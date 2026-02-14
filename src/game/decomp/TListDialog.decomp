@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TListDialog.decomp
+#include "../include/common.h"
+
+// Offset: 0x0043EEC0
+void* TListDialog::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TListDialog::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TListDialog::_vector_deleting_destructor_(TListDialog *this,uint param_1)
+    // 
+    // {
+    //   ~TListDialog(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

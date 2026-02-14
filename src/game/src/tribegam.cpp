@@ -252,19 +252,26 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
 
 TRIBE_Game::~TRIBE_Game() {
     // Source of truth: tribegam.cpp.decomp @ 0x005213A0
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("TRIBE_Game::~TRIBE_Game: destructor start");
+    CUSTOM_DEBUG_END
+
     this->inHandleIdle = 0;
 
     // Destroy video window if present
     if (this->video_window != nullptr) {
+        CUSTOM_DEBUG_LOG("TRIBE_Game dtor: destroying video_window");
         DestroyWindow((HWND)this->video_window);
         this->video_window = nullptr;
     }
 
     // Close all game screens and dialogs
+    CUSTOM_DEBUG_LOG("TRIBE_Game dtor: closing game screens");
     this->close_game_screens(1);
 
     // Destroy all remaining panels
     if (panel_system) {
+        CUSTOM_DEBUG_LOG("TRIBE_Game dtor: destroying panel system panels");
         panel_system->destroyPanel((char*)"Video Screen");
         panel_system->destroyPanel((char*)"Create Dialog");
         panel_system->destroyPanel((char*)"Campaign Editor Screen");
@@ -296,6 +303,7 @@ TRIBE_Game::~TRIBE_Game() {
     }
 
     // Close DRS resource files
+    CUSTOM_DEBUG_LOG("TRIBE_Game dtor: closing resource files");
     RESFILE_close_new_resource_file((char*)"sounds.drs");
     RESFILE_close_new_resource_file((char*)"graphics.drs");
     RESFILE_close_new_resource_file((char*)"Terrain.drs");
@@ -308,6 +316,7 @@ TRIBE_Game::~TRIBE_Game() {
         StringTableX = nullptr;
     }
 
+    CUSTOM_DEBUG_LOG("TRIBE_Game::~TRIBE_Game: destructor end");
     // ~RGE_Base_Game() is called automatically by C++ destructor chain
 }
 
@@ -384,7 +393,9 @@ int TRIBE_Game::setup() {
             if (this->load_game(this->startup_game)) goto FINAL_SETUP;
         }
         
-        if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
+        if (1 || quick_start_game_mode) {
+            this->start_game(0);
+        } else if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
             this->start_menu();
         } else {
             // Check for NOVIDEO/SKIPVIDEO etc inside start_video
@@ -709,21 +720,33 @@ int TRIBE_Game::create_game(int p1) {
     no_other_humans_count = 0;
 
     // --- Phase 2: Quick start game handling ---
+    // Source of truth: tribegam.cpp.decomp @ 0xcdd-0xcf8
     if (this->quickStartGame() != 0) {
+        MapType mt;
         if (quick_start_game_mode == 1) {
             this->setMapSize(static_cast<MapSize>(1)); // Medium
+            mt = (MapType)2; // AllLand
         } else {
             this->setMapSize(static_cast<MapSize>(2)); // Large
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xcdd);
-            MapType mt = (MapType)(r % 10);
-            // Remap map types per decomp
+            mt = (MapType)(r % 10);
+            // Exact remap from decomp:
             if ((int)mt < 2) {
                 mt = (MapType)2; // AllLand
+            } else if (mt == (MapType)3) {
+                mt = (MapType)4; // WaterAndLand -> MostlyLand
+            } else if (mt == (MapType)4) {
+                mt = (MapType)3; // MostlyLand -> WaterAndLand
+            } else if (mt == (MapType)2) {
+                mt = (MapType)5; // AllLand -> MostlyWater
+            } else if (mt != (MapType)6 && mt != (MapType)7 && mt != (MapType)8) {
+                // (mt != Isthmas) - MostlyWater & Isthmas
+                // If mt == 9 (Isthmas), keep as 9. Otherwise, set to 5 (MostlyWater).
+                mt = (mt != (MapType)9) ? (MapType)5 : (MapType)9;
             }
-            // Additional swaps per decomp: 3->4, 4->3, 2->5, etc.
-            // TODO(accuracy): exact remap from decomp. Using identity for now.
-            this->setMapType(mt);
+            // Continental(6), Lake(7), Hilly(8) pass through unchanged
         }
+        this->setMapType(mt);
         this->resetRandomComputerName();
         int np = this->numberPlayers();
         for (int i = 0; i < np; ++i) {
@@ -1254,7 +1277,8 @@ CUSTOM_DEBUG_END
     // TODO(accuracy): game music start (play_tracks for CD/MIDI/WAV)
     this->started_menu_music = 0;
 
-    // TODO(accuracy): reset_timings()
+    // Source of truth: tribegam.cpp.decomp @ 0x00528670 line 6780
+    this->reset_timings();
 
     // Critical: set prog_mode to 4 (in-game)
     this->set_prog_mode(4);
@@ -1264,8 +1288,17 @@ CUSTOM_DEBUG_END
         this->set_paused(0, 0);
     }
 
-    // TODO(accuracy): chat clear and chat group setup
-    // TODO(accuracy): mouse center if not iconic
+    // TODO(accuracy): TChat::ClearChat, TChat::setInChatGroup
+
+    // Center mouse cursor (decomp calls TMousePointer::center)
+    if (this->mouse_pointer != nullptr && this->prog_window != nullptr) {
+        if (!IsIconic((HWND)this->prog_window)) {
+            // TODO(accuracy): replace with TMousePointer::center() when declared
+            long cx = this->prog_info ? this->prog_info->main_wid / 2 : 320;
+            long cy = this->prog_info ? this->prog_info->main_hgt / 2 : 240;
+            SetCursorPos(cx, cy);
+        }
+    }
 
     this->enable_input();
 }

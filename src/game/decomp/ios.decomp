@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: ios.decomp
+#include "../include/common.h"
+
+// Offset: 0x0055B150
+void* ios::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall ios::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall ios::_vector_deleting_destructor_(ios *this,uint param_1)
+    // 
+    // {
+    //   ~ios(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

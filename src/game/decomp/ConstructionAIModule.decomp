@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: ConstructionAIModule.decomp
+#include "../include/common.h"
+
+// Offset: 0x0040AB90
+void* ConstructionAIModule::scalar_deleting_destructor(uint param_1) const {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall ConstructionAIModule::`scalar deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // ConstructionAIModule::_scalar_deleting_destructor_(ConstructionAIModule *this,uint param_1)
+    // 
+    // {
+    //   ~ConstructionAIModule(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

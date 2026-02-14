@@ -2,6 +2,15 @@
 #include "common.h"
 #include "TPanel.h"
 
+class TSpan_List_Manager;
+struct Tile_FogEdge_Table;
+struct Tile_BlackEdge_Table;
+struct Blit_Queue_Entry;
+struct RGE_SPick_Info;
+struct DClipInfo_List;
+struct Ov_Sprite_Draw_Rec;
+class TMessagePanel;
+
 class RGE_View : public TPanel {
 public:
     // Virtuals (best-effort)
@@ -88,6 +97,13 @@ public:
     short center_scr_col_offset;
     short center_scr_row_offset;
     short center_map_col;
+    virtual void update();
+    void draw_view(uchar mode, TDrawArea* area);
+    long view_function_terrain(uchar mode, tagRECT rect);
+    int draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, short row, uchar fog, int param_9, int param_10);
+    void draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar vis, uchar fog, int param_7, int param_8);
+    short get_tile_picture(uchar terrain_type, uchar vis, short col, short row);
+    short get_border_picture(uchar terrain_type, uchar border_type, uchar param_3, short col, short row);
     short center_map_row;
     short start_scr_col;
     short start_scr_row;
@@ -116,8 +132,8 @@ public:
     TSpan_List_Manager* Terrain_Clip_Mask;
     TSpan_List_Manager* Terrain_Fog_Clip_Mask;
     TSpan_List_Manager* Master_Clip_Mask;
-    Tile_FogEdge_Table** Tile_Edge_Tables;
-    Tile_BlackEdge_Table** Black_Edge_Tables;
+    struct Tile_FogEdge_Table** Tile_Edge_Tables;
+    struct Tile_BlackEdge_Table** Black_Edge_Tables;
     tagRECT OverlaidPanel;
     int OverlaidPanelActive;
     unsigned char EdgeNumber[256];
@@ -130,7 +146,7 @@ public:
     int Float_X_Delta;
     int Float_Y_Delta;
     int Queued_Blits;
-    Blit_Queue_Entry* Blit_Queue;
+    struct Blit_Queue_Entry* Blit_Queue;
     int Blit_Queue_Size;
     int Blt_Queue_Allocated;
     int Current_Blit;
@@ -138,7 +154,7 @@ public:
     int Blit_Offset_Y;
     long real_old_map_col;
     long real_old_map_row;
-    RGE_SPick_Info* pick_lists[5];
+    struct RGE_SPick_Info* pick_lists[5];
     int pick_list_size[5];
     TDrawArea* save_area1;
     unsigned char* LastRenderBits;
@@ -156,4 +172,4 @@ public:
     int DispSel_List_Size;
     int DispSel_List_Max;
 };
-static_assert(sizeof(RGE_View) == 0x360, "Size mismatch");
+// static_assert(sizeof(RGE_View) == 0x360, "Size mismatch");

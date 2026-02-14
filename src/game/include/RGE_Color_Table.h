@@ -8,6 +8,7 @@ public:
 
     // Constructors (reimplementation; source of truth: `src/game/src/color.cpp.asm` / `.decomp`).
     RGE_Color_Table();
+    RGE_Color_Table(int fd);
     RGE_Color_Table(struct TDrawArea* area, long amount_percent, struct tagPALETTEENTRY* base_color_or_null, struct tagPALETTEENTRY* palette_or_null);
 
     char color_table_name[30];

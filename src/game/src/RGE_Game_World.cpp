@@ -3,6 +3,14 @@
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
+#include "../include/RGE_Sprite.h"
+#include "../include/RGE_Color_Table.h"
+#include "../include/RGE_Sound.h"
+#include "../include/RGE_Effects.h"
+#include "../include/RGE_Master_Player.h"
+#include "../include/RGE_Command.h"
+#include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <io.h>
 #include <fcntl.h>
@@ -148,36 +156,85 @@ void RGE_Game_World::load_player(int param_1, uchar param_2, short param_3) {
     // TODO: implement
 }
 
-void RGE_Game_World::color_table_init(int param_1) {
-    // TODO: implement
+void RGE_Game_World::color_table_init(int fd) {
+    if (fd <= 0) return;
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::color_table_init fd=%d pos=%ld", fd, _tell(fd));
+    rge_read(fd, &this->color_table_num, 2);
+    if (this->color_table_num > 0) {
+        this->color_tables = (RGE_Color_Table**)calloc(this->color_table_num, sizeof(RGE_Color_Table*));
+        for (short i = 0; i < this->color_table_num; i++) {
+            this->color_tables[i] = new RGE_Color_Table(fd);
+        }
+    }
 }
 
-void RGE_Game_World::terrain_tables_init(int param_1) {
-    // TODO: implement
+void RGE_Game_World::terrain_tables_init(int fd) {
+    if (fd <= 0) return;
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::terrain_tables_init fd=%d pos=%ld", fd, _tell(fd));
+    rge_read(fd, &this->terrain_num, 2);
+    rge_read(fd, &this->terrain_size, 2);
+    if (this->terrain_num > 0) {
+        this->terrains = (float**)calloc(this->terrain_num, sizeof(float*));
+        for (short i = 0; i < this->terrain_num; i++) {
+            if (this->terrain_size > 0) {
+                this->terrains[i] = (float*)calloc(this->terrain_size, sizeof(float));
+                rge_read(fd, this->terrains[i], this->terrain_size * sizeof(float));
+            }
+        }
+    }
 }
 
-void RGE_Game_World::init_sounds(int param_1, TSound_Driver* param_2) {
-    // TODO: implement
+void RGE_Game_World::init_sounds(int fd, TSound_Driver* param_2) {
+    if (fd <= 0) return;
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sounds fd=%d pos=%ld", fd, _tell(fd));
+    rge_read(fd, &this->sound_num, 2);
+    if (this->sound_num > 0) {
+        this->sounds = (RGE_Sound**)calloc(this->sound_num, sizeof(RGE_Sound*));
+        for (short i = 0; i < this->sound_num; i++) {
+            this->sounds[i] = new RGE_Sound(fd, param_2);
+        }
+    }
 }
 
-void RGE_Game_World::init_sprites(int param_1) {
-    // TODO: implement
+void RGE_Game_World::init_sprites(int fd) {
+    if (fd <= 0) return;
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sprites fd=%d pos=%ld", fd, _tell(fd));
+    rge_read(fd, &this->sprite_num, 2);
+    if (this->sprite_num > 0) {
+        this->sprites = (RGE_Sprite**)calloc(this->sprite_num, sizeof(RGE_Sprite*));
+        for (short i = 0; i < this->sprite_num; i++) {
+            this->sprites[i] = new RGE_Sprite(fd, this->sounds, this->color_tables);
+        }
+    }
 }
 
-void RGE_Game_World::map_init(int param_1, TSound_Driver* param_2) {
-    // TODO: implement
+void RGE_Game_World::map_init(int fd, TSound_Driver* param_2) {
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::map_init fd=%d pos=%ld", fd, _tell(fd));
+    if (this->map) delete this->map;
+    this->map = new RGE_Map(fd, this->sounds, 1);
 }
 
-void RGE_Game_World::effects_init(int param_1) {
-    // TODO: implement
+void RGE_Game_World::effects_init(int fd) {
+    if (fd <= 0) return;
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::effects_init fd=%d pos=%ld", fd, _tell(fd));
+    this->effects = new RGE_Effects(fd);
 }
 
-void RGE_Game_World::master_player_init(int param_1) {
-    // TODO: implement
+void RGE_Game_World::master_player_init(int fd) {
+    if (fd <= 0) return;
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::master_player_init fd=%d pos=%ld", fd, _tell(fd));
+    rge_read(fd, &this->master_player_num, 2);
+    if (this->master_player_num > 0) {
+        this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, sizeof(RGE_Master_Player*));
+        for (short i = 0; i < this->master_player_num; i++) {
+            this->master_players[i] = new RGE_Master_Player(fd);
+        }
+    }
 }
 
-void RGE_Game_World::command_init(int param_1, TCommunications_Handler* param_2) {
-    // TODO: implement
+void RGE_Game_World::command_init(int fd, TCommunications_Handler* param_2) {
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::command_init fd=%d pos=%ld", fd, (fd > 0 ? _tell(fd) : -1L));
+    this->commands = new RGE_Command(this, param_2);
 }
 
 void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
@@ -305,18 +362,30 @@ RGE_Game_World::~RGE_Game_World() {
         this->master_players = nullptr;
     }
     if (this->sounds) {
+        for (short i = 0; i < this->sound_num; i++) {
+            if (this->sounds[i]) delete this->sounds[i];
+        }
         free(this->sounds);
         this->sounds = nullptr;
     }
     if (this->sprites) {
+        for (short i = 0; i < this->sprite_num; i++) {
+            if (this->sprites[i]) delete this->sprites[i];
+        }
         free(this->sprites);
         this->sprites = nullptr;
     }
     if (this->terrains) {
+        for (short i = 0; i < this->terrain_num; i++) {
+            if (this->terrains[i]) free(this->terrains[i]);
+        }
         free(this->terrains);
         this->terrains = nullptr;
     }
     if (this->color_tables) {
+        for (short i = 0; i < this->color_table_num; i++) {
+            if (this->color_tables[i]) delete this->color_tables[i];
+        }
         free(this->color_tables);
         this->color_tables = nullptr;
     }

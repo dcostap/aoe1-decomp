@@ -134,6 +134,14 @@ class RGE_Zone_Map_List;
 class RGE_Unified_Visible_Map;
 class Visible_Unit_Manager;
 
+struct Tile_FogEdge_Table;
+struct Tile_BlackEdge_Table;
+struct Blit_Queue_Entry;
+struct RGE_SPick_Info;
+struct DClipInfo_List;
+struct Ov_Sprite_Draw_Rec;
+struct DisplaySelectedObjRec;
+
 // Stubs for templates found in PDB
 template <typename T> struct ManagedArray {
     T* value;

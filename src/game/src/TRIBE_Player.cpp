@@ -145,14 +145,6 @@ TRIBE_Gaia::TRIBE_Gaia(int param_1, RGE_Game_World* world, uchar player_id)
 TRIBE_Gaia::~TRIBE_Gaia() {}
 void TRIBE_Gaia::update() { TRIBE_Player::update(); }
 
-// --- RGE_Master_Player base class stubs ---
-RGE_Master_Player::~RGE_Master_Player() {}
-void RGE_Master_Player::finish_init(int p1, RGE_Sprite** p2, RGE_Sound** p3) {}
-void RGE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {}
-void RGE_Master_Player::create_master_object_space(short p1) {}
-void RGE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {}
-void RGE_Master_Player::save(int p1) {}
-
 // --- TRIBE_Master_Player constructors ---
 TRIBE_Master_Player::TRIBE_Master_Player(int param_1) {
     // TODO(accuracy): full constructor from decomp

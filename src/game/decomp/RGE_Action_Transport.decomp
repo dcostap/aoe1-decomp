@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: RGE_Action_Transport.decomp
+#include "../include/common.h"
+
+// Offset: 0x00406D90
+void* RGE_Action_Transport::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Action_Transport::`vector deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // RGE_Action_Transport::_vector_deleting_destructor_(RGE_Action_Transport *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Action_Transport(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: ResourceItem.decomp
+#include "../include/common.h"
+
+// Offset: 0x00411EF0
+void* ResourceItem::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall ResourceItem::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall ResourceItem::_scalar_deleting_destructor_(ResourceItem *this,uint param_1)
+    // 
+    // {
+    //   ~ResourceItem(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

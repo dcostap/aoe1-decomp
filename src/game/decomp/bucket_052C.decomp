@@ -1,0 +1,40 @@
+// Auto-generated decompiler unit: bucket_052C.decomp
+#include "../include/common.h"
+
+// Offset: 0x0052CA20
+void TRIBE_Diamond_Map_View(TRIBE_Diamond_Map_View* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Diamond_Map_View::~TRIBE_Diamond_Map_View(void) */
+    // 
+    // void __thiscall TRIBE_Diamond_Map_View::~TRIBE_Diamond_Map_View(TRIBE_Diamond_Map_View *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   pcStack_8 = FUN_0055cf18;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   this->_padding_ = (int)&RGE_Diamond_Map::_vftable_;
+    //   uStack_4 = 0;
+    //   RGE_Diamond_Map::delete_surfaces((RGE_Diamond_Map *)this);
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //     this->_padding_ = 0;
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //     this->_padding_ = 0;
+    //   }
+    //   uStack_4 = 0xffffffff;
+    //   TPanel::~TPanel((TPanel *)this);
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: DiplomacyAIModule.decomp
+#include "../include/common.h"
+
+// Offset: 0x0040BF20
+void* DiplomacyAIModule::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall DiplomacyAIModule::`scalar deleting destructor'(unsigned int)
+    //     */
+    // 
+    // void * __thiscall
+    // DiplomacyAIModule::_scalar_deleting_destructor_(DiplomacyAIModule *this,uint param_1)
+    // 
+    // {
+    //   ~DiplomacyAIModule(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

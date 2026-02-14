@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TRIBE_Player.decomp
+#include "../include/common.h"
+
+// Offset: 0x00511E00
+void* TRIBE_Player::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Player::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TRIBE_Player::_vector_deleting_destructor_(TRIBE_Player *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Player(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

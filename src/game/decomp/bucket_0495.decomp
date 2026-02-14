@@ -1,0 +1,105 @@
+// Auto-generated decompiler unit: bucket_0495.decomp
+#include "../include/common.h"
+
+// Offset: 0x00495490
+void TRIBE_Main_View(TRIBE_Main_View* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Main_View::~TRIBE_Main_View(void) */
+    // 
+    // void __thiscall TRIBE_Main_View::~TRIBE_Main_View(TRIBE_Main_View *this)
+    // 
+    // {
+    //   TShape *this_00;
+    //   TSpan_List_Manager *pTVar1;
+    //   DClipInfo_List *pDVar2;
+    //   int iVar3;
+    //   int *piVar4;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   pcStack_8 = FUN_00561b28;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   *(undefined ***)this = &RGE_View::_vftable_;
+    //   this_00 = *(TShape **)&this->field_0x164;
+    //   uStack_4 = 0;
+    //   if (this_00 != (TShape *)0x0) {
+    //     TShape::~TShape(this_00);
+    //     operator_delete(this_00);
+    //     *(undefined4 *)&this->field_0x164 = 0;
+    //   }
+    //   RGE_View::delete_surfaces((RGE_View *)this);
+    //   if (*(int *)&this->field_0x15c != 0) {
+    //     DeleteObject(*(int *)&this->field_0x15c);
+    //     *(undefined4 *)&this->field_0x15c = 0;
+    //   }
+    //   if (*(int *)&this->field_0x32c != 0) {
+    //     free(*(int *)&this->field_0x32c);
+    //   }
+    //   pTVar1 = *(TSpan_List_Manager **)&this->field_0x178;
+    //   if (pTVar1 != (TSpan_List_Manager *)0x0) {
+    //     TSpan_List_Manager::~TSpan_List_Manager(pTVar1);
+    //     operator_delete(pTVar1);
+    //   }
+    //   pTVar1 = *(TSpan_List_Manager **)&this->field_0x17c;
+    //   if (pTVar1 != (TSpan_List_Manager *)0x0) {
+    //     TSpan_List_Manager::~TSpan_List_Manager(pTVar1);
+    //     operator_delete(pTVar1);
+    //   }
+    //   pTVar1 = *(TSpan_List_Manager **)&this->field_0x180;
+    //   if (pTVar1 != (TSpan_List_Manager *)0x0) {
+    //     TSpan_List_Manager::~TSpan_List_Manager(pTVar1);
+    //     operator_delete(pTVar1);
+    //   }
+    //   if (*(int *)&this->field_0x184 != 0) {
+    //     free(*(int *)&this->field_0x184);
+    //   }
+    //   if (*(int *)&this->field_0x188 != 0) {
+    //     free(*(int *)&this->field_0x188);
+    //   }
+    //   if (*(int *)&this->field_0x2c8 != 0) {
+    //     free(*(int *)&this->field_0x2c8);
+    //   }
+    //   if (*(int *)&this->field_0x2dc != 0) {
+    //     free(*(int *)&this->field_0x2dc);
+    //   }
+    //   pDVar2 = *(DClipInfo_List **)&this->field_0x334;
+    //   if (pDVar2 != (DClipInfo_List *)0x0) {
+    //     DClipInfo_List::~DClipInfo_List(pDVar2);
+    //     operator_delete(pDVar2);
+    //   }
+    //   pDVar2 = *(DClipInfo_List **)&this->field_0x338;
+    //   if (pDVar2 != (DClipInfo_List *)0x0) {
+    //     DClipInfo_List::~DClipInfo_List(pDVar2);
+    //     operator_delete(pDVar2);
+    //   }
+    //   piVar4 = (int *)&this->field_0x2fc;
+    //   iVar3 = 5;
+    //   do {
+    //     if (*piVar4 != 0) {
+    //       free(*piVar4);
+    //     }
+    //     piVar4 = piVar4 + 1;
+    //     iVar3 = iVar3 + -1;
+    //   } while (iVar3 != 0);
+    //   if (MouseSystem != (TMousePointer *)0x0) {
+    //     TMousePointer::set_game_mode(MouseSystem,0);
+    //     TMousePointer::set_game_enable(MouseSystem,0);
+    //   }
+    //   if (*(int *)&this->field_0x354 != 0) {
+    //     free(*(int *)&this->field_0x354);
+    //   }
+    //   RGE_View::reset_overlay_sprites((RGE_View *)this);
+    //   TPanel::~TPanel((TPanel *)this);
+    //   uStack_4 = 0xffffffff;
+    //   TPanel::~TPanel((TPanel *)this);
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+

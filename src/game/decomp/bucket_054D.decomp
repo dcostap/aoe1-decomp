@@ -1,0 +1,2247 @@
+// Auto-generated decompiler unit: bucket_054D.decomp
+#include "../include/common.h"
+
+// Offset: 0x0054D000
+undefined sopen() {
+    // --- Ghidra decompiler output ---
+    // 
+    // uint __sopen(undefined4 param_1,uint param_2,undefined4 param_3,byte param_4)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   uint unaff_EBX;
+    //   undefined4 uVar7;
+    //   undefined4 uVar8;
+    //   bool bVar9;
+    //   undefined4 *puVar10;
+    //   char acStack_14 [3];
+    //   byte local_11;
+    //   uint local_10;
+    //   undefined4 local_c;
+    //   undefined4 local_8;
+    //   uint local_4;
+    //   
+    //   bVar9 = (param_2 & 0x80) == 0;
+    //   local_c = 0xc;
+    //   local_8 = 0;
+    //   if (bVar9) {
+    //     local_11 = 0;
+    //   }
+    //   else {
+    //     local_11 = 0x10;
+    //   }
+    //   local_4 = (uint)bVar9;
+    //   if (((param_2 & 0x8000) == 0) && (((param_2 & 0x4000) != 0 || (__fmode != 0x8000)))) {
+    //     local_11 = local_11 | 0x80;
+    //   }
+    //   uVar2 = param_2 & 3;
+    //   if (uVar2 == 0) {
+    //     local_10 = 0x80000000;
+    //   }
+    //   else if (uVar2 == 1) {
+    //     local_10 = 0x40000000;
+    //   }
+    //   else {
+    //     if (uVar2 != 2) {
+    //       _errno = 0x16;
+    //       __doserrno = 0;
+    //       return 0xffffffff;
+    //     }
+    //     local_10 = 0xc0000000;
+    //   }
+    //   switch(param_3) {
+    //   case 0x10:
+    //     uVar7 = 0;
+    //     break;
+    //   default:
+    //     goto switchD_0054d098_caseD_11;
+    //   case 0x20:
+    //     uVar7 = 1;
+    //     break;
+    //   case 0x30:
+    //     uVar7 = 2;
+    //     break;
+    //   case 0x40:
+    //     uVar7 = 3;
+    //   }
+    //   uVar2 = param_2 & 0x700;
+    //   if (uVar2 < 0x101) {
+    //     if (uVar2 == 0x100) {
+    //       uVar8 = 4;
+    //     }
+    //     else {
+    //       if (uVar2 != 0) {
+    //         _errno = 0x16;
+    //         __doserrno = 0;
+    //         return 0xffffffff;
+    //       }
+    // LAB_0054d106:
+    //       uVar8 = 3;
+    //     }
+    //   }
+    //   else if (uVar2 < 0x301) {
+    //     if (uVar2 == 0x300) {
+    //       uVar8 = 2;
+    //     }
+    //     else {
+    //       if (uVar2 != 0x200) {
+    //         _errno = 0x16;
+    //         __doserrno = 0;
+    //         return 0xffffffff;
+    //       }
+    // LAB_0054d126:
+    //       uVar8 = 5;
+    //     }
+    //   }
+    //   else {
+    //     if (uVar2 < 0x501) {
+    //       if (uVar2 != 0x500) {
+    //         if (uVar2 != 0x400) {
+    // switchD_0054d098_caseD_11:
+    //           __doserrno = 0;
+    //           _errno = 0x16;
+    //           return 0xffffffff;
+    //         }
+    //         goto LAB_0054d106;
+    //       }
+    //     }
+    //     else {
+    //       if (uVar2 == 0x600) goto LAB_0054d126;
+    //       if (uVar2 != 0x700) {
+    //         _errno = 0x16;
+    //         __doserrno = 0;
+    //         return 0xffffffff;
+    //       }
+    //     }
+    //     uVar8 = 1;
+    //   }
+    //   uVar2 = 0x80;
+    //   if (((param_2 & 0x100) != 0) && ((param_4 & ~(byte)__umaskval & 0x80) == 0)) {
+    //     uVar2 = 1;
+    //   }
+    //   if ((param_2 & 0x40) != 0) {
+    //     uVar2 = uVar2 | 0x4000000;
+    //     local_10 = local_10 | 0x10000;
+    //   }
+    //   if ((param_2 & 0x1000) != 0) {
+    //     uVar2 = uVar2 | 0x100;
+    //   }
+    //   if ((param_2 & 0x20) == 0) {
+    //     if ((param_2 & 0x10) != 0) {
+    //       uVar2 = uVar2 | 0x10000000;
+    //     }
+    //   }
+    //   else {
+    //     uVar2 = uVar2 | 0x8000000;
+    //   }
+    //   uVar3 = __alloc_osfhnd();
+    //   if (uVar3 == 0xffffffff) {
+    //     _errno = 0x18;
+    //     __doserrno = 0;
+    //     return 0xffffffff;
+    //   }
+    //   puVar10 = &local_c;
+    //   iVar4 = CreateFileA(param_1,local_10,uVar7,puVar10,uVar8,uVar2,0);
+    //   if (iVar4 == -1) {
+    //     uVar7 = GetLastError();
+    //     __dosmaperr(uVar7);
+    //     return 0xffffffff;
+    //   }
+    //   iVar5 = GetFileType(iVar4);
+    //   if (iVar5 == 0) {
+    //     CloseHandle(iVar4);
+    //     uVar7 = GetLastError();
+    //     __dosmaperr(uVar7);
+    //     return 0xffffffff;
+    //   }
+    //   bVar1 = (byte)((uint)puVar10 >> 0x18);
+    //   if (iVar5 == 2) {
+    //     bVar1 = bVar1 | 0x40;
+    //   }
+    //   else {
+    //     if (iVar5 != 3) goto LAB_0054d233;
+    //     bVar1 = bVar1 | 8;
+    //   }
+    //   puVar10 = (undefined4 *)((uint)bVar1 << 0x18);
+    // LAB_0054d233:
+    //   __set_osfhnd(uVar3,iVar4);
+    //   iVar4 = (uVar3 & 0x1f) * 8;
+    //   *(byte *)(iVar4 + 4 + (&___pioinfo)[(int)uVar3 >> 5]) = (byte)((uint)puVar10 >> 0x18) | 1;
+    //   if (((((uint)puVar10 & 0x48000000) == 0) && (((uint)puVar10 & 0x80000000) != 0)) &&
+    //      ((unaff_EBX & 2) != 0)) {
+    //     iVar5 = lseek(uVar3,0xffffffff,2);
+    //     if (iVar5 == -1) {
+    //       if (__doserrno != 0x83) {
+    //         close(uVar3);
+    //         return 0xffffffff;
+    //       }
+    //     }
+    //     else {
+    //       acStack_14[0] = '\0';
+    //       iVar6 = read(uVar3,acStack_14,1);
+    //       if (((iVar6 == 0) && (acStack_14[0] == '\x1a')) &&
+    //          (iVar5 = __chsize(uVar3,iVar5), iVar5 == -1)) {
+    //         close(uVar3);
+    //         return 0xffffffff;
+    //       }
+    //       iVar5 = lseek(uVar3,0,0);
+    //       if (iVar5 == -1) {
+    //         close(uVar3);
+    //         return 0xffffffff;
+    //       }
+    //     }
+    //   }
+    //   if ((((uint)puVar10 & 0x48000000) == 0) && ((unaff_EBX & 8) != 0)) {
+    //     *(byte *)(iVar4 + 4 + (&___pioinfo)[(int)uVar3 >> 5]) =
+    //          *(byte *)(iVar4 + 4 + (&___pioinfo)[(int)uVar3 >> 5]) | 0x20;
+    //   }
+    //   return uVar3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D3C0
+undefined tell() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void __tell(undefined4 param_1)
+    // 
+    // {
+    //   lseek(param_1,0,1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D3E0
+undefined lseek() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* lseek */
+    // 
+    // int __cdecl lseek(uint param_1,undefined4 param_2,undefined4 param_3)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   if (param_1 < __nhandle) {
+    //     iVar3 = (param_1 & 0x1f) * 8;
+    //     if ((*(byte *)((&___pioinfo)[(int)param_1 >> 5] + 4 + iVar3) & 1) != 0) {
+    //       iVar1 = __get_osfhandle(param_1);
+    //       if (iVar1 == -1) {
+    //         _errno = 9;
+    //         return -1;
+    //       }
+    //       iVar1 = SetFilePointer(iVar1,param_2,0,param_3);
+    //       if (iVar1 == -1) {
+    //         iVar2 = GetLastError();
+    //       }
+    //       else {
+    //         iVar2 = 0;
+    //       }
+    //       if (iVar2 != 0) {
+    //         __dosmaperr(iVar2);
+    //         return -1;
+    //       }
+    //       *(byte *)((&___pioinfo)[(int)param_1 >> 5] + 4 + iVar3) =
+    //            *(byte *)((&___pioinfo)[(int)param_1 >> 5] + 4 + iVar3) & 0xfd;
+    //       return iVar1;
+    //     }
+    //   }
+    //   _errno = 9;
+    //   __doserrno = 0;
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D4A0
+undefined write() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* write */
+    // 
+    // int __cdecl write(uint param_1,char *param_2,uint param_3)
+    // 
+    // {
+    //   int *piVar1;
+    //   byte bVar2;
+    //   char cVar3;
+    //   char *pcVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   char *pcVar7;
+    //   int local_41c;
+    //   int local_414;
+    //   int local_410;
+    //   int local_40c;
+    //   int *local_408;
+    //   char local_404 [1028];
+    //   
+    //   if (param_1 < __nhandle) {
+    //     piVar1 = &___pioinfo + ((int)param_1 >> 5);
+    //     iVar6 = (param_1 & 0x1f) * 8;
+    //     bVar2 = *(byte *)(iVar6 + 4 + (&___pioinfo)[(int)param_1 >> 5]);
+    //     if ((bVar2 & 1) != 0) {
+    //       local_41c = 0;
+    //       local_40c = 0;
+    //       if (param_3 == 0) {
+    //         return 0;
+    //       }
+    //       local_408 = piVar1;
+    //       if ((bVar2 & 0x20) != 0) {
+    //         lseek(param_1,0,2);
+    //       }
+    //       if ((*(byte *)((undefined4 *)(*piVar1 + iVar6) + 1) & 0x80) == 0) {
+    //         iVar5 = WriteFile(*(undefined4 *)(*piVar1 + iVar6),param_2,param_3,&local_410,0);
+    //         if (iVar5 == 0) {
+    //           local_414 = GetLastError();
+    //         }
+    //         else {
+    //           local_41c = local_410;
+    //           local_414 = 0;
+    //         }
+    //       }
+    //       else {
+    //         local_414 = 0;
+    //         pcVar7 = param_2;
+    //         if (param_3 != 0) {
+    //           do {
+    //             pcVar4 = local_404;
+    //             do {
+    //               if (param_3 <= (uint)((int)pcVar7 - (int)param_2)) break;
+    //               cVar3 = *pcVar7;
+    //               pcVar7 = pcVar7 + 1;
+    //               if (cVar3 == '\n') {
+    //                 *pcVar4 = '\r';
+    //                 local_40c = local_40c + 1;
+    //                 pcVar4 = pcVar4 + 1;
+    //               }
+    //               *pcVar4 = cVar3;
+    //               pcVar4 = pcVar4 + 1;
+    //             } while ((int)pcVar4 - (int)local_404 < 0x400);
+    //             iVar5 = WriteFile(*(undefined4 *)(iVar6 + *local_408),local_404,
+    //                               (int)pcVar4 - (int)local_404,&local_410,0);
+    //             if (iVar5 == 0) {
+    //               local_414 = GetLastError();
+    //               break;
+    //             }
+    //             local_41c = local_41c + local_410;
+    //             if ((local_410 < (int)pcVar4 - (int)local_404) ||
+    //                (param_3 <= (uint)((int)pcVar7 - (int)param_2))) break;
+    //           } while( true );
+    //         }
+    //       }
+    //       if (local_41c != 0) {
+    //         return local_41c - local_40c;
+    //       }
+    //       if (local_414 == 0) {
+    //         if (((*(byte *)(iVar6 + 4 + *local_408) & 0x40) != 0) && (*param_2 == '\x1a')) {
+    //           return 0;
+    //         }
+    //         _errno = 0x1c;
+    //         __doserrno = 0;
+    //         return -1;
+    //       }
+    //       if (local_414 == 5) {
+    //         __doserrno = local_414;
+    //         _errno = 9;
+    //         return -1;
+    //       }
+    //       __dosmaperr(local_414);
+    //       return -1;
+    //     }
+    //   }
+    //   _errno = 9;
+    //   __doserrno = 0;
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D6C0
+undefined fscanf() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* fscanf */
+    // 
+    // void __cdecl fscanf(undefined4 param_1,undefined4 param_2)
+    // 
+    // {
+    //   __input(param_1,param_2,&stack0x0000000c);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D6E0
+void eh_vector_constructor_iterator(void* param_1, uint param_2, int param_3, _func_void_void_ptr* param_4, _func_void_void_ptr* param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* void __stdcall `eh vector constructor iterator'(void *,unsigned int,int,void (__thiscall*)(void
+    //    *),void (__thiscall*)(void *)) */
+    // 
+    // void _eh_vector_constructor_iterator_
+    //                (void *param_1,uint param_2,int param_3,_func_void_void_ptr *param_4,
+    //                _func_void_void_ptr *param_5)
+    // 
+    // {
+    //   int iVar1;
+    //   void *unaff_EDI;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_14;
+    //   undefined4 uStack_10;
+    //   undefined *puStack_c;
+    //   undefined4 local_8;
+    //   
+    //   puStack_c = &DAT_00577a58;
+    //   uStack_10 = 0x554df8;
+    //   local_14 = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_14;
+    //   local_8 = 0;
+    //   for (iVar1 = 0; iVar1 < param_3; iVar1 = iVar1 + 1) {
+    //     (*param_4)(unaff_EDI);
+    //   }
+    //   local_8 = 0xffffffff;
+    //   FUN_0054d758();
+    //   *unaff_FS_OFFSET = local_14;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D74F
+undefined FUN_0054d74f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d74f(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //   if (*(int *)(unaff_EBP + -0x20) == 0) {
+    //     __ArrayUnwind(*(void **)(unaff_EBP + 8),*(uint *)(unaff_EBP + 0xc),*(int *)(unaff_EBP + -0x1c),
+    //                   *(_func_void_void_ptr **)(unaff_EBP + 0x18));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D758
+undefined FUN_0054d758() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d758(void)
+    // 
+    // {
+    //   uint unaff_EBX;
+    //   int unaff_EBP;
+    //   int unaff_ESI;
+    //   void *unaff_EDI;
+    //   
+    //   if (*(int *)(unaff_EBP + -0x20) == 0) {
+    //     __ArrayUnwind(unaff_EDI,unaff_EBX,unaff_ESI,*(_func_void_void_ptr **)(unaff_EBP + 0x18));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D76C
+undefined FUN_0054d76c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d76c(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   
+    //   *unaff_FS_OFFSET = *(undefined4 *)(unaff_EBP + -0x10);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D780
+void eh_vector_destructor_iterator(void* param_1, uint param_2, int param_3, _func_void_void_ptr* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* void __stdcall `eh vector destructor iterator'(void *,unsigned int,int,void (__thiscall*)(void
+    //    *)) */
+    // 
+    // void _eh_vector_destructor_iterator_
+    //                (void *param_1,uint param_2,int param_3,_func_void_void_ptr *param_4)
+    // 
+    // {
+    //   void *unaff_EDI;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_14;
+    //   undefined4 uStack_10;
+    //   undefined *puStack_c;
+    //   undefined4 local_8;
+    //   
+    //   puStack_c = &DAT_00577a68;
+    //   uStack_10 = 0x554df8;
+    //   local_14 = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_14;
+    //   local_8 = 0;
+    //   while( true ) {
+    //     param_3 = param_3 + -1;
+    //     if (param_3 < 0) break;
+    //     (*param_4)(unaff_EDI);
+    //   }
+    //   local_8 = 0xffffffff;
+    //   FUN_0054d7f9();
+    //   *unaff_FS_OFFSET = local_14;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D7F3
+undefined FUN_0054d7f3() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d7f3(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //   if (*(int *)(unaff_EBP + -0x1c) == 0) {
+    //     __ArrayUnwind(*(void **)(unaff_EBP + 8),*(uint *)(unaff_EBP + 0xc),*(int *)(unaff_EBP + 0x10),
+    //                   *(_func_void_void_ptr **)(unaff_EBP + 0x14));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D7F9
+undefined FUN_0054d7f9() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d7f9(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   void *unaff_ESI;
+    //   uint unaff_EDI;
+    //   
+    //   if (*(int *)(unaff_EBP + -0x1c) == 0) {
+    //     __ArrayUnwind(unaff_ESI,unaff_EDI,*(int *)(unaff_EBP + 0x10),
+    //                   *(_func_void_void_ptr **)(unaff_EBP + 0x14));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D810
+undefined FUN_0054d810() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d810(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   
+    //   *unaff_FS_OFFSET = *(undefined4 *)(unaff_EBP + -0x10);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D830
+void ArrayUnwind(void* param_1, uint param_2, int param_3, _func_void_void_ptr* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* void __stdcall __ArrayUnwind(void *,unsigned int,int,void (__thiscall*)(void *)) */
+    // 
+    // void __ArrayUnwind(void *param_1,uint param_2,int param_3,_func_void_void_ptr *param_4)
+    // 
+    // {
+    //   void *unaff_EDI;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_14;
+    //   undefined4 uStack_10;
+    //   undefined *puStack_c;
+    //   undefined4 local_8;
+    //   
+    //   puStack_c = &DAT_00577a78;
+    //   uStack_10 = 0x554df8;
+    //   local_14 = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_14;
+    //   local_8 = 0;
+    //   while( true ) {
+    //     param_3 = param_3 + -1;
+    //     if (param_3 < 0) break;
+    //     (*param_4)(unaff_EDI);
+    //   }
+    //   *unaff_FS_OFFSET = local_14;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D870
+undefined FUN_0054d870() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d870(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //   FUN_0054d8a0(*(undefined4 *)(unaff_EBP + -0x14));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D87D
+undefined FUN_0054d87d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054d87d(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   
+    //   *(undefined4 *)(unaff_EBP + -4) = 0xffffffff;
+    //   *unaff_FS_OFFSET = *(undefined4 *)(unaff_EBP + -0x10);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D8A0
+undefined FUN_0054d8a0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054d8a0(undefined4 *param_1)
+    // 
+    // {
+    //   if (*(int *)*param_1 == -0x1f928c9d) {
+    //     terminate();
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D8C0
+undefined fputs() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* fputs */
+    // 
+    // int __cdecl fputs(char *param_1,undefined4 param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   undefined4 uVar2;
+    //   int iVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   
+    //   uVar4 = 0xffffffff;
+    //   pcVar5 = param_1;
+    //   do {
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     cVar1 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = __stbuf(param_2);
+    //   iVar3 = fwrite(param_1,1,~uVar4 - 1,param_2);
+    //   __ftbuf(uVar2,param_2);
+    //   return -(uint)(iVar3 != ~uVar4 - 1);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054D910
+undefined strncat() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* strncat */
+    // 
+    // uint * __cdecl strncat(uint *param_1,uint *param_2,uint param_3)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   uint uVar4;
+    //   uint *puVar5;
+    //   uint *puVar6;
+    //   
+    //   if (param_3 != 0) {
+    //     uVar4 = (uint)param_1 & 3;
+    //     puVar5 = param_1;
+    //     while (uVar4 != 0) {
+    //       uVar4 = *puVar5;
+    //       puVar5 = (uint *)((int)puVar5 + 1);
+    //       if ((byte)uVar4 == 0) goto LAB_0054d96b;
+    //       uVar4 = (uint)puVar5 & 3;
+    //     }
+    //     do {
+    //       do {
+    //         puVar6 = puVar5;
+    //         puVar5 = puVar6 + 1;
+    //       } while (((*puVar6 ^ 0xffffffff ^ *puVar6 + 0x7efefeff) & 0x81010100) == 0);
+    //       uVar4 = *puVar6;
+    //       if ((char)uVar4 == '\0') goto LAB_0054d97b;
+    //       if ((char)(uVar4 >> 8) == '\0') {
+    //         puVar6 = (uint *)((int)puVar6 + 1);
+    //         goto LAB_0054d97b;
+    //       }
+    //       if ((uVar4 & 0xff0000) == 0) {
+    //         puVar6 = (uint *)((int)puVar6 + 2);
+    //         goto LAB_0054d97b;
+    //       }
+    //     } while ((uVar4 & 0xff000000) != 0);
+    // LAB_0054d96b:
+    //     puVar6 = (uint *)((int)puVar5 + -1);
+    // LAB_0054d97b:
+    //     if (((uint)param_2 & 3) == 0) {
+    //       uVar3 = param_3 >> 2;
+    //     }
+    //     else {
+    //       do {
+    //         bVar1 = (byte)*param_2;
+    //         uVar4 = (uint)bVar1;
+    //         param_2 = (uint *)((int)param_2 + 1);
+    //         if (bVar1 == 0) goto LAB_0054d9ca;
+    //         *(byte *)puVar6 = bVar1;
+    //         puVar6 = (uint *)((int)puVar6 + 1);
+    //         param_3 = param_3 - 1;
+    //         if (param_3 == 0) goto LAB_0054d9c0;
+    //       } while (((uint)param_2 & 3) != 0);
+    //       uVar3 = param_3 >> 2;
+    //     }
+    //     for (; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       uVar2 = *param_2;
+    //       uVar4 = *param_2;
+    //       param_2 = param_2 + 1;
+    //       if (((uVar2 ^ 0xffffffff ^ uVar2 + 0x7efefeff) & 0x81010100) != 0) {
+    //         if ((char)uVar4 == '\0') {
+    // LAB_0054d9ca:
+    //           *(byte *)puVar6 = (byte)uVar4;
+    //           return param_1;
+    //         }
+    //         if ((char)(uVar4 >> 8) == '\0') {
+    //           *(short *)puVar6 = (short)uVar4;
+    //           return param_1;
+    //         }
+    //         if ((uVar4 & 0xff0000) == 0) {
+    //           *(short *)puVar6 = (short)uVar4;
+    //           *(byte *)((int)puVar6 + 2) = 0;
+    //           return param_1;
+    //         }
+    //         if ((uVar4 & 0xff000000) == 0) {
+    //           *puVar6 = uVar4;
+    //           return param_1;
+    //         }
+    //       }
+    //       *puVar6 = uVar4;
+    //       puVar6 = puVar6 + 1;
+    //     }
+    //     for (param_3 = param_3 & 3; param_3 != 0; param_3 = param_3 - 1) {
+    //       uVar4 = *param_2;
+    //       param_2 = (uint *)((int)param_2 + 1);
+    //       *(byte *)puVar6 = (byte)uVar4;
+    //       puVar6 = (uint *)((int)puVar6 + 1);
+    //       if ((byte)uVar4 == 0) {
+    //         return param_1;
+    //       }
+    //     }
+    // LAB_0054d9c0:
+    //     *(byte *)puVar6 = (byte)param_3;
+    //   }
+    //   return param_1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DA40
+undefined ctime() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* ctime */
+    // 
+    // undefined4 __cdecl ctime(undefined4 param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   undefined4 uVar2;
+    //   
+    //   iVar1 = localtime(param_1);
+    //   if (iVar1 != 0) {
+    //     uVar2 = asctime(iVar1);
+    //     return uVar2;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DA60
+undefined memset() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* memset */
+    // 
+    // uint * __cdecl memset(uint *param_1,byte param_2,uint param_3)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   uint *puVar4;
+    //   
+    //   if (param_3 == 0) {
+    //     return param_1;
+    //   }
+    //   uVar1 = (uint)param_2;
+    //   puVar4 = param_1;
+    //   if (3 < param_3) {
+    //     uVar2 = -(int)param_1 & 3;
+    //     uVar3 = param_3;
+    //     if (uVar2 != 0) {
+    //       uVar3 = param_3 - uVar2;
+    //       do {
+    //         *(byte *)puVar4 = param_2;
+    //         puVar4 = (uint *)((int)puVar4 + 1);
+    //         uVar2 = uVar2 - 1;
+    //       } while (uVar2 != 0);
+    //     }
+    //     uVar1 = uVar1 * 0x1010101;
+    //     param_3 = uVar3 & 3;
+    //     uVar3 = uVar3 >> 2;
+    //     if (uVar3 != 0) {
+    //       for (; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         *puVar4 = uVar1;
+    //         puVar4 = puVar4 + 1;
+    //       }
+    //       if (param_3 == 0) {
+    //         return param_1;
+    //       }
+    //     }
+    //   }
+    //   do {
+    //     *(char *)puVar4 = (char)uVar1;
+    //     puVar4 = (uint *)((int)puVar4 + 1);
+    //     param_3 = param_3 - 1;
+    //   } while (param_3 != 0);
+    //   return param_1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DAC0
+undefined memcpy() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* memcpy */
+    // 
+    // undefined4 * __cdecl memcpy(undefined4 *param_1,undefined4 *param_2,uint param_3)
+    // 
+    // {
+    //   uint uVar1;
+    //   undefined4 *puVar2;
+    //   
+    //   if ((param_2 < param_1) && (param_1 < (undefined4 *)(param_3 + (int)param_2))) {
+    //     param_2 = (undefined4 *)((param_3 - 4) + (int)param_2);
+    //     puVar2 = (undefined4 *)((param_3 - 4) + (int)param_1);
+    //     if (((uint)puVar2 & 3) == 0) {
+    //       uVar1 = param_3 >> 2;
+    //       param_3 = param_3 & 3;
+    //       if (7 < uVar1) {
+    //         for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //           *puVar2 = *param_2;
+    //           param_2 = param_2 + -1;
+    //           puVar2 = puVar2 + -1;
+    //         }
+    //         switch(param_3) {
+    //         case 0:
+    //           return param_1;
+    //         case 2:
+    //           goto switchD_0054dc77_caseD_2;
+    //         case 3:
+    //           goto switchD_0054dc77_caseD_3;
+    //         }
+    //         goto switchD_0054dc77_caseD_1;
+    //       }
+    //     }
+    //     else {
+    //       switch(param_3) {
+    //       case 0:
+    //         goto switchD_0054dc77_caseD_0;
+    //       case 1:
+    //         goto switchD_0054dc77_caseD_1;
+    //       case 2:
+    //         goto switchD_0054dc77_caseD_2;
+    //       case 3:
+    //         goto switchD_0054dc77_caseD_3;
+    //       default:
+    //         uVar1 = param_3 - ((uint)puVar2 & 3);
+    //         switch((uint)puVar2 & 3) {
+    //         case 1:
+    //           param_3 = uVar1 & 3;
+    //           *(undefined1 *)((int)puVar2 + 3) = *(undefined1 *)((int)param_2 + 3);
+    //           param_2 = (undefined4 *)((int)param_2 + -1);
+    //           uVar1 = uVar1 >> 2;
+    //           puVar2 = (undefined4 *)((int)puVar2 - 1);
+    //           if (7 < uVar1) {
+    //             for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //               *puVar2 = *param_2;
+    //               param_2 = param_2 + -1;
+    //               puVar2 = puVar2 + -1;
+    //             }
+    //             switch(param_3) {
+    //             case 0:
+    //               return param_1;
+    //             case 2:
+    //               goto switchD_0054dc77_caseD_2;
+    //             case 3:
+    //               goto switchD_0054dc77_caseD_3;
+    //             }
+    //             goto switchD_0054dc77_caseD_1;
+    //           }
+    //           break;
+    //         case 2:
+    //           param_3 = uVar1 & 3;
+    //           *(undefined1 *)((int)puVar2 + 3) = *(undefined1 *)((int)param_2 + 3);
+    //           uVar1 = uVar1 >> 2;
+    //           *(undefined1 *)((int)puVar2 + 2) = *(undefined1 *)((int)param_2 + 2);
+    //           param_2 = (undefined4 *)((int)param_2 + -2);
+    //           puVar2 = (undefined4 *)((int)puVar2 - 2);
+    //           if (7 < uVar1) {
+    //             for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //               *puVar2 = *param_2;
+    //               param_2 = param_2 + -1;
+    //               puVar2 = puVar2 + -1;
+    //             }
+    //             switch(param_3) {
+    //             case 0:
+    //               return param_1;
+    //             case 2:
+    //               goto switchD_0054dc77_caseD_2;
+    //             case 3:
+    //               goto switchD_0054dc77_caseD_3;
+    //             }
+    //             goto switchD_0054dc77_caseD_1;
+    //           }
+    //           break;
+    //         case 3:
+    //           param_3 = uVar1 & 3;
+    //           *(undefined1 *)((int)puVar2 + 3) = *(undefined1 *)((int)param_2 + 3);
+    //           *(undefined1 *)((int)puVar2 + 2) = *(undefined1 *)((int)param_2 + 2);
+    //           uVar1 = uVar1 >> 2;
+    //           *(undefined1 *)((int)puVar2 + 1) = *(undefined1 *)((int)param_2 + 1);
+    //           param_2 = (undefined4 *)((int)param_2 + -3);
+    //           puVar2 = (undefined4 *)((int)puVar2 - 3);
+    //           if (7 < uVar1) {
+    //             for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //               *puVar2 = *param_2;
+    //               param_2 = param_2 + -1;
+    //               puVar2 = puVar2 + -1;
+    //             }
+    //             switch(param_3) {
+    //             case 0:
+    //               return param_1;
+    //             case 2:
+    //               goto switchD_0054dc77_caseD_2;
+    //             case 3:
+    //               goto switchD_0054dc77_caseD_3;
+    //             }
+    //             goto switchD_0054dc77_caseD_1;
+    //           }
+    //         }
+    //       }
+    //     }
+    //     switch(uVar1) {
+    //     case 7:
+    //       puVar2[7 - uVar1] = param_2[7 - uVar1];
+    //     case 6:
+    //       puVar2[6 - uVar1] = param_2[6 - uVar1];
+    //     case 5:
+    //       puVar2[5 - uVar1] = param_2[5 - uVar1];
+    //     case 4:
+    //       puVar2[4 - uVar1] = param_2[4 - uVar1];
+    //     case 3:
+    //       puVar2[3 - uVar1] = param_2[3 - uVar1];
+    //     case 2:
+    //       puVar2[2 - uVar1] = param_2[2 - uVar1];
+    //     case 1:
+    //       puVar2[1 - uVar1] = param_2[1 - uVar1];
+    //       param_2 = param_2 + -uVar1;
+    //       puVar2 = puVar2 + -uVar1;
+    //     }
+    //     switch(param_3) {
+    //     case 1:
+    // switchD_0054dc77_caseD_1:
+    //       *(undefined1 *)((int)puVar2 + 3) = *(undefined1 *)((int)param_2 + 3);
+    //       return param_1;
+    //     case 2:
+    // switchD_0054dc77_caseD_2:
+    //       *(undefined1 *)((int)puVar2 + 3) = *(undefined1 *)((int)param_2 + 3);
+    //       *(undefined1 *)((int)puVar2 + 2) = *(undefined1 *)((int)param_2 + 2);
+    //       return param_1;
+    //     case 3:
+    // switchD_0054dc77_caseD_3:
+    //       *(undefined1 *)((int)puVar2 + 3) = *(undefined1 *)((int)param_2 + 3);
+    //       *(undefined1 *)((int)puVar2 + 2) = *(undefined1 *)((int)param_2 + 2);
+    //       *(undefined1 *)((int)puVar2 + 1) = *(undefined1 *)((int)param_2 + 1);
+    //       return param_1;
+    //     }
+    // switchD_0054dc77_caseD_0:
+    //     return param_1;
+    //   }
+    //   puVar2 = param_1;
+    //   if (((uint)param_1 & 3) == 0) {
+    //     uVar1 = param_3 >> 2;
+    //     param_3 = param_3 & 3;
+    //     if (7 < uVar1) {
+    //       for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //         *puVar2 = *param_2;
+    //         param_2 = param_2 + 1;
+    //         puVar2 = puVar2 + 1;
+    //       }
+    //       switch(param_3) {
+    //       case 0:
+    //         return param_1;
+    //       case 2:
+    //         goto switchD_0054daf5_caseD_2;
+    //       case 3:
+    //         goto switchD_0054daf5_caseD_3;
+    //       }
+    //       goto switchD_0054daf5_caseD_1;
+    //     }
+    //   }
+    //   else {
+    //     switch(param_3) {
+    //     case 0:
+    //       goto switchD_0054daf5_caseD_0;
+    //     case 1:
+    //       goto switchD_0054daf5_caseD_1;
+    //     case 2:
+    //       goto switchD_0054daf5_caseD_2;
+    //     case 3:
+    //       goto switchD_0054daf5_caseD_3;
+    //     default:
+    //       uVar1 = (param_3 - 4) + ((uint)param_1 & 3);
+    //       switch((uint)param_1 & 3) {
+    //       case 1:
+    //         param_3 = uVar1 & 3;
+    //         *(undefined1 *)param_1 = *(undefined1 *)param_2;
+    //         *(undefined1 *)((int)param_1 + 1) = *(undefined1 *)((int)param_2 + 1);
+    //         uVar1 = uVar1 >> 2;
+    //         *(undefined1 *)((int)param_1 + 2) = *(undefined1 *)((int)param_2 + 2);
+    //         param_2 = (undefined4 *)((int)param_2 + 3);
+    //         puVar2 = (undefined4 *)((int)param_1 + 3);
+    //         if (7 < uVar1) {
+    //           for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //             *puVar2 = *param_2;
+    //             param_2 = param_2 + 1;
+    //             puVar2 = puVar2 + 1;
+    //           }
+    //           switch(param_3) {
+    //           case 0:
+    //             return param_1;
+    //           case 2:
+    //             goto switchD_0054daf5_caseD_2;
+    //           case 3:
+    //             goto switchD_0054daf5_caseD_3;
+    //           }
+    //           goto switchD_0054daf5_caseD_1;
+    //         }
+    //         break;
+    //       case 2:
+    //         param_3 = uVar1 & 3;
+    //         *(undefined1 *)param_1 = *(undefined1 *)param_2;
+    //         uVar1 = uVar1 >> 2;
+    //         *(undefined1 *)((int)param_1 + 1) = *(undefined1 *)((int)param_2 + 1);
+    //         param_2 = (undefined4 *)((int)param_2 + 2);
+    //         puVar2 = (undefined4 *)((int)param_1 + 2);
+    //         if (7 < uVar1) {
+    //           for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //             *puVar2 = *param_2;
+    //             param_2 = param_2 + 1;
+    //             puVar2 = puVar2 + 1;
+    //           }
+    //           switch(param_3) {
+    //           case 0:
+    //             return param_1;
+    //           case 2:
+    //             goto switchD_0054daf5_caseD_2;
+    //           case 3:
+    //             goto switchD_0054daf5_caseD_3;
+    //           }
+    //           goto switchD_0054daf5_caseD_1;
+    //         }
+    //         break;
+    //       case 3:
+    //         param_3 = uVar1 & 3;
+    //         *(undefined1 *)param_1 = *(undefined1 *)param_2;
+    //         param_2 = (undefined4 *)((int)param_2 + 1);
+    //         uVar1 = uVar1 >> 2;
+    //         puVar2 = (undefined4 *)((int)param_1 + 1);
+    //         if (7 < uVar1) {
+    //           for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //             *puVar2 = *param_2;
+    //             param_2 = param_2 + 1;
+    //             puVar2 = puVar2 + 1;
+    //           }
+    //           switch(param_3) {
+    //           case 0:
+    //             return param_1;
+    //           case 2:
+    //             goto switchD_0054daf5_caseD_2;
+    //           case 3:
+    //             goto switchD_0054daf5_caseD_3;
+    //           }
+    //           goto switchD_0054daf5_caseD_1;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   switch(uVar1) {
+    //   case 7:
+    //     puVar2[uVar1 - 7] = param_2[uVar1 - 7];
+    //   case 6:
+    //     puVar2[uVar1 - 6] = param_2[uVar1 - 6];
+    //   case 5:
+    //     puVar2[uVar1 - 5] = param_2[uVar1 - 5];
+    //   case 4:
+    //     puVar2[uVar1 - 4] = param_2[uVar1 - 4];
+    //   case 3:
+    //     puVar2[uVar1 - 3] = param_2[uVar1 - 3];
+    //   case 2:
+    //     puVar2[uVar1 - 2] = param_2[uVar1 - 2];
+    //   case 1:
+    //     puVar2[uVar1 - 1] = param_2[uVar1 - 1];
+    //     param_2 = param_2 + uVar1;
+    //     puVar2 = puVar2 + uVar1;
+    //   }
+    //   switch(param_3) {
+    //   case 1:
+    // switchD_0054daf5_caseD_1:
+    //     *(undefined1 *)puVar2 = *(undefined1 *)param_2;
+    //     return param_1;
+    //   case 2:
+    // switchD_0054daf5_caseD_2:
+    //     *(undefined1 *)puVar2 = *(undefined1 *)param_2;
+    //     *(undefined1 *)((int)puVar2 + 1) = *(undefined1 *)((int)param_2 + 1);
+    //     return param_1;
+    //   case 3:
+    // switchD_0054daf5_caseD_3:
+    //     *(undefined1 *)puVar2 = *(undefined1 *)param_2;
+    //     *(undefined1 *)((int)puVar2 + 1) = *(undefined1 *)((int)param_2 + 1);
+    //     *(undefined1 *)((int)puVar2 + 2) = *(undefined1 *)((int)param_2 + 2);
+    //     return param_1;
+    //   }
+    // switchD_0054daf5_caseD_0:
+    //   return param_1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DB1B
+undefined FUN_0054db1b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054db1b(void)
+    // 
+    // {
+    //   int in_ECX;
+    //   
+    //                     /* WARNING: Could not recover jumptable at 0x0054db1c. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)(&switchD_0054db1c::switchdataD_0054db9c)[in_ECX])();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DB30
+undefined caseD_1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void switchD_0054db0d::caseD_1(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   undefined1 *unaff_ESI;
+    //   undefined4 *puVar2;
+    //   undefined1 *unaff_EDI;
+    //   undefined4 *puVar3;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //   unaff_EDI[1] = unaff_ESI[1];
+    //   uVar1 = in_ECX >> 2;
+    //   unaff_EDI[2] = unaff_ESI[2];
+    //   puVar2 = (undefined4 *)(unaff_ESI + 3);
+    //   puVar3 = (undefined4 *)(unaff_EDI + 3);
+    //   switch(uVar1) {
+    //   case 7:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x19) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x19);
+    //   case 6:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x15) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x15);
+    //   case 5:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x11) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x11);
+    //   case 4:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0xd) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0xd);
+    //   case 3:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -9) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -9);
+    //   case 2:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -5) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -5);
+    //   case 1:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -1) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -1);
+    //   case 0:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dbff. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[in_EDX & in_ECX])();
+    //     return;
+    //   default:
+    //     for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //       *puVar3 = *puVar2;
+    //       puVar2 = puVar2 + 1;
+    //       puVar3 = puVar3 + 1;
+    //     }
+    //                     /* WARNING: Could not recover jumptable at 0x0054db52. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[in_EDX & in_ECX])();
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DB59
+undefined FUN_0054db59() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054db59(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   undefined1 *unaff_ESI;
+    //   undefined4 *puVar2;
+    //   undefined1 *unaff_EDI;
+    //   undefined4 *puVar3;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //   uVar1 = in_ECX >> 2;
+    //   unaff_EDI[1] = unaff_ESI[1];
+    //   puVar2 = (undefined4 *)(unaff_ESI + 2);
+    //   puVar3 = (undefined4 *)(unaff_EDI + 2);
+    //   switch(uVar1) {
+    //   case 7:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x1a) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x1a);
+    //   case 6:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x16) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x16);
+    //   case 5:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x12) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x12);
+    //   case 4:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0xe) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0xe);
+    //   case 3:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -10) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -10);
+    //   case 2:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -6) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -6);
+    //   case 1:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -2) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -2);
+    //   case 0:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dbff. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[in_EDX & in_ECX])();
+    //     return;
+    //   default:
+    //     for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //       *puVar3 = *puVar2;
+    //       puVar2 = puVar2 + 1;
+    //       puVar3 = puVar3 + 1;
+    //     }
+    //                     /* WARNING: Could not recover jumptable at 0x0054db78. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[in_EDX & in_ECX])();
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DB7F
+undefined FUN_0054db7f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054db7f(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   undefined1 *unaff_ESI;
+    //   undefined4 *puVar2;
+    //   undefined1 *unaff_EDI;
+    //   undefined4 *puVar3;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //   uVar1 = in_ECX >> 2;
+    //   puVar2 = (undefined4 *)(unaff_ESI + 1);
+    //   puVar3 = (undefined4 *)(unaff_EDI + 1);
+    //   switch(uVar1) {
+    //   case 7:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x1b) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x1b);
+    //   case 6:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x17) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x17);
+    //   case 5:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0x13) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0x13);
+    //   case 4:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0xf) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0xf);
+    //   case 3:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -0xb) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -0xb);
+    //   case 2:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -7) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -7);
+    //   case 1:
+    //     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -3) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -3);
+    //   case 0:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dbff. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[in_EDX & in_ECX])();
+    //     return;
+    //   default:
+    //     for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //       *puVar3 = *puVar2;
+    //       puVar2 = puVar2 + 1;
+    //       puVar3 = puVar3 + 1;
+    //     }
+    //                     /* WARNING: Could not recover jumptable at 0x0054db92. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[in_EDX & in_ECX])();
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DB99
+undefined FUN_0054db99() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Control flow encountered bad instruction data */
+    // 
+    // void FUN_0054db99(void)
+    // 
+    // {
+    //                     /* WARNING: Bad instruction - Truncating control flow here */
+    //   halt_baddata();
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC06
+undefined FUN_0054dc06() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054dc06(void)
+    // 
+    // {
+    //   undefined4 in_EAX;
+    //   char *pcVar1;
+    //   byte unaff_BL;
+    //   int unaff_ESI;
+    //   char in_CF;
+    //   char cVar2;
+    //   
+    //   cVar2 = ((char)((uint)in_EAX >> 8) - unaff_BL) - in_CF;
+    //   pcVar1 = (char *)CONCAT22((short)((uint)in_EAX >> 0x10),CONCAT11(cVar2,(char)in_EAX));
+    //   *pcVar1 = *pcVar1 + cVar2;
+    //   *(byte *)(unaff_ESI + 0x5f) = *(byte *)(unaff_ESI + 0x5f) | unaff_BL;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC18
+undefined caseD_0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 switchD_0054daf5::caseD_0(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC1F
+undefined FUN_0054dc1f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054dc1f(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC2B
+undefined FUN_0054dc2b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054dc2b(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //   unaff_EDI[1] = unaff_ESI[1];
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC3D
+undefined FUN_0054dc3d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054dc3d(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //   unaff_EDI[1] = unaff_ESI[1];
+    //   unaff_EDI[2] = unaff_ESI[2];
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC57
+undefined FUN_0054dc57() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING (jumptable): Stack frame is not setup normally: Input value of stackpointer is not used
+    //     */
+    // 
+    // undefined4 FUN_0054dc57(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   uint uVar2;
+    //   int unaff_EBP;
+    //   int unaff_ESI;
+    //   undefined4 *puVar3;
+    //   int unaff_EDI;
+    //   undefined4 *puVar4;
+    //   
+    //   puVar3 = (undefined4 *)((in_ECX - 4) + unaff_ESI);
+    //   puVar4 = (undefined4 *)((in_ECX - 4) + unaff_EDI);
+    //   if (((uint)puVar4 & 3) == 0) {
+    //     uVar1 = in_ECX >> 2;
+    //     uVar2 = in_EDX & 3;
+    //     if (7 < uVar1) {
+    //       for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //         *puVar4 = *puVar3;
+    //         puVar3 = puVar3 + -1;
+    //         puVar4 = puVar4 + -1;
+    //       }
+    //       switch(uVar2) {
+    //       case 1:
+    //         goto switchD_0054dc77_caseD_1;
+    //       case 2:
+    //         goto switchD_0054dc77_caseD_2;
+    //       case 3:
+    //         goto switchD_0054dc77_caseD_3;
+    //       }
+    //       goto switchD_0054dc77_caseD_0;
+    //     }
+    //   }
+    //   else {
+    //     switch(in_ECX) {
+    //     case 0:
+    //       goto switchD_0054dc77_caseD_0;
+    //     case 1:
+    //       goto switchD_0054dc77_caseD_1;
+    //     case 2:
+    //       goto switchD_0054dc77_caseD_2;
+    //     case 3:
+    //       goto switchD_0054dc77_caseD_3;
+    //     default:
+    //       uVar1 = in_ECX - ((uint)puVar4 & 3);
+    //       switch((uint)puVar4 & 3) {
+    //       case 1:
+    //         uVar2 = uVar1 & 3;
+    //         *(undefined1 *)((int)puVar4 + 3) = *(undefined1 *)((int)puVar3 + 3);
+    //         puVar3 = (undefined4 *)((int)puVar3 + -1);
+    //         uVar1 = uVar1 >> 2;
+    //         puVar4 = (undefined4 *)((int)puVar4 - 1);
+    //         if (7 < uVar1) {
+    //           for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //             *puVar4 = *puVar3;
+    //             puVar3 = puVar3 + -1;
+    //             puVar4 = puVar4 + -1;
+    //           }
+    //           switch(uVar2) {
+    //           case 1:
+    //             goto switchD_0054dc77_caseD_1;
+    //           case 2:
+    //             goto switchD_0054dc77_caseD_2;
+    //           case 3:
+    //             goto switchD_0054dc77_caseD_3;
+    //           }
+    //           goto switchD_0054dc77_caseD_0;
+    //         }
+    //         break;
+    //       case 2:
+    //         uVar2 = uVar1 & 3;
+    //         *(undefined1 *)((int)puVar4 + 3) = *(undefined1 *)((int)puVar3 + 3);
+    //         uVar1 = uVar1 >> 2;
+    //         *(undefined1 *)((int)puVar4 + 2) = *(undefined1 *)((int)puVar3 + 2);
+    //         puVar3 = (undefined4 *)((int)puVar3 + -2);
+    //         puVar4 = (undefined4 *)((int)puVar4 - 2);
+    //         if (7 < uVar1) {
+    //           for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //             *puVar4 = *puVar3;
+    //             puVar3 = puVar3 + -1;
+    //             puVar4 = puVar4 + -1;
+    //           }
+    //           switch(uVar2) {
+    //           case 1:
+    //             goto switchD_0054dc77_caseD_1;
+    //           case 2:
+    //             goto switchD_0054dc77_caseD_2;
+    //           case 3:
+    //             goto switchD_0054dc77_caseD_3;
+    //           }
+    //           goto switchD_0054dc77_caseD_0;
+    //         }
+    //         break;
+    //       case 3:
+    //         uVar2 = uVar1 & 3;
+    //         *(undefined1 *)((int)puVar4 + 3) = *(undefined1 *)((int)puVar3 + 3);
+    //         *(undefined1 *)((int)puVar4 + 2) = *(undefined1 *)((int)puVar3 + 2);
+    //         uVar1 = uVar1 >> 2;
+    //         *(undefined1 *)((int)puVar4 + 1) = *(undefined1 *)((int)puVar3 + 1);
+    //         puVar3 = (undefined4 *)((int)puVar3 + -3);
+    //         puVar4 = (undefined4 *)((int)puVar4 - 3);
+    //         if (7 < uVar1) {
+    //           for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //             *puVar4 = *puVar3;
+    //             puVar3 = puVar3 + -1;
+    //             puVar4 = puVar4 + -1;
+    //           }
+    //           switch(uVar2) {
+    //           case 1:
+    //             goto switchD_0054dc77_caseD_1;
+    //           case 2:
+    //             goto switchD_0054dc77_caseD_2;
+    //           case 3:
+    //             goto switchD_0054dc77_caseD_3;
+    //           }
+    //           goto switchD_0054dc77_caseD_0;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   switch(uVar1) {
+    //   case 7:
+    //     puVar4[7 - uVar1] = puVar3[7 - uVar1];
+    //   case 6:
+    //     puVar4[6 - uVar1] = puVar3[6 - uVar1];
+    //   case 5:
+    //     puVar4[5 - uVar1] = puVar3[5 - uVar1];
+    //   case 4:
+    //     puVar4[4 - uVar1] = puVar3[4 - uVar1];
+    //   case 3:
+    //     puVar4[3 - uVar1] = puVar3[3 - uVar1];
+    //   case 2:
+    //     puVar4[2 - uVar1] = puVar3[2 - uVar1];
+    //   case 1:
+    //     puVar4[1 - uVar1] = puVar3[1 - uVar1];
+    //     puVar3 = puVar3 + -uVar1;
+    //     puVar4 = puVar4 + -uVar1;
+    //   }
+    //   switch(uVar2) {
+    //   case 1:
+    // switchD_0054dc77_caseD_1:
+    //     *(undefined1 *)((int)puVar4 + 3) = *(undefined1 *)((int)puVar3 + 3);
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   case 2:
+    // switchD_0054dc77_caseD_2:
+    //     *(undefined1 *)((int)puVar4 + 3) = *(undefined1 *)((int)puVar3 + 3);
+    //     *(undefined1 *)((int)puVar4 + 2) = *(undefined1 *)((int)puVar3 + 2);
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   case 3:
+    // switchD_0054dc77_caseD_3:
+    //     *(undefined1 *)((int)puVar4 + 3) = *(undefined1 *)((int)puVar3 + 3);
+    //     *(undefined1 *)((int)puVar4 + 2) = *(undefined1 *)((int)puVar3 + 2);
+    //     *(undefined1 *)((int)puVar4 + 1) = *(undefined1 *)((int)puVar3 + 1);
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   }
+    // switchD_0054dc77_caseD_0:
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC7E
+undefined FUN_0054dc7e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054dc7e(void)
+    // 
+    // {
+    //   int in_ECX;
+    //   
+    //                     /* WARNING: Could not recover jumptable at 0x0054dc82. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)(&PTR_caseD_0_0054dd50)[-in_ECX])();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DC89
+undefined FUN_0054dc89() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Control flow encountered bad instruction data */
+    // /* WARNING (jumptable): Stack frame is not setup normally: Input value of stackpointer is not used
+    //     */
+    // 
+    // undefined4 FUN_0054dc89(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   int unaff_EBP;
+    //   undefined4 *unaff_ESI;
+    //   undefined4 *unaff_EDI;
+    //   
+    //   switch(in_ECX) {
+    //   case 0:
+    //     goto switchD_0054dc77_caseD_0;
+    //   case 1:
+    // switchD_0054dc77_caseD_1:
+    //     *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   case 2:
+    // switchD_0054dc77_caseD_2:
+    //     *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
+    //     *(undefined1 *)((int)unaff_EDI + 2) = *(undefined1 *)((int)unaff_ESI + 2);
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   case 3:
+    // switchD_0054dc77_caseD_3:
+    //     *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
+    //     *(undefined1 *)((int)unaff_EDI + 2) = *(undefined1 *)((int)unaff_ESI + 2);
+    //     *(undefined1 *)((int)unaff_EDI + 1) = *(undefined1 *)((int)unaff_ESI + 1);
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   default:
+    //     uVar2 = in_ECX - ((uint)unaff_EDI & 3);
+    //     switch((uint)unaff_EDI & 3) {
+    //     case 0:
+    //                     /* WARNING: Bad instruction - Truncating control flow here */
+    //       halt_baddata();
+    //     case 1:
+    //       *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
+    //       unaff_ESI = (undefined4 *)((int)unaff_ESI + -1);
+    //       uVar3 = uVar2 >> 2;
+    //       unaff_EDI = (undefined4 *)((int)unaff_EDI + -1);
+    //       if (uVar3 < 8) {
+    // LAB_0054dc80:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dc82. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //         uVar1 = (*(code *)(&PTR_caseD_0_0054dd50)[-(uVar2 >> 2)])();
+    //         return uVar1;
+    //       }
+    //       for (; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         *unaff_EDI = *unaff_ESI;
+    //         unaff_ESI = unaff_ESI + -1;
+    //         unaff_EDI = unaff_EDI + -1;
+    //       }
+    //       switch(uVar2 & 3) {
+    //       case 1:
+    //         goto switchD_0054dc77_caseD_1;
+    //       case 2:
+    //         goto switchD_0054dc77_caseD_2;
+    //       case 3:
+    //         goto switchD_0054dc77_caseD_3;
+    //       }
+    //       break;
+    //     case 2:
+    //       *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
+    //       uVar3 = uVar2 >> 2;
+    //       *(undefined1 *)((int)unaff_EDI + 2) = *(undefined1 *)((int)unaff_ESI + 2);
+    //       unaff_ESI = (undefined4 *)((int)unaff_ESI + -2);
+    //       unaff_EDI = (undefined4 *)((int)unaff_EDI + -2);
+    //       if (uVar3 < 8) goto LAB_0054dc80;
+    //       for (; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         *unaff_EDI = *unaff_ESI;
+    //         unaff_ESI = unaff_ESI + -1;
+    //         unaff_EDI = unaff_EDI + -1;
+    //       }
+    //       switch(uVar2 & 3) {
+    //       case 1:
+    //         goto switchD_0054dc77_caseD_1;
+    //       case 2:
+    //         goto switchD_0054dc77_caseD_2;
+    //       case 3:
+    //         goto switchD_0054dc77_caseD_3;
+    //       }
+    //       break;
+    //     case 3:
+    //       *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
+    //       *(undefined1 *)((int)unaff_EDI + 2) = *(undefined1 *)((int)unaff_ESI + 2);
+    //       uVar3 = uVar2 >> 2;
+    //       *(undefined1 *)((int)unaff_EDI + 1) = *(undefined1 *)((int)unaff_ESI + 1);
+    //       unaff_ESI = (undefined4 *)((int)unaff_ESI + -3);
+    //       unaff_EDI = (undefined4 *)((int)unaff_EDI + -3);
+    //       if (uVar3 < 8) goto LAB_0054dc80;
+    //       for (; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         *unaff_EDI = *unaff_ESI;
+    //         unaff_ESI = unaff_ESI + -1;
+    //         unaff_EDI = unaff_EDI + -1;
+    //       }
+    //       switch(uVar2 & 3) {
+    //       case 1:
+    //         goto switchD_0054dc77_caseD_1;
+    //       case 2:
+    //         goto switchD_0054dc77_caseD_2;
+    //       case 3:
+    //         goto switchD_0054dc77_caseD_3;
+    //       }
+    //     }
+    // switchD_0054dc77_caseD_0:
+    //     return *(undefined4 *)(unaff_EBP + 8);
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DCB8
+undefined caseD_1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void switchD_0054dc9d::caseD_1(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   int unaff_ESI;
+    //   undefined4 *puVar2;
+    //   int unaff_EDI;
+    //   undefined4 *puVar3;
+    //   
+    //   *(undefined1 *)(unaff_EDI + 3) = *(undefined1 *)(unaff_ESI + 3);
+    //   puVar2 = (undefined4 *)(unaff_ESI + -1);
+    //   uVar1 = in_ECX >> 2;
+    //   puVar3 = (undefined4 *)(unaff_EDI + -1);
+    //   switch(uVar1) {
+    //   case 7:
+    //     *(undefined4 *)(unaff_EDI + 0x1b + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x1b + uVar1 * -4);
+    //   case 6:
+    //     *(undefined4 *)(unaff_EDI + 0x17 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x17 + uVar1 * -4);
+    //   case 5:
+    //     *(undefined4 *)(unaff_EDI + 0x13 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x13 + uVar1 * -4);
+    //   case 4:
+    //     *(undefined4 *)(unaff_EDI + 0xf + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0xf + uVar1 * -4);
+    //   case 3:
+    //     *(undefined4 *)(unaff_EDI + 0xb + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0xb + uVar1 * -4);
+    //   case 2:
+    //     *(undefined4 *)(unaff_EDI + 7 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 7 + uVar1 * -4);
+    //   case 1:
+    //     *(undefined4 *)(unaff_EDI + 3 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 3 + uVar1 * -4);
+    //   case 0:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dd97. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054dc77::switchdataD_0054dda0)[in_EDX & in_ECX])();
+    //     return;
+    //   default:
+    //     for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //       *puVar3 = *puVar2;
+    //       puVar2 = puVar2 + -1;
+    //       puVar3 = puVar3 + -1;
+    //     }
+    //                     /* WARNING: Could not recover jumptable at 0x0054dcce. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054dc77::switchdataD_0054dda0)[in_EDX & in_ECX])();
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DCD5
+undefined FUN_0054dcd5() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054dcd5(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   int unaff_ESI;
+    //   undefined4 *puVar2;
+    //   int unaff_EDI;
+    //   undefined4 *puVar3;
+    //   
+    //   *(undefined1 *)(unaff_EDI + 3) = *(undefined1 *)(unaff_ESI + 3);
+    //   uVar1 = in_ECX >> 2;
+    //   *(undefined1 *)(unaff_EDI + 2) = *(undefined1 *)(unaff_ESI + 2);
+    //   puVar2 = (undefined4 *)(unaff_ESI + -2);
+    //   puVar3 = (undefined4 *)(unaff_EDI + -2);
+    //   switch(uVar1) {
+    //   case 7:
+    //     *(undefined4 *)(unaff_EDI + 0x1a + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x1a + uVar1 * -4);
+    //   case 6:
+    //     *(undefined4 *)(unaff_EDI + 0x16 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x16 + uVar1 * -4);
+    //   case 5:
+    //     *(undefined4 *)(unaff_EDI + 0x12 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x12 + uVar1 * -4);
+    //   case 4:
+    //     *(undefined4 *)(unaff_EDI + 0xe + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0xe + uVar1 * -4);
+    //   case 3:
+    //     *(undefined4 *)(unaff_EDI + 10 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 10 + uVar1 * -4);
+    //   case 2:
+    //     *(undefined4 *)(unaff_EDI + 6 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 6 + uVar1 * -4);
+    //   case 1:
+    //     *(undefined4 *)(unaff_EDI + 2 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 2 + uVar1 * -4);
+    //   case 0:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dd97. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054dc77::switchdataD_0054dda0)[in_EDX & in_ECX])();
+    //     return;
+    //   default:
+    //     for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //       *puVar3 = *puVar2;
+    //       puVar2 = puVar2 + -1;
+    //       puVar3 = puVar3 + -1;
+    //     }
+    //                     /* WARNING: Could not recover jumptable at 0x0054dcf8. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054dc77::switchdataD_0054dda0)[in_EDX & in_ECX])();
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DCFF
+undefined FUN_0054dcff() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054dcff(void)
+    // 
+    // {
+    //   uint in_ECX;
+    //   uint uVar1;
+    //   uint in_EDX;
+    //   int unaff_ESI;
+    //   undefined4 *puVar2;
+    //   int unaff_EDI;
+    //   undefined4 *puVar3;
+    //   
+    //   *(undefined1 *)(unaff_EDI + 3) = *(undefined1 *)(unaff_ESI + 3);
+    //   *(undefined1 *)(unaff_EDI + 2) = *(undefined1 *)(unaff_ESI + 2);
+    //   uVar1 = in_ECX >> 2;
+    //   *(undefined1 *)(unaff_EDI + 1) = *(undefined1 *)(unaff_ESI + 1);
+    //   puVar2 = (undefined4 *)(unaff_ESI + -3);
+    //   puVar3 = (undefined4 *)(unaff_EDI + -3);
+    //   switch(uVar1) {
+    //   case 7:
+    //     *(undefined4 *)(unaff_EDI + 0x19 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x19 + uVar1 * -4);
+    //   case 6:
+    //     *(undefined4 *)(unaff_EDI + 0x15 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x15 + uVar1 * -4);
+    //   case 5:
+    //     *(undefined4 *)(unaff_EDI + 0x11 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0x11 + uVar1 * -4);
+    //   case 4:
+    //     *(undefined4 *)(unaff_EDI + 0xd + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 0xd + uVar1 * -4);
+    //   case 3:
+    //     *(undefined4 *)(unaff_EDI + 9 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 9 + uVar1 * -4);
+    //   case 2:
+    //     *(undefined4 *)(unaff_EDI + 5 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 5 + uVar1 * -4);
+    //   case 1:
+    //     *(undefined4 *)(unaff_EDI + 1 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 1 + uVar1 * -4);
+    //   case 0:
+    //                     /* WARNING: Could not recover jumptable at 0x0054dd97. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054dc77::switchdataD_0054dda0)[in_EDX & in_ECX])();
+    //     return;
+    //   default:
+    //     for (; uVar1 != 0; uVar1 = uVar1 - 1) {
+    //       *puVar3 = *puVar2;
+    //       puVar2 = puVar2 + -1;
+    //       puVar3 = puVar3 + -1;
+    //     }
+    //                     /* WARNING: Could not recover jumptable at 0x0054dd2a. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //     (*(code *)(&switchD_0054dc77::switchdataD_0054dda0)[in_EDX & in_ECX])();
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DD31
+undefined FUN_0054dd31() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Control flow encountered bad instruction data */
+    // 
+    // void FUN_0054dd31(void)
+    // 
+    // {
+    //   int in_EAX;
+    //   float10 in_ST0;
+    //   
+    //   *(double *)(in_EAX * 2 + 0x5c) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + 100) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + 0x6c) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + 0x74) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + 0x7c) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + -0x7c) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + -0x69) = (double)in_ST0;
+    //   *(double *)(in_EAX * 2 + -0x75) = (double)in_ST0;
+    //                     /* WARNING: Bad instruction - Truncating control flow here */
+    //   halt_baddata();
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DD9E
+undefined FUN_0054dd9e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0054dd9e(void)
+    // 
+    // {
+    //   undefined4 in_EAX;
+    //   int iVar1;
+    //   byte unaff_BL;
+    //   char unaff_BH;
+    //   int unaff_ESI;
+    //   float10 in_ST0;
+    //   
+    //   iVar1 = CONCAT31((int3)((uint)in_EAX >> 8),0xdd);
+    //   *(char *)(iVar1 + -0x37ffab23) = *(char *)(iVar1 + -0x37ffab23) + unaff_BH;
+    //   *(double *)(iVar1 * 2 + -0x24) = (double)in_ST0;
+    //   *(double *)(iVar1 * 2 + -0x75) = (double)in_ST0;
+    //   *(byte *)(unaff_ESI + 0x5f) = *(byte *)(unaff_ESI + 0x5f) | unaff_BL;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DDB0
+undefined caseD_0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 switchD_0054dc77::caseD_0(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DDB7
+undefined FUN_0054ddb7() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054ddb7(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   *(undefined1 *)(unaff_EDI + 3) = *(undefined1 *)(unaff_ESI + 3);
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DDC5
+undefined FUN_0054ddc5() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054ddc5(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   *(undefined1 *)(unaff_EDI + 3) = *(undefined1 *)(unaff_ESI + 3);
+    //   *(undefined1 *)(unaff_EDI + 2) = *(undefined1 *)(unaff_ESI + 2);
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DDDB
+undefined FUN_0054dddb() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0054dddb(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   *(undefined1 *)(unaff_EDI + 3) = *(undefined1 *)(unaff_ESI + 3);
+    //   *(undefined1 *)(unaff_EDI + 2) = *(undefined1 *)(unaff_ESI + 2);
+    //   *(undefined1 *)(unaff_EDI + 1) = *(undefined1 *)(unaff_ESI + 1);
+    //   return *(undefined4 *)(unaff_EBP + 8);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DE00
+undefined strtok() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* strtok */
+    // 
+    // uint __cdecl strtok(byte *param_1,byte *param_2)
+    // 
+    // {
+    //   byte bVar1;
+    //   byte bVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   byte local_20 [32];
+    //   
+    //   pbVar4 = local_20;
+    //   for (iVar3 = 8; iVar3 != 0; iVar3 = iVar3 + -1) {
+    //     pbVar4[0] = 0;
+    //     pbVar4[1] = 0;
+    //     pbVar4[2] = 0;
+    //     pbVar4[3] = 0;
+    //     pbVar4 = pbVar4 + 4;
+    //   }
+    //   do {
+    //     bVar1 = *param_2;
+    //     param_2 = param_2 + 1;
+    //     local_20[bVar1 >> 3] = local_20[bVar1 >> 3] | '\x01' << (bVar1 & 7);
+    //   } while (bVar1 != 0);
+    //   if (param_1 == (byte *)0x0) {
+    //     param_1 = DAT_00887ff0;
+    //   }
+    //   bVar1 = *param_1;
+    //   bVar2 = local_20[bVar1 >> 3] & (byte)(1 << (bVar1 & 7));
+    //   while ((bVar2 != 0 && (bVar1 != 0))) {
+    //     bVar1 = param_1[1];
+    //     param_1 = param_1 + 1;
+    //     bVar2 = local_20[bVar1 >> 3] & (byte)(1 << (bVar1 & 7));
+    //   }
+    //   bVar1 = *param_1;
+    //   DAT_00887ff0 = param_1;
+    //   do {
+    //     if (bVar1 == 0) {
+    // LAB_0054dec7:
+    //       return -(uint)(param_1 != DAT_00887ff0) & (uint)param_1;
+    //     }
+    //     if ((local_20[bVar1 >> 3] & (byte)(1 << (bVar1 & 7))) != 0) {
+    //       *DAT_00887ff0 = 0;
+    //       DAT_00887ff0 = DAT_00887ff0 + 1;
+    //       goto LAB_0054dec7;
+    //     }
+    //     bVar1 = DAT_00887ff0[1];
+    //     DAT_00887ff0 = DAT_00887ff0 + 1;
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DEE0
+undefined alloca_probe() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: This is an inlined function */
+    // /* WARNING: Unable to track spacebase fully for stack */
+    // 
+    // void __alloca_probe(void)
+    // 
+    // {
+    //   uint in_EAX;
+    //   undefined1 *puVar1;
+    //   undefined4 unaff_retaddr;
+    //   
+    //   puVar1 = &stack0x00000004;
+    //   if (0xfff < in_EAX) {
+    //     do {
+    //       puVar1 = puVar1 + -0x1000;
+    //       in_EAX = in_EAX - 0x1000;
+    //     } while (0xfff < in_EAX);
+    //   }
+    //   *(undefined4 *)(puVar1 + (-4 - in_EAX)) = unaff_retaddr;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DF40
+undefined isupper() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* isupper */
+    // 
+    // uint __cdecl isupper(int param_1)
+    // 
+    // {
+    //   uint uVar1;
+    //   
+    //   if (1 < ___mb_cur_max) {
+    //     uVar1 = __isctype(param_1,1);
+    //     return uVar1;
+    //   }
+    //   return (byte)__pctype[param_1 * 2] & 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DF6A
+undefined FUN_0054df6a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // uint FUN_0054df6a(int param_1)
+    // 
+    // {
+    //   uint uVar1;
+    //   
+    //   if (1 < ___mb_cur_max) {
+    //     uVar1 = __isctype(param_1,2);
+    //     return uVar1;
+    //   }
+    //   return (byte)__pctype[param_1 * 2] & 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DF9A
+undefined FUN_0054df9a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // uint FUN_0054df9a(int param_1)
+    // 
+    // {
+    //   uint uVar1;
+    //   
+    //   if (1 < ___mb_cur_max) {
+    //     uVar1 = __isctype(param_1,4);
+    //     return uVar1;
+    //   }
+    //   return (byte)__pctype[param_1 * 2] & 4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0054DFCA
+undefined FUN_0054dfca() {
+    // --- Ghidra decompiler output ---
+    // 
+    // uint FUN_0054dfca(int param_1)
+    // 
+    // {
+    //   uint uVar1;
+    //   
+    //   if (1 < ___mb_cur_max) {
+    //                     /* language.dll match for 0x80: "Arial" */
+    //     uVar1 = __isctype(param_1,0x80);
+    //     return uVar1;
+    //   }
+    //   return (byte)__pctype[param_1 * 2] & 0x80;
+    // }
+    // 
+    // 
+}
+

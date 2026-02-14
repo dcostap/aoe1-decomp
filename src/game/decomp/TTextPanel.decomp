@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TTextPanel.decomp
+#include "../include/common.h"
+
+// Offset: 0x0047C090
+void* TTextPanel::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TTextPanel::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TTextPanel::_scalar_deleting_destructor_(TTextPanel *this,uint param_1)
+    // 
+    // {
+    //   ~TTextPanel(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

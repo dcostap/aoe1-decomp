@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TRIBE_Credits_Screen.decomp
+#include "../include/common.h"
+
+// Offset: 0x00492950
+void* TRIBE_Credits_Screen::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Credits_Screen::`scalar deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // TRIBE_Credits_Screen::_scalar_deleting_destructor_(TRIBE_Credits_Screen *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Credits_Screen(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

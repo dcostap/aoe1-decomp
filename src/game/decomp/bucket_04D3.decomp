@@ -1,0 +1,29 @@
+// Auto-generated decompiler unit: bucket_04D3.decomp
+#include "../include/common.h"
+
+// Offset: 0x004D3970
+void TRIBE_Action(TRIBE_Action* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Action::~TRIBE_Action(void) */
+    // 
+    // void __thiscall TRIBE_Action::~TRIBE_Action(TRIBE_Action *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   *(undefined ***)this = &RGE_Action::_vftable_;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   this_00 = *(RGE_Action_List **)&this->field_0x34;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     *(undefined4 *)&this->field_0x34 = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

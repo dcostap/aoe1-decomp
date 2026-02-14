@@ -1,13 +1,20 @@
-// Temporary game-view panel: renders flat isometric tile grid with camera scrolling.
+// Temporary game-view panel: renders isometric map with real terrain SLP sprites.
 // This is scaffolding — will be replaced by the real TRIBE_Screen_Game once reimplemented.
 
 #include "../include/GameViewPanel.h"
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Tile.h"
+#include "../include/RGE_Tile_Set.h"
+#include "../include/RGE_TOB_Picts.h"
+#include "../include/TShape.h"
 #include "../include/TDrawArea.h"
 #include "../include/custom_debug.h"
 
 #include <windows.h>
+#include <stdio.h>
+#include "../include/TMousePointer.h"
+
+extern TMousePointer* MouseSystem;
 
 // AoE1 standard tile dimensions
 static const int TILE_HALF_W = 32; // half-width of isometric diamond
@@ -33,8 +40,45 @@ GameViewPanel::~GameViewPanel() {
     // world_map not owned by us
 }
 
+// get_tile_picture — transliterated from view.cpp.decomp @ 0x00539AA0
+// Returns the SLP frame index for a given terrain type and tile type at (col, row).
+// Returns -1 if no shape is available.
+static short get_tile_picture(RGE_Map* map, unsigned char terrain_type, unsigned char tile_type,
+                              short col, short row) {
+    RGE_Tile_Set* ts = &map->terrain_types[terrain_type];
+    if (!ts->shape) {
+        return -1;
+    }
+
+    unsigned int tt = (unsigned int)tile_type;
+    if (tt >= 19) tt = 0; // clamp to valid tile size index
+
+    short count = ts->tiles[tt].count;
+    if (count == 0) {
+        return -1;
+    }
+
+    short sub_tile = 0;
+    if (count > 1) {
+        unsigned char rows = (unsigned char)ts->rows;
+        unsigned char cols = (unsigned char)ts->cols;
+        if (rows > 1 || cols > 1) {
+            unsigned char row_mod = (rows == 0) ? 0 : (unsigned char)(row % (int)rows);
+            unsigned char col_mod = (cols == 0) ? 0 : (unsigned char)(col % (int)cols);
+            sub_tile = (short)((unsigned short)row_mod * (unsigned short)cols + (unsigned short)col_mod);
+        }
+    }
+
+    if (sub_tile > count - 1) {
+        sub_tile = 0;
+    }
+
+    return ts->tiles[tt].shape_index + ts->tiles[tt].animations * sub_tile;
+}
+
 void GameViewPanel::draw() {
     if (!this->render_area || !this->world_map || !this->world_map->map) {
+        CUSTOM_DEBUG_LOG("GameViewPanel::draw: SKIPPING - missing render_area/map/tiles");
         return;
     }
 
@@ -52,81 +96,86 @@ void GameViewPanel::draw() {
     long map_w = this->world_map->map_width;
     long map_h = this->world_map->map_height;
 
-    if (map_w <= 0 || map_h <= 0) return;
-
-    // For each tile at (col, row), isometric screen position (before camera) is:
-    //   sx = (col - row) * TILE_HALF_W + origin_x
-    //   sy = (col + row) * TILE_HALF_H + origin_y
-    //
-    // We set origin such that tile (0,0) is centered horizontally.
-    // With camera offset, screen pos = iso_pos - cam.
-
-    // Origin offset: place the top tile at the center-top of the world
-    long origin_x = (map_h - 1) * TILE_HALF_W;
-    long origin_y = 0;
-
-    // Get a GDI DC for polygon drawing
-    HDC hdc = (HDC)this->render_area->GetDc((char*)"GameViewPanel::draw");
-    if (!hdc) {
+    if (map_w <= 0 || map_h <= 0) {
+        CUSTOM_DEBUG_LOG_FMT("GameViewPanel::draw: invalid map dims %ldx%ld", map_w, map_h);
         return;
     }
 
-    // Palette-based green shades for terrain variety
-    // Using palette indices that are typically green-ish in AoE1 palette
-    // We'll use GDI Polygon with solid brush fills.
-    // Since we're 8-bit palettized, we use PALETTEINDEX colors.
-    COLORREF grass_colors[4] = {
-        PALETTEINDEX(0xB0),  // medium green
-        PALETTEINDEX(0xB1),  // slightly different green
-        PALETTEINDEX(0xB2),  // another green shade
-        PALETTEINDEX(0xB3),  // fourth variant
-    };
+    // Origin offset: place tile (0,0) at the center-top of the isometric diamond
+    long origin_x = (map_h - 1) * TILE_HALF_W;
+    long origin_y = 0;
 
-    HPEN gridPen = CreatePen(PS_SOLID, 1, PALETTEINDEX(0xA0)); // darker outline
-    HPEN oldPen = (HPEN)SelectObject(hdc, gridPen);
+    int drawn_tiles = 0;
+    int checked_tiles = 0;
 
-    // Compute visible tile range based on camera position
-    // We'll iterate all tiles but skip those outside the screen rect.
-    // For a large map this is wasteful, but sufficient for scaffolding.
+    // Iterate all tiles and draw terrain SLP sprites.
+    // For each tile, use the pre-computed screen_xpos/screen_ypos from RGE_Map,
+    // or compute isometric coords directly.
     for (long row = 0; row < map_h; row++) {
         for (long col = 0; col < map_w; col++) {
-            // Isometric center of this tile in world coords
-            long wx = origin_x + (col - row) * TILE_HALF_W;
-            long wy = origin_y + (col + row) * TILE_HALF_H;
+            checked_tiles++;
+            RGE_Tile* tile = &this->world_map->map_row_offset[row][col];
 
-            // Screen position
+            // Use the tile's pre-computed screen position (set by set_map_screen_pos)
+            // screen_xpos = (col - row) * tile_half_width
+            // screen_ypos = (col + row) * tile_half_height
+            long wx = origin_x + (long)tile->screen_xpos;
+            long wy = origin_y + (long)tile->screen_ypos;
+
+            // Convert to screen position with camera offset
             long sx = wx - this->cam_x + this->pnl_x;
             long sy = wy - this->cam_y + this->pnl_y;
 
-            // Early cull: skip if diamond is fully outside the panel
+            // Early cull: skip if tile is fully outside the panel
+            // Terrain tiles are 64x32 (TILE_HALF_W*2 x TILE_HALF_H*2)
             if (sx + TILE_HALF_W < this->pnl_x || sx - TILE_HALF_W > this->pnl_x + scr_w)
                 continue;
-            if (sy + TILE_HALF_H < this->pnl_y || sy - TILE_HALF_H > this->pnl_y + scr_h)
+            if (sy + TILE_HALF_H * 2 < this->pnl_y || sy - TILE_HALF_H > this->pnl_y + scr_h)
                 continue;
 
-            // Diamond vertices: top, right, bottom, left
-            POINT pts[4];
-            pts[0].x = sx;                  pts[0].y = sy - TILE_HALF_H;  // top
-            pts[1].x = sx + TILE_HALF_W;    pts[1].y = sy;                // right
-            pts[2].x = sx;                  pts[2].y = sy + TILE_HALF_H;  // bottom
-            pts[3].x = sx - TILE_HALF_W;    pts[3].y = sy;                // left
+            // Look up the terrain type and get the SLP shape
+            unsigned char terrain_idx = tile->terrain_type; // 5-bit field (0-31)
+            unsigned char tile_type = tile->tile_type;
 
-            // Pick color based on checkerboard pattern for visual variety
-            int color_idx = (col + row) % 4;
-            HBRUSH brush = CreateSolidBrush(grass_colors[color_idx]);
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, brush);
+            if (terrain_idx >= 32) {
+                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Bad terrain idx %d at %ld,%ld", terrain_idx, col, row);
+                 continue;
+            }
 
-            Polygon(hdc, pts, 4);
+            RGE_Tile_Set* ts = &this->world_map->terrain_types[terrain_idx];
+            if (!ts->loaded) {
+                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Terrain %d not loaded at %ld,%ld", terrain_idx, col, row);
+                 continue;
+            }
+            if (!ts->shape) {
+                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Terrain %d no shape at %ld,%ld", terrain_idx, col, row);
+                 continue;
+            }
 
-            SelectObject(hdc, oldBrush);
-            DeleteObject(brush);
+            // Get the SLP frame index for this terrain at this tile position
+            short frame = get_tile_picture(this->world_map, terrain_idx, tile_type,
+                                           (short)col, (short)row);
+            
+            if (frame < 0) {
+                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Terrain %d frame < 0 at %ld,%ld", terrain_idx, col, row);
+                 continue;
+            }
+
+            // Draw the terrain SLP sprite
+            // TShape::shape_draw(draw_area, x, y, shape_idx, mode, flag, table)
+            // The tile's SLP hotspot handles positioning — we draw at the tile's
+            // screen position. The SLP frame's hotspot aligns it correctly.
+            ts->shape->shape_draw(this->render_area, sx, sy, (long)frame, 0, 0, nullptr);
+            drawn_tiles++;
         }
     }
-
-    SelectObject(hdc, oldPen);
-    DeleteObject(gridPen);
-
-    this->render_area->ReleaseDc((char*)"GameViewPanel::draw");
+    
+    // Log summary (throttled)
+    static int log_counter = 0;
+    if (log_counter++ % 60 == 0) {
+        CUSTOM_DEBUG_LOG_FMT("GameViewPanel::draw: cam=%ld,%ld drawn=%d checked=%d map=%ldx%ld pnl=%dx%d",
+            this->cam_x, this->cam_y, drawn_tiles, checked_tiles, map_w, map_h, scr_w, scr_h);
+    }
 }
 
 long GameViewPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
@@ -152,15 +201,19 @@ long GameViewPanel::handle_key_down(long param_1, short param_2, int param_3, in
     switch (param_1) {
     case VK_LEFT:
         this->cam_x -= this->scroll_speed;
+        CUSTOM_DEBUG_LOG_FMT("Scroll LEFT -> %ld", this->cam_x);
         break;
     case VK_RIGHT:
         this->cam_x += this->scroll_speed;
+        CUSTOM_DEBUG_LOG_FMT("Scroll RIGHT -> %ld", this->cam_x);
         break;
     case VK_UP:
         this->cam_y -= this->scroll_speed;
+        CUSTOM_DEBUG_LOG_FMT("Scroll UP -> %ld", this->cam_y);
         break;
     case VK_DOWN:
         this->cam_y += this->scroll_speed;
+        CUSTOM_DEBUG_LOG_FMT("Scroll DOWN -> %ld", this->cam_y);
         break;
     default:
         handled = 0;
@@ -182,6 +235,55 @@ long GameViewPanel::handle_key_down(long param_1, short param_2, int param_3, in
 }
 
 long GameViewPanel::handle_idle() {
-    // For now, just delegate to parent. Edge scrolling can be added later.
+    if (MouseSystem) {
+        long mx = MouseSystem->mouse_x;
+        long my = MouseSystem->mouse_y;
+        
+        // Mouse coordinates are relative to the window/screen.
+        // We need them relative to the panel?
+        // TMousePointer stores screen coordinates usually.
+        // If the panel is full screen (or main view), screen coords are fine.
+        // But we should subtract pnl_x/y if needed. 
+        // For now assuming full screen or pnl_x=0.
+        mx -= this->pnl_x;
+        my -= this->pnl_y;
+
+        int scroll_margin = 10;
+        int scroll_needed = 0;
+
+        if (mx < scroll_margin) {
+            this->cam_x -= this->scroll_speed;
+            scroll_needed = 1;
+        } else if (mx > this->pnl_wid - scroll_margin) {
+            this->cam_x += this->scroll_speed;
+            scroll_needed = 1;
+        }
+
+        if (my < scroll_margin) {
+            this->cam_y -= this->scroll_speed;
+            scroll_needed = 1;
+        } else if (my > this->pnl_hgt - scroll_margin) {
+            this->cam_y += this->scroll_speed;
+            scroll_needed = 1;
+        }
+
+        if (scroll_needed) {
+            long map_w = this->world_map->map_width;
+            long map_h = this->world_map->map_height;
+            long world_pixel_w = (map_w + map_h) * TILE_HALF_W;
+            long world_pixel_h = (map_w + map_h) * TILE_HALF_H;
+            long max_cam_x = world_pixel_w - this->pnl_wid;
+            long max_cam_y = world_pixel_h - this->pnl_hgt;
+            if (max_cam_x < 0) max_cam_x = 0;
+            if (max_cam_y < 0) max_cam_y = 0;
+
+            if (this->cam_x < 0) this->cam_x = 0;
+            if (this->cam_y < 0) this->cam_y = 0;
+            if (this->cam_x > max_cam_x) this->cam_x = max_cam_x;
+            if (this->cam_y > max_cam_y) this->cam_y = max_cam_y;
+
+            this->set_redraw(TPanel::Redraw);
+        }
+    }
     return TScreenPanel::handle_idle();
 }

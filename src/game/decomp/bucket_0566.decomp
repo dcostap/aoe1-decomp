@@ -1,0 +1,2598 @@
+// Auto-generated decompiler unit: bucket_0566.decomp
+#include "../include/common.h"
+
+// Offset: 0x00566045
+undefined FUN_00566045() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566045(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar4;
+    //   int unaff_EBX;
+    //   byte *unaff_EDI;
+    //   
+    //   uVar4 = (undefined3)((uint)in_EDX >> 8);
+    //   *unaff_EDI = (*(byte *)(CONCAT31(uVar4,*unaff_EDI) + unaff_EBX) | (byte)(DAT_0088c02c._4_4_ >> 8))
+    //                & (byte)((uint)DAT_0088c02c >> 8);
+    //   uVar2 = *(uint *)(unaff_EDI + 1);
+    //   bVar1 = *(byte *)(CONCAT31(uVar4,(char)(uVar2 >> 8)) + unaff_EBX);
+    //   uVar3 = CONCAT11(*(undefined1 *)(CONCAT31(uVar4,(char)(uVar2 >> 0x10)) + unaff_EBX),
+    //                    *(undefined1 *)(CONCAT31(uVar4,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //   *(uint *)(unaff_EDI + 1) =
+    //        (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
+    //         ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //        DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //   uVar3 = *(ushort *)(unaff_EDI + 5);
+    //   *(ushort *)(unaff_EDI + 5) =
+    //        (CONCAT11(*(undefined1 *)(CONCAT31(uVar4,(char)(uVar3 >> 8)) + unaff_EBX),
+    //                  *(undefined1 *)(CONCAT31(uVar4,(char)uVar3) + unaff_EBX)) |
+    //        (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x005660a3. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005660A9
+undefined FUN_005660a9() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005660a9(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   uint in_ECX;
+    //   int in_EDX;
+    //   undefined3 uVar4;
+    //   int unaff_EBX;
+    //   uint *unaff_EDI;
+    //   bool bVar5;
+    //   
+    //   do {
+    //     uVar2 = *unaff_EDI;
+    //     uVar4 = (undefined3)((uint)in_EDX >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar4,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     in_EDX = CONCAT31(uVar4,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(in_EDX + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar4,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *unaff_EDI = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                   ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //                  DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     unaff_EDI = unaff_EDI + 1;
+    //     bVar5 = 3 < in_ECX;
+    //     in_ECX = in_ECX - 4;
+    //   } while (bVar5 && in_ECX != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x005660d9. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005660DF
+undefined FUN_005660df() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005660df(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 in_EDX;
+    //   int iVar5;
+    //   undefined3 uVar6;
+    //   int unaff_EBX;
+    //   byte *unaff_EDI;
+    //   uint *puVar7;
+    //   bool bVar8;
+    //   
+    //   iVar5 = CONCAT31((int3)((uint)in_EDX >> 8),*unaff_EDI);
+    //   *unaff_EDI = (*(byte *)(iVar5 + unaff_EBX) | (byte)(DAT_0088c02c._4_4_ >> 8)) &
+    //                (byte)((uint)DAT_0088c02c >> 8);
+    //   puVar7 = (uint *)(unaff_EDI + 1);
+    //   uVar4 = in_ECX - 1;
+    //   do {
+    //     uVar2 = *puVar7;
+    //     uVar6 = (undefined3)((uint)iVar5 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     iVar5 = CONCAT31(uVar6,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *puVar7 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar7 = puVar7 + 1;
+    //     bVar8 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar8 && uVar4 != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x00566124. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056612A
+undefined FUN_0056612a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056612a(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar6;
+    //   int iVar5;
+    //   int unaff_EBX;
+    //   ushort *unaff_EDI;
+    //   uint *puVar7;
+    //   bool bVar8;
+    //   
+    //   uVar6 = (undefined3)((uint)in_EDX >> 8);
+    //   iVar5 = CONCAT31(uVar6,(char)(*unaff_EDI >> 8));
+    //   *unaff_EDI = (CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                          *(undefined1 *)(CONCAT31(uVar6,(char)*unaff_EDI) + unaff_EBX)) |
+    //                (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //   puVar7 = (uint *)(unaff_EDI + 1);
+    //   uVar4 = in_ECX - 2;
+    //   do {
+    //     uVar2 = *puVar7;
+    //     uVar6 = (undefined3)((uint)iVar5 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     iVar5 = CONCAT31(uVar6,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *puVar7 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar7 = puVar7 + 1;
+    //     bVar8 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar8 && uVar4 != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x0056617c. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566182
+undefined FUN_00566182() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566182(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   undefined4 uVar2;
+    //   uint uVar3;
+    //   undefined1 uVar4;
+    //   ushort uVar5;
+    //   int in_ECX;
+    //   uint uVar6;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar8;
+    //   int iVar7;
+    //   int unaff_EBX;
+    //   int unaff_EDI;
+    //   uint *puVar9;
+    //   bool bVar10;
+    //   
+    //   uVar2 = *(undefined4 *)(unaff_EDI + -1);
+    //   uVar8 = (undefined3)((uint)in_EDX >> 8);
+    //   bVar1 = *(byte *)(CONCAT31(uVar8,(char)((uint)uVar2 >> 8)) + unaff_EBX);
+    //   uVar4 = (undefined1)((uint)uVar2 >> 0x18);
+    //   iVar7 = CONCAT31(uVar8,(char)uVar2);
+    //   *(uint *)(unaff_EDI + -1) =
+    //        CONCAT31(((uint3)bVar1 |
+    //                  (uint3)((((uint3)(CONCAT12(bVar1,CONCAT11(*(undefined1 *)
+    //                                                             (CONCAT31(uVar8,(char)((uint)uVar2 >>
+    //                                                                                   0x10)) + unaff_EBX
+    //                                                             ),uVar4)) >> 8) & 0xff) << 0x10) >> 8) |
+    //                  (uint3)(((uint)*(byte *)(CONCAT31(uVar8,uVar4) + unaff_EBX) << 0x18) >> 8) |
+    //                 (uint3)(DAT_0088c02c._4_4_ >> 8)) & (uint3)((uint)DAT_0088c02c >> 8),(char)uVar2);
+    //   puVar9 = (uint *)(unaff_EDI + 3);
+    //   uVar6 = in_ECX - 3;
+    //   do {
+    //     uVar3 = *puVar9;
+    //     uVar8 = (undefined3)((uint)iVar7 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar8,(char)(uVar3 >> 8)) + unaff_EBX);
+    //     iVar7 = CONCAT31(uVar8,(char)(uVar3 >> 0x10));
+    //     uVar5 = CONCAT11(*(undefined1 *)(iVar7 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar8,(char)(uVar3 >> 0x18)) + unaff_EBX));
+    //     *puVar9 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar8,(char)uVar3) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar9 = puVar9 + 1;
+    //     bVar10 = 3 < uVar6;
+    //     uVar6 = uVar6 - 4;
+    //   } while (bVar10 && uVar6 != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x005661e1. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005661E7
+undefined FUN_005661e7() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005661e7(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   int in_EDX;
+    //   undefined3 uVar5;
+    //   int unaff_EBX;
+    //   uint *unaff_EDI;
+    //   bool bVar6;
+    //   
+    //   uVar4 = in_ECX - 1;
+    //   do {
+    //     uVar2 = *unaff_EDI;
+    //     uVar5 = (undefined3)((uint)in_EDX >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar5,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     in_EDX = CONCAT31(uVar5,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(in_EDX + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar5,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *unaff_EDI = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar5,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                   ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //                  DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     unaff_EDI = unaff_EDI + 1;
+    //     bVar6 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar6 && uVar4 != 0);
+    //   *(byte *)unaff_EDI =
+    //        (*(byte *)(CONCAT31(uVar5,(byte)*unaff_EDI) + unaff_EBX) | (byte)DAT_0088c02c._4_4_) &
+    //        (byte)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x0056622c. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566232
+undefined FUN_00566232() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566232(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 in_EDX;
+    //   int iVar5;
+    //   undefined3 uVar6;
+    //   int unaff_EBX;
+    //   byte *unaff_EDI;
+    //   uint *puVar7;
+    //   bool bVar8;
+    //   
+    //   iVar5 = CONCAT31((int3)((uint)in_EDX >> 8),*unaff_EDI);
+    //   *unaff_EDI = (*(byte *)(iVar5 + unaff_EBX) | (byte)(DAT_0088c02c._4_4_ >> 8)) &
+    //                (byte)((uint)DAT_0088c02c >> 8);
+    //   puVar7 = (uint *)(unaff_EDI + 1);
+    //   uVar4 = in_ECX - 2;
+    //   do {
+    //     uVar2 = *puVar7;
+    //     uVar6 = (undefined3)((uint)iVar5 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     iVar5 = CONCAT31(uVar6,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *puVar7 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar7 = puVar7 + 1;
+    //     bVar8 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar8 && uVar4 != 0);
+    //   *(byte *)puVar7 =
+    //        (*(byte *)(CONCAT31(uVar6,(byte)*puVar7) + unaff_EBX) | (byte)DAT_0088c02c._4_4_) &
+    //        (byte)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x0056628d. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566293
+undefined FUN_00566293() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566293(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar6;
+    //   int iVar5;
+    //   int unaff_EBX;
+    //   ushort *unaff_EDI;
+    //   uint *puVar7;
+    //   bool bVar8;
+    //   
+    //   uVar6 = (undefined3)((uint)in_EDX >> 8);
+    //   iVar5 = CONCAT31(uVar6,(char)(*unaff_EDI >> 8));
+    //   *unaff_EDI = (CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                          *(undefined1 *)(CONCAT31(uVar6,(char)*unaff_EDI) + unaff_EBX)) |
+    //                (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //   puVar7 = (uint *)(unaff_EDI + 1);
+    //   uVar4 = in_ECX - 3;
+    //   do {
+    //     uVar2 = *puVar7;
+    //     uVar6 = (undefined3)((uint)iVar5 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     iVar5 = CONCAT31(uVar6,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *puVar7 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar7 = puVar7 + 1;
+    //     bVar8 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar8 && uVar4 != 0);
+    //   *(byte *)puVar7 =
+    //        (*(byte *)(CONCAT31(uVar6,(byte)*puVar7) + unaff_EBX) | (byte)DAT_0088c02c._4_4_) &
+    //        (byte)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x005662f9. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005662FF
+undefined FUN_005662ff() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005662ff(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   undefined4 uVar2;
+    //   uint uVar3;
+    //   undefined1 uVar4;
+    //   ushort uVar5;
+    //   int in_ECX;
+    //   uint uVar6;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar8;
+    //   int iVar7;
+    //   int unaff_EBX;
+    //   int unaff_EDI;
+    //   uint *puVar9;
+    //   bool bVar10;
+    //   
+    //   uVar2 = *(undefined4 *)(unaff_EDI + -1);
+    //   uVar8 = (undefined3)((uint)in_EDX >> 8);
+    //   bVar1 = *(byte *)(CONCAT31(uVar8,(char)((uint)uVar2 >> 8)) + unaff_EBX);
+    //   uVar4 = (undefined1)((uint)uVar2 >> 0x18);
+    //   iVar7 = CONCAT31(uVar8,(char)uVar2);
+    //   *(uint *)(unaff_EDI + -1) =
+    //        CONCAT31(((uint3)bVar1 |
+    //                  (uint3)((((uint3)(CONCAT12(bVar1,CONCAT11(*(undefined1 *)
+    //                                                             (CONCAT31(uVar8,(char)((uint)uVar2 >>
+    //                                                                                   0x10)) + unaff_EBX
+    //                                                             ),uVar4)) >> 8) & 0xff) << 0x10) >> 8) |
+    //                  (uint3)(((uint)*(byte *)(CONCAT31(uVar8,uVar4) + unaff_EBX) << 0x18) >> 8) |
+    //                 (uint3)(DAT_0088c02c._4_4_ >> 8)) & (uint3)((uint)DAT_0088c02c >> 8),(char)uVar2);
+    //   puVar9 = (uint *)(unaff_EDI + 3);
+    //   uVar6 = in_ECX - 4;
+    //   do {
+    //     uVar3 = *puVar9;
+    //     uVar8 = (undefined3)((uint)iVar7 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar8,(char)(uVar3 >> 8)) + unaff_EBX);
+    //     iVar7 = CONCAT31(uVar8,(char)(uVar3 >> 0x10));
+    //     uVar5 = CONCAT11(*(undefined1 *)(iVar7 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar8,(char)(uVar3 >> 0x18)) + unaff_EBX));
+    //     *puVar9 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar8,(char)uVar3) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar9 = puVar9 + 1;
+    //     bVar10 = 3 < uVar6;
+    //     uVar6 = uVar6 - 4;
+    //   } while (bVar10 && uVar6 != 0);
+    //   *(byte *)puVar9 =
+    //        (*(byte *)(CONCAT31(uVar8,(byte)*puVar9) + unaff_EBX) | (byte)DAT_0088c02c._4_4_) &
+    //        (byte)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x00566372. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566378
+undefined FUN_00566378() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566378(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   int in_EDX;
+    //   undefined3 uVar5;
+    //   int unaff_EBX;
+    //   uint *unaff_EDI;
+    //   bool bVar6;
+    //   
+    //   uVar4 = in_ECX - 2;
+    //   do {
+    //     uVar2 = *unaff_EDI;
+    //     uVar5 = (undefined3)((uint)in_EDX >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar5,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     in_EDX = CONCAT31(uVar5,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(in_EDX + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar5,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *unaff_EDI = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar5,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                   ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //                  DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     unaff_EDI = unaff_EDI + 1;
+    //     bVar6 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar6 && uVar4 != 0);
+    //   *(ushort *)unaff_EDI =
+    //        (CONCAT11(*(undefined1 *)(CONCAT31(uVar5,(char)((ushort)*unaff_EDI >> 8)) + unaff_EBX),
+    //                  *(undefined1 *)(CONCAT31(uVar5,(char)(ushort)*unaff_EDI) + unaff_EBX)) |
+    //        (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x005663ca. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005663D0
+undefined FUN_005663d0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005663d0(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 in_EDX;
+    //   int iVar5;
+    //   undefined3 uVar6;
+    //   int unaff_EBX;
+    //   byte *unaff_EDI;
+    //   uint *puVar7;
+    //   bool bVar8;
+    //   
+    //   iVar5 = CONCAT31((int3)((uint)in_EDX >> 8),*unaff_EDI);
+    //   *unaff_EDI = (*(byte *)(iVar5 + unaff_EBX) | (byte)(DAT_0088c02c._4_4_ >> 8)) &
+    //                (byte)((uint)DAT_0088c02c >> 8);
+    //   puVar7 = (uint *)(unaff_EDI + 1);
+    //   uVar4 = in_ECX - 3;
+    //   do {
+    //     uVar2 = *puVar7;
+    //     uVar6 = (undefined3)((uint)iVar5 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     iVar5 = CONCAT31(uVar6,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *puVar7 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar7 = puVar7 + 1;
+    //     bVar8 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar8 && uVar4 != 0);
+    //   *(ushort *)puVar7 =
+    //        (CONCAT11(*(undefined1 *)(CONCAT31(uVar6,(char)((ushort)*puVar7 >> 8)) + unaff_EBX),
+    //                  *(undefined1 *)(CONCAT31(uVar6,(char)(ushort)*puVar7) + unaff_EBX)) |
+    //        (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x00566436. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056643C
+undefined FUN_0056643c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056643c(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint uVar2;
+    //   ushort uVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar6;
+    //   int iVar5;
+    //   int unaff_EBX;
+    //   ushort *unaff_EDI;
+    //   uint *puVar7;
+    //   bool bVar8;
+    //   
+    //   uVar6 = (undefined3)((uint)in_EDX >> 8);
+    //   iVar5 = CONCAT31(uVar6,(char)(*unaff_EDI >> 8));
+    //   *unaff_EDI = (CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                          *(undefined1 *)(CONCAT31(uVar6,(char)*unaff_EDI) + unaff_EBX)) |
+    //                (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //   puVar7 = (uint *)(unaff_EDI + 1);
+    //   uVar4 = in_ECX - 4;
+    //   do {
+    //     uVar2 = *puVar7;
+    //     uVar6 = (undefined3)((uint)iVar5 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar2 >> 8)) + unaff_EBX);
+    //     iVar5 = CONCAT31(uVar6,(char)(uVar2 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar5 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar2 >> 0x18)) + unaff_EBX));
+    //     *puVar7 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar7 = puVar7 + 1;
+    //     bVar8 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //   } while (bVar8 && uVar4 != 0);
+    //   *(ushort *)puVar7 =
+    //        (CONCAT11(*(undefined1 *)(CONCAT31(uVar6,(char)((ushort)*puVar7 >> 8)) + unaff_EBX),
+    //                  *(undefined1 *)(CONCAT31(uVar6,(char)(ushort)*puVar7) + unaff_EBX)) |
+    //        (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x005664ad. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005664B3
+undefined FUN_005664b3() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005664b3(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   undefined4 uVar2;
+    //   uint uVar3;
+    //   undefined1 uVar4;
+    //   ushort uVar5;
+    //   int in_ECX;
+    //   uint uVar6;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar8;
+    //   int iVar7;
+    //   int unaff_EBX;
+    //   int unaff_EDI;
+    //   uint *puVar9;
+    //   bool bVar10;
+    //   
+    //   uVar2 = *(undefined4 *)(unaff_EDI + -1);
+    //   uVar8 = (undefined3)((uint)in_EDX >> 8);
+    //   bVar1 = *(byte *)(CONCAT31(uVar8,(char)((uint)uVar2 >> 8)) + unaff_EBX);
+    //   uVar4 = (undefined1)((uint)uVar2 >> 0x18);
+    //   iVar7 = CONCAT31(uVar8,(char)uVar2);
+    //   *(uint *)(unaff_EDI + -1) =
+    //        CONCAT31(((uint3)bVar1 |
+    //                  (uint3)((((uint3)(CONCAT12(bVar1,CONCAT11(*(undefined1 *)
+    //                                                             (CONCAT31(uVar8,(char)((uint)uVar2 >>
+    //                                                                                   0x10)) + unaff_EBX
+    //                                                             ),uVar4)) >> 8) & 0xff) << 0x10) >> 8) |
+    //                  (uint3)(((uint)*(byte *)(CONCAT31(uVar8,uVar4) + unaff_EBX) << 0x18) >> 8) |
+    //                 (uint3)(DAT_0088c02c._4_4_ >> 8)) & (uint3)((uint)DAT_0088c02c >> 8),(char)uVar2);
+    //   puVar9 = (uint *)(unaff_EDI + 3);
+    //   uVar6 = in_ECX - 5;
+    //   do {
+    //     uVar3 = *puVar9;
+    //     uVar8 = (undefined3)((uint)iVar7 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar8,(char)(uVar3 >> 8)) + unaff_EBX);
+    //     iVar7 = CONCAT31(uVar8,(char)(uVar3 >> 0x10));
+    //     uVar5 = CONCAT11(*(undefined1 *)(iVar7 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar8,(char)(uVar3 >> 0x18)) + unaff_EBX));
+    //     *puVar9 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar8,(char)uVar3) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar9 = puVar9 + 1;
+    //     bVar10 = 3 < uVar6;
+    //     uVar6 = uVar6 - 4;
+    //   } while (bVar10 && uVar6 != 0);
+    //   *(ushort *)puVar9 =
+    //        (CONCAT11(*(undefined1 *)(CONCAT31(uVar8,(char)((ushort)*puVar9 >> 8)) + unaff_EBX),
+    //                  *(undefined1 *)(CONCAT31(uVar8,(char)(ushort)*puVar9) + unaff_EBX)) |
+    //        (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //                     /* WARNING: Could not recover jumptable at 0x00566531. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566537
+undefined FUN_00566537() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566537(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint3 uVar2;
+    //   ushort uVar3;
+    //   uint uVar4;
+    //   int in_ECX;
+    //   uint uVar5;
+    //   int in_EDX;
+    //   undefined3 uVar6;
+    //   int unaff_EBX;
+    //   uint *unaff_EDI;
+    //   bool bVar7;
+    //   
+    //   uVar5 = in_ECX - 3;
+    //   do {
+    //     uVar4 = *unaff_EDI;
+    //     uVar6 = (undefined3)((uint)in_EDX >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar4 >> 8)) + unaff_EBX);
+    //     in_EDX = CONCAT31(uVar6,(char)(uVar4 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(in_EDX + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar6,(char)(uVar4 >> 0x18)) + unaff_EBX));
+    //     *unaff_EDI = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar4) + unaff_EBX)) & 0xff |
+    //                   ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //                  DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     unaff_EDI = unaff_EDI + 1;
+    //     bVar7 = 3 < uVar5;
+    //     uVar5 = uVar5 - 4;
+    //   } while (bVar7 && uVar5 != 0);
+    //   uVar5 = *unaff_EDI;
+    //   bVar1 = *(byte *)(CONCAT31(uVar6,(char)(uVar5 >> 8)) + unaff_EBX);
+    //   uVar4 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar5) + unaff_EBX)) & 0xff |
+    //            ((uint)bVar1 << 0x10) >> 8 |
+    //            (uint)*(byte *)(CONCAT31(uVar6,(char)(uVar5 >> 0x10)) + unaff_EBX) << 0x10 |
+    //           DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //   uVar2 = (uint3)((ushort)(uVar4 >> 0x10) & 0xff) | (uint3)uVar4 & 0xff00;
+    //   *unaff_EDI = uVar4 & 0xff | uVar2 & 0xff00 | (uVar2 & 0xff) << 0x10 | uVar5 & 0xff000000;
+    //                     /* WARNING: Could not recover jumptable at 0x00566598. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056659E
+undefined FUN_0056659e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056659e(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint3 uVar2;
+    //   ushort uVar3;
+    //   uint uVar4;
+    //   int in_ECX;
+    //   uint uVar5;
+    //   undefined4 in_EDX;
+    //   int iVar6;
+    //   undefined3 uVar7;
+    //   int unaff_EBX;
+    //   byte *unaff_EDI;
+    //   uint *puVar8;
+    //   bool bVar9;
+    //   
+    //   iVar6 = CONCAT31((int3)((uint)in_EDX >> 8),*unaff_EDI);
+    //   *unaff_EDI = (*(byte *)(iVar6 + unaff_EBX) | (byte)(DAT_0088c02c._4_4_ >> 8)) &
+    //                (byte)((uint)DAT_0088c02c >> 8);
+    //   puVar8 = (uint *)(unaff_EDI + 1);
+    //   uVar5 = in_ECX - 4;
+    //   do {
+    //     uVar4 = *puVar8;
+    //     uVar7 = (undefined3)((uint)iVar6 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar7,(char)(uVar4 >> 8)) + unaff_EBX);
+    //     iVar6 = CONCAT31(uVar7,(char)(uVar4 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar6 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar7,(char)(uVar4 >> 0x18)) + unaff_EBX));
+    //     *puVar8 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar7,(char)uVar4) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar8 = puVar8 + 1;
+    //     bVar9 = 3 < uVar5;
+    //     uVar5 = uVar5 - 4;
+    //   } while (bVar9 && uVar5 != 0);
+    //   uVar5 = *puVar8;
+    //   bVar1 = *(byte *)(CONCAT31(uVar7,(char)(uVar5 >> 8)) + unaff_EBX);
+    //   uVar4 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar7,(char)uVar5) + unaff_EBX)) & 0xff |
+    //            ((uint)bVar1 << 0x10) >> 8 |
+    //            (uint)*(byte *)(CONCAT31(uVar7,(char)(uVar5 >> 0x10)) + unaff_EBX) << 0x10 |
+    //           DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //   uVar2 = (uint3)((ushort)(uVar4 >> 0x10) & 0xff) | (uint3)uVar4 & 0xff00;
+    //   *puVar8 = uVar4 & 0xff | uVar2 & 0xff00 | (uVar2 & 0xff) << 0x10 | uVar5 & 0xff000000;
+    //                     /* WARNING: Could not recover jumptable at 0x00566613. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566619
+undefined FUN_00566619() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566619(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   uint3 uVar2;
+    //   ushort uVar3;
+    //   uint uVar4;
+    //   int in_ECX;
+    //   uint uVar5;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar7;
+    //   int iVar6;
+    //   int unaff_EBX;
+    //   ushort *unaff_EDI;
+    //   uint *puVar8;
+    //   bool bVar9;
+    //   
+    //   uVar7 = (undefined3)((uint)in_EDX >> 8);
+    //   iVar6 = CONCAT31(uVar7,(char)(*unaff_EDI >> 8));
+    //   *unaff_EDI = (CONCAT11(*(undefined1 *)(iVar6 + unaff_EBX),
+    //                          *(undefined1 *)(CONCAT31(uVar7,(char)*unaff_EDI) + unaff_EBX)) |
+    //                (ushort)DAT_0088c02c._4_4_) & (ushort)(uint)DAT_0088c02c;
+    //   puVar8 = (uint *)(unaff_EDI + 1);
+    //   uVar5 = in_ECX - 5;
+    //   do {
+    //     uVar4 = *puVar8;
+    //     uVar7 = (undefined3)((uint)iVar6 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar7,(char)(uVar4 >> 8)) + unaff_EBX);
+    //     iVar6 = CONCAT31(uVar7,(char)(uVar4 >> 0x10));
+    //     uVar3 = CONCAT11(*(undefined1 *)(iVar6 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar7,(char)(uVar4 >> 0x18)) + unaff_EBX));
+    //     *puVar8 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar7,(char)uVar4) + unaff_EBX)) & 0xff |
+    //                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
+    //               DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar8 = puVar8 + 1;
+    //     bVar9 = 3 < uVar5;
+    //     uVar5 = uVar5 - 4;
+    //   } while (bVar9 && uVar5 != 0);
+    //   uVar5 = *puVar8;
+    //   bVar1 = *(byte *)(CONCAT31(uVar7,(char)(uVar5 >> 8)) + unaff_EBX);
+    //   uVar4 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar7,(char)uVar5) + unaff_EBX)) & 0xff |
+    //            ((uint)bVar1 << 0x10) >> 8 |
+    //            (uint)*(byte *)(CONCAT31(uVar7,(char)(uVar5 >> 0x10)) + unaff_EBX) << 0x10 |
+    //           DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //   uVar2 = (uint3)((ushort)(uVar4 >> 0x10) & 0xff) | (uint3)uVar4 & 0xff00;
+    //   *puVar8 = uVar4 & 0xff | uVar2 & 0xff00 | (uVar2 & 0xff) << 0x10 | uVar5 & 0xff000000;
+    //                     /* WARNING: Could not recover jumptable at 0x00566699. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056669F
+undefined FUN_0056669f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056669f(void)
+    // 
+    // {
+    //   byte bVar1;
+    //   undefined4 uVar2;
+    //   uint3 uVar3;
+    //   undefined1 uVar4;
+    //   ushort uVar5;
+    //   uint uVar6;
+    //   int in_ECX;
+    //   uint uVar7;
+    //   undefined4 in_EDX;
+    //   undefined3 uVar9;
+    //   int iVar8;
+    //   int unaff_EBX;
+    //   int unaff_EDI;
+    //   uint *puVar10;
+    //   bool bVar11;
+    //   
+    //   uVar2 = *(undefined4 *)(unaff_EDI + -1);
+    //   uVar9 = (undefined3)((uint)in_EDX >> 8);
+    //   bVar1 = *(byte *)(CONCAT31(uVar9,(char)((uint)uVar2 >> 8)) + unaff_EBX);
+    //   uVar4 = (undefined1)((uint)uVar2 >> 0x18);
+    //   iVar8 = CONCAT31(uVar9,(char)uVar2);
+    //   *(uint *)(unaff_EDI + -1) =
+    //        CONCAT31(((uint3)bVar1 |
+    //                  (uint3)((((uint3)(CONCAT12(bVar1,CONCAT11(*(undefined1 *)
+    //                                                             (CONCAT31(uVar9,(char)((uint)uVar2 >>
+    //                                                                                   0x10)) + unaff_EBX
+    //                                                             ),uVar4)) >> 8) & 0xff) << 0x10) >> 8) |
+    //                  (uint3)(((uint)*(byte *)(CONCAT31(uVar9,uVar4) + unaff_EBX) << 0x18) >> 8) |
+    //                 (uint3)(DAT_0088c02c._4_4_ >> 8)) & (uint3)((uint)DAT_0088c02c >> 8),(char)uVar2);
+    //   puVar10 = (uint *)(unaff_EDI + 3);
+    //   uVar7 = in_ECX - 6;
+    //   do {
+    //     uVar6 = *puVar10;
+    //     uVar9 = (undefined3)((uint)iVar8 >> 8);
+    //     bVar1 = *(byte *)(CONCAT31(uVar9,(char)(uVar6 >> 8)) + unaff_EBX);
+    //     iVar8 = CONCAT31(uVar9,(char)(uVar6 >> 0x10));
+    //     uVar5 = CONCAT11(*(undefined1 *)(iVar8 + unaff_EBX),
+    //                      *(undefined1 *)(CONCAT31(uVar9,(char)(uVar6 >> 0x18)) + unaff_EBX));
+    //     *puVar10 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar9,(char)uVar6) + unaff_EBX)) & 0xff |
+    //                 ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18 |
+    //                DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //     puVar10 = puVar10 + 1;
+    //     bVar11 = 3 < uVar7;
+    //     uVar7 = uVar7 - 4;
+    //   } while (bVar11 && uVar7 != 0);
+    //   uVar7 = *puVar10;
+    //   bVar1 = *(byte *)(CONCAT31(uVar9,(char)(uVar7 >> 8)) + unaff_EBX);
+    //   uVar6 = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar9,(char)uVar7) + unaff_EBX)) & 0xff |
+    //            ((uint)bVar1 << 0x10) >> 8 |
+    //            (uint)*(byte *)(CONCAT31(uVar9,(char)(uVar7 >> 0x10)) + unaff_EBX) << 0x10 |
+    //           DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
+    //   uVar3 = (uint3)((ushort)(uVar6 >> 0x10) & 0xff) | (uint3)uVar6 & 0xff00;
+    //   *puVar10 = uVar6 & 0xff | uVar3 & 0xff00 | (uVar3 & 0xff) << 0x10 | uVar7 & 0xff000000;
+    //                     /* WARNING: Could not recover jumptable at 0x0056672c. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566732
+undefined FUN_00566732() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566732(void)
+    // 
+    // {
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //                     /* WARNING: Could not recover jumptable at 0x00566738. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056673E
+undefined FUN_0056673e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056673e(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[2] = (char)((uint)uVar1 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x0056674b. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566751
+undefined FUN_00566751() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566751(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[2] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[4] = (char)((uint)uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566764. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056676A
+undefined FUN_0056676a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056676a(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[2] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[4] = (char)((uint)uVar1 >> 0x10);
+    //   unaff_EDI[6] = (char)((uint)uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x00566780. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566786
+undefined FUN_00566786() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566786(void)
+    // 
+    // {
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI;
+    //                     /* WARNING: Could not recover jumptable at 0x0056678c. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566792
+undefined FUN_00566792() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566792(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x0056679f. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005667A5
+undefined FUN_005667a5() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005667a5(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x005667b8. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005667BE
+undefined FUN_005667be() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005667be(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *(uint *)(unaff_EDI + -3) =
+    //        uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //                     /* WARNING: Could not recover jumptable at 0x005667cb. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005667D1
+undefined FUN_005667d1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005667d1(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //   unaff_EDI[-3] = (char)((uint)uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x005667e7. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005667ED
+undefined FUN_005667ed() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005667ed(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint uVar2;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   uVar2 = unaff_ESI[1];
+    //   *(uint *)(unaff_EDI + -3) =
+    //        uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //   *(char *)(unaff_EDI + -4) = (char)uVar2;
+    //                     /* WARNING: Could not recover jumptable at 0x00566800. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566806
+undefined FUN_00566806() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566806(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   undefined4 uVar2;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar2 = *unaff_ESI;
+    //   uVar1 = *(undefined1 *)(unaff_ESI + 1);
+    //   *unaff_EDI = (char)uVar2;
+    //   unaff_EDI[-4] = uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar2 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar2 >> 0x10);
+    //   unaff_EDI[-3] = (char)((uint)uVar2 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x00566822. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566828
+undefined FUN_00566828() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566828(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   *(uint *)(unaff_EDI + -4) =
+    //        uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //                     /* WARNING: Could not recover jumptable at 0x0056683a. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566840
+undefined FUN_00566840() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566840(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint uVar2;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   uVar2 = unaff_ESI[1];
+    //   *(uint *)(unaff_EDI + -3) =
+    //        uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //   *(char *)(unaff_EDI + -4) = (char)uVar2;
+    //   *(char *)(unaff_EDI + -5) = (char)(uVar2 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566856. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056685C
+undefined FUN_0056685c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056685c(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 uVar2;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   uVar2 = unaff_ESI[1];
+    //   unaff_EDI[-5] = (char)((uint)uVar2 >> 8);
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-4] = (char)uVar2;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //   unaff_EDI[-3] = (char)((uint)uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x0056687b. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566881
+undefined FUN_00566881() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566881(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   uVar2 = *(uint *)((int)unaff_ESI + 2);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   *(uint *)(unaff_EDI + -5) =
+    //        uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //                     /* WARNING: Could not recover jumptable at 0x00566896. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056689C
+undefined FUN_0056689c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056689c(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   uint uVar2;
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = unaff_ESI[5];
+    //   uVar2 = *(uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   *(uint *)(unaff_EDI + -4) =
+    //        uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //   unaff_EDI[-5] = uVar1;
+    //                     /* WARNING: Could not recover jumptable at 0x005668b4. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005668BA
+undefined FUN_005668ba() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005668ba(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint uVar2;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   uVar2 = unaff_ESI[1];
+    //   *(char *)(unaff_EDI + -4) = (char)uVar2;
+    //   *(uint *)(unaff_EDI + -3) =
+    //        uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //   *(char *)(unaff_EDI + -5) = (char)(uVar2 >> 8);
+    //   *(char *)(unaff_EDI + -6) = (char)(uVar2 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x005668d6. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005668DC
+undefined FUN_005668dc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005668dc(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -1);
+    //   uVar2 = *(uint *)(unaff_ESI + 3);
+    //   *unaff_EDI = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 0x10);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x18);
+    //   *(uint *)(unaff_EDI + -6) =
+    //        uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //                     /* WARNING: Could not recover jumptable at 0x005668f8. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005668FE
+undefined FUN_005668fe() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005668fe(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   uint uVar2;
+    //   undefined4 uVar3;
+    //   undefined4 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar2 = *(uint *)((int)unaff_ESI + 2);
+    //   *(uint *)(unaff_EDI + -5) =
+    //        uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //   uVar3 = *unaff_ESI;
+    //   uVar1 = *(undefined1 *)((int)unaff_ESI + 6);
+    //   *unaff_EDI = (char)uVar3;
+    //   unaff_EDI[-6] = uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar3 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566919. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056691F
+undefined FUN_0056691f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056691f(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   undefined4 uVar2;
+    //   undefined1 *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + 5);
+    //   *(uint *)(unaff_EDI + -4) =
+    //        uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //   unaff_EDI[-5] = (char)uVar2;
+    //   unaff_EDI[-6] = (char)((uint)uVar2 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x0056693a. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566940
+undefined FUN_00566940() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566940(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint in_ECX;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   bool bVar2;
+    //   
+    //   do {
+    //     uVar1 = *unaff_ESI;
+    //     unaff_ESI = unaff_ESI + 1;
+    //     *(uint *)(unaff_EDI + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     unaff_EDI = unaff_EDI + -4;
+    //     bVar2 = 3 < in_ECX;
+    //     in_ECX = in_ECX - 4;
+    //   } while (bVar2 && in_ECX != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x00566952. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566958
+undefined FUN_00566958() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566958(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   undefined1 *unaff_ESI;
+    //   uint *puVar3;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar4;
+    //   bool bVar5;
+    //   
+    //   puVar3 = (uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   puVar4 = unaff_EDI + -1;
+    //   uVar2 = in_ECX - 1;
+    //   do {
+    //     uVar1 = *puVar3;
+    //     puVar3 = puVar3 + 1;
+    //     *(uint *)(puVar4 + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     puVar4 = puVar4 + -4;
+    //     bVar5 = 3 < uVar2;
+    //     uVar2 = uVar2 - 4;
+    //   } while (bVar5 && uVar2 != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x00566971. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566977
+undefined FUN_00566977() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566977(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   int in_ECX;
+    //   uint uVar3;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar4;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar5;
+    //   bool bVar6;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar4 = (uint *)((int)unaff_ESI + 2);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   puVar5 = unaff_EDI + -2;
+    //   uVar3 = in_ECX - 2;
+    //   do {
+    //     uVar2 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     *(uint *)(puVar5 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     puVar5 = puVar5 + -4;
+    //     bVar6 = 3 < uVar3;
+    //     uVar3 = uVar3 - 4;
+    //   } while (bVar6 && uVar3 != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x00566999. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056699F
+undefined FUN_0056699f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056699f(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   int in_ECX;
+    //   uint uVar3;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar4;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar5;
+    //   bool bVar6;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar4 = (uint *)((int)unaff_ESI + 3);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //   puVar5 = unaff_EDI + -3;
+    //   uVar3 = in_ECX - 3;
+    //   do {
+    //     uVar2 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     *(uint *)(puVar5 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     puVar5 = puVar5 + -4;
+    //     bVar6 = 3 < uVar3;
+    //     uVar3 = uVar3 - 4;
+    //   } while (bVar6 && uVar3 != 0);
+    //                     /* WARNING: Could not recover jumptable at 0x005669c7. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005669CD
+undefined FUN_005669cd() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005669cd(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   bool bVar3;
+    //   
+    //   uVar2 = in_ECX - 1;
+    //   do {
+    //     uVar1 = *unaff_ESI;
+    //     unaff_ESI = unaff_ESI + 1;
+    //     *(uint *)(unaff_EDI + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     unaff_EDI = unaff_EDI + -4;
+    //     bVar3 = 3 < uVar2;
+    //     uVar2 = uVar2 - 4;
+    //   } while (bVar3 && uVar2 != 0);
+    //   *unaff_EDI = (char)*unaff_ESI;
+    //                     /* WARNING: Could not recover jumptable at 0x005669e6. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005669EC
+undefined FUN_005669ec() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005669ec(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   undefined1 *unaff_ESI;
+    //   uint *puVar3;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar4;
+    //   bool bVar5;
+    //   
+    //   puVar3 = (uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   puVar4 = unaff_EDI + -1;
+    //   uVar2 = in_ECX - 2;
+    //   do {
+    //     uVar1 = *puVar3;
+    //     puVar3 = puVar3 + 1;
+    //     *(uint *)(puVar4 + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     puVar4 = puVar4 + -4;
+    //     bVar5 = 3 < uVar2;
+    //     uVar2 = uVar2 - 4;
+    //   } while (bVar5 && uVar2 != 0);
+    //   *puVar4 = (char)*puVar3;
+    //                     /* WARNING: Could not recover jumptable at 0x00566a0d. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566A13
+undefined FUN_00566a13() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566a13(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   int in_ECX;
+    //   uint uVar3;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar4;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar5;
+    //   bool bVar6;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar4 = (uint *)((int)unaff_ESI + 2);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   puVar5 = unaff_EDI + -2;
+    //   uVar3 = in_ECX - 3;
+    //   do {
+    //     uVar2 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     *(uint *)(puVar5 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     puVar5 = puVar5 + -4;
+    //     bVar6 = 3 < uVar3;
+    //     uVar3 = uVar3 - 4;
+    //   } while (bVar6 && uVar3 != 0);
+    //   *puVar5 = (char)*puVar4;
+    //                     /* WARNING: Could not recover jumptable at 0x00566a3b. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566A41
+undefined FUN_00566a41() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566a41(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   int in_ECX;
+    //   uint uVar3;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar4;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar5;
+    //   bool bVar6;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar4 = (uint *)((int)unaff_ESI + 3);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //   puVar5 = unaff_EDI + -3;
+    //   uVar3 = in_ECX - 4;
+    //   do {
+    //     uVar2 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     *(uint *)(puVar5 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     puVar5 = puVar5 + -4;
+    //     bVar6 = 3 < uVar3;
+    //     uVar3 = uVar3 - 4;
+    //   } while (bVar6 && uVar3 != 0);
+    //   *puVar5 = (char)*puVar4;
+    //                     /* WARNING: Could not recover jumptable at 0x00566a6f. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566A75
+undefined FUN_00566a75() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566a75(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar3;
+    //   bool bVar4;
+    //   
+    //   uVar2 = in_ECX - 2;
+    //   do {
+    //     puVar3 = unaff_EDI;
+    //     uVar1 = *unaff_ESI;
+    //     unaff_ESI = unaff_ESI + 1;
+    //     *(uint *)(puVar3 + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     bVar4 = 3 < uVar2;
+    //     uVar2 = uVar2 - 4;
+    //     unaff_EDI = puVar3 + -4;
+    //   } while (bVar4 && uVar2 != 0);
+    //   uVar2 = *unaff_ESI;
+    //   puVar3[-4] = (char)uVar2;
+    //   puVar3[-5] = (char)(uVar2 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566a97. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566A9D
+undefined FUN_00566a9d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566a9d(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   undefined1 *puVar2;
+    //   int in_ECX;
+    //   uint uVar3;
+    //   undefined1 *unaff_ESI;
+    //   uint *puVar4;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar5;
+    //   bool bVar6;
+    //   
+    //   puVar4 = (uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   uVar3 = in_ECX - 3;
+    //   puVar2 = unaff_EDI + -1;
+    //   do {
+    //     puVar5 = puVar2;
+    //     uVar1 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     *(uint *)(puVar5 + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     bVar6 = 3 < uVar3;
+    //     uVar3 = uVar3 - 4;
+    //     puVar2 = puVar5 + -4;
+    //   } while (bVar6 && uVar3 != 0);
+    //   uVar3 = *puVar4;
+    //   puVar5[-4] = (char)uVar3;
+    //   puVar5[-5] = (char)(uVar3 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566ac5. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566ACB
+undefined FUN_00566acb() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566acb(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   undefined1 *puVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar5;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar6;
+    //   bool bVar7;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar5 = (uint *)((int)unaff_ESI + 2);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   uVar4 = in_ECX - 4;
+    //   puVar3 = unaff_EDI + -2;
+    //   do {
+    //     puVar6 = puVar3;
+    //     uVar2 = *puVar5;
+    //     puVar5 = puVar5 + 1;
+    //     *(uint *)(puVar6 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     bVar7 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //     puVar3 = puVar6 + -4;
+    //   } while (bVar7 && uVar4 != 0);
+    //   uVar4 = *puVar5;
+    //   puVar6[-4] = (char)uVar4;
+    //   puVar6[-5] = (char)(uVar4 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566afa. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566B00
+undefined FUN_00566b00() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566b00(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   undefined1 *puVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar5;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar6;
+    //   bool bVar7;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar5 = (uint *)((int)unaff_ESI + 3);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //   uVar4 = in_ECX - 5;
+    //   puVar3 = unaff_EDI + -3;
+    //   do {
+    //     puVar6 = puVar3;
+    //     uVar2 = *puVar5;
+    //     puVar5 = puVar5 + 1;
+    //     *(uint *)(puVar6 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     bVar7 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //     puVar3 = puVar6 + -4;
+    //   } while (bVar7 && uVar4 != 0);
+    //   uVar4 = *puVar5;
+    //   puVar6[-4] = (char)uVar4;
+    //   puVar6[-5] = (char)(uVar4 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566b35. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566B3B
+undefined FUN_00566b3b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566b3b(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar3;
+    //   bool bVar4;
+    //   
+    //   uVar2 = in_ECX - 3;
+    //   do {
+    //     puVar3 = unaff_EDI;
+    //     uVar1 = *unaff_ESI;
+    //     unaff_ESI = unaff_ESI + 1;
+    //     *(uint *)(puVar3 + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     bVar4 = 3 < uVar2;
+    //     uVar2 = uVar2 - 4;
+    //     unaff_EDI = puVar3 + -4;
+    //   } while (bVar4 && uVar2 != 0);
+    //   uVar2 = *unaff_ESI;
+    //   puVar3[-4] = (char)uVar2;
+    //   puVar3[-5] = (char)(uVar2 >> 8);
+    //   puVar3[-6] = (char)(uVar2 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566b63. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566B69
+undefined FUN_00566b69() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566b69(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   undefined1 *puVar2;
+    //   int in_ECX;
+    //   uint uVar3;
+    //   undefined1 *unaff_ESI;
+    //   uint *puVar4;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar5;
+    //   bool bVar6;
+    //   
+    //   puVar4 = (uint *)(unaff_ESI + 1);
+    //   *unaff_EDI = *unaff_ESI;
+    //   uVar3 = in_ECX - 4;
+    //   puVar2 = unaff_EDI + -1;
+    //   do {
+    //     puVar5 = puVar2;
+    //     uVar1 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     *(uint *)(puVar5 + -3) =
+    //          uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18;
+    //     bVar6 = 3 < uVar3;
+    //     uVar3 = uVar3 - 4;
+    //     puVar2 = puVar5 + -4;
+    //   } while (bVar6 && uVar3 != 0);
+    //   uVar3 = *puVar4;
+    //   puVar5[-4] = (char)uVar3;
+    //   puVar5[-5] = (char)(uVar3 >> 8);
+    //   puVar5[-6] = (char)(uVar3 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566b97. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566B9D
+undefined FUN_00566b9d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566b9d(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   undefined1 *puVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar5;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar6;
+    //   bool bVar7;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar5 = (uint *)((int)unaff_ESI + 2);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   uVar4 = in_ECX - 5;
+    //   puVar3 = unaff_EDI + -2;
+    //   do {
+    //     puVar6 = puVar3;
+    //     uVar2 = *puVar5;
+    //     puVar5 = puVar5 + 1;
+    //     *(uint *)(puVar6 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     bVar7 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //     puVar3 = puVar6 + -4;
+    //   } while (bVar7 && uVar4 != 0);
+    //   uVar4 = *puVar5;
+    //   puVar6[-4] = (char)uVar4;
+    //   puVar6[-5] = (char)(uVar4 >> 8);
+    //   puVar6[-6] = (char)(uVar4 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566bd2. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566BD8
+undefined FUN_00566bd8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566bd8(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   uint uVar2;
+    //   undefined1 *puVar3;
+    //   int in_ECX;
+    //   uint uVar4;
+    //   undefined4 *unaff_ESI;
+    //   uint *puVar5;
+    //   undefined1 *unaff_EDI;
+    //   undefined1 *puVar6;
+    //   bool bVar7;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   puVar5 = (uint *)((int)unaff_ESI + 3);
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)((uint)uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)((uint)uVar1 >> 0x10);
+    //   uVar4 = in_ECX - 6;
+    //   puVar3 = unaff_EDI + -3;
+    //   do {
+    //     puVar6 = puVar3;
+    //     uVar2 = *puVar5;
+    //     puVar5 = puVar5 + 1;
+    //     *(uint *)(puVar6 + -3) =
+    //          uVar2 >> 0x18 | (uVar2 & 0xff0000) >> 8 | (uVar2 & 0xff00) << 8 | uVar2 << 0x18;
+    //     bVar7 = 3 < uVar4;
+    //     uVar4 = uVar4 - 4;
+    //     puVar3 = puVar6 + -4;
+    //   } while (bVar7 && uVar4 != 0);
+    //   uVar4 = *puVar5;
+    //   puVar6[-4] = (char)uVar4;
+    //   puVar6[-5] = (char)(uVar4 >> 8);
+    //   puVar6[-6] = (char)(uVar4 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566c13. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566C19
+undefined FUN_00566c19() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566c19(void)
+    // 
+    // {
+    //   byte *unaff_ESI;
+    //   byte *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI & (byte)(undefined4)DAT_0088c02c | (byte)DAT_0088c02c._4_4_;
+    //                     /* WARNING: Could not recover jumptable at 0x00566c2b. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566C31
+undefined FUN_00566c31() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566c31(void)
+    // 
+    // {
+    //   byte *unaff_ESI;
+    //   byte *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI & (byte)((uint)(undefined4)DAT_0088c02c >> 8) |
+    //                (byte)((uint)DAT_0088c02c._4_4_ >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566c43. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566C49
+undefined FUN_00566c49() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566c49(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)(uVar1 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566c62. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566C68
+undefined FUN_00566c68() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566c68(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)(uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)(uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566c85. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566C8B
+undefined FUN_00566c8b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566c8b(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)(uVar1 >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566ca4. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566CAA
+undefined FUN_00566caa() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566caa(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)(uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566cc9. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566CCF
+undefined FUN_00566ccf() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566ccf(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)(uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)(uVar1 >> 0x10);
+    //   unaff_EDI[-2] = (char)(uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x00566cef. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566CF5
+undefined FUN_00566cf5() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566cf5(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)(uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)(uVar1 >> 0x10);
+    //   unaff_EDI[-2] =
+    //        *(byte *)(unaff_ESI + 2) & (byte)((uint)DAT_0088c02c >> 8) | (byte)(DAT_0088c02c._4_4_ >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566d24. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566D2A
+undefined FUN_00566d2a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566d2a(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   byte *unaff_EDI;
+    //   
+    //   *unaff_EDI = (byte)*unaff_ESI & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._4_4_;
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-1] = (byte)(uVar1 >> 8);
+    //   unaff_EDI[-2] = (byte)(uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566d59. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566D5F
+undefined FUN_00566d5f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566d5f(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *(uint *)(unaff_EDI + -3) =
+    //        (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) &
+    //        (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //                     /* WARNING: Could not recover jumptable at 0x00566d78. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566D7E
+undefined FUN_00566d7e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566d7e(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)(uVar1 >> 0x10);
+    //   unaff_EDI[-3] =
+    //        *(byte *)((int)unaff_ESI + 3) & (byte)((uint)DAT_0088c02c >> 8) |
+    //        (byte)(DAT_0088c02c._4_4_ >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566daf. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566DB5
+undefined FUN_00566db5() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566db5(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)(uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)(uVar1 >> 0x10);
+    //   uVar1 = *(uint *)(unaff_ESI + 1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-2] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-3] = (char)(uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566def. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566DF5
+undefined FUN_00566df5() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566df5(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   byte *unaff_EDI;
+    //   
+    //   *unaff_EDI = (byte)*unaff_ESI & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._4_4_;
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-1] = (byte)(uVar1 >> 8);
+    //   unaff_EDI[-2] = (byte)(uVar1 >> 0x10);
+    //   unaff_EDI[-3] = (byte)(uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x00566e27. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566E2D
+undefined FUN_00566e2d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566e2d(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *(uint *)(unaff_EDI + -3) =
+    //        (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) &
+    //        (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *(byte *)(unaff_EDI + -4) =
+    //        (byte)unaff_ESI[1] & (byte)((uint)DAT_0088c02c >> 8) | (byte)(DAT_0088c02c._4_4_ >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x00566e58. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566E5E
+undefined FUN_00566e5e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566e5e(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)(uVar1 >> 0x10);
+    //   uVar1 = *(uint *)((int)unaff_ESI + 2) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-3] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-4] = (char)(uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566e9a. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566EA0
+undefined FUN_00566ea0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566ea0(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)(uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)(uVar1 >> 0x10);
+    //   uVar1 = *(uint *)(unaff_ESI + 1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-2] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-3] = (char)(uVar1 >> 0x10);
+    //   unaff_EDI[-4] = (char)(uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x00566edd. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566EE3
+undefined FUN_00566ee3() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566ee3(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   byte *unaff_ESI;
+    //   byte *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._4_4_;
+    //   uVar1 = *(uint *)(unaff_ESI + 1);
+    //   *(uint *)(unaff_EDI + -4) =
+    //        (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) &
+    //        (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //                     /* WARNING: Could not recover jumptable at 0x00566f0e. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566F14
+undefined FUN_00566f14() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566f14(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI;
+    //   *(uint *)(unaff_EDI + -3) =
+    //        (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) &
+    //        (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   uVar1 = *(uint *)((int)unaff_ESI + 3) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *(char *)(unaff_EDI + -4) = (char)(uVar1 >> 8);
+    //   *(char *)(unaff_EDI + -5) = (char)(uVar1 >> 0x10);
+    //                     /* WARNING: Could not recover jumptable at 0x00566f4a. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566F50
+undefined FUN_00566f50() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566f50(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   uint *unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)uVar1;
+    //   unaff_EDI[-1] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-2] = (char)(uVar1 >> 0x10);
+    //   uVar1 = *(uint *)((int)unaff_ESI + 2) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-3] = (char)(uVar1 >> 8);
+    //   unaff_EDI[-4] = (char)(uVar1 >> 0x10);
+    //   unaff_EDI[-5] = (char)(uVar1 >> 0x18);
+    //                     /* WARNING: Could not recover jumptable at 0x00566f8f. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566F95
+undefined FUN_00566f95() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566f95(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int unaff_ESI;
+    //   undefined1 *unaff_EDI;
+    //   
+    //   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   *unaff_EDI = (char)(uVar1 >> 8);
+    //   unaff_EDI[-1] = (char)(uVar1 >> 0x10);
+    //   uVar1 = *(uint *)(unaff_ESI + 2);
+    //   *(uint *)(unaff_EDI + -5) =
+    //        (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) &
+    //        (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //                     /* WARNING: Could not recover jumptable at 0x00566fcb. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00566FD1
+undefined FUN_00566fd1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00566fd1(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   byte *unaff_ESI;
+    //   byte *unaff_EDI;
+    //   
+    //   *unaff_EDI = *unaff_ESI & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._4_4_;
+    //   uVar1 = *(uint *)(unaff_ESI + 1);
+    //   *(uint *)(unaff_EDI + -4) =
+    //        (uVar1 >> 0x18 | (uVar1 & 0xff0000) >> 8 | (uVar1 & 0xff00) << 8 | uVar1 << 0x18) &
+    //        (uint)DAT_0088c02c | DAT_0088c02c._4_4_;
+    //   unaff_EDI[-5] = unaff_ESI[5] & (byte)((uint)DAT_0088c02c >> 8) | (byte)(DAT_0088c02c._4_4_ >> 8);
+    //                     /* WARNING: Could not recover jumptable at 0x0056700e. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   (*(code *)DAT_0088c044._0_4_)();
+    //   return;
+    // }
+    // 
+    // 
+}
+

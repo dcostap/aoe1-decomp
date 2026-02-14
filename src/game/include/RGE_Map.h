@@ -11,6 +11,7 @@ public:
     // Constructors
     RGE_Map(); // Default — zero-init
     RGE_Map(int file_handle, RGE_Sound** sounds, uchar load_map); // Binary path (empires.dat)
+    RGE_Map(RGE_Game_World* world, long w, long h);
     RGE_Map(char* terrain_file, char* border_file, char* terrain_obj_file,
             short tile_w, short tile_h, short elev_h, RGE_Sound** sounds); // Text file path
 
@@ -36,6 +37,7 @@ public:
     void load_terrain_types(char* filename, RGE_Sound** sounds); // Text file path
     void load_border_types(char* filename, RGE_Sound** sounds); // Text file path
     void new_map(long width, long height);
+    RGE_Tile* get_tile(int col, int row);
     void set_map_screen_pos(int col0, int row0, int col1, int row1);
     void clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain, long w, long h);
     void clear_map(uchar terrain, uchar height);

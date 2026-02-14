@@ -42,6 +42,9 @@ The decomp **lies** about:
 
 Note: even tho this is Windows, `grep` is installed and in the PATH.
 
+## EVERYTHING SHOULD BE THERE
+If you can't seem to find the source of truth for a given function, or piece of logic, etc, YOU MUST ASK AND REPORT TO THE USER. DON'T GO OFF ON USELESS TANGENTS. EVERY SINGLE LINE OF CODE SHOULD BE PRESENT!!! IF THAT'S NOT THE CASE, REPORT BACK!
+
 ## Includes (keep it simple)
 
 ### In headers (`.h`)

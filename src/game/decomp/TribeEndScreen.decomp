@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TribeEndScreen.decomp
+#include "../include/common.h"
+
+// Offset: 0x00493BE0
+void* TribeEndScreen::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeEndScreen::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TribeEndScreen::_scalar_deleting_destructor_(TribeEndScreen *this,uint param_1)
+    // 
+    // {
+    //   ~TribeEndScreen(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: RGE_Panel_Time.decomp
+#include "../include/common.h"
+
+// Offset: 0x0048A710
+void* RGE_Panel_Time::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Panel_Time::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall RGE_Panel_Time::_scalar_deleting_destructor_(RGE_Panel_Time *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Panel_Time(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

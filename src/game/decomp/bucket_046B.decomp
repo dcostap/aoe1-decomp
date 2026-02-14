@@ -1,0 +1,89 @@
+// Auto-generated decompiler unit: bucket_046B.decomp
+#include "../include/common.h"
+
+// Offset: 0x0046B050
+undefined E12() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E12(void)
+    // 
+    // {
+    //   _E9();
+    //   _E11();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046B080
+undefined E11() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E11(void)
+    // 
+    // {
+    //   atexit(_E10);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046B090
+undefined E10() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E10(void)
+    // 
+    // {
+    //   PathingSystem::~PathingSystem(&pathSystem);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046B0A0
+undefined E17() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E17(void)
+    // 
+    // {
+    //   _E14();
+    //   _E16();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046B0D0
+undefined E16() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E16(void)
+    // 
+    // {
+    //   atexit(_E15);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046B0E0
+undefined E15() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E15(void)
+    // 
+    // {
+    //   PathingSystem::~PathingSystem(&aiPathSystem);
+    //   return;
+    // }
+    // 
+    // 
+}
+

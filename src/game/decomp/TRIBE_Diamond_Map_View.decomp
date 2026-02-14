@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TRIBE_Diamond_Map_View.decomp
+#include "../include/common.h"
+
+// Offset: 0x0052CA00
+void* TRIBE_Diamond_Map_View::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Diamond_Map_View::`scalar deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // TRIBE_Diamond_Map_View::_scalar_deleting_destructor_(TRIBE_Diamond_Map_View *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Diamond_Map_View(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

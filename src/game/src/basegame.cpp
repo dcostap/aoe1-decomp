@@ -196,6 +196,10 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
 
 RGE_Base_Game::~RGE_Base_Game() {
     // Source of truth: basegame.cpp.decomp @ destructor
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor start");
+    CUSTOM_DEBUG_END
+
     // Save settings to registry before cleanup
     if (this->registry && this->draw_system) {
         this->registry->RegSetInt(1, "Screen Size", this->draw_system->ScreenWidth);
@@ -237,6 +241,7 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Delete world
     if (this->world != nullptr) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: deleting world");
         delete this->world;
         this->world = nullptr;
     }
@@ -317,6 +322,7 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Delete draw system
     if (this->draw_system != nullptr) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: deleting draw system");
         delete this->draw_system;
         this->draw_system = nullptr;
         this->draw_area = nullptr;
@@ -354,6 +360,7 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Destroy window
     if (this->prog_window != nullptr) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: destroying window");
         DestroyWindow((HWND)this->prog_window);
     }
 
@@ -382,9 +389,12 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Delete panel system
     if (panel_system) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: deleting panel system");
         delete panel_system;
         panel_system = nullptr;
     }
+
+    CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor end");
 }
 
 // Stubs for now
@@ -795,6 +805,16 @@ int RGE_Base_Game::check_multi_copies() { return 1; }
 long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { 
     // p1=HWND, p2=message, p3=wParam, p4=lParam
     long result = 0;
+
+    CUSTOM_DEBUG_BEGIN
+    if (p2 == WM_CLOSE) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_CLOSE");
+    } else if (p2 == WM_DESTROY) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_DESTROY");
+    } else if (p2 == WM_QUIT) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_QUIT");
+    }
+    CUSTOM_DEBUG_END
 
     // Forward messages to sound and music systems
     if (this->sound_system != nullptr) {

@@ -3,7 +3,9 @@
 
 class RGE_Master_Player {
 public:
-    // Virtuals (best-effort)
+    RGE_Master_Player();
+    RGE_Master_Player(int fd);
+    RGE_Master_Player(FILE* f);
     virtual ~RGE_Master_Player(); // vt[0] (0x0)
     virtual void finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3); // vt[1] (0x4)
     virtual void load_master_object(int param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5); // vt[2] (0x8)

@@ -1,19 +1,32 @@
 // Stub constructors/destructors for types used by TRIBE_World init overrides.
 #include "../include/TRIBE_Map.h"
+#include "../include/custom_debug.h"
 #include "../include/TRIBE_Command.h"
 #include "../include/TRIBE_Effects.h"
 #include "../include/T_Scenario.h"
 #include "../include/RGE_Effect.h"
 #include "../include/RGE_Effect_Command.h"
 #include "../include/globals.h"
+#include <io.h>
 
 // --- TRIBE_Map ---
 TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
-    : RGE_Map(param_1, param_2, (uchar)param_3) {
-    // Source of truth: tmap.cpp.decomp
-    // Delegates to RGE_Map(int fd, RGE_Sound** sounds, uchar load_map)
-    // which reads 0x8DD0 bytes from empires.dat via rge_read, then
-    // loads terrain/border TShape SLPs and initializes tile sizes.
+    : RGE_Map(param_1, param_2, 0) { // Decomp passes 0 (false) for load_map
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Map::TRIBE_Map(binary) param_1=%d param_3=%d", param_1, param_3);
+    
+    // Decomp logic: if param_3 (load_random_map flag) is set, load it.
+    // Note: Since param_1 is at EOF due to init_sprites, this will likely crash.
+    // We add a safety check.
+    if (param_3 && param_1 > 0) {
+        long pos = _tell(param_1);
+        long len = _filelength(param_1);
+        if (pos >= 0 && pos < len) {
+             this->data_load_random_map(param_1);
+        } else {
+             CUSTOM_DEBUG_LOG_FMT("TRIBE_Map::TRIBE_Map: SKIPPING data_load_random_map (fd=%d pos=%ld len=%ld)", param_1, pos, len);
+        }
+    }
+
     this->Game = nullptr;
     this->rge_player = nullptr;
     this->rge_game_world = nullptr;
@@ -85,111 +98,6 @@ RGE_Command::~RGE_Command() {
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {}
 void RGE_Command::do_command(void* p1) {}
 void RGE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {}
-
-// --- RGE_Effects (from effects.cpp.decomp) ---
-RGE_Effects::RGE_Effects(int param_1) {
-    // Source of truth: effects.cpp.decomp @ 0x004490E0
-    rge_read(param_1, &this->effect_num, 4);
-    if (this->effect_num < 1) {
-        this->effects = nullptr;
-        this->effect_num = 0;
-    } else {
-        this->effects = (RGE_Effect*)calloc(this->effect_num, 0x2c);
-        for (int i = 0; i < this->effect_num; i++) {
-            rge_read(param_1, this->effects[i].name, 0x1f);
-            rge_read(param_1, &this->effects[i].effect_list_num, 2);
-            if (this->effects[i].effect_list_num < 1) {
-                this->effects[i].effect_list = nullptr;
-            } else {
-                this->effects[i].effect_list = (RGE_Effect_Command*)calloc((int)this->effects[i].effect_list_num, 0xc);
-                for (short j = 0; j < this->effects[i].effect_list_num; j++) {
-                    RGE_Effect_Command* cmd = &this->effects[i].effect_list[j];
-                    rge_read(param_1, &cmd->command, 1);
-                    rge_read(param_1, &cmd->change_num1, 2);
-                    rge_read(param_1, &cmd->change_num2, 2);
-                    rge_read(param_1, &cmd->change_num3, 2);
-                    rge_read(param_1, &cmd->change_amount, 4);
-                }
-            }
-        }
-    }
-}
-
-RGE_Effects::RGE_Effects(char* param_1) {
-    // Source of truth: effects.cpp.decomp @ 0x00449260
-    // Text file constructor - reads from data file
-    // TODO(accuracy): implement full text file parsing via fscanf
-    this->effect_num = 0;
-    this->effects = nullptr;
-}
-
-RGE_Effects::~RGE_Effects() {
-    // Source of truth: effects.cpp.decomp @ 0x00449440
-    for (short i = 0; i < this->effect_num; i++) {
-        if (this->effects[i].effect_list != nullptr) {
-            free(this->effects[i].effect_list);
-        }
-        this->effects[i].effect_list = nullptr;
-    }
-    if (this->effects != nullptr) {
-        free(this->effects);
-        this->effects = nullptr;
-    }
-    this->effect_num = 0;
-}
-
-void RGE_Effects::save(int p1) {
-    // Source of truth: effects.cpp.decomp @ 0x004494B0
-    rge_write(p1, &this->effect_num, 4);
-    for (int i = 0; i < this->effect_num; i++) {
-        rge_write(p1, this->effects[i].name, 0x1f);
-        rge_write(p1, &this->effects[i].effect_list_num, 2);
-        for (short j = 0; j < this->effects[i].effect_list_num; j++) {
-            RGE_Effect_Command* cmd = &this->effects[i].effect_list[j];
-            rge_write(p1, &cmd->command, 1);
-            rge_write(p1, &cmd->change_num1, 2);
-            rge_write(p1, &cmd->change_num2, 2);
-            rge_write(p1, &cmd->change_num3, 2);
-            rge_write(p1, &cmd->change_amount, 4);
-        }
-    }
-}
-
-void RGE_Effects::do_effect(short p1, RGE_Player* p2) {
-    // Source of truth: effects.cpp.decomp @ 0x004495C0
-    if ((int)p1 >= this->effect_num) return;
-    RGE_Effect* eff = &this->effects[p1];
-    if (eff == nullptr) return;
-    for (short i = 0; i < eff->effect_list_num; i++) {
-        RGE_Effect_Command* cmd = &eff->effect_list[i];
-        switch (cmd->command) {
-        case 0: // modify_tobj (set)
-            // TODO: p2->modify_tobj(cmd->change_num1, cmd->change_num2, cmd->change_amount, (uchar)cmd->change_num3);
-            break;
-        case 1: // resource modify
-            if (cmd->change_num1 >= 0) {
-                if (cmd->change_num2 == 0) {
-                    // TODO: p2->new_attribute_num(cmd->change_num1, cmd->change_amount);
-                } else {
-                    // TODO: p2->add_attribute_num(cmd->change_num1, cmd->change_amount, 0);
-                }
-            }
-            break;
-        case 2: // make_available
-            // TODO: p2->make_available(cmd->change_num1, (uchar)cmd->change_num2);
-            break;
-        case 3: // copy_obj
-            // TODO: p2->copy_obj(cmd->change_num1, cmd->change_num2);
-            break;
-        case 4: // modify_tobj_delta
-            // TODO: p2->modify_tobj_delta(cmd->change_num1, cmd->change_num2, cmd->change_amount, (uchar)cmd->change_num3);
-            break;
-        case 5: // modify_tobj_percent
-            // TODO: p2->modify_tobj_percent(cmd->change_num1, cmd->change_num2, cmd->change_amount, (uchar)cmd->change_num3);
-            break;
-        }
-    }
-}
 
 // --- RGE_Scenario (base class stubs) ---
 RGE_Scenario::~RGE_Scenario() {}

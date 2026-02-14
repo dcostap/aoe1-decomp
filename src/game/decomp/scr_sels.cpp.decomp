@@ -1,0 +1,589 @@
+// Auto-generated decompiler unit: scr_sels.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/Scr_sels.cpp
+#include "../include/common.h"
+
+// Offset: 0x004B3C90
+undefined TribeSelectScenarioScreen(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeSelectScenarioScreen::TribeSelectScenarioScreen(void) */
+    // 
+    // TribeSelectScenarioScreen * __thiscall
+    // TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   TListPanel **ppTVar1;
+    //   TTextPanel **ppTVar2;
+    //   TButtonPanel **ppTVar3;
+    //   TDrawArea *pTVar4;
+    //   TButtonPanel *pTVar5;
+    //   int iVar6;
+    //   char *pcVar7;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int iVar8;
+    //   long lVar9;
+    //   long lVar10;
+    //   long lVar11;
+    //   long lVar12;
+    //   int iVar13;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055f638;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   TScreenPanel::TScreenPanel((TScreenPanel *)this,s_Select_Scenario_Screen);
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   init_vars(this);
+    //   iVar6 = RGE_Base_Game::multiplayerGame(rge_base_game);
+    //   pcVar7 = &s_scr3;
+    //   if (iVar6 == 0) {
+    //     pcVar7 = &s_scr2;
+    //   }
+    //   iVar13 = 1;
+    //   lVar12 = 0;
+    //   lVar11 = 0;
+    //   pTVar4 = rge_base_game->draw_area;
+    //   lVar10 = 0;
+    //   lVar9 = 0;
+    //   iVar8 = 1;
+    //   iVar6 = RGE_Base_Game::multiplayerGame(rge_base_game);
+    //   lVar9 = TEasy_Panel::setup((TEasy_Panel *)this,pTVar4,(TPanel *)0x0,pcVar7,(iVar6 != 0) + 0xc384,
+    //                              iVar8,lVar9,lVar10,lVar11,lVar12,iVar13);
+    //   if (lVar9 == 0) {
+    //     this->_padding_ = 1;
+    //     *unaff_FS_OFFSET = local_c;
+    //     return this;
+    //   }
+    //   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
+    //   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
+    //                     /* language.dll match for 0x25fa: "Scenarios" */
+    //   iVar6 = TEasy_Panel::create_text
+    //                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x25fa,0x14,10,600,0x1e,1,1,0,0
+    //                     );
+    //   if (iVar6 != 0) {
+    //     ppTVar1 = &this->scenarioList;
+    //     this->scenarioListX = 0x14;
+    //     this->scenarioListY = 0x46;
+    //     this->scenarioListWidth = 600;
+    //     this->scenarioListHeight = 0x107;
+    //     iVar6 = TEasy_Panel::create_list
+    //                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x14,0x46,600,0x107,0xb);
+    //     if (iVar6 != 0) {
+    //       TTextPanel::set_second_column_pos
+    //                 ((TTextPanel *)*ppTVar1,
+    //                  (this->_padding_ * (this->scenarioListWidth + -0x3c)) / this->_padding_);
+    //                     /* language.dll match for 0x25fd: "Loading list of scenarios..." */
+    //       (**(code **)((*ppTVar1)->_padding_ + 0xe4))(0x25fd);
+    //       iVar6 = TEasy_Panel::create_auto_scrollbar
+    //                         ((TEasy_Panel *)this,&this->scenarioScrollbar,(TTextPanel *)*ppTVar1,0x14);
+    //       if (iVar6 != 0) {
+    //         TPanel::set_help_info((TPanel *)this->scenarioScrollbar,-1,-1);
+    //                     /* language.dll match for 0x25fe: "Select Scenario" */
+    //         iVar6 = TEasy_Panel::create_text
+    //                           ((TEasy_Panel *)this,(TPanel *)this,&this->scenarioTitle,0x25fe,
+    //                            this->scenarioListX,this->scenarioListY + -0x14,300,0x14,4,0,0,0);
+    //         if (iVar6 != 0) {
+    //                     /* language.dll match for 0x25ff: "Players" */
+    //           iVar6 = TEasy_Panel::create_text
+    //                             ((TEasy_Panel *)this,(TPanel *)this,&this->scenarioPlayersTitle,0x25ff,
+    //                              this->scenarioListWidth + -0xdc + this->scenarioListX,
+    //                              this->scenarioListY + -0x14,200,0x14,4,0,0,0);
+    //           if (iVar6 != 0) {
+    //             TTextPanel::set_alignment(this->scenarioPlayersTitle,AlignTop,AlignRight);
+    //             iVar6 = this->scenarioListHeight + 0x19 + this->scenarioListY;
+    //             this->missionTextY = iVar6;
+    //             this->missionTextX = this->scenarioListX;
+    //                     /* language.dll match for 0x2600: "Scenario Instructions" */
+    //             this->missionTextWidth = this->scenarioListWidth;
+    //             this->missionTextHeight = 0x3c;
+    //             iVar6 = TEasy_Panel::create_text
+    //                               ((TEasy_Panel *)this,(TPanel *)this,&this->missionTitle,0x2600,
+    //                                this->scenarioListX,iVar6 + -0x14,400,0x14,4,0,0,0);
+    //             if (iVar6 != 0) {
+    //               ppTVar2 = &this->missionText;
+    //               iVar6 = TEasy_Panel::create_text
+    //                                 ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,s_,this->missionTextX,
+    //                                  this->missionTextY,this->missionTextWidth,this->missionTextHeight,
+    //                                  0xb,0,0,1);
+    //               if (iVar6 != 0) {
+    //                 (**(code **)((*ppTVar2)->_padding_ + 0xec))
+    //                           (3,(char)this->_padding_,*(undefined1 *)((int)&this->_padding_ + 1),
+    //                            *(undefined1 *)((int)&this->_padding_ + 2),
+    //                            *(undefined1 *)((int)&this->_padding_ + 3),(char)this->_padding_,
+    //                            *(undefined1 *)((int)&this->_padding_ + 1));
+    //                 iVar6 = TEasy_Panel::create_auto_scrollbar
+    //                                   ((TEasy_Panel *)this,&this->missionScrollbar,*ppTVar2,0x14);
+    //                 if (iVar6 != 0) {
+    //                   TPanel::set_help_info((TPanel *)this->missionScrollbar,0x7532,-1);
+    //                     /* language.dll match for 0xfa1: "OK" */
+    //                   iVar6 = TEasy_Panel::create_button
+    //                                     ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x46
+    //                                      ,0x1b8,0xf0,0x1e,0,0,0);
+    //                   if (iVar6 != 0) {
+    //                     TPanel::set_help_info((TPanel *)this->okButton,0x7531,-1);
+    //                     ppTVar3 = &this->cancelButton;
+    //                     /* language.dll match for 0xfa2: "Cancel" */
+    //                     iVar6 = TEasy_Panel::create_button
+    //                                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0xfa2,0,0x14a,
+    //                                        0x1b8,0xf0,0x1e,0,0,0);
+    //                     if (iVar6 != 0) {
+    //                       TPanel::set_help_info((TPanel *)*ppTVar3,0x7532,-1);
+    //                       pTVar5 = *ppTVar3;
+    //                       pTVar5->hotkey = 0x1b;
+    //                       pTVar5->hotkey_shift = 0;
+    //                       ppTVar3 = &this->close_button;
+    //                     /* language.dll match for 0x3ea: "X" */
+    //                       iVar6 = TEasy_Panel::create_button
+    //                                         ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0x3ea,0,0,0,0,0,
+    //                                          -1,-1,0);
+    //                       if (iVar6 != 0) {
+    //                         (**(code **)((*ppTVar3)->_padding_ + 0x14))(1);
+    //                         (**(code **)((*ppTVar3)->_padding_ + 0x18))
+    //                                   (9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
+    //                         fillScenarios(this);
+    //                         this->scenariosLoaded = 1;
+    //                         getSettings(this);
+    //                         fillMissionText(this);
+    //                         activatePanels(this);
+    //                         TPanel::set_curr_child((TPanel *)this,(TPanel *)*ppTVar1);
+    //                       }
+    //                     }
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B4120
+void init_vars(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TribeSelectScenarioScreen::init_vars(void) */
+    // 
+    // void __thiscall TribeSelectScenarioScreen::init_vars(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   this->last_scenario_line = -1;
+    //   this->title = (TTextPanel *)0x0;
+    //   this->scenarioTitle = (TTextPanel *)0x0;
+    //   this->scenarioPlayersTitle = (TTextPanel *)0x0;
+    //   this->scenarioList = (TListPanel *)0x0;
+    //   this->scenarioScrollbar = (TScrollBarPanel *)0x0;
+    //   this->scenarioCount = 0;
+    //   this->scenarioMission = (char **)0x0;
+    //   this->scenarioFixed = (int *)0x0;
+    //   this->scenariosLoaded = 0;
+    //   this->missionTitle = (TTextPanel *)0x0;
+    //   this->missionText = (TTextPanel *)0x0;
+    //   this->missionScrollbar = (TScrollBarPanel *)0x0;
+    //   this->okButton = (TButtonPanel *)0x0;
+    //   this->cancelButton = (TButtonPanel *)0x0;
+    //   this->close_button = (TButtonPanel *)0x0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B4190
+void TribeSelectScenarioScreen(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeSelectScenarioScreen::~TribeSelectScenarioScreen(void) */
+    // 
+    // void __thiscall
+    // TribeSelectScenarioScreen::~TribeSelectScenarioScreen(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_0055f658;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = 0;
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->title);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->scenarioTitle);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->scenarioPlayersTitle);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->scenarioList);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->scenarioScrollbar);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->missionTitle);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->missionText);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->missionScrollbar);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->okButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->cancelButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->close_button);
+    //   local_4 = 0xffffffff;
+    //   TScreenPanel::~TScreenPanel((TScreenPanel *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B4280
+long TribeSelectScenarioScreen::handle_idle() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TribeSelectScenarioScreen::handle_idle(void) */
+    // 
+    // long __thiscall TribeSelectScenarioScreen::handle_idle(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   long lVar1;
+    //   
+    //   if (this->scenariosLoaded == 0) {
+    //     fillScenarios(this);
+    //     fillMissionText(this);
+    //     this->scenariosLoaded = 1;
+    //     activatePanels(this);
+    //     TPanel::set_curr_child((TPanel *)this,(TPanel *)this->scenarioList);
+    //   }
+    //   if (rge_base_game->input_enabled == 0) {
+    //     RGE_Base_Game::enable_input(rge_base_game);
+    //   }
+    //   lVar1 = TPanel::handle_idle((TPanel *)this);
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B42E0
+long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual long __thiscall TribeSelectScenarioScreen::action(class TPanel *,long,unsigned
+    //    long,unsigned long) */
+    // 
+    // long __thiscall
+    // TribeSelectScenarioScreen::action
+    //           (TribeSelectScenarioScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+    // 
+    // {
+    //   TribeMPSetupScreen *this_00;
+    //   TribeSPMenuScreen *this_01;
+    //   long lVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uVar2;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055f686;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if ((param_1 != (TPanel *)0x0) && (this->scenariosLoaded != 0)) {
+    //     if (((TButtonPanel *)param_1 == this->okButton) && (param_2 == 1)) {
+    //       TPanel::set_curr_child((TPanel *)this,(TPanel *)this->scenarioList);
+    //       sendSettings(this);
+    //       RGE_Base_Game::disable_input(rge_base_game);
+    //       this_00 = (TribeMPSetupScreen *)operator_new(0x890);
+    //       local_4 = 0;
+    //       if (this_00 != (TribeMPSetupScreen *)0x0) {
+    //         TribeMPSetupScreen::TribeMPSetupScreen(this_00);
+    //       }
+    //       local_4 = 0xffffffff;
+    //       TPanelSystem::setCurrentPanel(&panel_system,s_MP_Setup_Screen,0);
+    //       TPanelSystem::destroyPanel(&panel_system,s_Select_Scenario_Screen);
+    //       *unaff_FS_OFFSET = local_c;
+    //       return 1;
+    //     }
+    //     if (((TButtonPanel *)param_1 == this->cancelButton) && (param_2 == 1)) {
+    //       TPanel::set_curr_child((TPanel *)this,(TPanel *)this->scenarioList);
+    //       RGE_Base_Game::disable_input(rge_base_game);
+    //       this_01 = (TribeSPMenuScreen *)operator_new(0x49c);
+    //       local_4 = 1;
+    //       if (this_01 != (TribeSPMenuScreen *)0x0) {
+    //         TribeSPMenuScreen::TribeSPMenuScreen(this_01);
+    //       }
+    //       local_4 = 0xffffffff;
+    //       TPanelSystem::setCurrentPanel(&panel_system,s_Single_Player_Menu,0);
+    //       TPanelSystem::destroyPanel(&panel_system,s_Select_Scenario_Screen);
+    //       *unaff_FS_OFFSET = local_c;
+    //       return 1;
+    //     }
+    //     if (((TButtonPanel *)param_1 == this->close_button) && (param_2 == 1)) {
+    //       RGE_Base_Game::close(rge_base_game);
+    //       *unaff_FS_OFFSET = local_c;
+    //       return 1;
+    //     }
+    //     if ((TListPanel *)param_1 == this->scenarioList) {
+    //       if (param_2 == 3) {
+    //         uVar2 = 1;
+    //         (**(code **)(this->_padding_ + 0xb4))(this->okButton,1,0,0);
+    //         *unaff_FS_OFFSET = uVar2;
+    //         return 1;
+    //       }
+    //       if (param_2 == 1) {
+    //         fillMissionText(this);
+    //         activatePanels(this);
+    //         *unaff_FS_OFFSET = local_c;
+    //         return 1;
+    //       }
+    //     }
+    //   }
+    //   lVar1 = TEasy_Panel::action((TEasy_Panel *)this,param_1,param_2,param_3,param_4);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B44F0
+void fillScenarios(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: i */
+    // /* protected: void __thiscall TribeSelectScenarioScreen::fillScenarios(void) */
+    // 
+    // void __thiscall TribeSelectScenarioScreen::fillScenarios(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   char cVar1;
+    //   int iVar2;
+    //   char *pcVar3;
+    //   char **ppcVar4;
+    //   int *piVar5;
+    //   long lVar6;
+    //   RGE_Scenario_Header *pRVar7;
+    //   char *pcVar8;
+    //   uint uVar9;
+    //   uint uVar10;
+    //   RGE_Scenario_File_Info *this_00;
+    //   char *pcVar11;
+    //   int i;
+    //   RGE_Scenario_File_Info *scenario_info_file;
+    //   char player_str [20];
+    //   char file_name [260];
+    //   char scenario_file [260];
+    //   
+    //   this_00 = rge_base_game->scenario_info;
+    //   player_str._0_4_ = this_00;
+    //   RGE_Scenario_File_Info::reload_scenarios(this_00);
+    //   TTextPanel::empty_list((TTextPanel *)this->scenarioList);
+    //   this->scenarioList->_padding_ = 1;
+    //   this->scenarioCount = 0;
+    //   do {
+    //     pcVar3 = RGE_Scenario_File_Info::get_scenario_name(this_00,this->scenarioCount);
+    //     if (pcVar3 == (char *)0x0) {
+    //       ppcVar4 = (char **)calloc(this->scenarioCount,4);
+    //       this->scenarioMission = ppcVar4;
+    //       piVar5 = (int *)calloc(this->scenarioCount,4);
+    //       this->scenarioFixed = piVar5;
+    //       if (((this->scenarioMission != (char **)0x0) && (piVar5 != (int *)0x0)) &&
+    //          (scenario_info_file = (RGE_Scenario_File_Info *)0x0, 0 < this->scenarioCount)) {
+    //         do {
+    //           lVar6 = TTextPanel::get_id((TTextPanel *)this->scenarioList,(long)scenario_info_file);
+    //           pRVar7 = RGE_Scenario_File_Info::get_scenario_info(this_00,lVar6);
+    //           if (pRVar7 != (RGE_Scenario_Header *)0x0) {
+    //             pcVar3 = (char *)calloc(0x1000,1);
+    //             this->scenarioMission[(int)scenario_info_file] = pcVar3;
+    //             if ((this->scenarioMission[(int)scenario_info_file] != (char *)0x0) &&
+    //                (pRVar7->description != (char *)0x0)) {
+    //               uVar9 = 0xffffffff;
+    //               pcVar3 = pRVar7->description;
+    //               do {
+    //                 pcVar8 = pcVar3;
+    //                 if (uVar9 == 0) break;
+    //                 uVar9 = uVar9 - 1;
+    //                 pcVar8 = pcVar3 + 1;
+    //                 cVar1 = *pcVar3;
+    //                 pcVar3 = pcVar8;
+    //               } while (cVar1 != '\0');
+    //               uVar9 = ~uVar9;
+    //               pcVar3 = pcVar8 + -uVar9;
+    //               pcVar8 = this->scenarioMission[(int)scenario_info_file];
+    //               for (uVar10 = uVar9 >> 2; uVar10 != 0; uVar10 = uVar10 - 1) {
+    //                 *(undefined4 *)pcVar8 = *(undefined4 *)pcVar3;
+    //                 pcVar3 = pcVar3 + 4;
+    //                 pcVar8 = pcVar8 + 4;
+    //               }
+    //               for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+    //                 *pcVar8 = *pcVar3;
+    //                 pcVar3 = pcVar3 + 1;
+    //                 pcVar8 = pcVar8 + 1;
+    //               }
+    //             }
+    //             this->scenarioFixed[(int)scenario_info_file] = pRVar7[1]._padding_;
+    //             iVar2 = pRVar7[1].error_code;
+    //             if (0 < iVar2) {
+    //               if ((this->scenarioFixed[(int)scenario_info_file] == 0) && (2 < iVar2)) {
+    //                 sprintf(player_str + 4,s__d____d,2,iVar2);
+    //               }
+    //               else {
+    //                 sprintf(player_str + 4,&s__d,iVar2);
+    //               }
+    //               pcVar8 = TTextPanel::get_text
+    //                                  ((TTextPanel *)this->scenarioList,(long)scenario_info_file);
+    //               uVar9 = 0xffffffff;
+    //               pcVar3 = scenario_file;
+    //               do {
+    //                 pcVar11 = pcVar8;
+    //                 if (uVar9 == 0) break;
+    //                 uVar9 = uVar9 - 1;
+    //                 pcVar11 = pcVar8 + 1;
+    //                 cVar1 = *pcVar8;
+    //                 pcVar8 = pcVar11;
+    //               } while (cVar1 != '\0');
+    //               uVar9 = ~uVar9;
+    //               pcVar8 = pcVar11 + -uVar9;
+    //               for (uVar10 = uVar9 >> 2; pcVar3 = pcVar3 + 4, uVar10 != 0; uVar10 = uVar10 - 1) {
+    //                 *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+    //                 pcVar8 = pcVar8 + 4;
+    //               }
+    //               for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+    //                 *pcVar3 = *pcVar8;
+    //                 pcVar8 = pcVar8 + 1;
+    //                 pcVar3 = pcVar3 + 1;
+    //               }
+    //               TTextPanel::change_line
+    //                         ((TTextPanel *)this->scenarioList,(long)scenario_info_file,scenario_file + 4
+    //                          ,player_str + 4,0);
+    //             }
+    //           }
+    //           scenario_info_file = (RGE_Scenario_File_Info *)(scenario_info_file->filename + 1);
+    //           this_00 = (RGE_Scenario_File_Info *)player_str._0_4_;
+    //         } while ((int)scenario_info_file < this->scenarioCount);
+    //       }
+    //       return;
+    //     }
+    //     uVar9 = 0xffffffff;
+    //     pcVar8 = pcVar3;
+    //     do {
+    //       if (uVar9 == 0) break;
+    //       uVar9 = uVar9 - 1;
+    //       cVar1 = *pcVar8;
+    //       pcVar8 = pcVar8 + 1;
+    //     } while (cVar1 != '\0');
+    //     strncpy(file_name + 4,pcVar3,~uVar9 - 5);
+    //     lVar6 = this->scenarioCount;
+    //     player_str[~uVar9 + 0x13] = '\0';
+    //     TTextPanel::append_line((TTextPanel *)this->scenarioList,file_name + 4,lVar6);
+    //     this->scenarioCount = this->scenarioCount + 1;
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B4720
+void fillMissionText(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TribeSelectScenarioScreen::fillMissionText(void) */
+    // 
+    // void __thiscall TribeSelectScenarioScreen::fillMissionText(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   long lVar1;
+    //   
+    //   (**(code **)(this->missionText->_padding_ + 0xe8))(s_);
+    //   lVar1 = TTextPanel::get_line((TTextPanel *)this->scenarioList);
+    //   if (-1 < lVar1) {
+    //     (**(code **)(this->missionText->_padding_ + 0xe8))(this->scenarioMission[lVar1]);
+    //   }
+    //   this->last_scenario_line = lVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B4770
+void getSettings(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TribeSelectScenarioScreen::getSettings(void) */
+    // 
+    // void __thiscall TribeSelectScenarioScreen::getSettings(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   char *pcVar1;
+    //   long lVar2;
+    //   
+    //   this->last_scenario_line = -1;
+    //   pcVar1 = RGE_Base_Game::scenarioName(rge_base_game);
+    //   lVar2 = TTextPanel::get_line((TTextPanel *)this->scenarioList,pcVar1);
+    //   if (lVar2 != -1) {
+    //     TListPanel::scroll_cur_line(this->scenarioList,'\x01',(short)lVar2,1);
+    //     this->last_scenario_line = lVar2 + -1;
+    //     return;
+    //   }
+    //   TListPanel::scroll_cur_line(this->scenarioList,'\x01',0,1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B47D0
+void sendSettings(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TribeSelectScenarioScreen::sendSettings(void) */
+    // 
+    // void __thiscall TribeSelectScenarioScreen::sendSettings(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   char *pcVar1;
+    //   
+    //   RGE_Base_Game::setScenarioGame(rge_base_game,1);
+    //   pcVar1 = TTextPanel::get_text((TTextPanel *)this->scenarioList);
+    //   RGE_Base_Game::setScenarioName(rge_base_game,pcVar1);
+    //   TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\0');
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004B4810
+void activatePanels(TribeSelectScenarioScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: tabList */
+    // /* protected: void __thiscall TribeSelectScenarioScreen::activatePanels(void) */
+    // 
+    // void __thiscall TribeSelectScenarioScreen::activatePanels(TribeSelectScenarioScreen *this)
+    // 
+    // {
+    //   TListPanel *pTStack_18;
+    //   TPanel *tabList [4];
+    //   
+    //   pTStack_18 = (TListPanel *)0x1;
+    //   (**(code **)(this->missionTitle->_padding_ + 0x14))();
+    //   (**(code **)(this->missionText->_padding_ + 0x14))(1);
+    //   tabList[0] = (TPanel *)this->okButton;
+    //   pTStack_18 = this->scenarioList;
+    //   tabList[1] = (TPanel *)this->cancelButton;
+    //   (**(code **)(this->_padding_ + 200))(&pTStack_18,3);
+    //   if ((this->_padding_ == 0) || (*(int *)(this->_padding_ + 0x6c) == 0)) {
+    //     TPanel::set_curr_child((TPanel *)this,(TPanel *)this->okButton);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

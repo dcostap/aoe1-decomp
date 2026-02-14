@@ -1,0 +1,1086 @@
+// Auto-generated decompiler unit: pnl_scbr.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/Pnl_scbr.cpp
+#include "../include/common.h"
+
+// Offset: 0x0047A700
+undefined TScrollBarPanel(TScrollBarPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TScrollBarPanel::TScrollBarPanel(void) */
+    // 
+    // TScrollBarPanel * __thiscall TScrollBarPanel::TScrollBarPanel(TScrollBarPanel *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e578;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   TPanel::TPanel((TPanel *)this);
+    //   this->list_panel = (TPanel *)0x0;
+    //   this->list_len = 0;
+    //   this->one_step = 0;
+    //   this->page_step = 0;
+    //   this->list_num = 0;
+    //   this->button_pics = (TShape *)0x0;
+    //   this->back_frame = 0;
+    //   local_4 = 0;
+    //   this->up_frame = 0;
+    //   this->down_frame = 0;
+    //   this->tab_frame = 0;
+    //   this->arrowSize = 0;
+    //   this->tabSize = 0;
+    //   this->tab_y = 0;
+    //   this->tab_min_y = 0;
+    //   this->tab_max_y = 0;
+    //   this->tab_mouse_y = 0;
+    //   this->tab_x = 0;
+    //   this->tab_min_x = 0;
+    //   this->tab_max_x = 0;
+    //   this->tab_mouse_x = 0;
+    //   this->item_down = '\0';
+    //   this->item_is_down = 0;
+    //   this->item_x = 0;
+    //   this->item_y = 0;
+    //   this->item_mode = '\0';
+    //   this->item_last_time = 0;
+    //   this->item_hold_interval = 100;
+    //   this->item_down_interval = 0xfa;
+    //   this->orientationValue = Vertical;
+    //   this->bevel_type = 1;
+    //   this->bevel_color1 = '\0';
+    //   this->bevel_color2 = '\0';
+    //   this->bevel_color3 = '\0';
+    //   this->bevel_color4 = '\0';
+    //   this->bevel_color5 = '\0';
+    //   this->bevel_color6 = '\0';
+    //   this->_padding_ = (int)&_vftable_;
+    //   *(undefined1 *)((int)&this->_padding_ + 2) = 5;
+    //   this->_padding_ = 0;
+    //   SetRect(&this->up_rect,0,0,0,0);
+    //   SetRect(&this->down_rect,0,0,0,0);
+    //   SetRect(&this->tab_rect,0,0,0,0);
+    //   SetRect(&this->top_rect,0,0,0,0);
+    //   SetRect(&this->bottom_rect,0,0,0,0);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047A8A0
+void TScrollBarPanel(TScrollBarPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TScrollBarPanel::~TScrollBarPanel(void) */
+    // 
+    // void __thiscall TScrollBarPanel::~TScrollBarPanel(TScrollBarPanel *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   TPanel::~TPanel((TPanel *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047A8B0
+long setup(TScrollBarPanel* this_, TDrawArea* param_2, TPanel* param_3, long param_4, long param_5, long param_6, long param_7, char* param_8, char* param_9, char* param_10, char* param_11, long param_12, long param_13, TPanel* param_14, long param_15, Orientation param_16) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall TScrollBarPanel::setup(class TDrawArea *,class TPanel
+    //    *,long,long,long,long,char *,char *,char *,char *,long,long,class TPanel *,long,enum
+    //    TScrollBarPanel::Orientation) */
+    // 
+    // long __thiscall
+    // TScrollBarPanel::setup
+    //           (TScrollBarPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
+    //           long param_5,long param_6,char *param_7,char *param_8,char *param_9,char *param_10,
+    //           long param_11,long param_12,TPanel *param_13,long param_14,Orientation param_15)
+    // 
+    // {
+    //   this->orientationValue = param_15;
+    //   this->arrowSize = param_11;
+    //   this->tabSize = param_12;
+    //   this->list_panel = param_13;
+    //   this->list_len = param_14;
+    //   TPanel::setup((TPanel *)this,param_1,param_2,param_3,param_4,param_5,param_6,'\0');
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047A910
+void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TScrollBarPanel::set_rect(long,long,long,long) */
+    // 
+    // void __thiscall
+    // TScrollBarPanel::set_rect(TScrollBarPanel *this,long param_1,long param_2,long param_3,long param_4)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   
+    //   TPanel::set_rect((TPanel *)this,param_1,param_2,param_3,param_4);
+    //   if (this->orientationValue == Horizontal) {
+    //     iVar2 = this->_padding_;
+    //     iVar3 = this->_padding_;
+    //     iVar1 = this->_padding_ + 2;
+    //     iVar5 = iVar2 + -5 + this->_padding_;
+    //     iVar4 = this->_padding_;
+    //     (this->up_rect).top = iVar1;
+    //     (this->down_rect).top = iVar1;
+    //     iVar6 = (iVar3 + iVar4) - iVar2;
+    //     (this->up_rect).left = iVar4 + 2;
+    //     (this->tab_rect).top = iVar1;
+    //     iVar3 = iVar6 + 2;
+    //     iVar4 = iVar4 + -3 + iVar2;
+    //     (this->down_rect).left = iVar3;
+    //     (this->top_rect).top = iVar1;
+    //     (this->bottom_rect).top = iVar1;
+    //     iVar1 = iVar4 + 1;
+    //     this->tab_min_x = iVar1;
+    //     this->tab_x = iVar1;
+    //     (this->up_rect).bottom = iVar5;
+    //     (this->up_rect).right = iVar4;
+    //     (this->down_rect).bottom = iVar5;
+    //     (this->down_rect).right = iVar6 + -3 + iVar2;
+    //     (this->tab_rect).bottom = iVar5;
+    //     (this->top_rect).bottom = iVar5;
+    //     (this->bottom_rect).bottom = iVar5;
+    //     this->tab_max_x = (iVar3 - iVar2) + 4;
+    //     calc_item_rects(this);
+    //     return;
+    //   }
+    //   iVar2 = this->_padding_;
+    //   iVar1 = this->_padding_ + 2;
+    //   iVar6 = (this->_padding_ + this->_padding_) - iVar2;
+    //   iVar5 = this->_padding_ + 2;
+    //   (this->up_rect).top = iVar1;
+    //   iVar1 = iVar2 + -5 + iVar1;
+    //   iVar3 = iVar6 + 2;
+    //   (this->up_rect).left = iVar5;
+    //   (this->down_rect).top = iVar3;
+    //   iVar4 = iVar2 + -5 + iVar5;
+    //   (this->down_rect).left = iVar5;
+    //   (this->tab_rect).left = iVar5;
+    //   (this->top_rect).left = iVar5;
+    //   (this->bottom_rect).left = iVar5;
+    //   iVar5 = iVar1 + 1;
+    //   this->tab_max_y = (iVar3 - iVar2) + 4;
+    //   (this->up_rect).right = iVar4;
+    //   (this->up_rect).bottom = iVar1;
+    //   (this->down_rect).right = iVar4;
+    //   (this->down_rect).bottom = iVar6 + -3 + iVar2;
+    //   (this->tab_rect).right = iVar4;
+    //   (this->top_rect).right = iVar4;
+    //   (this->bottom_rect).right = iVar4;
+    //   this->tab_min_y = iVar5;
+    //   this->tab_y = iVar5;
+    //   calc_item_rects(this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AA80
+void calc_item_rects(TScrollBarPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TScrollBarPanel::calc_item_rects(void) */
+    // 
+    // void __thiscall TScrollBarPanel::calc_item_rects(TScrollBarPanel *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   if (this->orientationValue == Horizontal) {
+    //     iVar1 = this->tab_x;
+    //     iVar2 = this->_padding_;
+    //     iVar3 = (this->up_rect).right;
+    //     (this->tab_rect).left = iVar1;
+    //     iVar2 = iVar2 + -5 + iVar1;
+    //     (this->tab_rect).right = iVar2;
+    //     (this->top_rect).right = iVar1 + -1;
+    //     (this->top_rect).left = iVar3 + 1;
+    //     (this->bottom_rect).left = iVar2 + 1;
+    //     (this->bottom_rect).right = (this->down_rect).left + -1;
+    //     return;
+    //   }
+    //   iVar1 = this->tab_y;
+    //   iVar2 = this->_padding_;
+    //   iVar3 = (this->up_rect).bottom;
+    //   (this->tab_rect).top = iVar1;
+    //   iVar2 = iVar2 + -5 + iVar1;
+    //   (this->tab_rect).bottom = iVar2;
+    //   (this->top_rect).bottom = iVar1 + -1;
+    //   (this->top_rect).top = iVar3 + 1;
+    //   (this->bottom_rect).top = iVar2 + 1;
+    //   (this->bottom_rect).bottom = (this->down_rect).top + -1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AB20
+void set_tab_pos(TScrollBarPanel* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TScrollBarPanel::set_tab_pos(long) */
+    // 
+    // void __thiscall TScrollBarPanel::set_tab_pos(TScrollBarPanel *this,long param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = this->list_len;
+    //   this->list_num = param_1;
+    //   if (this->orientationValue == Horizontal) {
+    //     if (0 < iVar1) {
+    //       this->tab_x = (((this->tabSize / 2 + this->tab_max_x) - this->tab_min_x) * param_1) / iVar1 +
+    //                     this->tab_min_x;
+    //     }
+    //     if (this->tab_x < this->tab_min_x) {
+    //       this->tab_x = this->tab_min_x;
+    //     }
+    //     else if (this->tab_max_x < this->tab_x) {
+    //       this->tab_x = this->tab_max_x;
+    //     }
+    //   }
+    //   else {
+    //     if (0 < iVar1) {
+    //       if (param_1 == iVar1 + -1) {
+    //         this->tab_y = this->tab_max_y;
+    //       }
+    //       else {
+    //         this->tab_y = (((this->tabSize / 2 + this->tab_max_y) - this->tab_min_y) * param_1) / iVar1
+    //                       + this->tab_min_y;
+    //       }
+    //     }
+    //     iVar1 = this->tab_min_y;
+    //     if ((this->tab_y < iVar1) || (iVar1 = this->tab_max_y, iVar1 < this->tab_y)) {
+    //       this->tab_y = iVar1;
+    //     }
+    //   }
+    //   calc_item_rects(this);
+    //   (**(code **)(this->_padding_ + 0x20))(1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AC10
+void set_list_len(TScrollBarPanel* this_, long param_2, long param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TScrollBarPanel::set_list_len(long,long) */
+    // 
+    // void __thiscall TScrollBarPanel::set_list_len(TScrollBarPanel *this,long param_1,long param_2)
+    // 
+    // {
+    //   this->list_len = param_1;
+    //   set_tab_pos(this,param_2);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AC30
+void set_buttons(TScrollBarPanel* this_, TShape* param_2, int param_3, int param_4, int param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TScrollBarPanel::set_buttons(class TShape *,int,int,int,int) */
+    // 
+    // void __thiscall
+    // TScrollBarPanel::set_buttons
+    //           (TScrollBarPanel *this,TShape *param_1,int param_2,int param_3,int param_4,int param_5)
+    // 
+    // {
+    //   this->button_pics = param_1;
+    //   this->back_frame = param_2;
+    //   this->up_frame = param_3;
+    //   this->down_frame = param_4;
+    //   this->tab_frame = param_5;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AC70
+void set_bevel_info(TScrollBarPanel* this_, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TScrollBarPanel::set_bevel_info(int,int,int,int,int,int,int) */
+    // 
+    // void __thiscall
+    // TScrollBarPanel::set_bevel_info
+    //           (TScrollBarPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,
+    //           int param_6,int param_7)
+    // 
+    // {
+    //   this->bevel_type = param_1;
+    //   this->bevel_color1 = (uchar)param_2;
+    //   this->bevel_color2 = (uchar)param_3;
+    //   this->bevel_color3 = (uchar)param_4;
+    //   this->bevel_color4 = (uchar)param_5;
+    //   this->bevel_color5 = (uchar)param_6;
+    //   this->bevel_color6 = (uchar)param_7;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047ACC0
+long THorizontalSliderPanel::handle_idle() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TScrollBarPanel::handle_idle(void) */
+    // 
+    // long __thiscall TScrollBarPanel::handle_idle(TScrollBarPanel *this)
+    // 
+    // {
+    //   ulong uVar1;
+    //   int iVar2;
+    //   
+    //   if (this->item_mode == '\x01') {
+    //     uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x128);
+    //     if (this->item_down_interval <= uVar1 - this->item_last_time) {
+    //       this->item_mode = '\x02';
+    //       this->item_last_time = uVar1 - this->item_hold_interval;
+    //     }
+    //   }
+    //   else if (((this->item_mode == '\x02') && (this->item_is_down != 0)) &&
+    //           (uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x132),
+    //           this->item_hold_interval <= uVar1 - this->item_last_time)) {
+    //     this->item_last_time = uVar1;
+    //     switch(this->item_down) {
+    //     case '\x01':
+    //       scroll(this,ActionUp,0);
+    //       return 0;
+    //     case '\x02':
+    //       scroll(this,ActionDown,0);
+    //       return 0;
+    //     case '\x04':
+    //       iVar2 = TPanel::is_inside_rect((TPanel *)this,this->item_x,this->item_y,&this->top_rect);
+    //       if (iVar2 == 0) {
+    //         this->item_is_down = 0;
+    //         this->item_mode = '\0';
+    //         (**(code **)(this->_padding_ + 0x20))(1);
+    //         return 0;
+    //       }
+    //       scroll(this,ActionPrior,0);
+    //       return 0;
+    //     case '\x05':
+    //       iVar2 = TPanel::is_inside_rect((TPanel *)this,this->item_x,this->item_y,&this->bottom_rect);
+    //       if (iVar2 == 0) {
+    //         this->item_is_down = 0;
+    //         this->item_mode = '\0';
+    //         (**(code **)(this->_padding_ + 0x20))(1);
+    //         return 0;
+    //       }
+    //       scroll(this,ActionNext,0);
+    //       return 0;
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AE22
+undefined FUN_0047ae22() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0047ae22(int param_1,int param_2)
+    // 
+    // {
+    //   char *pcVar1;
+    //   TPanel *pTVar2;
+    //   int iVar3;
+    //   ulong uVar4;
+    //   TScrollBarPanel *in_ECX;
+    //   char unaff_BL;
+    //   
+    //   cRam500047ae = cRam500047ae + unaff_BL;
+    //   pcVar1 = (char *)((int)&in_ECX[-0x3f6eda]._padding_ + 1);
+    //   *pcVar1 = *pcVar1 + unaff_BL;
+    //   TPanel::capture_mouse((TPanel *)in_ECX);
+    //   iVar3 = TPanel::is_inside_rect((TPanel *)in_ECX,param_1,param_2,&in_ECX->up_rect);
+    //   if (iVar3 == 0) {
+    //     iVar3 = TPanel::is_inside_rect((TPanel *)in_ECX,param_1,param_2,&in_ECX->down_rect);
+    //     if (iVar3 == 0) {
+    //       iVar3 = TPanel::is_inside_rect((TPanel *)in_ECX,param_1,param_2,&in_ECX->tab_rect);
+    //       if (iVar3 == 0) {
+    //         iVar3 = TPanel::is_inside_rect((TPanel *)in_ECX,param_1,param_2,&in_ECX->top_rect);
+    //         if (iVar3 == 0) {
+    //           iVar3 = TPanel::is_inside_rect((TPanel *)in_ECX,param_1,param_2,&in_ECX->bottom_rect);
+    //           if (iVar3 == 0) {
+    //             in_ECX->item_down = '\0';
+    //           }
+    //           else {
+    //             in_ECX->item_down = '\x05';
+    //             in_ECX->item_is_down = 1;
+    //             TScrollBarPanel::scroll(in_ECX,ActionNext,0);
+    //           }
+    //         }
+    //         else {
+    //           in_ECX->item_down = '\x04';
+    //           in_ECX->item_is_down = 1;
+    //           TScrollBarPanel::scroll(in_ECX,ActionPrior,0);
+    //         }
+    //       }
+    //       else {
+    //         in_ECX->item_down = '\x03';
+    //         if (in_ECX->orientationValue == Horizontal) {
+    //           in_ECX->tab_mouse_x = param_1 - in_ECX->tab_x;
+    //         }
+    //         else {
+    //           in_ECX->tab_mouse_y = param_2 - in_ECX->tab_y;
+    //         }
+    //       }
+    //     }
+    //     else {
+    //       in_ECX->item_down = '\x02';
+    //       in_ECX->item_is_down = 1;
+    //       TScrollBarPanel::scroll(in_ECX,ActionDown,0);
+    //     }
+    //   }
+    //   else {
+    //     in_ECX->item_down = '\x01';
+    //     in_ECX->item_is_down = 1;
+    //     TScrollBarPanel::scroll(in_ECX,ActionUp,0);
+    //   }
+    //   if (in_ECX->item_down != '\0') {
+    //     pTVar2 = in_ECX->list_panel;
+    //     if (((pTVar2 != (TPanel *)0x0) && (pTVar2->tab_stop != 0)) &&
+    //        (pTVar2->parent_panel != (TPanel *)0x0)) {
+    //       TPanel::set_curr_child(pTVar2->parent_panel,pTVar2);
+    //     }
+    //     in_ECX->item_x = param_1;
+    //     in_ECX->item_y = param_2;
+    //     in_ECX->item_mode = '\x01';
+    //     uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x185);
+    //     in_ECX->item_last_time = uVar4;
+    //     (**(code **)(in_ECX->_padding_ + 0x20))(1);
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AE40
+long THorizontalSliderPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TScrollBarPanel::mouse_left_down_action(long,long,int,int) */
+    // 
+    // long __thiscall
+    // TScrollBarPanel::mouse_left_down_action
+    //           (TScrollBarPanel *this,long param_1,long param_2,int param_3,int param_4)
+    // 
+    // {
+    //   TPanel *pTVar1;
+    //   int iVar2;
+    //   ulong uVar3;
+    //   
+    //   TPanel::capture_mouse((TPanel *)this);
+    //   iVar2 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->up_rect);
+    //   if (iVar2 == 0) {
+    //     iVar2 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->down_rect);
+    //     if (iVar2 == 0) {
+    //       iVar2 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->tab_rect);
+    //       if (iVar2 == 0) {
+    //         iVar2 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->top_rect);
+    //         if (iVar2 == 0) {
+    //           iVar2 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->bottom_rect);
+    //           if (iVar2 == 0) {
+    //             this->item_down = '\0';
+    //           }
+    //           else {
+    //             this->item_down = '\x05';
+    //             this->item_is_down = 1;
+    //             scroll(this,ActionNext,0);
+    //           }
+    //         }
+    //         else {
+    //           this->item_down = '\x04';
+    //           this->item_is_down = 1;
+    //           scroll(this,ActionPrior,0);
+    //         }
+    //       }
+    //       else {
+    //         this->item_down = '\x03';
+    //         if (this->orientationValue == Horizontal) {
+    //           this->tab_mouse_x = param_1 - this->tab_x;
+    //         }
+    //         else {
+    //           this->tab_mouse_y = param_2 - this->tab_y;
+    //         }
+    //       }
+    //     }
+    //     else {
+    //       this->item_down = '\x02';
+    //       this->item_is_down = 1;
+    //       scroll(this,ActionDown,0);
+    //     }
+    //   }
+    //   else {
+    //     this->item_down = '\x01';
+    //     this->item_is_down = 1;
+    //     scroll(this,ActionUp,0);
+    //   }
+    //   if (this->item_down != '\0') {
+    //     pTVar1 = this->list_panel;
+    //     if (((pTVar1 != (TPanel *)0x0) && (pTVar1->tab_stop != 0)) &&
+    //        (pTVar1->parent_panel != (TPanel *)0x0)) {
+    //       TPanel::set_curr_child(pTVar1->parent_panel,pTVar1);
+    //     }
+    //     this->item_x = param_1;
+    //     this->item_y = param_2;
+    //     this->item_mode = '\x01';
+    //     uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x185);
+    //     this->item_last_time = uVar3;
+    //     (**(code **)(this->_padding_ + 0x20))(1);
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047AFD0
+long THorizontalSliderPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TScrollBarPanel::mouse_left_move_action(long,long,int,int) */
+    // 
+    // long __thiscall
+    // TScrollBarPanel::mouse_left_move_action
+    //           (TScrollBarPanel *this,long param_1,long param_2,int param_3,int param_4)
+    // 
+    // {
+    //   int iVar1;
+    //   ulong uVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   long lVar5;
+    //   ActionType AVar6;
+    //   
+    //   switch(this->item_down) {
+    //   case '\x01':
+    //     iVar1 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->up_rect);
+    //     iVar3 = this->item_is_down;
+    //     if (iVar1 == 0) {
+    // LAB_0047b111:
+    //       if (iVar3 != 0) {
+    //         this->item_is_down = 0;
+    //         this->item_mode = '\0';
+    //         (**(code **)(this->_padding_ + 0x20))(1);
+    //       }
+    //       goto switchD_0047afee_default;
+    //     }
+    //     if (iVar3 != 0) goto switchD_0047afee_default;
+    //     this->item_is_down = 1;
+    //     this->item_mode = '\x02';
+    //     uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x19a);
+    //     this->item_last_time = uVar2;
+    //     AVar6 = ActionUp;
+    //     break;
+    //   case '\x02':
+    //     iVar1 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->down_rect);
+    //     iVar3 = this->item_is_down;
+    //     if (iVar1 == 0) {
+    // LAB_0047b19a:
+    //       if (iVar3 != 0) {
+    //         this->item_is_down = 0;
+    //         this->item_mode = '\0';
+    //         (**(code **)(this->_padding_ + 0x20))(1);
+    //       }
+    //       goto switchD_0047afee_default;
+    //     }
+    //     if (iVar3 != 0) goto switchD_0047afee_default;
+    //     this->item_is_down = 1;
+    //     this->item_mode = '\x02';
+    //     uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x1ad);
+    //     this->item_last_time = uVar2;
+    //     AVar6 = ActionDown;
+    //     goto LAB_0047b185;
+    //   case '\x03':
+    //     if (this->orientationValue == Horizontal) {
+    //       iVar4 = param_1 - this->item_x;
+    //       iVar3 = this->tab_x;
+    //       iVar1 = this->tab_min_x;
+    //       if ((((iVar3 == iVar1) && (0 < iVar4)) && (param_1 < this->tab_mouse_x + iVar3)) ||
+    //          (((iVar3 == this->tab_max_x && (iVar4 < 0)) && (this->tab_mouse_x + iVar3 <= param_1)))) {
+    //         iVar4 = 0;
+    //       }
+    //       if (iVar4 == 0) goto switchD_0047afee_default;
+    //       iVar4 = this->tab_x + iVar4;
+    //       this->tab_x = iVar4;
+    //       if (iVar4 < iVar1) {
+    //         this->tab_x = iVar1;
+    //       }
+    //       else if (this->tab_max_x < iVar4) {
+    //         this->tab_x = this->tab_max_x;
+    //       }
+    //       calc_item_rects(this);
+    //       (**(code **)(this->_padding_ + 0x20))(1);
+    //       iVar3 = this->tab_min_x;
+    //       if (iVar3 == this->tab_max_x) {
+    //         lVar5 = 0;
+    //       }
+    //       else {
+    //         lVar5 = ((this->tab_x - iVar3) * this->list_len) / (this->tab_max_x - iVar3);
+    //         if (lVar5 < 0) {
+    //           lVar5 = 0;
+    //         }
+    //         else {
+    //           iVar3 = this->list_len + -1;
+    //           if (iVar3 < lVar5) {
+    // LAB_0047b382:
+    //             lVar5 = iVar3;
+    //           }
+    //         }
+    //       }
+    //     }
+    //     else {
+    //       iVar4 = param_2 - this->item_y;
+    //       iVar3 = this->tab_y;
+    //       iVar1 = this->tab_min_y;
+    //       if (((iVar3 == iVar1) && (0 < iVar4)) && (param_2 < this->tab_mouse_y + iVar3)) {
+    //         iVar4 = 0;
+    //       }
+    //       else if (((iVar3 == this->tab_max_y) && (iVar4 < 0)) && (this->tab_mouse_y + iVar3 <= param_2)
+    //               ) {
+    //         iVar4 = 0;
+    //       }
+    //       if (iVar4 == 0) goto switchD_0047afee_default;
+    //       iVar4 = this->tab_y + iVar4;
+    //       this->tab_y = iVar4;
+    //       if (iVar4 < iVar1) {
+    //         this->tab_y = iVar1;
+    //       }
+    //       else if (this->tab_max_y < iVar4) {
+    //         this->tab_y = this->tab_max_y;
+    //       }
+    //       calc_item_rects(this);
+    //       (**(code **)(this->_padding_ + 0x20))(1);
+    //       iVar3 = this->tab_min_y;
+    //       if (iVar3 == this->tab_max_y) {
+    //         lVar5 = 0;
+    //       }
+    //       else {
+    //         lVar5 = ((this->tab_y - iVar3) * this->list_len) / (this->tab_max_y - iVar3);
+    //         if (lVar5 < 0) {
+    //           lVar5 = 0;
+    //         }
+    //         else {
+    //           iVar3 = this->list_len + -1;
+    //           if (iVar3 < lVar5) goto LAB_0047b382;
+    //         }
+    //       }
+    //     }
+    //     scroll(this,ActionPosition,lVar5);
+    //     goto switchD_0047afee_default;
+    //   case '\x04':
+    //     iVar1 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->top_rect);
+    //     iVar3 = this->item_is_down;
+    //     if (iVar1 == 0) goto LAB_0047b111;
+    //     if (iVar3 != 0) goto switchD_0047afee_default;
+    //     this->item_is_down = 1;
+    //     this->item_mode = '\x02';
+    //     uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x1c0);
+    //     this->item_last_time = uVar2;
+    //     AVar6 = ActionPrior;
+    //     break;
+    //   case '\x05':
+    //     iVar1 = TPanel::is_inside_rect((TPanel *)this,param_1,param_2,&this->bottom_rect);
+    //     iVar3 = this->item_is_down;
+    //     if (iVar1 == 0) goto LAB_0047b19a;
+    //     if (iVar3 != 0) goto switchD_0047afee_default;
+    //     this->item_is_down = 1;
+    //     this->item_mode = '\x02';
+    //     uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_scbr_c,0x1d3);
+    //     this->item_last_time = uVar2;
+    //     AVar6 = ActionNext;
+    // LAB_0047b185:
+    //     scroll(this,AVar6,0);
+    //     (**(code **)(this->_padding_ + 0x20))(1);
+    //   default:
+    //     goto switchD_0047afee_default;
+    //   }
+    //   scroll(this,AVar6,0);
+    //   (**(code **)(this->_padding_ + 0x20))(1);
+    // switchD_0047afee_default:
+    //   if (this->item_down != '\0') {
+    //     this->item_x = param_1;
+    //     this->item_y = param_2;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B3D0
+long THorizontalSliderPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TScrollBarPanel::mouse_left_up_action(long,long,int,int) */
+    // 
+    // long __thiscall
+    // TScrollBarPanel::mouse_left_up_action
+    //           (TScrollBarPanel *this,long param_1,long param_2,int param_3,int param_4)
+    // 
+    // {
+    //   if ((int *)this->_padding_ != (int *)0x0) {
+    //     (**(code **)(*(int *)this->_padding_ + 0xb4))(this,5,this->list_num,0);
+    //   }
+    //   TPanel::release_mouse((TPanel *)this);
+    //   this->item_down = '\0';
+    //   this->item_mode = '\0';
+    //   this->item_is_down = 0;
+    //   (**(code **)(this->_padding_ + 0x20))(1);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B420
+void scroll(TScrollBarPanel* this_, ActionType param_2, long param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TScrollBarPanel::scroll(enum TScrollBarPanel::ActionType,long) */
+    // 
+    // void __thiscall TScrollBarPanel::scroll(TScrollBarPanel *this,ActionType param_1,long param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if (this->list_panel != (TPanel *)0x0) {
+    //     (**(code **)(this->list_panel->_padding_ + 0xb4))(this,param_1,param_2,0);
+    //     return;
+    //   }
+    //   iVar1 = this->list_num;
+    //   switch(param_1) {
+    //   case ActionUp:
+    //     param_2 = iVar1 - this->one_step;
+    //     break;
+    //   case ActionDown:
+    //     param_2 = iVar1 + this->one_step;
+    //     break;
+    //   case ActionPrior:
+    //     param_2 = iVar1 - this->page_step;
+    //     break;
+    //   case ActionNext:
+    //     param_2 = iVar1 + this->page_step;
+    //     break;
+    //   case ActionPosition:
+    //     break;
+    //   default:
+    //     goto switchD_0047b459_default;
+    //   }
+    //   if (param_2 < 0) {
+    //     param_2 = 0;
+    //   }
+    //   else {
+    //     iVar2 = this->list_len + -1;
+    //     if (iVar2 < param_2) {
+    //       param_2 = iVar2;
+    //     }
+    //   }
+    //   if (param_2 != iVar1) {
+    //     set_tab_pos(this,param_2);
+    //     if ((int *)this->_padding_ != (int *)0x0) {
+    //       (**(code **)(*(int *)this->_padding_ + 0xb4))(this,4,param_2,0);
+    //     }
+    //   }
+    // switchD_0047b459_default:
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B4E0
+void TScrollBarPanel::draw() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TScrollBarPanel::draw(void) */
+    // 
+    // void __thiscall TScrollBarPanel::draw(TScrollBarPanel *this)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar *puVar2;
+    //   int iVar3;
+    //   
+    //   if ((int *)this->_padding_ != (int *)0x0) {
+    //     (**(code **)(*(int *)this->_padding_ + 0x3c))(&this->_padding_);
+    //   }
+    //   iVar1 = this->_padding_;
+    //   (**(code **)(iVar1 + 0x28))(0);
+    //   puVar2 = TDrawArea::Lock((TDrawArea *)this->_padding_,s_pnl_scbr__draw,1);
+    //   if (puVar2 != (uchar *)0x0) {
+    //     draw_back_pic(this);
+    //     draw_border(this,0,1,(tagRECT *)&this->_padding_);
+    //     if (((this->up_rect).top != (this->up_rect).bottom) &&
+    //        ((this->up_rect).left != (this->up_rect).right)) {
+    //       if ((this->item_down == '\x01') && (this->item_is_down != 0)) {
+    //         iVar3 = 1;
+    //       }
+    //       else {
+    //         iVar3 = 0;
+    //       }
+    //       draw_button_pic(this,this->up_frame,iVar3,&this->up_rect);
+    //       if ((this->item_down == '\x01') && (this->item_is_down != 0)) {
+    //         iVar3 = 1;
+    //       }
+    //       else {
+    //         iVar3 = 0;
+    //       }
+    //       draw_border(this,1,iVar3,&this->up_rect);
+    //     }
+    //     if (((this->down_rect).top != (this->down_rect).bottom) &&
+    //        ((this->down_rect).left != (this->down_rect).right)) {
+    //       if ((this->item_down == '\x02') && (this->item_is_down != 0)) {
+    //         iVar3 = 1;
+    //       }
+    //       else {
+    //         iVar3 = 0;
+    //       }
+    //       draw_button_pic(this,this->down_frame,iVar3,&this->down_rect);
+    //       if ((this->item_down == '\x02') && (this->item_is_down != 0)) {
+    //         iVar3 = 1;
+    //       }
+    //       else {
+    //         iVar3 = 0;
+    //       }
+    //       draw_border(this,1,iVar3,&this->down_rect);
+    //     }
+    //     draw_button_pic(this,this->tab_frame,0,&this->tab_rect);
+    //     draw_border(this,1,0,&this->tab_rect);
+    //     TDrawArea::Unlock((TDrawArea *)this->_padding_,s_pnl_scbr__draw);
+    //   }
+    //   (**(code **)(iVar1 + 0x2c))();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B660
+void draw_border(TScrollBarPanel* this_, int param_2, int param_3, tagRECT* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TScrollBarPanel::draw_border(int,int,struct tagRECT *) */
+    // 
+    // void __thiscall
+    // TScrollBarPanel::draw_border(TScrollBarPanel *this,int param_1,int param_2,tagRECT *param_3)
+    // 
+    // {
+    //   draw_border(this,param_1,param_2,param_3->left,param_3->top,param_3->right,param_3->bottom);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B690
+void draw_border(TScrollBarPanel* this_, int param_2, int param_3, long param_4, long param_5, long param_6, long param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TScrollBarPanel::draw_border(int,int,long,long,long,long) */
+    // 
+    // void __thiscall
+    // TScrollBarPanel::draw_border
+    //           (TScrollBarPanel *this,int param_1,int param_2,long param_3,long param_4,long param_5,
+    //           long param_6)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   if ((param_3 != param_5) && (param_4 != param_6)) {
+    //     if (param_2 == 0) {
+    //       switch(this->bevel_type) {
+    //       case 1:
+    //         uVar1 = '\0';
+    //         if (param_1 != 0) {
+    //           TDrawArea::DrawVertLine
+    //                     ((TDrawArea *)this->_padding_,param_5,param_4 + 1,param_6 - param_4,'\0');
+    //           TDrawArea::DrawHorzLine
+    //                     ((TDrawArea *)this->_padding_,param_3 + 1,param_4,param_5 - param_3,'\0');
+    //           TDrawArea::DrawRect((TDrawArea *)this->_padding_,param_3,param_4,param_5 + -1,param_4 + -1
+    //                               ,0xff);
+    //           return;
+    //         }
+    //         goto LAB_0047b7e8;
+    //       case 2:
+    //         TDrawArea::DrawBevel
+    //                   ((TDrawArea *)this->_padding_,param_3,param_4,param_5,param_6,this->bevel_color1,
+    //                    this->bevel_color6);
+    //         return;
+    //       case 3:
+    //         TDrawArea::DrawBevel2
+    //                   ((TDrawArea *)this->_padding_,param_3,param_4,param_5,param_6,this->bevel_color1,
+    //                    this->bevel_color2,this->bevel_color5,this->bevel_color6);
+    //         return;
+    //       case 4:
+    //         TDrawArea::DrawBevel3
+    //                   ((TDrawArea *)this->_padding_,param_3,param_4,param_5,param_6,this->bevel_color1,
+    //                    this->bevel_color2,this->bevel_color3,this->bevel_color4,this->bevel_color5,
+    //                    this->bevel_color6);
+    //       }
+    //     }
+    //     else {
+    //       switch(this->bevel_type) {
+    //       case 1:
+    //         uVar1 = 0xff;
+    //         if (param_1 != 0) {
+    //           TDrawArea::DrawRect((TDrawArea *)this->_padding_,param_3 + 1,param_4 + 1,param_5,param_6,
+    //                               0xff);
+    //           return;
+    //         }
+    // LAB_0047b7e8:
+    //         TDrawArea::DrawRect((TDrawArea *)this->_padding_,param_3,param_4,param_5 + -1,param_6,uVar1)
+    //         ;
+    //         return;
+    //       case 2:
+    //         TDrawArea::DrawBevel
+    //                   ((TDrawArea *)this->_padding_,param_3,param_4,param_5,param_6,this->bevel_color6,
+    //                    this->bevel_color1);
+    //         return;
+    //       case 3:
+    //         TDrawArea::DrawBevel2
+    //                   ((TDrawArea *)this->_padding_,param_3,param_4,param_5,param_6,this->bevel_color6,
+    //                    this->bevel_color5,this->bevel_color2,this->bevel_color1);
+    //         return;
+    //       case 4:
+    //         TDrawArea::DrawBevel3
+    //                   ((TDrawArea *)this->_padding_,param_3,param_4,param_5,param_6,this->bevel_color6,
+    //                    this->bevel_color5,this->bevel_color4,this->bevel_color3,this->bevel_color2,
+    //                    this->bevel_color1);
+    //         return;
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B8B0
+void draw_back_pic(TScrollBarPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: x_max */
+    // /* protected: void __thiscall TScrollBarPanel::draw_back_pic(void) */
+    // 
+    // void __thiscall TScrollBarPanel::draw_back_pic(TScrollBarPanel *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   long x_max;
+    //   long x_min;
+    //   long y_max;
+    //   long y_min;
+    //   long pic_hgt;
+    //   int local_4;
+    //   
+    //   if ((this->button_pics != (TShape *)0x0) && (this->back_frame != -1)) {
+    //     TShape::shape_minmax(this->button_pics,&y_max,&pic_hgt,&x_min,&y_min,this->back_frame);
+    //     iVar1 = (y_min - pic_hgt) + 1;
+    //     iVar2 = 0;
+    //     local_4 = iVar1;
+    //     if (-1 < this->_padding_) {
+    //       do {
+    //         iVar3 = 0;
+    //         if (-1 < this->_padding_) {
+    //           do {
+    //             TShape::shape_draw(this->button_pics,(TDrawArea *)this->_padding_,
+    //                                iVar3 + this->_padding_,iVar2 + this->_padding_,this->back_frame,'\0'
+    //                                ,(uchar *)0x0);
+    //             iVar3 = iVar3 + (x_min - y_max) + 1;
+    //             iVar1 = local_4;
+    //           } while (iVar3 <= this->_padding_);
+    //         }
+    //         iVar2 = iVar2 + iVar1;
+    //       } while (iVar2 <= this->_padding_);
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047B970
+void draw_button_pic(TScrollBarPanel* this_, int param_2, int param_3, tagRECT* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: x_min */
+    // /* protected: void __thiscall TScrollBarPanel::draw_button_pic(int,int,struct tagRECT *) */
+    // 
+    // void __thiscall
+    // TScrollBarPanel::draw_button_pic(TScrollBarPanel *this,int param_1,int param_2,tagRECT *param_3)
+    // 
+    // {
+    //   tagRECT *ptVar1;
+    //   short sVar2;
+    //   short sVar3;
+    //   long x_min;
+    //   long y_max;
+    //   long y_min;
+    //   int local_4;
+    //   
+    //   ptVar1 = param_3;
+    //   if ((this->button_pics != (TShape *)0x0) && (param_1 != -1)) {
+    //     TDrawArea::SetClipRect((TDrawArea *)this->_padding_,param_3);
+    //     TShape::shape_minmax(this->button_pics,&y_max,&local_4,(long *)&param_3,&y_min,param_1);
+    //     sVar2 = (((short)(((ptVar1->right - ptVar1->left) + 1) / 2) -
+    //              (short)(((int)param_3 + (1 - y_max)) / 2)) - (short)y_max) + (short)ptVar1->left;
+    //     sVar3 = (((short)(((ptVar1->bottom - ptVar1->top) + 1) / 2) -
+    //              (short)(((y_min - local_4) + 1) / 2)) - (short)local_4) + (short)ptVar1->top;
+    //     if (param_2 != 0) {
+    //       sVar2 = sVar2 + 1;
+    //       sVar3 = sVar3 + -1;
+    //     }
+    //     TShape::shape_draw(this->button_pics,(TDrawArea *)this->_padding_,(int)sVar2,(int)sVar3,
+    //                        (uint)(param_2 != 0) + param_1,'\0',(uchar *)0x0);
+    //     return;
+    //   }
+    //   (**(code **)(*(int *)this->_padding_ + 0x3c))(param_3);
+    //   return;
+    // }
+    // 
+    // 
+}
+

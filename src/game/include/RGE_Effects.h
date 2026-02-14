@@ -3,7 +3,8 @@
 
 class RGE_Effects {
 public:
-    RGE_Effects(int param_1);
+    RGE_Effects();
+    RGE_Effects(int fd);
     RGE_Effects(char* param_1);
 
     // Virtuals (best-effort)

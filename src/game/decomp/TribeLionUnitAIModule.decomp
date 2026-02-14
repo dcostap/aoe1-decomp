@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TribeLionUnitAIModule.decomp
+#include "../include/common.h"
+
+// Offset: 0x00504440
+void* TribeLionUnitAIModule::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeLionUnitAIModule::`vector deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // TribeLionUnitAIModule::_vector_deleting_destructor_(TribeLionUnitAIModule *this,uint param_1)
+    // 
+    // {
+    //   ~TribeLionUnitAIModule(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

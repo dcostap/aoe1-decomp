@@ -1,0 +1,1495 @@
+// Auto-generated decompiler unit: bucket_0560.decomp
+#include "../include/common.h"
+
+// Offset: 0x00560091
+undefined FUN_00560091() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560091(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L31895} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005600A8
+undefined FUN_005600a8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005600a8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36920} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005600C8
+undefined FUN_005600c8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005600c8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36939} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005600E8
+undefined FUN_005600e8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005600e8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36724} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560108
+undefined FUN_00560108() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560108(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36742} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560136
+undefined FUN_00560136() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560136(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36772} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560140
+undefined FUN_00560140() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560140(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L36844} */
+    //   RGE_Action::~RGE_Action(*(RGE_Action **)(unaff_EBP + -0x10));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560148
+undefined FUN_00560148() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560148(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36849} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560168
+undefined FUN_00560168() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560168(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36869} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560188
+undefined FUN_00560188() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560188(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L35906} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005601A8
+undefined FUN_005601a8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005601a8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L35924} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005601E1
+undefined FUN_005601e1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005601e1(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L35958} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005601F8
+undefined FUN_005601f8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005601f8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38556} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560218
+undefined FUN_00560218() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560218(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L30292} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560238
+undefined FUN_00560238() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560238(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L30310} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056025B
+undefined FUN_0056025b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056025b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L30328} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560278
+undefined FUN_00560278() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560278(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L39847} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005602A3
+undefined FUN_005602a3() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005602a3(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L39897} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005602B8
+undefined FUN_005602b8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005602b8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L39924} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005602DB
+undefined FUN_005602db() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005602db(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38377} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560325
+undefined FUN_00560325() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560325(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38437} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005603A8
+undefined FUN_005603a8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005603a8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L45055} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560438
+undefined FUN_00560438() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560438(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L45402} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005604C8
+undefined FUN_005604c8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005604c8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L45547} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005604EE
+undefined FUN_005604ee() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005604ee(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L45940} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560538
+undefined FUN_00560538() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560538(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L46282} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560560
+undefined FUN_00560560() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560560(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L46718} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560578
+undefined FUN_00560578() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560578(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L47773} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560616
+undefined FUN_00560616() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560616(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L40679} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560620
+undefined FUN_00560620() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560620(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40691} */
+    //   MainDecisionAIModule::~MainDecisionAIModule(*(MainDecisionAIModule **)(unaff_EBP + -0x10));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560628
+undefined FUN_00560628() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560628(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40692} */
+    //   TribeBuildAIModule::~TribeBuildAIModule
+    //             ((TribeBuildAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x104));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560636
+undefined FUN_00560636() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560636(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40693} */
+    //   TribeConstructionAIModule::~TribeConstructionAIModule
+    //             ((TribeConstructionAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x6c4));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560644
+undefined FUN_00560644() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560644(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40694} */
+    //   DiplomacyAIModule::~DiplomacyAIModule((DiplomacyAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x9dc));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560652
+undefined FUN_00560652() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560652(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40695} */
+    //   EmotionalAIModule::~EmotionalAIModule((EmotionalAIModule *)(*(int *)(unaff_EBP + -0x10) + 0xb2c));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560660
+undefined FUN_00560660() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560660(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40696} */
+    //   TribeInformationAIModule::~TribeInformationAIModule
+    //             ((TribeInformationAIModule *)(*(int *)(unaff_EBP + -0x10) + 0xcec));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056066E
+undefined FUN_0056066e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056066e(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40697} */
+    //   TribeResourceAIModule::~TribeResourceAIModule
+    //             ((TribeResourceAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x10d7c));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056067C
+undefined FUN_0056067c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056067c(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40698} */
+    //   TribeStrategyAIModule::~TribeStrategyAIModule
+    //             ((TribeStrategyAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x10e74));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056068A
+undefined FUN_0056068a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056068a(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40699} */
+    //   TribeTacticalAIModule::~TribeTacticalAIModule
+    //             ((TribeTacticalAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x1146c));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560698
+undefined FUN_00560698() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560698(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40700} */
+    //   TradeAIModule::~TradeAIModule((TradeAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x12478));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606A6
+undefined FUN_005606a6() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606a6(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L40705} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606B0
+undefined FUN_005606b0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606b0(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40714} */
+    //   MainDecisionAIModule::~MainDecisionAIModule(*(MainDecisionAIModule **)(unaff_EBP + -0x10));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606B8
+undefined FUN_005606b8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606b8(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40715} */
+    //   TribeBuildAIModule::~TribeBuildAIModule
+    //             ((TribeBuildAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x104));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606C6
+undefined FUN_005606c6() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606c6(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40716} */
+    //   TribeConstructionAIModule::~TribeConstructionAIModule
+    //             ((TribeConstructionAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x6c4));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606D4
+undefined FUN_005606d4() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606d4(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40717} */
+    //   DiplomacyAIModule::~DiplomacyAIModule((DiplomacyAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x9dc));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606E2
+undefined FUN_005606e2() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606e2(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40718} */
+    //   EmotionalAIModule::~EmotionalAIModule((EmotionalAIModule *)(*(int *)(unaff_EBP + -0x10) + 0xb2c));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606F0
+undefined FUN_005606f0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606f0(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40719} */
+    //   TribeInformationAIModule::~TribeInformationAIModule
+    //             ((TribeInformationAIModule *)(*(int *)(unaff_EBP + -0x10) + 0xcec));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005606FE
+undefined FUN_005606fe() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005606fe(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40720} */
+    //   TribeResourceAIModule::~TribeResourceAIModule
+    //             ((TribeResourceAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x10d7c));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056070C
+undefined FUN_0056070c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056070c(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40721} */
+    //   TribeStrategyAIModule::~TribeStrategyAIModule
+    //             ((TribeStrategyAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x10e74));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056071A
+undefined FUN_0056071a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056071a(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //                     /* Symbol Ref: {@symbol $L40722} */
+    //   TribeTacticalAIModule::~TribeTacticalAIModule
+    //             ((TribeTacticalAIModule *)(*(int *)(unaff_EBP + -0x10) + 0x1146c));
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560728
+undefined FUN_00560728() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560728(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L40726} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056074B
+undefined FUN_0056074b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056074b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L40843} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560768
+undefined FUN_00560768() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560768(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L36453} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005607B2
+undefined FUN_005607b2() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_005607b2(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38816} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560800
+undefined FUN_00560800() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560800(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38998} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560842
+undefined FUN_00560842() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560842(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L39027} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0056092A
+undefined FUN_0056092a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0056092a(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L45838} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560A28
+undefined FUN_00560a28() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560a28(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L46611} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560B28
+undefined FUN_00560b28() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560b28(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L46702} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560B48
+undefined FUN_00560b48() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560b48(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L51267} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560B68
+undefined FUN_00560b68() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560b68(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L52242} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560B8B
+undefined FUN_00560b8b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560b8b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L53019} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560BB0
+undefined FUN_00560bb0() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560bb0(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L53334} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560BC8
+undefined FUN_00560bc8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560bc8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L53398} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560BE8
+undefined FUN_00560be8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560be8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L53565} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560C08
+undefined FUN_00560c08() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560c08(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37377} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560C28
+undefined FUN_00560c28() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560c28(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37442} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560C48
+undefined FUN_00560c48() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560c48(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37520} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560C68
+undefined FUN_00560c68() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560c68(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37633} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560C88
+undefined FUN_00560c88() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560c88(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37771} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560CA8
+undefined FUN_00560ca8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560ca8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37837} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560CC8
+undefined FUN_00560cc8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560cc8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37930} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560CE8
+undefined FUN_00560ce8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560ce8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38009} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560D08
+undefined FUN_00560d08() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560d08(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38091} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560D28
+undefined FUN_00560d28() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560d28(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38179} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560D48
+undefined FUN_00560d48() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560d48(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38269} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560D68
+undefined FUN_00560d68() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560d68(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L38289} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560D8B
+undefined FUN_00560d8b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560d8b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34681} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560DAB
+undefined FUN_00560dab() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560dab(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L33439} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560DCB
+undefined FUN_00560dcb() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560dcb(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L44281} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560DEB
+undefined FUN_00560deb() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560deb(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L44297} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560E0E
+undefined FUN_00560e0e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560e0e(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L44343} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560E28
+undefined FUN_00560e28() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560e28(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37421} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560E48
+undefined FUN_00560e48() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560e48(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37435} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560E68
+undefined FUN_00560e68() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560e68(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37445} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560E8B
+undefined FUN_00560e8b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560e8b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37493} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560EAB
+undefined FUN_00560eab() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560eab(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37507} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560ECB
+undefined FUN_00560ecb() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560ecb(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L37521} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560EE8
+undefined FUN_00560ee8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560ee8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34817} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560F08
+undefined FUN_00560f08() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560f08(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34831} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560F28
+undefined FUN_00560f28() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560f28(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34841} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560F4B
+undefined FUN_00560f4b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560f4b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34886} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560F6B
+undefined FUN_00560f6b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560f6b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34929} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560F8B
+undefined FUN_00560f8b() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560f8b(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L34943} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560FA8
+undefined FUN_00560fa8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560fa8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L31573} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560FC8
+undefined FUN_00560fc8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560fc8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L31591} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00560FE8
+undefined FUN_00560fe8() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00560fe8(void)
+    // 
+    // {
+    //                     /* Symbol Ref: {@symbol $L31601} */
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+

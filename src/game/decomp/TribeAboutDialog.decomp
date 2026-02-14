@@ -1,0 +1,23 @@
+// Auto-generated decompiler unit: TribeAboutDialog.decomp
+#include "../include/common.h"
+
+// Offset: 0x0043B2E0
+void* TribeAboutDialog::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeAboutDialog::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TribeAboutDialog::_scalar_deleting_destructor_(TribeAboutDialog *this,uint param_1)
+    // 
+    // {
+    //   ~TribeAboutDialog(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

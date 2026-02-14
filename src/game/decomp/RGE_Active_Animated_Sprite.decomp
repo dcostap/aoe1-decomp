@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: RGE_Active_Animated_Sprite.decomp
+#include "../include/common.h"
+
+// Offset: 0x0041B120
+void* RGE_Active_Animated_Sprite::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Active_Animated_Sprite::`vector deleting
+    //    destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // RGE_Active_Animated_Sprite::_vector_deleting_destructor_
+    //           (RGE_Active_Animated_Sprite *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Active_Animated_Sprite(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

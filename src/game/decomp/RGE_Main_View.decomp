@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: RGE_Main_View.decomp
+#include "../include/common.h"
+
+// Offset: 0x0053DB10
+void* RGE_Main_View::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Main_View::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall RGE_Main_View::_vector_deleting_destructor_(RGE_Main_View *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Main_View(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

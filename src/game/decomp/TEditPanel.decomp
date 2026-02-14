@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TEditPanel.decomp
+#include "../include/common.h"
+
+// Offset: 0x00475670
+void* TEditPanel::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TEditPanel::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TEditPanel::_vector_deleting_destructor_(TEditPanel *this,uint param_1)
+    // 
+    // {
+    //   ~TEditPanel(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

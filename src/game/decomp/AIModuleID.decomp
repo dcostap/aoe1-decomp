@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: AIModuleID.decomp
+#include "../include/common.h"
+
+// Offset: 0x0040DDF0
+void* AIModuleID::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall AIModuleID::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall AIModuleID::_vector_deleting_destructor_(AIModuleID *this,uint param_1)
+    // 
+    // {
+    //   ~AIModuleID(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

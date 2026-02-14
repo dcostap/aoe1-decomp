@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: AIModuleMessage.decomp
+#include "../include/common.h"
+
+// Offset: 0x0040DF30
+void* AIModuleMessage::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall AIModuleMessage::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall AIModuleMessage::_scalar_deleting_destructor_(AIModuleMessage *this,uint param_1)
+    // 
+    // {
+    //   ~AIModuleMessage(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

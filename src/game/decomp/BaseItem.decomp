@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: BaseItem.decomp
+#include "../include/common.h"
+
+// Offset: 0x00407DE0
+void* BaseItem::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall BaseItem::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall BaseItem::_scalar_deleting_destructor_(BaseItem *this,uint param_1)
+    // 
+    // {
+    //   ~BaseItem(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

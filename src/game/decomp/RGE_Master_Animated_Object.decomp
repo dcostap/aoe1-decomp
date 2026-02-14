@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: RGE_Master_Animated_Object.decomp
+#include "../include/common.h"
+
+// Offset: 0x0044FA20
+void* RGE_Master_Animated_Object::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Master_Animated_Object::`vector deleting
+    //    destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // RGE_Master_Animated_Object::_vector_deleting_destructor_
+    //           (RGE_Master_Animated_Object *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Master_Animated_Object(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

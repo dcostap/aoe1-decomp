@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: istream_withassign.decomp
+#include "../include/common.h"
+
+// Offset: 0x0055BA10
+void* istream_withassign::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall istream_withassign::`vector deleting destructor'(unsigned int)
+    //     */
+    // 
+    // void * __thiscall
+    // istream_withassign::_vector_deleting_destructor_(istream_withassign *this,uint param_1)
+    // 
+    // {
+    //   ~istream_withassign(this);
+    //   ios::~ios((ios *)this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this + -0xc);
+    //   }
+    //   return this + -0xc;
+    // }
+    // 
+    // 
+}
+

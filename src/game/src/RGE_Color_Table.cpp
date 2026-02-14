@@ -1,5 +1,6 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/TDrawArea.h"
+#include "../include/globals.h"
 
 #include <string.h>
 
@@ -76,6 +77,28 @@ static void RGE_translate_palette(tagPALETTEENTRY* in_pal, tagPALETTEENTRY* out_
 
 RGE_Color_Table::RGE_Color_Table() {
     memset(this, 0, sizeof(*this));
+}
+
+RGE_Color_Table::RGE_Color_Table(int fd) {
+    // Source of truth: color.cpp.decomp line 192
+    rge_read(fd, this->color_table_name, 0x1E);
+    rge_read(fd, &this->id, 2);
+    rge_read(fd, &this->resource_id, 2);
+    rge_read(fd, &this->map_color, 1);
+    rge_read(fd, &this->type, 1);
+
+    // Read the 256-byte translation table from data\<name>
+    char data_path[260];
+    sprintf(data_path, "data\\%s", this->color_table_name);
+    FILE* f = fopen(data_path, "r");
+    if (f) {
+        for (int i = 0; i < 256; i++) {
+            short val;
+            fscanf(f, " %hd", &val);
+            this->table[i] = (unsigned char)val;
+        }
+        fclose(f);
+    }
 }
 
 RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount_percent, tagPALETTEENTRY* base_color_or_null, tagPALETTEENTRY* palette_or_null) {

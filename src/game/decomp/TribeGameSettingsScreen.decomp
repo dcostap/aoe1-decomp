@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TribeGameSettingsScreen.decomp
+#include "../include/common.h"
+
+// Offset: 0x004B57F0
+void* TribeGameSettingsScreen::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeGameSettingsScreen::`vector deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // TribeGameSettingsScreen::_vector_deleting_destructor_(TribeGameSettingsScreen *this,uint param_1)
+    // 
+    // {
+    //   ~TribeGameSettingsScreen(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

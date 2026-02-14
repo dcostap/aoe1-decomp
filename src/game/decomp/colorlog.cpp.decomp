@@ -1,0 +1,87 @@
+// Auto-generated decompiler unit: colorlog.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/Colorlog.cpp
+#include "../include/common.h"
+
+// Offset: 0x00424810
+void color_log(uchar param_1, uchar param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: scr_dest */
+    // /* void __cdecl color_log(unsigned char,unsigned char,int) */
+    // 
+    // void __cdecl color_log(uchar param_1,uchar param_2,int param_3)
+    // 
+    // {
+    //   TDrawSystem *pTVar1;
+    //   IDirectDrawSurface *pIVar2;
+    //   undefined4 uStack_c4;
+    //   undefined4 uStack_c0;
+    //   undefined4 uStack_bc;
+    //   long *plStack_b8;
+    //   IDirectDrawSurface *pIStack_b4;
+    //   long *plStack_b0;
+    //   undefined4 uStack_ac;
+    //   int iStack_a8;
+    //   void *pvStack_a4;
+    //   ulong *puStack_a0;
+    //   tagRECT scr_dest;
+    //   tagRECT back_dest;
+    //   tagPOINT point;
+    //   _DDBLTFX ddbltfx;
+    //   
+    //   if ((((do_color_log != '\0') && (rge_base_game != (RGE_Base_Game *)0x0)) &&
+    //       (1 < rge_base_game->prog_mode)) &&
+    //      ((pTVar1 = rge_base_game->draw_system, pTVar1 != (TDrawSystem *)0x0 &&
+    //       (pTVar1->PrimarySurface != (IDirectDrawSurface *)0x0)))) {
+    //     back_dest.right = 0;
+    //     point.x = 10;
+    //     back_dest.top = pTVar1->DrawArea->Width / 2 + (2 - param_3) * 0x14;
+    //     back_dest.bottom = back_dest.top + 10;
+    //     ddbltfx.dwSize = 0;
+    //     point.y = back_dest.top;
+    //     if (pTVar1->ScreenMode == '\x02') {
+    //       pvStack_a4 = pTVar1->Wnd;
+    //       puStack_a0 = (ulong *)&point.y;
+    //       iStack_a8 = 0x4248b8;
+    //       ClientToScreen();
+    //     }
+    //     scr_dest.bottom = point.y + 10;
+    //     back_dest.left = ddbltfx.dwSize + 10;
+    //     puStack_a0 = &ddbltfx.dwDDFX;
+    //     ddbltfx.dwDDFX = 100;
+    //     pIStack_b4 = pTVar1->PrimarySurface;
+    //     pvStack_a4 = (void *)0x1000400;
+    //     iStack_a8 = 0;
+    //     plStack_b0 = &scr_dest.top;
+    //     uStack_ac = 0;
+    //     plStack_b8 = (long *)0x42490f;
+    //     scr_dest.top = point.y;
+    //     scr_dest.right = ddbltfx.dwSize;
+    //     ddbltfx.ddckDestColorkey.dwColorSpaceLowValue = (uint)param_1;
+    //     (**(code **)((int)*pIStack_b4 + 0x14))();
+    //     back_dest.top = 100;
+    //     plStack_b8 = &back_dest.top;
+    //     uStack_bc = 0x1000400;
+    //     pIVar2 = pTVar1->DrawArea->DrawSurface;
+    //     uStack_c0 = 0;
+    //     uStack_c4 = 0;
+    //     ddbltfx.dwReserved = (uint)param_1;
+    //     (**(code **)((int)*pIVar2 + 0x14))(pIVar2,&stack0xffffff6c);
+    //     puStack_a0 = (ulong *)((int)puStack_a0 + 10);
+    //     plStack_b8 = (long *)((int)plStack_b8 + 10);
+    //     iStack_a8 = iStack_a8 + 10;
+    //     plStack_b0 = (long *)((int)plStack_b0 + 10);
+    //     ddbltfx.dwZDestConstBitDepth = ddbltfx.dwAlphaDestConstBitDepth & 0xff;
+    //     (**(code **)((int)*pTVar1->PrimarySurface + 0x14))
+    //               (pTVar1->PrimarySurface,&uStack_bc,0,0,0x1000400,&stack0xffffff6c);
+    //     uStack_ac = 100;
+    //     pIVar2 = pTVar1->DrawArea->DrawSurface;
+    //     ddbltfx.dwDDROP = ddbltfx.dwAlphaDestConstBitDepth & 0xff;
+    //     (**(code **)((int)*pIVar2 + 0x14))(pIVar2,&uStack_c4,0,0,0x1000400,&uStack_ac);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

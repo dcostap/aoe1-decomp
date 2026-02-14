@@ -1,0 +1,158 @@
+// Auto-generated decompiler unit: bucket_0506.decomp
+#include "../include/common.h"
+
+// Offset: 0x00506310
+void TribeTradeShipUnitAIModule(TribeTradeShipUnitAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeTradeShipUnitAIModule::~TribeTradeShipUnitAIModule(void) */
+    // 
+    // void __thiscall
+    // TribeTradeShipUnitAIModule::~TribeTradeShipUnitAIModule(TribeTradeShipUnitAIModule *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   pcStack_8 = FUN_0055c8ab;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   *(undefined ***)this = &UnitAIModule::_vftable_;
+    //   uStack_4 = 0;
+    //   if (*(void **)&this->field_0x18 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x18);
+    //     *(undefined4 *)&this->field_0x18 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x24 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x24);
+    //     *(undefined4 *)&this->field_0x24 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x124 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x124);
+    //     *(undefined4 *)&this->field_0x124 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x12c != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x12c);
+    //     *(undefined4 *)&this->field_0x12c = 0;
+    //   }
+    //   uStack_4 = 0xffffffff;
+    //   if (*(void **)&this->field_0x60 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x60);
+    //     *(undefined4 *)&this->field_0x60 = 0;
+    //   }
+    //   *(undefined4 *)&this->field_0x64 = 0;
+    //   *(undefined4 *)&this->field_0x68 = 0;
+    //   *(undefined4 *)&this->field_0x6c = 0;
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005068A0
+void TribeTransportShipUnitAIModule(TribeTransportShipUnitAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeTransportShipUnitAIModule::~TribeTransportShipUnitAIModule(void)
+    //     */
+    // 
+    // void __thiscall
+    // TribeTransportShipUnitAIModule::~TribeTransportShipUnitAIModule
+    //           (TribeTransportShipUnitAIModule *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   pcStack_8 = FUN_0055c8ab;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   *(undefined ***)this = &UnitAIModule::_vftable_;
+    //   uStack_4 = 0;
+    //   if (*(void **)&this->field_0x18 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x18);
+    //     *(undefined4 *)&this->field_0x18 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x24 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x24);
+    //     *(undefined4 *)&this->field_0x24 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x124 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x124);
+    //     *(undefined4 *)&this->field_0x124 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x12c != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x12c);
+    //     *(undefined4 *)&this->field_0x12c = 0;
+    //   }
+    //   uStack_4 = 0xffffffff;
+    //   if (*(void **)&this->field_0x60 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x60);
+    //     *(undefined4 *)&this->field_0x60 = 0;
+    //   }
+    //   *(undefined4 *)&this->field_0x64 = 0;
+    //   *(undefined4 *)&this->field_0x68 = 0;
+    //   *(undefined4 *)&this->field_0x6c = 0;
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506C60
+void TribeFishingShipUnitAIModule(TribeFishingShipUnitAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeFishingShipUnitAIModule::~TribeFishingShipUnitAIModule(void) */
+    // 
+    // void __thiscall
+    // TribeFishingShipUnitAIModule::~TribeFishingShipUnitAIModule(TribeFishingShipUnitAIModule *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   pcStack_8 = FUN_0055c8ab;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   *(undefined ***)this = &UnitAIModule::_vftable_;
+    //   uStack_4 = 0;
+    //   if (*(void **)&this->field_0x18 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x18);
+    //     *(undefined4 *)&this->field_0x18 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x24 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x24);
+    //     *(undefined4 *)&this->field_0x24 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x124 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x124);
+    //     *(undefined4 *)&this->field_0x124 = 0;
+    //   }
+    //   if (*(void **)&this->field_0x12c != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x12c);
+    //     *(undefined4 *)&this->field_0x12c = 0;
+    //   }
+    //   uStack_4 = 0xffffffff;
+    //   if (*(void **)&this->field_0x60 != (void *)0x0) {
+    //     operator_delete(*(void **)&this->field_0x60);
+    //     *(undefined4 *)&this->field_0x60 = 0;
+    //   }
+    //   *(undefined4 *)&this->field_0x64 = 0;
+    //   *(undefined4 *)&this->field_0x68 = 0;
+    //   *(undefined4 *)&this->field_0x6c = 0;
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+

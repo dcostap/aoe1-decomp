@@ -1,35 +1,70 @@
 #pragma once
 #include "common.h"
 
-struct RGE_Sprite {
-    char pict_name[13];
-    long resource_id;
-    uchar loaded;
-    RGE_Color_Table** color_tables;
-    TShape* shape;
-    long last_time;
-    long delta_time;
-    uchar color_flag;
-    uchar draw_level;
-    short color_table;
-    uchar transparent_picking_flag;
-    short box_x1;
-    short box_y1;
-    short box_x2;
-    short box_y2;
-    short draw_list_num;
-    RGE_Picture_List* draw_list;
-    RGE_Sound* main_sound;
-    uchar micro_man_sound;
-    RGE_Sound_List* sound_list;
-    char name[21];
-    short frame_num;
-    short facet_num;
-    float base_speed;
-    float duration;
-    float pause_between_loops;
-    uchar flag;
-    short id;
-    uchar mirror_flag;
+class RGE_Sound;
+class RGE_Color_Table;
+class TShape;
+
+struct RGE_Picture_List {
+    short picture_num; // 0x0
+    short _pad0;      // 0x2
+    class RGE_Sprite* sprite; // 0x4
+    short offset_x;    // 0x8
+    short offset_y;    // 0xA
+    short facet;       // 0xC
+    short _pad1;      // 0xE
 };
-static_assert(sizeof(RGE_Sprite) == 0x78, "Size mismatch");
+
+struct RGE_Sound_List {
+    RGE_Sound* sound[3]; // 0x0 - 0xB
+    short frame[3];      // 0xC - 0x11
+    short _pad;          // 0x12 - 0x13
+};
+
+class RGE_Sprite {
+public:
+    RGE_Sprite(short id);
+    RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** color_tables);
+    ~RGE_Sprite();
+
+    // Field order and padding checked against ASM offsets
+    char pict_name[13];       // 0x0
+    unsigned char _pad0[3];   // 0xD
+    int resource_id;         // 0x10
+    char loaded;             // 0x14
+    unsigned char _pad1[3];   // 0x15
+    RGE_Color_Table** color_tables; // 0x18
+    TShape* shape;           // 0x1C
+    long last_time;          // 0x20
+    long delta_time;         // 0x24
+    char color_flag;         // 0x28
+    char draw_level;         // 0x29
+    short color_table;       // 0x2A
+    char transparent_picking_flag; // 0x2C
+    char _pad2;              // 0x2D
+    short box_x1, box_y1, box_x2, box_y2; // 0x2E, 0x30, 0x32, 0x34
+    short draw_list_num;     // 0x36
+    RGE_Picture_List* draw_list; // 0x38
+    RGE_Sound* main_sound;   // 0x3C
+    char micro_man_sound;    // 0x40
+    unsigned char _pad3[3];   // 0x41
+    RGE_Sound_List* sound_list; // 0x44
+    char name[21];           // 0x48
+    char _pad4;              // 0x5D
+    short frame_num;         // 0x5E
+    short facet_num;         // 0x60
+    unsigned char _pad5[2];   // 0x62
+    float base_speed;        // 0x64
+    float duration;          // 0x68
+    float pause_between_loops; // 0x6C
+    char flag;               // 0x70
+    char _pad6;              // 0x71
+    short id;                // 0x72
+    char mirror_flag;        // 0x74
+    unsigned char _pad7[3];   // 0x75 (align to 0x78)
+
+    // Methods
+    void rehook(RGE_Sprite** sprites);
+    void load_facets(RGE_Sprite** sprites);
+};
+static_assert(sizeof(RGE_Sprite) == 0x78, "Size mismatch: RGE_Sprite");

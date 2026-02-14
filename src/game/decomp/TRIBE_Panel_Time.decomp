@@ -1,0 +1,23 @@
+// Auto-generated decompiler unit: TRIBE_Panel_Time.decomp
+#include "../include/common.h"
+
+// Offset: 0x0051D890
+void* TRIBE_Panel_Time::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Panel_Time::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TRIBE_Panel_Time::_scalar_deleting_destructor_(TRIBE_Panel_Time *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Panel_Time(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

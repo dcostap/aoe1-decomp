@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TacticalAIGroup.decomp
+#include "../include/common.h"
+
+// Offset: 0x004EA990
+void* TacticalAIGroup::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TacticalAIGroup::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TacticalAIGroup::_scalar_deleting_destructor_(TacticalAIGroup *this,uint param_1)
+    // 
+    // {
+    //   ~TacticalAIGroup(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

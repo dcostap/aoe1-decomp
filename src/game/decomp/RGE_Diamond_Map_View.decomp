@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: RGE_Diamond_Map_View.decomp
+#include "../include/common.h"
+
+// Offset: 0x0053D380
+void* RGE_Diamond_Map_View::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Diamond_Map_View::`scalar deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // RGE_Diamond_Map_View::_scalar_deleting_destructor_(RGE_Diamond_Map_View *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Diamond_Map_View(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -92,6 +92,8 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\TRIBE_Player.cpp ^
    %SRC_DIR%\RGE_Static_Object.cpp ^
    %SRC_DIR%\RGE_Map.cpp ^
+   %SRC_DIR%\view.cpp ^
+   %SRC_DIR%\RGE_Visible_Map.cpp ^
    %SRC_DIR%\com_hand.cpp ^
    %SRC_DIR%\globals.cpp ^
    %SRC_DIR%\Res_file.cpp ^
@@ -132,6 +134,9 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\Dsutil.cpp ^
    %SRC_DIR%\Sounddrv.cpp ^
    %SRC_DIR%\Sound.cpp ^
+   %SRC_DIR%\RGE_Sprite.cpp ^
+   %SRC_DIR%\RGE_Master_Player.cpp ^
+   %SRC_DIR%\RGE_Effects.cpp ^
    %SRC_DIR%\music.cpp ^
    /link /LIBPATH:"%DP_LIB%" ^
    kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^

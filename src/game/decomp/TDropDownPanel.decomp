@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TDropDownPanel.decomp
+#include "../include/common.h"
+
+// Offset: 0x00473F30
+void* TDropDownPanel::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TDropDownPanel::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TDropDownPanel::_scalar_deleting_destructor_(TDropDownPanel *this,uint param_1)
+    // 
+    // {
+    //   ~TDropDownPanel(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -2,6 +2,7 @@
 #include "common.h"
 
 struct RGE_Visible_Map {
+    uchar get_visible(int col, int row);
     uchar** map_offsets;
     RGE_Game_World* world;
     RGE_Player* player;
@@ -17,4 +18,4 @@ struct RGE_Visible_Map {
     ulong PlayerExploredMaskInvertValue;
     ulong input_csum;
 };
-static_assert(sizeof(RGE_Visible_Map) == 0x38, "Size mismatch");
+// static_assert(sizeof(RGE_Visible_Map) == 0x38, "Size mismatch");

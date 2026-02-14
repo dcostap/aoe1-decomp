@@ -1,3 +1,3 @@
 pushd dist
-empiresx.exe
+empiresx.exe QUICK1
 popd

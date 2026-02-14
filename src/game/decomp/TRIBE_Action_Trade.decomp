@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TRIBE_Action_Trade.decomp
+#include "../include/common.h"
+
+// Offset: 0x004D26E0
+void* TRIBE_Action_Trade::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Action_Trade::`scalar deleting destructor'(unsigned int)
+    //     */
+    // 
+    // void * __thiscall
+    // TRIBE_Action_Trade::_scalar_deleting_destructor_(TRIBE_Action_Trade *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Action_Trade(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
