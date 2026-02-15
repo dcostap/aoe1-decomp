@@ -853,6 +853,10 @@ int mps_start_game_single_player(TribeMPSetupScreen* owner) {
 } // namespace
 
 TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen") {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: enter");
+    CUSTOM_DEBUG_END
+
     this->title = nullptr;
     this->playerTitle = nullptr;
     this->civTitle = nullptr;
@@ -932,6 +936,10 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         return;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: base game/draw area ok");
+    CUSTOM_DEBUG_END
+
     char* setup_name = (rge_base_game->rge_game_options.multiplayerGameValue != 0) ? (char*)"scr3" : (char*)"scr2";
     long setup_id = (rge_base_game->rge_game_options.multiplayerGameValue != 0) ? 0xc385 : 0xc384;
     if (!TEasy_Panel::setup(rge_base_game->draw_area, (TPanel*)0, setup_name, setup_id, 1, 0, 0, 0, 0, 1)) {
@@ -939,15 +947,33 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         return;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("MPS ctor: setup ok name='%s' id=%ld", setup_name, setup_id);
+    CUSTOM_DEBUG_END
+
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1e0);
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: shadow/setup_ideal done");
+    CUSTOM_DEBUG_END
+
     const int title_resid = 0x25cf - ((rge_base_game->rge_game_options.multiplayerGameValue != 0) ? 1 : 0);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("MPS ctor: creating title resid=%d", title_resid);
+    CUSTOM_DEBUG_END
     if (!this->create_text((TPanel*)this, &this->title, title_resid, 0x14, 0x6, 600, 0x1e, 1, 1, 0, 0)) {
         this->error_code = 1;
         return;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: title ok");
+    CUSTOM_DEBUG_END
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: creating column titles");
+    CUSTOM_DEBUG_END
     if (!this->create_text((TPanel*)this, &this->playerTitle, 0x25d0, 0x1a, 0x32, 0xa0, 0x1e, 0, 0, 1, 0)) {
         this->error_code = 1;
         return;
@@ -967,8 +993,20 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     }
     this->teamTitle->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignRight);
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: column titles done");
+    CUSTOM_DEBUG_END
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: begin player row construction");
+    CUSTOM_DEBUG_END
+
     int row_y = 0x55;
     for (int i = 0; i < 8; ++i) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d begin", i);
+        CUSTOM_DEBUG_END
+
         // Player name dropdown (Computer/None/Closed/Open list storage; in SP it is hidden and mirrored to text).
         this->create_drop_down((TPanel*)this, &this->playerNameDrop[i], 0x9e, 100, 7, row_y - 1, 0x9e, 0x18, 0xb);
         if (this->playerNameDrop[i]) {
@@ -1037,10 +1075,22 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
             return;
         }
 
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d civ text done", i);
+        CUSTOM_DEBUG_END
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d scenario text begin", i);
+        CUSTOM_DEBUG_END
+
         if (!this->create_text((TPanel*)this, &this->scenarioPlayerText[i], (char*)"", 0x159, row_y + 2, 0x28, 0x16, 0xb, 0, 0, 0)) {
             this->error_code = 1;
             return;
         }
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d scenario text done", i);
+        CUSTOM_DEBUG_END
 
         if (!this->create_text((TPanel*)this, &this->playerCDText[i], 0x25df, 0x151, row_y + 3, 0x14, 0x16, 6, 0, 0, 0)) {
             this->error_code = 1;
@@ -1050,6 +1100,10 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
             this->error_code = 1;
             return;
         }
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d cd/version text done", i);
+        CUSTOM_DEBUG_END
         this->playerCDText[i]->set_active(0);
         
         // Player color button (cycling button)
@@ -1060,6 +1114,10 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         if (this->playerColor[i]) {
             this->playerColor[i]->set_help_info(0x7604, -1); // Help: "Click to select your starting position..."
         }
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d color button done", i);
+        CUSTOM_DEBUG_END
         
         // Team button (cycling button with states)
         if (!this->create_button((TPanel*)this, &this->playerTeam[i], 0x25b0, 0, 0x17c, row_y, 0x1e, 0x14, 0xb, 0, 1)) {
@@ -1079,21 +1137,44 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
             }
             this->playerTeam[i]->set_state(0); // Start with no team
         }
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d team button done", i);
+        CUSTOM_DEBUG_END
         
         // Team text display
         if (!this->create_text((TPanel*)this, &this->playerTeamText[i], (char*)"", 0x177, row_y, 0x28, 0x16, 0xb, 1, 1, 0)) {
             this->error_code = 1;
             return;
         }
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d team text done", i);
+        CUSTOM_DEBUG_END
         
         // Player color text display
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d color text begin", i);
+        CUSTOM_DEBUG_END
         if (!this->create_text((TPanel*)this, &this->playerColorText[i], (char*)"", 0x131, row_y, 0x28, 0x16, 0xb, 1, 1, 0)) {
             this->error_code = 1;
             return;
         }
+
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("MPS ctor: row %d done", i);
+        CUSTOM_DEBUG_END
         
         row_y += 0x18;
     }
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: player row construction done");
+    CUSTOM_DEBUG_END
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: creating footer/summary controls");
+    CUSTOM_DEBUG_END
 
     if (!this->create_button((TPanel*)this, &this->gameSettingsButton, 0x25d2, 0, 0x1a4, 0x32, 0xd2, 0x1e, 0, 0, 0)) {
         this->error_code = 1;
@@ -1183,13 +1264,27 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         this->set_tab_order(tab_list, 5);
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: controls created, refreshing ui");
+    CUSTOM_DEBUG_END
+
     mps_refresh_ui(this);
     
     // Initialize single player settings (multiplayerGameValue == 0 means single player)
     if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("MPS ctor: single-player init begin");
+        CUSTOM_DEBUG_END
         setupSinglePlayerPlayers(this);
         fillPlayers(this);
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("MPS ctor: single-player init done");
+        CUSTOM_DEBUG_END
     }
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: complete");
+    CUSTOM_DEBUG_END
 }
 
 TribeMPSetupScreen::~TribeMPSetupScreen() {

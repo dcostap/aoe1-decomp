@@ -1,11 +1,12 @@
 #include "../include/TTextPanel.h"
+#include "../include/TPanel.h"
 #include "../include/TDrawArea.h"
-#include "../include/TShape.h"
 #include "../include/TScrollBarPanel.h"
+#include "../include/TShape.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 
 static void free_text_list(TTextPanel* this_) {
     if (!this_) return;
@@ -336,6 +337,9 @@ static void draw_border(TTextPanel* this_) {
 }
 
 TTextPanel::TTextPanel() : TPanel(nullptr) {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TTextPanel::ctor enter this=%p", this);
+    CUSTOM_DEBUG_END
     this->back_color = 0xff;
     this->list = nullptr;
     this->num_lines = 0;
@@ -381,6 +385,9 @@ TTextPanel::TTextPanel() : TPanel(nullptr) {
     this->clip_rgn2 = nullptr;
     this->border_size = 0;
     this->spacer_size = 0;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TTextPanel::ctor exit this=%p", this);
+    CUSTOM_DEBUG_END
 }
 
 TTextPanel::~TTextPanel() {
@@ -396,7 +403,13 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char* initial_text) {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TTextPanel::setup(char*): begin this=%p text=%p", this, initial_text);
+    CUSTOM_DEBUG_END
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TTextPanel::setup(char*): TPanel::setup FAILED this=%p", this);
+        CUSTOM_DEBUG_END
         return 0;
     }
 
@@ -411,6 +424,9 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
     this->set_font(font, font_wid, font_hgt);
     this->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     this->set_back_pic(back_pic_name);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TTextPanel::setup(char*): done this=%p", this);
+    CUSTOM_DEBUG_END
     return 1;
 }
 

@@ -65,6 +65,13 @@ static unsigned long drawarea_surface_bpp(TDrawArea* area) {
         unsigned long bpp = area->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount;
         if (bpp != 0) return bpp;
     }
+
+    DrawAreaShadowState* shadow = drawarea_shadow_state(area, 0);
+    if (shadow && shadow->active && shadow->locked_surface_pitch > 0 && area->Width > 0) {
+        unsigned long bpp = (unsigned long)((shadow->locked_surface_pitch * 8) / area->Width);
+        if (bpp != 0) return bpp;
+    }
+
     if (area->Width > 0 && area->Pitch > 0) {
         return (unsigned long)((area->Pitch * 8) / area->Width);
     }
@@ -140,6 +147,13 @@ static int drawarea_bytes_per_pixel(TDrawArea* area) {
 
 static unsigned long drawarea_index_to_pixel_locked(TDrawArea* area, uchar color_idx) {
     if (!area) return (unsigned long)color_idx;
+
+    // In shadow-buffer mode we are writing 8-bit palette indices, not native surface pixels.
+    DrawAreaShadowState* shadow = drawarea_shadow_state(area, 0);
+    if (shadow && shadow->active) {
+        return (unsigned long)color_idx;
+    }
+
     if (area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
         return map_color_index_to_surface_pixel(area, (int)color_idx, &area->SurfaceDesc, DD_OK);
     }
@@ -1195,7 +1209,12 @@ void TDrawArea::Unlock(char* name) {
 
                 const long run = (right - left) + 1;
                 for (long x = 0; x < run; ++x) {
-                    unsigned long px = drawarea_index_to_pixel_locked(this, src_row[x]);
+                    unsigned long px;
+                    if (this->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
+                        px = map_color_index_to_surface_pixel(this, (int)src_row[x], &this->SurfaceDesc, DD_OK);
+                    } else {
+                        px = map_color_index_to_surface_pixel(this, (int)src_row[x], (const DDSURFACEDESC*)0, DDERR_GENERIC);
+                    }
                     drawarea_store_pixel(dst_row + x * bytes_per_pixel, bytes_per_pixel, px);
                 }
             }

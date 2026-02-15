@@ -2,6 +2,7 @@
 #include "../include/TScrollBarPanel.h"
 #include "../include/TDrawArea.h"
 #include "../include/debug_helpers.h"
+#include "../include/custom_debug.h"
 
 #include <windows.h>
 #include <ctype.h>
@@ -290,6 +291,9 @@ static void list_draw_highlight_bar(TListPanel* self) {
 } // namespace
 
 TListPanel::TListPanel() : TTextPanel() {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TListPanel::ctor enter this=%p", this);
+    CUSTOM_DEBUG_END
     auto_track = 0;
     mouse_scroll_last_time = 0;
     mouse_scroll_up = 0;
@@ -301,6 +305,9 @@ TListPanel::TListPanel() : TTextPanel() {
     tab_stop = 1;
     border_size = 1;
     spacer_size = 1;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TListPanel::ctor exit this=%p", this);
+    CUSTOM_DEBUG_END
 }
 
 TListPanel::~TListPanel() {
@@ -314,11 +321,22 @@ long TListPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y, lon
                        void* font, long font_wid, long font_hgt, void* back_pic, int fill_back,
                        unsigned char back_color, int have_outline, unsigned char outline_color,
                        int word_wrap, char** string_list, short sorted) {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TListPanel::setup begin this=%p sorted=%d list0=%p",
+        this, (int)sorted, (string_list ? string_list[0] : nullptr));
+    CUSTOM_DEBUG_END
     if (!TTextPanel::setup(draw_area, parent, x, y, wid, hgt, font, font_wid, font_hgt,
                            (char*)back_pic, fill_back, back_color, have_outline, outline_color,
                            (short)word_wrap, string_list, sorted)) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TListPanel::setup FAILED this=%p", this);
+        CUSTOM_DEBUG_END
         return 0;
     }
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TListPanel::setup done this=%p", this);
+    CUSTOM_DEBUG_END
 
     return 1;
 }

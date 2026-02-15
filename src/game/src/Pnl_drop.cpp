@@ -77,6 +77,9 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
     if (this->val_num < 0) {
         this->val_num = 0;
     }
+    if (sorted > 0 && this->val_num >= sorted) {
+        this->val_num = 0;
+    }
 
     // Setup base panel
     if (!TPanel::setup(draw_area, parent, x, y, wid, hgt, '\0')) {
@@ -85,7 +88,7 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
 
     // Create value text panel
     this->val_panel = new TTextPanel();
-    if (!this->val_panel) return 0;
+    if (!this->val_panel || this->val_panel->error_code != 0) return 0;
 
     // From decomp: val_panel setup uses string_list[val_num] as initial text.
     char* initial_text = (char*)"";
@@ -107,7 +110,7 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
     // Create button panel - decomp shows TDropDownButtonPanel (size 0x2BC), not plain TButtonPanel
     TDropDownButtonPanel* dbp = new TDropDownButtonPanel(this);
     this->btn_panel = (TButtonPanel*)dbp;
-    if (!this->btn_panel) return 0;
+    if (!this->btn_panel || this->btn_panel->error_code != 0) return 0;
 
     // From decomp: DrawBevelPicture=6, NotifyAction=1
     if (!this->btn_panel->setup(draw_area, this, 0, 0, this->btn_wid, this->btn_hgt,
@@ -120,9 +123,19 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
         this->btn_panel, this->btn_panel->parent_panel, this, (this->btn_panel->parent_panel == this));
     CUSTOM_DEBUG_END
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup stage: creating list_panel this=%p", this);
+    CUSTOM_DEBUG_END
+
     // Create list panel
     this->list_panel = new TListPanel();
-    if (!this->list_panel) return 0;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup stage: list_panel new returned list=%p", this->list_panel);
+    CUSTOM_DEBUG_END
+    if (!this->list_panel || this->list_panel->error_code != 0) return 0;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup stage: list_panel post-check OK list=%p", this->list_panel);
+    CUSTOM_DEBUG_END
 
     // From decomp: list_panel setup passes string_list and sorted
     if (!this->list_panel->setup(draw_area, this, 0, 0, this->list_wid, this->list_hgt,
@@ -131,6 +144,9 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
                                  string_list, sorted)) {
         return 0;
     }
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup stage: list_panel setup OK list=%p", this->list_panel);
+    CUSTOM_DEBUG_END
     this->list_panel->set_auto_track(1);
     this->list_panel->set_active(0);
     // From decomp: setCurrentLineNumber on list_panel with val_num
@@ -138,7 +154,10 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
 
     // Create scrollbar panel
     this->scbar_panel = new TScrollBarPanel();
-    if (!this->scbar_panel) return 0;
+    if (!this->scbar_panel || this->scbar_panel->error_code != 0) return 0;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup stage: creating scbar_panel=%p", this->scbar_panel);
+    CUSTOM_DEBUG_END
 
     // From decomp: scbar setup uses render_area (this->_padding_ at offset 0x20 = render_area)
     // and passes sorted as back_frame param
@@ -148,13 +167,22 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
                                   (TPanel*)this->list_panel, (int)sorted, TScrollBarPanel::Vertical)) {
         return 0;
     }
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup stage: scbar setup OK scbar=%p", this->scbar_panel);
+    CUSTOM_DEBUG_END
 
     // From decomp: set_scrollbar on list_panel, then deactivate scbar
     ((TTextPanel*)this->list_panel)->set_scrollbar(this->scbar_panel, 0);
     this->scbar_panel->set_active(0);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("TDropDownPanel::setup stage: before set_mode(ModeValue)");
+    CUSTOM_DEBUG_END
 
     // From decomp: set_mode(this, ModeValue) -- mode is already ModeNone from constructor
     this->set_mode(ModeValue);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("TDropDownPanel::setup stage: after set_mode(ModeValue)");
+    CUSTOM_DEBUG_END
 
     (void)back_pic_name;
     return 1;

@@ -524,10 +524,21 @@ void TEasy_Panel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TEasy_Panel::draw_finish() { TPanel::draw_finish(); }
 
 void TEasy_Panel::draw() {
-    // `TScreenPanel::draw` in `Pnl_scr.cpp.decomp` ultimately calls virtual draw_background.
+    // Source of truth: Panel_ez.cpp.decomp @ 0x00467570
+    // If restore is pending, rebuild the shadowed background snapshot first.
+    if (this->need_restore != 0) {
+        if (this->shadow_area != nullptr) {
+            this->setup_shadow_area(1);
+        }
+        this->need_restore = 0;
+    }
+
+    // draw_rect2()/draw_offset2() set draw_rect2_flag to request alternate background path.
+    if (this->draw_rect2_flag != 0) {
+        this->draw_background(1);
+        return;
+    }
     this->draw_background(0);
-    // NOTE: `TPanel::draw()` clears/restores background only (no child recursion) and is not part of
-    // the `TEasy_Panel` screen draw path in the original. Keep this panel-only draw minimal.
 }
 
 void TEasy_Panel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
@@ -981,11 +992,22 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char** param
     int font_index = (int)param_9;
     if (font_index < 0) font_index = 10;
     RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(font_index) : nullptr;
+    if (!font && rge_base_game && font_index != 10) {
+        font = rge_base_game->get_font(10);
+    }
+    if (!font) {
+        this->error_code = 1;
+        return 0;
+    }
     void* font_handle = font ? font->font : nullptr;
     long font_wid = font ? font->font_wid : 0;
     long font_hgt = font ? font->font_hgt : 0;
 
     if (!(*param_2)->setup(this->render_area, param_1, scaled_x, scaled_y, scaled_w, scaled_h, font_handle, font_wid, font_hgt, (char*)0, 0, 0, 0, 0, 0, (char*)0)) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_text(char*): setup failed panel=%p scaled=%ld,%ld %ldx%ld",
+            *param_2, scaled_x, scaled_y, scaled_w, scaled_h);
+CUSTOM_DEBUG_END
         this->error_code = 1;
         return 0;
     }
@@ -1001,8 +1023,24 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char** param
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
     if (!param_2) return 0;
 
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_text(char*): begin out=%p text_ptr=%p x=%ld y=%ld w=%ld h=%ld font=%ld",
+        param_2, param_3, param_4, param_5, param_6, param_7, param_8);
+CUSTOM_DEBUG_END
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("TEasy_Panel::create_text(char*): before new TTextPanel");
+CUSTOM_DEBUG_END
     *param_2 = new TTextPanel();
-    if (!*param_2) {
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_text(char*): after new panel=%p", *param_2);
+CUSTOM_DEBUG_END
+
+    if (!*param_2 || (*param_2)->error_code != 0) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_text(char*): new/ctor failed out=%p panel=%p",
+            param_2, (param_2 ? *param_2 : nullptr));
+CUSTOM_DEBUG_END
         this->error_code = 1;
         return 0;
     }
@@ -1015,6 +1053,13 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_
     int font_index = (int)param_8;
     if (font_index < 0) font_index = 10;
     RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(font_index) : nullptr;
+    if (!font && rge_base_game && font_index != 10) {
+        font = rge_base_game->get_font(10);
+    }
+    if (!font) {
+        this->error_code = 1;
+        return 0;
+    }
     void* font_handle = font ? font->font : nullptr;
     long font_wid = font ? font->font_wid : 0;
     long font_hgt = font ? font->font_hgt : 0;
@@ -1039,6 +1084,9 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_
     (*param_2)->set_text(param_3);
     (*param_2)->set_text_color(this->text_color1, this->text_color2);
     (*param_2)->set_highlight_text_color(this->focus_color1, this->focus_color2);
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_text(char*): done panel=%p", *param_2);
+CUSTOM_DEBUG_END
     return 1;
 }
 
@@ -1075,6 +1123,9 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
     // Get font
     int font_id = (param_9 < 0) ? 10 : (int)param_9;
     RGE_Font* font_info = rge_base_game ? rge_base_game->get_font(font_id) : nullptr;
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: font_id=%d font_info=%p", font_id, font_info);
+CUSTOM_DEBUG_END
     if (!font_info) return 0;
 
     // Create empty string list (1 entry with empty string)
@@ -1084,12 +1135,30 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
     if (!string_list[0]) { free(string_list); return 0; }
     // Copy empty string into it
     string_list[0][0] = '\0';
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: temp list alloc list=%p list0=%p", string_list, string_list[0]);
+CUSTOM_DEBUG_END
 
     // Create dropdown
     TDropDownPanel* drop = new TDropDownPanel();
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: new drop=%p", drop);
+CUSTOM_DEBUG_END
     if (!drop) { free(string_list[0]); free(string_list); this->error_code = 1; return 0; }
 
     *param_2 = drop;
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: begin drop=%p parent=%p x=%ld y=%ld w=%ld h=%ld list_w=%ld list_h=%ld",
+        drop, param_1,
+        (param_5 * actual_w) / ideal_w, (param_6 * actual_h) / ideal_h,
+        (param_7 * actual_w) / ideal_w, scaled_hgt,
+        (param_3 * actual_w) / ideal_w, (param_4 * actual_h) / ideal_h);
+CUSTOM_DEBUG_END
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: before setup drop=%p draw_area=%p parent=%p", drop, this->render_area, param_1);
+CUSTOM_DEBUG_END
 
     // From decomp: TDropDownPanel::setup call
     // setup(draw_area, parent, font, font_wid, font_hgt,
@@ -1119,10 +1188,18 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
     free(string_list);
 
     if (result == 0) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: setup FAILED drop=%p", drop);
+CUSTOM_DEBUG_END
         this->error_code = 1;
-        // Don't delete drop - it's assigned to *param_2 already
+        delete drop;
+        *param_2 = nullptr;
         return 0;
     }
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::create_drop_down: setup OK drop=%p", drop);
+CUSTOM_DEBUG_END
 
     // Set button pics if available
     if (this->button_pics) {

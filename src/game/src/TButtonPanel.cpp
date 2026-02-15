@@ -571,17 +571,17 @@ CUSTOM_DEBUG_BEGIN
         this->panelNameValue ? this->panelNameValue : "(null)");
 CUSTOM_DEBUG_END
 
-    // 1. Clear/Background restore.
-    //
-    // Non-original safety shim:
-    // `parent_panel->draw_rect2/draw_rect` currently triggers unstable re-entrant panel drawing on
-    // the menu path (heap corruption / stall during first paint). Clear directly until that path is
-    // audited against asm and made safe.
-    int clear_color = (int)this->color;
-    if (this->parent_panel) {
-        clear_color = (int)this->parent_panel->color;
+    // 1. Restore background under the button.
+    // Source of truth: `pnl_btn.cpp.decomp` / `pnl_btn.cpp.asm`.
+    if (this->drawTypeValue == TButtonPanel::DrawFillAndText) {
+        this->render_area->Clear(&this->clip_rect, (int)this->color);
+    } else if (this->parent_panel) {
+        if (this->bevel_type >= 2 && this->bevel_type <= 4) {
+            this->parent_panel->draw_rect2(&this->clip_rect);
+        } else if (this->parent_panel->overlapping_children == 0) {
+            this->parent_panel->draw_rect(&this->clip_rect);
+        }
     }
-    this->render_area->Clear(&this->clip_rect, clear_color);
 
     this->draw_setup(0);
 
@@ -632,70 +632,7 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
     }
 
-    // 3. Bevel.
-    if (draw_type == (int)TButtonPanel::DrawTextA ||
-        draw_type == (int)TButtonPanel::DrawPictureAndText ||
-        draw_type == (int)TButtonPanel::DrawFillAndText ||
-        draw_type == (int)TButtonPanel::DrawBevelPicture) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw bevel lock begin this=%p", this);
-CUSTOM_DEBUG_END
-        if (this->render_area->Lock((char*)"pnl_btn::draw2", 1)) {
-            const long x1 = this->pnl_x;
-            const long y1 = this->pnl_y;
-            const long x2 = this->pnl_x + this->pnl_wid - 1;
-            const long y2 = this->pnl_y + this->pnl_hgt - 1;
-
-            if (x2 > x1 && y2 > y1) {
-                if (this->disabled != 0) {
-                    this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color6);
-                    this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, this->bevel_color1);
-                } else {
-                    const int down_for_bevel = pressed ? 1 : 0;
-                    switch (this->bevel_type) {
-                        case 2:
-                            if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
-                            else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
-                            break;
-                        case 3:
-                            if (down_for_bevel) this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
-                            else this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
-                            break;
-                        case 4:
-                            if (down_for_bevel) {
-                                this->render_area->DrawBevel32(x1, y1, x2, y2,
-                                    this->bevel_color6, this->bevel_color5, this->bevel_color4,
-                                    this->bevel_color3, this->bevel_color2, this->bevel_color1);
-                            } else {
-                                this->render_area->DrawBevel3(x1, y1, x2, y2,
-                                    this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
-                            }
-                            break;
-                        case 1:
-                        default:
-                            if (down_for_bevel) {
-                                this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
-                            } else {
-                                this->render_area->DrawVertLine(x2, y1 + 1, this->pnl_hgt - 1, 0);
-                                this->render_area->DrawHorzLine(x1 + 1, y2, this->pnl_wid - 1, 0);
-                                this->render_area->DrawRect(x1, y1, x2 - 1, y2 - 1, 0xFF);
-                            }
-                            break;
-                    }
-                }
-            }
-            this->render_area->Unlock((char*)"pnl_btn::draw2");
-        }
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw bevel lock/end this=%p", this);
-CUSTOM_DEBUG_END
-    }
-
-    // 4. GDI text.
-    //
-    // On modern >8bpp paths we can draw through a lock-backed shadow buffer and then blit to surface.
-    // Draw text after lock-based passes so it is not overwritten by a later lock/unlock in this function.
+    // 3. GDI text.
     if (draw_type == (int)TButtonPanel::DrawTextA ||
         draw_type == (int)TButtonPanel::DrawPictureAndText ||
         draw_type == (int)TButtonPanel::DrawFillAndText) {
@@ -754,6 +691,66 @@ CUSTOM_DEBUG_END
             SelectClipRgn(hdc, 0);
             this->render_area->ReleaseDc("pnl_btn::draw");
         }
+    }
+
+    // 4. Bevel.
+    if (draw_type == (int)TButtonPanel::DrawTextA ||
+        draw_type == (int)TButtonPanel::DrawPictureAndText ||
+        draw_type == (int)TButtonPanel::DrawFillAndText ||
+        draw_type == (int)TButtonPanel::DrawBevelPicture) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw bevel lock begin this=%p", this);
+CUSTOM_DEBUG_END
+        if (this->render_area->Lock((char*)"pnl_btn::draw2", 1)) {
+            const long x1 = this->pnl_x;
+            const long y1 = this->pnl_y;
+            const long x2 = this->pnl_x + this->pnl_wid - 1;
+            const long y2 = this->pnl_y + this->pnl_hgt - 1;
+
+            if (x2 > x1 && y2 > y1) {
+                if (this->disabled != 0) {
+                    this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color6);
+                    this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, this->bevel_color1);
+                } else {
+                    const int down_for_bevel = pressed ? 1 : 0;
+                    switch (this->bevel_type) {
+                        case 2:
+                            if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                            else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
+                            break;
+                        case 3:
+                            if (down_for_bevel) this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
+                            else this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
+                            break;
+                        case 4:
+                            if (down_for_bevel) {
+                                this->render_area->DrawBevel32(x1, y1, x2, y2,
+                                    this->bevel_color6, this->bevel_color5, this->bevel_color4,
+                                    this->bevel_color3, this->bevel_color2, this->bevel_color1);
+                            } else {
+                                this->render_area->DrawBevel3(x1, y1, x2, y2,
+                                    this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                            }
+                            break;
+                        case 1:
+                        default:
+                            if (down_for_bevel) {
+                                this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
+                            } else {
+                                this->render_area->DrawVertLine(x2, y1 + 1, this->pnl_hgt - 1, 0);
+                                this->render_area->DrawHorzLine(x1 + 1, y2, this->pnl_wid - 1, 0);
+                                this->render_area->DrawRect(x1, y1, x2 - 1, y2 - 1, 0xFF);
+                            }
+                            break;
+                    }
+                }
+            }
+            this->render_area->Unlock((char*)"pnl_btn::draw2");
+        }
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw bevel lock/end this=%p", this);
+CUSTOM_DEBUG_END
     }
 
     this->draw_finish();
