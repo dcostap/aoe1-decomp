@@ -1308,8 +1308,13 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
                 // Decomp: operator_new(0x560) then constructor does all setup
                 TribeGameSettingsScreen* settingsScreen = new TribeGameSettingsScreen();
                 // Use pointer overload — name-based lookup won't find it yet
-                if (settingsScreen) {
+                if (settingsScreen && settingsScreen->error_code == 0) {
                     panel_system->setCurrentPanel((TPanel*)settingsScreen, 0);
+                } else {
+                    if (settingsScreen) {
+                        delete settingsScreen;
+                    }
+                    mps_enable_input();
                 }
             } else {
                 panel_system->setCurrentPanel(existing, 0);

@@ -645,10 +645,10 @@ void TEasy_Panel::draw_background(int param_1) {
     const long pic_w = (x_max - x_min) + 1;
     const long pic_h = (y_max - y_min) + 1;
 
-    if (this->render_area->Lock((char*)"panel_ez::draw_background", 0)) {
+    if (this->render_area->Lock((char*)"panel_ez::draw_background", 1)) {
         if (this->background_pos == 1) {
-            const long dx = this->pnl_x + (this->pnl_wid / 2) - (pic_w / 2) - x_min;
-            const long dy = this->pnl_y + (this->pnl_hgt / 2) - (pic_h / 2) - y_min;
+            const long dx = this->pnl_x + (this->pnl_wid / 2) - (pic_w / 2);
+            const long dy = this->pnl_y + (this->pnl_hgt / 2) - (pic_h / 2);
             pic->shape_draw(this->render_area, dx, dy, 0, 0, 0, (uchar*)0);
 
             if (param_1 != 0 && this->shadow_color_table) {
@@ -658,8 +658,8 @@ void TEasy_Panel::draw_background(int param_1) {
         } else if (this->background_pos == 2) {
             for (long yy = 0; yy <= this->pnl_hgt; yy += pic_h) {
                 for (long xx = 0; xx <= this->pnl_wid; xx += pic_w) {
-                    const long dx = this->pnl_x + xx - x_min;
-                    const long dy = this->pnl_y + yy - y_min;
+                    const long dx = this->pnl_x + xx;
+                    const long dy = this->pnl_y + yy;
                     pic->shape_draw(this->render_area, dx, dy, 0, 0, 0, (uchar*)0);
                 }
             }
@@ -681,7 +681,7 @@ void TEasy_Panel::draw_background(int param_1) {
 
     // Optional screen bevel.
     if (this->use_bevels != 0) {
-        if (this->render_area->Lock((char*)"panel_ez::draw_background2", 0)) {
+        if (this->render_area->Lock((char*)"panel_ez::draw_background2", 1)) {
             this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
                 this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
             this->render_area->Unlock((char*)"panel_ez::draw_background2");
@@ -781,7 +781,7 @@ void TEasy_Panel::setup_shadow_area(int force_rebuild) {
         }
 
         this->shadow_area->Clear((tagRECT*)0, (int)this->background_color1);
-        if (this->shadow_area->Lock((char*)"panel_ez::setup_shadow_area", 0)) {
+        if (this->shadow_area->Lock((char*)"panel_ez::setup_shadow_area", 1)) {
             this->background_pic->shape_draw(this->shadow_area, 0, 0, 0, 0, 0, (uchar*)0);
             this->shadow_area->SetShadowTable(this->shadow_color_table);
             this->shadow_area->DrawShadowBox(0, 0, w - 1, h - 1);

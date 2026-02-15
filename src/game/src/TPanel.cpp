@@ -9,6 +9,26 @@
 
 extern RGE_Base_Game* rge_base_game;
 
+static thread_local int g_panel_draw_tree_depth = 0;
+static thread_local int g_panel_wnd_proc_depth = 0;
+
+struct PanelDepthGuard {
+    explicit PanelDepthGuard(int* depth_ptr) : depth(depth_ptr) {
+        if (depth) {
+            ++(*depth);
+        }
+    }
+    ~PanelDepthGuard() {
+        if (depth) {
+            --(*depth);
+        }
+    }
+    int current() const {
+        return depth ? *depth : 0;
+    }
+    int* depth;
+};
+
 static long panel_abs_long(long value) {
     return (value < 0) ? -value : value;
 }
@@ -465,6 +485,16 @@ void TPanel::paint() {
     }
 }
 long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
+    if (g_panel_wnd_proc_depth > 1024) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TPanel::wnd_proc: recursion guard hit panel=%p name='%s' msg=0x%X depth=%d",
+            this, this->panelNameValue ? this->panelNameValue : "(null)",
+            (unsigned int)msg, g_panel_wnd_proc_depth);
+CUSTOM_DEBUG_END
+        return 0;
+    }
+    PanelDepthGuard wnd_guard(&g_panel_wnd_proc_depth);
+
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::wnd_proc` @ 0x004653E0).
     if (!this->active) {
         return 0;
@@ -541,7 +571,10 @@ long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     }
 
     // Non-input messages: children first (reverse z-order), then this panel.
-    for (PanelNode* curr = this->last_child_node; curr != nullptr; curr = curr->prev_node) {
+    int child_guard = 0;
+    for (PanelNode* curr = this->last_child_node;
+         curr != nullptr && child_guard < 4096;
+         curr = curr->prev_node, ++child_guard) {
         if (!curr->panel) {
             continue;
         }
@@ -549,6 +582,12 @@ long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
         if (child_res != 0) {
             return child_res;
         }
+    }
+    if (child_guard >= 4096) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TPanel::wnd_proc: child traversal guard hit panel=%p name='%s' msg=0x%X",
+            this, this->panelNameValue ? this->panelNameValue : "(null)", (unsigned int)msg);
+CUSTOM_DEBUG_END
     }
 
     if (msg < 0x401) {
@@ -1120,6 +1159,21 @@ void TPanel::release_mouse() {
 }
 
 void TPanel::draw_tree() {
+    if (g_panel_draw_tree_depth > 1024) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TPanel::draw_tree: recursion guard hit panel=%p name='%s' depth=%d",
+            this, this->panelNameValue ? this->panelNameValue : "(null)", g_panel_draw_tree_depth);
+CUSTOM_DEBUG_END
+        return;
+    }
+    PanelDepthGuard draw_guard(&g_panel_draw_tree_depth);
+CUSTOM_DEBUG_BEGIN
+    if (draw_guard.current() <= 4) {
+        CUSTOM_DEBUG_LOG_FMT("TPanel::draw_tree enter depth=%d panel=%p name='%s'",
+            draw_guard.current(), this, this->panelNameValue ? this->panelNameValue : "(null)");
+    }
+CUSTOM_DEBUG_END
+
     // Non-original helper (see `ui_core.h`); used by the current simplified game loop.
     // Parent visibility/active state gates child drawing in the original panel system flow.
     // Without this, inactive dropdowns/scrollbars still draw active child controls.
@@ -1128,11 +1182,25 @@ void TPanel::draw_tree() {
     }
 
     this->draw();
+CUSTOM_DEBUG_BEGIN
+    if (draw_guard.current() <= 4) {
+        CUSTOM_DEBUG_LOG_FMT("TPanel::draw_tree draw done depth=%d panel=%p name='%s'",
+            draw_guard.current(), this, this->panelNameValue ? this->panelNameValue : "(null)");
+    }
+CUSTOM_DEBUG_END
     PanelNode* n = this->first_child_node;
-    while (n) {
+    int guard = 0;
+    while (n && guard < 4096) {
         if (n->panel) {
             n->panel->draw_tree();
         }
         n = n->next_node;
+        ++guard;
+    }
+    if (guard >= 4096) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TPanel::draw_tree: child traversal guard hit panel=%p name='%s'",
+            this, this->panelNameValue ? this->panelNameValue : "(null)");
+CUSTOM_DEBUG_END
     }
 }

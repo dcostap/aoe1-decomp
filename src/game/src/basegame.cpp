@@ -10,6 +10,7 @@
 #include "../include/TDrawSystem.h"
 #include "../include/TDrawArea.h"
 #include "../include/TShape.h"
+#include "../include/TEasy_Panel.h"
 #include "../include/TSound_Driver.h"
 #include "../include/TMusic_System.h"
 #include "../include/TDigital.h"
@@ -679,6 +680,12 @@ CUSTOM_DEBUG_END
 
     this->is_timer = SetTimer((HWND)this->prog_window, 1, 0, NULL);
 
+    // setup complete: enable idle/update processing
+    this->prog_ready = 1;
+    if (this->prog_active == 0) {
+        this->prog_active = 1;
+    }
+
     return 1;
 }
 
@@ -811,6 +818,8 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
         CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_CLOSE");
     } else if (p2 == WM_DESTROY) {
         CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_DESTROY");
+    } else if (p2 == WM_PAINT) {
+        CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_PAINT");
     } else if (p2 == WM_QUIT) {
         CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: received WM_QUIT");
     }
@@ -831,10 +840,26 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
     }
 
     if (curPanel != nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (p2 == WM_PAINT) {
+            CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: WM_PAINT -> curPanel->wnd_proc panel=%p name='%s'",
+                curPanel, curPanel->panelNameValue ? curPanel->panelNameValue : "(null)");
+        }
+        CUSTOM_DEBUG_END
         result = curPanel->wnd_proc(p1, p2, p3, p4);
-        // If panel consumed the message AND it's not WM_MOUSEMOVE or WM_TIMER,
-        // return the result directly (decomp: goto LAB_004207c2 only if result==0 or msg==0x200 or msg==0x113)
-        if (result != 0 && p2 != 0x200 && p2 != 0x113) {
+        CUSTOM_DEBUG_BEGIN
+        if (p2 == WM_PAINT) {
+            CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: WM_PAINT <- curPanel->wnd_proc result=%ld", result);
+        }
+        CUSTOM_DEBUG_END
+        // If panel consumed the message AND it's not one of the messages that must
+        // still flow through base routing, return immediately.
+        // Activation messages must reach handle_activate() or prog_active may never flip on.
+        if (result != 0 &&
+            p2 != WM_MOUSEMOVE &&
+            p2 != WM_TIMER &&
+            p2 != WM_ACTIVATEAPP &&
+            p2 != WM_ACTIVATE) {
             return result;
         }
     }
@@ -890,6 +915,14 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
             iVar3 = this->handle_activate(p1, 0x1c, p3, p4);
             if (iVar3 == 0) return 0;
             break;
+
+        case WM_ACTIVATE: { // 0x06
+            // LOWORD(wParam) == WA_INACTIVE (0) when deactivated, nonzero when active.
+            uint active = ((p3 & 0xFFFFu) == 0) ? 0u : 1u;
+            iVar3 = this->handle_activate(p1, WM_ACTIVATE, active, p4);
+            if (iVar3 == 0) return 0;
+            break;
+        }
 
         case WM_SETCURSOR: // 0x20
             if (this->is_mouse_on && this->windows_mouse == 0) {
@@ -1399,7 +1432,7 @@ void* RGE_Base_Game::create_font(void* dc, int id1, int id2) {
 
     LOGFONTA lf;
     memset(&lf, 0, sizeof(lf));
-    // Source of truth: `make_font` uses current DC vertical DPI (LOGPIXELSY).
+    // Source of truth note: `basegame.cpp.decomp` points at `tmMaxCharWidth` for width.
     int log_pixels_y = 96;
     if (dc) {
         const int dpi = GetDeviceCaps((HDC)dc, LOGPIXELSY);
@@ -1536,24 +1569,68 @@ RGE_Game_World* RGE_Base_Game::create_world() {
 int RGE_Base_Game::run() {
     // Source of truth: basegame.cpp.decomp @ 0x0041CFD0
     MSG msg;
+    unsigned int idle_spin = 0;
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: enter prog_mode=%d prog_active=%d", this->prog_mode, this->prog_active);
+CUSTOM_DEBUG_END
     
     while (1) {
         while (1) {
             // Innermost loop: blocking GetMessage when inactive/wrong mode/paused
-            while (this->prog_active == 0 ||
-                   (this->prog_mode != 4 && this->prog_mode != 2) ||
+            // Non-original safety: keep game-idle pumping even if activation state drops
+            // spuriously while already in an in-game mode.
+            while (((this->prog_active == 0) &&
+                    (this->prog_mode != 4 && this->prog_mode != 5 && this->prog_mode != 6)) ||
+                   (this->prog_mode != 2 &&
+                    this->prog_mode != 4 && this->prog_mode != 5 && this->prog_mode != 6) ||
                    (this->comm_handler != nullptr && this->comm_handler->IsPaused() != 0)) {
                 int ret = GetMessageA(&msg, NULL, 0, 0);
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: GetMessage ret=%d msg=0x%X wParam=0x%IX lParam=0x%IX prog_mode=%d prog_active=%d",
+                    ret, (unsigned int)msg.message, (UINT_PTR)msg.wParam, (UINT_PTR)msg.lParam, this->prog_mode, this->prog_active);
+CUSTOM_DEBUG_END
                 if (ret == 0) {
+CUSTOM_DEBUG_BEGIN
+                    CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: GetMessage -> quit lParam=%ld", (long)msg.lParam);
+CUSTOM_DEBUG_END
                     return msg.lParam;
                 }
-                TranslateMessage(&msg);
-                DispatchMessageA(&msg);
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: dispatch(GetMessage) msg=0x%X", (unsigned int)msg.message);
+CUSTOM_DEBUG_END
+                __try {
+                    TranslateMessage(&msg);
+                    DispatchMessageA(&msg);
+                } __except (EXCEPTION_EXECUTE_HANDLER) {
+CUSTOM_DEBUG_BEGIN
+                    CUSTOM_DEBUG_ERROR(GetExceptionCode(), "RGE_Base_Game::run: exception in DispatchMessageA(GetMessage)");
+CUSTOM_DEBUG_END
+                    return -1;
+                }
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: dispatch(GetMessage) done msg=0x%X", (unsigned int)msg.message);
+CUSTOM_DEBUG_END
             }
             // Active mode: PeekMessage for non-blocking processing
             int got = PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
+CUSTOM_DEBUG_BEGIN
+            if (got != 0) {
+                CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: PeekMessage got hwnd=%p msg=0x%X wParam=0x%IX lParam=0x%IX",
+                    msg.hwnd, (unsigned int)msg.message, (UINT_PTR)msg.wParam, (UINT_PTR)msg.lParam);
+            } else if ((idle_spin++ & 0x3FF) == 0) {
+                CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: idle spin prog_mode=%d prog_active=%d", this->prog_mode, this->prog_active);
+            }
+CUSTOM_DEBUG_END
             if (got != 0) break;
-            this->handle_idle();
+            __try {
+                this->handle_idle();
+            } __except (EXCEPTION_EXECUTE_HANDLER) {
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_ERROR(GetExceptionCode(), "RGE_Base_Game::run: exception in handle_idle");
+CUSTOM_DEBUG_END
+                return -1;
+            }
         }
         // Quit check: decomp says msg.wParam == 0x12, but 0x12 = WM_QUIT (message ID).
         // Ghidra got the struct field wrong (off by 4 bytes). PostQuitMessage(0) sets wParam=0.
@@ -1561,12 +1638,31 @@ int RGE_Base_Game::run() {
         if (msg.message == WM_QUIT) break;
         // handle_message returns non-zero if message should still be dispatched
         int result = this->handle_message(&msg);
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: handle_message msg=0x%X result=%d", (unsigned int)msg.message, result);
+CUSTOM_DEBUG_END
         if (result != 0) {
-            TranslateMessage(&msg);
-            DispatchMessageA(&msg);
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: dispatch(PeekMessage) msg=0x%X", (unsigned int)msg.message);
+CUSTOM_DEBUG_END
+            __try {
+                TranslateMessage(&msg);
+                DispatchMessageA(&msg);
+            } __except (EXCEPTION_EXECUTE_HANDLER) {
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_ERROR(GetExceptionCode(), "RGE_Base_Game::run: exception in DispatchMessageA(PeekMessage)");
+CUSTOM_DEBUG_END
+                return -1;
+            }
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: dispatch(PeekMessage) done msg=0x%X", (unsigned int)msg.message);
+CUSTOM_DEBUG_END
         }
     }
 
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::run: exit lParam=%ld", (long)msg.lParam);
+CUSTOM_DEBUG_END
     return msg.lParam;
 }
 int RGE_Base_Game::handle_message(struct tagMSG* p1) {
@@ -1789,13 +1885,69 @@ int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) {
     this->action_size();
     return 1;
 }
-int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) { return 0; }
+int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x004219F0
+    if (this->draw_system != nullptr) {
+        this->draw_system->HandlePaletteChanged(p1, p2, p3, p4);
+    }
+
+    if ((void*)p3 != p1) {
+        TDrawSystem* ds = this->draw_system;
+        if (ds == nullptr || ds->DrawType == 1 || ds->ScreenMode == 1) {
+            (void)this->handle_query_new_palette(p1, p2, p3, p4);
+        } else if (this->prog_mode != 1) {
+            ds->ModifyPalette(0, 0x100, ds->palette);
+            return 1;
+        }
+    }
+
+    return 1;
+}
+
+int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x00421A80
+    TDrawSystem* ds = this->draw_system;
+
+    if (ds != nullptr && ds->DrawType != 1 && ds->ScreenMode != 1) {
+        InvalidateRect((HWND)p1, NULL, FALSE);
+        return ds->HandleQueryNewPalette(p1, p2, p3, p4);
+    }
+
+    HDC dc = GetDC((HWND)p1);
+    void* pal = nullptr;
+
+    TPanel* current = panel_system ? panel_system->currentPanelValue : nullptr;
+    if (current == nullptr) {
+        pal = this->prog_palette;
+    } else {
+        TEasy_Panel* easy = (TEasy_Panel*)current;
+        pal = easy->palette;
+    }
+
+    if (pal != nullptr) {
+        SelectPalette(dc, (HPALETTE)pal, FALSE);
+    }
+
+    int changed = (int)RealizePalette(dc);
+    ReleaseDC((HWND)p1, dc);
+
+    if (changed != 0) {
+        InvalidateRect((HWND)p1, NULL, FALSE);
+    }
+
+    if (ds != nullptr) {
+        return ds->HandleQueryNewPalette(p1, p2, p3, p4);
+    }
+    return 1;
+}
 int RGE_Base_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
     // Return 1 (not consumed) so DefWindowProcA handles it → calls DestroyWindow
     return 1;
 }
 int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::handle_destroy: hwnd=%p msg=0x%X", p1, p2);
+CUSTOM_DEBUG_END
     PostQuitMessage(0);
     return 0; // consumed
 }

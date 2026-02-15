@@ -4,6 +4,11 @@
 
 class TRIBE_Master_Building_Object : public TRIBE_Master_Combat_Object {
 public:
+    TRIBE_Master_Building_Object();
+    TRIBE_Master_Building_Object(TRIBE_Master_Building_Object* param_1, int param_2);
+    TRIBE_Master_Building_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
+    TRIBE_Master_Building_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Master_Building_Object(); // vt[0] (0x0)
     virtual void copy_obj(RGE_Master_Static_Object* param_1); // vt[1] (0x4)

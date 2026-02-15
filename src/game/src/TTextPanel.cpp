@@ -581,6 +581,7 @@ void TTextPanel::draw() {
 
     draw_background(this);
     this->draw_setup(0);
+    draw_border(this);
 
     HDC hdc = (HDC)this->render_area->GetDc((char*)"pnl_txt::draw");
     if (hdc) {
@@ -605,7 +606,6 @@ void TTextPanel::draw() {
         this->render_area->ReleaseDc((char*)"pnl_txt::draw");
     }
 
-    draw_border(this);
     this->draw_finish();
 }
 

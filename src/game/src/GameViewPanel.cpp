@@ -7,6 +7,10 @@
 #include "../include/RGE_Tile_Set.h"
 #include "../include/RGE_Border_Set.h"
 #include "../include/RGE_TOB_Picts.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Sprite.h"
 #include "../include/TShape.h"
 #include "../include/TDrawArea.h"
 #include "../include/custom_debug.h"
@@ -219,6 +223,20 @@ void GameViewPanel::draw() {
     long half_w = this->world_map->tile_half_width > 0 ? this->world_map->tile_half_width : TILE_HALF_W;
     long half_h = this->world_map->tile_half_height > 0 ? this->world_map->tile_half_height : TILE_HALF_H;
 
+    tagRECT saved_clip = this->render_area->ClipRect;
+    tagRECT draw_clip = this->clip_rect;
+    this->render_area->SetClipRect(&draw_clip);
+
+    int area_locked_here = 0;
+    if (!this->render_area->Bits) {
+        if (!this->render_area->Lock((char*)"GameViewPanel::draw", 0)) {
+            CUSTOM_DEBUG_LOG("GameViewPanel::draw: render_area lock failed");
+            this->render_area->SetClipRect(&saved_clip);
+            return;
+        }
+        area_locked_here = 1;
+    }
+
     int drawn_tiles = 0;
     int real_tiles = 0;
     int fallback_tiles = 0;
@@ -369,15 +387,71 @@ void GameViewPanel::draw() {
             real_tiles++;
         }
     }
+
+    int objects_drawn = 0;
+    int objects_fallback = 0;
+    int objects_culled = 0;
+    RGE_Game_World* world = this->world_map ? this->world_map->game_world : nullptr;
+    if (world != nullptr && world->objectsValue != nullptr && world->numberObjectsValue > 0) {
+        const long elev_h = (this->world_map->elev_height > 0) ? this->world_map->elev_height : 16;
+        for (int i = 0; i < world->numberObjectsValue; ++i) {
+            RGE_Static_Object* obj = world->objectsValue[i];
+            if (obj == nullptr || obj->master_obj == nullptr) {
+                continue;
+            }
+
+            RGE_Sprite* spr = obj->sprite;
+            if (spr == nullptr) {
+                spr = obj->master_obj->sprite;
+            }
+
+            long ox = (long)obj->world_x;
+            long oy = (long)obj->world_y;
+            if (ox < 0 || oy < 0 || ox >= map_w || oy >= map_h) {
+                objects_culled++;
+                continue;
+            }
+
+            RGE_Tile* ot = &this->world_map->map_row_offset[oy][ox];
+            long wx = origin_x + (long)ot->screen_xpos;
+            long wy = origin_y + (long)ot->screen_ypos;
+
+            long sx = wx - this->cam_x + this->pnl_x;
+            long sy = wy - this->cam_y + this->pnl_y;
+
+            if (sx < this->pnl_x - TILE_HALF_W || sx > this->pnl_x + scr_w + TILE_HALF_W ||
+                sy < this->pnl_y - TILE_HALF_H || sy > this->pnl_y + scr_h + TILE_HALF_H * 2) {
+                objects_culled++;
+                continue;
+            }
+
+            if (spr != nullptr && spr->loaded && spr->shape != nullptr && spr->shape->shape_count() > 0) {
+                spr->shape->shape_draw(this->render_area, sx, sy, 0, 0, 0, nullptr);
+                objects_drawn++;
+            } else {
+                // Fallback marker so we can still verify object placement visually.
+                this->render_area->DrawLine((int)sx - 4, (int)sy - 4, (int)sx + 4, (int)sy + 4, 250);
+                this->render_area->DrawLine((int)sx - 4, (int)sy + 4, (int)sx + 4, (int)sy - 4, 250);
+                objects_fallback++;
+            }
+        }
+    }
     
     // Log summary (throttled)
     static int log_counter = 0;
     if (log_counter++ % 60 == 0) {
-        CUSTOM_DEBUG_LOG_FMT("GameViewPanel::draw: cam=%ld,%ld drawn=%d real=%d fallback=%d borderDraw=%d borderMiss=%d checked=%d cullX=%d cullY=%d badTerrain=%d missShape=%d missFrame=%d sx=[%ld..%ld] sy=[%ld..%ld] map=%ldx%ld pnl=%d,%d %dx%d origin=%ld,%ld",
-            this->cam_x, this->cam_y, drawn_tiles, real_tiles, fallback_tiles, border_drawn, border_missing, checked_tiles, culled_x, culled_y, bad_terrain_idx, missing_shape, missing_frame,
+        CUSTOM_DEBUG_LOG_FMT("GameViewPanel::draw: cam=%ld,%ld drawn=%d real=%d fallback=%d borderDraw=%d borderMiss=%d objs=%d objFb=%d objCull=%d checked=%d cullX=%d cullY=%d badTerrain=%d missShape=%d missFrame=%d sx=[%ld..%ld] sy=[%ld..%ld] map=%ldx%ld pnl=%d,%d %dx%d origin=%ld,%ld",
+            this->cam_x, this->cam_y, drawn_tiles, real_tiles, fallback_tiles, border_drawn, border_missing, objects_drawn, objects_fallback, objects_culled, checked_tiles, culled_x, culled_y, bad_terrain_idx, missing_shape, missing_frame,
             min_sx, max_sx, min_sy, max_sy,
             map_w, map_h, this->pnl_x, this->pnl_y, scr_w, scr_h, origin_x, origin_y);
     }
+
+    if (area_locked_here) {
+        this->render_area->Unlock((char*)"GameViewPanel::draw");
+    }
+
+    this->render_area->SetClipRect(&saved_clip);
+
 }
 
 long GameViewPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
@@ -438,17 +512,20 @@ long GameViewPanel::handle_key_down(long param_1, short param_2, int param_3, in
 
 long GameViewPanel::handle_idle() {
     if (MouseSystem) {
-        long mx = MouseSystem->mouse_x;
-        long my = MouseSystem->mouse_y;
-        
-        // Mouse coordinates are relative to the window/screen.
-        // We need them relative to the panel?
-        // TMousePointer stores screen coordinates usually.
-        // If the panel is full screen (or main view), screen coords are fine.
-        // But we should subtract pnl_x/y if needed. 
-        // For now assuming full screen or pnl_x=0.
-        mx -= this->pnl_x;
-        my -= this->pnl_y;
+        POINT pt;
+        pt.x = MouseSystem->mouse_x;
+        pt.y = MouseSystem->mouse_y;
+
+        if (this->render_area && this->render_area->Wnd) {
+            ScreenToClient((HWND)this->render_area->Wnd, &pt);
+        }
+
+        long mx = (long)pt.x - this->pnl_x;
+        long my = (long)pt.y - this->pnl_y;
+
+        if (mx < 0 || my < 0 || mx >= this->pnl_wid || my >= this->pnl_hgt) {
+            return TScreenPanel::handle_idle();
+        }
 
         int scroll_margin = 10;
         int scroll_needed = 0;

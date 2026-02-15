@@ -10,6 +10,8 @@
 #include "../include/RGE_Object_Data_Entry.h"
 #include "../include/RGE_Elevation_Data.h"
 #include "../include/RGE_Elevation_Data_Entry.h"
+#include "../include/RGE_Player.h"
+#include "../include/TRIBE_Game.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
@@ -18,6 +20,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+static long g_rmm_fail_search_closed = 0;
+static long g_rmm_fail_terrain_mismatch = 0;
+static long g_rmm_fail_no_player = 0;
+static long g_rmm_fail_no_master_array = 0;
+static long g_rmm_fail_objid_oob = 0;
+static long g_rmm_fail_master_null = 0;
+static long g_rmm_fail_make_new = 0;
 
 static long rmm_clamp_long(long v, long lo, long hi) {
     if (v < lo) return lo;
@@ -85,6 +95,307 @@ static long rmm_count_terrain_tiles(RGE_RMM_Database_Controller* self, uchar ter
     return count;
 }
 
+static void rmm_fill_search_map(RGE_RMM_Database_Controller* self, uchar value) {
+    if (self == nullptr || self->search_map_rows == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return;
+    }
+    for (long y = 0; y < self->map_height; ++y) {
+        memset(self->search_map_rows[y], value, (size_t)self->map_width);
+    }
+}
+
+static int rmm_search_open(RGE_RMM_Database_Controller* self, long x, long y) {
+    if (self == nullptr || x < 0 || y < 0 || x >= self->map_width || y >= self->map_height) {
+        return 0;
+    }
+    if (self->search_map_rows == nullptr) {
+        return 1;
+    }
+    return self->search_map_rows[y][x] != 0;
+}
+
+static void rmm_set_search_area(RGE_RMM_Database_Controller* self, long cx, long cy, long radius, uchar value) {
+    if (self == nullptr || self->search_map_rows == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return;
+    }
+    if (radius < 0) {
+        radius = 0;
+    }
+    long x0 = rmm_clamp_long(cx - radius, 0, self->map_width - 1);
+    long x1 = rmm_clamp_long(cx + radius, 0, self->map_width - 1);
+    long y0 = rmm_clamp_long(cy - radius, 0, self->map_height - 1);
+    long y1 = rmm_clamp_long(cy + radius, 0, self->map_height - 1);
+    for (long y = y0; y <= y1; ++y) {
+        memset(self->search_map_rows[y] + x0, value, (size_t)(x1 - x0 + 1));
+    }
+}
+
+static RGE_Player* rmm_get_player_for_object(RGE_RMM_Database_Controller* self, long requested_player, long fallback_player) {
+    if (self == nullptr || self->world == nullptr || self->world->players == nullptr || self->world->player_num <= 0) {
+        return nullptr;
+    }
+
+    long player_index = requested_player;
+    if (player_index < 0) {
+        player_index = fallback_player;
+    }
+    if (player_index < 0 || player_index >= self->world->player_num) {
+        player_index = 0;
+    }
+    return self->world->players[player_index];
+}
+
+static int rmm_terrain_matches_object_rule(RGE_RMM_Database_Controller* self, RGE_Object_Info_Line* line, long x, long y) {
+    if (self == nullptr || line == nullptr || self->map_row_offset == nullptr || x < 0 || y < 0 || x >= self->map_width || y >= self->map_height) {
+        return 0;
+    }
+    if (line->terrain < 0) {
+        return 1;
+    }
+    return (self->map_row_offset[y][x].terrain_type & 0x1f) == (line->terrain & 0x1f);
+}
+
+static int rmm_try_place_single_object(
+    RGE_RMM_Database_Controller* self,
+    RGE_Object_Info_Line* line,
+    long x,
+    long y,
+    long requested_player,
+    long fallback_player,
+    long exclusion_radius) {
+    if (self == nullptr || line == nullptr) {
+        return 0;
+    }
+    if (x < 0 || y < 0 || x >= self->map_width || y >= self->map_height) {
+        return 0;
+    }
+    if (!rmm_search_open(self, x, y)) {
+        g_rmm_fail_search_closed = g_rmm_fail_search_closed + 1;
+        return 0;
+    }
+    if (!rmm_terrain_matches_object_rule(self, line, x, y)) {
+        g_rmm_fail_terrain_mismatch = g_rmm_fail_terrain_mismatch + 1;
+        return 0;
+    }
+
+    RGE_Player* player = rmm_get_player_for_object(self, requested_player, fallback_player);
+    if (player == nullptr) {
+        g_rmm_fail_no_player = g_rmm_fail_no_player + 1;
+        return 0;
+    }
+    if (player->master_objects == nullptr) {
+        g_rmm_fail_no_master_array = g_rmm_fail_no_master_array + 1;
+        return 0;
+    }
+    if (line->obj_id < 0 || line->obj_id >= player->master_object_num) {
+        g_rmm_fail_objid_oob = g_rmm_fail_objid_oob + 1;
+        return 0;
+    }
+    if (player->master_objects[line->obj_id] == nullptr) {
+        g_rmm_fail_master_null = g_rmm_fail_master_null + 1;
+        return 0;
+    }
+
+    RGE_Static_Object* placed = player->make_new_object(line->obj_id, (float)x + 0.5f, (float)y + 0.5f, 0.0f, 1);
+    if (placed == nullptr) {
+        g_rmm_fail_make_new = g_rmm_fail_make_new + 1;
+        return 0;
+    }
+
+    if (exclusion_radius < 1) {
+        exclusion_radius = 1;
+    }
+    rmm_set_search_area(self, x, y, exclusion_radius, 0);
+    return 1;
+}
+
+static long rmm_place_group_objects(
+    RGE_RMM_Database_Controller* self,
+    RGE_Object_Info_Line* line,
+    long root_x,
+    long root_y,
+    long requested_player,
+    long fallback_player,
+    long exclusion_radius) {
+    if (self == nullptr || line == nullptr || line->group_flag == 0) {
+        return 0;
+    }
+
+    long group_count = line->object_number_per_group;
+    long var = line->object_number_varience;
+    if (var < 0) {
+        var = 0;
+    }
+    if (var > 0) {
+        long rv = rmm_rand_range(var * 2 + 1);
+        group_count += rv - var;
+    }
+    if (group_count < 1) {
+        group_count = 1;
+    }
+
+    long area = line->group_area;
+    if (area < 1) {
+        area = 1;
+    }
+    if (line->group_flag == 2) {
+        area *= 2;
+    }
+
+    long placed = 0;
+    for (long n = 0; n < group_count; ++n) {
+        int done = 0;
+        for (long attempt = 0; attempt < 12 && !done; ++attempt) {
+            long dx = rmm_rand_range(area * 2 + 1) - area;
+            long dy = rmm_rand_range(area * 2 + 1) - area;
+            long x = root_x + dx;
+            long y = root_y + dy;
+            if (rmm_try_place_single_object(self, line, x, y, requested_player, fallback_player, exclusion_radius)) {
+                ++placed;
+                done = 1;
+            }
+        }
+    }
+
+    return placed;
+}
+
+static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
+    if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0 || self->object_info.object_num <= 0) {
+        return 0;
+    }
+
+    long total_placed = 0;
+    g_rmm_fail_search_closed = 0;
+    g_rmm_fail_terrain_mismatch = 0;
+    g_rmm_fail_no_player = 0;
+    g_rmm_fail_no_master_array = 0;
+    g_rmm_fail_objid_oob = 0;
+    g_rmm_fail_master_null = 0;
+    g_rmm_fail_make_new = 0;
+
+    long map_area = self->map_width * self->map_height;
+    if (map_area < 1) {
+        map_area = 1;
+    }
+
+    for (long i = 0; i < self->object_info.object_num; ++i) {
+        RGE_Object_Info_Line line = self->object_info.objects[i];
+        if (line.obj_id < 0) {
+            continue;
+        }
+
+        if (line.scale_flag != 0) {
+            long scaled = (map_area * line.number_of_groups) / 0x5100;
+            if (scaled < 1) {
+                scaled = 1;
+            }
+            line.number_of_groups = scaled;
+        }
+
+        long groups = line.number_of_groups;
+        if (groups < 1) {
+            continue;
+        }
+
+        long exclusion = line.object_exclusion_zone;
+        if (exclusion < 1) {
+            exclusion = 1;
+        }
+
+        rmm_fill_search_map(self, 1);
+
+        if (line.land_id == -2) {
+            for (long li = 0; li < self->object_info.land_num; ++li) {
+                RGE_Land_Point_Info_Line* land = &self->object_info.lands[li];
+                rmm_set_search_area(self, land->x, land->y, line.land_inner_radius, 0);
+            }
+        }
+
+        long placed_for_line = 0;
+
+        if (line.land_id >= 0) {
+            for (long li = 0; li < self->object_info.land_num; ++li) {
+                RGE_Land_Point_Info_Line* land = &self->object_info.lands[li];
+                if (land->id != line.land_id) {
+                    continue;
+                }
+
+                long outer = line.land_outer_radius;
+                if (outer < 1) {
+                    outer = 6;
+                }
+                long inner = line.land_inner_radius;
+                if (inner < 0) {
+                    inner = 0;
+                }
+
+                for (long g = 0; g < groups; ++g) {
+                    int done = 0;
+                    for (long attempt = 0; attempt < 64 && !done; ++attempt) {
+                        long dx = rmm_rand_range(outer * 2 + 1) - outer;
+                        long dy = rmm_rand_range(outer * 2 + 1) - outer;
+                        if (abs((int)dx) < inner && abs((int)dy) < inner) {
+                            continue;
+                        }
+
+                        long x = land->x + dx;
+                        long y = land->y + dy;
+                        long req_player = (line.player_id >= 0) ? line.player_id : land->player_id;
+                        if (rmm_try_place_single_object(self, &line, x, y, req_player, 0, exclusion)) {
+                            ++placed_for_line;
+                            placed_for_line += rmm_place_group_objects(self, &line, x, y, req_player, 0, exclusion);
+                            done = 1;
+                        }
+                    }
+                }
+            }
+        } else {
+            long base_tries = groups * 32;
+            if (base_tries < 128) {
+                base_tries = 128;
+            }
+            if (base_tries > map_area * 2) {
+                base_tries = map_area * 2;
+            }
+
+            for (long g = 0; g < groups; ++g) {
+                int done = 0;
+                for (long attempt = 0; attempt < base_tries && !done; ++attempt) {
+                    long x = rmm_rand_range(self->map_width);
+                    long y = rmm_rand_range(self->map_height);
+                    if (rmm_try_place_single_object(self, &line, x, y, line.player_id, 0, exclusion)) {
+                        ++placed_for_line;
+                        placed_for_line += rmm_place_group_objects(self, &line, x, y, line.player_id, 0, exclusion);
+                        done = 1;
+                    }
+                }
+            }
+        }
+
+        total_placed += placed_for_line;
+        CUSTOM_DEBUG_LOG_FMT(
+            "  object[%ld]: obj=%ld groups=%ld land=%ld placed=%ld",
+            i,
+            line.obj_id,
+            line.number_of_groups,
+            line.land_id,
+            placed_for_line);
+    }
+
+    CUSTOM_DEBUG_LOG_FMT(
+        "  placement_failures: search_closed=%ld terrain_mismatch=%ld no_player=%ld no_master_array=%ld objid_oob=%ld master_null=%ld make_new_null=%ld",
+        g_rmm_fail_search_closed,
+        g_rmm_fail_terrain_mismatch,
+        g_rmm_fail_no_player,
+        g_rmm_fail_no_master_array,
+        g_rmm_fail_objid_oob,
+        g_rmm_fail_master_null,
+        g_rmm_fail_make_new);
+
+    return total_placed;
+}
+
 static void rmm_free_map_data(RGE_RMM_Database_Controller* self) {
     if (self == nullptr) {
         return;
@@ -124,13 +435,8 @@ static RGE_Map_Data_Entry* rmm_select_map_entry(RGE_RMM_Database_Controller* sel
     if (self == nullptr || self->map_info.maps == nullptr || self->map_info.map_num <= 0) {
         return nullptr;
     }
-
-    for (long i = 0; i < self->map_info.map_num; ++i) {
-        if (self->map_info.maps[i].map_id == self->map_type) {
-            return &self->map_info.maps[i];
-        }
-    }
-
+    // Source of truth: rmm_dbct.cpp.decomp
+    // Original code indexes maps directly with map_type.
     if (self->map_type >= 0 && self->map_type < self->map_info.map_num) {
         return &self->map_info.maps[self->map_type];
     }
@@ -1013,12 +1319,9 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int param_1)
     this->number_of_players = 0;
 
     // Source of truth: rmm_dbct.cpp.decomp parses random-map DB from fd here.
-    // Keep world stream stable by restoring stream position after parsing.
+    // Important: this constructor consumes bytes from the shared world data stream.
+    // Do NOT rewind; later world_init stages must continue from the advanced position.
     const long saved_pos = rge_stream_tell(param_1);
-    if (saved_pos < 0) {
-        CUSTOM_DEBUG_LOG_FMT("RMM fd ctor: tell failed (fd=%d)", param_1);
-        return;
-    }
 
     const long kMaxMapDefs = 128;
     const long kMaxLandDefs = 4096;
@@ -1140,13 +1443,12 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int param_1)
         }
     }
 
-    rge_stream_seek(param_1, saved_pos);
-
     if (!parse_ok) {
         CUSTOM_DEBUG_LOG_FMT(
-            "RMM fd ctor parse failed: fd=%d pos=%ld map_num=%ld stage=%d idx=%ld val=%ld",
+            "RMM fd ctor parse failed: fd=%d start_pos=%ld end_pos=%ld map_num=%ld stage=%d idx=%ld val=%ld",
             param_1,
             saved_pos,
+            rge_stream_tell(param_1),
             hdr.map_num,
             parse_fail_stage,
             parse_fail_index,
@@ -1154,9 +1456,10 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int param_1)
         rmm_free_map_data(this);
     } else {
         CUSTOM_DEBUG_LOG_FMT(
-            "RMM fd ctor parse ok: fd=%d pos=%ld map_num=%ld",
+            "RMM fd ctor parse ok: fd=%d start_pos=%ld end_pos=%ld map_num=%ld",
             param_1,
             saved_pos,
+            rge_stream_tell(param_1),
             this->map_info.map_num);
     }
 }
@@ -1279,6 +1582,20 @@ uchar RGE_RMM_Database_Controller::generate() {
 
         uchar terrain = rmm_clamp_terrain(line->terrain_type);
         uchar base_filter = rmm_clamp_terrain(line->base_terrain_type);
+        if (rmm_count_terrain_tiles(this, base_filter) == 0) {
+            long best_count = -1;
+            uchar best_tt = base_filter;
+            for (int tt = 0; tt < 32; ++tt) {
+                long c = rmm_count_terrain_tiles(this, (uchar)tt);
+                if (c > best_count) {
+                    best_count = c;
+                    best_tt = (uchar)tt;
+                }
+            }
+            if (best_count > 0) {
+                base_filter = best_tt;
+            }
+        }
         long remaining = target_tiles;
         long tries = target_tiles * 4;
         if (tries < 64) tries = 64;
@@ -1378,6 +1695,12 @@ uchar RGE_RMM_Database_Controller::generate() {
         "RGE_RMM_Database_Controller::generate: height step before=%d after=%d",
         max_step_before,
         max_step_after);
+
+    long placed_objects = rmm_place_objects_pass(this);
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_RMM_Database_Controller::generate: object_defs=%ld placed=%ld",
+        this->object_info.object_num,
+        placed_objects);
 
     this->map->rebuild_tile_types(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1));
     this->map->rebuild_border_types(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1));
@@ -1541,7 +1864,45 @@ void RGE_RMM_Database_Controller::add_object_module() {
         d->land_id = s->land_id;
         d->land_inner_radius = s->land_inner_radius;
         d->land_outer_radius = s->land_outer_radius;
-        d->object_exclusion_zone = 0;
+        d->object_exclusion_zone = 1;
+    }
+
+    long land_num = this->land_info.land_num;
+    if (land_num < 0) land_num = 0;
+    if (land_num > 99) land_num = 99;
+    this->object_info.land_num = land_num;
+
+    long src_land_num = map_entry->land_info.land_num;
+    long by_player_cycle = 0;
+    if (src_land_num > 0 && map_entry->land_info.land != nullptr && map_entry->land_info.land[0].by_player_flag != 0) {
+        by_player_cycle = 1;
+    }
+
+    for (long i = 0; i < land_num; ++i) {
+        RGE_Land_Point_Info_Line* d = &this->object_info.lands[i];
+        d->x = this->land_info.land[i].x;
+        d->y = this->land_info.land[i].y;
+
+        long src_idx = i;
+        if (src_idx < 0) src_idx = 0;
+        if (src_land_num <= 0 || map_entry->land_info.land == nullptr) {
+            d->id = i;
+            d->player_id = 0;
+            continue;
+        }
+        if (src_idx >= src_land_num) {
+            src_idx = src_land_num - 1;
+        }
+
+        d->id = map_entry->land_info.land[src_idx].land_id;
+        d->player_id = by_player_cycle;
+
+        if (by_player_cycle > 0) {
+            ++by_player_cycle;
+            if (by_player_cycle > this->number_of_players) {
+                by_player_cycle = 0;
+            }
+        }
     }
 }
 
@@ -1747,7 +2108,7 @@ uchar TRIBE_RMM_Database_Controller::generate() {
             for (long x = 0; x < this->map_width; ++x) {
                 RGE_Tile* tile = &this->map_row_offset[y][x];
                 if ((tile->terrain_type & 0x1f) == 0x10) {
-                    tile->terrain_type = 0;
+                    tile->terrain_type = (uchar)(tile->terrain_type & 0xe0);
                 }
             }
         }
@@ -1773,7 +2134,15 @@ void TRIBE_RMM_Database_Controller::add_elevation_module() {
 }
 
 uchar TRIBE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, uchar param_5) {
-    return RGE_RMM_Database_Controller::init(param_1, param_2, param_3, param_4, param_5);
+    // Source of truth: rmm_tdbc.cpp.decomp @ 0x00487710
+    // TRIBE path overrides the final base-init flag using TRIBE_Game::randomizePositions().
+    uchar land_randomization_flag = param_5;
+    if (rge_base_game != nullptr) {
+        TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+        land_randomization_flag = (game->randomizePositions() == 0) ? 1 : 0;
+    }
+
+    return RGE_RMM_Database_Controller::init(param_1, param_2, param_3, param_4, land_randomization_flag);
 }
 
 uchar TRIBE_RMM_Database_Controller::de_init() {

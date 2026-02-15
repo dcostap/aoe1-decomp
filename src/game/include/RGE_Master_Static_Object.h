@@ -3,6 +3,11 @@
 
 class RGE_Master_Static_Object {
 public:
+    RGE_Master_Static_Object();
+    RGE_Master_Static_Object(RGE_Master_Static_Object* param_1, int param_2);
+    RGE_Master_Static_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
+    RGE_Master_Static_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5);
+
     // Virtuals (best-effort)
     virtual ~RGE_Master_Static_Object(); // vt[0] (0x0)
     virtual void copy_obj(); // vt[1] (0x4)
@@ -18,6 +23,10 @@ public:
     virtual void play_command_sound(); // vt[11] (0x2C)
     virtual void play_move_sound(); // vt[12] (0x30)
     virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8); // vt[13] (0x34)
+
+    int setup(RGE_Master_Static_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 
     unsigned char master_type;
     char* name;

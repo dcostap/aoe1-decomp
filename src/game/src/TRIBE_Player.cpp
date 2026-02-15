@@ -1,6 +1,9 @@
 #include "../include/TRIBE_Player.h"
 #include "../include/TRIBE_Gaia.h"
 #include "../include/TRIBE_Master_Player.h"
+#include "../include/TRIBE_Master_Tree_Object.h"
+#include "../include/TRIBE_Master_Combat_Object.h"
+#include "../include/TRIBE_Master_Building_Object.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/globals.h"
@@ -146,34 +149,51 @@ TRIBE_Gaia::~TRIBE_Gaia() {}
 void TRIBE_Gaia::update() { TRIBE_Player::update(); }
 
 // --- TRIBE_Master_Player constructors ---
-TRIBE_Master_Player::TRIBE_Master_Player(int param_1) {
-    // TODO(accuracy): full constructor from decomp
-    memset(this->name, 0, sizeof(this->name));
-    this->master_object_num = 0;
-    this->master_objects = nullptr;
-    this->attribute_num = 0;
-    this->attributes = nullptr;
-    this->culture = 0;
-    this->type = 0;
-    this->tribe_effect = 0;
-}
+TRIBE_Master_Player::TRIBE_Master_Player(int param_1)
+    : RGE_Master_Player(param_1) {}
 
-TRIBE_Master_Player::TRIBE_Master_Player(FILE* param_1) {
-    memset(this->name, 0, sizeof(this->name));
-    this->master_object_num = 0;
-    this->master_objects = nullptr;
-    this->attribute_num = 0;
-    this->attributes = nullptr;
-    this->culture = 0;
-    this->type = 0;
-    this->tribe_effect = 0;
-}
+TRIBE_Master_Player::TRIBE_Master_Player(FILE* param_1)
+    : RGE_Master_Player(param_1) {}
 
 TRIBE_Master_Player::~TRIBE_Master_Player() {}
 void TRIBE_Master_Player::finish_init(int p1, RGE_Sprite** p2, RGE_Sound** p3) { RGE_Master_Player::finish_init(p1, p2, p3); }
-void TRIBE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) { RGE_Master_Player::load_master_object(p1, p2, p3, p4, p5); }
+void TRIBE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {
+    RGE_Master_Static_Object* loaded = nullptr;
+
+    if (p2 == 'F') {
+        loaded = new TRIBE_Master_Combat_Object(p1, p3, p4, 1);
+    } else if (p2 == 'P') {
+        loaded = new TRIBE_Master_Building_Object(p1, p3, p4, 1);
+    } else if (p2 == 'Z') {
+        loaded = new TRIBE_Master_Tree_Object(p1, p3, p4, 1);
+    } else {
+        RGE_Master_Player::load_master_object(p1, p2, p3, p4, p5);
+        return;
+    }
+
+    if (this->master_objects != nullptr && p5 >= 0 && p5 < this->master_object_num) {
+        this->master_objects[p5] = loaded;
+    }
+}
 void TRIBE_Master_Player::create_master_object_space(short p1) { RGE_Master_Player::create_master_object_space(p1); }
-void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) { RGE_Master_Player::load_object(p1, p2, p3, p4, p5); }
+void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {
+    RGE_Master_Static_Object* loaded = nullptr;
+
+    if (p2 == 'F') {
+        loaded = new TRIBE_Master_Combat_Object(p1, p3, p4, p5, 1);
+    } else if (p2 == 'P') {
+        loaded = new TRIBE_Master_Building_Object(p1, p3, p4, p5, 1);
+    } else if (p2 == 'Z') {
+        loaded = new TRIBE_Master_Tree_Object(p1, p3, p4, p5, 1);
+    } else {
+        RGE_Master_Player::load_object(p1, p2, p3, p4, p5);
+        return;
+    }
+
+    if (this->master_objects != nullptr && p5 >= 0 && p5 < this->master_object_num) {
+        this->master_objects[p5] = loaded;
+    }
+}
 void TRIBE_Master_Player::save(int p1) { RGE_Master_Player::save(p1); }
 void TRIBE_Player::set_game_status(uchar param_1) { RGE_Player::set_game_status(param_1); }
 void TRIBE_Player::do_resign(int param_1) { RGE_Player::do_resign(param_1); }

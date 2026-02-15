@@ -1,9 +1,96 @@
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Player.h"
+#include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Object_List.h"
+#include "../include/RGE_Object_Node.h"
 #include "../include/globals.h"
+
+#include <stdlib.h>
+
+static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int dopple) {
+    if (self == nullptr) {
+        return nullptr;
+    }
+    if (sleeping != 0) {
+        return self->sleeping_objects;
+    }
+    if (dopple != 0) {
+        return self->doppleganger_objects;
+    }
+    return self->objects;
+}
+
+static void rge_player_set_list(RGE_Player* self, int sleeping, int dopple, RGE_Object_List* list) {
+    if (self == nullptr) {
+        return;
+    }
+    if (sleeping != 0) {
+        self->sleeping_objects = list;
+        return;
+    }
+    if (dopple != 0) {
+        self->doppleganger_objects = list;
+        return;
+    }
+    self->objects = list;
+}
+
+static RGE_Object_List* rge_player_ensure_list(RGE_Player* self, int sleeping, int dopple) {
+    RGE_Object_List* list = rge_player_get_list(self, sleeping, dopple);
+    if (list != nullptr) {
+        return list;
+    }
+
+    // Keep this POD-style until full RGE_Object_List constructor/vtable implementation is landed.
+    list = (RGE_Object_List*)calloc(1, sizeof(RGE_Object_List));
+    if (list == nullptr) {
+        return nullptr;
+    }
+    list->list = nullptr;
+    list->number_of_objects = 0;
+    rge_player_set_list(self, sleeping, dopple, list);
+    return list;
+}
+
+static RGE_Object_Node* rge_player_add_node(RGE_Object_List* list, RGE_Static_Object* obj) {
+    if (list == nullptr) {
+        return nullptr;
+    }
+
+    RGE_Object_Node* node = (RGE_Object_Node*)calloc(1, sizeof(RGE_Object_Node));
+    if (node == nullptr) {
+        return nullptr;
+    }
+
+    node->node = obj;
+    node->prev = nullptr;
+    node->next = list->list;
+    if (list->list != nullptr) {
+        list->list->prev = node;
+    }
+    list->list = node;
+    list->number_of_objects = (short)(list->number_of_objects + 1);
+    return node;
+}
+
+static void rge_player_remove_node(RGE_Object_List* list, RGE_Object_Node* node) {
+    if (list == nullptr || node == nullptr) {
+        return;
+    }
+    if (node->prev != nullptr) {
+        node->prev->next = node->next;
+    } else {
+        list->list = node->next;
+    }
+    if (node->next != nullptr) {
+        node->next->prev = node->prev;
+    }
+    free(node);
+    list->number_of_objects = (short)(list->number_of_objects - 1);
+}
 
 // --- RGE_Player constructors ---
 RGE_Player::RGE_Player() {
@@ -101,7 +188,11 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
         this->master_object_num = master->master_object_num;
         if (this->master_object_num > 0) {
             this->master_objects = (RGE_Master_Static_Object**)calloc(this->master_object_num, sizeof(RGE_Master_Static_Object*));
-            // TODO(accuracy): deep copy master objects via vtable clone
+            for (short i = 0; i < this->master_object_num; ++i) {
+                if (master->master_objects != nullptr && master->master_objects[i] != nullptr) {
+                    this->master_objects[i] = master->master_objects[i]->make_new_master();
+                }
+            }
         }
         // Copy attributes from master player
         this->attribute_num = master->attribute_num;
@@ -393,7 +484,19 @@ void RGE_Player::save(int param_1) {
 void RGE_Player::save2(int param_1) {}
 void RGE_Player::save_info(int param_1) {}
 void RGE_Player::random_start() {}
-RGE_Static_Object* RGE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) { return nullptr; }
+RGE_Static_Object* RGE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
+    (void)param_5;
+    if (param_1 < 0 || this->master_objects == nullptr || param_1 >= this->master_object_num) {
+        return nullptr;
+    }
+
+    RGE_Master_Static_Object* master = this->master_objects[param_1];
+    if (master == nullptr) {
+        return nullptr;
+    }
+
+    return master->make_new_obj(this, param_2, param_3, param_4);
+}
 void RGE_Player::analyize_selected_objects() {}
 int RGE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {
     // Source of truth: player.cpp.decomp @ 0x00471530
@@ -416,8 +519,41 @@ uchar RGE_Player::command_remove_from_group(int param_1, int param_2) { return 1
 uchar RGE_Player::command_destroy_group(int param_1) { return 1; }
 uchar RGE_Player::command_resign(int param_1, int param_2) { return 1; }
 uchar RGE_Player::command_add_waypoint(float param_1, float param_2, float param_3) { return 1; }
-RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) { return nullptr; }
-void RGE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) {}
+RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) {
+    RGE_Object_List* list = rge_player_ensure_list(this, param_2, param_3);
+    if (list == nullptr) {
+        return nullptr;
+    }
+
+    RGE_Object_Node* node = rge_player_add_node(list, param_1);
+    if (node != nullptr && this->world != nullptr) {
+        this->world->addObject(param_1);
+    }
+    return node;
+}
+
+void RGE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) {
+    RGE_Object_List* list = rge_player_get_list(this, param_2, param_3);
+    if (list == nullptr) {
+        return;
+    }
+
+    RGE_Object_Node* node = param_4;
+    if (node == nullptr) {
+        node = list->list;
+        while (node != nullptr && node->node != param_1) {
+            node = node->next;
+        }
+        if (node == nullptr) {
+            return;
+        }
+    }
+
+    rge_player_remove_node(list, node);
+    if (this->world != nullptr && param_1 != nullptr) {
+        this->world->removeObject((int)param_1->id);
+    }
+}
 void RGE_Player::logMessage(char* param_1) {}
 void RGE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
 void RGE_Player::logStatus(FILE* param_1, int param_2) {}

@@ -16,6 +16,61 @@ extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3) {
     // Stub
 }
 
+struct DrawAreaShadowState {
+    TDrawArea* area;
+    uchar* buffer;
+    int pitch;
+    int width;
+    int height;
+    int active;
+    uchar* locked_surface_bits;
+    int locked_surface_pitch;
+};
+
+static DrawAreaShadowState g_drawarea_shadow[32];
+
+static DrawAreaShadowState* drawarea_shadow_state(TDrawArea* area, int create_if_missing) {
+    if (!area) return nullptr;
+
+    for (int i = 0; i < 32; ++i) {
+        if (g_drawarea_shadow[i].area == area) {
+            return &g_drawarea_shadow[i];
+        }
+    }
+
+    if (!create_if_missing) {
+        return nullptr;
+    }
+
+    for (int i = 0; i < 32; ++i) {
+        if (g_drawarea_shadow[i].area == nullptr) {
+            g_drawarea_shadow[i].area = area;
+            g_drawarea_shadow[i].buffer = nullptr;
+            g_drawarea_shadow[i].pitch = 0;
+            g_drawarea_shadow[i].width = 0;
+            g_drawarea_shadow[i].height = 0;
+            g_drawarea_shadow[i].active = 0;
+            g_drawarea_shadow[i].locked_surface_bits = nullptr;
+            g_drawarea_shadow[i].locked_surface_pitch = 0;
+            return &g_drawarea_shadow[i];
+        }
+    }
+
+    return nullptr;
+}
+
+static unsigned long drawarea_surface_bpp(TDrawArea* area) {
+    if (!area) return 8;
+    if (area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
+        unsigned long bpp = area->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount;
+        if (bpp != 0) return bpp;
+    }
+    if (area->Width > 0 && area->Pitch > 0) {
+        return (unsigned long)((area->Pitch * 8) / area->Width);
+    }
+    return 8;
+}
+
 static unsigned long scale_component_to_mask_ul(unsigned int c, unsigned long mask) {
     if (mask == 0) return 0;
     unsigned long m = mask;
@@ -63,6 +118,12 @@ static unsigned long map_color_index_to_surface_pixel(TDrawArea* area, int idx, 
 
 static int drawarea_bytes_per_pixel(TDrawArea* area) {
     if (!area) return 1;
+
+    DrawAreaShadowState* shadow = drawarea_shadow_state(area, 0);
+    if (shadow && shadow->active) {
+        return 1;
+    }
+
     int bpp = 0;
     if (area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
         bpp = (int)area->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount;
@@ -119,6 +180,73 @@ static void drawarea_fill_run(uchar* dst, int count, int bytes_per_pixel, unsign
         drawarea_store_pixel(p, bytes_per_pixel, px);
         p += bytes_per_pixel;
     }
+}
+
+static void drawarea_shadow_clear_indices(TDrawArea* area, tagRECT* rect, int color_idx) {
+    if (!area) return;
+
+    DrawAreaShadowState* shadow = drawarea_shadow_state(area, 0);
+    if (!shadow || !shadow->buffer || shadow->width <= 0 || shadow->height <= 0 || shadow->pitch <= 0) {
+        return;
+    }
+
+    long left = 0;
+    long top = 0;
+    long right = (long)shadow->width - 1;
+    long bottom = (long)shadow->height - 1;
+    if (rect) {
+        left = rect->left;
+        top = rect->top;
+        right = rect->right;
+        bottom = rect->bottom;
+    }
+
+    if (left < 0) left = 0;
+    if (top < 0) top = 0;
+    if (right >= shadow->width) right = (long)shadow->width - 1;
+    if (bottom >= shadow->height) bottom = (long)shadow->height - 1;
+    if (left > right || top > bottom) return;
+
+    if (color_idx < 0) color_idx = 0;
+    if (color_idx > 255) color_idx = 255;
+    const uchar fill = (uchar)color_idx;
+    const int run = (int)(right - left + 1);
+
+    for (long y = top; y <= bottom; ++y) {
+        long row = y;
+        if (area->Orien != 1) {
+            row = ((long)shadow->height - 1) - y;
+        }
+        memset(shadow->buffer + row * shadow->pitch + left, (int)fill, (size_t)run);
+    }
+}
+
+static HRESULT drawarea_blt_colorfill_retry(IDirectDrawSurface* surface, RECT* rect, DDBLTFX* fx, int max_attempts) {
+    if (!surface || !fx) {
+        return DDERR_INVALIDOBJECT;
+    }
+
+    HRESULT hr = DDERR_GENERIC;
+    for (int attempt = 0; attempt < max_attempts; ++attempt) {
+        hr = surface->Blt(rect, NULL, NULL, DDBLT_COLORFILL, fx);
+        if (hr == DD_OK) {
+            return hr;
+        }
+
+        if (hr == DDERR_WASSTILLDRAWING || hr == DDERR_SURFACEBUSY) {
+            Sleep(1);
+            continue;
+        }
+
+        if (hr == DDERR_SURFACELOST) {
+            surface->Restore();
+            Sleep(1);
+            continue;
+        }
+
+        break;
+    }
+    return hr;
 }
 
 TDrawSystem::TDrawSystem() {
@@ -478,7 +606,66 @@ void TDrawSystem::Paint(tagRECT* param_rect) {
         src.bottom = ey + 1;
     }
 
-    this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src, DDBLT_WAIT, NULL);
+    HRESULT hr = DDERR_GENERIC;
+    for (int attempt = 0; attempt < 240; ++attempt) {
+        hr = this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src, 0, NULL);
+        if (hr == DD_OK) {
+            break;
+        }
+
+        if (hr == DDERR_WASSTILLDRAWING || hr == DDERR_SURFACEBUSY) {
+            Sleep(1);
+            continue;
+        }
+
+        if (hr == DDERR_SURFACELOST) {
+            this->CheckSurfaces();
+            Sleep(1);
+            continue;
+        }
+
+        break;
+    }
+
+    if (hr != DD_OK) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Paint blt failed hr=0x%lX dest=%ld,%ld,%ld,%ld src=%ld,%ld,%ld,%ld",
+            (unsigned long)hr,
+            (long)dest.left, (long)dest.top, (long)dest.right, (long)dest.bottom,
+            (long)src.left, (long)src.top, (long)src.right, (long)src.bottom);
+CUSTOM_DEBUG_END
+    }
+}
+
+// Source of truth: Drawarea.cpp.decomp @ 0x00443460
+void TDrawSystem::HandlePaletteChanged(void* wnd, uint msg, uint wparam, long lparam) {
+    if (wnd != this->Wnd) {
+        this->HandleQueryNewPalette(wnd, msg, wparam, lparam);
+    }
+}
+
+// Source of truth: Drawarea.cpp.decomp @ 0x00443490
+int TDrawSystem::HandleQueryNewPalette(void* wnd, uint msg, uint wparam, long lparam) {
+    (void)wnd;
+    (void)msg;
+    (void)wparam;
+    (void)lparam;
+
+    if (this->Pal != nullptr && (this->DrawType == 1 || this->ScreenMode == 1)) {
+        HDC hdc = GetDC((HWND)this->Wnd);
+        if (this->Pal != nullptr) {
+            SelectPalette(hdc, (HPALETTE)this->Pal, FALSE);
+        }
+        const UINT changed = RealizePalette(hdc);
+        ReleaseDC((HWND)this->Wnd, hdc);
+        if (changed != 0) {
+            InvalidateRect((HWND)this->Wnd, NULL, FALSE);
+            return 1;
+        }
+    }
+
+    this->ModifyPalette(0, 0x100, this->palette);
+    return 0;
 }
 
 // Source of truth: Drawarea.cpp.decomp @ 0x00443CB0
@@ -847,7 +1034,14 @@ void TDrawArea::Clear(tagRECT* rect, int color) {
     ddbltfx.dwSize = sizeof(ddbltfx);
     ddbltfx.dwFillColor = map_color_index_to_surface_pixel(this, color, &ddsd, sdesc_hr);
     if (!rect) {
-        this->DrawSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+        drawarea_shadow_clear_indices(this, (tagRECT*)0, color);
+        const HRESULT hr = drawarea_blt_colorfill_retry(this->DrawSurface, NULL, &ddbltfx, 240);
+        if (hr != DD_OK) {
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TDrawArea::Clear full failed hr=0x%lX area=%p surface=%p",
+                (unsigned long)hr, this, this->DrawSurface);
+CUSTOM_DEBUG_END
+        }
         return;
     }
 
@@ -857,7 +1051,15 @@ void TDrawArea::Clear(tagRECT* rect, int color) {
     dr.top = rect->top;
     dr.right = rect->right + 1;
     dr.bottom = rect->bottom + 1;
-    this->DrawSurface->Blt(&dr, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+    drawarea_shadow_clear_indices(this, rect, color);
+    const HRESULT hr = drawarea_blt_colorfill_retry(this->DrawSurface, &dr, &ddbltfx, 240);
+    if (hr != DD_OK) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawArea::Clear rect failed hr=0x%lX area=%p surface=%p rect=%ld,%ld,%ld,%ld",
+            (unsigned long)hr, this, this->DrawSurface,
+            (long)dr.left, (long)dr.top, (long)dr.right, (long)dr.bottom);
+CUSTOM_DEBUG_END
+    }
 }
 
 void TDrawArea::PtrClear(tagRECT* rect, int color) {}
@@ -872,20 +1074,141 @@ uchar* TDrawArea::Lock(char* name, int p2) {
     if (this->Bits != nullptr) return this->Bits;
     if (this->DrawDc != nullptr) return nullptr;
 
-    HRESULT hr = this->DrawSurface->Lock(NULL, &this->SurfaceDesc, (name != nullptr) ? 1 : 0, NULL);
-    if (hr != DD_OK) return nullptr;
+    // Avoid unbounded DDLOCK_WAIT stalls on modern drivers/wrappers.
+    // The original used blocking lock behavior; we keep best-effort parity with bounded retries.
+    HRESULT hr = DDERR_GENERIC;
+    const int max_attempts = (name != nullptr) ? 240 : 1;
+    for (int attempt = 0; attempt < max_attempts; ++attempt) {
+        hr = this->DrawSurface->Lock(NULL, &this->SurfaceDesc, 0, NULL);
+        if (hr == DD_OK) {
+            break;
+        }
+
+        if (hr == DDERR_WASSTILLDRAWING || hr == DDERR_SURFACEBUSY) {
+            Sleep(1);
+            continue;
+        }
+
+        if (hr == DDERR_SURFACELOST) {
+            this->CheckSurface();
+            Sleep(1);
+            continue;
+        }
+
+        break;
+    }
+    if (hr != DD_OK) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawArea::Lock failed hr=0x%lX name='%s' surface=%p",
+            (unsigned long)hr, name ? name : "(null)", this->DrawSurface);
+CUSTOM_DEBUG_END
+        return nullptr;
+    }
 
     this->Bits = (uchar*)this->SurfaceDesc.lpSurface;
     this->SetInfo();
     if (this->Bits != this->LastBits) {
         this->SetAccessOffsets();
     }
+
+    DrawAreaShadowState* shadow = drawarea_shadow_state(this, 1);
+    if (shadow) {
+        shadow->locked_surface_bits = this->Bits;
+        shadow->locked_surface_pitch = this->Pitch;
+        shadow->active = 0;
+
+        if (drawarea_surface_bpp(this) > 8) {
+            int w = this->Width;
+            int h = this->Height;
+            if (w > 0 && h > 0) {
+                int pitch = w;
+                int size = pitch * h;
+                if (shadow->buffer == nullptr || shadow->pitch != pitch || shadow->width != w || shadow->height != h) {
+                    if (shadow->buffer) {
+                        free(shadow->buffer);
+                        shadow->buffer = nullptr;
+                    }
+                    shadow->buffer = (uchar*)malloc((size_t)size);
+                    if (shadow->buffer) {
+                        memset(shadow->buffer, 0, (size_t)size);
+                        shadow->pitch = pitch;
+                        shadow->width = w;
+                        shadow->height = h;
+                    }
+                }
+
+                if (shadow->buffer) {
+                    shadow->active = 1;
+                    this->Bits = shadow->buffer;
+                    this->Pitch = shadow->pitch;
+                    this->SetAccessOffsets();
+                }
+            }
+        }
+    }
+
     return this->Bits;
 }
 
 // Source of truth: Drawarea.cpp.decomp @ 0x00444300
 void TDrawArea::Unlock(char* name) {
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 1) return;
+
+    DrawAreaShadowState* shadow = drawarea_shadow_state(this, 0);
+    if (this->DrawSurface != nullptr && shadow && shadow->active && shadow->buffer != nullptr && shadow->locked_surface_bits != nullptr) {
+        unsigned long bpp = drawarea_surface_bpp(this);
+        int bytes_per_pixel = (int)(bpp / 8);
+        if (bytes_per_pixel <= 0) bytes_per_pixel = 1;
+        if (bytes_per_pixel > 4) bytes_per_pixel = 4;
+
+        long w = this->Width;
+        long h = this->Height;
+        if (w > 0 && h > 0) {
+            // In shadow mode, only flush the current clip region back to the real surface.
+            // Copying the full surface each Unlock can erase GDI text drawn by other controls
+            // between lock/unlock pairs in the same frame.
+            long left = this->ClipRect.left;
+            long top = this->ClipRect.top;
+            long right = this->ClipRect.right;
+            long bottom = this->ClipRect.bottom;
+
+            if (left < 0) left = 0;
+            if (top < 0) top = 0;
+            if (right >= w) right = w - 1;
+            if (bottom >= h) bottom = h - 1;
+
+            if (left > right || top > bottom) {
+                left = 0;
+                top = 0;
+                right = w - 1;
+                bottom = h - 1;
+            }
+
+            for (long y = top; y <= bottom; ++y) {
+                uchar* src_row = shadow->buffer + y * shadow->pitch + left;
+                uchar* dst_row;
+                if (this->Orien == 1) {
+                    dst_row = shadow->locked_surface_bits + y * shadow->locked_surface_pitch + left * bytes_per_pixel;
+                } else {
+                    dst_row = shadow->locked_surface_bits + ((h - 1 - y) * shadow->locked_surface_pitch) + left * bytes_per_pixel;
+                }
+
+                const long run = (right - left) + 1;
+                for (long x = 0; x < run; ++x) {
+                    unsigned long px = drawarea_index_to_pixel_locked(this, src_row[x]);
+                    drawarea_store_pixel(dst_row + x * bytes_per_pixel, bytes_per_pixel, px);
+                }
+            }
+        }
+
+        this->DrawSurface->Unlock(shadow->locked_surface_bits);
+        shadow->active = 0;
+        shadow->locked_surface_bits = nullptr;
+        shadow->locked_surface_pitch = 0;
+        this->Bits = nullptr;
+        return;
+    }
+
     if (this->DrawSurface != nullptr && this->Bits != nullptr) {
         this->DrawSurface->Unlock(this->Bits);
         this->Bits = nullptr;

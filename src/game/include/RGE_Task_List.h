@@ -3,6 +3,15 @@
 
 class RGE_Task_List {
 public:
+    RGE_Task_List();
+    virtual ~RGE_Task_List();
+
+    void copy(RGE_Task_List* param_1);
+    void load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    void load(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    void save(int param_1);
+    void delete_list();
+
     // Virtuals (best-effort)
     virtual RGE_Task* create_task(short param_1, short param_2); // vt[0] (0x0)
     virtual RGE_Task* get_target_task(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5); // vt[1] (0x4)

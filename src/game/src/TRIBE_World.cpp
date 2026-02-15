@@ -133,13 +133,11 @@ void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
 }
 void TRIBE_World::effects_init(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E650
-    // Original: this->effects = new TRIBE_Effects(param_1);
-    // WORKAROUND: TRIBE_Effects(fd) reads effect data from empires.dat via rge_read,
-    // but the file position is wrong (preceding stubs don't advance it).
-    // Create an empty effects object instead.
-    this->effects = nullptr;
+    this->effects = new TRIBE_Effects(param_1);
 }
-void TRIBE_World::master_player_init(int param_1) { RGE_Game_World::master_player_init(param_1); }
+void TRIBE_World::master_player_init(int param_1) {
+    RGE_Game_World::master_player_init(param_1);
+}
 void TRIBE_World::command_init(int param_1, TCommunications_Handler* param_2) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E530
     this->commands = new TRIBE_Command(this, param_2);

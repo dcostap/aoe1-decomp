@@ -19,6 +19,7 @@ static unsigned long g_slp_ext_counts[256] = {0};
 static unsigned long g_slp_px_total[16] = {0};
 static unsigned long g_slp_px_zero[16] = {0};
 static int g_slp_decode_logged = 0;
+static const int g_collect_slp_stats = 0;
 
 static int shape_file_load(const char* path, unsigned char** out_data, int* out_size) {
     if (!path || !out_data || !out_size) return 0;
@@ -61,22 +62,42 @@ static int shape_has_version_110(const void* p) {
 
 static int shape_bytes_per_pixel(TDrawArea* draw_area) {
     if (!draw_area) return 1;
+    int bytes = 1;
+
     if (draw_area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
         int bpp = (int)draw_area->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount;
         if (bpp > 0) {
-            int bytes = bpp / 8;
-            if (bytes < 1) bytes = 1;
-            if (bytes > 4) bytes = 4;
-            return bytes;
+            bytes = bpp / 8;
         }
     }
-    if (draw_area->Width > 0 && draw_area->Pitch > 0) {
-        int bytes = draw_area->Pitch / draw_area->Width;
-        if (bytes < 1) bytes = 1;
-        if (bytes > 4) bytes = 4;
-        return bytes;
+
+    if (bytes <= 0 && draw_area->Width > 0 && draw_area->Pitch > 0) {
+        bytes = draw_area->Pitch / draw_area->Width;
     }
-    return 1;
+    if (bytes <= 0) bytes = 1;
+    if (bytes > 4) bytes = 4;
+
+    // Non-original safety:
+    // Drawarea.cpp can lock >8bpp surfaces through an internal 8bpp shadow buffer
+    // (Pitch == Width, Bits points to indexed staging memory). In that mode, treating
+    // writes as 16/24/32bpp corrupts heap memory.
+    if (draw_area->Bits != nullptr &&
+        draw_area->Width > 0 &&
+        draw_area->Pitch == draw_area->Width &&
+        draw_area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC) &&
+        draw_area->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount > 8) {
+        bytes = 1;
+    }
+
+    // Hard guard: never let pixel size exceed row stride.
+    if (draw_area->Width > 0 && draw_area->Pitch > 0 && (bytes * draw_area->Width) > draw_area->Pitch) {
+        int stride_bytes = draw_area->Pitch / draw_area->Width;
+        if (stride_bytes <= 0) stride_bytes = 1;
+        if (stride_bytes > 4) stride_bytes = 4;
+        bytes = stride_bytes;
+    }
+
+    return bytes;
 }
 
 static unsigned long shape_scale_to_mask(unsigned int c, unsigned long mask) {
@@ -426,12 +447,9 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
     short right = *(short*)(base + outline_off + 2);
     if (left < 0) return 0;
 
-    // Source-of-truth note: shape_check applies both x < Width and x <= Width - right.
-    // This means right values 0/1 both allow the right-most pixel.
-    long row_max_x = info->Width - 1;
-    if (right > 1) {
-        row_max_x = info->Width - right;
-    }
+    // Right outline count is inclusive-exclusive: last visible x is Width - right - 1.
+    long row_max_x = info->Width - (long)right - 1;
+    if (row_max_x < (long)left) return 0;
     if (lx < left || lx > row_max_x) return 0;
 
     unsigned long row_off = *(unsigned long*)(base + data_off_tbl);
@@ -447,7 +465,8 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
         if (op == 0x0F) return 0;
         if (op == 0x02 || op == 0x03) {
             if (src >= end) return 0;
-            run = (unsigned int)(((unsigned int)cmd << 4) | *src++);
+            // SLP long-run length uses only the high nibble of the command byte.
+            run = (unsigned int)((((unsigned int)cmd & 0xF0u) << 4) | *src++);
             if (op == 0x02) {
                 if (lx < cur_x + (long)run) return 1;
                 if (src + run > end) return 0;
@@ -685,10 +704,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         unsigned char* src = slp_base + row_off;
 
         long dst_x = draw_x + (long)left;
-        long max_x = draw_x + width - 1;
-        if (right > 1) {
-            max_x = draw_x + width - (long)right;
-        }
+        long max_x = draw_x + width - (long)right - 1;
+        if (max_x < dst_x) continue;
         int off = (draw_area->Orien == 1) ? (int)(dst_y * dest_pitch) : (int)(((draw_area->Height - dst_y) - 1) * dest_pitch);
         unsigned char* dst_row = dest_bits + off;
 
@@ -696,17 +713,20 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             if (src >= shape_end) break;
             unsigned char cmd = *src++;
             unsigned char op = (unsigned char)(cmd & 0x0F);
-            g_slp_cmd_total++;
-            g_slp_op_counts[op & 0x0F]++;
-            if (op == 0x0E) {
-                g_slp_ext_counts[cmd]++;
+            if (g_collect_slp_stats) {
+                g_slp_cmd_total++;
+                g_slp_op_counts[op & 0x0F]++;
+                if (op == 0x0E) {
+                    g_slp_ext_counts[cmd]++;
+                }
             }
 
             if (op == 0x0F) break;
 
             if (op == 0x02 || op == 0x03) {
                 if (src >= shape_end) break;
-                unsigned int len = (unsigned int)(((unsigned int)cmd << 4) | (*src++));
+                // SLP long-run length uses only the high nibble of the command byte.
+                unsigned int len = (unsigned int)((((unsigned int)cmd & 0xF0u) << 4) | (*src++));
                 if (op == 0x03) {
                     dst_x += (long)len;
                     continue;
@@ -715,8 +735,10 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
-                    g_slp_px_total[op]++;
-                    if (px == 0) g_slp_px_zero[op]++;
+                    if (g_collect_slp_stats) {
+                        g_slp_px_total[op]++;
+                        if (px == 0) g_slp_px_zero[op]++;
+                    }
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
                         unsigned char out_idx = xlate ? xlate[px] : px;
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -766,8 +788,10 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         if (op == 0x0B) {
                             shape_shadow_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
                         } else {
-                            g_slp_px_total[op]++;
-                            if (px == 0) g_slp_px_zero[op]++;
+                            if (g_collect_slp_stats) {
+                                g_slp_px_total[op]++;
+                                if (px == 0) g_slp_px_zero[op]++;
+                            }
                             unsigned char out_idx = xlate ? xlate[px] : px;
                             unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                             shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
@@ -781,13 +805,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             if (op == 0x0E) {
                 // Extended SLP commands (0x?E). We only implement non-xflipped behavior used by terrain.
                 if (cmd == 0x4E || cmd == 0x6E) {
-                    // Special colors are mostly used by outline-enabled sprites; terrain typically doesn't rely on them.
-                    unsigned char px = (cmd == 0x4E) ? 1 : 2;
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                        unsigned char out_idx = xlate ? xlate[px] : px;
-                        unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
-                        shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
-                    }
+                    // Outline-control pixels are non-visual in the standard draw path.
+                    // Advancing x without writing avoids right-edge artifact stripes on menu backgrounds.
                     dst_x++;
                     continue;
                 }
@@ -795,13 +814,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (cmd == 0x5E || cmd == 0x7E) {
                     if (src >= shape_end) break;
                     unsigned int len = (unsigned int)(*src++);
-                    unsigned char px = (cmd == 0x5E) ? 1 : 2;
                     for (unsigned int i = 0; i < len; ++i) {
-                        if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                            unsigned char out_idx = xlate ? xlate[px] : px;
-                            unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
-                            shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
-                        }
                         dst_x++;
                     }
                     continue;
@@ -821,8 +834,10 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
-                    g_slp_px_total[op & 0x0F]++;
-                    if (px == 0) g_slp_px_zero[op & 0x0F]++;
+                    if (g_collect_slp_stats) {
+                        g_slp_px_total[op & 0x0F]++;
+                        if (px == 0) g_slp_px_zero[op & 0x0F]++;
+                    }
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
                         unsigned char out_idx = xlate ? xlate[px] : px;
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -837,7 +852,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         }
     }
 
-    if (!g_slp_decode_logged && g_slp_cmd_total > 50000) {
+    if (g_collect_slp_stats && !g_slp_decode_logged && g_slp_cmd_total > 50000) {
         g_slp_decode_logged = 1;
         CUSTOM_DEBUG_LOG_FMT(
             "TShape::SLP decode cmd stats: total=%lu op0=%lu op1=%lu op2=%lu op3=%lu op4=%lu op5=%lu op6=%lu op7=%lu op8=%lu op9=%lu opA=%lu opB=%lu opC=%lu opD=%lu opE=%lu opF=%lu",

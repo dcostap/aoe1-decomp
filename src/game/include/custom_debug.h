@@ -47,9 +47,9 @@
 #if CUSTOM_DEBUG_ENABLED
 
 // Global debug state
-static FILE* g_debugLog = nullptr;
-static int g_debugInitialized = 0;
-static CRITICAL_SECTION g_debugLock;
+inline FILE* g_debugLog = nullptr;
+inline int g_debugInitialized = 0;
+inline CRITICAL_SECTION g_debugLock;
 
 // Initialize debug logging system
 inline void CustomDebug_Init() {

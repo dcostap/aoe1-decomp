@@ -1,4 +1,12 @@
 #include "../include/RGE_Master_Player.h"
+#include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Master_Animated_Object.h"
+#include "../include/RGE_Master_Moving_Object.h"
+#include "../include/RGE_Master_Action_Object.h"
+#include "../include/RGE_Master_Combat_Object.h"
+#include "../include/RGE_Master_Missile_Object.h"
+#include "../include/RGE_Master_Doppleganger_Object.h"
+#include "../include/custom_debug.h"
 #include "../include/globals.h"
 #include <stdlib.h>
 #include <string.h>
@@ -71,13 +79,136 @@ RGE_Master_Player::~RGE_Master_Player() {
     }
 }
 
-void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {}
-void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {}
+void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    const long begin_pos = rge_stream_tell(param_1);
+    short* object_count = &this->master_object_num;
+    rge_read(param_1, object_count, 2);
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Master_Player::finish_init begin stream_pos=%ld master_object_num=%d",
+        begin_pos,
+        (int)this->master_object_num);
+
+    if (*object_count < 1) {
+        this->master_objects = nullptr;
+        CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init no objects stream_pos=%ld", rge_stream_tell(param_1));
+        return;
+    }
+
+    this->master_objects = (RGE_Master_Static_Object**)calloc((int)*object_count, sizeof(RGE_Master_Static_Object*));
+    if (this->master_objects == nullptr) {
+        this->master_object_num = 0;
+        CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init alloc failed stream_pos=%ld", rge_stream_tell(param_1));
+        return;
+    }
+
+    rge_read(param_1, this->master_objects, (int)*object_count * (int)sizeof(RGE_Master_Static_Object*));
+    int marker_non_null = 0;
+    for (short i = 0; i < *object_count; ++i) {
+        if (this->master_objects[i] != nullptr) {
+            marker_non_null++;
+        }
+    }
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Master_Player::finish_init marker_table_done stream_pos=%ld non_null=%d/%d",
+        rge_stream_tell(param_1),
+        marker_non_null,
+        (int)*object_count);
+
+    for (short i = 0; i < *object_count; ++i) {
+        if (this->master_objects[i] != nullptr) {
+            uchar master_type = 0;
+            const long type_pos = rge_stream_tell(param_1);
+            rge_read(param_1, &master_type, 1);
+            if (i < 24 || i + 1 == *object_count) {
+                CUSTOM_DEBUG_LOG_FMT(
+                    "RGE_Master_Player::finish_init object idx=%d type=0x%02X type_pos=%ld after_type_pos=%ld",
+                    (int)i,
+                    (unsigned int)master_type,
+                    type_pos,
+                    rge_stream_tell(param_1));
+            }
+            this->load_master_object(param_1, master_type, param_2, param_3, i);
+        }
+    }
+
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Master_Player::finish_init end stream_pos=%ld consumed=%ld",
+        rge_stream_tell(param_1),
+        rge_stream_tell(param_1) - begin_pos);
+}
+
+void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
+    RGE_Master_Static_Object* loaded = nullptr;
+
+    switch (param_2) {
+    case '\n':
+        loaded = new RGE_Master_Static_Object(param_1, param_3, param_4, 1);
+        break;
+    case '\x14':
+        loaded = new RGE_Master_Animated_Object(param_1, param_3, param_4, 1);
+        break;
+    case '\x19':
+        loaded = new RGE_Master_Doppleganger_Object(param_1, param_3, param_4, 1);
+        break;
+    case '\x1e':
+        loaded = new RGE_Master_Moving_Object(param_1, param_3, param_4, 1);
+        break;
+    case '(':
+        loaded = new RGE_Master_Action_Object(param_1, param_3, param_4, 1);
+        break;
+    case '2':
+        loaded = new RGE_Master_Combat_Object(param_1, param_3, param_4, 1);
+        break;
+    case '<':
+        loaded = new RGE_Master_Missile_Object(param_1, param_3, param_4, 1);
+        break;
+    default:
+        loaded = nullptr;
+        break;
+    }
+
+    if (this->master_objects != nullptr && param_5 >= 0 && param_5 < this->master_object_num) {
+        this->master_objects[param_5] = loaded;
+    }
+}
 void RGE_Master_Player::create_master_object_space(short param_1) {
     this->master_object_num = param_1;
     if (param_1 > 0) {
         this->master_objects = (RGE_Master_Static_Object**)calloc(param_1, sizeof(RGE_Master_Static_Object*));
     }
 }
-void RGE_Master_Player::load_object(FILE* param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {}
+void RGE_Master_Player::load_object(FILE* param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
+    RGE_Master_Static_Object* loaded = nullptr;
+
+    switch (param_2) {
+    case '\n':
+        loaded = new RGE_Master_Static_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    case '\x14':
+        loaded = new RGE_Master_Animated_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    case '\x19':
+        loaded = new RGE_Master_Doppleganger_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    case '\x1e':
+        loaded = new RGE_Master_Moving_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    case '(':
+        loaded = new RGE_Master_Action_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    case '2':
+        loaded = new RGE_Master_Combat_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    case '<':
+        loaded = new RGE_Master_Missile_Object(param_1, param_3, param_4, param_5, 1);
+        break;
+    default:
+        loaded = nullptr;
+        break;
+    }
+
+    if (this->master_objects != nullptr && param_5 >= 0 && param_5 < this->master_object_num) {
+        this->master_objects[param_5] = loaded;
+    }
+}
 void RGE_Master_Player::save(int param_1) {}

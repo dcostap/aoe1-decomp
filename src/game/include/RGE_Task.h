@@ -2,6 +2,14 @@
 #include "common.h"
 
 struct RGE_Task {
+    RGE_Task(short param_1);
+    ~RGE_Task();
+
+    void copy(RGE_Task* param_1);
+    void load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    void load(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    void save(int param_1);
+
     short task_type;
     short id;
     uchar is_default;

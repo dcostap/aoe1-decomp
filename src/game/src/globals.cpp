@@ -54,7 +54,7 @@ int all_cp = 0;
 int numberPathingIterations = 2500; // default per decomp (0x9c4)
 int useComputerPlayers = 1; // default per ASM (= 1h)
 int show_timing_max = 0;
-float save_game_version = 0.0f;
+float save_game_version = 7.23f;
 unsigned char die_die_die = 0;
 int world_update_counter = 0;
 int ENABLE_COMPRESSION = 1;

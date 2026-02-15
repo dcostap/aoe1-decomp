@@ -15,6 +15,7 @@
 #include "../include/TPanel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TScreenPanel.h"
+#include "../include/TMusic_System.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Scenario.h"
@@ -186,6 +187,7 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
     this->input_enabled = 1;
     
     this->video_window = nullptr; // [ESI + 0x1dc]
+    this->started_menu_music = 0;
     
     // Lines 258-268: Initialize various strings and values
     this->testing_scenario[0] = '\0'; // [ESI + 0xc58]
@@ -321,6 +323,12 @@ TRIBE_Game::~TRIBE_Game() {
 }
 
 int TRIBE_Game::setup() {
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
+CUSTOM_DEBUG_END
+    // Non-original safety shim:
+    // force quick-start SP path while menu/text panel rendering is being stabilized.
+    quick_start_game_mode = 1;
     if (this->player_game_info) {
         return 0;
     }
@@ -371,6 +379,9 @@ int TRIBE_Game::setup() {
     
     StringTableX = LoadLibraryA(string_dll_name);
     if (!StringTableX) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: LoadLibraryA failed for '%s'", string_dll_name);
+CUSTOM_DEBUG_END
         this->error_code = 1;
         return 0;
     }
@@ -385,6 +396,9 @@ int TRIBE_Game::setup() {
     if (this->check_prog_argument("LOBBY")) {
         // Lobby startup logic
         // TCommunications_Handler::LaunchLobbyGame ...
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TRIBE_Game::setup: LOBBY startup path");
+CUSTOM_DEBUG_END
     } else {
         if (this->startup_scenario[0]) {
             if (this->start_scenario(this->startup_scenario)) goto FINAL_SETUP;
@@ -393,13 +407,22 @@ int TRIBE_Game::setup() {
             if (this->load_game(this->startup_game)) goto FINAL_SETUP;
         }
         
-        if (1 || quick_start_game_mode) {
-            this->start_game(0);
+        if (quick_start_game_mode) {
+            int start_ok = this->start_game(0);
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: quick_start -> start_game result=%d", start_ok);
+CUSTOM_DEBUG_END
         } else if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
-            this->start_menu();
+            int menu_ok = this->start_menu();
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: NOSTARTUP -> start_menu result=%d", menu_ok);
+CUSTOM_DEBUG_END
         } else {
             // Check for NOVIDEO/SKIPVIDEO etc inside start_video
-            this->start_video(0, (char*)"logo1");
+            int video_ok = this->start_video(0, (char*)"logo1");
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: start_video(0,'logo1') result=%d", video_ok);
+CUSTOM_DEBUG_END
         }
     }
 
@@ -441,6 +464,9 @@ FINAL_SETUP:
     sprintf(options_log, "options=%s", this->prog_info->cmd_line);
     run_log(options_log, 0);
 
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: exit success prog_mode=%d game_mode=%d", this->prog_mode, this->game_mode);
+CUSTOM_DEBUG_END
     return 1;
 }
 
@@ -1079,6 +1105,23 @@ int TRIBE_Game::create_game_screen() {
         return 0;
     }
 
+    // Temporary GameViewPanel path has no `.bina` setup file, so it won't load a panel palette.
+    // Keep map colors sane by binding the program palette explicitly.
+    if (this->prog_palette) {
+        void* panel_pal = this->prog_palette;
+        if (panel_system && this->prog_info) {
+            void* acquired = panel_system->get_palette(this->prog_info->pal_file, 50500);
+            if (acquired) {
+                panel_pal = acquired;
+            }
+        }
+
+        screen->palette = panel_pal;
+        if (this->draw_system) {
+            this->draw_system->SetPalette(this->prog_palette);
+        }
+    }
+
     screen->set_ideal_size(this->prog_info ? this->prog_info->main_wid : 0x280,
                            this->prog_info ? this->prog_info->main_hgt : 0x1e0);
 
@@ -1164,7 +1207,9 @@ CUSTOM_DEBUG_END
     this->disable_input();
 
     if (!this->world) {
-        this->show_status_message(0x44d, info_file, info_id);
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("start_game: status message suppressed (loading)");
+CUSTOM_DEBUG_END
 CUSTOM_DEBUG_BEGIN
         CUSTOM_DEBUG_LOG("start_game: loading game data...");
 CUSTOM_DEBUG_END
@@ -1181,7 +1226,9 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
     }
 
-    this->show_status_message(0x451, info_file, info_id);
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("start_game: status message suppressed (creating game)");
+CUSTOM_DEBUG_END
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("start_game: creating game...");
 CUSTOM_DEBUG_END
@@ -1230,6 +1277,19 @@ int TRIBE_Game::load_db_files() {
 int TRIBE_Game::start_menu() {
     // Best-effort reimplementation based on immutable reference:
     // `src/game/src/tribegam.cpp.asm` / `.decomp` (start_menu @ 0x00524030).
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::start_menu: enter world=%p game_screen=%p", this->world, this->game_screen);
+CUSTOM_DEBUG_END
+
+    // If we are returning from an active game, clear gameplay state before menu creation.
+    // Important: keep Game Screen destruction out of close_game_screens here, because
+    // screen switching already removes/retires the old current screen.
+    this->close_game_screens(0);
+    this->game_screen = nullptr;
+    if (this->world) {
+        delete this->world;
+        this->world = nullptr;
+    }
 
     if (this->video_setup != 0) {
         // TODO: Implement `TRIBE_Game::shutdown_video_system` accurately, then call it here.
@@ -1237,10 +1297,18 @@ int TRIBE_Game::start_menu() {
     }
 
     TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
-    if (!menu) return 0;
+    if (!menu) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TRIBE_Game::start_menu: allocation failed");
+CUSTOM_DEBUG_END
+        return 0;
+    }
 
     // The constructor calls `TScreenPanel::setup(...)`. If it failed, `TPanel::error_code` is set.
     if (menu->error_code != 0) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::start_menu: menu setup failed error_code=%d", menu->error_code);
+CUSTOM_DEBUG_END
         delete menu;
         return 0;
     }
@@ -1252,9 +1320,22 @@ int TRIBE_Game::start_menu() {
     // In the original, this is done via a virtual call at vtable +0xC (set_prog_mode).
     this->set_prog_mode(2);
 
-    // TODO: Menu music startup via `TMusic_System` (`open.mid` / `open.wav` / track 2).
-    this->started_menu_music = 1;
+    TMusic_System* music = this->music_system;
+    if (music != nullptr && this->started_menu_music == 0) {
+        uchar music_type = music->music_type;
+        if (music_type == 1) {
+            music->play_track(2, 0, 0);
+        } else if (music_type == 2) {
+            music->play_file((char*)"open.mid", 0, 0);
+        } else if (music_type == 3) {
+            music->play_file((char*)"open.wav", 0, 0);
+        }
+        this->started_menu_music = 1;
+    }
 
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::start_menu: success prog_mode=%d current_screen=%p", this->prog_mode, menu);
+CUSTOM_DEBUG_END
     return 1;
 }
 
@@ -1275,8 +1356,18 @@ CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("let_game_begin: transitioning to in-game mode");
 CUSTOM_DEBUG_END
 
-    // TODO(accuracy): game music start (play_tracks for CD/MIDI/WAV)
-    this->started_menu_music = 0;
+    TMusic_System* music = this->music_system;
+    if (music != nullptr) {
+        uchar music_type = music->music_type;
+        if (music_type == 1) {
+            music->play_tracks(5, 0x0E, 1, 0, 0);
+        } else if (music_type == 2) {
+            music->play_tracks(1, music->track_count, 1, 0, 0);
+        } else if (music_type == 3) {
+            music->stop_track();
+        }
+        this->started_menu_music = 0;
+    }
 
     // Source of truth: tribegam.cpp.decomp @ 0x00528670 line 6780
     this->reset_timings();
@@ -1393,8 +1484,8 @@ void TRIBE_Game::send_game_options() {}
 void TRIBE_Game::receive_game_options() {}
 char* TRIBE_Game::gameSummary() { return nullptr; }
 int TRIBE_Game::processCheatCode(int p1, char* p2) { return 0; }
-int TRIBE_Game::setup_music_system() { return 1; }
-void TRIBE_Game::shutdown_music_system() {}
+int TRIBE_Game::setup_music_system() { return RGE_Base_Game::setup_music_system(); }
+void TRIBE_Game::shutdown_music_system() { RGE_Base_Game::shutdown_music_system(); }
 
 // NOTE: These setup_* functions delegate to parent class per ASM analysis.
 // TRIBE_Game does NOT override initialization behavior - only TRIBE_Game::setup() is overridden.
@@ -1453,8 +1544,8 @@ void TRIBE_Game::setup_timings() {}
 
 void TRIBE_Game::stop_sound_system() {}
 int TRIBE_Game::restart_sound_system() { return 1; }
-void TRIBE_Game::stop_music_system() {}
-int TRIBE_Game::restart_music_system() { return 1; }
+void TRIBE_Game::stop_music_system() { RGE_Base_Game::stop_music_system(); }
+int TRIBE_Game::restart_music_system() { return RGE_Base_Game::restart_music_system(); }
 
 RGE_Game_World* TRIBE_Game::create_world() { 
     if (this->world) {
@@ -1506,20 +1597,6 @@ int TRIBE_Game::handle_idle() {
     }
     // Menu mode (prog_mode == 2): base class already called panel->handle_idle()
 
-    // Draw current panel tree + flip
-    TPanel* active = nullptr;
-    if (panel_system && panel_system->currentPanelValue) {
-        active = panel_system->currentPanelValue;
-    } else {
-        active = gCurrentScreen;
-    }
-    if (active) {
-        active->draw_tree();
-    }
-    if (this->draw_system) {
-        this->draw_system->Paint(NULL);
-    }
-
     this->inHandleIdle = 0;
     return base_result;
 }
@@ -1535,11 +1612,6 @@ int TRIBE_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
 CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG("handle_key_down: ESC pressed in game mode, returning to menu");
 CUSTOM_DEBUG_END
-            this->close_game_screens(1);
-            if (this->world) {
-                delete this->world;
-                this->world = nullptr;
-            }
             int ret = this->start_menu();
             if (ret == 0) {
                 this->close();
@@ -1570,6 +1642,10 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     }
 
     if (to_draw) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::handle_paint: drawing panel=%p name='%s'",
+            to_draw, to_draw->panelNameValue ? to_draw->panelNameValue : "(null)");
+CUSTOM_DEBUG_END
         if (this->input_enabled == 0) {
             // Same safety intent as `tribe_apply_screen_switch`: keep UI responsive even if the
             // idle path is not reached frequently.
@@ -1579,10 +1655,19 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
             }
         }
         to_draw->draw_tree();
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint: draw_tree done");
+CUSTOM_DEBUG_END
     }
 
     if (this->draw_system) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint: draw_system->Paint begin");
+CUSTOM_DEBUG_END
         this->draw_system->Paint(NULL);
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint: draw_system->Paint done");
+CUSTOM_DEBUG_END
     }
     return 1;
 }
