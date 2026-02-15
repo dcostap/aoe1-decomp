@@ -1,6 +1,7 @@
 #include "../include/TRIBE_Tech.h"
 #include "../include/TRIBE_World.h"
 #include "../include/RGE_Effects.h"
+#include "../include/custom_debug.h"
 #include "../include/globals.h"
 
 // Source of truth: bucket_050B.cpp.decomp
@@ -13,7 +14,12 @@ TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
     // Source of truth: bucket_050B.cpp.decomp @ 0x0050B840
     this->world = param_2;
     rge_read(param_1, &this->tech_tree_num, 2);
-    if (this->tech_tree_num < 1) {
+    if (this->tech_tree_num < 1 || this->tech_tree_num > 4096) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Tech::TRIBE_Tech(binary): rejecting tech_tree_num=%d (fd=%d)",
+            (int)this->tech_tree_num,
+            param_1);
+        this->tech_tree_num = 0;
         this->tech_tree = nullptr;
     } else {
         this->tech_tree = (Tech_Tree*)calloc(0x3c, (int)this->tech_tree_num);
@@ -43,7 +49,7 @@ TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
             // Read name
             short name_len = 0;
             rge_read(param_1, &name_len, 2);
-            if (name_len < 1) {
+            if (name_len < 1 || name_len > 4096) {
                 this->tech_tree[i].name = nullptr;
             } else {
                 this->tech_tree[i].name = (char*)calloc(1, (int)name_len);

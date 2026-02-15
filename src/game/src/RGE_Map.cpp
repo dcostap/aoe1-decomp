@@ -4,6 +4,7 @@
 #include "TSpan_List_Manager.h"
 #include "RGE_Border_Set.h"
 #include "RGE_Game_World.h"
+#include "RGE_RMM_Database_Controller.h"
 #include "TShape.h"
 #include "custom_debug.h"
 #include "debug_helpers.h"
@@ -325,8 +326,24 @@ void RGE_Map::load_terrain_obj_types(char* filename)
     // Stub
 }
 
-void RGE_Map::data_load_random_map(int param_1) {}
-void RGE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char* param_4) {}
+void RGE_Map::data_load_random_map(int param_1) {
+    // Source of truth: map.cpp.decomp @ 0x004557C0.
+    if (this->random_map != nullptr) {
+        delete this->random_map;
+        this->random_map = nullptr;
+    }
+    this->random_map = new RGE_RMM_Database_Controller(param_1);
+}
+
+void RGE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char* param_4) {
+    // Source of truth: map.cpp.decomp @ 0x00455820.
+    // Constructor argument order from decomp is (param_2, param_3, param_4, param_1).
+    if (this->random_map != nullptr) {
+        delete this->random_map;
+        this->random_map = nullptr;
+    }
+    this->random_map = new RGE_RMM_Database_Controller(param_2, param_3, param_4, param_1);
+}
 uchar RGE_Map::do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4) { return 0; }
 uchar RGE_Map::do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { return 0; }
 uchar RGE_Map::do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4) { return 0; }

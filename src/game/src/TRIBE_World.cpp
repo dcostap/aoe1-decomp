@@ -150,9 +150,7 @@ void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunication
     if (this->tech) {
         delete this->tech;
     }
-    // WORKAROUND: TRIBE_Tech(fd, world) reads tech tree from empires.dat via rge_read,
-    // but the file position is wrong. Create a stub tech with zero entries.
-    this->tech = new TRIBE_Tech((char*)nullptr);
+    this->tech = new TRIBE_Tech(param_1, this);
 
     this->victory_type = 0;
     this->artifact_count = 0;

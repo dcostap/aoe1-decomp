@@ -565,21 +565,22 @@ void TButtonPanel::draw() {
         this->curr_child = nullptr;
         return;
     }
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw enter this=%p state=%d drawType=%d name='%s'",
-        this, (int)this->cur_state, (int)this->drawTypeValue,
-        this->panelNameValue ? this->panelNameValue : "(null)");
-CUSTOM_DEBUG_END
 
-    // 1. Restore background under the button.
-    // Source of truth: `pnl_btn.cpp.decomp` / `pnl_btn.cpp.asm`.
+    // 1. Clear/Background restore (source of truth: `Pnl_btn.cpp.decomp`).
+    //
+    // Main-menu buttons (scr1) use a shaded background "plate" produced by asking the parent to
+    // redraw the background clipped to this button, with `draw_rect2` (shadowed) for bevel types 2..4.
     if (this->drawTypeValue == TButtonPanel::DrawFillAndText) {
+        // NOTE: The original clears using a per-panel fill byte; field mapping is not confirmed.
         this->render_area->Clear(&this->clip_rect, (int)this->color);
     } else if (this->parent_panel) {
         if (this->bevel_type >= 2 && this->bevel_type <= 4) {
             this->parent_panel->draw_rect2(&this->clip_rect);
-        } else if (this->parent_panel->overlapping_children == 0) {
-            this->parent_panel->draw_rect(&this->clip_rect);
+        } else {
+            // Only do the plain restore for non-overlapping parents (matches `Pnl_btn.cpp.decomp`).
+            if (this->parent_panel->overlapping_children == 0) {
+                this->parent_panel->draw_rect(&this->clip_rect);
+            }
         }
     }
 
@@ -594,13 +595,7 @@ CUSTOM_DEBUG_END
     if (draw_type == (int)TButtonPanel::DrawPicture ||
         draw_type == (int)TButtonPanel::DrawPictureAndText ||
         draw_type == (int)TButtonPanel::DrawBevelPicture) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw pic-path lock begin this=%p", this);
-CUSTOM_DEBUG_END
         if (this->render_area->Lock((char*)"pnl_btn::draw", 1)) {
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw pic-path lock ok this=%p", this);
-CUSTOM_DEBUG_END
             TShape* shape = this->pic[state];
             if (shape) {
                 if (this->auto_pic_pos != 0) {
@@ -617,22 +612,13 @@ CUSTOM_DEBUG_END
                     draw_x++;
                     draw_y--;
                 }
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw shape_draw begin this=%p shape=%p", this, shape);
-CUSTOM_DEBUG_END
                 shape->shape_draw(this->render_area, draw_x, draw_y, this->pic_index[state], 0, 0, nullptr);
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw shape_draw done this=%p", this);
-CUSTOM_DEBUG_END
             }
             this->render_area->Unlock((char*)"pnl_btn::draw");
         }
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw pic-path lock/end this=%p", this);
-CUSTOM_DEBUG_END
     }
 
-    // 3. GDI text.
+    // 3. GDI Text (source of truth: `Pnl_btn.cpp.decomp`).
     if (draw_type == (int)TButtonPanel::DrawTextA ||
         draw_type == (int)TButtonPanel::DrawPictureAndText ||
         draw_type == (int)TButtonPanel::DrawFillAndText) {
@@ -698,9 +684,6 @@ CUSTOM_DEBUG_END
         draw_type == (int)TButtonPanel::DrawPictureAndText ||
         draw_type == (int)TButtonPanel::DrawFillAndText ||
         draw_type == (int)TButtonPanel::DrawBevelPicture) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw bevel lock begin this=%p", this);
-CUSTOM_DEBUG_END
         if (this->render_area->Lock((char*)"pnl_btn::draw2", 1)) {
             const long x1 = this->pnl_x;
             const long y1 = this->pnl_y;
@@ -748,15 +731,9 @@ CUSTOM_DEBUG_END
             }
             this->render_area->Unlock((char*)"pnl_btn::draw2");
         }
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw bevel lock/end this=%p", this);
-CUSTOM_DEBUG_END
     }
 
     this->draw_finish();
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw exit this=%p", this);
-CUSTOM_DEBUG_END
 }
 
 void TButtonPanel::set_state_info(int num_states) {
