@@ -72,6 +72,8 @@ public:
     virtual int addObject(RGE_Static_Object* param_1); // vt[62] (0xF8)
     virtual int removeObject(int param_1); // vt[63] (0xFC)
 
+    void check_destructables(short param_1, short param_2, float param_3, float param_4, uchar param_5);
+
     TRIBE_Tech* tech;
     int victory_type;
     int artifact_count;

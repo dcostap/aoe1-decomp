@@ -45,7 +45,11 @@ public:
     void set_terrain(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7);
     void set_terrain_absolute(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7);
     void set_terrain(RGE_Player* player, RGE_Game_World* world, short col0, short row0, short col1, short row1, uchar terrain, uchar apply_terrain, int object_behavior);
+    uchar postclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void preclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void clean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
     void clean_terrain(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void set_elev(short param_1, short param_2, short param_3, short param_4, uchar param_5, short param_6, uchar param_7);
     void coordinate_map();
     void set_map_visible(uchar flag);
     void set_map_fog(uchar flag);

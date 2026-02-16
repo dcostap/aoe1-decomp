@@ -17,6 +17,26 @@ public:
     virtual void rehook(); // vt[2] (0x8)
     virtual void save(int param_1); // vt[3] (0xC)
 
+    void InitializeVictoryValues();
+    void Set_victory_all_flag(int param_1);
+    int Get_victory_all_flag();
+    void SetMPVictory(int param_1);
+    int GetMPVictory();
+    void SetVictoryScore(int param_1);
+    int GetVictoryScore();
+    void SetVictoryTime(int param_1);
+    int GetVictoryTime();
+    void Set_Multi_Conquest(int param_1);
+    void Set_Multi_Ruins(int param_1);
+    void Set_Multi_Artifacts(int param_1);
+    void Set_Multi_Discoveries(int param_1);
+    void Set_Multi_Exploration(int param_1);
+    void Set_Multi_Gold(int param_1);
+    int Get_Multi_Ruins();
+    int Get_Multi_Artifacts();
+    int Get_Multi_Discoveries();
+    void Save_victory_conditions_into_players(int param_1);
+
     Player_Start_Info player_info[16];
     Victory_StartInfo victory;
     SP_Victory_Info sp_victory[16][12];

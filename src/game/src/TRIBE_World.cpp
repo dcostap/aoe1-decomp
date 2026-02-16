@@ -14,11 +14,94 @@
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
+#include "../include/RGE_Object_Info.h"
+#include "../include/RGE_Object_Info_Line.h"
+#include "../include/debug_helpers.h"
+#include "../include/RGE_RMM_Object_Generator.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Object_Node.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/TSound_Driver.h"
 #include "../include/globals.h"
+#include <stdlib.h>
+
+static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
+    if (world == nullptr || world->players == nullptr) {
+        return 0;
+    }
+
+    int count = 0;
+    for (int i = 0; i < world->player_num; ++i) {
+        RGE_Player* player = world->players[i];
+        if (player == nullptr || player->objects == nullptr) {
+            continue;
+        }
+
+        for (RGE_Object_Node* node = player->objects->list; node != nullptr; node = node->next) {
+            if (node->node == nullptr || node->node->master_obj == nullptr) {
+                continue;
+            }
+
+            short id = node->node->master_obj->id;
+            if (id == object_id_a || (object_id_b >= 0 && id == object_id_b)) {
+                count = count + 1;
+            }
+        }
+    }
+
+    return count;
+}
+
+static void tribe_world_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
+    if (tile == nullptr || obj == nullptr) {
+        return;
+    }
+
+    RGE_Object_Node* node = tile->objects.list;
+    while (node != nullptr && node->node != obj) {
+        node = node->next;
+    }
+
+    if (node == nullptr) {
+        return;
+    }
+
+    if (node->prev != nullptr) {
+        node->prev->next = node->next;
+    } else {
+        tile->objects.list = node->next;
+    }
+
+    if (node->next != nullptr) {
+        node->next->prev = node->prev;
+    }
+
+    if (tile->objects.number_of_objects > 0) {
+        tile->objects.number_of_objects = (short)(tile->objects.number_of_objects - 1);
+    }
+
+    free(node);
+}
+
+static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
+    if (obj == nullptr) {
+        return;
+    }
+
+    RGE_Player* owner = obj->owner;
+    RGE_Tile* tile = obj->tile;
+
+    if (owner != nullptr) {
+        owner->removeObject(obj, (int)obj->sleep_flag, (int)obj->dopple_flag, obj->player_object_node);
+    }
+
+    tribe_world_remove_tile_node(tile, obj);
+    obj->player_object_node = nullptr;
+    obj->tile = nullptr;
+    delete obj;
+}
 
 // Source of truth: tworld.cpp.decomp @ 0x0052DF40
 TRIBE_World::TRIBE_World() : RGE_Game_World() {
@@ -192,11 +275,90 @@ void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
         this->players[i] = (RGE_Player*)player;
     }
 }
+
+void TRIBE_World::check_destructables(short param_1, short param_2, float param_3, float param_4, uchar param_5) {
+    // Source of truth: tworld.cpp.decomp @ 0x0052EAC0
+    if (this->players == nullptr || this->map == nullptr || this->map->map_row_offset == nullptr) {
+        return;
+    }
+
+    if (param_1 < 0 || param_1 >= this->player_num) {
+        return;
+    }
+
+    RGE_Player* player = this->players[param_1];
+    if (player == nullptr || player->master_objects == nullptr || param_2 < 0 || param_2 >= player->master_object_num) {
+        return;
+    }
+
+    RGE_Master_Static_Object* target_master = player->master_objects[param_2];
+    if (target_master == nullptr) {
+        return;
+    }
+
+    float rx = target_master->radius_x;
+    float ry = target_master->radius_y;
+    if (!(rx > 0.0f || ry > 0.0f)) {
+        return;
+    }
+
+    short min_x = (short)((long)(param_3 - rx));
+    short min_y = (short)((long)(param_4 - ry));
+    short max_x = (short)((long)(param_3 + rx));
+    short max_y = (short)((long)(param_4 + ry));
+
+    if (min_x < 0) {
+        min_x = 0;
+    }
+    if (max_x >= this->map->map_width) {
+        max_x = (short)(this->map->map_width - 1);
+    }
+    if (min_y < 0) {
+        min_y = 0;
+    }
+    if (max_y >= this->map->map_height) {
+        max_y = (short)(this->map->map_height - 1);
+    }
+
+    for (short y = min_y; y <= max_y; ++y) {
+        for (short x = min_x; x <= max_x; ++x) {
+            RGE_Object_Node* node = this->map->map_row_offset[y][x].objects.list;
+            while (node != nullptr) {
+                RGE_Object_Node* next = node->next;
+                RGE_Static_Object* obj = node->node;
+                if (obj != nullptr && obj->master_obj != nullptr) {
+                    RGE_Master_Static_Object* obj_master = obj->master_obj;
+                    unsigned char destructable_flag = *((unsigned char*)obj_master + 0x4B);
+                    if (obj_master->id != param_2 && destructable_flag != 0) {
+                        float dx = obj->world_x - param_3;
+                        float dy = obj->world_y - param_4;
+                        if (dx < 0.0f) {
+                            dx = -dx;
+                        }
+                        if (dy < 0.0f) {
+                            dy = -dy;
+                        }
+
+                        if (dx < (obj_master->radius_x + rx) && dy < (obj_master->radius_y + ry)) {
+                            if (param_5 == 0) {
+                                obj->destroy_obj();
+                            } else {
+                                tribe_world_delete_object_now(obj);
+                            }
+                        }
+                    }
+                }
+                node = next;
+            }
+        }
+    }
+}
+
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
     // Source of truth: tworld.cpp.decomp
     // The map should already be created by map_init() during world_init().
     // The real implementation calls map->map_generate() with full terrain generation.
-    // WORKAROUND: just call base which creates a blank tile grid.
+    // TODO: STUB, tworld.cpp new_random_game override body is not present in current decomp dump.
     return RGE_Game_World::new_random_game(param_1);
 }
 void TRIBE_World::save(int param_1) {
@@ -347,34 +509,131 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
             // Random game or non-default victory: set victory_type from game options
             int victoryAmount = ((TRIBE_Game*)rge_base_game)->victoryAmount();
             int vt = ((TRIBE_Game*)rge_base_game)->victoryType();
-
-            // TODO(accuracy): T_Scenario::Set_victory_all_flag, Set_Multi_* calls
-            // require scenario object which may not be allocated yet.
+            T_Scenario* tScenario = (T_Scenario*)this->scenario;
+            if (tScenario != nullptr) {
+                tScenario->Set_victory_all_flag(0);
+                tScenario->Set_Multi_Conquest(0);
+                tScenario->Set_Multi_Ruins(0);
+                tScenario->Set_Multi_Artifacts(0);
+                tScenario->Set_Multi_Discoveries(0);
+                tScenario->Set_Multi_Exploration(0);
+                tScenario->Set_Multi_Gold(0);
+                tScenario->SetVictoryScore(victoryAmount);
+                tScenario->SetVictoryTime(victoryAmount);
+            }
 
             switch (vt) {
             case 0: // VictoryDefault
             case 1: // VictoryStandard
                 this->victory_type = 0;
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Conquest(1);
+                }
                 break;
             case 2: // VictoryConquest
                 this->victory_type = 1;
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Conquest(1);
+                }
+                break;
+            case 3: // VictoryExplore
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Exploration(victoryAmount);
+                }
+                break;
+            case 4: // VictoryRuins
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Ruins(victoryAmount);
+                }
+                break;
+            case 5: // VictoryArtifacts
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Artifacts(victoryAmount);
+                }
+                break;
+            case 6: // VictoryDiscoveries
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Discoveries(victoryAmount);
+                }
+                break;
+            case 9: // VictoryGold
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Gold(victoryAmount);
+                }
                 break;
             case 7: // VictoryTime
                 this->victory_type = 2;
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Conquest(1);
+                }
                 this->countdown_victory = 1;
                 this->countdown_clock = (float)victoryAmount;
                 break;
             case 8: // VictoryScore
                 this->victory_type = 3;
+                if (tScenario != nullptr) {
+                    tScenario->Set_Multi_Conquest(1);
+                }
                 break;
             default:
-                // VictoryExplore, VictoryRuins, VictoryArtifacts, VictoryDiscoveries, VictoryGold
-                // These set specific T_Scenario Multi_* flags — deferred until scenario is wired.
                 break;
+            }
+
+            if (tScenario != nullptr) {
+                tScenario->Save_victory_conditions_into_players(0);
             }
         }
 
-        // TODO(accuracy): RGE_RMM_Object_Generator for artifacts/discoveries/ruins placement
+        T_Scenario* tScenario = (T_Scenario*)this->scenario;
+        RGE_RMM_Object_Generator* objGen = nullptr;
+        if (this->map != nullptr) {
+            objGen = new RGE_RMM_Object_Generator(this->map, (RGE_Random_Map_Module*)nullptr, this, (RGE_Object_Info*)nullptr, 0);
+        }
+
+        if (objGen != nullptr && tScenario != nullptr) {
+            int targetArtifacts = tScenario->Get_Multi_Artifacts();
+            if (targetArtifacts > 0) {
+                int existingArtifacts = tribe_count_object_type(this, 0x9f, -1);
+                if (targetArtifacts > existingArtifacts) {
+                    objGen->add_quick_obj(0x9f, targetArtifacts - existingArtifacts, 0);
+                }
+            }
+
+            int targetDiscoveries = tScenario->Get_Multi_Discoveries();
+            if (targetDiscoveries > 0) {
+                int existingDiscoveries = tribe_count_object_type(this, 10, -1);
+                if (targetDiscoveries > existingDiscoveries) {
+                    objGen->add_quick_obj(10, targetDiscoveries - existingDiscoveries, 0);
+                }
+            }
+
+            int targetRuins = tScenario->Get_Multi_Ruins();
+            if (targetRuins > 0) {
+                int existingRuins = tribe_count_object_type(this, 0x9e, 0xa3);
+                if (targetRuins > existingRuins) {
+                    objGen->add_quick_obj(0x9e, targetRuins - existingRuins, 0);
+                }
+            }
+
+            if (rge_base_game->campaignGame() == 0 && rge_base_game->randomGame() != 0) {
+                if (this->victory_type == 3 ||
+                    (debug_rand("C:\\msdev\\work\\age1_x1\\tworld.cpp", 0x38d) % 100) < 0x32) {
+                    objGen->add_quick_obj(0x9f, 5, this->map->map_width / 5);
+                    this->artifact_count = 5;
+                }
+                if ((debug_rand("C:\\msdev\\work\\age1_x1\\tworld.cpp", 0x394) % 100) < 0x32) {
+                    objGen->add_quick_obj(0x9e, 5, this->map->map_width / 5);
+                    this->ruin_count = 5;
+                }
+            } else {
+                this->artifact_count = tribe_count_object_type(this, 0x9f, -1);
+                this->ruin_count = tribe_count_object_type(this, 0x9e, 0xa3);
+            }
+
+            objGen->generate();
+            delete objGen;
+            objGen = nullptr;
+        }
     }
 
     return result;

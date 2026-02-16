@@ -6,7 +6,22 @@
 #include "../include/TDrawArea.h"
 #include "../include/RGE_Color_Table.h"
 
-// RGE_Static_Object stubs
+static void rge_static_set_sleep_flag(RGE_Static_Object* obj, uchar sleep_flag) {
+    if (obj == nullptr || obj->owner == nullptr) {
+        return;
+    }
+
+    if (obj->sleep_flag == sleep_flag) {
+        return;
+    }
+
+    RGE_Player* owner = obj->owner;
+    owner->removeObject(obj, (int)obj->sleep_flag, (int)obj->dopple_flag, obj->player_object_node);
+    obj->sleep_flag = sleep_flag;
+    obj->player_object_node = owner->addObject(obj, (int)obj->sleep_flag, (int)obj->dopple_flag);
+}
+
+// TODO: STUB, many RGE_Static_Object virtuals below still need full stat_obj.cpp transliteration.
 RGE_Static_Object::~RGE_Static_Object() {}
 void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {}
 void RGE_Static_Object::recycle_out_of_game() {}
@@ -30,11 +45,36 @@ void RGE_Static_Object::modify_delta(float param_1, uchar param_2) {}
 void RGE_Static_Object::modify_percent(float param_1, uchar param_2) {}
 void RGE_Static_Object::transform(RGE_Master_Static_Object* param_1) {}
 void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* param_1) {}
-void RGE_Static_Object::set_object_state(uchar param_1) {}
+void RGE_Static_Object::set_object_state(uchar param_1) {
+    // Source of truth: stat_obj.cpp.decomp @ 0x004C52F0
+    // Full state-transition side effects are still implemented in derived object classes.
+    if (this->object_state != param_1) {
+        this->object_state = param_1;
+    }
+}
 void RGE_Static_Object::remove_visible_resource() {}
 void RGE_Static_Object::create_doppleganger_when_dying() {}
-void RGE_Static_Object::destroy_obj() {}
-void RGE_Static_Object::die_die_die() {}
+void RGE_Static_Object::destroy_obj() {
+    // Source of truth: stat_obj.cpp.decomp @ 0x004C5080
+    if (this->object_state < 7) {
+        if (this->inside_obj != nullptr) {
+            this->exit_obj();
+        }
+        if ((this->selected & 1) != 0 && this->owner != nullptr) {
+            this->owner->unselect_one_object(this);
+        }
+        rge_static_set_sleep_flag(this, 0);
+        this->set_object_state(7);
+    }
+}
+void RGE_Static_Object::die_die_die() {
+    // Source of truth: stat_obj.cpp.decomp @ 0x004C50C0
+    if ((this->selected & 1) != 0 && this->owner != nullptr) {
+        this->owner->unselect_one_object(this);
+    }
+    rge_static_set_sleep_flag(this, 0);
+    this->hp = 0.0f;
+}
 void RGE_Static_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4) {}
 float RGE_Static_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4) { return 0.0f; }
 void RGE_Static_Object::rotate(long param_1) {}

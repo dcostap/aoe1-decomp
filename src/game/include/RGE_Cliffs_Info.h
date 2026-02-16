@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Cliffs_Hot_Spots.h"
 
 struct RGE_Cliffs_Info {
     long number_of_cliffs;

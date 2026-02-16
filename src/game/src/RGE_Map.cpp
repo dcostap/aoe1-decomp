@@ -17,6 +17,7 @@
 #include <string.h>
 #include <io.h> 
 #include <stdint.h>
+#include <math.h>
 
 static void rge_convert_us(char* text) {
     if (text == nullptr) {
@@ -107,6 +108,15 @@ static void rge_map_delete_object_now(RGE_Static_Object* obj) {
     obj->player_object_node = nullptr;
     obj->tile = nullptr;
     delete obj;
+}
+
+static uchar rge_tile_pack_terrain_height(const RGE_Tile* tile) {
+    return (uchar)((tile->terrain_type & 0x1f) | ((tile->height & 7) << 5));
+}
+
+static void rge_tile_set_packed_terrain_height(RGE_Tile* tile, uchar packed) {
+    tile->terrain_type = (uchar)(packed & 0x1f);
+    tile->height = (uchar)((packed >> 5) & 7);
 }
 
 RGE_Map::RGE_Map()
@@ -585,6 +595,389 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, short col0,
         }
     }
 
+    this->request_redraw((int)min_col, (int)min_row, (int)max_col, (int)max_row, 0);
+}
+
+uchar RGE_Map::postclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return 0;
+    }
+
+    if (param_1 > 0) param_1 = param_1 - 1;
+    if (param_2 > 0) param_2 = param_2 - 1;
+    if (param_3 < this->map_width - 1) param_3 = param_3 + 1;
+    if (param_4 < this->map_height - 1) param_4 = param_4 + 1;
+
+    uchar was_bad = 0;
+    const short stride = (short)this->map_width;
+    const short off_ul = (short)(-1 - stride);
+    const short off_u = (short)(-stride);
+    const short off_ur = (short)(1 - stride);
+    const short off_l = -1;
+    const short off_r = 1;
+    const short off_dl = (short)(stride - 1);
+    const short off_d = stride;
+    const short off_dr = (short)(stride + 1);
+
+    for (long y = param_2; y <= param_4; ++y) {
+        RGE_Tile* tile = this->map_row_offset[y] + param_1;
+        for (long x = param_1; x <= param_3; ++x) {
+            uchar cur_h = tile->height;
+            int next_h = (int)cur_h;
+            bool bad = false;
+
+            if (cur_h < param_5) {
+                next_h = (int)cur_h + 1;
+                if (y > 0 && next_h < (int)tile[off_u].height) bad = true;
+                if (y < this->map_height - 1 && next_h < (int)tile[off_d].height) bad = true;
+                if (x > 0 && next_h < (int)tile[off_l].height) bad = true;
+                if (x < this->map_width - 1 && next_h < (int)tile[off_r].height) bad = true;
+                if (y > 0 && x > 0 && next_h < (int)tile[off_ul].height) bad = true;
+                if (y > 0 && x < this->map_width - 1 && next_h < (int)tile[off_ur].height) bad = true;
+                if (y < this->map_height - 1 && x > 0 && next_h < (int)tile[off_dl].height) bad = true;
+                if (y < this->map_height - 1 && x < this->map_width - 1 && next_h < (int)tile[off_dr].height) bad = true;
+            } else if (param_5 < cur_h) {
+                next_h = (int)cur_h - 1;
+                if (y > 0 && (int)tile[off_u].height < next_h) bad = true;
+                if (y < this->map_height - 1 && (int)tile[off_d].height < next_h) bad = true;
+                if (x > 0 && (int)tile[off_l].height < next_h) bad = true;
+                if (x < this->map_width - 1 && (int)tile[off_r].height < next_h) bad = true;
+                if (y > 0 && x > 0 && (int)tile[off_ul].height < next_h) bad = true;
+                if (y > 0 && x < this->map_width - 1 && (int)tile[off_ur].height < next_h) bad = true;
+                if (y < this->map_height - 1 && x > 0 && (int)tile[off_dl].height < next_h) bad = true;
+                if (y < this->map_height - 1 && x < this->map_width - 1 && (int)tile[off_dr].height < next_h) bad = true;
+            }
+
+            if (bad) {
+                uchar packed = (uchar)((next_h << 5) | (tile->terrain_type & 0x1f));
+                rge_tile_set_packed_terrain_height(tile, packed);
+                was_bad = 1;
+            }
+
+            ++tile;
+        }
+    }
+
+    return was_bad;
+}
+
+void RGE_Map::preclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+
+    const short stride = (short)this->map_width;
+    const short off_ul = (short)(-1 - stride);
+    const short off_u = (short)(-stride);
+    const short off_ur = (short)(1 - stride);
+    const short off_l = -1;
+    const short off_r = 1;
+    const short off_dl = (short)(stride - 1);
+    const short off_d = stride;
+    const short off_dr = (short)(stride + 1);
+
+    long left = param_1;
+    long row_base = left * 0x18;
+    for (;;) {
+        bool changed = false;
+        if (left > 0) {
+            left = left - 1;
+            row_base = row_base - 0x18;
+            param_1 = left;
+        }
+        if (param_2 > 0) param_2 = param_2 - 1;
+        if (param_3 < this->map_width - 1) param_3 = param_3 + 1;
+        if (param_4 < this->map_height - 1) param_4 = param_4 + 1;
+
+        for (long y = param_2; y <= param_4; ++y) {
+            RGE_Tile* tile = this->map_row_offset[y] + left;
+            for (long x = left; x <= param_3; ++x) {
+                uchar h = tile->height;
+                bool up_left = false;
+                bool up = false;
+                bool up_right = false;
+                bool right = false;
+                bool down_right = false;
+                bool down = false;
+                bool down_left = false;
+                bool left_n = false;
+
+                if (y > 0) up = h < tile[off_u].height;
+                if (y < this->map_height - 1) down = h < tile[off_d].height;
+                if (x > 0) left_n = h < tile[off_l].height;
+                if (x < this->map_width - 1) right = h < tile[off_r].height;
+                if (y > 0) {
+                    if (x > 0) up_left = h < tile[off_ul].height;
+                    if (x < this->map_width - 1) up_right = h < tile[off_ur].height;
+                }
+                if (y < this->map_height - 1) {
+                    if (x > 0) down_left = h < tile[off_dl].height;
+                    if (x < this->map_width - 1) down_right = h < tile[off_dr].height;
+                }
+
+                bool join = false;
+                if ((up && down) || (right && left_n)) {
+                    join = true;
+                }
+                if (join) {
+                    if (h < param_5) {
+                        uchar packed = (uchar)(((h + 1) << 5) | (tile->terrain_type & 0x1f));
+                        rge_tile_set_packed_terrain_height(tile, packed);
+                    } else {
+                        if (up_left) tile[off_ul].height = h;
+                        if (up) tile[off_u].height = h;
+                        if (up_right) tile[off_ur].height = h;
+                        if (right) tile[off_r].height = h;
+                        if (down_right) tile[off_dr].height = h;
+                        if (down) tile[off_d].height = h;
+                        if (down_left) tile[off_dl].height = h;
+                        if (left_n) tile[off_l].height = h;
+                    }
+                    changed = true;
+                }
+                ++tile;
+            }
+        }
+
+        (void)row_base;
+        if (!changed) {
+            break;
+        }
+    }
+}
+
+void RGE_Map::clean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+
+    const short stride = (short)this->map_width;
+    const short off_ul = (short)(-1 - stride);
+    const short off_u = (short)(-stride);
+    const short off_ur = (short)(1 - stride);
+    const short off_l = -1;
+    const short off_r = 1;
+    const short off_dl = (short)(stride - 1);
+    const short off_d = stride;
+    const short off_dr = (short)(stride + 1);
+
+    if (param_1 < 0) param_1 = 0;
+    if (param_2 < 0) param_2 = 0;
+    if (param_3 >= this->map_width) param_3 = this->map_width - 1;
+    if (param_4 >= this->map_height) param_4 = this->map_height - 1;
+
+    for (;;) {
+        param_1 = param_1 - 2;
+        param_2 = param_2 - 2;
+        param_3 = param_3 + 2;
+        param_4 = param_4 + 2;
+        bool changed = false;
+
+        if (param_1 < 0) param_1 = 0;
+        if (param_2 < 0) param_2 = 0;
+        if (param_3 >= this->map_width) param_3 = this->map_width - 1;
+        if (param_4 >= this->map_height) param_4 = this->map_height - 1;
+
+        this->preclean_elevation(param_1, param_2, param_3, param_4, param_5);
+
+        for (long y = param_2; y <= param_4; ++y) {
+            RGE_Tile* tile = this->map_row_offset[y] + param_1;
+            for (long x = param_1; x <= param_3; ++x) {
+                bool up_left = false;
+                uchar h = tile->height;
+                bool up = false;
+                bool up_right = false;
+                bool right = false;
+                bool down_right = false;
+                bool down = false;
+                bool down_left = false;
+                bool left_n = false;
+
+                if (y > 0 && h < tile[off_u].height) up = true;
+                if (y < this->map_height - 1 && h < tile[off_d].height) down = true;
+                if (x > 0 && h < tile[off_l].height) left_n = true;
+                if (x < this->map_width - 1 && h < tile[off_r].height) right = true;
+                if (y > 0) {
+                    if (x > 0 && h < tile[off_ul].height) up_left = true;
+                    if (x < this->map_width - 1 && h < tile[off_ur].height) up_right = true;
+                }
+                if (y < this->map_height - 1) {
+                    if (x > 0 && h < tile[off_dl].height) down_left = true;
+                    if (x < this->map_width - 1 && h < tile[off_dr].height) down_right = true;
+                }
+
+                bool bad = false;
+                if (up_left) {
+                    if (((up_right && !up) || (right && !up_right) || (down_left && !left_n) || (down && !down_left))) {
+                        bad = true;
+                    } else if (down_right && !down && !right) {
+                        bad = true;
+                    }
+                }
+                if (up_right && !bad) {
+                    if ((down_right && !right) || (down && !down_right) || (up_left && !up) ||
+                        (left_n && !up_left) || (down_left && !left_n && !down)) {
+                        bad = true;
+                    }
+                }
+                if (down_right && !bad) {
+                    if ((down_left && !down) || (left_n && !down_left) || (up_right && !right) ||
+                        (up && !up_right) || (up_left && !up && !left_n)) {
+                        bad = true;
+                    }
+                }
+
+                if (down_left) {
+                    if (!bad) {
+                        if ((up_left && !left_n) || (up && !up_left) || (down_right && !down) ||
+                            (right && !down_right) || (up_right && !right && !up)) {
+                            bad = true;
+                        }
+                        if (!bad) {
+                            ++tile;
+                            continue;
+                        }
+                    }
+
+                    if (h < param_5) {
+                        uchar packed = (uchar)(((h + 1) << 5) | (tile->terrain_type & 0x1f));
+                        rge_tile_set_packed_terrain_height(tile, packed);
+                    } else {
+                        if (up_left) tile[off_ul].height = h;
+                        if (up) tile[off_u].height = h;
+                        if (up_right) tile[off_ur].height = h;
+                        if (right) tile[off_r].height = h;
+                        if (down_right) tile[off_dr].height = h;
+                        if (down) tile[off_d].height = h;
+                        if (down_left) tile[off_dl].height = h;
+                        if (left_n) tile[off_l].height = h;
+                    }
+                    changed = true;
+                } else if (bad) {
+                    if (h < param_5) {
+                        uchar packed = (uchar)(((h + 1) << 5) | (tile->terrain_type & 0x1f));
+                        rge_tile_set_packed_terrain_height(tile, packed);
+                    } else {
+                        if (up_left) tile[off_ul].height = h;
+                        if (up) tile[off_u].height = h;
+                        if (up_right) tile[off_ur].height = h;
+                        if (right) tile[off_r].height = h;
+                        if (down_right) tile[off_dr].height = h;
+                        if (down) tile[off_d].height = h;
+                        if (down_left) tile[off_dl].height = h;
+                        if (left_n) tile[off_l].height = h;
+                    }
+                    changed = true;
+                }
+
+                ++tile;
+            }
+        }
+
+        if (this->postclean_elevation(param_1, param_2, param_3, param_4, param_5) != 0) {
+            changed = true;
+        }
+
+        if (!changed) {
+            this->set_elev((short)param_1, (short)param_2, (short)param_3, (short)param_4, 0, 0, 0);
+            return;
+        }
+    }
+}
+
+void RGE_Map::set_elev(
+    short param_1,
+    short param_2,
+    short param_3,
+    short param_4,
+    uchar param_5,
+    short param_6,
+    uchar param_7) {
+    if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+
+    RGE_Player* cur_player = nullptr;
+    if (this->game_world != nullptr && this->game_world->players != nullptr) {
+        short idx = this->game_world->curr_player;
+        if (idx >= 0 && idx < this->game_world->player_num) {
+            cur_player = this->game_world->players[idx];
+        }
+    }
+
+    short min_row = param_2;
+    short max_row = param_4;
+    if (param_4 < param_2) {
+        min_row = param_4;
+        max_row = param_2;
+    }
+    short min_col = param_1;
+    short max_col = param_3;
+    if (param_3 < param_1) {
+        min_col = param_3;
+        max_col = param_1;
+    }
+
+    if (min_row < 0) min_row = 0;
+    if (max_row >= this->map_height) max_row = (short)(this->map_height - 1);
+    if (min_col < 0) min_col = 0;
+    if (max_col >= this->map_width) max_col = (short)(this->map_width - 1);
+
+    if (param_7 != 0) {
+        if (param_6 == 0) {
+            if (param_5 > 8) {
+                param_5 = 8;
+            }
+            for (short row = min_row; row <= max_row; ++row) {
+                for (short col = min_col; col <= max_col; ++col) {
+                    RGE_Tile* tile = &this->map_row_offset[row][col];
+                    uchar packed = (uchar)((tile->terrain_type & 0x1f) | (param_5 << 5));
+                    rge_tile_set_packed_terrain_height(tile, packed);
+                }
+            }
+        } else {
+            for (short row = min_row; row <= max_row; ++row) {
+                for (short col = min_col; col <= max_col; ++col) {
+                    RGE_Tile* tile = &this->map_row_offset[row][col];
+                    int h = (int)tile->height + (int)param_6;
+                    if (h < 0) h = 0;
+                    else if (h > 0xff) h = 0xff;
+
+                    uchar old_packed = rge_tile_pack_terrain_height(tile);
+                    uchar packed = (uchar)(((uchar)h << 5) | (old_packed & 0x1f));
+                    rge_tile_set_packed_terrain_height(tile, packed);
+
+                    if (((packed >> 5) & 0xff) > 8) {
+                        rge_tile_set_packed_terrain_height(tile, (uchar)(old_packed & 0x1f));
+                    }
+                }
+            }
+        }
+    }
+
+    if (min_row > 0) min_row = (short)(min_row - 1);
+    if (max_row < this->map_height - 1) max_row = (short)(max_row + 1);
+    if (min_col > 0) min_col = (short)(min_col - 1);
+    if (max_col < this->map_width - 1) max_col = (short)(max_col + 1);
+
+    for (short row = min_row; row <= max_row; ++row) {
+        for (short col = min_col; col <= max_col; ++col) {
+            RGE_Tile* tile = &this->map_row_offset[row][col];
+            tile->tile_type = this->get_tile_type(col, row);
+
+            for (RGE_Object_Node* node = tile->objects.list; node != nullptr; node = node->next) {
+                if (node->node != nullptr) {
+                    node->node->teleport(node->node->world_x, node->node->world_y, 0.0f);
+                }
+            }
+
+            if (this->game_world != nullptr && this->game_world->game_state != '\x03' && cur_player != nullptr) {
+                cur_player->diam_tile_list.add_node((int)col, (int)row);
+            }
+        }
+    }
+
+    this->set_map_screen_pos((int)min_col, (int)min_row, (int)max_col, (int)max_row);
     this->request_redraw((int)min_col, (int)min_row, (int)max_col, (int)max_row, 0);
 }
 
@@ -1086,12 +1479,225 @@ void RGE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char*
     }
     this->random_map = new RGE_RMM_Database_Controller(param_2, param_3, param_4, param_1);
 }
-uchar RGE_Map::do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4) { return 0; }
-uchar RGE_Map::do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { return 0; }
-uchar RGE_Map::do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4) { return 0; }
-uchar RGE_Map::do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { return 0; }
-uchar RGE_Map::do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4) { return 0; }
-uchar RGE_Map::do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6) { return 0; }
+uchar RGE_Map::do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4) {
+    long x0 = param_1 - param_3;
+    long x1 = param_1 + param_3;
+    long y0 = param_2 - param_3;
+    long y1 = param_2 + param_3;
+
+    if (x0 < 0) {
+        x0 = 0;
+    }
+    if (x1 >= this->map_width) {
+        x1 = this->map_width - 1;
+    }
+    if (y0 < 0) {
+        y0 = 0;
+    }
+    if (y1 >= this->map_height) {
+        y1 = this->map_height - 1;
+    }
+
+    for (long y = y0; y <= y1; ++y) {
+        for (long x = x0; x <= x1; ++x) {
+            this->set_terrain(this->game_world, (short)x, (short)y, param_4, 0, 0);
+        }
+    }
+
+    return 1;
+}
+
+uchar RGE_Map::do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) {
+    long radius = param_5 >> 1;
+
+    if (param_1 < 0) {
+        param_1 = 0;
+    }
+    if (param_3 >= this->map_width) {
+        param_3 = this->map_width - 1;
+    }
+    if (param_2 < 0) {
+        param_2 = 0;
+    }
+    if (param_4 >= this->map_height) {
+        param_4 = this->map_height - 1;
+    }
+
+    long dx_i = param_3 - param_1;
+    long dy_i = param_4 - param_2;
+    long steps = (long)sqrt((double)(dx_i * dx_i + dy_i * dy_i));
+
+    double dx = 0.0;
+    double dy = 0.0;
+    if (steps != 0) {
+        dx = (double)dx_i / (double)steps;
+        dy = (double)dy_i / (double)steps;
+    }
+
+    double x = (double)param_1;
+    double y = (double)param_2;
+
+    this->do_terrain_brush(param_1, param_2, radius, param_6);
+
+    for (long index = steps; index > 0; --index) {
+        x = x + dx;
+        y = y + dy;
+        this->do_terrain_brush((long)x, (long)y, radius, param_6);
+    }
+
+    if (((double)param_3 != x) || ((double)param_4 != y)) {
+        this->do_terrain_brush(param_3, param_4, radius, param_6);
+    }
+
+    return 1;
+}
+
+uchar RGE_Map::do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4) {
+    long x0 = param_1 - param_3;
+    long x1 = param_1 + param_3;
+    long y0 = param_2 - param_3;
+    long y1 = param_2 + param_3;
+
+    if (x0 < 0) {
+        x0 = 0;
+    }
+    if (x1 >= this->map_width) {
+        x1 = this->map_width - 1;
+    }
+    if (y0 < 0) {
+        y0 = 0;
+    }
+    if (y1 >= this->map_height) {
+        y1 = this->map_height - 1;
+    }
+
+    for (long y = y0; y <= y1; ++y) {
+        for (long x = x0; x <= x1; ++x) {
+            RGE_Tile* tile = &this->map_row_offset[y][x];
+            tile->terrain_type = (uchar)((tile->terrain_type & 0x1f) | (param_4 << 5));
+        }
+    }
+
+    return 1;
+}
+
+uchar RGE_Map::do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) {
+    long radius = param_5 >> 1;
+
+    if (param_1 < 0) {
+        param_1 = 0;
+    }
+    if (param_3 >= this->map_width) {
+        param_3 = this->map_width - 1;
+    }
+    if (param_2 < 0) {
+        param_2 = 0;
+    }
+    if (param_4 >= this->map_height) {
+        param_4 = this->map_height - 1;
+    }
+
+    long dx_i = param_3 - param_1;
+    long dy_i = param_4 - param_2;
+    long steps = (long)sqrt((double)(dx_i * dx_i + dy_i * dy_i));
+
+    double dx = 0.0;
+    double dy = 0.0;
+    if (steps != 0) {
+        dx = (double)dx_i / (double)steps;
+        dy = (double)dy_i / (double)steps;
+    }
+
+    double x = (double)param_1;
+    double y = (double)param_2;
+
+    this->do_elevation_brush(param_1, param_2, radius, param_6);
+
+    for (long index = steps; index > 0; --index) {
+        x = x + dx;
+        y = y + dy;
+        this->do_elevation_brush((long)x, (long)y, radius, param_6);
+    }
+
+    if (((double)param_3 != x) || ((double)param_4 != y)) {
+        this->do_elevation_brush(param_3, param_4, radius, param_6);
+    }
+
+    long clean_x0 = param_1;
+    long clean_x1 = param_3;
+    if (param_1 < param_3) {
+        clean_x0 = param_1 - radius;
+        clean_x1 = param_3 + radius;
+    } else {
+        clean_x0 = param_3 - radius;
+        clean_x1 = param_1 + radius;
+    }
+
+    long clean_y0 = param_2;
+    long clean_y1 = param_4;
+    if (param_2 < param_4) {
+        clean_y0 = param_2 - radius;
+        clean_y1 = param_4 + radius;
+    } else {
+        clean_y0 = param_4 - radius;
+        clean_y1 = param_2 + radius;
+    }
+
+    this->clean_elevation(clean_x0, clean_y0, clean_x1, clean_y1, param_6);
+
+    return 1;
+}
+
+uchar RGE_Map::do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4) {
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return 0;
+}
+
+uchar RGE_Map::do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6) {
+    if (param_1 < 0) {
+        param_1 = 0;
+    }
+    if (param_3 >= this->map_width) {
+        param_3 = this->map_width - 1;
+    }
+    if (param_2 < 0) {
+        param_2 = 0;
+    }
+    if (param_4 >= this->map_height) {
+        param_4 = this->map_height - 1;
+    }
+
+    long dx_i = param_3 - param_1;
+    long dy_i = param_4 - param_2;
+    long steps = (long)sqrt((double)(dx_i * dx_i + dy_i * dy_i));
+
+    double dx = 0.0;
+    double dy = 0.0;
+    if (steps != 0) {
+        dx = (double)dx_i / (double)steps;
+        dy = (double)dy_i / (double)steps;
+    }
+
+    double x = (double)param_1;
+    double y = (double)param_2;
+
+    this->do_cliff_brush(param_1, param_2, param_5, param_6);
+
+    for (long index = steps; index > 0; --index) {
+        x = x + dx;
+        y = y + dy;
+        this->do_cliff_brush((long)x, (long)y, param_5, param_6);
+    }
+
+    if (((double)param_3 != x) || ((double)param_4 != y)) {
+        this->do_cliff_brush(param_3, param_4, param_5, param_6);
+    }
+
+    return 1;
+}
 void RGE_Map::map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4) {}
 void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5) {
     // Source of truth: map.cpp.decomp @ 0x004578B0.
@@ -1157,7 +1763,10 @@ void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3,
         this->game_world->game_state = old_game_state;
     }
 }
-void RGE_Map::save(int param_1) {}
+void RGE_Map::save(int param_1) {
+    (void)param_1;
+    // TODO: STUB, map.cpp save path not yet transliterated.
+}
 
 void RGE_Map::load_terrain_types(RGE_Sound** sounds)
 {

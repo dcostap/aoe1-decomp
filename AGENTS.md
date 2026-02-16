@@ -9,7 +9,7 @@ The proven approach for this project is a **two-pass** strategy:
 ### Pass 1: Fast Transliteration (~95% of the work)
 
 1. Read the `*.cpp.decomp` file (Ghidra's C decompiler output) for the target module.
-2. **Transliterate** it into compilable C++ — same control flow, same constants, same logic. Don't try to be clever or "improve" it.
+2. **Transliterate** it into compilable C++ — same control flow, same constants, same logic. Don't try to be clever or "improve" it. Add sporadic comments if you can figure out clearly what each section of transliterated code did in the original codebase.
 3. Add method declarations to the corresponding `include/*.h` headers.
 4. Stub out any missing external dependencies (globals, helper functions).
 5. Add to `build.bat`, compile, fix errors. Ship it.
@@ -31,19 +31,25 @@ The decomp **lies** about:
 
 **How:** Open the `*.cpp.asm`, find the function by offset, and compare instruction-by-instruction against your C++. Focus on comparisons, memory copies, struct offsets, and branch conditions.
 
-## Source of Truth
+### Stubs
 
-- `*.cpp.asm` and `*.cpp.decomp` are **immutable references**. Never edit them.
-- `include/*.h` headers define **memory layout** (members) and **vtable layout** (virtuals).
-- `all_types_ground_truth.h` is the definitive type reference.
-- You may edit `*.h` files, but keep all size/offset/`static_assert(sizeof(...))` checks intact.
-- Create **stubs** for functions that are required but not yet critical.
-- Document your assumptions, doubts, and TODOs in comments. Be explicit about what you're unsure of.
+Only add your custom stubs when strictly needed.
+CRITICAL: ALL STUBS MUST INCLUDE A // TODO: STUB, and optionally a brief explanation of why the stub was needed
+Some legimitimate reasons for stubs:
+- The function is called by the decomp but not critical for the current implementation.
+- The function is complex and you want to defer it until you have more context.
 
-Note: even tho this is Windows, `grep` is installed and in the PATH.
+No other reasons, really. Try to keep custom stubs to a minimum.
+
+## Sources of Truth
+
+- `*.cpp.asm` and `*.cpp.decomp`, exported from Ghidra by reading the original .EXE and its PDB. These are **immutable references**. Never edit them.
+- `include/*.h` headers are pre-exported from Ghidra, and define **memory layout** (members) and **vtable layout** (virtuals).
+- `all_types_ground_truth.h` is a read-only dump of the all the type information exported from Ghidra.
+- You may edit `*.h` files, as the pre-exported code here may be imperfect or incorrect, but always keep all size/offset/`static_assert(sizeof(...))` checks intact.
 
 ## EVERYTHING SHOULD BE THERE
-If you can't seem to find the source of truth for a given function, or piece of logic, etc, YOU MUST ASK AND REPORT TO THE USER. DON'T GO OFF ON USELESS TANGENTS. EVERY SINGLE LINE OF CODE SHOULD BE PRESENT!!! IF THAT'S NOT THE CASE, REPORT BACK!
+If you can't seem to find the source of truth for a given function, piece of logic, type, etc, YOU MUST ASK AND REPORT TO THE USER. DON'T GO OFF ON USELESS TANGENTS. EVERY SINGLE LINE OF CODE SHOULD BE PRESENT!!! IF THAT'S NOT THE CASE, IT'S A FATAL MISTAKE BY THE USER, AND YOU MUST REPORT BACK!
 
 ## Includes (keep it simple)
 
@@ -123,9 +129,9 @@ CUSTOM_DEBUG_END
 
 ## Compiling & Output
 
-Use the `.bat` script files in the root directory to build / compile the game.
-Check `*.log` files for output logs.
-Ask the user to run the game and provide feedback, ONLY IF ESSENTIAL FOR PROGRESS.
+Use the existing `.bat` script files in the root directory to build / compile the game.
+Check `*.log` files for output logs of the last execution of the game.
+Ask the user to run the game and provide feedback, ONLY IF IT'S ESSENTIAL FOR PROGRESS.
 
 # Build & Assets
 
