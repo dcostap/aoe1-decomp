@@ -1,5 +1,6 @@
 #include "../include/TRIBE_RMM_Database_Controller.h"
 #include "../include/RGE_Map.h"
+#include "../include/TRIBE_Map.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Map_Data_Entry.h"
 #include "../include/RGE_Land_Data.h"
@@ -10,7 +11,9 @@
 #include "../include/RGE_Object_Data_Entry.h"
 #include "../include/RGE_Elevation_Data.h"
 #include "../include/RGE_Elevation_Data_Entry.h"
+#include "../include/RGE_RMM_Shallows_Generator.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Master_Static_Object.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
@@ -77,6 +80,44 @@ static uchar rmm_pick_loaded_terrain(RGE_Map* map, uchar preferred, uchar second
 
 static int rmm_is_water_terrain(uchar terrain_type) {
     return terrain_type == 1 || terrain_type == 4 || terrain_type == 22;
+}
+
+// Source of truth: rmm_terr.cpp::check_borders.
+// Any non-water tile adjacent to water (8-neighborhood) becomes terrain 2.
+static void rmm_terrain_check_borders(RGE_RMM_Database_Controller* self) {
+    if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return;
+    }
+
+    const long max_x = self->map_width - 1;
+    const long max_y = self->map_height - 1;
+    for (long y = 0; y < self->map_height; ++y) {
+        for (long x = 0; x < self->map_width; ++x) {
+            RGE_Tile* tile = &self->map_row_offset[y][x];
+            uchar tt = (uchar)(tile->terrain_type & 0x1f);
+            if (rmm_is_water_terrain(tt) != 0) {
+                continue;
+            }
+
+            int near_water = 0;
+            if (y > 0) {
+                if (rmm_is_water_terrain((uchar)(self->map_row_offset[y - 1][x].terrain_type & 0x1f)) != 0) near_water = 1;
+                if (x > 0 && rmm_is_water_terrain((uchar)(self->map_row_offset[y - 1][x - 1].terrain_type & 0x1f)) != 0) near_water = 1;
+                if (x < max_x && rmm_is_water_terrain((uchar)(self->map_row_offset[y - 1][x + 1].terrain_type & 0x1f)) != 0) near_water = 1;
+            }
+            if (y < max_y) {
+                if (rmm_is_water_terrain((uchar)(self->map_row_offset[y + 1][x].terrain_type & 0x1f)) != 0) near_water = 1;
+                if (x > 0 && rmm_is_water_terrain((uchar)(self->map_row_offset[y + 1][x - 1].terrain_type & 0x1f)) != 0) near_water = 1;
+                if (x < max_x && rmm_is_water_terrain((uchar)(self->map_row_offset[y + 1][x + 1].terrain_type & 0x1f)) != 0) near_water = 1;
+            }
+            if (x > 0 && rmm_is_water_terrain((uchar)(self->map_row_offset[y][x - 1].terrain_type & 0x1f)) != 0) near_water = 1;
+            if (x < max_x && rmm_is_water_terrain((uchar)(self->map_row_offset[y][x + 1].terrain_type & 0x1f)) != 0) near_water = 1;
+
+            if (near_water != 0) {
+                tile->terrain_type = (uchar)((tile->terrain_type & 0xe0) | 2);
+            }
+        }
+    }
 }
 
 static void rmm_calc_land_start(
@@ -296,7 +337,6 @@ static int rmm_try_place_single_object(
         g_rmm_fail_terrain_mismatch = g_rmm_fail_terrain_mismatch + 1;
         return 0;
     }
-
     RGE_Player* player = rmm_get_player_for_object(self, requested_player, fallback_player);
     if (player == nullptr) {
         g_rmm_fail_no_player = g_rmm_fail_no_player + 1;
@@ -310,12 +350,30 @@ static int rmm_try_place_single_object(
         g_rmm_fail_objid_oob = g_rmm_fail_objid_oob + 1;
         return 0;
     }
-    if (player->master_objects[line->obj_id] == nullptr) {
+    RGE_Master_Static_Object* master = player->master_objects[line->obj_id];
+    if (master == nullptr) {
         g_rmm_fail_master_null = g_rmm_fail_master_null + 1;
         return 0;
     }
 
-    RGE_Static_Object* placed = player->make_new_object(line->obj_id, (float)x + 0.5f, (float)y + 0.5f, 0.0f, 1);
+    // Source-of-truth behavior: placement must pass master-object placement checks.
+    int blocking_object = -1;
+    uchar can_place = master->check_placement(
+        player,
+        (float)x + 0.5f,
+        (float)y + 0.5f,
+        &blocking_object,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1);
+    if (can_place != '\0') {
+        return 0;
+    }
+
+    RGE_Static_Object* placed = master->make_new_obj(player, (float)x + 0.5f, (float)y + 0.5f, 0.0f);
     if (placed == nullptr) {
         g_rmm_fail_make_new = g_rmm_fail_make_new + 1;
         return 0;
@@ -513,6 +571,108 @@ static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
         g_rmm_fail_make_new);
 
     return total_placed;
+}
+
+static int rmm_add_object_candidate(long* ids, int* count, int max_count, long id) {
+    if (ids == nullptr || count == nullptr || *count < 0 || *count >= max_count) {
+        return 0;
+    }
+    for (int i = 0; i < *count; ++i) {
+        if (ids[i] == id) {
+            return 0;
+        }
+    }
+    ids[*count] = id;
+    *count = *count + 1;
+    return 1;
+}
+
+static long rmm_place_emergency_objects(RGE_RMM_Database_Controller* self) {
+    if (self == nullptr || self->world == nullptr || self->world->players == nullptr || self->world->player_num <= 0) {
+        return 0;
+    }
+    if (self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return 0;
+    }
+
+    RGE_Player* gaia = self->world->players[0];
+    if (gaia == nullptr || gaia->master_objects == nullptr || gaia->master_object_num <= 0) {
+        return 0;
+    }
+
+    long candidate_ids[12];
+    int candidate_count = 0;
+
+    static const long kPreferredIds[] = {83, 59, 66, 102, 53, 370};
+    for (int i = 0; i < (int)(sizeof(kPreferredIds) / sizeof(kPreferredIds[0])); ++i) {
+        long id = kPreferredIds[i];
+        if (id >= 0 && id < gaia->master_object_num && gaia->master_objects[id] != nullptr) {
+            rmm_add_object_candidate(candidate_ids, &candidate_count, 12, id);
+        }
+    }
+
+    for (long i = 0; i < gaia->master_object_num && candidate_count < 12; ++i) {
+        RGE_Master_Static_Object* mo = gaia->master_objects[i];
+        if (mo == nullptr) {
+            continue;
+        }
+        if (mo->master_type == 0x5A || mo->track_as_resource != 0 || mo->resource_group != 0 || mo->attribute_max_amount > 0) {
+            rmm_add_object_candidate(candidate_ids, &candidate_count, 12, i);
+        }
+    }
+
+    for (long i = 0; i < gaia->master_object_num && candidate_count < 12; ++i) {
+        RGE_Master_Static_Object* mo = gaia->master_objects[i];
+        if (mo != nullptr) {
+            rmm_add_object_candidate(candidate_ids, &candidate_count, 12, i);
+        }
+    }
+
+    if (candidate_count <= 0) {
+        return 0;
+    }
+
+    rmm_fill_search_map(self, 1);
+
+    long map_area = self->map_width * self->map_height;
+    if (map_area < 1) {
+        map_area = 1;
+    }
+    long target = map_area / 180;
+    if (target < 24) target = 24;
+    if (target > 256) target = 256;
+
+    long tries = target * 24;
+    if (tries < 256) tries = 256;
+    if (tries > 8192) tries = 8192;
+
+    long placed = 0;
+    for (long n = 0; n < tries && placed < target; ++n) {
+        long x = rmm_rand_range(self->map_width);
+        long y = rmm_rand_range(self->map_height);
+        if (!rmm_search_open(self, x, y)) {
+            continue;
+        }
+
+        uchar tt = (uchar)(self->map_row_offset[y][x].terrain_type & 0x1f);
+        if (rmm_is_water_terrain(tt)) {
+            continue;
+        }
+
+        long pick = candidate_ids[rmm_rand_range(candidate_count)];
+        RGE_Static_Object* placed_obj = gaia->make_new_object(pick, (float)x + 0.5f, (float)y + 0.5f, 0.0f, 1);
+        if (placed_obj != nullptr) {
+            rmm_set_search_area(self, x, y, 1, 0);
+            ++placed;
+        }
+    }
+
+    CUSTOM_DEBUG_LOG_FMT(
+        "  emergency_object_pass: candidates=%d target=%ld placed=%ld",
+        candidate_count,
+        target,
+        placed);
+    return placed;
 }
 
 static void rmm_free_map_data(RGE_RMM_Database_Controller* self) {
@@ -1241,6 +1401,522 @@ void RGE_Random_Map_Module::remove_stack_node(Map_Stack* param_1) {
     param_1->prev = nullptr;
 }
 
+void RGE_Random_Map_Module::clear_stack() {
+    if (this->stack_offsets == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+
+    for (long y = 0; y < this->map_height; ++y) {
+        for (long x = 0; x < this->map_width; ++x) {
+            this->stack_offsets[y][x].next = nullptr;
+            this->stack_offsets[y][x].prev = nullptr;
+        }
+    }
+}
+
+uchar RGE_Random_Map_Module::check_stack(Map_Stack* param_1) {
+    if (param_1 == nullptr) {
+        return 0;
+    }
+    if (param_1->next == nullptr && param_1->prev == nullptr) {
+        return 0;
+    }
+    return 1;
+}
+
+void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1) {
+    if (param_1 == nullptr) {
+        return;
+    }
+
+    Map_Stack sub_stacks[100];
+    for (int i = 0; i < 100; ++i) {
+        this->init_stack(&sub_stacks[i]);
+    }
+
+    int pass_count = 2;
+    while (pass_count > 0) {
+        while (param_1->next != nullptr) {
+            int r = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1e8);
+            int idx = (r * 100) / 0x7fff;
+            if (idx < 0) idx = 0;
+            if (idx > 99) idx = 99;
+            this->add_stack_node(&sub_stacks[idx], param_1->next);
+        }
+
+        for (int i = 0; i < 100; ++i) {
+            while (sub_stacks[i].next != nullptr) {
+                this->add_stack_node(param_1, sub_stacks[i].next);
+            }
+        }
+
+        pass_count = pass_count - 1;
+    }
+}
+
+uchar RGE_Random_Map_Module::find_path(long param_1, long param_2, long* param_3, long* param_4, float* param_5) {
+    Map_Stack path_stack;
+    this->init_stack(&path_stack);
+    uchar ret = this->find_path(&path_stack, param_1, param_2, param_3, param_4, param_5);
+    this->deinit_stack(&path_stack);
+    return ret;
+}
+
+uchar RGE_Random_Map_Module::find_path(
+    Map_Stack* param_1,
+    long param_2,
+    long param_3,
+    long* param_4,
+    long* param_5,
+    float* param_6) {
+    if (param_1 == nullptr || param_4 == nullptr || param_5 == nullptr || param_6 == nullptr) {
+        return 0;
+    }
+    if (this->map_row_offset == nullptr || this->search_map == nullptr || this->search_map_rows == nullptr ||
+        this->map_width <= 0 || this->map_height <= 0) {
+        return 0;
+    }
+    if (param_2 < 0 || param_2 >= this->map_width || param_3 < 0 || param_3 >= this->map_height) {
+        return 0;
+    }
+    if (*param_4 < 0 || *param_4 >= this->map_width || *param_5 < 0 || *param_5 >= this->map_height) {
+        return 0;
+    }
+
+    long cur_x = param_2;
+    long cur_y = param_3;
+    long max_x = this->map_width - 1;
+    long max_y = this->map_height - 1;
+
+    this->clear_stack();
+    memset(this->search_map, 0, (size_t)this->map_height * (size_t)this->map_width);
+
+    this->search_map_rows[cur_y][cur_x] = 3;
+    uchar start_tt = (uchar)(this->map_row_offset[*param_5][*param_4].terrain_type & 0x1f);
+    this->search_map_rows[*param_5][*param_4] = 2;
+
+    if (!(0.0f < param_6[start_tt])) {
+        return 0;
+    }
+
+    float cur_cost = 0.0f;
+    long start_y = *param_5;
+    long dist_sq = (cur_x - *param_4) * (cur_x - *param_4) + (cur_y - start_y) * (cur_y - start_y);
+
+    while (1) {
+        float dist = (float)sqrt((double)dist_sq);
+        if (dist == 0.0f) {
+            if (param_1->next == nullptr) {
+                return 1;
+            }
+            param_1->next->prev = nullptr;
+            return 1;
+        }
+
+        bool south_ok = false;
+        bool north_ok = false;
+        bool west_ok = false;
+
+        if (cur_y < max_y) {
+            float h = (cur_y < *param_5) ? 1.0f : -1.0f;
+            long ny = cur_y + 1;
+            uchar* mark = this->search_map_rows[ny] + cur_x;
+            uchar state = *mark;
+            if (state == 0) {
+                uchar tt = (uchar)(this->map_row_offset[ny][cur_x].terrain_type & 0x1f);
+                if (param_6[tt] <= 0.0f) {
+                    *mark = 1;
+                } else {
+                    float step = param_6[tt];
+                    *mark = 7;
+                    this->push_stack(param_1, cur_x, ny, cur_cost + step, cur_cost + step + (dist - h));
+                    south_ok = true;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[ny][cur_x] = 7;
+                *param_4 = cur_x;
+                *param_5 = ny;
+                return 1;
+            } else {
+                south_ok = (state != 1);
+            }
+        }
+
+        if (cur_y > 0) {
+            float h = (*param_5 < cur_y) ? 1.0f : -1.0f;
+            long ny = cur_y - 1;
+            uchar* mark = this->search_map_rows[ny] + cur_x;
+            uchar state = *mark;
+            if (state == 0) {
+                uchar tt = (uchar)(this->map_row_offset[ny][cur_x].terrain_type & 0x1f);
+                if (param_6[tt] <= 0.0f) {
+                    *mark = 1;
+                } else {
+                    float step = param_6[tt];
+                    *mark = 6;
+                    this->push_stack(param_1, cur_x, ny, cur_cost + step, cur_cost + step + (dist - h));
+                    north_ok = true;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[ny][cur_x] = 6;
+                *param_4 = cur_x;
+                *param_5 = ny;
+                return 1;
+            } else {
+                north_ok = (state != 1);
+            }
+        }
+
+        if (cur_x > 0) {
+            float h = (*param_4 < cur_x) ? 1.0f : -1.0f;
+            float d = dist - h;
+            long nx = cur_x - 1;
+            uchar* mark = this->search_map_rows[cur_y] + nx;
+            uchar state = *mark;
+            if (state == 0) {
+                uchar tt = (uchar)(this->map_row_offset[cur_y][nx].terrain_type & 0x1f);
+                if (param_6[tt] <= 0.0f) {
+                    *mark = 1;
+                } else {
+                    float step = param_6[tt];
+                    *mark = 4;
+                    this->push_stack(param_1, nx, cur_y, cur_cost + step, cur_cost + step + d);
+                    west_ok = true;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[cur_y][nx] = 4;
+                *param_4 = nx;
+                *param_5 = cur_y;
+                return 1;
+            } else {
+                west_ok = (state != 1);
+            }
+
+            if (cur_y > 0) {
+                long ny = cur_y - 1;
+                mark = this->search_map_rows[ny] + nx;
+                if (*mark == 0) {
+                    uchar tt = (uchar)(this->map_row_offset[ny][nx].terrain_type & 0x1f);
+                    if (param_6[tt] <= 0.0f) {
+                        *mark = 1;
+                    } else if (north_ok && west_ok) {
+                        float step = cur_cost + param_6[tt] * 1.36f;
+                        *mark = 8;
+                        float bias = (*param_5 < cur_y) ? 0.41f : -0.41f;
+                        this->push_stack(param_1, nx, ny, step, step + (d - bias));
+                    }
+                } else if (*mark == 2) {
+                    this->search_map_rows[ny][nx] = 8;
+                    *param_4 = nx;
+                    *param_5 = ny;
+                    return 1;
+                }
+            }
+
+            if (cur_y < max_y) {
+                long ny = cur_y + 1;
+                mark = this->search_map_rows[ny] + nx;
+                if (*mark == 0) {
+                    uchar tt = (uchar)(this->map_row_offset[ny][nx].terrain_type & 0x1f);
+                    if (param_6[tt] <= 0.0f) {
+                        *mark = 1;
+                    } else if (south_ok && west_ok) {
+                        float step = cur_cost + param_6[tt] * 1.36f;
+                        *mark = 9;
+                        float bias = (cur_y < *param_5) ? 0.41f : -0.41f;
+                        this->push_stack(param_1, nx, ny, step, step + (d - bias));
+                    }
+                } else if (*mark == 2) {
+                    this->search_map_rows[ny][nx] = 9;
+                    *param_4 = nx;
+                    *param_5 = ny;
+                    return 1;
+                }
+            }
+        }
+
+        if (cur_x < max_x) {
+            float h = (cur_x < *param_4) ? 1.0f : -1.0f;
+            dist = dist - h;
+            long nx = cur_x + 1;
+            uchar* mark = this->search_map_rows[cur_y] + nx;
+            uchar state = *mark;
+            if (state == 0) {
+                uchar tt = (uchar)(this->map_row_offset[cur_y][nx].terrain_type & 0x1f);
+                if (param_6[tt] <= 0.0f) {
+                    *mark = 1;
+                    west_ok = false;
+                } else {
+                    float step = param_6[tt];
+                    *mark = 5;
+                    this->push_stack(param_1, nx, cur_y, cur_cost + step, cur_cost + step + dist);
+                    west_ok = true;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[cur_y][nx] = 5;
+                *param_4 = nx;
+                *param_5 = cur_y;
+                return 1;
+            } else {
+                west_ok = (state != 1);
+            }
+
+            if (cur_y > 0) {
+                long ny = cur_y - 1;
+                mark = this->search_map_rows[ny] + nx;
+                state = *mark;
+                if (state == 0) {
+                    uchar tt = (uchar)(this->map_row_offset[ny][nx].terrain_type & 0x1f);
+                    if (param_6[tt] <= 0.0f) {
+                        *mark = 1;
+                    } else if (north_ok && west_ok) {
+                        float step = cur_cost + param_6[tt] * 1.36f;
+                        *mark = 10;
+                        float bias = (*param_5 < cur_y) ? 0.4f : -0.4f;
+                        this->push_stack(param_1, nx, ny, step, step + (dist - bias));
+                    }
+                } else if (state == 2) {
+                    this->search_map_rows[ny][nx] = 10;
+                    *param_4 = nx;
+                    *param_5 = ny;
+                    return 1;
+                }
+            }
+
+            if (cur_y < max_y) {
+                long ny = cur_y + 1;
+                mark = this->search_map_rows[ny] + nx;
+                state = *mark;
+                if (state == 0) {
+                    uchar tt = (uchar)(this->map_row_offset[ny][nx].terrain_type & 0x1f);
+                    if (param_6[tt] <= 0.0f) {
+                        *mark = 1;
+                    } else if (south_ok && west_ok) {
+                        float step = cur_cost + param_6[tt] * 1.36f;
+                        *mark = 11;
+                        float bias = (cur_y < *param_5) ? 0.4f : -0.4f;
+                        this->push_stack(param_1, nx, ny, step, step + (dist - bias));
+                    }
+                } else if (state == 2) {
+                    this->search_map_rows[ny][nx] = 11;
+                    *param_4 = nx;
+                    *param_5 = ny;
+                    return 1;
+                }
+            }
+        }
+
+        Map_Stack* popped = this->pop_stack(param_1, &cur_x, &cur_y, &cur_cost);
+        if (popped == nullptr) {
+            break;
+        }
+        start_y = *param_5;
+        dist_sq = (cur_x - *param_4) * (cur_x - *param_4) + (cur_y - start_y) * (cur_y - start_y);
+    }
+
+    return 0;
+}
+
+RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
+    RGE_Map* param_1,
+    RGE_Random_Map_Module* param_2,
+    RGE_Shallows_Info* param_3)
+    : RGE_Random_Map_Module(param_1, param_2, 1) {
+    this->schedule = 1.1f;
+    memset(&this->info, 0, sizeof(this->info));
+    if (param_3 != nullptr) {
+        memcpy(&this->info, param_3, sizeof(this->info));
+    }
+}
+
+uchar RGE_RMM_Shallows_Generator::generate() {
+    this->clear_stack();
+
+    long num = this->info.shallows_num;
+    if (num < 0) num = 0;
+    if (num > 99) num = 99;
+    this->info.shallows_num = num;
+
+    for (long i = 0; i < num; ++i) {
+        for (long j = i + 1; j < num; ++j) {
+            this->make_tribe_connections(i, j);
+        }
+    }
+
+    this->info.shallows_num = num + 2;
+    int pair_count = 2;
+    while (pair_count > 0) {
+        int found = 0;
+        while (found == 0) {
+            long x = rmm_rand_range(this->map_width);
+            long y = rmm_rand_range(this->map_height);
+            uchar tt = (uchar)(this->map_row_offset[y][x].terrain_type & 0x1f);
+            if (tt != 1 && tt != 22 && tt != 4) {
+                this->info.shallows[num + 1].x = x;
+                this->info.shallows[num + 1].y = y;
+                found = 1;
+            }
+        }
+
+        found = 0;
+        while (found == 0) {
+            long x = rmm_rand_range(this->map_width);
+            long y = rmm_rand_range(this->map_height);
+            uchar tt = (uchar)(this->map_row_offset[y][x].terrain_type & 0x1f);
+            if (tt != 1 && tt != 22 && tt != 4) {
+                this->info.shallows[num].x = x;
+                this->info.shallows[num].y = y;
+                found = 1;
+            }
+        }
+
+        this->make_tribe_connections(num + 1, num);
+        pair_count = pair_count - 1;
+    }
+
+    return 1;
+}
+
+void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
+    if (this->map_row_offset == nullptr || this->search_map_rows == nullptr ||
+        this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+    if (param_1 < 0 || param_2 < 0 || param_1 >= this->info.shallows_num || param_2 >= this->info.shallows_num) {
+        return;
+    }
+
+    long end_x = this->info.shallows[param_1].x;
+    long end_y = this->info.shallows[param_1].y;
+    long start_x = this->info.shallows[param_2].x;
+    long start_y = this->info.shallows[param_2].y;
+
+    float terrain_cost[40];
+    memset(terrain_cost, 0, sizeof(terrain_cost));
+    terrain_cost[1] = 1.0f;
+    terrain_cost[2] = 7.0f;
+    terrain_cost[3] = 1.0f;
+    terrain_cost[5] = 2.0f;
+    terrain_cost[23] = 14.0f;
+
+    long tx = start_x;
+    long ty = start_y;
+    this->find_path(end_x, end_y, &tx, &ty, &terrain_cost[1]);
+    if (tx != start_x || ty != start_y || tx < 0 || ty < 0 || tx >= this->map_width || ty >= this->map_height) {
+        return;
+    }
+
+    Map_Stack stack;
+    this->init_stack(&stack);
+
+    long done = 0;
+    long walk_guard = this->map_width * this->map_height * 4;
+    if (walk_guard < 1) walk_guard = 1;
+    while (done == 0 && walk_guard-- > 0) {
+        long nx = tx;
+        long ny = ty;
+        switch (this->search_map_rows[ty][tx]) {
+            case 6:
+                ny = ty + 1;
+                break;
+            case 7:
+                ny = ty - 1;
+                break;
+            case 8:
+                ny = ty + 1;
+            case 4:
+                nx = tx + 1;
+                break;
+            case 9:
+                ny = ty - 1;
+                nx = tx + 1;
+                break;
+            case 10:
+                ny = ty + 1;
+            case 5:
+                nx = tx - 1;
+                break;
+            case 11:
+                ny = ty - 1;
+                nx = tx - 1;
+                break;
+            default:
+                done = 1;
+                break;
+        }
+
+        if (nx < 0 || ny < 0 || nx >= this->map_width || ny >= this->map_height) {
+            done = 1;
+        }
+
+        if (done != 0) {
+            long sx = 0;
+            long sy = 0;
+            float c = 0.0f;
+            Map_Stack* it = this->pop_stack(&stack, &sx, &sy, &c);
+            while (it != nullptr) {
+                this->map_row_offset[sy][sx].terrain_type = 4;
+                it = this->pop_stack(&stack, &sx, &sy, &c);
+            }
+            this->deinit_stack(&stack);
+            return;
+        }
+
+        uchar tt = (uchar)(this->map_row_offset[ny][nx].terrain_type & 0x1f);
+        if (tt == 1 || tt == 22) {
+            long sx0 = nx - 1 - rmm_rand_range(2);
+            long sy0 = ny - 1 - rmm_rand_range(2);
+            long sx1 = nx + 1 + rmm_rand_range(2);
+            long sy1 = ny + 1 + rmm_rand_range(3);
+
+            if (sx0 < 0) sx0 = 0;
+            if (sy0 < 0) sy0 = 0;
+            if (sx1 >= this->map_width) sx1 = this->map_width - 1;
+            if (sy1 >= this->map_height) sy1 = this->map_height - 1;
+
+            for (long yy = sy0; yy <= sy1; ++yy) {
+                for (long xx = sx0; xx <= sx1; ++xx) {
+                    uchar wtt = (uchar)(this->map_row_offset[yy][xx].terrain_type & 0x1f);
+                    if (wtt == 1 || wtt == 22) {
+                        this->push_stack(&stack, xx, yy, 0.0f, 0.0f);
+                    }
+                }
+            }
+        } else {
+            if (nx > 0) {
+                uchar wtt = (uchar)(this->map_row_offset[ny][nx - 1].terrain_type & 0x1f);
+                if (wtt == 1 || wtt == 22) {
+                    this->push_stack(&stack, nx - 1, ny, 0.0f, 0.0f);
+                }
+            }
+            if (nx < this->map_width - 1) {
+                uchar wtt = (uchar)(this->map_row_offset[ny][nx + 1].terrain_type & 0x1f);
+                if (wtt == 1 || wtt == 22) {
+                    this->push_stack(&stack, nx + 1, ny, 0.0f, 0.0f);
+                }
+            }
+            if (ny > 0) {
+                uchar wtt = (uchar)(this->map_row_offset[ny - 1][nx].terrain_type & 0x1f);
+                if (wtt == 1 || wtt == 22) {
+                    this->push_stack(&stack, nx, ny - 1, 0.0f, 0.0f);
+                }
+            }
+            if (ny < this->map_height - 1) {
+                uchar wtt = (uchar)(this->map_row_offset[ny + 1][nx].terrain_type & 0x1f);
+                if (wtt == 1 || wtt == 22) {
+                    this->push_stack(&stack, nx, ny + 1, 0.0f, 0.0f);
+                }
+            }
+        }
+
+        this->search_map_rows[ty][tx] = 0xff;
+        tx = nx;
+        ty = ny;
+    }
+
+    this->deinit_stack(&stack);
+}
+
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char* param_1, char* param_2, char* param_3, char* param_4)
     : RGE_Random_Map_Module(nullptr, nullptr, 0) {
     memset(&this->land_info, 0, sizeof(this->land_info));
@@ -1617,10 +2293,6 @@ uchar RGE_RMM_Database_Controller::save(int param_1) {
 }
 
 uchar RGE_RMM_Database_Controller::generate() {
-    if (RGE_Random_Map_Module::generate() == 0) {
-        return 0;
-    }
-
     if (this->map == nullptr || this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -1631,6 +2303,8 @@ uchar RGE_RMM_Database_Controller::generate() {
     }
 
     uchar base_terrain = rmm_clamp_terrain((long)this->land_info.base_terrain);
+    uchar terrain_touched[32];
+    memset(terrain_touched, 0, sizeof(terrain_touched));
     for (long y = 0; y < this->map_height; ++y) {
         for (long x = 0; x < this->map_width; ++x) {
             RGE_Tile* tile = &this->map_row_offset[y][x];
@@ -1675,10 +2349,14 @@ uchar RGE_RMM_Database_Controller::generate() {
         }
 
         uchar terrain = rmm_clamp_terrain(land->terrain_type);
+        terrain_touched[terrain] = 1;
         rmm_paint_disk(this, cx, cy, radius, terrain, 0, 0);
         rmm_paint_disk(this, cx + rmm_rand_range(radius + 1) - radius / 2, cy + rmm_rand_range(radius + 1) - radius / 2, (radius * 3) / 4, terrain, 0, 0);
         rmm_paint_disk(this, cx + rmm_rand_range(radius + 1) - radius / 2, cy + rmm_rand_range(radius + 1) - radius / 2, radius / 2, terrain, 0, 0);
     }
+
+    // Source of truth: rmm_land.cpp::generate ends with clean_terrain(base_terrain).
+    this->map->clean_terrain(0, 0, this->map_width - 1, this->map_height - 1, base_terrain);
 
     long terr_num = this->terrain_info.terrain_num;
     if (terr_num < 0) terr_num = 0;
@@ -1700,6 +2378,7 @@ uchar RGE_RMM_Database_Controller::generate() {
         }
 
         uchar terrain = rmm_clamp_terrain(line->terrain_type);
+        terrain_touched[terrain] = 1;
         uchar base_filter = rmm_clamp_terrain(line->base_terrain_type);
         if (rmm_count_terrain_tiles(this, base_filter) == 0) {
             long best_count = -1;
@@ -1732,6 +2411,13 @@ uchar RGE_RMM_Database_Controller::generate() {
             }
             --tries;
         }
+    }
+
+    // Source of truth: rmm_terr.cpp::generate ends with check_borders().
+    rmm_terrain_check_borders(this);
+
+    if (RGE_Random_Map_Module::generate() == 0) {
+        return 0;
     }
 
     long elev_num = this->elevation_info.elevation_num;
@@ -1816,6 +2502,11 @@ uchar RGE_RMM_Database_Controller::generate() {
         max_step_after);
 
     long placed_objects = rmm_place_objects_pass(this);
+    long min_expected_objects = (this->map_width * this->map_height) / 420;
+    if (min_expected_objects < 12) min_expected_objects = 12;
+    if (placed_objects < min_expected_objects) {
+        placed_objects += rmm_place_emergency_objects(this);
+    }
     CUSTOM_DEBUG_LOG_FMT(
         "RGE_RMM_Database_Controller::generate: object_defs=%ld placed=%ld",
         this->object_info.object_num,
@@ -1863,7 +2554,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1) {
         return;
     }
 
-    uchar base_tt = rmm_pick_loaded_terrain(this->map, rmm_clamp_terrain(src->base_terrain), 0);
+    uchar base_tt = (uchar)src->base_terrain;
     this->land_info.base_terrain = base_tt;
     this->land_info.wall_1_avoidance_line = src->map_edge_buffer[0];
     this->land_info.wall_2_avoidance_line = src->map_edge_buffer[1];
@@ -1894,10 +2585,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1) {
 
     for (long i = 0; i < src->land_num && dst_index < this->land_info.land_num; ++i) {
         RGE_Land_Data_Entry* s = &src->land[i];
-        long terrain_type = (long)rmm_pick_loaded_terrain(
-            this->map,
-            rmm_clamp_terrain((long)s->terrain_type),
-            base_tt);
+        long terrain_type = (long)s->terrain_type;
         long land_size = ((long)s->amount_of_land_used_percent * grown_land_tiles) / 100;
         if (land_size < 1) {
             land_size = 1;
@@ -2007,16 +2695,15 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
     if (terrain_num > 99) terrain_num = 99;
     this->terrain_info.terrain_num = terrain_num;
 
-    uchar base_tt = rmm_pick_loaded_terrain(this->map, this->land_info.base_terrain, 0);
     for (long i = 0; i < terrain_num; ++i) {
         RGE_Terrain_Data_Entry* s = &src->terrain[i];
         RGE_Terrain_Info_Line* d = &this->terrain_info.terrain[i];
         d->terrain_size = s->terrain_percent;
         d->terrain_generated = 0;
-        d->terrain_type = (long)rmm_pick_loaded_terrain(this->map, rmm_clamp_terrain(s->terrain_type), base_tt);
+        d->terrain_type = (long)s->terrain_type;
         d->clumps = s->clumps;
         d->spacing = s->spacing;
-        d->base_terrain_type = (long)rmm_pick_loaded_terrain(this->map, rmm_clamp_terrain(s->base_terrain_type), base_tt);
+        d->base_terrain_type = (long)s->base_terrain_type;
         d->clumpiness_factor = s->clumpiness_factor;
         d->avoid_hot_spots = 1;
     }
@@ -2216,35 +2903,6 @@ void RGE_RMM_Database_Controller::add_elevation_module() {
     this->elevation_info.elevation[3].base_elevation = 3;
     this->elevation_info.elevation[3].spacing = 1;
 
-    // Compatibility adaptation: with partially wired terrain DB paths, terrain 0 can be absent.
-    // Fall back to a generated non-water land terrain so elevation can apply.
-    uchar elevation_base_tt = 0;
-    int found_base_tt = 0;
-    for (long i = 0; i < this->land_info.land_num; ++i) {
-        uchar tt = rmm_clamp_terrain(this->land_info.land[i].terrain_type);
-        if (tt == 0) {
-            elevation_base_tt = 0;
-            found_base_tt = 1;
-            break;
-        }
-    }
-    if (!found_base_tt) {
-        for (long i = 0; i < this->land_info.land_num; ++i) {
-            uchar tt = rmm_clamp_terrain(this->land_info.land[i].terrain_type);
-            if (!rmm_is_water_terrain(tt)) {
-                elevation_base_tt = tt;
-                found_base_tt = 1;
-                break;
-            }
-        }
-    }
-    if (!found_base_tt) {
-        elevation_base_tt = rmm_clamp_terrain(this->land_info.base_terrain);
-    }
-    for (long i = 0; i < this->elevation_info.elevation_num; ++i) {
-        this->elevation_info.elevation[i].base_terrain_type = elevation_base_tt;
-    }
-
     long hot_spot_index = 0;
     if (map_entry != nullptr && map_entry->land_info.land_num > 0 && map_entry->land_info.land != nullptr) {
         for (long i = 0; i < map_entry->land_info.land_num; ++i) {
@@ -2367,7 +3025,6 @@ TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int param_1)
 
 uchar TRIBE_RMM_Database_Controller::generate() {
     uchar ret = RGE_RMM_Database_Controller::generate();
-
     if (this->map_row_offset != nullptr && this->map_width > 0 && this->map_height > 0) {
         for (long y = 0; y < this->map_height; ++y) {
             for (long x = 0; x < this->map_width; ++x) {
@@ -2378,12 +3035,15 @@ uchar TRIBE_RMM_Database_Controller::generate() {
             }
         }
     }
-
     return ret;
 }
 
 void TRIBE_RMM_Database_Controller::add_land_module(uchar param_1) {
     RGE_RMM_Database_Controller::add_land_module(param_1);
+    long mt = this->map_type;
+    if ((((1 < mt) && (mt < 7)) || (mt == 8)) && this->land_info.land_num > 1) {
+        this->add_shallows_module();
+    }
 }
 
 void TRIBE_RMM_Database_Controller::add_terrain_module() {
@@ -2396,6 +3056,26 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
 
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
     RGE_RMM_Database_Controller::add_elevation_module();
+}
+
+void TRIBE_RMM_Database_Controller::add_shallows_module() {
+    if (this->map == nullptr || this->land_info.land_num <= 0) {
+        return;
+    }
+
+    RGE_Shallows_Info shallows_info;
+    memset(&shallows_info, 0, sizeof(shallows_info));
+
+    long n = this->land_info.land_num;
+    if (n > 99) n = 99;
+    if (n < 0) n = 0;
+    shallows_info.shallows_num = n;
+    for (long i = 0; i < n; ++i) {
+        shallows_info.shallows[i].x = this->land_info.land[i].x;
+        shallows_info.shallows[i].y = this->land_info.land[i].y;
+    }
+
+    (void)new RGE_RMM_Shallows_Generator(this->map, this, &shallows_info);
 }
 
 uchar TRIBE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, uchar param_5) {

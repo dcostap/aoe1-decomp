@@ -33,10 +33,9 @@ TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
 }
 
 TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8)
-    : RGE_Map(param_1, param_2, param_3, param_5, param_6, param_7, param_8) {
+    : RGE_Map(param_1, param_3, param_4, param_5, param_6, param_7, param_8) {
     // Source of truth: tmap.cpp.decomp
-    // Delegates to RGE_Map(char*, char*, char*, short, short, short, RGE_Sound**)
-    // which loads terrain/border definitions from text files.
+    // Base call order is (param_1, param_3, param_4, ...), not (..., param_2, param_3, ...).
     this->Game = nullptr;
     this->rge_player = nullptr;
     this->rge_game_world = nullptr;
@@ -61,6 +60,80 @@ void TRIBE_Map::load_random_map(char* p1, char* p2, char* p3, char* p4) {
     // Constructor argument order is (param_2, param_3, param_4, param_1).
     this->random_map = (RGE_RMM_Database_Controller*)new TRIBE_RMM_Database_Controller(p2, p3, p4, p1);
 }
+
+uchar TRIBE_Map::water(uchar p1) {
+    if (p1 == 1) {
+        return p1;
+    }
+    if (p1 == 0x16) {
+        return 1;
+    }
+    return (uchar)(p1 == 4);
+}
+
+void TRIBE_Map::clean_borders(long p1, long p2, long p3, long p4, uchar p5) {
+    if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+
+    long max_x = this->map_width - 1;
+    long max_y = this->map_height - 1;
+
+    if (p1 < 0) p1 = 0;
+    if (p2 < 0) p2 = 0;
+    if (p3 >= this->map_width) p3 = max_x;
+    if (p4 >= this->map_height) p4 = max_y;
+    if (p1 > p3 || p2 > p4) {
+        return;
+    }
+
+    for (long y = p2; y <= p4; ++y) {
+        for (long x = p1; x <= p3; ++x) {
+            uchar tt = (uchar)(this->map_row_offset[y][x].terrain_type & 0x1f);
+
+            int near_water = 0;
+            if (y > 0) {
+                if (this->water((uchar)(this->map_row_offset[y - 1][x].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                }
+            }
+            if (near_water == 0 && y < max_y) {
+                if (this->water((uchar)(this->map_row_offset[y + 1][x].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                }
+            }
+            if (near_water == 0 && x > 0) {
+                if (this->water((uchar)(this->map_row_offset[y][x - 1].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                } else if (y > 0 && this->water((uchar)(this->map_row_offset[y - 1][x - 1].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                } else if (y < max_y && this->water((uchar)(this->map_row_offset[y + 1][x - 1].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                }
+            }
+            if (near_water == 0 && x < max_x) {
+                if (this->water((uchar)(this->map_row_offset[y][x + 1].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                } else if (y > 0 && this->water((uchar)(this->map_row_offset[y - 1][x + 1].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                } else if (y < max_y && this->water((uchar)(this->map_row_offset[y + 1][x + 1].terrain_type & 0x1f)) != 0) {
+                    near_water = 1;
+                }
+            }
+
+            if (tt == 2) {
+                if (near_water == 0) {
+                    RGE_Map::set_terrain(this->game_world, (short)x, (short)y, p5, 0, 0);
+                }
+            } else {
+                if (this->water(tt) == 0 && near_water != 0) {
+                    RGE_Map::set_terrain(this->game_world, (short)x, (short)y, 2, 0, 0);
+                }
+            }
+        }
+    }
+}
+
 uchar TRIBE_Map::do_terrain_brush(long p1, long p2, long p3, uchar p4) { return 0; }
 uchar TRIBE_Map::do_terrain_brush_stroke(long p1, long p2, long p3, long p4, long p5, uchar p6) { return 0; }
 uchar TRIBE_Map::do_elevation_brush(long p1, long p2, long p3, uchar p4) { return 0; }

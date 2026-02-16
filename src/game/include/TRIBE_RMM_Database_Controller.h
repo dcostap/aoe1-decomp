@@ -16,5 +16,7 @@ public:
     virtual uchar init(RGE_Map* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, uchar param_5); // vt[5] (0x14)
     virtual uchar de_init(); // vt[6] (0x18)
 
+    void add_shallows_module();
+
 };
 static_assert(sizeof(TRIBE_RMM_Database_Controller) == 0x4F5C, "Size mismatch");

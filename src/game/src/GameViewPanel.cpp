@@ -10,6 +10,7 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Sprite.h"
 #include "../include/TShape.h"
 #include "../include/TDrawArea.h"
@@ -157,10 +158,12 @@ static short get_border_picture(RGE_Map* map, unsigned char border_type, unsigne
         return -1;
     }
 
-    // Source-of-truth quirk: original code indexes the 19x12 border table via a flattened
-    // offset (shape + tile_type*12 + 10), not a direct [tile_type-1][shape+11] expression.
-    const int flat_index = (int)border_shape + (int)tile_type * 12 + 10;
-    if (flat_index < 0 || flat_index >= (19 * 12)) {
+    // Source of truth: view.cpp.decomp @ 0x00539B90.
+    // borders[tile_type - 1][border_shape + 0x0B] => flattened:
+    // (tile_type * 12) + border_shape - 1
+    const int kMaxBorderPicts = 19 * 12;
+    int flat_index = (int)tile_type * 12 + (int)border_shape - 1;
+    if (flat_index < 0 || flat_index >= kMaxBorderPicts) {
         return -1;
     }
 
@@ -189,6 +192,127 @@ static short get_border_picture(RGE_Map* map, unsigned char border_type, unsigne
     }
 
     return (short)(pict->animations * sub_index + pict->shape_index);
+}
+
+static int get_border_edge_pictures(
+    RGE_Map* map,
+    unsigned char border_type,
+    unsigned char tile_type,
+    unsigned char border_shape_bits,
+    short col,
+    short row,
+    int* left_index,
+    int* bottom_index,
+    int* right_index,
+    int* center_index) {
+    if (left_index) *left_index = -1;
+    if (bottom_index) *bottom_index = -1;
+    if (right_index) *right_index = -1;
+    if (center_index) *center_index = -1;
+
+    if (!map || border_type >= 16) {
+        return 0;
+    }
+    if (map->border_types[border_type].shape == nullptr) {
+        return 0;
+    }
+    if (border_shape_bits == 0) {
+        return 0;
+    }
+
+    if ((border_shape_bits & 0x01) != 0) {
+        short s = get_border_picture(map, border_type, tile_type, 0x01, col, row);
+        if (left_index) *left_index = (int)s;
+    }
+    if ((border_shape_bits & 0x02) != 0) {
+        short s = get_border_picture(map, border_type, tile_type, 0x04, col, row);
+        if (center_index) *center_index = (int)s;
+    }
+    if ((border_shape_bits & 0x04) != 0) {
+        short s = get_border_picture(map, border_type, tile_type, 0x03, col, row);
+        if (right_index) *right_index = (int)s;
+    }
+    if ((border_shape_bits & 0x08) != 0) {
+        short s = get_border_picture(map, border_type, tile_type, 0x02, col, row);
+        if (bottom_index) *bottom_index = (int)s;
+    }
+    return 1;
+}
+
+static void gameview_try_load_sprite_shape(RGE_Sprite* spr) {
+    if (spr == nullptr || spr->shape != nullptr) {
+        return;
+    }
+    if (spr->pict_name[0] == '\0') {
+        return;
+    }
+
+    char shp_name[64];
+    _snprintf(shp_name, sizeof(shp_name), "%s.shp", spr->pict_name);
+    shp_name[sizeof(shp_name) - 1] = '\0';
+
+    TShape* loaded_shape = new TShape(shp_name, spr->resource_id);
+    if (loaded_shape != nullptr && loaded_shape->is_loaded() != 0) {
+        spr->shape = loaded_shape;
+        spr->loaded = 1;
+    } else if (loaded_shape != nullptr) {
+        delete loaded_shape;
+    }
+}
+
+static int gameview_draw_object_sprite(TDrawArea* area, RGE_Static_Object* obj, long sx, long sy) {
+    if (area == nullptr || obj == nullptr || obj->master_obj == nullptr) {
+        return 0;
+    }
+
+    RGE_Sprite* spr = obj->sprite;
+    if (spr == nullptr) {
+        spr = obj->master_obj->sprite;
+    }
+    gameview_try_load_sprite_shape(spr);
+
+    if (spr != nullptr && spr->loaded && spr->shape != nullptr && spr->shape->shape_count() > 0) {
+        int facet = (int)obj->facet;
+        if (facet < 0 || facet >= spr->shape->shape_count()) {
+            facet = 0;
+        }
+        spr->shape->shape_draw(area, sx, sy, facet, 0, 0, nullptr);
+        return 1;
+    }
+
+    if (spr != nullptr && spr->draw_list_num > 0 && spr->draw_list != nullptr) {
+        int drew_any = 0;
+        for (int di = 0; di < spr->draw_list_num; ++di) {
+            RGE_Picture_List* dl = &spr->draw_list[di];
+            RGE_Sprite* ds = dl->sprite;
+            if (dl->picture_num == -1) {
+                ds = spr;
+            }
+            gameview_try_load_sprite_shape(ds);
+            if (ds == nullptr || ds->shape == nullptr || ds->shape->shape_count() <= 0) {
+                continue;
+            }
+
+            int df = (int)dl->facet;
+            if (df < 0 || df >= ds->shape->shape_count()) {
+                df = 0;
+            }
+            ds->shape->shape_draw(
+                area,
+                sx + (long)dl->offset_x,
+                sy + (long)dl->offset_y,
+                (long)df,
+                0,
+                0,
+                nullptr);
+            drew_any = 1;
+        }
+        if (drew_any != 0) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void GameViewPanel::draw() {
@@ -240,6 +364,9 @@ void GameViewPanel::draw() {
     int drawn_tiles = 0;
     int real_tiles = 0;
     int fallback_tiles = 0;
+    int objects_drawn = 0;
+    int objects_fallback = 0;
+    int objects_culled = 0;
     int bad_terrain_idx = 0;
     int missing_shape = 0;
     int missing_frame = 0;
@@ -299,12 +426,65 @@ void GameViewPanel::draw() {
             }
 
             // Look up the terrain type and get the SLP shape
-            unsigned char terrain_idx = tile->terrain_type; // 5-bit field (0-31)
+            unsigned char terrain_idx = (unsigned char)(tile->terrain_type & 0x1F); // 5-bit field (0-31)
+            unsigned char draw_terrain_idx = terrain_idx;
+            if (terrain_idx < 32) {
+                short terrain_to_draw = this->world_map->terrain_types[terrain_idx].terrain_to_draw;
+                if (terrain_to_draw >= 0 && terrain_to_draw < this->world_map->num_terrain) {
+                    draw_terrain_idx = (unsigned char)terrain_to_draw;
+                }
+            }
 
             if (terrain_idx >= 32) {
                 bad_terrain_idx++;
                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Bad terrain idx %d at %ld,%ld", terrain_idx, col, row);
                 continue;
+            }
+
+            // Mirror RGE_View::draw_tile transition logic:
+            // decide border + draw_terrain first (border_style 0 can suppress base terrain draw).
+            int draw_border = 0;
+            int draw_terrain = 1;
+            int left_index = -1;
+            int bottom_index = -1;
+            int right_index = -1;
+            int center_index = -1;
+
+            unsigned char border_idx = (unsigned char)(tile->border_type & 0x0F);
+            unsigned char border_shape_bits = (unsigned char)(tile->border_shape & 0x0F);
+            if (border_idx != 0 && border_idx < 16) {
+                RGE_Border_Set* bs = &this->world_map->border_types[border_idx];
+                if (bs->loaded && bs->shape != nullptr) {
+                    if (bs->border_style == 0) {
+                        short border_frame = get_border_picture(
+                            this->world_map,
+                            border_idx,
+                            tile_type,
+                            border_shape_bits,
+                            (short)col,
+                            (short)row);
+                        if (border_frame >= 0) {
+                            draw_border = 1;
+                            center_index = (int)border_frame;
+                            draw_terrain = (int)bs->draw_tile;
+                        }
+                    } else {
+                        if (get_border_edge_pictures(
+                                this->world_map,
+                                border_idx,
+                                tile_type,
+                                border_shape_bits,
+                                (short)col,
+                                (short)row,
+                                &left_index,
+                                &bottom_index,
+                                &right_index,
+                                &center_index)) {
+                            draw_border = 1;
+                            draw_terrain = 1;
+                        }
+                    }
+                }
             }
 
             if (FORCE_FALLBACK_TILES) {
@@ -314,110 +494,135 @@ void GameViewPanel::draw() {
                 continue;
             }
 
-            RGE_Tile_Set* ts = &this->world_map->terrain_types[terrain_idx];
-            if (!ts->loaded) {
-                missing_shape++;
-                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
-                drawn_tiles++;
-                fallback_tiles++;
-                continue;
-            }
-            if (!ts->shape) {
-                missing_shape++;
-                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
-                drawn_tiles++;
-                fallback_tiles++;
-                continue;
-            }
-
-            // Get the SLP frame index for this terrain at this tile position
-            short frame = get_tile_picture(this->world_map, terrain_idx, tile_type,
-                                           (short)col, (short)row);
-            
-            if (frame < 0) {
-                missing_frame++;
-                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
-                drawn_tiles++;
-                fallback_tiles++;
-                continue;
-            }
-
-            if (frame >= ts->shape->shape_count()) {
-                missing_frame++;
-                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
-                drawn_tiles++;
-                fallback_tiles++;
-                continue;
-            }
-
-            // Non-original seam stabilization:
-            // Some transition/elevation tile frames appear to be partial overlays in the
-            // current renderer path. Draw a flat same-terrain underlay first so transparent
-            // portions never expose the clear color.
-            if (tile_type != 0) {
-                short underlay = get_tile_picture(this->world_map, terrain_idx, 0, (short)col, (short)row);
-                if (underlay >= 0 && underlay < ts->shape->shape_count()) {
-                    ts->shape->shape_draw(this->render_area, sx, sy, (long)underlay, 0, 0, nullptr);
+            if (draw_terrain != 0) {
+                RGE_Tile_Set* ts = &this->world_map->terrain_types[draw_terrain_idx];
+                if (!ts->loaded || ts->shape == nullptr) {
+                    missing_shape++;
+                    draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                    drawn_tiles++;
+                    fallback_tiles++;
+                    continue;
                 }
+
+                // Get the SLP frame index for this terrain at this tile position.
+                short frame = get_tile_picture(
+                    this->world_map,
+                    draw_terrain_idx,
+                    tile_type,
+                    (short)col,
+                    (short)row);
+                if (frame < 0 || frame >= ts->shape->shape_count()) {
+                    missing_frame++;
+                    draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                    drawn_tiles++;
+                    fallback_tiles++;
+                    continue;
+                }
+
+                ts->shape->shape_draw(this->render_area, sx, sy, (long)frame, 0, 0, nullptr);
             }
 
-            // Draw the terrain SLP sprite
-            // TShape::shape_draw(draw_area, x, y, shape_idx, mode, flag, table)
-            // The tile's SLP hotspot handles positioning — we draw at the tile's
-            // screen position. The SLP frame's hotspot aligns it correctly.
-            ts->shape->shape_draw(this->render_area, sx, sy, (long)frame, 0, 0, nullptr);
-
-            // Border overlay pass (terrain transitions/cliff-edge blending).
-            unsigned char border_idx = tile->border_type;
-            if (border_idx != 0 && border_idx < 16) {
+            if (draw_border != 0 && border_idx != 0 && border_idx < 16) {
                 RGE_Border_Set* bs = &this->world_map->border_types[border_idx];
                 if (bs->loaded && bs->shape != nullptr) {
-                    short border_frame = get_border_picture(this->world_map, border_idx, tile_type,
-                                                            tile->border_shape, (short)col, (short)row);
-                    if (border_frame >= 0 && border_frame < bs->shape->shape_count()) {
-                        bs->shape->shape_draw(this->render_area, sx, sy, (long)border_frame, 0, 0, nullptr);
-                        border_drawn++;
+                    if (bs->border_style == 0) {
+                        if (center_index >= 0 && center_index < bs->shape->shape_count()) {
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)center_index, 0, 0, nullptr);
+                            border_drawn++;
+                        } else {
+                            border_missing++;
+                        }
                     } else {
-                        border_missing++;
+                        if (left_index >= 0 && left_index < bs->shape->shape_count()) {
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)left_index, 0, 0, nullptr);
+                            border_drawn++;
+                        }
+                        if (right_index >= 0 && right_index < bs->shape->shape_count()) {
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)right_index, 0, 0, nullptr);
+                            border_drawn++;
+                        }
+                        if (bottom_index >= 0 && bottom_index < bs->shape->shape_count()) {
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)bottom_index, 0, 0, nullptr);
+                            border_drawn++;
+                        }
+                        if (center_index >= 0 && center_index < bs->shape->shape_count()) {
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)center_index, 0, 0, nullptr);
+                            border_drawn++;
+                        }
                     }
                 }
             }
 
             drawn_tiles++;
             real_tiles++;
+
+            // Draw objects linked to this tile in the same traversal order
+            // as terrain so depth appears stable and map-consistent.
+            RGE_Object_Node* on = tile->objects.list;
+            while (on != nullptr) {
+                RGE_Static_Object* obj = on->node;
+                on = on->next;
+
+                if (obj == nullptr || obj->master_obj == nullptr || obj->object_state >= 7) {
+                    continue;
+                }
+
+                long osx = sx + (long)obj->screen_x_offset;
+                long osy = sy + (long)tile->height * half_h + (long)obj->screen_y_offset;
+
+                if (osx < this->pnl_x - TILE_HALF_W || osx > this->pnl_x + scr_w + TILE_HALF_W ||
+                    osy < this->pnl_y - TILE_HALF_H || osy > this->pnl_y + scr_h + TILE_HALF_H * 2) {
+                    objects_culled++;
+                    continue;
+                }
+
+                if (gameview_draw_object_sprite(this->render_area, obj, osx, osy) != 0) {
+                    objects_drawn++;
+                } else {
+                    this->render_area->DrawLine((int)osx - 4, (int)osy - 4, (int)osx + 4, (int)osy + 4, 250);
+                    this->render_area->DrawLine((int)osx - 4, (int)osy + 4, (int)osx + 4, (int)osy - 4, 250);
+                    objects_fallback++;
+                }
+            }
         }
     }
 
-    int objects_drawn = 0;
-    int objects_fallback = 0;
-    int objects_culled = 0;
+    // Fallback pass for any objects not linked to tile lists yet.
     RGE_Game_World* world = this->world_map ? this->world_map->game_world : nullptr;
     if (world != nullptr && world->objectsValue != nullptr && world->numberObjectsValue > 0) {
-        const long elev_h = (this->world_map->elev_height > 0) ? this->world_map->elev_height : 16;
-        for (int i = 0; i < world->numberObjectsValue; ++i) {
+        int max_obj = world->numberObjectsValue;
+        if (world->maxNumberObjectsValue > 0 && max_obj > world->maxNumberObjectsValue) {
+            max_obj = world->maxNumberObjectsValue;
+        }
+        for (int i = 0; i < max_obj; ++i) {
             RGE_Static_Object* obj = world->objectsValue[i];
             if (obj == nullptr || obj->master_obj == nullptr) {
                 continue;
             }
-
-            RGE_Sprite* spr = obj->sprite;
-            if (spr == nullptr) {
-                spr = obj->master_obj->sprite;
+            if (obj->tile != nullptr) {
+                continue;
             }
 
-            long ox = (long)obj->world_x;
-            long oy = (long)obj->world_y;
-            if (ox < 0 || oy < 0 || ox >= map_w || oy >= map_h) {
+            RGE_Tile* ot = obj->tile;
+            if (ot == nullptr) {
+                long ox = (long)obj->world_x;
+                long oy = (long)obj->world_y;
+                if (ox < 0 || oy < 0 || ox >= map_w || oy >= map_h) {
+                    objects_culled++;
+                    continue;
+                }
+                ot = &this->world_map->map_row_offset[oy][ox];
+            }
+            if (ot == nullptr) {
                 objects_culled++;
                 continue;
             }
 
-            RGE_Tile* ot = &this->world_map->map_row_offset[oy][ox];
             long wx = origin_x + (long)ot->screen_xpos;
             long wy = origin_y + (long)ot->screen_ypos;
 
-            long sx = wx - this->cam_x + this->pnl_x;
-            long sy = wy - this->cam_y + this->pnl_y;
+            long sx = wx - this->cam_x + this->pnl_x + (long)obj->screen_x_offset;
+            long sy = wy + (long)ot->height * half_h - this->cam_y + this->pnl_y + (long)obj->screen_y_offset;
 
             if (sx < this->pnl_x - TILE_HALF_W || sx > this->pnl_x + scr_w + TILE_HALF_W ||
                 sy < this->pnl_y - TILE_HALF_H || sy > this->pnl_y + scr_h + TILE_HALF_H * 2) {
@@ -425,8 +630,7 @@ void GameViewPanel::draw() {
                 continue;
             }
 
-            if (spr != nullptr && spr->loaded && spr->shape != nullptr && spr->shape->shape_count() > 0) {
-                spr->shape->shape_draw(this->render_area, sx, sy, 0, 0, 0, nullptr);
+            if (gameview_draw_object_sprite(this->render_area, obj, sx, sy) != 0) {
                 objects_drawn++;
             } else {
                 // Fallback marker so we can still verify object placement visually.

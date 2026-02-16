@@ -26,6 +26,9 @@ public:
     virtual void save(int param_1); // vt[11] (0x2C)
     virtual void delete_cliff(long param_1, long param_2); // vt[12] (0x30)
 
+    uchar water(uchar param_1);
+    void clean_borders(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+
     TRIBE_Game* Game;
     RGE_Player* rge_player;
     RGE_Game_World* rge_game_world;

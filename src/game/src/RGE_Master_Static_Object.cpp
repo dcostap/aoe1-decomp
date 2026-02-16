@@ -2,14 +2,20 @@
 
 #include "../include/RGE_Damage_Sprite_Info.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Map.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Sound.h"
 #include "../include/RGE_Sprite.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Tile.h"
+#include "../include/RGE_Object_Node.h"
+#include "../include/RGE_Visible_Map.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 static char* rge_strdup_local(const char* src) {
     if (src == nullptr) {
@@ -21,6 +27,28 @@ static char* rge_strdup_local(const char* src) {
         memcpy(out, src, len);
     }
     return out;
+}
+
+static RGE_Object_Node* rge_master_add_tile_node(RGE_Object_List* list, RGE_Static_Object* obj) {
+    if (list == nullptr) {
+        return nullptr;
+    }
+
+    RGE_Object_Node* node = (RGE_Object_Node*)calloc(1, sizeof(RGE_Object_Node));
+    if (node == nullptr) {
+        return nullptr;
+    }
+
+    node->node = obj;
+    node->next = list->list;
+    node->prev = nullptr;
+    node->centered = 0;
+    if (list->list != nullptr) {
+        list->list->prev = node;
+    }
+    list->list = node;
+    list->number_of_objects = (short)(list->number_of_objects + 1);
+    return node;
 }
 
 static void rge_master_static_reset_fields(RGE_Master_Static_Object* self) {
@@ -145,27 +173,59 @@ RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* param_1, f
         return nullptr;
     }
 
+    // Source of truth: m_s_obj.cpp.decomp::RGE_Master_Static_Object::make_new_obj +
+    // stat_obj.cpp.decomp::RGE_Static_Object::setup (minimal transliteration).
+    obj->id = 0;
     obj->master_obj = this;
     obj->owner = param_1;
-    obj->world_x = param_2;
-    obj->world_y = param_3;
-    obj->world_z = param_4;
-    obj->object_state = 2;
-    obj->sleep_flag = 0;
-    obj->dopple_flag = 0;
-    obj->selected = 0;
+    obj->sprite = this->sprite;
+    obj->old_sprite = nullptr;
+    obj->sprite_list = nullptr;
     obj->tile = nullptr;
     obj->inside_obj = nullptr;
     obj->objects = nullptr;
+    obj->screen_x_offset = 0;
+    obj->screen_y_offset = 0;
+    obj->shadow_x_offset = 0;
+    obj->shadow_y_offset = 0;
+    obj->hp = (float)this->hp;
+    obj->curr_damage_percent = 0;
+    obj->facet = 0;
+    obj->selected = 0;
+    obj->selected_group = 0;
+    obj->world_x = param_2;
+    obj->world_y = param_3;
+    obj->world_z = param_4;
+    obj->attribute_amount_held = 0.0f;
+    obj->object_state = 2;
+    obj->sleep_flag = (obj->hp > 0.0f) ? 1 : 0;
+    obj->dopple_flag = (this->master_type == 0x19) ? 1 : 0;
+    obj->goto_sleep_flag = 0;
+    obj->attribute_type_held = -1;
+    obj->type = 0x0A;
+    obj->worker_num = 0;
     obj->player_object_node = nullptr;
+    obj->inObstructionMapValue = 0;
+    obj->lastInObstructionMapValue = 0;
+    obj->underAttackValue = 0;
 
     if (param_1->world != nullptr) {
-        obj->id = param_1->world->next_object_id++;
-    } else {
-        obj->id = 0;
+        obj->id = param_1->world->next_object_id;
+        param_1->world->next_object_id = param_1->world->next_object_id + 1;
     }
 
-    obj->player_object_node = param_1->addObject(obj, 0, 0);
+    obj->player_object_node = param_1->addObject(obj, (int)obj->sleep_flag, (int)obj->dopple_flag);
+
+    if (param_1->world != nullptr && param_1->world->map != nullptr) {
+        int tile_x = (int)param_2;
+        int tile_y = (int)param_3;
+        RGE_Tile* tile = param_1->world->map->get_tile(tile_x, tile_y);
+        if (tile != nullptr) {
+            obj->tile = tile;
+            rge_master_add_tile_node(&tile->objects, obj);
+        }
+    }
+
     return obj;
 }
 
@@ -174,11 +234,265 @@ RGE_Master_Static_Object* RGE_Master_Static_Object::make_new_master() {
 }
 
 uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) {
-    return 1;
+    (void)param_7;
+    if (param_4 != nullptr) {
+        *param_4 = -1;
+    }
+    if (param_1 == nullptr || param_1->world == nullptr || param_1->world->map == nullptr) {
+        return '\x07';
+    }
+
+    RGE_Map* map = param_1->world->map;
+    if (map->map_row_offset == nullptr || map->map_width <= 0 || map->map_height <= 0) {
+        return '\x07';
+    }
+
+    float rx = (param_8 == '\0') ? this->radius_x : this->construction_radius_x;
+    float ry = (param_8 == '\0') ? this->radius_y : this->construction_radius_y;
+
+    if ((param_2 - rx < 0.0f) ||
+        ((float)map->map_width <= (rx + param_2) - 0.001f) ||
+        (param_3 - ry < 0.0f) ||
+        ((float)map->map_height <= (ry + param_3) - 0.001f)) {
+        return '\x07';
+    }
+
+    short x1 = (short)floor(param_2 - rx);
+    short x2 = (short)floor((rx + param_2) - 0.001f);
+    short y1 = (short)floor(param_3 - ry);
+    short y2 = (short)floor((ry + param_3) - 0.001f);
+
+    short req_x1 = x1;
+    short req_x2 = x2;
+    short req_y1 = y1;
+    short req_y2 = y2;
+
+    if (this->center_tile_req1 >= 0 || this->center_tile_req2 >= 0) {
+        short cx = (short)floor(param_2);
+        short cy = (short)floor(param_3);
+        if (cx < 0 || cy < 0 || cx >= map->map_width || cy >= map->map_height) {
+            return '\x01';
+        }
+
+        ushort center_terr = (ushort)(map->map_row_offset[(int)cy][(int)cx].terrain_type & 0x1f);
+        if (center_terr != (ushort)this->center_tile_req1 && center_terr != (ushort)this->center_tile_req2) {
+            return '\x01';
+        }
+
+        req_x1 = cx;
+        req_x2 = cx;
+        req_y1 = cy;
+        req_y2 = cy;
+    }
+
+    if (this->tile_req1 >= 0 || this->tile_req2 >= 0) {
+        int found_req1 = 0;
+        int found_req2 = 0;
+
+        short y = (short)(req_y1 - 1);
+        if (y >= 0 && req_x1 <= req_x2) {
+            for (short x = req_x1; x <= req_x2; ++x) {
+                uchar t = (uchar)(map->map_row_offset[(int)y][(int)x].terrain_type & 0x1f);
+                if (t == (uchar)this->tile_req1) found_req1 = 1;
+                if (t == (uchar)this->tile_req2) found_req2 = 1;
+            }
+        }
+
+        short x = (short)(req_x2 + 1);
+        if (x < map->map_width && req_y1 <= req_y2) {
+            for (short yy = req_y1; yy <= req_y2; ++yy) {
+                uchar t = (uchar)(map->map_row_offset[(int)yy][(int)x].terrain_type & 0x1f);
+                if (t == (uchar)this->tile_req1) found_req1 = 1;
+                if (t == (uchar)this->tile_req2) found_req2 = 1;
+            }
+        }
+
+        y = (short)(req_y2 + 1);
+        if (y < map->map_height && req_x1 <= req_x2) {
+            for (short xx = req_x2; xx >= req_x1; --xx) {
+                uchar t = (uchar)(map->map_row_offset[(int)y][(int)xx].terrain_type & 0x1f);
+                if (t == (uchar)this->tile_req1) found_req1 = 1;
+                if (t == (uchar)this->tile_req2) found_req2 = 1;
+            }
+        }
+
+        x = (short)(req_x1 - 1);
+        if (x >= 0 && req_y1 <= req_y2) {
+            for (short yy = req_y2; yy >= req_y1; --yy) {
+                uchar t = (uchar)(map->map_row_offset[(int)yy][(int)x].terrain_type & 0x1f);
+                if (t == (uchar)this->tile_req1) found_req1 = 1;
+                if (t == (uchar)this->tile_req2) found_req2 = 1;
+            }
+        }
+
+        if (!found_req1 && !found_req2) {
+            return '\x01';
+        }
+    }
+
+    float* terrain_table = nullptr;
+    if (param_1->world->terrains != nullptr && this->terrain >= 0 && this->terrain < param_1->world->terrain_num) {
+        terrain_table = param_1->world->terrains[this->terrain];
+    }
+
+    int any_visible = 0;
+    for (short x = x1; x <= x2; ++x) {
+        for (short y = y1; y <= y2; ++y) {
+            int ix = (int)x;
+            int iy = (int)y;
+            uchar terr = (uchar)(map->map_row_offset[iy][ix].terrain_type & 0x1f);
+
+            if (terrain_table == nullptr || terrain_table[terr] <= 0.0f) {
+                return '\x02';
+            }
+
+            if (param_5 != '\0') {
+                if ((rge_base_game != nullptr && rge_base_game->prog_mode == 7) ||
+                    (param_1->visible != nullptr && param_1->visible->get_visible(ix, iy) != '\0')) {
+                    any_visible = 1;
+                }
+            }
+
+            if (param_6 != '\0') {
+                uchar tile_type = map->map_row_offset[iy][ix].tile_type;
+                if (this->elevation_flag == '\x01') {
+                    if (!(tile_type == 0 || tile_type == 5 || tile_type == 6 || tile_type == 7 || tile_type == 8)) {
+                        return '\x03';
+                    }
+                } else if (this->elevation_flag == '\x02') {
+                    if (tile_type != 0) {
+                        return '\x03';
+                    }
+                }
+            }
+        }
+    }
+
+    if (param_5 == '\x01' && !any_visible) {
+        return '\x05';
+    }
+
+    if (rx <= 0.0f && ry <= 0.0f) {
+        return '\0';
+    }
+
+    short edge_x1 = (short)floor(param_2 - rx);
+    short edge_y1 = (short)floor(param_3 - ry);
+    short edge_x2 = (short)floor(param_2 + rx);
+    short edge_y2 = (short)floor(param_3 + ry);
+
+    if (edge_x1 < 0) edge_x1 = 0;
+    if (edge_y1 < 0) edge_y1 = 0;
+    if (edge_x2 >= map->map_width) edge_x2 = (short)(map->map_width - 1);
+    if (edge_y2 >= map->map_height) edge_y2 = (short)(map->map_height - 1);
+
+    if (param_10 != '\0' && ((param_9 != '\0') || (0.0f < this->radius_z)) && edge_y1 <= edge_y2) {
+        for (short y = edge_y1; y <= edge_y2; ++y) {
+            for (short x = edge_x1; x <= edge_x2; ++x) {
+                RGE_Object_Node* node = map->map_row_offset[(int)y][(int)x].objects.list;
+                while (node != nullptr) {
+                    RGE_Static_Object* obj = node->node;
+                    if (obj != nullptr && obj->master_obj != nullptr && obj->object_state < 7) {
+                        if ((param_9 == '\0' || obj->master_obj->can_be_built_on != '\x01') || this->can_be_built_on != '\0') {
+                            RGE_Master_Static_Object* other_master = obj->master_obj;
+                            if (other_master->radius_x > 0.0f && other_master->radius_y > 0.0f) {
+                                int z_ok = 0;
+                                if (other_master->radius_z > 0.0f && this->radius_z > 0.0f) {
+                                    z_ok = 1;
+                                } else if (other_master->radius_z <= 0.0f && this->radius_z <= 0.0f) {
+                                    z_ok = 1;
+                                }
+
+                                if (z_ok) {
+                                    float dx = (float)fabs(obj->world_x - param_2);
+                                    float dy = (float)fabs(obj->world_y - param_3);
+                                    if (dx < other_master->radius_x + rx && dy < other_master->radius_y + ry) {
+                                        if (param_4 != nullptr) {
+                                            *param_4 = obj->id;
+                                        }
+                                        return '\x06';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    node = node->next;
+                }
+            }
+        }
+    }
+
+    return '\0';
 }
 
 uchar RGE_Master_Static_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) {
-    return 1;
+    if (param_1 == nullptr || param_2 == nullptr || param_3 == nullptr || param_3->map == nullptr) {
+        return '\x01';
+    }
+
+    float left = *param_1 - this->radius_x;
+    float top = *param_2 - this->radius_y;
+    float right = *param_1 + this->radius_x;
+    float bottom = *param_2 + this->radius_y;
+
+    float map_w = (float)param_3->map->map_width - 1e-05f;
+    float map_h = (float)param_3->map->map_height - 1e-05f;
+
+    if (left < 0.0f) {
+        float delta = -left;
+        right = right + delta;
+        *param_1 = *param_1 + delta;
+    }
+    if (top < 0.0f) {
+        float delta = -top;
+        bottom = bottom + delta;
+        *param_2 = *param_2 + delta;
+    }
+    if (map_w <= right) {
+        *param_1 = *param_1 + (map_w - right);
+    }
+    if (map_h <= bottom) {
+        *param_2 = *param_2 + (map_h - bottom);
+    }
+
+    if (param_4 == '\0') {
+        return '\x01';
+    }
+
+    float a = (float)fabs(*param_1 - this->radius_x);
+    float b = (float)fabs(*param_2 - this->radius_y);
+    float c = (float)fabs(*param_1 + this->radius_x);
+    float d = (float)fabs(*param_2 + this->radius_y);
+
+    float fa = a - (float)floor(a);
+    float fb = b - (float)floor(b);
+    float fc = 1.0f - (c - (float)floor(c));
+    float fd = 1.0f - (d - (float)floor(d));
+
+    float aligned_x = *param_1;
+    if (fc + fa < 1.0f) {
+        aligned_x = *param_1;
+    } else if (fa <= fc) {
+        aligned_x = *param_1 - (1.0f - fc);
+    } else {
+        aligned_x = *param_1 + (1.0f - fa);
+    }
+
+    if (1.0f <= fd + fb) {
+        if (fd < fb) {
+            float y0 = *param_2;
+            *param_1 = aligned_x;
+            *param_2 = y0 + (1.0f - fb);
+            return '\x01';
+        }
+        float y0 = *param_2;
+        *param_1 = aligned_x;
+        *param_2 = y0 - (1.0f - fd);
+        return '\x01';
+    }
+
+    *param_1 = aligned_x;
+    return '\x01';
 }
 
 long RGE_Master_Static_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) {

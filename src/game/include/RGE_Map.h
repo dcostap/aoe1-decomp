@@ -42,16 +42,25 @@ public:
     void clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain, long w, long h);
     void clear_map(uchar terrain, uchar height);
     void set_terrain(RGE_Player* player, RGE_Game_World* world, short col, short row, uchar terrain, uchar unknown1, uchar unknown2);
+    void set_terrain(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7);
+    void set_terrain_absolute(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7);
+    void set_terrain(RGE_Player* player, RGE_Game_World* world, short col0, short row0, short col1, short row1, uchar terrain, uchar apply_terrain, int object_behavior);
+    void clean_terrain(long param_1, long param_2, long param_3, long param_4, uchar param_5);
     void coordinate_map();
     void set_map_visible(uchar flag);
     void set_map_fog(uchar flag);
     void request_redraw(int col0, int row0, int col1, int row1, uchar attr);
     void clear_map_view_info();
+    uchar get_terrain(short col, short row);
     uchar get_tile_type(short col, short row);
     void rebuild_tile_types(short col0, short row0, short col1, short row1);
     void rebuild_border_types(short col0, short row0, short col1, short row1);
     uchar get_border_type(short col, short row);
     void load_terrain_obj_types(char* param_1);
+    void create_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id);
+    int clear_terrain_object(RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id);
+    void place_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, int object_id, int single_placement);
+    void create_terrain_objects(RGE_Player* player, RGE_Game_World* world);
 
     // Data members — layout must match empires.dat binary format
     // The RGE_Map constructor reads 0x8DD0 bytes into this struct starting at offset 0
@@ -90,4 +99,13 @@ public:
     RGE_Unified_Visible_Map* unified_vis_map;
     Visible_Unit_Manager* unit_manager;
 };
-// static_assert(sizeof(RGE_Map) == 0x8DD0, "Size mismatch");
+static_assert(sizeof(RGE_Map) == 0x8DD0, "Size mismatch");
+static_assert(offsetof(RGE_Map, map) == 0x4, "Offset mismatch: map");
+static_assert(offsetof(RGE_Map, tilesizes) == 0x18, "Offset mismatch: tilesizes");
+static_assert(offsetof(RGE_Map, terrain_types) == 0x8C, "Offset mismatch: terrain_types");
+static_assert(offsetof(RGE_Map, border_types) == 0x338C, "Offset mismatch: border_types");
+static_assert(offsetof(RGE_Map, map_row_offset) == 0x8D8C, "Offset mismatch: map_row_offset");
+static_assert(offsetof(RGE_Map, num_terrain) == 0x8D90, "Offset mismatch: num_terrain");
+static_assert(offsetof(RGE_Map, num_borders) == 0x8D92, "Offset mismatch: num_borders");
+static_assert(offsetof(RGE_Map, random_map) == 0x8DBC, "Offset mismatch: random_map");
+static_assert(offsetof(RGE_Map, game_world) == 0x8DC0, "Offset mismatch: game_world");

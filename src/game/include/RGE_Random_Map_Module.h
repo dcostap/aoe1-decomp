@@ -28,6 +28,11 @@ public:
     Map_Stack* pop_stack(Map_Stack* param_1, long* param_2, long* param_3, float* param_4);
     void add_stack_node(Map_Stack* param_1, Map_Stack* param_2);
     void remove_stack_node(Map_Stack* param_1);
+    void clear_stack();
+    uchar check_stack(Map_Stack* param_1);
+    void randomize_stack(Map_Stack* param_1);
+    uchar find_path(long param_1, long param_2, long* param_3, long* param_4, float* param_5);
+    uchar find_path(Map_Stack* param_1, long param_2, long param_3, long* param_4, long* param_5, float* param_6);
 
     RGE_Random_Map_Module* parent;
     RGE_Random_Map_Module_List* list;

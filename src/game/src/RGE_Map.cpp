@@ -4,6 +4,10 @@
 #include "TSpan_List_Manager.h"
 #include "RGE_Border_Set.h"
 #include "RGE_Game_World.h"
+#include "RGE_Player.h"
+#include "RGE_Static_Object.h"
+#include "RGE_Master_Static_Object.h"
+#include "RGE_Object_Node.h"
 #include "RGE_RMM_Database_Controller.h"
 #include "TShape.h"
 #include "custom_debug.h"
@@ -12,6 +16,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <io.h> 
+#include <stdint.h>
+
+static void rge_convert_us(char* text) {
+    if (text == nullptr) {
+        return;
+    }
+    while (*text != '\0') {
+        if (*text == '_') {
+            *text = ' ';
+        }
+        ++text;
+    }
+}
+
+static void rge_copy_fixed_text(char* dst, size_t dst_size, const char* src) {
+    if (dst == nullptr || dst_size == 0) {
+        return;
+    }
+    if (src == nullptr) {
+        dst[0] = '\0';
+        return;
+    }
+    strncpy(dst, src, dst_size - 1);
+    dst[dst_size - 1] = '\0';
+}
 
 static void rge_map_check_for_border(RGE_Map* map, uchar terrain, uchar* neighbor) {
     if (map == nullptr || neighbor == nullptr) {
@@ -29,6 +58,55 @@ static void rge_map_check_for_border(RGE_Map* map, uchar terrain, uchar* neighbo
     if (map->border_types[border].loaded == 0) {
         *neighbor = terrain;
     }
+}
+
+static void rge_map_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
+    if (tile == nullptr || obj == nullptr) {
+        return;
+    }
+
+    RGE_Object_Node* node = tile->objects.list;
+    while (node != nullptr && node->node != obj) {
+        node = node->next;
+    }
+
+    if (node == nullptr) {
+        return;
+    }
+
+    if (node->prev != nullptr) {
+        node->prev->next = node->next;
+    } else {
+        tile->objects.list = node->next;
+    }
+
+    if (node->next != nullptr) {
+        node->next->prev = node->prev;
+    }
+
+    if (tile->objects.number_of_objects > 0) {
+        tile->objects.number_of_objects = (short)(tile->objects.number_of_objects - 1);
+    }
+
+    free(node);
+}
+
+static void rge_map_delete_object_now(RGE_Static_Object* obj) {
+    if (obj == nullptr) {
+        return;
+    }
+
+    RGE_Player* owner = obj->owner;
+    RGE_Tile* tile = obj->tile;
+
+    if (owner != nullptr) {
+        owner->removeObject(obj, (int)obj->sleep_flag, (int)obj->dopple_flag, obj->player_object_node);
+    }
+
+    rge_map_remove_tile_node(tile, obj);
+    obj->player_object_node = nullptr;
+    obj->tile = nullptr;
+    delete obj;
 }
 
 RGE_Map::RGE_Map()
@@ -262,16 +340,66 @@ RGE_Map::RGE_Map(int file_handle, RGE_Sound** sounds, uchar load_map)
 
 RGE_Map::RGE_Map(char* terrain_file, char* border_file, char* terrain_obj_file, short tile_w, short tile_h, short elev_h, RGE_Sound** sounds)
 {
-    this->game_world = nullptr;
+    this->random_map = nullptr;
+    this->game_world = (rge_base_game != nullptr) ? rge_base_game->world : nullptr;
+    this->tile_width = tile_w;
+    this->tile_half_width = (short)(tile_w / 2);
+    this->tile_height = tile_h;
+    this->tile_half_height = (short)(tile_h / 2);
+    this->elev_height = elev_h;
     this->map_width = 0;
     this->map_height = 0;
-    this->world_width = 0.0f;
-    this->world_height = 0.0f;
-    this->map_row_offset = nullptr;
-    this->search_map = nullptr;
-    this->map = nullptr;
+    this->world_width = 0;
+    this->world_height = 0;
+
+    // Source of truth: map.cpp.decomp @ 0x004550A0.
+    this->set_tile_size(0x00, tile_w, tile_h, 0);
+    this->set_tile_size(0x01, this->tile_width, this->elev_height, -100);
+    this->set_tile_size(0x02, this->tile_width, (short)(this->elev_height + this->tile_height), 100);
+    this->set_tile_size(0x03, this->tile_width, this->tile_height, -100);
+    this->set_tile_size(0x04, this->tile_width, this->tile_height, -100);
+    this->set_tile_size(0x05, this->tile_width, this->elev_height, -100);
+    this->set_tile_size(0x06, this->tile_width, (short)(this->elev_height + this->tile_height), 100);
+    this->set_tile_size(0x07, this->tile_width, this->elev_height, -100);
+    this->set_tile_size(0x08, this->tile_width, (short)(this->elev_height + this->tile_height), 100);
+    this->set_tile_size(0x09, this->tile_width, this->elev_height, -100);
+    this->set_tile_size(0x0A, this->tile_width, (short)(this->elev_height + this->tile_height), 100);
+    this->set_tile_size(0x0B, this->tile_width, this->tile_height, -100);
+    this->set_tile_size(0x0C, this->tile_width, this->tile_height, -100);
+    this->set_tile_size(0x0D, this->tile_width, this->elev_height, -100);
+    this->set_tile_size(0x0E, this->tile_width, (short)(this->elev_height + this->tile_height), 100);
+    this->set_tile_size(0x0F, this->tile_width, this->tile_height, 100);
+    this->set_tile_size(0x10, this->tile_width, this->tile_height, 100);
+    this->set_tile_size(0x11, this->tile_half_width, this->tile_height, 0);
+    this->set_tile_size(0x12, this->tile_half_width, this->tile_height, 0);
+
+    this->cur_row = 0;
+    this->cur_col = 0;
     this->num_terrain = 0;
-    this->init_tile_sizes();
+    this->max_terrain = 0;
+    this->block_beg_row = 0;
+    this->block_end_row = 0;
+    this->block_beg_col = 0;
+    this->block_end_col = 0;
+    this->any_frame_change = 0;
+    this->map_visible_flag = 0;
+    this->fog_flag = 1;
+
+    memset(this->terrain_types, 0, sizeof(this->terrain_types));
+    memset(this->border_types, 0, sizeof(this->border_types));
+
+    // Decomp constructor order: load_terrain_types(param_2), load_border_types(param_1)
+    (void)terrain_obj_file;
+    this->load_terrain_types(border_file, sounds);
+    this->load_border_types(terrain_file, sounds);
+
+    this->map = nullptr;
+    this->search_map = nullptr;
+    this->map_row_offset = nullptr;
+    this->search_map_rows = nullptr;
+    this->unified_vis_map = nullptr;
+    this->unit_manager = nullptr;
+    this->map_zones = nullptr;
 }
 
 void RGE_Map::clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain, long w, long h)
@@ -281,8 +409,7 @@ void RGE_Map::clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain
         world->reset_object_count();
     }
 
-    // TODO(accuracy): replace with full RGE_Map::set_terrain area write.
-    this->clear_map(terrain, 1);
+    this->set_terrain(player, world, 0, 0, (short)(w - 1), (short)(h - 1), terrain, 1, 0);
 
     if (world != nullptr) {
         world->reset_player_visible_maps();
@@ -318,12 +445,627 @@ void RGE_Map::clear_map(uchar terrain, uchar height)
 
 void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, short col, short row, uchar terrain, uchar unknown1, uchar unknown2)
 {
-    // Stub
+    (void)player;
+    this->set_terrain(world, col, row, terrain, (int)unknown1, (int)unknown2);
+}
+
+void RGE_Map::set_terrain(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7) {
+    if (this->map_row_offset == nullptr || col < 0 || row < 0 || col >= this->map_width || row >= this->map_height) {
+        return;
+    }
+
+    RGE_Player* gaia = nullptr;
+    if (world != nullptr && world->players != nullptr) {
+        gaia = world->players[0];
+    }
+
+    RGE_Player* current_player = nullptr;
+    if (this->game_world != nullptr && this->game_world->players != nullptr &&
+        this->game_world->curr_player >= 0 && this->game_world->curr_player < this->game_world->player_num) {
+        current_player = this->game_world->players[this->game_world->curr_player];
+    }
+
+    RGE_Tile* tile = &this->map_row_offset[(int)row][(int)col];
+    uchar old_terrain = (uchar)(tile->terrain_type & 0x1f);
+
+    if (old_terrain != (terrain & 0x1f)) {
+        tile->terrain_type = (terrain & 0x1f);
+        if (gaia != nullptr) {
+            this->request_redraw((int)col, (int)row, (int)col, (int)row, 0);
+            if (world != nullptr && world->game_state != '\x03' && current_player != nullptr) {
+                current_player->diam_tile_list.add_node((int)col, (int)row);
+            }
+            int cleared_id = this->clear_terrain_object(world, row, col, (short)old_terrain, 1, param_6, param_7);
+            this->place_terrain_object(gaia, world, row, col, cleared_id, 0);
+            this->get_border_type(col, row);
+            return;
+        }
+    }
+
+    this->get_border_type(col, row);
+}
+
+void RGE_Map::set_terrain_absolute(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7) {
+    if (this->map_row_offset == nullptr || col < 0 || row < 0 || col >= this->map_width || row >= this->map_height) {
+        return;
+    }
+
+    RGE_Player* gaia = nullptr;
+    if (world != nullptr && world->players != nullptr) {
+        gaia = world->players[0];
+    }
+
+    RGE_Tile* tile = &this->map_row_offset[(int)row][(int)col];
+    tile->terrain_type = (terrain & 0x1f);
+
+    if (gaia != nullptr) {
+        int cleared_id = this->clear_terrain_object(world, row, col, -1, 1, param_6, param_7);
+        this->place_terrain_object(gaia, world, row, col, cleared_id, 1);
+    }
+
+    this->get_border_type(col, row);
+}
+
+void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, short col0, short row0, short col1, short row1, uchar terrain, uchar apply_terrain, int object_behavior) {
+    if (terrain >= this->num_terrain) {
+        return;
+    }
+
+    unsigned int terrain_idx = (unsigned int)terrain;
+    if (this->terrain_types[terrain_idx].loaded == 0) {
+        short draw_terrain = this->terrain_types[terrain_idx].terrain_to_draw;
+        if (draw_terrain < 0 || draw_terrain >= this->num_terrain || this->terrain_types[(unsigned int)draw_terrain].loaded != '\x01') {
+            return;
+        }
+    }
+
+    short min_row = row0;
+    short max_row = row1;
+    if (row1 < row0) {
+        min_row = row1;
+        max_row = row0;
+    }
+
+    short min_col = col0;
+    short max_col = col1;
+    if (col1 < col0) {
+        min_col = col1;
+        max_col = col0;
+    }
+
+    if (min_row < 0) {
+        min_row = 0;
+    }
+    if (max_row >= this->map_height) {
+        max_row = (short)(this->map_height - 1);
+    }
+    if (min_col < 0) {
+        min_col = 0;
+    }
+    if (max_col >= this->map_width) {
+        max_col = (short)(this->map_width - 1);
+    }
+
+    if ((apply_terrain != 0 || player != nullptr) && min_row <= max_row) {
+        for (short row = min_row; row <= max_row; ++row) {
+            if (min_col <= max_col) {
+                RGE_Tile* tile = this->map_row_offset[(int)row] + (int)min_col;
+                for (short col = min_col; col <= max_col; ++col) {
+                    if (this->terrain_types[terrain_idx].tiles[(int)tile->tile_type].count > 0) {
+                        uchar old_terrain = (uchar)(tile->terrain_type & 0x1f);
+                        if (old_terrain != (terrain & 0x1f) && apply_terrain != 0) {
+                            tile->terrain_type = (terrain & 0x1f);
+                        }
+                        if (player != nullptr) {
+                            this->create_terrain_object(player, world, row, col, (short)old_terrain, object_behavior, -1, -1);
+                        }
+                    }
+                    ++tile;
+                }
+            }
+        }
+    }
+
+    if (min_row > 0) {
+        min_row = (short)(min_row - 1);
+    }
+    if (max_row < this->map_height - 1) {
+        max_row = (short)(max_row + 1);
+    }
+    if (min_col > 0) {
+        min_col = (short)(min_col - 1);
+    }
+    if (max_col < this->map_width - 1) {
+        max_col = (short)(max_col + 1);
+    }
+
+    for (short row = min_row; row <= max_row; ++row) {
+        for (short col = min_col; col <= max_col; ++col) {
+            this->get_border_type(col, row);
+        }
+    }
+
+    this->request_redraw((int)min_col, (int)min_row, (int)max_col, (int)max_row, 0);
+}
+
+void RGE_Map::clean_terrain(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
+        return;
+    }
+
+    const uchar target_terrain = (uchar)(param_5 & 0x1f);
+    const short map_w = (short)this->map_width;
+    const short offset3 = (short)(-1 - map_w);
+    const short offset_top = (short)(-map_w);
+    const short offset7 = (short)(1 - map_w);
+    const short offset_br = (short)(map_w + 1);
+    const short offset_bl = (short)(map_w - 1);
+
+    if (param_1 < 0) param_1 = 0;
+    if (param_2 < 0) param_2 = 0;
+    if (this->map_width <= param_3) param_3 = this->map_width - 1;
+
+    int max_y = (int)param_4;
+    int min_x = (int)param_1;
+    if (this->map_height <= param_4) {
+        max_y = this->map_height - 1;
+        param_4 = max_y;
+    }
+
+    while (1) {
+        bool changed_any = false;
+        if (0 < min_x) {
+            min_x = min_x - 1;
+            param_1 = min_x;
+        }
+        if (0 < param_2) {
+            param_2 = param_2 - 1;
+        }
+        if (param_3 < this->map_width - 1) {
+            param_3 = param_3 + 1;
+        }
+        if (max_y < this->map_height - 1) {
+            max_y = max_y + 1;
+            param_4 = max_y;
+        }
+
+        int pass_index = 0;
+        do {
+            int y = (int)param_2;
+            int x = min_x;
+            int reset_x = min_x;
+
+            if ((int)param_2 <= max_y) {
+                do {
+                    RGE_Tile* tile = this->map_row_offset[y] + min_x;
+                    reset_x = x;
+
+                    for (; x <= (int)param_3; ++x) {
+                        if ((tile->terrain_type & 0x1f) != target_terrain) {
+                            bool left = false;
+                            bool down_left = false;
+                            bool up_left = false;
+                            bool up = false;
+                            bool mark = false;
+                            bool up_right = false;
+                            bool right = false;
+                            bool down_right = false;
+                            bool down = false;
+
+                            if (0 < y && ((tile[offset_top].terrain_type & 0x1f) == target_terrain)) {
+                                up = true;
+                            }
+                            max_y = this->map_height - 1;
+                            if (y < max_y && ((tile[map_w].terrain_type & 0x1f) == target_terrain)) {
+                                down = true;
+                            }
+                            if (0 < x && ((tile[-1].terrain_type & 0x1f) == target_terrain)) {
+                                left = true;
+                            }
+                            reset_x = this->map_width - 1;
+                            if (x < reset_x && ((tile[1].terrain_type & 0x1f) == target_terrain)) {
+                                right = true;
+                            }
+
+                            if (pass_index == 1) {
+                                up_right = mark;
+                                if (0 < y) {
+                                    if (0 < x && ((tile[offset3].terrain_type & 0x1f) == target_terrain)) {
+                                        up_left = true;
+                                    }
+                                    if (x < reset_x && ((tile[offset7].terrain_type & 0x1f) == target_terrain)) {
+                                        up_right = true;
+                                    }
+                                }
+                                if (y < max_y) {
+                                    down_left = false;
+                                    if (0 < x && ((tile[offset_bl].terrain_type & 0x1f) == target_terrain)) {
+                                        down_left = true;
+                                    }
+                                    if (x < reset_x && ((tile[offset_br].terrain_type & 0x1f) == target_terrain)) {
+                                        down_right = true;
+                                    }
+                                }
+                            }
+
+                            mark = false;
+                            if (pass_index == 0) {
+                                if ((up && down) || (right && left)) {
+                                    mark = true;
+                                }
+                                if (!mark) {
+                                    goto NEXT_TILE;
+                                }
+                            } else {
+                                if (up_left) {
+                                    if ((((up_right && !up) || (right && !up_right)) || (down_left && !left)) ||
+                                        (down && !down_left)) {
+                                        mark = true;
+                                    } else if (down_right && !down && !right) {
+                                        mark = true;
+                                    }
+                                }
+                                if (up_right && !mark) {
+                                    if ((((up_left && !up) || (left && !up_left)) || (down_right && !right)) ||
+                                        ((down && !down_right) || (down_left && !left && !down))) {
+                                        mark = true;
+                                    }
+                                }
+                                if (down_right && !mark) {
+                                    if ((((up_right && !right) || (up && !up_right)) || (down_left && !down)) ||
+                                        ((left && !down_left) || (up_left && !left && !up))) {
+                                        mark = true;
+                                    }
+                                }
+                                if (!down_left) {
+                                    goto FINISH_MARK;
+                                }
+                                if (!mark) {
+                                    if ((((up_left && !left) || (up && !up_left)) || (down_right && !down)) ||
+                                        ((right && !down_right) || ((up_right && !right) && !up))) {
+                                        mark = true;
+                                    }
+                                    goto FINISH_MARK;
+                                }
+                            }
+
+                            this->set_terrain(this->game_world, (short)x, (short)y, target_terrain, 0, 0);
+                            changed_any = true;
+                        }
+FINISH_MARK:
+NEXT_TILE:
+                        tile = tile + 1;
+                        max_y = (int)param_4;
+                        reset_x = (int)param_1;
+                    }
+
+                    y = y + 1;
+                    x = reset_x;
+                } while (y <= max_y);
+            }
+
+            pass_index = pass_index + 1;
+            min_x = reset_x;
+        } while (pass_index < 2);
+
+        if (!changed_any) {
+            return;
+        }
+    }
 }
 
 void RGE_Map::load_terrain_obj_types(char* filename)
 {
-    // Stub
+    FILE* infile = fopen(filename, "r");
+    if (infile != nullptr) {
+        short header_count = 0;
+        fscanf(infile, "%hd", &header_count);
+
+        short terrain_id = 0;
+        short obj_type = 0;
+        short obj_density = 0;
+        short placement_flag = 0;
+        int scan_ret = fscanf(infile, "%hd %hd %hd %hd", &terrain_id, &obj_type, &obj_density, &placement_flag);
+        while (scan_ret != EOF) {
+            int idx = (int)terrain_id;
+            if (idx >= 0 && idx < 32 && this->terrain_types[idx].loaded != 0) {
+                short slot = this->terrain_types[idx].num_obj_type;
+                if (slot < 30) {
+                    this->terrain_types[idx].obj_types[slot] = obj_type;
+                    this->terrain_types[idx].obj_density[slot] = obj_density;
+                    this->terrain_types[idx].obj_placement_flag[slot] = (uchar)placement_flag;
+                    this->terrain_types[idx].num_obj_type = (short)(slot + 1);
+                }
+            }
+
+            scan_ret = fscanf(infile, "%hd %hd %hd %hd", &terrain_id, &obj_type, &obj_density, &placement_flag);
+        }
+    }
+
+    if (infile != nullptr) {
+        fclose(infile);
+    }
+}
+
+uchar RGE_Map::get_terrain(short col, short row) {
+    if (this->map_row_offset == nullptr || col < 0 || row < 0 || col >= this->map_width || row >= this->map_height) {
+        return 0;
+    }
+
+    uchar terrain = (uchar)(this->map_row_offset[(int)row][(int)col].terrain_type & 0x1f);
+    if (terrain > 0x20 || (this->terrain_types[terrain].loaded == 0 && this->terrain_types[terrain].terrain_to_draw < 0)) {
+        return 0;
+    }
+
+    return terrain;
+}
+
+void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id) {
+    (void)world;
+    if (player == nullptr || this->map_row_offset == nullptr || row < 0 || col < 0 || row >= this->map_height || col >= this->map_width) {
+        return;
+    }
+
+    uchar terrain = this->get_terrain(col, row);
+    short end_i = this->terrain_types[terrain].num_obj_type;
+    if (end_i <= 0) {
+        return;
+    }
+
+    RGE_Object_Node* node = this->map_row_offset[(int)row][(int)col].objects.list;
+    while (node != nullptr) {
+        RGE_Static_Object* obj = node->node;
+        node = node->next;
+        if (obj == nullptr || obj->master_obj == nullptr) {
+            continue;
+        }
+
+        short obj_id = obj->master_obj->id;
+        if (obj->owner == player && (obj_id < min_obj_id || max_obj_id < obj_id)) {
+            if (old_terrain < 0) {
+                if (remove_now == 0) {
+                    obj->destroy_obj();
+                } else {
+                    rge_map_delete_object_now(obj);
+                }
+            } else if (old_terrain >= 0 && old_terrain < 32) {
+                short scan = this->terrain_types[(int)old_terrain].num_obj_type;
+                if (scan > 29) {
+                    scan = 29;
+                }
+                while (scan >= 0 && this->terrain_types[(int)old_terrain].obj_types[(int)scan] != obj_id) {
+                    scan = (short)(scan - 1);
+                }
+                if (scan >= 0) {
+                    if (remove_now == 0) {
+                        obj->destroy_obj();
+                    } else {
+                        rge_map_delete_object_now(obj);
+                    }
+                }
+            }
+        }
+    }
+
+    if (player->master_objects == nullptr) {
+        return;
+    }
+
+    if (end_i > 30) {
+        end_i = 30;
+    }
+
+    for (short i = 0; i < end_i; ++i) {
+        short master_id = this->terrain_types[(int)terrain].obj_types[(int)i];
+        if (master_id == -1 || master_id < 0 || master_id >= player->master_object_num) {
+            continue;
+        }
+
+        short density = this->terrain_types[(int)terrain].obj_density[(int)i];
+        uchar placement_flag = this->terrain_types[(int)terrain].obj_placement_flag[(int)i];
+        RGE_Master_Static_Object* master = player->master_objects[(int)master_id];
+        if (master == nullptr || density <= 0) {
+            continue;
+        }
+
+        short remaining = density;
+        int chance_threshold = (int)density;
+        do {
+            float world_x = 0.0f;
+            float world_y = 0.0f;
+
+            if (placement_flag == 0) {
+                int rand_x = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x813);
+                world_x = (float)(int)col - (float)rand_x * -3.051851e-05f;
+                int rand_y = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x814);
+                world_y = (float)(int)row - (float)rand_y * -3.051851e-05f;
+            } else if (placement_flag == 1) {
+                world_x = (float)(int)col - -0.5f;
+                world_y = (float)(int)row - -0.5f;
+            }
+
+            int should_place = 1;
+            if (remaining < 1000) {
+                int r = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x820);
+                should_place = (((r * 1000) / 0x7fff) < chance_threshold) ? 1 : 0;
+            }
+
+            if (should_place != 0) {
+                if (master->check_placement(player, world_x, world_y, 0, 0, 1, 0, 1, 0, 1) == '\0') {
+                    master->make_new_obj(player, world_x, world_y, 0.0f);
+                }
+            }
+
+            remaining = (short)(remaining - 1000);
+            chance_threshold = chance_threshold - 1000;
+        } while (remaining > 0);
+    }
+}
+
+int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id) {
+    (void)world;
+    (void)this->get_terrain(col, row);
+    if (this->map_row_offset == nullptr || row < 0 || col < 0 || row >= this->map_height || col >= this->map_width) {
+        return -1;
+    }
+
+    RGE_Object_Node* node = this->map_row_offset[(int)row][(int)col].objects.list;
+    short ret_obj_id = -1;
+
+    while (node != nullptr) {
+        RGE_Object_Node* current = node;
+        node = node->next;
+
+        RGE_Static_Object* obj = current->node;
+        if (obj == nullptr || obj->master_obj == nullptr) {
+            continue;
+        }
+
+        short obj_id = obj->master_obj->id;
+        if (min_obj_id <= obj_id && obj_id <= max_obj_id) {
+            continue;
+        }
+
+        if (old_terrain < 0) {
+            if (remove_now == 0) {
+                obj->destroy_obj();
+            } else {
+                rge_map_delete_object_now(obj);
+            }
+            continue;
+        }
+
+        ret_obj_id = obj_id;
+
+        short scan = -1;
+        if (old_terrain >= 0 && old_terrain < 32) {
+            scan = this->terrain_types[(int)old_terrain].num_obj_type;
+            if (scan > 29) {
+                scan = 29;
+            }
+            while (scan >= 0 && this->terrain_types[(int)old_terrain].obj_types[(int)scan] != obj_id) {
+                scan = (short)(scan - 1);
+            }
+        }
+
+        if (scan >= 0) {
+            if (remove_now == 0) {
+                obj->destroy_obj();
+            } else {
+                rge_map_delete_object_now(obj);
+            }
+            continue;
+        }
+
+        if (obj->master_obj->check_placement(obj->owner, obj->world_x, obj->world_y, 0, 0, 1, 1, 1, 0, 0) != '\0') {
+            if (remove_now == 0) {
+                obj->destroy_obj();
+            } else {
+                rge_map_delete_object_now(obj);
+            }
+        }
+    }
+
+    return (int)ret_obj_id;
+}
+
+void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, int object_id, int single_placement) {
+    (void)world;
+    (void)object_id;
+    if (player == nullptr || player->master_objects == nullptr || this->map_row_offset == nullptr || row < 0 || col < 0 || row >= this->map_height || col >= this->map_width) {
+        return;
+    }
+
+    uchar terrain = this->get_terrain(col, row);
+    int end_i = (int)this->terrain_types[(int)terrain].num_obj_type;
+    if (end_i < 1) {
+        return;
+    }
+    if (end_i > 30) {
+        end_i = 30;
+    }
+
+    for (int idx = 0; idx < end_i; ++idx) {
+        short master_id = this->terrain_types[(int)terrain].obj_types[idx];
+        if (master_id == -1 || master_id < 0 || master_id >= player->master_object_num) {
+            continue;
+        }
+
+        RGE_Master_Static_Object* master = player->master_objects[(int)master_id];
+        short density = this->terrain_types[(int)terrain].obj_density[idx];
+        uchar placement_flag = this->terrain_types[(int)terrain].obj_placement_flag[idx];
+        if (master == nullptr) {
+            continue;
+        }
+
+        if (single_placement == 0) {
+            if (density <= 0) {
+                continue;
+            }
+
+            short remaining = density;
+            int chance_threshold = (int)density;
+            do {
+                float world_x = 0.0f;
+                float world_y = 0.0f;
+
+                if (placement_flag == 0) {
+                    int rand_x = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x894);
+                    world_x = (float)(int)col - (float)rand_x * -3.051851e-05f;
+                    int rand_y = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x895);
+                    world_y = (float)(int)row - (float)rand_y * -3.051851e-05f;
+                } else {
+                    world_x = (float)(int)col - -0.5f;
+                    world_y = (float)(int)row - -0.5f;
+                }
+
+                int should_place = 1;
+                if (remaining < 1000) {
+                    int r = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x8a2);
+                    should_place = (((r * 1000) / 0x7fff) < chance_threshold) ? 1 : 0;
+                }
+
+                if (should_place != 0) {
+                    if (master->check_placement(player, world_x, world_y, 0, 0, 1, 0, 1, 0, 1) == '\0') {
+                        master->make_new_obj(player, world_x, world_y, 0.0f);
+                    }
+                }
+
+                remaining = (short)(remaining - 1000);
+                chance_threshold = chance_threshold - 1000;
+            } while (remaining > 0);
+        } else if (single_placement == 1) {
+            float world_x = 0.0f;
+            float world_y = 0.0f;
+
+            if (placement_flag == 0) {
+                int rand_x = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x8af);
+                world_x = (float)(int)col - (float)rand_x * -3.051851e-05f;
+                int rand_y = debug_rand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x8b0);
+                world_y = (float)(int)row - (float)rand_y * -3.051851e-05f;
+            } else {
+                world_x = (float)(int)col - -0.5f;
+                world_y = (float)(int)row - -0.5f;
+            }
+
+            if (master->check_placement(player, world_x, world_y, 0, 0, 1, 0, 1, 0, 1) == '\0') {
+                master->make_new_obj(player, world_x, world_y, 0.0f);
+                return;
+            }
+        }
+    }
+}
+
+void RGE_Map::create_terrain_objects(RGE_Player* player, RGE_Game_World* world) {
+    if (player == nullptr || this->map_row_offset == nullptr) {
+        return;
+    }
+
+    for (short row = 0; row < this->map_height; ++row) {
+        for (short col = 0; col < this->map_width; ++col) {
+            this->create_terrain_object(player, world, row, col, -1, 0, -1, -1);
+        }
+    }
 }
 
 void RGE_Map::data_load_random_map(int param_1) {
@@ -419,92 +1161,281 @@ void RGE_Map::save(int param_1) {}
 
 void RGE_Map::load_terrain_types(RGE_Sound** sounds)
 {
-    (void)sounds;
-    int terrain_count = this->num_terrain;
-    if (terrain_count < 0) terrain_count = 0;
-    if (terrain_count > 32) {
-        CUSTOM_DEBUG_LOG_FMT("RGE_Map::load_terrain_types: clamping num_terrain %d -> 32", terrain_count);
-        terrain_count = 32;
-    }
-
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("RGE_Map::load_terrain_types: num_terrain=%d", terrain_count);
-    CUSTOM_DEBUG_END
-
-    for (int i = 0; i < terrain_count; i++) {
+    // Source of truth: map.cpp.asm @ 0x00457EB0.
+    // This pass always iterates all 32 terrain slots, honoring serialized loaded flags.
+    for (int i = 0; i < 32; ++i) {
         RGE_Tile_Set* ts = &this->terrain_types[i];
-        
-        // Ensure name is null terminated just in case
-        ts->name[12] = 0;
-        ts->pict_name[12] = 0;
+        if (ts->loaded != 0) {
+            char shp_name[32];
+            shp_name[0] = '\0';
+            _snprintf(shp_name, sizeof(shp_name), "%s.shp", ts->pict_name);
+            shp_name[sizeof(shp_name) - 1] = '\0';
 
-        if (ts->resource_id > 0) {
-            // Load shape using resource ID (assume it's in loaded DRS files)
-            ts->shape = new TShape(ts->pict_name, ts->resource_id);
-            if (ts->shape->shape_count() > 0) {
-                ts->loaded = 1;
-                CUSTOM_DEBUG_BEGIN
-                if (i < 5 || i == terrain_count - 1) { // Log first few and last to avoid spam
-                    CUSTOM_DEBUG_LOG_FMT("  Terrain[%d] loaded: id=%d name='%s' shapes=%d", 
-                        i, ts->resource_id, ts->pict_name, ts->shape->shape_count());
-                }
-                CUSTOM_DEBUG_END
+            if (ts->shape != nullptr) {
+                delete ts->shape;
+                ts->shape = nullptr;
+            }
+
+            ts->shape = new TShape(shp_name, ts->resource_id);
+            if (ts->shape == nullptr || ts->shape->is_loaded() == 0) {
+                ts->loaded = 0;
+            }
+
+            intptr_t sound_idx = (intptr_t)ts->sound;
+            if (sound_idx >= 0 && sounds != nullptr) {
+                ts->sound = sounds[sound_idx];
             } else {
-                // If failed to load, maybe try just name?
-                // ts->loaded = 0;
-                // delete ts->shape;
-                // ts->shape = nullptr;
-                CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("  Terrain[%d] FAILED to load shapes: id=%d name='%s'", 
-                    i, ts->resource_id, ts->pict_name);
-                CUSTOM_DEBUG_END
+                ts->sound = nullptr;
             }
         } else {
             ts->shape = nullptr;
-            ts->loaded = 0;
-            // CUSTOM_DEBUG_LOG_FMT("  Terrain[%d] SKIPPED (no resource_id)", i);
         }
     }
 }
 
 void RGE_Map::load_border_types(RGE_Sound** sounds)
 {
-    (void)sounds;
-    int border_count = this->num_borders;
-    if (border_count < 0) border_count = 0;
-    if (border_count > 16) {
-        CUSTOM_DEBUG_LOG_FMT("RGE_Map::load_border_types: clamping num_borders %d -> 16", border_count);
-        border_count = 16;
-    }
-
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("RGE_Map::load_border_types: num_borders=%d", border_count);
-    CUSTOM_DEBUG_END
-
-    for (int i = 0; i < border_count; i++) {
+    // Source of truth: map.cpp.asm @ 0x00458280.
+    // This pass always iterates all 16 border slots, honoring serialized loaded flags.
+    for (int i = 0; i < 16; ++i) {
         RGE_Border_Set* bs = &this->border_types[i];
-        
-        bs->name[12] = 0;
-        bs->pict_name[12] = 0;
+        if (bs->loaded != 0) {
+            char shp_name[32];
+            shp_name[0] = '\0';
+            _snprintf(shp_name, sizeof(shp_name), "%s.shp", bs->pict_name);
+            shp_name[sizeof(shp_name) - 1] = '\0';
 
-        if (bs->resource_id > 0) {
-            bs->shape = new TShape(bs->pict_name, bs->resource_id);
-            // We assume border shape loading works similarly
-            if (bs->shape->shape_count() > 0) {
-                 // Log success if needed
+            if (bs->shape != nullptr) {
+                delete bs->shape;
+                bs->shape = nullptr;
+            }
+
+            bs->shape = new TShape(shp_name, bs->resource_id);
+            if (bs->shape == nullptr || bs->shape->is_loaded() == 0) {
+                bs->loaded = 0;
+            }
+
+            intptr_t sound_idx = (intptr_t)bs->sound;
+            if (sound_idx >= 0 && sounds != nullptr) {
+                bs->sound = sounds[sound_idx];
             } else {
-                 CUSTOM_DEBUG_BEGIN
-                 CUSTOM_DEBUG_LOG_FMT("  Border[%d] FAILED to load shapes: id=%d name='%s'", 
-                    i, bs->resource_id, bs->pict_name);
-                 CUSTOM_DEBUG_END
+                bs->sound = nullptr;
             }
         } else {
             bs->shape = nullptr;
         }
     }
 }
-void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds) {}
-void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds) {}
+void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds) {
+    for (int i = 0; i < 32; ++i) {
+        this->terrain_types[i].loaded = 0;
+    }
+
+    FILE* infile = fopen(filename, "r");
+    if (infile == nullptr) {
+        return;
+    }
+
+    fscanf(infile, "%hd", &this->num_terrain);
+    short count = (short)(this->num_terrain - 1);
+    if (count >= 0) {
+        long remaining = (long)count + 1;
+        do {
+            short terrain_id = 0;
+            short low_color_unused = 0;
+            short lt_cliff_color = 0;
+            short rt_cliff_color = 0;
+            short hi_color = 0;
+            short med_color = 0;
+            short is_animated = 0;
+            short animation_frames = 0;
+            float interval = 0.0f;
+            float pause_between_loops = 0.0f;
+            short terrain_to_draw = 0;
+            short rows = 0;
+            short cols = 0;
+            short impassable_terrain = 0;
+            short passable_terrain = 0;
+            short row = 0;
+            short col = 0;
+            short border_num = 0;
+            long resource_id = 0;
+            char name[13];
+            char pict_name[13];
+            memset(name, 0, sizeof(name));
+            memset(pict_name, 0, sizeof(pict_name));
+
+            int scan_ok = fscanf(
+                infile,
+                "%hd %12s %12s %ld %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd",
+                &terrain_id,
+                name,
+                pict_name,
+                &resource_id,
+                &low_color_unused,
+                &lt_cliff_color,
+                &rt_cliff_color,
+                &hi_color,
+                &med_color,
+                &is_animated,
+                &animation_frames,
+                &interval,
+                &pause_between_loops,
+                &terrain_to_draw,
+                &rows,
+                &cols,
+                &impassable_terrain,
+                &passable_terrain,
+                &row,
+                &col,
+                &border_num);
+
+            if (scan_ok != EOF && terrain_id >= 0 && terrain_id < 32) {
+                RGE_Tile_Set* ts = &this->terrain_types[terrain_id];
+                short shape_index = 0;
+                for (int i = 0; i < 19; ++i) {
+                    fscanf(infile, "%hd %hd", &ts->tiles[i].count, &ts->tiles[i].animations);
+                    ts->tiles[i].shape_index = shape_index;
+                    shape_index = (short)(shape_index + ts->tiles[i].count * ts->tiles[i].animations);
+                }
+
+                short loaded_borders = 0;
+                while (loaded_borders < border_num) {
+                    short border = 0;
+                    short border_type = 0;
+                    fscanf(infile, "%hd %hd", &border, &border_type);
+                    if (border >= 0 && border < 32) {
+                        ts->borders[border] = border_type;
+                    }
+                    loaded_borders = (short)(loaded_borders + 1);
+                }
+
+                ts->sound = (med_color < 0 || sounds == nullptr) ? nullptr : sounds[med_color];
+                ts->map_low_color = (uchar)hi_color;
+                ts->map_med_color = (uchar)lt_cliff_color;
+                ts->map_hi_color = (uchar)rt_cliff_color;
+                ts->map_lt_cliff_color = (uchar)impassable_terrain;
+                ts->map_rt_cliff_color = (uchar)passable_terrain;
+                ts->impassable_terrain = (uchar)row;
+                ts->passable_terrain = (uchar)col;
+                rge_convert_us(name);
+                rge_copy_fixed_text(ts->name, sizeof(ts->name), name);
+                rge_copy_fixed_text(ts->pict_name, sizeof(ts->pict_name), pict_name);
+                ts->animate_last = 0.0f;
+                ts->resource_id = resource_id;
+                ts->loaded = 1;
+                ts->rows = rows;
+                ts->cols = cols;
+                ts->is_animated = (uchar)is_animated;
+                ts->animation_frames = animation_frames;
+                ts->pause_frames = (interval == 0.0f) ? 0 : (short)(pause_between_loops / interval);
+                ts->interval = interval;
+                ts->frame = 0;
+                ts->pause_between_loops = pause_between_loops;
+                ts->draw_frame = 0;
+                ts->frame_changed = 0;
+                ts->drawn = 0;
+                ts->terrain_to_draw = terrain_to_draw;
+            }
+            remaining = remaining - 1;
+        } while (remaining != 0);
+    }
+    fclose(infile);
+}
+
+void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds) {
+    for (int i = 0; i < 16; ++i) {
+        this->border_types[i].loaded = 0;
+    }
+
+    FILE* infile = fopen(filename, "r");
+    if (infile == nullptr) {
+        return;
+    }
+
+    fscanf(infile, "%hd", &this->num_borders);
+    short count = (short)(this->num_borders - 1);
+    if (count >= 0) {
+        long remaining = (long)count + 1;
+        do {
+            short border_id = 0;
+            short low_color_unused = 0;
+            short map_med_color = 0;
+            short map_hi_color = 0;
+            short map_low_color = 0;
+            short sound_id = 0;
+            short tile_flag = 0;
+            short animation_frames = 0;
+            float interval = 0.0f;
+            float pause_between_loops = 0.0f;
+            short draw_tile = 0;
+            short underlay_terrain = 0;
+            short border_style = 0;
+            long resource_id = 0;
+            char name[13];
+            char pict_name[13];
+            memset(name, 0, sizeof(name));
+            memset(pict_name, 0, sizeof(pict_name));
+
+            int scan_ok = fscanf(
+                infile,
+                "%hd %12s %12s %ld %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd",
+                &border_id,
+                name,
+                pict_name,
+                &resource_id,
+                &low_color_unused,
+                &map_med_color,
+                &map_hi_color,
+                &map_low_color,
+                &sound_id,
+                &tile_flag,
+                &animation_frames,
+                &interval,
+                &pause_between_loops,
+                &draw_tile,
+                &underlay_terrain,
+                &border_style);
+
+            if (scan_ok != EOF && border_id >= 0 && border_id < 16) {
+                RGE_Border_Set* bs = &this->border_types[border_id];
+                short shape_index = 0;
+                for (int i = 0; i < 19; ++i) {
+                    for (int j = 0; j < 12; ++j) {
+                        fscanf(infile, "%hd %hd", &bs->borders[i][j].count, &bs->borders[i][j].animations);
+                        bs->borders[i][j].shape_index = shape_index;
+                        shape_index = (short)(shape_index + bs->borders[i][j].count * bs->borders[i][j].animations);
+                    }
+                }
+
+                bs->sound = (sound_id < 0 || sounds == nullptr) ? nullptr : sounds[sound_id];
+                bs->map_low_color = (uchar)map_low_color;
+                bs->map_med_color = (uchar)map_med_color;
+                bs->map_hi_color = (uchar)map_hi_color;
+                rge_convert_us(name);
+                rge_copy_fixed_text(bs->name, sizeof(bs->name), name);
+                rge_copy_fixed_text(bs->pict_name, sizeof(bs->pict_name), pict_name);
+                bs->loaded = 1;
+                bs->resource_id = resource_id;
+                bs->is_animated = (uchar)tile_flag;
+                bs->animation_frames = animation_frames;
+                bs->pause_frames = (interval == 0.0f) ? 0 : (short)(pause_between_loops / interval);
+                bs->interval = interval;
+                bs->pause_between_loops = pause_between_loops;
+                bs->frame = 0;
+                bs->draw_frame = 0;
+                bs->animate_last = 0.0f;
+                bs->frame_changed = 0;
+                bs->drawn = 0;
+                bs->draw_tile = (uchar)draw_tile;
+                bs->underlay_terrain = underlay_terrain;
+                bs->border_style = border_style;
+            }
+            remaining = remaining - 1;
+        } while (remaining != 0);
+    }
+    fclose(infile);
+}
 void RGE_Map::coordinate_map() {
     this->set_map_screen_pos(0, 0, this->map_width - 1, this->map_height - 1);
 }
@@ -514,7 +1445,51 @@ void RGE_Map::set_map_visible(uchar flag) {
 void RGE_Map::set_map_fog(uchar flag) {
     this->fog_flag = flag;
 }
-void RGE_Map::request_redraw(int col0, int row0, int col1, int row1, uchar attr) {}
+void RGE_Map::request_redraw(int col0, int row0, int col1, int row1, uchar attr) {
+    int x0 = col0;
+    int y0 = row0;
+    int x1 = col1;
+    int y1 = row1;
+
+    if (col1 < col0) {
+        x0 = col1;
+        x1 = col0;
+    }
+    if (row1 < row0) {
+        y0 = row1;
+        y1 = row0;
+    }
+
+    if (x1 < 0 || y1 < 0 || x0 >= this->map_width || y0 >= this->map_height) {
+        return;
+    }
+
+    if (x0 < 0) {
+        x0 = 0;
+    }
+    if (y0 < 0) {
+        y0 = 0;
+    }
+    if (x1 >= this->map_width) {
+        x1 = this->map_width - 1;
+    }
+    if (y1 >= this->map_height) {
+        y1 = this->map_height - 1;
+    }
+
+    for (int row = y0; row <= y1; ++row) {
+        if (x0 <= x1) {
+            RGE_Tile* tile = &this->map_row_offset[row][x0];
+            int count = (x1 - x0) + 1;
+            do {
+                tile->draw_as = 0xCC;
+                tile->draw_attribute = attr;
+                ++tile;
+                count = count - 1;
+            } while (count != 0);
+        }
+    }
+}
 void RGE_Map::clear_map_view_info() {
     if (this->map == nullptr || this->map_row_offset == nullptr) {
         return;
