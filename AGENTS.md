@@ -11,8 +11,9 @@ The proven approach for this project is a **two-pass** strategy:
 1. Read the `*.cpp.decomp` file (Ghidra's C decompiler output) for the target module.
 2. **Transliterate** it into compilable C++ — same control flow, same constants, same logic. Don't try to be clever or "improve" it. Add sporadic comments if you can figure out clearly what each section of transliterated code did in the original codebase.
 3. Add method declarations to the corresponding `include/*.h` headers.
-4. Stub out any missing external dependencies (globals, helper functions).
-5. Add to `build.bat`, compile, fix errors. Ship it.
+4. For every function body with a finished / verified full transliteration, add a `// Fully verified. Source of truth: tmap.cpp.decomp @ 0x005102A0` marker at the top, with the appropiate filename and offset.
+5. Stub out any missing external dependencies (globals, helper functions).
+6. Add to `build.bat`, compile, fix errors. Ship it.
 
 This gets you working code fast. The decomp gives you the logic, the types, the API calls, and the overall structure.
 

@@ -7,6 +7,7 @@
 #include "../include/TRIBE_Player_Tech.h"
 #include "../include/TRIBE_History_Info.h"
 #include "../include/TRIBE_Victory_Conditions.h"
+#include "../include/TRIBE_Command.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/globals.h"
@@ -248,6 +249,18 @@ void TRIBE_Player::scenario_postsave(int param_1) { RGE_Player::scenario_postsav
 void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) { RGE_Player::scenario_postload(param_1, param_2, param_3); }
 void TRIBE_Player::load(int param_1) { RGE_Player::load(param_1); }
 void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) { RGE_Player::add_attribute_num(param_1, param_2, param_3); }
+void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
+    // Source of truth: tplayer.cpp.decomp @ 0x00513DA0
+    // Temporary-safe: tech_tree construction is still partial in current decomp state.
+    if (this->tech_tree == nullptr) {
+        return;
+    }
+    if (param_2 != 0) {
+        this->tech_tree->enable((short)param_1);
+        return;
+    }
+    this->tech_tree->disable((short)param_1);
+}
 void TRIBE_Player::rev_tech(long param_1) {
     // Source of truth: tplayer.cpp.asm @ 0x00513DD0
     if (this->tech_tree == nullptr) {
@@ -394,7 +407,18 @@ void TRIBE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
 void TRIBE_Player::new_victory() {
     this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this);
 }
-uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param_3, float param_4) { return 0; }
+uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param_3, float param_4) {
+    // Source of truth: tplayer.cpp.decomp @ 0x005138D0
+    if (param_2 == -1 || param_3 == 0.0f) {
+        return 0;
+    }
+    if (this->world == nullptr || this->world->commands == nullptr) {
+        return 0;
+    }
+
+    ((TRIBE_Command*)this->world->commands)->command_give_attribute((int)this->id, param_1, param_2, param_3, param_4);
+    return 1;
+}
 void TRIBE_Player::buildObject(int param_1, int param_2, float param_3, float param_4, int param_5) {}
 void TRIBE_Player::cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {}
 void TRIBE_Player::registerBuild(RGE_Static_Object* param_1, int param_2) {}

@@ -77,6 +77,8 @@ public:
     void set_relation(long param_1, uchar param_2);
     void set_view_loc(float x, float y);
     void set_map_loc(short x, short y);
+    void set_map_visible();
+    void remake_visible_map();
     uchar get_resigned();
     int computerPlayer();
     int pathingAttemptCap();

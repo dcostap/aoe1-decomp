@@ -11,6 +11,7 @@
 #include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Command.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
@@ -21,6 +22,137 @@
 #include <share.h>
 #include <stdio.h>
 #include <string.h>
+
+static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Player_Info* info,
+                                           float scenario_version, int has_uncompressed_header) {
+    if (world == nullptr || fd < 0) {
+        return;
+    }
+
+    world_update_counter = 0;
+
+    if (has_uncompressed_header != 0) {
+        long header_size = 0;
+        rge_read(fd, &header_size, 4);
+        if (header_size > 0) {
+            void* header_data = malloc((size_t)header_size);
+            if (header_data == nullptr) {
+                rge_close(fd);
+                return;
+            }
+            rge_read(fd, header_data, (int)header_size);
+            free(header_data);
+        }
+    }
+
+    long scenario_player_num = 0;
+    rge_read(fd, &scenario_player_num, 4);
+
+    world->scenario_init(fd, world);
+    world->scenario_make_map(fd);
+
+    int player_id_map[9];
+    for (int i = 0; i < 9; ++i) {
+        player_id_map[i] = -1;
+    }
+
+    if (info != nullptr) {
+        for (int i = 0; i < world->player_num && i < 9; ++i) {
+            int hash = (int)info->player_id_hash[i];
+            if (hash >= 0 && hash < 9) {
+                player_id_map[hash] = i;
+            }
+        }
+    } else {
+        for (int i = 0; i < world->player_num && i < 9; ++i) {
+            player_id_map[i] = i;
+        }
+    }
+
+    world->reset_player_visible_maps();
+
+    long preload_player_count = 0;
+    rge_read(fd, &preload_player_count, 4);
+    for (int scen_player = 1; scen_player < preload_player_count; ++scen_player) {
+        int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
+        RGE_Player* player = nullptr;
+        if (mapped >= 0 && mapped < world->player_num && world->players != nullptr) {
+            player = world->players[mapped];
+        }
+        if (player == nullptr && world->players != nullptr && world->player_num > 0) {
+            player = world->players[0];
+        }
+        if (player != nullptr) {
+            player->scenario_load(fd, (long*)player_id_map, scenario_version);
+        }
+    }
+
+    for (int scen_player = 0; scen_player < preload_player_count; ++scen_player) {
+        long object_count = 0;
+        rge_read(fd, &object_count, 4);
+        for (int obj_idx = 0; obj_idx < object_count; ++obj_idx) {
+            float world_x = 0.0f;
+            float world_y = 0.0f;
+            float world_z = 0.0f;
+            long obj_id = 0;
+            short master_id = 0;
+            uchar obj_state = 0;
+            float obj_angle = 0.0f;
+
+            rge_read(fd, &world_x, 4);
+            rge_read(fd, &world_y, 4);
+            rge_read(fd, &world_z, 4);
+            rge_read(fd, &obj_id, 4);
+            rge_read(fd, &master_id, 2);
+            rge_read(fd, &obj_state, 1);
+            rge_read(fd, &obj_angle, 4);
+
+            int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
+            if (mapped >= 0 && mapped < world->player_num && world->players != nullptr && world->players[mapped] != nullptr) {
+                world->scenario_object_flag = '\x01';
+                world->scenario_object_id = obj_id;
+                world->players[mapped]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                world->scenario_object_flag = '\0';
+            }
+        }
+    }
+
+    rge_read(fd, &world->next_object_id, 4);
+
+    long postload_player_count = 0;
+    rge_read(fd, &postload_player_count, 4);
+    for (int scen_player = 1; scen_player < postload_player_count; ++scen_player) {
+        int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
+        RGE_Player* player = nullptr;
+        if (mapped >= 0 && mapped < world->player_num && world->players != nullptr) {
+            player = world->players[mapped];
+        }
+        if (player == nullptr && world->players != nullptr && world->player_num > 0) {
+            player = world->players[0];
+        }
+        if (player != nullptr) {
+            player->scenario_postload(fd, (long*)player_id_map, scenario_version);
+        }
+    }
+
+    if (world->scenario != nullptr && world->players != nullptr) {
+        for (int scen_player = 1; scen_player < world->player_num && scen_player < postload_player_count; ++scen_player) {
+            int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
+            int scenario_idx = scen_player - 1;
+            if (mapped >= 0 && mapped < world->player_num && world->players[mapped] != nullptr &&
+                scenario_idx >= 0 && scenario_idx < 16) {
+                world->players[mapped]->loadAIInformation(
+                    world->scenario->BuildList[scenario_idx],
+                    world->scenario->CityPlan[scenario_idx],
+                    world->scenario->AiRules[scenario_idx],
+                    world->scenario->PlayerPosture[scenario_idx],
+                    -1);
+            }
+        }
+    }
+
+    rge_close(fd);
+}
 
 // Forward declarations for types used in function signatures
 class RGE_Static_Object;
@@ -419,53 +551,135 @@ void RGE_Game_World::save(int param_1) {
 
 // Scenario loading virtuals
 void RGE_Game_World::scenario_make_player(short param_1, uchar param_2, uchar param_3, uchar param_4, char* param_5) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00544250
+    (void)param_2;
+    if (param_3 == '\0') {
+        RGE_Master_Player* master = nullptr;
+        if (this->master_players != nullptr && param_4 >= 0 && param_4 < this->master_player_num) {
+            master = this->master_players[param_4];
+        }
+        RGE_Player* player = new RGE_Player(this, master, (uchar)param_1, param_5, param_4, '\0', '\x01',
+                                            nullptr, nullptr, nullptr);
+        if (this->players != nullptr && param_1 >= 0 && param_1 < this->player_num) {
+            this->players[param_1] = player;
+        } else if (player != nullptr) {
+            delete player;
+        }
+    }
 }
 
 void RGE_Game_World::scenario_make_map(int param_1) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x005442E0
+    if (this->map != nullptr) {
+        this->map->scenario_load(param_1, nullptr);
+    }
 }
 
 uchar RGE_Game_World::load_scenario(RGE_Player_Info* param_1) {
-    // TODO: implement
-    return 1;
+    // TODO: STUB, campaign scenario file resolution is not fully transliterated yet.
+    if (param_1 != nullptr && param_1->scenario != nullptr) {
+        return this->load_scenario(param_1->scenario, param_1);
+    }
+    return 0;
 }
 
 uchar RGE_Game_World::load_scenario(char* param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00543E00
+    world_update_counter = 0;
+    if (param_1 == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
+        return 0;
+    }
+
+    char scenario_name[300];
+    memset(scenario_name, 0, sizeof(scenario_name));
+    sprintf(scenario_name, "%s%s", rge_base_game->prog_info->scenario_dir, param_1);
+
+    int fd = rge_open(scenario_name, _O_RDONLY | _O_BINARY);
+    if (fd == -1) {
+        return 0;
+    }
+
+    char version_tag[4];
+    memset(version_tag, 0, sizeof(version_tag));
+    rge_read(fd, version_tag, 4);
+
+    if (memcmp(version_tag, "1.01", 4) == 0) {
+        this->load_scenario1(fd, param_2);
+    } else if (memcmp(version_tag, "1.02", 4) == 0) {
+        this->load_scenario2(fd, param_2);
+    } else if (memcmp(version_tag, "1.03", 4) == 0) {
+        long header_size = 0;
+        rge_read(fd, &header_size, 4);
+        if (header_size > 0) {
+            void* temp = malloc((size_t)header_size);
+            if (temp == nullptr) {
+                rge_close(fd);
+                return 0;
+            }
+            rge_read(fd, temp, (int)header_size);
+            free(temp);
+        }
+        this->load_scenario2(fd, param_2);
+    } else if (memcmp(version_tag, "1.04", 4) == 0) {
+        this->load_scenario4(fd, param_2);
+    } else if (memcmp(version_tag, "1.05", 4) == 0) {
+        this->load_scenario5(fd, param_2);
+    } else if (memcmp(version_tag, "1.06", 4) == 0) {
+        this->load_scenario6(fd, param_2);
+    } else if (memcmp(version_tag, "1.07", 4) == 0) {
+        this->load_scenario7(fd, param_2);
+    } else if (memcmp(version_tag, "1.08", 4) == 0 ||
+               memcmp(version_tag, "1.09", 4) == 0 ||
+               memcmp(version_tag, "1.10", 4) == 0 ||
+               memcmp(version_tag, "1.11", 4) == 0) {
+        this->load_scenario8(fd, param_2);
+    } else {
+        rge_close(fd);
+        return 0;
+    }
+
+    this->setup_player_colors(param_2);
     return 1;
 }
 
 void RGE_Game_World::load_scenario1(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00544300
+    rge_world_load_scenario_common(this, param_1, param_2, 1.0f, 0);
 }
 
 void RGE_Game_World::load_scenario2(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x005445C0
+    rge_world_load_scenario_common(this, param_1, param_2, 1.03f, 0);
 }
 
 void RGE_Game_World::load_scenario3(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00544880
+    rge_world_load_scenario_common(this, param_1, param_2, 1.04f, 1);
 }
 
 void RGE_Game_World::load_scenario4(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00544B90
+    rge_world_load_scenario_common(this, param_1, param_2, 1.06f, 1);
 }
 
 void RGE_Game_World::load_scenario5(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00544E70
+    rge_world_load_scenario_common(this, param_1, param_2, 1.06f, 1);
 }
 
 void RGE_Game_World::load_scenario6(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x005451A0
+    rge_world_load_scenario_common(this, param_1, param_2, 1.07f, 1);
 }
 
 void RGE_Game_World::load_scenario7(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x005454D0
+    rge_world_load_scenario_common(this, param_1, param_2, 1.08f, 1);
 }
 
 void RGE_Game_World::load_scenario8(int param_1, RGE_Player_Info* param_2) {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00545800
+    rge_world_load_scenario_common(this, param_1, param_2, 1.11f, 1);
 }
 
 void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
@@ -714,11 +928,58 @@ uchar RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommunication
 }
 
 void RGE_Game_World::turn_sound_off() {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00541DC0
+    for (int i = 0; i < this->sound_num; ++i) {
+        if (this->sounds != nullptr && this->sounds[i] != nullptr) {
+            this->sounds[i]->stop();
+        }
+    }
 }
 
 void RGE_Game_World::del_game_info() {
-    // TODO: implement
+    // Source of truth: world.cpp.decomp @ 0x00541EE0
+    world_update_counter = 0;
+    this->game_state = '\x02';
+    this->game_end_condition = '\0';
+    this->next_reusable_object_id = -1;
+    this->campaign = -1;
+    this->campaign_player = -1;
+    this->campaign_scenario = -1;
+    this->difficultyLevelValue = -1;
+    this->next_object_id = 0;
+    this->numberObjectsValue = 0;
+    this->numberNegativeObjectsValue = 0;
+
+    if (this->objectsValue != nullptr && this->maxNumberObjectsValue > 0) {
+        memset(this->objectsValue, 0, (size_t)this->maxNumberObjectsValue * sizeof(RGE_Static_Object*));
+    }
+    if (this->negativeObjectsValue != nullptr && this->maxNumberNegativeObjectsValue > 0) {
+        memset(this->negativeObjectsValue, 0, (size_t)this->maxNumberNegativeObjectsValue * sizeof(RGE_Static_Object*));
+    }
+
+    if (this->scenario != nullptr) {
+        delete this->scenario;
+        this->scenario = nullptr;
+    }
+
+    if (this->players != nullptr && this->player_num > 0) {
+        for (int i = 0; i < this->player_num; ++i) {
+            if (this->players[i] != nullptr) {
+                delete this->players[i];
+                this->players[i] = nullptr;
+            }
+        }
+        free(this->players);
+        this->players = nullptr;
+    }
+    this->player_num = 0;
+
+    this->sound_update_index = 0;
+    this->sprite_update_index = 0;
+    this->player_turn = 0;
+    for (int i = 0; i < 9; ++i) {
+        this->player_time_delta[i] = 0;
+    }
 }
 
 uchar RGE_Game_World::update() {
@@ -963,8 +1224,60 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
 }
 
 uchar RGE_Game_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
-    // TODO: implement
-    return 1;
+    // Source of truth: world.cpp.decomp @ 0x00542BF0
+    if (param_1 == nullptr || this->map == nullptr) {
+        return 0;
+    }
+
+    world_update_counter = 0;
+    this->del_game_info();
+    this->curr_player = 0;
+
+    if (param_2 == 0 && this->commands != nullptr && this->commands->com_hand != nullptr) {
+        param_2 = this->commands->com_hand->GetRandomSeed();
+    }
+
+    this->random_seed = (unsigned int)param_2;
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5d5, (unsigned int)param_2);
+
+    this->map->new_map((int)param_1->map_width, (int)param_1->map_height);
+    if (param_1->map_info != nullptr) {
+        this->map->clear_map((uchar)param_1->map_info->base_terrain, '\x01');
+    } else {
+        this->map->clear_map((uchar)0, '\x01');
+    }
+
+    this->player_num = (short)(param_1->player_num + 1);
+    this->players = (RGE_Player**)calloc((int)this->player_num, sizeof(RGE_Player*));
+    this->setup_gaia();
+    this->setup_players(param_1);
+
+    this->world_time = 0;
+    this->old_world_time = 0;
+    this->world_time_delta = 0;
+    this->old_time = 0;
+    this->game_speed = 1.0f;
+    this->temp_pause = '\0';
+    this->world_time_delta_seconds = 0.0f;
+
+    uchar result = 0;
+    if (param_1->scenario == nullptr) {
+        this->load_scenario(param_1);
+        this->scenario_init(this);
+        result = 1;
+    } else {
+        result = this->load_scenario(param_1->scenario, param_1);
+    }
+
+    if (result != 0) {
+        for (int i = 0; i < this->player_num; ++i) {
+            if (this->players[i] != nullptr) {
+                this->players[i]->set_map_visible();
+            }
+        }
+    }
+
+    return result;
 }
 
 uchar RGE_Game_World::save_game(char* param_1) {
@@ -1023,7 +1336,97 @@ void RGE_Game_World::reset_object_count() {
 }
 
 void RGE_Game_World::reset_player_visible_maps() {
-    // TODO(accuracy): call RGE_Player::remake_visible_map for each player slot.
+    // Source of truth: world.cpp.decomp @ 0x00541E90
+    if (this->players == nullptr) {
+        return;
+    }
+    for (int i = 0; i < this->player_num; ++i) {
+        if (this->players[i] != nullptr) {
+            this->players[i]->remake_visible_map();
+        }
+    }
+}
+
+void RGE_Game_World::update_mutual_allies() {
+    // Source of truth: world.cpp.decomp @ 0x005462D0
+    if (this->players == nullptr || this->player_num <= 0) {
+        return;
+    }
+
+    for (int i = 0; i < this->player_num; ++i) {
+        RGE_Player* player = this->players[i];
+        if (player == nullptr) {
+            continue;
+        }
+
+        player->mutualExploredMask = 0;
+        player->mutualVisibleMask = 0;
+        player->nonMutualVisibleMask = 0;
+        memset(player->RemoveVisibleBits, 0, sizeof(player->RemoveVisibleBits));
+
+        for (int j = 0; j < 9; ++j) {
+            if (j == i) {
+                player->mutualAlly[j] = 1;
+                player->mutualVisibleMask = (1UL << (j & 0x1F));
+                player->mutualExploredMask = (1UL << ((j + 0x10) & 0x1F));
+            } else {
+                player->mutualAlly[j] = 0;
+            }
+        }
+    }
+
+    for (int i = 1; i < this->player_num; ++i) {
+        RGE_Player* player = this->players[i];
+        if (player == nullptr || player->allied_LOS_Enable != 1 || player->relations == nullptr) {
+            continue;
+        }
+
+        for (int j = 1; j < this->player_num; ++j) {
+            if (j == i) {
+                continue;
+            }
+
+            RGE_Player* other = this->players[j];
+            if (other == nullptr || other->relations == nullptr) {
+                continue;
+            }
+
+            if (player->relations[j] == 0 && other->relations[i] == 0) {
+                player->mutualAlly[j] = 1;
+                player->mutualVisibleMask = player->mutualVisibleMask | (1UL << (j & 0x1F));
+                player->mutualExploredMask = player->mutualExploredMask | (1UL << ((j + 0x10) & 0x1F));
+            }
+        }
+    }
+
+    for (int owner = 0; owner < this->player_num; ++owner) {
+        RGE_Player* owner_player = this->players[owner];
+        if (owner_player == nullptr || owner_player->relations == nullptr) {
+            continue;
+        }
+
+        for (int p_num = 1; p_num < this->player_num; ++p_num) {
+            if (p_num == owner || owner_player->mutualAlly[p_num] != 0) {
+                continue;
+            }
+
+            for (int via = 1; via < this->player_num; ++via) {
+                RGE_Player* via_player = this->players[via];
+                if (via_player == nullptr) {
+                    continue;
+                }
+
+                if (owner_player->relations[via] == 0 &&
+                    via_player->mutualAlly[p_num] == 1 &&
+                    via_player->mutualAlly[owner] == 1) {
+                    owner_player->nonMutualVisibleMask =
+                        owner_player->nonMutualVisibleMask | (1UL << (p_num & 0x1F));
+                    owner_player->RemoveVisibleBits[p_num] =
+                        owner_player->RemoveVisibleBits[p_num] | (1UL << (via & 0x1F));
+                }
+            }
+        }
+    }
 }
 
 int RGE_Game_World::initializePathingSystem() {

@@ -3,6 +3,7 @@
 #include "../include/TDrawSystem.h"
 #include "../include/TRANSINFO.h"
 #include "../include/Res_file.h"
+#include "../include/globals.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -189,6 +190,20 @@ TPicture::~TPicture() {
     }
 
     picture_reset(this);
+}
+
+void TPicture::Save(int p1) {
+    // Source of truth: picture.cpp.decomp @ 0x0046E020
+    rge_write(p1, &this->OwnMemory, 4);
+    rge_write(p1, &this->Width, 4);
+    rge_write(p1, &this->Height, 4);
+    rge_write(p1, &this->Orien, 2);
+
+    if (this->Width > 0 && this->Height > 0 && this->BitmapInfo != nullptr && this->Bits != nullptr) {
+        rge_write(p1, this->BitmapInfo, 0x428);
+        long aligned = picture_aligned_width(this->Width);
+        rge_write(p1, this->Bits, (int)(aligned * this->Height));
+    }
 }
 
 void TPicture::Draw(TDrawArea* area, long x, long y, int p4, int p5) {

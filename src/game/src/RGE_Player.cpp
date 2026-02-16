@@ -7,9 +7,12 @@
 #include "../include/RGE_Object_List.h"
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Victory_Conditions.h"
+#include "../include/RGE_Command.h"
+#include "../include/RGE_Visible_Map.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int dopple) {
     if (self == nullptr) {
@@ -396,9 +399,103 @@ void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3) {}
 int RGE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) { return 0; }
 int RGE_Player::objectCostByType(int param_1) { return 0; }
 void RGE_Player::trackUnitGather(int param_1, int param_2, int param_3) {}
-RGE_Static_Object* RGE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) { return nullptr; }
+RGE_Static_Object* RGE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) {
+    // Source of truth: player.cpp.decomp @ 0x0046F3A0
+    if (param_4 < 0 || this->master_objects == nullptr || param_4 >= this->master_object_num ||
+        this->master_objects[param_4] == nullptr) {
+        return nullptr;
+    }
+
+    RGE_Static_Object* obj = this->master_objects[param_4]->make_new_obj(this, param_1, param_2, param_3);
+    if (obj == nullptr) {
+        return nullptr;
+    }
+
+    if (param_5 > 6) {
+        obj->destroy_obj();
+    } else if (param_5 > 2) {
+        obj->die_die_die();
+    }
+    obj->new_angle(param_6);
+    return obj;
+}
 void RGE_Player::scenario_save(int param_1) {}
-void RGE_Player::scenario_load(int param_1, long* param_2, float param_3) {}
+void RGE_Player::scenario_load(int param_1, long* param_2, float param_3) {
+    // Source of truth: player.cpp.decomp @ 0x0046F420
+    if (param_3 > 1.05f) {
+        return;
+    }
+
+    short name_len = 0;
+    rge_read(param_1, &name_len, 2);
+    if (name_len > 0) {
+        char* temp_name = (char*)calloc((int)name_len, 1);
+        if (temp_name != nullptr) {
+            rge_read(param_1, temp_name, (int)name_len);
+            if (this->name == nullptr) {
+                this->name = temp_name;
+            } else {
+                free(temp_name);
+            }
+        }
+    }
+
+    rge_read(param_1, &this->view_x, 4);
+    rge_read(param_1, &this->view_y, 4);
+    rge_read(param_1, &this->map_x, 2);
+    rge_read(param_1, &this->map_y, 2);
+
+    if (param_3 > 1.0f) {
+        uchar allied_victory = 0;
+        rge_read(param_1, &allied_victory, 1);
+        this->allied_victory = allied_victory;
+    }
+
+    this->allied_LOS_Enable = 0;
+    if (this->attribute_num > 0) {
+        unsigned char attr_buf[0x74];
+        rge_read(param_1, attr_buf, 0x74);
+        int copy_bytes = this->attribute_num * 4;
+        if (copy_bytes > 0x74) {
+            copy_bytes = 0x74;
+        }
+        if (copy_bytes > 0 && this->attributes != nullptr) {
+            memcpy(this->attributes, attr_buf, (size_t)copy_bytes);
+        }
+    }
+
+    short relation_count = 0;
+    rge_read(param_1, &relation_count, 2);
+    for (short i = 0; i < relation_count; ++i) {
+        uchar relation_value = 0;
+        rge_read(param_1, &relation_value, 1);
+        int rel_idx = (param_2 != nullptr) ? (int)param_2[i] : (int)i;
+        if (this->world != nullptr && rel_idx >= 0 && rel_idx < this->world->player_num && this->relations != nullptr) {
+            this->relations[rel_idx] = relation_value;
+            if (rel_idx == 0) {
+                this->unitDiplomacy[0] = 0;
+            } else if (rel_idx == this->id) {
+                this->unitDiplomacy[rel_idx] = 1;
+            } else if (relation_value == 0) {
+                this->unitDiplomacy[rel_idx] = 2;
+            } else if (relation_value == 1) {
+                this->unitDiplomacy[rel_idx] = 3;
+            } else {
+                this->unitDiplomacy[rel_idx] = 4;
+            }
+        }
+    }
+
+    if (param_3 > 1.08f) {
+        rge_read(param_1, this->unitDiplomacy, 0x24);
+    }
+
+    if (this->victory_conditions != nullptr) {
+        delete this->victory_conditions;
+        this->victory_conditions = nullptr;
+    }
+    this->load_victory(param_1, param_2, 0);
+}
 void RGE_Player::scenario_postsave(int param_1) {
     // Source of truth: player.cpp.decomp @ 0x0046F6B0
     // Write name length + name
@@ -425,7 +522,78 @@ void RGE_Player::scenario_postsave(int param_1) {
         this->victory_conditions->save(param_1);
     }
 }
-void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {}
+void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {
+    // Source of truth: player.cpp.decomp @ 0x0046F7A0
+    short name_len = 0;
+    rge_read(param_1, &name_len, 2);
+    if (name_len > 0) {
+        char* temp_name = (char*)calloc((int)name_len, 1);
+        if (temp_name != nullptr) {
+            rge_read(param_1, temp_name, (int)name_len);
+            if (this->name == nullptr) {
+                this->name = temp_name;
+            } else {
+                free(temp_name);
+            }
+        }
+    }
+
+    rge_read(param_1, &this->view_x, 4);
+    rge_read(param_1, &this->view_y, 4);
+    rge_read(param_1, &this->map_x, 2);
+    rge_read(param_1, &this->map_y, 2);
+
+    if (param_3 > 1.0f) {
+        uchar allied_victory = 0;
+        rge_read(param_1, &allied_victory, 1);
+        this->allied_victory = allied_victory;
+    }
+
+    this->allied_LOS_Enable = 0;
+    if (param_3 <= 1.06f && this->attribute_num > 0) {
+        unsigned char attr_buf[0x74];
+        rge_read(param_1, attr_buf, 0x74);
+        int copy_bytes = this->attribute_num * 4;
+        if (copy_bytes > 0x74) {
+            copy_bytes = 0x74;
+        }
+        if (copy_bytes > 0 && this->attributes != nullptr) {
+            memcpy(this->attributes, attr_buf, (size_t)copy_bytes);
+        }
+    }
+
+    short relation_count = 0;
+    rge_read(param_1, &relation_count, 2);
+    for (short i = 0; i < relation_count; ++i) {
+        uchar relation_value = 0;
+        rge_read(param_1, &relation_value, 1);
+        int rel_idx = (param_2 != nullptr) ? (int)param_2[i] : (int)i;
+        if (this->world != nullptr && rel_idx >= 0 && rel_idx < this->world->player_num && this->relations != nullptr) {
+            this->relations[rel_idx] = relation_value;
+            if (rel_idx == 0) {
+                this->unitDiplomacy[0] = 0;
+            } else if (rel_idx == this->id) {
+                this->unitDiplomacy[rel_idx] = 1;
+            } else if (relation_value == 0) {
+                this->unitDiplomacy[rel_idx] = 2;
+            } else if (relation_value == 1) {
+                this->unitDiplomacy[rel_idx] = 3;
+            } else {
+                this->unitDiplomacy[rel_idx] = 4;
+            }
+        }
+    }
+
+    if (param_3 >= 1.08f) {
+        rge_read(param_1, this->unitDiplomacy, 0x24);
+    }
+
+    if (this->victory_conditions != nullptr) {
+        delete this->victory_conditions;
+        this->victory_conditions = nullptr;
+    }
+    this->load_victory(param_1, param_2, (param_3 >= 1.09f) ? 1 : 0);
+}
 void RGE_Player::load(int param_1) {}
 void RGE_Player::new_attribute_num(short param_1, float param_2) {
     // Source of truth: player.cpp.decomp @ 0x004700B0
@@ -520,9 +688,55 @@ uchar RGE_Player::command_make_move(RGE_Static_Object* param_1, float param_2, f
 uchar RGE_Player::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) { return 1; }
 uchar RGE_Player::command_make_do(RGE_Static_Object* param_1, float param_2, float param_3) { return 1; }
 uchar RGE_Player::command_stop() { return 1; }
-uchar RGE_Player::command_place_object(short param_1, float param_2, float param_3, float param_4) { return 1; }
-uchar RGE_Player::command_add_attribute(int param_1, float param_2) { return 1; }
-uchar RGE_Player::command_give_attribute(int param_1, int param_2, float param_3) { return 1; }
+uchar RGE_Player::command_place_object(short param_1, float param_2, float param_3, float param_4) {
+    // Source of truth: player.cpp.decomp @ 0x004717D0
+    if (param_1 == -1 || this->master_objects == nullptr) {
+        return 0;
+    }
+    int obj_idx = (int)param_1;
+    if (obj_idx < 0 || obj_idx >= this->master_object_num) {
+        return 0;
+    }
+    if (this->master_objects[obj_idx] == nullptr) {
+        return 0;
+    }
+    if (this->world == nullptr || this->world->commands == nullptr) {
+        return 0;
+    }
+
+    this->world->commands->command_create(param_1, this->id, param_2, param_3, param_4);
+    return 1;
+}
+uchar RGE_Player::command_add_attribute(int param_1, float param_2) {
+    // Source of truth: player.cpp.decomp @ 0x00471820
+    if (param_1 == -1 || param_2 == 0.0f) {
+        return 0;
+    }
+    if (this->world == nullptr || this->world->commands == nullptr) {
+        return 0;
+    }
+
+    this->world->commands->command_add_attribute((int)this->id, param_1, param_2);
+    return 1;
+}
+uchar RGE_Player::command_give_attribute(int param_1, int param_2, float param_3) {
+    // Source of truth: player.cpp.decomp @ 0x00471860
+    if (param_2 == -1 || param_3 == 0.0f) {
+        return 0;
+    }
+    if (this->world == nullptr || this->world->commands == nullptr || this->attributes == nullptr) {
+        return 0;
+    }
+    if (param_2 < 0 || param_2 >= this->attribute_num) {
+        return 0;
+    }
+    if (param_3 > this->attributes[param_2]) {
+        return 0;
+    }
+
+    this->world->commands->command_give_attribute((int)this->id, param_1, param_2, param_3);
+    return 1;
+}
 uchar RGE_Player::command_formation(int param_1) { return 1; }
 uchar RGE_Player::command_stand_ground() { return 1; }
 uchar RGE_Player::command_create_group(int param_1, int* param_2, int param_3, float param_4) { return 1; }
@@ -779,6 +993,82 @@ void RGE_Player::set_view_loc(float x, float y) {
 void RGE_Player::set_map_loc(short x, short y) {
     this->map_x = x;
     this->map_y = y;
+}
+
+void RGE_Player::set_map_visible() {
+    // Source of truth: player.cpp.decomp @ 0x00471BF0
+    if (this->visible == nullptr) {
+        this->remake_visible_map();
+    }
+    if (this->visible == nullptr || this->visible->visible_map == nullptr) {
+        return;
+    }
+
+    memset(this->visible->visible_map, 1, (size_t)this->visible->numberTotalTilesValue);
+    this->visible->numberTilesExploredValue = this->visible->numberTotalTilesValue;
+}
+
+void RGE_Player::remake_visible_map() {
+    // Source of truth: player.cpp.decomp @ 0x00471C00
+    if (this->visible != nullptr) {
+        if (this->visible->map_offsets != nullptr) {
+            free(this->visible->map_offsets);
+            this->visible->map_offsets = nullptr;
+        }
+        if (this->visible->visible_map != nullptr) {
+            free(this->visible->visible_map);
+            this->visible->visible_map = nullptr;
+        }
+        free(this->visible);
+        this->visible = nullptr;
+    }
+
+    if (this->world == nullptr || this->world->map == nullptr ||
+        this->world->map->map_width <= 0 || this->world->map->map_height <= 0) {
+        return;
+    }
+
+    RGE_Visible_Map* vis = (RGE_Visible_Map*)calloc(1, sizeof(RGE_Visible_Map));
+    if (vis == nullptr) {
+        return;
+    }
+
+    vis->world = this->world;
+    vis->player = this;
+    vis->map = this->world->map;
+    vis->widthValue = this->world->map->map_width;
+    vis->heightValue = this->world->map->map_height;
+    vis->numberTilesExploredValue = 0;
+    vis->numberTotalTilesValue = vis->widthValue * vis->heightValue;
+
+    if (this->id >= 0 && this->id < 32) {
+        vis->PlayerVisibleMaskValue = (1UL << this->id);
+        vis->PlayerExploredMaskValue = (1UL << this->id);
+    } else {
+        vis->PlayerVisibleMaskValue = 0;
+        vis->PlayerExploredMaskValue = 0;
+    }
+    vis->PlayerVisibleMaskInvertValue = ~vis->PlayerVisibleMaskValue;
+    vis->PlayerExploredMaskInvertValue = ~vis->PlayerExploredMaskValue;
+
+    vis->visible_map = (uchar*)calloc((size_t)vis->numberTotalTilesValue, 1);
+    vis->map_offsets = (uchar**)calloc((size_t)vis->heightValue, sizeof(uchar*));
+    if (vis->visible_map == nullptr || vis->map_offsets == nullptr) {
+        if (vis->map_offsets != nullptr) {
+            free(vis->map_offsets);
+        }
+        if (vis->visible_map != nullptr) {
+            free(vis->visible_map);
+        }
+        free(vis);
+        return;
+    }
+
+    for (int row = 0; row < vis->heightValue; ++row) {
+        vis->map_offsets[row] = vis->visible_map + row * vis->widthValue;
+    }
+
+    this->visible = vis;
 }
 
 uchar RGE_Player::get_resigned() { return this->resigned; }

@@ -33,6 +33,13 @@
 #define CUSTOM_DEBUG_SUPPRESS_MESSAGEBOXES 1
 #endif
 
+// Set to 1 to force CD audio path at startup (debug convenience toggle).
+// This is custom behavior and not part of the original executable.
+// NOTE: CD audio won't play if no CD is present.
+#ifndef CUSTOM_DEBUG_FORCE_CD_AUDIO
+#define CUSTOM_DEBUG_FORCE_CD_AUDIO 1
+#endif
+
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>

@@ -110,8 +110,15 @@ CUSTOM_DEBUG_END
     info.use_sys_mem = 1;
     info.use_music = 1;
     info.use_sound = 1;
+#if CUSTOM_DEBUG_FORCE_CD_AUDIO
+    info.use_cd_audio = 1;
+    info.use_midi = 0;
+    info.use_wave_music = 0;
+#else
     info.use_cd_audio = 0;
     info.use_midi = 1;
+    info.use_wave_music = 0;
+#endif
     info.auto_scroll = 1;
     info.mouse_scroll_edge = 1;
     info.mouse_scroll_interval = 3;

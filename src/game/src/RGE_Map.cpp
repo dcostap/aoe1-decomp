@@ -1698,6 +1698,56 @@ uchar RGE_Map::do_cliff_brush_stroke(long param_1, long param_2, long param_3, l
 
     return 1;
 }
+
+void RGE_Map::scenario_save(int param_1) {
+    // Source of truth: map.cpp.decomp @ 0x00455F10
+    rge_write(param_1, &this->map_width, 4);
+    rge_write(param_1, &this->map_height, 4);
+
+    for (int y = 0; y < this->map_height; ++y) {
+        for (int x = 0; x < this->map_width; ++x) {
+            RGE_Tile* tile = &this->map_row_offset[y][x];
+            uchar terrain_info = (uchar)(tile->terrain_type & 0x1f);
+            uchar height_info = (uchar)(tile->height & 7);
+            uchar overlay_info = 0;
+            rge_write(param_1, &terrain_info, 1);
+            rge_write(param_1, &height_info, 1);
+            rge_write(param_1, &overlay_info, 1);
+        }
+    }
+}
+
+void RGE_Map::scenario_load(int param_1, uchar* param_2) {
+    // Source of truth: map.cpp.decomp @ 0x00455FF0
+    (void)param_2;
+
+    long w = 0;
+    long h = 0;
+    rge_read(param_1, &w, 4);
+    rge_read(param_1, &h, 4);
+    this->new_map(w, h);
+
+    for (int y = 0; y < this->map_height; ++y) {
+        for (int x = 0; x < this->map_width; ++x) {
+            uchar terrain_info = 0;
+            uchar height_info = 0;
+            uchar overlay_info = 0;
+            rge_read(param_1, &terrain_info, 1);
+            rge_read(param_1, &height_info, 1);
+            rge_read(param_1, &overlay_info, 1);
+            (void)overlay_info;
+
+            RGE_Tile* tile = &this->map_row_offset[y][x];
+            tile->terrain_type = (uchar)(terrain_info & 0x1f);
+            tile->height = (uchar)(height_info & 7);
+        }
+    }
+
+    this->set_elev(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1), 0, 0, 0);
+    this->set_terrain((RGE_Player*)nullptr, (RGE_Game_World*)nullptr, 0, 0,
+                      (short)(this->map_width - 1), (short)(this->map_height - 1), 0, 0, 0);
+}
+
 void RGE_Map::map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4) {}
 void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5) {
     // Source of truth: map.cpp.decomp @ 0x004578B0.

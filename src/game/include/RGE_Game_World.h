@@ -76,6 +76,7 @@ public:
     // Non-virtual methods
     void reset_object_count();
     void reset_player_visible_maps();
+    void update_mutual_allies();
     void set_map_visible(uchar param_1);
     void set_map_fog(uchar param_1);
     int initializePathingSystem();

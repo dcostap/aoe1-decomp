@@ -20,6 +20,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
+#include <fcntl.h>
 #include <timeapi.h>
 #include <direct.h>
 
@@ -1022,8 +1023,8 @@ int RGE_Base_Game::get_paused() {
 }
 TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
-RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return nullptr; }
-RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return nullptr; }
+RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }
+RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return new RGE_Scenario_Header(p1); }
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
 void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
 int RGE_Base_Game::reset_comm() { return 0; }
@@ -1032,6 +1033,7 @@ void RGE_Base_Game::receive_game_options() {}
 char* RGE_Base_Game::gameSummary() { return nullptr; }
 int RGE_Base_Game::processCheatCode(int p1, char* p2) { return 0; }
 int RGE_Base_Game::setup_music_system() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F110
     // Offset: 0x0041F110
     if (this->prog_info->use_music != 0) {
         int vol = -5000;
@@ -1063,7 +1065,7 @@ int RGE_Base_Game::setup_music_system() {
             }
 
             char music_path[260];
-            sprintf(music_path, "%s%s", this->work_dir, this->prog_info->sounds_dir);
+            sprintf(music_path, "%s\\%s", this->work_dir, this->prog_info->sounds_dir);
 
             TMusic_System* pMusic = new TMusic_System(mtype, this->prog_info->instance,
                 this->prog_window, this->sound_system, music_path);
@@ -1085,7 +1087,15 @@ int RGE_Base_Game::setup_music_system() {
     }
     return 1;
 }
-void RGE_Base_Game::shutdown_music_system() {}
+void RGE_Base_Game::shutdown_music_system() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041FA90
+    if (this->music_system != nullptr) {
+        this->stop_music_system();
+        this->registry->RegSetInt(1, "Music Volume", -this->music_system->volume);
+        delete this->music_system;
+        this->music_system = nullptr;
+    }
+}
 int RGE_Base_Game::setup_cmd_options() {
     // Source of truth: basegame.cpp.decomp @ 0x0041D0A0
     if (!this->prog_info || !this->prog_info->cmd_line) return 1;
@@ -1524,8 +1534,47 @@ int RGE_Base_Game::setup_blank_screen() {
 void RGE_Base_Game::setup_timings() {}
 void RGE_Base_Game::stop_sound_system() {}
 int RGE_Base_Game::restart_sound_system() { return 1; }
-void RGE_Base_Game::stop_music_system() {}
-int RGE_Base_Game::restart_music_system() { return 1; }
+void RGE_Base_Game::stop_music_system() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F9B0
+    if (this->music_system != nullptr) {
+        this->music_system->get_play_info(
+            &this->save_music_type,
+            &this->save_music_track_from,
+            &this->save_music_track_to,
+            &this->save_music_cur_track,
+            this->save_music_file,
+            &this->save_music_loop,
+            &this->save_music_pos);
+        this->music_system->stop_track();
+    }
+}
+int RGE_Base_Game::restart_music_system() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F9F0
+    TMusic_System* music = this->music_system;
+    if (music == nullptr) {
+        return 1;
+    }
+    int from_track = this->save_music_track_from;
+    if (from_track != 0) {
+        if (from_track == this->save_music_track_to) {
+            music->play_track(from_track, this->save_music_loop, this->save_music_pos);
+            return 1;
+        }
+        if ((from_track != 0) && (this->save_music_track_to != 0)) {
+            music->play_tracks(
+                from_track,
+                this->save_music_track_to,
+                this->save_music_loop,
+                this->save_music_cur_track,
+                this->save_music_pos);
+            return 1;
+        }
+    }
+    if (this->save_music_file[0] != '\0') {
+        music->play_file(this->save_music_file, this->save_music_loop, this->save_music_pos);
+    }
+    return 1;
+}
 RGE_Game_World* RGE_Base_Game::create_world() {
     if (this->world) {
         delete this->world;
@@ -1956,13 +2005,17 @@ unsigned char RGE_Base_Game::mpPathFinding() {
 }
 
 void RGE_Base_Game::set_map_visible(unsigned char p1) {
-    // TODO(accuracy): implement full map visibility toggle via RGE_Game_World
-    (void)p1;
+    // Source of truth: basegame.cpp.decomp @ 0x004228C0
+    if (this->world != nullptr) {
+        this->world->set_map_visible(p1);
+    }
 }
 
 void RGE_Base_Game::set_map_fog(unsigned char p1) {
-    // TODO(accuracy): implement full fog-of-war toggle via RGE_Game_World
-    (void)p1;
+    // Source of truth: basegame.cpp.decomp @ 0x004228E0
+    if (this->world != nullptr) {
+        this->world->set_map_fog(p1);
+    }
 }
 
 void RGE_Base_Game::reset_countdown_timer(int p1) {
@@ -2000,11 +2053,47 @@ char* RGE_Base_Game::scenarioName() {
 }
 
 RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
-    // TODO(accuracy): implement full scenario loading from file
-    // Source of truth: basegame.cpp.decomp @ 0x00422170
-    (void)p1;
-    (void)p2;
-    return nullptr;
+    // Source of truth: basegame.cpp.decomp @ 0x0041CB80
+    char temp_name[300];
+    memset(temp_name, 0, sizeof(temp_name));
+    sprintf(temp_name, "%s%s", this->prog_info->scenario_dir, p1 ? p1 : "");
+
+    int fd = -1;
+    if (p2 == 0) {
+        if (p1 == nullptr) {
+            return nullptr;
+        }
+        fd = rge_open(temp_name, _O_RDONLY | _O_BINARY);
+    } else {
+        // TODO: STUB, campaign-backed scenario_info loading still depends on RGE_Game_Info::open_scenario.
+        return nullptr;
+    }
+
+    if (fd == -1) {
+        return nullptr;
+    }
+
+    long obj_id = 0;
+    long version = 0;
+    rge_read(fd, &obj_id, 4);
+    rge_read(fd, &version, 4);
+
+    if (version > 0) {
+        void* header_data = malloc((size_t)version);
+        if (header_data == nullptr) {
+            rge_close(fd);
+            return nullptr;
+        }
+        rge_read(fd, header_data, (int)version);
+        free(header_data);
+    }
+
+    char version_tag[4];
+    rge_read(fd, version_tag, 4);
+
+    RGE_Scenario* scenario_info = this->new_scenario_info(fd);
+    rge_close(fd);
+    return scenario_info;
 }
 
 // Linker fix stubs

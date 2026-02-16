@@ -1,8 +1,14 @@
 #pragma once
 #include "common.h"
 
+class RGE_Scenario;
+
 class RGE_Scenario_Header {
 public:
+    RGE_Scenario_Header(RGE_Scenario* param_1);
+    RGE_Scenario_Header(int param_1);
+    ~RGE_Scenario_Header();
+
     // Virtuals (best-effort)
     virtual long get_size(); // vt[0] (0x0)
     virtual void save(int param_1); // vt[1] (0x4)

@@ -4,21 +4,34 @@
 #include "../include/TRIBE_RMM_Database_Controller.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Command.h"
+#include "../include/RGE_Obj_Info.h"
+#include "../include/RGE_Command_Create.h"
+#include "../include/RGE_Command_Add_Attribute.h"
+#include "../include/RGE_Command_Give_Attribute.h"
+#include "../include/TRIBE_Command_Give_Attribute.h"
+#include "../include/TRIBE_Command_Trade_Attribute.h"
 #include "../include/TRIBE_Effects.h"
 #include "../include/T_Scenario.h"
+#include "../include/RGE_Scenario_Header.h"
+#include "../include/TRIBE_Scenario_Header.h"
 #include "../include/RGE_Effect.h"
 #include "../include/RGE_Effect_Command.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Base_Game.h"
+#include "../include/TRIBE_Player.h"
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/TRIBE_Victory_Conditions.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Object_Node.h"
+#include "../include/TPicture.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 #include <io.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 static void tribe_init_cliff_master_table(TRIBE_Map* map) {
     for (int i = 0; i < 0x100; ++i) {
@@ -1102,6 +1115,32 @@ void RGE_Command::reset_communications(TCommunications_Handler* param_1) {
     this->com_hand = param_1;
 }
 
+RGE_Static_Object* RGE_Command::get_obj(RGE_Obj_Info p1) {
+    // Source of truth: command.cpp.decomp @ 0x00433DC0
+    if (this->world == nullptr) {
+        return nullptr;
+    }
+    return this->world->object((int)p1.id);
+}
+
+void RGE_Command::submit(void* p1, long p2) {
+    // Source of truth: command.cpp.decomp @ 0x004352C0 (temporary-safe local execution path)
+    if (p1 == nullptr || p2 <= 0) {
+        return;
+    }
+
+    // TODO(accuracy): route through TCommunications_Handler::new_command once comm queue parity is restored.
+    this->do_command(p1);
+
+    if (this->last_order != nullptr) {
+        free(this->last_order);
+        this->last_order = nullptr;
+    }
+    this->last_order = (unsigned char*)p1;
+    this->last_order_size = p2;
+    this->last_order_time = (long)GetTickCount();
+}
+
 RGE_Command::~RGE_Command() {
     // Source of truth: Command.cpp.decomp @ 0x00433D90
     this->world = nullptr;
@@ -1111,20 +1150,342 @@ RGE_Command::~RGE_Command() {
         this->last_order = nullptr;
     }
 }
+void RGE_Command::do_command_create(RGE_Command_Create* p1) {
+    // Source of truth: command.cpp.decomp @ 0x004348B0
+    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
+        return;
+    }
+    RGE_Player* player = this->world->players[p1->player_id];
+    if (player == nullptr) {
+        return;
+    }
+    player->make_new_object((long)p1->obj_catagory, p1->location_x, p1->location_y, p1->location_z, 0);
+}
+void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
+    // Source of truth: command.cpp.decomp @ 0x004348F0
+    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
+        return;
+    }
+    RGE_Player* player = this->world->players[p1->player_id];
+    if (player == nullptr) {
+        return;
+    }
+    player->add_attribute_num((short)p1->attr_id, p1->attr_amount, 0);
+}
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
-    (void)p1;
-    // TODO: STUB, command decoding path not yet transliterated.
+    // Source of truth: command.cpp.decomp @ 0x00434920
+    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
+        return;
+    }
+
+    RGE_Player* from_player = this->world->players[p1->player_id];
+    if (from_player == nullptr || from_player->attributes == nullptr) {
+        return;
+    }
+
+    int attr_id = (int)p1->attr_id;
+    if (attr_id < 0 || attr_id >= from_player->attribute_num) {
+        return;
+    }
+
+    float amount = p1->attr_amount;
+    if (from_player->attributes[attr_id] < amount) {
+        return;
+    }
+
+    from_player->add_attribute_num((short)p1->attr_id, -amount, 0);
+
+    RGE_Player* to_player = this->world->players[p1->to_player_id];
+    if (to_player == nullptr) {
+        return;
+    }
+    to_player->add_attribute_num((short)p1->attr_id, amount, 0);
+
+    if (rge_base_game != nullptr) {
+        rge_base_game->notification(7, p1->player_id, p1->to_player_id, p1->attr_id, (long)amount);
+    }
+    to_player->notify(p1->player_id, p1->to_player_id, 0x20A, p1->attr_id, (long)amount, 0);
 }
 void RGE_Command::do_command(void* p1) {
-    (void)p1;
-    // TODO: STUB, command decoding path not yet transliterated.
+    // Source of truth: command.cpp.decomp @ 0x00433E20 (partial)
+    if (p1 == nullptr) {
+        return;
+    }
+
+    uchar cmd = *(uchar*)p1;
+    if (cmd == 4) {
+        this->do_command_create((RGE_Command_Create*)p1);
+        return;
+    }
+    if (cmd == 5) {
+        this->do_command_add_attribute((RGE_Command_Add_Attribute*)p1);
+        return;
+    }
+    if (cmd == 7) {
+        this->do_command_give_attribute((RGE_Command_Give_Attribute*)p1);
+    }
+}
+void RGE_Command::command_create(short p1, short p2, float p3, float p4, float p5) {
+    // Source of truth: command.cpp.decomp @ 0x004359C0
+    RGE_Command_Create* cmd = (RGE_Command_Create*)calloc(1, sizeof(RGE_Command_Create));
+    if (cmd == nullptr) {
+        return;
+    }
+    cmd->command = 4;
+    cmd->obj_catagory = p1;
+    cmd->player_id = (uchar)p2;
+    cmd->location_x = p3;
+    cmd->location_y = p4;
+    cmd->location_z = p5;
+
+    this->submit(cmd, sizeof(RGE_Command_Create));
+}
+void RGE_Command::command_add_attribute(int p1, int p2, float p3) {
+    // Source of truth: command.cpp.decomp @ 0x00435A30
+    RGE_Command_Add_Attribute* cmd = (RGE_Command_Add_Attribute*)calloc(1, sizeof(RGE_Command_Add_Attribute));
+    if (cmd == nullptr) {
+        return;
+    }
+    cmd->command = 5;
+    cmd->player_id = (uchar)p1;
+    cmd->attr_id = (uchar)p2;
+    cmd->attr_amount = p3;
+
+    this->submit(cmd, sizeof(RGE_Command_Add_Attribute));
 }
 void RGE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
-    (void)p1;
-    (void)p2;
-    (void)p3;
-    (void)p4;
-    // TODO: STUB, command encoding path not yet transliterated.
+    // Source of truth: command.cpp.decomp @ 0x00435A80
+    RGE_Command_Give_Attribute* cmd = (RGE_Command_Give_Attribute*)calloc(1, sizeof(RGE_Command_Give_Attribute));
+    if (cmd == nullptr) {
+        return;
+    }
+    cmd->command = 7;
+    cmd->player_id = (uchar)p1;
+    cmd->to_player_id = (uchar)p2;
+    cmd->attr_id = (uchar)p3;
+    cmd->attr_amount = p4;
+
+    this->submit(cmd, sizeof(RGE_Command_Give_Attribute));
+}
+
+static int rge_scenario_active_player_count(const RGE_Scenario* scenario) {
+    if (scenario == nullptr) {
+        return 0;
+    }
+
+    int count = 0;
+    for (int i = 0; i < 16; ++i) {
+        if (scenario->PlActive[i] != 0) {
+            count = count + 1;
+        }
+    }
+    return count;
+}
+
+static int tribe_scenario_any_sp_victory(const T_Scenario* scenario) {
+    if (scenario == nullptr) {
+        return 0;
+    }
+
+    for (int player = 0; player < 16; ++player) {
+        if (scenario->PlActive[player] == 0) {
+            continue;
+        }
+        for (int slot = 0; slot < 12; ++slot) {
+            if (scenario->sp_victory[player][slot].VictoryType != 0) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario) {
+    // Source of truth: scenario.cpp.decomp @ 0x0048AB10
+    this->error_code = 0;
+    this->version = 2;
+    this->checksum = (unsigned long)time(nullptr);
+    this->description = nullptr;
+
+    if (scenario != nullptr && scenario->description != nullptr) {
+        size_t desc_size = strlen(scenario->description) + 1;
+        this->description = (char*)malloc(desc_size);
+        if (this->description != nullptr) {
+            memcpy(this->description, scenario->description, desc_size);
+        } else {
+            this->error_code = 1;
+        }
+    }
+}
+
+RGE_Scenario_Header::RGE_Scenario_Header(int p1) {
+    // Source of truth: scenario.cpp.decomp @ 0x0048ABB0
+    this->error_code = 0;
+    this->version = 0;
+    this->checksum = 0;
+    this->description = nullptr;
+
+    long header_size = 0;
+    rge_read(p1, &header_size, 4);
+    rge_read(p1, &this->version, 4);
+    if (this->version > 1) {
+        rge_read(p1, &this->checksum, 4);
+    }
+
+    int desc_size = 0;
+    rge_read(p1, &desc_size, 4);
+    if (desc_size > 0) {
+        this->description = (char*)malloc((size_t)desc_size);
+        if (this->description == nullptr) {
+            this->error_code = 1;
+            return;
+        }
+        rge_read(p1, this->description, desc_size);
+    }
+}
+
+RGE_Scenario_Header::~RGE_Scenario_Header() {
+    // Source of truth: scenario.cpp.decomp @ 0x0048AC70
+    if (this->description != nullptr) {
+        free(this->description);
+        this->description = nullptr;
+    }
+}
+
+long RGE_Scenario_Header::get_size() {
+    // Source of truth: scenario.cpp.decomp @ 0x0048ACA0
+    if (this->description == nullptr) {
+        return 0xC;
+    }
+    return (long)(strlen(this->description) + 0xD);
+}
+
+void RGE_Scenario_Header::save(int p1) {
+    // Source of truth: scenario.cpp.decomp @ 0x0048ACC0
+    long header_size = this->get_size();
+    rge_write(p1, &header_size, 4);
+    rge_write(p1, &this->version, 4);
+
+    if (this->version > 1) {
+        rge_write(p1, &this->checksum, 4);
+    }
+
+    int desc_size = 0;
+    if (this->description != nullptr) {
+        desc_size = (int)strlen(this->description) + 1;
+    }
+    rge_write(p1, &desc_size, 4);
+    if (desc_size > 0) {
+        rge_write(p1, this->description, desc_size);
+    }
+}
+
+TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
+    : RGE_Scenario_Header((RGE_Scenario*)scenario) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052A990
+    this->any_sp_victory = tribe_scenario_any_sp_victory(scenario);
+    this->active_player_count = rge_scenario_active_player_count((RGE_Scenario*)scenario);
+}
+
+TRIBE_Scenario_Header::TRIBE_Scenario_Header(int p1)
+    : RGE_Scenario_Header(p1) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052A9F0
+    this->any_sp_victory = 0;
+    this->active_player_count = 0;
+    if (this->error_code == 0) {
+        rge_read(p1, &this->any_sp_victory, 4);
+        rge_read(p1, &this->active_player_count, 4);
+    }
+}
+
+long TRIBE_Scenario_Header::get_size() {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052AA70
+    return RGE_Scenario_Header::get_size() + 8;
+}
+
+void TRIBE_Scenario_Header::save(int p1) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052AA80
+    RGE_Scenario_Header::save(p1);
+    rge_write(p1, &this->any_sp_victory, 4);
+    rge_write(p1, &this->active_player_count, 4);
+}
+
+static unsigned short rge_scenario_string_len16(const char* text) {
+    if (text == nullptr) {
+        return 0;
+    }
+    size_t len = strlen(text) + 1;
+    if (len > 0xFFFF) {
+        len = 0xFFFF;
+    }
+    return (unsigned short)len;
+}
+
+static void rge_scenario_write_string16(int fd, const char* text) {
+    unsigned short length = rge_scenario_string_len16(text);
+    rge_write(fd, &length, 2);
+    if (length > 0 && text != nullptr) {
+        rge_write(fd, (void*)text, (int)length);
+    }
+}
+
+static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_base, const char* ext,
+                                         unsigned char** out_data, int* out_size) {
+    if (out_data == nullptr || out_size == nullptr) {
+        return;
+    }
+
+    if (ai_dir == nullptr || file_base == nullptr || file_base[0] == '\0') {
+        if (*out_data != nullptr) {
+            free(*out_data);
+            *out_data = nullptr;
+        }
+        *out_size = 0;
+        return;
+    }
+
+    char path[300];
+    sprintf(path, "%s%s%s", ai_dir, file_base, ext);
+    int fd = _open(path, _O_BINARY | _O_RDONLY);
+    if (fd == -1) {
+        if (*out_data != nullptr) {
+            free(*out_data);
+            *out_data = nullptr;
+        }
+        *out_size = 0;
+        return;
+    }
+
+    long file_size = _lseek(fd, 0, SEEK_END);
+    if (file_size <= 0) {
+        _close(fd);
+        if (*out_data != nullptr) {
+            free(*out_data);
+            *out_data = nullptr;
+        }
+        *out_size = 0;
+        return;
+    }
+
+    unsigned char* blob = (unsigned char*)calloc((size_t)file_size, 1);
+    if (blob == nullptr) {
+        _close(fd);
+        return;
+    }
+
+    _lseek(fd, 0, SEEK_SET);
+    int read_bytes = _read(fd, blob, (unsigned int)file_size);
+    _close(fd);
+    if (read_bytes != (int)file_size) {
+        free(blob);
+        return;
+    }
+
+    if (*out_data != nullptr) {
+        free(*out_data);
+    }
+    *out_data = blob;
+    *out_size = (int)file_size;
 }
 
 // --- RGE_Scenario (base class stubs) ---
@@ -1132,16 +1493,109 @@ RGE_Scenario::~RGE_Scenario() {
     // TODO: STUB, full scenario.cpp destructor not yet transliterated.
 }
 RGE_Static_Object* RGE_Scenario::get_object_pointer(int p1) {
+    // Source of truth: scenario.cpp.decomp @ 0x0048B580
     (void)p1;
-    // TODO: STUB, full scenario object table access not yet transliterated.
     return nullptr;
 }
 void RGE_Scenario::rehook() {
-    // TODO: STUB, full scenario.cpp rehook path not yet transliterated.
+    // Source of truth: scenario.cpp.decomp @ 0x0048B590
+    return;
 }
 void RGE_Scenario::save(int p1) {
-    (void)p1;
-    // TODO: STUB, full scenario.cpp save path not yet transliterated.
+    // Source of truth: scenario.cpp.decomp @ 0x0048C3E0
+    this->Version = 1.15f;
+    rge_write(p1, &this->Version, 4);
+
+    for (int i = 0; i < 16; ++i) {
+        rge_write(p1, this->player_name[i], 0x100);
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        rge_write(p1, &this->PlActive[i], 4);
+        rge_write(p1, &this->PlType[i], 4);
+        rge_write(p1, &this->PlCivilization[i], 4);
+        rge_write(p1, &this->PlayerPosture[i], 4);
+    }
+
+    rge_write(p1, &this->victory_conquest, 1);
+    if (this->time_line != nullptr) {
+        // TODO(accuracy): timeline save path still depends on missing RGE_Timeline::save transliteration.
+    }
+
+    rge_scenario_write_string16(p1, this->scenario_name);
+    rge_scenario_write_string16(p1, this->description);
+    rge_scenario_write_string16(p1, this->hints);
+    rge_scenario_write_string16(p1, this->win_message);
+    rge_scenario_write_string16(p1, this->loss_message);
+    rge_scenario_write_string16(p1, this->historicle_notes);
+
+    rge_scenario_write_string16(p1, this->Cine_PreGame);
+    rge_scenario_write_string16(p1, this->Cine_Victory);
+    rge_scenario_write_string16(p1, this->Cine_Loss);
+    rge_scenario_write_string16(p1, this->Mission_Bmp);
+
+    char mission_file[260];
+    sprintf(mission_file, "%s.bmp", this->Mission_Bmp);
+    TPicture* loaded_picture = new TPicture(mission_file, -1, 0, nullptr, 0);
+    if (this->mission_picture != nullptr) {
+        if (loaded_picture->Dib == nullptr) {
+            delete loaded_picture;
+        } else {
+            delete this->mission_picture;
+            this->mission_picture = loaded_picture;
+        }
+    } else {
+        this->mission_picture = loaded_picture;
+    }
+
+    if (this->mission_picture != nullptr) {
+        this->mission_picture->Save(p1);
+    } else {
+        TPicture empty_picture;
+        empty_picture.Save(p1);
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        rge_scenario_write_string16(p1, this->BuildList[i]);
+    }
+    for (int i = 0; i < 16; ++i) {
+        rge_scenario_write_string16(p1, this->CityPlan[i]);
+    }
+    if (this->Version >= 1.08f) {
+        for (int i = 0; i < 16; ++i) {
+            rge_scenario_write_string16(p1, this->AiRules[i]);
+        }
+    }
+
+    const char* ai_dir = nullptr;
+    if (rge_base_game != nullptr && rge_base_game->prog_info != nullptr) {
+        ai_dir = rge_base_game->prog_info->ai_dir;
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        rge_scenario_refresh_ai_blob(ai_dir, this->BuildList[i], ".ai", &this->BuildListFile[i], &this->BuildListFileSize[i]);
+        rge_scenario_refresh_ai_blob(ai_dir, this->CityPlan[i], ".cty", &this->CityPlanFile[i], &this->CityPlanFileSize[i]);
+        rge_scenario_refresh_ai_blob(ai_dir, this->AiRules[i], ".per", &this->AiRulesFile[i], &this->AiRulesFileSize[i]);
+
+        rge_write(p1, &this->BuildListFileSize[i], 4);
+        rge_write(p1, &this->CityPlanFileSize[i], 4);
+        if (this->Version >= 1.08f) {
+            rge_write(p1, &this->AiRulesFileSize[i], 4);
+        }
+
+        if (this->BuildListFile[i] != nullptr && this->BuildListFileSize[i] > 0) {
+            rge_write(p1, this->BuildListFile[i], this->BuildListFileSize[i]);
+        }
+        if (this->CityPlanFile[i] != nullptr && this->CityPlanFileSize[i] > 0) {
+            rge_write(p1, this->CityPlanFile[i], this->CityPlanFileSize[i]);
+        }
+        if (this->AiRulesFile[i] != nullptr && this->AiRulesFileSize[i] > 0) {
+            rge_write(p1, this->AiRulesFile[i], this->AiRulesFileSize[i]);
+        }
+    }
+
+    int checksum = -99;
+    rge_write(p1, &checksum, 4);
 }
 
 // --- TRIBE_Command ---
@@ -1151,31 +1605,147 @@ TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* com
 
 TRIBE_Command::~TRIBE_Command() {}
 void TRIBE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
-    (void)p1;
-    // TODO: STUB, TRIBE command decoding not yet transliterated.
+    // Source of truth: tcommand.cpp.decomp indicates TRIBE-specific handler lives in vt[4] (+0x10).
+    // Keep base command-id-7 behavior intact on vt[0].
+    RGE_Command::do_command_give_attribute(p1);
 }
 void TRIBE_Command::do_command(void* p1) {
-    (void)p1;
-    // TODO: STUB, TRIBE command decoding not yet transliterated.
+    // Source of truth: tcommand.cpp.decomp @ 0x00509770 (partial)
+    (void)debug_rand("C:\\msdev\\work\\age1_x1\\tcommand.cpp", 0x3F);
+    if (p1 == nullptr) {
+        return;
+    }
+
+    if (*(uchar*)p1 == 0x6C) {
+        this->do_command_give_attribute((TRIBE_Command_Give_Attribute*)p1);
+        return;
+    }
+    if (*(uchar*)p1 == 0x6D) {
+        this->do_command_trade_attribute((TRIBE_Command_Trade_Attribute*)p1);
+        return;
+    }
+
+    RGE_Command::do_command(p1);
 }
 void TRIBE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
-    (void)p1;
-    (void)p2;
-    (void)p3;
-    (void)p4;
-    // TODO: STUB, TRIBE command encoding not yet transliterated.
+    // TODO(accuracy): no dedicated 4-arg TRIBE source body in current tcommand export.
+    this->command_give_attribute(p1, p2, p3, p4, 0.0f);
 }
-void TRIBE_Command::do_command_give_attribute_tribe(TRIBE_Command_Give_Attribute* p1) {
-    (void)p1;
-    // TODO: STUB, TRIBE-specific command decoding not yet transliterated.
+void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* p1) {
+    // Source of truth: tcommand.cpp.decomp @ 0x0050A510
+    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
+        return;
+    }
+
+    float transfer_amount = 0.0f;
+    if (p1->attr_amount >= 0.0f) {
+        transfer_amount = p1->attr_amount;
+    }
+
+    float cost = 0.0f;
+    if (transfer_amount > 0.0f) {
+        cost = p1->attr_cost * transfer_amount;
+    }
+
+    RGE_Player* from_player = this->world->players[p1->player_id];
+    RGE_Player* to_player = this->world->players[p1->to_player_id];
+    if (from_player == nullptr || to_player == nullptr || from_player->attributes == nullptr) {
+        return;
+    }
+
+    int attr_id = (int)p1->attr_id;
+    if (attr_id < 0 || attr_id >= from_player->attribute_num) {
+        return;
+    }
+
+    float* from_attr = &from_player->attributes[attr_id];
+    if (*from_attr < transfer_amount + cost) {
+        cost = *from_attr * p1->attr_cost;
+        transfer_amount = *from_attr - cost;
+    }
+
+    to_player->add_attribute_num((short)p1->attr_id, transfer_amount, 0);
+    from_player->add_attribute_num((short)p1->attr_id, -(transfer_amount + cost), 0);
+    from_player->add_attribute_num(0x35, transfer_amount, 0);
+    to_player->add_attribute_num(0x35, -transfer_amount, 0);
+
+    if (rge_base_game != nullptr) {
+        rge_base_game->notification(7, p1->player_id, p1->to_player_id, p1->attr_id, (long)transfer_amount);
+    }
+    to_player->notify(p1->player_id, p1->to_player_id, 0x20A, p1->attr_id, (long)transfer_amount, 0);
 }
 void TRIBE_Command::command_give_attribute(int p1, int p2, int p3, float p4, float p5) {
-    (void)p1;
+    // Source of truth: tcommand.cpp.decomp @ 0x0050B130
+    TRIBE_Command_Give_Attribute* cmd = (TRIBE_Command_Give_Attribute*)calloc(1, sizeof(TRIBE_Command_Give_Attribute));
+    if (cmd == nullptr) {
+        return;
+    }
+    cmd->command = 0x6C;
+    cmd->player_id = (uchar)p1;
+    cmd->to_player_id = (uchar)p2;
+    cmd->attr_id = (uchar)p3;
+    cmd->attr_amount = p4;
+    cmd->attr_cost = p5;
+
+    this->submit(cmd, sizeof(TRIBE_Command_Give_Attribute));
+}
+void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* p1) {
+    // Source of truth: tcommand.cpp.decomp @ 0x0050A6A0
+    if (this->world == nullptr || p1 == nullptr) {
+        return;
+    }
+
+    RGE_Obj_Info* object_ids = (RGE_Obj_Info*)(p1 + 1);
+    int count = (int)p1->unit_num;
+    for (int i = 0; i < count; ++i) {
+        RGE_Static_Object* obj = this->get_obj(object_ids[i]);
+        if (obj != nullptr) {
+            obj->attribute_type_held = (short)p1->attribute;
+        }
+    }
+}
+void TRIBE_Command::command_trade_attribute(RGE_Static_Object** p1, short p2, long p3) {
+    // Source of truth: tcommand.cpp.decomp @ 0x0050B190 (temporary-safe local execution path)
+    if (p1 == nullptr || p2 <= 0) {
+        return;
+    }
+
+    int count = (int)p2;
+    int size = (int)sizeof(TRIBE_Command_Trade_Attribute) + count * 4;
+    unsigned char* buffer = (unsigned char*)calloc(1, size);
+    if (buffer == nullptr) {
+        return;
+    }
+
+    TRIBE_Command_Trade_Attribute* cmd = (TRIBE_Command_Trade_Attribute*)buffer;
+    cmd->command = 0x6D;
+    cmd->unit_num = (uchar)p2;
+    cmd->attribute = p3;
+
+    int* object_ids = (int*)(buffer + sizeof(TRIBE_Command_Trade_Attribute));
+    for (int i = 0; i < count; ++i) {
+        RGE_Static_Object* obj = p1[i];
+        object_ids[i] = (obj != nullptr) ? (int)obj->id : -1;
+    }
+
+    this->submit(buffer, size);
+}
+void TRIBE_Command::command_trade_attribute(int p1, int p2, long p3) {
+    // Source of truth: tcommand.cpp.decomp @ 0x0050B230 (temporary-safe local execution path)
     (void)p2;
-    (void)p3;
-    (void)p4;
-    (void)p5;
-    // TODO: STUB, TRIBE-specific command encoding not yet transliterated.
+
+    const int size = (int)sizeof(TRIBE_Command_Trade_Attribute) + 4;
+    unsigned char* buffer = (unsigned char*)calloc(1, size);
+    if (buffer == nullptr) {
+        return;
+    }
+    TRIBE_Command_Trade_Attribute* cmd = (TRIBE_Command_Trade_Attribute*)buffer;
+    cmd->command = 0x6D;
+    cmd->unit_num = 1;
+    cmd->attribute = p3;
+    *(int*)(buffer + sizeof(TRIBE_Command_Trade_Attribute)) = p1;
+
+    this->submit(buffer, size);
 }
 
 // --- TRIBE_Effects (from teffects.cpp.decomp) ---
@@ -1200,22 +1770,30 @@ void TRIBE_Effects::do_effect(short p1, RGE_Player* p2) {
     if ((int)p1 >= this->effect_num) return;
     RGE_Effect* eff = &this->effects[p1];
     if (eff == nullptr) return;
-    // TRIBE-specific: handle tech enable/disable commands before base do_effect
+    // TRIBE-specific: process tech-enable/disable effect commands before base do_effect.
     for (short i = 0; i < eff->effect_list_num; i++) {
         RGE_Effect_Command* cmd = &eff->effect_list[i];
-        // Command 'f' (0x66 = 102) = tech disable
-        // TODO(accuracy): implement tech_abling calls
+        if (cmd != nullptr && cmd->command == 'f' && p2 != nullptr) {
+            ((TRIBE_Player*)p2)->tech_abling((long)cmd->change_amount, 0);
+        }
     }
     RGE_Effects::do_effect(p1, p2);
 }
 
 void TRIBE_Effects::do_tech_effect(short p1, RGE_Player* p2) {
     // Source of truth: teffects.cpp.decomp @ 0x0050D550
+    if ((int)p1 < 0 || (int)p1 >= this->effect_num) {
+        return;
+    }
     RGE_Effect* eff = &this->effects[p1];
+    if (eff == nullptr) {
+        return;
+    }
     for (short i = 0; i < eff->effect_list_num; i++) {
         RGE_Effect_Command* cmd = &eff->effect_list[i];
-        // Command 'f' (0x66 = 102) = tech disable
-        // TODO(accuracy): implement tech_abling calls
+        if (cmd != nullptr && cmd->command == 'f' && p2 != nullptr) {
+            ((TRIBE_Player*)p2)->tech_abling((long)cmd->change_amount, 0);
+        }
     }
 }
 
@@ -1349,8 +1927,79 @@ void T_Scenario::rehook() {
     return;
 }
 void T_Scenario::save(int p1) {
-    (void)p1;
-    // TODO: STUB, requires full tscenaro.cpp save transliteration.
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052AF20
+    int checksum = -99;
+
+    this->WriteDisabledTechnologiesToMainSystem();
+    RGE_Scenario::save(p1);
+
+    Player_Start_Info* player = this->player_info;
+    for (int i = 0; i < 16; ++i) {
+        rge_write(p1, player, 0x10);
+        player = player + 1;
+    }
+
+    rge_write(p1, &checksum, 4);
+    rge_write(p1, &this->victory, 0x18);
+    rge_write(p1, &this->victory_all_flag, 4);
+    rge_write(p1, &this->mp_victory_type, 4);
+    rge_write(p1, &this->victory_score, 4);
+    rge_write(p1, &this->victory_time, 4);
+    rge_write(p1, this->Opponent, 0x400);
+
+    SP_Victory_Info (*sp_victory_row)[12] = this->sp_victory;
+    for (int i = 0; i < 16; ++i) {
+        rge_write(p1, sp_victory_row, 0x2d0);
+        sp_victory_row = sp_victory_row + 1;
+    }
+
+    rge_write(p1, &checksum, 4);
+    rge_write(p1, this->AlliedVictory, 0x40);
+    rge_write(p1, this->DisabledTechnology, 0x500);
+    rge_write(p1, this->ScenarioOptions, 0xC);
+    rge_write(p1, this->PlayerAge, 0x40);
+    rge_write(p1, &checksum, 4);
+}
+
+void T_Scenario::WriteDisabledTechnologiesToMainSystem() {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052C0B0
+    if (this->world == nullptr) {
+        return;
+    }
+    if (this->world->player_num <= 1) {
+        return;
+    }
+
+    int* disabled_row = this->DisabledTechnology[0] + 1;
+    int player_slot = 1;
+    do {
+        TRIBE_Player* player = (TRIBE_Player*)this->world->players[player_slot];
+        if (player != nullptr) {
+            if (this->ScenarioOptions[0] != 0 && this->world->effects != nullptr) {
+                this->world->effects->do_effect(100, player);
+            }
+
+            player->tech_abling(0x58, (uchar)disabled_row[-1]);
+            player->tech_abling(0x59, (uchar)disabled_row[0]);
+            player->tech_abling(0x5A, (uchar)disabled_row[1]);
+            player->tech_abling(0x5B, (uchar)disabled_row[2]);
+            player->tech_abling(0x5E, (uchar)disabled_row[3]);
+            player->tech_abling(0x5F, (uchar)disabled_row[4]);
+            player->tech_abling(0x61, (uchar)disabled_row[5]);
+            player->tech_abling(0x62, (uchar)disabled_row[6]);
+            player->tech_abling(0x5D, (uchar)disabled_row[7]);
+            player->tech_abling(0x60, (uchar)disabled_row[8]);
+            player->tech_abling(0x5C, (uchar)disabled_row[9]);
+            player->tech_abling(0x65, (uchar)disabled_row[10]);
+            player->tech_abling(0x66, (uchar)disabled_row[11]);
+            player->tech_abling(0x67, (uchar)disabled_row[12]);
+            player->tech_abling(0x73, (uchar)disabled_row[13]);
+            player->tech_abling(0x74, (uchar)disabled_row[14]);
+        }
+
+        player_slot = player_slot + 1;
+        disabled_row = disabled_row + 20;
+    } while (player_slot < this->world->player_num);
 }
 
 void T_Scenario::InitializeVictoryValues() {
@@ -1470,14 +2119,39 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
         t_scenario_save_attributes_into_players(this);
     }
 
-    for (int i = 1; i < this->world->player_num; ++i) {
-        this->world->players[i]->victory_conditions->destroy_all();
+    if (this->world == nullptr || this->world->players == nullptr) {
+        CUSTOM_DEBUG_LOG("T_Scenario::Save_victory_conditions_into_players skipped (world/players null)");
+        return;
+    }
+
+    int player_num = this->world->player_num;
+    for (int i = 1; i < player_num; ++i) {
+        RGE_Player* player = this->world->players[i];
+        if (player == nullptr) {
+            CUSTOM_DEBUG_LOG_FMT("T_Scenario::Save_victory_conditions_into_players skip reset player=%d (null player)", i);
+            continue;
+        }
+        if (player->victory_conditions == nullptr) {
+            player->new_victory();
+        }
+        if (player->victory_conditions == nullptr) {
+            CUSTOM_DEBUG_LOG_FMT("T_Scenario::Save_victory_conditions_into_players skip reset player=%d (no victory list)", i);
+            continue;
+        }
+        player->victory_conditions->destroy_all();
     }
 
     if (this->mp_victory_type == 4) {
         if (this->victory_all_flag != 0) {
-            for (int i = 1; i < this->world->player_num; ++i) {
-                RGE_Victory_Conditions* vc = this->world->players[i]->victory_conditions;
+            for (int i = 1; i < player_num; ++i) {
+                RGE_Player* player = this->world->players[i];
+                if (player != nullptr && player->victory_conditions == nullptr) {
+                    player->new_victory();
+                }
+                RGE_Victory_Conditions* vc = (player != nullptr) ? player->victory_conditions : nullptr;
+                if (vc == nullptr) {
+                    continue;
+                }
 
                 if (this->victory.MP_Exploration != 0) {
                     vc->add_explore('\b', this->victory.MP_Exploration, '\x01');
@@ -1498,8 +2172,15 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
         }
 
         if (this->victory_all_flag == 0) {
-            for (int i = 1; i < this->world->player_num; ++i) {
-                RGE_Victory_Conditions* vc = this->world->players[i]->victory_conditions;
+            for (int i = 1; i < player_num; ++i) {
+                RGE_Player* player = this->world->players[i];
+                if (player != nullptr && player->victory_conditions == nullptr) {
+                    player->new_victory();
+                }
+                RGE_Victory_Conditions* vc = (player != nullptr) ? player->victory_conditions : nullptr;
+                if (vc == nullptr) {
+                    continue;
+                }
 
                 if (this->victory.MP_Exploration != 0) {
                     vc->add_explore('\b', this->victory.MP_Exploration, '\x01');
@@ -1521,9 +2202,17 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
     }
 
     int player_index = 0;
-    if (this->world->player_num > 1) {
+    if (player_num > 1) {
         do {
-            RGE_Victory_Conditions* vc = this->world->players[player_index + 1]->victory_conditions;
+            RGE_Player* player = this->world->players[player_index + 1];
+            if (player != nullptr && player->victory_conditions == nullptr) {
+                player->new_victory();
+            }
+            RGE_Victory_Conditions* vc = (player != nullptr) ? player->victory_conditions : nullptr;
+            if (vc == nullptr) {
+                player_index = player_index + 1;
+                continue;
+            }
 
             for (int cond = 0; cond < 12; ++cond) {
                 SP_Victory_Info* info = &this->sp_victory[player_index][cond];
@@ -1581,19 +2270,23 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
                             if (obj != nullptr) {
                                 vc->add_destroy('\x01', obj);
                             }
-                        } else if (info->ObjType == 0) {
-                            RGE_Player* target_player = this->world->players[target_player_id];
-                            vc->add_destroy('\x01', target_player);
                         } else {
+                            if (target_player_id < 0 || target_player_id >= player_num) {
+                                continue;
+                            }
                             RGE_Player* target_player = this->world->players[target_player_id];
-                            vc->add_destroy('\x01', info->ObjType, info->Amount, target_player);
+                            if (info->ObjType == 0) {
+                                vc->add_destroy('\x01', target_player);
+                            } else {
+                                vc->add_destroy('\x01', info->ObjType, info->Amount, target_player);
+                            }
                         }
                     }
                 }
             }
 
             player_index = player_index + 1;
-        } while (player_index < this->world->player_num - 1);
+        } while (player_index < player_num - 1);
     }
 }
 

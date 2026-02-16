@@ -40,6 +40,7 @@ public:
     int Get_Multi_Gold();
     int GetScenarioOption(int param_1);
     void Save_victory_conditions_into_players(int param_1);
+    void WriteDisabledTechnologiesToMainSystem();
 
     Player_Start_Info player_info[16];
     Victory_StartInfo victory;

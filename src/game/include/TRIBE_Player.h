@@ -84,6 +84,7 @@ public:
     virtual void taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5); // vt[73] (0x124)
     virtual void notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt[74] (0x128)
 
+    void tech_abling(long param_1, uchar param_2);
     void rev_tech(long param_1);
     void add_population_entry();
 

@@ -19,6 +19,9 @@
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Scenario.h"
+#include "../include/RGE_Player.h"
+#include "../include/TRIBE_Scenario_Header.h"
+#include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
@@ -717,8 +720,8 @@ int TRIBE_Game::create_game(int p1) {
     // - `src/game/src/tribegam.cpp.asm` (`create_game` @ 0x00526E60)
     // - `src/game/src/tribegam.cpp.decomp`
     //
-    // Transliteration scoped to single-player random-map/death-match launch.
-    // TODO(accuracy): scenario/campaign branches are stubbed out.
+    // Transliteration scoped to single-player random-map/scenario launch.
+    // TODO(accuracy): campaign metadata path still depends on unimplemented RGE_Game_Info glue.
 
     TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
 
@@ -795,6 +798,8 @@ int TRIBE_Game::create_game(int p1) {
 
     RGE_Map_Gen_Info map_info;
     memset(&map_info, 0, sizeof(map_info));
+    char scenario_file[260];
+    memset(scenario_file, 0, sizeof(scenario_file));
 
     int isCampaign = this->campaignGame();
     int isScenario = this->scenarioGame();
@@ -804,12 +809,24 @@ int TRIBE_Game::create_game(int p1) {
         player_info.campaign = 1;
     } else if (isScenario != 0) {
         // Scenario path
-        // TODO(accuracy): scenario file lookup and loading
-        // Deferred — return 0 for now.
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("create_game: scenario path not yet implemented");
-CUSTOM_DEBUG_END
-        return 0;
+        char* scenario_name = this->scenarioName();
+        if (scenario_name == nullptr || scenario_name[0] == '\0' || this->prog_info == nullptr) {
+            return 0;
+        }
+
+        char probe_path[300];
+        _finddata_t file_info;
+        memset(&file_info, 0, sizeof(file_info));
+        sprintf(probe_path, "%s%s.scn", this->prog_info->scenario_dir, scenario_name);
+        intptr_t find_handle = _findfirst(probe_path, &file_info);
+        if (find_handle == -1) {
+            sprintf(scenario_file, "%s.scx", scenario_name);
+        } else {
+            _findclose(find_handle);
+            sprintf(scenario_file, "%s.scn", scenario_name);
+        }
+
+        player_info.scenario = scenario_file;
     } else {
         // Random map path
         player_info.map_info = &map_info;
@@ -1044,13 +1061,18 @@ CUSTOM_DEBUG_END
         this->reset_countdown_timer(i);
     }
 
-    // TODO(accuracy): world->update_mutual_allies()
+    this->world->update_mutual_allies();
 
     this->set_map_visible('\0');
 
     // Full visibility check
     if (this->fullVisibility() != 0) {
-        // TODO(accuracy): explore all for non-computer players
+        for (int i = 1; i < this->world->player_num; ++i) {
+            RGE_Player* player = this->world->players[i];
+            if (player != nullptr && player->computerPlayer() == 0) {
+                player->set_map_visible();
+            }
+        }
     }
 
     // Fog of war
@@ -1477,9 +1499,18 @@ char* TRIBE_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) { retu
 TPanel* TRIBE_Game::get_view_panel() { return nullptr; }
 TPanel* TRIBE_Game::get_map_panel() { return nullptr; }
 
-RGE_Scenario_Header* TRIBE_Game::new_scenario_header(RGE_Scenario* p1) { return nullptr; }
-RGE_Scenario_Header* TRIBE_Game::new_scenario_header(int p1) { return nullptr; }
-RGE_Scenario* TRIBE_Game::new_scenario_info(int p1) { return nullptr; }
+RGE_Scenario_Header* TRIBE_Game::new_scenario_header(RGE_Scenario* p1) {
+    // Source of truth: tribegam.cpp.decomp @ 0x00523570
+    return new TRIBE_Scenario_Header((T_Scenario*)p1);
+}
+RGE_Scenario_Header* TRIBE_Game::new_scenario_header(int p1) {
+    // Source of truth: tribegam.cpp.decomp @ 0x00523510
+    return new TRIBE_Scenario_Header(p1);
+}
+RGE_Scenario* TRIBE_Game::new_scenario_info(int p1) {
+    // Source of truth: tribegam.cpp.decomp @ 0x005235D0
+    return new T_Scenario(p1, nullptr);
+}
 
 void TRIBE_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
 int TRIBE_Game::reset_comm() { return 0; }
