@@ -32,9 +32,13 @@ public:
     void Set_Multi_Discoveries(int param_1);
     void Set_Multi_Exploration(int param_1);
     void Set_Multi_Gold(int param_1);
+    void SetScenarioOption(int param_1, int param_2);
     int Get_Multi_Ruins();
     int Get_Multi_Artifacts();
     int Get_Multi_Discoveries();
+    int Get_Multi_Exploration();
+    int Get_Multi_Gold();
+    int GetScenarioOption(int param_1);
     void Save_victory_conditions_into_players(int param_1);
 
     Player_Start_Info player_info[16];

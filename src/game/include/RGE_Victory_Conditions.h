@@ -1,13 +1,54 @@
 #pragma once
 #include "common.h"
 
+struct RGE_Victory_Entry;
+struct RGE_Victory_Point_Entry;
+
 class RGE_Victory_Conditions {
 public:
+    RGE_Victory_Conditions(RGE_Player* param_1);
+    RGE_Victory_Conditions(RGE_Player* param_1, int param_2, long* param_3, uchar param_4);
+
     // Virtuals (best-effort)
     virtual void handle_point_condition(RGE_Victory_Point_Entry* param_1); // vt[0] (0x0)
     virtual void handle_condition(RGE_Victory_Entry* param_1); // vt[1] (0x4)
     virtual char* condition_description(RGE_Victory_Entry* param_1); // vt[2] (0x8)
     virtual void save(int param_1); // vt[3] (0xC)
+    ~RGE_Victory_Conditions();
+
+    uchar update();
+    void update_for_object(RGE_Static_Object* param_1);
+
+    uchar add_capture(uchar param_1, RGE_Static_Object* param_2, uchar param_3);
+    uchar add_create(uchar param_1, long param_2, long param_3, uchar param_4);
+    uchar add_create(uchar param_1, long param_2, long param_3, float param_4, float param_5, float param_6, float param_7, uchar param_8);
+    uchar add_destroy(uchar param_1, RGE_Static_Object* param_2);
+    uchar add_destroy(uchar param_1, long param_2, long param_3, RGE_Player* param_4);
+    uchar add_destroy(uchar param_1, long param_2, RGE_Player* param_3);
+    uchar add_destroy(uchar param_1, RGE_Player* param_2);
+    uchar add_bring(uchar param_1, RGE_Static_Object* param_2, RGE_Static_Object* param_3);
+    uchar add_bring(uchar param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5, float param_6);
+    uchar add_attributes(uchar param_1, long param_2, long param_3, uchar param_4);
+    uchar add_explore(uchar param_1, long param_2, uchar param_3);
+    uchar add_victory_points(uchar param_1, long param_2, uchar param_3);
+
+    void destroy_all();
+    uchar condition_info(long param_1, char** param_2, uchar* param_3);
+    RGE_Victory_Entry* condition_raw_info(long param_1);
+    long condition_number(long param_1);
+    uchar victory_achieved();
+    uchar remove_condition(long param_1);
+
+    uchar add_points_attribute_amount(uchar param_1, uchar param_2, long param_3, long param_4, long param_5);
+    uchar add_points_attribute_first(uchar param_1, uchar param_2, long param_3, long param_4, long param_5);
+    uchar add_points_highest_attribute(uchar param_1, uchar param_2, long param_3, long param_4, long param_5);
+    uchar add_points_high_attribute_once(uchar param_1, uchar param_2, long param_3, long param_4, long param_5);
+    uchar add_points_high_attribute_amount(uchar param_1, uchar param_2, long param_3, long param_4, long param_5);
+
+    long get_victory_points();
+    long get_victory_points_group(uchar param_1);
+    long get_victory_points_id(uchar param_1);
+    long get_attribute_id(uchar param_1);
 
     RGE_Victory_Entry* victory_list;
     long list_num;
@@ -16,5 +57,31 @@ public:
     RGE_Victory_Point_Entry* victory_point_list;
     long point_list_num;
     long tot_victory_points;
+
+protected:
+    void check_for_victory();
+    RGE_Victory_Entry* add(uchar param_1, uchar param_2);
+    void sub(RGE_Victory_Entry* param_1);
+    RGE_Victory_Point_Entry* add_point(uchar param_1, uchar param_2);
+    void sub_point(RGE_Victory_Point_Entry* param_1);
+
+    void handle_capture(RGE_Victory_Entry* param_1);
+    void handle_create(RGE_Victory_Entry* param_1);
+    void handle_destroy(RGE_Victory_Entry* param_1);
+    void handle_destroy_multiple(RGE_Victory_Entry* param_1);
+    void handle_bring_area(RGE_Victory_Entry* param_1);
+    void handle_bring_object(RGE_Victory_Entry* param_1);
+    void handle_attribute(RGE_Victory_Entry* param_1);
+    void handle_explore(RGE_Victory_Entry* param_1);
+    void handle_create_in_area(RGE_Victory_Entry* param_1);
+    void handle_destroy_all(RGE_Victory_Entry* param_1);
+    void handle_destroy_player(RGE_Victory_Entry* param_1);
+    void handle_victory_points(RGE_Victory_Entry* param_1);
+
+    void handle_points_attribute_amount(RGE_Victory_Point_Entry* param_1);
+    void handle_points_attribute_first(RGE_Victory_Point_Entry* param_1);
+    void handle_points_highest_attribute(RGE_Victory_Point_Entry* param_1);
+    void handle_points_high_attribute_once(RGE_Victory_Point_Entry* param_1);
+    void handle_points_high_attribute_amount(RGE_Victory_Point_Entry* param_1);
 };
 static_assert(sizeof(RGE_Victory_Conditions) == 0x20, "Size mismatch");

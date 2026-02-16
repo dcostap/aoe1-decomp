@@ -130,6 +130,9 @@ public:
     Age startingAge();
     int randomizePositions();
     int fullTechTree();
+    int allowTrading();
+    int longCombat();
+    unsigned char deathMatch();
     unsigned char popLimit();
     int randomComputerName(int civ);
     void show_status_message(char* p1, char* p2, long p3);

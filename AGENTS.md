@@ -31,6 +31,13 @@ The decomp **lies** about:
 
 **How:** Open the `*.cpp.asm`, find the function by offset, and compare instruction-by-instruction against your C++. Focus on comparisons, memory copies, struct offsets, and branch conditions.
 
+### Crash Triage Protocol
+
+1. Reproduce the crash and inspect `dist/decomp_debug.log`.
+2. Add narrow `CUSTOM_DEBUG_LOG` checkpoints around the suspected call chain.
+3. Isolate the exact failing function/call boundary before changing behavior.
+4. Apply the smallest parity fix, rebuild, re-run, confirm no regression.
+
 ### Stubs
 
 Only add your custom stubs when strictly needed.
@@ -82,6 +89,10 @@ The dumped headers (`include/*.h`) often lack method declarations and constructo
 
 **Rule of Thumb:** If it changes the **bytes in memory** (variables, vtable), don't touch it. If it's just **code linkage** (functions, constructors), add it.
 
+## Constructor/Base Init Safety Rule
+
+For derived transliterations, ensure base state is initialized correctly (especially required pointers/flags) before derived logic runs. If a base constructor path is not implemented yet, add a clearly marked temporary-safe equivalent and keep parity intent explicit.
+
 ## Globals (`globals.h` / `globals.cpp`)
 
 * `globals.h`: `extern` declarations
@@ -96,6 +107,13 @@ Write straightforward, boring C++. It's fine to look like C with classes.
 * No modern/clever features (heavy templates, fancy RAII, complex STL).
 * Simple control flow, simple data, explicit local variables.
 * Match the decomp's style — the goal is behavioral parity, not idiomatic code.
+
+## Parity Completion Checklist (Per Function)
+
+- Match decomp control flow/constants first, then verify suspicious parts in ASM.
+- Confirm call signatures/virtual dispatch assumptions are correct.
+- Validate expected side effects in the active runtime path (not just return values).
+- Keep comments/TODOs precise where parity is intentionally deferred.
 
 # Custom Debug Infrastructure
 
@@ -126,6 +144,10 @@ CUSTOM_DEBUG_BEGIN
     // debug code here
 CUSTOM_DEBUG_END
 ```
+
+## Temporary Debug Instrumentation Lifecycle
+
+Temporary debug logs/checkpoints are allowed during investigation, but keep them narrow and remove (or gate) them once the issue is validated. Retain only durable checkpoints that continue to add diagnostic value.
 
 ## Compiling & Output
 

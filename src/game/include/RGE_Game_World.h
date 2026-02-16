@@ -79,6 +79,10 @@ public:
     void set_map_visible(uchar param_1);
     void set_map_fog(uchar param_1);
     int initializePathingSystem();
+    int numberObjects();
+    int numberNegativeObjects();
+    RGE_Static_Object* object(int param_1);
+    RGE_Static_Object* object_ptr(int param_1);
 
     unsigned long world_time; // +0x4
     unsigned long old_world_time; // +0x8

@@ -632,6 +632,9 @@ ResourceLevel TRIBE_Game::resourceLevel() { return this->tribe_game_options.reso
 Age TRIBE_Game::startingAge() { return this->tribe_game_options.startingAgeValue; }
 int TRIBE_Game::randomizePositions() { return this->tribe_game_options.randomizePositionsValue; }
 int TRIBE_Game::fullTechTree() { return this->tribe_game_options.fullTechTreeValue; }
+int TRIBE_Game::allowTrading() { return this->tribe_game_options.allowTradingValue; }
+int TRIBE_Game::longCombat() { return this->tribe_game_options.longCombatValue; }
+unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMatchValue; }
 unsigned char TRIBE_Game::popLimit() { return this->tribe_game_options.popLimitValue; }
 
 int TRIBE_Game::randomComputerName(int civ) {

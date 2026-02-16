@@ -373,6 +373,7 @@ void RGE_Game_World::setup_players(RGE_Player_Info* param_1) {
 
 uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
     // Source of truth: world.cpp.decomp @ 0x00542D10.
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_random_game enter");
     if (param_1 == nullptr || this->map == nullptr) {
         return 0;
     }
@@ -386,6 +387,7 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
 
     int player_count_minus_one = (int)this->player_num - 1;
     this->map->map_generate2(this, -1, -1, (uchar)param_1->map_type, player_count_minus_one);
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_random_game after map_generate2");
     this->initializePathingSystem();
 
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x61a);
@@ -395,8 +397,10 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
     this->curr_player = -1;
 
     for (int pass = 0; pass < 3; ++pass) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::new_random_game update pass=%d", pass);
         world_update_counter = world_update_counter + 1;
         for (int i = 0; i < this->player_num; ++i) {
+            CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::new_random_game updating player=%d", i);
             if (this->players != nullptr && this->players[i] != nullptr) {
                 this->players[i]->update();
             }
@@ -405,6 +409,7 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
 
     this->curr_player = saved_curr_player;
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x631);
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_random_game exit");
     return 1;
 }
 
@@ -817,6 +822,7 @@ uchar RGE_Game_World::load_game(char* param_1) {
 }
 
 uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game enter");
     if (param_1 == nullptr) {
         return 0;
     }
@@ -928,7 +934,9 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
     uchar result = 0;
     if (param_1->scenario == nullptr) {
         if (param_1->campaign == '\0') {
+            CUSTOM_DEBUG_LOG("RGE_Game_World::new_game calling new_random_game");
             result = this->new_random_game(param_1);
+            CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::new_game new_random_game result=%d", (int)result);
         } else {
             result = this->load_scenario(param_1);
         }
@@ -936,7 +944,9 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
         result = this->load_scenario(param_1->scenario, param_1);
     }
 
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game initializePathingSystem");
     this->initializePathingSystem();
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game random_start loop");
     for (int i = 0; i < this->player_num; ++i) {
         if (this->players != nullptr && this->players[i] != nullptr) {
             this->players[i]->random_start();
@@ -948,6 +958,7 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
     }
 
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5b2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::new_game exit result=%d", (int)result);
     return result;
 }
 
@@ -1018,6 +1029,35 @@ void RGE_Game_World::reset_player_visible_maps() {
 int RGE_Game_World::initializePathingSystem() {
     // TODO(accuracy): call PathingSystem::initialize(pathSystem/aiPathSystem).
     return (this->map != nullptr) ? 1 : 0;
+}
+
+int RGE_Game_World::numberObjects() {
+    // Source of truth: world.cpp.decomp @ 0x00545D10
+    return this->numberObjectsValue;
+}
+
+int RGE_Game_World::numberNegativeObjects() {
+    // Source of truth: world.cpp.decomp @ 0x00545D20
+    return this->numberNegativeObjectsValue;
+}
+
+RGE_Static_Object* RGE_Game_World::object(int param_1) {
+    // Source of truth: world.cpp.decomp @ 0x00545D30
+    if (param_1 < 0) {
+        int neg_idx = -param_1;
+        if (neg_idx < this->maxNumberNegativeObjectsValue && this->negativeObjectsValue != nullptr) {
+            return this->negativeObjectsValue[neg_idx];
+        }
+    } else if (param_1 < this->maxNumberObjectsValue && this->objectsValue != nullptr) {
+        return this->objectsValue[param_1];
+    }
+
+    return nullptr;
+}
+
+RGE_Static_Object* RGE_Game_World::object_ptr(int param_1) {
+    // Source of truth: world.cpp.decomp @ 0x00545D80
+    return this->object(param_1);
 }
 
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {

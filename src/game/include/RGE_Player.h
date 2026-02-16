@@ -73,6 +73,7 @@ public:
     virtual void new_victory(); // vt[61] (0xF4)
 
     // Non-virtual methods
+    void new_attribute_num(short param_1, float param_2);
     void set_relation(long param_1, uchar param_2);
     void set_view_loc(float x, float y);
     void set_map_loc(short x, short y);

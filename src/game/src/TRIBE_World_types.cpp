@@ -9,6 +9,8 @@
 #include "../include/RGE_Effect.h"
 #include "../include/RGE_Effect_Command.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Victory_Conditions.h"
+#include "../include/TRIBE_Victory_Conditions.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Object_Node.h"
@@ -1217,13 +1219,82 @@ void TRIBE_Effects::do_tech_effect(short p1, RGE_Player* p2) {
     }
 }
 
+static int t_scenario_get_player_food(T_Scenario* scenario, int idx) {
+    if (scenario == nullptr || idx < 0 || idx >= 16) {
+        return 0;
+    }
+    return scenario->player_info[idx].Food;
+}
+
+static int t_scenario_get_player_stone(T_Scenario* scenario, int idx) {
+    if (scenario == nullptr || idx < 0 || idx >= 16) {
+        return 0;
+    }
+    return scenario->player_info[idx].Stone;
+}
+
+static int t_scenario_get_player_gold(T_Scenario* scenario, int idx) {
+    if (scenario == nullptr || idx < 0 || idx >= 16) {
+        return 0;
+    }
+    return scenario->player_info[idx].Gold;
+}
+
+static int t_scenario_get_player_wood(T_Scenario* scenario, int idx) {
+    if (scenario == nullptr || idx < 0 || idx >= 16) {
+        return 0;
+    }
+    return scenario->player_info[idx].Wood;
+}
+
+static void t_scenario_save_attributes_into_players(T_Scenario* scenario) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052BA90
+    if (scenario == nullptr || scenario->world == nullptr || scenario->world->players == nullptr) {
+        return;
+    }
+
+    int player_slot = 1;
+    if (scenario->world->player_num <= 1) {
+        return;
+    }
+
+    int allied_idx = 0;
+    int opp_row = 0;
+    do {
+        int scen_player = player_slot - 1;
+        RGE_Player* player = scenario->world->players[player_slot];
+        if (player != nullptr) {
+            player->new_attribute_num(0, (float)t_scenario_get_player_food(scenario, scen_player));
+            player->new_attribute_num(2, (float)t_scenario_get_player_stone(scenario, scen_player));
+            player->new_attribute_num(3, (float)t_scenario_get_player_gold(scenario, scen_player));
+            player->new_attribute_num(1, (float)t_scenario_get_player_wood(scenario, scen_player));
+
+            int rel_player = 1;
+            if (scenario->world->player_num > 1) {
+                do {
+                    if (rel_player != player_slot) {
+                        player->set_relation(rel_player, (uchar)scenario->Opponent[opp_row].Attitude[rel_player - 1]);
+                    }
+                    rel_player = rel_player + 1;
+                } while (rel_player < scenario->world->player_num);
+            }
+
+            player->set_allied_victory((uchar)scenario->AlliedVictory[allied_idx]);
+        }
+
+        player_slot = player_slot + 1;
+        opp_row = opp_row + 1;
+        allied_idx = allied_idx + 1;
+    } while (player_slot < scenario->world->player_num);
+}
+
 // --- T_Scenario ---
 T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2) {
     (void)param_1;
-    (void)param_2;
-    char* base_end = (char*)this + sizeof(RGE_Scenario);
-    size_t tribe_size = sizeof(T_Scenario) - sizeof(RGE_Scenario);
-    memset(base_end, 0, tribe_size);
+    // Preserve vtable pointer and clear all data fields (base + derived).
+    memset((char*)this + sizeof(void*), 0, sizeof(T_Scenario) - sizeof(void*));
+    this->world = param_2;
+    this->victory_conquest = 1;
     this->InitializeVictoryValues();
 
     for (int i = 0; i < 16; ++i) {
@@ -1243,10 +1314,10 @@ T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2) {
 }
 
 T_Scenario::T_Scenario(RGE_Game_World* param_1) {
-    (void)param_1;
-    char* base_end = (char*)this + sizeof(RGE_Scenario);
-    size_t tribe_size = sizeof(T_Scenario) - sizeof(RGE_Scenario);
-    memset(base_end, 0, tribe_size);
+    // Preserve vtable pointer and clear all data fields (base + derived).
+    memset((char*)this + sizeof(void*), 0, sizeof(T_Scenario) - sizeof(void*));
+    this->world = param_1;
+    this->victory_conquest = 1;
     this->InitializeVictoryValues();
 
     for (int i = 0; i < 16; ++i) {
@@ -1267,12 +1338,15 @@ T_Scenario::T_Scenario(RGE_Game_World* param_1) {
 
 T_Scenario::~T_Scenario() {}
 RGE_Static_Object* T_Scenario::get_object_pointer(int p1) {
-    (void)p1;
-    // TODO: STUB, requires full scenario object table linkage.
-    return nullptr;
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052C080
+    if (this->world == nullptr || p1 <= 0) {
+        return nullptr;
+    }
+    return this->world->object(p1 - 1);
 }
 void T_Scenario::rehook() {
-    // TODO: STUB, requires full scenario object table linkage.
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052C070
+    return;
 }
 void T_Scenario::save(int p1) {
     (void)p1;
@@ -1360,6 +1434,11 @@ void T_Scenario::Set_Multi_Gold(int param_1) {
     this->victory.MP_Gold = param_1;
 }
 
+void T_Scenario::SetScenarioOption(int param_1, int param_2) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052B670
+    this->ScenarioOptions[param_1] = param_2;
+}
+
 int T_Scenario::Get_Multi_Ruins() {
     return this->victory.MP_Ruins;
 }
@@ -1372,9 +1451,150 @@ int T_Scenario::Get_Multi_Discoveries() {
     return this->victory.MP_Discoveries;
 }
 
+int T_Scenario::Get_Multi_Exploration() {
+    return this->victory.MP_Exploration;
+}
+
+int T_Scenario::Get_Multi_Gold() {
+    return this->victory.MP_Gold;
+}
+
+int T_Scenario::GetScenarioOption(int param_1) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052BA60
+    return this->ScenarioOptions[param_1];
+}
+
 void T_Scenario::Save_victory_conditions_into_players(int param_1) {
-    (void)param_1;
-    // TODO: STUB, requires full victory-condition graph translation (RGE_Victory_Conditions APIs).
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052BBC0
+    if (param_1 != 0) {
+        t_scenario_save_attributes_into_players(this);
+    }
+
+    for (int i = 1; i < this->world->player_num; ++i) {
+        this->world->players[i]->victory_conditions->destroy_all();
+    }
+
+    if (this->mp_victory_type == 4) {
+        if (this->victory_all_flag != 0) {
+            for (int i = 1; i < this->world->player_num; ++i) {
+                RGE_Victory_Conditions* vc = this->world->players[i]->victory_conditions;
+
+                if (this->victory.MP_Exploration != 0) {
+                    vc->add_explore('\b', this->victory.MP_Exploration, '\x01');
+                }
+                if (this->victory.MP_Ruins != 0) {
+                    vc->add_attributes('\b', 0x0e, this->victory.MP_Ruins, '\x01');
+                }
+                if (this->victory.MP_Artifacts != 0) {
+                    vc->add_attributes('\b', 7, this->victory.MP_Artifacts, '\x01');
+                }
+                if (this->victory.MP_Discoveries != 0) {
+                    vc->add_attributes('\b', 0x0d, this->victory.MP_Discoveries, '\0');
+                }
+                if (this->victory.MP_Gold != 0) {
+                    vc->add_attributes('\b', 3, this->victory.MP_Gold, '\x01');
+                }
+            }
+        }
+
+        if (this->victory_all_flag == 0) {
+            for (int i = 1; i < this->world->player_num; ++i) {
+                RGE_Victory_Conditions* vc = this->world->players[i]->victory_conditions;
+
+                if (this->victory.MP_Exploration != 0) {
+                    vc->add_explore('\b', this->victory.MP_Exploration, '\x01');
+                }
+                if (this->victory.MP_Ruins != 0) {
+                    vc->add_attributes('\t', 0x0e, this->victory.MP_Ruins, '\x01');
+                }
+                if (this->victory.MP_Artifacts != 0) {
+                    vc->add_attributes('\n', 7, this->victory.MP_Artifacts, '\x01');
+                }
+                if (this->victory.MP_Discoveries != 0) {
+                    vc->add_attributes('\v', 0x0d, this->victory.MP_Discoveries, '\0');
+                }
+                if (this->victory.MP_Gold != 0) {
+                    vc->add_attributes('\f', 3, this->victory.MP_Gold, '\x01');
+                }
+            }
+        }
+    }
+
+    int player_index = 0;
+    if (this->world->player_num > 1) {
+        do {
+            RGE_Victory_Conditions* vc = this->world->players[player_index + 1]->victory_conditions;
+
+            for (int cond = 0; cond < 12; ++cond) {
+                SP_Victory_Info* info = &this->sp_victory[player_index][cond];
+                int victory_type = info->VictoryType;
+                if (victory_type == 0) {
+                    continue;
+                }
+
+                if (victory_type == 4) {
+                    int attrib_type = info->AttribType;
+                    if (attrib_type == 6) {
+                        vc->add_explore('\x01', info->Amount, '\x01');
+                    } else if (attrib_type == 4) {
+                        vc->add_attributes('\x01', 0x0b, info->Amount, '\0');
+                    } else if (attrib_type == 3) {
+                        vc->add_attributes('\x01', 0, info->Amount, '\0');
+                    } else if (attrib_type == 2) {
+                        vc->add_attributes('\x01', 2, info->Amount, '\0');
+                    } else if (attrib_type == 1) {
+                        vc->add_attributes('\x01', 1, info->Amount, '\0');
+                    } else if (attrib_type == 0) {
+                        vc->add_attributes('\x01', 3, info->Amount, '\0');
+                    } else if (attrib_type == 5) {
+                        vc->add_attributes('\x01', 6, info->Amount, '\0');
+                    }
+                } else if (victory_type == 6) {
+                    vc->add_attributes('\x01', info->AttribType, info->Amount, '\0');
+                } else if (victory_type == 5) {
+                    RGE_Static_Object* obj = this->get_object_pointer(info->obj_ID);
+                    vc->add_capture('\x01', obj, '\x01');
+                } else if (victory_type == 3) {
+                    RGE_Static_Object* dest_obj = this->get_object_pointer(info->dest_obj_ID);
+                    if (dest_obj != nullptr) {
+                        RGE_Static_Object* obj = this->get_object_pointer(info->obj_ID);
+                        vc->add_bring('\x01', obj, dest_obj);
+                    } else {
+                        RGE_Static_Object* obj = this->get_object_pointer(info->obj_ID);
+                        vc->add_bring('\x01', obj, info->x1, info->y1, info->x2, info->y2);
+                    }
+                } else if (victory_type == 2) {
+                    if (info->x2 <= 0.0f) {
+                        vc->add_create('\x01', info->ObjType, info->Amount, '\0');
+                    } else {
+                        vc->add_create('\x01', info->ObjType, info->Amount, info->x1, info->y1, info->x2, info->y2, '\0');
+                    }
+                } else if (victory_type == 7) {
+                    ((TRIBE_Victory_Conditions*)vc)->add_tech('\x01', info->AttribType);
+                } else if (victory_type == 1) {
+                    if (info->ObjType != 0 && info->AllFlag != 0) {
+                        vc->add_destroy('\x01', info->ObjType, (RGE_Player*)nullptr);
+                    } else {
+                        int target_player_id = info->PlayerID;
+                        if (target_player_id == 0) {
+                            RGE_Static_Object* obj = this->get_object_pointer(info->obj_ID);
+                            if (obj != nullptr) {
+                                vc->add_destroy('\x01', obj);
+                            }
+                        } else if (info->ObjType == 0) {
+                            RGE_Player* target_player = this->world->players[target_player_id];
+                            vc->add_destroy('\x01', target_player);
+                        } else {
+                            RGE_Player* target_player = this->world->players[target_player_id];
+                            vc->add_destroy('\x01', info->ObjType, info->Amount, target_player);
+                        }
+                    }
+                }
+            }
+
+            player_index = player_index + 1;
+        } while (player_index < this->world->player_num - 1);
+    }
 }
 
 // --- RGE_Tile_List ---

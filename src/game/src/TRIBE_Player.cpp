@@ -4,9 +4,22 @@
 #include "../include/TRIBE_Master_Tree_Object.h"
 #include "../include/TRIBE_Master_Combat_Object.h"
 #include "../include/TRIBE_Master_Building_Object.h"
+#include "../include/TRIBE_Player_Tech.h"
+#include "../include/TRIBE_History_Info.h"
+#include "../include/TRIBE_Victory_Conditions.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/globals.h"
+
+static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
+    if (player == nullptr || player->attributes == nullptr) {
+        return 0;
+    }
+    if (index < 0 || index >= player->attribute_num) {
+        return 0;
+    }
+    return (short)((long)player->attributes[index]);
+}
 
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
@@ -235,6 +248,62 @@ void TRIBE_Player::scenario_postsave(int param_1) { RGE_Player::scenario_postsav
 void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) { RGE_Player::scenario_postload(param_1, param_2, param_3); }
 void TRIBE_Player::load(int param_1) { RGE_Player::load(param_1); }
 void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) { RGE_Player::add_attribute_num(param_1, param_2, param_3); }
+void TRIBE_Player::rev_tech(long param_1) {
+    // Source of truth: tplayer.cpp.asm @ 0x00513DD0
+    if (this->tech_tree == nullptr) {
+        return;
+    }
+
+    short attr_00 = tribe_player_attr_as_short(this, 0);
+    short attr_17 = tribe_player_attr_as_short(this, 0x17);
+    short attr_18 = tribe_player_attr_as_short(this, 0x18);
+    short attr_19 = tribe_player_attr_as_short(this, 0x19);
+
+    switch (param_1) {
+    case 0x17:
+        this->tech_tree->disable(attr_17);
+        this->tech_tree->rev_tech(attr_00);
+        this->tech_tree->enable(attr_17);
+        this->tech_tree->do_tech(attr_17);
+        return;
+    case 0x18:
+        this->tech_tree->disable(attr_00);
+        this->tech_tree->disable(attr_18);
+        this->tech_tree->rev_tech(attr_19);
+        this->tech_tree->enable(attr_00);
+        this->tech_tree->rev_tech(attr_17);
+        this->tech_tree->enable(attr_18);
+        this->tech_tree->do_tech(attr_00);
+        return;
+    case 0x19:
+        this->tech_tree->do_tech(attr_19);
+        return;
+    case 1:
+        this->tech_tree->disable(attr_17);
+        this->tech_tree->disable(attr_18);
+        this->tech_tree->rev_tech(attr_00);
+        this->tech_tree->enable(attr_17);
+        this->tech_tree->rev_tech(attr_17);
+        this->tech_tree->enable(attr_00);
+        this->tech_tree->rev_tech(attr_18);
+        return;
+    default:
+        return;
+    }
+}
+void TRIBE_Player::add_population_entry() {
+    // Source of truth: tplayer.cpp.asm @ 0x00513FD0
+    if (this->history == nullptr || this->attributes == nullptr || this->attribute_num <= 0x0B) {
+        return;
+    }
+
+    float population = this->attributes[0x0B];
+    if (population < 0.0f) {
+        this->history->add_history_entry(0, 0);
+    } else {
+        this->history->add_history_entry(0, (uchar)((long)population));
+    }
+}
 void TRIBE_Player::update() {
     // Source of truth: tplayer.cpp.decomp @ 0x005123B0
     // Accumulate update_time based on world_time_delta_seconds
@@ -319,8 +388,12 @@ void TRIBE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int par
 void TRIBE_Player::logMessage(char* param_1) { RGE_Player::logMessage(param_1); }
 void TRIBE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Player::notify(param_1, param_2, param_3, param_4, param_5, param_6); }
 void TRIBE_Player::logStatus(FILE* param_1, int param_2) { RGE_Player::logStatus(param_1, param_2); }
-void TRIBE_Player::load_victory(int param_1, long* param_2, uchar param_3) { RGE_Player::load_victory(param_1, param_2, param_3); }
-void TRIBE_Player::new_victory() { RGE_Player::new_victory(); }
+void TRIBE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
+    this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this, param_1, param_2, param_3);
+}
+void TRIBE_Player::new_victory() {
+    this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this);
+}
 uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param_3, float param_4) { return 0; }
 void TRIBE_Player::buildObject(int param_1, int param_2, float param_3, float param_4, int param_5) {}
 void TRIBE_Player::cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {}

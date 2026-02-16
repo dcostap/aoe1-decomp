@@ -12,10 +12,12 @@
 #include "../include/TRIBE_Gaia.h"
 #include "../include/TRIBE_Master_Player.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Victory_Conditions.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Object_Info.h"
 #include "../include/RGE_Object_Info_Line.h"
+#include "../include/RGE_Effects.h"
 #include "../include/debug_helpers.h"
 #include "../include/RGE_RMM_Object_Generator.h"
 #include "../include/RGE_Scenario.h"
@@ -52,6 +54,33 @@ static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short 
     }
 
     return count;
+}
+
+static void tribe_world_apply_effect(TRIBE_World* world, short effect_id) {
+    if (world == nullptr || world->effects == nullptr || world->players == nullptr) {
+        return;
+    }
+
+    for (int i = 1; i < world->player_num; ++i) {
+        RGE_Player* player = world->players[i];
+        if (player != nullptr) {
+            world->effects->do_effect(effect_id, player);
+        }
+    }
+}
+
+static void tribe_world_add_victory_points_simple(TRIBE_World* world, int player_index, int amount) {
+    if (world == nullptr || world->players == nullptr) {
+        return;
+    }
+    if (player_index <= 0 || player_index >= world->player_num) {
+        return;
+    }
+    RGE_Player* player = world->players[player_index];
+    if (player == nullptr || player->victory_conditions == nullptr) {
+        return;
+    }
+    player->victory_conditions->add_victory_points('\0', amount, '\x01');
 }
 
 static void tribe_world_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
@@ -485,19 +514,23 @@ uchar TRIBE_World::load_world(int param_1) {
 uchar TRIBE_World::load_game(char* param_1) { return RGE_Game_World::load_game(param_1); }
 uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
     // Source of truth: tworld.cpp.decomp @ 0x0052EF30
+    CUSTOM_DEBUG_LOG("TRIBE_World::new_game enter");
     this->score_displayed = 0;
     this->controllingComputerPlayer = 0xFF;
 
     uchar result = RGE_Game_World::new_game(param_1, param_2);
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::new_game after base result=%d", (int)result);
 
-    // Reset countdown timers for all players (decomp line 1116-1118)
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    T_Scenario* tScenario = (T_Scenario*)this->scenario;
+
+    // Reset countdown timers for all players.
     for (int i = 0; i < this->player_num; i++) {
         rge_base_game->reset_countdown_timer(i);
     }
 
-    // Victory condition setup (decomp LAB_0052f765, lines 1484-1548)
     if (result != 0) {
-        this->victory_type = 4; // default: custom/scenario
+        this->victory_type = 4;
         this->countdown_victory = 0;
         this->countdown_clock = 0.0f;
 
@@ -505,11 +538,9 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
         int isRandom = rge_base_game->randomGame();
 
         if ((isCampaign == 0 && isRandom != 0) ||
-            ((TRIBE_Game*)rge_base_game)->victoryType() != 0 /*VictoryDefault*/) {
-            // Random game or non-default victory: set victory_type from game options
-            int victoryAmount = ((TRIBE_Game*)rge_base_game)->victoryAmount();
-            int vt = ((TRIBE_Game*)rge_base_game)->victoryType();
-            T_Scenario* tScenario = (T_Scenario*)this->scenario;
+            (game != nullptr && game->victoryType() != 0)) {
+            int victoryAmount = (game != nullptr) ? game->victoryAmount() : 0;
+            int vt = (game != nullptr) ? game->victoryType() : 0;
             if (tScenario != nullptr) {
                 tScenario->Set_victory_all_flag(0);
                 tScenario->Set_Multi_Conquest(0);
@@ -518,8 +549,6 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
                 tScenario->Set_Multi_Discoveries(0);
                 tScenario->Set_Multi_Exploration(0);
                 tScenario->Set_Multi_Gold(0);
-                tScenario->SetVictoryScore(victoryAmount);
-                tScenario->SetVictoryTime(victoryAmount);
             }
 
             switch (vt) {
@@ -580,11 +609,37 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
             }
 
             if (tScenario != nullptr) {
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game Save_victory_conditions_into_players");
                 tScenario->Save_victory_conditions_into_players(0);
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game after Save_victory_conditions_into_players");
+            }
+
+            if (vt == 8 && this->player_num > 1) {
+                for (int i = 1; i < this->player_num; ++i) {
+                    tribe_world_add_victory_points_simple(this, i, victoryAmount);
+                }
+            }
+        } else {
+            if ((rge_base_game->campaignGame() != 0 || rge_base_game->scenarioGame() != 0) && tScenario != nullptr) {
+                int mpVictory = tScenario->GetMPVictory();
+                if (mpVictory == 0) {
+                    this->victory_type = 0;
+                } else if (mpVictory == 1) {
+                    this->victory_type = 1;
+                } else if (mpVictory == 2) {
+                    this->victory_type = 3;
+                    int victoryScore = tScenario->GetVictoryScore();
+                    for (int i = 1; i < this->player_num; ++i) {
+                        tribe_world_add_victory_points_simple(this, i, victoryScore);
+                    }
+                } else if (mpVictory == 3) {
+                    this->victory_type = 2;
+                    this->countdown_victory = 1;
+                    this->countdown_clock = (float)tScenario->GetVictoryTime();
+                }
             }
         }
 
-        T_Scenario* tScenario = (T_Scenario*)this->scenario;
         RGE_RMM_Object_Generator* objGen = nullptr;
         if (this->map != nullptr) {
             objGen = new RGE_RMM_Object_Generator(this->map, (RGE_Random_Map_Module*)nullptr, this, (RGE_Object_Info*)nullptr, 0);
@@ -633,6 +688,158 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
             objGen->generate();
             delete objGen;
             objGen = nullptr;
+        }
+    }
+
+    if (game != nullptr) {
+        if (game->allowTrading() == 0) {
+            tribe_world_apply_effect(this, (short)-8);
+        }
+
+        if (game->longCombat() == 1) {
+            tribe_world_apply_effect(this, (short)-8);
+        }
+
+        if (game->fullTechTree() == 0 && tScenario != nullptr && tScenario->GetScenarioOption(2) == 0) {
+            if (this->effects != nullptr && this->players != nullptr) {
+                for (int i = 1; i < this->player_num; ++i) {
+                    RGE_Player* player = this->players[i];
+                    if (player == nullptr) {
+                        continue;
+                    }
+                    short effect_id = *(short*)((char*)player + 0x10C);
+                    this->effects->do_effect(effect_id, player);
+                }
+            }
+        } else {
+            tribe_world_apply_effect(this, (short)-8);
+        }
+
+        int resource_level = game->resourceLevel();
+        if (resource_level == 1) {
+            for (int i = 1; i < this->player_num; ++i) {
+                RGE_Player* player = this->players[i];
+                if (player != nullptr && player->attributes != nullptr && player->attribute_num >= 4) {
+                    player->attributes[0] = 200.0f;
+                    player->attributes[1] = 200.0f;
+                    player->attributes[3] = 0.0f;
+                    player->attributes[2] = 100.0f;
+                }
+            }
+        } else if (resource_level == 2) {
+            for (int i = 1; i < this->player_num; ++i) {
+                RGE_Player* player = this->players[i];
+                if (player != nullptr && player->attributes != nullptr && player->attribute_num >= 4) {
+                    player->attributes[0] = 500.0f;
+                    player->attributes[1] = 500.0f;
+                    player->attributes[3] = 0.0f;
+                    player->attributes[2] = 250.0f;
+                }
+            }
+        } else if (resource_level == 3) {
+            for (int i = 1; i < this->player_num; ++i) {
+                RGE_Player* player = this->players[i];
+                if (player != nullptr && player->attributes != nullptr && player->attribute_num >= 4) {
+                    player->attributes[0] = 1000.0f;
+                    player->attributes[1] = 1000.0f;
+                    player->attributes[3] = 0.0f;
+                    player->attributes[2] = 750.0f;
+                }
+            }
+        }
+
+        if (game->deathMatch() != 0) {
+            for (int i = 1; i < this->player_num; ++i) {
+                RGE_Player* player = this->players[i];
+                if (player != nullptr && player->attributes != nullptr && player->attribute_num >= 4) {
+                    player->attributes[0] = 20000.0f;
+                    player->attributes[1] = 20000.0f;
+                    player->attributes[3] = 10000.0f;
+                    player->attributes[2] = 5000.0f;
+                }
+            }
+        }
+
+        int start_age = game->startingAge();
+        if (start_age == 3) {
+            for (int i = 1; i < this->player_num; ++i) {
+                TRIBE_Player* player = (TRIBE_Player*)this->players[i];
+                if (player != nullptr) {
+                    player->rev_tech(0x19);
+                }
+            }
+        } else if (start_age == 4) {
+            for (int i = 1; i < this->player_num; ++i) {
+                TRIBE_Player* player = (TRIBE_Player*)this->players[i];
+                if (player != nullptr) {
+                    player->rev_tech(0x17);
+                }
+            }
+        } else if (start_age == 5) {
+            for (int i = 1; i < this->player_num; ++i) {
+                TRIBE_Player* player = (TRIBE_Player*)this->players[i];
+                if (player != nullptr) {
+                    player->rev_tech(0x18);
+                }
+            }
+        }
+
+        if (rge_base_game->check_prog_argument("NOFOODCAP") != 0) {
+            for (int i = 1; i < this->player_num; ++i) {
+                RGE_Player* player = this->players[i];
+                if (player != nullptr) {
+                    player->new_attribute_num(0x20, 50.0f);
+                    player->new_attribute_num(0x21, 0.0f);
+                    player->new_attribute_num(0x1E, 500.0f);
+                    player->new_attribute_num(0x1F, 5000.0f);
+                }
+            }
+        } else if (rge_base_game->check_prog_argument("SYSTEM2") != 0) {
+            for (int i = 1; i < this->player_num; ++i) {
+                RGE_Player* player = this->players[i];
+                if (player != nullptr) {
+                    player->new_attribute_num(0x20, 50.0f);
+                    player->new_attribute_num(0x21, 0.0f);
+                }
+            }
+        } else {
+            for (int i = 1; i < this->player_num; ++i) {
+                TRIBE_Player* player = (TRIBE_Player*)this->players[i];
+                if (player != nullptr) {
+                    player->new_attribute_num(0x20, (float)game->popLimit());
+                    player->new_attribute_num(0x21, 0.0f);
+                    player->new_attribute_num(0x1E, 500.0f);
+                    player->new_attribute_num(0x2D, 1.0f);
+                    if (player->victory_conditions != nullptr) {
+                        player->victory_conditions->add_points_attribute_amount('\0', '\0', 0x14, 2, 1);
+                        player->victory_conditions->add_points_attribute_amount('\0', '\x01', 0x2B, 1, 1);
+                        player->victory_conditions->add_points_attribute_amount('\0', '\x02', 0x2C, 1, 1);
+                        player->victory_conditions->add_points_high_attribute_once('\0', '\x03', 0x28, 1, 0x19);
+                        player->victory_conditions->add_points_attribute_amount('\x01', '\x04', 0x31, 100, 1);
+                        player->victory_conditions->add_points_attribute_amount('\x01', '\x09', 0x35, 0x3C, 1);
+                        player->victory_conditions->add_points_high_attribute_amount('\x01', '\x05', 0x25, 1, 1);
+                        player->victory_conditions->add_points_high_attribute_once('\x01', '\x06', 0x25, 1, 0x19);
+                        player->victory_conditions->add_points_attribute_amount('\x01', '\x07', 0x16, 3, 1);
+                        if (rge_base_game->fullVisibility() == 0) {
+                            player->victory_conditions->add_points_highest_attribute('\x01', '\x08', 0x16, 1, 0x19);
+                        }
+                        player->victory_conditions->add_points_attribute_amount('\x02', '\x0A', 0x29, 1, 2);
+                        player->victory_conditions->add_points_highest_attribute('\x02', '\x0B', 0x29, 1, 0x19);
+                        player->victory_conditions->add_points_attribute_amount('\x02', '\x0C', 0x0E, 1, 10);
+                        player->victory_conditions->add_points_attribute_amount('\x02', '\x0D', 7, 1, 10);
+                        player->victory_conditions->add_points_attribute_amount('\x02', '\x0E', 0x34, 1, 3);
+                        player->victory_conditions->add_points_attribute_amount('\x02', '\x10', 0x37, 1, 0x32);
+                        player->victory_conditions->add_points_attribute_amount('\x02', '\x0F', 0x36, 1, 0x32);
+                        player->victory_conditions->add_points_attribute_amount('\x03', '\x11', 0x15, 1, 2);
+                        player->victory_conditions->add_points_highest_attribute('\x03', '\x12', 0x15, 1, 0x32);
+                        player->victory_conditions->add_points_attribute_first('\x03', '\x13', 6, 3, 0x19);
+                        player->victory_conditions->add_points_attribute_first('\x03', '\x14', 6, 4, 0x19);
+                        player->victory_conditions->add_points_attribute_amount('\x04', '\x16', 0x2D, 1, 100);
+                        player->victory_conditions->add_points_attribute_amount('\x04', '\x17', 0x2A, 1, 100);
+                    }
+                    player->add_population_entry();
+                }
+            }
         }
     }
 

@@ -6,6 +6,7 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Object_List.h"
 #include "../include/RGE_Object_Node.h"
+#include "../include/RGE_Victory_Conditions.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
@@ -289,7 +290,10 @@ RGE_Player::~RGE_Player() {
     // Source of truth: player.cpp.decomp @ 0x0046EB00
     // Free object lists
     // TODO(accuracy): delete objects, sleeping_objects, doppleganger_objects via destructors
-    // TODO(accuracy): delete victory_conditions via destructor
+    if (this->victory_conditions) {
+        delete this->victory_conditions;
+        this->victory_conditions = nullptr;
+    }
 
     // Free relations
     if (this->relations) {
@@ -417,10 +421,18 @@ void RGE_Player::scenario_postsave(int param_1) {
     rge_write(param_1, &this->world->player_num, 2);
     rge_write(param_1, this->relations, (int)this->world->player_num);
     rge_write(param_1, this->unitDiplomacy, 0x24);
-    // TODO(accuracy): victory_conditions->save(param_1)
+    if (this->victory_conditions) {
+        this->victory_conditions->save(param_1);
+    }
 }
 void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {}
 void RGE_Player::load(int param_1) {}
+void RGE_Player::new_attribute_num(short param_1, float param_2) {
+    // Source of truth: player.cpp.decomp @ 0x004700B0
+    if (param_1 >= 0 && param_1 < this->attribute_num) {
+        this->attributes[param_1] = param_2;
+    }
+}
 void RGE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) {
     // Source of truth: player.cpp.decomp @ 0x004700D0
     if (param_1 >= 0 && param_1 < this->attribute_num) {
@@ -435,7 +447,7 @@ void RGE_Player::update() {
     this->currentUpdatePathingAttemptsValue = 0;
     // TODO(accuracy): RGE_Object_List::update(this->objects);
     // TODO(accuracy): update_selected(this);
-    // TODO(accuracy): RGE_Victory_Conditions::update
+    // TODO: STUB, full victory update loop parity is not yet stable at runtime.
     this->checksum_created_this_update = 0;
     // TODO(accuracy): Visible_Resource_Manager::Process_New_Tiles
 }
@@ -557,8 +569,12 @@ void RGE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param
 void RGE_Player::logMessage(char* param_1) {}
 void RGE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
 void RGE_Player::logStatus(FILE* param_1, int param_2) {}
-void RGE_Player::load_victory(int param_1, long* param_2, uchar param_3) {}
-void RGE_Player::new_victory() {}
+void RGE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
+    this->victory_conditions = new RGE_Victory_Conditions(this, param_1, param_2, param_3);
+}
+void RGE_Player::new_victory() {
+    this->victory_conditions = new RGE_Victory_Conditions(this);
+}
 
 void RGE_Player::reset_selected() {
     // Source of truth: player.cpp.decomp @ 0x00470CB0

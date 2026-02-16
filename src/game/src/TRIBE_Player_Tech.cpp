@@ -80,6 +80,33 @@ uchar TRIBE_Player_Tech::undo_tech(short param_1) {
     return was_active;
 }
 
+void TRIBE_Player_Tech::do_rev_tech(short param_1) {
+    // Source of truth: bucket_050D.decomp @ 0x0050D1F9
+    for (int i = 0; i < 4; i++) {
+        short prereq = this->base_tech->tech_tree[param_1].pre_reqs[i];
+        int prereq_index = (int)prereq;
+        if (prereq_index >= 0 && this->tech_player_tree[prereq_index].state < 3) {
+            if (this->tech_player_tree[prereq_index].state >= 0) {
+                do_rev_tech(prereq);
+            }
+        }
+    }
+    do_tech(param_1);
+}
+
+uchar TRIBE_Player_Tech::rev_tech(short param_1) {
+    // Source of truth: bucket_050D.decomp @ 0x0050D281
+    do_tech(param_1);
+    for (int i = 0; i < this->tech_player_tree_num; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (this->base_tech->tech_tree[i].pre_reqs[j] == param_1) {
+                do_rev_tech((short)i);
+            }
+        }
+    }
+    return 1;
+}
+
 uchar TRIBE_Player_Tech::research(short param_1, float param_2) {
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050C6AD
     if (this->tech_player_tree[param_1].state == 2) {
