@@ -4,6 +4,8 @@
 
 class RGE_RMM_Object_Generator : public RGE_Random_Map_Module {
 public:
+    RGE_RMM_Object_Generator(RGE_Map* param_1, RGE_Random_Map_Module* param_2, RGE_Game_World* param_3, RGE_Object_Info* param_4, uchar param_5);
+
     // Virtuals (best-effort)
     virtual uchar generate(); // vt[0] (0x0)
 

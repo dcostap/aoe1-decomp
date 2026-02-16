@@ -11,6 +11,10 @@
 #include "../include/RGE_Object_Data_Entry.h"
 #include "../include/RGE_Elevation_Data.h"
 #include "../include/RGE_Elevation_Data_Entry.h"
+#include "../include/RGE_RMM_Land_Generator.h"
+#include "../include/RGE_RMM_Terrain_Generator.h"
+#include "../include/RGE_RMM_Object_Generator.h"
+#include "../include/RGE_RMM_Elevation_Generator.h"
 #include "../include/RGE_RMM_Shallows_Generator.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Master_Static_Object.h"
@@ -20,6 +24,7 @@
 #include "../include/globals.h"
 
 #include <math.h>
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,33 +54,6 @@ static long rmm_rand_range(long max_value) {
 static uchar rmm_clamp_terrain(long terrain) {
     if (terrain < 0) terrain = 0;
     return (uchar)(terrain & 0x1f);
-}
-
-static uchar rmm_pick_loaded_terrain(RGE_Map* map, uchar preferred, uchar secondary) {
-    if (map != nullptr) {
-        if (preferred < 32) {
-            RGE_Tile_Set* ts = &map->terrain_types[preferred];
-            if (ts->loaded && ts->shape != nullptr) {
-                return preferred;
-            }
-        }
-        if (secondary < 32) {
-            RGE_Tile_Set* ts = &map->terrain_types[secondary];
-            if (ts->loaded && ts->shape != nullptr) {
-                return secondary;
-            }
-        }
-        int terrain_num = map->num_terrain;
-        if (terrain_num < 0) terrain_num = 0;
-        if (terrain_num > 32) terrain_num = 32;
-        for (int i = 0; i < terrain_num; ++i) {
-            RGE_Tile_Set* ts = &map->terrain_types[i];
-            if (ts->loaded && ts->shape != nullptr) {
-                return (uchar)i;
-            }
-        }
-    }
-    return 0;
 }
 
 static int rmm_is_water_terrain(uchar terrain_type) {
@@ -239,6 +217,204 @@ static void rmm_calc_land_start(
     }
 }
 
+static int rmm_randomize_land_positions_by_team(RGE_RMM_Database_Controller* self) {
+    if (self == nullptr) {
+        return 0;
+    }
+
+    const long land_count = self->land_info.land_num;
+    if (land_count <= 1 || land_count > 8) {
+        return 0;
+    }
+
+    long distances[8][8];
+    long sorted_indices[8][8];
+    for (long i = 0; i < land_count; ++i) {
+        for (long j = 0; j < land_count; ++j) {
+            long dx = self->land_info.land[i].x - self->land_info.land[j].x;
+            long dy = self->land_info.land[i].y - self->land_info.land[j].y;
+            distances[i][j] = dx * dx + dy * dy;
+            sorted_indices[i][j] = j;
+        }
+
+        for (long pass = 1; pass < land_count; ++pass) {
+            int changed = 0;
+            for (long j = 1; j < land_count; ++j) {
+                long a = sorted_indices[i][j - 1];
+                long b = sorted_indices[i][j];
+                if (distances[i][b] < distances[i][a]) {
+                    sorted_indices[i][j - 1] = b;
+                    sorted_indices[i][j] = a;
+                    changed = 1;
+                }
+            }
+            if (!changed) {
+                break;
+            }
+        }
+    }
+
+    long player_teams[8];
+    long team_sizes[8];
+    long slot_teams[8];
+    uchar source_used[8];
+    memset(player_teams, 0xFF, sizeof(player_teams));
+    memset(team_sizes, 0, sizeof(team_sizes));
+    memset(slot_teams, 0xFF, sizeof(slot_teams));
+    memset(source_used, 0, sizeof(source_used));
+
+    long team_count = 0;
+    for (long i = 0; i < land_count; ++i) {
+        if (player_teams[i] != -1) {
+            continue;
+        }
+
+        long current_team = team_count;
+        if (current_team >= 8) {
+            break;
+        }
+        player_teams[i] = current_team;
+        team_sizes[current_team] = 1;
+
+        if (self->world != nullptr && self->world->players != nullptr) {
+            long world_index = i + 1;
+            RGE_Player* player_i = nullptr;
+            if (world_index >= 0 && world_index < self->world->player_num) {
+                player_i = self->world->players[world_index];
+            }
+            if (player_i != nullptr) {
+                for (long j = 0; j < land_count; ++j) {
+                    if (j == i || player_teams[j] != -1) {
+                        continue;
+                    }
+                    if (player_i->relation(j + 1) == 0) {
+                        player_teams[j] = current_team;
+                        team_sizes[current_team] = team_sizes[current_team] + 1;
+                    }
+                }
+            }
+        }
+
+        team_count = team_count + 1;
+    }
+
+    for (long i = 0; i < land_count; ++i) {
+        if (player_teams[i] != -1) {
+            continue;
+        }
+        if (team_count >= 8) {
+            break;
+        }
+        player_teams[i] = team_count;
+        team_sizes[team_count] = 1;
+        team_count = team_count + 1;
+    }
+
+    for (long team = 0; team < team_count; ++team) {
+        long seed_slot = -1;
+        for (long s = 0; s < land_count; ++s) {
+            if (slot_teams[s] == -1) {
+                seed_slot = s;
+                break;
+            }
+        }
+        if (seed_slot < 0) {
+            break;
+        }
+
+        slot_teams[seed_slot] = team;
+        long remaining = team_sizes[team] - 1;
+        if (remaining < 0) {
+            remaining = 0;
+        }
+
+        while (remaining > 0) {
+            long best_slot = -1;
+            long best_dist = 0x7FFFFFFF;
+
+            for (long src_slot = 0; src_slot < land_count; ++src_slot) {
+                if (slot_teams[src_slot] != team) {
+                    continue;
+                }
+                for (long order = 0; order < land_count; ++order) {
+                    long cand_slot = sorted_indices[src_slot][order];
+                    if (slot_teams[cand_slot] != -1) {
+                        continue;
+                    }
+                    long d = distances[src_slot][cand_slot];
+                    if (best_slot < 0 || d < best_dist) {
+                        best_slot = cand_slot;
+                        best_dist = d;
+                    }
+                    break;
+                }
+            }
+
+            if (best_slot < 0) {
+                break;
+            }
+            slot_teams[best_slot] = team;
+            remaining = remaining - 1;
+        }
+    }
+
+    long remap[8];
+    for (long i = 0; i < 8; ++i) {
+        remap[i] = -1;
+    }
+
+    for (long slot = 0; slot < land_count; ++slot) {
+        long team = slot_teams[slot];
+        if (team < 0) {
+            continue;
+        }
+
+        for (long src = 0; src < land_count; ++src) {
+            if (source_used[src] != 0) {
+                continue;
+            }
+            if (player_teams[src] == team) {
+                remap[slot] = src;
+                source_used[src] = 1;
+                break;
+            }
+        }
+    }
+
+    for (long slot = 0; slot < land_count; ++slot) {
+        if (remap[slot] != -1) {
+            continue;
+        }
+        for (long src = 0; src < land_count; ++src) {
+            if (source_used[src] == 0) {
+                remap[slot] = src;
+                source_used[src] = 1;
+                break;
+            }
+        }
+    }
+
+    long remap_x[8];
+    long remap_y[8];
+    for (long slot = 0; slot < land_count; ++slot) {
+        long src = remap[slot];
+        if (src < 0 || src >= land_count) {
+            remap_x[slot] = self->land_info.land[slot].x;
+            remap_y[slot] = self->land_info.land[slot].y;
+        } else {
+            remap_x[slot] = self->land_info.land[src].x;
+            remap_y[slot] = self->land_info.land[src].y;
+        }
+    }
+
+    for (long slot = 0; slot < land_count; ++slot) {
+        self->land_info.land[slot].x = remap_x[slot];
+        self->land_info.land[slot].y = remap_y[slot];
+    }
+
+    return 1;
+}
+
 static long rmm_count_terrain_tiles(RGE_RMM_Database_Controller* self, uchar terrain_type) {
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return 0;
@@ -309,10 +485,12 @@ static int rmm_terrain_matches_object_rule(RGE_RMM_Database_Controller* self, RG
     if (self == nullptr || line == nullptr || self->map_row_offset == nullptr || x < 0 || y < 0 || x >= self->map_width || y >= self->map_height) {
         return 0;
     }
+    uchar tt = (uchar)(self->map_row_offset[y][x].terrain_type & 0x1f);
     if (line->terrain < 0) {
-        return 1;
+        // Decomp object placement logic heavily biases generic objects away from water tiles.
+        return rmm_is_water_terrain(tt) == 0;
     }
-    return (self->map_row_offset[y][x].terrain_type & 0x1f) == (line->terrain & 0x1f);
+    return tt == (line->terrain & 0x1f);
 }
 
 static int rmm_try_place_single_object(
@@ -437,8 +615,8 @@ static long rmm_place_group_objects(
     return placed;
 }
 
-static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
-    if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0 || self->object_info.object_num <= 0) {
+static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self, RGE_Object_Info* object_info) {
+    if (self == nullptr || object_info == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0 || object_info->object_num <= 0) {
         return 0;
     }
 
@@ -456,8 +634,8 @@ static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
         map_area = 1;
     }
 
-    for (long i = 0; i < self->object_info.object_num; ++i) {
-        RGE_Object_Info_Line line = self->object_info.objects[i];
+    for (long i = 0; i < object_info->object_num; ++i) {
+        RGE_Object_Info_Line line = object_info->objects[i];
         if (line.obj_id < 0) {
             continue;
         }
@@ -483,8 +661,8 @@ static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
         rmm_fill_search_map(self, 1);
 
         if (line.land_id == -2) {
-            for (long li = 0; li < self->object_info.land_num; ++li) {
-                RGE_Land_Point_Info_Line* land = &self->object_info.lands[li];
+            for (long li = 0; li < object_info->land_num; ++li) {
+                RGE_Land_Point_Info_Line* land = &object_info->lands[li];
                 rmm_set_search_area(self, land->x, land->y, line.land_inner_radius, 0);
             }
         }
@@ -492,8 +670,8 @@ static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
         long placed_for_line = 0;
 
         if (line.land_id >= 0) {
-            for (long li = 0; li < self->object_info.land_num; ++li) {
-                RGE_Land_Point_Info_Line* land = &self->object_info.lands[li];
+            for (long li = 0; li < object_info->land_num; ++li) {
+                RGE_Land_Point_Info_Line* land = &object_info->lands[li];
                 if (land->id != line.land_id) {
                     continue;
                 }
@@ -573,108 +751,6 @@ static long rmm_place_objects_pass(RGE_RMM_Database_Controller* self) {
     return total_placed;
 }
 
-static int rmm_add_object_candidate(long* ids, int* count, int max_count, long id) {
-    if (ids == nullptr || count == nullptr || *count < 0 || *count >= max_count) {
-        return 0;
-    }
-    for (int i = 0; i < *count; ++i) {
-        if (ids[i] == id) {
-            return 0;
-        }
-    }
-    ids[*count] = id;
-    *count = *count + 1;
-    return 1;
-}
-
-static long rmm_place_emergency_objects(RGE_RMM_Database_Controller* self) {
-    if (self == nullptr || self->world == nullptr || self->world->players == nullptr || self->world->player_num <= 0) {
-        return 0;
-    }
-    if (self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
-        return 0;
-    }
-
-    RGE_Player* gaia = self->world->players[0];
-    if (gaia == nullptr || gaia->master_objects == nullptr || gaia->master_object_num <= 0) {
-        return 0;
-    }
-
-    long candidate_ids[12];
-    int candidate_count = 0;
-
-    static const long kPreferredIds[] = {83, 59, 66, 102, 53, 370};
-    for (int i = 0; i < (int)(sizeof(kPreferredIds) / sizeof(kPreferredIds[0])); ++i) {
-        long id = kPreferredIds[i];
-        if (id >= 0 && id < gaia->master_object_num && gaia->master_objects[id] != nullptr) {
-            rmm_add_object_candidate(candidate_ids, &candidate_count, 12, id);
-        }
-    }
-
-    for (long i = 0; i < gaia->master_object_num && candidate_count < 12; ++i) {
-        RGE_Master_Static_Object* mo = gaia->master_objects[i];
-        if (mo == nullptr) {
-            continue;
-        }
-        if (mo->master_type == 0x5A || mo->track_as_resource != 0 || mo->resource_group != 0 || mo->attribute_max_amount > 0) {
-            rmm_add_object_candidate(candidate_ids, &candidate_count, 12, i);
-        }
-    }
-
-    for (long i = 0; i < gaia->master_object_num && candidate_count < 12; ++i) {
-        RGE_Master_Static_Object* mo = gaia->master_objects[i];
-        if (mo != nullptr) {
-            rmm_add_object_candidate(candidate_ids, &candidate_count, 12, i);
-        }
-    }
-
-    if (candidate_count <= 0) {
-        return 0;
-    }
-
-    rmm_fill_search_map(self, 1);
-
-    long map_area = self->map_width * self->map_height;
-    if (map_area < 1) {
-        map_area = 1;
-    }
-    long target = map_area / 180;
-    if (target < 24) target = 24;
-    if (target > 256) target = 256;
-
-    long tries = target * 24;
-    if (tries < 256) tries = 256;
-    if (tries > 8192) tries = 8192;
-
-    long placed = 0;
-    for (long n = 0; n < tries && placed < target; ++n) {
-        long x = rmm_rand_range(self->map_width);
-        long y = rmm_rand_range(self->map_height);
-        if (!rmm_search_open(self, x, y)) {
-            continue;
-        }
-
-        uchar tt = (uchar)(self->map_row_offset[y][x].terrain_type & 0x1f);
-        if (rmm_is_water_terrain(tt)) {
-            continue;
-        }
-
-        long pick = candidate_ids[rmm_rand_range(candidate_count)];
-        RGE_Static_Object* placed_obj = gaia->make_new_object(pick, (float)x + 0.5f, (float)y + 0.5f, 0.0f, 1);
-        if (placed_obj != nullptr) {
-            rmm_set_search_area(self, x, y, 1, 0);
-            ++placed;
-        }
-    }
-
-    CUSTOM_DEBUG_LOG_FMT(
-        "  emergency_object_pass: candidates=%d target=%ld placed=%ld",
-        candidate_count,
-        target,
-        placed);
-    return placed;
-}
-
 static void rmm_free_map_data(RGE_RMM_Database_Controller* self) {
     if (self == nullptr) {
         return;
@@ -714,13 +790,10 @@ static RGE_Map_Data_Entry* rmm_select_map_entry(RGE_RMM_Database_Controller* sel
     if (self == nullptr || self->map_info.maps == nullptr || self->map_info.map_num <= 0) {
         return nullptr;
     }
-    // Source of truth: rmm_dbct.cpp.decomp
-    // Original code indexes maps directly with map_type.
-    if (self->map_type >= 0 && self->map_type < self->map_info.map_num) {
-        return &self->map_info.maps[self->map_type];
+    if (self->map_type < 0 || self->map_type >= self->map_info.map_num) {
+        return nullptr;
     }
-
-    return &self->map_info.maps[0];
+    return &self->map_info.maps[self->map_type];
 }
 
 static long rmm_paint_disk(
@@ -1056,6 +1129,244 @@ static void rmm_log_border_histogram(RGE_RMM_Database_Controller* self, const ch
             CUSTOM_DEBUG_LOG_FMT("  border_shape[%d]=%ld", i, shape_counts[i]);
         }
     }
+}
+
+static uchar rmm_generate_land_stage(RGE_RMM_Database_Controller* self, RGE_Land_Info* land_info) {
+    if (self == nullptr || land_info == nullptr || self->map == nullptr ||
+        self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return 0;
+    }
+
+    const long map_area = self->map_width * self->map_height;
+    if (map_area <= 0) {
+        return 0;
+    }
+
+    const uchar base_terrain = rmm_clamp_terrain((long)land_info->base_terrain);
+    for (long y = 0; y < self->map_height; ++y) {
+        for (long x = 0; x < self->map_width; ++x) {
+            RGE_Tile* tile = &self->map_row_offset[y][x];
+            tile->terrain_type = base_terrain;
+            tile->tile_type = 0;
+            tile->border_type = 0;
+            tile->border_shape = 0;
+            tile->height = 1;
+        }
+    }
+
+    long edge = 2;
+    RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(self);
+    if (map_entry != nullptr && map_entry->land_info.land_placement_edge > 0) {
+        edge = map_entry->land_info.land_placement_edge;
+    }
+    if (self->map_width > 2) edge = rmm_clamp_long(edge, 1, self->map_width / 2);
+    if (self->map_height > 2) edge = rmm_clamp_long(edge, 1, self->map_height / 2);
+
+    long land_num = land_info->land_num;
+    if (land_num < 0) land_num = 0;
+    if (land_num > 99) land_num = 99;
+    for (long i = 0; i < land_num; ++i) {
+        RGE_Land_Info_Line* land = &land_info->land[i];
+        long cx = land->x;
+        long cy = land->y;
+        if (cx <= 0 || cx >= self->map_width || cy <= 0 || cy >= self->map_height) {
+            long range_x = self->map_width - edge * 2;
+            long range_y = self->map_height - edge * 2;
+            if (range_x < 1) range_x = self->map_width;
+            if (range_y < 1) range_y = self->map_height;
+            cx = edge + rmm_rand_range(range_x);
+            cy = edge + rmm_rand_range(range_y);
+        }
+
+        long target_size = land->land_size;
+        if (target_size <= 0) target_size = map_area / 12;
+        long radius = (long)sqrt((double)target_size / 3.0);
+        if (radius < 4) radius = 4;
+        if (land->base_size > 0 && land->base_size > radius) {
+            radius = land->base_size;
+        }
+
+        const uchar terrain = rmm_clamp_terrain(land->terrain_type);
+        rmm_paint_disk(self, cx, cy, radius, terrain, 0, 0);
+        rmm_paint_disk(self, cx + rmm_rand_range(radius + 1) - radius / 2, cy + rmm_rand_range(radius + 1) - radius / 2, (radius * 3) / 4, terrain, 0, 0);
+        rmm_paint_disk(self, cx + rmm_rand_range(radius + 1) - radius / 2, cy + rmm_rand_range(radius + 1) - radius / 2, radius / 2, terrain, 0, 0);
+    }
+
+    self->map->clean_terrain(0, 0, self->map_width - 1, self->map_height - 1, base_terrain);
+    return 1;
+}
+
+static uchar rmm_generate_terrain_stage(RGE_RMM_Database_Controller* self, RGE_Terrain_Info* terrain_info) {
+    if (self == nullptr || terrain_info == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return 0;
+    }
+
+    const long map_area = self->map_width * self->map_height;
+    if (map_area <= 0) {
+        return 0;
+    }
+
+    long terr_num = terrain_info->terrain_num;
+    if (terr_num < 0) terr_num = 0;
+    if (terr_num > 99) terr_num = 99;
+    for (long i = 0; i < terr_num; ++i) {
+        RGE_Terrain_Info_Line* line = &terrain_info->terrain[i];
+        if (line->terrain_size <= 0) {
+            continue;
+        }
+
+        long target_tiles = 0;
+        if (line->terrain_size <= 100) {
+            target_tiles = (map_area * line->terrain_size) / 100;
+        } else {
+            target_tiles = line->terrain_size;
+        }
+        if (target_tiles <= 0) {
+            continue;
+        }
+
+        const uchar terrain = rmm_clamp_terrain(line->terrain_type);
+        uchar base_filter = rmm_clamp_terrain(line->base_terrain_type);
+        if (rmm_count_terrain_tiles(self, base_filter) == 0) {
+            long best_count = -1;
+            uchar best_tt = base_filter;
+            for (int tt = 0; tt < 32; ++tt) {
+                long c = rmm_count_terrain_tiles(self, (uchar)tt);
+                if (c > best_count) {
+                    best_count = c;
+                    best_tt = (uchar)tt;
+                }
+            }
+            if (best_count > 0) {
+                base_filter = best_tt;
+            }
+        }
+
+        long remaining = target_tiles;
+        long tries = target_tiles * 4;
+        if (tries < 64) tries = 64;
+        while (remaining > 0 && tries > 0) {
+            long cx = rmm_rand_range(self->map_width);
+            long cy = rmm_rand_range(self->map_height);
+            long radius = (line->clumps > 0) ? line->clumps : 3;
+            radius += rmm_rand_range((line->clumpiness_factor > 1) ? line->clumpiness_factor : 4);
+            radius = rmm_clamp_long(radius, 1, 24);
+
+            long changed = rmm_paint_disk(self, cx, cy, radius, terrain, 1, base_filter);
+            if (changed > 0) {
+                remaining -= changed;
+            }
+            --tries;
+        }
+    }
+
+    rmm_terrain_check_borders(self);
+    return 1;
+}
+
+static uchar rmm_generate_elevation_stage(RGE_RMM_Database_Controller* self, RGE_Elevation_Info* elevation_info) {
+    if (self == nullptr || elevation_info == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
+        return 0;
+    }
+
+    const long map_area = self->map_width * self->map_height;
+    if (map_area <= 0) {
+        return 0;
+    }
+
+    long elev_num = elevation_info->elevation_num;
+    if (elev_num < 0) elev_num = 0;
+    if (elev_num > 99) elev_num = 99;
+    for (long i = 0; i < elev_num; ++i) {
+        RGE_Elevation_Info_Line* line = &elevation_info->elevation[i];
+        if (line->elevation_size <= 0) {
+            continue;
+        }
+
+        long target_tiles = 0;
+        if (line->elevation_size <= 100) {
+            target_tiles = (map_area * line->elevation_size) / 100;
+        } else {
+            target_tiles = line->elevation_size;
+        }
+        if (target_tiles <= 0) {
+            continue;
+        }
+
+        uchar target_height = (uchar)line->elevation;
+        if (target_height > 7) target_height = 7;
+        uchar base_height = (uchar)line->base_elevation;
+        if (base_height > 7) base_height = 7;
+        uchar base_filter = rmm_clamp_terrain(line->base_terrain_type);
+        if (rmm_count_terrain_tiles(self, base_filter) == 0) {
+            long best_count = -1;
+            uchar best_tt = base_filter;
+            for (int tt = 0; tt < 32; ++tt) {
+                if (rmm_is_water_terrain((uchar)tt)) {
+                    continue;
+                }
+                long c = rmm_count_terrain_tiles(self, (uchar)tt);
+                if (c > best_count) {
+                    best_count = c;
+                    best_tt = (uchar)tt;
+                }
+            }
+            if (best_count > 0) {
+                base_filter = best_tt;
+            }
+        }
+
+        long remaining = target_tiles;
+        long tries = target_tiles * 4;
+        if (tries < 64) tries = 64;
+        long total_changed = 0;
+
+        while (remaining > 0 && tries > 0) {
+            long cx = rmm_rand_range(self->map_width);
+            long cy = rmm_rand_range(self->map_height);
+            long radius = (line->clumps > 0) ? line->clumps : 2;
+            radius += rmm_rand_range(4);
+            radius = rmm_clamp_long(radius, 1, 16);
+
+            long changed = rmm_raise_disk(self, cx, cy, radius, target_height, 1, base_filter, 1, base_height);
+            if (changed > 0) {
+                remaining -= changed;
+                total_changed += changed;
+            }
+            --tries;
+        }
+
+        CUSTOM_DEBUG_LOG_FMT(
+            "  elev[%ld]: size=%ld elev=%ld base_tt=%ld base_h=%ld changed=%ld target=%ld",
+            i,
+            line->elevation_size,
+            line->elevation,
+            line->base_terrain_type,
+            line->base_elevation,
+            total_changed,
+            target_tiles);
+    }
+
+    int max_step_before = rmm_max_height_step(self);
+    rmm_smooth_elevation(self, 32);
+    int max_step_after = rmm_max_height_step(self);
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_RMM_Database_Controller::generate: height step before=%d after=%d",
+        max_step_before,
+        max_step_after);
+    return 1;
+}
+
+static long rmm_generate_object_stage(RGE_RMM_Database_Controller* self, RGE_Object_Info* object_info) {
+    if (self == nullptr || object_info == nullptr) {
+        return 0;
+    }
+    long placed_objects = rmm_place_objects_pass(self, object_info);
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_RMM_Database_Controller::generate: object_defs=%ld placed=%ld",
+        object_info->object_num,
+        placed_objects);
+    return placed_objects;
 }
 
 RGE_Random_Map_Module::RGE_Random_Map_Module()
@@ -1717,6 +2028,108 @@ uchar RGE_Random_Map_Module::find_path(
     return 0;
 }
 
+RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
+    RGE_Map* param_1,
+    RGE_Random_Map_Module* param_2,
+    RGE_Land_Info* param_3)
+    : RGE_Random_Map_Module(param_1, param_2, 1) {
+    this->schedule = 1.0f;
+    memset(&this->info, 0, sizeof(this->info));
+    if (param_3 != nullptr) {
+        memcpy(&this->info, param_3, sizeof(this->info));
+    }
+}
+
+uchar RGE_RMM_Land_Generator::generate() {
+    if (this->parent == nullptr) {
+        return 0;
+    }
+    this->clear_stack();
+    return rmm_generate_land_stage((RGE_RMM_Database_Controller*)this->parent, &this->info);
+}
+
+RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
+    RGE_Map* param_1,
+    RGE_Random_Map_Module* param_2,
+    RGE_Terrain_Info* param_3)
+    : RGE_Random_Map_Module(param_1, param_2, 1) {
+    this->schedule = 2.0f;
+    memset(&this->info, 0, sizeof(this->info));
+    if (param_3 != nullptr) {
+        memcpy(&this->info, param_3, sizeof(this->info));
+    }
+    this->map_zone = nullptr;
+}
+
+uchar RGE_RMM_Terrain_Generator::generate() {
+    if (this->parent == nullptr) {
+        return 0;
+    }
+    this->clear_stack();
+    return rmm_generate_terrain_stage((RGE_RMM_Database_Controller*)this->parent, &this->info);
+}
+
+RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
+    RGE_Map* param_1,
+    RGE_Random_Map_Module* param_2,
+    RGE_Game_World* param_3,
+    RGE_Object_Info* param_4,
+    uchar param_5)
+    : RGE_Random_Map_Module(param_1, param_2, 1) {
+    this->schedule = 3.0f;
+    this->world = param_3;
+    memset(&this->info, 0, sizeof(this->info));
+    if (param_4 != nullptr) {
+        memcpy(&this->info, param_4, sizeof(this->info));
+    }
+    memset(this->terrain_table, 0, sizeof(this->terrain_table));
+    this->add_terrain = param_5;
+}
+
+uchar RGE_RMM_Object_Generator::generate() {
+    if (this->parent == nullptr) {
+        return 0;
+    }
+    if (this->add_terrain != 0 && this->map != nullptr && this->world != nullptr &&
+        this->world->players != nullptr && this->world->player_num > 0 && this->map_width > 0 && this->map_height > 0) {
+        RGE_Player* gaia = this->world->players[0];
+        this->map->set_terrain(
+            gaia,
+            this->world,
+            0,
+            0,
+            (short)(this->map_width - 1),
+            (short)(this->map_height - 1),
+            1,
+            0,
+            0);
+    }
+    this->clear_stack();
+    memset(this->terrain_table, 0, sizeof(this->terrain_table));
+    (void)rmm_generate_object_stage((RGE_RMM_Database_Controller*)this->parent, &this->info);
+    return 1;
+}
+
+RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
+    RGE_Map* param_1,
+    RGE_Random_Map_Module* param_2,
+    RGE_Elevation_Info* param_3)
+    : RGE_Random_Map_Module(param_1, param_2, 1) {
+    this->schedule = 1.5f;
+    memset(&this->info, 0, sizeof(this->info));
+    if (param_3 != nullptr) {
+        memcpy(&this->info, param_3, sizeof(this->info));
+    }
+}
+
+uchar RGE_RMM_Elevation_Generator::generate() {
+    if (this->parent == nullptr) {
+        return 0;
+    }
+    this->clear_stack();
+    return rmm_generate_elevation_stage((RGE_RMM_Database_Controller*)this->parent, &this->info);
+}
+
 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
     RGE_Map* param_1,
     RGE_Random_Map_Module* param_2,
@@ -2296,221 +2709,14 @@ uchar RGE_RMM_Database_Controller::generate() {
     if (this->map == nullptr || this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
-
-    long map_area = this->map_width * this->map_height;
-    if (map_area <= 0) {
-        return 0;
-    }
-
-    uchar base_terrain = rmm_clamp_terrain((long)this->land_info.base_terrain);
-    uchar terrain_touched[32];
-    memset(terrain_touched, 0, sizeof(terrain_touched));
-    for (long y = 0; y < this->map_height; ++y) {
-        for (long x = 0; x < this->map_width; ++x) {
-            RGE_Tile* tile = &this->map_row_offset[y][x];
-            tile->terrain_type = base_terrain;
-            tile->tile_type = 0;
-            tile->border_type = 0;
-            tile->border_shape = 0;
-            tile->height = 1;
-        }
-    }
-
-    long edge = 2;
-    RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
-    if (map_entry != nullptr && map_entry->land_info.land_placement_edge > 0) {
-        edge = map_entry->land_info.land_placement_edge;
-    }
-    if (this->map_width > 2) edge = rmm_clamp_long(edge, 1, this->map_width / 2);
-    if (this->map_height > 2) edge = rmm_clamp_long(edge, 1, this->map_height / 2);
-
-    long land_num = this->land_info.land_num;
-    if (land_num < 0) land_num = 0;
-    if (land_num > 99) land_num = 99;
-    for (long i = 0; i < land_num; ++i) {
-        RGE_Land_Info_Line* land = &this->land_info.land[i];
-        long cx = land->x;
-        long cy = land->y;
-        if (cx <= 0 || cx >= this->map_width || cy <= 0 || cy >= this->map_height) {
-            long range_x = this->map_width - edge * 2;
-            long range_y = this->map_height - edge * 2;
-            if (range_x < 1) range_x = this->map_width;
-            if (range_y < 1) range_y = this->map_height;
-            cx = edge + rmm_rand_range(range_x);
-            cy = edge + rmm_rand_range(range_y);
-        }
-
-        long target_size = land->land_size;
-        if (target_size <= 0) target_size = map_area / 12;
-        long radius = (long)sqrt((double)target_size / 3.0);
-        if (radius < 4) radius = 4;
-        if (land->base_size > 0 && land->base_size > radius) {
-            radius = land->base_size;
-        }
-
-        uchar terrain = rmm_clamp_terrain(land->terrain_type);
-        terrain_touched[terrain] = 1;
-        rmm_paint_disk(this, cx, cy, radius, terrain, 0, 0);
-        rmm_paint_disk(this, cx + rmm_rand_range(radius + 1) - radius / 2, cy + rmm_rand_range(radius + 1) - radius / 2, (radius * 3) / 4, terrain, 0, 0);
-        rmm_paint_disk(this, cx + rmm_rand_range(radius + 1) - radius / 2, cy + rmm_rand_range(radius + 1) - radius / 2, radius / 2, terrain, 0, 0);
-    }
-
-    // Source of truth: rmm_land.cpp::generate ends with clean_terrain(base_terrain).
-    this->map->clean_terrain(0, 0, this->map_width - 1, this->map_height - 1, base_terrain);
-
-    long terr_num = this->terrain_info.terrain_num;
-    if (terr_num < 0) terr_num = 0;
-    if (terr_num > 99) terr_num = 99;
-    for (long i = 0; i < terr_num; ++i) {
-        RGE_Terrain_Info_Line* line = &this->terrain_info.terrain[i];
-        if (line->terrain_size <= 0) {
-            continue;
-        }
-
-        long target_tiles = 0;
-        if (line->terrain_size <= 100) {
-            target_tiles = (map_area * line->terrain_size) / 100;
-        } else {
-            target_tiles = line->terrain_size;
-        }
-        if (target_tiles <= 0) {
-            continue;
-        }
-
-        uchar terrain = rmm_clamp_terrain(line->terrain_type);
-        terrain_touched[terrain] = 1;
-        uchar base_filter = rmm_clamp_terrain(line->base_terrain_type);
-        if (rmm_count_terrain_tiles(this, base_filter) == 0) {
-            long best_count = -1;
-            uchar best_tt = base_filter;
-            for (int tt = 0; tt < 32; ++tt) {
-                long c = rmm_count_terrain_tiles(this, (uchar)tt);
-                if (c > best_count) {
-                    best_count = c;
-                    best_tt = (uchar)tt;
-                }
-            }
-            if (best_count > 0) {
-                base_filter = best_tt;
-            }
-        }
-        long remaining = target_tiles;
-        long tries = target_tiles * 4;
-        if (tries < 64) tries = 64;
-
-        while (remaining > 0 && tries > 0) {
-            long cx = rmm_rand_range(this->map_width);
-            long cy = rmm_rand_range(this->map_height);
-            long radius = (line->clumps > 0) ? line->clumps : 3;
-            radius += rmm_rand_range((line->clumpiness_factor > 1) ? line->clumpiness_factor : 4);
-            radius = rmm_clamp_long(radius, 1, 24);
-
-            long changed = rmm_paint_disk(this, cx, cy, radius, terrain, 1, base_filter);
-            if (changed > 0) {
-                remaining -= changed;
-            }
-            --tries;
-        }
-    }
-
-    // Source of truth: rmm_terr.cpp::generate ends with check_borders().
-    rmm_terrain_check_borders(this);
+    (void)new (std::nothrow) RGE_RMM_Terrain_Generator(this->map, this, &this->terrain_info);
+    (void)new (std::nothrow) RGE_RMM_Land_Generator(this->map, this, &this->land_info);
+    (void)new (std::nothrow) RGE_RMM_Object_Generator(this->map, this, this->world, &this->object_info, 1);
+    (void)new (std::nothrow) RGE_RMM_Elevation_Generator(this->map, this, &this->elevation_info);
 
     if (RGE_Random_Map_Module::generate() == 0) {
         return 0;
     }
-
-    long elev_num = this->elevation_info.elevation_num;
-    if (elev_num < 0) elev_num = 0;
-    if (elev_num > 99) elev_num = 99;
-    for (long i = 0; i < elev_num; ++i) {
-        RGE_Elevation_Info_Line* line = &this->elevation_info.elevation[i];
-        if (line->elevation_size <= 0) {
-            continue;
-        }
-
-        long target_tiles = 0;
-        if (line->elevation_size <= 100) {
-            target_tiles = (map_area * line->elevation_size) / 100;
-        } else {
-            target_tiles = line->elevation_size;
-        }
-        if (target_tiles <= 0) {
-            continue;
-        }
-
-        uchar target_height = (uchar)line->elevation;
-        if (target_height > 7) target_height = 7;
-        uchar base_height = (uchar)line->base_elevation;
-        if (base_height > 7) base_height = 7;
-        uchar base_filter = rmm_clamp_terrain(line->base_terrain_type);
-        if (rmm_count_terrain_tiles(this, base_filter) == 0) {
-            long best_count = -1;
-            uchar best_tt = base_filter;
-            for (int tt = 0; tt < 32; ++tt) {
-                if (rmm_is_water_terrain((uchar)tt)) {
-                    continue;
-                }
-                long c = rmm_count_terrain_tiles(this, (uchar)tt);
-                if (c > best_count) {
-                    best_count = c;
-                    best_tt = (uchar)tt;
-                }
-            }
-            if (best_count > 0) {
-                base_filter = best_tt;
-            }
-        }
-
-        long remaining = target_tiles;
-        long tries = target_tiles * 4;
-        if (tries < 64) tries = 64;
-        long total_changed = 0;
-
-        while (remaining > 0 && tries > 0) {
-            long cx = rmm_rand_range(this->map_width);
-            long cy = rmm_rand_range(this->map_height);
-            long radius = (line->clumps > 0) ? line->clumps : 2;
-            radius += rmm_rand_range(4);
-            radius = rmm_clamp_long(radius, 1, 16);
-
-            long changed = rmm_raise_disk(this, cx, cy, radius, target_height, 1, base_filter, 1, base_height);
-            if (changed > 0) {
-                remaining -= changed;
-                total_changed += changed;
-            }
-            --tries;
-        }
-
-        CUSTOM_DEBUG_LOG_FMT(
-            "  elev[%ld]: size=%ld elev=%ld base_tt=%ld base_h=%ld changed=%ld target=%ld",
-            i,
-            line->elevation_size,
-            line->elevation,
-            line->base_terrain_type,
-            line->base_elevation,
-            total_changed,
-            target_tiles);
-    }
-
-    int max_step_before = rmm_max_height_step(this);
-    rmm_smooth_elevation(this, 32);
-    int max_step_after = rmm_max_height_step(this);
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_RMM_Database_Controller::generate: height step before=%d after=%d",
-        max_step_before,
-        max_step_after);
-
-    long placed_objects = rmm_place_objects_pass(this);
-    long min_expected_objects = (this->map_width * this->map_height) / 420;
-    if (min_expected_objects < 12) min_expected_objects = 12;
-    if (placed_objects < min_expected_objects) {
-        placed_objects += rmm_place_emergency_objects(this);
-    }
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_RMM_Database_Controller::generate: object_defs=%ld placed=%ld",
-        this->object_info.object_num,
-        placed_objects);
 
     this->map->rebuild_tile_types(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1));
     this->map->rebuild_border_types(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1));
@@ -2529,23 +2735,6 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1) {
 
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
     if (map_entry == nullptr) {
-        // Fallback defaults until full fd-accurate DB parsing is wired.
-        uchar base_tt = rmm_pick_loaded_terrain(this->map, 22, 0);
-        uchar land_a = rmm_pick_loaded_terrain(this->map, 6, base_tt);
-        uchar land_b = rmm_pick_loaded_terrain(this->map, 13, 1);
-
-        this->land_info.base_terrain = base_tt;
-        this->land_info.land_num = 2;
-        this->land_info.land[0].land_size = (this->map_width * this->map_height) / 5;
-        this->land_info.land[0].terrain_type = land_a;
-        this->land_info.land[0].base_size = 12;
-        this->land_info.land[0].x = this->map_width / 3;
-        this->land_info.land[0].y = this->map_height / 3;
-        this->land_info.land[1].land_size = (this->map_width * this->map_height) / 7;
-        this->land_info.land[1].terrain_type = land_b;
-        this->land_info.land[1].base_size = 10;
-        this->land_info.land[1].x = (this->map_width * 2) / 3;
-        this->land_info.land[1].y = (this->map_height * 2) / 3;
         return;
     }
 
@@ -2636,24 +2825,26 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1) {
     this->land_info.land_num = dst_index;
 
     if (param_1 != 0 && this->land_info.land_num > 1) {
-        for (long i = 0; i < this->land_info.land_num; ++i) {
-            long rem = this->land_info.land_num - i;
-            if (rem <= 1) {
-                break;
-            }
-            long j = i + rmm_rand_range(rem);
-            if (j < i) j = i;
-            if (j >= this->land_info.land_num) j = this->land_info.land_num - 1;
-            if (j == i) {
-                continue;
-            }
+        if (rmm_randomize_land_positions_by_team(this) == 0) {
+            for (long i = 0; i < this->land_info.land_num; ++i) {
+                long rem = this->land_info.land_num - i;
+                if (rem <= 1) {
+                    break;
+                }
+                long j = i + rmm_rand_range(rem);
+                if (j < i) j = i;
+                if (j >= this->land_info.land_num) j = this->land_info.land_num - 1;
+                if (j == i) {
+                    continue;
+                }
 
-            long tx = this->land_info.land[i].x;
-            long ty = this->land_info.land[i].y;
-            this->land_info.land[i].x = this->land_info.land[j].x;
-            this->land_info.land[i].y = this->land_info.land[j].y;
-            this->land_info.land[j].x = tx;
-            this->land_info.land[j].y = ty;
+                long tx = this->land_info.land[i].x;
+                long ty = this->land_info.land[i].y;
+                this->land_info.land[i].x = this->land_info.land[j].x;
+                this->land_info.land[i].y = this->land_info.land[j].y;
+                this->land_info.land[j].x = tx;
+                this->land_info.land[j].y = ty;
+            }
         }
     }
 }
@@ -2663,29 +2854,6 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
 
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
     if (map_entry == nullptr) {
-        uchar base_tt = rmm_pick_loaded_terrain(this->map, 22, 0);
-        uchar terr_a = rmm_pick_loaded_terrain(this->map, 6, base_tt);
-        uchar terr_b = rmm_pick_loaded_terrain(this->map, 10, 1);
-        uchar terr_c = rmm_pick_loaded_terrain(this->map, 13, 2);
-
-        this->terrain_info.terrain_num = 3;
-        this->terrain_info.terrain[0].terrain_size = 8;
-        this->terrain_info.terrain[0].terrain_type = terr_a;
-        this->terrain_info.terrain[0].base_terrain_type = base_tt;
-        this->terrain_info.terrain[0].clumps = 5;
-        this->terrain_info.terrain[0].clumpiness_factor = 8;
-
-        this->terrain_info.terrain[1].terrain_size = 6;
-        this->terrain_info.terrain[1].terrain_type = terr_b;
-        this->terrain_info.terrain[1].base_terrain_type = base_tt;
-        this->terrain_info.terrain[1].clumps = 4;
-        this->terrain_info.terrain[1].clumpiness_factor = 7;
-
-        this->terrain_info.terrain[2].terrain_size = 5;
-        this->terrain_info.terrain[2].terrain_type = terr_c;
-        this->terrain_info.terrain[2].base_terrain_type = base_tt;
-        this->terrain_info.terrain[2].clumps = 3;
-        this->terrain_info.terrain[2].clumpiness_factor = 6;
         return;
     }
 
@@ -2744,9 +2912,12 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
 void RGE_RMM_Database_Controller::add_object_module() {
     memset(&this->object_info, 0, sizeof(this->object_info));
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
+    if (map_entry == nullptr) {
+        return;
+    }
 
     long object_num = 0;
-    if (map_entry != nullptr && map_entry->object_info.objects != nullptr && map_entry->object_info.object_num > 0) {
+    if (map_entry->object_info.objects != nullptr && map_entry->object_info.object_num > 0) {
         RGE_Object_Data* src = &map_entry->object_info;
         object_num = src->object_num;
         if (object_num < 0) object_num = 0;
@@ -2770,34 +2941,6 @@ void RGE_RMM_Database_Controller::add_object_module() {
             d->land_outer_radius = s->land_outer_radius;
             d->object_exclusion_zone = 1;
         }
-    } else {
-        // Fallback object mix when DB object defs are missing.
-        this->object_info.object_num = 6;
-        RGE_Object_Info_Line* o = this->object_info.objects;
-
-        o[0].obj_id = 83;   o[0].terrain = -1; o[0].group_flag = 1; o[0].scale_flag = 0;
-        o[0].object_number_per_group = 5; o[0].object_number_varience = 2; o[0].number_of_groups = 8;
-        o[0].group_area = 8; o[0].player_id = -1; o[0].land_id = -1; o[0].land_inner_radius = 0; o[0].land_outer_radius = 0; o[0].object_exclusion_zone = 1;
-
-        o[1].obj_id = 59;   o[1].terrain = -1; o[1].group_flag = 1; o[1].scale_flag = 0;
-        o[1].object_number_per_group = 3; o[1].object_number_varience = 1; o[1].number_of_groups = 6;
-        o[1].group_area = 6; o[1].player_id = -1; o[1].land_id = -2; o[1].land_inner_radius = 5; o[1].land_outer_radius = 16; o[1].object_exclusion_zone = 1;
-
-        o[2].obj_id = 66;   o[2].terrain = -1; o[2].group_flag = 1; o[2].scale_flag = 0;
-        o[2].object_number_per_group = 3; o[2].object_number_varience = 1; o[2].number_of_groups = 6;
-        o[2].group_area = 6; o[2].player_id = -1; o[2].land_id = -2; o[2].land_inner_radius = 5; o[2].land_outer_radius = 16; o[2].object_exclusion_zone = 1;
-
-        o[3].obj_id = 102;  o[3].terrain = -1; o[3].group_flag = 1; o[3].scale_flag = 0;
-        o[3].object_number_per_group = 4; o[3].object_number_varience = 2; o[3].number_of_groups = 8;
-        o[3].group_area = 7; o[3].player_id = -1; o[3].land_id = 1; o[3].land_inner_radius = 3; o[3].land_outer_radius = 14; o[3].object_exclusion_zone = 1;
-
-        o[4].obj_id = 53;   o[4].terrain = -1; o[4].group_flag = 1; o[4].scale_flag = 1;
-        o[4].object_number_per_group = 1; o[4].object_number_varience = 0; o[4].number_of_groups = 30;
-        o[4].group_area = 8; o[4].player_id = -1; o[4].land_id = -1; o[4].land_inner_radius = 0; o[4].land_outer_radius = 0; o[4].object_exclusion_zone = 1;
-
-        o[5].obj_id = 370;  o[5].terrain = -1; o[5].group_flag = 0; o[5].scale_flag = 1;
-        o[5].object_number_per_group = 1; o[5].object_number_varience = 0; o[5].number_of_groups = 16;
-        o[5].group_area = 1; o[5].player_id = -1; o[5].land_id = -1; o[5].land_inner_radius = 0; o[5].land_outer_radius = 0; o[5].object_exclusion_zone = 1;
     }
 
     long land_num = this->land_info.land_num;
@@ -2861,11 +3004,11 @@ void RGE_RMM_Database_Controller::add_object_module() {
 void RGE_RMM_Database_Controller::add_elevation_module() {
     memset(&this->elevation_info, 0, sizeof(this->elevation_info));
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
-
-    long grown_land_percent = 60;
-    if (map_entry != nullptr) {
-        grown_land_percent = map_entry->land_info.grown_land_percent;
+    if (map_entry == nullptr) {
+        return;
     }
+
+    long grown_land_percent = map_entry->land_info.grown_land_percent;
     if (grown_land_percent < 0) grown_land_percent = 0;
     if (grown_land_percent > 100) grown_land_percent = 100;
 

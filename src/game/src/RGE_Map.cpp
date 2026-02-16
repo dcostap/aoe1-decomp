@@ -1129,7 +1129,7 @@ void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3,
 
     debug_srand("C:\\msdev\\work\\age1_x1\\map.cpp", 0x5dd, seed);
 
-    // TODO(accuracy): random map DB controller is still partially stubbed in this tree.
+    // Random map DB controller path is active; module internals are decomp-audited incrementally.
     if (this->random_map != nullptr) {
         using RMM_Generate_Fn = uchar(__thiscall*)(void*);
         using RMM_Init_Fn = uchar(__thiscall*)(void*, RGE_Map*, RGE_Game_World*, uchar, long, uchar);
