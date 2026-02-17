@@ -8,6 +8,7 @@
 #include "../include/globals.h"
 #include "../include/RGE_Map.h"
 #include "../include/TRIBE_Screen_Game.h"
+#include "../include/TRIBE_Screen_Wait.h"
 #include "../include/TRIBE_Screen_Main_Menu.h"
 #include "../include/TRIBE_Screen_Status_Message.h"
 #include "../include/TRIBE_World.h"
@@ -999,21 +1000,22 @@ int TRIBE_Game::create_game(int p1) {
     int scenario_player = 0;
     numPlayers = this->numberPlayers();
 
-    // Source of truth: tribegam.cpp.decomp @ 0x00527300-0x0052745D
+    // Source of truth: tribegam.cpp.asm @ 0x00527318..0x00527412
     // Single pass over comm slots: handle humans first, then computer-color remap when needed.
     for (int slot = 1; slot <= numPlayers; ++slot) {
         int humanity = comm_handler->GetPlayerHumanity(slot);
         if (humanity == 2) {
             int colorVal = this->playerColor(slot - 1);
-            if (position_used[colorVal] == -1) {
-                position_used[colorVal] = scenario_player;
+            int colorIndex = colorVal - 1;
+            if (position_used[colorIndex] == -1) {
+                position_used[colorIndex] = scenario_player;
                 scenario_player++;
             }
-            this->setPlayerID(slot, position_used[colorVal] + 1);
+            this->setPlayerID(slot, position_used[colorIndex] + 1);
         } else if (humanity == 4) {
             // Find an unused color position
             for (int c = 0; c < 8; ++c) {
-                if (position_used[c + 1] == -1) {
+                if (position_used[c] == -1) {
                     // Check no human has claimed this color
                     int claimed = 0;
                     for (uint check = 1; check < 9; ++check) {
@@ -1028,9 +1030,9 @@ int TRIBE_Game::create_game(int p1) {
                     }
                     if (!claimed) {
                         this->setPlayerColor(slot - 1, c + 1);
-                        position_used[c + 1] = scenario_player;
+                        position_used[c] = scenario_player;
                         scenario_player++;
-                        this->setPlayerID(slot, position_used[c + 1] + 1);
+                        this->setPlayerID(slot, position_used[c] + 1);
                         break;
                     }
                 }
@@ -1212,7 +1214,6 @@ int TRIBE_Game::create_game_screen() {
     // Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`create_game_screen` @ 0x00527830)
     // - `src/game/src/tribegam.cpp.decomp`
-    // Fully verified for control flow/call sequencing.
 
     this->disable_input();
     this->set_game_mode(0, 0);
@@ -1222,12 +1223,10 @@ int TRIBE_Game::create_game_screen() {
     if (screen != nullptr) {
         if (screen->error_code == 0) {
             int mp_started = 1;
-            if (this->multiplayerGame() != 0) {
-                if (this->comm_handler != nullptr) {
-                    mp_started = this->comm_handler->MultiplayerGameStart();
-                } else {
-                    mp_started = 0;
-                }
+            if (this->comm_handler != nullptr) {
+                mp_started = this->comm_handler->MultiplayerGameStart();
+            } else if (this->multiplayerGame() != 0) {
+                mp_started = 0;
             }
             if (mp_started != 0) {
                 tribe_set_current_screen(screen);
@@ -1235,10 +1234,15 @@ int TRIBE_Game::create_game_screen() {
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
             } else {
-                // TODO: STUB: restore TRIBE_Screen_Wait constructor + set_text path from scr_mps.cpp.
-                // Keep panel flow/prog_mode parity for the MP wait branch.
+                TRIBE_Screen_Wait* wait_screen = new TRIBE_Screen_Wait();
+                if (wait_screen != nullptr && wait_screen->error_code == 0) {
+                    wait_screen->set_text(0x454);
+                    tribe_set_current_screen(wait_screen);
+                } else if (wait_screen != nullptr) {
+                    delete wait_screen;
+                    wait_screen = nullptr;
+                }
                 if (panel_system) {
-                    panel_system->setCurrentPanel((char*)"Multiplayer Wait Screen", 0);
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
                 this->set_prog_mode(3);
@@ -1249,6 +1253,9 @@ int TRIBE_Game::create_game_screen() {
             tribe_retire_panel_by_name("Select Scenario Screen");
             tribe_retire_panel_by_name("Game Settings Screen");
             tribe_retire_panel_by_name("Load Saved Game Screen");
+            tribe_retire_panel_by_name("MP Setup Screen");
+            tribe_retire_panel_by_name("Join Screen");
+            tribe_retire_panel_by_name("MP Startup Screen");
             tribe_retire_panel_by_name("Main Menu");
             tribe_retire_panel_by_name("Campaign Selection Screen");
 

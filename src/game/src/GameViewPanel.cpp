@@ -18,6 +18,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "../include/TMousePointer.h"
 
 extern TMousePointer* MouseSystem;
@@ -269,34 +270,55 @@ static int gameview_draw_object_sprite(TDrawArea* area, RGE_Static_Object* obj, 
     if (spr == nullptr) {
         spr = obj->master_obj->sprite;
     }
+    if (spr == nullptr) {
+        return 0;
+    }
     gameview_try_load_sprite_shape(spr);
 
-    if (spr != nullptr && spr->loaded && spr->shape != nullptr && spr->shape->shape_count() > 0) {
-        int facet = (int)obj->facet;
-        if (facet < 0 || facet >= spr->shape->shape_count()) {
-            facet = 0;
-        }
-        spr->shape->shape_draw(area, sx, sy, facet, 0, 0, nullptr);
-        return 1;
+    // Source of truth: sprite.cpp.decomp @ 0x004C0510 (RGE_Sprite::draw).
+    // draw_list path has precedence and uses facet-filter + facet remap into child sprites.
+    int facet = (int)obj->facet;
+    if (facet < 0) {
+        facet = 0;
+    }
+    if (spr->facet_num > 0 && facet >= spr->facet_num) {
+        facet = 0;
     }
 
-    if (spr != nullptr && spr->draw_list_num > 0 && spr->draw_list != nullptr) {
+    if (spr->draw_list_num > 0 && spr->draw_list != nullptr) {
         int drew_any = 0;
         for (int di = 0; di < spr->draw_list_num; ++di) {
             RGE_Picture_List* dl = &spr->draw_list[di];
-            RGE_Sprite* ds = dl->sprite;
-            if (dl->picture_num == -1) {
-                ds = spr;
-            }
-            gameview_try_load_sprite_shape(ds);
-            if (ds == nullptr || ds->shape == nullptr || ds->shape->shape_count() <= 0) {
+            if (dl == nullptr) {
                 continue;
             }
 
-            int df = (int)dl->facet;
+            int list_facet = (int)dl->facet;
+            if (list_facet >= 0 && list_facet != facet) {
+                continue;
+            }
+
+            RGE_Sprite* ds = dl->sprite;
+            if (ds == nullptr && dl->picture_num == -1) {
+                ds = spr;
+            }
+            if (ds == nullptr) {
+                continue;
+            }
+
+            gameview_try_load_sprite_shape(ds);
+            if (!ds->loaded || ds->shape == nullptr || ds->shape->shape_count() <= 0) {
+                continue;
+            }
+
+            int df = 0;
+            if (spr->facet_num > 0 && ds->facet_num > 0) {
+                df = (ds->facet_num * facet) / spr->facet_num;
+            }
             if (df < 0 || df >= ds->shape->shape_count()) {
                 df = 0;
             }
+
             ds->shape->shape_draw(
                 area,
                 sx + (long)dl->offset_x,
@@ -312,6 +334,118 @@ static int gameview_draw_object_sprite(TDrawArea* area, RGE_Static_Object* obj, 
         }
     }
 
+    if (spr->loaded && spr->shape != nullptr && spr->shape->shape_count() > 0) {
+        int draw_facet = facet;
+        if (draw_facet < 0 || draw_facet >= spr->shape->shape_count()) {
+            draw_facet = 0;
+        }
+        spr->shape->shape_draw(area, sx, sy, draw_facet, 0, 0, nullptr);
+        return 1;
+    }
+
+    return 0;
+}
+
+static int gameview_object_bounds(RGE_Static_Object* obj, long anchor_x, long anchor_y,
+                                  long* out_l, long* out_t, long* out_r, long* out_b) {
+    if (obj == nullptr || out_l == nullptr || out_t == nullptr || out_r == nullptr || out_b == nullptr) {
+        return 0;
+    }
+
+    RGE_Sprite* spr = obj->sprite;
+    if (spr == nullptr && obj->master_obj != nullptr) {
+        spr = obj->master_obj->sprite;
+    }
+    if (spr == nullptr) {
+        return 0;
+    }
+
+    int facet = (int)obj->facet;
+    if (facet < 0) {
+        facet = 0;
+    }
+    if (spr->facet_num > 0 && facet >= spr->facet_num) {
+        facet = 0;
+    }
+
+    int have = 0;
+    long l = 0;
+    long t = 0;
+    long r = 0;
+    long b = 0;
+
+    if (spr->draw_list_num > 0 && spr->draw_list != nullptr) {
+        for (int di = 0; di < spr->draw_list_num; ++di) {
+            RGE_Picture_List* dl = &spr->draw_list[di];
+            if (dl == nullptr) {
+                continue;
+            }
+
+            int list_facet = (int)dl->facet;
+            if (list_facet >= 0 && list_facet != facet) {
+                continue;
+            }
+
+            RGE_Sprite* ds = dl->sprite;
+            if (ds == nullptr && dl->picture_num == -1) {
+                ds = spr;
+            }
+            if (ds == nullptr) {
+                continue;
+            }
+
+            long dl_l = (long)dl->offset_x + (long)ds->box_x1;
+            long dl_t = (long)dl->offset_y + (long)ds->box_y1;
+            long dl_r = (long)dl->offset_x + (long)ds->box_x2;
+            long dl_b = (long)dl->offset_y + (long)ds->box_y2;
+
+            if (!have) {
+                l = dl_l;
+                t = dl_t;
+                r = dl_r;
+                b = dl_b;
+                have = 1;
+            } else {
+                if (dl_l < l) l = dl_l;
+                if (dl_t < t) t = dl_t;
+                if (dl_r > r) r = dl_r;
+                if (dl_b > b) b = dl_b;
+            }
+        }
+    }
+
+    if (!have) {
+        l = (long)spr->box_x1;
+        t = (long)spr->box_y1;
+        r = (long)spr->box_x2;
+        b = (long)spr->box_y2;
+        have = 1;
+    }
+
+    *out_l = anchor_x + l;
+    *out_t = anchor_y + t;
+    *out_r = anchor_x + r;
+    *out_b = anchor_y + b;
+    return have;
+}
+
+struct GameViewObjDrawEntry {
+    RGE_Static_Object* obj;
+    long sx;
+    long sy;
+    long sort_y;
+    long sort_x;
+};
+
+static int gameview_obj_draw_cmp(const void* a, const void* b) {
+    const GameViewObjDrawEntry* ea = (const GameViewObjDrawEntry*)a;
+    const GameViewObjDrawEntry* eb = (const GameViewObjDrawEntry*)b;
+    if (ea->sort_y < eb->sort_y) return -1;
+    if (ea->sort_y > eb->sort_y) return 1;
+    if (ea->sort_x < eb->sort_x) return -1;
+    if (ea->sort_x > eb->sort_x) return 1;
+    if (ea->obj < eb->obj) return -1;
+    if (ea->obj > eb->obj) return 1;
     return 0;
 }
 
@@ -380,6 +514,22 @@ void GameViewPanel::draw() {
     long min_sy = 2147483647L;
     long max_sy = -2147483647L - 1;
 
+    RGE_Game_World* world = this->world_map ? this->world_map->game_world : nullptr;
+    int max_obj = 0;
+    if (world != nullptr && world->objectsValue != nullptr && world->numberObjectsValue > 0) {
+        max_obj = world->numberObjectsValue;
+        if (world->maxNumberObjectsValue > 0 && max_obj > world->maxNumberObjectsValue) {
+            max_obj = world->maxNumberObjectsValue;
+        }
+    }
+
+    GameViewObjDrawEntry* obj_draw_list = nullptr;
+    int obj_draw_cap = max_obj;
+    int obj_draw_count = 0;
+    if (obj_draw_cap > 0) {
+        obj_draw_list = new GameViewObjDrawEntry[obj_draw_cap];
+    }
+
     // Draw in diagonal order with constant (row-col), top-to-bottom in screen space.
     long min_diff = -(map_w - 1);
     long max_diff = map_h - 1;
@@ -410,17 +560,23 @@ void GameViewPanel::draw() {
             if (sy < min_sy) min_sy = sy;
             if (sy > max_sy) max_sy = sy;
 
+            long tile_draw_w = half_w * 2;
             long tile_draw_h = half_h * 2;
             if (tile_type < 19 && this->world_map->tilesizes[tile_type].height > 0) {
                 tile_draw_h = this->world_map->tilesizes[tile_type].height;
             }
+            if (tile_type < 19 && this->world_map->tilesizes[tile_type].width > 0) {
+                tile_draw_w = this->world_map->tilesizes[tile_type].width;
+            }
 
-            // Early cull: skip if tile is fully outside the panel.
-            if (sx + half_w < this->pnl_x || sx - half_w > this->pnl_x + scr_w) {
+            // Early cull: match RGE_View terrain bounds checks (x..x+tile_w, y..y+tile_h).
+            long ex = sx + tile_draw_w;
+            long ey = sy + tile_draw_h;
+            if (ex < this->pnl_x || sx > this->pnl_x + scr_w) {
                 culled_x++;
                 continue;
             }
-            if (sy + tile_draw_h < this->pnl_y || sy - half_h > this->pnl_y + scr_h) {
+            if (ey < this->pnl_y || sy > this->pnl_y + scr_h) {
                 culled_y++;
                 continue;
             }
@@ -556,50 +712,15 @@ void GameViewPanel::draw() {
             drawn_tiles++;
             real_tiles++;
 
-            // Draw objects linked to this tile in the same traversal order
-            // as terrain so depth appears stable and map-consistent.
-            RGE_Object_Node* on = tile->objects.list;
-            while (on != nullptr) {
-                RGE_Static_Object* obj = on->node;
-                on = on->next;
-
-                if (obj == nullptr || obj->master_obj == nullptr || obj->object_state >= 7) {
-                    continue;
-                }
-
-                long osx = sx + (long)obj->screen_x_offset;
-                long osy = sy + (long)tile->height * half_h + (long)obj->screen_y_offset;
-
-                if (osx < this->pnl_x - TILE_HALF_W || osx > this->pnl_x + scr_w + TILE_HALF_W ||
-                    osy < this->pnl_y - TILE_HALF_H || osy > this->pnl_y + scr_h + TILE_HALF_H * 2) {
-                    objects_culled++;
-                    continue;
-                }
-
-                if (gameview_draw_object_sprite(this->render_area, obj, osx, osy) != 0) {
-                    objects_drawn++;
-                } else {
-                    this->render_area->DrawLine((int)osx - 4, (int)osy - 4, (int)osx + 4, (int)osy + 4, 250);
-                    this->render_area->DrawLine((int)osx - 4, (int)osy + 4, (int)osx + 4, (int)osy - 4, 250);
-                    objects_fallback++;
-                }
-            }
         }
     }
 
-    // Fallback pass for any objects not linked to tile lists yet.
-    RGE_Game_World* world = this->world_map ? this->world_map->game_world : nullptr;
-    if (world != nullptr && world->objectsValue != nullptr && world->numberObjectsValue > 0) {
-        int max_obj = world->numberObjectsValue;
-        if (world->maxNumberObjectsValue > 0 && max_obj > world->maxNumberObjectsValue) {
-            max_obj = world->maxNumberObjectsValue;
-        }
+    // Global object gather pass (independent from terrain tile culling).
+    // This avoids edge despawn when an object's anchor tile is culled but sprite still overlaps view.
+    if (world != nullptr && world->objectsValue != nullptr && obj_draw_list != nullptr) {
         for (int i = 0; i < max_obj; ++i) {
             RGE_Static_Object* obj = world->objectsValue[i];
-            if (obj == nullptr || obj->master_obj == nullptr) {
-                continue;
-            }
-            if (obj->tile != nullptr) {
+            if (obj == nullptr || obj->master_obj == nullptr || obj->object_state >= 7) {
                 continue;
             }
 
@@ -608,39 +729,78 @@ void GameViewPanel::draw() {
                 long ox = (long)obj->world_x;
                 long oy = (long)obj->world_y;
                 if (ox < 0 || oy < 0 || ox >= map_w || oy >= map_h) {
-                    objects_culled++;
                     continue;
                 }
                 ot = &this->world_map->map_row_offset[oy][ox];
             }
             if (ot == nullptr) {
-                objects_culled++;
                 continue;
             }
 
             long wx = origin_x + (long)ot->screen_xpos;
-            long wy = origin_y + (long)ot->screen_ypos;
+            // Match RGE_View object anchor behavior: cancel terrain elevation offset for object sprite anchor.
+            long wy = origin_y + (long)ot->screen_ypos + (long)ot->height * half_h;
 
-            long sx = wx - this->cam_x + this->pnl_x + (long)obj->screen_x_offset;
-            long sy = wy + (long)ot->height * half_h - this->cam_y + this->pnl_y + (long)obj->screen_y_offset;
+            long osx = wx - this->cam_x + this->pnl_x + (long)obj->screen_x_offset;
+            long osy = wy - this->cam_y + this->pnl_y + (long)obj->screen_y_offset;
 
-            if (sx < this->pnl_x - TILE_HALF_W || sx > this->pnl_x + scr_w + TILE_HALF_W ||
-                sy < this->pnl_y - TILE_HALF_H || sy > this->pnl_y + scr_h + TILE_HALF_H * 2) {
-                objects_culled++;
-                continue;
+            long obj_l = 0;
+            long obj_t = 0;
+            long obj_r = 0;
+            long obj_b = 0;
+            long sort_y = osy;
+            if (gameview_object_bounds(obj, osx, osy, &obj_l, &obj_t, &obj_r, &obj_b) != 0) {
+                sort_y = obj_b;
             }
 
-            if (gameview_draw_object_sprite(this->render_area, obj, sx, sy) != 0) {
-                objects_drawn++;
-            } else {
-                // Fallback marker so we can still verify object placement visually.
-                this->render_area->DrawLine((int)sx - 4, (int)sy - 4, (int)sx + 4, (int)sy + 4, 250);
-                this->render_area->DrawLine((int)sx - 4, (int)sy + 4, (int)sx + 4, (int)sy - 4, 250);
-                objects_fallback++;
+            if (obj_draw_count < obj_draw_cap) {
+                obj_draw_list[obj_draw_count].obj = obj;
+                obj_draw_list[obj_draw_count].sx = osx;
+                obj_draw_list[obj_draw_count].sy = osy;
+                obj_draw_list[obj_draw_count].sort_y = sort_y;
+                obj_draw_list[obj_draw_count].sort_x = osx;
+                obj_draw_count++;
             }
         }
     }
-    
+
+    if (obj_draw_list != nullptr && obj_draw_count > 1) {
+        qsort(obj_draw_list, (size_t)obj_draw_count, sizeof(GameViewObjDrawEntry), gameview_obj_draw_cmp);
+    }
+
+    long tile_w = this->world_map->tile_width > 0 ? this->world_map->tile_width : TILE_HALF_W * 2;
+    long tile_h = this->world_map->tile_height > 0 ? this->world_map->tile_height : TILE_HALF_H * 2;
+    long cull_l = this->pnl_x - tile_w * 2;
+    long cull_t = this->pnl_y - tile_h * 4;
+    long cull_r = this->pnl_x + scr_w + tile_w * 2;
+    long cull_b = this->pnl_y + scr_h + tile_h * 10;
+
+    for (int i = 0; i < obj_draw_count; ++i) {
+        GameViewObjDrawEntry* e = &obj_draw_list[i];
+        if (e->obj == nullptr || e->obj->master_obj == nullptr || e->obj->object_state >= 7) {
+            continue;
+        }
+
+        long obj_l = 0;
+        long obj_t = 0;
+        long obj_r = 0;
+        long obj_b = 0;
+        if (gameview_object_bounds(e->obj, e->sx, e->sy, &obj_l, &obj_t, &obj_r, &obj_b) != 0) {
+            if (obj_r < cull_l || obj_l > cull_r || obj_b < cull_t || obj_t > cull_b) {
+                objects_culled++;
+                continue;
+            }
+        }
+
+        if (gameview_draw_object_sprite(this->render_area, e->obj, e->sx, e->sy) != 0) {
+            objects_drawn++;
+        } else {
+            this->render_area->DrawLine((int)e->sx - 4, (int)e->sy - 4, (int)e->sx + 4, (int)e->sy + 4, 250);
+            this->render_area->DrawLine((int)e->sx - 4, (int)e->sy + 4, (int)e->sx + 4, (int)e->sy - 4, 250);
+            objects_fallback++;
+        }
+    }
+
     // Log summary (throttled)
     static int log_counter = 0;
     if (log_counter++ % 60 == 0) {
@@ -653,6 +813,8 @@ void GameViewPanel::draw() {
     if (area_locked_here) {
         this->render_area->Unlock((char*)"GameViewPanel::draw");
     }
+
+    delete[] obj_draw_list;
 
     this->render_area->SetClipRect(&saved_clip);
 
@@ -668,10 +830,12 @@ long GameViewPanel::handle_key_down(long param_1, short param_2, int param_3, in
 
     long map_w = this->world_map->map_width;
     long map_h = this->world_map->map_height;
+    long half_w = this->world_map->tile_half_width > 0 ? this->world_map->tile_half_width : TILE_HALF_W;
+    long half_h = this->world_map->tile_half_height > 0 ? this->world_map->tile_half_height : TILE_HALF_H;
 
     // Maximum camera bounds (world pixel extents)
-    long world_pixel_w = (map_w + map_h) * TILE_HALF_W;
-    long world_pixel_h = (map_w + map_h) * TILE_HALF_H;
+    long world_pixel_w = (map_w + map_h) * half_w;
+    long world_pixel_h = (map_w + map_h) * half_h;
     long max_cam_x = world_pixel_w - this->pnl_wid;
     long max_cam_y = world_pixel_h - this->pnl_hgt;
     if (max_cam_x < 0) max_cam_x = 0;
@@ -753,8 +917,10 @@ long GameViewPanel::handle_idle() {
         if (scroll_needed) {
             long map_w = this->world_map->map_width;
             long map_h = this->world_map->map_height;
-            long world_pixel_w = (map_w + map_h) * TILE_HALF_W;
-            long world_pixel_h = (map_w + map_h) * TILE_HALF_H;
+            long half_w = this->world_map->tile_half_width > 0 ? this->world_map->tile_half_width : TILE_HALF_W;
+            long half_h = this->world_map->tile_half_height > 0 ? this->world_map->tile_half_height : TILE_HALF_H;
+            long world_pixel_w = (map_w + map_h) * half_w;
+            long world_pixel_h = (map_w + map_h) * half_h;
             long max_cam_x = world_pixel_w - this->pnl_wid;
             long max_cam_y = world_pixel_h - this->pnl_hgt;
             if (max_cam_x < 0) max_cam_x = 0;

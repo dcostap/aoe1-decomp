@@ -315,32 +315,45 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
             rge_view_try_load_sprite_shape(spr);
 
             int drawn = 0;
-
-            if (spr != nullptr && spr->shape != nullptr && spr->shape->shape_count() > 0) {
-                int facet = (int)obj->facet;
-                if (facet < 0 || facet >= spr->shape->shape_count()) {
-                    facet = 0;
-                }
-                spr->shape->shape_draw(this->cur_render_area, sx, sy, facet, 0, 0, nullptr);
-                drawn = 1;
+            int facet = (int)obj->facet;
+            if (facet < 0) {
+                facet = 0;
+            }
+            if (spr != nullptr && spr->facet_num > 0 && facet >= spr->facet_num) {
+                facet = 0;
             }
 
-            if (drawn == 0 && spr != nullptr && spr->draw_list_num > 0 && spr->draw_list != nullptr) {
+            // Source of truth: sprite.cpp.decomp @ 0x004C0510 (RGE_Sprite::draw).
+            // Draw-list path takes precedence and remaps facet into child sprites.
+            if (spr != nullptr && spr->draw_list_num > 0 && spr->draw_list != nullptr) {
                 for (int di = 0; di < spr->draw_list_num; ++di) {
                     RGE_Picture_List* dl = &spr->draw_list[di];
-                    RGE_Sprite* ds = dl->sprite;
-                    if (dl->picture_num == -1) {
-                        ds = spr;
-                    }
-                    rge_view_try_load_sprite_shape(ds);
-                    if (ds == nullptr || ds->shape == nullptr || ds->shape->shape_count() <= 0) {
+                    int list_facet = (int)dl->facet;
+                    if (list_facet >= 0 && list_facet != facet) {
                         continue;
                     }
 
-                    int df = (int)dl->facet;
+                    RGE_Sprite* ds = dl->sprite;
+                    if (ds == nullptr && dl->picture_num == -1) {
+                        ds = spr;
+                    }
+                    if (ds == nullptr) {
+                        continue;
+                    }
+
+                    rge_view_try_load_sprite_shape(ds);
+                    if (ds->shape == nullptr || ds->shape->shape_count() <= 0) {
+                        continue;
+                    }
+
+                    int df = 0;
+                    if (spr->facet_num > 0 && ds->facet_num > 0) {
+                        df = (ds->facet_num * facet) / spr->facet_num;
+                    }
                     if (df < 0 || df >= ds->shape->shape_count()) {
                         df = 0;
                     }
+
                     ds->shape->shape_draw(
                         this->cur_render_area,
                         sx + (int)dl->offset_x,
@@ -351,6 +364,15 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                         nullptr);
                     drawn = 1;
                 }
+            }
+
+            if (drawn == 0 && spr != nullptr && spr->shape != nullptr && spr->shape->shape_count() > 0) {
+                int draw_facet = facet;
+                if (draw_facet < 0 || draw_facet >= spr->shape->shape_count()) {
+                    draw_facet = 0;
+                }
+                spr->shape->shape_draw(this->cur_render_area, sx, sy, draw_facet, 0, 0, nullptr);
+                drawn = 1;
             }
 
             if (drawn == 0) {
