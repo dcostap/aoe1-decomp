@@ -235,6 +235,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     // ---- Victory Fixed Text (0x25d9) ----
     iVar9 = this->create_text((TPanel*)this, &this->victoryFixedText, 0x25d9, 0x14, 0x108, 0xb4, 0x5c, 0xb, 1, 1, 1);
     if (iVar9 == 0) goto fail;
+    // Source of truth: scr_set.cpp.asm @ 0x004B4E9A..0x004B4ED6
+    // Constructor applies bevel colors here; no separate set_text_color call in this block.
     this->victoryFixedText->set_bevel_info(3, (int)this->bevel_color1, (int)this->bevel_color2,
         (int)this->bevel_color3, (int)this->bevel_color4, (int)this->bevel_color5, (int)this->bevel_color6);
 
@@ -413,6 +415,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
             (char*)"", this->missionTextX, this->missionTextY,
             this->missionTextWidth, this->missionTextHeight, 0xb, 0, 0, 1);
         if (iVar9 == 0) goto fail;
+        // Source of truth: scr_set.cpp.asm @ 0x004B5677..0x004B56B3
+        // Constructor uses bevel setup for mission text; no constructor-time set_text_color call.
         this->missionText->set_bevel_info(3, (int)this->bevel_color1, (int)this->bevel_color2,
             (int)this->bevel_color3, (int)this->bevel_color4, (int)this->bevel_color5, (int)this->bevel_color6);
 

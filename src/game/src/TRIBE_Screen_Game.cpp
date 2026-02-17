@@ -87,7 +87,6 @@ static TMessagePanel* create_message_panel_checked(
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : GameViewPanel((rge_base_game != nullptr && rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr) {
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: begin");
     // Partial parity milestone:
     // constructor now executes panel/resource setup path, but map/main view rendering still
     // runs through GameViewPanel until TRIBE_Main_View/TRIBE_Diamond_Map_View are restored.
@@ -102,7 +101,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: setup ok");
 
     this->world_map = (rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr;
     this->runtime.world = (TRIBE_World*)rge_base_game->world;
@@ -126,7 +124,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             rge_base_game->draw_system->SetPalette(rge_base_game->prog_palette);
         }
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: palette configured");
 
     long screen_w = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->main_wid : 0x280;
     long screen_h = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->main_hgt : 0x1e0;
@@ -149,7 +146,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     // keep fallback view ownership (main_view=this) until TRIBE_Main_View/TRIBE_Diamond_Map_View
     // object path is wired, but continue with full panel/resource setup below.
     this->runtime.main_view = this;
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: fallback main_view=self");
 
     // Constructor resource parity (partial): load button art assets up front.
     this->runtime.button_unit_pic = load_shape_checked("btnunit.shp", 0xC62A);
@@ -181,7 +177,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             return;
         }
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: base button shapes loaded");
 
     // Constructor resource parity (partial): create panel objects that scr_game owns/destructs.
     RGE_Font* font11 = rge_base_game->get_font(0x0B);
@@ -201,7 +196,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             delete_panel_safe((TPanel*&)this->runtime.inven_panel);
         }
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: inven/object/time/pop/countdown panels allocated");
 
     if (font7 != nullptr) {
         this->runtime.object_panel = new TRIBE_Panel_Object(
@@ -264,7 +258,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: command button panels allocated");
 
     // Button ID/help/text setup parity for map/menu buttons.
     this->runtime.button_panel[12]->set_id(0, 0x0D, 0);
@@ -336,7 +329,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
         this->runtime.text_line_panel->set_justification(0, 2, 1);
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: text_line panel created");
 
     if (this->create_text(
             this->runtime.main_view,
@@ -407,7 +399,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             this->runtime.chat_panel[i]->set_active(0);
         }
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: message/chat panels created");
 
     if (font11 != nullptr) {
         this->runtime.age_panel = new TTextPanel();
@@ -435,7 +426,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->runtime.age_panel->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
         this->runtime.age_panel->set_help_info(0x4E35, -1);
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: age panel created");
 
     RGE_Font* font10 = rge_base_game->get_font(10);
     if (font10 != nullptr) {
@@ -474,7 +464,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             }
         }
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: fps panel created");
 
     int num_score_panels = 0;
     if (this->runtime.world != nullptr) {
@@ -501,7 +490,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             this->runtime.score_panel[i]->set_active(0);
         }
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: score panels created");
 
     // TODO: STUB: scr_game log panel block is crashing in partial constructor parity state.
     // Defer log_text/log_scrollbar creation until full screen/view parity is restored.
@@ -538,7 +526,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     for (int i = 0; i < 17; ++i) {
         this->runtime.button_panel[i]->set_z_order(1, 0);
     }
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: final z-order set");
 
     if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
         this->set_curr_child(this->runtime.main_view);
@@ -547,7 +534,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     // Keep construction deterministic and avoid touching panel runtime startup until
     // real TRIBE_Main_View/TRIBE_Diamond_Map_View + update loop parity is in place.
     (void)player;
-    CUSTOM_DEBUG_LOG("TRIBE_Screen_Game::ctor: end");
 }
 
 TRIBE_Screen_Game::~TRIBE_Screen_Game() {

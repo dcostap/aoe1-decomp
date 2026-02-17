@@ -803,7 +803,11 @@ int TRIBE_Game::create_game(int p1) {
     // - `src/game/src/tribegam.cpp.asm` (`create_game` @ 0x00526E60)
     // - `src/game/src/tribegam.cpp.decomp`
     //
-    // Transliteration scoped to single-player random-map/scenario launch.
+    // Instruction-audited parity for active single-player setup path:
+    // random/scenario player-info build, player ID/color mapping, world->new_game bootstrap,
+    // map visibility/fog/pathing setup, and save_humanity snapshot.
+    //
+    // Remaining non-SP/secondary branches are tracked elsewhere (video/MP-only flows).
     TCommunications_Handler* comm_handler = this->comm_handler;
 
     // --- Phase 1: Reset game state ---
@@ -1015,7 +1019,9 @@ int TRIBE_Game::create_game(int p1) {
         } else if (humanity == 4) {
             // Find an unused color position
             for (int c = 0; c < 8; ++c) {
-                if (position_used[c] == -1) {
+                // Source of truth: tribegam.cpp.asm @ 0x00527373..0x005273ff
+                // AI branch probes/writes position_used[c + 1].
+                if (position_used[c + 1] == -1) {
                     // Check no human has claimed this color
                     int claimed = 0;
                     for (uint check = 1; check < 9; ++check) {
@@ -1030,9 +1036,9 @@ int TRIBE_Game::create_game(int p1) {
                     }
                     if (!claimed) {
                         this->setPlayerColor(slot - 1, c + 1);
-                        position_used[c] = scenario_player;
+                        position_used[c + 1] = scenario_player;
                         scenario_player++;
-                        this->setPlayerID(slot, position_used[c] + 1);
+                        this->setPlayerID(slot, position_used[c + 1] + 1);
                         break;
                     }
                 }
