@@ -106,6 +106,7 @@ public:
     void set_word_wrap(int enable);
     void set_text_color(unsigned long c1, unsigned long c2);
     void set_highlight_text_color(unsigned long c1, unsigned long c2);
+    void set_spacer_size(int size);
     int get_text_rect(tagRECT* out_rect);
     void set_outline(int param_1, uchar param_2);
     void set_scrollbar(TScrollBarPanel* param_1, int param_2);

@@ -26,6 +26,8 @@
 #include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/TRegistry.h"
+#include "../include/TChat.h"
+#include "../include/TMousePointer.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
@@ -97,41 +99,18 @@ static void tribe_clear_panel_system_owners_for_screen(TPanel* screen) {
 
 static void tribe_apply_screen_switch(TPanel* new_screen) {
     if (new_screen == gCurrentScreen) return;
-
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("screen_switch: begin old=%p new=%p", gCurrentScreen, new_screen);
-CUSTOM_DEBUG_END
-
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("screen_switch: clear owners (before)");
-CUSTOM_DEBUG_END
     tribe_clear_panel_system_owners_for_screen(gCurrentScreen);
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("screen_switch: clear owners (after)");
-CUSTOM_DEBUG_END
 
     if (panel_system && gCurrentScreen) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("screen_switch: remove old panel");
-CUSTOM_DEBUG_END
         panel_system->remove_panel(gCurrentScreen);
     }
     if (gCurrentScreen) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("screen_switch: retire old screen begin");
-CUSTOM_DEBUG_END
         tribe_retire_screen_for_later_delete(gCurrentScreen);
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("screen_switch: retire old screen end");
-CUSTOM_DEBUG_END
         gCurrentScreen = nullptr;
     }
 
     gCurrentScreen = new_screen;
     if (panel_system && gCurrentScreen) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("screen_switch: add new panel");
-CUSTOM_DEBUG_END
         panel_system->add_panel(gCurrentScreen);
         panel_system->setCurrentPanel(gCurrentScreen, 0);
     }
@@ -141,18 +120,11 @@ CUSTOM_DEBUG_END
     // If idle gets starved by a message storm, force one activation pass here so the UI does not
     // remain stuck with wait-cursor/captured input.
     if (gCurrentScreen && rge_base_game && rge_base_game->input_enabled == 0) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("screen_switch: forcing post-switch handle_idle/enable_input");
-CUSTOM_DEBUG_END
         gCurrentScreen->handle_idle();
         if (rge_base_game->input_enabled == 0) {
             rge_base_game->enable_input();
         }
     }
-
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("screen_switch: end");
-CUSTOM_DEBUG_END
 }
 
 void tribe_set_current_screen(TPanel* new_screen) {
@@ -180,6 +152,21 @@ static void tribe_process_pending_screen_switch() {
     TPanel* next = gPendingScreen;
     gPendingScreen = nullptr;
     tribe_apply_screen_switch(next);
+}
+
+static void tribe_retire_panel_by_name(const char* panel_name) {
+    if (panel_system == nullptr || panel_name == nullptr || panel_name[0] == '\0') {
+        return;
+    }
+
+    TPanel* panel = panel_system->panel((char*)panel_name);
+    if (panel == nullptr) {
+        return;
+    }
+
+    tribe_clear_panel_system_owners_for_screen(panel);
+    panel_system->remove_panel(panel);
+    tribe_retire_screen_for_later_delete(panel);
 }
 
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
@@ -816,8 +803,7 @@ int TRIBE_Game::create_game(int p1) {
     // - `src/game/src/tribegam.cpp.decomp`
     //
     // Transliteration scoped to single-player random-map/scenario launch.
-
-    TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+    TCommunications_Handler* comm_handler = this->comm_handler;
 
     // --- Phase 1: Reset game state ---
     this->inHandleIdle = 0;
@@ -835,12 +821,21 @@ int TRIBE_Game::create_game(int p1) {
         this->quick_build = 0;
     }
 
+    this->do_show_timings = 0;
+    this->do_show_comm = 0;
+    this->do_show_ai = 0;
+
     this->set_map_visible('\0');
     this->set_map_fog('\0');
 
-    // Clear per-player queue counters and random_civ flags
-    for (int i = 0; i < 9; ++i) {
+    // Source of truth: tribegam.cpp.asm @ 0x00526EDE..0x00526F02
+    // Reset per-slot startup flags for active player slots (1..8).
+    for (int i = 1; i < 9; ++i) {
+        this->resigned[i] = 0;
+        player_dropped[i - 1] = 0;
         this->queue_is_waiting_on_pop_counter[i] = 0;
+    }
+    for (int i = 0; i < 9; ++i) {
         this->random_civ[i] = 0;
     }
     out_of_sync = 0;
@@ -943,7 +938,7 @@ int TRIBE_Game::create_game(int p1) {
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", seed_line, seed);
     } else {
         // Multiplayer: get seed from comm
-        unsigned int seed = comm_handler ? comm_handler->GetRandomSeed() : (unsigned int)GetTickCount();
+        unsigned int seed = comm_handler->GetRandomSeed();
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xd24, seed);
     }
 
@@ -968,7 +963,7 @@ int TRIBE_Game::create_game(int p1) {
     this->resetRandomComputerName();
     int numPlayers = this->numberPlayers();
     for (int i = 0; i < numPlayers; ++i) {
-        int humanity = comm_handler ? comm_handler->GetPlayerHumanity(i + 1) : 4;
+        int humanity = comm_handler->GetPlayerHumanity(i + 1);
         if (humanity == 4) {
             int civVal = this->civilization(i);
             int cn = this->randomComputerName(civVal);
@@ -1007,7 +1002,7 @@ int TRIBE_Game::create_game(int p1) {
     // Source of truth: tribegam.cpp.decomp @ 0x00527300-0x0052745D
     // Single pass over comm slots: handle humans first, then computer-color remap when needed.
     for (int slot = 1; slot <= numPlayers; ++slot) {
-        int humanity = comm_handler ? comm_handler->GetPlayerHumanity(slot) : (slot == 1 ? 2 : 4);
+        int humanity = comm_handler->GetPlayerHumanity(slot);
         if (humanity == 2) {
             int colorVal = this->playerColor(slot - 1);
             if (position_used[colorVal] == -1) {
@@ -1022,7 +1017,7 @@ int TRIBE_Game::create_game(int p1) {
                     // Check no human has claimed this color
                     int claimed = 0;
                     for (uint check = 1; check < 9; ++check) {
-                        int h = comm_handler ? comm_handler->GetPlayerHumanity(check) : (check == 1 ? 2 : 4);
+                        int h = comm_handler->GetPlayerHumanity(check);
                         if (h == 2) {
                             int pc = this->playerColor(check - 1);
                             if (pc - 1 == c) {
@@ -1058,7 +1053,7 @@ int TRIBE_Game::create_game(int p1) {
         }
         if (commSlot == 0) break;
 
-        int humanity = comm_handler ? comm_handler->GetPlayerHumanity(commSlot) : (commSlot == 1 ? 2 : 4);
+        int humanity = comm_handler->GetPlayerHumanity(commSlot);
         int playerIdx = commSlot - 1;
         int colorVal = this->playerColor(playerIdx);
         int colorIdx = colorVal - 1;
@@ -1082,7 +1077,7 @@ int TRIBE_Game::create_game(int p1) {
         // Set player name
         if (this->multiplayerGame() != 0 && humanity == 2) {
             // Multiplayer human: get name from comm
-            char* commName = comm_handler ? comm_handler->GetPlayerName(commSlot) : nullptr;
+            char* commName = comm_handler->GetPlayerName(commSlot);
             if (commName) {
                 strncpy(player_info.name[pos], commName, 64);
                 player_info.name[pos][64] = '\0';
@@ -1120,9 +1115,7 @@ int TRIBE_Game::create_game(int p1) {
                 }
             }
 
-            if (comm_handler) {
-                comm_handler->SetPlayerName(commSlot, player_info.name[pos]);
-            }
+            comm_handler->SetPlayerName(commSlot, player_info.name[pos]);
         }
 
         // Set color and player_id_hash
@@ -1148,19 +1141,8 @@ int TRIBE_Game::create_game(int p1) {
         return 0;
     }
 
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("create_game: player_num=%d, map_type=%d, map_w=%d, map_h=%d",
-        (int)player_info.player_num, (int)player_info.map_type,
-        (int)player_info.map_width, (int)player_info.map_height);
-    for (int i = 0; i < player_info.player_num; ++i) {
-        CUSTOM_DEBUG_LOG_FMT("  player[%d]: type=%d tribe=%d color=%d name='%s'",
-            i, (int)player_info.type[i], (int)player_info.tribe[i],
-            (int)player_info.color[i], player_info.name[i]);
-    }
-CUSTOM_DEBUG_END
-
     int local_player_slot = 1;
-    if (this->multiplayerGame() != 0 && comm_handler != nullptr) {
+    if (this->multiplayerGame() != 0) {
         local_player_slot = (int)comm_handler->WhoAmI();
     }
     int local_player_id = this->playerID(local_player_slot);
@@ -1169,19 +1151,16 @@ CUSTOM_DEBUG_END
         *((unsigned char*)this->sound_system + 1) = 1;
     }
 
-    uchar result = this->world->new_game(&player_info, local_player_id);
+    int result = (int)this->world->new_game(&player_info, local_player_id);
+    if (result != 0 && this->world->player_num < 2) {
+        this->world->del_game_info();
+        result = 0;
+    }
     if (this->sound_system != nullptr) {
         *((unsigned char*)this->sound_system + 1) = 0;
     }
-    if (result == 0) {
-        return 0;
-    }
 
     // --- Phase 10: Post-game-creation setup ---
-    if (this->world->player_num < 2) {
-        this->world->del_game_info();
-        return 0;
-    }
 
     // Reset countdown timers
     for (int i = 0; i < this->world->player_num; ++i) {
@@ -1222,88 +1201,73 @@ CUSTOM_DEBUG_END
 
     // Save humanity values
     for (uint i = 1; i < 9; ++i) {
-        int h = comm_handler ? comm_handler->GetPlayerHumanity(i) : 0;
+        int h = comm_handler->GetPlayerHumanity(i);
         this->save_humanity[i] = h;
     }
 
-    return (int)result;
+    return result;
 }
 
 int TRIBE_Game::create_game_screen() {
     // Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`create_game_screen` @ 0x00527830)
     // - `src/game/src/tribegam.cpp.decomp`
-    //
+    // Fully verified for control flow/call sequencing.
+
     this->disable_input();
     this->set_game_mode(0, 0);
-
-    // Get the map from the world for camera setup.
-    RGE_Map* map = this->world ? this->world->map : nullptr;
-
     TRIBE_Screen_Game* screen = new TRIBE_Screen_Game();
-    if (!screen) {
-        this->game_screen = nullptr;
-        this->close_status_message();
-        this->enable_input();
-        return 0;
-    }
     this->game_screen = screen;
-    screen->world_map = map;
 
-    // Setup the screen panel with draw area
-    if (!screen->setup(this->draw_area, (char*)0, -1, 0)) {
+    if (screen != nullptr) {
+        if (screen->error_code == 0) {
+            int mp_started = 1;
+            if (this->multiplayerGame() != 0) {
+                if (this->comm_handler != nullptr) {
+                    mp_started = this->comm_handler->MultiplayerGameStart();
+                } else {
+                    mp_started = 0;
+                }
+            }
+            if (mp_started != 0) {
+                tribe_set_current_screen(screen);
+                if (panel_system) {
+                    panel_system->destroyPanel((char*)"Status Screen");
+                }
+            } else {
+                // TODO: STUB: restore TRIBE_Screen_Wait constructor + set_text path from scr_mps.cpp.
+                // Keep panel flow/prog_mode parity for the MP wait branch.
+                if (panel_system) {
+                    panel_system->setCurrentPanel((char*)"Multiplayer Wait Screen", 0);
+                    panel_system->destroyPanel((char*)"Status Screen");
+                }
+                this->set_prog_mode(3);
+            }
+
+            tribe_retire_panel_by_name("Single Player Menu");
+            tribe_retire_panel_by_name("Game Setup Screen");
+            tribe_retire_panel_by_name("Select Scenario Screen");
+            tribe_retire_panel_by_name("Game Settings Screen");
+            tribe_retire_panel_by_name("Load Saved Game Screen");
+            tribe_retire_panel_by_name("Main Menu");
+            tribe_retire_panel_by_name("Campaign Selection Screen");
+
+            if (this->prog_mode != 3) {
+                this->let_game_begin();
+            }
+            return 1;
+        }
+
         delete screen;
         this->game_screen = nullptr;
-        this->close_status_message();
-        this->enable_input();
-        return 0;
     }
 
-    // Temporary GameViewPanel path has no `.bina` setup file, so it won't load a panel palette.
-    // Keep map colors sane by binding the program palette explicitly.
-    if (this->prog_palette) {
-        void* panel_pal = this->prog_palette;
-        if (panel_system && this->prog_info) {
-            void* acquired = panel_system->get_palette(this->prog_info->pal_file, 50500);
-            if (acquired) {
-                panel_pal = acquired;
-            }
-        }
-
-        screen->palette = panel_pal;
-        if (this->draw_system) {
-            this->draw_system->SetPalette(this->prog_palette);
-        }
+    if (this->world) {
+        this->world->del_game_info();
     }
-
-    screen->set_ideal_size(this->prog_info ? this->prog_info->main_wid : 0x280,
-                           this->prog_info ? this->prog_info->main_hgt : 0x1e0);
-
-    // Center camera on the map initially
-    if (map && map->map_width > 0 && map->map_height > 0) {
-        long world_pixel_w = (map->map_width + map->map_height) * 32;
-        long world_pixel_h = (map->map_width + map->map_height) * 16;
-        long scr_w = this->prog_info ? this->prog_info->main_wid : 0x280;
-        long scr_h = this->prog_info ? this->prog_info->main_hgt : 0x1e0;
-        screen->cam_x = (world_pixel_w - scr_w) / 2;
-        screen->cam_y = (world_pixel_h - scr_h) / 2;
-        if (screen->cam_x < 0) screen->cam_x = 0;
-        if (screen->cam_y < 0) screen->cam_y = 0;
-    }
-
-    // Source of truth: tribegam.cpp.decomp @ create_game_screen (0x00527830)
-    // The original calls setCurrentPanel + destroyPanel for all menu screens here.
-    // In our implementation, we use the deferred screen switch which safely handles
-    // panel transitions outside the button dispatch call stack.
-    tribe_queue_screen_switch(screen);
-    this->set_game_mode(4, 0);
-
-    // For single-player (prog_mode != 3), call let_game_begin to transition into gameplay.
-    if (this->prog_mode != 3) {
-        this->let_game_begin();
-    }
-
-    return 1;
+    this->close_status_message();
+    this->enable_input();
+    return 0;
 }
 
 void TRIBE_Game::close_game_screens(int p1) {
@@ -1376,6 +1340,9 @@ CUSTOM_DEBUG_END
     this->set_load_game_name((char*)0);
 
     if (p1 != 0) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("start_game: direct path calling create_game_screen");
+CUSTOM_DEBUG_END
         return this->create_game_screen();
     }
 
@@ -1709,10 +1676,8 @@ void TRIBE_Game::let_game_begin() {
     // The original does extensive run_log of game settings (map type, size, victory, etc.)
     // We skip the logging and focus on the critical state transitions.
 
-    // Source of truth: tribegam.cpp.decomp @ 0x00528670
-    // The original calls setCurrentPanel("Game Screen") and destroys "Status Screen" +
-    // "Multiplayer" here. We skip these because the deferred screen switch
-    // (tribe_queue_screen_switch) handles panel transitions safely.
+    // Source of truth: tribegam.cpp.decomp @ 0x00528670.
+    // Panel transitions into "Game Screen" are handled by create_game_screen().
 
     run_log((char*)"game_started", 1);
 
@@ -1744,15 +1709,22 @@ CUSTOM_DEBUG_END
         this->set_paused(0, 0);
     }
 
-    // TODO(accuracy): TChat::ClearChat, TChat::setInChatGroup
+    this->auto_paused = 0;
 
-    // Center mouse cursor (decomp calls TMousePointer::center)
-    if (this->mouse_pointer != nullptr && this->prog_window != nullptr) {
+    if (chat != nullptr) {
+        TChat* chat_system = (TChat*)chat;
+        chat_system->ClearChat();
+
+        int current_world_player = 0;
+        if (this->world != nullptr) {
+            current_world_player = (int)this->world->curr_player;
+        }
+        chat_system->setInChatGroup(current_world_player, 1);
+    }
+
+    if (this->mouse_pointer != nullptr && this->prog_ready != 0 && this->prog_window != nullptr) {
         if (!IsIconic((HWND)this->prog_window)) {
-            // TODO(accuracy): replace with TMousePointer::center() when declared
-            long cx = this->prog_info ? this->prog_info->main_wid / 2 : 320;
-            long cy = this->prog_info ? this->prog_info->main_hgt / 2 : 240;
-            SetCursorPos(cx, cy);
+            this->mouse_pointer->center();
         }
     }
 
@@ -2077,7 +2049,10 @@ RGE_Scenario* TRIBE_Game::new_scenario_info(int p1) {
 }
 
 void TRIBE_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
-int TRIBE_Game::reset_comm() { return 0; }
+int TRIBE_Game::reset_comm() {
+    // Source of truth: tribegam.cpp.decomp forwards to base reset path.
+    return RGE_Base_Game::reset_comm();
+}
 void TRIBE_Game::send_game_options() {}
 void TRIBE_Game::receive_game_options() {}
 char* TRIBE_Game::gameSummary() { return nullptr; }

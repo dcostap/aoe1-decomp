@@ -310,6 +310,11 @@ void TListPanel::set_auto_track(int track) {
     auto_track = track;
 }
 
+void TListPanel::setDrawHighlightBar(int draw) {
+    // Fully verified. Source of truth: Pnl_lst.cpp.decomp @ 0x00478EE0
+    drawHighlightBar = draw;
+}
+
 void TListPanel::scroll_cur_line(uchar mode, short line, int update_scrollbar) {
     list_scroll_cur_line(this, mode, line, update_scrollbar);
 }

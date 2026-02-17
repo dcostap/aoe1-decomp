@@ -2,6 +2,10 @@
 #include "common.h"
 #include "TPanel.h"
 
+struct RGE_Map_Image_Line;
+struct RGE_Map_Tile_Row;
+class RGE_View;
+
 class RGE_Diamond_Map : public TPanel {
 public:
     // Virtuals (best-effort)

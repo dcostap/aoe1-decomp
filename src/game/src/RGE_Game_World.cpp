@@ -11,6 +11,7 @@
 #include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Command.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/PathingSystem.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/globals.h"
@@ -22,38 +23,6 @@
 #include <share.h>
 #include <stdio.h>
 #include <string.h>
-
-namespace {
-struct PathingSystemRuntimeState {
-    int x_size;
-    int y_size;
-    RGE_Map* map;
-    RGE_Game_World* world;
-    unsigned char facet_mask;
-};
-
-static PathingSystemRuntimeState g_pathSystem;
-static PathingSystemRuntimeState g_aiPathSystem;
-
-static int pathing_system_initialize(PathingSystemRuntimeState* state, int x_size, int y_size,
-                                     RGE_Map* map, RGE_Game_World* world) {
-    if (state == nullptr) {
-        return 0;
-    }
-
-    state->map = map;
-    state->world = world;
-    if (map != nullptr) {
-        state->x_size = map->map_width;
-        state->y_size = map->map_height;
-    } else {
-        state->x_size = x_size;
-        state->y_size = y_size;
-    }
-    state->facet_mask = 0xF0;
-    return 1;
-}
-}
 
 static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Player_Info* info,
                                            float scenario_version, int has_uncompressed_header) {
@@ -1168,6 +1137,8 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
     }
 
     world_update_counter = 0;
+    pathSystem.zeroObstructionMap();
+    aiPathSystem.zeroObstructionMap();
     this->currentUpdateComputerPlayer = -1;
     this->game_state = '\x03';
     this->curr_player = (short)param_2;
@@ -1515,10 +1486,9 @@ int RGE_Game_World::initializePathingSystem() {
         return 0;
     }
 
-    // TODO: STUB: replace runtime shim with real PathingSystem::initialize(pathSystem/aiPathSystem).
-    pathing_system_initialize(&g_pathSystem, map_ptr->map_width, map_ptr->map_height, map_ptr, this);
+    pathSystem.initialize(map_ptr->map_width, map_ptr->map_height, map_ptr, this);
     map_ptr = this->map;
-    pathing_system_initialize(&g_aiPathSystem, map_ptr->map_width, map_ptr->map_height, map_ptr, this);
+    aiPathSystem.initialize(map_ptr->map_width, map_ptr->map_height, map_ptr, this);
     return 1;
 }
 

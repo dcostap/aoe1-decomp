@@ -1036,7 +1036,16 @@ RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { retu
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return new RGE_Scenario_Header(p1); }
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
 void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
-int RGE_Base_Game::reset_comm() { return 0; }
+int RGE_Base_Game::reset_comm() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041EFF0
+    // Tear down existing comm object, then re-run setup_comm() via virtual dispatch.
+    if (this->comm_handler != nullptr) {
+        delete this->comm_handler;
+        this->comm_handler = nullptr;
+        comm = nullptr;
+    }
+    return this->setup_comm();
+}
 void RGE_Base_Game::send_game_options() {}
 void RGE_Base_Game::receive_game_options() {}
 char* RGE_Base_Game::gameSummary() { return nullptr; }
@@ -2144,7 +2153,45 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
 
 // Linker fix stubs
 int RGE_Base_Game::setup_chat() { return 1; }
-int RGE_Base_Game::setup_comm() { return 1; }
+int RGE_Base_Game::setup_comm() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041EE90
+    // TODO: STUB: full TCommunications_Handler ctor parity is not restored yet.
+    // Minimal safe comm bootstrap for SP startup paths that require non-null comm_handler.
+    TCommunications_Handler* handler = new TCommunications_Handler();
+    if (handler == nullptr) {
+        this->comm_handler = nullptr;
+        comm = nullptr;
+        return 0;
+    }
+
+    memset(handler, 0, sizeof(TCommunications_Handler));
+
+    ushort max_players = 8;
+    if (this->prog_info != nullptr && this->prog_info->max_players > 0) {
+        max_players = (ushort)this->prog_info->max_players;
+    }
+    if (max_players > 9) {
+        max_players = 9;
+    }
+
+    handler->HostHWND = this->prog_window;
+    handler->MaxGamePlayers = max_players;
+    handler->Me = 1;
+    handler->Multiplayer = (this->rge_game_options.multiplayerGameValue != 0) ? 1 : 0;
+    handler->MeHost = (handler->Multiplayer == 0) ? 1 : 0;
+    handler->CommunicationsStatus = COMM_IDLE;
+
+    // Default SP humanity profile expected by create_game() mapping pass.
+    int* humanity = (int*)((char*)&handler->PlayerOptions + 0x184);
+    humanity[1] = 2;
+    for (int i = 2; i < 10; ++i) {
+        humanity[i] = 4;
+    }
+
+    this->comm_handler = handler;
+    comm = handler;
+    return 1;
+}
 int RGE_Base_Game::setup_sound_system() {
     // Offset: 0x0041F030
     int vol = 0;

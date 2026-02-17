@@ -1,5 +1,6 @@
 #include "../include/TMousePointer.h"
 #include "../include/TDrawArea.h"
+#include "../include/TDrawSystem.h"
 #include "../include/TShape.h"
 #include <string.h>
 #include <stdio.h>
@@ -198,6 +199,26 @@ void TMousePointer::reset() {
     // Lines 2068-2071
     this->save_area_valid = 0;
     this->drawn = 0;
+}
+
+void TMousePointer::center() {
+    // Source of truth: mouseptr.cpp.decomp @ 0x0045BF90
+    if (this->render_area == nullptr || this->render_area->DrawSystem == nullptr) {
+        return;
+    }
+
+    TDrawSystem* draw_system = this->render_area->DrawSystem;
+    if (draw_system->ScreenMode == 1) {
+        RECT win_rect;
+        if (GetWindowRect((HWND)draw_system->Wnd, &win_rect) != 0) {
+            int center_x = win_rect.left + (win_rect.right - win_rect.left) / 2;
+            int center_y = win_rect.top + (win_rect.bottom - win_rect.top) / 2;
+            SetCursorPos(center_x, center_y);
+        }
+        return;
+    }
+
+    SetCursorPos(draw_system->ScreenWidth / 2, draw_system->ScreenHeight / 2);
 }
 
 void TMousePointer::erase() {

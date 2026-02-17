@@ -591,6 +591,12 @@ void TTextPanel::set_highlight_text_color(unsigned long c1, unsigned long c2) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+void TTextPanel::set_spacer_size(int size) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CE00
+    this->spacer_size = size;
+    calc_draw_info(this, 1);
+}
+
 void TTextPanel::set_rect(tagRECT param_1) {
     TPanel::set_rect(param_1);
     this->full_width = this->pnl_wid;
@@ -817,22 +823,14 @@ void TTextPanel::set_text(long param_1) {
 }
 
 void TTextPanel::set_text(char* param_1) {
-    CUSTOM_DEBUG_LOG("TTextPanel::set_text(char*): ENTER");
-    CUSTOM_DEBUG_LOG_FMT("TTextPanel::set_text: this=%p param_1=%p", this, param_1);
     free_text_list(this);
-    CUSTOM_DEBUG_LOG("TTextPanel::set_text: after free_text_list");
 
     if (param_1 == nullptr || param_1[0] == '\0') {
-        CUSTOM_DEBUG_LOG("TTextPanel::set_text: empty/null text path");
         append_text_line(this, "", 0);
-        CUSTOM_DEBUG_LOG("TTextPanel::set_text: after append_text_line (empty)");
         calc_draw_info(this, 1);
-        CUSTOM_DEBUG_LOG("TTextPanel::set_text: after calc_draw_info");
         this->set_redraw(TPanel::RedrawMode::Redraw);
-        CUSTOM_DEBUG_LOG("TTextPanel::set_text: after set_redraw");
         return;
     }
-    CUSTOM_DEBUG_LOG("TTextPanel::set_text: non-empty text path");
 
     if (this->word_wrap == 0 && this->horz_align != TTextPanel::AlignWordwrap) {
         const char* cur = param_1;
@@ -859,13 +857,9 @@ void TTextPanel::set_text(char* param_1) {
         // TODO: proper word-wrap behavior (`Pnl_txt.cpp.decomp`: `word_wrap_append`).
         append_text_line(this, param_1, 0);
     }
-    CUSTOM_DEBUG_LOG("TTextPanel::set_text: after text processing loop");
-
     if (this->num_lines == 0) append_text_line(this, "", 0);
     calc_draw_info(this, 1);
-    CUSTOM_DEBUG_LOG("TTextPanel::set_text: after calc_draw_info (final)");
     this->set_redraw(TPanel::RedrawMode::Redraw);
-    CUSTOM_DEBUG_LOG("TTextPanel::set_text: SUCCESS");
 }
 
 void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {

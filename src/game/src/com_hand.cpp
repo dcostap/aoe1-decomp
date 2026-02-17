@@ -249,8 +249,15 @@ void TCommunications_Handler::TogglePauseGame() {
 }
 
 int TCommunications_Handler::MultiplayerGameStart() {
-    // Returns nonzero if a multiplayer game has started.
-    return (this->Multiplayer != 0 && this->CommunicationsStatus == COMM_ACTIVE) ? 1 : 0;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E5E0
+    if (this->Multiplayer == 0) {
+        return 1;
+    }
+    if (this->current_turn > 6) {
+        return 1;
+    }
+    this->DoCycle(0);
+    return 0;
 }
 
 int TCommunications_Handler::IsLobbyLaunched() {

@@ -3,6 +3,9 @@
 
 class TMessagePanel : public TPanel {
 public:
+    TMessagePanel();
+    TMessagePanel(void* param_1, long param_2, long param_3);
+
     // Virtuals (best-effort)
     virtual ~TMessagePanel(); // vt[0] (0x0)
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
@@ -43,6 +46,10 @@ public:
     virtual void handle_move_outside(int param_1, int param_2, int param_3, int param_4, int param_5); // vt[54] (0xD8)
     virtual void handle_reactivate(); // vt[55] (0xDC)
     virtual void set_font(void* param_1, long param_2, long param_3); // vt[56] (0xE0)
+
+    // Non-virtual helpers used by scr_game paths.
+    void set_justification(int param_1, int param_2, int param_3);
+    void remove_message();
 
     struct message_type* types;
     char text[512];

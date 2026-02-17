@@ -235,7 +235,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     // ---- Victory Fixed Text (0x25d9) ----
     iVar9 = this->create_text((TPanel*)this, &this->victoryFixedText, 0x25d9, 0x14, 0x108, 0xb4, 0x5c, 0xb, 1, 1, 1);
     if (iVar9 == 0) goto fail;
-    this->victoryFixedText->set_text_color(this->text_color1, this->text_color2);
+    this->victoryFixedText->set_bevel_info(3, (int)this->bevel_color1, (int)this->bevel_color2,
+        (int)this->bevel_color3, (int)this->bevel_color4, (int)this->bevel_color5, (int)this->bevel_color6);
 
     // ---- Starting Age label (0x2606) ----
     iVar9 = this->create_text((TPanel*)this, &this->ageLabel, 0x2606, 0xdc, 0x108, 0xb4, 0x14, 0xb, 0, 0, 0);
@@ -363,8 +364,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         // Source of truth: scr_set.cpp.asm @ 0x004b550e
         // The dumped type metadata does not expose this field name cleanly; keep exact byte parity.
         *(int*)((char*)this->scenarioList + 0x80) = 0;
-        this->scenarioList->drawHighlightBar = 0;
-        this->scenarioList->spacer_size = 0;
+        this->scenarioList->setDrawHighlightBar(0);
+        this->scenarioList->set_spacer_size(0);
     } else {
         this->scenarioList->set_text(0x25fd);
         this->scenarioList->set_help_info(0x7639, -1);
@@ -375,20 +376,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     // ---- Scenario title text ----
     {
         int title_y = this->scenarioListY - 0x14;
-        // Decomp: string ID depends on MP: (-(mp!=0) & 0xffffffde) + 0x2620
-        // SP: 0x2620 = "Scenario", MP: 0x2620 - 0x22 = 0x25fe... 
-        // Actually decomp: (-(uint)(iVar11 != 0) & 0xffffffde) + 0x2620
-        // If MP: -1 & 0xffffffde = 0xffffffde, + 0x2620 = 0x25fe... that seems wrong
-        // Let's use 0x2620 for SP (matches "Game Type" or similar)
-        long title_resid = 0x2620;
-        if (rge_base_game->rge_game_options.multiplayerGameValue != 0) {
-            // Decomp: 0x2620 + 0xffffffde = 0x25fe... but 0x25fe doesn't match
-            // Actually: -(1) = 0xFFFFFFFF, & 0xFFFFFFDE = 0xFFFFFFDE, + 0x2620 = overflow...
-            // Re-reading: NEG EAX; SBB EAX,EAX gives -1 if mp, AND 0xFFFFFFDE = 0xFFFFFFDE
-            // 0x2620 + (int)0xFFFFFFDE = 0x2620 - 0x22 = 0x25FE
-            // But wait: 0x2620 - 34 = 0x25FE. Let's check: 0x2620 = 9760, -34 = 9726 = 0x25FE
-            title_resid = 0x25FE;
-        }
+        // Source of truth: scr_set.cpp.asm @ 0x004B5550..0x004B5563
+        // title_resid = (-(mp != 0) & 0xFFFFFFDE) + 0x2620
+        long title_resid = ((rge_base_game->rge_game_options.multiplayerGameValue != 0) ? -1L : 0L) & 0xFFFFFFDEL;
+        title_resid = title_resid + 0x2620L;
         iVar9 = this->create_text((TPanel*)this, &this->scenarioTitle,
             (int)title_resid, this->scenarioListX, title_y, 300, 0x14, 4, 0, 0, 0);
         if (iVar9 == 0) goto fail;
@@ -400,7 +391,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
             0x25ff, this->scenarioListWidth - 0xdc + this->scenarioListX,
             this->scenarioListY - 0x14, 0xdc, 0x14, 4, 0, 0, 0);
         if (iVar9 == 0) goto fail;
-        this->scenarioPlayersTitle->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
+        // Source of truth: scr_set.cpp.asm @ 0x004B55C1..0x004B55C7 (push 0x2, push 0x3)
+        this->scenarioPlayersTitle->set_alignment((TTextPanel::Alignment)3, (TTextPanel::Alignment)2);
     }
 
     // ---- Mission text area ----
@@ -421,7 +413,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
             (char*)"", this->missionTextX, this->missionTextY,
             this->missionTextWidth, this->missionTextHeight, 0xb, 0, 0, 1);
         if (iVar9 == 0) goto fail;
-        this->missionText->set_text_color(this->text_color1, this->text_color2);
+        this->missionText->set_bevel_info(3, (int)this->bevel_color1, (int)this->bevel_color2,
+            (int)this->bevel_color3, (int)this->bevel_color4, (int)this->bevel_color5, (int)this->bevel_color6);
 
         // Mission scrollbar
         iVar9 = this->create_auto_scrollbar(&this->missionScrollbar, this->missionText, 0x14);
@@ -551,9 +544,7 @@ long TribeGameSettingsScreen::handle_idle()
             if (now == this->last_send_shared) {
                 return TPanel::handle_idle();
             }
-            if (comm != nullptr) {
-                ((TCommunications_Handler*)comm)->SendSharedData(0);
-            }
+            ((TCommunications_Handler*)comm)->SendSharedData(0);
             line = 0x240;
         }
         this->last_send_shared = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_set.cpp", line);

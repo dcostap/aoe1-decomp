@@ -17,6 +17,7 @@ struct TMousePointer {
     int create_surfaces();
     void delete_surfaces();
     void reset();
+    void center();
     void erase();
 
     int custom_draw;
