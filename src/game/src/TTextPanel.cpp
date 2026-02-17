@@ -13,6 +13,7 @@ static void free_text_list(TTextPanel* this_) {
     while (node) {
         TTextPanel::TextNode* next = node->next;
         if (node->text) free(node->text);
+        if (node->text2) free(node->text2);
         free(node);
         node = next;
     }
@@ -85,6 +86,46 @@ static const char* get_line_text(const TTextPanel* this_, int index) {
         i++;
     }
     return (n && n->text) ? n->text : nullptr;
+}
+
+static const char* get_line_text2(const TTextPanel* this_, int index) {
+    if (!this_ || index < 0) return nullptr;
+    const TTextPanel::TextNode* n = this_->list;
+    int i = 0;
+    while (n && i < index) {
+        n = n->next;
+        i++;
+    }
+    return (n && n->text2) ? n->text2 : nullptr;
+}
+
+static void update_second_column_clip(TTextPanel* this_) {
+    if (!this_) {
+        return;
+    }
+
+    if (this_->clip_rgn2) {
+        DeleteObject((HGDIOBJ)this_->clip_rgn2);
+        this_->clip_rgn2 = nullptr;
+    }
+
+    if (this_->second_column_pos == 0 || this_->pnl_wid <= 0 || this_->pnl_hgt <= 0) {
+        return;
+    }
+
+    long left = this_->pnl_x;
+    long top = this_->pnl_y;
+    long right = this_->pnl_x + this_->second_column_pos - 10;
+    long max_right = this_->pnl_x + this_->pnl_wid;
+    if (right > max_right) {
+        right = max_right;
+    }
+    if (right < left) {
+        right = left;
+    }
+
+    long bottom = this_->pnl_y + this_->pnl_hgt;
+    this_->clip_rgn2 = (void*)CreateRectRgn((int)left, (int)top, (int)right, (int)bottom);
 }
 
 static void calc_draw_info(TTextPanel* this_, int update_scrollbar) {
@@ -207,7 +248,8 @@ static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short li
 
 static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_index, unsigned long color_main, unsigned long color_shadow) {
     const char* text = get_line_text(this_, (int)line_index);
-    if (!text || text[0] == '\0') return;
+    const char* text2 = get_line_text2(this_, (int)line_index);
+    if ((text == nullptr || text[0] == '\0') && (text2 == nullptr || text2[0] == '\0')) return;
 
     tagRECT line_rect;
     long col_offset = 0;
@@ -217,33 +259,68 @@ static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_i
     if (this_->horz_align != TTextPanel::AlignCenter && this_->horz_align != TTextPanel::AlignWordwrap) {
         x += 5;
     }
+    const int x2 = x + (int)this_->second_column_pos;
     const int y = line_rect.top;
-    const int text_len = (int)strlen(text);
+    const int text_len = (text != nullptr) ? (int)strlen(text) : 0;
+    const int text2_len = (text2 != nullptr) ? (int)strlen(text2) : 0;
+
+    if (this_->clip_rgn2 != nullptr) {
+        SelectClipRgn(hdc, (HRGN)this_->clip_rgn2);
+    }
 
     if (this_->text_style == TTextPanel::NormalStyle) {
         SetTextColor(hdc, (COLORREF)color_main);
-        TextOutA(hdc, x, y, text, text_len);
-        return;
-    }
-
-    if (this_->text_style == TTextPanel::BeveledStyle) {
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
+    } else if (this_->text_style == TTextPanel::BeveledStyle) {
         SetTextColor(hdc, (COLORREF)color_main);
-        TextOutA(hdc, x - 1, y + 1, text, text_len);
+        if (text != nullptr) {
+            TextOutA(hdc, x - 1, y + 1, text, text_len);
+        }
         SetTextColor(hdc, (COLORREF)color_shadow);
-        TextOutA(hdc, x, y, text, text_len);
-        return;
-    }
-
-    if (this_->text_style == TTextPanel::ChiseledStyle) {
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
+    } else if (this_->text_style == TTextPanel::ChiseledStyle) {
         SetTextColor(hdc, (COLORREF)color_shadow);
-        TextOutA(hdc, x - 1, y + 1, text, text_len);
+        if (text != nullptr) {
+            TextOutA(hdc, x - 1, y + 1, text, text_len);
+        }
         SetTextColor(hdc, (COLORREF)color_main);
-        TextOutA(hdc, x, y, text, text_len);
-        return;
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
+    } else {
+        SetTextColor(hdc, (COLORREF)color_main);
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
     }
 
-    SetTextColor(hdc, (COLORREF)color_main);
-    TextOutA(hdc, x, y, text, text_len);
+    if (text2 != nullptr) {
+        if (this_->clip_rgn2 != nullptr) {
+            SelectClipRgn(hdc, (HRGN)this_->clip_rgn);
+        }
+
+        if (this_->text_style == TTextPanel::NormalStyle) {
+            SetTextColor(hdc, (COLORREF)color_main);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        } else if (this_->text_style == TTextPanel::BeveledStyle) {
+            SetTextColor(hdc, (COLORREF)color_main);
+            TextOutA(hdc, x2 - 1, y + 1, text2, text2_len);
+            SetTextColor(hdc, (COLORREF)color_shadow);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        } else if (this_->text_style == TTextPanel::ChiseledStyle) {
+            SetTextColor(hdc, (COLORREF)color_shadow);
+            TextOutA(hdc, x2 - 1, y + 1, text2, text2_len);
+            SetTextColor(hdc, (COLORREF)color_main);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        } else {
+            SetTextColor(hdc, (COLORREF)color_main);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        }
+    }
 }
 
 static void draw_background(TTextPanel* this_) {
@@ -533,6 +610,7 @@ void TTextPanel::set_rect(tagRECT param_1) {
     }
 
     calc_draw_info(this, 1);
+    update_second_column_clip(this);
 }
 
 void TTextPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
@@ -554,6 +632,7 @@ void TTextPanel::set_rect(long param_1, long param_2, long param_3, long param_4
     }
 
     calc_draw_info(this, 1);
+    update_second_column_clip(this);
 }
 
 void TTextPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
@@ -843,10 +922,7 @@ void TTextPanel::empty_list() {
 }
 
 int TTextPanel::append_line(char* text, long id) {
-    int result = ::append_text_line(this, text, id);
-    calc_draw_info(this, 1);
-    this->set_redraw(TPanel::RedrawMode::Redraw);
-    return result;
+    return this->insert_line((long)this->num_lines, text, id);
 }
 
 int TTextPanel::append_line(long str_id, long id) {
@@ -854,6 +930,197 @@ int TTextPanel::append_line(long str_id, long id) {
     str[0] = '\0';
     this->get_string((int)str_id, str, sizeof(str));
     return append_line(str, id);
+}
+
+int TTextPanel::insert_line(long line_num, char* text, long id) {
+    return this->insert_line(line_num, text, (char*)0, id);
+}
+
+int TTextPanel::insert_line(long line_num, char* text, char* text2, long id) {
+    TTextPanel::TextNode* node = (TTextPanel::TextNode*)calloc(1, sizeof(TTextPanel::TextNode));
+    if (node == nullptr) {
+        return 0;
+    }
+
+    size_t text_bytes = 1;
+    if (this->fixed_len == 0) {
+        if (text != nullptr) {
+            text_bytes = strlen(text) + 1;
+        }
+    } else {
+        text_bytes = (size_t)this->fixed_len + 1;
+    }
+
+    node->text = (char*)calloc(text_bytes, 1);
+    if (node->text == nullptr) {
+        free(node);
+        return 0;
+    }
+
+    if (text2 != nullptr) {
+        node->text2 = (char*)calloc(strlen(text2) + 1, 1);
+        if (node->text2 == nullptr) {
+            free(node->text);
+            free(node);
+            return 0;
+        }
+    }
+
+    if (text == nullptr) {
+        node->text[0] = '\0';
+    } else if (this->fixed_len == 0) {
+        memcpy(node->text, text, strlen(text) + 1);
+    } else {
+        strncpy(node->text, text, this->fixed_len);
+        node->text[this->fixed_len] = '\0';
+    }
+
+    if (text2 != nullptr) {
+        memcpy(node->text2, text2, strlen(text2) + 1);
+    }
+
+    node->id = id;
+    node->next = nullptr;
+
+    if (this->list == nullptr) {
+        this->list = node;
+    } else if (this->sorted == 0) {
+        if (line_num <= 0) {
+            node->next = this->list;
+            this->list = node;
+        } else if (line_num < this->num_lines) {
+            TTextPanel::TextNode* prev = this->list;
+            for (int i = 0; i != (int)line_num - 1 && prev->next != nullptr; ++i) {
+                prev = prev->next;
+            }
+            node->next = prev->next;
+            prev->next = node;
+        } else {
+            TTextPanel::TextNode* tail = this->list;
+            while (tail->next != nullptr) {
+                tail = tail->next;
+            }
+            tail->next = node;
+        }
+    } else {
+        TTextPanel::TextNode* prev = nullptr;
+        TTextPanel::TextNode* curr = this->list;
+        while (curr != nullptr) {
+            int cmp = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE, node->text, -1, curr->text, -1);
+            if (cmp == 1) {
+                node->next = curr;
+                if (prev == nullptr) {
+                    this->list = node;
+                } else {
+                    prev->next = node;
+                }
+                break;
+            }
+
+            prev = curr;
+            curr = curr->next;
+        }
+
+        if (curr == nullptr && prev != nullptr) {
+            prev->next = node;
+        }
+    }
+
+    this->num_lines = (short)(this->num_lines + 1);
+    calc_draw_info(this, 1);
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    return 1;
+}
+
+int TTextPanel::insert_line(long line_num, long str_id, long id) {
+    char str[256];
+    str[0] = '\0';
+    this->get_string((int)str_id, str, sizeof(str));
+    return this->insert_line(line_num, str, id);
+}
+
+int TTextPanel::insert_line(long line_num, long str1_id, long str2_id, long id) {
+    char str1[256];
+    char str2[256];
+    str1[0] = '\0';
+    str2[0] = '\0';
+    this->get_string((int)str1_id, str1, sizeof(str1));
+    this->get_string((int)str2_id, str2, sizeof(str2));
+    return this->insert_line(line_num, str1, str2, id);
+}
+
+int TTextPanel::change_line(long line_num, char* text, char* text2, long id) {
+    int sorted_prev = this->sorted;
+    this->sorted = 0;
+    int inserted = this->insert_line(line_num, text, text2, id);
+    if (inserted == 0) {
+        this->sorted = sorted_prev;
+        return 0;
+    }
+    this->delete_line(line_num + 1);
+    this->sorted = sorted_prev;
+    return 1;
+}
+
+int TTextPanel::change_line(long line_num, long str1_id, long str2_id, long id) {
+    int sorted_prev = this->sorted;
+    this->sorted = 0;
+    int inserted = this->insert_line(line_num, str1_id, str2_id, id);
+    if (inserted == 0) {
+        this->sorted = sorted_prev;
+        return 0;
+    }
+    this->delete_line(line_num + 1);
+    this->sorted = sorted_prev;
+    return 1;
+}
+
+int TTextPanel::delete_line(long line_num) {
+    if (line_num < 0 || line_num > (long)this->num_lines - 1) {
+        return 0;
+    }
+
+    TTextPanel::TextNode* victim = nullptr;
+    if (line_num == 0) {
+        victim = this->list;
+        if (victim != nullptr) {
+            this->list = victim->next;
+        }
+    } else {
+        TTextPanel::TextNode* prev = this->list;
+        for (int i = 0; i != (int)line_num - 1 && prev != nullptr; ++i) {
+            prev = prev->next;
+        }
+        if (prev != nullptr) {
+            victim = prev->next;
+            if (victim != nullptr) {
+                prev->next = victim->next;
+            }
+        }
+    }
+
+    if (victim == nullptr) {
+        return 0;
+    }
+
+    if (victim->text != nullptr) {
+        free(victim->text);
+    }
+    if (victim->text2 != nullptr) {
+        free(victim->text2);
+    }
+    free(victim);
+
+    this->num_lines = (short)(this->num_lines - 1);
+    if (this->num_lines == 0) {
+        this->cur_line = 0;
+    } else if (this->num_lines <= this->cur_line) {
+        this->cur_line = (short)(this->num_lines - 1);
+    }
+
+    calc_draw_info(this, 1);
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    return 1;
 }
 
 void TTextPanel::set_line(long line_num) {
@@ -881,6 +1148,19 @@ long TTextPanel::get_line(long line_num) {
     return -1;
 }
 
+long TTextPanel::get_line(char* text) {
+    int i = 0;
+    for (TTextPanel::TextNode* n = this->list; n != nullptr; n = n->next, ++i) {
+        if (n->text == nullptr || text == nullptr) {
+            continue;
+        }
+        if (strcmp(n->text, text) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 long TTextPanel::get_id() {
     return this->get_id((long)this->cur_line);
 }
@@ -899,6 +1179,17 @@ long TTextPanel::get_id(long line_num) {
 char* TTextPanel::get_text(long line_num) {
     const char* text = get_line_text(this, (int)line_num);
     return (char*)text;
+}
+
+char* TTextPanel::get_text2(long line_num) {
+    const char* text = get_line_text2(this, (int)line_num);
+    return (char*)text;
+}
+
+void TTextPanel::set_second_column_pos(long pos) {
+    this->second_column_pos = pos;
+    update_second_column_clip(this);
+    this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 // From decomp at 0x0047CCF0

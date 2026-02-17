@@ -350,6 +350,7 @@ struct TPanelSystem {
     TPanel* panel(char* name);
     int setCurrentPanel(char* name, int modal);
     void setCurrentPanel(TPanel* panel, int modal);
+    int restorePreviousPanel(int destroy_current);
     int destroyPanel(char* name);
     void setModalPanel(TPanel* panel);
     int restorePreviousModalPanel();

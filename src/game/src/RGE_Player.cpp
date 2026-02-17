@@ -9,6 +9,8 @@
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/RGE_Command.h"
 #include "../include/RGE_Visible_Map.h"
+#include "../include/Visible_Resource_Manager.h"
+#include "../include/TMousePointer.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
@@ -222,6 +224,10 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->resigned = 0;
     this->checksum = 0;
     this->checksum_created_this_update = 0;
+
+    if (is_active != 0) {
+        this->new_victory();
+    }
 }
 
 RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
@@ -608,18 +614,32 @@ void RGE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) 
     }
 }
 void RGE_Player::update() {
-    // Source of truth: player.cpp.decomp @ 0x00470120
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470120
     if (MouseSystem != nullptr) {
-        // TMousePointer::Poll(MouseSystem);
+        MouseSystem->Poll();
     }
     this->currentUpdatePathingAttemptsValue = 0;
-    // TODO(accuracy): RGE_Object_List::update(this->objects);
-    // TODO(accuracy): update_selected(this);
-    // TODO: STUB, full victory update loop parity is not yet stable at runtime.
+    if (this->objects != nullptr) {
+        this->objects->update();
+    }
+    this->update_selected();
+    if (this->victory_conditions != nullptr && this->victory_conditions->update() == '\x01') {
+        this->set_game_status(2);
+    }
     this->checksum_created_this_update = 0;
-    // TODO(accuracy): Visible_Resource_Manager::Process_New_Tiles
+    if (this->VR_List != nullptr) {
+        this->VR_List->Process_New_Tiles(&this->tile_list);
+    }
 }
-void RGE_Player::update_dopplegangers() {}
+void RGE_Player::update_dopplegangers() {
+    // Source of truth: player.cpp.decomp @ 0x00470180 (partial)
+    if (MouseSystem != nullptr) {
+        MouseSystem->Poll();
+    }
+    if (this->doppleganger_objects != nullptr) {
+        this->doppleganger_objects->update();
+    }
+}
 void RGE_Player::save(int param_1) {
     // Source of truth: player.cpp.decomp @ 0x004701B0
     rge_write(param_1, &this->type, 1);

@@ -50,6 +50,12 @@ public:
     void EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4);
     uint ExecuteIncoming();
     void GetDPLAYMessages();
+    void SendIResignMsg();
+    void ShutdownGameMessages();
+    int CountWaitingMessages();
+    void GameOver();
+    COMMSTATUS UnlinkToLevel(COMMSTATUS level);
+    uchar new_command(void* p1, int p2);
     long CommOut(uchar p1, void* p2, long p3, ulong p4);
     void DropDeadPlayer(uint id, ulong turn);
     void CheckPingTime(int p1);

@@ -149,6 +149,10 @@ public:
     int start_menu();
     int start_video(int p1, char* p2);
     void stop_video(int p1);
+    int setup_video_system();
+    void shutdown_video_system();
+    void disconnect_multiplayer_game();
+    long video_wnd_proc(void* p1, uint p2, uint p3, long p4);
     void let_game_begin();
     void close();
 

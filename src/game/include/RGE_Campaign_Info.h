@@ -1,7 +1,13 @@
 #pragma once
 #include "common.h"
+#include "RGE_Scenario_Info.h"
+
+struct RGE_Campaign;
 
 struct RGE_Campaign_Info {
+    long get_current_scenario();
+    int open_scenario();
+
     char campaign_name[255];
     long current_scenario;
     long scenario_num;

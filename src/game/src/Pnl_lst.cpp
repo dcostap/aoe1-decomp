@@ -310,6 +310,10 @@ void TListPanel::set_auto_track(int track) {
     auto_track = track;
 }
 
+void TListPanel::scroll_cur_line(uchar mode, short line, int update_scrollbar) {
+    list_scroll_cur_line(this, mode, line, update_scrollbar);
+}
+
 long TListPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,
                        void* font, long font_wid, long font_hgt, void* back_pic, int fill_back,
                        unsigned char back_color, int have_outline, unsigned char outline_color,

@@ -23,6 +23,38 @@
 #include <stdio.h>
 #include <string.h>
 
+namespace {
+struct PathingSystemRuntimeState {
+    int x_size;
+    int y_size;
+    RGE_Map* map;
+    RGE_Game_World* world;
+    unsigned char facet_mask;
+};
+
+static PathingSystemRuntimeState g_pathSystem;
+static PathingSystemRuntimeState g_aiPathSystem;
+
+static int pathing_system_initialize(PathingSystemRuntimeState* state, int x_size, int y_size,
+                                     RGE_Map* map, RGE_Game_World* world) {
+    if (state == nullptr) {
+        return 0;
+    }
+
+    state->map = map;
+    state->world = world;
+    if (map != nullptr) {
+        state->x_size = map->map_width;
+        state->y_size = map->map_height;
+    } else {
+        state->x_size = x_size;
+        state->y_size = y_size;
+    }
+    state->facet_mask = 0xF0;
+    return 1;
+}
+}
+
 static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Player_Info* info,
                                            float scenario_version, int has_uncompressed_header) {
     if (world == nullptr || fd < 0) {
@@ -576,11 +608,58 @@ void RGE_Game_World::scenario_make_map(int param_1) {
 }
 
 uchar RGE_Game_World::load_scenario(RGE_Player_Info* param_1) {
-    // TODO: STUB, campaign scenario file resolution is not fully transliterated yet.
-    if (param_1 != nullptr && param_1->scenario != nullptr) {
-        return this->load_scenario(param_1->scenario, param_1);
+    // Source of truth: world.cpp.decomp @ 0x00544090
+    world_update_counter = 0;
+    if (rge_base_game == nullptr) {
+        return 0;
     }
-    return 0;
+
+    int fd = rge_base_game->campaign_open_scenario();
+    if (fd == -1) {
+        return 0;
+    }
+
+    char version_tag[4];
+    rge_read(fd, version_tag, 4);
+
+    if (memcmp(version_tag, "1.01", 4) == 0) {
+        this->load_scenario1(fd, param_1);
+    } else if (memcmp(version_tag, "1.02", 4) == 0) {
+        this->load_scenario2(fd, param_1);
+    } else if (memcmp(version_tag, "1.03", 4) == 0) {
+        long header_size = 0;
+        rge_read(fd, &header_size, 4);
+        if (header_size > 0) {
+            void* header = malloc((size_t)header_size);
+            if (header == nullptr) {
+                rge_close(fd);
+                return 0;
+            }
+            rge_read(fd, header, (int)header_size);
+            free(header);
+        }
+        this->load_scenario2(fd, param_1);
+    } else if (memcmp(version_tag, "1.04", 4) == 0) {
+        this->load_scenario4(fd, param_1);
+    } else if (memcmp(version_tag, "1.05", 4) == 0) {
+        this->load_scenario5(fd, param_1);
+    } else if (memcmp(version_tag, "1.06", 4) == 0) {
+        this->load_scenario6(fd, param_1);
+    } else if (memcmp(version_tag, "1.07", 4) == 0) {
+        this->load_scenario7(fd, param_1);
+    } else if (memcmp(version_tag, "1.08", 4) == 0 ||
+               memcmp(version_tag, "1.09", 4) == 0 ||
+               memcmp(version_tag, "1.10", 4) == 0 ||
+               memcmp(version_tag, "1.11", 4) == 0) {
+        this->load_scenario8(fd, param_1);
+    } else {
+        rge_close(fd);
+        return 0;
+    }
+
+    this->setup_player_colors(param_1);
+    rge_base_game->get_campaign_info(&this->campaign, &this->campaign_player, &this->campaign_scenario);
+    return 1;
 }
 
 uchar RGE_Game_World::load_scenario(char* param_1, RGE_Player_Info* param_2) {
@@ -1430,8 +1509,17 @@ void RGE_Game_World::update_mutual_allies() {
 }
 
 int RGE_Game_World::initializePathingSystem() {
-    // TODO(accuracy): call PathingSystem::initialize(pathSystem/aiPathSystem).
-    return (this->map != nullptr) ? 1 : 0;
+    // Source of truth: world.cpp.decomp @ 0x00546030
+    RGE_Map* map_ptr = this->map;
+    if (map_ptr == nullptr) {
+        return 0;
+    }
+
+    // TODO: STUB: replace runtime shim with real PathingSystem::initialize(pathSystem/aiPathSystem).
+    pathing_system_initialize(&g_pathSystem, map_ptr->map_width, map_ptr->map_height, map_ptr, this);
+    map_ptr = this->map;
+    pathing_system_initialize(&g_aiPathSystem, map_ptr->map_width, map_ptr->map_height, map_ptr, this);
+    return 1;
 }
 
 int RGE_Game_World::numberObjects() {

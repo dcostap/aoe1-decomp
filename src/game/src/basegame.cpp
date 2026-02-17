@@ -17,6 +17,8 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
+#include "../include/RGE_Scenario_File_Info.h"
+#include "../include/RGE_Game_Info.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
@@ -44,6 +46,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     
     // ASM at 0x0041B6A0
     this->player_game_info = nullptr; // [EBP + 0x4] = 0
+    this->scenario_info = nullptr;    // [EBP + 0x8] = 0
     this->random_game_seed = -1;      // [EBP + 0x28] = -1
     this->random_map_seed = -1;       // [EBP + 0x2C] = -1
     this->save_random_game_seed = -1; // [EBP + 0x30] = -1
@@ -658,6 +661,12 @@ CUSTOM_DEBUG_END
     if (!this->setup_sounds()) {
         this->error_code = 0xc;
         return 0;
+    }
+
+    if (this->scenario_info == nullptr) {
+        char scenario_info_file[300];
+        sprintf(scenario_info_file, "%sscenario.inf", this->prog_info->scenario_dir);
+        this->scenario_info = new RGE_Scenario_File_Info(scenario_info_file);
     }
 
     // Drive Info (ASM 0x0041bf40) - TODO: implement DriveInformation class
@@ -2052,6 +2061,41 @@ char* RGE_Base_Game::scenarioName() {
     return this->rge_game_options.scenarioNameValue;
 }
 
+int RGE_Base_Game::campaign_open_scenario() {
+    // Source of truth: basegame.cpp.decomp @ 0x00422910
+    if (this->player_game_info == nullptr) {
+        return -1;
+    }
+    return this->player_game_info->open_scenario();
+}
+
+void RGE_Base_Game::get_campaign_info(long* param_1, long* param_2, long* param_3) {
+    // Source of truth: basegame.cpp.decomp @ 0x0041CF30
+    if (param_1 != nullptr) {
+        *param_1 = -1;
+    }
+    if (param_2 != nullptr) {
+        *param_2 = -1;
+    }
+    if (param_3 != nullptr) {
+        *param_3 = -1;
+    }
+
+    if (this->player_game_info == nullptr) {
+        return;
+    }
+
+    if (param_1 != nullptr) {
+        *param_1 = this->player_game_info->get_current_campaign();
+    }
+    if (param_2 != nullptr) {
+        *param_2 = this->player_game_info->get_current_player();
+    }
+    if (param_3 != nullptr) {
+        *param_3 = this->player_game_info->get_current_scenario();
+    }
+}
+
 RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
     // Source of truth: basegame.cpp.decomp @ 0x0041CB80
     char temp_name[300];
@@ -2065,8 +2109,10 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
         }
         fd = rge_open(temp_name, _O_RDONLY | _O_BINARY);
     } else {
-        // TODO: STUB, campaign-backed scenario_info loading still depends on RGE_Game_Info::open_scenario.
-        return nullptr;
+        if (this->player_game_info == nullptr) {
+            return nullptr;
+        }
+        fd = this->player_game_info->open_scenario();
     }
 
     if (fd == -1) {

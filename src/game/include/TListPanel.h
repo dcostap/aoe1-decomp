@@ -74,6 +74,7 @@ public:
     int drawHighlightBar;
 
     void set_auto_track(int track);
+    void scroll_cur_line(uchar mode, short line, int update_scrollbar);
 
     // Non-virtual setup (matches TTextPanel signature)
     long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,

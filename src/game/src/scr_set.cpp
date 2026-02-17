@@ -21,8 +21,17 @@
 #include "TScrollBarPanel.h"
 #include "TPanelSystem.h"
 #include "TRIBE_Game.h"
+#include "RGE_Scenario_File_Info.h"
+#include "RGE_Scenario_File_Entry.h"
+#include "RGE_Scenario_Header.h"
+#include "TRIBE_Scenario_Header.h"
+#include "TCommunications_Handler.h"
 #include "globals.h"
 #include "custom_debug.h"
+#include "debug_helpers.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 // ============================================================================
 // init_vars  (decomp @ 0x004B5810)
@@ -224,9 +233,9 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->scoreDrop->set_help_info(0x763c, -1);
 
     // ---- Victory Fixed Text (0x25d9) ----
-    iVar9 = this->create_text((TPanel*)this, &this->victoryFixedText, 0x25d9, 0x14, 0x108, 0xb4, 0x5c, 0xb, 1, 1, 0);
+    iVar9 = this->create_text((TPanel*)this, &this->victoryFixedText, 0x25d9, 0x14, 0x108, 0xb4, 0x5c, 0xb, 1, 1, 1);
     if (iVar9 == 0) goto fail;
-    // TODO: decomp calls victoryFixedText vtable+0xec (set_text_color) here; skipping for now
+    this->victoryFixedText->set_text_color(this->text_color1, this->text_color2);
 
     // ---- Starting Age label (0x2606) ----
     iVar9 = this->create_text((TPanel*)this, &this->ageLabel, 0x2606, 0xdc, 0x108, 0xb4, 0x14, 0xb, 0, 0, 0);
@@ -347,14 +356,20 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         this->scenarioListX, this->scenarioListY,
         this->scenarioListWidth, this->scenarioListHeight, 0xb);
     if (iVar9 == 0) goto fail;
+    this->scenarioList->set_second_column_pos(this->scenarioListWidth - 0x3c);
 
     // Decomp: for SP, scenarioList->selectable = 0, setDrawHighlightBar(0), set_spacer_size(0)
     if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
-        // SP: list is not selectable, no highlight, no spacer
-        // TODO: these are vtable calls in decomp; stubbing for now
+        // Source of truth: scr_set.cpp.asm @ 0x004b550e
+        // The dumped type metadata does not expose this field name cleanly; keep exact byte parity.
+        *(int*)((char*)this->scenarioList + 0x80) = 0;
+        this->scenarioList->drawHighlightBar = 0;
+        this->scenarioList->spacer_size = 0;
     } else {
-        // MP: "Loading list of scenarios..." and scrollbar
-        // TODO: stub for MP scenario list
+        this->scenarioList->set_text(0x25fd);
+        this->scenarioList->set_help_info(0x7639, -1);
+        iVar9 = this->create_auto_scrollbar(&this->scenarioScrollbar, this->scenarioList, 0x14);
+        if (iVar9 == 0) goto fail;
     }
 
     // ---- Scenario title text ----
@@ -385,7 +400,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
             0x25ff, this->scenarioListWidth - 0xdc + this->scenarioListX,
             this->scenarioListY - 0x14, 0xdc, 0x14, 4, 0, 0, 0);
         if (iVar9 == 0) goto fail;
-        // TODO: decomp calls set_alignment(AlignTop, AlignRight) on scenarioPlayersTitle
+        this->scenarioPlayersTitle->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
     }
 
     // ---- Mission text area ----
@@ -404,10 +419,9 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         // Mission text panel
         iVar9 = this->create_text((TPanel*)this, &this->missionText,
             (char*)"", this->missionTextX, this->missionTextY,
-            this->missionTextWidth, this->missionTextHeight, 0xb, 0, 0, 0);
+            this->missionTextWidth, this->missionTextHeight, 0xb, 0, 0, 1);
         if (iVar9 == 0) goto fail;
-
-        // TODO: decomp calls missionText vtable+0xec (set_text_color) here
+        this->missionText->set_text_color(this->text_color1, this->text_color2);
 
         // Mission scrollbar
         iVar9 = this->create_auto_scrollbar(&this->missionScrollbar, this->missionText, 0x14);
@@ -530,8 +544,20 @@ long TribeGameSettingsScreen::handle_idle()
         rge_base_game->enable_input();
     }
 
-    // Decomp: MP shared data sending - skip for SP
-    // TODO: implement MP shared data timing if needed
+    if (rge_base_game->multiplayerGame() != 0) {
+        int line = 0x23a;
+        if (this->last_send_shared != 0) {
+            const ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_set.cpp", 0x23d);
+            if (now == this->last_send_shared) {
+                return TPanel::handle_idle();
+            }
+            if (comm != nullptr) {
+                ((TCommunications_Handler*)comm)->SendSharedData(0);
+            }
+            line = 0x240;
+        }
+        this->last_send_shared = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_set.cpp", line);
+    }
 
     return TPanel::handle_idle();
 }
@@ -629,41 +655,134 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, ulong param_
 }
 
 // ============================================================================
-// fillScenarios  (decomp @ 0x004B5E00) - stub for SP
+// fillScenarios  (decomp @ 0x004B5E00)
 // ============================================================================
 void TribeGameSettingsScreen::fillScenarios()
 {
-    // Decomp: empties scenario list, reloads scenario files, populates list
-    // For SP random map, we just insert "Random Map" and optionally "Death Match"
-    if (this->scenarioList == nullptr) return;
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B5E00
+    if (this->scenarioList == nullptr) {
+        return;
+    }
 
-    // TODO: Full scenario loading requires RGE_Scenario_File_Info which is not yet implemented
-    // For now, insert "Random Map" entry for SP
+    this->scenarioList->empty_list();
     this->scenario_line_offset = 0;
 
-    if (rge_base_game->rge_game_options.multiplayerGameValue != 0 ||
-        rge_base_game->rge_game_options.scenarioGameValue != 0) {
-        // MP/scenario: would need full scenario enumeration
-        // TODO: stub
+    if (this->scenarioMission != nullptr) {
+        for (int i = 0; i < this->scenarioCount; ++i) {
+            if (this->scenarioMission[i] != nullptr) {
+                free(this->scenarioMission[i]);
+            }
+        }
+        free(this->scenarioMission);
+        this->scenarioMission = nullptr;
+    }
+    if (this->scenarioFixed != nullptr) {
+        free(this->scenarioFixed);
+        this->scenarioFixed = nullptr;
+    }
+    this->scenarioCount = 0;
+
+    if (rge_base_game != nullptr &&
+        (rge_base_game->multiplayerGame() != 0 || rge_base_game->scenarioGame() != 0) &&
+        rge_base_game->scenario_info != nullptr) {
+        RGE_Scenario_File_Info* info = rge_base_game->scenario_info;
+        info->reload_scenarios();
+        this->scenarioList->sorted = 1;
+
+        for (long scenario_info_file = 0;; ++scenario_info_file) {
+            char* scenario_name = info->get_scenario_name(scenario_info_file);
+            if (scenario_name == nullptr) {
+                break;
+            }
+
+            char file_name[260];
+            strncpy(file_name, scenario_name, sizeof(file_name) - 1);
+            file_name[sizeof(file_name) - 1] = '\0';
+
+            if (rge_base_game->multiplayerGame() == 0) {
+                char* selected = rge_base_game->scenarioName();
+                if (selected == nullptr || strcmp(file_name, selected) != 0) {
+                    continue;
+                }
+            }
+
+            this->scenarioList->append_line(file_name, scenario_info_file);
+            this->scenarioCount = this->scenarioCount + 1;
+        }
+
+        this->scenarioMission = (char**)calloc((size_t)this->scenarioCount, sizeof(char*));
+        this->scenarioFixed = (int*)calloc((size_t)this->scenarioCount, sizeof(int));
+
+        if (this->scenarioMission != nullptr && this->scenarioFixed != nullptr && this->scenarioCount > 0) {
+            for (int i = 0; i < this->scenarioCount; ++i) {
+                long list_id = this->scenarioList->get_id(i);
+                RGE_Scenario_Header* header = info->get_scenario_info(list_id);
+                if (header == nullptr) {
+                    continue;
+                }
+
+                this->scenarioMission[i] = (char*)calloc(0x1000, 1);
+                if (this->scenarioMission[i] != nullptr && header->description != nullptr) {
+                    strncpy(this->scenarioMission[i], header->description, 0x1000 - 1);
+                    this->scenarioMission[i][0x1000 - 1] = '\0';
+                }
+
+                TRIBE_Scenario_Header* tribe_header = (TRIBE_Scenario_Header*)header;
+                this->scenarioFixed[i] = tribe_header->any_sp_victory;
+                int player_count = tribe_header->active_player_count;
+                if (player_count > 0) {
+                    char player_str[32];
+                    if (this->scenarioFixed[i] == 0 && player_count > 2) {
+                        sprintf(player_str, "%d - %d", 2, player_count);
+                    } else {
+                        sprintf(player_str, "%d", player_count);
+                    }
+
+                    char scenario_text[260];
+                    scenario_text[0] = '\0';
+                    char* current_text = this->scenarioList->get_text(i);
+                    if (current_text != nullptr) {
+                        strncpy(scenario_text, current_text, sizeof(scenario_text) - 1);
+                        scenario_text[sizeof(scenario_text) - 1] = '\0';
+                    }
+
+                    this->scenarioList->change_line(i, scenario_text, player_str, 0);
+                }
+            }
+        }
+
+        this->scenarioList->sorted = 0;
     }
 
-    // Decomp: insert "Random Map" at line 0 with id=-2 for SP random games
-    // and "Death Match" at line 1 with id=-1 for death match
-    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-
-    if (rge_base_game->rge_game_options.multiplayerGameValue != 0 ||
-        (game->tribe_game_options.deathMatchValue == 0)) {
-        // Decomp: insert "Random Map" (0x25b5) with id=-2
-        this->scenarioList->append_line((long)0x25b5, -2);
-        this->scenario_line_offset += -1;
+    int add_random = 0;
+    if (rge_base_game != nullptr) {
+        if (rge_base_game->multiplayerGame() != 0 ||
+            (rge_base_game->randomGame() != 0 && ((TRIBE_Game*)rge_base_game)->deathMatch() == 0)) {
+            add_random = 1;
+        }
     }
 
-    if (rge_base_game->rge_game_options.multiplayerGameValue != 0 ||
-        (game->tribe_game_options.deathMatchValue != 0)) {
-        // Decomp: insert "Death Match" (0x2617) with id=-1
-        this->scenarioList->append_line((long)0x2617, -1);
-        this->scenario_line_offset += -1;
+    int add_deathmatch = 0;
+    if (rge_base_game != nullptr) {
+        if (rge_base_game->multiplayerGame() != 0 ||
+            (rge_base_game->randomGame() != 0 && ((TRIBE_Game*)rge_base_game)->deathMatch() != 0)) {
+            add_deathmatch = 1;
+        }
     }
+
+    if (add_random != 0 || add_deathmatch != 0) {
+        if (add_random != 0) {
+            char* random_text = this->get_string(0x25b5);
+            this->scenarioList->insert_line(0, random_text, (char*)"2 - 8", -2);
+            this->scenario_line_offset = this->scenario_line_offset - 1;
+        }
+        if (add_deathmatch != 0) {
+            char* deathmatch_text = this->get_string(0x2617);
+            this->scenarioList->insert_line(1, deathmatch_text, (char*)"2 - 8", -1);
+            this->scenario_line_offset = this->scenario_line_offset - 1;
+        }
+    }
+
 }
 
 // ============================================================================
@@ -671,18 +790,38 @@ void TribeGameSettingsScreen::fillScenarios()
 // ============================================================================
 void TribeGameSettingsScreen::fillMissionText()
 {
-    // Decomp: sets mission text based on selected scenario
-    // For SP random map, shows description of random map or death match
-    if (this->missionText == nullptr) return;
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B6160
+    if (this->missionText == nullptr || this->scenarioList == nullptr) {
+        return;
+    }
 
-    // TODO: Full implementation requires TTextPanel vtable calls for set_text
-    // For now, just set state based on scenario list selection
-    // Decomp: if id==-2, show random map description (0x25dc)
-    //         if id==-1, show death match description (0x2618)
-    //         else show scenario mission text
+    this->missionText->set_text((char*)"");
 
-    this->state = StateRandom;  // Default for SP
-    this->last_scenario_line = 0;
+    long line = this->scenarioList->get_line();
+    long id = this->scenarioList->get_id();
+
+    if (id == -2) {
+        this->missionText->set_text(0x25dc);
+    } else if (id == -1) {
+        this->missionText->set_text(0x2618);
+    } else {
+        const long mission_index = this->scenario_line_offset + line;
+        if (this->scenarioMission != nullptr && mission_index >= 0 && mission_index < this->scenarioCount &&
+            this->scenarioMission[mission_index] != nullptr) {
+            this->missionText->set_text(this->scenarioMission[mission_index]);
+        }
+    }
+
+    if (line != this->last_scenario_line && this->victoryTypeDrop != nullptr) {
+        this->victoryTypeDrop->set_line(0);
+    }
+
+    this->last_scenario_line = (int)line;
+    if (id < 0) {
+        this->state = StateRandom;
+    } else {
+        this->state = StateScenario;
+    }
 }
 
 // ============================================================================
@@ -703,11 +842,20 @@ void TribeGameSettingsScreen::getSettings()
     }
     this->last_scenario_line = 0;
 
-    // Decomp: scroll scenario list to current game type
-    // For SP random: scroll to line 0 (Random Map) or 1 (Death Match)
-    if (this->state == StateRandom) {
-        // Decomp: if deathMatch, sVar12=1 else sVar12=0
-        // TODO: scroll_cur_line on scenarioList
+    if (this->scenarioList != nullptr) {
+        if (this->state == StateRandom) {
+            short target_line = (short)((game->tribe_game_options.deathMatchValue != 0) ? 1 : 0);
+            this->scenarioList->scroll_cur_line(1, target_line, 1);
+        } else {
+            char* scenario_name = rge_base_game->scenarioName();
+            long scenario_line = (scenario_name != nullptr) ? this->scenarioList->get_line(scenario_name) : -1;
+            if (scenario_line != -1) {
+                this->scenarioList->scroll_cur_line(1, (short)scenario_line, 1);
+                this->last_scenario_line = (int)scenario_line - 1;
+            } else {
+                this->scenarioList->scroll_cur_line(1, 0, 1);
+            }
+        }
     }
 
     // Decomp: set dropdown values from game options using get_line(value) then set_line
@@ -791,17 +939,22 @@ void TribeGameSettingsScreen::sendSettings()
 
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
 
-    // Decomp: check scenario list selection
-    // For SP random map, id < 0 means random/death match
-    long scenario_id = -2;  // Default: random map (no scenario list interaction yet)
-    // TODO: get actual id from scenarioList when scenario selection is implemented
+    long scenario_id = -2;
+    if (this->scenarioList != nullptr) {
+        scenario_id = this->scenarioList->get_id();
+    }
 
     if (scenario_id < 0) {
         rge_base_game->setScenarioGame(0);
         rge_base_game->setScenarioName((char*)"");
     } else {
         rge_base_game->setScenarioGame(1);
-        // TODO: get scenario name from list
+        char* scenario_name = nullptr;
+        if (this->scenarioList != nullptr) {
+            long scenario_line = this->scenarioList->get_line();
+            scenario_name = this->scenarioList->get_text(scenario_line);
+        }
+        rge_base_game->setScenarioName((scenario_name != nullptr) ? scenario_name : (char*)"");
     }
 
     // Decomp: setDeathMatch(id == -1)
@@ -829,8 +982,7 @@ void TribeGameSettingsScreen::sendSettings()
     }
 
     // Map settings (only for random games)
-    // Decomp: if randomGame() != 0
-    if (rge_base_game->rge_game_options.scenarioGameValue == 0) {
+    if (rge_base_game->randomGame() != 0) {
         if (this->mapSizeDrop) {
             game->setMapSize((MapSize)this->mapSizeDrop->get_id());
         }
@@ -912,11 +1064,14 @@ void TribeGameSettingsScreen::activatePanels()
     if (this->mapSizeLabel) this->mapSizeLabel->set_active(isRandom);
     if (this->mapTypeLabel) this->mapTypeLabel->set_active(isRandom);
 
-    // Resources: active if not death match (id != -1)
-    // TODO: check scenarioList get_id for death match detection
-    // For now, always show resources in random mode
-    if (this->resourcesDrop) this->resourcesDrop->set_active(1);
-    if (this->resourcesLabel) this->resourcesLabel->set_active(1);
+    // Resources: disabled in death match list entry (id=-1).
+    long scenario_id = -2;
+    if (this->scenarioList) {
+        scenario_id = this->scenarioList->get_id();
+    }
+    int resources_active = (scenario_id != -1) ? 1 : 0;
+    if (this->resourcesDrop) this->resourcesDrop->set_active(resources_active);
+    if (this->resourcesLabel) this->resourcesLabel->set_active(resources_active);
 
     // Victory panels
     this->activateVictoryPanels();
@@ -944,35 +1099,36 @@ void TribeGameSettingsScreen::activatePanels()
 // ============================================================================
 void TribeGameSettingsScreen::activateVictoryPanels()
 {
-    CUSTOM_DEBUG_FUNC_ENTER();
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B6870
+    if (this->timeLabel != nullptr) this->timeLabel->set_active(0);
+    if (this->timeDrop != nullptr) this->timeDrop->set_active(0);
+    if (this->scoreLabel != nullptr) this->scoreLabel->set_active(0);
+    if (this->scoreDrop != nullptr) this->scoreDrop->set_active(0);
 
-    // Decomp: hide time and score controls
-    if (this->timeLabel) this->timeLabel->set_active(0);
-    if (this->timeDrop) this->timeDrop->set_active(0);
-    if (this->scoreLabel) this->scoreLabel->set_active(0);
-    if (this->scoreDrop) this->scoreDrop->set_active(0);
-
-    // Decomp: check for fixed victory in scenario mode
-    if (this->state == StateScenario) {
-        // TODO: check scenarioFixed array for current scenario
-        // For now, assume not fixed (show victory controls)
+    if (this->state == StateScenario && this->scenarioList != nullptr) {
+        long line1 = this->scenarioList->get_line();
+        long line2 = this->scenarioList->get_line();
+        if (this->scenariosLoaded != 0 && line2 >= 0 && this->scenarioFixed != nullptr) {
+            long fixed_index = this->scenario_line_offset + line1;
+            if (fixed_index >= 0 && fixed_index < this->scenarioCount && this->scenarioFixed[fixed_index] != 0) {
+                if (this->victoryFixedText != nullptr) this->victoryFixedText->set_active(1);
+                if (this->victoryTypeLabel != nullptr) this->victoryTypeLabel->set_active(0);
+                if (this->victoryTypeDrop != nullptr) this->victoryTypeDrop->set_active(0);
+                return;
+            }
+        }
     }
 
-    // Decomp: show victory controls (not fixed)
-    if (this->victoryFixedText) this->victoryFixedText->set_active(0);
-    if (this->victoryTypeLabel) this->victoryTypeLabel->set_active(1);
-    if (this->victoryTypeDrop) this->victoryTypeDrop->set_active(1);
+    if (this->victoryFixedText != nullptr) this->victoryFixedText->set_active(0);
+    if (this->victoryTypeLabel != nullptr) this->victoryTypeLabel->set_active(1);
+    if (this->victoryTypeDrop != nullptr) this->victoryTypeDrop->set_active(1);
 
-    // Decomp: show time/score controls based on victory type
-    if (this->victoryTypeDrop) {
-        long vic_id = this->victoryTypeDrop->get_id();
-        if (vic_id == 7) {  // Time victory
-            if (this->timeLabel) this->timeLabel->set_active(1);
-            if (this->timeDrop) this->timeDrop->set_active(1);
-        }
-        if (vic_id == 8) {  // Score victory
-            if (this->scoreLabel) this->scoreLabel->set_active(1);
-            if (this->scoreDrop) this->scoreDrop->set_active(1);
-        }
+    if (this->victoryTypeDrop != nullptr && this->victoryTypeDrop->get_id() == 7) {
+        if (this->timeLabel != nullptr) this->timeLabel->set_active(1);
+        if (this->timeDrop != nullptr) this->timeDrop->set_active(1);
+    }
+    if (this->victoryTypeDrop != nullptr && this->victoryTypeDrop->get_id() == 8) {
+        if (this->scoreLabel != nullptr) this->scoreLabel->set_active(1);
+        if (this->scoreDrop != nullptr) this->scoreDrop->set_active(1);
     }
 }

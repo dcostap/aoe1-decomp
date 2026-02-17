@@ -157,6 +157,22 @@ int TMousePointer::get_game_enable() {
     return this->GameEnabled;
 }
 
+void TMousePointer::Poll() {
+    // Source of truth: mouseptr.cpp.decomp @ 0x0045C010 (temporary-safe subset)
+    if (this->active == 0 || this->custom_draw == 0 || this->GameMode == 0 || this->GameEnabled == 0) {
+        return;
+    }
+
+    POINT cursor_pos;
+    if (GetCursorPos(&cursor_pos) == 0) {
+        return;
+    }
+
+    this->mouse_x = cursor_pos.x;
+    this->mouse_y = cursor_pos.y;
+    this->drawn = 1;
+}
+
 // Helper method stubs
 
 int TMousePointer::LoadCursors(char* filename, int file_id, int reload) {

@@ -3,6 +3,7 @@
 #include "../include/TPanelSystem.h"
 #include "../include/TPanel.h"
 #include "../include/PanelNode.h"
+#include "../include/globals.h"
 #include "../include/custom_debug.h"
 
 // External declaration from Dib.cpp
@@ -226,6 +227,36 @@ int TPanelSystem::destroyPanel(char* name) {
         curr = curr->next_node;
     }
     return 0;
+}
+
+int TPanelSystem::restorePreviousPanel(int destroy_current) {
+    // Source of truth: panel.cpp.decomp @ 0x00463EB0
+    if (this->currentPanelValue == nullptr) {
+        return 0;
+    }
+
+    TPanel* current = this->currentPanelValue;
+    TPanel* previous = current->previousPanelValue;
+    if (previous == nullptr) {
+        return 0;
+    }
+
+    if (destroy_current == 0) {
+        previous->previousPanelValue = current;
+    } else {
+        if (previous->previousPanelValue == current) {
+            previous->previousPanelValue = nullptr;
+        }
+        if (current->panelNameValue != nullptr) {
+            this->destroyPanel(current->panelNameValue);
+        }
+    }
+
+    this->currentPanelValue = previous;
+    this->currentPanelValue->set_focus(1);
+    this->currentPanelValue->set_redraw(TPanel::RedrawMode::RedrawFull);
+    UpdateWindow(AppWnd);
+    return 1;
 }
 
 // From decomp: sets the modal panel (captures all input)

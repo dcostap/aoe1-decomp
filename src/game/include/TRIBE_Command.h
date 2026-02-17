@@ -14,7 +14,7 @@ public:
     virtual void do_command_give_attribute(RGE_Command_Give_Attribute* param_1); // vt[0] (0x0)
     virtual ~TRIBE_Command(); // vt[1] (0x4)
     virtual void do_command(void* param_1); // vt[2] (0x8)
-    virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4); // vt[3] (0xC)
+    using RGE_Command::command_give_attribute; // vt[3] stays bound to RGE_Command::command_give_attribute
     virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* param_1); // vt[4] (0x10)
     virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4, float param_5); // vt[5] (0x14)
     void do_command_trade_attribute(TRIBE_Command_Trade_Attribute* param_1);

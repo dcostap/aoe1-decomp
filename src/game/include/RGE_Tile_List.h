@@ -6,6 +6,8 @@ struct RGE_Tile_List {
     RGE_Tile_List(int param_1);
     void add_node(int param_1, int param_2);
     void del_list();
+    void get_list_info(RGE_Tile_List_Node** param_1, int* param_2);
+    int get_new_count();
 
     int list_size;
     int num_active;

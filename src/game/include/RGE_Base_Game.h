@@ -180,6 +180,8 @@ public:
     void increment_world_update_count();
     void increment_view_update_count();
     char* scenarioName();
+    int campaign_open_scenario();
+    void get_campaign_info(long* param_1, long* param_2, long* param_3);
     RGE_Scenario* get_scenario_info(char* p1, int p2);
 
     RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)

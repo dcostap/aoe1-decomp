@@ -1,4 +1,6 @@
 #include "../include/TCommunications_Handler.h"
+#include "../include/NAME.h"
+#include <string.h>
 
 namespace {
 // COMMPLAYEROPTIONS::Humanity offset inside PlayerOptions.
@@ -156,23 +158,37 @@ void TCommunications_Handler::SetPlayerHumanity(uint player_number, int humanity
 }
 
 char* TCommunications_Handler::GetPlayerName(uint player_number) {
-    // Source of truth: com_hand.cpp.decomp @ GetPlayerName
-    // TODO(accuracy): implement full name lookup from PlayerOptions
-    // Returns pointer to internal name buffer for the given player slot.
-    // For now return the friendly name as a fallback.
-    static char empty_name[65] = {0};
-    if (player_number == 0 || player_number >= 10) {
-        return empty_name;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042D100
+    if (this->MaxGamePlayers < player_number) {
+        return nullptr;
     }
-    // TODO(accuracy): actual offset into PlayerOptions name array
-    return empty_name;
+    if (player_number == this->Me) {
+        return this->MyFriendlyName;
+    }
+    if (this->FriendlyName == nullptr) {
+        return nullptr;
+    }
+    return this->FriendlyName[player_number].Text;
 }
 
 void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
-    // Source of truth: com_hand.cpp.decomp @ SetPlayerName
-    // TODO(accuracy): implement full name storage in PlayerOptions
-    (void)player_number;
-    (void)name;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042D430
+    if (name == nullptr) {
+        return;
+    }
+
+    if (player_number == this->Me) {
+        strncpy(this->MyFriendlyName, name, sizeof(this->MyFriendlyName) - 1);
+        this->MyFriendlyName[sizeof(this->MyFriendlyName) - 1] = '\0';
+        return;
+    }
+
+    if (this->FriendlyName == nullptr) {
+        return;
+    }
+
+    strncpy(this->FriendlyName[player_number].Text, name, sizeof(this->FriendlyName[player_number].Text) - 1);
+    this->FriendlyName[player_number].Text[sizeof(this->FriendlyName[player_number].Text) - 1] = '\0';
 }
 
 uint TCommunications_Handler::GetRandomSeed() {
@@ -184,6 +200,23 @@ uint TCommunications_Handler::GetRandomSeed() {
 uint TCommunications_Handler::WhoAmI() {
     // Source of truth: com_hand.cpp.decomp @ WhoAmI
     return this->Me;
+}
+
+uchar TCommunications_Handler::new_command(void* p1, int p2) {
+    // Source of truth: com_hand.cpp.decomp @ 0x00426510
+    if (p1 == nullptr || p2 <= 0) {
+        return 0;
+    }
+
+    // TODO: STUB: NewCommand/AddCommand queue path (0x00426530) is not fully restored yet.
+    // Keep temporary-safe behavior:
+    // - Multiplayer: treat as queued (prevent immediate local execute fallback in submit()).
+    // - Single-player: return 0 so submit() still executes command locally.
+    if (this->Multiplayer != 0) {
+        (void)this->CommOut(0, p1, p2, 0);
+        return 1;
+    }
+    return 0;
 }
 
 void TCommunications_Handler::DropDeadPlayer(uint id, ulong turn) {
@@ -222,4 +255,36 @@ int TCommunications_Handler::MultiplayerGameStart() {
 
 int TCommunications_Handler::IsLobbyLaunched() {
     return this->LobbyLaunched;
+}
+
+void TCommunications_Handler::SendIResignMsg() {
+    // TODO: STUB: full resign packet serialization/send path is not restored yet.
+    // Keep a deterministic local state transition so disconnect flow can progress.
+    this->ShuttingDown = 1;
+}
+
+void TCommunications_Handler::ShutdownGameMessages() {
+    // TODO: STUB: full game-message queue drain path is not restored yet.
+    // Best-effort: flush stored send state and mark shutdown intent.
+    this->ShuttingDown = 1;
+    this->SendStoredMessages();
+}
+
+int TCommunications_Handler::CountWaitingMessages() {
+    // TODO: STUB: queue accounting from com_hand.cpp @ 0x0042A560 is not fully restored.
+    // HoldCount tracks buffered/held packets and is the closest stable field for disconnect loops.
+    return (int)this->HoldCount;
+}
+
+void TCommunications_Handler::GameOver() {
+    // TODO: STUB: full transport teardown path is not restored yet.
+    this->Multiplayer = 0;
+    this->CommunicationsStatus = COMM_NONE;
+    this->ShuttingDown = 1;
+}
+
+COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS level) {
+    // TODO: STUB: transport-level unlink path is not restored yet.
+    this->CommunicationsStatus = level;
+    return this->CommunicationsStatus;
 }

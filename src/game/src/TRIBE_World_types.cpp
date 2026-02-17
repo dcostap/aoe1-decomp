@@ -18,12 +18,14 @@
 #include "../include/RGE_Effect_Command.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/TCommunications_Handler.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/TRIBE_Victory_Conditions.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Object_Node.h"
+#include "../include/RGE_Timeline.h"
 #include "../include/TPicture.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
@@ -1124,13 +1126,21 @@ RGE_Static_Object* RGE_Command::get_obj(RGE_Obj_Info p1) {
 }
 
 void RGE_Command::submit(void* p1, long p2) {
-    // Source of truth: command.cpp.decomp @ 0x004352C0 (temporary-safe local execution path)
+    // Source of truth: command.cpp.decomp @ 0x004352C0
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
 
-    // TODO(accuracy): route through TCommunications_Handler::new_command once comm queue parity is restored.
-    this->do_command(p1);
+    uchar queued = 0;
+    if (this->com_hand != nullptr) {
+        queued = this->com_hand->new_command(p1, (int)p2);
+    }
+
+    if (queued == 0) {
+        // TODO: STUB: comm queue/AddCommand parity is incomplete.
+        // Temporary-safe path: execute locally only when command was not accepted/queued.
+        this->do_command(p1);
+    }
 
     if (this->last_order != nullptr) {
         free(this->last_order);
@@ -1490,7 +1500,62 @@ static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_ba
 
 // --- RGE_Scenario (base class stubs) ---
 RGE_Scenario::~RGE_Scenario() {
-    // TODO: STUB, full scenario.cpp destructor not yet transliterated.
+    // Source of truth: scenario.cpp.decomp @ 0x0048B5A0
+    if (this->time_line != nullptr) {
+        delete this->time_line;
+        this->time_line = nullptr;
+    }
+
+    if (this->description != nullptr) {
+        free(this->description);
+        this->description = nullptr;
+    }
+    if (this->hints != nullptr) {
+        free(this->hints);
+        this->hints = nullptr;
+    }
+    if (this->win_message != nullptr) {
+        free(this->win_message);
+        this->win_message = nullptr;
+    }
+    if (this->loss_message != nullptr) {
+        free(this->loss_message);
+        this->loss_message = nullptr;
+    }
+    if (this->historicle_notes != nullptr) {
+        free(this->historicle_notes);
+        this->historicle_notes = nullptr;
+    }
+
+    operator delete(this->scenario_name);
+    this->scenario_name = nullptr;
+
+    if (this->mission_picture != nullptr) {
+        delete this->mission_picture;
+        this->mission_picture = nullptr;
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        operator delete(this->BuildList[i]);
+        this->BuildList[i] = nullptr;
+        operator delete(this->CityPlan[i]);
+        this->CityPlan[i] = nullptr;
+        operator delete(this->AiRules[i]);
+        this->AiRules[i] = nullptr;
+
+        if (this->BuildListFile[i] != nullptr) {
+            free(this->BuildListFile[i]);
+            this->BuildListFile[i] = nullptr;
+        }
+        if (this->CityPlanFile[i] != nullptr) {
+            free(this->CityPlanFile[i]);
+            this->CityPlanFile[i] = nullptr;
+        }
+        if (this->AiRulesFile[i] != nullptr) {
+            free(this->AiRulesFile[i]);
+            this->AiRulesFile[i] = nullptr;
+        }
+    }
 }
 RGE_Static_Object* RGE_Scenario::get_object_pointer(int p1) {
     // Source of truth: scenario.cpp.decomp @ 0x0048B580
@@ -1519,7 +1584,7 @@ void RGE_Scenario::save(int p1) {
 
     rge_write(p1, &this->victory_conquest, 1);
     if (this->time_line != nullptr) {
-        // TODO(accuracy): timeline save path still depends on missing RGE_Timeline::save transliteration.
+        this->time_line->save(p1);
     }
 
     rge_scenario_write_string16(p1, this->scenario_name);
@@ -1626,10 +1691,6 @@ void TRIBE_Command::do_command(void* p1) {
     }
 
     RGE_Command::do_command(p1);
-}
-void TRIBE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
-    // TODO(accuracy): no dedicated 4-arg TRIBE source body in current tcommand export.
-    this->command_give_attribute(p1, p2, p3, p4, 0.0f);
 }
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* p1) {
     // Source of truth: tcommand.cpp.decomp @ 0x0050A510
@@ -1825,6 +1886,18 @@ static int t_scenario_get_player_wood(T_Scenario* scenario, int idx) {
     return scenario->player_info[idx].Wood;
 }
 
+static void t_scenario_clear_disabled_technologies(T_Scenario* scenario) {
+    // Source of truth: tscenaro.cpp.decomp @ 0x0052B100
+    if (scenario == nullptr) {
+        return;
+    }
+    for (int i = 0; i < 16; ++i) {
+        for (int j = 0; j < 20; ++j) {
+            scenario->DisabledTechnology[i][j] = 1;
+        }
+    }
+}
+
 static void t_scenario_save_attributes_into_players(T_Scenario* scenario) {
     // Source of truth: tscenaro.cpp.decomp @ 0x0052BA90
     if (scenario == nullptr || scenario->world == nullptr || scenario->world->players == nullptr) {
@@ -1876,27 +1949,11 @@ T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2) {
     this->InitializeVictoryValues();
 
     for (int i = 0; i < 16; ++i) {
-        for (int j = 0; j < 16; ++j) {
-            this->Opponent[i].Attitude[j] = 3;
-        }
+        this->player_info[i].Gold = 0;
+        this->player_info[i].Wood = 200;
+        this->player_info[i].Food = 200;
+        this->player_info[i].Stone = 150;
     }
-
-    this->mp_victory_type = 0;
-    this->victory_score = 900;
-    this->victory_time = 9000;
-    this->victory_all_flag = 0;
-    this->which_player = 0;
-    this->ScenarioOptions[0] = 0;
-    this->ScenarioOptions[1] = 0;
-    this->ScenarioOptions[2] = 0;
-}
-
-T_Scenario::T_Scenario(RGE_Game_World* param_1) {
-    // Preserve vtable pointer and clear all data fields (base + derived).
-    memset((char*)this + sizeof(void*), 0, sizeof(T_Scenario) - sizeof(void*));
-    this->world = param_1;
-    this->victory_conquest = 1;
-    this->InitializeVictoryValues();
 
     for (int i = 0; i < 16; ++i) {
         for (int j = 0; j < 16; ++j) {
@@ -1912,6 +1969,38 @@ T_Scenario::T_Scenario(RGE_Game_World* param_1) {
     this->ScenarioOptions[0] = 0;
     this->ScenarioOptions[1] = 0;
     this->ScenarioOptions[2] = 0;
+    t_scenario_clear_disabled_technologies(this);
+}
+
+T_Scenario::T_Scenario(RGE_Game_World* param_1) {
+    // Preserve vtable pointer and clear all data fields (base + derived).
+    memset((char*)this + sizeof(void*), 0, sizeof(T_Scenario) - sizeof(void*));
+    this->world = param_1;
+    this->victory_conquest = 1;
+    this->InitializeVictoryValues();
+
+    for (int i = 0; i < 16; ++i) {
+        this->player_info[i].Gold = 0;
+        this->player_info[i].Wood = 200;
+        this->player_info[i].Food = 200;
+        this->player_info[i].Stone = 150;
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        for (int j = 0; j < 16; ++j) {
+            this->Opponent[i].Attitude[j] = 3;
+        }
+    }
+
+    this->mp_victory_type = 0;
+    this->victory_score = 900;
+    this->victory_time = 9000;
+    this->victory_all_flag = 0;
+    this->which_player = 0;
+    this->ScenarioOptions[0] = 0;
+    this->ScenarioOptions[1] = 0;
+    this->ScenarioOptions[2] = 0;
+    t_scenario_clear_disabled_technologies(this);
 }
 
 T_Scenario::~T_Scenario() {}
@@ -2271,9 +2360,6 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
                                 vc->add_destroy('\x01', obj);
                             }
                         } else {
-                            if (target_player_id < 0 || target_player_id >= player_num) {
-                                continue;
-                            }
                             RGE_Player* target_player = this->world->players[target_player_id];
                             if (info->ObjType == 0) {
                                 vc->add_destroy('\x01', target_player);
@@ -2329,4 +2415,21 @@ void RGE_Tile_List::del_list() {
         this->list = (RGE_Tile_List_Node*)calloc(8, sizeof(RGE_Tile_List_Node));
         this->collapse_list = 0;
     }
+}
+
+void RGE_Tile_List::get_list_info(RGE_Tile_List_Node** param_1, int* param_2) {
+    // Source of truth: player.cpp.decomp @ 0x00471E90
+    if (param_1 != nullptr) {
+        *param_1 = this->list;
+    }
+    if (param_2 != nullptr) {
+        *param_2 = this->num_active;
+    }
+}
+
+int RGE_Tile_List::get_new_count() {
+    // Source of truth: player.cpp.decomp @ 0x00471EB0
+    int count = this->new_count;
+    this->new_count = 0;
+    return count;
 }

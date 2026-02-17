@@ -6,9 +6,10 @@
 #include "../include/Res_file.h"
 #include "../include/RGE_Prog_Info.h"
 #include "../include/globals.h"
-#include "../include/GameViewPanel.h"
 #include "../include/RGE_Map.h"
+#include "../include/TRIBE_Screen_Game.h"
 #include "../include/TRIBE_Screen_Main_Menu.h"
+#include "../include/TRIBE_Screen_Status_Message.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TDrawArea.h"
@@ -19,10 +20,12 @@
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Scenario.h"
+#include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Player.h"
 #include "../include/TRIBE_Scenario_Header.h"
 #include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
+#include "../include/TRegistry.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
@@ -33,8 +36,6 @@ static TPanel* gCurrentScreen = nullptr;
 static TPanel* gPendingScreen = nullptr;
 static TPanel* gRetiredScreens[32];
 static int gRetiredScreenCount = 0;
-static int gStatusMessageActive = 0;
-static char gStatusMessageText[512];
 
 static void tribe_retire_screen_for_later_delete(TPanel* screen) {
     // Non-original safety shim:
@@ -179,6 +180,83 @@ static void tribe_process_pending_screen_switch() {
     TPanel* next = gPendingScreen;
     gPendingScreen = nullptr;
     tribe_apply_screen_switch(next);
+}
+
+static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
+    if (lhs == nullptr || rhs == nullptr) {
+        return 0;
+    }
+    return strcmp(lhs, rhs) == 0;
+}
+
+static void tribe_close_video_window(TRIBE_Game* game) {
+    if (game == nullptr || game->video_window == nullptr) {
+        return;
+    }
+
+    char status[100];
+    status[0] = '\0';
+    SendMessageA((HWND)game->video_window, 0x46a, 100, (LPARAM)status);
+
+    if (status[0] != '\0' && tribe_ascii_str_eq(status, "stopped") == 0) {
+        SendMessageA((HWND)game->video_window, 0x808, 0, 0);
+    }
+
+    SendMessageA((HWND)game->video_window, 0x10, 0, 0);
+    game->video_window = nullptr;
+}
+
+static void tribe_write_debugload_dump(TRIBE_Game* game, const char* save_name_no_ext) {
+    if (game == nullptr || save_name_no_ext == nullptr || save_name_no_ext[0] == '\0') {
+        return;
+    }
+
+    char dump_name[300];
+    sprintf(dump_name, "c:\\%s.txt", save_name_no_ext);
+
+    FILE* out = fopen(dump_name, "w");
+    if (out == nullptr) {
+        return;
+    }
+
+    RGE_Game_World* world = game->world;
+    if (world == nullptr) {
+        fprintf(out, "world=null\n");
+        fclose(out);
+        return;
+    }
+
+    fprintf(out, "world_time=%lu\n", world->world_time);
+    fprintf(out, "old_world_time=%lu\n", world->old_world_time);
+    fprintf(out, "game_speed=%f\n", world->game_speed);
+    fprintf(out, "player_num=%d\n", (int)world->player_num);
+
+    if (world->map != nullptr) {
+        fprintf(out, "map=%ldx%ld visible=%u fog=%u\n",
+            world->map->map_width,
+            world->map->map_height,
+            (unsigned int)world->map->map_visible_flag,
+            (unsigned int)world->map->fog_flag);
+    }
+
+    for (int i = 0; i < (int)world->player_num; ++i) {
+        RGE_Player* player = (world->players != nullptr) ? world->players[i] : nullptr;
+        if (player == nullptr) {
+            continue;
+        }
+
+        int humanity = (game->comm_handler != nullptr) ? game->comm_handler->GetPlayerHumanity((uint)(i + 1)) : 0;
+        fprintf(out, "player[%d] id=%d civ=%u humanity=%d status=%u checksum=%ld name=%s\n",
+            i,
+            (int)player->id,
+            (unsigned int)player->culture,
+            humanity,
+            (unsigned int)player->game_status,
+            player->checksum,
+            (player->name != nullptr) ? player->name : "");
+    }
+
+    fclose(out);
 }
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0) {
@@ -329,9 +407,6 @@ int TRIBE_Game::setup() {
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
 CUSTOM_DEBUG_END
-    // Non-original safety shim:
-    // force quick-start SP path while menu/text panel rendering is being stabilized.
-    quick_start_game_mode = 1;
     if (this->player_game_info) {
         return 0;
     }
@@ -641,57 +716,77 @@ unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMa
 unsigned char TRIBE_Game::popLimit() { return this->tribe_game_options.popLimitValue; }
 
 int TRIBE_Game::randomComputerName(int civ) {
-    // Source of truth: tribegam.cpp.decomp @ 0x00522A20
-    // Picks a random unused computer name index for the given civ.
-    // computerNameUsed[civ][index] tracks which names have been used.
-    // TODO(accuracy): full implementation with name cycling per decomp.
-    // For now, return a simple incrementing index per civ to avoid duplicates.
-    if (civ < 0 || civ > 17) civ = 0;
-    for (int i = 0; i < 10; i++) {
-        if (this->computerNameUsed[civ][i] == 0) {
-            this->computerNameUsed[civ][i] = 1;
-            return i;
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A0B0
+    if (civ < 0 || civ >= 18) {
+        civ = 0;
+    }
+
+    char scount[10];
+    scount[0] = '\0';
+    this->get_string((civ + 0x1b7) * 10, scount, sizeof(scount));
+
+    int name_count = atoi(scount);
+    if (name_count <= 0) {
+        name_count = 1;
+    }
+
+    int selected = 0;
+    int tries = 0;
+    do {
+        int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1521);
+        selected = r % name_count;
+        if (selected > name_count - 1) {
+            selected = name_count - 1;
+        }
+        tries = tries + 1;
+    } while (this->computerNameUsed[civ][selected] != 0 && tries < 0x14);
+
+    int index = selected;
+    if (this->computerNameUsed[civ][selected] == 1) {
+        for (int i = 0; i < 10; ++i) {
+            if (this->computerNameUsed[civ][i] == 0) {
+                index = i;
+                break;
+            }
         }
     }
-    return 0;
+
+    this->computerNameUsed[civ][index] = 1;
+    return index + civ * 10 - 9;
 }
 
 void TRIBE_Game::show_status_message(char* p1, char* p2, long p3) {
-    (void)p2;
-    (void)p3;
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005236A0
+    TRIBE_Screen_Status_Message* status =
+        (TRIBE_Screen_Status_Message*)(panel_system ? panel_system->panel((char*)"Status Screen") : nullptr);
 
-    // Source of truth: `tribegam.cpp.asm/.decomp` (`show_status_message` @ 0x00523670 / 0x00523710).
-    // TODO(accuracy): replace this light-weight tracker with real `TRIBE_Screen_Status_Message`
-    // lifecycle (`Status Screen` panel creation + panel-system integration).
-    if (!p1) {
-        gStatusMessageText[0] = '\0';
+    if (status == nullptr) {
+        status = new TRIBE_Screen_Status_Message((char*)"Status Screen", p1, p2, p3);
     } else {
-        strncpy(gStatusMessageText, p1, sizeof(gStatusMessageText) - 1);
-        gStatusMessageText[sizeof(gStatusMessageText) - 1] = '\0';
+        status->set_text(p1);
+        if (this->prog_window != nullptr) {
+            InvalidateRect((HWND)this->prog_window, 0, 0);
+            UpdateWindow((HWND)this->prog_window);
+        }
     }
-    gStatusMessageActive = 1;
 
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("status_message: '%s'", gStatusMessageText[0] ? gStatusMessageText : "(empty)");
-CUSTOM_DEBUG_END
+    if (panel_system != nullptr) {
+        panel_system->setCurrentPanel((char*)"Status Screen", 0);
+    }
 }
 
 void TRIBE_Game::show_status_message(int p1, char* p2, long p3) {
-    char msg[512];
-    msg[0] = '\0';
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523750
+    char msg[256];
     this->get_string(p1, msg, sizeof(msg));
-    if (msg[0] == '\0') {
-        sprintf(msg, "Missing status string %d", p1);
-    }
     this->show_status_message(msg, p2, p3);
 }
 
 void TRIBE_Game::close_status_message() {
-    // Source of truth: `tribegam.cpp.asm/.decomp` (`close_status_message` @ 0x00523790).
-    // TODO(accuracy): restore original `TPanelSystem::restorePreviousPanel` behavior once status
-    // screen panels are reimplemented.
-    gStatusMessageActive = 0;
-    gStatusMessageText[0] = '\0';
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005237A0
+    if (panel_system != nullptr) {
+        panel_system->restorePreviousPanel(1);
+    }
 }
 
 int TRIBE_Game::load_game_data() {
@@ -721,7 +816,6 @@ int TRIBE_Game::create_game(int p1) {
     // - `src/game/src/tribegam.cpp.decomp`
     //
     // Transliteration scoped to single-player random-map/scenario launch.
-    // TODO(accuracy): campaign metadata path still depends on unimplemented RGE_Game_Info glue.
 
     TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
 
@@ -758,34 +852,34 @@ int TRIBE_Game::create_game(int p1) {
     if (this->quickStartGame() != 0) {
         MapType mt;
         if (quick_start_game_mode == 1) {
-            this->setMapSize(static_cast<MapSize>(1)); // Medium
-            mt = (MapType)2; // AllLand
+            this->setMapSize(static_cast<MapSize>(2)); // Medium
+            mt = (MapType)4;
         } else {
-            this->setMapSize(static_cast<MapSize>(2)); // Large
+            this->setMapSize(static_cast<MapSize>(3)); // Large
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xcdd);
             mt = (MapType)(r % 10);
-            // Exact remap from decomp:
+            // Exact numeric remap from 0x00526F5D..0x00526FAE.
             if ((int)mt < 2) {
-                mt = (MapType)2; // AllLand
-            } else if (mt == (MapType)3) {
-                mt = (MapType)4; // WaterAndLand -> MostlyLand
-            } else if (mt == (MapType)4) {
-                mt = (MapType)3; // MostlyLand -> WaterAndLand
+                mt = (MapType)4;
             } else if (mt == (MapType)2) {
-                mt = (MapType)5; // AllLand -> MostlyWater
-            } else if (mt != (MapType)6 && mt != (MapType)7 && mt != (MapType)8) {
-                // (mt != Isthmas) - MostlyWater & Isthmas
-                // If mt == 9 (Isthmas), keep as 9. Otherwise, set to 5 (MostlyWater).
-                mt = (mt != (MapType)9) ? (MapType)5 : (MapType)9;
+                mt = (MapType)3;
+            } else if (mt == (MapType)3) {
+                mt = (MapType)2;
+            } else if (mt == (MapType)4) {
+                mt = (MapType)1;
+            } else if (mt == (MapType)5 || mt == (MapType)6 || mt == (MapType)7) {
+                // pass through
+            } else {
+                mt = ((int)mt == 8) ? (MapType)8 : (MapType)0;
             }
-            // Continental(6), Lake(7), Hilly(8) pass through unchanged
         }
         this->setMapType(mt);
         this->resetRandomComputerName();
         int np = this->numberPlayers();
         for (int i = 0; i < np; ++i) {
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xcf8);
-            int civIdx = (r & 0xF) + 1; // abs(rand) % 16 + 1
+            int sign = r >> 31;
+            int civIdx = (((((r ^ sign) - sign) & 0xF) ^ sign) - sign) + 1;
             this->setCivilization(i, civIdx);
             int cn = this->randomComputerName(civIdx);
             this->setComputerName(i, cn);
@@ -838,12 +932,15 @@ int TRIBE_Game::create_game(int p1) {
     // --- Phase 4: Seed random number generator ---
     if (this->multiplayerGame() == 0) {
         unsigned int seed;
+        int seed_line;
         if (this->random_start_value == -1) {
             seed = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xd2a);
+            seed_line = 0xd2a;
         } else {
             seed = (unsigned int)this->random_start_value;
+            seed_line = 0xd28;
         }
-        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xd2a, seed);
+        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", seed_line, seed);
     } else {
         // Multiplayer: get seed from comm
         unsigned int seed = comm_handler ? comm_handler->GetRandomSeed() : (unsigned int)GetTickCount();
@@ -879,8 +976,21 @@ int TRIBE_Game::create_game(int p1) {
         }
     }
 
-    // --- Phase 7: Assign player positions (color -> position mapping) ---
-    // For random map SP, we skip the scenario path.
+    // --- Phase 7: Resolve campaign/scenario source ---
+    RGE_Scenario* scenario_info = nullptr;
+    if (this->campaignGame() != 0) {
+        scenario_info = this->get_scenario_info((char*)0, 1);
+        if (scenario_info == nullptr) {
+            return 0;
+        }
+    } else if (this->scenarioGame() != 0) {
+        scenario_info = this->get_scenario_info(player_info.scenario, 0);
+        if (scenario_info == nullptr) {
+            return 0;
+        }
+    }
+
+    // --- Phase 8: Assign player positions (color -> position mapping) ---
     int position_used[9];
     for (int i = 0; i < 9; ++i) {
         position_used[i] = -1;
@@ -894,23 +1004,18 @@ int TRIBE_Game::create_game(int p1) {
     int scenario_player = 0;
     numPlayers = this->numberPlayers();
 
-    // First pass: assign positions for human players (humanity == 2)
+    // Source of truth: tribegam.cpp.decomp @ 0x00527300-0x0052745D
+    // Single pass over comm slots: handle humans first, then computer-color remap when needed.
     for (int slot = 1; slot <= numPlayers; ++slot) {
         int humanity = comm_handler ? comm_handler->GetPlayerHumanity(slot) : (slot == 1 ? 2 : 4);
         if (humanity == 2) {
-            int colorIdx = this->playerColor(slot - 1);
-            if (position_used[colorIdx] == -1) {
-                position_used[colorIdx] = scenario_player;
+            int colorVal = this->playerColor(slot - 1);
+            if (position_used[colorVal] == -1) {
+                position_used[colorVal] = scenario_player;
                 scenario_player++;
             }
-            this->setPlayerID(slot, position_used[colorIdx] + 1);
-        }
-    }
-
-    // Second pass: assign positions for computer players (humanity == 4)
-    for (int slot = 1; slot <= numPlayers; ++slot) {
-        int humanity = comm_handler ? comm_handler->GetPlayerHumanity(slot) : (slot == 1 ? 2 : 4);
-        if (humanity == 4) {
+            this->setPlayerID(slot, position_used[colorVal] + 1);
+        } else if (humanity == 4) {
             // Find an unused color position
             for (int c = 0; c < 8; ++c) {
                 if (position_used[c + 1] == -1) {
@@ -938,7 +1043,7 @@ int TRIBE_Game::create_game(int p1) {
         }
     }
 
-    // --- Phase 8: Build final player info array ---
+    // --- Phase 9: Build final player info array ---
     this->resetRandomComputerName();
     player_info.player_num = 0;
 
@@ -970,8 +1075,7 @@ int TRIBE_Game::create_game(int p1) {
         if (this->campaignGame() == 0) {
             civVal = this->civilization(playerIdx);
         } else {
-            // TODO(accuracy): get civ from scenario
-            civVal = this->civilization(playerIdx);
+            civVal = (scenario_info != nullptr) ? scenario_info->PlCivilization[colorIdx] : this->civilization(playerIdx);
         }
         player_info.tribe[pos] = (char)civVal;
 
@@ -984,45 +1088,55 @@ int TRIBE_Game::create_game(int p1) {
                 player_info.name[pos][64] = '\0';
             }
         } else {
-            // Single player
-            if (player_info.type[pos] == 0) {
-                // Human player: "You" (string 0x286d)
+            if (this->campaignGame() != 0 && player_info.type[pos] == 0) {
+                const char* campaign_name =
+                    (this->player_game_info != nullptr) ? this->player_game_info->get_current_player_name() : nullptr;
+                if (campaign_name != nullptr) {
+                    strncpy(player_info.name[pos], campaign_name, 64);
+                    player_info.name[pos][64] = '\0';
+                }
+            } else if (this->campaignGame() == 0 && this->randomGame() != 0 && player_info.type[pos] == 0) {
                 this->get_string(0x286d, player_info.name[pos], 65);
-            } else {
-                // Computer player: get name from computer name index
-                int cnIdx = this->computerName(playerIdx);
-                if (cnIdx != 0) {
-                    // TODO(accuracy): look up name from string table at offset 0x1130 + cnIdx
-                    // For now use a generated name
-                    this->get_string(cnIdx + 0x1130, player_info.name[pos], 65);
-                } else {
-                    int rcn = this->randomComputerName((int)player_info.tribe[pos]);
-                    this->get_string(rcn + 0x1130, player_info.name[pos], 65);
+            } else if ((this->campaignGame() != 0 || this->scenarioGame() != 0) &&
+                       scenario_info != nullptr) {
+                const char* scenario_name = scenario_info->player_name[colorIdx];
+                if (scenario_name != nullptr) {
+                    strncpy(player_info.name[pos], scenario_name, 64);
+                    player_info.name[pos][64] = '\0';
                 }
             }
 
-            // Fallback: if name is still empty
             if (player_info.name[pos][0] == '\0') {
                 if (player_info.type[pos] == 0) {
                     this->get_string(0x286d, player_info.name[pos], 65);
                 } else {
-                    sprintf(player_info.name[pos], "Computer %d", pos + 1);
+                    int cnIdx = this->computerName(playerIdx);
+                    if (this->campaignGame() == 0 && cnIdx != 0) {
+                        this->get_string(cnIdx + 0x1130, player_info.name[pos], 65);
+                    } else {
+                        int rcn = this->randomComputerName((int)player_info.tribe[pos]);
+                        this->get_string(rcn + 0x1130, player_info.name[pos], 65);
+                    }
                 }
             }
 
-            // Set name in comm handler
             if (comm_handler) {
                 comm_handler->SetPlayerName(commSlot, player_info.name[pos]);
             }
         }
 
         // Set color and player_id_hash
-        player_info.color[pos] = (short)colorVal;
+        player_info.color[pos] = (short)colorIdx;
         player_info.player_id_hash[pos] = colorVal;
         player_info.player_num = (short)(pos + 1);
     }
 
-    // --- Phase 9: Call world->new_game() ---
+    if (scenario_info != nullptr) {
+        delete scenario_info;
+        scenario_info = nullptr;
+    }
+
+    // --- Phase 10: Call world->new_game() ---
     if (player_info.player_num == 0) {
         return 0;
     }
@@ -1045,14 +1159,27 @@ CUSTOM_DEBUG_BEGIN
     }
 CUSTOM_DEBUG_END
 
-    uchar result = this->world->new_game(&player_info, 0);
+    int local_player_slot = 1;
+    if (this->multiplayerGame() != 0 && comm_handler != nullptr) {
+        local_player_slot = (int)comm_handler->WhoAmI();
+    }
+    int local_player_id = this->playerID(local_player_slot);
+
+    if (this->sound_system != nullptr) {
+        *((unsigned char*)this->sound_system + 1) = 1;
+    }
+
+    uchar result = this->world->new_game(&player_info, local_player_id);
+    if (this->sound_system != nullptr) {
+        *((unsigned char*)this->sound_system + 1) = 0;
+    }
     if (result == 0) {
         return 0;
     }
 
     // --- Phase 10: Post-game-creation setup ---
-    // Only proceed if player_num >= 2 (at least gaia + 1 player)
     if (this->world->player_num < 2) {
+        this->world->del_game_info();
         return 0;
     }
 
@@ -1107,24 +1234,26 @@ int TRIBE_Game::create_game_screen() {
     // - `src/game/src/tribegam.cpp.asm` (`create_game_screen` @ 0x00527830)
     // - `src/game/src/tribegam.cpp.decomp`
     //
-    // TODO(accuracy): replace GameViewPanel with real `TRIBE_Screen_Game`
-    // allocation/flow once `scr_game` is reimplemented.
     this->disable_input();
     this->set_game_mode(0, 0);
 
-    // Get the map from the world for the game view panel
+    // Get the map from the world for camera setup.
     RGE_Map* map = this->world ? this->world->map : nullptr;
 
-    GameViewPanel* screen = new GameViewPanel(map);
+    TRIBE_Screen_Game* screen = new TRIBE_Screen_Game();
     if (!screen) {
+        this->game_screen = nullptr;
         this->close_status_message();
         this->enable_input();
         return 0;
     }
+    this->game_screen = screen;
+    screen->world_map = map;
 
     // Setup the screen panel with draw area
     if (!screen->setup(this->draw_area, (char*)0, -1, 0)) {
         delete screen;
+        this->game_screen = nullptr;
         this->close_status_message();
         this->enable_input();
         return 0;
@@ -1232,35 +1361,15 @@ CUSTOM_DEBUG_END
     this->disable_input();
 
     if (!this->world) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("start_game: status message suppressed (loading)");
-CUSTOM_DEBUG_END
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("start_game: loading game data...");
-CUSTOM_DEBUG_END
+        this->show_status_message(0x44d, info_file, info_id);
         if (!this->load_game_data()) {
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG("start_game: load_game_data FAILED");
-CUSTOM_DEBUG_END
-            this->close_status_message();
-            this->enable_input();
-            return 0;
+            goto start_game_fail;
         }
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("start_game: load_game_data OK");
-CUSTOM_DEBUG_END
     }
 
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("start_game: status message suppressed (creating game)");
-CUSTOM_DEBUG_END
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("start_game: creating game...");
-CUSTOM_DEBUG_END
+    this->show_status_message(0x451, info_file, info_id);
     if (!this->create_game(0)) {
-        this->close_status_message();
-        this->enable_input();
-        return 0;
+        goto start_game_fail;
     }
 
     this->set_save_game_name((char*)0);
@@ -1271,32 +1380,263 @@ CUSTOM_DEBUG_END
     }
 
     // Original path starts intro video id=3 and reaches game screen through video callbacks.
-    // Our current video system is not reimplemented yet; `start_video(3, ...)` forwards directly
-    // to `create_game_screen` below.
+    // Our current path keeps the same sequencing but still skips actual AVI decode/playback.
     //
     // Source-of-truth note: `start_game` does not branch on `start_video` return; it returns
     // success after scheduling video/start transition.
-    this->start_video(3, (char*)0);
+    this->start_video(3, info_file);
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("start_game: complete, prog_mode=%d", this->prog_mode);
 CUSTOM_DEBUG_END
     return 1;
-}
 
-int TRIBE_Game::start_scenario(char* p1) {
-    // TODO: implement logic from 0x00523620
+start_game_fail:
+    this->close_status_message();
+    this->enable_input();
     return 0;
 }
 
+int TRIBE_Game::start_scenario(char* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00525EE0
+    _finddata_t file_info;
+    char scenario_file[260];
+    int first_any_player = -1;
+
+    this->disable_input();
+
+    this->setSinglePlayerGame(1);
+    this->setCampaignGame(0);
+    this->setSavedGame(0);
+    this->setScenarioGame(1);
+    this->setScenarioName(p1);
+
+    this->setVictoryType((VictoryType)1, 0);
+    this->setFullVisibility(0);
+    this->setFogOfWar(1);
+    this->setAllowCheatCodes(1);
+    this->setRandomizePositions(0);
+    this->setLongCombat(0);
+    this->setAllowTrading(1);
+    this->setFullTechTree(0);
+    this->setResourceLevel((ResourceLevel)0);
+    this->setStartingAge((Age)0);
+    this->setStartingUnits(0);
+    this->setDeathMatch('\0');
+    this->setPopLimit('2');
+    this->setDifficulty(this->single_player_difficulty);
+    this->setQuickStartGame('\0');
+
+    sprintf(scenario_file, "%s%s.scn", this->prog_info->scenario_dir, p1);
+    long find_h = _findfirst(scenario_file, &file_info);
+    const char* ext_fmt = (find_h == -1) ? "%s.scx" : "%s.scn";
+    if (find_h != -1) {
+        _findclose(find_h);
+    }
+    sprintf(scenario_file, ext_fmt, p1);
+
+    RGE_Scenario* scenario = this->get_scenario_info(scenario_file, 0);
+    if (scenario == nullptr) {
+        this->enable_input();
+        return 0;
+    }
+
+    int active_count = 0;
+    for (int i = 0; i < 9; ++i) {
+        if (scenario->PlActive[i] != 0) {
+            this->setScenarioPlayer(active_count, i);
+            this->setCivilization(i, scenario->PlCivilization[i]);
+            this->setPlayerColor(i, i + 1);
+            this->setPlayerTeam(i, 1);
+            this->setComputerName(i, 0);
+            active_count = active_count + 1;
+
+            if (first_any_player == -1 && scenario->PlType[i] == 1) {
+                first_any_player = i;
+            }
+        }
+    }
+
+    delete scenario;
+
+    if (active_count == 0) {
+        this->enable_input();
+        return 0;
+    }
+
+    this->setNumberPlayers(active_count);
+
+    if (first_any_player != -1) {
+        for (int i = 1; i < active_count; ++i) {
+            if (this->tribe_game_options.scenarioPlayerValue[i] == first_any_player) {
+                this->setScenarioPlayer(i, this->tribe_game_options.scenarioPlayerValue[0]);
+                break;
+            }
+        }
+        this->setScenarioPlayer(0, first_any_player);
+    }
+
+    if (this->comm_handler != nullptr) {
+        this->comm_handler->SetPlayerHumanity(1, 2);
+
+        for (int slot = 2; slot <= active_count; ++slot) {
+            this->comm_handler->SetPlayerHumanity((uint)slot, 4);
+        }
+
+        for (int slot = active_count + 1; slot < 10; ++slot) {
+            this->comm_handler->SetPlayerHumanity((uint)slot, 1);
+        }
+    }
+
+    return this->start_game(1);
+}
+
 int TRIBE_Game::load_game(char* p1) {
-    // TODO: implement logic from 0x00523C60
+    // Source of truth:
+    // - `src/game/src/tribegam.cpp.asm` (`load_game` @ 0x00526170)
+    // - `src/game/src/tribegam.cpp.decomp`
+    this->inHandleIdle = 0;
+
+    TPanel* previous_panel = (panel_system != nullptr) ? panel_system->currentPanelValue : nullptr;
+    uchar loaded = 0;
+    this->disable_input();
+
+    if (this->prog_mode == 4 || this->prog_mode == 5 || this->prog_mode == 6) {
+        this->prog_mode = 0;
+        this->game_screen = nullptr;
+        if (panel_system != nullptr) {
+            panel_system->destroyPanel((char*)"Game Screen");
+        }
+    }
+
+    this->show_status_message(0x44d, (char*)0, -1);
+    if (this->load_game_data() == 0) {
+        goto LOAD_GAME_FAILED;
+    }
+
+    this->show_status_message(0x452, (char*)0, -1);
+
+    if (this->check_prog_argument((char*)"DEBUGSAVEGAME") != 0) {
+        ENABLE_COMPRESSION = 0;
+    }
+
+    if (this->world != nullptr) {
+        loaded = this->world->load_game(p1);
+        for (int i = 0; i < this->world->player_num; ++i) {
+            this->reset_countdown_timer(i);
+        }
+    }
+
+    ENABLE_COMPRESSION = 1;
+
+    if (loaded != 0) {
+        if (this->world != nullptr && this->world->map != nullptr) {
+            this->setFullVisibility((int)this->world->map->map_visible_flag);
+            this->setFogOfWar((int)this->world->map->fog_flag);
+        }
+        this->setAllowCheatCodes(1);
+        this->setSavedGame(1);
+
+        if (this->world != nullptr) {
+            this->setNumberPlayers((int)this->world->player_num - 1);
+        }
+
+        unsigned char pf = this->pathFinding();
+        if (pf == 1) {
+            numberPathingIterations = 5000;
+        } else if (pf == 2) {
+            numberPathingIterations = 7500;
+        } else {
+            numberPathingIterations = 2500;
+        }
+
+        for (int slot = 0; slot < 9; ++slot) {
+            if (this->world != nullptr && slot < this->world->player_num) {
+                this->setPlayerID(slot, slot);
+
+                if (slot > 0 && this->comm_handler != nullptr) {
+                    RGE_Player* p = this->world->players[slot];
+                    if (p != nullptr && p->name != nullptr) {
+                        this->comm_handler->SetPlayerName((uint)slot, p->name);
+                    }
+
+                    int humanity = (slot == 1) ? 2 : 4;
+                    this->comm_handler->SetPlayerHumanity((uint)slot, humanity);
+                }
+            } else {
+                this->setPlayerID(slot, 0);
+                if (slot > 0 && this->comm_handler != nullptr) {
+                    this->comm_handler->SetPlayerHumanity((uint)slot, 1);
+                }
+            }
+        }
+
+        char file_name_no_ext[260];
+        file_name_no_ext[0] = '\0';
+        if (p1 != nullptr) {
+            strncpy(file_name_no_ext, p1, sizeof(file_name_no_ext) - 1);
+            file_name_no_ext[sizeof(file_name_no_ext) - 1] = '\0';
+            char* dot = strchr(file_name_no_ext, '.');
+            if (dot != nullptr) {
+                *dot = '\0';
+            }
+        }
+        this->set_save_game_name(file_name_no_ext);
+        this->set_load_game_name(file_name_no_ext);
+
+        if (this->check_prog_argument((char*)"DEBUGLOAD") != 0) {
+            // Partial parity with tribegam.cpp DEBUGLOAD path:
+            // write a deterministic runtime snapshot to C:\<save_name>.txt.
+            tribe_write_debugload_dump(this, file_name_no_ext);
+        }
+
+        this->close_status_message();
+        this->close_game_screens(0);
+        return this->create_game_screen();
+    }
+
+LOAD_GAME_FAILED:
+    if (previous_panel != nullptr &&
+        previous_panel->panelNameValue != nullptr &&
+        previous_panel->panelNameValue[0] != '\0' &&
+        panel_system != nullptr) {
+        panel_system->setCurrentPanel(previous_panel->panelNameValue, 0);
+        panel_system->destroyPanel((char*)"Status Screen");
+        this->close_status_message();
+        this->enable_input();
+        return 0;
+    }
+
+    this->close_status_message();
+    this->enable_input();
     return 0;
 }
 
 int TRIBE_Game::load_db_files() {
-    // TODO: implement logic from 0x00524510.
-    // For now return success so developer hotkey paths can be wired without regressing UI flow.
-    return 1;
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00524530
+    this->disable_input();
+    this->show_status_message(0x44d, (char*)0, -1);
+
+    uint result = 0;
+
+    if (this->world != nullptr) {
+        delete this->world;
+        this->world = nullptr;
+    }
+
+    RGE_Game_World* world = this->create_world();
+    this->world = world;
+    if (world != nullptr) {
+        result = (uint)(world->data_load(this->prog_info->game_data_file, this->prog_info->sounds_dir) != 0);
+
+        if (this->world != nullptr) {
+            delete this->world;
+            this->world = nullptr;
+        }
+    }
+
+    this->close_status_message();
+    this->enable_input();
+    return (int)result;
 }
 
 int TRIBE_Game::start_menu() {
@@ -1317,8 +1657,7 @@ CUSTOM_DEBUG_END
     }
 
     if (this->video_setup != 0) {
-        // TODO: Implement `TRIBE_Game::shutdown_video_system` accurately, then call it here.
-        // The original does: shutdown_video_system(this);
+        this->shutdown_video_system();
     }
 
     TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
@@ -1421,29 +1760,254 @@ CUSTOM_DEBUG_END
 }
 
 int TRIBE_Game::start_video(int p1, char* p2) {
-    (void)p2;
+    // Source of truth: tribegam.cpp.decomp @ 0x005237B0
+    char temp_name[260];
+    temp_name[0] = '\0';
 
-    // Source of truth: `src/game/src/tribegam.cpp.asm/.decomp` (`start_video` @ 0x00523910).
-    // TODO(accuracy): restore full AVI playback / callback flow.
-    if (p1 == 3) {
-        return this->create_game_screen();
+    if (this->video_window != nullptr) {
+        tribe_close_video_window(this);
     }
-    return this->start_menu();
+
+    this->cur_video = p1;
+
+    if (this->check_prog_argument((char*)"NOVIDEO") != 0 || this->check_prog_argument((char*)"SKIPVIDEO") != 0) {
+        this->stop_video(1);
+        return 0;
+    }
+
+    if (p2 != nullptr && p2[0] != '\0' && this->prog_info != nullptr) {
+        sprintf(temp_name, "%s%s.avi", this->prog_info->avi_dir, p2);
+        int fd = _open(temp_name, 0, 0x100);
+        if (fd == -1) {
+            char* cd_path = (this->registry != nullptr) ? this->registry->RegGetAscii(0, "CDPath") : nullptr;
+            if (cd_path != nullptr) {
+                sprintf(temp_name, "%sgame\\avi\\%s.avi", cd_path, p2);
+                fd = _open(temp_name, 0, 0x100);
+            }
+        }
+
+        if (fd != -1) {
+            _close(fd);
+
+            if (video_codec_available != 0 && (this->video_setup != 0 || this->setup_video_system() != 0)) {
+                // TODO: STUB: AVI playback/callback flow is not restored yet.
+                // Keep timing fields coherent, then advance via stop_video sequence.
+                this->video_paused = 0;
+                this->last_video_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x598);
+            }
+        }
+    }
+
+    this->stop_video(1);
+    return 0;
+}
+
+int TRIBE_Game::setup_video_system() {
+    // Source of truth: tribegam.cpp.decomp @ 0x0052A260
+    if (this->video_setup != 0) {
+        return 1;
+    }
+
+    if (panel_system != nullptr) {
+        panel_system->setCurrentPanel((char*)"Blank Screen", 0);
+    }
+
+    this->mouse_off();
+    this->video_double_size = 1;
+    this->video_changed_res = 0;
+    this->video_hi_color = 0;
+    this->video_save_palette = this->prog_palette;
+
+    if (this->draw_system != nullptr && this->draw_system->ScreenMode == 2) {
+        SetCursor(nullptr);
+        if (this->prog_window != nullptr) {
+            SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, 0);
+        }
+
+        this->video_save_res_wid = this->draw_system->ScreenWidth;
+        this->video_save_res_hgt = this->draw_system->ScreenHeight;
+
+        if (this->check_prog_argument((char*)"8BITVIDEO") == 0) {
+            if (this->draw_system->IsModeAvail(0x280, 0x1e0, 0x10) != 0) {
+                this->video_changed_res = this->draw_system->SetDisplaySize(0x280, 0x1e0, 0x10);
+                if (this->video_changed_res != 0) {
+                    this->video_double_size = 1;
+                    this->video_hi_color = 1;
+                }
+            }
+
+            if (this->video_changed_res == 0 && this->draw_system->ScreenWidth != 0x280) {
+                if (this->draw_system->IsModeAvail(0x280, 0x1e0, 8) != 0) {
+                    this->video_changed_res = this->draw_system->SetDisplaySize(0x280, 0x1e0, 8);
+                    if (this->video_changed_res != 0) {
+                        this->video_double_size = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    this->set_prog_mode(1);
+    this->stop_sound_system();
+    this->video_setup = 1;
+    return 1;
 }
 
 void TRIBE_Game::stop_video(int p1) {
-    // Source of truth: tribegam.cpp.decomp (stop_video)
-    // p1: 1 = stop and advance to next video/menu, 0 = stop and go to menu
-    // Since we skip AVI playback, just transition to menu.
-    if (this->prog_mode == 1) {
-        if (p1) {
-            // Advance: in original, plays next video in sequence.
-            // Since we skip videos, go to menu.
-            this->start_menu();
-        } else {
-            // ESC: go directly to menu
-            this->start_menu();
+    // Source of truth: tribegam.cpp.decomp @ 0x00523B10
+    int save_vid_num = this->cur_video;
+    this->cur_video = -1;
+
+    if (this->video_window != nullptr) {
+        tribe_close_video_window(this);
+
+        if (this->draw_system != nullptr) {
+            this->draw_system->ClearPrimarySurface();
+            this->draw_system->SetPalette(this->prog_palette);
+            this->render_all = 1;
+            if (this->prog_window != nullptr) {
+                InvalidateRect((HWND)this->prog_window, 0, 1);
+                SendMessageA((HWND)this->prog_window, 0x0F, 0, 0);
+            }
+            this->draw_system->ClearPrimarySurface();
         }
+    }
+
+    switch (save_vid_num) {
+    case 0:
+        if (p1 != 0) {
+            this->start_video(1, (char*)"logo2");
+            return;
+        }
+        break;
+    case 1:
+        if (p1 != 0) {
+            this->start_video(2, (char*)"introx");
+            return;
+        }
+        break;
+    case 3:
+        if (this->video_setup != 0) {
+            this->shutdown_video_system();
+        }
+        // TODO: STUB: mission-dialog branch from 0x00523C8D is not restored.
+        this->create_game_screen();
+        return;
+    case 4:
+        if (this->video_setup != 0) {
+            this->shutdown_video_system();
+        }
+        // TODO: STUB: achievements/game-over branch from 0x00523D0F is not restored.
+        break;
+    default:
+        break;
+    }
+
+    if (this->start_menu() == 0) {
+        this->close();
+    }
+}
+
+void TRIBE_Game::shutdown_video_system() {
+    // Source of truth: tribegam.cpp.decomp @ 0x0052A430
+    if (this->video_setup == 0) {
+        return;
+    }
+
+    if (this->video_changed_res != 0 && this->draw_system != nullptr) {
+        this->draw_system->SetDisplaySize(this->video_save_res_wid, this->video_save_res_hgt, 8);
+        this->draw_system->ClearPrimarySurface();
+        this->draw_system->SetPalette(this->video_save_palette);
+        this->video_changed_res = 0;
+        this->draw_system->CheckSurfaces();
+        this->draw_system->ClearRestored();
+        restore_mouse_after_paint = 1;
+    }
+
+    if (this->draw_system != nullptr) {
+        this->draw_system->ClearPrimarySurface();
+        this->draw_system->SetPalette(this->video_save_palette);
+    }
+
+    this->render_all = 1;
+    if (this->prog_window != nullptr) {
+        InvalidateRect((HWND)this->prog_window, 0, 1);
+    }
+
+    this->set_prog_mode(2);
+    this->restart_sound_system();
+    this->set_mouse_cursor(LoadCursorA(0, IDC_ARROW));
+    this->mouse_on();
+    this->video_setup = 0;
+}
+
+long TRIBE_Game::video_wnd_proc(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: tribegam.cpp.decomp @ 0x0052A190
+    if (p2 == 0x200) {
+        SetCursor(0);
+        return 0;
+    }
+
+    if (p2 == 0x201 || p2 == 0x204) {
+        this->stop_video(1);
+        return 0;
+    }
+
+    if (this->old_video_wnd_proc != nullptr) {
+        return CallWindowProcA((WNDPROC)this->old_video_wnd_proc, (HWND)p1, p2, p3, p4);
+    }
+
+    return DefWindowProcA((HWND)p1, p2, p3, p4);
+}
+
+void TRIBE_Game::disconnect_multiplayer_game() {
+    // Source of truth: tribegam.cpp.decomp @ 0x0052A510
+    if (this->comm_handler == nullptr) {
+        return;
+    }
+
+    if (this->multiplayerGame() == 0) {
+        this->comm_handler->GameOver();
+        return;
+    }
+
+    int mode = this->prog_mode;
+    if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
+        this->comm_handler->SendIResignMsg();
+        this->comm_handler->ShutdownGameMessages();
+
+        if (this->comm_handler->CountWaitingMessages() > 0) {
+            this->disable_input();
+            this->show_status_message(0x4c0, (char*)0, -1);
+
+            ulong start = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15f8);
+            ulong loop_time = start;
+
+            for (;;) {
+                if (this->world == nullptr || this->world->game_state == 1) {
+                    break;
+                }
+
+                this->comm_handler->ShutdownGameMessages();
+
+                ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601);
+                if (now - loop_time < 500) {
+                    continue;
+                }
+
+                if (this->comm_handler->CountWaitingMessages() == 0) {
+                    break;
+                }
+
+                loop_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
+                if (loop_time - start >= 15000) {
+                    break;
+                }
+            }
+        }
+
+        this->comm_handler->GameOver();
+        this->comm_handler->UnlinkToLevel((COMMSTATUS)5);
     }
 }
 
@@ -1461,9 +2025,7 @@ void TRIBE_Game::set_game_mode(int param_1, int param_2) {
     int old_mode = this->game_mode;
     RGE_Base_Game::set_game_mode(param_1, param_2);
     if (this->game_screen) {
-        // TODO: Implement `TRIBE_Screen_Game` accurately and call `game_mode_changed(new_mode, old_mode)`.
-        // This call exists in the original (`src/game/src/tribegam.cpp.asm`), but `TRIBE_Screen_Game.h`
-        // is currently incomplete/broken, so we avoid dereferencing an incomplete type here.
+        this->game_screen->game_mode_changed(param_1, old_mode);
     }
 }
 
@@ -1471,10 +2033,12 @@ void TRIBE_Game::set_player(short p1) {
     // ASM 0x00522810
     short old_player = 0;
     if (this->world) {
-        // old_player = this->world->curr_player;
+        old_player = this->world->curr_player;
     }
     RGE_Base_Game::set_player(p1);
-    // ... additional TRIBE logic ...
+    if (this->world != nullptr && this->game_screen != nullptr) {
+        this->game_screen->player_changed((int)old_player, (int)this->world->curr_player);
+    }
 }
 
 int TRIBE_Game::get_error_code() { return RGE_Base_Game::get_error_code(); }
@@ -1616,12 +2180,26 @@ int TRIBE_Game::handle_idle() {
     int pm = this->prog_mode;
 
     if (pm == 1 && this->video_window != nullptr) {
-        // Video playback mode
-        // TODO(accuracy): video polling via SendMessage MCI_STATUS
+        // Source of truth: tribegam.cpp.decomp @ 0x00529610 (video polling branch)
+        const ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1381);
+        if (now - this->last_video_time >= 1000) {
+            char status[100];
+            status[0] = '\0';
+            SendMessageA((HWND)this->video_window, 0x46a, 100, (LPARAM)status);
+
+            if (status[0] == '\0' || tribe_ascii_str_eq(status, "stopped")) {
+                this->stop_video(1);
+            } else if (this->video_paused == 0 && tribe_ascii_str_eq(status, "paused")) {
+                SendMessageA((HWND)this->video_window, 0x855, 0, 0);
+            }
+
+            this->last_video_time =
+                debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x138d);
+        }
     } else if (pm == 4 || pm == 5 || pm == 6) {
         // In-game mode: world update + game screen update
         if (out_of_sync2 == 0 && this->game_screen != nullptr) {
-            // TODO(accuracy): this->game_screen->handle_game_update()
+            this->game_screen->handle_game_update();
         }
 
         // World update tick
@@ -1757,11 +2335,12 @@ int TRIBE_Game::action_exit_menu() { return 0; }
 int TRIBE_Game::action_size() { return 0; }
 int TRIBE_Game::action_close() {
     // Source of truth: tribegam.cpp.decomp @ 0x0052A000
-    // Disconnect multiplayer game if connected, then allow close.
-    if (this->multiplayerGame() != 0) {
-        // TODO(accuracy): disconnect_multiplayer_game(this);
+    if (this->comm_handler != nullptr) {
+        this->disconnect_multiplayer_game();
+        this->comm_handler = nullptr;
+        comm = nullptr;
     }
-    return 1; // allow close to proceed
+    return 1;
 }
 
 void TRIBE_Game::calc_timings() {}

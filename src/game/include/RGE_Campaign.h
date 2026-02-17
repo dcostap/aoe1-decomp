@@ -1,7 +1,11 @@
 #pragma once
 #include "common.h"
+#include "RGE_Campaign_Header.h"
+#include "RGE_Scenario_Offset.h"
 
 struct RGE_Campaign {
+    int open_scenario(long param_1);
+
     RGE_Campaign_Header campaign_header;
     RGE_Scenario_Offset* scenario_offsets;
     char filename[255];

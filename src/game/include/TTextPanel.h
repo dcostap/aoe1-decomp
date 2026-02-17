@@ -26,6 +26,7 @@ public:
 
     struct TextNode {
         char* text;
+        char* text2;
         long id;
         TextNode* next;
     };
@@ -118,12 +119,22 @@ public:
     void empty_list();
     int append_line(char* text, long id);
     int append_line(long str_id, long id);
+    int insert_line(long line_num, char* text, long id);
+    int insert_line(long line_num, char* text, char* text2, long id);
+    int insert_line(long line_num, long str_id, long id);
+    int insert_line(long line_num, long str1_id, long str2_id, long id);
+    int change_line(long line_num, char* text, char* text2, long id);
+    int change_line(long line_num, long str1_id, long str2_id, long id);
+    int delete_line(long line_num);
     void set_line(long line_num);
     long get_line();
     long get_line(long line_num);
+    long get_line(char* text);
     long get_id();
     long get_id(long line_num);
     char* get_text(long line_num);
+    char* get_text2(long line_num);
+    void set_second_column_pos(long pos);
 
     TTextPanel::TextNode* list;
     short num_lines;

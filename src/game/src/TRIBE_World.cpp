@@ -384,10 +384,10 @@ void TRIBE_World::check_destructables(short param_1, short param_2, float param_
 }
 
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
-    // Source of truth: tworld.cpp.decomp
-    // The map should already be created by map_init() during world_init().
-    // The real implementation calls map->map_generate() with full terrain generation.
-    // TODO: STUB, tworld.cpp new_random_game override body is not present in current decomp dump.
+    // Source of truth:
+    // - tworld.cpp.decomp / tworld.cpp.asm contain no dedicated TRIBE_World::new_random_game body.
+    // - world.cpp.decomp / world.cpp.asm provide RGE_Game_World::new_random_game @ 0x00542D10.
+    // Treat TRIBE path as inherited base behavior until a TRIBE-specific body is recovered.
     return RGE_Game_World::new_random_game(param_1);
 }
 void TRIBE_World::save(int param_1) {

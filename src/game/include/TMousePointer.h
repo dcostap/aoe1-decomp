@@ -6,6 +6,7 @@ struct TMousePointer {
     int setup(int custom_draw, struct TDrawArea* draw_area, char* filename, int file_id, int max_cursors);
     void on();
     void off();
+    void Poll();
     void set_facet(int facet_index);
     void set_game_facet(int facet_index);
     void set_game_enable(int enabled);
