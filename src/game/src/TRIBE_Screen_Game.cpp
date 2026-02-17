@@ -87,7 +87,9 @@ static TMessagePanel* create_message_panel_checked(
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : GameViewPanel((rge_base_game != nullptr && rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr) {
-    // TODO: STUB: this class still uses GameViewPanel rendering until full scr_game.cpp parity is restored.
+    // Partial parity milestone:
+    // constructor now executes panel/resource setup path, but map/main view rendering still
+    // runs through GameViewPanel until TRIBE_Main_View/TRIBE_Diamond_Map_View are restored.
     memset(&this->runtime, 0, sizeof(this->runtime));
     memset(this->shim_padding, 0, sizeof(this->shim_padding));
     if (rge_base_game == nullptr) {
@@ -140,11 +142,10 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
     }
 
-    // TODO: STUB: temporary safety fallback while scr_game constructor parity is incomplete.
-    // Keep GameViewPanel-only startup path to avoid runtime memory corruption in partial panel graph setup.
+    // Constructor parity milestone:
+    // keep fallback view ownership (main_view=this) until TRIBE_Main_View/TRIBE_Diamond_Map_View
+    // object path is wired, but continue with full panel/resource setup below.
     this->runtime.main_view = this;
-    this->set_curr_child(this);
-    return;
 
     // Constructor resource parity (partial): load button art assets up front.
     this->runtime.button_unit_pic = load_shape_checked("btnunit.shp", 0xC62A);
@@ -680,10 +681,8 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     this->game_mode_changed(rge_base_game != nullptr ? rge_base_game->game_mode : 0, rge_base_game != nullptr ? rge_base_game->game_mode : 0);
     this->reset_buttons();
     this->reset_clocks();
-
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("TRIBE_Screen_Game::player_changed %d -> %d", old_player, new_player);
-CUSTOM_DEBUG_END
+    (void)old_player;
+    (void)new_player;
 }
 
 void TRIBE_Screen_Game::handle_pause() {
@@ -748,10 +747,6 @@ void TRIBE_Screen_Game::display_system_message(char* text) {
     if (this->runtime.chat_line > 7) {
         this->runtime.chat_line = 0;
     }
-
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("TRIBE_Screen_Game message: %s", text);
-CUSTOM_DEBUG_END
 }
 
 void TRIBE_Screen_Game::setup_buttons() {

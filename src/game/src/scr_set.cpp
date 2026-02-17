@@ -571,17 +571,6 @@ long TribeGameSettingsScreen::handle_user_command(uint param_1, long param_2)
 // ============================================================================
 long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4)
 {
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("TribeGameSettingsScreen::action param_1=%p param_2=%ld param_3=%lu param_4=%lu",
-        param_1, param_2, param_3, param_4);
-    CUSTOM_DEBUG_LOG_FMT("  okButton=%p cancelButton=%p help_button=%p victoryTypeDrop=%p scenarioList=%p",
-        this->okButton, this->cancelButton, this->help_button, this->victoryTypeDrop, this->scenarioList);
-    CUSTOM_DEBUG_LOG_FMT("  mapSizeDrop=%p mapTypeDrop=%p ageDrop=%p resourcesDrop=%p difficultyDrop=%p pathingDrop=%p",
-        this->mapSizeDrop, this->mapTypeDrop, this->ageDrop, this->resourcesDrop, this->difficultyDrop, this->pathingDrop);
-    CUSTOM_DEBUG_LOG_FMT("  timeDrop=%p scoreDrop=%p limitDrop=%p scenariosLoaded=%d",
-        this->timeDrop, this->scoreDrop, this->limitDrop, this->scenariosLoaded);
-    CUSTOM_DEBUG_END
-
     if (param_1 == nullptr || this->scenariosLoaded == 0) {
         return TEasy_Panel::action(param_1, param_2, param_3, param_4);
     }
