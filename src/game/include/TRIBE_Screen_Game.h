@@ -76,6 +76,11 @@ private:
         void* bldg_list;
         void* trade_list;
         TDigital* game_over_sound;
+        RGE_Static_Object* last_selected_obj;
+        short last_sel_count;
+        short selection_pad;
+        short start_item;
+        short current_item;
         int chat_line;
         short last_item;
         short reserved;

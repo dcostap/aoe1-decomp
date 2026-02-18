@@ -51,8 +51,12 @@ static void tribe_retire_screen_for_later_delete(TPanel* screen) {
         return;
     }
 
-    // Fallback if retire buffer is full.
-    delete screen;
+    // TODO: STUB: retire buffer overflow handling.
+    // Safety-first fallback: never hard-delete here because several legacy screen dtors
+    // still have incomplete parity and may crash during transition teardown.
+    // We intentionally leak this screen instance instead of risking a UAF/crash.
+    CUSTOM_DEBUG_LOG_FMT("tribe_retire_screen_for_later_delete overflow: leaking panel=%s ptr=%p",
+        (screen->panelNameValue ? screen->panelNameValue : "(null)"), screen);
 }
 
 static int tribe_panel_belongs_to_screen(TPanel* panel, TPanel* screen) {
@@ -1210,7 +1214,7 @@ int TRIBE_Game::create_game(int p1) {
     // Save humanity values
     for (uint i = 1; i < 9; ++i) {
         int h = comm_handler->GetPlayerHumanity(i);
-        this->save_humanity[i] = h;
+        this->save_humanity[i - 1] = h;
     }
 
     return result;
@@ -1234,9 +1238,10 @@ int TRIBE_Game::create_game_screen() {
             } else if (this->multiplayerGame() != 0) {
                 mp_started = 0;
             }
+
             if (mp_started != 0) {
                 tribe_set_current_screen(screen);
-                if (panel_system) {
+                if (panel_system != nullptr) {
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
             } else {
@@ -1244,16 +1249,28 @@ int TRIBE_Game::create_game_screen() {
                 if (wait_screen != nullptr && wait_screen->error_code == 0) {
                     wait_screen->set_text(0x454);
                     tribe_set_current_screen(wait_screen);
-                } else if (wait_screen != nullptr) {
-                    delete wait_screen;
-                    wait_screen = nullptr;
+                } else {
+                    if (wait_screen != nullptr) {
+                        delete wait_screen;
+                        wait_screen = nullptr;
+                    }
+                    delete screen;
+                    this->game_screen = nullptr;
+                    if (this->world) {
+                        this->world->del_game_info();
+                    }
+                    this->close_status_message();
+                    this->enable_input();
+                    return 0;
                 }
-                if (panel_system) {
+                if (panel_system != nullptr) {
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
                 this->set_prog_mode(3);
             }
 
+            // TODO: STUB: immediate destroy of setup/menu panels can UAF during transition.
+            // Keep deferred retire queue path for transition safety.
             tribe_retire_panel_by_name("Single Player Menu");
             tribe_retire_panel_by_name("Game Setup Screen");
             tribe_retire_panel_by_name("Select Scenario Screen");
