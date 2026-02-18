@@ -163,6 +163,8 @@ public:
     int campaignGame();
     int multiplayerGame();
     int singlePlayerGame();
+    unsigned char playerVersion(int index);
+    int playerTeam(int index);
     int randomGame();
     int fullVisibility();
     int fogOfWar();

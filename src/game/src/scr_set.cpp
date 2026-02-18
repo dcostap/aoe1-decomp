@@ -770,7 +770,7 @@ void TribeGameSettingsScreen::fillScenarios()
 }
 
 // ============================================================================
-// fillMissionText  (decomp @ 0x004B6160) - stub
+// fillMissionText  (decomp @ 0x004B6160)
 // ============================================================================
 void TribeGameSettingsScreen::fillMissionText()
 {

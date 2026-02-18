@@ -3,12 +3,14 @@
 #include "../include/TribeSPMenuScreen.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
+#include "../include/TChat.h"
 #include "../include/TTextPanel.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TDropDownPanel.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/custom_debug.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
 #include <stdio.h>
@@ -801,55 +803,6 @@ void mps_popup_text(const char* text) {
     MessageBoxA(wnd, safe, "Age of Empires", MB_OK | MB_ICONINFORMATION);
 }
 
-int mps_start_game_single_player(TribeMPSetupScreen* owner) {
-    if (!owner || !rge_base_game) {
-        return 0;
-    }
-
-    // Single-player scope for this branch:
-    // keep multiplayer start unimplemented for now as requested in project scope.
-    if (rge_base_game->rge_game_options.multiplayerGameValue != 0) {
-        mps_popup_resid(owner, 0x9ca, "Multiplayer start is not implemented in this branch yet.");
-        return 0;
-    }
-
-    // `scr_mps.cpp.asm/.decomp`: startGame validates scenario metadata before launch.
-    if ((rge_base_game->rge_game_options.scenarioGameValue != 0) && (owner->scenarioInfo == nullptr)) {
-        mps_popup_resid(owner, 0x25c2, "The selected scenario is invalid.");
-        return 0;
-    }
-
-    // Source-of-truth: scr_mps.cpp.decomp (`startGame`) updates comm humanity before launch
-    // in single player (at least forcing slots > numberPlayers to absent).
-    // Keep this explicit here so "Computer/None" dropdown state is reflected at game start.
-    if (comm) {
-        TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
-        const int number_players = mps_clamp((int)rge_base_game->rge_game_options.numberPlayersValue, 2, 8);
-
-        comm_handler->SetPlayerHumanity(1, 2);
-        for (uint player = 2; player < 9; ++player) {
-            int humanity = 4;
-            const int row = (int)player - 1;
-            if (row >= number_players) {
-                humanity = 0;
-            } else if (owner->playerNameDrop[row]) {
-                humanity = (int)owner->playerNameDrop[row]->get_id();
-            }
-            comm_handler->SetPlayerHumanity(player, humanity);
-        }
-        comm_handler->SetPlayerHumanity(9, 0);
-    }
-
-    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-    if (!game->start_game(0)) {
-        // language.dll(0x961): "An error occurred while trying to start the game."
-        mps_popup_resid(owner, 0x961, "An error occurred while trying to start the game.");
-        return 0;
-    }
-
-    return 1;
-}
-
 } // namespace
 
 TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen") {
@@ -1360,6 +1313,356 @@ long TribeMPSetupScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
+void TribeMPSetupScreen::calcRandomPositions() {
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
+    if (!rge_base_game || !comm) {
+        return;
+    }
+
+    TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+
+    int active_players = 0;
+    int number_players = rge_base_game->numberPlayers();
+    for (int player = 1; player <= number_players; ++player) {
+        int humanity = comm_handler->GetPlayerHumanity((uint)player);
+        if (humanity == 2 || humanity == 4) {
+            active_players++;
+        }
+    }
+
+    int available_slots = 0;
+    int position_used[9];
+    for (int i = 0; i < 9; ++i) {
+        position_used[i] = -2;
+    }
+
+    for (int position = 0; position < 8; ++position) {
+        long line = -1;
+        if (this->scenarioPlayerDrop[0] != nullptr) {
+            line = this->scenarioPlayerDrop[0]->get_line(position);
+        }
+
+        if (line == -1) {
+            position_used[position + 1] = -2;
+        } else {
+            position_used[position + 1] = -1;
+            available_slots++;
+        }
+    }
+
+    if (active_players > available_slots) {
+        return;
+    }
+
+    int fallback_pos = 0;
+    number_players = rge_base_game->numberPlayers();
+    for (int player_slot = 0; player_slot < number_players; ++player_slot) {
+        int humanity = comm_handler->GetPlayerHumanity((uint)(player_slot + 1));
+        if (humanity != 2 && humanity != 4) {
+            continue;
+        }
+
+        int selected_fallback = fallback_pos;
+        if (this->scenarioPlayerCount > 0) {
+            for (int i = 0; i < this->scenarioPlayerCount; ++i) {
+                if (position_used[i + 1] == -1) {
+                    selected_fallback = i;
+                    break;
+                }
+            }
+        }
+
+        int chosen_pos = selected_fallback;
+        int attempts = 0;
+        while (attempts < 1000 && this->scenarioPlayerCount > 0) {
+            int candidate = (debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x5e4) * this->scenarioPlayerCount) / 0x7fff;
+            if (candidate < 0) {
+                candidate = 0;
+            } else if (candidate >= this->scenarioPlayerCount) {
+                candidate = this->scenarioPlayerCount - 1;
+            }
+
+            if (position_used[candidate + 1] == -1) {
+                chosen_pos = candidate;
+                break;
+            }
+
+            chosen_pos = selected_fallback;
+            attempts++;
+        }
+
+        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player_slot, chosen_pos);
+        position_used[chosen_pos + 1] = player_slot;
+        fallback_pos = chosen_pos;
+    }
+}
+
+int TribeMPSetupScreen::startGame() {
+    // Source of truth: scr_mps.cpp.decomp @ 0x004A2060.
+    if (!rge_base_game) {
+        return 0;
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+    int send_options = 0;
+
+    char msg[1024];
+    msg[0] = '\0';
+    char msg_small[256];
+    msg_small[0] = '\0';
+
+    if (rge_base_game->multiplayerGame() != 0) {
+        if (comm_handler == nullptr) {
+            // TODO: STUB: multiplayer comm object should always exist in this path.
+            return 0;
+        }
+
+        if (comm_handler->IsHost() == 0) {
+            return 0;
+        }
+
+        if (comm_handler->AllPlayersReady() == 0) {
+            mps_popup_resid(this, 0x25c1, "All players must be ready for a game to start.");
+            return 0;
+        }
+
+        if (rge_base_game->scenarioGame() != 0) {
+            for (int player = 1; player < 9; ++player) {
+                if (player == (int)comm_handler->WhoAmI()) {
+                    continue;
+                }
+
+                if (comm_handler->GetPlayerHumanity((uint)player) == 2 &&
+                    this->scenarioCheckSum[player - 1] != this->myScenarioChecksum) {
+                    const char* player_name = comm_handler->GetPlayerName((uint)player);
+                    char* fmt = this->get_string(0x25e1);
+                    if (fmt != nullptr && fmt[0] != '\0') {
+                        _snprintf(msg, sizeof(msg), fmt, (player_name != nullptr) ? player_name : "");
+                    } else {
+                        _snprintf(msg, sizeof(msg), "%s does not have this scenario or has a different version of it.",
+                            (player_name != nullptr) ? player_name : "A player");
+                    }
+                    msg[sizeof(msg) - 1] = '\0';
+                    mps_popup_text(msg);
+                    return 0;
+                }
+            }
+        }
+
+        for (int player = 1; player < 9; ++player) {
+            if (player == (int)comm_handler->WhoAmI()) {
+                continue;
+            }
+
+            if (comm_handler->GetPlayerHumanity((uint)player) == 2 &&
+                rge_base_game->playerVersion(player - 1) != 1) {
+                const char* player_name = comm_handler->GetPlayerName((uint)player);
+                char* fmt = this->get_string(0x25e2);
+                if (fmt != nullptr && fmt[0] != '\0') {
+                    _snprintf(msg, sizeof(msg), fmt, (player_name != nullptr) ? player_name : "");
+                } else {
+                    _snprintf(msg, sizeof(msg), "%s is not running version 1.0b of the game.",
+                        (player_name != nullptr) ? player_name : "A player");
+                }
+                msg[sizeof(msg) - 1] = '\0';
+                mps_popup_text(msg);
+                return 0;
+            }
+        }
+    }
+
+    if (rge_base_game->scenarioGame() != 0 && this->scenarioInfo == nullptr) {
+        mps_popup_resid(this, 0x25c2, "The selected scenario is invalid.");
+        return 0;
+    }
+
+    if (rge_base_game->multiplayerGame() != 0 &&
+        rge_base_game->scenarioGame() != 0 &&
+        this->scenarioPlayerDrop[0] != nullptr &&
+        comm_handler != nullptr) {
+        int scenario_index = 0;
+        for (int slot = 0; slot < 8; ++slot) {
+            int humanity = comm_handler->GetPlayerHumanity((uint)(slot + 1));
+            if (humanity == 2 || humanity == 4) {
+                long scenario_player = this->scenarioPlayerDrop[0]->get_id(scenario_index);
+                game->setScenarioPlayer(slot, (int)scenario_player);
+                scenario_index++;
+
+                if (this->scenarioPlayerDrop[0]->list_panel != nullptr) {
+                    int lines = ((TTextPanel*)this->scenarioPlayerDrop[0]->list_panel)->numberLines();
+                    if (scenario_index >= lines) {
+                        scenario_index = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    if (rge_base_game->multiplayerGame() != 0 && comm_handler != nullptr) {
+        int color_used[9];
+        for (int i = 0; i < 9; ++i) {
+            color_used[i] = 0;
+        }
+
+        int active_count = 0;
+        int number_players = rge_base_game->numberPlayers();
+        for (int slot = 0; slot < number_players; ++slot) {
+            int humanity = comm_handler->GetPlayerHumanity((uint)(slot + 1));
+            if (humanity == 2) {
+                int color = game->playerColor(slot);
+                if (color >= 0 && color < 9) {
+                    if (color_used[color] == 0) {
+                        color_used[color] = 1;
+                        active_count++;
+                    }
+                } else {
+                    active_count++;
+                }
+            } else if (humanity == 4) {
+                active_count++;
+            }
+        }
+
+        if (active_count < 2) {
+            mps_popup_resid(this, 0x25c6, "You cannot start a game with only one player.");
+            return 0;
+        }
+
+        if (rge_base_game->scenarioGame() != 0 && this->scenarioPlayerCount < active_count) {
+            char* fmt = this->get_string(0x25c3);
+            if (fmt != nullptr && fmt[0] != '\0') {
+                _snprintf(msg_small, sizeof(msg_small), fmt, this->scenarioPlayerCount);
+            } else {
+                _snprintf(msg_small, sizeof(msg_small), "This scenario only supports up to %d players.", this->scenarioPlayerCount);
+            }
+            msg_small[sizeof(msg_small) - 1] = '\0';
+            mps_popup_text(msg_small);
+            return 0;
+        }
+
+        if (rge_base_game->scenarioGame() != 0 && this->settingsFixed != 0 && active_count != this->scenarioPlayerCount) {
+            char* fmt = this->get_string(0x25c5);
+            if (fmt != nullptr && fmt[0] != '\0') {
+                _snprintf(msg_small, sizeof(msg_small), fmt, this->scenarioPlayerCount);
+            } else {
+                _snprintf(msg_small, sizeof(msg_small), "This scenario requires exactly %d players.", this->scenarioPlayerCount);
+            }
+            msg_small[sizeof(msg_small) - 1] = '\0';
+            mps_popup_text(msg_small);
+            return 0;
+        }
+
+        int human_count = 0;
+        number_players = rge_base_game->numberPlayers();
+        for (int slot = 0; slot < number_players; ++slot) {
+            if (comm_handler->GetPlayerHumanity((uint)(slot + 1)) == 2) {
+                human_count++;
+            }
+        }
+
+        int has_cd = rge_base_game->check_for_cd(0);
+        int who_am_i = (int)comm_handler->WhoAmI();
+        rge_base_game->setPlayerHasCD(who_am_i - 1, has_cd);
+        if (rge_base_game->check_for_cd(human_count) == 0) {
+            mps_popup_resid(this, 0x7d9, "One game CD is required for every three players.");
+            return 0;
+        }
+    }
+
+    if (rge_base_game->scenarioGame() != 0 && game->randomizePositions() != 0) {
+        this->calcRandomPositions();
+        if (rge_base_game->multiplayerGame() != 0) {
+            send_options = 1;
+        }
+    }
+
+    if (rge_base_game->singlePlayerGame() != 0 && comm_handler != nullptr) {
+        int number_players = rge_base_game->numberPlayers();
+        if (number_players < 8) {
+            for (int slot = number_players + 1; slot < 9; ++slot) {
+                comm_handler->SetPlayerHumanity((uint)slot, 0);
+            }
+        }
+    }
+
+    if (rge_base_game->multiplayerGame() != 0) {
+        int number_players = rge_base_game->numberPlayers();
+        for (int slot = 0; slot < number_players; ++slot) {
+            int civ = game->civilization(slot);
+            if (civ > 0x31) {
+                game->setCivilization(slot, civ - 0x32);
+                send_options = 1;
+            }
+
+            int team = rge_base_game->playerTeam(slot);
+            if (team > 0x31) {
+                rge_base_game->setPlayerTeam(slot, team - 0x32);
+                send_options = 1;
+            }
+        }
+    }
+
+    if (rge_base_game->multiplayerGame() != 0 && comm_handler != nullptr) {
+        int temp_team[9];
+        int temp_color[9];
+        int temp_civ[9];
+
+        for (int i = 1; i < 9; ++i) {
+            temp_team[i] = 1;
+            temp_color[i] = i;
+            temp_civ[i] = 1;
+        }
+
+        int active_count = 0;
+        for (int player = 1; player < 9; ++player) {
+            int humanity = comm_handler->GetPlayerHumanity((uint)player);
+            if (humanity == 2 || humanity == 4) {
+                int slot = player - 1;
+                temp_color[active_count + 1] = game->playerColor(slot);
+                temp_civ[active_count + 1] = game->civilization(slot);
+                temp_team[active_count + 1] = rge_base_game->playerTeam(slot);
+                active_count++;
+            }
+        }
+
+        if (active_count > 0) {
+            for (int slot = 0; slot < 8; ++slot) {
+                game->setPlayerColor(slot, temp_color[slot + 1]);
+                game->setCivilization(slot, temp_civ[slot + 1]);
+                rge_base_game->setPlayerTeam(slot, temp_team[slot + 1]);
+            }
+            send_options = 1;
+        }
+    }
+
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Status Screen");
+    }
+
+    if (rge_base_game->multiplayerGame() != 0) {
+        if (send_options != 0 || this->resend_game_options != 0) {
+            rge_base_game->send_game_options();
+            this->resend_game_options = 0;
+        }
+
+        if (comm_handler != nullptr) {
+            comm_handler->LaunchMultiplayerGame();
+            if (chat != nullptr) {
+                ((TChat*)chat)->setWindowHandle((void*)AppWnd);
+            }
+            comm_handler->SetWindowHandle((void*)AppWnd);
+        }
+    }
+
+    if (game->start_game(0) == 0) {
+        mps_popup_resid(this, 0x961, "An error occurred while trying to start the game.");
+        return 0;
+    }
+
+    return 1;
+}
+
 long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1 && (param_2 == 1)) {
         TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
@@ -1410,7 +1713,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
         if ((TButtonPanel*)param_1 == this->startButton) {
             rge_base_game->disable_input();
 
-            if (!mps_start_game_single_player(this)) {
+            if (!this->startGame()) {
                 mps_enable_input();
             }
             return 1;
@@ -1422,7 +1725,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
             TribeSPMenuScreen* menu = new TribeSPMenuScreen();
             if (menu && menu->error_code == 0) {
                 panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("MP_Setup_Screen");
+                panel_system->destroyPanel("MP Setup Screen");
             } else {
                 if (menu) delete menu;
                 mps_enable_input();

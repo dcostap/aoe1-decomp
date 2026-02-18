@@ -172,7 +172,7 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
                 panel_system->setCurrentPanel((TPanel*)setup, 0);
-                panel_system->destroyPanel("Single_Player_Menu");
+                panel_system->destroyPanel("Single Player Menu");
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -191,7 +191,7 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
                 panel_system->setCurrentPanel((TPanel*)setup, 0);
-                panel_system->destroyPanel("Single_Player_Menu");
+                panel_system->destroyPanel("Single Player Menu");
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -210,7 +210,7 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             TribeSelectScenarioScreen* scenario = new TribeSelectScenarioScreen();
             if (scenario && scenario->error_code == 0) {
                 panel_system->setCurrentPanel((TPanel*)scenario, 0);
-                panel_system->destroyPanel("Single_Player_Menu");
+                panel_system->destroyPanel("Single Player Menu");
             } else {
                 if (scenario) delete scenario;
                 sp_enable_input();
@@ -224,7 +224,7 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             TribeLoadSavedGameScreen* load_screen = new TribeLoadSavedGameScreen();
             if (load_screen && load_screen->error_code == 0) {
                 panel_system->setCurrentPanel((TPanel*)load_screen, 0);
-                panel_system->destroyPanel("Single_Player_Menu");
+                panel_system->destroyPanel("Single Player Menu");
             } else {
                 if (load_screen) delete load_screen;
                 sp_enable_input();
@@ -248,7 +248,7 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
             if (menu && menu->error_code == 0) {
                 panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("Single_Player_Menu");
+                panel_system->destroyPanel("Single Player Menu");
             } else {
                 if (menu) delete menu;
                 sp_enable_input();

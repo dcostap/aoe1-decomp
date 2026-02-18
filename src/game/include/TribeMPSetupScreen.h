@@ -7,6 +7,8 @@ class T_Scenario;
 class TribeMPSetupScreen : public TScreenPanel {
 public:
     TribeMPSetupScreen();
+    int startGame();
+    void calcRandomPositions();
 
     // Virtuals (best-effort)
     virtual ~TribeMPSetupScreen(); // vt[0] (0x0)

@@ -1,6 +1,7 @@
 #include "../include/TCommunications_Handler.h"
 #include "../include/NAME.h"
 #include <string.h>
+#include <dplay.h>
 
 namespace {
 // COMMPLAYEROPTIONS::Humanity offset inside PlayerOptions.
@@ -10,12 +11,37 @@ namespace {
 static const int kCommPlayerOptionsHumanityOffset = 0x184;
 static const int kCommPlayerOptionsNeedsToBeSentOffset = 0x0;
 static const int kCommPlayerOptionsProgramStateOffset = 0x8;
+static const int kCommPlayerOptionsCommandTurnIncrementOffset = 0x40;
+static const int kCommPlayerOptionsPlayerReadyOffset = 0x44;
+static const int kCommPlayerOptionsDcoIDOffset = 0x14;
+static const int kCommPlayerOptionsUser1Offset = 0x6C;
+static const int kCommPlayerOptionsUser2Offset = 0x94;
+static const int kCommPlayerOptionsUser3Offset = 0xBC;
+static const int kCommPlayerOptionsUser4Offset = 0xE4;
+static const int kCommPlayerOptionsUser5Offset = 0x10C;
+static const int kCommPlayerOptionsUser6Offset = 0x134;
+static const int kCommPlayerOptionsUser7Offset = 0x15C;
+static const int kCommPlayerOptionsHighPlayerNumberOffset = 0x1C0;
+static const int kCommPlayerOptionsLowPlayerNumberOffset = 0x1C2;
+static const int kCommPlayerOptionsHostPlayerNumberOffset = 0x1C4;
+static const int kCommPlayerOptionsRandomSeedOffset = 0x1BC;
+static const int kCommPlayerOptionsGameHasStartedOffset = 0x1C8;
+
+static const int kPlayerHumanityHuman = 2;
+static const int kPlayerHumanityComputer = 4;
+static const int kPlayerHumanityCyborg = 5;
+static const int kCommStateRunning = 5;
 
 // Source-of-truth constants from com_hand.cpp.asm:
 // - COMM_UPDATE_PARAMS literal pushed at SetPlayerHumanity+0x35 (0x0042cc5e): 0x17a6
 // - COMM_STATE_JOINNOW compare at SetPlayerHumanity+0x41 (0x0042cc71): 3
 static const int kCommMessageUpdateParams = 0x17a6;
+static const int kCommMessagePlayerIdSet = 0x17b8;
 static const int kCommStateJoinNow = 3;
+
+// Source-of-truth mirror for DAT_0062cf04 (local/self DPID).
+// TODO: STUB: this should be fed by restored AddSelfPlayer/DirectPlay paths.
+static ulong s_localPlayerDpid = 0;
 }
 
 int TCommunications_Handler::IsPaused() {
@@ -29,6 +55,65 @@ int TCommunications_Handler::IsPaused() {
     
     int* pause_state = (int*)((char*)this + 0x1558);
     return (*pause_state == 4);
+}
+
+int TCommunications_Handler::IsHost() {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB00
+    if (this->Multiplayer != 0) {
+        return this->MeHost;
+    }
+    return 1;
+}
+
+int TCommunications_Handler::AllPlayersReady() {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E610
+    const ushort* low_player =
+        (const ushort*)((const char*)&this->PlayerOptions + kCommPlayerOptionsLowPlayerNumberOffset);
+    const ushort* high_player =
+        (const ushort*)((const char*)&this->PlayerOptions + kCommPlayerOptionsHighPlayerNumberOffset);
+    const int* player_ready =
+        (const int*)((const char*)&this->PlayerOptions + kCommPlayerOptionsPlayerReadyOffset);
+
+    uint player = (uint)(*low_player);
+    if ((uint)(*high_player) < player) {
+        return 1;
+    }
+
+    while (true) {
+        if (this->IsPlayerHuman(player) != 0 && player_ready[player] == 0) {
+            return 0;
+        }
+        ++player;
+        if ((uint)(*high_player) < player) {
+            return 1;
+        }
+    }
+}
+
+long TCommunications_Handler::EnableNewPlayers(void* direct_play, int enable_links) {
+    // Source of truth: com_hand.cpp.decomp @ 0x0042EF00
+    if (direct_play == nullptr) {
+        return 0x80070057L;
+    }
+
+    IUnknown* direct_play_unknown = (IUnknown*)direct_play;
+    IDirectPlay* direct_play_interface = nullptr;
+    HRESULT hr = direct_play_unknown->QueryInterface(IID_IDirectPlay, (void**)&direct_play_interface);
+    if (hr >= 0 && direct_play_interface != nullptr) {
+        hr = direct_play_interface->EnableNewPlayers(enable_links);
+        (void)direct_play_interface->Release();
+    }
+    return (long)hr;
+}
+
+int TCommunications_Handler::IsPlayerHuman(uint player_number) {
+    // Source of truth: com_hand.cpp.decomp @ 0x0042CCD0
+    if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
+        return 0;
+    }
+
+    int humanity = this->GetPlayerHumanity(player_number);
+    return ((humanity == kPlayerHumanityHuman) || (humanity == kPlayerHumanityCyborg)) ? 1 : 0;
 }
 
 void TCommunications_Handler::Update() {
@@ -91,6 +176,13 @@ void TCommunications_Handler::NotifyWindow(int message) {
     // This branch still uses integer message ids because full comm enums are not restored yet.
     if (this->HostHWND) {
         PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, 0);
+    }
+}
+
+void TCommunications_Handler::NotifyWindowParam(int message, long param) {
+    // Source-of-truth: com_hand.cpp.decomp NotifyWindowParam / asm @ 0x00428280
+    if (this->HostHWND) {
+        PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, (LPARAM)param);
     }
 }
 
@@ -192,14 +284,271 @@ void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
 }
 
 uint TCommunications_Handler::GetRandomSeed() {
-    // Source of truth: com_hand.cpp.decomp @ GetRandomSeed
-    // TODO(accuracy): implement proper seed from comm shared data
-    return (uint)GetTickCount();
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CAD0
+    if (this->Multiplayer == 0) {
+        return (uint)GetTickCount();
+    }
+    const uint* random_seed =
+        (const uint*)((const char*)&this->PlayerOptions + kCommPlayerOptionsRandomSeedOffset);
+    return *random_seed;
 }
 
 uint TCommunications_Handler::WhoAmI() {
     // Source of truth: com_hand.cpp.decomp @ WhoAmI
     return this->Me;
+}
+
+void* TCommunications_Handler::SetWindowHandle(void* window_handle) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042D490
+    this->HostHWND = window_handle;
+    return window_handle;
+}
+
+void TCommunications_Handler::LaunchMultiplayerGame() {
+    // Source of truth: com_hand.cpp.decomp @ 0x0042DC20
+    int* program_state = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsProgramStateOffset);
+    int* game_has_started = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsGameHasStartedOffset);
+    uchar* command_turn_increment =
+        (uchar*)((char*)&this->PlayerOptions + kCommPlayerOptionsCommandTurnIncrementOffset);
+    const ushort* low_player =
+        (const ushort*)((const char*)&this->PlayerOptions + kCommPlayerOptionsLowPlayerNumberOffset);
+    const ushort* high_player =
+        (const ushort*)((const char*)&this->PlayerOptions + kCommPlayerOptionsHighPlayerNumberOffset);
+    const ulong* dco_id =
+        (const ulong*)((const char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
+
+    if (this->Me != 0 && this->Me <= (uint)this->MaxGamePlayers) {
+        s_localPlayerDpid = dco_id[this->Me];
+    }
+
+    this->EnableNewPlayers(this->OptionsData, 0);
+    *program_state = kCommStateRunning;
+    this->CalculatePlayerRange();
+    *game_has_started = 1;
+
+    this->ClearRXandTX();
+    this->PackPlayersDown();
+
+    if (this->MaxGamePlayers != 0) {
+        uint expected_serial = 2000;
+        for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+            if (dco_id[player] != 0) {
+                this->PlayerHighSerialNumber[player] = expected_serial;
+            }
+            expected_serial += 2000;
+        }
+    }
+
+    this->GTDSerialNo = this->Me * 2000 + 1;
+    this->SendSharedData(1);
+    this->current_turn = (ulong)(*command_turn_increment + 1);
+
+    if (this->Multiplayer != 0) {
+        uint player = (uint)(*low_player);
+        while (player <= (uint)(*high_player)) {
+            if (player != this->Me) {
+                this->LastTurnAck[player] = 0;
+            }
+            ++player;
+        }
+    }
+
+    this->ResetLastCommunicationTimes();
+    this->NotifyWindow(kCommMessageUpdateParams);
+}
+
+void TCommunications_Handler::CalculatePlayerRange() {
+    // Source of truth: com_hand.cpp.decomp @ 0x00425990
+    ushort* high_player = (ushort*)((char*)&this->PlayerOptions + kCommPlayerOptionsHighPlayerNumberOffset);
+    ushort* low_player = (ushort*)((char*)&this->PlayerOptions + kCommPlayerOptionsLowPlayerNumberOffset);
+
+    *high_player = 0;
+    *low_player = (ushort)(this->MaxGamePlayers + 1);
+
+    for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+        int humanity = this->GetPlayerHumanity(player);
+        if (this->IsPlayerHuman(player) != 0 || humanity == kPlayerHumanityComputer) {
+            if ((ushort)player > *high_player) {
+                *high_player = (ushort)player;
+            }
+            if ((ushort)player < *low_player) {
+                *low_player = (ushort)player;
+            }
+        }
+    }
+}
+
+void TCommunications_Handler::ClearRXandTX() {
+    // TODO: STUB: partial queue release parity; original code performs full structure-specific cleanup.
+    unsigned char* on_hold = (unsigned char*)this->OnHold;
+    if (on_hold != nullptr) {
+        for (uint offset = 0; offset < 0x2EF8; offset += 0x18) {
+            void** message_ptr = (void**)(on_hold + offset);
+            if (*message_ptr != nullptr) {
+                ::operator delete(*message_ptr);
+            }
+            memset(on_hold + offset, 0, 0x14);
+        }
+    }
+
+    unsigned char* resend = (unsigned char*)this->Resend;
+    if (resend != nullptr) {
+        for (uint offset = 0; offset < 0x6D98; offset += 0x38) {
+            void** payload_ptr = (void**)(resend + offset + 8);
+            if (*payload_ptr != nullptr) {
+                ::operator delete(*payload_ptr);
+            }
+            memset(resend + offset, 0, 0x10);
+            memset(resend + offset + 0x10, 0, 0x28);
+        }
+    }
+
+    this->HoldCount = 0;
+    this->WaitingForAck = 0;
+}
+
+void TCommunications_Handler::PackPlayersDown() {
+    // Source of truth: com_hand.cpp.decomp @ 0x0042D720
+    ulong* dco_id = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
+    int* player_ready = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsPlayerReadyOffset);
+    ulong* user1 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser1Offset);
+    ulong* user2 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser2Offset);
+    ulong* user3 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser3Offset);
+    ulong* user4 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser4Offset);
+    ulong* user5 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser5Offset);
+    ulong* user6 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser6Offset);
+    ulong* user7 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser7Offset);
+    int* humanity = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsHumanityOffset);
+
+    for (uint dst = 1; dst <= (uint)this->MaxGamePlayers; ++dst) {
+        int dst_humanity = this->GetPlayerHumanity(dst);
+        if (this->IsPlayerHuman(dst) != 0 || dst_humanity == kPlayerHumanityComputer) {
+            continue;
+        }
+
+        uint src = dst;
+        while (src <= (uint)this->MaxGamePlayers) {
+            int src_humanity = this->GetPlayerHumanity(src);
+            if (this->IsPlayerHuman(src) != 0 || src_humanity == kPlayerHumanityComputer) {
+                break;
+            }
+            ++src;
+        }
+
+        if (src > (uint)this->MaxGamePlayers) {
+            continue;
+        }
+
+        if (this->FriendlyName != nullptr) {
+            memcpy(this->FriendlyName[dst].Text, this->FriendlyName[src].Text, sizeof(this->FriendlyName[dst].Text));
+        }
+        if (this->FormalName != nullptr) {
+            memcpy(this->FormalName[dst].Text, this->FormalName[src].Text, sizeof(this->FormalName[dst].Text));
+        }
+
+        dco_id[dst] = dco_id[src];
+        player_ready[dst] = player_ready[src];
+        user1[dst] = user1[src];
+        user2[dst] = user2[src];
+        user3[dst] = user3[src];
+        user4[dst] = user4[src];
+        user5[dst] = user5[src];
+        user6[dst] = user6[src];
+        user7[dst] = user7[src];
+        humanity[dst] = humanity[src];
+        this->LastTurnAck[dst] = this->LastTurnAck[src];
+        this->LastPlayerCommunication[dst] = this->LastPlayerCommunication[src];
+
+        this->InitPlayerInformation(src, 0, (char*)"", (char*)"");
+    }
+
+    this->SetSelfPlayer();
+}
+
+void TCommunications_Handler::SetSelfPlayer() {
+    // Source of truth: com_hand.cpp.decomp @ 0x00428A70
+    ulong* dco_id = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
+
+    for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+        if (dco_id[player] == s_localPlayerDpid) {
+            this->Me = player;
+            this->NotifyWindowParam(kCommMessagePlayerIdSet, (long)player);
+            return;
+        }
+    }
+}
+
+void TCommunications_Handler::InitPlayerInformation(uint player_number, ulong dpid, char* friendly_name,
+                                                     char* formal_name) {
+    // Source of truth: com_hand.cpp.decomp @ 0x0042D2D0
+    if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
+        return;
+    }
+
+    ulong* dco_id = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
+    int* player_ready = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsPlayerReadyOffset);
+    ulong* user1 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser1Offset);
+    ulong* user2 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser2Offset);
+    ulong* user3 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser3Offset);
+    ulong* user4 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser4Offset);
+    ulong* user5 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser5Offset);
+    ulong* user6 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser6Offset);
+    ulong* user7 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser7Offset);
+    int* humanity = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsHumanityOffset);
+    uchar* invalid_player = (uchar*)((char*)&this->PlayerOptions + 0x1AC);
+
+    dco_id[player_number] = dpid;
+    if (dpid != 0 && player_number == this->Me) {
+        s_localPlayerDpid = dpid;
+    }
+    player_ready[player_number] = 0;
+    user1[player_number] = 0;
+    user2[player_number] = 0;
+    user3[player_number] = 0;
+    user4[player_number] = 0;
+    user5[player_number] = 0;
+    user6[player_number] = 0;
+    user7[player_number] = 0;
+    humanity[player_number] = 0;
+    invalid_player[player_number] = 0;
+
+    this->LastTurnAck[player_number] = 0;
+    this->PlayerHighSerialNumber[player_number] = 0;
+    this->LastPlayerCommunication[player_number] = 0;
+    this->LastPlayerWarning[player_number] = 0;
+    this->LastTXPing[player_number] = 0;
+    this->dwFlags = 0;
+    this->dwMaxBufferSize = 0;
+    this->dwMaxQueueSize = 0;
+    this->dwMaxPlayers = 0;
+    this->dwHundredBaud = 0;
+    this->dwLatency = 0;
+
+    if (this->FriendlyName != nullptr) {
+        strncpy(this->FriendlyName[player_number].Text,
+                (friendly_name != nullptr) ? friendly_name : "",
+                sizeof(this->FriendlyName[player_number].Text) - 1);
+        this->FriendlyName[player_number].Text[sizeof(this->FriendlyName[player_number].Text) - 1] = '\0';
+    }
+    if (this->FormalName != nullptr) {
+        strncpy(this->FormalName[player_number].Text,
+                (formal_name != nullptr) ? formal_name : "",
+                sizeof(this->FormalName[player_number].Text) - 1);
+        this->FormalName[player_number].Text[sizeof(this->FormalName[player_number].Text) - 1] = '\0';
+    }
+
+    if (this->InQ != nullptr) {
+        // TODO: STUB: flush queued packets for player requires RGE_Communications_Queue::FlushForPlayer.
+    }
+}
+
+void TCommunications_Handler::ResetLastCommunicationTimes() {
+    // Source of truth: com_hand.cpp.decomp @ 0x0042C7A0
+    ulong now = GetTickCount();
+    for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+        this->LastPlayerCommunication[player] = now;
+        this->LastTXPing[player] = now;
+    }
 }
 
 uchar TCommunications_Handler::new_command(void* p1, int p2) {

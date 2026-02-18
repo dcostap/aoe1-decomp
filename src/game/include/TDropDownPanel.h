@@ -117,6 +117,7 @@ public:
     long get_line(long id);
     long get_line(char* text);
     long get_id();
+    long get_id(long line_num);
     void set_val_text_color(unsigned long c1, unsigned long c2);
     void set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6);
     void set_buttons(TShape* button_pics, int pic_id, int highlight_id, int w, int h, int offset);

@@ -1269,18 +1269,18 @@ int TRIBE_Game::create_game_screen() {
                 this->set_prog_mode(3);
             }
 
-            // TODO: STUB: immediate destroy of setup/menu panels can UAF during transition.
-            // Keep deferred retire queue path for transition safety.
-            tribe_retire_panel_by_name("Single Player Menu");
-            tribe_retire_panel_by_name("Game Setup Screen");
-            tribe_retire_panel_by_name("Select Scenario Screen");
-            tribe_retire_panel_by_name("Game Settings Screen");
-            tribe_retire_panel_by_name("Load Saved Game Screen");
-            tribe_retire_panel_by_name("MP Setup Screen");
-            tribe_retire_panel_by_name("Join Screen");
-            tribe_retire_panel_by_name("MP Startup Screen");
-            tribe_retire_panel_by_name("Main Menu");
-            tribe_retire_panel_by_name("Campaign Selection Screen");
+            if (panel_system != nullptr) {
+                tribe_retire_panel_by_name("Single Player Menu");
+                tribe_retire_panel_by_name("Game Setup Screen");
+                tribe_retire_panel_by_name("Select Scenario Screen");
+                tribe_retire_panel_by_name("Game Settings Screen");
+                tribe_retire_panel_by_name("Load Saved Game Screen");
+                tribe_retire_panel_by_name("MP Setup Screen");
+                tribe_retire_panel_by_name("Join Screen");
+                tribe_retire_panel_by_name("MP Startup Screen");
+                tribe_retire_panel_by_name("Main Menu");
+                tribe_retire_panel_by_name("Campaign Selection Screen");
+            }
 
             if (this->prog_mode != 3) {
                 this->let_game_begin();

@@ -421,8 +421,18 @@ void RGE_Base_Game::setColoredChat(int p1) { rge_game_options.coloredChatValue =
 void RGE_Base_Game::setGameDeveloperMode(int p1) { rge_game_options.gameDeveloperModeValue = p1; }
 void RGE_Base_Game::setDifficulty(int p1) { rge_game_options.difficultyValue = p1; }
 void RGE_Base_Game::setPlayerCDAndVersion(int p1, int p2) { rge_game_options.playerCDAndVersionValue[p1] = p2; }
-void RGE_Base_Game::setPlayerHasCD(int p1, int p2) { /* TODO */ }
-void RGE_Base_Game::setPlayerVersion(int p1, int p2) { /* TODO */ }
+void RGE_Base_Game::setPlayerHasCD(int p1, int p2) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422800
+    uchar value = rge_game_options.playerCDAndVersionValue[p1];
+    value = (uchar)((value & 0xFE) | (uchar)p2);
+    rge_game_options.playerCDAndVersionValue[p1] = value;
+}
+void RGE_Base_Game::setPlayerVersion(int p1, int p2) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422820
+    uchar value = rge_game_options.playerCDAndVersionValue[p1];
+    value = (uchar)(((uchar)p2 << 1) | (value & 0x01));
+    rge_game_options.playerCDAndVersionValue[p1] = value;
+}
 void RGE_Base_Game::setPlayerTeam(int p1, int p2) { rge_game_options.playerTeamValue[p1] = p2; }
 void RGE_Base_Game::setPathFinding(unsigned char p1) { pathFindingValue = p1; }
 void RGE_Base_Game::setMpPathFinding(unsigned char p1) { rge_game_options.mpPathFindingValue = p1; }
@@ -1986,6 +1996,16 @@ int RGE_Base_Game::multiplayerGame() {
 
 int RGE_Base_Game::singlePlayerGame() {
     return (int)this->rge_game_options.singlePlayerGameValue;
+}
+
+unsigned char RGE_Base_Game::playerVersion(int index) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224C0
+    return (unsigned char)(this->rge_game_options.playerCDAndVersionValue[index] >> 1);
+}
+
+int RGE_Base_Game::playerTeam(int index) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422660
+    return (uint)this->rge_game_options.playerTeamValue[index];
 }
 
 int RGE_Base_Game::randomGame() {

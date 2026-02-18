@@ -22,6 +22,7 @@
 #include "../include/TRIBE_Player.h"
 #include "../include/TRIBE_World.h"
 #include "../include/custom_debug.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
@@ -596,8 +597,19 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
     }
 
-    // TODO: STUB: constructor-tail parity still missing command_score + anim/terrain timer init
-    // from scr_game.cpp @ 0x004953C7..0x00495420. Enable startup path once real views are restored.
+    // Constructor tail parity (scr_game.cpp @ 0x004953C7..0x00495420):
+    // initialize terrain/animation timing state and apply current score-display mode.
+    this->runtime.terrain_sound_interval = 20000;
+    this->runtime.last_terrain_sound_time =
+        debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x339);
+    this->runtime.anim_pal_interval = 200;
+    this->runtime.last_anim_pal_time =
+        debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x33f);
+    this->runtime.last_anim_pal_index2 = 0;
+    this->runtime.last_anim_pal_index3 = 0;
+    this->runtime.last_score_display = (this->runtime.world != nullptr) ? this->runtime.world->score_displayed : 0;
+    this->command_score((this->runtime.world != nullptr) ? (int)this->runtime.world->score_displayed : 0);
+
     (void)player;
 }
 
@@ -707,6 +719,11 @@ void TRIBE_Screen_Game::handle_game_update() {
         }
     }
 
+    if (this->runtime.world != nullptr && this->runtime.world->score_displayed != this->runtime.last_score_display) {
+        this->runtime.last_score_display = this->runtime.world->score_displayed;
+        this->command_score((int)this->runtime.world->score_displayed);
+    }
+
     if (this->runtime.chat_line < 0 || this->runtime.chat_line > 7) {
         this->runtime.chat_line = 0;
     }
@@ -781,43 +798,64 @@ void TRIBE_Screen_Game::handle_resume() {
 }
 
 void TRIBE_Screen_Game::handleChatReceived(int from_player) {
-    // TODO: STUB: restore full chat-panel/message-panel flow from scr_game.cpp @ 0x00497330.
-    char fallback[96];
-    fallback[0] = '\0';
+    char chat_msg[256];
+    chat_msg[0] = '\0';
 
-    const char* latest = nullptr;
+    const char* src = nullptr;
     if (chat != nullptr) {
         TChat* chat_system = (TChat*)chat;
-        int msg_index = chat_system->CurrentMsgNo - 1;
-        if (msg_index < 0) {
-            msg_index = 0;
+        if (from_player >= 0 && from_player < 51) {
+            src = chat_system->Chat[from_player];
         }
-        if (msg_index > 50) {
-            msg_index = 50;
+        if ((src == nullptr || src[0] == '\0') && chat_system->CurrentMsgNo >= 0 && chat_system->CurrentMsgNo < 51) {
+            src = chat_system->Chat[chat_system->CurrentMsgNo];
         }
-        latest = chat_system->Chat[msg_index];
     }
 
-    if (latest == nullptr || latest[0] == '\0') {
-        _snprintf(fallback, sizeof(fallback), "Player %d sent a chat message.", from_player);
-        fallback[sizeof(fallback) - 1] = '\0';
-        latest = fallback;
+    if (src == nullptr || src[0] == '\0') {
+        _snprintf(chat_msg, sizeof(chat_msg), "Player %d sent a chat message.", from_player);
+        chat_msg[sizeof(chat_msg) - 1] = '\0';
+    } else {
+        strncpy(chat_msg, src, sizeof(chat_msg) - 1);
+        chat_msg[sizeof(chat_msg) - 1] = '\0';
     }
 
-    this->display_system_message((char*)latest);
+    if (this->runtime.chat_line < 0 || this->runtime.chat_line > 7) {
+        this->runtime.chat_line = 0;
+    }
+
+    TMessagePanel* panel = this->runtime.chat_panel[this->runtime.chat_line];
+    if (panel != nullptr) {
+        panel->set_color(0xFF, 0);
+        panel->set_time(0);
+        panel->set_message(chat_msg);
+        panel->set_redraw(TPanel::Redraw);
+    }
+
+    this->runtime.chat_line = this->runtime.chat_line + 1;
+    if (this->runtime.chat_line > 7) {
+        this->runtime.chat_line = 0;
+    }
 }
 
 void TRIBE_Screen_Game::display_system_message(char* text) {
-    // TODO: STUB: restore full message-panel ring behavior from scr_game.cpp @ 0x004973F0.
     if (text == nullptr || text[0] == '\0') {
         return;
     }
 
-    if (this->runtime.log_text != nullptr) {
-        this->runtime.log_text->append_line(text, 0);
+    if (this->runtime.chat_line < 0 || this->runtime.chat_line > 7) {
+        this->runtime.chat_line = 0;
     }
 
-    this->runtime.chat_line++;
+    TMessagePanel* panel = this->runtime.chat_panel[this->runtime.chat_line];
+    if (panel != nullptr) {
+        panel->set_color(0xFF, 0);
+        panel->set_time(0);
+        panel->set_message(text);
+        panel->set_redraw(TPanel::Redraw);
+    }
+
+    this->runtime.chat_line = this->runtime.chat_line + 1;
     if (this->runtime.chat_line > 7) {
         this->runtime.chat_line = 0;
     }
@@ -844,6 +882,47 @@ void TRIBE_Screen_Game::setup_buttons() {
         this->runtime.last_item = 0;
     }
     this->set_redraw(TPanel::Redraw);
+}
+
+void TRIBE_Screen_Game::command_score(int enabled) {
+    const int show_score = (enabled != 0) ? 1 : 0;
+    if (this->runtime.world != nullptr) {
+        this->runtime.world->score_displayed = (unsigned char)show_score;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        if (this->runtime.score_panel[i] != nullptr) {
+            this->runtime.score_panel[i]->set_active(show_score);
+        }
+    }
+
+    if (show_score != 0) {
+        this->reset_score_display();
+    }
+
+    if (this->runtime.text_line_panel != nullptr) {
+        if (this->runtime.world != nullptr && this->runtime.world->score_displayed != 0) {
+            this->runtime.text_line_panel->set_positioning(
+                TPanel::Fixed, 8, 4, 0, 0xB8, 4, 0, 0x22, 0x22, nullptr, nullptr, nullptr, nullptr);
+        } else {
+            this->runtime.text_line_panel->set_positioning(
+                TPanel::Fixed, 8, 4, 0, 4, 4, 0, 0x22, 0x22, nullptr, nullptr, nullptr, nullptr);
+        }
+    }
+
+    if (this->runtime.main_view != nullptr) {
+        this->runtime.main_view->set_redraw(TPanel::Redraw);
+    }
+}
+
+void TRIBE_Screen_Game::reset_score_display() {
+    // TODO: STUB: full reset_score_display parity from scr_game.cpp @ 0x0049B080 is not restored yet.
+    // Keep score panels visible and force redraw when score mode changes.
+    for (int i = 0; i < 8; ++i) {
+        if (this->runtime.score_panel[i] != nullptr) {
+            this->runtime.score_panel[i]->set_redraw(TPanel::Redraw);
+        }
+    }
 }
 
 void TRIBE_Screen_Game::reset_clocks() {

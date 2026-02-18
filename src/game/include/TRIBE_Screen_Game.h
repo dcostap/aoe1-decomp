@@ -30,6 +30,8 @@ public:
     void setup_buttons();
     void reset_clocks();
     void reset_buttons();
+    void command_score(int enabled);
+    void reset_score_display();
     void set_map_buttons_redraw(RedrawMode param_1);
     virtual void set_redraw(RedrawMode param_1) override;
     virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) override;
@@ -84,6 +86,14 @@ private:
         int chat_line;
         short last_item;
         short reserved;
+        unsigned long terrain_sound_interval;
+        unsigned long last_terrain_sound_time;
+        unsigned long anim_pal_interval;
+        unsigned long last_anim_pal_time;
+        short last_anim_pal_index2;
+        short last_anim_pal_index3;
+        unsigned char last_score_display;
+        unsigned char score_padding[3];
     };
 
     static const int kScreenSize = 0x7C4;

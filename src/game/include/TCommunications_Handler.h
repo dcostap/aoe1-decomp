@@ -30,6 +30,8 @@ struct COMMPLAYEROPTIONS {
 class TCommunications_Handler {
 public:
     int IsPaused();
+    int IsHost();
+    int AllPlayersReady();
     void TogglePauseGame();
     int MultiplayerGameStart();
     int IsLobbyLaunched();
@@ -38,13 +40,18 @@ public:
     void UpdatePlayers();
     void UpdatePlayer(uint id, int timeout);
     void NotifyWindow(int message);
+    void NotifyWindowParam(int message, long param);
     long SendSharedData(int send_mode);
+    long EnableNewPlayers(void* direct_play, int enable_links);
+    int IsPlayerHuman(uint player_number);
     int GetPlayerHumanity(uint player_number);
     void SetPlayerHumanity(uint player_number, int humanity);
     char* GetPlayerName(uint player_number);
     void SetPlayerName(uint player_number, char* name);
     uint GetRandomSeed();
     uint WhoAmI();
+    void* SetWindowHandle(void* window_handle);
+    void LaunchMultiplayerGame();
     void ReceiveGameMessages();
     int DoCycle(ulong now);
     void EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4);
@@ -58,6 +65,12 @@ public:
     uchar new_command(void* p1, int p2);
     long CommOut(uchar p1, void* p2, long p3, ulong p4);
     void DropDeadPlayer(uint id, ulong turn);
+    void CalculatePlayerRange();
+    void ClearRXandTX();
+    void PackPlayersDown();
+    void SetSelfPlayer();
+    void InitPlayerInformation(uint player_number, ulong dpid, char* friendly_name, char* formal_name);
+    void ResetLastCommunicationTimes();
     void CheckPingTime(int p1);
     void SendStoredMessages();
     int PreprocessMessages(void* p1, ulong p2, void* p3, ulong p4);

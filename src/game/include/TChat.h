@@ -7,6 +7,7 @@ class TTaunt;
 struct TChat {
     TChat(void* p1);
     void ClearChat();
+    void setWindowHandle(void* p1);
     void setInChatGroup(int param_1, int param_2);
     int inChatGroup(int param_1);
     void* HostWnd;

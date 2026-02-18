@@ -479,6 +479,14 @@ long TDropDownPanel::get_id() {
     return 0;
 }
 
+long TDropDownPanel::get_id(long line_num) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475440
+    if (this->list_panel) {
+        return this->list_panel->get_id(line_num);
+    }
+    return 0;
+}
+
 void TDropDownPanel::set_val_text_color(unsigned long c1, unsigned long c2) {
     if (this->val_panel) {
         this->val_panel->set_text_color(c1, c2);

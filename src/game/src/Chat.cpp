@@ -18,6 +18,11 @@ void TChat::ClearChat() {
     this->CurrentMsgNo = 0;
 }
 
+void TChat::setWindowHandle(void* p1) {
+    // Fully verified. Source of truth: chat.cpp.decomp @ 0x00423E60
+    this->HostWnd = p1;
+}
+
 void TChat::setInChatGroup(int param_1, int param_2) {
     // Fully verified. Source of truth: chat.cpp.decomp @ 0x00423E70
     if (param_1 > 0 && param_1 < 10) {
