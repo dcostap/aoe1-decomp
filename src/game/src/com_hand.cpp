@@ -1,5 +1,9 @@
 #include "../include/TCommunications_Handler.h"
 #include "../include/NAME.h"
+#include "../include/RGE_Communications_Queue.h"
+#include "../include/RGE_Communications_Speed.h"
+#include "../include/RGE_TimeSinceLastCall.h"
+#include <stdio.h>
 #include <string.h>
 #include <dplay.h>
 
@@ -30,7 +34,10 @@ static const int kCommPlayerOptionsGameHasStartedOffset = 0x1C8;
 static const int kPlayerHumanityHuman = 2;
 static const int kPlayerHumanityComputer = 4;
 static const int kPlayerHumanityCyborg = 5;
+static const int kCommStatePause = 4;
 static const int kCommStateRunning = 5;
+static const int kCommWindowMessagePause = 0x17a2;
+static const int kCommWindowMessageResume = 0x17a3;
 
 // Source-of-truth constants from com_hand.cpp.asm:
 // - COMM_UPDATE_PARAMS literal pushed at SetPlayerHumanity+0x35 (0x0042cc5e): 0x17a6
@@ -40,21 +47,65 @@ static const int kCommMessagePlayerIdSet = 0x17b8;
 static const int kCommStateJoinNow = 3;
 
 // Source-of-truth mirror for DAT_0062cf04 (local/self DPID).
-// TODO: STUB: this should be fed by restored AddSelfPlayer/DirectPlay paths.
+// Updated through player/link identity sync paths.
 static ulong s_localPlayerDpid = 0;
+
+static ulong comm_tslc_get_avg(RGE_TimeSinceLastCall* tslc, int sample_count) {
+    if (tslc == nullptr || sample_count <= 0 || sample_count >= 0x65) {
+        return 0;
+    }
+
+    uint sum = 0;
+    int offset = tslc->Offset;
+    for (int i = 0; i < sample_count; ++i) {
+        --offset;
+        if (offset < 1) {
+            offset = 100;
+        }
+        sum += tslc->aTSLC[offset];
+        if (sum > 999) {
+            tslc->cps = (ulong)i;
+        }
+    }
+    return sum / (uint)sample_count;
+}
+
+static uchar comm_speed_get_high_latency_centi(RGE_Communications_Speed* speed) {
+    if (speed == nullptr || speed->Comm == nullptr) {
+        return 1;
+    }
+
+    uint highest_latency = 0;
+    for (uint player = 1; player < 10; ++player) {
+        if (speed->Comm->IsPlayerHuman(player) != 0 && highest_latency <= speed->ActualLatency[player]) {
+            highest_latency = speed->ActualLatency[player];
+        }
+    }
+
+    speed->HighestLatencyMsec = highest_latency;
+    uint high_latency_centi = (highest_latency + 5) / 10;
+    if (high_latency_centi < 2) {
+        high_latency_centi = 1;
+    }
+    if (high_latency_centi > 0xFE) {
+        high_latency_centi = 0xFF;
+    }
+    return (uchar)high_latency_centi;
+}
+
+static uint comm_speed_get_avg_frame_rate(RGE_Communications_Speed* speed) {
+    if (speed == nullptr) {
+        return 0;
+    }
+    return (uint)comm_tslc_get_avg(speed->FrameTSLC, 0x32);
+}
 }
 
 int TCommunications_Handler::IsPaused() {
-    // Offset 0x1558 in TCommunications_Handler is the pause state
-    // According to assembly at 0x0042C7F0:
-    // 0x1558 == 4 means Paused
-    
-    // We need to access the member at 0x1558.
-    // Based on the struct definition, we'll need to identify which member that is.
-    // For now, let's use a pointer cast to match the assembly exactly if the member name is unknown.
-    
-    int* pause_state = (int*)((char*)this + 0x1558);
-    return (*pause_state == 4);
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C7F0
+    const int* program_state =
+        (const int*)((const char*)&this->PlayerOptions + kCommPlayerOptionsProgramStateOffset);
+    return (*program_state == kCommStatePause) ? 1 : 0;
 }
 
 int TCommunications_Handler::IsHost() {
@@ -144,8 +195,64 @@ void TCommunications_Handler::ReceiveGameMessages() {
 }
 
 uint TCommunications_Handler::ExecuteIncoming() {
-    // TODO: Full implementation from 0x00429D90
-    // Loops through players and handles OnHold messages
+    // Source of truth: com_hand.cpp.decomp @ 0x00429D90
+    if (this->Multiplayer == 0) {
+        return 0;
+    }
+
+    const ulong* dco_id = (const ulong*)((const char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
+
+    uint on_hold_offset = 0;
+    uint slot_number = 0;
+    while (on_hold_offset <= 0x2EF8) {
+        ulong* hold_slot = (ulong*)((char*)this->OnHold + on_hold_offset);
+        if (hold_slot[2] != 0 && this->MaxGamePlayers != 0) {
+            const ulong* player_dco = dco_id + 1;
+            uint player = 1;
+            while (player <= (uint)this->MaxGamePlayers) {
+                if (this->IsPlayerHuman(player) != 0 && player != this->Me) {
+                    const uint expected_serial = this->PlayerHighSerialNumber[player] + 1;
+                    const uint serial = (uint)hold_slot[1];
+                    const ulong from_dpid = hold_slot[3];
+
+                    if (serial < expected_serial && from_dpid == *player_dco) {
+                        if (hold_slot[0] != 0) {
+                            ::operator delete((void*)hold_slot[0]);
+                        }
+                        hold_slot[0] = 0;
+                        hold_slot[1] = 0;
+                        hold_slot[2] = 0;
+                        hold_slot[3] = 0;
+                        hold_slot[4] = 0;
+                    }
+
+                    if ((uint)hold_slot[1] == expected_serial && hold_slot[3] == *player_dco) {
+                        sprintf(this->TBuff, "Cached Execute #%d  Slot#%d ", expected_serial, slot_number);
+
+                        this->PreprocessMessages(hold_slot[2], (char*)hold_slot[0], hold_slot[3], hold_slot[4], 1);
+
+                        hold_slot = (ulong*)((char*)this->OnHold + on_hold_offset);
+
+                        if (hold_slot[0] != 0) {
+                            ::operator delete((void*)hold_slot[0]);
+                        }
+                        hold_slot[0] = 0;
+                        hold_slot[1] = 0;
+                        hold_slot[2] = 0;
+                        hold_slot[3] = 0;
+                        hold_slot[4] = 0;
+                    }
+                }
+
+                ++player;
+                ++player_dco;
+            }
+        }
+
+        on_hold_offset += 0x18;
+        ++slot_number;
+    }
+
     return 0;
 }
 
@@ -317,10 +424,6 @@ void TCommunications_Handler::LaunchMultiplayerGame() {
     const ulong* dco_id =
         (const ulong*)((const char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
 
-    if (this->Me != 0 && this->Me <= (uint)this->MaxGamePlayers) {
-        s_localPlayerDpid = dco_id[this->Me];
-    }
-
     this->EnableNewPlayers(this->OptionsData, 0);
     *program_state = kCommStateRunning;
     this->CalculatePlayerRange();
@@ -379,32 +482,38 @@ void TCommunications_Handler::CalculatePlayerRange() {
 }
 
 void TCommunications_Handler::ClearRXandTX() {
-    // TODO: STUB: partial queue release parity; original code performs full structure-specific cleanup.
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429FD0
     unsigned char* on_hold = (unsigned char*)this->OnHold;
     if (on_hold != nullptr) {
         for (uint offset = 0; offset < 0x2EF8; offset += 0x18) {
-            void** message_ptr = (void**)(on_hold + offset);
-            if (*message_ptr != nullptr) {
-                ::operator delete(*message_ptr);
+            ulong* hold_slot = (ulong*)(on_hold + offset);
+            if (hold_slot[0] != 0) {
+                ::operator delete((void*)hold_slot[0]);
             }
-            memset(on_hold + offset, 0, 0x14);
+            hold_slot[0] = 0;
+            hold_slot[1] = 0;
+            hold_slot[2] = 0;
+            hold_slot[3] = 0;
+            hold_slot[4] = 0;
         }
     }
 
     unsigned char* resend = (unsigned char*)this->Resend;
     if (resend != nullptr) {
         for (uint offset = 0; offset < 0x6D98; offset += 0x38) {
-            void** payload_ptr = (void**)(resend + offset + 8);
-            if (*payload_ptr != nullptr) {
-                ::operator delete(*payload_ptr);
+            ulong* resend_slot = (ulong*)(resend + offset);
+            resend_slot[0] = 0;
+
+            void* payload_ptr = (void*)resend_slot[2];
+            if (payload_ptr != nullptr) {
+                ::operator delete(payload_ptr);
             }
-            memset(resend + offset, 0, 0x10);
+            resend_slot[2] = 0;
+            resend_slot[1] = 0;
+            resend_slot[3] = 0;
             memset(resend + offset + 0x10, 0, 0x28);
         }
     }
-
-    this->HoldCount = 0;
-    this->WaitingForAck = 0;
 }
 
 void TCommunications_Handler::PackPlayersDown() {
@@ -468,9 +577,22 @@ void TCommunications_Handler::PackPlayersDown() {
 void TCommunications_Handler::SetSelfPlayer() {
     // Source of truth: com_hand.cpp.decomp @ 0x00428A70
     ulong* dco_id = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
+    ulong local_dpid = s_localPlayerDpid;
+
+    if (this->Me != 0 && this->Me <= (uint)this->MaxGamePlayers) {
+        ulong slot_dpid = dco_id[this->Me];
+        if (slot_dpid != 0) {
+            local_dpid = slot_dpid;
+            s_localPlayerDpid = slot_dpid;
+        }
+    }
+
+    if (local_dpid == 0) {
+        return;
+    }
 
     for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
-        if (dco_id[player] == s_localPlayerDpid) {
+        if (dco_id[player] == local_dpid) {
             this->Me = player;
             this->NotifyWindowParam(kCommMessagePlayerIdSet, (long)player);
             return;
@@ -498,9 +620,6 @@ void TCommunications_Handler::InitPlayerInformation(uint player_number, ulong dp
     uchar* invalid_player = (uchar*)((char*)&this->PlayerOptions + 0x1AC);
 
     dco_id[player_number] = dpid;
-    if (dpid != 0 && player_number == this->Me) {
-        s_localPlayerDpid = dpid;
-    }
     player_ready[player_number] = 0;
     user1[player_number] = 0;
     user2[player_number] = 0;
@@ -538,7 +657,7 @@ void TCommunications_Handler::InitPlayerInformation(uint player_number, ulong dp
     }
 
     if (this->InQ != nullptr) {
-        // TODO: STUB: flush queued packets for player requires RGE_Communications_Queue::FlushForPlayer.
+        this->InQ->FlushForPlayer(player_number);
     }
 }
 
@@ -551,21 +670,53 @@ void TCommunications_Handler::ResetLastCommunicationTimes() {
     }
 }
 
-uchar TCommunications_Handler::new_command(void* p1, int p2) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00426510
-    if (p1 == nullptr || p2 <= 0) {
+int TCommunications_Handler::AddCommand(ulong p1, void* p2, ulong p3, int p4, uchar p5, int p6) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426470
+    if (this->InQ == nullptr) {
         return 0;
     }
 
-    // TODO: STUB: NewCommand/AddCommand queue path (0x00426530) is not fully restored yet.
-    // Keep temporary-safe behavior:
-    // - Multiplayer: treat as queued (prevent immediate local execute fallback in submit()).
-    // - Single-player: return 0 so submit() still executes command locally.
+    return this->InQ->AddItem(p1, p2, p3, (uint)p4, p5, p6);
+}
+
+void* TCommunications_Handler::get_command() {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004264D0
+    if (this->Multiplayer == 0) {
+        return this->InQ->GetNextItemSingle();
+    }
+
+    const int* program_state =
+        (const int*)((const char*)&this->PlayerOptions + kCommPlayerOptionsProgramStateOffset);
+    if (*program_state == kCommStateJoinNow) {
+        return this->InQ->GetNextItemSingle();
+    }
+
+    return this->InQ->GetNextItemOrdered(this->current_turn);
+}
+
+int TCommunications_Handler::NewCommand(void* p1, int p2, int p3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426530
     if (this->Multiplayer != 0) {
-        (void)this->CommOut(0, p1, p2, 0);
+        (void)this->CommOut((uchar)0x3E, p1, p2, 0);
         return 1;
     }
-    return 0;
+
+    if (this->InQ == nullptr) {
+        return 0;
+    }
+
+    const uchar* command_turn_increment =
+        (const uchar*)((const char*)&this->PlayerOptions + kCommPlayerOptionsCommandTurnIncrementOffset);
+    const ulong queue_turn = this->current_turn + (ulong)(*command_turn_increment);
+    const uchar sequence = this->InQ->GetNextSequence(this->current_turn);
+
+    this->AddCommand(queue_turn, p1, (ulong)p2, (int)this->Me, sequence, p3);
+    return 1;
+}
+
+uchar TCommunications_Handler::new_command(void* p1, int p2) {
+    // Source of truth: com_hand.cpp.decomp @ 0x00426510
+    return (uchar)this->NewCommand(p1, p2, 0);
 }
 
 void TCommunications_Handler::DropDeadPlayer(uint id, ulong turn) {
@@ -580,7 +731,7 @@ void TCommunications_Handler::SendStoredMessages() {
     // TODO: Implement (ASM 0x00426FCD)
 }
 
-int TCommunications_Handler::PreprocessMessages(void* p1, ulong p2, void* p3, ulong p4) {
+int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ulong p4, int p5) {
     // TODO: Implement (ASM 0x00429280)
     return 0;
 }
@@ -590,11 +741,72 @@ long TCommunications_Handler::CommOut(uchar p1, void* p2, long p3, ulong p4) {
     return 0;
 }
 
-void TCommunications_Handler::TogglePauseGame() {
-    // Source of truth: com_hand.cpp.asm
-    // Toggles the pause state in multiplayer games.
-    // For single player, this is a no-op since pause is managed locally.
-    // TODO(accuracy): implement full MP pause toggle
+void TCommunications_Handler::LocalResumeGame(uint p1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C840
+    int* program_state = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsProgramStateOffset);
+    *program_state = kCommStateRunning;
+    this->NotifyWindowParam(kCommWindowMessageResume, (long)p1);
+}
+
+void TCommunications_Handler::LocalPauseGame(uint p1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C860
+    int* program_state = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsProgramStateOffset);
+    *program_state = kCommStatePause;
+    this->NotifyWindowParam(kCommWindowMessagePause, (long)p1);
+}
+
+void TCommunications_Handler::SendPauseGame(int p1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C880
+    if ((this->Multiplayer != 0) && (this->MeHost != 0)) {
+        if (p1 != 0) {
+            (void)this->CommOut((uchar)'P', nullptr, 0, 0);
+            return;
+        }
+        (void)this->CommOut((uchar)'U', nullptr, 0, 0);
+    }
+}
+
+void TCommunications_Handler::RequestPauseGame(int p1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C930
+    (void)p1;
+    if (this->Multiplayer == 0) {
+        this->LocalPauseGame(this->Me);
+        return;
+    }
+    if (this->MeHost != 0) {
+        this->SendPauseGame(1);
+        this->LocalPauseGame(this->Me);
+        return;
+    }
+    (void)this->CommOut((uchar)'W', nullptr, 0, 0);
+}
+
+void TCommunications_Handler::RequestResumeGame(int p1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C9A0
+    (void)p1;
+    if (this->Multiplayer == 0) {
+        this->LocalResumeGame(this->Me);
+        return;
+    }
+    if (this->MeHost != 0) {
+        this->SendPauseGame(0);
+        this->LocalResumeGame(this->Me);
+        return;
+    }
+    (void)this->CommOut((uchar)'+', nullptr, 0, 0);
+}
+
+int TCommunications_Handler::TogglePauseGame() {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C8F0
+    if (this->PauseChangePending != 0) {
+        return 0;
+    }
+    if (this->IsPaused() != 0) {
+        this->RequestResumeGame(0);
+        return 1;
+    }
+    this->RequestPauseGame(0);
+    return 1;
 }
 
 int TCommunications_Handler::MultiplayerGameStart() {
@@ -614,29 +826,74 @@ int TCommunications_Handler::IsLobbyLaunched() {
 }
 
 void TCommunications_Handler::SendIResignMsg() {
-    // TODO: STUB: full resign packet serialization/send path is not restored yet.
-    // Keep a deterministic local state transition so disconnect flow can progress.
-    this->ShuttingDown = 1;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429A90
+    if (this->Multiplayer == 0) {
+        return;
+    }
+
+    const uchar* command_turn_increment =
+        (const uchar*)((const char*)&this->PlayerOptions + kCommPlayerOptionsCommandTurnIncrementOffset);
+    const ulong resign_turn = this->current_turn + (ulong)(*command_turn_increment);
+    (void)this->CommOut((uchar)'Q', (void*)&resign_turn, 4, 0);
+
+    struct MsgDone {
+        uchar command;
+        uchar _pad0;
+        uchar _pad1;
+        uchar _pad2;
+        ulong execute_on_turn;
+        uchar high_latency_centi;
+        uchar frame_rate_msec;
+        uchar _pad_end0;
+        uchar _pad_end1;
+    } done_msg;
+
+    memset(&done_msg, 0, sizeof(done_msg));
+    done_msg.command = (uchar)'D';
+    if (this->Speed != nullptr) {
+        done_msg.high_latency_centi = comm_speed_get_high_latency_centi(this->Speed);
+        done_msg.frame_rate_msec = (uchar)comm_speed_get_avg_frame_rate(this->Speed);
+    }
+
+    done_msg.execute_on_turn = this->current_turn + 1 + (ulong)(*command_turn_increment);
+    (void)this->CommOut((uchar)'D', (void*)&done_msg, 0x0C, 0);
+
+    done_msg.execute_on_turn = this->current_turn + 2 + (ulong)(*command_turn_increment);
+    (void)this->CommOut((uchar)'D', (void*)&done_msg, 0x0C, 0);
+
+    done_msg.execute_on_turn = this->current_turn + 3 + (ulong)(*command_turn_increment);
+    (void)this->CommOut((uchar)'D', (void*)&done_msg, 0x0C, 0);
 }
 
 void TCommunications_Handler::ShutdownGameMessages() {
-    // TODO: STUB: full game-message queue drain path is not restored yet.
-    // Best-effort: flush stored send state and mark shutdown intent.
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426FB0
     this->ShuttingDown = 1;
-    this->SendStoredMessages();
+    this->ReceiveGameMessages();
 }
 
 int TCommunications_Handler::CountWaitingMessages() {
-    // TODO: STUB: queue accounting from com_hand.cpp @ 0x0042A560 is not fully restored.
-    // HoldCount tracks buffered/held packets and is the closest stable field for disconnect loops.
-    return (int)this->HoldCount;
+    // Source of truth: com_hand.cpp.decomp @ 0x0042A0C0
+    int waiting = 0;
+    uint offset = 0;
+    while (offset < 0x6D99) {
+            ulong* resend_slot = (ulong*)((char*)this->Resend + offset);
+            if (resend_slot[1] != 0) {
+            ++waiting;
+        }
+        offset += 0x38;
+    }
+    return waiting;
 }
 
 void TCommunications_Handler::GameOver() {
-    // TODO: STUB: full transport teardown path is not restored yet.
-    this->Multiplayer = 0;
-    this->CommunicationsStatus = COMM_NONE;
-    this->ShuttingDown = 1;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425750
+    this->current_turn = 0;
+    if (this->InQ != nullptr) {
+        this->InQ->FlushAll();
+    }
+    if (this->OutQ != nullptr) {
+        this->OutQ->FlushAll();
+    }
 }
 
 COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS level) {

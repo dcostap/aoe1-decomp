@@ -32,7 +32,12 @@ public:
     int IsPaused();
     int IsHost();
     int AllPlayersReady();
-    void TogglePauseGame();
+    int TogglePauseGame();
+    void RequestPauseGame(int p1);
+    void RequestResumeGame(int p1);
+    void LocalPauseGame(uint p1);
+    void LocalResumeGame(uint p1);
+    void SendPauseGame(int p1);
     int MultiplayerGameStart();
     int IsLobbyLaunched();
     void Update();
@@ -62,7 +67,10 @@ public:
     int CountWaitingMessages();
     void GameOver();
     COMMSTATUS UnlinkToLevel(COMMSTATUS level);
+    void* get_command();
     uchar new_command(void* p1, int p2);
+    int NewCommand(void* p1, int p2, int p3);
+    int AddCommand(ulong p1, void* p2, ulong p3, int p4, uchar p5, int p6);
     long CommOut(uchar p1, void* p2, long p3, ulong p4);
     void DropDeadPlayer(uint id, ulong turn);
     void CalculatePlayerRange();
@@ -73,7 +81,7 @@ public:
     void ResetLastCommunicationTimes();
     void CheckPingTime(int p1);
     void SendStoredMessages();
-    int PreprocessMessages(void* p1, ulong p2, void* p3, ulong p4);
+    int PreprocessMessages(ulong p1, char* p2, ulong p3, ulong p4, int p5);
     int OptionsChanged;
     char* OptionsData;
     int Steps;

@@ -8,6 +8,7 @@ public:
     RGE_Timeline(RGE_Game_World* param_1);
     // Virtuals (best-effort)
     virtual ~RGE_Timeline(); // vt[0] (0x0)
+    void update();
     void save(int param_1);
 
     RGE_Game_World* world;

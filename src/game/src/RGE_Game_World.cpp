@@ -1078,6 +1078,9 @@ uchar RGE_Game_World::update() {
 
     this->world_time_delta = this->world_time - this->old_world_time;
     if (this->world_time_delta != 0 || first_tick != 0) {
+        this->commands->do_commands();
+        this->scenario->update();
+
         this->world_time_delta_seconds = (float)this->world_time_delta * 0.001f;
         world_update_counter = world_update_counter + 1;
 

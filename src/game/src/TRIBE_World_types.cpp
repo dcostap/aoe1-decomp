@@ -1104,6 +1104,90 @@ void TRIBE_Map::tribe_clean_terrain(long p1, long p2, long p3, long p4, uchar p5
 }
 
 // --- RGE_Command (base class) ---
+static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner, const uchar* command_data) {
+    // Source of truth: command.cpp.decomp @ 0x00435110
+    const uchar* last_order = command_owner->last_order;
+    const uint unit_count = (uint)command_data[8];
+
+    if (unit_count != (uint)last_order[8]) {
+        return 0;
+    }
+
+    const long current_x = (long)(*(const float*)(command_data + 0x0C));
+    const long last_x = (long)(*(const float*)(last_order + 0x0C));
+    if (current_x != last_x) {
+        return 0;
+    }
+
+    const long current_y = (long)(*(const float*)(command_data + 0x10));
+    const long last_y = (long)(*(const float*)(last_order + 0x10));
+    if (current_y != last_y) {
+        return 0;
+    }
+
+    if (*(const long*)(last_order + 4) != *(const long*)(command_data + 4)) {
+        return 0;
+    }
+
+    const long* current_units = (const long*)(command_data + 0x14);
+    const long* last_units = (const long*)(last_order + 0x14);
+    for (uint i = 0; i < unit_count; ++i) {
+        if (current_units[i] != last_units[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, const uchar* command_data) {
+    // Source of truth: command.cpp.decomp @ 0x004351B0
+    const uchar* last_order = command_owner->last_order;
+    const uint unit_count = (uint)command_data[1];
+
+    if (unit_count != (uint)last_order[1]) {
+        return 0;
+    }
+
+    const long* current_units = (const long*)(command_data + 2);
+    const long* last_units = (const long*)(last_order + 2);
+    for (uint i = 0; i < unit_count; ++i) {
+        if (current_units[i] != last_units[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data) {
+    // Source of truth: command.cpp.decomp @ 0x00435210
+    switch (command_data[0]) {
+    case 0:
+    case 2:
+    case 3:
+        return rge_duplicate_check_command_order(command_owner, command_data);
+    case 1:
+        return rge_duplicate_check_command_stop(command_owner, command_data);
+    default:
+        return 0;
+    }
+}
+
+static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data, long command_size) {
+    // Source of truth: command.cpp.decomp @ 0x00435260
+    if ((command_owner->last_order != nullptr) &&
+        (command_owner->last_order_size == command_size) &&
+        (command_owner->last_order[0] == command_data[0])) {
+        const ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Command.cpp", 0x497);
+        if ((long)(now - (ulong)command_owner->last_order_time) < 500) {
+            return rge_close_check_for_duplicate_orders(command_owner, command_data);
+        }
+    }
+
+    return 0;
+}
+
 RGE_Command::RGE_Command(RGE_Game_World* param_1, TCommunications_Handler* param_2) {
     // Source of truth: Command.cpp.decomp @ 0x00433D40
     this->world = param_1;
@@ -1125,21 +1209,25 @@ RGE_Static_Object* RGE_Command::get_obj(RGE_Obj_Info p1) {
     return this->world->object((int)p1.id);
 }
 
-void RGE_Command::submit(void* p1, long p2) {
-    // Source of truth: command.cpp.decomp @ 0x004352C0
-    if (p1 == nullptr || p2 <= 0) {
+void RGE_Command::do_commands() {
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00433DE0
+    if (this->com_hand == nullptr) {
         return;
     }
 
-    uchar queued = 0;
-    if (this->com_hand != nullptr) {
-        queued = this->com_hand->new_command(p1, (int)p2);
+    void* command_data = this->com_hand->get_command();
+    while (command_data != nullptr) {
+        this->do_command(command_data);
+        ::operator delete(command_data);
+        command_data = this->com_hand->get_command();
     }
+}
 
-    if (queued == 0) {
-        // TODO: STUB: comm queue/AddCommand parity is incomplete.
-        // Temporary-safe path: execute locally only when command was not accepted/queued.
-        this->do_command(p1);
+void RGE_Command::submit(void* p1, long p2) {
+    // Source of truth: command.cpp.decomp @ 0x004352C0
+    uchar duplicate_order = rge_check_for_duplicate_orders(this, (uchar*)p1, p2);
+    if (duplicate_order == 0) {
+        this->com_hand->new_command(p1, (int)p2);
     }
 
     if (this->last_order != nullptr) {
@@ -1148,7 +1236,7 @@ void RGE_Command::submit(void* p1, long p2) {
     }
     this->last_order = (unsigned char*)p1;
     this->last_order_size = p2;
-    this->last_order_time = (long)GetTickCount();
+    this->last_order_time = (long)debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Command.cpp", 0x4AC);
 }
 
 RGE_Command::~RGE_Command() {
@@ -1420,21 +1508,31 @@ void TRIBE_Scenario_Header::save(int p1) {
     rge_write(p1, &this->active_player_count, 4);
 }
 
-static unsigned short rge_scenario_string_len16(const char* text) {
+static unsigned short rge_scenario_string_len16(const char* text, int include_null) {
     if (text == nullptr) {
         return 0;
     }
-    size_t len = strlen(text) + 1;
-    if (len > 0xFFFF) {
-        len = 0xFFFF;
+
+    size_t len = strlen(text);
+    if (include_null != 0) {
+        len = len + 1;
     }
+
     return (unsigned short)len;
 }
 
-static void rge_scenario_write_string16(int fd, const char* text) {
-    unsigned short length = rge_scenario_string_len16(text);
+static void rge_scenario_write_string16(int fd, const char* text, int include_null) {
+    unsigned short length = rge_scenario_string_len16(text, include_null);
     rge_write(fd, &length, 2);
-    if (length > 0 && text != nullptr) {
+    if (((short)length > 0) && text != nullptr) {
+        rge_write(fd, (void*)text, (int)length);
+    }
+}
+
+static void rge_scenario_write_string16_unchecked(int fd, const char* text) {
+    unsigned short length = (unsigned short)strlen(text);
+    rge_write(fd, &length, 2);
+    if ((short)length > 0) {
         rge_write(fd, (void*)text, (int)length);
     }
 }
@@ -1445,57 +1543,24 @@ static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_ba
         return;
     }
 
-    if (ai_dir == nullptr || file_base == nullptr || file_base[0] == '\0') {
-        if (*out_data != nullptr) {
-            free(*out_data);
-            *out_data = nullptr;
-        }
-        *out_size = 0;
-        return;
-    }
-
     char path[300];
     sprintf(path, "%s%s%s", ai_dir, file_base, ext);
     int fd = _open(path, _O_BINARY | _O_RDONLY);
     if (fd == -1) {
-        if (*out_data != nullptr) {
-            free(*out_data);
-            *out_data = nullptr;
-        }
-        *out_size = 0;
         return;
     }
 
     long file_size = _lseek(fd, 0, SEEK_END);
-    if (file_size <= 0) {
-        _close(fd);
-        if (*out_data != nullptr) {
-            free(*out_data);
-            *out_data = nullptr;
-        }
-        *out_size = 0;
-        return;
-    }
 
-    unsigned char* blob = (unsigned char*)calloc((size_t)file_size, 1);
-    if (blob == nullptr) {
-        _close(fd);
-        return;
-    }
-
-    _lseek(fd, 0, SEEK_SET);
-    int read_bytes = _read(fd, blob, (unsigned int)file_size);
-    _close(fd);
-    if (read_bytes != (int)file_size) {
-        free(blob);
-        return;
-    }
-
+    *out_size = (int)file_size;
     if (*out_data != nullptr) {
         free(*out_data);
     }
-    *out_data = blob;
-    *out_size = (int)file_size;
+    *out_data = (unsigned char*)calloc((size_t)(*out_size), 1);
+
+    _lseek(fd, 0, SEEK_SET);
+    (void)_read(fd, *out_data, (unsigned int)(*out_size));
+    _close(fd);
 }
 
 // --- RGE_Scenario (base class stubs) ---
@@ -1566,9 +1631,19 @@ void RGE_Scenario::rehook() {
     // Source of truth: scenario.cpp.decomp @ 0x0048B590
     return;
 }
+float RGE_Scenario::Get_Version() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C0D0
+    return 1.15f;
+}
+void RGE_Scenario::update() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C3D0
+    if (this->time_line != nullptr) {
+        this->time_line->update();
+    }
+}
 void RGE_Scenario::save(int p1) {
     // Source of truth: scenario.cpp.decomp @ 0x0048C3E0
-    this->Version = 1.15f;
+    this->Version = this->Get_Version();
     rge_write(p1, &this->Version, 4);
 
     for (int i = 0; i < 16; ++i) {
@@ -1587,17 +1662,17 @@ void RGE_Scenario::save(int p1) {
         this->time_line->save(p1);
     }
 
-    rge_scenario_write_string16(p1, this->scenario_name);
-    rge_scenario_write_string16(p1, this->description);
-    rge_scenario_write_string16(p1, this->hints);
-    rge_scenario_write_string16(p1, this->win_message);
-    rge_scenario_write_string16(p1, this->loss_message);
-    rge_scenario_write_string16(p1, this->historicle_notes);
+    rge_scenario_write_string16(p1, this->scenario_name, 0);
+    rge_scenario_write_string16(p1, this->description, 1);
+    rge_scenario_write_string16(p1, this->hints, 1);
+    rge_scenario_write_string16(p1, this->win_message, 1);
+    rge_scenario_write_string16(p1, this->loss_message, 1);
+    rge_scenario_write_string16(p1, this->historicle_notes, 1);
 
-    rge_scenario_write_string16(p1, this->Cine_PreGame);
-    rge_scenario_write_string16(p1, this->Cine_Victory);
-    rge_scenario_write_string16(p1, this->Cine_Loss);
-    rge_scenario_write_string16(p1, this->Mission_Bmp);
+    rge_scenario_write_string16_unchecked(p1, this->Cine_PreGame);
+    rge_scenario_write_string16_unchecked(p1, this->Cine_Victory);
+    rge_scenario_write_string16_unchecked(p1, this->Cine_Loss);
+    rge_scenario_write_string16_unchecked(p1, this->Mission_Bmp);
 
     char mission_file[260];
     sprintf(mission_file, "%s.bmp", this->Mission_Bmp);
@@ -1613,34 +1688,33 @@ void RGE_Scenario::save(int p1) {
         this->mission_picture = loaded_picture;
     }
 
-    if (this->mission_picture != nullptr) {
-        this->mission_picture->Save(p1);
-    } else {
-        TPicture empty_picture;
-        empty_picture.Save(p1);
-    }
+    this->mission_picture->Save(p1);
 
     for (int i = 0; i < 16; ++i) {
-        rge_scenario_write_string16(p1, this->BuildList[i]);
+        rge_scenario_write_string16_unchecked(p1, this->BuildList[i]);
     }
     for (int i = 0; i < 16; ++i) {
-        rge_scenario_write_string16(p1, this->CityPlan[i]);
+        rge_scenario_write_string16_unchecked(p1, this->CityPlan[i]);
     }
     if (this->Version >= 1.08f) {
         for (int i = 0; i < 16; ++i) {
-            rge_scenario_write_string16(p1, this->AiRules[i]);
+            rge_scenario_write_string16_unchecked(p1, this->AiRules[i]);
         }
     }
 
-    const char* ai_dir = nullptr;
-    if (rge_base_game != nullptr && rge_base_game->prog_info != nullptr) {
-        ai_dir = rge_base_game->prog_info->ai_dir;
-    }
-
     for (int i = 0; i < 16; ++i) {
-        rge_scenario_refresh_ai_blob(ai_dir, this->BuildList[i], ".ai", &this->BuildListFile[i], &this->BuildListFileSize[i]);
-        rge_scenario_refresh_ai_blob(ai_dir, this->CityPlan[i], ".cty", &this->CityPlanFile[i], &this->CityPlanFileSize[i]);
-        rge_scenario_refresh_ai_blob(ai_dir, this->AiRules[i], ".per", &this->AiRulesFile[i], &this->AiRulesFileSize[i]);
+        if (this->BuildList[i] != nullptr) {
+            rge_scenario_refresh_ai_blob(rge_base_game->prog_info->ai_dir, this->BuildList[i], ".ai",
+                                         &this->BuildListFile[i], &this->BuildListFileSize[i]);
+        }
+        if (this->CityPlan[i] != nullptr) {
+            rge_scenario_refresh_ai_blob(rge_base_game->prog_info->ai_dir, this->CityPlan[i], ".cty",
+                                         &this->CityPlanFile[i], &this->CityPlanFileSize[i]);
+        }
+        if (this->AiRules[i] != nullptr) {
+            rge_scenario_refresh_ai_blob(rge_base_game->prog_info->ai_dir, this->AiRules[i], ".per",
+                                         &this->AiRulesFile[i], &this->AiRulesFileSize[i]);
+        }
 
         rge_write(p1, &this->BuildListFileSize[i], 4);
         rge_write(p1, &this->CityPlanFileSize[i], 4);
@@ -1648,13 +1722,13 @@ void RGE_Scenario::save(int p1) {
             rge_write(p1, &this->AiRulesFileSize[i], 4);
         }
 
-        if (this->BuildListFile[i] != nullptr && this->BuildListFileSize[i] > 0) {
+        if (this->BuildListFile[i] != nullptr) {
             rge_write(p1, this->BuildListFile[i], this->BuildListFileSize[i]);
         }
-        if (this->CityPlanFile[i] != nullptr && this->CityPlanFileSize[i] > 0) {
+        if (this->CityPlanFile[i] != nullptr) {
             rge_write(p1, this->CityPlanFile[i], this->CityPlanFileSize[i]);
         }
-        if (this->AiRulesFile[i] != nullptr && this->AiRulesFileSize[i] > 0) {
+        if (this->AiRulesFile[i] != nullptr) {
             rge_write(p1, this->AiRulesFile[i], this->AiRulesFileSize[i]);
         }
     }

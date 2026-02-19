@@ -20,6 +20,9 @@ Mission:
   - `src/game/include/*.h`
 - Return high-value evidence that helps implementation agents proceed with parity work.
 - Use the shared `truth-source-lookup` skill when available.
+- Typical best-fit uses:
+  - pre-implementation truth discovery when offsets are unknown
+  - filling missing evidence reported by verifier audits
 
 Approach:
 1. Resolve likely symbol/function/type candidates.

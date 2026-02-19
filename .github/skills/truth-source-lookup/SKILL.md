@@ -30,6 +30,13 @@ Workflow:
 - If multiple matches exist, rank by evidence strength and context fit.
 - Explicitly mark uncertain mappings and what additional context would disambiguate.
 
+5. Prepare verifier-ready exhibits
+- Build compact evidence packets suitable for per-function audit:
+  - exact truth pointers (file + offset/line)
+  - short excerpt text
+  - why the excerpt is relevant to parity
+- Prefer exhibit-style outputs over large dumps.
+
 Suggested output style (not strict):
 - Request interpreted
 - Best-match candidates
@@ -43,3 +50,4 @@ Suggested output style (not strict):
 Quality bar:
 - Prefer precise, high-signal evidence over large noisy dumps.
 - Include enough context to enable immediate decompilation/audit work.
+- Be scope-disciplined: avoid broad exploration unless explicitly requested.

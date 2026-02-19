@@ -12,6 +12,8 @@ public:
     virtual RGE_Static_Object* get_object_pointer(int param_1); // vt[0] (0x0)
     virtual ~RGE_Scenario(); // vt[1] (0x4)
     virtual void rehook(); // vt[2] (0x8)
+    float Get_Version();
+    void update();
     virtual void save(int param_1); // vt[3] (0xC)
 
     RGE_Timeline* time_line; // +0x4

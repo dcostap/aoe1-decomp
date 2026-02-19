@@ -193,6 +193,19 @@ void TMessagePanel::set_justification(int param_1, int param_2, int param_3) {
     this->set_wrap(param_3);
 }
 
+void TMessagePanel::show_message2(int param_1, char* param_2, unsigned long param_3, unsigned long param_4, void* param_5, long param_6, long param_7, TShape* param_8, int param_9, TShape* param_10, int param_11) {
+    // TODO: STUB: Full RightInfoMessage rendering parity from pnl_msg.cpp is pending.
+    (void)param_1;
+    this->set_font(param_5, param_6, param_7);
+    this->set_color(param_3, param_4);
+    this->Icon = (param_8 != nullptr) ? param_8 : param_10;
+    this->IconIndex = (param_8 != nullptr) ? param_9 : param_11;
+    this->IconFrame1 = param_9;
+    this->IconFrame2 = param_11;
+    this->set_message(param_2);
+    this->set_active(1);
+}
+
 void TMessagePanel::remove_message() {
     this->clear_message();
 }
