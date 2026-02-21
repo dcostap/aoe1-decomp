@@ -159,3 +159,353 @@ int RGE_Sprite::check_for_shadows() {
     }
     return 1;
 }
+
+static void sprite_ensure_shape_loaded(RGE_Sprite* sprite) {
+    if (sprite == nullptr) {
+        return;
+    }
+    if (sprite->shape != nullptr) {
+        return;
+    }
+    if (sprite->loaded == 0) {
+        return;
+    }
+
+    char shape_name[64];
+    shape_name[0] = '\0';
+    snprintf(shape_name, sizeof(shape_name), "%s.shp", sprite->pict_name);
+    sprite->shape = new TShape(shape_name, sprite->resource_id);
+}
+
+void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
+    // Source of truth: sprite.cpp.decomp @ 0x004BFFF0
+    if (this->facet_num <= param_3) {
+        param_3 = 0;
+    }
+    if (param_1 == param_2) {
+        return;
+    }
+
+    if (this->main_sound != nullptr && (param_1 == 0 || (param_2 < param_1 && param_2 != 0))) {
+        this->main_sound->play(1);
+    }
+
+    if (this->micro_man_sound == 0 || this->sound_list == nullptr) {
+        return;
+    }
+
+    if (param_1 < param_2) {
+        for (int i = 0; i < 3; ++i) {
+            short sound_frame = this->sound_list[param_3].frame[i];
+            if (sound_frame < 0) {
+                break;
+            }
+            if (param_1 <= sound_frame && sound_frame < param_2 && this->sound_list[param_3].sound[i] != nullptr) {
+                this->sound_list[param_3].sound[i]->play(1);
+            }
+        }
+        return;
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        short sound_frame = this->sound_list[param_3].frame[i];
+        if (sound_frame < 0) {
+            return;
+        }
+        if ((param_1 <= sound_frame || sound_frame < param_2) && this->sound_list[param_3].sound[i] != nullptr) {
+            this->sound_list[param_3].sound[i]->play(1);
+        }
+    }
+}
+
+unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param_3) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C00E0
+    unsigned char mirror = this->mirror_flag;
+    if ((mirror != 0) && (this->facet_num == 2)) {
+        *param_3 = param_2;
+        return (unsigned char)param_1;
+    }
+
+    if ((mirror != 0) && (((int)mirror < param_1) || (param_1 < ((int)this->facet_num >> 2)))) {
+        int index = (int)this->facet_num >> 1;
+        if (index < param_1) {
+            index = (index - (int)param_1) + (int)this->facet_num;
+        } else {
+            index = index - (int)param_1;
+        }
+        *param_3 = index;
+        *param_3 = (*param_3 - ((int)this->facet_num >> 2)) * (int)this->frame_num + param_2;
+        return 1;
+    }
+
+    if (mirror == 0) {
+        *param_3 = this->frame_num * param_1 + param_2;
+        return 0;
+    }
+
+    *param_3 = (param_1 - ((int)this->facet_num >> 2)) * (int)this->frame_num + param_2;
+    return 0;
+}
+
+void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C01A0
+    if (this->frame_num <= param_2) {
+        param_2 = 0;
+    }
+
+    sprite_ensure_shape_loaded(this);
+    if (this->shape == nullptr) {
+        return;
+    }
+
+    this->delta_time = 0;
+
+    long facet_index = 0;
+    unsigned char mirrored = this->get_facetindex(param_1, param_2, &facet_index);
+    (void)mirrored;
+
+    unsigned char* table = nullptr;
+    if (this->color_table < 0) {
+        if (param_5 != nullptr) {
+            table = param_5->table;
+        }
+    } else {
+        short color_idx = this->color_table;
+        if (this->color_tables != nullptr && this->color_tables[color_idx] != nullptr) {
+            table = this->color_tables[color_idx]->table;
+        }
+    }
+
+    this->shape->shape_draw(param_6, param_3, param_4, facet_index, this->color_flag, 0, table);
+}
+
+unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, unsigned char param_9) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C04F0
+    if (this->facet_num <= param_1) {
+        param_1 = 0;
+    }
+
+    if ((this->draw_list_num < 1) || (this->draw_list == nullptr)) {
+        if (this->draw_level < 0x0B) {
+            param_3 = param_5;
+            param_4 = param_6;
+        }
+        this->do_draw(param_1, param_2, param_3, param_4, param_7, param_8, param_9);
+        return 1;
+    }
+
+    int count = 0;
+    int offset = 0;
+    while (count < this->draw_list_num) {
+        RGE_Picture_List* list = this->draw_list;
+        short facet = *(short*)((char*)&list->facet + offset);
+        if (facet < 0 || facet == param_1) {
+            RGE_Sprite* child = *(RGE_Sprite**)((char*)&list->sprite + offset);
+            int y = (int)*(short*)((char*)&list->offset_y + offset);
+            short x = *(short*)((char*)&list->offset_x + offset);
+            long draw_x = 0;
+            if (child->draw_level < 0x0B) {
+                y += (int)param_6;
+                draw_x = param_5 + x;
+            } else {
+                y += (int)param_4;
+                draw_x = param_3 + x;
+            }
+            child->do_draw((child->facet_num * param_1) / (int)this->facet_num, param_2, draw_x, y, param_7, param_8, param_9);
+        }
+        count++;
+        offset += 0x10;
+    }
+
+    return (unsigned char)count;
+}
+
+unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0620
+    long facet = param_1;
+    if (this->facet_num <= param_1) {
+        facet = 0;
+    }
+
+    if ((this->draw_list_num < 1) || (this->draw_list == nullptr)) {
+        if (this->draw_level == 0x14) {
+            this->do_draw(facet, param_2, param_3, param_4, param_5, param_6, 0);
+        }
+        return 1;
+    }
+
+    int count = 0;
+    int offset = 0;
+    while (count < this->draw_list_num) {
+        RGE_Picture_List* list = this->draw_list;
+        RGE_Sprite* child = *(RGE_Sprite**)((char*)&list->sprite + offset);
+        short child_facet = *(short*)((char*)&list->facet + offset);
+        if (child->draw_level == 0x14 && (child_facet < 0 || child_facet == facet)) {
+            this->draw_list[count].sprite->do_draw(
+                (child->facet_num * facet) / (int)this->facet_num,
+                param_2,
+                *(short*)((char*)&list->offset_x + offset) + param_3,
+                *(short*)((char*)&list->offset_y + offset) + param_4,
+                param_5,
+                param_6,
+                0);
+        }
+        count++;
+        offset += 0x10;
+    }
+
+    return (unsigned char)count;
+}
+
+unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0720
+    long facet = param_1;
+    if (this->facet_num <= param_1) {
+        facet = 0;
+    }
+
+    if ((this->draw_list_num < 1) || (this->draw_list == nullptr)) {
+        if (this->draw_level != param_7 && this->draw_level < 0x14) {
+            this->do_draw(facet, param_2, param_3, param_4, param_5, param_6, 0);
+        }
+        return 1;
+    }
+
+    int count = 0;
+    int offset = 0;
+    while (count < this->draw_list_num) {
+        RGE_Picture_List* list = this->draw_list;
+        RGE_Sprite* child = *(RGE_Sprite**)((char*)&list->sprite + offset);
+        short child_facet = *(short*)((char*)&list->facet + offset);
+        if ((child->draw_level != param_7) && (child->draw_level < 0x14) && (child_facet < 0 || child_facet == facet)) {
+            child->do_draw(
+                (child->facet_num * facet) / (int)this->facet_num,
+                param_2,
+                *(short*)((char*)&list->offset_x + offset) + param_3,
+                *(short*)((char*)&list->offset_y + offset) + param_4,
+                param_5,
+                param_6,
+                0);
+        }
+        offset += 0x10;
+        count++;
+    }
+
+    return (unsigned char)count;
+}
+
+int RGE_Sprite::get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0840
+    sprite_ensure_shape_loaded(this);
+    if (this->shape == nullptr) {
+        return 0;
+    }
+    return (int)this->shape->shape_minmax(param_1, param_2, param_3, param_4, (int)param_5);
+}
+
+int RGE_Sprite::get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0B70
+    long frame = param_6;
+    if (this->frame_num <= param_6) {
+        frame = 0;
+    }
+
+    long facet_index = 0;
+    unsigned char mirrored = this->get_facetindex(param_5, frame, &facet_index);
+
+    long min_x = 0;
+    long min_y = 0;
+    long max_x = 0;
+    long max_y = 0;
+    if (this->get_size(&min_x, &min_y, &max_x, &max_y, facet_index) == 0) {
+        return 0;
+    }
+
+    if (mirrored != 0) {
+        long t = -min_x;
+        min_x = -max_x;
+        max_x = t;
+    }
+
+    int calc_min_x = (int)min_x + (int)param_7;
+    int calc_max_x = (int)max_x + (int)param_7;
+    int calc_min_y = (int)min_y + (int)param_8;
+    int calc_max_y = (int)max_y + (int)param_8;
+
+    if (calc_min_x < *param_1) *param_1 = (short)calc_min_x;
+    if (calc_min_y < *param_2) *param_2 = (short)calc_min_y;
+    if (*param_3 < calc_max_x) *param_3 = (short)calc_max_x;
+    if (*param_4 < calc_max_y) *param_4 = (short)calc_max_y;
+
+    return 1;
+}
+
+int RGE_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6) {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0960
+    sprite_ensure_shape_loaded(this);
+    if (this->shape == nullptr) {
+        return 0;
+    }
+
+    if (((this->box_x1 == 0) && (this->box_x2 == 0)) || ((this->box_y1 == 0) && (this->box_y2 == 0))) {
+        *param_1 = 0;
+        *param_2 = 0;
+        *param_3 = 0;
+        *param_4 = 0;
+
+        if ((this->draw_list_num < 1) || (this->draw_list == nullptr)) {
+            this->get_frame_min_max(param_1, param_2, param_3, param_4, param_5, param_6, 0, 0);
+        } else {
+            int offset = 0;
+            for (int index = 0; index < this->draw_list_num; ++index) {
+                if (this->transparent_picking_flag != 0) {
+                    RGE_Picture_List* list = this->draw_list;
+                    RGE_Sprite* child = *(RGE_Sprite**)((char*)&list->sprite + offset);
+                    child->get_frame_min_max(
+                        param_1,
+                        param_2,
+                        param_3,
+                        param_4,
+                        (child->facet_num * param_5) / (int)this->facet_num,
+                        param_6,
+                        *(short*)((char*)&list->offset_x + offset),
+                        *(short*)((char*)&list->offset_y + offset));
+                }
+                offset += 0x10;
+            }
+        }
+
+        if (((*param_1 == 0) && (*param_3 == 0)) || ((*param_2 == 0) && (*param_4 == 0))) {
+            return 0;
+        }
+    } else {
+        *param_1 = this->box_x1;
+        *param_2 = this->box_y1;
+        *param_3 = this->box_x2;
+        *param_4 = this->box_y2;
+    }
+
+    return 1;
+}
+
+unsigned char RGE_Sprite::get_lowest_draw_level() {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0C50
+    short draw_count = this->draw_list_num;
+    if (draw_count == 0) {
+        return this->draw_level;
+    }
+
+    unsigned char lowest = 0x14;
+    if (draw_count > 0 && this->draw_list != nullptr) {
+        RGE_Sprite** sprite_ptr = &this->draw_list->sprite;
+        int count = (int)draw_count;
+        do {
+            if ((*sprite_ptr)->draw_level < lowest) {
+                lowest = (*sprite_ptr)->draw_level;
+            }
+            sprite_ptr = sprite_ptr + 4;
+            count = count - 1;
+        } while (count != 0);
+    }
+    return lowest;
+}

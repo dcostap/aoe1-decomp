@@ -121,30 +121,32 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount_percent, tagPALETT
     if (amount_percent > 100) amount_percent = 100;
     this->id = (short)amount_percent;
 
-    tagPALETTEENTRY palette[256];
-    tagPALETTEENTRY temp_palette[256];
+    tagPALETTEENTRY palette[257];
+    tagPALETTEENTRY temp_palette[257];
     memset(palette, 0, sizeof(palette));
     memset(temp_palette, 0, sizeof(temp_palette));
 
     if (palette_or_null) {
-        memcpy(palette, palette_or_null, sizeof(palette));
+        memcpy(&palette[1], palette_or_null, 256 * sizeof(tagPALETTEENTRY));
     } else if (area) {
-        area->GetPalette(palette);
+        area->GetPalette(&palette[1]);
     }
 
     tagPALETTEENTRY base;
     if (base_color_or_null) base = *base_color_or_null;
     else { base.peRed = 0; base.peGreen = 0; base.peBlue = 0; base.peFlags = 0; }
 
-    RGE_translate_palette(palette, temp_palette, base, amount_percent, -1, -1);
+    RGE_translate_palette(&palette[1], &temp_palette[1], base, amount_percent, -1, -1);
 
     for (int index1 = 0; index1 < 256; ++index1) {
         int best_idx = 0;
         int best_dist = 20000;
+        const tagPALETTEENTRY& target = temp_palette[index1 + 1];
         for (int i = 0; i < 256; ++i) {
-            const int dr = (int)temp_palette[index1].peRed - (int)palette[i].peRed;
-            const int dg = (int)temp_palette[index1].peGreen - (int)palette[i].peGreen;
-            const int db = (int)temp_palette[index1].peBlue - (int)palette[i].peBlue;
+            const tagPALETTEENTRY& candidate = palette[i + 1];
+            const int dr = (int)target.peRed - (int)candidate.peRed;
+            const int dg = (int)target.peGreen - (int)candidate.peGreen;
+            const int db = (int)target.peBlue - (int)candidate.peBlue;
             const int dist = dr * dr + dg * dg + db * db;
             if (dist < best_dist) {
                 best_dist = dist;

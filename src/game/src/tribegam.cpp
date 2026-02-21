@@ -260,7 +260,19 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
     this->input_enabled = 1;
     
     this->video_window = nullptr; // [ESI + 0x1dc]
+    this->old_video_wnd_proc = nullptr;
+    this->video_paused = 0;
+    this->last_video_time = 0;
+    this->video_setup = 0;
+    this->video_double_size = 0;
+    this->video_changed_res = 0;
+    this->video_hi_color = 0;
+    this->video_save_res_wid = 0;
+    this->video_save_res_hgt = 0;
+    this->video_save_palette = nullptr;
     this->started_menu_music = 0;
+    this->show_object_id = 0;
+    this->game_screen = nullptr;
     
     // Lines 258-268: Initialize various strings and values
     this->testing_scenario[0] = '\0'; // [ESI + 0xc58]
@@ -298,6 +310,8 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
         this->notification_loc_x[i] = -1;
         this->notification_loc_y[i] = -1;
     }
+    this->current_notification_loc = -1;
+    this->current_notification_recalled = -1;
     
     // Lines 360-399: Initialize player settings
     // Arrays are size 9 per TRIBE_Game_Options.h
@@ -312,9 +326,24 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
     for (int i = 0; i < 9; i++) {
         this->save_humanity[i] = 4; // STOSD in ASM 0x00521333 sets to 4
     }
+
+    this->handleIdleLock = nullptr;
+    this->inHandleIdle = 0;
     
     setNumberPlayers(4);
     resetRandomComputerName();
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT(
+        "TRIBE_Game layout: testing=0x%lX startup_scn=0x%lX auto_exit=0x%lX startup_game=0x%lX save=0x%lX load=0x%lX inHandleIdle=0x%lX",
+        (long)((char*)&this->testing_scenario - (char*)this),
+        (long)((char*)&this->startup_scenario - (char*)this),
+        (long)((char*)&this->auto_exit_time - (char*)this),
+        (long)((char*)&this->startup_game - (char*)this),
+        (long)((char*)&this->save_game_name - (char*)this),
+        (long)((char*)&this->load_game_name - (char*)this),
+        (long)((char*)&this->inHandleIdle - (char*)this));
+CUSTOM_DEBUG_END
     
     if (param_2) {
         if (this->setup() == 0) {
@@ -477,12 +506,23 @@ CUSTOM_DEBUG_END
             if (this->load_game(this->startup_game)) goto FINAL_SETUP;
         }
         
-        if (quick_start_game_mode) {
+        if (this->check_prog_argument("DEBUGTREEAUTOSTART")) {
+            int start_ok = this->start_game(1);
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: DEBUGTREEAUTOSTART -> start_game(1) result=%d", start_ok);
+CUSTOM_DEBUG_END
+        } else if (quick_start_game_mode) {
             int start_ok = this->start_game(0);
 CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: quick_start -> start_game result=%d", start_ok);
 CUSTOM_DEBUG_END
         } else if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
+            if (this->check_prog_argument("DEBUGTREEGRIDMASTER")) {
+                int preload_ok = this->load_game_data();
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: DEBUGTREEGRIDMASTER preload load_game_data=%d", preload_ok);
+CUSTOM_DEBUG_END
+            }
             int menu_ok = this->start_menu();
 CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: NOSTARTUP -> start_menu result=%d", menu_ok);
@@ -1163,7 +1203,15 @@ int TRIBE_Game::create_game(int p1) {
         *((unsigned char*)this->sound_system + 1) = 1;
     }
 
+    CUSTOM_DEBUG_LOG_FMT(
+        "create_game: calling world->new_game world=%p player_num=%d local_player_id=%d",
+        this->world,
+        (int)player_info.player_num,
+        local_player_id);
     int result = (int)this->world->new_game(&player_info, local_player_id);
+    CUSTOM_DEBUG_LOG_FMT("create_game: world->new_game returned result=%d world_player_num=%d",
+        result,
+        this->world ? (int)this->world->player_num : -1);
     if (result != 0 && this->world->player_num < 2) {
         this->world->del_game_info();
         result = 0;
@@ -1175,26 +1223,34 @@ int TRIBE_Game::create_game(int p1) {
     // --- Phase 10: Post-game-creation setup ---
 
     // Reset countdown timers
+    CUSTOM_DEBUG_LOG("create_game: resetting countdown timers");
     for (int i = 0; i < this->world->player_num; ++i) {
         this->reset_countdown_timer(i);
     }
+    CUSTOM_DEBUG_LOG("create_game: reset countdown timers done");
 
+    CUSTOM_DEBUG_LOG("create_game: world->update_mutual_allies begin");
     this->world->update_mutual_allies();
+    CUSTOM_DEBUG_LOG("create_game: world->update_mutual_allies done");
 
     this->set_map_visible('\0');
+    CUSTOM_DEBUG_LOG("create_game: set_map_visible done");
 
     // Full visibility check
     if (this->fullVisibility() != 0) {
+        CUSTOM_DEBUG_LOG("create_game: fullVisibility pass begin");
         for (int i = 1; i < this->world->player_num; ++i) {
             RGE_Player* player = this->world->players[i];
             if (player != nullptr && player->computerPlayer() == 0) {
                 player->set_map_visible();
             }
         }
+        CUSTOM_DEBUG_LOG("create_game: fullVisibility pass done");
     }
 
     // Fog of war
     this->set_map_fog((unsigned char)this->fogOfWar());
+    CUSTOM_DEBUG_LOG("create_game: set_map_fog done");
 
     // Path finding iterations based on setting
     unsigned char pf;
@@ -1216,6 +1272,7 @@ int TRIBE_Game::create_game(int p1) {
         int h = comm_handler->GetPlayerHumanity(i);
         this->save_humanity[i - 1] = h;
     }
+    CUSTOM_DEBUG_LOG_FMT("create_game: exit result=%d", result);
 
     return result;
 }
@@ -1227,8 +1284,10 @@ int TRIBE_Game::create_game_screen() {
 
     this->disable_input();
     this->set_game_mode(0, 0);
+    CUSTOM_DEBUG_LOG_FMT("create_game_screen: begin world=%p panel_system=%p", this->world, panel_system);
     TRIBE_Screen_Game* screen = new TRIBE_Screen_Game();
     this->game_screen = screen;
+    CUSTOM_DEBUG_LOG_FMT("create_game_screen: screen=%p err=%d", screen, screen ? screen->error_code : -1);
 
     if (screen != nullptr) {
         if (screen->error_code == 0) {
@@ -1238,12 +1297,15 @@ int TRIBE_Game::create_game_screen() {
             } else if (this->multiplayerGame() != 0) {
                 mp_started = 0;
             }
+            CUSTOM_DEBUG_LOG_FMT("create_game_screen: mp_started=%d", mp_started);
 
             if (mp_started != 0) {
+                CUSTOM_DEBUG_LOG("create_game_screen: switching to game screen");
                 tribe_set_current_screen(screen);
                 if (panel_system != nullptr) {
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
+                CUSTOM_DEBUG_LOG("create_game_screen: switched to game screen");
             } else {
                 TRIBE_Screen_Wait* wait_screen = new TRIBE_Screen_Wait();
                 if (wait_screen != nullptr && wait_screen->error_code == 0) {
@@ -1284,7 +1346,9 @@ int TRIBE_Game::create_game_screen() {
 
             if (this->prog_mode != 3) {
                 this->let_game_begin();
+                CUSTOM_DEBUG_LOG("create_game_screen: let_game_begin complete");
             }
+            CUSTOM_DEBUG_LOG("create_game_screen: success");
             return 1;
         }
 
@@ -1297,6 +1361,7 @@ int TRIBE_Game::create_game_screen() {
     }
     this->close_status_message();
     this->enable_input();
+    CUSTOM_DEBUG_LOG("create_game_screen: failure");
     return 0;
 }
 
@@ -1348,6 +1413,7 @@ int TRIBE_Game::start_game(int p1) {
     }
 
     this->disable_input();
+    CUSTOM_DEBUG_LOG_FMT("start_game(%d): begin world=%p", p1, this->world);
 
     if (!this->world) {
         this->show_status_message(0x44d, info_file, info_id);
@@ -1360,11 +1426,22 @@ int TRIBE_Game::start_game(int p1) {
     if (!this->create_game(0)) {
         goto start_game_fail;
     }
+    CUSTOM_DEBUG_LOG_FMT("start_game(%d): create_game succeeded", p1);
 
+    CUSTOM_DEBUG_LOG("start_game: set_save_game_name(nullptr) begin");
     this->set_save_game_name((char*)0);
+    CUSTOM_DEBUG_LOG("start_game: set_save_game_name(nullptr) done");
+    CUSTOM_DEBUG_LOG("start_game: set_load_game_name(nullptr) begin");
     this->set_load_game_name((char*)0);
+    CUSTOM_DEBUG_LOG("start_game: set_load_game_name(nullptr) done");
 
     if (p1 != 0) {
+        if (this->check_prog_argument("DEBUGBYPASSGAMESCREEN") != 0) {
+            // TODO: STUB: Temporary debug gate to isolate crash around create_game_screen transition.
+            CUSTOM_DEBUG_LOG("start_game: DEBUGBYPASSGAMESCREEN active, skipping create_game_screen");
+            return 1;
+        }
+        CUSTOM_DEBUG_LOG("start_game: creating game screen immediately");
         return this->create_game_screen();
     }
 
@@ -1377,6 +1454,7 @@ int TRIBE_Game::start_game(int p1) {
     return 1;
 
 start_game_fail:
+    CUSTOM_DEBUG_LOG_FMT("start_game(%d): FAILED", p1);
     this->close_status_message();
     this->enable_input();
     return 0;
@@ -1634,8 +1712,12 @@ int TRIBE_Game::start_menu() {
     this->close_game_screens(0);
     this->game_screen = nullptr;
     if (this->world) {
-        delete this->world;
-        this->world = nullptr;
+        if (this->check_prog_argument("DEBUGTREEGRIDMASTER") == 0) {
+            delete this->world;
+            this->world = nullptr;
+        } else {
+            CUSTOM_DEBUG_LOG("TRIBE_Game::start_menu: keeping world alive for DEBUGTREEGRIDMASTER");
+        }
     }
 
     if (this->video_setup != 0) {

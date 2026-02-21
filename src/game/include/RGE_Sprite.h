@@ -67,6 +67,16 @@ public:
     // Methods
     void rehook(RGE_Sprite** sprites);
     void load_facets(RGE_Sprite** sprites);
+    void play_sound(short param_1, short param_2, short param_3);
+    unsigned char get_facetindex(long param_1, long param_2, long* param_3);
+    void do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7);
+    unsigned char draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, unsigned char param_9);
+    unsigned char normal_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6);
+    unsigned char shadow_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7);
+    int get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5);
+    int get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6);
+    int get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8);
+    unsigned char get_lowest_draw_level();
     RGE_Active_Sprite* make_active_sprite();
     int check_for_shadows();
 };

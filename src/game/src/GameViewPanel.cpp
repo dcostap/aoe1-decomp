@@ -19,6 +19,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/TMousePointer.h"
 
 extern TMousePointer* MouseSystem;
@@ -261,6 +262,56 @@ static void gameview_try_load_sprite_shape(RGE_Sprite* spr) {
     }
 }
 
+static int gameview_ascii_contains_ci(const char* text, const char* token) {
+    if (text == nullptr || token == nullptr || token[0] == '\0') {
+        return 0;
+    }
+
+    size_t text_len = strlen(text);
+    size_t token_len = strlen(token);
+    if (token_len == 0 || token_len > text_len) {
+        return 0;
+    }
+
+    for (size_t i = 0; i + token_len <= text_len; ++i) {
+        int match = 1;
+        for (size_t j = 0; j < token_len; ++j) {
+            char a = text[i + j];
+            char b = token[j];
+            if (a >= 'a' && a <= 'z') a = (char)(a - 'a' + 'A');
+            if (b >= 'a' && b <= 'z') b = (char)(b - 'a' + 'A');
+            if (a != b) {
+                match = 0;
+                break;
+            }
+        }
+        if (match != 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+static int gameview_is_tree_object(RGE_Static_Object* obj) {
+    if (obj == nullptr || obj->master_obj == nullptr) {
+        return 0;
+    }
+
+    const char* name = obj->master_obj->name;
+    if (name == nullptr || name[0] == '\0') {
+        return 0;
+    }
+
+    if (gameview_ascii_contains_ci(name, "TREE") != 0) {
+        return 1;
+    }
+    if (gameview_ascii_contains_ci(name, "FOREST") != 0) {
+        return 1;
+    }
+    return 0;
+}
+
 static int gameview_draw_object_sprite(TDrawArea* area, RGE_Static_Object* obj, long sx, long sy) {
     if (area == nullptr || obj == nullptr || obj->master_obj == nullptr) {
         return 0;
@@ -276,7 +327,9 @@ static int gameview_draw_object_sprite(TDrawArea* area, RGE_Static_Object* obj, 
     gameview_try_load_sprite_shape(spr);
 
     // Source of truth: sprite.cpp.decomp @ 0x004C0510 (RGE_Sprite::draw).
-    // draw_list path has precedence and uses facet-filter + facet remap into child sprites.
+    // Important parity point:
+    // calling shape_draw() directly bypasses sprite color_flag/color_table handling
+    // (including SLP shadow op decode behavior), which can produce white/garbled shadows.
     int facet = (int)obj->facet;
     if (facet < 0) {
         facet = 0;
@@ -285,65 +338,7 @@ static int gameview_draw_object_sprite(TDrawArea* area, RGE_Static_Object* obj, 
         facet = 0;
     }
 
-    if (spr->draw_list_num > 0 && spr->draw_list != nullptr) {
-        int drew_any = 0;
-        for (int di = 0; di < spr->draw_list_num; ++di) {
-            RGE_Picture_List* dl = &spr->draw_list[di];
-            if (dl == nullptr) {
-                continue;
-            }
-
-            int list_facet = (int)dl->facet;
-            if (list_facet >= 0 && list_facet != facet) {
-                continue;
-            }
-
-            RGE_Sprite* ds = dl->sprite;
-            if (ds == nullptr && dl->picture_num == -1) {
-                ds = spr;
-            }
-            if (ds == nullptr) {
-                continue;
-            }
-
-            gameview_try_load_sprite_shape(ds);
-            if (!ds->loaded || ds->shape == nullptr || ds->shape->shape_count() <= 0) {
-                continue;
-            }
-
-            int df = 0;
-            if (spr->facet_num > 0 && ds->facet_num > 0) {
-                df = (ds->facet_num * facet) / spr->facet_num;
-            }
-            if (df < 0 || df >= ds->shape->shape_count()) {
-                df = 0;
-            }
-
-            ds->shape->shape_draw(
-                area,
-                sx + (long)dl->offset_x,
-                sy + (long)dl->offset_y,
-                (long)df,
-                0,
-                0,
-                nullptr);
-            drew_any = 1;
-        }
-        if (drew_any != 0) {
-            return 1;
-        }
-    }
-
-    if (spr->loaded && spr->shape != nullptr && spr->shape->shape_count() > 0) {
-        int draw_facet = facet;
-        if (draw_facet < 0 || draw_facet >= spr->shape->shape_count()) {
-            draw_facet = 0;
-        }
-        spr->shape->shape_draw(area, sx, sy, draw_facet, 0, 0, nullptr);
-        return 1;
-    }
-
-    return 0;
+    return spr->draw((long)facet, 0, sx, sy, sx, sy, nullptr, area, 0) != 0;
 }
 
 static int gameview_object_bounds(RGE_Static_Object* obj, long anchor_x, long anchor_y,
@@ -447,6 +442,164 @@ static int gameview_obj_draw_cmp(const void* a, const void* b) {
     if (ea->obj < eb->obj) return -1;
     if (ea->obj > eb->obj) return 1;
     return 0;
+}
+
+struct GameViewTreeEntry {
+    RGE_Static_Object* obj;
+    RGE_Sprite* sprite;
+};
+
+static void gameview_draw_tree_debug_grid(GameViewPanel* self) {
+    if (self == nullptr || self->render_area == nullptr || self->world_map == nullptr) {
+        return;
+    }
+
+    TDrawArea* area = self->render_area;
+    RGE_Game_World* world = self->world_map->game_world;
+    if (world == nullptr || world->objectsValue == nullptr || world->numberObjectsValue <= 0) {
+        tagRECT clearRect;
+        clearRect.left = self->pnl_x;
+        clearRect.top = self->pnl_y;
+        clearRect.right = self->pnl_x + self->pnl_wid - 1;
+        clearRect.bottom = self->pnl_y + self->pnl_hgt - 1;
+        area->Clear(&clearRect, 0);
+        return;
+    }
+
+    GameViewTreeEntry entries[96];
+    short seen_sprite_ids[192];
+    int entry_count = 0;
+    int seen_count = 0;
+
+    int max_obj = world->numberObjectsValue;
+    if (world->maxNumberObjectsValue > 0 && max_obj > world->maxNumberObjectsValue) {
+        max_obj = world->maxNumberObjectsValue;
+    }
+
+    for (int i = 0; i < max_obj; ++i) {
+        RGE_Static_Object* obj = world->objectsValue[i];
+        if (obj == nullptr || obj->master_obj == nullptr || obj->object_state >= 7) {
+            continue;
+        }
+        if (gameview_is_tree_object(obj) == 0) {
+            continue;
+        }
+
+        RGE_Sprite* spr = obj->sprite;
+        if (spr == nullptr) {
+            spr = obj->master_obj->sprite;
+        }
+        if (spr == nullptr) {
+            continue;
+        }
+
+        int already_seen = 0;
+        for (int s = 0; s < seen_count; ++s) {
+            if (seen_sprite_ids[s] == spr->id) {
+                already_seen = 1;
+                break;
+            }
+        }
+        if (already_seen != 0) {
+            continue;
+        }
+
+        if (entry_count < (int)(sizeof(entries) / sizeof(entries[0])) &&
+            seen_count < (int)(sizeof(seen_sprite_ids) / sizeof(seen_sprite_ids[0]))) {
+            entries[entry_count].obj = obj;
+            entries[entry_count].sprite = spr;
+            seen_sprite_ids[seen_count] = spr->id;
+            entry_count++;
+            seen_count++;
+        }
+    }
+
+    tagRECT clearRect;
+    clearRect.left = self->pnl_x;
+    clearRect.top = self->pnl_y;
+    clearRect.right = self->pnl_x + self->pnl_wid - 1;
+    clearRect.bottom = self->pnl_y + self->pnl_hgt - 1;
+    area->Clear(&clearRect, 0);
+
+    if (entry_count == 0) {
+        CUSTOM_DEBUG_LOG("DEBUGTREEGRID: no tree sprites found in current world object list");
+        return;
+    }
+
+    static int tree_grid_log_once = 0;
+    if (tree_grid_log_once == 0) {
+        tree_grid_log_once = 1;
+        CUSTOM_DEBUG_LOG_FMT("DEBUGTREEGRID: drawing %d unique tree sprites", entry_count);
+        for (int i = 0; i < entry_count; ++i) {
+            RGE_Static_Object* obj = entries[i].obj;
+            RGE_Sprite* spr = entries[i].sprite;
+            CUSTOM_DEBUG_LOG_FMT(
+                "DEBUGTREEGRID[%d]: obj=%ld master=%d name=%s sprite=%d color_flag=%u color_table=%d draw_list=%d draw_level=%u facet=%u",
+                i,
+                obj ? obj->id : -1L,
+                (obj && obj->master_obj) ? (int)obj->master_obj->id : -1,
+                (obj && obj->master_obj && obj->master_obj->name) ? obj->master_obj->name : "(null)",
+                spr ? (int)spr->id : -1,
+                spr ? (unsigned int)spr->color_flag : 0U,
+                spr ? (int)spr->color_table : -1,
+                spr ? (int)spr->draw_list_num : 0,
+                spr ? (unsigned int)spr->draw_level : 0U,
+                obj ? (unsigned int)obj->facet : 0U);
+        }
+    }
+
+    const int cell_w = 200;
+    const int cell_h = 110;
+    int cols = self->pnl_wid / cell_w;
+    if (cols < 1) cols = 1;
+
+    for (int i = 0; i < entry_count; ++i) {
+        int col = i % cols;
+        int row = i / cols;
+
+        long x0 = self->pnl_x + col * cell_w;
+        long y0 = self->pnl_y + row * cell_h;
+        long x1 = x0 + cell_w - 2;
+        long y1 = y0 + cell_h - 2;
+
+        if (y0 > self->pnl_y + self->pnl_hgt - 1) {
+            break;
+        }
+        if (y1 > self->pnl_y + self->pnl_hgt - 1) {
+            y1 = self->pnl_y + self->pnl_hgt - 1;
+        }
+
+        area->FillRect(x0, y0, x1, y1, 8);
+
+        long split_x = x0 + cell_w / 2;
+        area->FillRect(x0 + 1, y0 + 1, split_x - 2, y1 - 1, 35);
+        area->FillRect(split_x + 1, y0 + 1, x1 - 1, y1 - 1, 60);
+        area->DrawVertLine(split_x, y0 + 2, cell_h - 6, 220);
+
+        long anchor_y = y0 + cell_h - 20;
+        long left_anchor_x = x0 + 44;
+        long right_anchor_x = split_x + 44;
+
+        RGE_Static_Object* obj = entries[i].obj;
+        RGE_Sprite* spr = entries[i].sprite;
+
+        int left_ok = gameview_draw_object_sprite(area, obj, left_anchor_x, anchor_y);
+        int right_ok = 0;
+        if (obj != nullptr && spr != nullptr) {
+            int facet = (int)obj->facet;
+            if (facet < 0) facet = 0;
+            right_ok = spr->draw((long)facet, 0, right_anchor_x, anchor_y, right_anchor_x, anchor_y, nullptr, area, 0) != 0;
+        }
+
+        if (left_ok == 0) {
+            area->DrawLine((int)left_anchor_x - 8, (int)anchor_y - 8, (int)left_anchor_x + 8, (int)anchor_y + 8, 250);
+            area->DrawLine((int)left_anchor_x - 8, (int)anchor_y + 8, (int)left_anchor_x + 8, (int)anchor_y - 8, 250);
+        }
+        if (right_ok == 0) {
+            area->DrawLine((int)right_anchor_x - 8, (int)anchor_y - 8, (int)right_anchor_x + 8, (int)anchor_y + 8, 250);
+            area->DrawLine((int)right_anchor_x - 8, (int)anchor_y + 8, (int)right_anchor_x + 8, (int)anchor_y - 8, 250);
+        }
+    }
 }
 
 void GameViewPanel::draw() {

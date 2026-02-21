@@ -187,16 +187,10 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
             if (setup && setup->error_code == 0) {
 CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("SP action: setCurrentPanel(new=%p)", setup);
+                CUSTOM_DEBUG_LOG_FMT("SP action: tribe_set_current_screen(new=%p)", setup);
 CUSTOM_DEBUG_END
-                panel_system->setCurrentPanel((TPanel*)setup, 0);
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG("SP action: destroying panel 'Single Player Menu'");
-CUSTOM_DEBUG_END
-                panel_system->destroyPanel("Single Player Menu");
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG("SP action: destroyPanel returned");
-CUSTOM_DEBUG_END
+                tribe_set_current_screen((TPanel*)setup);
+                return 1;
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -221,16 +215,10 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
             if (setup && setup->error_code == 0) {
 CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("SP action: setCurrentPanel(new=%p)", setup);
+                CUSTOM_DEBUG_LOG_FMT("SP action: tribe_set_current_screen(new=%p)", setup);
 CUSTOM_DEBUG_END
-                panel_system->setCurrentPanel((TPanel*)setup, 0);
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG("SP action: destroying panel 'Single Player Menu'");
-CUSTOM_DEBUG_END
-                panel_system->destroyPanel("Single Player Menu");
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG("SP action: destroyPanel returned");
-CUSTOM_DEBUG_END
+                tribe_set_current_screen((TPanel*)setup);
+                return 1;
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -248,8 +236,8 @@ CUSTOM_DEBUG_END
 
             TribeSelectScenarioScreen* scenario = new TribeSelectScenarioScreen();
             if (scenario && scenario->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)scenario, 0);
-                panel_system->destroyPanel("Single Player Menu");
+                tribe_set_current_screen((TPanel*)scenario);
+                return 1;
             } else {
                 if (scenario) delete scenario;
                 sp_enable_input();
@@ -262,8 +250,8 @@ CUSTOM_DEBUG_END
 
             TribeLoadSavedGameScreen* load_screen = new TribeLoadSavedGameScreen();
             if (load_screen && load_screen->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)load_screen, 0);
-                panel_system->destroyPanel("Single Player Menu");
+                tribe_set_current_screen((TPanel*)load_screen);
+                return 1;
             } else {
                 if (load_screen) delete load_screen;
                 sp_enable_input();
@@ -286,8 +274,8 @@ CUSTOM_DEBUG_END
 
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
             if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("Single Player Menu");
+                tribe_set_current_screen((TPanel*)menu);
+                return 1;
             } else {
                 if (menu) delete menu;
                 sp_enable_input();

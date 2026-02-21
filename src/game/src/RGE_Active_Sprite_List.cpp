@@ -68,15 +68,19 @@ void RGE_Active_Sprite::update(float param_1, float param_2) {
 }
 
 void RGE_Active_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::draw path.
+    // Source of truth: asprite.cpp.decomp @ 0x0041AE60
+    this->sprite->draw((long)param_1, 0, param_2 + this->offset_x, param_3 + this->offset_y,
+        param_4 + this->offset_x, param_5 + this->offset_y, param_6, param_7, 0);
 }
 
 void RGE_Active_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::normal_draw path.
+    // Source of truth: asprite.cpp.decomp @ 0x0041AEB0
+    this->sprite->normal_draw((long)param_1, 0, this->offset_x + param_2, this->offset_y + param_3, param_4, param_5);
 }
 
 void RGE_Active_Sprite::shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::shadow_draw path.
+    // Source of truth: asprite.cpp.decomp @ 0x0041AEF0
+    this->sprite->shadow_draw((long)param_1, 0, this->offset_x + param_2, this->offset_y + param_3, param_4, param_5, param_6);
 }
 
 short RGE_Active_Sprite::what_frame() {
@@ -104,13 +108,15 @@ uchar RGE_Active_Sprite::looped() {
 }
 
 short RGE_Active_Sprite::get_facetindex(short param_1) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::get_facetindex path.
-    return 0;
+    // Source of truth: asprite.cpp.decomp @ 0x0041AF80
+    long facet_index = 0;
+    this->sprite->get_facetindex((long)param_1, 0, &facet_index);
+    return (short)facet_index;
 }
 
 uchar RGE_Active_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::get_frame path.
-    return 0;
+    // Source of truth: asprite.cpp.decomp @ 0x0041AFB0
+    return (uchar)this->sprite->get_frame(param_1, param_2, param_3, param_4, param_5, 0);
 }
 
 void RGE_Active_Sprite::setToFirstFrame() {
@@ -264,15 +270,25 @@ void RGE_Active_Animated_Sprite::update(float param_1, float param_2) {
 }
 
 void RGE_Active_Animated_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::draw/play_sound path.
+    // Source of truth: asprite.cpp.decomp @ 0x0041B430
+    this->sprite->draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5, param_6, param_7, 0);
+    if (this->frame_changed != 0) {
+        this->frame_changed = 0;
+    }
 }
 
 void RGE_Active_Animated_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::normal_draw/play_sound path.
+    // Source of truth: asprite.cpp.decomp @ 0x0041B4A0
+    this->sprite->normal_draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5);
+    if (this->frame_changed != 0) {
+        this->sprite->play_sound(this->last_frame, this->frame, param_1);
+        this->frame_changed = 0;
+    }
 }
 
 void RGE_Active_Animated_Sprite::shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::shadow_draw path.
+    // Source of truth: asprite.cpp.decomp @ 0x0041B4F0
+    this->sprite->shadow_draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5, param_6);
 }
 
 short RGE_Active_Animated_Sprite::what_frame() {
@@ -311,13 +327,15 @@ uchar RGE_Active_Animated_Sprite::looped() {
 }
 
 short RGE_Active_Animated_Sprite::get_facetindex(short param_1) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::get_facetindex path.
-    return 0;
+    // Source of truth: asprite.cpp.decomp @ 0x0041B5A0
+    long facet_index = 0;
+    this->sprite->get_facetindex((long)param_1, (long)this->frame, &facet_index);
+    return (short)facet_index;
 }
 
 uchar RGE_Active_Animated_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5) {
-    // TODO: STUB - depends on untranslated RGE_Sprite::get_frame path.
-    return 0;
+    // Source of truth: asprite.cpp.decomp @ 0x0041B5D0
+    return (uchar)this->sprite->get_frame(param_1, param_2, param_3, param_4, param_5, (long)this->frame);
 }
 
 void RGE_Active_Animated_Sprite::setToFirstFrame() {

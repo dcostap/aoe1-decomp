@@ -3593,7 +3593,7 @@ void TRIBE_Effects::save(int p1) {
 
 void TRIBE_Effects::do_effect(short p1, RGE_Player* p2) {
     // Source of truth: teffects.cpp.decomp @ 0x0050D4D0
-    if ((int)p1 >= this->effect_num) return;
+    if ((int)p1 < 0 || (int)p1 >= this->effect_num || this->effects == nullptr) return;
     RGE_Effect* eff = &this->effects[p1];
     if (eff == nullptr) return;
     // TRIBE-specific: process tech-enable/disable effect commands before base do_effect.

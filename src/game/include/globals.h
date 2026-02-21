@@ -59,6 +59,7 @@ extern int world_update_counter;
 extern int ENABLE_COMPRESSION;
 extern int rge_write_error;
 extern int debug_random_on;
+extern int fog_next_shape;
 
 void run_log(char* param_1, int param_2);
 int rge_fake_open(int handle, int remaining_bytes);

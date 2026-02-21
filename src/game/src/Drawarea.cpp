@@ -12,8 +12,12 @@
 // EXTERNAL
 int system_ignore_size_messages = 0;
 
-extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3) {
-    // Stub
+extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4) {
+    (void)p1;
+    (void)p2;
+    (void)p3;
+    (void)p4;
+    // TODO: STUB - ASM shadowing setup path is not yet ported; no-op fallback.
 }
 
 static unsigned long scale_component_to_mask_ul(unsigned int c, unsigned long mask) {
@@ -121,12 +125,31 @@ static void drawarea_fill_run(uchar* dst, int count, int bytes_per_pixel, unsign
     }
 }
 
+static unsigned long drawarea_palette_checksum(const tagPALETTEENTRY* entries, int count) {
+    if (entries == nullptr || count <= 0) {
+        return 0;
+    }
+
+    unsigned long hash = 2166136261UL;
+    for (int i = 0; i < count; ++i) {
+        hash ^= (unsigned long)entries[i].peRed;
+        hash *= 16777619UL;
+        hash ^= (unsigned long)entries[i].peGreen;
+        hash *= 16777619UL;
+        hash ^= (unsigned long)entries[i].peBlue;
+        hash *= 16777619UL;
+        hash ^= (unsigned long)entries[i].peFlags;
+        hash *= 16777619UL;
+    }
+    return hash;
+}
+
 TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
     this->ColorBits = 8; // Default to 8-bit
     system_ignore_size_messages = 0;
-    _ASMSet_Shadowing(0, 0xFF00FF00, 0); 
-    _ASMSet_Shadowing(0x1111, 0xFF00FF, 0); 
+    _ASMSet_Shadowing(0, 0xFF00FF00, 0, 0); 
+    _ASMSet_Shadowing(0x1111, 0xFF00FF, 0, 0); 
 }
 
 // Source of truth: Drawarea.cpp.decomp @ 0x00442710
@@ -495,6 +518,7 @@ void TDrawSystem::SetPalette(void* pal) {
     color_table[0].peGreen = 0;
     color_table[0].peBlue = 0;
     color_table[0].peFlags = 0;
+
     this->ModifyPalette(0, 256, color_table);
 }
 

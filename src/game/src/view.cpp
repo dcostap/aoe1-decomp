@@ -14,8 +14,11 @@
 #include "TMessagePanel.h"
 #include "RGE_Tile_Set.h"
 #include "RGE_Border_Set.h"
+#include "globals.h"
 #include <cstdio>
 #include <cstdlib>
+
+extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4);
 
 // Global variables (from decomp)
 int view_debug_redraw_all = 0;
@@ -323,55 +326,10 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                 facet = 0;
             }
 
-            // Source of truth: sprite.cpp.decomp @ 0x004C0510 (RGE_Sprite::draw).
-            // Draw-list path takes precedence and remaps facet into child sprites.
-            if (spr != nullptr && spr->draw_list_num > 0 && spr->draw_list != nullptr) {
-                for (int di = 0; di < spr->draw_list_num; ++di) {
-                    RGE_Picture_List* dl = &spr->draw_list[di];
-                    int list_facet = (int)dl->facet;
-                    if (list_facet >= 0 && list_facet != facet) {
-                        continue;
-                    }
-
-                    RGE_Sprite* ds = dl->sprite;
-                    if (ds == nullptr && dl->picture_num == -1) {
-                        ds = spr;
-                    }
-                    if (ds == nullptr) {
-                        continue;
-                    }
-
-                    rge_view_try_load_sprite_shape(ds);
-                    if (ds->shape == nullptr || ds->shape->shape_count() <= 0) {
-                        continue;
-                    }
-
-                    int df = 0;
-                    if (spr->facet_num > 0 && ds->facet_num > 0) {
-                        df = (ds->facet_num * facet) / spr->facet_num;
-                    }
-                    if (df < 0 || df >= ds->shape->shape_count()) {
-                        df = 0;
-                    }
-
-                    ds->shape->shape_draw(
-                        this->cur_render_area,
-                        sx + (int)dl->offset_x,
-                        sy + (int)dl->offset_y,
-                        df,
-                        0,
-                        0,
-                        nullptr);
-                    drawn = 1;
-                }
-            }
-
-            if (drawn == 0 && spr != nullptr && spr->shape != nullptr && spr->shape->shape_count() > 0) {
-                int draw_facet = facet;
-                if (draw_facet < 0 || draw_facet >= spr->shape->shape_count()) {
-                    draw_facet = 0;
-                }
-                spr->shape->shape_draw(this->cur_render_area, sx, sy, draw_facet, 0, 0, nullptr);
+            // Source of truth: sprite.cpp.decomp @ 0x004C04F0 (RGE_Sprite::draw).
+            // Route through sprite draw so draw-list remapping, color xform, and xlate-table behavior match runtime.
+            if (spr != nullptr) {
+                spr->draw((long)facet, 0, sx, sy, sx, sy, nullptr, this->cur_render_area, 0);
                 drawn = 1;
             }
 
@@ -521,8 +479,59 @@ int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, 
 
 void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar vis, uchar fog, int param_7, int param_8)
 {
-    if (this->cur_render_area == nullptr) return;
-    shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0, nullptr);
+    // Source of truth: view.cpp.decomp @ 0x00538B80
+    if (this->cur_render_area == nullptr || shape == nullptr) {
+        return;
+    }
+
+    int hotspot_x = 0;
+    int hotspot_y = 0;
+    if (shape->shape_info != nullptr && frame >= 0 && frame < shape->shape_count()) {
+        hotspot_x = shape->shape_info[frame].Hotspot_X;
+        hotspot_y = shape->shape_info[frame].Hotspot_Y;
+    }
+
+    if ((fog & 0x10) == 0x10) {
+        fog_next_shape = 1;
+        _ASMSet_Shadowing(0x00FF00FF, 0x28002800, (int)0xFF00FF00u, 0x00280028);
+        shape->shape_draw(this->cur_render_area, x - hotspot_x, y - hotspot_y, frame, 0, 0, nullptr);
+        _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
+        fog_next_shape = 0;
+        return;
+    }
+
+    if ((fog & 0x20) == 0x20) {
+        _ASMSet_Shadowing(0x00FF00FF, 0x56005600, (int)0xFF00FF00u, 0x00560056);
+    }
+
+    if ((fog & 0x80) == 0x80) {
+        int shade = ((int)(fog & 0x0F) * 0x10001000) + 0x04000400;
+        _ASMSet_Shadowing(0x00FF00FF, shade, (int)0xFF00FF00u, shade);
+    }
+
+    if (this->map != nullptr && this->map->fog_flag != 0 && vis == 0x80) {
+        fog_next_shape = 1;
+    }
+
+    if (param_8 != 0) {
+        this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
+        fog_next_shape = 1;
+        shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0, nullptr);
+        fog_next_shape = 0;
+    }
+
+    if ((fog & 0xA0) != 0) {
+        fog_next_shape = 1;
+    }
+
+    if (param_7 != 0) {
+        this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
+        shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0, nullptr);
+    }
+
+    this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
+    _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
+    fog_next_shape = 0;
 }
 
 short RGE_View::get_tile_picture(uchar terrain_type, uchar vis, short col, short row)

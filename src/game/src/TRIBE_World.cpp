@@ -523,11 +523,13 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
 
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
     T_Scenario* tScenario = (T_Scenario*)this->scenario;
+    CUSTOM_DEBUG_LOG("TRIBE_World::new_game checkpoint before reset timers");
 
     // Reset countdown timers for all players.
     for (int i = 0; i < this->player_num; i++) {
         rge_base_game->reset_countdown_timer(i);
     }
+    CUSTOM_DEBUG_LOG("TRIBE_World::new_game checkpoint after reset timers");
 
     if (result != 0) {
         this->victory_type = 4;
@@ -541,6 +543,10 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
             (game != nullptr && game->victoryType() != 0)) {
             int victoryAmount = (game != nullptr) ? game->victoryAmount() : 0;
             int vt = (game != nullptr) ? game->victoryType() : 0;
+            CUSTOM_DEBUG_LOG_FMT(
+                "TRIBE_World::new_game victory setup: vt=%d victoryAmount=%d",
+                vt,
+                victoryAmount);
             if (tScenario != nullptr) {
                 tScenario->Set_victory_all_flag(0);
                 tScenario->Set_Multi_Conquest(0);
@@ -613,11 +619,14 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
                 tScenario->Save_victory_conditions_into_players(0);
                 CUSTOM_DEBUG_LOG("TRIBE_World::new_game after Save_victory_conditions_into_players");
             }
+            CUSTOM_DEBUG_LOG("TRIBE_World::new_game checkpoint after-save step1");
 
             if (vt == 8 && this->player_num > 1) {
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game applying score victory points");
                 for (int i = 1; i < this->player_num; ++i) {
                     tribe_world_add_victory_points_simple(this, i, victoryAmount);
                 }
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game score victory points applied");
             }
         } else {
             if ((rge_base_game->campaignGame() != 0 || rge_base_game->scenarioGame() != 0) && tScenario != nullptr) {
@@ -641,11 +650,18 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
         }
 
         RGE_RMM_Object_Generator* objGen = nullptr;
+        CUSTOM_DEBUG_LOG("TRIBE_World::new_game creating RGE_RMM_Object_Generator");
         if (this->map != nullptr) {
             objGen = new RGE_RMM_Object_Generator(this->map, (RGE_Random_Map_Module*)nullptr, this, (RGE_Object_Info*)nullptr, 0);
         }
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_World::new_game object generator ptr=%p", objGen);
 
         if (objGen != nullptr && tScenario != nullptr) {
+            CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator setup begin");
+            int debug_skip_obj_gen = 0;
+            if (rge_base_game != nullptr) {
+                debug_skip_obj_gen = rge_base_game->check_prog_argument((char*)"DEBUGSKIPOBJGEN");
+            }
             int targetArtifacts = tScenario->Get_Multi_Artifacts();
             if (targetArtifacts > 0) {
                 int existingArtifacts = tribe_count_object_type(this, 0x9f, -1);
@@ -685,13 +701,22 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
                 this->ruin_count = tribe_count_object_type(this, 0x9e, 0xa3);
             }
 
-            objGen->generate();
+            if (debug_skip_obj_gen != 0) {
+                // TODO: STUB: Temporary debug gate to isolate map-start crash near object generation.
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate SKIPPED (DEBUGSKIPOBJGEN)");
+            } else {
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate begin");
+                objGen->generate();
+                CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate done");
+            }
             delete objGen;
             objGen = nullptr;
+            CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator deleted");
         }
     }
 
     if (game != nullptr) {
+        CUSTOM_DEBUG_LOG("TRIBE_World::new_game entering post-new-game game-option passes");
         if (game->allowTrading() == 0) {
             tribe_world_apply_effect(this, (short)-8);
         }
@@ -761,6 +786,7 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
         }
 
         int start_age = game->startingAge();
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_World::new_game start_age=%d", start_age);
         if (start_age == 3) {
             for (int i = 1; i < this->player_num; ++i) {
                 TRIBE_Player* player = (TRIBE_Player*)this->players[i];
@@ -843,6 +869,7 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
         }
     }
 
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::new_game exit result=%d", (int)result);
     return result;
 }
 uchar TRIBE_World::new_scenario(RGE_Player_Info* param_1, int param_2) {

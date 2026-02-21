@@ -135,6 +135,15 @@ CUSTOM_DEBUG_END
         this->shadow_area = nullptr;
     }
     if (this->shadow_color_table) {
+        if (this->render_area && this->render_area->shadow_color_table == this->shadow_color_table) {
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT(
+                "TEasy_Panel dtor: clearing render_area stale shadow table area=%p table=%p",
+                this->render_area,
+                this->shadow_color_table);
+CUSTOM_DEBUG_END
+            this->render_area->SetShadowTable(nullptr);
+        }
 CUSTOM_DEBUG_BEGIN
         CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting shadow_color_table=%p", this->shadow_color_table);
 CUSTOM_DEBUG_END
@@ -733,6 +742,15 @@ void TEasy_Panel::set_shadow_amount(long amount_percent) {
     }
 
     if (this->shadow_color_table) {
+        if (this->render_area && this->render_area->shadow_color_table == this->shadow_color_table) {
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT(
+                "TEasy_Panel::set_shadow_amount: clearing previous render_area shadow table area=%p table=%p",
+                this->render_area,
+                this->shadow_color_table);
+CUSTOM_DEBUG_END
+            this->render_area->SetShadowTable(nullptr);
+        }
         delete this->shadow_color_table;
         this->shadow_color_table = 0;
     }

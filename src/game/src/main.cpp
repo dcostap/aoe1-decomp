@@ -29,6 +29,40 @@ CUSTOM_DEBUG_BEGIN
                              (unsigned long)ep->ContextRecord->Eip,
                              (unsigned long)ep->ContextRecord->Esp,
                              (unsigned long)ep->ContextRecord->Ebp);
+
+        HMODULE exe_mod = GetModuleHandleA(NULL);
+        if (exe_mod != NULL) {
+            unsigned long image_base = (unsigned long)(uintptr_t)exe_mod;
+            IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER*)exe_mod;
+            if (dos->e_magic == IMAGE_DOS_SIGNATURE) {
+                IMAGE_NT_HEADERS* nt = (IMAGE_NT_HEADERS*)((char*)exe_mod + dos->e_lfanew);
+                if (nt->Signature == IMAGE_NT_SIGNATURE) {
+                    unsigned long image_size = (unsigned long)nt->OptionalHeader.SizeOfImage;
+                    unsigned long eip = (unsigned long)ep->ContextRecord->Eip;
+                    int inside = (eip >= image_base && eip < (image_base + image_size)) ? 1 : 0;
+                    CUSTOM_DEBUG_LOG_FMT(
+                        "UNHANDLED_EXCEPTION module: base=0x%08lX size=0x%08lX eip_rva=0x%08lX inside=%d",
+                        image_base,
+                        image_size,
+                        eip - image_base,
+                        inside);
+                }
+            }
+        }
+
+        MEMORY_BASIC_INFORMATION mbi;
+        memset(&mbi, 0, sizeof(mbi));
+        SIZE_T vq = VirtualQuery((LPCVOID)(uintptr_t)ep->ContextRecord->Eip, &mbi, sizeof(mbi));
+        if (vq == sizeof(mbi)) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "UNHANDLED_EXCEPTION vquery: base=%p alloc=%p size=0x%08lX state=0x%08lX protect=0x%08lX type=0x%08lX",
+                mbi.BaseAddress,
+                mbi.AllocationBase,
+                (unsigned long)mbi.RegionSize,
+                (unsigned long)mbi.State,
+                (unsigned long)mbi.Protect,
+                (unsigned long)mbi.Type);
+        }
     }
 CUSTOM_DEBUG_END
     return EXCEPTION_EXECUTE_HANDLER;

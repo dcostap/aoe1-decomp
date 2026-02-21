@@ -197,6 +197,16 @@ public:
     int inHandleIdle;
 };
 static_assert(sizeof(TRIBE_Game) == 0x1254, "Size mismatch");
+static_assert(offsetof(TRIBE_Game, testing_scenario) == 0xAE8, "Offset mismatch: testing_scenario");
+static_assert(offsetof(TRIBE_Game, video_window) == 0xBEC, "Offset mismatch: video_window");
+static_assert(offsetof(TRIBE_Game, cur_video) == 0xBF0, "Offset mismatch: cur_video");
+static_assert(offsetof(TRIBE_Game, started_menu_music) == 0xC1C, "Offset mismatch: started_menu_music");
+static_assert(offsetof(TRIBE_Game, startup_scenario) == 0xC58, "Offset mismatch: startup_scenario");
+static_assert(offsetof(TRIBE_Game, startup_game) == 0xD5C, "Offset mismatch: startup_game");
+static_assert(offsetof(TRIBE_Game, auto_exit_time) == 0xE60, "Offset mismatch: auto_exit_time");
+static_assert(offsetof(TRIBE_Game, save_game_name) == 0xE64, "Offset mismatch: save_game_name");
+static_assert(offsetof(TRIBE_Game, load_game_name) == 0xF68, "Offset mismatch: load_game_name");
+static_assert(offsetof(TRIBE_Game, inHandleIdle) == 0x1250, "Offset mismatch: inHandleIdle");
 
 // Non-original helper API used by the current simplified panel manager.
 // TODO(accuracy): replace these with `TPanelSystem::setCurrentPanel/destroyPanel` when that path is fully reimplemented.
