@@ -3,9 +3,14 @@
 
 class RGE_Object_List {
 public:
+    RGE_Object_List();
+
     // Virtuals (best-effort)
     virtual void load(uchar param_1, int param_2, RGE_Game_World* param_3); // vt[0] (0x0)
     void update();
+    RGE_Object_Node* add_node(RGE_Static_Object* param_1);
+    void remove_node(RGE_Static_Object* param_1, RGE_Object_Node* param_2);
+    RGE_Static_Object* find_by_id(long param_1);
 
     RGE_Object_Node* list;
     short number_of_objects;

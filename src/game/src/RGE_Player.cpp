@@ -12,9 +12,11 @@
 #include "../include/Visible_Resource_Manager.h"
 #include "../include/TMousePointer.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <new>
 
 static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int dopple) {
     if (self == nullptr) {
@@ -50,13 +52,10 @@ static RGE_Object_List* rge_player_ensure_list(RGE_Player* self, int sleeping, i
         return list;
     }
 
-    // Keep this POD-style until full RGE_Object_List constructor/vtable implementation is landed.
-    list = (RGE_Object_List*)calloc(1, sizeof(RGE_Object_List));
+    list = new (std::nothrow) RGE_Object_List();
     if (list == nullptr) {
         return nullptr;
     }
-    list->list = nullptr;
-    list->number_of_objects = 0;
     rge_player_set_list(self, sleeping, dopple, list);
     return list;
 }
@@ -615,6 +614,7 @@ void RGE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) 
 }
 void RGE_Player::update() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00470120
+    CUSTOM_DEBUG_LOG_FMT("RGE_Player::update this=%p id=%d objects=%p dopple=%p", this, (int)this->id, this->objects, this->doppleganger_objects);
     if (MouseSystem != nullptr) {
         MouseSystem->Poll();
     }

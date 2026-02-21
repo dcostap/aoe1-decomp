@@ -3,6 +3,9 @@
 
 class RGE_Active_Sprite {
 public:
+    RGE_Active_Sprite(RGE_Sprite* param_1);
+    RGE_Active_Sprite(int param_1, RGE_Sprite** param_2);
+
     // Virtuals (best-effort)
     virtual ~RGE_Active_Sprite(); // vt[0] (0x0)
     virtual void set_offset(long param_1, long param_2); // vt[1] (0x4)
@@ -19,6 +22,8 @@ public:
     virtual short get_facetindex(short param_1); // vt[12] (0x30)
     virtual uchar get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5); // vt[13] (0x34)
     virtual void setToFirstFrame(); // vt[14] (0x38)
+
+    int check_for_shadows();
 
     RGE_Sprite* sprite;
     unsigned char type;

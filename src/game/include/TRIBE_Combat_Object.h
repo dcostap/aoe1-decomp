@@ -134,6 +134,8 @@ public:
     virtual void work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5); // vt[126] (0x1F8)
     virtual void set_task(short param_1); // vt[127] (0x1FC)
 
+    void do_repair(RGE_Static_Object* param_1);
+
     unsigned char own_master;
 };
 static_assert(sizeof(TRIBE_Combat_Object) == 0x1C8, "Size mismatch");

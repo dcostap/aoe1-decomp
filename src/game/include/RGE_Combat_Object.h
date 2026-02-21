@@ -2,8 +2,13 @@
 #include "common.h"
 #include "RGE_Action_Object.h"
 
+struct VISIBLE_UNIT_REC;
+
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
+    RGE_Combat_Object();
+    RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int param_3);
+
     // Virtuals (best-effort)
     virtual ~RGE_Combat_Object(); // vt[0] (0x0)
     virtual void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[1] (0x4)

@@ -38,6 +38,7 @@ public:
     void load_border_types(char* filename, RGE_Sound** sounds); // Text file path
     void new_map(long width, long height);
     RGE_Tile* get_tile(int col, int row);
+    void get_point(short* param_1, short* param_2, float param_3, float param_4, float param_5, short param_6, short param_7);
     void set_map_screen_pos(int col0, int row0, int col1, int row1);
     void clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain, long w, long h);
     void clear_map(uchar terrain, uchar height);

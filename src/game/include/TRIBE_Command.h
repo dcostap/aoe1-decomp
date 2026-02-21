@@ -4,6 +4,9 @@
 
 class TRIBE_Command_Give_Attribute;
 class TRIBE_Command_Trade_Attribute;
+struct TRIBE_Command_Repair;
+struct TRIBE_Command_Queue;
+struct TRIBE_Command_Unload;
 class RGE_Static_Object;
 
 class TRIBE_Command : public RGE_Command {
@@ -17,9 +20,16 @@ public:
     using RGE_Command::command_give_attribute; // vt[3] stays bound to RGE_Command::command_give_attribute
     virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* param_1); // vt[4] (0x10)
     virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4, float param_5); // vt[5] (0x14)
+    void do_command_tribe_create(RGE_Command_Create* param_1);
+    void do_command_unload(TRIBE_Command_Unload* param_1);
+    void do_command_repair(TRIBE_Command_Repair* param_1);
+    void do_command_queue(TRIBE_Command_Queue* param_1);
     void do_command_trade_attribute(TRIBE_Command_Trade_Attribute* param_1);
     void command_trade_attribute(RGE_Static_Object** param_1, short param_2, long param_3);
     void command_trade_attribute(int param_1, int param_2, long param_3);
+    void command_repair(RGE_Static_Object** param_1, short param_2, RGE_Static_Object* param_3);
+    void command_unload(RGE_Static_Object** param_1, short param_2, float param_3, float param_4);
+    void command_queue(RGE_Static_Object* param_1, short param_2, short param_3);
 
 };
 static_assert(sizeof(TRIBE_Command) == 0x18, "Size mismatch");

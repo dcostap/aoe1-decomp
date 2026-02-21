@@ -87,6 +87,9 @@ public:
     void tech_abling(long param_1, uchar param_2);
     void rev_tech(long param_1);
     void add_population_entry();
+    uchar check_obj_cost(short param_1, short* param_2, float param_3, int param_4);
+    uchar pay_obj_cost(short param_1, float param_2, int param_3);
+    void reimburse_obj_cost(short param_1);
 
     TRIBE_Player_Tech* tech_tree;
     long fog_update;

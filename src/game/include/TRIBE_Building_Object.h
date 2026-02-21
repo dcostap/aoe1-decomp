@@ -2,6 +2,8 @@
 #include "common.h"
 #include "TRIBE_Combat_Object.h"
 
+struct Production_Queue_Record;
+
 class TRIBE_Building_Object : public TRIBE_Combat_Object {
 public:
     // Virtuals (best-effort)
@@ -133,6 +135,10 @@ public:
     virtual int setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[125] (0x1F4)
     virtual void work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5); // vt[126] (0x1F8)
     virtual void set_task(short param_1); // vt[127] (0x1FC)
+
+    unsigned char build(float param_1);
+    void add_to_production_queue(short param_1, short param_2);
+    void remove_from_production_queue(short param_1, short param_2);
 
     Production_Queue_Record* production_queue;
     short production_queue_size;

@@ -1524,6 +1524,35 @@ RGE_Static_Object* RGE_Game_World::object_ptr(int param_1) {
     return this->object(param_1);
 }
 
+uchar RGE_Game_World::recycle_object_out_of_game(uchar param_1, RGE_Static_Object* param_2) {
+    // Source of truth: world.cpp.decomp @ 0x00546070
+    switch (param_1) {
+    case 0x0A:
+        this->reusable_static_objects->add_node(param_2);
+        return 1;
+    case 0x14:
+        this->reusable_animated_objects->add_node(param_2);
+        return 1;
+    case 0x19:
+        this->reusable_doppleganger_objects->add_node(param_2);
+        return 1;
+    case 0x1E:
+        this->reusable_moving_objects->add_node(param_2);
+        return 1;
+    case 0x28:
+        this->reusable_action_objects->add_node(param_2);
+        return 1;
+    case 0x32:
+        this->reusable_combat_objects->add_node(param_2);
+        return 1;
+    case 0x3C:
+        this->reusable_missile_objects->add_node(param_2);
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
     (void)param_1;
     // TODO: implement

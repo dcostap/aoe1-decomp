@@ -12,6 +12,14 @@ public:
     virtual void copy_obj(RGE_Master_Action_Object* param_1); // vt[5] (0x14)
     virtual void copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3); // vt[6] (0x18)
 
+    void remove_action();
+    void delete_list();
+    int action_stop();
+    int action_work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    RGE_Action* get_action();
+    RGE_Task* get_task();
+    void load(int fd);
+
     RGE_Action_Object* obj;
     RGE_Action_Node* list;
 };

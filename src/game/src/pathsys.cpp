@@ -116,3 +116,31 @@ void PathingSystem::zeroObstructionMap() {
     // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B5C0
     memset(this->obstructionValue, 0, sizeof(this->obstructionValue));
 }
+
+// Lookup tables for 2-bit packed obstruction cells (4 cells per byte).
+// ObstructionValueShift[i] = bit offset for cell (i & 3) within a byte.
+// ObstructionValueMask[i]  = mask to clear cell (i & 3) within a byte.
+static const unsigned char ObstructionValueShift[4] = { 0x00, 0x02, 0x04, 0x06 };
+static const unsigned char ObstructionValueMask[4]  = { 0xFC, 0xF3, 0xCF, 0x3F };
+
+void PathingSystem::incrementObstruction(int param_1, int param_2) {
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B620
+    unsigned char cell = this->obstructionValue[param_1][param_2 >> 2];
+    unsigned char shift = ObstructionValueShift[param_2 & 3];
+    unsigned char val = (cell >> shift) & 3;
+    if (val < 3) {
+        this->obstructionValue[param_1][param_2 >> 2] =
+            (ObstructionValueMask[param_2 & 3] & cell) | ((val + 1) << shift);
+    }
+}
+
+void PathingSystem::decrementObstruction(int param_1, int param_2) {
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B680
+    unsigned char cell = this->obstructionValue[param_1][param_2 >> 2];
+    unsigned char shift = ObstructionValueShift[param_2 & 3];
+    unsigned char val = (cell >> shift) & 3;
+    if (val != 0) {
+        this->obstructionValue[param_1][param_2 >> 2] =
+            (ObstructionValueMask[param_2 & 3] & cell) | ((val - 1) << shift);
+    }
+}

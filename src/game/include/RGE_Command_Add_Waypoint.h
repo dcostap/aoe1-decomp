@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "XYZBYTEPoint.h"
 
 struct RGE_Command_Add_Waypoint {
     uchar command;

@@ -317,6 +317,102 @@ void TRIBE_Player::add_population_entry() {
         this->history->add_history_entry(0, (uchar)((long)population));
     }
 }
+uchar TRIBE_Player::check_obj_cost(short param_1, short* param_2, float param_3, int param_4) {
+    // Source of truth: tplayer.cpp.decomp @ 0x00513AF0
+    float reserve_resource = this->attributes[3];
+    if (param_2 != nullptr) {
+        *param_2 = -1;
+    }
+
+    bool can_use_reserve = 1.0f <= this->attributes[0x1D];
+    if (!can_use_reserve) {
+        reserve_resource = 0.0f;
+    }
+
+    TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_objects[param_1];
+    if (master == nullptr || master->master_type < 'F') {
+        if (param_2 != nullptr) {
+            *param_2 = -1;
+        }
+        return 0;
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        int attr_type = (int)master->build_inventory[i].type;
+        if (attr_type >= 0) {
+            float needed = (float)(int)master->build_inventory[i].amount * param_3;
+
+            if (((attr_type == 4) && (param_4 == 0)) && (this->attributes[0x20] <= this->attributes[0x0B])) {
+                if (param_2 == nullptr) {
+                    return 0;
+                }
+                *param_2 = 0x20;
+                return 0;
+            }
+
+            if (can_use_reserve && attr_type == 3) {
+                reserve_resource = reserve_resource - needed;
+                if (reserve_resource < 0.0f) {
+                    if (param_2 == nullptr) {
+                        return 0;
+                    }
+                    *param_2 = 3;
+                    return 0;
+                }
+            }
+
+            if ((this->attributes[attr_type] < needed) && ((attr_type != 4) || (param_4 == 0))) {
+                if ((master->build_inventory[i].flag == 0) || (reserve_resource + this->attributes[attr_type] < needed)) {
+                    if (param_2 == nullptr) {
+                        return 0;
+                    }
+                    *param_2 = master->build_inventory[i].type;
+                    return 0;
+                }
+                reserve_resource = reserve_resource - (needed - this->attributes[attr_type]);
+            }
+        }
+    }
+
+    return 1;
+}
+uchar TRIBE_Player::pay_obj_cost(short param_1, float param_2, int param_3) {
+    // Source of truth: tplayer.cpp.decomp @ 0x00513C50
+    if (this->check_obj_cost(param_1, nullptr, param_2, param_3) != 0) {
+        TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_objects[param_1];
+        Attribute_Cost* cost = &master->build_inventory[0];
+
+        for (int i = 0; i < 3; ++i) {
+            int attr_type = (int)cost[i].type;
+            if (((attr_type >= 0) && (cost[i].flag != 0)) && ((param_3 == 0) || (attr_type != 4))) {
+                float needed = (float)(int)cost[i].amount * param_2;
+                if (needed <= this->attributes[attr_type]) {
+                    this->attributes[attr_type] = this->attributes[attr_type] - needed;
+                }
+                else {
+                    this->attributes[3] = this->attributes[3] - (needed - this->attributes[attr_type]);
+                    this->attributes[attr_type] = 0.0f;
+                }
+            }
+        }
+        return 1;
+    }
+
+    return 0;
+}
+void TRIBE_Player::reimburse_obj_cost(short param_1) {
+    // Source of truth: tplayer.cpp.decomp @ 0x00513D00
+    TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_objects[param_1];
+    if (master->master_type >= 'F') {
+        Attribute_Cost* cost = &master->build_inventory[0];
+        for (int i = 0; i < 3; ++i) {
+            if ((cost[i].type >= 0) && (cost[i].flag != 0)) {
+                float* attr = &this->attributes[cost[i].type];
+                *attr = (float)(int)cost[i].amount + *attr;
+            }
+        }
+    }
+}
 void TRIBE_Player::update() {
     // Source of truth: tplayer.cpp.decomp @ 0x005123B0
     // Accumulate update_time based on world_time_delta_seconds

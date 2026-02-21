@@ -4,6 +4,9 @@
 
 class RGE_Static_Object {
 public:
+    RGE_Static_Object();
+    RGE_Static_Object(int param_1, RGE_Game_World* param_2, int param_3);
+
     // Virtuals (best-effort)
     virtual ~RGE_Static_Object(); // vt[0] (0x0)
     virtual void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[1] (0x4)
@@ -57,7 +60,7 @@ public:
     virtual void release_being_worked_on(); // vt[49] (0xC4)
     virtual uchar is_moving(); // vt[50] (0xC8)
     virtual RGE_Static_Object* get_target_obj(); // vt[51] (0xCC)
-    virtual void enter_obj(); // vt[52] (0xD0)
+    virtual void enter_obj(RGE_Static_Object* param_1); // vt[52] (0xD0)
     virtual void exit_obj(); // vt[53] (0xD4)
     virtual int explore_terrain(RGE_Player* param_1, uchar param_2, int param_3); // vt[54] (0xD8)
     virtual void unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3); // vt[55] (0xDC)
@@ -127,6 +130,27 @@ public:
     virtual int setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[119] (0x1DC)
     virtual RGE_Object_List* create_object_list(); // vt[120] (0x1E0)
     virtual RGE_Active_Sprite_List* create_sprite_list(); // vt[121] (0x1E4)
+
+    int unitIsInGroup(int param_1);
+    int createGroup(int* param_1, int param_2, int param_3, float param_4);
+    int commanderCreateGroup(int* param_1, int param_2, int param_3, float param_4);
+    int addToGroup(int param_1, float param_2);
+    int commanderAddToGroup(int param_1, float param_2);
+    int removeFromGroup(int param_1);
+    int commanderRemoveFromGroup(int param_1);
+    int destroyGroup();
+    int commanderDestroyGroup();
+    void addToPathingGroup(int param_1);
+    void removeAllFromPathingGroup();
+    void remove_shadows();
+    uchar more_room();
+    int addToObstructionMap(int param_1);
+    int removeFromObstructionMap(int param_1);
+    RGE_Static_Object* get_object_pointer(long param_1);
+    RGE_Sprite* get_sprite_pointer(short param_1);
+    void get_starting_attribute();
+    void give_attribute_to_owner();
+    void take_attribute_from_owner();
 
     long id;
     RGE_Master_Static_Object* master_obj;

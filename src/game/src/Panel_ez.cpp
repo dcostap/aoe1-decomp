@@ -93,32 +93,65 @@ TEasy_Panel::TEasy_Panel(char* name) : TPanel(name) {
 TEasy_Panel::~TEasy_Panel() {
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: begin panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
+    CUSTOM_DEBUG_LOG_FMT(
+        "TEasy_Panel dtor state: bg1=%p bg2=%p btn_pics=%p shadow_area=%p shadow_ct=%p palette=%p brush=%p stock_brush=%d",
+        this->background_pic,
+        this->background_pic2,
+        this->button_pics,
+        this->shadow_area,
+        this->shadow_color_table,
+        this->palette,
+        this->brush,
+        this->stock_brush);
 CUSTOM_DEBUG_END
 
     // Best-effort match for `prepare_for_close` behavior; keep minimal for now.
     if (this->background_pic) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting background_pic=%p", this->background_pic);
+CUSTOM_DEBUG_END
         delete this->background_pic;
         this->background_pic = nullptr;
     }
     if (this->background_pic2) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting background_pic2=%p", this->background_pic2);
+CUSTOM_DEBUG_END
         delete this->background_pic2;
         this->background_pic2 = nullptr;
     }
     if (this->button_pics) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting button_pics=%p", this->button_pics);
+CUSTOM_DEBUG_END
         delete this->button_pics;
         this->button_pics = nullptr;
     }
     if (this->shadow_area) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting shadow_area=%p", this->shadow_area);
+CUSTOM_DEBUG_END
         delete this->shadow_area;
         this->shadow_area = nullptr;
     }
     if (this->shadow_color_table) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting shadow_color_table=%p", this->shadow_color_table);
+CUSTOM_DEBUG_END
         delete this->shadow_color_table;
         this->shadow_color_table = nullptr;
     }
     if (this->palette && panel_system) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: releasing palette=%p via panel_system=%p", this->palette, panel_system);
+CUSTOM_DEBUG_END
         panel_system->release_palette(this->palette);
         this->palette = nullptr;
+    }
+    if (this->brush) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: brush still set (not freed here) brush=%p stock=%d", this->brush, this->stock_brush);
+CUSTOM_DEBUG_END
     }
 
 CUSTOM_DEBUG_BEGIN

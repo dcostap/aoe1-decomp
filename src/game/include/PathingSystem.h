@@ -13,6 +13,8 @@ public:
     int initialize(int param_1, int param_2, RGE_Map* param_3, RGE_Game_World* param_4);
     void initMisc(uchar param_1);
     void zeroObstructionMap();
+    void incrementObstruction(int param_1, int param_2);
+    void decrementObstruction(int param_1, int param_2);
 
     int xSizeValue;
     int ySizeValue;

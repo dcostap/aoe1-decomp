@@ -53,10 +53,12 @@ extern int numberPathingIterations;
 extern int useComputerPlayers;
 extern int show_timing_max;
 extern float save_game_version;
+extern unsigned long* unified_map_offsets[256];
 extern unsigned char die_die_die;
 extern int world_update_counter;
 extern int ENABLE_COMPRESSION;
 extern int rge_write_error;
+extern int debug_random_on;
 
 void run_log(char* param_1, int param_2);
 int rge_fake_open(int handle, int remaining_bytes);

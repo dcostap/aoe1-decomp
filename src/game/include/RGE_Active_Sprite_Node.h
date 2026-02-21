@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+class RGE_Active_Sprite;
+
 struct RGE_Active_Sprite_Node {
     RGE_Active_Sprite* node;
     uchar order;

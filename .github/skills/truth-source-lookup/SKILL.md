@@ -5,6 +5,15 @@ description: Shared lookup workflow for finding and mapping symbols across origi
 
 Use this skill when you need to find authoritative truth for a function/class/struct/global, especially when input may be vague, partial, or descriptive.
 
+Repository structure optimization (decomp project specific):
+- Truth lives primarily in paired module dumps under `src/game/decomp`:
+  - `<module>.cpp.decomp`
+  - `<module>.cpp.asm`
+- When module is known, search only that pair first.
+- Use `Offset: 0x...` anchors in decomp files to land directly on function slices.
+- Use asm around the same offset for signedness, copy size, and branch opcode validation.
+- Pull `src/game/include/*.h` only when call signatures, field offsets, or layout checks are required.
+
 Primary sources (in order):
 1. `src/game/decomp/*.asm`
 2. `src/game/decomp/*.decomp`
@@ -16,6 +25,10 @@ Workflow:
 1. Normalize the request
 - Accept single symbol, multiple symbols, or descriptive query.
 - Produce candidate names/aliases (class-qualified names, decorated/undecorated variants, nearby naming patterns).
+
+1b. Choose lookup mode
+- Module-known mode: shard to one module pair (`<module>.cpp.decomp` + `<module>.cpp.asm`).
+- Module-unknown mode: do narrow discovery to identify candidate modules first, then switch to module-known mode.
 
 2. Locate candidate definitions/references
 - Search asm/decomp for exact and fuzzy matches.
@@ -37,6 +50,17 @@ Workflow:
   - why the excerpt is relevant to parity
 - Prefer exhibit-style outputs over large dumps.
 
+6. Emit packet-friendly evidence keys
+- For each target function, include stable keys:
+  - `target.function`
+  - `target.module`
+  - `truth.decomp.offset`
+  - `truth.decomp.excerpt`
+  - `truth.asm.offset_or_range`
+  - `truth.asm.excerpt`
+  - `truth.header.path_and_excerpt` (if needed)
+  - `notes.assumptions`
+
 Suggested output style (not strict):
 - Request interpreted
 - Best-match candidates
@@ -51,3 +75,4 @@ Quality bar:
 - Prefer precise, high-signal evidence over large noisy dumps.
 - Include enough context to enable immediate decompilation/audit work.
 - Be scope-disciplined: avoid broad exploration unless explicitly requested.
+- Do not dump full decomp functions when a compact offset-anchored excerpt is sufficient.

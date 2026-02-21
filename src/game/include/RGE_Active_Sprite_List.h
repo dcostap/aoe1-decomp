@@ -3,6 +3,8 @@
 
 class RGE_Active_Sprite_List {
 public:
+    RGE_Active_Sprite_List(RGE_Static_Object* param_1);
+
     // Virtuals (best-effort)
     virtual ~RGE_Active_Sprite_List(); // vt[0] (0x0)
     virtual short frame(RGE_Sprite* param_1); // vt[1] (0x4)
@@ -16,6 +18,12 @@ public:
     virtual uchar looped(RGE_Sprite* param_1); // vt[9] (0x24)
     virtual short get_facetindex(RGE_Sprite* param_1, short param_2); // vt[10] (0x28)
     virtual uchar load_node(int param_1, uchar param_2, RGE_Sprite** param_3); // vt[11] (0x2C)
+
+    void load(int param_1, RGE_Sprite** param_2);
+    void save(int param_1);
+    void delete_list();
+    void add_sprite(RGE_Sprite* param_1, uchar param_2, long param_3, long param_4);
+    void remove_sprite(RGE_Sprite* param_1);
 
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;

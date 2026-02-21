@@ -4,6 +4,9 @@
 
 class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
 public:
+    RGE_Active_Animated_Sprite(RGE_Sprite* param_1);
+    RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2);
+
     // Virtuals (best-effort)
     virtual ~RGE_Active_Animated_Sprite(); // vt[0] (0x0)
     virtual void set_offset(long param_1, long param_2); // vt[1] (0x4)

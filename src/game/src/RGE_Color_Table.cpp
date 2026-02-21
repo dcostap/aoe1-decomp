@@ -76,7 +76,12 @@ static void RGE_translate_palette(tagPALETTEENTRY* in_pal, tagPALETTEENTRY* out_
 }
 
 RGE_Color_Table::RGE_Color_Table() {
-    memset(this, 0, sizeof(*this));
+    memset(this->color_table_name, 0, sizeof(this->color_table_name));
+    this->resource_id = 0;
+    this->type = 0;
+    this->map_color = 0;
+    this->id = 0;
+    memset(this->table, 0, sizeof(this->table));
 }
 
 RGE_Color_Table::RGE_Color_Table(int fd) {
@@ -103,7 +108,12 @@ RGE_Color_Table::RGE_Color_Table(int fd) {
 
 RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount_percent, tagPALETTEENTRY* base_color_or_null, tagPALETTEENTRY* palette_or_null) {
     // Source of truth: `color.cpp.decomp` ctor at 0x004245F0.
-    memset(this, 0, sizeof(*this));
+    memset(this->color_table_name, 0, sizeof(this->color_table_name));
+    this->resource_id = 0;
+    this->type = 0;
+    this->map_color = 0;
+    this->id = 0;
+    memset(this->table, 0, sizeof(this->table));
 
     // Store the percent in `id` so `TDrawArea::DrawShadowBox` can shade 16/32bpp surfaces.
     // NOTE: Non-original, but contained to the runtime-generated "shadow" tables.
@@ -125,11 +135,6 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount_percent, tagPALETT
     tagPALETTEENTRY base;
     if (base_color_or_null) base = *base_color_or_null;
     else { base.peRed = 0; base.peGreen = 0; base.peBlue = 0; base.peFlags = 0; }
-
-    this->resource_id = 0;
-    this->map_color = 0;
-    this->type = 0;
-    memset(this->table, 0, sizeof(this->table));
 
     RGE_translate_palette(palette, temp_palette, base, amount_percent, -1, -1);
 

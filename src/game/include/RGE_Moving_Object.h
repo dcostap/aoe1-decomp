@@ -7,6 +7,12 @@
 
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
+    RGE_Moving_Object();
+    RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int param_3);
+
+    void setGoal(float x, float y, float z);
+    void set_angle();
+
     // Virtuals (best-effort)
     virtual ~RGE_Moving_Object(); // vt[0] (0x0)
     virtual void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[1] (0x4)

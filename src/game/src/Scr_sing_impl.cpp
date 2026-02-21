@@ -144,11 +144,20 @@ CUSTOM_DEBUG_END
 TribeSPMenuScreen::~TribeSPMenuScreen() {
     // Source of truth: scr_sing.cpp.decomp @ 0x004B6C00
     // Delete all child panels before base destructor runs
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("SP dtor: begin this=%p title=%p close=%p", this, this->title, this->close_button);
+CUSTOM_DEBUG_END
     this->delete_panel((TPanel**)&this->title);
     for (int i = 0; i < 7; ++i) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("SP dtor: deleting button[%d]=%p", i, this->button[i]);
+CUSTOM_DEBUG_END
         this->delete_panel((TPanel**)&this->button[i]);
     }
     this->delete_panel((TPanel**)&this->close_button);
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("SP dtor: end");
+CUSTOM_DEBUG_END
 }
 
 long TribeSPMenuScreen::handle_idle() {
@@ -162,6 +171,9 @@ long TribeSPMenuScreen::handle_idle() {
 long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1 && (param_2 == 1)) {
         if ((TButtonPanel*)param_1 == this->button[0]) {
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("SP action: random map button pressed this=%p panel_system=%p", this, panel_system);
+CUSTOM_DEBUG_END
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
@@ -170,9 +182,21 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("SP action: random map setup created ptr=%p err=%d", setup, setup ? setup->error_code : -1);
+CUSTOM_DEBUG_END
             if (setup && setup->error_code == 0) {
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG_FMT("SP action: setCurrentPanel(new=%p)", setup);
+CUSTOM_DEBUG_END
                 panel_system->setCurrentPanel((TPanel*)setup, 0);
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG("SP action: destroying panel 'Single Player Menu'");
+CUSTOM_DEBUG_END
                 panel_system->destroyPanel("Single Player Menu");
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG("SP action: destroyPanel returned");
+CUSTOM_DEBUG_END
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -181,6 +205,9 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
         }
 
         if ((TButtonPanel*)param_1 == this->button[2]) {
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("SP action: deathmatch button pressed this=%p panel_system=%p", this, panel_system);
+CUSTOM_DEBUG_END
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
@@ -189,9 +216,21 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("SP action: deathmatch setup created ptr=%p err=%d", setup, setup ? setup->error_code : -1);
+CUSTOM_DEBUG_END
             if (setup && setup->error_code == 0) {
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG_FMT("SP action: setCurrentPanel(new=%p)", setup);
+CUSTOM_DEBUG_END
                 panel_system->setCurrentPanel((TPanel*)setup, 0);
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG("SP action: destroying panel 'Single Player Menu'");
+CUSTOM_DEBUG_END
                 panel_system->destroyPanel("Single Player Menu");
+CUSTOM_DEBUG_BEGIN
+                CUSTOM_DEBUG_LOG("SP action: destroyPanel returned");
+CUSTOM_DEBUG_END
             } else {
                 if (setup) delete setup;
                 sp_enable_input();

@@ -4,6 +4,7 @@
 class RGE_Sound;
 class RGE_Color_Table;
 class TShape;
+class RGE_Active_Sprite;
 
 struct RGE_Picture_List {
     short picture_num; // 0x0
@@ -66,5 +67,7 @@ public:
     // Methods
     void rehook(RGE_Sprite** sprites);
     void load_facets(RGE_Sprite** sprites);
+    RGE_Active_Sprite* make_active_sprite();
+    int check_for_shadows();
 };
 static_assert(sizeof(RGE_Sprite) == 0x78, "Size mismatch: RGE_Sprite");

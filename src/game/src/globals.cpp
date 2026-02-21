@@ -28,6 +28,7 @@ int run_log_created = 0;
 FILE* run_log_file = nullptr;
 HINSTANCE StringTableX = nullptr;
 int disable_terrain_sounds = 0;
+int debug_random_on = 0;
 int out_of_sync = 0;
 int out_of_sync2 = 0;
 int player_dropped[9] = {0};
@@ -57,6 +58,7 @@ int show_timing_max = 0;
 float save_game_version = 7.23f;
 unsigned char die_die_die = 0;
 int world_update_counter = 0;
+unsigned long* unified_map_offsets[256] = {0};
 int ENABLE_COMPRESSION = 1;
 int rge_write_error = 0;
 

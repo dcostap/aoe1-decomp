@@ -2104,6 +2104,17 @@ void RGE_Map::set_map_visible(uchar flag) {
 void RGE_Map::set_map_fog(uchar flag) {
     this->fog_flag = flag;
 }
+void RGE_Map::get_point(short* param_1, short* param_2, float param_3, float param_4, float param_5, short param_6, short param_7) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x0045A6D0
+    int half_width = (int)this->tile_half_width;
+    int half_height = (int)this->tile_half_height;
+
+    int x = (int)((param_4 + param_3) * (float)half_width) + (int)param_6;
+    int y = (int)((param_4 - 1.0f - param_3 - param_5) * (float)half_height) - 0x10 + (int)param_7;
+
+    *param_1 = (short)x;
+    *param_2 = (short)y;
+}
 void RGE_Map::request_redraw(int col0, int row0, int col1, int row1, uchar attr) {
     int x0 = col0;
     int y0 = row0;

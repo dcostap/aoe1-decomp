@@ -3,6 +3,14 @@
 #include "Waypoint.h"
 
 struct Path {
+    Path();
+    Path(int capacity);
+    ~Path();
+
+    int insertAtEnd(Waypoint wp);
+    void initToStart();
+    int moveToNextWaypoint();
+
     ulong timeStampValue;
     Waypoint startValue;
     Waypoint goalValue;

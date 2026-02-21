@@ -1,9 +1,13 @@
 #include "../include/RGE_Sprite.h"
 #include "../include/RGE_Sound.h"
 #include "../include/RGE_Color_Table.h"
+#include "../include/RGE_Active_Sprite.h"
+#include "../include/RGE_Active_Animated_Sprite.h"
 #include "../include/TShape.h"
 #include "../include/globals.h"
+#include "../include/debug_helpers.h"
 #include <malloc.h>
+#include <new>
 #include <string.h>
 #include <stdio.h>
 
@@ -116,4 +120,42 @@ void RGE_Sprite::load_facets(RGE_Sprite** sprites) {
     // For now, shape loading is deferred to first draw as in decomp do_draw
     this->shape = nullptr;
     this->loaded = 1;
+}
+
+RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
+    // Source of truth: sprite.cpp.decomp @ 0x004C0F90
+    if ((this->flag & 1) == 0) {
+        RGE_Active_Sprite* active = (RGE_Active_Sprite*)::operator new(sizeof(RGE_Active_Sprite), std::nothrow);
+        if (active != nullptr) {
+            return new(active) RGE_Active_Sprite(this);
+        }
+        return nullptr;
+    }
+
+    RGE_Active_Animated_Sprite* animated = (RGE_Active_Animated_Sprite*)::operator new(sizeof(RGE_Active_Animated_Sprite), std::nothrow);
+    if (animated != nullptr) {
+        return (RGE_Active_Sprite*)(new(animated) RGE_Active_Animated_Sprite(this));
+    }
+    return nullptr;
+}
+
+int RGE_Sprite::check_for_shadows() {
+    // Source of truth: sprite.cpp.decomp @ 0x004C1030
+    short draw_count = this->draw_list_num;
+    if (draw_count < 1 || this->draw_list == nullptr) {
+        if (this->draw_level != 0) {
+            return 0;
+        }
+    } else {
+        int index = 0;
+        RGE_Sprite** sprite_ptr = &this->draw_list->sprite;
+        while ((*sprite_ptr)->draw_level != 0) {
+            index = index + 1;
+            sprite_ptr = sprite_ptr + 4;
+            if (draw_count <= index) {
+                return 0;
+            }
+        }
+    }
+    return 1;
 }

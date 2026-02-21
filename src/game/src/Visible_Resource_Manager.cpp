@@ -98,3 +98,36 @@ void Visible_Resource_Manager::AddResource(int param_1, int param_2) {
     rec->pos_y = (uchar)obj->world_y;
     this->VR_ListUsed[param_2] = this->VR_ListUsed[param_2] + 1;
 }
+
+int Visible_Resource_Manager::Remove_Resource(int param_1, int param_2) {
+    // Source of truth: vis_unit.cpp.decomp @ 0x0053BFD0
+    if (this->num_visible_resource_lists != 0) {
+        if (this->VR_ListUsed[param_2] != 0) {
+            int last_index = this->VR_ListUsed[param_2] - 1;
+            VISIBLE_RESOURCE_REC* records = this->VR_List[param_2];
+            int index = 0;
+            VISIBLE_RESOURCE_REC* current = records;
+            if (last_index >= 0) {
+                do {
+                    if (current->object_id == param_1) {
+                        if (index < last_index) {
+                            records[index].object_id = records[last_index].object_id;
+                            VISIBLE_RESOURCE_REC* tail = records + last_index;
+                            records[index].distance = tail->distance;
+                            records[index].zone = tail->zone;
+                            records[index].pos_x = tail->pos_x;
+                            records[index].pos_y = tail->pos_y;
+                        }
+                        this->VR_ListUsed[param_2] = this->VR_ListUsed[param_2] - 1;
+                        return 1;
+                    }
+                    index = index + 1;
+                    current = current + 1;
+                } while (index <= last_index);
+                return 0;
+            }
+        }
+    }
+
+    return 0;
+}
