@@ -11,6 +11,7 @@ struct RGE_SPick_Info;
 struct DClipInfo_List;
 struct Ov_Sprite_Draw_Rec;
 class TMessagePanel;
+class Shape_Info;
 
 class RGE_View : public TPanel {
 public:
@@ -36,6 +37,9 @@ public:
     void set_selection_area(long param_1, long param_2, long param_3, long param_4);
     unsigned char pick(unsigned char param_1, unsigned char param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
     unsigned char pick_multi(unsigned char param_1, long param_2, long param_3, long param_4, long param_5);
+    int pick_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7);
+    int pick_multi_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, unsigned char param_8, int param_9);
+    int sprite_check(unsigned char* param_1, Shape_Info* param_2, int param_3, int param_4);
 
     // Non-virtual helpers used by minimap (truth: view.cpp.decomp).
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
