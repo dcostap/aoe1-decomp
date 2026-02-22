@@ -108,6 +108,8 @@ void save_get_string_or_default(TPanel* panel, int id, char* out_text, int out_l
 }
 
 int save_show_message_id(TribeSaveGameScreen* owner, int string_id, const char* fallback) {
+    // TODO(parity): replace MessageBox fallback with TEasy_Panel popup dialog flow
+    // once popup panel APIs are fully reimplemented.
     char text[512];
     save_get_string_or_default((TPanel*)owner, string_id, text, sizeof(text), fallback);
     HWND wnd = (rge_base_game != nullptr && rge_base_game->prog_window != nullptr) ? (HWND)rge_base_game->prog_window : nullptr;
@@ -115,6 +117,8 @@ int save_show_message_id(TribeSaveGameScreen* owner, int string_id, const char* 
 }
 
 int save_confirm_text(TribeSaveGameScreen* owner, const char* text) {
+    // TODO(parity): replace MessageBox fallback with TEasy_Panel yes/no popup flow
+    // once popup panel APIs are fully reimplemented.
     HWND wnd = (rge_base_game != nullptr && rge_base_game->prog_window != nullptr) ? (HWND)rge_base_game->prog_window : nullptr;
     return MessageBoxA(wnd, text, "Age of Empires", MB_ICONQUESTION | MB_YESNO) == IDYES;
 }
@@ -493,6 +497,8 @@ void TribeSaveGameScreen::save_for_scenario_editor() {
         }
         panel_system->destroyPanel((char*)kScenarioEditorScreenName);
     } else if (this->quit_after_save == 2) {
+        // TODO(parity): original path constructs/activates TRIBE_Screen_Sed_Open directly.
+        // Current codebase lacks that runtime construction path, so we route by panel name.
         panel_system->setCurrentPanel((char*)kScenarioEditorOpenName, 0);
     } else if (this->quit_after_save == 3) {
         panel_system->setCurrentPanel((char*)kScenarioEditorScreenName, 0);
