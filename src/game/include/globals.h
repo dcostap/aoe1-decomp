@@ -58,6 +58,7 @@ extern unsigned char die_die_die;
 extern int world_update_counter;
 extern int ENABLE_COMPRESSION;
 extern int rge_write_error;
+extern int Map_Update_Suppresion;
 extern int debug_random_on;
 extern int fog_next_shape;
 

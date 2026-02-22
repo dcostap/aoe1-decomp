@@ -5,6 +5,8 @@
 
 struct RGE_Campaign {
     int open_scenario(long param_1);
+    char* get_name();
+    long scenario_number();
 
     RGE_Campaign_Header campaign_header;
     RGE_Scenario_Offset* scenario_offsets;

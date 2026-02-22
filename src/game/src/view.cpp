@@ -8,6 +8,7 @@
 #include "RGE_Visible_Map.h"
 #include "RGE_Static_Object.h"
 #include "RGE_Master_Static_Object.h"
+#include "RGE_Pick_Info.h"
 #include "RGE_Object_List.h"
 #include "RGE_Object_Node.h"
 #include "RGE_Sprite.h"
@@ -34,6 +35,9 @@ int frame_count = 0;
 int View_Grid_Mode = 0;
 extern TMousePointer* MouseSystem;
 extern RGE_Base_Game* rge_base_game;
+
+static const float kView_Scroll_Factor = 0.0625f; // Source of truth: view.cpp.asm uses DAT_005776c4.
+static const float kView_Pick_Offset = 0.5f;      // Source of truth: view.cpp.asm uses DAT_005776c0 (=-0.5), i.e. +0.5 bias.
 
 static int rge_view_get_border_edge_pictures(
     RGE_View* self,
@@ -308,13 +312,502 @@ void RGE_View::set_focus(int param_1) {
     }
 }
 
-int RGE_View::pick_through_fog(RGE_Static_Object* param_1) { (void)param_1; return 0; } // TODO: STUB
-int RGE_View::pick_weight(RGE_Static_Object* param_1, int param_2) { (void)param_1; (void)param_2; return 0; } // TODO: STUB
-int RGE_View::start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; } // TODO: STUB
-int RGE_View::handle_scroll_view(long param_1, long param_2) { (void)param_1; (void)param_2; return 0; } // TODO: STUB
-void RGE_View::end_scroll_view() {} // TODO: STUB
-int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; } // TODO: STUB
-void RGE_View::draw_multi_object_outline() {} // TODO: STUB
+void RGE_View::set_selection_area(long param_1, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534530.
+    if ((this->map != nullptr) && (rge_base_game->game_mode != 0x15)) {
+        this->map->request_redraw((int)this->sel_col1, (int)this->sel_row1, (int)this->sel_col2, (int)this->sel_row2, '\0');
+    }
+
+    this->sel_col1 = param_1;
+    this->sel_row1 = param_2;
+    this->sel_col2 = param_3;
+    this->sel_row2 = param_4;
+
+    if ((this->map != nullptr) && (rge_base_game->game_mode != 0x15)) {
+        this->map->request_redraw((int)param_1, (int)param_2, (int)param_3, (int)param_4, '\x10');
+    }
+
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+}
+
+uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6) {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x005359E0.
+    // NOTE: The original calls view_function(); this repo does not yet have that pipeline transliterated.
+    // This is the minimal tile-pick behavior needed by scroll/paint interactions.
+    (void)param_2;
+    (void)param_6;
+
+    if (param_5 != nullptr) {
+        param_5->x = 0.0f;
+        param_5->y = 0.0f;
+        param_5->scr_x = 0;
+        param_5->scr_y = 0;
+        param_5->object = nullptr;
+        param_5->tile = nullptr;
+    }
+
+    if (this->map == nullptr || param_5 == nullptr) {
+        return '\0';
+    }
+    if (param_1 != '(') {
+        return '\0';
+    }
+    if (this->tile_half_wid == 0 || this->tile_half_hgt == 0) {
+        return '\0';
+    }
+
+    // Approximate inverse of the isometric projection used by RGE_Map::coordinate_map()/tile screen coords.
+    float sx = (float)(param_3 + this->map_scr_x_offset);
+    float sy = (float)(param_4 + this->map_scr_y_offset);
+    float a = sx / (float)this->tile_half_wid;
+    float b = sy / (float)this->tile_half_hgt;
+
+    float col = (a - b) * 0.5f;
+    float row = (a + b) * 0.5f;
+
+    param_5->x = col;
+    param_5->y = row;
+    param_5->scr_x = (short)param_3;
+    param_5->scr_y = (short)param_4;
+
+    int icol = (int)col;
+    int irow = (int)row;
+    if (icol < 0 || irow < 0 || icol >= (int)this->map->map_width || irow >= (int)this->map->map_height) {
+        return '\0';
+    }
+
+    param_5->tile = this->map->get_tile(icol, irow);
+    return (param_5->tile != nullptr) ? '3' : '\0';
+}
+
+uchar RGE_View::pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5) {
+    // TODO: STUB - the original uses prior_objs/futur_objs capture lists (DClipInfo_List) to select objects.
+    // Keep this function for control-flow parity in end_scroll_view while the capture pipeline is not present.
+    (void)param_1;
+    if (this->player != nullptr) {
+        this->player->select_area(param_2, param_3, param_4, param_5);
+    }
+    return '\0';
+}
+
+int RGE_View::pick_through_fog(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535CB0.
+    (void)param_1;
+    return 0;
+}
+
+int RGE_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535CC0.
+    bool bVar1;
+    RGE_Static_Object* pRVar2;
+
+    pRVar2 = param_1;
+    uchar select_level = (uchar)param_1->master_obj->select_level;
+
+    if ((this->UC_ObjectTouched == 0) || (this->UC_TouchedObj != pRVar2->id)) {
+        bVar1 = false;
+    } else {
+        bVar1 = true;
+    }
+
+    if (select_level == 2) {
+        if (bVar1) {
+            return 5;
+        }
+        if ((param_2 != 1) && (param_2 != 2)) {
+            if (param_2 != 3) {
+                return 0;
+            }
+            return 2;
+        }
+    } else {
+        if (select_level != 3) {
+            if (select_level != 4) {
+                return 1;
+            }
+            if (!bVar1) {
+                if ((param_2 != 1) && (param_2 != 2)) {
+                    return (param_2 == 3) + 2;
+                }
+                return 4;
+            }
+            return 5;
+        }
+        if (bVar1) {
+            return 5;
+        }
+        if (param_2 != 1) {
+            if (param_2 != 2) {
+                return 0;
+            }
+            return 3;
+        }
+    }
+    return 3;
+}
+
+int RGE_View::start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A0D0.
+    RGE_Pick_Info pick_info;
+
+    if (param_1 == '\x03') {
+        uchar uVar2 = this->pick('(', '\0', param_2, param_3, &pick_info, nullptr);
+        if (uVar2 != '3') {
+            return 0;
+        }
+
+        long col = (long)pick_info.x;
+        long row = (long)pick_info.y;
+        this->set_selection_area(col, row, col, row);
+    } else if (param_1 == '\t') {
+        this->pick('(', '\0', param_2, param_3, &pick_info, nullptr);
+        this->real_old_map_col = (long)pick_info.x;
+        this->real_old_map_row = (long)pick_info.y;
+
+        if (this->do_paint(param_2, param_3, param_2, param_3, 1) == 0) {
+            return 0;
+        }
+
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
+    this->scroll_action = param_1;
+    this->mouse_last_x = param_2;
+    this->mouse_last_y = param_3;
+
+    this->capture_mouse();
+
+    uchar action = this->scroll_action;
+    if (action == '\x01' || action == '\x02' || action == '\x06' || action == '\a' || action == '\b') {
+        rge_base_game->mouse_off();
+    }
+
+    if (this->scroll_action == '\x02') {
+        if ((param_5 == 0) && (param_4 == 0)) {
+            this->player->unselect_object();
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
+    if ((this->scroll_action == '\x06') || (this->scroll_action == '\b')) {
+        uchar uVar2 = this->pick('(', '\0', param_2, param_3, &pick_info, nullptr);
+        if (uVar2 == '3') {
+            this->player->set_view_loc(pick_info.x + kView_Pick_Offset, pick_info.y + kView_Pick_Offset);
+            this->set_redraw(TPanel::RedrawMode::Redraw);
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+int RGE_View::handle_scroll_view(long param_1, long param_2) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A290.
+    tagPOINT point;
+    RGE_Pick_Info pick_info;
+    long save_mouse_last_x;
+
+    point.x = this->mouse_last_x;
+    if ((param_1 == point.x) && (param_2 == this->mouse_last_y)) {
+        return 0;
+    }
+
+    if (this->player == nullptr) {
+        return 0;
+    }
+
+    float start_view_x = this->player->view_x;
+    float start_view_y = this->player->view_y;
+
+    uchar action = this->scroll_action;
+    switch (action) {
+    case '\x02':
+        this->mouse_last_x = param_1;
+        this->mouse_last_y = param_2;
+        this->bound_point(&this->mouse_last_x, &this->mouse_last_y);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return 0;
+
+    case '\x06': {
+        if (this->is_inside(param_1, param_2) != 0) {
+            uchar uVar8 = this->pick('(', '\0', param_1, param_2, &pick_info, nullptr);
+            if (uVar8 == '3') {
+                this->player->set_view_loc(pick_info.x + kView_Pick_Offset, pick_info.y + kView_Pick_Offset);
+            }
+        }
+
+        this->mouse_last_x = param_1;
+        this->mouse_last_y = param_2;
+
+        if ((start_view_x == this->player->view_x) && (start_view_y == this->player->view_y)) {
+            return 0;
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return 1;
+    }
+
+    case '\a': {
+        int iVar10 = (int)(param_2 - this->mouse_last_y);
+        if (((param_2 != this->mouse_last_y) && (iVar10 < 100)) && (-100 < iVar10)) {
+            short sVar9 = (short)((long)((float)iVar10 * kView_Scroll_Factor));
+            this->player->map_y = (short)(this->player->map_y + sVar9);
+            this->player->map_x = (short)(this->player->map_x - sVar9);
+        }
+
+        iVar10 = (int)(param_1 - this->mouse_last_x);
+        if (((param_1 != this->mouse_last_x) && (iVar10 < 100)) && (-100 < iVar10)) {
+            short sVar9 = (short)((long)((float)iVar10 * kView_Scroll_Factor));
+            this->player->map_y = (short)(this->player->map_y + sVar9);
+            this->player->map_x = (short)(this->player->map_x + sVar9);
+        }
+
+        if ((std::abs((int)(param_2 - this->mouse_down_y)) < 9) && (std::abs((int)(param_1 - this->mouse_down_x)) < 9)) {
+            this->mouse_last_x = param_1;
+            this->mouse_last_y = param_2;
+            this->set_redraw(TPanel::RedrawMode::Redraw);
+            return 1;
+        }
+
+        point.x = this->mouse_down_x;
+        point.y = this->mouse_down_y;
+        if (this->render_area && this->render_area->Wnd) {
+            ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+            SetCursorPos(point.x, point.y);
+        }
+
+        this->mouse_last_x = this->mouse_down_x;
+        this->mouse_last_y = this->mouse_down_y;
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return 1;
+    }
+
+    case '\b': {
+        int iVar10 = (int)(param_2 - this->mouse_last_y);
+        if (((param_2 != this->mouse_last_y) && (iVar10 < 100)) && (-100 < iVar10)) {
+            int step = (int)((long)((float)iVar10 * kView_Scroll_Factor));
+            this->player->set_view_loc(this->player->view_x - (float)step, this->player->view_y + (float)step);
+        }
+
+        iVar10 = (int)(param_1 - this->mouse_last_x);
+        if (((param_1 != this->mouse_last_x) && (iVar10 < 100)) && (-100 < iVar10)) {
+            int step = (int)((long)((float)iVar10 * kView_Scroll_Factor));
+            this->player->set_view_loc(this->player->view_x + (float)step, this->player->view_y + (float)step);
+        }
+
+        if ((std::abs((int)(param_2 - this->mouse_down_y)) < 9) && (std::abs((int)(param_1 - this->mouse_down_x)) < 9)) {
+            this->mouse_last_x = param_1;
+            this->mouse_last_y = param_2;
+        } else {
+            point.x = this->mouse_down_x;
+            point.y = this->mouse_down_y;
+            if (this->render_area && this->render_area->Wnd) {
+                ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+                SetCursorPos(point.x, point.y);
+            }
+            this->mouse_last_x = this->mouse_down_x;
+            this->mouse_last_y = this->mouse_down_y;
+        }
+
+        if ((start_view_x == this->player->view_x) && (start_view_y == this->player->view_y)) {
+            return 0;
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return 1;
+    }
+    }
+
+    // Default: edge-scrolling while dragging (also handles selection and paint interactions).
+    int bVar7;
+    if ((action == '\x03') || (action == '\x04') || (action == '\t')) {
+        if (((param_1 < this->clip_rect.left + 0x40) && (param_1 < point.x)) ||
+            ((this->clip_rect.right - 0x40 < param_1) && (point.x < param_1)) ||
+            ((param_2 < this->clip_rect.top + 0x20) && (param_2 < this->mouse_last_y)) ||
+            ((this->clip_rect.bottom - 0x20 < param_2) && (this->mouse_last_y < param_2))) {
+            bVar7 = 1;
+        } else {
+            bVar7 = 0;
+        }
+    } else {
+        bVar7 = 1;
+    }
+
+    int iVar10 = (int)(param_2 - this->mouse_last_y);
+    if (((iVar10 != 0) && (iVar10 < 200)) && ((-200 < iVar10 && (bVar7 != 0)))) {
+        this->player->set_view_loc(
+            this->player->view_x - (float)iVar10 * kView_Scroll_Factor,
+            this->player->view_y + (float)iVar10 * kView_Scroll_Factor);
+    }
+
+    iVar10 = (int)(param_1 - this->mouse_last_x);
+    if (((iVar10 != 0) && (iVar10 < 200)) && ((-200 < iVar10 && (bVar7 != 0)))) {
+        this->player->set_view_loc(
+            this->player->view_x + (float)iVar10 * kView_Scroll_Factor,
+            this->player->view_y + (float)iVar10 * kView_Scroll_Factor);
+    }
+
+    point.x = this->mouse_last_x;
+    long old_mouse_last_y = this->mouse_last_y;
+    this->mouse_last_x = param_1;
+    this->mouse_last_y = param_2;
+
+    if (bVar7 != 0) {
+        if ((8 < std::abs((int)(param_2 - this->mouse_down_y))) || (8 < std::abs((int)(param_1 - this->mouse_down_x)))) {
+            point.x = this->mouse_down_x;
+            point.y = this->mouse_down_y;
+            if (this->render_area && this->render_area->Wnd) {
+                ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+                SetCursorPos(point.x, point.y);
+            }
+            this->mouse_last_x = this->mouse_down_x;
+            this->mouse_last_y = this->mouse_down_y;
+        }
+    } else {
+        this->mouse_down_x = param_1;
+        this->mouse_down_y = param_2;
+    }
+
+    action = this->scroll_action;
+    if (action == '\x03') {
+        uchar uVar8 = this->pick('(', '\0', param_1, param_2, &pick_info, nullptr);
+        if ((uVar8 == '3') && (this->player != nullptr)) {
+            long col2 = (long)pick_info.x;
+            long row2 = (long)pick_info.y;
+            this->set_selection_area(this->sel_col1, this->sel_row1, col2, row2);
+        }
+    } else if (action == '\x04') {
+        if ((this->player->selected_obj != nullptr) &&
+            (this->pick('(', '\0', param_1, param_2, &pick_info, nullptr) == '3')) {
+            this->player->selected_obj->teleport(pick_info.x, pick_info.y, 0.0f);
+
+            RGE_Static_Object* pRVar6 = this->player->selected_obj;
+            uchar uVar8;
+            if (pRVar6->sprite_list == nullptr) {
+                if (pRVar6->sprite == nullptr) {
+                    uVar8 = '\x14';
+                } else {
+                    uVar8 = pRVar6->sprite->get_lowest_draw_level();
+                }
+            } else {
+                uVar8 = pRVar6->sprite_list->get_lowest_draw_level();
+            }
+
+            if (uVar8 == '\0') {
+                this->set_redraw(TPanel::RedrawMode::RedrawFull);
+            } else {
+                this->set_redraw(TPanel::RedrawMode::Redraw);
+            }
+        }
+    } else if (action == '\t') {
+        this->do_paint(point.x, old_mouse_last_y, param_1, param_2, 2);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
+    if ((start_view_x == this->player->view_x) && (start_view_y == this->player->view_y)) {
+        return 0;
+    }
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    return 1;
+}
+
+void RGE_View::end_scroll_view() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A9C0.
+    tagPOINT point;
+
+    switch (this->scroll_action) {
+    case '\x01':
+    case '\x06':
+    case '\a':
+    case '\b':
+        point.x = (LONG)this->mouse_down_x;
+        point.y = (LONG)this->mouse_down_y;
+        if (this->render_area && this->render_area->Wnd) {
+            ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+            SetCursorPos(point.x, point.y);
+        }
+        break;
+
+    case '\x02': {
+        long x0 = this->mouse_down_x;
+        long x1 = this->mouse_last_x;
+        long min_x = x0;
+        long max_x = x1;
+        if (x1 < x0) {
+            min_x = x1;
+            max_x = x0;
+        }
+
+        long y0 = this->mouse_down_y;
+        long y1 = this->mouse_last_y;
+        long min_y = y0;
+        long max_y = y1;
+        if (y1 < y0) {
+            min_y = y1;
+            max_y = y0;
+        }
+
+        this->pick_multi('\x04', min_x, min_y, max_x, max_y);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        break;
+    }
+
+    case '\t':
+        this->do_paint(this->mouse_down_x, this->mouse_down_y, this->mouse_last_x, this->mouse_last_y, 0);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        break;
+    }
+
+    uchar uVar1 = this->scroll_action;
+    if (uVar1 == '\x01' || uVar1 == '\x02' || uVar1 == '\x06' || uVar1 == '\a' || uVar1 == '\b') {
+        rge_base_game->mouse_on();
+    }
+
+    this->release_mouse();
+    this->scroll_action = '\0';
+}
+
+int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, int param_5) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053AAF0.
+    RGE_Pick_Info pick_info;
+
+    uchar uVar2 = this->pick('(', '\0', param_3, param_4, &pick_info, nullptr);
+    if (uVar2 != '3') {
+        return 0;
+    }
+
+    long lVar3 = (long)pick_info.x; // col
+    long lVar4 = (long)pick_info.y; // row
+
+    this->pick('(', '\0', param_1, param_2, &pick_info, nullptr);
+
+    int iVar1 = rge_base_game->game_mode;
+    if (iVar1 == 9) {
+        if ((param_5 != 0) && (rge_base_game->terrain_id != -1)) {
+            this->map->do_terrain_brush_stroke(
+                this->real_old_map_col, this->real_old_map_row, lVar3, lVar4,
+                (long)rge_base_game->brush_size, (uchar)rge_base_game->terrain_id);
+        }
+    } else if (iVar1 == 10) {
+        if ((param_5 != 0) && (rge_base_game->elevation_height != -1)) {
+            this->map->do_elevation_brush_stroke(
+                this->real_old_map_col, this->real_old_map_row, lVar3, lVar4,
+                (long)rge_base_game->brush_size, (uchar)rge_base_game->elevation_height);
+        }
+    } else if (iVar1 == 0x13) {
+        this->map->do_cliff_brush_stroke(
+            this->real_old_map_col, this->real_old_map_row, lVar3, lVar4,
+            0, (uchar)(rge_base_game->sub_game_mode == 1));
+        this->set_redraw(TPanel::RedrawMode::RedrawFull);
+    }
+
+    this->real_old_map_row = lVar4;
+    this->real_old_map_col = lVar3;
+    return 1;
+}
+
+void RGE_View::draw_multi_object_outline() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538410.
+    return;
+}
 
 int RGE_View::get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize) {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x005345D0

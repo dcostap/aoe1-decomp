@@ -83,6 +83,15 @@ RGE_Static_Object* RGE_Object_List::find_by_id(long param_1) {
     return nullptr;
 }
 
+void RGE_Object_List::rehook_list() {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463910
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        if (node->node != nullptr) {
+            node->node->rehook();
+        }
+    }
+}
+
 void RGE_Object_List::update() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463210
     int polled_objects = 0;

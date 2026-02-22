@@ -93,6 +93,10 @@ public:
     void win_game_now();
     void victory_if_game_on();
     void loss_if_game_on();
+    void load_info(int param_1);
+    uchar check_victory_conditions();
+    uchar check_ally_group(long* param_1);
+    uchar check_victory();
     void set_allied_victory(uchar param_1);
     uchar get_allied_victory();
     uchar relation(long param_1);
@@ -100,6 +104,7 @@ public:
     void unselect_one_object(RGE_Static_Object* param_1);
     void unselect_one_object(short param_1);
     void select_one_object(RGE_Static_Object* param_1);
+    int select_one_object(RGE_Static_Object* param_1, int param_2);
     void select_area(long param_1, long param_2, long param_3, long param_4);
     void unselect_area();
     void unselect_object();

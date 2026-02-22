@@ -24,6 +24,7 @@ public:
     void delete_list();
     void add_sprite(RGE_Sprite* param_1, uchar param_2, long param_3, long param_4);
     void remove_sprite(RGE_Sprite* param_1);
+    uchar get_lowest_draw_level();
 
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;

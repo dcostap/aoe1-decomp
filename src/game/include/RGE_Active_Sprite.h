@@ -24,6 +24,7 @@ public:
     virtual void setToFirstFrame(); // vt[14] (0x38)
 
     int check_for_shadows();
+    unsigned char get_lowest_draw_level();
 
     RGE_Sprite* sprite;
     unsigned char type;

@@ -2,7 +2,14 @@
 #include "common.h"
 
 struct RGE_Visible_Map {
+    RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2);
+    RGE_Visible_Map(int param_1, RGE_Game_World* param_2);
+    ~RGE_Visible_Map();
+
+    void save(int param_1);
     uchar get_visible(int col, int row);
+    float percentExplored();
+
     uchar** map_offsets;
     RGE_Game_World* world;
     RGE_Player* player;

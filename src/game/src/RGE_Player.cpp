@@ -903,6 +903,14 @@ void RGE_Player::select_one_object(RGE_Static_Object* param_1) {
     }
 }
 
+int RGE_Player::select_one_object(RGE_Static_Object* param_1, int param_2) {
+    // Partially verified. Source of truth: player.cpp.decomp calls select_one_object(obj,0) and checks success.
+    (void)param_2;
+    short before = this->sel_count;
+    this->select_one_object(param_1);
+    return (this->sel_count != before);
+}
+
 void RGE_Player::select_area(long param_1, long param_2, long param_3, long param_4) {
     // Source of truth: player.cpp.decomp @ 0x00471480
     this->selected_start_col = (short)param_1;
@@ -1137,6 +1145,108 @@ void RGE_Player::loss_if_game_on() {
     if (this->game_status == 0) {
         this->set_game_status(2); // lost
     }
+}
+
+void RGE_Player::load_info(int param_1) {
+    // Source of truth: player.cpp.decomp @ 0x0046FF00
+    this->load_victory(param_1, nullptr, '\x01');
+    if (this->objects != nullptr) {
+        this->objects->rehook_list();
+    }
+    if (this->sleeping_objects != nullptr) {
+        this->sleeping_objects->rehook_list();
+    }
+    if (this->doppleganger_objects != nullptr) {
+        this->doppleganger_objects->rehook_list();
+    }
+}
+
+uchar RGE_Player::check_victory_conditions() {
+    // Source of truth: player.cpp.decomp @ 0x00470690
+    if (this->game_status != '\x02') {
+        return (this->victory_conditions != nullptr) ? this->victory_conditions->victory_achieved() : '\0';
+    }
+    return '\x01';
+}
+
+uchar RGE_Player::check_ally_group(long* param_1) {
+    // Source of truth: player.cpp.decomp @ 0x004706B0
+    long old_count = (param_1 != nullptr) ? *param_1 : -1;
+    uchar ok = '\x01';
+
+    if (this->game_status != '\x02') {
+        if (param_1 != nullptr) {
+            *param_1 = 0;
+        }
+
+        if (this->world != nullptr && this->world->player_num > 1) {
+            for (int i = 1; i < this->world->player_num; ++i) {
+                if (this->relations != nullptr && this->relations[i] == '\0') {
+                    RGE_Player* other = (this->world->players != nullptr) ? this->world->players[i] : nullptr;
+                    if (other != nullptr) {
+                        if (other->relation((long)this->id) != '\0' || other->allied_victory == '\0') {
+                            ok = '\0';
+                            break;
+                        }
+                    }
+                }
+
+                if (param_1 != nullptr) {
+                    *param_1 = *param_1 + 1;
+                }
+            }
+        }
+    }
+
+    if (old_count >= 0 && param_1 != nullptr && *param_1 != old_count) {
+        ok = '\0';
+    }
+
+    return ok;
+}
+
+uchar RGE_Player::check_victory() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470750 (audited vs player.cpp.asm).
+    if (this->game_status != '\x02' && this->victory_conditions != nullptr && this->victory_conditions->victory_achieved() != '\0') {
+        bool blocked = false;
+        if (this->allied_victory != '\0') {
+            long count = -1;
+            if (this->world != nullptr && this->world->player_num > 1) {
+                for (int i = 1; i < this->world->player_num; ++i) {
+                    if (i == (int)this->id || (this->relations != nullptr && this->relations[i] == '\0')) {
+                        RGE_Player* other = (this->world->players != nullptr) ? this->world->players[i] : nullptr;
+                        if (other != nullptr && other->check_ally_group(&count) == '\0') {
+                            blocked = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (this->allied_victory != '\0' && !blocked) {
+                if (this->world != nullptr && this->world->player_num > 1) {
+                    for (int i = 1; i < this->world->player_num; ++i) {
+                        if (this->relations != nullptr && this->relations[i] == '\0') {
+                            RGE_Player* other = (this->world->players != nullptr) ? this->world->players[i] : nullptr;
+                            if (other != nullptr && other->check_victory_conditions() == '\0') {
+                                blocked = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!blocked) {
+            this->set_game_status('\x01'); // won
+            if (this->world != nullptr) {
+                this->world->game_end_condition = '\x02';
+            }
+        }
+    }
+
+    return this->game_status;
 }
 
 void RGE_Player::set_allied_victory(uchar param_1) {

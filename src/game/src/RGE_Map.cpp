@@ -9,6 +9,8 @@
 #include "RGE_Master_Static_Object.h"
 #include "RGE_Object_Node.h"
 #include "RGE_RMM_Database_Controller.h"
+#include "RGE_Zone_Map_List.h"
+#include "RGE_Unified_Visible_Map.h"
 #include "TShape.h"
 #include "custom_debug.h"
 #include "debug_helpers.h"
@@ -18,6 +20,7 @@
 #include <io.h> 
 #include <stdint.h>
 #include <math.h>
+#include <new>
 
 static void rge_convert_us(char* text) {
     if (text == nullptr) {
@@ -263,6 +266,82 @@ void RGE_Map::new_map(long w, long h)
     }
 
     this->set_map_screen_pos(0, 0, w - 1, h - 1);
+}
+
+void RGE_Map::load_map(int param_1) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004579C0 (audited vs map.cpp.asm).
+    long width = 0;
+    long height = 0;
+    rge_read(param_1, &width, 4);
+    rge_read(param_1, &height, 4);
+
+    this->new_map(width, height);
+
+    if (this->map_zones != nullptr) {
+        delete this->map_zones;
+        this->map_zones = nullptr;
+    }
+    this->map_zones = new (std::nothrow) RGE_Zone_Map_List(param_1, this);
+
+    rge_read(param_1, &this->map_visible_flag, 1);
+    rge_read(param_1, &this->fog_flag, 1);
+
+    if (save_game_version < 7.0f) {
+        const int tile_bytes = (int)(this->map_width * this->map_height * (long)sizeof(RGE_Tile));
+        if (this->map != nullptr && tile_bytes > 0) {
+            rge_read(param_1, this->map, tile_bytes);
+
+            // Clear pointer-backed tile list state (saved pointers aren't valid after load).
+            for (int y = 0; y < this->map_height; ++y) {
+                for (int x = 0; x < this->map_width; ++x) {
+                    RGE_Tile* t = &this->map_row_offset[y][x];
+                    t->objects.list = nullptr;
+                    t->objects.number_of_objects = 0;
+                }
+            }
+        }
+    } else {
+        for (int y = 0; y < this->map_height; ++y) {
+            RGE_Tile* row = this->map_row_offset[y];
+            for (int x = 0; x < this->map_width; ++x) {
+                RGE_Tile* t = &row[x];
+                rge_read(param_1, &t->screen_xpos, 2);
+                rge_read(param_1, &t->screen_ypos, 2);
+                rge_read(param_1, &t->tile_type, 1);
+
+                uchar tmp = 0;
+                rge_read(param_1, &tmp, 1);
+                t->terrain_type = tmp & 0x1F;
+                rge_read(param_1, &tmp, 1);
+                t->height = tmp & 0x07;
+                rge_read(param_1, &tmp, 1);
+                t->border_type = tmp & 0x0F;
+                rge_read(param_1, &tmp, 1);
+                t->border_shape = tmp & 0x0F;
+
+                t->last_drawn_as = '\0';
+                t->last_drawn_shape = 0xFF;
+                t->objects.list = nullptr;
+                t->objects.number_of_objects = 0;
+                t->draw_as = '\0';
+                t->draw_attribute = '\0';
+                t->last_drawn_shape2 = 0xFF;
+            }
+        }
+    }
+
+    int created_unified = 0;
+    if (this->unified_vis_map == nullptr) {
+        this->unified_vis_map = (RGE_Unified_Visible_Map*)calloc(1, sizeof(RGE_Unified_Visible_Map));
+        created_unified = 1;
+    }
+    if (this->unified_vis_map != nullptr) {
+        this->unified_vis_map->load(param_1);
+        if (created_unified != 0) {
+            Map_Update_Suppresion = 0;
+            this->unified_vis_map->Set_Map_Offsets();
+        }
+    }
 }
 
 void RGE_Map::set_map_screen_pos(int col1, int row1, int col2, int row2)

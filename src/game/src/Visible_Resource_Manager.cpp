@@ -10,9 +10,95 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Tile_List.h"
 #include "../include/RGE_Tile_List_Node.h"
+#include "../include/globals.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+Visible_Resource_Manager::Visible_Resource_Manager(RGE_Player* param_1, int param_2) {
+    // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BB30
+    this->num_visible_resource_lists = param_2;
+    if (param_2 < 1) {
+        this->VR_List = nullptr;
+        this->VR_ListSize = nullptr;
+        this->VR_ListUsed = nullptr;
+    } else {
+        this->VR_List = (VISIBLE_RESOURCE_REC**)calloc(param_2, 4);
+        this->VR_ListSize = (int*)calloc(this->num_visible_resource_lists, 4);
+        this->VR_ListUsed = (int*)calloc(this->num_visible_resource_lists, 4);
+        for (int i = 0; i < this->num_visible_resource_lists; ++i) {
+            this->VR_List[i] = (VISIBLE_RESOURCE_REC*)malloc(0x100);
+            this->VR_ListSize[i] = 0x20;
+            this->VR_ListUsed[i] = 0;
+        }
+    }
+    this->owner = param_1;
+}
+
+Visible_Resource_Manager::Visible_Resource_Manager(int param_1, RGE_Player* param_2) {
+    // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BBE0
+    if (save_game_version < 7.11f) {
+        this->num_visible_resource_lists = 5;
+    } else {
+        rge_read(param_1, &this->num_visible_resource_lists, 4);
+    }
+
+    if (this->num_visible_resource_lists < 1) {
+        this->VR_List = nullptr;
+        this->VR_ListSize = nullptr;
+        this->VR_ListUsed = nullptr;
+    } else {
+        this->VR_List = (VISIBLE_RESOURCE_REC**)calloc(this->num_visible_resource_lists, 4);
+        this->VR_ListSize = (int*)calloc(this->num_visible_resource_lists, 4);
+        this->VR_ListUsed = (int*)calloc(this->num_visible_resource_lists, 4);
+
+        for (int i = 0; i < this->num_visible_resource_lists; ++i) {
+            rge_read(param_1, this->VR_ListSize + i, 4);
+            rge_read(param_1, this->VR_ListUsed + i, 4);
+            this->VR_List[i] = (VISIBLE_RESOURCE_REC*)malloc(this->VR_ListSize[i] << 3);
+        }
+
+        for (int i = 0; i < this->num_visible_resource_lists; ++i) {
+            if (this->VR_ListUsed[i] > 0) {
+                rge_read(param_1, this->VR_List[i], this->VR_ListUsed[i] * 8);
+            }
+        }
+    }
+
+    this->owner = param_2;
+}
+
+Visible_Resource_Manager::~Visible_Resource_Manager() {
+    // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BD10
+    for (int i = 0; i < this->num_visible_resource_lists; ++i) {
+        if (this->VR_List[i] != nullptr) {
+            free(this->VR_List[i]);
+        }
+    }
+    if (this->VR_List != nullptr) {
+        free(this->VR_List);
+    }
+    if (this->VR_ListSize != nullptr) {
+        free(this->VR_ListSize);
+    }
+    if (this->VR_ListUsed != nullptr) {
+        free(this->VR_ListUsed);
+    }
+}
+
+void Visible_Resource_Manager::save(int param_1) {
+    // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BD70
+    rge_write(param_1, &this->num_visible_resource_lists, 4);
+    for (int i = 0; i < this->num_visible_resource_lists; ++i) {
+        rge_write(param_1, this->VR_ListSize + i, 4);
+        rge_write(param_1, this->VR_ListUsed + i, 4);
+    }
+    for (int i = 0; i < this->num_visible_resource_lists; ++i) {
+        if (this->VR_ListUsed[i] > 0) {
+            rge_write(param_1, this->VR_List[i], this->VR_ListUsed[i] << 3);
+        }
+    }
+}
 
 void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* param_1) {
     // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BE00
