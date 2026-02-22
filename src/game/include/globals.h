@@ -73,6 +73,7 @@ extern long SDI_Object_ID;
 extern int SDI_Draw_Line;
 extern int SDI_Draw_Level;
 extern int startLoggingAI;
+extern int confirmed_close;
 
 void run_log(char* param_1, int param_2);
 int rge_fake_open(int handle, int remaining_bytes);

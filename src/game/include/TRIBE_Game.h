@@ -142,11 +142,15 @@ public:
     int create_game(int p1);
     int create_game_screen();
     void close_game_screens(int p1);
+    void restart_game();
     int start_game(int p1);
     int start_scenario(char* p1);
     int load_game(char* p1);
     int load_db_files();
     int start_menu();
+    void quit_game();
+    int start_campaign_menu();
+    int start_scenario_editor(char* scenario_filename, int mode);
     int start_video(int p1, char* p2);
     void stop_video(int p1);
     int setup_video_system();

@@ -4,6 +4,12 @@
 
 class TRIBE_Screen_Campaign_Selection : public TScreenPanel {
 public:
+    // Non-virtual helpers (see scr_cams.cpp.decomp)
+    void init_vars();
+    void fillCampaigns();
+    void fillScenarios();
+    void startGame();
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Screen_Campaign_Selection(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

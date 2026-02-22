@@ -1278,6 +1278,105 @@ void TRIBE_Game::close_game_screens(int p1) {
     }
 }
 
+// Source of truth: tribegam.cpp.asm @ 0x00524150
+void TRIBE_Game::quit_game() {
+    // NOTE: This is a best-effort transliteration sufficient for the achievements "OK" end-game path.
+    // The original has additional branches for campaign flow, scenario editor, and join screen.
+
+    if (this->comm_handler != nullptr) {
+        int lobby = this->comm_handler->IsLobbyLaunched();
+        if (lobby != 0 && this->world != nullptr) {
+            // send_zone_score_info() is not yet transliterated; quitting proceeds without it.
+        }
+    }
+
+    this->disconnect_multiplayer_game();
+    this->prog_mode = 0;
+
+    if (this->world != nullptr) {
+        this->world->del_game_info();
+    }
+
+    int ok = this->start_menu();
+    if (ok == 0) {
+        this->close();
+    }
+
+    this->close_game_screens(0);
+    this->game_screen = nullptr;
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Game Screen");
+    }
+    this->testing_scenario[0] = '\0';
+}
+
+// Source of truth: tribegam.cpp.decomp @ 0x005243A0
+void TRIBE_Game::restart_game() {
+    this->show_status_message(0x451, (char*)0, -1);
+
+    this->close_game_screens(0);
+    this->game_screen = nullptr;
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Game Screen");
+    }
+
+    this->prog_mode = 0;
+
+    // Source of truth: tribegam.cpp.asm @ 0x005243DB calls vtbl+0xB8 on `world` (offset +0x3F4).
+    using WorldVFuncB8 = void(__thiscall*)(RGE_Game_World*);
+    void** world_vtbl = *(void***)this->world;
+    ((WorldVFuncB8)world_vtbl[0xB8 / 4])(this->world);
+
+    for (uint slot = 1; slot < 9; ++slot) {
+        this->comm_handler->SetPlayerHumanity(slot, this->save_humanity[slot - 1]);
+    }
+
+    int ok = 0;
+    if (this->savedGameValue == 0) {
+        int saved_seed = 0;
+        if (this->randomGame() == 1 && this->campaignGame() == 0) {
+            saved_seed = this->random_game_seed;
+            this->random_game_seed = this->save_random_game_seed;
+        }
+
+        ok = this->start_game(1);
+
+        if (this->randomGame() != 0 && this->campaignGame() == 0) {
+            this->random_game_seed = saved_seed;
+        }
+    } else {
+        _finddata_t fileInfo;
+        char temp_name[260];
+        temp_name[0] = '\0';
+
+        sprintf(temp_name, "%s%s.gmx", this->prog_info->save_dir, this->load_game_name);
+        long find_h = _findfirst(temp_name, &fileInfo);
+        const char* fmt = (find_h == -1) ? "%s.gam" : "%s.gmx";
+        if (find_h != -1) {
+            _findclose(find_h);
+        }
+
+        sprintf(temp_name, fmt, this->load_game_name);
+        ok = this->load_game(temp_name);
+    }
+
+    if (ok == 0) {
+        ok = this->start_menu();
+        if (ok == 0) {
+            this->close();
+            return;
+        }
+
+        // Source of truth: tribegam.cpp.asm @ 0x005244F3 (panel \"Main Menu\" -> popupOKDialog(0x961,...)).
+        if (panel_system != nullptr) {
+            TEasy_Panel* main_menu = (TEasy_Panel*)panel_system->panel((char*)"Main Menu");
+            if (main_menu != nullptr) {
+                main_menu->popupOKDialog(0x961, (char*)0, 0x1c2, 100);
+            }
+        }
+    }
+}
+
 int TRIBE_Game::start_game(int p1) {
     // Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`start_game` @ 0x00525D20)

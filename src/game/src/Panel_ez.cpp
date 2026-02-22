@@ -13,6 +13,7 @@
 #include "../include/TMousePointer.h"
 #include "../include/RGE_Font.h"
 #include "../include/globals.h"
+#include "../include/TMessageDialog.h"
 #include "../include/custom_debug.h"
 
 #include <string.h>
@@ -166,6 +167,51 @@ CUSTOM_DEBUG_END
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: end panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
 CUSTOM_DEBUG_END
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
+void TEasy_Panel::popupOKDialog(long text_id, char* panel_name, int param_4, int param_5) {
+    char text[256];
+    this->get_string(text_id, text, sizeof(text));
+    this->popupOKDialog(text, panel_name, param_4, param_5);
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x00469F30
+void TEasy_Panel::popupOKDialog(char* text, char* panel_name, int param_4, int param_5) {
+    if (panel_name == nullptr || *panel_name == '\0') {
+        panel_name = (char*)"OKDialog";
+    }
+
+    if (panel_system) {
+        TPanel* existing = panel_system->panel(panel_name);
+        if (existing != nullptr) {
+            panel_system->destroyPanel(panel_name);
+        }
+    }
+
+    TMessageDialog* dlg = new TMessageDialog(panel_name);
+    if (dlg != nullptr) {
+        dlg->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_4, param_5, 0, text, 0x5a, 0x1e);
+    }
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x0046A040
+void TEasy_Panel::popupYesNoDialog(long text_id, char* panel_name, int param_4, int param_5) {
+    char text[256];
+    this->get_string(text_id, text, sizeof(text));
+    this->popupYesNoDialog(text, panel_name, param_4, param_5);
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x0046A090
+void TEasy_Panel::popupYesNoDialog(char* text, char* panel_name, int param_4, int param_5) {
+    if (panel_name == nullptr || *panel_name == '\0') {
+        panel_name = (char*)"YesNoDialog";
+    }
+
+    TMessageDialog* dlg = new TMessageDialog(panel_name);
+    if (dlg != nullptr) {
+        dlg->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_4, param_5, 2, text, 0x5a, 0x1e);
+    }
 }
 
 // Virtual setup (base signature): forward to TPanel::setup.
