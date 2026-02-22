@@ -1295,16 +1295,61 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
 }
 
 int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8;
-    return 0;
+    // Fully verified. Source of truth: Panel_ez.cpp.decomp @ 0x00469910
+    long scaled_x = (this->pnl_wid * param_5) / this->ideal_width;
+    long scaled_y = (param_6 * this->pnl_hgt) / this->ideal_height;
+    long scaled_h = (param_8 * this->pnl_hgt) / this->ideal_height;
+
+    TScrollBarPanel* scrollbar = new TScrollBarPanel();
+    *param_2 = scrollbar;
+
+    if ((scrollbar == nullptr) || (scrollbar->error_code != 0) ||
+        (scrollbar->setup(
+             this->render_area,
+             param_1,
+             scaled_x,
+             scaled_y,
+             param_7,
+             scaled_h,
+             nullptr,
+             nullptr,
+             nullptr,
+             nullptr,
+             param_7,
+             param_7,
+             (TPanel*)param_3,
+             (int)param_4,
+             TScrollBarPanel::Vertical) == 0)) {
+        return 0;
+    }
+
+    if (param_3 != nullptr) {
+        param_3->set_scrollbar(*param_2, 0);
+    }
+    if (this->button_pics != nullptr) {
+        (*param_2)->set_buttons(this->button_pics, -1, 8, 10, 0xC);
+    }
+    if (this->use_bevels != 0) {
+        (*param_2)->set_bevel_info(
+            3,
+            this->bevel_color1,
+            this->bevel_color2,
+            this->bevel_color3,
+            this->bevel_color4,
+            this->bevel_color5,
+            this->bevel_color6);
+    }
+
+    return 1;
 }
 
 int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) {
-    // Source of truth: Panel_ez.cpp.decomp @ 0x00469A80
-    // Decomp: calls create_scrollbar(parent, param_1, param_2, 0, 0, 0, param_3, 0)
-    //         then set_scrollbar(param_2, *param_1, 1)
-    // TODO: create_scrollbar is not yet implemented; stub by setting output to null and returning success
-    if (param_1) *param_1 = nullptr;
+    // Fully verified. Source of truth: Panel_ez.cpp.decomp @ 0x00469A80
+    int ok = this->create_scrollbar(param_2->parent_panel, param_1, param_2, 0, 0, 0, param_3, 0);
+    if (ok == 0) {
+        return 0;
+    }
+    param_2->set_scrollbar(*param_1, 1);
     return 1;
 }
 
