@@ -1779,16 +1779,20 @@ uchar RGE_Map::do_cliff_brush_stroke(long param_1, long param_2, long param_3, l
 }
 
 void RGE_Map::scenario_save(int param_1) {
-    // Source of truth: map.cpp.decomp @ 0x00455F10
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455F10 (audited vs map.cpp.asm).
     rge_write(param_1, &this->map_width, 4);
     rge_write(param_1, &this->map_height, 4);
 
+    // Parity: both loops are bounded by map_height (original has an apparent width/height mix-up).
     for (int y = 0; y < this->map_height; ++y) {
-        for (int x = 0; x < this->map_width; ++x) {
+        for (int x = 0; x < this->map_height; ++x) {
             RGE_Tile* tile = &this->map_row_offset[y][x];
-            uchar terrain_info = (uchar)(tile->terrain_type & 0x1f);
-            uchar height_info = (uchar)(tile->height & 7);
+            const uchar packed = *(uchar*)((uint8_t*)tile + 5);
+
+            uchar terrain_info = (uchar)(packed & 0x1F);
+            uchar height_info = (uchar)(packed >> 5);
             uchar overlay_info = 0;
+
             rge_write(param_1, &terrain_info, 1);
             rge_write(param_1, &height_info, 1);
             rge_write(param_1, &overlay_info, 1);
@@ -1797,7 +1801,7 @@ void RGE_Map::scenario_save(int param_1) {
 }
 
 void RGE_Map::scenario_load(int param_1, uchar* param_2) {
-    // Source of truth: map.cpp.decomp @ 0x00455FF0
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455FF0 (audited vs map.cpp.asm).
     (void)param_2;
 
     long w = 0;
@@ -1807,7 +1811,8 @@ void RGE_Map::scenario_load(int param_1, uchar* param_2) {
     this->new_map(w, h);
 
     for (int y = 0; y < this->map_height; ++y) {
-        for (int x = 0; x < this->map_width; ++x) {
+        // Parity: both loops are bounded by map_height (original has an apparent width/height mix-up).
+        for (int x = 0; x < this->map_height; ++x) {
             uchar terrain_info = 0;
             uchar height_info = 0;
             uchar overlay_info = 0;
@@ -1817,8 +1822,14 @@ void RGE_Map::scenario_load(int param_1, uchar* param_2) {
             (void)overlay_info;
 
             RGE_Tile* tile = &this->map_row_offset[y][x];
-            tile->terrain_type = (uchar)(terrain_info & 0x1f);
-            tile->height = (uchar)(height_info & 7);
+            uchar* packed = (uchar*)((uint8_t*)tile + 5);
+
+            // Low 5 bits (terrain)
+            uchar old = *packed;
+            *packed = ((terrain_info ^ old) & 0x1F) ^ old;
+
+            // High 3 bits (height)
+            *packed = (uchar)((height_info << 5) | (*packed & 0x1F));
         }
     }
 
@@ -1892,9 +1903,80 @@ void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3,
         this->game_world->game_state = old_game_state;
     }
 }
+
+void RGE_Map::save_map(int param_1) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457C50 (audited vs map.cpp.asm).
+    rge_write(param_1, &this->map_width, 4);
+    rge_write(param_1, &this->map_height, 4);
+
+    this->map_zones->save(param_1);
+
+    rge_write(param_1, &this->map_visible_flag, 1);
+    rge_write(param_1, &this->fog_flag, 1);
+
+    if (save_game_version < 7.0f) {
+        const int tile_bytes = (int)(this->map_width * this->map_height * (long)sizeof(RGE_Tile));
+        rge_write(param_1, this->map, tile_bytes);
+    } else {
+        for (int y = 0; y < this->map_height; ++y) {
+            RGE_Tile* tile = this->map_row_offset[y];
+            for (int x = 0; x < this->map_width; ++x) {
+                rge_write(param_1, &tile->screen_xpos, 2);
+                rge_write(param_1, &tile->screen_ypos, 2);
+                rge_write(param_1, &tile->tile_type, 1);
+
+                const uchar field_0x5 = *(uchar*)((uint8_t*)tile + 5);
+                const uchar field_0x6 = *(uchar*)((uint8_t*)tile + 6);
+
+                uchar terrain_info = (uchar)(field_0x5 & 0x1F);
+                uchar height_info = (uchar)(field_0x5 >> 5);
+                uchar border_info = (uchar)(field_0x6 & 0x0F);
+                uchar border_shape = (uchar)(field_0x6 >> 4);
+
+                rge_write(param_1, &terrain_info, 1);
+                rge_write(param_1, &height_info, 1);
+                rge_write(param_1, &border_info, 1);
+                rge_write(param_1, &border_shape, 1);
+
+                tile = tile + 1;
+            }
+        }
+    }
+
+    this->unified_vis_map->save(param_1);
+}
+
 void RGE_Map::save(int param_1) {
-    (void)param_1;
-    // TODO: STUB, map.cpp save path not yet transliterated.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457DF0 (audited vs map.cpp.asm).
+    uint8_t* temp = (uint8_t*)calloc(1, sizeof(RGE_Map));
+    memcpy(temp, this, sizeof(RGE_Map));
+
+    // Rewrite sound pointers in the temp blob to serialized sound IDs (-1 for null).
+    for (int i = 0; i < 32; ++i) {
+        RGE_Tile_Set* ts = &this->terrain_types[i];
+        if (ts->loaded != 0) {
+            int32_t id = -1;
+            if (ts->sound != nullptr) {
+                id = (int32_t)ts->sound->id;
+            }
+            const size_t off = (size_t)((uint8_t*)&ts->sound - (uint8_t*)this);
+            *(int32_t*)(temp + off) = id;
+        }
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        RGE_Border_Set* bs = &this->border_types[i];
+        int32_t id = -1;
+        if (bs->loaded != 0 && bs->sound != nullptr) {
+            id = (int32_t)bs->sound->id;
+        }
+        const size_t off = (size_t)((uint8_t*)&bs->sound - (uint8_t*)this);
+        *(int32_t*)(temp + off) = id;
+    }
+
+    rge_write(param_1, temp, (int)sizeof(RGE_Map));
+    this->random_map->save(param_1);
+    free(temp);
 }
 
 void RGE_Map::load_terrain_types(RGE_Sound** sounds)
