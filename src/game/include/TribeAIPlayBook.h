@@ -4,6 +4,8 @@
 
 class TribeAIPlayBook : public AIPlayBook {
 public:
+    TribeAIPlayBook();
+
     // Virtuals (best-effort)
     virtual ~TribeAIPlayBook(); // vt[0] (0x0)
     virtual int convertTargetNameToIntType(char* param_1); // vt[1] (0x4)
