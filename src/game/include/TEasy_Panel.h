@@ -30,6 +30,12 @@ public:
     char* get_popup_info_file();
     long get_popup_info_id();
 
+    // Dialog helpers (original game uses panel-system dialogs; we currently implement as shims).
+    void popupOKDialog(long text_id, char* dialog_name, int x, int y);
+    void popupOKDialog(char* text, char* dialog_name, int x, int y);
+    void popupYesNoDialog(long text_id, char* dialog_name, int x, int y);
+    void popupYesNoDialog(char* text, char* dialog_name, int x, int y);
+
     // Virtuals (best-effort)
     virtual ~TEasy_Panel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

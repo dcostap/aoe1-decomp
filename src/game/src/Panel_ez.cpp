@@ -4,6 +4,8 @@
 #include "../include/TDropDownPanel.h"
 #include "../include/TListPanel.h"
 #include "../include/TScrollBarPanel.h"
+#include "../include/TEditPanel.h"
+#include "../include/TMessageDialog.h"
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TShape.h"
@@ -817,6 +819,56 @@ long TEasy_Panel::get_popup_info_id() {
     return this->popup_info_id;
 }
 
+void TEasy_Panel::popupOKDialog(long text_id, char* dialog_name, int wid, int hgt) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469FC0
+    char text[256];
+    text[0] = '\0';
+    this->get_string((int)text_id, text, sizeof(text));
+    this->popupOKDialog(text, dialog_name, wid, hgt);
+}
+
+void TEasy_Panel::popupOKDialog(char* text, char* dialog_name, int wid, int hgt) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469FC0
+    if (!dialog_name || *dialog_name == '\0') {
+        dialog_name = (char*)"OKDialog";
+    }
+
+    char temp_title[256];
+    strncpy(temp_title, dialog_name, sizeof(temp_title) - 1);
+    temp_title[sizeof(temp_title) - 1] = '\0';
+
+    if (panel_system) {
+        if (panel_system->panel(temp_title)) {
+            panel_system->destroyPanel(temp_title);
+        }
+    }
+
+    TMessageDialog* dlg = new TMessageDialog(temp_title);
+    if (dlg) {
+        dlg->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, wid, hgt, '\0', text, 0x5a, 0x1e);
+    }
+}
+
+void TEasy_Panel::popupYesNoDialog(long text_id, char* dialog_name, int wid, int hgt) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A040
+    char text[256];
+    text[0] = '\0';
+    this->get_string((int)text_id, text, sizeof(text));
+    this->popupYesNoDialog(text, dialog_name, wid, hgt);
+}
+
+void TEasy_Panel::popupYesNoDialog(char* text, char* dialog_name, int wid, int hgt) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A090
+    if (!dialog_name || *dialog_name == '\0') {
+        dialog_name = (char*)"YesNoDialog";
+    }
+
+    TMessageDialog* dlg = new TMessageDialog(dialog_name);
+    if (dlg) {
+        dlg->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, wid, hgt, '\x02', text, 0x5a, 0x1e);
+    }
+}
+
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
     // Source of truth: `Panel_ez.cpp.decomp` (`TEasy_Panel::setup_shadow_area`).
     if (!this->allow_shadow_area) return;
@@ -1109,8 +1161,46 @@ int TEasy_Panel::create_input(TPanel* param_1, TInputPanel** param_2, char* para
 }
 
 int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9; (void)param_10; (void)param_11; (void)param_12;
-    return 0;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004691C0
+    if (!param_2) return 0;
+
+    *param_2 = new TEditPanel();
+    if (!*param_2) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    long actual_w = this->pnl_wid;
+    long actual_h = this->pnl_hgt;
+    long ideal_w = this->ideal_width;
+    long ideal_h = this->ideal_height;
+
+    long scaled_x = (ideal_w > 0) ? (param_6 * actual_w) / ideal_w : param_6;
+    long scaled_y = (ideal_h > 0) ? (param_7 * actual_h) / ideal_h : param_7;
+    long scaled_w = (ideal_w > 0) ? (param_8 * actual_w) / ideal_w : param_8;
+
+    // NOTE: The original passes height unscaled here (pnl_edit expects fixed Win32 edit height).
+    const long scaled_h = param_9;
+
+    int font_id = (param_10 < 0) ? 10 : (int)param_10;
+    RGE_Font* font_info = rge_base_game ? rge_base_game->get_font(font_id) : nullptr;
+    void* font_handle = font_info ? font_info->font : nullptr;
+
+    const int auto_sel = (param_5 != FormatMultiLine);
+    if (!(*param_2)->setup(this->render_area, param_1, scaled_x, scaled_y, scaled_w, scaled_h, font_handle, param_4, param_3, param_5, auto_sel)) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    if (this->use_bevels) {
+        (*param_2)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+    }
+
+    (*param_2)->set_text_color(this->text_color1, this->text_color2);
+    (*param_2)->set_highlight_text_color(this->focus_color1, this->focus_color2);
+    (*param_2)->set_back_color(this->brush, this->stock_brush, (unsigned long)this->brush_color, this->background_color1);
+    (*param_2)->set_ime_info(param_11, param_12);
+    return 1;
 }
 
 int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
