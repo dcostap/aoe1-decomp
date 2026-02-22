@@ -23,6 +23,22 @@ struct ASMShadowingState {
 };
 ASMShadowingState g_ASMShadowing_State = {0};
 unsigned int g_ASMShadowing_Amount = 0; // derived 0..255, consumed by the software shape drawers
+
+// Mirrors the original DAT_0088c000..DAT_0088c08c render block used by the ASM draw routines.
+// For our software renderer, this is primarily consumed for parity and for span clipping state.
+struct ASMSurfaceInfoState {
+    void** DisplayOffsets;     // DAT_0088c000
+    VSpan_Node** LineHeadPtrs; // DAT_0088c004
+    VSpan_Node** LineTailPtrs; // DAT_0088c008
+    int MinLine;               // DAT_0088c080
+    int MaxLine;               // DAT_0088c084
+    int MinSpanPx;             // DAT_0088c088
+    int MaxSpanPx;             // DAT_0088c08c
+};
+ASMSurfaceInfoState g_ASMSurfaceInfo_State = {0};
+
+unsigned int g_ASMColorXform = 0;          // DAT_0088c040 (replicated byte)
+unsigned char* g_ASMXlateTable = nullptr;  // DAT_0088c01c
 }
 
 static unsigned int asm_shadowing_extract_amount(unsigned int p2, unsigned int p4) {
@@ -63,6 +79,45 @@ extern "C" void _ASMSet_ShadowingEx(int* p) {
     g_ASMShadowing_State.table[7] = (unsigned int)p[7];
 
     g_ASMShadowing_Amount = asm_shadowing_extract_amount(g_ASMShadowing_State.table[4], g_ASMShadowing_State.table[5]);
+}
+
+// Fully verified. Source of truth: bucket_056C.decomp @ 0x0056C720
+extern "C" void _ASMSet_Surface_Info(
+    void** display_offsets,
+    VSpan_Node** line_head_ptrs,
+    VSpan_Node** line_tail_ptrs,
+    int min_span_px,
+    int min_line,
+    int max_span_px,
+    int max_line) {
+    g_ASMSurfaceInfo_State.DisplayOffsets = display_offsets;
+    g_ASMSurfaceInfo_State.LineHeadPtrs = line_head_ptrs;
+    g_ASMSurfaceInfo_State.LineTailPtrs = line_tail_ptrs;
+    g_ASMSurfaceInfo_State.MinLine = min_line;
+    g_ASMSurfaceInfo_State.MaxLine = max_line;
+    g_ASMSurfaceInfo_State.MinSpanPx = min_span_px;
+    g_ASMSurfaceInfo_State.MaxSpanPx = max_span_px;
+}
+
+// Fully verified. Source of truth: bucket_056C.decomp @ 0x0056C760
+extern "C" void _ASMSet_Color_Xform(int v) {
+    const unsigned int b = (unsigned int)((unsigned char)v);
+    g_ASMColorXform = b | (b << 8) | (b << 16) | (b << 24);
+}
+
+// Fully verified. Source of truth: bucket_056C.decomp @ 0x0056C780
+extern "C" unsigned int _ASMGet_Color_Xform() {
+    return g_ASMColorXform & 0xFFu;
+}
+
+// Fully verified. Source of truth: bucket_056C.decomp @ 0x0056C7A0
+extern "C" void _ASMSet_Xlate_Table(void* p) {
+    g_ASMXlateTable = (unsigned char*)p;
+}
+
+// Fully verified. Source of truth: bucket_056C.asm @ 0x0056C7AD (label _ASMGet_Xlate_Table @ 0x0056C7C0)
+extern "C" void* _ASMGet_Xlate_Table() {
+    return (void*)g_ASMXlateTable;
 }
 
 static unsigned long scale_component_to_mask_ul(unsigned int c, unsigned long mask) {
