@@ -1745,8 +1745,12 @@ int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) {
 
     // Custom mouse pointer update
     if (this->custom_mouse != 0 && this->windows_mouse == 0) {
-        // TODO(accuracy): TMousePointer::in_game_mode check → draw(0) vs Poll()
-        // Requires adding Poll/draw/in_game_mode to TMousePointer.h
+        // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421110
+        if (this->mouse_pointer->in_game_mode() == 0) {
+            this->mouse_pointer->draw(0);
+        } else {
+            this->mouse_pointer->Poll();
+        }
     }
 
     // Extract mouse position from lParam

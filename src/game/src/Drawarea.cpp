@@ -1015,6 +1015,26 @@ void TDrawArea::Unlock(char* name) {
     }
 }
 
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445710
+void TDrawArea::SetTrans(int enabled, uchar trans_color) {
+    this->UseTrans = enabled;
+    if (enabled == 0) {
+        this->TransColor = 0xFF;
+    } else {
+        this->TransColor = trans_color;
+    }
+
+    if (enabled != 0) {
+        IDirectDrawSurface* surf = this->DrawSurface;
+        if (surf != nullptr && this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
+            DDCOLORKEY ddck;
+            ddck.dwColorSpaceLowValue = (DWORD)this->TransColor;
+            ddck.dwColorSpaceHighValue = (DWORD)this->TransColor;
+            surf->SetColorKey(DDCKEY_SRCBLT, &ddck);
+        }
+    }
+}
+
 void TDrawArea::SetInfo() {
     // Source of truth: `Drawarea.cpp.decomp` / `.asm`.
     this->Pitch = (int)this->SurfaceDesc.lPitch;

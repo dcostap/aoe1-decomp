@@ -15,6 +15,7 @@ struct TDrawArea {
     void OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y);
     uchar* Lock(char* name, int p2);
     void Unlock(char* name);
+    void SetTrans(int enabled, uchar trans_color);
     void SetAccessOffsets();
     void SetInfo();
     void PtrSpanCopy(TDrawArea* src, int x, int y);
