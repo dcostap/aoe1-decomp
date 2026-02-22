@@ -362,7 +362,37 @@ void RGE_Static_Object::recycle_out_of_game() {
         deleting_dtor(this, 1);
     }
 }
-void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {}
+void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
+    // TODO: STUB: Minimal in-game draw implementation so the view pipeline can render objects while
+    // per-type draw() overrides are still stubbed (see rge_object_virtual_stubs.cpp).
+    if (param_1 == nullptr) return;
+    if (this->tile == nullptr) return;
+    if (this->object_state >= 7) return;
+
+    if (this->sprite_list != nullptr) {
+        this->sprite_list->draw(
+            (short)this->facet,
+            (short)(this->screen_x_offset + param_2),
+            (short)(this->screen_y_offset + param_3),
+            (short)(this->shadow_x_offset + param_2),
+            (short)(this->shadow_y_offset + param_3),
+            param_4,
+            param_1);
+        return;
+    }
+
+    // TODO: STUB: fallback for partially-initialized objects (sprite_list is expected in-game).
+    RGE_Sprite* spr = this->sprite;
+    if (spr == nullptr && this->master_obj != nullptr) {
+        spr = this->master_obj->sprite;
+    }
+    if (spr != nullptr) {
+        spr->draw((long)this->facet, 0,
+            (long)(this->screen_x_offset + param_2), (long)(this->screen_y_offset + param_3),
+            (long)(this->screen_x_offset + param_2), (long)(this->screen_y_offset + param_3),
+            param_4, param_1, 0);
+    }
+}
 void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {}
 void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {}
 void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {}
