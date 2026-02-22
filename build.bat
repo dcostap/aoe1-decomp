@@ -149,16 +149,22 @@ if !CHANGED_COUNT! GTR 0 (
     ) else (
         echo [2/3] Compiling !CHANGED_COUNT! changed source file^(s^)...
     )
+    REM Use a response file to avoid hitting the Windows command line length limit.
+    set "CHANGED_RSP=%OBJ_DIR%\changed_sources.rsp"
+    del /f /q "!CHANGED_RSP!" >nul 2>nul
+    powershell -NoProfile -Command "$env:CHANGED_SOURCES -split ' ' | Where-Object { $_ -and $_.Length -gt 0 } | ForEach-Object { '\"' + $_ + '\"' } | Set-Content -LiteralPath '!CHANGED_RSP!'" >nul
+
     cl /nologo /c /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ /MP /FS ^
        /I"%INC_DIR%" /I"%DP_INC%" ^
        /Fo"%OBJ_DIR%\\" /Fd"%OBJ_DIR%\empiresx.pdb" ^
-       !CHANGED_SOURCES!
+       @"!CHANGED_RSP!"
     if errorlevel 1 (
         echo.
         echo Compilation FAILED!
         popd
         exit /b 1
     )
+    del /f /q "!CHANGED_RSP!" >nul 2>nul
 ) else (
     echo [2/3] Source files are up to date.
 )

@@ -125,8 +125,10 @@ public:
 
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
             if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("Main_Menu");
+                panel_system->setCurrentPanel((char*)"Main Menu", 0);
+                if (this->panelNameValue != nullptr) {
+                    panel_system->destroyPanel(this->panelNameValue);
+                }
             } else {
                 if (menu) delete menu;
                 menu_enable_input();
@@ -374,8 +376,8 @@ long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int pa
     if ((param_1 == 'C') || (param_1 == 'c')) {
         TPanel* credits = create_stub_screen((char*)"Credits Screen", (char*)"scr_cred", 0xc38b, (char*)"Credits (Stub)");
         if (credits) {
-            panel_system->setCurrentPanel(credits, 0);
-            panel_system->destroyPanel("Main_Menu");
+            panel_system->setCurrentPanel((char*)"Credits Screen", 0);
+            panel_system->destroyPanel((char*)"Main Menu");
         }
         return 1;
     }
@@ -413,8 +415,8 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             menu_disable_input();
             TribeSPMenuScreen* next = new TribeSPMenuScreen();
             if (next && next->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)next, 0);
-                panel_system->destroyPanel("Main_Menu");
+                panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
+                panel_system->destroyPanel((char*)"Main Menu");
             } else {
                 if (next) {
                     delete next;
@@ -428,8 +430,8 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             menu_disable_input();
             TPanel* next = create_stub_screen((char*)"MP Startup Screen", (char*)"scr3", 0xc385, (char*)"Multiplayer Startup (Stub)");
             if (next) {
-                panel_system->setCurrentPanel(next, 0);
-                panel_system->destroyPanel("Main_Menu");
+                panel_system->setCurrentPanel((char*)"MP Startup Screen", 0);
+                panel_system->destroyPanel((char*)"Main Menu");
             } else {
                 menu_enable_input();
             }
@@ -449,8 +451,8 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             menu_disable_input();
             TPanel* next = create_stub_screen((char*)"Scenario Editor Menu", (char*)"scr4", 0xc386, (char*)"Scenario Editor Menu (Stub)");
             if (next) {
-                panel_system->setCurrentPanel(next, 0);
-                panel_system->destroyPanel("Main_Menu");
+                panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
+                panel_system->destroyPanel((char*)"Main Menu");
             } else {
                 menu_enable_input();
             }

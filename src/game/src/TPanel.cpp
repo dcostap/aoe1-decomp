@@ -204,9 +204,52 @@ TPanel::TPanel(char* name) {
 
     if (name) this->panelNameValue = strdup(name);
     else this->panelNameValue = nullptr;
+
+    // Fully verified. Source of truth: panel.cpp.decomp (TPanel::TPanel(char*)) near 0x00464740.
+    // Named panels are registered with panel_system for name-based lookup and destroyPanel flows.
+    if (this->panelNameValue != nullptr && this->panelNameValue[0] != '\0' && panel_system != nullptr) {
+        panel_system->add_panel(this);
+    }
 }
 
-TPanel::~TPanel() {}
+TPanel::~TPanel() {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004649E0
+    this->release_mouse();
+
+    if (panel_system && this->panelNameValue != nullptr) {
+        // Fully verified. Source of truth: panel.cpp.decomp @ 0x004649E0
+        // Only remove if this panel is still registered in panel_system.
+        TPanel* in_system = panel_system->panel(this->panelNameValue);
+        if (in_system == this) {
+            panel_system->remove_panel(this);
+        }
+    }
+
+    if (this->node != nullptr) {
+        if (this->parent_panel != nullptr) {
+            panel_remove_node(this->parent_panel, this->node);
+        }
+        free(this->node);
+        this->node = nullptr;
+    }
+
+    this->first_child_node = nullptr;
+    this->last_child_node = nullptr;
+
+    if (this->clip_rgn) {
+        DeleteObject((HGDIOBJ)this->clip_rgn);
+        this->clip_rgn = nullptr;
+    }
+
+    if (this->parent_panel != nullptr) {
+        this->parent_panel->set_redraw(TPanel::RedrawMode::RedrawFull);
+    }
+
+    if (this->panelNameValue != nullptr) {
+        free(this->panelNameValue);
+        this->panelNameValue = nullptr;
+    }
+}
 long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     this->parent_panel = param_2;
     this->render_area = param_1;
