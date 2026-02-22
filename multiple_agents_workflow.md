@@ -38,7 +38,7 @@ git switch -c agent/<short-task-name>
 ```bash
 git status
 git add -A
-git commit -m "Describe the change, don't be vague or too generic"
+git commit -m "Describe the change, don't be vague or too generic. Then, add a more detailed description in the body of the commit message if needed. Include what you did, what you found, and any assumptions or uncertainties."
 ```
 
 Repeat as needed.
