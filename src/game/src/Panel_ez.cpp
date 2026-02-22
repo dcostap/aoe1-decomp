@@ -19,6 +19,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 // NOTE: This file is a best-effort reimplementation based on immutable references:
 // `src/game/src/Panel_ez.cpp.asm` and `src/game/src/Panel_ez.cpp.decomp`.
@@ -41,6 +42,173 @@ static void trim_in_place(char* s) {
     while (*p == ' ' || *p == '\t') p++;
     if (p != s) memmove(s, p, strlen(p) + 1);
 }
+
+class EasyPseudoEditPanel : public TTextPanel {
+public:
+    EasyPseudoEditPanel(short max_len, FormatType format, int auto_sel) {
+        this->max_len_ = (max_len > 1) ? (max_len - 1) : 259;
+        if (this->max_len_ > 259) {
+            this->max_len_ = 259;
+        }
+        this->format_ = format;
+        this->auto_sel_ = auto_sel;
+        this->select_all_ = 0;
+        this->buffer_[0] = '\0';
+        this->len_ = 0;
+    }
+
+    void easy_set_text(const char* text) {
+        this->buffer_[0] = '\0';
+        this->len_ = 0;
+        if (text != nullptr) {
+            strncpy(this->buffer_, text, (size_t)this->max_len_);
+            this->buffer_[this->max_len_] = '\0';
+            this->len_ = (int)strlen(this->buffer_);
+        }
+        TTextPanel::set_text(this->buffer_);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
+    const char* easy_text() const {
+        return this->buffer_;
+    }
+
+    virtual void set_focus(int param_1) override {
+        TTextPanel::set_focus(param_1);
+        if ((param_1 != 0) && (this->auto_sel_ != 0)) {
+            this->select_all_ = 1;
+        }
+    }
+
+    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) override {
+        (void)param_2;
+        (void)param_3;
+        (void)param_4;
+        (void)param_5;
+
+        if (param_1 == VK_BACK || param_1 == VK_DELETE) {
+            if (this->select_all_ != 0) {
+                this->easy_set_text("");
+                this->select_all_ = 0;
+                return 1;
+            }
+            if (this->len_ > 0) {
+                this->buffer_[this->len_ - 1] = '\0';
+                this->len_--;
+                TTextPanel::set_text(this->buffer_);
+                this->set_redraw(TPanel::RedrawMode::Redraw);
+            }
+            return 1;
+        }
+
+        if (param_1 == VK_RETURN) {
+            if (this->parent_panel != nullptr) {
+                this->parent_panel->action(this, 0, 0, 0);
+                return 1;
+            }
+        } else if (param_1 == VK_ESCAPE) {
+            if (this->parent_panel != nullptr) {
+                this->parent_panel->action(this, 1, 0, 0);
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    virtual long char_action(long param_1, short param_2) override {
+        if (param_2 <= 0) {
+            param_2 = 1;
+        }
+
+        if (param_1 < 0x20) {
+            return 1;
+        }
+
+        while (param_2-- > 0) {
+            char ch = (char)param_1;
+            if (!this->allow_char(ch)) {
+                MessageBeep(0xffffffff);
+                return 1;
+            }
+
+            if (this->select_all_ != 0) {
+                this->buffer_[0] = '\0';
+                this->len_ = 0;
+                this->select_all_ = 0;
+            }
+
+            if (this->len_ >= this->max_len_) {
+                MessageBeep(0xffffffff);
+                return 1;
+            }
+
+            this->buffer_[this->len_] = ch;
+            this->len_++;
+            this->buffer_[this->len_] = '\0';
+        }
+
+        TTextPanel::set_text(this->buffer_);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return 1;
+    }
+
+private:
+    bool allow_char(char c) {
+        if (this->format_ == FormatNumber || this->format_ == FormatInteger || this->format_ == FormatUnsignedInt) {
+            if (c >= '0' && c <= '9') {
+                return true;
+            }
+            if (c == '-' && this->len_ == 0 && this->format_ != FormatUnsignedInt) {
+                return true;
+            }
+            if (c == '.' && this->format_ == FormatNumber) {
+                return strchr(this->buffer_, '.') == nullptr;
+            }
+            return false;
+        }
+
+        if (this->format_ == FormatFile || this->format_ == FormatFileNoExt) {
+            if (c == '.' && this->format_ == FormatFileNoExt) {
+                return false;
+            }
+            if (c == '\\' || c == '/' || c == ':' || c == '"' || c == '*' || c == '?' || c == '<' || c == '>' || c == '|') {
+                return false;
+            }
+            return true;
+        }
+
+        if (this->format_ == FormatPath) {
+            if (c == '"' || c == '*' || c == '?' || c == '<' || c == '>' || c == '|') {
+                return false;
+            }
+            if (c == ':' && this->len_ != 1) {
+                return false;
+            }
+            return true;
+        }
+
+        if (this->format_ == FormatPercent) {
+            if (c < '0' || c > '9') {
+                return false;
+            }
+            if (this->len_ >= 2) {
+                return false;
+            }
+            return true;
+        }
+
+        return isprint((unsigned char)c) != 0;
+    }
+
+private:
+    char buffer_[260];
+    int len_;
+    int max_len_;
+    FormatType format_;
+    int auto_sel_;
+    int select_all_;
+};
 
 static void init_vars(TEasy_Panel* this_) {
     // Matches `TEasy_Panel::init_vars` in `src/game/src/Panel_ez.cpp.decomp` (immutable reference).
@@ -1310,16 +1478,18 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
     // Source of truth: Panel_ez.cpp.decomp @ 0x004696B0
     // params: parent, out_ptr, x, y, w, h, font_index
-    if (!param_2) return 0;
 
-    // Scale from ideal coords to current panel size
-    long scaled_x = (this->ideal_width > 0) ? (param_3 * this->pnl_wid) / this->ideal_width : param_3;
-    long scaled_y = (this->ideal_height > 0) ? (param_4 * this->pnl_hgt) / this->ideal_height : param_4;
-    long scaled_w = (this->ideal_width > 0) ? (param_5 * this->pnl_wid) / this->ideal_width : param_5;
-    long scaled_h = (this->ideal_height > 0) ? (param_6 * this->pnl_hgt) / this->ideal_height : param_6;
+    // Scale from ideal coords to current panel size (source of truth uses unconditional division).
+    long scaled_x = (param_3 * this->pnl_wid) / this->ideal_width;
+    long scaled_y = (param_4 * this->pnl_hgt) / this->ideal_height;
+    long scaled_w = (param_5 * this->pnl_wid) / this->ideal_width;
+    long scaled_h = (param_6 * this->pnl_hgt) / this->ideal_height;
 
     int font_index = (int)param_7;
     if (font_index < 0) font_index = 10;
+
+    // Source of truth calls get_font once before allocation (return value unused).
+    rge_base_game->get_font(font_index);
 
     // Decomp: allocate a string list with 1 empty string entry
     char** string_list = (char**)calloc(1, sizeof(char*));
@@ -1345,13 +1515,7 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
     }
 
     // Decomp: get font and call setup
-    RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(font_index) : nullptr;
-    if (!font) {
-        if (string_list[0]) free(string_list[0]);
-        free(string_list);
-        this->error_code = 1;
-        return 0;
-    }
+    RGE_Font* font = rge_base_game->get_font(font_index);
 
     // Decomp: TTextPanel::setup(list, draw_area, parent, x, y, w, h, font, font_wid, font_hgt,
     //                           back_pic=0, fill_back=0, back_color=0, have_outline=1, outline_color=0xff,
@@ -1369,8 +1533,8 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
         return 0;
     }
 
-    // Decomp: scroll_cur_line (stubbed — just scroll to top)
-    // TListPanel::scroll_cur_line(*param_2, 1, 0, 1);
+    // Source of truth: Panel_ez.cpp.decomp calls `TListPanel::scroll_cur_line(list, 1, 0, 1)` here.
+    (*param_2)->scroll_cur_line(1, 0, 1);
 
     // Decomp: free the temporary string list
     if (string_list[0]) {

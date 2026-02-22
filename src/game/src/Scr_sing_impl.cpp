@@ -186,14 +186,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("SP action: random map setup created ptr=%p err=%d", setup, setup ? setup->error_code : -1);
-CUSTOM_DEBUG_END
             if (setup && setup->error_code == 0) {
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("SP action: tribe_set_current_screen(new=%p)", setup);
-CUSTOM_DEBUG_END
-                tribe_set_current_screen((TPanel*)setup);
+                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+                panel_system->destroyPanel((char*)"Single Player Menu");
                 return 1;
             } else {
                 if (setup) delete setup;
@@ -214,14 +209,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("SP action: deathmatch setup created ptr=%p err=%d", setup, setup ? setup->error_code : -1);
-CUSTOM_DEBUG_END
             if (setup && setup->error_code == 0) {
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("SP action: tribe_set_current_screen(new=%p)", setup);
-CUSTOM_DEBUG_END
-                tribe_set_current_screen((TPanel*)setup);
+                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+                panel_system->destroyPanel((char*)"Single Player Menu");
                 return 1;
             } else {
                 if (setup) delete setup;
@@ -240,7 +230,8 @@ CUSTOM_DEBUG_END
 
             TribeSelectScenarioScreen* scenario = new TribeSelectScenarioScreen();
             if (scenario && scenario->error_code == 0) {
-                tribe_set_current_screen((TPanel*)scenario);
+                panel_system->setCurrentPanel((char*)"Select Scenario Screen", 0);
+                panel_system->destroyPanel((char*)"Single Player Menu");
                 return 1;
             } else {
                 if (scenario) delete scenario;
@@ -254,7 +245,8 @@ CUSTOM_DEBUG_END
 
             TribeLoadSavedGameScreen* load_screen = new TribeLoadSavedGameScreen();
             if (load_screen && load_screen->error_code == 0) {
-                tribe_set_current_screen((TPanel*)load_screen);
+                panel_system->setCurrentPanel((char*)"Load Saved Game Screen", 0);
+                panel_system->destroyPanel((char*)"Single Player Menu");
                 return 1;
             } else {
                 if (load_screen) delete load_screen;
@@ -316,7 +308,8 @@ CUSTOM_DEBUG_END
 
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
             if (menu && menu->error_code == 0) {
-                tribe_set_current_screen((TPanel*)menu);
+                panel_system->setCurrentPanel((char*)"Main Menu", 0);
+                panel_system->destroyPanel((char*)"Single Player Menu");
                 return 1;
             } else {
                 if (menu) delete menu;

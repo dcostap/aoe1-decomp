@@ -37,146 +37,6 @@
 #include <vfw.h>
 #include <io.h>
 
-// Static global to track current screen until TPanel_System is implemented
-static TPanel* gCurrentScreen = nullptr;
-static TPanel* gPendingScreen = nullptr;
-static TPanel* gRetiredScreens[32];
-static int gRetiredScreenCount = 0;
-
-static void tribe_retire_screen_for_later_delete(TPanel* screen) {
-    // Non-original safety shim:
-    // several screen dtors still rely on not-yet-reimplemented panel teardown paths.
-    // Defer deletion so menu transitions remain stable while those dtors are filled in.
-    if (!screen) return;
-
-    if (gRetiredScreenCount < (int)(sizeof(gRetiredScreens) / sizeof(gRetiredScreens[0]))) {
-        gRetiredScreens[gRetiredScreenCount++] = screen;
-        return;
-    }
-
-    // TODO: STUB: retire buffer overflow handling.
-    // Safety-first fallback: never hard-delete here because several legacy screen dtors
-    // still have incomplete parity and may crash during transition teardown.
-    // We intentionally leak this screen instance instead of risking a UAF/crash.
-    CUSTOM_DEBUG_LOG_FMT("tribe_retire_screen_for_later_delete overflow: leaking panel=%s ptr=%p",
-        (screen->panelNameValue ? screen->panelNameValue : "(null)"), screen);
-}
-
-static int tribe_panel_belongs_to_screen(TPanel* panel, TPanel* screen) {
-    if (!panel || !screen) {
-        return 0;
-    }
-
-    // Non-original safety helper:
-    // avoid dereferencing dangling panel pointers after screen switches by clearing owner references
-    // that still point into the outgoing screen tree.
-    TPanel* cursor = panel;
-    int guard = 0;
-    while (cursor && guard < 1024) {
-        if (cursor == screen) {
-            return 1;
-        }
-        cursor = cursor->parent_panel;
-        ++guard;
-    }
-
-    return 0;
-}
-
-static void tribe_clear_panel_system_owners_for_screen(TPanel* screen) {
-    if (!panel_system || !screen) {
-        return;
-    }
-
-    if (tribe_panel_belongs_to_screen(panel_system->mouseOwnerValue, screen)) {
-        panel_system->mouseOwnerValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->keyboardOwnerValue, screen)) {
-        panel_system->keyboardOwnerValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->modalPanelValue, screen)) {
-        panel_system->modalPanelValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->currentPanelValue, screen)) {
-        panel_system->currentPanelValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->prevCurrentChildValue, screen)) {
-        panel_system->prevCurrentChildValue = nullptr;
-    }
-}
-
-static void tribe_apply_screen_switch(TPanel* new_screen) {
-    if (new_screen == gCurrentScreen) return;
-    tribe_clear_panel_system_owners_for_screen(gCurrentScreen);
-
-    if (panel_system && gCurrentScreen) {
-        panel_system->remove_panel(gCurrentScreen);
-    }
-    if (gCurrentScreen) {
-        tribe_retire_screen_for_later_delete(gCurrentScreen);
-        gCurrentScreen = nullptr;
-    }
-
-    gCurrentScreen = new_screen;
-    if (panel_system && gCurrentScreen) {
-        panel_system->add_panel(gCurrentScreen);
-        panel_system->setCurrentPanel(gCurrentScreen, 0);
-    }
-
-    // Non-original safety shim:
-    // some transitions disable input before queueing the new screen and rely on idle to re-enable.
-    // If idle gets starved by a message storm, force one activation pass here so the UI does not
-    // remain stuck with wait-cursor/captured input.
-    if (gCurrentScreen && rge_base_game && rge_base_game->input_enabled == 0) {
-        gCurrentScreen->handle_idle();
-        if (rge_base_game->input_enabled == 0) {
-            rge_base_game->enable_input();
-        }
-    }
-}
-
-void tribe_set_current_screen(TPanel* new_screen) {
-    tribe_apply_screen_switch(new_screen);
-}
-
-void tribe_queue_screen_switch(TPanel* new_screen) {
-    // Non-original safety shim:
-    // queue screen destruction/creation until idle so we do not mutate panel lists while dispatching
-    // the current input message.
-    if (new_screen == gCurrentScreen) {
-        return;
-    }
-
-    if (gPendingScreen && gPendingScreen != new_screen) {
-        delete gPendingScreen;
-    }
-    gPendingScreen = new_screen;
-}
-
-static void tribe_process_pending_screen_switch() {
-    if (!gPendingScreen) {
-        return;
-    }
-    TPanel* next = gPendingScreen;
-    gPendingScreen = nullptr;
-    tribe_apply_screen_switch(next);
-}
-
-static void tribe_retire_panel_by_name(const char* panel_name) {
-    if (panel_system == nullptr || panel_name == nullptr || panel_name[0] == '\0') {
-        return;
-    }
-
-    TPanel* panel = panel_system->panel((char*)panel_name);
-    if (panel == nullptr) {
-        return;
-    }
-
-    tribe_clear_panel_system_owners_for_screen(panel);
-    panel_system->remove_panel(panel);
-    tribe_retire_screen_for_later_delete(panel);
-}
-
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     if (lhs == nullptr || rhs == nullptr) {
         return 0;
@@ -596,62 +456,183 @@ CUSTOM_DEBUG_END
     return 1;
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00520FC0
+static const uint encrypt_codes_table[0x60] = {
+    // 0x00-0x3F
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    // 0x40
+    0x00000000,
+    // 0x41-0x5F ('A'-'_') extracted from the original beta EXE data section @ 0x0058B760.
+    0x00006878, // 'A' -> "hx"
+    0x00002A5F, // 'B' -> "*_"
+    0x00003343, // 'C' -> "3C"
+    0x00003F3E, // 'D' -> "?>"
+    0x0000416D, // 'E' -> "Am"
+    0x00004A6D, // 'F' -> "Jm"
+    0x0000315A, // 'G' -> "1Z"
+    0x00004029, // 'H' -> "@)"
+    0x0000234C, // 'I' -> "#L"
+    0x00007D7B, // 'J' -> "}{"
+    0x00006357, // 'K' -> "cW"
+    0x00002B21, // 'L' -> "+!"
+    0x00002563, // 'M' -> "%c"
+    0x00006457, // 'N' -> "dW"
+    0x0000255E, // 'O' -> "%^"
+    0x0000773E, // 'P' -> "w>"
+    0x00006878, // 'Q' -> "hx"
+    0x00002525, // 'R' -> "%%"
+    0x00003124, // 'S' -> "1$"
+    0x0000205E, // 'T' -> " ^"
+    0x00005F6A, // 'U' -> "_j"
+    0x00002654, // 'V' -> "&T"
+    0x00003433, // 'W' -> "43"
+    0x00002928, // 'X' -> ")("
+    0x00003A3A, // 'Y' -> "::"
+    0x0000533F, // 'Z' -> "S?"
+    0x0000264B, // '[' -> "&K"
+    0x00005279, // '\\' -> "Ry"
+    0x00003758, // ']' -> "7X"
+    0x00003B69, // '^' -> ";i"
+    0x00002A26, // '_' -> "*&"
+};
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00520FC0
+void encrypt_codes(char* in, char* out, int max_len) {
+    char c = *in;
+    int out_len = 0;
+    char* next = in + 1;
+
+    while (c != '\0' && out_len < max_len) {
+        if (c < 'A' || '_' < c) {
+            *out = c;
+            out = out + 1;
+            out_len = out_len + 1;
+        } else {
+            uint v = encrypt_codes_table[(unsigned char)c];
+            *out = (char)((uint)v >> 8);
+            out[1] = (char)v;
+            out = out + 2;
+            out_len = out_len + 2;
+        }
+
+        c = *next;
+        next = next + 1;
+    }
+
+    *out = '\0';
+}
+
 int TRIBE_Game::setup_cmd_options() {
     // Source of truth: tribegam.cpp.decomp @ 0x00521FA0
-    char cmd_line_upper[260];
-    strncpy(cmd_line_upper, this->prog_info->cmd_line, 255);
-    cmd_line_upper[255] = '\0';
-    CharUpperA(cmd_line_upper);
+    char cmd_line_and_temp[0x204];
+    char* cmd_line = cmd_line_and_temp + 4;
+    char* temp_str = cmd_line_and_temp + 0x104;
+    char encstr[512];
 
-    if (strstr(cmd_line_upper, "NOTERRAINSOUND")) {
+    strncpy(cmd_line, this->prog_info->cmd_line, 0xff);
+    temp_str[3] = '\0';
+    CharUpperA(cmd_line);
+
+    encrypt_codes(cmd_line, encstr, 0x200);
+
+    if (strstr(cmd_line, "NOTERRAINSOUND") != nullptr) {
         disable_terrain_sounds = 1;
     }
 
-    // Pop limit from encrypted command line (simplified — skip encrypt_codes)
-    // TODO(accuracy): encrypt_codes for obfuscated pop limit argument
+    // Obfuscated pop-limit argument parsed out of the encrypted command line.
+    char* pcVar3 = strstr(encstr, "+!#L%c#L ^=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
+        }
 
-    if (strstr(cmd_line_upper, "QUICK1")) {
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            temp_str[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        temp_str[iVar2] = '\0';
+
+        iVar2 = atol(temp_str);
+        if (iVar2 < 0x1a) {
+            iVar2 = 0x19;
+        } else if (200 < iVar2) {
+            iVar2 = 200;
+        }
+        this->setPopLimit((unsigned char)iVar2);
+    }
+
+    if (strstr(cmd_line, "QUICK1") != nullptr) {
         quick_start_game_mode = 1;
     }
 
-    // SCN= : startup scenario from command line
-    char* scn_arg = strstr(cmd_line_upper, "SCN=");
-    if (scn_arg) {
-        while (*scn_arg && *scn_arg != '=') scn_arg++;
-        scn_arg++; // skip '='
-        int i = 0;
-        while (*scn_arg && *scn_arg != ' ' && i < 255) {
-            this->startup_scenario[i++] = *scn_arg++;
+    pcVar3 = strstr(cmd_line, "SCN=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
         }
-        this->startup_scenario[i] = '\0';
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            this->startup_scenario[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        this->startup_scenario[iVar2] = '\0';
     }
 
-    // EXIT= : auto exit time
-    char* exit_arg = strstr(cmd_line_upper, "EXIT=");
-    if (exit_arg) {
-        while (*exit_arg && *exit_arg != '=') exit_arg++;
-        exit_arg++;
-        char temp[256];
-        int i = 0;
-        while (*exit_arg && *exit_arg != ' ' && i < 255) {
-            temp[i++] = *exit_arg++;
+    pcVar3 = strstr(cmd_line, "EXIT=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
         }
-        temp[i] = '\0';
-        this->auto_exit_time = atol(temp);
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            temp_str[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        temp_str[iVar2] = '\0';
+        this->auto_exit_time = (ulong)atol(temp_str);
     }
 
-    // GAM= : startup saved game from command line
-    char* gam_arg = strstr(cmd_line_upper, "GAM=");
-    if (gam_arg) {
-        while (*gam_arg && *gam_arg != '=') gam_arg++;
-        gam_arg++;
-        int i = 0;
-        while (*gam_arg && *gam_arg != ' ' && i < 255) {
-            this->startup_game[i++] = *gam_arg++;
+    pcVar3 = strstr(cmd_line, "GAM=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
         }
-        this->startup_game[i] = '\0';
-        // Append .gmx extension if no extension present
-        if (!strchr(this->startup_game, '.')) {
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            this->startup_game[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        this->startup_game[iVar2] = '\0';
+
+        if (strchr(this->startup_game, '.') == 0) {
             strcat(this->startup_game, ".gmx");
         }
     }
@@ -1317,7 +1298,9 @@ int TRIBE_Game::create_game_screen() {
 
             if (mp_started != 0) {
                 CUSTOM_DEBUG_LOG("create_game_screen: switching to game screen");
-                tribe_set_current_screen(screen);
+                if (panel_system != nullptr) {
+                    panel_system->setCurrentPanel((char*)"Game Screen", 0);
+                }
                 if (panel_system != nullptr) {
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
@@ -1326,7 +1309,9 @@ int TRIBE_Game::create_game_screen() {
                 TRIBE_Screen_Wait* wait_screen = new TRIBE_Screen_Wait();
                 if (wait_screen != nullptr && wait_screen->error_code == 0) {
                     wait_screen->set_text(0x454);
-                    tribe_set_current_screen(wait_screen);
+                    if (panel_system != nullptr) {
+                        panel_system->setCurrentPanel((char*)"Multiplayer Wait Screen", 0);
+                    }
                 } else {
                     if (wait_screen != nullptr) {
                         delete wait_screen;
@@ -1348,16 +1333,17 @@ int TRIBE_Game::create_game_screen() {
             }
 
             if (panel_system != nullptr) {
-                tribe_retire_panel_by_name("Single Player Menu");
-                tribe_retire_panel_by_name("Game Setup Screen");
-                tribe_retire_panel_by_name("Select Scenario Screen");
-                tribe_retire_panel_by_name("Game Settings Screen");
-                tribe_retire_panel_by_name("Load Saved Game Screen");
-                tribe_retire_panel_by_name("MP Setup Screen");
-                tribe_retire_panel_by_name("Join Screen");
-                tribe_retire_panel_by_name("MP Startup Screen");
-                tribe_retire_panel_by_name("Main Menu");
-                tribe_retire_panel_by_name("Campaign Selection Screen");
+                // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00527830
+                panel_system->destroyPanel((char*)"Single Player Menu");
+                panel_system->destroyPanel((char*)"Game Setup Screen");
+                panel_system->destroyPanel((char*)"Select Scenario Screen");
+                panel_system->destroyPanel((char*)"Game Settings Screen");
+                panel_system->destroyPanel((char*)"Load Saved Game Screen");
+                panel_system->destroyPanel((char*)"MP Setup Screen");
+                panel_system->destroyPanel((char*)"Join Screen");
+                panel_system->destroyPanel((char*)"MP Startup Screen");
+                panel_system->destroyPanel((char*)"Main Menu");
+                panel_system->destroyPanel((char*)"Campaign Selection Screen");
             }
 
             if (this->prog_mode != 3) {
@@ -1752,7 +1738,9 @@ int TRIBE_Game::start_menu() {
 
     // The original uses `TPanelSystem::setCurrentPanel(panel_system, "Main Menu", 0)`.
     // We do best-effort equivalent with our simplified panel-system implementation.
-    tribe_set_current_screen(menu);
+    if (panel_system != nullptr) {
+        panel_system->setCurrentPanel((char*)"Main Menu", 0);
+    }
 
     // In the original, this is done via a virtual call at vtable +0xC (set_prog_mode).
     this->set_prog_mode(2);
@@ -2014,7 +2002,9 @@ void TRIBE_Game::stop_video(int p1) {
                 (this->randomGame() == 0 || this->campaignGame() != 0)) {
                 TRIBE_Mission_Screen* mission = new TRIBE_Mission_Screen(desc, '\0', this->world->scenario->mission_picture);
                 if (mission != nullptr && mission->error_code == 0) {
-                    tribe_set_current_screen(mission);
+                    if (panel_system != nullptr) {
+                        panel_system->setCurrentPanel((char*)"Mission Dialog", 0);
+                    }
                     return;
                 }
                 if (mission != nullptr) {
@@ -2043,7 +2033,9 @@ void TRIBE_Game::stop_video(int p1) {
 
             TribeAchievementsScreen* ach = new TribeAchievementsScreen(msg, 1);
             if (ach != nullptr && ach->error_code == 0) {
-                tribe_set_current_screen(ach);
+                if (panel_system != nullptr) {
+                    panel_system->setCurrentPanel((char*)"Achievements Screen", 0);
+                }
 
                 TMusic_System* music = this->music_system;
                 if (music != nullptr) {
@@ -2331,8 +2323,6 @@ int TRIBE_Game::handle_idle() {
     //    - 4, 5, 6: in-game world update
     //    - else (2): menu mode — draw only (base already ran panel idle)
 
-    tribe_process_pending_screen_switch();
-
     int base_result = RGE_Base_Game::handle_idle();
     if (base_result == 0) {
         return 0;
@@ -2408,19 +2398,14 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     (void)p3;
     (void)p4;
 
-    tribe_process_pending_screen_switch();
-
     TPanel* to_draw = nullptr;
     if (panel_system && panel_system->currentPanelValue) {
         to_draw = panel_system->currentPanelValue;
-    } else {
-        to_draw = gCurrentScreen;
     }
 
     if (to_draw) {
         if (this->input_enabled == 0) {
-            // Same safety intent as `tribe_apply_screen_switch`: keep UI responsive even if the
-            // idle path is not reached frequently.
+            // Keep UI responsive even if the idle path is not reached frequently.
             to_draw->handle_idle();
             if (this->input_enabled == 0) {
                 this->enable_input();

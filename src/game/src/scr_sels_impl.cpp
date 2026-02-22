@@ -7,6 +7,8 @@
 #include "../include/RGE_Scenario_File_Entry.h"
 #include "../include/RGE_Scenario_Header.h"
 #include "../include/TTextPanel.h"
+#include "../include/TListPanel.h"
+#include "../include/TScrollBarPanel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/globals.h"
 
@@ -50,13 +52,40 @@ void sels_set_mission_text(TribeSelectScenarioScreen* owner) {
         return;
     }
 
-    int idx = owner->last_scenario_line;
-    if (idx < 0 || idx >= owner->scenarioCount) {
-        idx = 0;
+    int idx = 0;
+    if (owner->scenarioList) {
+        long line = ((TTextPanel*)owner->scenarioList)->get_line();
+        if (line >= 0 && line < owner->scenarioCount) {
+            idx = (int)line;
+        }
+    } else if (owner->last_scenario_line >= 0 && owner->last_scenario_line < owner->scenarioCount) {
+        idx = owner->last_scenario_line;
     }
 
     owner->missionText->set_text(owner->scenarioMission[idx]);
     owner->last_scenario_line = idx;
+}
+
+void sels_fill_scenario_list(TribeSelectScenarioScreen* owner) {
+    if (!owner || !owner->scenarioList || !rge_base_game || !rge_base_game->scenario_info) {
+        return;
+    }
+
+    TTextPanel* list_text = (TTextPanel*)owner->scenarioList;
+    list_text->empty_list();
+    list_text->sorted = 1;
+
+    RGE_Scenario_File_Info* info = rge_base_game->scenario_info;
+    if (!info->scenarios || info->scenario_num <= 0) {
+        list_text->append_line((long)0x25fd, 0); // "Loading list of scenarios..."
+        return;
+    }
+
+    for (int i = 0; i < (int)info->scenario_num; ++i) {
+        RGE_Scenario_File_Entry* entry = &info->scenarios[i];
+        const char* scen_name = (entry->name[0] != '\0') ? entry->name : "(unnamed scenario)";
+        list_text->append_line((char*)scen_name, i);
+    }
 }
 
 int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
@@ -120,6 +149,11 @@ int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
             }
         }
     }
+
+    sels_fill_scenario_list(owner);
+    if (owner->scenarioList) {
+        owner->scenarioList->scroll_cur_line(1, (short)owner->last_scenario_line, 1);
+    }
     return 1;
 }
 
@@ -129,27 +163,25 @@ void sels_activate_panels(TribeSelectScenarioScreen* owner) {
     if (owner->missionTitle) owner->missionTitle->set_active(1);
     if (owner->missionText) owner->missionText->set_active(1);
 
-    TPanel* tabs[2];
-    tabs[0] = (TPanel*)owner->okButton;
-    tabs[1] = (TPanel*)owner->cancelButton;
-    owner->set_tab_order(tabs, 2);
-
-    if (owner->okButton) {
-        owner->curr_child = (TPanel*)owner->okButton;
-    }
+    TPanel* tabs[3];
+    tabs[0] = (TPanel*)owner->scenarioList;
+    tabs[1] = (TPanel*)owner->okButton;
+    tabs[2] = (TPanel*)owner->cancelButton;
+    owner->set_tab_order(tabs, 3);
+    if (owner->okButton) owner->curr_child = (TPanel*)owner->okButton;
 }
 
 void sels_send_settings(TribeSelectScenarioScreen* owner) {
     if (!owner || !rge_base_game || !rge_base_game->scenario_info) return;
 
-    int idx = owner->last_scenario_line;
-    if (idx < 0 || idx >= owner->scenarioCount) {
-        idx = 0;
-    }
-
     const char* scenario_name = "";
-    if (idx >= 0 && idx < owner->scenarioCount) {
-        scenario_name = rge_base_game->scenario_info->scenarios[idx].name;
+    if (owner->scenarioList) {
+        TTextPanel* list_text = (TTextPanel*)owner->scenarioList;
+        long line = list_text->get_line();
+        char* text = (line >= 0) ? list_text->get_text(line) : nullptr;
+        if (text && text[0] != '\0') {
+            scenario_name = text;
+        }
     }
 
     rge_base_game->setScenarioGame(1);
@@ -210,12 +242,28 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Se
     this->scenarioListWidth = 600;
     this->scenarioListHeight = 0x107;
 
+    if (!this->create_list((TPanel*)this, &this->scenarioList, this->scenarioListX, this->scenarioListY, this->scenarioListWidth, this->scenarioListHeight, 0xb)) {
+        this->error_code = 1;
+        return;
+    }
+    this->scenarioList->set_second_column_pos((this->pnl_wid * (this->scenarioListWidth - 0x3c)) / this->ideal_width);
+    this->scenarioList->set_text((long)0x25fd); // "Loading list of scenarios..."
+    if (!this->create_auto_scrollbar(&this->scenarioScrollbar, (TTextPanel*)this->scenarioList, 0x14)) {
+        this->error_code = 1;
+        return;
+    }
+    if (this->scenarioScrollbar) {
+        this->scenarioScrollbar->set_help_info(-1, -1);
+    }
+
     if (!this->create_text((TPanel*)this, &this->scenarioTitle, 0x25fe, this->scenarioListX, this->scenarioListY - 0x14, 300, 0x14, 4, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }
 
-    if (!this->create_text((TPanel*)this, &this->scenarioPlayersTitle, 0x25ff, this->scenarioListX, this->scenarioListY, this->scenarioListWidth, 0x14, 4, 0, 0, 0)) {
+    if (!this->create_text((TPanel*)this, &this->scenarioPlayersTitle, 0x25ff,
+                           this->scenarioListX + this->scenarioListWidth - 0xdc, this->scenarioListY - 0x14,
+                           200, 0x14, 4, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }
@@ -235,19 +283,31 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Se
         this->error_code = 1;
         return;
     }
-
-    // TODO(accuracy): original constructor builds a real `TListPanel` + scrollbars.
-    // Current TEasy_Panel list/scrollbar helpers are still stubs, so we keep a read-only scenario view for now.
+    if (this->use_bevels) {
+        this->missionText->set_bevel_info(3,
+            (int)this->bevel_color1, (int)this->bevel_color2,
+            (int)this->bevel_color3, (int)this->bevel_color4,
+            (int)this->bevel_color5, (int)this->bevel_color6);
+    }
+    if (!this->create_auto_scrollbar(&this->missionScrollbar, this->missionText, 0x14)) {
+        this->error_code = 1;
+        return;
+    }
+    if (this->missionScrollbar) {
+        this->missionScrollbar->set_help_info(0x7532, -1);
+    }
 
     if (!this->create_button((TPanel*)this, &this->okButton, 0xfa1, 0, 0x46, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }
+    this->okButton->set_help_info(0x7531, -1);
 
     if (!this->create_button((TPanel*)this, &this->cancelButton, 0xfa2, 0, 0x14a, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }
+    this->cancelButton->set_help_info(0x7532, -1);
     this->cancelButton->hotkey = 0x1b;
     this->cancelButton->hotkey_shift = 0;
 
@@ -258,14 +318,15 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Se
     this->close_button->set_active(1);
     this->close_button->set_positioning((PositionMode)9, 4, 4, 4, 4, 0x11, 0x11, 0x11, 0x11, (TPanel*)0, (TPanel*)0, (TPanel*)0, (TPanel*)0);
 
-    if (sels_load_scenarios(this)) {
-        this->scenariosLoaded = 1;
+    const int loaded = sels_load_scenarios(this);
+    this->scenariosLoaded = 1; // Source of truth: scr_sels.cpp.decomp sets this after the first attempt.
+    if (loaded) {
         sels_set_mission_text(this);
     } else {
-        this->scenariosLoaded = 0;
         this->missionText->set_text((char*)"No scenarios available.");
     }
     sels_activate_panels(this);
+    this->set_curr_child((TPanel*)this->scenarioList);
 }
 
 TribeSelectScenarioScreen::~TribeSelectScenarioScreen() {
@@ -287,11 +348,15 @@ TribeSelectScenarioScreen::~TribeSelectScenarioScreen() {
 
 long TribeSelectScenarioScreen::handle_idle() {
     if (this->scenariosLoaded == 0) {
-        if (sels_load_scenarios(this)) {
-            this->scenariosLoaded = 1;
+        const int loaded = sels_load_scenarios(this);
+        if (loaded) {
             sels_set_mission_text(this);
-            sels_activate_panels(this);
+        } else if (this->missionText) {
+            this->missionText->set_text((char*)"No scenarios available.");
         }
+        this->scenariosLoaded = 1;
+        sels_activate_panels(this);
+        this->set_curr_child((TPanel*)this->scenarioList);
     }
 
     if (rge_base_game && rge_base_game->input_enabled == 0) {
@@ -310,8 +375,8 @@ long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong para
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)setup, 0);
-                panel_system->destroyPanel("Select_Scenario_Screen");
+                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+                panel_system->destroyPanel((char*)"Select Scenario Screen");
             } else {
                 if (setup) delete setup;
                 sels_enable_input();
@@ -325,8 +390,8 @@ long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong para
 
             TribeSPMenuScreen* menu = new TribeSPMenuScreen();
             if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("Select_Scenario_Screen");
+                panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
+                panel_system->destroyPanel((char*)"Select Scenario Screen");
             } else {
                 if (menu) delete menu;
                 sels_enable_input();

@@ -86,6 +86,17 @@ void TPanelSystem::DisableIME() {
 void TPanelSystem::add_panel(TPanel* panel) {
     if (!panel) return;
 
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D80 (TPanelSystem::addPanel)
+    // Only add if a panel with the same name is not already present.
+    if (panel->panelNameValue != nullptr && panel->panelNameValue[0] != '\0') {
+        for (PanelNode* it = this->panelListValue; it != nullptr; it = it->next_node) {
+            if (it->panel && it->panel->panelNameValue &&
+                strcmp(it->panel->panelNameValue, panel->panelNameValue) == 0) {
+                return;
+            }
+        }
+    }
+
     PanelNode* newNode = new PanelNode();
     newNode->panel = panel;
     newNode->next_node = this->panelListValue;
@@ -97,6 +108,7 @@ void TPanelSystem::add_panel(TPanel* panel) {
     this->panelListValue = newNode;
     this->numberActivePanelsValue++;
     // Decomp: addPanel does NOT set currentPanelValue; that's done by setCurrentPanel.
+    panel->previousPanelValue = nullptr;
 }
 
 void TPanelSystem::remove_panel(TPanel* panel) {
@@ -177,21 +189,6 @@ int TPanelSystem::setCurrentPanel(char* name, int modal) {
 void TPanelSystem::setCurrentPanel(TPanel* panel, int modal) {
     // Source of truth: panel.cpp.decomp @ 0x00464260
     if (!panel) return;
-
-    // Add panel to system if not already present
-    // (not in decomp, but needed for newly created screens)
-    bool found = false;
-    PanelNode* curr = this->panelListValue;
-    while (curr) {
-        if (curr->panel == panel) {
-            found = true;
-            break;
-        }
-        curr = curr->next_node;
-    }
-    if (!found) {
-        this->add_panel(panel);
-    }
 
     // Decomp: save previous panel, unfocus old, focus new
     panel->previousPanelValue = this->currentPanelValue;

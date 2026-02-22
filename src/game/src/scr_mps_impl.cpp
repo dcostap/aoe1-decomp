@@ -671,6 +671,28 @@ void mps_enable_input() {
     rge_base_game->enable_input();
 }
 
+static int mps_ensure_multiplayer_comm() {
+    if (!rge_base_game || rge_base_game->multiplayerGame() == 0) {
+        return 1;
+    }
+
+    if (rge_base_game->comm_handler != nullptr && comm == nullptr) {
+        comm = rge_base_game->comm_handler;
+    }
+
+    if (rge_base_game->comm_handler == nullptr || comm == nullptr) {
+        if (rge_base_game->reset_comm() == 0) {
+            return 0;
+        }
+    }
+
+    if (rge_base_game->comm_handler != nullptr && comm == nullptr) {
+        comm = rge_base_game->comm_handler;
+    }
+
+    return (rge_base_game->comm_handler != nullptr && comm != nullptr) ? 1 : 0;
+}
+
 void fillPlayers(TribeMPSetupScreen* owner) {
     // Source of truth: scr_mps.cpp.decomp (`TribeMPSetupScreen::fillPlayers`).
     // This branch currently targets Single Player Random Map only.
@@ -885,6 +907,11 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     this->resend_game_options = 0;
 
     if (!rge_base_game || !rge_base_game->draw_area) {
+        this->error_code = 1;
+        return;
+    }
+
+    if (!mps_ensure_multiplayer_comm()) {
         this->error_code = 1;
         return;
     }
@@ -1403,6 +1430,10 @@ int TribeMPSetupScreen::startGame() {
         return 0;
     }
 
+    if (!mps_ensure_multiplayer_comm()) {
+        return 0;
+    }
+
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
     TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
     int send_options = 0;
@@ -1413,11 +1444,6 @@ int TribeMPSetupScreen::startGame() {
     msg_small[0] = '\0';
 
     if (rge_base_game->multiplayerGame() != 0) {
-        if (comm_handler == nullptr) {
-            // TODO: STUB: multiplayer comm object should always exist in this path.
-            return 0;
-        }
-
         if (comm_handler->IsHost() == 0) {
             return 0;
         }
@@ -1695,9 +1721,8 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
                 rge_base_game->disable_input();
                 // Decomp: operator_new(0x560) then constructor does all setup
                 TribeGameSettingsScreen* settingsScreen = new TribeGameSettingsScreen();
-                // Use pointer overload — name-based lookup won't find it yet
                 if (settingsScreen && settingsScreen->error_code == 0) {
-                    panel_system->setCurrentPanel((TPanel*)settingsScreen, 0);
+                    panel_system->setCurrentPanel((char*)"Game Settings Screen", 0);
                 } else {
                     if (settingsScreen) {
                         delete settingsScreen;
@@ -1705,7 +1730,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
                     mps_enable_input();
                 }
             } else {
-                panel_system->setCurrentPanel(existing, 0);
+                panel_system->setCurrentPanel((char*)"Game Settings Screen", 0);
             }
             return 1;
         }
@@ -1724,8 +1749,8 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
 
             TribeSPMenuScreen* menu = new TribeSPMenuScreen();
             if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("MP Setup Screen");
+                panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
+                panel_system->destroyPanel((char*)"MP Setup Screen");
             } else {
                 if (menu) delete menu;
                 mps_enable_input();

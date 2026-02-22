@@ -14,12 +14,15 @@
 #include "../include/RGE_Doppleganger_Creator.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/TMousePointer.h"
+#include "../include/TCommunications_Handler.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <new>
+#include <stdarg.h>
+#include <stdio.h>
 
 static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int dopple) {
     if (self == nullptr) {
@@ -1148,8 +1151,48 @@ void RGE_Player::remake_visible_map() {
 uchar RGE_Player::get_resigned() { return this->resigned; }
 int RGE_Player::computerPlayer() { return this->computerPlayerValue; }
 
-void RGE_Player::sendChatMessage(int param_1, int param_2, char* param_3) {
-    // TODO(accuracy): implement chat message sending
+void __cdecl RGE_Player::sendChatMessage(int param_1, int param_2, char* param_3, ...) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F2A0 (and player.cpp.asm @ 0x0046F2A0)
+    char textOut[1025];
+
+    va_list args;
+    va_start(args, param_3);
+    vsprintf(textOut + 4, param_3, args);
+    va_end(args);
+
+    if (textOut[4] == '\0') {
+        return;
+    }
+
+    TCommunications_Handler* comm_handler = this->world->commands->com_hand;
+
+    uint slot = 1;
+    int playerCount = rge_base_game->numberPlayers();
+    if (playerCount > 0) {
+        do {
+            const int player_id = rge_base_game->playerID((int)slot);
+            if (player_id == param_1) {
+                comm_handler->SendChatMsg((uint)this->id, slot, textOut + 4);
+            }
+            slot += 1;
+            playerCount = rge_base_game->numberPlayers();
+        } while ((int)slot <= playerCount);
+    }
+
+    if (param_2 == 1 && param_1 != this->id) {
+        slot = 1;
+        playerCount = rge_base_game->numberPlayers();
+        if (playerCount > 0) {
+            do {
+                const int player_id = rge_base_game->playerID((int)slot);
+                if (player_id == this->id) {
+                    comm_handler->SendChatMsg((uint)this->id, slot, textOut + 4);
+                }
+                slot += 1;
+                playerCount = rge_base_game->numberPlayers();
+            } while ((int)slot <= playerCount);
+        }
+    }
 }
 
 void RGE_Player::set_color_table(uchar param_1) {

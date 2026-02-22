@@ -88,7 +88,7 @@ public:
     int currentUpdatePathingAttempts();
     int availablePathingAttempts(int param_1);
     void incrementPathingAttempts();
-    void sendChatMessage(int param_1, int param_2, char* param_3);
+    void __cdecl sendChatMessage(int param_1, int param_2, char* param_3, ...);
     void set_color_table(uchar param_1);
     void win_game_now();
     void victory_if_game_on();

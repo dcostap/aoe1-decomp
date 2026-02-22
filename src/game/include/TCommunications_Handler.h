@@ -141,6 +141,10 @@ public:
     void InitPlayerInformation(uint player_number, ulong dpid, char* friendly_name, char* formal_name);
     void ResetLastCommunicationTimes();
     void CheckPingTime(int p1);
+    void SendGroupChatMsg(char* param_1);
+    void SendChatMsgAll(char* param_1);
+    void SendChatMsg(uint param_1, uint param_2, char* param_3);
+    long TXChat(uint param_1, uchar* param_2, char* param_3);
     void SendStoredMessages();
     int PreprocessMessages(ulong p1, char* p2, ulong p3, ulong p4, int p5);
     int OptionsChanged;
