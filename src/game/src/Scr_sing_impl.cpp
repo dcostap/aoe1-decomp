@@ -272,14 +272,8 @@ CUSTOM_DEBUG_END
 
                 TRIBE_Screen_Name* name_screen = new TRIBE_Screen_Name();
                 if (name_screen && name_screen->error_code == 0) {
-                    if (panel_system) {
-                        panel_system->add_panel((TPanel*)name_screen);
-                        panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
-                        panel_system->destroyPanel((char*)"Single Player Menu");
-                        return 1;
-                    }
-                    delete name_screen;
-                    sp_enable_input();
+                    panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
+                    panel_system->destroyPanel((char*)"Single Player Menu");
                     return 1;
                 }
 

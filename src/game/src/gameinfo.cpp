@@ -151,30 +151,23 @@ void RGE_Campaign_Info::save(int param_1) {
 
 long RGE_Campaign_Info::get_scenario_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044CB20
-    if (this->campaign == nullptr) {
-        if (param_2) {
-            *param_2 = -1;
-        }
-        return -1;
-    }
-
-    // Allocate up to last unlocked scenario (inclusive).
-    char** list = (char**)calloc((size_t)(this->last_scenario + 1), 4);
-    if (param_1) {
+    if (this->campaign != nullptr) {
+        char** list = (char**)calloc((size_t)(this->last_scenario + 1), 4);
         *param_1 = list;
-    }
 
-    if (this->last_scenario >= 0 && list != nullptr) {
-        for (long i = 0; i <= this->last_scenario; ++i) {
-            char* name = this->campaign->get_scenario_name(i);
-            getstring(&list[i], name);
+        if (-1 < this->last_scenario) {
+            for (long i = 0; i <= this->last_scenario; ++i) {
+                char* name = this->campaign->get_scenario_name(i);
+                getstring(&list[i], name);
+            }
         }
+
+        *param_2 = this->current_scenario;
+        return this->last_scenario + 1;
     }
 
-    if (param_2) {
-        *param_2 = this->current_scenario;
-    }
-    return this->last_scenario + 1;
+    *param_2 = -1;
+    return -1;
 }
 
 RGE_Person_Info::RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long param_3) {
