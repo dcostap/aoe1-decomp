@@ -152,7 +152,7 @@ if !CHANGED_COUNT! GTR 0 (
     REM Use a response file to avoid hitting the Windows command line length limit.
     set "CHANGED_RSP=%OBJ_DIR%\changed_sources.rsp"
     del /f /q "!CHANGED_RSP!" >nul 2>nul
-    powershell -NoProfile -Command "$env:CHANGED_SOURCES -split ' ' | Where-Object { $_ -and $_.Length -gt 0 } | ForEach-Object { '\"' + $_ + '\"' } | Set-Content -LiteralPath '!CHANGED_RSP!'" >nul
+    powershell -NoProfile -Command "$out=@(); foreach($s in ($env:CHANGED_SOURCES -split ' ')) { if($s -and $s.Length -gt 0) { $out += $s } }; Set-Content -LiteralPath '!CHANGED_RSP!' -Value $out -Encoding ASCII" >nul
 
     cl /nologo /c /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ /MP /FS ^
        /I"%INC_DIR%" /I"%DP_INC%" ^
