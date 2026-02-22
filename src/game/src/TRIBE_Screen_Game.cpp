@@ -846,6 +846,20 @@ void TRIBE_Screen_Game::handle_game_update() {
         }
     }
 
+    if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
+        RGE_View* v = (RGE_View*)this->runtime.main_view;
+        if (v->player != player) {
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT(
+                "TRIBE_Screen_Game::handle_game_update: binding main_view player old=%p new=%p curr_player=%d",
+                v->player,
+                player,
+                (this->runtime.world != nullptr) ? (int)this->runtime.world->curr_player : -1);
+            CUSTOM_DEBUG_END
+            v->player = player;
+        }
+    }
+
     if (this->runtime.world != nullptr && this->runtime.world->score_displayed != this->runtime.last_score_display) {
         this->runtime.last_score_display = this->runtime.world->score_displayed;
         this->command_score((int)this->runtime.world->score_displayed);

@@ -1065,6 +1065,7 @@ void RGE_Game_World::selectNextComputerPlayer(int param_1) {
 uchar RGE_Game_World::update() {
     // Source of truth: world.cpp.decomp / world.cpp.asm (update @ 0x00542ED0).
     // Keep timing/cycle flow close to original so single-player simulation advances.
+    static int s_world_update_debug_logs = 0;
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
 
     int cycle_time = -1;
@@ -1110,8 +1111,35 @@ uchar RGE_Game_World::update() {
 
     this->world_time_delta = this->world_time - this->old_world_time;
     if (this->world_time_delta != 0 || first_tick != 0) {
-        this->commands->do_commands();
-        this->scenario->update();
+        CUSTOM_DEBUG_BEGIN
+        if (s_world_update_debug_logs < 16) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_Game_World::update tick begin world_time=%lu delta=%lu commands=%p scenario=%p player_num=%d curr_player=%d",
+                (unsigned long)this->world_time,
+                (unsigned long)this->world_time_delta,
+                this->commands,
+                this->scenario,
+                (int)this->player_num,
+                (int)this->curr_player);
+            s_world_update_debug_logs++;
+        }
+        CUSTOM_DEBUG_END
+
+        if (this->commands != nullptr) {
+            this->commands->do_commands();
+        } else {
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("RGE_Game_World::update: commands is null, skipping do_commands");
+            CUSTOM_DEBUG_END
+        }
+
+        if (this->scenario != nullptr) {
+            this->scenario->update();
+        } else {
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("RGE_Game_World::update: scenario is null, skipping scenario->update");
+            CUSTOM_DEBUG_END
+        }
 
         this->world_time_delta_seconds = (float)this->world_time_delta * 0.001f;
         world_update_counter = world_update_counter + 1;

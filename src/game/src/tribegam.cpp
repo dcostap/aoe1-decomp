@@ -1233,6 +1233,14 @@ int TRIBE_Game::create_game(int p1) {
 
     this->set_map_visible('\0');
     CUSTOM_DEBUG_LOG("create_game: set_map_visible done");
+    CUSTOM_DEBUG_BEGIN
+#if CUSTOM_DEBUG_ENABLED
+    // Development-only override: keep map visible to avoid all-black in-game screens
+    // while world/visibility parity is still in progress.
+    this->set_map_visible('\x01');
+    CUSTOM_DEBUG_LOG("create_game: DEV override set_map_visible(1) for easier debugging");
+#endif
+    CUSTOM_DEBUG_END
 
     // Full visibility check
     if (this->fullVisibility() != 0) {
@@ -2358,7 +2366,21 @@ int TRIBE_Game::handle_idle() {
     //    - 4, 5, 6: in-game world update
     //    - else (2): menu mode — draw only (base already ran panel idle)
 
+    static int s_tribe_idle_logs = 0;
     int base_result = RGE_Base_Game::handle_idle();
+    CUSTOM_DEBUG_BEGIN
+    if (s_tribe_idle_logs < 20) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Game::handle_idle enter base_result=%d prog_mode=%d inHandleIdle=%d world=%p game_screen=%p panel=%p",
+            base_result,
+            this->prog_mode,
+            this->inHandleIdle,
+            this->world,
+            this->game_screen,
+            (panel_system != nullptr) ? panel_system->currentPanelValue : nullptr);
+        s_tribe_idle_logs++;
+    }
+    CUSTOM_DEBUG_END
     if (base_result == 0) {
         return 0;
     }
@@ -2390,13 +2412,35 @@ int TRIBE_Game::handle_idle() {
         }
     } else if (pm == 4 || pm == 5 || pm == 6) {
         // In-game mode: world update + game screen update
+        CUSTOM_DEBUG_BEGIN
+        if (s_tribe_idle_logs < 24) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "TRIBE_Game::handle_idle in-game branch out_of_sync2=%d world=%p game_screen=%p",
+                out_of_sync2,
+                this->world,
+                this->game_screen);
+            s_tribe_idle_logs++;
+        }
+        CUSTOM_DEBUG_END
         if (out_of_sync2 == 0 && this->game_screen != nullptr) {
             this->game_screen->handle_game_update();
         }
 
         // World update tick
         if (this->world) {
+            CUSTOM_DEBUG_BEGIN
+            if (s_tribe_idle_logs < 28) {
+                CUSTOM_DEBUG_LOG("TRIBE_Game::handle_idle before world->update");
+                s_tribe_idle_logs++;
+            }
+            CUSTOM_DEBUG_END
             this->world->update();
+            CUSTOM_DEBUG_BEGIN
+            if (s_tribe_idle_logs < 32) {
+                CUSTOM_DEBUG_LOG("TRIBE_Game::handle_idle after world->update");
+                s_tribe_idle_logs++;
+            }
+            CUSTOM_DEBUG_END
         }
     }
     // Menu mode (prog_mode == 2): base class already called panel->handle_idle()
@@ -2433,10 +2477,22 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     (void)p3;
     (void)p4;
 
+    static int s_tribe_paint_logs = 0;
     TPanel* to_draw = nullptr;
     if (panel_system && panel_system->currentPanelValue) {
         to_draw = panel_system->currentPanelValue;
     }
+
+    CUSTOM_DEBUG_BEGIN
+    if (s_tribe_paint_logs < 20) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Game::handle_paint enter input_enabled=%d to_draw=%p draw_system=%p",
+            this->input_enabled,
+            to_draw,
+            this->draw_system);
+        s_tribe_paint_logs++;
+    }
+    CUSTOM_DEBUG_END
 
     if (to_draw) {
         if (this->input_enabled == 0) {
@@ -2446,7 +2502,19 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
                 this->enable_input();
             }
         }
+        CUSTOM_DEBUG_BEGIN
+        if (s_tribe_paint_logs < 24) {
+            CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint before draw_tree");
+            s_tribe_paint_logs++;
+        }
+        CUSTOM_DEBUG_END
         to_draw->draw_tree();
+        CUSTOM_DEBUG_BEGIN
+        if (s_tribe_paint_logs < 28) {
+            CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint after draw_tree");
+            s_tribe_paint_logs++;
+        }
+        CUSTOM_DEBUG_END
     }
 
     if (this->draw_system) {

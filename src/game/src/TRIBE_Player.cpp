@@ -191,19 +191,23 @@ TRIBE_Player::~TRIBE_Player() {
 
 // --- TRIBE_Gaia constructors ---
 TRIBE_Gaia::TRIBE_Gaia(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar type)
-    : TRIBE_Player(world, master, player_id, name, 0, '\0', '\0', nullptr, nullptr, nullptr) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519BD0
+    : TRIBE_Player(world, master, player_id, name, type, '\0', '\x01', nullptr, nullptr, nullptr) {
+    *((unsigned char*)this + 0x48) = 2;
     this->update_time = 0.0f;
-    this->update_nature = 0;
-    this->last_count = 0;
+    this->update_nature = 0x1d;
     this->animal_max = 0;
+    this->last_count = 0;
 }
 
 TRIBE_Gaia::TRIBE_Gaia(int param_1, RGE_Game_World* world, uchar player_id)
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519AF0
     : TRIBE_Player(param_1, world, player_id) {
-    this->update_time = 0.0f;
-    this->update_nature = 0;
-    this->last_count = 0;
-    this->animal_max = 0;
+    *((unsigned char*)this + 0x48) = 2;
+    rge_read(param_1, &this->update_time, 4);
+    rge_read(param_1, &this->update_nature, 4);
+    rge_read(param_1, &this->animal_max, 4);
+    rge_read(param_1, &this->last_count, 4);
 }
 
 TRIBE_Gaia::~TRIBE_Gaia() {}

@@ -33,6 +33,16 @@
 #include <stdio.h>
 #include <string.h>
 
+static void tribe_settings_delete_panel_logged(TribeGameSettingsScreen* self, TPanel** panel, const char* label) {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TribeGameSettingsScreen dtor: delete_panel begin %s ptr=%p", label, panel ? *panel : nullptr);
+    CUSTOM_DEBUG_END
+    self->delete_panel(panel);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TribeGameSettingsScreen dtor: delete_panel end   %s", label);
+    CUSTOM_DEBUG_END
+}
+
 // ============================================================================
 // init_vars  (decomp @ 0x004B5810)
 // ============================================================================
@@ -469,44 +479,48 @@ TribeGameSettingsScreen::~TribeGameSettingsScreen()
     CUSTOM_DEBUG_FUNC_ENTER();
 
     // Decomp: delete_panel for each member in exact order
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->mapSizeLabel);
-    this->delete_panel((TPanel**)&this->mapSizeDrop);
-    this->delete_panel((TPanel**)&this->mapTypeLabel);
-    this->delete_panel((TPanel**)&this->mapTypeDrop);
-    this->delete_panel((TPanel**)&this->victoryTypeLabel);
-    this->delete_panel((TPanel**)&this->victoryTypeDrop);
-    this->delete_panel((TPanel**)&this->timeDrop);
-    this->delete_panel((TPanel**)&this->timeLabel);
-    this->delete_panel((TPanel**)&this->scoreDrop);
-    this->delete_panel((TPanel**)&this->scoreLabel);
-    this->delete_panel((TPanel**)&this->victoryFixedText);
-    this->delete_panel((TPanel**)&this->difficultyLabel);
-    this->delete_panel((TPanel**)&this->difficultyDrop);
-    this->delete_panel((TPanel**)&this->ageLabel);
-    this->delete_panel((TPanel**)&this->ageDrop);
-    this->delete_panel((TPanel**)&this->resourcesLabel);
-    this->delete_panel((TPanel**)&this->resourcesDrop);
-    this->delete_panel((TPanel**)&this->scenarioTitle);
-    this->delete_panel((TPanel**)&this->scenarioPlayersTitle);
-    this->delete_panel((TPanel**)&this->scenarioList);
-    this->delete_panel((TPanel**)&this->scenarioScrollbar);
-    this->delete_panel((TPanel**)&this->missionTitle);
-    this->delete_panel((TPanel**)&this->missionText);
-    this->delete_panel((TPanel**)&this->missionScrollbar);
-    this->delete_panel((TPanel**)&this->pathingLabel);
-    this->delete_panel((TPanel**)&this->pathingDrop);
-    this->delete_panel((TPanel**)&this->limitLabel);
-    this->delete_panel((TPanel**)&this->limitDrop);
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->title, "title");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->mapSizeLabel, "mapSizeLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->mapSizeDrop, "mapSizeDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->mapTypeLabel, "mapTypeLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->mapTypeDrop, "mapTypeDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->victoryTypeLabel, "victoryTypeLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->victoryTypeDrop, "victoryTypeDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->timeDrop, "timeDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->timeLabel, "timeLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->scoreDrop, "scoreDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->scoreLabel, "scoreLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->victoryFixedText, "victoryFixedText");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->difficultyLabel, "difficultyLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->difficultyDrop, "difficultyDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->ageLabel, "ageLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->ageDrop, "ageDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->resourcesLabel, "resourcesLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->resourcesDrop, "resourcesDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->scenarioTitle, "scenarioTitle");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->scenarioPlayersTitle, "scenarioPlayersTitle");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->scenarioList, "scenarioList");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->scenarioScrollbar, "scenarioScrollbar");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->missionTitle, "missionTitle");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->missionText, "missionText");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->missionScrollbar, "missionScrollbar");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->pathingLabel, "pathingLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->pathingDrop, "pathingDrop");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->limitLabel, "limitLabel");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->limitDrop, "limitDrop");
 
     for (int i = 0; i < 4; ++i) {
-        this->delete_panel((TPanel**)&this->optionButton[i]);
-        this->delete_panel((TPanel**)&this->optionText[i]);
+        char label_button[32];
+        char label_text[32];
+        sprintf(label_button, "optionButton[%d]", i);
+        sprintf(label_text, "optionText[%d]", i);
+        tribe_settings_delete_panel_logged(this, (TPanel**)&this->optionButton[i], label_button);
+        tribe_settings_delete_panel_logged(this, (TPanel**)&this->optionText[i], label_text);
     }
 
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->help_button);
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->okButton, "okButton");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->cancelButton, "cancelButton");
+    tribe_settings_delete_panel_logged(this, (TPanel**)&this->help_button, "help_button");
 
     // Free scenario data
     if (this->scenarioMission != nullptr) {

@@ -138,8 +138,36 @@ static void rge_static_set_unit_ai_play_status(UnitAIModule* target_unit_ai, Uni
 }
 
 static void rge_static_ctor_common_init(RGE_Static_Object* obj) {
+    obj->id = 0;
+    obj->master_obj = nullptr;
+    obj->owner = nullptr;
     obj->sprite = nullptr;
     obj->old_sprite = nullptr;
+    obj->sprite_list = nullptr;
+    obj->tile = nullptr;
+    obj->inside_obj = nullptr;
+    obj->objects = nullptr;
+    obj->screen_x_offset = 0;
+    obj->screen_y_offset = 0;
+    obj->shadow_x_offset = 0;
+    obj->shadow_y_offset = 0;
+    obj->hp = 0.0f;
+    obj->curr_damage_percent = 0;
+    obj->facet = 0;
+    obj->selected = 0;
+    obj->selected_group = 0;
+    obj->world_x = 0.0f;
+    obj->world_y = 0.0f;
+    obj->world_z = 0.0f;
+    obj->attribute_amount_held = 0.0f;
+    obj->object_state = 0;
+    obj->sleep_flag = 0;
+    obj->dopple_flag = 0;
+    obj->goto_sleep_flag = 0;
+    obj->attribute_type_held = -1;
+    obj->type = 0x0A;
+    obj->worker_num = 0;
+    obj->player_object_node = nullptr;
 
     obj->pathingGroupMembers.value = nullptr;
     obj->pathingGroupMembers.numberValue = 0;
@@ -184,8 +212,21 @@ RGE_Static_Object::~RGE_Static_Object() {
         if (this->object_state < 3) {
             this->take_attribute_from_owner();
         }
-        if (this->object_state < 7) {
-            this->owner->victory_conditions->update_for_object(this);
+        if (this->object_state < 7 && this->owner != nullptr) {
+            if (this->owner->victory_conditions != nullptr) {
+                this->owner->victory_conditions->update_for_object(this);
+            } else {
+                static int s_static_dtor_vc_guard_logs = 0;
+                CUSTOM_DEBUG_BEGIN
+                if (s_static_dtor_vc_guard_logs < 64) {
+                    CUSTOM_DEBUG_LOG_FMT(
+                        "RGE_Static_Object deleting-dtor guard: missing victory_conditions id=%ld owner=%p",
+                        this->id,
+                        this->owner);
+                    s_static_dtor_vc_guard_logs++;
+                }
+                CUSTOM_DEBUG_END
+            }
         }
     }
 
@@ -320,7 +361,20 @@ void RGE_Static_Object::recycle_out_of_game() {
             this->take_attribute_from_owner();
         }
         if (this->object_state < 7) {
-            this->owner->victory_conditions->update_for_object(this);
+            if (this->owner != nullptr && this->owner->victory_conditions != nullptr) {
+                this->owner->victory_conditions->update_for_object(this);
+            } else {
+                static int s_recycle_vc_guard_logs = 0;
+                CUSTOM_DEBUG_BEGIN
+                if (s_recycle_vc_guard_logs < 32) {
+                    CUSTOM_DEBUG_LOG_FMT(
+                        "RGE_Static_Object recycle guard: missing victory_conditions id=%ld owner=%p",
+                        this->id,
+                        this->owner);
+                    s_recycle_vc_guard_logs++;
+                }
+                CUSTOM_DEBUG_END
+            }
         }
         if (this->sprite_list != nullptr) {
             this->sprite_list->delete_list();
@@ -369,11 +423,35 @@ void RGE_Static_Object::recycle_out_of_game() {
 }
 void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1F30
+    static int s_static_draw_guard_logs = 0;
     SDI_Object_ID = this->id;
+
+    if (this->owner == nullptr || this->sprite_list == nullptr || this->master_obj == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (s_static_draw_guard_logs < 32) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_Static_Object::draw guard: id=%ld owner=%p sprite_list=%p master=%p state=%u tile=%p type=%u",
+                this->id,
+                this->owner,
+                this->sprite_list,
+                this->master_obj,
+                (unsigned int)this->object_state,
+                this->tile,
+                (unsigned int)this->type);
+            s_static_draw_guard_logs++;
+        }
+        CUSTOM_DEBUG_END
+        SDI_Object_ID = -1;
+        return;
+    }
 
     if (this->type == 0x19) {
         // Doppleganger draw: draw visibility gating + real underlying object id for capture/pick.
         RGE_Doppleganger_Object* dop = (RGE_Doppleganger_Object*)this;
+        if (this->owner->world == nullptr) {
+            SDI_Object_ID = -1;
+            return;
+        }
         if (((uint)dop->CantSeeBits & (1u << ((uint)this->owner->world->curr_player & 0x1f))) != 0) {
             SDI_Object_ID = -1;
             return;
@@ -400,6 +478,21 @@ void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, R
 
 void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2030
+    static int s_static_shadow_guard_logs = 0;
+    if (this->owner == nullptr || this->sprite_list == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (s_static_shadow_guard_logs < 16) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_Static_Object::shadow_draw guard: id=%ld owner=%p sprite_list=%p state=%u",
+                this->id,
+                this->owner,
+                this->sprite_list,
+                (unsigned int)this->object_state);
+            s_static_shadow_guard_logs++;
+        }
+        CUSTOM_DEBUG_END
+        return;
+    }
     if ((this->tile != nullptr) && (this->object_state < 7)) {
         RGE_Color_Table* ct = this->owner->color_table;
         this->sprite_list->shadow_draw(this->facet, this->shadow_x_offset + param_2, this->shadow_y_offset + param_3, ct, param_1, param_4);
@@ -408,6 +501,21 @@ void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short par
 
 void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2080
+    static int s_static_normal_guard_logs = 0;
+    if (this->owner == nullptr || this->sprite_list == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (s_static_normal_guard_logs < 16) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_Static_Object::normal_draw guard: id=%ld owner=%p sprite_list=%p state=%u",
+                this->id,
+                this->owner,
+                this->sprite_list,
+                (unsigned int)this->object_state);
+            s_static_normal_guard_logs++;
+        }
+        CUSTOM_DEBUG_END
+        return;
+    }
     if ((this->tile != nullptr) && (this->object_state < 7)) {
         bool draw_frame = (this->selected != 0) || (rge_base_game->outline_type == 3);
         if (draw_frame) {
@@ -2879,7 +2987,36 @@ int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     this->selected = 0;
     return 1;
 }
-int RGE_Static_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return 1; }
+int RGE_Static_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
+    // Source of truth intent: stat_obj.cpp.decomp setup(master, player, x, y, z)
+    // initializes a live object instance (sprite/object lists + runtime state).
+    if (param_1 == nullptr || param_2 == nullptr || param_2->world == nullptr) {
+        return 0;
+    }
+
+    this->type = 0x0A;
+
+    if (this->sprite_list == nullptr) {
+        this->sprite_list = this->create_sprite_list();
+    } else {
+        this->sprite_list->delete_list();
+    }
+    if (this->objects == nullptr) {
+        this->objects = this->create_object_list();
+    }
+    if (this->sprite_list == nullptr || this->objects == nullptr) {
+        return 0;
+    }
+
+    if (param_1->recyclable == 0) {
+        this->id = param_2->world->get_next_object_id();
+    } else {
+        this->id = param_2->world->get_next_reusable_object_id();
+    }
+
+    this->recycle_in_to_game(param_1, param_2, param_3, param_4, param_5);
+    return 1;
+}
 RGE_Object_List* RGE_Static_Object::create_object_list() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1D60
     RGE_Object_List* list = (RGE_Object_List*)::operator new(sizeof(RGE_Object_List), std::nothrow);
