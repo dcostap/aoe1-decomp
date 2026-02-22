@@ -145,6 +145,7 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
 
     uint num_players = 0;
     int human_scen_player = -1;
+    int human_color = -1;
     for (int scen_player = 0; scen_player < 9; ++scen_player) {
         if (scen->PlActive[scen_player] != 0) {
             game->setScenarioPlayer((int)num_players, scen_player);
@@ -152,6 +153,7 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
             rge_base_game->setPlayerTeam((int)num_players, 1);
             if (human_scen_player == -1 && scen->PlType[scen_player] == 1) {
                 human_scen_player = scen_player;
+                human_color = scen_player + 1;
             }
             num_players++;
         }
@@ -163,6 +165,21 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
     }
 
     rge_base_game->setNumberPlayers((int)num_players);
+
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x00491554
+    if (human_scen_player != -1) {
+        for (int i = 1; i < (int)num_players; ++i) {
+            if (game->tribe_game_options.scenarioPlayerValue[i] == human_scen_player) {
+                const int old_scen = game->tribe_game_options.scenarioPlayerValue[0];
+                const int old_color = (int)game->tribe_game_options.playerColorValue[0];
+                game->setScenarioPlayer(i, old_scen);
+                game->setPlayerColor(i, old_color);
+                break;
+            }
+        }
+        game->setScenarioPlayer(0, human_scen_player);
+        game->setPlayerColor(0, human_color);
+    }
 
     TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
     if (comm_handler) {
