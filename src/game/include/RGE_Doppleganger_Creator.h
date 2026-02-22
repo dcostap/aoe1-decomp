@@ -2,6 +2,9 @@
 #include "common.h"
 
 struct RGE_Doppleganger_Creator {
+    RGE_Doppleganger_Creator(RGE_Player* param_1, int param_2);
+    ~RGE_Doppleganger_Creator();
+
     int add_doppleganger_check(RGE_Static_Object* param_1, ulong* param_2);
     int remove_doppleganger_check(RGE_Static_Object* param_1);
 

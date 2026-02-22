@@ -4,6 +4,37 @@
 
 #include <stdlib.h>
 
+RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* param_1, int param_2) {
+    // Source of truth: dpl_obj.cpp.decomp @ 0x00442100
+    this->Objects = (RGE_Static_Object**)calloc((size_t)param_2, 4);
+    this->Map_Addresses = (ulong**)calloc((size_t)param_2, 4);
+    this->Last_Map_Value = (ulong*)calloc((size_t)param_2, 4);
+    this->Object_ids = (int*)calloc((size_t)param_2, 4);
+    this->allocated_size = param_2;
+    this->active_size = 0;
+    this->owner = param_1;
+}
+
+RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
+    // Source of truth: dpl_obj.cpp.decomp @ 0x00442180
+    if (this->Objects != nullptr) {
+        free(this->Objects);
+        this->Objects = nullptr;
+    }
+    if (this->Map_Addresses != nullptr) {
+        free(this->Map_Addresses);
+        this->Map_Addresses = nullptr;
+    }
+    if (this->Last_Map_Value != nullptr) {
+        free(this->Last_Map_Value);
+        this->Last_Map_Value = nullptr;
+    }
+    if (this->Object_ids != nullptr) {
+        free(this->Object_ids);
+        this->Object_ids = nullptr;
+    }
+}
+
 static void rge_doppleganger_expand_allocations(RGE_Doppleganger_Creator* creator, int grow_by) {
     // Source of truth: dpl_obj.cpp.decomp @ 0x00442540
     int new_allocated_size = creator->allocated_size + grow_by;
