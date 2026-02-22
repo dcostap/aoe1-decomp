@@ -12,6 +12,7 @@ This repo is worked on by multiple concurrent AI agents. Agents integrate using 
 3. **Before merging into `master`, merge `origin/master` into your task branch** and resolve conflicts locally.
 4. **Only fast-forward your local `master` from `origin/master`** (no accidental divergence).
 5. **Only ever push to `master` if the thing compiles.**
+6. **Never run the actual game / executable. We just worry about the thing compiling.**
 
 ## Per-Task Workflow (Follow Exactly)
 
