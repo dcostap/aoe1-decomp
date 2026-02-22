@@ -4,6 +4,10 @@
 
 class TMessageDialog : public TDialogPanel {
 public:
+    TMessageDialog(char* name);
+    long setup(TPanel* param_1, char* param_2, long param_3, long param_4, long param_5, uchar param_6, char* param_7, long param_8, long param_9);
+    long setup(TPanel* param_1, char* param_2, long param_3, long param_4, long param_5, uchar param_6, int param_7, long param_8, long param_9);
+
     // Virtuals (best-effort)
     virtual ~TMessageDialog(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

@@ -23,19 +23,10 @@ void menu_enable_input() {
 }
 
 void menu_popup_resid(TRIBE_Screen_Main_Menu* owner, int resid) {
-    char text[512];
-    text[0] = '\0';
-    if (owner) {
-        owner->get_string(resid, text, sizeof(text));
-    } else if (rge_base_game) {
-        rge_base_game->get_string(resid, text, sizeof(text));
+    if (owner == nullptr) {
+        return;
     }
-    if (text[0] == '\0') {
-        sprintf(text, "Missing UI string %d", resid);
-    }
-
-    HWND wnd = (rge_base_game && rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : NULL;
-    MessageBoxA(wnd, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+    owner->popupOKDialog((long)resid, (char*)0, 0x1c2, 100);
 }
 
 int menu_cd_gate(TRIBE_Screen_Main_Menu* owner, int error_resid) {
@@ -53,27 +44,10 @@ int menu_cd_gate(TRIBE_Screen_Main_Menu* owner, int error_resid) {
 }
 
 void menu_dispatch_confirm_dialog(TRIBE_Screen_Main_Menu* owner) {
-    if (!owner || !rge_base_game) {
+    if (!owner) {
         return;
     }
-
-    // TODO(accuracy): replace this MessageBox-based shim with real `TEasy_Panel::popupOKDialog`
-    // / panel-system lifecycle once dialog screens are reimplemented in this branch.
-    char text[512];
-    text[0] = '\0';
-    owner->get_string(0x1d4f7, text, sizeof(text));
-    if (text[0] == '\0') {
-        strncpy(text, "Open Help?", sizeof(text) - 1);
-        text[sizeof(text) - 1] = '\0';
-    }
-
-    MessageBoxA((HWND)rge_base_game->prog_window, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
-
-    // Re-route through `action(..., param_2=0)` with panel name "Confirm Dialog" to keep the
-    // callback shape aligned with original control flow.
-    TPanel confirm_panel((char*)0);
-    confirm_panel.panelNameValue = (char*)"Confirm Dialog";
-    owner->action(&confirm_panel, 0, 0, 0);
+    owner->popupOKDialog(0x1d4f7, (char*)"Confirm Dialog", 0x1c2, 100);
 }
 
 class MainMenuStubScreen : public TScreenPanel {
@@ -400,6 +374,9 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
     // Source of truth: `src/game/src/Scr_main.cpp.decomp` (`action` @ 0x0049EE00).
     // NOTE: dialog and target screens are currently stubs; keep TODO markers explicit.
     if (param_1 && param_1->panelNameValue && (_stricmp(param_1->panelNameValue, "Confirm Dialog") == 0) && (param_2 == 0)) {
+        if (panel_system) {
+            panel_system->destroyPanel((char*)"Confirm Dialog");
+        }
         if (rge_base_game && rge_base_game->prog_window) {
             WinHelpA((HWND)rge_base_game->prog_window, "empires.hlp", HELP_FINDER, 0);
         }

@@ -12,6 +12,7 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TMousePointer.h"
 #include "../include/RGE_Font.h"
+#include "../include/TMessageDialog.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
@@ -983,6 +984,68 @@ char* TEasy_Panel::get_popup_info_file() {
 long TEasy_Panel::get_popup_info_id() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468450
     return this->popup_info_id;
+}
+
+void TEasy_Panel::popupOKDialog(long param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
+    char text[256];
+    this->get_string((int)param_1, text, 0x100);
+    this->popupOKDialog(text, param_2, param_3, param_4);
+}
+
+void TEasy_Panel::popupOKDialog(char* param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469F30
+    char temp_title[256];
+
+    if (param_2 == nullptr || *param_2 == '\0') {
+        param_2 = (char*)"OKDialog";
+    }
+
+    strcpy(temp_title, param_2);
+
+    TPanel* existing = panel_system->panel(temp_title);
+    if (existing != nullptr) {
+        panel_system->destroyPanel(temp_title);
+    }
+
+    TMessageDialog* dialog = new TMessageDialog(temp_title);
+    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\0', param_1, 0x5a, 0x1e);
+}
+
+void TEasy_Panel::popupYesNoDialog(long param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A040
+    char text[256];
+    this->get_string((int)param_1, text, 0x100);
+    this->popupYesNoDialog(text, param_2, param_3, param_4);
+}
+
+void TEasy_Panel::popupYesNoDialog(char* param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A090
+    TMessageDialog* dialog = nullptr;
+    if (param_2 == nullptr || *param_2 == '\0') {
+        dialog = new TMessageDialog((char*)"YesNoDialog");
+    } else {
+        dialog = new TMessageDialog(param_2);
+    }
+    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\x02', param_1, 0x5a, 0x1e);
+}
+
+void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A150
+    char text[256];
+    this->get_string((int)param_1, text, 0x100);
+    this->popupYesNoCancelDialog(text, param_2, param_3, param_4);
+}
+
+void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A1A0
+    TMessageDialog* dialog = nullptr;
+    if (param_2 == nullptr || *param_2 == '\0') {
+        dialog = new TMessageDialog((char*)"YesNoCancelDialog");
+    } else {
+        dialog = new TMessageDialog(param_2);
+    }
+    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\x04', param_1, 0x78, 0x19);
 }
 
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
