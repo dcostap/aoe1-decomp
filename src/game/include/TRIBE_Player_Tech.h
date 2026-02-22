@@ -10,11 +10,14 @@ struct TRIBE_Player_Tech {
     short get_tech_state(short param_1);
     uchar check_tech_cost(short param_1, short* param_2);
     uchar start_research(short param_1, uchar param_2, short* param_3);
+    uchar cancel_research(short param_1, uchar param_2);
     uchar do_tech(short param_1);
     uchar undo_tech(short param_1);
     void do_rev_tech(short param_1);
     uchar rev_tech(short param_1);
     uchar research(short param_1, float param_2);
+    short get_progress(short param_1);
+    char* get_name(short param_1);
     void tech_cost(short param_1, short* param_2, short* param_3, short* param_4, short* param_5, short* param_6, short* param_7);
     void check_for_new_tech();
     void save(int param_1);

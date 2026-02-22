@@ -28,6 +28,8 @@
 #include "../include/TRIBE_Command_Unload.h"
 #include "../include/TRIBE_Command_Make.h"
 #include "../include/TRIBE_Command_Research.h"
+#include "../include/TRIBE_Action_Make_Obj.h"
+#include "../include/TRIBE_Action_Make_Tech.h"
 #include "../include/TRIBE_Command_Build.h"
 #include "../include/TRIBE_Command_Game.h"
 #include "../include/TRIBE_Command_Explore.h"
@@ -3391,49 +3393,71 @@ void TRIBE_Command::do_command_tribe_create(RGE_Command_Create* p1) {
     }
 }
 void TRIBE_Command::do_command_make(TRIBE_Command_Make* p1) {
-    // TODO: STUB - source of truth: tcommand.cpp.decomp @ 0x00509980
-    // The original allocates TRIBE_Action_Make_Obj (tact_mob.cpp) and queues it on the building's action stack.
-    // That action class is not yet implemented in the build, so we currently only apply the AI-side bookkeeping
-    // and the fallback cancel path when the target unit/building is missing.
-    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509980
+    if ((this->world == nullptr) || (this->world->players == nullptr) || (p1 == nullptr)) {
         return;
     }
 
     TRIBE_Building_Object* building = (TRIBE_Building_Object*)this->world->object(p1->unit_id);
+    TRIBE_Player* player = (TRIBE_Player*)this->world->players[p1->unit_player_id];
+
+    short work_type = 0;
     if (building == nullptr) {
-        TRIBE_Player* player = (TRIBE_Player*)this->world->players[p1->unit_player_id];
-        if (player != nullptr) {
-            player->cancelTrain(0, (int)p1->obj_id, p1->unit_id, p1->unique_id);
-        }
-        return;
+        work_type = 0x67;
+    } else if ((building->production_queue_actions != nullptr) && (building->production_queue_actions->get_action() != nullptr)) {
+        work_type = building->production_queue_actions->get_action()->type();
     }
 
-    UnitAIModule* unit_ai = building->unitAIValue;
-    if (unit_ai != nullptr) {
-        tribe_unit_ai_set_current_action(unit_ai, 0x26C);
-        tribe_unit_ai_set_current_target(unit_ai, p1->unique_id, -1, -1.0f, -1.0f, -1.0f);
+    if ((building != nullptr) && (work_type != 0x67) && (work_type != 0x66)) {
+        TRIBE_Action_Make_Obj* action = new TRIBE_Action_Make_Obj((RGE_Action_Object*)building, p1->obj_id, p1->unique_id, 0);
+        if (action != nullptr) {
+            typedef void(__thiscall* AddActionFn)(TRIBE_Building_Object*, RGE_Action*);
+            void** vtable = *(void***)building;
+            AddActionFn add_action = (AddActionFn)vtable[0x208 / 4];
+            add_action(building, action);
+        }
+
+        UnitAIModule* unit_ai = building->unitAIValue;
+        if (unit_ai != nullptr) {
+            tribe_unit_ai_set_current_action(unit_ai, 0x26C);
+            tribe_unit_ai_set_current_target(unit_ai, p1->unique_id, -1, -1.0f, -1.0f, -1.0f);
+        }
+    } else if (player != nullptr) {
+        player->cancelTrain(0, (int)p1->obj_id, p1->unit_id, p1->unique_id);
     }
 }
 void TRIBE_Command::do_command_research(TRIBE_Command_Research* p1) {
-    // TODO: STUB - source of truth: tcommand.cpp.decomp @ 0x00509AF0
-    // The original allocates TRIBE_Action_Make_Tech (tact_tek.cpp) and queues it on the building's action stack.
-    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509AF0
+    if ((this->world == nullptr) || (this->world->players == nullptr) || (p1 == nullptr)) {
         return;
     }
 
     TRIBE_Building_Object* building = (TRIBE_Building_Object*)this->world->object(p1->unit_id);
+    TRIBE_Player* player = (TRIBE_Player*)this->world->players[p1->unit_player_id];
+
+    short work_type = 0;
     if (building == nullptr) {
-        TRIBE_Player* player = (TRIBE_Player*)this->world->players[p1->unit_player_id];
-        if (player != nullptr) {
-            player->cancelResearch((int)p1->tech_id, p1->unit_id, -1, p1->unique_id);
-        }
-        return;
+        work_type = 0x67;
+    } else if ((building->production_queue_actions != nullptr) && (building->production_queue_actions->get_action() != nullptr)) {
+        work_type = building->production_queue_actions->get_action()->type();
     }
 
-    UnitAIModule* unit_ai = building->unitAIValue;
-    if (unit_ai != nullptr) {
-        tribe_unit_ai_set_current_action(unit_ai, 0x26C);
-        tribe_unit_ai_set_current_target(unit_ai, p1->unique_id, -1, -1.0f, -1.0f, -1.0f);
+    if ((building != nullptr) && (work_type != 0x67) && (work_type != 0x66)) {
+        TRIBE_Action_Make_Tech* action = new TRIBE_Action_Make_Tech((RGE_Action_Object*)building, p1->tech_id, p1->unique_id);
+        if (action != nullptr) {
+            typedef void(__thiscall* AddActionFn)(TRIBE_Building_Object*, RGE_Action*);
+            void** vtable = *(void***)building;
+            AddActionFn add_action = (AddActionFn)vtable[0x208 / 4];
+            add_action(building, action);
+        }
+
+        UnitAIModule* unit_ai = building->unitAIValue;
+        if (unit_ai != nullptr) {
+            tribe_unit_ai_set_current_action(unit_ai, 0x26C);
+            tribe_unit_ai_set_current_target(unit_ai, p1->unique_id, -1, -1.0f, -1.0f, -1.0f);
+        }
+    } else if (player != nullptr) {
+        player->cancelResearch((int)p1->tech_id, p1->unit_id, -1, p1->unique_id);
     }
 }
 void TRIBE_Command::do_command_build(TRIBE_Command_Build* p1) {
