@@ -132,13 +132,12 @@ CUSTOM_DEBUG_END
 
     this->set_curr_child((TPanel*)this->button[0]);
 
-    TPanel* tab_list[7];
+    TPanel* tab_list[6];
     for (int i = 0; i < 6; ++i) {
         tab_list[i] = (TPanel*)this->button[i];
     }
-    tab_list[6] = (TPanel*)this->close_button;
-    // Source of truth: scr_sing.cpp.decomp - skip Random Map but include close button.
-    this->set_tab_order(tab_list + 1, 6);
+    // Fully verified. Source of truth: scr_sing.cpp.asm @ 0x004B6BAF
+    this->set_tab_order(tab_list, 6);
 
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("SP ctor: completed");
