@@ -527,9 +527,9 @@ void encrypt_codes(char* in, char* out, int max_len) {
 
 int TRIBE_Game::setup_cmd_options() {
     // Source of truth: tribegam.cpp.decomp @ 0x00521FA0
-    char cmd_line_and_temp[512];
+    char cmd_line_and_temp[0x204];
     char* cmd_line = cmd_line_and_temp + 4;
-    char* temp_str = cmd_line_and_temp + 0x100;
+    char* temp_str = cmd_line_and_temp + 0x104;
     char encstr[512];
 
     strncpy(cmd_line, this->prog_info->cmd_line, 0xff);
