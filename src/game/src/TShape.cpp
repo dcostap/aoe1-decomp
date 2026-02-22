@@ -2,6 +2,7 @@
 #include "../include/Res_file.h"
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
+#include "../include/TSpan_List_Manager.h"
 #include "../include/RGE_Color_Table.h"
 #include <string.h>
 #include <stdlib.h>
@@ -13,6 +14,18 @@ extern unsigned char shape_file_first;
 extern int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2);
 
 extern "C" unsigned int g_ASMShadowing_Amount;
+extern "C" void _ASMSet_Surface_Info(void** display_offsets, VSpan_Node** line_head_ptrs, VSpan_Node** line_tail_ptrs, int min_span_px, int min_line, int max_span_px, int max_line);
+extern "C" void _ASMSet_Xlate_Table(void* p);
+extern "C" void* _ASMGet_Xlate_Table();
+
+static inline VSpan_Node* shape_span_advance(VSpan_Node* span, long x) {
+    while (span && x > (long)span->EndPx) span = span->Next;
+    return span;
+}
+
+static inline int shape_span_contains(VSpan_Node* span, long x) {
+    return (span && x >= (long)span->StartPx && x <= (long)span->EndPx) ? 1 : 0;
+}
 
 static unsigned long shape_palette_checksum(const tagPALETTEENTRY* entries, int count) {
     if (!entries || count <= 0) return 0;
@@ -326,6 +339,9 @@ static unsigned char* shape_slp_shadow_table(TDrawArea* draw_area, unsigned char
     // The ASM global persists across draws, so mirror that: if a table was previously provided, keep using it.
     static unsigned char* last_xlate = (unsigned char*)0;
     if (xlate) { last_xlate = xlate; return xlate; }
+
+    unsigned char* asm_xlate = (unsigned char*)_ASMGet_Xlate_Table();
+    if (asm_xlate) return asm_xlate;
     if (last_xlate) return last_xlate;
 
     // UI can also install a runtime shadow table via draw_area->shadow_color_table.
@@ -714,6 +730,13 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
     long draw_b = (sy2 < clip_b) ? sy2 : clip_b;
     if (draw_l > draw_r || draw_t > draw_b) return 0;
 
+    TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
+    if (spans) {
+        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, spans->Line_Head_Ptrs, spans->Line_Tail_Ptrs, spans->Min_Span_Px, spans->Min_Line, spans->Max_Span_Px, spans->Max_Line);
+    } else {
+        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, (VSpan_Node**)0, (VSpan_Node**)0, 0, 0, 0, 0);
+    }
+
     int locked_here = 0;
     if (!draw_area->Bits) {
         if (!draw_area->Lock((char*)"shape_draw", 0)) return 0;
@@ -743,9 +766,13 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
         long cur_x = sx1;
         int draw_row = (dst_y >= draw_t && dst_y <= draw_b) ? 1 : 0;
         unsigned char* dst_row = 0;
+        VSpan_Node* span = (VSpan_Node*)0;
         if (draw_row) {
             int off = (draw_area->Orien == 1) ? (int)(dst_y * draw_area->Pitch) : (int)(((draw_area->Height - dst_y) - 1) * draw_area->Pitch);
             dst_row = bits + off;
+            if (spans && spans->Line_Head_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {
+                span = spans->Line_Head_Ptrs[dst_y];
+            }
         }
 
         for (;;) {
@@ -757,6 +784,7 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
                 if (run == 0) {
                     if (src >= end) break;
                     cur_x += *src++;
+                    if (draw_row) span = shape_span_advance(span, cur_x);
                     continue;
                 }
 
@@ -767,7 +795,8 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
 
                 for (unsigned int i = 0; i < run; ++i) {
                     unsigned char spx = *src++;
-                    if (draw_row && cur_x >= draw_l && cur_x <= draw_r) {
+                    if (draw_row) span = shape_span_advance(span, cur_x);
+                    if (draw_row && cur_x >= draw_l && cur_x <= draw_r && shape_span_contains(span, cur_x)) {
                         unsigned char* dst_px = dst_row + cur_x * bpp;
                         if (mode == 2) {
                             shape_shadow_pixel(draw_area, dst_px, bpp, table);
@@ -788,13 +817,14 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
             if (run == 0) break;
             if (src >= end) break;
 
-            unsigned char fill = *src++;
-            for (unsigned int i = 0; i < run; ++i) {
-                if (draw_row && cur_x >= draw_l && cur_x <= draw_r) {
-                    unsigned char* dst_px = dst_row + cur_x * bpp;
-                    if (mode == 2) {
-                        shape_shadow_pixel(draw_area, dst_px, bpp, table);
-                    } else {
+                unsigned char fill = *src++;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (draw_row) span = shape_span_advance(span, cur_x);
+                    if (draw_row && cur_x >= draw_l && cur_x <= draw_r && shape_span_contains(span, cur_x)) {
+                        unsigned char* dst_px = dst_row + cur_x * bpp;
+                        if (mode == 2) {
+                            shape_shadow_pixel(draw_area, dst_px, bpp, table);
+                        } else {
                         unsigned char out_idx = fill;
                         if (mode == 1 && table) out_idx = table[fill];
                         if (bpp == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
@@ -853,7 +883,16 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
     unsigned long* row_offsets = (unsigned long*)(slp_base + info->Shape_Data_Offsets);
     unsigned short* outline = (unsigned short*)(slp_base + info->Shape_Outline_Offset);
-    unsigned char* active_xlate = xlate;
+
+    unsigned char* base_xlate = xlate ? xlate : (unsigned char*)_ASMGet_Xlate_Table();
+    unsigned char* active_xlate = base_xlate;
+
+    TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
+    if (spans) {
+        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, spans->Line_Head_Ptrs, spans->Line_Tail_Ptrs, spans->Min_Span_Px, spans->Min_Line, spans->Max_Span_Px, spans->Max_Line);
+    } else {
+        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, (VSpan_Node**)0, (VSpan_Node**)0, 0, 0, 0, 0);
+    }
 
     for (long row = 0; row < height; row++) {
         long dst_y = draw_y + row;
@@ -874,6 +913,11 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         int off = (draw_area->Orien == 1) ? (int)(dst_y * dest_pitch) : (int)(((draw_area->Height - dst_y) - 1) * dest_pitch);
         unsigned char* dst_row = dest_bits + off;
 
+        VSpan_Node* span = (VSpan_Node*)0;
+        if (spans && spans->Line_Head_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {
+            span = spans->Line_Head_Ptrs[dst_y];
+        }
+
         for (;;) {
             if (src >= shape_end) break;
             unsigned char cmd = *src++;
@@ -887,7 +931,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
                 // 0x2E / 0x3E: normal/alternate transform selection.
                 if (ext == 0x02) { active_xlate = (unsigned char*)0; continue; }
-                if (ext == 0x03) { active_xlate = xlate; continue; }
+                if (ext == 0x03) { active_xlate = base_xlate; continue; }
 
                 // 0x4E/0x5E/0x6E/0x7E: outline opcodes. These draw palette indices and advance X.
                 unsigned int len = 0;
@@ -899,7 +943,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 else { continue; }
 
                 for (unsigned int i = 0; i < len; ++i) {
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
+                    span = shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
                         unsigned char out_idx = outline_idx;
                         if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -916,13 +961,15 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
                 if (op == 0x03) {
                     dst_x += (long)len;
+                    span = shape_span_advance(span, dst_x);
                     continue;
                 }
 
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
+                    span = shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
                         unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                         if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -953,7 +1000,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 }
 
                 unsigned char* shadow_table = (unsigned char*)0;
-                if (op == 0x0B) shadow_table = shape_slp_shadow_table(draw_area, xlate);
+                if (op == 0x0B) shadow_table = shape_slp_shadow_table(draw_area, base_xlate);
 
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = 0;
@@ -963,7 +1010,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         px = a;
                     }
 
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
+                    span = shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
                         if (op == 0x0B) {
                             shape_shadow_pixel(draw_area, dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
                         } else {
@@ -987,13 +1035,15 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         len = (unsigned int)(*src++);
                     }
                     dst_x += (long)len;
+                    span = shape_span_advance(span, dst_x);
                     continue;
                 }
 
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
+                    span = shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
                         unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                         if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -1017,6 +1067,9 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
     (void)param_6;
 
     if (this->Check_shape(shape_idx, (char*)"RGL_shape_draw")) return 0;
+
+    // Parity: original code sets the global xlate table only when a non-null transform table is passed.
+    if (param_7) _ASMSet_Xlate_Table(param_7);
 
     if (this->FShape && this->shape_info) {
         // NOTE: SLP path in original calls ASM sprite drawer and can use xlate table.
