@@ -172,17 +172,17 @@ if "%RES_CHANGED%"=="1" set "NEED_LINK=1"
 
 if "%NEED_LINK%"=="1" (
     echo [3/3] Linking...
-    link /nologo /DEBUG /INCREMENTAL /OUT:"%OUT_EXE%" ^
-         !OBJECT_LIST! ^
-         /LIBPATH:"%DP_LIB%" ^
-         kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
-         ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib
-    if errorlevel 1 (
-        echo.
-        echo Link FAILED!
-        popd
-        exit /b 1
-    )
+     link /nologo /DEBUG /INCREMENTAL /OUT:"%OUT_EXE%" ^
+          !OBJECT_LIST! ^
+          /LIBPATH:"%DP_LIB%" ^
+          kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
+          ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib vfw32.lib ws2_32.lib
+     if errorlevel 1 (
+         echo.
+         echo Link FAILED!
+         popd
+         exit /b 1
+     )
 ) else (
     echo [3/3] Link is up to date.
 )
