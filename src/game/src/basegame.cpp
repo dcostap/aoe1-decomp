@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
+#include <new>
 #include <timeapi.h>
 #include <direct.h>
 
@@ -2249,7 +2250,12 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
 }
 
 // Linker fix stubs
-int RGE_Base_Game::setup_chat() { return 1; }
+int RGE_Base_Game::setup_chat() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041ED00
+    TChat* chat_obj = new (std::nothrow) TChat(this->prog_window);
+    chat = chat_obj;
+    return (chat_obj != nullptr) ? 1 : 0;
+}
 int RGE_Base_Game::setup_comm() {
     // Source of truth: basegame.cpp.decomp @ 0x0041EE90
     // NOTE: This used to memset a default-constructed handler (temporary stub).
