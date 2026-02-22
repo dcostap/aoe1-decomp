@@ -1220,16 +1220,18 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
     // Source of truth: Panel_ez.cpp.decomp @ 0x004696B0
     // params: parent, out_ptr, x, y, w, h, font_index
-    if (!param_2) return 0;
 
-    // Scale from ideal coords to current panel size
-    long scaled_x = (this->ideal_width > 0) ? (param_3 * this->pnl_wid) / this->ideal_width : param_3;
-    long scaled_y = (this->ideal_height > 0) ? (param_4 * this->pnl_hgt) / this->ideal_height : param_4;
-    long scaled_w = (this->ideal_width > 0) ? (param_5 * this->pnl_wid) / this->ideal_width : param_5;
-    long scaled_h = (this->ideal_height > 0) ? (param_6 * this->pnl_hgt) / this->ideal_height : param_6;
+    // Scale from ideal coords to current panel size (source of truth uses unconditional division).
+    long scaled_x = (param_3 * this->pnl_wid) / this->ideal_width;
+    long scaled_y = (param_4 * this->pnl_hgt) / this->ideal_height;
+    long scaled_w = (param_5 * this->pnl_wid) / this->ideal_width;
+    long scaled_h = (param_6 * this->pnl_hgt) / this->ideal_height;
 
     int font_index = (int)param_7;
     if (font_index < 0) font_index = 10;
+
+    // Source of truth calls get_font once before allocation (return value unused).
+    rge_base_game->get_font(font_index);
 
     // Decomp: allocate a string list with 1 empty string entry
     char** string_list = (char**)calloc(1, sizeof(char*));
@@ -1255,13 +1257,7 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
     }
 
     // Decomp: get font and call setup
-    RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(font_index) : nullptr;
-    if (!font) {
-        if (string_list[0]) free(string_list[0]);
-        free(string_list);
-        this->error_code = 1;
-        return 0;
-    }
+    RGE_Font* font = rge_base_game->get_font(font_index);
 
     // Decomp: TTextPanel::setup(list, draw_area, parent, x, y, w, h, font, font_wid, font_hgt,
     //                           back_pic=0, fill_back=0, back_color=0, have_outline=1, outline_color=0xff,
@@ -1279,8 +1275,8 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
         return 0;
     }
 
-    // Decomp: scroll_cur_line (stubbed — just scroll to top)
-    // TListPanel::scroll_cur_line(*param_2, 1, 0, 1);
+    // Source of truth: Panel_ez.cpp.decomp calls `TListPanel::scroll_cur_line(list, 1, 0, 1)` here.
+    (*param_2)->scroll_cur_line(1, 0, 1);
 
     // Decomp: free the temporary string list
     if (string_list[0]) {

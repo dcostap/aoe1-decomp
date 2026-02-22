@@ -6,6 +6,7 @@
 #include "../include/TPanelSystem.h"
 #include "../include/TTextPanel.h"
 #include "../include/TListPanel.h"
+#include "../include/TScrollBarPanel.h"
 #include "../include/globals.h"
 
 #include <io.h>
@@ -15,72 +16,9 @@
 
 namespace {
 
-struct SavedListState {
-    TribeLoadSavedGameScreen* owner;
-    char** names;
-    int count;
-    int selected;
-    SavedListState* next;
-};
-
-SavedListState* g_saved_list_states = nullptr;
-
 void load_enable_input() {
     if (rge_base_game) {
         rge_base_game->enable_input();
-    }
-}
-
-SavedListState* load_find_state(TribeLoadSavedGameScreen* owner) {
-    SavedListState* cur = g_saved_list_states;
-    while (cur) {
-        if (cur->owner == owner) {
-            return cur;
-        }
-        cur = cur->next;
-    }
-    return nullptr;
-}
-
-void load_clear_names(SavedListState* state) {
-    if (!state) return;
-    if (state->names) {
-        for (int i = 0; i < state->count; ++i) {
-            free(state->names[i]);
-        }
-        free(state->names);
-        state->names = nullptr;
-    }
-    state->count = 0;
-    state->selected = -1;
-}
-
-SavedListState* load_ensure_state(TribeLoadSavedGameScreen* owner) {
-    SavedListState* state = load_find_state(owner);
-    if (state) return state;
-
-    state = (SavedListState*)calloc(1, sizeof(SavedListState));
-    if (!state) return nullptr;
-    state->owner = owner;
-    state->selected = -1;
-    state->next = g_saved_list_states;
-    g_saved_list_states = state;
-    return state;
-}
-
-void load_destroy_state(TribeLoadSavedGameScreen* owner) {
-    SavedListState* prev = nullptr;
-    SavedListState* cur = g_saved_list_states;
-    while (cur) {
-        if (cur->owner == owner) {
-            if (prev) prev->next = cur->next;
-            else g_saved_list_states = cur->next;
-            load_clear_names(cur);
-            free(cur);
-            return;
-        }
-        prev = cur;
-        cur = cur->next;
     }
 }
 
@@ -91,144 +29,23 @@ void load_set_button_disabled(TButtonPanel* button, int disabled) {
 }
 
 void load_sync_buttons(TribeLoadSavedGameScreen* owner) {
-    SavedListState* state = load_find_state(owner);
-    const int no_selection = (!state || state->count <= 0 || state->selected < 0 || state->selected >= state->count);
+    if (!owner || !owner->list) {
+        load_set_button_disabled(owner ? owner->okButton : nullptr, 1);
+        load_set_button_disabled(owner ? owner->deleteButton : nullptr, 1);
+        return;
+    }
+
+    char* cur = ((TTextPanel*)owner->list)->currentLine();
+    const int no_selection = (cur == nullptr || cur[0] == '\0');
     load_set_button_disabled(owner->okButton, no_selection);
     load_set_button_disabled(owner->deleteButton, no_selection);
 }
 
-void load_refresh_list_text(TribeLoadSavedGameScreen* owner) {
-    if (!owner || !owner->list) return;
-
-    SavedListState* state = load_find_state(owner);
-    TTextPanel* list_text = (TTextPanel*)owner->list;
-    if (!state || state->count <= 0) {
-        list_text->set_text((char*)"");
-        load_sync_buttons(owner);
-        return;
-    }
-
-    if (state->selected < 0) state->selected = 0;
-    if (state->selected >= state->count) state->selected = state->count - 1;
-    list_text->cur_line = (short)state->selected;
-
-    size_t total = 1;
-    for (int i = 0; i < state->count; ++i) {
-        total += strlen(state->names[i]) + 6;
-    }
-
-    char* all_lines = (char*)calloc(total, 1);
-    if (!all_lines) return;
-
-    all_lines[0] = '\0';
-    for (int i = 0; i < state->count; ++i) {
-        strcat(all_lines, (i == state->selected) ? "> " : "  ");
-        strcat(all_lines, state->names[i]);
-        if (i + 1 < state->count) {
-            strcat(all_lines, "\r\n");
-        }
-    }
-
-    list_text->set_text(all_lines);
-    free(all_lines);
-    load_sync_buttons(owner);
-}
-
-int load_strip_save_name(const char* file_name, char* out_name, size_t out_len) {
-    if (!file_name || !out_name || out_len == 0) return 0;
-    const size_t len = strlen(file_name);
-    if (len <= 8) return 0;
-
-    const size_t body_len = len - 8; // strip first 4 chars and ".gam"/".gmx"
-    if (body_len + 1 > out_len) return 0;
-
-    memcpy(out_name, file_name + 4, body_len);
-    out_name[body_len] = '\0';
-    return 1;
-}
-
-int load_add_name(SavedListState* state, const char* name) {
-    if (!state || !name || name[0] == '\0') return 0;
-
-    char** next = (char**)realloc(state->names, sizeof(char*) * (size_t)(state->count + 1));
-    if (!next) return 0;
-    state->names = next;
-
-    const size_t len = strlen(name);
-    state->names[state->count] = (char*)calloc(len + 1, 1);
-    if (!state->names[state->count]) return 0;
-
-    memcpy(state->names[state->count], name, len);
-    state->names[state->count][len] = '\0';
-    state->count++;
-    return 1;
-}
-
-void load_append_pattern(SavedListState* state, const char* pattern) {
-    if (!state || !pattern) return;
-
-    _finddata_t info;
-    intptr_t h = _findfirst(pattern, &info);
-    if (h == -1) {
-        return;
-    }
-
-    do {
-        char name_no_ext[260];
-        if (load_strip_save_name(info.name, name_no_ext, sizeof(name_no_ext))) {
-            load_add_name(state, name_no_ext);
-        }
-    } while (_findnext(h, &info) == 0);
-
-    _findclose(h);
-}
-
-const char* load_selected_name(TribeLoadSavedGameScreen* owner) {
-    SavedListState* state = load_find_state(owner);
-    if (!state) return nullptr;
-    if (state->selected < 0 || state->selected >= state->count) return nullptr;
-    return state->names[state->selected];
-}
-
-void load_pick_default_selection(TribeLoadSavedGameScreen* owner) {
-    SavedListState* state = load_find_state(owner);
-    if (!state || state->count <= 0) return;
-
-    state->selected = 0;
-
-    const TRIBE_Game* game = (const TRIBE_Game*)rge_base_game;
-    if (!game || game->save_game_name[0] == '\0') return;
-
-    for (int i = 0; i < state->count; ++i) {
-        if (_stricmp(state->names[i], game->save_game_name) == 0) {
-            state->selected = i;
-            return;
-        }
-    }
-}
-
-void load_remove_selected_entry(TribeLoadSavedGameScreen* owner) {
-    SavedListState* state = load_find_state(owner);
-    if (!state || state->count <= 0 || state->selected < 0 || state->selected >= state->count) return;
-
-    const int idx = state->selected;
-    free(state->names[idx]);
-
-    for (int i = idx; i + 1 < state->count; ++i) {
-        state->names[i] = state->names[i + 1];
-    }
-
-    state->count--;
-    if (state->count <= 0) {
-        free(state->names);
-        state->names = nullptr;
-        state->selected = -1;
-        return;
-    }
-
-    char** next = (char**)realloc(state->names, sizeof(char*) * (size_t)state->count);
-    if (next) state->names = next;
-    if (state->selected >= state->count) state->selected = state->count - 1;
+static const char* load_selected_name(TribeLoadSavedGameScreen* owner) {
+    if (!owner || !owner->list) return nullptr;
+    char* cur = ((TTextPanel*)owner->list)->currentLine();
+    if (!cur || cur[0] == '\0') return nullptr;
+    return cur;
 }
 
 void load_delete_selected_files(TribeLoadSavedGameScreen* owner) {
@@ -262,8 +79,9 @@ void load_delete_selected_files(TribeLoadSavedGameScreen* owner) {
     file_name[sizeof(file_name) - 1] = '\0';
     _unlink(file_name);
 
-    load_remove_selected_entry(owner);
-    load_refresh_list_text(owner);
+    long line_num = ((TTextPanel*)owner->list)->get_line();
+    ((TTextPanel*)owner->list)->delete_line(line_num);
+    load_sync_buttons(owner);
 }
 
 int load_selected_game(TribeLoadSavedGameScreen* owner) {
@@ -288,26 +106,6 @@ int load_selected_game(TribeLoadSavedGameScreen* owner) {
     load_name[sizeof(load_name) - 1] = '\0';
 
     return ((TRIBE_Game*)rge_base_game)->load_game(load_name);
-}
-
-int load_select_by_click(TribeLoadSavedGameScreen* owner, long x, long y) {
-    if (!owner || !owner->list) return 0;
-    TTextPanel* list_text = (TTextPanel*)owner->list;
-    if (!list_text->is_inside(x, y)) return 0;
-
-    SavedListState* state = load_find_state(owner);
-    if (!state || state->count <= 0) return 0;
-
-    const int row_h = (list_text->font_hgt > 0) ? ((int)list_text->font_hgt + 2) : 16;
-    int row = (int)((y - list_text->pnl_y) / row_h);
-    if (row < 0) row = 0;
-
-    int idx = (int)list_text->top_line + row;
-    if (idx < 0 || idx >= state->count) return 0;
-
-    state->selected = idx;
-    load_refresh_list_text(owner);
-    return 1;
 }
 
 } // namespace
@@ -364,13 +162,17 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
         return;
     }
 
-    TTextPanel* list_text = nullptr;
-    if (!this->create_text((TPanel*)this, &list_text, (char*)"", 0x14, 0x41, 600, 0x160, 0xb, 0, 0, 0)) {
+    if (!this->create_list((TPanel*)this, &this->list, 0x14, 0x41, 600, 0x160, 0xb)) {
         this->error_code = 1;
         return;
     }
-    this->list = (TListPanel*)list_text;
-    this->scrollbar = nullptr;
+    if (!this->create_auto_scrollbar(&this->scrollbar, (TTextPanel*)this->list, 0x14)) {
+        this->error_code = 1;
+        return;
+    }
+    if (this->scrollbar) {
+        this->scrollbar->set_help_info(0x7670, -1);
+    }
 
     if (!this->create_button((TPanel*)this, &this->okButton, 0xfa1, 0, 0x1e, 0x1b8, 0xb4, 0x1e, 0, 0, 0)) {
         this->error_code = 1;
@@ -397,17 +199,17 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
     this->cancelButton->set_help_info(0x7532, -1);
     this->deleteButton->set_help_info(0x7533, -1);
 
-    // TODO(accuracy): restore real TListPanel + scrollbar once TEasy_Panel list infrastructure
-    // (`create_list`/`create_auto_scrollbar`) is reimplemented.
     this->fillList();
 
     // Source of truth: scr_load.cpp.decomp - disable buttons if list is empty
+    load_sync_buttons(this);
+
+    // Source of truth: scr_load.cpp.decomp - attempt to restore current save selection
     if (this->list) {
-        long cur_line = this->list->get_line();
-        char* text = this->list->get_text(cur_line);
-        if (!text || text[0] == '\0') {
-            this->okButton->set_active(0);
-            this->deleteButton->set_active(0);
+        char* save_name = ((TRIBE_Game*)rge_base_game)->get_save_game_name();
+        long line = ((TTextPanel*)this->list)->get_line(save_name);
+        if (line != -1) {
+            this->list->scroll_cur_line(1, (short)line, 1);
         }
     }
 
@@ -430,27 +232,66 @@ TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen() {
     this->delete_panel((TPanel**)&this->okButton);
     this->delete_panel((TPanel**)&this->cancelButton);
     this->delete_panel((TPanel**)&this->deleteButton);
-    load_destroy_state(this);
 }
 
 void TribeLoadSavedGameScreen::fillList() {
-    SavedListState* state = load_ensure_state(this);
-    if (!state) return;
-
-    load_clear_names(state);
-    if (rge_base_game && rge_base_game->prog_info) {
-        char pattern[512];
-        snprintf(pattern, sizeof(pattern), "%s*.gam", rge_base_game->prog_info->save_dir);
-        pattern[sizeof(pattern) - 1] = '\0';
-        load_append_pattern(state, pattern);
-
-        snprintf(pattern, sizeof(pattern), "%s*.gmx", rge_base_game->prog_info->save_dir);
-        pattern[sizeof(pattern) - 1] = '\0';
-        load_append_pattern(state, pattern);
+    // Source of truth: scr_load.cpp.decomp @ 0x0049E150
+    if (!this->list || !rge_base_game || !rge_base_game->prog_info) {
+        return;
     }
 
-    load_pick_default_selection(this);
-    load_refresh_list_text(this);
+    TTextPanel* list_text = (TTextPanel*)this->list;
+    list_text->empty_list();
+    list_text->sorted = 1;
+
+    char pattern[512];
+    snprintf(pattern, sizeof(pattern), "%s*.gam", rge_base_game->prog_info->save_dir);
+    pattern[sizeof(pattern) - 1] = '\0';
+    {
+        _finddata_t info;
+        intptr_t h = _findfirst(pattern, &info);
+        if (h != -1) {
+            do {
+                const char* name = info.name;
+                if (!name) continue;
+                const size_t len = strlen(name);
+                if (len <= 8) continue;
+
+                char out[260];
+                const size_t body_len = len - 8;
+                if (body_len + 1 >= sizeof(out)) continue;
+                memcpy(out, name + 4, body_len);
+                out[body_len] = '\0';
+                list_text->append_line(out, 0);
+            } while (_findnext(h, &info) == 0);
+            _findclose(h);
+        }
+    }
+
+    snprintf(pattern, sizeof(pattern), "%s*.gmx", rge_base_game->prog_info->save_dir);
+    pattern[sizeof(pattern) - 1] = '\0';
+    {
+        _finddata_t info;
+        intptr_t h = _findfirst(pattern, &info);
+        if (h != -1) {
+            do {
+                const char* name = info.name;
+                if (!name) continue;
+                const size_t len = strlen(name);
+                if (len <= 8) continue;
+
+                char out[260];
+                const size_t body_len = len - 8;
+                if (body_len + 1 >= sizeof(out)) continue;
+                memcpy(out, name + 4, body_len);
+                out[body_len] = '\0';
+                list_text->append_line(out, 0);
+            } while (_findnext(h, &info) == 0);
+            _findclose(h);
+        }
+    }
+
+    load_sync_buttons(this);
 }
 
 long TribeLoadSavedGameScreen::handle_idle() {
@@ -462,20 +303,10 @@ long TribeLoadSavedGameScreen::handle_idle() {
 }
 
 long TribeLoadSavedGameScreen::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
-    (void)param_3;
-    (void)param_4;
-    if (load_select_by_click(this, param_1, param_2)) {
-        return 1;
-    }
     return TScreenPanel::mouse_left_down_action(param_1, param_2, param_3, param_4);
 }
 
 long TribeLoadSavedGameScreen::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
-    (void)param_3;
-    (void)param_4;
-    if (load_select_by_click(this, param_1, param_2)) {
-        return this->action((TPanel*)this->okButton, 1, 0, 0);
-    }
     return TScreenPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4);
 }
 
@@ -512,11 +343,7 @@ long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param
             if (game_screen == nullptr) {
                 rge_base_game->disable_input();
                 TribeSPMenuScreen* menu = new TribeSPMenuScreen();
-                if (menu == nullptr || menu->error_code != 0) {
-                    if (menu) delete menu;
-                    load_enable_input();
-                    return 1;
-                }
+                (void)menu;
                 return_panel = "Single Player Menu";
             } else {
                 if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
