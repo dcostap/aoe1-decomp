@@ -332,7 +332,8 @@ RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* this_obj
         e->player = (uchar)this_obj->owner->id;
         e->this_obj_id = this->find_id(this_obj);
         e->target_obj = target_obj;
-        e->target_obj_id = this->find_id(target_obj);
+        // NOTE: Parity with decomp/ASM: original passes `this_obj` again for target_obj_id.
+        e->target_obj_id = this->find_id(this_obj);
         e->command = 0;
     }
     return e;

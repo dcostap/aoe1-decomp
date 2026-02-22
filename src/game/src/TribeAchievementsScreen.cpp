@@ -790,15 +790,11 @@ long TribeAchievementsScreen::wnd_proc(void* wnd, uint msg, uint wparam, long lp
     if (msg == 0x10 && confirmed_close == 0) { // WM_CLOSE
         confirmed_close = 1;
 
-        if (rge_base_game != nullptr) {
-            int pm = rge_base_game->prog_mode;
-            if (pm == 4 || pm == 5 || pm == 6 || pm == 7) {
-                if (this->render_area != nullptr && this->render_area->Wnd != nullptr) {
-                    if (IsIconic((HWND)this->render_area->Wnd) == 0) {
-                        this->popupYesNoDialog(this->get_string(0xc1d), nullptr, 0x1c2, 100);
-                        return 1;
-                    }
-                }
+        int pm = rge_base_game->prog_mode;
+        if (pm == 4 || pm == 5 || pm == 6 || pm == 7) {
+            if (IsIconic((HWND)this->render_area->Wnd) == 0) {
+                this->popupYesNoDialog(this->get_string(0xc1d), nullptr, 0x1c2, 100);
+                return 1;
             }
         }
     }
