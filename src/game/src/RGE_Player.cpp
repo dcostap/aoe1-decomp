@@ -10,6 +10,9 @@
 #include "../include/RGE_Command.h"
 #include "../include/RGE_Visible_Map.h"
 #include "../include/Visible_Resource_Manager.h"
+#include "../include/RGE_Color_Table.h"
+#include "../include/RGE_Doppleganger_Creator.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/TMousePointer.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
@@ -284,7 +287,7 @@ RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
     // Read color table ID (ignored for now)
     uchar color_id = 0;
     rge_read(param_1, &color_id, 1);
-    // TODO(accuracy): set_color_table(this, color_id);
+    this->set_color_table(color_id);
 
     // Read pathing caps
     rge_read(param_1, &this->pathingAttemptCapValue, 4);
@@ -296,8 +299,18 @@ RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
 
 RGE_Player::~RGE_Player() {
     // Source of truth: player.cpp.decomp @ 0x0046EB00
-    // Free object lists
-    // TODO(accuracy): delete objects, sleeping_objects, doppleganger_objects via destructors
+    if (this->objects != nullptr) {
+        delete this->objects;
+        this->objects = nullptr;
+    }
+    if (this->sleeping_objects != nullptr) {
+        delete this->sleeping_objects;
+        this->sleeping_objects = nullptr;
+    }
+    if (this->doppleganger_objects != nullptr) {
+        delete this->doppleganger_objects;
+        this->doppleganger_objects = nullptr;
+    }
     if (this->victory_conditions) {
         delete this->victory_conditions;
         this->victory_conditions = nullptr;
@@ -322,7 +335,18 @@ RGE_Player::~RGE_Player() {
         this->master_object_num = 0;
     }
 
-    // TODO(accuracy): delete visible, doppleganger_creator, VR_List via destructors
+    if (this->visible != nullptr) {
+        delete this->visible;
+        this->visible = nullptr;
+    }
+    if (this->doppleganger_creator != nullptr) {
+        delete this->doppleganger_creator;
+        this->doppleganger_creator = nullptr;
+    }
+    if (this->VR_List != nullptr) {
+        delete this->VR_List;
+        this->VR_List = nullptr;
+    }
 
     // Free name
     if (this->name) {
@@ -338,19 +362,23 @@ RGE_Player::~RGE_Player() {
     }
 }
 void RGE_Player::set_game_status(uchar param_1) {
-    // Source of truth: player.cpp.decomp @ 0x0046ECE0
-    if (param_1 != this->game_status) {
-        if (this->resigned == 0 || param_1 == 2) {
-            this->game_status = param_1;
-            // TODO(accuracy): if param_1==2 && resigned==0, notify via rge_base_game
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ECE0 (audited vs player.cpp.asm).
+    if ((param_1 != this->game_status) && (this->resigned == 0 || param_1 == 2)) {
+        uchar was_resigned = this->resigned;
+        this->game_status = param_1;
+        if (param_1 == 2 && was_resigned == 0) {
+            rge_base_game->notification(6, (long)this->id, 0, 0, 0);
         }
     }
 }
 void RGE_Player::do_resign(int param_1) {
-    // Source of truth: player.cpp.decomp @ 0x0046ED50
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ED50 (audited vs player.cpp.asm).
+    uchar old_resigned = this->resigned;
     this->resigned = 1;
     this->set_game_status(2);
-    // TODO(accuracy): notify via rge_base_game
+    if (old_resigned == 0) {
+        rge_base_game->notification(5, (long)this->id, param_1, 0, 0);
+    }
 }
 void RGE_Player::changeToHumanPlayer() {}
 void RGE_Player::changeToComputerPlayer() {}
@@ -674,7 +702,7 @@ void RGE_Player::save(int param_1) {
     // Color table ID
     uchar color_id = 0;
     if (this->color_table) {
-        // TODO(accuracy): color_id = (uchar)this->color_table->id;
+        color_id = (uchar)this->color_table->id;
     }
     rge_write(param_1, &color_id, 1);
     // Pathing caps
@@ -967,21 +995,32 @@ void RGE_Player::update_selected() {
 }
 
 int RGE_Player::select_object(RGE_Static_Object* param_1) {
-    // Source of truth: player.cpp.decomp @ 0x00470D20
-    // Simplified: selects the object and any grouped objects
-    select_one_object(param_1);
-    if (this->sel_count == 0) {
+    // Source of truth: player.cpp.decomp @ 0x00470D20 (audited vs player.cpp.asm).
+    if (select_one_object(param_1, 1) == 0) {
         return 0;
     }
-    // TODO(accuracy): if selected_group > 10, also select all objects in the same group
+
+    uchar selected_group = param_1->selected_group;
+    if (selected_group > 10 && this->objects != nullptr) {
+        RGE_Object_Node* node = this->objects->list;
+        while (node != nullptr) {
+            RGE_Static_Object* obj = node->node;
+            if (obj != param_1 && obj->selected_group == selected_group) {
+                if (select_one_object(obj, 0) == 0) {
+                    break;
+                }
+            }
+            node = node->next;
+        }
+    }
+
     this->selected_obj = param_1;
     return 1;
 }
 
 // --- Non-virtual methods ---
 void RGE_Player::set_relation(long param_1, uchar param_2) {
-    // Source of truth: player.cpp.decomp @ 0x00470BE0
-    if (!this->relations) return;
+    // Source of truth: player.cpp.decomp @ 0x00470BE0 (audited vs player.cpp.asm).
     this->relations[param_1] = param_2;
     if (param_1 == 0) {
         this->unitDiplomacy[0] = 0; // gaia
@@ -994,7 +1033,14 @@ void RGE_Player::set_relation(long param_1, uchar param_2) {
     } else {
         this->unitDiplomacy[param_1] = 4; // enemy
     }
-    // TODO(accuracy): notify all objects of relation change
+
+    if (this->objects != nullptr) {
+        for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+            if (node->node != nullptr) {
+                node->node->notify_of_relation(param_1, param_2);
+            }
+        }
+    }
 }
 
 void RGE_Player::set_view_loc(float x, float y) {

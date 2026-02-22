@@ -7,6 +7,7 @@ struct RGE_Person_Info {
     long get_current_campaign();
     long get_current_scenario();
     int open_scenario();
+    void save(int param_1);
     uchar set_current_campaign(long param_1);
     uchar set_current_scenario(long param_1);
     void notify_of_scenario_complete();

@@ -1436,11 +1436,6 @@ int TRIBE_Game::start_game(int p1) {
     CUSTOM_DEBUG_LOG("start_game: set_load_game_name(nullptr) done");
 
     if (p1 != 0) {
-        if (this->check_prog_argument("DEBUGBYPASSGAMESCREEN") != 0) {
-            // TODO: STUB: Temporary debug gate to isolate crash around create_game_screen transition.
-            CUSTOM_DEBUG_LOG("start_game: DEBUGBYPASSGAMESCREEN active, skipping create_game_screen");
-            return 1;
-        }
         CUSTOM_DEBUG_LOG("start_game: creating game screen immediately");
         return this->create_game_screen();
     }

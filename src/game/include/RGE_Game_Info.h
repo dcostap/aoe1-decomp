@@ -12,6 +12,7 @@ struct RGE_Game_Info {
     uchar set_current_person(long param_1);
     uchar set_current_campaign(long param_1);
     uchar set_current_scenario(long param_1);
+    void save(char* param_1);
     void notify_of_scenario_complete();
 
     long current_person;

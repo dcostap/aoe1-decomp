@@ -631,14 +631,11 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->runtime.log_text->text_style = TTextPanel::NormalStyle;
     this->runtime.log_text->set_text_color(0xFFFFFF, 0);
 
-    if (this->create_auto_scrollbar(&this->runtime.log_scrollbar, this->runtime.log_text, 0x14) == 0 ||
-        this->runtime.log_scrollbar == nullptr) {
-        // TODO: STUB: log scrollbar creation can fail in the current fallback view path.
-        // Keep constructor alive so SP game-start transition can proceed.
-        this->runtime.log_scrollbar = nullptr;
-    } else {
-        this->runtime.log_scrollbar->set_bevel_info(1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
+    if (this->create_auto_scrollbar(&this->runtime.log_scrollbar, this->runtime.log_text, 0x14) == 0) {
+        this->error_code = 1;
+        return;
     }
+    this->runtime.log_scrollbar->set_bevel_info(1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF);
     this->runtime.log_text->empty_list();
     this->runtime.log_text->set_active(0);
 
@@ -1219,15 +1216,16 @@ void TRIBE_Screen_Game::reset_score_display() {
             }
             if (latency > 299) {
                 icon1 = this->runtime.button_other_pic;
-                icon1_frame = (latency < 1001) ? 0x13 : 0x14;
+                icon1_frame = 0x14;
+                if (latency < 1001) {
+                    icon1_frame = 0x13;
+                }
             }
         }
 
-        panel->show_message2(5, text, color1, color2, font_obj, font_wid, font_hgt, icon1, icon1_frame, icon2, icon2_frame);
+        panel->show_message2(TMessagePanel::RightInfoMessage, text, color1, color2, font_obj, font_wid, font_hgt, icon1, icon1_frame, icon2, icon2_frame);
         panel->set_redraw(TPanel::Redraw);
     }
-
-    // TODO(accuracy): Replace message-type constant and full icon composition with exact pnl_msg.cpp parity.
 }
 
 void TRIBE_Screen_Game::reset_clocks() {

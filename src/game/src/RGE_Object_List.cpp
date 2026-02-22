@@ -25,6 +25,28 @@ RGE_Object_List::RGE_Object_List() {
     this->number_of_objects = 0;
 }
 
+RGE_Object_List::~RGE_Object_List() {
+    // Source of truth: obj_list.cpp.decomp @ 0x00462EA0
+    RGE_Object_Node* node = this->list;
+    while (node != nullptr) {
+        RGE_Object_Node* next = node->next;
+        if (node->node != nullptr) {
+            delete node->node;
+        }
+        node = next;
+    }
+
+    node = this->list;
+    while (node != nullptr) {
+        RGE_Object_Node* next = node->next;
+        free(node);
+        node = next;
+    }
+
+    this->list = nullptr;
+    this->number_of_objects = 0;
+}
+
 RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462F30
     RGE_Object_Node* new_node = (RGE_Object_Node*)calloc(1, 0x10);
