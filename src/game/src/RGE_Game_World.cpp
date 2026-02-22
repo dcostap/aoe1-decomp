@@ -1703,6 +1703,46 @@ RGE_Static_Object* RGE_Game_World::object_ptr(int param_1) {
     return this->object(param_1);
 }
 
+long RGE_Game_World::get_next_object_id() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545D90
+    if (this->scenario_object_flag != 0) {
+        return this->scenario_object_id;
+    }
+
+    int max_id = this->maxNumberObjectsValue - 1;
+    if (this->next_object_id <= max_id) {
+        int next = 0;
+        do {
+            if (this->objectsValue[this->next_object_id] == nullptr) {
+                break;
+            }
+            next = this->next_object_id + 1;
+            this->next_object_id = next;
+        } while (next <= max_id);
+    }
+
+    long id = this->next_object_id;
+    this->next_object_id = (long)(id + 1);
+    return id;
+}
+
+long RGE_Game_World::get_next_reusable_object_id() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545DD0
+    long id = 0;
+    if (this->scenario_object_flag == 0) {
+        id = this->next_reusable_object_id;
+        this->next_reusable_object_id = id - 1;
+    } else {
+        id = this->scenario_object_id;
+        if (id < this->next_reusable_object_id) {
+            this->next_reusable_object_id = id - 1;
+            return id;
+        }
+    }
+
+    return id;
+}
+
 uchar RGE_Game_World::recycle_object_out_of_game(uchar param_1, RGE_Static_Object* param_2) {
     // Source of truth: world.cpp.decomp @ 0x00546070
     switch (param_1) {
@@ -1812,8 +1852,9 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
     this->numberObjectsValue = this->numberObjectsValue + 1;
 
     if (replaced != nullptr && this->scenario_object_flag != 0) {
-        // TODO(accuracy): world.cpp.decomp calls RGE_Static_Object::change_unique_id(replaced).
         this->scenario_object_flag = 0;
+        replaced->change_unique_id();
+        return 1;
     }
 
     return 1;
