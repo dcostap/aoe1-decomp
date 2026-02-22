@@ -170,6 +170,7 @@ public:
     int fogOfWar();
     int playerID(int index);
     void setPlayerID(int index, int value);
+    float get_game_speed();
     unsigned char pathFinding();
     unsigned char mpPathFinding();
     void set_map_visible(unsigned char p1);
@@ -184,6 +185,8 @@ public:
     char* scenarioName();
     int campaign_open_scenario();
     void get_campaign_info(long* param_1, long* param_2, long* param_3);
+    uchar set_campaign_info(long param_1, long param_2, long param_3);
+    void set_campaign_win();
     RGE_Scenario* get_scenario_info(char* p1, int p2);
 
     RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)

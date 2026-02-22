@@ -1,4 +1,6 @@
 #include "../include/TRIBE_Player_Tech.h"
+#include "../include/TRIBE_Player.h"
+#include "../include/TRIBE_History_Info.h"
 #include "../include/TRIBE_Tech.h"
 #include "../include/RGE_Player.h"
 #include "../include/globals.h"
@@ -59,12 +61,22 @@ short TRIBE_Player_Tech::get_tech_state(short param_1) {
 }
 
 uchar TRIBE_Player_Tech::do_tech(short param_1) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C5E5
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C5E5
     if (this->tech_player_tree[param_1].state < 3 && this->tech_player_tree[param_1].state >= 0) {
         this->tech_player_tree[param_1].state = 3;
         this->base_tech->do_tech(param_1, this->owner);
         check_for_new_tech();
-        // TODO(accuracy): history events for age advances (0x65, 0x66, 0x67)
+
+        TRIBE_Player* owner_player = (TRIBE_Player*)this->owner;
+        if (owner_player != nullptr && owner_player->history != nullptr) {
+            if (param_1 == 0x65) {
+                owner_player->history->add_history_event(0);
+            } else if (param_1 == 0x66) {
+                owner_player->history->add_history_event(1);
+            } else if (param_1 == 0x67) {
+                owner_player->history->add_history_event(2);
+            }
+        }
         return 1;
     }
     return 0;

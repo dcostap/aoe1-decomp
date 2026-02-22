@@ -93,6 +93,10 @@ public:
     void win_game_now();
     void victory_if_game_on();
     void loss_if_game_on();
+    void load_info(int param_1);
+    uchar check_victory_conditions();
+    uchar check_ally_group(long* param_1);
+    uchar check_victory();
     void set_allied_victory(uchar param_1);
     uchar get_allied_victory();
     uchar relation(long param_1);

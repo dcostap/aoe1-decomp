@@ -79,6 +79,7 @@ public:
     void update_mutual_allies();
     void set_map_visible(uchar param_1);
     void set_map_fog(uchar param_1);
+    void selectNextComputerPlayer(int param_1);
     int initializePathingSystem();
     int numberObjects();
     int numberNegativeObjects();

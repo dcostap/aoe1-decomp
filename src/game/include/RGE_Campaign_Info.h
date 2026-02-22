@@ -7,6 +7,10 @@ struct RGE_Campaign;
 struct RGE_Campaign_Info {
     long get_current_scenario();
     int open_scenario();
+    RGE_Campaign_Info(RGE_Campaign* param_1);
+    uchar set_current_scenario(long param_1);
+    uchar verify_campaign_name(char* param_1);
+    void notify_of_scenario_complete();
 
     char campaign_name[255];
     long current_scenario;
