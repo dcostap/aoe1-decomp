@@ -131,6 +131,14 @@ int RGE_Active_Sprite::check_for_shadows() {
     return 0;
 }
 
+unsigned char RGE_Active_Sprite::get_lowest_draw_level() {
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AFE0.
+    if (this->sprite != nullptr) {
+        return this->sprite->get_lowest_draw_level();
+    }
+    return 0x14;
+}
+
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* param_1)
     : RGE_Active_Sprite(param_1) {
     // Source of truth: asprite.cpp.decomp @ 0x0041B010
@@ -439,6 +447,18 @@ void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
 
         free(cur);
     }
+}
+
+uchar RGE_Active_Sprite_List::get_lowest_draw_level() {
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041ACC0.
+    uchar bVar3 = 0x14;
+    for (RGE_Active_Sprite_Node* pRVar1 = this->list; pRVar1 != nullptr; pRVar1 = pRVar1->next) {
+        uchar bVar2 = pRVar1->node->get_lowest_draw_level();
+        if (bVar2 < bVar3) {
+            bVar3 = bVar2;
+        }
+    }
+    return bVar3;
 }
 
 RGE_Active_Sprite_List::~RGE_Active_Sprite_List() {

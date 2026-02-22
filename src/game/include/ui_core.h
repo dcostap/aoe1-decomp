@@ -96,7 +96,8 @@ public:
     void set_z_order(char param_1, int param_2);
     int capture_mouse();
     void release_mouse();
-    
+    int bound_point(long* param_1, long* param_2);
+     
     int get_string(int resid, char* buffer, int len);
     char* get_string(int resid);
 

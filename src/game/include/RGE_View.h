@@ -6,6 +6,7 @@ class TSpan_List_Manager;
 struct Tile_FogEdge_Table;
 struct Tile_BlackEdge_Table;
 struct Blit_Queue_Entry;
+struct RGE_Pick_Info;
 struct RGE_SPick_Info;
 struct DClipInfo_List;
 struct Ov_Sprite_Draw_Rec;
@@ -23,14 +24,18 @@ public:
     virtual void draw() override;
     virtual void set_focus(int param_1) override;
 
-    // View-specific virtuals (still stubbed in this decomp state).
-    virtual int pick_through_fog(RGE_Static_Object* param_1); // TODO: STUB
-    virtual int pick_weight(RGE_Static_Object* param_1, int param_2); // TODO: STUB
-    virtual int start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5); // TODO: STUB
-    virtual int handle_scroll_view(long param_1, long param_2); // TODO: STUB
-    virtual void end_scroll_view(); // TODO: STUB
-    virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5); // TODO: STUB
-    virtual void draw_multi_object_outline(); // TODO: STUB
+    // View-specific virtuals.
+    virtual int pick_through_fog(RGE_Static_Object* param_1);
+    virtual int pick_weight(RGE_Static_Object* param_1, int param_2);
+    virtual int start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5);
+    virtual int handle_scroll_view(long param_1, long param_2);
+    virtual void end_scroll_view();
+    virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5);
+    virtual void draw_multi_object_outline();
+
+    void set_selection_area(long param_1, long param_2, long param_3, long param_4);
+    unsigned char pick(unsigned char param_1, unsigned char param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
+    unsigned char pick_multi(unsigned char param_1, long param_2, long param_3, long param_4, long param_5);
 
     TDrawArea* cur_render_area;
     int calc_draw_count;
