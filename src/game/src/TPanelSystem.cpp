@@ -259,6 +259,18 @@ int TPanelSystem::restorePreviousPanel(int destroy_current) {
 // From decomp: sets the modal panel (captures all input)
 void TPanelSystem::setModalPanel(TPanel* panel) {
     if (panel) {
+        // Original dialogs live in the panel list so they can be found/destroyed by name.
+        bool found = false;
+        for (PanelNode* curr = this->panelListValue; curr; curr = curr->next_node) {
+            if (curr->panel == panel) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            this->add_panel(panel);
+        }
+
         // Save previous modal panel in the panel's own field
         panel->previousModalPanelValue = this->modalPanelValue;
     }
