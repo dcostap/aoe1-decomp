@@ -66,6 +66,20 @@ public:
     virtual void take_snapshot(); // vt[54] (0xD8)
     virtual void handle_reactivate(); // vt[55] (0xDC)
 
+    TEditPanel();
+
+    long setup(TDrawArea* render_area, TPanel* parent, long x, long y, long w, long h, void* font, short fixed_len, char* initial_text, FormatType format, int auto_sel);
+    void set_text(char* s);
+    char* get_text();
+    void update_text();
+    void set_text_color(unsigned long c1, unsigned long c2);
+    void set_highlight_text_color(unsigned long c1, unsigned long c2);
+    void set_back_color(void* brush, int stock_brush, unsigned long brush_color, unsigned long back_color);
+    void set_bevel_info(int bevel_type, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6);
+    void set_ime_info(int enable, int turn_on);
+
+    long sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam);
+
     void* edit_wnd;
     short fixed_len;
     char* text;
@@ -82,7 +96,7 @@ public:
     TEditPanel::FormatType format;
     void* font;
     int multi_line;
-    tagRECT draw_rect;
+    tagRECT draw_rect_value;
     unsigned int draw_format;
     int auto_sel;
     int sel_len;

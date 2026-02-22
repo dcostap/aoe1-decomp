@@ -1616,6 +1616,21 @@ void RGE_Static_Object::remove_overlay_sprite(RGE_Sprite* param_1) {
     this->sprite_list->remove_sprite(param_1);
 }
 
+void RGE_Static_Object::change_unique_id() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1CF0
+    this->owner->removeObject(this, (int)this->sleep_flag, (int)this->dopple_flag, this->player_object_node);
+
+    long new_id = 0;
+    if (this->master_obj->recyclable == 0) {
+        new_id = this->owner->world->get_next_object_id();
+    } else {
+        new_id = this->owner->world->get_next_reusable_object_id();
+    }
+
+    this->id = new_id;
+    this->player_object_node = this->owner->addObject(this, (int)this->sleep_flag, (int)this->dopple_flag);
+}
+
 void RGE_Static_Object::get_starting_attribute() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1E20
     RGE_Master_Static_Object* master = this->master_obj;

@@ -85,6 +85,8 @@ public:
     int numberNegativeObjects();
     RGE_Static_Object* object(int param_1);
     RGE_Static_Object* object_ptr(int param_1);
+    long get_next_object_id();
+    long get_next_reusable_object_id();
     uchar recycle_object_out_of_game(uchar param_1, RGE_Static_Object* param_2);
 
     unsigned long world_time; // +0x4

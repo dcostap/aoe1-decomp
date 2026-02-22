@@ -4,12 +4,10 @@
 
 class TMessageDialog : public TDialogPanel {
 public:
-    // Source of truth: dlg_msg.cpp.decomp @ 0x0043FC70
     TMessageDialog(char* name);
 
-    // Source of truth: dlg_msg.cpp.decomp @ 0x0043FD50 / 0x0043FFF0
-    long setup(TPanel* param_1, char* param_2, long param_3, long param_4, long param_5, uchar param_6, char* param_7, long param_8, long param_9);
-    long setup(TPanel* param_1, char* param_2, long param_3, long param_4, long param_5, uchar param_6, int param_7, long param_8, long param_9);
+    long setup(TPanel* parent, char* info_file, long info_id, long wid, long hgt, uchar dlg_type, char* text, long button_wid, long button_hgt);
+    long setup(TPanel* parent, char* info_file, long info_id, long wid, long hgt, uchar dlg_type, int text_id, long button_wid, long button_hgt);
 
     // Virtuals (best-effort)
     virtual ~TMessageDialog(); // vt[0] (0x0)

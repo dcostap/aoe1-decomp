@@ -4,6 +4,8 @@
 
 class TRIBE_Screen_Campaign_Selection : public TScreenPanel {
 public:
+    TRIBE_Screen_Campaign_Selection();
+
     // Non-virtual helpers (see scr_cams.cpp.decomp)
     void init_vars();
     void fillCampaigns();

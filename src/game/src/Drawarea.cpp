@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <io.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "../include/TDrawSystem.h"
 #include "../include/TDrawArea.h"
 #include "../include/TSpan_List_Manager.h"
@@ -705,6 +708,28 @@ int TDrawSystem::SetDisplaySize(long p1, long p2, int p3) {
     return 1;
 }
 
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004433F0
+void TDrawSystem::HandleSize(void* wnd, uint msg, uint wparam, long lparam) {
+    (void)wnd;
+    (void)msg;
+    (void)wparam;
+    (void)lparam;
+
+    if (this->DrawArea != nullptr) {
+        if (this->DrawType == 1 || this->ScreenMode == 1) {
+            RECT wnd_rect;
+            GetClientRect((HWND)this->Wnd, &wnd_rect);
+            this->ScreenWidth = wnd_rect.right;
+            this->ScreenHeight = wnd_rect.bottom;
+        }
+
+        if (this->PrimaryArea != nullptr) {
+            this->PrimaryArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
+        }
+        this->DrawArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
+    }
+}
+
 // TDrawArea Implementation
 
 TDrawArea::TDrawArea(char* name) {
@@ -1012,6 +1037,26 @@ void TDrawArea::Unlock(char* name) {
     if (this->DrawSurface != nullptr && this->Bits != nullptr) {
         this->DrawSurface->Unlock(this->Bits);
         this->Bits = nullptr;
+    }
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445710
+void TDrawArea::SetTrans(int enabled, uchar trans_color) {
+    this->UseTrans = enabled;
+    if (enabled == 0) {
+        this->TransColor = 0xFF;
+    } else {
+        this->TransColor = trans_color;
+    }
+
+    if (enabled != 0) {
+        IDirectDrawSurface* surf = this->DrawSurface;
+        if (surf != nullptr && this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
+            DDCOLORKEY ddck;
+            ddck.dwColorSpaceLowValue = (DWORD)this->TransColor;
+            ddck.dwColorSpaceHighValue = (DWORD)this->TransColor;
+            surf->SetColorKey(DDCKEY_SRCBLT, &ddck);
+        }
     }
 }
 
@@ -1816,4 +1861,100 @@ void TDrawArea::ReleaseDc(char* name) {
         this->DrawSurface->ReleaseDC((HDC)this->DrawDc);
         this->DrawDc = nullptr;
     }
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp/.asm @ 0x004463B0
+void TDrawArea::take_snapshot(char* filename_fmt, int* snapshot_number) {
+    // Matches original implementation: 8-bit paletted BMP with DWORD-aligned scanlines.
+    unsigned int bmWide = ((unsigned int)this->Width + 3u) & 0xFFFFFFFCu;
+
+    BITMAPFILEHEADER bmFH;
+    BITMAPINFOHEADER bmIH;
+    char BMPFile[60];
+    RGBQUAD bmPAL[257];
+    tagPALETTEENTRY thePal[257];
+
+    bmIH.biSize = 0x28;
+    bmIH.biWidth = this->Width;
+    bmIH.biHeight = this->Height;
+    bmIH.biPlanes = 1;
+    bmIH.biBitCount = 8;
+    bmIH.biCompression = BI_RGB;
+    bmIH.biSizeImage = 0;
+    bmIH.biXPelsPerMeter = 0;
+    bmIH.biYPelsPerMeter = 0;
+    bmIH.biClrUsed = 0;
+    bmIH.biClrImportant = 0;
+
+    memset(&bmFH, 0, sizeof(bmFH));
+    bmFH.bfType = 0x4D42; // 'BM'
+    bmFH.bfOffBits = 0x436;
+    bmFH.bfSize = (DWORD)(this->Height * (int)bmWide + 0x436);
+
+    BMPFile[0] = '\0';
+    BMPFile[1] = '\0';
+    BMPFile[2] = '\0';
+    BMPFile[3] = '\0';
+
+    this->GetPalette(thePal + 1);
+
+    int iVar4 = 0;
+    do {
+        unsigned char g = (&thePal[1].peGreen)[iVar4];
+        (&bmPAL[1].rgbBlue)[iVar4] = (&thePal[1].peBlue)[iVar4];
+        unsigned char r = (&thePal[1].peRed)[iVar4];
+        (&bmPAL[1].rgbGreen)[iVar4] = g;
+        (&bmPAL[1].rgbRed)[iVar4] = r;
+        (&bmPAL[1].rgbReserved)[iVar4] = '\0';
+        iVar4 = iVar4 + 4;
+    } while (iVar4 < 0x400);
+
+    iVar4 = 0;
+    while (true) {
+        char* pcVar10;
+        int iVar5 = *snapshot_number;
+        if (filename_fmt == (char*)0x0) {
+            pcVar10 = (char*)"C:\\AOE_%03d.BMP";
+        } else {
+            pcVar10 = filename_fmt;
+        }
+
+        sprintf(BMPFile + 4, pcVar10, iVar5);
+        iVar4 = iVar4 + 1;
+        int h = _open(BMPFile + 4, 0);
+        if (h == -1) break;
+        *snapshot_number = *snapshot_number + 1;
+        _close(h);
+        if (1000 < iVar4) {
+            return;
+        }
+    }
+
+    unsigned char* line_buf = (unsigned char*)malloc((size_t)bmWide);
+    int out = _open(BMPFile + 4, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
+    if (out != -1) {
+        _write(out, &bmFH, 0xE);
+        _write(out, &bmIH, 0x28);
+        _write(out, bmPAL + 1, 0x400);
+
+        unsigned char* locked = this->Lock((char*)"take_snapshot", 1);
+        int iVar3 = this->Height;
+        if (locked != (unsigned char*)0x0) {
+            while (iVar3 = iVar3 + -1, -1 < iVar3) {
+                int iVar7 = 0;
+                unsigned char* puVar8 = (unsigned char*)this->CurDisplayOffsets[iVar3];
+                if (0 < this->Width) {
+                    do {
+                        *(unsigned char*)(iVar7 + line_buf) = *puVar8;
+                        iVar7 = iVar7 + 1;
+                        puVar8 = puVar8 + 1;
+                    } while (iVar7 < this->Width);
+                }
+                _write(out, line_buf, (unsigned int)bmWide);
+            }
+            this->Unlock((char*)"take_snapshot");
+        }
+        _close(out);
+    }
+    free(line_buf);
 }

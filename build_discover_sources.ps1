@@ -55,12 +55,17 @@ foreach ($src in $sources) {
     }
 
     if ($needsCompile) {
-        $changedSources.Add($src.FullName)
+        # Keep paths relative to avoid hitting cmd.exe environment length limits.
+        $changedSources.Add((Join-Path $SrcDir $src.Name))
     }
 }
 
+# Emit changed sources as a response file to avoid Windows cmd.exe line-length limits.
+$changedRspPath = Join-Path $ObjDir "changed_sources.rsp"
+Set-Content -LiteralPath $changedRspPath -Value ($changedSources -join "`r`n") -Encoding ASCII
+
 Write-Output ("OBJECT_LIST=" + ($objectList -join " "))
-Write-Output ("CHANGED_SOURCES=" + ($changedSources -join " "))
+Write-Output ("CHANGED_SOURCES_RSP=" + $changedRspPath)
 Write-Output ("SOURCE_COUNT=" + $sourceCount)
 Write-Output ("CHANGED_COUNT=" + $changedSources.Count)
 Write-Output ("EXCLUDED_COUNT=" + $excludedCount)

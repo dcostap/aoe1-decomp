@@ -15,6 +15,7 @@ struct TDrawArea {
     void OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y);
     uchar* Lock(char* name, int p2);
     void Unlock(char* name);
+    void SetTrans(int enabled, uchar trans_color);
     void SetAccessOffsets();
     void SetInfo();
     void PtrSpanCopy(TDrawArea* src, int x, int y);
@@ -36,6 +37,7 @@ struct TDrawArea {
     void* GetDc(char* name);
     void ReleaseDc(char* name);
     void SaveBitmap(char* filename);
+    void take_snapshot(char* filename_fmt, int* snapshot_number);
 
     // Source-of-truth methods needed by `Panel_ez` and UI shading.
     long AlignedWidth();

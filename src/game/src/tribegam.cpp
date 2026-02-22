@@ -33,6 +33,7 @@
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Mission_Screen.h"
 #include "../include/TribeAchievementsScreen.h"
+#include "../include/TribeEndScreen.h"
 #include <windows.h>
 #include <vfw.h>
 #include <io.h>
@@ -456,62 +457,183 @@ CUSTOM_DEBUG_END
     return 1;
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00520FC0
+static const uint encrypt_codes_table[0x60] = {
+    // 0x00-0x3F
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    // 0x40
+    0x00000000,
+    // 0x41-0x5F ('A'-'_') extracted from the original beta EXE data section @ 0x0058B760.
+    0x00006878, // 'A' -> "hx"
+    0x00002A5F, // 'B' -> "*_"
+    0x00003343, // 'C' -> "3C"
+    0x00003F3E, // 'D' -> "?>"
+    0x0000416D, // 'E' -> "Am"
+    0x00004A6D, // 'F' -> "Jm"
+    0x0000315A, // 'G' -> "1Z"
+    0x00004029, // 'H' -> "@)"
+    0x0000234C, // 'I' -> "#L"
+    0x00007D7B, // 'J' -> "}{"
+    0x00006357, // 'K' -> "cW"
+    0x00002B21, // 'L' -> "+!"
+    0x00002563, // 'M' -> "%c"
+    0x00006457, // 'N' -> "dW"
+    0x0000255E, // 'O' -> "%^"
+    0x0000773E, // 'P' -> "w>"
+    0x00006878, // 'Q' -> "hx"
+    0x00002525, // 'R' -> "%%"
+    0x00003124, // 'S' -> "1$"
+    0x0000205E, // 'T' -> " ^"
+    0x00005F6A, // 'U' -> "_j"
+    0x00002654, // 'V' -> "&T"
+    0x00003433, // 'W' -> "43"
+    0x00002928, // 'X' -> ")("
+    0x00003A3A, // 'Y' -> "::"
+    0x0000533F, // 'Z' -> "S?"
+    0x0000264B, // '[' -> "&K"
+    0x00005279, // '\\' -> "Ry"
+    0x00003758, // ']' -> "7X"
+    0x00003B69, // '^' -> ";i"
+    0x00002A26, // '_' -> "*&"
+};
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00520FC0
+void encrypt_codes(char* in, char* out, int max_len) {
+    char c = *in;
+    int out_len = 0;
+    char* next = in + 1;
+
+    while (c != '\0' && out_len < max_len) {
+        if (c < 'A' || '_' < c) {
+            *out = c;
+            out = out + 1;
+            out_len = out_len + 1;
+        } else {
+            uint v = encrypt_codes_table[(unsigned char)c];
+            *out = (char)((uint)v >> 8);
+            out[1] = (char)v;
+            out = out + 2;
+            out_len = out_len + 2;
+        }
+
+        c = *next;
+        next = next + 1;
+    }
+
+    *out = '\0';
+}
+
 int TRIBE_Game::setup_cmd_options() {
     // Source of truth: tribegam.cpp.decomp @ 0x00521FA0
-    char cmd_line_upper[260];
-    strncpy(cmd_line_upper, this->prog_info->cmd_line, 255);
-    cmd_line_upper[255] = '\0';
-    CharUpperA(cmd_line_upper);
+    char cmd_line_and_temp[0x204];
+    char* cmd_line = cmd_line_and_temp + 4;
+    char* temp_str = cmd_line_and_temp + 0x104;
+    char encstr[512];
 
-    if (strstr(cmd_line_upper, "NOTERRAINSOUND")) {
+    strncpy(cmd_line, this->prog_info->cmd_line, 0xff);
+    temp_str[3] = '\0';
+    CharUpperA(cmd_line);
+
+    encrypt_codes(cmd_line, encstr, 0x200);
+
+    if (strstr(cmd_line, "NOTERRAINSOUND") != nullptr) {
         disable_terrain_sounds = 1;
     }
 
-    // Pop limit from encrypted command line (simplified — skip encrypt_codes)
-    // TODO(accuracy): encrypt_codes for obfuscated pop limit argument
+    // Obfuscated pop-limit argument parsed out of the encrypted command line.
+    char* pcVar3 = strstr(encstr, "+!#L%c#L ^=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
+        }
 
-    if (strstr(cmd_line_upper, "QUICK1")) {
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            temp_str[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        temp_str[iVar2] = '\0';
+
+        iVar2 = atol(temp_str);
+        if (iVar2 < 0x1a) {
+            iVar2 = 0x19;
+        } else if (200 < iVar2) {
+            iVar2 = 200;
+        }
+        this->setPopLimit((unsigned char)iVar2);
+    }
+
+    if (strstr(cmd_line, "QUICK1") != nullptr) {
         quick_start_game_mode = 1;
     }
 
-    // SCN= : startup scenario from command line
-    char* scn_arg = strstr(cmd_line_upper, "SCN=");
-    if (scn_arg) {
-        while (*scn_arg && *scn_arg != '=') scn_arg++;
-        scn_arg++; // skip '='
-        int i = 0;
-        while (*scn_arg && *scn_arg != ' ' && i < 255) {
-            this->startup_scenario[i++] = *scn_arg++;
+    pcVar3 = strstr(cmd_line, "SCN=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
         }
-        this->startup_scenario[i] = '\0';
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            this->startup_scenario[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        this->startup_scenario[iVar2] = '\0';
     }
 
-    // EXIT= : auto exit time
-    char* exit_arg = strstr(cmd_line_upper, "EXIT=");
-    if (exit_arg) {
-        while (*exit_arg && *exit_arg != '=') exit_arg++;
-        exit_arg++;
-        char temp[256];
-        int i = 0;
-        while (*exit_arg && *exit_arg != ' ' && i < 255) {
-            temp[i++] = *exit_arg++;
+    pcVar3 = strstr(cmd_line, "EXIT=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
         }
-        temp[i] = '\0';
-        this->auto_exit_time = atol(temp);
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            temp_str[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        temp_str[iVar2] = '\0';
+        this->auto_exit_time = (ulong)atol(temp_str);
     }
 
-    // GAM= : startup saved game from command line
-    char* gam_arg = strstr(cmd_line_upper, "GAM=");
-    if (gam_arg) {
-        while (*gam_arg && *gam_arg != '=') gam_arg++;
-        gam_arg++;
-        int i = 0;
-        while (*gam_arg && *gam_arg != ' ' && i < 255) {
-            this->startup_game[i++] = *gam_arg++;
+    pcVar3 = strstr(cmd_line, "GAM=");
+    if (pcVar3 != nullptr) {
+        char cVar1 = *pcVar3;
+        while (cVar1 != '=') {
+            char* pcVar8 = pcVar3 + 1;
+            pcVar3 = pcVar3 + 1;
+            cVar1 = *pcVar8;
         }
-        this->startup_game[i] = '\0';
-        // Append .gmx extension if no extension present
-        if (!strchr(this->startup_game, '.')) {
+        int iVar2 = 0;
+        cVar1 = pcVar3[1];
+        while (cVar1 != ' ' && cVar1 != '\0') {
+            this->startup_game[iVar2] = cVar1;
+            iVar2 = iVar2 + 1;
+            cVar1 = pcVar3[2];
+            pcVar3 = pcVar3 + 1;
+        }
+        this->startup_game[iVar2] = '\0';
+
+        if (strchr(this->startup_game, '.') == 0) {
             strcat(this->startup_game, ".gmx");
         }
     }
@@ -1999,27 +2121,61 @@ void TRIBE_Game::stop_video(int p1) {
         if (this->world != nullptr) {
             this->close_game_screens(0);
 
+            char* title_text = (char*)"";
             char* msg = (char*)"";
+            RGE_Player* player = this->get_player();
+            const bool won = (player != nullptr && player->game_status == 1);
             if (this->world->scenario != nullptr) {
-                RGE_Player* player = this->get_player();
-                const bool won = (player != nullptr && player->game_status == 1);
+                if (this->world->scenario->scenario_name != nullptr) {
+                    title_text = this->world->scenario->scenario_name;
+                }
+
                 msg = won ? this->world->scenario->win_message : this->world->scenario->loss_message;
                 if (msg == nullptr) {
                     msg = (char*)"";
                 }
             }
 
-            TribeAchievementsScreen* ach = new TribeAchievementsScreen(msg, 1);
-            if (ach != nullptr && ach->error_code == 0) {
+            // Split win/loss message into lines for TribeEndScreen's list-based text panel.
+            char msg_buf[4096];
+            msg_buf[0] = '\0';
+            strncpy(msg_buf, msg, sizeof(msg_buf) - 1);
+            msg_buf[sizeof(msg_buf) - 1] = '\0';
+
+            char* msg_lines[64];
+            int msg_line_count = 0;
+            char* cur = msg_buf;
+            if (cur[0] == '\0') {
+                if (msg_line_count < (int)(sizeof(msg_lines) / sizeof(msg_lines[0]))) {
+                    msg_lines[msg_line_count++] = (char*)"";
+                }
+            } else {
+                while (cur && *cur != '\0' && msg_line_count < (int)(sizeof(msg_lines) / sizeof(msg_lines[0]))) {
+                    char* nl = strchr(cur, '\n');
+                    if (nl != nullptr) {
+                        *nl = '\0';
+                    }
+                    const size_t len = strlen(cur);
+                    if (len > 0 && cur[len - 1] == '\r') {
+                        cur[len - 1] = '\0';
+                    }
+                    msg_lines[msg_line_count++] = cur;
+                    if (nl == nullptr) {
+                        break;
+                    }
+                    cur = nl + 1;
+                }
+            }
+
+            TribeEndScreen* end_screen = new TribeEndScreen(title_text, msg_lines, msg_line_count);
+            if (end_screen != nullptr && end_screen->error_code == 0) {
                 if (panel_system != nullptr) {
-                    panel_system->setCurrentPanel((char*)"Achievements Screen", 0);
+                    panel_system->setCurrentPanel((char*)"End Screen", 0);
                 }
 
                 TMusic_System* music = this->music_system;
                 if (music != nullptr) {
                     uchar mt = music->music_type;
-                    RGE_Player* player = this->get_player();
-                    const bool won = (player != nullptr && player->game_status == 1);
                     if (mt == 1) {
                         music->play_track(won ? 3 : 4, 0, 0);
                     } else if (mt == 2) {
@@ -2028,8 +2184,8 @@ void TRIBE_Game::stop_video(int p1) {
                 }
                 return;
             }
-            if (ach != nullptr) {
-                delete ach;
+            if (end_screen != nullptr) {
+                delete end_screen;
             }
         }
         break;

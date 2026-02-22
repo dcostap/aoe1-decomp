@@ -12,12 +12,14 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TMousePointer.h"
 #include "../include/RGE_Font.h"
+#include "../include/TMessageDialog.h"
 #include "../include/globals.h"
 #include "../include/TMessageDialog.h"
 #include "../include/custom_debug.h"
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 // NOTE: This file is a best-effort reimplementation based on immutable references:
 // `src/game/src/Panel_ez.cpp.asm` and `src/game/src/Panel_ez.cpp.decomp`.
@@ -40,6 +42,173 @@ static void trim_in_place(char* s) {
     while (*p == ' ' || *p == '\t') p++;
     if (p != s) memmove(s, p, strlen(p) + 1);
 }
+
+class EasyPseudoEditPanel : public TTextPanel {
+public:
+    EasyPseudoEditPanel(short max_len, FormatType format, int auto_sel) {
+        this->max_len_ = (max_len > 1) ? (max_len - 1) : 259;
+        if (this->max_len_ > 259) {
+            this->max_len_ = 259;
+        }
+        this->format_ = format;
+        this->auto_sel_ = auto_sel;
+        this->select_all_ = 0;
+        this->buffer_[0] = '\0';
+        this->len_ = 0;
+    }
+
+    void easy_set_text(const char* text) {
+        this->buffer_[0] = '\0';
+        this->len_ = 0;
+        if (text != nullptr) {
+            strncpy(this->buffer_, text, (size_t)this->max_len_);
+            this->buffer_[this->max_len_] = '\0';
+            this->len_ = (int)strlen(this->buffer_);
+        }
+        TTextPanel::set_text(this->buffer_);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
+    const char* easy_text() const {
+        return this->buffer_;
+    }
+
+    virtual void set_focus(int param_1) override {
+        TTextPanel::set_focus(param_1);
+        if ((param_1 != 0) && (this->auto_sel_ != 0)) {
+            this->select_all_ = 1;
+        }
+    }
+
+    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) override {
+        (void)param_2;
+        (void)param_3;
+        (void)param_4;
+        (void)param_5;
+
+        if (param_1 == VK_BACK || param_1 == VK_DELETE) {
+            if (this->select_all_ != 0) {
+                this->easy_set_text("");
+                this->select_all_ = 0;
+                return 1;
+            }
+            if (this->len_ > 0) {
+                this->buffer_[this->len_ - 1] = '\0';
+                this->len_--;
+                TTextPanel::set_text(this->buffer_);
+                this->set_redraw(TPanel::RedrawMode::Redraw);
+            }
+            return 1;
+        }
+
+        if (param_1 == VK_RETURN) {
+            if (this->parent_panel != nullptr) {
+                this->parent_panel->action(this, 0, 0, 0);
+                return 1;
+            }
+        } else if (param_1 == VK_ESCAPE) {
+            if (this->parent_panel != nullptr) {
+                this->parent_panel->action(this, 1, 0, 0);
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    virtual long char_action(long param_1, short param_2) override {
+        if (param_2 <= 0) {
+            param_2 = 1;
+        }
+
+        if (param_1 < 0x20) {
+            return 1;
+        }
+
+        while (param_2-- > 0) {
+            char ch = (char)param_1;
+            if (!this->allow_char(ch)) {
+                MessageBeep(0xffffffff);
+                return 1;
+            }
+
+            if (this->select_all_ != 0) {
+                this->buffer_[0] = '\0';
+                this->len_ = 0;
+                this->select_all_ = 0;
+            }
+
+            if (this->len_ >= this->max_len_) {
+                MessageBeep(0xffffffff);
+                return 1;
+            }
+
+            this->buffer_[this->len_] = ch;
+            this->len_++;
+            this->buffer_[this->len_] = '\0';
+        }
+
+        TTextPanel::set_text(this->buffer_);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return 1;
+    }
+
+private:
+    bool allow_char(char c) {
+        if (this->format_ == FormatNumber || this->format_ == FormatInteger || this->format_ == FormatUnsignedInt) {
+            if (c >= '0' && c <= '9') {
+                return true;
+            }
+            if (c == '-' && this->len_ == 0 && this->format_ != FormatUnsignedInt) {
+                return true;
+            }
+            if (c == '.' && this->format_ == FormatNumber) {
+                return strchr(this->buffer_, '.') == nullptr;
+            }
+            return false;
+        }
+
+        if (this->format_ == FormatFile || this->format_ == FormatFileNoExt) {
+            if (c == '.' && this->format_ == FormatFileNoExt) {
+                return false;
+            }
+            if (c == '\\' || c == '/' || c == ':' || c == '"' || c == '*' || c == '?' || c == '<' || c == '>' || c == '|') {
+                return false;
+            }
+            return true;
+        }
+
+        if (this->format_ == FormatPath) {
+            if (c == '"' || c == '*' || c == '?' || c == '<' || c == '>' || c == '|') {
+                return false;
+            }
+            if (c == ':' && this->len_ != 1) {
+                return false;
+            }
+            return true;
+        }
+
+        if (this->format_ == FormatPercent) {
+            if (c < '0' || c > '9') {
+                return false;
+            }
+            if (this->len_ >= 2) {
+                return false;
+            }
+            return true;
+        }
+
+        return isprint((unsigned char)c) != 0;
+    }
+
+private:
+    char buffer_[260];
+    int len_;
+    int max_len_;
+    FormatType format_;
+    int auto_sel_;
+    int select_all_;
+};
 
 static void init_vars(TEasy_Panel* this_) {
     // Matches `TEasy_Panel::init_vars` in `src/game/src/Panel_ez.cpp.decomp` (immutable reference).
@@ -863,6 +1032,68 @@ long TEasy_Panel::get_popup_info_id() {
     return this->popup_info_id;
 }
 
+void TEasy_Panel::popupOKDialog(long param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
+    char text[256];
+    this->get_string((int)param_1, text, 0x100);
+    this->popupOKDialog(text, param_2, param_3, param_4);
+}
+
+void TEasy_Panel::popupOKDialog(char* param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469F30
+    char temp_title[256];
+
+    if (param_2 == nullptr || *param_2 == '\0') {
+        param_2 = (char*)"OKDialog";
+    }
+
+    strcpy(temp_title, param_2);
+
+    TPanel* existing = panel_system->panel(temp_title);
+    if (existing != nullptr) {
+        panel_system->destroyPanel(temp_title);
+    }
+
+    TMessageDialog* dialog = new TMessageDialog(temp_title);
+    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\0', param_1, 0x5a, 0x1e);
+}
+
+void TEasy_Panel::popupYesNoDialog(long param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A040
+    char text[256];
+    this->get_string((int)param_1, text, 0x100);
+    this->popupYesNoDialog(text, param_2, param_3, param_4);
+}
+
+void TEasy_Panel::popupYesNoDialog(char* param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A090
+    TMessageDialog* dialog = nullptr;
+    if (param_2 == nullptr || *param_2 == '\0') {
+        dialog = new TMessageDialog((char*)"YesNoDialog");
+    } else {
+        dialog = new TMessageDialog(param_2);
+    }
+    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\x02', param_1, 0x5a, 0x1e);
+}
+
+void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A150
+    char text[256];
+    this->get_string((int)param_1, text, 0x100);
+    this->popupYesNoCancelDialog(text, param_2, param_3, param_4);
+}
+
+void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A1A0
+    TMessageDialog* dialog = nullptr;
+    if (param_2 == nullptr || *param_2 == '\0') {
+        dialog = new TMessageDialog((char*)"YesNoCancelDialog");
+    } else {
+        dialog = new TMessageDialog(param_2);
+    }
+    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\x04', param_1, 0x78, 0x19);
+}
+
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
     // Source of truth: `Panel_ez.cpp.decomp` (`TEasy_Panel::setup_shadow_area`).
     if (!this->allow_shadow_area) return;
@@ -1155,8 +1386,63 @@ int TEasy_Panel::create_input(TPanel* param_1, TInputPanel** param_2, char* para
 }
 
 int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9; (void)param_10; (void)param_11; (void)param_12;
-    return 0;
+    // Best-effort implementation for Save/Scenario name entry paths while full TEditPanel parity
+    // remains pending.
+    if (param_2 == nullptr) {
+        return 0;
+    }
+    *param_2 = nullptr;
+
+    const long scaled_x = (this->ideal_width > 0) ? (param_6 * this->pnl_wid) / this->ideal_width : param_6;
+    const long scaled_y = (this->ideal_height > 0) ? (param_7 * this->pnl_hgt) / this->ideal_height : param_7;
+    const long scaled_w = (this->ideal_width > 0) ? (param_8 * this->pnl_wid) / this->ideal_width : param_8;
+    const long scaled_h = (this->ideal_height > 0) ? (param_9 * this->pnl_hgt) / this->ideal_height : param_9;
+
+    int font_index = (int)param_10;
+    if (font_index < 0) {
+        font_index = 10;
+    }
+    RGE_Font* font = (rge_base_game != nullptr) ? rge_base_game->get_font(font_index) : nullptr;
+    void* font_handle = (font != nullptr) ? font->font : nullptr;
+    long font_wid = (font != nullptr) ? font->font_wid : 0;
+    long font_hgt = (font != nullptr) ? font->font_hgt : 0;
+
+    EasyPseudoEditPanel* edit = new EasyPseudoEditPanel(param_4, param_5, param_12);
+    if (edit == nullptr) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    const short fixed_len = (param_4 > 1) ? param_4 : 260;
+    if (edit->setup(this->render_area, param_1, scaled_x, scaled_y, scaled_w, scaled_h,
+                    font_handle, font_wid, font_hgt, nullptr, 0, 0, 0, 0, fixed_len,
+                    (param_3 != nullptr) ? param_3 : (char*)"") == 0) {
+        delete edit;
+        this->error_code = 1;
+        return 0;
+    }
+
+    edit->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignHorizontalScroll);
+    edit->set_word_wrap(0);
+    edit->set_text_color(this->text_color1, this->text_color2);
+    edit->set_highlight_text_color(this->focus_color1, this->focus_color2);
+    if (this->use_bevels != 0) {
+        edit->set_bevel_info(
+            3,
+            (int)this->bevel_color1,
+            (int)this->bevel_color2,
+            (int)this->bevel_color3,
+            (int)this->bevel_color4,
+            (int)this->bevel_color5,
+            (int)this->bevel_color6);
+    }
+    if (param_11 != 0) {
+        edit->set_focus(1);
+    }
+    edit->easy_set_text((param_3 != nullptr) ? param_3 : "");
+
+    *param_2 = reinterpret_cast<TEditPanel*>(edit);
+    return 1;
 }
 
 int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
