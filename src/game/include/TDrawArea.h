@@ -36,6 +36,7 @@ struct TDrawArea {
     void* GetDc(char* name);
     void ReleaseDc(char* name);
     void SaveBitmap(char* filename);
+    void take_snapshot(char* filename_fmt, int* snapshot_number);
 
     // Source-of-truth methods needed by `Panel_ez` and UI shading.
     long AlignedWidth();

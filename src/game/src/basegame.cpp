@@ -34,6 +34,9 @@
 struct TPanelSystem;
 extern struct TPanelSystem* panel_system;
 
+static int snapshot_number = 1;
+static char s_dot_AoE_04d_bmp[] = ".\\AoE%04d.bmp";
+
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
@@ -1787,7 +1790,7 @@ int RGE_Base_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
 
     // Ctrl+F12 takes screenshot
     if (ctrl_down != 0 && key_code == 0x7B) { // VK_F12
-        // TODO(accuracy): TDrawArea::take_snapshot
+        this->draw_system->DrawArea->take_snapshot(s_dot_AoE_04d_bmp, &snapshot_number);
         return 0;
     }
 
