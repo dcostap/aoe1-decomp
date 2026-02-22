@@ -9,12 +9,15 @@
 #include "RGE_Static_Object.h"
 #include "RGE_Master_Static_Object.h"
 #include "RGE_Pick_Info.h"
+#include "RGE_SPick_Info.h"
 #include "RGE_Object_List.h"
 #include "RGE_Object_Node.h"
 #include "RGE_Sprite.h"
 #include "RGE_Active_Sprite_List.h"
 #include "RGE_Color_Table.h"
 #include "TShape.h"
+#include "DClipInfo_List.h"
+#include "DClipInfo_Node.h"
 #include "TMousePointer.h"
 #include "TMessagePanel.h"
 #include "RGE_Tile_Set.h"
@@ -33,6 +36,7 @@ int view_debug_palette = 0;
 int tiles_drawn = 0;
 int frame_count = 0;
 int View_Grid_Mode = 0;
+RGE_Pick_Obj_Info Picked_Objects[0x40] = {}; // Stride 0xC, max 0x40. Source of truth: view.cpp.asm.
 extern TMousePointer* MouseSystem;
 extern RGE_Base_Game* rge_base_game;
 
@@ -252,6 +256,14 @@ long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long par
     this->last_view_x = -9999.0f;
     this->last_view_y = -9999.0f;
     this->function_mode = 0;
+
+    // Source of truth: view.cpp.decomp @ 0x00533940 allocates 5 pick_lists of 0x40 entries.
+    for (int i = 0; i < 5; ++i) {
+        if (this->pick_lists[i] == nullptr) {
+            this->pick_lists[i] = (RGE_SPick_Info*)std::calloc(0x40, sizeof(RGE_SPick_Info));
+        }
+        this->pick_list_size[i] = 0;
+    }
     return ok;
 }
 
@@ -381,13 +393,400 @@ uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, R
 }
 
 uchar RGE_View::pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5) {
-    // TODO: STUB - the original uses prior_objs/futur_objs capture lists (DClipInfo_List) to select objects.
-    // Keep this function for control-flow parity in end_scroll_view while the capture pipeline is not present.
-    (void)param_1;
-    if (this->player != nullptr) {
-        this->player->select_area(param_2, param_3, param_4, param_5);
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535A80.
+    bool picked_any = false;
+
+    if (this->player == nullptr || this->world == nullptr || this->map == nullptr) {
+        return '\0';
     }
+
+    int num = this->pick_multi_objects(
+        (int)param_2, (int)param_3, (int)param_4, (int)param_5,
+        10, 0x14, (int)this->player->id, param_1, 1);
+
+    for (int i = 0; i < num; ++i) {
+        int obj_id = Picked_Objects[i].object_id;
+        if (obj_id != -1) {
+            RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+            if ((obj != nullptr) && (obj->object_state < 7)) {
+                int ok = this->player->select_one_object(obj, 0);
+                if (ok == 0) {
+                    break;
+                }
+                picked_any = true;
+            }
+        }
+    }
+
+    if (picked_any) {
+        return '\x01';
+    }
+
+    int dx = (int)(param_4 - param_2);
+    int dy = (int)(param_5 - param_3);
+    int tol = dx;
+    if (dy <= dx) {
+        tol = dy;
+    }
+    if (tol < 0x32) {
+        tol = dy;
+        if (dx < dy) {
+            tol = dx;
+        }
+    } else {
+        tol = 0x32;
+    }
+
+    int num2 = this->pick_objects((dx / 2) + (int)param_2, (dy / 2) + (int)param_3, 10, 0x14, tol, 4, 1);
+    if (num2 != 0) {
+        int best_weight = 0;
+        RGE_Static_Object* best_obj = nullptr;
+
+        for (int i = 0; i < num2; ++i) {
+            int obj_id = Picked_Objects[i].object_id;
+            if (obj_id < 0) {
+                continue;
+            }
+
+            RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+            if (obj == nullptr) {
+                continue;
+            }
+            if (obj->object_state >= 7) {
+                continue;
+            }
+            if (obj->master_obj->select_level <= 1) {
+                continue;
+            }
+
+            if ((this->map->map_visible_flag == '\0') && (this->pick_through_fog(obj) == 0)) {
+                int row = (int)obj->world_y;
+                int col = (int)obj->world_x;
+                uchar vis = this->player->visible->get_visible(col, row);
+                if (vis != '\x0f') {
+                    continue;
+                }
+            }
+
+            int w = this->pick_weight(obj, (int)Picked_Objects[i].confidence);
+            if (obj->owner == this->player) {
+                w += 5;
+            }
+            if (best_weight < w) {
+                best_weight = w;
+                best_obj = obj;
+            }
+        }
+
+        if (best_obj != nullptr) {
+            int ok = this->player->select_one_object(best_obj, 0);
+            if (ok != 0) {
+                return '\x01';
+            }
+        }
+    }
+
     return '\0';
+}
+
+int RGE_View::pick_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005390D0.
+    if (this->prior_objs == nullptr) {
+        return 0;
+    }
+
+    if ((param_5 < 0) || (param_4 < param_3)) {
+        return 0;
+    }
+
+    if ((param_1 < this->clip_rect.left) || (this->clip_rect.right < param_1) ||
+        (param_2 < this->clip_rect.top) || (this->clip_rect.bottom < param_2) ||
+        (0x28 < param_3) || (param_4 < 0)) {
+        return 0;
+    }
+
+    if (param_3 < 0) {
+        param_3 = 0;
+    }
+    if (0x28 < param_4) {
+        param_4 = 0x28;
+    }
+
+    int local_x = param_1 - this->clip_rect.left;
+    int local_y = param_2 - this->clip_rect.top;
+
+    int num = 0;
+    for (int level = param_4; param_3 <= level; --level) {
+        for (DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[level]; node != nullptr; node = node->NextOnLevel) {
+            int confidence = 0;
+
+            if ((node->Node_Type == 0) && ((param_7 == 0) || (-1 < node->Object_ID))) {
+                int node_y1 = (int)node->y1;
+                int node_x2 = (int)node->x2;
+
+                if ((local_x < (int)node->x1 - param_5) ||
+                    (local_y < node_y1 - param_5) ||
+                    (param_5 + node_x2 < local_x) ||
+                    ((int)node->y2 + param_5 < local_y)) {
+                    confidence = 0;
+                } else {
+                    confidence = 4;
+                    if (((int)node->x1 <= local_x) && (node_y1 <= local_y) &&
+                        (local_x <= node_x2) && (local_y <= (int)node->y2)) {
+                        confidence = 3;
+
+                        int rel_x;
+                        if ((node->Draw_Flag & 2) == 2) {
+                            rel_x = node_x2 - local_x;
+                        } else {
+                            rel_x = local_x - (int)node->x1;
+                        }
+
+                        int sc = this->sprite_check(node->Shape_Base, node->Shape, rel_x, local_y - node_y1);
+                        if (sc == 1) {
+                            confidence = 2;
+                        } else if (sc == 2) {
+                            confidence = 1;
+                        }
+                    }
+                }
+            }
+
+            if ((confidence != 0) && (confidence <= param_6)) {
+                int obj_id = node->Object_ID;
+                short draw_level = node->y3;
+
+                int found = -1;
+                for (int i = 0; i < num; ++i) {
+                    if (Picked_Objects[i].object_id == obj_id) {
+                        found = i;
+                        break;
+                    }
+                }
+
+                if (found != -1) {
+                    short old_conf = Picked_Objects[found].confidence;
+                    short old_draw = Picked_Objects[found].draw_level;
+                    if ((old_conf < (short)confidence) || ((old_conf == (short)confidence) && (draw_level < old_draw))) {
+                        continue;
+                    }
+                } else {
+                    if (num == 0x40) {
+                        return 0x40;
+                    }
+                    found = num++;
+                }
+
+                Picked_Objects[found].object_id = obj_id;
+                Picked_Objects[found].confidence = (short)confidence;
+                Picked_Objects[found].draw_level = draw_level;
+                Picked_Objects[found].draw_x = (short)node->Draw_X;
+                Picked_Objects[found].draw_y = (short)node->Draw_Y;
+            }
+        }
+    }
+
+    // Sort by (confidence asc, draw_level desc) to match the ordered lists in the original.
+    for (int i = 0; i < num - 1; ++i) {
+        for (int j = i + 1; j < num; ++j) {
+            const RGE_Pick_Obj_Info& a = Picked_Objects[i];
+            const RGE_Pick_Obj_Info& b = Picked_Objects[j];
+            if ((b.confidence < a.confidence) || ((b.confidence == a.confidence) && (a.draw_level < b.draw_level))) {
+                RGE_Pick_Obj_Info tmp = Picked_Objects[i];
+                Picked_Objects[i] = Picked_Objects[j];
+                Picked_Objects[j] = tmp;
+            }
+        }
+    }
+
+    return num;
+}
+
+int RGE_View::pick_multi_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, uchar param_8, int param_9) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005396F0.
+    (void)param_9;
+
+    if (this->prior_objs == nullptr || this->world == nullptr) {
+        return 0;
+    }
+
+    if ((param_3 < this->clip_rect.left) || (this->clip_rect.right < param_1) ||
+        (param_4 < this->clip_rect.top) || (this->clip_rect.bottom < param_2) ||
+        (0x28 < param_5) || (param_6 < 0)) {
+        return 0;
+    }
+
+    if (param_5 < 0) {
+        param_5 = 0;
+    }
+    int level = param_6;
+    if (0x28 < param_6) {
+        level = 0x28;
+    }
+
+    int x1 = param_1 - this->clip_rect.left;
+    int x2 = param_3 - this->clip_rect.left;
+    int y1 = param_2 - this->clip_rect.top;
+    int y2 = param_4 - this->clip_rect.top;
+
+    int num = 0;
+    for (; param_5 <= level; --level) {
+        DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[level];
+        for (; node != nullptr; node = node->NextOnLevel) {
+            short conf = 0;
+            int obj_id = node->Object_ID;
+
+            if ((node->Node_Type == 0) && (-1 < obj_id)) {
+                if ((x1 <= (int)node->x2) && ((int)node->x1 <= x2) && (y1 <= (int)node->y2) && ((int)node->y1 <= y2)) {
+                    RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+                    if ((obj != nullptr) && ((param_7 == -1) || (obj->owner->id == param_7)) &&
+                        (obj->object_state == '\x02') && ((uchar)param_8 <= (uchar)obj->master_obj->select_level)) {
+                        conf = 1;
+                    }
+                }
+            }
+
+            if (conf != 0) {
+                int found = -1;
+                for (int i = 0; i < num; ++i) {
+                    if (Picked_Objects[i].object_id == obj_id) {
+                        found = i;
+                        break;
+                    }
+                }
+
+                if (found != -1) {
+                    if (conf < Picked_Objects[found].confidence) {
+                        Picked_Objects[found].confidence = conf;
+                    }
+                } else {
+                    if (num == 0x40) {
+                        return 0x40;
+                    }
+                    Picked_Objects[num].object_id = obj_id;
+                    Picked_Objects[num].confidence = conf;
+                    Picked_Objects[num].draw_level = conf;
+                    Picked_Objects[num].draw_x = (short)node->Draw_X;
+                    Picked_Objects[num].draw_y = (short)node->Draw_Y;
+                    ++num;
+                }
+            }
+        }
+    }
+
+    return num;
+}
+
+int RGE_View::sprite_check(uchar* param_1, Shape_Info* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539510.
+    (void)this;
+
+    if (((param_2 != nullptr) && (-1 < param_3)) &&
+        ((param_3 < (int)param_2->Width) && ((-1 < param_4) && (param_4 < (int)param_2->Height)))) {
+        int width = (int)param_2->Width;
+        int pos = (int)*(short*)(param_1 + param_4 * 4 + param_2->Shape_Outline_Offset);
+        if ((-1 < pos) && (pos <= param_3) &&
+            (param_3 <= width - *(short*)(param_1 + param_4 * 4 + param_2->Shape_Outline_Offset + 2))) {
+            uchar* pb = param_1 + *(int*)(param_1 + param_4 * 4 + param_2->Shape_Data_Offsets);
+            if (pos < width) {
+                while (pos <= param_3) {
+                    uchar b = *pb;
+                    uchar* next = pb + 1;
+
+                    switch (b & 0xF) {
+                    case 0:
+                    case 4:
+                    case 8:
+                    case 0xC: {
+                        pos += (uint)(b >> 2);
+                        if (param_3 < pos) {
+                            return 2;
+                        }
+                        next += (b >> 2);
+                        break;
+                    }
+                    case 1:
+                    case 5:
+                    case 9:
+                    case 0xD:
+                        pos += (uint)(b >> 2);
+                        break;
+
+                    case 2: {
+                        uint u = ((uint)b << 4) | (uint)*next;
+                        pos += (int)u;
+                        if (param_3 < pos) {
+                            return 2;
+                        }
+                        next = pb + u + 2;
+                        break;
+                    }
+                    case 3: {
+                        uchar b2 = *next;
+                        next = pb + 2;
+                        pos += (int)(((uint)b << 4) | (uint)b2);
+                        break;
+                    }
+
+                    case 6: {
+                        uint u = (uint)(b >> 4);
+                        if (u == 0) {
+                            u = (uint)*next;
+                            next = pb + 2;
+                        }
+                        pos += (int)u;
+                        if (param_3 < pos) {
+                            return 2;
+                        }
+                        next += u;
+                        break;
+                    }
+                    case 7:
+                    case 0xA: {
+                        uint u = (uint)(b >> 4);
+                        if (u == 0) {
+                            u = (uint)*next;
+                            next = pb + 2;
+                        }
+                        pos += (int)u;
+                        if (param_3 < pos) {
+                            return 2;
+                        }
+                        next += 1;
+                        break;
+                    }
+                    case 0xB: {
+                        uint u = (uint)(b >> 4);
+                        if (u == 0) {
+                            u = (uint)*next;
+                            next = pb + 2;
+                        }
+                        pos += (int)u;
+                        if (param_3 < pos) {
+                            return 2;
+                        }
+                        break;
+                    }
+
+                    case 0xE:
+                    case 0xF:
+                        return 0;
+
+                    default:
+                        return 1;
+                    }
+
+                    pb = next;
+                    if (width <= pos) {
+                        return 1;
+                    }
+                }
+            }
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 int RGE_View::pick_through_fog(RGE_Static_Object* param_1) {

@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+struct DClipInfo_Node;
+
 struct DClipInfo_List {
     DClipInfo_Node** Zone_Ptrs;
     int* Zone_Size_Ptrs;
