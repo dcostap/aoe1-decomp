@@ -2,8 +2,12 @@
 #include "common.h"
 #include "TScreenPanel.h"
 
+class Time_Line_Panel;
+
 class TribeAchievementsScreen : public TScreenPanel {
 public:
+    TribeAchievementsScreen(char* summary_text, int end_game_flag);
+
     // Virtuals (best-effort)
     virtual ~TribeAchievementsScreen(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

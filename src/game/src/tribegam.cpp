@@ -31,7 +31,10 @@
 #include "../include/TMousePointer.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
+#include "../include/TRIBE_Mission_Screen.h"
+#include "../include/TribeAchievementsScreen.h"
 #include <windows.h>
+#include <vfw.h>
 #include <io.h>
 
 // Static global to track current screen until TPanel_System is implemented
@@ -196,6 +199,14 @@ static void tribe_close_video_window(TRIBE_Game* game) {
 
     SendMessageA((HWND)game->video_window, 0x10, 0, 0);
     game->video_window = nullptr;
+}
+
+static LRESULT CALLBACK tribe_video_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    if (game != nullptr) {
+        return (LRESULT)game->video_wnd_proc((void*)hwnd, (uint)msg, (uint)wParam, (long)lParam);
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 }
 
 static void tribe_write_debugload_dump(TRIBE_Game* game, const char* save_name_no_ext) {
@@ -490,6 +501,11 @@ CUSTOM_DEBUG_END
 
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
+
+    // Video codec availability gate used by start_video (Source of truth: tribegam.cpp.decomp @ 0x00521B3F).
+    ICINFO ici;
+    memset(&ici, 0, sizeof(ici));
+    video_codec_available = (int)ICInfo(mmioFOURCC('v', 'i', 'd', 'c'), mmioFOURCC('i', 'v', '4', '1'), &ici);
 
     // Startup screens logic (ASM 0x00521b3f)
     if (this->check_prog_argument("LOBBY")) {
@@ -1445,7 +1461,11 @@ int TRIBE_Game::start_game(int p1) {
     //
     // Source-of-truth note: `start_game` does not branch on `start_video` return; it returns
     // success after scheduling video/start transition.
-    this->start_video(3, info_file);
+    char* pregame_video = nullptr;
+    if (this->world != nullptr && this->world->scenario != nullptr) {
+        pregame_video = this->world->scenario->Cine_PreGame;
+    }
+    this->start_video(3, pregame_video);
     return 1;
 
 start_game_fail:
@@ -1822,8 +1842,11 @@ int TRIBE_Game::start_video(int p1, char* p2) {
     this->cur_video = p1;
 
     if (this->check_prog_argument((char*)"NOVIDEO") != 0 || this->check_prog_argument((char*)"SKIPVIDEO") != 0) {
-        this->stop_video(1);
-        return 0;
+        goto START_VIDEO_FAIL;
+    }
+
+    if (this->multiplayerGame() != 0) {
+        goto START_VIDEO_FAIL;
     }
 
     if (p2 != nullptr && p2[0] != '\0' && this->prog_info != nullptr) {
@@ -1841,14 +1864,57 @@ int TRIBE_Game::start_video(int p1, char* p2) {
             _close(fd);
 
             if (video_codec_available != 0 && (this->video_setup != 0 || this->setup_video_system() != 0)) {
-                // TODO: STUB: AVI playback/callback flow is not restored yet.
-                // Keep timing fields coherent, then advance via stop_video sequence.
-                this->video_paused = 0;
-                this->last_video_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x598);
+                HWND wnd = MCIWndCreateA((HWND)this->prog_window, (HINSTANCE)this->prog_info->instance, 0x50001f0a, temp_name);
+                this->video_window = (void*)wnd;
+                if (wnd != nullptr) {
+                    this->old_video_wnd_proc = (int(__stdcall*)())GetWindowLongPtrA(wnd, GWLP_WNDPROC);
+                    SetWindowLongPtrA(wnd, GWLP_WNDPROC, (LONG_PTR)tribe_video_sub_wnd_proc);
+
+                    if (this->video_hi_color == 0 && this->draw_system != nullptr) {
+                        void* pal = (void*)SendMessageA(wnd, 0x47e, 0, 0);
+                        this->draw_system->SetPalette(pal);
+                    }
+
+                    RECT video_rect;
+                    GetClientRect(wnd, &video_rect);
+                    int width = video_rect.right;
+                    int height = video_rect.bottom;
+                    if (this->video_double_size != 0) {
+                        width *= 2;
+                        height *= 2;
+                    }
+
+                    int sw = (this->draw_system != nullptr) ? this->draw_system->ScreenWidth : 0;
+                    int sh = (this->draw_system != nullptr) ? this->draw_system->ScreenHeight : 0;
+                    int x = (sw / 2) - (width / 2);
+                    int y = (sh / 2) - (height / 2);
+                    MoveWindow(wnd, x, y, width, height, FALSE);
+
+                    this->render_all = 1;
+                    if (this->prog_window != nullptr) {
+                        InvalidateRect((HWND)this->prog_window, 0, 1);
+                        SendMessageA((HWND)this->prog_window, 0x0F, 0, 0);
+                    }
+                    if (this->draw_system != nullptr) {
+                        this->draw_system->ClearPrimarySurface();
+                    }
+
+                    this->video_paused = 0;
+                    this->last_video_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x598);
+                    SendMessageA(wnd, 0x806, 0, 0);
+
+                    this->enable_input();
+                    SetCursor(nullptr);
+                    if (this->prog_window != nullptr) {
+                        SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, 0);
+                    }
+                    return 1;
+                }
             }
         }
     }
 
+START_VIDEO_FAIL:
     this->stop_video(1);
     return 0;
 }
@@ -1941,14 +2007,61 @@ void TRIBE_Game::stop_video(int p1) {
         if (this->video_setup != 0) {
             this->shutdown_video_system();
         }
-        // TODO: STUB: mission-dialog branch from 0x00523C8D is not restored.
+        if (this->world != nullptr && this->world->scenario != nullptr) {
+            char* desc = this->world->scenario->description;
+            if (desc != nullptr && desc[0] != '\0' &&
+                this->multiplayerGame() == 0 &&
+                (this->randomGame() == 0 || this->campaignGame() != 0)) {
+                TRIBE_Mission_Screen* mission = new TRIBE_Mission_Screen(desc, '\0', this->world->scenario->mission_picture);
+                if (mission != nullptr && mission->error_code == 0) {
+                    tribe_set_current_screen(mission);
+                    return;
+                }
+                if (mission != nullptr) {
+                    delete mission;
+                }
+            }
+        }
         this->create_game_screen();
         return;
     case 4:
         if (this->video_setup != 0) {
             this->shutdown_video_system();
         }
-        // TODO: STUB: achievements/game-over branch from 0x00523D0F is not restored.
+        if (this->world != nullptr) {
+            this->close_game_screens(0);
+
+            char* msg = (char*)"";
+            if (this->world->scenario != nullptr) {
+                RGE_Player* player = this->get_player();
+                const bool won = (player != nullptr && player->game_status == 1);
+                msg = won ? this->world->scenario->win_message : this->world->scenario->loss_message;
+                if (msg == nullptr) {
+                    msg = (char*)"";
+                }
+            }
+
+            TribeAchievementsScreen* ach = new TribeAchievementsScreen(msg, 1);
+            if (ach != nullptr && ach->error_code == 0) {
+                tribe_set_current_screen(ach);
+
+                TMusic_System* music = this->music_system;
+                if (music != nullptr) {
+                    uchar mt = music->music_type;
+                    RGE_Player* player = this->get_player();
+                    const bool won = (player != nullptr && player->game_status == 1);
+                    if (mt == 1) {
+                        music->play_track(won ? 3 : 4, 0, 0);
+                    } else if (mt == 2) {
+                        music->play_file((char*)(won ? "won.mid" : "lost.mid"), 0, 0);
+                    }
+                }
+                return;
+            }
+            if (ach != nullptr) {
+                delete ach;
+            }
+        }
         break;
     default:
         break;
@@ -2321,12 +2434,36 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     }
     return 1;
 }
-int TRIBE_Game::handle_activate(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_activate(p1, p2, p3, p4); }
+int TRIBE_Game::handle_activate(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: tribegam.cpp.decomp @ 0x005299E0
+    RGE_Base_Game::handle_activate(p1, p2, p3, p4);
+
+    if (this->prog_mode == 1 && this->video_window != nullptr) {
+        if (p3 == 1) {
+            if (this->video_paused != 0) {
+                SendMessageA((HWND)this->video_window, 0x855, 0, 0);
+                this->video_paused = 0;
+            }
+        } else if (this->video_paused == 0) {
+            SendMessageA((HWND)this->video_window, 0x809, 0, 0);
+            this->video_paused = 1;
+        }
+    }
+
+    return 1;
+}
 int TRIBE_Game::handle_init_menu(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_init_menu(p1, p2, p3, p4); }
 int TRIBE_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_exit_menu(p1, p2, p3, p4); }
 int TRIBE_Game::handle_size(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_size(p1, p2, p3, p4); }
 int TRIBE_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_palette_changed(p1, p2, p3, p4); }
-int TRIBE_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_query_new_palette(p1, p2, p3, p4); }
+int TRIBE_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: tribegam.cpp.decomp @ 0x00529980
+    if (this->prog_mode == 1 && this->video_window != nullptr && this->video_hi_color == 0) {
+        SendMessageA((HWND)this->video_window, 0x476, 0, 0);
+        return 1;
+    }
+    return RGE_Base_Game::handle_query_new_palette(p1, p2, p3, p4);
+}
 int TRIBE_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
     // Return 1 (not consumed) so DefWindowProcA handles it → calls DestroyWindow
     return 1;

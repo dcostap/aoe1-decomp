@@ -4,6 +4,8 @@
 
 class TRIBE_Mission_Screen : public TScreenPanel {
 public:
+    TRIBE_Mission_Screen(char* description, unsigned char game_flag, TPicture* mission_picture);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Mission_Screen(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
