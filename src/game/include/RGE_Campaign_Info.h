@@ -5,9 +5,12 @@
 struct RGE_Campaign;
 
 struct RGE_Campaign_Info {
+    ~RGE_Campaign_Info();
+
     long get_current_scenario();
     int open_scenario();
     RGE_Campaign_Info(RGE_Campaign* param_1);
+    long get_scenario_list(char*** param_1, long* param_2);
     void save(int param_1);
     uchar set_current_scenario(long param_1);
     uchar verify_campaign_name(char* param_1);

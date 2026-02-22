@@ -6,11 +6,15 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TPanelSystem.h"
+#include "../include/TRIBE_Screen_Name.h"
+#include "../include/TRIBE_Dialog_Name.h"
+#include "../include/RGE_Game_Info.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 namespace {
 
@@ -132,9 +136,8 @@ CUSTOM_DEBUG_END
     for (int i = 0; i < 6; ++i) {
         tab_list[i] = (TPanel*)this->button[i];
     }
-    // Source of truth: scr_sing.cpp.decomp - skip first button in tab order
-    // but pass count as 6 (the original passes all 6 buttons starting from index 1)
-    this->set_tab_order(tab_list + 1, 5);
+    // Fully verified. Source of truth: scr_sing.cpp.asm @ 0x004B6BAF
+    this->set_tab_order(tab_list, 6);
 
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("SP ctor: completed");
@@ -254,10 +257,42 @@ CUSTOM_DEBUG_END
         if ((TButtonPanel*)param_1 == this->button[1]) {
             rge_base_game->disable_input();
 
-            // TODO(accuracy): source of truth uses `RGE_Game_Info::get_people_list` and then enters
-            // `TRIBE_Screen_Name` or `TRIBE_Dialog_Name`. That path is still unimplemented here.
-            sp_popup_resid(this, 0x2408, "Campaign menu is not implemented yet.");
-            sp_enable_input();
+            char** players = nullptr;
+            long curr_index = 0;
+            const long count = (rge_base_game && rge_base_game->player_game_info)
+                ? rge_base_game->player_game_info->get_people_list(&players, &curr_index)
+                : 0;
+
+            if (count > 0 && players) {
+                for (long i = 0; i < count; ++i) {
+                    free(players[i]);
+                }
+                free(players);
+
+                TRIBE_Screen_Name* name_screen = new TRIBE_Screen_Name();
+                if (name_screen && name_screen->error_code == 0) {
+                    panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
+                    panel_system->destroyPanel((char*)"Single Player Menu");
+                    return 1;
+                }
+
+                if (name_screen) delete name_screen;
+                sp_enable_input();
+                return 1;
+            }
+
+            if (players) {
+                for (long i = 0; i < count; ++i) {
+                    free(players[i]);
+                }
+                free(players);
+            }
+
+            TRIBE_Dialog_Name* dlg = new TRIBE_Dialog_Name((TScreenPanel*)this);
+            if (!dlg || dlg->error_code != 0) {
+                if (dlg) delete dlg;
+                sp_enable_input();
+            }
             return 1;
         }
 
