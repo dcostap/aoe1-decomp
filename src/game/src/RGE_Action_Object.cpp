@@ -31,7 +31,7 @@ RGE_Action_Object::RGE_Action_Object(int param_1, RGE_Game_World* param_2, int p
     }
 }
 
-// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x004061A0
+// Source of truth: act_obj.cpp.decomp @ 0x004061A0
 RGE_Action_List* RGE_Action_Object::create_action_list() {
     RGE_Action_List* pList = (RGE_Action_List*)operator new(sizeof(RGE_Action_List));
     if (pList != nullptr) {
