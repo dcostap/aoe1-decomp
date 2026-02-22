@@ -1954,6 +1954,14 @@ RGE_Font* RGE_Base_Game::get_font(int index) {
     return nullptr;
 }
 
+TShape* RGE_Base_Game::get_shape(int index) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004201C0.
+    if (this->shapes == nullptr) {
+        return nullptr;
+    }
+    return this->shapes[index];
+}
+
 TDigital* RGE_Base_Game::get_sound(int index) {
     // Source of truth: `src/game/src/basegame.cpp.decomp` (`RGE_Base_Game::get_sound`).
     // The original only checks for null `sounds` and then indexes directly.

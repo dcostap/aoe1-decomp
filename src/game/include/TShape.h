@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "Shape_Info.h"
 
 class SLhape_File_Header {
 public:
@@ -22,18 +23,6 @@ public:
     long ymin; // +0xC (Size: 0x4)
     long xmax; // +0x10 (Size: 0x4)
     long ymax; // +0x14 (Size: 0x4)
-};
-
-class Shape_Info {
-public:
-    unsigned long Shape_Data_Offsets; // +0x0 (Size: 0x4)
-    unsigned long Shape_Outline_Offset; // +0x4 (Size: 0x4)
-    long Reserved1; // +0x8 (Size: 0x4)
-    long Reserved2; // +0xC (Size: 0x4)
-    long Width; // +0x10 (Size: 0x4)
-    long Height; // +0x14 (Size: 0x4)
-    long Hotspot_X; // +0x18 (Size: 0x4)
-    long Hotspot_Y; // +0x1C (Size: 0x4)
 };
 
 class Shape_Offsets {

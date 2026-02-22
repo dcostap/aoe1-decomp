@@ -6,6 +6,7 @@ class RGE_Base_Game;
 class TRegistry;
 struct TPanelSystem;
 struct TMousePointer;
+struct DClipInfo_List;
 
 extern RGE_Base_Game* rge_base_game;
 extern int do_draw_log;
@@ -61,6 +62,14 @@ extern int rge_write_error;
 extern int Map_Update_Suppresion;
 extern int debug_random_on;
 extern int fog_next_shape;
+
+// Selection/display capture globals (used by view/sprite/shape/static object draw paths).
+extern int SDI_Capture_Info;
+extern DClipInfo_List* SDI_List;
+extern long SDI_Object_ID;
+extern int SDI_Draw_Line;
+extern int SDI_Draw_Level;
+extern int startLoggingAI;
 
 void run_log(char* param_1, int param_2);
 int rge_fake_open(int handle, int remaining_bytes);

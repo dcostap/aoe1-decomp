@@ -64,6 +64,13 @@ int rge_write_error = 0;
 int Map_Update_Suppresion = 0;
 int fog_next_shape = 0;
 
+int SDI_Capture_Info = 0;
+DClipInfo_List* SDI_List = nullptr;
+long SDI_Object_ID = -1;
+int SDI_Draw_Line = 0;
+int SDI_Draw_Level = 0;
+int startLoggingAI = 0;
+
 static int g_rge_handle = -1;
 static unsigned char g_rge_mode = 2;
 static unsigned char* g_rge_window = nullptr;
