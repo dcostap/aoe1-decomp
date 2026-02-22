@@ -145,6 +145,7 @@ public:
     unsigned char check_prog_argument(const char* p1);
     void close();
     int get_paused();
+    RGE_Player* get_player();
     RGE_Font* get_font(int index);
     TDigital* get_sound(int index);
     unsigned long get_last_max_time();
