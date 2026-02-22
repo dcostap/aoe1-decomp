@@ -135,14 +135,14 @@ RGE_Active_Sprite_List* RGE_Animated_Object::create_sprite_list() { return RGE_S
 // --- Different signature from parent (return defaults) ---
 void RGE_Animated_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {} // TODO: STUB - extra param vs Static
 float RGE_Animated_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { return 0.0f; } // TODO: STUB - extra param vs Static
-void RGE_Animated_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {} // TODO: STUB - extra RGE_Static_Object* param vs Static
-void RGE_Animated_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {} // TODO: STUB - extra RGE_Static_Object* param vs Static
-void RGE_Animated_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {} // TODO: STUB - extra RGE_Static_Object* param vs Static
-void RGE_Animated_Object::set_attack(RGE_Static_Object* param_1) {} // TODO: STUB - takes RGE_Static_Object* vs no-param in Static
-RGE_Master_Static_Object* RGE_Animated_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return nullptr; } // TODO: STUB - extra RGE_Static_Object* param vs Static
-void RGE_Animated_Object::release_being_worked_on(RGE_Static_Object* param_1) {} // TODO: STUB - takes RGE_Static_Object* vs no-param in Static
-int RGE_Animated_Object::inAttackRange(RGE_Static_Object* param_1) { return 0; } // TODO: STUB - takes RGE_Static_Object* vs no-param in Static
-float RGE_Animated_Object::calc_attack_modifier(RGE_Static_Object* param_1) { return 1.0f; } // TODO: STUB - takes RGE_Static_Object* vs no-param in Static
+void RGE_Animated_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::do_command(param_1, param_2, param_3, param_4); } // TODO: STUB
+void RGE_Animated_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::move_to(param_1, param_2, param_3, param_4); } // TODO: STUB
+void RGE_Animated_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::work(param_1, param_2, param_3, param_4); } // TODO: STUB
+void RGE_Animated_Object::set_attack(RGE_Static_Object* param_1) { RGE_Static_Object::set_attack(param_1); } // TODO: STUB
+RGE_Master_Static_Object* RGE_Animated_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Static_Object::get_command_master(param_1, param_2, param_3, param_4); } // TODO: STUB
+void RGE_Animated_Object::release_being_worked_on(RGE_Static_Object* param_1) { RGE_Static_Object::release_being_worked_on(param_1); } // TODO: STUB
+int RGE_Animated_Object::inAttackRange(RGE_Static_Object* param_1) { return RGE_Static_Object::inAttackRange(param_1); } // TODO: STUB
+float RGE_Animated_Object::calc_attack_modifier(RGE_Static_Object* param_1) { return RGE_Static_Object::calc_attack_modifier(param_1); } // TODO: STUB
 
 // --- New virtual in Animated (not in Static) ---
 int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return 0; } // TODO: STUB
