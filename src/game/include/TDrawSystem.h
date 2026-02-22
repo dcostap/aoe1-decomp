@@ -17,6 +17,7 @@ struct TDrawSystem {
     uchar CheckSurfaces();
     void ClearRestored();
     void Paint(tagRECT* rect);
+    void HandleSize(void* wnd, uint msg, uint wparam, long lparam);
     void HandlePaletteChanged(void* wnd, uint msg, uint wparam, long lparam);
     int HandleQueryNewPalette(void* wnd, uint msg, uint wparam, long lparam);
     void ModifyPalette(int start, int count, tagPALETTEENTRY* entries);
