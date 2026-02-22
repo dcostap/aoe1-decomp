@@ -3,6 +3,7 @@
 #include "../include/RGE_Master_Doppleganger_Object.h"
 #include "../include/RGE_Doppleganger_Object.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Visible_Map.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/RGE_Sprite.h"
@@ -2615,12 +2616,78 @@ void RGE_Static_Object::exit_obj() {
         this->inside_obj = nullptr;
     }
 }
-int RGE_Static_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { return 0; }
-void RGE_Static_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {}
-LOSTBL* RGE_Static_Object::get_los_table() { return nullptr; }
+int RGE_Static_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C59B0
+    if (param_1 != nullptr) {
+        if (param_3 == -1) {
+            param_3 = (int)(long)this->master_obj->los;
+        }
+        if (0 < param_3) {
+            RGE_Visible_Map* visible = param_1->visible;
+            uint isCurPlayer = (uint)(param_1->id == param_1->world->curr_player);
+            if (param_2 == 0) {
+                int world_x_int = (int)(long)this->world_x;
+                int world_y_int = (int)(long)this->world_y;
+                return visible->explore_terrain(world_x_int, world_y_int, param_3, 0, (int)isCurPlayer, (int)this->id);
+            }
+            if ((0.0f < this->master_obj->radius_x) && (0.0f < this->master_obj->radius_y)) {
+                int x1 = (int)(long)(this->world_x - this->master_obj->radius_x);
+                int y1 = (int)(long)(this->world_y - this->master_obj->radius_y);
+                // ASM: stat_obj.cpp.asm @ 0x004C5A4F subtracts 10.0f before truncating max extents.
+                int x2 = (int)(long)(this->world_x + this->master_obj->radius_x - 10.0f);
+                int y2 = (int)(long)(this->world_y + this->master_obj->radius_y - 10.0f);
+                return visible->explore_terrain_sq(x1, y1, x2, y2, (int)isCurPlayer, (int)this->id);
+            }
+        }
+    }
+    return 0;
+}
+
+void RGE_Static_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5AA0
+    if (param_1 != nullptr) {
+        if (param_3 == -1) {
+            param_3 = (int)(long)this->master_obj->los;
+        }
+        if (0 < param_3) {
+            RGE_Visible_Map* visible = param_1->visible;
+            uint isCurPlayer = (uint)(param_1->id == param_1->world->curr_player);
+            if (param_2 == 0) {
+                int world_x_int = (int)(long)this->world_x;
+                int world_y_int = (int)(long)this->world_y;
+                visible->unexplore_terrain(world_x_int, world_y_int, param_3, 0, (int)isCurPlayer, (int)this->id);
+                return;
+            }
+            if ((0.0f < this->master_obj->radius_x) && (0.0f < this->master_obj->radius_y)) {
+                int x1 = (int)(long)(this->world_x - this->master_obj->radius_x);
+                int y1 = (int)(long)(this->world_y - this->master_obj->radius_y);
+                // ASM: stat_obj.cpp.asm @ 0x004C5B3F subtracts 10.0f before truncating max extents.
+                int x2 = (int)(long)(this->world_x + this->master_obj->radius_x - 10.0f);
+                int y2 = (int)(long)(this->world_y + this->master_obj->radius_y - 10.0f);
+                visible->unexplore_terrain_sq(x1, y1, x2, y2, (int)isCurPlayer, (int)this->id);
+            }
+        }
+    }
+}
+
+LOSTBL* RGE_Static_Object::get_los_table() {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C5980
+    RGE_Player* pRVar1 = this->owner;
+    if (pRVar1 == nullptr) {
+        return nullptr;
+    }
+    int losValue = (int)(long)this->master_obj->los;
+    return pRVar1->visible->get_los_table(losValue, 0);
+}
 int RGE_Static_Object::inAttackRange(RGE_Static_Object* /*param_1*/) { return 0; }
-uchar RGE_Static_Object::underAttack() { return 0; }
-void RGE_Static_Object::setUnderAttack(uchar param_1) {}
+uchar RGE_Static_Object::underAttack() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6B60
+    return this->underAttackValue;
+}
+void RGE_Static_Object::setUnderAttack(uchar param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6B70
+    this->underAttackValue = param_1;
+}
 float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* /*param_1*/) { return 1.0f; }
 float RGE_Static_Object::getSpeed() { return 0.0f; }
 float RGE_Static_Object::getAngle() { return 0.0f; }
@@ -2630,8 +2697,14 @@ float RGE_Static_Object::damageCapability(RGE_Static_Object* param_1) { return 0
 float RGE_Static_Object::damageCapability() { return 0.0f; }
 float RGE_Static_Object::weaponRange() { return 0.0f; }
 float RGE_Static_Object::minimumWeaponRange() { return 0.0f; }
-int RGE_Static_Object::passableTile(float param_1, float param_2, int param_3) { return 1; }
-uchar RGE_Static_Object::facetToNextWaypoint() { return 0; }
+int RGE_Static_Object::passableTile(float /*param_1*/, float /*param_2*/, int /*param_3*/) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A500
+    return 0;
+}
+uchar RGE_Static_Object::facetToNextWaypoint() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A510
+    return 0xFF;
+}
 int RGE_Static_Object::currentTargetID() { return -1; }
 float RGE_Static_Object::currentTargetX() { return -1.0f; }
 float RGE_Static_Object::currentTargetY() { return -1.0f; }
