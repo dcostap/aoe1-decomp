@@ -3686,7 +3686,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
         break;
     }
     case 6:
-        // TODO: STUB - TRIBE_World::cheat (tworld.cpp @ 0x00530AE0) not yet implemented/declared.
+        ((TRIBE_World*)this->world)->cheat(p1->var1, (short)(uchar)p1->var2);
         break;
     default:
         break;

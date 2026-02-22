@@ -71,9 +71,11 @@ public:
     virtual void scenario_init(int param_1, RGE_Game_World* param_2); // vt[61] (0xF4)
     virtual int addObject(RGE_Static_Object* param_1); // vt[62] (0xF8)
     virtual int removeObject(int param_1); // vt[63] (0xFC)
-
+ 
     void check_destructables(short param_1, short param_2, float param_3, float param_4, uchar param_5);
-
+    void send_cheat(short param_1);
+    void cheat(short param_1, short param_2);
+ 
     TRIBE_Tech* tech;
     int victory_type;
     int artifact_count;
