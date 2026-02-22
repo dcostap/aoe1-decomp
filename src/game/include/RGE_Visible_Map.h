@@ -9,6 +9,11 @@ struct RGE_Visible_Map {
     void save(int param_1);
     uchar get_visible(int col, int row);
     float percentExplored();
+    LOSTBL* get_los_table(int param_1, int param_2);
+    int explore_terrain(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    void unexplore_terrain(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    int explore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    void unexplore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
 
     uchar** map_offsets;
     RGE_Game_World* world;
