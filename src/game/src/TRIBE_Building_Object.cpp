@@ -1,16 +1,17 @@
 #include "../include/TRIBE_Building_Object.h"
 
-#include "../include/Production_Queue_Record.h"
 #include "../include/RGE_Action_List.h"
-#include "../include/RGE_Doppleganger_Creator.h"
+#include "../include/RGE_Game_World.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Doppleganger_Creator.h"
 #include "../include/globals.h"
 
-#include <cstdlib>
+#include <new>
+#include <stdlib.h>
 
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C81D0
 TRIBE_Building_Object::TRIBE_Building_Object(int param_1, RGE_Game_World* param_2, int param_3)
     : TRIBE_Combat_Object(param_1, param_2, 0) {
-    // Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C81D0
     this->production_queue = nullptr;
     this->production_queue_size = 0;
     this->production_queue_count = 0;
@@ -25,40 +26,46 @@ TRIBE_Building_Object::TRIBE_Building_Object(int param_1, RGE_Game_World* param_
         this->setup(param_1, param_2);
     }
 
-    int map_y = (int)this->world_y;
-    int map_x = (int)this->world_x;
-    this->DoppleInstalled =
-        this->owner->doppleganger_creator->add_doppleganger_check(this, unified_map_offsets[map_y] + map_x);
+    // Install doppleganger checks after load/setup.
+    int y = (int)this->world_y;
+    int x = (int)this->world_x;
+    unsigned long* addr = unified_map_offsets[y] + x;
+    this->DoppleInstalled = this->owner->doppleganger_creator->add_doppleganger_check(this, addr);
 }
 
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C82A0
+TRIBE_Building_Object::~TRIBE_Building_Object() = default;
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8490
 int TRIBE_Building_Object::setup(int param_1, RGE_Game_World* param_2) {
-    // Source of truth: t_b_obj.cpp.decomp @ 0x004C8490
-    TRIBE_Combat_Object::setup(param_1, param_2);
-    this->type = 0x50;
+    int fd = param_1;
+    RGE_Game_World* world = param_2;
 
-    rge_read(param_1, &this->built, 1);
-    rge_read(param_1, &this->build_pts, 4);
-    rge_read(param_1, &this->unique_build_id, 4);
-    rge_read(param_1, &this->culture, 1);
+    TRIBE_Combat_Object::setup(fd, world);
+    this->type = 'P';
 
-    this->production_queue_actions = RGE_Action_Object::create_action_list();
+    rge_read(fd, &this->built, 1);
+    rge_read(fd, &this->build_pts, 4);
+    rge_read(fd, &this->unique_build_id, 4);
+    rge_read(fd, &this->culture, 1);
 
-    if (7.21f <= save_game_version) {
-        rge_read(param_1, &this->production_queue_size, 2);
+    this->production_queue_actions = this->create_action_list();
+
+    if (save_game_version >= 7.21f) {
+        rge_read(fd, &this->production_queue_size, 2);
         if (this->production_queue_size > 0) {
-            this->production_queue = (Production_Queue_Record*)calloc((int)this->production_queue_size, 4);
-            for (short queue_index = 0; queue_index < this->production_queue_size; ++queue_index) {
-                rge_read(param_1, &this->production_queue[queue_index], 2);
-                rge_read(param_1, &this->production_queue[queue_index].unit_count, 2);
+            this->production_queue = (Production_Queue_Record*)calloc((size_t)this->production_queue_size, sizeof(Production_Queue_Record));
+            for (short i = 0; i < this->production_queue_size; ++i) {
+                rge_read(fd, &this->production_queue[i].master_id, 2);
+                rge_read(fd, &this->production_queue[i].unit_count, 2);
             }
         }
 
-        rge_read(param_1, &this->production_queue_count, 2);
-        rge_read(param_1, &this->production_queue_enabled, 1);
-        if (this->production_queue_actions != nullptr) {
-            this->production_queue_actions->load(param_1);
-        }
+        rge_read(fd, &this->production_queue_count, 2);
+        rge_read(fd, &this->production_queue_enabled, 1);
+        this->production_queue_actions->load(fd);
     }
 
     return 1;
 }
+
