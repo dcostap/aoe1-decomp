@@ -79,6 +79,7 @@ public:
     int set_bitmap(char* param_1, long param_2);
     void set_world(RGE_Game_World* param_1);
     void set_player(RGE_Player* param_1);
+    void set_main_view(RGE_View* param_1);
     void delete_surfaces();
     int create_surfaces();
 

@@ -3,6 +3,7 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/RGE_Color_Table.h"
 #include "../include/RGE_Diamond_Map.h"
+#include "../include/TRIBE_Diamond_Map_View.h"
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Map.h"
@@ -229,6 +230,25 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             main_view->tile_half_hgt = main_view->map->tile_half_height;
             main_view->elev_hgt = main_view->map->elev_height;
         }
+    }
+
+    // Minimap (diamond map) panel.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004942F0..0x004943F1
+    {
+        TRIBE_Diamond_Map_View* map_view = new TRIBE_Diamond_Map_View();
+        this->runtime.map_view = (TPanel*)map_view;
+        if (map_view == nullptr || map_view->error_code != 0 ||
+            ((RGE_Diamond_Map*)map_view)->setup(this->render_area, this, 0, 0, 0, 0, 0, 0, rge_base_game->map_save_area) == 0) {
+            delete_panel_safe(this->runtime.map_view);
+            this->error_code = 1;
+            return;
+        }
+
+        map_view->set_help_info(0x4E33, -1);
+        ((RGE_Diamond_Map*)map_view)->set_world((RGE_Game_World*)rge_base_game->world);
+        ((RGE_Diamond_Map*)map_view)->set_bitmap((char*)"map.bmp", 0xC4E1);
+        ((RGE_Diamond_Map*)map_view)->set_player(rge_base_game->get_player());
+        ((RGE_Diamond_Map*)map_view)->set_main_view((RGE_View*)this->runtime.main_view);
     }
 
     if (this->world_map != nullptr && this->world_map->map_width > 0 && this->world_map->map_height > 0) {

@@ -1040,6 +1040,21 @@ int RGE_Base_Game::get_paused() {
     }
     return 0;
 }
+
+RGE_Player* RGE_Base_Game::get_player() {
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420330
+    if (this->world == nullptr) {
+        return nullptr;
+    }
+    if (this->world->player_num == 0) {
+        return nullptr;
+    }
+    if (this->world->curr_player >= this->world->player_num) {
+        return nullptr;
+    }
+    return this->world->players[this->world->curr_player];
+}
+
 TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }

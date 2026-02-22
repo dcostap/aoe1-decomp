@@ -386,6 +386,10 @@ void RGE_Diamond_Map::set_player(RGE_Player* param_1) {
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+void RGE_Diamond_Map::set_main_view(RGE_View* param_1) {
+    this->main_view = param_1;
+}
+
 void RGE_Diamond_Map::set_redraw(RedrawMode param_1) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004370A0
     TPanel::set_redraw(param_1);
