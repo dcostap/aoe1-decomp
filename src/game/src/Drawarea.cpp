@@ -12,12 +12,57 @@
 // EXTERNAL
 int system_ignore_size_messages = 0;
 
+extern "C" {
+// Mirrors the original DAT_0088c058 block (prefix + 8 dwords starting at +8).
+// The first 8 bytes (offsets 0/4) are referenced by the ASM render path, but are not currently
+// consumed by our software renderer; keep them for parity/future porting.
+struct ASMShadowingState {
+    unsigned int unk0;
+    unsigned int unk4;
+    unsigned int table[8]; // DAT_0088c058 + 8
+};
+ASMShadowingState g_ASMShadowing_State = {0};
+unsigned int g_ASMShadowing_Amount = 0; // derived 0..255, consumed by the software shape drawers
+}
+
+static unsigned int asm_shadowing_extract_amount(unsigned int p2, unsigned int p4) {
+    // Calls in view.cpp use two patterns for the same 8-bit amount:
+    // - "shifted":   0xNN00NN00  (amount in bytes 1 and 3)
+    // - "unshifted": 0x00NN00NN  (amount in bytes 0 and 2)
+    if ((p2 & 0xFF00FF00u) != 0) return (p2 >> 8) & 0xFFu;
+    if ((p4 & 0xFF00FF00u) != 0) return (p4 >> 8) & 0xFFu;
+    if ((p2 & 0x00FF00FFu) != 0) return p2 & 0xFFu;
+    if ((p4 & 0x00FF00FFu) != 0) return p4 & 0xFFu;
+    return 0;
+}
+
+// Fully verified. Source of truth: bucket_056C.decomp @ 0x0056C680
 extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4) {
-    (void)p1;
-    (void)p2;
-    (void)p3;
-    (void)p4;
-    // TODO: STUB - ASM shadowing setup path is not yet ported; no-op fallback.
+    g_ASMShadowing_State.table[0] = (unsigned int)p1;
+    g_ASMShadowing_State.table[1] = (unsigned int)p3;
+    g_ASMShadowing_State.table[2] = (unsigned int)p1;
+    g_ASMShadowing_State.table[3] = (unsigned int)p3;
+    g_ASMShadowing_State.table[4] = (unsigned int)p2;
+    g_ASMShadowing_State.table[5] = (unsigned int)p4;
+    g_ASMShadowing_State.table[6] = (unsigned int)p2;
+    g_ASMShadowing_State.table[7] = (unsigned int)p4;
+
+    g_ASMShadowing_Amount = asm_shadowing_extract_amount((unsigned int)p2, (unsigned int)p4);
+}
+
+// Fully verified. Source of truth: bucket_056C.decomp @ 0x0056C6C0
+extern "C" void _ASMSet_ShadowingEx(int* p) {
+    // Note: original ASM dereferences unconditionally; keep parity (no defensive null check).
+    g_ASMShadowing_State.table[0] = (unsigned int)p[0];
+    g_ASMShadowing_State.table[1] = (unsigned int)p[1];
+    g_ASMShadowing_State.table[2] = (unsigned int)p[2];
+    g_ASMShadowing_State.table[3] = (unsigned int)p[3];
+    g_ASMShadowing_State.table[4] = (unsigned int)p[4];
+    g_ASMShadowing_State.table[5] = (unsigned int)p[5];
+    g_ASMShadowing_State.table[6] = (unsigned int)p[6];
+    g_ASMShadowing_State.table[7] = (unsigned int)p[7];
+
+    g_ASMShadowing_Amount = asm_shadowing_extract_amount(g_ASMShadowing_State.table[4], g_ASMShadowing_State.table[5]);
 }
 
 static unsigned long scale_component_to_mask_ul(unsigned int c, unsigned long mask) {
@@ -148,8 +193,7 @@ TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
     this->ColorBits = 8; // Default to 8-bit
     system_ignore_size_messages = 0;
-    _ASMSet_Shadowing(0, 0xFF00FF00, 0, 0); 
-    _ASMSet_Shadowing(0x1111, 0xFF00FF, 0, 0); 
+    _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
 }
 
 // Source of truth: Drawarea.cpp.decomp @ 0x00442710
