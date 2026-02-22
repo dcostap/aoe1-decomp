@@ -2,17 +2,21 @@
 
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Animated_Object.h"
 #include "../include/RGE_Doppleganger_Object.h"
 #include "../include/RGE_Moving_Object.h"
 #include "../include/RGE_Action_Object.h"
 #include "../include/RGE_Combat_Object.h"
 #include "../include/RGE_Missile_Object.h"
+#include "../include/RGE_Player.h"
+#include "../include/RGE_Game_World.h"
 #include "../include/TMousePointer.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
 #include <stdlib.h>
+#include <cstddef>
 #include <new>
 
 RGE_Object_List::RGE_Object_List() {
@@ -114,6 +118,57 @@ void RGE_Object_List::update() {
         node = next;
     }
     CUSTOM_DEBUG_LOG_FMT("RGE_Object_List::update end this=%p visited=%d", this, node_index);
+}
+
+void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    // Partially verified. Source of truth: obj_list.cpp.decomp @ 0x00463000 (RGE_Object_List::draw).
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if (obj == nullptr) {
+            continue;
+        }
+
+        RGE_Player* owner = obj->owner;
+        int should_draw = 1;
+        RGE_Color_Table* color_table = owner->color_table;
+
+        switch (obj->master_obj->fog_flag) {
+        case 0:
+            if (param_4 != 0) should_draw = 0;
+            break;
+        case 2:
+            if (param_4 != 0 && 2 < (int)obj->object_state) should_draw = 0;
+            break;
+        case 3: {
+            should_draw = 0;
+            if (param_4 != 0 &&
+                owner->world->players[owner->world->curr_player]->mutualAlly[owner->id] != 0) {
+                // obj_list.cpp.decomp @ 0x00463000: pRVar6 = (RGE_Color_Table *)pRVar2[1].master_obj;
+                // This reads a pointer-sized field from the derived-object tail at the same offset as master_obj.
+                const std::ptrdiff_t master_obj_off = (const char*)&obj->master_obj - (const char*)obj;
+                color_table = *(RGE_Color_Table**)((char*)obj + sizeof(RGE_Static_Object) + master_obj_off);
+                should_draw = 1;
+            }
+            break;
+        }
+        case 4:
+            if (param_4 != 0 && 1 < (int)this->number_of_objects) {
+                for (RGE_Object_Node* scan = this->list; scan != nullptr; scan = scan->next) {
+                    if (scan->node->type == 0x19) {
+                        should_draw = 0;
+                        break;
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+        }
+
+        if (should_draw) {
+            obj->draw(param_1, param_2, param_3, color_table);
+        }
+    }
 }
 
 void RGE_Object_List::load(uchar param_1, int param_2, RGE_Game_World* param_3) {

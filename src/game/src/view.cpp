@@ -8,7 +8,11 @@
 #include "RGE_Visible_Map.h"
 #include "RGE_Static_Object.h"
 #include "RGE_Master_Static_Object.h"
+#include "RGE_Object_List.h"
+#include "RGE_Object_Node.h"
 #include "RGE_Sprite.h"
+#include "RGE_Active_Sprite_List.h"
+#include "RGE_Color_Table.h"
 #include "TShape.h"
 #include "TMousePointer.h"
 #include "TMessagePanel.h"
@@ -17,6 +21,7 @@
 #include "globals.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4);
 
@@ -76,26 +81,240 @@ static int rge_view_get_border_edge_pictures(
     return 1;
 }
 
-static void rge_view_try_load_sprite_shape(RGE_Sprite* spr) {
-    if (spr == nullptr || spr->shape != nullptr) {
-        return;
-    }
-    if (spr->pict_name[0] == '\0') {
-        return;
+RGE_View::RGE_View()
+    : TPanel((char*)"RGE_View") {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533510 (RGE_View::RGE_View).
+    this->cur_render_area = nullptr;
+    this->calc_draw_count = 0;
+    this->world = nullptr;
+    this->player = nullptr;
+    this->map = nullptr;
+
+    this->tile_wid = 0;
+    this->tile_hgt = 0;
+    this->tile_half_wid = 0;
+    this->tile_half_hgt = 0;
+    this->elev_hgt = 0;
+    this->render_rect_wid = 0;
+    this->render_rect_hgt = 0;
+    this->max_col_num = 0;
+    this->max_row_num = 0;
+    this->center_scr_col = 0;
+    this->center_scr_row = 0;
+    this->center_scr_col_offset = 0;
+    this->center_scr_row_offset = 0;
+    this->center_map_col = 0;
+    this->center_map_row = 0;
+    this->start_scr_col = 0;
+    this->start_scr_row = 0;
+    this->start_map_col = 0;
+    this->start_map_row = 0;
+    this->map_scr_x_offset = 0;
+    this->map_scr_y_offset = 0;
+    this->last_view_x = -9999.0f;
+    this->last_view_y = -9999.0f;
+    this->function_mode = 0;
+    this->function_parm = 0;
+    this->render_terrain_mode = 0;
+
+    this->sel_col1 = -1;
+    this->sel_row1 = -1;
+    this->sel_col2 = -1;
+    this->sel_row2 = -1;
+    this->save_paint_terrain = -1;
+
+    this->white_pen = nullptr;
+    this->red_pen = nullptr;
+    this->hollow_brush = nullptr;
+    this->border_line_shape = nullptr;
+
+    this->scroll_action = 0;
+    this->mouse_last_x = -1;
+    this->mouse_last_y = -1;
+    this->movable_object = nullptr;
+
+    this->Terrain_Clip_Mask = nullptr;
+    this->Terrain_Fog_Clip_Mask = nullptr;
+    this->Master_Clip_Mask = nullptr;
+
+    this->Tile_Edge_Tables = nullptr;
+    this->Black_Edge_Tables = nullptr;
+
+    std::memset(&this->OverlaidPanel, 0, sizeof(this->OverlaidPanel));
+    this->OverlaidPanelActive = 0;
+    std::memset(this->EdgeNumber, 0xFF, sizeof(this->EdgeNumber));
+    this->Limited_Render_Rect = 0;
+    this->Use_Rect2 = 0;
+    std::memset(&this->Render_Rect1, 0, sizeof(this->Render_Rect1));
+    std::memset(&this->Render_Rect2, 0, sizeof(this->Render_Rect2));
+
+    this->Float_Scroll_Offsets = nullptr;
+    this->Float_Scroll_Offsets_Sz = 0;
+    this->Float_X_Delta = 0;
+    this->Float_Y_Delta = 0;
+    this->Queued_Blits = 0;
+    this->Blit_Queue = nullptr;
+    this->Blit_Queue_Size = 0;
+    this->Blt_Queue_Allocated = 0;
+    this->Current_Blit = 0;
+    this->Blit_Offset_X = 0;
+    this->Blit_Offset_Y = 0;
+
+    this->real_old_map_col = 0;
+    this->real_old_map_row = 0;
+    for (int i = 0; i < 5; ++i) {
+        this->pick_lists[i] = nullptr;
+        this->pick_list_size[i] = 0;
     }
 
-    char shp_name[64];
-    std::snprintf(shp_name, sizeof(shp_name), "%s.shp", spr->pict_name);
-    shp_name[sizeof(shp_name) - 1] = '\0';
+    this->save_area1 = nullptr;
+    this->LastRenderBits = nullptr;
+    this->RenderOffsets = nullptr;
+    this->LastRenderSize = 0;
+    this->prior_objs = nullptr;
+    this->futur_objs = nullptr;
 
-    TShape* loaded_shape = new TShape(shp_name, spr->resource_id);
-    if (loaded_shape != nullptr && loaded_shape->is_loaded() != 0) {
-        spr->shape = loaded_shape;
-        spr->loaded = 1;
-    } else if (loaded_shape != nullptr) {
-        delete loaded_shape;
+    this->UC_ObjectTouched = 0;
+    this->UC_TouchedObj = (int)0x80000000u;
+    this->UC_StartTime = 0;
+    this->UC_ElapsedTime = 0;
+
+    this->message_panel = nullptr;
+    this->extra_sprites = nullptr;
+
+    this->DispSel_List = (DisplaySelectedObjRec*)std::calloc(8, 0x14);
+    this->DispSel_List_Size = 0;
+    this->DispSel_List_Max = 8;
+}
+
+RGE_View::~RGE_View() {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533760 (RGE_View::~RGE_View).
+    if (this->Tile_Edge_Tables) {
+        std::free(this->Tile_Edge_Tables);
+        this->Tile_Edge_Tables = nullptr;
+    }
+    if (this->Black_Edge_Tables) {
+        std::free(this->Black_Edge_Tables);
+        this->Black_Edge_Tables = nullptr;
+    }
+    if (this->Float_Scroll_Offsets) {
+        std::free(this->Float_Scroll_Offsets);
+        this->Float_Scroll_Offsets = nullptr;
+    }
+    if (this->Blit_Queue) {
+        std::free(this->Blit_Queue);
+        this->Blit_Queue = nullptr;
+    }
+    for (int i = 0; i < 5; ++i) {
+        if (this->pick_lists[i] != nullptr) {
+            std::free(this->pick_lists[i]);
+            this->pick_lists[i] = nullptr;
+        }
+    }
+    if (this->LastRenderBits) {
+        std::free(this->LastRenderBits);
+        this->LastRenderBits = nullptr;
+    }
+    if (this->RenderOffsets) {
+        std::free(this->RenderOffsets);
+        this->RenderOffsets = nullptr;
+    }
+    if (this->save_area1) {
+        delete this->save_area1;
+        this->save_area1 = nullptr;
+    }
+    if (this->Terrain_Clip_Mask) {
+        delete this->Terrain_Clip_Mask;
+        this->Terrain_Clip_Mask = nullptr;
+    }
+    if (this->Terrain_Fog_Clip_Mask) {
+        delete this->Terrain_Fog_Clip_Mask;
+        this->Terrain_Fog_Clip_Mask = nullptr;
+    }
+    if (this->Master_Clip_Mask) {
+        delete this->Master_Clip_Mask;
+        this->Master_Clip_Mask = nullptr;
+    }
+    if (this->DispSel_List) {
+        std::free(this->DispSel_List);
+        this->DispSel_List = nullptr;
     }
 }
+
+long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533940 (RGE_View::setup).
+    long ok = TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+    this->cur_render_area = nullptr;
+    this->last_view_x = -9999.0f;
+    this->last_view_y = -9999.0f;
+    this->function_mode = 0;
+    return ok;
+}
+
+void RGE_View::set_rect(tagRECT param_1) {
+    // Source of truth: view.cpp.decomp calls through TPanel::set_rect(tagRECT).
+    TPanel::set_rect(param_1);
+}
+
+void RGE_View::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533F70 (RGE_View::set_rect).
+    TPanel::set_rect(param_1, param_2, param_3, param_4);
+
+    this->render_rect_wid = (short)param_3;
+    this->render_rect_hgt = (short)param_4;
+
+    if (this->tile_half_wid <= 0) this->tile_half_wid = (this->map != nullptr) ? this->map->tile_half_width : 32;
+    if (this->tile_half_hgt <= 0) this->tile_half_hgt = (this->map != nullptr) ? this->map->tile_half_height : 16;
+    if (this->tile_wid <= 0) this->tile_wid = (short)(this->tile_half_wid * 2);
+    if (this->tile_hgt <= 0) this->tile_hgt = (short)(this->tile_half_hgt * 2);
+
+    if (this->tile_half_wid > 0) {
+        this->max_col_num = (short)(param_3 / this->tile_half_wid);
+    }
+    if (this->tile_half_hgt > 0) {
+        this->max_row_num = (short)(param_4 / this->tile_half_hgt);
+    }
+    if (this->max_col_num < 1) this->max_col_num = 1;
+    if (this->max_row_num < 1) this->max_row_num = 1;
+
+    this->last_view_x = -9999.0f;
+    this->last_view_y = -9999.0f;
+
+    if (this->Terrain_Clip_Mask) {
+        delete this->Terrain_Clip_Mask;
+        this->Terrain_Clip_Mask = nullptr;
+    }
+    if (this->Terrain_Fog_Clip_Mask) {
+        delete this->Terrain_Fog_Clip_Mask;
+        this->Terrain_Fog_Clip_Mask = nullptr;
+    }
+    if (this->Master_Clip_Mask) {
+        delete this->Master_Clip_Mask;
+        this->Master_Clip_Mask = nullptr;
+    }
+
+    if (param_3 > 0 && param_4 > 0) {
+        this->Terrain_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
+        this->Terrain_Fog_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
+        this->Master_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
+    }
+}
+
+void RGE_View::set_focus(int param_1) {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533AC0.
+    TPanel::set_focus(param_1);
+    if (MouseSystem != nullptr) {
+        MouseSystem->set_game_enable(param_1);
+    }
+}
+
+int RGE_View::pick_through_fog(RGE_Static_Object* param_1) { (void)param_1; return 0; } // TODO: STUB
+int RGE_View::pick_weight(RGE_Static_Object* param_1, int param_2) { (void)param_1; (void)param_2; return 0; } // TODO: STUB
+int RGE_View::start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; } // TODO: STUB
+int RGE_View::handle_scroll_view(long param_1, long param_2) { (void)param_1; (void)param_2; return 0; } // TODO: STUB
+void RGE_View::end_scroll_view() {} // TODO: STUB
+int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; } // TODO: STUB
+void RGE_View::draw_multi_object_outline() {} // TODO: STUB
 
 void RGE_View::draw()
 {
@@ -110,8 +329,8 @@ void RGE_View::draw()
 
     if (this->world == nullptr) {
         this->draw_setup(0);
-        if (this->cur_render_area) {
-           this->cur_render_area->Clear(&this->cur_render_area->ClipRect, 0);
+        if (this->render_area) {
+           this->render_area->Clear(&this->render_area->ClipRect, 0);
         }
         this->draw_finish();
         return;
@@ -148,6 +367,7 @@ void RGE_View::draw()
 void RGE_View::update()
 {
     if (this->player == nullptr) return;
+    if (this->map == nullptr) return;
 
     if (this->player->view_x != this->last_view_x || this->player->view_y != this->last_view_y) {
         this->center_map_col = (short)this->player->view_x;
@@ -181,20 +401,19 @@ void RGE_View::update()
 
 void RGE_View::draw_view(uchar mode, TDrawArea* area)
 {
-    if (area == nullptr) area = this->cur_render_area;
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535480 (RGE_View::draw_view).
+    if (area == nullptr) area = this->render_area;
     if (area == nullptr) return;
 
+    this->cur_render_area = area;
     if (area->Lock("draw_view", 1)) {
         if (mode == 10) { // Terrain
-            tagRECT rect;
-            rect.left = 0;
-            rect.top = 0;
-            rect.right = area->Width - 1;
-            rect.bottom = area->Height - 1;
+            tagRECT rect = area->ClipRect;
             this->view_function_terrain(mode, rect);
         }
         area->Unlock("draw_view");
     }
+    this->cur_render_area = nullptr;
 }
 
 long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
@@ -254,6 +473,21 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                     0,
                                     0);
                                 tiles_drawn = tiles_drawn + 1;
+
+                                // Source of truth: view.cpp.decomp @ 0x00536B40 (RGE_View::view_function_terrain)
+                                // calls RGE_Object_List::draw(&tile->objects, ...).
+                                if (tile->objects.list != nullptr) {
+                                    if (vis != 0x0F) {
+                                        fog_next_shape = 1;
+                                    }
+                                    short obj_y = (short)(sy + (int)tile->height * (int)this->tile_half_hgt);
+                                    tile->objects.draw(
+                                        this->cur_render_area,
+                                        (short)sx,
+                                        obj_y,
+                                        (uchar)(vis == 0x80));
+                                    fog_next_shape = 0;
+                                }
                             }
                         }
                     }
@@ -268,75 +502,6 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
             row_num = row_num + 1;
         } else {
             col_num = col_num - 1;
-        }
-    }
-
-    // Draw world objects (static resources/decorations/etc) as a compatibility
-    // path while tile object-list linkage is still incomplete.
-    if (this->world != nullptr && this->world->objectsValue != nullptr && this->world->maxNumberObjectsValue > 0) {
-        int max_objects = this->world->maxNumberObjectsValue;
-        for (int i = 0; i < max_objects; ++i) {
-            RGE_Static_Object* obj = this->world->objectsValue[i];
-            if (obj == nullptr || obj->master_obj == nullptr) {
-                continue;
-            }
-
-            int ox = (int)obj->world_x;
-            int oy = (int)obj->world_y;
-            if (ox < 0 || oy < 0 || ox >= this->map->map_width || oy >= this->map->map_height) {
-                continue;
-            }
-
-            uchar vis = 0x0F;
-            if (this->player != nullptr && this->player->visible != nullptr) {
-                vis = this->player->visible->get_visible((short)ox, (short)oy);
-            }
-            if (vis == 0 && this->map->map_visible_flag != 0) {
-                vis = 0x0F;
-            }
-            if (vis == 0) {
-                continue;
-            }
-
-            RGE_Tile* tile = this->map->get_tile(ox, oy);
-            if (tile == nullptr) {
-                continue;
-            }
-
-            int sx = (int)tile->screen_xpos - this->map_scr_x_offset + (int)obj->screen_x_offset;
-            int sy = (int)tile->screen_ypos + (int)tile->height * this->tile_half_hgt - this->map_scr_y_offset + (int)obj->screen_y_offset;
-
-            if (sx < rect.left - this->tile_wid || sx > rect.right + this->tile_wid ||
-                sy < rect.top - this->tile_hgt * 2 || sy > rect.bottom + this->tile_hgt * 4) {
-                continue;
-            }
-
-            RGE_Sprite* spr = obj->sprite;
-            if (spr == nullptr) {
-                spr = obj->master_obj->sprite;
-            }
-            rge_view_try_load_sprite_shape(spr);
-
-            int drawn = 0;
-            int facet = (int)obj->facet;
-            if (facet < 0) {
-                facet = 0;
-            }
-            if (spr != nullptr && spr->facet_num > 0 && facet >= spr->facet_num) {
-                facet = 0;
-            }
-
-            // Source of truth: sprite.cpp.decomp @ 0x004C04F0 (RGE_Sprite::draw).
-            // Route through sprite draw so draw-list remapping, color xform, and xlate-table behavior match runtime.
-            if (spr != nullptr) {
-                spr->draw((long)facet, 0, sx, sy, sx, sy, nullptr, this->cur_render_area, 0);
-                drawn = 1;
-            }
-
-            if (drawn == 0) {
-                this->cur_render_area->DrawLine(sx - 3, sy - 3, sx + 3, sy + 3, 250);
-                this->cur_render_area->DrawLine(sx - 3, sy + 3, sx + 3, sy - 3, 250);
-            }
         }
     }
 

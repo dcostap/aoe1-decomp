@@ -603,6 +603,11 @@ static void gameview_draw_tree_debug_grid(GameViewPanel* self) {
 }
 
 void GameViewPanel::draw() {
+    // The temporary in-game rendering path has been retired.
+    // Main in-game render should flow through RGE_View / view.cpp (original-style view pipeline).
+    TScreenPanel::draw();
+    return;
+
     if (!this->render_area || !this->world_map || !this->world_map->map) {
         CUSTOM_DEBUG_LOG("GameViewPanel::draw: SKIPPING - missing render_area/map/tiles");
         return;
