@@ -3,12 +3,17 @@
 
 struct TMousePointer {
     TMousePointer(int p1);
+    ~TMousePointer();
     int setup(int custom_draw, struct TDrawArea* draw_area, char* filename, int file_id, int max_cursors);
     void on();
     void off();
     void Poll();
+    void draw(int param_1);
     void set_facet(int facet_index);
     void set_game_facet(int facet_index);
+    void set_game_mode(int mode);
+    int in_game_mode();
+    void set_game_window(int left, int top, int right, int bottom);
     void set_game_enable(int enabled);
     int get_game_enable();
     
@@ -16,9 +21,11 @@ struct TMousePointer {
     int LoadCursors(char* filename, int file_id, int reload);
     int create_surfaces();
     void delete_surfaces();
+    int update_mouse_position();
     void reset();
     void center();
     void erase();
+    int GetDDBltError(long err);
 
     int custom_draw;
     TDrawArea* render_area;
