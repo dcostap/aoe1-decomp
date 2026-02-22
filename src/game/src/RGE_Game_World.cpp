@@ -1030,6 +1030,37 @@ void RGE_Game_World::del_game_info() {
     }
 }
 
+void RGE_Game_World::selectNextComputerPlayer(int param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545B30
+    int current = this->currentUpdateComputerPlayer;
+    if (current == -1) {
+        for (int i = 0; i < this->player_num; ++i) {
+            if ((uint)this->players[i]->type == (uint)param_1) {
+                this->currentUpdateComputerPlayer = i;
+                return;
+            }
+        }
+        return;
+    }
+
+    int player_count = (int)this->player_num;
+    int checked = 0;
+    int idx = current;
+    if (current < player_count) {
+        while (checked < player_count) {
+            if ((uint)this->players[idx]->type == (uint)param_1 && idx != current) {
+                this->currentUpdateComputerPlayer = idx;
+                return;
+            }
+            idx = (idx + 1) % player_count;
+            checked = checked + 1;
+            if (player_count <= idx) {
+                return;
+            }
+        }
+    }
+}
+
 uchar RGE_Game_World::update() {
     // Source of truth: world.cpp.decomp / world.cpp.asm (update @ 0x00542ED0).
     // Keep timing/cycle flow close to original so single-player simulation advances.

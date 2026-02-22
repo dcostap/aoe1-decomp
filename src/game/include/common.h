@@ -89,7 +89,7 @@ class RGE_Master_Action_Object;
 class TRIBE_Game;
 class TRIBE_World;
 class TRIBE_Player;
-class TRIBE_Tech;
+struct TRIBE_Tech;
 class TRIBE_Player_Tech;
 class TRIBE_History_Info;
 class TRIBE_Screen_Game;

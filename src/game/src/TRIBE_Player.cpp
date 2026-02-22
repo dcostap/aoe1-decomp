@@ -4,13 +4,26 @@
 #include "../include/TRIBE_Master_Tree_Object.h"
 #include "../include/TRIBE_Master_Combat_Object.h"
 #include "../include/TRIBE_Master_Building_Object.h"
+#include "../include/TRIBE_World.h"
+#include "../include/TRIBE_Object_List.h"
 #include "../include/TRIBE_Player_Tech.h"
 #include "../include/TRIBE_History_Info.h"
 #include "../include/TRIBE_Victory_Conditions.h"
 #include "../include/TRIBE_Command.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Object_List.h"
+#include "../include/RGE_Object_Node.h"
+#include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Visible_Map.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/Visible_Resource_Manager.h"
+#include "../include/TCommunications_Handler.h"
+#include "../include/TMousePointer.h"
+#include "../include/RGE_Base_Game.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
+
+#include <new>
 
 static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
     if (player == nullptr || player->attributes == nullptr) {
@@ -26,25 +39,34 @@ static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player(world, master, player_id, name, civ, '\0', '\0', ai1, ai2, ai3) {
     // Source of truth: tplayer.cpp.decomp @ 0x00511E20
-    // Note: base class called with is_active='\0' — TRIBE_Player creates its own object lists.
     this->playerAI = nullptr;
+    this->VR_List = new (std::nothrow) Visible_Resource_Manager((RGE_Player*)this, 5);
 
-    // Set player type for computer players
     if (is_computer != 0) {
-        this->type = 3; // computer player type in TRIBE layer
+        this->type = 3;
         this->computerPlayerValue = 1;
-        // TODO(accuracy): create TribeMainDecisionAIModule if comm->IsHost()
+        if (((TCommunications_Handler*)comm)->IsHost() == 1) {
+            // TODO: STUB parity gap - TribeMainDecisionAIModule constructors are not implemented in this codebase yet.
+            this->playerAI = nullptr;
+        }
     } else {
-        this->type = 1; // human player type in TRIBE layer
+        this->type = 1;
     }
 
-    // Set relations to enemy for all other players
-    if (world) {
-        for (int i = 1; i < world->player_num; i++) {
+    if (is_active != 0) {
+        this->objects = new (std::nothrow) TRIBE_Object_List();
+        this->sleeping_objects = new (std::nothrow) TRIBE_Object_List();
+        this->doppleganger_objects = new (std::nothrow) TRIBE_Object_List();
+        this->new_victory();
+        if (world != nullptr && world->map != nullptr) {
+            this->visible = new (std::nothrow) RGE_Visible_Map(world->map, (RGE_Player*)this);
+        }
+    }
+
+    if (world != nullptr && world->player_num > 1) {
+        for (int i = 1; i < world->player_num; ++i) {
             if (i != this->id) {
-                if (this->relations && i < world->player_num) {
-                    this->relations[i] = 3; // enemy
-                }
+                this->set_relation(i, 3);
             }
         }
     }
@@ -52,9 +74,9 @@ TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uch
     this->update_count = 0;
     this->update_history_count = 0;
     this->updateCountNeedHelp = 0;
+    int random_value = debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x140);
     this->update_time = 0.0f;
-    // fog_update: random offset 3-6 per decomp: (debug_rand() * 3) / 0x7fff + 3
-    this->fog_update = (rand() * 3) / 0x7fff + 3;
+    this->fog_update = (random_value * 3) / 0x7fff + 3;
 
     memset(this->aiStatusInformationValue, 0, sizeof(this->aiStatusInformationValue));
     memset(this->aiStatusInformationValue2, 0, sizeof(this->aiStatusInformationValue2));
@@ -63,11 +85,8 @@ TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uch
     memset(this->aiStatusInformationValue5, 0, sizeof(this->aiStatusInformationValue5));
     memset(this->aiStatusInformationValue6, 0, sizeof(this->aiStatusInformationValue6));
 
-    // TODO(accuracy): create TRIBE_History_Info(-1) for history
-    this->history = nullptr;
-
-    // TODO(accuracy): create TRIBE_Player_Tech from world->tech for tech_tree
-    this->tech_tree = nullptr;
+    this->history = new (std::nothrow) TRIBE_History_Info(-1);
+    this->tech_tree = new (std::nothrow) TRIBE_Player_Tech(((TRIBE_World*)world)->tech, (RGE_Player*)this, 1);
 
     this->ruin_held_time = -1.0f;
     this->artifact_held_time = -1.0f;
@@ -84,24 +103,20 @@ TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
     memset(this->aiStatusInformationValue5, 0, sizeof(this->aiStatusInformationValue5));
     memset(this->aiStatusInformationValue6, 0, sizeof(this->aiStatusInformationValue6));
 
-    // Read saved TRIBE_Player fields
     rge_read(param_1, &this->type, 1);
     rge_read(param_1, &this->update_count, 4);
     rge_read(param_1, &this->updateCountNeedHelp, 4);
     rge_read(param_1, &this->fog_update, 4);
     rge_read(param_1, &this->update_time, 4);
-
-    // TODO(accuracy): create TRIBE_Player_Tech from save file + world->tech
-    this->tech_tree = nullptr;
+    this->tech_tree = new (std::nothrow) TRIBE_Player_Tech(param_1, ((TRIBE_World*)world)->tech, (RGE_Player*)this, 0);
 
     if (save_game_version <= 5.0f) {
         this->update_history_count = 0;
+        this->history = new (std::nothrow) TRIBE_History_Info(-1);
     } else {
         rge_read(param_1, &this->update_history_count, 4);
+        this->history = new (std::nothrow) TRIBE_History_Info(param_1);
     }
-
-    // TODO(accuracy): create TRIBE_History_Info from save file or default(-1)
-    this->history = nullptr;
 
     if (save_game_version < 5.3f) {
         this->ruin_held_time = -1.0f;
@@ -111,35 +126,34 @@ TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
         rge_read(param_1, &this->artifact_held_time, 4);
     }
 
-    // Computer player AI loading
     if (this->type == 3) {
         int has_ai = 1;
         if (save_game_version >= 7.03f) {
             rge_read(param_1, &has_ai, 4);
         }
-        // TODO(accuracy): create TribeMainDecisionAIModule from save if IsHost && has_ai
+        if (((TCommunications_Handler*)comm)->IsHost() == 1 && has_ai == 1) {
+            // TODO: STUB parity gap - TribeMainDecisionAIModule save-load constructor is not implemented yet.
+            this->playerAI = nullptr;
+        }
         this->computerPlayerValue = 1;
     }
 }
 
-// TRIBE_Player destructor - Source of truth: tplayer.cpp.decomp @ 0x005120F0
 TRIBE_Player::~TRIBE_Player() {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005120F0
     if (this->tech_tree) {
-        // TODO(accuracy): call TRIBE_Player_Tech::~TRIBE_Player_Tech
         delete this->tech_tree;
         this->tech_tree = nullptr;
     }
     if (this->playerAI) {
-        // TODO(accuracy): call TribeMainDecisionAIModule destructor via vtable
-        // delete this->playerAI;
+        void** vtable = *(void***)this->playerAI;
+        ((void(__thiscall*)(TribeMainDecisionAIModule*, int))vtable[0])(this->playerAI, 1);
         this->playerAI = nullptr;
     }
     if (this->history) {
-        // TODO(accuracy): call TRIBE_History_Info::~TRIBE_History_Info
         delete this->history;
         this->history = nullptr;
     }
-    // Base ~RGE_Player() called automatically
 }
 
 // --- TRIBE_Gaia constructors ---
@@ -414,62 +428,125 @@ void TRIBE_Player::reimburse_obj_cost(short param_1) {
     }
 }
 void TRIBE_Player::update() {
-    // Source of truth: tplayer.cpp.decomp @ 0x005123B0
-    // Accumulate update_time based on world_time_delta_seconds
-    if (this->world) {
-        this->update_time += this->world->world_time_delta_seconds;
-    }
-
-    // Process update ticks while update_time > 1.0
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005123B0
+    this->update_time = this->world->world_time_delta_seconds + this->update_time;
     while (this->update_time > 1.0f) {
-        this->update_history_count++;
-        this->update_time -= 1.0f;
+        int previous_history_count = this->update_history_count;
+        int next_history_count = previous_history_count + 1;
+        this->update_history_count = next_history_count;
+        this->update_time = this->update_time - 1.0f;
 
-        // Decrement update counters
+        if (next_history_count > 0xE) {
+            this->update_history_count = previous_history_count - 0xE;
+            uchar population_value = 0;
+            if (0.0f <= this->attributes[0x0B]) {
+                population_value = (uchar)((long)this->attributes[0x0B]);
+            }
+            this->history->add_history_entry(0, population_value);
+        }
+
+        if (rge_base_game->fullVisibility() == 0) {
+            this->attributes[0x16] = this->visible->percentExplored() * 100.0f;
+        } else {
+            this->attributes[0x16] = 100.0f;
+        }
+
+        this->attributes[0x2C] = this->attributes[0x14] - (this->attributes[0x13] - this->attributes[0x0B]);
+        if (this->attributes[0x2C] < 0.0f) {
+            this->attributes[0x2C] = 0.0f;
+        }
+
+        this->attributes[9] = this->attributes[10] + this->attributes[9];
+        if (100.0f < this->attributes[9]) {
+            this->attributes[9] = 100.0f;
+        }
+
         if (this->update_count > 0) {
-            this->update_count--;
+            this->update_count = this->update_count - 1;
         }
         if (this->updateCountNeedHelp > 0) {
-            this->updateCountNeedHelp--;
+            this->updateCountNeedHelp = this->updateCountNeedHelp - 1;
         }
 
-        // TODO(accuracy): history entry every 15 ticks
-        // TODO(accuracy): update explored percentage
-        // TODO(accuracy): check for player defeat (no units left)
+        if (0 < this->id) {
+            RGE_Object_Node* node = nullptr;
+            if (this->objects != nullptr) {
+                node = this->objects->list;
+            }
+            while (node != nullptr) {
+                short object_group = node->node->master_obj->object_group;
+                if ((object_group != 0x0B) && (object_group != 0x1E) && (object_group != 0x1B) && (object_group != 1) &&
+                    (object_group != 0x15) && (object_group != 0x14) && (object_group != 2) && (object_group != 0x25) &&
+                    (node->node->object_state == 2)) {
+                    break;
+                }
+                node = node->next;
+            }
+
+            if (node == nullptr) {
+                this->set_game_status(2);
+                this->attributes[0x2D] = 0.0f;
+            }
+        }
     }
 
-    // Call base class update (resets pathing attempts, etc.)
     RGE_Player::update();
 
-    // TODO(accuracy): AI module update
-    // TODO(accuracy): fog_update attribute decay
+    this->attributes[0] = this->attributes[0] - this->world->world_time_delta_seconds * this->attributes[0x21] * this->attributes[0x0B] * 0.016666668f;
+    if (this->attributes[0] < 0.0f) {
+        this->attributes[0] = 0.0f;
+    }
+
+    uint saved_seed = (uint)debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x25F);
+    int saved_debug_random_on = debug_random_on;
+    debug_random_on = 0;
+
+    if (this->playerAI != nullptr && ((TCommunications_Handler*)comm)->MultiplayerGameStart() == 1) {
+        if (this->world->currentUpdateComputerPlayer == -1) {
+            this->world->selectNextComputerPlayer(3);
+        }
+        void** vtable = *(void***)this->playerAI;
+        ((int(__thiscall*)(TribeMainDecisionAIModule*, int))vtable[12])(this->playerAI, 0);
+    }
+
+    debug_random_on = saved_debug_random_on;
+    debug_srand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x277, saved_seed);
+    if (MouseSystem != nullptr) {
+        MouseSystem->Poll();
+    }
 }
 void TRIBE_Player::update_dopplegangers() { RGE_Player::update_dopplegangers(); }
 void TRIBE_Player::save(int param_1) {
     // Source of truth: tplayer.cpp.decomp @ 0x00512250
+    color_log(0x16, 0x16, 2);
+    int handle = param_1;
     RGE_Player::save(param_1);
+    color_log(0x16, 0x24, 2);
     rge_write(param_1, &this->type, 1);
     rge_write(param_1, &this->update_count, 4);
     rge_write(param_1, &this->updateCountNeedHelp, 4);
     rge_write(param_1, &this->fog_update, 4);
     rge_write(param_1, &this->update_time, 4);
-    if (this->tech_tree) {
-        // TODO(accuracy): TRIBE_Player_Tech::save(this->tech_tree, param_1);
-    }
+    this->tech_tree->save(param_1);
     rge_write(param_1, &this->update_history_count, 4);
-    if (this->history) {
-        // TODO(accuracy): TRIBE_History_Info::save(this->history, param_1);
-    }
+    this->history->save(param_1);
     rge_write(param_1, &this->ruin_held_time, 4);
     rge_write(param_1, &this->artifact_held_time, 4);
-    // Computer player AI save
-    if (this->type == 1) {
-        int has_ai = 0;
-        if (this->playerAI != nullptr) {
-            // TODO(accuracy): check IsHost and save AI data
+    color_log(0x16, 0x4C, 2);
+
+    if (this->computerPlayerValue == 1) {
+        if (this->playerAI != nullptr && ((TCommunications_Handler*)comm)->IsHost() == 1) {
+            int has_ai = 1;
+            rge_write(handle, &has_ai, 4);
+            void** vtable = *(void***)this->playerAI;
+            ((int(__thiscall*)(TribeMainDecisionAIModule*, int))vtable[15])(this->playerAI, handle);
+            color_log(0x16, 0x5F, 2);
+            return;
         }
+        int has_ai = 0;
         rge_write(param_1, &has_ai, 4);
     }
+    color_log(0x16, 0x5F, 2);
 }
 void TRIBE_Player::save2(int param_1) { RGE_Player::save2(param_1); }
 void TRIBE_Player::save_info(int param_1) { RGE_Player::save_info(param_1); }
