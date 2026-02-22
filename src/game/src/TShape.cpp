@@ -12,6 +12,119 @@
 extern unsigned char shape_file_first;
 extern int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2);
 
+extern "C" unsigned int g_ASMShadowing_Amount;
+
+static unsigned long shape_palette_checksum(const tagPALETTEENTRY* entries, int count) {
+    if (!entries || count <= 0) return 0;
+    unsigned long hash = 2166136261UL;
+    for (int i = 0; i < count; ++i) {
+        hash ^= (unsigned long)entries[i].peRed; hash *= 16777619UL;
+        hash ^= (unsigned long)entries[i].peGreen; hash *= 16777619UL;
+        hash ^= (unsigned long)entries[i].peBlue; hash *= 16777619UL;
+        hash ^= (unsigned long)entries[i].peFlags; hash *= 16777619UL;
+    }
+    return hash;
+}
+
+static const unsigned char* shape_shadowing_xlate_table(TDrawArea* draw_area, unsigned int amount) {
+    if (!draw_area || !draw_area->DrawSystem) return (const unsigned char*)0;
+    if (amount == 0) return (const unsigned char*)0;
+
+    static unsigned char table[256];
+    static unsigned long last_pal_hash = 0;
+    static unsigned int last_amount = 0xFFFFFFFFu;
+    static TDrawSystem* last_sys = (TDrawSystem*)0;
+    // NOTE: Not thread-safe; rendering in this codebase is expected to be single-threaded.
+
+    const tagPALETTEENTRY* pal = draw_area->DrawSystem->palette;
+    const unsigned long pal_hash = shape_palette_checksum(pal, 256);
+    if (last_sys == draw_area->DrawSystem && last_pal_hash == pal_hash && last_amount == amount) {
+        return table;
+    }
+
+    last_sys = draw_area->DrawSystem;
+    last_pal_hash = pal_hash;
+    last_amount = amount;
+
+    const unsigned int keep = 256u - (amount & 0xFFu);
+    for (int i = 0; i < 256; ++i) {
+        const int r = (int)pal[i].peRed;
+        const int g = (int)pal[i].peGreen;
+        const int b = (int)pal[i].peBlue;
+
+        const int tr = (r * (int)keep) >> 8;
+        const int tg = (g * (int)keep) >> 8;
+        const int tb = (b * (int)keep) >> 8;
+
+        int best_idx = 0;
+        int best_dist = 0x7FFFFFFF;
+        for (int j = 0; j < 256; ++j) {
+            const int dr = tr - (int)pal[j].peRed;
+            const int dg = tg - (int)pal[j].peGreen;
+            const int db = tb - (int)pal[j].peBlue;
+            const int dist = dr * dr + dg * dg + db * db;
+            if (dist < best_dist) {
+                best_dist = dist;
+                best_idx = j;
+            }
+        }
+        table[i] = (unsigned char)best_idx;
+    }
+
+    return table;
+}
+
+static unsigned char shape_apply_shadowing_to_index(TDrawArea* draw_area, unsigned char idx, unsigned int amount) {
+    const unsigned char* tbl = shape_shadowing_xlate_table(draw_area, amount);
+    return tbl ? tbl[idx] : idx;
+}
+
+static unsigned long shape_apply_shadowing_to_pixel(TDrawArea* draw_area, unsigned long px, unsigned int amount) {
+    if (!draw_area || amount == 0) return px;
+
+    const unsigned int keep = 256u - (amount & 0xFFu);
+
+    unsigned long rmask = 0x00FF0000;
+    unsigned long gmask = 0x0000FF00;
+    unsigned long bmask = 0x000000FF;
+    if (draw_area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
+        rmask = draw_area->SurfaceDesc.ddpfPixelFormat.dwRBitMask;
+        gmask = draw_area->SurfaceDesc.ddpfPixelFormat.dwGBitMask;
+        bmask = draw_area->SurfaceDesc.ddpfPixelFormat.dwBBitMask;
+    }
+
+    int rshift = 0, gshift = 0, bshift = 0;
+    while (rmask && ((rmask >> rshift) & 1) == 0) rshift++;
+    while (gmask && ((gmask >> gshift) & 1) == 0) gshift++;
+    while (bmask && ((bmask >> bshift) & 1) == 0) bshift++;
+
+    unsigned long rmax = rmask ? (rmask >> rshift) : 0xFF;
+    unsigned long gmax = gmask ? (gmask >> gshift) : 0xFF;
+    unsigned long bmax = bmask ? (bmask >> bshift) : 0xFF;
+
+    unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
+    unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
+    unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
+
+    r = (r * (unsigned long)keep) >> 8;
+    g = (g * (unsigned long)keep) >> 8;
+    b = (b * (unsigned long)keep) >> 8;
+
+    if (r > rmax) r = rmax;
+    if (g > gmax) g = gmax;
+    if (b > bmax) b = bmax;
+
+    unsigned long out = px;
+    if (rmask) out = (out & ~rmask) | ((r << rshift) & rmask);
+    else out = (out & 0xFF00FFFF) | ((r & 0xFF) << 16);
+    if (gmask) out = (out & ~gmask) | ((g << gshift) & gmask);
+    else out = (out & 0xFFFF00FF) | ((g & 0xFF) << 8);
+    if (bmask) out = (out & ~bmask) | ((b << bshift) & bmask);
+    else out = (out & 0xFFFFFF00) | (b & 0xFF);
+
+    return out;
+}
+
 static int shape_file_load(const char* path, unsigned char** out_data, int* out_size) {
     if (!path || !out_data || !out_size) return 0;
     *out_data = 0;
@@ -575,6 +688,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
 
 static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, long mode, unsigned char* table) {
     if (!self || !draw_area || !self->shape || !self->offsets) return 0;
+    const unsigned int shadow_amount = g_ASMShadowing_Amount & 0xFFu;
 
     Shape_Header* hdr = (Shape_Header*)(self->shape + self->offsets[shape_idx].shape);
     if (!hdr) return 0;
@@ -660,7 +774,9 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
                         } else {
                             unsigned char out_idx = spx;
                             if (mode == 1 && table) out_idx = table[spx];
+                            if (bpp == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                             unsigned long px = shape_index_to_pixel(draw_area, out_idx, bpp);
+                            if (bpp > 1 && shadow_amount) px = shape_apply_shadowing_to_pixel(draw_area, px, shadow_amount);
                             shape_store_pixel(dst_px, bpp, px);
                         }
                     }
@@ -681,7 +797,9 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
                     } else {
                         unsigned char out_idx = fill;
                         if (mode == 1 && table) out_idx = table[fill];
+                        if (bpp == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long px = shape_index_to_pixel(draw_area, out_idx, bpp);
+                        if (bpp > 1 && shadow_amount) px = shape_apply_shadowing_to_pixel(draw_area, px, shadow_amount);
                         shape_store_pixel(dst_px, bpp, px);
                     }
                 }
@@ -696,6 +814,7 @@ static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area,
 
 static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* xlate) {
     if (!self || !draw_area || !self->FShape || !self->shape_info) return 0;
+    const unsigned int shadow_amount = g_ASMShadowing_Amount & 0xFFu;
     Shape_Info* info = &self->shape_info[shape_idx];
 
     long width = info->Width;
@@ -781,7 +900,10 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
                 for (unsigned int i = 0; i < len; ++i) {
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                        unsigned long out_px = shape_index_to_pixel(draw_area, outline_idx, bytes_per_pixel);
+                        unsigned char out_idx = outline_idx;
+                        if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
+                        unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
+                        if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
                     dst_x++;
@@ -802,7 +924,9 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                     unsigned char px = *src++;
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
                         unsigned char out_idx = active_xlate ? active_xlate[px] : px;
+                        if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
+                        if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
                     dst_x++;
@@ -844,7 +968,9 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                             shape_shadow_pixel(draw_area, dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
                         } else {
                             unsigned char out_idx = active_xlate ? active_xlate[px] : px;
+                            if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                             unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
+                            if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                             shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                         }
                     }
@@ -869,7 +995,9 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                     unsigned char px = *src++;
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
                         unsigned char out_idx = active_xlate ? active_xlate[px] : px;
+                        if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
+                        if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
                     dst_x++;

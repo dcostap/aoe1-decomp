@@ -2953,6 +2953,12 @@ float RGE_Scenario::Get_Version() {
     // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C0D0
     return 1.15f;
 }
+
+uchar RGE_Scenario::Get_conquest_victory() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048CCC0
+    return this->victory_conquest;
+}
+
 void RGE_Scenario::update() {
     // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C3D0
     if (this->time_line != nullptr) {
