@@ -63,7 +63,7 @@ try {
     [WinMM]::Send("close $alias")
     [WinMM]::Send("open `"$escapedPath`" type mpegvideo alias $alias")
     # MCI volume is typically 0-1000
-    [WinMM]::Send("setaudio $alias volume to 700")
+    [WinMM]::Send("setaudio $alias volume to 900")
     [WinMM]::Send("play $alias")
 
     # Keep the process alive briefly so the sound actually plays.

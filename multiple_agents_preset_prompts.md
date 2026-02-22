@@ -1,4 +1,4 @@
-Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are one of the workers.
+Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are now one of the workers.
 
 Mandatory: 
 1. to validate your changes, after everything compiles, launch 3 parallel sub-agents, that receive
