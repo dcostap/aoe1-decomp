@@ -9,19 +9,25 @@ public:
     // Enum values are best-effort; only a subset is currently needed.
     // Source of truth for behavior: `src/game/src/Pnl_txt.cpp.asm` / `.decomp` (immutable references).
     enum Alignment : int {
-        AlignTop = 0,
-        AlignCenter = 1,
-        AlignBottom = 2,
-        AlignLeft = 0,
+        // Values verified against `src/game/decomp/pnl_txt.cpp.asm` (e.g. set_text @ 0x0047C560,
+        // calc_line_pos @ 0x0047D9E0).
+        AlignCenter = 0,
+        AlignLeft = 1,
         AlignRight = 2,
-        // NOTE: Values inferred from `Pnl_txt.cpp.asm/.decomp`.
-        AlignWordwrap = 3,
-        AlignHorizontalScroll = 4,
+        AlignTop = 3,
+        AlignBottom = 4,
+        AlignHorizontalScroll = 5,
+        AlignWordwrap = 6,
     };
     enum Style : int {
         NormalStyle = 0,
         BeveledStyle = 1,
         ChiseledStyle = 2,
+    };
+    enum CharType : int {
+        SingleByteChar = 0,
+        SingleByteKanaChar = 1,
+        DoubleByteChar = 2,
     };
 
     struct TextNode {
@@ -110,6 +116,8 @@ public:
     int get_text_rect(tagRECT* out_rect);
     void set_outline(int param_1, uchar param_2);
     void set_scrollbar(TScrollBarPanel* param_1, int param_2);
+    CharType char_type(unsigned char* param_1);
+    int word_wrap_append(char* param_1);
     int numberLines();
     int numberDrawLines();
     int currentLineNumber();

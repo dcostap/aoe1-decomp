@@ -6,6 +6,10 @@
 #include <windows.h>
 #include <string.h>
 #include <stdlib.h>
+#include <mbstring.h>
+#include <mbctype.h>
+
+static void calc_draw_info(TTextPanel* this_, int update_scrollbar);
 
 static void free_text_list(TTextPanel* this_) {
     if (!this_) return;
@@ -19,11 +23,8 @@ static void free_text_list(TTextPanel* this_) {
     }
     this_->list = nullptr;
     this_->num_lines = 0;
-    this_->draw_lines = 0;
-    this_->top_line = 0;
-    this_->bot_line = 0;
-    this_->cur_line = 0;
-    this_->cur_col = 0;
+    calc_draw_info(this_, 1);
+    this_->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 static char* dup_cstr(const char* s) {
@@ -203,29 +204,39 @@ static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short li
         const int text_len = (int)strlen(text);
         GetTextExtentPoint32A(hdc, text, text_len, &full_sz);
         if (this_->cur_col > 0) {
-            int col_len = this_->cur_col;
-            if (col_len > text_len) col_len = text_len;
-            GetTextExtentPoint32A(hdc, text, col_len, &col_sz);
+            const int mbs_len = (int)_mbslen((const unsigned char*)text);
+            if (mbs_len < this_->cur_col) {
+                col_sz = full_sz;
+            } else {
+                unsigned char temp_text2[256];
+                memset(temp_text2, 0, sizeof(temp_text2));
+                _mbsncpy(temp_text2 + 4, (const unsigned char*)text, (size_t)this_->cur_col);
+                const int col_bytes = (int)strlen((const char*)(temp_text2 + 4));
+                if (col_bytes > 0) {
+                    // Truth uses the original string pointer with a substring byte length.
+                    GetTextExtentPoint32A(hdc, text, col_bytes, &col_sz);
+                }
+            }
         }
     }
 
     const int text_width = full_sz.cx;
-    int col_offset = col_sz.cx;
-    int text_w_with_pad = text_width;
+    const int col_offset = col_sz.cx;
+    int col_offset_for_scroll = col_offset;
     if (this_->horz_align != TTextPanel::AlignCenter && this_->horz_align != TTextPanel::AlignWordwrap) {
-        text_w_with_pad += 5;
+        // Truth adds 5 to the scroll comparison value for non-center/non-wordwrap modes.
+        col_offset_for_scroll += 5;
     }
 
     int x = this_->pnl_x + this_->border_size;
     if (this_->horz_align == TTextPanel::AlignRight) {
-        x = (((this_->pnl_x + this_->pnl_wid) - this_->border_size) - text_w_with_pad) - 7;
+        x = (((this_->pnl_x + this_->pnl_wid) - this_->border_size) - text_width) - 7;
     } else if (this_->horz_align == TTextPanel::AlignHorizontalScroll) {
         x = this_->pnl_x + this_->border_size;
-        if (this_->text_wid <= col_offset + 1) x += (this_->text_wid - col_offset) - 2;
+        if (this_->text_wid <= col_offset_for_scroll + 1) x += (this_->text_wid - col_offset_for_scroll) - 2;
     } else if (this_->horz_align == TTextPanel::AlignCenter || this_->horz_align == TTextPanel::AlignWordwrap) {
-        x = (this_->pnl_x + (this_->pnl_wid / 2)) - (text_w_with_pad / 2);
+        x = (this_->pnl_x + (this_->pnl_wid / 2)) - (text_width / 2);
     }
-    x += col_offset;
 
     int y = this_->pnl_y + this_->border_size;
     int line_hgt = (this_->spacer_size == 0) ? (int)this_->text_hgt : (int)this_->text_hgt - 1 + this_->spacer_size * 2;
@@ -236,12 +247,13 @@ static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short li
     } else if (this_->vert_align == TTextPanel::AlignBottom) {
         y = (((this_->pnl_y + this_->pnl_hgt) - (((int)this_->num_lines - (int)draw_index) * line_hgt)) - this_->border_size) - this_->spacer_size - 1;
     } else {
-        y = ((int)draw_index * line_hgt - ((int)this_->num_lines * line_hgt) / 2) + this_->pnl_y + (this_->pnl_hgt / 2) + this_->spacer_size;
+        // NOTE: Matches pnl_txt.cpp.asm: center-vertical does not apply spacer_size as an additional offset.
+        y = ((int)draw_index * line_hgt - ((int)this_->num_lines * line_hgt) / 2) + this_->pnl_y + (this_->pnl_hgt / 2);
     }
 
     line_rect->left = x;
     line_rect->top = y;
-    line_rect->right = x + text_w_with_pad - 1;
+    line_rect->right = x + text_width - 1;
     line_rect->bottom = y + this_->text_hgt;
     if (col_offset_out) *col_offset_out = col_offset;
 }
@@ -803,16 +815,13 @@ void TTextPanel::set_text(char** param_1, short param_2) {
 
     if (param_2 == 0) {
         if (this->fixed_len != 0) {
-            append_text_line(this, "", 0);
+            this->append_line((char*)"", 0);
         }
     } else if (param_2 > 0 && param_1) {
         for (int i = 0; i < param_2; ++i) {
-            append_text_line(this, param_1[i] ? param_1[i] : "", i);
+            this->append_line(param_1[i] ? param_1[i] : (char*)"", 0);
         }
     }
-
-    calc_draw_info(this, 1);
-    this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 void TTextPanel::set_text(long param_1) {
@@ -825,41 +834,35 @@ void TTextPanel::set_text(long param_1) {
 void TTextPanel::set_text(char* param_1) {
     free_text_list(this);
 
-    if (param_1 == nullptr || param_1[0] == '\0') {
-        append_text_line(this, "", 0);
-        calc_draw_info(this, 1);
-        this->set_redraw(TPanel::RedrawMode::Redraw);
+    if (param_1 == nullptr) {
+        if (this->fixed_len != 0) {
+            this->append_line((char*)"", 0);
+        }
+        return;
+    }
+    if (param_1[0] == '\0') {
+        this->append_line((char*)"", 0);
         return;
     }
 
     if (this->word_wrap == 0 && this->horz_align != TTextPanel::AlignWordwrap) {
-        const char* cur = param_1;
-        int line_id = 0;
-        while (cur && cur[0] != '\0') {
-            const char* lf = strchr(cur, '\n');
-            if (!lf) {
-                append_text_line(this, cur, line_id);
-                break;
-            }
+        unsigned char temp_text[256];
+        unsigned char* cur = (unsigned char*)param_1;
+        while (true) {
+            unsigned char* lf = (unsigned char*)_mbschr(cur, '\n');
+            if (lf == nullptr) break;
 
-            size_t len = (size_t)(lf - cur);
-            while (len > 0 && cur[len - 1] == '\r') len--;
-            char* tmp = (char*)calloc(1, len + 1);
-            if (!tmp) break;
-            memcpy(tmp, cur, len);
-            tmp[len] = '\0';
-            append_text_line(this, tmp, line_id);
-            free(tmp);
+            short copy_len = (short)(lf - cur);
+            strncpy((char*)(temp_text + 4), (char*)cur, (int)copy_len);
+            temp_text[(int)copy_len + 4] = '\0';
+            this->append_line((char*)(temp_text + 4), 0);
+
             cur = lf + 1;
-            ++line_id;
         }
+        this->append_line((char*)cur, 0);
     } else {
-        // TODO: proper word-wrap behavior (`Pnl_txt.cpp.decomp`: `word_wrap_append`).
-        append_text_line(this, param_1, 0);
+        this->word_wrap_append(param_1);
     }
-    if (this->num_lines == 0) append_text_line(this, "", 0);
-    calc_draw_info(this, 1);
-    this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
@@ -1203,6 +1206,198 @@ void TTextPanel::set_scrollbar(TScrollBarPanel* param_1, int param_2) {
         this->scbar_width = param_1->width();
         this->set_rect(this->pnl_x, this->pnl_y, this->pnl_wid, this->pnl_hgt);
     }
+}
+
+// From decomp at 0x0047C520
+TTextPanel::CharType TTextPanel::char_type(unsigned char* param_1) {
+    if (param_1 != nullptr && *param_1 != '\0') {
+        if (IsDBCSLeadByte(*param_1) != 0) {
+            return TTextPanel::DoubleByteChar;
+        }
+        if (*param_1 > 0xA0 && *param_1 < 0xE0) {
+            return TTextPanel::SingleByteKanaChar;
+        }
+    }
+    return TTextPanel::SingleByteChar;
+}
+
+// From asm/decomp at 0x0047C640
+int TTextPanel::word_wrap_append(char* param_1) {
+    if (param_1 == nullptr || *param_1 == '\0') {
+        return 1;
+    }
+
+    long max_wid = 0;
+    if (this->auto_scbar == 0) {
+        max_wid = this->pnl_wid;
+    } else {
+        max_wid = this->full_width - this->scbar_width;
+    }
+    max_wid = max_wid - 10;
+
+    HDC dc = (HDC)this->render_area->GetDc((char*)"pnl_txt::word_wrap_append");
+    if (!dc) {
+        return 0;
+    }
+
+    HGDIOBJ old_font = SelectObject(dc, (HGDIOBJ)this->font);
+    TEXTMETRICA tm;
+    GetTextMetricsA(dc, &tm);
+    int japanese = (tm.tmCharSet == SHIFTJIS_CHARSET);
+
+    unsigned char* cur = (unsigned char*)param_1;
+    while (cur != nullptr && *cur != '\0') {
+        int found_break = 0;
+        int found_return = 0;
+        int found_space = 0;
+        int found_linefeed = 0;
+        int found_bad_return = 0;
+
+        const int mbs_len = (int)_mbslen(cur);
+        int break_chars = 0;
+
+        // Scan for a newline before we exceed the max width.
+        if (*cur == '\n') {
+            found_linefeed = 1;
+            break_chars = 0;
+        } else {
+            for (int i = 1; i <= mbs_len; ++i) {
+                unsigned char* end = _mbsninc(cur, i);
+                if (!end) break;
+
+                // Detect newline (and CRLF) within the measured prefix.
+                unsigned char* p = _mbsninc(cur, i - 1);
+                if (p && *p == '\n') {
+                    found_linefeed = 1;
+                    break_chars = i - 1;
+                    if (break_chars > 0) {
+                        unsigned char* prev = _mbsdec(cur, p);
+                        if (prev && *prev == '\r') {
+                            found_return = 1;
+                            break_chars = break_chars - 1;
+                        }
+                    }
+                    break;
+                }
+                if (p && *p == '\r') {
+                    found_bad_return = 1;
+                }
+
+                SIZE sz;
+                GetTextExtentPoint32A(dc, (char*)cur, (int)(end - cur), &sz);
+                if (sz.cx >= max_wid) {
+                    break;
+                }
+            }
+        }
+
+        if (!found_linefeed) {
+            SIZE full_sz;
+            GetTextExtentPoint32A(dc, (char*)cur, (int)strlen((char*)cur), &full_sz);
+            if (full_sz.cx <= max_wid) {
+                this->append_line((char*)cur, 0);
+                break;
+            }
+
+            // Determine the first char count that exceeds max_wid; keep a fallback break point.
+            int fallback_break_chars = 1;
+            for (int i = 1; i <= mbs_len; ++i) {
+                unsigned char* end = _mbsninc(cur, i);
+                if (!end) break;
+                SIZE sz;
+                GetTextExtentPoint32A(dc, (char*)cur, (int)(end - cur), &sz);
+                if (sz.cx > max_wid) {
+                    break_chars = i;
+                    break;
+                }
+                fallback_break_chars = i - 1;
+            }
+            if (break_chars == 0) {
+                break_chars = 1;
+            }
+
+            // Walk backward to find a break position (space, or Japanese type transition).
+            unsigned char* next_char = _mbsninc(cur, break_chars);
+            int scan_chars = break_chars;
+            while (scan_chars >= 2 && next_char != nullptr) {
+                unsigned char* old_next = next_char;
+                unsigned char* last_char = _mbsdec(cur, old_next);
+                if (!last_char) break;
+                scan_chars = scan_chars - 1;
+
+                if (!japanese) {
+                    if (_ismbcspace(*last_char) != 0) {
+                        found_space = 1;
+                        break;
+                    }
+                } else {
+                    const CharType t1 = this->char_type(last_char);
+                    const CharType t2 = this->char_type(old_next);
+
+                    if (t1 == SingleByteChar && t2 == SingleByteChar && _ismbcspace(*last_char) != 0) {
+                        found_space = 1;
+                        break;
+                    }
+
+                    if ((t1 == DoubleByteChar && t2 == DoubleByteChar) ||
+                        (t1 == SingleByteKanaChar && t2 == SingleByteKanaChar) ||
+                        (t1 == SingleByteChar && t2 == DoubleByteChar) ||
+                        (t1 == DoubleByteChar && t2 == SingleByteChar) ||
+                        (t1 == SingleByteChar && t2 == SingleByteKanaChar) ||
+                        (t1 == SingleByteKanaChar && t2 == SingleByteChar)) {
+                        found_break = 1;
+                        break;
+                    }
+                }
+
+                next_char = last_char;
+            }
+
+            if (found_space == 0 && found_break == 0) {
+                found_break = 1;
+                scan_chars = fallback_break_chars;
+                if (scan_chars < 1) {
+                    scan_chars = 1;
+                }
+            }
+
+            break_chars = scan_chars;
+        }
+
+        unsigned char temp_text[256];
+        memset(temp_text, 0, sizeof(temp_text));
+        _mbsncpy(temp_text + 4, cur, (size_t)break_chars);
+        if (found_return) {
+            _mbscat(temp_text + 4, (unsigned char*)" ");
+        }
+        if (found_linefeed) {
+            _mbscat(temp_text + 4, (unsigned char*)" ");
+        }
+
+        if (found_bad_return) {
+            unsigned char* p = temp_text + 4;
+            while (*p != '\0') {
+                if (*p == '\r') {
+                    *p = ' ';
+                }
+                p = _mbsinc(p);
+            }
+        }
+
+        this->append_line((char*)(temp_text + 4), 0);
+
+        cur = _mbsninc(cur, (size_t)break_chars);
+        if (found_return) {
+            cur = _mbsinc(cur);
+        }
+        if (found_linefeed) {
+            cur = _mbsinc(cur);
+        }
+    }
+
+    SelectObject(dc, old_font);
+    this->render_area->ReleaseDc((char*)"pnl_txt::word_wrap_append");
+    return 1;
 }
 
 // From decomp at 0x0047DC30
