@@ -2117,11 +2117,11 @@ uchar RGE_Static_Object::heal(float param_1) {
 }
 int RGE_Static_Object::canRepair() { return 0; }
 void RGE_Static_Object::notify_of_relation(long param_1, uchar param_2) {}
-void RGE_Static_Object::do_command(float param_1, float param_2, float param_3) {}
-void RGE_Static_Object::move_to(float param_1, float param_2, float param_3) {}
-void RGE_Static_Object::work(float param_1, float param_2, float param_3) {}
+void RGE_Static_Object::do_command(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
+void RGE_Static_Object::move_to(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
+void RGE_Static_Object::work(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
 void RGE_Static_Object::stop() {}
-void RGE_Static_Object::set_attack() {}
+void RGE_Static_Object::set_attack(RGE_Static_Object* /*param_1*/) {}
 void RGE_Static_Object::play_command_sound() {}
 void RGE_Static_Object::play_move_sound() {}
 int RGE_Static_Object::unitIsInGroup(int param_1) {
@@ -2570,7 +2570,7 @@ RGE_Static_Object* RGE_Static_Object::spawn_death_obj() {
     }
     return nullptr;
 }
-RGE_Master_Static_Object* RGE_Static_Object::get_command_master(float param_1, float param_2, float param_3) { return nullptr; }
+RGE_Master_Static_Object* RGE_Static_Object::get_command_master(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) { return nullptr; }
 void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D20
     if (this->worker_num < 0xFA) {
@@ -2578,7 +2578,7 @@ void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
     }
     rge_static_set_sleep_flag(this, 0);
 }
-void RGE_Static_Object::release_being_worked_on() {
+void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* /*param_1*/) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D40
     if (this->worker_num != 0) {
         this->worker_num = this->worker_num - 1;
@@ -2618,10 +2618,10 @@ void RGE_Static_Object::exit_obj() {
 int RGE_Static_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { return 0; }
 void RGE_Static_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {}
 LOSTBL* RGE_Static_Object::get_los_table() { return nullptr; }
-int RGE_Static_Object::inAttackRange() { return 0; }
+int RGE_Static_Object::inAttackRange(RGE_Static_Object* /*param_1*/) { return 0; }
 uchar RGE_Static_Object::underAttack() { return 0; }
 void RGE_Static_Object::setUnderAttack(uchar param_1) {}
-float RGE_Static_Object::calc_attack_modifier() { return 1.0f; }
+float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* /*param_1*/) { return 1.0f; }
 float RGE_Static_Object::getSpeed() { return 0.0f; }
 float RGE_Static_Object::getAngle() { return 0.0f; }
 float RGE_Static_Object::maximumSpeed() { return 0.0f; }

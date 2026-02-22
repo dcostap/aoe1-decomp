@@ -9,11 +9,6 @@ struct TMousePointer;
 struct DClipInfo_List;
 
 extern RGE_Base_Game* rge_base_game;
-
-// Draw/capture state used by shape/view rendering (source of truth: stat_obj.cpp.asm / shape.cpp.asm).
-extern long SDI_Object_ID;
-extern int SDI_Draw_Line;
-extern int SDI_Capture_Info;
 extern int do_draw_log;
 extern int safe_draw_log;
 extern char draw_log_name[260];
