@@ -55,7 +55,8 @@ foreach ($src in $sources) {
     }
 
     if ($needsCompile) {
-        $changedSources.Add($src.FullName)
+        # Keep paths relative to avoid hitting cmd.exe environment length limits.
+        $changedSources.Add((Join-Path $SrcDir $src.Name))
     }
 }
 
