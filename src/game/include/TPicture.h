@@ -12,6 +12,7 @@ struct TPicture {
 
     void Save(int param_1);
     void Draw(TDrawArea* area, long x, long y, int p4, int p5);
+    long AlignedWidth();
 
     tagBITMAPINFOHEADER* Dib;
     BITMAPINFO256* BitmapInfo;

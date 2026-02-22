@@ -37,6 +37,10 @@ public:
     unsigned char pick(unsigned char param_1, unsigned char param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
     unsigned char pick_multi(unsigned char param_1, long param_2, long param_3, long param_4, long param_5);
 
+    // Non-virtual helpers used by minimap (truth: view.cpp.decomp).
+    int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
+    void get_max_size(short* max_col, short* max_row);
+
     TDrawArea* cur_render_area;
     int calc_draw_count;
     RGE_Game_World* world;

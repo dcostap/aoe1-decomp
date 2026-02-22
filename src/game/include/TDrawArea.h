@@ -19,6 +19,7 @@ struct TDrawArea {
     void SetInfo();
     void PtrSpanCopy(TDrawArea* src, int x, int y);
     void DrawLine(int x1, int y1, int x2, int y2, uchar color);
+    void SetPixel(long x, long y, uchar color);
     // NOTE: coordinates are inclusive (matches `Drawarea.cpp.decomp`).
     void FillRect(long left, long top, long right, long bottom, uchar color);
     // Primitive helpers (source of truth: `src/game/src/Drawarea.cpp.asm` / `.decomp`).
