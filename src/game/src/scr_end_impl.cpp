@@ -20,11 +20,6 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list, int text_coun
     this->text = nullptr;
     this->okButton = nullptr;
 
-    if (rge_base_game == nullptr || rge_base_game->draw_area == nullptr) {
-        this->error_code = 1;
-        return;
-    }
-
     if (this->TScreenPanel::setup(rge_base_game->draw_area, (char*)0, 0, 1) == 0) {
         this->error_code = 1;
         return;
