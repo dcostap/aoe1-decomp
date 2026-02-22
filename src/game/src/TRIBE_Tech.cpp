@@ -1,8 +1,10 @@
 #include "../include/TRIBE_Tech.h"
 #include "../include/TRIBE_World.h"
 #include "../include/RGE_Effects.h"
+#include "../include/mystring.h"
 #include "../include/custom_debug.h"
 #include "../include/globals.h"
+#include <string.h>
 
 // Source of truth: bucket_050B.cpp.decomp
 // Constructor (int, TRIBE_World*): reads tech tree from binary data via rge_read.
@@ -60,11 +62,70 @@ TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
 }
 
 TRIBE_Tech::TRIBE_Tech(char* param_1) {
-    // Decomp @ 0x0050BB84: opens text file, reads tech_tree_num and entries via fscanf.
-    // TODO(accuracy): implement full text file parsing.
-    this->tech_tree = nullptr;
-    this->tech_tree_num = 0;
-    this->world = nullptr;
+    // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050BB84
+    this->tech_tree = (Tech_Tree*)0x0;
+
+    FILE* local_1c = fopen(param_1, "r");
+    if (local_1c != nullptr) {
+        int tech_tree_num_tmp = 0;
+        int entry_count_tmp = 0;
+        int iVar1 = fscanf(local_1c, "%d %d", &tech_tree_num_tmp, &entry_count_tmp);
+        this->tech_tree_num = (short)tech_tree_num_tmp;
+        short local_c0 = (short)entry_count_tmp;
+
+        if ((iVar1 != -1) && (0 < this->tech_tree_num)) {
+            this->tech_tree = (Tech_Tree*)calloc(0x3c, (int)this->tech_tree_num);
+            for (short local_20 = 0; local_20 < local_c0; local_20 = (short)(local_20 + 1)) {
+                short local_8c0 = 0;
+                fscanf(local_1c, "%hd", &local_8c0);
+
+                char local_84[100];
+                short button_location_tmp = 0;
+                fscanf(local_1c,
+                       "%s %hd %hd %hd %hd %hd %hd %hd",
+                       local_84,
+                       &this->tech_tree[local_8c0].pre_reqs_required,
+                       &this->tech_tree[local_8c0].research,
+                       &this->tech_tree[local_8c0].effect,
+                       &this->tech_tree[local_8c0].track,
+                       &this->tech_tree[local_8c0].icon,
+                       &button_location_tmp,
+                       &this->tech_tree[local_8c0].build_obj_id);
+                this->tech_tree[local_8c0].button_location = (uchar)button_location_tmp;
+
+                int local_8 = (int)strlen(local_84);
+                for (int local_14 = 0; local_14 < local_8; local_14 = local_14 + 1) {
+                    if (local_84[local_14] == '_') {
+                        local_84[local_14] = ' ';
+                    }
+                }
+
+                this->tech_tree[local_8c0].name = (char*)0x0;
+                getstring(&this->tech_tree[local_8c0].name, local_84);
+
+                for (short local_88 = 0; local_88 < 4; local_88 = (short)(local_88 + 1)) {
+                    fscanf(local_1c, "%hd", this->tech_tree[local_8c0].pre_reqs + local_88);
+                }
+                for (short local_88 = 0; local_88 < 3; local_88 = (short)(local_88 + 1)) {
+                    short attribute_used_tmp = 0;
+                    fscanf(local_1c,
+                           "%hd %hd %hd",
+                           this->tech_tree[local_8c0].attribute + local_88,
+                           this->tech_tree[local_8c0].attribute_cost + local_88,
+                           &attribute_used_tmp);
+                    this->tech_tree[local_8c0].attribute_used[local_88] = (uchar)attribute_used_tmp;
+                }
+                fscanf(local_1c,
+                       "%hd %hd %d %d %d",
+                       &this->tech_tree[local_8c0].string_id,
+                       &this->tech_tree[local_8c0].string_id2,
+                       &this->tech_tree[local_8c0].help_string_id,
+                       &this->tech_tree[local_8c0].help_page_id,
+                       &this->tech_tree[local_8c0].hotkey_id);
+            }
+        }
+        fclose(local_1c);
+    }
 }
 
 TRIBE_Tech::~TRIBE_Tech() {

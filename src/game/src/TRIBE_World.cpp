@@ -1,11 +1,13 @@
 #include <time.h>
 #include "../include/TRIBE_World.h"
+#include "../include/TribeAIPlayBook.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Tech.h"
 #include "../include/TRIBE_Map.h"
 #include "../include/RGE_Tile.h"
 #include "../include/TRIBE_Command.h"
+#include "../include/TRIBE_Command_Game.h"
 #include "../include/TRIBE_Effects.h"
 #include "../include/T_Scenario.h"
 #include "../include/TRIBE_Player.h"
@@ -27,6 +29,7 @@
 #include "../include/TCommunications_Handler.h"
 #include "../include/TSound_Driver.h"
 #include "../include/globals.h"
+#include <new>
 #include <stdlib.h>
 
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
@@ -132,7 +135,23 @@ static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
     delete obj;
 }
 
-// Source of truth: tworld.cpp.decomp @ 0x0052DF40
+static RGE_Static_Object* tribe_find_by_master_id_simple(RGE_Object_List* list, long master_id, uchar require_state, uchar required_state) {
+    if (list == nullptr) {
+        return nullptr;
+    }
+
+    for (RGE_Object_Node* node = list->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if (obj != nullptr && obj->master_obj != nullptr && obj->master_obj->id == (short)master_id &&
+            (require_state == 0 || obj->object_state == required_state)) {
+            return obj;
+        }
+    }
+
+    return nullptr;
+}
+
+// Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052DF60
 TRIBE_World::TRIBE_World() : RGE_Game_World() {
     this->controllingComputerPlayer = 0xFF;
     this->tech = nullptr;
@@ -144,9 +163,18 @@ TRIBE_World::TRIBE_World() : RGE_Game_World() {
     this->countdown_clock = 0.0f;
     this->score_displayed = 0;
 
-    // Original creates TribeAIPlayBook and loads "data\\aoe.ply".
-    // playbook is an AIPlayBook* member on RGE_Game_World at +0xA0.
-    // TODO(accuracy): allocate TribeAIPlayBook and call loadPlays("data\\aoe.ply")
+    AIPlayBook* created_playbook = nullptr;
+    TribeAIPlayBook* tribe_playbook = new (std::nothrow) TribeAIPlayBook();
+    if (tribe_playbook == nullptr) {
+        created_playbook = nullptr;
+    } else {
+        created_playbook = static_cast<AIPlayBook*>(tribe_playbook);
+    }
+
+    this->playbook = created_playbook;
+    if (created_playbook != nullptr) {
+        created_playbook->loadPlays((char*)"data\\aoe.ply");
+    }
 }
 
 // Stub implementations for TRIBE_World virtual methods
@@ -380,6 +408,318 @@ void TRIBE_World::check_destructables(short param_1, short param_2, float param_
                 node = next;
             }
         }
+    }
+}
+
+// Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530AC0
+void TRIBE_World::send_cheat(short param_1) {
+    // Decomp: TRIBE_Command::command_cheat((TRIBE_Command *)this->commands,this->curr_player,param_1);
+    // Inline the command_cheat body to avoid adding a new TRIBE_Command surface area.
+    if (this->commands == nullptr) {
+        return;
+    }
+
+    TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
+    if (cmd == nullptr) {
+        return;
+    }
+
+    cmd->command = 0x67;
+    cmd->game_command = 6;
+    cmd->var1 = this->curr_player;
+    cmd->var2 = param_1;
+
+    this->commands->submit(cmd, sizeof(TRIBE_Command_Game));
+}
+
+// Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530AE0
+void TRIBE_World::cheat(short param_1, short param_2) {
+    if (rge_base_game == nullptr) {
+        return;
+    }
+
+    // RGE_Base_Game::allowCheatCodes(rge_base_game)
+    if (rge_base_game->rge_game_options.allowCheatCodesValue == 0) {
+        return;
+    }
+
+    // ASM uses an unsigned range check (JA) after MOVSX, so negative values are treated as out of range.
+    uint cheat_id = (uint)(ushort)param_2;
+    if (cheat_id > 0xE7) {
+        return;
+    }
+
+    TRIBE_Command* cmd = (TRIBE_Command*)this->commands;
+
+    switch ((int)cheat_id) {
+    case 0: {
+        if (0 < param_1 && this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                RGE_Static_Object* obj = tribe_find_by_master_id_simple(plr->objects, 0x6d, 1, 2);
+                if (obj != nullptr && cmd != nullptr) {
+                    cmd->command_make(obj, 0x112);
+                    return;
+                }
+            }
+        }
+        break;
+    }
+    case 1: {
+        if (0 < param_1 && this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                RGE_Static_Object* obj = tribe_find_by_master_id_simple(plr->objects, 0x6d, 1, 2);
+                if (obj != nullptr && cmd != nullptr) {
+                    cmd->command_make(obj, 0xf8);
+                    return;
+                }
+            }
+        }
+        break;
+    }
+    case 2:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x7f, this->players[param_1]);
+            return;
+        }
+        break;
+    case 3:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x80, this->players[param_1]);
+            return;
+        }
+        break;
+    case 4:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x81, this->players[param_1]);
+            return;
+        }
+        break;
+    case 5:
+        if (this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x82, this->players[0]);
+            return;
+        }
+        break;
+    case 6:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x83, this->players[param_1]);
+            return;
+        }
+        break;
+    case 7:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x84, this->players[param_1]);
+            return;
+        }
+        break;
+    case 8:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x85, this->players[param_1]);
+            return;
+        }
+        break;
+    case 9:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x86, this->players[param_1]);
+            return;
+        }
+        break;
+    case 10:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x87, this->players[param_1]);
+            return;
+        }
+        break;
+    case 0xb:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x88, this->players[param_1]);
+            return;
+        }
+        break;
+    case 0xc:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x89, this->players[param_1]);
+            return;
+        }
+        break;
+    case 0xd:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0x8a, this->players[param_1]);
+            return;
+        }
+        break;
+    case 0xe: {
+        if (0 < param_1 && this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                RGE_Static_Object* obj = tribe_find_by_master_id_simple(plr->objects, 0x6d, 1, 2);
+                if (obj != nullptr && cmd != nullptr) {
+                    cmd->command_make(obj, 0x182);
+                    return;
+                }
+            }
+        }
+        break;
+    }
+    case 0xf:
+        if (0 < param_1 && this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0xd7, this->players[param_1]);
+            return;
+        }
+        break;
+    case 0x10: {
+        if (0 < param_1 && this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                RGE_Static_Object* obj = tribe_find_by_master_id_simple(plr->objects, 0x6d, 1, 2);
+                if (obj != nullptr && cmd != nullptr) {
+                    cmd->command_make(obj, 0x18d);
+                    return;
+                }
+            }
+        }
+        break;
+    }
+    case 0x11:
+        if (0 < param_1 && this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                (void)tribe_find_by_master_id_simple(plr->objects, 0x6d, 1, 2);
+                return;
+            }
+        }
+        break;
+    case 0x12:
+        if (this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0xd8, this->players[0]);
+            return;
+        }
+        break;
+    case 0x13:
+        if (this->effects != nullptr && this->players != nullptr) {
+            this->effects->do_effect(0xd9, this->players[0]);
+            return;
+        }
+        break;
+    case 0x64: {
+        int iVar2 = 1;
+        die_die_die = 1;
+        if (1 < (short)this->player_num && this->players != nullptr) {
+            int iVar6 = (int)param_1;
+            do {
+                if ((iVar2 != iVar6) ||
+                    (this->players[iVar6] != nullptr && this->players[iVar6]->isAlly(iVar2) == 0) ||
+                    (this->players[iVar2] != nullptr && this->players[iVar2]->isAlly(iVar6) == 0)) {
+                    RGE_Player* plr = this->players[iVar2];
+                    if (plr != nullptr && plr->objects != nullptr) {
+                        for (RGE_Object_Node* node = plr->objects->list; node != nullptr; node = node->next) {
+                            RGE_Static_Object* obj = node->node;
+                            if (obj != nullptr && obj->object_state < 3 && obj->master_obj != nullptr && obj->master_obj->object_group != 1) {
+                                obj->die_die_die();
+                            }
+                        }
+                    }
+                }
+                iVar2 = iVar2 + 1;
+            } while (iVar2 < (short)this->player_num);
+            return;
+        }
+        break;
+    }
+    case 0x65: {
+        if (this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                for (RGE_Object_Node* node = plr->objects->list; node != nullptr; node = node->next) {
+                    RGE_Static_Object* obj = node->node;
+                    if (obj != nullptr && obj->object_state < 3 && obj->master_obj != nullptr && obj->master_obj->object_group != 1) {
+                        obj->die_die_die();
+                    }
+                }
+                return;
+            }
+        }
+        break;
+    }
+    case 0x66:
+        if (this->players != nullptr) {
+            this->players[param_1]->win_game_now();
+            this->game_end_condition = 0x68;
+            return;
+        }
+        break;
+    case 0x67:
+        if (this->players != nullptr) {
+            this->players[param_1]->loss_if_game_on();
+            return;
+        }
+        break;
+    case 200:
+    case 0xc9:
+    case 0xca:
+    case 0xcb:
+    case 0xcc:
+    case 0xcd:
+    case 0xce:
+    case 0xcf:
+    case 0xd0:
+    case 0xd1: {
+        int iVar6 = (int)param_1;
+        int iVar2 = (int)cheat_id + -200;
+        if (this->players != nullptr &&
+            (((iVar2 != iVar6) ||
+              (this->players[iVar6] != nullptr && this->players[iVar6]->isAlly(iVar2) == 0)) ||
+             (this->players[iVar2] != nullptr && this->players[iVar2]->isAlly(iVar6) == 0))) {
+            RGE_Player* plr = this->players[iVar2];
+            if (plr != nullptr && plr->objects != nullptr) {
+                for (RGE_Object_Node* node = plr->objects->list; node != nullptr; node = node->next) {
+                    RGE_Static_Object* obj = node->node;
+                    if (obj != nullptr && obj->object_state < 3 && obj->master_obj != nullptr && obj->master_obj->object_group != 1) {
+                        obj->die_die_die();
+                    }
+                }
+                return;
+            }
+        }
+        break;
+    }
+    case 0xdc: {
+        if (this->players != nullptr) {
+            RGE_Player* plr = this->players[param_1];
+            if (plr != nullptr && plr->objects != nullptr) {
+                RGE_Static_Object* obj = tribe_find_by_master_id_simple(plr->objects, 0x6d, 1, 2);
+                if (obj != nullptr) {
+                    cmd->command_make(obj, 0x174);
+                    return;
+                }
+            }
+        }
+        break;
+    }
+    case 0xe6: {
+        rge_base_game->set_map_visible(1);
+        TPanel* panel = rge_base_game->get_view_panel();
+        if (panel != nullptr) {
+            panel->set_redraw((TPanel::RedrawMode)2);
+        }
+        panel = rge_base_game->get_map_panel();
+        if (panel != nullptr) {
+            panel->set_redraw((TPanel::RedrawMode)2);
+        }
+        return;
+    }
+    case 0xe7: {
+        rge_base_game->set_map_fog(0);
+        TPanel* panel = rge_base_game->get_view_panel();
+        if (panel != nullptr) {
+            panel->set_redraw((TPanel::RedrawMode)2);
+        }
+        return;
+    }
+    default:
+        break;
     }
 }
 
