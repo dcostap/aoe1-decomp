@@ -506,18 +506,28 @@ long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param
         }
 
         if ((TButtonPanel*)param_1 == this->cancelButton && param_2 == 1) {
-            rge_base_game->disable_input();
-
-            // TODO(accuracy): original path returns to "Game Screen" when present and unpauses as needed.
-            // Current panel manager does not expose named-panel lookup yet, so this fallback always returns
-            // to "Single Player Menu" in the SP-only flow.
-            TribeSPMenuScreen* menu = new TribeSPMenuScreen();
-            if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("Load_Saved_Game_Screen");
+            // Fully verified. Source of truth: scr_load.cpp.decomp (cancel path) @ 0x0049E5F7
+            const char* return_panel = "Game Screen";
+            TPanel* game_screen = (panel_system != nullptr) ? panel_system->panel((char*)"Game Screen") : nullptr;
+            if (game_screen == nullptr) {
+                rge_base_game->disable_input();
+                TribeSPMenuScreen* menu = new TribeSPMenuScreen();
+                if (menu == nullptr || menu->error_code != 0) {
+                    if (menu) delete menu;
+                    load_enable_input();
+                    return 1;
+                }
+                return_panel = "Single Player Menu";
             } else {
-                if (menu) delete menu;
-                load_enable_input();
+                if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
+                    rge_base_game->set_paused(0, 0);
+                }
+                return_panel = "Game Screen";
+            }
+
+            if (panel_system != nullptr) {
+                panel_system->setCurrentPanel((char*)return_panel, 0);
+                panel_system->destroyPanel((char*)"Load Saved Game Screen");
             }
             return 1;
         }

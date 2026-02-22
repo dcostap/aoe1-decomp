@@ -208,7 +208,4 @@ static_assert(offsetof(TRIBE_Game, save_game_name) == 0xE64, "Offset mismatch: s
 static_assert(offsetof(TRIBE_Game, load_game_name) == 0xF68, "Offset mismatch: load_game_name");
 static_assert(offsetof(TRIBE_Game, inHandleIdle) == 0x1250, "Offset mismatch: inHandleIdle");
 
-// Non-original helper API used by the current simplified panel manager.
-// TODO(accuracy): replace these with `TPanelSystem::setCurrentPanel/destroyPanel` when that path is fully reimplemented.
-void tribe_set_current_screen(TPanel* new_screen);
-void tribe_queue_screen_switch(TPanel* new_screen);
+// Screen transitions use `TPanelSystem::setCurrentPanel` / `destroyPanel` (see tribegam.cpp).

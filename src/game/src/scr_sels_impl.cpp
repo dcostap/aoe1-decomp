@@ -310,8 +310,8 @@ long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong para
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)setup, 0);
-                panel_system->destroyPanel("Select_Scenario_Screen");
+                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+                panel_system->destroyPanel((char*)"Select Scenario Screen");
             } else {
                 if (setup) delete setup;
                 sels_enable_input();
@@ -325,8 +325,8 @@ long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong para
 
             TribeSPMenuScreen* menu = new TribeSPMenuScreen();
             if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((TPanel*)menu, 0);
-                panel_system->destroyPanel("Select_Scenario_Screen");
+                panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
+                panel_system->destroyPanel((char*)"Select Scenario Screen");
             } else {
                 if (menu) delete menu;
                 sels_enable_input();
