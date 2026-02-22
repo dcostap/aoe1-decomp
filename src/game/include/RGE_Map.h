@@ -45,6 +45,7 @@ public:
     void clear_map(uchar terrain, uchar height);
     void scenario_save(int param_1);
     void scenario_load(int param_1, uchar* param_2);
+    void save_map(int param_1);
     void set_terrain(RGE_Player* player, RGE_Game_World* world, short col, short row, uchar terrain, uchar unknown1, uchar unknown2);
     void set_terrain(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7);
     void set_terrain_absolute(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7);
