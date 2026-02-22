@@ -30,6 +30,7 @@ public:
     virtual void save(int param_1); // vt[11] (0x2C)
 
     // Non-virtual methods — transliterated from map.cpp.decomp
+    void load_map(int param_1);
     void init_tile_sizes();
     void set_tile_size(uchar index, short width, short height, short y_delta);
     void load_terrain_types(RGE_Sound** sounds); // Binary path: construct TShape from pict_name+resource_id

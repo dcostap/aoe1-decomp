@@ -9,6 +9,10 @@ struct RGE_Game_Info {
     long get_current_player();
     char* get_current_player_name();
     int open_scenario();
+    uchar set_current_person(long param_1);
+    uchar set_current_campaign(long param_1);
+    uchar set_current_scenario(long param_1);
+    void notify_of_scenario_complete();
 
     long current_person;
     long people_num;
