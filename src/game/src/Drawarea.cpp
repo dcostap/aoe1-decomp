@@ -705,6 +705,28 @@ int TDrawSystem::SetDisplaySize(long p1, long p2, int p3) {
     return 1;
 }
 
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004433F0
+void TDrawSystem::HandleSize(void* wnd, uint msg, uint wparam, long lparam) {
+    (void)wnd;
+    (void)msg;
+    (void)wparam;
+    (void)lparam;
+
+    if (this->DrawArea != nullptr) {
+        if (this->DrawType == 1 || this->ScreenMode == 1) {
+            RECT wnd_rect;
+            GetClientRect((HWND)this->Wnd, &wnd_rect);
+            this->ScreenWidth = wnd_rect.right;
+            this->ScreenHeight = wnd_rect.bottom;
+        }
+
+        if (this->PrimaryArea != nullptr) {
+            this->PrimaryArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
+        }
+        this->DrawArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
+    }
+}
+
 // TDrawArea Implementation
 
 TDrawArea::TDrawArea(char* name) {
