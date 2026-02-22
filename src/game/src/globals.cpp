@@ -46,6 +46,8 @@ int restore_mouse_after_paint = 0;
 int restoration_count = 0;
 unsigned char shape_file_first = 0;
 unsigned char sound_file_first = 0;
+int do_fixed_update = 0;
+int displayPathingFlags = 0;
 int debug_timeGetTime_on = 0;
 // system_ignore_size_messages defined in Drawarea.cpp
 int do_restore_palette = 0;
@@ -60,6 +62,7 @@ int useComputerPlayers = 1; // default per ASM (= 1h)
 int show_timing_max = 0;
 float save_game_version = 7.23f;
 unsigned char die_die_die = 0;
+int allow_user_commands = 1; // default per original (toggled by scr_game.cpp paths)
 int world_update_counter = 0;
 unsigned long* unified_map_offsets[256] = {0};
 int ENABLE_COMPRESSION = 1;
