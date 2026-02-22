@@ -19,6 +19,8 @@
 #include "../include/RGE_Scenario_Header.h"
 #include "../include/RGE_Scenario_File_Info.h"
 #include "../include/RGE_Game_Info.h"
+#include "../include/RGE_Communications_Speed.h"
+#include "../include/RGE_Communications_Synchronize.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
@@ -2267,10 +2269,27 @@ int RGE_Base_Game::setup_comm() {
         return 0;
     }
 
+    handler->Chat = (TChat*)chat;
+    if (this->prog_info != nullptr) {
+        handler->ApplicationGUID = this->prog_info->game_guid;
+    } else {
+        memset(&handler->ApplicationGUID, 0, sizeof(handler->ApplicationGUID));
+    }
+
     handler->Me = 1;
     handler->Multiplayer = (this->rge_game_options.multiplayerGameValue != 0) ? 1 : 0;
     handler->MeHost = (handler->Multiplayer == 0) ? 1 : 0;
     handler->CommunicationsStatus = COMM_IDLE;
+    if (handler->Sync != nullptr) {
+        handler->Sync->DialogOnSyncFail = this->comm_syncstop;
+        handler->Sync->StopOnSyncFail = this->comm_syncstop;
+        handler->Sync->SendChatMsgs = this->comm_syncmsg;
+    }
+    if (handler->Speed != nullptr) {
+        handler->Speed->SpeedControlEnabled = this->comm_speed;
+    }
+    handler->StepMode = this->comm_stepmode;
+    handler->IntentionallyDropPackets = this->comm_droppackets;
 
     // Default SP humanity profile expected by create_game() mapping pass.
     handler->PlayerOptions.Humanity[1] = 2;
