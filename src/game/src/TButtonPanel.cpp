@@ -6,6 +6,7 @@
 #include "../include/RGE_Font.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
+#include <stdlib.h>
 
 static unsigned long button_time_ms() {
     return (unsigned long)GetTickCount();
@@ -281,6 +282,27 @@ void TButtonPanel::set_state(short param_1) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+void TButtonPanel::set_text_pos(long x, long y) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472220
+    this->text_x = x;
+    this->text_y = y;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+}
+
+void TButtonPanel::set_text_info(char* text, void* font, long wid, long hgt, long x, long y) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004721A0
+    this->set_text_pos(x, y);
+    this->set_text(0, text);
+    this->set_font(font, wid, hgt);
+}
+
+void TButtonPanel::set_text_info(long resid, void* font, long wid, long hgt, long x, long y) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004721E0
+    this->set_text_pos(x, y);
+    this->set_text(0, resid);
+    this->set_font(font, wid, hgt);
+}
+
 // Decomp @ Pnl_btn.cpp: returns (int)this->cur_state
 int TButtonPanel::get_state() {
     return (int)this->cur_state;
@@ -310,6 +332,32 @@ void TButtonPanel::set_id(short state, long id, long id2) {
     this->id2[state] = id2;
 }
 void TButtonPanel::set_sound(TDigital* s) { this->sound = s; }
+
+void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472240
+    this->buttonTypeValue = TButtonPanel::Radio;
+
+    if (this->radio_buttons != nullptr) {
+        free(this->radio_buttons);
+        this->radio_buttons = nullptr;
+    }
+
+    this->num_radio_buttons = 0;
+    if (count == 0) {
+        return;
+    }
+
+    this->num_radio_buttons = count;
+    this->radio_buttons = (TButtonPanel**)calloc((int)count, 4);
+    if (this->radio_buttons == nullptr) {
+        this->num_radio_buttons = 0;
+        return;
+    }
+
+    for (int i = 0; i < (int)count; ++i) {
+        this->radio_buttons[i] = buttons[i];
+    }
+}
 
 void TButtonPanel::set_radio_button() {
     // Best-effort match for `TButtonPanel::set_radio_button` in `Pnl_btn.cpp.asm`.

@@ -121,6 +121,7 @@ public:
     int numberLines();
     int numberDrawLines();
     int currentLineNumber();
+    char* currentLine();
     void setCurrentLineNumber(int param_1);
     void scroll(uchar param_1, short param_2, int param_3);
 

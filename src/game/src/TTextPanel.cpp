@@ -1415,6 +1415,11 @@ int TTextPanel::currentLineNumber() {
     return (int)this->cur_line;
 }
 
+// From decomp at 0x0047DC70
+char* TTextPanel::currentLine() {
+    return this->get_text((long)this->cur_line);
+}
+
 // From decomp at 0x0047DC60
 void TTextPanel::setCurrentLineNumber(int param_1) {
     this->set_line((long)param_1);

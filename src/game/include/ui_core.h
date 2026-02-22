@@ -100,6 +100,7 @@ public:
      
     int get_string(int resid, char* buffer, int len);
     char* get_string(int resid);
+    char* panelName() const;
 
     long xPosition() const;
     long yPosition() const;
@@ -218,9 +219,13 @@ public:
     int hit_button(long param_1, long param_2);
     void do_action();
     void do_right_action(int param_1);
-    void set_radio_button();
-    void set_picture(short state, TShape* pic, short pic_index);
-    void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
+     void set_radio_button();
+     void set_picture(short state, TShape* pic, short pic_index);
+     void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
+    void set_text_pos(long x, long y);
+    void set_text_info(char* text, void* font, long wid, long hgt, long x, long y);
+    void set_text_info(long resid, void* font, long wid, long hgt, long x, long y);
+    void set_radio_info(TButtonPanel** buttons, short count);
 
     virtual void set_rect(tagRECT param_1) override;
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4) override;

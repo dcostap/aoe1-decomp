@@ -1063,6 +1063,11 @@ char* TPanel::get_string(int resid) {
     return nullptr;
 }
 
+char* TPanel::panelName() const {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004666B0 (TPanel::panelName)
+    return this->panelNameValue;
+}
+
 long TPanel::xPosition() const { return this->pnl_x; }
 long TPanel::yPosition() const { return this->pnl_y; }
 long TPanel::width() const { return this->pnl_wid; }

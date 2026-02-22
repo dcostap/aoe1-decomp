@@ -27,6 +27,8 @@ public:
     void setup_shadow_area(int force_rebuild);
     void setup_popup_help();
     void clear_popup_help();
+    char* get_popup_info_file();
+    long get_popup_info_id();
 
     // Virtuals (best-effort)
     virtual ~TEasy_Panel(); // vt[0] (0x0)

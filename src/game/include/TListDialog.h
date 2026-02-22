@@ -4,6 +4,20 @@
 
 class TListDialog : public TDialogPanel {
 public:
+    TListDialog();
+    TListDialog(char* name);
+
+    long setup(TPanel* parent, char* info_file, long info_id, long wid, long hgt,
+        long title_x, long title_y, long title_w, long title_h, char* title_text,
+        long list_x, long list_y, long list_w, long list_h,
+        char** list_text, short list_size, short list_line,
+        long ok_x, long btn_w, long btn_y, long cancel_x, long btn_h);
+    long setup(TPanel* parent, char* info_file, long info_id, long wid, long hgt,
+        long title_x, long title_y, long title_w, long title_h, int title_resid,
+        long list_x, long list_y, long list_w, long list_h,
+        char** list_text, short list_size, short list_line,
+        long ok_x, long btn_w, long btn_y, long cancel_x, long btn_h);
+
     // Virtuals (best-effort)
     virtual ~TListDialog(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
