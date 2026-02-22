@@ -16,6 +16,7 @@
 #include "../include/custom_debug.h"
 
 #include <stdlib.h>
+#include <cstddef>
 #include <new>
 
 RGE_Object_List::RGE_Object_List() {
@@ -142,8 +143,10 @@ void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uch
             should_draw = 0;
             if (param_4 != 0 &&
                 owner->world->players[owner->world->curr_player]->mutualAlly[owner->id] != 0) {
-                // TODO: STUB: decomp loads an alternate color_table pointer from derived-object tail
-                // (obj_list.cpp.decomp @ 0x00463000 case 3). Keep owner color_table for now.
+                // obj_list.cpp.decomp @ 0x00463000: pRVar6 = (RGE_Color_Table *)pRVar2[1].master_obj;
+                // This reads a pointer-sized field from the derived-object tail at the same offset as master_obj.
+                const std::ptrdiff_t master_obj_off = (const char*)&obj->master_obj - (const char*)obj;
+                color_table = *(RGE_Color_Table**)((char*)obj + sizeof(RGE_Static_Object) + master_obj_off);
                 should_draw = 1;
             }
             break;
