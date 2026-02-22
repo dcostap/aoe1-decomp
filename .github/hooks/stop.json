@@ -1,10 +1,18 @@
 {
+  "version": 1,
   "hooks": {
-    "Stop": [
+    "agentStop": [
       {
         "type": "command",
-        "command": "powershell -ExecutionPolicy Bypass -File .github/hooks/play_done_sound.ps1",
-        "timeout": 10
+        "powershell": ".github/hooks/play_done_sound.ps1",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "powershell": ".github/hooks/play_done_sound.ps1",
+        "timeoutSec": 10
       }
     ]
   }
