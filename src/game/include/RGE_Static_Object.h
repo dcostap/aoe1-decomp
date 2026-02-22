@@ -154,6 +154,15 @@ public:
     void capture_frame(TDrawArea* param_1, short param_2, short param_3);
     int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
 
+    // Non-virtual draw helpers (stat_obj.cpp).
+    void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);
+    void capture_frame_3d_cube(TDrawArea* param_1, short param_2, short param_3);
+    void capture_frame_3d_square(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_square_back(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_square_front(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_cube_back(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_cube_front(TDrawArea* param_1, short param_2, short param_3);
+
     long id;
     RGE_Master_Static_Object* master_obj;
     RGE_Player* owner;

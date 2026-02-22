@@ -1,12 +1,14 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Master_Doppleganger_Object.h"
+#include "../include/RGE_Doppleganger_Object.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/RGE_Sprite.h"
 #include "../include/RGE_Action_Object.h"
 #include "../include/TDrawArea.h"
+#include "../include/TShape.h"
 #include "../include/RGE_Color_Table.h"
 #include "../include/RGE_Object_List.h"
 #include "../include/RGE_Object_Node.h"
@@ -20,8 +22,9 @@
 #include "../include/RGE_Sound.h"
 #include "../include/Visible_Resource_Manager.h"
 #include "../include/RGE_Doppleganger_Creator.h"
-#include "../include/globals.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/DClipInfo_List.h"
+#include "../include/globals.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include <cstring>
@@ -364,168 +367,125 @@ void RGE_Static_Object::recycle_out_of_game() {
     }
 }
 void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C1F30
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1F30
     SDI_Object_ID = this->id;
 
     if (this->type == 0x19) {
-        // Uses derived object state via fixed offsets (ASM: [this+0xA4], [this+0x8C]).
-        uint mask = 1u << ((uint)(uchar)this->owner->world->curr_player & 0x1F);
-        if ((*(uint*)((unsigned char*)this + 0xA4) & mask) != 0) {
+        // Doppleganger draw: draw visibility gating + real underlying object id for capture/pick.
+        RGE_Doppleganger_Object* dop = (RGE_Doppleganger_Object*)this;
+        if (((uint)dop->CantSeeBits & (1u << ((uint)this->owner->world->curr_player & 0x1f))) != 0) {
             SDI_Object_ID = -1;
             return;
         }
-
-        void* ptr = *(void**)((unsigned char*)this + 0x8C);
-        if (ptr == nullptr) {
+        if (dop->doppled_object == nullptr) {
             SDI_Object_ID = -1;
         } else {
-            SDI_Object_ID = *(long*)((unsigned char*)ptr + 4);
+            SDI_Object_ID = dop->doppled_object->id;
         }
     }
 
-    if (this->tile != nullptr && this->object_state < 7) {
-        if (this->selected != 0 ||
-            rge_base_game->outline_type == 3 ||
+    if ((this->tile != nullptr) && (this->object_state < 7)) {
+        if ((this->selected != 0) || (rge_base_game->outline_type == 3) ||
             (((this->master_obj->draw_flag & 1) == 1) && (rge_base_game->prog_mode == 7))) {
             this->capture_frame(param_1, param_2, param_3);
         }
-
         SDI_Draw_Line = (int)param_3 + (int)this->shadow_y_offset;
-        this->sprite_list->draw(
-            (short)this->facet,
-            (short)(this->screen_x_offset + param_2),
-            (short)(this->screen_y_offset + param_3),
-            (short)(this->shadow_x_offset + param_2),
-            (short)(this->shadow_y_offset + param_3),
-            param_4,
-            param_1);
+        this->sprite_list->draw(this->facet, this->screen_x_offset + param_2, this->screen_y_offset + param_3,
+                                this->shadow_x_offset + param_2, param_3 + this->shadow_y_offset, param_4, param_1);
     }
 
     SDI_Object_ID = -1;
 }
 
 void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2030
-    if (this->tile != nullptr && this->object_state < 7) {
-        RGE_Color_Table* table = this->owner->color_table;
-        this->sprite_list->shadow_draw(
-            (short)this->facet,
-            (short)(this->shadow_x_offset + param_2),
-            (short)(this->shadow_y_offset + param_3),
-            table,
-            param_1,
-            param_4);
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2030
+    if ((this->tile != nullptr) && (this->object_state < 7)) {
+        RGE_Color_Table* ct = this->owner->color_table;
+        this->sprite_list->shadow_draw(this->facet, this->shadow_x_offset + param_2, this->shadow_y_offset + param_3, ct, param_1, param_4);
     }
 }
 
 void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2080
-    if (this->tile != nullptr && this->object_state < 7) {
-        bool draw_frames = (this->selected != 0 || rge_base_game->outline_type == 3);
-        if (draw_frames) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2080
+    if ((this->tile != nullptr) && (this->object_state < 7)) {
+        bool draw_frame = (this->selected != 0) || (rge_base_game->outline_type == 3);
+        if (draw_frame) {
             this->draw_back_frame(param_1, param_2, param_3);
         }
-
-        RGE_Color_Table* table = this->owner->color_table;
-        this->sprite_list->normal_draw(
-            (short)this->facet,
-            (short)(this->screen_x_offset + param_2),
-            (short)(this->screen_y_offset + param_3),
-            table,
-            param_1);
-
-        if (draw_frames) {
+        RGE_Color_Table* ct = this->owner->color_table;
+        this->sprite_list->normal_draw(this->facet, this->screen_x_offset + param_2, this->screen_y_offset + param_3, ct, param_1);
+        if (draw_frame) {
             this->draw_front_frame(param_1, param_2, param_3);
         }
     }
 }
 
-// TODO: STUB - needed by draw_front_frame/draw_back_frame, not yet transliterated (stat_obj.cpp.decomp).
-static void rge_static_draw_frame_3d_cube_front(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
-static void rge_static_draw_frame_3d_cube_back(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
-static void rge_static_draw_frame_3d_square_front(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
-static void rge_static_draw_frame_3d_square_back(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
-
 void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2110
-    if (rge_base_game->game_mode == 1) {
-        rge_static_draw_frame_3d_cube_front(this, param_1, param_2, param_3);
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2110
+    if (rge_base_game->game_mode != 1) {
+        switch (rge_base_game->outline_type) {
+        case 0:
+            this->draw_frame(param_1, param_2, param_3);
+            return;
+        case 1:
+            this->draw_frame_3d_cube_front(param_1, param_2, param_3);
+            return;
+        case 2:
+        case 3:
+            this->draw_frame_3d_square_front(param_1, param_2, param_3);
+            return;
+        }
         return;
     }
-
-    switch (rge_base_game->outline_type) {
-    case 0:
-        this->draw_frame(param_1, param_2, param_3);
-        return;
-    case 1:
-        rge_static_draw_frame_3d_cube_front(this, param_1, param_2, param_3);
-        return;
-    case 2:
-    case 3:
-        rge_static_draw_frame_3d_square_front(this, param_1, param_2, param_3);
-        return;
-    default:
-        return;
-    }
+    this->draw_frame_3d_cube_front(param_1, param_2, param_3);
 }
 
 void RGE_Static_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C21A0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C21A0
     if (rge_base_game->game_mode == 1) {
-        rge_static_draw_frame_3d_cube_back(this, param_1, param_2, param_3);
+        this->draw_frame_3d_cube_back(param_1, param_2, param_3);
         return;
     }
-
     switch (rge_base_game->outline_type) {
     case 1:
-        rge_static_draw_frame_3d_cube_back(this, param_1, param_2, param_3);
+        this->draw_frame_3d_cube_back(param_1, param_2, param_3);
         return;
     case 2:
     case 3:
-        rge_static_draw_frame_3d_square_back(this, param_1, param_2, param_3);
-        return;
-    default:
+        this->draw_frame_3d_square_back(param_1, param_2, param_3);
         return;
     }
 }
 
 void RGE_Static_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C3B30
-    if (this->sprite != nullptr && this->sprite_list != nullptr) {
-        this->sprite_list->get_facetindex(this->sprite, (short)this->facet);
-
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3B30
+    if ((this->sprite != nullptr) && (this->sprite_list != nullptr)) {
+        this->sprite_list->get_facetindex(this->sprite, this->facet);
         short min_x = 0;
         short min_y = 0;
         short max_x = 0;
         short max_y = 0;
         if (this->get_frame(&min_x, &min_y, &max_x, &max_y) != 0) {
-            int left = (int)this->screen_x_offset + (int)param_2 + (int)min_x - 1;
-            int top = (int)this->screen_y_offset + (int)param_3 + (int)min_y - 1;
-            int right = (int)this->screen_x_offset + (int)param_2 + (int)max_x + 1;
-            int bottom = (int)this->screen_y_offset + (int)param_3 + (int)max_y + 1;
-
-            param_1->DrawRect(left, top, right, bottom, 0xFF);
+            int x1 = (int)min_x + (int)param_2 + -1 + (int)this->screen_x_offset;
+            int y1 = (int)min_y + (int)param_3 + -1 + (int)this->screen_y_offset;
+            int x2 = (int)max_x + (int)param_2 + 1 + (int)this->screen_x_offset;
+            int y2 = (int)max_y + (int)param_3 + 1 + (int)this->screen_y_offset;
+            param_1->DrawRect(x1, y1, x2, y2, 0xff);
 
             if (this->object_state < 3) {
-                int hp_value = (int)this->hp;
-                if (hp_value < 1) {
-                    hp_value = 0;
+                int hp_int = (int)this->hp;
+                if (hp_int < 1) {
+                    hp_int = 0;
                 }
-
                 int tot_hp = (int)this->master_obj->hp;
-                if (0 < tot_hp) {
-                    int bar_top = top - 6;
-                    param_1->DrawRect(left, bar_top, left + 0x1A, bar_top + 5, 0xFF);
-
-                    int inner_left = left + 1;
-                    int inner_top = bar_top + 1;
-                    int inner_right = left + 0x18;
-                    int inner_bottom = bar_top + 3;
-                    param_1->FillRect(inner_left, inner_top, inner_right, inner_bottom, (uchar)0x55);
-
-                    int fill_amount = (int)(((long long)hp_value * 0x19LL) / (long long)tot_hp);
-                    int fill_right = inner_left + fill_amount - 1;
-                    param_1->FillRect(inner_left, inner_top, fill_right, bar_top + 4, (uchar)0x25);
+                if (tot_hp > 0) {
+                    param_1->DrawRect(x1, y1 + -6, x1 + 0x1a, y1 + -1, 0xff);
+                    int bar_left = x1 + 1;
+                    param_1->FillRect(bar_left, y1 + -5, x1 + 0x18, y1 + -3, 0x55);
+                    int filled = (hp_int * 0x19) / tot_hp;
+                    if (filled > 0) {
+                        param_1->FillRect(bar_left, y1 + -5, bar_left + filled + -1, y1 + -2, 0x25);
+                    }
                 }
             }
         }
@@ -533,21 +493,520 @@ void RGE_Static_Object::draw_frame(TDrawArea* param_1, short param_2, short para
 }
 
 void RGE_Static_Object::capture_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // TODO: STUB - selection/outline capture uses SDI_List/DClipInfo_List; not yet transliterated here.
-    // Source of truth: stat_obj.cpp.asm @ 0x004C2220.
-    if (SDI_Capture_Info == 0) {
-        return;
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2220
+    if (SDI_Capture_Info != 0) {
+        if (rge_base_game->game_mode == 1) {
+            this->capture_frame_3d_cube(param_1, param_2, param_3);
+            return;
+        }
+        switch (rge_base_game->outline_type) {
+        case 0:
+            this->capture_square_frame(param_1, param_2, param_3);
+            return;
+        case 1:
+            this->capture_frame_3d_cube(param_1, param_2, param_3);
+            return;
+        case 2:
+        case 3:
+            this->capture_frame_3d_square(param_1, param_2, param_3);
+            return;
+        }
     }
 }
 
-int RGE_Static_Object::get_frame(short* param_1, short* param_2, short* param_3, short* param_4) {
+void RGE_Static_Object::capture_square_frame(TDrawArea* /*param_1*/, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C22C0
+    if ((this->sprite != nullptr) && (this->sprite_list != nullptr)) {
+        this->sprite_list->get_facetindex(this->sprite, this->facet);
+        short min_x = 0;
+        short min_y = 0;
+        short max_x = 0;
+        short max_y = 0;
+        if (this->get_frame(&min_x, &min_y, &max_x, &max_y) != 0) {
+            int x1 = (int)min_x + (int)param_2 + -1 + (int)this->screen_x_offset;
+            int y1 = (int)min_y + (int)param_3 + -1 + (int)this->screen_y_offset;
+            int x2 = (int)max_x + (int)param_2 + 1 + (int)this->screen_x_offset;
+            int y2 = (int)max_y + (int)param_3 + 1 + (int)this->screen_y_offset;
+            SDI_List->AddGDINode(4, y2, x1, y1, x2, y2, 0, 0, 0, 0, 10, 0xff, (int)SDI_Object_ID);
+
+            if (this->object_state < 3) {
+                int hp_int = (int)this->hp;
+                if (hp_int < 1) {
+                    hp_int = 0;
+                }
+                int tot_hp = (int)this->master_obj->hp;
+                if (tot_hp > 0) {
+                    int filled_right = (hp_int * 0x19) / tot_hp + x1;
+                    if (x1 + 0x1a <= filled_right) {
+                        filled_right = x1 + 0x19;
+                    }
+                    SDI_List->AddGDINode(2, y2, x1, y1 + -6, x1 + 0x1a, y1 + -1, filled_right, 0, filled_right + 1, 0, 0x14, 0xff, (int)SDI_Object_ID);
+                }
+            }
+        }
+    }
+}
+
+void RGE_Static_Object::capture_frame_3d_cube(TDrawArea* /*param_1*/, short /*param_2*/, short /*param_3*/) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C23F0
+}
+
+void RGE_Static_Object::capture_frame_3d_square(TDrawArea* /*param_1*/, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2400
+    RGE_Master_Static_Object* master = this->master_obj;
+    RGE_Map* map = this->owner->world->map;
+
+    float rx = 0.0f;
+    float ry = 0.0f;
+    float rz = 0.0f;
+    if (rge_base_game->outline_type == 3) {
+        rx = master->radius_x;
+        ry = master->radius_y;
+        rz = master->radius_z;
+    } else {
+        rx = master->outline_radius_x;
+        ry = master->outline_radius_y;
+        rz = master->outline_radius_z;
+    }
+
+    uchar draw_color = 0xff;
+    if (((startLoggingAI == 1) && (this->groupCommanderValue == this->id)) && (this->id >= 0)) {
+        draw_color = 0;
+    } else if ((this->selected & 1) == 0) {
+        if (rge_base_game->outline_type == 3) {
+            draw_color = 0x74;
+        } else if (((master->draw_flag & 1) == 1) && (rge_base_game->prog_mode == 7)) {
+            draw_color = master->draw_color;
+        }
+    }
+    if ((this->selected & 2) != 0) {
+        draw_color = 0x4a;
+    }
+    if ((this->selected & 4) != 0) {
+        draw_color = 0x97;
+    }
+
+    float neg_ry = -ry;
+    short screen_x = (short)(param_2 + this->screen_x_offset);
+    short screen_y = (short)(param_3 + this->screen_y_offset);
+
+    short x0 = 0, y0 = 0;
+    short x1 = 0, y1 = 0;
+    short x2 = 0, y2 = 0;
+    short x3 = 0, y3 = 0;
+    map->get_point(&x0, &y0, rx, neg_ry, 0.0f, screen_x, screen_y);
+    map->get_point(&x1, &y1, rx, ry, 0.0f, screen_x, screen_y);
+    map->get_point(&x2, &y2, -rx, ry, 0.0f, screen_x, screen_y);
+    map->get_point(&x3, &y3, -rx, neg_ry, 0.0f, screen_x, screen_y);
+
+    int draw_line = (int)screen_y;
+    SDI_List->AddGDINode(1, draw_line, (int)x0, (int)y0, (int)x1, (int)y1, (int)x2, (int)y2, (int)x3, (int)y3, 10, (int)draw_color, (int)SDI_Object_ID);
+
+    if ((this->selected != 0) && (this->selected_group != 0) && (this->selected_group < 10) &&
+        (this->owner->id == this->owner->world->curr_player)) {
+        TShape* group_num_shape = rge_base_game->get_shape(0);
+        if (group_num_shape != nullptr) {
+            SDI_List->AddDrawNode(group_num_shape->FShape, &group_num_shape->shape_info[this->selected_group], draw_line,
+                                  (int)x3 + -6, (int)y3 + -8, 0, nullptr, 0, 0x1e, (int)SDI_Object_ID);
+        }
+    }
+
+    if (((this->selected & 1) == 1) && ((master->draw_flag & 2) == 0)) {
+        int hp_int = (int)this->hp;
+        if (hp_int > 0) {
+            short hp_x = 0;
+            short hp_y = 0;
+            map->get_point(&hp_x, &hp_y, rx, neg_ry, rz, screen_x, screen_y);
+            if (hp_int < 1) {
+                hp_int = 0;
+            }
+            int tot_hp = (int)master->hp;
+            if (tot_hp > 0) {
+                int left = (int)hp_x + -0xc;
+                int top = (int)hp_y + -2;
+                int right = (int)hp_x + 0xb;
+                int bottom = (int)hp_y + -1;
+
+                int x_fill = 0;
+                int y_fill = 0;
+                int x_fill2 = 0;
+                int y_fill2 = 0;
+                if (hp_int == tot_hp) {
+                    y_fill = 1;
+                    x_fill = right;
+                    x_fill2 = -1;
+                    y_fill2 = 0;
+                } else if (hp_int == 0) {
+                    x_fill = -1;
+                    y_fill = 0;
+                    x_fill2 = left;
+                    y_fill2 = 1;
+                } else {
+                    y_fill = 1;
+                    x_fill = ((hp_int * 0x18) / tot_hp) + left;
+                    if (right <= x_fill) {
+                        x_fill = (int)hp_x + 10;
+                    }
+                    x_fill2 = x_fill + 1;
+                    y_fill2 = 1;
+                }
+
+                SDI_List->AddGDINode(2, draw_line, left, top, right, bottom, x_fill, y_fill, x_fill2, y_fill2, 0x1e, (int)draw_color, (int)SDI_Object_ID);
+            }
+        }
+    }
+
+    if (rge_base_game->display_selected_ids != 0) {
+        TShape* digit_shape = rge_base_game->get_shape(0);
+        int raw_id = (int)this->id;
+        int abs_id = raw_id < 0 ? -raw_id : raw_id;
+
+        int digits[6];
+        digits[1] = abs_id / 10000;
+        digits[2] = (abs_id % 10000) / 1000;
+        int t = (abs_id % 10000) % 1000;
+        digits[3] = t / 100;
+        t = t % 100;
+        digits[4] = t / 10;
+        digits[5] = t % 10;
+
+        uint start_index = (uint)(raw_id < 10000);
+        if (raw_id < 1000) start_index = 2;
+        if (raw_id < 100) start_index = 3;
+        if (raw_id < 10) start_index = 4;
+
+        int cur_x = (int)x1;
+        int base_y = (int)y1;
+        if (raw_id < 0) {
+            cur_x += 7;
+            SDI_List->AddGDINode(4, draw_line, cur_x + 1, base_y + 3, cur_x + 5, base_y + 3, 0, 0, 0, 0, 0x1e, 0x97, (int)SDI_Object_ID);
+        }
+
+        if (start_index < 5) {
+            int* p_digit = &digits[(int)start_index + 1];
+            int remaining = (int)(5 - start_index);
+            while (remaining != 0) {
+                cur_x += 7;
+                short sx = (short)cur_x;
+                if (*p_digit == 0) {
+                    SDI_List->AddGDINode(4, draw_line, (int)sx + 1, base_y, (int)sx + 5, base_y + 5, 0, 0, 0, 0, 0x1e, 0xff, (int)SDI_Object_ID);
+                } else if (digit_shape != nullptr) {
+                    SDI_List->AddDrawNode(digit_shape->FShape, &digit_shape->shape_info[*p_digit], draw_line, (int)sx, base_y, 0, nullptr, 0, 0x1e, (int)SDI_Object_ID);
+                }
+                ++p_digit;
+                remaining = remaining + -1;
+            }
+        }
+    }
+}
+
+void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2970
+    RGE_Map* map = this->owner->world->map;
+    float rx = this->master_obj->outline_radius_x;
+    float ry = this->master_obj->outline_radius_y;
+
+    TPanel* view_panel = rge_base_game->get_view_panel();
+    if (view_panel != nullptr) {
+        param_1->Unlock((char*)"stat_obj::draw_frame_3d_square_back");
+        if (param_1->GetDc((char*)"stat_obj::draw_frame_3d_square_back") != nullptr) {
+            SelectClipRgn((HDC)param_1->DrawDc, (HRGN)view_panel->clip_rgn);
+
+            HGDIOBJ pen = GetStockObject(6);
+            if (((startLoggingAI == 1) && (this->groupCommanderValue == this->id)) && (-1 < this->id)) {
+                pen = GetStockObject(7);
+            }
+            SelectObject((HDC)param_1->DrawDc, pen);
+
+            float neg_ry = -ry;
+            short screen_x = (short)(param_2 + this->screen_x_offset);
+            short screen_y = (short)(param_3 + this->screen_y_offset);
+            short x2 = 0, y2 = 0;
+            short x1 = 0, y1 = 0;
+
+            map->get_point(&x2, &y2, rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, neg_ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            SelectClipRgn((HDC)param_1->DrawDc, nullptr);
+            param_1->ReleaseDc((char*)"stat_obj::draw_frame_3d_square_back");
+        }
+        param_1->Lock((char*)"stat_obj::draw_frame_3d_square_back", 1);
+    }
+}
+
+void RGE_Static_Object::draw_frame_3d_square_front(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2B50
+    RGE_Map* map = this->owner->world->map;
+    float rx = this->master_obj->outline_radius_x;
+    float ry = this->master_obj->outline_radius_y;
+    float rz = this->master_obj->radius_z;
+
+    TPanel* view_panel = rge_base_game->get_view_panel();
+    if (view_panel != nullptr) {
+        param_1->Unlock((char*)"stat_obj::draw_frame_3d_square_front");
+
+        short screen_x = (short)(param_2 + this->screen_x_offset);
+        short screen_y = (short)(param_3 + this->screen_y_offset);
+
+        if (param_1->GetDc((char*)"stat_obj::draw_frame_3d_square_front") != nullptr) {
+            SelectClipRgn((HDC)param_1->DrawDc, (HRGN)view_panel->clip_rgn);
+
+            HGDIOBJ pen = GetStockObject(6);
+            if (((startLoggingAI == 1) && (this->groupCommanderValue == this->id)) && (-1 < this->id)) {
+                pen = GetStockObject(7);
+            }
+            SelectObject((HDC)param_1->DrawDc, pen);
+
+            float neg_rx = -rx;
+            float neg_ry = -ry;
+            short x2 = 0, y2 = 0;
+            short x1 = 0, y1 = 0;
+
+            map->get_point(&x2, &y2, neg_rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, neg_rx, ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, neg_rx, ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            SelectClipRgn((HDC)param_1->DrawDc, nullptr);
+            param_1->ReleaseDc((char*)"stat_obj::draw_frame_3d_square_front");
+        }
+
+        param_1->Lock((char*)"stat_obj::draw_frame_3d_square_front", 1);
+
+        int hp_int = (int)this->hp;
+        if (hp_int > 0) {
+            short hp_x = 0;
+            short hp_y = 0;
+            map->get_point(&hp_x, &hp_y, rx, -ry, rz, screen_x, screen_y);
+            if (hp_int < 1) {
+                hp_int = 0;
+            }
+            int tot_hp = (int)this->master_obj->hp;
+            if (tot_hp > 0) {
+                param_1->FillRect((long)hp_x + -0xc, (long)hp_y + -2, (long)hp_x + 0xc, (long)hp_y + -1, 0x97);
+                param_1->FillRect((long)hp_x + -0xc, (long)hp_y + -2,
+                                  (long)hp_x + -0xc + (hp_int * 0x18) / tot_hp, (long)hp_y + -1, 0x4a);
+            }
+        }
+    }
+}
+
+void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2DF0
+    RGE_Master_Static_Object* master = this->master_obj;
+    RGE_Map* map = this->owner->world->map;
+
+    float rx_small = master->outline_radius_x * 0.25f;
+    float ry_small = master->outline_radius_y * 0.25f;
+    float rz_small = master->outline_radius_z * 0.25f;
+    float rz_large = master->outline_radius_z * 0.75f;
+    float rx = master->outline_radius_x;
+    float ry = master->outline_radius_y;
+    float rz = master->outline_radius_z;
+
+    TPanel* view_panel = rge_base_game->get_view_panel();
+    if (view_panel != nullptr) {
+        param_1->Unlock(nullptr);
+        if (param_1->GetDc(nullptr) != nullptr) {
+            SelectClipRgn((HDC)param_1->DrawDc, (HRGN)view_panel->clip_rgn);
+
+            HGDIOBJ pen = GetStockObject(6);
+            if (((startLoggingAI == 1) && (this->groupCommanderValue == this->id)) && (-1 < this->id)) {
+                pen = GetStockObject(7);
+            }
+            SelectObject((HDC)param_1->DrawDc, pen);
+
+            float neg_ry = -ry;
+            short screen_x = (short)(param_2 + this->screen_x_offset);
+            short screen_y = (short)(param_3 + this->screen_y_offset);
+            short x2 = 0, y2 = 0;
+            short x1 = 0, y1 = 0;
+
+            map->get_point(&x2, &y2, rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, neg_ry, rz_small, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, neg_ry, rz_large, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, neg_ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx_small, neg_ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx_small, neg_ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, -ry_small, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, ry_small, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            SelectClipRgn((HDC)param_1->DrawDc, nullptr);
+            param_1->ReleaseDc(nullptr);
+        }
+        param_1->Lock(nullptr, 1);
+    }
+}
+
+void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C31E0
+    RGE_Master_Static_Object* master = this->master_obj;
+    RGE_Map* map = this->owner->world->map;
+
+    float rx_small = master->outline_radius_x * 0.25f;
+    float ry_small = master->outline_radius_y * 0.25f;
+    float rz_small = master->outline_radius_z * 0.25f;
+    float rz_large = master->outline_radius_z * 0.75f;
+    float rx = master->outline_radius_x;
+    float ry = master->outline_radius_y;
+    float rz = master->outline_radius_z;
+
+    TPanel* view_panel = rge_base_game->get_view_panel();
+    if (view_panel != nullptr) {
+        param_1->Unlock(nullptr);
+        if (param_1->GetDc(nullptr) != nullptr) {
+            SelectClipRgn((HDC)param_1->DrawDc, (HRGN)view_panel->clip_rgn);
+
+            HGDIOBJ pen = GetStockObject(6);
+            if (((startLoggingAI == 1) && (this->groupCommanderValue == this->id)) && (-1 < this->id)) {
+                pen = GetStockObject(7);
+            }
+            SelectObject((HDC)param_1->DrawDc, pen);
+
+            float neg_ry = -ry;
+            short screen_x = (short)(param_2 + this->screen_x_offset);
+            short screen_y = (short)(param_3 + this->screen_y_offset + -0x10);
+            short x2 = 0, y2 = 0;
+            short x1 = 0, y1 = 0;
+
+            map->get_point(&x2, &y2, rx, neg_ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx_small, neg_ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, neg_ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx_small, neg_ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx_small, ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx_small, ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, ry_small, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, neg_ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, -ry_small, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, ry_small, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, neg_ry, rz, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, -ry_small, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, -ry_small, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, ry_small, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx_small, ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx_small, ry, 0.0f, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, ry, rz_small, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, ry, rz_large, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, neg_ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, neg_ry, rz_small, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, -rx, neg_ry, rz_large, screen_x, screen_y);
+            map->get_point(&x1, &y1, -rx, neg_ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, ry, rz_small, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            map->get_point(&x2, &y2, rx, ry, rz_large, screen_x, screen_y);
+            map->get_point(&x1, &y1, rx, ry, rz, screen_x, screen_y);
+            MoveToEx((HDC)param_1->DrawDc, (int)x2, (int)y2, nullptr);
+            LineTo((HDC)param_1->DrawDc, (int)x1, (int)y1);
+
+            SelectClipRgn((HDC)param_1->DrawDc, nullptr);
+            param_1->ReleaseDc(nullptr);
+        }
+        param_1->Lock(nullptr, 1);
+    }
+}
+
+int RGE_Static_Object::get_frame(short* x1, short* y1, short* x2, short* y2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5880
-    if (this->sprite != nullptr && this->sprite_list != nullptr) {
-        return (int)this->sprite_list->get_frame(param_1, param_2, param_3, param_4, this->sprite, (long)(uint)this->facet);
+    if ((this->sprite != nullptr) && (this->sprite_list != nullptr)) {
+        uchar ok = this->sprite_list->get_frame(x1, y1, x2, y2, this->sprite, (long)(uint)this->facet);
+        return (int)(uint)ok;
     }
     return 0;
 }
-
 uchar RGE_Static_Object::update() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3C70
 
@@ -1658,27 +2117,13 @@ uchar RGE_Static_Object::heal(float param_1) {
 }
 int RGE_Static_Object::canRepair() { return 0; }
 void RGE_Static_Object::notify_of_relation(long param_1, uchar param_2) {}
-void RGE_Static_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A450
-}
-void RGE_Static_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A460
-}
-void RGE_Static_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A470
-}
-void RGE_Static_Object::stop() {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A480
-}
-void RGE_Static_Object::set_attack(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A490
-}
-void RGE_Static_Object::play_command_sound() {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4A0
-}
-void RGE_Static_Object::play_move_sound() {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4B0
-}
+void RGE_Static_Object::do_command(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
+void RGE_Static_Object::move_to(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
+void RGE_Static_Object::work(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
+void RGE_Static_Object::stop() {}
+void RGE_Static_Object::set_attack(RGE_Static_Object* /*param_1*/) {}
+void RGE_Static_Object::play_command_sound() {}
+void RGE_Static_Object::play_move_sound() {}
 int RGE_Static_Object::unitIsInGroup(int param_1) {
     // Source of truth: stat_obj.cpp.decomp @ 0x004C7770
     int count = this->groupMembers.numberValue;
@@ -2125,10 +2570,7 @@ RGE_Static_Object* RGE_Static_Object::spawn_death_obj() {
     }
     return nullptr;
 }
-RGE_Master_Static_Object* RGE_Static_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4C0
-    return this->master_obj;
-}
+RGE_Master_Static_Object* RGE_Static_Object::get_command_master(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) { return nullptr; }
 void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D20
     if (this->worker_num < 0xFA) {
@@ -2136,7 +2578,7 @@ void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
     }
     rge_static_set_sleep_flag(this, 0);
 }
-void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* param_1) {
+void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* /*param_1*/) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D40
     if (this->worker_num != 0) {
         this->worker_num = this->worker_num - 1;
@@ -2176,16 +2618,10 @@ void RGE_Static_Object::exit_obj() {
 int RGE_Static_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { return 0; }
 void RGE_Static_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {}
 LOSTBL* RGE_Static_Object::get_los_table() { return nullptr; }
-int RGE_Static_Object::inAttackRange(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x00405D20
-    return 0;
-}
+int RGE_Static_Object::inAttackRange(RGE_Static_Object* /*param_1*/) { return 0; }
 uchar RGE_Static_Object::underAttack() { return 0; }
 void RGE_Static_Object::setUnderAttack(uchar param_1) {}
-float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x00405D30
-    return 1.0f;
-}
+float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* /*param_1*/) { return 1.0f; }
 float RGE_Static_Object::getSpeed() { return 0.0f; }
 float RGE_Static_Object::getAngle() { return 0.0f; }
 float RGE_Static_Object::maximumSpeed() { return 0.0f; }

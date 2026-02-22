@@ -147,6 +147,7 @@ public:
     int get_paused();
     RGE_Player* get_player();
     RGE_Font* get_font(int index);
+    TShape* get_shape(int index);
     TDigital* get_sound(int index);
     unsigned long get_last_max_time();
     unsigned long get_last_world_update_count();

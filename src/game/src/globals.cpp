@@ -9,9 +9,6 @@ extern "C" {
 }
 
 RGE_Base_Game* rge_base_game = nullptr;
-long SDI_Object_ID = -1;
-int SDI_Draw_Line = 0;
-int SDI_Capture_Info = 0;
 int do_draw_log = 0;
 int safe_draw_log = 0;
 char draw_log_name[260] = {0};
@@ -69,6 +66,13 @@ int ENABLE_COMPRESSION = 1;
 int rge_write_error = 0;
 int Map_Update_Suppresion = 0;
 int fog_next_shape = 0;
+
+int SDI_Capture_Info = 0;
+DClipInfo_List* SDI_List = nullptr;
+long SDI_Object_ID = -1;
+int SDI_Draw_Line = 0;
+int SDI_Draw_Level = 0;
+int startLoggingAI = 0;
 
 static int g_rge_handle = -1;
 static unsigned char g_rge_mode = 2;
