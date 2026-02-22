@@ -410,8 +410,8 @@ static int comm_all_players_acknowledged(TCommunications_Handler* comm) {
 }
 
 static int comm_evaluate_player_message(TCommunications_Handler* comm, ulong full_len, uint from_player, ulong execute_on_turn,
-                                       uchar command, uchar sequence, const char* payload, uint payload_len, ulong from_dpid,
-                                       ulong to_dpid) {
+                                        uchar command, uchar sequence, const char* payload, uint payload_len, ulong from_dpid,
+                                        ulong to_dpid) {
     (void)full_len;
     (void)from_dpid;
     (void)to_dpid;
@@ -424,6 +424,32 @@ static int comm_evaluate_player_message(TCommunications_Handler* comm, ulong ful
     case 0x3E: // '>' command
         comm->AddCommand(execute_on_turn, (void*)payload, (ulong)payload_len, (int)from_player, sequence, 0);
         return 1;
+    case 'C': {
+        // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004282C0 (EvaluatePlayerMessage case 0x43)
+        if (payload_len < 0x11) {
+            return 1;
+        }
+
+        const uchar pregame = (uchar)payload[0x10];
+        if (pregame != 0 && comm->PlayerOptions.ProgramState != kCommStateJoinNow) {
+            return 0;
+        }
+
+        if (comm->Chat == nullptr || comm->FriendlyName == nullptr) {
+            return 1;
+        }
+
+        const uint me = comm->Me;
+        const int joinNow = (comm->PlayerOptions.ProgramState == kCommStateJoinNow) ? 1 : 0;
+        if ((joinNow != 0) || (me != 0 && me <= (uint)comm->MaxGamePlayers && payload[me + 1] == 'Y')) {
+            const uint from = (uint)(uchar)payload[0];
+            if (from != 0 && from <= (uint)comm->MaxGamePlayers) {
+                comm->Chat->AddChatMsg(comm->FriendlyName[from].Text, (char*)(payload + 0x11), 0);
+            }
+        }
+
+        return 1;
+    }
     case 'D': {
         if (payload_len >= 8) {
             ulong done_turn = *(const ulong*)(payload + 4);
@@ -1598,6 +1624,96 @@ void TCommunications_Handler::CheckPingTime(int p1) {
             comm_tx_ping(this, p);
         }
     }
+}
+
+void TCommunications_Handler::SendGroupChatMsg(char* param_1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429760
+    uchar destMap[10];
+    memset(destMap, 'N', sizeof(destMap));
+
+    if (this->MaxGamePlayers != 0 && this->Chat != nullptr) {
+        for (uint p = 1; p <= (uint)this->MaxGamePlayers && p < 10; ++p) {
+            if (this->Chat->inChatGroup((int)p) != 0) {
+                destMap[p] = 'Y';
+            }
+        }
+    }
+
+    (void)this->TXChat(this->Me, destMap, param_1);
+}
+
+void TCommunications_Handler::SendChatMsgAll(char* param_1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004297D0
+    uchar destMap[10];
+    memset(destMap, 'N', sizeof(destMap));
+
+    for (uint p = 1; p <= (uint)this->MaxGamePlayers && p < 10; ++p) {
+        destMap[p] = 'Y';
+    }
+
+    (void)this->TXChat(this->Me, destMap, param_1);
+}
+
+void TCommunications_Handler::SendChatMsg(uint param_1, uint param_2, char* param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429810
+    uchar destMap[10];
+    memset(destMap, 'N', sizeof(destMap));
+
+    if (param_2 < 10) {
+        destMap[param_2] = 'Y';
+    }
+
+    (void)this->TXChat(param_1, destMap, param_3);
+}
+
+long TCommunications_Handler::TXChat(uint param_1, uchar* param_2, char* param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429870
+    if (param_3 == nullptr) {
+        return 0;
+    }
+
+    if (this->Multiplayer == 0) {
+        if (this->Chat != nullptr && this->FriendlyName != nullptr && param_1 <= (uint)this->MaxGamePlayers) {
+            this->Chat->AddChatMsg(this->FriendlyName[param_1].Text, param_3, 1);
+        }
+        return 0;
+    }
+
+    if (param_1 > (uint)this->MaxGamePlayers) {
+        return 0x80004005; // E_FAIL
+    }
+
+    unsigned char cht[0x16 + 0x100];
+    memset(cht, 0, sizeof(cht));
+
+    // Build dest map filtered to human players only.
+    for (uint p = 1; p <= (uint)this->MaxGamePlayers && p < 10; ++p) {
+        if (this->IsPlayerHuman(p) != 0 && param_2 != nullptr && param_2[p] == 'Y') {
+            cht[p + 1] = 'Y';
+        } else {
+            cht[p + 1] = 'N';
+        }
+    }
+
+    // Add local chat line if we are one of the destinations.
+    if (this->Chat != nullptr && this->FriendlyName != nullptr &&
+        this->Me != 0 && this->Me <= (uint)this->MaxGamePlayers &&
+        cht[this->Me + 1] == 'Y') {
+        this->Chat->AddChatMsg(this->FriendlyName[param_1].Text, param_3, 1);
+    }
+
+    size_t msgLen = strlen(param_3);
+    if (msgLen > 0xFF) {
+        msgLen = 0xFF;
+    }
+
+    cht[0] = (uchar)param_1;
+    *(uint*)(cht + 0x0C) = (uint)msgLen;
+    cht[0x10] = (this->PlayerOptions.ProgramState == kCommStateJoinNow) ? 1 : 0;
+    strncpy((char*)(cht + 0x11), param_3, msgLen + 1);
+
+    long ret = this->CommOut((uchar)'C', (void*)cht, (long)((uint)msgLen + 0x16), 0);
+    return ret;
 }
 
 void TCommunications_Handler::SendStoredMessages() {
