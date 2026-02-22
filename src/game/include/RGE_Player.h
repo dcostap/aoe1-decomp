@@ -100,6 +100,7 @@ public:
     void unselect_one_object(RGE_Static_Object* param_1);
     void unselect_one_object(short param_1);
     void select_one_object(RGE_Static_Object* param_1);
+    int select_one_object(RGE_Static_Object* param_1, int param_2);
     void select_area(long param_1, long param_2, long param_3, long param_4);
     void unselect_area();
     void unselect_object();

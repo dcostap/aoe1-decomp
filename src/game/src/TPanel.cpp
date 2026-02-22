@@ -1119,6 +1119,31 @@ void TPanel::release_mouse() {
     this->mouse_captured = 0;
 }
 
+int TPanel::bound_point(long* param_1, long* param_2) {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350 (TPanel::bound_point).
+    int iVar1 = 0;
+
+    int iVar2 = this->clip_rect.left + 1;
+    if ((*param_1 < iVar2) || (iVar2 = this->clip_rect.right + -1, iVar2 < *param_1)) {
+        *param_1 = iVar2;
+        iVar1 = 1;
+    }
+
+    iVar2 = this->clip_rect.top + 1;
+    if (*param_2 < iVar2) {
+        *param_2 = iVar2;
+        return 1;
+    }
+
+    iVar2 = this->clip_rect.bottom + -1;
+    if (iVar2 < *param_2) {
+        *param_2 = iVar2;
+        iVar1 = 1;
+    }
+
+    return iVar1;
+}
+
 void TPanel::draw_tree() {
     // Non-original helper (see `ui_core.h`); used by the current simplified game loop.
     // Parent visibility/active state gates child drawing in the original panel system flow.

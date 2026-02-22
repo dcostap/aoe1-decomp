@@ -903,6 +903,14 @@ void RGE_Player::select_one_object(RGE_Static_Object* param_1) {
     }
 }
 
+int RGE_Player::select_one_object(RGE_Static_Object* param_1, int param_2) {
+    // Partially verified. Source of truth: player.cpp.decomp calls select_one_object(obj,0) and checks success.
+    (void)param_2;
+    short before = this->sel_count;
+    this->select_one_object(param_1);
+    return (this->sel_count != before);
+}
+
 void RGE_Player::select_area(long param_1, long param_2, long param_3, long param_4) {
     // Source of truth: player.cpp.decomp @ 0x00471480
     this->selected_start_col = (short)param_1;
