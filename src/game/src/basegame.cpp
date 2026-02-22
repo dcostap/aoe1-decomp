@@ -1895,7 +1895,7 @@ int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) {
     }
 
     if (this->draw_system != nullptr) {
-        // TODO(accuracy): TDrawSystem::HandleSize(p1, p2, p3, p4)
+        this->draw_system->HandleSize(p1, p2, p3, p4);
         // Update prog_info from draw system dimensions if available
         if (this->draw_system->ScreenWidth != 0) {
             this->prog_info->main_wid = this->draw_system->ScreenWidth;
