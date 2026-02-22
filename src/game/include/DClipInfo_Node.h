@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+struct Shape_Info;
+
 struct DClipInfo_Node {
     DClipInfo_Node* Next;
     DClipInfo_Node* NextOnLevel;
