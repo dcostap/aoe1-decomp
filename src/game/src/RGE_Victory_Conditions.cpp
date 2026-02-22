@@ -10,6 +10,7 @@
 #include "../include/RGE_Victory_Entry.h"
 #include "../include/RGE_Victory_Point_Entry.h"
 #include "../include/globals.h"
+#include "../include/mystring.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -993,14 +994,72 @@ uchar RGE_Victory_Conditions::condition_info(long param_1, char** param_2, uchar
 }
 
 char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* param_1) {
-    // TODO(accuracy): map this to the original localized victory text table.
-    static char temp[200];
-    if (param_1 == nullptr) {
-        temp[0] = '\0';
-        return temp;
+    // Fully verified. Source of truth: victory.cpp.decomp @ 0x00532CC0
+    char* description = nullptr;
+    char temp[200];
+
+    temp[0] = '\0';
+    temp[1] = '\0';
+    temp[2] = '\0';
+    temp[3] = '\0';
+
+    switch (param_1->command) {
+    case '\0':
+        sprintf(temp + 4, "Capture %s", param_1->this_obj->master_obj->name);
+        break;
+    case '\x01':
+        sprintf(temp + 4, "Create %d %s", param_1->number, param_1->target_player->master_objects[param_1->obj_type]->name);
+        break;
+    case '\x02':
+        sprintf(temp + 4, "Destroy %s", param_1->this_obj->master_obj->name);
+        break;
+    case '\x03':
+        sprintf(temp + 4,
+                "Destroy %d %s of player %d",
+                param_1->number,
+                param_1->target_player->master_objects[param_1->obj_type]->name,
+                (int)param_1->target_player->id);
+        break;
+    case '\x04':
+        sprintf(temp + 4,
+                "Bring %s to area (%f, %f) - (%f, %f)",
+                param_1->this_obj->master_obj->name,
+                (double)param_1->x0,
+                (double)param_1->y0,
+                (double)param_1->x1,
+                (double)param_1->y1);
+        break;
+    case '\x05':
+        sprintf(temp + 4, "Bring %s to %s", param_1->this_obj->master_obj->name, param_1->target_obj->master_obj->name);
+        break;
+    case '\x06':
+        sprintf(temp + 4, "aqquire %d of attribute %d", param_1->count, param_1->number);
+        break;
+    case '\a':
+        sprintf(temp + 4, "explore %d percent of the map", param_1->count);
+        break;
+    case '\b':
+        sprintf(temp + 4,
+                "Create %d %s in area (%f, %f) - (%f, %f)",
+                param_1->number,
+                param_1->target_player->master_objects[param_1->obj_type]->name,
+                (double)param_1->x0,
+                (double)param_1->y0,
+                (double)param_1->x1,
+                (double)param_1->y1);
+        break;
+    case '\t':
+        sprintf(temp + 4,
+                "Destroy all %s of player %d",
+                param_1->target_player->master_objects[param_1->obj_type]->name,
+                (int)param_1->target_player->id);
+        break;
+    default:
+        break;
     }
-    snprintf(temp, sizeof(temp), "VC cmd=%d group=%d state=%d", (int)param_1->command, (int)param_1->victory_group, (int)param_1->state);
-    return temp;
+
+    getstring(&description, temp + 4);
+    return description;
 }
 
 RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long param_1) {
