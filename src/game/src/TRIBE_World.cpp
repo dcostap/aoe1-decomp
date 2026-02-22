@@ -1,5 +1,6 @@
 #include <time.h>
 #include "../include/TRIBE_World.h"
+#include "../include/TribeAIPlayBook.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Tech.h"
@@ -27,6 +28,7 @@
 #include "../include/TCommunications_Handler.h"
 #include "../include/TSound_Driver.h"
 #include "../include/globals.h"
+#include <new>
 #include <stdlib.h>
 
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
@@ -132,7 +134,7 @@ static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
     delete obj;
 }
 
-// Source of truth: tworld.cpp.decomp @ 0x0052DF40
+// Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052DF60
 TRIBE_World::TRIBE_World() : RGE_Game_World() {
     this->controllingComputerPlayer = 0xFF;
     this->tech = nullptr;
@@ -144,9 +146,18 @@ TRIBE_World::TRIBE_World() : RGE_Game_World() {
     this->countdown_clock = 0.0f;
     this->score_displayed = 0;
 
-    // Original creates TribeAIPlayBook and loads "data\\aoe.ply".
-    // playbook is an AIPlayBook* member on RGE_Game_World at +0xA0.
-    // TODO(accuracy): allocate TribeAIPlayBook and call loadPlays("data\\aoe.ply")
+    AIPlayBook* created_playbook = nullptr;
+    TribeAIPlayBook* tribe_playbook = new (std::nothrow) TribeAIPlayBook();
+    if (tribe_playbook == nullptr) {
+        created_playbook = nullptr;
+    } else {
+        created_playbook = static_cast<AIPlayBook*>(tribe_playbook);
+    }
+
+    this->playbook = created_playbook;
+    if (created_playbook != nullptr) {
+        created_playbook->loadPlays((char*)"data\\aoe.ply");
+    }
 }
 
 // Stub implementations for TRIBE_World virtual methods
