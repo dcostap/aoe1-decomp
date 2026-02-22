@@ -1,6 +1,7 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Map.h"
+#include "../include/RGE_Unified_Visible_Map.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
@@ -1150,18 +1151,186 @@ uchar RGE_Game_World::get_game_state() {
 }
 
 uchar RGE_Game_World::check_game_state() {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005433C0 (audited vs world.cpp.asm).
+    uchar victory_status = 0;
+    int current_allies_ok = 0;
+    int reference_player = 0;
+    long games_won = 0;
+    long games_lost = 0;
+    long games_on = 0;
+
+    // Only iterate real players (index 1..player_num-1). Player 0 is GAIA.
+    for (int i = 1; i < this->player_num; ++i) {
+        victory_status = (this->players != nullptr && this->players[i] != nullptr) ? this->players[i]->check_victory() : '\x02';
+        if (victory_status == '\0') {
+            games_won = games_won + 1;
+            if (reference_player < 1 || current_allies_ok == 0) {
+                current_allies_ok = 1;
+                reference_player = i;
+            } else {
+                // Conquest ally-group check: all remaining "game on" players must be mutual allies and have allied victory enabled.
+                if (this->players != nullptr && this->players[reference_player] != nullptr && this->players[i] != nullptr) {
+                    if (this->players[i]->allied_victory == '\0' ||
+                        this->players[reference_player]->relation(i) != '\0' ||
+                        this->players[i]->relation(reference_player) != '\0') {
+                        current_allies_ok = -1;
+                    }
+                } else {
+                    current_allies_ok = -1;
+                }
+            }
+        } else if (victory_status == '\x01') {
+            games_lost = games_lost + 1;
+        } else if (victory_status == '\x02') {
+            games_on = games_on + 1;
+        }
+    }
+
+    if (games_lost < 1) {
+        uchar conquest_victory = (this->scenario != nullptr) ? this->scenario->victory_conquest : '\0';
+        if (conquest_victory != '\0' &&
+            (((0 < games_on && (0 < current_allies_ok)) || (games_won == 0)))) {
+            this->game_state = '\x01';
+            for (int i = 1; i < this->player_num; ++i) {
+                if (this->players != nullptr && this->players[i] != nullptr) {
+                    this->players[i]->victory_if_game_on();
+                }
+            }
+            this->game_end_condition = '\x01';
+        }
+    } else {
+        this->game_state = '\x01';
+        for (int i = 1; i < this->player_num; ++i) {
+            if (this->players != nullptr && this->players[i] != nullptr) {
+                this->players[i]->loss_if_game_on();
+            }
+        }
+    }
+
+    if ((this->game_state == '\x01') && (-1 < this->campaign) && (rge_base_game != nullptr)) {
+        uchar ok = rge_base_game->set_campaign_info(this->campaign, this->campaign_player, this->campaign_scenario);
+        if (ok == '\0') {
+            this->campaign = -1;
+        } else if (this->players != nullptr && this->players[this->curr_player] != nullptr &&
+                   this->players[this->curr_player]->game_status == '\x01') {
+            rge_base_game->set_campaign_win();
+            return this->game_state;
+        }
+    }
     return this->game_state;
 }
 
 uchar RGE_Game_World::load_world(int param_1) {
-    // TODO: implement
-    return 1;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005420F0 (audited vs world.cpp.asm).
+    const int fd = param_1;
+    uchar saved_game_state = '\0';
+
+    this->game_state = '\x02';
+    this->game_end_condition = '\0';
+
+    rge_read(fd, &this->world_time, 4);
+    rge_read(fd, &this->old_world_time, 4);
+    rge_read(fd, &this->world_time_delta, 4);
+    rge_read(fd, &this->world_time_delta_seconds, 4);
+    rge_read(fd, &this->timer, 4);
+    rge_read(fd, &this->game_speed, 4);
+    rge_read(fd, &this->temp_pause, 1);
+    rge_read(fd, &this->next_object_id, 4);
+    rge_read(fd, &this->next_reusable_object_id, 4);
+    rge_read(fd, &this->random_seed, 4);
+    rge_read(fd, &this->curr_player, 2);
+    rge_read(fd, &this->player_num, 2);
+    rge_read(fd, &saved_game_state, 1);
+    rge_read(fd, &this->campaign, 4);
+    rge_read(fd, &this->campaign_player, 4);
+    rge_read(fd, &this->campaign_scenario, 4);
+    rge_read(fd, &this->player_turn, 4);
+
+    for (int i = 0; i < 9; ++i) {
+        rge_read(fd, &this->player_time_delta[i], 4);
+    }
+
+    this->old_time = 0;
+
+    if (this->map != nullptr) {
+        this->map->load_map(fd);
+    }
+    this->initializePathingSystem();
+
+    this->currentUpdateComputerPlayer = -1;
+
+    if (this->player_num > 0) {
+        this->players = (RGE_Player**)calloc((size_t)this->player_num, sizeof(RGE_Player*));
+        for (int i = 0; i < this->player_num; ++i) {
+            uchar type = 0;
+            rge_read(fd, &type, 1);
+            this->load_player(fd, type, (short)i);
+        }
+    }
+
+    this->update_mutual_allies();
+
+    if (this->map != nullptr && this->map->unified_vis_map != nullptr) {
+        this->map->unified_vis_map->suppress_updates(1);
+    }
+
+    for (int i = 0; i < this->player_num; ++i) {
+        if (this->players != nullptr && this->players[i] != nullptr) {
+            this->players[i]->load_info(fd);
+        }
+    }
+
+    if (this->map != nullptr && this->map->unified_vis_map != nullptr) {
+        this->map->unified_vis_map->suppress_updates(0);
+    }
+
+    this->scenario_init(fd, this);
+
+    if (save_game_version < 7.16f) {
+        this->difficultyLevelValue = -1;
+    } else {
+        rge_read(fd, &this->difficultyLevelValue, 4);
+    }
+
+    if (rge_base_game != nullptr && rge_base_game->singlePlayerGame() != 0) {
+        this->game_speed = rge_base_game->get_game_speed();
+    }
+
+    this->game_state = saved_game_state;
+    return '\x01';
 }
 
 uchar RGE_Game_World::load_game(char* param_1) {
-    // TODO: implement
-    return 1;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542360 (audited vs world.cpp.asm).
+    if (param_1 == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
+        return '\0';
+    }
+
+    world_update_counter = 0;
+    this->del_game_info();
+
+    char tempname[300];
+    memset(tempname, 0, sizeof(tempname));
+    sprintf(tempname, "%s%s", rge_base_game->prog_info->save_dir, param_1);
+
+    int fd = rge_open(tempname, _O_BINARY);
+    if (fd == -1) {
+        return '\0';
+    }
+
+    char version[8];
+    memset(version, 0, sizeof(version));
+    rge_read(fd, version, 8);
+    rge_read(fd, &save_game_version, 4);
+
+    if (memcmp(version, "VER 8.6", 8) != 0) {
+        rge_close(fd);
+        return '\0';
+    }
+
+    this->load_world(fd);
+    rge_close(fd);
+    return '\x01';
 }
 
 uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {

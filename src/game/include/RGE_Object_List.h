@@ -7,6 +7,7 @@ public:
 
     // Virtuals (best-effort)
     virtual void load(uchar param_1, int param_2, RGE_Game_World* param_3); // vt[0] (0x0)
+    void rehook_list();
     void update();
     void draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4);
     RGE_Object_Node* add_node(RGE_Static_Object* param_1);
