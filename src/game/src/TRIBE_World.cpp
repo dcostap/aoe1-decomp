@@ -998,10 +998,6 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
 
         if (objGen != nullptr && tScenario != nullptr) {
             CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator setup begin");
-            int debug_skip_obj_gen = 0;
-            if (rge_base_game != nullptr) {
-                debug_skip_obj_gen = rge_base_game->check_prog_argument((char*)"DEBUGSKIPOBJGEN");
-            }
             int targetArtifacts = tScenario->Get_Multi_Artifacts();
             if (targetArtifacts > 0) {
                 int existingArtifacts = tribe_count_object_type(this, 0x9f, -1);
@@ -1041,14 +1037,9 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
                 this->ruin_count = tribe_count_object_type(this, 0x9e, 0xa3);
             }
 
-            if (debug_skip_obj_gen != 0) {
-                // TODO: STUB: Temporary debug gate to isolate map-start crash near object generation.
-                CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate SKIPPED (DEBUGSKIPOBJGEN)");
-            } else {
-                CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate begin");
-                objGen->generate();
-                CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate done");
-            }
+            CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate begin");
+            objGen->generate();
+            CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator generate done");
             delete objGen;
             objGen = nullptr;
             CUSTOM_DEBUG_LOG("TRIBE_World::new_game object generator deleted");
