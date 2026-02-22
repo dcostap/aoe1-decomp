@@ -123,6 +123,17 @@ void RGE_Campaign_Info::notify_of_scenario_complete() {
     }
 }
 
+void RGE_Campaign_Info::save(int param_1) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044C8A0
+    rge_write(param_1, this, 0xFF);
+    rge_write(param_1, &this->current_scenario, 4);
+    rge_write(param_1, &this->scenario_num, 4);
+    rge_write(param_1, &this->last_scenario, 4);
+    if (this->scenario_num > 0) {
+        rge_write(param_1, this->scenario_info, (int)this->scenario_num);
+    }
+}
+
 long RGE_Person_Info::get_current_campaign() {
     // Source of truth: gameinfo.cpp.decomp @ 0x0044D090
     return this->current_campaign;
@@ -150,6 +161,18 @@ int RGE_Person_Info::open_scenario() {
         return -1;
     }
     return info->open_scenario();
+}
+
+void RGE_Person_Info::save(int param_1) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044CE10
+    rge_write(param_1, this, 0xFF);
+    rge_write(param_1, &this->current_campaign, 4);
+    rge_write(param_1, &this->campaign_info_num, 4);
+    if (this->campaign_info_num > 0) {
+        for (int i = 0; i < this->campaign_info_num; ++i) {
+            this->campaign_info[i]->save(param_1);
+        }
+    }
 }
 
 uchar RGE_Person_Info::set_current_campaign(long param_1) {
@@ -291,12 +314,31 @@ uchar RGE_Game_Info::set_current_scenario(long param_1) {
     return '\0';
 }
 
+void RGE_Game_Info::save(char* param_1) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044D3B0
+    static const char kPifVersion[4] = {'1', '.', '0', '0'};
+
+    strcpy(this->save_filename, param_1);
+
+    int fd = rge_open(param_1, 0x8309, 0x180);
+    if (fd != -1) {
+        rge_write(fd, (void*)kPifVersion, 4);
+        rge_write(fd, this, 4);
+        rge_write(fd, &this->people_num, 4);
+        if (this->people_num > 0) {
+            for (int i = 0; i < this->people_num; ++i) {
+                this->people_info[i]->save(fd);
+            }
+        }
+        rge_close(fd);
+    }
+}
+
 void RGE_Game_Info::notify_of_scenario_complete() {
     // Source of truth: gameinfo.cpp.decomp @ 0x0044DA00
     int idx = (int)this->current_person;
     if (idx >= 0 && idx < this->people_num && this->people_info != nullptr && this->people_info[idx] != nullptr) {
         this->people_info[idx]->notify_of_scenario_complete();
     }
-
-    // TODO(accuracy): original also persists the player info file (PIF) via RGE_Game_Info::save(save_filename).
+    this->save(this->save_filename);
 }

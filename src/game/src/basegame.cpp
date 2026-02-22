@@ -2171,10 +2171,7 @@ uchar RGE_Base_Game::set_campaign_info(long param_1, long param_2, long param_3)
 
 void RGE_Base_Game::set_campaign_win() {
     // Source of truth: basegame.cpp.decomp @ 0x0041CFC0
-    // TODO(accuracy): original also persists the player info file (PIF) via RGE_Game_Info::save().
-    if (this->player_game_info != nullptr) {
-        this->player_game_info->notify_of_scenario_complete();
-    }
+    this->player_game_info->notify_of_scenario_complete();
 }
 
 RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
