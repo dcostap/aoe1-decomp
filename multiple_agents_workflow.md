@@ -38,7 +38,7 @@ git switch -c agent/<short-task-name>
 ```bash
 git status
 git add -A
-git commit -m "Describe the change, don't be vague or too generic"
+git commit -m "Describe the change, don't be vague or too generic. Then, add a more detailed description in the body of the commit message if needed. Include what you did, what you found, and any assumptions or uncertainties."
 ```
 
 Repeat as needed.
@@ -51,18 +51,11 @@ This reduces the chance you break `master` when you finally push.
 
 ```bash
 git fetch origin --prune
-git merge origin/master
+git merge origin/master -m "<description>"
 ```
+Always include the merge message to prevent git from prompting the computer user to open an editor.
 
-If conflicts occur:
-
-* Resolve conflicts in the files.
-* Then:
-
-  ```bash
-  git add -A
-  git commit
-  ```
+Resolve any conflicts locally, and repeat the steps.
 
 ### 5) Update local `master` to latest remote, then merge your task branch into it
 

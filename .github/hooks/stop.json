@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "powershell -ExecutionPolicy Bypass -File .github/hooks/play_done_sound.ps1",
+        "timeout": 10
+      }
+    ]
+  }
+}
