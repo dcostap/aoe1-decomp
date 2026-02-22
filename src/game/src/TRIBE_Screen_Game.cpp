@@ -183,8 +183,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
     this->world_map = (rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr;
     this->runtime.world = (TRIBE_World*)rge_base_game->world;
-    // TODO: STUB: restore real TRIBE_Main_View / TRIBE_Diamond_Map_View path.
-    this->runtime.main_view = this;
+    this->runtime.main_view = nullptr;
     this->runtime.map_view = nullptr;
     this->runtime.chat_line = 0;
     this->runtime.last_item = 0;
@@ -208,6 +207,30 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     long screen_h = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->main_hgt : 0x1e0;
     this->set_ideal_size(screen_w, screen_h);
 
+    // Main in-game view panel (original-style rendering pipeline).
+    // Source of truth intent: view.cpp.decomp @ 0x00535310 (RGE_View::draw) / 0x00536B40 (terrain+objects).
+    this->runtime.main_view = new RGE_View();
+    if (this->runtime.main_view == nullptr ||
+        ((RGE_View*)this->runtime.main_view)->setup(this->render_area, this, 0, 0, screen_w, screen_h, 0) == 0) {
+        delete_panel_safe(this->runtime.main_view);
+        this->runtime.main_view = nullptr;
+        this->error_code = 1;
+        return;
+    }
+    {
+        RGE_View* main_view = (RGE_View*)this->runtime.main_view;
+        main_view->world = (RGE_Game_World*)rge_base_game->world;
+        main_view->player = nullptr;
+        main_view->map = this->world_map;
+        if (main_view->map != nullptr) {
+            main_view->tile_wid = main_view->map->tile_width;
+            main_view->tile_hgt = main_view->map->tile_height;
+            main_view->tile_half_wid = main_view->map->tile_half_width;
+            main_view->tile_half_hgt = main_view->map->tile_half_height;
+            main_view->elev_hgt = main_view->map->elev_height;
+        }
+    }
+
     if (this->world_map != nullptr && this->world_map->map_width > 0 && this->world_map->map_height > 0) {
         long world_pixel_w = (this->world_map->map_width + this->world_map->map_height) * 32;
         long world_pixel_h = (this->world_map->map_width + this->world_map->map_height) * 16;
@@ -221,10 +244,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
     }
 
-    // Constructor parity milestone:
-    // keep fallback view ownership (main_view=this) until TRIBE_Main_View/TRIBE_Diamond_Map_View
-    // object path is wired, but continue with full panel/resource setup below.
-    this->runtime.main_view = this;
+    // NOTE: the view pipeline now owns main in-game render via runtime.main_view.
 
     // Constructor resource parity (partial): load button art assets up front.
     this->runtime.button_unit_pic = load_shape_checked("btnunit.shp", 0xC62A);
@@ -603,8 +623,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->runtime.log_text->set_active(0);
 
     this->runtime.tool_box = nullptr;
-    const int has_real_view_path = (this->runtime.main_view != this) && (this->runtime.main_view != nullptr) && (this->runtime.map_view != nullptr);
-    if (font7 != nullptr && has_real_view_path) {
+    const int has_real_view_path = (this->runtime.main_view != this) && (this->runtime.main_view != nullptr);
+    if (font7 != nullptr && has_real_view_path && this->runtime.map_view != nullptr) {
         this->runtime.tool_box = new RGE_Panel_Tool_Box(
             this->render_area,
             this,
@@ -777,6 +797,18 @@ void TRIBE_Screen_Game::handle_game_update() {
     if (rge_base_game != nullptr && rge_base_game->world != nullptr) {
         this->world_map = rge_base_game->world->map;
         this->runtime.world = (TRIBE_World*)rge_base_game->world;
+        if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
+            RGE_View* v = (RGE_View*)this->runtime.main_view;
+            v->world = (RGE_Game_World*)rge_base_game->world;
+            v->map = this->world_map;
+            if (v->map != nullptr) {
+                v->tile_wid = v->map->tile_width;
+                v->tile_hgt = v->map->tile_height;
+                v->tile_half_wid = v->map->tile_half_width;
+                v->tile_half_hgt = v->map->tile_half_height;
+                v->elev_hgt = v->map->elev_height;
+            }
+        }
     }
 
     TRIBE_Player* player = nullptr;
