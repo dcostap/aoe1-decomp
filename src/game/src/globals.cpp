@@ -61,6 +61,7 @@ int world_update_counter = 0;
 unsigned long* unified_map_offsets[256] = {0};
 int ENABLE_COMPRESSION = 1;
 int rge_write_error = 0;
+int Map_Update_Suppresion = 0;
 int fog_next_shape = 0;
 
 static int g_rge_handle = -1;

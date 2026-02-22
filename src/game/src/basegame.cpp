@@ -1998,6 +1998,11 @@ int RGE_Base_Game::singlePlayerGame() {
     return (int)this->rge_game_options.singlePlayerGameValue;
 }
 
+float RGE_Base_Game::get_game_speed() {
+    // Source of truth: basegame.cpp.decomp @ 0x00422EB0
+    return this->game_speed;
+}
+
 unsigned char RGE_Base_Game::playerVersion(int index) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224C0
     return (unsigned char)(this->rge_game_options.playerCDAndVersionValue[index] >> 1);
@@ -2122,6 +2127,30 @@ void RGE_Base_Game::get_campaign_info(long* param_1, long* param_2, long* param_
     }
     if (param_3 != nullptr) {
         *param_3 = this->player_game_info->get_current_scenario();
+    }
+}
+
+uchar RGE_Base_Game::set_campaign_info(long param_1, long param_2, long param_3) {
+    // Source of truth: basegame.cpp.decomp @ 0x0041CF70
+    if (this->player_game_info == nullptr) {
+        return '\0';
+    }
+
+    if (this->player_game_info->set_current_campaign(param_1) != '\0') {
+        if (this->player_game_info->set_current_person(param_2) != '\0') {
+            if (this->player_game_info->set_current_scenario(param_3) != '\0') {
+                return '\x01';
+            }
+        }
+    }
+    return '\0';
+}
+
+void RGE_Base_Game::set_campaign_win() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041CFC0
+    // TODO(accuracy): original also persists the player info file (PIF) via RGE_Game_Info::save().
+    if (this->player_game_info != nullptr) {
+        this->player_game_info->notify_of_scenario_complete();
     }
 }
 
