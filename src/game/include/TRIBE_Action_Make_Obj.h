@@ -4,6 +4,9 @@
 
 class TRIBE_Action_Make_Obj : public RGE_Action {
 public:
+    TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* param_2);
+    TRIBE_Action_Make_Obj(RGE_Action_Object* param_1, short param_2, int param_3, uchar param_4);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Action_Make_Obj(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)
@@ -29,10 +32,14 @@ public:
     virtual void set_target_obj(RGE_Static_Object* param_1); // vt[21] (0x54)
     virtual void set_target_obj2(RGE_Static_Object* param_1); // vt[22] (0x58)
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
+    void get_info(short* param_1, short* param_2, char* param_3, short param_4);
 
     short obj_id;
     float work_done;
     int unique_id;
     unsigned char pre_paid;
+
+protected:
+    uchar place_obj(RGE_Static_Object** param_1);
 };
 static_assert(sizeof(TRIBE_Action_Make_Obj) == 0x50, "Size mismatch");

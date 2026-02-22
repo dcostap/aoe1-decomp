@@ -21,6 +21,7 @@
 #include "../include/Visible_Resource_Manager.h"
 #include "../include/RGE_Doppleganger_Creator.h"
 #include "../include/globals.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include <cstring>
@@ -363,13 +364,33 @@ void RGE_Static_Object::recycle_out_of_game() {
     }
 }
 void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
-    // TODO: STUB: Minimal in-game draw implementation so the view pipeline can render objects while
-    // per-type draw() overrides are still stubbed (see rge_object_virtual_stubs.cpp).
-    if (param_1 == nullptr) return;
-    if (this->tile == nullptr) return;
-    if (this->object_state >= 7) return;
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C1F30
+    SDI_Object_ID = this->id;
 
-    if (this->sprite_list != nullptr) {
+    if (this->type == 0x19) {
+        // Uses derived object state via fixed offsets (ASM: [this+0xA4], [this+0x8C]).
+        uint mask = 1u << ((uint)(uchar)this->owner->world->curr_player & 0x1F);
+        if ((*(uint*)((unsigned char*)this + 0xA4) & mask) != 0) {
+            SDI_Object_ID = -1;
+            return;
+        }
+
+        void* ptr = *(void**)((unsigned char*)this + 0x8C);
+        if (ptr == nullptr) {
+            SDI_Object_ID = -1;
+        } else {
+            SDI_Object_ID = *(long*)((unsigned char*)ptr + 4);
+        }
+    }
+
+    if (this->tile != nullptr && this->object_state < 7) {
+        if (this->selected != 0 ||
+            rge_base_game->outline_type == 3 ||
+            (((this->master_obj->draw_flag & 1) == 1) && (rge_base_game->prog_mode == 7))) {
+            this->capture_frame(param_1, param_2, param_3);
+        }
+
+        SDI_Draw_Line = (int)param_3 + (int)this->shadow_y_offset;
         this->sprite_list->draw(
             (short)this->facet,
             (short)(this->screen_x_offset + param_2),
@@ -378,26 +399,155 @@ void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, R
             (short)(this->shadow_y_offset + param_3),
             param_4,
             param_1);
+    }
+
+    SDI_Object_ID = -1;
+}
+
+void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2030
+    if (this->tile != nullptr && this->object_state < 7) {
+        RGE_Color_Table* table = this->owner->color_table;
+        this->sprite_list->shadow_draw(
+            (short)this->facet,
+            (short)(this->shadow_x_offset + param_2),
+            (short)(this->shadow_y_offset + param_3),
+            table,
+            param_1,
+            param_4);
+    }
+}
+
+void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2080
+    if (this->tile != nullptr && this->object_state < 7) {
+        bool draw_frames = (this->selected != 0 || rge_base_game->outline_type == 3);
+        if (draw_frames) {
+            this->draw_back_frame(param_1, param_2, param_3);
+        }
+
+        RGE_Color_Table* table = this->owner->color_table;
+        this->sprite_list->normal_draw(
+            (short)this->facet,
+            (short)(this->screen_x_offset + param_2),
+            (short)(this->screen_y_offset + param_3),
+            table,
+            param_1);
+
+        if (draw_frames) {
+            this->draw_front_frame(param_1, param_2, param_3);
+        }
+    }
+}
+
+// TODO: STUB - needed by draw_front_frame/draw_back_frame, not yet transliterated (stat_obj.cpp.decomp).
+static void rge_static_draw_frame_3d_cube_front(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
+static void rge_static_draw_frame_3d_cube_back(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
+static void rge_static_draw_frame_3d_square_front(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
+static void rge_static_draw_frame_3d_square_back(RGE_Static_Object* this_, TDrawArea* param_1, short param_2, short param_3) {}
+
+void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2110
+    if (rge_base_game->game_mode == 1) {
+        rge_static_draw_frame_3d_cube_front(this, param_1, param_2, param_3);
         return;
     }
 
-    // TODO: STUB: fallback for partially-initialized objects (sprite_list is expected in-game).
-    RGE_Sprite* spr = this->sprite;
-    if (spr == nullptr && this->master_obj != nullptr) {
-        spr = this->master_obj->sprite;
-    }
-    if (spr != nullptr) {
-        spr->draw((long)this->facet, 0,
-            (long)(this->screen_x_offset + param_2), (long)(this->screen_y_offset + param_3),
-            (long)(this->screen_x_offset + param_2), (long)(this->screen_y_offset + param_3),
-            param_4, param_1, 0);
+    switch (rge_base_game->outline_type) {
+    case 0:
+        this->draw_frame(param_1, param_2, param_3);
+        return;
+    case 1:
+        rge_static_draw_frame_3d_cube_front(this, param_1, param_2, param_3);
+        return;
+    case 2:
+    case 3:
+        rge_static_draw_frame_3d_square_front(this, param_1, param_2, param_3);
+        return;
+    default:
+        return;
     }
 }
-void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {}
-void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {}
-void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {}
-void RGE_Static_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) {}
-void RGE_Static_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) {}
+
+void RGE_Static_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C21A0
+    if (rge_base_game->game_mode == 1) {
+        rge_static_draw_frame_3d_cube_back(this, param_1, param_2, param_3);
+        return;
+    }
+
+    switch (rge_base_game->outline_type) {
+    case 1:
+        rge_static_draw_frame_3d_cube_back(this, param_1, param_2, param_3);
+        return;
+    case 2:
+    case 3:
+        rge_static_draw_frame_3d_square_back(this, param_1, param_2, param_3);
+        return;
+    default:
+        return;
+    }
+}
+
+void RGE_Static_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C3B30
+    if (this->sprite != nullptr && this->sprite_list != nullptr) {
+        this->sprite_list->get_facetindex(this->sprite, (short)this->facet);
+
+        short min_x = 0;
+        short min_y = 0;
+        short max_x = 0;
+        short max_y = 0;
+        if (this->get_frame(&min_x, &min_y, &max_x, &max_y) != 0) {
+            int left = (int)this->screen_x_offset + (int)param_2 + (int)min_x - 1;
+            int top = (int)this->screen_y_offset + (int)param_3 + (int)min_y - 1;
+            int right = (int)this->screen_x_offset + (int)param_2 + (int)max_x + 1;
+            int bottom = (int)this->screen_y_offset + (int)param_3 + (int)max_y + 1;
+
+            param_1->DrawRect(left, top, right, bottom, 0xFF);
+
+            if (this->object_state < 3) {
+                int hp_value = (int)this->hp;
+                if (hp_value < 1) {
+                    hp_value = 0;
+                }
+
+                int tot_hp = (int)this->master_obj->hp;
+                if (0 < tot_hp) {
+                    int bar_top = top - 6;
+                    param_1->DrawRect(left, bar_top, left + 0x1A, bar_top + 5, 0xFF);
+
+                    int inner_left = left + 1;
+                    int inner_top = bar_top + 1;
+                    int inner_right = left + 0x18;
+                    int inner_bottom = bar_top + 3;
+                    param_1->FillRect(inner_left, inner_top, inner_right, inner_bottom, (uchar)0x55);
+
+                    int fill_amount = (int)(((long long)hp_value * 0x19LL) / (long long)tot_hp);
+                    int fill_right = inner_left + fill_amount - 1;
+                    param_1->FillRect(inner_left, inner_top, fill_right, bar_top + 4, (uchar)0x25);
+                }
+            }
+        }
+    }
+}
+
+void RGE_Static_Object::capture_frame(TDrawArea* param_1, short param_2, short param_3) {
+    // TODO: STUB - selection/outline capture uses SDI_List/DClipInfo_List; not yet transliterated here.
+    // Source of truth: stat_obj.cpp.asm @ 0x004C2220.
+    if (SDI_Capture_Info == 0) {
+        return;
+    }
+}
+
+int RGE_Static_Object::get_frame(short* param_1, short* param_2, short* param_3, short* param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5880
+    if (this->sprite != nullptr && this->sprite_list != nullptr) {
+        return (int)this->sprite_list->get_frame(param_1, param_2, param_3, param_4, this->sprite, (long)(uint)this->facet);
+    }
+    return 0;
+}
+
 uchar RGE_Static_Object::update() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3C70
 
@@ -1508,13 +1658,27 @@ uchar RGE_Static_Object::heal(float param_1) {
 }
 int RGE_Static_Object::canRepair() { return 0; }
 void RGE_Static_Object::notify_of_relation(long param_1, uchar param_2) {}
-void RGE_Static_Object::do_command(float param_1, float param_2, float param_3) {}
-void RGE_Static_Object::move_to(float param_1, float param_2, float param_3) {}
-void RGE_Static_Object::work(float param_1, float param_2, float param_3) {}
-void RGE_Static_Object::stop() {}
-void RGE_Static_Object::set_attack() {}
-void RGE_Static_Object::play_command_sound() {}
-void RGE_Static_Object::play_move_sound() {}
+void RGE_Static_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A450
+}
+void RGE_Static_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A460
+}
+void RGE_Static_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A470
+}
+void RGE_Static_Object::stop() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A480
+}
+void RGE_Static_Object::set_attack(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A490
+}
+void RGE_Static_Object::play_command_sound() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4A0
+}
+void RGE_Static_Object::play_move_sound() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4B0
+}
 int RGE_Static_Object::unitIsInGroup(int param_1) {
     // Source of truth: stat_obj.cpp.decomp @ 0x004C7770
     int count = this->groupMembers.numberValue;
@@ -1961,7 +2125,10 @@ RGE_Static_Object* RGE_Static_Object::spawn_death_obj() {
     }
     return nullptr;
 }
-RGE_Master_Static_Object* RGE_Static_Object::get_command_master(float param_1, float param_2, float param_3) { return nullptr; }
+RGE_Master_Static_Object* RGE_Static_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4C0
+    return this->master_obj;
+}
 void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D20
     if (this->worker_num < 0xFA) {
@@ -1969,7 +2136,7 @@ void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
     }
     rge_static_set_sleep_flag(this, 0);
 }
-void RGE_Static_Object::release_being_worked_on() {
+void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D40
     if (this->worker_num != 0) {
         this->worker_num = this->worker_num - 1;
@@ -2009,10 +2176,16 @@ void RGE_Static_Object::exit_obj() {
 int RGE_Static_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { return 0; }
 void RGE_Static_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {}
 LOSTBL* RGE_Static_Object::get_los_table() { return nullptr; }
-int RGE_Static_Object::inAttackRange() { return 0; }
+int RGE_Static_Object::inAttackRange(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x00405D20
+    return 0;
+}
 uchar RGE_Static_Object::underAttack() { return 0; }
 void RGE_Static_Object::setUnderAttack(uchar param_1) {}
-float RGE_Static_Object::calc_attack_modifier() { return 1.0f; }
+float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x00405D30
+    return 1.0f;
+}
 float RGE_Static_Object::getSpeed() { return 0.0f; }
 float RGE_Static_Object::getAngle() { return 0.0f; }
 float RGE_Static_Object::maximumSpeed() { return 0.0f; }

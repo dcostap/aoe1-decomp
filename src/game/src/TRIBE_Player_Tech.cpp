@@ -133,6 +133,26 @@ uchar TRIBE_Player_Tech::research(short param_1, float param_2) {
     return 0;
 }
 
+// Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D0FA
+short TRIBE_Player_Tech::get_progress(short param_1) {
+    if (this->tech_player_tree[param_1].state == 2) {
+        short research_required = this->base_tech->tech_tree[param_1].research;
+        if (research_required > 0) {
+            return (short)((this->tech_player_tree[param_1].research_done * 100.0f) / (float)research_required);
+        }
+        return 100;
+    }
+    if (this->tech_player_tree[param_1].state == 3) {
+        return 100;
+    }
+    return 0;
+}
+
+// Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D178
+char* TRIBE_Player_Tech::get_name(short param_1) {
+    return this->base_tech->tech_tree[param_1].name;
+}
+
 uchar TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2) {
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050CA9E
     Tech_Tree* tt = this->base_tech->tech_tree;
@@ -199,6 +219,26 @@ uchar TRIBE_Player_Tech::start_research(short param_1, uchar param_2, short* par
         this->tech_player_tree[param_1].state = 2;
     }
     return 1;
+}
+
+// Fully verified. Source of truth: bucket_050C.decomp @ 0x0050CD73
+uchar TRIBE_Player_Tech::cancel_research(short param_1, uchar param_2) {
+    Tech_Tree* tt = this->base_tech->tech_tree;
+    if (this->tech_player_tree[param_1].state == 2) {
+        if (param_2 != 0) {
+            for (short i = 0; i < 3; ++i) {
+                int attr_index = (int)tt[param_1].attribute[i];
+                if ((attr_index >= 0) && (tt[param_1].attribute_used[i] != 0)) {
+                    this->owner->attributes[attr_index] =
+                        this->owner->attributes[attr_index] + (float)(int)tt[param_1].attribute_cost[i];
+                }
+            }
+        }
+        this->tech_player_tree[param_1].state = 1;
+        this->tech_player_tree[param_1].research_done = 0.0f;
+        return 1;
+    }
+    return 0;
 }
 
 void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3, short* param_4, short* param_5, short* param_6, short* param_7) {
