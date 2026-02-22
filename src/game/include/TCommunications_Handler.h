@@ -2,10 +2,28 @@
 #include "common.h"
 
 enum COMMSTATUS {
-    COMM_NONE = 0,
-    COMM_IDLE = 1,
-    COMM_ACTIVE = 2,
-    // ... more values based on ASM
+    // Source of truth: com_hand.cpp.asm AnalyzeCommunicationsStatus @ 0x0042C690
+    UNINITIALIZED = 0,
+    INITIALIZED = 1,
+    SINGLE_PLAYER = 2,
+    MULTIPLAYER_RESET = 3,
+    CONVERSATION_OPEN = 4,
+    SERVICE_AVAILABLE = 5,
+    SESSION_AVAILABLE = 6,
+    SESSION_HOSTED = 7,
+    COMM_UNKNOWN_8 = 8,
+    PLAYER_CREATED = 9,
+    GAME_PLAYER_SET = 10,
+    COMM_SETTINGS_EXCHANGED = 11,
+    GAME_OPTIONS_EXCHANGED = 12,
+    GAME_IS_LOADING = 13,
+    GAME_IS_RUNNING = 14,
+    GAME_IS_PAUSED = 15,
+
+    // Legacy aliases used by the decomp stub code.
+    COMM_NONE = UNINITIALIZED,
+    COMM_IDLE = INITIALIZED,
+    COMM_ACTIVE = SINGLE_PLAYER,
 };
 
 struct TChat;
@@ -21,7 +39,36 @@ struct RESENDER;
 struct HOLDER;
 #pragma pack(push, 1)
 struct COMMPLAYEROPTIONS {
-    char data[464]; // Adjusted size
+    // Source of truth: all_types_ground_truth.h :: COMMPLAYEROPTIONS (Size: 0x1D0)
+    uchar NeedsToBeSent;               // +0x0000
+    uchar _pad_0[3];                   // +0x0001
+    ulong LastSentTime;                // +0x0004
+    int ProgramState;                  // +0x0008 (COMMSTATES)
+    ulong CurrentTurn;                 // +0x000C
+    uchar TurnSpeedMsec;               // +0x0010
+    uchar _pad_1[3];                   // +0x0011
+    ulong dcoID[10];                   // +0x0014
+    ulong AcknowledgeAfterMsec;        // +0x003C
+    uchar CommandTurnIncrement;        // +0x0040
+    uchar _pad_2[3];                   // +0x0041
+    int PlayerReady[10];               // +0x0044
+    ulong User1[10];                   // +0x006C
+    ulong User2[10];                   // +0x0094
+    ulong User3[10];                   // +0x00BC
+    ulong User4[10];                   // +0x00E4
+    ulong User5[10];                   // +0x010C
+    ulong User6[10];                   // +0x0134
+    ulong User7[10];                   // +0x015C
+    int Humanity[10];                  // +0x0184 (PLAYERHUMANITY)
+    uchar InvalidPlayer[10];           // +0x01AC
+    uchar _pad_3[2];                   // +0x01B6
+    ulong Initialized;                 // +0x01B8
+    ulong RandomSeed;                  // +0x01BC
+    ushort HighPlayerNumber;           // +0x01C0
+    ushort LowPlayerNumber;            // +0x01C2
+    uint HostPlayerNumber;             // +0x01C4
+    int GameHasStarted;                // +0x01C8
+    ulong DataSizeToFollow;            // +0x01CC
 };
 
 #pragma pack(pop)
@@ -29,6 +76,9 @@ struct COMMPLAYEROPTIONS {
 #pragma pack(push, 4)
 class TCommunications_Handler {
 public:
+    TCommunications_Handler(void* host_hwnd, uchar max_game_players);
+    ~TCommunications_Handler();
+
     int IsPaused();
     int IsHost();
     int AllPlayersReady();
@@ -66,7 +116,18 @@ public:
     void ShutdownGameMessages();
     int CountWaitingMessages();
     void GameOver();
+    COMMSTATUS GetCommunicationsStatus();
+    COMMSTATUS AnalyzeCommunicationsStatus();
+    COMMSTATUS UnlinkCurrentLevel();
     COMMSTATUS UnlinkToLevel(COMMSTATUS level);
+    void ClearAllSerialNumbers();
+    int Kick(uint player_number);
+    void DropAllHostedPlayers();
+    void ReleaseSettings();
+    long CloseSession();
+    long ReleaseComm();
+    long DestroyMyPlayer();
+    void FreeOptions();
     void* get_command();
     uchar new_command(void* p1, int p2);
     int NewCommand(void* p1, int p2, int p3);

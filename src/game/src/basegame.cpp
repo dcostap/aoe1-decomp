@@ -2175,17 +2175,8 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
 int RGE_Base_Game::setup_chat() { return 1; }
 int RGE_Base_Game::setup_comm() {
     // Source of truth: basegame.cpp.decomp @ 0x0041EE90
-    // TODO: STUB: full TCommunications_Handler ctor parity is not restored yet.
-    // Minimal safe comm bootstrap for SP startup paths that require non-null comm_handler.
-    TCommunications_Handler* handler = new TCommunications_Handler();
-    if (handler == nullptr) {
-        this->comm_handler = nullptr;
-        comm = nullptr;
-        return 0;
-    }
-
-    memset(handler, 0, sizeof(TCommunications_Handler));
-
+    // NOTE: This used to memset a default-constructed handler (temporary stub).
+    // Now that we have a real comm handler ctor, we must not clobber its internal allocations/state.
     ushort max_players = 8;
     if (this->prog_info != nullptr && this->prog_info->max_players > 0) {
         max_players = (ushort)this->prog_info->max_players;
@@ -2194,18 +2185,22 @@ int RGE_Base_Game::setup_comm() {
         max_players = 9;
     }
 
-    handler->HostHWND = this->prog_window;
-    handler->MaxGamePlayers = max_players;
+    TCommunications_Handler* handler = new TCommunications_Handler(this->prog_window, (uchar)max_players);
+    if (handler == nullptr) {
+        this->comm_handler = nullptr;
+        comm = nullptr;
+        return 0;
+    }
+
     handler->Me = 1;
     handler->Multiplayer = (this->rge_game_options.multiplayerGameValue != 0) ? 1 : 0;
     handler->MeHost = (handler->Multiplayer == 0) ? 1 : 0;
     handler->CommunicationsStatus = COMM_IDLE;
 
     // Default SP humanity profile expected by create_game() mapping pass.
-    int* humanity = (int*)((char*)&handler->PlayerOptions + 0x184);
-    humanity[1] = 2;
+    handler->PlayerOptions.Humanity[1] = 2;
     for (int i = 2; i < 10; ++i) {
-        humanity[i] = 4;
+        handler->PlayerOptions.Humanity[i] = 4;
     }
 
     this->comm_handler = handler;
