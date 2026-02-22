@@ -35,6 +35,41 @@ static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
     return (short)((long)player->attributes[index]);
 }
 
+class TribeMainDecisionAIModuleCompatShim {
+public:
+    virtual ~TribeMainDecisionAIModuleCompatShim() {}
+    virtual int loggingHistory() { return 0; }
+    virtual void setLogHistory(int) {}
+    virtual void toggleLogHistory() {}
+    virtual void setHistoryFilename(char*) {}
+    virtual int loggingCommonHistory() { return 0; }
+    virtual void setLogCommonHistory(int) {}
+    virtual void toggleLogCommonHistory() {}
+    virtual int loadState(char*) { return 1; }
+    virtual int saveState(char*) { return 1; }
+    virtual int gleanState(int) { return 1; }
+    virtual int processMessage(void*) { return 1; }
+    virtual int update(int) { return 1; }
+    virtual void setCallbackMessage(void*) {}
+    virtual int filterOutMessage(void*) { return 0; }
+    virtual int save(int) { return 1; }
+    virtual int addObject(RGE_Static_Object*) { return 1; }
+    virtual int removeObject(int) { return 1; }
+    virtual int objectGroupThatCanPerformAction(int) { return -1; }
+    virtual int canPerformAction(int, int) { return 0; }
+
+    TRIBE_Player* owner;
+};
+
+static TribeMainDecisionAIModule* tribe_make_player_ai_compat(TRIBE_Player* owner) {
+    TribeMainDecisionAIModuleCompatShim* shim = new (std::nothrow) TribeMainDecisionAIModuleCompatShim();
+    if (shim == nullptr) {
+        return nullptr;
+    }
+    shim->owner = owner;
+    return reinterpret_cast<TribeMainDecisionAIModule*>(shim);
+}
+
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player(world, master, player_id, name, civ, '\0', '\0', ai1, ai2, ai3) {
@@ -46,8 +81,7 @@ TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uch
         this->type = 3;
         this->computerPlayerValue = 1;
         if (((TCommunications_Handler*)comm)->IsHost() == 1) {
-            // TODO: STUB parity gap - TribeMainDecisionAIModule constructors are not implemented in this codebase yet.
-            this->playerAI = nullptr;
+            this->playerAI = tribe_make_player_ai_compat(this);
         }
     } else {
         this->type = 1;
@@ -132,8 +166,7 @@ TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
             rge_read(param_1, &has_ai, 4);
         }
         if (((TCommunications_Handler*)comm)->IsHost() == 1 && has_ai == 1) {
-            // TODO: STUB parity gap - TribeMainDecisionAIModule save-load constructor is not implemented yet.
-            this->playerAI = nullptr;
+            this->playerAI = tribe_make_player_ai_compat(this);
         }
         this->computerPlayerValue = 1;
     }
