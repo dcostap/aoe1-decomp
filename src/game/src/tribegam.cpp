@@ -528,17 +528,17 @@ void encrypt_codes(char* in, char* out, int max_len) {
 int TRIBE_Game::setup_cmd_options() {
     // Source of truth: tribegam.cpp.decomp @ 0x00521FA0
     char cmd_line_and_temp[512];
-    char* cmd_line = cmd_line_and_temp;
+    char* cmd_line = cmd_line_and_temp + 4;
     char* temp_str = cmd_line_and_temp + 0x100;
     char encstr[512];
 
-    strncpy(cmd_line + 4, this->prog_info->cmd_line, 0xff);
+    strncpy(cmd_line, this->prog_info->cmd_line, 0xff);
     temp_str[3] = '\0';
-    CharUpperA(cmd_line + 4);
+    CharUpperA(cmd_line);
 
-    encrypt_codes(cmd_line + 4, encstr, 0x200);
+    encrypt_codes(cmd_line, encstr, 0x200);
 
-    if (strstr(cmd_line + 4, "NOTERRAINSOUND") != nullptr) {
+    if (strstr(cmd_line, "NOTERRAINSOUND") != nullptr) {
         disable_terrain_sounds = 1;
     }
 
@@ -571,11 +571,11 @@ int TRIBE_Game::setup_cmd_options() {
         this->setPopLimit((unsigned char)iVar2);
     }
 
-    if (strstr(cmd_line + 4, "QUICK1") != nullptr) {
+    if (strstr(cmd_line, "QUICK1") != nullptr) {
         quick_start_game_mode = 1;
     }
 
-    pcVar3 = strstr(cmd_line + 4, "SCN=");
+    pcVar3 = strstr(cmd_line, "SCN=");
     if (pcVar3 != nullptr) {
         char cVar1 = *pcVar3;
         while (cVar1 != '=') {
@@ -594,7 +594,7 @@ int TRIBE_Game::setup_cmd_options() {
         this->startup_scenario[iVar2] = '\0';
     }
 
-    pcVar3 = strstr(cmd_line + 4, "EXIT=");
+    pcVar3 = strstr(cmd_line, "EXIT=");
     if (pcVar3 != nullptr) {
         char cVar1 = *pcVar3;
         while (cVar1 != '=') {
@@ -614,7 +614,7 @@ int TRIBE_Game::setup_cmd_options() {
         this->auto_exit_time = (ulong)atol(temp_str);
     }
 
-    pcVar3 = strstr(cmd_line + 4, "GAM=");
+    pcVar3 = strstr(cmd_line, "GAM=");
     if (pcVar3 != nullptr) {
         char cVar1 = *pcVar3;
         while (cVar1 != '=') {
