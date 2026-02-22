@@ -148,6 +148,7 @@ public:
     int removeFromObstructionMap(int param_1);
     RGE_Static_Object* get_object_pointer(long param_1);
     RGE_Sprite* get_sprite_pointer(short param_1);
+    void change_unique_id();
     void get_starting_attribute();
     void give_attribute_to_owner();
     void take_attribute_from_owner();
