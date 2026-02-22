@@ -130,7 +130,7 @@ if errorlevel 1 (
 )
 
 set "OBJECT_LIST="
-set "CHANGED_SOURCES="
+set "CHANGED_SOURCES_RSP="
 set /a SOURCE_COUNT=0
 set /a CHANGED_COUNT=0
 set /a EXCLUDED_COUNT=0
@@ -149,10 +149,11 @@ if !CHANGED_COUNT! GTR 0 (
     ) else (
         echo [2/3] Compiling !CHANGED_COUNT! changed source file^(s^)...
     )
+
     cl /nologo /c /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ /MP /FS ^
        /I"%INC_DIR%" /I"%DP_INC%" ^
        /Fo"%OBJ_DIR%\\" /Fd"%OBJ_DIR%\empiresx.pdb" ^
-       !CHANGED_SOURCES!
+       @"!CHANGED_SOURCES_RSP!"
     if errorlevel 1 (
         echo.
         echo Compilation FAILED!
@@ -173,16 +174,16 @@ if "%RES_CHANGED%"=="1" set "NEED_LINK=1"
 if "%NEED_LINK%"=="1" (
     echo [3/3] Linking...
      link /nologo /DEBUG /INCREMENTAL /OUT:"%OUT_EXE%" ^
-          !OBJECT_LIST! ^
-          /LIBPATH:"%DP_LIB%" ^
-          kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
-          ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib vfw32.lib ws2_32.lib
-     if errorlevel 1 (
-         echo.
-         echo Link FAILED!
-         popd
-         exit /b 1
-     )
+           !OBJECT_LIST! ^
+           /LIBPATH:"%DP_LIB%" ^
+           kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
+           ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib vfw32.lib ws2_32.lib imm32.lib
+      if errorlevel 1 (
+          echo.
+          echo Link FAILED!
+          popd
+          exit /b 1
+      )
 ) else (
     echo [3/3] Link is up to date.
 )
