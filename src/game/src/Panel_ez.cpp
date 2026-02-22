@@ -807,6 +807,16 @@ void TEasy_Panel::clear_popup_help() {
     }
 }
 
+char* TEasy_Panel::get_popup_info_file() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468440
+    return this->popup_info_file_name;
+}
+
+long TEasy_Panel::get_popup_info_id() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468450
+    return this->popup_info_id;
+}
+
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
     // Source of truth: `Panel_ez.cpp.decomp` (`TEasy_Panel::setup_shadow_area`).
     if (!this->allow_shadow_area) return;

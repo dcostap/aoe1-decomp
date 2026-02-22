@@ -146,6 +146,8 @@ public:
     void close();
     int get_paused();
     RGE_Player* get_player();
+    int create_dialog(TPanel** out_dialog, TPanel* dialog);
+    void delete_dialog(TPanel** dialog);
     RGE_Font* get_font(int index);
     TShape* get_shape(int index);
     TDigital* get_sound(int index);

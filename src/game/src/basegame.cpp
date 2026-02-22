@@ -1055,6 +1055,32 @@ RGE_Player* RGE_Base_Game::get_player() {
     return this->world->players[this->world->curr_player];
 }
 
+int RGE_Base_Game::create_dialog(TPanel** out_dialog, TPanel* dialog) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004200D0
+    if (out_dialog) {
+        *out_dialog = nullptr;
+    }
+    if (dialog == nullptr) {
+        return 0;
+    }
+    if (dialog->error_code != 0) {
+        delete dialog;
+        return 0;
+    }
+    if (out_dialog) {
+        *out_dialog = dialog;
+    }
+    return 1;
+}
+
+void RGE_Base_Game::delete_dialog(TPanel** dialog) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420110
+    if (dialog != nullptr && *dialog != nullptr) {
+        delete *dialog;
+        *dialog = nullptr;
+    }
+}
+
 TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }

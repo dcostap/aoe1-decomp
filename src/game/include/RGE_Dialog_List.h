@@ -1,9 +1,15 @@
 #pragma once
 #include "common.h"
 #include "TListDialog.h"
+#include "rdlg_list_info.h"
+
+class TScreenPanel;
 
 class RGE_Dialog_List : public TListDialog {
 public:
+    RGE_Dialog_List(char* name);
+    int setup(TScreenPanel* screen, char* popup_file, long popup_id, int list_type, char* title);
+
     // Virtuals (best-effort)
     virtual ~RGE_Dialog_List(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
