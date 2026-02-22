@@ -1241,6 +1241,25 @@ void TDrawArea::DrawVertLine(long x, long y, long len, uchar color) {
     }
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x004457E0
+void TDrawArea::SetPixel(long x, long y, uchar color) {
+    if (!this->Bits) return;
+    if (x < this->ClipRect.left || x > this->ClipRect.right) return;
+    if (y < this->ClipRect.top || y > this->ClipRect.bottom) return;
+
+    int bytes_per_pixel = drawarea_bytes_per_pixel(this);
+    unsigned long px = drawarea_index_to_pixel_locked(this, color);
+
+    int off;
+    if (this->Orien == 1) {
+        off = (int)(this->Pitch * y);
+    } else {
+        off = (int)(((this->Height - y) - 1) * this->Pitch);
+    }
+
+    drawarea_store_pixel(this->Bits + off + x * bytes_per_pixel, bytes_per_pixel, px);
+}
+
 void TDrawArea::DrawRect(long x1, long y1, long x2, long y2, uchar color) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);

@@ -26,6 +26,11 @@ static long picture_aligned_width(long width) {
     return (width + 3L) & ~3L;
 }
 
+long TPicture::AlignedWidth() {
+    // Fully verified. Source of truth: picture.cpp.decomp (usage from diam_map.cpp.decomp @ 0x00436A10).
+    return picture_aligned_width(this->Width);
+}
+
 static int picture_alloc_8bit(TPicture* pic, long width, long height) {
     if (!pic || width < 1 || height < 1) return 0;
 

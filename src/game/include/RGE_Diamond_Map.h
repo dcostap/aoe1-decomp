@@ -4,10 +4,13 @@
 
 struct RGE_Map_Image_Line;
 struct RGE_Map_Tile_Row;
+struct RGE_Tile;
 class RGE_View;
 
 class RGE_Diamond_Map : public TPanel {
 public:
+    RGE_Diamond_Map();
+
     // Virtuals (best-effort)
     virtual ~RGE_Diamond_Map(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
@@ -70,6 +73,27 @@ public:
     virtual void draw_visible_object(RGE_Static_Object* param_1, uchar param_2, uchar param_3); // vt[58] (0xE8)
     virtual void draw_object(short param_1, short param_2, uchar param_3, short param_4, RGE_Static_Object* param_5); // vt[59] (0xEC)
     virtual void draw_view_rect(); // vt[60] (0xF0)
+
+    // Non-virtual helpers (source of truth: diam_map.cpp.decomp / diam_map.cpp.asm)
+    long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, TDrawArea* param_9);
+    int set_bitmap(char* param_1, long param_2);
+    void set_world(RGE_Game_World* param_1);
+    void set_player(RGE_Player* param_1);
+    void delete_surfaces();
+    int create_surfaces();
+
+    int pick_tile(long param_1, long param_2, short* param_3, short* param_4, RGE_Tile** param_5);
+    void start_scroll_view(long param_1, long param_2);
+    void handle_scroll_view(long param_1, long param_2);
+    void end_scroll_view();
+
+protected:
+    void clear_image();
+    void copy_image();
+    void draw_all_tiles();
+    void draw_explored_tiles();
+    void draw_tile(short param_1, short param_2, int param_3, uchar param_4);
+    void draw_clipped_horz_line(short param_1, short param_2, short param_3, uchar param_4, RGE_Map_Image_Line* param_5);
 
     RGE_Game_World* world;
     RGE_Player* player;

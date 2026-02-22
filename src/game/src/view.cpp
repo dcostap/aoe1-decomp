@@ -316,6 +316,93 @@ void RGE_View::end_scroll_view() {} // TODO: STUB
 int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; } // TODO: STUB
 void RGE_View::draw_multi_object_outline() {} // TODO: STUB
 
+int RGE_View::get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005345D0
+    *col1 = this->sel_col1;
+    *row1 = this->sel_row1;
+    *col2 = this->sel_col2;
+    int r2 = (int)this->sel_row2;
+    *row2 = r2;
+
+    int c1 = (int)*col1;
+    if (c1 == -1 && *row1 == -1 && *col2 == -1 && r2 == -1) {
+        return 0;
+    }
+
+    if (c1 < 0) {
+        *col1 = 0;
+    } else {
+        int mw = this->map->map_width;
+        if (mw <= c1) {
+            *col1 = mw - 1;
+        }
+    }
+
+    if (*row1 < 0) {
+        *row1 = 0;
+    } else {
+        int mh = this->map->map_height;
+        if (mh <= *row1) {
+            *row1 = mh - 1;
+        }
+    }
+
+    if (*col2 < 0) {
+        *col2 = 0;
+    } else {
+        int mw = this->map->map_width;
+        if (mw <= *col2) {
+            *col2 = mw - 1;
+        }
+    }
+
+    if (*row2 < 0) {
+        *row2 = 0;
+    } else {
+        int mh = this->map->map_height;
+        if (mh <= *row2) {
+            *row2 = mh - 1;
+        }
+    }
+
+    if (normalize != 0) {
+        int a = (int)*col1;
+        int b = (int)*col2;
+        int d = (int)*row2;
+        int c = (int)*row1;
+
+        int min_c = a;
+        if (b <= a) {
+            min_c = b;
+        }
+        *col1 = min_c;
+
+        int min_r = c;
+        if (d <= c) {
+            min_r = d;
+        }
+        *row1 = min_r;
+
+        if (a <= b) {
+            a = b;
+        }
+        *col2 = a;
+
+        if (c <= d) {
+            c = d;
+        }
+        *row2 = c;
+    }
+
+    return 1;
+}
+
+void RGE_View::get_max_size(short* max_col, short* max_row) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535FC0
+    *max_col = this->max_col_num;
+    *max_row = this->max_row_num;
+}
+
 void RGE_View::draw()
 {
     tiles_drawn = 0;

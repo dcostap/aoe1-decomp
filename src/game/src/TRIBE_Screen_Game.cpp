@@ -867,7 +867,7 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
         ((RGE_View*)this->runtime.main_view)->player = player;
     }
     if (this->runtime.map_view != nullptr) {
-        ((RGE_Diamond_Map*)this->runtime.map_view)->player = player;
+        ((RGE_Diamond_Map*)this->runtime.map_view)->set_player(player);
     }
     if (this->runtime.inven_panel != nullptr) {
         this->runtime.inven_panel->set_player(player);

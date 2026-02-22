@@ -32,6 +32,10 @@ public:
     virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5); // TODO: STUB
     virtual void draw_multi_object_outline(); // TODO: STUB
 
+    // Non-virtual helpers used by minimap (truth: view.cpp.decomp).
+    int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
+    void get_max_size(short* max_col, short* max_row);
+
     TDrawArea* cur_render_area;
     int calc_draw_count;
     RGE_Game_World* world;
