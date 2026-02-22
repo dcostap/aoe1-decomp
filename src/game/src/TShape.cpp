@@ -207,13 +207,38 @@ static void shape_shadow_pixel(TDrawArea* draw_area, unsigned char* dst, int byt
 }
 
 static unsigned char* shape_slp_shadow_table(TDrawArea* draw_area, unsigned char* xlate) {
-    // Prefer the sprite-provided translation table when available.
-    // draw_area->shadow_color_table is a panel/UI shadow helper and can differ from sprite shadow ramps.
-    if (xlate) return xlate;
-    if (draw_area && draw_area->shadow_color_table) {
-        return draw_area->shadow_color_table->table;
-    }
-    return (unsigned char*)0;
+    // Parity note (ASMDraw_Sprite): opcode 0x0B uses the global table installed by _ASMSet_Xlate_Table
+    // (DAT_0088c01c). In our software SLP renderer, `xlate` is the TShape::shape_draw() param_7 pointer
+    // (same value that would be passed to _ASMSet_Xlate_Table), so we use it when present.
+    // The ASM global persists across draws, so mirror that: if a table was previously provided, keep using it.
+    static unsigned char* last_xlate = (unsigned char*)0;
+    if (xlate) { last_xlate = xlate; return xlate; }
+    if (last_xlate) return last_xlate;
+
+    // UI can also install a runtime shadow table via draw_area->shadow_color_table.
+    if (draw_area && draw_area->shadow_color_table) return draw_area->shadow_color_table->table;
+
+    struct ShadowColTable {
+        unsigned char table[256];
+        int ok;
+        ShadowColTable() : ok(0) {
+            FILE* f = fopen("data\\shadow.col", "r");
+            if (!f) f = fopen("dist\\data\\shadow.col", "r");
+            if (!f) return;
+            for (int i = 0; i < 256; ++i) {
+                int v = 0;
+                if (fscanf(f, " %d", &v) != 1) { fclose(f); return; }
+                if (v < 0) v = 0;
+                if (v > 255) v = 255;
+                table[i] = (unsigned char)v;
+            }
+            fclose(f);
+            ok = 1;
+        }
+    };
+
+    static ShadowColTable shadow_col;
+    return shadow_col.ok ? shadow_col.table : (unsigned char*)0;
 }
 
 static void shape_free_loaded_data(unsigned char* ptr, int load_type, int load_size) {
@@ -503,17 +528,38 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
             } else if (op == 0x0A) {
                 if (src >= end) return 0;
                 src++;
-            } else {
+            } else if (op == 0x06) {
                 if (src + run > end) return 0;
                 src += run;
+            } else if (op == 0x0B) {
+                // Shadow draw (0x0B) consumes no pixel payload bytes.
             }
             continue;
         }
         if (op == 0x0E) {
-            return 0;
+            unsigned char ext = (unsigned char)(cmd >> 4);
+            if (ext == 0x04 || ext == 0x06) {
+                run = 1;
+            } else if (ext == 0x05 || ext == 0x07) {
+                if (src >= end) return 0;
+                run = (unsigned int)(*src++);
+                if (run == 0) run = 1;
+            } else {
+                run = 0;
+            }
+
+            if (run) {
+                if (lx < cur_x + (long)run) return 1;
+                cur_x += run;
+            }
+            continue;
         }
         if ((op & 0x03) == 0x00 || (op & 0x03) == 0x01) {
             run = (unsigned int)(cmd >> 2);
+            if ((op & 0x03) == 0x01 && run == 0) {
+                if (src >= end) return 0;
+                run = (unsigned int)(*src++);
+            }
             if ((op & 0x03) == 0x00) {
                 if (lx < cur_x + (long)run) return 1;
                 if (src + run > end) return 0;
@@ -667,9 +713,6 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
     int dest_pitch = draw_area->Pitch;
     int bytes_per_pixel = shape_bytes_per_pixel(draw_area);
-    unsigned long shadow_runs = 0;
-    unsigned long shadow_pixels = 0;
-    unsigned long shadow_no_table = 0;
     unsigned char* slp_base = (unsigned char*)self->FShape;
     unsigned char* shape_end = slp_base + self->load_size;
 
@@ -691,6 +734,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
     unsigned long* row_offsets = (unsigned long*)(slp_base + info->Shape_Data_Offsets);
     unsigned short* outline = (unsigned short*)(slp_base + info->Shape_Outline_Offset);
+    unsigned char* active_xlate = xlate;
 
     for (long row = 0; row < height; row++) {
         long dst_y = draw_y + row;
@@ -715,43 +759,40 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             if (src >= shape_end) break;
             unsigned char cmd = *src++;
             unsigned char op = (unsigned char)(cmd & 0x0F);
-            unsigned char effective_op = op;
-            int is_extended_op = 0;
-
-            if (op == 0x0E) {
-                is_extended_op = 1;
-                effective_op = (unsigned char)(cmd >> 4);
-            }
 
             if (op == 0x0F) break;
             if (dst_x > max_x) break;
 
-            if (is_extended_op && effective_op == 0x0F) {
-                if (src >= shape_end) break;
-                unsigned int len = (unsigned int)(*src++);
-                if (len == 0) {
-                    len = 1;
-                }
-                unsigned char* shadow_table = shape_slp_shadow_table(draw_area, xlate);
-                shadow_runs++;
-                shadow_pixels += len;
-                if (shadow_table == nullptr) {
-                    shadow_no_table += len;
-                }
+            if (op == 0x0E) {
+                unsigned char ext = (unsigned char)(cmd >> 4);
+
+                // 0x2E / 0x3E: normal/alternate transform selection.
+                if (ext == 0x02) { active_xlate = (unsigned char*)0; continue; }
+                if (ext == 0x03) { active_xlate = xlate; continue; }
+
+                // 0x4E/0x5E/0x6E/0x7E: outline opcodes. These draw palette indices and advance X.
+                unsigned int len = 0;
+                unsigned char outline_idx = 0;
+                if (ext == 0x04) { len = 1; outline_idx = 16; }
+                else if (ext == 0x06) { len = 1; outline_idx = 243; }
+                else if (ext == 0x05) { if (src >= shape_end) break; len = (unsigned int)(*src++); if (len == 0) len = 1; outline_idx = 16; }
+                else if (ext == 0x07) { if (src >= shape_end) break; len = (unsigned int)(*src++); if (len == 0) len = 1; outline_idx = 243; }
+                else { continue; }
 
                 for (unsigned int i = 0; i < len; ++i) {
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                        shape_shadow_pixel(draw_area, dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
+                        unsigned long out_px = shape_index_to_pixel(draw_area, outline_idx, bytes_per_pixel);
+                        shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
                     dst_x++;
                 }
                 continue;
             }
 
-            if (effective_op == 0x02 || effective_op == 0x03) {
+            if (op == 0x02 || op == 0x03) {
                 if (src >= shape_end) break;
                 unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
-                if (effective_op == 0x03) {
+                if (op == 0x03) {
                     dst_x += (long)len;
                     continue;
                 }
@@ -760,7 +801,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                        unsigned char out_idx = xlate ? xlate[px] : px;
+                        unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
@@ -769,7 +810,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 continue;
             }
 
-            if (effective_op == 0x07 || effective_op == 0x0A || effective_op == 0x06 || effective_op == 0x0B) {
+            if (op == 0x07 || op == 0x0A || op == 0x06 || op == 0x0B) {
                 unsigned int len = (unsigned int)(cmd >> 4);
                 if (len == 0) {
                     if (src >= shape_end) break;
@@ -777,39 +818,32 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 }
 
                 unsigned char a = 0;
-                if (effective_op == 0x07) {
+                if (op == 0x07) {
                     if (src >= shape_end) break;
                     a = *src++;
-                } else if (effective_op == 0x0A) {
+                } else if (op == 0x0A) {
                     if (src >= shape_end) break;
                     a = *src++;
-                } else if (effective_op == 0x06) {
+                } else if (op == 0x06) {
                     if (src + len > shape_end) break;
                 }
 
                 unsigned char* shadow_table = (unsigned char*)0;
-                if (effective_op == 0x0B) {
-                    shadow_table = shape_slp_shadow_table(draw_area, xlate);
-                    shadow_runs++;
-                    shadow_pixels += len;
-                    if (shadow_table == nullptr) {
-                        shadow_no_table += len;
-                    }
-                }
+                if (op == 0x0B) shadow_table = shape_slp_shadow_table(draw_area, xlate);
 
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = 0;
-                    if (effective_op == 0x06) {
+                    if (op == 0x06) {
                         px = *src++;
-                    } else if (effective_op == 0x07 || effective_op == 0x0A) {
+                    } else if (op == 0x07 || op == 0x0A) {
                         px = a;
                     }
 
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                        if (effective_op == 0x0B) {
+                        if (op == 0x0B) {
                             shape_shadow_pixel(draw_area, dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
                         } else {
-                            unsigned char out_idx = xlate ? xlate[px] : px;
+                            unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                             unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                             shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                         }
@@ -819,13 +853,13 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 continue;
             }
 
-            if (is_extended_op && effective_op == 0x0E) {
-                continue;
-            }
-
-            if ((effective_op & 0x03) == 0x00 || (effective_op & 0x03) == 0x01) {
+            if ((op & 0x03) == 0x00 || (op & 0x03) == 0x01) {
                 unsigned int len = (unsigned int)(cmd >> 2);
-                if ((effective_op & 0x03) == 0x01) {
+                if ((op & 0x03) == 0x01) {
+                    if (len == 0) {
+                        if (src >= shape_end) break;
+                        len = (unsigned int)(*src++);
+                    }
                     dst_x += (long)len;
                     continue;
                 }
@@ -834,16 +868,12 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
-                        unsigned char out_idx = xlate ? xlate[px] : px;
+                        unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
                     dst_x++;
                 }
-                continue;
-            }
-
-            if (is_extended_op) {
                 continue;
             }
 
