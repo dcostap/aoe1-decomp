@@ -33,6 +33,7 @@
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Mission_Screen.h"
 #include "../include/TribeAchievementsScreen.h"
+#include "../include/TribeEndScreen.h"
 #include <windows.h>
 #include <vfw.h>
 #include <io.h>
@@ -1900,27 +1901,61 @@ void TRIBE_Game::stop_video(int p1) {
         if (this->world != nullptr) {
             this->close_game_screens(0);
 
+            char* title_text = (char*)"";
             char* msg = (char*)"";
+            RGE_Player* player = this->get_player();
+            const bool won = (player != nullptr && player->game_status == 1);
             if (this->world->scenario != nullptr) {
-                RGE_Player* player = this->get_player();
-                const bool won = (player != nullptr && player->game_status == 1);
+                if (this->world->scenario->scenario_name != nullptr) {
+                    title_text = this->world->scenario->scenario_name;
+                }
+
                 msg = won ? this->world->scenario->win_message : this->world->scenario->loss_message;
                 if (msg == nullptr) {
                     msg = (char*)"";
                 }
             }
 
-            TribeAchievementsScreen* ach = new TribeAchievementsScreen(msg, 1);
-            if (ach != nullptr && ach->error_code == 0) {
+            // Split win/loss message into lines for TribeEndScreen's list-based text panel.
+            char msg_buf[4096];
+            msg_buf[0] = '\0';
+            strncpy(msg_buf, msg, sizeof(msg_buf) - 1);
+            msg_buf[sizeof(msg_buf) - 1] = '\0';
+
+            char* msg_lines[64];
+            int msg_line_count = 0;
+            char* cur = msg_buf;
+            if (cur[0] == '\0') {
+                if (msg_line_count < (int)(sizeof(msg_lines) / sizeof(msg_lines[0]))) {
+                    msg_lines[msg_line_count++] = (char*)"";
+                }
+            } else {
+                while (cur && *cur != '\0' && msg_line_count < (int)(sizeof(msg_lines) / sizeof(msg_lines[0]))) {
+                    char* nl = strchr(cur, '\n');
+                    if (nl != nullptr) {
+                        *nl = '\0';
+                    }
+                    const size_t len = strlen(cur);
+                    if (len > 0 && cur[len - 1] == '\r') {
+                        cur[len - 1] = '\0';
+                    }
+                    msg_lines[msg_line_count++] = cur;
+                    if (nl == nullptr) {
+                        break;
+                    }
+                    cur = nl + 1;
+                }
+            }
+
+            TribeEndScreen* end_screen = new TribeEndScreen(title_text, msg_lines, msg_line_count);
+            if (end_screen != nullptr && end_screen->error_code == 0) {
                 if (panel_system != nullptr) {
-                    panel_system->setCurrentPanel((char*)"Achievements Screen", 0);
+                    panel_system->setCurrentPanel((char*)"End Screen", 0);
                 }
 
                 TMusic_System* music = this->music_system;
                 if (music != nullptr) {
                     uchar mt = music->music_type;
-                    RGE_Player* player = this->get_player();
-                    const bool won = (player != nullptr && player->game_status == 1);
                     if (mt == 1) {
                         music->play_track(won ? 3 : 4, 0, 0);
                     } else if (mt == 2) {
@@ -1929,8 +1964,8 @@ void TRIBE_Game::stop_video(int p1) {
                 }
                 return;
             }
-            if (ach != nullptr) {
-                delete ach;
+            if (end_screen != nullptr) {
+                delete end_screen;
             }
         }
         break;
