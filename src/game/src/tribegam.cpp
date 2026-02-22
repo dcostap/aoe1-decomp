@@ -37,146 +37,6 @@
 #include <vfw.h>
 #include <io.h>
 
-// Static global to track current screen until TPanel_System is implemented
-static TPanel* gCurrentScreen = nullptr;
-static TPanel* gPendingScreen = nullptr;
-static TPanel* gRetiredScreens[32];
-static int gRetiredScreenCount = 0;
-
-static void tribe_retire_screen_for_later_delete(TPanel* screen) {
-    // Non-original safety shim:
-    // several screen dtors still rely on not-yet-reimplemented panel teardown paths.
-    // Defer deletion so menu transitions remain stable while those dtors are filled in.
-    if (!screen) return;
-
-    if (gRetiredScreenCount < (int)(sizeof(gRetiredScreens) / sizeof(gRetiredScreens[0]))) {
-        gRetiredScreens[gRetiredScreenCount++] = screen;
-        return;
-    }
-
-    // TODO: STUB: retire buffer overflow handling.
-    // Safety-first fallback: never hard-delete here because several legacy screen dtors
-    // still have incomplete parity and may crash during transition teardown.
-    // We intentionally leak this screen instance instead of risking a UAF/crash.
-    CUSTOM_DEBUG_LOG_FMT("tribe_retire_screen_for_later_delete overflow: leaking panel=%s ptr=%p",
-        (screen->panelNameValue ? screen->panelNameValue : "(null)"), screen);
-}
-
-static int tribe_panel_belongs_to_screen(TPanel* panel, TPanel* screen) {
-    if (!panel || !screen) {
-        return 0;
-    }
-
-    // Non-original safety helper:
-    // avoid dereferencing dangling panel pointers after screen switches by clearing owner references
-    // that still point into the outgoing screen tree.
-    TPanel* cursor = panel;
-    int guard = 0;
-    while (cursor && guard < 1024) {
-        if (cursor == screen) {
-            return 1;
-        }
-        cursor = cursor->parent_panel;
-        ++guard;
-    }
-
-    return 0;
-}
-
-static void tribe_clear_panel_system_owners_for_screen(TPanel* screen) {
-    if (!panel_system || !screen) {
-        return;
-    }
-
-    if (tribe_panel_belongs_to_screen(panel_system->mouseOwnerValue, screen)) {
-        panel_system->mouseOwnerValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->keyboardOwnerValue, screen)) {
-        panel_system->keyboardOwnerValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->modalPanelValue, screen)) {
-        panel_system->modalPanelValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->currentPanelValue, screen)) {
-        panel_system->currentPanelValue = nullptr;
-    }
-    if (tribe_panel_belongs_to_screen(panel_system->prevCurrentChildValue, screen)) {
-        panel_system->prevCurrentChildValue = nullptr;
-    }
-}
-
-static void tribe_apply_screen_switch(TPanel* new_screen) {
-    if (new_screen == gCurrentScreen) return;
-    tribe_clear_panel_system_owners_for_screen(gCurrentScreen);
-
-    if (panel_system && gCurrentScreen) {
-        panel_system->remove_panel(gCurrentScreen);
-    }
-    if (gCurrentScreen) {
-        tribe_retire_screen_for_later_delete(gCurrentScreen);
-        gCurrentScreen = nullptr;
-    }
-
-    gCurrentScreen = new_screen;
-    if (panel_system && gCurrentScreen) {
-        panel_system->add_panel(gCurrentScreen);
-        panel_system->setCurrentPanel(gCurrentScreen, 0);
-    }
-
-    // Non-original safety shim:
-    // some transitions disable input before queueing the new screen and rely on idle to re-enable.
-    // If idle gets starved by a message storm, force one activation pass here so the UI does not
-    // remain stuck with wait-cursor/captured input.
-    if (gCurrentScreen && rge_base_game && rge_base_game->input_enabled == 0) {
-        gCurrentScreen->handle_idle();
-        if (rge_base_game->input_enabled == 0) {
-            rge_base_game->enable_input();
-        }
-    }
-}
-
-void tribe_set_current_screen(TPanel* new_screen) {
-    tribe_apply_screen_switch(new_screen);
-}
-
-void tribe_queue_screen_switch(TPanel* new_screen) {
-    // Non-original safety shim:
-    // queue screen destruction/creation until idle so we do not mutate panel lists while dispatching
-    // the current input message.
-    if (new_screen == gCurrentScreen) {
-        return;
-    }
-
-    if (gPendingScreen && gPendingScreen != new_screen) {
-        delete gPendingScreen;
-    }
-    gPendingScreen = new_screen;
-}
-
-static void tribe_process_pending_screen_switch() {
-    if (!gPendingScreen) {
-        return;
-    }
-    TPanel* next = gPendingScreen;
-    gPendingScreen = nullptr;
-    tribe_apply_screen_switch(next);
-}
-
-static void tribe_retire_panel_by_name(const char* panel_name) {
-    if (panel_system == nullptr || panel_name == nullptr || panel_name[0] == '\0') {
-        return;
-    }
-
-    TPanel* panel = panel_system->panel((char*)panel_name);
-    if (panel == nullptr) {
-        return;
-    }
-
-    tribe_clear_panel_system_owners_for_screen(panel);
-    panel_system->remove_panel(panel);
-    tribe_retire_screen_for_later_delete(panel);
-}
-
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     if (lhs == nullptr || rhs == nullptr) {
         return 0;
@@ -1317,7 +1177,9 @@ int TRIBE_Game::create_game_screen() {
 
             if (mp_started != 0) {
                 CUSTOM_DEBUG_LOG("create_game_screen: switching to game screen");
-                tribe_set_current_screen(screen);
+                if (panel_system != nullptr) {
+                    panel_system->setCurrentPanel((char*)"Game Screen", 0);
+                }
                 if (panel_system != nullptr) {
                     panel_system->destroyPanel((char*)"Status Screen");
                 }
@@ -1326,7 +1188,9 @@ int TRIBE_Game::create_game_screen() {
                 TRIBE_Screen_Wait* wait_screen = new TRIBE_Screen_Wait();
                 if (wait_screen != nullptr && wait_screen->error_code == 0) {
                     wait_screen->set_text(0x454);
-                    tribe_set_current_screen(wait_screen);
+                    if (panel_system != nullptr) {
+                        panel_system->setCurrentPanel((char*)"Multiplayer Wait Screen", 0);
+                    }
                 } else {
                     if (wait_screen != nullptr) {
                         delete wait_screen;
@@ -1348,16 +1212,17 @@ int TRIBE_Game::create_game_screen() {
             }
 
             if (panel_system != nullptr) {
-                tribe_retire_panel_by_name("Single Player Menu");
-                tribe_retire_panel_by_name("Game Setup Screen");
-                tribe_retire_panel_by_name("Select Scenario Screen");
-                tribe_retire_panel_by_name("Game Settings Screen");
-                tribe_retire_panel_by_name("Load Saved Game Screen");
-                tribe_retire_panel_by_name("MP Setup Screen");
-                tribe_retire_panel_by_name("Join Screen");
-                tribe_retire_panel_by_name("MP Startup Screen");
-                tribe_retire_panel_by_name("Main Menu");
-                tribe_retire_panel_by_name("Campaign Selection Screen");
+                // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00527830
+                panel_system->destroyPanel((char*)"Single Player Menu");
+                panel_system->destroyPanel((char*)"Game Setup Screen");
+                panel_system->destroyPanel((char*)"Select Scenario Screen");
+                panel_system->destroyPanel((char*)"Game Settings Screen");
+                panel_system->destroyPanel((char*)"Load Saved Game Screen");
+                panel_system->destroyPanel((char*)"MP Setup Screen");
+                panel_system->destroyPanel((char*)"Join Screen");
+                panel_system->destroyPanel((char*)"MP Startup Screen");
+                panel_system->destroyPanel((char*)"Main Menu");
+                panel_system->destroyPanel((char*)"Campaign Selection Screen");
             }
 
             if (this->prog_mode != 3) {
@@ -1752,7 +1617,9 @@ int TRIBE_Game::start_menu() {
 
     // The original uses `TPanelSystem::setCurrentPanel(panel_system, "Main Menu", 0)`.
     // We do best-effort equivalent with our simplified panel-system implementation.
-    tribe_set_current_screen(menu);
+    if (panel_system != nullptr) {
+        panel_system->setCurrentPanel((char*)"Main Menu", 0);
+    }
 
     // In the original, this is done via a virtual call at vtable +0xC (set_prog_mode).
     this->set_prog_mode(2);
@@ -2014,7 +1881,9 @@ void TRIBE_Game::stop_video(int p1) {
                 (this->randomGame() == 0 || this->campaignGame() != 0)) {
                 TRIBE_Mission_Screen* mission = new TRIBE_Mission_Screen(desc, '\0', this->world->scenario->mission_picture);
                 if (mission != nullptr && mission->error_code == 0) {
-                    tribe_set_current_screen(mission);
+                    if (panel_system != nullptr) {
+                        panel_system->setCurrentPanel((char*)"Mission Dialog", 0);
+                    }
                     return;
                 }
                 if (mission != nullptr) {
@@ -2043,7 +1912,9 @@ void TRIBE_Game::stop_video(int p1) {
 
             TribeAchievementsScreen* ach = new TribeAchievementsScreen(msg, 1);
             if (ach != nullptr && ach->error_code == 0) {
-                tribe_set_current_screen(ach);
+                if (panel_system != nullptr) {
+                    panel_system->setCurrentPanel((char*)"Achievements Screen", 0);
+                }
 
                 TMusic_System* music = this->music_system;
                 if (music != nullptr) {
@@ -2331,8 +2202,6 @@ int TRIBE_Game::handle_idle() {
     //    - 4, 5, 6: in-game world update
     //    - else (2): menu mode — draw only (base already ran panel idle)
 
-    tribe_process_pending_screen_switch();
-
     int base_result = RGE_Base_Game::handle_idle();
     if (base_result == 0) {
         return 0;
@@ -2408,19 +2277,14 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     (void)p3;
     (void)p4;
 
-    tribe_process_pending_screen_switch();
-
     TPanel* to_draw = nullptr;
     if (panel_system && panel_system->currentPanelValue) {
         to_draw = panel_system->currentPanelValue;
-    } else {
-        to_draw = gCurrentScreen;
     }
 
     if (to_draw) {
         if (this->input_enabled == 0) {
-            // Same safety intent as `tribe_apply_screen_switch`: keep UI responsive even if the
-            // idle path is not reached frequently.
+            // Keep UI responsive even if the idle path is not reached frequently.
             to_draw->handle_idle();
             if (this->input_enabled == 0) {
                 this->enable_input();
