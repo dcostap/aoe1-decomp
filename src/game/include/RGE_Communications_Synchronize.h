@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "CHECKSUMARRAY.h"
 
 struct RGE_Communications_Synchronize {
     TCommunications_Handler* Comm;
