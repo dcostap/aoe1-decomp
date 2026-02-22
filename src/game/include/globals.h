@@ -9,6 +9,11 @@ struct TMousePointer;
 struct DClipInfo_List;
 
 extern RGE_Base_Game* rge_base_game;
+
+// Draw/capture state used by shape/view rendering (source of truth: stat_obj.cpp.asm / shape.cpp.asm).
+extern long SDI_Object_ID;
+extern int SDI_Draw_Line;
+extern int SDI_Capture_Info;
 extern int do_draw_log;
 extern int safe_draw_log;
 extern char draw_log_name[260];
@@ -41,6 +46,8 @@ extern int quick_start_game_mode;
 extern int restore_mouse_after_paint;
 extern unsigned char shape_file_first;
 extern unsigned char sound_file_first;
+extern int do_fixed_update;
+extern int displayPathingFlags;
 extern int debug_timeGetTime_on;
 extern int system_ignore_size_messages;
 extern int do_restore_palette;
@@ -56,6 +63,7 @@ extern int show_timing_max;
 extern float save_game_version;
 extern unsigned long* unified_map_offsets[256];
 extern unsigned char die_die_die;
+extern int allow_user_commands;
 extern int world_update_counter;
 extern int ENABLE_COMPRESSION;
 extern int rge_write_error;

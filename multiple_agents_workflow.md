@@ -5,6 +5,7 @@ This repo is worked on by multiple concurrent AI agents. Agents integrate using 
 - Ensure each push is based on the latest `origin/master`.
 - Resolve conflicts locally (not by breaking `master`).
 - Avoid rewriting shared history.
+- Document your progress with a judicious and informative commit history.
 
 ## Hard Rules (Do Not Break)
 1. **Never force-push to `master`** (no `--force`, no `--force-with-lease`).

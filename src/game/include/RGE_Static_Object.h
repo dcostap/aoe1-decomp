@@ -46,18 +46,18 @@ public:
     virtual uchar heal(float param_1); // vt[35] (0x8C)
     virtual int canRepair(); // vt[36] (0x90)
     virtual void notify_of_relation(long param_1, uchar param_2); // vt[37] (0x94)
-    virtual void do_command(float param_1, float param_2, float param_3); // vt[38] (0x98)
-    virtual void move_to(float param_1, float param_2, float param_3); // vt[39] (0x9C)
-    virtual void work(float param_1, float param_2, float param_3); // vt[40] (0xA0)
+    virtual void do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // vt[38] (0x98)
+    virtual void move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // vt[39] (0x9C)
+    virtual void work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // vt[40] (0xA0)
     virtual void stop(); // vt[41] (0xA4)
-    virtual void set_attack(); // vt[42] (0xA8)
+    virtual void set_attack(RGE_Static_Object* param_1); // vt[42] (0xA8)
     virtual void play_command_sound(); // vt[43] (0xAC)
     virtual void play_move_sound(); // vt[44] (0xB0)
     virtual void new_angle(float param_1); // vt[45] (0xB4)
     virtual RGE_Static_Object* spawn_death_obj(); // vt[46] (0xB8)
-    virtual RGE_Master_Static_Object* get_command_master(float param_1, float param_2, float param_3); // vt[47] (0xBC)
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // vt[47] (0xBC)
     virtual void set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3); // vt[48] (0xC0)
-    virtual void release_being_worked_on(); // vt[49] (0xC4)
+    virtual void release_being_worked_on(RGE_Static_Object* param_1); // vt[49] (0xC4)
     virtual uchar is_moving(); // vt[50] (0xC8)
     virtual RGE_Static_Object* get_target_obj(); // vt[51] (0xCC)
     virtual void enter_obj(RGE_Static_Object* param_1); // vt[52] (0xD0)
@@ -65,10 +65,10 @@ public:
     virtual int explore_terrain(RGE_Player* param_1, uchar param_2, int param_3); // vt[54] (0xD8)
     virtual void unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3); // vt[55] (0xDC)
     virtual LOSTBL* get_los_table(); // vt[56] (0xE0)
-    virtual int inAttackRange(); // vt[57] (0xE4)
+    virtual int inAttackRange(RGE_Static_Object* param_1); // vt[57] (0xE4)
     virtual uchar underAttack(); // vt[58] (0xE8)
     virtual void setUnderAttack(uchar param_1); // vt[59] (0xEC)
-    virtual float calc_attack_modifier(); // vt[60] (0xF0)
+    virtual float calc_attack_modifier(RGE_Static_Object* param_1); // vt[60] (0xF0)
     virtual float getSpeed(); // vt[61] (0xF4)
     virtual float getAngle(); // vt[62] (0xF8)
     virtual float maximumSpeed(); // vt[63] (0xFC)
@@ -151,9 +151,10 @@ public:
     void get_starting_attribute();
     void give_attribute_to_owner();
     void take_attribute_from_owner();
+    void capture_frame(TDrawArea* param_1, short param_2, short param_3);
+    int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
 
     // Non-virtual draw helpers (stat_obj.cpp).
-    void capture_frame(TDrawArea* param_1, short param_2, short param_3);
     void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);
     void capture_frame_3d_cube(TDrawArea* param_1, short param_2, short param_3);
     void capture_frame_3d_square(TDrawArea* param_1, short param_2, short param_3);
@@ -161,7 +162,6 @@ public:
     void draw_frame_3d_square_front(TDrawArea* param_1, short param_2, short param_3);
     void draw_frame_3d_cube_back(TDrawArea* param_1, short param_2, short param_3);
     void draw_frame_3d_cube_front(TDrawArea* param_1, short param_2, short param_3);
-    int get_frame(short* x1, short* y1, short* x2, short* y2);
 
     long id;
     RGE_Master_Static_Object* master_obj;
