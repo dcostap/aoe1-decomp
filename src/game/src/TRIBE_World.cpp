@@ -182,8 +182,9 @@ uchar TRIBE_World::data_load_world(FILE* param_1) {
     RGE_Game_World::data_load_world(param_1);
 
     char tech_file[24];
-    fscanf(param_1, " %s", tech_file);
-    this->tech = new TRIBE_Tech(tech_file);
+    // ASM writes/reads via tech_file + 4 (tworld.cpp.asm @ 0x0052E377 / 0x0052E3A2).
+    fscanf(param_1, "%s ", tech_file + 4);
+    this->tech = new TRIBE_Tech(tech_file + 4);
 
     this->victory_type = 0;
     this->artifact_count = 0;
