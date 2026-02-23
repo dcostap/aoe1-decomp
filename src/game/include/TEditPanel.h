@@ -74,7 +74,7 @@ public:
     void update_text();
     void set_text_color(unsigned long c1, unsigned long c2);
     void set_highlight_text_color(unsigned long c1, unsigned long c2);
-    void set_back_color(void* brush, int stock_brush, unsigned long brush_color, unsigned long back_color);
+    void set_back_color(void* brush, unsigned long brush_color, unsigned char back_color);
     void set_bevel_info(int bevel_type, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6);
     void set_ime_info(int enable, int turn_on);
 
