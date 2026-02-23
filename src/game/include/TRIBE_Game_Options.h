@@ -7,6 +7,14 @@ typedef int VictoryType;
 typedef int ResourceLevel;
 typedef int Age;
 
+// Decomp uses these symbolic defaults in several screens (e.g. scr_cams.cpp.decomp).
+// Verified by ASM call sites: all are passed as literal 0.
+enum {
+    VictoryDefault = 0,
+    DefaultResources = 0,
+    DefaultAge = 0,
+};
+
 struct TRIBE_Game_Options {
     MapSize mapSizeValue;
     MapType mapTypeValue;

@@ -236,12 +236,7 @@ RGE_Action* RGE_Action_List::create_task_action(RGE_Task* param_1, RGE_Static_Ob
         break;
     }
     case 0x15: {
-        RGE_Action_Make* make = new (std::nothrow) RGE_Action_Make();
-        if (make != nullptr) {
-            make->setup(this->obj);
-            make->task = param_1;
-            action = make;
-        }
+        action = new (std::nothrow) RGE_Action_Make(this->obj, param_1);
         break;
     }
     default:

@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <cstdint>
 #include <new>
 #include <stdarg.h>
 #include <stdio.h>
@@ -1277,64 +1278,70 @@ long RGE_Player::get_checksum() {
     return this->checksum;
 }
 
-unsigned char RGE_Player::get_checksums(long& checksum_out, long& position_checksum_out, long& action_checksum_out) {
+uchar RGE_Player::get_checksums(long& cs1, long& cs2, long& cs3) {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FF60
     if (this->checksum_created_this_update == '\0') {
         this->create_checksum();
     }
-    checksum_out = this->checksum;
-    position_checksum_out = this->position_checksum;
-    action_checksum_out = this->action_checksum;
+    cs1 = this->checksum;
+    cs2 = this->position_checksum;
+    cs3 = this->action_checksum;
     return '\x01';
 }
 
 long RGE_Player::create_checksum() {
-    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FF90 (ASM-audited for field usage)
-    const short player_id = this->id;
+    // Fully verified. Source of truth: player.cpp.asm @ 0x0046FF90
+    const int id = (int)this->id; // MOVSX
+
     this->checksum_created_this_update = '\x01';
     this->action_checksum = 0;
 
-    const short sleeping = this->sleeping_objects->number_of_objects;
-    const short dopple = this->doppleganger_objects->number_of_objects;
+    const int sleeping_cnt = (int)this->sleeping_objects->number_of_objects; // MOVSX
+    const int dopple_cnt = (int)this->doppleganger_objects->number_of_objects; // MOVSX
 
-    long attribute_sum = 0;
-    long num_attrs = (long)this->attribute_num;
-    const float* attrs = this->attributes;
-    if (0 < num_attrs) {
+    int num2 = (int)this->attribute_num; // MOVSX
+    uint32_t temp_position_checksum = 0;
+    uint32_t iVar11 = 0;
+    uint32_t num1 = 0;
+    float num3 = 0.0f;
+
+    if (0 < num2) {
+        float* attrs = this->attributes;
         do {
-            attribute_sum = attribute_sum + (long)(*attrs);
+            // Mirrors `FLD [EDI] ; CALL __ftol` loop in asm.
+            const long iVar8 = (long)*attrs;
+            temp_position_checksum += (uint32_t)iVar8;
             attrs = attrs + 1;
-            num_attrs = num_attrs + -1;
-        } while (num_attrs != 0);
+            num2 = num2 + -1;
+        } while (num2 != 0);
     }
 
-    long obj_accum = 0;
-    long num_objs = 0;
-    float position_sum = 0.0f;
-
-    RGE_Object_Node* node = this->objects->list;
-    while (node != nullptr) {
+    for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
         RGE_Static_Object* obj = node->node;
-        const uint state = (uint)obj->object_state;
-        const long held = (long)obj->attribute_amount_held;
-        const int master_id = (int)obj->master_obj->id;
-        const long waypoint = obj->get_waypoint_checksum();
-        obj_accum = (long)state + held + master_id + obj_accum + waypoint;
-        num_objs = num_objs + 1;
 
-        this->action_checksum = this->action_checksum + obj->get_action_checksum();
+        const uint32_t bVar1 = (uint32_t)obj->object_state; // MOV CL with prior XOR (zero-extend)
+        const long iVar8 = (long)obj->attribute_amount_held; // __ftol
+        const int sVar5 = (int)obj->master_obj->id; // MOVSX
+        const long iVar9 = obj->get_waypoint_checksum(); // vt[117] (0x1D4)
 
-        position_sum = position_sum + obj->world_x + obj->world_y + obj->world_z;
-        node = node->next;
+        iVar11 = bVar1 + (uint32_t)iVar8 + (uint32_t)sVar5 + iVar11 + (uint32_t)iVar9;
+        num1 = num1 + 1;
+
+        // Accumulates world position into the final `position_checksum` (__ftol at end).
+        num3 = num3 + obj->world_x + obj->world_y + obj->world_z;
+
+        const long act = obj->get_action_checksum(); // vt[116] (0x1D0)
+        this->action_checksum = (long)((uint32_t)this->action_checksum + (uint32_t)act);
     }
 
-    long checksum = (long)player_id + (long)sleeping + (long)dopple;
-    checksum = (checksum * 0x100 + num_objs) * 0x100 + obj_accum;
-    checksum = checksum * 0x100 + attribute_sum;
+    uint32_t checksum = (uint32_t)id + (uint32_t)sleeping_cnt + (uint32_t)dopple_cnt;
+    checksum = (checksum << 8) + num1;
+    checksum = (checksum << 8) + iVar11;
+    checksum = (checksum << 8) + temp_position_checksum;
 
-    this->checksum = checksum;
-    this->position_checksum = (long)position_sum;
-    return checksum;
+    this->checksum = (long)checksum;
+    this->position_checksum = (long)num3; // __ftol
+    return this->checksum;
 }
 
 uchar RGE_Player::check_victory_conditions() {

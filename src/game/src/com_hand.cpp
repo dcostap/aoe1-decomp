@@ -1813,34 +1813,44 @@ int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ul
     }
 
     const uint from_player = comm_find_player_by_dpid(this, p3);
+    const uchar cmd = (uchar)p2[0];
+    if (cmd == 'I') {
+        // Fully verified. Source of truth: com_hand.cpp.asm @ 0x0042764f
+        (void)this->UnlinkToLevel(SERVICE_AVAILABLE);
+        this->NotifyWindow(kCommMessageUpdatePlayers);
+        this->NotifyWindow(kCommMessagePlayerKicked);
+        return 1;
+    }
+
     if (from_player == 0) {
-        // TODO: STUB - Unknown sender: best-effort ack for GTD packets so they don't keep resending.
-        if (this->RGE_Guaranteed_Delivery != 0 && p1 >= 0x0C) {
-            const uint serial = *(const uint*)(p2 + 8);
-            struct MsgAck {
-                uchar cmd;
-                uchar _pad0;
-                uchar _pad1;
-                uchar _pad2;
-                uint serial;
-            } ack;
-            memset(&ack, 0, sizeof(ack));
-            ack.cmd = (uchar)'A';
-            ack.serial = serial;
-            (void)comm_fast_send_raw(this, p3, &ack, 8, 0);
+        // Unknown sender: still send an ACK (matches original behavior).
+        struct MsgAck {
+            uchar cmd;
+            uchar _pad0;
+            uchar _pad1;
+            uchar _pad2;
+            uint serial;
+        } ack;
+        ack.cmd = (uchar)'A';
+        ack._pad0 = 0;
+        ack._pad1 = 0;
+        ack._pad2 = 0;
+        ack.serial = *(const uint*)(p2 + 8);
+
+        if (s_localPlayerDpid != 0) {
+            IDirectPlay2* dp = comm_get_dplay(this);
+            if (dp != nullptr) {
+                const HRESULT hr = dp->Send((DPID)s_localPlayerDpid, (DPID)p3, 0, &ack, 8);
+                if (hr == 0) {
+                    this->TXPacketLength += 8;
+                }
+                (void)dp->Release();
+            }
         }
         return 0;
     }
 
     this->LastPlayerCommunication[from_player] = GetTickCount();
-
-    const uchar cmd = (uchar)p2[0];
-
-    if (cmd == 'I') {
-        this->NotifyWindow(kCommMessageUpdatePlayers);
-        this->NotifyWindow(kCommMessagePlayerKicked);
-        return 1;
-    }
 
     if (cmd == 'A' && p1 >= 8) {
         const uint serial = *(const uint*)(p2 + 4);
@@ -2039,30 +2049,29 @@ long TCommunications_Handler::CommOut(uchar p1, void* p2, long p3, ulong p4) {
 
     // Build dest map for resend bookkeeping.
     memset(this->DestMap, 0, sizeof(this->DestMap));
-    int recipient_count = 0;
-    if (p4 == 0) {
-        for (uint p = 1; p <= (uint)this->MaxGamePlayers && p < 10; ++p) {
-            if (this->IsPlayerHuman(p) != 0 && p != this->Me) {
-                this->DestMap[p] = 0xF0;
-                recipient_count += 1;
-            }
-        }
-    } else {
-        // TODO: STUB - Best-effort: map a single recipient by DPID to a comm slot.
-        uint player = comm_find_player_by_dpid(this, p4);
-        if (player != 0) {
-            this->DestMap[player] = 0xF0;
-            recipient_count = 1;
+    int outgoing_count = 0;
+    for (uint p = 0; p <= (uint)this->MaxGamePlayers && p < 10; ++p) {
+        if (this->IsPlayerHuman(p) != 0 && p != this->Me) {
+            this->DestMap[p] = 0xF0;
+            outgoing_count += 1;
         }
     }
 
-    HRESULT hr = dp->Send((DPID)from_dpid, (DPID)p4, 0, out, (DWORD)full_len);
+    const int recipient_count = (p4 == 0) ? outgoing_count : 1;
+    HRESULT hr = 0;
+    bool did_send = false;
+    if (outgoing_count != 0) {
+        hr = dp->Send((DPID)from_dpid, (DPID)p4, 0, out, (DWORD)full_len);
+        did_send = true;
+    }
 
     if (hr == 0) {
         this->TXPackets += 1;
-        this->TXPacketLength += (ulong)(recipient_count * (int)full_len);
+        if (did_send) {
+            this->TXPacketLength += (ulong)(recipient_count * (int)full_len);
+        }
 
-        if (this->RGE_Guaranteed_Delivery != 0) {
+        if (did_send && this->RGE_Guaranteed_Delivery != 0) {
             // Store a copy for resend.
             unsigned char* resend = (unsigned char*)this->Resend;
             if (resend != nullptr) {
