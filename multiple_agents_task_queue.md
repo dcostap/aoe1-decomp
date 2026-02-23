@@ -534,8 +534,9 @@ Rules of engagement:
 - Where: add new src/game/src/ translation units for scenario + fractal (or extend existing world/scenario units if that’s the established pattern), plus headers under src/game/include.
 - Source of truth: src/game/decomp/scenario.cpp.decomp, src/game/decomp/tscenaro.cpp.decomp, src/game/decomp/fractal.cpp.decomp (+ asm audits as needed).
 - Done when: scenario save/load code compiles/link-clean without stubs, fractal code exists, and completed transliterations have verified markers.
+- Done when: scenario save/load code compiles/link-clean without stubs, fractal code exists, and completed transliterations have verified markers.
 - Dependency note: this is a prerequisite for Task 55 (scenario editor screens) and a practical prerequisite for finishing random-map generation parity (Task 49) beyond the currently-landed pieces.
-- Status note: a significant chunk of `RGE_Scenario` / `T_Scenario` code currently lives in `src/game/src/TRIBE_World_types.cpp` (commit `dc4862e`), but key base methods like `RGE_Scenario::get_object_pointer` and `RGE_Scenario::rehook` are still stubs and there is no `Fractal` implementation in src yet.
+- Status note: `Fractal` code now exists in `src/game/src/fractal.cpp` (upstream merge `7a3af17`), but key base methods like `RGE_Scenario::get_object_pointer` and `RGE_Scenario::rehook` are still stubs and the remaining `RGE_Scenario` / `T_Scenario` coverage is still concentrated in `src/game/src/TRIBE_World_types.cpp` (commit `dc4862e`).
 
 ## Task 49 — Implement random map generation modules (`RMM_*` classes)
 - [ ] Assigned to agent
