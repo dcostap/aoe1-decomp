@@ -27,6 +27,8 @@ public:
     int setup(RGE_Master_Static_Object* param_1);
     int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
     int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
+    long get_help_message();
+    long get_help_page();
 
     unsigned char master_type;
     char* name;

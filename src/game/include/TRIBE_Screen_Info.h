@@ -4,6 +4,9 @@
 
 class TRIBE_Screen_Info : public TScreenPanel {
 public:
+    TRIBE_Screen_Info(char* panel_name, char* screen_file, long screen_id, ulong timer);
+    void close_screen();
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Screen_Info(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

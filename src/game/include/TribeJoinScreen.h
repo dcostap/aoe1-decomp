@@ -4,6 +4,9 @@
 
 class TribeJoinScreen : public TScreenPanel {
 public:
+    TribeJoinScreen();
+    void fillList();
+
     // Virtuals (best-effort)
     virtual ~TribeJoinScreen(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

@@ -1933,6 +1933,11 @@ int RGE_Base_Game::check_paint() {
     return 0;
 }
 
+void RGE_Base_Game::draw_window() {
+    // Source of truth: basegame.cpp.decomp draw_window @ 0x00420360
+    UpdateWindow((HWND)this->prog_window);
+}
+
 void RGE_Base_Game::clear_window() {
     // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420000
     if (this->prog_window != nullptr) {
@@ -2183,6 +2188,12 @@ void RGE_Base_Game::reset_timings() {
         this->timings[i].last_single_time = 0;
     }
 }
+
+unsigned long RGE_Base_Game::get_accum_time(int param_1) {
+    // Source of truth: basegame.cpp.decomp @ 0x0041C8F0
+    return this->timings[param_1].accum_time;
+}
+
 void RGE_Base_Game::add_to_timing(int param_1, ulong param_2) {
     // Source of truth: basegame.cpp.decomp @ 0x0041C830
     this->timings[param_1].accum_time += param_2;

@@ -6,6 +6,8 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TribeSPMenuScreen.h"
+#include "../include/TribeMPStartupScreen.h"
+#include "../include/TRIBE_Screen_Sed_Menu.h"
 #include "../include/TPanelSystem.h"
 
 #include <string.h>
@@ -408,11 +410,14 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
 
         if ((TButtonPanel*)param_1 == this->button[1]) {
             menu_disable_input();
-            TPanel* next = create_stub_screen((char*)"MP Startup Screen", (char*)"scr3", 0xc385, (char*)"Multiplayer Startup (Stub)");
-            if (next) {
+            TribeMPStartupScreen* next = new TribeMPStartupScreen();
+            if (next && next->error_code == 0) {
                 panel_system->setCurrentPanel((char*)"MP Startup Screen", 0);
                 panel_system->destroyPanel((char*)"Main Menu");
             } else {
+                if (next) {
+                    delete next;
+                }
                 menu_enable_input();
             }
             return 1;
@@ -429,11 +434,14 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             }
 
             menu_disable_input();
-            TPanel* next = create_stub_screen((char*)"Scenario Editor Menu", (char*)"scr4", 0xc386, (char*)"Scenario Editor Menu (Stub)");
-            if (next) {
+            TRIBE_Screen_Sed_Menu* next = new TRIBE_Screen_Sed_Menu();
+            if (next && next->error_code == 0) {
                 panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
                 panel_system->destroyPanel((char*)"Main Menu");
             } else {
+                if (next) {
+                    delete next;
+                }
                 menu_enable_input();
             }
             return 1;

@@ -2,8 +2,23 @@
 #include "common.h"
 #include "TScreenPanel.h"
 
+struct RGE_Campaign;
+
 class TRIBE_Campaign_Editor_Screen : public TScreenPanel {
 public:
+    TRIBE_Campaign_Editor_Screen();
+
+    void fill_campaign_drop();
+    void fill_scenario_list();
+    void fill_campaign_scenario_list();
+    uchar check_lists();
+    void load_campaign();
+    void make_campaign();
+    void add_scenario();
+    void remove_scenario();
+    void move_scenario_up();
+    void move_scenario_down();
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Campaign_Editor_Screen(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
