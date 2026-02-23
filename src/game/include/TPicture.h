@@ -6,7 +6,7 @@ struct TRANSINFO;
 struct TPicture {
     // Constructors/destructor used by `TPicturePanel::load_pic/free_pic`.
     TPicture(char* filename, long file_id, int use_trans, void* memory, int own_memory);
-    TPicture(int width, int height);
+    TPicture(int handle, int use_trans);
     TPicture();
     ~TPicture();
 
