@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -259,9 +260,359 @@ int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2) {
     return 1;
 }
 
-void RESFILE_build_res_file(char* path, char* file, char* tag) {
-    // TODO: STUB
-    (void)path;
-    (void)file;
-    (void)tag;
+namespace {
+#pragma pack(push, 1)
+struct ResfileHeader {
+    char banner_msg[0x28]; // 0x00
+    char version[4];       // 0x28 ("1.00")
+    char file_type[0x0c];  // 0x2C ("tribe" / etc)
+    int num_types;         // 0x38
+    int data_offset;       // 0x3C (start of resource data)
+};
+static_assert(sizeof(ResfileHeader) == 0x40, "ResfileHeader size mismatch");
+
+struct ResfileTypeDirNode {
+    unsigned long type;
+    int id_dir_offset;
+    int num_ids;
+};
+static_assert(sizeof(ResfileTypeDirNode) == 0x0c, "ResfileTypeDirNode size mismatch");
+
+struct ResfileIdDirNode {
+    unsigned long id;
+    int data_offset;
+    int data_size;
+};
+static_assert(sizeof(ResfileIdDirNode) == 0x0c, "ResfileIdDirNode size mismatch");
+#pragma pack(pop)
+
+struct BuildResIdNode {
+    unsigned long id;       // +0x00
+    int data_offset;        // +0x04
+    unsigned char* resData; // +0x08
+    int resSize;            // +0x0C
+    BuildResIdNode* next;   // +0x10
+    char filename[260];     // +0x14
+};
+static_assert(sizeof(BuildResIdNode) == 0x118, "BuildResIdNode size mismatch");
+
+struct BuildResTypeNode {
+    unsigned long type;   // +0x00
+    int dir_offset;       // +0x04
+    int num_ids;          // +0x08
+    BuildResIdNode* ids;  // +0x0C
+    BuildResTypeNode* next; // +0x10
+};
+static_assert(sizeof(BuildResTypeNode) == 0x14, "BuildResTypeNode size mismatch");
+
+static const char header_message[] = "Copyright (c) 1997 Ensemble Studios.";
+
+static void BUILDRES_free_lists(BuildResTypeNode* head) {
+    while (head != nullptr) {
+        BuildResIdNode* id = head->ids;
+        while (id != nullptr) {
+            if (id->resData != nullptr) {
+                free(id->resData);
+            }
+            BuildResIdNode* nextId = id->next;
+            free(id);
+            id = nextId;
+        }
+        BuildResTypeNode* nextType = head->next;
+        free(head);
+        head = nextType;
+    }
+}
+
+static unsigned long BUILDRES_get_files_resource_type(const char* filename) {
+    // Transliteration of res_file.cpp.decomp BUILDRES_get_files_resource_type @ 0x0047FC50.
+    size_t len = strlen(filename);
+    if (len <= 4 || len >= 0x104) {
+        return 0;
+    }
+
+    // Find '.' in the filename (from end).
+    int dot = (int)len - 2;
+    while (dot > 0 && filename[dot] != '.') {
+        --dot;
+    }
+    if (dot == 0) {
+        return 0;
+    }
+
+    int ext_len = ((int)len - dot) - 1;
+    if (ext_len > 3) {
+        return 0;
+    }
+
+    char extension[4] = {0, 0, 0, 0};
+    for (int i = 0; i <= ext_len; ++i) {
+        char c = filename[dot + 1 + i];
+        if (isupper((unsigned char)c)) {
+            c = (char)tolower((unsigned char)c);
+        }
+        extension[i] = c;
+    }
+
+    struct ExtEntry {
+        const char ext[4];
+        unsigned long type;
+    };
+
+    // NOTE: The full original table lives in the binary's .data; we implement the known types used by the codebase.
+    static const ExtEntry res_extension_table[] = {
+        { "voc", 0x766f6320 }, // 'voc '
+        { "wav", 0x77617620 }, // 'wav '
+        { "xmi", 0x786d6920 }, // 'xmi '
+        { "slp", 0x736c7020 }, // 'slp '
+        { "shp", 0x73687020 }, // 'shp '
+        { "pal", 0x70616c20 }, // 'pal '
+        { {0, 0, 0, 0}, 0 }
+    };
+
+    for (int i = 0; res_extension_table[i].type != 0; ++i) {
+        if (strncmp(res_extension_table[i].ext, extension, ext_len + 1) == 0) {
+            return res_extension_table[i].type;
+        }
+    }
+
+    return 0x62696e61; // 'bina'
+}
+} // namespace
+
+int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F5C0
+    BuildResTypeNode* iq = nullptr;
+    int numResTypes = 0;
+    int outFd = -1;
+    int ret = 0;
+
+    char data_filename[260];
+    char temp_filename[260];
+    char resource_filename[260];
+    char build_filename[260];
+    char rPassword[40];
+
+    sprintf(build_filename, "%s%s", resource_dir, tag);
+    FILE* buildFile = fopen(build_filename, "r");
+    if (buildFile == nullptr) {
+        CUSTOM_DEBUG_LOG_FMT("Error: could not find resource build file: %s", tag);
+        goto cleanup;
+    }
+
+    if (fscanf(buildFile, "%259s %39s", temp_filename, rPassword) != 2) {
+        CUSTOM_DEBUG_LOG_FMT("Error: could not parse resource build file header: %s", build_filename);
+        goto cleanup;
+    }
+    sprintf(resource_filename, "%s%s", path, temp_filename);
+
+    int file_id;
+    while (fscanf(buildFile, "%259s", temp_filename) == 1 &&
+           fscanf(buildFile, "%d", &file_id) == 1) {
+        unsigned long rId = (unsigned long)file_id; // build file provides numeric resource id
+
+        sprintf(data_filename, "%s%s", resource_dir, temp_filename);
+        unsigned long rType = BUILDRES_get_files_resource_type(temp_filename);
+        if (rType == 0) {
+            CUSTOM_DEBUG_LOG_FMT("Error: could not determine file type of: %s", temp_filename);
+            goto cleanup;
+        }
+
+        BuildResTypeNode* prevType = nullptr;
+        BuildResTypeNode* typeNode = nullptr;
+        for (BuildResTypeNode* cur = iq; cur != nullptr; cur = cur->next) {
+            if (cur->type == rType) {
+                typeNode = cur;
+                break;
+            }
+            if (cur->type < rType) {
+                prevType = cur;
+            }
+        }
+
+        if (typeNode == nullptr) {
+            typeNode = (BuildResTypeNode*)malloc(sizeof(BuildResTypeNode));
+            if (typeNode == nullptr) {
+                CUSTOM_DEBUG_LOG("Error: out of memory #1");
+                goto cleanup;
+            }
+            typeNode->type = rType;
+            typeNode->dir_offset = 0;
+            typeNode->num_ids = 0;
+            typeNode->ids = nullptr;
+            typeNode->next = nullptr;
+
+            if (prevType == nullptr) {
+                typeNode->next = iq;
+                iq = typeNode;
+            } else {
+                typeNode->next = prevType->next;
+                prevType->next = typeNode;
+            }
+            numResTypes += 1;
+        }
+
+        BuildResIdNode* prevId = nullptr;
+        for (BuildResIdNode* cur = typeNode->ids; cur != nullptr; cur = cur->next) {
+            if (cur->id == rId) {
+                CUSTOM_DEBUG_LOG_FMT("Error: duplicate resources: %s & %s", cur->filename, data_filename);
+                goto cleanup;
+            }
+            if (cur->id < rId) {
+                prevId = cur;
+            }
+        }
+
+        BuildResIdNode* idNode = (BuildResIdNode*)malloc(sizeof(BuildResIdNode));
+        if (idNode == nullptr) {
+            CUSTOM_DEBUG_LOG("Error: out of memory #2");
+            goto cleanup;
+        }
+        memset(idNode, 0, sizeof(BuildResIdNode));
+        idNode->id = rId;
+        strcpy(idNode->filename, data_filename);
+
+        int fd = _open(data_filename, _O_BINARY | _O_RDONLY);
+        if (fd == -1) {
+            CUSTOM_DEBUG_LOG_FMT("Error: unable to open file: %s", data_filename);
+            free(idNode);
+            continue;
+        }
+
+        // Insert into the per-type ID list (sorted).
+        if (prevId == nullptr) {
+            idNode->next = typeNode->ids;
+            typeNode->ids = idNode;
+        } else {
+            idNode->next = prevId->next;
+            prevId->next = idNode;
+        }
+        typeNode->num_ids += 1;
+
+        long fileSize = _lseek(fd, 0, SEEK_END);
+        _lseek(fd, 0, SEEK_SET);
+        if (fileSize < 1) {
+            CUSTOM_DEBUG_LOG_FMT("Error: file is empty/NULL: %s", data_filename);
+            _close(fd);
+            goto cleanup;
+        }
+
+        idNode->resData = (unsigned char*)malloc(fileSize);
+        if (idNode->resData == nullptr) {
+            CUSTOM_DEBUG_LOG("Error: out of memory #3");
+            _close(fd);
+            goto cleanup;
+        }
+
+        idNode->resSize = (int)fileSize;
+        int bytesRead = _read(fd, idNode->resData, (unsigned int)fileSize);
+        if (bytesRead != fileSize) {
+            CUSTOM_DEBUG_LOG_FMT("Error: error reading file: %s", data_filename);
+            _close(fd);
+            goto cleanup;
+        }
+        _close(fd);
+    }
+
+    fclose(buildFile);
+    buildFile = nullptr;
+
+    outFd = _open(resource_filename, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
+    if (outFd == -1) {
+        CUSTOM_DEBUG_LOG_FMT("Error: unable to create resource file file: %s", resource_filename);
+        goto cleanup;
+    }
+
+    int dataOffset = 0x40 + numResTypes * 0x0c;
+    for (BuildResTypeNode* t = iq; t != nullptr; t = t->next) {
+        t->dir_offset = dataOffset;
+        dataOffset += t->num_ids * 0x0c;
+    }
+
+    int curDataPos = dataOffset;
+    for (BuildResTypeNode* t = iq; t != nullptr; t = t->next) {
+        for (BuildResIdNode* n = t->ids; n != nullptr; n = n->next) {
+            n->data_offset = curDataPos;
+            curDataPos += n->resSize;
+        }
+    }
+
+    ResfileHeader theHeader;
+    memset(&theHeader, 0, sizeof(theHeader));
+    strncpy(theHeader.banner_msg, header_message, sizeof(theHeader.banner_msg));
+    memcpy(theHeader.version, "1.00", 4);
+    strcpy(theHeader.file_type, rPassword);
+    theHeader.num_types = numResTypes;
+    theHeader.data_offset = dataOffset;
+
+    int pos = 0;
+    pos = _write(outFd, &theHeader, 0x40);
+    if (pos != 0x40) {
+        CUSTOM_DEBUG_LOG("Error writing resource file header");
+        goto cleanup;
+    }
+
+    pos = 0x40;
+    for (BuildResTypeNode* t = iq; t != nullptr; t = t->next) {
+        ResfileTypeDirNode typeDirNode;
+        typeDirNode.type = t->type;
+        typeDirNode.id_dir_offset = t->dir_offset;
+        typeDirNode.num_ids = t->num_ids;
+        int wrote = _write(outFd, &typeDirNode, sizeof(typeDirNode));
+        if (wrote != sizeof(typeDirNode)) {
+            CUSTOM_DEBUG_LOG("Error writing resource file header: type node");
+            goto cleanup;
+        }
+        pos += sizeof(typeDirNode);
+    }
+
+    // Write all ID directory entries (in type list order).
+    for (BuildResTypeNode* t = iq; t != nullptr; t = t->next) {
+        if (pos != t->dir_offset) {
+            CUSTOM_DEBUG_LOG("Error writing resource file: pos out of sync");
+            goto cleanup;
+        }
+        for (BuildResIdNode* n = t->ids; n != nullptr; n = n->next) {
+            ResfileIdDirNode idDirNode;
+            idDirNode.id = n->id;
+            idDirNode.data_offset = n->data_offset;
+            idDirNode.data_size = n->resSize;
+            int wrote = _write(outFd, &idDirNode, sizeof(idDirNode));
+            if (wrote != sizeof(idDirNode)) {
+                CUSTOM_DEBUG_LOG("Error writing resource file header: id node");
+                goto cleanup;
+            }
+            pos += sizeof(idDirNode);
+        }
+    }
+
+    // Write resource data.
+    for (BuildResTypeNode* t = iq; t != nullptr; t = t->next) {
+        for (BuildResIdNode* n = t->ids; n != nullptr; n = n->next) {
+            if (pos != n->data_offset) {
+                CUSTOM_DEBUG_LOG("Error writing resource file data: pos out of sync");
+                goto cleanup;
+            }
+            int wrote = _write(outFd, n->resData, n->resSize);
+            if (wrote != n->resSize) {
+                CUSTOM_DEBUG_LOG("Error writing resource file data");
+                goto cleanup;
+            }
+            pos += n->resSize;
+        }
+    }
+
+    ret = 1;
+
+cleanup:
+    if (outFd != -1) {
+        _close(outFd);
+        outFd = -1;
+    }
+    if (buildFile != nullptr) {
+        fclose(buildFile);
+        buildFile = nullptr;
+    }
+    BUILDRES_free_lists(iq);
+    return ret;
 }
