@@ -1,6 +1,8 @@
 #include "../include/TRIBE_Master_Tree_Object.h"
 #include "../include/TRIBE_Master_Combat_Object.h"
 #include "../include/TRIBE_Master_Building_Object.h"
+#include "../include/TRIBE_Combat_Object.h"
+#include "../include/TRIBE_Building_Object.h"
 #include "../include/TRIBE_Task_List.h"
 
 #include "../include/Attribute_Cost.h"
@@ -13,6 +15,7 @@
 #include "../include/globals.h"
 
 #include <string.h>
+#include <new>
 
 static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     self->orig_pierce_armor = 0;
@@ -173,7 +176,13 @@ void TRIBE_Master_Combat_Object::modify(float param_1, uchar param_2) { this->RG
 void TRIBE_Master_Combat_Object::modify_delta(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_delta(param_1, param_2); }
 void TRIBE_Master_Combat_Object::modify_percent(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_percent(param_1, param_2); }
 void TRIBE_Master_Combat_Object::save(int param_1) {}
-RGE_Static_Object* TRIBE_Master_Combat_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) { return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4); }
+
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050F090, tm_co_ob.cpp.asm @ 0x0050F090
+RGE_Static_Object* TRIBE_Master_Combat_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
+    TRIBE_Combat_Object* obj = new (std::nothrow) TRIBE_Combat_Object(this, param_1, param_2, param_3, param_4, 1);
+    return (RGE_Static_Object*)obj;
+}
+
 RGE_Master_Static_Object* TRIBE_Master_Combat_Object::make_new_master() { return new TRIBE_Master_Combat_Object(this, 1); }
 uchar TRIBE_Master_Combat_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 uchar TRIBE_Master_Combat_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
@@ -314,7 +323,13 @@ void TRIBE_Master_Building_Object::modify(float param_1, uchar param_2) { this->
 void TRIBE_Master_Building_Object::modify_delta(float param_1, uchar param_2) { this->TRIBE_Master_Combat_Object::modify_delta(param_1, param_2); }
 void TRIBE_Master_Building_Object::modify_percent(float param_1, uchar param_2) { this->TRIBE_Master_Combat_Object::modify_percent(param_1, param_2); }
 void TRIBE_Master_Building_Object::save(int param_1) {}
-RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) { return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4); }
+
+// Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E6B0, tm_b_obj.cpp.asm @ 0x0050E6B0
+RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
+    TRIBE_Building_Object* obj = new (std::nothrow) TRIBE_Building_Object(this, param_1, param_2, param_3, param_4, 1);
+    return (RGE_Static_Object*)obj;
+}
+
 RGE_Master_Static_Object* TRIBE_Master_Building_Object::make_new_master() { return new TRIBE_Master_Building_Object(this, 1); }
 uchar TRIBE_Master_Building_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 uchar TRIBE_Master_Building_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, 1); }
@@ -323,4 +338,9 @@ void TRIBE_Master_Building_Object::play_command_sound() { this->RGE_Master_Stati
 void TRIBE_Master_Building_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 void TRIBE_Master_Building_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 RGE_Task_List* TRIBE_Master_Building_Object::create_task_list() { return this->TRIBE_Master_Combat_Object::create_task_list(); }
-RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4, int param_5) { return this->make_new_obj(param_1, param_2, param_3, param_4); }
+
+// Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E630, tm_b_obj.cpp.asm @ 0x0050E630
+RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4, int param_5) {
+    TRIBE_Building_Object* obj = new (std::nothrow) TRIBE_Building_Object(this, param_1, param_2, param_3, param_4, param_5, 1);
+    return (RGE_Static_Object*)obj;
+}

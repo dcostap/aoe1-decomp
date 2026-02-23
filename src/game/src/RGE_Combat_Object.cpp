@@ -26,6 +26,22 @@ RGE_Combat_Object::RGE_Combat_Object()
     this->capture_flag = '\0';
 }
 
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042F930
+RGE_Combat_Object::RGE_Combat_Object(RGE_Master_Combat_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6)
+    : RGE_Action_Object((RGE_Master_Action_Object*)param_1, param_2, param_3, param_4, param_5, 0)
+{
+    for (int i = 0; i < 9; i++) {
+        this->VUR_Ptrs[i] = nullptr;
+    }
+    this->Unified_Map_Value = 0;
+    this->attack_timer = 0.0f;
+    this->capture_flag = '\0';
+
+    if (param_6 != 0) {
+        this->setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
+    }
+}
+
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042F9E0
 RGE_Combat_Object::RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int param_3)
     : RGE_Action_Object(param_1, param_2, 0)
