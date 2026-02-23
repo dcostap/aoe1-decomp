@@ -15,6 +15,9 @@ struct RGE_Visible_Map {
     int explore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
     void unexplore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
 
+    long checksumVisible();
+    ulong checksumUnifiedVisible();
+
     uchar** map_offsets;
     RGE_Game_World* world;
     RGE_Player* player;

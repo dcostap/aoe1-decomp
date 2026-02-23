@@ -16,6 +16,7 @@
 #include "../include/TDigital.h"
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
 #include "../include/RGE_Scenario_File_Info.h"
@@ -458,6 +459,7 @@ int RGE_Base_Game::setup_registry() {
 int RGE_Base_Game::setup_debugging_log() {
     this->debugLog = new TDebuggingLog();
     if (this->debugLog) {
+        L = this->debugLog;
         this->debugLog->LogFile(this->log_comm);
         this->debugLog->LogOutput(log_output);
         this->debugLog->LogTimestamp(1);
@@ -1061,6 +1063,33 @@ RGE_Player* RGE_Base_Game::get_player() {
         return nullptr;
     }
     return this->world->players[this->world->curr_player];
+}
+
+unsigned char RGE_Base_Game::GetWorldChecksums(long& checksum_out, long& position_checksum_out, long& action_checksum_out) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422960
+    int player = 0;
+    checksum_out = 0;
+    position_checksum_out = 0;
+    action_checksum_out = 0;
+
+    RGE_Game_World* w = this->world;
+    if (w != nullptr) {
+        if (0 < w->player_num) {
+            do {
+                long checksum = 0;
+                long pos_checksum = 0;
+                long action_checksum = 0;
+                w->players[player]->get_checksums(checksum, pos_checksum, action_checksum);
+                checksum_out = checksum_out + checksum;
+                position_checksum_out = position_checksum_out + pos_checksum;
+                action_checksum_out = action_checksum_out + action_checksum;
+                player = player + 1;
+                w = this->world;
+            } while (player < w->player_num);
+        }
+        return '\x01';
+    }
+    return '\0';
 }
 
 int RGE_Base_Game::create_dialog(TPanel** out_dialog, TPanel* dialog) {

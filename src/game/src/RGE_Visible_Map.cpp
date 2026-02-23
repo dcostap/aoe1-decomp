@@ -897,6 +897,48 @@ void RGE_Visible_Map::save(int param_1) {
     }
 }
 
+long RGE_Visible_Map::checksumVisible() {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053D0D0
+    uint uVar1 = 0;
+    int row = 0;
+    if (0 < this->heightValue) {
+        do {
+            int col = 0;
+            if (0 < this->widthValue) {
+                do {
+                    uVar1 = uVar1 ^ this->map_offsets[row][col];
+                    col = col + 1;
+                } while (col < this->widthValue);
+            }
+            row = row + 1;
+        } while (row < this->heightValue);
+    }
+    return (long)uVar1;
+}
+
+ulong RGE_Visible_Map::checksumUnifiedVisible() {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053D110
+    int rows = this->heightValue;
+    ulong uVar2 = 0;
+    if (0 < rows) {
+        ulong** row_offsets = &unified_map_offsets[0];
+        do {
+            if (0 < this->widthValue) {
+                ulong* row = (ulong*)*row_offsets;
+                int cols = this->widthValue;
+                do {
+                    uVar2 = uVar2 ^ *row;
+                    row = row + 1;
+                    cols = cols + -1;
+                } while (cols != 0);
+            }
+            row_offsets = row_offsets + 1;
+            rows = rows + -1;
+        } while (rows != 0);
+    }
+    return uVar2;
+}
+
 uchar RGE_Visible_Map::get_visible(int col, int row) {
     // Source of truth: visible.cpp.decomp @ 0x0053C490
     if (this->player == nullptr || row < 0 || col < 0) {

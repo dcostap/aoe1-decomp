@@ -1269,6 +1269,74 @@ void RGE_Player::load_info(int param_1) {
     }
 }
 
+long RGE_Player::get_checksum() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FF40
+    if (this->checksum_created_this_update == '\0') {
+        this->create_checksum();
+    }
+    return this->checksum;
+}
+
+unsigned char RGE_Player::get_checksums(long& checksum_out, long& position_checksum_out, long& action_checksum_out) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FF60
+    if (this->checksum_created_this_update == '\0') {
+        this->create_checksum();
+    }
+    checksum_out = this->checksum;
+    position_checksum_out = this->position_checksum;
+    action_checksum_out = this->action_checksum;
+    return '\x01';
+}
+
+long RGE_Player::create_checksum() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FF90 (ASM-audited for field usage)
+    const short player_id = this->id;
+    this->checksum_created_this_update = '\x01';
+    this->action_checksum = 0;
+
+    const short sleeping = this->sleeping_objects->number_of_objects;
+    const short dopple = this->doppleganger_objects->number_of_objects;
+
+    long attribute_sum = 0;
+    long num_attrs = (long)this->attribute_num;
+    const float* attrs = this->attributes;
+    if (0 < num_attrs) {
+        do {
+            attribute_sum = attribute_sum + (long)(*attrs);
+            attrs = attrs + 1;
+            num_attrs = num_attrs + -1;
+        } while (num_attrs != 0);
+    }
+
+    long obj_accum = 0;
+    long num_objs = 0;
+    float position_sum = 0.0f;
+
+    RGE_Object_Node* node = this->objects->list;
+    while (node != nullptr) {
+        RGE_Static_Object* obj = node->node;
+        const uint state = (uint)obj->object_state;
+        const long held = (long)obj->attribute_amount_held;
+        const int master_id = (int)obj->master_obj->id;
+        const long waypoint = obj->get_waypoint_checksum();
+        obj_accum = (long)state + held + master_id + obj_accum + waypoint;
+        num_objs = num_objs + 1;
+
+        this->action_checksum = this->action_checksum + obj->get_action_checksum();
+
+        position_sum = position_sum + obj->world_x + obj->world_y + obj->world_z;
+        node = node->next;
+    }
+
+    long checksum = (long)player_id + (long)sleeping + (long)dopple;
+    checksum = (checksum * 0x100 + num_objs) * 0x100 + obj_accum;
+    checksum = checksum * 0x100 + attribute_sum;
+
+    this->checksum = checksum;
+    this->position_checksum = (long)position_sum;
+    return checksum;
+}
+
 uchar RGE_Player::check_victory_conditions() {
     // Source of truth: player.cpp.decomp @ 0x00470690
     if (this->game_status != '\x02') {

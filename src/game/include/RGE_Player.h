@@ -94,6 +94,9 @@ public:
     void victory_if_game_on();
     void loss_if_game_on();
     void load_info(int param_1);
+    long get_checksum();
+    unsigned char get_checksums(long& checksum_out, long& position_checksum_out, long& action_checksum_out);
+    long create_checksum();
     uchar check_victory_conditions();
     uchar check_ally_group(long* param_1);
     uchar check_victory();
