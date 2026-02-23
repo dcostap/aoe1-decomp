@@ -100,13 +100,14 @@ void TScrollTextPanel::set_text(char* text) {
 }
 
 long TScrollTextPanel::handle_idle() {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: scr_cred.cpp.decomp @ 0x00492FB0
-    const ulong now = debug_timeGetTime(kScrCredSourcePath, 0x1DF);
+    // Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492FB0
     if (this->last_time == 0) {
-        this->last_time = now;
+        this->last_time = debug_timeGetTime(kScrCredSourcePath, 0x1DC);
     } else {
-        const float dt = (float)(int)(now - this->last_time) * 0.001f;
-        const int delta = (int)(dt * (float)this->speed);
+        const ulong now = debug_timeGetTime(kScrCredSourcePath, 0x1DF);
+        const ulong delta_ms = now - this->last_time;
+        const float pixels_f = (float)delta_ms * 0.001f * (float)this->speed;
+        const int delta = (int)pixels_f; // __ftol behavior
         if (delta > 0) {
             this->scroll += delta;
             this->set_redraw(TPanel::RedrawMode::Redraw);
@@ -120,50 +121,88 @@ long TScrollTextPanel::handle_idle() {
     return TPanel::handle_idle();
 }
 
-void TScrollTextPanel::draw_scrolled_line(void* hdc_void, short /*draw_index*/, short line_index, ulong color1, ulong color2) {
-    // TODO(accuracy): Best-effort implementation. Source of truth: scr_cred.cpp.decomp @ 0x00493160
+void TScrollTextPanel::draw_scrolled_line(void* hdc_void, short draw_index, short line_index, ulong color1, ulong color2) {
+    // Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00493160
     HDC hdc = (HDC)hdc_void;
+
     const char* text = this->get_text((long)line_index);
-    if (!text || text[0] == '\0') {
+    const char* text2 = this->get_text2((long)line_index);
+    if (text == nullptr && text2 == nullptr) {
         return;
     }
 
-    SIZE sz{};
-    GetTextExtentPoint32A(hdc, text, (int)strlen(text), &sz);
+    tagRECT line_rect{};
+    this->calc_line_pos((void*)hdc, draw_index, line_index, &line_rect, (long*)0);
 
-    const long x = this->pnl_x + (this->pnl_wid / 2) - (long)sz.cx / 2;
-    const long y0 = (this->pnl_y + this->pnl_hgt - this->border_size - this->text_hgt);
-    const long y = y0 + (long)line_index * this->text_hgt - (long)this->scroll;
-
-    if (y + this->text_hgt < this->pnl_y) {
-        return;
+    long x = line_rect.left;
+    if (this->horz_align != TTextPanel::AlignCenter && this->horz_align != TTextPanel::AlignWordwrap) {
+        x += 5;
     }
-    if (y > this->pnl_y + this->pnl_hgt) {
-        return;
+    const long x2 = x + this->second_column_pos;
+
+    const long y = (this->pnl_hgt - this->scroll) + line_rect.top;
+
+    if (line_index == (short)(this->num_lines - 1) && this->font_hgt + y < this->pnl_y) {
+        this->done = 1;
     }
 
-    if (this->text_style == TTextPanel::ChiseledStyle) {
-        SetTextColor(hdc, (COLORREF)color2);
-        TextOutA(hdc, x - 1, y + 1, text, (int)strlen(text));
+    const int text_len = (text != nullptr) ? (int)strlen(text) : 0;
+    const int text2_len = (text2 != nullptr) ? (int)strlen(text2) : 0;
+
+    if (this->clip_rgn2 != nullptr) {
+        SelectClipRgn(hdc, (HRGN)this->clip_rgn2);
+    }
+
+    if (this->text_style == TTextPanel::NormalStyle) {
         SetTextColor(hdc, (COLORREF)color1);
-        TextOutA(hdc, x, y, text, (int)strlen(text));
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
     } else if (this->text_style == TTextPanel::BeveledStyle) {
         SetTextColor(hdc, (COLORREF)color1);
-        TextOutA(hdc, x - 1, y + 1, text, (int)strlen(text));
+        if (text != nullptr) {
+            TextOutA(hdc, x - 1, y + 1, text, text_len);
+        }
         SetTextColor(hdc, (COLORREF)color2);
-        TextOutA(hdc, x, y, text, (int)strlen(text));
-    } else {
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
+    } else if (this->text_style == TTextPanel::ChiseledStyle) {
+        SetTextColor(hdc, (COLORREF)color2);
+        if (text != nullptr) {
+            TextOutA(hdc, x - 1, y + 1, text, text_len);
+        }
         SetTextColor(hdc, (COLORREF)color1);
-        TextOutA(hdc, x, y, text, (int)strlen(text));
+        if (text != nullptr) {
+            TextOutA(hdc, x, y, text, text_len);
+        }
     }
 
-    if (line_index == (short)(this->num_lines - 1) && y + this->text_hgt < this->pnl_y) {
-        this->done = 1;
+    if (text2 != nullptr) {
+        if (this->clip_rgn2 != nullptr) {
+            SelectClipRgn(hdc, (HRGN)this->clip_rgn);
+        }
+
+        if (this->text_style == TTextPanel::NormalStyle) {
+            SetTextColor(hdc, (COLORREF)color1);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        } else if (this->text_style == TTextPanel::BeveledStyle) {
+            SetTextColor(hdc, (COLORREF)color1);
+            TextOutA(hdc, x2 - 1, y + 1, text2, text2_len);
+            SetTextColor(hdc, (COLORREF)color2);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        } else if (this->text_style == TTextPanel::ChiseledStyle) {
+            SetTextColor(hdc, (COLORREF)color2);
+            TextOutA(hdc, x2 - 1, y + 1, text2, text2_len);
+            SetTextColor(hdc, (COLORREF)color1);
+            TextOutA(hdc, x2, y, text2, text2_len);
+        }
     }
 }
 
 void TScrollTextPanel::draw() {
-    // TODO(accuracy): Best-effort implementation. Source of truth: scr_cred.cpp.decomp @ 0x00493070
+    // Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00493070
+    this->need_redraw = TPanel::RedrawMode::NoRedraw;
     if (!this->render_area || !this->active || !this->visible) {
         return;
     }
