@@ -1040,7 +1040,27 @@ void TPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {
     (void)param_1; (void)param_2;
 }
 void TPanel::set_tab_order(TPanel** param_1, short param_2) {}
-uchar TPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
+uchar TPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004668D0
+    if ((this->active != 0) && (this->is_inside(param_3, param_4) != 0)) {
+        for (PanelNode* node = this->last_child_node; node != nullptr; node = node->prev_node) {
+            if (node->panel && node->panel->get_help_info(param_1, param_2, param_3, param_4) != 0) {
+                return 1;
+            }
+        }
+
+        if (this->help_string_id >= 0) {
+            char* str = this->get_string((int)this->help_string_id);
+            // NOTE: Parity with original (panel.cpp.asm @ 0x004668D0): copy into caller-provided buffer
+            // with no bounds check. Callers are expected to provide sufficient space (string source is 0x200).
+            strcpy(*param_1, str);
+            *param_2 = this->help_page_id;
+            return 1;
+        }
+    }
+
+    return 0;
+}
 void TPanel::stop_sound_system() {}
 int TPanel::restart_sound_system() { return 1; }
 void TPanel::take_snapshot() {}
@@ -1099,11 +1119,10 @@ int TPanel::get_string(int resid, char* buffer, int len) {
 }
 
 char* TPanel::get_string(int resid) {
-    static char static_buffer[1024];
-    if (this->get_string(resid, static_buffer, sizeof(static_buffer))) {
-        return static_buffer;
-    }
-    return nullptr;
+    static char static_buffer[0x200];
+    // Source of truth: panel.cpp.decomp @ 0x00466870
+    this->get_string(resid, static_buffer, sizeof(static_buffer));
+    return static_buffer;
 }
 
 char* TPanel::panelName() const {
