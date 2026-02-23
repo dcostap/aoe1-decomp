@@ -505,13 +505,13 @@ Rules of engagement:
 
 ## Task 46 — Complete doppleganger (fog-of-war ghost) object parity
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the fog-of-war ghost object system so it can draw/update/save correctly instead of only loading.
 - Implement: remaining `RGE_Doppleganger_Object` virtuals (draw/update/save/die/destroy/copy/rehook/new_sprite/check_damage_sprites, etc.) and any creator/helpers required.
 - Where: src/game/src/RGE_Doppleganger_Object.cpp (+ possibly src/game/src/RGE_Doppleganger_Creator.cpp) and headers under src/game/include.
 - Source of truth: src/game/decomp/dpl_obj.cpp.decomp + src/game/decomp/dpl_obj.cpp.asm, plus src/game/decomp/m_dg_obj.cpp.decomp if it contains master/variant behaviors.
 - Done when: doppleganger no longer depends on stub forwarding for core virtuals and build is clean.
-- Status note: `RGE_Doppleganger_Object.cpp` currently only implements ctor(s) + `setup` (load); core behavior virtuals are still stubbed/forwarded (commit `9b7dd32`).
+- Status note: doppleganger creator/object runtime parity restored (commit `2b96aa1`, merged via `a59a4b0`).
 
 ## Task 47 — Audit/restore `TShape` draw pipeline parity (replace current custom implementation)
 - [x] Assigned to agent
