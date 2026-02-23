@@ -272,13 +272,11 @@ void TEditPanel::set_highlight_text_color(unsigned long c1, unsigned long c2) {
     (void)c2;
 }
 
-void TEditPanel::set_back_color(void* brush_in, int stock_brush_in, unsigned long brush_color, unsigned long back_color_in) {
-    // TODO: STUB - original set_back_color body is not present in decomp output (returned early).
-    (void)brush_color;
-    this->brush = brush_in;
-    this->stock_brush = stock_brush_in;
-    this->back_color = back_color_in;
-    this->set_redraw(TPanel::RedrawMode::RedrawFull);
+void TEditPanel::set_back_color(void* brush_in, unsigned long brush_color_in, unsigned char back_color_in) {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475E40 (no-op)
+    (void)brush_in;
+    (void)brush_color_in;
+    (void)back_color_in;
 }
 
 void TEditPanel::set_bevel_info(int bevel_type_in, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6) {
