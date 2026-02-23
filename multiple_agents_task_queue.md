@@ -396,7 +396,7 @@ Rules of engagement:
 - Status note: replacement semantics restored and `change_unique_id()` implemented/used when `scenario_object_flag` is set (merge `agent/scenario-replace-unique-id`, commit `9182602`).
 
 ## Task 36 — Replace TRIBE player AI compat shim with real `TribeMainDecisionAIModule`
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: remove `TribeMainDecisionAIModuleCompatShim` so TRIBE player AI uses the real module/vtable, preventing subtle AI dispatch mismatches.
 - Implement: full ctor/dtor + required virtuals for `TribeMainDecisionAIModule`, and update `TRIBE_Player` to allocate/use it (removing the compat shim + reinterpret-cast allocation path).
@@ -408,7 +408,7 @@ Rules of engagement:
 ---
 
 ## Task 37 — Implement `AIPlayBook::loadPlays` full `.ply` parsing (remove current stub)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: stop treating `data\\aoe.ply` as “loaded” when parsing is stubbed, so playbook data structures are actually populated.
 - Implement: full transliteration of `AIPlayBook::loadPlays(char*)` (file format parse + allocation + per-play setup).
@@ -419,7 +419,7 @@ Rules of engagement:
   - Current state: `AIPlayBook::loadPlays` still contains the explicit `// TODO: STUB: Full .ply parsing...` marker in `src/game/src/AIPlayBook.cpp` (commit `c444d6a`).
 
 ## Task 38 — Implement `RGE_Game_World::data_load_*` virtuals (currently hard stubs)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore the data-loading virtuals so world initialization can load terrain/sprites/sounds/players/objects without “return 1” placeholders.
 - Implement: `data_load_world`, `data_load_terrain_tables`, `data_load_players`, `data_load_objects`, `data_load_sounds`, `data_load_color_tables`, `data_load_sprites`, `data_load_players_type`, `data_load_effects`, `data_load_map`, `data_load_random_map`.
@@ -429,7 +429,7 @@ Rules of engagement:
 - Status note: `src/game/src/RGE_Game_World.cpp` still contains a “Stub implementations for RGE_Game_World virtual methods” block for the `data_load_*` family (latest local commit `15212ff`).
 
 ## Task 39 — Finish `RGE_Action_Object` + `RGE_Action_List` plumbing parity (action stack management)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: complete per-unit action-stack behavior so units can enqueue/dequeue actions and save/load action stacks correctly.
 - Implement:
@@ -442,7 +442,7 @@ Rules of engagement:
 - Status note: initial load scaffolding exists, but coverage is still minimal (e.g., `RGE_Action_Object.cpp` currently implements only ctor/`setup`/`create_action_list` and still has a TODO about the `RGE_Action_List` owning-ctor; `RGE_Action_List.cpp` currently implements only basic stack ops + `load`) (commit `9b7dd32`).
 
 ## Task 40 — Implement the 8 core `RGE_Action_*` subclasses (base unit behaviors)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore the RGE action subclasses that drive the majority of unit behavior (attack/move/gather/enter/explore/bird/missile/transport).
 - Implement: `RGE_Action_Attack`, `RGE_Action_Move_To`, `RGE_Action_Gather`, `RGE_Action_Enter`, `RGE_Action_Explore`, `RGE_Action_Bird`, `RGE_Action_Missile`, `RGE_Action_Transport`.
@@ -453,7 +453,7 @@ Rules of engagement:
 - Status note: no per-action subclass translation units are present under `src/game/src/` yet for the act_*.decomp set; only the `RGE_Action_Object`/`RGE_Action_List` scaffolding exists so far.
 
 ## Task 41 — Implement remaining TRIBE-specific action subclasses (`tact_*`) (AoE1 gameplay behaviors)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore TRIBE-only unit behaviors (build/convert/heal/hunt/repair/trade/artifact/wonder etc.) that extend the base RGE action system.
 - Implement: `TRIBE_Action` + the action subclasses from the tact_*.decomp set, excluding the already-restored make-object/make-tech actions from Task 5.
@@ -463,7 +463,7 @@ Rules of engagement:
 - Status note: aside from the already-restored make-object/make-tech actions (Task 5), the rest of the `tact_*` class set does not have src translation units yet.
 
 ## Task 42 — Implement missing `RGE_Moving_Object` methods (movement + pathing glue)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore the “real movement object” behaviors so moving units can plan and execute movement (beyond load/setup).
 - Implement: remaining `RGE_Moving_Object` methods from move_obj.cpp.decomp (movement updates, rotate/velocity helpers, findPath integration, save/copy/transform, exception path handling, etc.).
@@ -473,7 +473,7 @@ Rules of engagement:
 - Status note: `RGE_Moving_Object` save/load/setup is present, but most movement behavior is not yet restored; `set_angle()` explicitly contains a “for now, simple stub” path and the overall file only covers a small slice of move_obj.cpp (commit `9b7dd32`).
 
 ## Task 43 — Finish pathfinding: `PathingSystem` + `Path` algorithm and helper ops
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore the actual pathfinding algorithm and the missing `Path` manipulation helpers so movement can compute real routes.
 - Implement:
