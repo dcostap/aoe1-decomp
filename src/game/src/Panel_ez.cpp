@@ -1,9 +1,12 @@
 #include "../include/TEasy_Panel.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TTextPanel.h"
+#include "../include/TInputPanel.h"
 #include "../include/TDropDownPanel.h"
 #include "../include/TListPanel.h"
 #include "../include/TScrollBarPanel.h"
+#include "../include/TVerticalSliderPanel.h"
+#include "../include/THorizontalSliderPanel.h"
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TShape.h"
@@ -1337,8 +1340,54 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_
 }
 
 int TEasy_Panel::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9; (void)param_10;
-    return 0;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469000
+    if (param_2 == nullptr) {
+        return 0;
+    }
+
+    TInputPanel* inp = new TInputPanel();
+    *param_2 = inp;
+    if ((inp == nullptr) || (inp->error_code != 0)) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    if (param_10 < 0) {
+        param_10 = 10;
+    }
+    RGE_Font* font = rge_base_game->get_font((int)param_10);
+
+    const long scaled_x = (this->ideal_width > 0) ? (param_6 * this->pnl_wid) / this->ideal_width : param_6;
+    const long scaled_y = (this->ideal_height > 0) ? (param_7 * this->pnl_hgt) / this->ideal_height : param_7;
+    const long scaled_w = (this->ideal_width > 0) ? (param_8 * this->pnl_wid) / this->ideal_width : param_8;
+    const long scaled_h = (this->ideal_height > 0) ? (param_9 * this->pnl_hgt) / this->ideal_height : param_9;
+
+    const long ok = inp->setup(this->render_area, param_1,
+                               scaled_x, scaled_y, scaled_w, scaled_h,
+                               font->font, font->font_wid, font->font_hgt,
+                               (char*)nullptr,
+                               0, '\0',
+                               1, (uchar)0xff,
+                               (uchar)0xff,
+                               param_4,
+                               (TDigital*)nullptr,
+                               param_3,
+                               param_5);
+    if (ok == 0) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    if (this->use_bevels != 0) {
+        inp->set_bevel_info(3,
+                            (int)this->bevel_color1, (int)this->bevel_color2,
+                            (int)this->bevel_color3, (int)this->bevel_color4,
+                            (int)this->bevel_color5, (int)this->bevel_color6);
+    }
+
+    inp->set_text_color(this->text_color1, this->text_color2);
+    inp->set_highlight_text_color(this->focus_color1, this->focus_color2);
+    return 1;
 }
 
 int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) {
@@ -1648,15 +1697,86 @@ int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* pa
 }
 
 int TEasy_Panel::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9;
-    return 0;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469AD0
+    if (param_2 == nullptr) {
+        return 0;
+    }
+    *param_2 = nullptr;
+
+    const long scaled_x = (this->ideal_width > 0) ? (param_6 * this->pnl_wid) / this->ideal_width : param_6;
+    const long scaled_y = (this->ideal_height > 0) ? (param_7 * this->pnl_hgt) / this->ideal_height : param_7;
+    const long scaled_w = (this->ideal_width > 0) ? (param_8 * this->pnl_wid) / this->ideal_width : param_8;
+    const long scaled_h = (this->ideal_height > 0) ? (param_9 * this->pnl_hgt) / this->ideal_height : param_9;
+
+    TVerticalSliderPanel* slider = new TVerticalSliderPanel();
+    *param_2 = slider;
+
+    if ((slider == nullptr) || (slider->error_code != 0) ||
+        (slider->setup(this->render_area, param_1,
+                       scaled_x, scaled_y, scaled_w, scaled_h,
+                       (char*)nullptr, (char*)nullptr,
+                       0, param_3, param_4, param_5,
+                       1, 0) == 0)) {
+        return 0;
+    }
+
+    if (this->button_pics != nullptr) {
+        slider->set_buttons(this->button_pics, -1, 8, 10, 0xC);
+    }
+    if (this->use_bevels != 0) {
+        slider->set_bevel_info(3,
+                               (uint)this->bevel_color1, (uint)this->bevel_color2,
+                               (uint)this->bevel_color3, (uint)this->bevel_color4,
+                               (uint)this->bevel_color5, (uint)this->bevel_color6);
+    }
+    return 1;
 }
 
 int TEasy_Panel::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9;
-    return 0;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469C40
+    if (param_2 == nullptr) {
+        return 0;
+    }
+    *param_2 = nullptr;
+
+    const long scaled_x = (this->ideal_width > 0) ? (param_6 * this->pnl_wid) / this->ideal_width : param_6;
+    const long scaled_y = (this->ideal_height > 0) ? (param_7 * this->pnl_hgt) / this->ideal_height : param_7;
+    const long scaled_w = (this->ideal_width > 0) ? (param_8 * this->pnl_wid) / this->ideal_width : param_8;
+    const long scaled_h = (this->ideal_height > 0) ? (param_9 * this->pnl_hgt) / this->ideal_height : param_9;
+
+    THorizontalSliderPanel* slider = new THorizontalSliderPanel();
+    *param_2 = slider;
+
+    if ((slider == nullptr) || (slider->error_code != 0) ||
+        (slider->setup(this->render_area, param_1,
+                       scaled_x, scaled_y, scaled_w, scaled_h,
+                       (char*)nullptr, (char*)nullptr,
+                       0, param_3, param_4, param_5,
+                       1, 0) == 0)) {
+        return 0;
+    }
+
+    if (this->button_pics != nullptr) {
+        slider->set_buttons(this->button_pics, -1, 8, 10, 0xC);
+    }
+    if (this->use_bevels != 0) {
+        slider->set_bevel_info(3,
+                               (uint)this->bevel_color1, (uint)this->bevel_color2,
+                               (uint)this->bevel_color3, (uint)this->bevel_color4,
+                               (uint)this->bevel_color5, (uint)this->bevel_color6);
+    }
+    return 1;
 }
 
 void TEasy_Panel::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469DB0
+    if (param_1 == nullptr) {
+        return;
+    }
+
+    const long scaled_x = (this->ideal_width > 0) ? (param_2 * this->pnl_wid) / this->ideal_width : param_2;
+    const long scaled_y = (this->ideal_height > 0) ? (param_3 * this->pnl_hgt) / this->ideal_height : param_3;
+    const long scaled_w = (this->ideal_width > 0) ? (param_4 * this->pnl_wid) / this->ideal_width : param_4;
+    const long scaled_h = (this->ideal_height > 0) ? (param_5 * this->pnl_hgt) / this->ideal_height : param_5;
+    param_1->set_rect(scaled_x, scaled_y, scaled_w, scaled_h);
 }

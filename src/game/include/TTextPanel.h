@@ -116,6 +116,10 @@ public:
     int get_text_rect(tagRECT* out_rect);
     void set_outline(int param_1, uchar param_2);
     void set_scrollbar(TScrollBarPanel* param_1, int param_2);
+
+    // Source of truth: pnl_txt.cpp.asm/.decomp (used by TTextPanel::draw and credits scrollers).
+    void draw_background();
+    void draw_border();
     CharType char_type(unsigned char* param_1);
     int word_wrap_append(char* param_1);
     int numberLines();

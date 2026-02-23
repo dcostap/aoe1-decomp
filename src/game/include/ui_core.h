@@ -242,6 +242,7 @@ public:
     virtual void draw_rect2(tagRECT* param_1) override;
     virtual void draw_offset2(long param_1, long param_2, tagRECT* param_3) override;
     virtual void paint() override;
+    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) override;
     virtual long handle_paint() override;
     virtual long handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) override;
     virtual long handle_char(long param_1, short param_2) override;

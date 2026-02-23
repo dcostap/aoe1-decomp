@@ -133,12 +133,56 @@ void TButtonPanel::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
 void TButtonPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
 void TButtonPanel::paint() {}
 // TButtonPanel inherited stubs (removed to use TPanel base or new overrides)
-long TButtonPanel::handle_paint() { return 0; }
-long TButtonPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
-long TButtonPanel::handle_char(long param_1, short param_2) { return 0; }
-long TButtonPanel::handle_user_command(uint param_1, long param_2) { return 0; }
-long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
-long TButtonPanel::handle_scroll(long param_1, long param_2) { return 0; }
+long TButtonPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473890
+    if ((param_2 == WM_KEYUP) && (this->key_down != 0) && (param_3 == (uint)this->key_down)) {
+        this->key_down = 0;
+        if (this->buttonTypeValue != TButtonPanel::Radio) {
+            this->is_down = 0;
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        if (this->render_area && this->render_area->Wnd) {
+            SendMessageA((HWND)this->render_area->Wnd, WM_PAINT, 0, 0);
+        }
+        this->do_action();
+        return 1;
+    }
+
+    return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
+}
+long TButtonPanel::handle_paint() { return TPanel::handle_paint(); }
+long TButtonPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004735B0
+    if (this->active && (this->disabled == 0) &&
+        (param_3 == 0) && (param_4 == 0) &&
+        (this->hotkey != 0) && (param_1 == (long)this->hotkey) && (this->key_down == 0) &&
+        ((this->hotkey_shift == 0) || (param_5 == (int)this->hotkey_shift))) {
+
+        if (this->tab_stop && this->parent_panel && this->parent_panel->curr_child != this) {
+            this->parent_panel->set_curr_child(this);
+        }
+
+        if (this->sound != nullptr) {
+            if (this->sound->is_playing() != 0) {
+                this->sound->stop();
+            }
+            this->sound->play();
+        }
+
+        this->key_down = param_1;
+        this->is_down = 1;
+        this->button_down_time = button_time_ms();
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        button_notify_parent(this, 2);
+        return 1;
+    }
+
+    return TPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5);
+}
+long TButtonPanel::handle_char(long param_1, short param_2) { return TPanel::handle_char(param_1, param_2); }
+long TButtonPanel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
+long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
+long TButtonPanel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
 // ASM: TButtonPanel does NOT override handle_mouse_dbl_click — inherit TPanel's default
 // which includes is_inside check and fallback to handle_mouse_down.
 long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
@@ -249,9 +293,67 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_
     return 1;
 }
 long TButtonPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
+long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004736F0
+    (void)param_2;
+    if (this->key_down != 0) {
+        return 0;
+    }
+
+    switch (param_1) {
+    case VK_RETURN:
+    case VK_SPACE:
+        if (this->disabled != 0) {
+            return 0;
+        }
+        if (param_3 != 0) { // alt
+            return 0;
+        }
+        if (param_4 != 0) { // ctrl
+            return 0;
+        }
+        if (this->sound != nullptr) {
+            if (this->sound->is_playing() != 0) {
+                this->sound->stop();
+            }
+            this->sound->play();
+        }
+        this->key_down = param_1;
+        this->is_down = 1;
+        this->button_down_time = button_time_ms();
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        button_notify_parent(this, 2);
+        return 1;
+
+    case VK_UP:
+        if (param_3 != 0 || param_4 != 0) {
+            return 1;
+        }
+        if (this->tab_stop && this->parent_panel && this->tab_prev_panel) {
+            this->parent_panel->set_curr_child(this->tab_prev_panel);
+        }
+        return 1;
+
+    case VK_DOWN:
+        if (param_3 != 0 || param_4 != 0) {
+            return 1;
+        }
+        if (this->tab_stop && this->parent_panel && this->tab_next_panel) {
+            this->parent_panel->set_curr_child(this->tab_next_panel);
+        }
+        return 1;
+
+    default:
+        break;
+    }
+
+    if (param_5 != 0) {
+        return 0;
+    }
+    return 0;
+}
 long TButtonPanel::char_action(long param_1, short param_2) { return 0; }
-long TButtonPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return 0; }
+long TButtonPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
 void TButtonPanel::get_true_render_rect(tagRECT* param_1) {}
 int TButtonPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
 void TButtonPanel::set_focus(int focused) {

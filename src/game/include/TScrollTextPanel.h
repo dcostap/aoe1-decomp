@@ -66,6 +66,13 @@ public:
     virtual void set_text(char* param_1); // vt[58] (0xE8)
     virtual void set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7); // vt[59] (0xEC)
 
+    // Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492E70
+    TScrollTextPanel(TPanel* parent, TDrawArea* area, long x, long y, long w, long h,
+                     int speed, void* font, long font_wid, long font_hgt, char* text);
+
+    // Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00493160
+    void draw_scrolled_line(void* hdc, short draw_index, short line_index, ulong color1, ulong color2);
+
     int scroll;
     unsigned long last_time;
     int speed;

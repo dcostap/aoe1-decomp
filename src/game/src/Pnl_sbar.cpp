@@ -177,6 +177,28 @@ static void sbar_draw_button_pic(TScrollBarPanel* self, int frame, int pressed, 
 
 } // namespace
 
+void TScrollBarPanel::calc_item_rects() {
+    sbar_calc_item_rects(this);
+}
+
+void TScrollBarPanel::draw_back_pic() {
+    sbar_draw_back_pic(this);
+}
+
+void TScrollBarPanel::draw_button_pic(int frame, int pressed, tagRECT* r) {
+    if (!r) {
+        return;
+    }
+    sbar_draw_button_pic(this, frame, pressed, *r);
+}
+
+void TScrollBarPanel::draw_border(int border_type, int reverse, tagRECT* r) {
+    if (!r) {
+        return;
+    }
+    sbar_draw_border(this, border_type, reverse, *r);
+}
+
 TScrollBarPanel::TScrollBarPanel() : TPanel() {
     list_panel = nullptr;
     list_len = 0;

@@ -131,5 +131,12 @@ public:
     void set_bevel_info(int type, unsigned char c1, unsigned char c2,
                         unsigned char c3, unsigned char c4,
                         unsigned char c5, unsigned char c6);
+
+protected:
+    // Non-virtual helpers used by slider subclasses (source of truth: pnl_scbr.cpp/pnl_sld.cpp decomp).
+    void calc_item_rects();
+    void draw_back_pic();
+    void draw_button_pic(int frame, int pressed, tagRECT* r);
+    void draw_border(int border_type, int reverse, tagRECT* r);
 };
 static_assert(sizeof(TScrollBarPanel) == 0x1C4, "Size mismatch");

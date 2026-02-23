@@ -4,6 +4,8 @@
 
 class THorizontalSliderPanel : public TVerticalSliderPanel {
 public:
+    THorizontalSliderPanel();
+
     // Virtuals (best-effort)
     virtual ~THorizontalSliderPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
@@ -61,6 +63,12 @@ public:
     virtual int restart_sound_system(); // vt[53] (0xD4)
     virtual void take_snapshot(); // vt[54] (0xD8)
     virtual void handle_reactivate(); // vt[55] (0xDC)
+
+    // Non-virtual overload used by TEasy_Panel::create_horz_slider.
+    // Fully verified. Source of truth: pnl_sld.cpp.decomp @ 0x0047BE40
+    long setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h,
+               char* pic1, char* pic4, long arrow_hgt, long list_len, long one_step, long page_step,
+               int draw_box, int spine_width);
 
 };
 static_assert(sizeof(THorizontalSliderPanel) == 0x1CC, "Size mismatch");

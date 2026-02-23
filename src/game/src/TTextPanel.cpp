@@ -424,6 +424,16 @@ static void draw_border(TTextPanel* this_) {
     this_->render_area->Unlock((char*)"pnl_txt::draw_border");
 }
 
+void TTextPanel::draw_background() {
+    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D3D0
+    ::draw_background(this);
+}
+
+void TTextPanel::draw_border() {
+    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D570
+    ::draw_border(this);
+}
+
 TTextPanel::TTextPanel() : TPanel(nullptr) {
     this->back_color = 0xff;
     this->list = nullptr;
@@ -676,7 +686,7 @@ void TTextPanel::draw_finish() { TPanel::draw_finish(); }
 void TTextPanel::draw() {
     if (!this->render_area || !this->active || !this->visible) return;
 
-    draw_background(this);
+    this->draw_background();
     this->draw_setup(0);
 
     HDC hdc = (HDC)this->render_area->GetDc((char*)"pnl_txt::draw");
@@ -702,7 +712,7 @@ void TTextPanel::draw() {
         this->render_area->ReleaseDc((char*)"pnl_txt::draw");
     }
 
-    draw_border(this);
+    this->draw_border();
     this->draw_finish();
 }
 

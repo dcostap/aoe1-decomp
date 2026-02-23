@@ -70,6 +70,31 @@ public:
     virtual void set_text(char* param_1); // vt[58] (0xE8)
     virtual void set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7); // vt[59] (0xEC)
 
+    TInputPanel();
+
+    // Non-virtual overload used by TEasy_Panel::create_input.
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00476D80
+    long setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h,
+               void* font, long font_wid, long font_hgt, char* back_pic_name,
+               int fill_back, uchar back_color, int outline, uchar outline_color,
+               uchar caret_color, short max_len, TDigital* over_len_sound, char* initial_text,
+               TInputPanel::FormatType format);
+
+    void set_format(TInputPanel::FormatType format);
+    char* get_input_buffer();
+    int is_blank();
+    char* get_trimmed_str(char* out, int out_len);
+
+protected:
+    int append_character(long ch);
+    int insert_character(long ch);
+    int delete_character();
+    int backspace_character();
+    int paste();
+    void reformat();
+    void calc_input_pos();
+    void calc_cur_line_col();
+
     unsigned char caret_color;
     unsigned long caret_interval;
     unsigned long caret_last_time;
