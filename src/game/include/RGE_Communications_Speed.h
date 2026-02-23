@@ -1,7 +1,39 @@
 #pragma once
 #include "common.h"
 
+struct RGE_TimeSinceLastCall;
+
 struct RGE_Communications_Speed {
+    RGE_Communications_Speed(TCommunications_Handler* comm);
+    ~RGE_Communications_Speed();
+
+    void SetPlayerTurnSpeed(uint player, uchar avg_frames_msec, uchar high_latency_centi);
+    void SetActualLatency(uint player, ulong latency_msec);
+    void SetFutureSpeedChange(uint future_frames, uint future_granularity, ulong change_turn);
+    void EnableSpeedControl(int enable);
+    uint GetBufferGranularity();
+    ulong GetAdjustmentCount();
+    uint GetBufferGranularityAdjusted();
+    uint BufferFramesRemaining();
+    uint WaitingOnAcknowledgement();
+    void ReloadBufferFrames();
+    uint BufferTimeToUse(ulong frame_no);
+    void Skip();
+    uchar GetHighLatencyCenti();
+    ulong GetPlayerLatency(uint player);
+    char* GetLatencyInfo();
+    char* GetSelfPlayerOptimalSpeedStr();
+    char* GetPlayerSpeedStatusStr(int player);
+    char* GetMachineSpeedInfo();
+    uint GetRecommendedBufferFrames();
+    uint GetAvgFrameRate();
+    uint GetRecommendedBufferGranularity();
+    int AnalyzeGameSpeed(uint* out_granularity, uint* out_frames, int apply_change);
+    void SetV1(ulong v);
+    void SetV2(ulong v);
+
+    void AdjustLocalSpeed();
+
     char TBuff[255];
     RGE_TimeSinceLastCall* TurnTSLC;
     RGE_TimeSinceLastCall* FrameTSLC;
