@@ -113,6 +113,8 @@ public:
     void unselect_object();
     void update_selected();
     int select_object(RGE_Static_Object* param_1);
+    unsigned char get_select_level();
+    unsigned char get_selected_objects_to_command(RGE_Static_Object*** list_out, short* list_num_out, short min_select_level, short object_group, short object_id, short unit_level);
 
     int computerPlayerValue;
     int pathingAttemptCapValue;

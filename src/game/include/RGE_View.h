@@ -41,6 +41,11 @@ public:
     int pick_multi_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, unsigned char param_8, int param_9);
     int sprite_check(unsigned char* param_1, Shape_Info* param_2, int param_3, int param_4);
 
+    // Overlay helpers (view.cpp.decomp: selection flashes + overlay sprites).
+    void display_object_selection(int id, int duration, int select_type, int reset_type);
+    void reset_overlay_sprites();
+    void add_overlay_sprite(TShape* shape, int facet, int world_x, int world_y, int flags, int draw_level, unsigned char* color_table, int display_function, unsigned long draw_interval);
+
     // Non-virtual helpers used by minimap (truth: view.cpp.decomp).
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
     void get_max_size(short* max_col, short* max_row);
