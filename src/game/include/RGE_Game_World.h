@@ -89,6 +89,7 @@ public:
     long get_next_object_id();
     long get_next_reusable_object_id();
     uchar recycle_object_out_of_game(uchar param_1, RGE_Static_Object* param_2);
+    RGE_Static_Object* recycle_object_in_to_game(uchar param_1);
 
     unsigned long world_time; // +0x4
     unsigned long old_world_time; // +0x8

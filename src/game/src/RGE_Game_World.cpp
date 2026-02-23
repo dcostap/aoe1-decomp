@@ -2053,6 +2053,72 @@ uchar RGE_Game_World::recycle_object_out_of_game(uchar param_1, RGE_Static_Objec
     }
 }
 
+RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(uchar param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00546180
+    RGE_Object_Node* node = nullptr;
+    RGE_Static_Object* obj = nullptr;
+
+    switch (param_1) {
+    case 0x0A:
+        node = this->reusable_static_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_static_objects->remove_node(obj, nullptr);
+            return obj;
+        }
+        break;
+    case 0x14:
+        node = this->reusable_animated_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_animated_objects->remove_node(obj, nullptr);
+            return obj;
+        }
+        break;
+    case 0x19:
+        node = this->reusable_doppleganger_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_doppleganger_objects->remove_node(obj, nullptr);
+        }
+        break;
+    case 0x1E:
+        node = this->reusable_moving_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_moving_objects->remove_node(obj, nullptr);
+            return obj;
+        }
+        break;
+    case 0x28:
+        node = this->reusable_action_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_action_objects->remove_node(obj, nullptr);
+            return obj;
+        }
+        break;
+    case 0x32:
+        node = this->reusable_combat_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_combat_objects->remove_node(obj, nullptr);
+            return obj;
+        }
+        break;
+    case 0x3C:
+        node = this->reusable_missile_objects->list;
+        if (node != nullptr) {
+            obj = node->node;
+            this->reusable_missile_objects->remove_node(obj, nullptr);
+            return obj;
+        }
+        break;
+    }
+
+    return obj;
+}
+
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
     (void)param_1;
     // TODO: implement

@@ -26,6 +26,16 @@ RGE_Combat_Object::RGE_Combat_Object()
     this->capture_flag = '\0';
 }
 
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042F930
+RGE_Combat_Object::RGE_Combat_Object(RGE_Master_Combat_Object* param_1, RGE_Player* param_2, float param_3, float param_4,
+                                     float param_5, int param_6)
+    : RGE_Action_Object((RGE_Master_Action_Object*)param_1, param_2, param_3, param_4, param_5, 0)
+{
+    if (param_6 != 0) {
+        this->setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
+    }
+}
+
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042F9E0
 RGE_Combat_Object::RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int param_3)
     : RGE_Action_Object(param_1, param_2, 0)
@@ -33,6 +43,41 @@ RGE_Combat_Object::RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int p
     if (param_3 != 0) {
         this->setup(param_1, param_2);
     }
+}
+
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FAF0
+void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4,
+                                          float param_5) {
+    // Clear combat-visible-unit tracking before base recycle.
+    for (int i = 0; i < 9; i++) {
+        this->VUR_Ptrs[i] = nullptr;
+    }
+    this->Unified_Map_Value = 0;
+
+    RGE_Action_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5);
+
+    this->attack_timer = ((RGE_Master_Combat_Object*)this->master_obj)->speed_of_attack;
+}
+
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FB40
+int RGE_Combat_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
+    // Zero VUR_Ptrs and Unified_Map_Value before base setup.
+    for (int i = 0; i < 9; i++) {
+        this->VUR_Ptrs[i] = nullptr;
+    }
+    this->Unified_Map_Value = 0;
+
+    RGE_Action_Object::setup((RGE_Master_Action_Object*)param_1, param_2, param_3, param_4, param_5);
+    this->type = 0x32;
+
+    this->attack_timer = ((RGE_Master_Combat_Object*)this->master_obj)->speed_of_attack;
+    this->capture_flag = '\0';
+    return 1;
+}
+
+int RGE_Combat_Object::setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
+    // Forward to the canonical combat setup (typed by decomp as RGE_Master_Combat_Object*).
+    return this->setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
 }
 
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FBA0
