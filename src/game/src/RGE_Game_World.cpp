@@ -3,6 +3,8 @@
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Unified_Visible_Map.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Sprite.h"
@@ -1955,6 +1957,31 @@ RGE_Static_Object* RGE_Game_World::object(int param_1) {
 RGE_Static_Object* RGE_Game_World::object_ptr(int param_1) {
     // Source of truth: world.cpp.decomp @ 0x00545D80
     return this->object(param_1);
+}
+
+int RGE_Game_World::objectGroupOnTile(int playerId, int objectGroup, int tileX, int tileY, int& objectCountOnTile) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545C00
+    if (tileX < 0 || tileY < 0 || this->map->map_width <= tileX || this->map->map_height <= tileY) {
+        objectCountOnTile = 0;
+        return -1;
+    }
+
+    objectCountOnTile = (int)this->map->map_row_offset[tileY][tileX].objects.number_of_objects;
+    RGE_Object_Node* node = this->map->map_row_offset[tileY][tileX].objects.list;
+    if (node != nullptr) {
+        while (node->node != nullptr) {
+            RGE_Static_Object* obj = node->node;
+            if ((playerId == -1 || obj->owner->id == playerId) && obj->master_obj->object_group == objectGroup) {
+                return obj->id;
+            }
+            node = node->next;
+            if (node == nullptr) {
+                return -1;
+            }
+        }
+    }
+
+    return -1;
 }
 
 long RGE_Game_World::get_next_object_id() {
