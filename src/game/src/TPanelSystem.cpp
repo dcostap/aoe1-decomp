@@ -145,6 +145,11 @@ long TPanelSystem::check_message(void* hwnd, uint msg, uint wparam, long lparam)
     return 0;
 }
 
+TPanel* TPanelSystem::currentPanel() {
+    // Source of truth: panel.cpp.decomp / panel.cpp.asm (TPanelSystem::currentPanel)
+    return this->currentPanelValue;
+}
+
 TPanel* TPanelSystem::panel(char* name) {
     // Source of truth: panel.cpp.decomp / panel.cpp.asm
     // Find panel by name and return it
@@ -285,4 +290,13 @@ int TPanelSystem::restorePreviousModalPanel() {
     }
     this->modalPanelValue = nullptr;
     return 0;
+}
+
+void TPanelSystem::set_restore() {
+    // Fully verified. Source of truth: panel.cpp.asm @ 0x004646F0
+    for (PanelNode* it = this->panelListValue; it != nullptr; it = it->next_node) {
+        if (it->panel != nullptr) {
+            it->panel->need_restore = 1;
+        }
+    }
 }

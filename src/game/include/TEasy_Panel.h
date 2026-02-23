@@ -30,6 +30,10 @@ public:
     char* get_popup_info_file();
     long get_popup_info_id();
 
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468300 / 0x00468310
+    char* get_info_file();
+    long get_info_id();
+
     // Source of truth: panel_ez.cpp.asm/.decomp @ 0x00469EE0 / 0x00469F30
     void popupOKDialog(long text_id, char* panel_name, int param_4, int param_5);
     void popupOKDialog(char* text, char* panel_name, int param_4, int param_5);

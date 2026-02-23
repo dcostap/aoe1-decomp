@@ -7,6 +7,7 @@
 #include "../include/RGE_TimeSinceLastCall.h"
 #include "../include/RGE_Lobby.h"
 #include "../include/globals.h"
+#include "../include/debug_helpers.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2705,4 +2706,87 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS level) {
     }
 
     return this->AnalyzeCommunicationsStatus();
+}
+
+IDirectPlay3* TCommunications_Handler::GetDPInterface() {
+    // Source of truth: com_hand.cpp.asm GetDPInterface @ 0x0042DED0
+    IDirectPlay2* dp2 = comm_get_dplay(this);
+    if (dp2 == nullptr) {
+        return nullptr;
+    }
+
+    IDirectPlay3* dp3 = nullptr;
+    const HRESULT hr = dp2->QueryInterface(IID_IDirectPlay3A, (LPVOID*)&dp3);
+    (void)dp2->Release();
+
+    if (FAILED(hr)) {
+        return nullptr;
+    }
+    return dp3;
+}
+
+void TCommunications_Handler::SendSpeedChange(uint buffer_frames, uint buffer_granularity) {
+    // Source of truth: com_hand.cpp.decomp @ 0x00429A30
+    if (this->MeHost != 0 && this->Multiplayer != 0) {
+        const uint packed = ((buffer_granularity & 0xFFFF) << 16) | (buffer_frames & 0xFFFF);
+        (void)this->CommOut('S', (void*)&packed, 4, 0);
+    }
+}
+
+int TCommunications_Handler::AllPlayersAcknowledged() {
+    // Source of truth: com_hand.cpp.decomp @ 0x00429C40
+    if (this->Multiplayer == 0) {
+        return 0;
+    }
+    if (this->ShuttingDown != 0) {
+        return 0;
+    }
+    if (this->PlayerOptions.ProgramState == kCommStatePause) {
+        return 0;
+    }
+
+    uint low = (uint)this->PlayerOptions.LowPlayerNumber;
+    uint high = (uint)this->PlayerOptions.HighPlayerNumber;
+    if (low < 1) low = 1;
+    if (high > (uint)this->MaxGamePlayers) high = (uint)this->MaxGamePlayers;
+    if (high > 9) high = 9;
+
+    for (uint p = low; p <= high; ++p) {
+        if (this->IsPlayerHuman(p) != 0) {
+            if (this->LastTurnAck[p] < this->current_turn) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+long TCommunications_Handler::SendChecksumMessage(ulong world_time, uint random, long cs2, long cs3, long cs4, long cs5,
+                                                 long ping_initiated) {
+    // Source of truth: com_hand.cpp.asm SendChecksumMessage @ 0x00429CE0
+    struct MSGFORMAT_CHECKSUM {
+        ulong WorldTurn;
+        ulong Random;
+        long cs2;
+        long cs3;
+        long cs4;
+        long cs5;
+        long PingInitiated;
+        long cs1;
+        ulong Timestamp;
+    } cs;
+
+    memset(&cs, 0, sizeof(cs));
+    cs.WorldTurn = world_time;
+    cs.Random = this->current_turn;
+    cs.cs2 = cs2;
+    cs.cs3 = cs3;
+    cs.cs4 = cs4;
+    cs.cs5 = cs5;
+    cs.PingInitiated = ping_initiated;
+    cs.cs1 = (long)random;
+    cs.Timestamp = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0xBC0);
+
+    const long hr = this->CommOut('M', &cs, 0x24, 0);
+    return hr;
 }

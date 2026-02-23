@@ -2,6 +2,7 @@
 #include "../include/ui_core.h"
 #include "../include/TPanel.h"
 #include "../include/TPanelSystem.h"
+#include "../include/TScreenPanel.h"
 #include "../include/TRegistry.h"
 #include "../include/TDebuggingLog.h"
 #include "../include/TCommunications_Handler.h"
@@ -1433,21 +1434,29 @@ int RGE_Base_Game::setup_palette() {
 }
 
 int RGE_Base_Game::setup_mouse() {
-    if (!this->registry) return 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EBF0, basegame.cpp.asm @ 0x0041EBF0
+    int custom_mouse_reg = this->registry->RegGetInt(0, "Custom Mouse");
 
-    int custom_mouse_reg = this->registry->RegGetInt(1, "Custom Mouse");
+    int custom_type = 0;
     if (custom_mouse_reg == -1) {
-        this->registry->RegSetInt(1, "Custom Mouse", 0);
-        custom_mouse_reg = 0;
+        this->registry->RegSetInt(0, "Custom Mouse", 0);
+    } else if (custom_mouse_reg == 1) {
+        custom_type = 1;
+    } else if (custom_mouse_reg == 2) {
+        this->custom_mouse = 0;
+        custom_type = (int)this;
     }
 
-    if (custom_mouse_reg == 1 || custom_mouse_reg == 2) {
-        // TODO: STUB - TMousePointer implementation
-        // this->mouse_pointer = new TMousePointer(custom_mouse_reg);
-        // setup call...
-    } else {
-        this->mouse_pointer = nullptr;
+    this->mouse_pointer = new (std::nothrow) TMousePointer(custom_type);
+    if (this->mouse_pointer == nullptr) {
+        return 0;
     }
+
+    if (this->mouse_pointer->setup(this->custom_mouse, this->draw_area, this->prog_info->cursor_file, 51000, 10) == 0) {
+        return 0;
+    }
+
+    this->mouse_off();
     return 1;
 }
 
@@ -1598,13 +1607,38 @@ CUSTOM_DEBUG_END
 }
 
 int RGE_Base_Game::setup_shapes() { 
-    // TODO: STUB
-    return 1; 
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041F2D0
+    this->shape_num = 3;
+    this->shapes = (TShape**)calloc(3, sizeof(TShape*));
+    if (this->shapes == nullptr) {
+        return 0;
+    }
+
+    for (int i = 0; i < this->shape_num; ++i) {
+        this->shapes[i] = nullptr;
+    }
+
+    this->shapes[0] = new TShape((char*)"groupnum.shp", 0xC4E3);
+    this->shapes[1] = new TShape((char*)"waypoint.shp", 0xC4E4);
+    this->shapes[2] = new TShape((char*)"moveto.shp", 0xC4E5);
+    return 1;
 }
 
 int RGE_Base_Game::setup_blank_screen() { 
-    // TODO: STUB
-    return 1; 
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041F730
+    TScreenPanel* blank = new TScreenPanel((char*)"Blank Screen");
+    if (blank == nullptr) {
+        return 0;
+    }
+
+    if (blank->setup(this->draw_area, (char*)0, -1, 0) == 0) {
+        return 0;
+    }
+
+    panel_system->setCurrentPanel((char*)"Blank Screen", 0);
+    this->set_render_all();
+    SendMessageA((HWND)this->prog_window, 0xF, 0, 0); // WM_PAINT
+    return 1;
 }
 void RGE_Base_Game::setup_timings() {}
 void RGE_Base_Game::stop_sound_system() {}
@@ -1983,6 +2017,12 @@ void RGE_Base_Game::show_ai() {}
 int RGE_Base_Game::setup_map_save_area() { return 1; }
 void RGE_Base_Game::set_interface_messages() {}
 
+void RGE_Base_Game::set_render_all() {
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00422FF0
+    this->render_all = 1;
+    panel_system->set_restore();
+}
+
 RGE_Font* RGE_Base_Game::get_font(int index) {
     if (index >= 0 && index < this->font_num) {
         return &this->fonts[index];
@@ -2122,7 +2162,16 @@ void RGE_Base_Game::set_map_fog(unsigned char p1) {
 
 void RGE_Base_Game::reset_countdown_timer(int p1) {
     if (p1 >= 0 && p1 < 9) {
-        this->countdown_timer[p1] = 0;
+        this->countdown_timer[p1] = -1;
+    }
+}
+
+void RGE_Base_Game::set_countdown_timer(int p1, long p2) {
+    // Source of truth: basegame.cpp.decomp @ 0x00422DE0
+    if (p1 >= 0 && p1 < 9) {
+        if ((p2 < this->countdown_timer[p1]) || (this->countdown_timer[p1] < 0)) {
+            this->countdown_timer[p1] = p2;
+        }
     }
 }
 

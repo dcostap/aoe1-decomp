@@ -37,6 +37,7 @@ struct RGE_Communications_Addresses;
 struct RGE_Comm_Error;
 struct RESENDER;
 struct HOLDER;
+struct IDirectPlay3;
 #pragma pack(push, 1)
 struct COMMPLAYEROPTIONS {
     // Source of truth: all_types_ground_truth.h :: COMMPLAYEROPTIONS (Size: 0x1D0)
@@ -147,6 +148,15 @@ public:
     long TXChat(uint param_1, uchar* param_2, char* param_3);
     void SendStoredMessages();
     int PreprocessMessages(ulong p1, char* p2, ulong p3, ulong p4, int p5);
+
+    // DirectPlay helper used by session/service primitives.
+    IDirectPlay3* GetDPInterface();
+
+    // Used by RGE_Communications_Speed / RGE_Communications_Synchronize.
+    void SendSpeedChange(uint buffer_frames, uint buffer_granularity);
+    int AllPlayersAcknowledged();
+    long SendChecksumMessage(ulong world_time, uint random, long cs2, long cs3, long cs4, long cs5, long ping_initiated);
+
     int OptionsChanged;
     char* OptionsData;
     int Steps;

@@ -138,6 +138,7 @@ public:
     void set_mouse_facet(long p1);
     void disable_input();
     void enable_input();
+    void set_render_all();
     void mouse_on();
     void mouse_off();
     int check_expiration();
@@ -180,6 +181,7 @@ public:
     void set_map_visible(unsigned char p1);
     void set_map_fog(unsigned char p1);
     void reset_countdown_timer(int p1);
+    void set_countdown_timer(int p1, long p2);
     void set_paused(int p1, int p2);
     void request_pause();
     void reset_timings();

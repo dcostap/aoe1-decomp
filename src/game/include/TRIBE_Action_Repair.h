@@ -34,6 +34,10 @@ public:
     virtual void set_target_obj2(RGE_Static_Object* param_1); // vt[22] (0x58)
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
 
+protected:
+    // Non-virtual helper. Source of truth: tact_rep.cpp.asm @ 0x004D2020
+    void meet_target();
+
     unsigned char save_target_command_flag;
 };
 static_assert(sizeof(TRIBE_Action_Repair) == 0x44, "Size mismatch");

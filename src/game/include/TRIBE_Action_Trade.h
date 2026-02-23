@@ -36,5 +36,9 @@ public:
 
     float pick_up_x;
     float pick_up_y;
+
+protected:
+    RGE_Sprite* get_move_sprite();
+    RGE_Sprite* get_wait_sprite();
 };
 static_assert(sizeof(TRIBE_Action_Trade) == 0x48, "Size mismatch");
