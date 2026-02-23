@@ -35,6 +35,11 @@
 // RGE_Action_Make
 // ============================================================================
 
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x004049B0
+RGE_Action_Make::RGE_Action_Make(int param_1, RGE_Action_Object* param_2) {
+    this->setup(param_1, param_2);
+}
+
 RGE_Action_Make::~RGE_Action_Make() = default; // TODO: STUB
 
 int RGE_Action_Make::setup(RGE_Action_Object* param_1) {
