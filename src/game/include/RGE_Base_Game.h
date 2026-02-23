@@ -181,6 +181,7 @@ public:
     void set_map_visible(unsigned char p1);
     void set_map_fog(unsigned char p1);
     void reset_countdown_timer(int p1);
+    void set_countdown_timer(int p1, long p2);
     void set_paused(int p1, int p2);
     void request_pause();
     void reset_timings();
