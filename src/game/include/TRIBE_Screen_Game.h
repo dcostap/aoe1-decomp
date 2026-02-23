@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameViewPanel.h"
+#include "TScreenPanel.h"
 
 class TRIBE_World;
 class TTextPanel;
@@ -15,7 +15,7 @@ class TRIBE_Panel_Button;
 struct TDigital;
 class TShape;
 
-class TRIBE_Screen_Game : public GameViewPanel {
+class TRIBE_Screen_Game : public TScreenPanel {
 public:
     TRIBE_Screen_Game();
     virtual ~TRIBE_Screen_Game();
@@ -98,8 +98,8 @@ private:
 
     static const int kScreenSize = 0x7C4;
     RuntimeState runtime;
-    unsigned char shim_padding[kScreenSize - sizeof(GameViewPanel) - sizeof(RuntimeState)];
+    unsigned char shim_padding[kScreenSize - sizeof(TScreenPanel) - sizeof(RuntimeState)];
 };
 
-static_assert(sizeof(GameViewPanel) <= 0x7C4, "GameViewPanel exceeds TRIBE_Screen_Game size");
+static_assert(sizeof(TScreenPanel) <= 0x7C4, "TScreenPanel exceeds TRIBE_Screen_Game size");
 static_assert(sizeof(TRIBE_Screen_Game) == 0x7C4, "Size mismatch");

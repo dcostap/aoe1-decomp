@@ -4,6 +4,8 @@
 
 class RGE_Main_View : public RGE_View {
 public:
+    RGE_Main_View();
+
     // Virtuals (best-effort)
     virtual ~RGE_Main_View(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

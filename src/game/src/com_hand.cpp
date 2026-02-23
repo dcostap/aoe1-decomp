@@ -6,6 +6,8 @@
 #include "../include/RGE_Communications_Synchronize.h"
 #include "../include/RGE_TimeSinceLastCall.h"
 #include "../include/RGE_Lobby.h"
+#include "../include/RGE_Comm_Error.h"
+#include "../include/TDebuggingLog.h"
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
 #include <stdio.h>
@@ -39,8 +41,11 @@ static const int kCommPlayerOptionsRandomSeedOffset = 0x1BC;
 static const int kCommPlayerOptionsGameHasStartedOffset = 0x1C8;
 
 static const int kPlayerHumanityHuman = 2;
+static const int kPlayerHumanityClosed = 1;
+static const int kPlayerHumanityEliminated = 3;
 static const int kPlayerHumanityComputer = 4;
 static const int kPlayerHumanityCyborg = 5;
+static const int kPlayerHumanityViewOnly = 6;
 static const int kCommStatePause = 4;
 static const int kCommStateRunning = 5;
 static const int kCommWindowMessagePause = 0x17a2;
@@ -517,6 +522,8 @@ TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game
         memset(this->FormalName, 0, sizeof(NAME) * ((size_t)max_game_players + 1));
     }
 
+    this->Err = new (std::nothrow) RGE_Comm_Error(host_hwnd);
+
     this->Speed = (RGE_Communications_Speed*)calloc(1, sizeof(RGE_Communications_Speed));
     if (this->Speed != nullptr) {
         this->Speed->Comm = this;
@@ -590,6 +597,11 @@ TCommunications_Handler::~TCommunications_Handler() {
     if (this->Sync != nullptr) {
         free(this->Sync);
         this->Sync = nullptr;
+    }
+
+    if (this->Err != nullptr) {
+        delete this->Err;
+        this->Err = nullptr;
     }
 }
 
@@ -1002,60 +1014,126 @@ void TCommunications_Handler::UpdatePlayers() {
 }
 
 void TCommunications_Handler::UpdatePlayer(uint id, int timeout) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042DF90
-    (void)timeout;
-    if (id == 0 || id > (uint)this->MaxGamePlayers) {
-        return;
-    }
-
+    // Source of truth: com_hand.cpp.decomp/.asm @ 0x0042DF90
     COMMPLAYEROPTIONS* opts = &this->PlayerOptions;
     const int humanity = opts->Humanity[id];
+    const ulong dpid = opts->dcoID[id];
 
-    if (humanity == 0) { // absent
+    switch (humanity) {
+    case 0: // ME_ABSENT
+        L->Log("P#%d ABSENT", id);
         opts->dcoID[id] = 0;
         opts->PlayerReady[id] = 0;
-        return;
-    }
-
-    if (humanity == kPlayerHumanityComputer) {
+        goto done;
+    case kPlayerHumanityEliminated: // ME_ELIMINATED
+        L->Log("P#%d ELIMINATED", id);
+        opts->dcoID[id] = 0;
+        opts->PlayerReady[id] = 0;
+        goto done;
+    case kPlayerHumanityClosed: // ME_CLOSED
+        L->Log("P#%d CLOSED", id);
         opts->dcoID[id] = 0;
         opts->PlayerReady[id] = 1;
+        goto done;
+    case kPlayerHumanityHuman: // ME_HUMAN
+        L->Log("P#%d HUMAN", id);
+        break;
+    case kPlayerHumanityComputer: // ME_COMPUTER
+        L->Log("P#%d COMPUTER", id);
+        opts->dcoID[id] = 0;
+        opts->PlayerReady[id] = 1;
+        goto done;
+    case kPlayerHumanityCyborg: // ME_CYBORG
+        L->Log("P#%d CYBORG", id);
+        break;
+    case kPlayerHumanityViewOnly: // ME_VIEWONLY
+        opts->PlayerReady[id] = 1;
+        L->Log("P#%d VIEWONLY", id);
+        break;
+    default:
+        strcpy(this->FriendlyName[id].Text, "Error");
+        L->Log("COMM:INVALID P#%d HUMANITY SETTING %d", id, humanity);
         return;
     }
 
-    if (opts->dcoID[id] == 0) {
+    if (dpid == 0) {
+        L->Log("P#%d Not Defined (updateplayers).", id);
         return;
     }
 
-    // TODO(accuracy): Best-effort name refresh (DirectPlay data may not be available in this branch yet).
-    IDirectPlay2* dp = comm_get_dplay(this);
+    IDirectPlay3* dp = this->GetDPInterface();
     if (dp == nullptr) {
         return;
     }
 
     DWORD size = 0;
-    HRESULT hr = dp->GetPlayerName((DPID)opts->dcoID[id], nullptr, &size);
-    if (hr == DPERR_BUFFERTOOSMALL && size != 0) {
-        void* buf = calloc((size_t)size, 1);
-        if (buf != nullptr) {
-            DWORD size2 = size;
-            hr = dp->GetPlayerName((DPID)opts->dcoID[id], buf, &size2);
-            if (hr == 0) {
-                DPNAME* name = (DPNAME*)buf;
-                if (this->FriendlyName != nullptr && name->lpszShortNameA != nullptr) {
-                    strncpy(this->FriendlyName[id].Text, name->lpszShortNameA, sizeof(this->FriendlyName[id].Text) - 1);
-                    this->FriendlyName[id].Text[sizeof(this->FriendlyName[id].Text) - 1] = '\0';
-                }
-                if (this->FormalName != nullptr && name->lpszLongNameA != nullptr) {
-                    strncpy(this->FormalName[id].Text, name->lpszLongNameA, sizeof(this->FormalName[id].Text) - 1);
-                    this->FormalName[id].Text[sizeof(this->FormalName[id].Text) - 1] = '\0';
+    (void)dp->GetPlayerName((DPID)dpid, nullptr, &size);
+    void* lpData = calloc((size_t)size, 1);
+
+    HRESULT hr = dp->GetPlayerName((DPID)dpid, lpData, &size);
+    this->Err->ShowReturn((long)hr, "Get PName Info");
+
+    const long lhr = (long)hr;
+    const long kHrBufferTooSmall = (long)0x8877001e;
+    const long kHrInvalidArg = (long)0x80070057;
+    const long kHrFatalOther = (long)0x88770082;
+    const long kHrInvalidPlayer = (long)0x88770096;
+
+    if (lhr <= kHrBufferTooSmall) {
+        if (lhr == kHrBufferTooSmall || lhr == kHrInvalidArg) {
+            L->Log("Fatal error player info %ld", lhr);
+            strcpy(this->FriendlyName[id].Text, "Error!");
+            opts->Humanity[id] = 0;
+        } else {
+            L->Log("Unknown fail on updateplayers");
+            opts->Humanity[id] = 0;
+            opts->dcoID[id] = 0;
+        }
+    } else {
+        if (lhr == kHrFatalOther) {
+            L->Log("Fatal error player info %ld", lhr);
+            strcpy(this->FriendlyName[id].Text, "Error!");
+            opts->Humanity[id] = 0;
+        } else if (lhr == kHrInvalidPlayer) {
+            L->Log("INVALID PLAYER %d.  Removing.", (long)dpid);
+            if (opts->ProgramState == kCommStateJoinNow) {
+                opts->Humanity[id] = kPlayerHumanityHuman;
+                if (this->IsPlayerHuman(id) != 0) {
+                    L->Log("INVALID PLAYER");
+                    L->Log("TX Missing Player report for player=%d ", (long)dpid);
+                    struct MsgMissingPlayer {
+                        uchar cmd;
+                        uchar _pad0;
+                        uchar _pad1;
+                        uchar _pad2;
+                        ulong dpid;
+                    } m;
+                    memset(&m, 0, sizeof(m));
+                    m.cmd = (uchar)'?';
+                    m.dpid = dpid;
+                    L->Log("  >TX MP #%d (%d)", (long)dpid, 8);
+                    (void)comm_fast_send_raw(this, 0, &m, 8, 0);
                 }
             }
-            free(buf);
+        } else if (lhr == 0) {
+            const DPNAME* name = (const DPNAME*)lpData;
+            memcpy(this->FriendlyName[id].Text, name->lpszShortNameA, strlen(name->lpszShortNameA) + 1);
+            memcpy(this->FormalName[id].Text, name->lpszLongNameA, strlen(name->lpszLongNameA) + 1);
+            opts->Humanity[id] = kPlayerHumanityHuman;
+        } else {
+            L->Log("Unknown fail on updateplayers");
+            opts->Humanity[id] = 0;
+            opts->dcoID[id] = 0;
         }
     }
 
+    free(lpData);
     (void)dp->Release();
+
+done:
+    if (timeout != 0) {
+        this->NotifyWindow(kCommMessageUpdatePlayers);
+    }
 }
 
 void TCommunications_Handler::NotifyWindow(int message) {
