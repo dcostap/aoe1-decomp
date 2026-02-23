@@ -247,7 +247,6 @@ long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param
     button_notify_parent(this, 5);
     return 1;
 }
-long TButtonPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TButtonPanel::mouse_right_move_action(long x, long y, int param_3, int param_4) {
     (void)param_3;
     (void)param_4;
@@ -292,7 +291,14 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_
     }
     return 1;
 }
-long TButtonPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+long TButtonPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473390
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return 0;
+}
 long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004736F0
     (void)param_2;
@@ -352,7 +358,12 @@ long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int
     }
     return 0;
 }
-long TButtonPanel::char_action(long param_1, short param_2) { return 0; }
+long TButtonPanel::char_action(long param_1, short param_2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473920
+    (void)param_1;
+    (void)param_2;
+    return 0;
+}
 long TButtonPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
 void TButtonPanel::get_true_render_rect(tagRECT* param_1) {}
 int TButtonPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
@@ -365,7 +376,6 @@ void TButtonPanel::set_focus(int focused) {
 }
 void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
 void TButtonPanel::set_tab_order(TPanel** param_1, short param_2) {}
-uchar TButtonPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
 void TButtonPanel::stop_sound_system() {
     if (this->sound != nullptr) {
         this->sound = nullptr;
