@@ -149,6 +149,7 @@ public:
     void close();
     int get_paused();
     RGE_Player* get_player();
+    unsigned char GetWorldChecksums(long& checksum_out, long& position_checksum_out, long& action_checksum_out);
     int create_dialog(TPanel** out_dialog, TPanel* dialog);
     void delete_dialog(TPanel** dialog);
     RGE_Font* get_font(int index);

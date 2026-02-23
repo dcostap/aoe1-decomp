@@ -2,9 +2,20 @@
 
 #include "../include/RGE_Comm_Error.h"
 #include "../include/TCommunications_Handler.h"
+#include "../include/TDebuggingLog.h"
+#include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Player.h"
+#include "../include/RGE_Visible_Map.h"
+#include "../include/PathingSystem.h"
+#include "../include/globals.h"
 
 #include <stdio.h>
 #include <string.h>
+
+// Source of truth: com_sync.cpp.asm uses these globals for per-player visibility checksums.
+static long DAT_0062d208[9];
+static ulong DAT_0062d230;
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_Handler* comm) {
     // Source of truth: com_sync.cpp.decomp @ 0x00432FF0
@@ -106,15 +117,63 @@ int RGE_Communications_Synchronize::ValidateChecksums(uint player_no, ulong worl
 }
 
 ulong RGE_Communications_Synchronize::DoChecksum(ulong comm_turn) {
-    // TODO: STUB - Full checksum computation depends on game-world checksum helpers not yet restored.
-    // Source of truth: com_sync.cpp.decomp @ 0x00433290
+    // Fully verified. Source of truth: com_sync.cpp.asm @ 0x00433290
+    ulong world_time = 0;
     if (this->DoChecksums == 0) {
         return 0;
     }
+
+    if (rge_base_game->world != nullptr) {
+        world_time = rge_base_game->world->world_time;
+    }
+
     if (comm_turn < this->CheckTurn) {
         return 0;
     }
-    this->CheckTurn += 4;
+
+    L->Log("Sync check at turn #%d", this->CheckTurn);
+    this->CheckTurn = this->CheckTurn + 4;
+
+    long cs4 = 0;
+    long cs2 = 0;
+    union {
+        char tmp[255];
+        long cs3;
+    } u;
+    u.tmp[0] = '\0';
+    u.tmp[1] = '\0';
+    u.tmp[2] = '\0';
+    u.tmp[3] = '\0';
+
+    rge_base_game->GetWorldChecksums(cs4, cs2, u.cs3);
+
+    if (this->SendChatMsgs != 0) {
+        sprintf(u.tmp + 4, "Worldtime=%ld Random=%d Checksum=%d", world_time, this->LastWorldRandom, this->GameWorldChecksum);
+        this->Comm->SendChatMsgAll(u.tmp + 4);
+    }
+
+    DAT_0062d230 = rge_base_game->world->players[0]->visible->checksumUnifiedVisible();
+
+    int i = 1;
+    RGE_Game_World* world = rge_base_game->world;
+    if (1 < world->player_num) {
+        do {
+            DAT_0062d208[i] = world->players[i]->visible->checksumVisible();
+            i = i + 1;
+            world = rge_base_game->world;
+        } while (i < world->player_num);
+    }
+
+    const long unified = (long)DAT_0062d230;
+    const long path_checksum = pathSystem.checksum();
+
+    const uint player_no = (uint)this->Comm->WhoAmI();
+    this->Add(player_no, world_time, comm_turn, this->LastWorldRandom, unified, cs4, cs2, u.cs3, path_checksum);
+
+    this->Comm->SendChecksumMessage(world_time, (uint)this->LastWorldRandom, unified, cs4, cs2, u.cs3, path_checksum);
+
+    L->Log("Checksum: T#%d wt=%d   rand=%d  csum=%d", comm_turn, world_time, this->LastWorldRandom, this->GameWorldChecksum);
+    L->FlushLog();
     return 1;
 }
 

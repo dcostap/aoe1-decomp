@@ -4,11 +4,13 @@
 
 class RGE_Base_Game;
 class TRegistry;
+class TDebuggingLog;
 struct TPanelSystem;
 struct TMousePointer;
 struct DClipInfo_List;
 
 extern RGE_Base_Game* rge_base_game;
+extern TDebuggingLog* L;
 extern int do_draw_log;
 extern int safe_draw_log;
 extern char draw_log_name[260];

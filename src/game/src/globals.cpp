@@ -9,6 +9,7 @@ extern "C" {
 }
 
 RGE_Base_Game* rge_base_game = nullptr;
+TDebuggingLog* L = nullptr;
 int do_draw_log = 0;
 int safe_draw_log = 0;
 char draw_log_name[260] = {0};
