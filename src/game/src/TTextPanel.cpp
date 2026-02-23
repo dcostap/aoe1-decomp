@@ -927,11 +927,6 @@ int TTextPanel::get_text_rect(tagRECT* out_rect) {
     return 1;
 }
 
-void TTextPanel::calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out) {
-    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D9E0
-    ::calc_line_pos(this, (HDC)hdc, draw_index, line_index, line_rect, col_offset_out);
-}
-
 // List management methods (needed for TDropDownPanel / TListPanel)
 void TTextPanel::empty_list() {
     free_text_list(this);
