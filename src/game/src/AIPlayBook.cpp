@@ -367,7 +367,7 @@ int AIPlayBook::loadPlays(char* param_1) {
     char temp[256];
     char temp2[256];
     while (fgets(temp, 0x100, file) != nullptr) {
-        if (sscanf(temp, "%255s", temp2) == 1) {
+        if (sscanf(temp, "%255s ", temp2) == 1) {
             if (strcmp(temp2, "Play") == 0) {
                 this->numberPlaysValue += 8;
             }
@@ -410,14 +410,14 @@ int AIPlayBook::loadPlays(char* param_1) {
             continue;
         }
 
-        if (sscanf(temp, "%255s", temp2) != 1) {
+        if (sscanf(temp, "%255s ", temp2) != 1) {
             continue;
         }
 
         if (strcmp(temp2, "Play") == 0) {
             ++current_play;
             current_phase = -1;
-            if (15999 < current_play) {
+            if ((15999 < current_play) || (allocated_count <= current_play)) {
                 break;
             }
 
