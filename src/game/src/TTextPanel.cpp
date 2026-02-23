@@ -916,10 +916,15 @@ int TTextPanel::get_text_rect(tagRECT* out_rect) {
     if (!hdc) return 0;
 
     HGDIOBJ old_font = SelectObject(hdc, (HGDIOBJ)this->font);
-    calc_line_pos(this, hdc, 0, 0, out_rect, (long*)0);
+    this->calc_line_pos((void*)hdc, 0, 0, out_rect, (long*)0);
     SelectObject(hdc, old_font);
     this->render_area->ReleaseDc((char*)"pnl_txt::get_text_rect");
     return 1;
+}
+
+void TTextPanel::calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out) {
+    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D9E0
+    ::calc_line_pos(this, (HDC)hdc, draw_index, line_index, line_rect, col_offset_out);
 }
 
 // List management methods (needed for TDropDownPanel / TListPanel)
