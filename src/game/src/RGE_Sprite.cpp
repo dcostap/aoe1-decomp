@@ -415,7 +415,7 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
         }
     }
 
-    this->shape->shape_draw(param_6, param_3, param_4, facet_index, this->color_flag, 0, table);
+    this->shape->shape_draw(param_6, param_3, param_4, facet_index, (unsigned char)this->color_flag, table);
 }
 
 unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, unsigned char param_9) {

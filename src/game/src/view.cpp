@@ -1708,7 +1708,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     if ((fog & 0x10) == 0x10) {
         fog_next_shape = 1;
         _ASMSet_Shadowing(0x00FF00FF, 0x28002800, (int)0xFF00FF00u, 0x00280028);
-        shape->shape_draw(this->cur_render_area, x - hotspot_x, y - hotspot_y, frame, 0, 0, nullptr);
+        shape->shape_draw(this->cur_render_area, x - hotspot_x, y - hotspot_y, frame, 0, nullptr);
         _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
         fog_next_shape = 0;
         return;
@@ -1730,7 +1730,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     if (param_8 != 0) {
         this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
         fog_next_shape = 1;
-        shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0, nullptr);
+        shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
         fog_next_shape = 0;
     }
 
@@ -1740,7 +1740,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
 
     if (param_7 != 0) {
         this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
-        shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0, nullptr);
+        shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
     }
 
     this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;

@@ -226,10 +226,10 @@ void TMousePointer::Poll() {
                         if (bits != nullptr) {
                             long facet = this->next_facet;
                             Shape_Info* info = this->Cursor_Shape->shape_info;
-                            this->Cursor_Shape->shape_draw(this->primary_area,
-                                info[facet].Hotspot_X + ptVar1->left,
-                                this->mouse_rect.top + info[facet].Hotspot_Y,
-                                facet, 0, 0, nullptr);
+                             this->Cursor_Shape->shape_draw(this->primary_area,
+                                 info[facet].Hotspot_X + ptVar1->left,
+                                 this->mouse_rect.top + info[facet].Hotspot_Y,
+                                 facet, 0, nullptr);
                             this->primary_area->Unlock((char*)"mouseptr::poll");
                         }
                     }
@@ -322,10 +322,10 @@ int TMousePointer::LoadCursors(char* filename, int file_id, int reload) {
                         } else {
                             da->FillRect(0, 0, this->Max_CX, this->Max_CY, '\0');
                             Shape_Info* info = this->Cursor_Shape->shape_info;
-                            this->Cursor_Shape->shape_draw(da,
-                                info[i].Hotspot_X,
-                                info[i].Hotspot_Y,
-                                (long)i, 0, 0, nullptr);
+                             this->Cursor_Shape->shape_draw(da,
+                                 info[i].Hotspot_X,
+                                 info[i].Hotspot_Y,
+                                 (long)i, 0, nullptr);
                             da->Unlock((char*)"mouseptr::LoadCursors");
                         }
                     }
@@ -618,10 +618,10 @@ void TMousePointer::draw(int param_1) {
                         if (bits != nullptr) {
                             long facet = this->next_facet;
                             Shape_Info* info = this->Cursor_Shape->shape_info;
-                            this->Cursor_Shape->shape_draw(this->render_area,
-                                info[facet].Hotspot_X + ptVar1->left,
-                                info[facet].Hotspot_Y + this->mouse_rect.top,
-                                facet, 0, 0, nullptr);
+                             this->Cursor_Shape->shape_draw(this->render_area,
+                                 info[facet].Hotspot_X + ptVar1->left,
+                                 info[facet].Hotspot_Y + this->mouse_rect.top,
+                                 facet, 0, nullptr);
                             this->render_area->Unlock((char*)"mouseptr::draw");
                         }
                     }
