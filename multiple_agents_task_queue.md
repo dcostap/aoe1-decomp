@@ -329,7 +329,7 @@ Rules of engagement:
 
 ## Task 30 — Implement Achievements + Timeline screens parity (`TribeAchievementsScreen` + `Time_Line_Panel`)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the post-game achievements/statistics UI (including timeline view) so the “Achievements Screen” path is no longer a missing-screen hole.
 - Implement:
   - Transliterate `TribeAchievementsScreen` ctor/dtor + action handlers (mode switching, back/ok/restart buttons, scrollbars for text areas, stat table fill).
@@ -337,7 +337,7 @@ Rules of engagement:
 - Where: new src/game/src/scr_ach_impl.cpp + src/game/src/timeline_impl.cpp (or equivalent), wired to existing headers src/game/include/TribeAchievementsScreen.h and src/game/include/Time_Line_Panel.h.
 - Source of truth: src/game/decomp/scr_ach.cpp.decomp (ctor @ 0x0048D530), src/game/decomp/timeline.cpp.decomp (RGE_Timeline @ 0x0050D5B0) + corresponding `.asm` files.
 - Done when: “Achievements Screen” can be constructed without stubs, the timeline panel allocates/loads correctly per decomp, and all code compiles/link-clean with no new placeholder forwarding stubs.
-- Status note: a best-effort `TribeAchievementsScreen` exists (sufficient for the `stop_video(video=4)` branch) (commit `0fde90d`), and `RGE_Timeline` exists in src (`src/game/src/RGE_Timeline.cpp`) (commit `24765e4`), but the real Achievements UI + `Time_Line_Panel` parity is still pending.
+- Status note: Achievements screen + timeline UI parity landed (`Time_Line_Panel.cpp` commit `1bcd8b7`, `TribeAchievementsScreen.cpp` parity fixes commit `a5b9cdf`); timeline backing (`RGE_Timeline.cpp`) already exists (commit `24765e4`).
 
 ---
 
@@ -397,36 +397,35 @@ Rules of engagement:
 
 ## Task 36 — Replace TRIBE player AI compat shim with real `TribeMainDecisionAIModule`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove `TribeMainDecisionAIModuleCompatShim` so TRIBE player AI uses the real module/vtable, preventing subtle AI dispatch mismatches.
 - Implement: full ctor/dtor + required virtuals for `TribeMainDecisionAIModule`, and update `TRIBE_Player` to allocate/use it (removing the compat shim + reinterpret-cast allocation path).
 - Where: new src file(s) under src/game/src + edits in src/game/src/TRIBE_Player.cpp and matching headers under src/game/include.
 - Source of truth: src/game/decomp/TribeMainDecisionAIModule.decomp + src/game/decomp/TribeMainDecisionAIModule.asm, plus call sites in src/game/decomp/tplayer.cpp.decomp.
 - Done when: the shim class is removed, `playerAI` is a real `TribeMainDecisionAIModule`, and build is clean without adding new “linker satisfaction” stubs.
-- Status note: `TribeMainDecisionAIModuleCompatShim` + reinterpret-cast allocation are still present in `src/game/src/TRIBE_Player.cpp` (latest local commit `15212ff`).
+- Status note: `TRIBE_Player` now allocates/uses a real `TribeMainDecisionAIModule` and the compat shim path is gone (commit `1b3f6f5`, merged via `baa935e`).
 
 ---
 
 ## Task 37 — Implement `AIPlayBook::loadPlays` full `.ply` parsing (remove current stub)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: stop treating `data\\aoe.ply` as “loaded” when parsing is stubbed, so playbook data structures are actually populated.
 - Implement: full transliteration of `AIPlayBook::loadPlays(char*)` (file format parse + allocation + per-play setup).
 - Where: src/game/src/AIPlayBook.cpp (+ any needed declarations in src/game/include/AIPlayBook.h).
 - Source of truth: src/game/decomp/aipbook.cpp.decomp (loadPlays @ 0x00410220) + src/game/decomp/aipbook.cpp.asm.
 - Done when: the `// TODO: STUB: Full .ply parsing...` note is removed, all parse branches/alloc/free match decomp, and build is clean.
-- Status note: Task 14 restored the call-site; this task restores the actual parser.
-  - Current state: `AIPlayBook::loadPlays` still contains the explicit `// TODO: STUB: Full .ply parsing...` marker in `src/game/src/AIPlayBook.cpp` (commit `c444d6a`).
+- Status note: `AIPlayBook::loadPlays` full `.ply` parsing restored and the explicit stub marker removed (implementation/fix commit `baf6442`, merged via `603fda9`).
 
 ## Task 38 — Implement `RGE_Game_World::data_load_*` virtuals (currently hard stubs)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the data-loading virtuals so world initialization can load terrain/sprites/sounds/players/objects without “return 1” placeholders.
 - Implement: `data_load_world`, `data_load_terrain_tables`, `data_load_players`, `data_load_objects`, `data_load_sounds`, `data_load_color_tables`, `data_load_sprites`, `data_load_players_type`, `data_load_effects`, `data_load_map`, `data_load_random_map`.
 - Where: src/game/src/RGE_Game_World.cpp (+ declarations in src/game/include/RGE_Game_World.h if missing).
 - Source of truth: src/game/decomp/world.cpp.decomp + src/game/decomp/world.cpp.asm (locate the `data_load_*` family by symbol/offset).
 - Done when: the “Stub implementations” block is gone, each method matches decomp control flow, and build is clean.
-- Status note: `src/game/src/RGE_Game_World.cpp` still contains a “Stub implementations for RGE_Game_World virtual methods” block for the `data_load_*` family (latest local commit `15212ff`).
+- Status note: `data_load_*` family implemented (commit `6605a1a`, merged via `2d9afb0`).
 
 ## Task 39 — Finish `RGE_Action_Object` + `RGE_Action_List` plumbing parity (action stack management)
 - [x] Assigned to agent
@@ -439,7 +438,7 @@ Rules of engagement:
 - Where: src/game/src/RGE_Action_Object.cpp, src/game/src/RGE_Action_List.cpp (+ headers under src/game/include).
 - Source of truth: src/game/decomp/act_obj.cpp.decomp + src/game/decomp/act_obj.cpp.asm, src/game/decomp/act_list.cpp.decomp + src/game/decomp/act_list.cpp.asm.
 - Done when: the transliteration covers the full decomp function set for both files (with `// Fully verified...` markers on finished functions) and build is clean.
-- Status note: initial load scaffolding exists, but coverage is still minimal (e.g., `RGE_Action_Object.cpp` currently implements only ctor/`setup`/`create_action_list` and still has a TODO about the `RGE_Action_List` owning-ctor; `RGE_Action_List.cpp` currently implements only basic stack ops + `load`) (commit `9b7dd32`).
+- Status note: action-stack plumbing parity implemented (`RGE_Action_Object`/`RGE_Action_List` ctor/dtor/load/save/rehook/update/queue ops) (commit `8018339`). Remaining gaps are now primarily the action subclass factories (`RGE_Action_List::create_action` / `create_task_action` still have TODO: STUB because Task 40’s `RGE_Action_*` subclasses are not yet transliterated).
 
 ## Task 40 — Implement the 8 core `RGE_Action_*` subclasses (base unit behaviors)
 - [x] Assigned to agent
@@ -470,7 +469,7 @@ Rules of engagement:
 - Where: src/game/src/RGE_Moving_Object.cpp (+ declarations in src/game/include/RGE_Moving_Object.h).
 - Source of truth: src/game/decomp/move_obj.cpp.decomp + src/game/decomp/move_obj.cpp.asm (ASM audit for signedness in angle/velocity math).
 - Done when: move_obj.cpp.decomp function set is fully covered (verified markers on completed functions) and build is clean.
-- Status note: `RGE_Moving_Object` save/load/setup is present, but most movement behavior is not yet restored; `set_angle()` explicitly contains a “for now, simple stub” path and the overall file only covers a small slice of move_obj.cpp (commit `9b7dd32`).
+- Status note: a large set of move_obj.cpp helper methods + state management landed (commit `a98da35`, plus marker fix `2bf8491`). Still missing the higher-level movement/pathing execution methods (e.g., `update`, `canPath`/path search integration) and therefore remains blocked on Task 43’s `PathingSystem::findPath` parity.
 
 ## Task 43 — Finish pathfinding: `PathingSystem` + `Path` algorithm and helper ops
 - [x] Assigned to agent
@@ -482,7 +481,7 @@ Rules of engagement:
 - Where: src/game/src/pathsys.cpp, src/game/src/Path.cpp (+ headers under src/game/include).
 - Source of truth: src/game/decomp/pathsys.cpp.decomp + src/game/decomp/pathsys.cpp.asm, src/game/decomp/path.cpp.decomp + src/game/decomp/path.cpp.asm.
 - Done when: the decomp function sets are implemented (verified markers on completed functions) and build is clean.
-- Status note: `pathsys.cpp` currently only contains constructor/destructor + basic obstruction helpers (no `findPath` yet), and `Path.cpp` currently only contains a handful of container methods (commit `9b7dd32`).
+- Status note: `Path.cpp` has grown beyond the initial handful of helpers (latest touch `a98da35`), but `pathsys.cpp` still lacks `PathingSystem::findPath` and the real path search/smoothing logic (still primarily ctor/dtor + obstruction helpers, commit `9b7dd32`).
 
 ## Task 44 — Implement missing `RGE_Combat_Object` combat mechanics (attack/damage/armor)
 - [x] Assigned to agent
@@ -506,16 +505,16 @@ Rules of engagement:
 
 ## Task 46 — Complete doppleganger (fog-of-war ghost) object parity
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the fog-of-war ghost object system so it can draw/update/save correctly instead of only loading.
 - Implement: remaining `RGE_Doppleganger_Object` virtuals (draw/update/save/die/destroy/copy/rehook/new_sprite/check_damage_sprites, etc.) and any creator/helpers required.
 - Where: src/game/src/RGE_Doppleganger_Object.cpp (+ possibly src/game/src/RGE_Doppleganger_Creator.cpp) and headers under src/game/include.
 - Source of truth: src/game/decomp/dpl_obj.cpp.decomp + src/game/decomp/dpl_obj.cpp.asm, plus src/game/decomp/m_dg_obj.cpp.decomp if it contains master/variant behaviors.
 - Done when: doppleganger no longer depends on stub forwarding for core virtuals and build is clean.
-- Status note: `RGE_Doppleganger_Object.cpp` currently only implements ctor(s) + `setup` (load); core behavior virtuals are still stubbed/forwarded (commit `9b7dd32`).
+- Status note: doppleganger creator/object runtime parity restored (commit `2b96aa1`, merged via `a59a4b0`).
 
 ## Task 47 — Audit/restore `TShape` draw pipeline parity (replace current custom implementation)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: ensure software renderer shape drawing matches the original (control flow + blending/shadow/mirror/dither variants), not an approximation.
 - Implement: decomp-first transliteration of the `shape.cpp.decomp` routine set into the project’s `TShape` implementation (including clipped/unclipped, mirror variants, shadowing/translucency, bounds, and span integration). If current code already covers a function, ASM-audit and adjust it to match decomp rather than refactoring.
