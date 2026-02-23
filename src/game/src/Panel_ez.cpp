@@ -24,9 +24,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-
-// TODO(accuracy): This file is a best-effort reimplementation based on immutable references:
-// `src/game/src/Panel_ez.cpp.asm` and `src/game/src/Panel_ez.cpp.decomp`.
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
 
 static int is_none_token(const char* s) {
     if (!s) return 1;
@@ -111,68 +111,50 @@ CUSTOM_DEBUG_BEGIN
         this->brush,
         this->stock_brush);
 CUSTOM_DEBUG_END
-
-    // TODO(accuracy): Best-effort match for `prepare_for_close` behavior; keep minimal for now.
-    if (this->background_pic) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting background_pic=%p", this->background_pic);
-CUSTOM_DEBUG_END
-        delete this->background_pic;
-        this->background_pic = nullptr;
-    }
-    if (this->background_pic2) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting background_pic2=%p", this->background_pic2);
-CUSTOM_DEBUG_END
-        delete this->background_pic2;
-        this->background_pic2 = nullptr;
-    }
-    if (this->button_pics) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting button_pics=%p", this->button_pics);
-CUSTOM_DEBUG_END
-        delete this->button_pics;
-        this->button_pics = nullptr;
-    }
-    if (this->shadow_area) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting shadow_area=%p", this->shadow_area);
-CUSTOM_DEBUG_END
-        delete this->shadow_area;
-        this->shadow_area = nullptr;
-    }
-    if (this->shadow_color_table) {
-        if (this->render_area && this->render_area->shadow_color_table == this->shadow_color_table) {
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT(
-                "TEasy_Panel dtor: clearing render_area stale shadow table area=%p table=%p",
-                this->render_area,
-                this->shadow_color_table);
-CUSTOM_DEBUG_END
-            this->render_area->SetShadowTable(nullptr);
-        }
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting shadow_color_table=%p", this->shadow_color_table);
-CUSTOM_DEBUG_END
-        delete this->shadow_color_table;
-        this->shadow_color_table = nullptr;
-    }
-    if (this->palette && panel_system) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: releasing palette=%p via panel_system=%p", this->palette, panel_system);
-CUSTOM_DEBUG_END
-        panel_system->release_palette(this->palette);
-        this->palette = nullptr;
-    }
-    if (this->brush) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: brush still set (not freed here) brush=%p stock=%d", this->brush, this->stock_brush);
-CUSTOM_DEBUG_END
-    }
+    this->prepare_for_close();
 
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: end panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
 CUSTOM_DEBUG_END
+}
+
+// Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004672A0
+void TEasy_Panel::prepare_for_close() {
+    if (this->shadow_area != nullptr) {
+        delete this->shadow_area;
+        this->shadow_area = nullptr;
+    }
+
+    if (this->brush != nullptr) {
+        if (this->stock_brush == 0) {
+            DeleteObject((HGDIOBJ)this->brush);
+        }
+        this->brush = nullptr;
+    }
+
+    if (this->background_pic != nullptr) {
+        delete this->background_pic;
+        this->background_pic = nullptr;
+    }
+    if (this->background_pic2 != nullptr) {
+        delete this->background_pic2;
+        this->background_pic2 = nullptr;
+    }
+
+    if (this->palette != nullptr) {
+        panel_system->release_palette(this->palette);
+        this->palette = nullptr;
+    }
+
+    if (this->shadow_color_table != nullptr) {
+        delete this->shadow_color_table;
+        this->shadow_color_table = nullptr;
+    }
+
+    if (this->button_pics != nullptr) {
+        delete this->button_pics;
+        this->button_pics = nullptr;
+    }
 }
 
 // Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
@@ -456,8 +438,7 @@ static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackgr
 }
 
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
-    // TODO(accuracy): Best-effort implementation targeting accuracy for boot->main menu path.
-    // Source of truth: `src/game/src/Panel_ez.cpp.asm` / `.decomp` (immutable references).
+    // Source of truth: panel_ez.cpp.asm @ 0x00466A90
     this->allow_shadow_area = param_10;
     set_info_file(this, param_3, param_4);
 
@@ -466,57 +447,99 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
     long y = param_7;
     long w = param_8;
     long h = param_9;
-    if (param_1) {
-        if (w <= 0) w = param_1->Width;
-        if (h <= 0) h = param_1->Height;
-        if (param_5 == 0 && w > 0 && h > 0) {
+    if (param_5 == 0) {
+        if (((0 < w) && (0 < h)) && (param_1 != nullptr)) {
             if (x == -1) x = (param_1->Width / 2) - (w / 2);
             if (y == -1) y = (param_1->Height / 2) - (h / 2);
         }
-    }
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-
-    if (!TPanel::setup(param_1, param_2, x, y, w, h, 0)) {
-        this->error_code = 1;
-        return 0;
-    }
-
-    // Allow blank screens.
-    if (this->info_id < 0) {
-        return 1;
+    } else {
+        x = 0;
+        y = 0;
+        if (param_1 == nullptr) {
+            w = 0;
+            h = 0;
+        } else {
+            w = param_1->Width;
+            h = param_1->Height;
+        }
     }
 
+    if (!TPanel::setup(param_1, param_2, x, y, w, h, 0)) return 0;
+
+    this->set_ideal_size(w, h);
+    if (param_3 != nullptr) {
+        this->set_positioning(TPanel::PositionMode::Relative, 0, 0, 0, 0, 0, 0, 0, 0, nullptr, nullptr, nullptr, nullptr);
+    }
+
+    unsigned char* res = nullptr;
     int res_size = 0;
-    int res_type = 0;
-    unsigned char* res = RESFILE_load(0x62696e61, (unsigned long)this->info_id, &res_size, &res_type); // 'bina'
-    if (!res || res_size <= 0) {
-        CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::setup: failed to load bina id=%ld", this->info_id);
-        this->error_code = 1;
-        return 0;
+    int own_mem = 0;
+
+    if ((shape_file_first != '\0') && (this->info_file_name[0] != '\0')) {
+        char sin_path[260];
+        const char* fmt = (strchr(this->info_file_name, '.') != nullptr) ? "%s" : "%s.sin";
+        sprintf(sin_path, fmt, this->info_file_name);
+
+        const int fd = _open(sin_path, _O_RDONLY | _O_BINARY);
+        if (fd != -1) {
+            const long size = (long)_lseek(fd, 0, 2);
+            if (size > 0) {
+                res = (unsigned char*)malloc((size_t)size + 1);
+                if (res != nullptr) {
+                    _lseek(fd, 0, 0);
+                    const int n = _read(fd, res, (unsigned int)size);
+                    if (n > 0) {
+                        res_size = n;
+                        res[res_size] = '\0';
+                        own_mem = 1;
+                    } else {
+                        free(res);
+                        res = nullptr;
+                    }
+                }
+            }
+            _close(fd);
+        }
     }
 
-    // Make a writable null-terminated copy for tokenization.
+    if (res == nullptr) {
+        if (this->info_id != -1) {
+            res = RESFILE_load(0x62696e61, (unsigned long)this->info_id, &res_size, &own_mem); // 'bina'
+        }
+        if (res == nullptr) {
+            return 1;
+        }
+    }
+
+    // Parse expects a mutable, null-terminated buffer.
     char* cfg_text = (char*)calloc(1, (size_t)res_size + 1);
     if (!cfg_text) {
-        if (res_type == 1) free(res);
-        this->error_code = 1;
-        return 0;
+        if (own_mem == 1) free(res);
+        return 1;
     }
     memcpy(cfg_text, res, (size_t)res_size);
     cfg_text[res_size] = '\0';
-    if (res_type == 1) free(res);
+    if (own_mem == 1) free(res);
 
     EasyCfg cfg;
     easycfg_init(&cfg);
     const int parsed_items = parse_easy_cfg_text(&cfg, cfg_text);
     free(cfg_text);
 
-    if (parsed_items <= 0) {
-        // Source of truth: `Panel_ez.cpp.decomp` only applies parsed style/state data when `sscanf != -1`.
-        // If parsing failed, keep constructor defaults and treat setup as successful.
-        return 1;
+    if (parsed_items <= 0) return 1;
+
+    // Background selection by resolution.
+    const EasyCfgBackground* bg = &cfg.bg1;
+    if (param_1) {
+        if (param_1->Width >= 1024) {
+            bg = &cfg.bg3;
+        } else if ((param_1->Width >= 800) && !is_none_token(cfg.bg2.file1)) {
+            bg = &cfg.bg2;
+        }
     }
+    load_bg_shape_pair(&this->background_pic, &this->background_pic2, bg);
+
+    this->set_shadow_amount(cfg.shade_amount_percent);
 
     // Palette.
     if (panel_system && !is_none_token(cfg.pal_file) && cfg.pal_id >= 0) {
@@ -533,14 +556,6 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
         this->cursor_file[sizeof(this->cursor_file) - 1] = '\0';
         this->cursor_id = cfg.cursor_id;
     }
-
-    // Background selection by resolution.
-    const EasyCfgBackground* bg = &cfg.bg1;
-    if (param_1) {
-        if (param_1->Width >= 1024) bg = &cfg.bg3;
-        else if (param_1->Width >= 800) bg = &cfg.bg2;
-    }
-    load_bg_shape_pair(&this->background_pic, &this->background_pic2, bg);
 
     // Colors / bevels.
     this->background_pos = cfg.background_pos;
@@ -592,8 +607,6 @@ CUSTOM_DEBUG_BEGIN
         (int)this->bevel_color1, (int)this->bevel_color2, (int)this->bevel_color3,
         (int)this->bevel_color4, (int)this->bevel_color5, (int)this->bevel_color6);
 CUSTOM_DEBUG_END
-
-    this->set_shadow_amount(cfg.shade_amount_percent);
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::setup done: info='%s' id=%ld shade=%ld", this->info_file_name, this->info_id, this->shadow_amount);
 CUSTOM_DEBUG_END
@@ -683,101 +696,114 @@ void TEasy_Panel::take_snapshot() { TPanel::take_snapshot(); }
 void TEasy_Panel::handle_reactivate() { TPanel::handle_reactivate(); }
 
 void TEasy_Panel::draw_background(int param_1) {
-    // TODO(accuracy): Best-effort match for `TEasy_Panel::draw_background` in `Panel_ez.cpp.decomp`.
-    if (!this->render_area) return;
+    // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004675C0
+    if (this->render_area == nullptr) return;
 
     this->draw_setup(0);
 
-    // Fast path: for shaded backgrounds, we can use a prebuilt shadow_area.
-    if (param_1 != 0 && this->shadow_area) {
-        const long w = this->shadow_area->Width;
-        const long h = this->shadow_area->Height;
+    if ((param_1 != 0) && (this->shadow_area != nullptr)) {
+        if (this->need_redraw == TPanel::RedrawMode::RedrawFull) {
+            this->render_area->Clear(&this->clip_rect, (uint)this->background_color2);
+        }
 
+        const long shadow_w = this->shadow_area->Width;
+        const long shadow_h = this->shadow_area->Height;
         if (this->background_pos == 0) {
             this->shadow_area->Copy(this->render_area, this->pnl_x, this->pnl_y, (tagRECT*)0, 0);
         } else if (this->background_pos == 1) {
-            const long dx = this->pnl_x + (this->pnl_wid / 2) - (w / 2);
-            const long dy = this->pnl_y + (this->pnl_hgt / 2) - (h / 2);
+            const long dx = (long)(short)(this->pnl_x + (this->pnl_wid / 2) - (shadow_w / 2));
+            const long dy = (long)(short)(this->pnl_y + (this->pnl_hgt / 2) - (shadow_h / 2));
             this->shadow_area->Copy(this->render_area, dx, dy, (tagRECT*)0, 0);
         } else if (this->background_pos == 2) {
-            for (long yy = 0; yy <= this->pnl_hgt; yy += h) {
-                for (long xx = 0; xx <= this->pnl_wid; xx += w) {
-                    this->shadow_area->Copy(this->render_area, this->pnl_x + xx, this->pnl_y + yy, (tagRECT*)0, 0);
+            if (this->pnl_hgt >= 0) {
+                for (long yy = 0; yy <= this->pnl_hgt; yy += shadow_h) {
+                    if (this->pnl_wid >= 0) {
+                        for (long xx = 0; xx <= this->pnl_wid; xx += shadow_w) {
+                            this->shadow_area->Copy(this->render_area, this->pnl_x + xx, this->pnl_y + yy, (tagRECT*)0, 0);
+                        }
+                    }
                 }
             }
         }
-
-        this->draw_finish();
-        return;
-    }
-
-    // Choose background pic.
-    TShape* pic = 0;
-    if (param_1 == 0) {
-        pic = this->background_pic;
     } else {
-        pic = this->background_pic2 ? this->background_pic2 : this->background_pic;
-    }
-
-    // If no picture, clear the background using the configured color.
-    if (!pic || !pic->is_loaded()) {
-        const int c = (param_1 == 0) ? (int)this->background_color1 : (int)this->background_color2;
-        this->render_area->Clear(&this->clip_rect, c);
-        this->draw_finish();
-        return;
-    }
-
-    // If the original background does not fully cover the draw area (or clip rect is partial), the engine clears first.
-    {
-        const int c = (param_1 == 0) ? (int)this->background_color1 : (int)this->background_color2;
-        this->render_area->Clear(&this->clip_rect, c);
-    }
-
-    // Draw the picture (clipped via `TDrawArea::ClipRect` + `TShape::shape_draw`).
-    long x_min = 0, y_min = 0, x_max = 0, y_max = 0;
-    pic->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0);
-    const long pic_w = (x_max - x_min) + 1;
-    const long pic_h = (y_max - y_min) + 1;
-
-    if (this->render_area->Lock((char*)"panel_ez::draw_background", 0)) {
-        if (this->background_pos == 1) {
-            const long dx = this->pnl_x + (this->pnl_wid / 2) - (pic_w / 2) - x_min;
-            const long dy = this->pnl_y + (this->pnl_hgt / 2) - (pic_h / 2) - y_min;
-            pic->shape_draw(this->render_area, dx, dy, 0, 0, (uchar*)0);
-
-            if (param_1 != 0 && this->shadow_color_table) {
-                this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(dx, dy, dx + pic_w - 1, dy + pic_h - 1);
-            }
-        } else if (this->background_pos == 2) {
-            for (long yy = 0; yy <= this->pnl_hgt; yy += pic_h) {
-                for (long xx = 0; xx <= this->pnl_wid; xx += pic_w) {
-                    const long dx = this->pnl_x + xx - x_min;
-                    const long dy = this->pnl_y + yy - y_min;
-                    pic->shape_draw(this->render_area, dx, dy, 0, 0, (uchar*)0);
-                }
-            }
-            if (param_1 != 0 && this->shadow_color_table) {
-                this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1);
-            }
-        } else {
-            // Top-left anchored.
-            pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, (uchar*)0);
-            if (param_1 != 0 && this->shadow_color_table) {
-                this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + (x_max - x_min), this->pnl_y + (y_max - y_min));
-            }
+        TShape* pic = this->background_pic;
+        if ((param_1 != 0) && (this->background_pic2 != nullptr)) {
+            pic = this->background_pic2;
         }
 
-        this->render_area->Unlock((char*)"panel_ez::draw_background");
+        if ((this->need_redraw == TPanel::RedrawMode::RedrawFull) || (pic == nullptr)) {
+            const uint c = (uint)((param_1 == 0) ? this->background_color1 : this->background_color2);
+            this->render_area->Clear(&this->clip_rect, c);
+            if (pic == nullptr) goto draw_bevel_and_finish;
+        }
+
+        if (this->render_area->Lock((char*)"panel_ez::draw_background", 1)) {
+            long x_min = 0, y_min = 0, x_max = 0, y_max = 0;
+            pic->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0);
+            const long pic_w = (x_max - x_min) + 1;
+            const long pic_h = (y_max - y_min) + 1;
+
+            long shadow_x1 = 0, shadow_y1 = 0, shadow_x2 = 0, shadow_y2 = 0;
+            int do_shadow = 0;
+
+            if (this->background_pos == 1) {
+                const long dx = (long)(short)(this->pnl_x + (this->pnl_wid / 2) - (pic_w / 2));
+                const long dy = (long)(short)(this->pnl_y + (this->pnl_hgt / 2) - (pic_h / 2));
+                pic->shape_draw(this->render_area, dx, dy, 0, 0, (uchar*)0);
+
+                if ((param_1 != 0) && (this->shadow_color_table != nullptr)) {
+                    do_shadow = 1;
+                    shadow_x1 = dx;
+                    shadow_y1 = dy;
+                    shadow_x2 = dx + pic_w - 1;
+                    shadow_y2 = dy + pic_h - 1;
+                }
+            } else if (this->background_pos == 2) {
+                if (this->pnl_hgt >= 0) {
+                    for (long yy = 0; yy <= this->pnl_hgt; yy += pic_h) {
+                        if (this->pnl_wid >= 0) {
+                            for (long xx = 0; xx <= this->pnl_wid; xx += pic_w) {
+                                pic->shape_draw(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0, (uchar*)0);
+                            }
+                        }
+                    }
+                }
+
+                if ((param_1 != 0) && (this->shadow_color_table != nullptr)) {
+                    do_shadow = 1;
+                    shadow_x1 = this->pnl_x;
+                    shadow_y1 = this->pnl_y;
+                    shadow_x2 = this->pnl_x + this->pnl_wid - 1;
+                    shadow_y2 = this->pnl_y + this->pnl_hgt - 1;
+                }
+            } else {
+                pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, (uchar*)0);
+                if ((param_1 != 0) && (this->shadow_color_table != nullptr)) {
+                    do_shadow = 1;
+                    shadow_x1 = this->pnl_x;
+                    shadow_y1 = this->pnl_y;
+                    shadow_x2 = this->pnl_x + (x_max - x_min);
+                    shadow_y2 = this->pnl_y + (y_max - y_min);
+                }
+            }
+
+            if (do_shadow) {
+                this->render_area->SetShadowTable(this->shadow_color_table);
+                this->render_area->DrawShadowBox(shadow_x1, shadow_y1, shadow_x2, shadow_y2);
+            }
+
+            this->render_area->Unlock((char*)"panel_ez::draw_background");
+        }
     }
 
-    // Optional screen bevel.
+draw_bevel_and_finish:
     if (this->use_bevels != 0) {
-        if (this->render_area->Lock((char*)"panel_ez::draw_background2", 0)) {
-            this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+        if (this->render_area->Lock((char*)"panel_ez::draw_background2", 1)) {
+            this->render_area->DrawBevel3(
+                this->pnl_x, this->pnl_y,
+                this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
+                this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                this->bevel_color4, this->bevel_color5, this->bevel_color6);
             this->render_area->Unlock((char*)"panel_ez::draw_background2");
         }
     }
