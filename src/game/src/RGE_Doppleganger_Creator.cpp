@@ -1,4 +1,7 @@
 #include "../include/RGE_Doppleganger_Creator.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Master_Doppleganger_Object.h"
+#include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Player.h"
 
@@ -35,10 +38,10 @@ RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
     }
 }
 
-static void rge_doppleganger_expand_allocations(RGE_Doppleganger_Creator* creator, int grow_by) {
-    // Source of truth: dpl_obj.cpp.decomp @ 0x00442540
-    int new_allocated_size = creator->allocated_size + grow_by;
-    creator->allocated_size = new_allocated_size;
+// Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442540
+void RGE_Doppleganger_Creator::expand_allocations(int param_1) {
+    int new_allocated_size = this->allocated_size + param_1;
+    this->allocated_size = new_allocated_size;
 
     RGE_Static_Object** new_objects = (RGE_Static_Object**)calloc((size_t)new_allocated_size, 4);
     ulong** new_map_addresses = (ulong**)calloc((size_t)new_allocated_size, 4);
@@ -53,28 +56,28 @@ static void rge_doppleganger_expand_allocations(RGE_Doppleganger_Creator* creato
         return;
     }
 
-    for (int index = 0; index < creator->active_size; index++) {
-        new_objects[index] = creator->Objects[index];
-        new_map_addresses[index] = creator->Map_Addresses[index];
-        new_last_map_values[index] = creator->Last_Map_Value[index];
-        new_object_ids[index] = creator->Object_ids[index];
+    for (int index = 0; index < this->active_size; index++) {
+        new_objects[index] = this->Objects[index];
+        new_map_addresses[index] = this->Map_Addresses[index];
+        new_last_map_values[index] = this->Last_Map_Value[index];
+        new_object_ids[index] = this->Object_ids[index];
     }
 
-    free(creator->Objects);
-    free(creator->Map_Addresses);
-    free(creator->Last_Map_Value);
-    free(creator->Object_ids);
+    free(this->Objects);
+    free(this->Map_Addresses);
+    free(this->Last_Map_Value);
+    free(this->Object_ids);
 
-    creator->Objects = new_objects;
-    creator->Map_Addresses = new_map_addresses;
-    creator->Last_Map_Value = new_last_map_values;
-    creator->Object_ids = new_object_ids;
+    this->Objects = new_objects;
+    this->Map_Addresses = new_map_addresses;
+    this->Last_Map_Value = new_last_map_values;
+    this->Object_ids = new_object_ids;
 }
 
 int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* param_1, ulong* param_2) {
     // Source of truth: dpl_obj.cpp.decomp @ 0x004421F0
     if (this->allocated_size <= this->active_size) {
-        rge_doppleganger_expand_allocations(this, 0x1E);
+        this->expand_allocations(0x1E);
         if (this->allocated_size <= this->active_size) {
             return 0;
         }
@@ -131,4 +134,42 @@ int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* param
     }
 
     return 0;
+}
+
+// Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442390
+void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
+    RGE_Static_Object* remove_me = nullptr;
+
+    if (this->active_size > 0) {
+        for (int index = 0; index < this->active_size; index++) {
+            unsigned long map_value = *this->Map_Addresses[index];
+            if (map_value != this->Last_Map_Value[index]) {
+                RGE_Static_Object* checked_obj = this->Objects[index];
+                if (checked_obj == nullptr ||
+                    this->owner->world->object(this->Object_ids[index]) != checked_obj) {
+                    remove_me = checked_obj;
+                } else {
+                    int player_index = 1;
+                    unsigned long bitmask = ((map_value ^ this->Last_Map_Value[index]) & this->Last_Map_Value[index]) >> 1 & 0x7FFF;
+                    while (bitmask != 0) {
+                        if ((bitmask & 1) != 0) {
+                            int owner_id = (int)this->owner->id;
+                            if (player_index != owner_id) {
+                                RGE_Player* target_player = this->owner->world->players[player_index];
+                                RGE_Static_Object* source_obj = this->Objects[index];
+                                ((RGE_Master_Doppleganger_Object*)target_player->master_objects[0xF3])->make_new_obj(
+                                    target_player, source_obj->world_x, source_obj->world_y, source_obj->world_z, source_obj);
+                            }
+                        }
+                        player_index = player_index + 1;
+                        bitmask = bitmask >> 1;
+                    }
+                }
+                this->Last_Map_Value[index] = map_value;
+            }
+        }
+        if (remove_me != nullptr) {
+            this->remove_doppleganger_check(remove_me);
+        }
+    }
 }

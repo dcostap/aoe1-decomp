@@ -4,9 +4,11 @@
 #include "../include/RGE_Master_Combat_Object.h"
 #include "../include/RGE_Master_Missile_Object.h"
 #include "../include/RGE_Master_Doppleganger_Object.h"
+#include "../include/RGE_Doppleganger_Object.h"
 
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Task_List.h"
+#include <new>
 
 RGE_Master_Animated_Object::~RGE_Master_Animated_Object() {}
 void RGE_Master_Animated_Object::copy_obj(RGE_Master_Static_Object* param_1) { if (param_1) this->RGE_Master_Static_Object::setup(param_1); }
@@ -100,4 +102,14 @@ long RGE_Master_Doppleganger_Object::calc_base_damage_ability(RGE_Master_Combat_
 void RGE_Master_Doppleganger_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
 void RGE_Master_Doppleganger_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 void RGE_Master_Doppleganger_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
-RGE_Static_Object* RGE_Master_Doppleganger_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4, RGE_Static_Object* param_5) { return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4); }
+// Source of truth: m_dg_obj.cpp.decomp @ 0x004512D0 (recycle path intentionally deferred)
+RGE_Static_Object* RGE_Master_Doppleganger_Object::make_new_obj(
+    RGE_Player* param_1, float param_2, float param_3, float param_4, RGE_Static_Object* param_5) {
+    RGE_Doppleganger_Object* obj =
+        (RGE_Doppleganger_Object*)::operator new(sizeof(RGE_Doppleganger_Object), std::nothrow);
+    if (obj != nullptr) {
+        obj = new(obj) RGE_Doppleganger_Object(this, param_1, param_2, param_3, param_4, 1, param_5);
+        return obj;
+    }
+    return nullptr;
+}
