@@ -74,6 +74,9 @@ public:
 
     // Non-virtual methods
     void new_attribute_num(short param_1, float param_2);
+    long get_checksum();
+    uchar get_checksums(long& cs1, long& cs2, long& cs3);
+    long create_checksum();
     void set_relation(long param_1, uchar param_2);
     void set_view_loc(float x, float y);
     void set_map_loc(short x, short y);
@@ -94,9 +97,6 @@ public:
     void victory_if_game_on();
     void loss_if_game_on();
     void load_info(int param_1);
-    long get_checksum();
-    uchar get_checksums(long& cs1, long& cs2, long& cs3);
-    long create_checksum();
     uchar check_victory_conditions();
     uchar check_ally_group(long* param_1);
     uchar check_victory();

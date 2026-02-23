@@ -193,6 +193,9 @@ public:
     void increment_view_update_count();
     char* scenarioName();
     int campaign_open_scenario();
+    long GetChecksum(long player_index_or_special);
+    unsigned char GetWorldChecksums(long& out1, long& out2, long& out3);
+    long GetWorldChecksum();
     void get_campaign_info(long* param_1, long* param_2, long* param_3);
     uchar set_campaign_info(long param_1, long param_2, long param_3);
     void set_campaign_win();
