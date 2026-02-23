@@ -24,6 +24,16 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+static long rge_ftol(float v) {
+    // MSVC x86 __ftol equivalent (x87 FISTP using current rounding mode).
+    long result;
+    __asm {
+        fld v
+        fistp result
+    }
+    return result;
+}
+
 static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int dopple) {
     if (self == nullptr) {
         return nullptr;
@@ -231,7 +241,20 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->checksum_created_this_update = 0;
 
     if (is_active != 0) {
+        // Source of truth: player.cpp.decomp @ 0x0046E770 (active-player allocations)
+        if (this->objects == nullptr) {
+            this->objects = new (std::nothrow) RGE_Object_List();
+        }
+        if (this->sleeping_objects == nullptr) {
+            this->sleeping_objects = new (std::nothrow) RGE_Object_List();
+        }
+        if (this->doppleganger_objects == nullptr) {
+            this->doppleganger_objects = new (std::nothrow) RGE_Object_List();
+        }
         this->new_victory();
+        if (this->visible == nullptr && world != nullptr) {
+            this->visible = new (std::nothrow) RGE_Visible_Map(world->map, this);
+        }
     }
 }
 
@@ -631,6 +654,76 @@ void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {
     this->load_victory(param_1, param_2, (param_3 >= 1.09f) ? 1 : 0);
 }
 void RGE_Player::load(int param_1) {}
+
+long RGE_Player::get_checksum() {
+    // Fully verified. Source of truth: player.cpp.asm @ 0x0046FF40
+    if (this->checksum_created_this_update == 0) {
+        this->create_checksum();
+    }
+    return this->checksum;
+}
+
+unsigned char RGE_Player::get_checksums(long& checksum, long& position_checksum, long& action_checksum) {
+    // Fully verified. Source of truth: player.cpp.asm @ 0x0046FF60
+    if (this->checksum_created_this_update == 0) {
+        this->create_checksum();
+    }
+    checksum = this->checksum;
+    position_checksum = this->position_checksum;
+    action_checksum = this->action_checksum;
+    return 1;
+}
+
+long RGE_Player::create_checksum() {
+    // Fully verified. Source of truth: player.cpp.asm @ 0x0046FF90
+    // Note: local variable names mirror the decomp's structure, but this function is ASM-audited.
+
+    const int id_sum = (int)this->id + (int)this->sleeping_objects->number_of_objects + (int)this->doppleganger_objects->number_of_objects;
+
+    this->checksum_created_this_update = 1;
+    this->action_checksum = 0;
+
+    uint obj_checksum = 0;
+    uint num1 = 0;
+
+    uint temp_position_checksum = 0; // sum of attribute floats converted via __ftol
+    float local_10 = 0.0f;           // sum of object xyz positions
+
+    int num2 = (int)this->attribute_num;
+    float* attrs = this->attributes;
+    if (num2 > 0) {
+        do {
+            temp_position_checksum += (uint)rge_ftol(*attrs);
+            attrs += 1;
+            num2 -= 1;
+        } while (num2 != 0);
+    }
+
+    for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+
+        const uint state = (uint)obj->object_state;
+        const int held_amount = (int)rge_ftol(obj->attribute_amount_held);
+        const int master_id = (int)(short)obj->master_obj->id;
+        const int waypoint_checksum = (int)obj->get_waypoint_checksum();
+
+        obj_checksum = obj_checksum + state + (uint)held_amount + (uint)master_id + (uint)waypoint_checksum;
+        num1 += 1;
+
+        local_10 = (local_10 + obj->world_x + obj->world_y) + obj->world_z;
+        this->action_checksum = (long)((uint)this->action_checksum + (uint)obj->get_action_checksum());
+    }
+
+    uint checksum = (uint)id_sum;
+    checksum = (checksum << 8) + num1;
+    checksum = (checksum << 8) + obj_checksum;
+    checksum = (checksum << 8) + (uint)temp_position_checksum;
+
+    this->checksum = (long)checksum;
+    this->position_checksum = rge_ftol(local_10);
+    return this->checksum;
+}
+
 void RGE_Player::new_attribute_num(short param_1, float param_2) {
     // Source of truth: player.cpp.decomp @ 0x004700B0
     if (param_1 >= 0 && param_1 < this->attribute_num) {
