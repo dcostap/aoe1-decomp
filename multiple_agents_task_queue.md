@@ -485,7 +485,7 @@ Rules of engagement:
 - Status note: `pathsys.cpp` currently only contains constructor/destructor + basic obstruction helpers (no `findPath` yet), and `Path.cpp` currently only contains a handful of container methods (commit `9b7dd32`).
 
 ## Task 44 — Implement missing `RGE_Combat_Object` combat mechanics (attack/damage/armor)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore real combat behavior (damage, area attack, armor/weapon queries) instead of only having load/setup.
 - Implement: the missing `RGE_Combat_Object` methods (attack/do_attack/damage/calc modifiers/save/update/stop + helpers) and any required master-combat helpers.

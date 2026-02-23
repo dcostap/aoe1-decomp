@@ -5,6 +5,7 @@
 class RGE_Action_Object : public RGE_Moving_Object {
 public:
     RGE_Action_Object();
+    RGE_Action_Object(RGE_Master_Action_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Action_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     virtual RGE_Action_List* create_action_list();
@@ -138,6 +139,14 @@ public:
     virtual int setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[125] (0x1F4)
     virtual void work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5); // vt[126] (0x1F8)
     virtual void set_task(short param_1); // vt[127] (0x1FC)
+
+    int setup(RGE_Master_Action_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
+    void setTaskByTaskID(int param_1);
+    void set_action(RGE_Action* param_1);
+    void set_only_action(RGE_Action* param_1);
+    void set_end_action(RGE_Action* param_1);
+    uchar have_action();
+    RGE_Task* getTask(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
 
     unsigned char waiting;
     RGE_Action_List* actions;
