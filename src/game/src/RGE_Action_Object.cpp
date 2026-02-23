@@ -2,6 +2,7 @@
 
 #include "../include/RGE_Action.h"
 #include "../include/RGE_Action_List.h"
+#include "../include/RGE_Action_Move_To.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Action_Object.h"
 #include "../include/RGE_Player.h"
@@ -230,18 +231,13 @@ void RGE_Action_Object::move_to(RGE_Static_Object* param_1, float param_2, float
         return;
     }
 
-    // TODO: STUB - RGE_Action_Move_To subclass constructor is not transliterated yet.
-    RGE_Action* action = new RGE_Action();
-    if (action != nullptr) {
-        action->setup(this);
-        action->action_type = 1;
-        if (param_1 == nullptr) {
-            action->target_x = param_2;
-            action->target_y = param_3;
-            action->target_z = param_4;
-        } else {
-            action->set_target_obj(param_1);
-        }
+    // Best-effort: use the move-to action subclass for correct type/save behavior.
+    // Note: full move/path execution is still tracked under Task 42/43.
+    RGE_Action_Move_To* action = nullptr;
+    if (param_1 == nullptr) {
+        action = new (std::nothrow) RGE_Action_Move_To(this, param_2, param_3, param_4, 0.0f, nullptr);
+    } else {
+        action = new (std::nothrow) RGE_Action_Move_To(this, param_1, 0.0f, nullptr);
     }
 
     if (this->unitAIValue != nullptr) {
