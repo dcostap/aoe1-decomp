@@ -22,6 +22,7 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
+#include "../include/TribeMainDecisionAIModule.h"
 
 #include <new>
 
@@ -35,41 +36,6 @@ static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
     return (short)((long)player->attributes[index]);
 }
 
-class TribeMainDecisionAIModuleCompatShim {
-public:
-    virtual ~TribeMainDecisionAIModuleCompatShim() {}
-    virtual int loggingHistory() { return 0; }
-    virtual void setLogHistory(int) {}
-    virtual void toggleLogHistory() {}
-    virtual void setHistoryFilename(char*) {}
-    virtual int loggingCommonHistory() { return 0; }
-    virtual void setLogCommonHistory(int) {}
-    virtual void toggleLogCommonHistory() {}
-    virtual int loadState(char*) { return 1; }
-    virtual int saveState(char*) { return 1; }
-    virtual int gleanState(int) { return 1; }
-    virtual int processMessage(void*) { return 1; }
-    virtual int update(int) { return 1; }
-    virtual void setCallbackMessage(void*) {}
-    virtual int filterOutMessage(void*) { return 0; }
-    virtual int save(int) { return 1; }
-    virtual int addObject(RGE_Static_Object*) { return 1; }
-    virtual int removeObject(int) { return 1; }
-    virtual int objectGroupThatCanPerformAction(int) { return -1; }
-    virtual int canPerformAction(int, int) { return 0; }
-
-    TRIBE_Player* owner;
-};
-
-static TribeMainDecisionAIModule* tribe_make_player_ai_compat(TRIBE_Player* owner) {
-    TribeMainDecisionAIModuleCompatShim* shim = new (std::nothrow) TribeMainDecisionAIModuleCompatShim();
-    if (shim == nullptr) {
-        return nullptr;
-    }
-    shim->owner = owner;
-    return reinterpret_cast<TribeMainDecisionAIModule*>(shim);
-}
-
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player(world, master, player_id, name, civ, '\0', '\0', ai1, ai2, ai3) {
@@ -81,7 +47,7 @@ TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uch
         this->type = 3;
         this->computerPlayerValue = 1;
         if (((TCommunications_Handler*)comm)->IsHost() == 1) {
-            this->playerAI = tribe_make_player_ai_compat(this);
+            this->playerAI = new (std::nothrow) TribeMainDecisionAIModule(nullptr, (int)this->id, this->name, this, ai1, ai2, ai3);
         }
     } else {
         this->type = 1;
@@ -166,7 +132,7 @@ TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
             rge_read(param_1, &has_ai, 4);
         }
         if (((TCommunications_Handler*)comm)->IsHost() == 1 && has_ai == 1) {
-            this->playerAI = tribe_make_player_ai_compat(this);
+            this->playerAI = new (std::nothrow) TribeMainDecisionAIModule((int)this->id, this->name, this, param_1);
         }
         this->computerPlayerValue = 1;
     }
@@ -179,8 +145,7 @@ TRIBE_Player::~TRIBE_Player() {
         this->tech_tree = nullptr;
     }
     if (this->playerAI) {
-        void** vtable = *(void***)this->playerAI;
-        ((void(__thiscall*)(TribeMainDecisionAIModule*, int))vtable[0])(this->playerAI, 1);
+        delete this->playerAI;
         this->playerAI = nullptr;
     }
     if (this->history) {
@@ -191,19 +156,23 @@ TRIBE_Player::~TRIBE_Player() {
 
 // --- TRIBE_Gaia constructors ---
 TRIBE_Gaia::TRIBE_Gaia(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar type)
-    : TRIBE_Player(world, master, player_id, name, 0, '\0', '\0', nullptr, nullptr, nullptr) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519BD0
+    : TRIBE_Player(world, master, player_id, name, type, '\0', '\x01', nullptr, nullptr, nullptr) {
+    *((unsigned char*)this + 0x48) = 2;
     this->update_time = 0.0f;
-    this->update_nature = 0;
-    this->last_count = 0;
+    this->update_nature = 0x1d;
     this->animal_max = 0;
+    this->last_count = 0;
 }
 
 TRIBE_Gaia::TRIBE_Gaia(int param_1, RGE_Game_World* world, uchar player_id)
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519AF0
     : TRIBE_Player(param_1, world, player_id) {
-    this->update_time = 0.0f;
-    this->update_nature = 0;
-    this->last_count = 0;
-    this->animal_max = 0;
+    *((unsigned char*)this + 0x48) = 2;
+    rge_read(param_1, &this->update_time, 4);
+    rge_read(param_1, &this->update_nature, 4);
+    rge_read(param_1, &this->animal_max, 4);
+    rge_read(param_1, &this->last_count, 4);
 }
 
 TRIBE_Gaia::~TRIBE_Gaia() {}

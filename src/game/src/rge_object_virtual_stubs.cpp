@@ -657,10 +657,7 @@ void RGE_Doppleganger_Object::normal_draw(TDrawArea* param_1, short param_2, sho
 void RGE_Doppleganger_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Doppleganger_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Doppleganger_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
-uchar RGE_Doppleganger_Object::update() { return RGE_Animated_Object::update(); } // TODO: STUB
 void RGE_Doppleganger_Object::check_damage_sprites() { RGE_Animated_Object::check_damage_sprites(); } // TODO: STUB
-void RGE_Doppleganger_Object::rehook() { RGE_Animated_Object::rehook(); } // TODO: STUB
-void RGE_Doppleganger_Object::save(int param_1) { RGE_Animated_Object::save(param_1); } // TODO: STUB
 float RGE_Doppleganger_Object::teleport(float param_1, float param_2, float param_3) { return RGE_Animated_Object::teleport(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Doppleganger_Object::new_sprite(RGE_Sprite* param_1) { RGE_Animated_Object::new_sprite(param_1); } // TODO: STUB
 void RGE_Doppleganger_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Animated_Object::add_overlay_sprite(param_1, param_2); } // TODO: STUB
@@ -773,6 +770,3 @@ RGE_Active_Sprite_List* RGE_Doppleganger_Object::create_sprite_list() { return R
 int RGE_Doppleganger_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 
 // --- New virtuals in Doppleganger (slots 123-125, different from Moving's slots) ---
-void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, RGE_Static_Object* param_6) {} // TODO: STUB - 6-param overload unique to Doppleganger
-void RGE_Doppleganger_Object::validate() {} // TODO: STUB
-int RGE_Doppleganger_Object::setup(RGE_Master_Doppleganger_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return 0; } // TODO: STUB

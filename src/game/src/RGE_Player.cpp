@@ -663,12 +663,15 @@ void RGE_Player::update() {
     }
 }
 void RGE_Player::update_dopplegangers() {
-    // Source of truth: player.cpp.decomp @ 0x00470180 (partial)
+    // Source of truth: player.cpp.decomp @ 0x00470180
     if (MouseSystem != nullptr) {
         MouseSystem->Poll();
     }
     if (this->doppleganger_objects != nullptr) {
         this->doppleganger_objects->update();
+    }
+    if (this->doppleganger_creator != nullptr) {
+        this->doppleganger_creator->perform_doppleganger_checks();
     }
 }
 void RGE_Player::save(int param_1) {

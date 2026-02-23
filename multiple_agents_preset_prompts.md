@@ -21,5 +21,5 @@ I ran out of tasks, here are all the tasks i had:
 
 
 
-Many other workers are currently working on these tasks. Since you finished yours, and i got no more, I want you to be independent, and explore the codebase and pick a new task yourself. It should be something isolated from the EXISTING tasks i showed you, to not cause
+Many other workers are currently working on these tasks. Since you finished yours, and i got no more tasks, I want you to be independent, and explore the codebase and pick a new task yourself. It should be something isolated from the EXISTING tasks i showed you, to not cause
   conflicts. Good luck. Follow the same procedure, just with your own auto-found task.

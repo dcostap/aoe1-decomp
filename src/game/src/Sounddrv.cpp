@@ -6,6 +6,7 @@
 #include "../include/Dsutil.h"
 #include "../include/Res_file.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include <io.h>
 #include <fcntl.h>
@@ -73,6 +74,10 @@ int TSound_Driver::init(void* wnd, char* path) {
     this->ready = 0;
 
     this->dsrval = DirectSoundCreate(nullptr, &this->direct_sound, nullptr);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: DirectSoundCreate hr=0x%lx ds=%p wnd=%p",
+        (unsigned long)this->dsrval, this->direct_sound, this->main_wnd);
+    CUSTOM_DEBUG_END
     if (this->dsrval != DS_OK) {
         return 0;
     }
@@ -81,9 +86,16 @@ int TSound_Driver::init(void* wnd, char* path) {
     memset(&dscaps, 0, sizeof(dscaps));
     dscaps.dwSize = sizeof(dscaps);
     this->direct_sound->GetCaps(&dscaps);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: caps flags=0x%lx", (unsigned long)dscaps.dwFlags);
+    CUSTOM_DEBUG_END
 
     if (dscaps.dwFlags & DSCAPS_PRIMARYSTEREO) {
         this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, DSSCL_PRIORITY);
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: SetCooperativeLevel(PRIORITY) hr=0x%lx",
+            (unsigned long)this->dsrval);
+        CUSTOM_DEBUG_END
         if (this->dsrval == DS_OK) {
             bExclusive = true;
             goto coop_ok;
@@ -91,6 +103,10 @@ int TSound_Driver::init(void* wnd, char* path) {
     }
 
     this->dsrval = this->direct_sound->SetCooperativeLevel((HWND)this->main_wnd, DSSCL_NORMAL);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: SetCooperativeLevel(NORMAL) hr=0x%lx",
+        (unsigned long)this->dsrval);
+    CUSTOM_DEBUG_END
 
 coop_ok:
     if (this->dsrval != DS_OK) {
@@ -105,22 +121,39 @@ coop_ok:
     dsBD.dwFlags = DSBCAPS_PRIMARYBUFFER;
 
     this->dsrval = this->direct_sound->CreateSoundBuffer(&dsBD, &this->primary_buffer, nullptr);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: CreateSoundBuffer(primary) hr=0x%lx primary=%p",
+        (unsigned long)this->dsrval, this->primary_buffer);
+    CUSTOM_DEBUG_END
     if (this->dsrval == DS_OK) {
         if (bExclusive) {
-            // Set primary buffer format to 16-bit stereo
+            // ASM @ 0x004BC707..0x004BC745 sets a 16-bit mono 22050Hz PCM format.
             memset(&fmt, 0, sizeof(fmt));
             fmt.wFormatTag = WAVE_FORMAT_PCM;
             fmt.nChannels = 1;
-            fmt.nSamplesPerSec = 0x10001; // per ASM: 0x10001
-            // TODO: The decomp shows 0x10001 being stored. This may be an artifact.
-            // The original likely set 22050Hz or similar. Keeping ASM-parity for now.
+            fmt.nSamplesPerSec = 22050;
+            fmt.nAvgBytesPerSec = 44100;
+            fmt.nBlockAlign = 2;
+            fmt.wBitsPerSample = 16;
             this->dsrval = this->primary_buffer->SetFormat(&fmt);
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: SetFormat hr=0x%lx", (unsigned long)this->dsrval);
+            CUSTOM_DEBUG_END
         }
 
         this->dsrval = this->primary_buffer->Play(0, 0, DSBPLAY_LOOPING);
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TSound_Driver::init: primary Play hr=0x%lx", (unsigned long)this->dsrval);
+        CUSTOM_DEBUG_END
         if (this->dsrval == DS_OK) {
             this->ready = 1;
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("TSound_Driver::init: calling ds_stream_init");
+            CUSTOM_DEBUG_END
             ds_stream_init(this->main_wnd, this->direct_sound, this->primary_buffer);
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("TSound_Driver::init: calling open_mixer");
+            CUSTOM_DEBUG_END
             this->open_mixer();
             return (int)this->ready;
         }
