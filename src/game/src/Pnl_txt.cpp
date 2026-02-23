@@ -100,7 +100,7 @@ void TScrollTextPanel::set_text(char* text) {
 }
 
 long TScrollTextPanel::handle_idle() {
-    // Best-effort transliteration. Source of truth: scr_cred.cpp.decomp @ 0x00492FB0
+    // TODO(accuracy): Best-effort transliteration. Source of truth: scr_cred.cpp.decomp @ 0x00492FB0
     const ulong now = debug_timeGetTime(kScrCredSourcePath, 0x1DF);
     if (this->last_time == 0) {
         this->last_time = now;
@@ -121,7 +121,7 @@ long TScrollTextPanel::handle_idle() {
 }
 
 void TScrollTextPanel::draw_scrolled_line(void* hdc_void, short /*draw_index*/, short line_index, ulong color1, ulong color2) {
-    // Best-effort implementation. Source of truth: scr_cred.cpp.decomp @ 0x00493160
+    // TODO(accuracy): Best-effort implementation. Source of truth: scr_cred.cpp.decomp @ 0x00493160
     HDC hdc = (HDC)hdc_void;
     const char* text = this->get_text((long)line_index);
     if (!text || text[0] == '\0') {
@@ -163,7 +163,7 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc_void, short /*draw_index*/, 
 }
 
 void TScrollTextPanel::draw() {
-    // Best-effort implementation. Source of truth: scr_cred.cpp.decomp @ 0x00493070
+    // TODO(accuracy): Best-effort implementation. Source of truth: scr_cred.cpp.decomp @ 0x00493070
     if (!this->render_area || !this->active || !this->visible) {
         return;
     }

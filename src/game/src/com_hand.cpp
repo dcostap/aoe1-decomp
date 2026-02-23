@@ -1026,7 +1026,7 @@ void TCommunications_Handler::UpdatePlayer(uint id, int timeout) {
         return;
     }
 
-    // Best-effort name refresh (DirectPlay data may not be available in this branch yet).
+    // TODO(accuracy): Best-effort name refresh (DirectPlay data may not be available in this branch yet).
     IDirectPlay2* dp = comm_get_dplay(this);
     if (dp == nullptr) {
         return;
@@ -1813,7 +1813,7 @@ int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ul
 
     const uint from_player = comm_find_player_by_dpid(this, p3);
     if (from_player == 0) {
-        // Unknown sender: best-effort ack for GTD packets so they don't keep resending.
+        // TODO: STUB - Unknown sender: best-effort ack for GTD packets so they don't keep resending.
         if (this->RGE_Guaranteed_Delivery != 0 && p1 >= 0x0C) {
             const uint serial = *(const uint*)(p2 + 8);
             struct MsgAck {
@@ -2047,7 +2047,7 @@ long TCommunications_Handler::CommOut(uchar p1, void* p2, long p3, ulong p4) {
             }
         }
     } else {
-        // Best-effort: map a single recipient by DPID to a comm slot.
+        // TODO: STUB - Best-effort: map a single recipient by DPID to a comm slot.
         uint player = comm_find_player_by_dpid(this, p4);
         if (player != 0) {
             this->DestMap[player] = 0xF0;

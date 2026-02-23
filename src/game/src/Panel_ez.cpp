@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-// NOTE: This file is a best-effort reimplementation based on immutable references:
+// TODO(accuracy): This file is a best-effort reimplementation based on immutable references:
 // `src/game/src/Panel_ez.cpp.asm` and `src/game/src/Panel_ez.cpp.decomp`.
 
 static int is_none_token(const char* s) {
@@ -278,7 +278,7 @@ CUSTOM_DEBUG_BEGIN
         this->stock_brush);
 CUSTOM_DEBUG_END
 
-    // Best-effort match for `prepare_for_close` behavior; keep minimal for now.
+    // TODO(accuracy): Best-effort match for `prepare_for_close` behavior; keep minimal for now.
     if (this->background_pic) {
 CUSTOM_DEBUG_BEGIN
         CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: deleting background_pic=%p", this->background_pic);
@@ -622,7 +622,7 @@ static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackgr
 }
 
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
-    // Best-effort implementation targeting accuracy for boot->main menu path.
+    // TODO(accuracy): Best-effort implementation targeting accuracy for boot->main menu path.
     // Source of truth: `src/game/src/Panel_ez.cpp.asm` / `.decomp` (immutable references).
     this->allow_shadow_area = param_10;
     set_info_file(this, param_3, param_4);
@@ -849,7 +849,7 @@ void TEasy_Panel::take_snapshot() { TPanel::take_snapshot(); }
 void TEasy_Panel::handle_reactivate() { TPanel::handle_reactivate(); }
 
 void TEasy_Panel::draw_background(int param_1) {
-    // Best-effort match for `TEasy_Panel::draw_background` in `Panel_ez.cpp.decomp`.
+    // TODO(accuracy): Best-effort match for `TEasy_Panel::draw_background` in `Panel_ez.cpp.decomp`.
     if (!this->render_area) return;
 
     this->draw_setup(0);
@@ -1391,8 +1391,8 @@ int TEasy_Panel::create_input(TPanel* param_1, TInputPanel** param_2, char* para
 }
 
 int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) {
-    // Best-effort implementation for Save/Scenario name entry paths while full TEditPanel parity
-    // remains pending.
+    // TODO: STUB - Best-effort implementation for Save/Scenario name entry paths while full TEditPanel parity
+    // TODO: STUB - remains pending.
     if (param_2 == nullptr) {
         return 0;
     }

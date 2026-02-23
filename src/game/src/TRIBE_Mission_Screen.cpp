@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-// Best-effort transliteration of the mission dialog screen sufficient for the
+// TODO(accuracy): Best-effort transliteration of the mission dialog screen sufficient for the
 // stop_video(video=3) post-intro branch.
 TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* description, unsigned char game_flag, TPicture* mission_picture)
     : TScreenPanel((char*)"Mission Dialog") {

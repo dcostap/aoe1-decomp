@@ -80,7 +80,7 @@ void TPanelSystem::release_palette(void* pal) {
 }
 
 void TPanelSystem::DisableIME() {
-    // Stub
+    // TODO: STUB
 }
 
 void TPanelSystem::add_panel(TPanel* panel) {

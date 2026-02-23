@@ -1,5 +1,5 @@
-// Temporary game-view panel: renders isometric map with real terrain SLP sprites.
-// This is scaffolding — will be replaced by the real TRIBE_Screen_Game once reimplemented.
+// TODO: STUB - Temporary game-view panel: renders isometric map with real terrain SLP sprites.
+// TODO: STUB - This is scaffolding — will be replaced by the real TRIBE_Screen_Game once reimplemented.
 
 #include "../include/GameViewPanel.h"
 #include "../include/RGE_Map.h"

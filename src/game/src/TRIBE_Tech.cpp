@@ -10,7 +10,6 @@
 // Constructor (int, TRIBE_World*): reads tech tree from binary data via rge_read.
 // Constructor (char*): reads tech tree from text file via fscanf.
 // Both are data-loading constructors that require the game database.
-// Stubbed for now — zero-init members.
 
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
     // Source of truth: bucket_050B.cpp.decomp @ 0x0050B840

@@ -260,5 +260,8 @@ int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2) {
 }
 
 void RESFILE_build_res_file(char* path, char* file, char* tag) {
-    // Stub
+    // TODO: STUB
+    (void)path;
+    (void)file;
+    (void)tag;
 }

@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-// NOTE: This file is a best-effort reimplementation based on immutable references:
+// TODO(accuracy): This file is a best-effort reimplementation based on immutable references:
 // - `src/game/src/color.cpp.asm`
 // - `src/game/src/color.cpp.decomp`
 //

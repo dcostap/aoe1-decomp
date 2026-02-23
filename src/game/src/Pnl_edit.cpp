@@ -199,7 +199,7 @@ void TEditPanel::set_active(int param_1) {
 }
 
 void TEditPanel::set_focus(int param_1) {
-    // Best-effort transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475B60
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475B60
     const int had_focus = this->have_focus;
     TPanel::set_focus(param_1);
     if (this->edit_wnd) {
@@ -227,7 +227,7 @@ void TEditPanel::set_rect(tagRECT param_1) {
 }
 
 void TEditPanel::set_rect(long x, long y, long w, long h) {
-    // Best-effort transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475CC0
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475CC0
     TPanel::set_rect(x, y, w, h);
     if (this->edit_wnd) {
         const BOOL do_redraw = (this->hidden == 0 && this->have_focus != 0);

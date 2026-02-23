@@ -54,14 +54,14 @@ class MainMenuStubScreen : public TScreenPanel {
 public:
     MainMenuStubScreen(char* panel_name, char* setup_name, long setup_id, char* title_text)
         : TScreenPanel(panel_name), title(nullptr), back_button(nullptr) {
-        // Non-original stub screen:
-        // this exists only to keep UI flow usable until the real screen classes are reimplemented.
+        // TODO: STUB - Non-original stub screen:
+        // TODO: STUB - this exists only to keep UI flow usable until the real screen classes are reimplemented.
         if (!rge_base_game || !rge_base_game->draw_area) {
             this->error_code = 1;
             return;
         }
 
-        // Best-effort: use original setup tuple first, then fallback to main menu panel resources.
+        // TODO(accuracy): Best-effort: use original setup tuple first, then fallback to main menu panel resources.
         if (!TScreenPanel::setup(rge_base_game->draw_area, setup_name, setup_id, 1)) {
             if (!TScreenPanel::setup(rge_base_game->draw_area, (char*)"scr1", 0xc383, 1)) {
                 this->error_code = 1;
@@ -268,7 +268,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
     for (int i = 0; i < 5; ++i) tab_list[i + 1] = (TPanel*)this->button[i];
     this->set_tab_order(tab_list + 1, 5);
 
-    // Best-effort: set current child to the first button.
+    // TODO(accuracy): Best-effort: set current child to the first button.
     this->curr_child = (TPanel*)this->button[0];
 }
 

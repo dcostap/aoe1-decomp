@@ -6,9 +6,9 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/globals.h"
 
-// NOTE: The original AoE1/X1 move-to action relies on large parts of the pathing/moving system
-// that are not fully restored in this codebase yet. This implementation keeps save/load parity
-// for the action's own fields and provides a minimal state machine so TRIBE tact actions can link.
+// TODO: STUB - The original AoE1/X1 move-to action relies on large parts of the pathing/moving system
+// TODO: STUB - that are not fully restored in this codebase yet. This implementation keeps save/load parity
+// TODO: STUB - for the action's own fields and provides a minimal state machine so TRIBE tact actions can link.
 
 RGE_Action_Move_To::RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2) {
     this->range = 0.4f;
@@ -92,7 +92,7 @@ uchar RGE_Action_Move_To::idle_update() {
 }
 
 uchar RGE_Action_Move_To::update() {
-    // Best-effort: consider the move completed immediately.
+    // TODO: STUB - Best-effort: consider the move completed immediately.
     this->set_state(1);
     return 1;
 }

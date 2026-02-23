@@ -177,8 +177,8 @@ TRIBE_World::TRIBE_World() : RGE_Game_World() {
     }
 }
 
-// Stub implementations for TRIBE_World virtual methods
-// These mostly just call base class or return defaults
+// TODO: STUB - Stub implementations for TRIBE_World virtual methods
+// TODO: STUB - These mostly just call base class or return defaults
 
 uchar TRIBE_World::data_load_world(FILE* param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E350

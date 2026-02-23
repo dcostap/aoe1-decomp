@@ -180,7 +180,7 @@ long TInputPanel::handle_idle() {
 }
 
 void TInputPanel::draw() {
-    // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x004779C0
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x004779C0
     TTextPanel::draw();
 
     if (!this->render_area || !this->have_focus || this->draw_caret == 0 || !this->input_buffer) {
@@ -301,7 +301,7 @@ int TInputPanel::insert_character(long ch) {
 }
 
 int TInputPanel::delete_character() {
-    // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477AF0
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477AF0
     if (this->input_len <= this->input_pos) {
         return 0;
     }
@@ -367,7 +367,7 @@ int TInputPanel::backspace_character() {
 }
 
 int TInputPanel::paste() {
-    // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477CB0
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477CB0
     if (!IsClipboardFormatAvailable(CF_TEXT)) {
         return 0;
     }
@@ -424,7 +424,7 @@ int TInputPanel::paste() {
 }
 
 void TInputPanel::reformat() {
-    // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477E90
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477E90
     const short old_top = this->top_line;
     const short old_cur = this->cur_line;
 
@@ -478,7 +478,7 @@ void TInputPanel::calc_input_pos() {
 }
 
 void TInputPanel::calc_cur_line_col() {
-    // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00478010
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00478010
     this->cur_line = 0;
     this->cur_col = 0;
 
@@ -644,7 +644,7 @@ long TInputPanel::char_action(long key, short repeat) {
 }
 
 long TInputPanel::key_down_action(long key, short /*param_2*/, int alt, int ctrl, int shift) {
-    // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477220
+    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477220
     (void)alt;
 
     switch (key) {

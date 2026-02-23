@@ -138,7 +138,7 @@ int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
         }
     }
 
-    // Best-effort current selection recovery.
+    // TODO(accuracy): Best-effort current selection recovery.
     owner->last_scenario_line = 0;
     if (rge_base_game->rge_game_options.scenarioNameValue[0] != '\0') {
         const char* wanted = rge_base_game->rge_game_options.scenarioNameValue;

@@ -1442,7 +1442,7 @@ int RGE_Base_Game::setup_mouse() {
     }
 
     if (custom_mouse_reg == 1 || custom_mouse_reg == 2) {
-        // Stub: TMousePointer implementation
+        // TODO: STUB - TMousePointer implementation
         // this->mouse_pointer = new TMousePointer(custom_mouse_reg);
         // setup call...
     } else {
@@ -1598,12 +1598,12 @@ CUSTOM_DEBUG_END
 }
 
 int RGE_Base_Game::setup_shapes() { 
-    // Stub implementation
+    // TODO: STUB
     return 1; 
 }
 
 int RGE_Base_Game::setup_blank_screen() { 
-    // Stub implementation
+    // TODO: STUB
     return 1; 
 }
 void RGE_Base_Game::setup_timings() {}

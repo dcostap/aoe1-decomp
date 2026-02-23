@@ -462,7 +462,7 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
 }
 
 void TButtonPanel::set_radio_button() {
-    // Best-effort match for `TButtonPanel::set_radio_button` in `Pnl_btn.cpp.asm`.
+    // TODO(accuracy): Best-effort match for `TButtonPanel::set_radio_button` in `Pnl_btn.cpp.asm`.
     for (int i = 0; i < this->num_radio_buttons; ++i) {
         if (!this->radio_buttons || !this->radio_buttons[i]) continue;
         this->radio_buttons[i]->is_down = 0;
@@ -702,7 +702,7 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
 }
 
 void TButtonPanel::draw() {
-    // Best-effort reimplementation based on immutable references:
+    // TODO(accuracy): Best-effort reimplementation based on immutable references:
     // - `src/game/src/Pnl_btn.cpp.asm`
     // - `src/game/src/Pnl_btn.cpp.decomp`
     //

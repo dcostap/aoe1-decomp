@@ -1410,8 +1410,8 @@ void TRIBE_Game::close_game_screens(int p1) {
 
 // Source of truth: tribegam.cpp.asm @ 0x00524150
 void TRIBE_Game::quit_game() {
-    // NOTE: This is a best-effort transliteration sufficient for the achievements "OK" end-game path.
-    // The original has additional branches for campaign flow, scenario editor, and join screen.
+    // TODO: STUB - This is a best-effort transliteration sufficient for the achievements "OK" end-game path.
+    // TODO: STUB - The original has additional branches for campaign flow, scenario editor, and join screen.
 
     if (this->comm_handler != nullptr) {
         int lobby = this->comm_handler->IsLobbyLaunched();
@@ -1813,7 +1813,7 @@ int TRIBE_Game::load_db_files() {
 }
 
 int TRIBE_Game::start_menu() {
-    // Best-effort reimplementation based on immutable reference:
+    // TODO(accuracy): Best-effort reimplementation based on immutable reference:
     // `src/game/src/tribegam.cpp.asm` / `.decomp` (start_menu @ 0x00524030).
     // If we are returning from an active game, clear gameplay state before menu creation.
     // Important: keep Game Screen destruction out of close_game_screens here, because
@@ -1845,7 +1845,7 @@ int TRIBE_Game::start_menu() {
     }
 
     // The original uses `TPanelSystem::setCurrentPanel(panel_system, "Main Menu", 0)`.
-    // We do best-effort equivalent with our simplified panel-system implementation.
+    // TODO: STUB - We do best-effort equivalent with our simplified panel-system implementation.
     if (panel_system != nullptr) {
         panel_system->setCurrentPanel((char*)"Main Menu", 0);
     }

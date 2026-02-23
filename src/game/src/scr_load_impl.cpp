@@ -129,7 +129,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
     info_file[sizeof(info_file) - 1] = '\0';
     long info_id = 0xc384;
 
-    // Best-effort parity with `scr_load`: copy setup file/id from current screen.
+    // TODO(accuracy): Best-effort parity with `scr_load`: copy setup file/id from current screen.
     TEasy_Panel* from_panel = nullptr;
     if (panel_system && panel_system->currentPanelValue) {
         from_panel = dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue);

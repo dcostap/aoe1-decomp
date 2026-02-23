@@ -231,8 +231,8 @@ void RGE_Action_Object::move_to(RGE_Static_Object* param_1, float param_2, float
         return;
     }
 
-    // Best-effort: use the move-to action subclass for correct type/save behavior.
-    // Note: full move/path execution is still tracked under Task 42/43.
+    // TODO(accuracy): Best-effort: use the move-to action subclass for correct type/save behavior.
+    // TODO(accuracy): full move/path execution is still tracked under Task 42/43.
     RGE_Action_Move_To* action = nullptr;
     if (param_1 == nullptr) {
         action = new (std::nothrow) RGE_Action_Move_To(this, param_2, param_3, param_4, 0.0f, nullptr);

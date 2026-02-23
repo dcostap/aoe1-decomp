@@ -100,7 +100,7 @@ static void cams_fillScenarios(TRIBE_Screen_Campaign_Selection* this_) {
 }
 
 static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
-    // Best-effort transliteration. Source of truth: scr_cams.cpp.decomp @ 0x00491350
+    // TODO(accuracy): Best-effort transliteration. Source of truth: scr_cams.cpp.decomp @ 0x00491350
     if (!this_ || !rge_base_game) return;
 
     const long line = this_->scenarioList ? this_->scenarioList->get_line() : -1;
@@ -114,7 +114,7 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
     rge_base_game->setCampaignGame(1);
     rge_base_game->setSavedGame(0);
 
-    // VictoryDefault / DefaultResources / DefaultAge are 0 in this scaffold.
+    // TODO: STUB - VictoryDefault / DefaultResources / DefaultAge are 0 in this scaffold.
     ((TRIBE_Game*)rge_base_game)->setVictoryType(0, 0);
 
     const long difficulty = this_->difficultyDrop ? this_->difficultyDrop->get_id() : rge_base_game->single_player_difficulty;
@@ -226,7 +226,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPane
     if (!this->create_auto_scrollbar(&this->campaignScrollbar, (TTextPanel*)this->campaignList, 0x14)) return;
     if (!this->create_text((TPanel*)this, &this->campaignTitle, 0x2BCE, this->campaignListX - 5, this->campaignListY - 0x14, 200, 0x14, 4, 0, 0, 0)) return;
 
-    // Loading placeholder
+    // TODO: STUB - Loading placeholder
     this->campaignList->set_text((long)0x2B5D);
 
     this->scenarioListX = 0x14;
