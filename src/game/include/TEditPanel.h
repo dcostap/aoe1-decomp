@@ -80,6 +80,7 @@ public:
     void set_ime_info(int enable, int turn_on);
 
     long sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam);
+    int verify_char(int param_1);
 
     void* edit_wnd;
     short fixed_len;
