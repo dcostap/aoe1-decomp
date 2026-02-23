@@ -1,6 +1,9 @@
 #pragma once
 #include "common.h"
 
+#include "AIPlayGroup.h"
+#include "AIPlayPhase.h"
+
 struct AIPlay {
     char nameValue[65];
     uchar minimumNumberUnitsValue;
