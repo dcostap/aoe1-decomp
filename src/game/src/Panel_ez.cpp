@@ -14,6 +14,7 @@
 #include "../include/RGE_Font.h"
 #include "../include/TMessageDialog.h"
 #include "../include/globals.h"
+#include "../include/TMessageDialog.h"
 #include "../include/custom_debug.h"
 
 #include <string.h>
@@ -335,6 +336,51 @@ CUSTOM_DEBUG_END
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: end panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
 CUSTOM_DEBUG_END
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
+void TEasy_Panel::popupOKDialog(long text_id, char* panel_name, int param_4, int param_5) {
+    char text[256];
+    this->get_string(text_id, text, sizeof(text));
+    this->popupOKDialog(text, panel_name, param_4, param_5);
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x00469F30
+void TEasy_Panel::popupOKDialog(char* text, char* panel_name, int param_4, int param_5) {
+    if (panel_name == nullptr || *panel_name == '\0') {
+        panel_name = (char*)"OKDialog";
+    }
+
+    if (panel_system) {
+        TPanel* existing = panel_system->panel(panel_name);
+        if (existing != nullptr) {
+            panel_system->destroyPanel(panel_name);
+        }
+    }
+
+    TMessageDialog* dlg = new TMessageDialog(panel_name);
+    if (dlg != nullptr) {
+        dlg->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_4, param_5, 0, text, 0x5a, 0x1e);
+    }
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x0046A040
+void TEasy_Panel::popupYesNoDialog(long text_id, char* panel_name, int param_4, int param_5) {
+    char text[256];
+    this->get_string(text_id, text, sizeof(text));
+    this->popupYesNoDialog(text, panel_name, param_4, param_5);
+}
+
+// Source of truth: panel_ez.cpp.decomp @ 0x0046A090
+void TEasy_Panel::popupYesNoDialog(char* text, char* panel_name, int param_4, int param_5) {
+    if (panel_name == nullptr || *panel_name == '\0') {
+        panel_name = (char*)"YesNoDialog";
+    }
+
+    TMessageDialog* dlg = new TMessageDialog(panel_name);
+    if (dlg != nullptr) {
+        dlg->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_4, param_5, 2, text, 0x5a, 0x1e);
+    }
 }
 
 // Virtual setup (base signature): forward to TPanel::setup.
@@ -984,50 +1030,6 @@ char* TEasy_Panel::get_popup_info_file() {
 long TEasy_Panel::get_popup_info_id() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468450
     return this->popup_info_id;
-}
-
-void TEasy_Panel::popupOKDialog(long param_1, char* param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
-    char text[256];
-    this->get_string((int)param_1, text, 0x100);
-    this->popupOKDialog(text, param_2, param_3, param_4);
-}
-
-void TEasy_Panel::popupOKDialog(char* param_1, char* param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469F30
-    char temp_title[256];
-
-    if (param_2 == nullptr || *param_2 == '\0') {
-        param_2 = (char*)"OKDialog";
-    }
-
-    strcpy(temp_title, param_2);
-
-    TPanel* existing = panel_system->panel(temp_title);
-    if (existing != nullptr) {
-        panel_system->destroyPanel(temp_title);
-    }
-
-    TMessageDialog* dialog = new TMessageDialog(temp_title);
-    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\0', param_1, 0x5a, 0x1e);
-}
-
-void TEasy_Panel::popupYesNoDialog(long param_1, char* param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A040
-    char text[256];
-    this->get_string((int)param_1, text, 0x100);
-    this->popupYesNoDialog(text, param_2, param_3, param_4);
-}
-
-void TEasy_Panel::popupYesNoDialog(char* param_1, char* param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A090
-    TMessageDialog* dialog = nullptr;
-    if (param_2 == nullptr || *param_2 == '\0') {
-        dialog = new TMessageDialog((char*)"YesNoDialog");
-    } else {
-        dialog = new TMessageDialog(param_2);
-    }
-    dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\x02', param_1, 0x5a, 0x1e);
 }
 
 void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
