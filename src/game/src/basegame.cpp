@@ -1433,21 +1433,29 @@ int RGE_Base_Game::setup_palette() {
 }
 
 int RGE_Base_Game::setup_mouse() {
-    if (!this->registry) return 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EBF0, basegame.cpp.asm @ 0x0041EBF0
+    int custom_mouse_reg = this->registry->RegGetInt(0, "Custom Mouse");
 
-    int custom_mouse_reg = this->registry->RegGetInt(1, "Custom Mouse");
+    int custom_type = 0;
     if (custom_mouse_reg == -1) {
-        this->registry->RegSetInt(1, "Custom Mouse", 0);
-        custom_mouse_reg = 0;
+        this->registry->RegSetInt(0, "Custom Mouse", 0);
+    } else if (custom_mouse_reg == 1) {
+        custom_type = 1;
+    } else if (custom_mouse_reg == 2) {
+        this->custom_mouse = 0;
+        custom_type = (int)this;
     }
 
-    if (custom_mouse_reg == 1 || custom_mouse_reg == 2) {
-        // TODO: STUB - TMousePointer implementation
-        // this->mouse_pointer = new TMousePointer(custom_mouse_reg);
-        // setup call...
-    } else {
-        this->mouse_pointer = nullptr;
+    this->mouse_pointer = new (std::nothrow) TMousePointer(custom_type);
+    if (this->mouse_pointer == nullptr) {
+        return 0;
     }
+
+    if (this->mouse_pointer->setup(this->custom_mouse, this->draw_area, this->prog_info->cursor_file, 51000, 10) == 0) {
+        return 0;
+    }
+
+    this->mouse_off();
     return 1;
 }
 
