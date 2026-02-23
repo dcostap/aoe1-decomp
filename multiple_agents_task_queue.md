@@ -569,22 +569,6 @@ Rules of engagement:
 - Non-overlap note: do not implement the TRIBE decision AI modules (the tai*.decomp family) here; this task is only the shared AI framework base.
 - Status note: AI framework base transliterations landed (`src/game/src/AIModule.cpp`, `AIModuleID.cpp`, `AIModuleMessage.cpp`, `BaseItem.cpp`, `BaseObject.cpp`) (implement commit `c1b4ac6`, merged via `904b732`).
 
-## Task 51 — Implement remaining TRIBE AI modules (excluding `TribeMainDecisionAIModule`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: umbrella tracking for TRIBE AI modules; the real work is split per decomp unit so it’s safely parallelizable.
-- Implement: transliterate and land the TRIBE AI modules from the tai*.decomp set (one translation unit per decomp file is fine):
-  - `TribeBuildAIModule` (src/game/decomp/taibldmd.cpp.decomp)
-  - `TribeConstructionAIModule` (src/game/decomp/taiconmd.cpp.decomp)
-  - Rules system (src/game/decomp/taicrule.cpp.decomp)
-  - `TribeInformationAIModule` (src/game/decomp/taiinfmd.cpp.decomp)
-  - `TribeResourceAIModule` (src/game/decomp/tairesmd.cpp.decomp)
-  - `TribeStrategyAIModule` (src/game/decomp/taistrmd.cpp.decomp)
-  - `TribeTacticalAIModule` (src/game/decomp/taitacmd.cpp.decomp)
-  - TRIBE unit-AI glue (src/game/decomp/taiuaimd.cpp.decomp)
-- Dependency note: requires the base AI framework primitives (`AIModule`, `AIModuleID`, `AIModuleMessage`, `BaseItem`, `BaseObject`) to exist first.
-- Status note: TRIBE AI headers exist under src/game/include, but there are currently no `tai*` transliteration `.cpp` units under `src/game/src/`.
-
 ---
 
 ## Task 57 — AI framework: implement `AIModule` (`aimodule.cpp.decomp`)
