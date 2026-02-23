@@ -2162,7 +2162,16 @@ void RGE_Base_Game::set_map_fog(unsigned char p1) {
 
 void RGE_Base_Game::reset_countdown_timer(int p1) {
     if (p1 >= 0 && p1 < 9) {
-        this->countdown_timer[p1] = 0;
+        this->countdown_timer[p1] = -1;
+    }
+}
+
+void RGE_Base_Game::set_countdown_timer(int p1, long p2) {
+    // Source of truth: basegame.cpp.decomp @ 0x00422DE0
+    if (p1 >= 0 && p1 < 9) {
+        if ((p2 < this->countdown_timer[p1]) || (this->countdown_timer[p1] < 0)) {
+            this->countdown_timer[p1] = p2;
+        }
     }
 }
 

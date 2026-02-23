@@ -177,27 +177,14 @@ TRIBE_World::TRIBE_World() : RGE_Game_World() {
     }
 }
 
-// TODO: STUB - Stub implementations for TRIBE_World virtual methods
-// TODO: STUB - These mostly just call base class or return defaults
-
 uchar TRIBE_World::data_load_world(FILE* param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E350
-    // Calls base class data_load_world, then reads tech file name and creates TRIBE_Tech.
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E350
     RGE_Game_World::data_load_world(param_1);
 
-    // Original: fscanf(param_1, " %s", tech_file);
-    // Then creates TRIBE_Tech from text file.
     char tech_file[24];
-    if (param_1) {
-        fscanf(param_1, " %s", tech_file);
-    } else {
-        tech_file[0] = '\0';
-    }
-
-    if (this->tech) {
-        delete this->tech;
-    }
-    this->tech = new TRIBE_Tech(tech_file);
+    // ASM writes/reads via tech_file + 4 (tworld.cpp.asm @ 0x0052E377 / 0x0052E3A2).
+    fscanf(param_1, "%s ", tech_file + 4);
+    this->tech = new TRIBE_Tech(tech_file + 4);
 
     this->victory_type = 0;
     this->artifact_count = 0;
@@ -767,31 +754,39 @@ void TRIBE_World::load_scenario6(int param_1, RGE_Player_Info* param_2) { RGE_Ga
 void TRIBE_World::load_scenario7(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario7(param_1, param_2); }
 void TRIBE_World::load_scenario8(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario8(param_1, param_2); }
 void TRIBE_World::logStatus(FILE* param_1, int param_2) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E0B0
-    // Writes game status info to AI log file.
-    if (param_1 == nullptr || param_2 != 1) return;
+    // Fully verified. Source of truth: tworld.cpp.asm @ 0x0052E0B0
+    if (param_1 != nullptr && param_2 == 1) {
+        fprintf(param_1, "\n\n\n*****************************************************\n");
 
-    fprintf(param_1, "---------------------------------\n");
+        time_t clock;
+        time(&clock);
+        struct tm* t = localtime(&clock);
+        fprintf(param_1, "AI Log file for Game Started %s", asctime(t));
+        fprintf(param_1, "Number Players:          %d\n", (int)this->player_num - 1);
 
-    time_t clock;
-    time(&clock);
-    struct tm* t = localtime(&clock);
-    fprintf(param_1, "AI Log file for Game Started: %s", asctime(t));
-    fprintf(param_1, "Number Players            %d\n", this->player_num - 1);
+        char* scenario_name = nullptr;
+        if (this->scenario != nullptr) {
+            scenario_name = this->scenario->scenario_name;
+        }
+        if (scenario_name != nullptr && scenario_name[0] != '\0') {
+            fprintf(param_1, "Scenario:                %s\n", scenario_name);
+            return;
+        }
 
-    // If scenario has a name, log it; otherwise log map/victory info
-    if (this->scenario) {
-        // TODO(accuracy): check scenario->scenario_name and log it
-    }
+        // NOTE: tworld.cpp.asm reuses the first 4 bytes of this stack buffer for the `time()` result,
+        // and writes strings into tempString + 4.
+        char tempString[0x104];
+        char* buf = tempString + 4;
 
-    // Log map size, map type, victory condition from game settings
-    // These use get_string through string table lookups in the original.
-    // Simplified: just log the numeric values.
-    if (rge_base_game) {
         TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-        fprintf(param_1, "Map Size                  %d\n", game->mapSize());
-        fprintf(param_1, "Map Type                  %d\n", game->mapType());
-        fprintf(param_1, "Victory Condition         %d\n", game->victoryType());
+        rge_base_game->get_string((long)(game->mapSize() + 0x2973), buf, 0x100);
+        fprintf(param_1, "Map Size:                %s\n", buf);
+
+        rge_base_game->get_string((long)(game->mapType() + 0x296a), buf, 0x100);
+        fprintf(param_1, "Map Type:                %s\n", buf);
+
+        rge_base_game->get_string((long)(game->victoryType() + 0x28a6), buf, 0x100);
+        fprintf(param_1, "Victory Condition:       %s\n", buf);
     }
 }
 TRIBE_World::~TRIBE_World() {
@@ -808,7 +803,242 @@ void TRIBE_World::turn_sound_off() { RGE_Game_World::turn_sound_off(); }
 void TRIBE_World::del_game_info() { RGE_Game_World::del_game_info(); }
 uchar TRIBE_World::update() { return RGE_Game_World::update(); }
 uchar TRIBE_World::get_game_state() { return RGE_Game_World::get_game_state(); }
-uchar TRIBE_World::check_game_state() { return RGE_Game_World::check_game_state(); }
+uchar TRIBE_World::check_game_state() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005303F0
+    // (ASM-audited: tworld.cpp.asm @ 0x005303F0)
+    TRIBE_Player* pTVar1;
+    float fVar2;
+    long lVar4;
+    int iVar5;
+    int iVar7;
+    uint uVar9;
+    int iVar10;
+    int iVar12;
+    int i;
+    int held_time;
+    int local_1a0;
+    int team_count;
+    int local_198;
+
+    // NOTE: Arrays are intentionally oversized to accommodate the decomp's 1-based indexing patterns.
+    int team_size[10];
+    int player_team[10];
+    TRIBE_Player* team_player[9][9];
+
+    if (this->game_state == 0) {
+        // Countdown victory
+        if ((((this->victory_type == 2) && (this->countdown_victory != 0)) && (1.0f <= this->countdown_clock)) &&
+            ((this->countdown_clock = this->countdown_clock - (this->world_time_delta_seconds + this->world_time_delta_seconds)),
+             this->countdown_clock < 1.0f)) {
+            for (int idx = 0; idx < 10; ++idx) {
+                team_size[idx] = -1;
+            }
+
+            if (1 < this->player_num) {
+                for (iVar10 = 1; iVar10 < (short)this->player_num; ++iVar10) {
+                    RGE_Player* plr = this->players[iVar10];
+                    lVar4 = plr->victory_conditions->get_victory_points();
+                    iVar12 = this->player_num;
+                    team_size[iVar10 + 1] = (int)lVar4;
+                    held_time = 1;
+
+                    if (plr->type != 0 && 1 < (short)iVar12) {
+                        for (iVar12 = 1; iVar12 < (short)this->player_num; ++iVar12) {
+                            if (iVar12 != iVar10) {
+                                if (plr->relation(iVar12) == 0 && this->players[iVar12]->relation(iVar10) == 0 &&
+                                    this->players[iVar12]->type != 0) {
+                                    lVar4 = this->players[iVar12]->victory_conditions->get_victory_points();
+                                    held_time = held_time + 1;
+                                    team_size[iVar10 + 1] = team_size[iVar10 + 1] + (int)lVar4;
+                                }
+                            }
+                        }
+                    }
+
+                    team_size[iVar10 + 1] = team_size[iVar10 + 1] / held_time;
+                }
+            }
+
+            iVar10 = (int)(short)this->player_num;
+            iVar7 = 1;
+            RGE_Player* this_00 = nullptr;
+            iVar12 = -1;
+            if (1 < iVar10) {
+                do {
+                    if (iVar12 < team_size[iVar7 + 1]) {
+                        this_00 = this->players[iVar7];
+                        iVar12 = team_size[iVar7 + 1];
+                    }
+                    iVar7 = iVar7 + 1;
+                } while (iVar7 < iVar10);
+            }
+            if (this_00 != nullptr) {
+                this_00->win_game_now();
+                this->game_end_condition = 0x67;
+            }
+        }
+
+        // Artifacts / ruins victory countdowns
+        if ((0 < this->artifact_count) || (0 < this->ruin_count)) {
+            uVar9 = (uint)(short)this->player_num;
+            for (i = 0; (uint)i < uVar9 && i < 10; ++i) {
+                team_size[i] = 0;
+                player_team[i] = -1;
+            }
+
+            local_198 = 0;
+            held_time = 1;
+            if (1 < (int)uVar9) {
+                team_count = 0;
+                int* piVar13 = team_size + 1;
+                do {
+                    if (player_team[held_time] == -1) {
+                        player_team[held_time] = local_198;
+                        iVar7 = *piVar13;
+                        pTVar1 = (TRIBE_Player*)this->players[held_time];
+                        team_player[local_198][iVar7 + 1] = pTVar1;
+                        iVar12 = iVar7 + 1;
+                        *piVar13 = iVar12;
+
+                        if (pTVar1->type != 0 && (local_1a0 = 1, 1 < (int)uVar9)) {
+                            do {
+                                if (player_team[local_1a0] == -1 && this->players[local_1a0]->type != 0 &&
+                                    ((RGE_Player*)this->players[held_time])->relation(local_1a0) == 0 &&
+                                    ((RGE_Player*)this->players[local_1a0])->relation(held_time) == 0) {
+                                    iVar12 = iVar12 + 1;
+                                    player_team[local_1a0] = local_198;
+                                    pTVar1 = (TRIBE_Player*)this->players[local_1a0];
+                                    *piVar13 = iVar12;
+                                    team_player[local_198][iVar12] = pTVar1;
+                                }
+                                local_1a0 = local_1a0 + 1;
+                            } while (local_1a0 < (short)this->player_num);
+                        }
+
+                        local_198 = local_198 + 1;
+                        team_count = team_count + 9;
+                        piVar13 = piVar13 + 1;
+                    }
+                    uVar9 = (uint)(short)this->player_num;
+                    held_time = held_time + 1;
+                } while (held_time < (int)uVar9);
+            }
+
+            // Artifacts
+            if ((0 < this->artifact_count) && (0 < local_198)) {
+                for (int team = 0; team < local_198; ++team) {
+                    iVar10 = 0;
+                    iVar12 = team_size[team + 1];
+                    iVar7 = iVar12;
+                    if (0 < iVar12) {
+                        do {
+                            // Sum per-player artifact count from attributes + 0x1C (ASM @ 0x005306F0).
+                            iVar5 = (int)(long)(*(float*)((char*)team_player[team][iVar7]->attributes + 0x1C));
+                            iVar10 = iVar10 + iVar5;
+                            iVar7 = iVar7 + -1;
+                        } while (iVar7 != 0);
+                    }
+
+                    if (iVar10 == this->artifact_count) {
+                        pTVar1 = team_player[team][1];
+                        fVar2 = pTVar1->artifact_held_time;
+                        if (fVar2 == -1.0f) {
+                            for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                *(float*)((char*)team_player[team][iVar7]->attributes + 0xDC) = 1.0f;
+                            }
+                            if (this->victory_type == 0) {
+                                for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                    team_player[team][iVar7]->artifact_held_time = 2000.0f;
+                                }
+                                rge_base_game->notification(0x72, (int)pTVar1->id, 0, 0, 0);
+                            }
+                        } else if ((1.0f <= fVar2) && (this->victory_type == 0)) {
+                            fVar2 = fVar2 - (this->world_time_delta_seconds + this->world_time_delta_seconds);
+                            for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                team_player[team][iVar7]->artifact_held_time = fVar2;
+                            }
+                            if (fVar2 < 1.0f) {
+                                pTVar1->win_game_now();
+                                this->game_end_condition = 0x65;
+                            }
+                        }
+                    } else {
+                        pTVar1 = team_player[team][1];
+                        if (pTVar1->artifact_held_time != -1.0f) {
+                            for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                *(float*)((char*)team_player[team][iVar7]->attributes + 0xDC) = 0.0f;
+                            }
+                            if (this->victory_type == 0) {
+                                for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                    team_player[team][iVar7]->artifact_held_time = -1.0f;
+                                }
+                                rge_base_game->notification(0x73, (int)pTVar1->id, 0, 0, 0);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Ruins
+            if ((0 < this->ruin_count) && (0 < local_198)) {
+                for (int team = 0; team < local_198; ++team) {
+                    iVar10 = 0;
+                    iVar12 = team_size[team + 1];
+                    iVar7 = iVar12;
+                    if (0 < iVar12) {
+                        do {
+                            // ASM @ 0x005308BA loads from [attributes + 0x18].
+                            iVar5 = (int)(long)(*(float*)((char*)team_player[team][iVar7]->attributes + 0x18));
+                            iVar10 = iVar10 + iVar5;
+                            iVar7 = iVar7 + -1;
+                        } while (iVar7 != 0);
+                    }
+
+                    if (iVar10 == this->ruin_count) {
+                        pTVar1 = team_player[team][1];
+                        fVar2 = pTVar1->ruin_held_time;
+                        if (fVar2 == -1.0f) {
+                            for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                *(float*)((char*)team_player[team][iVar7]->attributes + 0xD8) = 1.0f;
+                            }
+                            if (this->victory_type == 0) {
+                                for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                    team_player[team][iVar7]->ruin_held_time = 2000.0f;
+                                }
+                                rge_base_game->notification(0x74, (int)pTVar1->id, 0, 0, 0);
+                            }
+                        } else if ((1.0f <= fVar2) && (this->victory_type == 0)) {
+                            fVar2 = fVar2 - (this->world_time_delta_seconds + this->world_time_delta_seconds);
+                            for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                team_player[team][iVar7]->ruin_held_time = fVar2;
+                            }
+                            if (fVar2 < 1.0f) {
+                                pTVar1->win_game_now();
+                                this->game_end_condition = 0x66;
+                            }
+                        }
+                    } else {
+                        pTVar1 = team_player[team][1];
+                        if (pTVar1->ruin_held_time != -1.0f) {
+                            for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                *(float*)((char*)team_player[team][iVar7]->attributes + 0xD8) = 0.0f;
+                            }
+                            if (this->victory_type == 0) {
+                                for (iVar7 = iVar12; 0 < iVar7; --iVar7) {
+                                    team_player[team][iVar7]->ruin_held_time = -1.0f;
+                                }
+                                rge_base_game->notification(0x75, (int)pTVar1->id, 0, 0, 0);
+                            }
+                        }
+                    }
+                }
+                team_size[0] = 0;
+            }
+        }
+    }
+
+    return RGE_Game_World::check_game_state();
+}
 uchar TRIBE_World::load_world(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052EDF0
     uchar result = RGE_Game_World::load_world(param_1);
