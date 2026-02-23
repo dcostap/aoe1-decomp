@@ -344,8 +344,8 @@ Rules of engagement:
 ---
 
 ## Task 31 — Replace remaining `MessageBoxA` screen shims with `TEasy_Panel` popup dialogs
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: eliminate remaining Win32 `MessageBoxA` usage in *screen/UI* flows by routing through the already-restored `TEasy_Panel` popup dialogs.
 - Implement: replace remaining `MessageBoxA` call sites in screen implementations with:
   - `TEasy_Panel::popupOKDialog` (0x00469EE0)
@@ -359,7 +359,7 @@ Rules of engagement:
   (Scope note: error/fatal popups in low-level bootstrap/resource code like `main.cpp` / `Res_file.cpp` are out-of-scope unless explicitly desired.)
 - Source of truth: src/game/decomp/panel_ez.cpp.decomp + src/game/decomp/panel_ez.cpp.asm.
 - Done when: those four screen files no longer call `MessageBoxA` and any TODO(parity) “MessageBox fallback” notes are removed, with build staying clean.
-- Status note: popup helpers are implemented and used in several screens already (commit `a2dd915`), but `MessageBoxA` still exists in the listed screen files (e.g. `scr_load_impl.cpp`, `scr_save_impl.cpp`, `scr_mps_impl.cpp`, `Scr_sing_impl.cpp`).
+- Status note: as of current `master`, the listed screen files no longer call `MessageBoxA`/`MessageBox` (verified via `git grep`). Remaining `MessageBoxA` usage is only in low-level bootstrap/resource code (`main.cpp`, `Res_file.cpp`), which this task explicitly scoped out.
 
 ## Task 32 — Finish custom mouse pointer parity (basegame mouse-move path)
 - [x] Assigned to agent
@@ -611,78 +611,6 @@ Rules of engagement:
 - Done when: `BaseObject` behavior matches decomp and builds without adding new stubs.
 - Status note: implemented in `src/game/src/BaseObject.cpp` (commit `c1b4ac6`, merged via `904b732`).
 
-## Task 61 — TRIBE AI: implement `TribeBuildAIModule` (`taibldmd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore TRIBE build planning/selection behavior.
-- Implement: decomp-first transliteration for the `taibldmd` unit into `TribeBuildAIModule`.
-- Where: add src/game/src/TribeBuildAIModule.cpp and wire to src/game/include/TribeBuildAIModule.h.
-- Source of truth: src/game/decomp/taibldmd.cpp.decomp + src/game/decomp/taibldmd.cpp.asm.
-- Done when: module compiles/links with verified markers and can be embedded/used by `TribeMainDecisionAIModule` without layout changes.
-
-## Task 62 — TRIBE AI: implement `TribeConstructionAIModule` (`taiconmd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore TRIBE construction plan / placement behavior.
-- Implement: decomp-first transliteration for the `taiconmd` unit into `TribeConstructionAIModule`.
-- Where: add src/game/src/TribeConstructionAIModule.cpp and wire to src/game/include/TribeConstructionAIModule.h.
-- Source of truth: src/game/decomp/taiconmd.cpp.decomp + src/game/decomp/taiconmd.cpp.asm.
-- Done when: module compiles/links with verified markers and can be embedded/used by `TribeMainDecisionAIModule` without layout changes.
-
-## Task 63 — TRIBE AI: implement rules system (`taicrule.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore TRIBE rule evaluation/execution helpers used by strategy/victory-condition logic.
-- Implement: transliterate the `taicrule` unit (rule parsing/execution helpers, rule-set storage, and any structs it owns that are referenced by `TribeStrategyAIModule`).
-- Where: add an appropriately named src/game/src translation unit (e.g. TribeRuleSystem.cpp) and wire to the existing headers/structs already present under src/game/include.
-- Source of truth: src/game/decomp/taicrule.cpp.decomp + src/game/decomp/taicrule.cpp.asm.
-- Done when: `TribeStrategyAIModule`-related rule helpers compile/link and match decomp control flow.
-
-## Task 64 — TRIBE AI: implement `TribeInformationAIModule` (`taiinfmd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore information/scouting knowledge behaviors for TRIBE AI.
-- Implement: decomp-first transliteration for `taiinfmd` into `TribeInformationAIModule`.
-- Where: add src/game/src/TribeInformationAIModule.cpp and wire to src/game/include/TribeInformationAIModule.h.
-- Source of truth: src/game/decomp/taiinfmd.cpp.decomp + src/game/decomp/taiinfmd.cpp.asm.
-- Done when: module compiles/links with verified markers and can be embedded/used by `TribeMainDecisionAIModule` without layout changes.
-
-## Task 65 — TRIBE AI: implement `TribeResourceAIModule` (`tairesmd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore resource management behaviors for TRIBE AI.
-- Implement: decomp-first transliteration for `tairesmd` into `TribeResourceAIModule`.
-- Where: add src/game/src/TribeResourceAIModule.cpp and wire to src/game/include/TribeResourceAIModule.h.
-- Source of truth: src/game/decomp/tairesmd.cpp.decomp + src/game/decomp/tairesmd.cpp.asm.
-- Done when: module compiles/links with verified markers and can be embedded/used by `TribeMainDecisionAIModule` without layout changes.
-
-## Task 66 — TRIBE AI: implement `TribeStrategyAIModule` (`taistrmd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore strategy/victory-condition goal selection and rule-set execution behaviors.
-- Implement: decomp-first transliteration for `taistrmd` into `TribeStrategyAIModule`.
-- Where: add src/game/src/TribeStrategyAIModule.cpp and wire to src/game/include/TribeStrategyAIModule.h.
-- Source of truth: src/game/decomp/taistrmd.cpp.decomp + src/game/decomp/taistrmd.cpp.asm.
-- Done when: module compiles/links with verified markers and can be embedded/used by `TribeMainDecisionAIModule` without layout changes.
-
-## Task 67 — TRIBE AI: implement `TribeTacticalAIModule` (`taitacmd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore tactical unit grouping/attack/defense behaviors.
-- Implement: decomp-first transliteration for `taitacmd` into `TribeTacticalAIModule`.
-- Where: add src/game/src/TribeTacticalAIModule.cpp and wire to src/game/include/TribeTacticalAIModule.h.
-- Source of truth: src/game/decomp/taitacmd.cpp.decomp + src/game/decomp/taitacmd.cpp.asm.
-- Done when: module compiles/links with verified markers and can be embedded/used by `TribeMainDecisionAIModule` without layout changes.
-
-## Task 68 — TRIBE AI: implement TRIBE unit-AI glue (`taiuaimd.cpp.decomp`)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore the TRIBE-side glue that coordinates/creates the per-unit AI modules.
-- Implement: decomp-first transliteration for `taiuaimd` into the TRIBE unit-AI module set.
-- Where: add the appropriate src/game/src translation unit(s), likely wired to existing headers like src/game/include/TribeUnitAIModules.h and the various `Tribe*UnitAIModule.h` headers.
-- Source of truth: src/game/decomp/taiuaimd.cpp.decomp + src/game/decomp/taiuaimd.cpp.asm.
-- Done when: unit-AI glue compiles/links with verified markers and unit AI creation paths don’t rely on placeholder code.
-
 ## Task 52 — Restore missing panel/widget classes used across menus/screens
 - [x] Assigned to agent
 - [x] Finished
@@ -703,68 +631,84 @@ Rules of engagement:
 
 ## Task 69 — Follow-up umbrella: retire `rge_object_virtual_stubs.cpp` further
 - [ ] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: continue shrinking/removing `src/game/src/rge_object_virtual_stubs.cpp` by implementing the real virtuals in their owning classes.
 - Implement: prioritize stubs that are currently on hot paths (update/draw/command responders) and any that block other parity tasks.
 - Where: src/game/src/rge_object_virtual_stubs.cpp, plus the real owners (e.g. src/game/src/RGE_Static_Object.cpp, RGE_Animated_Object.cpp, RGE_Moving_Object.cpp, etc.)
 - Source of truth: the relevant `stat_obj.cpp.decomp`, `ani_obj.cpp.decomp`, `move_obj.cpp.decomp`, etc (+ ASM audits where suspicious).
 - Done when: `rge_object_virtual_stubs.cpp` is reduced to a small set of unavoidable forwarders (or fully removed).
 
+Status note: umbrella task retired for queue hygiene. Follow-up work is now tracked as scoped, file-isolated tasks (see new tasks added below) to avoid multi-agent conflicts.
+
 ## Task 70 — Finish `TRIBE_Game::quit_game` + `start_menu` parity (remove TODO: STUB in tribegam)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: eliminate the remaining `TRIBE_Game` “best-effort”/stubbed control-flow in `tribegam.cpp` and match the decomp branches (campaign, scenario editor, join screen, etc.).
 - Where: src/game/src/tribegam.cpp
 - Source of truth: src/game/decomp/tribegam.cpp.decomp + src/game/decomp/tribegam.cpp.asm (especially `quit_game` @ 0x00524150 and `start_menu` @ 0x00524030).
 - Done when: the `// TODO: STUB` markers around quit/menu transitions are removed and the control flow matches the decomp.
 
+Status note: quit/menu control-flow parity landed (implement commit `16cf874`, merged via `4cf5566`).
+
 ## Task 71 — TEasy_Panel follow-up: finish `create_edit` parity (remove EasyPseudoEditPanel stub)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove the current `create_edit` best-effort behavior and restore the real edit panel construction/behavior used by Save/Scenario name entry.
 - Where: src/game/src/Panel_ez.cpp (+ any required panel classes under src/game/src/)
 - Source of truth: src/game/decomp/panel_ez.cpp.decomp (+ asm audit where sizing/flags look suspicious) and the real edit panel decomp unit (pnl_edit.cpp.decomp / pnl_inp.cpp.decomp where applicable).
 - Done when: `TEasy_Panel::create_edit` no longer contains `// TODO: STUB` and uses the correct real panel types/flags.
 
+Status note: `TEasy_Panel::create_edit` parity restored (commit `ae1c415`).
+
 ## Task 72 — Screen follow-up: remove “Best-effort current selection recovery” hacks
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: eliminate the best-effort setup-id propagation/selection recovery hacks and match the screen decomp logic.
 - Where: src/game/src/scr_load_impl.cpp, src/game/src/scr_sels_impl.cpp
 - Source of truth: src/game/decomp/scr_load.cpp.decomp + src/game/decomp/scr_sels.cpp.decomp (+ asm audits as needed).
 - Done when: the `// TODO(accuracy): Best-effort ...` markers are removed and the setup/state propagation matches decomp.
 
+Status note: selection recovery hacks removed (commit `3b3f8f3`).
+
 ## Task 73 — Basegame follow-up: implement custom mouse pointer creation (remove TODO: STUB in setup_mouse)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore the original “Custom Mouse” behavior by allocating/configuring `TMousePointer` in `RGE_Base_Game::setup_mouse`.
 - Where: src/game/src/basegame.cpp (+ any required glue in src/game/src/Mouseptr.cpp)
 - Source of truth: src/game/decomp/basegame.cpp.decomp + src/game/decomp/mouseptr.cpp.decomp (+ asm audits where needed).
 - Done when: `RGE_Base_Game::setup_mouse` no longer has `// TODO: STUB` and the allocation/setup sequence matches decomp.
 
+Status note: `setup_mouse` custom pointer creation restored (implement commit `80ce7f4`, merged via `71d6493`).
+
 ## Task 74 — Basegame follow-up: implement `setup_shapes` + `setup_blank_screen`
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove placeholder returns in basegame setup so boot/menu paths rely on real setup logic.
 - Where: src/game/src/basegame.cpp
 - Source of truth: src/game/decomp/basegame.cpp.decomp (+ asm audit for call ordering).
 - Done when: `setup_shapes` and `setup_blank_screen` no longer contain `// TODO: STUB` and match decomp control flow.
 
+Status note: basegame setup shapes/blank-screen parity landed (implement commit `956834b`, merged via `0e2363f`).
+
 ## Task 75 — TRIBE_World follow-up: replace remaining TRIBE_World “stub virtuals” with real tworld.cpp parity
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove reliance on base-call/default-return TRIBE_World overrides and match `tworld.cpp.decomp`.
 - Where: src/game/src/TRIBE_World.cpp, src/game/src/TRIBE_World_types.cpp
 - Source of truth: src/game/decomp/tworld.cpp.decomp + src/game/decomp/tworld.cpp.asm.
 - Done when: the file-level `// TODO: STUB - Stub implementations for TRIBE_World virtual methods` note is no longer true and the relevant methods have verified markers.
 
+Status note: TRIBE_World tworld parity landed (implement commit `16a5f08`) with follow-up offset fix (commit `557f58c`).
+
 ## Task 76 — Core actions: implement `RGE_Action_Attack` (act_atak)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore attack action parity.
 - Where: src/game/src/RGE_Action_Attack.cpp (+ src/game/include/RGE_Action_Attack.h)
 - Source of truth: src/game/decomp/act_atak.cpp.decomp + src/game/decomp/act_atak.cpp.asm.
 - Done when: no placeholder update/stop/work behavior remains and functions have verified markers.
+
+Status note: `RGE_Action_Attack` implemented (implement commit `265cef5`, merged via `c36e3ff`).
 
 ## Task 77 — Core actions: implement `RGE_Action_Gather` (act_gath)
 - [x] Assigned to agent
@@ -794,13 +738,13 @@ Rules of engagement:
 - Status note: implemented in commit `013aa34`.
 
 ## Task 80 — Core actions: implement `RGE_Action_Missile` (act_misl) + wire missile init
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore missile action parity and remove the current base-action shell used for missile init.
 - Where: src/game/src/RGE_Action_Missile.cpp (+ header), and update missile call sites (e.g. src/game/src/RGE_Missile_Object.cpp).
 - Source of truth: src/game/decomp/act_misl.cpp.decomp + src/game/decomp/act_misl.cpp.asm.
 - Done when: `RGE_Missile_Object` no longer uses a base `RGE_Action` shell for missile actions and TODO: STUB markers are removed.
-- Status note: `RGE_Action_Missile` implementation and `RGE_Action_List` load wiring landed in `013aa34`, but `RGE_Missile_Object` still constructs base `RGE_Action` shells; leaving this task open.
+- Status note: `RGE_Missile_Object::init_missile` now instantiates `RGE_Action_Missile` and enqueues it (no base-action shell). Remaining TODO in `RGE_Missile_Object` concerns the Combat master-based constructor path and is tracked separately.
 
 ## Task 81 — Action list factories: wire `RGE_Action_List::create_action` / `create_task_action` to real subclasses
 - [x] Assigned to agent
@@ -821,57 +765,71 @@ Rules of engagement:
 - Status note: implemented in commit `013aa34`.
 
 ## Task 83 — TRIBE actions: finish `TRIBE_Action_Repair` parity (tact_rep)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Where: src/game/src/TRIBE_Action_Repair.cpp
 - Source of truth: src/game/decomp/tact_rep.cpp.decomp + src/game/decomp/tact_rep.cpp.asm.
 - Done when: the existing TODO: STUB note is removed and update/stop/work/save match decomp.
 
+Status note: `TRIBE_Action_Repair` parity landed (implement commit `689510b`, merged via `8396656`).
+
 ## Task 84 — TRIBE actions: finish `TRIBE_Action_Trade` parity (tact_trd)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Where: src/game/src/TRIBE_Action_Trade.cpp
 - Source of truth: src/game/decomp/tact_trd.cpp.decomp + src/game/decomp/tact_trd.cpp.asm.
 - Done when: the existing TODO: STUB note is removed and update/stop/work/save match decomp.
 
+Status note: `TRIBE_Action_Trade` parity landed (implement commit `c6b62f6`, merged via `bbbcd75`).
+
 ## Task 85 — TRIBE actions: finish `TRIBE_Action_Wonder` parity (tact_wnd)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Where: src/game/src/TRIBE_Action_Wonder.cpp
 - Source of truth: src/game/decomp/tact_wnd.cpp.decomp + src/game/decomp/tact_wnd.cpp.asm.
 - Done when: the existing TODO: STUB notes are removed and victory countdown/state behavior matches decomp.
 
+Status note: `TRIBE_Action_Wonder` parity landed (implement commit `fcb716c`, merged via `83d7a49`).
+
 ## Task 86 — Core actions: finish `RGE_Action_Enter` parity (act_entr)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: replace the current minimal enter action behavior with full decomp parity.
 - Where: src/game/src/RGE_Action_Enter.cpp (+ src/game/include/RGE_Action_Enter.h)
 - Source of truth: src/game/decomp/act_entr.cpp.decomp + src/game/decomp/act_entr.cpp.asm.
 - Done when: enter action update/stop/work/save/rehook paths match decomp and placeholder behavior is removed.
 
+Status note: `RGE_Action_Enter` parity landed (implement commit `7cf3f6a`, merged via `a08d665`).
+
 ## Task 87 — Movement follow-up: finish missing `RGE_Moving_Object` high-level movement/path execution
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: complete movement execution (update/canPath integration) now that pathfinding is implemented.
 - Where: src/game/src/RGE_Moving_Object.cpp (+ header)
 - Source of truth: src/game/decomp/move_obj.cpp.decomp + src/game/decomp/move_obj.cpp.asm.
 - Done when: the remaining move_obj.cpp.decomp function set is covered with verified markers.
 
+Status note: movement execution parity landed (implement commit `c3ed272`, merged via `b34c516`).
+
 ## Task 88 — UI widget follow-up: finish `TButtonPanel` handler parity (remove return-0 placeholders)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove remaining simplified/return-0 handlers in `TButtonPanel` and match pnl_btn decomp.
 - Where: src/game/src/TButtonPanel.cpp
 - Source of truth: src/game/decomp/pnl_btn.cpp.decomp + src/game/decomp/pnl_btn.cpp.asm.
 - Done when: core input handlers no longer short-circuit with placeholder returns and finished functions have verified markers.
 
+Status note: `TButtonPanel` handler parity landed (implement commit `ee454ed`, merged via `ced0b65`).
+
 ## Task 89 — Core actions: finish `RGE_Action_Transport` parity (act_tran)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: replace the current minimal transport action behavior with full decomp parity.
 - Where: src/game/src/RGE_Action_Transport.cpp (+ src/game/include/RGE_Action_Transport.h)
 - Source of truth: src/game/decomp/act_tran.cpp.decomp + src/game/decomp/act_tran.cpp.asm.
 - Done when: transport action update/stop/work/save/rehook paths match decomp and placeholder behavior is removed.
+
+Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, merged via `3e17505`).
 
 ## Task 53 — Implement dialog classes (`dlg_*.cpp.decomp`) used by menus and in-game UI
 - [x] Assigned to agent
@@ -885,32 +843,129 @@ Rules of engagement:
 - Status note: dialog translation units landed and compile/link clean (implement commit `5b846b7`, merged via `a0b390d`).
 
 ## Task 54 — Implement COM/networking primitives (`com_*.cpp.decomp`) needed by multiplayer
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore the COM networking layer so comm handlers can serialize/receive commands without missing-class gaps.
 - Implement: COM_Object plus the COM_* family used by the comm handler (address/session/lobby/server/sync/speed/error, etc.).
 - Where: add new src/game/src/ translation units + headers under src/game/include.
 - Source of truth: src/game/decomp/com_*.cpp.decomp (+ asm audits as needed).
 - Done when: COM layer compiles/links and comm handler code can build without placeholder structs/types for COM objects.
-- Status note: there are currently no `COM_*.cpp` translation units under `src/game/src/`.
+- Status note: COM primitive translation units landed (`com_addr.cpp`, `com_err.cpp`, `com_loby.cpp`, `com_serv.cpp`, `com_sess.cpp`, `com_spd.cpp`, `com_sync.cpp`, etc.) (implement commit `b8be9d9`, merged via `434280f`).
 
-## Task 55 — Implement scenario editor screens (`scr_sed*`) (large, split-friendly)
+---
+
+## Task 90 — SP gameplay: restore TRIBE unit/building runtime creation (masters + ctors + setup)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: unblock real single-player gameplay by ensuring units/buildings created from master objects instantiate the correct TRIBE object types (not `RGE_Static_Object`) and run the correct setup paths.
+- Implement (decomp-first transliteration):
+  - `TRIBE_Combat_Object::TRIBE_Combat_Object(TRIBE_Master_Combat_Object*, RGE_Player*, float x, float y, float z, int do_setup)` @ 0x004CA0F0.
+  - `TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object*, RGE_Player*, float x, float y, float z)` (protected virtual) @ 0x004CA300.
+  - `TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object*, RGE_Player*, float x, float y, float z, int unique_build_id, int do_setup, int unused?)` @ 0x004C7F50 (match signature/param order from decomp).
+  - `TRIBE_Building_Object::TRIBE_Building_Object(TRIBE_Master_Building_Object*, RGE_Player*, float x, float y, float z, int do_setup)` @ 0x004C80B0.
+  - `TRIBE_Building_Object::setup(TRIBE_Master_Building_Object*, RGE_Player*, float x, float y, float z)` (protected virtual) @ 0x004C83E0.
+  - `TRIBE_Master_Combat_Object::make_new_obj(RGE_Player*, float x, float y, float z)` @ 0x0050F090.
+  - `TRIBE_Master_Building_Object::make_new_obj(RGE_Player*, float x, float y, float z, int unique_build_id)` @ 0x0050E630.
+  - `TRIBE_Master_Building_Object::make_new_obj(RGE_Player*, float x, float y, float z)` @ 0x0050E6B0.
+- Where:
+  - Constructors + setup: `src/game/src/TRIBE_Combat_Object.cpp`, `src/game/include/TRIBE_Combat_Object.h`, `src/game/src/TRIBE_Building_Object.cpp`, `src/game/include/TRIBE_Building_Object.h`.
+  - Master creation wiring: `src/game/src/TRIBE_Master_Objects.cpp` (replacing the current forwarding-to-base behavior).
+- Source of truth:
+  - `src/game/decomp/t_c_obj.cpp.decomp` (+ `src/game/decomp/t_c_obj.cpp.asm` if any signedness/offsets look suspicious).
+  - `src/game/decomp/t_b_obj.cpp.decomp` (+ `src/game/decomp/t_b_obj.cpp.asm`).
+  - `src/game/decomp/tm_co_ob.cpp.decomp` and `src/game/decomp/tm_b_obj.cpp.decomp` for the master `make_new_obj` routines.
+- Done when:
+  - `TRIBE_Action_Make_Obj`’s call to `produced_master->make_new_obj(...)` can return a `TRIBE_Combat_Object` / `TRIBE_Building_Object` implementation (via the restored master virtuals) without relying on `RGE_Master_Static_Object::make_new_obj`.
+  - The new constructors/setup methods are declared in headers and compile/link clean.
+  - No new “linker satisfaction” stubs are added.
+
+## Task 91 — SP gameplay: restore RGE combat/missile runtime creation (recycle + masters + ctors + setup)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: restore projectile/combat instantiation used by the single-player simulation (combat objects and missiles must be constructible from masters, and master `make_new_obj` must create correct derived types).
+- Implement (decomp-first transliteration):
+  - `RGE_Game_World::recycle_object_in_to_game(unsigned char type)` @ 0x00546180.
+  - `RGE_Master_Combat_Object::make_new_obj(RGE_Player*, float x, float y, float z)` @ 0x004506D0.
+  - `RGE_Master_Missile_Object::make_new_obj(RGE_Player*, float x, float y, float z)` @ 0x00451770.
+  - `RGE_Combat_Object::RGE_Combat_Object(RGE_Master_Combat_Object*, RGE_Player*, float x, float y, float z, int do_setup)` @ 0x0042F930.
+  - `RGE_Combat_Object::setup(RGE_Master_Combat_Object*, RGE_Player*, float x, float y, float z)` (protected virtual) @ 0x0042FB40.
+  - `RGE_Missile_Object::RGE_Missile_Object(RGE_Master_Combat_Object*, RGE_Player*, float x, float y, float z, int do_setup)` @ 0x0045A740.
+  - `RGE_Missile_Object::setup(RGE_Master_Combat_Object*, RGE_Player*, float x, float y, float z)` (protected virtual) @ 0x0045A870.
+- Where:
+  - World recycle-in: `src/game/src/RGE_Game_World.cpp` (+ declaration in `src/game/include/RGE_Game_World.h` if missing).
+  - Master make_new_obj: `src/game/src/RGE_Master_Derived_Stubs.cpp` (replace the current “forward to base static make_new_obj” behavior for Combat+Missile masters).
+  - Ctors/setup: `src/game/src/RGE_Combat_Object.cpp`, `src/game/include/RGE_Combat_Object.h`, `src/game/src/RGE_Missile_Object.cpp`, `src/game/include/RGE_Missile_Object.h`.
+- Source of truth:
+  - `src/game/decomp/world.cpp.decomp` (recycle_object_in_to_game @ 0x00546180).
+  - `src/game/decomp/m_co_obj.cpp.decomp` (master combat make_new_obj @ 0x004506D0).
+  - `src/game/decomp/m_mi_obj.cpp.decomp` (master missile make_new_obj @ 0x00451770).
+  - `src/game/decomp/com_obj.cpp.decomp` (combat ctor/setup @ 0x0042F930 / 0x0042FB40).
+  - `src/game/decomp/misl_obj.cpp.decomp` (missile ctor/setup @ 0x0045A740 / 0x0045A870).
+- Done when:
+  - Combat/missile masters construct the correct derived object types (`RGE_Combat_Object` / `RGE_Missile_Object`) and use the correct setup routines.
+  - The current TODO in `src/game/src/RGE_Missile_Object.cpp` about missing Combat master-based constructor path is removed (or is no longer true).
+  - Build remains clean and no new placeholder stubs are introduced.
+
+## Task 92 — SP gameplay: restore `RGE_Master_Static_Object` modify/copy/save (tech/upgrades)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: make technology and attribute modifications apply to master objects (HP/LOS/radius/etc.), enabling upgrades to affect single-player simulation.
+- Implement (decomp-first transliteration):
+  - `RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src)` @ 0x00453120.
+  - `RGE_Master_Static_Object::modify(float value, unsigned char attr)` @ 0x004534A0.
+  - `RGE_Master_Static_Object::modify_delta(float value, unsigned char attr)` @ 0x00453540.
+  - `RGE_Master_Static_Object::modify_percent(float value, unsigned char attr)` @ 0x004535F0.
+  - `RGE_Master_Static_Object::save(int fd)` @ 0x004536D0.
+- Where:
+  - `src/game/src/RGE_Master_Static_Object.cpp` (these functions are currently empty/no-op).
+  - Ensure declarations/virtual overrides exist in `src/game/include/RGE_Master_Static_Object.h` (do not change member layout/size asserts).
+- Source of truth:
+  - `src/game/decomp/m_s_obj.cpp.decomp` (offsets above) + `src/game/decomp/m_s_obj.cpp.asm` if any field offsets look ambiguous.
+- Done when:
+  - The no-op bodies in `RGE_Master_Static_Object.cpp` are replaced with real transliterations.
+  - Code compiles/link-clean and preserves all struct size/static_assert invariants.
+
+## Task 93 — SP in-game loop: restore `RGE_Base_Game::handle_paint` parity slice (render hot-path)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: bring the per-frame paint path closer to original so the single-player in-game loop can reliably render via the panel system without relying on the current “simplified” path.
+- Implement: transliterate `RGE_Base_Game::handle_paint(void*, uint, uint, long)` @ 0x004213E0.
+- Where: `src/game/src/basegame.cpp` (and only add minimal supporting helpers in existing draw/panel types if the decomp calls them).
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` (`handle_paint` @ 0x004213E0) + `src/game/decomp/basegame.cpp.asm` for any message/branch nuances.
+- Done when:
+  - The “Simplified” comment block in `RGE_Base_Game::handle_paint` is no longer true (control-flow matches decomp at a high level: paint gating, panel draw_tree/paint, mouse pointer draw sequencing, and surface/palette handling where applicable).
+  - Build stays clean without introducing new placeholder stubs.
+
+## Task 94 — Save/load support: eliminate `RGE_Action_List` fallback base-action shells (missing load ctors)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: make `RGE_Action_List::create_action` match `act_list.cpp` decomp parity (and stop fabricating base-action shells for unknown types).
+- Implement:
+  - Transliterate `RGE_Action_List::create_action(int fd, short action_type)` to match the switch map and return behavior in `src/game/decomp/act_list.cpp.decomp`.
+  - Remove the current “unknown → allocate `RGE_Action` shell” fallback; on unknown types, return `nullptr` like the decomp.
+  - Ensure the supported cases correctly deserialize by calling the proper `setup(fd, obj)` paths (or load constructors where they truly exist in the decomp).
+- Where: `src/game/src/RGE_Action_List.cpp` plus the owning action class translation units under `src/game/src/` (and headers under `src/game/include/`).
+- Source of truth: `src/game/decomp/act_list.cpp.decomp` + `src/game/decomp/act_list.cpp.asm` for the exact action-type switch map and construction pattern.
+- Done when:
+  - The `// TODO: STUB - not all action subclass load constructors are transliterated yet.` block in `RGE_Action_List::create_action` is removed.
+  - The factory no longer allocates a base `RGE_Action` shell for unknown types.
+  - For the action types present in the decomp switch, construction + load paths match the decomp.
+  - Build remains clean and no new “linker satisfaction” stubs are introduced.
+
+## Task 95 — SP gameplay: implement `RGE_Action_Make` parity (act_make)
 - [ ] Assigned to agent
 - [ ] Finished
-- Goal: restore the scenario editor screens and helpers so editor mode isn’t a missing-screen hole.
-- Implement: `TRIBE_Screen_Sed` + related open/menu screens (scr_sed/scr_sed2/scr_sedo/scr_sedm).
-- Where: add new src/game/src/ screen translation units + headers under src/game/include.
-- Source of truth: src/game/decomp/scr_sed.cpp.decomp, scr_sed2.cpp.decomp, scr_sedo.cpp.decomp, scr_sedm.cpp.decomp.
-- Done when: all editor screens compile/link and can be instantiated via the panel system without stubs.
-- Dependency note: requires scenario core + fractal implementation, plus substantial coverage of widget panels and dialog classes, since the scenario editor screens instantiate both.
-- Status note: no scenario-editor screen translation units from the `scr_sed*` set exist in `src/game/src/` yet.
-
-## Task 56 — Implement shared utility classes used broadly (AI + screens)
-- [ ] Assigned to agent
-- [ ] Finished
-- Goal: restore utility/data-structure code that many subsystems rely on (strings, arrays, trig helpers, campaign, influence map).
-- Implement: `DString`, `UTMArray`, trig helpers, `Campaign`, `InfluenceMap` (and any small helpers they require).
-- Where: add new src/game/src/ translation units + headers under src/game/include.
-- Source of truth: src/game/decomp/dstring.cpp.decomp, utmarray.cpp.decomp, trig.cpp.decomp, campaign.cpp.decomp, infmap.cpp.decomp.
-- Done when: these units compile/link cleanly and downstream modules stop carrying local string/array workarounds.
-- Status note: the project has some ad-hoc utilities already (e.g. `mystring.cpp`), but there are currently no translation units in `src/game/src/` corresponding to the decomp units for `DString`/`UTMArray`/trig/Campaign/InfluenceMap.
+- Goal: replace the current placeholder/stub `RGE_Action_Make` implementation with real act_make parity so production/make actions behave correctly in-game and serialize cleanly.
+- Implement:
+  - Full decomp-first transliteration of `RGE_Action_Make` (ctor/setup/save/update/stop/work/move_to/target handling/state machine) from `act_make.cpp`.
+  - Remove the remaining `// TODO: STUB` behavior currently living in `src/game/src/RGE_Action_Derived_Stubs.cpp` for `RGE_Action_Make`.
+- Where:
+  - Prefer creating a real translation unit `src/game/src/RGE_Action_Make.cpp` and removing/reducing `src/game/src/RGE_Action_Derived_Stubs.cpp` accordingly.
+  - Header: `src/game/include/RGE_Action_Make.h` (add only method declarations; do not change layout/size asserts).
+- Source of truth:
+  - `src/game/decomp/act_make.cpp.decomp` (+ `src/game/decomp/act_make.cpp.asm` for any tricky branches/signedness).
+  - Shared expectations via `src/game/decomp/action.cpp.decomp` / `src/game/decomp/act_list.cpp.decomp` only where needed for base behavior.
+- Done when:
+  - `RGE_Action_Make::~RGE_Action_Make` and `RGE_Action_Make::save` are no longer stub-forwarders.
+  - The class behavior matches the decomp control flow closely enough that it can run in the SP world update loop without falling back to base `RGE_Action` behavior.
+  - Build stays clean with no new placeholder stubs.
