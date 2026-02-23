@@ -71,6 +71,7 @@ public:
     long setup(TDrawArea* render_area, TPanel* parent, long x, long y, long w, long h, void* font, short fixed_len, char* initial_text, FormatType format, int auto_sel);
     void set_text(char* s);
     char* get_text();
+    char* currentLine();
     void update_text();
     void set_text_color(unsigned long c1, unsigned long c2);
     void set_highlight_text_color(unsigned long c1, unsigned long c2);

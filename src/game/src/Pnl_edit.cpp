@@ -189,6 +189,11 @@ char* TEditPanel::get_text() {
     return this->text;
 }
 
+char* TEditPanel::currentLine() {
+    // Parity helper: scr_mp.cpp references TEditPanel::currentLine; in this codebase it's equivalent to get_text().
+    return this->get_text();
+}
+
 void TEditPanel::set_active(int param_1) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B20
     TPanel::set_active(param_1);
