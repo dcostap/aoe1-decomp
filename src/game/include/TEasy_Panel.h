@@ -29,12 +29,18 @@ public:
     void clear_popup_help();
     char* get_popup_info_file();
     long get_popup_info_id();
-    void popupOKDialog(long param_1, char* param_2, int param_3, int param_4);
-    void popupOKDialog(char* param_1, char* param_2, int param_3, int param_4);
-    void popupYesNoDialog(long param_1, char* param_2, int param_3, int param_4);
-    void popupYesNoDialog(char* param_1, char* param_2, int param_3, int param_4);
-    void popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4);
-    void popupYesNoCancelDialog(char* param_1, char* param_2, int param_3, int param_4);
+
+    // Source of truth: panel_ez.cpp.asm/.decomp @ 0x00469EE0 / 0x00469F30
+    void popupOKDialog(long text_id, char* panel_name, int param_4, int param_5);
+    void popupOKDialog(char* text, char* panel_name, int param_4, int param_5);
+
+    // Source of truth: panel_ez.cpp.asm/.decomp @ 0x0046A040 / 0x0046A090
+    void popupYesNoDialog(long text_id, char* panel_name, int param_4, int param_5);
+    void popupYesNoDialog(char* text, char* panel_name, int param_4, int param_5);
+
+    // Source of truth: panel_ez.cpp.asm/.decomp @ 0x0046A150 / 0x0046A1A0
+    void popupYesNoCancelDialog(long text_id, char* panel_name, int param_4, int param_5);
+    void popupYesNoCancelDialog(char* text, char* panel_name, int param_4, int param_5);
 
     // Virtuals (best-effort)
     virtual ~TEasy_Panel(); // vt[0] (0x0)
