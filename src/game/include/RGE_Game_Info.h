@@ -9,6 +9,7 @@ struct RGE_Game_Info {
     long get_current_player();
     char* get_current_player_name();
     int open_scenario();
+    void find_campaigns();
     uchar add_new_person(char* param_1);
     uchar set_current_person(long param_1);
     uchar set_current_campaign(long param_1);

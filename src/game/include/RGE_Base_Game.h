@@ -118,6 +118,7 @@ public:
     void setSinglePlayerGame(int p1);
     void setMultiplayerGame(int p1);
     void setMapSize(int p1, int p2, int p3);
+    void find_campaigns();
     void setAllowCheatCodes(int p1);
     void setCheatNotification(int p1);
     void setFullVisibility(int p1);
