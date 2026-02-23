@@ -10,6 +10,8 @@
 #include "RGE_Master_Static_Object.h"
 #include "RGE_Pick_Info.h"
 #include "RGE_SPick_Info.h"
+#include "Ov_Sprite_Draw_Rec.h"
+#include "DisplaySelectedObjRec.h"
 #include "RGE_Object_List.h"
 #include "RGE_Object_Node.h"
 #include "RGE_Sprite.h"
@@ -24,9 +26,11 @@
 #include "RGE_Border_Set.h"
 #include "../include/custom_debug.h"
 #include "globals.h"
+#include "debug_helpers.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <new>
 
 extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4);
 
@@ -252,6 +256,76 @@ RGE_View::~RGE_View() {
     }
 }
 
+void RGE_View::display_object_selection(int id, int duration, int select_type, int reset_type) {
+    // Source of truth: view.cpp.decomp @ 0x00533EC0
+    bool found_empty = false;
+    DisplaySelectedObjRec* slot = nullptr;
+
+    for (int i = 0; i < this->DispSel_List_Max; ++i) {
+        DisplaySelectedObjRec* rec = &this->DispSel_List[i];
+        if (rec->active == 0) {
+            found_empty = true;
+            slot = rec;
+        } else if (reset_type != 0 && rec->select_type == reset_type) {
+            rec->start_time -= rec->duration;
+        }
+    }
+
+    if (found_empty && slot != nullptr) {
+        slot->active = 1;
+        slot->id = id;
+        slot->start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 0x31D);
+        slot->duration = (unsigned long)duration;
+        slot->select_type = select_type;
+        this->DispSel_List_Size += 1;
+    }
+}
+
+void RGE_View::reset_overlay_sprites() {
+    // Source of truth: view.cpp.decomp @ 0x0053AC40
+    Ov_Sprite_Draw_Rec* cur = this->extra_sprites;
+    while (cur != nullptr) {
+        Ov_Sprite_Draw_Rec* next = cur->next;
+        delete cur;
+        cur = next;
+    }
+    this->extra_sprites = nullptr;
+}
+
+void RGE_View::add_overlay_sprite(
+    TShape* shape,
+    int facet,
+    int world_x,
+    int world_y,
+    int flags,
+    int draw_level,
+    unsigned char* color_table,
+    int display_function,
+    unsigned long draw_interval) {
+    // Source of truth: view.cpp.decomp @ 0x0053ACD0
+    Ov_Sprite_Draw_Rec* rec = new (std::nothrow) Ov_Sprite_Draw_Rec();
+    if (rec != nullptr) {
+        Ov_Sprite_Draw_Rec* old = this->extra_sprites;
+        rec->prev = nullptr;
+        rec->next = old;
+        if (old != nullptr) {
+            old->prev = rec;
+        }
+        this->extra_sprites = rec;
+
+        rec->theShape = shape;
+        rec->thefacet = facet;
+        rec->world_x = world_x;
+        rec->world_y = world_y;
+        rec->flags = flags;
+        rec->drawLevel = draw_level;
+        rec->colortable = color_table;
+        rec->displayfunction = display_function;
+        rec->DrawTimeInterval = draw_interval;
+        rec->LastDrawTime = 0;
+    }
+}
+
 long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     // Partially verified. Source of truth: view.cpp.decomp @ 0x00533940 (RGE_View::setup).
     long ok = TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
@@ -347,10 +421,8 @@ void RGE_View::set_selection_area(long param_1, long param_2, long param_3, long
 
 uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6) {
     // Partially verified. Source of truth: view.cpp.decomp @ 0x005359E0.
-    // NOTE: The original calls view_function(); this repo does not yet have that pipeline transliterated.
-    // This is the minimal tile-pick behavior needed by scroll/paint interactions.
-    (void)param_2;
-    (void)param_6;
+    // NOTE: The original routes object-picks through view_function(); this repo does not yet have that full pipeline.
+    // The object-pick path here is a best-effort transliteration using `pick_objects()` + `pick_weight()`.
 
     if (param_5 != nullptr) {
         param_5->x = 0.0f;
@@ -364,6 +436,122 @@ uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, R
     if (this->map == nullptr || param_5 == nullptr) {
         return '\0';
     }
+
+    if (param_1 == ')') {
+        if (this->player == nullptr || this->world == nullptr) {
+            return '\0';
+        }
+
+        int max_level = 0x28;
+        int start_level = 0;
+        if (param_2 != '\0') {
+            max_level = 0x14;
+            start_level = 10;
+        }
+
+        int num = this->pick_objects((int)param_3, (int)param_4, start_level, max_level, 0x0f, 4, 1);
+        if (num == 0) {
+            return '2';
+        }
+
+        RGE_Static_Object* picked = nullptr;
+        short picked_scr_x = 0;
+        short picked_scr_y = 0;
+        int best_weight = 0;
+
+        if (param_6 != nullptr) {
+            // Cycle to the next valid object after `param_6`, wrapping to the first valid object.
+            bool found_last = false;
+            RGE_Static_Object* first = nullptr;
+            short first_scr_x = 0;
+            short first_scr_y = 0;
+
+            for (int i = 0; i < num; ++i) {
+                int obj_id = Picked_Objects[i].object_id;
+                if (obj_id < 0) {
+                    continue;
+                }
+                RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+                if (obj == nullptr || obj->object_state >= 7) {
+                    continue;
+                }
+                if ((uchar)param_2 > (uchar)obj->master_obj->select_level) {
+                    continue;
+                }
+                if (this->pick_weight(obj, (int)Picked_Objects[i].confidence) <= 0) {
+                    continue;
+                }
+
+                if (first == nullptr) {
+                    first = obj;
+                    first_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
+                    first_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
+                }
+
+                if (found_last) {
+                    picked = obj;
+                    picked_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
+                    picked_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
+                    break;
+                }
+
+                if (obj == param_6) {
+                    found_last = true;
+                }
+            }
+
+            if (picked == nullptr && found_last && first != nullptr) {
+                picked = first;
+                picked_scr_x = first_scr_x;
+                picked_scr_y = first_scr_y;
+            }
+        } else {
+            for (int i = 0; i < num; ++i) {
+                int obj_id = Picked_Objects[i].object_id;
+                if (obj_id < 0) {
+                    continue;
+                }
+
+                RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+                if (obj == nullptr || obj->object_state >= 7) {
+                    continue;
+                }
+                if ((uchar)param_2 > (uchar)obj->master_obj->select_level) {
+                    continue;
+                }
+
+                // Fog gating: match pick_multi/pick1 behavior.
+                if ((this->map->map_visible_flag == '\0') && (this->pick_through_fog(obj) == 0)) {
+                    int row = (int)obj->world_y;
+                    int col = (int)obj->world_x;
+                    uchar vis = this->player->visible->get_visible(col, row);
+                    if (vis != '\x0f') {
+                        continue;
+                    }
+                }
+
+                int w = this->pick_weight(obj, (int)Picked_Objects[i].confidence);
+                if (best_weight < w) {
+                    best_weight = w;
+                    picked = obj;
+                    picked_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
+                    picked_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
+                }
+            }
+        }
+
+        if (picked != nullptr) {
+            param_5->object = picked;
+            param_5->scr_x = picked_scr_x;
+            param_5->scr_y = picked_scr_y;
+            param_5->x = picked->world_x;
+            param_5->y = picked->world_y;
+            return '4';
+        }
+
+        return '2';
+    }
+
     if (param_1 != '(') {
         return '\0';
     }

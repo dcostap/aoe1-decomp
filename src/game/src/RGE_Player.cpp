@@ -1118,6 +1118,88 @@ int RGE_Player::select_object(RGE_Static_Object* param_1) {
     return 1;
 }
 
+unsigned char RGE_Player::get_select_level() {
+    // Source of truth: player.cpp.decomp @ 0x00471290
+    unsigned char best = 0xFF;
+    short idx = 0;
+    short found = 0;
+    do {
+        if (this->sel_count <= found) {
+            break;
+        }
+        if (this->sel_list[idx] != nullptr) {
+            unsigned char level = this->sel_list[idx]->master_obj->select_level;
+            if (level < best) {
+                best = level;
+            }
+            found = (short)(found + 1);
+        }
+        idx = (short)(idx + 1);
+    } while (idx < 0x19);
+
+    return (unsigned char)(((best == 0xFF) - 1U) & best);
+}
+
+unsigned char RGE_Player::get_selected_objects_to_command(
+    RGE_Static_Object*** list_out,
+    short* list_num_out,
+    short min_select_level,
+    short object_group,
+    short object_id,
+    short unit_level) {
+    // Source of truth: player.cpp.decomp @ 0x004712F0
+    int idx = 0;
+    *list_out = nullptr;
+    short list_num = 0;
+    *list_num_out = 0;
+
+    if (this->sel_count == 0) {
+        return 0;
+    }
+
+    RGE_Static_Object** list = (RGE_Static_Object**)calloc(4, (int)this->sel_count);
+    if (list == nullptr) {
+        return 0;
+    }
+
+    if (min_select_level == -1) {
+        min_select_level = 4;
+    }
+
+    short processed = 0;
+    for (short i = 0; i < 0x19; ++i) {
+        if (this->sel_count <= processed) {
+            break;
+        }
+
+        RGE_Static_Object* obj = this->sel_list[i];
+        if (obj != nullptr) {
+            processed = (short)(processed + 1);
+
+            if (obj->object_state == 2 && obj->owner == this) {
+                RGE_Master_Static_Object* master = obj->master_obj;
+                if ((min_select_level <= (short)(unsigned short)master->select_level || this->id == 0) &&
+                    (object_group == -1 || master->object_group == (object_group & 0xFF)) &&
+                    (object_id == -1 || master->id == (object_id & 0xFF)) &&
+                    (unit_level == -1 || master->unit_level == (unsigned char)unit_level) &&
+                    (0x27 < master->master_type) && (master->master_type != 0x5A)) {
+                    list[idx++] = obj;
+                    list_num = (short)(list_num + 1);
+                }
+            }
+        }
+    }
+
+    if (list_num == 0) {
+        free(list);
+        return 0;
+    }
+
+    *list_out = list;
+    *list_num_out = list_num;
+    return 1;
+}
+
 // --- Non-virtual methods ---
 void RGE_Player::set_relation(long param_1, uchar param_2) {
     // Source of truth: player.cpp.decomp @ 0x00470BE0 (audited vs player.cpp.asm).
