@@ -123,6 +123,8 @@ public:
     // Source of truth: pnl_txt.cpp.asm/.decomp (used by TTextPanel::draw and credits scrollers).
     void draw_background();
     void draw_border();
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D9E0
+    void calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out);
     CharType char_type(unsigned char* param_1);
     int word_wrap_append(char* param_1);
     int numberLines();

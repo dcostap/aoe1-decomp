@@ -199,26 +199,54 @@ void TEditPanel::set_active(int param_1) {
 }
 
 void TEditPanel::set_focus(int param_1) {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475B60
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B60
     const int had_focus = this->have_focus;
     TPanel::set_focus(param_1);
+
     if (this->edit_wnd) {
-        if (this->have_focus) {
-            if (GetFocus() != (HWND)this->edit_wnd) {
-                SetFocus((HWND)this->edit_wnd);
+        const HWND focus_wnd = GetFocus();
+        const HWND edit_wnd = (HWND)this->edit_wnd;
+
+        if (this->have_focus == 0) {
+            if (focus_wnd == edit_wnd) {
+                const HWND render_wnd = (HWND)this->render_area->Wnd;
+                if (focus_wnd != render_wnd) {
+                    SetFocus(render_wnd);
+                }
             }
         } else {
-            if (GetFocus() == (HWND)this->edit_wnd && this->render_area) {
-                SetFocus((HWND)this->render_area->Wnd);
+            if (focus_wnd != edit_wnd) {
+                SetFocus(edit_wnd);
+            }
+
+            if (this->imc == 0) {
+                if (this->enable_ime == 0) {
+                    this->imc = (unsigned long)ImmAssociateContext(edit_wnd, 0);
+                } else {
+                    this->imc = (unsigned long)ImmGetContext(edit_wnd);
+                }
+            }
+
+            if (this->imc != 0 && this->enable_ime != 0) {
+                ImmSetOpenStatus((HIMC)this->imc, this->turn_ime_on != 0);
             }
         }
     }
     if (had_focus != 0 && this->have_focus == 0) {
         this->update_text();
-        this->set_redraw(TPanel::RedrawMode::RedrawFull);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
     }
     if (this->edit_wnd && this->have_focus && had_focus == 0 && this->auto_sel) {
         SendMessageA((HWND)this->edit_wnd, EM_SETSEL, 0, (LPARAM)-1);
+    }
+
+    if (DAT_0086b240 == 0 && this->edit_wnd && this->have_focus == 0 && this->hidden == 0) {
+        ShowWindow((HWND)this->edit_wnd, SW_HIDE);
+        this->hidden = 1;
+    }
+
+    if (this->have_focus != 0) {
+        DAT_0086b244 = 0;
     }
 }
 
@@ -227,28 +255,33 @@ void TEditPanel::set_rect(tagRECT param_1) {
 }
 
 void TEditPanel::set_rect(long x, long y, long w, long h) {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475CC0
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475CC0
     TPanel::set_rect(x, y, w, h);
     if (this->edit_wnd) {
-        const BOOL do_redraw = (this->hidden == 0 && this->have_focus != 0);
         const int bs = this->bevel_size;
-        MoveWindow((HWND)this->edit_wnd, (int)(x + bs), (int)(y + bs), (int)(w - bs * 2 - 1), (int)(h - bs * 2 - 1), do_redraw);
+        const BOOL do_redraw = (this->hidden == 0 && this->visible != 0 && this->active != 0);
+        MoveWindow((HWND)this->edit_wnd,
+            (int)(this->pnl_x + bs),
+            (int)(this->pnl_y + bs),
+            (int)(this->pnl_wid - bs * 2 - 1),
+            (int)(this->pnl_hgt - bs * 2 - 1),
+            do_redraw);
     }
 
     const int bs = this->bevel_size;
     if (this->format == FormatMultiLine) {
-        this->draw_rect_value.left = (LONG)(x + 1 + bs);
-        this->draw_rect_value.top = (LONG)(y + bs);
+        this->draw_rect_value.left = (LONG)(this->render_rect.left + 1 + bs);
+        this->draw_rect_value.top = (LONG)(this->render_rect.top + bs);
         const int sb_wid = GetSystemMetrics(SM_CXVSCROLL);
-        this->draw_rect_value.right = (LONG)((x + w - bs - sb_wid) - 1);
-        this->draw_rect_value.bottom = (LONG)(y + h - bs);
+        this->draw_rect_value.right = (LONG)(((this->render_rect.right - bs) - sb_wid) - 1);
+        this->draw_rect_value.bottom = (LONG)(this->render_rect.bottom - bs);
         return;
     }
 
-    this->draw_rect_value.left = (LONG)(x + 8 + bs);
-    this->draw_rect_value.top = (LONG)(y + bs);
-    this->draw_rect_value.right = (LONG)(x + w - bs);
-    this->draw_rect_value.bottom = (LONG)(y + h - bs);
+    this->draw_rect_value.left = (LONG)(this->render_rect.left + 8 + bs);
+    this->draw_rect_value.top = (LONG)(this->render_rect.top + bs);
+    this->draw_rect_value.right = (LONG)(this->render_rect.right - bs);
+    this->draw_rect_value.bottom = (LONG)(this->render_rect.bottom - bs);
 }
 
 void TEditPanel::set_redraw(RedrawMode param_1) {

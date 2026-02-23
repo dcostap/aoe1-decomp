@@ -181,13 +181,15 @@ public:
     // Enum values verified against `src/game/src/Pnl_btn.cpp.asm` (immutable reference).
     // Only values we currently rely on are defined here; add more as confirmed by ASM.
     enum ButtonType : int {
-        Normal = 0,
-        // CheckBox likely exists but value not yet confirmed from ASM.
+        // NOTE: `TButtonPanel::TButtonPanel` initializes `buttonTypeValue` to 1 (see `pnl_btn.cpp.asm`).
+        Normal = 1,
         Radio = 2,
         State = 3,
     };
     enum DrawType : int {
-        DrawClear = 0,
+        // NOTE: `TButtonPanel::TButtonPanel` initializes `drawTypeValue` to 1 and `TButtonPanel::draw`
+        // early-returns on `drawTypeValue == 1` (see `pnl_btn.cpp.asm`).
+        DrawClear = 1,
         DrawPicture = 2,
         DrawTextA = 3,
         DrawPictureAndText = 4,
