@@ -2,6 +2,7 @@
 #include "../include/ui_core.h"
 #include "../include/TPanel.h"
 #include "../include/TPanelSystem.h"
+#include "../include/TScreenPanel.h"
 #include "../include/TRegistry.h"
 #include "../include/TDebuggingLog.h"
 #include "../include/TCommunications_Handler.h"
@@ -1606,13 +1607,38 @@ CUSTOM_DEBUG_END
 }
 
 int RGE_Base_Game::setup_shapes() { 
-    // TODO: STUB
-    return 1; 
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041F2D0
+    this->shape_num = 3;
+    this->shapes = (TShape**)calloc(3, sizeof(TShape*));
+    if (this->shapes == nullptr) {
+        return 0;
+    }
+
+    for (int i = 0; i < this->shape_num; ++i) {
+        this->shapes[i] = nullptr;
+    }
+
+    this->shapes[0] = new TShape((char*)"groupnum.shp", 0xC4E3);
+    this->shapes[1] = new TShape((char*)"waypoint.shp", 0xC4E4);
+    this->shapes[2] = new TShape((char*)"moveto.shp", 0xC4E5);
+    return 1;
 }
 
 int RGE_Base_Game::setup_blank_screen() { 
-    // TODO: STUB
-    return 1; 
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041F730
+    TScreenPanel* blank = new TScreenPanel((char*)"Blank Screen");
+    if (blank == nullptr) {
+        return 0;
+    }
+
+    if (blank->setup(this->draw_area, (char*)0, -1, 0) == 0) {
+        return 0;
+    }
+
+    panel_system->setCurrentPanel((char*)"Blank Screen", 0);
+    this->set_render_all();
+    SendMessageA((HWND)this->prog_window, 0xF, 0, 0); // WM_PAINT
+    return 1;
 }
 void RGE_Base_Game::setup_timings() {}
 void RGE_Base_Game::stop_sound_system() {}
@@ -1990,6 +2016,12 @@ void RGE_Base_Game::show_comm() {}
 void RGE_Base_Game::show_ai() {}
 int RGE_Base_Game::setup_map_save_area() { return 1; }
 void RGE_Base_Game::set_interface_messages() {}
+
+void RGE_Base_Game::set_render_all() {
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00422FF0
+    this->render_all = 1;
+    panel_system->set_restore();
+}
 
 RGE_Font* RGE_Base_Game::get_font(int index) {
     if (index >= 0 && index < this->font_num) {

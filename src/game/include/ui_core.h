@@ -254,7 +254,6 @@ public:
     virtual long mouse_move_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) override;
-    virtual long mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) override;
@@ -265,7 +264,6 @@ public:
     virtual void set_focus(int param_1) override;
     virtual void set_tab_order(TPanel* param_1, TPanel* param_2) override;
     virtual void set_tab_order(TPanel** param_1, short param_2) override;
-    virtual uchar get_help_info(char** param_1, long* param_2, long param_3, long param_4) override;
     virtual void stop_sound_system() override;
     virtual int restart_sound_system() override;
     virtual void take_snapshot() override;
@@ -362,6 +360,7 @@ struct TPanelSystem {
     int destroyPanel(char* name);
     void setModalPanel(TPanel* panel);
     int restorePreviousModalPanel();
+    void set_restore();
 };
 static_assert(sizeof(TPanelSystem) == 0xAD8, "Size mismatch");
 
