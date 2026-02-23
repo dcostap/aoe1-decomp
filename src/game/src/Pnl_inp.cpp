@@ -180,47 +180,41 @@ long TInputPanel::handle_idle() {
 }
 
 void TInputPanel::draw() {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x004779C0
+    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x004777C0
     TTextPanel::draw();
 
-    if (!this->render_area || !this->have_focus || this->draw_caret == 0 || !this->input_buffer) {
-        return;
-    }
-    if (this->cur_line < this->top_line || this->cur_line > this->bot_line) {
-        return;
-    }
+    if (!this->render_area) return;
+    if (!this->visible) return;
+    if (!this->active) return;
+    if (!this->have_focus) return;
+    if (this->draw_caret == 0) return;
+    if (this->cur_line < this->top_line || this->cur_line > this->bot_line) return;
 
-    const char* line = this->get_text((long)this->cur_line);
-    if (!line) {
-        return;
-    }
+    tagRECT line_rect{};
+    long cursor_x_offset = 0;
 
-    unsigned char prefix[4096];
-    prefix[0] = '\0';
-    _mbsncpy(prefix, (const unsigned char*)line, (size_t)this->cur_col);
-    prefix[4095] = '\0';
+    this->draw_setup(0);
 
     HDC hdc = (HDC)this->render_area->GetDc((char*)"pnl_inp::draw");
-    if (!hdc) {
-        return;
-    }
-    HGDIOBJ old_font = SelectObject(hdc, (HGDIOBJ)this->font);
-    SIZE sz{};
-    GetTextExtentPoint32A(hdc, (const char*)prefix, (int)strlen((const char*)prefix), &sz);
-    SelectObject(hdc, old_font);
-    this->render_area->ReleaseDc((char*)"pnl_inp::draw");
+    if (hdc) {
+        const HGDIOBJ old_font = SelectObject(hdc, (HGDIOBJ)this->font);
+        this->calc_line_pos(hdc, (short)(this->cur_line - this->top_line), this->cur_line, &line_rect, &cursor_x_offset);
+        SelectObject(hdc, old_font);
+        this->render_area->ReleaseDc((char*)"pnl_inp::draw");
 
-    long x = this->pnl_x + this->border_size + 5 + (long)sz.cx;
-    long y = this->pnl_y + this->border_size + (long)(this->cur_line - this->top_line) * this->text_hgt;
-    if (this->vert_align == TTextPanel::AlignCenter) {
-        y = this->pnl_y + (this->pnl_hgt / 2) - (this->text_hgt / 2);
+        uchar* bits = this->render_area->Lock((char*)"pnl_inp::draw", 1);
+        if (bits) {
+            const long x = cursor_x_offset + line_rect.left;
+            const long len = (line_rect.bottom - line_rect.top) + 1;
+            if (x < this->render_rect.right) {
+                this->render_area->DrawVertLine(x, line_rect.top, len, this->caret_color);
+                this->render_area->DrawVertLine(x + 1, line_rect.top, len, this->caret_color);
+            }
+            this->render_area->Unlock((char*)"pnl_inp::draw");
+        }
     }
 
-    if (this->render_area->Lock((char*)"pnl_inp::draw", 1)) {
-        this->render_area->DrawVertLine(x, y, this->text_hgt + 1, this->caret_color);
-        this->render_area->DrawVertLine(x + 1, y, this->text_hgt + 1, this->caret_color);
-        this->render_area->Unlock((char*)"pnl_inp::draw");
-    }
+    this->draw_finish();
 }
 
 void TInputPanel::set_text(char* s) {
@@ -301,54 +295,59 @@ int TInputPanel::insert_character(long ch) {
 }
 
 int TInputPanel::delete_character() {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477AF0
+    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477AF0
     if (this->input_len <= this->input_pos) {
         return 0;
     }
 
-    char* src = this->input_buffer;
-    char* dst = (this->input_buffer == this->input_buffer1) ? this->input_buffer2 : this->input_buffer1;
-    this->input_buffer = dst;
-    dst[0] = '\0';
+    const char* src_buf = (this->input_buffer == this->input_buffer1) ? this->input_buffer1 : this->input_buffer2;
+    char* dst_buf = (this->input_buffer == this->input_buffer1) ? this->input_buffer2 : this->input_buffer1;
 
-    unsigned char* cur_src = (unsigned char*)src;
-    unsigned char* cur_dst = (unsigned char*)dst;
+    this->input_buffer = dst_buf;
+    dst_buf[0] = '\0';
 
-    if (this->input_pos > 0) {
-        _mbsncpy(cur_dst, cur_src, (size_t)this->input_pos);
-        cur_src = _mbsninc(cur_src, (size_t)this->input_pos);
-        cur_dst = _mbsninc(cur_dst, (size_t)this->input_pos);
-    }
-
+    unsigned char* cur_src = (unsigned char*)src_buf;
+    unsigned char* cur_dest = (unsigned char*)dst_buf;
+    unsigned char* after_src = (unsigned char*)src_buf;
     short remove_chars = 1;
-    bool move_back_one = false;
+    int move_back_one = 0;
 
-    if (*cur_src == '\r') {
-        unsigned char* next = _mbsinc(cur_src);
-        if (*next == '\n') {
-            cur_src = _mbsninc(cur_src, 2);
-            remove_chars = 2;
-        } else {
-            cur_src = _mbsinc(cur_src);
-        }
-    } else if (*cur_src == '\n' && (unsigned char*)src < cur_src) {
-        unsigned char* prev = _mbsdec((unsigned char*)src, cur_src);
-        if (prev && *prev == '\r') {
-            cur_dst = _mbsdec((unsigned char*)dst, cur_dst);
-            cur_src = _mbsninc(prev, 2);
-            remove_chars = 2;
-            move_back_one = true;
-        } else {
-            cur_src = _mbsinc(cur_src);
-        }
+    if (0 < this->input_pos) {
+        _mbsncpy(cur_dest, cur_src, (int)this->input_pos);
+        after_src = _mbsninc(cur_src, (int)this->input_pos);
+        cur_dest = _mbsninc(cur_dest, (int)this->input_pos);
     } else {
-        cur_src = _mbsinc(cur_src);
+        after_src = cur_src;
     }
 
-    _mbsncpy(cur_dst, cur_src, (size_t)((int)this->input_len - (int)this->input_pos) + 1);
-    if (move_back_one) {
-        this->input_pos = (short)(this->input_pos - 1);
+    if (*after_src == '\r') {
+        unsigned char* p = _mbsinc(after_src);
+        remove_chars = 1;
+        if (*p == '\n') {
+            p = _mbsinc(p);
+            remove_chars = 2;
+        }
+        after_src = p;
+    } else {
+        if ((*after_src == '\n') && ((const unsigned char*)src_buf < after_src)) {
+            unsigned char* prev = _mbsdec((unsigned char*)src_buf, after_src);
+            if (*prev == '\r') {
+                cur_dest = _mbsdec((unsigned char*)dst_buf, cur_dest);
+                after_src = _mbsninc(prev, 2);
+                remove_chars = 2;
+                move_back_one = 1;
+                goto LAB_00477C15;
+            }
+            after_src = _mbsninc(prev, 2);
+        } else {
+            after_src = _mbsinc(after_src);
+        }
+        remove_chars = 1;
     }
+
+LAB_00477C15:
+    _mbsncpy(cur_dest, after_src, ((int)this->input_len - (int)this->input_pos) + 1);
+    if (move_back_one) this->input_pos = (short)(this->input_pos - 1);
     this->input_len = (short)(this->input_len - remove_chars);
     this->reformat();
     this->calc_cur_line_col();
@@ -367,11 +366,11 @@ int TInputPanel::backspace_character() {
 }
 
 int TInputPanel::paste() {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477CB0
+    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477CB0
     if (!IsClipboardFormatAvailable(CF_TEXT)) {
         return 0;
     }
-    HWND hwnd = (HWND)(this->render_area ? this->render_area->Wnd : nullptr);
+    HWND hwnd = (HWND)this->render_area->Wnd;
     if (!OpenClipboard(hwnd)) {
         return 0;
     }
@@ -424,28 +423,23 @@ int TInputPanel::paste() {
 }
 
 void TInputPanel::reformat() {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477E90
+    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477E90
     const short old_top = this->top_line;
     const short old_cur = this->cur_line;
 
     TTextPanel::set_text(this->input_buffer);
 
-    if (this->num_lines > 0) {
-        if (this->cur_line >= this->num_lines) this->cur_line = (short)(this->num_lines - 1);
-        if (this->cur_line < 0) this->cur_line = 0;
+    const short num_lines = this->num_lines;
+    if (num_lines <= old_cur) {
+        this->cur_line = (short)(num_lines - 1);
     } else {
-        this->cur_line = 0;
+        this->cur_line = old_cur;
+    }
+    if (num_lines <= old_top) {
+        this->top_line = (short)(num_lines - 1);
     }
 
-    // Restore prior view as closely as possible.
-    short new_top = old_top;
-    if (this->num_lines > 0 && new_top >= this->num_lines) {
-        new_top = (short)(this->num_lines - 1);
-    }
-    if (new_top < 0) new_top = 0;
-
-    (void)old_cur;
-    this->scroll(1, new_top, 1);
+    this->scroll(1, old_top, 1);
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
@@ -478,23 +472,21 @@ void TInputPanel::calc_input_pos() {
 }
 
 void TInputPanel::calc_cur_line_col() {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00478010
+    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00478010
     this->cur_line = 0;
     this->cur_col = 0;
 
-    short scanned = 0;
+    int scanned = 0;
     TTextPanel::TextNode* n = this->list;
-    while (n && this->cur_line < (short)(this->num_lines - 1)) {
-        const short len = (short)_mbslen((const unsigned char*)n->text);
-        if (scanned + len > this->input_pos) {
-            break;
-        }
-        scanned = (short)(scanned + len);
+    while (n && (this->cur_line != (short)(this->num_lines - 1))) {
+        const int len = (int)_mbslen((const unsigned char*)n->text);
+        if (scanned + len > (int)this->input_pos) break;
+        scanned += len;
         this->cur_line = (short)(this->cur_line + 1);
         n = n->next;
     }
 
-    this->cur_col = (short)(this->input_pos - scanned);
+    this->cur_col = (short)((int)this->input_pos - scanned);
     if (this->cur_col > 0 && this->input_pos > 0 && this->input_buffer[this->input_pos - 1] == '\n') {
         this->cur_col = (short)(this->cur_col - 1);
         this->input_pos = (short)(this->input_pos - 1);
@@ -644,122 +636,198 @@ long TInputPanel::char_action(long key, short repeat) {
 }
 
 long TInputPanel::key_down_action(long key, short /*param_2*/, int alt, int ctrl, int shift) {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477220
+    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477220
     (void)alt;
+
+    short sVar1;
+    short sVar3;
+    char* pcVar4;
 
     switch (key) {
     case VK_BACK:
         this->backspace_character();
         return 1;
+    default:
+        return 0;
     case VK_RETURN:
         if (this->format_type == FormatMultiLine) {
-            this->insert_character('\n');
+            this->insert_character(10);
             return 1;
         }
         if (this->parent_panel) {
             this->parent_panel->action(this, 0, 0, 0);
             return 1;
         }
-        return 1;
+        break;
     case VK_ESCAPE:
         if (this->parent_panel) {
             this->parent_panel->action(this, 1, 0, 0);
             return 1;
         }
-        return 1;
+        break;
+    case VK_PRIOR: // Page Up
+        if (this->num_lines < 1) return 1;
+        sVar1 = this->cur_line;
+        if (sVar1 < 1) return 1;
+        sVar3 = this->top_line;
+        if ((sVar1 < sVar3) || (this->bot_line < sVar1)) {
+            this->cur_line = sVar3;
+        }
+        if (this->cur_line == sVar3) {
+            this->scroll(5, 0, 1);
+            sVar3 = this->top_line;
+        }
+        goto LAB_004775F9;
+    case VK_NEXT: // Page Down
+        sVar3 = this->num_lines;
+        if (sVar3 < 1) return 1;
+        sVar1 = this->cur_line;
+        if ((int)(sVar3 - 1) <= (int)sVar1) return 1;
+        if ((sVar1 < this->top_line) || (this->bot_line < sVar1)) {
+            sVar3 = this->bot_line;
+            this->cur_line = sVar3;
+        } else {
+            sVar3 = this->bot_line;
+        }
+        if (this->cur_line == sVar3) {
+            this->scroll(4, 0, 1);
+            sVar3 = this->bot_line;
+        }
+        goto LAB_004775F9;
+    case VK_END:
+        sVar3 = this->num_lines;
+        if (sVar3 < 1) return 1;
+        if (ctrl == 0) {
+            pcVar4 = this->get_text((long)this->cur_line);
+            sVar3 = (short)_mbslen((const unsigned char*)pcVar4);
+            if (this->cur_col == sVar3) return 1;
+            sVar3 = this->cur_line;
+        } else {
+            const int iVar5 = (int)this->cur_line;
+            if (iVar5 == (int)sVar3 - 1) {
+                pcVar4 = this->get_text((long)iVar5);
+                sVar3 = (short)_mbslen((const unsigned char*)pcVar4);
+                if (this->cur_col == sVar3) return 1;
+            }
+            sVar3 = (short)(this->num_lines - 1);
+            this->cur_line = sVar3;
+        }
+        pcVar4 = this->get_text((long)sVar3);
+        this->cur_col = (short)_mbslen((const unsigned char*)pcVar4);
+        goto LAB_0047750F;
     case VK_HOME:
         if (this->num_lines < 1) return 1;
         if (ctrl == 0) {
             if (this->cur_col != 0) {
                 this->cur_col = 0;
-                this->calc_input_pos();
-                this->set_redraw(TPanel::RedrawMode::Redraw);
+                goto LAB_0047750F;
             }
+        } else if ((this->cur_col != 0) || (this->cur_line != 0)) {
+            this->cur_col = 0;
+            this->cur_line = 0;
+            this->calc_input_pos();
+            this->set_redraw(TPanel::RedrawMode::Redraw);
             return 1;
         }
-        this->cur_line = 0;
-        this->cur_col = 0;
-        this->calc_input_pos();
-        this->set_redraw(TPanel::RedrawMode::Redraw);
-        return 1;
-    case VK_END:
-        if (this->num_lines < 1) return 1;
-        if (ctrl == 0) {
-            const char* line = this->get_text((long)this->cur_line);
-            const short len = (short)_mbslen((const unsigned char*)(line ? line : ""));
-            if (this->cur_col == len) return 1;
-            this->cur_col = len;
-        } else {
-            this->cur_line = (short)(this->num_lines - 1);
-            const char* line = this->get_text((long)this->cur_line);
-            this->cur_col = (short)_mbslen((const unsigned char*)(line ? line : ""));
-        }
-        this->calc_input_pos();
-        this->set_redraw(TPanel::RedrawMode::Redraw);
-        return 1;
+        break;
     case VK_LEFT:
         if (this->num_lines < 1) return 1;
-        if (this->cur_col > 0) {
-            this->cur_col = (short)(this->cur_col - 1);
-        } else if (this->cur_line > 0) {
-            this->cur_line = (short)(this->cur_line - 1);
-            const char* line = this->get_text((long)this->cur_line);
-            this->cur_col = (short)_mbslen((const unsigned char*)(line ? line : ""));
+        sVar3 = this->cur_col;
+        if (sVar3 < 1) {
+            sVar3 = this->cur_line;
+            if (sVar3 < 1) return 1;
+            sVar3 = (short)(sVar3 - 1);
+            this->cur_line = sVar3;
+            goto LAB_00477625;
         }
-        this->calc_input_pos();
-        this->set_redraw(TPanel::RedrawMode::Redraw);
-        return 1;
-    case VK_RIGHT: {
-        if (this->num_lines < 1) return 1;
-        const char* line = this->get_text((long)this->cur_line);
-        const short len = (short)_mbslen((const unsigned char*)(line ? line : ""));
-        if (this->cur_col < len) {
-            this->cur_col = (short)(this->cur_col + 1);
-        } else if (this->cur_line < (short)(this->num_lines - 1)) {
-            this->cur_line = (short)(this->cur_line + 1);
-            this->cur_col = 0;
-        }
-        this->calc_input_pos();
-        this->set_redraw(TPanel::RedrawMode::Redraw);
-        return 1;
-    }
+        sVar3 = (short)(sVar3 - 1);
+        goto LAB_00477635;
     case VK_UP:
-        if (this->cur_line > 0) {
-            this->cur_line = (short)(this->cur_line - 1);
-            const char* line = this->get_text((long)this->cur_line);
-            const short len = (short)_mbslen((const unsigned char*)(line ? line : ""));
-            if (this->cur_col > len) this->cur_col = len;
-            this->calc_input_pos();
-            this->set_redraw(TPanel::RedrawMode::Redraw);
+        if (this->num_lines < 1) return 1;
+        sVar3 = this->cur_line;
+        if (0 < sVar3) {
+            sVar3 = (short)(sVar3 - 1);
+            this->cur_line = sVar3;
+            pcVar4 = this->get_text((long)sVar3);
+            sVar3 = (short)_mbslen((const unsigned char*)pcVar4);
+            if (sVar3 < this->cur_col) {
+                pcVar4 = this->get_text((long)this->cur_line);
+                this->cur_col = (short)_mbslen((const unsigned char*)pcVar4);
+            }
+            goto LAB_0047763C;
         }
-        return 1;
+        break;
+    case VK_RIGHT:
+        if (this->num_lines < 1) return 1;
+        sVar3 = this->cur_col;
+        pcVar4 = this->get_text((long)this->cur_line);
+        sVar1 = (short)_mbslen((const unsigned char*)pcVar4);
+        if (sVar3 < sVar1) {
+            this->cur_col = (short)(sVar3 + 1);
+            goto LAB_0047763C;
+        }
+        sVar3 = this->cur_line;
+        if ((int)sVar3 < (int)this->num_lines - 1) {
+            this->cur_col = 0;
+            this->cur_line = (short)(sVar3 + 1);
+            goto LAB_0047763C;
+        }
+        break;
     case VK_DOWN:
-        if (this->cur_line < (short)(this->num_lines - 1)) {
-            this->cur_line = (short)(this->cur_line + 1);
-            const char* line = this->get_text((long)this->cur_line);
-            const short len = (short)_mbslen((const unsigned char*)(line ? line : ""));
-            if (this->cur_col > len) this->cur_col = len;
-            this->calc_input_pos();
-            this->set_redraw(TPanel::RedrawMode::Redraw);
-        }
-        return 1;
-    case VK_DELETE:
-        this->delete_character();
-        return 1;
+        sVar3 = this->num_lines;
+        if (sVar3 < 1) return 1;
+        sVar1 = this->cur_line;
+        if ((int)(sVar3 - 1) <= (int)sVar1) return 1;
+        sVar1 = (short)(sVar1 + 1);
+        this->cur_line = sVar1;
+        pcVar4 = this->get_text((long)sVar1);
+        sVar3 = (short)_mbslen((const unsigned char*)pcVar4);
+        if (this->cur_col <= sVar3) goto LAB_0047763C;
+        goto LAB_0047761D;
     case VK_INSERT:
         if (shift == 0) {
             if (ctrl != 0) return 1;
-            this->insert_mode = (this->insert_mode == 0) ? 1 : 0;
+            this->insert_mode = (this->insert_mode == 0);
             return 1;
         }
-        this->paste();
+        goto LAB_00477711;
+    case VK_DELETE:
+        this->delete_character();
         return 1;
     case 'V':
         if (ctrl == 0) return 0;
+
+LAB_00477711:
         this->paste();
-        return 1;
-    default:
-        return 0;
     }
+
+    return 1;
+
+LAB_0047750F:
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    this->calc_input_pos();
+    return 1;
+
+LAB_004775F9:
+    this->cur_line = sVar3;
+    pcVar4 = this->get_text((long)sVar3);
+    sVar3 = (short)_mbslen((const unsigned char*)pcVar4);
+    if (sVar3 < this->cur_col) goto LAB_0047761D;
+    goto LAB_0047763C;
+
+LAB_0047761D:
+    sVar3 = this->cur_line;
+
+LAB_00477625:
+    pcVar4 = this->get_text((long)sVar3);
+    sVar3 = (short)_mbslen((const unsigned char*)pcVar4);
+
+LAB_00477635:
+    this->cur_col = sVar3;
+
+LAB_0047763C:
+    this->calc_input_pos();
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    return 1;
 }
 

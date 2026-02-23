@@ -3,14 +3,17 @@
 
 class RGE_Color_Table {
 public:
-    // Virtuals (best-effort)
+    // Virtuals
     virtual ~RGE_Color_Table(); // vt[0] (0x0)
 
-    // Constructors (reimplementation; source of truth: `src/game/src/color.cpp.asm` / `.decomp`).
+    // Source of truth: `src/game/decomp/color.cpp.decomp` + `src/game/decomp/color.cpp.asm`.
     RGE_Color_Table();
     RGE_Color_Table(FILE* infile, short id);
     RGE_Color_Table(int fd);
+    RGE_Color_Table(char* name);
     RGE_Color_Table(struct TDrawArea* area, long amount_percent, struct tagPALETTEENTRY* base_color_or_null, struct tagPALETTEENTRY* palette_or_null);
+
+    void save(int fd);
 
     char color_table_name[30];
     short resource_id;

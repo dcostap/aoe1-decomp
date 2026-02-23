@@ -16,6 +16,7 @@
 #include "../include/TShape.h"
 #include "../include/TScrollBarPanel.h"
 #include "../include/TTextPanel.h"
+#include "../include/TRIBE_Main_View.h"
 #include "../include/TRIBE_Panel_Button.h"
 #include "../include/TRIBE_Panel_Inven.h"
 #include "../include/TRIBE_Panel_Object.h"
@@ -166,10 +167,8 @@ static TMessagePanel* create_message_panel_checked(
 }
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
-    : GameViewPanel((rge_base_game != nullptr && rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr) {
-    // Partial parity milestone:
-    // constructor now executes panel/resource setup path, but map/main view rendering still
-    // runs through GameViewPanel until TRIBE_Main_View/TRIBE_Diamond_Map_View are restored.
+    : TScreenPanel((char*)"Game Screen") {
+    // Parity-first: in-game rendering/input routes through TRIBE_Main_View/TRIBE_Diamond_Map_View.
     memset(&this->runtime, 0, sizeof(this->runtime));
     memset(this->shim_padding, 0, sizeof(this->shim_padding));
     if (rge_base_game == nullptr) {
@@ -182,7 +181,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         return;
     }
 
-    this->world_map = (rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr;
     this->runtime.world = (TRIBE_World*)rge_base_game->world;
     this->runtime.main_view = nullptr;
     this->runtime.map_view = nullptr;
@@ -210,7 +208,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
     // Main in-game view panel (original-style rendering pipeline).
     // Source of truth intent: view.cpp.decomp @ 0x00535310 (RGE_View::draw) / 0x00536B40 (terrain+objects).
-    this->runtime.main_view = new RGE_View();
+    this->runtime.main_view = (TPanel*)new TRIBE_Main_View();
     if (this->runtime.main_view == nullptr ||
         ((RGE_View*)this->runtime.main_view)->setup(this->render_area, this, 0, 0, screen_w, screen_h, 0) == 0) {
         delete_panel_safe(this->runtime.main_view);
@@ -221,8 +219,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     {
         RGE_View* main_view = (RGE_View*)this->runtime.main_view;
         main_view->world = (RGE_Game_World*)rge_base_game->world;
-        main_view->player = nullptr;
-        main_view->map = this->world_map;
+        main_view->player = (rge_base_game != nullptr) ? rge_base_game->get_player() : nullptr;
+        main_view->map = (rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr;
         if (main_view->map != nullptr) {
             main_view->tile_wid = main_view->map->tile_width;
             main_view->tile_hgt = main_view->map->tile_height;
@@ -249,19 +247,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         ((RGE_Diamond_Map*)map_view)->set_bitmap((char*)"map.bmp", 0xC4E1);
         ((RGE_Diamond_Map*)map_view)->set_player(rge_base_game->get_player());
         ((RGE_Diamond_Map*)map_view)->set_main_view((RGE_View*)this->runtime.main_view);
-    }
-
-    if (this->world_map != nullptr && this->world_map->map_width > 0 && this->world_map->map_height > 0) {
-        long world_pixel_w = (this->world_map->map_width + this->world_map->map_height) * 32;
-        long world_pixel_h = (this->world_map->map_width + this->world_map->map_height) * 16;
-        this->cam_x = (world_pixel_w - screen_w) / 2;
-        this->cam_y = (world_pixel_h - screen_h) / 2;
-        if (this->cam_x < 0) {
-            this->cam_x = 0;
-        }
-        if (this->cam_y < 0) {
-            this->cam_y = 0;
-        }
     }
 
     // NOTE: the view pipeline now owns main in-game render via runtime.main_view.
@@ -800,11 +785,7 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     delete_panel_safe((TPanel*&)this->runtime.pop_panel);
     delete_panel_safe((TPanel*&)this->runtime.tool_box);
 
-    if (this->runtime.main_view != this) {
-        delete_panel_safe(this->runtime.main_view);
-    } else {
-        this->runtime.main_view = nullptr;
-    }
+    delete_panel_safe(this->runtime.main_view);
     delete_panel_safe(this->runtime.map_view);
 }
 
@@ -812,12 +793,11 @@ void TRIBE_Screen_Game::handle_game_update() {
     // Partial parity slice from scr_game.cpp @ 0x00496800:
     // keep runtime world pointers current and refresh selected-object panel when selection changes.
     if (rge_base_game != nullptr && rge_base_game->world != nullptr) {
-        this->world_map = rge_base_game->world->map;
         this->runtime.world = (TRIBE_World*)rge_base_game->world;
         if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
             RGE_View* v = (RGE_View*)this->runtime.main_view;
             v->world = (RGE_Game_World*)rge_base_game->world;
-            v->map = this->world_map;
+            v->map = rge_base_game->world->map;
             if (v->map != nullptr) {
                 v->tile_wid = v->map->tile_width;
                 v->tile_hgt = v->map->tile_height;

@@ -258,6 +258,11 @@ static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short li
     if (col_offset_out) *col_offset_out = col_offset;
 }
 
+void TTextPanel::calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out) {
+    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D9E0
+    ::calc_line_pos(this, (HDC)hdc, draw_index, line_index, line_rect, col_offset_out);
+}
+
 static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_index, unsigned long color_main, unsigned long color_shadow) {
     const char* text = get_line_text(this_, (int)line_index);
     const char* text2 = get_line_text2(this_, (int)line_index);
@@ -909,14 +914,14 @@ void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param
 
 int TTextPanel::get_text_rect(tagRECT* out_rect) {
     // Source of truth: `src/game/src/Pnl_txt.cpp.decomp` (`get_text_rect`).
-    // It selects this->font, then delegates to `calc_line_pos(this, hdc, 0, 0, out_rect, 0)`.
+    // It selects this->font, then delegates to `TTextPanel::calc_line_pos(hdc, 0, 0, out_rect, 0)`.
     if (!out_rect || !this->render_area) return 0;
 
     HDC hdc = (HDC)this->render_area->GetDc((char*)"pnl_txt::get_text_rect");
     if (!hdc) return 0;
 
     HGDIOBJ old_font = SelectObject(hdc, (HGDIOBJ)this->font);
-    calc_line_pos(this, hdc, 0, 0, out_rect, (long*)0);
+    this->calc_line_pos(hdc, 0, 0, out_rect, (long*)0);
     SelectObject(hdc, old_font);
     this->render_area->ReleaseDc((char*)"pnl_txt::get_text_rect");
     return 1;

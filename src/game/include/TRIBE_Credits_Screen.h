@@ -2,8 +2,21 @@
 #include "common.h"
 #include "TScreenPanel.h"
 
+class TScrollTextPanel;
+class TShape;
+
 class TRIBE_Credits_Screen : public TScreenPanel {
 public:
+    enum ScreenMode : int {
+        ModeNone = 1,
+        ModeFadeOut = 2,
+        ModePause = 4,
+        ModeFadeIn = 5,
+    };
+
+    TRIBE_Credits_Screen();
+    void close_screen();
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Credits_Screen(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
