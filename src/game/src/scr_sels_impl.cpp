@@ -46,24 +46,29 @@ void sels_free_cached_scenarios(TribeSelectScenarioScreen* owner) {
 void sels_set_mission_text(TribeSelectScenarioScreen* owner) {
     if (!owner || !owner->missionText) return;
 
-    if (!owner->scenarioMission || owner->scenarioCount <= 0) {
-        owner->missionText->set_text((char*)"");
-        owner->last_scenario_line = -1;
+    // Source of truth: scr_sels.cpp.decomp @ 0x004B4720 (fillMissionText).
+    owner->missionText->set_text((char*)"");
+
+    const long line = ((TTextPanel*)owner->scenarioList)->get_line();
+    if (line >= 0) {
+        owner->missionText->set_text(owner->scenarioMission[(int)line]);
+    }
+    owner->last_scenario_line = (int)line;
+}
+
+void sels_get_settings(TribeSelectScenarioScreen* owner) {
+    // Source of truth: scr_sels.cpp.decomp @ 0x004B4770 (getSettings).
+    if (!owner || !owner->scenarioList || !rge_base_game) return;
+
+    owner->last_scenario_line = -1;
+    char* wanted = rge_base_game->scenarioName();
+    long line = (wanted != nullptr) ? ((TTextPanel*)owner->scenarioList)->get_line(wanted) : -1;
+    if (line != -1) {
+        owner->scenarioList->scroll_cur_line(1, (short)line, 1);
+        owner->last_scenario_line = (int)line - 1;
         return;
     }
-
-    int idx = 0;
-    if (owner->scenarioList) {
-        long line = ((TTextPanel*)owner->scenarioList)->get_line();
-        if (line >= 0 && line < owner->scenarioCount) {
-            idx = (int)line;
-        }
-    } else if (owner->last_scenario_line >= 0 && owner->last_scenario_line < owner->scenarioCount) {
-        idx = owner->last_scenario_line;
-    }
-
-    owner->missionText->set_text(owner->scenarioMission[idx]);
-    owner->last_scenario_line = idx;
+    owner->scenarioList->scroll_cur_line(1, 0, 1);
 }
 
 void sels_fill_scenario_list(TribeSelectScenarioScreen* owner) {
@@ -107,8 +112,6 @@ int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
         sels_free_cached_scenarios(owner);
         return 0;
     }
-
-    owner->last_scenario_line = 0;
     for (int i = 0; i < owner->scenarioCount; ++i) {
         owner->scenarioFixed[i] = i;
         RGE_Scenario_File_Entry* entry = &info->scenarios[i];
@@ -134,26 +137,11 @@ int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
         size_t len = strlen(text);
         owner->scenarioMission[i] = (char*)calloc(len + 1, 1);
         if (owner->scenarioMission[i]) {
-            memcpy(owner->scenarioMission[i], text, len + 1);
-        }
-    }
-
-    // TODO(accuracy): Best-effort current selection recovery.
-    owner->last_scenario_line = 0;
-    if (rge_base_game->rge_game_options.scenarioNameValue[0] != '\0') {
-        const char* wanted = rge_base_game->rge_game_options.scenarioNameValue;
-        for (int i = 0; i < owner->scenarioCount; ++i) {
-            if (_stricmp(info->scenarios[i].name, wanted) == 0) {
-                owner->last_scenario_line = i;
-                break;
-            }
+                memcpy(owner->scenarioMission[i], text, len + 1);
         }
     }
 
     sels_fill_scenario_list(owner);
-    if (owner->scenarioList) {
-        owner->scenarioList->scroll_cur_line(1, (short)owner->last_scenario_line, 1);
-    }
     return 1;
 }
 
@@ -321,6 +309,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Se
     const int loaded = sels_load_scenarios(this);
     this->scenariosLoaded = 1; // Source of truth: scr_sels.cpp.decomp sets this after the first attempt.
     if (loaded) {
+        sels_get_settings(this);
         sels_set_mission_text(this);
     } else {
         this->missionText->set_text((char*)"No scenarios available.");

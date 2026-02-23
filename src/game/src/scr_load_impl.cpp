@@ -16,6 +16,8 @@
 
 namespace {
 
+static const char kLoadCancelDialogName[] = "Cancel Dialog";
+
 void load_enable_input() {
     if (rge_base_game) {
         rge_base_game->enable_input();
@@ -48,7 +50,26 @@ static const char* load_selected_name(TribeLoadSavedGameScreen* owner) {
     return cur;
 }
 
-void load_delete_selected_files(TribeLoadSavedGameScreen* owner) {
+void load_delete_selected_files_now(TribeLoadSavedGameScreen* owner) {
+    if (!owner || !rge_base_game || !rge_base_game->prog_info) return;
+    const char* selected = load_selected_name(owner);
+    if (!selected) return;
+
+    char file_name[512];
+    snprintf(file_name, sizeof(file_name), "%s%s.gam", rge_base_game->prog_info->save_dir, selected);
+    file_name[sizeof(file_name) - 1] = '\0';
+    _unlink(file_name);
+
+    snprintf(file_name, sizeof(file_name), "%s%s.gmx", rge_base_game->prog_info->save_dir, selected);
+    file_name[sizeof(file_name) - 1] = '\0';
+    _unlink(file_name);
+
+    long line_num = ((TTextPanel*)owner->list)->get_line();
+    ((TTextPanel*)owner->list)->delete_line(line_num);
+    load_sync_buttons(owner);
+}
+
+void load_prompt_delete_selected_files(TribeLoadSavedGameScreen* owner) {
     if (!owner || !rge_base_game || !rge_base_game->prog_info) return;
     const char* selected = load_selected_name(owner);
     if (!selected) return;
@@ -65,23 +86,7 @@ void load_delete_selected_files(TribeLoadSavedGameScreen* owner) {
     snprintf(confirm_msg, sizeof(confirm_msg), confirm_fmt, selected);
     confirm_msg[sizeof(confirm_msg) - 1] = '\0';
 
-    HWND wnd = (rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : nullptr;
-    if (MessageBoxA(wnd, confirm_msg, "Age of Empires", MB_ICONQUESTION | MB_YESNO) != IDYES) {
-        return;
-    }
-
-    char file_name[512];
-    snprintf(file_name, sizeof(file_name), "%s%s.gam", rge_base_game->prog_info->save_dir, selected);
-    file_name[sizeof(file_name) - 1] = '\0';
-    _unlink(file_name);
-
-    snprintf(file_name, sizeof(file_name), "%s%s.gmx", rge_base_game->prog_info->save_dir, selected);
-    file_name[sizeof(file_name) - 1] = '\0';
-    _unlink(file_name);
-
-    long line_num = ((TTextPanel*)owner->list)->get_line();
-    ((TTextPanel*)owner->list)->delete_line(line_num);
-    load_sync_buttons(owner);
+    owner->popupYesNoDialog((char*)confirm_msg, (char*)kLoadCancelDialogName, 0x1c2, 100);
 }
 
 int load_selected_game(TribeLoadSavedGameScreen* owner) {
@@ -124,25 +129,12 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
         return;
     }
 
+    // Source of truth: scr_load.cpp.decomp @ 0x0049DD40 (setup tuple copied from current panel).
+    TEasy_Panel* from_panel = (TEasy_Panel*)panel_system->currentPanel();
     char info_file[260];
-    strncpy(info_file, "scr2", sizeof(info_file) - 1);
+    strncpy(info_file, from_panel->get_info_file(), sizeof(info_file) - 1);
     info_file[sizeof(info_file) - 1] = '\0';
-    long info_id = 0xc384;
-
-    // TODO(accuracy): Best-effort parity with `scr_load`: copy setup file/id from current screen.
-    TEasy_Panel* from_panel = nullptr;
-    if (panel_system && panel_system->currentPanelValue) {
-        from_panel = dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue);
-    }
-    if (from_panel) {
-        if (from_panel->info_file_name[0] != '\0') {
-            strncpy(info_file, from_panel->info_file_name, sizeof(info_file) - 1);
-            info_file[sizeof(info_file) - 1] = '\0';
-        }
-        if (from_panel->info_id >= 0) {
-            info_id = from_panel->info_id;
-        }
-    }
+    long info_id = from_panel->get_info_id();
 
     if (!TScreenPanel::setup(rge_base_game->draw_area, info_file, info_id, 1)) {
         this->error_code = 1;
@@ -312,12 +304,33 @@ long TribeLoadSavedGameScreen::mouse_left_dbl_click_action(long param_1, long pa
 
 long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1) {
+        const char* panel_name = param_1->panelName();
+        if (panel_name != nullptr) {
+            if (strcmp(panel_name, kLoadCancelDialogName) == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)kLoadCancelDialogName);
+                }
+                if (param_2 == 0) {
+                    load_delete_selected_files_now(this);
+                }
+                load_sync_buttons(this);
+                return 1;
+            }
+            if (strcmp(panel_name, "OKDialog") == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)"OKDialog");
+                }
+                this->set_curr_child((TPanel*)this->list);
+                return 1;
+            }
+        }
+
         if ((TPanel*)this->list == param_1 && param_2 == 3) {
             return this->action((TPanel*)this->okButton, 1, 0, 0);
         }
 
         if ((TButtonPanel*)param_1 == this->deleteButton && param_2 == 1) {
-            load_delete_selected_files(this);
+            load_prompt_delete_selected_files(this);
             return 1;
         }
 
@@ -330,8 +343,7 @@ long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param
                     strncpy(text, "Cannot load that saved game.", sizeof(text) - 1);
                     text[sizeof(text) - 1] = '\0';
                 }
-                HWND wnd = (rge_base_game && rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : nullptr;
-                MessageBoxA(wnd, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+                this->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
             }
             return 1;
         }

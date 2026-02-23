@@ -10,6 +10,7 @@
 #include "../include/TRIBE_Screen_Game.h"
 #include "../include/TRIBE_Screen_Wait.h"
 #include "../include/TRIBE_Screen_Main_Menu.h"
+#include "../include/TRIBE_Screen_Campaign_Selection.h"
 #include "../include/TRIBE_Screen_Status_Message.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TDrawSystem.h"
@@ -1408,28 +1409,83 @@ void TRIBE_Game::close_game_screens(int p1) {
     }
 }
 
-// Source of truth: tribegam.cpp.asm @ 0x00524150
 void TRIBE_Game::quit_game() {
-    // TODO: STUB - This is a best-effort transliteration sufficient for the achievements "OK" end-game path.
-    // TODO: STUB - The original has additional branches for campaign flow, scenario editor, and join screen.
+    // Source of truth: tribegam.cpp.asm @ 0x00524150
+    bool campaign = false;
 
     if (this->comm_handler != nullptr) {
         int lobby = this->comm_handler->IsLobbyLaunched();
         if (lobby != 0 && this->world != nullptr) {
-            // send_zone_score_info() is not yet transliterated; quitting proceeds without it.
+            // send_zone_score_info() not yet transliterated; skipping preserves control flow.
         }
     }
 
     this->disconnect_multiplayer_game();
     this->prog_mode = 0;
 
+    if (this->singlePlayerGame() == 1 && this->world != nullptr && this->world->campaign > -1) {
+        if (this->player_game_info->set_current_person(this->world->campaign_player) != '\0') {
+            if (this->player_game_info->set_current_campaign(this->world->campaign) != '\0') {
+                campaign = true;
+            }
+        }
+    }
+
     if (this->world != nullptr) {
+        // Source of truth: tribegam.cpp.asm @ 0x00524210 calls vtbl +0xB8.
         this->world->del_game_info();
     }
 
-    int ok = this->start_menu();
-    if (ok == 0) {
-        this->close();
+    if (this->singlePlayerGame() == 1) {
+        if (campaign) {
+            int ok = this->start_campaign_menu();
+            if (ok == 0) {
+                this->close();
+            }
+        } else {
+            char* test_scenario = this->testing_scenario;
+            if (test_scenario[0] != '\0') {
+                this->close_game_screens(0);
+                this->game_screen = nullptr;
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)"Game Screen");
+                }
+
+                _finddata_t file_info;
+                char temp_test_scenario[260];
+                temp_test_scenario[0] = '\0';
+
+                sprintf(temp_test_scenario, "%s%s.scn", this->prog_info->scenario_dir, test_scenario);
+                long find_h = _findfirst(temp_test_scenario, &file_info);
+                // Parity: original code does not call _findclose(find_h) here (tribegam.cpp.asm @ 0x005242a2).
+                const char* fmt = (find_h == -1) ? "%s.scx" : "%s.scn";
+
+                sprintf(temp_test_scenario, fmt, test_scenario);
+                test_scenario[0] = '\0';
+
+                int ok = this->start_scenario_editor(temp_test_scenario, 0);
+                if (ok != 0) {
+                    test_scenario[0] = '\0';
+                    return;
+                }
+            }
+
+            int ok = this->start_menu();
+            if (ok == 0) {
+                this->close();
+            }
+        }
+    } else {
+        int lobby = (this->comm_handler != nullptr) ? this->comm_handler->IsLobbyLaunched() : 0;
+        if (lobby != 0) {
+            this->close();
+            return;
+        }
+
+        if (panel_system != nullptr) {
+            panel_system->setCurrentPanel((char*)"Join Screen", 0);
+        }
+        this->set_prog_mode(2);
     }
 
     this->close_game_screens(0);
@@ -1812,23 +1868,45 @@ int TRIBE_Game::load_db_files() {
     return (int)result;
 }
 
-int TRIBE_Game::start_menu() {
-    // TODO(accuracy): Best-effort reimplementation based on immutable reference:
-    // `src/game/src/tribegam.cpp.asm` / `.decomp` (start_menu @ 0x00524030).
-    // If we are returning from an active game, clear gameplay state before menu creation.
-    // Important: keep Game Screen destruction out of close_game_screens here, because
-    // screen switching already removes/retires the old current screen.
-    this->close_game_screens(0);
-    this->game_screen = nullptr;
-    if (this->world) {
-        if (this->check_prog_argument("DEBUGTREEGRIDMASTER") == 0) {
-            delete this->world;
-            this->world = nullptr;
-        } else {
-            CUSTOM_DEBUG_LOG("TRIBE_Game::start_menu: keeping world alive for DEBUGTREEGRIDMASTER");
-        }
+int TRIBE_Game::start_campaign_menu() {
+    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00523F10
+    if (this->video_setup != 0) {
+        this->shutdown_video_system();
     }
 
+    TRIBE_Screen_Campaign_Selection* screen = new TRIBE_Screen_Campaign_Selection();
+    if (screen == nullptr) {
+        return 0;
+    }
+
+    if (screen->error_code != 0) {
+        delete screen;
+        return 0;
+    }
+
+    if (panel_system != nullptr) {
+        panel_system->setCurrentPanel((char*)"Campaign Selection Screen", 0);
+    }
+    this->set_prog_mode(2);
+
+    TMusic_System* music = this->music_system;
+    if (music != nullptr && this->started_menu_music == 0) {
+        uchar music_type = music->music_type;
+        if (music_type == 1) {
+            music->play_track(2, 0, 0);
+        } else if (music_type == 2) {
+            music->play_file((char*)"open.mid", 0, 0);
+        } else if (music_type == 3) {
+            music->play_file((char*)"open.wav", 0, 0);
+        }
+        this->started_menu_music = 1;
+    }
+
+    return 1;
+}
+
+int TRIBE_Game::start_menu() {
+    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00524030
     if (this->video_setup != 0) {
         this->shutdown_video_system();
     }
@@ -1844,8 +1922,6 @@ int TRIBE_Game::start_menu() {
         return 0;
     }
 
-    // The original uses `TPanelSystem::setCurrentPanel(panel_system, "Main Menu", 0)`.
-    // TODO: STUB - We do best-effort equivalent with our simplified panel-system implementation.
     if (panel_system != nullptr) {
         panel_system->setCurrentPanel((char*)"Main Menu", 0);
     }
@@ -1867,6 +1943,61 @@ int TRIBE_Game::start_menu() {
     }
 
     return 1;
+}
+
+int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode) {
+    // Source of truth: tribegam.cpp.asm @ 0x00528DE0
+    // TODO(parity): TRIBE_Screen_Sed is not yet transliterated; this uses a placeholder TScreenPanel.
+    this->disable_input();
+
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Scenario Editor Screen");
+    }
+
+    TScreenPanel* sed = new TScreenPanel((char*)"Scenario Editor Screen");
+    if (sed != nullptr && sed->error_code == 0 && this->draw_area != nullptr) {
+        // Reuse the Scenario Editor Menu resource as a lightweight stand-in.
+        sed->setup(this->draw_area, (char*)"scr4", 0xc386, 1);
+    }
+
+    if (sed != nullptr && sed->error_code == 0) {
+        if (this->music_system != nullptr) {
+            this->music_system->stop_track();
+            this->started_menu_music = 0;
+        }
+
+        if (panel_system != nullptr) {
+            panel_system->setCurrentPanel((char*)"Scenario Editor Screen", 0);
+            panel_system->destroyPanel((char*)"Scenario Editor Open");
+            panel_system->destroyPanel((char*)"Scenario Editor Menu");
+            panel_system->destroyPanel((char*)"Status Screen");
+        }
+
+        if (this->mouse_pointer != nullptr) {
+            this->mouse_pointer->center();
+        }
+        this->enable_input();
+        (void)scenario_filename;
+        (void)mode;
+        return 1;
+    }
+
+    const char* next = "Blank Screen";
+    if (panel_system != nullptr) {
+        if (panel_system->panel((char*)"Scenario Editor Open") != nullptr) {
+            next = "Scenario Editor Open";
+        } else if (panel_system->panel((char*)"Scenario Editor Menu") != nullptr) {
+            next = "Scenario Editor Menu";
+        }
+        panel_system->setCurrentPanel((char*)next, 0);
+        panel_system->destroyPanel((char*)"Scenario Editor Screen");
+        panel_system->destroyPanel((char*)"Status Screen");
+    }
+
+    this->enable_input();
+    (void)scenario_filename;
+    (void)mode;
+    return 0;
 }
 
 void TRIBE_Game::let_game_begin() {

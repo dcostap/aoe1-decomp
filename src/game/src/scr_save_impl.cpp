@@ -15,7 +15,6 @@
 #include <io.h>
 #include <stdio.h>
 #include <string.h>
-#include <windows.h>
 
 namespace {
 
@@ -24,6 +23,7 @@ static const char kGameScreenName[] = "Game Screen";
 static const char kScenarioEditorScreenName[] = "Scenario Editor Screen";
 static const char kScenarioEditorOpenName[] = "Scenario Editor Open";
 static const char kStatusScreenName[] = "Status Screen";
+static const char kSaveCancelDialogName[] = "Cancel Dialog";
 
 void save_set_button_disabled(TButtonPanel* button, int disabled) {
     if (button == nullptr) {
@@ -108,19 +108,12 @@ void save_get_string_or_default(TPanel* panel, int id, char* out_text, int out_l
 }
 
 int save_show_message_id(TribeSaveGameScreen* owner, int string_id, const char* fallback) {
-    // TODO(parity): replace MessageBox fallback with TEasy_Panel popup dialog flow
-    // once popup panel APIs are fully reimplemented.
     char text[512];
     save_get_string_or_default((TPanel*)owner, string_id, text, sizeof(text), fallback);
-    HWND wnd = (rge_base_game != nullptr && rge_base_game->prog_window != nullptr) ? (HWND)rge_base_game->prog_window : nullptr;
-    return MessageBoxA(wnd, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
-}
-
-int save_confirm_text(TribeSaveGameScreen* owner, const char* text) {
-    // TODO(parity): replace MessageBox fallback with TEasy_Panel yes/no popup flow
-    // once popup panel APIs are fully reimplemented.
-    HWND wnd = (rge_base_game != nullptr && rge_base_game->prog_window != nullptr) ? (HWND)rge_base_game->prog_window : nullptr;
-    return MessageBoxA(wnd, text, "Age of Empires", MB_ICONQUESTION | MB_YESNO) == IDYES;
+    if (owner != nullptr) {
+        owner->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
+    }
+    return 1;
 }
 
 void save_update_delete_button_from_list(TribeSaveGameScreen* owner) {
@@ -356,31 +349,83 @@ void TribeSaveGameScreen::fillList() {
 long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Source of truth: scr_save.cpp.decomp @ 0x004A7850
     if (param_1 != nullptr) {
+        const char* panel_name = param_1->panelName();
+        if (panel_name != nullptr) {
+            if (strcmp(panel_name, "OKDialog") == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)"OKDialog");
+                }
+                this->set_curr_child((TPanel*)this->input);
+                return 1;
+            }
+
+            if (strcmp(panel_name, "YesNoDialog") == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)"YesNoDialog");
+                }
+                if (param_2 != 0) {
+                    this->set_curr_child((TPanel*)this->input);
+                    return 1;
+                }
+
+                // Overwrite confirmed.
+                save_get_input_trimmed(this, this->fileNameNoExt, sizeof(this->fileNameNoExt));
+                char path[600];
+                if (this->modeValue == SaveGame) {
+                    sprintf(path, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
+                    _unlink(path);
+                    (void)save_execute_mode_save(this);
+                    return 1;
+                }
+                if (this->modeValue == SaveScenario) {
+                    sprintf(path, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
+                    _unlink(path);
+                    (void)save_execute_mode_save(this);
+                    return 1;
+                }
+                if (this->modeValue == SaveScenarioEdit) {
+                    sprintf(path, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
+                    _unlink(path);
+                    this->save_for_scenario_editor();
+                    return 1;
+                }
+            }
+
+            if (strcmp(panel_name, kSaveCancelDialogName) == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)kSaveCancelDialogName);
+                }
+                if (param_2 == 0 && save_selected_line(this)[0] != '\0') {
+                    char path[600];
+                    if (this->modeValue == SaveGame) {
+                        sprintf(path, "%s%s.gam", rge_base_game->prog_info->save_dir, save_selected_line(this));
+                        _unlink(path);
+                        sprintf(path, "%s%s.gmx", rge_base_game->prog_info->save_dir, save_selected_line(this));
+                        _unlink(path);
+                    } else {
+                        sprintf(path, "%s%s.scn", rge_base_game->prog_info->scenario_dir, save_selected_line(this));
+                        _unlink(path);
+                        sprintf(path, "%s%s.scx", rge_base_game->prog_info->scenario_dir, save_selected_line(this));
+                        _unlink(path);
+                    }
+
+                    long line = ((TTextPanel*)this->list)->get_line();
+                    ((TTextPanel*)this->list)->delete_line(line);
+                    save_set_input_text(this, save_selected_line(this));
+                    save_update_delete_button_from_list(this);
+                }
+                this->set_curr_child((TPanel*)this->input);
+                return 1;
+            }
+        }
+
         if ((TButtonPanel*)param_1 == this->deleteButton && param_2 == 1 && save_selected_line(this)[0] != '\0') {
             char fmt[512];
             save_get_string_or_default((TPanel*)this, 0x24ca, fmt, sizeof(fmt), "Are you sure you want to delete the file\n'%s'?");
 
             char text[1024];
             sprintf(text, fmt, save_selected_line(this));
-            if (save_confirm_text(this, text)) {
-                char path[600];
-                if (this->modeValue == SaveGame) {
-                    sprintf(path, "%s%s.gam", rge_base_game->prog_info->save_dir, save_selected_line(this));
-                    _unlink(path);
-                    sprintf(path, "%s%s.gmx", rge_base_game->prog_info->save_dir, save_selected_line(this));
-                    _unlink(path);
-                } else {
-                    sprintf(path, "%s%s.scn", rge_base_game->prog_info->scenario_dir, save_selected_line(this));
-                    _unlink(path);
-                    sprintf(path, "%s%s.scx", rge_base_game->prog_info->scenario_dir, save_selected_line(this));
-                    _unlink(path);
-                }
-
-                long line = ((TTextPanel*)this->list)->get_line();
-                ((TTextPanel*)this->list)->delete_line(line);
-                save_set_input_text(this, save_selected_line(this));
-                save_update_delete_button_from_list(this);
-            }
+            this->popupYesNoDialog((char*)text, (char*)kSaveCancelDialogName, 0x1c2, 100);
             return 1;
         }
 
@@ -441,18 +486,7 @@ long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, u
 
             char overwrite_text[256];
             save_get_string_or_default((TPanel*)this, 0x24c8, overwrite_text, sizeof(overwrite_text), "That file exists. Overwrite it?");
-            if (save_confirm_text(this, overwrite_text)) {
-                save_get_input_trimmed(this, this->fileNameNoExt, sizeof(this->fileNameNoExt));
-                if (this->modeValue == SaveGame) {
-                    sprintf(path, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
-                } else {
-                    sprintf(path, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
-                }
-                _unlink(path);
-                save_execute_mode_save(this);
-            } else {
-                this->set_curr_child((TPanel*)this->input);
-            }
+            this->popupYesNoDialog((char*)overwrite_text, (char*)0, 0x1c2, 100);
             return 1;
         }
 
