@@ -11,10 +11,29 @@ public:
     virtual ~PathingSystem(); // vt[0] (0x0)
 
     int initialize(int param_1, int param_2, RGE_Map* param_3, RGE_Game_World* param_4);
+    void printToFile(char* path);
+
+    uchar lookupMisc(int x, int y);
+    void setMisc(int x, int y, uchar value);
     void initMisc(uchar param_1);
     void zeroObstructionMap();
+
+    uchar obstruction(int x, int y);
     void incrementObstruction(int param_1, int param_2);
     void decrementObstruction(int param_1, int param_2);
+
+    int findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* obj, float goalTolerance,
+                     int targetID, int clearPathOnFail, float* pathDistanceOut, int param_10, int checkTerrainOnFirstPass,
+                     int param_12, int param_13, int unobstructiblePlayerID, int unobstructibleGroupID, int param_15);
+
+    void incrementInitialPaths();
+    void incrementContinuePaths();
+    void incrementCanPaths();
+
+    int passable(RGE_Moving_Object* obj, float x, float y, int inObMap);
+    long checksum();
+
+    void copyUnobstructibles(ManagedArray<int>& out);
 
     int xSizeValue;
     int ySizeValue;
@@ -65,6 +84,10 @@ public:
     int currentUnobstructiblePlayerID;
     ManagedArray<int> currentUnobstructibles;
     int aiPS;
+
+protected:
+    void printState(RGE_Moving_Object* obj);
+    int copyPath(int param_1);
 };
 static_assert(sizeof(PathingSystem) == 0x11DCF8, "Size mismatch");
 

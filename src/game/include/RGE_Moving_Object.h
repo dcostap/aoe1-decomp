@@ -12,6 +12,7 @@ public:
 
     void setGoal(float x, float y, float z);
     void set_angle();
+    void setInitialPoints(XYPoint* param_1, XYPoint* param_2);
 
     // Virtuals (best-effort)
     virtual ~RGE_Moving_Object(); // vt[0] (0x0)

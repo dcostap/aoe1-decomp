@@ -81,6 +81,14 @@ void RGE_Moving_Object::set_angle() {
     this->facet = 0;
 }
 
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x00460D30
+void RGE_Moving_Object::setInitialPoints(XYPoint* param_1, XYPoint* param_2) {
+    this->minInitialPointValue.x = param_1->x;
+    this->minInitialPointValue.y = param_1->y;
+    this->maxInitialPointValue.x = param_2->x;
+    this->maxInitialPointValue.y = param_2->y;
+}
+
 // Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045CAA0
 int RGE_Moving_Object::setup(int param_1, RGE_Game_World* param_2) {
     int fd = param_1;

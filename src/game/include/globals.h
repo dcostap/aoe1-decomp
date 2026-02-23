@@ -65,6 +65,7 @@ extern int rge_write_error;
 extern int Map_Update_Suppresion;
 extern int debug_random_on;
 extern int fog_next_shape;
+extern int MapPathsDisplay;
 
 // Selection/display capture globals (used by view/sprite/shape/static object draw paths).
 extern int SDI_Capture_Info;
