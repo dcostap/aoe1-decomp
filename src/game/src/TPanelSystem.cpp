@@ -291,3 +291,12 @@ int TPanelSystem::restorePreviousModalPanel() {
     this->modalPanelValue = nullptr;
     return 0;
 }
+
+void TPanelSystem::set_restore() {
+    // Fully verified. Source of truth: panel.cpp.asm @ 0x004646F0
+    for (PanelNode* it = this->panelListValue; it != nullptr; it = it->next_node) {
+        if (it->panel != nullptr) {
+            it->panel->need_restore = 1;
+        }
+    }
+}
