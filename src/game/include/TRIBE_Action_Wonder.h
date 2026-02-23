@@ -4,6 +4,9 @@
 
 class TRIBE_Action_Wonder : public RGE_Action {
 public:
+    TRIBE_Action_Wonder(int param_1, RGE_Action_Object* param_2);
+    TRIBE_Action_Wonder(RGE_Action_Object* param_1);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Action_Wonder(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)

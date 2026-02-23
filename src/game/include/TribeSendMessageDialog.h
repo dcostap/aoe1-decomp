@@ -2,7 +2,15 @@
 #include "common.h"
 #include "TDialogPanel.h"
 
+class TScreenPanel;
+
 class TribeSendMessageDialog : public TDialogPanel {
+public:
+    TribeSendMessageDialog(TScreenPanel* parent_screen);
+
+protected:
+    void checkButtons();
+
 public:
     // Virtuals (best-effort)
     virtual ~TribeSendMessageDialog(); // vt[0] (0x0)

@@ -172,9 +172,40 @@ TPicture::TPicture(char* filename, long file_id, int use_trans, void* memory, in
     picture_load_bmp_from_resource(this, file_id);
 }
 
-TPicture::TPicture(int width, int height) {
+TPicture::TPicture(int handle, int use_trans) {
+    // Fully verified. Source of truth: picture.cpp.decomp @ 0x0046DE30
+    (void)use_trans; // TransInfo is not currently reconstructed; not required for scenario load/save parity.
+
     picture_reset(this);
-    picture_alloc_8bit(this, (long)width, (long)height);
+
+    rge_read(handle, &this->OwnMemory, 4);
+    rge_read(handle, &this->Width, 4);
+    rge_read(handle, &this->Height, 4);
+    rge_read(handle, &this->Orien, 2);
+
+    if (this->OwnMemory != 0) {
+        this->OwnMemory = 2;
+    }
+
+    if (this->Width < 1 || this->Height < 1) {
+        this->Dib = 0;
+        this->BitmapInfo = 0;
+        this->Bits = 0;
+        return;
+    }
+
+    long aligned = picture_aligned_width(this->Width);
+    long total_size = 0x428 + (aligned * this->Height);
+    this->Dib = (tagBITMAPINFOHEADER*)calloc(1, (size_t)total_size);
+    if (this->Dib == 0) {
+        picture_reset(this);
+        return;
+    }
+
+    rge_read(handle, this->Dib, (int)total_size);
+    this->BitmapInfo = (BITMAPINFO256*)this->Dib;
+    this->Bits = ((unsigned char*)this->Dib) + 0x428;
+    this->TransInfo = 0;
 }
 
 TPicture::TPicture() {
@@ -190,8 +221,13 @@ TPicture::~TPicture() {
         this->TransInfo = 0;
     }
 
-    if (this->OwnMemory && this->Dib) {
-        free(this->Dib);
+    if (this->OwnMemory != 0 && this->Dib != nullptr) {
+        // Decomp distinguishes OwnMemory==2 vs other values; in this codebase DIB memory is heap-backed.
+        if (this->OwnMemory == 2) {
+            free(this->Dib);
+        } else {
+            free(this->Dib);
+        }
     }
 
     picture_reset(this);
