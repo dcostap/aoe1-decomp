@@ -2415,37 +2415,6 @@ long RGE_Base_Game::GetChecksum(long player_index_or_special) {
     return 0;
 }
 
-unsigned char RGE_Base_Game::GetWorldChecksums(long& out1, long& out2, long& out3) {
-    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00422960
-    out1 = 0;
-    out2 = 0;
-    out3 = 0;
-
-    RGE_Game_World* w = this->world;
-    if (w == nullptr) {
-        return 0;
-    }
-
-    int i = 0;
-    long checksum = 0;
-    long position_checksum = 0;
-    long action_checksum = 0;
-
-    if (w->player_num > 0) {
-        do {
-            w->players[i]->get_checksums(checksum, position_checksum, action_checksum);
-            out1 += checksum;
-            out2 += position_checksum;
-            out3 += action_checksum;
-
-            i += 1;
-            w = this->world;
-        } while (i < w->player_num);
-    }
-
-    return 1;
-}
-
 long RGE_Base_Game::GetWorldChecksum() {
     // Fully verified. Source of truth: basegame.cpp.asm @ 0x00422A10
     long checksum = 0;
