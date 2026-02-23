@@ -1,6 +1,5 @@
-// TODO: STUB - minimal RGE_Action derived implementations required by RGE_Action_List factories (Attack/Make).
+// TODO: STUB - minimal RGE_Action derived implementations required by RGE_Action_List factories (Make).
 
-#include "../include/RGE_Action_Attack.h"
 #include "../include/RGE_Action_List.h"
 #include "../include/RGE_Action_Make.h"
 #include "../include/RGE_Action_Object.h"
@@ -31,79 +30,6 @@
     void ClassName::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); } \
     void ClassName::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); } \
     void ClassName::set_state(uchar param_1) { RGE_Action::set_state(param_1); }
-
-// ============================================================================
-// RGE_Action_Attack
-// ============================================================================
-
-RGE_Action_Attack::~RGE_Action_Attack() = default; // TODO: STUB
-
-int RGE_Action_Attack::setup(RGE_Action_Object* param_1) {
-    RGE_Action::setup(param_1);
-    this->action_type = 9;
-    this->move_sprite = nullptr;
-    this->fight_sprite = nullptr;
-    this->wait_sprite = nullptr;
-    this->range = 0.0f;
-    this->min_range = 0.0f;
-    this->missile_id = -1;
-    this->fire_missile_at_frame = -1;
-    this->need_to_attack = 0;
-    this->was_same_owner = 0;
-    this->indirect_fire_flag = 0;
-    return 1;
-}
-
-// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401000
-int RGE_Action_Attack::setup(int param_1, RGE_Action_Object* param_2) {
-    RGE_Action::setup(param_1, param_2);
-    this->action_type = 9;
-
-    rge_read(param_1, &this->range, 4);
-    rge_read(param_1, &this->min_range, 4);
-    rge_read(param_1, &this->missile_id, 2);
-    rge_read(param_1, &this->fire_missile_at_frame, 2);
-    rge_read(param_1, &this->need_to_attack, 1);
-    rge_read(param_1, &this->was_same_owner, 1);
-    rge_read(param_1, &this->indirect_fire_flag, 1);
-
-    short sprite_id = -1;
-    rge_read(param_1, &sprite_id, 2);
-    this->move_sprite = ((param_2 != nullptr) && (sprite_id >= 0)) ? param_2->get_sprite_pointer(sprite_id) : nullptr;
-
-    rge_read(param_1, &sprite_id, 2);
-    this->fight_sprite = ((param_2 != nullptr) && (sprite_id >= 0)) ? param_2->get_sprite_pointer(sprite_id) : nullptr;
-
-    rge_read(param_1, &sprite_id, 2);
-    this->wait_sprite = ((param_2 != nullptr) && (sprite_id >= 0)) ? param_2->get_sprite_pointer(sprite_id) : nullptr;
-
-    return 1;
-}
-
-// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x004013B0
-void RGE_Action_Attack::save(int param_1) {
-    RGE_Action::save(param_1);
-    rge_write(param_1, &this->range, 4);
-    rge_write(param_1, &this->min_range, 4);
-    rge_write(param_1, &this->missile_id, 2);
-    rge_write(param_1, &this->fire_missile_at_frame, 2);
-    rge_write(param_1, &this->need_to_attack, 1);
-    rge_write(param_1, &this->was_same_owner, 1);
-    rge_write(param_1, &this->indirect_fire_flag, 1);
-
-    short sprite_id = (this->move_sprite != nullptr) ? this->move_sprite->id : (short)-1;
-    rge_write(param_1, &sprite_id, 2);
-    sprite_id = (this->fight_sprite != nullptr) ? this->fight_sprite->id : (short)-1;
-    rge_write(param_1, &sprite_id, 2);
-    sprite_id = (this->wait_sprite != nullptr) ? this->wait_sprite->id : (short)-1;
-    rge_write(param_1, &sprite_id, 2);
-}
-
-ACTION_FORWARDING(RGE_Action_Attack)
-
-// ============================================================================
-// RGE_Action_Bird
-// ============================================================================
 
 // ============================================================================
 // RGE_Action_Make
