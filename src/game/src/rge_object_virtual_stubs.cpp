@@ -155,7 +155,6 @@ void RGE_Moving_Object::draw_frame(TDrawArea* param_1, short param_2, short para
 uchar RGE_Moving_Object::update() { return RGE_Animated_Object::update(); } // TODO: STUB
 void RGE_Moving_Object::check_damage_sprites() { RGE_Animated_Object::check_damage_sprites(); } // TODO: STUB
 void RGE_Moving_Object::rehook() { RGE_Animated_Object::rehook(); } // TODO: STUB
-float RGE_Moving_Object::teleport(float param_1, float param_2, float param_3) { return RGE_Animated_Object::teleport(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Moving_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Animated_Object::add_overlay_sprite(param_1, param_2); } // TODO: STUB
 void RGE_Moving_Object::remove_overlay_sprite(RGE_Sprite* param_1) { RGE_Animated_Object::remove_overlay_sprite(param_1); } // TODO: STUB
 void RGE_Moving_Object::change_ownership(RGE_Player* param_1) { RGE_Animated_Object::change_ownership(param_1); } // TODO: STUB
@@ -202,7 +201,6 @@ float RGE_Moving_Object::damageCapability(RGE_Static_Object* param_1) { return R
 float RGE_Moving_Object::damageCapability() { return RGE_Animated_Object::damageCapability(); } // TODO: STUB
 float RGE_Moving_Object::weaponRange() { return RGE_Animated_Object::weaponRange(); } // TODO: STUB
 float RGE_Moving_Object::minimumWeaponRange() { return RGE_Animated_Object::minimumWeaponRange(); } // TODO: STUB
-int RGE_Moving_Object::passableTile(float param_1, float param_2, int param_3) { return RGE_Animated_Object::passableTile(param_1, param_2, param_3); } // TODO: STUB
 int RGE_Moving_Object::currentTargetID() { return RGE_Animated_Object::currentTargetID(); } // TODO: STUB
 float RGE_Moving_Object::currentTargetX() { return RGE_Animated_Object::currentTargetX(); } // TODO: STUB
 float RGE_Moving_Object::currentTargetY() { return RGE_Animated_Object::currentTargetY(); } // TODO: STUB
@@ -231,16 +229,6 @@ int RGE_Moving_Object::unload(int param_1, float param_2, float param_3, float p
 int RGE_Moving_Object::transport(float param_1, float param_2, float param_3, int param_4) { return RGE_Animated_Object::transport(param_1, param_2, param_3, param_4); } // TODO: STUB
 int RGE_Moving_Object::stopAction() { return RGE_Animated_Object::stopAction(); } // TODO: STUB
 int RGE_Moving_Object::pause() { return RGE_Animated_Object::pause(); } // TODO: STUB
-int RGE_Moving_Object::canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6) { return RGE_Animated_Object::canPath(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
-int RGE_Moving_Object::canPath(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7) { return RGE_Animated_Object::canPath(param_1, param_2, param_3, param_4, param_5, param_6, param_7); } // TODO: STUB
-int RGE_Moving_Object::canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7) { return RGE_Animated_Object::canBidirectionPath(param_1, param_2, param_3, param_4, param_5, param_6, param_7); } // TODO: STUB
-int RGE_Moving_Object::canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray<int>* param_7) { return RGE_Animated_Object::canPathWithObstructions(param_1, param_2, param_3, param_4, param_5, param_6, param_7); } // TODO: STUB
-int RGE_Moving_Object::canPathWithAdditionalPassability(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7, int param_8, int param_9) { return RGE_Animated_Object::canPathWithAdditionalPassability(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); } // TODO: STUB
-int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3) { return RGE_Animated_Object::findFirstTerrainAlongExceptionPath(param_1, param_2, param_3); } // TODO: STUB
-int RGE_Moving_Object::canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6) { return RGE_Animated_Object::canLinePath(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
-int RGE_Moving_Object::canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5) { return RGE_Animated_Object::canLinePath(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
-int RGE_Moving_Object::firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6) { return RGE_Animated_Object::firstTileAlongLine(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
-Path* RGE_Moving_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int param_3) { return RGE_Animated_Object::findAvoidancePath(param_1, param_2, param_3); } // TODO: STUB
 long RGE_Moving_Object::get_action_checksum() { return RGE_Animated_Object::get_action_checksum(); } // TODO: STUB
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Moving_Object.cpp
 int RGE_Moving_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB

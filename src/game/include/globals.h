@@ -43,6 +43,7 @@ extern unsigned char shape_file_first;
 extern unsigned char sound_file_first;
 extern int do_fixed_update;
 extern int displayPathingFlags;
+extern int displayPathObjectID;
 extern int debug_timeGetTime_on;
 extern int system_ignore_size_messages;
 extern int do_restore_palette;

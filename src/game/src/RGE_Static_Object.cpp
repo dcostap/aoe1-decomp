@@ -1249,6 +1249,11 @@ int RGE_Static_Object::withinRangeOfZoneAtPoint(uchar param_1, float param_2, XY
     return 0;
 }
 
+float RGE_Static_Object::get_terrain_speed(unsigned char terrain_type) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5820
+    return this->owner->world->terrains[this->master_obj->terrain][terrain_type];
+}
+
 int RGE_Static_Object::withinRangeOfZone(uchar param_1, float param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7630
     int x = (int)(long)this->world_x;

@@ -747,7 +747,7 @@ void PathingSystem::copyUnobstructibles(ManagedArray<int>& out) {
 
 int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* obj, float goalTolerance,
                                 int targetID, int clearPathOnFail, float* pathDistanceOut, int param_10, int checkTerrainOnFirstPass,
-                                int param_12, int step, int unobstructiblePlayerID, int unobstructibleGroupID, int param_15) {
+                                int param_12, int step, int unobstructiblePlayerID, int unobstructibleGroupID) {
     // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B6E0
     if ((startX < 0) || (startY < 0) || (this->xSizeValue < startX) || (this->xSizeValue < startY) || (goalX < 0) || (goalY < 0) ||
         (this->xSizeValue < goalX) || (this->xSizeValue < goalY)) {
