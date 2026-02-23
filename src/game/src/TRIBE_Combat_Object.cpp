@@ -3,6 +3,7 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/TRIBE_Master_Combat_Object.h"
 #include "../include/TRIBE_Master_Building_Object.h"
+#include "../include/TRIBE_Action_List.h"
 #include "../include/TribeUnitAIModules.h"
 #include "../include/globals.h"
 
@@ -18,6 +19,12 @@ TRIBE_Combat_Object::TRIBE_Combat_Object(int param_1, RGE_Game_World* param_2, i
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA210
 TRIBE_Combat_Object::~TRIBE_Combat_Object() = default;
+
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA510
+RGE_Action_List* TRIBE_Combat_Object::create_action_list() {
+    TRIBE_Action_List* list = new (std::nothrow) TRIBE_Action_List((RGE_Action_Object*)this);
+    return (RGE_Action_List*)list;
+}
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA3E0, t_c_obj.cpp.asm @ 0x004CA3E0
 int TRIBE_Combat_Object::setup(int param_1, RGE_Game_World* param_2) {

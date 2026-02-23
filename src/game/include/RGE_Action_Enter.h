@@ -4,6 +4,9 @@
 
 class RGE_Action_Enter : public RGE_Action {
 public:
+    RGE_Action_Enter(int param_1, RGE_Action_Object* param_2);
+    RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3);
+
     // Virtuals (best-effort)
     virtual ~RGE_Action_Enter(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)

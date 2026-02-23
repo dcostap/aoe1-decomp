@@ -2,8 +2,17 @@
 #include "common.h"
 #include "TDialogPanel.h"
 
+class TScreenPanel;
+
 class TribeDiplomacyDialog : public TDialogPanel {
 public:
+    TribeDiplomacyDialog(TScreenPanel* parent_screen);
+
+    int check_gold();
+    int check_wood();
+    int check_food();
+    int check_stone();
+
     // Virtuals (best-effort)
     virtual ~TribeDiplomacyDialog(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

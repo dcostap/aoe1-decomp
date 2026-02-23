@@ -4,6 +4,8 @@
 
 class TRIBE_Action_List : public RGE_Action_List {
 public:
+    TRIBE_Action_List(RGE_Action_Object* param_1);
+
     // Virtuals (best-effort)
     virtual RGE_Action* create_action(int param_1, short param_2); // vt[0] (0x0)
     virtual RGE_Action* create_task_action(RGE_Task* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5); // vt[1] (0x4)

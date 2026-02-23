@@ -14,6 +14,7 @@
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
+#include <new>
 #include <string.h>
 
 namespace {
@@ -154,12 +155,7 @@ int TRIBE_Action_Make_Obj::setup(int param_1, RGE_Action_Object* param_2) {
 }
 
 RGE_Action_List* TRIBE_Action_Make_Obj::create_action_list(RGE_Action_Object* param_1) {
-    RGE_Action_List* p_list = (RGE_Action_List*)operator new(sizeof(RGE_Action_List));
-    if (p_list != nullptr) {
-        memset(p_list, 0, sizeof(RGE_Action_List));
-        p_list->obj = param_1;
-    }
-    return p_list;
+    return new (std::nothrow) RGE_Action_List(param_1);
 }
 
 void TRIBE_Action_Make_Obj::rehook() {}
