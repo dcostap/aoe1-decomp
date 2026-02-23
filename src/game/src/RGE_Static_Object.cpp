@@ -57,6 +57,11 @@ static void rge_static_set_sleep_flag(RGE_Static_Object* obj, uchar sleep_flag) 
     obj->sleep_flag = sleep_flag;
 }
 
+void RGE_Static_Object::set_sleep_flag(uchar sleep_flag) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm calls this helper via RGE_Static_Object::set_sleep_flag.
+    rge_static_set_sleep_flag(this, sleep_flag);
+}
+
 static void rge_static_ensure_group_capacity(ManagedArray<int>& arr, int required_index) {
     if (arr.maximumSizeValue - 1 >= required_index) {
         return;
@@ -2168,9 +2173,9 @@ void RGE_Static_Object::die_die_die() {
     rge_static_set_sleep_flag(this, 0);
     this->hp = 0.0f;
 }
-void RGE_Static_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4) {
+void RGE_Static_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5B90
-    float dmg = this->calculateDamage(param_1, param_2, param_3, param_4);
+    float dmg = this->calculateDamage(param_1, param_2, param_3, param_4, param_5);
     float result = this->hp - dmg;
     this->hp = result;
     if (result < 1.0f) {
@@ -2178,7 +2183,7 @@ void RGE_Static_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, floa
         rge_static_set_sleep_flag(this, 0);
     }
 }
-float RGE_Static_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4) {
+float RGE_Static_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* /*param_5*/) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5BE0
     float total = 0.0f;
     if (param_1 > 0) {

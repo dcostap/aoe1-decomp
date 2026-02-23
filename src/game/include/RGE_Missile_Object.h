@@ -2,9 +2,12 @@
 #include "common.h"
 #include "RGE_Combat_Object.h"
 
+struct RGE_Check_List;
+
 class RGE_Missile_Object : public RGE_Combat_Object {
 public:
     RGE_Missile_Object();
+    RGE_Missile_Object(RGE_Master_Combat_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Missile_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     // Virtuals (best-effort)
@@ -136,6 +139,11 @@ public:
     virtual int setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[125] (0x1F4)
     virtual void work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5); // vt[126] (0x1F8)
     virtual void set_task(short param_1); // vt[127] (0x1FC)
+
+    void init_missile(RGE_Combat_Object* param_1, RGE_Static_Object* param_2, float param_3);
+    void init_missile(RGE_Combat_Object* param_1, float param_2, float param_3, float param_4, float param_5);
+    uchar missile_move();
+    RGE_Check_List* make_object_collision_list(float param_1);
 
     float max_range;
 };
