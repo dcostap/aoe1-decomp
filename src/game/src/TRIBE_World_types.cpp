@@ -1,4 +1,4 @@
-// TODO: STUB - Stub constructors/destructors for types used by TRIBE_World init overrides.
+// Implementations for types used by TRIBE_World init overrides.
 #include "../include/TRIBE_Map.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TRIBE_RMM_Database_Controller.h"
