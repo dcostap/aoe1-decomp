@@ -10,7 +10,7 @@ public:
 
     // Virtuals (best-effort)
     virtual ~RGE_Master_Static_Object(); // vt[0] (0x0)
-    virtual void copy_obj(); // vt[1] (0x4)
+    virtual void copy_obj(RGE_Master_Static_Object* param_1); // vt[1] (0x4)
     virtual void modify(float param_1, uchar param_2); // vt[2] (0x8)
     virtual void modify_delta(float param_1, uchar param_2); // vt[3] (0xC)
     virtual void modify_percent(float param_1, uchar param_2); // vt[4] (0x10)

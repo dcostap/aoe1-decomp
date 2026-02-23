@@ -12,10 +12,21 @@
 #include "../include/RGE_Visible_Map.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/globals.h"
+#include "../include/mystring.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
+static long rge_ftol(float v) {
+    // MSVC x86 __ftol equivalent (x87 FISTP using current rounding mode).
+    long result;
+    __asm {
+        fld v
+        fistp result
+    }
+    return result;
+}
 
 static char* rge_strdup_local(const char* src) {
     if (src == nullptr) {
@@ -157,11 +168,337 @@ RGE_Master_Static_Object::~RGE_Master_Static_Object() {
     }
 }
 
-void RGE_Master_Static_Object::copy_obj() {}
-void RGE_Master_Static_Object::modify(float param_1, uchar param_2) {}
-void RGE_Master_Static_Object::modify_delta(float param_1, uchar param_2) {}
-void RGE_Master_Static_Object::modify_percent(float param_1, uchar param_2) {}
-void RGE_Master_Static_Object::save(int param_1) {}
+void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00453120
+    short old_id = this->id;
+    short old_copy_id = this->copy_id;
+    uchar old_available = this->available;
+    uchar old_hide_in_scenario_editor = this->hide_in_scenario_editor;
+
+    if (this->name != nullptr) {
+        free(this->name);
+    }
+
+    this->master_type = param_1->master_type;
+    this->name = param_1->name;
+    this->string_id = param_1->string_id;
+    this->string_id2 = param_1->string_id2;
+    this->id = param_1->id;
+    this->copy_id = param_1->copy_id;
+    this->object_group = param_1->object_group;
+    this->sprite = param_1->sprite;
+    this->death_sprite = param_1->death_sprite;
+    this->undead_sprite = param_1->undead_sprite;
+    this->undead_flag = param_1->undead_flag;
+    this->hp = param_1->hp;
+    this->los = param_1->los;
+    this->obj_max = param_1->obj_max;
+    this->radius_x = param_1->radius_x;
+    this->radius_y = param_1->radius_y;
+    this->radius_z = param_1->radius_z;
+    this->selected_sound = param_1->selected_sound;
+    this->created_sound = param_1->created_sound;
+    this->death_sound = param_1->death_sound;
+    this->death_spawn_obj_id = param_1->death_spawn_obj_id;
+    this->sort_number = param_1->sort_number;
+    this->can_be_built_on = param_1->can_be_built_on;
+    this->button_pict = param_1->button_pict;
+    this->hide_in_scenario_editor = param_1->hide_in_scenario_editor;
+    this->portrait_pict = param_1->portrait_pict;
+    this->available = param_1->available;
+    this->tile_req1 = param_1->tile_req1;
+    this->tile_req2 = param_1->tile_req2;
+    this->center_tile_req1 = param_1->center_tile_req1;
+    this->center_tile_req2 = param_1->center_tile_req2;
+    this->construction_radius_x = param_1->construction_radius_x;
+    this->construction_radius_y = param_1->construction_radius_y;
+    this->elevation_flag = param_1->elevation_flag;
+    this->fog_flag = param_1->fog_flag;
+    this->terrain = param_1->terrain;
+    this->movement_type = param_1->movement_type;
+
+    for (int i = 0; i < 3; ++i) {
+        this->attribute_type_held[i] = param_1->attribute_type_held[i];
+        this->attribute_amount_held[i] = param_1->attribute_amount_held[i];
+        this->attribute_flag[i] = param_1->attribute_flag[i];
+    }
+
+    this->attribute_max_amount = param_1->attribute_max_amount;
+    this->attribute_rot = param_1->attribute_rot;
+    this->multiple_attribute_mod = param_1->multiple_attribute_mod;
+
+    this->area_effect_object_level = param_1->area_effect_object_level;
+    this->combat_level = param_1->combat_level;
+    this->select_level = param_1->select_level;
+    this->map_draw_level = param_1->map_draw_level;
+    this->unit_level = param_1->unit_level;
+    this->map_color = param_1->map_color;
+    this->attack_reaction = param_1->attack_reaction;
+    this->convert_terrain_flag = param_1->convert_terrain_flag;
+    this->damage_sprite_num = param_1->damage_sprite_num;
+    this->damage_sprites = param_1->damage_sprites;
+    this->help_string_id = param_1->help_string_id;
+    this->help_page_id = param_1->help_page_id;
+    this->hotkey_id = param_1->hotkey_id;
+    this->recyclable = param_1->recyclable;
+    this->track_as_resource = param_1->track_as_resource;
+    this->create_doppleganger_on_death = param_1->create_doppleganger_on_death;
+    this->resource_group = param_1->resource_group;
+    this->draw_flag = param_1->draw_flag;
+    this->draw_color = param_1->draw_color;
+    this->outline_radius_x = param_1->outline_radius_x;
+    this->outline_radius_y = param_1->outline_radius_y;
+    this->outline_radius_z = param_1->outline_radius_z;
+
+    if (param_1->hide_in_scenario_editor == '\x01') {
+        this->copy_id = old_copy_id;
+    }
+
+    this->hide_in_scenario_editor = old_hide_in_scenario_editor;
+    param_1->hide_in_scenario_editor = '\x01';
+
+    if (this->damage_sprite_num == '\0') {
+        this->damage_sprites = nullptr;
+    } else {
+        this->damage_sprites = (RGE_Damage_Sprite_Info*)calloc(this->damage_sprite_num, 8);
+        for (int i = 0; i < (int)(uint)this->damage_sprite_num; ++i) {
+            this->damage_sprites[i].sprite = param_1->damage_sprites[i].sprite;
+            this->damage_sprites[i].damage_percent = param_1->damage_sprites[i].damage_percent;
+            this->damage_sprites[i].flag = param_1->damage_sprites[i].flag;
+        }
+    }
+
+    this->name = nullptr;
+    getstring(&this->name, param_1->name);
+
+    this->id = old_id;
+    this->available = old_available;
+}
+
+void RGE_Master_Static_Object::modify(float param_1, uchar param_2) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004534A0
+    switch (param_2) {
+        case '\0': {
+            this->hp = (short)rge_ftol(param_1);
+            return;
+        }
+        case '\x01': {
+            this->los = param_1;
+            return;
+        }
+        case '\x02': {
+            this->obj_max = (uchar)rge_ftol(param_1);
+            return;
+        }
+        case '\x03': {
+            this->radius_x = param_1;
+            return;
+        }
+        case '\x04': {
+            this->radius_y = param_1;
+            return;
+        }
+        case '\x0e': {
+            this->attribute_max_amount = (short)rge_ftol(param_1);
+            return;
+        }
+        default:
+            return;
+    }
+}
+
+void RGE_Master_Static_Object::modify_delta(float param_1, uchar param_2) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00453540
+    switch (param_2) {
+        case '\0': {
+            this->hp = (short)(this->hp + (short)rge_ftol(param_1));
+            return;
+        }
+        case '\x01': {
+            this->los = param_1 + this->los;
+            return;
+        }
+        case '\x02': {
+            char delta = (char)rge_ftol(param_1);
+            this->obj_max = (uchar)(this->obj_max + delta);
+            return;
+        }
+        case '\x03': {
+            this->radius_x = param_1 + this->radius_x;
+            return;
+        }
+        case '\x04': {
+            this->radius_y = param_1 + this->radius_y;
+            return;
+        }
+        case '\x0e': {
+            this->attribute_max_amount = (short)(this->attribute_max_amount + (short)rge_ftol(param_1));
+            return;
+        }
+        default:
+            return;
+    }
+}
+
+void RGE_Master_Static_Object::modify_percent(float param_1, uchar param_2) {
+    // Fully verified. Source of truth: m_s_obj.cpp.asm @ 0x004535F0
+    switch (param_2) {
+        case '\0': {
+            this->hp = (short)rge_ftol(param_1 * (float)(int)this->hp);
+            return;
+        }
+        case '\x01': {
+            this->los = param_1 * this->los;
+            return;
+        }
+        case '\x02': {
+            this->obj_max = (uchar)rge_ftol(param_1 * (float)(uint)this->obj_max);
+            return;
+        }
+        case '\x03': {
+            this->radius_x = param_1 * this->radius_x;
+            return;
+        }
+        case '\x04': {
+            this->radius_y = param_1 * this->radius_y;
+            return;
+        }
+        case '\x0e': {
+            this->attribute_max_amount = (short)rge_ftol(param_1 * (float)(int)this->attribute_max_amount);
+            return;
+        }
+        default:
+            return;
+    }
+}
+
+void RGE_Master_Static_Object::save(int param_1) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004536D0
+    short temp_sprite = -1;
+    short temp_death_sprite = -1;
+    short temp_undead_sprite = -1;
+    short created_sound_num = -1;
+    short selected_sound_num = -1;
+    short death_sound_num = -1;
+    short name_size = 0;
+
+    if (this->created_sound != nullptr) {
+        created_sound_num = this->created_sound->id;
+    }
+    if (this->selected_sound != nullptr) {
+        selected_sound_num = this->selected_sound->id;
+    }
+    if (this->death_sound != nullptr) {
+        death_sound_num = this->death_sound->id;
+    }
+
+    if (this->sprite != nullptr) {
+        temp_sprite = this->sprite->id;
+    }
+    if (this->death_sprite != nullptr) {
+        temp_death_sprite = this->death_sprite->id;
+    }
+    if (this->undead_sprite != nullptr) {
+        temp_undead_sprite = this->undead_sprite->id;
+    }
+
+    // Name size logic matches the original SCASB-based strlen (includes trailing '\0' when non-empty).
+    uint uVar6 = 0xffffffffu;
+    char* pcVar9 = this->name;
+    char cVar1;
+    do {
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        cVar1 = *pcVar9;
+        pcVar9 = pcVar9 + 1;
+    } while (cVar1 != '\0');
+    name_size = (short)(~uVar6 - 1);
+    if (0 < name_size) {
+        name_size = (short)(~uVar6);
+    }
+
+    rge_write(param_1, &this->master_type, 1);
+    rge_write(param_1, &name_size, 2);
+    rge_write(param_1, &this->id, 2);
+    rge_write(param_1, &this->string_id, 2);
+    rge_write(param_1, &this->string_id2, 2);
+    rge_write(param_1, &this->object_group, 2);
+    rge_write(param_1, &temp_sprite, 2);
+    rge_write(param_1, &temp_death_sprite, 2);
+    rge_write(param_1, &temp_undead_sprite, 2);
+    rge_write(param_1, &this->undead_flag, 1);
+    rge_write(param_1, &this->hp, 2);
+    rge_write(param_1, &this->los, 4);
+    rge_write(param_1, &this->obj_max, 1);
+    rge_write(param_1, &this->radius_x, 4);
+    rge_write(param_1, &this->radius_y, 4);
+    rge_write(param_1, &this->radius_z, 4);
+    rge_write(param_1, &created_sound_num, 2);
+    rge_write(param_1, &this->death_spawn_obj_id, 2);
+    rge_write(param_1, &this->sort_number, 1);
+    rge_write(param_1, &this->can_be_built_on, 1);
+    rge_write(param_1, &this->button_pict, 2);
+    rge_write(param_1, &this->hide_in_scenario_editor, 1);
+    rge_write(param_1, &this->portrait_pict, 2);
+    rge_write(param_1, &this->available, 1);
+    rge_write(param_1, &this->tile_req1, 2);
+    rge_write(param_1, &this->tile_req2, 2);
+    rge_write(param_1, &this->center_tile_req1, 2);
+    rge_write(param_1, &this->center_tile_req2, 2);
+    rge_write(param_1, &this->construction_radius_x, 4);
+    rge_write(param_1, &this->construction_radius_y, 4);
+    rge_write(param_1, &this->elevation_flag, 1);
+    rge_write(param_1, &this->fog_flag, 1);
+    rge_write(param_1, &this->terrain, 2);
+    rge_write(param_1, &this->movement_type, 1);
+    rge_write(param_1, &this->attribute_max_amount, 2);
+    rge_write(param_1, &this->attribute_rot, 4);
+    rge_write(param_1, &this->area_effect_object_level, 1);
+    rge_write(param_1, &this->combat_level, 1);
+    rge_write(param_1, &this->select_level, 1);
+    rge_write(param_1, &this->map_draw_level, 1);
+    rge_write(param_1, &this->unit_level, 1);
+    rge_write(param_1, &this->multiple_attribute_mod, 4);
+    rge_write(param_1, &this->map_color, 1);
+    rge_write(param_1, &this->help_string_id, 4);
+    rge_write(param_1, &this->help_page_id, 4);
+    rge_write(param_1, &this->hotkey_id, 4);
+    rge_write(param_1, &this->recyclable, 1);
+    rge_write(param_1, &this->track_as_resource, 1);
+    rge_write(param_1, &this->create_doppleganger_on_death, 1);
+    rge_write(param_1, &this->resource_group, 1);
+    rge_write(param_1, &this->draw_flag, 1);
+    rge_write(param_1, &this->draw_color, 1);
+    rge_write(param_1, &this->outline_radius_x, 4);
+    rge_write(param_1, &this->outline_radius_y, 4);
+    rge_write(param_1, &this->outline_radius_z, 4);
+
+    for (int i = 0; i < 3; ++i) {
+        rge_write(param_1, &this->attribute_type_held[i], 2);
+        rge_write(param_1, &this->attribute_amount_held[i], 4);
+        rge_write(param_1, &this->attribute_flag[i], 1);
+    }
+
+    rge_write(param_1, &this->damage_sprite_num, 1);
+    if (this->damage_sprite_num != '\0') {
+        for (short i = 0; i < (short)(ushort)this->damage_sprite_num; ++i) {
+            rge_write(param_1, &(this->damage_sprites[i].sprite)->id, 2);
+            rge_write(param_1, &this->damage_sprites[i].damage_percent, 2);
+            rge_write(param_1, &this->damage_sprites[i].flag, 1);
+        }
+    }
+
+    rge_write(param_1, &selected_sound_num, 2);
+    rge_write(param_1, &death_sound_num, 2);
+    rge_write(param_1, &this->attack_reaction, 1);
+    rge_write(param_1, &this->convert_terrain_flag, 1);
+
+    if (name_size != 0) {
+        rge_write(param_1, this->name, (int)name_size);
+    }
+
+    rge_write(param_1, &this->copy_id, 2);
+}
 
 RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
     if (param_1 == nullptr) {
