@@ -2,6 +2,21 @@
 #include "common.h"
 
 struct RGE_TimeSinceLastCall {
+    RGE_TimeSinceLastCall();
+    ~RGE_TimeSinceLastCall();
+
+    ulong GetAvg(int sample_count);
+    ulong Get();
+    ulong Set();
+    void Skip();
+    char* GetAvgInfo(int sample_count);
+    char* GetHiLoMaxInfo(int sample_count);
+    char* GetHiLoInfo(int sample_count);
+    ulong CPS();
+    ulong GetFirstCall();
+    char* GetElapsedFirstCall();
+    void Test();
+
     char TBuff[255];
     ulong lowTSLC;
     ulong highTSLC;
