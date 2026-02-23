@@ -856,7 +856,7 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
 
 ## Task 90 — SP gameplay: restore TRIBE unit/building runtime creation (masters + ctors + setup)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: unblock real single-player gameplay by ensuring units/buildings created from master objects instantiate the correct TRIBE object types (not `RGE_Static_Object`) and run the correct setup paths.
 - Implement (decomp-first transliteration):
   - `TRIBE_Combat_Object::TRIBE_Combat_Object(TRIBE_Master_Combat_Object*, RGE_Player*, float x, float y, float z, int do_setup)` @ 0x004CA0F0.
@@ -878,6 +878,8 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
   - `TRIBE_Action_Make_Obj`’s call to `produced_master->make_new_obj(...)` can return a `TRIBE_Combat_Object` / `TRIBE_Building_Object` implementation (via the restored master virtuals) without relying on `RGE_Master_Static_Object::make_new_obj`.
   - The new constructors/setup methods are declared in headers and compile/link clean.
   - No new “linker satisfaction” stubs are added.
+
+Status note: landed as Task90 implementation commit `dd2439d` and merged via `51adec2`.
 
 ## Task 91 — SP gameplay: restore RGE combat/missile runtime creation (recycle + masters + ctors + setup)
 - [x] Assigned to agent
@@ -910,7 +912,7 @@ Status note: landed as Task 91 implementation commit `9dc5ff2` and merged via `d
 
 ## Task 92 — SP gameplay: restore `RGE_Master_Static_Object` modify/copy/save (tech/upgrades)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: make technology and attribute modifications apply to master objects (HP/LOS/radius/etc.), enabling upgrades to affect single-player simulation.
 - Implement (decomp-first transliteration):
   - `RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src)` @ 0x00453120.
@@ -926,6 +928,8 @@ Status note: landed as Task 91 implementation commit `9dc5ff2` and merged via `d
 - Done when:
   - The no-op bodies in `RGE_Master_Static_Object.cpp` are replaced with real transliterations.
   - Code compiles/link-clean and preserves all struct size/static_assert invariants.
+
+Status note: landed as Task 92 implementation commit `2b569dd` and merged via `05d49d6`.
 
 ## Task 93 — SP in-game loop: restore `RGE_Base_Game::handle_paint` parity slice (render hot-path)
 - [x] Assigned to agent
