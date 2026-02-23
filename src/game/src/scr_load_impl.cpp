@@ -129,25 +129,12 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
         return;
     }
 
+    // Source of truth: scr_load.cpp.decomp @ 0x0049DD40 (setup tuple copied from current panel).
+    TEasy_Panel* from_panel = (TEasy_Panel*)panel_system->currentPanel();
     char info_file[260];
-    strncpy(info_file, "scr2", sizeof(info_file) - 1);
+    strncpy(info_file, from_panel->get_info_file(), sizeof(info_file) - 1);
     info_file[sizeof(info_file) - 1] = '\0';
-    long info_id = 0xc384;
-
-    // TODO(accuracy): Best-effort parity with `scr_load`: copy setup file/id from current screen.
-    TEasy_Panel* from_panel = nullptr;
-    if (panel_system && panel_system->currentPanelValue) {
-        from_panel = dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue);
-    }
-    if (from_panel) {
-        if (from_panel->info_file_name[0] != '\0') {
-            strncpy(info_file, from_panel->info_file_name, sizeof(info_file) - 1);
-            info_file[sizeof(info_file) - 1] = '\0';
-        }
-        if (from_panel->info_id >= 0) {
-            info_id = from_panel->info_id;
-        }
-    }
+    long info_id = from_panel->get_info_id();
 
     if (!TScreenPanel::setup(rge_base_game->draw_area, info_file, info_id, 1)) {
         this->error_code = 1;
