@@ -1233,6 +1233,14 @@ int TRIBE_Game::create_game(int p1) {
 
     this->set_map_visible('\0');
     CUSTOM_DEBUG_LOG("create_game: set_map_visible done");
+    CUSTOM_DEBUG_BEGIN
+#if CUSTOM_DEBUG_ENABLED
+    // Development-only override: keep map visible to avoid all-black in-game screens
+    // while world/visibility parity is still in progress.
+    this->set_map_visible('\x01');
+    CUSTOM_DEBUG_LOG("create_game: DEV override set_map_visible(1) for easier debugging");
+#endif
+    CUSTOM_DEBUG_END
 
     // Full visibility check
     if (this->fullVisibility() != 0) {
@@ -1396,6 +1404,105 @@ void TRIBE_Game::close_game_screens(int p1) {
         if (p1 != 0) {
             this->game_screen = nullptr;
             panel_system->destroyPanel((char*)"Game Screen");
+        }
+    }
+}
+
+// Source of truth: tribegam.cpp.asm @ 0x00524150
+void TRIBE_Game::quit_game() {
+    // NOTE: This is a best-effort transliteration sufficient for the achievements "OK" end-game path.
+    // The original has additional branches for campaign flow, scenario editor, and join screen.
+
+    if (this->comm_handler != nullptr) {
+        int lobby = this->comm_handler->IsLobbyLaunched();
+        if (lobby != 0 && this->world != nullptr) {
+            // send_zone_score_info() is not yet transliterated; quitting proceeds without it.
+        }
+    }
+
+    this->disconnect_multiplayer_game();
+    this->prog_mode = 0;
+
+    if (this->world != nullptr) {
+        this->world->del_game_info();
+    }
+
+    int ok = this->start_menu();
+    if (ok == 0) {
+        this->close();
+    }
+
+    this->close_game_screens(0);
+    this->game_screen = nullptr;
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Game Screen");
+    }
+    this->testing_scenario[0] = '\0';
+}
+
+// Source of truth: tribegam.cpp.decomp @ 0x005243A0
+void TRIBE_Game::restart_game() {
+    this->show_status_message(0x451, (char*)0, -1);
+
+    this->close_game_screens(0);
+    this->game_screen = nullptr;
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Game Screen");
+    }
+
+    this->prog_mode = 0;
+
+    // Source of truth: tribegam.cpp.asm @ 0x005243DB calls vtbl+0xB8 on `world` (offset +0x3F4).
+    using WorldVFuncB8 = void(__thiscall*)(RGE_Game_World*);
+    void** world_vtbl = *(void***)this->world;
+    ((WorldVFuncB8)world_vtbl[0xB8 / 4])(this->world);
+
+    for (uint slot = 1; slot < 9; ++slot) {
+        this->comm_handler->SetPlayerHumanity(slot, this->save_humanity[slot - 1]);
+    }
+
+    int ok = 0;
+    if (this->savedGameValue == 0) {
+        int saved_seed = 0;
+        if (this->randomGame() == 1 && this->campaignGame() == 0) {
+            saved_seed = this->random_game_seed;
+            this->random_game_seed = this->save_random_game_seed;
+        }
+
+        ok = this->start_game(1);
+
+        if (this->randomGame() != 0 && this->campaignGame() == 0) {
+            this->random_game_seed = saved_seed;
+        }
+    } else {
+        _finddata_t fileInfo;
+        char temp_name[260];
+        temp_name[0] = '\0';
+
+        sprintf(temp_name, "%s%s.gmx", this->prog_info->save_dir, this->load_game_name);
+        long find_h = _findfirst(temp_name, &fileInfo);
+        const char* fmt = (find_h == -1) ? "%s.gam" : "%s.gmx";
+        if (find_h != -1) {
+            _findclose(find_h);
+        }
+
+        sprintf(temp_name, fmt, this->load_game_name);
+        ok = this->load_game(temp_name);
+    }
+
+    if (ok == 0) {
+        ok = this->start_menu();
+        if (ok == 0) {
+            this->close();
+            return;
+        }
+
+        // Source of truth: tribegam.cpp.asm @ 0x005244F3 (panel \"Main Menu\" -> popupOKDialog(0x961,...)).
+        if (panel_system != nullptr) {
+            TEasy_Panel* main_menu = (TEasy_Panel*)panel_system->panel((char*)"Main Menu");
+            if (main_menu != nullptr) {
+                main_menu->popupOKDialog(0x961, (char*)0, 0x1c2, 100);
+            }
         }
     }
 }
@@ -2358,7 +2465,21 @@ int TRIBE_Game::handle_idle() {
     //    - 4, 5, 6: in-game world update
     //    - else (2): menu mode — draw only (base already ran panel idle)
 
+    static int s_tribe_idle_logs = 0;
     int base_result = RGE_Base_Game::handle_idle();
+    CUSTOM_DEBUG_BEGIN
+    if (s_tribe_idle_logs < 20) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Game::handle_idle enter base_result=%d prog_mode=%d inHandleIdle=%d world=%p game_screen=%p panel=%p",
+            base_result,
+            this->prog_mode,
+            this->inHandleIdle,
+            this->world,
+            this->game_screen,
+            (panel_system != nullptr) ? panel_system->currentPanelValue : nullptr);
+        s_tribe_idle_logs++;
+    }
+    CUSTOM_DEBUG_END
     if (base_result == 0) {
         return 0;
     }
@@ -2390,13 +2511,35 @@ int TRIBE_Game::handle_idle() {
         }
     } else if (pm == 4 || pm == 5 || pm == 6) {
         // In-game mode: world update + game screen update
+        CUSTOM_DEBUG_BEGIN
+        if (s_tribe_idle_logs < 24) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "TRIBE_Game::handle_idle in-game branch out_of_sync2=%d world=%p game_screen=%p",
+                out_of_sync2,
+                this->world,
+                this->game_screen);
+            s_tribe_idle_logs++;
+        }
+        CUSTOM_DEBUG_END
         if (out_of_sync2 == 0 && this->game_screen != nullptr) {
             this->game_screen->handle_game_update();
         }
 
         // World update tick
         if (this->world) {
+            CUSTOM_DEBUG_BEGIN
+            if (s_tribe_idle_logs < 28) {
+                CUSTOM_DEBUG_LOG("TRIBE_Game::handle_idle before world->update");
+                s_tribe_idle_logs++;
+            }
+            CUSTOM_DEBUG_END
             this->world->update();
+            CUSTOM_DEBUG_BEGIN
+            if (s_tribe_idle_logs < 32) {
+                CUSTOM_DEBUG_LOG("TRIBE_Game::handle_idle after world->update");
+                s_tribe_idle_logs++;
+            }
+            CUSTOM_DEBUG_END
         }
     }
     // Menu mode (prog_mode == 2): base class already called panel->handle_idle()
@@ -2433,10 +2576,22 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     (void)p3;
     (void)p4;
 
+    static int s_tribe_paint_logs = 0;
     TPanel* to_draw = nullptr;
     if (panel_system && panel_system->currentPanelValue) {
         to_draw = panel_system->currentPanelValue;
     }
+
+    CUSTOM_DEBUG_BEGIN
+    if (s_tribe_paint_logs < 20) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Game::handle_paint enter input_enabled=%d to_draw=%p draw_system=%p",
+            this->input_enabled,
+            to_draw,
+            this->draw_system);
+        s_tribe_paint_logs++;
+    }
+    CUSTOM_DEBUG_END
 
     if (to_draw) {
         if (this->input_enabled == 0) {
@@ -2446,7 +2601,19 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
                 this->enable_input();
             }
         }
+        CUSTOM_DEBUG_BEGIN
+        if (s_tribe_paint_logs < 24) {
+            CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint before draw_tree");
+            s_tribe_paint_logs++;
+        }
+        CUSTOM_DEBUG_END
         to_draw->draw_tree();
+        CUSTOM_DEBUG_BEGIN
+        if (s_tribe_paint_logs < 28) {
+            CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint after draw_tree");
+            s_tribe_paint_logs++;
+        }
+        CUSTOM_DEBUG_END
     }
 
     if (this->draw_system) {

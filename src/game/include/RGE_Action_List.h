@@ -15,20 +15,27 @@ public:
     virtual void copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3); // vt[6] (0x18)
     virtual ~RGE_Action_List(); // vt[7] (0x1C)
 
-    void remove_action();
-    void delete_list();
-    void add_action(RGE_Action* param_1);
-    void add_action_at_end(RGE_Action* param_1);
-    void add_action_at_end_of_action_queue(RGE_Action* param_1);
-    int action_stop();
-    int action_work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    RGE_Action* get_action();
-    RGE_Task* get_task();
     void load(int fd);
     void rehook();
     void save(int fd);
+
+    void delete_list();
+    void remove_action();
+    void add_action(RGE_Action* param_1);
+    void add_action_at_end(RGE_Action* param_1);
+    void add_action_at_end_of_action_queue(RGE_Action* param_1);
+
+    uchar have_action();
+    int action_stop();
+    int action_move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    int action_work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    int attack_response(RGE_Static_Object* param_1);
+    int relation_response(long param_1, uchar param_2);
+    RGE_Action* get_action();
+    RGE_Task* get_task();
 
     RGE_Action_Object* obj;
     RGE_Action_Node* list;
 };
 static_assert(sizeof(RGE_Action_List) == 0xC, "Size mismatch");
+

@@ -1,7 +1,52 @@
 #pragma once
 #include "common.h"
+#include "PrimaryPt.h"
+#include "PtToPt.h"
 
 struct PointMaker {
+    PointMaker();
+    ~PointMaker();
+
+    void SetDefaultValues();
+    void CreateMasks();
+    void DeleteMasks();
+    void DrawMask(int param_1, int param_2, int param_3);
+    void ClearArrays();
+    void DeleteArrays();
+    void MakeArrays();
+    int CreateShape();
+    int CreateShape(int param_1, int param_2);
+    void Branch(int param_1);
+    int MakeFirstLink();
+    int MakeNewLink();
+    int MakeSatelliteLink();
+    void DrawPrimaryIntoProbabilityArray();
+    void DrawCurrentBranchIntoProbArray(int param_1);
+    void DrawCurrentSatelliteIntoProbArray(int param_1);
+    void AddingRect(int param_1, int param_2, int param_3, int param_4);
+    void AddingCircle(int param_1, int param_2, int param_3);
+    void CreateMapBasedOnProbabilityArray();
+    void SetPoint(int param_1, int param_2);
+    void SetMaxNumberOfBranches(int param_1);
+    void SetChanceOfNextNode(int param_1);
+    void SetNumberOfSatellites(int param_1);
+    void SetSplitsPerBranch(int param_1);
+    void SetWidthAndHeight(int param_1, int param_2);
+    void SetStartPositionRadius(int param_1);
+    void SetBranchsRadius(int param_1);
+    void SetSatelliteRadius(int param_1);
+    void SetMaxNumberOfBranchLevels(int param_1);
+    void SetSatelliteDistance(int param_1);
+    void SetBranchDistance(int param_1);
+    void SetMinimumNumberOfTiles(int param_1);
+    void SetDrawToOneArray();
+    void SetBorderDepthPercentage(int param_1);
+    char* RetrieveMap();
+    char* RetrieveProbMap();
+    void ErrorCheckingAndCorrection();
+    void PrepareLimits();
+    void MapCleanUpEliminatingSinglesOnly();
+
     PrimaryPt Prime;
     PtToPt Point[500];
     char* Mask_2x2;

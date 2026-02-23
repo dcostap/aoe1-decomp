@@ -7,6 +7,8 @@ struct RGE_Doppleganger_Creator {
 
     int add_doppleganger_check(RGE_Static_Object* param_1, ulong* param_2);
     int remove_doppleganger_check(RGE_Static_Object* param_1);
+    void perform_doppleganger_checks();
+    void expand_allocations(int param_1);
 
     RGE_Player* owner;
     int allocated_size;

@@ -132,7 +132,6 @@ static void sbar_draw_back_pic(TScrollBarPanel* self) {
                 self->pnl_y + y,
                 self->back_frame,
                 0,
-                0,
                 (uchar*)0);
         }
     }
@@ -166,7 +165,6 @@ static void sbar_draw_button_pic(TScrollBarPanel* self, int frame, int pressed, 
             (int)draw_x,
             (int)draw_y,
             frame + (pressed ? 1 : 0),
-            0,
             0,
             (uchar*)0);
         return;

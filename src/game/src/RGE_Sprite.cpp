@@ -6,6 +6,7 @@
 #include "../include/TShape.h"
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
+#include "../include/mystring.h"
 #include <malloc.h>
 #include <new>
 #include <string.h>
@@ -20,6 +21,144 @@ RGE_Sprite::RGE_Sprite(short sprite_id) {
     this->main_sound = nullptr;
     this->draw_list = nullptr;
     this->sound_list = nullptr;
+}
+
+RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds) {
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFA20
+    memset(this, 0, sizeof(RGE_Sprite));
+    this->color_tables = nullptr;
+    this->last_time = 0;
+    this->delta_time = 0;
+    this->id = sprite_id;
+
+    short temp_draw_level = 0;
+    short temp_color_flag = 0;
+    short temp_transparent_picking_flag = 0;
+    short temp_animated = 0;
+    short temp_directional = 0;
+    short temp_randomize_on_start = 0;
+    short temp_loop_once = 0;
+    short sound_id = 0;
+    short sound_frame = 0;
+    short temp_micro_man_sound = 0;
+
+    int iVar4 = fscanf(infile,
+        " %20s %12s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd",
+        this->name,
+        this->pict_name,
+        &this->resource_id,
+        &this->frame_num,
+        &this->facet_num,
+        &temp_draw_level,
+        &temp_transparent_picking_flag,
+        &temp_animated,
+        &this->color_table,
+        &sound_id,
+        &temp_directional,
+        &temp_randomize_on_start,
+        &temp_loop_once,
+        &sound_frame,
+        &this->box_x1,
+        &this->box_y1,
+        &this->box_x2,
+        &this->box_y2,
+        &this->base_speed,
+        &this->duration,
+        &this->pause_between_loops,
+        &this->draw_list_num,
+        &temp_color_flag,
+        &temp_micro_man_sound);
+
+    if (iVar4 == -1) {
+        return;
+    }
+
+    this->loaded = 0;
+    this->shape = nullptr;
+    convert_us(this->name);
+
+    if (temp_color_flag < 0 || sounds == nullptr) {
+        this->main_sound = nullptr;
+    } else {
+        this->main_sound = sounds[temp_color_flag];
+    }
+
+    if (temp_draw_level < 1) {
+        this->mirror_flag = 0;
+    } else {
+        this->mirror_flag = (char)((this->facet_num >> 1) + (this->facet_num >> 2));
+    }
+
+    this->color_flag = (char)temp_transparent_picking_flag;
+    this->draw_level = (char)temp_animated;
+    this->transparent_picking_flag = (char)temp_directional;
+
+    this->micro_man_sound = (char)(0 < temp_micro_man_sound);
+    this->flag = (char)(0 < temp_randomize_on_start);
+    if (temp_loop_once != 0) {
+        this->flag = (char)((0 < temp_randomize_on_start) + 2);
+    }
+    if (sound_id != 0) {
+        this->flag = (char)(this->flag + 4);
+    }
+    if (sound_frame != 0) {
+        this->flag = (char)(this->flag + 8);
+    }
+
+    if (this->draw_list_num < 1) {
+        this->draw_list = nullptr;
+    } else {
+        this->draw_list = (RGE_Picture_List*)calloc((int)this->draw_list_num, sizeof(RGE_Picture_List));
+        if (this->draw_list != nullptr) {
+            for (short i = 0; i < this->draw_list_num; ++i) {
+                RGE_Picture_List* entry = &this->draw_list[i];
+                entry->sprite = nullptr;
+                fscanf(infile, " %hd %hd %hd %hd", &entry->picture_num, &entry->offset_x, &entry->offset_y, &entry->facet);
+            }
+        }
+    }
+
+    if (this->micro_man_sound == 0) {
+        this->sound_list = nullptr;
+        return;
+    }
+
+    this->sound_list = (RGE_Sound_List*)calloc((int)this->facet_num, sizeof(RGE_Sound_List));
+    if (this->sound_list != nullptr) {
+        for (short facet = 0; facet < this->facet_num; ++facet) {
+            for (int slot = 0; slot < 3; ++slot) {
+                this->sound_list[facet].sound[slot] = nullptr;
+                this->sound_list[facet].frame[slot] = (short)-1;
+            }
+        }
+
+        int sound_slot = 0;
+        short prev_facet = (short)-1;
+        for (short i = 0; i < temp_micro_man_sound; ++i) {
+            short facet = 0;
+            short frame = 0;
+            short sound_idx = 0;
+            if (fscanf(infile, " %hd %hd %hd", &facet, &frame, &sound_idx) == -1) {
+                continue;
+            }
+
+            if (facet == prev_facet) {
+                sound_slot = sound_slot + 1;
+            } else {
+                sound_slot = 0;
+                prev_facet = facet;
+            }
+
+            if ((facet >= 0) && (facet < this->facet_num) && (sound_slot < 3)) {
+                this->sound_list[facet].frame[sound_slot] = frame;
+                if (sound_idx < 0 || sounds == nullptr) {
+                    this->sound_list[facet].sound[sound_slot] = nullptr;
+                } else {
+                    this->sound_list[facet].sound[sound_slot] = sounds[sound_idx];
+                }
+            }
+        }
+    }
 }
 
 RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
@@ -276,7 +415,7 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
         }
     }
 
-    this->shape->shape_draw(param_6, param_3, param_4, facet_index, this->color_flag, 0, table);
+    this->shape->shape_draw(param_6, param_3, param_4, facet_index, (unsigned char)this->color_flag, table);
 }
 
 unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, unsigned char param_9) {

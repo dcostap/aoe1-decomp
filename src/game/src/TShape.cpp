@@ -3,6 +3,8 @@
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TSpan_List_Manager.h"
+#include "../include/DClipInfo_List.h"
+#include "../include/globals.h"
 #include "../include/RGE_Color_Table.h"
 #include <string.h>
 #include <stdlib.h>
@@ -10,16 +12,19 @@
 #include <io.h>
 #include <fcntl.h>
 
-extern unsigned char shape_file_first;
-extern int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2);
-
 extern "C" unsigned int g_ASMShadowing_Amount;
+extern "C" unsigned int _ASMGet_Color_Xform();
 extern "C" void _ASMSet_Surface_Info(void** display_offsets, VSpan_Node** line_head_ptrs, VSpan_Node** line_tail_ptrs, int min_span_px, int min_line, int max_span_px, int max_line);
 extern "C" void _ASMSet_Xlate_Table(void* p);
 extern "C" void* _ASMGet_Xlate_Table();
 
 static inline VSpan_Node* shape_span_advance(VSpan_Node* span, long x) {
     while (span && x > (long)span->EndPx) span = span->Next;
+    return span;
+}
+
+static inline VSpan_Node* shape_span_retreat(VSpan_Node* span, long x) {
+    while (span && x < (long)span->StartPx) span = span->Prev;
     return span;
 }
 
@@ -702,154 +707,16 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
     return 0;
 }
 
-static unsigned char shape_draw_shp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, long mode, unsigned char* table) {
-    if (!self || !draw_area || !self->shape || !self->offsets) return 0;
-    const unsigned int shadow_amount = g_ASMShadowing_Amount & 0xFFu;
-
-    Shape_Header* hdr = (Shape_Header*)(self->shape + self->offsets[shape_idx].shape);
-    if (!hdr) return 0;
-    self->shape_header = hdr;
-
-    long sx1 = x + hdr->xmin;
-    long sy1 = y + hdr->ymin;
-    long sx2 = x + hdr->xmax;
-    long sy2 = y + hdr->ymax;
-
-    long clip_l = draw_area->ClipRect.left;
-    long clip_t = draw_area->ClipRect.top;
-    long clip_r = draw_area->ClipRect.right;
-    long clip_b = draw_area->ClipRect.bottom;
-    if (clip_l < 0) clip_l = 0;
-    if (clip_t < 0) clip_t = 0;
-    if (draw_area->Width > 0 && clip_r >= draw_area->Width) clip_r = draw_area->Width - 1;
-    if (draw_area->Height > 0 && clip_b >= draw_area->Height) clip_b = draw_area->Height - 1;
-
-    long draw_l = (sx1 > clip_l) ? sx1 : clip_l;
-    long draw_t = (sy1 > clip_t) ? sy1 : clip_t;
-    long draw_r = (sx2 < clip_r) ? sx2 : clip_r;
-    long draw_b = (sy2 < clip_b) ? sy2 : clip_b;
-    if (draw_l > draw_r || draw_t > draw_b) return 0;
-
-    TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
-    if (spans) {
-        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, spans->Line_Head_Ptrs, spans->Line_Tail_Ptrs, spans->Min_Span_Px, spans->Min_Line, spans->Max_Span_Px, spans->Max_Line);
-    } else {
-        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, (VSpan_Node**)0, (VSpan_Node**)0, 0, 0, 0, 0);
-    }
-
-    int locked_here = 0;
-    if (!draw_area->Bits) {
-        if (!draw_area->Lock((char*)"shape_draw", 0)) return 0;
-        locked_here = 1;
-    }
-
-    unsigned char* bits = draw_area->Bits;
-    if (!bits) {
-        if (locked_here) draw_area->Unlock((char*)"shape_draw");
-        return 0;
-    }
-
-    int bpp = shape_bytes_per_pixel(draw_area);
-    if (mode != 0 && mode != 1 && mode != 2) {
-        if (locked_here) draw_area->Unlock((char*)"shape_draw");
-        return 0;
-    }
-    if (mode != 0 && !table) mode = 0;
-
-    unsigned char* src = (unsigned char*)(hdr + 1);
-    unsigned char* end = self->shape + self->load_size;
-    long rows = (hdr->ymax - hdr->ymin) + 1;
-    if (rows < 0) rows = 0;
-
-    for (long row = 0; row < rows && src < end; ++row) {
-        long dst_y = sy1 + row;
-        long cur_x = sx1;
-        int draw_row = (dst_y >= draw_t && dst_y <= draw_b) ? 1 : 0;
-        unsigned char* dst_row = 0;
-        VSpan_Node* span = (VSpan_Node*)0;
-        if (draw_row) {
-            int off = (draw_area->Orien == 1) ? (int)(dst_y * draw_area->Pitch) : (int)(((draw_area->Height - dst_y) - 1) * draw_area->Pitch);
-            dst_row = bits + off;
-            if (spans && spans->Line_Head_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {
-                span = spans->Line_Head_Ptrs[dst_y];
-            }
-        }
-
-        for (;;) {
-            if (src >= end) break;
-            unsigned char cmd = *src++;
-            unsigned int run = (unsigned int)(cmd >> 1);
-
-            if (cmd & 1) {
-                if (run == 0) {
-                    if (src >= end) break;
-                    cur_x += *src++;
-                    if (draw_row) span = shape_span_advance(span, cur_x);
-                    continue;
-                }
-
-                if (src + run > end) {
-                    src = end;
-                    break;
-                }
-
-                for (unsigned int i = 0; i < run; ++i) {
-                    unsigned char spx = *src++;
-                    if (draw_row) span = shape_span_advance(span, cur_x);
-                    if (draw_row && cur_x >= draw_l && cur_x <= draw_r && shape_span_contains(span, cur_x)) {
-                        unsigned char* dst_px = dst_row + cur_x * bpp;
-                        if (mode == 2) {
-                            shape_shadow_pixel(draw_area, dst_px, bpp, table);
-                        } else {
-                            unsigned char out_idx = spx;
-                            if (mode == 1 && table) out_idx = table[spx];
-                            if (bpp == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
-                            unsigned long px = shape_index_to_pixel(draw_area, out_idx, bpp);
-                            if (bpp > 1 && shadow_amount) px = shape_apply_shadowing_to_pixel(draw_area, px, shadow_amount);
-                            shape_store_pixel(dst_px, bpp, px);
-                        }
-                    }
-                    cur_x++;
-                }
-                continue;
-            }
-
-            if (run == 0) break;
-            if (src >= end) break;
-
-                unsigned char fill = *src++;
-                for (unsigned int i = 0; i < run; ++i) {
-                    if (draw_row) span = shape_span_advance(span, cur_x);
-                    if (draw_row && cur_x >= draw_l && cur_x <= draw_r && shape_span_contains(span, cur_x)) {
-                        unsigned char* dst_px = dst_row + cur_x * bpp;
-                        if (mode == 2) {
-                            shape_shadow_pixel(draw_area, dst_px, bpp, table);
-                        } else {
-                        unsigned char out_idx = fill;
-                        if (mode == 1 && table) out_idx = table[fill];
-                        if (bpp == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
-                        unsigned long px = shape_index_to_pixel(draw_area, out_idx, bpp);
-                        if (bpp > 1 && shadow_amount) px = shape_apply_shadowing_to_pixel(draw_area, px, shadow_amount);
-                        shape_store_pixel(dst_px, bpp, px);
-                    }
-                }
-                cur_x++;
-            }
-        }
-    }
-
-    if (locked_here) draw_area->Unlock((char*)"shape_draw");
-    return 1;
-}
-
-static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* xlate) {
+static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* xlate, unsigned int draw_flag) {
     if (!self || !draw_area || !self->FShape || !self->shape_info) return 0;
-    const unsigned int shadow_amount = g_ASMShadowing_Amount & 0xFFu;
+    const unsigned int mirror = (draw_flag & 2u);
+    const unsigned int fog = (draw_flag & 1u);
+    const unsigned int shadow_amount = fog ? (g_ASMShadowing_Amount & 0xFFu) : 0u;
     Shape_Info* info = &self->shape_info[shape_idx];
 
     long width = info->Width;
     long height = info->Height;
-    long draw_x = x - info->Hotspot_X;
+    long draw_x = (mirror != 0) ? ((info->Hotspot_X + x) - info->Width) : (x - info->Hotspot_X);
     long draw_y = y - info->Hotspot_Y;
 
     int locked_here = 0;
@@ -888,11 +755,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     unsigned char* active_xlate = base_xlate;
 
     TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
-    if (spans) {
-        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, spans->Line_Head_Ptrs, spans->Line_Tail_Ptrs, spans->Min_Span_Px, spans->Min_Line, spans->Max_Span_Px, spans->Max_Line);
-    } else {
-        _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, (VSpan_Node**)0, (VSpan_Node**)0, 0, 0, 0, 0);
-    }
+    // Parity: surface/span globals are set by the shape_draw/shape_mirror wrapper (matches Shape.cpp.decomp).
 
     for (long row = 0; row < height; row++) {
         long dst_y = draw_y + row;
@@ -900,7 +763,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
         unsigned short left = outline[row * 2 + 0];
         unsigned short right = outline[row * 2 + 1];
-        if (left & 0x8000) continue;
+        if ((left & 0x8000) || (right & 0x8000)) continue;
         left = (unsigned short)(left & 0x7FFF);
         right = (unsigned short)(right & 0x7FFF);
 
@@ -908,14 +771,21 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         if (row_off >= (unsigned long)self->load_size) continue;
         unsigned char* src = slp_base + row_off;
 
-        long dst_x = draw_x + (long)left;
-        long max_x = draw_x + width - 1 - (long)right;
+        long dst_x = 0;
+        long limit_x = 0;
+        if (mirror != 0) {
+            dst_x = (draw_x + width - 1) - (long)left;
+            limit_x = draw_x + (long)right;
+        } else {
+            dst_x = draw_x + (long)left;
+            limit_x = (draw_x + width - 1) - (long)right;
+        }
         int off = (draw_area->Orien == 1) ? (int)(dst_y * dest_pitch) : (int)(((draw_area->Height - dst_y) - 1) * dest_pitch);
         unsigned char* dst_row = dest_bits + off;
 
         VSpan_Node* span = (VSpan_Node*)0;
-        if (spans && spans->Line_Head_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {
-            span = spans->Line_Head_Ptrs[dst_y];
+        if (spans && spans->Line_Head_Ptrs && spans->Line_Tail_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {
+            span = (mirror != 0) ? spans->Line_Tail_Ptrs[dst_y] : spans->Line_Head_Ptrs[dst_y];
         }
 
         for (;;) {
@@ -924,7 +794,11 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             unsigned char op = (unsigned char)(cmd & 0x0F);
 
             if (op == 0x0F) break;
-            if (dst_x > max_x) break;
+            if (mirror != 0) {
+                if (dst_x < limit_x) break;
+            } else {
+                if (dst_x > limit_x) break;
+            }
 
             if (op == 0x0E) {
                 unsigned char ext = (unsigned char)(cmd >> 4);
@@ -943,15 +817,16 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 else { continue; }
 
                 for (unsigned int i = 0; i < len; ++i) {
-                    span = shape_span_advance(span, dst_x);
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && shape_span_contains(span, dst_x) &&
+                        ((mirror != 0) ? (dst_x >= limit_x) : (dst_x <= limit_x))) {
                         unsigned char out_idx = outline_idx;
                         if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                         if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
-                    dst_x++;
+                    dst_x += (mirror != 0) ? -1 : 1;
                 }
                 continue;
             }
@@ -960,23 +835,24 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (src >= shape_end) break;
                 unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
                 if (op == 0x03) {
-                    dst_x += (long)len;
-                    span = shape_span_advance(span, dst_x);
+                    dst_x += (mirror != 0) ? -(long)len : (long)len;
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
                     continue;
                 }
 
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
-                    span = shape_span_advance(span, dst_x);
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && shape_span_contains(span, dst_x) &&
+                        ((mirror != 0) ? (dst_x >= limit_x) : (dst_x <= limit_x))) {
                         unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                         if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                         if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
-                    dst_x++;
+                    dst_x += (mirror != 0) ? -1 : 1;
                 }
                 continue;
             }
@@ -1010,8 +886,9 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         px = a;
                     }
 
-                    span = shape_span_advance(span, dst_x);
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && shape_span_contains(span, dst_x) &&
+                        ((mirror != 0) ? (dst_x >= limit_x) : (dst_x <= limit_x))) {
                         if (op == 0x0B) {
                             shape_shadow_pixel(draw_area, dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
                         } else {
@@ -1022,7 +899,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                             shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                         }
                     }
-                    dst_x++;
+                    dst_x += (mirror != 0) ? -1 : 1;
                 }
                 continue;
             }
@@ -1034,23 +911,24 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         if (src >= shape_end) break;
                         len = (unsigned int)(*src++);
                     }
-                    dst_x += (long)len;
-                    span = shape_span_advance(span, dst_x);
+                    dst_x += (mirror != 0) ? -(long)len : (long)len;
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
                     continue;
                 }
 
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
-                    span = shape_span_advance(span, dst_x);
-                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x && shape_span_contains(span, dst_x)) {
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
+                    if (dst_x >= clip_l && dst_x <= clip_r && shape_span_contains(span, dst_x) &&
+                        ((mirror != 0) ? (dst_x >= limit_x) : (dst_x <= limit_x))) {
                         unsigned char out_idx = active_xlate ? active_xlate[px] : px;
                         if (bytes_per_pixel == 1 && shadow_amount) out_idx = shape_apply_shadowing_to_index(draw_area, out_idx, shadow_amount);
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                         if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
                     }
-                    dst_x++;
+                    dst_x += (mirror != 0) ? -1 : 1;
                 }
                 continue;
             }
@@ -1063,23 +941,1090 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     return 1;
 }
 
-unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shape_idx, long param_5, unsigned char param_6, unsigned char* param_7) {
-    (void)param_6;
-
+unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char color_flag, unsigned char* color_table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9440
+    if (shape_idx < 0) return 0;
     if (this->Check_shape(shape_idx, (char*)"RGL_shape_draw")) return 0;
 
     // Parity: original code sets the global xlate table only when a non-null transform table is passed.
-    if (param_7) _ASMSet_Xlate_Table(param_7);
-
-    if (this->FShape && this->shape_info) {
-        // NOTE: SLP path in original calls ASM sprite drawer and can use xlate table.
-        // Our current reimplementation keeps the existing software decode path.
-        return shape_draw_slp_internal(this, draw_area, x, y, shape_idx, param_7);
+    if (color_table != (unsigned char*)0) {
+        _ASMSet_Xlate_Table(color_table);
     }
 
-    if (this->shape && this->offsets) {
-        return shape_draw_shp_internal(this, draw_area, x, y, shape_idx, param_5, param_7);
+    if (this->FShape != (SLhape_File_Header*)0) {
+        if (SDI_Capture_Info != 0) {
+            Shape_Info* info = &this->shape_info[shape_idx];
+            const int draw_level = SDI_Draw_Level;
+            const int object_id = (int)SDI_Object_ID;
+            const int xform_mask = (int)_ASMGet_Color_Xform();
+            if (SDI_List) {
+                SDI_List->AddDrawNode(this->FShape,
+                    info,
+                    SDI_Draw_Line,
+                    (int)(x - info->Hotspot_X),
+                    (int)(y - info->Hotspot_Y),
+                    fog_next_shape,
+                    color_table,
+                    xform_mask,
+                    draw_level,
+                    object_id);
+            }
+            return 1;
+        }
+
+        TSpan_List_Manager* cur_spans = draw_area->CurSpanList;
+        int max_lines = 0;
+        if (draw_area->SpanList && cur_spans) {
+            max_lines = draw_area->SpanList->Num_Lines;
+            if (cur_spans->Num_Lines < max_lines) max_lines = cur_spans->Num_Lines;
+        }
+        if (cur_spans && max_lines > 0) {
+            _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, cur_spans->Line_Head_Ptrs, cur_spans->Line_Tail_Ptrs, 0, 0, cur_spans->Max_Span_Px, max_lines - 1);
+        }
+
+        if (color_table != (unsigned char*)0) {
+            _ASMSet_Xlate_Table(color_table);
+        }
+
+        return shape_draw_slp_internal(this, draw_area, x, y, shape_idx, color_table, (unsigned int)fog_next_shape);
+    }
+
+    if (this->shape != (unsigned char*)0) {
+        Shape_Header* hdr = (Shape_Header*)(this->shape + this->offsets[shape_idx].shape);
+        this->shape_header = hdr;
+
+        tagRECT clip = draw_area->ClipRect;
+        long clip_l = clip.left;
+        long clip_t = clip.top;
+        long clip_r = clip.right;
+        long clip_b = clip.bottom;
+
+        const long shape_x0 = hdr->xmin + x;
+        const long shape_y0 = hdr->ymin + y;
+        const long shape_x1 = hdr->xmax + x;
+        const long shape_y1 = hdr->ymax + y;
+
+        long draw_l = shape_x0;
+        if (draw_l < clip_l) draw_l = clip_l;
+        long draw_t = shape_y0;
+        if (draw_t < clip_t) draw_t = clip_t;
+        long draw_r = shape_x1;
+        if (draw_r > clip_r) draw_r = clip_r;
+        long draw_b = shape_y1;
+        if (draw_b > clip_b) draw_b = clip_b;
+
+        if (draw_l < 0) draw_l = 0;
+        if (draw_t < 0) draw_t = 0;
+        if (draw_area->Width <= draw_r) draw_r = draw_area->Width - 1;
+        if (draw_area->Height <= draw_b) draw_b = draw_area->Height - 1;
+
+        if (draw_l <= draw_r && draw_t <= draw_b) {
+            int locked_here = 0;
+            if (draw_area->Bits == (unsigned char*)0) {
+                if (!draw_area->Lock((char*)"shape_draw", 0)) return 0;
+                locked_here = 1;
+            }
+
+            unsigned char ret = 0;
+            if (draw_l != shape_x0 || draw_t != shape_y0 || draw_r != shape_x1 || draw_b != shape_y1) {
+                if (color_flag != 0) {
+                    if (color_flag == 1) {
+                        if (color_table != (unsigned char*)0) {
+                            ret = this->shape_color_trans_clipped(draw_area, shape_x0, shape_y0, shape_idx, draw_l, draw_t, draw_r, draw_b, color_table);
+                        } else {
+                            ret = this->shape_draw_clipped(draw_area, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else if (color_flag == 2) {
+                        if (color_table != (unsigned char*)0) {
+                            ret = this->shape_shadow_clipped(draw_area, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b, color_table);
+                        } else {
+                            ret = this->shape_draw_clipped(draw_area, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else {
+                        ret = 0;
+                    }
+                } else {
+                    ret = this->shape_draw_clipped(draw_area, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b);
+                }
+            } else {
+                if (color_flag == 0) {
+                    ret = this->shape_draw_unclipped(draw_area, shape_x0, shape_y0, shape_idx);
+                } else if (color_flag == 1) {
+                    if (color_table == (unsigned char*)0) {
+                        ret = this->shape_draw_unclipped(draw_area, shape_x0, shape_y0, shape_idx);
+                    } else {
+                        ret = this->shape_color_trans_unclipped(draw_area, shape_x0, shape_y0, shape_idx, color_table);
+                    }
+                } else if (color_flag == 2) {
+                    if (color_table == (unsigned char*)0) {
+                        ret = this->shape_draw_unclipped(draw_area, shape_x0, shape_y0, shape_idx);
+                    } else {
+                        ret = this->shape_shadow_unclipped(draw_area, shape_x0, shape_y0, color_table);
+                    }
+                } else {
+                    ret = 0;
+                }
+            }
+
+            if (locked_here) draw_area->Unlock((char*)"shape_draw");
+            return ret;
+        }
     }
 
     return 0;
+}
+
+static unsigned char* shp_skip_row(unsigned char* src) {
+    for (;;) {
+        unsigned char cmd = *src++;
+        unsigned int run = (unsigned int)(cmd >> 1);
+        if (cmd & 1) {
+            if (run == 0) {
+                src++; // skip count
+            } else {
+                src += run; // literal bytes
+            }
+        } else {
+            if (run == 0) {
+                break; // end of row
+            }
+            src++; // fill byte
+        }
+    }
+    return src;
+}
+
+unsigned char TShape::shape_draw_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B97F0
+    (void)shape_idx;
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = y;
+    if (orien < 1) {
+        dst_y = (dst_y - draw_area->Height) + 1;
+    }
+
+    unsigned char* dst_line = draw_area->Bits + x + dst_y * stride;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst += *src++;
+                } else {
+                    memcpy(dst, src, run);
+                    dst += run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                memset(dst, (int)fill, run);
+                dst += run;
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_color_trans_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B98E0
+    (void)shape_idx;
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = y;
+    if (orien < 1) {
+        dst_y = (dst_y - draw_area->Height) + 1;
+    }
+
+    unsigned char* dst_line = draw_area->Bits + x + dst_y * stride;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        *dst++ = table[*src++];
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = table[*src++];
+                memset(dst, (int)fill, run);
+                dst += run;
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_shadow_unclipped(TDrawArea* draw_area, long x, long y, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B99F0
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = y;
+    if (orien < 1) {
+        dst_y = (dst_y - draw_area->Height) + 1;
+    }
+
+    unsigned char* dst_line = draw_area->Bits + x + dst_y * stride;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        dst[i] = table[dst[i]];
+                    }
+                    dst += run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                for (unsigned int i = 0; i < run; ++i) {
+                    dst[i] = table[dst[i]];
+                }
+                dst += run;
+                src++; // consume fill byte
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_draw_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9AF0
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) {
+            break;
+        }
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    const long seg_x0 = cur_x;
+                    const long seg_x1 = cur_x + (long)run - 1;
+                    if (seg_x1 >= clip_x0 && seg_x0 <= clip_x1) {
+                        const long out_x0 = (seg_x0 < clip_x0) ? clip_x0 : seg_x0;
+                        const long out_x1 = (seg_x1 > clip_x1) ? clip_x1 : seg_x1;
+                        const unsigned int skip = (unsigned int)(out_x0 - seg_x0);
+                        const unsigned int count = (unsigned int)(out_x1 - out_x0 + 1);
+                        memcpy(line + out_x0, src + skip, count);
+                    }
+                    cur_x += (long)run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                const long seg_x0 = cur_x;
+                const long seg_x1 = cur_x + (long)run - 1;
+                if (seg_x1 >= clip_x0 && seg_x0 <= clip_x1) {
+                    const long out_x0 = (seg_x0 < clip_x0) ? clip_x0 : seg_x0;
+                    const long out_x1 = (seg_x1 > clip_x1) ? clip_x1 : seg_x1;
+                    memset(line + out_x0, (int)fill, (size_t)(out_x1 - out_x0 + 1));
+                }
+                cur_x += (long)run;
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx, long clip_x0, long clip_y0, long clip_x1, long clip_y1, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9E20
+    (void)shape_idx;
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) {
+            break;
+        }
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    const long seg_x0 = cur_x;
+                    const long seg_x1 = cur_x + (long)run - 1;
+                    if (seg_x1 >= clip_x0 && seg_x0 <= clip_x1) {
+                        const long out_x0 = (seg_x0 < clip_x0) ? clip_x0 : seg_x0;
+                        const long out_x1 = (seg_x1 > clip_x1) ? clip_x1 : seg_x1;
+                        unsigned int skip = (unsigned int)(out_x0 - seg_x0);
+                        for (long xx = out_x0; xx <= out_x1; ++xx, ++skip) {
+                            line[xx] = table[src[skip]];
+                        }
+                    }
+                    cur_x += (long)run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = table[*src++];
+                const long seg_x0 = cur_x;
+                const long seg_x1 = cur_x + (long)run - 1;
+                if (seg_x1 >= clip_x0 && seg_x0 <= clip_x1) {
+                    const long out_x0 = (seg_x0 < clip_x0) ? clip_x0 : seg_x0;
+                    const long out_x1 = (seg_x1 > clip_x1) ? clip_x1 : seg_x1;
+                    memset(line + out_x0, (int)fill, (size_t)(out_x1 - out_x0 + 1));
+                }
+                cur_x += (long)run;
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA1C0
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) {
+            break;
+        }
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    const long seg_x0 = cur_x;
+                    const long seg_x1 = cur_x + (long)run - 1;
+                    if (seg_x1 >= clip_x0 && seg_x0 <= clip_x1) {
+                        const long out_x0 = (seg_x0 < clip_x0) ? clip_x0 : seg_x0;
+                        const long out_x1 = (seg_x1 > clip_x1) ? clip_x1 : seg_x1;
+                        for (long xx = out_x0; xx <= out_x1; ++xx) {
+                            line[xx] = table[line[xx]];
+                        }
+                    }
+                    cur_x += (long)run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                const long seg_x0 = cur_x;
+                const long seg_x1 = cur_x + (long)run - 1;
+                if (seg_x1 >= clip_x0 && seg_x0 <= clip_x1) {
+                    const long out_x0 = (seg_x0 < clip_x0) ? clip_x0 : seg_x0;
+                    const long out_x1 = (seg_x1 > clip_x1) ? clip_x1 : seg_x1;
+                    for (long xx = out_x0; xx <= out_x1; ++xx) {
+                        line[xx] = table[line[xx]];
+                    }
+                }
+                cur_x += (long)run;
+                src++; // consume fill byte
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_mirror(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char color_flag, unsigned char* color_table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA550
+    if (shape_idx < 0) return 0;
+    if (this->Check_shape(shape_idx, (char*)"RGL_shape_draw")) return 0;
+
+    if (color_table != (unsigned char*)0) {
+        _ASMSet_Xlate_Table(color_table);
+    }
+
+    if (this->FShape != (SLhape_File_Header*)0) {
+        if (SDI_Capture_Info != 0) {
+            Shape_Info* info = &this->shape_info[shape_idx];
+            const int draw_level = SDI_Draw_Level;
+            const int object_id = (int)SDI_Object_ID;
+            const int xform_mask = (int)_ASMGet_Color_Xform();
+            if (SDI_List) {
+                SDI_List->AddDrawNode(this->FShape,
+                    info,
+                    SDI_Draw_Line,
+                    (int)((info->Hotspot_X - info->Width) + x),
+                    (int)(y - info->Hotspot_Y),
+                    fog_next_shape + 2,
+                    color_table,
+                    xform_mask,
+                    draw_level,
+                    object_id);
+            }
+            return 1;
+        }
+
+        TSpan_List_Manager* cur_spans = draw_area->CurSpanList;
+        int max_lines = 0;
+        if (draw_area->SpanList && cur_spans) {
+            max_lines = draw_area->SpanList->Num_Lines;
+            if (cur_spans->Num_Lines < max_lines) max_lines = cur_spans->Num_Lines;
+        }
+        if (cur_spans && max_lines > 0) {
+            _ASMSet_Surface_Info(draw_area->CurDisplayOffsets, cur_spans->Line_Head_Ptrs, cur_spans->Line_Tail_Ptrs, 0, 0, cur_spans->Max_Span_Px, max_lines - 1);
+        }
+
+        if (color_table != (unsigned char*)0) {
+            _ASMSet_Xlate_Table(color_table);
+        }
+
+        // NOTE: Original dispatches to _ASMDraw_Sprite with mirror flag; we use the software SLP path.
+        return shape_draw_slp_internal(this, draw_area, x, y, shape_idx, color_table, (unsigned int)(fog_next_shape + 2));
+    }
+
+    if (this->shape != (unsigned char*)0) {
+        Shape_Header* hdr = (Shape_Header*)(this->shape + this->offsets[shape_idx].shape);
+        this->shape_header = hdr;
+
+        tagRECT clip = draw_area->ClipRect;
+        long clip_l = clip.left;
+        long clip_t = clip.top;
+        long clip_r = clip.right;
+        long clip_b = clip.bottom;
+
+        const long shape_l = x - hdr->xmax;
+        const long shape_t = y + hdr->ymin;
+        const long shape_r = x - hdr->xmin;
+        const long shape_b = y + hdr->ymax;
+
+        long draw_l = shape_l;
+        if (draw_l < clip_l) draw_l = clip_l;
+        long draw_t = shape_t;
+        if (draw_t < clip_t) draw_t = clip_t;
+        long draw_r = shape_r;
+        if (draw_r > clip_r) draw_r = clip_r;
+        long draw_b = shape_b;
+        if (draw_b > clip_b) draw_b = clip_b;
+
+        if (draw_l < 0) draw_l = 0;
+        if (draw_t < 0) draw_t = 0;
+        if (draw_area->Width <= draw_r) draw_r = draw_area->Width - 1;
+        if (draw_area->Height <= draw_b) draw_b = draw_area->Height - 1;
+
+        if (draw_l <= draw_r && draw_t <= draw_b) {
+            int locked_here = 0;
+            if (draw_area->Bits == (unsigned char*)0) {
+                if (!draw_area->Lock((char*)"shape_mirror", 0)) return 0;
+                locked_here = 1;
+            }
+
+            unsigned char ret = 0;
+            if (draw_l != shape_l || draw_t != shape_t || draw_r != shape_r || draw_b != shape_b) {
+                if (color_flag != 0) {
+                    if (color_flag == 1) {
+                        if (color_table != (unsigned char*)0) {
+                            ret = this->shape_mirror_color_trans_clipped(draw_area, shape_r, shape_t, shape_idx, draw_l, draw_t, draw_r, draw_b, color_table);
+                        } else {
+                            ret = this->shape_mirror_clipped(draw_area, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else if (color_flag == 2) {
+                        if (color_table != (unsigned char*)0) {
+                            ret = this->shape_mirror_shadow_clipped(draw_area, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b, color_table);
+                        } else {
+                            ret = this->shape_mirror_clipped(draw_area, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else {
+                        ret = 0;
+                    }
+                } else {
+                    ret = this->shape_mirror_clipped(draw_area, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b);
+                }
+            } else {
+                if (color_flag == 0) {
+                    ret = this->shape_mirror_unclipped(draw_area, shape_r, shape_t);
+                } else if (color_flag == 1) {
+                    if (color_table == (unsigned char*)0) {
+                        ret = this->shape_mirror_unclipped(draw_area, shape_r, shape_t);
+                    } else {
+                        ret = this->shape_mirror_color_trans_unclipped(draw_area, shape_r, shape_t, shape_idx, color_table);
+                    }
+                } else if (color_flag == 2) {
+                    if (color_table == (unsigned char*)0) {
+                        ret = this->shape_mirror_unclipped(draw_area, shape_r, shape_t);
+                    } else {
+                        ret = this->shape_mirror_shadow_unclipped(draw_area, shape_r, shape_t, color_table);
+                    }
+                } else {
+                    ret = 0;
+                }
+            }
+
+            if (locked_here) draw_area->Unlock((char*)"shape_mirror");
+            return ret;
+        }
+    }
+
+    return 0;
+}
+
+unsigned char TShape::shape_mirror_unclipped(TDrawArea* draw_area, long x, long y) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA900
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = y;
+    if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+
+    unsigned char* dst_line = draw_area->Bits + x + dst_y * stride + 1;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        *--dst = *src++;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                dst -= run;
+                memset(dst, (int)fill, run);
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_mirror_color_trans_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA9E0
+    (void)shape_idx;
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = y;
+    if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+
+    unsigned char* dst_line = draw_area->Bits + x + dst_y * stride + 1;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        *--dst = table[*src++];
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = table[*src++];
+                dst -= run;
+                memset(dst, (int)fill, run);
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x, long y, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BAAF0
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = y;
+    if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+
+    unsigned char* dst_line = draw_area->Bits + x + dst_y * stride + 1;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        --dst;
+                        *dst = table[*dst];
+                    }
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                for (unsigned int i = 0; i < run; ++i) {
+                    --dst;
+                    *dst = table[*dst];
+                }
+                src++; // consume fill byte
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_mirror_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BAC00
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                            line[cur_x] = *src;
+                        }
+                        src++;
+                        cur_x--;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                        line[cur_x] = fill;
+                    }
+                    cur_x--;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_mirror_color_trans_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx, long clip_x0, long clip_y0, long clip_x1, long clip_y1, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BAF20
+    (void)shape_idx;
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                            line[cur_x] = table[*src];
+                        }
+                        src++;
+                        cur_x--;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = table[*src++];
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                        line[cur_x] = fill;
+                    }
+                    cur_x--;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_mirror_shadow_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB280
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                            line[cur_x] = table[line[cur_x]];
+                        }
+                        src++;
+                        cur_x--;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                        line[cur_x] = table[line[cur_x]];
+                    }
+                    cur_x--;
+                }
+                src++; // consume fill byte
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_dither(TDrawArea* draw_area, long x, long y, long shape_idx, long param_5, long param_6) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB5E0
+    if (!draw_area) return 0;
+    if (shape_idx < 0) return 0;
+    if (this->Check_shape(shape_idx, (char*)"RGL_shape_draw")) return 0;
+    if (this->shape == (unsigned char*)0 || this->offsets == (Shape_Offsets*)0) return 0;
+
+    Shape_Header* hdr = (Shape_Header*)(this->shape + this->offsets[shape_idx].shape);
+    this->shape_header = hdr;
+
+    tagRECT clip = draw_area->ClipRect;
+    long clip_l = clip.left;
+    long clip_t = clip.top;
+    long clip_r = clip.right;
+    long clip_b = clip.bottom;
+
+    const long shape_x0 = hdr->xmin + x;
+    const long shape_y0 = hdr->ymin + y;
+    const long shape_x1 = hdr->xmax + x;
+    const long shape_y1 = hdr->ymax + y;
+
+    long draw_l = shape_x0;
+    if (draw_l < clip_l) draw_l = clip_l;
+    long draw_t = shape_y0;
+    if (draw_t < clip_t) draw_t = clip_t;
+    long draw_r = shape_x1;
+    if (draw_r > clip_r) draw_r = clip_r;
+    long draw_b = shape_y1;
+    if (draw_b > clip_b) draw_b = clip_b;
+
+    if (draw_l < 0) draw_l = 0;
+    if (draw_t < 0) draw_t = 0;
+    if (draw_area->Width <= draw_r) draw_r = draw_area->Width - 1;
+    if (draw_area->Height <= draw_b) draw_b = draw_area->Height - 1;
+
+    if (draw_l <= draw_r && draw_t <= draw_b) {
+        int locked_here = 0;
+        if (draw_area->Bits == (unsigned char*)0) {
+            if (!draw_area->Lock((char*)"shape_dither", 0)) return 0;
+            locked_here = 1;
+        }
+
+        unsigned char ret = 0;
+        if (draw_l == shape_x0 && draw_t == shape_y0 && draw_r == shape_x1 && draw_b == shape_y1) {
+            ret = this->shape_dithered_unclipped(draw_area, shape_x0, shape_y0, param_5, param_6);
+        } else {
+            ret = this->shape_dithered_clipped(draw_area, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b, param_5, param_6);
+        }
+
+        if (locked_here) draw_area->Unlock((char*)"shape_dither");
+        return ret;
+    }
+
+    return 0;
+}
+
+unsigned char TShape::shape_dithered_unclipped(TDrawArea* draw_area, long x, long y, long param_4, long param_5) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB770
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = y + r;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = x;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (((cur_x + param_4 + dst_y_screen + param_5) & 1) == 0) {
+                            line[cur_x] = 0;
+                        }
+                        cur_x++;
+                        src++;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                // fill byte consumed but unused
+                src++;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (((cur_x + param_4 + dst_y_screen + param_5) & 1) == 0) {
+                        line[cur_x] = 0;
+                    }
+                    cur_x++;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char TShape::shape_dithered_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1, long param_8, long param_9) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB910
+    Shape_Header* hdr = this->shape_header;
+    if (!draw_area || !hdr || !draw_area->Bits) return 0;
+
+    const int orien = draw_area->Orien;
+    const long pitch = draw_area->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = shape_y1 + r;
+        if (dst_y_screen < clip_y0) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > clip_y1) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - draw_area->Height) + 1;
+        unsigned char* line = draw_area->Bits + dst_y * stride;
+
+        long cur_x = shape_x1;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                            if (((cur_x + param_8 + dst_y_screen + param_9) & 1) == 0) {
+                                line[cur_x] = 0;
+                            }
+                        }
+                        cur_x++;
+                        src++;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                src++; // fill byte
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= clip_x0 && cur_x <= clip_x1) {
+                        if (((cur_x + param_8 + dst_y_screen + param_9) & 1) == 0) {
+                            line[cur_x] = 0;
+                        }
+                    }
+                    cur_x++;
+                }
+            }
+        }
+    }
+
+    return 1;
 }

@@ -358,7 +358,7 @@ static void draw_background(TTextPanel* this_) {
                         this_->render_area,
                         this_->pnl_x + x * this_->back_pic_wid,
                         this_->pnl_y + y * this_->back_pic_hgt,
-                        0, 0, 0, (uchar*)0);
+                        0, 0, (uchar*)0);
                 }
             }
             this_->render_area->Unlock((char*)"pnl_txt::draw_background");

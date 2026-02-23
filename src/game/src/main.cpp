@@ -62,6 +62,14 @@ CUSTOM_DEBUG_BEGIN
                 (unsigned long)mbi.State,
                 (unsigned long)mbi.Protect,
                 (unsigned long)mbi.Type);
+            char module_path[MAX_PATH];
+            module_path[0] = '\0';
+            if (mbi.AllocationBase != nullptr) {
+                DWORD mlen = GetModuleFileNameA((HMODULE)mbi.AllocationBase, module_path, MAX_PATH);
+                if (mlen != 0 && mlen < MAX_PATH) {
+                    CUSTOM_DEBUG_LOG_FMT("UNHANDLED_EXCEPTION module_from_vquery: %s", module_path);
+                }
+            }
         }
     }
 CUSTOM_DEBUG_END
@@ -138,7 +146,8 @@ CUSTOM_DEBUG_END
     info.update_interval = 0;
     info.check_multi_copies = 1;
     info.skip_startup = 1;
-    info.full_screen = 1;
+    // Development convenience: always launch windowed during crash triage.
+    info.full_screen = 0;
     info.fixed_window_size = 1;
     info.use_dir_draw = 1;
     info.use_sys_mem = 1;

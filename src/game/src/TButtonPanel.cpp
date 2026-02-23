@@ -660,7 +660,7 @@ void TButtonPanel::draw() {
                     draw_x++;
                     draw_y--;
                 }
-                shape->shape_draw(this->render_area, draw_x, draw_y, this->pic_index[state], 0, 0, nullptr);
+                shape->shape_draw(this->render_area, draw_x, draw_y, this->pic_index[state], 0, nullptr);
             }
             this->render_area->Unlock((char*)"pnl_btn::draw");
         }

@@ -84,6 +84,10 @@ public:
     virtual int create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt[72] (0x120)
     virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // vt[73] (0x124)
 
+protected:
+    void set_mode(long mode);
+
+public:
     int end_game_flag;
     int current_mode;
     int size;

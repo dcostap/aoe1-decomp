@@ -5,6 +5,7 @@
 class RGE_Action_Object : public RGE_Moving_Object {
 public:
     RGE_Action_Object();
+    RGE_Action_Object(RGE_Master_Action_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Action_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     virtual RGE_Action_List* create_action_list();
@@ -58,7 +59,7 @@ public:
     virtual void new_angle(float param_1); // vt[45] (0xB4)
     virtual RGE_Static_Object* spawn_death_obj(); // vt[46] (0xB8)
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // vt[47] (0xBC)
-    virtual void set_being_worked_on(short param_1, uchar param_2); // vt[48] (0xC0)
+    virtual void set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3); // vt[48] (0xC0)
     virtual void release_being_worked_on(RGE_Static_Object* param_1); // vt[49] (0xC4)
     virtual uchar is_moving(); // vt[50] (0xC8)
     virtual RGE_Static_Object* get_target_obj(); // vt[51] (0xCC)
@@ -138,6 +139,14 @@ public:
     virtual int setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[125] (0x1F4)
     virtual void work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5); // vt[126] (0x1F8)
     virtual void set_task(short param_1); // vt[127] (0x1FC)
+
+    int setup(RGE_Master_Action_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
+    void setTaskByTaskID(int param_1);
+    void set_action(RGE_Action* param_1);
+    void set_only_action(RGE_Action* param_1);
+    void set_end_action(RGE_Action* param_1);
+    uchar have_action();
+    RGE_Task* getTask(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
 
     unsigned char waiting;
     RGE_Action_List* actions;

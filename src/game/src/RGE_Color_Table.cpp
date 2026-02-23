@@ -1,6 +1,7 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/TDrawArea.h"
 #include "../include/globals.h"
+#include "../include/mystring.h"
 
 #include <string.h>
 
@@ -82,6 +83,26 @@ RGE_Color_Table::RGE_Color_Table() {
     this->map_color = 0;
     this->id = 0;
     memset(this->table, 0, sizeof(this->table));
+}
+
+RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
+    // Fully verified. Source of truth: color.cpp.decomp @ 0x00424440
+    this->id = param_id;
+    memset(this->table, 0, sizeof(this->table));
+
+    short temp_map_color = 0;
+    short temp_type = 0;
+    fscanf(infile, " %hd %29s %hd %hd", &this->resource_id, this->color_table_name, &temp_map_color, &temp_type);
+    this->map_color = (unsigned char)temp_map_color;
+    this->type = (unsigned char)temp_type;
+
+    char* with_ext = nullptr;
+    addstring(&with_ext, this->color_table_name, (char*)".col");
+    if (with_ext != nullptr) {
+        strncpy(this->color_table_name, with_ext, sizeof(this->color_table_name) - 1);
+        this->color_table_name[sizeof(this->color_table_name) - 1] = '\0';
+        free(with_ext);
+    }
 }
 
 RGE_Color_Table::RGE_Color_Table(int fd) {
