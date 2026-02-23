@@ -557,11 +557,11 @@ Rules of engagement:
 
 ## Task 50 — Implement base AI framework (`AIModule`, `BaseItem`, `BaseObject`, IDs/messages)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: umbrella tracking for the AI framework base; the real work is intentionally split into small, assignable units.
 - Implement: see Tasks 57–60.
 - Non-overlap note: don’t implement TRIBE decision modules here (that’s Task 51 / Tasks 61–68).
-- Status note: AI headers exist and some higher-level AI classes are already in src, but the decomp-based framework translation units are still missing.
+- Status note: AI framework base transliterations landed (`src/game/src/AIModule.cpp`, `AIModuleID.cpp`, `AIModuleMessage.cpp`, `BaseItem.cpp`, `BaseObject.cpp`) (implement commit `c1b4ac6`, merged via `904b732`).
 
 ## Task 51 — Implement remaining TRIBE AI modules (excluding Task 36)
 - [ ] Assigned to agent
@@ -575,39 +575,43 @@ Rules of engagement:
 
 ## Task 57 — AI framework: implement `AIModule` (`aimodule.cpp.decomp`)
 - [ ] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the base AI module vtable + state management used by most AI subsystems.
 - Implement: decomp-first transliteration of the `AIModule` method set.
 - Where: add src/game/src/AIModule.cpp (or the project’s established naming) and wire to existing header src/game/include/AIModule.h.
 - Source of truth: src/game/decomp/aimodule.cpp.decomp + src/game/decomp/aimodule.cpp.asm.
 - Done when: the `AIModule` virtuals exist with verified markers and downstream AI modules can derive/call without shim behavior.
+- Status note: implemented in `src/game/src/AIModule.cpp` (commit `c1b4ac6`, merged via `904b732`).
 
 ## Task 58 — AI framework: implement `AIModuleID` + `AIModuleMessage`
 - [ ] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the message + identifier primitives used by AI module communication.
 - Implement: transliterate `AIModuleID` + `AIModuleMessage` behavior (constructors, helpers, any serialization/compare routines present in the decomp dumps).
 - Where: add src/game/src/AIModuleID.cpp and src/game/src/AIModuleMessage.cpp (or similar) and wire to existing headers under src/game/include/.
 - Source of truth: src/game/decomp/AIModuleID.decomp + src/game/decomp/AIModuleID.asm, src/game/decomp/AIModuleMessage.decomp + src/game/decomp/AIModuleMessage.asm.
 - Done when: both types link-clean with their decomp behaviors and AI module call sites no longer need placeholder logic.
+- Status note: implemented in `src/game/src/AIModuleID.cpp` + `src/game/src/AIModuleMessage.cpp` (commit `c1b4ac6`, merged via `904b732`).
 
 ## Task 59 — AI framework: implement `BaseItem` (`aibitm.cpp.decomp`)
 - [ ] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the AI base “item” type used throughout AI lists/collections.
 - Implement: transliterate `BaseItem` ctor/dtor + any helpers from aibitm.cpp.decomp.
 - Where: add src/game/src/BaseItem.cpp and wire to src/game/include/BaseItem.h.
 - Source of truth: src/game/decomp/aibitm.cpp.decomp + src/game/decomp/aibitm.cpp.asm.
 - Done when: `BaseItem` behavior matches decomp and builds without adding new stubs.
+- Status note: implemented in `src/game/src/BaseItem.cpp` (commit `c1b4ac6`, merged via `904b732`).
 
 ## Task 60 — AI framework: implement `BaseObject` (`aibobj.cpp.decomp`)
 - [ ] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the AI base “object” type used by AI module object tracking.
 - Implement: transliterate `BaseObject` ctor/dtor + any helpers from aibobj.cpp.decomp.
 - Where: add src/game/src/BaseObject.cpp and wire to src/game/include/BaseObject.h.
 - Source of truth: src/game/decomp/aibobj.cpp.decomp + src/game/decomp/aibobj.cpp.asm.
 - Done when: `BaseObject` behavior matches decomp and builds without adding new stubs.
+- Status note: implemented in `src/game/src/BaseObject.cpp` (commit `c1b4ac6`, merged via `904b732`).
 
 ## Task 61 — TRIBE AI: implement `TribeBuildAIModule` (`taibldmd.cpp.decomp`)
 - [ ] Assigned to agent
