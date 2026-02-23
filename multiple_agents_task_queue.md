@@ -329,7 +329,7 @@ Rules of engagement:
 
 ## Task 30 — Implement Achievements + Timeline screens parity (`TribeAchievementsScreen` + `Time_Line_Panel`)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the post-game achievements/statistics UI (including timeline view) so the “Achievements Screen” path is no longer a missing-screen hole.
 - Implement:
   - Transliterate `TribeAchievementsScreen` ctor/dtor + action handlers (mode switching, back/ok/restart buttons, scrollbars for text areas, stat table fill).
@@ -337,23 +337,27 @@ Rules of engagement:
 - Where: new src/game/src/scr_ach_impl.cpp + src/game/src/timeline_impl.cpp (or equivalent), wired to existing headers src/game/include/TribeAchievementsScreen.h and src/game/include/Time_Line_Panel.h.
 - Source of truth: src/game/decomp/scr_ach.cpp.decomp (ctor @ 0x0048D530), src/game/decomp/timeline.cpp.decomp (RGE_Timeline @ 0x0050D5B0) + corresponding `.asm` files.
 - Done when: “Achievements Screen” can be constructed without stubs, the timeline panel allocates/loads correctly per decomp, and all code compiles/link-clean with no new placeholder forwarding stubs.
-- Status note: a best-effort `TribeAchievementsScreen` exists (sufficient for the `stop_video(video=4)` branch) (commit `0fde90d`), and `RGE_Timeline` exists in src (`src/game/src/RGE_Timeline.cpp`) (commit `24765e4`), but the real Achievements UI + `Time_Line_Panel` parity is still pending.
+- Status note: Achievements screen + timeline UI parity landed (`Time_Line_Panel.cpp` commit `1bcd8b7`, `TribeAchievementsScreen.cpp` parity fixes commit `a5b9cdf`); timeline backing (`RGE_Timeline.cpp`) already exists (commit `24765e4`).
 
 ---
 
-## Task 31 — Restore `TEasy_Panel` popup dialog helpers (remove Win32 MessageBox shims)
+## Task 31 — Replace remaining `MessageBoxA` screen shims with `TEasy_Panel` popup dialogs
 - [ ] Assigned to agent
 - [ ] Finished
-- Goal: replace remaining Win32 `MessageBoxA` shims used by menu/screens with the original `TEasy_Panel` dialog flows.
-- Implement: `TEasy_Panel::popupOKDialog` (0x00469EE0), `popupYesNoDialog` (0x0046A040), `popupYesNoCancelDialog` (0x0046A150).
-- Where: src/game/src/Panel_ez.cpp (+ declarations in src/game/include/TEasy_Panel.h) and remove/update call-site shims including:
-  - src/game/src/scr_save_impl.cpp (explicit TODO(parity) MessageBox fallbacks)
-  - src/game/src/scr_load_impl.cpp (delete/confirm flows still use `MessageBoxA`)
-  - src/game/src/scr_mps_impl.cpp (MP setup/info popups still use `MessageBoxA`)
-  - src/game/src/Scr_sing_impl.cpp (SP menu popup helper uses `MessageBoxA`)
+- Goal: eliminate remaining Win32 `MessageBoxA` usage in *screen/UI* flows by routing through the already-restored `TEasy_Panel` popup dialogs.
+- Implement: replace remaining `MessageBoxA` call sites in screen implementations with:
+  - `TEasy_Panel::popupOKDialog` (0x00469EE0)
+  - `TEasy_Panel::popupYesNoDialog` (0x0046A040)
+  - `TEasy_Panel::popupYesNoCancelDialog` (0x0046A150)
+- Where: remove/update screen call sites in:
+  - src/game/src/scr_save_impl.cpp
+  - src/game/src/scr_load_impl.cpp
+  - src/game/src/scr_mps_impl.cpp
+  - src/game/src/Scr_sing_impl.cpp
+  (Scope note: error/fatal popups in low-level bootstrap/resource code like `main.cpp` / `Res_file.cpp` are out-of-scope unless explicitly desired.)
 - Source of truth: src/game/decomp/panel_ez.cpp.decomp + src/game/decomp/panel_ez.cpp.asm.
-- Done when: screens no longer rely on `MessageBoxA` for these dialog flows, and TODO markers/call sites are removed (including the save-screen TODO(parity) MessageBox fallbacks).
-- Status note: `TEasy_Panel::popupOKDialog/popupYesNoDialog/popupYesNoCancelDialog` are implemented and marked fully verified in `Panel_ez.cpp` (commit `a2dd915`); remaining work is removing the remaining `MessageBoxA` call sites listed above.
+- Done when: those four screen files no longer call `MessageBoxA` and any TODO(parity) “MessageBox fallback” notes are removed, with build staying clean.
+- Status note: popup helpers are implemented and used in several screens already (commit `a2dd915`), but `MessageBoxA` still exists in the listed screen files (e.g. `scr_load_impl.cpp`, `scr_save_impl.cpp`, `scr_mps_impl.cpp`, `Scr_sing_impl.cpp`).
 
 ## Task 32 — Finish custom mouse pointer parity (basegame mouse-move path)
 - [x] Assigned to agent
@@ -397,36 +401,35 @@ Rules of engagement:
 
 ## Task 36 — Replace TRIBE player AI compat shim with real `TribeMainDecisionAIModule`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove `TribeMainDecisionAIModuleCompatShim` so TRIBE player AI uses the real module/vtable, preventing subtle AI dispatch mismatches.
 - Implement: full ctor/dtor + required virtuals for `TribeMainDecisionAIModule`, and update `TRIBE_Player` to allocate/use it (removing the compat shim + reinterpret-cast allocation path).
 - Where: new src file(s) under src/game/src + edits in src/game/src/TRIBE_Player.cpp and matching headers under src/game/include.
 - Source of truth: src/game/decomp/TribeMainDecisionAIModule.decomp + src/game/decomp/TribeMainDecisionAIModule.asm, plus call sites in src/game/decomp/tplayer.cpp.decomp.
 - Done when: the shim class is removed, `playerAI` is a real `TribeMainDecisionAIModule`, and build is clean without adding new “linker satisfaction” stubs.
-- Status note: `TribeMainDecisionAIModuleCompatShim` + reinterpret-cast allocation are still present in `src/game/src/TRIBE_Player.cpp` (latest local commit `15212ff`).
+- Status note: `TRIBE_Player` now allocates/uses a real `TribeMainDecisionAIModule` and the compat shim path is gone (commit `1b3f6f5`, merged via `baa935e`).
 
 ---
 
 ## Task 37 — Implement `AIPlayBook::loadPlays` full `.ply` parsing (remove current stub)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: stop treating `data\\aoe.ply` as “loaded” when parsing is stubbed, so playbook data structures are actually populated.
 - Implement: full transliteration of `AIPlayBook::loadPlays(char*)` (file format parse + allocation + per-play setup).
 - Where: src/game/src/AIPlayBook.cpp (+ any needed declarations in src/game/include/AIPlayBook.h).
 - Source of truth: src/game/decomp/aipbook.cpp.decomp (loadPlays @ 0x00410220) + src/game/decomp/aipbook.cpp.asm.
 - Done when: the `// TODO: STUB: Full .ply parsing...` note is removed, all parse branches/alloc/free match decomp, and build is clean.
-- Status note: Task 14 restored the call-site; this task restores the actual parser.
-  - Current state: `AIPlayBook::loadPlays` still contains the explicit `// TODO: STUB: Full .ply parsing...` marker in `src/game/src/AIPlayBook.cpp` (commit `c444d6a`).
+- Status note: `AIPlayBook::loadPlays` full `.ply` parsing restored and the explicit stub marker removed (implementation/fix commit `baf6442`, merged via `603fda9`).
 
 ## Task 38 — Implement `RGE_Game_World::data_load_*` virtuals (currently hard stubs)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the data-loading virtuals so world initialization can load terrain/sprites/sounds/players/objects without “return 1” placeholders.
 - Implement: `data_load_world`, `data_load_terrain_tables`, `data_load_players`, `data_load_objects`, `data_load_sounds`, `data_load_color_tables`, `data_load_sprites`, `data_load_players_type`, `data_load_effects`, `data_load_map`, `data_load_random_map`.
 - Where: src/game/src/RGE_Game_World.cpp (+ declarations in src/game/include/RGE_Game_World.h if missing).
 - Source of truth: src/game/decomp/world.cpp.decomp + src/game/decomp/world.cpp.asm (locate the `data_load_*` family by symbol/offset).
 - Done when: the “Stub implementations” block is gone, each method matches decomp control flow, and build is clean.
-- Status note: `src/game/src/RGE_Game_World.cpp` still contains a “Stub implementations for RGE_Game_World virtual methods” block for the `data_load_*` family (latest local commit `15212ff`).
+- Status note: `data_load_*` family implemented (commit `6605a1a`, merged via `2d9afb0`).
 
 ## Task 39 — Finish `RGE_Action_Object` + `RGE_Action_List` plumbing parity (action stack management)
 - [x] Assigned to agent
@@ -439,7 +442,7 @@ Rules of engagement:
 - Where: src/game/src/RGE_Action_Object.cpp, src/game/src/RGE_Action_List.cpp (+ headers under src/game/include).
 - Source of truth: src/game/decomp/act_obj.cpp.decomp + src/game/decomp/act_obj.cpp.asm, src/game/decomp/act_list.cpp.decomp + src/game/decomp/act_list.cpp.asm.
 - Done when: the transliteration covers the full decomp function set for both files (with `// Fully verified...` markers on finished functions) and build is clean.
-- Status note: initial load scaffolding exists, but coverage is still minimal (e.g., `RGE_Action_Object.cpp` currently implements only ctor/`setup`/`create_action_list` and still has a TODO about the `RGE_Action_List` owning-ctor; `RGE_Action_List.cpp` currently implements only basic stack ops + `load`) (commit `9b7dd32`).
+- Status note: action-stack plumbing parity implemented (`RGE_Action_Object`/`RGE_Action_List` ctor/dtor/load/save/rehook/update/queue ops) (commit `8018339`). Remaining gaps are now primarily the action subclass factories (`RGE_Action_List::create_action` / `create_task_action` still have TODO: STUB because Task 40’s `RGE_Action_*` subclasses are not yet transliterated).
 
 ## Task 40 — Implement the 8 core `RGE_Action_*` subclasses (base unit behaviors)
 - [x] Assigned to agent
@@ -470,7 +473,7 @@ Rules of engagement:
 - Where: src/game/src/RGE_Moving_Object.cpp (+ declarations in src/game/include/RGE_Moving_Object.h).
 - Source of truth: src/game/decomp/move_obj.cpp.decomp + src/game/decomp/move_obj.cpp.asm (ASM audit for signedness in angle/velocity math).
 - Done when: move_obj.cpp.decomp function set is fully covered (verified markers on completed functions) and build is clean.
-- Status note: `RGE_Moving_Object` save/load/setup is present, but most movement behavior is not yet restored; `set_angle()` explicitly contains a “for now, simple stub” path and the overall file only covers a small slice of move_obj.cpp (commit `9b7dd32`).
+- Status note: a large set of move_obj.cpp helper methods + state management landed (commit `a98da35`, plus marker fix `2bf8491`). Still missing the higher-level movement/pathing execution methods (e.g., `update`, `canPath`/path search integration) and therefore remains blocked on Task 43’s `PathingSystem::findPath` parity.
 
 ## Task 43 — Finish pathfinding: `PathingSystem` + `Path` algorithm and helper ops
 - [x] Assigned to agent
@@ -482,7 +485,7 @@ Rules of engagement:
 - Where: src/game/src/pathsys.cpp, src/game/src/Path.cpp (+ headers under src/game/include).
 - Source of truth: src/game/decomp/pathsys.cpp.decomp + src/game/decomp/pathsys.cpp.asm, src/game/decomp/path.cpp.decomp + src/game/decomp/path.cpp.asm.
 - Done when: the decomp function sets are implemented (verified markers on completed functions) and build is clean.
-- Status note: `pathsys.cpp` currently only contains constructor/destructor + basic obstruction helpers (no `findPath` yet), and `Path.cpp` currently only contains a handful of container methods (commit `9b7dd32`).
+- Status note: `Path.cpp` has grown beyond the initial handful of helpers (latest touch `a98da35`), but `pathsys.cpp` still lacks `PathingSystem::findPath` and the real path search/smoothing logic (still primarily ctor/dtor + obstruction helpers, commit `9b7dd32`).
 
 ## Task 44 — Implement missing `RGE_Combat_Object` combat mechanics (attack/damage/armor)
 - [x] Assigned to agent
@@ -506,16 +509,16 @@ Rules of engagement:
 
 ## Task 46 — Complete doppleganger (fog-of-war ghost) object parity
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the fog-of-war ghost object system so it can draw/update/save correctly instead of only loading.
 - Implement: remaining `RGE_Doppleganger_Object` virtuals (draw/update/save/die/destroy/copy/rehook/new_sprite/check_damage_sprites, etc.) and any creator/helpers required.
 - Where: src/game/src/RGE_Doppleganger_Object.cpp (+ possibly src/game/src/RGE_Doppleganger_Creator.cpp) and headers under src/game/include.
 - Source of truth: src/game/decomp/dpl_obj.cpp.decomp + src/game/decomp/dpl_obj.cpp.asm, plus src/game/decomp/m_dg_obj.cpp.decomp if it contains master/variant behaviors.
 - Done when: doppleganger no longer depends on stub forwarding for core virtuals and build is clean.
-- Status note: `RGE_Doppleganger_Object.cpp` currently only implements ctor(s) + `setup` (load); core behavior virtuals are still stubbed/forwarded (commit `9b7dd32`).
+- Status note: doppleganger creator/object runtime parity restored (commit `2b96aa1`, merged via `a59a4b0`).
 
 ## Task 47 — Audit/restore `TShape` draw pipeline parity (replace current custom implementation)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: ensure software renderer shape drawing matches the original (control flow + blending/shadow/mirror/dither variants), not an approximation.
 - Implement: decomp-first transliteration of the `shape.cpp.decomp` routine set into the project’s `TShape` implementation (including clipped/unclipped, mirror variants, shadowing/translucency, bounds, and span integration). If current code already covers a function, ASM-audit and adjust it to match decomp rather than refactoring.
@@ -531,27 +534,41 @@ Rules of engagement:
 - Where: add new src/game/src/ translation units for scenario + fractal (or extend existing world/scenario units if that’s the established pattern), plus headers under src/game/include.
 - Source of truth: src/game/decomp/scenario.cpp.decomp, src/game/decomp/tscenaro.cpp.decomp, src/game/decomp/fractal.cpp.decomp (+ asm audits as needed).
 - Done when: scenario save/load code compiles/link-clean without stubs, fractal code exists, and completed transliterations have verified markers.
-- Status note: a significant chunk of `RGE_Scenario` / `T_Scenario` code currently lives in `src/game/src/TRIBE_World_types.cpp` (commit `dc4862e`), but key base methods like `RGE_Scenario::get_object_pointer` and `RGE_Scenario::rehook` are still stubs and there is no `Fractal` implementation in src yet.
+- Done when: scenario save/load code compiles/link-clean without stubs, fractal code exists, and completed transliterations have verified markers.
+- Dependency note: this is a prerequisite for Task 55 (scenario editor screens) and a practical prerequisite for finishing random-map generation parity (Task 49) beyond the currently-landed pieces.
+- Status note: `Fractal` code now exists in `src/game/src/fractal.cpp` (upstream merge `7a3af17`), but key base methods like `RGE_Scenario::get_object_pointer` and `RGE_Scenario::rehook` are still stubs and the remaining `RGE_Scenario` / `T_Scenario` coverage is still concentrated in `src/game/src/TRIBE_World_types.cpp` (commit `dc4862e`).
 
 ## Task 49 — Implement random map generation modules (`RMM_*` classes)
 - [ ] Assigned to agent
 - [ ] Finished
 - Goal: restore the random map generation pipeline (land/elevation/terrain/shallows/objects/etc.) so `new_game` can generate real maps without placeholder behavior.
-- Implement: the `RMM_*` modules from the rmm_*.decomp set (base/controller/land/elevation/terrain/shallows/objects + any additional rmm units present in decomp like cliffs/database controllers).
-- Where: add new src/game/src/ files for each module; use headers under src/game/include.
+- Implement: the missing `RGE_RMM_*` modules from the rmm_*.decomp set, focusing on the core pipeline classes:
+  - `RGE_RMM_Controller`
+  - `RGE_RMM_Land_Generator`
+  - `RGE_RMM_Elevation_Generator`
+  - `RGE_RMM_Terrain_Generator`
+  - `RGE_RMM_Shallows_Generator`
+  - `RGE_RMM_Object_Generator`
+  (and any remaining helpers referenced by these units).
+- Where: add new src/game/src/ translation units for the missing generator/controller classes (headers already exist under src/game/include).
 - Source of truth: src/game/decomp/rmm_*.cpp.decomp (+ asm audits where suspicious).
-- Done when: all modules compile/link and random-map generation can proceed without TODO/STUB blocks.
-- Status note: no `RMM_*` module translation units exist in `src/game/src/` yet.
+- Done when: `RGE_Map`/`RGE_Game_World` can construct and run the full random-map module chain without placeholder behavior (compile/link clean; no “TODO/STUB” generators).
+- Status note: random-map work has started: `src/game/src/TRIBE_RMM_Database_Controller.cpp` and `src/game/src/RGE_RMM_Cliffs_Generator.cpp` exist, but the rest of the generator chain (`RGE_RMM_Controller`, land/elev/terrain/shallows/object generators) still has no src translation units.
 
 ## Task 50 — Implement base AI framework (`AIModule`, `BaseItem`, `BaseObject`, IDs/messages)
 - [ ] Assigned to agent
 - [ ] Finished
-- Goal: restore the shared AI framework that TRIBE AI modules build on.
-- Implement: AIModule, BaseItem, BaseObject, AIModuleID, AIModuleMessage (and any small helpers/types they require).
-- Where: add new src/game/src/ files + headers under src/game/include.
+- Goal: restore the core AI framework units from decomp so higher-level AI modules can be transliterated without inventing placeholder types.
+- Implement: decomp-first transliteration (as actually referenced by the decomp) for:
+  - `AIModule` (aimodule.cpp.decomp)
+  - `BaseItem` (aibitm.cpp.decomp)
+  - `BaseObject` (aibobj.cpp.decomp)
+  - `AIModuleID` and `AIModuleMessage` behaviors (AIModuleID.decomp / AIModuleMessage.decomp)
+  Keep dumped header layouts/vtables intact; do not add/reorder members.
+- Where: add new src/game/src/ translation units for these types (headers already exist under src/game/include).
 - Source of truth: src/game/decomp/aimodule.cpp.decomp, src/game/decomp/aibitm.cpp.decomp, src/game/decomp/aibobj.cpp.decomp, src/game/decomp/AIModuleID.decomp, src/game/decomp/AIModuleMessage.decomp.
-- Done when: AI framework compiles/links cleanly and downstream TRIBE AI module builds no longer require shim types.
-- Status note: no AI framework translation units (AIModule/BaseItem/BaseObject/IDs/messages) exist in `src/game/src/` yet.
+- Done when: these decomp-based translation units compile/link cleanly without introducing new “linker satisfaction” stubs, and downstream AI work can include/use these types directly.
+- Status note: headers exist (`src/game/include/AIModule.h`, `BaseItem.h`, `BaseObject.h`, `AIModuleID.h`, `AIModuleMessage.h`), and some AI code exists in src (`MainDecisionAIModule.cpp`, `UnitAIModule.cpp`, `TribeMainDecisionAIModule.cpp`), but there are currently no corresponding decomp-based `AIModule`/`BaseItem`/`BaseObject` `.cpp` units under `src/game/src/`.
 
 ## Task 51 — Implement remaining TRIBE AI modules (excluding Task 36)
 - [ ] Assigned to agent
@@ -560,27 +577,31 @@ Rules of engagement:
 - Implement: TRIBE AI modules from the tai*.decomp set excluding `TribeMainDecisionAIModule` (Task 36), e.g. build/strategy/resource/tactical/information and any required connectors/rules modules.
 - Where: add new src/game/src/ files + headers under src/game/include.
 - Source of truth: src/game/decomp/taibldmd.cpp.decomp, taiconmd.cpp.decomp, taicrule.cpp.decomp, taiinfmd.cpp.decomp, tairesmd.cpp.decomp, taistrmd.cpp.decomp, taitacmd.cpp.decomp, taiuaimd.cpp.decomp (+ asm audits as needed).
-- Done when: each module compiles/links, has verified markers on completed transliterations, and TRIBE_Player can wire AI callbacks beyond just construction.
-- Dependency note: expects Task 50 to land first.
-- Status note: no TRIBE AI module translation units from the `tai*` decomp set exist in `src/game/src/` yet.
+- Done when: each tai* module has a corresponding src translation unit that matches decomp control flow (verified markers on completed transliterations) and can be constructed/used without changing the `TribeMainDecisionAIModule` memory layout.
+- Dependency note: expects Task 50 to land first (AIModule/BaseItem/BaseObject/IDs/messages).
+- Status note: many TRIBE AI headers exist under src/game/include (e.g. `TribeBuildAIModule.h`, `TribeStrategyAIModule.h`, `TribeTacticalAIModule.h`, etc.), but there are currently no `tai*` transliteration `.cpp` units under `src/game/src/`.
 
 ## Task 52 — Restore missing panel/widget classes used across menus/screens
 - [ ] Assigned to agent
 - [ ] Finished
 - Goal: fill in UI panel classes that screens depend on (edit boxes, input panels, scrollable text, dialog panels, sliders, buttons).
-- Implement: `TEditPanel`, `TInputPanel`, `TScrollTextPanel`, `TDialogPanel`, `THorizontalSliderPanel`, and restore `TButtonPanel` parity (many handlers currently return 0).
-- Where: add/update src/game/src/ panel units (likely `Pnl_edit.cpp`, `Pnl_inp.cpp`, `Pnl_txt.cpp`, `Pnl_dlg.cpp`, `Pnl_sld.cpp`, and `TButtonPanel.cpp`) plus headers under src/game/include.
+- Implement: missing widget/panel behavior from decomp for:
+  - `TInputPanel` (pnl_inp.cpp.decomp)
+  - `TScrollTextPanel` (pnl_txt.cpp.decomp)
+  - `THorizontalSliderPanel` (pnl_sld.cpp.decomp)
+  - Continue `TEditPanel` parity (pnl_edit.cpp.decomp) and `TButtonPanel` parity (pnl_btn.cpp.decomp) where existing src still returns 0 in core handlers.
+  - This task excludes list/scrollbar/message panel work already covered by Tasks 7 and 21.
+- Where: add/update the panel translation units under src/game/src (existing examples include `Pnl_edit.cpp`, `TButtonPanel.cpp`, `TDialogPanel.cpp`).
 - Source of truth: src/game/decomp/pnl_edit.cpp.decomp, pnl_inp.cpp.decomp, pnl_txt.cpp.decomp, pnl_dlg.cpp.decomp, pnl_sld.cpp.decomp, pnl_btn.cpp.decomp (+ asm audits as needed).
 - Done when: these panels compile/link, no longer contain placeholder return-0 behavior in their core input paths, and completed transliterations have verified markers.
 - Non-overlap note: this task explicitly excludes list/scrollbar/message panel work already tracked by Tasks 7 and 21.
-- Status note: `TDialogPanel` landed (src/game/src/TDialogPanel.cpp) alongside list-dialog plumbing (`TListDialog`, `RGE_Dialog_List`) (commit `6331dab`). Remaining: edit/input/scroll-text/slider panels + full `TButtonPanel` parity.
-- Status note (more detail): `Pnl_edit.cpp` exists (commit `66b82f2`) and dialog primitives exist (`TMessageDialog.cpp` commit `66b82f2`, `TListDialog.cpp`/`RGE_Dialog_List.cpp` commit `6331dab`), but there are still no translation units for `TInputPanel`/`TScrollTextPanel`/slider panels, and `TButtonPanel` parity remains incomplete.
+- Status note: there is already substantial UI panel coverage (including `Pnl_edit.cpp` and a large `TButtonPanel.cpp`), but several `TButtonPanel` handlers still return 0 and there are still no translation units for `TInputPanel`/`TScrollTextPanel`/slider panels.
 
 ## Task 53 — Implement dialog classes (`dlg_*.cpp.decomp`) used by menus and in-game UI
 - [ ] Assigned to agent
 - [ ] Finished
 - Goal: restore the real dialog boxes (config/diplomacy/menu/about/help/list/message/send message/etc.) so screens don’t need Win32 shims.
-- Implement: dialog classes from src/game/decomp/dlg_*.cpp.decomp (split across agents by dialog if needed).
+- Implement: dialog classes from src/game/decomp/dlg_*.cpp.decomp (this is intentionally split-friendly: assign one dialog translation unit per agent).
 - Where: add new src/game/src/ dialog translation units + headers under src/game/include.
 - Source of truth: src/game/decomp/dlg_*.cpp.decomp (+ asm audits as needed).
 - Done when: dialogs compile/link and can be constructed by screens without TODO/STUB shims.
@@ -595,7 +616,7 @@ Rules of engagement:
 - Implement: COM_Object plus the COM_* family used by the comm handler (address/session/lobby/server/sync/speed/error, etc.).
 - Where: add new src/game/src/ translation units + headers under src/game/include.
 - Source of truth: src/game/decomp/com_*.cpp.decomp (+ asm audits as needed).
-- Done when: COM layer compiles/links and Task 26’s MP comm init no longer needs fallback null-path handling due to missing types.
+- Done when: COM layer compiles/links and comm handler code can build without placeholder structs/types for COM objects.
 - Status note: there are currently no `COM_*.cpp` translation units under `src/game/src/`.
 
 ## Task 55 — Implement scenario editor screens (`scr_sed*`) (large, split-friendly)
@@ -606,6 +627,7 @@ Rules of engagement:
 - Where: add new src/game/src/ screen translation units + headers under src/game/include.
 - Source of truth: src/game/decomp/scr_sed.cpp.decomp, scr_sed2.cpp.decomp, scr_sedo.cpp.decomp, scr_sedm.cpp.decomp.
 - Done when: all editor screens compile/link and can be instantiated via the panel system without stubs.
+- Dependency note: expects Task 48 (scenario core + fractal) and substantial coverage from Tasks 52/53 (widgets + dialogs).
 - Status note: no scenario-editor screen translation units from the `scr_sed*` set exist in `src/game/src/` yet.
 
 ## Task 56 — Implement shared utility classes used broadly (AI + screens)
@@ -616,4 +638,4 @@ Rules of engagement:
 - Where: add new src/game/src/ translation units + headers under src/game/include.
 - Source of truth: src/game/decomp/dstring.cpp.decomp, utmarray.cpp.decomp, trig.cpp.decomp, campaign.cpp.decomp, infmap.cpp.decomp.
 - Done when: these units compile/link cleanly and downstream modules stop carrying local string/array workarounds.
-- Status note: there are currently no utility translation units in `src/game/src/` for `DString`/`UTMArray`/trig/Campaign/InfluenceMap yet.
+- Status note: the project has some ad-hoc utilities already (e.g. `mystring.cpp`), but there are currently no translation units in `src/game/src/` corresponding to the decomp units for `DString`/`UTMArray`/trig/Campaign/InfluenceMap.
