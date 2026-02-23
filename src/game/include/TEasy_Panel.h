@@ -19,6 +19,9 @@ public:
     TEasy_Panel();
     TEasy_Panel(char* name);
 
+    // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004672A0
+    void prepare_for_close();
+
     // Non-virtual overload used heavily by screens (see `src/game/src/Panel_ez.cpp.asm` / `.decomp`).
     long setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10);
 
