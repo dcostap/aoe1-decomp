@@ -1,4 +1,5 @@
 #include "../include/TRIBE_Screen_Main_Menu.h"
+#include "../include/TRIBE_Credits_Screen.h"
 #include "../include/TTextPanel.h"
 #include "../include/TPicturePanel.h"
 #include "../include/globals.h"
@@ -348,10 +349,12 @@ long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int pa
     }
 
     if ((param_1 == 'C') || (param_1 == 'c')) {
-        TPanel* credits = create_stub_screen((char*)"Credits Screen", (char*)"scr_cred", 0xc38b, (char*)"Credits (Stub)");
-        if (credits) {
+        TRIBE_Credits_Screen* credits = new TRIBE_Credits_Screen();
+        if (credits && credits->error_code == 0 && panel_system) {
             panel_system->setCurrentPanel((char*)"Credits Screen", 0);
             panel_system->destroyPanel((char*)"Main Menu");
+        } else if (credits) {
+            delete credits;
         }
         return 1;
     }
