@@ -118,6 +118,7 @@ public:
     void setSinglePlayerGame(int p1);
     void setMultiplayerGame(int p1);
     void setMapSize(int p1, int p2, int p3);
+    void find_campaigns();
     void setAllowCheatCodes(int p1);
     void setCheatNotification(int p1);
     void setFullVisibility(int p1);
@@ -188,6 +189,7 @@ public:
     void set_paused(int p1, int p2);
     void request_pause();
     void reset_timings();
+    unsigned long get_accum_time(int param_1);
     void add_to_timing(int param_1, ulong param_2);
     void increment_world_update_count();
     void increment_view_update_count();
