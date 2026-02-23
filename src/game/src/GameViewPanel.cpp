@@ -833,7 +833,7 @@ void GameViewPanel::draw() {
                     continue;
                 }
 
-                ts->shape->shape_draw(this->render_area, sx, sy, (long)frame, 0, 0, nullptr);
+                ts->shape->shape_draw(this->render_area, sx, sy, (long)frame, 0, nullptr);
             }
 
             if (draw_border != 0 && border_idx != 0 && border_idx < 16) {
@@ -841,26 +841,26 @@ void GameViewPanel::draw() {
                 if (bs->loaded && bs->shape != nullptr) {
                     if (bs->border_style == 0) {
                         if (center_index >= 0 && center_index < bs->shape->shape_count()) {
-                            bs->shape->shape_draw(this->render_area, sx, sy, (long)center_index, 0, 0, nullptr);
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)center_index, 0, nullptr);
                             border_drawn++;
                         } else {
                             border_missing++;
                         }
                     } else {
                         if (left_index >= 0 && left_index < bs->shape->shape_count()) {
-                            bs->shape->shape_draw(this->render_area, sx, sy, (long)left_index, 0, 0, nullptr);
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)left_index, 0, nullptr);
                             border_drawn++;
                         }
                         if (right_index >= 0 && right_index < bs->shape->shape_count()) {
-                            bs->shape->shape_draw(this->render_area, sx, sy, (long)right_index, 0, 0, nullptr);
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)right_index, 0, nullptr);
                             border_drawn++;
                         }
                         if (bottom_index >= 0 && bottom_index < bs->shape->shape_count()) {
-                            bs->shape->shape_draw(this->render_area, sx, sy, (long)bottom_index, 0, 0, nullptr);
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)bottom_index, 0, nullptr);
                             border_drawn++;
                         }
                         if (center_index >= 0 && center_index < bs->shape->shape_count()) {
-                            bs->shape->shape_draw(this->render_area, sx, sy, (long)center_index, 0, 0, nullptr);
+                            bs->shape->shape_draw(this->render_area, sx, sy, (long)center_index, 0, nullptr);
                             border_drawn++;
                         }
                     }

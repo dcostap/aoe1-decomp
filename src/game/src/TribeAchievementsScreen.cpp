@@ -665,7 +665,7 @@ void TribeAchievementsScreen::draw() {
                     if (p != nullptr && p->game_status == 1 && this->player_names[row] != nullptr) {
                         long y = ((TPanel*)this->player_names[row])->yPosition();
                         long x = ((TPanel*)this->player_names[row])->xPosition();
-                        this->win_decal->shape_draw(this->render_area, x - 0x14, y, 0, 0, 0, nullptr);
+                        this->win_decal->shape_draw(this->render_area, x - 0x14, y, 0, 0, nullptr);
                     }
                 }
             }

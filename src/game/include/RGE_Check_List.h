@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+struct RGE_Check_Node;
+
 struct RGE_Check_List {
     RGE_Check_Node* list;
 };

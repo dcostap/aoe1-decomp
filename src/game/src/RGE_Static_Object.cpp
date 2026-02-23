@@ -57,6 +57,11 @@ static void rge_static_set_sleep_flag(RGE_Static_Object* obj, uchar sleep_flag) 
     obj->sleep_flag = sleep_flag;
 }
 
+void RGE_Static_Object::set_sleep_flag(uchar sleep_flag) {
+    // Fully verified. Source of truth: stat_obj.cpp.asm calls this helper via RGE_Static_Object::set_sleep_flag.
+    rge_static_set_sleep_flag(this, sleep_flag);
+}
+
 static void rge_static_ensure_group_capacity(ManagedArray<int>& arr, int required_index) {
     if (arr.maximumSizeValue - 1 >= required_index) {
         return;
