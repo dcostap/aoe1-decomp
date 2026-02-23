@@ -442,7 +442,7 @@ Rules of engagement:
 - Where: src/game/src/RGE_Action_Object.cpp, src/game/src/RGE_Action_List.cpp (+ headers under src/game/include).
 - Source of truth: src/game/decomp/act_obj.cpp.decomp + src/game/decomp/act_obj.cpp.asm, src/game/decomp/act_list.cpp.decomp + src/game/decomp/act_list.cpp.asm.
 - Done when: the transliteration covers the full decomp function set for both files (with `// Fully verified...` markers on finished functions) and build is clean.
-- Status note: action-stack plumbing parity implemented (`RGE_Action_Object`/`RGE_Action_List` ctor/dtor/load/save/rehook/update/queue ops) (commit `8018339`). Remaining gaps are now primarily the action subclass factories (`RGE_Action_List::create_action` / `create_task_action` still have TODO: STUB because Task 40’s `RGE_Action_*` subclasses are not yet transliterated).
+- Status note: action-stack plumbing parity implemented (`RGE_Action_Object`/`RGE_Action_List` ctor/dtor/load/save/rehook/update/queue ops) (commit `8018339`). Remaining gaps are now primarily the action subclass factories (`RGE_Action_List::create_action` / `create_task_action` still have TODO: STUB because Task 40’s `RGE_Action_*` subclasses are not yet fully transliterated). Minor wiring fix: `RGE_Action_Object::move_to` fallback now instantiates `RGE_Action_Move_To` (commit `ad5e426`).
 
 ## Task 40 — Implement the 8 core `RGE_Action_*` subclasses (base unit behaviors)
 - [x] Assigned to agent
@@ -453,7 +453,7 @@ Rules of engagement:
 - Source of truth: src/game/decomp/act_atak.cpp.decomp, act_move.cpp.decomp, act_gath.cpp.decomp, act_entr.cpp.decomp, act_expl.cpp.decomp, act_bird.cpp.decomp, act_misl.cpp.decomp, act_tran.cpp.decomp (+ asm audits as needed).
 - Done when: all eight classes compile/link, all transliterated functions have `// Fully verified...` markers, and no placeholder “return success” behavior remains in core update/stop/work paths.
 - Dependency note: assumes Task 39 (action-stack plumbing) is far enough along for compilation and basic dispatch.
-- Status note: no per-action subclass translation units are present under `src/game/src/` yet for the act_*.decomp set; only the `RGE_Action_Object`/`RGE_Action_List` scaffolding exists so far.
+- Status note: partial scaffolding exists for a subset of the action subclasses (`RGE_Action_Move_To`, `RGE_Action_Enter`, `RGE_Action_Transport`) (commit `d55c6d4`), primarily to keep action stacks/save/load/linking working. The remaining core actions (`RGE_Action_Attack`, `RGE_Action_Gather`, `RGE_Action_Explore`, `RGE_Action_Bird`, `RGE_Action_Missile`) are still missing and the existing ones are explicitly best-effort/minimal.
 
 ## Task 41 — Implement remaining TRIBE-specific action subclasses (`tact_*`) (AoE1 gameplay behaviors)
 - [x] Assigned to agent
@@ -463,7 +463,7 @@ Rules of engagement:
 - Where: add new source files under src/game/src/ for each class; use headers under src/game/include/.
 - Source of truth: src/game/decomp/taction.cpp.decomp and src/game/decomp/tact_*.cpp.decomp (+ asm audits where needed).
 - Done when: each class compiles/links, save/load/update/stop/work parity matches decomp, and the set has verified markers on completed transliterations.
-- Status note: aside from the already-restored make-object/make-tech actions (Task 5), the rest of the `tact_*` class set does not have src translation units yet.
+- Status note: TRIBE tact action translation units now exist for most of the `tact_*` set (commit `d55c6d4`), but several are still scaffolds/best-effort (with TODO/STUB notes and simplified update/stop/work paths). This task tracks finishing full decomp parity for each tact action.
 
 ## Task 42 — Implement missing `RGE_Moving_Object` methods (movement + pathing glue)
 - [x] Assigned to agent
@@ -473,11 +473,11 @@ Rules of engagement:
 - Where: src/game/src/RGE_Moving_Object.cpp (+ declarations in src/game/include/RGE_Moving_Object.h).
 - Source of truth: src/game/decomp/move_obj.cpp.decomp + src/game/decomp/move_obj.cpp.asm (ASM audit for signedness in angle/velocity math).
 - Done when: move_obj.cpp.decomp function set is fully covered (verified markers on completed functions) and build is clean.
-- Status note: a large set of move_obj.cpp helper methods + state management landed (commit `a98da35`, plus marker fix `2bf8491`). Still missing the higher-level movement/pathing execution methods (e.g., `update`, `canPath`/path search integration) and therefore remains blocked on Task 43’s `PathingSystem::findPath` parity.
+- Status note: a large set of move_obj.cpp helper methods + state management landed (commit `a98da35`, plus marker fix `2bf8491`). Higher-level movement/pathing execution methods (e.g., `update`, `canPath`/path search integration) are still missing, but Task 43’s pathfinding work is now available as a dependency.
 
 ## Task 43 — Finish pathfinding: `PathingSystem` + `Path` algorithm and helper ops
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the actual pathfinding algorithm and the missing `Path` manipulation helpers so movement can compute real routes.
 - Implement:
   - `PathingSystem::findPath` / internal path search, smoothing, open/closed management, obstruction/terrain exception behaviors.
@@ -485,7 +485,7 @@ Rules of engagement:
 - Where: src/game/src/pathsys.cpp, src/game/src/Path.cpp (+ headers under src/game/include).
 - Source of truth: src/game/decomp/pathsys.cpp.decomp + src/game/decomp/pathsys.cpp.asm, src/game/decomp/path.cpp.decomp + src/game/decomp/path.cpp.asm.
 - Done when: the decomp function sets are implemented (verified markers on completed functions) and build is clean.
-- Status note: `Path.cpp` has grown beyond the initial handful of helpers (latest touch `a98da35`), but `pathsys.cpp` still lacks `PathingSystem::findPath` and the real path search/smoothing logic (still primarily ctor/dtor + obstruction helpers, commit `9b7dd32`).
+- Status note: pathfinding and Path helper coverage landed (implement commit `6a585fd`, merged via `cce049c`).
 
 ## Task 44 — Implement missing `RGE_Combat_Object` combat mechanics (attack/damage/armor)
 - [x] Assigned to agent
@@ -529,18 +529,18 @@ Rules of engagement:
 
 ## Task 48 — Implement scenario system + fractal map generator (save/load + random-map terrain)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore scenario load/save and the fractal generator used by random maps.
 - Implement: `RGE_Scenario` + `T_Scenario` methods (load/save/serialize helpers) and the `Fractal` implementation.
 - Where: add new src/game/src/ translation units for scenario + fractal (or extend existing world/scenario units if that’s the established pattern), plus headers under src/game/include.
 - Source of truth: src/game/decomp/scenario.cpp.decomp, src/game/decomp/tscenaro.cpp.decomp, src/game/decomp/fractal.cpp.decomp (+ asm audits as needed).
 - Done when: scenario save/load code compiles/link-clean without stubs, fractal code exists, and completed transliterations have verified markers.
 - Dependency note: this is a prerequisite for Task 55 (scenario editor screens) and a practical prerequisite for finishing random-map generation parity (Task 49) beyond the currently-landed pieces.
-- Status note: `Fractal` code now exists in `src/game/src/fractal.cpp` (upstream merge `7a3af17`), but key base methods like `RGE_Scenario::get_object_pointer` and `RGE_Scenario::rehook` are still stubs and the remaining `RGE_Scenario` / `T_Scenario` coverage is still concentrated in `src/game/src/TRIBE_World_types.cpp` (commit `dc4862e`).
+- Status note: scenario save/load + `T_Scenario` transliterations landed (implement commit `8dade6e`, merged via `1e55d74`).
 
 ## Task 49 — Implement random map generation modules (`RMM_*` classes)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the random map generation pipeline (land/elevation/terrain/shallows/objects/etc.) so `new_game` can generate real maps without placeholder behavior.
 - Implement: the missing `RGE_RMM_*` modules from the rmm_*.decomp set, focusing on the core pipeline classes:
   - `RGE_RMM_Controller`
@@ -553,7 +553,7 @@ Rules of engagement:
 - Where: add new src/game/src/ translation units for the missing generator/controller classes (headers already exist under src/game/include).
 - Source of truth: src/game/decomp/rmm_*.cpp.decomp (+ asm audits where suspicious).
 - Done when: `RGE_Map`/`RGE_Game_World` can construct and run the full random-map module chain without placeholder behavior (compile/link clean; no “TODO/STUB” generators).
-- Status note: random-map work has started: `src/game/src/TRIBE_RMM_Database_Controller.cpp` and `src/game/src/RGE_RMM_Cliffs_Generator.cpp` exist, but the rest of the generator chain (`RGE_RMM_Controller`, land/elev/terrain/shallows/object generators) still has no src translation units.
+- Status note: core random-map generator chain landed (implement commit `2de750e`, merged via `57faada`).
 
 ## Task 50 — Implement base AI framework (`AIModule`, `BaseItem`, `BaseObject`, IDs/messages)
 - [x] Assigned to agent
@@ -699,19 +699,18 @@ Rules of engagement:
 - Source of truth: src/game/decomp/pnl_edit.cpp.decomp, pnl_inp.cpp.decomp, pnl_txt.cpp.decomp, pnl_dlg.cpp.decomp, pnl_sld.cpp.decomp, pnl_btn.cpp.decomp (+ asm audits as needed).
 - Done when: these panels compile/link, no longer contain placeholder return-0 behavior in their core input paths, and completed transliterations have verified markers.
 - Non-overlap note: this task explicitly excludes list/scrollbar/message panel work already tracked by Tasks 7 and 21.
-- Status note: there is already substantial UI panel coverage (including `Pnl_edit.cpp` and a large `TButtonPanel.cpp`), but several `TButtonPanel` handlers still return 0 and there are still no translation units for `TInputPanel`/`TScrollTextPanel`/slider panels.
+- Status note: `TInputPanel`/`TScrollTextPanel` translation units now exist (commit `177e4f4`), and slider/panel coverage is present, but there are still known parity gaps (e.g., some `TButtonPanel` handlers remain simplified/return-0). This task tracks finishing those remaining widget parity holes.
 
 ## Task 53 — Implement dialog classes (`dlg_*.cpp.decomp`) used by menus and in-game UI
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore the real dialog boxes (config/diplomacy/menu/about/help/list/message/send message/etc.) so screens don’t need Win32 shims.
 - Implement: dialog classes from src/game/decomp/dlg_*.cpp.decomp (this is intentionally split-friendly: assign one dialog translation unit per agent).
 - Where: add new src/game/src/ dialog translation units + headers under src/game/include.
 - Source of truth: src/game/decomp/dlg_*.cpp.decomp (+ asm audits as needed).
 - Done when: dialogs compile/link and can be constructed by screens without TODO/STUB shims.
 - Dependency note: expects Task 52’s widget panels and Task 31’s popup helpers to exist where referenced.
-- Status note: list dialog foundations exist (`TListDialog`, `RGE_Dialog_List`), but the `dlg_*.cpp.decomp` dialog set is still not implemented.
-- Status note: there are currently no `dlg_*.cpp` translation units under `src/game/src/`.
+- Status note: dialog translation units landed and compile/link clean (implement commit `5b846b7`, merged via `a0b390d`).
 
 ## Task 54 — Implement COM/networking primitives (`com_*.cpp.decomp`) needed by multiplayer
 - [ ] Assigned to agent
