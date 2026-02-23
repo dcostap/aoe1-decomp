@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "RGE_Random_Map_Module.h"
+#include "RGE_Terrain_Info.h"
 
 class RGE_Zone_Map;
 

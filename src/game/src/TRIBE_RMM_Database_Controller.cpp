@@ -1690,6 +1690,17 @@ uchar RGE_Random_Map_Module::find_path(
     return 0;
 }
 
+#if 0
+// NOTE: The core RMM generator implementations were originally in this TU during bring-up,
+// but are now split into dedicated translation units for Task 49 parity work:
+//   - src/game/src/RGE_RMM_Land_Generator.cpp
+//   - src/game/src/RGE_RMM_Terrain_Generator.cpp
+//   - src/game/src/RGE_RMM_Object_Generator.cpp
+//   - src/game/src/RGE_RMM_Elevation_Generator.cpp
+//   - src/game/src/RGE_RMM_Shallows_Generator.cpp
+//
+// Keep the old in-file copies disabled to avoid duplicate symbols at link time.
+
 RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
     RGE_Map* param_1,
     RGE_Random_Map_Module* param_2,
@@ -3724,6 +3735,8 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
 
     this->deinit_stack(&stack);
 }
+
+#endif // 0
 
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char* param_1, char* param_2, char* param_3, char* param_4)
     : RGE_Random_Map_Module(nullptr, nullptr, 0) {
