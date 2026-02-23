@@ -11,6 +11,7 @@
 #include "../include/globals.h"
 
 #include <stdio.h>
+#include <new>
 
 namespace {
 static RGE_Task* action_object_get_task_by_id(RGE_Master_Action_Object* master, short task_id) {
@@ -167,7 +168,7 @@ int RGE_Action_Object::setup(int param_1, RGE_Game_World* param_2) {
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x004061A0
 RGE_Action_List* RGE_Action_Object::create_action_list() {
-    RGE_Action_List* list = new RGE_Action_List(this);
+    RGE_Action_List* list = new (std::nothrow) RGE_Action_List(this);
     return list;
 }
 
