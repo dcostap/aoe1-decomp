@@ -173,50 +173,13 @@ RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* param_1, f
         return nullptr;
     }
 
-    // Source of truth: m_s_obj.cpp.decomp::RGE_Master_Static_Object::make_new_obj +
-    // stat_obj.cpp.decomp::RGE_Static_Object::setup (minimal transliteration).
-    obj->id = 0;
-    obj->master_obj = this;
-    obj->owner = param_1;
-    obj->sprite = this->sprite;
-    obj->old_sprite = nullptr;
-    obj->sprite_list = nullptr;
-    obj->tile = nullptr;
-    obj->inside_obj = nullptr;
-    obj->objects = nullptr;
-    obj->screen_x_offset = 0;
-    obj->screen_y_offset = 0;
-    obj->shadow_x_offset = 0;
-    obj->shadow_y_offset = 0;
-    obj->hp = (float)this->hp;
-    obj->curr_damage_percent = 0;
-    obj->facet = 0;
-    obj->selected = 0;
-    obj->selected_group = 0;
-    obj->world_x = param_2;
-    obj->world_y = param_3;
-    obj->world_z = param_4;
-    obj->attribute_amount_held = 0.0f;
-    obj->object_state = 2;
-    obj->sleep_flag = (obj->hp > 0.0f) ? 1 : 0;
-    obj->dopple_flag = (this->master_type == 0x19) ? 1 : 0;
-    obj->goto_sleep_flag = 0;
-    obj->attribute_type_held = -1;
-    obj->type = 0x0A;
-    obj->worker_num = 0;
-    obj->player_object_node = nullptr;
-    obj->inObstructionMapValue = 0;
-    obj->lastInObstructionMapValue = 0;
-    obj->underAttackValue = 0;
-
-    if (param_1->world != nullptr) {
-        obj->id = param_1->world->next_object_id;
-        param_1->world->next_object_id = param_1->world->next_object_id + 1;
+    if (obj->setup(this, param_1, param_2, param_3, param_4) == 0) {
+        delete obj;
+        obj = nullptr;
+        return nullptr;
     }
 
-    obj->player_object_node = param_1->addObject(obj, (int)obj->sleep_flag, (int)obj->dopple_flag);
-
-    if (param_1->world != nullptr && param_1->world->map != nullptr) {
+    if (obj->tile == nullptr && param_1->world != nullptr && param_1->world->map != nullptr) {
         int tile_x = (int)param_2;
         int tile_y = (int)param_3;
         RGE_Tile* tile = param_1->world->map->get_tile(tile_x, tile_y);

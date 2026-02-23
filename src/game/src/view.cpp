@@ -22,6 +22,7 @@
 #include "TMessagePanel.h"
 #include "RGE_Tile_Set.h"
 #include "RGE_Border_Set.h"
+#include "../include/custom_debug.h"
 #include "globals.h"
 #include <cstdio>
 #include <cstdlib>
@@ -39,6 +40,8 @@ int View_Grid_Mode = 0;
 RGE_Pick_Obj_Info Picked_Objects[0x40] = {}; // Stride 0xC, max 0x40. Source of truth: view.cpp.asm.
 extern TMousePointer* MouseSystem;
 extern RGE_Base_Game* rge_base_game;
+static int s_view_debug_draw_logs = 0;
+static int s_view_debug_terrain_logs = 0;
 
 static const float kView_Scroll_Factor = 0.0625f; // Source of truth: view.cpp.asm uses DAT_005776c4.
 static const float kView_Pick_Offset = 0.5f;      // Source of truth: view.cpp.asm uses DAT_005776c0 (=-0.5), i.e. +0.5 bias.
@@ -1307,6 +1310,12 @@ void RGE_View::draw()
     }
 
     if (this->world == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (s_view_debug_draw_logs < 12) {
+            CUSTOM_DEBUG_LOG("RGE_View::draw: world is null, clearing render area");
+            s_view_debug_draw_logs++;
+        }
+        CUSTOM_DEBUG_END
         this->draw_setup(0);
         if (this->render_area) {
            this->render_area->Clear(&this->render_area->ClipRect, 0);
@@ -1336,6 +1345,25 @@ void RGE_View::draw()
     }
 
     this->draw_view(10, this->save_area1); // 10 is terrain mode
+
+    CUSTOM_DEBUG_BEGIN
+    if (s_view_debug_draw_logs < 12 || (frame_count % 120) == 0) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "RGE_View::draw: frame=%d tiles_drawn=%d world=%p map=%p player=%p start=(%d,%d) map_offset=(%d,%d)",
+            frame_count,
+            tiles_drawn,
+            this->world,
+            this->map,
+            this->player,
+            (int)this->start_map_col,
+            (int)this->start_map_row,
+            (int)this->map_scr_x_offset,
+            (int)this->map_scr_y_offset);
+        if (s_view_debug_draw_logs < 12) {
+            s_view_debug_draw_logs++;
+        }
+    }
+    CUSTOM_DEBUG_END
 
     this->render_terrain_mode = 1;
     this->draw_finish();
@@ -1391,6 +1419,10 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
             this->view_function_terrain(mode, rect);
         }
         area->Unlock("draw_view");
+    } else {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("RGE_View::draw_view: Lock failed mode=%u area=%p", (unsigned)mode, area);
+        CUSTOM_DEBUG_END
     }
     this->cur_render_area = nullptr;
 }
@@ -1399,6 +1431,16 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 {
     (void)mode;
     if (this->map == nullptr || this->cur_render_area == nullptr || this->map->map_row_offset == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (s_view_debug_terrain_logs < 12) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_View::view_function_terrain: early return map=%p cur_render=%p rows=%p",
+                this->map,
+                this->cur_render_area,
+                (this->map != nullptr) ? this->map->map_row_offset : nullptr);
+            s_view_debug_terrain_logs++;
+        }
+        CUSTOM_DEBUG_END
         return 0;
     }
 
@@ -1408,6 +1450,10 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     const int rows_to_scan = (int)this->max_row_num * 2 + 0x0C;
     const int map_w = this->map->map_width;
     const int map_h = this->map->map_height;
+    int in_bounds_tiles = 0;
+    int clip_visible_tiles = 0;
+    int vis_nonzero_tiles = 0;
+    int terrain_candidates = 0;
 
     for (int scan_row = 0; scan_row < rows_to_scan; ++scan_row) {
         int map_col = col_num;
@@ -1415,6 +1461,7 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 
         for (int scan_col = 0; scan_col < cols_to_scan; ++scan_col) {
             if (map_col >= 0 && map_row >= 0 && map_col < map_w && map_row < map_h) {
+                in_bounds_tiles++;
                 RGE_Tile* tile = &this->map->map_row_offset[map_row][map_col];
                 int sx = (int)tile->screen_xpos - this->map_scr_x_offset;
                 int sy = (int)tile->screen_ypos - this->map_scr_y_offset;
@@ -1424,6 +1471,7 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                     int ex = sx + (int)this->map->tilesizes[tt].width;
                     int ey = sy + (int)this->map->tilesizes[tt].height;
                     if (!(ex < rect.left || sx > rect.right || ey < rect.top || sy > rect.bottom)) {
+                        clip_visible_tiles++;
                         uchar vis = 0x0F;
                         if (this->player != nullptr && this->player->visible != nullptr) {
                             vis = this->player->visible->get_visible((short)map_col, (short)map_row);
@@ -1433,8 +1481,10 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                         }
 
                         if (vis != 0) {
+                            vis_nonzero_tiles++;
                             uchar terrain_to_draw = (uchar)(tile->terrain_type & 0x1F);
                             if ((int)terrain_to_draw < this->map->num_terrain) {
+                                terrain_candidates++;
                                 short override_terrain = this->map->terrain_types[terrain_to_draw].terrain_to_draw;
                                 if (override_terrain != -1 && override_terrain >= 0 && override_terrain < this->map->num_terrain) {
                                     terrain_to_draw = (uchar)override_terrain;
@@ -1483,6 +1533,26 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
             col_num = col_num - 1;
         }
     }
+
+    CUSTOM_DEBUG_BEGIN
+    if (s_view_debug_terrain_logs < 12 || tiles_drawn == 0 || (frame_count % 120) == 0) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "RGE_View::view_function_terrain: map=%ldx%ld scan=%dx%d in_bounds=%d clip=%d vis=%d terrain_ok=%d tiles_drawn=%d player=%p",
+            (long)map_w,
+            (long)map_h,
+            cols_to_scan,
+            rows_to_scan,
+            in_bounds_tiles,
+            clip_visible_tiles,
+            vis_nonzero_tiles,
+            terrain_candidates,
+            tiles_drawn,
+            this->player);
+        if (s_view_debug_terrain_logs < 12) {
+            s_view_debug_terrain_logs++;
+        }
+    }
+    CUSTOM_DEBUG_END
 
     return 0;
 }

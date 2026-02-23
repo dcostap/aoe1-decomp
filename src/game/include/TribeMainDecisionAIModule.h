@@ -4,6 +4,9 @@
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:
+    TribeMainDecisionAIModule(void* param_1, int player_number, char* player_name, TRIBE_Player* player, char* ai1, char* ai2, char* ai3);
+    TribeMainDecisionAIModule(int player_number, char* player_name, TRIBE_Player* player, int fd);
+
     // Virtuals (best-effort)
     virtual ~TribeMainDecisionAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -26,15 +29,17 @@ public:
     virtual int objectGroupThatCanPerformAction(int param_1); // vt[18] (0x48)
     virtual int canPerformAction(int param_1, int param_2); // vt[19] (0x4C)
 
-    TribeBuildAIModule buildAI;
-    TribeConstructionAIModule constructionAI;
-    DiplomacyAIModule diplomacyAI;
-    EmotionalAIModule emotionalAI;
-    TribeInformationAIModule informationAI;
-    TribeResourceAIModule resourceAI;
-    TribeStrategyAIModule strategyAI;
-    TribeTacticalAIModule tacticalAI;
-    TradeAIModule tradeAI;
+    // Opaque storage: these embedded AI modules are not transliterated yet, but must exist at the
+    // correct offsets for `TribeMainDecisionAIModule` layout/vtable parity.
+    alignas(4) unsigned char buildAI[0x5C0];
+    alignas(4) unsigned char constructionAI[0x318];
+    alignas(4) unsigned char diplomacyAI[0x150];
+    alignas(4) unsigned char emotionalAI[0x1C0];
+    alignas(4) unsigned char informationAI[0x10090];
+    alignas(4) unsigned char resourceAI[0xF8];
+    alignas(4) unsigned char strategyAI[0x5F8];
+    alignas(4) unsigned char tacticalAI[0x100C];
+    alignas(4) unsigned char tradeAI[0xF4];
     TRIBE_Player* aiPlayer;
     int firstUpdate;
     int veryFirstUpdate;

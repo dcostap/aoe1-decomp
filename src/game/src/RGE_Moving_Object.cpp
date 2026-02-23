@@ -67,6 +67,7 @@ void RGE_Moving_Object::setGoal(float x, float y, float z) {
 }
 
 // Fully verified. Source of truth: move_obj.cpp.asm @ 0x0045D360
+// Computes facet from angle based on sprite's number of facets.
 void RGE_Moving_Object::set_angle() {
     RGE_Sprite* spr = this->sprite;
     if (spr != nullptr) {

@@ -940,6 +940,10 @@ int RGE_Visible_Map::explore_terrain(int param_1, int param_2, int param_3, int 
     int iVar8 = param_3;
     int Revealed = 0;
 
+    if (this->world == nullptr || this->player == nullptr || this->map_offsets == nullptr) {
+        return 0;
+    }
+
     log_map_call(this->world->world_time, (int)this->player->id, 1, param_6, param_1, param_2, param_3, param_4, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return 0;
@@ -951,7 +955,13 @@ int RGE_Visible_Map::explore_terrain(int param_1, int param_2, int param_3, int 
     uVar4 = ((uVar4 << 4) | (uVar4 >> 0x1C)) ^ (uint)param_2;
     this->input_csum = (ulong)((((uVar4 << 3) | (uVar4 >> 0x1D)) ^ (uint)param_3) + (uint)param_4);
 
-    RGE_Player* cur_player = (this->world != nullptr) ? this->world->players[this->world->curr_player] : nullptr;
+    RGE_Player* cur_player = nullptr;
+    if (this->world != nullptr && this->world->players != nullptr) {
+        int cp = (int)this->world->curr_player;
+        if (cp >= 0 && cp < this->world->player_num) {
+            cur_player = this->world->players[cp];
+        }
+    }
     bool bVar10 = false;
     if (cur_player != nullptr) {
         bVar10 = cur_player->mutualAlly[this->player->id] == 1;
@@ -968,6 +978,11 @@ int RGE_Visible_Map::explore_terrain(int param_1, int param_2, int param_3, int 
     while (y_delta != 999) {
         int y = param_2 + y_delta;
         if (-1 < y && y < this->heightValue) {
+            if (this->map_offsets[y] == nullptr || unified_map_offsets[y] == nullptr) {
+                idx = idx + 1;
+                y_delta = offsets[idx].y_delta;
+                continue;
+            }
             int x = offsets[idx].x_left + param_1;
             if (x < 0) {
                 x = 0;
@@ -1021,6 +1036,10 @@ int RGE_Visible_Map::explore_terrain(int param_1, int param_2, int param_3, int 
 
 void RGE_Visible_Map::unexplore_terrain(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
     // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053C920
+    if (this->world == nullptr || this->player == nullptr || this->map_offsets == nullptr) {
+        return;
+    }
+
     log_map_call(this->world->world_time, (int)this->player->id, 3, param_6, param_1, param_2, param_3, param_4, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return;
@@ -1042,6 +1061,11 @@ void RGE_Visible_Map::unexplore_terrain(int param_1, int param_2, int param_3, i
     while (y_delta != 999) {
         int y = param_2 + y_delta;
         if (-1 < y && y < this->heightValue) {
+            if (this->map_offsets[y] == nullptr || unified_map_offsets[y] == nullptr) {
+                idx = idx + 1;
+                y_delta = offsets[idx].y_delta;
+                continue;
+            }
             int x = offsets[idx].x_left + param_1;
             if (x < 0) {
                 x = 0;
@@ -1086,12 +1110,22 @@ int RGE_Visible_Map::explore_terrain_sq(int param_1, int param_2, int param_3, i
     // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053CAC0
     int Revealed = 0;
 
+    if (this->world == nullptr || this->player == nullptr || this->map_offsets == nullptr) {
+        return 0;
+    }
+
     log_map_call(this->world->world_time, (int)this->player->id, 2, param_6, param_1, param_2, param_3, param_4, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return 0;
     }
 
-    RGE_Player* cur_player = (this->world != nullptr) ? this->world->players[this->world->curr_player] : nullptr;
+    RGE_Player* cur_player = nullptr;
+    if (this->world != nullptr && this->world->players != nullptr) {
+        int cp = (int)this->world->curr_player;
+        if (cp >= 0 && cp < this->world->player_num) {
+            cur_player = this->world->players[cp];
+        }
+    }
     bool bVar7 = false;
     if (cur_player != nullptr) {
         bVar7 = cur_player->mutualAlly[this->player->id] == 1;
@@ -1122,6 +1156,9 @@ int RGE_Visible_Map::explore_terrain_sq(int param_1, int param_2, int param_3, i
         }
 
         for (; param_2 <= param_4; ++param_2) {
+            if (this->map_offsets[param_2] == nullptr || unified_map_offsets[param_2] == nullptr) {
+                continue;
+            }
             ulong* pUnified = unified_map_offsets[param_2] + param_1;
             uchar* pVis = this->map_offsets[param_2] + param_1;
             int x = param_1;
@@ -1166,6 +1203,10 @@ int RGE_Visible_Map::explore_terrain_sq(int param_1, int param_2, int param_3, i
 
 void RGE_Visible_Map::unexplore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
     // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053CCF0
+    if (this->world == nullptr || this->player == nullptr || this->map_offsets == nullptr) {
+        return;
+    }
+
     log_map_call(this->world->world_time, (int)this->player->id, 4, param_6, param_1, param_2, param_3, param_4, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return;
@@ -1195,6 +1236,9 @@ void RGE_Visible_Map::unexplore_terrain_sq(int param_1, int param_2, int param_3
         }
 
         for (; param_2 <= param_4; ++param_2) {
+            if (this->map_offsets[param_2] == nullptr || unified_map_offsets[param_2] == nullptr) {
+                continue;
+            }
             uchar* pVis = this->map_offsets[param_2] + param_1;
             ulong* pUnified = unified_map_offsets[param_2] + param_1;
             uintptr_t tile_addr = 0;
