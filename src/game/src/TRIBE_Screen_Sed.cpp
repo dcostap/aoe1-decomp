@@ -4,10 +4,15 @@
 #include "../include/RGE_Diamond_Map.h"
 #include "../include/RGE_Diamond_Map_View.h"
 #include "../include/RGE_Font.h"
+#include "../include/RGE_Main_View.h"
+#include "../include/RGE_Map.h"
+#include "../include/RGE_Scenario.h"
 #include "../include/RGE_View.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TDrawArea.h"
+#include "../include/TDropDownPanel.h"
 #include "../include/TMessagePanel.h"
+#include "../include/TRegistry.h"
 #include "../include/TRIBE_Dialog_Sed_Menu.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Main_View.h"
@@ -64,6 +69,29 @@ static void init_module_variables(TRIBE_Screen_Sed* this_) {
     this_->object_panel = nullptr;
 }
 
+static void set_player_active(TRIBE_Screen_Sed* this_, short player_num, int active) {
+    // Decomp-first transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB2B0
+    if (!this_ || !this_->world || !this_->world->scenario) return;
+    this_->world->scenario->Set_player_Active((int)player_num, active);
+}
+
+static void SavePlayerActiveStatus(TRIBE_Screen_Sed* this_) {
+    // TODO: STUB (partial): Full parity in scr_sed2.cpp.decomp @ 0x004B2C50
+    if (!this_ || !this_->world || !this_->world->scenario) return;
+
+    // Best-effort: if the dropdown exists, use it to set scenario active players.
+    int active_players = 2;
+    if (this_->player_number_list) {
+        active_players = (int)this_->player_number_list->get_line() + 1;
+        if (active_players < 1) active_players = 1;
+    }
+
+    // Scenario uses player indices starting at 0; keep Gaia and others untouched.
+    for (int i = 0; i < 8; ++i) {
+        this_->world->scenario->Set_player_Active(i, (i < active_players) ? 1 : 0);
+    }
+}
+
 static void set_panel_info(TRIBE_Screen_Sed* this_) {
     // Decomp-first transliteration (small).
     if (!this_ || !rge_base_game) return;
@@ -81,6 +109,69 @@ static void set_panel_info(TRIBE_Screen_Sed* this_) {
         map->set_player(rge_base_game->get_player());
         map->set_main_view((RGE_View*)this_->main_view);
     }
+}
+
+static void set_map_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::MapType param_1, int /*param_2*/) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AA740
+    if (!this_) return;
+    if (param_1 == TRIBE_Screen_Sed::MapTypeNone) return;
+    this_->map_type = param_1;
+    if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
+}
+
+static void set_mp_victory_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::VictoryType param_1, int /*param_2*/) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AA8F0
+    if (!this_) return;
+    if (param_1 == TRIBE_Screen_Sed::VictoryTypeNone) return;
+    this_->mp_victory_type = param_1;
+    if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
+}
+
+static void set_brush_size(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::BrushSize param_1) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AAA90
+    if (!this_ || param_1 == TRIBE_Screen_Sed::BrushSizeNone) return;
+    this_->brush_size = param_1;
+    if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
+}
+
+static void set_paint_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::PaintType param_1, int /*param_2*/) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AAB30
+    if (!this_ || param_1 == TRIBE_Screen_Sed::PaintTypeNone) return;
+    this_->paint_type = param_1;
+    if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
+}
+
+static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char /*param_2*/, unsigned char /*param_3*/) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AB080
+    if (!this_) return;
+    this_->player_num = player_num;
+}
+
+static void set_unit_player(TRIBE_Screen_Sed* this_, short player_num) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AB300
+    if (!this_) return;
+    if (this_->unit_player_list) {
+        this_->unit_player_list->set_line(player_num);
+    }
+}
+
+static void set_message_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::MessageType param_1, int /*param_2*/) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004ACB90
+    if (!this_) return;
+    if (param_1 == TRIBE_Screen_Sed::MessageTypeNone) return;
+    this_->message_type = param_1;
+}
+
+static void set_scenario_mode(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::ScenarioMode param_1) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004A9AA0
+    if (!this_) return;
+    this_->scenario_mode = param_1;
+    if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
+}
+
+static void set_unit(TRIBE_Screen_Sed* this_, short /*param_1*/) {
+    // TODO: STUB (partial): Full parity in scr_sed.cpp.decomp @ 0x004AC0C0
+    if (!this_) return;
 }
 
 static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int is_multi_player, int param_4, int param_5, int param_6, int show_status) {
@@ -158,11 +249,17 @@ static void command_open(TRIBE_Screen_Sed* this_) {
     }
 
     TRIBE_Screen_Sed_Open* open = new TRIBE_Screen_Sed_Open();
-    if (panel_system && open) {
-        if (open->error_code != 0) {
-            delete open;
-            return;
-        }
+    if (open == nullptr) return;
+    if (panel_system == nullptr) {
+        delete open;
+        return;
+    }
+    if (open->error_code != 0) {
+        delete open;
+        return;
+    }
+
+    {
         panel_system->add_panel((TPanel*)open);
         panel_system->setCurrentPanel((char*)"Scenario Editor Open", 0);
     }
@@ -188,13 +285,13 @@ static void command_quit(TRIBE_Screen_Sed* this_) {
     }
 }
 
-static void command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned char param_2) {
+static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned char param_2) {
     // TODO: STUB: save pipeline parity requires scr_sed.cpp.decomp @ 0x004AD700.
     (void)param_1;
     (void)param_2;
-    if (!this_) return;
-    this_->need_to_save_flag = 0;
+    if (!this_) return 0;
     this_->popupOKDialog((char*)"Save not implemented yet.", (char*)0, 0x1c2, 100);
+    return 0;
 }
 
 static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
@@ -237,7 +334,7 @@ static void position_panels(TRIBE_Screen_Sed* this_) {
 }
 
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004A81E0
+    // Partially verified. Source of truth: scr_sed.cpp.asm @ 0x004A81E0
     : TScreenPanel(kScenarioEditorScreenName) {
     this->is_multi_player = 0;
     this->scenario_mode = ScenarioModeNone;
@@ -265,16 +362,26 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
     this->changed_system_colors = 0;
     this->CurrentVictory = 0;
 
-    this->is_multi_player = is_multi_player_in;
-
     if (!rge_base_game || !rge_base_game->draw_area) {
         this->error_code = 1;
         return;
     }
 
+    rge_base_game->set_prog_mode(7);
+
     if (command_new_map(this, scenario_name, is_multi_player_in, 0, 0x90, 0x90, 1) == 0) {
         this->error_code = 1;
         return;
+    }
+
+    // If we're editing the default scenario, mark as needing a save (matches original startup behavior).
+    if (rge_base_game->registry != nullptr && scenario_name != nullptr) {
+        const int game_file_no = rge_base_game->registry->RegGetInt(0, (char*)"Game File Number");
+        char temp_name[260];
+        sprintf(temp_name, "default%d.scx", game_file_no);
+        if (strcmp(scenario_name, temp_name) == 0) {
+            this->need_to_save_flag = 1;
+        }
     }
 
     if (this->TScreenPanel::setup(rge_base_game->draw_area, (char*)"scr5", 0xC387, 1) == 0) {
@@ -286,7 +393,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
 
     // Main view.
     this->main_view = new TRIBE_Main_View();
-    if (this->main_view == nullptr || ((RGE_View*)this->main_view)->setup(rge_base_game->draw_area, this, 0, 0, this->pnl_wid, this->pnl_hgt, 0) == 0) {
+    if (this->main_view == nullptr || ((RGE_View*)this->main_view)->setup(rge_base_game->draw_area, this, 0, 0, 0, 0, (uchar)0xA1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -295,11 +402,13 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
     // Diamond minimap.
     this->map_view = new RGE_Diamond_Map_View();
     if (this->map_view == nullptr || this->map_view->error_code != 0 ||
-        ((RGE_Diamond_Map*)this->map_view)->setup(rge_base_game->draw_area, this, 0, 0, 0, 0, 0, 0, rge_base_game->map_save_area) == 0) {
+        ((RGE_Diamond_Map*)this->map_view)->setup(rge_base_game->draw_area, this, 0, 0, 0, 0, (uchar)0xA1, 0, rge_base_game->map_save_area) == 0) {
         this->error_code = 1;
         return;
     }
     ((RGE_Diamond_Map*)this->map_view)->set_bitmap((char*)"map640.bmp", 0xC4E1);
+    ((RGE_Diamond_Map*)this->map_view)->set_main_view((RGE_View*)this->main_view);
+    ((RGE_Main_View*)this->main_view)->map_view = (TPanel*)this->map_view;
 
     // Message panel.
     {
@@ -319,9 +428,58 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
     }
 
     create_all_buttons_etc(this);
+
+    // Player active state + scenario name processing (best-effort for parity).
+    int player_num_line = 1;
+    if (scenario_name == nullptr || *scenario_name == '\0') {
+        set_player_active(this, 0, 1);
+        set_player_active(this, 1, 1);
+        player_num_line = 1;
+    } else {
+        if (this->world && this->world->scenario) {
+            if (strstr(scenario_name, ".scn") != nullptr || strstr(scenario_name, ".SCN") != nullptr) {
+                char name[260];
+                int i = 0;
+                while (scenario_name[i] != '\0' && scenario_name[i] != '.' && i < (int)sizeof(name) - 1) {
+                    name[i] = scenario_name[i];
+                    ++i;
+                }
+                name[i] = '\0';
+                char scx_name[260];
+                sprintf(scx_name, "%s.scx", name);
+                this->world->scenario->Set_scenario_name(scx_name);
+            }
+
+            int i = 0;
+            while (i < 8) {
+                if (this->world->scenario->Get_player_Active(i) == 0) break;
+                ++i;
+            }
+            player_num_line = i - 1;
+        }
+    }
+    if (this->player_number_list) {
+        this->player_number_list->set_line(player_num_line);
+    }
+    SavePlayerActiveStatus(this);
+
     this->set_curr_child(this->bottom_panel);
     position_panels(this);
     set_panel_info(this);
+
+    set_map_type(this, MapTypeBlank, 0);
+    set_mp_victory_type(this, VictoryTypeStandard, 0);
+    set_brush_size(this, BrushSizeVerySmall);
+    set_paint_type(this, PaintTypeTerrain, 0);
+    set_player(this, 1, '\0', '\0');
+    set_unit_player(this, 1);
+    set_message_type(this, MessageTypeDescription, 0);
+    set_scenario_mode(this, ScenarioModeMap);
+    set_unit(this, -1);
+    if (this->world && this->world->map) {
+        this->world->map->set_map_visible('\x01');
+        this->world->map->set_map_fog('\0');
+    }
 }
 
 TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
@@ -401,7 +559,7 @@ long TRIBE_Screen_Sed::key_down_action(long param_1, short param_2, int param_3,
         }
         // Ctrl+S: save.
         if ((param_1 == 'S' || param_1 == 's') && param_4 != 0) {
-            command_save(this, 0, 0);
+            (void)command_save(this, 0, 0);
             return 1;
         }
     }
@@ -432,11 +590,16 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulon
     if (panel_name != nullptr) {
         if (strcmp(panel_name, kQuitSaveDialogName) == 0) {
             if (param_2 == 0) {
-                command_save(this, 0, 0);
-                command_quit(this);
+                if (command_save(this, 0, 0) != 0) {
+                    if (panel_system) panel_system->destroyPanel(kQuitSaveDialogName);
+                    command_quit(this);
+                    return 1;
+                }
             } else if (param_2 == 1) {
                 this->need_to_save_flag = 0;
+                if (panel_system) panel_system->destroyPanel(kQuitSaveDialogName);
                 command_quit(this);
+                return 1;
             }
             if (panel_system) {
                 panel_system->setCurrentPanel(kScenarioEditorScreenName, 0);
@@ -447,11 +610,16 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulon
 
         if (strcmp(panel_name, kOpenSaveDialogName) == 0) {
             if (param_2 == 0) {
-                command_save(this, 0, 0);
-                command_open(this);
+                if (command_save(this, 0, 0) != 0) {
+                    if (panel_system) panel_system->destroyPanel(kOpenSaveDialogName);
+                    command_open(this);
+                    return 1;
+                }
             } else if (param_2 == 1) {
                 this->need_to_save_flag = 0;
+                if (panel_system) panel_system->destroyPanel(kOpenSaveDialogName);
                 command_open(this);
+                return 1;
             }
             if (panel_system) {
                 panel_system->setCurrentPanel(kScenarioEditorScreenName, 0);
@@ -462,11 +630,16 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulon
 
         if (strcmp(panel_name, kNewSaveDialogName) == 0) {
             if (param_2 == 0) {
-                command_save(this, 0, 0);
-                command_new(this);
+                if (command_save(this, 0, 0) != 0) {
+                    if (panel_system) panel_system->destroyPanel(kNewSaveDialogName);
+                    command_new(this);
+                    return 1;
+                }
             } else if (param_2 == 1) {
                 this->need_to_save_flag = 0;
+                if (panel_system) panel_system->destroyPanel(kNewSaveDialogName);
                 command_new(this);
+                return 1;
             }
             if (panel_system) {
                 panel_system->setCurrentPanel(kScenarioEditorScreenName, 0);
