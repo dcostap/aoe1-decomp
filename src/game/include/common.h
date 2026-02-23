@@ -97,6 +97,8 @@ class TRIBE_Screen_Game;
 // AI related
 class AIPlayBook;
 class UnitAIModule;
+class AIModuleMessage;
+class MainDecisionAIModule;
 class TribeMainDecisionAIModule;
 
 // Map and Terrain
