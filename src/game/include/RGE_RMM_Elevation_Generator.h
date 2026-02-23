@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "RGE_Random_Map_Module.h"
+#include "RGE_Elevation_Info.h"
 
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
