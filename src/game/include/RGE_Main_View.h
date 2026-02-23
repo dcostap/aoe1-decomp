@@ -4,6 +4,8 @@
 
 class RGE_Main_View : public RGE_View {
 public:
+    RGE_Main_View();
+
     // Virtuals (best-effort)
     virtual ~RGE_Main_View(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
@@ -74,6 +76,18 @@ public:
     virtual int command_make_work(long param_1, long param_2); // vt[66] (0x108)
     virtual int command_place_multi_object(long param_1, long param_2, long param_3, long param_4, int param_5); // vt[67] (0x10C)
 
+    // vw_main.cpp non-virtual helpers
+    int do_auto_scroll();
+    int handle_keys();
+    unsigned char pick1(unsigned char param_1, unsigned char param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6, int param_7);
+    int pick_objects1(long param_1, long param_2, RGE_Static_Object** param_3, int param_4);
+    RGE_Static_Object* pick_best_target(long param_1, long param_2, int* param_3, short param_4);
+    void reset_display_object_selection(int param_1);
+
+protected:
+    void fixup_pick_info(RGE_Pick_Info* param_1);
+
+public:
     TPanel* map_view;
     unsigned long last_mouse_scroll_time;
     int mouse_scrolling;

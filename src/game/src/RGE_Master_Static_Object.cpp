@@ -1050,3 +1050,13 @@ int RGE_Master_Static_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sou
 
     return 1;
 }
+
+long RGE_Master_Static_Object::get_help_message() {
+    // Source of truth: m_s_obj.cpp.decomp @ 0x00454950
+    return this->help_string_id;
+}
+
+long RGE_Master_Static_Object::get_help_page() {
+    // Source of truth: m_s_obj.cpp.decomp @ 0x00454960
+    return this->help_page_id;
+}
