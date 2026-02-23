@@ -34,12 +34,14 @@ Branch naming:
 git switch -c agent/<short-task-name>
 ```
 
+Include task number (if provided at the start) in `<short-task-name>`.
+
 ### 2) Work and commit on the task branch
 
 ```bash
 git status
 git add -A
-git commit -m "Describe the change, include the task name and number (if provided at the start), don't be vague or too generic. Then, add a more detailed description in the body of the commit message if needed. Include what you did, what you found, and any assumptions or uncertainties."
+git commit -m "Describe the change,  don't be vague or too generic. Then, add a more detailed description in the body of the commit message if needed. Include what you did, what you found, and any assumptions or uncertainties."
 ```
 
 Repeat as needed.
@@ -54,7 +56,7 @@ This reduces the chance you break `master` when you finally push.
 git fetch origin --prune
 git merge origin/master -m "<description>"
 ```
-Always include the merge message to prevent git from prompting the computer user to open an editor.
+Always include `-m` with the merge message to prevent git from prompting the computer user to open an editor.
 
 Resolve any conflicts locally, and repeat the steps.
 
