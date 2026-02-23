@@ -152,11 +152,9 @@ int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* 
 // RGE_Moving_Object  (parent: RGE_Animated_Object)
 // =====================================================================
 
-RGE_Moving_Object::~RGE_Moving_Object() {} // TODO: STUB
 
 // --- Forwarding stubs: same signature as RGE_Animated_Object ---
 
-void RGE_Moving_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { RGE_Animated_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Moving_Object::recycle_out_of_game() { RGE_Animated_Object::recycle_out_of_game(); } // TODO: STUB
 void RGE_Moving_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Animated_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
 void RGE_Moving_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Animated_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
@@ -167,17 +165,13 @@ void RGE_Moving_Object::draw_frame(TDrawArea* param_1, short param_2, short para
 uchar RGE_Moving_Object::update() { return RGE_Animated_Object::update(); } // TODO: STUB
 void RGE_Moving_Object::check_damage_sprites() { RGE_Animated_Object::check_damage_sprites(); } // TODO: STUB
 void RGE_Moving_Object::rehook() { RGE_Animated_Object::rehook(); } // TODO: STUB
-void RGE_Moving_Object::save(int param_1) { RGE_Animated_Object::save(param_1); } // TODO: STUB
 float RGE_Moving_Object::teleport(float param_1, float param_2, float param_3) { return RGE_Animated_Object::teleport(param_1, param_2, param_3); } // TODO: STUB
-void RGE_Moving_Object::new_sprite(RGE_Sprite* param_1) { RGE_Animated_Object::new_sprite(param_1); } // TODO: STUB
 void RGE_Moving_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Animated_Object::add_overlay_sprite(param_1, param_2); } // TODO: STUB
 void RGE_Moving_Object::remove_overlay_sprite(RGE_Sprite* param_1) { RGE_Animated_Object::remove_overlay_sprite(param_1); } // TODO: STUB
 void RGE_Moving_Object::change_ownership(RGE_Player* param_1) { RGE_Animated_Object::change_ownership(param_1); } // TODO: STUB
 void RGE_Moving_Object::modify(float param_1, uchar param_2) { RGE_Animated_Object::modify(param_1, param_2); } // TODO: STUB
 void RGE_Moving_Object::modify_delta(float param_1, uchar param_2) { RGE_Animated_Object::modify_delta(param_1, param_2); } // TODO: STUB
 void RGE_Moving_Object::modify_percent(float param_1, uchar param_2) { RGE_Animated_Object::modify_percent(param_1, param_2); } // TODO: STUB
-void RGE_Moving_Object::transform(RGE_Master_Static_Object* param_1) { RGE_Animated_Object::transform(param_1); } // TODO: STUB
-void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* param_1) { RGE_Animated_Object::copy_obj(param_1); } // TODO: STUB
 void RGE_Moving_Object::set_object_state(uchar param_1) { RGE_Animated_Object::set_object_state(param_1); } // TODO: STUB
 void RGE_Moving_Object::remove_visible_resource() { RGE_Animated_Object::remove_visible_resource(); } // TODO: STUB
 void RGE_Moving_Object::create_doppleganger_when_dying() { RGE_Animated_Object::create_doppleganger_when_dying(); } // TODO: STUB
@@ -185,7 +179,6 @@ void RGE_Moving_Object::destroy_obj() { RGE_Animated_Object::destroy_obj(); } //
 void RGE_Moving_Object::die_die_die() { RGE_Animated_Object::die_die_die(); } // TODO: STUB
 void RGE_Moving_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { RGE_Animated_Object::damage(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 float RGE_Moving_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { return RGE_Animated_Object::calculateDamage(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
-void RGE_Moving_Object::rotate(long param_1) { RGE_Animated_Object::rotate(param_1); } // TODO: STUB
 uchar RGE_Moving_Object::can_attack() { return RGE_Animated_Object::can_attack(); } // TODO: STUB
 void RGE_Moving_Object::set_attribute(short param_1, float param_2) { RGE_Animated_Object::set_attribute(param_1, param_2); } // TODO: STUB
 void RGE_Moving_Object::set_attribute_amount(float param_1, uchar param_2, uchar param_3) { RGE_Animated_Object::set_attribute_amount(param_1, param_2, param_3); } // TODO: STUB
@@ -200,12 +193,9 @@ void RGE_Moving_Object::stop() { RGE_Animated_Object::stop(); } // TODO: STUB
 void RGE_Moving_Object::set_attack(RGE_Static_Object* param_1) { RGE_Animated_Object::set_attack(param_1); } // TODO: STUB
 void RGE_Moving_Object::play_command_sound() { RGE_Animated_Object::play_command_sound(); } // TODO: STUB
 void RGE_Moving_Object::play_move_sound() { RGE_Animated_Object::play_move_sound(); } // TODO: STUB
-void RGE_Moving_Object::new_angle(float param_1) { RGE_Animated_Object::new_angle(param_1); } // TODO: STUB
-RGE_Static_Object* RGE_Moving_Object::spawn_death_obj() { return RGE_Animated_Object::spawn_death_obj(); } // TODO: STUB
 RGE_Master_Static_Object* RGE_Moving_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Animated_Object::get_command_master(param_1, param_2, param_3, param_4); } // TODO: STUB
 void RGE_Moving_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) { RGE_Animated_Object::set_being_worked_on(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Moving_Object::release_being_worked_on(RGE_Static_Object* param_1) { RGE_Animated_Object::release_being_worked_on(param_1); } // TODO: STUB
-uchar RGE_Moving_Object::is_moving() { return RGE_Animated_Object::is_moving(); } // TODO: STUB
 RGE_Static_Object* RGE_Moving_Object::get_target_obj() { return RGE_Animated_Object::get_target_obj(); } // TODO: STUB
 void RGE_Moving_Object::enter_obj(RGE_Static_Object* param_1) { RGE_Animated_Object::enter_obj(param_1); } // TODO: STUB
 void RGE_Moving_Object::exit_obj() { RGE_Animated_Object::exit_obj(); } // TODO: STUB
@@ -217,21 +207,16 @@ uchar RGE_Moving_Object::underAttack() { return RGE_Animated_Object::underAttack
 void RGE_Moving_Object::setUnderAttack(uchar param_1) { RGE_Animated_Object::setUnderAttack(param_1); } // TODO: STUB
 float RGE_Moving_Object::calc_attack_modifier(RGE_Static_Object* param_1) { return RGE_Animated_Object::calc_attack_modifier(param_1); } // TODO: STUB
 float RGE_Moving_Object::getSpeed() { return RGE_Animated_Object::getSpeed(); } // TODO: STUB
-float RGE_Moving_Object::getAngle() { return RGE_Animated_Object::getAngle(); } // TODO: STUB
-float RGE_Moving_Object::maximumSpeed() { return RGE_Animated_Object::maximumSpeed(); } // TODO: STUB
 float RGE_Moving_Object::rateOfFire() { return RGE_Animated_Object::rateOfFire(); } // TODO: STUB
 float RGE_Moving_Object::damageCapability(RGE_Static_Object* param_1) { return RGE_Animated_Object::damageCapability(param_1); } // TODO: STUB
 float RGE_Moving_Object::damageCapability() { return RGE_Animated_Object::damageCapability(); } // TODO: STUB
 float RGE_Moving_Object::weaponRange() { return RGE_Animated_Object::weaponRange(); } // TODO: STUB
 float RGE_Moving_Object::minimumWeaponRange() { return RGE_Animated_Object::minimumWeaponRange(); } // TODO: STUB
 int RGE_Moving_Object::passableTile(float param_1, float param_2, int param_3) { return RGE_Animated_Object::passableTile(param_1, param_2, param_3); } // TODO: STUB
-uchar RGE_Moving_Object::facetToNextWaypoint() { return RGE_Animated_Object::facetToNextWaypoint(); } // TODO: STUB
 int RGE_Moving_Object::currentTargetID() { return RGE_Animated_Object::currentTargetID(); } // TODO: STUB
 float RGE_Moving_Object::currentTargetX() { return RGE_Animated_Object::currentTargetX(); } // TODO: STUB
 float RGE_Moving_Object::currentTargetY() { return RGE_Animated_Object::currentTargetY(); } // TODO: STUB
 float RGE_Moving_Object::currentTargetZ() { return RGE_Animated_Object::currentTargetZ(); } // TODO: STUB
-void RGE_Moving_Object::setWaitingToMove(uchar param_1) { RGE_Animated_Object::setWaitingToMove(param_1); } // TODO: STUB
-uchar RGE_Moving_Object::waitingToMove() { return RGE_Animated_Object::waitingToMove(); } // TODO: STUB
 uchar RGE_Moving_Object::actionState() { return RGE_Animated_Object::actionState(); } // TODO: STUB
 uchar RGE_Moving_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Animated_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Moving_Object::produceWhenKilledBy(int param_1) { return RGE_Animated_Object::produceWhenKilledBy(param_1); } // TODO: STUB
@@ -265,14 +250,8 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(int param_1, float* pa
 int RGE_Moving_Object::canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6) { return RGE_Animated_Object::canLinePath(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 int RGE_Moving_Object::canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5) { return RGE_Animated_Object::canLinePath(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 int RGE_Moving_Object::firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6) { return RGE_Animated_Object::firstTileAlongLine(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
-XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int param_1) { return RGE_Animated_Object::userDefinedWaypoint(param_1); } // TODO: STUB
-int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* param_1, int param_2) { return RGE_Animated_Object::addUserDefinedWaypoint(param_1, param_2); } // TODO: STUB
-void RGE_Moving_Object::removeAllUserDefinedWaypoints(int param_1) { RGE_Animated_Object::removeAllUserDefinedWaypoints(param_1); } // TODO: STUB
-void RGE_Moving_Object::removeUserDefinedWaypoint(int param_1) { RGE_Animated_Object::removeUserDefinedWaypoint(param_1); } // TODO: STUB
-int RGE_Moving_Object::numberUserDefinedWaypoints() { return RGE_Animated_Object::numberUserDefinedWaypoints(); } // TODO: STUB
 Path* RGE_Moving_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int param_3) { return RGE_Animated_Object::findAvoidancePath(param_1, param_2, param_3); } // TODO: STUB
 long RGE_Moving_Object::get_action_checksum() { return RGE_Animated_Object::get_action_checksum(); } // TODO: STUB
-long RGE_Moving_Object::get_waypoint_checksum() { return RGE_Animated_Object::get_waypoint_checksum(); } // TODO: STUB
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Moving_Object.cpp
 int RGE_Moving_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 RGE_Object_List* RGE_Moving_Object::create_object_list() { return RGE_Animated_Object::create_object_list(); } // TODO: STUB
@@ -280,9 +259,6 @@ RGE_Active_Sprite_List* RGE_Moving_Object::create_sprite_list() { return RGE_Ani
 int RGE_Moving_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 
 // --- New virtuals in Moving (not in Animated) ---
-void RGE_Moving_Object::stop_moving() {} // TODO: STUB
-uchar RGE_Moving_Object::turn_towards(RGE_Static_Object* param_1, float param_2, float param_3) { return 0; } // TODO: STUB
-int RGE_Moving_Object::setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return 0; } // TODO: STUB
 
 
 // =====================================================================

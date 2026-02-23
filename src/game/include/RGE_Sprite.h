@@ -25,6 +25,7 @@ struct RGE_Sound_List {
 class RGE_Sprite {
 public:
     RGE_Sprite(short id);
+    RGE_Sprite(FILE* infile, short id, RGE_Sound** sounds);
     RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** color_tables);
     ~RGE_Sprite();
 

@@ -2,8 +2,18 @@
 #include "common.h"
 #include "TEasy_Panel.h"
 
+struct Special_Events;
+
 class Time_Line_Panel : public TEasy_Panel {
 public:
+    enum Style : int {
+        NormalStyle = 0,
+        BeveledStyle = 1,
+        ChiseledStyle = 2,
+    };
+
+    Time_Line_Panel();
+
     // Virtuals (best-effort)
     virtual ~Time_Line_Panel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
@@ -79,6 +89,22 @@ public:
     virtual int create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt[71] (0x11C)
     virtual int create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt[72] (0x120)
     virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // vt[73] (0x124)
+
+    static long create_timeline(TPanel* parent, Time_Line_Panel** out, long x, long y, long wid, long hgt, long axis_font_id, long body_font_id, long base_w, long base_h);
+    long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,
+               void* axis_font, long axis_font_wid, long axis_font_hgt,
+               void* body_font, long body_font_wid, long body_font_hgt,
+               char* background_file, char* special_events_file,
+               int fill_back, uchar back_color, int outline, uchar outline_color);
+    void set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6);
+    int set_background(char* file);
+    int set_background(char* file, long id);
+    int set_special_events(char* file);
+    int set_special_events(char* file, long id);
+    void set_axis_font(void* font, long wid, long hgt);
+    void set_body_font(void* font, long wid, long hgt);
+    void set_back_color(int fill_back, uchar back_color);
+    void init_timeline();
 
     void* axis_font;
     long axis_font_wid;
