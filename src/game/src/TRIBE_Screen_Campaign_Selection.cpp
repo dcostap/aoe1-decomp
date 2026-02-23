@@ -100,7 +100,7 @@ static void cams_fillScenarios(TRIBE_Screen_Campaign_Selection* this_) {
 }
 
 static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
-    // TODO(accuracy): Best-effort transliteration. Source of truth: scr_cams.cpp.decomp @ 0x00491350
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x00491350
     if (!this_ || !rge_base_game) return;
 
     const long line = this_->scenarioList ? this_->scenarioList->get_line() : -1;
@@ -114,8 +114,7 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
     rge_base_game->setCampaignGame(1);
     rge_base_game->setSavedGame(0);
 
-    // TODO: STUB - VictoryDefault / DefaultResources / DefaultAge are 0 in this scaffold.
-    ((TRIBE_Game*)rge_base_game)->setVictoryType(0, 0);
+    ((TRIBE_Game*)rge_base_game)->setVictoryType((VictoryType)VictoryDefault, 0);
 
     const long difficulty = this_->difficultyDrop ? this_->difficultyDrop->get_id() : rge_base_game->single_player_difficulty;
     rge_base_game->setDifficulty((int)difficulty);
@@ -133,8 +132,8 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
     game->setLongCombat(0);
     game->setAllowTrading(1);
     game->setFullTechTree(0);
-    game->setResourceLevel(0);
-    game->setStartingAge(0);
+    game->setResourceLevel((ResourceLevel)DefaultResources);
+    game->setStartingAge((Age)DefaultAge);
     game->setStartingUnits(0);
 
     RGE_Scenario* scen = rge_base_game->get_scenario_info(nullptr, 1);
@@ -226,7 +225,6 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPane
     if (!this->create_auto_scrollbar(&this->campaignScrollbar, (TTextPanel*)this->campaignList, 0x14)) return;
     if (!this->create_text((TPanel*)this, &this->campaignTitle, 0x2BCE, this->campaignListX - 5, this->campaignListY - 0x14, 200, 0x14, 4, 0, 0, 0)) return;
 
-    // TODO: STUB - Loading placeholder
     this->campaignList->set_text((long)0x2B5D);
 
     this->scenarioListX = 0x14;
