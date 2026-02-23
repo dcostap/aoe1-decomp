@@ -12,6 +12,7 @@ struct RGE_Campaign_Info {
     RGE_Campaign_Info(RGE_Campaign* param_1);
     long get_scenario_list(char*** param_1, long* param_2);
     void save(int param_1);
+    void rehook_campaigns(RGE_Campaign** param_1, long param_2);
     uchar set_current_scenario(long param_1);
     uchar verify_campaign_name(char* param_1);
     void notify_of_scenario_complete();
