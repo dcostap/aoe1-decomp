@@ -8,6 +8,7 @@ public:
 
     virtual ~TRIBE_Combat_Object();
     virtual int setup(int param_1, RGE_Game_World* param_2);
+    virtual RGE_Action_List* create_action_list() override;
 
 protected:
     virtual void initUnitAI();

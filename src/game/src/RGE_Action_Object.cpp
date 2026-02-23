@@ -3,6 +3,7 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/globals.h"
 
+#include <new>
 #include <stdlib.h>
 
 // Default constructor
@@ -33,15 +34,7 @@ RGE_Action_Object::RGE_Action_Object(int param_1, RGE_Game_World* param_2, int p
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x004061A0
 RGE_Action_List* RGE_Action_Object::create_action_list() {
-    RGE_Action_List* pList = (RGE_Action_List*)operator new(sizeof(RGE_Action_List));
-    if (pList != nullptr) {
-        // TODO: RGE_Action_List constructor takes the owning action object
-        // For now, zero-initialize and set obj pointer
-        memset(pList, 0, sizeof(RGE_Action_List));
-        pList->obj = this;
-        return pList;
-    }
-    return nullptr;
+    return new (std::nothrow) RGE_Action_List(this);
 }
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406120
