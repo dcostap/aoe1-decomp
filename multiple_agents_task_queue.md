@@ -495,7 +495,7 @@ Rules of engagement:
 - Status note: `RGE_Combat_Object.cpp` currently only has ctor(s) + `setup` (load) and does not yet implement combat behavior (`attack`/`damage`/etc.) (commit `9b7dd32`).
 
 ## Task 45 — Implement remaining `RGE_Animated_Object` + `RGE_Missile_Object` methods
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: remove reliance on `rge_object_virtual_stubs.cpp` for animated/missile behaviors and restore real update/save/transform logic.
 - Implement: remaining `RGE_Animated_Object` functions from ani_obj.cpp.decomp and remaining `RGE_Missile_Object` functions from misl_obj.cpp.decomp.
@@ -505,7 +505,7 @@ Rules of engagement:
 - Status note: both `RGE_Animated_Object.cpp` and `RGE_Missile_Object.cpp` currently only implement ctor(s) + `setup` (load) (commit `9b7dd32`); most behavior still routes through virtual stubs.
 
 ## Task 46 — Complete doppleganger (fog-of-war ghost) object parity
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore the fog-of-war ghost object system so it can draw/update/save correctly instead of only loading.
 - Implement: remaining `RGE_Doppleganger_Object` virtuals (draw/update/save/die/destroy/copy/rehook/new_sprite/check_damage_sprites, etc.) and any creator/helpers required.
