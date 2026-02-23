@@ -3,8 +3,13 @@
 #include "TRIBE_Combat_Object.h"
 #include "Production_Queue_Record.h"
 
+class TRIBE_Master_Building_Object;
+class RGE_Player;
+
 class TRIBE_Building_Object : public TRIBE_Combat_Object {
 public:
+    TRIBE_Building_Object(TRIBE_Master_Building_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6, int param_7);
+    TRIBE_Building_Object(TRIBE_Master_Building_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     TRIBE_Building_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     virtual ~TRIBE_Building_Object();
@@ -33,5 +38,9 @@ public:
     long PriorTurn1;
     long PriorTurn2;
     long PriorTurn3;
+
+protected:
+    // Fully verified. Source of truth: t_b_obj.cpp.asm @ 0x004C83E0
+    virtual int setup(TRIBE_Master_Building_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
 };
 static_assert(sizeof(TRIBE_Building_Object) == 0x204, "Size mismatch");
