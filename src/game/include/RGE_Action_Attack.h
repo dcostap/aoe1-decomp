@@ -5,6 +5,7 @@
 class RGE_Action_Attack : public RGE_Action {
 public:
     RGE_Action_Attack() = default;
+    RGE_Action_Attack(int param_1, RGE_Action_Object* param_2);
 
     // Virtuals (best-effort)
     virtual ~RGE_Action_Attack(); // vt[0] (0x0)
