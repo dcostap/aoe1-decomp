@@ -173,14 +173,14 @@ void TScrollTextPanel::draw() {
     HDC hdc = (HDC)this->render_area->GetDc((char*)"scr_cred::draw");
     if (hdc) {
         SelectClipRgn(hdc, (HRGN)this->clip_rgn);
-        HGDIOBJ old_font = this->font ? SelectObject(hdc, (HGDIOBJ)this->font) : nullptr;
+        HGDIOBJ old_font = SelectObject(hdc, (HGDIOBJ)this->font);
         SetBkMode(hdc, TRANSPARENT);
 
         for (short i = 0; i < this->num_lines; ++i) {
             this->draw_scrolled_line(hdc, i, i, this->text_color1, this->text_color2);
         }
 
-        if (old_font) SelectObject(hdc, old_font);
+        SelectObject(hdc, old_font);
         SelectClipRgn(hdc, 0);
         this->render_area->ReleaseDc((char*)"scr_cred::draw");
     }

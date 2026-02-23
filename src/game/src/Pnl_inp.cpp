@@ -264,7 +264,7 @@ int TInputPanel::append_character(long ch) {
 
 int TInputPanel::insert_character(long ch) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x004779D0
-    if (this->input_len >= this->max_len || !this->input_buffer1 || !this->input_buffer2) {
+    if (this->input_len >= this->max_len) {
         if (this->overLengthSound) {
             this->overLengthSound->play();
             return 0;
@@ -302,7 +302,7 @@ int TInputPanel::insert_character(long ch) {
 
 int TInputPanel::delete_character() {
     // Best-effort transliteration. Source of truth: pnl_inp.cpp.decomp @ 0x00477AF0
-    if (this->input_len <= this->input_pos || !this->input_buffer1 || !this->input_buffer2) {
+    if (this->input_len <= this->input_pos) {
         return 0;
     }
 
