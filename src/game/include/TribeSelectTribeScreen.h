@@ -2,8 +2,14 @@
 #include "common.h"
 #include "TScreenPanel.h"
 
+class TPicturePanel;
+class TTextPanel;
+class TButtonPanel;
+
 class TribeSelectTribeScreen : public TScreenPanel {
 public:
+    TribeSelectTribeScreen();
+
     // Virtuals (best-effort)
     virtual ~TribeSelectTribeScreen(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
@@ -79,6 +85,10 @@ public:
     virtual int create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt[71] (0x11C)
     virtual int create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt[72] (0x120)
     virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // vt[73] (0x124)
+
+protected:
+    void fillTribeText(int tribe_id);
+    char* tribeName(int tribe_id);
 
     TPicturePanel* background;
     TTextPanel* title;
