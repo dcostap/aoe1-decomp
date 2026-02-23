@@ -8,6 +8,7 @@ class RGE_Master_Combat_Object;
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
     RGE_Combat_Object();
+    RGE_Combat_Object(RGE_Master_Combat_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     // Virtuals (best-effort)

@@ -21,15 +21,15 @@ RGE_Missile_Object::RGE_Missile_Object()
     this->max_range = 0.0f;
 }
 
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A740
 RGE_Missile_Object::RGE_Missile_Object(RGE_Master_Combat_Object* param_1, RGE_Player* param_2, float param_3, float param_4,
-                                       float param_5, int param_6)
-    : RGE_Combat_Object()
+                                        float param_5, int param_6)
+    : RGE_Combat_Object(param_1, param_2, param_3, param_4, param_5, 0)
 {
     this->max_range = 0.0f;
 
     if (param_6 != 0) {
-        // TODO: STUB - RGE_Combat_Object full master-based constructor path is not transliterated yet.
-        this->setup((RGE_Master_Animated_Object*)param_1, param_2, param_3, param_4, param_5);
+        this->setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
     }
 
     this->type = 0x3C;
@@ -67,10 +67,22 @@ int RGE_Missile_Object::setup(int param_1, RGE_Game_World* param_2) {
 RGE_Missile_Object::~RGE_Missile_Object() {
 }
 
-// Fully verified. Source of truth: misl_obj.cpp.asm @ 0x0045A870
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A870
+int RGE_Missile_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
+    RGE_Combat_Object::setup(param_1, param_2, param_3, param_4, param_5);
+    this->type = 0x3C;
+    return 1;
+}
+
+int RGE_Missile_Object::setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
+    // Forward to the canonical missile setup (typed by decomp as RGE_Master_Combat_Object*).
+    return this->setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
+}
+
 int RGE_Missile_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4,
                               float param_5) {
-    RGE_Combat_Object::setup(param_1, param_2, param_3, param_4, param_5);
+    // Keep behavior consistent regardless of which setup overload is used.
+    RGE_Combat_Object::setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
     this->type = 0x3C;
     return 1;
 }

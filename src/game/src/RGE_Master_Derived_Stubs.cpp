@@ -5,6 +5,10 @@
 #include "../include/RGE_Master_Missile_Object.h"
 #include "../include/RGE_Master_Doppleganger_Object.h"
 #include "../include/RGE_Doppleganger_Object.h"
+#include "../include/RGE_Combat_Object.h"
+#include "../include/RGE_Missile_Object.h"
+#include "../include/RGE_Player.h"
+#include "../include/RGE_Game_World.h"
 
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Task_List.h"
@@ -62,7 +66,23 @@ void RGE_Master_Combat_Object::modify(float param_1, uchar param_2) { this->RGE_
 void RGE_Master_Combat_Object::modify_delta(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_delta(param_1, param_2); }
 void RGE_Master_Combat_Object::modify_percent(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_percent(param_1, param_2); }
 void RGE_Master_Combat_Object::save(int param_1) { this->RGE_Master_Static_Object::save(param_1); }
-RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) { return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4); }
+RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x004506D0
+    if (this->master_type != 0) {
+        RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
+        if (recycled != nullptr) {
+            recycled->recycle_in_to_game(this, param_1, param_2, param_3, param_4);
+            return recycled;
+        }
+    }
+
+    RGE_Combat_Object* obj = (RGE_Combat_Object*)::operator new(sizeof(RGE_Combat_Object), std::nothrow);
+    if (obj != nullptr) {
+        obj = new (obj) RGE_Combat_Object(this, param_1, param_2, param_3, param_4, 1);
+        return obj;
+    }
+    return nullptr;
+}
 RGE_Master_Static_Object* RGE_Master_Combat_Object::make_new_master() { return this->RGE_Master_Static_Object::make_new_master(); }
 uchar RGE_Master_Combat_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 uchar RGE_Master_Combat_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
@@ -78,7 +98,23 @@ void RGE_Master_Missile_Object::modify(float param_1, uchar param_2) { this->RGE
 void RGE_Master_Missile_Object::modify_delta(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_delta(param_1, param_2); }
 void RGE_Master_Missile_Object::modify_percent(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_percent(param_1, param_2); }
 void RGE_Master_Missile_Object::save(int param_1) { this->RGE_Master_Static_Object::save(param_1); }
-RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) { return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4); }
+RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451770
+    if (this->master_type != 0) {
+        RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
+        if (recycled != nullptr) {
+            recycled->recycle_in_to_game(this, param_1, param_2, param_3, param_4);
+            return recycled;
+        }
+    }
+
+    RGE_Missile_Object* obj = (RGE_Missile_Object*)::operator new(sizeof(RGE_Missile_Object), std::nothrow);
+    if (obj != nullptr) {
+        obj = new (obj) RGE_Missile_Object((RGE_Master_Combat_Object*)this, param_1, param_2, param_3, param_4, 1);
+        return obj;
+    }
+    return nullptr;
+}
 RGE_Master_Static_Object* RGE_Master_Missile_Object::make_new_master() { return this->RGE_Master_Static_Object::make_new_master(); }
 uchar RGE_Master_Missile_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 uchar RGE_Master_Missile_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
