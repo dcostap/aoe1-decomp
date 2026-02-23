@@ -472,11 +472,12 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
 }
 
 void TButtonPanel::set_radio_button() {
-    // TODO(accuracy): Best-effort match for `TButtonPanel::set_radio_button` in `Pnl_btn.cpp.asm`.
-    for (int i = 0; i < this->num_radio_buttons; ++i) {
-        if (!this->radio_buttons || !this->radio_buttons[i]) continue;
-        this->radio_buttons[i]->is_down = 0;
-        this->radio_buttons[i]->set_state(0);
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472690
+    if (this->num_radio_buttons > 0) {
+        for (int i = 0; i < (int)this->num_radio_buttons; ++i) {
+            this->radio_buttons[i]->is_down = 0;
+            this->radio_buttons[i]->set_state(0);
+        }
     }
 
     if (this->drawTypeValue == TButtonPanel::DrawTextA || this->drawTypeValue == TButtonPanel::DrawFillAndText) {
@@ -712,15 +713,8 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
 }
 
 void TButtonPanel::draw() {
-    // TODO(accuracy): Best-effort reimplementation based on immutable references:
-    // - `src/game/src/Pnl_btn.cpp.asm`
-    // - `src/game/src/Pnl_btn.cpp.decomp`
-    //
-    // TODO: The original draw path uses `TDrawArea::Lock` and span-based primitives. Our draw-area
-    //       implementation is still incomplete, so bevel drawing below uses `FillRect`-based helpers.
-
-    if (!this->visible || !this->active || !this->render_area || this->pnl_hgt <= 0 || this->pnl_wid <= 0 ||
-        this->drawTypeValue == TButtonPanel::DrawClear) {
+    // Fully verified. Source of truth: pnl_btn.cpp.asm @ 0x004728C0
+    if (!this->render_area || this->pnl_hgt == 0 || this->pnl_wid == 0 || this->drawTypeValue == TButtonPanel::DrawClear) {
         // Source of truth: `Pnl_btn.cpp.asm` writes zero to `[this+0x38]` on early return.
         this->curr_child = nullptr;
         return;
@@ -748,22 +742,20 @@ void TButtonPanel::draw() {
 
     const int draw_type = (int)this->drawTypeValue;
     const bool pressed = (this->draw_reverse == 0) ? (this->is_down != 0) : (this->is_down == 0);
-    short state = this->cur_state;
-    if (state < 0 || state >= 9) state = 0;
+    const short state = this->cur_state;
 
     // 2. Picture draw path (`Pnl_btn.cpp.decomp`): draw for DrawPicture / DrawPictureAndText / DrawBevelPicture.
     if (draw_type == (int)TButtonPanel::DrawPicture ||
         draw_type == (int)TButtonPanel::DrawPictureAndText ||
         draw_type == (int)TButtonPanel::DrawBevelPicture) {
         if (this->render_area->Lock((char*)"pnl_btn::draw", 1)) {
-            TShape* shape = this->pic[state];
+            TShape* shape = this->pic[(int)state];
             if (shape) {
                 if (this->auto_pic_pos != 0) {
                     long x_min = 0, y_min = 0, x_max = 0, y_max = 0;
-                    if (shape->shape_minmax(&x_min, &y_min, &x_max, &y_max, (int)this->pic_index[state])) {
-                        this->pic_x = ((this->pnl_wid / 2) - (((x_max - x_min) + 1) / 2)) - x_min;
-                        this->pic_y = ((this->pnl_hgt / 2) - (((y_max - y_min) + 1) / 2)) - y_min;
-                    }
+                    shape->shape_minmax(&x_min, &y_min, &x_max, &y_max, (int)this->pic_index[(int)state]);
+                    this->pic_x = ((this->pnl_wid / 2) - (((x_max - x_min) + 1) / 2)) - x_min;
+                    this->pic_y = ((this->pnl_hgt / 2) - (((y_max - y_min) + 1) / 2)) - y_min;
                 }
 
                 long draw_x = this->pnl_x + this->pic_x;
@@ -772,7 +764,7 @@ void TButtonPanel::draw() {
                     draw_x++;
                     draw_y--;
                 }
-                shape->shape_draw(this->render_area, draw_x, draw_y, this->pic_index[state], 0, nullptr);
+                shape->shape_draw(this->render_area, draw_x, draw_y, this->pic_index[(int)state], 0, nullptr);
             }
             this->render_area->Unlock((char*)"pnl_btn::draw");
         }
@@ -784,18 +776,18 @@ void TButtonPanel::draw() {
         draw_type == (int)TButtonPanel::DrawFillAndText) {
         HDC hdc = (HDC)this->render_area->GetDc("pnl_btn::draw");
         if (hdc) {
-            if (this->clip_rgn) SelectClipRgn(hdc, (HRGN)this->clip_rgn);
-            void* old_font = nullptr;
-            if (this->font) old_font = SelectObject(hdc, (HGDIOBJ)this->font);
+            SelectClipRgn(hdc, (HRGN)this->clip_rgn);
+            void* old_font = SelectObject(hdc, (HGDIOBJ)this->font);
             SetBkMode(hdc, 1);
 
-            char* line1 = this->text1[state] ? this->text1[state] : this->text1[0];
-            char* line2_state = this->text2[state];
+            char* line1 = this->text1[(int)state] ? this->text1[(int)state] : this->text1[0];
+            char* line2_state = this->text2[(int)state];
             char* line2 = line2_state ? line2_state : this->text2[0];
 
-            if (line1 && line1[0] != '\0') {
+            if (line1) {
                 SIZE sz1;
-                GetTextExtentPoint32A(hdc, line1, (int)strlen(line1), &sz1);
+                const int len1 = (int)(short)strlen(line1);
+                GetTextExtentPoint32A(hdc, line1, len1, &sz1);
 
                 long cx = (this->text_x == -1) ? (this->pnl_wid / 2) : this->text_x;
                 long cy = (this->text_y == -1) ? (this->pnl_hgt / 2) : this->text_y;
@@ -808,17 +800,18 @@ void TButtonPanel::draw() {
                     ty--;
                 }
 
-                const unsigned long shadow_c = (this->have_focus != 0) ? this->highlight_text_color2[state] : this->text_color2[state];
-                const unsigned long main_c = (this->have_focus != 0) ? this->highlight_text_color1[state] : this->text_color1[state];
+                const unsigned long shadow_c = (this->have_focus != 0) ? this->highlight_text_color2[(int)state] : this->text_color2[(int)state];
+                const unsigned long main_c = (this->have_focus != 0) ? this->highlight_text_color1[(int)state] : this->text_color1[(int)state];
 
                 SetTextColor(hdc, shadow_c);
-                TextOutA(hdc, tx - 1, ty + 1, line1, (int)strlen(line1));
+                TextOutA(hdc, tx - 1, ty + 1, line1, len1);
                 SetTextColor(hdc, main_c);
-                TextOutA(hdc, tx, ty, line1, (int)strlen(line1));
+                TextOutA(hdc, tx, ty, line1, len1);
 
-                if (line2 && line2[0] != '\0') {
+                if (line2) {
                     SIZE sz2;
-                    GetTextExtentPoint32A(hdc, line2, (int)strlen(line2), &sz2);
+                    const int len2 = (int)(short)strlen(line2);
+                    GetTextExtentPoint32A(hdc, line2, len2, &sz2);
                     long tx2 = this->pnl_x + (cx - (sz2.cx / 2));
                     long ty2 = this->pnl_y + cy;
                     if (pressed) {
@@ -827,13 +820,13 @@ void TButtonPanel::draw() {
                     }
 
                     SetTextColor(hdc, shadow_c);
-                    TextOutA(hdc, tx2 - 1, ty2 + 1, line2, (int)strlen(line2));
+                    TextOutA(hdc, tx2 - 1, ty2 + 1, line2, len2);
                     SetTextColor(hdc, main_c);
-                    TextOutA(hdc, tx2, ty2, line2, (int)strlen(line2));
+                    TextOutA(hdc, tx2, ty2, line2, len2);
                 }
             }
 
-            if (old_font) SelectObject(hdc, (HGDIOBJ)old_font);
+            SelectObject(hdc, (HGDIOBJ)old_font);
             SelectClipRgn(hdc, 0);
             this->render_area->ReleaseDc("pnl_btn::draw");
         }
@@ -850,43 +843,41 @@ void TButtonPanel::draw() {
             const long x2 = this->pnl_x + this->pnl_wid - 1;
             const long y2 = this->pnl_y + this->pnl_hgt - 1;
 
-            if (x2 > x1 && y2 > y1) {
-                if (this->disabled != 0) {
-                    this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color6);
-                    this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, this->bevel_color1);
-                } else {
-                    const int down_for_bevel = pressed ? 1 : 0;
-                    switch (this->bevel_type) {
-                        case 2:
-                            if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
-                            else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
-                            break;
-                        case 3:
-                            if (down_for_bevel) this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
-                            else this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
-                            break;
-                        case 4:
-                            if (down_for_bevel) {
-                                this->render_area->DrawBevel32(x1, y1, x2, y2,
-                                    this->bevel_color6, this->bevel_color5, this->bevel_color4,
-                                    this->bevel_color3, this->bevel_color2, this->bevel_color1);
-                            } else {
-                                this->render_area->DrawBevel3(x1, y1, x2, y2,
-                                    this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
-                            }
-                            break;
-                        case 1:
-                        default:
-                            if (down_for_bevel) {
-                                this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
-                            } else {
-                                this->render_area->DrawVertLine(x2, y1 + 1, this->pnl_hgt - 1, 0);
-                                this->render_area->DrawHorzLine(x1 + 1, y2, this->pnl_wid - 1, 0);
-                                this->render_area->DrawRect(x1, y1, x2 - 1, y2 - 1, 0xFF);
-                            }
-                            break;
-                    }
+            if (this->disabled != 0) {
+                this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color6);
+                this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, this->bevel_color1);
+            } else {
+                const int down_for_bevel = pressed ? 1 : 0;
+                switch (this->bevel_type) {
+                    case 2:
+                        if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                        else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
+                        break;
+                    case 3:
+                        if (down_for_bevel) this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
+                        else this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
+                        break;
+                    case 4:
+                        if (down_for_bevel) {
+                            this->render_area->DrawBevel32(x1, y1, x2, y2,
+                                this->bevel_color6, this->bevel_color5, this->bevel_color4,
+                                this->bevel_color3, this->bevel_color2, this->bevel_color1);
+                        } else {
+                            this->render_area->DrawBevel3(x1, y1, x2, y2,
+                                this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                        }
+                        break;
+                    case 1:
+                    default:
+                        if (down_for_bevel) {
+                            this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
+                        } else {
+                            this->render_area->DrawVertLine(x2, y1 + 1, this->pnl_hgt - 1, 0);
+                            this->render_area->DrawHorzLine(x1 + 1, y2, this->pnl_wid - 1, 0);
+                            this->render_area->DrawRect(x1, y1, x2 - 1, y2 - 1, 0xFF);
+                        }
+                        break;
                 }
             }
             this->render_area->Unlock((char*)"pnl_btn::draw2");
