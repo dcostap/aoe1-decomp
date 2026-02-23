@@ -33,6 +33,7 @@
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Mission_Screen.h"
+#include "../include/TRIBE_Screen_Sed.h"
 #include "../include/TribeAchievementsScreen.h"
 #include "../include/TribeEndScreen.h"
 #include <windows.h>
@@ -1947,20 +1948,17 @@ int TRIBE_Game::start_menu() {
 
 int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode) {
     // Source of truth: tribegam.cpp.asm @ 0x00528DE0
-    // TODO(parity): TRIBE_Screen_Sed is not yet transliterated; this uses a placeholder TScreenPanel.
     this->disable_input();
 
     if (panel_system != nullptr) {
         panel_system->destroyPanel((char*)"Scenario Editor Screen");
     }
 
-    TScreenPanel* sed = new TScreenPanel((char*)"Scenario Editor Screen");
-    if (sed != nullptr && sed->error_code == 0 && this->draw_area != nullptr) {
-        // Reuse the Scenario Editor Menu resource as a lightweight stand-in.
-        sed->setup(this->draw_area, (char*)"scr4", 0xc386, 1);
-    }
-
+    TRIBE_Screen_Sed* sed = new TRIBE_Screen_Sed(scenario_filename, mode);
     if (sed != nullptr && sed->error_code == 0) {
+        if (panel_system != nullptr) {
+            panel_system->add_panel((TPanel*)sed);
+        }
         if (this->music_system != nullptr) {
             this->music_system->stop_track();
             this->started_menu_music = 0;
@@ -1980,6 +1978,11 @@ int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode) {
         (void)scenario_filename;
         (void)mode;
         return 1;
+    }
+
+    if (sed != nullptr) {
+        delete sed;
+        sed = nullptr;
     }
 
     const char* next = "Blank Screen";

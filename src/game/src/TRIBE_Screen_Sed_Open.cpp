@@ -34,7 +34,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario E
     this->cancelButton = nullptr;
     this->deleteButton = nullptr;
 
-    if (rge_base_game == nullptr || panel_system == nullptr) {
+    if (rge_base_game == nullptr || rge_base_game->draw_area == nullptr || panel_system == nullptr) {
         this->error_code = 1;
         return;
     }
@@ -52,7 +52,8 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario E
         info_id = ((TEasy_Panel*)from)->get_info_id();
     }
 
-    if (TScreenPanel::setup(rge_base_game->draw_area, info_file, info_id, 1) == 0) {
+    char* setup_file = info_file[0] ? info_file : (char*)0;
+    if (TScreenPanel::setup(rge_base_game->draw_area, setup_file, info_id, 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -61,21 +62,27 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario E
     this->set_ideal_size(0x280, 0x1e0);
 
     if (this->create_text((TPanel*)this, &this->title, 0x24cd, 0x14, 0x14, 600, 0x1e, 1, 1, 0, 0) == 0) {
+        this->error_code = 1;
         return;
     }
     if (this->create_list((TPanel*)this, &this->list, 0x14, 0x46, 600, 0x154, 0xb) == 0) {
+        this->error_code = 1;
         return;
     }
     if (this->create_auto_scrollbar(&this->scrollbar, (TTextPanel*)this->list, 0x14) == 0) {
+        this->error_code = 1;
         return;
     }
     if (this->create_button((TPanel*)this, &this->okButton, 0xfa1, 0, 0x1e, 0x1b8, 0xb4, 0x1e, 0, 0, 0) == 0) {
+        this->error_code = 1;
         return;
     }
     if (this->create_button((TPanel*)this, &this->deleteButton, 0x24c9, 0, 0xe6, 0x1b8, 0xb4, 0x1e, 0, 0, 0) == 0) {
+        this->error_code = 1;
         return;
     }
     if (this->create_button((TPanel*)this, &this->cancelButton, 0xfa2, 0, 0x1ae, 0x1b8, 0xb4, 0x1e, 0, 0, 0) == 0) {
+        this->error_code = 1;
         return;
     }
 
@@ -96,8 +103,8 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario E
     TPanel* tab_list[4];
     tab_list[0] = (TPanel*)this->list;
     tab_list[1] = (TPanel*)this->okButton;
-    tab_list[2] = (TPanel*)this->cancelButton;
-    tab_list[3] = (TPanel*)this->deleteButton;
+    tab_list[2] = (TPanel*)this->deleteButton;
+    tab_list[3] = (TPanel*)this->cancelButton;
     this->set_tab_order(tab_list, 4);
 }
 
@@ -119,50 +126,52 @@ void TRIBE_Screen_Sed_Open::fillList() {
 
     TTextPanel* list_text = (TTextPanel*)this->list;
     list_text->empty_list();
+
+    // scr_sedo.cpp.decomp assigns to a Ghidra artifact field; in this codebase this maps to handle_mouse_input.
+    this->list->handle_mouse_input = 1;
     this->list->sorted = 1;
 
     char pattern[520];
     _finddata_t info;
-    intptr_t handle = -1;
 
     sprintf(pattern, "%s*.scn", rge_base_game->prog_info->scenario_dir);
-    handle = _findfirst(pattern, &info);
-    while (handle != -1) {
-        const char* name = info.name;
-        if (name != nullptr) {
-            size_t len = strlen(name);
-            if (len > 4) {
-                char out[260];
-                size_t body_len = len - 4;
-                if (body_len >= sizeof(out)) body_len = sizeof(out) - 1;
-                memcpy(out, name, body_len);
-                out[body_len] = '\0';
-                list_text->append_line(out, 0);
+    intptr_t handle = _findfirst(pattern, &info);
+    if (handle != -1) {
+        do {
+            const char* name = info.name;
+            if (name != nullptr) {
+                size_t len = strlen(name);
+                if (len > 4) {
+                    char out[260];
+                    size_t body_len = len - 4;
+                    if (body_len >= sizeof(out)) body_len = sizeof(out) - 1;
+                    memcpy(out, name, body_len);
+                    out[body_len] = '\0';
+                    list_text->append_line(out, 0);
+                }
             }
-        }
-        if (_findnext(handle, &info) != 0) {
-            handle = -1;
-        }
+        } while (_findnext(handle, &info) == 0);
+        _findclose(handle);
     }
 
     sprintf(pattern, "%s*.scx", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(pattern, &info);
-    while (handle != -1) {
-        const char* name = info.name;
-        if (name != nullptr) {
-            size_t len = strlen(name);
-            if (len > 4) {
-                char out[260];
-                size_t body_len = len - 4;
-                if (body_len >= sizeof(out)) body_len = sizeof(out) - 1;
-                memcpy(out, name, body_len);
-                out[body_len] = '\0';
-                list_text->append_line(out, 0);
+    if (handle != -1) {
+        do {
+            const char* name = info.name;
+            if (name != nullptr) {
+                size_t len = strlen(name);
+                if (len > 4) {
+                    char out[260];
+                    size_t body_len = len - 4;
+                    if (body_len >= sizeof(out)) body_len = sizeof(out) - 1;
+                    memcpy(out, name, body_len);
+                    out[body_len] = '\0';
+                    list_text->append_line(out, 0);
+                }
             }
-        }
-        if (_findnext(handle, &info) != 0) {
-            handle = -1;
-        }
+        } while (_findnext(handle, &info) == 0);
+        _findclose(handle);
     }
 }
 
@@ -262,7 +271,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2, ulong param_3,
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// Virtual wrappers: forward to TScreenPanel unless overridden.
+// Virtual wrappers: forward to TScreenPanel unless overridden above.
 long TRIBE_Screen_Sed_Open::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
 void TRIBE_Screen_Sed_Open::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
 void TRIBE_Screen_Sed_Open::set_rect(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_rect(param_1, param_2, param_3, param_4); }
@@ -335,4 +344,3 @@ int TRIBE_Screen_Sed_Open::create_auto_scrollbar(TScrollBarPanel** param_1, TTex
 int TRIBE_Screen_Sed_Open::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 int TRIBE_Screen_Sed_Open::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 void TRIBE_Screen_Sed_Open::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
-
