@@ -2881,7 +2881,7 @@ static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_ba
     _close(fd);
 }
 
-// --- RGE_Scenario (base class stubs) ---
+// --- RGE_Scenario ---
 RGE_Scenario::~RGE_Scenario() {
     // Source of truth: scenario.cpp.decomp @ 0x0048B5A0
     if (this->time_line != nullptr) {
@@ -2941,12 +2941,12 @@ RGE_Scenario::~RGE_Scenario() {
     }
 }
 RGE_Static_Object* RGE_Scenario::get_object_pointer(int p1) {
-    // Source of truth: scenario.cpp.decomp @ 0x0048B580
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B580
     (void)p1;
     return nullptr;
 }
 void RGE_Scenario::rehook() {
-    // Source of truth: scenario.cpp.decomp @ 0x0048B590
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B590
     return;
 }
 float RGE_Scenario::Get_Version() {
