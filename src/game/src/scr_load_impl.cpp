@@ -16,6 +16,8 @@
 
 namespace {
 
+static const char kLoadCancelDialogName[] = "Cancel Dialog";
+
 void load_enable_input() {
     if (rge_base_game) {
         rge_base_game->enable_input();
@@ -48,7 +50,26 @@ static const char* load_selected_name(TribeLoadSavedGameScreen* owner) {
     return cur;
 }
 
-void load_delete_selected_files(TribeLoadSavedGameScreen* owner) {
+void load_delete_selected_files_now(TribeLoadSavedGameScreen* owner) {
+    if (!owner || !rge_base_game || !rge_base_game->prog_info) return;
+    const char* selected = load_selected_name(owner);
+    if (!selected) return;
+
+    char file_name[512];
+    snprintf(file_name, sizeof(file_name), "%s%s.gam", rge_base_game->prog_info->save_dir, selected);
+    file_name[sizeof(file_name) - 1] = '\0';
+    _unlink(file_name);
+
+    snprintf(file_name, sizeof(file_name), "%s%s.gmx", rge_base_game->prog_info->save_dir, selected);
+    file_name[sizeof(file_name) - 1] = '\0';
+    _unlink(file_name);
+
+    long line_num = ((TTextPanel*)owner->list)->get_line();
+    ((TTextPanel*)owner->list)->delete_line(line_num);
+    load_sync_buttons(owner);
+}
+
+void load_prompt_delete_selected_files(TribeLoadSavedGameScreen* owner) {
     if (!owner || !rge_base_game || !rge_base_game->prog_info) return;
     const char* selected = load_selected_name(owner);
     if (!selected) return;
@@ -65,23 +86,7 @@ void load_delete_selected_files(TribeLoadSavedGameScreen* owner) {
     snprintf(confirm_msg, sizeof(confirm_msg), confirm_fmt, selected);
     confirm_msg[sizeof(confirm_msg) - 1] = '\0';
 
-    HWND wnd = (rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : nullptr;
-    if (MessageBoxA(wnd, confirm_msg, "Age of Empires", MB_ICONQUESTION | MB_YESNO) != IDYES) {
-        return;
-    }
-
-    char file_name[512];
-    snprintf(file_name, sizeof(file_name), "%s%s.gam", rge_base_game->prog_info->save_dir, selected);
-    file_name[sizeof(file_name) - 1] = '\0';
-    _unlink(file_name);
-
-    snprintf(file_name, sizeof(file_name), "%s%s.gmx", rge_base_game->prog_info->save_dir, selected);
-    file_name[sizeof(file_name) - 1] = '\0';
-    _unlink(file_name);
-
-    long line_num = ((TTextPanel*)owner->list)->get_line();
-    ((TTextPanel*)owner->list)->delete_line(line_num);
-    load_sync_buttons(owner);
+    owner->popupYesNoDialog((char*)confirm_msg, (char*)kLoadCancelDialogName, 0x1c2, 100);
 }
 
 int load_selected_game(TribeLoadSavedGameScreen* owner) {
@@ -312,12 +317,33 @@ long TribeLoadSavedGameScreen::mouse_left_dbl_click_action(long param_1, long pa
 
 long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1) {
+        const char* panel_name = param_1->panelName();
+        if (panel_name != nullptr) {
+            if (strcmp(panel_name, kLoadCancelDialogName) == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)kLoadCancelDialogName);
+                }
+                if (param_2 == 0) {
+                    load_delete_selected_files_now(this);
+                }
+                load_sync_buttons(this);
+                return 1;
+            }
+            if (strcmp(panel_name, "OKDialog") == 0) {
+                if (panel_system != nullptr) {
+                    panel_system->destroyPanel((char*)"OKDialog");
+                }
+                this->set_curr_child((TPanel*)this->list);
+                return 1;
+            }
+        }
+
         if ((TPanel*)this->list == param_1 && param_2 == 3) {
             return this->action((TPanel*)this->okButton, 1, 0, 0);
         }
 
         if ((TButtonPanel*)param_1 == this->deleteButton && param_2 == 1) {
-            load_delete_selected_files(this);
+            load_prompt_delete_selected_files(this);
             return 1;
         }
 
@@ -330,8 +356,7 @@ long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param
                     strncpy(text, "Cannot load that saved game.", sizeof(text) - 1);
                     text[sizeof(text) - 1] = '\0';
                 }
-                HWND wnd = (rge_base_game && rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : nullptr;
-                MessageBoxA(wnd, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+                this->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
             }
             return 1;
         }
