@@ -3,6 +3,7 @@
 #include "RGE_Action_Object.h"
 
 struct VISIBLE_UNIT_REC;
+class RGE_Master_Combat_Object;
 
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
@@ -138,6 +139,18 @@ public:
     virtual int setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[125] (0x1F4)
     virtual void work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5); // vt[126] (0x1F8)
     virtual void set_task(short param_1); // vt[127] (0x1FC)
+
+    // Combat-specific virtuals (com_obj.cpp). These are appended after the base vtable.
+    virtual uchar area_attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4, RGE_Static_Object* param_5);
+    virtual uchar attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4);
+    virtual uchar attack(RGE_Static_Object* param_1, RGE_Combat_Object* param_2);
+    virtual uchar do_attack(RGE_Static_Object* param_1, RGE_Combat_Object* param_2, float param_3, float param_4, float param_5);
+
+    void reset_attack_timer();
+    virtual void get_armor(short& param_1, short& param_2);
+    virtual void get_weapon(short& param_1, short& param_2);
+    virtual void get_weapon_range(float& param_1, float& param_2);
+    virtual void get_speed_of_attack(float& param_1, float& param_2);
 
     VISIBLE_UNIT_REC* VUR_Ptrs[9];
     unsigned long Unified_Map_Value;
