@@ -397,13 +397,13 @@ Rules of engagement:
 
 ## Task 36 — Replace TRIBE player AI compat shim with real `TribeMainDecisionAIModule`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove `TribeMainDecisionAIModuleCompatShim` so TRIBE player AI uses the real module/vtable, preventing subtle AI dispatch mismatches.
 - Implement: full ctor/dtor + required virtuals for `TribeMainDecisionAIModule`, and update `TRIBE_Player` to allocate/use it (removing the compat shim + reinterpret-cast allocation path).
 - Where: new src file(s) under src/game/src + edits in src/game/src/TRIBE_Player.cpp and matching headers under src/game/include.
 - Source of truth: src/game/decomp/TribeMainDecisionAIModule.decomp + src/game/decomp/TribeMainDecisionAIModule.asm, plus call sites in src/game/decomp/tplayer.cpp.decomp.
 - Done when: the shim class is removed, `playerAI` is a real `TribeMainDecisionAIModule`, and build is clean without adding new “linker satisfaction” stubs.
-- Status note: `TribeMainDecisionAIModuleCompatShim` + reinterpret-cast allocation are still present in `src/game/src/TRIBE_Player.cpp` (latest local commit `15212ff`).
+- Status note: `TRIBE_Player` now allocates/uses a real `TribeMainDecisionAIModule` and the compat shim path is gone (commit `1b3f6f5`, merged via `baa935e`).
 
 ---
 
