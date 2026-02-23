@@ -9,6 +9,7 @@
 #include "../include/TDropDownPanel.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/TCommunications_Handler.h"
+#include "../include/TEasy_Panel.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
@@ -815,14 +816,25 @@ void mps_popup_resid(TribeMPSetupScreen* owner, int resid, const char* fallback)
         }
     }
 
-    HWND wnd = (rge_base_game && rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : NULL;
-    MessageBoxA(wnd, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+    TEasy_Panel* panel = nullptr;
+    if (owner) {
+        panel = (TEasy_Panel*)owner;
+    } else if (panel_system && panel_system->currentPanelValue) {
+        panel = dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue);
+    }
+    if (panel) {
+        panel->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
+    }
 }
 
 void mps_popup_text(const char* text) {
     const char* safe = (text && text[0] != '\0') ? text : "No message.";
-    HWND wnd = (rge_base_game && rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : NULL;
-    MessageBoxA(wnd, safe, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+    TEasy_Panel* panel = (panel_system && panel_system->currentPanelValue)
+        ? dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue)
+        : nullptr;
+    if (panel) {
+        panel->popupOKDialog((char*)safe, (char*)0, 0x1c2, 100);
+    }
 }
 
 } // namespace

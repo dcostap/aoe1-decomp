@@ -1,5 +1,5 @@
 #include "../include/RGE_Missile_Object.h"
-#include "../include/RGE_Action.h"
+#include "../include/RGE_Action_Missile.h"
 #include "../include/RGE_Action_List.h"
 #include "../include/RGE_Check_List.h"
 #include "../include/RGE_Check_Node.h"
@@ -12,6 +12,7 @@
 #include "../include/globals.h"
 
 #include <math.h>
+#include <new>
 
 // Default constructor
 RGE_Missile_Object::RGE_Missile_Object()
@@ -90,42 +91,22 @@ uchar RGE_Missile_Object::update() {
     return RGE_Combat_Object::update();
 }
 
-// TODO: STUB - RGE_Action_Missile is not transliterated yet; keep action stack plumbing alive with a base action shell.
-// Source of truth: misl_obj.cpp.decomp @ 0x0045A950
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A950, misl_obj.cpp.asm @ 0x0045A950
 void RGE_Missile_Object::init_missile(RGE_Combat_Object* param_1, RGE_Static_Object* param_2, float param_3) {
-    RGE_Action* action = new RGE_Action();
+    RGE_Action_Missile* action = new (std::nothrow)
+        RGE_Action_Missile((RGE_Action_Object*)this, (RGE_Static_Object*)param_1, param_2, param_2->world_x, param_2->world_y, param_2->world_z);
     if (action != nullptr) {
-        action->setup((RGE_Action_Object*)this);
-        action->action_type = 8;
-        action->set_target_obj(param_2);
-        action->set_target_obj2((RGE_Static_Object*)param_1);
-        if (param_2 != nullptr) {
-            action->target_x = param_2->world_x;
-            action->target_y = param_2->world_y;
-            action->target_z = param_2->world_z;
-        }
-        if (this->actions != nullptr) {
-            this->actions->add_action(action);
-        }
+        this->actions->add_action(action);
     }
     this->max_range = param_3;
 }
 
-// TODO: STUB - RGE_Action_Missile is not transliterated yet; keep action stack plumbing alive with a base action shell.
-// Source of truth: misl_obj.cpp.decomp @ 0x0045A9E0
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A9E0, misl_obj.cpp.asm @ 0x0045A9E0
 void RGE_Missile_Object::init_missile(RGE_Combat_Object* param_1, float param_2, float param_3, float param_4, float param_5) {
-    RGE_Action* action = new RGE_Action();
+    RGE_Action_Missile* action = new (std::nothrow)
+        RGE_Action_Missile((RGE_Action_Object*)this, (RGE_Static_Object*)param_1, nullptr, param_2, param_3, param_4);
     if (action != nullptr) {
-        action->setup((RGE_Action_Object*)this);
-        action->action_type = 8;
-        action->set_target_obj(nullptr);
-        action->set_target_obj2((RGE_Static_Object*)param_1);
-        action->target_x = param_2;
-        action->target_y = param_3;
-        action->target_z = param_4;
-        if (this->actions != nullptr) {
-            this->actions->add_action(action);
-        }
+        this->actions->add_action(action);
     }
     this->max_range = param_5;
 }

@@ -350,6 +350,7 @@ struct TPanelSystem {
     long check_message(void* hwnd, uint msg, uint wparam, long lparam);
     void add_panel(TPanel* panel);
     void remove_panel(TPanel* panel);
+    TPanel* currentPanel();
 
     // Missing methods needed for original game behavior
     TPanel* panel(char* name);
