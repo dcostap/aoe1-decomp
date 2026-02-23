@@ -140,6 +140,7 @@ public:
     int commanderRemoveFromGroup(int param_1);
     int destroyGroup();
     int commanderDestroyGroup();
+    void set_sleep_flag(uchar sleep_flag);
     void addToPathingGroup(int param_1);
     void removeAllFromPathingGroup();
     void remove_shadows();
