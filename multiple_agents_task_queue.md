@@ -881,7 +881,7 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
 
 ## Task 91 — SP gameplay: restore RGE combat/missile runtime creation (recycle + masters + ctors + setup)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore projectile/combat instantiation used by the single-player simulation (combat objects and missiles must be constructible from masters, and master `make_new_obj` must create correct derived types).
 - Implement (decomp-first transliteration):
   - `RGE_Game_World::recycle_object_in_to_game(unsigned char type)` @ 0x00546180.
@@ -906,6 +906,8 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
   - The current TODO in `src/game/src/RGE_Missile_Object.cpp` about missing Combat master-based constructor path is removed (or is no longer true).
   - Build remains clean and no new placeholder stubs are introduced.
 
+Status note: landed as Task 91 implementation commit `9dc5ff2` and merged via `d3ecb49`.
+
 ## Task 92 — SP gameplay: restore `RGE_Master_Static_Object` modify/copy/save (tech/upgrades)
 - [x] Assigned to agent
 - [ ] Finished
@@ -927,7 +929,7 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
 
 ## Task 93 — SP in-game loop: restore `RGE_Base_Game::handle_paint` parity slice (render hot-path)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: bring the per-frame paint path closer to original so the single-player in-game loop can reliably render via the panel system without relying on the current “simplified” path.
 - Implement: transliterate `RGE_Base_Game::handle_paint(void*, uint, uint, long)` @ 0x004213E0.
 - Where: `src/game/src/basegame.cpp` (and only add minimal supporting helpers in existing draw/panel types if the decomp calls them).
@@ -936,9 +938,11 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
   - The “Simplified” comment block in `RGE_Base_Game::handle_paint` is no longer true (control-flow matches decomp at a high level: paint gating, panel draw_tree/paint, mouse pointer draw sequencing, and surface/palette handling where applicable).
   - Build stays clean without introducing new placeholder stubs.
 
+Status note: landed as Task 93 implementation commit `2d08055` and merged via `0f584ff`.
+
 ## Task 94 — Save/load support: eliminate `RGE_Action_List` fallback base-action shells (missing load ctors)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: make `RGE_Action_List::create_action` match `act_list.cpp` decomp parity (and stop fabricating base-action shells for unknown types).
 - Implement:
   - Transliterate `RGE_Action_List::create_action(int fd, short action_type)` to match the switch map and return behavior in `src/game/decomp/act_list.cpp.decomp`.
@@ -951,6 +955,8 @@ Status note: `RGE_Action_Transport` parity landed (implement commit `5d3cd1b`, m
   - The factory no longer allocates a base `RGE_Action` shell for unknown types.
   - For the action types present in the decomp switch, construction + load paths match the decomp.
   - Build remains clean and no new “linker satisfaction” stubs are introduced.
+
+Status note: landed as Task 94 implementation commit `6af9972`.
 
 ## Task 95 — SP gameplay: implement `RGE_Action_Make` parity (act_make)
 - [ ] Assigned to agent
