@@ -153,7 +153,7 @@ void TPicturePanel::draw() {
                 this->pic->Draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
             }
         } else if (this->shape) {
-            this->shape->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0, nullptr);
+            this->shape->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, nullptr);
         }
         this->render_area->Unlock((char*)"pnl_pic::draw");
     }

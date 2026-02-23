@@ -10,15 +10,11 @@
 #include "../include/globals.h"
 
 #include <string.h>
+#include <new>
 
 namespace {
 static RGE_Action_List* action_alloc_list(RGE_Action_Object* obj) {
-    RGE_Action_List* list = (RGE_Action_List*)operator new(sizeof(RGE_Action_List));
-    if (list != nullptr) {
-        memset(list, 0, sizeof(RGE_Action_List));
-        list->obj = obj;
-    }
-    return list;
+    return new (std::nothrow) RGE_Action_List(obj);
 }
 }
 
@@ -68,6 +64,9 @@ int RGE_Action::setup(int param_1, RGE_Action_Object* param_2) {
 
     rge_read(param_1, &sprite_id, 2);
     this->sprite = nullptr;
+    if (this->obj != nullptr) {
+        this->sprite = ((RGE_Static_Object*)this->obj)->get_sprite_pointer(sprite_id);
+    }
 
     this->task = nullptr;
     if ((this->obj != nullptr) && (this->obj->master_obj != nullptr) && (task_id >= 0)) {
@@ -121,6 +120,9 @@ void RGE_Action::rehook() {
             this->target2ID = hooked->id;
         }
     }
+    if (this->sub_actions != nullptr) {
+        this->sub_actions->rehook();
+    }
 }
 
 // Fully verified. Source of truth: action.cpp.decomp @ 0x00407790
@@ -143,7 +145,11 @@ void RGE_Action::save(int param_1) {
     rge_write(param_1, &this->timer, 4);
     rge_write(param_1, &task_id, 2);
     rge_write(param_1, &this->subActionValue, 1);
-    rge_write(param_1, &sub_action_terminator, 2);
+    if (this->sub_actions != nullptr) {
+        this->sub_actions->save(param_1);
+    } else {
+        rge_write(param_1, &sub_action_terminator, 2);
+    }
     rge_write(param_1, &sprite_id, 2);
 }
 
@@ -182,6 +188,9 @@ uchar RGE_Action::update() {
     }
     if ((this->target_obj2 != nullptr) && (this->target_obj2->object_state > 6)) {
         this->set_target_obj2(nullptr);
+    }
+    if ((this->sub_actions != nullptr) && (this->sub_actions->list != nullptr)) {
+        return this->sub_actions->update();
     }
     return (this->state == 1) ? 1 : 0;
 }
@@ -272,4 +281,14 @@ void RGE_Action::set_target_obj2(RGE_Static_Object* param_1) {
 
 void RGE_Action::set_state(uchar param_1) {
     this->state = param_1;
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407D60
+uchar RGE_Action::subAction() const {
+    return this->subActionValue;
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407D70
+void RGE_Action::setSubAction(uchar param_1) {
+    this->subActionValue = param_1;
 }

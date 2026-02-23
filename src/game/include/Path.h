@@ -28,15 +28,15 @@ struct Path {
     const Waypoint& start() const;
     const Waypoint& goal() const;
 
-    const Waypoint* waypoint(int idx) const;
+    Waypoint* waypoint(int idx) const;
     Waypoint* currentWaypoint() const;
     int currentWaypointNumber() const;
     void setCurrentWaypointNumber(int idx);
 
-    const Waypoint* nextWaypoint() const;
-    const Waypoint* previousWaypoint() const;
-    const Waypoint* firstWaypoint() const;
-    const Waypoint* lastWaypoint() const;
+    Waypoint* nextWaypoint() const;
+    Waypoint* previousWaypoint() const;
+    Waypoint* firstWaypoint() const;
+    Waypoint* lastWaypoint() const;
 
     void initToStart();
     void initToEnd();

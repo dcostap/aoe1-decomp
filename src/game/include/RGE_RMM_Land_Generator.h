@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "RGE_Random_Map_Module.h"
+#include "RGE_Land_Info.h"
 
 class RGE_RMM_Land_Generator : public RGE_Random_Map_Module {
 public:

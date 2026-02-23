@@ -59,7 +59,7 @@ public:
     virtual void new_angle(float param_1); // vt[45] (0xB4)
     virtual RGE_Static_Object* spawn_death_obj(); // vt[46] (0xB8)
     virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // vt[47] (0xBC)
-    virtual void set_being_worked_on(short param_1, uchar param_2); // vt[48] (0xC0)
+    virtual void set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3); // vt[48] (0xC0)
     virtual void release_being_worked_on(RGE_Static_Object* param_1); // vt[49] (0xC4)
     virtual uchar is_moving(); // vt[50] (0xC8)
     virtual RGE_Static_Object* get_target_obj(); // vt[51] (0xCC)

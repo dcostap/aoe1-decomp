@@ -227,59 +227,285 @@ RGE_Game_World::RGE_Game_World() {
     this->difficultyLevelValue = 0;
 }
 
-// Stub implementations for RGE_Game_World virtual methods
-// TODO: implement actual logic for each method (see worldload.cpp.asm, world.cpp.asm, etc.)
-
 // Data loading virtuals
 uchar RGE_Game_World::data_load_world(FILE* param_1) {
-    // TODO: implement (see worldload.cpp.asm)
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005415B0
+    char terrain_table_file[23];
+    char color_file[23];
+    char sound_file[23];
+    char border_file[23];
+    char overlay_file[23];
+    char terrain_file[23];
+    char map_file[23];
+    char sprite_file[23];
+    char player_file[23];
+    char obj_file[23];
+    char effects_file[23];
+    char terr_obj_file[23];
+    char rmm_map_file[23];
+    char rmm_land_file[23];
+    char rmm_terr_file[23];
+    char rmm_obj_file[23];
+    short tile_width = 0;
+    short tile_height = 0;
+    short elev_height = 0;
+
+    if (param_1 != nullptr) {
+        fscanf(param_1,
+               " %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %22s %hd %hd %hd",
+               terrain_table_file,
+               color_file,
+               sound_file,
+               border_file,
+               overlay_file,
+               terrain_file,
+               map_file,
+               sprite_file,
+               player_file,
+               obj_file,
+               effects_file,
+               terr_obj_file,
+               rmm_map_file,
+               rmm_land_file,
+               rmm_terr_file,
+               rmm_obj_file,
+               &tile_width,
+               &tile_height,
+               &elev_height);
+
+        this->data_load_terrain_tables(terrain_table_file);
+        this->data_load_color_tables(color_file);
+        this->data_load_sounds(sound_file);
+        this->data_load_sprites(sprite_file);
+        this->data_load_players(player_file);
+        this->data_load_objects(obj_file);
+        this->data_load_effects(effects_file);
+        this->data_load_map(terrain_file, overlay_file, border_file, map_file, tile_width, tile_height, elev_height, this->sounds, terr_obj_file);
+        this->data_load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_obj_file);
+    }
+
     return 1;
 }
 
 uchar RGE_Game_World::data_load_terrain_tables(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540EB0
+    FILE* f = fopen(param_1, "r");
+    if (f != nullptr) {
+        if (fscanf(f, "%hd %hd", &this->terrain_num, &this->terrain_size) == -1) {
+            this->terrain_num = 0;
+            this->terrains = nullptr;
+        } else {
+            this->terrains = (float**)calloc((int)this->terrain_num, sizeof(float*));
+            for (short i = 0; i < this->terrain_num; ++i) {
+                short terrain_id = 0;
+                short count = 0;
+                if (fscanf(f, "%hd %hd", &terrain_id, &count) == -1) {
+                    continue;
+                }
+
+                float* arr = (float*)calloc((int)this->terrain_size, sizeof(float));
+                if (this->terrains != nullptr && terrain_id >= 0 && terrain_id < this->terrain_num) {
+                    this->terrains[terrain_id] = arr;
+                }
+
+                for (short j = 0; j < count; ++j) {
+                    short index = 0;
+                    float value = 0.0f;
+                    fscanf(f, "%hd", &index);
+                    if (this->terrains != nullptr && terrain_id >= 0 && terrain_id < this->terrain_num &&
+                        this->terrains[terrain_id] != nullptr && index >= 0 && index < this->terrain_size) {
+                        fscanf(f, "%f", &this->terrains[terrain_id][index]);
+                    } else {
+                        fscanf(f, "%f", &value);
+                    }
+                }
+            }
+        }
+        fclose(f);
+    }
     return 1;
 }
 
 uchar RGE_Game_World::data_load_players(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005412B0
+    FILE* f = fopen(param_1, "r");
+    if (f != nullptr) {
+        short count = 0;
+        if (fscanf(f, "%hd %hd", &this->master_player_num, &count) == -1) {
+            this->master_player_num = 0;
+            this->master_players = nullptr;
+        } else {
+            this->master_players = (RGE_Master_Player**)calloc((int)this->master_player_num, sizeof(RGE_Master_Player*));
+            for (short i = 0; i < count; ++i) {
+                short type = 0;
+                short id = 0;
+                if (fscanf(f, "%hd %hd", &type, &id) != -1) {
+                    this->data_load_players_type(type, id, f);
+                }
+            }
+        }
+        fclose(f);
+    }
     return 1;
 }
 
 uchar RGE_Game_World::data_load_objects(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541380
+    FILE* f = fopen(param_1, "r");
+    if (f != nullptr) {
+        short player_count = 0;
+        if (fscanf(f, "%hd", &player_count) != -1 && player_count > 0) {
+            for (short i = 0; i < player_count; ++i) {
+                short player_id = 0;
+                if (fscanf(f, "%hd", &player_id) == -1) {
+                    continue;
+                }
+
+                short obj_space = 0;
+                fscanf(f, "%hd", &obj_space);
+                if (this->master_players != nullptr && player_id >= 0 && player_id < this->master_player_num &&
+                    this->master_players[player_id] != nullptr) {
+                    this->master_players[player_id]->create_master_object_space(obj_space);
+                }
+
+                short obj_count = 0;
+                fscanf(f, "%hd", &obj_count);
+                for (short j = 0; j < obj_count; ++j) {
+                    short object_type = 0;
+                    short obj_index = 0;
+                    if (fscanf(f, "%hd %hd", &object_type, &obj_index) == -1) {
+                        continue;
+                    }
+                    if (this->master_players != nullptr && player_id >= 0 && player_id < this->master_player_num &&
+                        this->master_players[player_id] != nullptr) {
+                        this->master_players[player_id]->load_object(f, (uchar)object_type, this->sprites, this->sounds, obj_index);
+                    }
+                }
+            }
+        }
+        fclose(f);
+    }
     return 1;
 }
 
 uchar RGE_Game_World::data_load_sounds(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540DA0
+    FILE* f = fopen(param_1, "r");
+    if (f != nullptr) {
+        short count = 0;
+        if (fscanf(f, "%hd %hd", &this->sound_num, &count) == -1) {
+            this->sound_num = 0;
+            this->sounds = nullptr;
+        } else {
+            this->sounds = (RGE_Sound**)calloc((int)this->sound_num, sizeof(RGE_Sound*));
+            for (short i = 0; i < count; ++i) {
+                short index = 0;
+                if (fscanf(f, "%hd", &index) != -1) {
+                    RGE_Sound* sound = new RGE_Sound(f, index);
+                    if (this->sounds != nullptr && index >= 0 && index < this->sound_num) {
+                        this->sounds[index] = sound;
+                    } else {
+                        delete sound;
+                    }
+                }
+            }
+        }
+        fclose(f);
+    }
     return 1;
 }
 
 uchar RGE_Game_World::data_load_color_tables(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540FD0
+    FILE* f = fopen(param_1, "r");
+    if (f != nullptr) {
+        short count = 0;
+        if (fscanf(f, "%hd %hd", &this->color_table_num, &count) == -1) {
+            this->color_table_num = 0;
+            this->color_tables = nullptr;
+        } else {
+            this->color_tables = (RGE_Color_Table**)calloc((int)this->color_table_num, sizeof(RGE_Color_Table*));
+            for (short i = 0; i < count; ++i) {
+                short index = 0;
+                if (fscanf(f, "%hd", &index) != -1) {
+                    RGE_Color_Table* table = new RGE_Color_Table(f, index);
+                    if (this->color_tables != nullptr && index >= 0 && index < this->color_table_num) {
+                        this->color_tables[index] = table;
+                    } else {
+                        delete table;
+                    }
+                }
+            }
+        }
+        fclose(f);
+    }
     return 1;
 }
 
 uchar RGE_Game_World::data_load_sprites(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005410E0
+    FILE* f = fopen(param_1, "r");
+    if (f != nullptr) {
+        short count = 0;
+        if (fscanf(f, "%hd %hd", &this->sprite_num, &count) == -1) {
+            this->sprite_num = 0;
+            this->sprites = nullptr;
+        } else {
+            this->sprites = (RGE_Sprite**)calloc((int)this->sprite_num, sizeof(RGE_Sprite*));
+            for (short i = 0; i < count; ++i) {
+                short id = 0;
+                if (fscanf(f, "%hd", &id) != -1) {
+                    RGE_Sprite* sprite = new RGE_Sprite(f, id, this->sounds);
+                    if (this->sprites != nullptr && id >= 0 && id < this->sprite_num) {
+                        this->sprites[id] = sprite;
+                    } else {
+                        delete sprite;
+                    }
+                }
+            }
+
+            for (short i = 0; i < this->sprite_num; ++i) {
+                if (this->sprites != nullptr && this->sprites[i] == nullptr) {
+                    this->sprites[i] = new RGE_Sprite(i);
+                }
+            }
+        }
+        fclose(f);
+    }
     return 1;
 }
 
 void RGE_Game_World::data_load_players_type(short param_1, short param_2, FILE* param_3) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541240
+    if (param_2 == 0) {
+        RGE_Master_Player* mp = new RGE_Master_Player(param_3);
+        if (this->master_players != nullptr && param_1 >= 0 && param_1 < this->master_player_num) {
+            this->master_players[param_1] = mp;
+        } else {
+            delete mp;
+        }
+    }
 }
 
 void RGE_Game_World::data_load_effects(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005414A0
+    this->effects = new RGE_Effects(param_1);
 }
 
 void RGE_Game_World::data_load_map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8, char* param_9) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541500
+    (void)param_2;
+    this->map = new RGE_Map(param_1, param_3, param_4, param_5, param_6, param_7, param_8);
+    if (this->map != nullptr) {
+        this->map->load_terrain_obj_types(param_9);
+    }
 }
 
 void RGE_Game_World::data_load_random_map(char* param_1, char* param_2, char* param_3, char* param_4) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541590
+    if (this->map != nullptr) {
+        this->map->load_random_map(param_1, param_2, param_3, param_4);
+    }
 }
 
 // Initialization virtuals
@@ -1067,6 +1293,7 @@ void RGE_Game_World::selectNextComputerPlayer(int param_1) {
 uchar RGE_Game_World::update() {
     // Source of truth: world.cpp.decomp / world.cpp.asm (update @ 0x00542ED0).
     // Keep timing/cycle flow close to original so single-player simulation advances.
+    static int s_world_update_debug_logs = 0;
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
 
     int cycle_time = -1;
@@ -1112,8 +1339,35 @@ uchar RGE_Game_World::update() {
 
     this->world_time_delta = this->world_time - this->old_world_time;
     if (this->world_time_delta != 0 || first_tick != 0) {
-        this->commands->do_commands();
-        this->scenario->update();
+        CUSTOM_DEBUG_BEGIN
+        if (s_world_update_debug_logs < 16) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_Game_World::update tick begin world_time=%lu delta=%lu commands=%p scenario=%p player_num=%d curr_player=%d",
+                (unsigned long)this->world_time,
+                (unsigned long)this->world_time_delta,
+                this->commands,
+                this->scenario,
+                (int)this->player_num,
+                (int)this->curr_player);
+            s_world_update_debug_logs++;
+        }
+        CUSTOM_DEBUG_END
+
+        if (this->commands != nullptr) {
+            this->commands->do_commands();
+        } else {
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("RGE_Game_World::update: commands is null, skipping do_commands");
+            CUSTOM_DEBUG_END
+        }
+
+        if (this->scenario != nullptr) {
+            this->scenario->update();
+        } else {
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("RGE_Game_World::update: scenario is null, skipping scenario->update");
+            CUSTOM_DEBUG_END
+        }
 
         this->world_time_delta_seconds = (float)this->world_time_delta * 0.001f;
         world_update_counter = world_update_counter + 1;

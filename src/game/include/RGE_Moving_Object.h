@@ -7,12 +7,25 @@
 
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
+    enum PathResult {
+        PathFound = 0,
+        WaitingOnPathingCap = 1
+    };
+
     RGE_Moving_Object();
     RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
+    float angle_to_object(RGE_Static_Object* param_1, float param_2, float param_3);
     void setGoal(float x, float y, float z);
     void set_angle();
+    void set_velocity(float param_1, float param_2, float param_3);
+    const Path& getPath() const;
+    void setActionRange(float param_1);
+    void setTargetID(int param_1);
+    void setTargetRadius(float param_1, float param_2);
+    void setFinalUserDefinedWaypoint();
     void setInitialPoints(XYPoint* param_1, XYPoint* param_2);
+    void boundAngle(float* param_1, int param_2);
 
     // Virtuals (best-effort)
     virtual ~RGE_Moving_Object(); // vt[0] (0x0)

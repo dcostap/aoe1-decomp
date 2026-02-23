@@ -383,6 +383,27 @@ void RGE_Active_Sprite_List::delete_list() {
     this->list = nullptr;
 }
 
+// Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A8B0
+RGE_Active_Sprite_Node* RGE_Active_Sprite_List::copy_sprite_list() {
+    RGE_Active_Sprite_Node* original_list = this->list;
+    this->list = nullptr;
+
+    for (RGE_Active_Sprite_Node* node = original_list; node != nullptr; node = node->next) {
+        RGE_Active_Sprite* active_sprite = node->node;
+        this->add_sprite(active_sprite->sprite, node->order, active_sprite->offset_x, active_sprite->offset_y);
+    }
+
+    RGE_Active_Sprite_Node* copied_list = this->list;
+    this->list = original_list;
+    return copied_list;
+}
+
+// Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A8F0
+void RGE_Active_Sprite_List::use_sprite_list(RGE_Active_Sprite_Node* param_1) {
+    this->delete_list();
+    this->list = param_1;
+}
+
 void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* param_1, uchar param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A910
     if (param_1 != nullptr) {

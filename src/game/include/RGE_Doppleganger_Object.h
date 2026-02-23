@@ -8,6 +8,7 @@ class RGE_Doppleganger_Object : public RGE_Animated_Object {
 public:
     RGE_Doppleganger_Object();
     RGE_Doppleganger_Object(int param_1, RGE_Game_World* param_2, int param_3);
+    RGE_Doppleganger_Object(RGE_Master_Doppleganger_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6, RGE_Static_Object* param_7);
 
     // Virtuals (best-effort)
     virtual ~RGE_Doppleganger_Object(); // vt[0] (0x0)

@@ -8,13 +8,54 @@ typedef char PlayerName[256];
 
 class RGE_Scenario {
 public:
+    RGE_Scenario(RGE_Game_World* param_1);
+    RGE_Scenario(int param_1, RGE_Game_World* param_2);
+
     // Virtuals (best-effort)
     virtual RGE_Static_Object* get_object_pointer(int param_1); // vt[0] (0x0)
     virtual ~RGE_Scenario(); // vt[1] (0x4)
     virtual void rehook(); // vt[2] (0x8)
+
+    void InitializeTextValues();
+    void Set_scenario_name(char* param_1);
+    void Set_description(char* param_1);
+    void Set_Cine_PreGame(char* param_1);
+    void Set_Cine_Victory(char* param_1);
+    void Set_Cine_Loss(char* param_1);
+    void Set_Mission_Bmp(char* param_1);
+    void Set_BuildList(int param_1, char* param_2, int param_3);
+    void Set_CityPlan(int param_1, char* param_2, int param_3);
+    void Set_player_AI(int param_1, char* param_2, int param_3);
+    void Set_Version(float param_1);
+    void Set_player_Type(int param_1, int param_2);
+    void Set_player_Civ(int param_1, int param_2);
+    void Set_player_Active(int param_1, int param_2);
+    void SetPlayerName(int param_1, char* param_2);
+
+    char* Get_scenario_name();
+    char* Get_description();
+    char* Get_Cine_PreGame();
+    char* Get_Cine_Victory();
+    char* Get_Cine_Loss();
+    char* Get_Mission_Bmp();
+    char* Get_BuildList(int param_1, int param_2);
+    char* Get_CityPlan(int param_1, int param_2);
     float Get_Version();
+    char* Get_player_AI(int param_1, int param_2);
+    int GetPlayerPosture(int param_1);
+    char* GetPlayerName(int param_1);
+    int Get_player_Type(int param_1);
+    int Get_player_Civ(int param_1);
+    int Get_player_Active(int param_1);
     uchar Get_conquest_victory();
+    void Set_conquest_victory(uchar param_1);
     void update();
+    int active_player_count();
+    int any_player_count();
+    int computer_player_count();
+    void add_description(char* param_1);
+    void Set_message(char* param_1, long param_2);
+    char* Get_message(long param_1);
     virtual void save(int param_1); // vt[3] (0xC)
 
     RGE_Timeline* time_line; // +0x4

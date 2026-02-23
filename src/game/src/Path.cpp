@@ -272,7 +272,7 @@ const Waypoint& Path::goal() const {
 }
 
 // Fully verified. Source of truth: path.cpp.decomp @ 0x0046AE70
-const Waypoint* Path::waypoint(int idx) const {
+Waypoint* Path::waypoint(int idx) const {
     if (this->pathValue != nullptr && -1 < idx && idx < this->currentSizeValue) {
         return this->pathValue + idx;
     }
@@ -299,7 +299,7 @@ void Path::setCurrentWaypointNumber(int idx) {
 }
 
 // Fully verified. Source of truth: path.cpp.decomp @ 0x0046AEE0
-const Waypoint* Path::nextWaypoint() const {
+Waypoint* Path::nextWaypoint() const {
     int next = this->currentWaypointValue + 1;
     if (this->pathValue != nullptr && -1 < this->currentWaypointValue && next < this->currentSizeValue) {
         return this->pathValue + next;
@@ -308,7 +308,7 @@ const Waypoint* Path::nextWaypoint() const {
 }
 
 // Fully verified. Source of truth: path.cpp.decomp @ 0x0046AF10
-const Waypoint* Path::previousWaypoint() const {
+Waypoint* Path::previousWaypoint() const {
     int idx = this->currentWaypointValue;
     if (this->pathValue != nullptr && idx != -1 && -1 < idx + 1 && idx < this->currentSizeValue) {
         return this->pathValue + idx - 1;
@@ -317,7 +317,7 @@ const Waypoint* Path::previousWaypoint() const {
 }
 
 // Fully verified. Source of truth: path.cpp.decomp @ 0x0046AF40
-const Waypoint* Path::firstWaypoint() const {
+Waypoint* Path::firstWaypoint() const {
     Waypoint* p = this->pathValue;
     if (p == nullptr || this->currentSizeValue < 1) {
         p = nullptr;
@@ -326,7 +326,7 @@ const Waypoint* Path::firstWaypoint() const {
 }
 
 // Fully verified. Source of truth: path.cpp.decomp @ 0x0046AF60
-const Waypoint* Path::lastWaypoint() const {
+Waypoint* Path::lastWaypoint() const {
     if (this->pathValue != nullptr && 0 < this->currentSizeValue) {
         return this->pathValue + this->currentSizeValue - 1;
     }

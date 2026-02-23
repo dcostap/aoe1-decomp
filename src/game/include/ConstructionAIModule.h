@@ -1,8 +1,14 @@
 #pragma once
 #include "common.h"
+#include "BuildItem.h"
+#include "ConstructionItem.h"
 
 class ConstructionAIModule {
 public:
+    enum PlacementResult : int {
+        PlacementResult_0 = 0,
+    };
+
     // Virtuals (best-effort)
     virtual ~ConstructionAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -28,64 +34,65 @@ public:
     virtual void decrementBuildAttempts(float param_1, float param_2, int param_3) const; // vt[21] (0x54)
     virtual void incrementBuildAttempts(float param_1, float param_2, int param_3) const; // vt[22] (0x58)
 
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
-    int padding;
+    int padding0;
+    int padding1;
+    int padding2;
+    int padding3;
+    int padding4;
+    int padding5;
+    int padding6;
+    int padding7;
+    int padding8;
+    int padding9;
+    int padding10;
+    int padding11;
+    int padding12;
+    int padding13;
+    int padding14;
+    int padding15;
+    int padding16;
+    int padding17;
+    int padding18;
+    int padding19;
+    int padding20;
+    int padding21;
+    int padding22;
+    int padding23;
+    int padding24;
+    int padding25;
+    int padding26;
+    int padding27;
+    int padding28;
+    int padding29;
+    int padding30;
+    int padding31;
+    int padding32;
+    int padding33;
+    int padding34;
+    int padding35;
+    int padding36;
+    int padding37;
+    int padding38;
+    int padding39;
+    int padding40;
+    int padding41;
+    int padding42;
+    int padding43;
+    int padding44;
+    int padding45;
+    int padding46;
+    int padding47;
+    int padding48;
+    int padding49;
+    int padding50;
+    int padding51;
+    int padding52;
+    int padding53;
+    int padding54;
+    int padding55;
+    int padding56;
+    int padding57;
+    int padding58;
     int padding;
     int numberConstructionLotsValue;
     ConstructionItem constructionLots;

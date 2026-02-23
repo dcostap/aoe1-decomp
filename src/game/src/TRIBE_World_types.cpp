@@ -2881,7 +2881,7 @@ static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_ba
     _close(fd);
 }
 
-// --- RGE_Scenario (base class stubs) ---
+// --- RGE_Scenario ---
 RGE_Scenario::~RGE_Scenario() {
     // Source of truth: scenario.cpp.decomp @ 0x0048B5A0
     if (this->time_line != nullptr) {
@@ -2941,12 +2941,12 @@ RGE_Scenario::~RGE_Scenario() {
     }
 }
 RGE_Static_Object* RGE_Scenario::get_object_pointer(int p1) {
-    // Source of truth: scenario.cpp.decomp @ 0x0048B580
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B580
     (void)p1;
     return nullptr;
 }
 void RGE_Scenario::rehook() {
-    // Source of truth: scenario.cpp.decomp @ 0x0048B590
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B590
     return;
 }
 float RGE_Scenario::Get_Version() {
@@ -4325,69 +4325,6 @@ static void t_scenario_save_attributes_into_players(T_Scenario* scenario) {
 }
 
 // --- T_Scenario ---
-T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2) {
-    (void)param_1;
-    // Preserve vtable pointer and clear all data fields (base + derived).
-    memset((char*)this + sizeof(void*), 0, sizeof(T_Scenario) - sizeof(void*));
-    this->world = param_2;
-    this->victory_conquest = 1;
-    this->InitializeVictoryValues();
-
-    for (int i = 0; i < 16; ++i) {
-        this->player_info[i].Gold = 0;
-        this->player_info[i].Wood = 200;
-        this->player_info[i].Food = 200;
-        this->player_info[i].Stone = 150;
-    }
-
-    for (int i = 0; i < 16; ++i) {
-        for (int j = 0; j < 16; ++j) {
-            this->Opponent[i].Attitude[j] = 3;
-        }
-    }
-
-    this->mp_victory_type = 0;
-    this->victory_score = 900;
-    this->victory_time = 9000;
-    this->victory_all_flag = 0;
-    this->which_player = 0;
-    this->ScenarioOptions[0] = 0;
-    this->ScenarioOptions[1] = 0;
-    this->ScenarioOptions[2] = 0;
-    t_scenario_clear_disabled_technologies(this);
-}
-
-T_Scenario::T_Scenario(RGE_Game_World* param_1) {
-    // Preserve vtable pointer and clear all data fields (base + derived).
-    memset((char*)this + sizeof(void*), 0, sizeof(T_Scenario) - sizeof(void*));
-    this->world = param_1;
-    this->victory_conquest = 1;
-    this->InitializeVictoryValues();
-
-    for (int i = 0; i < 16; ++i) {
-        this->player_info[i].Gold = 0;
-        this->player_info[i].Wood = 200;
-        this->player_info[i].Food = 200;
-        this->player_info[i].Stone = 150;
-    }
-
-    for (int i = 0; i < 16; ++i) {
-        for (int j = 0; j < 16; ++j) {
-            this->Opponent[i].Attitude[j] = 3;
-        }
-    }
-
-    this->mp_victory_type = 0;
-    this->victory_score = 900;
-    this->victory_time = 9000;
-    this->victory_all_flag = 0;
-    this->which_player = 0;
-    this->ScenarioOptions[0] = 0;
-    this->ScenarioOptions[1] = 0;
-    this->ScenarioOptions[2] = 0;
-    t_scenario_clear_disabled_technologies(this);
-}
-
 T_Scenario::~T_Scenario() {}
 RGE_Static_Object* T_Scenario::get_object_pointer(int p1) {
     // Source of truth: tscenaro.cpp.decomp @ 0x0052C080
