@@ -4,9 +4,11 @@
 
 class RGE_Action_Move_To : public RGE_Action {
 public:
+    RGE_Action_Move_To() = default;
+
     RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2);
-    RGE_Action_Move_To(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, RGE_Sprite* param_4);
     RGE_Action_Move_To(RGE_Action_Object* param_1, float param_2, float param_3, float param_4, float param_5, RGE_Sprite* param_6);
+    RGE_Action_Move_To(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, RGE_Sprite* param_4);
 
     // Virtuals (best-effort)
     virtual ~RGE_Action_Move_To(); // vt[0] (0x0)
@@ -35,5 +37,8 @@ public:
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
 
     float range;
+
+protected:
+    uchar is_in_range();
 };
 static_assert(sizeof(RGE_Action_Move_To) == 0x44, "Size mismatch");

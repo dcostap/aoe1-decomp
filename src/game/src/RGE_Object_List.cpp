@@ -105,6 +105,54 @@ RGE_Static_Object* RGE_Object_List::find_by_id(long param_1) {
     return nullptr;
 }
 
+// Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463640
+RGE_Static_Object* RGE_Object_List::find_by_master_ids(long param_1, long param_2, float param_3, float param_4, uchar param_5, uchar param_6, RGE_Static_Object* param_7) {
+    uint zone = 0xFFFFFFFF;
+    if ((param_7 != nullptr) && (-1.0f < param_3) && (-1.0f < param_4)) {
+        zone = (uint)param_7->lookupZone((int)param_3, (int)param_4);
+    }
+
+    RGE_Static_Object* found = nullptr;
+    float best_dist2 = -1.0f;
+
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if (obj == nullptr || obj->master_obj == nullptr) {
+            continue;
+        }
+
+        int id = (int)obj->master_obj->id;
+        if ((id != (int)param_1) && (id != (int)param_2)) {
+            continue;
+        }
+
+        if (param_5 != 0 && obj->object_state != param_6) {
+            continue;
+        }
+
+        if ((param_3 == -1.0f) && (param_4 == -1.0f)) {
+            return obj;
+        }
+
+        if ((int)zone != -1) {
+            uchar obj_zone = (param_7 != nullptr) ? param_7->lookupZone((int)obj->world_x, (int)obj->world_y) : (uchar)0;
+            if ((uint)obj_zone != zone) {
+                continue;
+            }
+        }
+
+        float dx = param_3 - obj->world_x;
+        float dy = param_4 - obj->world_y;
+        float dist2 = dy * dy + dx * dx;
+        if (best_dist2 == -1.0f || dist2 < best_dist2) {
+            best_dist2 = dist2;
+            found = obj;
+        }
+    }
+
+    return found;
+}
+
 void RGE_Object_List::rehook_list() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463910
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {

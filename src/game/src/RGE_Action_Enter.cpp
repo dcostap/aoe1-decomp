@@ -3,6 +3,8 @@
 #include "../include/RGE_Action_Object.h"
 #include "../include/RGE_Static_Object.h"
 
+// TODO: STUB - minimal Enter action shell. Full parity requires act_entr.cpp.decomp transliteration.
+
 RGE_Action_Enter::RGE_Action_Enter(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
     this->action_type = 3;

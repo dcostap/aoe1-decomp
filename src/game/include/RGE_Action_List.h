@@ -1,6 +1,13 @@
 #pragma once
 #include "common.h"
 
+class RGE_Action;
+class RGE_Action_Object;
+class RGE_Action_Node;
+class RGE_Master_Action_Object;
+class RGE_Static_Object;
+struct RGE_Task;
+
 class RGE_Action_List {
 public:
     RGE_Action_List(RGE_Action_Object* param_1);
@@ -18,13 +25,11 @@ public:
     void load(int fd);
     void rehook();
     void save(int fd);
-
     void delete_list();
     void remove_action();
     void add_action(RGE_Action* param_1);
     void add_action_at_end(RGE_Action* param_1);
     void add_action_at_end_of_action_queue(RGE_Action* param_1);
-
     uchar have_action();
     int action_stop();
     int action_move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);

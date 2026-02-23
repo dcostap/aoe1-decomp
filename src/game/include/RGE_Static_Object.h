@@ -155,6 +155,13 @@ public:
     void take_attribute_from_owner();
     void capture_frame(TDrawArea* param_1, short param_2, short param_3);
     int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
+    int inRange(RGE_Static_Object* param_1, float param_2);
+    float distance_to_object(RGE_Static_Object* param_1);
+    float distance_to_position(float param_1, float param_2, float param_3);
+    int withinRangeOfZoneAtPoint(uchar param_1, float param_2, XYPoint* param_3);
+    int withinRangeOfZone(uchar param_1, float param_2);
+    uchar lookupZone(XYPoint param_1);
+    uchar lookupZone(int param_1, int param_2);
 
     // Non-virtual draw helpers (stat_obj.cpp).
     void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);

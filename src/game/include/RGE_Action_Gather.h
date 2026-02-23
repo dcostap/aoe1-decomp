@@ -4,6 +4,12 @@
 
 class RGE_Action_Gather : public RGE_Action {
 public:
+    RGE_Action_Gather() = default;
+
+    RGE_Action_Gather(int param_1, RGE_Action_Object* param_2);
+    RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3);
+    RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5);
+
     // Virtuals (best-effort)
     virtual ~RGE_Action_Gather(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)
@@ -31,5 +37,9 @@ public:
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
 
     int targetType;
+
+protected:
+    RGE_Sprite* get_move_sprite();
+    RGE_Sprite* get_wait_sprite();
 };
 static_assert(sizeof(RGE_Action_Gather) == 0x44, "Size mismatch");

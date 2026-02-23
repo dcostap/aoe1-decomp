@@ -466,6 +466,16 @@ void RGE_Moving_Object::setTargetRadius(float param_1, float param_2) {
     this->targetRadiusY = param_2;
 }
 
+RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
+    // TODO: STUB - path finding not yet decompiled here
+    return PathFound;
+}
+
+int RGE_Moving_Object::doMove() {
+    // TODO: STUB - movement stepping not yet decompiled here
+    return 2;
+}
+
 // Fully verified. Source of truth: move_obj.cpp.decomp @ 0x004608D0
 float RGE_Moving_Object::maximumSpeed() {
     if (this->master_obj != nullptr && this->speed > 0.0f) {

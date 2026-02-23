@@ -18,6 +18,7 @@
 #include "../include/PathingSystem.h"
 #include "../include/RGE_Active_Sprite_List.h"
 #include "../include/RGE_Map.h"
+#include "../include/RGE_Zone_Map_List.h"
 #include "../include/RGE_Damage_Sprite_Info.h"
 #include "../include/RGE_Unified_Visible_Map.h"
 #include "../include/RGE_Sound.h"
@@ -28,6 +29,7 @@
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
+#include <cmath>
 #include <cstring>
 #include <new>
 
@@ -1121,6 +1123,155 @@ int RGE_Static_Object::get_frame(short* x1, short* y1, short* x2, short* y2) {
     }
     return 0;
 }
+
+int RGE_Static_Object::inRange(RGE_Static_Object* param_1, float param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D80
+    RGE_Static_Object* other = param_1;
+
+    float dx = other->world_x - this->world_x;
+    float dy = other->world_y - this->world_y;
+
+    if (dx < 0.0f) {
+        dx = -dx;
+    }
+    if (dy < 0.0f) {
+        dy = -dy;
+    }
+
+    float dX = (dx - this->master_obj->radius_x) - other->master_obj->radius_x;
+    float dY = (dy - this->master_obj->radius_y) - other->master_obj->radius_y;
+
+    if (dX < 0.0f) {
+        dX = 0.0f;
+    }
+    if (dY < 0.0f) {
+        dY = 0.0f;
+    }
+
+    if (dY * dY + dX * dX < param_2 * param_2) {
+        return 1;
+    }
+    return 0;
+}
+
+float RGE_Static_Object::distance_to_object(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5E50
+    RGE_Static_Object* other = param_1;
+
+    float dx = other->world_x - this->world_x;
+    float dy = other->world_y - this->world_y;
+
+    if (dx < 0.0f) {
+        dx = -dx;
+    }
+    if (dy < 0.0f) {
+        dy = -dy;
+    }
+
+    float dX = (dx - this->master_obj->radius_x) - other->master_obj->radius_x;
+    float dY = (dy - this->master_obj->radius_y) - other->master_obj->radius_y;
+
+    if (dX < 0.0f) {
+        dX = 0.0f;
+    }
+    if (dY < 0.0f) {
+        dY = 0.0f;
+    }
+
+    return sqrtf(dY * dY + dX * dX);
+}
+
+float RGE_Static_Object::distance_to_position(float param_1, float param_2, float /*param_3*/) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5F00
+    float dx = this->world_x - param_1;
+    float dy = this->world_y - param_2;
+
+    if (dx < 0.0f) {
+        dx = -dx;
+    }
+    if (dy < 0.0f) {
+        dy = -dy;
+    }
+
+    float dX = dx - this->master_obj->radius_x;
+    float dY = dy - this->master_obj->radius_y;
+
+    if (dX < 0.0f) {
+        dX = 0.0f;
+    }
+    if (dY < 0.0f) {
+        dY = 0.0f;
+    }
+
+    return sqrtf(dY * dY + dX * dX);
+}
+
+// Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7430
+uchar RGE_Static_Object::lookupZone(XYPoint param_1) {
+    return this->lookupZone(param_1.x, param_1.y);
+}
+
+// Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C74B0
+uchar RGE_Static_Object::lookupZone(int param_1, int param_2) {
+    if (param_1 < 0 || param_2 < 0) {
+        return 0;
+    }
+
+    RGE_Game_World* world = (this->owner != nullptr) ? this->owner->world : nullptr;
+    if (world == nullptr || world->map == nullptr || world->map->map_zones == nullptr || this->master_obj == nullptr) {
+        return 0;
+    }
+
+    RGE_Zone_Map* zone_map = nullptr;
+    if (this->zoneMapIndex == -1) {
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], (int)world->terrain_size, &this->zoneMapIndex);
+    } else {
+        zone_map = world->map->map_zones->get_zone_map((long)this->zoneMapIndex);
+    }
+
+    return (zone_map != nullptr) ? zone_map->get_zone_info((long)param_1, (long)param_2) : 0;
+}
+
+int RGE_Static_Object::withinRangeOfZoneAtPoint(uchar param_1, float param_2, XYPoint* param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C75B0
+    RGE_Zone_Map* zone_map;
+
+    if (this->zoneMapIndex == -1) {
+        RGE_Game_World* world = this->owner->world;
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], (int)world->terrain_size, &this->zoneMapIndex);
+    } else {
+        zone_map = this->owner->world->map->map_zones->get_zone_map((long)this->zoneMapIndex);
+    }
+
+    if (zone_map != nullptr) {
+        return zone_map->withinRange(param_1, *param_3, param_2);
+    }
+    return 0;
+}
+
+int RGE_Static_Object::withinRangeOfZone(uchar param_1, float param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7630
+    int x = (int)(long)this->world_x;
+    int y = (int)(long)this->world_y;
+    int index = this->zoneMapIndex;
+    RGE_Zone_Map* zone_map;
+
+    if (index == -1) {
+        RGE_Game_World* world = this->owner->world;
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], (int)world->terrain_size, &this->zoneMapIndex);
+    } else {
+        zone_map = this->owner->world->map->map_zones->get_zone_map((long)index);
+    }
+
+    if (zone_map != nullptr) {
+        XYPoint pos;
+        pos.y = y;
+        pos.x = x;
+        return zone_map->withinRange(param_1, pos, param_2);
+    }
+    return 0;
+}
+
 uchar RGE_Static_Object::update() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3C70
 

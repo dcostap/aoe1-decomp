@@ -3,6 +3,8 @@
 #include "../include/RGE_Action_Object.h"
 #include "../include/RGE_Static_Object.h"
 
+// TODO: STUB - minimal Transport action shell. Full parity requires act_tran.cpp.decomp transliteration.
+
 RGE_Action_Transport::RGE_Action_Transport(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x0c;

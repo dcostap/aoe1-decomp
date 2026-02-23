@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+class RGE_Static_Object;
+
 class RGE_Object_List {
 public:
     RGE_Object_List();
@@ -14,6 +16,7 @@ public:
     RGE_Object_Node* add_node(RGE_Static_Object* param_1);
     void remove_node(RGE_Static_Object* param_1, RGE_Object_Node* param_2);
     RGE_Static_Object* find_by_id(long param_1);
+    RGE_Static_Object* find_by_master_ids(long param_1, long param_2, float param_3, float param_4, uchar param_5, uchar param_6, RGE_Static_Object* param_7);
 
     RGE_Object_Node* list;
     short number_of_objects;
