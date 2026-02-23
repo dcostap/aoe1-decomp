@@ -1138,3 +1138,108 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 - Where: `src/game/src/Pnl_txt.cpp`.
 - Source of truth: `src/game/decomp/scr_cred.cpp.decomp` + `src/game/decomp/scr_cred.cpp.asm` (and `src/game/decomp/pnl_txt.cpp.decomp`/`.asm` where needed for the underlying panel behavior).
 - Done when: the TODO(accuracy) markers in `Pnl_txt.cpp` are removed (or replaced with fully verified markers) and build remains clean.
+
+---
+
+## Task 108 — UI/screen: restore `TRIBE_Mission_Screen` parity (mission dialog)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: replace the current best-effort mission dialog screen so the post-intro mission/instructions screen matches decomp behavior and screen teardown is safe.
+- Implement:
+  - Full transliteration of `TRIBE_Mission_Screen::TRIBE_Mission_Screen(char*, unsigned char, TPicture*)` @ 0x004B8100.
+  - Full transliteration of `TRIBE_Mission_Screen::~TRIBE_Mission_Screen()` @ 0x004B87D0.
+  - Implement `action(...)` and any other non-trivial overrides in the `scr_vc.cpp` unit needed for correct OK/continue behavior.
+- Where: `src/game/src/TRIBE_Mission_Screen.cpp` (+ add missing method declarations in `src/game/include/TRIBE_Mission_Screen.h` if required; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_vc.cpp.decomp` + `src/game/decomp/scr_vc.cpp.asm` (TRIBE_Mission_Screen @ 0x004B8100).
+- Done when:
+  - The file-level TODO(accuracy) note in `TRIBE_Mission_Screen.cpp` is removed.
+  - Constructor/dtor/action match decomp control flow closely enough to compile/link clean.
+
+## Task 109 — UI widget: finish remaining `TButtonPanel` TODO(accuracy) parity (pnl_btn)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining “best-effort” `TButtonPanel` behaviors so radio/check/button state changes match the original.
+- Implement: audit and finish the specific methods still tagged TODO(accuracy) in `src/game/src/TButtonPanel.cpp` (e.g. `set_radio_button` behavior and any adjacent state/flag logic).
+- Where: `src/game/src/TButtonPanel.cpp`.
+- Source of truth: `src/game/decomp/pnl_btn.cpp.decomp` + `src/game/decomp/pnl_btn.cpp.asm` (and `src/game/decomp/tpnl_btn.cpp.decomp`/`.asm` where those overrides apply).
+- Done when:
+  - TODO(accuracy) markers in `TButtonPanel.cpp` are removed (or replaced with fully verified markers).
+  - Build remains clean and behavior matches decomp control flow.
+
+## Task 110 — In-game view: implement `RGE_Main_View` parity (vw_main)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore the original “main view” wrapper over `RGE_View` (auto-scroll + key-scroll + scroll-view glue) as a prerequisite for replacing temporary in-game view scaffolding.
+- Implement (decomp-first transliteration of the unit):
+  - `RGE_Main_View::RGE_Main_View()` @ 0x0053DAB0.
+  - `RGE_Main_View::handle_idle()` @ 0x0053DB40.
+  - `RGE_Main_View::do_auto_scroll()` @ 0x0053DBA0.
+  - `RGE_Main_View::handle_keys()` (and helpers it calls) from `vw_main.cpp`.
+  - Scroll-view virtuals (`start_scroll_view`, `handle_scroll_view`, `end_scroll_view`) and any other overrides present in the decomp unit.
+- Where:
+  - Add `src/game/src/RGE_Main_View.cpp`.
+  - Add method declarations to `src/game/include/RGE_Main_View.h` as needed (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/vw_main.cpp.decomp` + `src/game/decomp/vw_main.cpp.asm`.
+- Done when: `RGE_Main_View` can be instantiated and linked cleanly with its decomp behaviors (no placeholder stubs added).
+
+## Task 111 — In-game view: implement `TRIBE_Main_View` parity (tvw_main)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore TRIBE-specific main-view behaviors used by placement/outline/mouse command logic.
+- Implement (decomp-first transliteration of the unit):
+  - Key TRIBE overrides in `tvw_main.cpp` (e.g. `draw_multi_object_outline`, `command_place_object`, `command_place_multi_object`, mouse up actions) and any helpers they rely on (wall outline / line of walls placement).
+- Where:
+  - Add `src/game/src/TRIBE_Main_View.cpp`.
+  - Update `src/game/include/TRIBE_Main_View.h` with method declarations required by the transliteration (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/tvw_main.cpp.decomp` + `src/game/decomp/tvw_main.cpp.asm`.
+- Dependency note: requires Task 110 (`RGE_Main_View`) to be complete first.
+- Done when: `TRIBE_Main_View` compiles/links and matches the decomp control flow for the implemented overrides.
+
+## Task 112 — Main menu: implement `TRIBE_Credits_Screen` and stop using stub credits panel
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the main-menu credits stub panel and use the real `TRIBE_Credits_Screen` so credits flow matches the original.
+- Implement:
+  - Transliterate `TRIBE_Credits_Screen` from `scr_cred.cpp` (constructor/dtor + idle/action + any draw/setup logic needed for correct playback).
+  - Update the main menu key handler so pressing `C` opens the real `TRIBE_Credits_Screen` instead of `create_stub_screen(... "Credits (Stub)")`.
+- Where:
+  - Add `src/game/src/TRIBE_Credits_Screen.cpp` (new translation unit).
+  - Update `src/game/src/Scr_main_impl.cpp` (credits hotkey path only; avoid touching the MP/editor stub screens in this task to keep scope tight).
+- Source of truth: `src/game/decomp/scr_cred.cpp.decomp` + `src/game/decomp/scr_cred.cpp.asm` (primary), plus `src/game/decomp/scr_main.cpp.decomp` for the main menu dispatch expectations.
+- Done when:
+  - The credits hotkey no longer routes through `MainMenuStubScreen`.
+  - `TRIBE_Credits_Screen` compiles/links and can be constructed without introducing new placeholder stubs.
+
+## Task 113 — Actions: remove `RGE_Action_Object::move_to` TODO(accuracy) by matching `act_obj` decomp
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: eliminate the remaining best-effort `move_to` action creation path so move commands create the correct action type and serialize consistently.
+- Implement: decomp-first transliteration of `RGE_Action_Object::move_to(...)` (and any adjacent helpers it needs) so it matches `act_obj.cpp` behavior.
+- Where: `src/game/src/RGE_Action_Object.cpp`.
+- Source of truth: `src/game/decomp/act_obj.cpp.decomp` + `src/game/decomp/act_obj.cpp.asm` (and `src/game/decomp/act_move.cpp.decomp` / `.asm` if construction signature details are ambiguous).
+- Done when:
+  - The two TODO(accuracy) markers in `RGE_Action_Object::move_to` are removed.
+  - The implementation matches decomp control flow and build remains clean.
+
+## Task 114 — MP/COM: remove `TCommunications_Handler::UpdatePlayer` TODO(accuracy) (name refresh)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining best-effort DirectPlay name refresh logic and match the original `com_hand.cpp` behavior.
+- Implement: audit and adjust `TCommunications_Handler::UpdatePlayer(uint id, int timeout)` name refresh branch to match the decomp (buffer sizing, structure interpretation, null/empty behavior, and whether names are refreshed unconditionally).
+- Where: `src/game/src/com_hand.cpp`.
+- Source of truth: `src/game/decomp/com_hand.cpp.decomp` + `src/game/decomp/com_hand.cpp.asm`.
+- Done when: the TODO(accuracy) marker in `UpdatePlayer` is removed (or replaced with a fully verified marker) and build remains clean.
+
+## Task 115 — In-game screen: retire `GameViewPanel` scaffolding from `TRIBE_Screen_Game`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: stop routing in-game rendering/input through the temporary `GameViewPanel` base and use the real view pipeline (`RGE_Main_View`/`TRIBE_Main_View`) for parity.
+- Implement:
+  - Update `TRIBE_Screen_Game` so its “main view” is a `TRIBE_Main_View` (not a bare `RGE_View`) and stop inheriting from `GameViewPanel` once equivalent behavior exists.
+  - Keep the implementation parity-first: transliterate the relevant setup/teardown from `scr_game.cpp`.
+- Where: `src/game/src/TRIBE_Screen_Game.cpp` (+ `src/game/include/TRIBE_Screen_Game.h` if inheritance/decls need to change; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `src/game/decomp/scr_game.cpp.asm`, plus Task 110/111 sources for main-view behavior.
+- Dependency note: requires Task 110 + Task 111 to be complete first.
+- Done when:
+  - `TRIBE_Screen_Game` no longer relies on `GameViewPanel` for its core view behavior.
+  - Build remains clean and no new placeholder stubs are introduced.
