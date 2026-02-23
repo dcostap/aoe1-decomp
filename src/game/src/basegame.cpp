@@ -407,7 +407,7 @@ RGE_Base_Game::~RGE_Base_Game() {
     CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor end");
 }
 
-// Stubs for now
+// TODO: STUB - Stubs for now
 void RGE_Base_Game::setVersion(float p1) { rge_game_options.versionValue = p1; }
 void RGE_Base_Game::setScenarioGame(int p1) { rge_game_options.scenarioGameValue = p1; }
 void RGE_Base_Game::setCampaignGame(int p1) { campaignGameValue = p1; } 

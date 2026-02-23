@@ -17,7 +17,7 @@ long TScreenPanel::setup(TDrawArea* param_1, char* param_2, long param_3, int pa
     return (ok != 0) ? 1 : 0;
 }
 
-// Non-virtual overload: used for blank/placeholder screens in original.
+// Non-virtual overload: used for blank screens in original.
 long TScreenPanel::setup(TDrawArea* param_1, char* param_2, long param_3, uchar param_4, int param_5) {
     (void)param_2;
     (void)param_3;
