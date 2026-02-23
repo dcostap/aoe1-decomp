@@ -2,8 +2,12 @@
 #include "common.h"
 #include "TDialogPanel.h"
 
+class TRIBE_Screen_Sed;
+
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
+    TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* scenario_editor);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Dialog_Sed_Menu(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
