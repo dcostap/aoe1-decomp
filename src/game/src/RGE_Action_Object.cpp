@@ -221,23 +221,22 @@ void RGE_Action_Object::do_command(RGE_Static_Object* param_1, float param_2, fl
     }
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406300
+// Fully verified. Source of truth: act_obj.cpp.asm @ 0x00406300
 void RGE_Action_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if ((RGE_Action_Object*)param_1 == this) {
         return;
     }
 
-    if (this->actions != nullptr && this->actions->action_move_to(param_1, param_2, param_3, param_4) != 0) {
+    // NOTE: act_obj.cpp.asm @ 0x00406300 assumes `this->actions` is non-null here.
+    if (this->actions->action_move_to(param_1, param_2, param_3, param_4) != 0) {
         return;
     }
 
-    // TODO(accuracy): Best-effort: use the move-to action subclass for correct type/save behavior.
-    // TODO(accuracy): full move/path execution is still tracked under Task 42/43.
     RGE_Action_Move_To* action = nullptr;
     if (param_1 == nullptr) {
-        action = new (std::nothrow) RGE_Action_Move_To(this, param_2, param_3, param_4, 0.0f, nullptr);
+        action = new (std::nothrow) RGE_Action_Move_To(this, param_2, param_3, param_4, 0.4f, (RGE_Sprite*)nullptr);
     } else {
-        action = new (std::nothrow) RGE_Action_Move_To(this, param_1, 0.0f, nullptr);
+        action = new (std::nothrow) RGE_Action_Move_To(this, param_1, 0.4f, (RGE_Sprite*)nullptr);
     }
 
     if (this->unitAIValue != nullptr) {
@@ -246,8 +245,7 @@ void RGE_Action_Object::move_to(RGE_Static_Object* param_1, float param_2, float
         if (param_1 == nullptr) {
             action_object_set_current_target(this->unitAIValue, -1, -1, param_2, param_3, param_4);
         } else {
-            int target_type = (param_1->master_obj != nullptr) ? (int)param_1->master_obj->object_group : -1;
-            action_object_set_current_target(this->unitAIValue, param_1->id, target_type, param_2, param_3, param_4);
+            action_object_set_current_target(this->unitAIValue, param_1->id, (int)param_1->master_obj->object_group, param_2, param_3, param_4);
         }
     }
 
