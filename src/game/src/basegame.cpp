@@ -1933,6 +1933,11 @@ int RGE_Base_Game::check_paint() {
     return 0;
 }
 
+void RGE_Base_Game::draw_window() {
+    // Source of truth: basegame.cpp.decomp draw_window @ 0x00420360
+    UpdateWindow((HWND)this->prog_window);
+}
+
 void RGE_Base_Game::clear_window() {
     // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420000
     if (this->prog_window != nullptr) {
