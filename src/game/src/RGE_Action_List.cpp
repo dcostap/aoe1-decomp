@@ -117,60 +117,24 @@ void RGE_Action_List::delete_list() {
 
 // Fully verified. Source of truth: act_list.cpp.decomp @ 0x00403FC0
 RGE_Action* RGE_Action_List::create_action(int param_1, short param_2) {
-    RGE_Action* action = nullptr;
-    bool needs_setup = true;
-
     switch (param_2) {
     case 1:
-        action = new (std::nothrow) RGE_Action_Move_To();
-        break;
-    case 3:
-        action = new (std::nothrow) RGE_Action_Enter(param_1, this->obj);
-        needs_setup = false;
-        break;
+        return new (std::nothrow) RGE_Action_Move_To(param_1, this->obj);
     case 4:
-        action = new (std::nothrow) RGE_Action_Explore();
-        break;
+        return new (std::nothrow) RGE_Action_Explore(param_1, this->obj);
     case 5:
-        action = new (std::nothrow) RGE_Action_Gather();
-        break;
+        return new (std::nothrow) RGE_Action_Gather(param_1, this->obj);
     case 8:
-        action = new (std::nothrow) RGE_Action_Missile(param_1, this->obj);
-        needs_setup = false;
-        break;
+        return new (std::nothrow) RGE_Action_Missile(param_1, this->obj);
     case 9:
-        action = new (std::nothrow) RGE_Action_Attack();
-        break;
+        return new (std::nothrow) RGE_Action_Attack(param_1, this->obj);
     case 10:
-        action = new (std::nothrow) RGE_Action_Bird();
-        break;
-    case 0x0C:
-        action = new (std::nothrow) RGE_Action_Transport(param_1, this->obj);
-        needs_setup = false;
-        break;
+        return new (std::nothrow) RGE_Action_Bird(param_1, this->obj);
     case 0x15:
-        action = new (std::nothrow) RGE_Action_Make();
-        break;
+        return new (std::nothrow) RGE_Action_Make(param_1, this->obj);
     default:
-        break;
+        return nullptr;
     }
-
-    if (action == nullptr) {
-        // TODO: STUB - not all action subclass load constructors are transliterated yet.
-        // Keep save/load stack plumbing working with a base action shell.
-        action = new (std::nothrow) RGE_Action();
-        if (action != nullptr) {
-            action->setup(param_1, this->obj);
-            action->action_type = param_2;
-            needs_setup = false;
-        }
-    }
-
-    if ((action != nullptr) && needs_setup) {
-        action->setup(param_1, this->obj);
-    }
-
-    return action;
 }
 
 // Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404200

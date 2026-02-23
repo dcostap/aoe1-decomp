@@ -8,6 +8,11 @@
 
 #include <new>
 
+// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402B40
+RGE_Action_Explore::RGE_Action_Explore(int param_1, RGE_Action_Object* param_2) {
+    this->setup(param_1, param_2);
+}
+
 RGE_Action_Explore::~RGE_Action_Explore() = default;
 
 int RGE_Action_Explore::setup(RGE_Action_Object* param_1) {

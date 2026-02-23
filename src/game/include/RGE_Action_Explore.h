@@ -5,6 +5,7 @@
 class RGE_Action_Explore : public RGE_Action {
 public:
     RGE_Action_Explore() = default;
+    RGE_Action_Explore(int param_1, RGE_Action_Object* param_2);
 
     // Virtuals (best-effort)
     virtual ~RGE_Action_Explore(); // vt[0] (0x0)
