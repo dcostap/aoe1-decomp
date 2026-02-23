@@ -405,6 +405,27 @@ void TMousePointer::reset() {
     this->drawn = 0;
 }
 
+int TMousePointer::Restore_Mouse(TDrawArea* param_1) {
+    // Source of truth: Mouseptr.cpp.decomp @ 0x0045B0A0 (TMousePointer::Restore_Mouse).
+    if (this->Shutdown == 0) {
+        return 0;
+    }
+    if (this->custom_draw != 0) {
+        if (this->Setup == 0) {
+            return 0;
+        }
+        this->render_area = param_1;
+        this->renderSurface = param_1->DrawSurface;
+        this->PrimarySurface = param_1->DrawSystem->PrimarySurface;
+        this->primary_area = param_1->DrawSystem->PrimaryArea;
+        if (this->LoadCursors(nullptr, -1, 1) == 0) {
+            return 0;
+        }
+        this->Shutdown = 0;
+    }
+    return 1;
+}
+
 void TMousePointer::center() {
     // Source of truth: mouseptr.cpp.decomp @ 0x0045BF90
     if (this->render_area == nullptr || this->render_area->DrawSystem == nullptr) {

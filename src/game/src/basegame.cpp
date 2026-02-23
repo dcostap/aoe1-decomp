@@ -37,6 +37,7 @@ extern struct TPanelSystem* panel_system;
 
 static int snapshot_number = 1;
 static char s_dot_AoE_04d_bmp[] = ".\\AoE%04d.bmp";
+static const char kBasegameSourcePath[] = "C:\\msdev\\work\\age1_x1\\basegame.cpp";
 
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
@@ -1863,24 +1864,184 @@ int RGE_Base_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) {
     int result = this->action_music_done();
     return (result != 0) ? 1 : 0;
 }
+
+int RGE_Base_Game::check_paint() {
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041FF20
+    tagRECT update_rect;
+
+    if (this->prog_ready == 0) {
+        this->clear_window();
+        ValidateRect((HWND)this->prog_window, nullptr);
+        return 0;
+    }
+
+    if (IsIconic((HWND)this->prog_window) != 0) {
+        ValidateRect((HWND)this->prog_window, nullptr);
+        return 0;
+    }
+
+    if (this->prog_active == 0) {
+        if (GetUpdateRect((HWND)this->prog_window, (RECT*)&update_rect, 0) != 0) {
+            this->draw_system->Paint(&update_rect);
+        }
+        ValidateRect((HWND)this->prog_window, nullptr);
+        return 0;
+    }
+
+    const uchar surface_status = this->draw_system->CheckSurfaces();
+    if (surface_status != 1) {
+        if (surface_status == 2) {
+            this->draw_system->ClearRestored();
+            this->set_render_all();
+        } else if (surface_status == 3) {
+            ValidateRect((HWND)this->prog_window, nullptr);
+            DestroyWindow((HWND)this->prog_window);
+            return 0;
+        }
+        return 1;
+    }
+
+    return 0;
+}
+
+void RGE_Base_Game::clear_window() {
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420000
+    if (this->prog_window != nullptr) {
+        HDC dc = GetDC((HWND)this->prog_window);
+        RECT rect;
+        GetClientRect((HWND)this->prog_window, &rect);
+        HBRUSH brush = (HBRUSH)GetStockObject(4); // BLACK_BRUSH
+        FillRect(dc, &rect, brush);
+        ReleaseDC((HWND)this->prog_window, dc);
+    }
+}
+
 int RGE_Base_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x004213E0
-    // Simplified: the original does DirectDraw surface locking, check_paint,
-    // panel draw_tree, timing calculations, mouse pointer draw, and Paint.
-    // We handle the essential parts: draw current panel, Paint, ValidateRect.
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x004213E0
+    IDirectDrawSurface* pIVar1;
+    ulong uVar2;
+    int iVar3;
+    ulong uVar4;
+    ulong uVar5;
+    TPanel* pTVar6;
+    ulong uVar7;
 
-    TPanel* current = panel_system ? panel_system->currentPanelValue : nullptr;
-    if (current) {
-        current->draw_tree();
+    color_log('2', '2', 4);
+    uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x10ea);
+    iVar3 = this->check_paint();
+    uVar4 = debug_timeGetTime(kBasegameSourcePath, 0x10ee);
+    this->add_to_timing(5, uVar4 - uVar2);
+    if (iVar3 == 0) {
+        color_log('2', '_', 4);
+        return 0;
     }
 
-    if (this->draw_system) {
-        this->draw_system->Paint(NULL);
+    int pm = this->prog_mode;
+    if (((pm == 4) || (pm == 6) || (pm == 7)) && (this->draw_system->DrawType != 1 && this->custom_mouse != 0) &&
+        (this->mouse_blit_sync != 0)) {
+        pIVar1 = this->draw_system->PrimarySurface;
+        iVar3 = (int)pIVar1->GetBltStatus(1);
+        uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x10fc);
+        do {
+            if (iVar3 != (int)0x8876021c) goto LAB_004214dc; // DDERR_WASSTILLDRAWING
+            pIVar1 = this->draw_system->PrimarySurface;
+            iVar3 = (int)pIVar1->GetBltStatus(1);
+            uVar4 = debug_timeGetTime(kBasegameSourcePath, 0x1100);
+        } while (uVar4 <= uVar2 + 100);
+        this->mouse_blit_sync = 0;
     }
 
-    ValidateRect((HWND)this->prog_window, NULL);
+LAB_004214dc:
+    color_log('2', 0xBA, 4);
+    uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x110c);
+    if (rge_base_game->sound_system != nullptr) {
+        rge_base_game->sound_system->play_list();
+        rge_base_game->sound_system->reset_play_list();
+    }
+    uVar4 = debug_timeGetTime(kBasegameSourcePath, 0x1115);
+    this->add_to_timing(10, uVar4 - uVar2);
+
+    uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x111c);
+    if (this->erase_mouse != 0) {
+        color_log('2', 'L', 4);
+        if ((this->render_all == 0) && (this->custom_mouse != 0)) {
+            this->mouse_pointer->erase();
+        }
+        this->erase_mouse = 0;
+    }
+    uVar4 = debug_timeGetTime(kBasegameSourcePath, 0x1127);
+    uVar5 = debug_timeGetTime(kBasegameSourcePath, 0x112a);
+
+    color_log('2', 0x16, 4);
+    pTVar6 = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
+    if (pTVar6 == nullptr) {
+        this->clear_window();
+    } else {
+        color_log(0x16, 0x16, 1);
+        if (this->render_all != 0) {
+            pTVar6 = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
+            pTVar6->set_redraw(TPanel::RedrawMode::RedrawFull);
+        }
+        pTVar6 = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
+        pTVar6->handle_paint();
+        color_log(0x16, '_', 1);
+    }
+
+    color_log('2', '$', 4);
+    if (DAT_0062c57c != 0) {
+        DAT_0062c57c = 0;
+        if (((this->prog_mode == 4) || (this->prog_mode == 5)) && (this->do_show_timings != 0)) {
+            this->show_timings();
+        }
+    }
+
+    uVar7 = debug_timeGetTime(kBasegameSourcePath, 0x1147);
+    this->add_to_timing(2, uVar7 - uVar5);
+    uVar5 = debug_timeGetTime(kBasegameSourcePath, 0x114b);
+
+    color_log('2', 'T', 4);
+    if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
+        this->mouse_pointer->draw(1);
+        this->erase_mouse = 1;
+    }
+
+    uVar7 = debug_timeGetTime(kBasegameSourcePath, 0x115b);
+    this->add_to_timing(8, (uVar4 - uVar2) + (uVar7 - uVar5));
+
+    uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x1160);
+    color_log('2', 'E', 4);
+    this->draw_system->Paint(nullptr);
+    ValidateRect((HWND)this->prog_window, nullptr);
+    ValidateRect((HWND)this->prog_window, nullptr);
     this->render_all = 0;
+    uVar4 = debug_timeGetTime(kBasegameSourcePath, 0x1176);
+    this->add_to_timing(3, uVar4 - uVar2);
+    color_log('2', '_', 4);
+
     this->frame_count++;
+    uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x1182);
+    if (999 < uVar2 - DAT_0062c578) {
+        this->calc_timings();
+        DAT_0062c57c = 1;
+        DAT_0062c578 = uVar2;
+    }
+
+    if (restore_mouse_after_paint != 0) {
+        if (this->mouse_pointer != nullptr) {
+            this->mouse_pointer->Restore_Mouse(this->draw_area);
+            if (this->is_mouse_on != 0) {
+                if ((this->custom_mouse == 0) || (this->windows_mouse != 0)) {
+                    SetCursor((HCURSOR)this->mouse_cursor);
+                    SetClassLongA((HWND)this->prog_window, -12, (LONG)this->mouse_cursor);
+                } else {
+                    this->mouse_pointer->on();
+                    this->mouse_pointer->draw(1);
+                }
+            }
+            InvalidateRect((HWND)p1, nullptr, 0);
+        }
+        restore_mouse_after_paint = 0;
+    }
 
     return 1;
 }

@@ -16,6 +16,11 @@ namespace {
 static const char s_act_bird_cpp[] = "C:\\msdev\\work\\age1_x1\\act_bird.cpp";
 }
 
+// Fully verified. Source of truth: act_bird.cpp.decomp @ 0x00401FE0
+RGE_Action_Bird::RGE_Action_Bird(int param_1, RGE_Action_Object* param_2) {
+    this->setup(param_1, param_2);
+}
+
 RGE_Action_Bird::~RGE_Action_Bird() = default;
 
 int RGE_Action_Bird::setup(RGE_Action_Object* param_1) {

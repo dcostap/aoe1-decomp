@@ -25,6 +25,7 @@ struct TMousePointer {
     void reset();
     void center();
     void erase();
+    int Restore_Mouse(TDrawArea* param_1);
     int GetDDBltError(long err);
 
     int custom_draw;

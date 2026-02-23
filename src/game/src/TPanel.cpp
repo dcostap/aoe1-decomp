@@ -931,7 +931,34 @@ long TPanel::handle_size(long param_1, long param_2) {
 
     return 0;
 }
-long TPanel::handle_paint() { return 0; }
+long TPanel::handle_paint() {
+    // Source of truth: panel.cpp.decomp @ 0x00465A70 (TPanel::handle_paint).
+    if (((this->render_area != nullptr) && (this->visible != 0)) && (this->active != 0)) {
+        if (rge_base_game->prog_active != 0 && IsIconic((HWND)this->render_area->Wnd) == 0) {
+            if (this->need_redraw != NoRedraw) {
+                for (PanelNode* n = this->first_child_node; n != nullptr; n = n->next_node) {
+                    n->panel->set_redraw(this->need_redraw);
+                }
+
+                TPanel* parent = this->parent_panel;
+                if (parent != nullptr && parent->overlapping_children != 0) {
+                    parent->set_overlapped_redraw(this, this, this->need_redraw);
+                }
+
+                this->draw();
+                this->need_redraw = NoRedraw;
+                this->just_drawn = 1;
+            }
+
+            for (PanelNode* n = this->first_child_node; n != nullptr; n = n->next_node) {
+                n->panel->handle_paint();
+            }
+
+            this->just_drawn = 0;
+        }
+    }
+    return 0;
+}
 long TPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
     if (this->curr_child && this->curr_child->active && this->curr_child->visible) {
         if (this->curr_child->handle_key_down(param_1, param_2, param_3, param_4, param_5)) {

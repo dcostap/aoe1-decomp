@@ -4,6 +4,9 @@
 
 class RGE_Action_Make : public RGE_Action {
 public:
+    RGE_Action_Make() = default;
+    RGE_Action_Make(int param_1, RGE_Action_Object* param_2);
+
     // Virtuals (best-effort)
     virtual ~RGE_Action_Make(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)

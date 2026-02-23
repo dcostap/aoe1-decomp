@@ -19,6 +19,11 @@
 #include <math.h>
 #include <new>
 
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401000
+RGE_Action_Attack::RGE_Action_Attack(int param_1, RGE_Action_Object* param_2) {
+    this->setup(param_1, param_2);
+}
+
 // Fully verified. Source of truth: act_atak.cpp.decomp @ 0x004013A0
 RGE_Action_Attack::~RGE_Action_Attack() = default;
 

@@ -139,6 +139,8 @@ public:
     void disable_input();
     void enable_input();
     void set_render_all();
+    int check_paint();
+    void clear_window();
     void mouse_on();
     void mouse_off();
     int check_expiration();
