@@ -558,7 +558,7 @@ void RGE_Moving_Object::removeUserDefinedWaypoint(int param_1) {
     this->numberUserDefinedWaypointsValue = this->numberUserDefinedWaypointsValue - 1;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D6xx + 0x00405F60
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x00405F60
 int RGE_Moving_Object::numberUserDefinedWaypoints() {
     return this->numberUserDefinedWaypointsValue;
 }
