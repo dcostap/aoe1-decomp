@@ -73,6 +73,10 @@ extern int debug_random_on;
 extern int fog_next_shape;
 extern int MapPathsDisplay;
 
+// UI edit-panel globals (source of truth: `src/game/decomp/pnl_edit.cpp.asm`).
+extern int DAT_0086b240;
+extern int DAT_0086b244;
+
 // Selection/display capture globals (used by view/sprite/shape/static object draw paths).
 extern int SDI_Capture_Info;
 extern DClipInfo_List* SDI_List;

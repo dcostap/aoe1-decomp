@@ -71,6 +71,8 @@ int rge_write_error = 0;
 int Map_Update_Suppresion = 0;
 int fog_next_shape = 0;
 int MapPathsDisplay = 0;
+int DAT_0086b240 = 0;
+int DAT_0086b244 = 0;
 
 int SDI_Capture_Info = 0;
 DClipInfo_List* SDI_List = nullptr;
