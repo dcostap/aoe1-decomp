@@ -906,7 +906,7 @@ void TEasy_Panel::draw_background(int param_1) {
         if (this->background_pos == 1) {
             const long dx = this->pnl_x + (this->pnl_wid / 2) - (pic_w / 2) - x_min;
             const long dy = this->pnl_y + (this->pnl_hgt / 2) - (pic_h / 2) - y_min;
-            pic->shape_draw(this->render_area, dx, dy, 0, 0, 0, (uchar*)0);
+            pic->shape_draw(this->render_area, dx, dy, 0, 0, (uchar*)0);
 
             if (param_1 != 0 && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);
@@ -917,7 +917,7 @@ void TEasy_Panel::draw_background(int param_1) {
                 for (long xx = 0; xx <= this->pnl_wid; xx += pic_w) {
                     const long dx = this->pnl_x + xx - x_min;
                     const long dy = this->pnl_y + yy - y_min;
-                    pic->shape_draw(this->render_area, dx, dy, 0, 0, 0, (uchar*)0);
+                    pic->shape_draw(this->render_area, dx, dy, 0, 0, (uchar*)0);
                 }
             }
             if (param_1 != 0 && this->shadow_color_table) {
@@ -926,7 +926,7 @@ void TEasy_Panel::draw_background(int param_1) {
             }
         } else {
             // Top-left anchored.
-            pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0, (uchar*)0);
+            pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, (uchar*)0);
             if (param_1 != 0 && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);
                 this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + (x_max - x_min), this->pnl_y + (y_max - y_min));
@@ -1076,7 +1076,7 @@ void TEasy_Panel::setup_shadow_area(int force_rebuild) {
 
         this->shadow_area->Clear((tagRECT*)0, (int)this->background_color1);
         if (this->shadow_area->Lock((char*)"panel_ez::setup_shadow_area", 0)) {
-            this->background_pic->shape_draw(this->shadow_area, 0, 0, 0, 0, 0, (uchar*)0);
+            this->background_pic->shape_draw(this->shadow_area, 0, 0, 0, 0, (uchar*)0);
             this->shadow_area->SetShadowTable(this->shadow_color_table);
             this->shadow_area->DrawShadowBox(0, 0, w - 1, h - 1);
             this->shadow_area->Unlock((char*)"panel_ez::setup_shadow_area");

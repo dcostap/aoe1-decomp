@@ -547,13 +547,12 @@ int TMessagePanel::render_to_image_buffer() {
             const long frame = (long)this->IconFrame1;
             Shape_Info* info = this->Icon1->shape_info;
             const int icon_wid = info[frame].Width;
-            this->Icon1->shape_draw(this->ImageBuffer,
-                                    (info[frame].Hotspot_X - icon_wid) - 4 + this->UsedImageRect.left,
-                                    info[frame].Hotspot_Y + 6 + this->UsedImageRect.top,
-                                    frame,
-                                    0,
-                                    0,
-                                    nullptr);
+             this->Icon1->shape_draw(this->ImageBuffer,
+                                     (info[frame].Hotspot_X - icon_wid) - 4 + this->UsedImageRect.left,
+                                     info[frame].Hotspot_Y + 6 + this->UsedImageRect.top,
+                                     frame,
+                                     0,
+                                     nullptr);
             this->UsedImageRect.left = this->UsedImageRect.left + (-4 - icon_wid);
         }
 
@@ -561,13 +560,12 @@ int TMessagePanel::render_to_image_buffer() {
             const long frame = (long)this->IconFrame2;
             Shape_Info* info = this->Icon2->shape_info;
             const int icon_wid = info[frame].Width;
-            this->Icon2->shape_draw(this->ImageBuffer,
-                                    (info[frame].Hotspot_X - icon_wid) - 4 + this->UsedImageRect.left,
-                                    info[frame].Hotspot_Y + 6 + this->UsedImageRect.top,
-                                    frame,
-                                    0,
-                                    0,
-                                    nullptr);
+             this->Icon2->shape_draw(this->ImageBuffer,
+                                     (info[frame].Hotspot_X - icon_wid) - 4 + this->UsedImageRect.left,
+                                     info[frame].Hotspot_Y + 6 + this->UsedImageRect.top,
+                                     frame,
+                                     0,
+                                     nullptr);
             this->UsedImageRect.left = this->UsedImageRect.left + (-4 - icon_wid);
         }
 
