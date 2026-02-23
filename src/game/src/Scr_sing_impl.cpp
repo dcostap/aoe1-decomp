@@ -9,6 +9,7 @@
 #include "../include/TRIBE_Screen_Name.h"
 #include "../include/TRIBE_Dialog_Name.h"
 #include "../include/RGE_Game_Info.h"
+#include "../include/TEasy_Panel.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
@@ -41,8 +42,16 @@ void sp_popup_resid(TribeSPMenuScreen* owner, int resid, const char* fallback) {
         }
     }
 
-    HWND wnd = (rge_base_game && rge_base_game->prog_window) ? (HWND)rge_base_game->prog_window : NULL;
-    MessageBoxA(wnd, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+    if (owner) {
+        owner->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
+        return;
+    }
+    TEasy_Panel* panel = (panel_system && panel_system->currentPanelValue)
+        ? dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue)
+        : nullptr;
+    if (panel) {
+        panel->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
+    }
 }
 
 } // namespace
