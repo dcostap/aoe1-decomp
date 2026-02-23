@@ -769,28 +769,31 @@ Rules of engagement:
 - Done when: no placeholder update/stop/work behavior remains and functions have verified markers.
 
 ## Task 77 — Core actions: implement `RGE_Action_Gather` (act_gath)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore gather action parity.
 - Where: src/game/src/RGE_Action_Gather.cpp (+ src/game/include/RGE_Action_Gather.h)
 - Source of truth: src/game/decomp/act_gath.cpp.decomp + src/game/decomp/act_gath.cpp.asm.
 - Done when: no placeholder update/stop/work behavior remains and functions have verified markers.
+- Status note: implemented in commit `013aa34`.
 
 ## Task 78 — Core actions: implement `RGE_Action_Explore` (act_expl)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore explore action parity.
 - Where: src/game/src/RGE_Action_Explore.cpp (+ src/game/include/RGE_Action_Explore.h)
 - Source of truth: src/game/decomp/act_expl.cpp.decomp + src/game/decomp/act_expl.cpp.asm.
 - Done when: no placeholder update/stop/work behavior remains and functions have verified markers.
+- Status note: implemented in commit `013aa34`.
 
 ## Task 79 — Core actions: implement `RGE_Action_Bird` (act_bird)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore bird action parity.
 - Where: src/game/src/RGE_Action_Bird.cpp (+ src/game/include/RGE_Action_Bird.h)
 - Source of truth: src/game/decomp/act_bird.cpp.decomp + src/game/decomp/act_bird.cpp.asm.
 - Done when: no placeholder update/stop/work behavior remains and functions have verified markers.
+- Status note: implemented in commit `013aa34`.
 
 ## Task 80 — Core actions: implement `RGE_Action_Missile` (act_misl) + wire missile init
 - [ ] Assigned to agent
@@ -799,22 +802,25 @@ Rules of engagement:
 - Where: src/game/src/RGE_Action_Missile.cpp (+ header), and update missile call sites (e.g. src/game/src/RGE_Missile_Object.cpp).
 - Source of truth: src/game/decomp/act_misl.cpp.decomp + src/game/decomp/act_misl.cpp.asm.
 - Done when: `RGE_Missile_Object` no longer uses a base `RGE_Action` shell for missile actions and TODO: STUB markers are removed.
+- Status note: `RGE_Action_Missile` implementation and `RGE_Action_List` load wiring landed in `013aa34`, but `RGE_Missile_Object` still constructs base `RGE_Action` shells; leaving this task open.
 
 ## Task 81 — Action list factories: wire `RGE_Action_List::create_action` / `create_task_action` to real subclasses
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove remaining `RGE_Action_List` factory TODO: STUBs and construct the correct action subclasses.
 - Where: src/game/src/RGE_Action_List.cpp (+ headers)
 - Source of truth: src/game/decomp/act_list.cpp.decomp + src/game/decomp/act_list.cpp.asm.
 - Done when: factory methods create correct subclasses without TODO: STUB branches.
+- Status note: factory wiring for core action types landed in commit `013aa34`.
 
 ## Task 82 — Core actions: finish `RGE_Action_Move_To` parity (act_move)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: replace the current move-to “minimal state machine” with full act_move parity.
 - Where: src/game/src/RGE_Action_Move_To.cpp (+ src/game/include/RGE_Action_Move_To.h)
 - Source of truth: src/game/decomp/act_move.cpp.decomp + src/game/decomp/act_move.cpp.asm.
 - Done when: move-to update/stop/work/rehook/save behavior matches decomp and TODO: STUB markers are removed.
+- Status note: implemented in commit `013aa34`.
 
 ## Task 83 — TRIBE actions: finish `TRIBE_Action_Repair` parity (tact_rep)
 - [ ] Assigned to agent
