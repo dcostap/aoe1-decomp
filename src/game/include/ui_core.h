@@ -362,6 +362,7 @@ struct TPanelSystem {
     int destroyPanel(char* name);
     void setModalPanel(TPanel* panel);
     int restorePreviousModalPanel();
+    void set_restore();
 };
 static_assert(sizeof(TPanelSystem) == 0xAD8, "Size mismatch");
 

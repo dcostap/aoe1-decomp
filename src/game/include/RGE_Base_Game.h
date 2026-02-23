@@ -138,6 +138,7 @@ public:
     void set_mouse_facet(long p1);
     void disable_input();
     void enable_input();
+    void set_render_all();
     void mouse_on();
     void mouse_off();
     int check_expiration();
