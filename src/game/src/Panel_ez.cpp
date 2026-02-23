@@ -1035,6 +1035,16 @@ long TEasy_Panel::get_popup_info_id() {
     return this->popup_info_id;
 }
 
+char* TEasy_Panel::get_info_file() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468300
+    return this->info_file_name;
+}
+
+long TEasy_Panel::get_info_id() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468310
+    return this->info_id;
+}
+
 void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A150
     char text[256];
