@@ -162,6 +162,7 @@ public:
     int withinRangeOfZone(uchar param_1, float param_2);
     uchar lookupZone(XYPoint param_1);
     uchar lookupZone(int param_1, int param_2);
+    float get_terrain_speed(unsigned char terrain_type);
 
     // Non-virtual draw helpers (stat_obj.cpp).
     void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);

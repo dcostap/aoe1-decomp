@@ -1154,6 +1154,22 @@ void RGE_Player::remake_visible_map() {
 uchar RGE_Player::get_resigned() { return this->resigned; }
 int RGE_Player::computerPlayer() { return this->computerPlayerValue; }
 
+// Fully verified. Source of truth: player.cpp.decomp @ 0x0046F250
+int RGE_Player::availablePathingAttempts(int param_1) {
+    if ((this->pathingDelayCapValue != -1) && (this->pathingDelayCapValue < param_1)) {
+        return 1;
+    }
+    if (this->pathingAttemptCapValue == -1) {
+        return 1;
+    }
+    return (this->currentUpdatePathingAttemptsValue < this->pathingAttemptCapValue) ? 1 : 0;
+}
+
+// Fully verified. Source of truth: player.cpp.decomp @ 0x0046F290
+void RGE_Player::incrementPathingAttempts() {
+    this->currentUpdatePathingAttemptsValue = this->currentUpdatePathingAttemptsValue + 1;
+}
+
 void __cdecl RGE_Player::sendChatMessage(int param_1, int param_2, char* param_3, ...) {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F2A0 (and player.cpp.asm @ 0x0046F2A0)
     char textOut[1025];

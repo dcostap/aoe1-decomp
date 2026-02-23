@@ -45,6 +45,7 @@ unsigned char shape_file_first = 0;
 unsigned char sound_file_first = 0;
 int do_fixed_update = 0;
 int displayPathingFlags = 0;
+int displayPathObjectID = 0x53; // default per original runtime (move_obj.cpp.asm shows 53h)
 int debug_timeGetTime_on = 0;
 // system_ignore_size_messages defined in Drawarea.cpp
 int do_restore_palette = 0;

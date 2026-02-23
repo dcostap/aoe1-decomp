@@ -9,7 +9,8 @@ class RGE_Moving_Object : public RGE_Animated_Object {
 public:
     enum PathResult {
         PathFound = 0,
-    WaitingOnPathingCap = 1
+        PathFailed = 1,
+        WaitingOnPathingCap = 2
     };
 
     RGE_Moving_Object();
@@ -28,6 +29,7 @@ public:
     void boundAngle(float* param_1, int param_2);
     PathResult findPath();
     int doMove();
+    int doTrivialMove(float param_1, float param_2);
 
     // Virtuals (best-effort)
     virtual ~RGE_Moving_Object(); // vt[0] (0x0)
