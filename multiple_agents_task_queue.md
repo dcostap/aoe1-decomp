@@ -963,8 +963,8 @@ Status note: landed as Task 93 implementation commit `2d08055` and merged via `0
 Status note: landed as Task 94 implementation commit `6af9972`.
 
 ## Task 95 — SP gameplay: implement `RGE_Action_Make` parity (act_make)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: replace the current placeholder/stub `RGE_Action_Make` implementation with real act_make parity so production/make actions behave correctly in-game and serialize cleanly.
 - Implement:
   - Full decomp-first transliteration of `RGE_Action_Make` (ctor/setup/save/update/stop/work/move_to/target handling/state machine) from `act_make.cpp`.
@@ -979,3 +979,162 @@ Status note: landed as Task 94 implementation commit `6af9972`.
   - `RGE_Action_Make::~RGE_Action_Make` and `RGE_Action_Make::save` are no longer stub-forwarders.
   - The class behavior matches the decomp control flow closely enough that it can run in the SP world update loop without falling back to base `RGE_Action` behavior.
   - Build stays clean with no new placeholder stubs.
+
+Status note: landed as Task 95 implementation commit `77ac370` and merged via `4013868`.
+
+---
+
+## Task 96 — UI: implement `TPanelSystem::DisableIME` parity (panel)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining `TPanelSystem::DisableIME` stub so focus/IME behavior matches the original panel system.
+- Implement: `TPanelSystem::DisableIME()` @ 0x004644E0.
+- Where: `src/game/src/TPanelSystem.cpp` (and only add includes/glue needed for the `_ImmAssociateContext@8` call).
+- Source of truth: `src/game/decomp/panel.cpp.decomp` + `src/game/decomp/panel.cpp.asm` (DisableIME @ 0x004644E0).
+- Done when:
+  - The `// TODO: STUB` body is removed.
+  - The implementation matches the ASM sequence (guard on IME context member, call `_ImmAssociateContext(AppWnd, 0)`, store the returned context, clear the active IME context member).
+  - Build remains clean and no new placeholder stubs are introduced.
+
+Status note: landed as commit `e2e43ab` and merged via `c545537`.
+
+## Task 97 — Resources: implement `RESFILE_build_res_file` parity (res_file)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the original “build resource file” pipeline so the engine can create/update `.rm` resource packs from a build file when needed.
+- Implement: `RESFILE_build_res_file(char* path, char* resource_dir, char* tag)` @ 0x0047F5C0.
+- Where: `src/game/src/Res_file.cpp` (+ `src/game/include/Res_file.h` only if declarations are missing; do not change struct layouts).
+- Source of truth: `src/game/decomp/res_file.cpp.decomp` + `src/game/decomp/res_file.cpp.asm` (RESFILE_build_res_file @ 0x0047F5C0).
+- Done when:
+  - `Res_file.cpp` no longer contains the `RESFILE_build_res_file` TODO stub.
+  - The function matches decomp control flow (file naming, temp files, header/type/id directories, error paths) closely enough to compile/link clean.
+  - Build remains clean without adding new “linker satisfaction” stubs.
+
+Status note: landed as commit `be39813` and merged via `affb79e`.
+
+## Task 98 — Checksums: implement `RGE_Player` checksum helpers (player)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore per-player checksum computation needed by world/basegame checksum aggregation and comm sync.
+- Implement (decomp-first transliteration):
+  - `RGE_Player::get_checksum()` @ 0x0046FF40.
+  - `RGE_Player::get_checksums(long& cs1, long& cs2, long& cs3)` @ 0x0046FF60.
+  - `RGE_Player::create_checksum()` @ 0x0046FF90.
+- Where: `src/game/src/RGE_Player.cpp` (+ `src/game/include/RGE_Player.h` only if method declarations are missing; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/player.cpp.decomp` + `src/game/decomp/player.cpp.asm` (offsets above).
+- Done when:
+  - The three methods exist, compile, and match the decomp’s control flow (including the `checksum_created_this_update` gating).
+  - Callers in basegame/comms can use these without falling back to “return 0” behavior.
+
+Status note: landed as Task 98 implementation commit `95b7e88` and merged via `7e9143b`.
+
+## Task 99 — Checksums: implement `RGE_Base_Game` checksum aggregation (basegame)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the basegame checksum helpers that aggregate per-player checksums (used by comm sync and debug checksum logging).
+- Implement (decomp-first transliteration):
+  - `RGE_Base_Game::GetChecksum(long player_index_or_special)` @ 0x00422920.
+  - `RGE_Base_Game::GetWorldChecksums(long& out1, long& out2, long& out3)` @ 0x00422960.
+  - `RGE_Base_Game::GetWorldChecksum()` @ 0x00422A10.
+- Where: `src/game/src/basegame.cpp` (+ `src/game/include/RGE_Base_Game.h` only if declarations are missing; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm` (offsets above).
+- Done when:
+  - The three methods compile/link cleanly.
+  - Behavior matches decomp (special player index handling in `GetChecksum`, per-player iteration in world helpers).
+  - Dependency note: requires Task 98 (player checksum helpers) to be complete first.
+
+Status note: landed as commit `eb6c5b0` and merged via `5c03eb7` (follow-up dedup/cleanup landed in `3f01e5e` / `7094cbe`).
+
+## Task 100 — MP sync: implement `RGE_Communications_Synchronize::DoChecksum` parity (com_sync)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the real checksum collection/logging behavior used by the comm-sync layer (even if MP gameplay isn’t the primary target, this keeps shared code paths parity-correct).
+- Implement: `RGE_Communications_Synchronize::DoChecksum(unsigned long comm_turn)` @ 0x00433290.
+- Where: `src/game/src/com_sync.cpp`.
+- Source of truth: `src/game/decomp/com_sync.cpp.decomp` + `src/game/decomp/com_sync.cpp.asm` (DoChecksum @ 0x00433290).
+- Done when:
+  - The `// TODO: STUB - Full checksum computation...` block is removed.
+  - Control flow matches decomp (turn gating, `CheckTurn += 4`, calls into basegame checksum helpers, logging behavior).
+  - Dependency note: requires Task 98 + Task 99 to be complete first.
+
+Status note: landed as commit `e62d64d` and merged via `6ddb644`.
+
+## Task 101 — SP campaign flow: finish `TRIBE_Screen_Campaign_Selection` parity (scr_cams)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining scaffolding in the campaign-selection screen so it loads campaign/scenario lists and starts the game with real defaults.
+- Implement:
+  - Finish `startGame` parity @ 0x00491350 (remove the “VictoryDefault/DefaultResources/DefaultAge are 0” scaffold and match the original option-setting sequence).
+  - Remove the campaign list “Loading placeholder” stub and replace it with the real behavior used by the decomp.
+- Where: `src/game/src/TRIBE_Screen_Campaign_Selection.cpp` (+ header only if missing declarations; do not change layouts).
+- Source of truth: `src/game/decomp/scr_cams.cpp.decomp` + `src/game/decomp/scr_cams.cpp.asm` (fillCampaigns @ 0x004911A0, fillScenarios @ 0x00491290, startGame @ 0x00491350).
+- Done when:
+  - The two `// TODO: STUB` markers in `TRIBE_Screen_Campaign_Selection.cpp` are removed.
+  - `cams_startGame` / list population match decomp control flow closely enough to compile/link clean.
+
+Status note: landed as commit `f65d843` and merged via `0c42cb5`.
+
+## Task 102 — MP networking: remove remaining GTD “best-effort” stubs in `TCommunications_Handler`
+- [x] Assigned to agent
+- [x] Finished
+- Goal: eliminate the two remaining “best-effort” GTD behaviors so guaranteed-delivery packet flow matches `com_hand.cpp` decomp.
+- Implement (decomp-first transliteration):
+  - In `TCommunications_Handler::PreprocessMessages(...)` @ 0x00427600: replace the “unknown sender → best-effort ack” scaffold with the decomp’s real behavior.
+  - In `TCommunications_Handler::CommOut(...)` @ 0x0042B270: replace the “single recipient by DPID” best-effort mapping with the decomp’s real recipient resolution.
+- Where: `src/game/src/com_hand.cpp`.
+- Source of truth: `src/game/decomp/com_hand.cpp.decomp` + `src/game/decomp/com_hand.cpp.asm` (PreprocessMessages @ 0x00427600, CommOut @ 0x0042B270).
+- Done when:
+  - The two `// TODO: STUB` markers in `com_hand.cpp` are removed.
+  - Behavior matches decomp control flow closely enough to compile/link clean.
+
+Status note: landed as commit `88ab5b2` and merged via `52622b8`.
+
+## Task 103 — Rendering: finish `RGE_Color_Table` parity (color)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining “best-effort” implementation note and restore full `color.cpp` parity so color translation/shadow tables and serialization behavior match the original engine.
+- Implement: complete the remaining `RGE_Color_Table` methods present in `color.cpp` (constructors, destructor, `save(int fd)`, and any helper routines referenced by call sites).
+- Where: `src/game/src/RGE_Color_Table.cpp` (+ `src/game/include/RGE_Color_Table.h` only if declarations are missing; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/color.cpp.decomp` + `src/game/decomp/color.cpp.asm`.
+- Done when:
+  - The file-level `// TODO(accuracy)` note is no longer true (remaining methods are transliterated, and completed methods have verified markers).
+  - Build remains clean without adding new placeholder stubs.
+
+## Task 104 — UI follow-up: remove remaining `Panel_ez.cpp` “best-effort” blocks (prepare_for_close/draw_background)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: finish the remaining `TEasy_Panel` parity so screens relying on TEasy_Panel behave consistently and the file no longer needs “best-effort” caveats.
+- Implement: audit and transliterate the remaining sections guarded by TODO(accuracy) in `Panel_ez.cpp`, especially:
+  - `prepare_for_close` behavior.
+  - The remaining boot→main-menu-path helper logic still marked best-effort.
+  - `TEasy_Panel::draw_background` behavior.
+- Where: `src/game/src/Panel_ez.cpp`.
+- Source of truth: `src/game/decomp/panel_ez.cpp.decomp` + `src/game/decomp/panel_ez.cpp.asm`.
+- Done when: the TODO(accuracy) markers in `Panel_ez.cpp` are removed (or replaced with fully verified markers) and build remains clean.
+
+## Task 105 — UI follow-up: finish `TInputPanel` TODO(accuracy) blocks (pnl_inp)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove remaining “best-effort transliteration” sections in `TInputPanel` so input handling matches decomp precisely.
+- Implement: audit and finish the methods currently tagged TODO(accuracy) in `src/game/src/Pnl_inp.cpp` (offsets are already referenced inline in the file).
+- Where: `src/game/src/Pnl_inp.cpp`.
+- Source of truth: `src/game/decomp/pnl_inp.cpp.decomp` + `src/game/decomp/pnl_inp.cpp.asm`.
+- Done when: all TODO(accuracy) markers in `Pnl_inp.cpp` are removed (or replaced with fully verified markers) and build remains clean.
+
+## Task 106 — UI follow-up: finish `TEditPanel` TODO(accuracy) blocks (pnl_edit)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove remaining “best-effort transliteration” sections in `TEditPanel` so edit behavior matches decomp precisely.
+- Implement: audit and finish the methods currently tagged TODO(accuracy) in `src/game/src/Pnl_edit.cpp` (offsets are already referenced inline in the file).
+- Where: `src/game/src/Pnl_edit.cpp`.
+- Source of truth: `src/game/decomp/pnl_edit.cpp.decomp` + `src/game/decomp/pnl_edit.cpp.asm`.
+- Done when: all TODO(accuracy) markers in `Pnl_edit.cpp` are removed (or replaced with fully verified markers) and build remains clean.
+
+## Task 107 — UI follow-up: finish `Pnl_txt.cpp` credits-related TODO(accuracy) blocks (scr_cred)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: eliminate the remaining credits-screen “best-effort” code paths by matching the original credits text logic.
+- Implement: audit and finish the `Pnl_txt.cpp` methods currently tagged TODO(accuracy) (they reference `scr_cred.cpp` offsets inline).
+- Where: `src/game/src/Pnl_txt.cpp`.
+- Source of truth: `src/game/decomp/scr_cred.cpp.decomp` + `src/game/decomp/scr_cred.cpp.asm` (and `src/game/decomp/pnl_txt.cpp.decomp`/`.asm` where needed for the underlying panel behavior).
+- Done when: the TODO(accuracy) markers in `Pnl_txt.cpp` are removed (or replaced with fully verified markers) and build remains clean.
