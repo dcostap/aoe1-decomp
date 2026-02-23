@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <imm.h>
 #include <string.h>
 #include "../include/TPanelSystem.h"
 #include "../include/TPanel.h"
@@ -80,7 +81,11 @@ void TPanelSystem::release_palette(void* pal) {
 }
 
 void TPanelSystem::DisableIME() {
-    // TODO: STUB
+    // Fully verified. Source of truth: panel.cpp.asm @ 0x004644E0
+    if (this->ImeEnabled != 0) {
+        this->Imc = (unsigned long)ImmAssociateContext(AppWnd, 0);
+        this->ImeEnabled = 0;
+    }
 }
 
 void TPanelSystem::add_panel(TPanel* panel) {
