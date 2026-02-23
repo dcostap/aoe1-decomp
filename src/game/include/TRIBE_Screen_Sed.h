@@ -2,8 +2,94 @@
 #include "common.h"
 #include "TScreenPanel.h"
 
+class RGE_Static_Object;
+class TShape;
+class TRIBE_Main_View;
+class RGE_Diamond_Map_View;
+class TMessagePanel;
+class TPanel;
+class TButtonPanel;
+class TTextPanel;
+class TDropDownPanel;
+class TEditPanel;
+class TInputPanel;
+class TListPanel;
+class TScrollBarPanel;
+class TRIBE_Scenario_Editor_Panel_Object;
+class TRIBE_World;
+
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
+    struct List_Info {
+        short id;
+        char text[100];
+    };
+
+    enum SELECT_REGION_e : int {
+        SELECT_OFF = 0,
+        SELECT_AREA = 1,
+        SELECT_OBJECT = 2,
+        SELECT_DEST_OBJECT = 3,
+    };
+
+    enum ScenarioMode : int {
+        ScenarioModeNone = 0,
+        ScenarioModeMap = 1,
+        ScenarioModeTerrain = 2,
+        ScenarioModePlayers = 3,
+        ScenarioModeUnits = 4,
+        ScenarioModeDiplomacy = 5,
+        ScenarioModeVictory = 6,
+        ScenarioModeVictoryMulti = 7,
+        ScenarioModeOptions = 8,
+        ScenarioModeMessages = 9,
+        ScenarioModeCinematics = 10,
+        ScenarioModeSave = 11,
+    };
+
+    enum MapType : int {
+        MapTypeNone = 0,
+        MapTypeBlank = 1,
+        MapTypeRandom = 2,
+        MapTypeSeed = 3,
+    };
+
+    enum VictoryType : int {
+        VictoryTypeNone = 0,
+        VictoryTypeConquest = 1,
+        VictoryTypeStandard = 2,
+        VictoryTypeScore = 3,
+        VictoryTypeTime = 4,
+        VictoryTypeCustom = 5,
+    };
+
+    enum BrushSize : int {
+        BrushSizeNone = 0,
+        BrushSizeVerySmall = 1,
+        BrushSizeSmall = 2,
+        BrushSizeMedium = 3,
+        BrushSizeLarge = 4,
+        BrushSizeXLarge = 5,
+    };
+
+    enum PaintType : int {
+        PaintTypeNone = 0,
+        PaintTypeTerrain = 1,
+        PaintTypeElevation = 2,
+        PaintTypeCliffs = 3,
+    };
+
+    enum MessageType : int {
+        MessageTypeNone = 0,
+        MessageTypeDescription = 1,
+        MessageTypeHint = 2,
+        MessageTypeVictory = 3,
+        MessageTypeLoss = 4,
+        MessageTypeHistory = 5,
+    };
+
+    TRIBE_Screen_Sed(char* scenario_name, int is_multi_player);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Screen_Sed(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
