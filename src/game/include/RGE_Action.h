@@ -29,6 +29,10 @@ public:
     virtual void set_target_obj2(RGE_Static_Object* param_1); // vt[22] (0x58)
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
 
+    // Non-virtual helpers
+    uchar subAction() const;
+    void setSubAction(uchar param_1);
+
     short action_type;
     RGE_Action_Object* obj;
     unsigned char state;

@@ -4,6 +4,13 @@
 
 class THelpDialog : public TDialogPanel {
 public:
+    THelpDialog(TEasy_Panel* parent, char* panel_name, long text_id, long x, long y, long w, long h);
+    THelpDialog(TEasy_Panel* parent, char* panel_name, char* text, long x, long y, long w, long h);
+
+protected:
+    void setup_help(TEasy_Panel* parent, char* panel_name, char* text, long x, long y, long w, long h);
+
+public:
     // Virtuals (best-effort)
     virtual ~THelpDialog(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

@@ -4,6 +4,10 @@
 
 class TRIBE_Action_Hunt : public RGE_Action {
 public:
+    TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2);
+    TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3);
+    TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Action_Hunt(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)
