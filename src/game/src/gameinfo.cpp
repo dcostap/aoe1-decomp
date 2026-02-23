@@ -2,10 +2,12 @@
 #include "../include/RGE_Person_Info.h"
 #include "../include/RGE_Campaign_Info.h"
 #include "../include/RGE_Campaign.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/mystring.h"
 #include "../include/globals.h"
 #include <io.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <new>
@@ -149,6 +151,41 @@ void RGE_Campaign_Info::save(int param_1) {
     }
 }
 
+void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044C930
+    this->campaign = nullptr;
+    if (param_2 > 0) {
+        for (long i = 0; i < param_2; ++i) {
+            RGE_Campaign* camp = param_1[i];
+
+            if (strcmp(camp->get_name(), this->campaign_name) == 0) {
+                this->campaign = camp;
+                long new_num = camp->scenario_number();
+                if (this->scenario_num != new_num) {
+                    RGE_Scenario_Info* new_info = (RGE_Scenario_Info*)calloc((size_t)new_num, 1);
+                    long copy_num = this->scenario_num;
+                    if (copy_num > new_num) {
+                        copy_num = new_num;
+                    }
+                    if (copy_num > 0 && this->scenario_info != nullptr) {
+                        memcpy(new_info, this->scenario_info, (size_t)copy_num);
+                    }
+                    free(this->scenario_info);
+                    this->scenario_info = new_info;
+                }
+
+                this->scenario_num = new_num;
+                if (new_num <= this->last_scenario) {
+                    this->last_scenario = new_num - 1;
+                }
+                if (this->last_scenario < this->current_scenario) {
+                    this->current_scenario = this->last_scenario;
+                }
+            }
+        }
+    }
+}
+
 long RGE_Campaign_Info::get_scenario_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044CB20
     if (this->campaign != nullptr) {
@@ -262,6 +299,17 @@ void RGE_Person_Info::save(int param_1) {
     if (this->campaign_info_num > 0) {
         for (int i = 0; i < this->campaign_info_num; ++i) {
             this->campaign_info[i]->save(param_1);
+        }
+    }
+}
+
+void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044CE90
+    this->campaign_num = param_2;
+    this->campaigns = param_1;
+    if (this->campaign_info_num > 0) {
+        for (int i = 0; i < this->campaign_info_num; ++i) {
+            this->campaign_info[i]->rehook_campaigns(this->campaigns, this->campaign_num);
         }
     }
 }
@@ -422,6 +470,77 @@ void RGE_Game_Info::save(char* param_1) {
             }
         }
         rge_close(fd);
+    }
+}
+
+void RGE_Game_Info::find_campaigns() {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044D470
+    if (this->campaigns != nullptr) {
+        if (this->campaign_num > 0) {
+            for (int i = 0; i < this->campaign_num; ++i) {
+                if (this->campaigns[i] != nullptr) {
+                    delete this->campaigns[i];
+                    this->campaigns[i] = nullptr;
+                }
+            }
+        }
+        free(this->campaigns);
+        this->campaigns = nullptr;
+    }
+
+    _finddata_t file_info;
+    char file_name[260];
+
+    sprintf(file_name, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
+    intptr_t h = _findfirst(file_name, &file_info);
+    this->campaign_num = 0;
+    int rc = (int)h;
+    while (rc != -1) {
+        this->campaign_num = this->campaign_num + 1;
+        rc = _findnext(h, &file_info);
+    }
+
+    sprintf(file_name, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
+    h = _findfirst(file_name, &file_info);
+    rc = (int)h;
+    while (rc != -1) {
+        this->campaign_num = this->campaign_num + 1;
+        rc = _findnext(h, &file_info);
+    }
+
+    int index = 0;
+    if (this->campaign_num < 1) {
+        this->campaigns = nullptr;
+    } else {
+        this->campaigns = (RGE_Campaign**)calloc((size_t)this->campaign_num, 4);
+
+        sprintf(file_name, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
+        h = _findfirst(file_name, &file_info);
+        rc = (int)h;
+        while (rc != -1) {
+            this->campaigns[index] = new (std::nothrow) RGE_Campaign(file_info.name);
+            index = index + 1;
+            rc = _findnext(h, &file_info);
+        }
+
+        sprintf(file_name, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
+        h = _findfirst(file_name, &file_info);
+        if (h != -1) {
+            while (true) {
+                this->campaigns[index] = new (std::nothrow) RGE_Campaign(file_info.name);
+                index = index + 1;
+                rc = _findnext(h, &file_info);
+                if (rc == -1) {
+                    break;
+                }
+            }
+        }
+    }
+
+    if (this->people_num > 0) {
+        for (int i = 0; i < this->people_num; ++i) {
+            this->people_info[i]->rehook_campaigns(this->campaigns, this->campaign_num);
+        }
     }
 }
 
