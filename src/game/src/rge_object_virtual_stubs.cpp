@@ -365,7 +365,6 @@ RGE_Combat_Object::~RGE_Combat_Object() {} // TODO: STUB
 
 // --- Forwarding stubs: same signature as RGE_Action_Object ---
 
-void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { RGE_Action_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Combat_Object::recycle_out_of_game() { RGE_Action_Object::recycle_out_of_game(); } // TODO: STUB
 void RGE_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Action_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
 void RGE_Combat_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Action_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
@@ -477,13 +476,11 @@ Path* RGE_Combat_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int
 long RGE_Combat_Object::get_action_checksum() { return RGE_Action_Object::get_action_checksum(); } // TODO: STUB
 long RGE_Combat_Object::get_waypoint_checksum() { return RGE_Action_Object::get_waypoint_checksum(); } // TODO: STUB
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
-int RGE_Combat_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Action_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 RGE_Object_List* RGE_Combat_Object::create_object_list() { return RGE_Action_Object::create_object_list(); } // TODO: STUB
 RGE_Active_Sprite_List* RGE_Combat_Object::create_sprite_list() { return RGE_Action_Object::create_sprite_list(); } // TODO: STUB
 int RGE_Combat_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Action_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Combat_Object::stop_moving() { RGE_Action_Object::stop_moving(); } // TODO: STUB
 uchar RGE_Combat_Object::turn_towards(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Action_Object::turn_towards(param_1, param_2, param_3); } // TODO: STUB
-int RGE_Combat_Object::setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Action_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Combat_Object::work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5) { RGE_Action_Object::work2(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Combat_Object::set_task(short param_1) { RGE_Action_Object::set_task(param_1); } // TODO: STUB
 
@@ -614,12 +611,10 @@ Path* RGE_Missile_Object::findAvoidancePath(XYZPoint* param_1, float param_2, in
 long RGE_Missile_Object::get_action_checksum() { return RGE_Combat_Object::get_action_checksum(); } // TODO: STUB
 long RGE_Missile_Object::get_waypoint_checksum() { return RGE_Combat_Object::get_waypoint_checksum(); } // TODO: STUB
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Missile_Object.cpp
-int RGE_Missile_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Combat_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 RGE_Object_List* RGE_Missile_Object::create_object_list() { return RGE_Combat_Object::create_object_list(); } // TODO: STUB
 RGE_Active_Sprite_List* RGE_Missile_Object::create_sprite_list() { return RGE_Combat_Object::create_sprite_list(); } // TODO: STUB
 void RGE_Missile_Object::stop_moving() { RGE_Combat_Object::stop_moving(); } // TODO: STUB
 uchar RGE_Missile_Object::turn_towards(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Combat_Object::turn_towards(param_1, param_2, param_3); } // TODO: STUB
-int RGE_Missile_Object::setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Combat_Object::setup(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Missile_Object::work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5) { RGE_Combat_Object::work2(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Missile_Object::set_task(short param_1) { RGE_Combat_Object::set_task(param_1); } // TODO: STUB
 

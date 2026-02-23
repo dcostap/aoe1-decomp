@@ -56,6 +56,9 @@ extern int all_cp;
 extern int numberPathingIterations;
 extern int useComputerPlayers;
 extern int show_timing_max;
+// basegame.cpp.asm uses these to gate timing display updates (1 Hz).
+extern unsigned long DAT_0062c578;
+extern int DAT_0062c57c;
 extern float save_game_version;
 extern unsigned long* unified_map_offsets[256];
 extern unsigned char die_die_die;

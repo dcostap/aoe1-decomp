@@ -58,6 +58,8 @@ int all_cp = 0;
 int numberPathingIterations = 2500; // default per decomp (0x9c4)
 int useComputerPlayers = 1; // default per ASM (= 1h)
 int show_timing_max = 0;
+unsigned long DAT_0062c578 = 0;
+int DAT_0062c57c = 0;
 float save_game_version = 7.23f;
 unsigned char die_die_die = 0;
 int allow_user_commands = 1; // default per original (toggled by scr_game.cpp paths)
