@@ -117,6 +117,9 @@ public:
     void set_outline(int param_1, uchar param_2);
     void set_scrollbar(TScrollBarPanel* param_1, int param_2);
 
+    // Source of truth: pnl_txt.cpp.asm/.decomp (e.g. TTextPanel::calc_line_pos @ 0x0047D9E0).
+    void calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out);
+
     // Source of truth: pnl_txt.cpp.asm/.decomp (used by TTextPanel::draw and credits scrollers).
     void draw_background();
     void draw_border();
