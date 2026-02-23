@@ -74,6 +74,8 @@ int SDI_Draw_Line = 0;
 int SDI_Draw_Level = 0;
 int startLoggingAI = 0;
 int confirmed_close = 0;
+FILE* commonHistoryLogFile = nullptr;
+int specificAIPlayerToLog = -1;
 
 static int g_rge_handle = -1;
 static unsigned char g_rge_mode = 2;
