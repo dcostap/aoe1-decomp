@@ -129,6 +129,22 @@ struct BITMAPINFO256 {
     tagRGBQUAD bmiColors[256];
 };
 
+// DIB blit helpers (source of truth: dib.cpp.decomp/.asm)
+struct TRANSINFO;
+void DibBlt(BITMAPINFO256* param_1, uchar* param_2, tagRECT* param_3, long param_4, long param_5, long param_6, long param_7,
+            BITMAPINFO256* param_8, uchar* param_9, long param_10, long param_11, long param_12, long param_13, int param_14, int param_15,
+            int param_16);
+void TransDibBlt(BITMAPINFO256* param_1, uchar* param_2, tagRECT* param_3, long param_4, long param_5, long param_6, long param_7,
+                 BITMAPINFO256* param_8, uchar* param_9, TRANSINFO* param_10, long param_11, long param_12, long param_13, long param_14,
+                 int param_15, int param_16, int param_17, int param_18);
+int ClipDibBlt(BITMAPINFO256* param_1, tagRECT* param_2, long* param_3, long* param_4, long* param_5, long* param_6, long* param_7,
+               long* param_8, long* param_9, long* param_10, int param_11, int param_12);
+void GetDibDim(BITMAPINFO256* param_1, long* param_2, long* param_3, long* param_4);
+long TileDibBlt(BITMAPINFO256* param_1, uchar* param_2, tagRECT* param_3, long param_4, long param_5, long param_6, long param_7,
+                long param_8, long param_9, BITMAPINFO256* param_10, uchar* param_11, TRANSINFO* param_12, long param_13, long param_14,
+                long param_15, long param_16, int param_17, int param_18, int param_19);
+void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, int param_4);
+
 // Forward declare these structs — real definitions are in dedicated headers
 struct RGE_Tile_Size;
 struct RGE_Tile_Set;

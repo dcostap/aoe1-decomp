@@ -248,77 +248,13 @@ void TPicture::Save(int p1) {
 }
 
 void TPicture::Draw(TDrawArea* area, long x, long y, int p4, int p5) {
-    (void)p4;
-    (void)p5;
-
-    if (!area || !area->Bits || !this->Bits || this->Width < 1 || this->Height < 1) return;
-
-    int bytes_per_pixel = 1;
-    if (area->Width > 0 && area->Pitch > 0) {
-        bytes_per_pixel = area->Pitch / area->Width;
-        if (bytes_per_pixel < 1) bytes_per_pixel = 1;
-        if (bytes_per_pixel > 4) bytes_per_pixel = 4;
+    // Fully verified. Source of truth: picture.cpp.decomp @ 0x0046E2D0
+    if (this->TransInfo != nullptr) {
+        TransDibBlt(area->BitmapInfo, area->Bits, &area->ClipRect, x, y, this->Width, this->Height, this->BitmapInfo, this->Bits, this->TransInfo,
+                    0, 0, this->Width, this->Height, 1, p4, p5, 0);
+        return;
     }
 
-    long clip_left = area->ClipRect.left;
-    long clip_top = area->ClipRect.top;
-    long clip_right = area->ClipRect.right;
-    long clip_bottom = area->ClipRect.bottom;
-    if (clip_right < clip_left || clip_bottom < clip_top) {
-        clip_left = 0;
-        clip_top = 0;
-        clip_right = area->Width - 1;
-        clip_bottom = area->Height - 1;
-    }
-
-    long src_stride = picture_aligned_width(this->Width);
-    for (long sy = 0; sy < this->Height; ++sy) {
-        long dy = y + sy;
-        if (dy < 0 || dy >= area->Height || dy < clip_top || dy > clip_bottom) continue;
-
-        long sx0 = 0;
-        long dx0 = x;
-        if (dx0 < clip_left) {
-            sx0 += (clip_left - dx0);
-            dx0 = clip_left;
-        }
-        if (dx0 < 0) {
-            sx0 += -dx0;
-            dx0 = 0;
-        }
-
-        long draw_w = this->Width - sx0;
-        long clip_w = (clip_right - dx0) + 1;
-        long area_w = area->Width - dx0;
-        if (draw_w > clip_w) draw_w = clip_w;
-        if (draw_w > area_w) draw_w = area_w;
-        if (draw_w < 1) continue;
-
-        unsigned char* src = this->Bits + (sy * src_stride) + sx0;
-        unsigned char* dst = area->Bits + (dy * area->Pitch) + (dx0 * bytes_per_pixel);
-
-        if (bytes_per_pixel == 1) {
-            memcpy(dst, src, (size_t)draw_w);
-            continue;
-        }
-
-        // Non-original fallback for >8bpp render targets. TODO: port exact palette conversion logic.
-        for (long i = 0; i < draw_w; ++i) {
-            unsigned char idx = src[i];
-            unsigned char b = idx;
-            unsigned char g = idx;
-            unsigned char r = idx;
-            if (area->DrawSystem) {
-                tagPALETTEENTRY pe = area->DrawSystem->palette[idx];
-                r = pe.peRed;
-                g = pe.peGreen;
-                b = pe.peBlue;
-            }
-            unsigned char* px = dst + (i * bytes_per_pixel);
-            px[0] = b;
-            if (bytes_per_pixel > 1) px[1] = g;
-            if (bytes_per_pixel > 2) px[2] = r;
-            if (bytes_per_pixel > 3) px[3] = 0;
-        }
-    }
+    DibBlt(area->BitmapInfo, area->Bits, &area->ClipRect, x, y, this->Width, this->Height, this->BitmapInfo, this->Bits, 0, 0, this->Width,
+           this->Height, 1, p4, p5);
 }

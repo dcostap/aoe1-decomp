@@ -251,13 +251,11 @@ int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FI
 }
 
 int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2) {
-    // Source-of-truth note:
-    // The original engine can decommit mapped resource memory. In this reimplementation,
-    // mapped resource views are owned by `ResFile` and released on file close, so this is a no-op.
-    // TODO(decomp): revisit if per-resource mapping ownership is reintroduced.
-    (void)param_1;
-    (void)param_2;
-    return 1;
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F590
+    if (param_1 != nullptr && 0 < param_2) {
+        return (int)VirtualFree(param_1, (SIZE_T)param_2, 0x4000);
+    }
+    return 0;
 }
 
 namespace {

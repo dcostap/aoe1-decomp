@@ -24,6 +24,7 @@
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Communications_Speed.h"
 #include "../include/RGE_Communications_Synchronize.h"
+#include "../include/globals.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
@@ -740,8 +741,57 @@ CUSTOM_DEBUG_END
 }
 
 int RGE_Base_Game::check_for_cd(int p1) {
-    // TODO: implement logic from 0x0041FD40
-    return 1;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041FC90
+    if (this->prog_info->verify_cd == 0) {
+        return 1;
+    }
+
+    if (p1 > 0) {
+        int iVar4 = 0;
+        uint uVar5 = 0;
+        uint uVar1 = 0;
+        do {
+            uVar1 = uVar5 + 1;
+            int iVar2 = this->comm_handler->GetPlayerHumanity(uVar1);
+            if (iVar2 == 2) {
+                iVar2 = this->playerHasCD((int)uVar5);
+                if (iVar2 != 0) {
+                    iVar4 = iVar4 + 1;
+                }
+            }
+            uVar5 = uVar1;
+        } while ((int)uVar1 < 9);
+        return (uint)(p1 <= this->prog_info->max_players_per_cd * iVar4);
+    }
+
+    if (force_cd != 0) {
+        return 1;
+    }
+
+    char* pcVar3 = this->registry->RegGetAscii(0, "CDPath");
+    if (pcVar3 == nullptr) {
+        return 0;
+    }
+
+    int iVar4 = GetDriveTypeA(pcVar3);
+    if (iVar4 != 5) {
+        return 0;
+    }
+
+    unsigned long vol_ser_num = 0;
+    unsigned long file_sys_flags = 0;
+    unsigned long max_comp_len = 0;
+    char vol_name[256];
+    char file_sys_name[256];
+
+    int ok = GetVolumeInformationA(
+        pcVar3, vol_name, 0x100, &vol_ser_num, &max_comp_len, &file_sys_flags, file_sys_name, 0x100);
+    if (ok == 0) {
+        return 0;
+    }
+
+    iVar4 = stricmp(vol_name, this->prog_info->vol_name);
+    return (uint)(iVar4 == 0);
 }
 
 void RGE_Base_Game::set_mouse_cursor(void* p1) {
@@ -1145,6 +1195,20 @@ TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return new RGE_Scenario_Header(p1); }
+
+void RGE_Base_Game::write_scenario_header(int param_1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CDA0
+    RGE_Scenario_Header* header = this->new_scenario_header(this->world->scenario);
+    if (header != nullptr) {
+        header->save(param_1);
+        delete header;
+        return;
+    }
+
+    long header_size = 0;
+    rge_write_uncompressed(param_1, &header_size, 4);
+}
+
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
 void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
 int RGE_Base_Game::reset_comm() {
@@ -2333,7 +2397,7 @@ unsigned char RGE_Base_Game::playerVersion(int index) {
 
 int RGE_Base_Game::playerHasCD(int index) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224A0
-    return (int)(this->rge_game_options.playerCDAndVersionValue[index] & 1);
+    return this->rge_game_options.playerCDAndVersionValue[index] & 1;
 }
 
 char* RGE_Base_Game::playerVersionString(int index) {

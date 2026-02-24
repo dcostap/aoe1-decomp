@@ -173,8 +173,8 @@ public:
     int campaignGame();
     int multiplayerGame();
     int singlePlayerGame();
-    unsigned char playerVersion(int index);
     int playerHasCD(int index);
+    unsigned char playerVersion(int index);
     char* playerVersionString(int index);
     int playerTeam(int index);
     int randomGame();
@@ -206,6 +206,7 @@ public:
     RGE_Scenario* get_scenario_info(char* p1, int p2);
     RGE_Scenario_Header* get_scenario_header(char* p1, int p2);
     long get_scenario_checksum(char* p1);
+    void write_scenario_header(int param_1);
 
     RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)
     RGE_Scenario_File_Info* scenario_info; // +0x8 (Size: 0x4)

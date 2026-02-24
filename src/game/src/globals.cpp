@@ -57,6 +57,7 @@ int MouseCursorInChildContol = 0;
 int DDSys_CanColorFill = 1;
 int no_other_humans_count = 0;
 int all_cp = 0;
+int force_cd = 0;
 int numberPathingIterations = 2500; // default per decomp (0x9c4)
 int useComputerPlayers = 1; // default per ASM (= 1h)
 int show_timing_max = 0;
@@ -311,6 +312,18 @@ void rge_read(int handle, void* buf, int size) {
 }
 
 void rge_write(int handle, void* buf, int size) {
+    if (handle < 0 || handle != g_rge_handle) {
+        return;
+    }
+
+    int wrote = _write(handle, buf, size);
+    if (wrote < 1) {
+        rge_write_error = 1;
+    }
+}
+
+void rge_write_uncompressed(int handle, void* buf, int size) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x00480040
     if (handle < 0 || handle != g_rge_handle) {
         return;
     }
