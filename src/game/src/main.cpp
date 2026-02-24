@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include <excpt.h>
 #include "../include/TRIBE_Game.h"
 #include "../include/RGE_Prog_Info.h"
@@ -131,9 +132,12 @@ CUSTOM_DEBUG_END
     strcpy(info.cursor_file, "mcursors");
 
     // main.cpp:153 (Scalar initializations)
-    // NOTE: ASM stores integer 84 (0x54) into these float fields.
-    info.mouse_scroll_max_dist = 84.0f; // TODO: verify if should be integer bit-pattern 0x54
-    info.key_scroll_max_dist = 84.0f; 
+    // NOTE: ASM stores integer 0x00000054 into these float fields (raw bits; float value ~= 1.17709e-43).
+    {
+        const uint32_t scroll_max_dist_bits = 0x00000054u;
+        memcpy(&info.mouse_scroll_max_dist, &scroll_max_dist_bits, sizeof(scroll_max_dist_bits));
+        memcpy(&info.key_scroll_max_dist, &scroll_max_dist_bits, sizeof(scroll_max_dist_bits));
+    }
     
     info.game_guid = AGE1_TRIBE_GUID;
     info.zone_guid = AGE1_ZONE_GUID;
