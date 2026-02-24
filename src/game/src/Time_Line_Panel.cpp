@@ -422,11 +422,10 @@ void Time_Line_Panel::set_body_font(void* font, long wid, long hgt) {
     this->set_redraw(TPanel::Redraw);
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051F100 (partial)
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F100
 void Time_Line_Panel::set_back_color(int fill_back, uchar back_color) {
     this->fill_back = fill_back;
     this->back_color = back_color;
-    this->set_redraw(TPanel::Redraw);
 }
 
 // Source of truth: tpnl_tml.cpp.decomp @ 0x0051F310
