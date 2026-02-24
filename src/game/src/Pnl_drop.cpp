@@ -463,11 +463,10 @@ long TDropDownPanel::get_line(long id) {
     return 0;
 }
 
-// Decomp @ 0x004753C0: get_line(char*) - find line by text
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004753C0
 long TDropDownPanel::get_line(char* text) {
     if (this->list_panel) {
-        // TODO: TTextPanel::get_line(char*) not yet declared; stub returns 0
-        return 0;
+        return ((TTextPanel*)this->list_panel)->get_line(text);
     }
     return 0;
 }
