@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/TSpan_List_Manager.h"
+#include "../include/VSpanMiniList.h"
 #include "../include/custom_debug.h"
 
 // NOTE: This file is a reimplementation based on immutable references:
@@ -8,7 +9,6 @@
 // - `src/game/src/spanlist.cpp.decomp`
 //
 // It intentionally keeps the data layouts from dumped headers intact.
-// TODO: Implement additional methods (DeleteSpan, Merge, etc.) when they become needed.
 
 // -------------------------
 // TSpan_Node_List
@@ -362,5 +362,176 @@ void TSpan_List_Manager::AddSpan(int start_px, int end_px, int line) {
 
     if (cur->StartPx < this->LeftMostPx[line]) this->LeftMostPx[line] = cur->StartPx;
     if (cur->EndPx > this->RightMostPx[line]) this->RightMostPx[line] = cur->EndPx;
+}
+
+void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini_list, int x_off, int y_off) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE240
+    if (mini_list != (VSpanMiniList*)0) {
+        do {
+            if (mini_list->Y_delta == 0xff) {
+                return;
+            }
+            this->DeleteSpan((int)mini_list->X_start + x_off, (int)mini_list->X_end + x_off, (int)mini_list->Y_delta + y_off);
+            mini_list = mini_list + 1;
+        } while (mini_list != (VSpanMiniList*)0);
+    }
+}
+
+void TSpan_List_Manager::DeleteSpan(int start_px, int end_px, int line) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE290
+    int orig_line = line;
+    int end_in = end_px;
+
+    if (line < this->Min_Line || this->Max_Line < line) return;
+
+    if (end_px < start_px) {
+        end_px = start_px;
+        start_px = end_in;
+    }
+
+    int min_span = this->Min_Span_Px;
+    int max_span = this->Max_Span_Px;
+    if (end_px < min_span) return;
+    if (max_span < start_px) return;
+
+    if (start_px < min_span) start_px = min_span;
+    if (max_span < end_px) end_px = max_span;
+
+    VSpan_Node* head = this->Line_Head_Ptrs[line];
+    if (!head) return;
+
+    if (end_px < this->LeftMostPx[line]) return;
+    if (this->RightMostPx[line] < start_px) return;
+
+    if ((start_px <= this->LeftMostPx[line]) && (this->RightMostPx[line] <= end_px)) {
+        this->VSList.FreeThread(head, this->Line_Tail_Ptrs[line]);
+        this->Line_Head_Ptrs[line] = (VSpan_Node*)0;
+        this->Line_Tail_Ptrs[line] = (VSpan_Node*)0;
+        this->Span_Count[line] = 0;
+        this->LeftMostPx[line] = 0;
+        this->RightMostPx[line] = 0;
+        return;
+    }
+
+    VSpan_Node* tail = this->Line_Tail_Ptrs[line];
+
+    VSpan_Node* cur = head;
+    while (cur->EndPx < start_px) {
+        cur = cur->Next;
+    }
+
+    if (cur->StartPx < start_px) {
+        if (end_px < cur->EndPx) {
+            // Split a span in two.
+            VSpan_Node* n = this->VSList.GetNode();
+            n->Prev = cur;
+            n->Next = cur->Next;
+            cur->Next = n;
+            if (n->Next != (VSpan_Node*)0) {
+                n->Next->Prev = n;
+            }
+            if (cur == tail) {
+                this->Line_Tail_Ptrs[line] = n;
+            }
+            n->StartPx = end_px + 1;
+            n->EndPx = cur->EndPx;
+            cur->EndPx = start_px - 1;
+            this->Span_Count[line] = this->Span_Count[line] + 1;
+            return;
+        }
+
+        if (cur->StartPx < start_px) {
+            cur->EndPx = start_px - 1;
+            cur = cur->Next;
+        }
+    }
+
+    VSpan_Node* new_tail = tail;
+    VSpan_Node* new_head = head;
+
+    if (cur != (VSpan_Node*)0) {
+        VSpan_Node* next = (VSpan_Node*)0;
+        do {
+            if ((cur->StartPx < start_px) || (end_px < cur->EndPx)) {
+                next = (VSpan_Node*)0;
+            } else {
+                if (cur == new_head) {
+                    new_head = cur->Next;
+                }
+                if (cur == new_tail) {
+                    new_tail = cur->Prev;
+                }
+                if (cur->Prev != (VSpan_Node*)0) {
+                    cur->Prev->Next = cur->Next;
+                }
+                if (cur->Next != (VSpan_Node*)0) {
+                    cur->Next->Prev = cur->Prev;
+                }
+                next = cur->Next;
+                this->VSList.FreeNode(cur);
+                this->Span_Count[orig_line] = this->Span_Count[orig_line] - 1;
+                cur = next;
+            }
+        } while (next != (VSpan_Node*)0);
+
+        if ((cur != (VSpan_Node*)0) && (cur->StartPx <= end_px)) {
+            cur->StartPx = end_px + 1;
+        }
+    }
+
+    this->Line_Head_Ptrs[orig_line] = new_head;
+    this->Line_Tail_Ptrs[orig_line] = new_tail;
+    this->LeftMostPx[orig_line] = new_head->StartPx;
+    this->RightMostPx[orig_line] = new_tail->EndPx;
+}
+
+int TSpan_List_Manager::PointVisible(int x_px, int y_line) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE5B0
+    if ((-1 < y_line) && (y_line < this->Num_Lines)) {
+        VSpan_Node* node = this->Line_Head_Ptrs[y_line];
+        if (node != (VSpan_Node*)0) {
+            while ((x_px < node->StartPx) || (node->EndPx < x_px)) {
+                node = node->Next;
+                if (node == (VSpan_Node*)0) {
+                    return 0;
+                }
+            }
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* list_a, TSpan_List_Manager* list_b) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE5F0
+    this->ResetAll();
+
+    int num_lines = this->Num_Lines;
+    if ((num_lines != list_a->Num_Lines) || (num_lines != list_b->Num_Lines) || (this->Num_Pixels != list_a->Num_Pixels) ||
+        (this->Num_Pixels != list_b->Num_Pixels) || (num_lines < 1)) {
+        return;
+    }
+
+    int i = 0;
+    while (true) {
+        VSpan_Node* a = list_a->Line_Head_Ptrs[i];
+        VSpan_Node* b = list_b->Line_Head_Ptrs[i];
+
+        while (true) {
+            if (a == (VSpan_Node*)0) {
+                if (b == (VSpan_Node*)0) break;
+            } else {
+                this->AddSpan(a->StartPx & 0xfffffffc, a->EndPx | 3, i);
+                a = a->Next;
+            }
+            if (b != (VSpan_Node*)0) {
+                this->AddSpan(b->StartPx & 0xfffffffc, b->EndPx | 3, i);
+                b = b->Next;
+            }
+        }
+
+        i = i + 1;
+        if (num_lines <= i) return;
+    }
 }
 
