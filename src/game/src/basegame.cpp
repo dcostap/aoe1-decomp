@@ -16,6 +16,7 @@
 #include "../include/TDigital.h"
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Map.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
@@ -1014,15 +1015,11 @@ void RGE_Base_Game::set_game_mode(int p1, int p2) {
     this->sub_game_mode = p2;
 }
 void RGE_Base_Game::set_player(short p1) {
-    // ASM 0x00420150: Sets world->curr_player and clears map view info
-    // NOTE: From basegame.cpp.asm analysis, this checks player_num before assignment
-    if (this->world) {
-        // ASM shows this writes to [world + 0x7C] which is curr_player
-        this->world->curr_player = p1;
-        if (this->world->map) {
-            // TODO: implement clear_map_view_info when RGE_Map is available
-            // this->world->map->clear_map_view_info();
-        }
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420150
+    RGE_Game_World* pWorld = this->world;
+    if ((pWorld != nullptr) && (p1 < pWorld->player_num)) {
+        pWorld->curr_player = p1;
+        this->world->map->clear_map_view_info();
     }
 }
 char* RGE_Base_Game::get_string(long p1, char* p2, int p3) { 
