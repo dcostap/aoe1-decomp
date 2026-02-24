@@ -24,6 +24,7 @@
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Communications_Speed.h"
 #include "../include/RGE_Communications_Synchronize.h"
+#include "../include/globals.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
@@ -1168,6 +1169,20 @@ TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return new RGE_Scenario_Header(p1); }
+
+void RGE_Base_Game::write_scenario_header(int param_1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CDA0
+    RGE_Scenario_Header* header = this->new_scenario_header(this->world->scenario);
+    if (header != nullptr) {
+        header->save(param_1);
+        delete header;
+        return;
+    }
+
+    long header_size = 0;
+    rge_write_uncompressed(param_1, &header_size, 4);
+}
+
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
 void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
 int RGE_Base_Game::reset_comm() {
