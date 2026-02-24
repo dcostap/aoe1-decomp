@@ -4,6 +4,7 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/TRIBE_Game.h"
+#include "../include/TRIBE_Screen_Sed_Open.h"
 #include "../include/TEasy_Panel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TTextPanel.h"
@@ -531,11 +532,10 @@ void TribeSaveGameScreen::save_for_scenario_editor() {
         }
         panel_system->destroyPanel((char*)kScenarioEditorScreenName);
     } else if (this->quit_after_save == 2) {
-        // TODO(parity): original path constructs/activates TRIBE_Screen_Sed_Open directly.
-        // Current codebase lacks that runtime construction path, so we route by panel name.
+        new TRIBE_Screen_Sed_Open();
         panel_system->setCurrentPanel((char*)kScenarioEditorOpenName, 0);
     } else if (this->quit_after_save == 3) {
-        panel_system->setCurrentPanel((char*)kScenarioEditorScreenName, 0);
+        ((TRIBE_Game*)rge_base_game)->start_scenario_editor((char*)0, 0);
     } else {
         panel_system->setCurrentPanel((char*)kScenarioEditorScreenName, 0);
     }
