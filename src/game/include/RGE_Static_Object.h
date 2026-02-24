@@ -89,7 +89,7 @@ public:
     virtual uchar keepGatheringWhenObjectIsOut(int param_1); // vt[78] (0x138)
     virtual uchar produceWhenKilledBy(int param_1); // vt[79] (0x13C)
     virtual uchar useSameZoneDropsite(); // vt[80] (0x140)
-    virtual void logDebug(char* param_1); // vt[81] (0x144)
+    virtual void logDebug(const char* param_1, ...); // vt[81] (0x144)
     virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt[82] (0x148)
     virtual int attack(float param_1, float param_2, float param_3, int param_4); // vt[83] (0x14C)
     virtual int attack(int param_1, int param_2); // vt[84] (0x150)
