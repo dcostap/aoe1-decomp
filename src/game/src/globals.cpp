@@ -320,6 +320,18 @@ void rge_write(int handle, void* buf, int size) {
     }
 }
 
+void rge_write_uncompressed(int handle, void* buf, int size) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x00480040
+    if (handle < 0 || handle != g_rge_handle) {
+        return;
+    }
+
+    int wrote = _write(handle, buf, size);
+    if (wrote < 1) {
+        rge_write_error = 1;
+    }
+}
+
 long rge_stream_tell(int handle) {
     if (handle < 0 || handle != g_rge_handle) {
         return -1;

@@ -202,6 +202,7 @@ public:
     uchar set_campaign_info(long param_1, long param_2, long param_3);
     void set_campaign_win();
     RGE_Scenario* get_scenario_info(char* p1, int p2);
+    void write_scenario_header(int param_1);
 
     RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)
     RGE_Scenario_File_Info* scenario_info; // +0x8 (Size: 0x4)
