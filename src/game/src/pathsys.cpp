@@ -487,13 +487,10 @@ long PathingSystem::checksum() {
 
 void PathingSystem::printState(RGE_Moving_Object* obj) {
     // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046D770
-    // Decomp/ASM show this is a printf-style varargs callback at vtable slot 0x144, not the 1-arg stub in RGE_Moving_Object.h.
+    // Decomp/ASM show this is a printf-style varargs callback at vtable slot 0x144.
     // Source of truth: pathsys.cpp.asm @ 0x0046D784..0x0046D79C.
-    typedef void(__cdecl* LogDebugFn)(RGE_Moving_Object*, const char*, ...);
-    LogDebugFn logFn = *(LogDebugFn*)(*(int*)obj + 0x144);
-
-    logFn(obj, "    There are %d open paths and %d traversed paths.", this->numberOpenPathsValue, this->numberTraversedPathsValue);
-    logFn(obj, "    The open paths:");
+    obj->logDebug("    There are %d open paths and %d traversed paths.", this->numberOpenPathsValue, this->numberTraversedPathsValue);
+    obj->logDebug("    The open paths:");
 
     int iVar4 = 1;
     if (0 < this->numberOpenPathsValue) {
@@ -505,8 +502,8 @@ void PathingSystem::printState(RGE_Moving_Object* obj) {
             } else {
                 bVar1 = 0xff;
             }
-            logFn(obj, "      %5d: (%d, %d), total=%d, facet=%d.", iVar4, (uint)((MGP_FloatHeap*)(puVar3 + -1))->x, (uint)*puVar3,
-                  *(int*)(puVar3 + 3), bVar1);
+            obj->logDebug("      %5d: (%d, %d), total=%d, facet=%d.", iVar4, (uint)((MGP_FloatHeap*)(puVar3 + -1))->x, (uint)*puVar3,
+                          *(int*)(puVar3 + 3), bVar1);
             iVar4 = iVar4 + 1;
             puVar3 = puVar3 + 8;
         } while (iVar4 <= this->numberOpenPathsValue);

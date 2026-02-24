@@ -22,7 +22,7 @@ HINSTANCE AppInst = nullptr;
 void* chat = nullptr;
 void* comm = nullptr;
 void* sound_driver = nullptr;
-void* driveInfo = nullptr;
+DriveInformation* driveInfo = nullptr;
 TMousePointer* MouseSystem = nullptr;
 
 int do_run_log = 0;
