@@ -64,12 +64,10 @@ public:
             return;
         }
 
-        // TODO(accuracy): Best-effort: use original setup tuple first, then fallback to main menu panel resources.
+        // Match original screen setup call shape: attempt the requested setup tuple once and fail hard.
         if (!TScreenPanel::setup(rge_base_game->draw_area, setup_name, setup_id, 1)) {
-            if (!TScreenPanel::setup(rge_base_game->draw_area, (char*)"scr1", 0xc383, 1)) {
-                this->error_code = 1;
-                return;
-            }
+            this->error_code = 1;
+            return;
         }
 
         this->set_ideal_size(0x280, 0x1e0);
@@ -271,8 +269,8 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
     for (int i = 0; i < 5; ++i) tab_list[i + 1] = (TPanel*)this->button[i];
     this->set_tab_order(tab_list + 1, 5);
 
-    // TODO(accuracy): Best-effort: set current child to the first button.
-    this->curr_child = (TPanel*)this->button[0];
+    // Source of truth: Scr_main.cpp.decomp @ 0x0049E6D0
+    this->set_curr_child((TPanel*)this->button[0]);
 }
 
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
