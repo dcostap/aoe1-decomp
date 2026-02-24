@@ -173,6 +173,7 @@ public:
     int campaignGame();
     int multiplayerGame();
     int singlePlayerGame();
+    int playerHasCD(int index);
     unsigned char playerVersion(int index);
     int playerTeam(int index);
     int randomGame();
