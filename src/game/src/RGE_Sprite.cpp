@@ -261,6 +261,60 @@ void RGE_Sprite::load_facets(RGE_Sprite** sprites) {
     this->loaded = 1;
 }
 
+void RGE_Sprite::save(int param_1) {
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFDA0
+    short info = (short)-1;
+    if (this->main_sound != nullptr) {
+        info = this->main_sound->id;
+    }
+
+    rge_write(param_1, this->name, 0x15);
+    rge_write(param_1, this->pict_name, 0x0D);
+    rge_write(param_1, &this->resource_id, 4);
+    rge_write(param_1, &this->loaded, 1);
+    rge_write(param_1, &this->color_flag, 1);
+    rge_write(param_1, &this->draw_level, 1);
+    rge_write(param_1, &this->color_table, 2);
+    rge_write(param_1, &this->transparent_picking_flag, 1);
+    rge_write(param_1, &this->box_x1, 2);
+    rge_write(param_1, &this->box_y1, 2);
+    rge_write(param_1, &this->box_x2, 2);
+    rge_write(param_1, &this->box_y2, 2);
+    rge_write(param_1, &this->draw_list_num, 2);
+    rge_write(param_1, &info, 2);
+    rge_write(param_1, &this->micro_man_sound, 1);
+    rge_write(param_1, &this->frame_num, 2);
+    rge_write(param_1, &this->facet_num, 2);
+    rge_write(param_1, &this->base_speed, 4);
+    rge_write(param_1, &this->duration, 4);
+    rge_write(param_1, &this->pause_between_loops, 4);
+    rge_write(param_1, &this->flag, 1);
+    rge_write(param_1, &this->id, 2);
+    rge_write(param_1, &this->mirror_flag, 1);
+
+    if (this->draw_list != nullptr) {
+        rge_write(param_1, this->draw_list, (int)this->draw_list_num << 4);
+    }
+
+    if (this->micro_man_sound != '\0' && 0 < this->facet_num) {
+        for (short facet = 0; facet < this->facet_num; ++facet) {
+            for (int slot = 0; slot < 3; ++slot) {
+                short sound_id = (short)-1;
+                if (this->sound_list != nullptr && this->sound_list[facet].sound[slot] != nullptr) {
+                    sound_id = this->sound_list[facet].sound[slot]->id;
+                }
+                if (this->sound_list != nullptr) {
+                    rge_write(param_1, &this->sound_list[facet].frame[slot], 2);
+                } else {
+                    short frame = (short)-1;
+                    rge_write(param_1, &frame, 2);
+                }
+                rge_write(param_1, &sound_id, 2);
+            }
+        }
+    }
+}
+
 RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
     // Source of truth: sprite.cpp.decomp @ 0x004C0F90
     if ((this->flag & 1) == 0) {

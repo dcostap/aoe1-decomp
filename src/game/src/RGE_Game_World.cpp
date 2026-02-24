@@ -562,7 +562,12 @@ uchar RGE_Game_World::init_player(int param_1) {
 }
 
 void RGE_Game_World::load_player(int param_1, uchar param_2, short param_3) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542060
+    if (param_2 == '\0') {
+        RGE_Player* player = new RGE_Player(param_1, this, (uchar)param_3);
+        this->players[param_3] = player;
+        this->players[param_3]->load(param_1);
+    }
 }
 
 void RGE_Game_World::color_table_init(int fd) {
@@ -776,7 +781,56 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
 }
 
 void RGE_Game_World::save(int param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00543540
+    int fd = param_1;
+
+    color_log('$', '$', 1);
+    save_game_version = 7.23f;
+
+    rge_write(fd, &this->world_time, 4);
+    rge_write(fd, &this->old_world_time, 4);
+    rge_write(fd, &this->world_time_delta, 4);
+    rge_write(fd, &this->world_time_delta_seconds, 4);
+    rge_write(fd, &this->timer, 4);
+    rge_write(fd, &this->game_speed, 4);
+    rge_write(fd, &this->temp_pause, 1);
+    rge_write(fd, &this->next_object_id, 4);
+    rge_write(fd, &this->next_reusable_object_id, 4);
+    rge_write(fd, &this->random_seed, 4);
+    rge_write(fd, &this->curr_player, 2);
+    rge_write(fd, &this->player_num, 2);
+    rge_write(fd, &this->game_state, 1);
+    rge_write(fd, &this->campaign, 4);
+    rge_write(fd, &this->campaign_player, 4);
+    rge_write(fd, &this->campaign_scenario, 4);
+    rge_write(fd, &this->player_turn, 4);
+
+    for (int i = 0; i < 9; ++i) {
+        rge_write(fd, &this->player_time_delta[i], 4);
+    }
+
+    this->map->save_map(fd);
+
+    for (int i = 0; i < this->player_num; ++i) {
+        color_log('$', 'L', 1);
+        this->players[i]->save(fd);
+        color_log('$', '\x16', 1);
+        this->players[i]->save2(fd);
+    }
+
+    color_log('$', '2', 1);
+    for (int i = 0; i < this->player_num; ++i) {
+        this->players[i]->save_info(fd);
+    }
+
+    color_log('$', 'E', 1);
+    this->scenario->save(fd);
+
+    color_log('$', '_', 1);
+    if (this->difficultyLevelValue == -1 && rge_base_game != nullptr) {
+        this->difficultyLevelValue = (int)rge_base_game->rge_game_options.difficultyValue;
+    }
+    rge_write(fd, &this->difficultyLevelValue, 4);
 }
 
 // Scenario loading virtuals
@@ -960,7 +1014,9 @@ void RGE_Game_World::load_scenario8(int param_1, RGE_Player_Info* param_2) {
 }
 
 void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540A10
+    (void)param_1;
+    (void)param_2;
 }
 
 // Destructor
@@ -1769,26 +1825,208 @@ uchar RGE_Game_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
 }
 
 uchar RGE_Game_World::save_game(char* param_1) {
-    // TODO: implement
-    return 1;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00543770
+    char tempname[300];
+
+    save_game_version = 7.23f;
+    sprintf(tempname + 4, "%s%s", rge_base_game->prog_info->save_dir, param_1);
+
+    int fd = rge_open(tempname + 4, 0x8309, 0x180);
+    if (fd == -1) {
+        return '\0';
+    }
+
+    rge_write_error = 0;
+
+    const char ver[8] = "VER 8.6";
+    rge_write(fd, (void*)ver, 8);
+    rge_write(fd, &save_game_version, 4);
+    this->save(fd);
+    rge_close(fd);
+
+    if (rge_write_error != 0) {
+        _unlink(tempname + 4);
+        return '\0';
+    }
+
+    return '\x01';
 }
 
 void RGE_Game_World::base_save(char* param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005439C0
+    int fd = rge_open(param_1, 0x8309, 0x180);
+    if (fd != -1) {
+        this->base_save(fd);
+        rge_close(fd);
+    }
 }
 
 void RGE_Game_World::base_save(int param_1) {
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00543850
+    const char ver[8] = "VER 3.7";
+    rge_write(param_1, (void*)ver, 8);
+
+    rge_write(param_1, &this->terrain_num, 2);
+    rge_write(param_1, &this->terrain_size, 2);
+
+    if (this->terrain_num > 0 && this->terrain_size > 0) {
+        rge_write(param_1, this->terrains, (int)this->terrain_num << 2);
+        for (int i = 0; i < this->terrain_num; ++i) {
+            if (this->terrains[i] != nullptr) {
+                rge_write(param_1, this->terrains[i], (int)this->terrain_size << 2);
+            }
+        }
+    }
+
+    rge_write(param_1, &this->color_table_num, 2);
+    for (int i = 0; i < this->color_table_num; ++i) {
+        this->color_tables[i]->save(param_1);
+    }
+
+    rge_write(param_1, &this->sound_num, 2);
+    for (int i = 0; i < this->sound_num; ++i) {
+        this->sounds[i]->save(param_1);
+    }
+
+    rge_write(param_1, &this->sprite_num, 2);
+    rge_write(param_1, this->sprites, (int)this->sprite_num << 2);
+    for (int i = 0; i < this->sprite_num; ++i) {
+        if (this->sprites[i] != nullptr) {
+            this->sprites[i]->save(param_1);
+        }
+    }
+
+    this->map->save(param_1);
+    this->effects->save(param_1);
+
+    rge_write(param_1, &this->master_player_num, 2);
+    for (int i = 0; i < this->master_player_num; ++i) {
+        this->master_players[i]->save(param_1);
+    }
 }
 
 uchar RGE_Game_World::save_scenario(char* param_1) {
-    // TODO: implement
-    return 1;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00543A00
+    char scenario_name[300];
+    char kill_name[300];
+
+    // Extract base name (up to '.') into kill_name+4.
+    int i = 0;
+    while (param_1[i] != '\0' && param_1[i] != '.') {
+        kill_name[i + 4] = param_1[i];
+        i++;
+    }
+    kill_name[i + 4] = '\0';
+
+    sprintf(scenario_name + 4, "%s%s.scn", rge_base_game->prog_info->scenario_dir, kill_name + 4);
+    _unlink(scenario_name + 4);
+
+    sprintf(scenario_name + 4, "%s%s", rge_base_game->prog_info->scenario_dir, param_1);
+    int fd = rge_open(scenario_name + 4, 0x8301, 0x180);
+    if (fd == -1) {
+        return '\0';
+    }
+
+    rge_write_error = 0;
+
+    const char* version_tag = "1.11";
+    if (rge_base_game->check_prog_argument("TRIAL") == '\x01') {
+        version_tag = "1.10";
+    }
+
+    rge_write_uncompressed(fd, (void*)version_tag, 4);
+    rge_base_game->write_scenario_header(fd);
+
+    long scenario_player_num = (long)this->player_num;
+
+    rge_write(fd, &this->next_object_id, 4);
+    this->scenario->save(fd);
+    this->map->scenario_save(fd);
+    rge_write(fd, &scenario_player_num, 4);
+
+    for (int player = 1; player < this->player_num; ++player) {
+        this->players[player]->scenario_save(fd);
+    }
+
+    for (long index = 0; index < this->player_num; ++index) {
+        long count = 0;
+        for (RGE_Object_Node* node = this->players[index]->objects->list; node != nullptr; node = node->next) {
+            if (node->node->master_obj->master_type != '\x19') {
+                count = count + 1;
+            }
+        }
+        for (RGE_Object_Node* node = this->players[index]->sleeping_objects->list; node != nullptr; node = node->next) {
+            if (node->node->master_obj->master_type != '\x19') {
+                count = count + 1;
+            }
+        }
+
+        rge_write(fd, &count, 4);
+
+        for (RGE_Object_Node* node = this->players[index]->objects->list; node != nullptr; node = node->next) {
+            RGE_Static_Object* obj = node->node;
+            if (obj->master_obj->master_type != '\x19') {
+                rge_write(fd, &obj->world_x, 4);
+                rge_write(fd, &obj->world_y, 4);
+                rge_write(fd, &obj->world_z, 4);
+                rge_write(fd, &obj->id, 4);
+                rge_write(fd, &obj->master_obj->id, 2);
+                rge_write(fd, &obj->object_state, 1);
+
+                float obj_angle = 0.0f;
+                const uchar master_type = obj->master_obj->master_type;
+                if (master_type < 0x1f || 0x59 < master_type) {
+                    obj_angle = (float)obj->facet;
+                } else {
+                    const size_t angle_offset = sizeof(RGE_Static_Object) + offsetof(RGE_Static_Object, old_sprite);
+                    memcpy(&obj_angle, (char*)obj + angle_offset, 4);
+                }
+                rge_write(fd, &obj_angle, 4);
+            }
+        }
+
+        for (RGE_Object_Node* node = this->players[index]->sleeping_objects->list; node != nullptr; node = node->next) {
+            RGE_Static_Object* obj = node->node;
+            if (obj->master_obj->master_type != '\x19') {
+                rge_write(fd, &obj->world_x, 4);
+                rge_write(fd, &obj->world_y, 4);
+                rge_write(fd, &obj->world_z, 4);
+                rge_write(fd, &obj->id, 4);
+                rge_write(fd, &obj->master_obj->id, 2);
+                rge_write(fd, &obj->object_state, 1);
+
+                float obj_angle = 0.0f;
+                const uchar master_type = obj->master_obj->master_type;
+                if (master_type < 0x1f || 0x59 < master_type) {
+                    obj_angle = (float)obj->facet;
+                } else {
+                    const size_t angle_offset = sizeof(RGE_Static_Object) + offsetof(RGE_Static_Object, old_sprite);
+                    memcpy(&obj_angle, (char*)obj + angle_offset, 4);
+                }
+                rge_write(fd, &obj_angle, 4);
+            }
+        }
+    }
+
+    rge_write(fd, &scenario_player_num, 4);
+    for (int player = 1; player < this->player_num; ++player) {
+        this->players[player]->scenario_postsave(fd);
+    }
+
+    rge_close(fd);
+
+    if (rge_write_error != 0) {
+        _unlink(scenario_name + 4);
+        return '\0';
+    }
+
+    return '\x01';
 }
 
 RGE_Scenario* RGE_Game_World::get_scenario_info(char* param_1) {
-    // TODO: implement
-    return this->scenario;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545CE0
+    (void)param_1;
+    return nullptr;
 }
 
 void RGE_Game_World::pause(uchar param_1) {
@@ -2120,14 +2358,13 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(uchar param_1) {
 }
 
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
-    (void)param_1;
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541BC0
+    this->scenario = new RGE_Scenario(param_1);
 }
 
 void RGE_Game_World::scenario_init(int param_1, RGE_Game_World* param_2) {
-    (void)param_1;
-    (void)param_2;
-    // TODO: implement
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541B60
+    this->scenario = new RGE_Scenario(param_1, param_2);
 }
 
 // Object management virtuals
