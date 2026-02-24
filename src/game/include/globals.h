@@ -98,5 +98,6 @@ int rge_fake_close(int handle);
 int rge_close(int handle);
 void rge_read(int handle, void* buf, int size);
 void rge_write(int handle, void* buf, int size);
+void rge_write_uncompressed(int handle, void* buf, int size);
 long rge_stream_tell(int handle);
 long rge_stream_seek(int handle, long pos);
