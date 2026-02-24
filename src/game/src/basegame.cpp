@@ -24,6 +24,7 @@
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Communications_Speed.h"
 #include "../include/RGE_Communications_Synchronize.h"
+#include "../include/DriveInformation.h"
 #include "../include/globals.h"
 #include <windows.h>
 #include <stdio.h>
@@ -275,7 +276,7 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Delete drive info
     if (driveInfo != nullptr) {
-        free(driveInfo);
+        delete driveInfo;
         driveInfo = nullptr;
     }
 
@@ -691,8 +692,11 @@ CUSTOM_DEBUG_END
         this->scenario_info = new RGE_Scenario_File_Info(scenario_info_file);
     }
 
-    // Drive Info (ASM 0x0041bf40) - TODO: implement DriveInformation class
-    // driveInfo = new DriveInformation();
+    // Drive Info (ASM 0x0041bf40)
+    driveInfo = new (std::nothrow) DriveInformation();
+    if (driveInfo == nullptr) {
+        return 0;
+    }
     
     if (!this->setup_blank_screen()) { // vtable offset 0x9c (index 39)
         this->error_code = 0xd;
