@@ -56,6 +56,7 @@ extern int MouseCursorInChildContol;
 extern int DDSys_CanColorFill;
 extern int no_other_humans_count;
 extern int all_cp;
+extern int force_cd;
 extern int numberPathingIterations;
 extern int useComputerPlayers;
 extern int show_timing_max;
