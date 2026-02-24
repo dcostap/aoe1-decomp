@@ -9,6 +9,9 @@ public:
     TribeMPSetupScreen();
     int startGame();
     void calcRandomPositions();
+    void updateSummary();
+    void fillPlayers();
+    void setupSinglePlayerPlayers();
 
     // Virtuals (best-effort)
     virtual ~TribeMPSetupScreen(); // vt[0] (0x0)

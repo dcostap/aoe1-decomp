@@ -1243,3 +1243,20 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 - Done when:
   - `TRIBE_Screen_Game` no longer relies on `GameViewPanel` for its core view behavior.
   - Build remains clean and no new placeholder stubs are introduced.
+
+## Task 143 — Spanlist: add missing `TSpan_List_Manager` methods (DeleteSpan/Subtract/Merge/PointVisible)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the “additional methods when needed” TODO and restore the spanlist API used by visibility/clip logic.
+- Implement (decomp-first transliteration):
+  - `TSpan_List_Manager::SubtractMiniList(VSpanMiniList*, int, int)` @ 0x004BE240.
+  - `TSpan_List_Manager::DeleteSpan(int, int, int)` @ 0x004BE290.
+  - `TSpan_List_Manager::PointVisible(int, int)` @ 0x004BE5B0.
+  - `TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager*, TSpan_List_Manager*)` @ 0x004BE5F0.
+- Where:
+  - `src/game/src/spanlist.cpp`.
+  - `src/game/include/TSpan_List_Manager.h` (methods only; no layout changes).
+- Source of truth: `src/game/decomp/spanlist.cpp.decomp` + `src/game/decomp/spanlist.cpp.asm`.
+- Done when: the TODO marker in `spanlist.cpp` is removed/replaced and all four methods compile/link cleanly.
+
+Status note: methods/declarations and fully-verified markers were already present on `master`; this pass re-validated parity against decomp/asm and confirmed clean build.
