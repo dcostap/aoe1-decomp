@@ -1,10 +1,12 @@
 #include "../include/TEditPanel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TDrawArea.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <mbstring.h>
 #include <imm.h>
 
 static LRESULT CALLBACK pnl_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
@@ -357,12 +359,20 @@ void TEditPanel::set_ime_info(int enable, int turn_on) {
 }
 
 long TEditPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
-    // Partial transliteration. Source of truth: pnl_edit.cpp.decomp @ 0x00475F40
-    if (this->edit_wnd && this->have_focus && this->hidden == 0) {
-        if (param_2 == WM_CTLCOLOREDIT && this->brush && (HWND)(param_4 & 0xFFFF) == (HWND)this->edit_wnd) {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475F40
+    void* pvVar1 = this->edit_wnd;
+    if (pvVar1 != nullptr && this->active != 0 && this->visible != 0 && this->hidden == 0) {
+        if (param_2 == WM_SETFOCUS) {
+            return TPanel::wnd_proc(param_1, WM_SETFOCUS, param_3, param_4);
+        }
+        if (param_2 == WM_COMMAND) {
+            if ((void*)param_4 == pvVar1 && (short)(param_3 >> 16) == 0x400) {
+                InvalidateRect((HWND)pvVar1, nullptr, TRUE);
+            }
+        } else if (param_2 == WM_CTLCOLOREDIT && this->brush != nullptr && (HWND)(param_4 & 0xFFFF) == (HWND)pvVar1) {
             HDC hdc = (HDC)param_3;
             SetBkColor(hdc, (COLORREF)this->back_color);
-            SetBkMode(hdc, TRANSPARENT);
+            SetBkMode(hdc, 2);
             SetTextColor(hdc, (COLORREF)this->highlight_text_color1);
             return (long)this->brush;
         }
@@ -371,29 +381,227 @@ long TEditPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_
 }
 
 long TEditPanel::sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
-    // Minimal behavior needed for name dialogs: forward Enter/Esc as panel actions.
-    if (msg == WM_KEYDOWN) {
-        if (wparam == VK_RETURN) {
-            if (this->parent_panel) {
-                this->parent_panel->action((TPanel*)this, 0, 0, 0);
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476040
+    if (this->edit_wnd != nullptr && this->active != 0 && this->visible != 0 && this->hidden == 0) {
+        if (msg < 0x15) {
+            if (msg == WM_ERASEBKGND) {
+                if (this->brush != nullptr) {
+                    tagRECT rect{};
+                    HDC hdc = (HDC)wparam;
+                    SelectObject(hdc, (HGDIOBJ)this->brush);
+                    GetClientRect((HWND)hwnd, &rect);
+                    FillRect(hdc, &rect, (HBRUSH)this->brush);
+                    return 1;
+                }
+            } else if (msg == WM_PAINT) {
+                InvalidateRect((HWND)hwnd, nullptr, TRUE);
             }
-            return 0;
-        }
-        if (wparam == VK_ESCAPE) {
-            if (this->parent_panel) {
-                const long handled = this->parent_panel->action((TPanel*)this, 1, 0, 0);
-                if (handled != 0) {
+        } else if (msg < 0x201) {
+            if (msg == WM_MOUSEMOVE) {
+                if (rge_base_game->windows_mouse == 0) {
+                    MouseCursorInChildContol = 1;
+                    rge_base_game->mouse_off();
+                }
+            } else {
+                switch (msg) {
+                case WM_KEYDOWN: {
+                    if (this->parent_panel == nullptr) {
+                        if (wparam == VK_ESCAPE) {
+                            SendMessageA((HWND)this->edit_wnd, EM_UNDO, 0, 0);
+                            return 0;
+                        }
+                    } else {
+                        const long handled = this->parent_panel->wnd_proc(hwnd, msg, wparam, lparam);
+                        if (handled != 0) {
+                            return 0;
+                        }
+
+                        if (wparam == VK_TAB) {
+                            const int alt_down = (GetKeyState(VK_MENU) < 0);
+                            const int ctrl_down = (GetKeyState(VK_CONTROL) < 0);
+                            const int shift_down = (GetKeyState(VK_SHIFT) < 0);
+                            DAT_0086b240 = 1;
+                            this->handle_key_down(VK_TAB, (short)lparam, alt_down, ctrl_down, shift_down);
+                            DAT_0086b240 = 0;
+                            return 0;
+                        }
+                        if (wparam == VK_RETURN) {
+                            this->parent_panel->action((TPanel*)this, 0, 0, 0);
+                            return 0;
+                        }
+                        if (wparam == VK_ESCAPE) {
+                            const long esc_handled = this->parent_panel->action((TPanel*)this, 1, 0, 0);
+                            if (esc_handled != 0) {
+                                return 0;
+                            }
+                            SendMessageA((HWND)this->edit_wnd, EM_UNDO, 0, 0);
+                            return 0;
+                        }
+                    }
+                    break;
+                }
+                case WM_KEYUP:
+                    if (wparam == VK_TAB) {
+                        return 0;
+                    }
+                    break;
+                case WM_CHAR:
+                    if (this->verify_char((int)wparam) == 0) {
+                        return 0;
+                    }
+                    break;
+                case WM_SYSKEYDOWN:
+                    if (this->imc == 0 || this->enable_ime == 0) {
+                        SetFocus((HWND)this->render_area->Wnd);
+                        PostMessageA((HWND)this->render_area->Wnd, (UINT)msg, (WPARAM)wparam, (LPARAM)lparam);
+                    }
                     return 0;
+                default:
+                    break;
                 }
             }
         }
     }
 
-    WNDPROC old_proc = (WNDPROC)this->old_sub_wnd_proc;
-    if (old_proc) {
-        return (long)CallWindowProcA(old_proc, (HWND)hwnd, (UINT)msg, (WPARAM)wparam, (LPARAM)lparam);
+    DWORD sel_start_before = 0;
+    DWORD sel_end_before = 0;
+    DWORD sel_start_after = 0;
+    DWORD sel_end_after = 0;
+    int track_sel = 0;
+
+    if (this->edit_wnd == nullptr || msg == EM_GETSEL) {
+        track_sel = 0;
+    } else {
+        track_sel = 1;
+        SendMessageA((HWND)this->edit_wnd, EM_GETSEL, (WPARAM)&sel_start_before, (LPARAM)&sel_end_before);
     }
-    return 0;
+
+    long ret = 0;
+    WNDPROC old_proc = (WNDPROC)this->old_sub_wnd_proc;
+    if (old_proc != nullptr) {
+        ret = (long)CallWindowProcA(old_proc, (HWND)hwnd, (UINT)msg, (WPARAM)wparam, (LPARAM)lparam);
+    }
+
+    if (track_sel != 0) {
+        SendMessageA((HWND)this->edit_wnd, EM_GETSEL, (WPARAM)&sel_start_after, (LPARAM)&sel_end_after);
+        if (sel_start_after != sel_start_before || sel_end_after != sel_end_before) {
+            InvalidateRect((HWND)this->edit_wnd, nullptr, TRUE);
+            UpdateWindow((HWND)this->edit_wnd);
+        }
+    }
+
+    if (msg == WM_PASTE) {
+        this->update_text();
+    }
+
+    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
+        const uint x = (uint)lparam & 0xFFFF;
+        const uint y = ((uint)lparam >> 16) & 0xFFFF;
+        const uint nx = ((uint)(this->pnl_x + (long)x)) & 0xFFFF;
+        const uint ny = ((uint)(this->pnl_y + (long)y)) & 0xFFFF;
+        const long new_lparam = (long)((ny << 16) | nx);
+        TPanel* cp = panel_system->currentPanel();
+        ret = cp->wnd_proc((void*)this->render_area->Wnd, msg, wparam, new_lparam);
+    }
+
+    return ret;
+}
+
+int TEditPanel::verify_char(int param_1) {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476440
+    if (DAT_0086b244 != 0) {
+        DAT_0086b244 = 0;
+        return 0;
+    }
+    if (param_1 == VK_TAB) {
+        return 0;
+    }
+    if (param_1 == VK_RETURN && this->format != FormatMultiLine) {
+        return 0;
+    }
+    if (param_1 == VK_BACK) {
+        return 1;
+    }
+
+    this->update_text();
+
+    if (this->sel_len == 0) {
+        if ((int)this->fixed_len - 1 <= this->text_len) {
+            MessageBeep((UINT)-1);
+            return 0;
+        }
+        if ((int)this->fixed_len - 2 <= this->text_len && IsDBCSLeadByte((BYTE)param_1) != 0) {
+            DAT_0086b244 = 1;
+            MessageBeep((UINT)-1);
+            return 0;
+        }
+    }
+
+    switch (this->format) {
+    default:
+        return 1;
+    case FormatNumber:
+    case FormatInteger:
+    case FormatUnsignedInt:
+        this->update_text();
+        if (0x2f < param_1 && param_1 < 0x3a) {
+            return 1;
+        }
+        if (param_1 == 0x2d && this->text != nullptr && *this->text == '\0' && this->format != FormatUnsignedInt) {
+            return 1;
+        }
+        if (param_1 == 0x2e) {
+            if (_mbschr((unsigned char*)this->text, 0x2e) == nullptr) {
+                MessageBeep((UINT)-1);
+                return 0;
+            }
+            if (this->format == FormatNumber) {
+                return 1;
+            }
+        }
+        MessageBeep((UINT)-1);
+        return 0;
+    case FormatFile:
+    case FormatFileNoExt:
+        this->update_text();
+        if (param_1 == 0x2e) {
+            if (this->format == FormatFile && _mbschr((unsigned char*)this->text, 0x2e) == nullptr) {
+                return 1;
+            }
+            MessageBeep((UINT)-1);
+            return 0;
+        }
+        if (param_1 == 0x5c || param_1 == 0x3a) {
+            MessageBeep((UINT)-1);
+            return 0;
+        }
+        goto format_path_common;
+    case FormatPath:
+        this->update_text();
+        if (param_1 == 0x3a && this->text_len != 1) {
+            MessageBeep((UINT)-1);
+            return 0;
+        }
+    format_path_common:
+        if (param_1 != 0x2f && param_1 != 0x22 && param_1 != 0x2a && param_1 != 0x3f && param_1 != 0x3e && param_1 != 0x3c &&
+            param_1 != 0x7c) {
+            return 1;
+        }
+        MessageBeep((UINT)-1);
+        return 0;
+    case FormatPercent:
+        if (this->text_len < 2 && 0x2f < param_1 && param_1 < 0x3a) {
+            return 1;
+        }
+        if (this->text_len == 2 && param_1 == 0x30) {
+            const int cmp = _mbscmp((const unsigned char*)"10", (const unsigned char*)this->text);
+            if (cmp == 0) {
+                return 1;
+            }
+        }
+        MessageBeep((UINT)-1);
+        return 0;
+    }
 }
 
 // Boilerplate virtual forwards
