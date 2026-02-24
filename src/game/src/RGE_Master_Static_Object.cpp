@@ -1060,3 +1060,15 @@ long RGE_Master_Static_Object::get_help_page() {
     // Source of truth: m_s_obj.cpp.decomp @ 0x00454960
     return this->help_page_id;
 }
+
+// TODO: STUB - alignment_box not yet decompiled; needed by TRIBE_Main_View wall-outline preview.
+void RGE_Master_Static_Object::alignment_box(RGE_Game_World* world, float col, float row,
+                                              short* x4, short* local_12, short* scr_y,
+                                              short* y3, short* y4, short* y1, short* x2,
+                                              short* local_4)
+{
+    // Zero-init outputs so draw_wall_outline degrades gracefully.
+    *x4 = 0; *local_12 = 0; *scr_y = 0;
+    *y3 = 0; *y4 = 0; *y1 = 0; *x2 = 0;
+    local_4[0] = 0; local_4[1] = 0;
+}

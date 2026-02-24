@@ -606,3 +606,15 @@ void TRIBE_Player::registerResearch(int param_1, int param_2, int param_3) {}
 void TRIBE_Player::taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5) {}
 void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5) {}
 void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
+
+// TODO: STUB - command_make_building not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_make_building(short master_obj_id, float x, float y) { return 0; }
+
+// TODO: STUB - command_attack_ground not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_attack_ground(float x, float y) { return 0; }
+
+// TODO: STUB - command_make_repair not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_make_repair(RGE_Static_Object* target) { return 0; }
+
+// TODO: STUB - command_make_unload not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_make_unload(float x, float y) { return 0; }

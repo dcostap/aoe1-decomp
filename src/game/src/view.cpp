@@ -2027,3 +2027,19 @@ short RGE_View::get_border_picture(uchar terrain_type, uchar border_type, uchar 
 
     return (short)(pict->animations * sub_index + pict->shape_index);
 }
+
+// TODO: STUB - get_tile_screen_coords not yet implemented from view.cpp.decomp.
+int RGE_View::get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int flags)
+{
+    (void)col; (void)row; (void)flags;
+    if (out_x) *out_x = 0;
+    if (out_y) *out_y = 0;
+    return 0;
+}
+
+// TODO: STUB - Object_Was_Displayed not yet implemented from view.cpp.decomp.
+bool RGE_View::Object_Was_Displayed(long object_id, int param_2)
+{
+    (void)object_id; (void)param_2;
+    return false;
+}

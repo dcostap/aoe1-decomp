@@ -91,6 +91,12 @@ public:
     uchar pay_obj_cost(short param_1, float param_2, int param_3);
     void reimburse_obj_cost(short param_1);
 
+    uchar command_make_building(short master_obj_id, float x, float y);
+    uchar command_make_wall(short master_obj_id, long col1, long row1, long col2, long row2);
+    uchar command_attack_ground(float x, float y);
+    uchar command_make_repair(RGE_Static_Object* target);
+    uchar command_make_unload(float x, float y);
+
     TRIBE_Player_Tech* tech_tree;
     long fog_update;
     long update_count;
