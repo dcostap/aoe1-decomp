@@ -13,6 +13,7 @@ extern RGE_Base_Game* rge_base_game;
 extern TDebuggingLog* L;
 extern int do_draw_log;
 extern int safe_draw_log;
+extern unsigned char do_color_log;
 extern char draw_log_name[260];
 extern FILE* draw_log;
 extern HINSTANCE StringTable;
