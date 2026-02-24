@@ -8,15 +8,18 @@
 #include "../include/TButtonPanel.h"
 #include "../include/TDropDownPanel.h"
 #include "../include/RGE_Scenario.h"
+#include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/TEasy_Panel.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
+#include "../include/TDebuggingLog.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <io.h>
 
 namespace {
 
@@ -190,6 +193,20 @@ static void mps_button_set_state_by_id(TButtonPanel* button, long id) {
         }
     }
     button->set_state(0);
+}
+
+static void mps_button_set_disabled(TButtonPanel* button, int disabled) {
+    if (!button) {
+        return;
+    }
+    button->disabled = disabled;
+}
+
+static int mps_comm_is_player_ready(TCommunications_Handler* comm_handler, uint player_number) {
+    if (comm_handler == nullptr || player_number >= 10) {
+        return 0;
+    }
+    return (comm_handler->PlayerOptions.PlayerReady[player_number] != 0) ? 1 : 0;
 }
 
 static long mps_dropdown_find_line_by_id(TDropDownPanel* drop, long id) {
@@ -694,110 +711,6 @@ static int mps_ensure_multiplayer_comm() {
     return (rge_base_game->comm_handler != nullptr && comm != nullptr) ? 1 : 0;
 }
 
-void fillPlayers(TribeMPSetupScreen* owner) {
-    // Source of truth: scr_mps.cpp.decomp (`TribeMPSetupScreen::fillPlayers`).
-    // This branch currently targets Single Player Random Map only.
-    // Assumption/TODO: multiplayer-only readiness and comm-humanity state are intentionally skipped here.
-    if (!owner || !rge_base_game) return;
-    mps_refresh_ui(owner);
-}
-
-void setupSinglePlayerPlayers(TribeMPSetupScreen* owner) {
-    // Source of truth: scr_mps.cpp.decomp
-    // Sets up default players for single player mode
-    if (!rge_base_game) return;
-    
-    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-
-    const int scenario_game = (int)rge_base_game->rge_game_options.scenarioGameValue;
-    RGE_Scenario* scenario = owner ? (RGE_Scenario*)owner->scenarioInfo : nullptr;
-    if (!scenario_game) {
-        for (int i = 0; i < 8; ++i) {
-            const int civ = (rand() % 16) + 1; // 1..16, random non-"Random" civ selection.
-            game->setCivilization(i, civ);
-            game->setPlayerColor(i, i + 1);
-        }
-    } else if (owner && scenario) {
-        int first_any_player = -1;
-        int first_any_civ = -1;
-        int first_any_color = -1;
-        int slot = 0;
-        for (int scen_player = 0; scen_player < 9 && slot < 8; ++scen_player) {
-            if (!scenario->PlActive[scen_player]) {
-                continue;
-            }
-
-            game->setScenarioPlayer(slot, scen_player);
-            game->setCivilization(slot, scenario->PlCivilization[scen_player]);
-            game->setPlayerColor(slot, scen_player + 1);
-            if (scenario->PlType[scen_player] == 1 && first_any_player < 0) {
-                first_any_player = scen_player;
-                first_any_civ = scenario->PlCivilization[scen_player];
-                first_any_color = scen_player + 1;
-            }
-            ++slot;
-        }
-
-        int scen_count = owner->scenarioPlayerCount;
-        if (slot > 0 && scen_count > slot) {
-            scen_count = slot;
-        }
-        if (scen_count < 2) {
-            scen_count = (slot >= 2) ? slot : 2;
-        }
-        if (scen_count > 8) {
-            scen_count = 8;
-        }
-        rge_base_game->setNumberPlayers(scen_count);
-
-        if (first_any_player >= 0 && scen_count > 0) {
-            for (int i = 1; i < scen_count; ++i) {
-                if (game->tribe_game_options.scenarioPlayerValue[i] == first_any_player) {
-                    const int old_scen = game->tribe_game_options.scenarioPlayerValue[0];
-                    const int old_civ = (int)game->tribe_game_options.civilizationValue[0];
-                    const int old_color = (int)game->tribe_game_options.playerColorValue[0];
-                    game->setScenarioPlayer(i, old_scen);
-                    game->setCivilization(i, old_civ);
-                    game->setPlayerColor(i, old_color);
-                    break;
-                }
-            }
-
-            game->setScenarioPlayer(0, first_any_player);
-            game->setCivilization(0, first_any_civ);
-            game->setPlayerColor(0, first_any_color);
-        }
-    } else {
-        // TODO: Scenario metadata is unavailable here; keep deterministic defaults until loading is wired.
-        for (int i = 0; i < 8; ++i) {
-            game->setCivilization(i, 17);
-            game->setPlayerColor(i, i + 1);
-        }
-    }
-
-    for (int i = 0; i < 8; ++i) {
-        rge_base_game->setPlayerTeam(i, 1);
-    }
-
-    // Source-of-truth: scr_mps.cpp.decomp (`setupSinglePlayerPlayers`).
-    // Initialize single-player humanity map in comm handler:
-    // player 1 = human, players 2..8 = computer, slot 9 = absent.
-    if (comm) {
-        TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
-        comm_handler->SetPlayerHumanity(1, 2);
-        for (uint player = 2; player < 9; ++player) {
-            comm_handler->SetPlayerHumanity(player, 4);
-        }
-        comm_handler->SetPlayerHumanity(9, 0);
-    }
-
-    if (owner) {
-        mps_fill_number_players(owner);
-    }
-    
-    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers() completed");
-}
-
 void mps_popup_resid(TribeMPSetupScreen* owner, int resid, const char* fallback) {
     char text[512];
     text[0] = '\0';
@@ -838,6 +751,792 @@ void mps_popup_text(const char* text) {
 }
 
 } // namespace
+
+// Fully verified. Source of truth: scr_mps.cpp.asm @ 0x004A5210
+void TribeMPSetupScreen::setupSinglePlayerPlayers() {
+    if (rge_base_game == nullptr) {
+        return;
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+
+    if (rge_base_game->scenarioGame() == 0) {
+        int i = 0;
+        do {
+            int r = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0xb31);
+            int s = r >> 0x1f;
+            r = r ^ s;
+            r = r - s;
+            r = r & 0xf;
+            r = r ^ s;
+            r = r - s;
+            r = r + 1;
+
+            game->setCivilization(i, r);
+            game->setPlayerColor(i, i + 1);
+            ++i;
+        } while (i < 8);
+    } else {
+        int first_any_player = -1; // scenario player index
+        int first_any_civ = -1;    // civ id
+        int first_any_color = -1;  // color id (scenario idx + 1)
+
+        if (this->scenarioInfo != nullptr) {
+            int slot = 0;
+            for (int scen_player = 0; scen_player < 9; ++scen_player) {
+                if (((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(scen_player) == 0) {
+                    continue;
+                }
+
+                game->setScenarioPlayer(slot, scen_player);
+                int civ = ((RGE_Scenario*)this->scenarioInfo)->Get_player_Civ(scen_player);
+                game->setCivilization(slot, civ);
+                game->setPlayerColor(slot, scen_player + 1);
+
+                if (((RGE_Scenario*)this->scenarioInfo)->Get_player_Type(scen_player) == 1 && first_any_player == -1) {
+                    first_any_player = scen_player;
+                    first_any_civ = civ;
+                    first_any_color = scen_player + 1;
+                }
+
+                ++slot;
+            }
+        }
+
+        rge_base_game->setNumberPlayers(this->scenarioPlayerCount);
+
+        if (first_any_player != -1) {
+            if (1 < this->scenarioPlayerCount) {
+                for (int i = 1; i < this->scenarioPlayerCount; ++i) {
+                    if (game->tribe_game_options.scenarioPlayerValue[i] == first_any_player) {
+                        const int old_scen = game->tribe_game_options.scenarioPlayerValue[0];
+                        const int old_civ = (int)game->tribe_game_options.civilizationValue[0];
+                        const int old_color = (int)game->tribe_game_options.playerColorValue[0];
+
+                        game->setScenarioPlayer(i, old_scen);
+                        game->setCivilization(i, old_civ);
+                        game->setPlayerColor(i, old_color);
+                        break;
+                    }
+                }
+            }
+
+            game->setScenarioPlayer(0, first_any_player);
+            game->setCivilization(0, first_any_civ);
+            game->setPlayerColor(0, first_any_color);
+        }
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        rge_base_game->setPlayerTeam(i, 1);
+    }
+
+    if (comm != nullptr) {
+        TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+        comm_handler->SetPlayerHumanity(1, 2);
+        for (uint player = 2; player <= 8; ++player) {
+            comm_handler->SetPlayerHumanity(player, 4);
+        }
+        comm_handler->SetPlayerHumanity(9, 0);
+    }
+
+    mps_fill_number_players(this);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.asm @ 0x004A37D0
+void TribeMPSetupScreen::fillPlayers() {
+    if (rge_base_game == nullptr) {
+        return;
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+
+    if (rge_base_game->multiplayerGame() != 0 && comm_handler != nullptr && comm_handler->IsHost() != 0) {
+        int changed = 0;
+        const int num_players = rge_base_game->numberPlayers();
+        for (int i = 0; i < num_players; ++i) {
+            const uint player_num = (uint)(i + 1);
+            if (mps_comm_is_player_ready(comm_handler, player_num) != 0 &&
+                this->playerNameText[i] != nullptr &&
+                this->playerNameText[i]->text_color1 == 0xff) {
+
+                for (int j = 0; j < num_players; ++j) {
+                    if (i == j) {
+                        continue;
+                    }
+
+                    if (mps_comm_is_player_ready(comm_handler, (uint)(j + 1)) == 0) {
+                        continue;
+                    }
+
+                    const int color_j = game->playerColor(j);
+                    const int color_i = game->playerColor(i);
+                    if (color_j == color_i) {
+                        if (L != nullptr) {
+                            L->Log("$$$ SETTING CIV/TEAM+50 (%d,%d)", i, j);
+                        }
+                        const int civ = game->civilization(i);
+                        game->setCivilization(j, civ + 0x32);
+
+                        const int team = rge_base_game->playerTeam(i);
+                        rge_base_game->setPlayerTeam(j, team + 0x32);
+                        changed = 1;
+                    }
+                }
+            }
+        }
+
+        if (changed != 0) {
+            rge_base_game->send_game_options();
+        }
+    }
+
+    const int num_players = rge_base_game->numberPlayers();
+    for (int slot = 0; slot < num_players; ++slot) {
+        int humanity = 0;
+        int is_me = 0;
+
+        if (rge_base_game->multiplayerGame() != 0 && comm_handler != nullptr) {
+            humanity = comm_handler->GetPlayerHumanity((uint)(slot + 1));
+            is_me = (comm_handler->WhoAmI() == (uint)(slot + 1)) ? 1 : 0;
+        } else {
+            if (slot == 0) {
+                humanity = 2;
+                is_me = 1;
+            } else if (this->playerNameDrop[slot] != nullptr) {
+                humanity = (int)this->playerNameDrop[slot]->get_id();
+            } else {
+                humanity = 0;
+            }
+            is_me = 0;
+        }
+
+        // CD + version indicators are only shown for human players in multiplayer.
+        if (rge_base_game->multiplayerGame() == 0 || humanity != 2) {
+            if (this->playerCDText[slot]) this->playerCDText[slot]->set_active(0);
+            if (this->playerVersionText[slot]) this->playerVersionText[slot]->set_active(0);
+        } else {
+            if (this->playerCDText[slot]) {
+                this->playerCDText[slot]->set_active(rge_base_game->playerHasCD(slot));
+            }
+
+            int show_version = 0;
+            if (comm_handler != nullptr && comm_handler->IsHost() != 0) {
+                show_version = 1;
+            } else if (rge_base_game->playerVersion(0) != 0) {
+                show_version = 1;
+            }
+
+            if (show_version != 0) {
+                if (this->playerVersionText[slot]) {
+                    this->playerVersionText[slot]->set_text((char*)rge_base_game->playerVersionString(slot));
+                    this->playerVersionText[slot]->set_active(1);
+                }
+            } else if (slot == 0) {
+                if (this->playerVersionText[0]) {
+                    this->playerVersionText[0]->set_text((char*)rge_base_game->playerVersionString(0));
+                    this->playerVersionText[0]->set_active(1);
+                }
+            } else if (is_me != 0) {
+                rge_base_game->setPlayerVersion(slot, 1);
+                if (this->playerVersionText[slot]) {
+                    this->playerVersionText[slot]->set_text((char*)rge_base_game->playerVersionString(slot));
+                    this->playerVersionText[slot]->set_active(1);
+                }
+            } else {
+                if (this->playerVersionText[slot]) this->playerVersionText[slot]->set_active(0);
+            }
+        }
+
+        // Player color button/text.
+        int color_id = 0;
+        if (is_me != 0 && this->myPlayerColor != 0) {
+            color_id = this->myPlayerColor;
+        } else {
+            color_id = game->playerColor(slot);
+        }
+        if (this->playerColor[slot]) {
+            mps_button_set_state_by_id(this->playerColor[slot], color_id);
+        }
+        if (this->playerColorText[slot]) {
+            this->playerColorText[slot]->set_text((char*)mps_button_state_text(this->playerColor[slot]));
+            this->playerColorText[slot]->set_text_color(mps_button_state_color(this->playerColor[slot]), 0);
+        }
+        if (this->playerColor[slot]) this->playerColor[slot]->set_active(0);
+        if (this->playerColorText[slot]) this->playerColorText[slot]->set_active(0);
+
+        if (((rge_base_game->multiplayerGame() != 0) && (is_me != 0) && (this->i_am_ready == 0)) ||
+            ((rge_base_game->singlePlayerGame() != 0) && (is_me != 0) && (1 < this->numberAnyPlayers))) {
+            if (this->playerColor[slot]) {
+                this->playerColor[slot]->set_active(1);
+                mps_button_set_disabled(this->playerColor[slot], 0);
+            }
+        } else if (humanity == 2) {
+            if (this->playerColorText[slot]) this->playerColorText[slot]->set_active(1);
+        }
+
+        // Player team button/text.
+        if (this->playerTeam[slot]) {
+            if (is_me != 0 && this->myPlayerTeam != 0) {
+                this->playerTeam[slot]->set_state((short)(this->myPlayerTeam - 1));
+            } else {
+                int team = rge_base_game->playerTeam(slot);
+                if (team > 0x31) {
+                    team -= 0x32;
+                }
+                this->playerTeam[slot]->set_state((short)(team - 1));
+            }
+        }
+        if (this->playerTeamText[slot]) {
+            this->playerTeamText[slot]->set_text((char*)mps_button_state_text(this->playerTeam[slot]));
+        }
+        if (this->playerTeam[slot]) this->playerTeam[slot]->set_active(0);
+        if (this->playerTeamText[slot]) this->playerTeamText[slot]->set_active(0);
+
+        if (((rge_base_game->multiplayerGame() != 0) &&
+            (((is_me != 0) && (this->i_am_ready == 0)) ||
+             (comm_handler != nullptr && comm_handler->IsHost() != 0 && humanity == 4 && this->i_am_ready == 0))) ||
+            ((rge_base_game->singlePlayerGame() != 0) && ((is_me != 0) || (humanity == 4)))) {
+            if (this->playerTeam[slot]) {
+                this->playerTeam[slot]->set_active(1);
+                mps_button_set_disabled(this->playerTeam[slot], 0);
+            }
+        } else if (humanity == 2 || humanity == 4) {
+            if (this->playerTeamText[slot]) this->playerTeamText[slot]->set_active(1);
+        }
+
+        // Name text coloring (ready state) in multiplayer.
+        if (rge_base_game->multiplayerGame() != 0 && comm_handler != nullptr) {
+            unsigned long color = 0xff00;
+            if (humanity == 2 && mps_comm_is_player_ready(comm_handler, (uint)(slot + 1)) == 0) {
+                color = 0xff;
+            }
+            if (this->playerNameDrop[slot]) {
+                this->playerNameDrop[slot]->set_val_text_color(color, 0);
+            }
+            if (this->playerNameText[slot]) {
+                this->playerNameText[slot]->set_text_color(color, 0);
+            }
+        }
+
+        // Player name UI.
+        if (rge_base_game->multiplayerGame() == 0) {
+            if (slot == 0) {
+                if (this->playerNameText[0]) {
+                    this->playerNameText[0]->set_text(0x25b3); // "You"
+                }
+            } else if (this->playerNameText[slot] && this->playerNameDrop[slot]) {
+                this->playerNameText[slot]->set_text((char*)mps_dropdown_current_text(this->playerNameDrop[slot]));
+            }
+        } else if (this->playerNameDrop[slot] && this->playerNameText[slot] && comm_handler != nullptr) {
+            if (this->playerNameDrop[slot]->get_id(0) == 2) {
+                if (this->playerNameDrop[slot]->list_panel) {
+                    ((TTextPanel*)this->playerNameDrop[slot]->list_panel)->delete_line(0);
+                }
+            }
+
+            if (humanity == 2) {
+                const char* name = comm_handler->GetPlayerName((uint)(slot + 1));
+                if (this->playerNameDrop[slot]->list_panel) {
+                    ((TTextPanel*)this->playerNameDrop[slot]->list_panel)->insert_line(0, (char*)(name ? name : ""), 2);
+                }
+            }
+
+            const long line = this->playerNameDrop[slot]->get_line((long)humanity);
+            this->playerNameDrop[slot]->set_line(line);
+            this->playerNameText[slot]->set_text((char*)mps_dropdown_current_text(this->playerNameDrop[slot]));
+        }
+
+        // Civilization UI.
+        if (this->playerCivDrop[slot] && this->playerCivDrop[slot]->mode != TDropDownPanel::ModeList) {
+            int civ = 0;
+            if (is_me != 0 && this->myCivilization != 0) {
+                civ = this->myCivilization;
+            } else {
+                civ = game->civilization(slot);
+                if (civ > 0x31) {
+                    civ -= 0x32;
+                }
+            }
+            this->playerCivDrop[slot]->set_line(this->playerCivDrop[slot]->get_line(civ));
+        }
+        if (this->playerCivText[slot] && this->playerCivDrop[slot]) {
+            this->playerCivText[slot]->set_text((char*)mps_dropdown_current_text(this->playerCivDrop[slot]));
+        }
+
+        // Scenario player UI.
+        if (this->scenarioPlayerDrop[slot] && this->scenarioPlayerDrop[slot]->mode != TDropDownPanel::ModeList) {
+            int scen = -1;
+            if (is_me != 0 && this->myScenarioPlayer != -1) {
+                scen = this->myScenarioPlayer;
+            } else {
+                scen = game->tribe_game_options.scenarioPlayerValue[slot];
+            }
+            this->scenarioPlayerDrop[slot]->set_line(this->scenarioPlayerDrop[slot]->get_line(scen));
+        }
+        if (this->scenarioPlayerText[slot] && this->scenarioPlayerDrop[slot]) {
+            this->scenarioPlayerText[slot]->set_text((char*)mps_dropdown_current_text(this->scenarioPlayerDrop[slot]));
+        }
+
+        // Enable/disable dropdowns vs text mirrors.
+        if ((rge_base_game->multiplayerGame() == 0) ||
+            (comm_handler == nullptr) ||
+            (comm_handler->IsHost() == 0) ||
+            (is_me != 0)) {
+            if (this->playerNameDrop[slot]) this->playerNameDrop[slot]->set_active(0);
+            if (this->playerNameText[slot]) this->playerNameText[slot]->set_active(1);
+        } else {
+            if (this->playerNameDrop[slot]) this->playerNameDrop[slot]->set_active(1);
+            if (this->playerNameText[slot]) this->playerNameText[slot]->set_active(0);
+        }
+
+        if (this->playerCivDrop[slot]) this->playerCivDrop[slot]->set_active(0);
+        if (this->playerCivText[slot]) this->playerCivText[slot]->set_active(0);
+        if (((rge_base_game->multiplayerGame() != 0) &&
+            (((is_me != 0) && (this->i_am_ready == 0)) ||
+             (comm_handler != nullptr && comm_handler->IsHost() != 0 && humanity == 4 && this->i_am_ready == 0))) ||
+            ((rge_base_game->singlePlayerGame() != 0) && ((is_me != 0) || (humanity == 4)))) {
+            if (this->playerCivDrop[slot]) this->playerCivDrop[slot]->set_active(1);
+        } else if (humanity == 2 || humanity == 4) {
+            if (this->playerCivText[slot]) this->playerCivText[slot]->set_active(1);
+        }
+
+        if (this->scenarioPlayerDrop[slot]) this->scenarioPlayerDrop[slot]->set_active(0);
+        if (this->scenarioPlayerText[slot]) this->scenarioPlayerText[slot]->set_active(0);
+    }
+
+    // Hide unused rows (beyond numberPlayers).
+    for (int row = num_players; row < 8; ++row) {
+        if (this->playerNameDrop[row]) this->playerNameDrop[row]->set_active(0);
+        if (this->playerNameText[row]) this->playerNameText[row]->set_active(0);
+        if (this->playerCivDrop[row]) this->playerCivDrop[row]->set_active(0);
+        if (this->playerCivText[row]) this->playerCivText[row]->set_active(0);
+        if (this->scenarioPlayerDrop[row]) this->scenarioPlayerDrop[row]->set_active(0);
+        if (this->scenarioPlayerText[row]) this->scenarioPlayerText[row]->set_active(0);
+        if (this->playerColor[row]) this->playerColor[row]->set_active(0);
+        if (this->playerColorText[row]) this->playerColorText[row]->set_active(0);
+        if (this->playerTeam[row]) this->playerTeam[row]->set_active(0);
+        if (this->playerTeamText[row]) this->playerTeamText[row]->set_active(0);
+        if (this->playerCDText[row]) this->playerCDText[row]->set_active(0);
+        if (this->playerVersionText[row]) this->playerVersionText[row]->set_active(0);
+    }
+
+    mps_fill_player_colors(this);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.asm @ 0x004A4190
+void TribeMPSetupScreen::updateSummary() {
+    if (rge_base_game == nullptr) {
+        return;
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+
+    char str1[256];
+    char str2[256];
+    char file_name[260];
+    char str3[256];
+    _finddata_t file_info;
+
+    str1[0] = '\0';
+    str2[0] = '\0';
+    file_name[0] = '\0';
+    str3[0] = '\0';
+
+    int reload = 0;
+    const int scenario_game = rge_base_game->scenarioGame();
+    const int prev_random = this->saveRandomGame;
+
+    if (scenario_game == 0) {
+        if (prev_random == 0) {
+            reload = 1;
+        }
+    } else {
+        if (prev_random == 0) {
+            if (strcmp(this->saveScenarioName, rge_base_game->scenarioName()) != 0) {
+                reload = 1;
+            }
+        } else {
+            reload = 1;
+        }
+    }
+
+    if (reload != 0) {
+        if (rge_base_game->scenarioGame() != 0) {
+            if (this->scenarioInfo != nullptr) {
+                delete this->scenarioInfo;
+                this->scenarioInfo = nullptr;
+            }
+
+            const char* scen_name = rge_base_game->scenarioName();
+            const char* scen_dir = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->scenario_dir : "";
+            sprintf(file_name, "%s%s.scn", scen_dir, scen_name ? scen_name : "");
+            if (_findfirst(file_name, &file_info) == -1) {
+                sprintf(str1, "%s.scx", scen_name ? scen_name : "");
+            } else {
+                sprintf(str1, "%s.scn", scen_name ? scen_name : "");
+            }
+
+            if (str1[0] != '.') {
+                this->scenarioInfo = (T_Scenario*)rge_base_game->get_scenario_info(str1, 0);
+            }
+
+            if (this->scenarioInfo == nullptr) {
+                rge_base_game->setScenarioGame(0);
+            } else {
+                for (int i = 0; i < 8; ++i) {
+                    if (this->scenarioPlayerDrop[i]) {
+                        this->scenarioPlayerDrop[i]->empty_list();
+                    }
+                }
+
+                this->settingsFixed = ((T_Scenario*)this->scenarioInfo)->any_sp_victory();
+                this->numberAnyPlayers = 0;
+                this->scenarioPlayerCount = 0;
+
+                for (int scen_player = 0; scen_player < 9; ++scen_player) {
+                    if (((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(scen_player) == 0) {
+                        continue;
+                    }
+
+                    this->scenarioPlayerCount = this->scenarioPlayerCount + 1;
+                    sprintf(str2, "%d", scen_player + 1);
+
+                    int allow_any = 0;
+                    if (rge_base_game->multiplayerGame() != 0) {
+                        allow_any = 1;
+                    } else if (rge_base_game->singlePlayerGame() != 0 &&
+                               ((RGE_Scenario*)this->scenarioInfo)->Get_player_Type(scen_player) == 1) {
+                        allow_any = 1;
+                    }
+
+                    if (allow_any != 0) {
+                        this->numberAnyPlayers = this->numberAnyPlayers + 1;
+                        for (int i = 0; i < 8; ++i) {
+                            if (this->scenarioPlayerDrop[i]) {
+                                this->scenarioPlayerDrop[i]->append_line(str2, scen_player);
+                            }
+                        }
+                    }
+                }
+
+                int scen_index = -1;
+                for (int slot = 0; slot < 8; ++slot) {
+                    int active = 0;
+                    do {
+                        scen_index = scen_index + 1;
+                        if (scen_index == 9) {
+                            scen_index = 0;
+                        }
+                        active = ((RGE_Scenario*)this->scenarioInfo)->Get_player_Active(scen_index);
+                    } while (active == 0);
+
+                    this->defaultColor[slot] = (unsigned char)(scen_index + 1);
+                    game->setScenarioPlayer(slot, scen_index);
+                    game->setPlayerColor(slot, (uint)this->defaultColor[slot]);
+                    rge_base_game->setPlayerTeam(slot, 1);
+                }
+            }
+        }
+
+        if (rge_base_game->randomGame() != 0) {
+            for (int i = 0; i < 8; ++i) {
+                if (this->scenarioPlayerDrop[i]) {
+                    this->scenarioPlayerDrop[i]->empty_list();
+                }
+            }
+
+            this->scenarioPlayerCount = 8;
+            this->numberAnyPlayers = 8;
+            this->settingsFixed = 0;
+
+            for (int i = 0; i < 8; ++i) {
+                this->defaultColor[i] = (unsigned char)(i + 1);
+                game->setScenarioPlayer(i, i);
+                game->setPlayerColor(i, (uint)this->defaultColor[i]);
+                rge_base_game->setPlayerTeam(i, 1);
+
+                sprintf(str2, "%d", (int)this->defaultColor[i]);
+                for (int drop = 0; drop < 8; ++drop) {
+                    if (this->scenarioPlayerDrop[drop]) {
+                        this->scenarioPlayerDrop[drop]->append_line(str2, i);
+                    }
+                }
+            }
+        }
+
+        if (rge_base_game->singlePlayerGame() != 0) {
+            this->setupSinglePlayerPlayers();
+        }
+
+        this->saveRandomGame = rge_base_game->randomGame();
+        if (this->saveRandomGame == 0) {
+            strncpy(this->saveScenarioName, rge_base_game->scenarioName(), sizeof(this->saveScenarioName) - 1);
+            this->saveScenarioName[sizeof(this->saveScenarioName) - 1] = '\0';
+        } else {
+            this->saveScenarioName[0] = '\0';
+        }
+
+        for (int i = 0; i < 8; ++i) {
+            this->scenarioCheckSum[i] = 0;
+        }
+
+        if (rge_base_game->scenarioGame() == 0) {
+            this->myScenarioChecksum = 0;
+        } else {
+            const char* scen_name = rge_base_game->scenarioName();
+            const char* scen_dir = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->scenario_dir : "";
+            sprintf(file_name, "%s%s.scn", scen_dir, scen_name ? scen_name : "");
+            if (_findfirst(file_name, &file_info) == -1) {
+                sprintf(file_name, "%s.scx", scen_name ? scen_name : "");
+            } else {
+                sprintf(file_name, "%s.scn", scen_name ? scen_name : "");
+            }
+            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name);
+        }
+    }
+
+    for (int i = 0; i < 20; ++i) {
+        if (this->settingText[i]) {
+            this->settingText[i]->set_active(0);
+        }
+    }
+
+    // Scenario name line + base index.
+    int base_index = 1;
+    if (rge_base_game->scenarioGame() == 0) {
+        const int scen_resid = (game->deathMatch() != 0) ? 0x2617 : 0x25b5;
+        mps_get_string_safe(this, scen_resid, "Random Map", str1, sizeof(str1));
+        mps_get_string_safe(this, 0x25ed, "Scenario: %s", str2, sizeof(str2));
+        snprintf(str3, sizeof(str3), str2, str1);
+        str3[sizeof(str3) - 1] = '\0';
+        mps_set_text(this->scenarioName, str3);
+        base_index = 1;
+    } else {
+        mps_get_string_safe(this, 0x25ed, "Scenario: %s", str2, sizeof(str2));
+        snprintf(str3, sizeof(str3), str2, rge_base_game->scenarioName());
+        str3[sizeof(str3) - 1] = '\0';
+        mps_set_text(this->scenarioName, str3);
+        base_index = 3;
+    }
+
+    int idx = base_index;
+
+    // Random-map-only entries.
+    if (rge_base_game->randomGame() != 0) {
+        char value[256];
+        char fmt[256];
+        char line[320];
+
+        const int map_size_resid = mps_map_size_resid((int)game->tribe_game_options.mapSizeValue);
+        mps_get_string_safe(this, (map_size_resid >= 0) ? map_size_resid : 0x2975, "Medium", value, sizeof(value));
+        mps_get_string_safe(this, 0x25da, "Map Size: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+
+        const int map_type_resid = mps_map_type_resid((int)game->tribe_game_options.mapTypeValue);
+        mps_get_string_safe(this, (map_type_resid >= 0) ? map_type_resid : 0x296d, "Mostly Land", value, sizeof(value));
+        mps_get_string_safe(this, 0x25b6, "Map Type: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Players.
+    {
+        char fmt[256];
+        char line[320];
+        int max_players = (rge_base_game->scenarioGame() != 0) ? this->scenarioPlayerCount : 8;
+        if (max_players < 2 || max_players > 8) {
+            max_players = 8;
+        }
+        const int players = mps_clamp((int)rge_base_game->rge_game_options.numberPlayersValue, 2, max_players);
+        mps_get_string_safe(this, 0x25b7, "Players:", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), "%s %d", fmt, players);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Victory.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        const int victory_type = (int)game->tribe_game_options.victoryTypeValue;
+        mps_get_string_safe(this, mps_victory_resid(victory_type), "Standard", value, sizeof(value));
+        if (victory_type == 2 || victory_type == 3) {
+            mps_get_string_safe(this, 0x25be, "Victory: %s (%d)", fmt, sizeof(fmt));
+            snprintf(line, sizeof(line), fmt, value, (int)game->tribe_game_options.victoryAmountValue);
+        } else {
+            mps_get_string_safe(this, 0x25bc, "Victory: %s", fmt, sizeof(fmt));
+            snprintf(line, sizeof(line), fmt, value);
+        }
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Age.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        int age_resid = 0x10e7;
+        if ((int)game->tribe_game_options.startingAgeValue == 5) {
+            age_resid = 0x106e;
+        } else if ((int)game->tribe_game_options.startingAgeValue > 0) {
+            age_resid = 0x1067 + (int)game->tribe_game_options.startingAgeValue;
+        }
+        mps_get_string_safe(this, age_resid, "Default", value, sizeof(value));
+        mps_get_string_safe(this, 0x25e4, "Age: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Resources.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        if ((int)game->tribe_game_options.resourceLevelValue == 0) {
+            mps_get_string_safe(this, 0x10e7, "Default", value, sizeof(value));
+        } else {
+            mps_get_string_safe(this, 0x25e5 + (int)game->tribe_game_options.resourceLevelValue, "Default", value, sizeof(value));
+        }
+        mps_get_string_safe(this, 0x25e5, "Resources: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Difficulty.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        mps_get_string_safe(this, 0x2bd0 + (int)rge_base_game->rge_game_options.difficultyValue, "Hardest", value, sizeof(value));
+        mps_get_string_safe(this, 0x25e0, "Difficulty Level: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Fixed Positions.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        mps_get_string_safe(this, game->tribe_game_options.randomizePositionsValue ? 0xfa4 : 0xfa3,
+            game->tribe_game_options.randomizePositionsValue ? "No" : "Yes", value, sizeof(value));
+        mps_get_string_safe(this, 0x25e9, "Fixed Positions: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Reveal Map.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        mps_get_string_safe(this, rge_base_game->rge_game_options.fullVisibilityValue ? 0xfa3 : 0xfa4,
+            rge_base_game->rge_game_options.fullVisibilityValue ? "Yes" : "No", value, sizeof(value));
+        mps_get_string_safe(this, 0x25b8, "Reveal Map: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Full Tech Tree.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        mps_get_string_safe(this, game->tribe_game_options.fullTechTreeValue ? 0xfa3 : 0xfa4,
+            game->tribe_game_options.fullTechTreeValue ? "Yes" : "No", value, sizeof(value));
+        mps_get_string_safe(this, 0x25ec, "Full Tech Tree: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Enable Cheating (multiplayer only).
+    if (rge_base_game->multiplayerGame() != 0) {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        const int allow = (int)rge_base_game->rge_game_options.allowCheatCodesValue;
+        mps_get_string_safe(this, allow ? 0xfa3 : 0xfa4, allow ? "Yes" : "No", value, sizeof(value));
+        mps_get_string_safe(this, 0x25bb, "Enable Cheating: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Path Finding.
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        const unsigned char pf = (rge_base_game->multiplayerGame() != 0) ? rge_base_game->mpPathFinding() : rge_base_game->pathFinding();
+        mps_get_string_safe(this, 0x260e + (int)pf, "Medium", value, sizeof(value));
+        mps_get_string_safe(this, 0x25f1, "Path Finding: %s", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, value);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    // Population limit.
+    {
+        char fmt[256];
+        char line[320];
+        mps_get_string_safe(this, 0x25f0, "Population Limit: %d", fmt, sizeof(fmt));
+        snprintf(line, sizeof(line), fmt, (int)game->tribe_game_options.popLimitValue);
+        line[sizeof(line) - 1] = '\0';
+        mps_set_text(this->settingText[idx], line);
+        if (this->settingText[idx]) this->settingText[idx]->set_active(1);
+        ++idx;
+    }
+
+    if (rge_base_game->singlePlayerGame() != 0) {
+        const int show_number_players =
+            (rge_base_game->scenarioGame() == 0) || ((this->settingsFixed == 0) && (2 < this->scenarioPlayerCount));
+        if (this->numberPlayersTitle) {
+            this->numberPlayersTitle->set_active(show_number_players);
+        }
+        if (this->numberPlayersDrop) {
+            this->numberPlayersDrop->set_active(show_number_players);
+        }
+    }
+
+    this->fillPlayers();
+}
 
 TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen") {
     CUSTOM_DEBUG_BEGIN
@@ -1260,19 +1959,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_LOG("MPS ctor: controls created, refreshing ui");
     CUSTOM_DEBUG_END
 
-    mps_refresh_ui(this);
-    
-    // Initialize single player settings (multiplayerGameValue == 0 means single player)
-    if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
-        CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("MPS ctor: single-player init begin");
-        CUSTOM_DEBUG_END
-        setupSinglePlayerPlayers(this);
-        fillPlayers(this);
-        CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("MPS ctor: single-player init done");
-        CUSTOM_DEBUG_END
-    }
+    this->updateSummary();
 
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("MPS ctor: complete");
@@ -1711,7 +2398,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
                 int color_id = (int)mps_button_state_id(this->playerColor[i]);
                 color_id = mps_clamp(color_id, 1, 8);
                 game->setPlayerColor(i, color_id);
-                mps_refresh_ui(this);
+                this->fillPlayers();
                 return 1;
             }
         }
@@ -1721,7 +2408,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
             if ((TButtonPanel*)param_1 == this->playerTeam[i]) {
                 int state = mps_button_state_index(this->playerTeam[i]);
                 rge_base_game->setPlayerTeam(i, state + 1);
-                mps_refresh_ui(this);
+                this->fillPlayers();
                 return 1;
             }
         }
@@ -1787,9 +2474,11 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
     if (param_1 && param_1->panelNameValue != nullptr) {
         if (strcmp(param_1->panelNameValue, "Game Settings Screen") == 0) {
             if (param_2 != 0) {
-                // OK: update summary for SP (decomp: updateSummary + sync game options)
-                // TODO: updateSummary(this) when implemented
-                // SP: no game option sync needed (decomp checks singlePlayerGame)
+                this->updateSummary();
+                if (rge_base_game && rge_base_game->singlePlayerGame() == 0) {
+                    rge_base_game->send_game_options();
+                    this->resend_game_options = 0;
+                }
             }
             // Both OK and Cancel: return to MP Setup Screen
             panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
@@ -1808,7 +2497,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
             }
             selected_id = mps_clamp((int)selected_id, 2, max_players);
             rge_base_game->setNumberPlayers(selected_id);
-            fillPlayers(this);
+            this->updateSummary();
             return 1;
         }
         
@@ -1819,7 +2508,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
                 if (selected_civ >= 1 && selected_civ <= 17) {
                     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
                     game->setCivilization(i, selected_civ);
-                    fillPlayers(this);
+                    this->fillPlayers();
                 }
                 return 1;
             }
@@ -1834,7 +2523,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
                     long selected_humanity = this->playerNameDrop[i]->get_id();
                     comm_handler->SetPlayerHumanity((uint)(i + 1), (int)selected_humanity);
                 }
-                fillPlayers(this);
+                this->fillPlayers();
                 return 1;
             }
         }
