@@ -418,8 +418,42 @@ void TPanel::set_redraw(RedrawMode param_1) {
     }
 }
 void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) {
-    // TODO: implement per panel.cpp.decomp @ 0x00464E80
-    (void)param_1; (void)param_2; (void)param_3;
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464F20
+    // Redraw any higher-z siblings that overlap the invalidated panel rect.
+    const long this_left = param_1->clip_rect.left;
+    const long this_top = param_1->clip_rect.top;
+    const long this_right = param_1->clip_rect.right;
+    const long this_bottom = param_1->clip_rect.bottom;
+
+    for (PanelNode* node = this->first_child_node; node != nullptr; node = node->next_node) {
+        TPanel* panel = node->panel;
+        if (panel == param_1 || panel == param_2) {
+            continue;
+        }
+
+        if (param_1->z_order >= panel->z_order) {
+            continue;
+        }
+
+        const long p_left = panel->clip_rect.left;
+        const long p_top = panel->clip_rect.top;
+        const long p_right = panel->clip_rect.right;
+        const long p_bottom = panel->clip_rect.bottom;
+
+        const int x_overlap =
+            (((p_left <= this_left) && (this_left <= p_right)) ||
+             ((p_left <= this_right) && (this_right <= p_right)) ||
+             ((this_left < p_left) && (p_right < this_right)));
+
+        const int y_overlap =
+            (((p_top <= this_top) && (this_top <= p_bottom)) ||
+             ((p_top <= this_bottom) && (this_bottom <= p_bottom)) ||
+             ((this_top < p_top) && (p_bottom < this_bottom)));
+
+        if (x_overlap && y_overlap) {
+            panel->set_redraw(param_3);
+        }
+    }
 }
 void TPanel::draw_setup(int param_1) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_setup`).
@@ -1063,10 +1097,24 @@ void TPanel::set_focus(int param_1) {
     }
 }
 void TPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {
-    // TODO: implement per panel.cpp.decomp
-    (void)param_1; (void)param_2;
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466650
+    this->tab_prev_panel = param_1;
+    this->tab_next_panel = param_2;
+    this->tab_stop = 1;
 }
-void TPanel::set_tab_order(TPanel** param_1, short param_2) {}
+void TPanel::set_tab_order(TPanel** param_1, short param_2) {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466600
+    int count = (int)param_2;
+    if (count <= 0) {
+        return;
+    }
+
+    for (int i = 0; i < count; ++i) {
+        TPanel* prev = (i == 0) ? param_1[count - 1] : param_1[i - 1];
+        TPanel* next = (i == count - 1) ? param_1[0] : param_1[i + 1];
+        param_1[i]->set_tab_order(prev, next);
+    }
+}
 uchar TPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004668D0
     if ((this->active != 0) && (this->is_inside(param_3, param_4) != 0)) {
