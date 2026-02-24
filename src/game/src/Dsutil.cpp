@@ -472,9 +472,63 @@ int WaveCloseReadFile(HMMIO* phmmio, tWAVEFORMATEX** ppwfx) {
 // ============================================================================
 // Offset: 0x00448080
 int WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, tWAVEFORMATEX* pwfxDest, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF) {
-    // TODO: Decompilation failed in Ghidra. Stub for now.
-    // This function creates a new WAV file for writing. Not critical for playback.
-    return 0xE100;
+    // Fully verified. Source of truth: dsutil.cpp.asm @ 0x00448080
+    *phmmioOut = mmioOpenA(pszFileName, nullptr, MMIO_WRITE | MMIO_CREATE | MMIO_ALLOCBUF);
+    if (*phmmioOut == nullptr) {
+        return 0xE104; // ERROR_CANNOT_WRITE
+    }
+
+    pckOutRIFF->cksize = 0;
+    pckOutRIFF->fccType = mmioFOURCC('W','A','V','E');
+    int mmr = mmioCreateChunk(*phmmioOut, pckOutRIFF, MMIO_CREATERIFF);
+    if (mmr != 0) {
+        return mmr;
+    }
+
+    pckOut->ckid = mmioFOURCC('f','m','t',' ');
+    pckOut->cksize = 0x10;
+    mmr = mmioCreateChunk(*phmmioOut, pckOut, 0);
+    if (mmr != 0) {
+        return mmr;
+    }
+
+    if (pwfxDest->wFormatTag == 1) {
+        int wrote = mmioWrite(*phmmioOut, (HPSTR)pwfxDest, 0x10);
+        if (wrote != 0x10) {
+            return 0xE104;
+        }
+    } else {
+        unsigned int cb = (unsigned int)(unsigned short)pwfxDest->cbSize + 0x12;
+        int wrote = mmioWrite(*phmmioOut, (HPSTR)pwfxDest, (int)cb);
+        if (wrote != (int)cb) {
+            return 0xE104;
+        }
+    }
+
+    mmr = mmioAscend(*phmmioOut, pckOut, 0);
+    if (mmr != 0) {
+        return mmr;
+    }
+
+    MMCKINFO ckFact;
+    ckFact.ckid = mmioFOURCC('f','a','c','t');
+    ckFact.cksize = 0;
+    mmr = mmioCreateChunk(*phmmioOut, &ckFact, 0);
+    if (mmr != 0) {
+        return mmr;
+    }
+
+    DWORD dwFactChunk;
+    int wroteFact = mmioWrite(*phmmioOut, (HPSTR)&dwFactChunk, sizeof(DWORD));
+    if (wroteFact != sizeof(DWORD)) {
+        return 0xE104;
+    }
+
+    if (mmioAscend(*phmmioOut, &ckFact, 0) != 0) {
+        return 0xE104;
+    }
+
+    return 0;
 }
 
 // ============================================================================
