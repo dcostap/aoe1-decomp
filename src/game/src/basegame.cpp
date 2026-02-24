@@ -16,6 +16,7 @@
 #include "../include/TDigital.h"
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Map.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
@@ -714,8 +715,57 @@ CUSTOM_DEBUG_END
 }
 
 int RGE_Base_Game::check_for_cd(int p1) {
-    // TODO: implement logic from 0x0041FD40
-    return 1;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041FC90
+    if (this->prog_info->verify_cd == 0) {
+        return 1;
+    }
+
+    if (p1 > 0) {
+        int iVar4 = 0;
+        uint uVar5 = 0;
+        uint uVar1 = 0;
+        do {
+            uVar1 = uVar5 + 1;
+            int iVar2 = this->comm_handler->GetPlayerHumanity(uVar1);
+            if (iVar2 == 2) {
+                iVar2 = this->playerHasCD((int)uVar5);
+                if (iVar2 != 0) {
+                    iVar4 = iVar4 + 1;
+                }
+            }
+            uVar5 = uVar1;
+        } while ((int)uVar1 < 9);
+        return (uint)(p1 <= this->prog_info->max_players_per_cd * iVar4);
+    }
+
+    if (force_cd != 0) {
+        return 1;
+    }
+
+    char* pcVar3 = this->registry->RegGetAscii(0, "CDPath");
+    if (pcVar3 == nullptr) {
+        return 0;
+    }
+
+    int iVar4 = GetDriveTypeA(pcVar3);
+    if (iVar4 != 5) {
+        return 0;
+    }
+
+    unsigned long vol_ser_num = 0;
+    unsigned long file_sys_flags = 0;
+    unsigned long max_comp_len = 0;
+    char vol_name[256];
+    char file_sys_name[256];
+
+    int ok = GetVolumeInformationA(
+        pcVar3, vol_name, 0x100, &vol_ser_num, &max_comp_len, &file_sys_flags, file_sys_name, 0x100);
+    if (ok == 0) {
+        return 0;
+    }
+
+    iVar4 = stricmp(vol_name, this->prog_info->vol_name);
+    return (uint)(iVar4 == 0);
 }
 
 void RGE_Base_Game::set_mouse_cursor(void* p1) {
@@ -1015,15 +1065,11 @@ void RGE_Base_Game::set_game_mode(int p1, int p2) {
     this->sub_game_mode = p2;
 }
 void RGE_Base_Game::set_player(short p1) {
-    // ASM 0x00420150: Sets world->curr_player and clears map view info
-    // NOTE: From basegame.cpp.asm analysis, this checks player_num before assignment
-    if (this->world) {
-        // ASM shows this writes to [world + 0x7C] which is curr_player
-        this->world->curr_player = p1;
-        if (this->world->map) {
-            // TODO: implement clear_map_view_info when RGE_Map is available
-            // this->world->map->clear_map_view_info();
-        }
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420150
+    RGE_Game_World* pWorld = this->world;
+    if ((pWorld != nullptr) && (p1 < pWorld->player_num)) {
+        pWorld->curr_player = p1;
+        this->world->map->clear_map_view_info();
     }
 }
 char* RGE_Base_Game::get_string(long p1, char* p2, int p3) { 
@@ -2321,6 +2367,11 @@ float RGE_Base_Game::get_game_speed() {
 unsigned char RGE_Base_Game::playerVersion(int index) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224C0
     return (unsigned char)(this->rge_game_options.playerCDAndVersionValue[index] >> 1);
+}
+
+int RGE_Base_Game::playerHasCD(int index) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224A0
+    return this->rge_game_options.playerCDAndVersionValue[index] & 1;
 }
 
 int RGE_Base_Game::playerTeam(int index) {

@@ -12,6 +12,7 @@ RGE_Base_Game* rge_base_game = nullptr;
 TDebuggingLog* L = nullptr;
 int do_draw_log = 0;
 int safe_draw_log = 0;
+unsigned char do_color_log = 0;
 char draw_log_name[260] = {0};
 FILE* draw_log = nullptr;
 HINSTANCE StringTable = nullptr;
@@ -56,6 +57,7 @@ int MouseCursorInChildContol = 0;
 int DDSys_CanColorFill = 1;
 int no_other_humans_count = 0;
 int all_cp = 0;
+int force_cd = 0;
 int numberPathingIterations = 2500; // default per decomp (0x9c4)
 int useComputerPlayers = 1; // default per ASM (= 1h)
 int show_timing_max = 0;
