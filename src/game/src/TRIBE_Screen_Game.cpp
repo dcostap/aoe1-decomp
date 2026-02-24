@@ -176,7 +176,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         return;
     }
 
-    if (!this->setup(rge_base_game->draw_area, (char*)0, -1, 0)) {
+    // Fully verified. Source of truth: scr_game.cpp.asm @ 0x004940BF..0x004940DC
+    if (!this->setup(rge_base_game->draw_area, (char*)"scr6", 0xC388, 1)) {
         this->error_code = 1;
         return;
     }
@@ -251,7 +252,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
     // NOTE: the view pipeline now owns main in-game render via runtime.main_view.
 
-    // Constructor resource parity (partial): load button art assets up front.
+    // Fully verified. Source of truth: scr_game.cpp.asm @ 0x004940FC..0x0049427F
     this->runtime.button_unit_pic = load_shape_checked("btnunit.shp", 0xC62A);
     if (this->runtime.button_unit_pic == nullptr) {
         this->error_code = 1;
@@ -282,54 +283,60 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
     }
 
-    // Constructor resource parity (partial): create panel objects that scr_game owns/destructs.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049437E..0x004946E7
     RGE_Font* font11 = rge_base_game->get_font(0x0B);
     RGE_Font* font7 = rge_base_game->get_font(7);
     TDigital* button_sound = rge_base_game->get_sound(1);
-    TRIBE_Player* player = nullptr;
-    if (this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
-        int curr = (int)this->runtime.world->curr_player;
-        if (curr >= 0) {
-            player = (TRIBE_Player*)this->runtime.world->players[curr];
-        }
+    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+
+    if (font11 == nullptr || font7 == nullptr) {
+        this->error_code = 1;
+        return;
     }
 
-    if (font11 != nullptr) {
-        this->runtime.inven_panel = new TRIBE_Panel_Inven(this->render_area, this, font11->font, player);
-        if (this->runtime.inven_panel != nullptr && this->runtime.inven_panel->error_code != 0) {
-            delete_panel_safe((TPanel*&)this->runtime.inven_panel);
-        }
+    this->runtime.inven_panel = new TRIBE_Panel_Inven(this->render_area, this, font11->font, player);
+    if (this->runtime.inven_panel == nullptr || this->runtime.inven_panel->error_code != 0) {
+        this->error_code = 1;
+        return;
     }
+    this->runtime.inven_panel->set_help_info(0x4E25, -1);
 
-    if (font7 != nullptr) {
-        this->runtime.object_panel = new TRIBE_Panel_Object(
-            this->render_area,
-            this,
-            font7->font,
-            font7->font_wid,
-            font7->font_hgt,
-            this->runtime.button_unit_pic,
-            this->runtime.button_bldg_pics,
-            player);
-        if (this->runtime.object_panel != nullptr && this->runtime.object_panel->error_code != 0) {
-            delete_panel_safe((TPanel*&)this->runtime.object_panel);
-        }
+    this->runtime.object_panel = new TRIBE_Panel_Object(
+        this->render_area,
+        this,
+        font7->font,
+        font7->font_wid,
+        font7->font_hgt,
+        this->runtime.button_unit_pic,
+        this->runtime.button_bldg_pics,
+        player);
+    if (this->runtime.object_panel == nullptr || this->runtime.object_panel->error_code != 0) {
+        this->error_code = 1;
+        return;
     }
+    this->runtime.object_panel->set_help_info(0x19BB8, 0x265AC);
 
-    this->runtime.time_panel = new TRIBE_Panel_Time(this->render_area, this);
-    if (this->runtime.time_panel != nullptr && this->runtime.time_panel->error_code != 0) {
-        delete_panel_safe((TPanel*&)this->runtime.time_panel);
+    this->runtime.time_panel = new TRIBE_Panel_Time(this->render_area, this->runtime.main_view);
+    if (this->runtime.time_panel == nullptr || this->runtime.time_panel->error_code != 0) {
+        this->error_code = 1;
+        return;
     }
-    this->runtime.pop_panel = new TRIBE_Panel_Pop(this->render_area, this);
-    if (this->runtime.pop_panel != nullptr && this->runtime.pop_panel->error_code != 0) {
-        delete_panel_safe((TPanel*&)this->runtime.pop_panel);
+    this->runtime.time_panel->set_active(0);
+
+    this->runtime.pop_panel = new TRIBE_Panel_Pop(this->render_area, this->runtime.main_view);
+    if (this->runtime.pop_panel == nullptr || this->runtime.pop_panel->error_code != 0) {
+        this->error_code = 1;
+        return;
     }
+    this->runtime.pop_panel->set_active(0);
 
     for (int i = 0; i < 10; ++i) {
-        this->runtime.countdown_clock[i] = new TRIBE_Panel_Time(this->render_area, this);
-        if (this->runtime.countdown_clock[i] != nullptr && this->runtime.countdown_clock[i]->error_code != 0) {
-            delete_panel_safe((TPanel*&)this->runtime.countdown_clock[i]);
+        this->runtime.countdown_clock[i] = new TRIBE_Panel_Time(this->render_area, this->runtime.main_view);
+        if (this->runtime.countdown_clock[i] == nullptr || this->runtime.countdown_clock[i]->error_code != 0) {
+            this->error_code = 1;
+            return;
         }
+        this->runtime.countdown_clock[i]->set_active(0);
     }
 
     if (font11 != nullptr) {
@@ -432,6 +439,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             return;
         }
         this->runtime.text_line_panel->set_justification(0, 2, 1);
+        ((RGE_View*)this->runtime.main_view)->message_panel = this->runtime.text_line_panel;
     }
 
     if (this->create_text(

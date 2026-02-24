@@ -439,26 +439,70 @@ RGE_Base_Game::~RGE_Base_Game() {
     CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor end");
 }
 
-// TODO: STUB - Stubs for now
-void RGE_Base_Game::setVersion(float p1) { rge_game_options.versionValue = p1; }
-void RGE_Base_Game::setScenarioGame(int p1) { rge_game_options.scenarioGameValue = p1; }
-void RGE_Base_Game::setCampaignGame(int p1) { campaignGameValue = p1; } 
-void RGE_Base_Game::setSavedGame(int p1) { savedGameValue = p1; }
-void RGE_Base_Game::setSinglePlayerGame(int p1) { rge_game_options.singlePlayerGameValue = p1; }
-void RGE_Base_Game::setMultiplayerGame(int p1) { rge_game_options.multiplayerGameValue = p1; }
-void RGE_Base_Game::setMapSize(int p1, int p2, int p3) { 
-    rge_game_options.mapXSizeValue = p1; 
-    rge_game_options.mapYSizeValue = p2; 
-    rge_game_options.mapZSizeValue = p3; 
+void RGE_Base_Game::setVersion(float p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004226C0
+    rge_game_options.versionValue = p1;
 }
-void RGE_Base_Game::setAllowCheatCodes(int p1) { rge_game_options.allowCheatCodesValue = p1; }
-void RGE_Base_Game::setCheatNotification(int p1) { rge_game_options.cheatNotificationValue = p1; }
-void RGE_Base_Game::setFullVisibility(int p1) { rge_game_options.fullVisibilityValue = p1; }
-void RGE_Base_Game::setFogOfWar(int p1) { rge_game_options.fogOfWarValue = p1; }
-void RGE_Base_Game::setColoredChat(int p1) { rge_game_options.coloredChatValue = p1; }
-void RGE_Base_Game::setGameDeveloperMode(int p1) { rge_game_options.gameDeveloperModeValue = p1; }
-void RGE_Base_Game::setDifficulty(int p1) { rge_game_options.difficultyValue = p1; }
-void RGE_Base_Game::setPlayerCDAndVersion(int p1, int p2) { rge_game_options.playerCDAndVersionValue[p1] = p2; }
+void RGE_Base_Game::setScenarioGame(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004226B0
+    rge_game_options.scenarioGameValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setCampaignGame(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422700
+    campaignGameValue = p1;
+}
+void RGE_Base_Game::setSavedGame(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422710
+    savedGameValue = p1;
+}
+void RGE_Base_Game::setSinglePlayerGame(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422720
+    rge_game_options.singlePlayerGameValue = (unsigned char)p1;
+    rge_game_options.multiplayerGameValue = (unsigned char)(p1 == 0);
+}
+void RGE_Base_Game::setMultiplayerGame(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422740
+    rge_game_options.multiplayerGameValue = (unsigned char)p1;
+    rge_game_options.singlePlayerGameValue = (unsigned char)(p1 == 0);
+}
+void RGE_Base_Game::setMapSize(int p1, int p2, int p3) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422760
+    rge_game_options.mapXSizeValue = (unsigned char)p1;
+    rge_game_options.mapYSizeValue = (unsigned char)p2;
+    rge_game_options.mapZSizeValue = (unsigned char)p3;
+}
+void RGE_Base_Game::setAllowCheatCodes(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422790
+    rge_game_options.allowCheatCodesValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setCheatNotification(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004227A0
+    rge_game_options.cheatNotificationValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setFullVisibility(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004227B0
+    rge_game_options.fullVisibilityValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setFogOfWar(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004227C0
+    rge_game_options.fogOfWarValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setColoredChat(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004227D0
+    rge_game_options.coloredChatValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setGameDeveloperMode(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004227F0
+    rge_game_options.gameDeveloperModeValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setDifficulty(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422870
+    rge_game_options.difficultyValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setPlayerCDAndVersion(int p1, int p2) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422850
+    rge_game_options.playerCDAndVersionValue[p1] = (unsigned char)p2;
+}
 void RGE_Base_Game::setPlayerHasCD(int p1, int p2) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422800
     uchar value = rge_game_options.playerCDAndVersionValue[p1];
@@ -471,11 +515,27 @@ void RGE_Base_Game::setPlayerVersion(int p1, int p2) {
     value = (uchar)(((uchar)p2 << 1) | (value & 0x01));
     rge_game_options.playerCDAndVersionValue[p1] = value;
 }
-void RGE_Base_Game::setPlayerTeam(int p1, int p2) { rge_game_options.playerTeamValue[p1] = p2; }
-void RGE_Base_Game::setPathFinding(unsigned char p1) { pathFindingValue = p1; }
-void RGE_Base_Game::setMpPathFinding(unsigned char p1) { rge_game_options.mpPathFindingValue = p1; }
-void RGE_Base_Game::setNumberPlayers(int p1) { rge_game_options.numberPlayersValue = p1; }
-void RGE_Base_Game::setScenarioName(char* p1) { strncpy(rge_game_options.scenarioNameValue, p1, 127); }
+void RGE_Base_Game::setPlayerTeam(int p1, int p2) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422880
+    rge_game_options.playerTeamValue[p1] = (unsigned char)p2;
+}
+void RGE_Base_Game::setPathFinding(unsigned char p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004228A0
+    pathFindingValue = p1;
+}
+void RGE_Base_Game::setMpPathFinding(unsigned char p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004228B0
+    rge_game_options.mpPathFindingValue = p1;
+}
+void RGE_Base_Game::setNumberPlayers(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004227E0
+    rge_game_options.numberPlayersValue = (unsigned char)p1;
+}
+void RGE_Base_Game::setScenarioName(char* p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004226D0
+    strncpy(rge_game_options.scenarioNameValue, p1, 0x80);
+    rge_game_options.scenarioNameValue[0x7f] = '\0';
+}
 
 int RGE_Base_Game::setup_registry() {
     if (this->prog_info) {
@@ -1642,17 +1702,12 @@ void* RGE_Base_Game::create_font(void* dc, int id1, int id2) {
 }
 
 int RGE_Base_Game::setup_fonts() {
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041F560
+    this->font_num = 12;
     this->fonts = (RGE_Font*)calloc(12, sizeof(RGE_Font));
     if (!this->fonts) return 0;
-    this->font_num = 12;
 
-    HDC hdc = nullptr;
-    int use_draw_area_dc = 0;
-    if (this->draw_area) {
-        hdc = (HDC)this->draw_area->GetDc((char*)"basegame::setup_fonts");
-        if (hdc) use_draw_area_dc = 1;
-    }
-    if (!hdc) hdc = GetDC((HWND)this->prog_window);
+    HDC hdc = (HDC)this->draw_area->GetDc((char*)"basegame::setup_fonts");
     if (!hdc) return 0;
     
     for (int i = 0; i < 12; i++) {
@@ -1683,17 +1738,13 @@ int RGE_Base_Game::setup_fonts() {
             HGDIOBJ old_font = SelectObject(hdc, (HFONT)this->fonts[i].font);
             TEXTMETRICA tm;
             GetTextMetricsA(hdc, &tm);
-            // Source of truth note: `basegame.cpp.decomp` points at `tmMaxCharWidth` for width.
-            this->fonts[i].font_wid = tm.tmMaxCharWidth;
-            // TODO(asm-parity): field mapping in the decomp is noisy here; this line-height formula
-            // may still differ from original and can be revisited with tighter stack-var mapping.
+            this->fonts[i].font_wid = tm.tmAveCharWidth;
             this->fonts[i].font_hgt = tm.tmHeight + tm.tmExternalLeading;
-            if (old_font) SelectObject(hdc, old_font);
+            SelectObject(hdc, old_font);
         }
     }
 
-    if (use_draw_area_dc) this->draw_area->ReleaseDc((char*)"basegame::setup_fonts");
-    else ReleaseDC((HWND)this->prog_window, hdc);
+    this->draw_area->ReleaseDc((char*)"basegame::setup_fonts");
     return 1;
 }
 

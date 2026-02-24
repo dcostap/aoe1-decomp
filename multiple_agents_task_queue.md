@@ -1090,8 +1090,8 @@ Status note: landed as commit `f65d843` and merged via `0c42cb5`.
 Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 
 ## Task 103 — Rendering: finish `RGE_Color_Table` parity (color)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove the remaining “best-effort” implementation note and restore full `color.cpp` parity so color translation/shadow tables and serialization behavior match the original engine.
 - Implement: complete the remaining `RGE_Color_Table` methods present in `color.cpp` (constructors, destructor, `save(int fd)`, and any helper routines referenced by call sites).
 - Where: `src/game/src/RGE_Color_Table.cpp` (+ `src/game/include/RGE_Color_Table.h` only if declarations are missing; do not change member layout/size asserts).
@@ -1100,9 +1100,11 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
   - The file-level `// TODO(accuracy)` note is no longer true (remaining methods are transliterated, and completed methods have verified markers).
   - Build remains clean without adding new placeholder stubs.
 
+Status note: landed as commit `dc8ceb3` and merged via `f94db69`.
+
 ## Task 104 — UI follow-up: remove remaining `Panel_ez.cpp` “best-effort” blocks (prepare_for_close/draw_background)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: finish the remaining `TEasy_Panel` parity so screens relying on TEasy_Panel behave consistently and the file no longer needs “best-effort” caveats.
 - Implement: audit and transliterate the remaining sections guarded by TODO(accuracy) in `Panel_ez.cpp`, especially:
   - `prepare_for_close` behavior.
@@ -1112,38 +1114,46 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 - Source of truth: `src/game/decomp/panel_ez.cpp.decomp` + `src/game/decomp/panel_ez.cpp.asm`.
 - Done when: the TODO(accuracy) markers in `Panel_ez.cpp` are removed (or replaced with fully verified markers) and build remains clean.
 
+Status note: landed as commit `6b82a05` and merged via `d5064b0`.
+
 ## Task 105 — UI follow-up: finish `TInputPanel` TODO(accuracy) blocks (pnl_inp)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove remaining “best-effort transliteration” sections in `TInputPanel` so input handling matches decomp precisely.
 - Implement: audit and finish the methods currently tagged TODO(accuracy) in `src/game/src/Pnl_inp.cpp` (offsets are already referenced inline in the file).
 - Where: `src/game/src/Pnl_inp.cpp`.
 - Source of truth: `src/game/decomp/pnl_inp.cpp.decomp` + `src/game/decomp/pnl_inp.cpp.asm`.
 - Done when: all TODO(accuracy) markers in `Pnl_inp.cpp` are removed (or replaced with fully verified markers) and build remains clean.
 
+Status note: landed as commit `0a94237` and merged via `d8ec0f5`.
+
 ## Task 106 — UI follow-up: finish `TEditPanel` TODO(accuracy) blocks (pnl_edit)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove remaining “best-effort transliteration” sections in `TEditPanel` so edit behavior matches decomp precisely.
 - Implement: audit and finish the methods currently tagged TODO(accuracy) in `src/game/src/Pnl_edit.cpp` (offsets are already referenced inline in the file).
 - Where: `src/game/src/Pnl_edit.cpp`.
 - Source of truth: `src/game/decomp/pnl_edit.cpp.decomp` + `src/game/decomp/pnl_edit.cpp.asm`.
 - Done when: all TODO(accuracy) markers in `Pnl_edit.cpp` are removed (or replaced with fully verified markers) and build remains clean.
 
+Status note: landed as commit `4c25053` and merged via `5231468`.
+
 ## Task 107 — UI follow-up: finish `Pnl_txt.cpp` credits-related TODO(accuracy) blocks (scr_cred)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: eliminate the remaining credits-screen “best-effort” code paths by matching the original credits text logic.
 - Implement: audit and finish the `Pnl_txt.cpp` methods currently tagged TODO(accuracy) (they reference `scr_cred.cpp` offsets inline).
 - Where: `src/game/src/Pnl_txt.cpp`.
 - Source of truth: `src/game/decomp/scr_cred.cpp.decomp` + `src/game/decomp/scr_cred.cpp.asm` (and `src/game/decomp/pnl_txt.cpp.decomp`/`.asm` where needed for the underlying panel behavior).
 - Done when: the TODO(accuracy) markers in `Pnl_txt.cpp` are removed (or replaced with fully verified markers) and build remains clean.
 
+Status note: landed as commit `fa9531a` and merged via `ee8167d`.
+
 ---
 
 ## Task 108 — UI/screen: restore `TRIBE_Mission_Screen` parity (mission dialog)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: replace the current best-effort mission dialog screen so the post-intro mission/instructions screen matches decomp behavior and screen teardown is safe.
 - Implement:
   - Full transliteration of `TRIBE_Mission_Screen::TRIBE_Mission_Screen(char*, unsigned char, TPicture*)` @ 0x004B8100.
@@ -1155,9 +1165,11 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
   - The file-level TODO(accuracy) note in `TRIBE_Mission_Screen.cpp` is removed.
   - Constructor/dtor/action match decomp control flow closely enough to compile/link clean.
 
+Status note: landed as commit `f9df2c3` and merged via `b769918`.
+
 ## Task 109 — UI widget: finish remaining `TButtonPanel` TODO(accuracy) parity (pnl_btn)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove the remaining “best-effort” `TButtonPanel` behaviors so radio/check/button state changes match the original.
 - Implement: audit and finish the specific methods still tagged TODO(accuracy) in `src/game/src/TButtonPanel.cpp` (e.g. `set_radio_button` behavior and any adjacent state/flag logic).
 - Where: `src/game/src/TButtonPanel.cpp`.
@@ -1166,9 +1178,11 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
   - TODO(accuracy) markers in `TButtonPanel.cpp` are removed (or replaced with fully verified markers).
   - Build remains clean and behavior matches decomp control flow.
 
+Status note: landed as commit `41086c5` and merged via `a6bb22f`.
+
 ## Task 110 — In-game view: implement `RGE_Main_View` parity (vw_main)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: restore the original “main view” wrapper over `RGE_View` (auto-scroll + key-scroll + scroll-view glue) as a prerequisite for replacing temporary in-game view scaffolding.
 - Implement (decomp-first transliteration of the unit):
   - `RGE_Main_View::RGE_Main_View()` @ 0x0053DAB0.
@@ -1182,8 +1196,10 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 - Source of truth: `src/game/decomp/vw_main.cpp.decomp` + `src/game/decomp/vw_main.cpp.asm`.
 - Done when: `RGE_Main_View` can be instantiated and linked cleanly with its decomp behaviors (no placeholder stubs added).
 
+Status note: vw_main parity landed as commits `8c1bedd` and `89afb33` (now in `master`).
+
 ## Task 111 — In-game view: implement `TRIBE_Main_View` parity (tvw_main)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: restore TRIBE-specific main-view behaviors used by placement/outline/mouse command logic.
 - Implement (decomp-first transliteration of the unit):
@@ -1195,9 +1211,11 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 - Dependency note: requires Task 110 (`RGE_Main_View`) to be complete first.
 - Done when: `TRIBE_Main_View` compiles/links and matches the decomp control flow for the implemented overrides.
 
+Status note: a minimal `TRIBE_Main_View` skeleton TU landed as part of Task 115 (`fddf946` / `5bbd320`), but tvw_main parity is still incomplete (TRIBE-specific command placement/outline behaviors are not yet transliterated).
+
 ## Task 112 — Main menu: implement `TRIBE_Credits_Screen` and stop using stub credits panel
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove the main-menu credits stub panel and use the real `TRIBE_Credits_Screen` so credits flow matches the original.
 - Implement:
   - Transliterate `TRIBE_Credits_Screen` from `scr_cred.cpp` (constructor/dtor + idle/action + any draw/setup logic needed for correct playback).
@@ -1210,9 +1228,11 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
   - The credits hotkey no longer routes through `MainMenuStubScreen`.
   - `TRIBE_Credits_Screen` compiles/links and can be constructed without introducing new placeholder stubs.
 
+Status note: landed as commit `c6224e5` and merged via `4a283d4`.
+
 ## Task 113 — Actions: remove `RGE_Action_Object::move_to` TODO(accuracy) by matching `act_obj` decomp
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: eliminate the remaining best-effort `move_to` action creation path so move commands create the correct action type and serialize consistently.
 - Implement: decomp-first transliteration of `RGE_Action_Object::move_to(...)` (and any adjacent helpers it needs) so it matches `act_obj.cpp` behavior.
 - Where: `src/game/src/RGE_Action_Object.cpp`.
@@ -1221,18 +1241,22 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
   - The two TODO(accuracy) markers in `RGE_Action_Object::move_to` are removed.
   - The implementation matches decomp control flow and build remains clean.
 
+Status note: landed as commit `9c79aa1` and merged via `0a24787`.
+
 ## Task 114 — MP/COM: remove `TCommunications_Handler::UpdatePlayer` TODO(accuracy) (name refresh)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: remove the remaining best-effort DirectPlay name refresh logic and match the original `com_hand.cpp` behavior.
 - Implement: audit and adjust `TCommunications_Handler::UpdatePlayer(uint id, int timeout)` name refresh branch to match the decomp (buffer sizing, structure interpretation, null/empty behavior, and whether names are refreshed unconditionally).
 - Where: `src/game/src/com_hand.cpp`.
 - Source of truth: `src/game/decomp/com_hand.cpp.decomp` + `src/game/decomp/com_hand.cpp.asm`.
 - Done when: the TODO(accuracy) marker in `UpdatePlayer` is removed (or replaced with a fully verified marker) and build remains clean.
 
+Status note: landed as commit `cf94c50` and merged via `ae5be41`.
+
 ## Task 115 — In-game screen: retire `GameViewPanel` scaffolding from `TRIBE_Screen_Game`
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
 - Goal: stop routing in-game rendering/input through the temporary `GameViewPanel` base and use the real view pipeline (`RGE_Main_View`/`TRIBE_Main_View`) for parity.
 - Implement:
   - Update `TRIBE_Screen_Game` so its “main view” is a `TRIBE_Main_View` (not a bare `RGE_View`) and stop inheriting from `GameViewPanel` once equivalent behavior exists.
@@ -1243,6 +1267,460 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
 - Done when:
   - `TRIBE_Screen_Game` no longer relies on `GameViewPanel` for its core view behavior.
   - Build remains clean and no new placeholder stubs are introduced.
+
+Status note: landed as commit `fddf946` and merged via `5bbd320`.
+
+---
+
+## Task 116 — MP UI: implement `TribeMPStartupScreen` + `TribeJoinScreen` (+ `TribeMPCreateDialog`) parity
+- [x] Assigned to agent
+- [x] Finished
+- Goal: replace the current main-menu MP “stub screen” flow with the real MP Startup + Join + Create dialog screens so MP UI transitions and session browsing are parity-correct.
+- Implement (decomp-first transliteration):
+  - `TribeMPStartupScreen::TribeMPStartupScreen()` @ 0x0049F370.
+  - `TribeMPStartupScreen::~TribeMPStartupScreen()` @ 0x0049F890.
+  - `TribeMPStartupScreen::handle_idle()` @ 0x0049F9A0.
+  - `TribeMPStartupScreen::action(...)` @ 0x0049F9D0.
+  - `TribeMPStartupScreen::fillList()` @ 0x0049FED0.
+  - `TribeJoinScreen::TribeJoinScreen()` @ 0x00491650.
+  - `TribeJoinScreen::~TribeJoinScreen()` @ 0x00491990.
+  - `TribeJoinScreen::handle_idle()` @ 0x00491A80.
+  - `TribeJoinScreen::handle_user_command(...)` @ 0x00491B20.
+  - `TribeJoinScreen::fillList()` @ 0x00491C70.
+  - `TribeJoinScreen::action(...)` @ 0x00491E20.
+  - `TribeMPCreateDialog::TribeMPCreateDialog(TPanel*)` @ 0x004920C0.
+  - `TribeMPCreateDialog::~TribeMPCreateDialog()` @ 0x00492330.
+  - `TribeMPCreateDialog::action(...)` @ 0x004923C0.
+- Where:
+  - Add `src/game/src/TribeMPStartupScreen.cpp`.
+  - Add `src/game/src/TribeJoinScreen.cpp` (may include `TribeMPCreateDialog` too, since it lives in `scr_cj`).
+  - Update headers only for missing method declarations:
+    - `src/game/include/TribeMPStartupScreen.h`
+    - `src/game/include/TribeJoinScreen.h`
+    - `src/game/include/TribeMPCreateDialog.h`
+    (Do not change member layout/size asserts.)
+- Source of truth: `src/game/decomp/scr_mp.cpp.decomp` + `src/game/decomp/scr_mp.cpp.asm`, `src/game/decomp/scr_cj.cpp.decomp` + `src/game/decomp/scr_cj.cpp.asm`.
+- Done when:
+  - New translation units compile/link cleanly without introducing new placeholder stubs.
+  - `TribeMPStartupScreen` can construct/destroy and its `action()` can construct the join screen and create-dialog per decomp.
+
+Status note: landed as commit `8f02236` (now in `master`).
+
+## Task 117 — Scenario editor UI: implement `TRIBE_Screen_Sed_Menu` + `TRIBE_Screen_Sed_Open` + `TRIBE_Campaign_Editor_Screen` parity
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the pre-editor “Scenario Builder” screen flow so menu/open/campaign-editor transitions match original behavior.
+- Implement (decomp-first transliteration):
+  - `TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()` @ 0x004B2EF0.
+  - `TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu()` @ 0x004B3110.
+  - `TRIBE_Screen_Sed_Menu::handle_idle()` @ 0x004B31A0.
+  - `TRIBE_Screen_Sed_Menu::action(...)` @ 0x004B31D0.
+  - `TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()` @ 0x004B33D0.
+  - `TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open()` @ 0x004B36A0.
+  - `TRIBE_Screen_Sed_Open::fillList()` @ 0x004B3740.
+  - `TRIBE_Screen_Sed_Open::action(...)` @ 0x004B38A0.
+  - `TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()` @ 0x0048F5D0.
+  - `TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen()` @ 0x0048FA40.
+  - And the helper routines in `scr_cam` that it relies on (e.g. list/dropdown fill and campaign load/save glue).
+- Where:
+  - Add `src/game/src/TRIBE_Screen_Sed_Menu.cpp`.
+  - Add `src/game/src/TRIBE_Screen_Sed_Open.cpp`.
+  - Add `src/game/src/TRIBE_Campaign_Editor_Screen.cpp`.
+  - Update headers only for missing method declarations:
+    - `src/game/include/TRIBE_Screen_Sed_Menu.h`
+    - `src/game/include/TRIBE_Screen_Sed_Open.h`
+    - `src/game/include/TRIBE_Campaign_Editor_Screen.h`
+    (Do not change member layout/size asserts.)
+- Source of truth: `src/game/decomp/scr_sedm.cpp.decomp` + `src/game/decomp/scr_sedm.cpp.asm`, `src/game/decomp/scr_sedo.cpp.decomp` + `src/game/decomp/scr_sedo.cpp.asm`, `src/game/decomp/scr_cam.cpp.decomp` + `src/game/decomp/scr_cam.cpp.asm`.
+- Done when: all three screens compile/link cleanly and their action/transition logic matches the decomp control flow.
+
+Status note: landed as commit `4bf9d4a` and merged via `16d59e0` (follow-up wrapper fix in `1438141`).
+
+## Task 118 — Scenario editor core: implement `TRIBE_Screen_Sed` parity (scr_sed)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: restore the full in-editor runtime so scenario edit mode uses the same map/view initialization, editor tools, and save prompts as the original.
+- Implement: decomp-first transliteration of the `scr_sed.cpp` unit, starting with:
+  - `TRIBE_Screen_Sed::TRIBE_Screen_Sed(char*, int)` @ 0x004A81E0.
+  - Then complete the remaining non-trivial editor behaviors required for a compile/link-clean TU (handle idle, action routing, command handlers, save/open flows).
+- Where: add `src/game/src/TRIBE_Screen_Sed.cpp` (+ update `src/game/include/TRIBE_Screen_Sed.h` with method declarations as needed; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_sed.cpp.decomp` + `src/game/decomp/scr_sed.cpp.asm`.
+- Dependency note: depends on Task 110 + Task 111 (main view types) and Task 117 (menu/open screens) for a clean end-to-end screen flow.
+- Done when: `TRIBE_Screen_Sed` compiles/links cleanly and its constructor/setup matches the decomp control flow (view + minimap + message panel setup).
+
+Status note: base implementation landed as `7839d26` with ctor parity fixes in `c53563d`, but the file still contains multiple `// TODO: STUB (partial)` blocks; remaining work is still pending.
+
+## Task 119 — UI/screen: implement `TRIBE_Screen_Info` parity (scr_info)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the generic “info / timed auto-close” screen used by multiple flows (auto-close timer, click/keypress close, and close transition logic).
+- Implement:
+  - `TRIBE_Screen_Info::TRIBE_Screen_Info(char*, char*, long, ulong)` @ 0x0049D550.
+  - `TRIBE_Screen_Info::~TRIBE_Screen_Info()` @ 0x0049D600.
+  - `TRIBE_Screen_Info::handle_idle()` @ 0x0049D610.
+  - `TRIBE_Screen_Info::key_down_action(...)` @ 0x0049D690.
+  - `TRIBE_Screen_Info::mouse_left_down_action(...)` @ 0x0049D6B0.
+  - `TRIBE_Screen_Info::action(...)` @ 0x0049D6C0.
+  - `TRIBE_Screen_Info::close_screen()` @ 0x0049D6E0.
+- Where:
+  - Add `src/game/src/TRIBE_Screen_Info.cpp`.
+  - Update `src/game/include/TRIBE_Screen_Info.h` only for missing method declarations (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_info.cpp.decomp` + `src/game/decomp/scr_info.cpp.asm`.
+- Done when: `TRIBE_Screen_Info` compiles/links cleanly and close behavior matches the decomp control flow.
+
+Status note: landed as commit `1a26e24` and merged via `2f34d37`.
+
+## Task 120 — UI/screen: implement `TribeSelectTribeScreen` parity (scr_trb)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the civilization/tribe selection screen so SP and scenario flows can select a tribe with correct UI and button routing.
+- Implement (decomp-first transliteration):
+  - `TribeSelectTribeScreen::TribeSelectTribeScreen()` @ 0x004B75A0.
+  - `TribeSelectTribeScreen::~TribeSelectTribeScreen()` @ 0x004B7DF0.
+  - `TribeSelectTribeScreen::action(...)` @ 0x004B7EE0.
+  - `TribeSelectTribeScreen::fillTribeText(int)` @ 0x004B7F70.
+  - `TribeSelectTribeScreen::tribeName(int)` @ 0x004B8070.
+- Where:
+  - Add `src/game/src/TribeSelectTribeScreen.cpp`.
+  - Update `src/game/include/TribeSelectTribeScreen.h` only for missing method declarations (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_trb.cpp.decomp` + `src/game/decomp/scr_trb.cpp.asm`.
+- Done when: the screen compiles/links cleanly and the UI creation/action routing matches decomp control flow.
+
+Status note: landed as commit `e403e34` and merged via `d327b1c`.
+
+## Task 121 — MP UI: implement `TRIBE_Screen_Disconnect` parity (disconnect screen)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the multiplayer disconnect screen so MP teardown paths don’t rely on missing/stub behavior.
+- Implement:
+  - `TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int)` @ 0x004A61A0.
+  - `TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect()` @ 0x004A6290.
+  - `TRIBE_Screen_Disconnect::set_text(char*)` @ 0x004A62F0.
+  - `TRIBE_Screen_Disconnect::set_text(long)` @ 0x004A6310.
+  - `TRIBE_Screen_Disconnect::action(...)` @ 0x004A6330.
+  - `TRIBE_Screen_Disconnect::handle_idle()` @ 0x004A63C0.
+- Where:
+  - Add `src/game/src/TRIBE_Screen_Disconnect.cpp`.
+  - Update `src/game/include/TRIBE_Screen_Disconnect.h` only for missing method declarations (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_mps.cpp.decomp` + `src/game/decomp/scr_mps.cpp.asm` (disconnect block near the end of the unit).
+- Done when: the disconnect screen compiles/links cleanly and action/idle match the decomp control flow.
+
+Status note: landed as commit `bd665f3` and merged via `29a0d2e`.
+
+## Task 122 — Save UI: remove `scr_save_impl` scenario-editor TODO(parity) (activate real `TRIBE_Screen_Sed_Open`)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining save-screen TODO that notes the original constructs/activates `TRIBE_Screen_Sed_Open` directly.
+- Implement: update the scenario-editor-related save path so it constructs/activates `TRIBE_Screen_Sed_Open` per the original flow (and removes the TODO marker).
+- Where: `src/game/src/scr_save_impl.cpp`.
+- Source of truth: `src/game/decomp/scr_save.cpp.decomp` + `src/game/decomp/scr_save.cpp.asm` (and `src/game/decomp/scr_sedo.cpp.decomp` for how the open screen is created/activated).
+- Dependency note: requires Task 117 (`TRIBE_Screen_Sed_Open`) to exist.
+- Done when: the TODO(parity) marker in `scr_save_impl.cpp` is removed and build remains clean.
+
+Status note: landed as commit `bf35ea5` and merged via `4530bb0`.
+
+## Task 123 — Main menu: stop using MP/editor stub screens in `Scr_main_impl` (after real screens land)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: retire the remaining main-menu “stub screen” usages for MP Startup and Scenario Editor Menu once the real screens exist.
+- Implement:
+  - Replace the MP Startup stub creation with constructing/activating `TribeMPStartupScreen`.
+  - Replace the Scenario Editor Menu stub creation with constructing/activating `TRIBE_Screen_Sed_Menu`.
+  - Keep this task focused: do not touch the credits stub path here (Task 112 owns credits).
+- Where: `src/game/src/Scr_main_impl.cpp`.
+- Source of truth: `src/game/decomp/scr_main.cpp.decomp` + `src/game/decomp/scr_main.cpp.asm` (main menu action dispatch), plus Task 116/117 sources for screen creation expectations.
+- Dependency note: requires Task 116 and Task 117 to be complete first.
+- Done when: MP Startup + Scenario Editor menu no longer route through `create_stub_screen(...)` and build remains clean.
+
+Status note: MP Startup screen routing landed with Task 116 (`8f02236`), and scenario-editor menu routing landed with Task 117 (`4bf9d4a`).
+
+## Task 124 — Rendering/view: implement missing `RGE_View` selection + draw pipeline helpers required by main views
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining `RGE_View` “missing pipeline” gaps so `RGE_Main_View`/`TRIBE_Main_View` can rely on original selection display + draw/update behavior.
+- Implement (decomp-first transliteration of the missing methods from `view.cpp.decomp`):
+  - `RGE_View::update_display_selected_objects()`.
+  - `RGE_View::display_object_selection(int, int, int, int)`.
+  - `RGE_View::delete_surfaces()` and `RGE_View::create_surfaces()`.
+  - `RGE_View::calc_draw_vars()`.
+  - `RGE_View::draw_object_outline()` and `RGE_View::draw_paint_brush()`.
+  - `RGE_View::get_tile_screen_coords(...)`, `get_center_screen_pos(...)`, `get_start_coords(...)`, `get_center_coords(...)`, `get_tile_sizes(...)`.
+  - The missing `RGE_View::view_function(...)` dispatcher (the code currently notes it’s not transliterated yet).
+- Where:
+  - `src/game/src/view.cpp`.
+  - `src/game/include/RGE_View.h` for method declarations only (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/view.cpp.decomp` + `src/game/decomp/view.cpp.asm`.
+- Dependency note: intended as a prerequisite for Task 110/111/115 view-pipeline work; coordinate if another agent is actively modifying `view.cpp`.
+- Done when: the missing-method gap is closed (methods exist, compile/link cleanly) and `RGE_View` no longer references an unimplemented `view_function()` in its core interaction paths.
+
+Status note: landed as commit `b173887` and merged via `f8a401b`.
+
+## Task 125 — Main menu error: implement `TRIBE_Screen_Main_Error` parity (scr_main)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the main-menu error screen used for fatal/error message flows.
+- Implement:
+  - `TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()` @ 0x0049F0D0.
+  - `TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error()` @ 0x0049F240.
+  - `TRIBE_Screen_Main_Error::set_text(char*)` @ 0x0049F2B0 and `set_text(long)` @ 0x0049F2D0.
+  - `TRIBE_Screen_Main_Error::action(...)` @ 0x0049F2F0.
+  - `TRIBE_Screen_Main_Error::handle_idle()` @ 0x0049F340.
+- Where:
+  - Add `src/game/src/TRIBE_Screen_Main_Error.cpp`.
+  - Update `src/game/include/TRIBE_Screen_Main_Error.h` only for missing method declarations (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_main.cpp.decomp` + `src/game/decomp/scr_main.cpp.asm`.
+- Done when: the screen compiles/links cleanly and its setup/action/idle match decomp control flow.
+
+Status note: landed as commit `b727be4` and merged via `36d5cff`.
+
+## Task 126 — Main menu follow-up: remove remaining `Scr_main_impl.cpp` TODO(accuracy) markers (no new UX)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: eliminate the remaining best-effort TODO(accuracy) notes in the main menu implementation by matching `scr_main` decomp control flow exactly.
+- Implement: adjust only the TODO(accuracy) blocks (e.g. setup tuple selection and current-child/tab-order behavior) so they match decomp; do not add new screens/features.
+- Where: `src/game/src/Scr_main_impl.cpp`.
+- Source of truth: `src/game/decomp/scr_main.cpp.decomp` + `src/game/decomp/scr_main.cpp.asm`.
+- Dependency note: will conflict with Task 112/123 if run concurrently; schedule after those land.
+- Done when: all TODO(accuracy) markers in `Scr_main_impl.cpp` are removed (or replaced with verified markers) and build remains clean.
+
+Status note: landed as commit `180de8c` and merged via `0b7bedb`.
+
+---
+
+## Task 127 — UI core: implement `TPanel::set_overlapped_redraw` + tab-order parity (panel.cpp)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining core-panel stubs so overlapped redraw invalidation and keyboard tab navigation behave like the original.
+- Implement (decomp-first transliteration):
+  - `TPanel::set_overlapped_redraw(TPanel*, TPanel*, RedrawMode)` @ 0x00464F20.
+  - `TPanel::set_tab_order(TPanel**, short)` @ 0x00466600.
+  - `TPanel::set_tab_order(TPanel*, TPanel*)` @ 0x00466650.
+- Where:
+  - `src/game/src/TPanel.cpp`.
+  - `src/game/include/TPanel.h` only if method declarations are missing (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/panel.cpp.decomp` + `src/game/decomp/panel.cpp.asm`.
+- Done when: the two TODO stubs in `TPanel.cpp` are removed and build remains clean.
+
+Status note: landed as commit `a7a2dab` and merged via `eb5101c`.
+
+## Task 128 — World save/init: implement remaining `RGE_Game_World` serialization + init stubs (world.cpp)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the original world save/init virtuals so save-game + scenario serialization and scenario bootstrap don’t rely on placeholders.
+- Implement (decomp-first transliteration):
+  - `RGE_Game_World::load_player(int, uchar, short)` @ 0x00542060.
+  - `RGE_Game_World::save(int)` @ 0x00543540.
+  - `RGE_Game_World::save_game(char*)` @ 0x00543770.
+  - `RGE_Game_World::base_save(int)` @ 0x00543850.
+  - `RGE_Game_World::base_save(char*)` @ 0x005439C0.
+  - `RGE_Game_World::save_scenario(char*)` @ 0x00543A00.
+  - `RGE_Game_World::scenario_init(int, RGE_Game_World*)` @ 0x00541B60.
+  - `RGE_Game_World::scenario_init(RGE_Game_World*)` @ 0x00541BC0.
+  - `RGE_Game_World::logStatus(FILE*, int)` @ 0x00540A10 (decomp shows this as an intentional no-op).
+  - `RGE_Game_World::get_scenario_info(char*)` @ 0x00545CE0 (decomp shows return-null behavior for base type).
+- Where: `src/game/src/RGE_Game_World.cpp` (+ header `src/game/include/RGE_Game_World.h` only if required for declarations).
+- Source of truth: `src/game/decomp/world.cpp.decomp` + `src/game/decomp/world.cpp.asm`.
+- Done when: the `// TODO: implement` stubs for these methods are removed (or replaced with fully verified markers) and save paths compile/link cleanly.
+
+Status note: landed as commit `9a78af4` and merged via `0157a15`.
+
+## Task 129 — UI widget: finish `TDropDownPanel::get_line(char*)` parity (pnl_drop)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining dropdown text-lookup stub so dropdowns can map selected text to list lines correctly.
+- Implement: `TDropDownPanel::get_line(char*)` @ 0x004753C0 by calling through to the list panel’s `TTextPanel::get_line(char*)` (already implemented).
+- Where: `src/game/src/Pnl_drop.cpp`.
+- Source of truth: `src/game/decomp/pnl_drop.cpp.decomp` + `src/game/decomp/pnl_drop.cpp.asm`.
+- Done when: the TODO stub in `TDropDownPanel::get_line(char*)` is removed and build remains clean.
+
+Status note: landed as commit `a2de119` and merged via `9f2d724`.
+
+## Task 130 — Debug logging: implement `write_draw_log` + `write_draw_log2` parity (basegame.cpp)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the original draw-log helpers used by view/sprite codepaths (normally gated by globals), removing the current no-op stubs.
+- Implement:
+  - `write_draw_log(char*)` @ 0x0041B620.
+  - `write_draw_log2(char*)` @ 0x0041B650.
+- Where:
+  - `src/game/src/debug_helpers.cpp`.
+  - Add/verify required globals (`draw_log`, `draw_log_name`, `do_draw_log`, `safe_draw_log`) in `src/game/include/globals.h` + `src/game/src/globals.cpp` if missing.
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm`.
+- Done when: the two TODO stub bodies in `debug_helpers.cpp` are removed and the functions match the decomp control flow.
+
+Status note: landed as commit `80f0c6d` and merged via `1178e9d`.
+
+## Task 131 — Debug rendering: implement `color_log` parity (colorlog)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore the original “color log” helper used by some save/render debug paths (typically gated behind `do_color_log`).
+- Implement: `color_log(uchar, uchar, int)` @ 0x00424810.
+- Where: either implement directly in `src/game/src/debug_helpers.cpp` (keeping the exported signature) or add a dedicated TU (project-consistent choice), ensuring there is exactly one definition.
+- Source of truth: `src/game/decomp/colorlog.cpp.decomp` + `src/game/decomp/colorlog.cpp.asm`.
+- Done when: `debug_helpers.cpp` no longer has a TODO stub for `color_log` and build remains clean.
+
+Status note: landed as commit `ebb2d4d` and merged via `cbbe5d1`.
+
+## Task 132 — Cleanup: delete `GameViewPanel` scaffolding (non-original)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the temporary, non-original `GameViewPanel` renderer now that the real view/screen pipeline has landed.
+- Implement:
+  - Remove `src/game/src/GameViewPanel.cpp` and `src/game/include/GameViewPanel.h`.
+  - Verify there are no remaining references; if any exist, update call sites to use the real panels/views instead.
+- Where: delete the two files above (and any trivial include cleanups required).
+- Done when: build remains clean and no code references `GameViewPanel`.
+
+Status note: landed as commit `64366b5` and merged via `35f6c81`.
+
+## Task 133 — Audio utils: implement `WaveCreateFile` parity (dsutil)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining WAV-write stub so any tooling paths that emit WAV data don’t hard-fail.
+- Implement: `WaveCreateFile(...)` @ 0x00448080.
+- Where: `src/game/src/Dsutil.cpp`.
+- Source of truth: `src/game/decomp/dsutil.cpp.asm` (Ghidra decomp notes this function failed; ASM is required source of truth here) + any partial context in `src/game/decomp/dsutil.cpp.decomp`.
+- Done when: the stub body is replaced with a parity implementation and build remains clean.
+
+Status note: landed as commit `85f79e8` and merged via `34e38c8`.
+
+---
+
+## Task 134 — Basegame CD gating: implement `RGE_Base_Game::check_for_cd` (+ `playerHasCD`) parity
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining basegame CD verification stub so SP/MP startup uses the original gating rules (`verify_cd`, `CDPath`, `vol_name`, and max-players-per-CD logic).
+- Implement (decomp-first transliteration):
+  - `RGE_Base_Game::check_for_cd(int)` @ 0x0041FC90.
+  - `RGE_Base_Game::playerHasCD(int)` @ 0x004224A0 (required dependency called by `check_for_cd`).
+- Where:
+  - `src/game/src/basegame.cpp`.
+  - `src/game/include/RGE_Base_Game.h` for method declarations (do not change member layout/size asserts).
+  - `src/game/include/globals.h` + `src/game/src/globals.cpp` only if missing globals referenced by the decomp (`force_cd`, etc).
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm`.
+- Non-overlap note: conflicts with other tasks that edit `basegame.cpp`; schedule accordingly.
+- Done when: `RGE_Base_Game::check_for_cd` is no longer a stub (`return 1`) and matches the decomp control flow (including the multiplayer “humanity” count branch).
+
+Status note: landed as commit `feca2ad` and merged via `170e451`.
+
+## Task 135 — Basegame player switching: implement `RGE_Base_Game::set_player` parity (clear map view info)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: match the original player-switch behavior (bounds check + clear map view info), removing the now-stale TODO in the implementation.
+- Implement: `RGE_Base_Game::set_player(short)` @ 0x00420150.
+- Where: `src/game/src/basegame.cpp`.
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm`.
+- Dependency note: `RGE_Map::clear_map_view_info()` already exists in `src/game/src/RGE_Map.cpp`; just call it per decomp.
+- Non-overlap note: conflicts with other tasks that edit `basegame.cpp`; schedule accordingly.
+- Done when: `set_player` checks `world != nullptr` and `param_1 < world->player_num` and then calls `world->map->clear_map_view_info()`.
+
+Status note: landed as commit `b021996` and merged via `c4ff834`.
+
+## Task 136 — File/STF: implement `DriveInformation` parity (file_stf)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore the missing `DriveInformation` helper used by basegame startup and file utilities (drive enumeration + cwd tracking).
+- Implement (decomp-first transliteration from `file_stf.cpp`):
+  - Free helpers: `driveAsLetter(int)` @ 0x00449750, `driveAsInt(char)` @ 0x00449760.
+  - `DriveInformation::DriveInformation()` @ 0x00449770.
+  - `initialDrive/initialDriveAsLetter/initialDirectory` @ 0x004497C0/0x004497D0/0x004497E0.
+  - `currentDrive/currentDriveAsLetter/currentDirectory` @ 0x004497F0/0x00449800/0x00449810.
+  - `numberDrives/validDrive/checkDrives` @ 0x00449820/0x00449830/0x00449840.
+  - File-count helpers: `numberOfFilesWithFilename` @ 0x004498A0, `numberOfFilesWithAttribute` @ 0x00449910, `numberOfFilesWithFilenameOrAttribute` @ 0x00449990.
+  - Drive/cwd helpers: `resetCurrentDriveAndDirectory/resetCurrentDrive/resetCurrentDirectory` @ 0x00449A20/0x00449A40/0x00449A50.
+  - `changeDrive/changeDirectory/updateDirectory` @ 0x00449A60/0x00449A90/0x00449AC0.
+- Where:
+  - Add a new TU `src/game/src/DriveInformation.cpp` (preferred) or place into the most appropriate existing TU if that’s the codebase pattern.
+  - Add method declarations to `src/game/include/DriveInformation.h` (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/file_stf.cpp.decomp` + `src/game/decomp/file_stf.cpp.asm`.
+- Done when: the methods compile/link cleanly, and callers can construct `DriveInformation` without new stubs.
+
+## Task 137 — DIB blit pipeline: implement `DibBlt`/`TransDibBlt`/`TileDibBlt` (+ palette mapping) and restore `TPicture::Draw` parity
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the non-original `TPicture::Draw` >8bpp fallback and use the original DIB blit helpers for correct clip/scale/transparency behavior.
+- Implement (decomp-first transliteration):
+  - `DibBlt(...)` @ 0x00438820.
+  - `TransDibBlt(...)` @ 0x00438AA0.
+  - `ClipDibBlt(...)` @ 0x00438E80.
+  - `TileDibBlt(...)` @ 0x004390A0.
+  - `DibMapToPalette(...)` @ 0x0043A660.
+  - Update `TPicture::Draw(...)` @ 0x0046E2D0 to match `picture.cpp.decomp` (call `TransDibBlt` when `TransInfo` exists; otherwise `DibBlt`).
+  - If `TPicture::Tile(...)` exists in code, ensure it routes to `TileDibBlt(...)` per `picture.cpp.decomp` @ 0x0046E370.
+- Where:
+  - `src/game/src/Dib.cpp` (add the missing functions; keep existing palette loader unless it conflicts).
+  - `src/game/src/Picture.cpp` (replace the custom blit body with the decomp’s call pattern).
+- Source of truth:
+  - `src/game/decomp/dib.cpp.decomp` + `src/game/decomp/dib.cpp.asm`.
+  - `src/game/decomp/picture.cpp.decomp` + `src/game/decomp/picture.cpp.asm`.
+- Done when: the TODO in `Picture.cpp` about >8bpp conversion is gone and `TPicture::Draw` control flow matches the decomp.
+
+Status note: landed as commit `d68ac23` and merged via `2f16354`.
+
+## Task 138 — MP setup (scr_mps): implement `updateSummary` + finish `fillPlayers/setupSinglePlayerPlayers` parity (remove TODOs)
+- [ ] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining TODO/assumption blocks in MP Setup so scenario metadata and summary UI update match the original.
+- Implement (decomp-first transliteration):
+  - `TribeMPSetupScreen::updateSummary()` @ 0x004A4190.
+  - `TribeMPSetupScreen::fillPlayers()` @ 0x004A37D0.
+  - `TribeMPSetupScreen::setupSinglePlayerPlayers()` @ 0x004A5210.
+- Where:
+  - `src/game/src/scr_mps_impl.cpp`.
+  - Update `src/game/include/TribeMPSetupScreen.h` only for missing declarations (do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/scr_mps.cpp.decomp` + `src/game/decomp/scr_mps.cpp.asm`.
+- Done when: the three TODO markers currently in `scr_mps_impl.cpp` are removed and build remains clean.
+
+Status note: landed as commit `abe1991` and merged via `28931b8`.
+
+## Task 139 — Main menu cleanup: remove dead stub-screen helper and stale TODO notes (no new UX)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: delete remaining main-menu scaffolding comments/helpers that are no longer used now that the real screens exist.
+- Implement:
+  - Remove the unused `create_stub_screen(...)` helper from `Scr_main_impl.cpp` (it is defined but no longer referenced anywhere).
+  - Remove the now-stale TODO/STUB comments about “dialog and target screens are currently stubs” if those code paths are now implemented.
+- Where: `src/game/src/Scr_main_impl.cpp`.
+- Source of truth: `src/game/decomp/scr_main.cpp.decomp` + `src/game/decomp/scr_main.cpp.asm` (ensure you don’t change runtime behavior; this is cleanup only).
+- Done when: `Scr_main_impl.cpp` contains no stub-screen helper or stale TODO/STUB comments and build remains clean.
+
+Status note: landed as commit `ece7d0b` and merged via `a0d4de2`.
+
+---
+
+## Task 140 — Startup: implement `GetDXVersion` (platform + version outputs) parity enough to remove stub
+- [ ] Assigned to agent
+- [x] Finished
+- Goal: remove the current `GetDXVersion` hardcoded stub so callers receive plausible platform/version outputs per the original.
+- Implement: `GetDXVersion(ulong* dx_version, ulong* dx_platform)` @ 0x0044DAC0.
+- Where: `src/game/src/getdxver.cpp`.
+- Source of truth: `src/game/decomp/getdxver.cpp.decomp` + `src/game/decomp/getdxver.cpp.asm`.
+- Scope note: start by matching the OS/platform gating (Win9x vs NT) and set outputs consistently with the decomp’s early-return paths; only expand into the DirectDraw/DirectPlay probing if required for build-parity (avoid new stubs).
+- Done when: the `dx_platform` TODO is removed, outputs are set by real logic (not constants), and build remains clean.
+
+Status note: landed as commit `a295543` and merged via `8031000`.
+
+## Task 141 — Startup constants: fix `mouse_scroll_max_dist` / `key_scroll_max_dist` bit-pattern parity (main)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: match the original initialization which stores integer `0x54` into these float fields (decomp shows `1.17709e-43`, i.e. float bit-pattern `0x00000054`).
+- Implement: replace the current `84.0f` assignments with a bitwise store of `0x54` into both float fields.
+- Where: `src/game/src/main.cpp`.
+- Source of truth: `src/game/decomp/main.cpp.decomp` (search for `mouse_scroll_max_dist` / `key_scroll_max_dist`) + `src/game/decomp/main.cpp.asm` if needed.
+- Done when: the TODO marker is removed and the two fields are initialized via bit-pattern parity (use `memcpy` or equivalent to avoid UB).
+
+Status note: landed as commit `50c5ef4` and merged via `de775c9`.
+
+## Task 142 — Resources: implement `RESFILE_Decommit_Mapped_Memory` parity (VirtualFree MEM_DECOMMIT)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: replace the current no-op with the original behavior so mapped resource pages can be decommitted when requested.
+- Implement: `RESFILE_Decommit_Mapped_Memory(uchar* ptr, int size)` @ 0x0047F590.
+- Where: `src/game/src/Res_file.cpp`.
+- Source of truth: `src/game/decomp/res_file.cpp.decomp` + `src/game/decomp/res_file.cpp.asm`.
+- Done when: function calls `VirtualFree(ptr, size, 0x4000)` when `ptr != nullptr && size > 0`, returns the API result, otherwise returns 0.
+
+Status note: landed as commit `0eb1ec4` and merged via `e315130`.
 
 ## Task 143 — Spanlist: add missing `TSpan_List_Manager` methods (DeleteSpan/Subtract/Merge/PointVisible)
 - [x] Assigned to agent
@@ -1255,8 +1733,109 @@ Status note: landed as commit `88ab5b2` and merged via `52622b8`.
   - `TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager*, TSpan_List_Manager*)` @ 0x004BE5F0.
 - Where:
   - `src/game/src/spanlist.cpp`.
-  - `src/game/include/TSpan_List_Manager.h` (methods only; no layout changes).
+  - Add method declarations to `src/game/include/TSpan_List_Manager.h` (methods only; do not change member layout/size asserts).
 - Source of truth: `src/game/decomp/spanlist.cpp.decomp` + `src/game/decomp/spanlist.cpp.asm`.
 - Done when: the TODO marker in `spanlist.cpp` is removed/replaced and all four methods compile/link cleanly.
 
-Status note: methods/declarations and fully-verified markers were already present on `master`; this pass re-validated parity against decomp/asm and confirmed clean build.
+Status note: landed as commit `e78d303` and merged via `fcfbb51`.
+
+---
+
+## Task 144 — UI: fix `Time_Line_Panel::set_back_color` parity (no redraw side effects)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the remaining “partial” mismatch so `set_back_color` matches the decomp exactly (no extra invalidation/side effects).
+- Implement: `Time_Line_Panel::set_back_color(int fill_back, uchar back_color)` @ 0x0051F100.
+- Where: `src/game/src/Time_Line_Panel.cpp`.
+- Source of truth: `src/game/decomp/tpnl_tml.cpp.decomp` + `src/game/decomp/tpnl_tml.cpp.asm`.
+- Done when: the function only stores the two fields and returns (no `set_redraw(...)` call), and build remains clean.
+
+Status note: landed as commit `5aa6480` and merged via `8528fd6`.
+
+## Task 145 — Startup: remove `main.cpp` GUID init “ASSUMPTION” by ASM-auditing the initializer block
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: eliminate the remaining GUID init assumption by matching the original assembly initialization exactly.
+- Implement: audit the GUID values initialized in `main.cpp` (comment references ASM init @ 0x00454C17) and adjust the C++ constants/stores to match.
+- Where: `src/game/src/main.cpp`.
+- Source of truth: `src/game/decomp/main.cpp.asm` (GUID init block near 0x00454C17) + `src/game/decomp/main.cpp.decomp`.
+- Done when: the GUID init comment no longer says ASSUMPTION, values/stores match ASM, and build remains clean.
+
+## Task 146 — Pathing: fix `RGE_Moving_Object::logDebug` virtual signature (printf-style varargs) parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: match the real vtable slot signature used by `PathingSystem::printState` so we don’t rely on unsafe function-pointer casts.
+- Implement:
+  - Update the virtual declaration for the vtable slot used at offset `0x144` to a printf-style varargs signature.
+  - Update any forwarding stubs/derived overrides to match the signature so the project still links cleanly.
+  - Optional: simplify `PathingSystem::printState` to call `obj->logDebug("...", ...)` directly once the signature is correct.
+- Where:
+  - Header(s): `src/game/include/RGE_Moving_Object.h` (and any base/derived headers if the virtual is inherited).
+  - Implementations/stubs: `src/game/src/rge_object_virtual_stubs.cpp` only as needed for linkage.
+  - Call site: `src/game/src/pathsys.cpp` (`PathingSystem::printState`).
+- Source of truth: `src/game/decomp/pathsys.cpp.asm` @ 0x0046D784..0x0046D79C (vtable call pattern) + `src/game/decomp/pathsys.cpp.decomp`.
+- Done when: the header signature matches the ASM reality, `printState` no longer needs a manual vtable-cast to call the logger, and build remains clean.
+
+## Task 147 — Basegame: de-stub the option-setter block + resolve remaining ASM-parity TODOs in `setup_fonts`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining “TODO: STUB - Stubs for now” block marker and fix the last ASM-parity TODO note so basegame initialization is fully parity-backed.
+- Implement:
+  - Audit the `RGE_Base_Game::set*` option setters (the big setter block right after the destructor) against `basegame.cpp.decomp` and correct any subtle parity issues (sizes, string copy semantics, bit packing).
+  - Remove/replace the “TODO: STUB - Stubs for now” marker once the block matches the decomp.
+  - Resolve the `setup_fonts` `TODO(asm-parity)` note (line-height formula) by auditing `basegame.cpp.asm` stack-var mapping and updating the metric fields to match.
+- Where: `src/game/src/basegame.cpp`.
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm`.
+- Done when: those TODO markers are removed/replaced with verified markers where appropriate, and build remains clean.
+
+## Task 148 — In-game screen: finish `TRIBE_Screen_Game` constructor resource/panel parity (remove “partial” notes)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: complete the remaining constructor setup parity so all in-game UI panels/resources created in the original are created/initialized here too.
+- Implement: audit the `TRIBE_Screen_Game::TRIBE_Screen_Game` constructor against `scr_game.cpp.decomp` and update the resource/panel creation blocks currently labeled “partial”.
+- Where: `src/game/src/TRIBE_Screen_Game.cpp`.
+- Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `src/game/decomp/scr_game.cpp.asm`.
+- Done when: the “partial” parity notes are removed (or replaced with verified markers), and build remains clean.
+
+---
+
+## Task 149 — Multiplayer/lobby exit: implement `TRIBE_World::send_zone_score_info` parity (tworld)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore the original lobby-launched quit-game score reporting (currently skipped in `TRIBE_Game::quit_game`).
+- Implement: `TRIBE_World::send_zone_score_info()` @ 0x00531350.
+- Where:
+  - Add method declaration to `src/game/include/TRIBE_World.h` (methods only; do not change member layout/size asserts).
+  - Implement in `src/game/src/TRIBE_World.cpp`.
+  - Remove the “not yet transliterated” skip comment in `src/game/src/tribegam.cpp` inside `TRIBE_Game::quit_game` once the call is safe.
+- Source of truth:
+  - `src/game/decomp/tworld.cpp.decomp` + `src/game/decomp/tworld.cpp.asm` (function @ 0x00531350).
+  - Call site reference: `src/game/decomp/tribegam.cpp.decomp` / `.asm` (`TRIBE_Game::quit_game` @ 0x00524150).
+- Done when: the method compiles/links, `quit_game` calls it instead of skipping, and build remains clean.
+
+## Task 150 — Objects: implement doppleganger recycle path in `RGE_Master_Doppleganger_Object::make_new_obj` (m_dg_obj)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining intentional parity defer so doppleganger objects recycle from the world’s reusable pool when enabled.
+- Implement: `RGE_Master_Doppleganger_Object::make_new_obj(RGE_Player*, float, float, float, RGE_Static_Object*)` @ 0x004512D0.
+- Where: `src/game/src/RGE_Master_Derived_Stubs.cpp` (and any required declarations in the relevant headers; do not change member layout/size asserts).
+- Source of truth: `src/game/decomp/m_dg_obj.cpp.decomp` + `src/game/decomp/m_dg_obj.cpp.asm`.
+- Notes:
+  - Decomp shows a recycle path guarded by `this->field_0xa4 != 0` that calls `RGE_Game_World::recycle_object_in_to_game(param_1->world, this->field_0x4)` and then calls the recycled object’s vfunc at `+0x1EC` with `(this, player, x, y, z, existing_obj)`.
+  - If recycle returns null, fall back to allocating a new `RGE_Doppleganger_Object` as currently.
+- Done when: the “intentionally deferred” note is removed, recycle path matches decomp control flow, and build remains clean.
+
+## Task 151 — World init: implement `RGE_Game_World::RGE_Game_World()` constructor parity (allocate object arrays + reusable lists)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: match the original world constructor so core pointers/arrays/lists are allocated and defaults (game_state, random_seed, etc.) match the EXE.
+- Implement: `RGE_Game_World::RGE_Game_World()` @ 0x00540750.
+- Where: `src/game/src/RGE_Game_World.cpp` (+ header `src/game/include/RGE_Game_World.h` only if required for declarations).
+- Source of truth: `src/game/decomp/world.cpp.decomp` + `src/game/decomp/world.cpp.asm`.
+- Key parity requirements (see decomp for exact values/order):
+  - Allocate `objectsValue` (max 10000) and `negativeObjectsValue` (max 1000) and assign `VIS_UNIT_objectsValue`.
+  - Initialize `maximumComputerPlayerUpdateTime`, `availableComputerPlayerUpdateTime`, `currentUpdateComputerPlayer`, `difficultyLevelValue`.
+  - Set `game_state = 2`, `random_seed = 0xE`, `curr_player = 1`, `next_reusable_object_id = -1`, and other scalar defaults per decomp.
+  - Allocate all `reusable_*_objects` lists as `RGE_Object_List` instances.
+  - Ensure the destructor path frees/deletes these allocations per decomp (avoid leaks/double-frees).
+- Done when: ctor/dtor match the decomp’s allocation/initialization behavior closely enough that reusable-object APIs can be used without null-guards, and build remains clean.
