@@ -2999,7 +2999,7 @@ uchar RGE_Static_Object::actionState() { return 0; }
 uchar RGE_Static_Object::keepGatheringWhenObjectIsOut(int param_1) { return 0; }
 uchar RGE_Static_Object::produceWhenKilledBy(int param_1) { return 0; }
 uchar RGE_Static_Object::useSameZoneDropsite() { return 0; }
-void RGE_Static_Object::logDebug(char* param_1) {}
+void RGE_Static_Object::logDebug(const char* param_1, ...) {}
 void RGE_Static_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
 int RGE_Static_Object::attack(float param_1, float param_2, float param_3, int param_4) { return 0; }
 int RGE_Static_Object::attack(int param_1, int param_2) { return 0; }

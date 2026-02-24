@@ -8,6 +8,7 @@ class TDebuggingLog;
 struct TPanelSystem;
 struct TMousePointer;
 struct DClipInfo_List;
+struct DriveInformation;
 
 extern RGE_Base_Game* rge_base_game;
 extern TDebuggingLog* L;
@@ -23,7 +24,7 @@ extern HINSTANCE AppInst;
 extern void* chat;
 extern void* comm;
 extern void* sound_driver;
-extern void* driveInfo;
+extern DriveInformation* driveInfo;
 extern TMousePointer* MouseSystem;
 
 extern int do_run_log;
