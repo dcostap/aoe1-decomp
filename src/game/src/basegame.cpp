@@ -2866,3 +2866,15 @@ CUSTOM_DEBUG_END
     this->setup_music_system();
     return 1;
 }
+
+// TODO: STUB - get_mouse_pos not yet implemented from basegame.cpp.decomp.
+void RGE_Base_Game::get_mouse_pos(tagPOINT* out)
+{
+    if (out) { out->x = 0; out->y = 0; }
+}
+
+// TODO: STUB - play_sound not yet implemented from basegame.cpp.decomp.
+void RGE_Base_Game::play_sound(int sound_id)
+{
+    (void)sound_id;
+}

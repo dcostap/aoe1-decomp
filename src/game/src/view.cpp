@@ -2395,3 +2395,10 @@ short RGE_View::get_border_picture(uchar terrain_type, uchar border_type, uchar 
 
     return (short)(pict->animations * sub_index + pict->shape_index);
 }
+
+// TODO: STUB - Object_Was_Displayed not yet implemented from view.cpp.decomp.
+bool RGE_View::Object_Was_Displayed(long object_id, int param_2)
+{
+    (void)object_id; (void)param_2;
+    return false;
+}

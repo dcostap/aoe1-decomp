@@ -25,6 +25,7 @@
 #include "../include/TribeMainDecisionAIModule.h"
 
 #include <new>
+#include <stdlib.h>
 
 static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
     if (player == nullptr || player->attributes == nullptr) {
@@ -606,3 +607,49 @@ void TRIBE_Player::registerResearch(int param_1, int param_2, int param_3) {}
 void TRIBE_Player::taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5) {}
 void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5) {}
 void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
+
+// Offset: 0x00513690
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513690
+uchar TRIBE_Player::command_make_wall(short param_1, long param_2, long param_3, long param_4, long param_5) {
+    int iVar1;
+    short sVar2;
+    uchar uVar3;
+    RGE_Static_Object** list;
+    short list_num;
+
+    sVar2 = param_1;
+    iVar1 = (int)this->master_objects[(int)param_1];
+    if ((iVar1 != 0) && (*(char*)(iVar1 + 0x52) != '\0')) {
+        list = nullptr;
+        list_num = 0;
+        uVar3 = ((RGE_Player*)this)->get_selected_objects_to_command(&list, &list_num, 4, 4, (short)-1, (short)-1);
+        if (uVar3 != '\0') {
+            // Parity: virtual call at *(this->master_objects + 0x1d8)->vtable + 0x2c (tplayer.cpp.asm @ 0x005136ca).
+            if (this->master_objects != nullptr) {
+                void* obj = *(void**)((char*)this->master_objects + 0x1d8);
+                if (obj != nullptr) {
+                    using VCall = void(__thiscall*)(void*);
+                    VCall fn = (VCall)(*(void***)(obj))[0x2c / 4];
+                    fn(obj);
+                }
+            }
+
+            ((TRIBE_Command*)this->world->commands)->command_build_wall(list, list_num, sVar2, param_2, param_3, param_4, param_5);
+            free(list);
+            return '\x01';
+        }
+    }
+    return '\0';
+}
+
+// TODO: STUB - command_make_building not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_make_building(short master_obj_id, float x, float y) { return 0; }
+
+// TODO: STUB - command_attack_ground not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_attack_ground(float x, float y) { return 0; }
+
+// TODO: STUB - command_make_repair not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_make_repair(RGE_Static_Object* target) { return 0; }
+
+// TODO: STUB - command_make_unload not yet implemented from tribeplr.cpp.decomp.
+uchar TRIBE_Player::command_make_unload(float x, float y) { return 0; }

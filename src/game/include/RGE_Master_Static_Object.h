@@ -30,6 +30,12 @@ public:
     long get_help_message();
     long get_help_page();
 
+    // Computes the 8 screen-space bounding corners of this object's footprint at (col, row).
+    void alignment_box(RGE_Game_World* world, float col, float row,
+                       short* x4, short* local_12, short* scr_y,
+                       short* y3, short* y4, short* y1, short* x2,
+                       short* local_4);
+
     unsigned char master_type;
     char* name;
     short string_id;
