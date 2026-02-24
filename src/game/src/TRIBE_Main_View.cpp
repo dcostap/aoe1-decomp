@@ -254,6 +254,7 @@ int TRIBE_Main_View::command_place_object(long param_1, long param_2, int param_
     this->fixup_pick_info(&pick_info);
 
     short master_obj_id = rge_base_game->master_obj_id;
+
     if (master_obj_id == (short)-1)
         return 0;
 
@@ -286,21 +287,47 @@ int TRIBE_Main_View::command_place_multi_object(long param_1, long param_2,
                                                 long param_3, long param_4,
                                                 int param_5)
 {
-    if (!allow_user_commands)
-        return 0;
+    short master_obj_id;
+    TRIBE_Player* player;
+    TRIBE_Master_Building_Object* mk;
+    uint uVar6;
 
-    if (rge_base_game->prog_mode != 7)
-        return RGE_Main_View::command_place_multi_object(param_1, param_2, param_3, param_4, param_5);
-
-    short master_obj_id = rge_base_game->master_obj_id;
-    if (master_obj_id == (short)-1)
+    uVar6 = 0;
+    player = nullptr;
+    mk = nullptr;
+    if (!allow_user_commands) {
         return 0;
+    }
 
-    TRIBE_Player* player = (TRIBE_Player*)this->player;
-    TRIBE_Master_Building_Object* mk = (TRIBE_Master_Building_Object*)
-        player->master_objects[(int)master_obj_id];
-    if (!mk)
-        return 0;
+    master_obj_id = rge_base_game->master_obj_id;
+
+    // Non-preview mode builds the wall immediately via TRIBE_Player::command_make_wall (ASM 0x0052D472..).
+    if (rge_base_game->prog_mode != 7) {
+        player = (TRIBE_Player*)this->player;
+        if (player != nullptr && master_obj_id != (short)-1 &&
+            player->master_objects != nullptr &&
+            player->master_objects[(int)master_obj_id] != nullptr) {
+            uchar uVar3 = player->command_make_wall(master_obj_id, param_1, param_2, param_3, param_4);
+            uVar6 = (uint)(uVar3 != '\0');
+        }
+        if (param_5 != 0) {
+            rge_base_game->set_game_mode(0, 0);
+        }
+        goto LAB_0052d4c7;
+    }
+
+    if (master_obj_id == (short)-1) {
+        goto LAB_0052d4c7;
+    }
+
+    player = (TRIBE_Player*)this->player;
+    if (player == nullptr || player->master_objects == nullptr) {
+        goto LAB_0052d4c7;
+    }
+    mk = (TRIBE_Master_Building_Object*)player->master_objects[(int)master_obj_id];
+    if (mk == nullptr) {
+        goto LAB_0052d4c7;
+    }
 
     long c1 = param_1, r1 = param_2;
     long c2 = param_3, r2 = param_4;
@@ -335,7 +362,17 @@ int TRIBE_Main_View::command_place_multi_object(long param_1, long param_2,
         }
     }
 
-    return 1;
+    uVar6 = 1;
+
+LAB_0052d4c7:
+    this->set_selection_area(-1, -1, -1, -1);
+    {
+        // Parity: virtual call at vtable + 0x20 with param 1 (tvw_main.cpp.asm @ 0x0052D4D6).
+        using VCall = void(__thiscall*)(TRIBE_Main_View*, int);
+        VCall fn = (VCall)(*(void***)(this))[0x20 / 4];
+        fn(this, 1);
+    }
+    return (int)uVar6;
 }
 
 // ---------------------------------------------------------------------------

@@ -66,8 +66,6 @@ public:
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);
     void get_max_size(short* max_col, short* max_row);
 
-    // Converts tile (col, row) to screen (x, y) coordinates. Returns 1 if on-screen.
-    int get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int flags);
     // Returns true if the object with the given id was drawn in the last frame.
     bool Object_Was_Displayed(long object_id, int param_2);
 
