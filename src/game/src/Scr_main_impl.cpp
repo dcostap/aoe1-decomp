@@ -53,82 +53,6 @@ void menu_dispatch_confirm_dialog(TRIBE_Screen_Main_Menu* owner) {
     owner->popupOKDialog(0x1d4f7, (char*)"Confirm Dialog", 0x1c2, 100);
 }
 
-class MainMenuStubScreen : public TScreenPanel {
-public:
-    MainMenuStubScreen(char* panel_name, char* setup_name, long setup_id, char* title_text)
-        : TScreenPanel(panel_name), title(nullptr), back_button(nullptr) {
-        // TODO: STUB - Non-original stub screen:
-        // TODO: STUB - this exists only to keep UI flow usable until the real screen classes are reimplemented.
-        if (!rge_base_game || !rge_base_game->draw_area) {
-            this->error_code = 1;
-            return;
-        }
-
-        // Match original screen setup call shape: attempt the requested setup tuple once and fail hard.
-        if (!TScreenPanel::setup(rge_base_game->draw_area, setup_name, setup_id, 1)) {
-            this->error_code = 1;
-            return;
-        }
-
-        this->set_ideal_size(0x280, 0x1e0);
-
-        if (!this->create_text((TPanel*)this, &this->title, title_text, 0x14, 0x14, 0x258, 0x1e, 0xb, 1, 1, 0)) {
-            this->error_code = 1;
-            return;
-        }
-
-        if (!this->create_button((TPanel*)this, &this->back_button, 0xfa2, 0, 0x14a, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
-            this->error_code = 1;
-            return;
-        }
-
-        this->back_button->hotkey = 0x1b;
-        this->back_button->hotkey_shift = 0;
-        this->curr_child = (TPanel*)this->back_button;
-    }
-
-    virtual long handle_idle() override {
-        if (rge_base_game && rge_base_game->input_enabled == 0) {
-            menu_enable_input();
-        }
-        return TPanel::handle_idle();
-    }
-
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) override {
-        if ((param_2 == 1) && (param_1 == (TPanel*)this->back_button)) {
-            menu_disable_input();
-
-            TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
-            if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"Main Menu", 0);
-                if (this->panelNameValue != nullptr) {
-                    panel_system->destroyPanel(this->panelNameValue);
-                }
-            } else {
-                if (menu) delete menu;
-                menu_enable_input();
-            }
-            return 1;
-        }
-
-        return TScreenPanel::action(param_1, param_2, param_3, param_4);
-    }
-
-private:
-    TTextPanel* title;
-    TButtonPanel* back_button;
-};
-
-TPanel* create_stub_screen(char* panel_name, char* setup_name, long setup_id, char* title_text) {
-    MainMenuStubScreen* screen = new MainMenuStubScreen(panel_name, setup_name, setup_id, title_text);
-    if (!screen) return nullptr;
-    if (screen->error_code != 0) {
-        delete screen;
-        return nullptr;
-    }
-    return (TPanel*)screen;
-}
-
 } // namespace
 
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Menu") {
@@ -375,7 +299,6 @@ long TRIBE_Screen_Main_Menu::char_action(long param_1, short param_2) { return T
 
 long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Source of truth: `src/game/src/Scr_main.cpp.decomp` (`action` @ 0x0049EE00).
-    // NOTE: dialog and target screens are currently stubs; keep TODO markers explicit.
     if (param_1 && param_1->panelNameValue && (_stricmp(param_1->panelNameValue, "Confirm Dialog") == 0) && (param_2 == 0)) {
         if (panel_system) {
             panel_system->destroyPanel((char*)"Confirm Dialog");
