@@ -1,16 +1,19 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include <excpt.h>
 #include "../include/TRIBE_Game.h"
 #include "../include/RGE_Prog_Info.h"
 #include "../include/custom_debug.h"
 
-// ASSUMPTION: GUID values are reconstructed from assembly initialization logic at 0x00454c17.
-// _TRIBE_GUID: F2E846A8-08F5-0797-11D1EBE2-60009B83
-const _GUID AGE1_TRIBE_GUID = { 0xF2E846A8, 0x08F5, 0x0797, { 0x11, 0xD1, 0xEB, 0xE2, 0x60, 0x00, 0x9B, 0x83 } };
-// _ZONE_GUID: F2E846AA-08F5-0797-11D1EBE2-60009B83
-const _GUID AGE1_ZONE_GUID  = { 0xF2E846AA, 0x08F5, 0x0797, { 0x11, 0xD1, 0xEB, 0xE2, 0x60, 0x00, 0x9B, 0x83 } };
+// Fully verified GUID initialization parity with main.cpp.asm @ 0x00454c17.
+// _TRIBE_GUID dword stores:
+//   Data1=0x08F50797, Data2=0x46A8, Data3=0xF2E8, Data4={0xE2,0xEB,0xD1,0x11,0x83,0x9B,0x00,0x60}
+const _GUID AGE1_TRIBE_GUID = { 0x08F50797, 0x46A8, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
+// _ZONE_GUID dword stores:
+//   Data1=0x08F50797, Data2=0x46AA, Data3=0xF2E8, Data4={0xE2,0xEB,0xD1,0x11,0x83,0x9B,0x00,0x60}
+const _GUID AGE1_ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
 
 static int aoe_log_unhandled_exception(EXCEPTION_POINTERS* ep) {
 CUSTOM_DEBUG_BEGIN
@@ -131,9 +134,12 @@ CUSTOM_DEBUG_END
     strcpy(info.cursor_file, "mcursors");
 
     // main.cpp:153 (Scalar initializations)
-    // NOTE: ASM stores integer 84 (0x54) into these float fields.
-    info.mouse_scroll_max_dist = 84.0f; // TODO: verify if should be integer bit-pattern 0x54
-    info.key_scroll_max_dist = 84.0f; 
+    // NOTE: ASM stores integer 0x00000054 into these float fields (raw bits; float value ~= 1.17709e-43).
+    {
+        const uint32_t scroll_max_dist_bits = 0x00000054u;
+        memcpy(&info.mouse_scroll_max_dist, &scroll_max_dist_bits, sizeof(scroll_max_dist_bits));
+        memcpy(&info.key_scroll_max_dist, &scroll_max_dist_bits, sizeof(scroll_max_dist_bits));
+    }
     
     info.game_guid = AGE1_TRIBE_GUID;
     info.zone_guid = AGE1_ZONE_GUID;

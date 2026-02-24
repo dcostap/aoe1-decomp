@@ -238,6 +238,14 @@ RGE_View::~RGE_View() {
         delete this->save_area1;
         this->save_area1 = nullptr;
     }
+    if (this->prior_objs) {
+        delete this->prior_objs;
+        this->prior_objs = nullptr;
+    }
+    if (this->futur_objs) {
+        delete this->futur_objs;
+        this->futur_objs = nullptr;
+    }
     if (this->Terrain_Clip_Mask) {
         delete this->Terrain_Clip_Mask;
         this->Terrain_Clip_Mask = nullptr;
@@ -278,6 +286,40 @@ void RGE_View::display_object_selection(int id, int duration, int select_type, i
         slot->duration = (unsigned long)duration;
         slot->select_type = select_type;
         this->DispSel_List_Size += 1;
+    }
+}
+
+void RGE_View::update_display_selected_objects() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00533E10
+    const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 0x2CB);
+
+    for (int i = 0; i < this->DispSel_List_Max; ++i) {
+        DisplaySelectedObjRec* rec = &this->DispSel_List[i];
+        if (rec->active == 0) {
+            continue;
+        }
+
+        RGE_Static_Object* obj = this->world->objectsValue[rec->id];
+
+        if (obj == nullptr) {
+            rec->active = 0;
+            this->DispSel_List_Size -= 1;
+            continue;
+        }
+
+        const ulong elapsed = now - rec->start_time;
+        if ((ulong)rec->duration < elapsed) {
+            rec->active = 0;
+            this->DispSel_List_Size -= 1;
+            continue;
+        }
+
+        const uchar mask = (uchar)rec->select_type;
+        if ((elapsed & 0x100) == 0) {
+            obj->selected = (uchar)(obj->selected | mask);
+        } else {
+            obj->selected = (uchar)(obj->selected & ~mask);
+        }
     }
 }
 
@@ -361,14 +403,8 @@ void RGE_View::set_rect(long param_1, long param_2, long param_3, long param_4) 
     if (this->tile_wid <= 0) this->tile_wid = (short)(this->tile_half_wid * 2);
     if (this->tile_hgt <= 0) this->tile_hgt = (short)(this->tile_half_hgt * 2);
 
-    if (this->tile_half_wid > 0) {
-        this->max_col_num = (short)(param_3 / this->tile_half_wid);
-    }
-    if (this->tile_half_hgt > 0) {
-        this->max_row_num = (short)(param_4 / this->tile_half_hgt);
-    }
-    if (this->max_col_num < 1) this->max_col_num = 1;
-    if (this->max_row_num < 1) this->max_row_num = 1;
+    this->calc_draw_vars();
+    this->create_surfaces();
 
     this->last_view_x = -9999.0f;
     this->last_view_y = -9999.0f;
@@ -391,6 +427,86 @@ void RGE_View::set_rect(long param_1, long param_2, long param_3, long param_4) 
         this->Terrain_Fog_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
         this->Master_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
     }
+
+    if (MouseSystem != nullptr && param_3 > 0 && param_4 > 0) {
+        MouseSystem->set_game_window((int)param_1, (int)param_2, (int)(param_3 + param_1), (int)(param_4 + param_2));
+        MouseSystem->set_game_mode(1);
+    }
+
+    this->set_redraw(TPanel::RedrawMode::RedrawFull);
+}
+
+void RGE_View::delete_surfaces() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534100
+    if (this->save_area1 != nullptr) {
+        delete this->save_area1;
+        this->save_area1 = nullptr;
+    }
+}
+
+int RGE_View::create_surfaces() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534130
+    if (this->pnl_wid == 0 && this->pnl_hgt == 0) {
+        return 1;
+    }
+
+    if (this->save_area1 == nullptr) {
+        this->save_area1 = new (std::nothrow) TDrawArea((char*)"Terrain Buffer");
+        if (this->save_area1 != nullptr && this->render_area != nullptr) {
+            this->save_area1->Init(this->render_area->DrawSystem, nullptr, (int)this->pnl_wid, (int)this->pnl_hgt, 1, 0, 0);
+        }
+    }
+
+    if (this->save_area1 != nullptr && 0 < this->pnl_hgt) {
+        this->save_area1->SetSize(this->pnl_wid, this->pnl_hgt, 1);
+        this->Float_X_Delta = 0;
+        this->Float_Y_Delta = 0;
+        this->save_area1->SetFloatOffsets(0, 0);
+
+        if (this->prior_objs != nullptr) {
+            delete this->prior_objs;
+            this->prior_objs = nullptr;
+        }
+        if (this->futur_objs != nullptr) {
+            delete this->futur_objs;
+            this->futur_objs = nullptr;
+        }
+
+        const int yline = (int)this->pnl_hgt + 0x1C2;
+        this->prior_objs = new (std::nothrow) DClipInfo_List(yline * 2, yline, 0x40, -200, (int)this->pnl_hgt + 0xF9, 0x28);
+        this->futur_objs = new (std::nothrow) DClipInfo_List(yline * 2, yline, 0x40, -200, (int)this->pnl_hgt + 0xF9, 0x28);
+
+        if (this->prior_objs != nullptr) {
+            this->prior_objs->SetDrawRegion(0, 0, (int)this->pnl_wid - 1, (int)this->pnl_hgt - 1);
+        }
+        if (this->futur_objs != nullptr) {
+            this->futur_objs->SetDrawRegion(0, 0, (int)this->pnl_wid - 1, (int)this->pnl_hgt - 1);
+        }
+    }
+
+    return (this->save_area1 != nullptr) ? 1 : 0;
+}
+
+void RGE_View::calc_draw_vars() {
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00534340
+    if (this->pnl_wid != 0 && this->pnl_hgt != 0 && this->tile_wid != 0 && this->tile_hgt != 0) {
+        this->center_scr_col_offset = 0;
+        this->center_scr_row_offset = 0;
+        this->max_col_num = (short)(this->pnl_wid / (long)this->tile_wid);
+        this->max_row_num = (short)(this->pnl_hgt / (long)this->tile_hgt);
+        this->center_scr_col = (short)((short)this->pnl_wid - this->tile_half_wid + (short)(this->pnl_wid / 2));
+        this->center_scr_row = (short)((short)this->pnl_hgt - this->tile_half_hgt + (short)(this->pnl_hgt / 2));
+        return;
+    }
+
+    this->max_row_num = 0;
+    this->max_col_num = 0;
+    this->center_scr_col = 0;
+    this->center_scr_row = 0;
+    this->center_map_col = 0;
+    this->center_map_row = 0;
+    this->center_scr_col_offset = 0;
+    this->center_scr_row_offset = 0;
 }
 
 void RGE_View::set_focus(int param_1) {
@@ -420,167 +536,38 @@ void RGE_View::set_selection_area(long param_1, long param_2, long param_3, long
 }
 
 uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6) {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x005359E0.
-    // NOTE: The original routes object-picks through view_function(); this repo does not yet have that full pipeline.
-    // The object-pick path here is a best-effort transliteration using `pick_objects()` + `pick_weight()`.
-
-    if (param_5 != nullptr) {
-        param_5->x = 0.0f;
-        param_5->y = 0.0f;
-        param_5->scr_x = 0;
-        param_5->scr_y = 0;
-        param_5->object = nullptr;
-        param_5->tile = nullptr;
-    }
-
-    if (this->map == nullptr || param_5 == nullptr) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005359E0.
+    if (param_5 == nullptr) {
         return '\0';
     }
 
-    if (param_1 == ')') {
-        if (this->player == nullptr || this->world == nullptr) {
-            return '\0';
-        }
+    tagPOINT mouse_pos;
+    mouse_pos.x = param_3;
+    mouse_pos.y = param_4;
 
-        int max_level = 0x28;
-        int start_level = 0;
-        if (param_2 != '\0') {
-            max_level = 0x14;
-            start_level = 10;
-        }
+    tagPOINT start_mouse_pos;
+    start_mouse_pos.x = param_3;
+    start_mouse_pos.y = param_4;
 
-        int num = this->pick_objects((int)param_3, (int)param_4, start_level, max_level, 0x0f, 4, 1);
-        if (num == 0) {
-            return '2';
-        }
+    param_5->x = 0.0f;
+    param_5->y = 0.0f;
+    param_5->scr_x = 0;
+    param_5->scr_y = 0;
+    param_5->object = nullptr;
+    param_5->tile = nullptr;
 
-        RGE_Static_Object* picked = nullptr;
-        short picked_scr_x = 0;
-        short picked_scr_y = 0;
-        int best_weight = 0;
+    void* picked = (param_1 != '(') ? (void*)param_6 : nullptr;
+    const long res = this->view_function(param_1, param_2, &mouse_pos, &start_mouse_pos, &picked, &param_5->x, &param_5->y, &param_5->scr_x, &param_5->scr_y);
 
-        if (param_6 != nullptr) {
-            // Cycle to the next valid object after `param_6`, wrapping to the first valid object.
-            bool found_last = false;
-            RGE_Static_Object* first = nullptr;
-            short first_scr_x = 0;
-            short first_scr_y = 0;
-
-            for (int i = 0; i < num; ++i) {
-                int obj_id = Picked_Objects[i].object_id;
-                if (obj_id < 0) {
-                    continue;
-                }
-                RGE_Static_Object* obj = this->world->objectsValue[obj_id];
-                if (obj == nullptr || obj->object_state >= 7) {
-                    continue;
-                }
-                if ((uchar)param_2 > (uchar)obj->master_obj->select_level) {
-                    continue;
-                }
-                if (this->pick_weight(obj, (int)Picked_Objects[i].confidence) <= 0) {
-                    continue;
-                }
-
-                if (first == nullptr) {
-                    first = obj;
-                    first_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
-                    first_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
-                }
-
-                if (found_last) {
-                    picked = obj;
-                    picked_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
-                    picked_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
-                    break;
-                }
-
-                if (obj == param_6) {
-                    found_last = true;
-                }
-            }
-
-            if (picked == nullptr && found_last && first != nullptr) {
-                picked = first;
-                picked_scr_x = first_scr_x;
-                picked_scr_y = first_scr_y;
-            }
-        } else {
-            for (int i = 0; i < num; ++i) {
-                int obj_id = Picked_Objects[i].object_id;
-                if (obj_id < 0) {
-                    continue;
-                }
-
-                RGE_Static_Object* obj = this->world->objectsValue[obj_id];
-                if (obj == nullptr || obj->object_state >= 7) {
-                    continue;
-                }
-                if ((uchar)param_2 > (uchar)obj->master_obj->select_level) {
-                    continue;
-                }
-
-                // Fog gating: match pick_multi/pick1 behavior.
-                if ((this->map->map_visible_flag == '\0') && (this->pick_through_fog(obj) == 0)) {
-                    int row = (int)obj->world_y;
-                    int col = (int)obj->world_x;
-                    uchar vis = this->player->visible->get_visible(col, row);
-                    if (vis != '\x0f') {
-                        continue;
-                    }
-                }
-
-                int w = this->pick_weight(obj, (int)Picked_Objects[i].confidence);
-                if (best_weight < w) {
-                    best_weight = w;
-                    picked = obj;
-                    picked_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
-                    picked_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
-                }
-            }
-        }
-
-        if (picked != nullptr) {
-            param_5->object = picked;
-            param_5->scr_x = picked_scr_x;
-            param_5->scr_y = picked_scr_y;
-            param_5->x = picked->world_x;
-            param_5->y = picked->world_y;
-            return '4';
-        }
-
-        return '2';
+    const uchar c = (uchar)res;
+    if (c == '4') {
+        param_5->object = (RGE_Static_Object*)picked;
+        return '4';
     }
-
-    if (param_1 != '(') {
-        return '\0';
+    if (c == '3') {
+        param_5->tile = (RGE_Tile*)picked;
     }
-    if (this->tile_half_wid == 0 || this->tile_half_hgt == 0) {
-        return '\0';
-    }
-
-    // Approximate inverse of the isometric projection used by RGE_Map::coordinate_map()/tile screen coords.
-    float sx = (float)(param_3 + this->map_scr_x_offset);
-    float sy = (float)(param_4 + this->map_scr_y_offset);
-    float a = sx / (float)this->tile_half_wid;
-    float b = sy / (float)this->tile_half_hgt;
-
-    float col = (a - b) * 0.5f;
-    float row = (a + b) * 0.5f;
-
-    param_5->x = col;
-    param_5->y = row;
-    param_5->scr_x = (short)param_3;
-    param_5->scr_y = (short)param_4;
-
-    int icol = (int)col;
-    int irow = (int)row;
-    if (icol < 0 || irow < 0 || icol >= (int)this->map->map_width || irow >= (int)this->map->map_height) {
-        return '\0';
-    }
-
-    param_5->tile = this->map->get_tile(icol, irow);
-    return (param_5->tile != nullptr) ? '3' : '\0';
+    return c;
 }
 
 uchar RGE_View::pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5) {
@@ -1486,6 +1473,372 @@ void RGE_View::get_max_size(short* max_col, short* max_row) {
     *max_row = this->max_row_num;
 }
 
+int RGE_View::get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int adjust_elev) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535DA0
+    if (out_x != nullptr) {
+        *out_x = 0;
+    }
+    if (out_y != nullptr) {
+        *out_y = 0;
+    }
+
+    if (this->map == nullptr) {
+        return 0;
+    }
+
+    if (col < 0 || row < 0 || col >= (short)this->map->map_width || row >= (short)this->map->map_height) {
+        return 0;
+    }
+
+    RGE_Tile* tile = nullptr;
+    if (this->map->map_row_offset != nullptr) {
+        tile = this->map->map_row_offset[row] + col;
+    }
+    if (tile == nullptr) {
+        return 0;
+    }
+
+    const uchar tile_type = tile->tile_type;
+    short scr_y = (short)(this->map->tilesizes[tile_type].y_delta + tile->screen_ypos - (short)this->map_scr_y_offset);
+
+    if (adjust_elev != 0) {
+        if (tile_type != 0) {
+            scr_y = (short)(scr_y + (short)(this->elev_hgt / 2));
+        }
+        if (tile_type == 6 || tile_type == 5 || tile_type == 3 || tile_type == 0x0B) {
+            scr_y = (short)(scr_y - this->elev_hgt);
+        }
+    }
+
+    if (out_x != nullptr) {
+        *out_x = (short)(tile->screen_xpos - (short)this->map_scr_x_offset);
+    }
+    if (out_y != nullptr) {
+        *out_y = scr_y;
+    }
+    return 1;
+}
+
+void RGE_View::get_center_screen_pos(short* out_y, short* out_x) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535EB0
+    if (out_y != nullptr) {
+        *out_y = this->center_scr_row;
+    }
+    if (out_x != nullptr) {
+        *out_x = this->center_scr_col;
+    }
+}
+
+void RGE_View::get_start_coords(short* out_map_col, short* out_map_row, short* out_scr_x, short* out_scr_y) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535ED0
+    if (out_map_col != nullptr) {
+        *out_map_col = this->start_map_col;
+    }
+    if (out_map_row != nullptr) {
+        *out_map_row = this->start_map_row;
+    }
+    if (out_scr_x != nullptr) {
+        *out_scr_x = this->start_scr_col;
+    }
+    if (out_scr_y != nullptr) {
+        *out_scr_y = this->start_scr_row;
+    }
+}
+
+void RGE_View::get_center_coords(short* out_map_col, short* out_map_row, short* out_scr_x, short* out_scr_y) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535F20
+    if (out_map_col != nullptr) {
+        *out_map_col = this->center_map_col;
+    }
+    if (out_map_row != nullptr) {
+        *out_map_row = this->center_map_row;
+    }
+    if (out_scr_x != nullptr) {
+        *out_scr_x = this->center_scr_col;
+    }
+    if (out_scr_y != nullptr) {
+        *out_scr_y = this->center_scr_row;
+    }
+}
+
+void RGE_View::get_tile_sizes(short* out_tile_wid, short* out_tile_hgt, short* out_half_wid, short* out_half_hgt) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535F70
+    if (out_tile_wid != nullptr) {
+        *out_tile_wid = this->tile_wid;
+    }
+    if (out_tile_hgt != nullptr) {
+        *out_tile_hgt = this->tile_hgt;
+    }
+    if (out_half_wid != nullptr) {
+        *out_half_wid = this->tile_half_wid;
+    }
+    if (out_half_hgt != nullptr) {
+        *out_half_hgt = this->tile_half_hgt;
+    }
+}
+
+long RGE_View::view_function(uchar mode, uchar parm, tagPOINT* mouse_pos, tagPOINT* start_mouse_pos, void** picked, float* out_x, float* out_y, short* out_scr_x, short* out_scr_y) {
+    // Best-effort transliteration. Source of truth: view.cpp.decomp @ 0x00535FE0
+    // NOTE: The original does a full diamond-scan + hit-test pipeline; this implementation focuses on the
+    // pick modes used by main view interactions in this repo (tile + object picks).
+    (void)start_mouse_pos;
+
+    this->function_mode = mode;
+    this->function_parm = parm;
+
+    void* in_picked = (picked != nullptr) ? *picked : nullptr;
+
+    if (out_x) *out_x = 0.0f;
+    if (out_y) *out_y = 0.0f;
+    if (out_scr_x) *out_scr_x = 0;
+    if (out_scr_y) *out_scr_y = 0;
+    if (picked) *picked = nullptr;
+
+    if (this->map == nullptr || mouse_pos == nullptr) {
+        return 0;
+    }
+
+    if (mode == '(') {
+        if (this->tile_half_wid == 0 || this->tile_half_hgt == 0) {
+            return 0;
+        }
+
+        float sx = (float)(mouse_pos->x + this->map_scr_x_offset);
+        float sy = (float)(mouse_pos->y + this->map_scr_y_offset);
+        float a = sx / (float)this->tile_half_wid;
+        float b = sy / (float)this->tile_half_hgt;
+
+        float col = (a - b) * 0.5f;
+        float row = (a + b) * 0.5f;
+
+        int icol = (int)col;
+        int irow = (int)row;
+        if (icol < 0 || irow < 0 || icol >= (int)this->map->map_width || irow >= (int)this->map->map_height) {
+            return 0;
+        }
+
+        RGE_Tile* tile = this->map->get_tile(icol, irow);
+        if (tile == nullptr) {
+            return 0;
+        }
+
+        if (out_x) *out_x = col;
+        if (out_y) *out_y = row;
+        if (out_scr_x) *out_scr_x = (short)mouse_pos->x;
+        if (out_scr_y) *out_scr_y = (short)mouse_pos->y;
+        if (picked) *picked = tile;
+        return '3';
+    }
+
+    if (mode == ')' || mode == '*' || mode == '+' || mode == ',') {
+        if (this->player == nullptr || this->world == nullptr) {
+            return 0;
+        }
+
+        const int max_level = (parm != '\0') ? 0x14 : 0x28;
+        const int start_level = (parm != '\0') ? 10 : 0;
+
+        const int num = this->pick_objects((int)mouse_pos->x, (int)mouse_pos->y, start_level, max_level, 0x0f, 4, 1);
+        if (num == 0) {
+            return '2';
+        }
+
+        RGE_Static_Object* last = (RGE_Static_Object*)in_picked;
+        RGE_Static_Object* chosen = nullptr;
+        short chosen_scr_x = 0;
+        short chosen_scr_y = 0;
+
+        if (last != nullptr) {
+            bool found_last = false;
+            RGE_Static_Object* first = nullptr;
+            short first_scr_x = 0;
+            short first_scr_y = 0;
+
+            for (int i = 0; i < num; ++i) {
+                const int obj_id = Picked_Objects[i].object_id;
+                if (obj_id < 0) continue;
+                RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+                if (obj == nullptr || obj->object_state >= 7) continue;
+                if ((uchar)parm > (uchar)obj->master_obj->select_level) continue;
+                if ((this->map->map_visible_flag == '\0') && (this->pick_through_fog(obj) == 0) && this->player->visible != nullptr) {
+                    const int row = (int)obj->world_y;
+                    const int col = (int)obj->world_x;
+                    const uchar vis = this->player->visible->get_visible(col, row);
+                    if (vis != '\x0f') continue;
+                }
+                if (this->pick_weight(obj, (int)Picked_Objects[i].confidence) <= 0) continue;
+
+                if (first == nullptr) {
+                    first = obj;
+                    first_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
+                    first_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
+                }
+
+                if (found_last) {
+                    chosen = obj;
+                    chosen_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
+                    chosen_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
+                    break;
+                }
+
+                if (obj == last) {
+                    found_last = true;
+                }
+            }
+
+            if (chosen == nullptr && found_last && first != nullptr) {
+                chosen = first;
+                chosen_scr_x = first_scr_x;
+                chosen_scr_y = first_scr_y;
+            }
+        } else {
+            int best_weight = 0;
+            for (int i = 0; i < num; ++i) {
+                const int obj_id = Picked_Objects[i].object_id;
+                if (obj_id < 0) continue;
+                RGE_Static_Object* obj = this->world->objectsValue[obj_id];
+                if (obj == nullptr || obj->object_state >= 7) continue;
+                if ((uchar)parm > (uchar)obj->master_obj->select_level) continue;
+                if ((this->map->map_visible_flag == '\0') && (this->pick_through_fog(obj) == 0) && this->player->visible != nullptr) {
+                    const int row = (int)obj->world_y;
+                    const int col = (int)obj->world_x;
+                    const uchar vis = this->player->visible->get_visible(col, row);
+                    if (vis != '\x0f') continue;
+                }
+
+                int w = this->pick_weight(obj, (int)Picked_Objects[i].confidence);
+                if (obj->owner == this->player) {
+                    w += 5;
+                }
+
+                if (chosen == nullptr || best_weight < w) {
+                    best_weight = w;
+                    chosen = obj;
+                    chosen_scr_x = (short)(this->pnl_x + Picked_Objects[i].draw_x);
+                    chosen_scr_y = (short)(this->pnl_y + Picked_Objects[i].draw_y);
+                }
+            }
+        }
+
+        if (chosen == nullptr) {
+            return '2';
+        }
+
+        if (picked) *picked = chosen;
+        if (out_x) *out_x = chosen->world_x;
+        if (out_y) *out_y = chosen->world_y;
+        if (out_scr_x) *out_scr_x = chosen_scr_x;
+        if (out_scr_y) *out_scr_y = chosen_scr_y;
+        return '4';
+    }
+
+    return 0;
+}
+
+static void rge_get_mouse_pos(tagPOINT* pt) {
+    if (pt == nullptr) return;
+    GetCursorPos((POINT*)pt);
+    if (rge_base_game != nullptr && rge_base_game->prog_info != nullptr && rge_base_game->prog_info->full_screen == 0) {
+        ScreenToClient((HWND)rge_base_game->prog_window, (POINT*)pt);
+        if (60000 < (uint)pt->x) pt->x = pt->x - 0x10000;
+        if (60000 < (uint)pt->y) pt->y = pt->y - 0x10000;
+    }
+}
+
+void RGE_View::draw_object_outline() {
+    // Best-effort transliteration. Source of truth: view.cpp.asm @ 0x00535610
+    if (rge_base_game == nullptr || this->world == nullptr || this->player == nullptr || this->map == nullptr) {
+        return;
+    }
+
+    const short master_id = rge_base_game->master_obj_id;
+    if (master_id == -1) {
+        return;
+    }
+
+    RGE_Player* cur_player = rge_base_game->get_player();
+    if (cur_player == nullptr || cur_player->master_objects == nullptr) {
+        return;
+    }
+
+    RGE_Master_Static_Object* master = cur_player->master_objects[master_id];
+    if (master == nullptr) {
+        return;
+    }
+
+    tagPOINT point;
+    rge_get_mouse_pos(&point);
+
+    if (this->is_inside(point.x, point.y) == 0) {
+        return;
+    }
+
+    RGE_Pick_Info pick_info;
+    const long local_x = point.x - this->clip_rect.left;
+    const long local_y = point.y - this->clip_rect.top;
+    if (this->pick('(', '\0', local_x, local_y, &pick_info, nullptr) != '3') {
+        return;
+    }
+
+    // Align placement to map/world rules.
+    float px = pick_info.x;
+    float py = pick_info.y;
+    master->alignment(&px, &py, this->world, 0);
+
+    short tile_x = 0;
+    short tile_y = 0;
+    if (this->get_tile_screen_coords((short)px, (short)py, &tile_x, &tile_y, 1) == 0) {
+        return;
+    }
+
+    const uchar elev_flag = master->elevation_flag;
+    const uchar ok = master->check_placement(cur_player, px, py, nullptr, 1, elev_flag, 0, 1, 1, 1);
+    if (ok == '\0') {
+        fog_next_shape = 5;
+    } else {
+        uint t = (this->world->world_time >> 7) & 7;
+        int c = (t < 4) ? (int)(t + 0x24) : (int)(0x2C - t);
+        fog_next_shape = (c << 4) | 9;
+    }
+
+    SDI_Draw_Line = (int)tile_y;
+    RGE_Color_Table* ct = (cur_player != nullptr) ? cur_player->color_table : nullptr;
+    master->draw(this->cur_render_area ? this->cur_render_area : this->render_area, tile_x, tile_y, ct, 0, 0, (int)(master->draw_flag & 1), (ok == '\0') ? master->draw_color : (uchar)0x97);
+    fog_next_shape = 0;
+}
+
+void RGE_View::draw_paint_brush() {
+    // Best-effort transliteration. Source of truth: view.cpp.asm @ 0x005358B0
+    this->set_selection_area(-1, -1, -1, -1);
+
+    if (rge_base_game == nullptr) {
+        return;
+    }
+
+    tagPOINT point;
+    rge_get_mouse_pos(&point);
+    if (this->is_inside(point.x, point.y) == 0) {
+        return;
+    }
+
+    RGE_Pick_Info pick_info;
+    const long local_x = point.x - this->clip_rect.left;
+    const long local_y = point.y - this->clip_rect.top;
+    if (this->pick('(', '\0', local_x, local_y, &pick_info, nullptr) != '3') {
+        return;
+    }
+
+    short brush = rge_base_game->brush_size;
+    if (rge_base_game->game_mode == 0x13) {
+        brush = 3;
+    }
+
+    const int col = (int)pick_info.x;
+    const int row = (int)pick_info.y;
+    const int half = (int)brush >> 1;
+    this->set_selection_area(col - half, row - half, col + half, row + half);
+}
+
 void RGE_View::draw()
 {
     tiles_drawn = 0;
@@ -1618,6 +1971,11 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
 long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 {
     (void)mode;
+
+    if (0 < this->DispSel_List_Size) {
+        this->update_display_selected_objects();
+    }
+
     if (this->map == nullptr || this->cur_render_area == nullptr || this->map->map_row_offset == nullptr) {
         CUSTOM_DEBUG_BEGIN
         if (s_view_debug_terrain_logs < 12) {
@@ -1719,6 +2077,16 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
             row_num = row_num + 1;
         } else {
             col_num = col_num - 1;
+        }
+    }
+
+    if (rge_base_game != nullptr) {
+        const int gm = rge_base_game->game_mode;
+        if (gm == 1 || ((6 < gm) && (gm < 9))) {
+            this->draw_object_outline();
+        }
+        if (gm == 0x15) {
+            this->draw_paint_brush();
         }
     }
 

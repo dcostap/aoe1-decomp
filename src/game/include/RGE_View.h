@@ -43,8 +43,24 @@ public:
 
     // Overlay helpers (view.cpp.decomp: selection flashes + overlay sprites).
     void display_object_selection(int id, int duration, int select_type, int reset_type);
+    void update_display_selected_objects();
     void reset_overlay_sprites();
     void add_overlay_sprite(TShape* shape, int facet, int world_x, int world_y, int flags, int draw_level, unsigned char* color_table, int display_function, unsigned long draw_interval);
+
+    // Surface/pipeline helpers (truth: view.cpp.decomp).
+    void delete_surfaces();
+    int create_surfaces();
+    void calc_draw_vars();
+    void draw_object_outline();
+    void draw_paint_brush();
+
+    int get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int adjust_elev);
+    void get_center_screen_pos(short* out_y, short* out_x);
+    void get_start_coords(short* out_map_col, short* out_map_row, short* out_scr_x, short* out_scr_y);
+    void get_center_coords(short* out_map_col, short* out_map_row, short* out_scr_x, short* out_scr_y);
+    void get_tile_sizes(short* out_tile_wid, short* out_tile_hgt, short* out_half_wid, short* out_half_hgt);
+
+    long view_function(uchar mode, uchar parm, tagPOINT* mouse_pos, tagPOINT* start_mouse_pos, void** picked, float* out_x, float* out_y, short* out_scr_x, short* out_scr_y);
 
     // Non-virtual helpers used by minimap (truth: view.cpp.decomp).
     int get_selection_area(long* col1, long* row1, long* col2, long* row2, int normalize);

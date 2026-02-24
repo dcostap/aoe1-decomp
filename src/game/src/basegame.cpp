@@ -16,6 +16,7 @@
 #include "../include/TDigital.h"
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Map.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
@@ -23,6 +24,8 @@
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Communications_Speed.h"
 #include "../include/RGE_Communications_Synchronize.h"
+#include "../include/DriveInformation.h"
+#include "../include/globals.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
@@ -30,6 +33,7 @@
 #include <new>
 #include <timeapi.h>
 #include <direct.h>
+#include <string.h>
 
 #include "../include/debug_helpers.h"
 
@@ -37,6 +41,31 @@ struct TPanelSystem;
 extern struct TPanelSystem* panel_system;
 
 static int snapshot_number = 1;
+
+static char s_ver_empty[] = "";
+static char s_ver_1_0[] = "1.0";
+static char s_ver_1_0a[] = "1.0a";
+static char s_ver_1_0b[] = "1.0b";
+static char s_ver_1_0c[] = "1.0c";
+static char s_ver_1_0d[] = "1.0d";
+static char s_ver_1_0e[] = "1.0e";
+static char s_ver_1_1[] = "1.1";
+static char s_ver_1_1a[] = "1.1a";
+static char s_ver_1_1b[] = "1.1b";
+static char s_ver_1_1c[] = "1.1c";
+static char s_ver_1_2[] = "1.2";
+static char s_ver_1_2a[] = "1.2a";
+static char s_ver_1_2b[] = "1.2b";
+static char s_ver_1_2c[] = "1.2c";
+static char s_ver_1_3[] = "1.3";
+static char s_ver_1_3a[] = "1.3a";
+static char s_ver_1_3b[] = "1.3b";
+static char s_ver_1_3c[] = "1.3c";
+static char s_ver_1_4[] = "1.4";
+static char s_ver_1_4a[] = "1.4a";
+static char s_ver_1_4b[] = "1.4b";
+static char s_ver_1_4c[] = "1.4c";
+static char s_ver_1_X[] = "1.X";
 static char s_dot_AoE_04d_bmp[] = ".\\AoE%04d.bmp";
 static const char kBasegameSourcePath[] = "C:\\msdev\\work\\age1_x1\\basegame.cpp";
 
@@ -273,7 +302,7 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Delete drive info
     if (driveInfo != nullptr) {
-        free(driveInfo);
+        delete driveInfo;
         driveInfo = nullptr;
     }
 
@@ -689,8 +718,11 @@ CUSTOM_DEBUG_END
         this->scenario_info = new RGE_Scenario_File_Info(scenario_info_file);
     }
 
-    // Drive Info (ASM 0x0041bf40) - TODO: implement DriveInformation class
-    // driveInfo = new DriveInformation();
+    // Drive Info (ASM 0x0041bf40)
+    driveInfo = new (std::nothrow) DriveInformation();
+    if (driveInfo == nullptr) {
+        return 0;
+    }
     
     if (!this->setup_blank_screen()) { // vtable offset 0x9c (index 39)
         this->error_code = 0xd;
@@ -713,8 +745,57 @@ CUSTOM_DEBUG_END
 }
 
 int RGE_Base_Game::check_for_cd(int p1) {
-    // TODO: implement logic from 0x0041FD40
-    return 1;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041FC90
+    if (this->prog_info->verify_cd == 0) {
+        return 1;
+    }
+
+    if (p1 > 0) {
+        int iVar4 = 0;
+        uint uVar5 = 0;
+        uint uVar1 = 0;
+        do {
+            uVar1 = uVar5 + 1;
+            int iVar2 = this->comm_handler->GetPlayerHumanity(uVar1);
+            if (iVar2 == 2) {
+                iVar2 = this->playerHasCD((int)uVar5);
+                if (iVar2 != 0) {
+                    iVar4 = iVar4 + 1;
+                }
+            }
+            uVar5 = uVar1;
+        } while ((int)uVar1 < 9);
+        return (uint)(p1 <= this->prog_info->max_players_per_cd * iVar4);
+    }
+
+    if (force_cd != 0) {
+        return 1;
+    }
+
+    char* pcVar3 = this->registry->RegGetAscii(0, "CDPath");
+    if (pcVar3 == nullptr) {
+        return 0;
+    }
+
+    int iVar4 = GetDriveTypeA(pcVar3);
+    if (iVar4 != 5) {
+        return 0;
+    }
+
+    unsigned long vol_ser_num = 0;
+    unsigned long file_sys_flags = 0;
+    unsigned long max_comp_len = 0;
+    char vol_name[256];
+    char file_sys_name[256];
+
+    int ok = GetVolumeInformationA(
+        pcVar3, vol_name, 0x100, &vol_ser_num, &max_comp_len, &file_sys_flags, file_sys_name, 0x100);
+    if (ok == 0) {
+        return 0;
+    }
+
+    iVar4 = stricmp(vol_name, this->prog_info->vol_name);
+    return (uint)(iVar4 == 0);
 }
 
 void RGE_Base_Game::set_mouse_cursor(void* p1) {
@@ -1014,15 +1095,11 @@ void RGE_Base_Game::set_game_mode(int p1, int p2) {
     this->sub_game_mode = p2;
 }
 void RGE_Base_Game::set_player(short p1) {
-    // ASM 0x00420150: Sets world->curr_player and clears map view info
-    // NOTE: From basegame.cpp.asm analysis, this checks player_num before assignment
-    if (this->world) {
-        // ASM shows this writes to [world + 0x7C] which is curr_player
-        this->world->curr_player = p1;
-        if (this->world->map) {
-            // TODO: implement clear_map_view_info when RGE_Map is available
-            // this->world->map->clear_map_view_info();
-        }
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x00420150
+    RGE_Game_World* pWorld = this->world;
+    if ((pWorld != nullptr) && (p1 < pWorld->player_num)) {
+        pWorld->curr_player = p1;
+        this->world->map->clear_map_view_info();
     }
 }
 char* RGE_Base_Game::get_string(long p1, char* p2, int p3) { 
@@ -1122,6 +1199,20 @@ TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return new RGE_Scenario_Header(p1); }
+
+void RGE_Base_Game::write_scenario_header(int param_1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CDA0
+    RGE_Scenario_Header* header = this->new_scenario_header(this->world->scenario);
+    if (header != nullptr) {
+        header->save(param_1);
+        delete header;
+        return;
+    }
+
+    long header_size = 0;
+    rge_write_uncompressed(param_1, &header_size, 4);
+}
+
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
 void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
 int RGE_Base_Game::reset_comm() {
@@ -2308,6 +2399,42 @@ unsigned char RGE_Base_Game::playerVersion(int index) {
     return (unsigned char)(this->rge_game_options.playerCDAndVersionValue[index] >> 1);
 }
 
+int RGE_Base_Game::playerHasCD(int index) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224A0
+    return this->rge_game_options.playerCDAndVersionValue[index] & 1;
+}
+
+char* RGE_Base_Game::playerVersionString(int index) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004224E0
+    const unsigned char v = this->playerVersion(index);
+    switch (v) {
+    case 0x00: return s_ver_empty;
+    case 0x01: return s_ver_1_0;
+    case 0x02: return s_ver_1_0a;
+    case 0x03: return s_ver_1_0b;
+    case 0x04: return s_ver_1_0c;
+    case 0x05: return s_ver_1_0d;
+    case 0x06: return s_ver_1_0e;
+    case 0x07: return s_ver_1_1;
+    case 0x08: return s_ver_1_1a;
+    case 0x09: return s_ver_1_1b;
+    case 0x0A: return s_ver_1_1c;
+    case 0x0B: return s_ver_1_2;
+    case 0x0C: return s_ver_1_2a;
+    case 0x0D: return s_ver_1_2b;
+    case 0x0E: return s_ver_1_2c;
+    case 0x0F: return s_ver_1_3;
+    case 0x10: return s_ver_1_3a;
+    case 0x11: return s_ver_1_3b;
+    case 0x12: return s_ver_1_3c;
+    case 0x13: return s_ver_1_4;
+    case 0x14: return s_ver_1_4a;
+    case 0x15: return s_ver_1_4b;
+    case 0x16: return s_ver_1_4c;
+    default: return s_ver_1_X;
+    }
+}
+
 int RGE_Base_Game::playerTeam(int index) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422660
     return (uint)this->rge_game_options.playerTeamValue[index];
@@ -2536,6 +2663,61 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
     RGE_Scenario* scenario_info = this->new_scenario_info(fd);
     rge_close(fd);
     return scenario_info;
+}
+
+RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* p1, int p2) {
+    // Source of truth: basegame.cpp.decomp @ 0x0041CCA0
+    char temp_name[300];
+    memset(temp_name, 0, sizeof(temp_name));
+    sprintf(temp_name, "%s%s", this->prog_info->scenario_dir, p1 ? p1 : "");
+
+    int fd = -1;
+    if (p2 == 0) {
+        if (p1 == nullptr) {
+            return nullptr;
+        }
+        fd = rge_open(temp_name, _O_RDONLY | _O_BINARY);
+    } else {
+        if (this->player_game_info == nullptr) {
+            return nullptr;
+        }
+        fd = this->player_game_info->open_scenario();
+    }
+
+    if (fd == -1) {
+        return nullptr;
+    }
+
+    char version_tag[4];
+    rge_read(fd, version_tag, 4);
+
+    RGE_Scenario_Header* header = nullptr;
+    if (memcmp(version_tag, "1.03", 4) == 0 ||
+        memcmp(version_tag, "1.04", 4) == 0 ||
+        memcmp(version_tag, "1.05", 4) == 0 ||
+        memcmp(version_tag, "1.06", 4) == 0 ||
+        memcmp(version_tag, "1.07", 4) == 0 ||
+        memcmp(version_tag, "1.08", 4) == 0 ||
+        memcmp(version_tag, "1.09", 4) == 0 ||
+        memcmp(version_tag, "1.10", 4) == 0 ||
+        memcmp(version_tag, "1.11", 4) == 0) {
+        header = this->new_scenario_header(fd);
+    }
+
+    rge_close(fd);
+    return header;
+}
+
+long RGE_Base_Game::get_scenario_checksum(char* p1) {
+    // Source of truth: basegame.cpp.decomp @ 0x00422D20
+    RGE_Scenario_Header* header = this->get_scenario_header(p1, 0);
+    if (header == nullptr) {
+        return 0;
+    }
+
+    const long checksum = (long)header->checksum;
+    delete header;
+    return checksum;
 }
 
 // Linker fix stubs
