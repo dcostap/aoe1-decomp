@@ -30,6 +30,9 @@ public:
     void setup_shadow_area(int force_rebuild);
     void setup_popup_help();
     void clear_popup_help();
+    long command_do_popup_help(uchar param_1, long param_2, long param_3);
+    void command_help(char* param_1, long param_2, long param_3, long param_4, long param_5);
+    void command_help(char* param_1, char* param_2, long param_3, long param_4, long param_5);
     char* get_popup_info_file();
     long get_popup_info_id();
 
