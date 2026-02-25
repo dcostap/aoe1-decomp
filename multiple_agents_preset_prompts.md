@@ -9,9 +9,6 @@ Mandatory:
     deal is, to the user. 
 
 Runtime rule (always keep): do NOT run the game/executable unless the user explicitly instructs you to do so for this task.
-
-Optional reusable template (only when user explicitly allows running the game):
-your task will be to remain an independent researcher of this issue. you will, on your own, investigate, make changes, build and run the game and then check the outputs, in a closed loop, until you fix the issue. The output will consist of runtime logs and generated output images. You will use / implement a screen-capture feature, where we output the screen contents to an image. That will let you perform visual verification. For the game runtime to progress to where we want, we implement debug skips / "jump to the part we care about automatically", so no input is needed in the game itself. Good luck.
      
 Your task right now is to...
 
@@ -28,3 +25,14 @@ I ran out of tasks, here are all the tasks i had:
 
 Many other workers are currently working on these tasks. Since you finished yours, and i got no more tasks, I want you to be independent, and explore the codebase and pick a new task yourself. It should be something isolated from the EXISTING tasks i showed you, to not cause
   conflicts. Good luck. Follow the same procedure, just with your own auto-found task.
+
+
+
+
+
+
+
+WHEN DEBUGGING AN ISSUE THAT NEEDS RUNNING THE GAME, CLOSED DEBUGGING LOOP FOR AN AGENT:
+your task will be to remain an independent researcher of this issue. you will, on your own, investigate, make changes, build and run the game and then check the outputs, in a closed loop, until you fix the issue. 
+The output will consist of runtime logs and generated output images. You will use / implement a screen-capture feature, where we output the screen contents to an image. 
+That will let you perform visual verification. For the game runtime to progress to where we want, we implement debug skips / "jump to the part we care about automatically", so no input is needed in the game itself. Good luck.
