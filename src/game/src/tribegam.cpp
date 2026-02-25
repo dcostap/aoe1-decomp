@@ -29,9 +29,12 @@
 #include "../include/TRIBE_Scenario_Header.h"
 #include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
+#include "../include/TRIBE_Command.h"
 #include "../include/TRegistry.h"
 #include "../include/TChat.h"
 #include "../include/TMousePointer.h"
+#include "../include/TEasy_Panel.h"
+#include "../include/TDebuggingLog.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Mission_Screen.h"
@@ -789,6 +792,71 @@ int TRIBE_Game::load_game_data() {
         }
     }
     return 1;
+}
+
+int TRIBE_Game::save_game(char* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00524640
+    char fileNameNoExt[260];
+
+    if (this->prog_mode != 4 && this->prog_mode != 6 && this->prog_mode != 7 && this->prog_mode != 5) {
+        return 0;
+    }
+
+    this->disable_input();
+    this->show_status_message(0x453, (char*)0, -1);
+
+    if (this->check_prog_argument((char*)"DEBUGSAVEGAME")) {
+        ENABLE_COMPRESSION = 0;
+    }
+
+    uchar save_ok = this->world->save_game(p1);
+    ENABLE_COMPRESSION = 1;
+    if (save_ok == 0) {
+        this->close_status_message();
+        this->enable_input();
+        return 0;
+    }
+
+    strcpy(fileNameNoExt, p1);
+    char* ext = strchr(fileNameNoExt, '.');
+    if (ext != nullptr) {
+        *ext = '\0';
+    }
+
+    this->set_save_game_name(fileNameNoExt);
+    if (this->singlePlayerGame() == 1) {
+        this->set_paused(0, 0);
+    }
+
+    panel_system->setCurrentPanel((char*)"Game Screen", 0);
+    panel_system->destroyPanel((char*)"Save Game Screen");
+    panel_system->destroyPanel((char*)"Status Screen");
+
+    this->enable_input();
+    return 1;
+}
+
+void TRIBE_Game::do_game_over() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00526DC0
+    this->disconnect_multiplayer_game();
+    if (this->testing_scenario[0] != '\0') {
+        this->quit_game();
+        return;
+    }
+
+    if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5 || this->prog_mode == 3) {
+        RGE_Game_World* world = this->world;
+        this->prog_mode = 0;
+        if (world != nullptr) {
+            world->turn_sound_off();
+            RGE_Player* player = this->get_player();
+            if (player->game_status == 1) {
+                this->start_video(4, (char*)((char*)world->scenario + 0x15e8));
+                return;
+            }
+            this->start_video(4, (char*)((char*)world->scenario + 0x16c8));
+        }
+    }
 }
 
 int TRIBE_Game::create_game(int p1) {
@@ -2752,7 +2820,130 @@ int TRIBE_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) {
 
     return 1; // not consumed
 }
-int TRIBE_Game::action_user_command(ulong p1, ulong p2) { return 0; }
+int TRIBE_Game::action_user_command(ulong p1, ulong p2) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529A70
+    char msg[256];
+    char temp_str[256];
+
+    if (this->prog_mode == 3) {
+        switch (p1) {
+        case 0x17a8:
+        case 0x17a9:
+        case 0x17aa:
+        case 0x17ab:
+        case 0x17b2:
+        case 0x17b6: {
+            this->quit_game();
+            panel_system->destroyPanel((char*)"Multiplayer Wait Screen");
+            panel_system->destroyPanel((char*)"Status Screen");
+            TEasy_Panel* panel = (TEasy_Panel*)panel_system->currentPanel();
+            if (panel != nullptr) {
+                panel->popupOKDialog(0x25c9, (char*)0, 0x1c2, 100);
+            }
+            break;
+        }
+        case 0x17ac:
+        case 0x17b7: {
+            this->reset_comm();
+            this->setSinglePlayerGame(1);
+            this->quit_game();
+            panel_system->destroyPanel((char*)"Multiplayer Wait Screen");
+            panel_system->destroyPanel((char*)"Status Screen");
+            TEasy_Panel* panel = (TEasy_Panel*)panel_system->currentPanel();
+            if (panel != nullptr) {
+                panel->popupOKDialog(0x25c9, (char*)0, 0x1c2, 100);
+            }
+            break;
+        }
+        }
+    } else if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
+        switch (p1) {
+        case 0x17a2:
+            if (this->game_screen != nullptr) {
+                this->game_screen->handle_pause();
+            }
+            break;
+        case 0x17a3:
+            if (this->game_screen != nullptr) {
+                this->game_screen->handle_resume();
+            }
+            break;
+        case 0x17b0:
+            if (this->game_screen != nullptr) {
+                this->play_sound(2);
+                this->game_screen->display_system_message((char*)"Out of sync detected by comm...");
+            }
+            if (this->check_prog_argument((char*)"SKIPSYNCSAVE") == 0) {
+                if (out_of_sync == 0) {
+                    out_of_sync = 1;
+                    if (this->comm_handler->IsHost() != 0) {
+                        ((TRIBE_Command*)this->world->commands)->command_save_game();
+                    }
+                }
+            } else if (out_of_sync == 0) {
+                uint who = this->comm_handler->WhoAmI();
+                if (this->comm_handler->IsPlayerOutOfSync(who, p2) != 0) {
+                    out_of_sync = 1;
+                    out_of_sync2 = 1;
+                    TRIBE_Screen_Status_Message* temp_screen =
+                        new TRIBE_Screen_Status_Message((char*)"Temp Screen", (char*)"", (char*)0, -1);
+                    (void)temp_screen;
+                    panel_system->setCurrentPanel((char*)"Temp Screen", 0);
+                    this->close_game_screens(1);
+                    if (do_debug_random != 0) {
+                        debug_random_write();
+                        dump_vismap_log();
+                    }
+                    int me = (int)this->comm_handler->WhoAmI();
+                    sprintf(msg + 4, "syncerr%d.gam", me);
+                    this->save_game(msg + 4);
+                    this->world->players[this->world->curr_player]->loss_if_game_on();
+                    this->do_game_over();
+                    TEasy_Panel* panel = (TEasy_Panel*)panel_system->currentPanel();
+                    if (panel != nullptr) {
+                        panel->popupOKDialog(0x966, (char*)0, 0x1c2, 100);
+                    }
+                    panel_system->destroyPanel((char*)"Temp Screen");
+                }
+            }
+            break;
+        case 0x17b2:
+            if (this->game_screen != nullptr) {
+                this->world->players[this->world->curr_player]->loss_if_game_on();
+                this->do_game_over();
+                TEasy_Panel* panel = (TEasy_Panel*)panel_system->currentPanel();
+                if (panel != nullptr) {
+                    panel->popupOKDialog(0x25c9, (char*)0, 0x1c2, 100);
+                }
+            }
+            break;
+        case 0x17bd: {
+            int player_id = this->playerID((int)p2);
+            if (player_id != this->world->curr_player && this->game_screen != nullptr) {
+                player_id = this->playerID((int)p2);
+                if (player_id > 0 && player_dropped[p2] == 0) {
+                    this->play_sound(2);
+                    this->get_string(0x4c1, temp_str + 4, 0x100);
+                    player_id = this->playerID((int)p2);
+                    sprintf(msg + 4, temp_str + 4, this->world->players[player_id]->name);
+                    this->game_screen->display_system_message(msg + 4);
+                    player_id = this->playerID((int)p2);
+                    L->Log("$$$ PROBLEM COMMUNICATING WITH %s", this->world->players[player_id]->name);
+                }
+            }
+            break;
+        }
+        case 0x17d5:
+            if (this->game_screen != nullptr) {
+                this->play_sound(2);
+                this->game_screen->handleChatReceived((int)p2);
+            }
+            break;
+        }
+    }
+
+    return 1;
+}
 int TRIBE_Game::action_command(ulong p1, ulong p2) { return 0; }
 int TRIBE_Game::action_music_done() { return 0; }
 int TRIBE_Game::action_activate() { return 0; }

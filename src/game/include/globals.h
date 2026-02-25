@@ -77,6 +77,7 @@ extern int ENABLE_COMPRESSION;
 extern int rge_write_error;
 extern int Map_Update_Suppresion;
 extern int debug_random_on;
+extern int do_debug_random;
 extern int fog_next_shape;
 extern int MapPathsDisplay;
 
@@ -101,6 +102,8 @@ int rge_open(char* path, int oflag);
 int rge_open(char* path, int oflag, int pmode);
 int rge_fake_close(int handle);
 int rge_close(int handle);
+void debug_random_write();
+void dump_vismap_log();
 void rge_read(int handle, void* buf, int size);
 void rge_write(int handle, void* buf, int size);
 void rge_write_uncompressed(int handle, void* buf, int size);
