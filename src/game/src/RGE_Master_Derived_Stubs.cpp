@@ -138,9 +138,18 @@ long RGE_Master_Doppleganger_Object::calc_base_damage_ability(RGE_Master_Combat_
 void RGE_Master_Doppleganger_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
 void RGE_Master_Doppleganger_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 void RGE_Master_Doppleganger_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
-// Source of truth: m_dg_obj.cpp.decomp @ 0x004512D0 (recycle path intentionally deferred)
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x004512D0
 RGE_Static_Object* RGE_Master_Doppleganger_Object::make_new_obj(
     RGE_Player* param_1, float param_2, float param_3, float param_4, RGE_Static_Object* param_5) {
+    if (this->recyclable != 0) {
+        RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
+        if (recycled != nullptr) {
+            ((RGE_Doppleganger_Object*)recycled)
+                ->recycle_in_to_game(this, param_1, param_2, param_3, param_4, param_5);
+            return recycled;
+        }
+    }
+
     RGE_Doppleganger_Object* obj =
         (RGE_Doppleganger_Object*)::operator new(sizeof(RGE_Doppleganger_Object), std::nothrow);
     if (obj != nullptr) {
