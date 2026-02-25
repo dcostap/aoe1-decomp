@@ -836,16 +836,86 @@ RGE_Static_Object* RGE_Player::make_new_object(long param_1, float param_2, floa
 
     return master->make_new_obj(this, param_2, param_3, param_4);
 }
-void RGE_Player::analyize_selected_objects() {}
+void RGE_Player::analyize_selected_objects() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471520
+    return;
+}
 int RGE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {
     // Source of truth: player.cpp.decomp @ 0x00471530
     *param_2 = 0;
     *param_3 = 0;
     return 0;
 }
-uchar RGE_Player::command_make_move(RGE_Static_Object* param_1, float param_2, float param_3) { return 1; }
-uchar RGE_Player::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) { return 1; }
-uchar RGE_Player::command_make_do(RGE_Static_Object* param_1, float param_2, float param_3) { return 1; }
+uchar RGE_Player::command_make_move(RGE_Static_Object* param_1, float param_2, float param_3) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471550
+    RGE_Static_Object** list = nullptr;
+    short list_num = 0;
+    uchar can_command = this->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1);
+    if (can_command != 0) {
+        list[0]->play_move_sound();
+        this->world->commands->command_move(list, list_num, param_1, param_2, param_3);
+        free(list);
+        return 1;
+    }
+    return 0;
+}
+
+uchar RGE_Player::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x004715D0
+    RGE_Static_Object** list = nullptr;
+    short list_num = 0;
+    uchar can_command = this->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1);
+    if (can_command != 0) {
+        RGE_Master_Static_Object* command_master = list[0]->get_command_master(param_1, param_2, param_3, 0.0f);
+        if (command_master != nullptr) {
+            command_master->play_command_sound();
+        }
+
+        this->world->commands->command_work(list, list_num, param_1, param_2, param_3);
+
+        if ((param_1 != nullptr) && (list_num > 0)) {
+            int i = 0;
+            do {
+                this->sendUnitAIOrder(
+                    (int)this->id,
+                    (int)list[i]->id,
+                    0x2BD,
+                    (int)param_1->id,
+                    (int)param_1->owner->id,
+                    param_1->world_x,
+                    param_1->world_y,
+                    1.0f,
+                    param_1->master_obj->los * 0.5f,
+                    0,
+                    0,
+                    100);
+                i = i + 1;
+            } while (i < list_num);
+        }
+
+        free(list);
+        return 1;
+    }
+    return 0;
+}
+
+uchar RGE_Player::command_make_do(RGE_Static_Object* param_1, float param_2, float param_3) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x004716D0
+    RGE_Static_Object** list = nullptr;
+    short list_num = 0;
+    uchar can_command = this->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1);
+    if (can_command != 0) {
+        RGE_Master_Static_Object* command_master = list[0]->get_command_master(param_1, param_2, param_3, 0.0f);
+        if (command_master != nullptr) {
+            command_master->play_command_sound();
+        }
+
+        this->world->commands->command_order(list, list_num, param_1, param_2, param_3);
+        free(list);
+        return 1;
+    }
+    return 0;
+}
 uchar RGE_Player::command_stop() { return 1; }
 uchar RGE_Player::command_place_object(short param_1, float param_2, float param_3, float param_4) {
     // Source of truth: player.cpp.decomp @ 0x004717D0
