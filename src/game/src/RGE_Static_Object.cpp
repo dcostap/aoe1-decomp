@@ -2401,12 +2401,39 @@ uchar RGE_Static_Object::heal(float param_1) {
     return 1;
 }
 int RGE_Static_Object::canRepair() { return 0; }
-void RGE_Static_Object::notify_of_relation(long param_1, uchar param_2) {}
-void RGE_Static_Object::do_command(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
-void RGE_Static_Object::move_to(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
-void RGE_Static_Object::work(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) {}
-void RGE_Static_Object::stop() {}
-void RGE_Static_Object::set_attack(RGE_Static_Object* /*param_1*/) {}
+void RGE_Static_Object::notify_of_relation(long param_1, uchar param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D10
+    (void)param_1;
+    (void)param_2;
+}
+void RGE_Static_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A450
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+}
+void RGE_Static_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A460
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+}
+void RGE_Static_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A470
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+}
+void RGE_Static_Object::stop() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A480
+}
+void RGE_Static_Object::set_attack(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A490
+    (void)param_1;
+}
 void RGE_Static_Object::play_command_sound() {}
 void RGE_Static_Object::play_move_sound() {}
 int RGE_Static_Object::unitIsInGroup(int param_1) {
@@ -2843,7 +2870,10 @@ uchar RGE_Static_Object::more_room() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C58C0
     return this->objects->number_of_objects < (short)(unsigned short)this->master_obj->obj_max;
 }
-void RGE_Static_Object::new_angle(float param_1) {}
+void RGE_Static_Object::new_angle(float param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6260
+    (void)param_1;
+}
 RGE_Static_Object* RGE_Static_Object::spawn_death_obj() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C41D0
     short spawnId = this->master_obj->death_spawn_obj_id;
@@ -2855,7 +2885,14 @@ RGE_Static_Object* RGE_Static_Object::spawn_death_obj() {
     }
     return nullptr;
 }
-RGE_Master_Static_Object* RGE_Static_Object::get_command_master(RGE_Static_Object* /*param_1*/, float /*param_2*/, float /*param_3*/, float /*param_4*/) { return nullptr; }
+RGE_Master_Static_Object* RGE_Static_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4C0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return this->master_obj;
+}
 void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D20
     if (this->worker_num < 0xFA) {
