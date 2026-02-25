@@ -13,10 +13,8 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/TMousePointer.h"
 #include "../include/globals.h"
-#include "../include/custom_debug.h"
 
 #include <stdlib.h>
-#include <cstddef>
 #include <new>
 
 RGE_Object_List::RGE_Object_List() {
@@ -163,26 +161,14 @@ void RGE_Object_List::rehook_list() {
 }
 
 void RGE_Object_List::update() {
-    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463210
+    // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463210
     int polled_objects = 0;
-    int node_index = 0;
-    CUSTOM_DEBUG_LOG_FMT("RGE_Object_List::update begin this=%p head=%p count=%d", this, this ? this->list : nullptr, (int)this->number_of_objects);
     RGE_Object_Node* node = this->list;
     while (node != nullptr) {
         RGE_Object_Node* next = node->next;
         if (node->node != nullptr) {
-            if (node_index < 16) {
-                void* obj_vft = *(void**)node->node;
-                CUSTOM_DEBUG_LOG_FMT("RGE_Object_List::update node[%d] node=%p obj=%p vft=%p id=%ld state=%d", node_index, node, node->node, obj_vft, node->node->id, (int)node->node->object_state);
-            }
             uchar update_result = node->node->update();
-            if (node_index < 16) {
-                CUSTOM_DEBUG_LOG_FMT("RGE_Object_List::update node[%d] update result=%d", node_index, (int)update_result);
-            }
             if (update_result != '\0') {
-                if (node_index < 16) {
-                    CUSTOM_DEBUG_LOG_FMT("RGE_Object_List::update node[%d] recycle obj=%p", node_index, node->node);
-                }
                 node->node->recycle_out_of_game();
             }
             polled_objects = polled_objects + 1;
@@ -193,14 +179,12 @@ void RGE_Object_List::update() {
                 }
             }
         }
-        node_index = node_index + 1;
         node = next;
     }
-    CUSTOM_DEBUG_LOG_FMT("RGE_Object_List::update end this=%p visited=%d", this, node_index);
 }
 
 void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
-    // Partially verified. Source of truth: obj_list.cpp.decomp @ 0x00463000 (RGE_Object_List::draw).
+    // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463000
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
         RGE_Static_Object* obj = node->node;
         if (obj == nullptr) {
@@ -222,10 +206,7 @@ void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uch
             should_draw = 0;
             if (param_4 != 0 &&
                 owner->world->players[owner->world->curr_player]->mutualAlly[owner->id] != 0) {
-                // obj_list.cpp.decomp @ 0x00463000: pRVar6 = (RGE_Color_Table *)pRVar2[1].master_obj;
-                // This reads a pointer-sized field from the derived-object tail at the same offset as master_obj.
-                const std::ptrdiff_t master_obj_off = (const char*)&obj->master_obj - (const char*)obj;
-                color_table = *(RGE_Color_Table**)((char*)obj + sizeof(RGE_Static_Object) + master_obj_off);
+                color_table = *(RGE_Color_Table**)((char*)obj + 0x90);
                 should_draw = 1;
             }
             break;

@@ -108,7 +108,7 @@ static int rge_view_get_border_edge_pictures(
 
 RGE_View::RGE_View()
     : TPanel((char*)"RGE_View") {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533510 (RGE_View::RGE_View).
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00533510
     this->cur_render_area = nullptr;
     this->calc_draw_count = 0;
     this->world = nullptr;
@@ -157,21 +157,18 @@ RGE_View::RGE_View()
     this->mouse_last_x = -1;
     this->mouse_last_y = -1;
     this->movable_object = nullptr;
+    this->save_area1 = nullptr;
+    this->set_selection_area(-1, -1, -1, -1);
 
     this->Terrain_Clip_Mask = nullptr;
     this->Terrain_Fog_Clip_Mask = nullptr;
     this->Master_Clip_Mask = nullptr;
 
+    this->LastRenderBits = nullptr;
+    this->RenderOffsets = nullptr;
+    this->LastRenderSize = 0;
     this->Tile_Edge_Tables = nullptr;
     this->Black_Edge_Tables = nullptr;
-
-    std::memset(&this->OverlaidPanel, 0, sizeof(this->OverlaidPanel));
-    this->OverlaidPanelActive = 0;
-    std::memset(this->EdgeNumber, 0xFF, sizeof(this->EdgeNumber));
-    this->Limited_Render_Rect = 0;
-    this->Use_Rect2 = 0;
-    std::memset(&this->Render_Rect1, 0, sizeof(this->Render_Rect1));
-    std::memset(&this->Render_Rect2, 0, sizeof(this->Render_Rect2));
 
     this->Float_Scroll_Offsets = nullptr;
     this->Float_Scroll_Offsets_Sz = 0;
@@ -184,20 +181,13 @@ RGE_View::RGE_View()
     this->Current_Blit = 0;
     this->Blit_Offset_X = 0;
     this->Blit_Offset_Y = 0;
+    this->prior_objs = nullptr;
+    this->futur_objs = nullptr;
 
-    this->real_old_map_col = 0;
-    this->real_old_map_row = 0;
     for (int i = 0; i < 5; ++i) {
         this->pick_lists[i] = nullptr;
         this->pick_list_size[i] = 0;
     }
-
-    this->save_area1 = nullptr;
-    this->LastRenderBits = nullptr;
-    this->RenderOffsets = nullptr;
-    this->LastRenderSize = 0;
-    this->prior_objs = nullptr;
-    this->futur_objs = nullptr;
 
     this->UC_ObjectTouched = 0;
     this->UC_TouchedObj = (int)0x80000000u;
@@ -213,7 +203,37 @@ RGE_View::RGE_View()
 }
 
 RGE_View::~RGE_View() {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533760 (RGE_View::~RGE_View).
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00533760
+    if (this->border_line_shape != nullptr) {
+        delete this->border_line_shape;
+        this->border_line_shape = nullptr;
+    }
+
+    this->delete_surfaces();
+
+    if (this->red_pen != nullptr) {
+        DeleteObject(this->red_pen);
+        this->red_pen = nullptr;
+    }
+
+    if (this->RenderOffsets != nullptr) {
+        std::free(this->RenderOffsets);
+        this->RenderOffsets = nullptr;
+    }
+
+    if (this->Terrain_Clip_Mask != nullptr) {
+        delete this->Terrain_Clip_Mask;
+        this->Terrain_Clip_Mask = nullptr;
+    }
+    if (this->Terrain_Fog_Clip_Mask != nullptr) {
+        delete this->Terrain_Fog_Clip_Mask;
+        this->Terrain_Fog_Clip_Mask = nullptr;
+    }
+    if (this->Master_Clip_Mask != nullptr) {
+        delete this->Master_Clip_Mask;
+        this->Master_Clip_Mask = nullptr;
+    }
+
     if (this->Tile_Edge_Tables) {
         std::free(this->Tile_Edge_Tables);
         this->Tile_Edge_Tables = nullptr;
@@ -230,24 +250,6 @@ RGE_View::~RGE_View() {
         std::free(this->Blit_Queue);
         this->Blit_Queue = nullptr;
     }
-    for (int i = 0; i < 5; ++i) {
-        if (this->pick_lists[i] != nullptr) {
-            std::free(this->pick_lists[i]);
-            this->pick_lists[i] = nullptr;
-        }
-    }
-    if (this->LastRenderBits) {
-        std::free(this->LastRenderBits);
-        this->LastRenderBits = nullptr;
-    }
-    if (this->RenderOffsets) {
-        std::free(this->RenderOffsets);
-        this->RenderOffsets = nullptr;
-    }
-    if (this->save_area1) {
-        delete this->save_area1;
-        this->save_area1 = nullptr;
-    }
     if (this->prior_objs) {
         delete this->prior_objs;
         this->prior_objs = nullptr;
@@ -256,22 +258,24 @@ RGE_View::~RGE_View() {
         delete this->futur_objs;
         this->futur_objs = nullptr;
     }
-    if (this->Terrain_Clip_Mask) {
-        delete this->Terrain_Clip_Mask;
-        this->Terrain_Clip_Mask = nullptr;
+    for (int i = 0; i < 5; ++i) {
+        if (this->pick_lists[i] != nullptr) {
+            std::free(this->pick_lists[i]);
+            this->pick_lists[i] = nullptr;
+        }
     }
-    if (this->Terrain_Fog_Clip_Mask) {
-        delete this->Terrain_Fog_Clip_Mask;
-        this->Terrain_Fog_Clip_Mask = nullptr;
+
+    if (MouseSystem != nullptr) {
+        MouseSystem->set_game_mode(0);
+        MouseSystem->set_game_enable(0);
     }
-    if (this->Master_Clip_Mask) {
-        delete this->Master_Clip_Mask;
-        this->Master_Clip_Mask = nullptr;
-    }
+
     if (this->DispSel_List) {
         std::free(this->DispSel_List);
         this->DispSel_List = nullptr;
     }
+
+    this->reset_overlay_sprites();
 }
 
 void RGE_View::display_object_selection(int id, int duration, int select_type, int reset_type) {
@@ -379,109 +383,92 @@ void RGE_View::add_overlay_sprite(
 }
 
 long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533940 (RGE_View::setup).
-    long ok = TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00533940
+    // Signature in this codebase is collapsed from original; callsite-backed mapping:
+    // game setup uses `param_7 == 0` and editor setup uses `param_7 == 0xA1`.
+    TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
     this->cur_render_area = nullptr;
+    this->calc_draw_count = (param_7 == (uchar)0xA1) ? 0 : 1;
+    this->start_scr_col = 0;
+    this->start_scr_row = 0;
+    this->start_map_col = 0;
+    this->start_map_row = 0;
     this->last_view_x = -9999.0f;
     this->last_view_y = -9999.0f;
     this->function_mode = 0;
 
-    // Source of truth: view.cpp.decomp @ 0x00533940 allocates 5 pick_lists of 0x40 entries.
+    this->white_pen = GetStockObject(6);
+    this->red_pen = CreatePen(0, 1, 0xFF);
+    this->hollow_brush = GetStockObject(5);
+
+    char shape_name[260];
+    std::sprintf(shape_name, "%s.shp", "bordline");
+    this->border_line_shape = new (std::nothrow) TShape(shape_name, -1);
+
+    this->Init_Tile_Edge_Tables();
+
     for (int i = 0; i < 5; ++i) {
-        if (this->pick_lists[i] == nullptr) {
-            this->pick_lists[i] = (RGE_SPick_Info*)std::calloc(0x40, sizeof(RGE_SPick_Info));
-        }
+        this->pick_lists[i] = (RGE_SPick_Info*)std::calloc(0x40, sizeof(RGE_SPick_Info));
         this->pick_list_size[i] = 0;
     }
 
-    if (this->Tile_Edge_Tables == nullptr || this->Black_Edge_Tables == nullptr) {
-        this->Init_Tile_Edge_Tables();
-    }
-    return ok;
+    return 1;
 }
 
 void RGE_View::Init_Tile_Edge_Tables() {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533AF0.
-    constexpr int kTileTypeTableBytes = 0x44;
-    constexpr int kTileTypeCount = kTileTypeTableBytes / 4;
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00533AF0
+    constexpr int kTileTypeCount = 0x44 / 4;
     constexpr int kMaskEntryCount = 0x2F;
-
-    if (this->Tile_Edge_Tables != nullptr) {
-        std::free(this->Tile_Edge_Tables);
-        this->Tile_Edge_Tables = nullptr;
-    }
-    if (this->Black_Edge_Tables != nullptr) {
-        std::free(this->Black_Edge_Tables);
-        this->Black_Edge_Tables = nullptr;
-    }
 
     int fd = _open("data2\\tileedge.dat", _O_BINARY | _O_RDONLY);
     if (fd != -1) {
-        const long size = _lseek(fd, 0, SEEK_END);
-        if (size > 0) {
-            Tile_FogEdge_Table** tables = (Tile_FogEdge_Table**)std::calloc(1, (size_t)size);
-            if (tables != nullptr) {
-                _lseek(fd, 0, SEEK_SET);
-                const int got = _read(fd, tables, (unsigned int)size);
-                if (got == size) {
-                    this->Tile_Edge_Tables = tables;
-                    for (int i = 0; i < kTileTypeCount; ++i) {
-                        char* base = (char*)tables;
-                        tables[i] = (Tile_FogEdge_Table*)(base + (intptr_t)tables[i]);
-                    }
-                    for (int i = 0; i < kTileTypeCount; ++i) {
-                        Tile_FogEdge_Table* rows = tables[i];
-                        if (rows == nullptr) {
-                            continue;
-                        }
-                        for (int j = 0; j < kMaskEntryCount; ++j) {
-                            if (rows[j].normal_draw != nullptr) {
-                                rows[j].normal_draw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].normal_draw);
-                            }
-                            if (rows[j].fog_draw != nullptr) {
-                                rows[j].fog_draw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].fog_draw);
-                            }
-                        }
-                    }
-                } else {
-                    std::free(tables);
+        _lseek(fd, 0, SEEK_END);
+        const long bytes = _tell(fd);
+        this->Tile_Edge_Tables = (Tile_FogEdge_Table**)std::calloc(1, (size_t)bytes);
+        _lseek(fd, 0, SEEK_SET);
+        _read(fd, this->Tile_Edge_Tables, (unsigned int)bytes);
+        _close(fd);
+
+        Tile_FogEdge_Table** tables = this->Tile_Edge_Tables;
+        for (int i = 0; i < kTileTypeCount; ++i) {
+            Tile_FogEdge_Table** entry = (Tile_FogEdge_Table**)((char*)this->Tile_Edge_Tables + i * 4);
+            *entry = (Tile_FogEdge_Table*)((char*)tables + (intptr_t)(*entry));
+        }
+        for (int i = 0; i < kTileTypeCount; ++i) {
+            Tile_FogEdge_Table* rows = *(Tile_FogEdge_Table**)((char*)this->Tile_Edge_Tables + i * 4);
+            for (int j = 0; j < kMaskEntryCount; ++j) {
+                if (rows[j].normal_draw != nullptr) {
+                    rows[j].normal_draw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].normal_draw);
+                }
+                if (rows[j].fog_draw != nullptr) {
+                    rows[j].fog_draw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].fog_draw);
                 }
             }
         }
-        _close(fd);
     }
 
     fd = _open("data2\\blkedge.dat", _O_BINARY | _O_RDONLY);
     if (fd != -1) {
-        const long size = _lseek(fd, 0, SEEK_END);
-        if (size > 0) {
-            Tile_BlackEdge_Table** tables = (Tile_BlackEdge_Table**)std::calloc(1, (size_t)size);
-            if (tables != nullptr) {
-                _lseek(fd, 0, SEEK_SET);
-                const int got = _read(fd, tables, (unsigned int)size);
-                if (got == size) {
-                    this->Black_Edge_Tables = tables;
-                    for (int i = 0; i < kTileTypeCount; ++i) {
-                        char* base = (char*)tables;
-                        tables[i] = (Tile_BlackEdge_Table*)(base + (intptr_t)tables[i]);
-                    }
-                    for (int i = 0; i < kTileTypeCount; ++i) {
-                        Tile_BlackEdge_Table* rows = tables[i];
-                        if (rows == nullptr) {
-                            continue;
-                        }
-                        for (int j = 0; j < kMaskEntryCount; ++j) {
-                            if (rows[j].black_UNdraw != nullptr) {
-                                rows[j].black_UNdraw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].black_UNdraw);
-                            }
-                        }
-                    }
-                } else {
-                    std::free(tables);
+        _lseek(fd, 0, SEEK_END);
+        const long bytes = _tell(fd);
+        this->Black_Edge_Tables = (Tile_BlackEdge_Table**)std::calloc(1, (size_t)bytes);
+        _lseek(fd, 0, SEEK_SET);
+        _read(fd, this->Black_Edge_Tables, (unsigned int)bytes);
+        _close(fd);
+
+        Tile_BlackEdge_Table** tables = this->Black_Edge_Tables;
+        for (int i = 0; i < kTileTypeCount; ++i) {
+            Tile_BlackEdge_Table** entry = (Tile_BlackEdge_Table**)((char*)this->Black_Edge_Tables + i * 4);
+            *entry = (Tile_BlackEdge_Table*)((char*)tables + (intptr_t)(*entry));
+        }
+        for (int i = 0; i < kTileTypeCount; ++i) {
+            Tile_BlackEdge_Table* rows = *(Tile_BlackEdge_Table**)((char*)this->Black_Edge_Tables + i * 4);
+            for (int j = 0; j < kMaskEntryCount; ++j) {
+                if (rows[j].black_UNdraw != nullptr) {
+                    rows[j].black_UNdraw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].black_UNdraw);
                 }
             }
         }
-        _close(fd);
     }
 
     std::memset(this->EdgeNumber, 0xFF, sizeof(this->EdgeNumber));
@@ -542,17 +529,8 @@ void RGE_View::set_rect(tagRECT param_1) {
 }
 
 void RGE_View::set_rect(long param_1, long param_2, long param_3, long param_4) {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533F70 (RGE_View::set_rect).
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00533F70
     TPanel::set_rect(param_1, param_2, param_3, param_4);
-
-    this->render_rect_wid = (short)param_3;
-    this->render_rect_hgt = (short)param_4;
-
-    if (this->tile_half_wid <= 0) this->tile_half_wid = (this->map != nullptr) ? this->map->tile_half_width : 32;
-    if (this->tile_half_hgt <= 0) this->tile_half_hgt = (this->map != nullptr) ? this->map->tile_half_height : 16;
-    if (this->tile_wid <= 0) this->tile_wid = (short)(this->tile_half_wid * 2);
-    if (this->tile_hgt <= 0) this->tile_hgt = (short)(this->tile_half_hgt * 2);
-
     this->calc_draw_vars();
     this->create_surfaces();
 
@@ -572,11 +550,9 @@ void RGE_View::set_rect(long param_1, long param_2, long param_3, long param_4) 
         this->Master_Clip_Mask = nullptr;
     }
 
-    if (param_3 > 0 && param_4 > 0) {
-        this->Terrain_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
-        this->Terrain_Fog_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
-        this->Master_Clip_Mask = new TSpan_List_Manager((int)param_3, (int)param_4);
-    }
+    this->Terrain_Clip_Mask = new (std::nothrow) TSpan_List_Manager((int)param_3, (int)param_4);
+    this->Terrain_Fog_Clip_Mask = new (std::nothrow) TSpan_List_Manager((int)param_3, (int)param_4);
+    this->Master_Clip_Mask = new (std::nothrow) TSpan_List_Manager((int)param_3, (int)param_4);
 
     if (MouseSystem != nullptr && param_3 > 0 && param_4 > 0) {
         MouseSystem->set_game_window((int)param_1, (int)param_2, (int)(param_3 + param_1), (int)(param_4 + param_2));
@@ -660,10 +636,10 @@ void RGE_View::calc_draw_vars() {
 }
 
 void RGE_View::set_focus(int param_1) {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533AC0.
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00533AC0
     TPanel::set_focus(param_1);
     if (MouseSystem != nullptr) {
-        MouseSystem->set_game_enable(param_1);
+        MouseSystem->set_game_enable(this->have_focus);
     }
 }
 
@@ -2489,67 +2465,78 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 
 int RGE_View::get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, ulong param_5)
 {
-    // Partially verified. Source of truth: view.cpp.decomp @ 0x00538590.
-    if (param_2 < 0 || param_2 >= 256 || unified_map_offsets[param_2] == nullptr) {
-        return 0;
-    }
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00538590
+    uint mask_bits = 0;
 
-    auto masked_off = [&](int col, int row) -> bool {
-        if (row < 0 || row >= 256) {
-            return true;
+    if ((((param_1 < 1) || (param_2 < 1)) || (param_3 - 1 <= param_1)) || (param_4 - 1 <= param_2)) {
+        if ((0 < param_1) && ((unified_map_offsets[param_2][param_1 - 1] & param_5) == 0)) {
+            mask_bits = 0x10;
         }
-        unsigned long* row_ptr = unified_map_offsets[row];
-        if (row_ptr == nullptr || col < 0) {
-            return true;
-        }
-        return (row_ptr[col] & param_5) == 0;
-    };
 
-    unsigned int mask_bits = 0;
-
-    if (param_1 < 1 || param_2 < 1 || param_1 >= (param_3 - 1) || param_2 >= (param_4 - 1)) {
-        if (param_1 > 0 && masked_off(param_1 - 1, param_2)) {
-            mask_bits |= 0x10;
-        }
-        if (param_1 < (param_3 - 1) && masked_off(param_1 + 1, param_2)) {
+        int max_col = param_3 - 1;
+        if ((param_1 < max_col) && ((unified_map_offsets[param_2][param_1 + 1] & param_5) == 0)) {
             mask_bits |= 0x40;
         }
-        if (param_2 > 0 && masked_off(param_1, param_2 - 1)) {
+
+        if ((0 < param_2) && ((unified_map_offsets[param_2 - 1][param_1] & param_5) == 0)) {
             mask_bits |= 0x80;
         }
-        if (param_2 < (param_4 - 1) && masked_off(param_1, param_2 + 1)) {
+
+        int max_row = param_4 - 1;
+        if ((param_2 < max_row) && ((unified_map_offsets[param_2 + 1][param_1] & param_5) == 0)) {
             mask_bits |= 0x20;
         }
 
-        if (param_1 > 0) {
-            if (param_2 > 0 && masked_off(param_1 - 1, param_2 - 1)) {
+        if (0 < param_1) {
+            if ((0 < param_2) && ((unified_map_offsets[param_2 - 1][param_1 - 1] & param_5) == 0)) {
                 mask_bits |= 0x01;
             }
-            if (param_2 < (param_4 - 1) && masked_off(param_1 - 1, param_2 + 1)) {
+            if ((param_2 < max_row) && ((unified_map_offsets[param_2 + 1][param_1 - 1] & param_5) == 0)) {
                 mask_bits |= 0x02;
             }
         }
 
-        if (param_1 < (param_3 - 1)) {
-            if (param_2 > 0 && masked_off(param_1 + 1, param_2 - 1)) {
+        if (param_1 < max_col) {
+            if ((0 < param_2) && ((unified_map_offsets[param_2 - 1][param_1 + 1] & param_5) == 0)) {
                 mask_bits |= 0x08;
             }
-            if (param_2 < (param_4 - 1) && masked_off(param_1 + 1, param_2 + 1)) {
+            if ((param_2 < max_row) && ((unified_map_offsets[param_2 + 1][param_1 + 1] & param_5) == 0)) {
                 mask_bits |= 0x04;
             }
         }
     } else {
-        if (masked_off(param_1, param_2 - 1)) mask_bits |= 0x80;
-        if (masked_off(param_1 + 1, param_2)) mask_bits |= 0x40;
-        if (masked_off(param_1, param_2 + 1)) mask_bits |= 0x20;
-        if (masked_off(param_1 - 1, param_2)) mask_bits |= 0x10;
-        if (masked_off(param_1 + 1, param_2 - 1)) mask_bits |= 0x08;
-        if (masked_off(param_1 + 1, param_2 + 1)) mask_bits |= 0x04;
-        if (masked_off(param_1 - 1, param_2 + 1)) mask_bits |= 0x02;
-        if (masked_off(param_1 - 1, param_2 - 1)) mask_bits |= 0x01;
+        unsigned long* row_above = unified_map_offsets[param_2 - 1];
+        if ((row_above[param_1] & param_5) == 0) {
+            mask_bits = 0x80;
+        }
+
+        unsigned long* row = unified_map_offsets[param_2];
+        if ((row[param_1 + 1] & param_5) == 0) {
+            mask_bits |= 0x40;
+        }
+
+        unsigned long* row_below = unified_map_offsets[param_2 + 1];
+        if ((row_below[param_1] & param_5) == 0) {
+            mask_bits |= 0x20;
+        }
+        if ((row[param_1 - 1] & param_5) == 0) {
+            mask_bits |= 0x10;
+        }
+        if ((row_above[param_1 + 1] & param_5) == 0) {
+            mask_bits |= 0x08;
+        }
+        if ((row_below[param_1 + 1] & param_5) == 0) {
+            mask_bits |= 0x04;
+        }
+        if ((row_below[param_1 - 1] & param_5) == 0) {
+            mask_bits |= 0x02;
+        }
+        if ((row_above[param_1 - 1] & param_5) == 0) {
+            mask_bits |= 0x01;
+        }
     }
 
-    return (int)this->EdgeNumber[mask_bits & 0xFF];
+    return (uint)this->EdgeNumber[mask_bits];
 }
 
 int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, short row, uchar fog, int param_9, int param_10)
