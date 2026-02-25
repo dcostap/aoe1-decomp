@@ -1839,3 +1839,193 @@ Status note: landed as commit `5aa6480` and merged via `8528fd6`.
   - Allocate all `reusable_*_objects` lists as `RGE_Object_List` instances.
   - Ensure the destructor path frees/deletes these allocations per decomp (avoid leaks/double-frees).
 - Done when: ctor/dtor match the decomp’s allocation/initialization behavior closely enough that reusable-object APIs can be used without null-guards, and build remains clean.
+
+---
+
+## Task 152 — Rendering follow-up: restore `TDrawArea::DrawShadowBox` >8bpp parity (remove disabled branch workaround)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the current forced-disabled >8bpp palette-remap branch and replace it with a decomp/ASM-backed implementation so menu/game shadowing is stable and parity-correct.
+- Implement:
+  - Audit `TDrawArea::DrawShadowBox` >8bpp path against source-of-truth and restore the intended behavior for 16/32bpp surfaces.
+  - Eliminate the `if (0 && pal != nullptr)` workaround and replace it with real control flow.
+  - Verify interaction with `RGE_Color_Table` runtime tables (including `id`/amount usage) so shadow intensity is deterministic.
+- Where:
+  - `src/game/src/Drawarea.cpp`
+  - `src/game/src/RGE_Color_Table.cpp` (only if required by parity audit)
+- Source of truth:
+  - `src/game/decomp/drawarea.cpp.decomp` + `src/game/decomp/drawarea.cpp.asm`
+  - `src/game/decomp/color.cpp.decomp` + `src/game/decomp/color.cpp.asm` (for table semantics used by shadowing)
+- Done when: the disabled workaround is gone, `DrawShadowBox` is parity-implemented for active bpp modes, and build remains clean.
+
+## Task 153 — UI follow-up: finish `TEasy_Panel` popup-help/action parity and remove temporary cfg-dump hook
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: retire remaining non-original fallback behavior in `TEasy_Panel` that can mask UI regressions (popup-help action shim + temporary cfg dump instrumentation).
+- Implement:
+  - Replace the current `TEasy_Panel::action` “clear-only help mode” fallback with decomp-faithful `command_do_popup_help` routing behavior.
+  - Remove or properly gate the temporary `scr1_cfg_dump.txt` dump hook in `TEasy_Panel::setup`.
+  - Keep debug logging only where it has durable diagnostic value and matches project debug conventions.
+- Where: `src/game/src/Panel_ez.cpp`
+- Source of truth: `src/game/decomp/panel_ez.cpp.decomp` + `src/game/decomp/panel_ez.cpp.asm`
+- Done when: the popup-help fallback TODO is removed/replaced by parity behavior, temporary dump hook is retired, and build remains clean.
+
+## Task 154 — View follow-up: replace remaining `RGE_View` best-effort interaction blocks with strict parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove high-risk “Best-effort transliteration” code still in core picking/outline paths, which can cause subtle UI/gameplay regressions.
+- Implement (decomp-first, ASM-audit suspicious branches/signedness):
+  - `RGE_View::view_function` parity.
+  - `RGE_View::draw_object_outline` parity.
+  - `RGE_View::draw_paint_brush` parity.
+- Where:
+  - `src/game/src/view.cpp`
+  - `src/game/include/RGE_View.h` (declarations only if needed; do not change layout asserts)
+- Source of truth: `src/game/decomp/view.cpp.decomp` + `src/game/decomp/view.cpp.asm`
+- Done when: the listed methods no longer carry “Best-effort transliteration” markers and build remains clean.
+
+## Task 155 — View wrapper follow-up: remove remaining `RGE_Main_View.cpp` best-effort parity debt
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: finish parity in `RGE_Main_View` so scrolling/interaction wrappers do not rely on unresolved best-effort approximations.
+- Implement:
+  - Audit every method in `RGE_Main_View.cpp` still marked “Best-effort transliteration” and replace with decomp/ASM-correct control flow.
+  - Ensure any helper interactions with `RGE_View` remain consistent with current main-view call patterns.
+- Where:
+  - `src/game/src/RGE_Main_View.cpp`
+  - `src/game/include/RGE_Main_View.h` (declarations only if needed; do not change layout asserts)
+- Source of truth: `src/game/decomp/vw_main.cpp.decomp` + `src/game/decomp/vw_main.cpp.asm`
+- Done when: no remaining best-effort markers in `RGE_Main_View.cpp` for implemented methods, and build remains clean.
+
+## Task 156 — Lobby/network follow-up: remove `RGE_Lobby::Init` best-effort player-enum shim
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: replace the current diagnostics-only player enumeration in lobby connect flow with parity-correct behavior from the original executable.
+- Implement:
+  - Audit `RGE_Lobby::Init` connect/setup flow and remove the “Best-effort: enumerate players for diagnostics” shim.
+  - Restore original success/failure handling around lobby connection + interface setup as shown in decomp/ASM.
+- Where: `src/game/src/com_loby.cpp`
+- Source of truth: `src/game/decomp/com_loby.cpp.decomp` + `src/game/decomp/com_loby.cpp.asm`
+- Done when: the best-effort shim comment/behavior is gone, flow matches source-of-truth control flow, and build remains clean.
+
+## Task 157 — UI core follow-up: replace non-original `TPanel::draw_tree` helper with panel-system parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the current non-original draw-tree recursion helper and restore the original panel-system draw traversal behavior so visibility/activation/child ordering side effects match the EXE.
+- Implement:
+  - Audit `TPanel::draw_tree` against decomp/ASM expectations from the panel unit and connected draw/paint call sites.
+  - Replace the current non-original gating/recursion helper with parity-correct control flow.
+  - Verify related callers in screen/basegame paint path still route correctly after the change.
+- Where:
+  - `src/game/src/TPanel.cpp`
+  - `src/game/src/basegame.cpp` or `src/game/src/tribegam.cpp` only if call-site alignment is required by parity audit.
+- Source of truth:
+  - `src/game/decomp/panel.cpp.decomp` + `src/game/decomp/panel.cpp.asm`
+  - Related call-site references in `src/game/decomp/basegame.cpp.decomp` / `tribegam.cpp.decomp`.
+- Done when: the `TPanel::draw_tree` non-original TODO/STUB note is resolved with parity logic and build remains clean.
+
+## Task 158 — Random-map follow-up: replace non-original `rmm_smooth_elevation` stabilization pass
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the non-original elevation smoothing shim in the random-map database controller and restore source-of-truth terrain/elevation transition behavior.
+- Implement:
+  - Audit the random-map elevation/tile-type transition sequence where `rmm_smooth_elevation` is used.
+  - Replace/remove the non-original smoothing pass with decomp/ASM-backed logic from the correct RMM modules/controller path.
+  - Confirm terrain/tile-type seams are handled by original logic, not post-hoc smoothing.
+- Where:
+  - `src/game/src/TRIBE_RMM_Database_Controller.cpp`
+  - Any required `rmm_*` generator source files directly referenced by the audited flow.
+- Source of truth:
+  - `src/game/decomp/TRIBE_RMM_Database_Controller`-related decomp/ASM units in `src/game/decomp/`
+  - Core random-map modules: `src/game/decomp/rmm_*.cpp.decomp` + corresponding `.asm`.
+- Done when: the non-original smoothing TODO/STUB note is removed/replaced by parity-backed behavior and build remains clean.
+
+## Task 159 — MP setup follow-up: retire temporary UI-control scaffolding comments/logic in `scr_mps_impl`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: ensure MP setup screen constructor/action paths no longer rely on temporary UI scaffolding assumptions and match `scr_mps` parity cleanly.
+- Implement:
+  - Audit the constructor/setup block around player/summary/settings controls and remove remaining temporary-scaffold behavior/comments that do not match source-of-truth.
+  - Keep only real `scr_mps`-parity control creation and flow (settings button / dropdowns / summary updates).
+  - Verify no stale fallback-only paths remain in the touched MP setup routines.
+- Where: `src/game/src/scr_mps_impl.cpp`
+- Source of truth: `src/game/decomp/scr_mps.cpp.decomp` + `src/game/decomp/scr_mps.cpp.asm`
+- Done when: temporary-scaffold TODO/STUB note is resolved by parity-backed implementation and build remains clean.
+
+## Task 160 — In-game bottom panel parity: finish `TRIBE_Panel_Object` information/layout rendering
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore object-info panel behavior in-game so selected-unit/building details, stats, and icon regions render with original parity (eliminates one major source of “missing bottom panel” visuals).
+- Implement:
+  - Complete `TRIBE_Panel_Object` constructor/startup/draw/update behavior from source-of-truth (do not leave partial placeholders).
+  - Ensure selected object state transitions (unit/building/no-selection) and cached fields refresh exactly as decomp/ASM flow dictates.
+  - Keep existing memory layout/vtable intact; declarations-only header edits allowed.
+- Scope guard (independence): touch only panel-object files; do **not** modify `TRIBE_Screen_Game.cpp` in this task.
+- Where:
+  - `src/game/src/TRIBE_Panel_Object.cpp`
+  - `src/game/include/TRIBE_Panel_Object.h` (declarations only if required)
+- Source of truth: `src/game/decomp/tpnl_obj.cpp.decomp` + `src/game/decomp/tpnl_obj.cpp.asm`
+- Done when: panel-object TODO/STUB markers are resolved with parity-backed logic and build remains clean.
+
+## Task 161 — In-game inventory strip parity: finish `TRIBE_Panel_Inven` resource/icon rendering
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore inventory/resource strip rendering in-game so the bottom UI no longer appears partially blank/incomplete.
+- Implement:
+  - Complete `TRIBE_Panel_Inven` setup/draw/update logic from source-of-truth (resource entries, icon handling, redraw conditions).
+  - Verify player-switch and redraw behavior follows original control flow (no ad-hoc refresh hacks).
+  - Keep member layout untouched; header edits declarations-only.
+- Scope guard (independence): only inventory panel files; do **not** modify `TRIBE_Panel_Object.cpp` or `TRIBE_Screen_Game.cpp`.
+- Where:
+  - `src/game/src/TRIBE_Panel_Inven.cpp`
+  - `src/game/include/TRIBE_Panel_Inven.h` (declarations only if required)
+- Source of truth: `src/game/decomp/tpnl_inv.cpp.decomp` + `src/game/decomp/tpnl_inv.cpp.asm`
+- Done when: inventory panel TODO/STUB markers are resolved with parity-backed logic and build remains clean.
+
+## Task 162 — Clock/population panel parity: finish `TRIBE_Panel_Time` + `TRIBE_Panel_Pop`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore top/bottom HUD counters (clock/population) so game HUD text blocks are fully painted and synchronized with player/world state.
+- Implement:
+  - Complete `TRIBE_Panel_Time` parity for startup, clock mode/format handling, and draw/update cadence.
+  - Complete `TRIBE_Panel_Pop` parity for player binding, population/max-pop updates, and rendering behavior.
+  - Keep rendering and redraw triggers faithful to decomp/ASM (no periodic-force-redraw hacks).
+- Scope guard (independence): only time/pop panel files; do **not** modify `TRIBE_Screen_Game.cpp`.
+- Where:
+  - `src/game/src/TRIBE_Panel_Time.cpp`
+  - `src/game/src/TRIBE_Panel_Pop.cpp`
+  - corresponding headers for declarations only if required
+- Source of truth:
+  - `src/game/decomp/tpnl_tim.cpp.decomp` + `src/game/decomp/tpnl_tim.cpp.asm`
+  - `src/game/decomp/tpnl_pop.cpp.decomp` + `src/game/decomp/tpnl_pop.cpp.asm`
+- Done when: time/pop TODO/STUB markers are resolved with parity-backed logic and build remains clean.
+
+## Task 163 — Minimap visual parity: audit/fix `RGE_Diamond_Map` bitmap + paint pipeline
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore in-game minimap rendering/parity (background image, explored overlays, object dots, and view rectangle) to remove “missing/minimal minimap” behavior.
+- Implement:
+  - Audit `set_bitmap`, `draw`, and `draw_all` paths for parity-correct bitmap ownership/loading and repaint behavior.
+  - Verify explored-tile/object plotting and viewport rectangle drawing match source-of-truth control flow.
+  - Fix only minimap module logic; avoid unrelated UI composition edits.
+- Scope guard (independence): touch minimap view files only; do **not** modify `TRIBE_Screen_Game.cpp` unless strictly required by parity call signatures.
+- Where:
+  - `src/game/src/RGE_Diamond_Map.cpp`
+  - `src/game/include/RGE_Diamond_Map.h` (declarations only if required)
+- Source of truth: `src/game/decomp/diam_map.cpp.decomp` + `src/game/decomp/diam_map.cpp.asm`
+- Done when: minimap parity issues are resolved in-module, TODO markers (if any) are closed, and build remains clean.
+
+## Task 164 — World seam artifact parity: audit/fix terrain shape blit in `TShape`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: eliminate black outline seams between isometric terrain cells by restoring terrain-shape draw parity in the shape renderer.
+- Implement:
+  - Audit terrain-related `TShape` draw/span/color-key paths used by ground tiles in 8-bit and 32-bit display paths.
+  - Compare suspicious blend/skip conditions against ASM (signedness, run-length decode, transparency handling) and correct parity mismatches.
+  - Keep changes constrained to shape rendering code; do not add non-original smoothing/fill hacks.
+- Scope guard (independence): only shape renderer files; avoid `view.cpp` edits in this task to prevent overlap with existing view-focused work.
+- Where:
+  - `src/game/src/TShape.cpp`
+  - `src/game/include/TShape.h` (declarations only if required)
+- Source of truth: `src/game/decomp/shape.cpp.decomp` + `src/game/decomp/shape.cpp.asm`
+- Done when: terrain seam artifact parity fix is in place without hacks and build remains clean.

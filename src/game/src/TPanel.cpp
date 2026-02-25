@@ -1287,7 +1287,7 @@ int TPanel::bound_point(long* param_1, long* param_2) {
 }
 
 void TPanel::draw_tree() {
-    // Non-original helper (see `ui_core.h`); used by the current simplified game loop.
+    // TODO: STUB - Non-original helper (see `ui_core.h`); replace with full panel-system draw-tree parity.
     // Parent visibility/active state gates child drawing in the original panel system flow.
     // Without this, inactive dropdowns/scrollbars still draw active child controls.
     if (!this->active || !this->visible) {

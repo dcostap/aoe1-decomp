@@ -91,8 +91,8 @@ CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("CmdLine: %s", lpCmdLine ? lpCmdLine : "(null)");
 CUSTOM_DEBUG_END
 
-    // Non-original safety/debug hook:
-    // ensure hard faults are recorded in `decomp_debug.log` before process exit.
+    // TODO: STUB - Non-original safety/debug hook; keep until startup/crash parity instrumentation is fully restored.
+    // Ensures hard faults are recorded in `decomp_debug.log` before process exit.
     SetUnhandledExceptionFilter(aoe_unhandled_exception_filter);
 
     RGE_Prog_Info info;

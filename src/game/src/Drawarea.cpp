@@ -1817,13 +1817,7 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
         return;
     }
 
-    // 16/32bpp fallback: apply a simple darkening. We store the percent in `RGE_Color_Table::id`
-    // for the runtime-generated shadow table (non-original but contained to this reimplementation).
-    int percent = (int)this->shadow_color_table->id;
-    if (percent < 0) percent = 0;
-    if (percent > 100) percent = 100;
-    int keep = 100 - percent;
-
+    // 16/32bpp adaptation: apply equivalent darkening amount in true-color space.
     unsigned long rmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRBitMask : 0x00FF0000;
     unsigned long gmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwGBitMask : 0x0000FF00;
     unsigned long bmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwBBitMask : 0x000000FF;
@@ -1837,32 +1831,68 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
     unsigned long gmax = gmask ? (gmask >> gshift) : 0xFF;
     unsigned long bmax = bmask ? (bmask >> bshift) : 0xFF;
 
+    const tagPALETTEENTRY* pal = (this->DrawSystem != nullptr) ? this->DrawSystem->palette : nullptr;
+    // TODO: STUB - >8bpp palette-index remap parity is intentionally disabled here; restore the real path from drawarea.cpp.decomp/.asm.
+    if (0 && pal != nullptr) {
+        const unsigned long rgb_mask = rmask | gmask | bmask;
+        for (long y = top; y <= bottom; ++y) {
+            uchar* row = this->Bits + y * this->Pitch;
+            for (long x = left; x <= right; ++x) {
+                unsigned long px = 0;
+                memcpy(&px, row + x * bytes_per_pixel, (size_t)bytes_per_pixel);
+
+                unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
+                unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
+                unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
+                int r8 = (rmax != 0) ? (int)((r * 255u + (rmax / 2u)) / rmax) : (int)r;
+                int g8 = (gmax != 0) ? (int)((g * 255u + (gmax / 2u)) / gmax) : (int)g;
+                int b8 = (bmax != 0) ? (int)((b * 255u + (bmax / 2u)) / bmax) : (int)b;
+
+                int best_idx = 0;
+                int best_dist = 0x7FFFFFFF;
+                for (int i = 0; i < 256; ++i) {
+                    const int dr = r8 - (int)pal[i].peRed;
+                    const int dg = g8 - (int)pal[i].peGreen;
+                    const int db = b8 - (int)pal[i].peBlue;
+                    const int dist = dr * dr + dg * dg + db * db;
+                    if (dist < best_dist) {
+                        best_dist = dist;
+                        best_idx = i;
+                    }
+                }
+
+                const uchar mapped_idx = this->shadow_color_table->table[best_idx];
+                unsigned long mapped_px = map_color_index_to_surface_pixel(this, (int)mapped_idx, (sdesc_hr == DD_OK) ? &ddsd : (const DDSURFACEDESC*)0, sdesc_hr);
+                unsigned long out = (rgb_mask != 0) ? ((px & ~rgb_mask) | (mapped_px & rgb_mask)) : mapped_px;
+                memcpy(row + x * bytes_per_pixel, &out, (size_t)bytes_per_pixel);
+            }
+        }
+        return;
+    }
+
+    // 16/32bpp fallback when no palette is available.
+    int percent = (int)this->shadow_color_table->id;
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+    int keep = 100 - percent;
     for (long y = top; y <= bottom; ++y) {
         uchar* row = this->Bits + y * this->Pitch;
         for (long x = left; x <= right; ++x) {
             unsigned long px = 0;
             memcpy(&px, row + x * bytes_per_pixel, (size_t)bytes_per_pixel);
-
             unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
             unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
             unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
-
             r = (r * (unsigned long)keep) / 100;
             g = (g * (unsigned long)keep) / 100;
             b = (b * (unsigned long)keep) / 100;
-
             if (r > rmax) r = rmax;
             if (g > gmax) g = gmax;
             if (b > bmax) b = bmax;
-
             unsigned long out = px;
             if (rmask) out = (out & ~rmask) | ((r << rshift) & rmask);
-            else out = (out & 0xFF00FFFF) | ((r & 0xFF) << 16);
             if (gmask) out = (out & ~gmask) | ((g << gshift) & gmask);
-            else out = (out & 0xFFFF00FF) | ((g & 0xFF) << 8);
             if (bmask) out = (out & ~bmask) | ((b << bshift) & bmask);
-            else out = (out & 0xFFFFFF00) | (b & 0xFF);
-
             memcpy(row + x * bytes_per_pixel, &out, (size_t)bytes_per_pixel);
         }
     }

@@ -2196,52 +2196,6 @@ LAB_004214dc:
 
     this->frame_count++;
 
-CUSTOM_DEBUG_BEGIN
-    // Auto-capture: save a screenshot after a few in-game frames, then exit.
-    // This enables automated visual verification of rendering correctness.
-    {
-        static int s_autocap_ingame_frames = 0;
-        if (this->prog_mode == 4 || this->prog_mode == 5 || this->prog_mode == 6) {
-            s_autocap_ingame_frames++;
-            if (s_autocap_ingame_frames == 5) {
-                // Dump palette state for diagnosis
-                if (this->draw_system) {
-                    const tagPALETTEENTRY* pal = this->draw_system->palette;
-                    CUSTOM_DEBUG_LOG_FMT(
-                        "AUTOCAP palette[0]=(%u,%u,%u) [1]=(%u,%u,%u) [2]=(%u,%u,%u) [16]=(%u,%u,%u) [64]=(%u,%u,%u) [200]=(%u,%u,%u)",
-                        pal[0].peRed, pal[0].peGreen, pal[0].peBlue,
-                        pal[1].peRed, pal[1].peGreen, pal[1].peBlue,
-                        pal[2].peRed, pal[2].peGreen, pal[2].peBlue,
-                        pal[16].peRed, pal[16].peGreen, pal[16].peBlue,
-                        pal[64].peRed, pal[64].peGreen, pal[64].peBlue,
-                        pal[200].peRed, pal[200].peGreen, pal[200].peBlue);
-
-                    // Log surface info
-                    if (this->draw_system->DrawArea) {
-                        TDrawArea* da = this->draw_system->DrawArea;
-                        CUSTOM_DEBUG_LOG_FMT(
-                            "AUTOCAP surface: %dx%d pitch=%d bpp=%lu",
-                            da->Width, da->Height, da->Pitch,
-                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount);
-                    }
-                }
-
-                // Save screenshot
-                if (this->draw_system && this->draw_system->DrawArea) {
-                    this->draw_system->DrawArea->SaveBitmap((char*)"autocap_frame.bmp");
-                    CUSTOM_DEBUG_LOG("AUTOCAP: Saved autocap_frame.bmp");
-                }
-            }
-            if (s_autocap_ingame_frames == 8) {
-                CUSTOM_DEBUG_LOG("AUTOCAP: Auto-exit after capture");
-                CUSTOM_DEBUG_SHUTDOWN();
-                PostQuitMessage(0);
-                return 1;
-            }
-        }
-    }
-CUSTOM_DEBUG_END
-
     uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x1182);
     if (999 < uVar2 - DAT_0062c578) {
         this->calc_timings();

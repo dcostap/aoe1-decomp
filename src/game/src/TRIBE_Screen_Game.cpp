@@ -205,7 +205,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->set_ideal_size(screen_w, screen_h);
 
     // Main in-game view panel (original-style rendering pipeline).
-    // Source of truth intent: view.cpp.decomp @ 0x00535310 (RGE_View::draw) / 0x00536B40 (terrain+objects).
+    // TODO: STUB - Main-view integration here is non-final; complete full scr_game/tvw_main parity for render/input wiring.
+    // Source of truth: view.cpp.decomp @ 0x00535310 (RGE_View::draw) / 0x00536B40 (terrain+objects).
     this->runtime.main_view = (TPanel*)new TRIBE_Main_View();
     if (this->runtime.main_view == nullptr ||
         ((RGE_View*)this->runtime.main_view)->setup(this->render_area, this, 0, 0, screen_w, screen_h, 0) == 0) {
@@ -795,7 +796,7 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
 }
 
 void TRIBE_Screen_Game::handle_game_update() {
-    // Partial parity slice from scr_game.cpp @ 0x00496800:
+    // TODO: STUB - Partial parity slice from scr_game.cpp @ 0x00496800:
     // keep runtime world pointers current and refresh selected-object panel when selection changes.
     if (rge_base_game != nullptr && rge_base_game->world != nullptr) {
         this->runtime.world = (TRIBE_World*)rge_base_game->world;
@@ -858,7 +859,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 }
 
 void TRIBE_Screen_Game::game_mode_changed(int new_mode, int old_mode) {
-    // Source of truth intent: scr_game.cpp.decomp @ 0x00498A10.
+    // TODO: STUB - game_mode_changed parity is partial; complete scr_game.cpp.decomp @ 0x00498A10 behavior.
     if (this->runtime.tool_box != nullptr) {
         this->runtime.tool_box->game_mode_changed(new_mode, old_mode);
     }
@@ -869,7 +870,7 @@ void TRIBE_Screen_Game::game_mode_changed(int new_mode, int old_mode) {
 }
 
 void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
-    // Partial parity from scr_game.cpp @ 0x00498A50:
+    // TODO: STUB - Partial parity from scr_game.cpp @ 0x00498A50:
     // refresh per-player bindings first, then refresh UI state.
     TRIBE_Player* player = nullptr;
     if (this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
@@ -903,7 +904,7 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
 }
 
 void TRIBE_Screen_Game::handle_pause() {
-    // Source of truth intent: scr_game.cpp.decomp @ 0x004972A0.
+    // TODO: STUB - pause flow parity is partial; complete scr_game.cpp.decomp @ 0x004972A0 behavior.
     if (this->runtime.pause_text != nullptr) {
         this->runtime.pause_text->set_text(0x2329); // "GAME PAUSED"
         if (this->runtime.pause_text->active == 0) {
@@ -915,7 +916,7 @@ void TRIBE_Screen_Game::handle_pause() {
 }
 
 void TRIBE_Screen_Game::handle_resume() {
-    // Source of truth intent: scr_game.cpp.decomp @ 0x004972F0.
+    // TODO: STUB - resume flow parity is partial; complete scr_game.cpp.decomp @ 0x004972F0 behavior.
     if (this->runtime.pause_text != nullptr && this->runtime.pause_text->active != 0) {
         this->runtime.pause_text->set_active(0);
         this->runtime.pause_text->set_redraw(TPanel::Redraw);
@@ -988,7 +989,7 @@ void TRIBE_Screen_Game::display_system_message(char* text) {
 }
 
 void TRIBE_Screen_Game::setup_buttons() {
-    // Partial parity from scr_game.cpp @ 0x004996C0:
+    // TODO: STUB - Partial parity from scr_game.cpp @ 0x004996C0:
     // reset command-slot state before rebuilding per-selection buttons.
     this->runtime.start_item = 0;
     this->runtime.current_item = -1;

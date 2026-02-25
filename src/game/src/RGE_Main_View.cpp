@@ -397,7 +397,7 @@ long RGE_Main_View::mouse_move_action(long param_1, long param_2, int param_3, i
 }
 
 long RGE_Main_View::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053E340
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053E340
     (void)param_3;
     (void)param_4;
 
@@ -449,7 +449,7 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2, int param
 }
 
 long RGE_Main_View::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053E7F0
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053E7F0
     (void)param_3;
     (void)param_4;
 
@@ -483,7 +483,7 @@ long RGE_Main_View::mouse_left_move_action(long param_1, long param_2, int param
 }
 
 long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053E910
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053E910
     (void)param_4;
 
     const int prog_mode = rge_base_game->prog_mode;
@@ -538,7 +538,7 @@ long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3
 }
 
 long RGE_Main_View::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053F220
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053F220
     (void)param_3;
     (void)param_4;
 
@@ -567,7 +567,7 @@ long RGE_Main_View::mouse_right_down_action(long param_1, long param_2, int para
 }
 
 long RGE_Main_View::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053F2F0
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053F2F0
     (void)param_3;
     (void)param_4;
 
@@ -601,7 +601,7 @@ long RGE_Main_View::mouse_right_move_action(long param_1, long param_2, int para
 }
 
 long RGE_Main_View::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053F3D0
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053F3D0
     (void)param_3;
 
     const int prog_mode = rge_base_game->prog_mode;
@@ -751,7 +751,7 @@ void RGE_Main_View::draw_multi_object_outline() {
 }
 
 int RGE_Main_View::command_place_object(long param_1, long param_2, int param_3) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.asm @ 0x0053F810
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.asm @ 0x0053F810
     if (allow_user_commands == 0) {
         return 0;
     }
@@ -832,7 +832,7 @@ int RGE_Main_View::command_place_object(long param_1, long param_2, int param_3)
 }
 
 int RGE_Main_View::command_make_do(long param_1, long param_2, int param_3, short param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053FA10
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053FA10
     if (allow_user_commands == 0 || this->player == nullptr) {
         return 0;
     }
@@ -883,7 +883,7 @@ int RGE_Main_View::command_make_do(long param_1, long param_2, int param_3, shor
 }
 
 int RGE_Main_View::command_make_move(long param_1, long param_2) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x00540350
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x00540350
     if (allow_user_commands == 0 || this->player == nullptr) {
         return 0;
     }
@@ -910,7 +910,7 @@ int RGE_Main_View::command_make_move(long param_1, long param_2) {
 }
 
 int RGE_Main_View::command_make_work(long param_1, long param_2) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x00540420
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x00540420
     if (allow_user_commands == 0 || this->player == nullptr) {
         return 0;
     }
@@ -1034,7 +1034,7 @@ void RGE_Main_View::reset_display_object_selection(int param_1) {
 }
 
 uchar RGE_Main_View::pick1(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6, int param_7) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053FBD0
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x0053FBD0
     if (param_1 != ')') {
         if (param_1 == '*') {
             const uchar res = this->pick1(')', param_2, param_3, param_4, param_5, param_6, 1);
@@ -1198,7 +1198,7 @@ int RGE_Main_View::pick_objects1(long param_1, long param_2, RGE_Static_Object**
 }
 
 RGE_Static_Object* RGE_Main_View::pick_best_target(long param_1, long param_2, int* param_3, short param_4) {
-    // Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x00540010
+    // TODO: STUB - Best-effort transliteration. Source of truth: vw_main.cpp.decomp @ 0x00540010
     (void)param_4;
 
     if (param_3 != nullptr) {

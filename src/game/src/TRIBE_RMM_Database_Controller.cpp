@@ -597,8 +597,8 @@ static int rmm_max_height_step(RGE_RMM_Database_Controller* self) {
     return max_step;
 }
 
-// Non-original stabilization pass:
-// keep local elevation transitions within one step so tile_type slope pieces can cover seams.
+// TODO: STUB - Non-original stabilization pass; replace with source-of-truth RMM elevation/tile-type parity.
+// Keeps local elevation transitions within one step so tile_type slope pieces can cover seams.
 static void rmm_smooth_elevation(RGE_RMM_Database_Controller* self, int max_iters) {
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;

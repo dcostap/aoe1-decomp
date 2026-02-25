@@ -115,7 +115,7 @@ uchar RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3** out_dp3) {
             return 0xFF;
         }
 
-        // Best-effort: enumerate players for diagnostics; ignore results.
+        // TODO: STUB - Best-effort diagnostics enumeration; replace with source-of-truth lobby/player-enum parity.
         if (*out_dp3 != nullptr) {
             (void)(*out_dp3)->EnumPlayers(nullptr, EnumPlayersCallbackLobby, this, 0);
         }

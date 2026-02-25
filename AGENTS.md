@@ -13,7 +13,8 @@ The proven approach for this project is a **two-pass** strategy:
 3. Add method declarations to the corresponding `include/*.h` headers.
 4. For every function body with a finished / verified full transliteration, add a `// Fully verified. Source of truth: tmap.cpp.decomp @ 0x005102A0` marker at the top, with the appropiate filename and offset.
 5. Stub out any missing external dependencies (globals, helper functions).
-6. Add to `build.bat`, compile, fix errors. Ship it.
+6. If a function does not contain FULL PARITY yet with the decomp, it MUST BE MARKED WITH A `// TODO` comment (see below for more details).
+7. Add to `build.bat`, compile, fix errors. Ship it.
 
 This gets you working code fast. The decomp gives you the logic, the types, the API calls, and the overall structure.
 
@@ -42,12 +43,14 @@ The decomp **lies** about:
 ### Stubs
 
 Only add your custom stubs when strictly needed.
-CRITICAL: ALL STUBS MUST INCLUDE A // TODO: STUB, and optionally a brief explanation of why the stub was needed
+CRITICAL: ALL STUBS MUST INCLUDE A `// TODO: STUB`, and optionally a brief explanation of why the stub was needed
 Some legimitimate reasons for stubs:
 - The function is called by the decomp but not critical for the current implementation.
 - The function is complex and you want to defer it until you have more context.
 
 No other reasons, really. Try to keep custom stubs to a minimum.
+
+ALWAYS REMEMBER: Any non-parity code path (e.g., best-effort logic, debug bypass, disabled branch, fallback) IS FORBIDDEN UNLESS IT'S CLEARLY marked WITH A `// TODO`
 
 ## Sources of Truth
 

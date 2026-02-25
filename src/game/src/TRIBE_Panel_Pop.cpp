@@ -8,6 +8,7 @@
 #include <windows.h>
 
 TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent) : TPanel() {
+    // TODO: STUB - Constructor/startup parity is partial; complete tpnl_pop.cpp.{decomp,asm} behavior.
     this->font = nullptr;
     if (rge_base_game != nullptr) {
         RGE_Font* f = rge_base_game->get_font(0x0B);

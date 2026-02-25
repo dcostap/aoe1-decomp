@@ -37,25 +37,8 @@ void TScreenPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, Redra
 void TScreenPanel::draw_setup(int param_1) { TEasy_Panel::draw_setup(param_1); }
 void TScreenPanel::draw_finish() { TEasy_Panel::draw_finish(); }
 void TScreenPanel::draw() {
-    // Source of truth: `src/game/src/Pnl_scr.cpp.decomp` / `.asm`.
-    //
-    // NOTE: The original `TScreenPanel::draw` only draws the background (normal or shaded).
-    // Child panels are drawn via higher-level invalidation/paint logic. Our simplified loop uses
-    // `TPanel::draw_tree()` for recursion.
-
-    if (this->need_restore) {
-        if (this->shadow_area) {
-            this->setup_shadow_area(1);
-        }
-        this->need_restore = 0;
-    }
-
-    if (this->draw_rect2_flag) {
-        this->draw_background(1);
-        return;
-    }
-
-    this->draw_background(0);
+    // Fully verified. Source of truth: pnl_scr.cpp.asm @ 0x0047BB40
+    TEasy_Panel::draw();
 }
 void TScreenPanel::draw_rect(tagRECT* param_1) { TEasy_Panel::draw_rect(param_1); }
 void TScreenPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TEasy_Panel::draw_offset(param_1, param_2, param_3); }

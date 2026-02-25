@@ -5,6 +5,7 @@
 
 TRIBE_Panel_Inven::TRIBE_Panel_Inven(TDrawArea* area, TPanel* parent, void* font_param, TRIBE_Player* player_param)
     : TPanel() {
+    // TODO: STUB - Constructor/setup parity is partial; complete tpnl_inv.cpp.{decomp,asm} behavior.
     this->font = font_param;
     this->save_attr_num = 0;
     this->save_attr = nullptr;

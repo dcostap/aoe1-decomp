@@ -79,7 +79,7 @@ static void SavePlayerActiveStatus(TRIBE_Screen_Sed* this_) {
     // TODO: STUB (partial): Full parity in scr_sed2.cpp.decomp @ 0x004B2C50
     if (!this_ || !this_->world || !this_->world->scenario) return;
 
-    // Best-effort: if the dropdown exists, use it to set scenario active players.
+    // TODO: STUB - Best-effort handling; replace with strict scr_sed parity for active-player propagation.
     int active_players = 2;
     if (this_->player_number_list) {
         active_players = (int)this_->player_number_list->get_line() + 1;
@@ -197,7 +197,7 @@ static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int
 
     this_->world = (TRIBE_World*)rge_base_game->world;
 
-    // Best-effort: populate scenario name into game options if provided.
+    // TODO: STUB - Best-effort handling; replace with strict scr_sed parity for scenario-name propagation.
     if (scenario_filename != nullptr) {
         rge_base_game->setScenarioName(scenario_filename);
     }
@@ -429,7 +429,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
 
     create_all_buttons_etc(this);
 
-    // Player active state + scenario name processing (best-effort for parity).
+    // TODO: STUB - Best-effort processing; replace with strict scr_sed parity for player-state/name flow.
     int player_num_line = 1;
     if (scenario_name == nullptr || *scenario_name == '\0') {
         set_player_active(this, 0, 1);

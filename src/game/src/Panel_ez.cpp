@@ -547,6 +547,10 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
         this->palette = pal;
         if (pal && param_1 && param_1->DrawSystem) {
             param_1->DrawSystem->SetPalette(pal);
+            // Rebuild runtime shadow table against the active palette (matches original set_palette path).
+            if (this->shadow_amount > 0) {
+                this->set_shadow_amount(this->shadow_amount);
+            }
         }
     }
 
@@ -598,18 +602,6 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
         }
     }
 
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT(
-        "TEasy_Panel::setup cfg: info='%s' id=%ld bg='%s'(%ld) pos=%d use_bevels=%d bevel=%d,%d,%d,%d,%d,%d",
-        this->info_file_name, this->info_id,
-        bg->file1, bg->id1,
-        this->background_pos, this->use_bevels,
-        (int)this->bevel_color1, (int)this->bevel_color2, (int)this->bevel_color3,
-        (int)this->bevel_color4, (int)this->bevel_color5, (int)this->bevel_color6);
-CUSTOM_DEBUG_END
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::setup done: info='%s' id=%ld shade=%ld", this->info_file_name, this->info_id, this->shadow_amount);
-CUSTOM_DEBUG_END
     return 1;
 }
 
@@ -631,10 +623,20 @@ void TEasy_Panel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TEasy_Panel::draw_finish() { TPanel::draw_finish(); }
 
 void TEasy_Panel::draw() {
-    // `TScreenPanel::draw` in `Pnl_scr.cpp.decomp` ultimately calls virtual draw_background.
+    // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x00467570
+    if (this->need_restore) {
+        if (this->shadow_area) {
+            this->setup_shadow_area(1);
+        }
+        this->need_restore = 0;
+    }
+
+    if (this->draw_rect2_flag) {
+        this->draw_background(1);
+        return;
+    }
+
     this->draw_background(0);
-    // NOTE: `TPanel::draw()` clears/restores background only (no child recursion) and is not part of
-    // the `TEasy_Panel` screen draw path in the original. Keep this panel-only draw minimal.
 }
 
 void TEasy_Panel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
@@ -674,9 +676,7 @@ long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong par
     (void)param_3;
     (void)param_4;
 
-    // Minimal parity for popup-help mode:
-    // original TEasy_Panel::action routes clicks through command_do_popup_help.
-    // We at least clear help mode on the next click so cursor/game-mouse state is restored.
+    // TODO: STUB - `command_do_popup_help` parity is incomplete; this clear-only behavior is a non-original minimal fallback.
     if (this->help_mode == 1 && (param_2 == 0 || param_2 == 1)) {
         this->clear_popup_help();
         return 1;
@@ -821,12 +821,6 @@ void TEasy_Panel::set_shadow_amount(long amount_percent) {
 
     if (this->shadow_color_table) {
         if (this->render_area && this->render_area->shadow_color_table == this->shadow_color_table) {
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT(
-                "TEasy_Panel::set_shadow_amount: clearing previous render_area shadow table area=%p table=%p",
-                this->render_area,
-                this->shadow_color_table);
-CUSTOM_DEBUG_END
             this->render_area->SetShadowTable(nullptr);
         }
         delete this->shadow_color_table;
@@ -841,8 +835,9 @@ CUSTOM_DEBUG_END
         int have = 0;
         if (this->palette) {
             have = (int)GetPaletteEntries((HPALETTE)this->palette, 0, 256, pe);
-        } else if (this->render_area) {
-            // Fallback: use the current draw-system palette.
+        }
+        if (have == 0 && this->render_area) {
+            // Fallback: use the current draw-system palette when Win32 palette reads are unavailable.
             this->render_area->GetPalette(pe);
             have = 1;
         }

@@ -149,6 +149,8 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount_percent, tagPALETT
     this->resource_id = 0;
     this->map_color = 0;
     this->type = 0;
+    // Runtime shadow tables are not file-backed; keep amount here so 16/32-bpp shadow fallback can use it.
+    this->id = (short)amount_percent;
     memset(this->table, 0, sizeof(this->table));
 
     RGE_translate_palette(palette + 1, temp_palette + 1, base, amount_percent, -1, -1);

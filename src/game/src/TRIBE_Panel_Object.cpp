@@ -13,6 +13,7 @@ TRIBE_Panel_Object::TRIBE_Panel_Object(
     TShape** bldg_pics_param,
     TRIBE_Player* player_param)
     : TPanel() {
+    // TODO: STUB - Constructor/setup parity is partial; complete tpnl_obj.cpp.{decomp,asm} behavior.
     this->font = font_param;
     this->font_wid = font_wid_param;
     this->font_hgt = font_hgt_param;

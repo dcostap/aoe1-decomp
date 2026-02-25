@@ -2711,22 +2711,10 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     (void)p3;
     (void)p4;
 
-    static int s_tribe_paint_logs = 0;
     TPanel* to_draw = nullptr;
     if (panel_system && panel_system->currentPanelValue) {
         to_draw = panel_system->currentPanelValue;
     }
-
-    CUSTOM_DEBUG_BEGIN
-    if (s_tribe_paint_logs < 20) {
-        CUSTOM_DEBUG_LOG_FMT(
-            "TRIBE_Game::handle_paint enter input_enabled=%d to_draw=%p draw_system=%p",
-            this->input_enabled,
-            to_draw,
-            this->draw_system);
-        s_tribe_paint_logs++;
-    }
-    CUSTOM_DEBUG_END
 
     if (to_draw) {
         if (this->input_enabled == 0) {
@@ -2736,72 +2724,8 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
                 this->enable_input();
             }
         }
-        CUSTOM_DEBUG_BEGIN
-        if (s_tribe_paint_logs < 24) {
-            CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint before draw_tree");
-            s_tribe_paint_logs++;
-        }
-        CUSTOM_DEBUG_END
         to_draw->draw_tree();
-        CUSTOM_DEBUG_BEGIN
-        if (s_tribe_paint_logs < 28) {
-            CUSTOM_DEBUG_LOG("TRIBE_Game::handle_paint after draw_tree");
-            s_tribe_paint_logs++;
-        }
-        CUSTOM_DEBUG_END
     }
-
-CUSTOM_DEBUG_BEGIN
-    // Auto-capture: save a screenshot on first in-game paint, then exit.
-    {
-        static int s_autocap_ingame_frames = 0;
-        if (this->prog_mode == 4 || this->prog_mode == 5 || this->prog_mode == 6) {
-            s_autocap_ingame_frames++;
-            if (s_autocap_ingame_frames == 1) {
-                if (this->draw_system) {
-                    const tagPALETTEENTRY* pal = this->draw_system->palette;
-                    // Dump full palette to a separate file for analysis
-                    FILE* pf = fopen("autocap_palette.txt", "w");
-                    if (pf) {
-                        for (int i = 0; i < 256; i++) {
-                            fprintf(pf, "%3d: %3u %3u %3u\n", i, pal[i].peRed, pal[i].peGreen, pal[i].peBlue);
-                        }
-                        fclose(pf);
-                    }
-                    CUSTOM_DEBUG_LOG_FMT(
-                        "AUTOCAP palette[0]=(%u,%u,%u) [1]=(%u,%u,%u) [16]=(%u,%u,%u) [64]=(%u,%u,%u) [128]=(%u,%u,%u) [200]=(%u,%u,%u)",
-                        pal[0].peRed, pal[0].peGreen, pal[0].peBlue,
-                        pal[1].peRed, pal[1].peGreen, pal[1].peBlue,
-                        pal[16].peRed, pal[16].peGreen, pal[16].peBlue,
-                        pal[64].peRed, pal[64].peGreen, pal[64].peBlue,
-                        pal[128].peRed, pal[128].peGreen, pal[128].peBlue,
-                        pal[200].peRed, pal[200].peGreen, pal[200].peBlue);
-                    if (this->draw_system->DrawArea) {
-                        TDrawArea* da = this->draw_system->DrawArea;
-                        CUSTOM_DEBUG_LOG_FMT(
-                            "AUTOCAP surface: %dx%d pitch=%d bpp=%lu ColorBits=%d",
-                            da->Width, da->Height, da->Pitch,
-                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount,
-                            this->draw_system->ColorBits);
-                        // Also log pixel format masks
-                        CUSTOM_DEBUG_LOG_FMT(
-                            "AUTOCAP pf: rmask=0x%08lx gmask=0x%08lx bmask=0x%08lx",
-                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwRBitMask,
-                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwGBitMask,
-                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwBBitMask);
-                    }
-                }
-                if (this->draw_system && this->draw_system->DrawArea) {
-                    this->draw_system->DrawArea->SaveBitmap((char*)"autocap_frame.bmp");
-                    CUSTOM_DEBUG_LOG("AUTOCAP: Saved autocap_frame.bmp");
-                }
-                CUSTOM_DEBUG_LOG("AUTOCAP: Auto-exit after capture");
-                PostQuitMessage(0);
-                return 1;
-            }
-        }
-    }
-CUSTOM_DEBUG_END
 
     if (this->draw_system) {
         this->draw_system->Paint(NULL);

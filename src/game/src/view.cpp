@@ -1727,7 +1727,7 @@ void RGE_View::get_tile_sizes(short* out_tile_wid, short* out_tile_hgt, short* o
 }
 
 long RGE_View::view_function(uchar mode, uchar parm, tagPOINT* mouse_pos, tagPOINT* start_mouse_pos, void** picked, float* out_x, float* out_y, short* out_scr_x, short* out_scr_y) {
-    // Best-effort transliteration. Source of truth: view.cpp.decomp @ 0x00535FE0
+    // TODO: STUB - Best-effort transliteration. Source of truth: view.cpp.decomp @ 0x00535FE0
     // NOTE: The original does a full diamond-scan + hit-test pipeline; this implementation focuses on the
     // pick modes used by main view interactions in this repo (tile + object picks).
     (void)start_mouse_pos;
@@ -1895,7 +1895,7 @@ static void rge_get_mouse_pos(tagPOINT* pt) {
 }
 
 void RGE_View::draw_object_outline() {
-    // Best-effort transliteration. Source of truth: view.cpp.asm @ 0x00535610
+    // TODO: STUB - Best-effort transliteration. Source of truth: view.cpp.asm @ 0x00535610
     if (rge_base_game == nullptr || this->world == nullptr || this->player == nullptr || this->map == nullptr) {
         return;
     }
@@ -1957,7 +1957,7 @@ void RGE_View::draw_object_outline() {
 }
 
 void RGE_View::draw_paint_brush() {
-    // Best-effort transliteration. Source of truth: view.cpp.asm @ 0x005358B0
+    // TODO: STUB - Best-effort transliteration. Source of truth: view.cpp.asm @ 0x005358B0
     this->set_selection_area(-1, -1, -1, -1);
 
     if (rge_base_game == nullptr) {

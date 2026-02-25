@@ -1889,7 +1889,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         summary_y += 0x18;
     }
 
-    // Non-original temporary UI controls:
+    // TODO: STUB - Non-original temporary UI controls:
     // source-of-truth `scr_set` uses a separate settings screen with drop-downs/edit controls.
     // Those controls are still blocked by unimplemented TEasy_Panel creators in this branch,
     // so we expose the key random-map settings inline as cycle buttons for now.
