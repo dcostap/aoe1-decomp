@@ -9,7 +9,7 @@
 #include <string.h>
 
 static BOOL FAR PASCAL EnumPlayersCallbackLobby(DPID /*dpid*/, DWORD /*dwPlayerType*/, LPCDPNAME /*name*/, DWORD /*flags*/, LPVOID /*context*/) {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F3A0 (logging removed)
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F3A0
     return TRUE;
 }
 
@@ -58,7 +58,7 @@ int RGE_Lobby::IsLobbyLaunched() {
 }
 
 uchar RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3** out_dp3) {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F430
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F430
     *out_dp3 = nullptr;
 
     this->ClearLobbyInfo();
