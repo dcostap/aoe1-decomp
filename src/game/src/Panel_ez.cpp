@@ -17,6 +17,7 @@
 #include "../include/TMousePointer.h"
 #include "../include/RGE_Font.h"
 #include "../include/TMessageDialog.h"
+#include "../include/THelpDialog.h"
 #include "../include/globals.h"
 #include "../include/TMessageDialog.h"
 #include "../include/custom_debug.h"
@@ -654,7 +655,13 @@ long TEasy_Panel::handle_command(uint param_1, long param_2) { return TPanel::ha
 long TEasy_Panel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
 long TEasy_Panel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
 long TEasy_Panel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
-long TEasy_Panel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+long TEasy_Panel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004679A0
+    if (this->command_do_popup_help(param_1, param_2, param_3) != 0) {
+        return 1;
+    }
+    return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
+}
 long TEasy_Panel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
 long TEasy_Panel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
 long TEasy_Panel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
@@ -672,14 +679,39 @@ long TEasy_Panel::mouse_right_dbl_click_action(long param_1, long param_2, int p
 long TEasy_Panel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
 long TEasy_Panel::char_action(long param_1, short param_2) { return TPanel::char_action(param_1, param_2); }
 long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    (void)param_1;
-    (void)param_3;
-    (void)param_4;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A4E0
+    if (param_1 != nullptr) {
+        char* panel_name = param_1->panelName();
+        if (panel_name != nullptr) {
+            if (strcmp(panel_name, "OKDialog") == 0) {
+                if ((param_2 != 0) && (param_2 != 1)) {
+                    return 1;
+                }
+                panel_system->destroyPanel((char*)"OKDialog");
+                return 1;
+            }
+        }
 
-    // TODO: STUB - `command_do_popup_help` parity is incomplete; this clear-only behavior is a non-original minimal fallback.
-    if (this->help_mode == 1 && (param_2 == 0 || param_2 == 1)) {
-        this->clear_popup_help();
-        return 1;
+        panel_name = param_1->panelName();
+        if (panel_name != nullptr) {
+            if (strcmp(panel_name, "YesNoDialog") == 0) {
+                if ((param_2 != 0) && (param_2 != 1)) {
+                    return 1;
+                }
+                panel_system->destroyPanel((char*)"YesNoDialog");
+                return 1;
+            }
+        }
+
+        panel_name = param_1->panelName();
+        if (panel_name != nullptr) {
+            if (strcmp(panel_name, "YesNoCancelDialog") == 0) {
+                if ((param_2 == 0) || (param_2 == 1) || (param_2 == 2)) {
+                    panel_system->destroyPanel((char*)"YesNoCancelDialog");
+                }
+                return 1;
+            }
+        }
     }
 
     return TPanel::action(param_1, param_2, param_3, param_4);
@@ -878,6 +910,54 @@ void TEasy_Panel::clear_popup_help() {
             rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
         }
     }
+}
+
+void TEasy_Panel::command_help(char* param_1, long param_2, long param_3, long param_4, long param_5) {
+    // Source of truth: panel_ez.cpp.decomp @ 0x0046A260
+    if (param_2 < 0) {
+        return;
+    }
+
+    char* text = this->get_string((int)param_2);
+    if ((text == nullptr) || (*text == '\0')) {
+        return;
+    }
+
+    this->command_help(param_1, text, param_3, param_4, param_5);
+}
+
+void TEasy_Panel::command_help(char* param_1, char* param_2, long param_3, long param_4, long param_5) {
+    // Source of truth: panel_ez.cpp.decomp @ 0x0046A2E0
+    if ((param_2 == nullptr) || (*param_2 == '\0')) {
+        return;
+    }
+
+    long dialog_w = (this->ideal_width > 0) ? this->ideal_width : 0x280;
+    long dialog_h = (this->ideal_height > 0) ? this->ideal_height : 0x1e0;
+    THelpDialog* dialog = new THelpDialog(this, param_1, param_2, param_4, param_5, dialog_w, dialog_h);
+    if (dialog != nullptr) {
+        dialog->help_page_id = param_3;
+    }
+}
+
+long TEasy_Panel::command_do_popup_help(uchar param_1, long param_2, long param_3) {
+    // Source of truth: panel_ez.cpp.decomp @ 0x0046A410
+    char help_string2[1000];
+    char** help_text = reinterpret_cast<char**>(help_string2);
+    *help_text = help_string2 + 4;
+    long help_page = -1;
+
+    if (this->help_mode == 1) {
+        this->clear_popup_help();
+        if (param_1 == 1) {
+            if (this->get_help_info(help_text, &help_page, param_2, param_3) != 0) {
+                this->command_help(this->panelNameValue, *help_text, help_page, param_2, param_3);
+            }
+        }
+        return 1;
+    }
+
+    return 0;
 }
 
 char* TEasy_Panel::get_popup_info_file() {
