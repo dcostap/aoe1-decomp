@@ -39,6 +39,8 @@ extern int player_dropped[9];
 extern TPanelSystem* panel_system;
 extern int debugActions;
 extern FILE* actionFile;
+extern FILE* logStatusFile;
+extern FILE* DVlogf;
 extern int video_codec_available;
 extern int log_output;
 

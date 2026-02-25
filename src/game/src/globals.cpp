@@ -37,6 +37,8 @@ int player_dropped[9] = {0};
 TPanelSystem* panel_system = nullptr;
 int debugActions = 0;
 FILE* actionFile = nullptr;
+FILE* logStatusFile = nullptr;
+FILE* DVlogf = nullptr;
 int video_codec_available = 0;
 int log_output = 0;
 
