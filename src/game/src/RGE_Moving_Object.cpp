@@ -72,6 +72,26 @@ RGE_Moving_Object::RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int p
     }
 }
 
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
+void RGE_Moving_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
+    RGE_Animated_Object::draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463139
+void RGE_Moving_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    RGE_Animated_Object::shadow_draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x004631ba
+void RGE_Moving_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Animated_Object::normal_draw(param_1, param_2, param_3);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463227
+uchar RGE_Moving_Object::update() {
+    return RGE_Animated_Object::update();
+}
+
 // Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D650
 void RGE_Moving_Object::setGoal(float x, float y, float z) {
     this->goalValue.x = x;

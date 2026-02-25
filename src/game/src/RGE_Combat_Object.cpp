@@ -54,7 +54,7 @@ RGE_Combat_Object::RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int p
 
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FAF0
 void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4,
-                                          float param_5) {
+                                           float param_5) {
     // Clear combat-visible-unit tracking before base recycle.
     for (int i = 0; i < 9; i++) {
         this->VUR_Ptrs[i] = nullptr;
@@ -64,6 +64,21 @@ void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RG
     RGE_Action_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5);
 
     this->attack_timer = ((RGE_Master_Combat_Object*)this->master_obj)->speed_of_attack;
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
+void RGE_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
+    RGE_Action_Object::draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463139
+void RGE_Combat_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    RGE_Action_Object::shadow_draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x004631ba
+void RGE_Combat_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Action_Object::normal_draw(param_1, param_2, param_3);
 }
 
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FB40
