@@ -37,6 +37,60 @@ static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
     return (short)((long)player->attributes[index]);
 }
 
+static int tribe_build_ai_cancel_build_item(unsigned char* build_ai, int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
+    (void)build_ai;
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    (void)param_7;
+    return 1; // TODO: STUB - TribeBuildAIModule::cancelBuildItem not transliterated yet.
+}
+
+static int tribe_build_ai_add_built_item(unsigned char* build_ai, RGE_Static_Object* param_1, int param_2) {
+    (void)build_ai;
+    (void)param_1;
+    (void)param_2;
+    return 1; // TODO: STUB - TribeBuildAIModule::addBuiltItem not transliterated yet.
+}
+
+static int tribe_build_ai_cancel_train_unit(unsigned char* build_ai, int param_1, int param_2, int param_3, int param_4) {
+    (void)build_ai;
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return 1; // TODO: STUB - TribeBuildAIModule::cancelTrainUnit not transliterated yet.
+}
+
+static int tribe_build_ai_add_trained_unit(unsigned char* build_ai, int param_1, int param_2, int param_3, int param_4) {
+    (void)build_ai;
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return 1; // TODO: STUB - TribeBuildAIModule::addTrainedUnit not transliterated yet.
+}
+
+static int tribe_build_ai_cancel_research(unsigned char* build_ai, int param_1, int param_2, int param_3, int param_4) {
+    (void)build_ai;
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return 1; // TODO: STUB - TribeBuildAIModule::cancelResearch not transliterated yet.
+}
+
+static int tribe_build_ai_add_research(unsigned char* build_ai, int param_1, int param_2, int param_3) {
+    (void)build_ai;
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    return 1; // TODO: STUB - TribeBuildAIModule::addResearch not transliterated yet.
+}
+
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player(world, master, player_id, name, civ, '\0', '\0', ai1, ai2, ai3) {
@@ -595,17 +649,92 @@ uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param
     ((TRIBE_Command*)this->world->commands)->command_give_attribute((int)this->id, param_1, param_2, param_3, param_4);
     return 1;
 }
-void TRIBE_Player::buildObject(int param_1, int param_2, float param_3, float param_4, int param_5) {}
-void TRIBE_Player::cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {}
-void TRIBE_Player::registerBuild(RGE_Static_Object* param_1, int param_2) {}
-void TRIBE_Player::trainUnit(int param_1, int param_2, int param_3) {}
-void TRIBE_Player::cancelTrain(int param_1, int param_2, int param_3, int param_4) {}
-void TRIBE_Player::registerTrain(int param_1, int param_2, int param_3, int param_4) {}
-void TRIBE_Player::research(int param_1, int param_2, int param_3) {}
-void TRIBE_Player::cancelResearch(int param_1, int param_2, int param_3, int param_4) {}
-void TRIBE_Player::registerResearch(int param_1, int param_2, int param_3) {}
-void TRIBE_Player::taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5) {}
-void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5) {}
+// Offset: 0x00515130
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515130
+void TRIBE_Player::buildObject(int param_1, int param_2, float param_3, float param_4, int param_5) {
+    int* allocated_ids = (int*)calloc(1, 4);
+    *allocated_ids = param_1;
+    ((TRIBE_Command*)this->world->commands)->command_build((int)this->id, allocated_ids, 1, param_2, param_3, param_4, param_5);
+    free(allocated_ids);
+}
+
+// Offset: 0x00515180
+// TODO: Parity depends on non-transliterated TribeBuildAIModule::cancelBuildItem.
+void TRIBE_Player::cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
+    if (this->playerAI != nullptr) {
+        tribe_build_ai_cancel_build_item(this->playerAI->buildAI, param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+    }
+}
+
+// Offset: 0x005151C0
+// TODO: Parity depends on non-transliterated TribeBuildAIModule::addBuiltItem.
+void TRIBE_Player::registerBuild(RGE_Static_Object* param_1, int param_2) {
+    if (this->playerAI != nullptr) {
+        tribe_build_ai_add_built_item(this->playerAI->buildAI, param_1, param_2);
+    }
+}
+
+// Offset: 0x005151F0
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005151F0
+void TRIBE_Player::trainUnit(int param_1, int param_2, int param_3) {
+    ((TRIBE_Command*)this->world->commands)->command_make((int)this->id, param_2, param_1, param_3);
+}
+
+// Offset: 0x00515220
+// TODO: Parity depends on non-transliterated TribeBuildAIModule::cancelTrainUnit.
+void TRIBE_Player::cancelTrain(int param_1, int param_2, int param_3, int param_4) {
+    if (this->playerAI != nullptr) {
+        tribe_build_ai_cancel_train_unit(this->playerAI->buildAI, param_1, param_2, param_3, param_4);
+    }
+}
+
+// Offset: 0x00515250
+// TODO: Parity depends on non-transliterated TribeBuildAIModule::addTrainedUnit.
+void TRIBE_Player::registerTrain(int param_1, int param_2, int param_3, int param_4) {
+    if (this->playerAI != nullptr) {
+        tribe_build_ai_add_trained_unit(this->playerAI->buildAI, param_1, param_2, param_3, param_4);
+    }
+}
+
+// Offset: 0x00515280
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515280
+void TRIBE_Player::research(int param_1, int param_2, int param_3) {
+    ((TRIBE_Command*)this->world->commands)->command_research((int)this->id, param_2, param_1, param_3);
+}
+
+// Offset: 0x005152B0
+// TODO: Parity depends on non-transliterated TribeBuildAIModule::cancelResearch.
+void TRIBE_Player::cancelResearch(int param_1, int param_2, int param_3, int param_4) {
+    if (this->playerAI != nullptr) {
+        tribe_build_ai_cancel_research(this->playerAI->buildAI, param_1, param_2, param_3, param_4);
+    }
+}
+
+// Offset: 0x005152E0
+// TODO: Parity depends on non-transliterated TribeBuildAIModule::addResearch.
+void TRIBE_Player::registerResearch(int param_1, int param_2, int param_3) {
+    if (this->playerAI != nullptr) {
+        tribe_build_ai_add_research(this->playerAI->buildAI, param_1, param_2, param_3);
+    }
+}
+
+// Offset: 0x00515310
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515310
+void TRIBE_Player::taskTrader(int param_1, int param_2, int param_3, float param_4, float param_5) {
+    int* allocated_ids = (int*)calloc(1, 4);
+    *allocated_ids = param_1;
+    ((RGE_Command*)this->world->commands)->command_work((int)this->id, allocated_ids, 1, param_2, param_3, param_4, param_5);
+    free(allocated_ids);
+}
+
+// Offset: 0x00515360
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515360
+void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, float param_4, float param_5) {
+    int* allocated_ids = (int*)calloc(1, 4);
+    *allocated_ids = param_1;
+    ((RGE_Command*)this->world->commands)->command_work((int)this->id, allocated_ids, 1, param_2, param_3, param_4, param_5);
+    free(allocated_ids);
+}
 void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
 
 // Offset: 0x00513690
