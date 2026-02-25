@@ -11,6 +11,7 @@
 #include "../include/TRIBE_Effects.h"
 #include "../include/T_Scenario.h"
 #include "../include/TRIBE_Player.h"
+#include "../include/TRIBE_History_Info.h"
 #include "../include/TRIBE_Gaia.h"
 #include "../include/TRIBE_Master_Player.h"
 #include "../include/RGE_Player.h"
@@ -27,10 +28,14 @@
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Object_Node.h"
 #include "../include/TCommunications_Handler.h"
+#include "../include/RGE_Lobby.h"
+#include "../include/RGE_Comm_Error.h"
 #include "../include/TSound_Driver.h"
 #include "../include/globals.h"
+#include "../include/TRIBE_Zone_High_Score_Info.h"
 #include <new>
 #include <stdlib.h>
+#include <string.h>
 
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
     if (world == nullptr || world->players == nullptr) {
@@ -149,6 +154,110 @@ static RGE_Static_Object* tribe_find_by_master_id_simple(RGE_Object_List* list, 
     }
 
     return nullptr;
+}
+
+struct TRIBE_Zone_Player_Info_Packet {
+    char name[16];
+    long score;
+    uchar winner;
+    uchar civ_played;
+    uchar civ_random;
+    uchar player_no;
+    uchar team_no;
+    uchar game_outcome;
+    uchar _pad_0[2];
+    long tool_time;
+    long bronze_time;
+    long iron_time;
+};
+
+struct TRIBE_Zone_Map_Info_Packet {
+    uchar Map_Size;
+    uchar Map_Type;
+    short Pop_Limit;
+    uchar Victory_Condition;
+    uchar Start_Age;
+    uchar Resources;
+    uchar Full_Tech;
+    uchar Fixed_Pos;
+    uchar Reveal_Map;
+    uchar Death_Match;
+    uchar _pad_end[1];
+};
+
+struct TRIBE_Zone_Info_Packet {
+    uchar number_of_players;
+    uchar number_of_computer_players;
+    char scenario_name[32];
+    uchar _pad_0[2];
+    ulong game_time;
+    TRIBE_Zone_High_Score_Info total_score;
+    TRIBE_Zone_High_Score_Info religion_score;
+    TRIBE_Zone_High_Score_Info economy_score;
+    TRIBE_Zone_High_Score_Info combat_score;
+    TRIBE_Zone_High_Score_Info research_score;
+    TRIBE_Zone_Player_Info_Packet player_info[8];
+    TRIBE_Zone_Map_Info_Packet map_info;
+    uchar cheats_enabled;
+    uchar game_end_condition_code;
+    uchar _pad_1[2];
+    ulong database_checksum;
+    ulong code_checksum;
+    ulong program_version;
+};
+
+struct TRIBE_Zone_Info_Stack_Buffer {
+    ulong _pad_0;
+    TRIBE_Zone_Info_Packet info;
+};
+
+struct TRIBE_Zone_History_Event_Node {
+    uchar age_id;
+    uchar _pad_0[7];
+    long age_time;
+    TRIBE_Zone_History_Event_Node* next;
+};
+
+static_assert(sizeof(TRIBE_Zone_Player_Info_Packet) == 0x28, "Size mismatch");
+static_assert(sizeof(TRIBE_Zone_Map_Info_Packet) == 0xC, "Size mismatch");
+static_assert(sizeof(TRIBE_Zone_Info_Packet) == 0x1FC, "Size mismatch");
+static_assert(sizeof(TRIBE_Zone_Info_Stack_Buffer) == 0x200, "Size mismatch");
+
+static void tribe_world_fill_in_score(TRIBE_World* world, TRIBE_Zone_High_Score_Info* score_info, long score_group) {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00531240
+    int hi_player = 1;
+    long hi_score = 0;
+    int index = 1;
+
+    if (1 < (short)world->player_num) {
+        do {
+            if (world->players[index]->computerPlayer() == 0) {
+                long score = world->players[index]->victory_conditions->get_victory_points_group((uchar)score_group);
+                if (hi_score < score) {
+                    hi_score = world->players[index]->victory_conditions->get_victory_points_group((uchar)score_group);
+                    hi_player = index;
+                }
+            }
+            index = index + 1;
+        } while (index < (short)world->player_num);
+    }
+
+    score_info->score = hi_score;
+    score_info->civ = world->players[hi_player]->culture;
+    strcpy(score_info->player_name, world->players[hi_player]->name);
+
+    long ally_count = 0;
+    index = 1;
+    if (1 < (short)world->player_num) {
+        do {
+            if (index != hi_player && world->players[index]->relation(hi_player) == 0 &&
+                world->players[hi_player]->relation(index) == 0) {
+                ally_count = ally_count + 1;
+            }
+            index = index + 1;
+        } while (index < (short)world->player_num);
+    }
+    score_info->num_allies = (uchar)ally_count;
 }
 
 // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052DF60
@@ -707,6 +816,135 @@ void TRIBE_World::cheat(short param_1, short param_2) {
     }
     default:
         break;
+    }
+}
+
+void TRIBE_World::send_zone_score_info() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00531350
+    if (this->sent_zone_score != 0) {
+        return;
+    }
+
+    this->sent_zone_score = 1;
+
+    TRIBE_Zone_Info_Stack_Buffer zone_info_buffer;
+    TRIBE_Zone_Info_Packet* info = &zone_info_buffer.info;
+
+    int player_index = 1;
+    char computer_count = '\0';
+    info->number_of_players = 0;
+    if (1 < (short)this->player_num) {
+        do {
+            if (this->players[player_index]->computerPlayer() == 0) {
+                info->number_of_players = (uchar)(info->number_of_players + 1);
+            } else {
+                computer_count = (char)(computer_count + 1);
+            }
+            player_index = player_index + 1;
+        } while (player_index < (short)this->player_num);
+    }
+    info->number_of_computer_players = (uchar)computer_count;
+
+    strcpy(info->scenario_name, this->scenario->Get_scenario_name());
+
+    info->game_time = this->world_time / 1000;
+    tribe_world_fill_in_score(this, &info->total_score, 0xFF);
+    tribe_world_fill_in_score(this, &info->religion_score, 2);
+    tribe_world_fill_in_score(this, &info->economy_score, 1);
+    tribe_world_fill_in_score(this, &info->combat_score, 0);
+    tribe_world_fill_in_score(this, &info->research_score, 3);
+
+    player_index = 1;
+    if (1 < (short)this->player_num) {
+        TRIBE_Zone_Player_Info_Packet* zone_player_info = &info->player_info[0];
+        do {
+            strcpy(zone_player_info->name, this->players[player_index]->name);
+            zone_player_info->score = this->players[player_index]->victory_conditions->get_victory_points();
+
+            int game_player_index = player_index - 1;
+            zone_player_info->winner = (uchar)(this->players[player_index]->game_status == 1);
+            zone_player_info->civ_played = (uchar)((TRIBE_Game*)rge_base_game)->civilization(game_player_index);
+            zone_player_info->civ_random = (uchar)((TRIBE_Game*)rge_base_game)->random_civ[player_index];
+            zone_player_info->player_no = (uchar)((TRIBE_Game*)rge_base_game)->playerColor(game_player_index);
+            zone_player_info->team_no = (uchar)rge_base_game->playerTeam(game_player_index);
+            zone_player_info->game_outcome = (uchar)((TCommunications_Handler*)comm)->WasKicked[game_player_index];
+            zone_player_info->tool_time = -1;
+            zone_player_info->bronze_time = -1;
+            zone_player_info->iron_time = -1;
+
+            TRIBE_Player* player = (TRIBE_Player*)this->players[player_index];
+            TRIBE_Zone_History_Event_Node* history_event =
+                (player->history == nullptr) ? nullptr : (TRIBE_Zone_History_Event_Node*)player->history->events;
+            while (history_event != nullptr) {
+                if (history_event->age_id == 0) {
+                    zone_player_info->tool_time = history_event->age_time;
+                } else if (history_event->age_id == 1) {
+                    zone_player_info->bronze_time = history_event->age_time;
+                } else if (history_event->age_id == 2) {
+                    zone_player_info->iron_time = history_event->age_time;
+                }
+                history_event = history_event->next;
+            }
+
+            player_index = player_index + 1;
+            zone_player_info = zone_player_info + 1;
+        } while (player_index < (short)this->player_num);
+    }
+
+    ((uchar*)&info->database_checksum)[0] = (uchar)rge_base_game->rge_game_options.allowCheatCodesValue;
+    switch (this->game_end_condition) {
+    case 0:
+        ((uchar*)&info->database_checksum)[1] = 0;
+        break;
+    case 1:
+        ((uchar*)&info->database_checksum)[1] = 1;
+        break;
+    case 2:
+        ((uchar*)&info->database_checksum)[1] = 6;
+        break;
+    case 100:
+        ((uchar*)&info->database_checksum)[1] = 2;
+        break;
+    case 0x65:
+        ((uchar*)&info->database_checksum)[1] = 3;
+        break;
+    case 0x66:
+        ((uchar*)&info->database_checksum)[1] = 4;
+        break;
+    case 0x67:
+        ((uchar*)&info->database_checksum)[1] = 5;
+        break;
+    case 0x68:
+        ((uchar*)&info->database_checksum)[1] = 7;
+        break;
+    default:
+        ((uchar*)&info->database_checksum)[1] = 8;
+        break;
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    info->map_info.Victory_Condition = (uchar)game->mapSize();
+    info->map_info.Start_Age = (uchar)game->mapType();
+    info->map_info.Fixed_Pos = (uchar)game->victoryType();
+    info->map_info.Reveal_Map = (uchar)game->startingAge();
+    info->map_info.Death_Match = (uchar)game->resourceLevel();
+    info->map_info._pad_end[0] = (uchar)game->fullTechTree();
+    info->cheats_enabled = (uchar)game->randomizePositions();
+    info->game_end_condition_code = (uchar)rge_base_game->fullVisibility();
+    info->_pad_1[0] = info->number_of_computer_players;
+
+    ushort map_info_6_2 = (ushort)(uchar)info->scenario_name[0];
+    memcpy(&info->map_info.Resources, &map_info_6_2, sizeof(map_info_6_2));
+
+    info->code_checksum = 0;
+    info->program_version = 0;
+
+    TCommunications_Handler* communications = this->commands->com_hand;
+    if (communications->IsLobbyLaunched() != 0) {
+        long result = communications->Lobby->SendZoneMessage((char*)info, 0x1FC, rge_base_game->prog_info->zone_guid);
+        if (result != 0) {
+            communications->Err->ShowReturn(result, "SendGameOptions");
+        }
     }
 }
 

@@ -11,6 +11,22 @@
 #include "../include/RGE_Missile_Object.h"
 #include "../include/RGE_Doppleganger_Object.h"
 #include "../include/RGE_Action_List.h"
+#include <cstdarg>
+#include <cstdio>
+
+namespace {
+void forward_log_debug_to_static(RGE_Static_Object* object, const char* format, va_list args) {
+    char formatted_message[1024];
+    formatted_message[0] = '\0';
+
+    if (format != nullptr) {
+        vsnprintf(formatted_message, sizeof(formatted_message), format, args);
+        formatted_message[sizeof(formatted_message) - 1] = '\0';
+    }
+
+    object->RGE_Static_Object::logDebug("%s", formatted_message);
+}
+} // namespace
 
 // =====================================================================
 // RGE_Animated_Object  (parent: RGE_Static_Object)
@@ -82,7 +98,12 @@ uchar RGE_Animated_Object::actionState() { return RGE_Static_Object::actionState
 uchar RGE_Animated_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Static_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Animated_Object::produceWhenKilledBy(int param_1) { return RGE_Static_Object::produceWhenKilledBy(param_1); } // TODO: STUB
 uchar RGE_Animated_Object::useSameZoneDropsite() { return RGE_Static_Object::useSameZoneDropsite(); } // TODO: STUB
-void RGE_Animated_Object::logDebug(const char* param_1, ...) { RGE_Static_Object::logDebug(param_1); } // TODO: STUB
+void RGE_Animated_Object::logDebug(const char* param_1, ...) {
+    va_list args;
+    va_start(args, param_1);
+    forward_log_debug_to_static(this, param_1, args);
+    va_end(args);
+} // TODO: STUB
 void RGE_Animated_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Static_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 int RGE_Animated_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Static_Object::attack(param_1, param_2, param_3, param_4); } // TODO: STUB
 int RGE_Animated_Object::attack(int param_1, int param_2) { return RGE_Static_Object::attack(param_1, param_2); } // TODO: STUB
@@ -209,7 +230,12 @@ uchar RGE_Moving_Object::actionState() { return RGE_Animated_Object::actionState
 uchar RGE_Moving_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Animated_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Moving_Object::produceWhenKilledBy(int param_1) { return RGE_Animated_Object::produceWhenKilledBy(param_1); } // TODO: STUB
 uchar RGE_Moving_Object::useSameZoneDropsite() { return RGE_Animated_Object::useSameZoneDropsite(); } // TODO: STUB
-void RGE_Moving_Object::logDebug(const char* param_1, ...) { RGE_Animated_Object::logDebug(param_1); } // TODO: STUB
+void RGE_Moving_Object::logDebug(const char* param_1, ...) {
+    va_list args;
+    va_start(args, param_1);
+    forward_log_debug_to_static(this, param_1, args);
+    va_end(args);
+} // TODO: STUB
 void RGE_Moving_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Animated_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 int RGE_Moving_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Animated_Object::attack(param_1, param_2, param_3, param_4); } // TODO: STUB
 int RGE_Moving_Object::attack(int param_1, int param_2) { return RGE_Animated_Object::attack(param_1, param_2); } // TODO: STUB
@@ -305,7 +331,12 @@ uchar RGE_Action_Object::waitingToMove() { return RGE_Moving_Object::waitingToMo
 uchar RGE_Action_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Moving_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Action_Object::produceWhenKilledBy(int param_1) { return RGE_Moving_Object::produceWhenKilledBy(param_1); } // TODO: STUB
 uchar RGE_Action_Object::useSameZoneDropsite() { return RGE_Moving_Object::useSameZoneDropsite(); } // TODO: STUB
-void RGE_Action_Object::logDebug(const char* param_1, ...) { RGE_Moving_Object::logDebug(param_1); } // TODO: STUB
+void RGE_Action_Object::logDebug(const char* param_1, ...) {
+    va_list args;
+    va_start(args, param_1);
+    forward_log_debug_to_static(this, param_1, args);
+    va_end(args);
+} // TODO: STUB
 void RGE_Action_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Moving_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 int RGE_Action_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Moving_Object::attack(param_1, param_2, param_3, param_4); } // TODO: STUB
 int RGE_Action_Object::attack(int param_1, int param_2) { return RGE_Moving_Object::attack(param_1, param_2); } // TODO: STUB
@@ -439,7 +470,12 @@ uchar RGE_Combat_Object::actionState() { return RGE_Action_Object::actionState()
 uchar RGE_Combat_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Action_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Combat_Object::produceWhenKilledBy(int param_1) { return RGE_Action_Object::produceWhenKilledBy(param_1); } // TODO: STUB
 uchar RGE_Combat_Object::useSameZoneDropsite() { return RGE_Action_Object::useSameZoneDropsite(); } // TODO: STUB
-void RGE_Combat_Object::logDebug(const char* param_1, ...) { RGE_Action_Object::logDebug(param_1); } // TODO: STUB
+void RGE_Combat_Object::logDebug(const char* param_1, ...) {
+    va_list args;
+    va_start(args, param_1);
+    forward_log_debug_to_static(this, param_1, args);
+    va_end(args);
+} // TODO: STUB
 void RGE_Combat_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Action_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 // attack(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 int RGE_Combat_Object::moveTo(float param_1, float param_2, float param_3, float param_4, int param_5) { return RGE_Action_Object::moveTo(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
@@ -573,7 +609,12 @@ uchar RGE_Missile_Object::actionState() { return RGE_Combat_Object::actionState(
 uchar RGE_Missile_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Combat_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Missile_Object::produceWhenKilledBy(int param_1) { return RGE_Combat_Object::produceWhenKilledBy(param_1); } // TODO: STUB
 uchar RGE_Missile_Object::useSameZoneDropsite() { return RGE_Combat_Object::useSameZoneDropsite(); } // TODO: STUB
-void RGE_Missile_Object::logDebug(const char* param_1, ...) { RGE_Combat_Object::logDebug(param_1); } // TODO: STUB
+void RGE_Missile_Object::logDebug(const char* param_1, ...) {
+    va_list args;
+    va_start(args, param_1);
+    forward_log_debug_to_static(this, param_1, args);
+    va_end(args);
+} // TODO: STUB
 void RGE_Missile_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Combat_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 int RGE_Missile_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Combat_Object::attack(param_1, param_2, param_3, param_4); } // TODO: STUB
 int RGE_Missile_Object::attack(int param_1, int param_2) { return RGE_Combat_Object::attack(param_1, param_2); } // TODO: STUB
@@ -704,7 +745,12 @@ uchar RGE_Doppleganger_Object::actionState() { return RGE_Animated_Object::actio
 uchar RGE_Doppleganger_Object::keepGatheringWhenObjectIsOut(int param_1) { return RGE_Animated_Object::keepGatheringWhenObjectIsOut(param_1); } // TODO: STUB
 uchar RGE_Doppleganger_Object::produceWhenKilledBy(int param_1) { return RGE_Animated_Object::produceWhenKilledBy(param_1); } // TODO: STUB
 uchar RGE_Doppleganger_Object::useSameZoneDropsite() { return RGE_Animated_Object::useSameZoneDropsite(); } // TODO: STUB
-void RGE_Doppleganger_Object::logDebug(const char* param_1, ...) { RGE_Animated_Object::logDebug(param_1); } // TODO: STUB
+void RGE_Doppleganger_Object::logDebug(const char* param_1, ...) {
+    va_list args;
+    va_start(args, param_1);
+    forward_log_debug_to_static(this, param_1, args);
+    va_end(args);
+} // TODO: STUB
 void RGE_Doppleganger_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Animated_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 int RGE_Doppleganger_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Animated_Object::attack(param_1, param_2, param_3, param_4); } // TODO: STUB
 int RGE_Doppleganger_Object::attack(int param_1, int param_2) { return RGE_Animated_Object::attack(param_1, param_2); } // TODO: STUB

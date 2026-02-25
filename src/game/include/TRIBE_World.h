@@ -75,6 +75,7 @@ public:
     void check_destructables(short param_1, short param_2, float param_3, float param_4, uchar param_5);
     void send_cheat(short param_1);
     void cheat(short param_1, short param_2);
+    void send_zone_score_info();
  
     TRIBE_Tech* tech;
     int victory_type;

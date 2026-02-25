@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 class RGE_Base_Game;
+class RGE_Static_Object;
 class TRegistry;
 class TDebuggingLog;
 struct TPanelSystem;
@@ -69,6 +70,7 @@ extern unsigned long* unified_map_offsets[256];
 extern unsigned char die_die_die;
 extern int allow_user_commands;
 extern int world_update_counter;
+extern RGE_Static_Object** VIS_UNIT_objectsValue;
 extern int ENABLE_COMPRESSION;
 extern int rge_write_error;
 extern int Map_Update_Suppresion;
