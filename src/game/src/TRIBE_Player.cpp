@@ -642,14 +642,122 @@ uchar TRIBE_Player::command_make_wall(short param_1, long param_2, long param_3,
     return '\0';
 }
 
-// TODO: STUB - command_make_building not yet implemented from tribeplr.cpp.decomp.
-uchar TRIBE_Player::command_make_building(short master_obj_id, float x, float y) { return 0; }
+// Offset: 0x00513600
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513600
+uchar TRIBE_Player::command_make_building(short master_obj_id, float x, float y) {
+    int iVar1;
+    short sVar2;
+    uchar uVar3;
+    RGE_Static_Object** list;
+    short list_num;
 
-// TODO: STUB - command_attack_ground not yet implemented from tribeplr.cpp.decomp.
-uchar TRIBE_Player::command_attack_ground(float x, float y) { return 0; }
+    sVar2 = master_obj_id;
+    iVar1 = (int)this->master_objects[(int)master_obj_id];
+    if ((iVar1 != 0) && ((*(char*)(iVar1 + 0x52) != '\0' || (master_obj_id == 0x6d)))) {
+        list = nullptr;
+        list_num = 0;
+        uVar3 = ((RGE_Player*)this)->get_selected_objects_to_command(&list, &list_num, 4, 4, (short)-1, (short)-1);
+        if (uVar3 != '\0') {
+            // Parity: virtual call at *(this->master_objects + 0x1d8)->vtable + 0x2c (tplayer.cpp.asm @ 0x00513649).
+            void* obj = *(void**)((char*)this->master_objects + 0x1d8);
+            using VCall = void(__thiscall*)(void*);
+            VCall fn = (VCall)(*(void***)(obj))[0x2c / 4];
+            fn(obj);
 
-// TODO: STUB - command_make_repair not yet implemented from tribeplr.cpp.decomp.
-uchar TRIBE_Player::command_make_repair(RGE_Static_Object* target) { return 0; }
+            ((TRIBE_Command*)this->world->commands)->command_build(list, list_num, sVar2, x, y);
+            free(list);
+            return '\x01';
+        }
+    }
+    return '\0';
+}
 
-// TODO: STUB - command_make_unload not yet implemented from tribeplr.cpp.decomp.
-uchar TRIBE_Player::command_make_unload(float x, float y) { return 0; }
+// Offset: 0x00513860
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513860
+uchar TRIBE_Player::command_attack_ground(float x, float y) {
+    uchar uVar1;
+    RGE_Static_Object** list;
+    short list_num;
+
+    list = nullptr;
+    list_num = 0;
+    uVar1 = ((RGE_Player*)this)->get_selected_objects_to_command(&list, &list_num, 4, (short)-1, (short)-1, 4);
+    if (uVar1 != '\0') {
+        list[0]->play_command_sound();
+        ((TRIBE_Command*)this->world->commands)->command_attack_ground(list, list_num, x, y);
+        free(list);
+        return '\x01';
+    }
+    return '\0';
+}
+
+// Offset: 0x00513950
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513950
+uchar TRIBE_Player::command_make_repair(RGE_Static_Object* target) {
+    RGE_Static_Object* pRVar1;
+    uchar uVar2;
+    int iVar3;
+    RGE_Static_Object** list;
+    short sVar5;
+    short list_num;
+    RGE_Master_Static_Object* pRVar6;
+
+    pRVar1 = target;
+    if (((((TRIBE_Player*)target->owner != this) && ((iVar3 = this->isAlly((int)target->owner->id), iVar3 == 0))) ||
+         (pRVar1->master_obj->master_type != 'P')) ||
+        (((float)(int)pRVar1->master_obj->hp <= pRVar1->hp || (2 < pRVar1->object_state)))) {
+        if ((TRIBE_Player*)pRVar1->owner != this) {
+            iVar3 = this->isAlly((int)pRVar1->owner->id);
+            if (iVar3 == 0) {
+                return '\0';
+            }
+            iVar3 = pRVar1->owner->isAlly((int)this->id);
+            if (iVar3 == 0) {
+                return '\0';
+            }
+        }
+        sVar5 = pRVar1->master_obj->object_group;
+        if (((sVar5 != 2) && (sVar5 != 0x14)) && ((sVar5 != 0x15 && (sVar5 != 0x16)))) {
+            return '\0';
+        }
+        if ((float)(int)pRVar1->master_obj->hp <= pRVar1->hp) {
+            return '\0';
+        }
+        if (2 < pRVar1->object_state) {
+            return '\0';
+        }
+    }
+
+    list = nullptr;
+    list_num = 0;
+    uVar2 = ((RGE_Player*)this)->get_selected_objects_to_command(&list, &list_num, 4, 4, (short)-1, (short)-1);
+    if (uVar2 == '\0') {
+        return '\0';
+    }
+    pRVar6 = list[0]->get_command_master(pRVar1, 0.0f, 0.0f, 0.0f);
+    if (pRVar6 != nullptr) {
+        pRVar6->play_command_sound();
+    }
+    ((TRIBE_Command*)this->world->commands)->command_repair(list, list_num, pRVar1);
+    free(list);
+    return '\x01';
+}
+
+// Offset: 0x00513A80
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513A80
+uchar TRIBE_Player::command_make_unload(float x, float y) {
+    uchar uVar1;
+    RGE_Static_Object** list;
+    short list_num;
+
+    list = nullptr;
+    list_num = 0;
+    uVar1 = ((RGE_Player*)this)->get_selected_objects_to_command(&list, &list_num, 4, (short)-1, (short)-1, 7);
+    if (uVar1 != '\0') {
+        list[0]->play_command_sound();
+        ((TRIBE_Command*)this->world->commands)->command_unload(list, list_num, x, y);
+        free(list);
+        return '\x01';
+    }
+    return '\0';
+}
