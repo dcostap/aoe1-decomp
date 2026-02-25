@@ -495,20 +495,6 @@ static void mps_update_player_rows(TribeMPSetupScreen* owner) {
     }
 }
 
-static void mps_update_option_buttons(TribeMPSetupScreen* owner) {
-    if (!owner || !rge_base_game) return;
-    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-
-    char value[256];
-    char fmt[256];
-    char line[320];
-
-    // NOTE: The temporary cycle buttons (hiddenMapButton, ready_button, readyButtons, netInfoButton)
-    // have been removed to match the original scr_mps behavior. 
-    // Settings are now changed via the Settings button or the new player row controls.
-    (void)owner; (void)game; (void)value; (void)fmt; (void)line;
-}
-
 static void mps_update_summary(TribeMPSetupScreen* owner) {
     if (!owner || !rge_base_game) return;
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
@@ -681,7 +667,6 @@ static void mps_refresh_ui(TribeMPSetupScreen* owner) {
         mps_fill_number_players(owner);
     }
     mps_update_player_rows(owner);
-    mps_update_option_buttons(owner);
 }
 
 void mps_enable_input() {
@@ -1665,6 +1650,10 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("MPS ctor: creating column titles");
     CUSTOM_DEBUG_END
+    const int allow_settings_controls =
+        (rge_base_game->singlePlayerGame() != 0) ||
+        (comm != nullptr && ((TCommunications_Handler*)comm)->IsHost() != 0);
+
     if (!this->create_text((TPanel*)this, &this->playerTitle, 0x25d0, 0x1a, 0x32, 0xa0, 0x1e, 0, 0, 1, 0)) {
         this->error_code = 1;
         return;
@@ -1672,6 +1661,12 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     if (!this->create_text((TPanel*)this, &this->civTitle, 0x25d1, 0xbd, 0x32, 0xa0, 0x1e, 0, 0, 1, 0)) {
         this->error_code = 1;
         return;
+    }
+    if (allow_settings_controls) {
+        if (!this->create_text((TPanel*)this, &this->settingsTitle, 0x25d2, 0x1a4, 0x32, 0xd2, 0x1e, 0, 0, 1, 0)) {
+            this->error_code = 1;
+            return;
+        }
     }
     if (!this->create_text((TPanel*)this, &this->colorTitle, 0x25ae, 0xf0, 0x32, 100, 0x1e, 0, 0, 1, 0)) {
         this->error_code = 1;
@@ -1750,7 +1745,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
             this->playerCivDrop[i]->append_line(0x280a, 17); // Random
         }
 
-        // Scenario player dropdown (kept for layout/vtable parity; populated by scenario summary flow).
+        // Source-of-truth ctor creates this scenario-player dropdown for each row.
         this->create_drop_down((TPanel*)this, &this->scenarioPlayerDrop[i], 0x28, 100, 0x144, row_y - 1, 0x28, 0x18, 0xb);
         if (this->scenarioPlayerDrop[i]) {
             this->scenarioPlayerDrop[i]->set_draw_style(TDropDownPanel::DrawStyleLeftButton);
@@ -1867,12 +1862,14 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_LOG("MPS ctor: creating footer/summary controls");
     CUSTOM_DEBUG_END
 
-    if (!this->create_button((TPanel*)this, &this->gameSettingsButton, 0x25d2, 0, 0x1a4, 0x32, 0xd2, 0x1e, 0, 0, 0)) {
-        this->error_code = 1;
-        return;
-    }
-    if (this->gameSettingsButton) {
-        this->gameSettingsButton->set_help_info(0x75fc, -1); // Help: "Click to change the scenario settings."
+    if (allow_settings_controls) {
+        if (!this->create_button((TPanel*)this, &this->gameSettingsButton, 0x25d2, 0, 0x1a4, 0x32, 0xd2, 0x1e, 0, 0, 0)) {
+            this->error_code = 1;
+            return;
+        }
+        if (this->gameSettingsButton) {
+            this->gameSettingsButton->set_help_info(0x75fc, -1); // Help: "Click to change the scenario settings."
+        }
     }
 
     if (!this->create_text((TPanel*)this, &this->scenarioName, (char*)"", 0x1a4, 0x54, 0xdc, 0x44, 0xb, 0, 0, 1)) {
@@ -1889,13 +1886,6 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         summary_y += 0x18;
     }
 
-    // TODO: STUB - Non-original temporary UI controls:
-    // source-of-truth `scr_set` uses a separate settings screen with drop-downs/edit controls.
-    // Those controls are still blocked by unimplemented TEasy_Panel creators in this branch,
-    // so we expose the key random-map settings inline as cycle buttons for now.
-    // NOTE: These have been removed to match the original scr_mps behavior.
-    // Settings should be changed via the Settings button which opens TribeGameSettingsScreen.
-    
     // Number of Players dropdown (single player only)
     if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
         if (!this->create_text((TPanel*)this, &this->numberPlayersTitle, 0x25d8, 0x1a, 0x127, 0x14f, 0x14, 0, 0, 1, 0)) {
@@ -1940,19 +1930,25 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
 
     if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
         TPanel* tab_list_sp[3];
-        tab_list_sp[0] = (TPanel*)this->startButton;
-        tab_list_sp[1] = (TPanel*)this->cancelButton;
-        tab_list_sp[2] = (TPanel*)this->gameSettingsButton;
-        this->set_tab_order(tab_list_sp, 3);
+        short tab_count_sp = 0;
+        tab_list_sp[tab_count_sp++] = (TPanel*)this->startButton;
+        tab_list_sp[tab_count_sp++] = (TPanel*)this->cancelButton;
+        if (this->gameSettingsButton != nullptr) {
+            tab_list_sp[tab_count_sp++] = (TPanel*)this->gameSettingsButton;
+        }
+        this->set_tab_order(tab_list_sp, tab_count_sp);
         this->curr_child = (TPanel*)this->startButton;
     } else {
         TPanel* tab_list[5];
-        tab_list[0] = (TPanel*)this->gameSettingsButton;
-        tab_list[1] = (TPanel*)this->startButton;
-        tab_list[2] = (TPanel*)this->cancelButton;
-        tab_list[3] = (TPanel*)this->help_button;
-        tab_list[4] = (TPanel*)this->close_button;
-        this->set_tab_order(tab_list, 5);
+        short tab_count = 0;
+        if (this->gameSettingsButton != nullptr) {
+            tab_list[tab_count++] = (TPanel*)this->gameSettingsButton;
+        }
+        tab_list[tab_count++] = (TPanel*)this->startButton;
+        tab_list[tab_count++] = (TPanel*)this->cancelButton;
+        tab_list[tab_count++] = (TPanel*)this->help_button;
+        tab_list[tab_count++] = (TPanel*)this->close_button;
+        this->set_tab_order(tab_list, tab_count);
     }
 
     CUSTOM_DEBUG_BEGIN
@@ -2413,24 +2409,14 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
             }
         }
 
-        if ((TButtonPanel*)param_1 == this->gameSettingsButton) {
-            // Decomp @ 004a1aaf: check if settings screen already exists
+        if (this->gameSettingsButton != nullptr && (TButtonPanel*)param_1 == this->gameSettingsButton) {
             TPanel* existing = panel_system->panel((char*)"Game Settings Screen");
             if (existing == nullptr) {
                 rge_base_game->disable_input();
-                // Decomp: operator_new(0x560) then constructor does all setup
                 TribeGameSettingsScreen* settingsScreen = new TribeGameSettingsScreen();
-                if (settingsScreen && settingsScreen->error_code == 0) {
-                    panel_system->setCurrentPanel((char*)"Game Settings Screen", 0);
-                } else {
-                    if (settingsScreen) {
-                        delete settingsScreen;
-                    }
-                    mps_enable_input();
-                }
-            } else {
-                panel_system->setCurrentPanel((char*)"Game Settings Screen", 0);
+                (void)settingsScreen;
             }
+            panel_system->setCurrentPanel((char*)"Game Settings Screen", 0);
             return 1;
         }
 
