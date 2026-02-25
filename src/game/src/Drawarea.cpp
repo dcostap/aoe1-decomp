@@ -1770,54 +1770,64 @@ void TDrawArea::SetShadowTable(RGE_Color_Table* table) {
 void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
     if (!this->shadow_color_table) return;
     if (!this->Bits) return;
-
-    if (left > right) {
-        long t = left; left = right; right = t;
-    }
-    if (top > bottom) {
-        long t = top; top = bottom; bottom = t;
-    }
-
-    long cl = this->ClipRect.left;
-    long ct = this->ClipRect.top;
-    long cr = this->ClipRect.right;
-    long cb = this->ClipRect.bottom;
-
-    if (left < cl) left = cl;
-    if (top < ct) top = ct;
-    if (right > cr) right = cr;
-    if (bottom > cb) bottom = cb;
-
+    long clip = this->ClipRect.left;
+    if (left < clip) left = clip;
+    clip = this->ClipRect.top;
+    if (top < clip) top = clip;
+    clip = this->ClipRect.right;
+    if (clip < right) right = clip;
+    clip = this->ClipRect.bottom;
+    if (clip < bottom) bottom = clip;
     if (left < 0) left = 0;
     if (top < 0) top = 0;
-    if (right >= this->Width) right = this->Width - 1;
-    if (bottom >= this->Height) bottom = this->Height - 1;
-    if (left > right || top > bottom) return;
+    if (this->Width <= right) right = this->Width - 1;
+    if (this->Height <= bottom) bottom = this->Height - 1;
+    if ((left > right) || (top > bottom)) return;
 
-    // Determine surface format.
+    int orien = this->Orien;
+    int row_step = (int)(this->AlignedWidth() * orien);
+    int row_index = (int)top;
+    if (orien < 1) {
+        row_index = (int)((top - this->Height) + 1);
+    }
+
     DDSURFACEDESC ddsd;
     memset(&ddsd, 0, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
     HRESULT sdesc_hr = DDERR_GENERIC;
-    if (this->DrawSurface) sdesc_hr = this->DrawSurface->GetSurfaceDesc(&ddsd);
+    if (this->DrawSurface) {
+        sdesc_hr = this->DrawSurface->GetSurfaceDesc(&ddsd);
+    }
+    if (sdesc_hr != DD_OK && this->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
+        ddsd = this->SurfaceDesc;
+        sdesc_hr = DD_OK;
+    }
 
     unsigned long bpp = 8;
-    if (sdesc_hr == DD_OK) bpp = ddsd.ddpfPixelFormat.dwRGBBitCount;
+    if (sdesc_hr == DD_OK) {
+        bpp = ddsd.ddpfPixelFormat.dwRGBBitCount;
+    }
     int bytes_per_pixel = (int)(bpp / 8);
     if (bytes_per_pixel <= 0) bytes_per_pixel = 1;
+    if (bytes_per_pixel > 4) bytes_per_pixel = 4;
 
-    if (bpp <= 8) {
-        // 8bpp palette-index mapping (original behavior).
-        for (long y = top; y <= bottom; ++y) {
-            uchar* row = this->Bits + y * this->Pitch;
-            for (long x = left; x <= right; ++x) {
-                row[x] = this->shadow_color_table->table[row[x]];
+    int row_count = (int)((bottom - top) + 1);
+    int pixel_count = (int)((right - left) + 1);
+    uchar* row_start = this->Bits + row_index * row_step + left * bytes_per_pixel;
+
+    if (bytes_per_pixel == 1) {
+        uchar* row = row_start;
+        for (int y = 0; y < row_count; ++y) {
+            uchar* p = row;
+            for (int x = 0; x < pixel_count; ++x) {
+                *p = this->shadow_color_table->table[*p];
+                ++p;
             }
+            row += row_step;
         }
         return;
     }
 
-    // 16/32bpp adaptation: apply equivalent darkening amount in true-color space.
     unsigned long rmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRBitMask : 0x00FF0000;
     unsigned long gmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwGBitMask : 0x0000FF00;
     unsigned long bmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwBBitMask : 0x000000FF;
@@ -1832,14 +1842,14 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
     unsigned long bmax = bmask ? (bmask >> bshift) : 0xFF;
 
     const tagPALETTEENTRY* pal = (this->DrawSystem != nullptr) ? this->DrawSystem->palette : nullptr;
-    // TODO: STUB - >8bpp palette-index remap parity is intentionally disabled here; restore the real path from drawarea.cpp.decomp/.asm.
-    if (0 && pal != nullptr) {
+    if (pal != nullptr) {
         const unsigned long rgb_mask = rmask | gmask | bmask;
-        for (long y = top; y <= bottom; ++y) {
-            uchar* row = this->Bits + y * this->Pitch;
-            for (long x = left; x <= right; ++x) {
+        uchar* row = row_start;
+        for (int y = 0; y < row_count; ++y) {
+            uchar* p = row;
+            for (int x = 0; x < pixel_count; ++x) {
                 unsigned long px = 0;
-                memcpy(&px, row + x * bytes_per_pixel, (size_t)bytes_per_pixel);
+                memcpy(&px, p, (size_t)bytes_per_pixel);
 
                 unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
                 unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
@@ -1864,22 +1874,25 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
                 const uchar mapped_idx = this->shadow_color_table->table[best_idx];
                 unsigned long mapped_px = map_color_index_to_surface_pixel(this, (int)mapped_idx, (sdesc_hr == DD_OK) ? &ddsd : (const DDSURFACEDESC*)0, sdesc_hr);
                 unsigned long out = (rgb_mask != 0) ? ((px & ~rgb_mask) | (mapped_px & rgb_mask)) : mapped_px;
-                memcpy(row + x * bytes_per_pixel, &out, (size_t)bytes_per_pixel);
+                memcpy(p, &out, (size_t)bytes_per_pixel);
+                p += bytes_per_pixel;
             }
+            row += row_step;
         }
         return;
     }
 
-    // 16/32bpp fallback when no palette is available.
     int percent = (int)this->shadow_color_table->id;
     if (percent < 0) percent = 0;
     if (percent > 100) percent = 100;
     int keep = 100 - percent;
-    for (long y = top; y <= bottom; ++y) {
-        uchar* row = this->Bits + y * this->Pitch;
-        for (long x = left; x <= right; ++x) {
+
+    uchar* row = row_start;
+    for (int y = 0; y < row_count; ++y) {
+        uchar* p = row;
+        for (int x = 0; x < pixel_count; ++x) {
             unsigned long px = 0;
-            memcpy(&px, row + x * bytes_per_pixel, (size_t)bytes_per_pixel);
+            memcpy(&px, p, (size_t)bytes_per_pixel);
             unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
             unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
             unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
@@ -1893,8 +1906,10 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
             if (rmask) out = (out & ~rmask) | ((r << rshift) & rmask);
             if (gmask) out = (out & ~gmask) | ((g << gshift) & gmask);
             if (bmask) out = (out & ~bmask) | ((b << bshift) & bmask);
-            memcpy(row + x * bytes_per_pixel, &out, (size_t)bytes_per_pixel);
+            memcpy(p, &out, (size_t)bytes_per_pixel);
+            p += bytes_per_pixel;
         }
+        row += row_step;
     }
 }
 
