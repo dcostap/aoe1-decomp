@@ -24,6 +24,7 @@
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Victory_Conditions.h"
 #include "../include/RGE_Visible_Map.h"
 #include "../include/TRIBE_Scenario_Header.h"
 #include "../include/T_Scenario.h"
@@ -71,59 +72,6 @@ static LRESULT CALLBACK tribe_video_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wPa
         return (LRESULT)game->video_wnd_proc((void*)hwnd, (uint)msg, (uint)wParam, (long)lParam);
     }
     return DefWindowProcA(hwnd, msg, wParam, lParam);
-}
-
-static void tribe_write_debugload_dump(TRIBE_Game* game, const char* save_name_no_ext) {
-    if (game == nullptr || save_name_no_ext == nullptr || save_name_no_ext[0] == '\0') {
-        return;
-    }
-
-    char dump_name[300];
-    sprintf(dump_name, "c:\\%s.txt", save_name_no_ext);
-
-    FILE* out = fopen(dump_name, "w");
-    if (out == nullptr) {
-        return;
-    }
-
-    RGE_Game_World* world = game->world;
-    if (world == nullptr) {
-        fprintf(out, "world=null\n");
-        fclose(out);
-        return;
-    }
-
-    fprintf(out, "world_time=%lu\n", world->world_time);
-    fprintf(out, "old_world_time=%lu\n", world->old_world_time);
-    fprintf(out, "game_speed=%f\n", world->game_speed);
-    fprintf(out, "player_num=%d\n", (int)world->player_num);
-
-    if (world->map != nullptr) {
-        fprintf(out, "map=%ldx%ld visible=%u fog=%u\n",
-            world->map->map_width,
-            world->map->map_height,
-            (unsigned int)world->map->map_visible_flag,
-            (unsigned int)world->map->fog_flag);
-    }
-
-    for (int i = 0; i < (int)world->player_num; ++i) {
-        RGE_Player* player = (world->players != nullptr) ? world->players[i] : nullptr;
-        if (player == nullptr) {
-            continue;
-        }
-
-        int humanity = (game->comm_handler != nullptr) ? game->comm_handler->GetPlayerHumanity((uint)(i + 1)) : 0;
-        fprintf(out, "player[%d] id=%d civ=%u humanity=%d status=%u checksum=%ld name=%s\n",
-            i,
-            (int)player->id,
-            (unsigned int)player->culture,
-            humanity,
-            (unsigned int)player->game_status,
-            player->checksum,
-            (player->name != nullptr) ? player->name : "");
-    }
-
-    fclose(out);
 }
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0) {
@@ -1418,7 +1366,7 @@ void TRIBE_Game::quit_game() {
     if (this->comm_handler != nullptr) {
         int lobby = this->comm_handler->IsLobbyLaunched();
         if (lobby != 0 && this->world != nullptr) {
-            // send_zone_score_info() not yet transliterated; skipping preserves control flow.
+            ((TRIBE_World*)this->world)->send_zone_score_info();
         }
     }
 
@@ -1815,9 +1763,53 @@ int TRIBE_Game::load_game(char* p1) {
         this->set_load_game_name(file_name_no_ext);
 
         if (this->check_prog_argument((char*)"DEBUGLOAD") != 0) {
-            // Partial parity with tribegam.cpp DEBUGLOAD path:
-            // write a deterministic runtime snapshot to C:\<save_name>.txt.
-            tribe_write_debugload_dump(this, file_name_no_ext);
+            char debugload_dump_name[300];
+            sprintf(debugload_dump_name, "c:\\%s.txt", file_name_no_ext);
+
+            FILE* debugload_out = fopen(debugload_dump_name, "w");
+            if (debugload_out != nullptr) {
+                long total_action_checksum = 0;
+                long total_position_checksum = 0;
+
+                fprintf(debugload_out, "world_time=%u\n", this->world->world_time);
+                fprintf(debugload_out, "old_world_time=%u\n", this->world->old_world_time);
+                fprintf(debugload_out, "game_speed=%6.2f\n", (double)this->world->game_speed);
+
+                for (int i = 0; i < (int)this->world->player_num; ++i) {
+                    RGE_Player* player = this->world->players[i];
+                    if (player == nullptr) {
+                        continue;
+                    }
+
+                    long score = 0;
+                    if (player->victory_conditions != nullptr) {
+                        score = player->victory_conditions->get_victory_points();
+                    }
+
+                    fprintf(debugload_out, "player %d civ=%d score=%ld %s\n",
+                        i,
+                        (int)player->culture,
+                        score,
+                        (player->name != nullptr) ? player->name : "");
+
+                    long checksum = 0;
+                    long position_checksum = 0;
+                    long action_checksum = 0;
+                    player->get_checksums(checksum, position_checksum, action_checksum);
+
+                    total_position_checksum = total_position_checksum + position_checksum;
+                    total_action_checksum = total_action_checksum + action_checksum;
+
+                    fprintf(debugload_out, "  p=%d checksum=%ld pos=%ld act=%ld\n",
+                        (int)player->id,
+                        checksum,
+                        position_checksum,
+                        action_checksum);
+                }
+
+                fprintf(debugload_out, "total_checksum=%ld act=%ld\n", total_action_checksum, total_position_checksum);
+                fclose(debugload_out);
+            }
         }
 
         this->close_status_message();
@@ -2684,53 +2676,15 @@ int TRIBE_Game::handle_idle() {
 }
 int TRIBE_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_mouse_move(p1, p2, p3, p4); }
 int TRIBE_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: tribegam.cpp.decomp (handle_key_down in game screen context)
-    // In the original, ESC opens the in-game menu dialog. Since we don't have that yet,
-    // ESC during in-game mode (prog_mode == 4) returns to the main menu.
-
-    if (this->prog_mode == 4 || this->prog_mode == 5 || this->prog_mode == 6) {
-        // VK_ESCAPE = 0x1B
-        if (p3 == 0x1B) {
-            int ret = this->start_menu();
-            if (ret == 0) {
-                this->close();
-            }
-            return 0; // consumed
-        }
-    }
-
-    // Pass to base class for other keys / modes
+    // Fully verified. Source of truth: tribegam.cpp.asm vtable @ 0x0057726C -> RGE_Base_Game::handle_key_down
     return RGE_Base_Game::handle_key_down(p1, p2, p3, p4);
 }
 int TRIBE_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_user_command(p1, p2, p3, p4); }
 int TRIBE_Game::handle_command(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_command(p1, p2, p3, p4); }
 int TRIBE_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_music_done(p1, p2, p3, p4); }
 int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
-    (void)p1;
-    (void)p2;
-    (void)p3;
-    (void)p4;
-
-    TPanel* to_draw = nullptr;
-    if (panel_system && panel_system->currentPanelValue) {
-        to_draw = panel_system->currentPanelValue;
-    }
-
-    if (to_draw) {
-        if (this->input_enabled == 0) {
-            // Keep UI responsive even if the idle path is not reached frequently.
-            to_draw->handle_idle();
-            if (this->input_enabled == 0) {
-                this->enable_input();
-            }
-        }
-        to_draw->draw_tree();
-    }
-
-    if (this->draw_system) {
-        this->draw_system->Paint(NULL);
-    }
-    return 1;
+    // Fully verified. Source of truth: tribegam.cpp.asm vtable @ 0x0057727C -> RGE_Base_Game::handle_paint
+    return RGE_Base_Game::handle_paint(p1, p2, p3, p4);
 }
 int TRIBE_Game::handle_activate(void* p1, uint p2, uint p3, long p4) {
     // Source of truth: tribegam.cpp.decomp @ 0x005299E0
