@@ -39,7 +39,6 @@ int RGE_Action::setup(int param_1, RGE_Action_Object* param_2) {
     int target_obj2_id = -1;
     short task_id = -1;
     short sprite_id = -1;
-    short sub_action_type = 0;
 
     rge_read(param_1, &this->state, 1);
     rge_read(param_1, &target_obj_id, 4);
@@ -54,13 +53,7 @@ int RGE_Action::setup(int param_1, RGE_Action_Object* param_2) {
     rge_read(param_1, &this->timer, 4);
     rge_read(param_1, &task_id, 2);
     rge_read(param_1, &this->subActionValue, 1);
-
-    if (this->sub_actions != nullptr) {
-        this->sub_actions->load(param_1);
-    } else {
-        // Fallback for partially restored action stack support.
-        rge_read(param_1, &sub_action_type, 2);
-    }
+    this->sub_actions->load(param_1);
 
     rge_read(param_1, &sprite_id, 2);
     this->sprite = nullptr;
