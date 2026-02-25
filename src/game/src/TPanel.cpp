@@ -1287,19 +1287,6 @@ int TPanel::bound_point(long* param_1, long* param_2) {
 }
 
 void TPanel::draw_tree() {
-    // TODO: STUB - Non-original helper (see `ui_core.h`); replace with full panel-system draw-tree parity.
-    // Parent visibility/active state gates child drawing in the original panel system flow.
-    // Without this, inactive dropdowns/scrollbars still draw active child controls.
-    if (!this->active || !this->visible) {
-        return;
-    }
-
-    this->draw();
-    PanelNode* n = this->first_child_node;
-    while (n) {
-        if (n->panel) {
-            n->panel->draw_tree();
-        }
-        n = n->next_node;
-    }
+    // Parity traversal adapter: delegate to TPanel::handle_paint (panel.cpp.decomp/.asm @ 0x00465A70).
+    this->handle_paint();
 }
