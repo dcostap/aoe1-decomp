@@ -4,6 +4,13 @@
 
 class TRIBE_Panel_Object : public TPanel {
 public:
+    enum ValueType : int {
+        ValueTypeNumber = 0,
+        ValueTypeBonus = 1,
+        ValueTypeCompare = 2,
+        ValueTypePercent = 3,
+    };
+
     TRIBE_Panel_Object(
         TDrawArea* area,
         TPanel* parent,
@@ -14,12 +21,22 @@ public:
         TShape** bldg_pics,
         TRIBE_Player* player);
     virtual ~TRIBE_Panel_Object();
+    virtual void draw() override;
+    virtual long handle_idle() override;
+    virtual long mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) override;
+    virtual long mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) override;
 
     void set_player(TRIBE_Player* player);
     void set_object(RGE_Static_Object* obj);
     void set_mode(unsigned char mode);
     unsigned char get_mode();
 
+protected:
+    void draw_score();
+    virtual void draw_item(int param_1, int param_2, ValueType param_3, int param_4, int param_5);
+    void save_object_info();
+
+public:
     void* font;
     long font_wid;
     long font_hgt;
