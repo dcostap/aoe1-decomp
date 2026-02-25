@@ -101,6 +101,7 @@ public:
     long EnableNewPlayers(void* direct_play, int enable_links);
     int IsPlayerHuman(uint player_number);
     int GetPlayerHumanity(uint player_number);
+    int IsPlayerOutOfSync(uint player_number, ulong comm_turn);
     void SetPlayerHumanity(uint player_number, int humanity);
     char* GetPlayerName(uint player_number);
     void SetPlayerName(uint player_number, char* name);

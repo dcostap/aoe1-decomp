@@ -146,8 +146,10 @@ public:
     int start_game(int p1);
     int start_scenario(char* p1);
     int load_game(char* p1);
+    int save_game(char* p1);
     int load_db_files();
     int start_menu();
+    void do_game_over();
     void quit_game();
     int start_campaign_menu();
     int start_scenario_editor(char* scenario_filename, int mode);

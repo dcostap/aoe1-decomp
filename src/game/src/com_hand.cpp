@@ -1305,6 +1305,11 @@ uint TCommunications_Handler::WhoAmI() {
     return this->Me;
 }
 
+int TCommunications_Handler::IsPlayerOutOfSync(uint player_number, ulong comm_turn) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042F270
+    return this->Sync->IsPlayerOutOfSync(player_number, comm_turn);
+}
+
 void* TCommunications_Handler::SetWindowHandle(void* window_handle) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042D490
     this->HostHWND = window_handle;
