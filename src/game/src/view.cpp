@@ -24,6 +24,8 @@
 #include "TMessagePanel.h"
 #include "RGE_Tile_Set.h"
 #include "RGE_Border_Set.h"
+#include "Tile_FogEdge_Table.h"
+#include "Tile_BlackEdge_Table.h"
 #include "../include/custom_debug.h"
 #include "globals.h"
 #include "debug_helpers.h"
@@ -31,8 +33,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <new>
+#include <fcntl.h>
+#include <io.h>
 
 extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4);
+extern "C" void _ASMSet_Color_Xform(int v);
+extern "C" void _ASMSet_Xlate_Table(void* p);
 
 // Global variables (from decomp)
 int view_debug_redraw_all = 0;
@@ -46,6 +52,9 @@ extern TMousePointer* MouseSystem;
 extern RGE_Base_Game* rge_base_game;
 static int s_view_debug_draw_logs = 0;
 static int s_view_debug_terrain_logs = 0;
+static int s_view_debug_masked_draws = 0;
+static int s_view_debug_fog_masked_draws = 0;
+static int s_view_debug_fallback_draws = 0;
 
 static const float kView_Scroll_Factor = 0.0625f; // Source of truth: view.cpp.asm uses DAT_005776c4.
 static const float kView_Pick_Offset = 0.5f;      // Source of truth: view.cpp.asm uses DAT_005776c0 (=-0.5), i.e. +0.5 bias.
@@ -383,7 +392,147 @@ long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long par
         }
         this->pick_list_size[i] = 0;
     }
+
+    if (this->Tile_Edge_Tables == nullptr || this->Black_Edge_Tables == nullptr) {
+        this->Init_Tile_Edge_Tables();
+    }
     return ok;
+}
+
+void RGE_View::Init_Tile_Edge_Tables() {
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00533AF0.
+    constexpr int kTileTypeTableBytes = 0x44;
+    constexpr int kTileTypeCount = kTileTypeTableBytes / 4;
+    constexpr int kMaskEntryCount = 0x2F;
+
+    if (this->Tile_Edge_Tables != nullptr) {
+        std::free(this->Tile_Edge_Tables);
+        this->Tile_Edge_Tables = nullptr;
+    }
+    if (this->Black_Edge_Tables != nullptr) {
+        std::free(this->Black_Edge_Tables);
+        this->Black_Edge_Tables = nullptr;
+    }
+
+    int fd = _open("data2\\tileedge.dat", _O_BINARY | _O_RDONLY);
+    if (fd != -1) {
+        const long size = _lseek(fd, 0, SEEK_END);
+        if (size > 0) {
+            Tile_FogEdge_Table** tables = (Tile_FogEdge_Table**)std::calloc(1, (size_t)size);
+            if (tables != nullptr) {
+                _lseek(fd, 0, SEEK_SET);
+                const int got = _read(fd, tables, (unsigned int)size);
+                if (got == size) {
+                    this->Tile_Edge_Tables = tables;
+                    for (int i = 0; i < kTileTypeCount; ++i) {
+                        char* base = (char*)tables;
+                        tables[i] = (Tile_FogEdge_Table*)(base + (intptr_t)tables[i]);
+                    }
+                    for (int i = 0; i < kTileTypeCount; ++i) {
+                        Tile_FogEdge_Table* rows = tables[i];
+                        if (rows == nullptr) {
+                            continue;
+                        }
+                        for (int j = 0; j < kMaskEntryCount; ++j) {
+                            if (rows[j].normal_draw != nullptr) {
+                                rows[j].normal_draw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].normal_draw);
+                            }
+                            if (rows[j].fog_draw != nullptr) {
+                                rows[j].fog_draw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].fog_draw);
+                            }
+                        }
+                    }
+                } else {
+                    std::free(tables);
+                }
+            }
+        }
+        _close(fd);
+    }
+
+    fd = _open("data2\\blkedge.dat", _O_BINARY | _O_RDONLY);
+    if (fd != -1) {
+        const long size = _lseek(fd, 0, SEEK_END);
+        if (size > 0) {
+            Tile_BlackEdge_Table** tables = (Tile_BlackEdge_Table**)std::calloc(1, (size_t)size);
+            if (tables != nullptr) {
+                _lseek(fd, 0, SEEK_SET);
+                const int got = _read(fd, tables, (unsigned int)size);
+                if (got == size) {
+                    this->Black_Edge_Tables = tables;
+                    for (int i = 0; i < kTileTypeCount; ++i) {
+                        char* base = (char*)tables;
+                        tables[i] = (Tile_BlackEdge_Table*)(base + (intptr_t)tables[i]);
+                    }
+                    for (int i = 0; i < kTileTypeCount; ++i) {
+                        Tile_BlackEdge_Table* rows = tables[i];
+                        if (rows == nullptr) {
+                            continue;
+                        }
+                        for (int j = 0; j < kMaskEntryCount; ++j) {
+                            if (rows[j].black_UNdraw != nullptr) {
+                                rows[j].black_UNdraw = (VSpanMiniList*)((char*)tables + (intptr_t)rows[j].black_UNdraw);
+                            }
+                        }
+                    }
+                } else {
+                    std::free(tables);
+                }
+            }
+        }
+        _close(fd);
+    }
+
+    std::memset(this->EdgeNumber, 0xFF, sizeof(this->EdgeNumber));
+
+    int next_edge = 0;
+    for (int i = 0; i < 0x100; ++i) {
+        const unsigned char bits = (unsigned char)i;
+        bool valid = true;
+        const bool c1 = (bits & 0x01) != 0;
+        const bool c2 = (bits & 0x02) != 0;
+        const bool c4 = (bits & 0x04) != 0;
+        const bool c8 = (bits & 0x08) != 0;
+
+        if ((bits & 0x80) != 0 && (c1 || c8)) valid = false;
+        if ((bits & 0x40) != 0 && (c4 || c8)) valid = false;
+        if ((bits & 0x20) != 0 && (c2 || c4)) valid = false;
+        if ((bits & 0x10) != 0 && (c1 || c2)) valid = false;
+
+        if (valid) {
+            this->EdgeNumber[i] = (unsigned char)next_edge;
+            next_edge++;
+        }
+    }
+
+    for (unsigned int i = 0; i < 0x100; ++i) {
+        if (this->EdgeNumber[i] == 0xFF) {
+            unsigned int b1 = i & 0x01;
+            unsigned int b2 = i & 0x02;
+            unsigned int b4 = i & 0x04;
+            unsigned int b8 = i & 0x08;
+
+            if ((i & 0x80) != 0) {
+                b8 = 0;
+                b1 = 0;
+            }
+            if ((i & 0x40) != 0) {
+                b8 = 0;
+                b4 = 0;
+            }
+            if ((i & 0x20) != 0) {
+                b4 = 0;
+                b2 = 0;
+            }
+            if ((i & 0x10) != 0) {
+                b2 = 0;
+                b1 = 0;
+            }
+
+            const unsigned int canonical = (i & 0xF0) | b8 | b4 | b2 | b1;
+            this->EdgeNumber[i] = this->EdgeNumber[canonical];
+        }
+    }
 }
 
 void RGE_View::set_rect(tagRECT param_1) {
@@ -1842,6 +1991,9 @@ void RGE_View::draw_paint_brush() {
 void RGE_View::draw()
 {
     tiles_drawn = 0;
+    s_view_debug_masked_draws = 0;
+    s_view_debug_fog_masked_draws = 0;
+    s_view_debug_fallback_draws = 0;
     if (view_debug_redraw_all != 0) {
         this->render_terrain_mode = 0;
         view_debug_redraw_all = 0;
@@ -1876,6 +2028,10 @@ void RGE_View::draw()
 
     this->draw_setup(0);
 
+    // Source of truth: view.cpp.decomp uses save_area1 as the terrain draw target.
+    // save_area1 is panel-local; it is copied into render_area at panel coordinates after draw.
+    TDrawArea* terrain_target = (this->save_area1 != nullptr) ? this->save_area1 : this->render_area;
+
     if (this->render_terrain_mode == 0) {
         this->Float_X_Delta = 0;
         this->Float_Y_Delta = 0;
@@ -1885,14 +2041,30 @@ void RGE_View::draw()
         }
     }
 
-    this->draw_view(10, this->save_area1); // 10 is terrain mode
+    if (terrain_target != nullptr) {
+        terrain_target->Clear(&terrain_target->ClipRect, 0);
+    }
+
+    this->draw_view(10, terrain_target); // 10 is terrain mode
+
+    if (terrain_target == this->save_area1 && this->render_area != nullptr) {
+        tagRECT src;
+        src.left = 0;
+        src.top = 0;
+        src.right = this->pnl_wid - 1;
+        src.bottom = this->pnl_hgt - 1;
+        this->save_area1->Copy(this->render_area, this->pnl_x, this->pnl_y, &src, 0);
+    }
 
     CUSTOM_DEBUG_BEGIN
     if (s_view_debug_draw_logs < 12 || (frame_count % 120) == 0) {
         CUSTOM_DEBUG_LOG_FMT(
-            "RGE_View::draw: frame=%d tiles_drawn=%d world=%p map=%p player=%p start=(%d,%d) map_offset=(%d,%d)",
+            "RGE_View::draw: frame=%d tiles_drawn=%d mask_draws=%d fog_mask_draws=%d fallback_draws=%d world=%p map=%p player=%p start=(%d,%d) map_offset=(%d,%d)",
             frame_count,
             tiles_drawn,
+            s_view_debug_masked_draws,
+            s_view_debug_fog_masked_draws,
+            s_view_debug_fallback_draws,
             this->world,
             this->map,
             this->player,
@@ -1996,10 +2168,30 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     const int rows_to_scan = (int)this->max_row_num * 2 + 0x0C;
     const int map_w = this->map->map_width;
     const int map_h = this->map->map_height;
+    const int tile_visible_mask =
+        (this->player == nullptr || this->player->visible == nullptr || this->map->map_visible_flag != 0) ? 1 : 0;
+    const ulong explored_mask = (this->player != nullptr) ? this->player->mutualExploredMask : 0;
+    const ulong visible_mask = (this->player != nullptr) ? this->player->mutualVisibleMask : 0;
+    constexpr int kEdgeTileTypeCount = 17;
     int in_bounds_tiles = 0;
     int clip_visible_tiles = 0;
     int vis_nonzero_tiles = 0;
     int terrain_candidates = 0;
+    int tile_type_hist[19];
+    int terrain_id_hist[32];
+    std::memset(tile_type_hist, 0, sizeof(tile_type_hist));
+    std::memset(terrain_id_hist, 0, sizeof(terrain_id_hist));
+    int draw_min_x = 0x7FFFFFFF;
+    int draw_min_y = 0x7FFFFFFF;
+    int draw_max_x = -0x7FFFFFFF;
+    int draw_max_y = -0x7FFFFFFF;
+
+    if (this->Terrain_Clip_Mask != nullptr) {
+        this->Terrain_Clip_Mask->SetSpanRegions(rect.left, rect.top, rect.right, rect.bottom);
+    }
+    if (this->Terrain_Fog_Clip_Mask != nullptr) {
+        this->Terrain_Fog_Clip_Mask->SetSpanRegions(rect.left, rect.top, rect.right, rect.bottom);
+    }
 
     for (int scan_row = 0; scan_row < rows_to_scan; ++scan_row) {
         int map_col = col_num;
@@ -2018,24 +2210,101 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                     int ey = sy + (int)this->map->tilesizes[tt].height;
                     if (!(ex < rect.left || sx > rect.right || ey < rect.top || sy > rect.bottom)) {
                         clip_visible_tiles++;
-                        uchar vis = 0x0F;
-                        if (this->player != nullptr && this->player->visible != nullptr) {
-                            vis = this->player->visible->get_visible((short)map_col, (short)map_row);
-                        }
-                        if (vis == 0 && this->map->map_visible_flag != 0) {
-                            vis = 0x0F;
+                        uchar map_vis = 0;
+                        ulong tile_offset = 0;
+                        if (map_row >= 0 && map_row < 256 && unified_map_offsets[map_row] != nullptr && map_col >= 0) {
+                            tile_offset = unified_map_offsets[map_row][map_col];
                         }
 
-                        if (vis != 0) {
+                        if ((tile_offset & visible_mask) == 0) {
+                            if ((explored_mask & tile_offset) != 0 || tile_visible_mask != 0) {
+                                map_vis = (this->map->fog_flag != 0) ? (uchar)0x80 : (uchar)0x0F;
+                            } else {
+                                map_vis = 0;
+                                tile->last_drawn_as = 0;
+                            }
+                        } else {
+                            map_vis = 0x0F;
+                        }
+
+                        if (map_vis == 0 &&
+                            this->player != nullptr &&
+                            this->player->visible != nullptr &&
+                            this->player->visible->numberTilesExploredValue == 0) {
+                            map_vis = 0x0F;
+                        }
+
+                        if (map_vis != 0) {
                             vis_nonzero_tiles++;
                             uchar terrain_to_draw = (uchar)(tile->terrain_type & 0x1F);
                             if ((int)terrain_to_draw < this->map->num_terrain) {
                                 terrain_candidates++;
+                                if ((int)tt >= 0 && (int)tt < 19) {
+                                    tile_type_hist[(int)tt]++;
+                                }
+                                if ((int)terrain_to_draw >= 0 && (int)terrain_to_draw < 32) {
+                                    terrain_id_hist[(int)terrain_to_draw]++;
+                                }
                                 short override_terrain = this->map->terrain_types[terrain_to_draw].terrain_to_draw;
                                 if (override_terrain != -1 && override_terrain >= 0 && override_terrain < this->map->num_terrain) {
                                     terrain_to_draw = (uchar)override_terrain;
                                 }
 
+                                int tile_mask_num = 0;
+                                int clip_to = 0;
+                                if (this->Tile_Edge_Tables != nullptr && this->Black_Edge_Tables != nullptr &&
+                                    (int)tile->tile_type >= 0 && (int)tile->tile_type < kEdgeTileTypeCount) {
+                                    int black_tile_mask_num = 0;
+                                    if (map_vis == 0x0F && this->map->fog_flag != 0) {
+                                        black_tile_mask_num = this->get_tile_mask_num(map_col, map_row, map_w, map_h, visible_mask);
+                                    }
+
+                                    int explored_tile_mask_num = 0;
+                                    if (tile_visible_mask == 0 && map_vis != 0) {
+                                        explored_tile_mask_num = this->get_tile_mask_num(map_col, map_row, map_w, map_h, explored_mask);
+                                    }
+
+                                    Tile_FogEdge_Table* edge_table = this->Tile_Edge_Tables[tile->tile_type];
+                                    Tile_BlackEdge_Table* black_edge_table = this->Black_Edge_Tables[tile->tile_type];
+                                    if (edge_table != nullptr) {
+                                        VSpanMiniList* normal_draw_data = edge_table[black_tile_mask_num].normal_draw;
+                                        VSpanMiniList* fog_draw_data = edge_table[black_tile_mask_num].fog_draw;
+                                        VSpanMiniList* black_undraw_data = nullptr;
+                                        if (black_edge_table != nullptr && explored_tile_mask_num >= 0) {
+                                            black_undraw_data = black_edge_table[explored_tile_mask_num].black_UNdraw;
+                                        }
+
+                                        if (map_vis == 0x80) {
+                                            fog_draw_data = edge_table[0].normal_draw;
+                                            clip_to = (fog_draw_data != nullptr) ? 1 : 0;
+                                            tile_mask_num = 0;
+                                        } else {
+                                            tile_mask_num = (normal_draw_data != nullptr) ? 1 : 0;
+                                            clip_to = (fog_draw_data != nullptr) ? 1 : 0;
+                                        }
+
+                                        const int has_black_clip =
+                                            (explored_tile_mask_num >= 1 && black_undraw_data != nullptr) ? 1 : 0;
+
+                                        if (tile_mask_num != 0 && this->Terrain_Clip_Mask != nullptr) {
+                                            this->Terrain_Clip_Mask->AddMiniList(normal_draw_data, sx, sy);
+                                        }
+                                        if (clip_to != 0 && this->Terrain_Fog_Clip_Mask != nullptr) {
+                                            this->Terrain_Fog_Clip_Mask->AddMiniList(fog_draw_data, sx, sy);
+                                        }
+                                        if (has_black_clip != 0) {
+                                            if (tile_mask_num != 0 && this->Terrain_Clip_Mask != nullptr) {
+                                                this->Terrain_Clip_Mask->SubtractMiniList(black_undraw_data, sx, sy);
+                                            }
+                                            if (clip_to != 0 && this->Terrain_Fog_Clip_Mask != nullptr) {
+                                                this->Terrain_Fog_Clip_Mask->SubtractMiniList(black_undraw_data, sx, sy);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                tile->last_drawn_as = map_vis;
+                                tile->draw_as = map_vis;
                                 tile->draw_attribute = (uchar)(tile->draw_attribute & 0xBF);
                                 this->draw_tile(
                                     tile,
@@ -2044,15 +2313,22 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                     (short)sy,
                                     (short)map_col,
                                     (short)map_row,
-                                    vis,
-                                    0,
-                                    0);
+                                    map_vis,
+                                    tile_mask_num,
+                                    clip_to);
                                 tiles_drawn = tiles_drawn + 1;
+
+                                int ex_draw = sx + (int)this->map->tilesizes[tt].width;
+                                int ey_draw = sy + (int)this->map->tilesizes[tt].height;
+                                if (sx < draw_min_x) draw_min_x = sx;
+                                if (sy < draw_min_y) draw_min_y = sy;
+                                if (ex_draw > draw_max_x) draw_max_x = ex_draw;
+                                if (ey_draw > draw_max_y) draw_max_y = ey_draw;
 
                                 // Source of truth: view.cpp.decomp @ 0x00536B40 (RGE_View::view_function_terrain)
                                 // calls RGE_Object_List::draw(&tile->objects, ...).
                                 if (tile->objects.list != nullptr) {
-                                    if (vis != 0x0F) {
+                                    if (map_vis != 0x0F) {
                                         fog_next_shape = 1;
                                     }
                                     short obj_y = (short)(sy + (int)tile->height * (int)this->tile_half_hgt);
@@ -2060,7 +2336,7 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                         this->cur_render_area,
                                         (short)sx,
                                         obj_y,
-                                        (uchar)(vis == 0x80));
+                                        (uchar)(map_vis == 0x80));
                                     fog_next_shape = 0;
                                 }
                             }
@@ -2093,7 +2369,7 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     CUSTOM_DEBUG_BEGIN
     if (s_view_debug_terrain_logs < 12 || tiles_drawn == 0 || (frame_count % 120) == 0) {
         CUSTOM_DEBUG_LOG_FMT(
-            "RGE_View::view_function_terrain: map=%ldx%ld scan=%dx%d in_bounds=%d clip=%d vis=%d terrain_ok=%d tiles_drawn=%d player=%p",
+            "RGE_View::view_function_terrain: map=%ldx%ld scan=%dx%d in_bounds=%d clip=%d vis=%d terrain_ok=%d tiles_drawn=%d bbox=(%d,%d)-(%d,%d) player=%p",
             (long)map_w,
             (long)map_h,
             cols_to_scan,
@@ -2103,7 +2379,27 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
             vis_nonzero_tiles,
             terrain_candidates,
             tiles_drawn,
+            (draw_min_x == 0x7FFFFFFF) ? -1 : draw_min_x,
+            (draw_min_y == 0x7FFFFFFF) ? -1 : draw_min_y,
+            draw_max_x,
+            draw_max_y,
             this->player);
+        if (s_view_debug_terrain_logs < 4) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_View::terrain_hist tt0=%d tt1=%d tt2=%d tt3=%d tt4=%d tt5=%d terr0=%d terr1=%d terr2=%d terr3=%d terr4=%d terr5=%d",
+                tile_type_hist[0],
+                tile_type_hist[1],
+                tile_type_hist[2],
+                tile_type_hist[3],
+                tile_type_hist[4],
+                tile_type_hist[5],
+                terrain_id_hist[0],
+                terrain_id_hist[1],
+                terrain_id_hist[2],
+                terrain_id_hist[3],
+                terrain_id_hist[4],
+                terrain_id_hist[5]);
+        }
         if (s_view_debug_terrain_logs < 12) {
             s_view_debug_terrain_logs++;
         }
@@ -2111,6 +2407,71 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     CUSTOM_DEBUG_END
 
     return 0;
+}
+
+int RGE_View::get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, ulong param_5)
+{
+    // Partially verified. Source of truth: view.cpp.decomp @ 0x00538590.
+    if (param_2 < 0 || param_2 >= 256 || unified_map_offsets[param_2] == nullptr) {
+        return 0;
+    }
+
+    auto masked_off = [&](int col, int row) -> bool {
+        if (row < 0 || row >= 256) {
+            return true;
+        }
+        unsigned long* row_ptr = unified_map_offsets[row];
+        if (row_ptr == nullptr || col < 0) {
+            return true;
+        }
+        return (row_ptr[col] & param_5) == 0;
+    };
+
+    unsigned int mask_bits = 0;
+
+    if (param_1 < 1 || param_2 < 1 || param_1 >= (param_3 - 1) || param_2 >= (param_4 - 1)) {
+        if (param_1 > 0 && masked_off(param_1 - 1, param_2)) {
+            mask_bits |= 0x10;
+        }
+        if (param_1 < (param_3 - 1) && masked_off(param_1 + 1, param_2)) {
+            mask_bits |= 0x40;
+        }
+        if (param_2 > 0 && masked_off(param_1, param_2 - 1)) {
+            mask_bits |= 0x80;
+        }
+        if (param_2 < (param_4 - 1) && masked_off(param_1, param_2 + 1)) {
+            mask_bits |= 0x20;
+        }
+
+        if (param_1 > 0) {
+            if (param_2 > 0 && masked_off(param_1 - 1, param_2 - 1)) {
+                mask_bits |= 0x01;
+            }
+            if (param_2 < (param_4 - 1) && masked_off(param_1 - 1, param_2 + 1)) {
+                mask_bits |= 0x02;
+            }
+        }
+
+        if (param_1 < (param_3 - 1)) {
+            if (param_2 > 0 && masked_off(param_1 + 1, param_2 - 1)) {
+                mask_bits |= 0x08;
+            }
+            if (param_2 < (param_4 - 1) && masked_off(param_1 + 1, param_2 + 1)) {
+                mask_bits |= 0x04;
+            }
+        }
+    } else {
+        if (masked_off(param_1, param_2 - 1)) mask_bits |= 0x80;
+        if (masked_off(param_1 + 1, param_2)) mask_bits |= 0x40;
+        if (masked_off(param_1, param_2 + 1)) mask_bits |= 0x20;
+        if (masked_off(param_1 - 1, param_2)) mask_bits |= 0x10;
+        if (masked_off(param_1 + 1, param_2 - 1)) mask_bits |= 0x08;
+        if (masked_off(param_1 + 1, param_2 + 1)) mask_bits |= 0x04;
+        if (masked_off(param_1 - 1, param_2 + 1)) mask_bits |= 0x02;
+        if (masked_off(param_1 - 1, param_2 - 1)) mask_bits |= 0x01;
+    }
+
+    return (int)this->EdgeNumber[mask_bits & 0xFF];
 }
 
 int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, short row, uchar fog, int param_9, int param_10)
@@ -2176,6 +2537,43 @@ int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, 
     if (draw_terrain != 0) {
         RGE_Tile_Set* block = &this->map->terrain_types[vis];
         short pic = this->get_tile_picture(vis, tile->tile_type, col, row);
+        CUSTOM_DEBUG_BEGIN
+        static int s_draw_tile_dbg = 0;
+        static unsigned char s_draw_tile_seen_terr[32] = {0};
+        if (s_draw_tile_dbg < 24) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "draw_tile dbg terr=%u tile_type=%u pic=%d terr_shape=%p border_type=%u border_shape_ptr=%p draw_border=%d draw_terrain=%d map_vis=%u",
+                (unsigned)vis,
+                (unsigned)tile->tile_type,
+                (int)pic,
+                block->shape,
+                (unsigned)border_type,
+                (border_type < 16) ? this->map->border_types[border_type].shape : nullptr,
+                draw_border,
+                draw_terrain,
+                (unsigned)fog);
+            s_draw_tile_dbg++;
+        }
+        if ((unsigned)vis < 32u && s_draw_tile_seen_terr[(unsigned)vis] == 0) {
+            s_draw_tile_seen_terr[(unsigned)vis] = 1;
+            int shp_count = -1;
+            if (block->shape != nullptr) {
+                shp_count = (int)block->shape->shape_count();
+            }
+            CUSTOM_DEBUG_LOG_FMT(
+                "draw_tile terr_meta terr=%u name='%s' pict='%s' resid=%ld rows=%d cols=%d t0(count=%d anim=%d idx=%d) shape_count=%d",
+                (unsigned)vis,
+                block->name,
+                block->pict_name,
+                block->resource_id,
+                (int)block->rows,
+                (int)block->cols,
+                (int)block->tiles[0].count,
+                (int)block->tiles[0].animations,
+                (int)block->tiles[0].shape_index,
+                shp_count);
+        }
+        CUSTOM_DEBUG_END
         if (block->shape != nullptr && pic != (short)0xFFFF) {
             this->draw_terrain_shape(x, y, block->shape, pic, fog, draw_attribute, param_9, param_10);
             terrain_drawn = 1;
@@ -2264,7 +2662,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     if ((fog & 0x10) == 0x10) {
         fog_next_shape = 1;
         _ASMSet_Shadowing(0x00FF00FF, 0x28002800, (int)0xFF00FF00u, 0x00280028);
-        shape->shape_draw(this->cur_render_area, x - hotspot_x, y - hotspot_y, frame, 0, nullptr);
+        (void)shape->shape_draw(this->cur_render_area, x - hotspot_x, y - hotspot_y, frame, 0, nullptr);
         _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
         fog_next_shape = 0;
         return;
@@ -2286,7 +2684,8 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     if (param_8 != 0) {
         this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
         fog_next_shape = 1;
-        shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
+        (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
+        s_view_debug_fog_masked_draws++;
         fog_next_shape = 0;
     }
 
@@ -2296,7 +2695,8 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
 
     if (param_7 != 0) {
         this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
-        shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
+        (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
+        s_view_debug_masked_draws++;
     }
 
     this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;

@@ -35,6 +35,7 @@ public:
     void set_map_buttons_redraw(RedrawMode param_1);
     virtual void set_redraw(RedrawMode param_1) override;
     virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) override;
+    virtual long handle_size(long param_1, long param_2) override;
     virtual long handle_user_command(uint param_1, long param_2) override;
     virtual void set_focus(int param_1) override;
     virtual void stop_sound_system() override;

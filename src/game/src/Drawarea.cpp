@@ -621,6 +621,32 @@ void TDrawSystem::SetPalette(void* pal) {
     color_table[0].peBlue = 0;
     color_table[0].peFlags = 0;
 
+    CUSTOM_DEBUG_BEGIN
+    static int s_set_palette_logs = 0;
+    if (s_set_palette_logs < 8) {
+        const PALETTEENTRY* p1 = &color_table[1];
+        const PALETTEENTRY* p16 = &color_table[16];
+        const PALETTEENTRY* p64 = &color_table[64];
+        const PALETTEENTRY* p200 = &color_table[200];
+        CUSTOM_DEBUG_LOG_FMT(
+            "TDrawSystem::SetPalette pal=%p idx1=(%u,%u,%u) idx16=(%u,%u,%u) idx64=(%u,%u,%u) idx200=(%u,%u,%u)",
+            pal,
+            (unsigned)p1->peRed,
+            (unsigned)p1->peGreen,
+            (unsigned)p1->peBlue,
+            (unsigned)p16->peRed,
+            (unsigned)p16->peGreen,
+            (unsigned)p16->peBlue,
+            (unsigned)p64->peRed,
+            (unsigned)p64->peGreen,
+            (unsigned)p64->peBlue,
+            (unsigned)p200->peRed,
+            (unsigned)p200->peGreen,
+            (unsigned)p200->peBlue);
+        s_set_palette_logs++;
+    }
+    CUSTOM_DEBUG_END
+
     this->ModifyPalette(0, 256, color_table);
 }
 
@@ -1020,6 +1046,8 @@ uchar* TDrawArea::Lock(char* name, int p2) {
     if (this->Bits != nullptr) return this->Bits;
     if (this->DrawDc != nullptr) return nullptr;
 
+    // DirectDraw requires dwSize be set before calling Lock/GetSurfaceDesc.
+    this->SurfaceDesc.dwSize = sizeof(DDSURFACEDESC);
     HRESULT hr = this->DrawSurface->Lock(NULL, &this->SurfaceDesc, (name != nullptr) ? 1 : 0, NULL);
     if (hr != DD_OK) return nullptr;
 

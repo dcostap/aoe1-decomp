@@ -236,10 +236,18 @@ static unsigned long shape_index_to_pixel(TDrawArea* draw_area, unsigned char id
 
     if (draw_area && draw_area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
         const DDSURFACEDESC* d = &draw_area->SurfaceDesc;
-        unsigned long pr = shape_scale_to_mask(r, d->ddpfPixelFormat.dwRBitMask);
-        unsigned long pg = shape_scale_to_mask(g, d->ddpfPixelFormat.dwGBitMask);
-        unsigned long pb = shape_scale_to_mask(b, d->ddpfPixelFormat.dwBBitMask);
-        return pr | pg | pb;
+        const unsigned long rmask = d->ddpfPixelFormat.dwRBitMask;
+        const unsigned long gmask = d->ddpfPixelFormat.dwGBitMask;
+        const unsigned long bmask = d->ddpfPixelFormat.dwBBitMask;
+
+        // Some drivers/surface types don't populate RGB masks. If masks are all zero, fall back to
+        // a conventional 0x00RRGGBB layout rather than producing 0 for every pixel.
+        if ((rmask | gmask | bmask) != 0) {
+            unsigned long pr = shape_scale_to_mask(r, rmask);
+            unsigned long pg = shape_scale_to_mask(g, gmask);
+            unsigned long pb = shape_scale_to_mask(b, bmask);
+            return pr | pg | pb;
+        }
     }
 
     return ((unsigned long)r << 16) | ((unsigned long)g << 8) | (unsigned long)b;
@@ -751,7 +759,12 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     unsigned long* row_offsets = (unsigned long*)(slp_base + info->Shape_Data_Offsets);
     unsigned short* outline = (unsigned short*)(slp_base + info->Shape_Outline_Offset);
 
-    unsigned char* base_xlate = xlate ? xlate : (unsigned char*)_ASMGet_Xlate_Table();
+    // When SDI_Capture_Info is disabled (our case), shape_draw() calls us
+    // immediately with the caller's color_table as `xlate`. We must NOT fall
+    // back to the global xlate table because it may contain stale state from
+    // a prior, unrelated draw call. In the original game the SDI sorted-draw
+    // list manages per-draw xlate explicitly; without it the global is unreliable.
+    unsigned char* base_xlate = xlate;
     unsigned char* active_xlate = base_xlate;
 
     TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;

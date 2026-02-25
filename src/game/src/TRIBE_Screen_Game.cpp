@@ -198,9 +198,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
 
         this->palette = panel_pal;
-        if (rge_base_game->draw_system != nullptr) {
-            rge_base_game->draw_system->SetPalette(rge_base_game->prog_palette);
-        }
     }
 
     long screen_w = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->main_wid : 0x280;
@@ -1346,6 +1343,151 @@ void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, 
     if (rects_overlap(param_1->clip_rect, dialog->clip_rect) != 0) {
         dialog->set_redraw(param_3);
     }
+}
+
+long TRIBE_Screen_Game::handle_size(long param_1, long param_2) {
+    // Source of truth: scr_game.cpp.decomp @ 0x00495AE0.
+    TPanel::handle_size(param_1, param_2);
+
+    if (this->runtime.main_view == nullptr) {
+        return 0;
+    }
+
+    auto set_rect_safe = [](TPanel* panel, long x, long y, long w, long h) {
+        if (panel != nullptr) {
+            panel->set_rect(x, y, w, h);
+        }
+    };
+
+    const int toolbox_active =
+        (this->runtime.tool_box != nullptr && ((TPanel*)this->runtime.tool_box)->active != 0) ? 1 : 0;
+
+    int grid_start_y = 0;
+    int b12_x = 0;
+    int b13_x = 0;
+    int b14_x = 0;
+    int b15_x = 0;
+    int b15_y = 0;
+    int b16_x = 0;
+    int b16_y = 0;
+
+    if ((this->pnl_wid < 0x400) || (this->pnl_hgt < 0x300)) {
+        if ((this->pnl_wid < 800) || (this->pnl_hgt < 600)) {
+            // 640x480 layout
+            if (toolbox_active == 0) {
+                set_rect_safe(this->runtime.main_view, 0, 0x14, 0x280, 0x14e);
+            } else {
+                set_rect_safe((TPanel*)this->runtime.tool_box, 0, 0x14, 0x280, 0x1e);
+                set_rect_safe(this->runtime.main_view, 0, 0x32, 0x280, 0x130);
+            }
+
+            set_rect_safe(this->runtime.map_view, 0x19b, 0x16a, 0xdc, 0x72);
+            set_rect_safe((TPanel*)this->runtime.age_panel, 0x10e, 2, 0x6a, 0x10);
+            set_rect_safe((TPanel*)this->runtime.fps_panel, 2, 2, 0x118, 0x10);
+            set_rect_safe((TPanel*)this->runtime.inven_panel, 0, 0, 0x10e, 0x14);
+            set_rect_safe((TPanel*)this->runtime.object_panel, 5, 0x169, 0x7f, 0x72);
+
+            grid_start_y = 0x16a;
+            b12_x = 0x224;
+            b13_x = 0x26c;
+            b14_x = 0x2d8;
+            b15_x = 0x2fd;
+            b15_y = 0x234;
+            b16_x = 0x2fd;
+            b16_y = 0x1e2;
+        } else {
+            // 800x600 layout
+            if (toolbox_active == 0) {
+                set_rect_safe(this->runtime.main_view, 0, 0x14, 800, 0x1c6);
+            } else {
+                set_rect_safe((TPanel*)this->runtime.tool_box, 0, 0x14, 800, 0x1e);
+                set_rect_safe(this->runtime.main_view, 0, 0x32, 800, 0x1a8);
+            }
+
+            set_rect_safe(this->runtime.map_view, 0x23b, 0x1e0, 0xdc, 0x72);
+            set_rect_safe((TPanel*)this->runtime.age_panel, 0x10e, 2, 0x10c, 0x10);
+            set_rect_safe((TPanel*)this->runtime.fps_panel, 2, 2, 0x118, 0x10);
+            set_rect_safe((TPanel*)this->runtime.inven_panel, 0, 0, 0x10e, 0x14);
+            set_rect_safe((TPanel*)this->runtime.object_panel, 5, 0x1e1, 0x7f, 0x72);
+
+            grid_start_y = 0x1e2;
+            b12_x = 0x224;
+            b13_x = 0x34c;
+            b14_x = 0x3b8;
+            b15_x = 0x3dd;
+            b15_y = 0x2dc;
+            b16_x = 0x3dd;
+            b16_y = 0x28a;
+        }
+    } else {
+        // 1024x768+ layout
+        if (toolbox_active == 0) {
+            set_rect_safe(this->runtime.main_view, 0, 0x14, 0x400, 0x26e);
+        } else {
+            set_rect_safe((TPanel*)this->runtime.tool_box, 0, 0x14, 0x400, 0x1e);
+            set_rect_safe(this->runtime.main_view, 0, 0x32, 0x400, 0x250);
+        }
+
+        set_rect_safe(this->runtime.map_view, 0x31b, 0x288, 0xdc, 0x72);
+        set_rect_safe((TPanel*)this->runtime.age_panel, 0x10e, 2, 0x1ec, 0x10);
+        set_rect_safe((TPanel*)this->runtime.fps_panel, 2, 2, 0x118, 0x10);
+        set_rect_safe((TPanel*)this->runtime.inven_panel, 0, 0, 0x10e, 0x14);
+        set_rect_safe((TPanel*)this->runtime.object_panel, 5, 0x289, 0x7f, 0x72);
+
+        grid_start_y = 0x28a;
+        b12_x = 0x304;
+        b13_x = 0x34c;
+        b14_x = 0x3b8;
+        b15_x = 0x3dd;
+        b15_y = 0x2dc;
+        b16_x = 0x3dd;
+        b16_y = 0x28a;
+    }
+
+    // Main 2x6 command grid.
+    int button_index = 0;
+    int y = grid_start_y;
+    for (int row = 0; row < 2; ++row) {
+        int x = 0x88;
+        for (int col = 0; col < 6; ++col) {
+            set_rect_safe((TPanel*)this->runtime.button_panel[button_index], x, y, 0x36, 0x36);
+            x += 0x36;
+            button_index++;
+        }
+        y += 0x3a;
+    }
+
+    // Top map/action buttons (indices 12..16).
+    set_rect_safe((TPanel*)this->runtime.button_panel[12], b12_x, 0, 0x48, 0x13);
+    set_rect_safe((TPanel*)this->runtime.button_panel[13], b13_x, 0, 0x6c, 0x13);
+    set_rect_safe((TPanel*)this->runtime.button_panel[14], b14_x, 0, 0x48, 0x13);
+    set_rect_safe((TPanel*)this->runtime.button_panel[15], b15_x, b15_y, 0x1e, 0x1e);
+    set_rect_safe((TPanel*)this->runtime.button_panel[16], b16_x, b16_y, 0x1e, 0x1e);
+
+    CUSTOM_DEBUG_BEGIN
+    static int s_scr_game_size_logs = 0;
+    if (s_scr_game_size_logs < 8 && this->runtime.main_view != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Screen_Game::handle_size wnd=%ldx%ld main=(%ld,%ld %ldx%ld) map=(%ld,%ld %ldx%ld) object=(%ld,%ld %ldx%ld)",
+            this->pnl_wid,
+            this->pnl_hgt,
+            this->runtime.main_view->pnl_x,
+            this->runtime.main_view->pnl_y,
+            this->runtime.main_view->pnl_wid,
+            this->runtime.main_view->pnl_hgt,
+            (this->runtime.map_view != nullptr) ? this->runtime.map_view->pnl_x : -1L,
+            (this->runtime.map_view != nullptr) ? this->runtime.map_view->pnl_y : -1L,
+            (this->runtime.map_view != nullptr) ? this->runtime.map_view->pnl_wid : -1L,
+            (this->runtime.map_view != nullptr) ? this->runtime.map_view->pnl_hgt : -1L,
+            (this->runtime.object_panel != nullptr) ? this->runtime.object_panel->pnl_x : -1L,
+            (this->runtime.object_panel != nullptr) ? this->runtime.object_panel->pnl_y : -1L,
+            (this->runtime.object_panel != nullptr) ? this->runtime.object_panel->pnl_wid : -1L,
+            (this->runtime.object_panel != nullptr) ? this->runtime.object_panel->pnl_hgt : -1L);
+        s_scr_game_size_logs++;
+    }
+    CUSTOM_DEBUG_END
+
+    return 1;
 }
 
 void TRIBE_Screen_Game::set_map_buttons_redraw(RedrawMode param_1) {

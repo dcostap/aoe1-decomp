@@ -8,6 +8,7 @@
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Tile.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <stdint.h>
 
@@ -106,10 +107,37 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(int param_1, RGE_Game_World* pa
 // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00441BB0
 void RGE_Doppleganger_Object::recycle_in_to_game(
     RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, RGE_Static_Object* param_6) {
+    CUSTOM_DEBUG_BEGIN
+    static int s_dopple_recycle_dbg_calls = 0;
+    int dbg_call_index = s_dopple_recycle_dbg_calls;
+    if (dbg_call_index < 32) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "DOPPLE recycle(6) enter this=%p master=%p player=%p x=%.3f y=%.3f z=%.3f src=%p",
+            this,
+            param_1,
+            param_2,
+            param_3,
+            param_4,
+            param_5,
+            param_6);
+    }
+    s_dopple_recycle_dbg_calls = dbg_call_index + 1;
+    CUSTOM_DEBUG_END
+
     rge_doppleganger_reset_fields(this);
 
     RGE_Animated_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5);
     this->type = 0x19;
+
+    CUSTOM_DEBUG_BEGIN
+    if (dbg_call_index < 32) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "DOPPLE recycle after base this.owner=%p this.world=%p this.sprite_list=%p",
+            this->owner,
+            (this->owner != nullptr) ? this->owner->world : nullptr,
+            this->sprite_list);
+    }
+    CUSTOM_DEBUG_END
 
     this->doppled_object = param_6;
     if (param_6 == nullptr) {
@@ -118,6 +146,19 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
         this->doppled_player = 0;
         this->destroy_obj();
     } else {
+        CUSTOM_DEBUG_BEGIN
+        if (dbg_call_index < 32) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "DOPPLE recycle src owner=%p master=%p sprite=%p sprite_list=%p id=%ld state=%u",
+                param_6->owner,
+                param_6->master_obj,
+                param_6->sprite,
+                param_6->sprite_list,
+                param_6->id,
+                (unsigned)param_6->object_state);
+        }
+        CUSTOM_DEBUG_END
+
         this->doppled_master_obj = param_6->master_obj;
         this->doppled_player = (int)param_6->owner->id;
         this->doppledObjectID = param_6->id;
@@ -138,11 +179,21 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
         if (param_6->object_state > 6) {
             this->doppled_object = nullptr;
             this->doppledObjectID = -1;
+            CUSTOM_DEBUG_BEGIN
+            if (dbg_call_index < 32) {
+                CUSTOM_DEBUG_LOG("DOPPLE recycle src state>6; calling validate() and returning");
+            }
+            CUSTOM_DEBUG_END
             this->validate();
             return;
         }
     }
 
+    CUSTOM_DEBUG_BEGIN
+    if (dbg_call_index < 32) {
+        CUSTOM_DEBUG_LOG("DOPPLE recycle calling validate()");
+    }
+    CUSTOM_DEBUG_END
     this->validate();
 }
 

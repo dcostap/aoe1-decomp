@@ -377,6 +377,23 @@ void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini_list, int x_off, i
     }
 }
 
+void TSpan_List_Manager::AddMiniList(VSpanMiniList* mini_list, int x_off, int y_off) {
+    if (mini_list == nullptr) {
+        return;
+    }
+
+    for (VSpanMiniList* it = mini_list; it != nullptr; ++it) {
+        if (it->Y_delta == 0xFF) {
+            return;
+        }
+
+        this->AddSpan(
+            (int)it->X_start + x_off,
+            (int)it->X_end + x_off,
+            (int)it->Y_delta + y_off);
+    }
+}
+
 void TSpan_List_Manager::DeleteSpan(int start_px, int end_px, int line) {
     // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE290
     int orig_line = line;

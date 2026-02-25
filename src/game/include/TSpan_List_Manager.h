@@ -12,6 +12,7 @@ struct TSpan_List_Manager {
     void SetSpanRegions(int left_px, int top_line, int right_px, int bottom_line);
     void ResetAll();
     void AddSpan(int start_px, int end_px, int line);
+    void AddMiniList(VSpanMiniList* mini_list, int x_off, int y_off);
     void SubtractMiniList(VSpanMiniList* mini_list, int x_off, int y_off);
     void DeleteSpan(int start_px, int end_px, int line);
     int PointVisible(int x_px, int y_line);

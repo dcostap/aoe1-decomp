@@ -24,6 +24,7 @@
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Visible_Map.h"
 #include "../include/TRIBE_Scenario_Header.h"
 #include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
@@ -1233,16 +1234,16 @@ int TRIBE_Game::create_game(int p1) {
     this->world->update_mutual_allies();
     CUSTOM_DEBUG_LOG("create_game: world->update_mutual_allies done");
 
+    if (local_player_id > 0) {
+        this->set_player((short)local_player_id);
+        CUSTOM_DEBUG_LOG_FMT(
+            "create_game: set_player local_player_id=%d curr_player=%d",
+            local_player_id,
+            (this->world != nullptr) ? (int)this->world->curr_player : -1);
+    }
+
     this->set_map_visible('\0');
     CUSTOM_DEBUG_LOG("create_game: set_map_visible done");
-    CUSTOM_DEBUG_BEGIN
-#if CUSTOM_DEBUG_ENABLED
-    // Development-only override: keep map visible to avoid all-black in-game screens
-    // while world/visibility parity is still in progress.
-    this->set_map_visible('\x01');
-    CUSTOM_DEBUG_LOG("create_game: DEV override set_map_visible(1) for easier debugging");
-#endif
-    CUSTOM_DEBUG_END
 
     // Full visibility check
     if (this->fullVisibility() != 0) {
@@ -2749,6 +2750,58 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
         }
         CUSTOM_DEBUG_END
     }
+
+CUSTOM_DEBUG_BEGIN
+    // Auto-capture: save a screenshot on first in-game paint, then exit.
+    {
+        static int s_autocap_ingame_frames = 0;
+        if (this->prog_mode == 4 || this->prog_mode == 5 || this->prog_mode == 6) {
+            s_autocap_ingame_frames++;
+            if (s_autocap_ingame_frames == 1) {
+                if (this->draw_system) {
+                    const tagPALETTEENTRY* pal = this->draw_system->palette;
+                    // Dump full palette to a separate file for analysis
+                    FILE* pf = fopen("autocap_palette.txt", "w");
+                    if (pf) {
+                        for (int i = 0; i < 256; i++) {
+                            fprintf(pf, "%3d: %3u %3u %3u\n", i, pal[i].peRed, pal[i].peGreen, pal[i].peBlue);
+                        }
+                        fclose(pf);
+                    }
+                    CUSTOM_DEBUG_LOG_FMT(
+                        "AUTOCAP palette[0]=(%u,%u,%u) [1]=(%u,%u,%u) [16]=(%u,%u,%u) [64]=(%u,%u,%u) [128]=(%u,%u,%u) [200]=(%u,%u,%u)",
+                        pal[0].peRed, pal[0].peGreen, pal[0].peBlue,
+                        pal[1].peRed, pal[1].peGreen, pal[1].peBlue,
+                        pal[16].peRed, pal[16].peGreen, pal[16].peBlue,
+                        pal[64].peRed, pal[64].peGreen, pal[64].peBlue,
+                        pal[128].peRed, pal[128].peGreen, pal[128].peBlue,
+                        pal[200].peRed, pal[200].peGreen, pal[200].peBlue);
+                    if (this->draw_system->DrawArea) {
+                        TDrawArea* da = this->draw_system->DrawArea;
+                        CUSTOM_DEBUG_LOG_FMT(
+                            "AUTOCAP surface: %dx%d pitch=%d bpp=%lu ColorBits=%d",
+                            da->Width, da->Height, da->Pitch,
+                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount,
+                            this->draw_system->ColorBits);
+                        // Also log pixel format masks
+                        CUSTOM_DEBUG_LOG_FMT(
+                            "AUTOCAP pf: rmask=0x%08lx gmask=0x%08lx bmask=0x%08lx",
+                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwRBitMask,
+                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwGBitMask,
+                            (unsigned long)da->SurfaceDesc.ddpfPixelFormat.dwBBitMask);
+                    }
+                }
+                if (this->draw_system && this->draw_system->DrawArea) {
+                    this->draw_system->DrawArea->SaveBitmap((char*)"autocap_frame.bmp");
+                    CUSTOM_DEBUG_LOG("AUTOCAP: Saved autocap_frame.bmp");
+                }
+                CUSTOM_DEBUG_LOG("AUTOCAP: Auto-exit after capture");
+                PostQuitMessage(0);
+                return 1;
+            }
+        }
+    }
+CUSTOM_DEBUG_END
 
     if (this->draw_system) {
         this->draw_system->Paint(NULL);

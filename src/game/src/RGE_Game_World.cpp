@@ -280,7 +280,9 @@ uchar RGE_Game_World::data_load_world(FILE* param_1) {
         this->data_load_players(player_file);
         this->data_load_objects(obj_file);
         this->data_load_effects(effects_file);
-        this->data_load_map(terrain_file, overlay_file, border_file, map_file, tile_width, tile_height, elev_height, this->sounds, terr_obj_file);
+        // Source of truth: world.cpp.decomp @ 0x00541500 calls RGE_Map(border_file, terrain_file, ...).
+        // Our RGE_Map file constructor expects border file first, terrain file second.
+        this->data_load_map(border_file, overlay_file, terrain_file, map_file, tile_width, tile_height, elev_height, this->sounds, terr_obj_file);
         this->data_load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_obj_file);
     }
 

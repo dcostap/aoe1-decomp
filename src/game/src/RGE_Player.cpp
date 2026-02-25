@@ -182,6 +182,12 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->world = world;
     this->id = (short)player_id;
 
+    // Source of truth: player.cpp.decomp (constructor paths allocate doppleganger_creator early).
+    // Required for New Game: TRIBE_Building_Object ctor unconditionally calls doppleganger_creator->add_doppleganger_check.
+    if (this->doppleganger_creator == nullptr) {
+        this->doppleganger_creator = new (std::nothrow) RGE_Doppleganger_Creator(this, 100);
+    }
+
     if (name_str) {
         this->name = _strdup(name_str);
     }
@@ -266,6 +272,11 @@ RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
     this->pathingDelayCapValue = 10;
     this->id = (short)player_id;
     this->world = world;
+
+    // Source of truth: player.cpp.decomp @ 0x0046E4B0
+    if (this->doppleganger_creator == nullptr) {
+        this->doppleganger_creator = new (std::nothrow) RGE_Doppleganger_Creator(this, 100);
+    }
 
     // Allocate and read relations
     this->relations = (unsigned char*)calloc(1, (int)world->player_num);

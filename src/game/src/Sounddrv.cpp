@@ -382,16 +382,9 @@ TDigital::TDigital(TDigital* src) {
 
 // Offset: 0x004BCCB0
 TDigital::~TDigital() {
-    if (this->owner != nullptr) {
-        this->owner->exit();
-        this->init_vars();
-        return;
-    }
-    if (this->loaded != 0) {
-        this->stop();
-        this->unload();
-        this->init_vars();
-    }
+    // Fully verified. Source of truth: sounddrv.cpp.asm @ 0x004BCCB0
+    // Destructor is just `JMP TDigital::exit`.
+    this->exit();
 }
 
 // Offset: 0x004BCCC0
@@ -697,6 +690,63 @@ void TDigital::unload() {
 int TDigital::play() {
     TDigital* actual = this->owner;
     if (actual == nullptr) actual = this;
+
+    // Custom debug instrumentation for crash triage (New Game crash observed at RVA 0x9B6EF).
+    // Keep this throttled; it can be called frequently.
+    static long s_play_log_count = 0;
+    if (s_play_log_count < 40) {
+        ++s_play_log_count;
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT(
+            "TDigital::play pre this=%p owner=%p actual=%p drv=%p loaded=%d failed=%d buf=%p file='%s' resid=%ld vol=%ld pitch=%lu pan=%ld loop=%d",
+            this,
+            this->owner,
+            actual,
+            actual ? actual->sound_system : nullptr,
+            actual ? (int)actual->loaded : -1,
+            actual ? (int)actual->failed : -1,
+            actual ? actual->sound_buffer : nullptr,
+            actual ? actual->sound_file : "(null)",
+            actual ? (long)actual->resource_id : 0,
+            (long)this->volume,
+            (unsigned long)this->pitch,
+            (long)this->pan,
+            actual ? (int)actual->loop : 0);
+
+        void* vtbl = nullptr;
+        void* fp_get_status = nullptr;
+        void* fp_set_volume = nullptr;
+        void* fp_set_freq = nullptr;
+        void* fp_set_pan = nullptr;
+        void* fp_set_curpos = nullptr;
+        void* fp_play = nullptr;
+        __try {
+            if (actual && actual->sound_buffer) {
+                vtbl = *(void**)actual->sound_buffer;
+                if (vtbl) {
+                    fp_get_status = *(void**)((char*)vtbl + 0x24);
+                    fp_play = *(void**)((char*)vtbl + 0x30);
+                    fp_set_curpos = *(void**)((char*)vtbl + 0x34);
+                    fp_set_volume = *(void**)((char*)vtbl + 0x3C);
+                    fp_set_pan = *(void**)((char*)vtbl + 0x40);
+                    fp_set_freq = *(void**)((char*)vtbl + 0x44);
+                }
+            }
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            // Intentionally swallow faults; we're logging corrupted-pointer state.
+        }
+
+        CUSTOM_DEBUG_LOG_FMT(
+            "TDigital::play vtbl=%p get_status=%p set_volume=%p set_freq=%p set_pan=%p set_curpos=%p play=%p",
+            vtbl,
+            fp_get_status,
+            fp_set_volume,
+            fp_set_freq,
+            fp_set_pan,
+            fp_set_curpos,
+            fp_play);
+        CUSTOM_DEBUG_END
+    }
 
     TSound_Driver* drv = actual->sound_system;
     if (drv == nullptr || drv->ready == 0 || drv->mute != 0) {

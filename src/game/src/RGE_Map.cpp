@@ -266,6 +266,32 @@ void RGE_Map::new_map(long w, long h)
     }
 
     this->set_map_screen_pos(0, 0, w - 1, h - 1);
+
+    // Source of truth: map.cpp.decomp new_map() constructs fresh zone maps + unified vis map.
+    // Required for doppleganger checks (unified_map_offsets) during New Game random map generation.
+    if (this->map_zones != nullptr) {
+        delete this->map_zones;
+        this->map_zones = nullptr;
+    }
+    this->map_zones = new (std::nothrow) RGE_Zone_Map_List(this);
+
+    if (this->unified_vis_map != nullptr) {
+        if (this->unified_vis_map->UnifiedVisibleMap != nullptr) {
+            free(this->unified_vis_map->UnifiedVisibleMap);
+            this->unified_vis_map->UnifiedVisibleMap = nullptr;
+        }
+        free(this->unified_vis_map);
+        this->unified_vis_map = nullptr;
+    }
+
+    this->unified_vis_map = (RGE_Unified_Visible_Map*)calloc(1, sizeof(RGE_Unified_Visible_Map));
+    if (this->unified_vis_map != nullptr) {
+        this->unified_vis_map->mapWidth = (int)w;
+        this->unified_vis_map->mapHeight = (int)h;
+        this->unified_vis_map->UnifiedVisibleMap =
+            (ulong*)calloc((size_t)w * (size_t)h, sizeof(ulong));
+        this->unified_vis_map->Set_Map_Offsets();
+    }
 }
 
 void RGE_Map::load_map(int param_1) {
@@ -337,10 +363,9 @@ void RGE_Map::load_map(int param_1) {
     }
     if (this->unified_vis_map != nullptr) {
         this->unified_vis_map->load(param_1);
-        if (created_unified != 0) {
-            Map_Update_Suppresion = 0;
-            this->unified_vis_map->Set_Map_Offsets();
-        }
+        // Source of truth: offsets must reflect the loaded UnifiedVisibleMap regardless of allocation path.
+        Map_Update_Suppresion = 0;
+        this->unified_vis_map->Set_Map_Offsets();
     }
 }
 
@@ -427,7 +452,7 @@ RGE_Map::RGE_Map(int file_handle, RGE_Sound** sounds, uchar load_map)
     }
 }
 
-RGE_Map::RGE_Map(char* terrain_file, char* border_file, char* terrain_obj_file, short tile_w, short tile_h, short elev_h, RGE_Sound** sounds)
+RGE_Map::RGE_Map(char* border_file, char* terrain_file, char* terrain_obj_file, short tile_w, short tile_h, short elev_h, RGE_Sound** sounds)
 {
     this->random_map = nullptr;
     this->game_world = (rge_base_game != nullptr) ? rge_base_game->world : nullptr;
@@ -477,10 +502,11 @@ RGE_Map::RGE_Map(char* terrain_file, char* border_file, char* terrain_obj_file, 
     memset(this->terrain_types, 0, sizeof(this->terrain_types));
     memset(this->border_types, 0, sizeof(this->border_types));
 
-    // Decomp constructor order: load_terrain_types(param_2), load_border_types(param_1)
+    // Source of truth: map.cpp.decomp @ 0x004550A0
+    // load_terrain_types(param_2), load_border_types(param_1)
     (void)terrain_obj_file;
-    this->load_terrain_types(border_file, sounds);
-    this->load_border_types(terrain_file, sounds);
+    this->load_terrain_types(terrain_file, sounds);
+    this->load_border_types(border_file, sounds);
 
     this->map = nullptr;
     this->search_map = nullptr;

@@ -386,7 +386,7 @@ static void draw_background(TTextPanel* this_) {
 
     if (this_->parent_panel) {
         if (this_->bevel_type > 1 && this_->bevel_type < 8) this_->parent_panel->draw_rect2(&this_->clip_rect);
-        else if (this_->parent_panel->overlapping_children == 0) this_->parent_panel->draw_rect(&this_->clip_rect);
+        else if (this_->parent_panel->just_drawn == 0) this_->parent_panel->draw_rect(&this_->clip_rect);
     }
 }
 

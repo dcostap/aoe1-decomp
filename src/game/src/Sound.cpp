@@ -5,6 +5,7 @@
 #include "../include/TDigital.h"
 #include "../include/TSound_Driver.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include <string.h>
 #include <stdlib.h>
@@ -156,6 +157,19 @@ void RGE_Sound::play(int add_to_list) {
     if (idx >= this->sound_num) return;
 
     if (this->sounds[idx].digital_sound != nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT(
+            "RGE_Sound::play id=%d sound_num=%d idx=%d add_to_list=%d name='%s' resid=%ld pct=%hd dig=%p",
+            (int)this->id,
+            (int)this->sound_num,
+            (int)idx,
+            (int)add_to_list,
+            this->sounds[idx].name,
+            this->sounds[idx].resource_id,
+            (short)this->sounds[idx].percent,
+            this->sounds[idx].digital_sound);
+        CUSTOM_DEBUG_END
+
         if (do_draw_log != 0) {
             char s[256];
             sprintf(s, " %s", this->sounds[idx].name);

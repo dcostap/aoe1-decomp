@@ -50,6 +50,7 @@ public:
     // Surface/pipeline helpers (truth: view.cpp.decomp).
     void delete_surfaces();
     int create_surfaces();
+    void Init_Tile_Edge_Tables();
     void calc_draw_vars();
     void draw_object_outline();
     void draw_paint_brush();
@@ -91,6 +92,7 @@ public:
     void update();
     void draw_view(uchar mode, TDrawArea* area);
     long view_function_terrain(uchar mode, tagRECT rect);
+    int get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, ulong param_5);
     int draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, short row, uchar fog, int param_9, int param_10);
     void draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar vis, uchar fog, int param_7, int param_8);
     short get_tile_picture(uchar terrain_type, uchar vis, short col, short row);

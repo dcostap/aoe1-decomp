@@ -731,8 +731,9 @@ void TButtonPanel::draw() {
         if (this->bevel_type >= 2 && this->bevel_type <= 4) {
             this->parent_panel->draw_rect2(&this->clip_rect);
         } else {
-            // Only do the plain restore for non-overlapping parents (matches `Pnl_btn.cpp.decomp`).
-            if (this->parent_panel->overlapping_children == 0) {
+            // Only do the plain restore when the parent wasn't just drawn (matches `pnl_btn.cpp.decomp`:
+            // parent->just_drawn gate at +0x84 / index 0x21).
+            if (this->parent_panel->just_drawn == 0) {
                 this->parent_panel->draw_rect(&this->clip_rect);
             }
         }
