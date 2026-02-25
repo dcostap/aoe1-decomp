@@ -637,7 +637,7 @@ CUSTOM_DEBUG_END
 
     // Call setup_cmd_options (offset 0x64 in vtable)
     if (!this->setup_cmd_options()) {
-        this->error_code = 0;
+        this->error_code = 2;
         return 0;
     }
 
@@ -651,9 +651,10 @@ CUSTOM_DEBUG_END
     // Check Memory
     MEMORYSTATUS memStatus;
     GlobalMemoryStatus(&memStatus);
-    // 0x1400000 = 20MB, 0xa00000 = 10MB
-    if (memStatus.dwTotalPhys < 0xa00000) {
-        this->error_code = 0x14; // TODO: verify code
+    if ((((memStatus.dwTotalPageFile < 0x1400000) || (memStatus.dwTotalVirtual < 0xa00000)) &&
+         ((memStatus.dwTotalPageFile < 0xa00000) || (memStatus.dwTotalVirtual < 0x1400000))) &&
+        (memStatus.dwTotalVirtual < 0x1e00000)) {
+        this->error_code = 0x16;
         return 0;
     }
 
@@ -2868,14 +2869,33 @@ CUSTOM_DEBUG_END
     return 1;
 }
 
-// TODO: STUB - get_mouse_pos not yet implemented from basegame.cpp.decomp.
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x004202E0
 void RGE_Base_Game::get_mouse_pos(tagPOINT* out)
 {
-    if (out) { out->x = 0; out->y = 0; }
+    GetCursorPos(out);
+    if (this->prog_info->full_screen == 0) {
+        ScreenToClient((HWND)this->prog_window, out);
+        if (out->x > 60000) {
+            out->x -= 0x10000;
+        }
+        if (out->y > 60000) {
+            out->y -= 0x10000;
+        }
+    }
 }
 
-// TODO: STUB - play_sound not yet implemented from basegame.cpp.decomp.
-void RGE_Base_Game::play_sound(int sound_id)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422E60
+int RGE_Base_Game::play_sound(int sound_id)
 {
-    (void)sound_id;
+    TDigital** pp_sounds = this->sounds;
+    if (pp_sounds == nullptr) {
+        return 0;
+    }
+    if (pp_sounds[sound_id] == nullptr) {
+        return 0;
+    }
+    if (pp_sounds[sound_id]->is_playing() != 0) {
+        return 1;
+    }
+    return pp_sounds[sound_id]->play();
 }

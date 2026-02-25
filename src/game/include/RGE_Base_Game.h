@@ -165,7 +165,7 @@ public:
     // Fills *out with the current cursor screen position.
     void get_mouse_pos(tagPOINT* out);
     // Plays the UI sound effect with the given index.
-    void play_sound(int sound_id);
+    int play_sound(int sound_id);
     
     void* create_font(void* dc, int id1, int id2);
 
