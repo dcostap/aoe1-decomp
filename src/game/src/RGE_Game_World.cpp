@@ -5,12 +5,14 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Object_Node.h"
+#include "../include/RGE_Object_List.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Sprite.h"
 #include "../include/RGE_Color_Table.h"
 #include "../include/RGE_Sound.h"
 #include "../include/RGE_Effects.h"
+#include "../include/AIPlayBook.h"
 #include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Command.h"
 #include "../include/RGE_Base_Game.h"
@@ -26,6 +28,7 @@
 #include <share.h>
 #include <stdio.h>
 #include <string.h>
+#include <new>
 
 static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Player_Info* info,
                                            float scenario_version, int has_uncompressed_header) {
@@ -164,20 +167,28 @@ class TCommunications_Handler;
 struct TSound_Driver;
 class RGE_Scenario;
 
-// Constructor — zero-init all members
+// Constructor
 RGE_Game_World::RGE_Game_World() {
-    this->world_time = 0;
-    this->old_world_time = 0;
-    this->world_time_delta = 0;
-    this->timer = 0.0f;
-    this->old_time = 0;
-    this->game_speed = 1.5f;
-    this->temp_pause = 0;
-    this->game_state = 0;
-    this->game_end_condition = 0;
-    this->sound_update_index = 0;
-    this->sprite_update_index = 0;
-    this->map = nullptr;
+    // Source of truth: world.cpp.decomp @ 0x00540750
+    this->objectsValue = nullptr;
+    this->numberObjectsValue = 0;
+    this->maxNumberObjectsValue = 10000;
+    this->negativeObjectsValue = nullptr;
+    this->numberNegativeObjectsValue = 0;
+    this->maxNumberNegativeObjectsValue = 1000;
+    this->maximumComputerPlayerUpdateTime = 2;
+    this->availableComputerPlayerUpdateTime = 2;
+    this->currentUpdateComputerPlayer = -1;
+    this->difficultyLevelValue = -1;
+    world_update_counter = 0;
+
+    this->objectsValue = static_cast<RGE_Static_Object**>(
+        ::operator new((size_t)this->maxNumberObjectsValue * sizeof(RGE_Static_Object*), std::nothrow));
+    this->negativeObjectsValue = static_cast<RGE_Static_Object**>(
+        ::operator new((size_t)this->maxNumberNegativeObjectsValue * sizeof(RGE_Static_Object*), std::nothrow));
+    VIS_UNIT_objectsValue = this->objectsValue;
+
+    this->playbook = nullptr;
     this->sound_num = 0;
     this->sounds = nullptr;
     this->sprite_num = 0;
@@ -186,45 +197,42 @@ RGE_Game_World::RGE_Game_World() {
     this->players = nullptr;
     this->master_player_num = 0;
     this->master_players = nullptr;
-    this->effects = nullptr;
     this->terrain_num = 0;
-    this->terrain_size = 0;
     this->terrains = nullptr;
-    this->commands = nullptr;
-    this->scenario = nullptr;
     this->color_table_num = 0;
     this->color_tables = nullptr;
-    this->next_object_id = 0;
-    this->next_reusable_object_id = 0;
-    this->scenario_object_id = 0;
-    this->scenario_object_flag = 0;
-    this->random_seed = 0;
-    this->curr_player = 0;
-    this->sound_driver = nullptr;
+    this->commands = nullptr;
+    this->scenario = nullptr;
+    this->effects = nullptr;
+    this->map = nullptr;
+    this->world_time = 0;
+    this->old_world_time = 0;
+    this->world_time_delta = 0;
     this->world_time_delta_seconds = 0.0f;
-    this->objectsValue = nullptr;
-    this->numberObjectsValue = 0;
-    this->maxNumberObjectsValue = 0;
-    this->negativeObjectsValue = nullptr;
-    this->numberNegativeObjectsValue = 0;
-    this->maxNumberNegativeObjectsValue = 0;
-    this->playbook = nullptr;
-    this->campaign = 0;
-    this->campaign_player = 0;
-    this->campaign_scenario = 0;
+    this->timer = 0.0f;
+    this->old_time = 0;
+    this->game_speed = 0.0f;
+    this->temp_pause = 0;
+    this->next_object_id = 0;
+    this->next_reusable_object_id = -1;
+    this->random_seed = 0xE;
+    this->curr_player = 1;
+    this->sound_driver = nullptr;
+    this->game_state = 2;
+    this->game_end_condition = 0;
+    this->sound_update_index = 0;
+    this->sprite_update_index = 0;
     this->player_turn = 0;
     memset(this->player_time_delta, 0, sizeof(this->player_time_delta));
-    this->reusable_static_objects = nullptr;
-    this->reusable_animated_objects = nullptr;
-    this->reusable_moving_objects = nullptr;
-    this->reusable_action_objects = nullptr;
-    this->reusable_combat_objects = nullptr;
-    this->reusable_missile_objects = nullptr;
-    this->reusable_doppleganger_objects = nullptr;
-    this->maximumComputerPlayerUpdateTime = 0;
-    this->availableComputerPlayerUpdateTime = 0;
-    this->currentUpdateComputerPlayer = 0;
-    this->difficultyLevelValue = 0;
+    this->reusable_static_objects = new (std::nothrow) RGE_Object_List();
+    this->reusable_animated_objects = new (std::nothrow) RGE_Object_List();
+    this->reusable_moving_objects = new (std::nothrow) RGE_Object_List();
+    this->reusable_action_objects = new (std::nothrow) RGE_Object_List();
+    this->reusable_combat_objects = new (std::nothrow) RGE_Object_List();
+    this->reusable_missile_objects = new (std::nothrow) RGE_Object_List();
+    this->reusable_doppleganger_objects = new (std::nothrow) RGE_Object_List();
+    this->scenario_object_flag = 0;
+    // TODO: Parity gap: constructor-side DVlogf fopen("c:\\aoeWVlog.txt","w") is not implemented.
 }
 
 // Data loading virtuals
@@ -1023,17 +1031,42 @@ void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
 
 // Destructor
 RGE_Game_World::~RGE_Game_World() {
-    // Clean up allocated arrays. Since most are stubs returning null,
-    // only free what was actually allocated.
-    if (this->players) {
-        for (short i = 0; i < this->player_num; i++) {
-            if (this->players[i]) {
-                delete this->players[i];
-            }
-        }
-        free(this->players);
-        this->players = nullptr;
+    // Source of truth: world.cpp.decomp @ 0x00540A40
+    if (this->commands != nullptr) {
+        delete this->commands;
+        this->commands = nullptr;
     }
+    this->del_game_info();
+
+    if (this->reusable_static_objects != nullptr) {
+        delete this->reusable_static_objects;
+        this->reusable_static_objects = nullptr;
+    }
+    if (this->reusable_animated_objects != nullptr) {
+        delete this->reusable_animated_objects;
+        this->reusable_animated_objects = nullptr;
+    }
+    if (this->reusable_moving_objects != nullptr) {
+        delete this->reusable_moving_objects;
+        this->reusable_moving_objects = nullptr;
+    }
+    if (this->reusable_action_objects != nullptr) {
+        delete this->reusable_action_objects;
+        this->reusable_action_objects = nullptr;
+    }
+    if (this->reusable_combat_objects != nullptr) {
+        delete this->reusable_combat_objects;
+        this->reusable_combat_objects = nullptr;
+    }
+    if (this->reusable_missile_objects != nullptr) {
+        delete this->reusable_missile_objects;
+        this->reusable_missile_objects = nullptr;
+    }
+    if (this->reusable_doppleganger_objects != nullptr) {
+        delete this->reusable_doppleganger_objects;
+        this->reusable_doppleganger_objects = nullptr;
+    }
+
     if (this->master_players) {
         for (short i = 0; i < this->master_player_num; i++) {
             if (this->master_players[i]) {
@@ -1043,12 +1076,13 @@ RGE_Game_World::~RGE_Game_World() {
         free(this->master_players);
         this->master_players = nullptr;
     }
-    if (this->sounds) {
-        for (short i = 0; i < this->sound_num; i++) {
-            if (this->sounds[i]) delete this->sounds[i];
-        }
-        free(this->sounds);
-        this->sounds = nullptr;
+    if (this->effects) {
+        delete this->effects;
+        this->effects = nullptr;
+    }
+    if (this->map) {
+        delete this->map;
+        this->map = nullptr;
     }
     if (this->sprites) {
         for (short i = 0; i < this->sprite_num; i++) {
@@ -1056,6 +1090,13 @@ RGE_Game_World::~RGE_Game_World() {
         }
         free(this->sprites);
         this->sprites = nullptr;
+    }
+    if (this->sounds) {
+        for (short i = 0; i < this->sound_num; i++) {
+            if (this->sounds[i]) delete this->sounds[i];
+        }
+        free(this->sounds);
+        this->sounds = nullptr;
     }
     if (this->terrains) {
         for (short i = 0; i < this->terrain_num; i++) {
@@ -1072,30 +1113,19 @@ RGE_Game_World::~RGE_Game_World() {
         this->color_tables = nullptr;
     }
     if (this->objectsValue) {
-        free(this->objectsValue);
+        ::operator delete(this->objectsValue);
         this->objectsValue = nullptr;
+        VIS_UNIT_objectsValue = nullptr;
     }
     if (this->negativeObjectsValue) {
-        free(this->negativeObjectsValue);
+        ::operator delete(this->negativeObjectsValue);
         this->negativeObjectsValue = nullptr;
     }
-    if (this->map) {
-        delete this->map;
-        this->map = nullptr;
+    if (this->playbook != nullptr) {
+        delete this->playbook;
+        this->playbook = nullptr;
     }
-    if (this->effects) {
-        delete this->effects;
-        this->effects = nullptr;
-    }
-    if (this->commands) {
-        delete this->commands;
-        this->commands = nullptr;
-    }
-    if (this->scenario) {
-        delete this->scenario;
-        this->scenario = nullptr;
-    }
-    // playbook, reusable_* lists — not yet allocated by stubs
+    // TODO: Parity gap: destructor-side fclose for logStatusFile/DVlogf is not implemented.
 }
 
 // Utility virtuals
@@ -2387,7 +2417,8 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
                 new_max = 1;
             }
 
-            RGE_Static_Object** new_arr = (RGE_Static_Object**)calloc((size_t)new_max, sizeof(RGE_Static_Object*));
+            RGE_Static_Object** new_arr = static_cast<RGE_Static_Object**>(
+                ::operator new((size_t)new_max * sizeof(RGE_Static_Object*), std::nothrow));
             if (new_arr == nullptr) {
                 return 0;
             }
@@ -2395,9 +2426,12 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
             for (int i = 0; i < this->maxNumberNegativeObjectsValue; ++i) {
                 new_arr[i] = this->negativeObjectsValue[i];
             }
+            for (int i = this->maxNumberNegativeObjectsValue; i < new_max; ++i) {
+                new_arr[i] = nullptr;
+            }
 
             if (this->negativeObjectsValue != nullptr) {
-                free(this->negativeObjectsValue);
+                ::operator delete(this->negativeObjectsValue);
             }
             this->negativeObjectsValue = new_arr;
             this->maxNumberNegativeObjectsValue = new_max;
@@ -2417,7 +2451,8 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
             new_max = 1;
         }
 
-        RGE_Static_Object** new_arr = (RGE_Static_Object**)calloc((size_t)new_max, sizeof(RGE_Static_Object*));
+        RGE_Static_Object** new_arr = static_cast<RGE_Static_Object**>(
+            ::operator new((size_t)new_max * sizeof(RGE_Static_Object*), std::nothrow));
         if (new_arr == nullptr) {
             return 0;
         }
@@ -2425,11 +2460,15 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
         for (int i = 0; i < this->maxNumberObjectsValue; ++i) {
             new_arr[i] = this->objectsValue[i];
         }
+        for (int i = this->maxNumberObjectsValue; i < new_max; ++i) {
+            new_arr[i] = nullptr;
+        }
 
         if (this->objectsValue != nullptr) {
-            free(this->objectsValue);
+            ::operator delete(this->objectsValue);
         }
         this->objectsValue = new_arr;
+        VIS_UNIT_objectsValue = new_arr;
         this->maxNumberObjectsValue = new_max;
     }
 
