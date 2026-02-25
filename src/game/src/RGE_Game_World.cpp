@@ -232,7 +232,9 @@ RGE_Game_World::RGE_Game_World() {
     this->reusable_missile_objects = new (std::nothrow) RGE_Object_List();
     this->reusable_doppleganger_objects = new (std::nothrow) RGE_Object_List();
     this->scenario_object_flag = 0;
-    // TODO: Parity gap: constructor-side DVlogf fopen("c:\\aoeWVlog.txt","w") is not implemented.
+    if (DVlogf == nullptr) {
+        DVlogf = fopen("c:\\aoeWVlog.txt", "w");
+    }
 }
 
 // Data loading virtuals
@@ -1121,11 +1123,18 @@ RGE_Game_World::~RGE_Game_World() {
         ::operator delete(this->negativeObjectsValue);
         this->negativeObjectsValue = nullptr;
     }
+    if (logStatusFile != nullptr) {
+        fclose(logStatusFile);
+        logStatusFile = nullptr;
+    }
     if (this->playbook != nullptr) {
         delete this->playbook;
         this->playbook = nullptr;
     }
-    // TODO: Parity gap: destructor-side fclose for logStatusFile/DVlogf is not implemented.
+    if (DVlogf != nullptr) {
+        fclose(DVlogf);
+        DVlogf = nullptr;
+    }
 }
 
 // Utility virtuals
