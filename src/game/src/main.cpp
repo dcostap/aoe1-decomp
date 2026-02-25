@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
-#include <excpt.h>
 #include "../include/TRIBE_Game.h"
 #include "../include/RGE_Prog_Info.h"
 #include "../include/custom_debug.h"
@@ -15,85 +14,12 @@ const _GUID AGE1_TRIBE_GUID = { 0x08F50797, 0x46A8, 0xF2E8, { 0xE2, 0xEB, 0xD1, 
 //   Data1=0x08F50797, Data2=0x46AA, Data3=0xF2E8, Data4={0xE2,0xEB,0xD1,0x11,0x83,0x9B,0x00,0x60}
 const _GUID AGE1_ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
 
-static int aoe_log_unhandled_exception(EXCEPTION_POINTERS* ep) {
-CUSTOM_DEBUG_BEGIN
-    if (!ep || !ep->ExceptionRecord) {
-        CUSTOM_DEBUG_ERROR(-1, "Unhandled exception (missing exception record)");
-        return EXCEPTION_EXECUTE_HANDLER;
-    }
-
-    const DWORD code = ep->ExceptionRecord->ExceptionCode;
-    const void* addr = ep->ExceptionRecord->ExceptionAddress;
-    CUSTOM_DEBUG_LOG_FMT("UNHANDLED_EXCEPTION code=0x%08lX address=%p flags=0x%08lX",
-                         (unsigned long)code, addr, (unsigned long)ep->ExceptionRecord->ExceptionFlags);
-
-    if (ep->ContextRecord) {
-        CUSTOM_DEBUG_LOG_FMT("UNHANDLED_EXCEPTION regs: EIP=0x%08lX ESP=0x%08lX EBP=0x%08lX",
-                             (unsigned long)ep->ContextRecord->Eip,
-                             (unsigned long)ep->ContextRecord->Esp,
-                             (unsigned long)ep->ContextRecord->Ebp);
-
-        HMODULE exe_mod = GetModuleHandleA(NULL);
-        if (exe_mod != NULL) {
-            unsigned long image_base = (unsigned long)(uintptr_t)exe_mod;
-            IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER*)exe_mod;
-            if (dos->e_magic == IMAGE_DOS_SIGNATURE) {
-                IMAGE_NT_HEADERS* nt = (IMAGE_NT_HEADERS*)((char*)exe_mod + dos->e_lfanew);
-                if (nt->Signature == IMAGE_NT_SIGNATURE) {
-                    unsigned long image_size = (unsigned long)nt->OptionalHeader.SizeOfImage;
-                    unsigned long eip = (unsigned long)ep->ContextRecord->Eip;
-                    int inside = (eip >= image_base && eip < (image_base + image_size)) ? 1 : 0;
-                    CUSTOM_DEBUG_LOG_FMT(
-                        "UNHANDLED_EXCEPTION module: base=0x%08lX size=0x%08lX eip_rva=0x%08lX inside=%d",
-                        image_base,
-                        image_size,
-                        eip - image_base,
-                        inside);
-                }
-            }
-        }
-
-        MEMORY_BASIC_INFORMATION mbi;
-        memset(&mbi, 0, sizeof(mbi));
-        SIZE_T vq = VirtualQuery((LPCVOID)(uintptr_t)ep->ContextRecord->Eip, &mbi, sizeof(mbi));
-        if (vq == sizeof(mbi)) {
-            CUSTOM_DEBUG_LOG_FMT(
-                "UNHANDLED_EXCEPTION vquery: base=%p alloc=%p size=0x%08lX state=0x%08lX protect=0x%08lX type=0x%08lX",
-                mbi.BaseAddress,
-                mbi.AllocationBase,
-                (unsigned long)mbi.RegionSize,
-                (unsigned long)mbi.State,
-                (unsigned long)mbi.Protect,
-                (unsigned long)mbi.Type);
-            char module_path[MAX_PATH];
-            module_path[0] = '\0';
-            if (mbi.AllocationBase != nullptr) {
-                DWORD mlen = GetModuleFileNameA((HMODULE)mbi.AllocationBase, module_path, MAX_PATH);
-                if (mlen != 0 && mlen < MAX_PATH) {
-                    CUSTOM_DEBUG_LOG_FMT("UNHANDLED_EXCEPTION module_from_vquery: %s", module_path);
-                }
-            }
-        }
-    }
-CUSTOM_DEBUG_END
-    return EXCEPTION_EXECUTE_HANDLER;
-}
-
-static LONG WINAPI aoe_unhandled_exception_filter(EXCEPTION_POINTERS* ep) {
-    aoe_log_unhandled_exception(ep);
-    return EXCEPTION_EXECUTE_HANDLER;
-}
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_INIT();
     CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
     CUSTOM_DEBUG_LOG_FMT("CmdLine: %s", lpCmdLine ? lpCmdLine : "(null)");
 CUSTOM_DEBUG_END
-
-    // TODO: STUB - Non-original safety/debug hook; keep until startup/crash parity instrumentation is fully restored.
-    // Ensures hard faults are recorded in `decomp_debug.log` before process exit.
-    SetUnhandledExceptionFilter(aoe_unhandled_exception_filter);
 
     RGE_Prog_Info info;
     memset(&info, 0, sizeof(info));
