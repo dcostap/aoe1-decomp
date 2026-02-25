@@ -13,6 +13,7 @@
 #include <fcntl.h>
 
 extern "C" unsigned int g_ASMShadowing_Amount;
+extern "C" unsigned int g_ASMShadowing_State[];
 extern "C" unsigned int _ASMGet_Color_Xform();
 extern "C" void _ASMSet_Surface_Info(void** display_offsets, VSpan_Node** line_head_ptrs, VSpan_Node** line_tail_ptrs, int min_span_px, int min_line, int max_span_px, int max_line);
 extern "C" void _ASMSet_Xlate_Table(void* p);
@@ -776,7 +777,11 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
         unsigned short left = outline[row * 2 + 0];
         unsigned short right = outline[row * 2 + 1];
-        if ((left & 0x8000) || (right & 0x8000)) continue;
+        if (mirror != 0) {
+            if (right & 0x8000) continue;
+        } else {
+            if (left & 0x8000) continue;
+        }
         left = (unsigned short)(left & 0x7FFF);
         right = (unsigned short)(right & 0x7FFF);
 
@@ -820,15 +825,28 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (ext == 0x02) { active_xlate = (unsigned char*)0; continue; }
                 if (ext == 0x03) { active_xlate = base_xlate; continue; }
 
-                // 0x4E/0x5E/0x6E/0x7E: outline opcodes. These draw palette indices and advance X.
+                // 0x4E/0x5E/0x6E/0x7E: outline opcodes.
+                // ASM parity: they only render when DAT_0088c058 (+0x0) is non-zero; otherwise they are pure X-advance.
                 unsigned int len = 0;
-                unsigned char outline_idx = 0;
-                if (ext == 0x04) { len = 1; outline_idx = 16; }
-                else if (ext == 0x06) { len = 1; outline_idx = 243; }
-                else if (ext == 0x05) { if (src >= shape_end) break; len = (unsigned int)(*src++); if (len == 0) len = 1; outline_idx = 16; }
-                else if (ext == 0x07) { if (src >= shape_end) break; len = (unsigned int)(*src++); if (len == 0) len = 1; outline_idx = 243; }
+                if (ext == 0x04 || ext == 0x06) {
+                    len = 1;
+                } else if (ext == 0x05 || ext == 0x07) {
+                    if (src >= shape_end) break;
+                    len = (unsigned int)(*src++);
+                }
                 else { continue; }
 
+                if (len == 0) {
+                    continue;
+                }
+
+                if (g_ASMShadowing_State[0] == 0u) {
+                    dst_x += (mirror != 0) ? -(long)len : (long)len;
+                    span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
+                    continue;
+                }
+
+                const unsigned char outline_idx = (unsigned char)(g_ASMShadowing_State[1] & 0xFFu);
                 for (unsigned int i = 0; i < len; ++i) {
                     span = (mirror != 0) ? shape_span_retreat(span, dst_x) : shape_span_advance(span, dst_x);
                     if (dst_x >= clip_l && dst_x <= clip_r && shape_span_contains(span, dst_x) &&
