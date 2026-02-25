@@ -68,7 +68,7 @@ public:
     void get_max_size(short* max_col, short* max_row);
 
     // Returns true if the object with the given id was drawn in the last frame.
-    bool Object_Was_Displayed(long object_id, int param_2);
+    bool Object_Was_Displayed(long object_id, bool include_flagged);
 
     TDrawArea* cur_render_area;
     int calc_draw_count;
