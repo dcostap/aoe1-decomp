@@ -2874,9 +2874,15 @@ short RGE_View::get_border_picture(uchar terrain_type, uchar border_type, uchar 
     return (short)(pict->animations * sub_index + pict->shape_index);
 }
 
-// TODO: STUB - Object_Was_Displayed not yet implemented from view.cpp.decomp.
-bool RGE_View::Object_Was_Displayed(long object_id, int param_2)
+bool RGE_View::Object_Was_Displayed(long object_id, bool include_flagged)
 {
-    (void)object_id; (void)param_2;
-    return false;
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053AD50
+    DClipInfo_Node* node = this->prior_objs->LocateIDbyDrawLevel((int)object_id, 6, 0x28, 0);
+    if (node == nullptr) {
+        return false;
+    }
+    if ((!include_flagged) && ((node->Draw_Flag & 1) != 0)) {
+        return false;
+    }
+    return true;
 }
