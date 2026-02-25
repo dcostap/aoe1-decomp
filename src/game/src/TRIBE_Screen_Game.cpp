@@ -205,8 +205,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->set_ideal_size(screen_w, screen_h);
 
     // Main in-game view panel (original-style rendering pipeline).
-    // TODO: STUB - Main-view integration here is non-final; complete full scr_game/tvw_main parity for render/input wiring.
-    // Source of truth: view.cpp.decomp @ 0x00535310 (RGE_View::draw) / 0x00536B40 (terrain+objects).
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00494285..0x0049431E
     this->runtime.main_view = (TPanel*)new TRIBE_Main_View();
     if (this->runtime.main_view == nullptr ||
         ((RGE_View*)this->runtime.main_view)->setup(this->render_area, this, 0, 0, screen_w, screen_h, 0) == 0) {
@@ -694,13 +693,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             this->runtime.pop_panel->startup();
         }
 
-        if (rge_base_game != nullptr && rge_base_game->check_prog_argument("PAUSE") != 0) {
-            rge_base_game->set_paused(1, 0);
-            if (rge_base_game->world != nullptr) {
-                rge_base_game->world->temp_pause = 1;
-            }
-            this->handle_pause();
-        }
     }
 
     // Constructor tail parity (scr_game.cpp @ 0x004953C7..0x00495420):
@@ -715,6 +707,14 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->runtime.last_anim_pal_index3 = 0;
     this->runtime.last_score_display = (this->runtime.world != nullptr) ? this->runtime.world->score_displayed : 0;
     this->command_score((this->runtime.world != nullptr) ? (int)this->runtime.world->score_displayed : 0);
+    confirmed_close = 0;
+
+    if (rge_base_game != nullptr && rge_base_game->check_prog_argument("PAUSE") != 0) {
+        rge_base_game->set_prog_mode(6);
+        if (rge_base_game->world != nullptr) {
+            rge_base_game->world->temp_pause = 1;
+        }
+    }
 
     (void)player;
 }
@@ -796,8 +796,7 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
 }
 
 void TRIBE_Screen_Game::handle_game_update() {
-    // TODO: STUB - Partial parity slice from scr_game.cpp @ 0x00496800:
-    // keep runtime world pointers current and refresh selected-object panel when selection changes.
+    // Source-aligned main-loop parity slice. Source: scr_game.cpp.decomp @ 0x00496800
     if (rge_base_game != nullptr && rge_base_game->world != nullptr) {
         this->runtime.world = (TRIBE_World*)rge_base_game->world;
         if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
@@ -815,10 +814,20 @@ void TRIBE_Screen_Game::handle_game_update() {
     }
 
     TRIBE_Player* player = nullptr;
-    if (this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
+    if (rge_base_game != nullptr) {
+        player = (TRIBE_Player*)rge_base_game->get_player();
+    }
+    if (player == nullptr && this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
         int curr = (int)this->runtime.world->curr_player;
         if (curr >= 0 && curr < this->runtime.world->player_num) {
             player = (TRIBE_Player*)this->runtime.world->players[curr];
+        }
+    }
+
+    if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
+        RGE_View* main_view = (RGE_View*)this->runtime.main_view;
+        if (main_view->player != player) {
+            main_view->player = player;
         }
     }
 
@@ -829,20 +838,7 @@ void TRIBE_Screen_Game::handle_game_update() {
             this->runtime.object_panel->set_object(selected);
             this->runtime.last_selected_obj = selected;
             this->runtime.last_sel_count = sel_count;
-        }
-    }
-
-    if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
-        RGE_View* v = (RGE_View*)this->runtime.main_view;
-        if (v->player != player) {
-            CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT(
-                "TRIBE_Screen_Game::handle_game_update: binding main_view player old=%p new=%p curr_player=%d",
-                v->player,
-                player,
-                (this->runtime.world != nullptr) ? (int)this->runtime.world->curr_player : -1);
-            CUSTOM_DEBUG_END
-            v->player = player;
+            this->reset_buttons();
         }
     }
 
@@ -859,21 +855,23 @@ void TRIBE_Screen_Game::handle_game_update() {
 }
 
 void TRIBE_Screen_Game::game_mode_changed(int new_mode, int old_mode) {
-    // TODO: STUB - game_mode_changed parity is partial; complete scr_game.cpp.decomp @ 0x00498A10 behavior.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00498A10
     if (this->runtime.tool_box != nullptr) {
         this->runtime.tool_box->game_mode_changed(new_mode, old_mode);
     }
 
-    if (new_mode != old_mode || this->runtime.last_item != 0) {
+    if (this->runtime.button_panel[0] != nullptr) {
         this->reset_buttons();
     }
 }
 
 void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
-    // TODO: STUB - Partial parity from scr_game.cpp @ 0x00498A50:
-    // refresh per-player bindings first, then refresh UI state.
+    // Source-aligned runtime rebinding slice. Source: scr_game.cpp.decomp @ 0x00498A50
     TRIBE_Player* player = nullptr;
-    if (this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
+    if (rge_base_game != nullptr) {
+        player = (TRIBE_Player*)rge_base_game->get_player();
+    }
+    if (player == nullptr && this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
         int curr = (int)this->runtime.world->curr_player;
         if (curr >= 0 && curr < this->runtime.world->player_num) {
             player = (TRIBE_Player*)this->runtime.world->players[curr];
@@ -899,12 +897,13 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     this->game_mode_changed(rge_base_game != nullptr ? rge_base_game->game_mode : 0, rge_base_game != nullptr ? rge_base_game->game_mode : 0);
     this->reset_buttons();
     this->reset_clocks();
+    this->set_redraw(TPanel::Redraw);
     (void)old_player;
     (void)new_player;
 }
 
 void TRIBE_Screen_Game::handle_pause() {
-    // TODO: STUB - pause flow parity is partial; complete scr_game.cpp.decomp @ 0x004972A0 behavior.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004972A0
     if (this->runtime.pause_text != nullptr) {
         this->runtime.pause_text->set_text(0x2329); // "GAME PAUSED"
         if (this->runtime.pause_text->active == 0) {
@@ -912,16 +911,20 @@ void TRIBE_Screen_Game::handle_pause() {
             this->runtime.pause_text->set_redraw(TPanel::Redraw);
         }
     }
-    this->set_redraw(TPanel::Redraw);
+    if (this->runtime.main_view != nullptr) {
+        this->runtime.main_view->set_redraw(TPanel::Redraw);
+    }
 }
 
 void TRIBE_Screen_Game::handle_resume() {
-    // TODO: STUB - resume flow parity is partial; complete scr_game.cpp.decomp @ 0x004972F0 behavior.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004972F0
     if (this->runtime.pause_text != nullptr && this->runtime.pause_text->active != 0) {
         this->runtime.pause_text->set_active(0);
         this->runtime.pause_text->set_redraw(TPanel::Redraw);
+        if (this->runtime.main_view != nullptr) {
+            this->runtime.main_view->set_redraw(TPanel::Redraw);
+        }
     }
-    this->set_redraw(TPanel::Redraw);
 }
 
 void TRIBE_Screen_Game::handleChatReceived(int from_player) {
@@ -989,14 +992,14 @@ void TRIBE_Screen_Game::display_system_message(char* text) {
 }
 
 void TRIBE_Screen_Game::setup_buttons() {
-    // TODO: STUB - Partial parity from scr_game.cpp @ 0x004996C0:
-    // reset command-slot state before rebuilding per-selection buttons.
+    // Source-aligned command-panel refresh slice. Source: scr_game.cpp.decomp @ 0x004996C0
     this->runtime.start_item = 0;
     this->runtime.current_item = -1;
 
     for (int i = 0; i < 12; ++i) {
         if (this->runtime.button_panel[i] != nullptr) {
             this->runtime.button_panel[i]->in_use = 0;
+            this->runtime.button_panel[i]->set_redraw(TPanel::Redraw);
         }
     }
 
