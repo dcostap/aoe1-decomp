@@ -571,113 +571,6 @@ static long rmm_raise_disk(
     return changed;
 }
 
-static int rmm_max_height_step(RGE_RMM_Database_Controller* self) {
-    if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
-        return 0;
-    }
-
-    int max_step = 0;
-    for (long y = 0; y < self->map_height; ++y) {
-        for (long x = 0; x < self->map_width; ++x) {
-            int h = (int)self->map_row_offset[y][x].height;
-            if (x + 1 < self->map_width) {
-                int hr = (int)self->map_row_offset[y][x + 1].height;
-                int d = h - hr;
-                if (d < 0) d = -d;
-                if (d > max_step) max_step = d;
-            }
-            if (y + 1 < self->map_height) {
-                int hb = (int)self->map_row_offset[y + 1][x].height;
-                int d = h - hb;
-                if (d < 0) d = -d;
-                if (d > max_step) max_step = d;
-            }
-        }
-    }
-    return max_step;
-}
-
-// TODO: STUB - Non-original stabilization pass; replace with source-of-truth RMM elevation/tile-type parity.
-// Keeps local elevation transitions within one step so tile_type slope pieces can cover seams.
-static void rmm_smooth_elevation(RGE_RMM_Database_Controller* self, int max_iters) {
-    if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
-        return;
-    }
-    if (max_iters < 1) {
-        max_iters = 1;
-    }
-
-    const long w = self->map_width;
-    const long h = self->map_height;
-    const long area = w * h;
-    if (area <= 0) {
-        return;
-    }
-
-    uchar* old_h = (uchar*)malloc((size_t)area);
-    if (old_h == nullptr) {
-        return;
-    }
-
-    for (int it = 0; it < max_iters; ++it) {
-        for (long y = 0; y < h; ++y) {
-            for (long x = 0; x < w; ++x) {
-                old_h[y * w + x] = self->map_row_offset[y][x].height;
-            }
-        }
-
-        long changed = 0;
-        for (long y = 0; y < h; ++y) {
-            for (long x = 0; x < w; ++x) {
-                int cur = (int)old_h[y * w + x];
-                int max_n = cur;
-                int min_n = cur;
-
-                for (long dy = -1; dy <= 1; ++dy) {
-                    for (long dx = -1; dx <= 1; ++dx) {
-                        if (dx == 0 && dy == 0) continue;
-                        long nx = x + dx;
-                        long ny = y + dy;
-                        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-
-                        int nh = (int)old_h[ny * w + nx];
-                        if (nh > max_n) max_n = nh;
-                        if (nh < min_n) min_n = nh;
-                    }
-                }
-
-                int lower = max_n - 1;
-                int upper = min_n + 1;
-                if (lower < 0) lower = 0;
-                if (upper > 7) upper = 7;
-
-                int next = cur;
-                if (lower > upper) {
-                    // Inconsistent neighborhood: move toward midpoint to converge in later passes.
-                    next = (max_n + min_n) / 2;
-                } else {
-                    if (next < lower) next = lower;
-                    if (next > upper) next = upper;
-                }
-
-                if (next < 0) next = 0;
-                if (next > 7) next = 7;
-
-                if (next != cur) {
-                    self->map_row_offset[y][x].height = (uchar)next;
-                    changed++;
-                }
-            }
-        }
-
-        if (changed == 0) {
-            break;
-        }
-    }
-
-    free(old_h);
-}
-
 static void rmm_log_terrain_histogram(RGE_RMM_Database_Controller* self, const char* tag) {
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;
@@ -1019,15 +912,11 @@ static uchar rmm_generate_elevation_stage(RGE_RMM_Database_Controller* self, RGE
             line->base_elevation,
             total_changed,
             target_tiles);
+        if (self->map != nullptr) {
+            self->map->clean_elevation(0, 0, self->map_width - 1, self->map_height - 1, 8);
+        }
     }
 
-    int max_step_before = rmm_max_height_step(self);
-    rmm_smooth_elevation(self, 32);
-    int max_step_after = rmm_max_height_step(self);
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_RMM_Database_Controller::generate: height step before=%d after=%d",
-        max_step_before,
-        max_step_after);
     return 1;
 }
 
