@@ -88,3 +88,9 @@ git push origin master
 This means someone else pushed to `origin/master` since your last pull.
 
 Do **not** force push. Repeat the integration loop.
+
+---
+
+## Maybe you were assigned a task that's already done by mistake?
+
+You may review git history to verify your suspicions. Either way, make sure to give the whole thing a thorough read and review it, and even improve it, while you're at it.
