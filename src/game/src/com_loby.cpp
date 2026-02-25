@@ -59,34 +59,25 @@ int RGE_Lobby::IsLobbyLaunched() {
 
 uchar RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3** out_dp3) {
     // Source of truth: com_loby.cpp.decomp @ 0x0042F430
-    if (out_dp3 != nullptr) {
-        *out_dp3 = nullptr;
-    }
+    *out_dp3 = nullptr;
 
     this->ClearLobbyInfo();
 
     HRESULT hr = DirectPlayLobbyCreateA(nullptr, (LPDIRECTPLAYLOBBYA*)&this->glpDPL, nullptr, nullptr, 0);
+    this->Err->ShowReturn((long)hr, "Lobby Create");
     if (FAILED(hr)) {
         return 0;
     }
 
     hr = this->glpDPL->QueryInterface(IID_IDirectPlayLobby2A, (LPVOID*)&this->glpDPL2);
-    if (FAILED(hr) || this->glpDPL2 == nullptr) {
+    if (this->glpDPL2 == nullptr) {
         return 0;
     }
 
     DWORD size = 0;
-    hr = this->glpDPL2->GetConnectionSettings(0, nullptr, &size);
-    if (FAILED(hr) || size == 0) {
-        this->lobby_game = 0;
-        return 0;
-    }
+    (void)this->glpDPL2->GetConnectionSettings(0, nullptr, &size);
 
-    this->glpdplConnection = (DPLCONNECTION*)new (std::nothrow) char[size];
-    if (this->glpdplConnection == nullptr) {
-        this->lobby_game = 0;
-        return 0;
-    }
+    this->glpdplConnection = (DPLCONNECTION*)new char[size + 1];
 
     hr = this->glpDPL2->GetConnectionSettings(0, this->glpdplConnection, &size);
     if (FAILED(hr)) {
@@ -94,32 +85,26 @@ uchar RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3** out_dp3) {
         return 0;
     }
 
-    if (this->glpdplConnection->lpSessionDesc != nullptr) {
-        this->glpdplConnection->lpSessionDesc->dwFlags = 0x44;
-        this->glpdplConnection->lpSessionDesc->dwMaxPlayers = 9;
-    }
+    this->glpdplConnection->lpSessionDesc->dwFlags = 0x44;
+    this->glpdplConnection->lpSessionDesc->dwMaxPlayers = 9;
     (void)this->glpDPL2->SetConnectionSettings(0, 0, this->glpdplConnection);
 
     hr = this->glpDPL2->Connect(0, (LPDIRECTPLAY2*)&this->glpDP, nullptr);
     if (FAILED(hr)) {
-        // DPERR_CONNECTING is treated specially by the original (return 0xFF).
+        // Original special-case: DPERR_CONNECTING returns immediately without ShowReturn.
         if ((unsigned long)hr == 0x887700F0) {
             return 0xFF;
         }
+        this->Err->ShowReturn((long)hr, "Connect");
         return 0xFF;
     }
 
-    if (out_dp3 != nullptr && this->glpDP != nullptr) {
-        hr = this->glpDP->QueryInterface(IID_IDirectPlay3A, (LPVOID*)out_dp3);
-        if (FAILED(hr)) {
-            return 0xFF;
-        }
-
-        // TODO: STUB - Best-effort diagnostics enumeration; replace with source-of-truth lobby/player-enum parity.
-        if (*out_dp3 != nullptr) {
-            (void)(*out_dp3)->EnumPlayers(nullptr, EnumPlayersCallbackLobby, this, 0);
-        }
+    hr = this->glpDP->QueryInterface(IID_IDirectPlay3A, (LPVOID*)out_dp3);
+    this->Err->ShowReturn((long)hr, "Lobby QI");
+    if (FAILED(hr)) {
+        return 0xFF;
     }
+    (void)(*out_dp3)->EnumPlayers(nullptr, EnumPlayersCallbackLobby, this, 0);
 
     this->lobby_game = 1;
     return 1;
