@@ -20,7 +20,7 @@ public:
     virtual RGE_Master_Static_Object* make_new_master(); // vt[7] (0x1C)
     virtual uchar check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10); // vt[8] (0x20)
     virtual uchar alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4); // vt[9] (0x24)
-    virtual long calc_base_damage_ability(); // vt[10] (0x28)
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* param_1); // vt[10] (0x28)
     virtual void play_command_sound(); // vt[11] (0x2C)
     virtual void play_move_sound(); // vt[12] (0x30)
     virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8); // vt[13] (0x34)
