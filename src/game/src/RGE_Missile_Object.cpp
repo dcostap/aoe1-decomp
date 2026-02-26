@@ -67,6 +67,21 @@ int RGE_Missile_Object::setup(int param_1, RGE_Game_World* param_2) {
 RGE_Missile_Object::~RGE_Missile_Object() {
 }
 
+// Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463000, obj_list.cpp.asm @ 0x00463055
+void RGE_Missile_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
+    RGE_Combat_Object::draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463100, obj_list.cpp.asm @ 0x00463139
+void RGE_Missile_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    RGE_Combat_Object::shadow_draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463180, obj_list.cpp.asm @ 0x004631BA
+void RGE_Missile_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Combat_Object::normal_draw(param_1, param_2, param_3);
+}
+
 // Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A870
 int RGE_Missile_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     RGE_Combat_Object::setup(param_1, param_2, param_3, param_4, param_5);
