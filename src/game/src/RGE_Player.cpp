@@ -13,6 +13,7 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/RGE_Doppleganger_Creator.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Sound.h"
 #include "../include/TMousePointer.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/globals.h"
@@ -1037,7 +1038,7 @@ void RGE_Player::reset_selected() {
 }
 
 void RGE_Player::unselect_one_object(RGE_Static_Object* param_1) {
-    // Source of truth: player.cpp.decomp @ 0x00470E80
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470E80 (audited vs player.cpp.asm).
     if (this->sel_count > 0) {
         short sVar1 = 0;
         short sVar2 = 0;
@@ -1058,7 +1059,7 @@ void RGE_Player::unselect_one_object(RGE_Static_Object* param_1) {
 }
 
 void RGE_Player::unselect_one_object(short param_1) {
-    // Source of truth: player.cpp.decomp @ 0x00470ED0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470ED0 (audited vs player.cpp.asm).
     int idx = (int)param_1;
     RGE_Static_Object* obj = this->sel_list[idx];
     if (obj != nullptr) {
@@ -1087,7 +1088,12 @@ void RGE_Player::unselect_one_object(short param_1) {
 }
 
 void RGE_Player::select_one_object(RGE_Static_Object* param_1) {
-    // Source of truth: player.cpp.decomp @ 0x00470D80 (simplified - no sound)
+    // Helper overload retained for local callsites; original parity path is select_one_object(obj, int).
+    this->select_one_object(param_1, 1);
+}
+
+int RGE_Player::select_one_object(RGE_Static_Object* param_1, int param_2) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470D80 (audited vs player.cpp.asm).
     short sVar1 = this->sel_count;
     if (sVar1 < 0x19) {
         short sVar3 = sVar1;
@@ -1097,27 +1103,29 @@ void RGE_Player::select_one_object(RGE_Static_Object* param_1) {
             if (sVar1 > 0) {
                 do {
                     sVar3 = sVar2;
-                    if (this->sel_list[sVar2] == nullptr) break;
-                    sVar2++;
+                    if (this->sel_list[sVar2] == nullptr) {
+                        break;
+                    }
+                    sVar2 = (short)(sVar2 + 1);
                     sVar3 = -1;
                 } while (sVar2 < sVar1);
             }
         }
         if (sVar3 != -1) {
             this->sel_list[sVar3] = param_1;
-            this->sel_count++;
+            this->sel_count = (short)(this->sel_count + 1);
             this->selected_obj = param_1;
             param_1->selected = 1;
+            if (param_2 != 0) {
+                RGE_Sound* selected_sound = param_1->master_obj->selected_sound;
+                if ((selected_sound != nullptr) && ((param_1->owner == this) || (param_1->owner->id == 0))) {
+                    selected_sound->play(1);
+                }
+            }
+            return 1;
         }
     }
-}
-
-int RGE_Player::select_one_object(RGE_Static_Object* param_1, int param_2) {
-    // Partially verified. Source of truth: player.cpp.decomp calls select_one_object(obj,0) and checks success.
-    (void)param_2;
-    short before = this->sel_count;
-    this->select_one_object(param_1);
-    return (this->sel_count != before);
+    return 0;
 }
 
 void RGE_Player::select_area(long param_1, long param_2, long param_3, long param_4) {
@@ -1137,7 +1145,7 @@ void RGE_Player::unselect_area() {
 }
 
 void RGE_Player::unselect_object() {
-    // Source of truth: player.cpp.decomp @ 0x00470E30
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470E30 (audited vs player.cpp.asm).
     if (this->sel_count > 0) {
         short sVar1 = 0;
         this->selected_obj = nullptr;
@@ -1156,7 +1164,7 @@ void RGE_Player::unselect_object() {
 }
 
 void RGE_Player::update_selected() {
-    // Source of truth: player.cpp.decomp @ 0x00471430
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471430 (audited vs player.cpp.asm).
     short sVar3 = 0;
     short sVar2 = 0;
     do {
@@ -1182,7 +1190,7 @@ int RGE_Player::select_object(RGE_Static_Object* param_1) {
     }
 
     uchar selected_group = param_1->selected_group;
-    if (selected_group > 10 && this->objects != nullptr) {
+    if (selected_group > 10) {
         RGE_Object_Node* node = this->objects->list;
         while (node != nullptr) {
             RGE_Static_Object* obj = node->node;
@@ -1228,7 +1236,7 @@ unsigned char RGE_Player::get_selected_objects_to_command(
     short object_group,
     short object_id,
     short unit_level) {
-    // Source of truth: player.cpp.decomp @ 0x004712F0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x004712F0 (audited vs player.cpp.asm).
     int idx = 0;
     *list_out = nullptr;
     short list_num = 0;
@@ -1239,9 +1247,6 @@ unsigned char RGE_Player::get_selected_objects_to_command(
     }
 
     RGE_Static_Object** list = (RGE_Static_Object**)calloc(4, (int)this->sel_count);
-    if (list == nullptr) {
-        return 0;
-    }
 
     if (min_select_level == -1) {
         min_select_level = 4;

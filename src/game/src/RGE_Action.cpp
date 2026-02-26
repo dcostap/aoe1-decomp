@@ -188,10 +188,12 @@ uchar RGE_Action::update() {
     return (this->state == 1) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x004078F0
 int RGE_Action::stop() {
     return 0;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407900
 int RGE_Action::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     (void)param_2;
@@ -200,6 +202,7 @@ int RGE_Action::move_to(RGE_Static_Object* param_1, float param_2, float param_3
     return 0;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407910
 int RGE_Action::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     (void)param_2;
@@ -208,21 +211,63 @@ int RGE_Action::work(RGE_Static_Object* param_1, float param_2, float param_3, f
     return 0;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407920
 uchar RGE_Action::attack_response(RGE_Static_Object* param_1) {
     (void)param_1;
     return 0;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407930
 uchar RGE_Action::relation_response(long param_1, uchar param_2) {
     (void)param_1;
     (void)param_2;
     return 0;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407B00
 void RGE_Action::copy_obj(RGE_Master_Action_Object* param_1) {
-    (void)param_1;
+    RGE_Sprite* new_sprite = nullptr;
+    if ((this->task == nullptr) || (param_1->tasks == nullptr)) {
+        this->copy_obj_sprites(param_1, nullptr, nullptr);
+        this->sub_actions->copy_obj_sprites(param_1, nullptr, nullptr);
+        return;
+    }
+
+    RGE_Task** task_list = param_1->tasks->list;
+    int index = param_1->tasks->list_num - 1;
+    short action_type = this->task->action_type;
+    while (index >= 0) {
+        if (task_list[index]->action_type == action_type) {
+            break;
+        }
+        index--;
+    }
+
+    if (index < 0) {
+        return;
+    }
+
+    RGE_Task* matched_task = task_list[index];
+    if (this->obj->sprite == matched_task->move_sprite) {
+        new_sprite = matched_task->move_sprite;
+    } else if (this->obj->sprite == matched_task->work_sprite) {
+        new_sprite = matched_task->work_sprite;
+    } else if (this->obj->sprite == matched_task->work_sprite2) {
+        new_sprite = matched_task->work_sprite2;
+    } else if (this->obj->sprite == matched_task->carry_sprite) {
+        new_sprite = matched_task->carry_sprite;
+    }
+
+    if (new_sprite != nullptr) {
+        this->obj->new_sprite(new_sprite);
+    }
+
+    this->copy_obj_sprites(param_1, this->task, matched_task);
+    this->sub_actions->copy_obj_sprites(param_1, this->task, matched_task);
+    this->task = matched_task;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407C00
 void RGE_Action::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) {
     (void)param_1;
     (void)param_2;

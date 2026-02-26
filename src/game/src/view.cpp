@@ -120,8 +120,6 @@ RGE_View::RGE_View()
     this->tile_half_wid = 0;
     this->tile_half_hgt = 0;
     this->elev_hgt = 0;
-    this->render_rect_wid = 0;
-    this->render_rect_hgt = 0;
     this->max_col_num = 0;
     this->max_row_num = 0;
     this->center_scr_col = 0;
@@ -139,7 +137,6 @@ RGE_View::RGE_View()
     this->last_view_x = -9999.0f;
     this->last_view_y = -9999.0f;
     this->function_mode = 0;
-    this->function_parm = 0;
     this->render_terrain_mode = 0;
 
     this->sel_col1 = -1;
@@ -177,7 +174,6 @@ RGE_View::RGE_View()
     this->Queued_Blits = 0;
     this->Blit_Queue = nullptr;
     this->Blit_Queue_Size = 0;
-    this->Blt_Queue_Allocated = 0;
     this->Current_Blit = 0;
     this->Blit_Offset_X = 0;
     this->Blit_Offset_Y = 0;
@@ -383,12 +379,18 @@ void RGE_View::add_overlay_sprite(
 }
 
 long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
+    // Source of truth: callsites in this codebase use the collapsed 7-arg signature.
+    if (param_7 == (uchar)0xA1) {
+        return this->setup(param_1, param_2, param_3, param_4, param_5, param_6, 0, 0xA1, (char*)"bordline");
+    }
+    return this->setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7, 1, (char*)"bordline");
+}
+
+long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, char* param_9) {
     // Fully verified. Source of truth: view.cpp.asm @ 0x00533940
-    // Signature in this codebase is collapsed from original; callsite-backed mapping:
-    // game setup uses `param_7 == 0` and editor setup uses `param_7 == 0xA1`.
     TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
     this->cur_render_area = nullptr;
-    this->calc_draw_count = (param_7 == (uchar)0xA1) ? 0 : 1;
+    this->calc_draw_count = param_8;
     this->start_scr_col = 0;
     this->start_scr_row = 0;
     this->start_map_col = 0;
@@ -402,7 +404,7 @@ long RGE_View::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long par
     this->hollow_brush = GetStockObject(5);
 
     char shape_name[260];
-    std::sprintf(shape_name, "%s.shp", "bordline");
+    std::sprintf(shape_name, "%s.shp", param_9);
     this->border_line_shape = new (std::nothrow) TShape(shape_name, -1);
 
     this->Init_Tile_Edge_Tables();
