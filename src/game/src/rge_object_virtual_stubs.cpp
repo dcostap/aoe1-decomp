@@ -34,9 +34,6 @@ void forward_log_debug_to_static(RGE_Static_Object* object, const char* format, 
 
 // --- Forwarding stubs: same signature as RGE_Static_Object ---
 void RGE_Animated_Object::recycle_out_of_game() { RGE_Static_Object::recycle_out_of_game(); } // TODO: STUB
-void RGE_Animated_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Static_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Animated_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Static_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Animated_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::normal_draw(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Animated_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Animated_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Animated_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
@@ -167,13 +164,9 @@ float RGE_Animated_Object::calc_attack_modifier(RGE_Static_Object* param_1) { re
 // --- Forwarding stubs: same signature as RGE_Animated_Object ---
 
 void RGE_Moving_Object::recycle_out_of_game() { RGE_Animated_Object::recycle_out_of_game(); } // TODO: STUB
-void RGE_Moving_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Animated_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Moving_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Animated_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Moving_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::normal_draw(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Moving_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Moving_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Moving_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
-uchar RGE_Moving_Object::update() { return RGE_Animated_Object::update(); } // TODO: STUB
 void RGE_Moving_Object::check_damage_sprites() { RGE_Animated_Object::check_damage_sprites(); } // TODO: STUB
 void RGE_Moving_Object::rehook() { RGE_Animated_Object::rehook(); } // TODO: STUB
 void RGE_Moving_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Animated_Object::add_overlay_sprite(param_1, param_2); } // TODO: STUB
@@ -272,9 +265,6 @@ int RGE_Moving_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* pa
 
 // --- Forwarding stubs: same signature as RGE_Moving_Object ---
 
-void RGE_Action_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Moving_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Action_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Moving_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Action_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::normal_draw(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Action_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Action_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Action_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
@@ -397,9 +387,6 @@ RGE_Combat_Object::~RGE_Combat_Object() {} // TODO: STUB
 // --- Forwarding stubs: same signature as RGE_Action_Object ---
 
 void RGE_Combat_Object::recycle_out_of_game() { RGE_Action_Object::recycle_out_of_game(); } // TODO: STUB
-void RGE_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Action_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Combat_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Action_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Combat_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::normal_draw(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Combat_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Combat_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Combat_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
