@@ -2840,3 +2840,124 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Source of truth: `src/game/decomp/aipbook.cpp.decomp` + `.asm`, `src/game/decomp/taipbook.cpp.decomp` + `.asm`, `src/game/decomp/AIPlayBook.decomp`, `src/game/decomp/TribeAIPlayBook.decomp`, plus individual class `.decomp` files if they exist.
 - Non-overlap: do NOT touch `AIPlayBook.cpp` or `TribeAIPlayBook.cpp` (already implemented).
 - Done when: all AI play data classes compile/link cleanly and the playbook system can instantiate complete play structures.
+
+## Task 211 — CRITICAL: Technology effects system parity — `RGE_Effects::do_effect()` + `RGE_Player` effect helper methods
+
+- [ ] Finished
+- [ ] Assigned to agent
+
+### Priority: P0 — This is the #1 non-AI gameplay blocker. Without this, researching technologies does NOTHING (no stat changes, no unit upgrades, no age advancement effects).
+
+### Problem
+`RGE_Effects::do_effect(short, RGE_Player*)` at line 75 of `src/game/src/RGE_Effects.cpp` is completely empty `{}`. This is the virtual base method that applies technology effect commands to a player. When a technology finishes researching, the call chain is:
+1. `TRIBE_Action_Make_Tech` completes → `TRIBE_Player_Tech::research()` → `TRIBE_Tech::do_tech()` → `TRIBE_Effects::do_effect()`
+2. `TRIBE_Effects::do_effect()` (in `TRIBE_World_types.cpp` line 4224) handles command type `'f'` (tech enable/disable) then calls `RGE_Effects::do_effect()` for all other command types.
+3. `RGE_Effects::do_effect()` is **empty** → attribute modifications, unit availability, object copies are ALL silently dropped.
+
+### What to implement
+
+#### Part A: `RGE_Effects::do_effect()` in `src/game/src/RGE_Effects.cpp`
+Decomp: `src/game/decomp/effects.cpp.decomp` @ offset 0x004495C0 (lines 256-318).
+
+The method iterates `effects[param_1].effect_list[]` and switches on `command`:
+- Case 0 (`'\0'`): calls `param_2->modify_tobj(change_num1, change_num2, change_amount, (uchar)change_num3)`
+- Case 1 (`'\x01'`): if `change_num1 >= 0`: if `change_num2 == 0` calls `param_2->new_attribute_num(change_num1, change_amount)`, else calls the player's virtual method at vtable offset 0x78 with args `(change_num1, change_amount, 0)`. **NOTE**: vtable offset 0x78 = the 30th virtual entry on `RGE_Player`. Check `src/game/include/RGE_Player.h` to identify which virtual method this is (likely `add_attribute_num` or a resource modification method). If the virtual at that offset doesn't exist yet, investigate `src/game/decomp/player.cpp.asm` at offset 0x004495C0 to confirm.
+- Case 2 (`'\x02'`): if `change_num1 >= 0` calls `param_2->make_available(change_num1, (uchar)change_num2)`
+- Case 3 (`'\x03'`): calls `param_2->copy_obj(change_num1, change_num2)`
+- Case 4 (`'\x04'`): calls `param_2->modify_tobj_delta(change_num1, change_num2, change_amount, (uchar)change_num3)`
+- Case 5 (`'\x05'`): calls `param_2->modify_tobj_percent(change_num1, change_num2, change_amount, (uchar)change_num3)`
+
+`RGE_Player::new_attribute_num(short, float)` is ALREADY implemented at line 740 of `RGE_Player.cpp`.
+
+#### Part B: Missing `RGE_Player` methods in `src/game/src/RGE_Player.cpp`
+These 5 methods are called by `do_effect()` and do NOT exist yet. All are in `src/game/decomp/player.cpp.decomp`:
+
+1. **`RGE_Player::make_available(short param_1, uchar param_2)`** @ offset 0x004707D0 (decomp line ~1911). Simple: if `master_objects[param_1]` is not null, call `master_objects[param_1]->make_available(param_2)`.
+
+2. **`RGE_Player::modify_tobj(short param_1, short param_2, float param_3, uchar param_4)`** @ offset 0x00470810 (decomp line ~2429). If `param_1 < 0`, iterates ALL master objects matching `object_group == param_2` and calls virtual method at vtable offset 0x08 on master and vtable offset 0x48 on each runtime object. If `param_1 >= 0`, applies to the single master object at index `param_1`. The virtual calls are `set_attribute`-type methods on master/runtime objects — use the ASM (`player.cpp.asm` @ 0x00470810) to confirm the exact vtable offsets and map them to the correct virtual method names in `RGE_Master_Static_Object.h` and `RGE_Static_Object.h`.
+
+3. **`RGE_Player::modify_tobj_delta(short param_1, short param_2, float param_3, uchar param_4)`** @ offset 0x00470940 (decomp line ~2484). Same pattern as `modify_tobj` but calls vtable offset 0x0C on master and 0x4C on runtime objects (delta/add mode).
+
+4. **`RGE_Player::modify_tobj_percent(short param_1, short param_2, float param_3, uchar param_4)`** @ offset 0x00470A40 (decomp line ~2540). Same pattern, vtable offset 0x10 on master and 0x50 on runtime objects (percent/multiply mode).
+
+5. **`RGE_Player::copy_obj(short param_1, short param_2)`** @ offset 0x00470B40 (decomp line ~2596). Copies master_objects[param_2]'s data onto master_objects[param_1] and all its runtime instances. Calls vtable offset 0x04 on master and 0x58 on runtime objects.
+
+### Files to modify
+- `src/game/src/RGE_Effects.cpp` — implement `do_effect()` body (replace the empty `{}`)
+- `src/game/src/RGE_Player.cpp` — add 5 new method implementations
+- `src/game/include/RGE_Player.h` — add method declarations for the 5 new methods (do NOT change member variables or virtual order)
+- `src/game/include/RGE_Effects.h` — only if `do_effect` declaration needs fixing (it's already declared as virtual)
+
+### Source of truth
+- `src/game/decomp/effects.cpp.decomp` + `effects.cpp.asm`
+- `src/game/decomp/player.cpp.decomp` + `player.cpp.asm`
+
+### Non-overlap
+- Do NOT touch `TRIBE_World_types.cpp` (TRIBE_Effects::do_effect and do_tech_effect are already correct there).
+- Do NOT touch `TRIBE_Player.cpp` (handled by Task 200).
+
+### Done when
+- `RGE_Effects::do_effect()` has the full 6-case switch statement matching the decomp.
+- All 5 player methods are implemented with full parity from the decomp.
+- The vtable virtual calls in modify_tobj/modify_tobj_delta/modify_tobj_percent/copy_obj are resolved to named method calls (not raw pointer arithmetic).
+- Project compiles and links cleanly with `build.bat`.
+
+## Task 212 — Master combat object sound parity: implement `play_command_sound` / `play_move_sound`
+
+- [ ] Finished
+- [ ] Assigned to agent
+
+### Problem
+Unit command acknowledgment sounds (the voice line when you click a unit / tell it to move) are completely silent. The `play_command_sound()` and `play_move_sound()` methods are empty stubs throughout the object hierarchy.
+
+### What to implement
+
+The decomp shows that the **only non-trivial implementations** are on `RGE_Master_Combat_Object`:
+
+**`RGE_Master_Combat_Object::play_command_sound()`** — from `src/game/decomp/m_ac_obj.cpp.decomp` line ~614:
+```
+if (this->command_sound != NULL) {
+    RGE_Sound::play(this->command_sound, 1);
+}
+```
+
+**`RGE_Master_Combat_Object::play_move_sound()`** — from `src/game/decomp/m_ac_obj.cpp.decomp` line ~632:
+```
+if (this->move_sound != NULL) {
+    RGE_Sound::play(this->move_sound, 1);
+}
+```
+
+All base-class versions (`RGE_Master_Static_Object`, `RGE_Master_Moving_Object`, `RGE_Animated_Object`) are **intentionally empty** in the original binary — do NOT add code to those.
+
+The runtime object hierarchy (`RGE_Action_Object`, `TRIBE_Building_Object`) delegates to the master object through virtual dispatch. Check that the existing forwarder chain correctly routes to the master's implementation. The decomp shows `TRIBE_Building_Object::play_command_sound()` does a virtual dispatch call through the master pointer — verify this works in the current code.
+
+### Additional methods from m_ac_obj.cpp.decomp
+The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL functions in this decomp and check which ones are already implemented vs still stubs. Implement any remaining missing methods. Key functions to check:
+- Constructor(s) and destructor
+- `setup()` method
+- `save()` method
+- Any attribute modification virtuals (`set_attribute`, `add_attribute`, etc.)
+- `make_available()` on master combat object
+- `copy_obj()` on master combat object
+
+### Files to modify
+- `src/game/src/RGE_Master_Static_Object.cpp` — if master combat methods are here, OR
+- `src/game/src/RGE_Master_Derived_Stubs.cpp` — if derived master methods are here
+- Check which file currently has `RGE_Master_Combat_Object` method implementations and add the sound methods there
+- `src/game/include/RGE_Master_Combat_Object.h` — add declarations if missing (do NOT change member layout)
+- Possibly `src/game/src/rge_object_virtual_stubs.cpp` — if runtime object forwarders need fixing (only touch the sound-related entries)
+
+### Source of truth
+- `src/game/decomp/m_ac_obj.cpp.decomp` + `m_ac_obj.cpp.asm`
+
+### Non-overlap
+- Do NOT touch `RGE_Effects.cpp` or `RGE_Player.cpp` (Task 211).
+- Do NOT touch `TRIBE_Master_Objects.cpp` (TRIBE master objects are separate).
+- Be careful with `rge_object_virtual_stubs.cpp` — only modify the `play_command_sound` / `play_move_sound` entries.
+
+### Done when
+- `RGE_Master_Combat_Object::play_command_sound()` and `play_move_sound()` have real implementations matching decomp.
+- All other non-trivial methods from `m_ac_obj.cpp.decomp` are implemented.
+- Runtime objects correctly delegate sound calls to their master objects.
+- Project compiles and links cleanly with `build.bat`.
