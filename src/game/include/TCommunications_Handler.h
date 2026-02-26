@@ -110,6 +110,7 @@ public:
     void* SetWindowHandle(void* window_handle);
     void LaunchMultiplayerGame();
     void ReceiveGameMessages();
+    void LastWorldRandom(int param_1);
     int DoCycle(ulong now);
     void EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4);
     uint ExecuteIncoming();
