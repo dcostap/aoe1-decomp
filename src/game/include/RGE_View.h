@@ -20,6 +20,7 @@ public:
     // Core overrides used by the in-game render pipeline.
     virtual ~RGE_View() override;
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) override;
+    long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, char* param_9);
     virtual void set_rect(tagRECT param_1) override;
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4) override;
     virtual void draw() override;
