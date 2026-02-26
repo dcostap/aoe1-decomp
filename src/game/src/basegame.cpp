@@ -1907,7 +1907,7 @@ int RGE_Base_Game::handle_message(struct tagMSG* p1) {
 }
 
 int RGE_Base_Game::handle_idle() {
-    // Source of truth: basegame.cpp.decomp @ 0x00420F60
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420F60, basegame.cpp.asm @ 0x00420F60
     if (this->prog_ready == 0 || this->prog_window == nullptr) {
         return 0;
     }
@@ -1931,18 +1931,25 @@ int RGE_Base_Game::handle_idle() {
     }
 
     // Current panel idle
-    if (panel_system != nullptr) {
-        TPanel* curPanel = panel_system->currentPanelValue;
-        if (curPanel != nullptr) {
-            curPanel->handle_idle();
-        }
+    TPanel* curPanel = panel_system->currentPanel();
+    if (curPanel != nullptr) {
+        curPanel = panel_system->currentPanel();
+        curPanel->handle_idle();
     }
 
     // Comm handler message receiving
     if (this->comm_handler != nullptr) {
-        if (this->rge_game_options.multiplayerGameValue != 0) {
+        if (this->multiplayerGame() != 0) {
             this->comm_handler->ReceiveGameMessages();
         }
+    }
+
+    if (this->do_show_comm != 0) {
+        this->show_comm();
+    }
+
+    if (this->do_show_ai != 0) {
+        this->show_ai();
     }
 
     return 1;
@@ -2010,9 +2017,18 @@ int RGE_Base_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
     return (result != 0) ? 1 : 0;
 }
 int RGE_Base_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x004212E0
-    // p3 (wParam): 0x17a2 = pause world, 0x17a3 = unpause world
-    // 0x17b3/0x17b4 = MP player commands (need players allocated)
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004212E0, basegame.cpp.asm @ 0x004212E0
+    int mp_started = this->comm_handler->MultiplayerGameStart();
+    if ((mp_started != 0) && (out_of_sync == 0)) {
+        if (p3 == 0x17b3) {
+            int player_index = this->playerID((int)p4);
+            this->world->players[player_index]->command_resign((int)p4, 1);
+        } else if (p3 == 0x17b4) {
+            int player_index = this->playerID((int)p4);
+            this->world->players[player_index]->command_resign((int)p4, 0);
+        }
+    }
+
     if (p3 == 0x17a2) {
         if (this->world != nullptr) {
             this->world->pause(1);
@@ -2027,12 +2043,12 @@ int RGE_Base_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) {
     return (result != 0) ? 1 : 0;
 }
 int RGE_Base_Game::handle_command(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x004213A0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004213A0, basegame.cpp.asm @ 0x004213A0
     int result = this->action_command(p3, p4);
     return (result != 0) ? 1 : 0;
 }
 int RGE_Base_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x004213C0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004213C0, basegame.cpp.asm @ 0x004213C0
     int result = this->action_music_done();
     return (result != 0) ? 1 : 0;
 }
