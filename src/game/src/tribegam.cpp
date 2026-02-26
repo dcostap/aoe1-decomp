@@ -52,6 +52,45 @@ static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     return strcmp(lhs, rhs) == 0;
 }
 
+struct TRIBE_Screen_Game_Runtime_Panel_Prefix {
+    TShape* game_screen_pic;
+    TShape* button_border1_pic;
+    TShape* button_other_pic;
+    TShape* button_border2_pic;
+    TShape* button_border3_pic;
+    TShape* button_cmd_pic;
+    TShape* button_tech_pic;
+    TShape* button_unit_pic;
+    TShape* button_bldg_pics[5];
+    TShape* more_cancel_pic;
+    TRIBE_World* world;
+    TPanel* main_view;
+    TPanel* map_view;
+};
+
+struct TRIBE_Screen_Game_Runtime_Panel_Access {
+    TScreenPanel base;
+    TRIBE_Screen_Game_Runtime_Panel_Prefix runtime;
+};
+
+static TPanel* tribe_main_view_panel(TRIBE_Screen_Game* game_screen) {
+    if (game_screen == nullptr) {
+        return nullptr;
+    }
+    TRIBE_Screen_Game_Runtime_Panel_Access* runtime_access =
+        (TRIBE_Screen_Game_Runtime_Panel_Access*)game_screen;
+    return runtime_access->runtime.main_view;
+}
+
+static TPanel* tribe_map_view_panel(TRIBE_Screen_Game* game_screen) {
+    if (game_screen == nullptr) {
+        return nullptr;
+    }
+    TRIBE_Screen_Game_Runtime_Panel_Access* runtime_access =
+        (TRIBE_Screen_Game_Runtime_Panel_Access*)game_screen;
+    return runtime_access->runtime.map_view;
+}
+
 static void tribe_close_video_window(TRIBE_Game* game) {
     if (game == nullptr || game->video_window == nullptr) {
         return;
@@ -2553,8 +2592,34 @@ char* TRIBE_Game::get_string(long p1, char* p2, int p3) {
 char* TRIBE_Game::get_string(long p1) { return RGE_Base_Game::get_string(p1); }
 char* TRIBE_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) { return RGE_Base_Game::get_string2(p1, p2, p3, p4, p5); }
 
-TPanel* TRIBE_Game::get_view_panel() { return nullptr; }
-TPanel* TRIBE_Game::get_map_panel() { return nullptr; }
+TPanel* TRIBE_Game::get_view_panel() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523450
+    const int mode = this->prog_mode;
+    if ((mode == 4 || mode == 6 || mode == 5) && this->game_screen != nullptr) {
+        return tribe_main_view_panel(this->game_screen);
+    }
+    if (mode == 7) {
+        TPanel* panel = panel_system->panel((char*)"Scenario Editor Screen");
+        if (panel != nullptr) {
+            return panel[5].previousPanelValue;
+        }
+    }
+    return nullptr;
+}
+TPanel* TRIBE_Game::get_map_panel() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005234A0
+    const int mode = this->prog_mode;
+    if ((mode == 4 || mode == 6 || mode == 5) && this->game_screen != nullptr) {
+        return tribe_map_view_panel(this->game_screen);
+    }
+    if (mode == 7) {
+        TPanel* panel = panel_system->panel((char*)"Scenario Editor Screen");
+        if (panel != nullptr) {
+            return panel[5].previousModalPanelValue;
+        }
+    }
+    return nullptr;
+}
 
 RGE_Scenario_Header* TRIBE_Game::new_scenario_header(RGE_Scenario* p1) {
     // Source of truth: tribegam.cpp.decomp @ 0x00523570
@@ -2793,8 +2858,14 @@ int TRIBE_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
     return 0; // consumed
 }
 
-int TRIBE_Game::action_update() { return 0; }
-int TRIBE_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) { return 0; }
+int TRIBE_Game::action_update() {
+    // Fully verified. Source of truth: basegame.cpp.asm vtable @ 0x005772A0
+    return RGE_Base_Game::action_update();
+}
+int TRIBE_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) {
+    // Fully verified. Source of truth: basegame.cpp.asm vtable @ 0x005772A4
+    return RGE_Base_Game::action_mouse_move(p1, p2, p3, p4, p5, p6);
+}
 int TRIBE_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) {
     // Source of truth: tribegam.cpp.decomp @ 0x00529F60
     // p1 = virtual key code
@@ -2944,8 +3015,14 @@ int TRIBE_Game::action_user_command(ulong p1, ulong p2) {
 
     return 1;
 }
-int TRIBE_Game::action_command(ulong p1, ulong p2) { return 0; }
-int TRIBE_Game::action_music_done() { return 0; }
+int TRIBE_Game::action_command(ulong p1, ulong p2) {
+    // Fully verified. Source of truth: basegame.cpp.asm vtable @ 0x005772B0
+    return RGE_Base_Game::action_command(p1, p2);
+}
+int TRIBE_Game::action_music_done() {
+    // Fully verified. Source of truth: basegame.cpp.asm vtable @ 0x005772B4
+    return RGE_Base_Game::action_music_done();
+}
 int TRIBE_Game::action_activate() { return 0; }
 int TRIBE_Game::action_deactivate() { return 0; }
 int TRIBE_Game::action_init_menu() { return 0; }
