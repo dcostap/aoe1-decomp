@@ -132,6 +132,21 @@ void RGE_Action_Object::recycle_out_of_game() {
     RGE_Static_Object::recycle_out_of_game();
 }
 
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
+void RGE_Action_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
+    RGE_Moving_Object::draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463139
+void RGE_Action_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    RGE_Moving_Object::shadow_draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x004631ba
+void RGE_Action_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Moving_Object::normal_draw(param_1, param_2, param_3);
+}
+
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x004060A0
 void RGE_Action_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     RGE_Moving_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5);

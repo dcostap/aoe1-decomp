@@ -3979,6 +3979,17 @@ void TRIBE_Command::command_game_speed(float p1) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
+void TRIBE_Command::command_save_game() {
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AE40
+    TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
+    if (cmd == nullptr) {
+        return;
+    }
+
+    cmd->command = 0x67;
+    cmd->game_command = 8;
+    this->submit(cmd, sizeof(TRIBE_Command_Game));
+}
 void TRIBE_Command::command_cancel_build(RGE_Static_Object* p1) {
     // Source of truth: tcommand.cpp.decomp @ 0x0050AFD0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {

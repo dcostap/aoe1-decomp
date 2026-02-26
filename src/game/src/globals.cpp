@@ -74,6 +74,7 @@ unsigned long* unified_map_offsets[256] = {0};
 int ENABLE_COMPRESSION = 1;
 int rge_write_error = 0;
 int Map_Update_Suppresion = 0;
+int do_debug_random = 0;
 int fog_next_shape = 0;
 int MapPathsDisplay = 0;
 int DAT_0086b240 = 0;
@@ -205,6 +206,14 @@ static int rge_prepare_read_cache(int handle) {
 }
 
 void run_log(char* param_1, int param_2) {}
+
+// TODO: STUB - Source-of-truth implementations exist in basegame.cpp/visible.cpp, but have not
+// been transliterated in this tree yet.
+void debug_random_write() {}
+
+// TODO: STUB - Source-of-truth implementation exists in visible.cpp, but has not
+// been transliterated in this tree yet.
+void dump_vismap_log() {}
 
 int rge_fake_open(int handle, int remaining_bytes) {
     if (handle > -1) {

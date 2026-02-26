@@ -54,6 +54,7 @@ public:
     void command_build_wall(RGE_Static_Object** param_1, short param_2, short param_3, long param_4, long param_5, long param_6, long param_7);
     void command_explore(int param_1, int* param_2, int param_3, float param_4, float param_5);
     void command_game_speed(float param_1);
+    void command_save_game();
     void command_cancel_build(RGE_Static_Object* param_1);
     void command_attack_ground(RGE_Static_Object** param_1, short param_2, float param_3, float param_4);
 
