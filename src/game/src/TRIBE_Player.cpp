@@ -27,6 +27,17 @@
 #include <new>
 #include <stdlib.h>
 
+class TribeBuildAIModule {
+public:
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    int addBuiltItem(RGE_Static_Object* param_1, int param_2);
+    int cancelBuildItem(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7);
+    int addTrainedUnit(int param_1, int param_2, int param_3, int param_4);
+    int cancelTrainUnit(int param_1, int param_2, int param_3, int param_4);
+    int addResearch(int param_1, int param_2, int param_3);
+    int cancelResearch(int param_1, int param_2, int param_3, int param_4);
+};
+
 static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
     if (player == nullptr || player->attributes == nullptr) {
         return 0;
@@ -35,60 +46,6 @@ static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
         return 0;
     }
     return (short)((long)player->attributes[index]);
-}
-
-static int tribe_build_ai_cancel_build_item(unsigned char* build_ai, int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
-    (void)build_ai;
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
-    (void)param_5;
-    (void)param_6;
-    (void)param_7;
-    return 1; // TODO: STUB - TribeBuildAIModule::cancelBuildItem not transliterated yet.
-}
-
-static int tribe_build_ai_add_built_item(unsigned char* build_ai, RGE_Static_Object* param_1, int param_2) {
-    (void)build_ai;
-    (void)param_1;
-    (void)param_2;
-    return 1; // TODO: STUB - TribeBuildAIModule::addBuiltItem not transliterated yet.
-}
-
-static int tribe_build_ai_cancel_train_unit(unsigned char* build_ai, int param_1, int param_2, int param_3, int param_4) {
-    (void)build_ai;
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
-    return 1; // TODO: STUB - TribeBuildAIModule::cancelTrainUnit not transliterated yet.
-}
-
-static int tribe_build_ai_add_trained_unit(unsigned char* build_ai, int param_1, int param_2, int param_3, int param_4) {
-    (void)build_ai;
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
-    return 1; // TODO: STUB - TribeBuildAIModule::addTrainedUnit not transliterated yet.
-}
-
-static int tribe_build_ai_cancel_research(unsigned char* build_ai, int param_1, int param_2, int param_3, int param_4) {
-    (void)build_ai;
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
-    return 1; // TODO: STUB - TribeBuildAIModule::cancelResearch not transliterated yet.
-}
-
-static int tribe_build_ai_add_research(unsigned char* build_ai, int param_1, int param_2, int param_3) {
-    (void)build_ai;
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    return 1; // TODO: STUB - TribeBuildAIModule::addResearch not transliterated yet.
 }
 
 // --- TRIBE_Player constructors ---
@@ -659,18 +616,18 @@ void TRIBE_Player::buildObject(int param_1, int param_2, float param_3, float pa
 }
 
 // Offset: 0x00515180
-// TODO: Parity depends on non-transliterated TribeBuildAIModule::cancelBuildItem.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515180
 void TRIBE_Player::cancelBuild(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
     if (this->playerAI != nullptr) {
-        tribe_build_ai_cancel_build_item(this->playerAI->buildAI, param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+        ((TribeBuildAIModule*)this->playerAI->buildAI)->cancelBuildItem(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
     }
 }
 
 // Offset: 0x005151C0
-// TODO: Parity depends on non-transliterated TribeBuildAIModule::addBuiltItem.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005151C0
 void TRIBE_Player::registerBuild(RGE_Static_Object* param_1, int param_2) {
     if (this->playerAI != nullptr) {
-        tribe_build_ai_add_built_item(this->playerAI->buildAI, param_1, param_2);
+        ((TribeBuildAIModule*)this->playerAI->buildAI)->addBuiltItem(param_1, param_2);
     }
 }
 
@@ -681,18 +638,18 @@ void TRIBE_Player::trainUnit(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x00515220
-// TODO: Parity depends on non-transliterated TribeBuildAIModule::cancelTrainUnit.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515220
 void TRIBE_Player::cancelTrain(int param_1, int param_2, int param_3, int param_4) {
     if (this->playerAI != nullptr) {
-        tribe_build_ai_cancel_train_unit(this->playerAI->buildAI, param_1, param_2, param_3, param_4);
+        ((TribeBuildAIModule*)this->playerAI->buildAI)->cancelTrainUnit(param_1, param_2, param_3, param_4);
     }
 }
 
 // Offset: 0x00515250
-// TODO: Parity depends on non-transliterated TribeBuildAIModule::addTrainedUnit.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515250
 void TRIBE_Player::registerTrain(int param_1, int param_2, int param_3, int param_4) {
     if (this->playerAI != nullptr) {
-        tribe_build_ai_add_trained_unit(this->playerAI->buildAI, param_1, param_2, param_3, param_4);
+        ((TribeBuildAIModule*)this->playerAI->buildAI)->addTrainedUnit(param_1, param_2, param_3, param_4);
     }
 }
 
@@ -703,18 +660,18 @@ void TRIBE_Player::research(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x005152B0
-// TODO: Parity depends on non-transliterated TribeBuildAIModule::cancelResearch.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005152B0
 void TRIBE_Player::cancelResearch(int param_1, int param_2, int param_3, int param_4) {
     if (this->playerAI != nullptr) {
-        tribe_build_ai_cancel_research(this->playerAI->buildAI, param_1, param_2, param_3, param_4);
+        ((TribeBuildAIModule*)this->playerAI->buildAI)->cancelResearch(param_1, param_2, param_3, param_4);
     }
 }
 
 // Offset: 0x005152E0
-// TODO: Parity depends on non-transliterated TribeBuildAIModule::addResearch.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005152E0
 void TRIBE_Player::registerResearch(int param_1, int param_2, int param_3) {
     if (this->playerAI != nullptr) {
-        tribe_build_ai_add_research(this->playerAI->buildAI, param_1, param_2, param_3);
+        ((TribeBuildAIModule*)this->playerAI->buildAI)->addResearch(param_1, param_2, param_3);
     }
 }
 
