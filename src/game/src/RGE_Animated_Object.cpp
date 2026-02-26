@@ -68,6 +68,21 @@ int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* 
     return 1;
 }
 
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
+void RGE_Animated_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
+    RGE_Static_Object::draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463139
+void RGE_Animated_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    RGE_Static_Object::shadow_draw(param_1, param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: obj_list.cpp.asm @ 0x004631ba
+void RGE_Animated_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Static_Object::normal_draw(param_1, param_2, param_3);
+}
+
 // Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A350
 uchar RGE_Animated_Object::update() {
     uchar uVar1 = RGE_Static_Object::update();
