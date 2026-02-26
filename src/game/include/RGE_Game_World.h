@@ -80,6 +80,8 @@ public:
     void set_map_visible(uchar param_1);
     void set_map_fog(uchar param_1);
     void selectNextComputerPlayer(int param_1);
+    void update_sounds(ulong param_1);
+    void update_sprites(ulong param_1);
     int initializePathingSystem();
     int numberObjects();
     int numberNegativeObjects();

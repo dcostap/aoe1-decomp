@@ -6,11 +6,13 @@
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Object_List.h"
+#include "../include/RGE_Doppleganger_Creator.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Sprite.h"
 #include "../include/RGE_Color_Table.h"
 #include "../include/RGE_Sound.h"
+#include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Effects.h"
 #include "../include/AIPlayBook.h"
 #include "../include/RGE_Master_Player.h"
@@ -19,6 +21,7 @@
 #include "../include/PathingSystem.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/TCommunications_Handler.h"
+#include "../include/TMousePointer.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
@@ -1387,113 +1390,228 @@ void RGE_Game_World::selectNextComputerPlayer(int param_1) {
     }
 }
 
+void RGE_Game_World::update_sounds(ulong param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542E50
+    if ((int)this->sound_num <= this->sound_update_index) {
+        this->sound_update_index = 0;
+    }
+    this->sounds[this->sound_update_index]->update(param_1);
+    this->sound_update_index = this->sound_update_index + 1;
+}
+
+void RGE_Game_World::update_sprites(ulong param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542E90
+    if ((int)this->sprite_num <= this->sprite_update_index) {
+        this->sprite_update_index = 0;
+    }
+    if (this->sprites[this->sprite_update_index] != nullptr) {
+        this->sprites[this->sprite_update_index]->update(param_1);
+    }
+    this->sprite_update_index = this->sprite_update_index + 1;
+}
+
 uchar RGE_Game_World::update() {
-    // Source of truth: world.cpp.decomp / world.cpp.asm (update @ 0x00542ED0).
-    // Keep timing/cycle flow close to original so single-player simulation advances.
-    static int s_world_update_debug_logs = 0;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542ED0 (audited vs world.cpp.asm).
+    int iVar2 = 0;
+    int elapsed_value = 0;
+    uint uVar4 = 0;
+    ulong uVar1 = 0;
+    ulong uVar3 = 0;
+    ulong* puVar8 = nullptr;
+    bool bVar9 = false;
+    char fileName[256];
+
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
-
-    int cycle_time = -1;
-    if (this->commands != nullptr && this->commands->com_hand != nullptr) {
-        cycle_time = this->commands->com_hand->DoCycle(this->world_time);
-        if (cycle_time == 0) {
-            this->world_time_delta = 0;
-            this->world_time_delta_seconds = 0.0f;
-            return this->game_state;
-        }
-    } else {
-        cycle_time = 1;
+    uVar1 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x68e);
+    iVar2 = this->commands->com_hand->DoCycle(this->world_time);
+    uVar3 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x690);
+    rge_base_game->add_to_timing(0xe, uVar3 - uVar1);
+    if (iVar2 == 0) {
+        this->world_time_delta = 0;
+        return this->game_state;
     }
 
-    const unsigned long now = GetTickCount();
-    unsigned long elapsed_ms = 0;
-    int first_tick = 0;
+    visible_combats = 0;
+    debug_random_on = 1;
+    debug_timeGetTime_on = 1;
+    if (do_fixed_update != 0) {
+        iVar2 = fixed_update_time;
+    }
 
-    if (cycle_time == -1) {
-        if (this->old_time == 0) {
-            first_tick = 1;
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6a2, this->random_seed);
+    uVar1 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6a4);
+    this->update_sounds(uVar1);
+    this->update_sprites(uVar1);
+
+    elapsed_value = iVar2;
+    if (iVar2 == -1) {
+        bVar9 = this->old_time == 0;
+        if (bVar9) {
+            elapsed_value = 0;
         } else {
-            elapsed_ms = now - this->old_time;
-            if (elapsed_ms > 100) {
-                elapsed_ms = 100;
+            ulong elapsed_unsigned = uVar1 - this->old_time;
+            if (100 < elapsed_unsigned) {
+                elapsed_unsigned = 100;
             }
+            elapsed_value = (int)elapsed_unsigned;
         }
-    } else {
-        elapsed_ms = (unsigned long)cycle_time;
     }
 
-    this->old_time = now;
-    this->old_world_time = this->world_time;
-
-    if (this->temp_pause == 0) {
-        this->world_time += (unsigned long)((float)elapsed_ms * this->game_speed);
+    this->old_time = uVar1;
+    uVar1 = this->world_time;
+    this->old_world_time = uVar1;
+    if (this->temp_pause == '\0') {
+        fileName[0] = '\0';
+        fileName[1] = '\0';
+        fileName[2] = '\0';
+        fileName[3] = '\0';
+        this->world_time = (ulong)((float)(ulong)elapsed_value * this->game_speed) + uVar1;
     } else {
-        if (cycle_time != -1) {
-            this->world_time += (unsigned long)((float)elapsed_ms * this->game_speed);
+        if (iVar2 != -1) {
+            fileName[0] = '\0';
+            fileName[1] = '\0';
+            fileName[2] = '\0';
+            fileName[3] = '\0';
+            this->world_time = (ulong)((float)(ulong)elapsed_value * this->game_speed) + uVar1;
         }
-        this->temp_pause = 0;
+        this->temp_pause = '\0';
     }
 
-    this->world_time_delta = this->world_time - this->old_world_time;
-    if (this->world_time_delta != 0 || first_tick != 0) {
-        CUSTOM_DEBUG_BEGIN
-        if (s_world_update_debug_logs < 16) {
-            CUSTOM_DEBUG_LOG_FMT(
-                "RGE_Game_World::update tick begin world_time=%lu delta=%lu commands=%p scenario=%p player_num=%d curr_player=%d",
-                (unsigned long)this->world_time,
-                (unsigned long)this->world_time_delta,
-                this->commands,
-                this->scenario,
-                (int)this->player_num,
-                (int)this->curr_player);
-            s_world_update_debug_logs++;
-        }
-        CUSTOM_DEBUG_END
-
-        if (this->commands != nullptr) {
-            this->commands->do_commands();
-        } else {
-            CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG("RGE_Game_World::update: commands is null, skipping do_commands");
-            CUSTOM_DEBUG_END
-        }
-
-        if (this->scenario != nullptr) {
-            this->scenario->update();
-        } else {
-            CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG("RGE_Game_World::update: scenario is null, skipping scenario->update");
-            CUSTOM_DEBUG_END
-        }
+    uVar1 = this->world_time - this->old_world_time;
+    this->world_time_delta = uVar1;
+    if (uVar1 != 0 || bVar9) {
+        this->commands->do_commands();
+        this->scenario->update();
+        fileName[0] = '\0';
+        fileName[1] = '\0';
+        fileName[2] = '\0';
+        fileName[3] = '\0';
 
         this->world_time_delta_seconds = (float)this->world_time_delta * 0.001f;
         world_update_counter = world_update_counter + 1;
-
-        if (this->players != nullptr) {
-            for (short i = 0; i < this->player_num; ++i) {
-                if (this->players[i] != nullptr) {
-                    this->player_time_delta[i] = this->player_time_delta[i] + this->world_time_delta;
-                    this->players[i]->update();
-                    this->players[i]->tile_list.del_list();
+        if (0 < this->player_num) {
+            iVar2 = 0;
+            puVar8 = this->player_time_delta;
+            do {
+                if (this->players[iVar2] != nullptr) {
+                    *puVar8 = *puVar8 + this->world_time_delta;
+                    this->players[iVar2]->update();
+                    this->players[iVar2]->tile_list.del_list();
                 }
-            }
+                iVar2 = iVar2 + 1;
+                puVar8 = puVar8 + 1;
+            } while (iVar2 < this->player_num);
         }
 
-        // Keep the same per-tick player rotation bookkeeping used by the original.
+        if (MouseSystem != nullptr) {
+            MouseSystem->Poll();
+        }
+
+        uVar4 = (uint)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6e2);
+        iVar2 = 0;
+        if (0 < this->player_num) {
+            do {
+                if (this->players[iVar2] != nullptr) {
+                    this->players[iVar2]->doppleganger_objects->update();
+                }
+                iVar2 = iVar2 + 1;
+            } while (iVar2 < this->player_num);
+        }
+
+        iVar2 = 0;
+        if (0 < this->player_num) {
+            do {
+                if (this->players[iVar2] != nullptr) {
+                    this->players[iVar2]->doppleganger_creator->perform_doppleganger_checks();
+                }
+                iVar2 = iVar2 + 1;
+            } while (iVar2 < this->player_num);
+        }
+
+        debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6f6, uVar4);
         this->player_time_delta[this->player_turn] = 0;
-        this->player_turn = this->player_turn + 1;
-        if (this->player_turn >= this->player_num) {
+        iVar2 = this->player_turn + 1;
+        this->player_turn = iVar2;
+        if (this->player_num <= iVar2) {
             this->player_turn = 0;
         }
 
         this->check_game_state();
-    } else {
-        this->world_time_delta_seconds = 0.0f;
     }
 
-    this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x71a);
-    if (this->commands != nullptr && this->commands->com_hand != nullptr) {
-        this->commands->com_hand->last_world_random = (int)this->random_seed;
+    uVar4 = (uint)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x71a);
+    this->random_seed = uVar4;
+    debug_random_on = 0;
+    debug_timeGetTime_on = 0;
+    this->commands->com_hand->LastWorldRandom((int)this->random_seed);
+    if (logStatusOn == 1) {
+        if (this->game_state != '\x01') {
+            if (30000 < this->world_time - lastStatusLogTime || lastStatusLogTime == 0) {
+                if (logStatusFile == nullptr) {
+                    char* current_player_name = rge_base_game->player_game_info->get_current_player_name();
+                    sprintf(fileName + 4, "AILog\\%s.log", current_player_name);
+                    logStatusFile = fopen(fileName + 4, "a");
+                    if (logStatusFile == nullptr) {
+                        return this->game_state;
+                    }
+                }
+
+                uint uVar6 = 0;
+                uint uVar7 = 0;
+                uVar4 = this->world_time / 1000;
+                if (0x3B < uVar4) {
+                    uVar6 = uVar4 / 0x3C;
+                    uVar4 = uVar4 % 0x3C;
+                    if (0x3B < uVar6) {
+                        uVar7 = uVar6 / 0x3C;
+                        uVar6 = uVar6 % 0x3C;
+                    }
+                }
+
+                if (lastStatusLogTime == 0) {
+                    this->logStatus(logStatusFile, 1);
+                } else {
+                    fprintf(logStatusFile, "\nStatus Log at GameTime %02ld:%02ld:%02ld\n", uVar7, uVar6, uVar4);
+                }
+
+                iVar2 = 1;
+                if (1 < this->player_num) {
+                    do {
+                        if (this->players[iVar2] != nullptr) {
+                            this->players[iVar2]->logStatus(logStatusFile, lastStatusLogTime == 0);
+                        }
+                        iVar2 = iVar2 + 1;
+                    } while (iVar2 < this->player_num);
+                }
+                lastStatusLogTime = this->world_time + 1;
+            }
+
+            if (this->game_state != '\x01') {
+                return this->game_state;
+            }
+        }
+    } else if (this->game_state != '\x01') {
+        return this->game_state;
+    }
+
+    iVar2 = 1;
+    if (logStatusOn == 1 && logStatusFile != nullptr) {
+        fprintf(logStatusFile, "GAME OVER!\n");
+        if (1 < this->player_num) {
+            do {
+                if (this->players[iVar2] != nullptr) {
+                    if (this->players[iVar2]->game_status == '\x01') {
+                        fprintf(logStatusFile, "  Player #%d Won.\n", iVar2);
+                    } else {
+                        fprintf(logStatusFile, "  Player #%d Lost.\n", iVar2);
+                    }
+                }
+                iVar2 = iVar2 + 1;
+            } while (iVar2 < this->player_num);
+        }
+
+        fclose(logStatusFile);
+        logStatusFile = nullptr;
     }
 
     return this->game_state;

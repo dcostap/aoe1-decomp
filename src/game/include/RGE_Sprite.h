@@ -68,6 +68,7 @@ public:
     // Methods
     void rehook(RGE_Sprite** sprites);
     void load_facets(RGE_Sprite** sprites);
+    void update(ulong param_1);
     void save(int param_1);
     void play_sound(short param_1, short param_2, short param_3);
     unsigned char get_facetindex(long param_1, long param_2, long* param_3);
