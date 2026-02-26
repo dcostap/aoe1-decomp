@@ -671,6 +671,11 @@ int TCommunications_Handler::IsPlayerHuman(uint player_number) {
     return ((humanity == kPlayerHumanityHuman) || (humanity == kPlayerHumanityCyborg)) ? 1 : 0;
 }
 
+void TCommunications_Handler::LastWorldRandom(int param_1) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426630
+    this->Sync->SetLastWorldRandom((ulong)param_1);
+}
+
 void TCommunications_Handler::Update() {
     // Offset 0x00426650 in ASM is DoCycle
     // The user wants Update() to behave like the core tick.

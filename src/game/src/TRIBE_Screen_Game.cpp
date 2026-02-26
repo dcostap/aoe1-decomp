@@ -166,6 +166,19 @@ static TMessagePanel* create_message_panel_checked(
     return panel;
 }
 
+static int scr_game_get_player_age(RGE_Player* player) {
+    if (player == nullptr) {
+        return 0;
+    }
+
+    void* age_state = *(void**)((char*)player + 0x50);
+    if (age_state == nullptr) {
+        return 0;
+    }
+
+    return (int)(*(float*)((char*)age_state + 0x18));
+}
+
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel((char*)"Game Screen") {
     // Parity-first: in-game rendering/input routes through TRIBE_Main_View/TRIBE_Diamond_Map_View.
@@ -187,6 +200,17 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->runtime.map_view = nullptr;
     this->runtime.chat_line = 0;
     this->runtime.last_item = 0;
+    this->runtime.update_interval = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->update_interval : 0;
+    this->runtime.last_update_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x116);
+    this->runtime.map_redraw_interval = 0x14D;
+    this->runtime.last_map_redraw_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x119);
+    this->runtime.save_age = 0;
+    this->runtime.view_interval = 100;
+    this->runtime.last_view_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x142);
+    this->runtime.reset_after_update = 1;
+    this->runtime.score_interval = 3000;
+    this->runtime.last_score_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x154);
+    this->runtime.watch_mode = 0;
 
     if (rge_base_game->prog_palette != nullptr) {
         void* panel_pal = rge_base_game->prog_palette;
@@ -796,62 +820,97 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
 }
 
 void TRIBE_Screen_Game::handle_game_update() {
-    // Source-aligned main-loop parity slice. Source: scr_game.cpp.decomp @ 0x00496800
-    if (rge_base_game != nullptr && rge_base_game->world != nullptr) {
-        this->runtime.world = (TRIBE_World*)rge_base_game->world;
-        if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
-            RGE_View* v = (RGE_View*)this->runtime.main_view;
-            v->world = (RGE_Game_World*)rge_base_game->world;
-            v->map = rge_base_game->world->map;
-            if (v->map != nullptr) {
-                v->tile_wid = v->map->tile_width;
-                v->tile_hgt = v->map->tile_height;
-                v->tile_half_wid = v->map->tile_half_width;
-                v->tile_half_hgt = v->map->tile_half_height;
-                v->elev_hgt = v->map->elev_height;
-            }
-        }
+    // TODO: Remaining world-step/game-over branches from 0x00496800 are still pending transliteration.
+    if (rge_base_game == nullptr) {
+        return;
     }
 
-    TRIBE_Player* player = nullptr;
-    if (rge_base_game != nullptr) {
-        player = (TRIBE_Player*)rge_base_game->get_player();
+    if (rge_base_game->world != nullptr) {
+        this->runtime.world = (TRIBE_World*)rge_base_game->world;
     }
-    if (player == nullptr && this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
-        int curr = (int)this->runtime.world->curr_player;
-        if (curr >= 0 && curr < this->runtime.world->player_num) {
-            player = (TRIBE_Player*)this->runtime.world->players[curr];
-        }
-    }
+
+    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
 
     if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
         RGE_View* main_view = (RGE_View*)this->runtime.main_view;
-        if (main_view->player != player) {
-            main_view->player = player;
+        main_view->world = (RGE_Game_World*)rge_base_game->world;
+        main_view->map = (rge_base_game->world != nullptr) ? rge_base_game->world->map : nullptr;
+        main_view->player = player;
+        if (main_view->map != nullptr) {
+            main_view->tile_wid = main_view->map->tile_width;
+            main_view->tile_hgt = main_view->map->tile_height;
+            main_view->tile_half_wid = main_view->map->tile_half_width;
+            main_view->tile_half_hgt = main_view->map->tile_half_height;
+            main_view->elev_hgt = main_view->map->elev_height;
         }
     }
 
-    if (this->runtime.object_panel != nullptr) {
-        RGE_Static_Object* selected = (player != nullptr) ? player->selected_obj : nullptr;
-        short sel_count = (player != nullptr) ? player->sel_count : 0;
-        if (this->runtime.last_selected_obj != selected || this->runtime.last_sel_count != sel_count) {
-            this->runtime.object_panel->set_object(selected);
-            this->runtime.last_selected_obj = selected;
-            this->runtime.last_sel_count = sel_count;
-            this->reset_buttons();
+    int update_counter = 0;
+    const ulong update_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x63F);
+    if (update_time - this->runtime.last_update_time >= this->runtime.update_interval) {
+        this->runtime.last_update_time = update_time;
+        update_counter = 1;
+    }
+
+    if (update_counter != 0 && this->runtime.reset_after_update != 0) {
+        this->reset_clocks();
+        this->runtime.reset_after_update = 0;
+    }
+
+    if (update_counter != 0 &&
+        this->runtime.object_panel != nullptr &&
+        player != nullptr &&
+        (this->runtime.last_selected_obj != player->selected_obj ||
+         this->runtime.last_sel_count != player->sel_count)) {
+        this->runtime.object_panel->set_object(player->selected_obj);
+        this->object_changed();
+    }
+
+    if (panel_system != nullptr && panel_system->currentPanel() == this) {
+        const ulong draw_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x79C);
+
+        if (update_counter != 0 && player != nullptr) {
+            const int current_age = scr_game_get_player_age((RGE_Player*)player);
+            if (current_age != this->runtime.save_age) {
+                this->age_changed();
+            }
+
+            if (this->runtime.score_panel[0] != nullptr &&
+                this->runtime.score_panel[0]->active != 0 &&
+                this->runtime.score_interval <= draw_time - this->runtime.last_score_time) {
+                this->reset_score_display();
+                this->runtime.last_score_time =
+                    debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x7A8);
+            }
+        }
+
+        int has_focus = 0;
+        if (this->runtime.main_view != nullptr) {
+            has_focus = this->runtime.main_view->have_focus;
+        }
+
+        TPanel* quick_message_dialog = panel_system->panel((char*)"Send Quick Message Dialog");
+        TPanel* help_dialog = panel_system->panel((char*)"Help Dialog");
+        if (has_focus != 0 || this->curr_child == quick_message_dialog || this->curr_child == help_dialog) {
+            if (this->runtime.main_view != nullptr &&
+                (update_counter != 0 || this->runtime.view_interval <= draw_time - this->runtime.last_view_time)) {
+                this->runtime.main_view->set_redraw(TPanel::Redraw);
+                this->runtime.last_view_time = draw_time;
+            }
+
+            if (update_counter != 0 &&
+                this->runtime.map_view != nullptr &&
+                this->runtime.map_redraw_interval <= draw_time - this->runtime.last_map_redraw_time) {
+                this->runtime.map_view->set_redraw(TPanel::Redraw);
+                this->runtime.last_map_redraw_time = draw_time;
+            }
+
+            if (this->runtime.main_view != nullptr &&
+                this->runtime.main_view->need_redraw != TPanel::NoRedraw) {
+                rge_base_game->draw_window();
+            }
         }
     }
-
-    if (this->runtime.world != nullptr && this->runtime.world->score_displayed != this->runtime.last_score_display) {
-        this->runtime.last_score_display = this->runtime.world->score_displayed;
-        this->command_score((int)this->runtime.world->score_displayed);
-    }
-
-    if (this->runtime.chat_line < 0 || this->runtime.chat_line > 7) {
-        this->runtime.chat_line = 0;
-    }
-
-    this->set_redraw(TPanel::Redraw);
 }
 
 void TRIBE_Screen_Game::game_mode_changed(int new_mode, int old_mode) {
@@ -866,40 +925,85 @@ void TRIBE_Screen_Game::game_mode_changed(int new_mode, int old_mode) {
 }
 
 void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
-    // Source-aligned runtime rebinding slice. Source: scr_game.cpp.decomp @ 0x00498A50
-    TRIBE_Player* player = nullptr;
-    if (rge_base_game != nullptr) {
-        player = (TRIBE_Player*)rge_base_game->get_player();
-    }
-    if (player == nullptr && this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
-        int curr = (int)this->runtime.world->curr_player;
-        if (curr >= 0 && curr < this->runtime.world->player_num) {
-            player = (TRIBE_Player*)this->runtime.world->players[curr];
-        }
-    }
+    // TODO: Civilization theme/picture refresh branch from 0x00498AD0 is still pending transliteration.
+    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
 
-    if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
-        ((RGE_View*)this->runtime.main_view)->player = player;
-    }
-    if (this->runtime.map_view != nullptr) {
-        ((RGE_Diamond_Map*)this->runtime.map_view)->set_player(player);
-    }
-    if (this->runtime.inven_panel != nullptr) {
-        this->runtime.inven_panel->set_player(player);
-    }
-    if (this->runtime.object_panel != nullptr) {
-        this->runtime.object_panel->set_player(player);
-        this->runtime.object_panel->set_object((player != nullptr) ? player->selected_obj : nullptr);
-    }
-    this->runtime.last_selected_obj = (player != nullptr) ? player->selected_obj : nullptr;
-    this->runtime.last_sel_count = (player != nullptr) ? player->sel_count : 0;
+    ((RGE_View*)this->runtime.main_view)->player = (RGE_Player*)player;
+    ((RGE_Diamond_Map*)this->runtime.map_view)->set_player((RGE_Player*)player);
+    this->runtime.inven_panel->set_player(player);
+    this->runtime.object_panel->set_player(player);
 
-    this->game_mode_changed(rge_base_game != nullptr ? rge_base_game->game_mode : 0, rge_base_game != nullptr ? rge_base_game->game_mode : 0);
-    this->reset_buttons();
-    this->reset_clocks();
+    this->game_mode_changed(rge_base_game->game_mode, rge_base_game->game_mode);
+    this->object_changed();
+    this->age_changed();
+
+    this->setup_buttons();
     this->set_redraw(TPanel::Redraw);
     (void)old_player;
     (void)new_player;
+}
+
+void TRIBE_Screen_Game::object_changed() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004992E0
+    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+    RGE_Static_Object* previous_obj = this->runtime.last_selected_obj;
+    RGE_Static_Object* selected_obj = player->selected_obj;
+
+    this->runtime.last_selected_obj = selected_obj;
+    this->runtime.last_sel_count = player->sel_count;
+
+    if (previous_obj != selected_obj) {
+        if (rge_base_game->game_mode == 0x15) {
+            ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
+        }
+
+        const char game_mode = (char)rge_base_game->game_mode;
+        if (game_mode != 0x01 &&
+            game_mode != 0x12 &&
+            game_mode != 0x0E &&
+            game_mode != 0x02 &&
+            game_mode != 0x03 &&
+            game_mode != 0x08 &&
+            game_mode != 0x09 &&
+            game_mode != 0x0A) {
+            rge_base_game->set_game_mode(0, 0);
+        }
+    }
+
+    this->reset_buttons();
+}
+
+void TRIBE_Screen_Game::age_changed() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004993B0
+    if (this->runtime.age_panel == nullptr) {
+        return;
+    }
+
+    TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+    this->runtime.save_age = scr_game_get_player_age((RGE_Player*)player);
+
+    char age_text[512];
+    age_text[0] = '\0';
+    rge_base_game->get_string(0x65, this->runtime.save_age, age_text, sizeof(age_text));
+    this->runtime.age_panel->set_text(age_text);
+    this->runtime.age_panel->set_redraw(TPanel::Redraw);
+
+    switch (this->runtime.save_age) {
+    case 1:
+        this->runtime.age_panel->set_help_info(0x1069, -1);
+        break;
+    case 2:
+        this->runtime.age_panel->set_help_info(0x106A, -1);
+        break;
+    case 3:
+        this->runtime.age_panel->set_help_info(0x106B, -1);
+        break;
+    case 4:
+        this->runtime.age_panel->set_help_info(0x106C, -1);
+        break;
+    default:
+        break;
+    }
 }
 
 void TRIBE_Screen_Game::handle_pause() {
@@ -1334,17 +1438,8 @@ void TRIBE_Screen_Game::set_redraw(RedrawMode param_1) {
 
 void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) {
     (void)param_2;
-
-    if (panel_system == nullptr || param_1 == nullptr) {
-        return;
-    }
-
-    TPanel* dialog = panel_system->modalPanelValue;
-    if (dialog == nullptr) {
-        return;
-    }
-
-    if (rects_overlap(param_1->clip_rect, dialog->clip_rect) != 0) {
+    TPanel* dialog = (panel_system != nullptr) ? panel_system->modalPanelValue : nullptr;
+    if (dialog != nullptr && rects_overlap(param_1->clip_rect, dialog->clip_rect) != 0) {
         dialog->set_redraw(param_3);
     }
 }

@@ -3058,16 +3058,46 @@ int RGE_Static_Object::moveTo(int param_1, int param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E30
     return 0;
 }
-int RGE_Static_Object::moveAwayFrom(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::hunt(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::gather(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::convert(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::repair(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::build(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::trade(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::explore(int param_1, int param_2, int param_3) { return 0; }
-int RGE_Static_Object::enter(int param_1, int param_2) { return 0; }
-int RGE_Static_Object::unload(int param_1, float param_2, float param_3, float param_4) { return 0; }
+int RGE_Static_Object::moveAwayFrom(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E60
+    return 0;
+}
+int RGE_Static_Object::hunt(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E70
+    return 0;
+}
+int RGE_Static_Object::gather(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E80
+    return 0;
+}
+int RGE_Static_Object::convert(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E90
+    return 0;
+}
+int RGE_Static_Object::repair(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405EB0
+    return 0;
+}
+int RGE_Static_Object::build(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405EC0
+    return 0;
+}
+int RGE_Static_Object::trade(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405ED0
+    return 0;
+}
+int RGE_Static_Object::explore(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405EE0
+    return 0;
+}
+int RGE_Static_Object::enter(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405EF0
+    return 0;
+}
+int RGE_Static_Object::unload(int param_1, float param_2, float param_3, float param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405F00
+    return 0;
+}
 int RGE_Static_Object::transport(float param_1, float param_2, float param_3, int param_4) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405F10
     return 0;
@@ -3076,7 +3106,10 @@ int RGE_Static_Object::stopAction() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405F20
     return 0;
 }
-int RGE_Static_Object::pause() { return 0; }
+int RGE_Static_Object::pause() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405F30
+    return 0;
+}
 int RGE_Static_Object::canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A560
     return 0;
@@ -3085,9 +3118,18 @@ int RGE_Static_Object::canPath(XYZPoint param_1, float param_2, int param_3, flo
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A550
     return 0;
 }
-int RGE_Static_Object::canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7) { return 0; }
-int RGE_Static_Object::canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray<int>* param_7) { return 0; }
-int RGE_Static_Object::canPathWithAdditionalPassability(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7, int param_8, int param_9) { return 0; }
+int RGE_Static_Object::canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A570
+    return 0;
+}
+int RGE_Static_Object::canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray<int>* param_7) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A580
+    return 0;
+}
+int RGE_Static_Object::canPathWithAdditionalPassability(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7, int param_8, int param_9) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A590
+    return 0;
+}
 int RGE_Static_Object::findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3) { return 0; }
 int RGE_Static_Object::canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6) { return 0; }
 int RGE_Static_Object::canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5) { return 0; }

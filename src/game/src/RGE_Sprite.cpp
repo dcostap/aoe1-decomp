@@ -261,6 +261,25 @@ void RGE_Sprite::load_facets(RGE_Sprite** sprites) {
     this->loaded = 1;
 }
 
+void RGE_Sprite::update(ulong param_1) {
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C1080
+    if (this->loaded != '\0' && this->shape != nullptr) {
+        if (this->delta_time == 0) {
+            this->last_time = param_1;
+            this->delta_time = 1;
+            return;
+        }
+
+        int delta = (int)((param_1 - this->last_time) + this->delta_time);
+        this->last_time = param_1;
+        this->delta_time = delta;
+        if (0x2BF20 < delta) {
+            delete this->shape;
+            this->shape = nullptr;
+        }
+    }
+}
+
 void RGE_Sprite::save(int param_1) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFDA0
     short info = (short)-1;
