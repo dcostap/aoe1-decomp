@@ -41,6 +41,10 @@ public:
     virtual void stop_sound_system() override;
     virtual int restart_sound_system() override;
 
+protected:
+    void object_changed();
+    void age_changed();
+
 private:
     struct RuntimeState {
         TShape* game_screen_pic;
@@ -95,6 +99,17 @@ private:
         short last_anim_pal_index3;
         unsigned char last_score_display;
         unsigned char score_padding[3];
+        unsigned long update_interval;
+        unsigned long last_update_time;
+        unsigned long map_redraw_interval;
+        unsigned long last_map_redraw_time;
+        int save_age;
+        unsigned long score_interval;
+        unsigned long last_score_time;
+        unsigned long view_interval;
+        unsigned long last_view_time;
+        int reset_after_update;
+        int watch_mode;
     };
 
     static const int kScreenSize = 0x7C4;
