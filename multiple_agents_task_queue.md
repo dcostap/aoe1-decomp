@@ -2252,7 +2252,7 @@ Status note: `Object_Was_Displayed` parity landed in commit `7f68a3e` and merged
 
 ## Task 175 — In-game user-command parity: implement `TRIBE_Game::action_user_command` (pause/resume/out-of-sync/drop flow)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore gameplay/user-command routing in active matches so pause/resume and out-of-sync handling follow original control flow instead of a hard stub.
 - Implement:
   - Transliterate `TRIBE_Game::action_user_command(unsigned long,unsigned long)` from source-of-truth (current implementation is `return 0;`).
@@ -2262,6 +2262,8 @@ Status note: `Object_Was_Displayed` parity landed in commit `7f68a3e` and merged
 - Where: `src/game/src/tribegam.cpp`
 - Source of truth: `src/game/decomp/tribegam.cpp.decomp` + `src/game/decomp/tribegam.cpp.asm` (`action_user_command` @ `0x00529A70`, plus adjacent `action_*` dispatch slots in the same TU/vtable region).
 - Done when: `action_user_command` is no longer stubbed, adjacent `action_*` stubs are parity-audited, and runtime command/music/update dispatch behavior matches source-of-truth.
+
+Status note: `action_user_command` parity landed in commit `6b59bf1` and merged via `5a2e0a9`; remaining adjacent `action_*` stub retirement is tracked in Task 189.
 
 ## Task 176 — Object list hot-loop parity: finalize `RGE_Object_List::draw` + `update`
 - [x] Assigned to agent
@@ -2329,7 +2331,7 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 
 ## Task 180 — Virtual-forwarder retirement (hot-path slots): remove gameplay-critical forwarding from `rge_object_virtual_stubs`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: reduce reliance on linker-satisfaction forwarding stubs in per-frame object update/draw dispatch for non-static object classes.
 - Implement:
   - Audit the vtable slots exercised by `RGE_Object_List` hot-loop dispatch (`draw`/`shadow_draw`/`normal_draw`/`update`) for `RGE_Animated_Object`, `RGE_Moving_Object`, `RGE_Action_Object`, and `RGE_Combat_Object`.
@@ -2342,9 +2344,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
   - `src/game/decomp/obj_list.cpp.decomp` + `.asm` (dispatch slots), plus class-specific decomp/ASM units (`anim_obj`, `m_obj`, `act_obj`, `c_obj`).
 - Done when: scoped hot-path methods no longer route through forwarding TODO stubs and frame-loop behavior remains parity-backed.
 
+Status note: implemented in commit `721ed20` and merged via `d7e739e`; remaining missile/dopple forwarder retirement is tracked in Task 190.
+
 ## Task 181 — View lifecycle parity tranche: finish remaining partial `RGE_View` hot-path methods
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: close the remaining `view.cpp` lifecycle/render-support parity debt now that `Object_Was_Displayed` is de-stubbed.
 - Implement:
   - ASM-audit and finalize: `RGE_View::RGE_View`, `~RGE_View`, `setup`, `Init_Tile_Edge_Tables`, `set_rect(long,long,long,long)`, `set_focus`, and `get_tile_mask_num`.
@@ -2358,9 +2362,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
   - Offsets: `0x00533510`, `0x00533760`, `0x00533940`, `0x00533AF0`, `0x00533F70`, `0x00533AC0`, `0x00538590`.
 - Done when: the scoped methods are parity-verified and no longer marked partially verified.
 
+Status note: implemented in commit `1154aa1` and merged via `5e8f189`.
+
 ## Task 182 — In-game screen runtime parity: finalize `TRIBE_Screen_Game` frame-update/player-rebind flow
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: eliminate remaining "source-aligned slice" behavior in `TRIBE_Screen_Game` so per-frame HUD/view rebinding follows strict decomp/ASM parity.
 - Implement:
   - Audit and finalize `TRIBE_Screen_Game::handle_game_update` (world/player/main_view rebinding, selection refresh, score display branch, redraw timing).
@@ -2372,9 +2378,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 - Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `src/game/decomp/scr_game.cpp.asm` (`handle_game_update` block around `0x00496800`, `player_changed` block around `0x00498A50`).
 - Done when: these runtime handlers are decomp/ASM-aligned and no longer described as source-aligned best-effort slices.
 
+Status note: implemented in commit `413142e` and merged via `f5b0a81`; remaining command-panel refresh slice parity is tracked in Task 194.
+
 ## Task 183 — World tick parity: ASM-audit and finalize `RGE_Game_World::update`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: harden the core simulation tick used by SP gameplay by replacing temporary debug-era guards/logging with strict world update parity.
 - Implement:
   - ASM-audit `RGE_Game_World::update` timing/cycle math (`DoCycle`, `old_time`, `world_time_delta`, pause/temp-pause, random-seed update).
@@ -2384,9 +2392,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 - Source of truth: `src/game/decomp/world.cpp.decomp` + `src/game/decomp/world.cpp.asm` (`RGE_Game_World::update` @ `0x00542ED0`).
 - Done when: update tick ordering/branching is parity-backed and the function carries a fully verified marker.
 
+Status note: implemented in commit `69db962` and merged via `a7621d5`.
+
 ## Task 184 — Base runtime dispatch parity: finalize `RGE_Base_Game` idle/user-command handlers
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: ensure WM_TIMER/WM_COMMAND/WM_USERCOMMAND/music-done dispatch semantics match original behavior before reaching TRIBE-level action handlers.
 - Implement:
   - ASM-audit and finalize `RGE_Base_Game::handle_idle`, `handle_user_command`, `handle_command`, and `handle_music_done`.
@@ -2396,9 +2406,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 - Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm` (`handle_idle` @ `0x00420F60`, `handle_user_command` @ `0x004212E0`, `handle_command` @ `0x004213A0`, `handle_music_done` @ `0x004213C0`).
 - Done when: these dispatch handlers are parity-verified and feed TRIBE action handlers with the original message semantics.
 
+Status note: implemented in commit `2d35db9` and merged via `4b72373`.
+
 ## Task 185 — Player selection lifecycle parity follow-up (`RGE_Player` selection bookkeeping)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove the remaining partial parity in player selection bookkeeping that feeds view command routing.
 - Implement:
   - Finalize `RGE_Player::select_one_object(RGE_Static_Object*, int)` parity (success/slot semantics, `param_2` behavior, and return contract).
@@ -2410,9 +2422,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 - Source of truth: `src/game/decomp/player.cpp.decomp` + `src/game/decomp/player.cpp.asm` (selection blocks spanning `0x00470D20`..`0x00471430` and `get_selected_objects_to_command` @ `0x004712F0`).
 - Done when: selection lifecycle functions are parity-audited and the partial marker in the scoped selection path is removed.
 
+Status note: implemented in commit `2d160e3` and merged via `5dfd716`.
+
 ## Task 186 — TRIBE player AI-build parity follow-up: replace temporary `TribeBuildAIModule` helper shims
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove temporary local helper shims in `TRIBE_Player` cancel/register paths and restore real `TribeBuildAIModule` integration.
 - Implement:
   - Transliterate/restore the missing `TribeBuildAIModule` methods used by `TRIBE_Player`: cancel/add hooks for build/train/research (`cancelBuildItem`, `addBuiltItem`, `cancelTrainUnit`, `addTrainedUnit`, `cancelResearch`, `addResearch`).
@@ -2421,13 +2435,15 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 - Where:
   - `src/game/src/TRIBE_Player.cpp`
   - `src/game/include/TribeBuildAIModule.h`
-  - Add/update the owning `TribeBuildAIModule` implementation TU(s) under `src/game/src/` as required by source-of-truth.
+  - Add/update `src/game/src/TribeBuildAIModule.cpp` (split only if source-of-truth requires additional TU(s)).
 - Source of truth: `src/game/decomp/tplayer.cpp.decomp` + `src/game/decomp/tplayer.cpp.asm` for call sites, and `TribeBuildAIModule` source-of-truth units in `src/game/decomp/` for method bodies/signatures.
 - Done when: the six `tribe_build_ai_*` temporary shims are gone and `TRIBE_Player` cancel/register paths use real `TribeBuildAIModule` methods.
 
+Status note: implemented in commit `3c40130` and merged via `b5e2244`; remaining AI-module dependency parity work is tracked in Task 196.
+
 ## Task 187 — Static-object gameplay virtuals follow-up: de-stub remaining movement/work/path methods
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: continue shrinking high-impact `RGE_Static_Object` default-return virtuals still reachable from command/action runtime paths.
 - Implement (decomp-first):
   - De-stub the next gameplay tranche after Task 179: `moveAwayFrom`, `hunt`, `gather`, `convert`, `repair`, `build`, `trade`, `explore`, `enter`, `unload`, and `pause`.
@@ -2439,9 +2455,11 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
 - Source of truth: `src/game/decomp/stat_obj.cpp.decomp` + `src/game/decomp/stat_obj.cpp.asm` (post-Task-179 virtual block beginning at `moveAwayFrom`).
 - Done when: the scoped methods are no longer hardcoded default returns and follow source-of-truth control flow.
 
+Status note: implemented in commit `f209973` and merged via `6e26b7c`; remaining contiguous static-object virtual defaults are tracked in Task 195.
+
 ## Task 188 — Action-runtime parity follow-up: de-stub core `RGE_Action` virtual responders
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove remaining base-action default responders that can short-circuit runtime behavior when specific action subclasses fall back to base methods.
 - Implement:
   - Transliterate parity for `RGE_Action::stop`, `move_to`, `work`, `attack_response`, and `relation_response`.
@@ -2452,3 +2470,373 @@ Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining
   - `src/game/include/RGE_Action.h` (declarations only if required)
 - Source of truth: `src/game/decomp/action.cpp.decomp` + `src/game/decomp/action.cpp.asm` (base action virtual responder block following `update`/`save`/`setup`).
 - Done when: scoped base virtual responders are parity-backed and no longer trivial hardcoded returns/no-ops.
+
+Status note: implemented in commit `3d7b445`.
+
+## Task 189 — TRIBE game-loop action dispatch parity follow-up (`TRIBE_Game` runtime action stubs)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: retire the remaining hardcoded action-dispatch stubs in `TRIBE_Game` so in-game WM_* routed actions follow source-of-truth behavior end-to-end.
+- Implement:
+  - Transliterate and parity-audit `TRIBE_Game::action_update`, `action_mouse_move`, `action_command`, and `action_music_done` (currently hardcoded `return 0;`).
+  - Audit adjacent runtime accessors used by this path (`get_view_panel`, `get_map_panel`) and wire them to parity-correct in-game panels where required by source-of-truth.
+  - Keep scope on action dispatch/runtime panel access only; do not overlap with Task 182 screen internals.
+- Where:
+  - `src/game/src/tribegam.cpp`
+  - `src/game/include/TRIBE_Game.h` (declarations only if required)
+- Source of truth: `src/game/decomp/tribegam.cpp.decomp` + `src/game/decomp/tribegam.cpp.asm` (action/vtable block adjacent to `action_user_command` @ `0x00529A70`, plus related panel-accessor slots in the same TU).
+- Done when: the scoped action/accessor methods are no longer hardcoded zero/null stubs and runtime dispatch behavior is parity-backed.
+
+## Task 190 — Forwarder retirement follow-up: missile/dopple hot-loop virtual slots
+- [x] Assigned to agent
+- [x] Finished
+- Goal: continue shrinking gameplay-critical forwarding stubs by retiring remaining projectile/doppleganger draw-slot forwarding still emitted from `rge_object_virtual_stubs.cpp`.
+- Implement:
+  - Add parity-backed owning-class implementations for `RGE_Missile_Object` and `RGE_Doppleganger_Object` draw slots used by object-list dispatch (`draw`, `shadow_draw`, `normal_draw`) where still routed through the stub TU.
+  - Remove the corresponding forwarder entries from `rge_object_virtual_stubs.cpp` while preserving signatures/vtable order.
+  - Keep this task constrained to missile/dopple forwarder retirement only.
+- Where:
+  - `src/game/src/rge_object_virtual_stubs.cpp`
+  - `src/game/src/RGE_Missile_Object.cpp`
+  - `src/game/src/RGE_Doppleganger_Object.cpp`
+  - Relevant include declarations only if required (`src/game/include/RGE_Missile_Object.h`, `src/game/include/RGE_Doppleganger_Object.h`)
+- Source of truth:
+  - `src/game/decomp/obj_list.cpp.decomp` + `src/game/decomp/obj_list.cpp.asm` (virtual dispatch slots around `0x00463055`, `0x00463139`, `0x004631BA`)
+  - `src/game/decomp/misl_obj.cpp.decomp` + `.asm`, `src/game/decomp/dpl_obj.cpp.decomp` + `.asm`
+- Done when: scoped missile/dopple draw-slot methods no longer forward through `rge_object_virtual_stubs.cpp` and dispatch parity remains intact.
+
+Status note: implemented in commit `2af58df` (direct on `master`).
+
+## Task 191 — Master-derived factory parity follow-up (`RGE_Master_Derived_Stubs.cpp`)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove remaining base-forwarder object-factory behavior in master-derived classes so runtime spawning uses parity-correct class-specific creation logic.
+- Implement:
+  - Transliterate/restore class-specific `make_new_obj` behavior for `RGE_Master_Animated_Object` and `RGE_Master_Moving_Object` (currently forwarding to `RGE_Master_Static_Object::make_new_obj`).
+  - Audit `RGE_Master_Doppleganger_Object::make_new_obj(RGE_Player*,float,float,float)` and `RGE_Master_Combat_Object::calc_base_damage_ability()` paths where current behavior is still generic/zero-return.
+  - Keep scope to this TU and directly related declarations; do not overlap with Task 190 virtual-forwarder retirement.
+- Where:
+  - `src/game/src/RGE_Master_Derived_Stubs.cpp`
+  - Relevant master-object headers under `src/game/include/` (declarations only if required)
+- Source of truth:
+  - `src/game/decomp/m_a_obj.cpp.decomp` + `.asm`
+  - `src/game/decomp/m_m_obj.cpp.decomp` + `.asm`
+  - `src/game/decomp/m_dg_obj.cpp.decomp` + `.asm`
+  - `src/game/decomp/m_co_obj.cpp.decomp` + `.asm`
+- Done when: scoped master-derived factory/combat methods are no longer base-forwarder/zero-return placeholders and match source-of-truth control flow.
+
+## Task 192 — Out-of-sync diagnostics parity: restore `debug_random_write` / `dump_vismap_log`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: replace the remaining global no-op debug helpers used by out-of-sync handling with source-backed implementations so diagnostic artifacts are generated when debug toggles are enabled.
+- Implement:
+  - Transliterate `debug_random_write` and `dump_vismap_log` from source-of-truth instead of no-op TODO stubs.
+  - Preserve existing runtime gating (`do_debug_random`) and call sites in multiplayer/out-of-sync flows.
+  - Keep this task strictly to these two globals and required support declarations.
+- Where:
+  - `src/game/src/globals.cpp`
+  - `src/game/include/globals.h` (declarations only if required)
+  - Any directly required source-backed helper TU(s) under `src/game/src/` if needed for linkage
+- Source of truth: source-backed implementations referenced by existing comments/callers (`src/game/decomp/visible.cpp.decomp` + `.asm`, plus related debug helper blocks in `basegame`/`tribegam` decomp where applicable).
+- Done when: both functions are no longer TODO no-ops and emit parity-correct diagnostic output when the debug path is active.
+
+## Task 193 — Main-view command pipeline audit: finalize `RGE_Main_View` input-to-command routing parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: harden single-player input command routing by ASM-auditing `RGE_Main_View` command entrypoints used by right/left-click gameplay interactions.
+- Implement:
+  - Audit/finalize `command_make_do`, `command_make_move`, `command_make_work`, `command_place_object`, and `command_place_multi_object`.
+  - Audit/finalize the pick/target helpers feeding these calls (`pick1`, `pick_objects1`, `pick_best_target`) for branch/return semantics.
+  - Keep scope limited to `RGE_Main_View` command-path behavior; do not overlap with Task 182 `TRIBE_Screen_Game` rebinding work.
+- Where:
+  - `src/game/src/RGE_Main_View.cpp`
+  - `src/game/include/RGE_Main_View.h` (declarations only if required)
+- Source of truth: `src/game/decomp/vw_main.cpp.decomp` + `src/game/decomp/vw_main.cpp.asm` (command/pick blocks spanning `command_make_*` and `pick*` regions in the 0x0053E7F0..0x005405E0 range).
+- Done when: scoped command-path functions are parity-audited against ASM and no longer rely on non-parity fallbacks.
+
+## Task 194 — In-game screen parity follow-up: finalize remaining command-panel refresh slice in `TRIBE_Screen_Game`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: close the remaining `TRIBE_Screen_Game` in-game parity gaps left after Task 182 (world-step/game-over branch, player-change civ-refresh branch, and command-panel refresh slice).
+- Implement:
+  - Transliterate the remaining world-step/game-over branch in `handle_game_update` (decomp block around `0x00496800`) currently marked TODO in code.
+  - Transliterate the remaining civilization theme/picture refresh branch in `player_changed` (decomp block around `0x00498AD0`) currently marked TODO in code.
+  - Audit/finalize the command-panel refresh helper currently marked source-aligned in `setup_buttons` (block around `0x004996C0`), including `player_changed`/`reset_buttons` interactions.
+  - Remove the scoped TODO/source-aligned markers only after decomp/ASM-backed parity validation.
+- Where:
+  - `src/game/src/TRIBE_Screen_Game.cpp`
+  - `src/game/include/TRIBE_Screen_Game.h` (declarations only if required)
+- Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `src/game/decomp/scr_game.cpp.asm` (remaining blocks around `0x00496800`, `0x00498AD0`, and `0x004996C0`).
+- Done when: all three scoped `TRIBE_Screen_Game.cpp` TODO/source-aligned parity markers are removed and behavior is decomp/ASM-backed.
+
+## Task 195 — Static-object virtual parity follow-up II: finish remaining contiguous default-return block
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: continue Task-187 follow-through by replacing the still-default contiguous `RGE_Static_Object` movement/work/path virtual block with source-backed parity implementations.
+- Implement (decomp-first + ASM spot-audit):
+  - Finalize the still-default methods in the `moveAwayFrom` contiguous block (`moveAwayFrom`, `hunt`, `gather`, `convert`, `repair`, `build`, `trade`, `explore`, `enter`, `unload`, `pause`).
+  - Include immediate pathing continuations in the same block (`canBidirectionPath`, `canPathWithObstructions`, `canPathWithAdditionalPassability`) and any directly chained helpers if required by source-of-truth control flow.
+  - Keep scope limited to this contiguous default-return tranche in `RGE_Static_Object.cpp`; do not overlap with forwarder retirement in `rge_object_virtual_stubs.cpp`.
+- Where:
+  - `src/game/src/RGE_Static_Object.cpp`
+  - `src/game/include/RGE_Static_Object.h` (declarations only if required)
+- Source of truth: `src/game/decomp/stat_obj.cpp.decomp` + `src/game/decomp/stat_obj.cpp.asm` (contiguous virtual block beginning at `moveAwayFrom` and its immediate pathing helpers).
+- Done when: the scoped contiguous virtual block no longer uses hardcoded default returns except where explicitly proven by source-of-truth.
+
+## Task 196 — TRIBE AI build-module dependency parity: retire helper stubs in `TribeBuildAIModule.cpp`
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove helper-level TODO stubs currently short-circuiting AI build/train/research bookkeeping during in-game updates.
+- Implement:
+  - Replace local helper stubs with source-backed behavior: `tribe_build_ai_detask`, `tribe_build_ai_is_moveable`, `tribe_build_ai_clear_area`, `tribe_build_ai_remove_lot`, `tribe_build_ai_update_needed_resources`.
+  - Remove/resolve the partial-parity notes in `addBuiltItem`, `cancelBuildItem`, `addTrainedUnit`, `cancelTrainUnit`, `addResearch`, and `cancelResearch` that are currently gated by these helpers.
+  - Keep scope limited to `TribeBuildAIModule` and directly required declarations; do not modify `TRIBE_Player` command issuance flow (already finalized in Task 186).
+- Where:
+  - `src/game/src/TribeBuildAIModule.cpp`
+  - `src/game/include/TribeBuildAIModule.h` (declarations only if required)
+- Source of truth: `src/game/decomp/taibldmd.cpp.decomp` + `src/game/decomp/taibldmd.cpp.asm`, with call-site expectations from `src/game/decomp/tplayer.cpp.decomp`.
+- Done when: the scoped helper TODO stubs are removed and the six add/cancel methods no longer carry partial-parity TODO markers.
+
+## Task 197 — TRIBE AI decision-module full parity: orchestration + update + virtuals (`TribeMainDecisionAIModule.cpp`)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: replace the hollow TribeMainDecisionAIModule with a source-backed implementation so the AI decision orchestrator actually invokes sub-module updates during the game tick. Currently **all 21 methods** are stubs returning 1 or doing nothing; the `update()` method (the main AI tick entry called from `TRIBE_Player::update()`) is completely empty — meaning AI opponents never make build/train/attack/research decisions.
+- Implement (decomp-first from `taimdmd.cpp.decomp`, ~1535 lines):
+  - **Core orchestration:** `TribeMainDecisionAIModule::update(int)` — this is the main AI tick that iterates sub-modules (build, strategy, tactical, resource, etc.) and drives all AI decision-making. This is the single most critical method for SP AI opponents.
+  - **Module management:** `addModule`, `removeModule`, `findModule`, and the constructor/load-constructor that wires sub-module slots (build, strategy, tactical, information, construction, resource, diplomacy, emotional, research, trade modules).
+  - **Process/filtering methods:** `filterOutMessage`, `canPerformAction`, and message dispatch to sub-modules.
+  - **Logging/history virtuals:** `loggingHistory`, `toggleLogHistory`, `loggingCommonHistory`, `toggleLogCommonHistory`, `setLogHistory`, `setHistoryFilename`.
+  - **State persistence:** `saveState`, `loadState` (if present in decomp).
+  - Verify constructor/load-constructor state so offset-backed embedded-module storage remains layout-safe.
+  - Keep scope to `TribeMainDecisionAIModule` only; do not overlap with `TribeBuildAIModule` helper work tracked in Task 196.
+- Where:
+  - `src/game/src/TribeMainDecisionAIModule.cpp`
+  - `src/game/include/TribeMainDecisionAIModule.h` (declarations only if required)
+- Source of truth: `src/game/decomp/taimdmd.cpp.decomp` + `src/game/decomp/taimdmd.cpp.asm`, plus class-level info in `src/game/decomp/TribeMainDecisionAIModule.decomp` + `.asm`.
+- Context: The AI decision pipeline is: `TRIBE_Player::update()` → `playerAI->update(0)` → `TribeMainDecisionAIModule::update()` → sub-module updates. Without this method implemented, AI opponents sit idle in SP.
+- Done when: `TribeMainDecisionAIModule::update()` orchestrates sub-module ticks per source-of-truth, and all scoped methods match decomp control flow. The sub-modules themselves may still be stubs (they're tracked in Tasks 196, 201–209), but the orchestration/dispatch logic must be real.
+
+## Task 198 — Base-game in-match options/cheat dispatch parity (`basegame.cpp`)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: restore base-game handlers currently left as empty/constant-return shims so in-match command flow is source-backed before TRIBE-layer handling.
+- Implement:
+  - Transliterate and parity-audit `RGE_Base_Game::notification`, `send_game_options`, `receive_game_options`, `gameSummary`, and `processCheatCode`.
+  - Wire return/side-effect semantics to match existing call sites in the runtime message/command path.
+  - Keep scope limited to these methods; do not overlap with `TRIBE_Game` action dispatch work tracked in Task 189.
+- Where:
+  - `src/game/src/basegame.cpp`
+  - `src/game/include/RGE_Base_Game.h` (declarations only if required)
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm` (method bodies by symbol/offset).
+- Done when: the scoped methods are no longer empty/constant-return shims and compile/link cleanly.
+
+## Task 199 — Forwarder retirement tranche III: animated-object gameplay virtuals
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: continue shrinking `rge_object_virtual_stubs.cpp` by retiring a contiguous animated-object gameplay virtual tranche used in frame update/draw paths.
+- Implement:
+  - Move one contiguous animated-object tranche from forwarders into owning implementations (e.g., `draw_front_frame`, `draw_back_frame`, `draw_frame`, `check_damage_sprites`, `rehook`, `new_sprite`, `add_overlay_sprite`, `remove_overlay_sprite`) per source-of-truth.
+  - Remove corresponding entries from `rge_object_virtual_stubs.cpp` while preserving signatures and vtable ordering.
+  - Keep scope limited to this animated-object tranche only; do not touch missile/dopple slots (Task 190 complete) or static-object movement block (Task 195).
+- Where:
+  - `src/game/src/rge_object_virtual_stubs.cpp`
+  - `src/game/src/RGE_Animated_Object.cpp`
+  - `src/game/include/RGE_Animated_Object.h` (declarations only if required)
+- Source of truth: `src/game/decomp/anim_obj.cpp.decomp` + `src/game/decomp/anim_obj.cpp.asm`, plus dispatch context in `src/game/decomp/obj_list.cpp.decomp` + `.asm`.
+- Done when: the scoped animated-object tranche no longer routes through `rge_object_virtual_stubs.cpp` and build remains clean.
+
+## Task 200 — TRIBE player tech-tree safety-gap parity (`TRIBE_Player.cpp`)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining temporary-safe tech-tree guard path in runtime tech enable/revoke flow so single-player progression logic is source-backed.
+- Implement:
+  - ASM-audit and finalize `TRIBE_Player::tech_abling` and adjacent `rev_tech` runtime flow around the current temporary-safe comment.
+  - Validate constructor/load-time assumptions required by this runtime path so behavior does not rely on silent fallback guards.
+  - Keep scope limited to the tech-tree runtime toggling path; do not overlap with AI-build hook parity tracked in Task 186/196.
+- Where:
+  - `src/game/src/TRIBE_Player.cpp`
+  - `src/game/include/TRIBE_Player.h` (declarations only if required)
+- Source of truth: `src/game/decomp/tplayer.cpp.decomp` + `src/game/decomp/tplayer.cpp.asm` (blocks around `0x00513DA0` and `0x00513DD0`, plus immediate setup dependencies).
+- Done when: the temporary-safe note is removed and scoped tech enable/revoke behavior is parity-backed.
+
+## Task 201 — AI module: implement base `BuildAIModule` parity (aibldmod.cpp.decomp)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the base `BuildAIModule` class — the parent of `TribeBuildAIModule` — so AI build-decision dispatch has a real base-class implementation instead of missing/unresolved methods. This is a prerequisite for the AI build pipeline to function correctly.
+- Implement (decomp-first from `aibldmod.cpp.decomp`, ~1562 lines):
+  - Constructor, destructor, load-constructor.
+  - `update()` — base build-module tick (called from the decision orchestrator).
+  - Item management: `addBuildItem`, `removeBuildItem`, `findBuildItem`, `getBuildItemList`.
+  - Build-request evaluation methods: `evaluateBuildRequest`, `prioritizeBuildItems`.
+  - State persistence: `save`, `load` if present.
+  - Any virtual methods that `TribeBuildAIModule` expects to call via `BuildAIModule::method()`.
+- Where:
+  - Add `src/game/src/BuildAIModule.cpp` (new file).
+  - Update `src/game/include/BuildAIModule.h` (method declarations only if required; do not change member layout).
+  - Add the new .cpp to `build.bat`.
+- Source of truth: `src/game/decomp/aibldmod.cpp.decomp` + `src/game/decomp/aibldmod.cpp.asm`, plus class info in `src/game/decomp/BuildAIModule.decomp`.
+- Non-overlap: do NOT touch `TribeBuildAIModule.cpp` (Task 196) or `TribeMainDecisionAIModule.cpp` (Task 197).
+- Done when: `BuildAIModule` compiles/links cleanly with all decomp-backed methods and `TribeBuildAIModule` can call parent methods without unresolved symbols.
+
+## Task 202 — AI module: implement `ConstructionAIModule` + `TribeConstructionAIModule` parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the construction AI sub-module pair so AI opponents can prioritize and manage building construction during gameplay. Currently neither the base nor TRIBE override class has a .cpp implementation.
+- Implement (decomp-first, ~1600 lines total):
+  - **Base `ConstructionAIModule`** from `aiconmod.cpp.decomp` (~1105 lines): constructor, destructor, `update()`, construction item management, build-site evaluation, priority methods.
+  - **`TribeConstructionAIModule`** from `taiconmd.cpp.decomp` (~496 lines): constructor, destructor, `update()` override with AoE1-specific construction logic, any TRIBE-specific evaluation or priority methods.
+- Where:
+  - Add `src/game/src/ConstructionAIModule.cpp` (new file).
+  - Add `src/game/src/TribeConstructionAIModule.cpp` (new file).
+  - Update `src/game/include/ConstructionAIModule.h` and `src/game/include/TribeConstructionAIModule.h` (declarations only if required; do not change member layout).
+  - Add both new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aiconmod.cpp.decomp` + `.asm`, `src/game/decomp/taiconmd.cpp.decomp` + `.asm`, plus class-level info in `src/game/decomp/ConstructionAIModule.decomp` and `src/game/decomp/TribeConstructionAIModule.decomp`.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: both classes compile/link cleanly, `update()` methods match source-of-truth control flow, and construction AI can be wired into the decision module sub-module array.
+
+## Task 203 — AI module: implement `ResourceAIModule` + `TribeResourceAIModule` + `DiplomacyAIModule` parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement three smaller AI sub-modules in one task: resource management AI (base + TRIBE override) and diplomacy AI (base only). These feed into the main decision module's sub-module array for resource allocation and diplomatic stance decisions.
+- Implement (decomp-first, ~1586 lines total):
+  - **Base `ResourceAIModule`** from `airesmod.cpp.decomp` (~646 lines): constructor, destructor, `update()`, resource tracking/evaluation methods.
+  - **`TribeResourceAIModule`** from `tairesmd.cpp.decomp` (~256 lines): constructor, destructor, `update()` override with AoE1-specific resource logic.
+  - **`DiplomacyAIModule`** from `aidipmod.cpp.decomp` (~684 lines): constructor, destructor, `update()`, diplomacy evaluation/stance methods.
+- Where:
+  - Add `src/game/src/ResourceAIModule.cpp` (new file).
+  - Add `src/game/src/TribeResourceAIModule.cpp` (new file).
+  - Add `src/game/src/DiplomacyAIModule.cpp` (new file).
+  - Update respective headers under `src/game/include/` (declarations only if required; do not change member layout).
+  - Add all three new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/airesmod.cpp.decomp` + `.asm`, `src/game/decomp/tairesmd.cpp.decomp` + `.asm`, `src/game/decomp/aidipmod.cpp.decomp` + `.asm`, plus class-level `.decomp` files for each class.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: all three classes compile/link cleanly with source-backed `update()` methods and can be wired into the decision module sub-module array.
+
+## Task 204 — AI module: implement `TribeStrategyAIModule` parity (taistrmd.cpp.decomp)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the strategy AI sub-module so AI opponents can make age-advancement, long-term planning, and strategy-level decisions during SP gameplay. The base `StrategyAIModule` is tiny (39 lines, mostly virtual stubs) and should be included.
+- Implement (decomp-first, ~3337 lines total):
+  - **Base `StrategyAIModule`** from `aistrmod.cpp.decomp` (~39 lines): constructor, destructor, virtual stubs.
+  - **`TribeStrategyAIModule`** from `taistrmd.cpp.decomp` (~3298 lines): constructor, destructor, `update()` with age-advancement logic, strategy evaluation, resource allocation priorities, and all helper methods referenced by the update tick.
+- Where:
+  - Add `src/game/src/StrategyAIModule.cpp` (new file — may be very small).
+  - Add `src/game/src/TribeStrategyAIModule.cpp` (new file — main implementation).
+  - Update respective headers under `src/game/include/` (declarations only if required; do not change member layout).
+  - Add both new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aistrmod.cpp.decomp` + `.asm`, `src/game/decomp/taistrmd.cpp.decomp` + `.asm`, plus class-level `.decomp` files.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: `TribeStrategyAIModule::update()` matches source-of-truth control flow and compiles/links cleanly.
+
+## Task 205 — AI support modules: implement `EmotionalAIModule` + `ResearchAIModule` + `TradeAIModule` parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement three smaller AI sub-modules that feed into the main decision module's sub-module array: emotional state tracking, research prioritization, and trade evaluation.
+- Implement (decomp-first, ~1449 lines total):
+  - **`EmotionalAIModule`** from `aiemomod.cpp.decomp` (~633 lines): constructor, destructor, `update()`, emotional state tracking/evaluation methods.
+  - **`ResearchAIModule`** from `airchmod.cpp.decomp` (~727 lines): constructor, destructor, `update()`, research priority/evaluation methods.
+  - **`TradeAIModule`** from `aitrdmod.cpp.decomp` (~89 lines): constructor, destructor, `update()`, trade evaluation (very small module).
+- Where:
+  - Add `src/game/src/EmotionalAIModule.cpp` (new file).
+  - Add `src/game/src/ResearchAIModule.cpp` (new file).
+  - Add `src/game/src/TradeAIModule.cpp` (new file).
+  - Update respective headers under `src/game/include/` (declarations only if required; do not change member layout).
+  - Add all three new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aiemomod.cpp.decomp` + `.asm`, `src/game/decomp/airchmod.cpp.decomp` + `.asm`, `src/game/decomp/aitrdmod.cpp.decomp` + `.asm`, plus class-level `.decomp` files.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: all three classes compile/link cleanly with source-backed `update()` methods.
+
+## Task 206 — AI items: implement `BuildItem` + `ConstructionItem` + `ResearchItem` + `TechItem` parity
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the four AI item data classes used by AI modules to track build orders, construction jobs, research queues, and tech targets. These are data structures consumed by `BuildAIModule`, `ConstructionAIModule`, `ResearchAIModule`, and the strategy module.
+- Implement (decomp-first, ~1755 lines total):
+  - **`BuildItem`** from `aiblditm.cpp.decomp` (~618 lines): constructor, destructor, item state, priority, cost evaluation, save/load.
+  - **`ConstructionItem`** from `aiconitm.cpp.decomp` (~315 lines): constructor, destructor, construction state tracking.
+  - **`ResearchItem`** from `airesitm.cpp.decomp` (~504 lines): constructor, destructor, research progress/priority tracking.
+  - **`TechItem`** from `aitchitm.cpp.decomp` (~318 lines): constructor, destructor, tech availability tracking.
+- Where:
+  - Add `src/game/src/BuildItem.cpp` (new file).
+  - Add `src/game/src/ConstructionItem.cpp` (new file).
+  - Add `src/game/src/ResearchItem.cpp` (new file).
+  - Add `src/game/src/TechItem.cpp` (new file).
+  - Update respective headers under `src/game/include/` if they exist (declarations only; do not change member layout). If no header exists, create minimal ones following the project pattern.
+  - Add all four new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aiblditm.cpp.decomp` + `.asm`, `src/game/decomp/aiconitm.cpp.decomp` + `.asm`, `src/game/decomp/airesitm.cpp.decomp` + `.asm`, `src/game/decomp/aitchitm.cpp.decomp` + `.asm`.
+- Non-overlap: do NOT touch any AI module .cpp files.
+- Done when: all four item classes compile/link cleanly with source-backed constructors, state methods, and save/load matching decomp control flow.
+
+## Task 207 — AI module: implement `TribeTacticalAIModule` parity — Part 1 (core lifecycle + group management)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the first half of the tactical AI module — the largest single AI TU at ~20,813 lines of decomp. This Part 1 focuses on the core lifecycle (constructor, destructor, update tick) and group management methods. Part 2 will be created after Part 1 completes to handle the remaining combat targeting/resolution methods.
+- Implement (decomp-first from `taitacmd.cpp.decomp`, first ~half of the file):
+  - **Base `TacticalAIModule`** from `aitacmod.cpp.decomp` (~39 lines): constructor, destructor, virtual stubs (tiny base).
+  - **`TacticalAIGroup`** — if referenced by tactical methods, transliterate from the related decomp. Check `src/game/include/TacticalAIGroup.h` for the class layout.
+  - **`TribeTacticalAIModule` Part 1:** constructor, destructor, load-constructor, `update()` (the main tactical tick), group lifecycle methods (`addGroup`, `removeGroup`, `findGroup`, `getGroup`, `createGroup`), and immediate helper methods called by `update()`.
+  - If the decomp file is too large, prioritize: constructor → update → group management → save/load. Mark remaining methods with `// TODO: Part 2` comments.
+- Where:
+  - Add `src/game/src/TacticalAIModule.cpp` (new file — may be very small base).
+  - Add `src/game/src/TacticalAIGroup.cpp` (new file if TacticalAIGroup has its own TU in decomp).
+  - Add `src/game/src/TribeTacticalAIModule.cpp` (new file — main implementation).
+  - Update respective headers under `src/game/include/` (declarations only; do not change member layout).
+  - Add all new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aitacmod.cpp.decomp` + `.asm`, `src/game/decomp/taitacmd.cpp.decomp` + `.asm`, `src/game/decomp/TacticalAIGroup.decomp` + `.asm`, `src/game/decomp/TribeTacticalAIModule.decomp` + `.asm`.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: `TribeTacticalAIModule` constructor, `update()`, and group management methods compile/link cleanly and match source-of-truth control flow. Remaining combat methods may be marked TODO for Part 2.
+
+## Task 208 — AI module: implement `TribeInformationAIModule` parity — Part 1 (core lifecycle + scouting)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the first half of the information/scouting AI module (~10,885 lines of decomp total). This Part 1 focuses on the core lifecycle and primary scouting/intelligence methods. Part 2 will be created after Part 1 completes.
+- Implement (decomp-first from `taiinfmd.cpp.decomp`, first ~half of the file):
+  - **Base `InformationAIModule`** from `aiinfmod.cpp.decomp` (~39 lines): constructor, destructor, virtual stubs (tiny base).
+  - **`TribeInformationAIModule` Part 1:** constructor, destructor, load-constructor, `update()` (the main information tick), primary scouting/exploration methods, and immediate helper methods called by `update()`.
+  - If the decomp file is too large, prioritize: constructor → update → core scouting helpers → save/load. Mark remaining methods with `// TODO: Part 2` comments.
+- Where:
+  - Add `src/game/src/InformationAIModule.cpp` (new file — may be very small base).
+  - Add `src/game/src/TribeInformationAIModule.cpp` (new file — main implementation).
+  - Update respective headers under `src/game/include/` (declarations only; do not change member layout).
+  - Add both new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aiinfmod.cpp.decomp` + `.asm`, `src/game/decomp/taiinfmd.cpp.decomp` + `.asm`, plus class-level `.decomp` files.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: `TribeInformationAIModule` constructor, `update()`, and core scouting methods compile/link cleanly and match source-of-truth control flow. Remaining methods may be marked TODO for Part 2.
+
+## Task 209 — Unit AI: implement Tribe unit AI module dispatch + all unit-type AI module stubs
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the unit-level AI dispatch module and all 15 unit-type-specific AI module constructors/destructors. The dispatch module (`taiuaimd.cpp.decomp`, ~4273 lines) routes AI decisions to the correct unit-type module based on unit class. The 15 unit-type modules are each only ~25 lines (constructor/destructor pairs with minimal logic).
+- Implement (decomp-first, ~4648 lines total):
+  - **Unit AI dispatch module** from `taiuaimd.cpp.decomp` (~4273 lines): unit-type routing logic, module creation factory, update dispatch to type-specific handlers.
+  - **All 15 unit-type AI modules** (~25 lines each): `TribeSoldierUnitAIModule`, `TribeRangedUnitAIModule`, `TribeRangedUnitAIModule2`, `TribeCivilianUnitAIModule`, `TribeBuildingUnitAIModule`, `TribePriestUnitAIModule`, `TribeTowerUnitAIModule`, `TribeElephantUnitAIModule`, `TribeFishingShipUnitAIModule`, `TribeTradeShipUnitAIModule`, `TribeTransportShipUnitAIModule`, `TribeLionUnitAIModule`, `TribePreditorUnitAIModule`, `TribeHuntedAnimalUnitAIModule`, `TribeArtifactUnitAIModule`.
+  - These tiny modules can be grouped into one .cpp file or split into individual files — follow whatever pattern keeps `build.bat` manageable.
+- Where:
+  - Add `src/game/src/TribeUnitAIModules.cpp` (new file for the dispatch module — or name per the decomp TU).
+  - Add individual .cpp files for each unit-type module, or group them into `src/game/src/TribeUnitAIModuleTypes.cpp`.
+  - Update respective headers under `src/game/include/` (declarations only; do not change member layout). Headers already exist for all 15 types (e.g., `TribeSoldierUnitAIModule.h`, etc.) plus `TribeUnitAIModules.h`.
+  - Add all new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/taiuaimd.cpp.decomp` + `.asm`, plus each unit-type's `.decomp` + `.asm` file (e.g., `TribeSoldierUnitAIModule.decomp`).
+- Non-overlap: do NOT touch `UnitAIModule.cpp` (already fully verified) or any other AI module .cpp files.
+- Done when: the dispatch module routes unit AI correctly per source-of-truth, all 15 unit-type modules compile/link cleanly, and `build.bat` includes all new files.
+
+## Task 210 — AI playbook data: implement `AIPlay` group/phase/command/trigger support classes
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: implement the AI playbook data structure support classes that define AI play scripts loaded by `AIPlayBook::loadPlays`. These classes represent the structured play definitions (groups of phases with commands and triggers) that drive strategic AI behavior.
+- Implement: check which of these classes already have implementations vs need new .cpp files:
+  - `AIPlay` (from `src/game/include/AIPlay.h`)
+  - `AIPlayGroup` (from `src/game/include/AIPlayGroup.h`)
+  - `AIPlayPhase` (from `src/game/include/AIPlayPhase.h`)
+  - `AIPlayPhaseCommand` (from `src/game/include/AIPlayPhaseCommand.h`)
+  - `AIPlayPhaseTrigger` (from `src/game/include/AIPlayPhaseTrigger.h`)
+  - `AIPlayStatus` (from `src/game/include/AIPlayStatus.h`)
+  - Related: `Item_Avail` (from `src/game/include/Item_Avail.h`), `Trade_Avail` (from `src/game/include/Trade_Avail.h`)
+  - Check `aipbook.cpp.decomp` and `taipbook.cpp.decomp` for any methods belonging to these classes that are not yet implemented.
+  - If these classes are trivial data structures (just constructors/destructor/accessors), they may already be inlined or handled through existing playbook code. Verify and implement only what's missing.
+- Where:
+  - Add new .cpp files as needed under `src/game/src/`.
+  - Update headers only for missing method declarations (do not change member layout).
+  - Add any new .cpp files to `build.bat`.
+- Source of truth: `src/game/decomp/aipbook.cpp.decomp` + `.asm`, `src/game/decomp/taipbook.cpp.decomp` + `.asm`, `src/game/decomp/AIPlayBook.decomp`, `src/game/decomp/TribeAIPlayBook.decomp`, plus individual class `.decomp` files if they exist.
+- Non-overlap: do NOT touch `AIPlayBook.cpp` or `TribeAIPlayBook.cpp` (already implemented).
+- Done when: all AI play data classes compile/link cleanly and the playbook system can instantiate complete play structures.
