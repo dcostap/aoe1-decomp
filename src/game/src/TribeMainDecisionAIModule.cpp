@@ -2,6 +2,11 @@
 
 #include <cstring>
 
+class TribeBuildAIModule {
+public:
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+};
+
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* param_1, int player_number, char* player_name, TRIBE_Player* player, char* ai1, char* ai2, char* ai3) {
     (void)param_1;
     (void)player_number;
@@ -34,6 +39,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* param_1, int player_n
     std::memset(this->strategyAI, 0, sizeof(this->strategyAI));
     std::memset(this->tacticalAI, 0, sizeof(this->tacticalAI));
     std::memset(this->tradeAI, 0, sizeof(this->tradeAI));
+    ((TribeBuildAIModule*)this->buildAI)->setMainDecisionAI(this);
 }
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(int player_number, char* player_name, TRIBE_Player* player, int fd) {
@@ -65,6 +71,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int player_number, char* pl
     std::memset(this->strategyAI, 0, sizeof(this->strategyAI));
     std::memset(this->tacticalAI, 0, sizeof(this->tacticalAI));
     std::memset(this->tradeAI, 0, sizeof(this->tradeAI));
+    ((TribeBuildAIModule*)this->buildAI)->setMainDecisionAI(this);
 }
 
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule() {}

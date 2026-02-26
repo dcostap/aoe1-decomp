@@ -520,9 +520,6 @@ void RGE_Combat_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
 
 void RGE_Missile_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { RGE_Combat_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Missile_Object::recycle_out_of_game() { RGE_Combat_Object::recycle_out_of_game(); } // TODO: STUB
-void RGE_Missile_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Combat_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Missile_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Combat_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Missile_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) { RGE_Combat_Object::normal_draw(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Missile_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Combat_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Missile_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Combat_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Missile_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Combat_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
@@ -657,9 +654,6 @@ RGE_Doppleganger_Object::~RGE_Doppleganger_Object() {} // TODO: STUB
 
 void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { RGE_Animated_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
 void RGE_Doppleganger_Object::recycle_out_of_game() { RGE_Animated_Object::recycle_out_of_game(); } // TODO: STUB
-void RGE_Doppleganger_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) { RGE_Animated_Object::draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Doppleganger_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) { RGE_Animated_Object::shadow_draw(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Doppleganger_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::normal_draw(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Doppleganger_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Doppleganger_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Doppleganger_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
