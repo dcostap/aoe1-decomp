@@ -1899,7 +1899,7 @@ Status note: popup-help parity landed in commit `2240384` and merged via `4c85e3
 
 ## Task 154 — View follow-up: replace remaining `RGE_View` best-effort interaction blocks with strict parity
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove high-risk “Best-effort transliteration” code still in core picking/outline paths, which can cause subtle UI/gameplay regressions.
 - Implement (decomp-first, ASM-audit suspicious branches/signedness):
   - `RGE_View::view_function` parity.
@@ -1911,6 +1911,8 @@ Status note: popup-help parity landed in commit `2240384` and merged via `4c85e3
   - `src/game/include/RGE_View.h` (declarations only if needed; do not change layout asserts)
 - Source of truth: `src/game/decomp/view.cpp.decomp` + `src/game/decomp/view.cpp.asm`
 - Done when: the listed methods no longer carry “Best-effort transliteration” markers, `Object_Was_Displayed` is no longer a hard stub, and build remains clean.
+
+Status note: landed in commit `d0ac1a7` and merged via `0b81364`; remaining view gaps are tracked in Task 174.
 
 ## Task 155 — View wrapper follow-up: remove remaining `RGE_Main_View.cpp` best-effort parity debt
 - [ ] Assigned to agent
@@ -1929,7 +1931,7 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
 
 ## Task 156 — Lobby/network follow-up: remove `RGE_Lobby::Init` best-effort player-enum shim
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: replace the current diagnostics-only player enumeration in lobby connect flow with parity-correct behavior from the original executable.
 - Implement:
   - Audit `RGE_Lobby::Init` connect/setup flow and remove the “Best-effort: enumerate players for diagnostics” shim.
@@ -1938,9 +1940,11 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
 - Source of truth: `src/game/decomp/com_loby.cpp.decomp` + `src/game/decomp/com_loby.cpp.asm`
 - Done when: the best-effort shim comment/behavior is gone, flow matches source-of-truth control flow, and build remains clean.
 
+Status note: landed in commit `6700240` and merged via `650c9d3`.
+
 ## Task 157 — UI core follow-up: replace non-original `TPanel::draw_tree` helper with panel-system parity
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove the current non-original draw-tree recursion helper and restore the original panel-system draw traversal behavior so visibility/activation/child ordering side effects match the EXE.
 - Implement:
   - Audit `TPanel::draw_tree` against decomp/ASM expectations from the panel unit and connected draw/paint call sites.
@@ -1953,9 +1957,11 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
 - Dependency note: should land before Tasks 160/161/162 so panel draw traversal semantics are stable for in-game HUD panel audits.
 - Done when: the `TPanel::draw_tree` non-original TODO/STUB note is resolved with parity logic and build remains clean.
 
+Status note: landed in commit `6d36f5e` and merged via `aaae6eb`.
+
 ## Task 158 — Random-map follow-up: replace non-original `rmm_smooth_elevation` stabilization pass
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove the non-original elevation smoothing shim in the random-map database controller and restore source-of-truth terrain/elevation transition behavior.
 - Implement:
   - Audit the random-map elevation/tile-type transition sequence where `rmm_smooth_elevation` is used.
@@ -1969,9 +1975,11 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
   - Core random-map modules: `src/game/decomp/rmm_*.cpp.decomp` + corresponding `.asm`.
 - Done when: the non-original smoothing TODO/STUB note is removed/replaced by parity-backed behavior and build remains clean.
 
+Status note: landed in commit `32d9708` and merged via `5ea04b4`.
+
 ## Task 159 — MP setup follow-up: retire temporary UI-control scaffolding comments/logic in `scr_mps_impl`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: ensure MP setup screen constructor/action paths no longer rely on temporary UI scaffolding assumptions and match `scr_mps` parity cleanly.
 - Implement:
   - Audit the constructor/setup block around player/summary/settings controls and remove remaining temporary-scaffold behavior/comments that do not match source-of-truth.
@@ -1981,9 +1989,11 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
 - Source of truth: `src/game/decomp/scr_mps.cpp.decomp` + `src/game/decomp/scr_mps.cpp.asm`
 - Done when: temporary-scaffold TODO/STUB note is resolved by parity-backed implementation and build remains clean.
 
+Status note: landed in commit `fc35d6c` and merged via `68aec26`.
+
 ## Task 160 — In-game bottom panel parity: finish `TRIBE_Panel_Object` information/layout rendering
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore object-info panel behavior in-game so selected-unit/building details, stats, and icon regions render with original parity (eliminates one major source of “missing bottom panel” visuals).
 - Implement:
   - Complete `TRIBE_Panel_Object` constructor/startup/draw/update behavior from source-of-truth (do not leave partial placeholders).
@@ -1997,9 +2007,11 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
 - Dependency note: complete Task 157 first so panel draw-tree traversal is parity-correct before panel-object draw/update auditing.
 - Done when: panel-object TODO/STUB markers are resolved with parity-backed logic and build remains clean.
 
+Status note: landed in commit `d118c33` and merged via `4ad20d5`.
+
 ## Task 161 — In-game inventory strip parity: finish `TRIBE_Panel_Inven` resource/icon rendering
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore inventory/resource strip rendering in-game so the bottom UI no longer appears partially blank/incomplete.
 - Implement:
   - Complete `TRIBE_Panel_Inven` setup/draw/update logic from source-of-truth (resource entries, icon handling, redraw conditions).
@@ -2013,9 +2025,11 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
 - Dependency note: complete Task 157 first so panel draw-tree traversal is parity-correct before inventory draw/update auditing.
 - Done when: inventory panel TODO/STUB markers are resolved with parity-backed logic and build remains clean.
 
+Status note: landed in commit `747cb7d` and merged via `af6e8af`.
+
 ## Task 162 — Clock/population panel parity: finish `TRIBE_Panel_Time` + `TRIBE_Panel_Pop`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: restore top/bottom HUD counters (clock/population) so game HUD text blocks are fully painted and synchronized with player/world state.
 - Implement:
   - Complete `TRIBE_Panel_Time` parity for startup, clock mode/format handling, and draw/update cadence.
@@ -2031,6 +2045,8 @@ Status note: wrapper parity landed in commit `08294d8` and merged via `12277f7`;
   - `src/game/decomp/tpnl_pop.cpp.decomp` + `src/game/decomp/tpnl_pop.cpp.asm`
 - Dependency note: complete Task 157 first so panel draw-tree traversal is parity-correct before clock/pop draw/update auditing.
 - Done when: time/pop TODO/STUB markers are resolved with parity-backed logic and build remains clean.
+
+Status note: landed in commit `171c456` and merged via `d3645b9`.
 
 ## Task 163 — Minimap visual parity: audit/fix `RGE_Diamond_Map` bitmap + paint pipeline
 - [ ] Assigned to agent
@@ -2051,7 +2067,7 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 
 ## Task 164 — World seam artifact parity: audit/fix terrain shape blit in `TShape`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: eliminate black outline seams between isometric terrain cells by restoring terrain-shape draw parity in the shape renderer.
 - Implement:
   - Audit terrain-related `TShape` draw/span/color-key paths used by ground tiles in 8-bit and 32-bit display paths.
@@ -2064,11 +2080,13 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: `src/game/decomp/shape.cpp.decomp` + `src/game/decomp/shape.cpp.asm`
 - Done when: terrain seam artifact parity fix is in place without hacks and build remains clean.
 
+Status note: landed in commit `3a26fde` and merged via `f3b8011`.
+
 ---
 
 ## Task 165 — Object command parity: de-stub `RGE_Static_Object` command responders used in gameplay loop
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove empty/default command virtuals in `RGE_Static_Object` that can short-circuit in-game selection/command behavior for non-combat/static entities.
 - Implement (decomp-first transliteration):
   - `RGE_Static_Object::do_command(...)`
@@ -2084,9 +2102,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: `src/game/decomp/stat_obj.cpp.decomp` + `src/game/decomp/stat_obj.cpp.asm`.
 - Done when: these methods are no longer empty `{}` / `return nullptr` placeholders, match decomp control flow, and build remains clean.
 
+Status note: landed in commit `27d4149` and merged via `6278b1c`; remaining non-command virtual gaps are tracked in Task 179.
+
 ## Task 166 — In-game control-flow parity in `tribegam`: ESC/menu path + DEBUGLOAD + handle_paint + lobby score call-site
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove remaining non-original gameplay-loop control-flow in `TRIBE_Game` that affects in-game behavior and diagnostics paths.
 - Implement:
   - Restore `TRIBE_Game::handle_key_down` ESC behavior to decomp parity (menu/dialog path), replacing the direct `start_menu()` fallback.
@@ -2098,9 +2118,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Dependency note: Task 149 is now complete (`a000854`); this task owns the remaining `tribegam.cpp` call-site/control-flow parity.
 - Done when: TODO/STUB notes in `tribegam.cpp` DEBUGLOAD path are removed, ESC fallback comment/path is gone, `handle_paint` matches source-of-truth control flow, and build remains clean.
 
+Status note: landed in commit `6b0a4e9` and merged via `d9e4a26`; remaining user-command routing is tracked in Task 175.
+
 ## Task 167 — Basegame parity follow-up: finalize `setup()` failure-code mapping + de-stub input/audio helpers
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: close remaining high-impact basegame parity debt affecting startup and in-game input/audio glue.
 - Implement:
   - ASM-audit `RGE_Base_Game::setup()` failure branches and verify each `setup_*` failure maps to the original `error_code` values.
@@ -2112,9 +2134,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm`.
 - Done when: the setup failure-code TODO verify marker is removed, `get_mouse_pos`/`play_sound` are no longer stubbed, and affected control flow matches decomp+asm.
 
+Status note: landed in commit `9a373c8` and merged via `8bf5873`.
+
 ## Task 168 — Startup parity cleanup: remove non-original WinMain exception hook scaffolding
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: align startup control flow with the original executable by removing non-original unhandled-exception hook scaffolding in `main.cpp`.
 - Implement:
   - Audit `WinMain` startup sequence and remove/defer `SetUnhandledExceptionFilter(aoe_unhandled_exception_filter)` path if it is not present in source-of-truth.
@@ -2124,9 +2148,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: `src/game/decomp/main.cpp.decomp` + `src/game/decomp/main.cpp.asm`.
 - Done when: the non-original startup hook TODO note is gone and `WinMain` startup flow matches decomp parity expectations.
 
+Status note: landed in commit `d2e29f1` and merged via `a8e0a32`.
+
 ## Task 169 — Varargs safety: fix `logDebug(...)` forwarding chain in `rge_object_virtual_stubs.cpp`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove unsafe variadic forwarding in object virtual stubs where format arguments are dropped across class-layer `logDebug(...)` calls.
 - Implement:
   - Audit every `logDebug(const char*, ...)` stub in `rge_object_virtual_stubs.cpp`.
@@ -2136,11 +2162,13 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: vtable usage/call patterns in `src/game/decomp/pathsys.cpp.asm` and class units that consume `logDebug`.
 - Done when: no `logDebug` stub drops variadic arguments, the file still links cleanly, and runtime debug-format calls are safe.
 
+Status note: landed in commit `a262071` and merged via `b53220f`.
+
 ---
 
 ## Task 170 — Player command parity: de-stub core `TRIBE_Player` command issuers used by in-game view actions
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: unblock core right-click/build command flow in single-player by replacing hard-fail `TRIBE_Player` command stubs currently reached by `TRIBE_Main_View`.
 - Implement:
   - `TRIBE_Player::command_make_building(short,float,float)`.
@@ -2154,9 +2182,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Dependency note: Task 111 is complete; this task removes the remaining command-layer hard-fail stubs now exercised by tvw_main actions.
 - Done when: the four methods no longer return hardcoded failure, command emission matches decomp control flow, and build remains clean.
 
+Status note: landed in commit `0a4db97` and merged via `8d6236d`; remaining production/research command stubs are tracked in Task 178.
+
 ## Task 171 — Player selection-command parity: restore `RGE_Player` selected-object analysis and `command_make_*` dispatch
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: replace placeholder selected-object command dispatch in `RGE_Player` so movement/work/do commands use decomp-backed filtering/command emission rather than hardcoded success.
 - Implement:
   - `RGE_Player::analyize_selected_objects()`.
@@ -2169,9 +2199,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: `src/game/decomp/player.cpp.decomp` + `src/game/decomp/player.cpp.asm` (`analyize_selected_objects` and `command_make_*` paths through `get_selected_objects_to_command`).
 - Done when: these methods are no longer empty/hardcoded-success placeholders, selected-object filtering + command forwarding match decomp control flow, and build remains clean.
 
+Status note: implemented in commit `0f7632a` and merged via `33f83e9`.
+
 ## Task 172 — Placement geometry parity: implement `RGE_Master_Static_Object::alignment_box`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove the current zeroed fallback in `alignment_box` so wall/object placement outlines use real geometry extents in the main-view draw path.
 - Implement: `RGE_Master_Static_Object::alignment_box(RGE_Game_World*,float,float,short*,short*,short*,short*,short*,short*,short*,short*)`.
 - Where:
@@ -2180,9 +2212,11 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
 - Source of truth: `src/game/decomp/m_s_obj.cpp.decomp` + `src/game/decomp/m_s_obj.cpp.asm` (`alignment_box`, used by `TRIBE_Main_View::draw_wall_outline` and `RGE_View::draw_object_outline` call paths).
 - Done when: zero-init fallback logic is removed, output coordinates follow decomp math/control flow, and outline consumers use parity-backed extents.
 
+Status note: implemented in commit `253a895` and merged via `667528e` (later upstream sync merge `7a425fb`).
+
 ## Task 173 — World logging-handle parity: restore ctor/dtor log-file open/close in `RGE_Game_World`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
 - Goal: remove remaining constructor/destructor parity gaps around world log-file handles now that Task 151 constructor allocation parity is complete.
 - Implement:
   - In `RGE_Game_World::RGE_Game_World()`, restore the decomp-backed log-file open behavior (`DVlogf` / related handle init) as applicable.
@@ -2193,3 +2227,228 @@ Status note: retired as obsolete. `RGE_Diamond_Map.cpp` already carries full ver
   - `src/game/include/globals.h` and `src/game/src/globals.cpp` only if declarations/definitions are required for parity-correct handles.
 - Source of truth: `src/game/decomp/world.cpp.decomp` + `src/game/decomp/world.cpp.asm` (ctor/dtor log-handle blocks noted in current TODO comments).
 - Done when: ctor/dtor log-handle TODO parity notes are removed and lifecycle behavior matches decomp ordering.
+
+Status note: implemented in commit `bdabd22` and merged via `a2d4d56`.
+
+---
+
+## Task 174 — View hot-path follow-up: finish remaining `RGE_View` parity debt (`Object_Was_Displayed` + partial lifecycle helpers)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: close the remaining `view.cpp` parity gaps still in single-player in-game render/selection hot paths.
+- Implement:
+  - Implement `RGE_View::Object_Was_Displayed(int,bool)` from source-of-truth (remove the current hard `return false` stub).
+  - ASM-audit and finalize still-partial methods in this file that are hit during in-game rendering/input setup: ctor/dtor/setup/`Init_Tile_Edge_Tables`/`set_rect`/`set_focus`/`get_tile_mask_num`.
+  - Remove/replace remaining "Partially verified" markers only when parity is actually validated.
+- Where:
+  - `src/game/src/view.cpp`
+  - `src/game/include/RGE_View.h` (declarations only if required)
+- Source of truth:
+  - `src/game/decomp/view.cpp.decomp` + `src/game/decomp/view.cpp.asm`
+  - Existing offsets already referenced in source comments: `0x00533510`, `0x00533760`, `0x00533940`, `0x00533AF0`, `0x00533F70`, `0x00533AC0`, `0x00538590`, plus the `Object_Was_Displayed` block near decomp line ~6975.
+- Done when: `Object_Was_Displayed` is no longer stubbed, scoped partial markers are resolved with parity-backed logic, and build remains clean.
+
+Status note: `Object_Was_Displayed` parity landed in commit `7f68a3e` and merged via `e671355`; remaining lifecycle partials are tracked as Task 181 to keep queue flow moving.
+
+## Task 175 — In-game user-command parity: implement `TRIBE_Game::action_user_command` (pause/resume/out-of-sync/drop flow)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: restore gameplay/user-command routing in active matches so pause/resume and out-of-sync handling follow original control flow instead of a hard stub.
+- Implement:
+  - Transliterate `TRIBE_Game::action_user_command(unsigned long,unsigned long)` from source-of-truth (current implementation is `return 0;`).
+  - In the same parity pass, audit the adjacent `TRIBE_Game::action_command`, `action_music_done`, `action_update`, and `action_mouse_move` stubs against source-of-truth/vtable dispatch expectations and either transliterate or convert to parity-correct base passthroughs.
+  - Preserve program-mode branching and panel interactions (`quit_game`, popup dialogs, pause/resume routing, out-of-sync handling).
+  - Keep behavior strictly parity-driven; no new UX branches.
+- Where: `src/game/src/tribegam.cpp`
+- Source of truth: `src/game/decomp/tribegam.cpp.decomp` + `src/game/decomp/tribegam.cpp.asm` (`action_user_command` @ `0x00529A70`, plus adjacent `action_*` dispatch slots in the same TU/vtable region).
+- Done when: `action_user_command` is no longer stubbed, adjacent `action_*` stubs are parity-audited, and runtime command/music/update dispatch behavior matches source-of-truth.
+
+## Task 176 — Object list hot-loop parity: finalize `RGE_Object_List::draw` + `update`
+- [x] Assigned to agent
+- [x] Finished
+- Goal: harden frame-loop object traversal/render behavior by replacing remaining partial parity in object-list draw/update hot paths.
+- Implement:
+  - ASM-audit and finalize `RGE_Object_List::draw` (including fog-flag branches and color-table selection behavior).
+  - Audit `RGE_Object_List::update` call flow and retire temporary debug-only instrumentation that is no longer needed after parity validation.
+  - Keep behavior/source-of-truth parity exact; do not add fallback branches.
+- Where: `src/game/src/RGE_Object_List.cpp`
+- Source of truth: `src/game/decomp/obj_list.cpp.decomp` + `src/game/decomp/obj_list.cpp.asm` (`draw` @ `0x00463000`, `update` @ `0x00463210`).
+- Done when: draw/update are parity-verified, partial marker is removed, and runtime loop behavior remains stable.
+
+Status note: implemented in commit `72271fa` and merged via `a962963`.
+
+## Task 177 — Action load parity follow-up: remove `RGE_Action::setup` fallback action-stack shim
+- [x] Assigned to agent
+- [x] Finished
+- Goal: remove the non-parity fallback in action deserialization so action sub-list loading always follows source-of-truth flow.
+- Implement:
+  - Audit/implement strict parity in `RGE_Action::setup(int,RGE_Action_Object*)` where `sub_actions` are loaded.
+  - Remove the current fallback branch that manually reads a short when `sub_actions == nullptr`; align with decomp-backed control flow.
+  - Validate interaction with `RGE_Action::setup(RGE_Action_Object*)` and `create_action_list`.
+- Where: `src/game/src/RGE_Action.cpp`
+- Source of truth: `src/game/decomp/action.cpp.decomp` + `src/game/decomp/action.cpp.asm` (`setup(int,...)` @ `0x00407530`, `setup(...)` @ `0x00407680`, `create_action_list` @ `0x004076D0`).
+- Done when: fallback shim is removed/replaced by parity logic and action load paths remain stable.
+
+Status note: implemented in commit `a22c064` and merged via `567aca5`.
+
+## Task 178 — TRIBE player production/research command parity tranche (build/train/research/task work)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: restore core single-player production/research/task command issuance paths currently stubbed in `TRIBE_Player`.
+- Implement:
+  - `buildObject`, `cancelBuild`, `registerBuild`.
+  - `trainUnit`, `cancelTrain`, `registerTrain`.
+  - `research`, `cancelResearch`, `registerResearch`.
+  - `taskTrader`, `taskResourceGatherer`.
+  - Keep command payload allocation/cleanup and player-AI checks consistent with source-of-truth.
+- Where:
+  - `src/game/src/TRIBE_Player.cpp`
+  - `src/game/include/TRIBE_Player.h` (declarations only if required)
+- Source of truth: `src/game/decomp/tplayer.cpp.decomp` + `src/game/decomp/tplayer.cpp.asm` (`buildObject` @ `0x00515130` through `taskResourceGatherer` @ `0x00515360`).
+- Done when: listed methods no longer have empty stub bodies and production/research/task command issuance follows decomp control flow.
+
+Status note: implemented in commit `2adef0e` and merged via `6afaca2`; remaining `TribeBuildAIModule` helper parity is tracked in Task 186.
+
+## Task 179 — Static object movement/combat virtual parity tranche (post-Task-165 follow-up)
+- [x] Assigned to agent
+- [x] Finished
+- Goal: continue de-stubbing `RGE_Static_Object` gameplay virtuals still returning hardcoded defaults in movement/combat command execution paths.
+- Implement (decomp-first):
+  - `attack(int,int)` + `attack(float,float,float,int)`.
+  - `moveTo(int,int)`, `moveTo(int,float,int)`, `moveTo(float,float,float,float,int)`.
+  - `transport(float,float,float,int)`.
+  - `stopAction()`.
+  - `canPath(int,float,float*,int,int,int)` and `canPath(XYZPoint,float,int,float*,int,int,int)`.
+- Where:
+  - `src/game/src/RGE_Static_Object.cpp`
+  - `src/game/include/RGE_Static_Object.h` (declarations only if required)
+- Source of truth: `src/game/decomp/stat_obj.cpp.decomp` + `src/game/decomp/stat_obj.cpp.asm` (function blocks in the `attack`/`moveTo`/`transport`/`stopAction`/`canPath` sections).
+- Done when: listed methods are no longer hardcoded default returns and follow source-of-truth control flow.
+
+Status note: implemented in commit `a1e077f` and merged via `6d49b98`; remaining static-object gameplay virtuals are tracked in Task 187.
+
+## Task 180 — Virtual-forwarder retirement (hot-path slots): remove gameplay-critical forwarding from `rge_object_virtual_stubs`
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: reduce reliance on linker-satisfaction forwarding stubs in per-frame object update/draw dispatch for non-static object classes.
+- Implement:
+  - Audit the vtable slots exercised by `RGE_Object_List` hot-loop dispatch (`draw`/`shadow_draw`/`normal_draw`/`update`) for `RGE_Animated_Object`, `RGE_Moving_Object`, `RGE_Action_Object`, and `RGE_Combat_Object`.
+  - Replace forwarding-only stub bodies with parity-backed implementations in owning class translation units.
+  - Remove/retire corresponding entries from `rge_object_virtual_stubs.cpp` for the scoped methods while keeping signatures/vtable order intact.
+- Where:
+  - `src/game/src/rge_object_virtual_stubs.cpp`
+  - Owning class sources as required (`RGE_Animated_Object.cpp`, `RGE_Moving_Object.cpp`, `RGE_Action_Object.cpp`, `RGE_Combat_Object.cpp`).
+- Source of truth:
+  - `src/game/decomp/obj_list.cpp.decomp` + `.asm` (dispatch slots), plus class-specific decomp/ASM units (`anim_obj`, `m_obj`, `act_obj`, `c_obj`).
+- Done when: scoped hot-path methods no longer route through forwarding TODO stubs and frame-loop behavior remains parity-backed.
+
+## Task 181 — View lifecycle parity tranche: finish remaining partial `RGE_View` hot-path methods
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: close the remaining `view.cpp` lifecycle/render-support parity debt now that `Object_Was_Displayed` is de-stubbed.
+- Implement:
+  - ASM-audit and finalize: `RGE_View::RGE_View`, `~RGE_View`, `setup`, `Init_Tile_Edge_Tables`, `set_rect(long,long,long,long)`, `set_focus`, and `get_tile_mask_num`.
+  - Remove/replace remaining "Partially verified" markers for these methods only when parity is actually validated.
+  - Keep scope limited to lifecycle + mask-table behavior; do not modify pick/outline code already completed in Tasks 154/174.
+- Where:
+  - `src/game/src/view.cpp`
+  - `src/game/include/RGE_View.h` (declarations only if required)
+- Source of truth:
+  - `src/game/decomp/view.cpp.decomp` + `src/game/decomp/view.cpp.asm`
+  - Offsets: `0x00533510`, `0x00533760`, `0x00533940`, `0x00533AF0`, `0x00533F70`, `0x00533AC0`, `0x00538590`.
+- Done when: the scoped methods are parity-verified and no longer marked partially verified.
+
+## Task 182 — In-game screen runtime parity: finalize `TRIBE_Screen_Game` frame-update/player-rebind flow
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: eliminate remaining "source-aligned slice" behavior in `TRIBE_Screen_Game` so per-frame HUD/view rebinding follows strict decomp/ASM parity.
+- Implement:
+  - Audit and finalize `TRIBE_Screen_Game::handle_game_update` (world/player/main_view rebinding, selection refresh, score display branch, redraw timing).
+  - Audit and finalize `TRIBE_Screen_Game::player_changed` plus overlap/redraw helpers used by in-game dialogs/panels.
+  - Remove temporary fallback behavior that was added to keep runtime alive (only where source-of-truth does not support it).
+- Where:
+  - `src/game/src/TRIBE_Screen_Game.cpp`
+  - `src/game/include/TRIBE_Screen_Game.h` (declarations only if required)
+- Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `src/game/decomp/scr_game.cpp.asm` (`handle_game_update` block around `0x00496800`, `player_changed` block around `0x00498A50`).
+- Done when: these runtime handlers are decomp/ASM-aligned and no longer described as source-aligned best-effort slices.
+
+## Task 183 — World tick parity: ASM-audit and finalize `RGE_Game_World::update`
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: harden the core simulation tick used by SP gameplay by replacing temporary debug-era guards/logging with strict world update parity.
+- Implement:
+  - ASM-audit `RGE_Game_World::update` timing/cycle math (`DoCycle`, `old_time`, `world_time_delta`, pause/temp-pause, random-seed update).
+  - Verify `commands->do_commands`, `scenario->update`, player loop/update ordering, and `check_game_state` sequencing against source-of-truth.
+  - Retire narrow temporary debug logging/extra null-guard branches in this function where they diverge from original behavior.
+- Where: `src/game/src/RGE_Game_World.cpp`
+- Source of truth: `src/game/decomp/world.cpp.decomp` + `src/game/decomp/world.cpp.asm` (`RGE_Game_World::update` @ `0x00542ED0`).
+- Done when: update tick ordering/branching is parity-backed and the function carries a fully verified marker.
+
+## Task 184 — Base runtime dispatch parity: finalize `RGE_Base_Game` idle/user-command handlers
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: ensure WM_TIMER/WM_COMMAND/WM_USERCOMMAND/music-done dispatch semantics match original behavior before reaching TRIBE-level action handlers.
+- Implement:
+  - ASM-audit and finalize `RGE_Base_Game::handle_idle`, `handle_user_command`, `handle_command`, and `handle_music_done`.
+  - Verify return-value semantics (consumed vs not-consumed) and action dispatch calls (`action_user_command`, `action_command`, `action_music_done`) against source-of-truth.
+  - Remove temporary debug instrumentation in these handlers where it is no longer needed after parity validation.
+- Where: `src/game/src/basegame.cpp`
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `src/game/decomp/basegame.cpp.asm` (`handle_idle` @ `0x00420F60`, `handle_user_command` @ `0x004212E0`, `handle_command` @ `0x004213A0`, `handle_music_done` @ `0x004213C0`).
+- Done when: these dispatch handlers are parity-verified and feed TRIBE action handlers with the original message semantics.
+
+## Task 185 — Player selection lifecycle parity follow-up (`RGE_Player` selection bookkeeping)
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: remove the remaining partial parity in player selection bookkeeping that feeds view command routing.
+- Implement:
+  - Finalize `RGE_Player::select_one_object(RGE_Static_Object*, int)` parity (success/slot semantics, `param_2` behavior, and return contract).
+  - Audit adjacent selection lifecycle helpers (`select_one_object`, `unselect_one_object`, `unselect_object`, `update_selected`, `get_selected_objects_to_command`) to ensure list/order/count behavior is source-accurate.
+  - Keep this task selection-scope only; do not modify movement/work/do command emitters covered by Task 171.
+- Where:
+  - `src/game/src/RGE_Player.cpp`
+  - `src/game/include/RGE_Player.h` (declarations only if required)
+- Source of truth: `src/game/decomp/player.cpp.decomp` + `src/game/decomp/player.cpp.asm` (selection blocks spanning `0x00470D20`..`0x00471430` and `get_selected_objects_to_command` @ `0x004712F0`).
+- Done when: selection lifecycle functions are parity-audited and the partial marker in the scoped selection path is removed.
+
+## Task 186 — TRIBE player AI-build parity follow-up: replace temporary `TribeBuildAIModule` helper shims
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: remove temporary local helper shims in `TRIBE_Player` cancel/register paths and restore real `TribeBuildAIModule` integration.
+- Implement:
+  - Transliterate/restore the missing `TribeBuildAIModule` methods used by `TRIBE_Player`: cancel/add hooks for build/train/research (`cancelBuildItem`, `addBuiltItem`, `cancelTrainUnit`, `addTrainedUnit`, `cancelResearch`, `addResearch`).
+  - Replace the temporary `tribe_build_ai_*` shim helpers in `TRIBE_Player.cpp` with real calls to the restored module methods.
+  - Keep command issuance behavior from Task 178 intact; this task is specifically about AI bookkeeping parity.
+- Where:
+  - `src/game/src/TRIBE_Player.cpp`
+  - `src/game/include/TribeBuildAIModule.h`
+  - Add/update the owning `TribeBuildAIModule` implementation TU(s) under `src/game/src/` as required by source-of-truth.
+- Source of truth: `src/game/decomp/tplayer.cpp.decomp` + `src/game/decomp/tplayer.cpp.asm` for call sites, and `TribeBuildAIModule` source-of-truth units in `src/game/decomp/` for method bodies/signatures.
+- Done when: the six `tribe_build_ai_*` temporary shims are gone and `TRIBE_Player` cancel/register paths use real `TribeBuildAIModule` methods.
+
+## Task 187 — Static-object gameplay virtuals follow-up: de-stub remaining movement/work/path methods
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: continue shrinking high-impact `RGE_Static_Object` default-return virtuals still reachable from command/action runtime paths.
+- Implement (decomp-first):
+  - De-stub the next gameplay tranche after Task 179: `moveAwayFrom`, `hunt`, `gather`, `convert`, `repair`, `build`, `trade`, `explore`, `enter`, `unload`, and `pause`.
+  - Include the immediate pathing follow-ups still hardcoded in this block (`canBidirectionPath`, `canPathWithObstructions`, `canPathWithAdditionalPassability`) if needed by scoped methods.
+  - Keep scope limited to this contiguous virtual block; do not touch forwarder retirement work in `rge_object_virtual_stubs.cpp`.
+- Where:
+  - `src/game/src/RGE_Static_Object.cpp`
+  - `src/game/include/RGE_Static_Object.h` (declarations only if required)
+- Source of truth: `src/game/decomp/stat_obj.cpp.decomp` + `src/game/decomp/stat_obj.cpp.asm` (post-Task-179 virtual block beginning at `moveAwayFrom`).
+- Done when: the scoped methods are no longer hardcoded default returns and follow source-of-truth control flow.
+
+## Task 188 — Action-runtime parity follow-up: de-stub core `RGE_Action` virtual responders
+- [x] Assigned to agent
+- [ ] Finished
+- Goal: remove remaining base-action default responders that can short-circuit runtime behavior when specific action subclasses fall back to base methods.
+- Implement:
+  - Transliterate parity for `RGE_Action::stop`, `move_to`, `work`, `attack_response`, and `relation_response`.
+  - Audit and complete `copy_obj` / `copy_obj_sprites` behavior where source-of-truth requires non-no-op state propagation.
+  - Keep this task constrained to base action class behavior; do not overlap with action-list/load work already completed in Task 177.
+- Where:
+  - `src/game/src/RGE_Action.cpp`
+  - `src/game/include/RGE_Action.h` (declarations only if required)
+- Source of truth: `src/game/decomp/action.cpp.decomp` + `src/game/decomp/action.cpp.asm` (base action virtual responder block following `update`/`save`/`setup`).
+- Done when: scoped base virtual responders are parity-backed and no longer trivial hardcoded returns/no-ops.

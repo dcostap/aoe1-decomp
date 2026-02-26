@@ -74,6 +74,7 @@ Notes:
 
 * `--no-ff` records a merge commit for traceability (recommended in multi-agent work).
 * If you prefer fast-forward merges when possible, omit `--no-ff`.
+* Also always include messages for merges to prevent git from prompting the computer user to open an editor.
 
 ### 6) Push `master`
 
