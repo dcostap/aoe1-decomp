@@ -113,13 +113,18 @@ public:
     void setScenarioPlayer(int p1, int p2);
     void setPlayerColor(int p1, int p2);
     void setComputerName(int p1, int p2);
+    void set_tribe_options(TRIBE_Game_Options* p1);
+    void get_tribe_options(TRIBE_Game_Options* p1);
     void resetRandomComputerName();
     void set_save_game_name(char* p1);
     void set_load_game_name(char* p1);
     char* get_save_game_name();
     char* get_load_game_name();
     unsigned char quickStartGame();
+    int animals();
+    int predators();
     int civilization(int p1);
+    int scenarioPlayer(int p1);
     int playerColor(int p1);
     int computerName(int p1);
     MapSize mapSize();
@@ -132,9 +137,12 @@ public:
     int fullTechTree();
     int allowTrading();
     int longCombat();
+    int startingUnits();
     unsigned char deathMatch();
     unsigned char popLimit();
+    int randomStartValue();
     int randomComputerName(int civ);
+    void show_error_message(int p1);
     void show_status_message(char* p1, char* p2, long p3);
     void show_status_message(int p1, char* p2, long p3);
     void close_status_message();
@@ -145,11 +153,15 @@ public:
     void restart_game();
     int start_game(int p1);
     int start_scenario(char* p1);
+    int test_scenario(char* p1);
     int load_game(char* p1);
     int save_game(char* p1);
+    int save_scenario(char* p1);
     int load_db_files();
     int start_menu();
     void do_game_over();
+    char* game_over_msg();
+    long get_achievement_info(unsigned char p1, char** p2);
     void quit_game();
     int start_campaign_menu();
     int start_scenario_editor(char* scenario_filename, int mode);
@@ -159,6 +171,9 @@ public:
     void shutdown_video_system();
     void disconnect_multiplayer_game();
     long video_wnd_proc(void* p1, uint p2, uint p3, long p4);
+    void SetClickTables(MouseClickInfo* p1, int p2, MouseClickInfo* p3, int p4);
+    void add_notification_loc(long p1, long p2);
+    void goto_notification_loc();
     void let_game_begin();
     void close();
 

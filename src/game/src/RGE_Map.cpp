@@ -22,6 +22,8 @@
 #include <math.h>
 #include <new>
 
+static ulong DAT_0062e65c = 0;
+
 static void rge_convert_us(char* text) {
     if (text == nullptr) {
         return;
@@ -2362,6 +2364,340 @@ void RGE_Map::clear_map_view_info() {
             tile->last_drawn_shape2 = 0xff;
             ++tile;
         }
+    }
+}
+
+long RGE_Map::get_map_width() {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00456150
+    return this->map_width;
+}
+
+long RGE_Map::get_map_height() {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00456160
+    return this->map_height;
+}
+
+RGE_Tile** RGE_Map::give_up_map_offsets() {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00456140
+    return this->map_row_offset;
+}
+
+long RGE_Map::clean_border_tile(long param_1, long param_2, long (*param_3)[32]) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457310
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    return -1;
+}
+
+void RGE_Map::clean_borders(long param_1, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457300
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+}
+
+void RGE_Map::delete_objects_on_tile(RGE_Player* param_1, RGE_Game_World* param_2, int param_3, int param_4, int param_5, int param_6) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458760
+    (void)param_2;
+    if (((-1 < param_3) && (param_3 < this->map_width) && (-1 < param_4)) && (param_4 < this->map_height)) {
+        RGE_Object_Node* node = this->map_row_offset[param_4][param_3].objects.list;
+        while (node != nullptr) {
+            RGE_Static_Object* obj = node->node;
+            node = node->next;
+            int object_id = (int)obj->master_obj->id;
+            if (((obj->owner == param_1) && ((object_id < param_5) || (param_6 < object_id))) && (obj != nullptr)) {
+                void** vtable = *(void***)obj;
+                if (vtable != nullptr && vtable[0] != nullptr) {
+                    typedef void(__thiscall* DestroySelfFn)(RGE_Static_Object*, int);
+                    ((DestroySelfFn)vtable[0])(obj, 1);
+                }
+            }
+        }
+    }
+}
+
+void RGE_Map::delete_all_objects_on_tile(int param_1, int param_2) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004587D0
+    if (((-1 < param_1) && (param_1 < this->map_width) && (-1 < param_2)) && (param_2 < this->map_height)) {
+        RGE_Object_Node* node = this->map_row_offset[param_2][param_1].objects.list;
+        while (node != nullptr) {
+            RGE_Object_Node* next = node->next;
+            RGE_Static_Object* obj = node->node;
+            node = next;
+            if (obj != nullptr) {
+                void** vtable = *(void***)obj;
+                if (vtable != nullptr && vtable[0] != nullptr) {
+                    typedef void(__thiscall* DestroySelfFn)(RGE_Static_Object*, int);
+                    ((DestroySelfFn)vtable[0])(obj, 1);
+                }
+            }
+        }
+    }
+}
+
+void RGE_Map::tile_map_coords(short param_1, short param_2, RGE_Tile* param_3, float* param_4, float* param_5) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459060
+    float fVar2 = (float)(int)param_1 / (float)(int)this->tile_width;
+    float fVar1 = 0.0f;
+    float fVar3 = (float)(int)param_2;
+    float fVar4 = fVar3 / (float)(int)this->tile_height;
+
+    switch (param_3->tile_type) {
+    case '\0':
+    case '\t':
+        goto switch_case_0;
+    case '\x01':
+        if (fVar2 <= 0.5f) {
+            fVar1 = (fVar4 + fVar4) - ((0.5f - fVar2) + (0.5f - fVar2));
+        } else {
+            fVar1 = (fVar4 + fVar4) - ((fVar2 - 0.5f) + (fVar2 - 0.5f));
+        }
+        break;
+    case '\x02':
+        if (0.5f < fVar2) {
+            fVar1 = fVar2 * -0.5f - (fVar4 - 0.5f);
+            break;
+        }
+        goto switch_case_8;
+    case '\x03':
+        fVar1 = 1.0f - fVar2;
+        if (fVar2 * 0.5f < fVar3) {
+            fVar1 = fVar1 * 0.5f - (fVar4 - 0.5f);
+            break;
+        }
+        fVar3 = fVar4 + fVar4;
+        fVar1 = (fVar1 + fVar1) - 1.0f;
+        goto apply_fvar3;
+    case '\x04':
+        if ((1.0f - fVar2) * 0.5f < fVar3) {
+            fVar1 = fVar2 * 0.5f - (fVar4 - 0.5f);
+            break;
+        }
+    case '\a':
+switch_case_7:
+        fVar3 = fVar4 + fVar4;
+        fVar1 = (fVar2 + fVar2) - 1.0f;
+apply_fvar3:
+        fVar1 = fVar1 + fVar3;
+        break;
+    case '\x05':
+        goto switch_case_5;
+    case '\x06':
+switch_case_6:
+        fVar1 = fVar2 * -0.5f - (fVar4 - 0.5f);
+        break;
+    case '\b':
+        goto switch_case_8;
+    case '\n':
+        if (1.0f <= fVar4) {
+            fVar1 = -1.0f;
+        } else {
+            fVar1 = -fVar4;
+        }
+        break;
+    case '\v':
+        if (fVar2 <= 0.5f) {
+            fVar1 = (0.5f - fVar2) + (0.5f - fVar2);
+            break;
+        }
+        goto switch_case_0;
+    case '\f':
+        if (0.5f < fVar2) {
+            fVar1 = (fVar2 - 0.5f) + (fVar2 - 0.5f);
+            break;
+        }
+switch_case_0:
+        fVar1 = 0.0f;
+        break;
+    case '\r':
+        if (fVar2 <= 0.5f) {
+            fVar1 = (0.5f - fVar2) + fVar4;
+            fVar1 = fVar1 + fVar1;
+        } else {
+            fVar1 = (fVar2 - 0.5f) + fVar4;
+            fVar1 = fVar1 + fVar1;
+        }
+        break;
+    case '\x0e':
+        if (fVar2 <= 0.5f) {
+            goto switch_case_6;
+        }
+        goto switch_case_8;
+    case '\x0f':
+        if (fVar3 <= 1.0f - fVar2 * 0.5f) {
+            goto switch_case_7;
+        }
+switch_case_8:
+        fVar1 = (1.0f - fVar2) * -0.5f - (fVar4 - 0.5f);
+        break;
+    case '\x10':
+        if (1.0f - (1.0f - fVar2) * 0.5f < fVar3) {
+            goto switch_case_6;
+        }
+switch_case_5:
+        fVar1 = fVar4 + fVar4;
+        fVar3 = 1.0f - (fVar2 + fVar2);
+        goto apply_fvar3;
+    }
+
+    fVar1 = (((fVar2 + fVar2) - (1.0f - (fVar4 + fVar4))) + fVar1) * 0.5f;
+    *param_5 = fVar1;
+    *param_4 = (fVar2 + fVar2) - fVar1;
+}
+
+uchar RGE_Map::check_map_coords(short param_1, short param_2) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004593A0
+    if (((-1 < param_1) && ((int)param_1 < this->map_width)) && ((-1 < param_2) && ((int)param_2 < this->map_height))) {
+        return '\x01';
+    }
+    return '\0';
+}
+
+uchar RGE_Map::get_elev(short param_1, short param_2) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004593D0
+    uchar value = (uchar)(rge_tile_pack_terrain_height(&this->map_row_offset[param_2][param_1]) >> 5);
+    if (8 < value) {
+        value = 0;
+    }
+    return value;
+}
+
+uchar RGE_Map::get_border(short param_1, short param_2) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459460
+    uchar value = (uchar)(this->map_row_offset[param_2][param_1].border_type & 0x0F);
+    if ((0x10 < value) || (this->border_types[value].loaded == '\0')) {
+        value = 0;
+    }
+    return value;
+}
+
+void RGE_Map::check_for_border(uchar param_1, uchar* param_2) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x0045A490
+    short border = 0;
+    if ((*param_2 != param_1) &&
+        (((border = this->terrain_types[param_1].borders[*param_2], border == -1 || (border < 0)) ||
+          (0x0F < border)) || (this->border_types[border].loaded == '\0'))) {
+        *param_2 = param_1;
+    }
+}
+
+void RGE_Map::set_terrain_passablity(short param_1, short param_2, short param_3, short param_4, uchar param_5) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004594B0
+    short max_row = param_4;
+    if (param_4 < param_2) {
+        max_row = param_2;
+        param_2 = param_4;
+    }
+
+    short min_col = param_1;
+    if (param_3 < param_1) {
+        min_col = param_3;
+        param_3 = param_1;
+    }
+
+    if (param_2 < 0) {
+        param_2 = 0;
+    }
+    if (this->map_height <= (int)max_row) {
+        max_row = (short)this->map_height - 1;
+    }
+    if (min_col < 0) {
+        min_col = 0;
+    }
+    if (this->map_width <= (int)param_3) {
+        param_3 = (short)this->map_width - 1;
+    }
+
+    if (param_2 <= max_row) {
+        int rows = ((int)max_row - (int)param_2) + 1;
+        int row = (int)param_2;
+        do {
+            if (min_col <= param_3) {
+                int cols = ((int)param_3 - (int)min_col) + 1;
+                int col = (int)min_col;
+                do {
+                    RGE_Tile* tile = &this->map_row_offset[row][col];
+                    uchar packed = rge_tile_pack_terrain_height(tile);
+                    uchar value = 0;
+                    if (param_5 == '\0') {
+                        value = this->terrain_types[(short)(ushort)(packed & 0x1F)].impassable_terrain;
+                    } else {
+                        value = this->terrain_types[(short)(ushort)(packed & 0x1F)].passable_terrain;
+                    }
+                    packed = (uchar)(((value ^ packed) & 0x1F) ^ packed);
+                    rge_tile_set_packed_terrain_height(tile, packed);
+                    col = col + 1;
+                    cols = cols - 1;
+                } while (cols != 0);
+            }
+            row = row + 1;
+            rows = rows - 1;
+        } while (rows != 0);
+    }
+}
+
+void RGE_Map::update(ulong param_1) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x0045A500
+    if ((param_1 - DAT_0062e65c) > 99) {
+        float fVar2 = (float)param_1 * 0.001f;
+
+        if (0 < this->num_terrain) {
+            for (short i = 0; i < this->num_terrain; ++i) {
+                if ((this->terrain_types[i].is_animated != '\0') &&
+                    (this->terrain_types[i].interval <= fVar2 - this->terrain_types[i].animate_last)) {
+                    short frame_step = (short)((fVar2 - this->terrain_types[i].animate_last) / this->terrain_types[i].interval);
+                    short animation_frames = this->terrain_types[i].animation_frames;
+                    short cycle_len = (short)(this->terrain_types[i].pause_frames + animation_frames);
+                    short frame = (short)(frame_step + this->terrain_types[i].frame);
+                    if (cycle_len <= frame) {
+                        frame = (short)(frame % cycle_len);
+                    }
+                    this->terrain_types[i].frame = frame;
+                    if (animation_frames <= frame) {
+                        frame = (short)(animation_frames - 1);
+                    }
+                    if (this->terrain_types[i].draw_frame != frame) {
+                        this->terrain_types[i].draw_frame = frame;
+                        this->terrain_types[i].frame_changed = '\x01';
+                        this->any_frame_change = '\x01';
+                    }
+
+                    float delta = fVar2 - this->terrain_types[i].animate_last;
+                    this->terrain_types[i].animate_last = fVar2 - (delta - (float)(int)frame_step * this->terrain_types[i].interval);
+                }
+            }
+        }
+
+        if (0 < this->num_borders) {
+            for (short i = 0; i < this->num_borders; ++i) {
+                if ((this->border_types[i].is_animated != '\0') &&
+                    (this->border_types[i].interval <= fVar2 - this->border_types[i].animate_last)) {
+                    short frame_step = (short)((fVar2 - this->border_types[i].animate_last) / this->border_types[i].interval);
+                    short animation_frames = this->border_types[i].animation_frames;
+                    short cycle_len = (short)(this->border_types[i].pause_frames + animation_frames);
+                    short frame = (short)(frame_step + this->border_types[i].frame);
+                    if (cycle_len <= frame) {
+                        frame = (short)(frame % cycle_len);
+                    }
+                    this->border_types[i].frame = frame;
+                    if (animation_frames <= frame) {
+                        frame = (short)(animation_frames - 1);
+                    }
+                    if (this->border_types[i].draw_frame != frame) {
+                        this->border_types[i].draw_frame = frame;
+                        this->border_types[i].frame_changed = '\x01';
+                        this->any_frame_change = '\x01';
+                    }
+
+                    float delta = fVar2 - this->border_types[i].animate_last;
+                    this->border_types[i].animate_last = fVar2 - (delta - (float)(int)frame_step * this->border_types[i].interval);
+                }
+            }
+        }
+
+        DAT_0062e65c = param_1;
     }
 }
 
