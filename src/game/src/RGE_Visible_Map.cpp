@@ -771,9 +771,9 @@ struct VC_LOG {
     int values[9];
 };
 
-static VC_LOG VCALL_LOG[0x400];
-static int VCALL_LOG_HEAD = -1;
-static int VCALL_LOG_TAIL = -1;
+VC_LOG VCALL_LOG[0x400];
+int VCALL_LOG_HEAD = -1;
+int VCALL_LOG_TAIL = -1;
 
 static void log_map_call(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9) {
     // Source of truth: visible.cpp.decomp @ 0x0053D150
