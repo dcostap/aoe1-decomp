@@ -104,6 +104,17 @@ static unsigned char* g_rge_inflated_data = nullptr;
 static long g_rge_compressed_size = 0;
 static long g_rge_stream_read_pos = 0;
 static long g_rge_read_count = 0;
+static char debug_random_log[5000][0x64] = {{0}};
+static int debug_random_index = -1;
+static int wrote_debug_random_log = 0;
+
+struct VC_LOG {
+    int values[9];
+};
+
+extern VC_LOG VCALL_LOG[0x400];
+extern int VCALL_LOG_HEAD;
+extern int VCALL_LOG_TAIL;
 
 static void rge_reset_buffers() {
     if (g_rge_window != nullptr) {
@@ -211,13 +222,75 @@ static int rge_prepare_read_cache(int handle) {
 
 void run_log(char* param_1, int param_2) {}
 
-// TODO: STUB - Source-of-truth implementations exist in basegame.cpp/visible.cpp, but have not
-// been transliterated in this tree yet.
-void debug_random_write() {}
+void debug_random_write() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423030
+    FILE* file = fopen("c:\\aoerand.txt", "w");
+    if (file != nullptr) {
+        for (int i = 0; i < 5000; ++i) {
+            const char* marker = ">";
+            if (i != debug_random_index) {
+                marker = " ";
+            }
+            fprintf(file, "%s%d - %s\n", marker, i, debug_random_log[i]);
+        }
+        fclose(file);
+        wrote_debug_random_log = 1;
+    }
+}
 
-// TODO: STUB - Source-of-truth implementation exists in visible.cpp, but has not
-// been transliterated in this tree yet.
-void dump_vismap_log() {}
+void dump_vismap_log() {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053D200
+    bool reached_end = false;
+    FILE* file = fopen("c:\\aoeexlog.txt", "w");
+    if (-1 < VCALL_LOG_HEAD) {
+        int i = VCALL_LOG_TAIL;
+        if (VCALL_LOG_TAIL < 0) {
+            i = 0;
+        }
+        do {
+            switch (VCALL_LOG[i].values[2]) {
+            case 1:
+                fprintf(file, "EXPLORE     ");
+                break;
+            case 2:
+                fprintf(file, "EXPLORE SQ  ");
+                break;
+            case 3:
+                fprintf(file, "UNEXPLORE   ");
+                break;
+            case 4:
+                fprintf(file, "UNEXPLORE SQ");
+                break;
+            case 5:
+                fprintf(file, "SET ALL     ");
+                break;
+            case 6:
+                fprintf(file, "EXPLORE ALL ");
+                break;
+            default:
+                fprintf(file, "*ERROR* Undef Action = %d ", VCALL_LOG[i].values[2]);
+                break;
+            }
+
+            fprintf(file, " wt = %d, plyr = %d, id = %d, x1=%d, x2=%d, y1=%d, y2=%d, suppr=%d\n",
+                    VCALL_LOG[i].values[0], VCALL_LOG[i].values[1], VCALL_LOG[i].values[3],
+                    VCALL_LOG[i].values[4], VCALL_LOG[i].values[5], VCALL_LOG[i].values[6],
+                    VCALL_LOG[i].values[7], VCALL_LOG[i].values[8]);
+            if (i == VCALL_LOG_HEAD) {
+                reached_end = true;
+            }
+            ++i;
+            if (0x3FF < i) {
+                i = 0;
+            }
+        } while (!reached_end);
+        fclose(file);
+        return;
+    }
+
+    fprintf(file, "NULL LOG\n");
+    fclose(file);
+}
 
 int rge_fake_open(int handle, int remaining_bytes) {
     if (handle > -1) {

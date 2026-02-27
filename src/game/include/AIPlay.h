@@ -18,5 +18,25 @@ struct AIPlay {
     uchar numberGroupsValue;
     AIPlayGroup groups[5];
     AIPlayPhase phases[10];
+
+    AIPlay();
+    void setName(char* name);
+    int humanPlay() const;
+    char* typeName() const;
+    uchar targetType(int index) const;
+    int isTargetType(uchar type) const;
+    int addTargetType(uchar type);
+    uchar targetCharacteristic(int index) const;
+    int isTargetCharacteristic(uchar characteristic) const;
+    int addTargetCharacteristic(uchar characteristic);
+    int gatherTolerance(int unused, int phaseIndex);
+    AIPlayGroup* group(int index);
+    AIPlayPhase* phase(int index);
+    int groupGivenCommandOnPhase(int groupNumber, int commandType, int phaseIndex);
+    int locationsOnMap(int xOffset, int yOffset, int width, int height);
+
+protected:
+    uchar convertToIntType(char* typeName) const;
+    char* convertToNameType(uchar type) const;
 };
 static_assert(sizeof(AIPlay) == 0x608, "Size mismatch");
