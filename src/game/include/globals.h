@@ -35,6 +35,8 @@ extern HINSTANCE StringTableX;
 extern int disable_terrain_sounds;
 extern int out_of_sync;
 extern int out_of_sync2;
+extern int start_paused;
+extern int multi_updates;
 extern int player_dropped[9];
 extern TPanelSystem* panel_system;
 extern int debugActions;
