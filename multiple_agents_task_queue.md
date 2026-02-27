@@ -3054,7 +3054,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 216 — In-game screen parity follow-up: finalize remaining `TRIBE_Screen_Game` TODO blocks
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `26f9b1d` (462 insertions). handle_game_update, player_changed, and setup_buttons finalized.
 - Assignment note: worker-4 (`aoe1_clone_4`)
 - Goal: close the remaining `TRIBE_Screen_Game` in-game parity gaps (retried from stale Task 194): world-step/game-over branch, player-change civ-refresh branch, and command-panel refresh slice.
 - Implement:
@@ -3112,7 +3113,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 220 — RGE_Player parity tranche: fill remaining ~2500-line decomp gap
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `109f835` (249 insertions). RGE_Player methods implemented.
 - Assignment note: worker-5 (`aoe1_clone_5`)
 - Goal: close the ~2500-line gap between `player.cpp.decomp` (4242 lines) and `RGE_Player.cpp` (1760 lines). This covers base player methods for object management, attribute handling, diplomacy state, and save/load.
 - Implement (decomp-first from `player.cpp.decomp`):
@@ -3140,3 +3142,94 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
   - `src/game/include/TRIBE_Game.h` (declarations only)
 - Source of truth: `src/game/decomp/tribegam.cpp.decomp` + `tribegam.cpp.asm`.
 - Done when: the implementation gap is cut by at least 2500 lines. Mark any remaining unimplemented methods with `// TODO` comments.
+
+## Task 222 — com_hand.cpp communication handler parity (~5500-line gap)
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-3 (`aoe1_clone_3`)
+- Goal: close the ~5500-line gap between `com_hand.cpp.decomp` (8394 lines) and `com_hand.cpp` (2889 lines). The communication handler routes player commands (move, attack, build, etc.) to the game engine. This is critical game infrastructure.
+- Implement (decomp-first from `com_hand.cpp.decomp`):
+  - Enumerate ALL functions in `com_hand.cpp.decomp` that are NOT yet in `com_hand.cpp`.
+  - Focus on: command dispatch (the big switch statement that routes command types), multiplayer sync, command serialization/deserialization, queue management.
+  - Each function should be transliterated from the decomp with `// Fully verified` markers.
+  - This is a LARGE task — aim for 1500+ lines of new code.
+- Where:
+  - `src/game/src/com_hand.cpp` (extend existing file)
+  - Any relevant headers in `src/game/include/` (declarations only)
+- Source of truth: `src/game/decomp/com_hand.cpp.decomp` + `com_hand.cpp.asm`.
+- Non-overlap: do NOT touch `basegame.cpp`, `tribegam.cpp`, or any player files.
+- Done when: the implementation gap is cut by at least 2500 lines. Mark any remaining methods with `// TODO` comments.
+
+## Task 223 — RGE_Static_Object massive parity tranche (~3800-line gap)
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-4 (`aoe1_clone_4`)
+- Goal: close the ~3800-line gap between `stat_obj.cpp.decomp` (7238 lines) and `RGE_Static_Object.cpp` (3429 lines). RGE_Static_Object is the base class for all game objects (buildings, trees, resources, etc.). Its virtual methods drive core gameplay.
+- Implement (decomp-first from `stat_obj.cpp.decomp`):
+  - Enumerate ALL functions in `stat_obj.cpp.decomp` that are NOT yet in `RGE_Static_Object.cpp`.
+  - Focus on: virtual method implementations (save/load, attribute getters/setters, damage/heal, garrison, selection), constructor/destructor parity, and utility methods.
+  - Each function should be transliterated from the decomp with `// Fully verified` markers.
+  - Also check if any methods are in `rge_object_virtual_stubs.cpp` that should be moved to the proper file.
+- Where:
+  - `src/game/src/RGE_Static_Object.cpp` (extend existing file)
+  - `src/game/include/RGE_Static_Object.h` (declarations only)
+- Source of truth: `src/game/decomp/stat_obj.cpp.decomp` + `stat_obj.cpp.asm`.
+- Non-overlap: do NOT touch `RGE_Moving_Object.cpp`, `TRIBE_Combat_Object.cpp`, or any derived object files.
+- Done when: all missing methods from `stat_obj.cpp.decomp` implemented, compile/link clean.
+
+## Task 224 — basegame.cpp parity tranche: game init/shutdown + remaining methods (~4800-line gap)
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-5 (`aoe1_clone_5`) — **CODEX CLI TEST** (first codex exec dispatch)
+- Goal: close the ~4800-line gap between `basegame.cpp.decomp` (7841 lines) and `basegame.cpp` (2979 lines). The base game class handles initialization, shutdown, main loop timing, world creation, and game state management.
+- Implement (decomp-first from `basegame.cpp.decomp`):
+  - Enumerate ALL functions in `basegame.cpp.decomp` that are NOT yet in `basegame.cpp`.
+  - Focus on: game initialization sequence, world creation/destruction, main loop update, timing/speed control, debug methods.
+  - Each function should be transliterated from the decomp.
+- Where:
+  - `src/game/src/basegame.cpp` (extend existing file)
+  - `src/game/include/RGE_Base_Game.h` (declarations only)
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `basegame.cpp.asm`.
+- Done when: the implementation gap is cut by at least 2000 lines.
+
+## Task 225 — RGE_Main_View + view.cpp parity tranche (~4800-line gap)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: close the ~4800-line gap between `view.cpp.decomp` (7696 lines) and the view implementation files (~2877 lines). The view system handles scrolling, zooming, rendering delegation, and input routing.
+- Implement (decomp-first from `view.cpp.decomp`):
+  - Enumerate ALL functions in `view.cpp.decomp` that are NOT yet in `view.cpp` or `RGE_Main_View.cpp`.
+  - Focus on: scroll/zoom methods, rendering coordination, input event routing, minimap interaction.
+  - Each function should be transliterated from the decomp.
+- Where:
+  - `src/game/src/view.cpp` and/or `src/game/src/RGE_Main_View.cpp` (extend existing)
+  - Any relevant headers (declarations only)
+- Source of truth: `src/game/decomp/view.cpp.decomp` + `view.cpp.asm`.
+- Done when: the implementation gap is cut by at least 2000 lines.
+
+## Task 226 — RGE_Map parity tranche: terrain + pathfinding helpers (~1800-line gap)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: close the ~1800-line gap between `map.cpp.decomp` (4507 lines) and `RGE_Map.cpp` (2680 lines). The map system handles terrain data, tile queries, elevation, and pathfinding support.
+- Implement (decomp-first from `map.cpp.decomp`):
+  - Enumerate ALL functions in `map.cpp.decomp` that are NOT yet in `RGE_Map.cpp`.
+  - Focus on: terrain query methods, elevation helpers, tile-to-world coordinate conversions, pathfinding support methods.
+- Where:
+  - `src/game/src/RGE_Map.cpp` (extend existing file)
+  - `src/game/include/RGE_Map.h` (declarations only)
+- Source of truth: `src/game/decomp/map.cpp.decomp` + `map.cpp.asm`.
+- Done when: all missing methods implemented, compile/link clean.
+
+## Task 227 — TRIBE_Screen_Sed scenario editor parity tranche (~5700-line gap)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: close the ~5700-line gap between `scr_sed.cpp.decomp` (5907 lines) and `TRIBE_Screen_Sed.cpp` (203 lines). The scenario editor is nearly empty — this task creates the bulk of it.
+- Implement (decomp-first from `scr_sed.cpp.decomp`):
+  - Enumerate ALL functions in `scr_sed.cpp.decomp`.
+  - Focus on: editor initialization, terrain painting, unit/building placement, trigger setup, save/load scenario.
+  - Each function should be transliterated from the decomp.
+  - This is a LARGE task — expect 2000+ lines of new code.
+- Where:
+  - `src/game/src/TRIBE_Screen_Sed.cpp` (extend existing file)
+  - `src/game/include/TRIBE_Screen_Sed.h` (declarations only)
+- Source of truth: `src/game/decomp/scr_sed.cpp.decomp` + `scr_sed.cpp.asm`.
+- Done when: the implementation gap is cut by at least 3000 lines.

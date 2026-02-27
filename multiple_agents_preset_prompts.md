@@ -402,7 +402,7 @@ Track a mental ledger:
 - **100-300 lines**: Still too small. Batch these together next time.
 - **300-700 lines**: Acceptable but on the lean side. OK for focused tasks.
 - **700-2000+ lines**: Sweet spot. This is what a worker cycle should produce.
-- **2000+ lines**: Excellent ROI. Big tasks are fine as long as they're self-contained.
+- **> 3000 lines**: Too much work for one run. Agent may start rushing and quality may drop. Avoid.
 
 Use this data to calibrate future task scoping. If you notice a pattern of small outputs, stop and re-scope remaining tasks to be bigger before dispatching more workers.
 
