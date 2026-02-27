@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+class ResourceItem;
+
 class TechnologyItem {
 public:
     // Virtuals (best-effort)
