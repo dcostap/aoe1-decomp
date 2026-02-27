@@ -33,6 +33,19 @@ public:
 
     char* updateAreaName();
     void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    int numberCivilians() const;
+    int numberCivilianExplorers() const;
+    int numberGatherers() const;
+    int desiredNumberCivilianExplorers() const;
+    int desiredNumberGatherers() const;
+    int numberSoldiers() const;
+    int numberSoldierExplorers();
+    int numberBoats() const;
+    int neededResource(int param_1) const;
+    int neededResourceAmount(int param_1) const;
+    void detask(int param_1);
+    int strategicNumber(int param_1);
+    void setStrategicNumber(int param_1, int param_2);
     int doSomething();
     void enableAttack(int param_1);
     TacticalAIGroup* createGroup(int param_1);
