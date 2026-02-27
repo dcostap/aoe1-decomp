@@ -1,8 +1,11 @@
 #pragma once
 #include "common.h"
+#include "AIModule.h"
 
-class InformationAIModule {
+class InformationAIModule : public AIModule {
 public:
+    InformationAIModule(void* param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~InformationAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
