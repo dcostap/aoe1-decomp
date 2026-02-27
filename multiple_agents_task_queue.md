@@ -3081,7 +3081,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 218 — TRIBE_Player massive parity tranche: civ setup + commands + tech helpers (~5500 lines of decomp gap)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `351bb90` (1989 insertions). 41 method declarations added to header, 1948 lines of implementations.
 - Assignment note: worker-2 (`aoe1_clone_2`)
 - Goal: close the ~5500-line gap between `tplayer.cpp.decomp` (6343 lines) and `TRIBE_Player.cpp` (828 lines). This covers 36 missing methods including all 15 civilization setup methods, 6 command methods, and 15 tech/research/trade helpers.
 - Implement (decomp-first from `tplayer.cpp.decomp`):
@@ -3228,7 +3229,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 227 — TRIBE_Screen_Sed scenario editor parity tranche (~5700-line gap)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `f166adf` (6090 insertions!). TRIBE_Screen_Sed went from 203→6293 lines. Nearly entire editor implemented. Self-reviewed due to 429 quota on sub-agents.
 - Goal: close the ~5700-line gap between `scr_sed.cpp.decomp` (5907 lines) and `TRIBE_Screen_Sed.cpp` (203 lines). The scenario editor is nearly empty — this task creates the bulk of it.
 - Implement (decomp-first from `scr_sed.cpp.decomp`):
   - Enumerate ALL functions in `scr_sed.cpp.decomp`.
@@ -3242,7 +3244,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: the implementation gap is cut by at least 3000 lines.
 
 ## Task 228 — TribeUnitAIModule massive parity: unit AI decision-making (~10000-line gap across 2 decomps)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: close the massive gap in the unit AI module system. Two decomps feed this module: `aiuaimod.cpp.decomp` (6558 lines) maps to `TribeUnitAIModules.cpp` (59 lines) and `UnitAIModule.cpp` (340 lines); `taiuaimd.cpp.decomp` (4273 lines) maps to `TribeUnitAIModuleTypes.cpp` (155 lines). Combined gap is ~10000 lines. This controls individual unit AI decisions (attack, gather, explore, flee, etc.).
 - Implement (decomp-first):
@@ -3312,7 +3314,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: gap cut by at least 1500 lines.
 
 ## Task 232 — Scenario data system parity: scenario + tscenaro (~3690-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: close the gap in scenario data handling (NOT the editor UI — that's Task 227):
   - `scenario.cpp.decomp` (2903 lines) → `scenario.cpp` (739 lines) = gap ~2164
