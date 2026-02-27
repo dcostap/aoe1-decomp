@@ -2526,8 +2526,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: scoped master-derived factory/combat methods are no longer base-forwarder/zero-return placeholders and match source-of-truth control flow.
 
 ## Task 192 — Out-of-sync diagnostics parity: restore `debug_random_write` / `dump_vismap_log`
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: re-assigned to worker-5 (`aoe1_clone_5`)
+- Status note: 82 lines — small task. Commit `d7272e3`.
 - Goal: replace the remaining global no-op debug helpers used by out-of-sync handling with source-backed implementations so diagnostic artifacts are generated when debug toggles are enabled.
 - Implement:
   - Transliterate `debug_random_write` and `dump_vismap_log` from source-of-truth instead of no-op TODO stubs.
@@ -2541,8 +2543,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: both functions are no longer TODO no-ops and emit parity-correct diagnostic output when the debug path is active.
 
 ## Task 193 — Main-view command pipeline audit: finalize `RGE_Main_View` input-to-command routing parity
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: re-assigned to worker-5 (`aoe1_clone_5`)
+- Status note: `command_make_move`, `pick_objects1`, `pick_best_target`, `command_place_multi_object` finalized. Commit `d4a9e27`.
 - Goal: harden single-player input command routing by ASM-auditing `RGE_Main_View` command entrypoints used by right/left-click gameplay interactions.
 - Implement:
   - Audit/finalize `command_make_do`, `command_make_move`, `command_make_work`, `command_place_object`, and `command_place_multi_object`.
@@ -2555,8 +2559,9 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: scoped command-path functions are parity-audited against ASM and no longer rely on non-parity fallbacks.
 
 ## Task 194 — In-game screen parity follow-up: finalize remaining command-panel refresh slice in `TRIBE_Screen_Game`
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
+- Assignment note: worker-3 (`aoe1_clone_3`)
 - Goal: close the remaining `TRIBE_Screen_Game` in-game parity gaps left after Task 182 (world-step/game-over branch, player-change civ-refresh branch, and command-panel refresh slice).
 - Implement:
   - Transliterate the remaining world-step/game-over branch in `handle_game_update` (decomp block around `0x00496800`) currently marked TODO in code.
@@ -2570,8 +2575,9 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: all three scoped `TRIBE_Screen_Game.cpp` TODO/source-aligned parity markers are removed and behavior is decomp/ASM-backed.
 
 ## Task 195 — Static-object virtual parity follow-up II: finish remaining contiguous default-return block
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Status note: completed by `worker-1` (`aoe1_clone_1`); task commit `0ea8ca9`, merged to master as `aae5756`.
 - Goal: continue Task-187 follow-through by replacing the still-default contiguous `RGE_Static_Object` movement/work/path virtual block with source-backed parity implementations.
 - Implement (decomp-first + ASM spot-audit):
   - Finalize the still-default methods in the `moveAwayFrom` contiguous block (`moveAwayFrom`, `hunt`, `gather`, `convert`, `repair`, `build`, `trade`, `explore`, `enter`, `unload`, `pause`).
@@ -2584,8 +2590,9 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: the scoped contiguous virtual block no longer uses hardcoded default returns except where explicitly proven by source-of-truth.
 
 ## Task 196 — TRIBE AI build-module dependency parity: retire helper stubs in `TribeBuildAIModule.cpp`
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
+- Status note: assigned to `worker-2` (`aoe1_clone_4`) for execution.
 - Goal: remove helper-level TODO stubs currently short-circuiting AI build/train/research bookkeeping during in-game updates.
 - Implement:
   - Replace local helper stubs with source-backed behavior: `tribe_build_ai_detask`, `tribe_build_ai_is_moveable`, `tribe_build_ai_clear_area`, `tribe_build_ai_remove_lot`, `tribe_build_ai_update_needed_resources`.
@@ -2598,8 +2605,9 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: the scoped helper TODO stubs are removed and the six add/cancel methods no longer carry partial-parity TODO markers.
 
 ## Task 197 — TRIBE AI decision-module full parity: orchestration + update + virtuals (`TribeMainDecisionAIModule.cpp`)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Status note: worker-2 (`aoe1_clone_2`). Full orchestration/update/module-management replaced from stubs. Commit `f790188`.
 - Goal: replace the hollow TribeMainDecisionAIModule with a source-backed implementation so the AI decision orchestrator actually invokes sub-module updates during the game tick. Currently **all 21 methods** are stubs returning 1 or doing nothing; the `update()` method (the main AI tick entry called from `TRIBE_Player::update()`) is completely empty — meaning AI opponents never make build/train/attack/research decisions.
 - Implement (decomp-first from `taimdmd.cpp.decomp`, ~1535 lines):
   - **Core orchestration:** `TribeMainDecisionAIModule::update(int)` — this is the main AI tick that iterates sub-modules (build, strategy, tactical, resource, etc.) and drives all AI decision-making. This is the single most critical method for SP AI opponents.
@@ -2617,8 +2625,9 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: `TribeMainDecisionAIModule::update()` orchestrates sub-module ticks per source-of-truth, and all scoped methods match decomp control flow. The sub-modules themselves may still be stubs (they're tracked in Tasks 196, 201–209), but the orchestration/dispatch logic must be real.
 
 ## Task 198 — Base-game in-match options/cheat dispatch parity (`basegame.cpp`)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Status note: re-assigned to worker-4 (`aoe1_clone_4`). Landed at commit `5701b85`.
 - Goal: restore base-game handlers currently left as empty/constant-return shims so in-match command flow is source-backed before TRIBE-layer handling.
 - Implement:
   - Transliterate and parity-audit `RGE_Base_Game::notification`, `send_game_options`, `receive_game_options`, `gameSummary`, and `processCheatCode`.
@@ -2631,8 +2640,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: the scoped methods are no longer empty/constant-return shims and compile/link cleanly.
 
 ## Task 199 — Forwarder retirement tranche III: animated-object gameplay virtuals
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-1 (`aoe1_clone_1`)
+- Status note: animated-object tranche (`draw_front_frame`, `draw_back_frame`, `draw_frame`, `check_damage_sprites`, `rehook`, `new_sprite`, `add_overlay_sprite`, `remove_overlay_sprite`) moved to owning class and forwarders removed (merge `agent/task-199-anim-virtuals`, commit `aa1d448`).
 - Goal: continue shrinking `rge_object_virtual_stubs.cpp` by retiring a contiguous animated-object gameplay virtual tranche used in frame update/draw paths.
 - Implement:
   - Move one contiguous animated-object tranche from forwarders into owning implementations (e.g., `draw_front_frame`, `draw_back_frame`, `draw_frame`, `check_damage_sprites`, `rehook`, `new_sprite`, `add_overlay_sprite`, `remove_overlay_sprite`) per source-of-truth.
@@ -2646,8 +2657,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: the scoped animated-object tranche no longer routes through `rge_object_virtual_stubs.cpp` and build remains clean.
 
 ## Task 200 — TRIBE player tech-tree safety-gap parity (`TRIBE_Player.cpp`)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-2 (`aoe1_clone_4`)
+- Status note: tech_abling/rev_tech finalized with ASM-backed parity and temporary-safe guard removed (merge `agent/task-200-tech-tree-safety-gap`, commit `0e89851`).
 - Goal: remove the remaining temporary-safe tech-tree guard path in runtime tech enable/revoke flow so single-player progression logic is source-backed.
 - Implement:
   - ASM-audit and finalize `TRIBE_Player::tech_abling` and adjacent `rev_tech` runtime flow around the current temporary-safe comment.
@@ -2660,8 +2673,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: the temporary-safe note is removed and scoped tech enable/revoke behavior is parity-backed.
 
 ## Task 201 — AI module: implement base `BuildAIModule` parity (aibldmod.cpp.decomp)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-3 (`aoe1_clone_3`)
+- Status note: `BuildAIModule` transliteration implemented with full parity, header layout corrected for `sizeof == 0x5BC` (merge `agent/task-201-buildaimodule-base`, commit `0973441`).
 - Goal: implement the base `BuildAIModule` class — the parent of `TribeBuildAIModule` — so AI build-decision dispatch has a real base-class implementation instead of missing/unresolved methods. This is a prerequisite for the AI build pipeline to function correctly.
 - Implement (decomp-first from `aibldmod.cpp.decomp`, ~1562 lines):
   - Constructor, destructor, load-constructor.
@@ -2679,8 +2694,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: `BuildAIModule` compiles/links cleanly with all decomp-backed methods and `TribeBuildAIModule` can call parent methods without unresolved symbols.
 
 ## Task 202 — AI module: implement `ConstructionAIModule` + `TribeConstructionAIModule` parity
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-2 (`aoe1_clone_4`)
+- Status note: `ConstructionAIModule.cpp` and `TribeConstructionAIModule.cpp` implemented with header updates and TribeMainDecisionAI wiring. Commit `5ff8583`.
 - Goal: implement the construction AI sub-module pair so AI opponents can prioritize and manage building construction during gameplay. Currently neither the base nor TRIBE override class has a .cpp implementation.
 - Implement (decomp-first, ~1600 lines total):
   - **Base `ConstructionAIModule`** from `aiconmod.cpp.decomp` (~1105 lines): constructor, destructor, `update()`, construction item management, build-site evaluation, priority methods.
@@ -2695,8 +2712,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: both classes compile/link cleanly, `update()` methods match source-of-truth control flow, and construction AI can be wired into the decision module sub-module array.
 
 ## Task 203 — AI module: implement `ResourceAIModule` + `TribeResourceAIModule` + `DiplomacyAIModule` parity
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-4 (`aoe1_clone_2`)
+- Status note: `ResourceAIModule`, `TribeResourceAIModule`, and `DiplomacyAIModule` implemented (merge `agent/task-203-ai-modules`, commit `2e2c843`).
 - Goal: implement three smaller AI sub-modules in one task: resource management AI (base + TRIBE override) and diplomacy AI (base only). These feed into the main decision module's sub-module array for resource allocation and diplomatic stance decisions.
 - Implement (decomp-first, ~1586 lines total):
   - **Base `ResourceAIModule`** from `airesmod.cpp.decomp` (~646 lines): constructor, destructor, `update()`, resource tracking/evaluation methods.
@@ -2713,8 +2732,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: all three classes compile/link cleanly with source-backed `update()` methods and can be wired into the decision module sub-module array.
 
 ## Task 204 — AI module: implement `TribeStrategyAIModule` parity (taistrmd.cpp.decomp)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-1 (`aoe1_clone_1`)
+- Status note: `StrategyAIModule.cpp` + `TribeStrategyAIModule.cpp` added. Commit `113afcc`.
 - Goal: implement the strategy AI sub-module so AI opponents can make age-advancement, long-term planning, and strategy-level decisions during SP gameplay. The base `StrategyAIModule` is tiny (39 lines, mostly virtual stubs) and should be included.
 - Implement (decomp-first, ~3337 lines total):
   - **Base `StrategyAIModule`** from `aistrmod.cpp.decomp` (~39 lines): constructor, destructor, virtual stubs.
@@ -2729,8 +2750,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: `TribeStrategyAIModule::update()` matches source-of-truth control flow and compiles/links cleanly.
 
 ## Task 205 — AI support modules: implement `EmotionalAIModule` + `ResearchAIModule` + `TradeAIModule` parity
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-2 (`aoe1_clone_2`)
+- Status note: 3 AI support module .cpp files added. Commit `c17cc45`.
 - Goal: implement three smaller AI sub-modules that feed into the main decision module's sub-module array: emotional state tracking, research prioritization, and trade evaluation.
 - Implement (decomp-first, ~1449 lines total):
   - **`EmotionalAIModule`** from `aiemomod.cpp.decomp` (~633 lines): constructor, destructor, `update()`, emotional state tracking/evaluation methods.
@@ -2747,8 +2770,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: all three classes compile/link cleanly with source-backed `update()` methods.
 
 ## Task 206 — AI items: implement `BuildItem` + `ConstructionItem` + `ResearchItem` + `TechItem` parity
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-3 (`aoe1_clone_3`)
+- Status note: 4 AI item .cpp files added (BuildItem, ConstructionItem, ResearchItem, TechItem), headers updated. Commit `d3b427f`.
 - Goal: implement the four AI item data classes used by AI modules to track build orders, construction jobs, research queues, and tech targets. These are data structures consumed by `BuildAIModule`, `ConstructionAIModule`, `ResearchAIModule`, and the strategy module.
 - Implement (decomp-first, ~1755 lines total):
   - **`BuildItem`** from `aiblditm.cpp.decomp` (~618 lines): constructor, destructor, item state, priority, cost evaluation, save/load.
@@ -2767,8 +2792,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: all four item classes compile/link cleanly with source-backed constructors, state methods, and save/load matching decomp control flow.
 
 ## Task 207 — AI module: implement `TribeTacticalAIModule` parity — Part 1 (core lifecycle + group management)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-4 (`aoe1_clone_4`)
+- Status note: `TacticalAIModule.cpp`, `TacticalAIGroup.cpp`, `TribeTacticalAIModule.cpp` added. Part 2 methods marked TODO. Commit `6719e50`.
 - Goal: implement the first half of the tactical AI module — the largest single AI TU at ~20,813 lines of decomp. This Part 1 focuses on the core lifecycle (constructor, destructor, update tick) and group management methods. Part 2 will be created after Part 1 completes to handle the remaining combat targeting/resolution methods.
 - Implement (decomp-first from `taitacmd.cpp.decomp`, first ~half of the file):
   - **Base `TacticalAIModule`** from `aitacmod.cpp.decomp` (~39 lines): constructor, destructor, virtual stubs (tiny base).
@@ -2786,8 +2813,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: `TribeTacticalAIModule` constructor, `update()`, and group management methods compile/link cleanly and match source-of-truth control flow. Remaining combat methods may be marked TODO for Part 2.
 
 ## Task 208 — AI module: implement `TribeInformationAIModule` parity — Part 1 (core lifecycle + scouting)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-5 (`aoe1_clone_5`)
+- Status note: `InformationAIModule.cpp` + `TribeInformationAIModule.cpp` added. Part 2 methods marked TODO. Commit `9e76b50`.
 - Goal: implement the first half of the information/scouting AI module (~10,885 lines of decomp total). This Part 1 focuses on the core lifecycle and primary scouting/intelligence methods. Part 2 will be created after Part 1 completes.
 - Implement (decomp-first from `taiinfmd.cpp.decomp`, first ~half of the file):
   - **Base `InformationAIModule`** from `aiinfmod.cpp.decomp` (~39 lines): constructor, destructor, virtual stubs (tiny base).
@@ -2803,8 +2832,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: `TribeInformationAIModule` constructor, `update()`, and core scouting methods compile/link cleanly and match source-of-truth control flow. Remaining methods may be marked TODO for Part 2.
 
 ## Task 209 — Unit AI: implement Tribe unit AI module dispatch + all unit-type AI module stubs
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-3 (`aoe1_clone_3`)
+- Status note: `TribeUnitAIModules.cpp` + `TribeUnitAIModuleTypes.cpp` added, 15 type headers updated, `TRIBE_Combat_Object::initUnitAI` wired. Commit `b1ce3b7`.
 - Goal: implement the unit-level AI dispatch module and all 15 unit-type-specific AI module constructors/destructors. The dispatch module (`taiuaimd.cpp.decomp`, ~4273 lines) routes AI decisions to the correct unit-type module based on unit class. The 15 unit-type modules are each only ~25 lines (constructor/destructor pairs with minimal logic).
 - Implement (decomp-first, ~4648 lines total):
   - **Unit AI dispatch module** from `taiuaimd.cpp.decomp` (~4273 lines): unit-type routing logic, module creation factory, update dispatch to type-specific handlers.
@@ -2820,8 +2851,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 - Done when: the dispatch module routes unit AI correctly per source-of-truth, all 15 unit-type modules compile/link cleanly, and `build.bat` includes all new files.
 
 ## Task 210 — AI playbook data: implement `AIPlay` group/phase/command/trigger support classes
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Assignment note: worker-1 (`aoe1_clone_1`)
+- Status note: `AIPlayData.cpp` added with all 6 play data classes. Commit `2eb1aaa`.
 - Goal: implement the AI playbook data structure support classes that define AI play scripts loaded by `AIPlayBook::loadPlays`. These classes represent the structured play definitions (groups of phases with commands and triggers) that drive strategic AI behavior.
 - Implement: check which of these classes already have implementations vs need new .cpp files:
   - `AIPlay` (from `src/game/include/AIPlay.h`)
@@ -2843,8 +2876,10 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 
 ## Task 211 — CRITICAL: Technology effects system parity — `RGE_Effects::do_effect()` + `RGE_Player` effect helper methods
 
-- [ ] Finished
-- [ ] Assigned to agent
+- [x] Finished
+- [x] Assigned to agent
+- Assignment note: worker-6 (`aoe1_clone_6`)
+- Status note: `RGE_Effects::do_effect()` filled (6 cases), 5 `RGE_Player` methods added + `RGE_Master_Static_Object::make_available`. Commit `6ca1802`.
 
 ### Priority: P0 — This is the #1 non-AI gameplay blocker. Without this, researching technologies does NOTHING (no stat changes, no unit upgrades, no age advancement effects).
 
@@ -2904,8 +2939,10 @@ These 5 methods are called by `do_effect()` and do NOT exist yet. All are in `sr
 
 ## Task 212 — Master combat object sound parity: implement `play_command_sound` / `play_move_sound`
 
-- [ ] Finished
-- [ ] Assigned to agent
+- [x] Finished
+- [x] Assigned to agent
+- Assignment note: worker-6 (`aoe1_clone_6`)
+- Status note: `play_command_sound`/`play_move_sound` + full `RGE_Master_Action_Object` audit (destructor, copy_obj, modify*, save, make_new_obj, etc.). Commit `e4f7653`.
 
 ### Problem
 Unit command acknowledgment sounds (the voice line when you click a unit / tell it to move) are completely silent. The `play_command_sound()` and `play_move_sound()` methods are empty stubs throughout the object hierarchy.
@@ -2961,3 +2998,145 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - All other non-trivial methods from `m_ac_obj.cpp.decomp` are implemented.
 - Runtime objects correctly delegate sound calls to their master objects.
 - Project compiles and links cleanly with `build.bat`.
+
+## Task 213 — AI module: implement `TribeTacticalAIModule` parity — Part 2 (combat targeting + resolution)
+- [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `13c52c3` (641 insertions). Tactical Part 2 scaffolding and group callbacks.
+- Assignment note: worker-3 (`aoe1_clone_3`)
+- Goal: implement the second half of the tactical AI module (~10,000+ remaining lines from `taitacmd.cpp.decomp`). Part 1 (Task 207) landed constructor, update(), group lifecycle, and save/load skeleton. Part 2 covers combat targeting, attack resolution, retreat/flee logic, and remaining helper methods marked `// TODO: Part 2`.
+- Implement (decomp-first from `taitacmd.cpp.decomp`, second half):
+  - All methods currently marked `// TODO: Part 2` in `TribeTacticalAIModule.cpp`.
+  - Combat targeting methods: target selection, attack group formation, threat assessment.
+  - Resolution/response methods: retreat, flee, regroup, notify callbacks.
+  - Any `TacticalAIGroup` methods marked TODO from Part 1 (load-constructor body, `save`, `notify`, `doSomething`, commander callbacks).
+- Where:
+  - `src/game/src/TribeTacticalAIModule.cpp` (extend existing file)
+  - `src/game/src/TacticalAIGroup.cpp` (extend existing file)
+  - Update headers only for missing declarations.
+- Source of truth: `src/game/decomp/taitacmd.cpp.decomp` + `.asm`, `src/game/decomp/TacticalAIGroup.decomp` + `.asm`.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: all `// TODO: Part 2` markers removed, all methods from `taitacmd.cpp.decomp` implemented, compile/link clean.
+
+## Task 214 — AI module: implement `TribeInformationAIModule` parity — Part 2 (map analysis + enemy tracking)
+- [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `79a0e56` (1665 insertions). Full Part 2 implementation.
+- Assignment note: worker-6 (`aoe1_clone_6`)
+- Goal: implement the second half of the information AI module (~5,400+ remaining lines from `taiinfmd.cpp.decomp`). Part 1 (Task 208) landed constructor, update(), and core scouting helpers. Part 2 covers map analysis, enemy base detection, resource mapping, and remaining helper methods marked `// TODO: Part 2`.
+- Implement (decomp-first from `taiinfmd.cpp.decomp`, second half):
+  - All methods currently marked `// TODO: Part 2` in `TribeInformationAIModule.cpp`.
+  - Map analysis methods: terrain evaluation, zone classification, resource mapping.
+  - Enemy tracking: base detection, military strength estimation, technology scouting.
+  - Any remaining save/load state methods from Part 1 that were deferred.
+- Where:
+  - `src/game/src/TribeInformationAIModule.cpp` (extend existing file)
+  - Update headers only for missing declarations.
+- Source of truth: `src/game/decomp/taiinfmd.cpp.decomp` + `.asm`.
+- Non-overlap: do NOT touch any other AI module .cpp files.
+- Done when: all `// TODO: Part 2` markers removed, all methods from `taiinfmd.cpp.decomp` implemented, compile/link clean.
+
+## Task 215 — TRIBE AI build-module dependency parity: retire helper stubs in `TribeBuildAIModule.cpp`
+- [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `bbe3146` (342 insertions). Helper stubs replaced with source-backed implementations.
+- Assignment note: worker-1 (`aoe1_clone_1`)
+- Goal: remove helper-level TODO stubs currently short-circuiting AI build/train/research bookkeeping during in-game updates. (Retried from stale Task 196.)
+- Implement:
+  - Replace local helper stubs with source-backed behavior: `tribe_build_ai_detask`, `tribe_build_ai_is_moveable`, `tribe_build_ai_clear_area`, `tribe_build_ai_remove_lot`, `tribe_build_ai_update_needed_resources`.
+  - Remove/resolve the partial-parity notes in `addBuiltItem`, `cancelBuildItem`, `addTrainedUnit`, `cancelTrainUnit`, `addResearch`, and `cancelResearch` that are currently gated by these helpers.
+  - Keep scope limited to `TribeBuildAIModule` and directly required declarations; do not modify `TRIBE_Player` command issuance flow.
+- Where:
+  - `src/game/src/TribeBuildAIModule.cpp`
+  - `src/game/include/TribeBuildAIModule.h` (declarations only if required)
+- Source of truth: `src/game/decomp/taibldmd.cpp.decomp` + `.asm`.
+- Done when: all TODO stubs in `TribeBuildAIModule.cpp` are replaced with source-backed implementations and compile/link cleanly.
+
+## Task 216 — In-game screen parity follow-up: finalize remaining `TRIBE_Screen_Game` TODO blocks
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-4 (`aoe1_clone_4`)
+- Goal: close the remaining `TRIBE_Screen_Game` in-game parity gaps (retried from stale Task 194): world-step/game-over branch, player-change civ-refresh branch, and command-panel refresh slice.
+- Implement:
+  - Transliterate the remaining world-step/game-over branch in `handle_game_update` (decomp block around `0x00496800`) currently marked TODO.
+  - Transliterate the remaining civilization theme/picture refresh branch in `player_changed` (decomp block around `0x00498AD0`) currently marked TODO.
+  - Audit/finalize the command-panel refresh helper in `setup_buttons` (block around `0x004996C0`).
+  - Remove scoped TODO markers only after decomp/ASM-backed parity validation.
+- Where:
+  - `src/game/src/TRIBE_Screen_Game.cpp`
+  - `src/game/include/TRIBE_Screen_Game.h` (declarations only if required)
+- Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `src/game/decomp/scr_game.cpp.asm`.
+- Done when: all three scoped TODO markers are removed and behavior is decomp/ASM-backed.
+
+## Task 217 — AI module TODO cleanup: retire remaining stubs in ConstructionAIModule + TribeConstructionAIModule + BuildAIModule
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-2 (`aoe1_clone_2`)
+- Goal: replace all remaining TODO stubs in the construction and build AI modules with source-backed implementations from the decomp.
+- Where: `ConstructionAIModule.cpp`, `TribeConstructionAIModule.cpp`, `BuildAIModule.cpp`
+- Source of truth: `aiconmod.cpp.decomp`, `taiconmd.cpp.decomp`, `aibldmod.cpp.decomp` + `.asm` files.
+- Non-overlap: do NOT touch `TribeBuildAIModule.cpp` (Task 215).
+- Done when: all `// TODO` markers in the three scoped files replaced with source-backed implementations and compile/link clean.
+
+## Task 218 — TRIBE_Player massive parity tranche: civ setup + commands + tech helpers (~5500 lines of decomp gap)
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-2 (`aoe1_clone_2`)
+- Goal: close the ~5500-line gap between `tplayer.cpp.decomp` (6343 lines) and `TRIBE_Player.cpp` (828 lines). This covers 36 missing methods including all 15 civilization setup methods, 6 command methods, and 15 tech/research/trade helpers.
+- Implement (decomp-first from `tplayer.cpp.decomp`):
+  - **Civilization setup (15 methods):** `setupAssyrian`, `setupBabylonian`, `setupCarthaginian`, `setupChoson`, `setupEgyptian`, `setupGreek`, `setupHittite`, `setupMacedonian`, `setupMinoan`, `setupPalmyran`, `setupPersian`, `setupPhoenician`, `setupRoman`, `setupShang`, `setupSumerian`, `setupYamato`. These set civ-specific bonuses/modifiers.
+  - **Command methods (6):** `command_building_cancel`, `command_building_make_obj`, `command_building_make_tech`, `command_delete_object`, `command_trade_attribute`, `find_obj`.
+  - **Tech/research helpers (15):** `check_tech_cost`, `pay_tech_cost`, `tech_cost`, `researchAvailable`, `researchCost`, `researchEverAvailable`, `researchState`, `objectAvailable`, `interface_item_avail`, `interface_tech_avail`, `interface_trade_avail`, `get_achievement`, `intelligentBuildListAndRulesSelection`, `intelligentCivSelection`.
+- Where:
+  - `src/game/src/TRIBE_Player.cpp` (extend existing file)
+  - `src/game/include/TRIBE_Player.h` (declarations only)
+- Source of truth: `src/game/decomp/tplayer.cpp.decomp` + `tplayer.cpp.asm`.
+- Non-overlap: do NOT touch `TRIBE_Player_Tech.cpp` or `RGE_Player.cpp`.
+- Done when: all 36 missing methods implemented from decomp, compile/link clean. This is a large task — expect 1500+ lines of new code.
+
+## Task 219 — TRIBE_Screen_Game massive parity tranche: fill the 7400-line decomp gap
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-6 (`aoe1_clone_6`)
+- Goal: close the ~7400-line gap between `scr_game.cpp.decomp` (9061 lines) and `TRIBE_Screen_Game.cpp` (1638 lines). This covers the bulk of in-game UI handling: button/panel setup, minimap interactions, unit command routing, chat, diplomacy panel, and achievement display.
+- Implement (decomp-first from `scr_game.cpp.decomp`):
+  - Enumerate ALL functions in `scr_game.cpp.decomp` that are NOT yet in `TRIBE_Screen_Game.cpp`.
+  - Prioritize by: button/panel setup methods > command routing > chat/diplomacy > achievement display.
+  - Each function should be transliterated from the decomp with `// Fully verified` markers.
+- Where:
+  - `src/game/src/TRIBE_Screen_Game.cpp` (extend existing file)
+  - `src/game/include/TRIBE_Screen_Game.h` (declarations only)
+- Source of truth: `src/game/decomp/scr_game.cpp.decomp` + `scr_game.cpp.asm`.
+- Non-overlap: do NOT touch `RGE_Main_View.cpp` (Task 193 handled command pipeline).
+- Done when: the implementation gap is cut by at least 3000 lines (half the gap). Mark any remaining unimplemented methods with `// TODO: Part 2` comments.
+
+## Task 220 — RGE_Player parity tranche: fill remaining ~2500-line decomp gap
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-5 (`aoe1_clone_5`)
+- Goal: close the ~2500-line gap between `player.cpp.decomp` (4242 lines) and `RGE_Player.cpp` (1760 lines). This covers base player methods for object management, attribute handling, diplomacy state, and save/load.
+- Implement (decomp-first from `player.cpp.decomp`):
+  - Enumerate ALL functions in `player.cpp.decomp` that are NOT yet in `RGE_Player.cpp`.
+  - Transliterate each from the decomp.
+  - Focus on: object management (create/destroy master/runtime objects), attribute helpers, diplomacy state, save/load methods.
+- Where:
+  - `src/game/src/RGE_Player.cpp` (extend existing file)
+  - `src/game/include/RGE_Player.h` (declarations only)
+- Source of truth: `src/game/decomp/player.cpp.decomp` + `player.cpp.asm`.
+- Non-overlap: do NOT touch `TRIBE_Player.cpp` (Task 218).
+- Done when: all missing methods from `player.cpp.decomp` implemented, compile/link clean.
+
+## Task 221 — TRIBE_Game parity tranche: fill remaining ~5600-line decomp gap (tribegam.cpp)
+- [x] Assigned to agent
+- [ ] Finished
+- Assignment note: worker-1 (`aoe1_clone_1`)
+- Goal: close the ~5600-line gap between `tribegam.cpp.decomp` (8725 lines) and `tribegam.cpp` (3057 lines). This covers game setup, save/load, campaign flow, multiplayer setup, and cheat processing.
+- Implement (decomp-first from `tribegam.cpp.decomp`):
+  - Enumerate ALL functions in `tribegam.cpp.decomp` that are NOT yet in `tribegam.cpp`.
+  - Prioritize: game setup/initialization > save/load game > campaign management > multiplayer setup.
+  - Each function should be transliterated from the decomp.
+- Where:
+  - `src/game/src/tribegam.cpp` (extend existing file)
+  - `src/game/include/TRIBE_Game.h` (declarations only)
+- Source of truth: `src/game/decomp/tribegam.cpp.decomp` + `tribegam.cpp.asm`.
+- Done when: the implementation gap is cut by at least 2500 lines. Mark any remaining unimplemented methods with `// TODO` comments.
