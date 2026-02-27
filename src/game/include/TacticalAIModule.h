@@ -4,6 +4,8 @@
 
 class TacticalAIModule : public AIModule {
 public:
+    TacticalAIModule(void* param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TacticalAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
