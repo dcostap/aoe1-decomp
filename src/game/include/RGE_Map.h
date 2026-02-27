@@ -39,7 +39,12 @@ public:
     void load_border_types(char* filename, RGE_Sound** sounds); // Text file path
     void new_map(long width, long height);
     RGE_Tile* get_tile(int col, int row);
+    long get_map_width();
+    long get_map_height();
+    RGE_Tile** give_up_map_offsets();
     void get_point(short* param_1, short* param_2, float param_3, float param_4, float param_5, short param_6, short param_7);
+    void tile_map_coords(short param_1, short param_2, RGE_Tile* param_3, float* param_4, float* param_5);
+    uchar check_map_coords(short param_1, short param_2);
     void set_map_screen_pos(int col0, int row0, int col1, int row1);
     void clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain, long w, long h);
     void clear_map(uchar terrain, uchar height);
@@ -60,11 +65,20 @@ public:
     void set_map_fog(uchar flag);
     void request_redraw(int col0, int row0, int col1, int row1, uchar attr);
     void clear_map_view_info();
+    uchar get_elev(short col, short row);
+    uchar get_border(short col, short row);
+    void check_for_border(uchar param_1, uchar* param_2);
+    void set_terrain_passablity(short param_1, short param_2, short param_3, short param_4, uchar param_5);
     uchar get_terrain(short col, short row);
     uchar get_tile_type(short col, short row);
     void rebuild_tile_types(short col0, short row0, short col1, short row1);
     void rebuild_border_types(short col0, short row0, short col1, short row1);
     uchar get_border_type(short col, short row);
+    void clean_borders(long param_1, long param_2, long param_3, long param_4);
+    long clean_border_tile(long param_1, long param_2, long (*param_3)[32]);
+    void delete_objects_on_tile(RGE_Player* param_1, RGE_Game_World* param_2, int param_3, int param_4, int param_5, int param_6);
+    void delete_all_objects_on_tile(int param_1, int param_2);
+    void update(ulong param_1);
     void load_terrain_obj_types(char* param_1);
     void create_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id);
     int clear_terrain_object(RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id);
