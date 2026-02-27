@@ -25,6 +25,17 @@ set "OUT_EXE=%OUT_DIR%\empiresx.exe"
 set "BUILD_STAMP=%OBJ_DIR%\build.stamp"
 set "EXCLUDE_FILE=build_exclude_sources.txt"
 
+if not exist "%SRC_DIR%\StrategyAIModule.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\StrategyAIModule.cpp"
+    popd
+    exit /b 1
+)
+if not exist "%SRC_DIR%\TribeStrategyAIModule.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\TribeStrategyAIModule.cpp"
+    popd
+    exit /b 1
+)
+
 REM --- Setup VS Environment (only if required tools are not already available) ---
 where cl >nul 2>nul
 set "HAS_CL=%errorlevel%"
