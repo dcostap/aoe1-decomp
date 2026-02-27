@@ -150,13 +150,16 @@ void TacticalAIGroup::setType(int param_1) { this->typeValue = param_1; }
 int TacticalAIGroup::subType() const { return this->subTypeValue; }
 void TacticalAIGroup::setSubType(int param_1) { this->subTypeValue = param_1; }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EAFA0
 int TacticalAIGroup::addUnit(int param_1, TribeMainDecisionAIModule* param_2) {
     for (int i = 0; i < 40; ++i) {
         if (this->unitsValue[i] == -1) {
             this->unitsValue[i] = param_1;
             this->unitsOriginalHitPointsValue[i] = -1;
             this->numberUnitsValue += 1;
-            // TODO: Part 2 - preserve commander command wiring via md function table.
+            if (this->commanderValue != -1) {
+                param_2->player->command_add_to_group(this->commanderValue, param_1, 4.0f);
+            }
             if ((param_2 != nullptr) && (param_2->player != nullptr) && (param_2->player->world != nullptr)) {
                 this->lastAddedUnitTimeValue = param_2->player->world->world_time;
             }
@@ -166,13 +169,15 @@ int TacticalAIGroup::addUnit(int param_1, TribeMainDecisionAIModule* param_2) {
     return 0;
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EB030
 int TacticalAIGroup::removeUnit(int param_1, TribeMainDecisionAIModule* param_2) {
     for (int i = 0; i < 40; ++i) {
         if (this->unitsValue[i] == param_1) {
             if (param_1 == this->commanderValue) {
                 setSpecificCommander(-1, param_2);
+            } else if (this->commanderValue != -1) {
+                param_2->player->command_remove_from_group(this->commanderValue, param_1);
             }
-            // TODO: Part 2 - preserve commander unlink callback when commander differs.
             this->unitsValue[i] = -1;
             this->unitsOriginalHitPointsValue[i] = -1;
             this->numberUnitsValue -= 1;
@@ -182,14 +187,16 @@ int TacticalAIGroup::removeUnit(int param_1, TribeMainDecisionAIModule* param_2)
     return 0;
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EB0C0
 int TacticalAIGroup::removeUnitByIndex(int param_1, TribeMainDecisionAIModule* param_2) {
     if ((param_1 < 0) || (param_1 >= 40)) {
         return 0;
     }
     if (this->unitsValue[param_1] == this->commanderValue) {
         setSpecificCommander(-1, param_2);
+    } else if (this->commanderValue != -1) {
+        param_2->player->command_remove_from_group(this->commanderValue, this->unitsValue[param_1]);
     }
-    // TODO: Part 2 - preserve commander unlink callback when commander differs.
     this->unitsValue[param_1] = -1;
     this->unitsOriginalHitPointsValue[param_1] = -1;
     this->numberUnitsValue -= 1;
@@ -236,10 +243,26 @@ int TacticalAIGroup::desiredNumberUnits() const { return this->desiredNumberUnit
 void TacticalAIGroup::setDesiredNumberUnits(int param_1) { this->desiredNumberUnitsValue = param_1; }
 int TacticalAIGroup::commander() const { return this->commanderValue; }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EB3A0
 void TacticalAIGroup::setSpecificCommander(int param_1, TribeMainDecisionAIModule* param_2) {
-    (void)param_2;
-    // TODO: Part 2 - preserve command fan-out/update logic in setSpecificCommander.
+    int temp[40];
+    if (this->commanderValue != -1) {
+        param_2->player->command_destroy_group(this->commanderValue);
+    }
     this->commanderValue = param_1;
+    if (param_1 != -1) {
+        int numberUnits = 0;
+        int* outUnits = temp + 1;
+        for (int i = 0; i < 40; ++i) {
+            int unitID = this->unitsValue[i];
+            *outUnits = unitID;
+            if (unitID != -1) {
+                numberUnits += 1;
+                outUnits += 1;
+            }
+        }
+        param_2->player->command_create_group(param_1, temp + 1, numberUnits, 4.0f);
+    }
 }
 
 void TacticalAIGroup::setLocation(float param_1, float param_2, float param_3) {
