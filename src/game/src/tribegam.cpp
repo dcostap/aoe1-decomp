@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <new>
 
 #include "../include/TRIBE_Game.h"
 #include "../include/Res_file.h"
@@ -669,6 +670,76 @@ void TRIBE_Game::setCivilization(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->
 void TRIBE_Game::setScenarioPlayer(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.scenarioPlayerValue[p1] = p2; }
 void TRIBE_Game::setPlayerColor(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.playerColorValue[p1] = p2; }
 void TRIBE_Game::setComputerName(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.computerNameValue[p1] = p2; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529000
+void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* p1) {
+    int i = 0;
+    int* scenarioPlayerValue = p1->scenarioPlayerValue;
+
+    this->setMapSize(p1->mapSizeValue);
+    this->setMapType(p1->mapTypeValue);
+    this->setAnimals(p1->animalsValue);
+    this->setPredators(p1->predatorsValue);
+    this->setVictoryType(p1->victoryTypeValue, p1->victoryAmountValue);
+
+    do {
+        this->setCivilization(i, (uint)p1->civilizationValue[i]);
+        this->setScenarioPlayer(i, *scenarioPlayerValue);
+        this->setPlayerColor(i, (uint)p1->playerColorValue[i]);
+        this->setComputerName(i, (uint)p1->computerNameValue[i]);
+        i = i + 1;
+        scenarioPlayerValue = scenarioPlayerValue + 1;
+    } while (i < 9);
+
+    this->setAllowTrading((uint)p1->allowTradingValue);
+    this->setLongCombat((uint)p1->longCombatValue);
+    this->setRandomizePositions((uint)p1->randomizePositionsValue);
+    this->setFullTechTree((uint)p1->fullTechTreeValue);
+    this->setResourceLevel(p1->resourceLevelValue);
+    this->setStartingAge(p1->startingAgeValue);
+    this->setStartingUnits((uint)p1->startingUnitsValue);
+    this->setDeathMatch(p1->deathMatchValue);
+    this->setPopLimit(p1->popLimitValue);
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529100
+void TRIBE_Game::get_tribe_options(TRIBE_Game_Options* p1) {
+    uchar u = 0;
+    int i = 0;
+    int* scenarioPlayerValue = p1->scenarioPlayerValue;
+
+    p1->mapSizeValue = this->mapSize();
+    p1->mapTypeValue = this->mapType();
+    p1->animalsValue = this->animals();
+    p1->predatorsValue = this->predators();
+    p1->victoryTypeValue = this->victoryType();
+    p1->victoryAmountValue = this->victoryAmount();
+
+    do {
+        int value = this->civilization(i);
+        p1->civilizationValue[i] = (uchar)value;
+        value = this->scenarioPlayer(i);
+        *scenarioPlayerValue = value;
+        value = this->playerColor(i);
+        p1->playerColorValue[i] = (uchar)value;
+        value = this->computerName(i);
+        p1->computerNameValue[i] = (uchar)value;
+
+        i = i + 1;
+        scenarioPlayerValue = scenarioPlayerValue + 1;
+    } while (i < 9);
+
+    p1->allowTradingValue = (uchar)this->allowTrading();
+    p1->longCombatValue = (uchar)this->longCombat();
+    p1->randomizePositionsValue = (uchar)this->randomizePositions();
+    p1->fullTechTreeValue = (uchar)this->fullTechTree();
+    p1->resourceLevelValue = this->resourceLevel();
+    p1->startingAgeValue = this->startingAge();
+    p1->startingUnitsValue = (uchar)this->startingUnits();
+    u = this->deathMatch();
+    p1->deathMatchValue = u;
+    u = this->popLimit();
+    p1->popLimitValue = u;
+}
 
 void TRIBE_Game::resetRandomComputerName() {
     memset(this->computerNameUsed, 0, sizeof(this->computerNameUsed));
@@ -693,6 +764,10 @@ void TRIBE_Game::set_load_game_name(char* p1) {
 }
 
 unsigned char TRIBE_Game::quickStartGame() { return this->quick_start_game; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292C0
+int TRIBE_Game::animals() { return this->tribe_game_options.animalsValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292E0
+int TRIBE_Game::predators() { return this->tribe_game_options.predatorsValue; }
 
 char* TRIBE_Game::get_save_game_name() {
     // Source of truth: tribegam.cpp.decomp @ 0x005234F0
@@ -707,6 +782,14 @@ char* TRIBE_Game::get_load_game_name() {
 int TRIBE_Game::civilization(int p1) {
     if (p1 >= 0 && p1 < 9) {
         return (int)this->tribe_game_options.civilizationValue[p1];
+    }
+    return 0;
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529370
+int TRIBE_Game::scenarioPlayer(int p1) {
+    if (p1 >= 0 && p1 < 9) {
+        return this->tribe_game_options.scenarioPlayerValue[p1];
     }
     return 0;
 }
@@ -735,8 +818,12 @@ int TRIBE_Game::randomizePositions() { return this->tribe_game_options.randomize
 int TRIBE_Game::fullTechTree() { return this->tribe_game_options.fullTechTreeValue; }
 int TRIBE_Game::allowTrading() { return this->tribe_game_options.allowTradingValue; }
 int TRIBE_Game::longCombat() { return this->tribe_game_options.longCombatValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529460
+int TRIBE_Game::startingUnits() { return (uint)this->tribe_game_options.startingUnitsValue; }
 unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMatchValue; }
 unsigned char TRIBE_Game::popLimit() { return this->tribe_game_options.popLimitValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294B0
+int TRIBE_Game::randomStartValue() { return this->random_start_value; }
 
 int TRIBE_Game::randomComputerName(int civ) {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A0B0
@@ -776,6 +863,16 @@ int TRIBE_Game::randomComputerName(int civ) {
 
     this->computerNameUsed[civ][index] = 1;
     return index + civ * 10 - 9;
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523640
+void TRIBE_Game::show_error_message(int p1) {
+    char title[256];
+    char msg[256];
+
+    this->get_string(0xfa8, title, 0x100);
+    this->get_string2(1, p1, 0, msg, 0x100);
+    MessageBoxA((HWND)this->prog_window, msg, title, MB_ICONHAND);
 }
 
 void TRIBE_Game::show_status_message(char* p1, char* p2, long p3) {
@@ -875,6 +972,42 @@ int TRIBE_Game::save_game(char* p1) {
     return 1;
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00524790
+int TRIBE_Game::save_scenario(char* p1) {
+    int mode = this->prog_mode;
+    int i = 1;
+
+    if ((mode != 4) && (mode != 6) && (mode != 7) && (mode != 5)) {
+        return 0;
+    }
+
+    this->disable_input();
+    this->show_status_message(0x450, (char*)0, -1);
+
+    if (this->world->player_num > 1) {
+        do {
+            this->world->scenario->Set_player_Active(i - 1, 1);
+            i = i + 1;
+        } while (i < this->world->player_num);
+    }
+
+    uchar ok = this->world->save_scenario(p1);
+    if (ok == 0) {
+        this->enable_input();
+        return 0;
+    }
+
+    if (this->singlePlayerGame() == 1) {
+        this->set_paused(0, 0);
+    }
+
+    panel_system->setCurrentPanel((char*)"Game Screen", 0);
+    panel_system->destroyPanel((char*)"Save Game Screen");
+    panel_system->destroyPanel((char*)"Status Screen");
+    this->enable_input();
+    return 1;
+}
+
 void TRIBE_Game::do_game_over() {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00526DC0
     this->disconnect_multiplayer_game();
@@ -896,6 +1029,27 @@ void TRIBE_Game::do_game_over() {
             this->start_video(4, (char*)((char*)world->scenario + 0x16c8));
         }
     }
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A030
+char* TRIBE_Game::game_over_msg() {
+    if (this->world->players[this->world->curr_player]->game_status == 1) {
+        this->get_string(0x47e, this->timing_text2, 0x100);
+        return this->timing_text2;
+    }
+
+    this->get_string(0x47f, this->timing_text2, 0x100);
+    return this->timing_text2;
+}
+
+long TRIBE_Game::get_achievement_info(unsigned char p1, char** p2) {
+    // TODO: STUB - TRIBE_World::get_achievement is not yet declared/implemented in this tree.
+    (void)p1;
+    (void)p2;
+    if (this->world == nullptr) {
+        return 0;
+    }
+    return 0;
 }
 
 int TRIBE_Game::create_game(int p1) {
@@ -1679,6 +1833,30 @@ start_game_fail:
     CUSTOM_DEBUG_LOG_FMT("start_game(%d): FAILED", p1);
     this->close_status_message();
     this->enable_input();
+    return 0;
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00525E50
+int TRIBE_Game::test_scenario(char* p1) {
+    uint len = (uint)strlen(p1) + 1;
+    memcpy(this->testing_scenario, p1, len);
+
+    panel_system->destroyPanel((char*)"Scenario Editor Screen");
+    this->set_prog_mode(0);
+
+    int ok = this->start_scenario(this->testing_scenario);
+    if (ok != 0) {
+        return 1;
+    }
+
+    ok = this->start_scenario_editor(this->testing_scenario, 0);
+    if (ok == 0) {
+        ok = this->start_menu();
+        if (ok == 0) {
+            this->RGE_Base_Game::close();
+        }
+    }
+
     return 0;
 }
 
@@ -2634,15 +2812,84 @@ RGE_Scenario* TRIBE_Game::new_scenario_info(int p1) {
     return new T_Scenario(p1, nullptr);
 }
 
-void TRIBE_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
+void TRIBE_Game::notification(int p1, long p2, long p3, long p4, long p5) {
+    // TODO: Transliterate full TRIBE_Game::notification from tribegam.cpp.decomp @ 0x00524D70.
+    RGE_Base_Game::notification(p1, p2, p3, p4, p5);
+}
 int TRIBE_Game::reset_comm() {
     // Source of truth: tribegam.cpp.decomp forwards to base reset path.
     return RGE_Base_Game::reset_comm();
 }
-void TRIBE_Game::send_game_options() {}
-void TRIBE_Game::receive_game_options() {}
-char* TRIBE_Game::gameSummary() { return nullptr; }
-int TRIBE_Game::processCheatCode(int p1, char* p2) { return 0; }
+// TODO: Minor parity gap - decomp uses comm handler SetMyGameOptions API path (@ 0x00528F60).
+void TRIBE_Game::send_game_options() {
+    if (this->comm_handler == nullptr) {
+        return;
+    }
+
+    this->comm_handler->FreeOptions();
+
+    char* options_data = (char*)::operator new(0x114 + 1, std::nothrow);
+    if (options_data == nullptr) {
+        return;
+    }
+
+    memcpy(options_data, &this->rge_game_options, sizeof(this->rge_game_options));
+    TRIBE_Game_Options* tribe_options = (TRIBE_Game_Options*)(options_data + sizeof(this->rge_game_options));
+    this->get_tribe_options(tribe_options);
+
+    this->comm_handler->OptionsData = options_data;
+    this->comm_handler->PlayerOptions.DataSizeToFollow = 0x114;
+    if (this->comm_handler->MeHost != 0) {
+        this->comm_handler->PlayerOptions.NeedsToBeSent = '\x01';
+    }
+}
+
+// TODO: Minor parity gap - decomp uses comm handler GetMyGameOptions API path (@ 0x00528FB0).
+void TRIBE_Game::receive_game_options() {
+    if (this->comm_handler == nullptr) {
+        return;
+    }
+
+    ulong size = this->comm_handler->PlayerOptions.DataSizeToFollow;
+    char* raw_options = this->comm_handler->OptionsData;
+    if (raw_options == nullptr || size != 0x114) {
+        return;
+    }
+
+    RGE_Base_Game::RGE_Game_Options* base_options = (RGE_Base_Game::RGE_Game_Options*)raw_options;
+    this->setVersion(base_options->versionValue);
+    this->setScenarioGame((uint)base_options->scenarioGameValue);
+    this->setScenarioName(base_options->scenarioNameValue);
+    this->setSinglePlayerGame((uint)base_options->singlePlayerGameValue);
+    this->setMultiplayerGame((uint)base_options->multiplayerGameValue);
+    this->RGE_Base_Game::setMapSize((uint)base_options->mapXSizeValue, (uint)base_options->mapYSizeValue, (uint)base_options->mapZSizeValue);
+    this->setAllowCheatCodes((uint)base_options->allowCheatCodesValue);
+    this->setCheatNotification((uint)base_options->cheatNotificationValue);
+    this->setFullVisibility((uint)base_options->fullVisibilityValue);
+    this->setFogOfWar((uint)base_options->fogOfWarValue);
+    this->setColoredChat((uint)base_options->coloredChatValue);
+    this->setNumberPlayers((uint)base_options->numberPlayersValue);
+    this->setGameDeveloperMode((uint)base_options->gameDeveloperModeValue);
+    this->setDifficulty((uint)base_options->difficultyValue);
+    this->setMpPathFinding(base_options->mpPathFindingValue);
+    for (int i = 0; i < 9; i++) {
+        this->setPlayerCDAndVersion(i, base_options->playerCDAndVersionValue[i]);
+        this->setPlayerTeam(i, (uint)base_options->playerTeamValue[i]);
+    }
+
+    TRIBE_Game_Options* tribe_options = (TRIBE_Game_Options*)(raw_options + sizeof(this->rge_game_options));
+    this->set_tribe_options(tribe_options);
+}
+
+char* TRIBE_Game::gameSummary() {
+    // TODO: Transliterate TRIBE_Game::gameSummary from tribegam.cpp.decomp @ 0x00529570.
+    return RGE_Base_Game::gameSummary();
+}
+
+int TRIBE_Game::processCheatCode(int p1, char* p2) {
+    // TODO: Transliterate full TRIBE_Game::processCheatCode from tribegam.cpp.decomp @ 0x00527A70.
+    return RGE_Base_Game::processCheatCode(p1, p2);
+}
 int TRIBE_Game::setup_music_system() { return RGE_Base_Game::setup_music_system(); }
 void TRIBE_Game::shutdown_music_system() { RGE_Base_Game::shutdown_music_system(); }
 
@@ -2699,9 +2946,13 @@ int TRIBE_Game::setup_fonts() { return RGE_Base_Game::setup_fonts(); }
 int TRIBE_Game::setup_sounds() { return RGE_Base_Game::setup_sounds(); }
 int TRIBE_Game::setup_shapes() { return RGE_Base_Game::setup_shapes(); }
 int TRIBE_Game::setup_blank_screen() { return RGE_Base_Game::setup_blank_screen(); }
-void TRIBE_Game::setup_timings() {}
+void TRIBE_Game::setup_timings() {
+    // TODO: Transliterate TRIBE_Game::setup_timings from decomp if needed.
+}
 
-void TRIBE_Game::stop_sound_system() {}
+void TRIBE_Game::stop_sound_system() {
+    // TODO: Transliterate TRIBE_Game::stop_sound_system from decomp if needed.
+}
 int TRIBE_Game::restart_sound_system() { return 1; }
 void TRIBE_Game::stop_music_system() { RGE_Base_Game::stop_music_system(); }
 int TRIBE_Game::restart_music_system() { return RGE_Base_Game::restart_music_system(); }
@@ -3023,11 +3274,26 @@ int TRIBE_Game::action_music_done() {
     // Fully verified. Source of truth: basegame.cpp.asm vtable @ 0x005772B4
     return RGE_Base_Game::action_music_done();
 }
-int TRIBE_Game::action_activate() { return 0; }
-int TRIBE_Game::action_deactivate() { return 0; }
-int TRIBE_Game::action_init_menu() { return 0; }
-int TRIBE_Game::action_exit_menu() { return 0; }
-int TRIBE_Game::action_size() { return 0; }
+int TRIBE_Game::action_activate() {
+    // TODO: Transliterate TRIBE_Game::action_activate from decomp/asm.
+    return 0;
+}
+int TRIBE_Game::action_deactivate() {
+    // TODO: Transliterate TRIBE_Game::action_deactivate from decomp/asm.
+    return 0;
+}
+int TRIBE_Game::action_init_menu() {
+    // TODO: Transliterate TRIBE_Game::action_init_menu from decomp/asm.
+    return 0;
+}
+int TRIBE_Game::action_exit_menu() {
+    // TODO: Transliterate TRIBE_Game::action_exit_menu from decomp/asm.
+    return 0;
+}
+int TRIBE_Game::action_size() {
+    // TODO: Transliterate TRIBE_Game::action_size from decomp/asm.
+    return 0;
+}
 int TRIBE_Game::action_close() {
     // Source of truth: tribegam.cpp.decomp @ 0x0052A000
     if (this->comm_handler != nullptr) {
@@ -3038,17 +3304,72 @@ int TRIBE_Game::action_close() {
     return 1;
 }
 
-void TRIBE_Game::calc_timings() {}
-void TRIBE_Game::calc_timing_text() {}
-void TRIBE_Game::show_timings() {}
-void TRIBE_Game::show_comm() {}
-void TRIBE_Game::show_ai() {}
+void TRIBE_Game::calc_timings() {
+    // TODO: Transliterate TRIBE_Game::calc_timings from decomp/asm.
+}
+void TRIBE_Game::calc_timing_text() {
+    // TODO: Transliterate TRIBE_Game::calc_timing_text from tribegam.cpp.decomp @ 0x00524880.
+}
+void TRIBE_Game::show_timings() {
+    // TODO: Transliterate TRIBE_Game::show_timings from tribegam.cpp.decomp @ 0x00524A60.
+}
+void TRIBE_Game::show_comm() {
+    // TODO: Transliterate TRIBE_Game::show_comm from tribegam.cpp.decomp @ 0x00524A80.
+}
+void TRIBE_Game::show_ai() {
+    // TODO: Transliterate TRIBE_Game::show_ai from tribegam.cpp.decomp @ 0x00524AF0.
+}
 
 int TRIBE_Game::setup_map_save_area() { return RGE_Base_Game::setup_map_save_area(); }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A1E0
+void TRIBE_Game::SetClickTables(MouseClickInfo* p1, int p2, MouseClickInfo* p3, int p4) {
+    this->MouseRightClickTable = p1;
+    this->MouseRightClickTableSize = p2;
+    this->MouseLeftClickTable = p3;
+    this->MouseLeftClickTableSize = p4;
+}
+
 void TRIBE_Game::set_interface_messages() {
-    // ASM 0x0052A210
-    // Simplified selection of mouse click tables
+    // TODO: Transliterate full table wiring from tribegam.cpp.decomp @ 0x0052A210.
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A630
+void TRIBE_Game::add_notification_loc(long p1, long p2) {
+    int i = this->current_notification_loc;
+    if ((i < 0) || (this->notification_loc_x[i] != p1) || (this->notification_loc_y[i] != p2)) {
+        this->current_notification_loc = i + 1;
+        if (i + 1 > 4) {
+            this->current_notification_loc = 0;
+        }
+        this->notification_loc_x[this->current_notification_loc] = p1;
+        this->notification_loc_y[this->current_notification_loc] = p2;
+    }
+    this->current_notification_recalled = this->current_notification_loc;
+}
+
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A6A0
+void TRIBE_Game::goto_notification_loc() {
+    int i = this->current_notification_recalled;
+    if (i == -1) {
+        return;
+    }
+
+    int x = this->notification_loc_x[i];
+    int y = this->notification_loc_y[i];
+
+    this->current_notification_recalled = i - 1;
+    if (i - 1 < 0) {
+        this->current_notification_recalled = 4;
+    }
+
+    if ((this->notification_loc_x[this->current_notification_recalled] == -1) ||
+        (this->notification_loc_y[this->current_notification_recalled] == -1)) {
+        this->current_notification_recalled = this->current_notification_loc;
+    }
+
+    RGE_Player* player = this->get_player();
+    player->set_view_loc((float)x, (float)y);
 }
 
 void TRIBE_Game::close() { 
