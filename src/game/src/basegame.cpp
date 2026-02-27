@@ -68,6 +68,7 @@ static char s_ver_1_4c[] = "1.4c";
 static char s_ver_1_X[] = "1.X";
 static char s_dot_AoE_04d_bmp[] = ".\\AoE%04d.bmp";
 static const char kBasegameSourcePath[] = "C:\\msdev\\work\\age1_x1\\basegame.cpp";
+static char DAT_0062c49c[4];
 
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
@@ -1275,7 +1276,14 @@ void RGE_Base_Game::write_scenario_header(int param_1) {
 }
 
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
-void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {}
+void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C6E0
+    (void)p1;
+    (void)p2;
+    (void)p3;
+    (void)p4;
+    (void)p5;
+}
 int RGE_Base_Game::reset_comm() {
     // Source of truth: basegame.cpp.decomp @ 0x0041EFF0
     // Tear down existing comm object, then re-run setup_comm() via virtual dispatch.
@@ -1286,10 +1294,64 @@ int RGE_Base_Game::reset_comm() {
     }
     return this->setup_comm();
 }
-void RGE_Base_Game::send_game_options() {}
-void RGE_Base_Game::receive_game_options() {}
-char* RGE_Base_Game::gameSummary() { return nullptr; }
-int RGE_Base_Game::processCheatCode(int p1, char* p2) { return 0; }
+void RGE_Base_Game::send_game_options() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004220D0
+    if (this->comm_handler != nullptr) {
+        this->comm_handler->FreeOptions();
+        char* options = (char*)::operator new(0xA8 + 1, std::nothrow);
+        if (options == nullptr) {
+            return;
+        }
+        memcpy(options, &this->rge_game_options, 0xA8);
+        this->comm_handler->OptionsData = options;
+        this->comm_handler->PlayerOptions.DataSizeToFollow = 0xA8;
+        if (this->comm_handler->MeHost != 0) {
+            this->comm_handler->PlayerOptions.NeedsToBeSent = '\x01';
+        }
+    }
+}
+
+void RGE_Base_Game::receive_game_options() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004220F0
+    if (this->comm_handler != nullptr) {
+        ulong size = this->comm_handler->PlayerOptions.DataSizeToFollow;
+        RGE_Game_Options* options = (RGE_Game_Options*)this->comm_handler->OptionsData;
+        if ((options != nullptr) && (size == 0xA8)) {
+            this->setVersion(options->versionValue);
+            this->setScenarioGame((uint)options->scenarioGameValue);
+            this->setScenarioName(options->scenarioNameValue);
+            this->setSinglePlayerGame((uint)options->singlePlayerGameValue);
+            this->setMultiplayerGame((uint)options->multiplayerGameValue);
+            this->setMapSize((uint)options->mapXSizeValue, (uint)options->mapYSizeValue, (uint)options->mapZSizeValue);
+            this->setAllowCheatCodes((uint)options->allowCheatCodesValue);
+            this->setCheatNotification((uint)options->cheatNotificationValue);
+            this->setFullVisibility((uint)options->fullVisibilityValue);
+            this->setFogOfWar((uint)options->fogOfWarValue);
+            this->setColoredChat((uint)options->coloredChatValue);
+            this->setNumberPlayers((uint)options->numberPlayersValue);
+            this->setGameDeveloperMode((uint)options->gameDeveloperModeValue);
+            this->setDifficulty((uint)options->difficultyValue);
+            this->setMpPathFinding(options->mpPathFindingValue);
+            for (int i = 0; i < 9; i++) {
+                this->setPlayerCDAndVersion(i, options->playerCDAndVersionValue[i]);
+                this->setPlayerTeam(i, (uint)options->playerTeamValue[i]);
+            }
+        }
+    }
+}
+
+char* RGE_Base_Game::gameSummary() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422690
+    DAT_0062c49c[0] = '\0';
+    return DAT_0062c49c;
+}
+
+int RGE_Base_Game::processCheatCode(int p1, char* p2) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C6F0
+    (void)p1;
+    (void)p2;
+    return 0;
+}
 int RGE_Base_Game::setup_music_system() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F110
     // Offset: 0x0041F110
