@@ -2,6 +2,8 @@
 #include "common.h"
 #include "ResourceItem.h"
 
+class ResourceItem;
+
 class TechnologyItem {
 public:
     TechnologyItem();
