@@ -24,6 +24,9 @@
 #include "../include/RGE_Sound.h"
 #include "../include/Visible_Resource_Manager.h"
 #include "../include/RGE_Doppleganger_Creator.h"
+#include "../include/RGE_Check_List.h"
+#include "../include/RGE_Check_Node.h"
+#include "../include/InfluenceMap.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/DClipInfo_List.h"
 #include "../include/globals.h"
@@ -109,6 +112,55 @@ static void rge_static_add_unique_member(ManagedArray<int>& arr, int value) {
     if (arr.value != nullptr && arr.numberValue < arr.maximumSizeValue) {
         arr.value[arr.numberValue] = value;
         arr.numberValue = arr.numberValue + 1;
+    }
+}
+
+static void rge_static_add_check_node(RGE_Check_List* list, RGE_Static_Object* obj, float dx, float dy, uchar flag) {
+    if (list == nullptr) {
+        return;
+    }
+    RGE_Check_Node* node = new (std::nothrow) RGE_Check_Node();
+    if (node == nullptr) {
+        return;
+    }
+    node->node = obj;
+    node->dx = dx;
+    node->dy = dy;
+    node->flag = flag;
+    node->next = list->list;
+    list->list = node;
+}
+
+static void rge_static_delete_check_list(RGE_Check_List* list) {
+    if (list == nullptr) {
+        return;
+    }
+    RGE_Check_Node* node = list->list;
+    while (node != nullptr) {
+        RGE_Check_Node* next = node->next;
+        delete node;
+        node = next;
+    }
+    delete list;
+}
+
+static void rge_static_change_influence_value(InfluenceMap* map, int x, int y, uchar value, int increase) {
+    if (map == nullptr || map->rowValue == nullptr) {
+        return;
+    }
+
+    int local_x = x - map->xReferencePointValue;
+    int local_y = y - map->yReferencePointValue;
+    if ((local_x < 0) || (local_y < 0) || (local_x >= map->xSizeValue) || (local_y >= map->ySizeValue)) {
+        return;
+    }
+
+    uchar* cell = &map->rowValue[local_y][local_x];
+    if (increase != 0) {
+        uint sum = (uint)(*cell) + (uint)value;
+        *cell = (sum > 0xFFu) ? 0xFF : (uchar)sum;
+    } else {
+        *cell = (*cell <= value) ? 0 : (uchar)(*cell - value);
     }
 }
 
@@ -1206,6 +1258,491 @@ float RGE_Static_Object::distance_to_position(float param_1, float param_2, floa
     return sqrtf(dY * dY + dX * dX);
 }
 
+RGE_Static_Object* RGE_Static_Object::check_object_bounds() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5610
+    float rx = this->master_obj->radius_x;
+    float ry = this->master_obj->radius_y;
+    if ((rx <= 0.0f) && (ry <= 0.0f)) {
+        return nullptr;
+    }
+
+    int min_x = (int)(this->world_x - rx);
+    int min_y = (int)(this->world_y - ry);
+    int max_x = (int)(this->world_x + rx);
+    int max_y = (int)(this->world_y + ry);
+
+    RGE_Map* map = this->owner->world->map;
+    if (min_x < 0) {
+        min_x = 0;
+    }
+    if (max_x >= map->map_width) {
+        max_x = map->map_width - 1;
+    }
+    if (min_y < 0) {
+        min_y = 0;
+    }
+    if (max_y >= map->map_height) {
+        max_y = map->map_height - 1;
+    }
+
+    for (int y = min_y; y <= max_y; ++y) {
+        for (int x = min_x; x <= max_x; ++x) {
+            for (RGE_Object_Node* node = map->map_row_offset[y][x].objects.list; node != nullptr; node = node->next) {
+                RGE_Static_Object* obj = node->node;
+                float obj_rx = obj->master_obj->radius_x;
+                float obj_ry = obj->master_obj->radius_y;
+                if ((obj_rx > 0.0f) && (obj_ry > 0.0f)) {
+                    float dy = obj->world_y - this->world_y;
+                    float dx = obj->world_x - this->world_x;
+                    if (dy < 0.0f) {
+                        dy = -dy;
+                    }
+                    if (dx < 0.0f) {
+                        dx = -dx;
+                    }
+                    if ((dy <= obj_ry + ry) && (dx <= obj_rx + rx)) {
+                        return obj;
+                    }
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
+uchar RGE_Static_Object::hit_test(short param_1, short param_2, short param_3, short param_4, short param_5) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5FA0
+    if ((this->sprite == nullptr) || (this->sprite_list == nullptr) || (this->sprite->shape == nullptr)) {
+        return 0;
+    }
+
+    short frame = this->sprite_list->frame(this->sprite);
+    int shape_index = (int)((uint)this->facet * (uint)(ushort)this->sprite->frame_num) + (int)frame;
+
+    short local_y = (short)((param_3 - this->screen_y_offset) - param_1);
+    short local_x = (short)((param_2 - this->screen_x_offset) - param_5);
+
+    if (this->sprite->shape->shape_check((long)local_x, (long)local_y, shape_index) != 0) {
+        return 1;
+    }
+
+    if (param_4 != 0) {
+        for (short yoff = (short)-param_4; yoff < param_4; ++yoff) {
+            for (short xoff = (short)-param_4; xoff < param_4; ++xoff) {
+                if (this->sprite->shape->shape_check((long)(local_x + xoff), (long)(local_y + yoff), shape_index) != 0) {
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+uchar RGE_Static_Object::box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C60A0
+    if ((this->sprite == nullptr) || (this->sprite_list == nullptr)) {
+        return 0;
+    }
+
+    this->sprite_list->get_facetindex(this->sprite, this->facet);
+    short min_x = 0;
+    short min_y = 0;
+    short max_x = 0;
+    short max_y = 0;
+    if (this->get_frame(&min_x, &min_y, &max_x, &max_y) == 0) {
+        return 0;
+    }
+
+    short x1 = (short)(min_x + param_5 + this->screen_x_offset);
+    short x2 = (short)(max_x + param_5 + this->screen_x_offset);
+    short y1 = (short)(min_y + param_6 + this->screen_y_offset);
+    short y2 = (short)(max_y + param_6 + this->screen_y_offset);
+
+    if (((param_1 <= x1) && (x1 <= param_3) && (param_2 <= y1) && (y1 <= param_4)) ||
+        ((param_1 <= x2) && (x2 <= param_3) && (param_2 <= y2) && (y2 <= param_4)) ||
+        ((x1 <= param_1) && (param_1 <= x2) && (y1 <= param_2) && (param_2 <= y2)) ||
+        ((x1 <= param_3) && (param_3 <= x2) && (y1 <= param_4) && (param_4 <= y2))) {
+        return 1;
+    }
+
+    if ((param_1 < x1) && (x2 < param_3)) {
+        if ((y1 < param_2) && (param_2 < y2)) {
+            return 1;
+        }
+        if ((y1 < param_4) && (param_4 < y2)) {
+            return 1;
+        }
+    }
+
+    if ((param_2 < y1) && (y2 < param_4) &&
+        (((x1 < param_1) && (param_1 < x2)) || ((x1 < param_3) && (param_3 < x2)))) {
+        return 1;
+    }
+
+    return 0;
+}
+
+void RGE_Static_Object::set_location(float param_1, float param_2, float param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6240
+    this->world_x = param_1;
+    this->world_y = param_2;
+    this->world_z = param_3;
+}
+
+uchar RGE_Static_Object::drop_held_objects(int param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6270
+    if (this->objects == nullptr) {
+        return 0;
+    }
+
+    float drop_x[10] = {};
+    float drop_y[10] = {};
+    float radius_x[10] = {};
+    float radius_y[10] = {};
+
+    drop_x[1] = this->world_x;
+    drop_y[1] = this->world_y;
+    radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
+    radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
+
+    int count_index = 1;
+    uchar count = 0;
+    for (RGE_Object_Node* node = this->objects->list; node != nullptr;) {
+        RGE_Object_Node* next = node->next;
+        int index = count_index;
+        while (index >= 1) {
+            float out_x = 0.0f;
+            float out_y = 0.0f;
+            uchar placed = this->find_drop_location(param_1, &out_x, &out_y, node->node->master_obj, node->node,
+                                                    drop_x[index], drop_y[index], radius_x[index], radius_y[index]);
+            if (placed != 0) {
+                RGE_Static_Object* dropped = node->node;
+                dropped->set_location(this->world_x, this->world_y, this->world_z);
+                dropped->exit_obj();
+                dropped->teleport(out_x, out_y, this->world_z);
+                count = (uchar)(count + 1);
+
+                if (index < 9) {
+                    count_index = index + 1;
+                    drop_x[count_index] = out_x;
+                    drop_y[count_index] = out_y;
+                    radius_x[count_index] = dropped->master_obj->radius_x + dropped->master_obj->radius_x;
+                    radius_y[count_index] = dropped->master_obj->radius_y + dropped->master_obj->radius_y;
+                } else {
+                    count_index = index;
+                }
+                break;
+            }
+
+            int prev = index - 1;
+            if (prev < 1) {
+                break;
+            }
+            drop_x[prev] = drop_x[index];
+            drop_y[prev] = drop_y[index];
+            radius_x[prev] = radius_x[index];
+            radius_y[prev] = radius_y[index];
+            index = prev;
+        }
+        node = next;
+    }
+
+    return count;
+}
+
+uchar RGE_Static_Object::find_drop_location(int param_1, float* param_2, float* param_3, RGE_Master_Static_Object* param_4,
+                                            RGE_Static_Object* param_5, float param_6, float param_7, float param_8,
+                                            float param_9) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6400
+    RGE_Map* map = this->owner->world->map;
+    float test_radius_x = param_8 + param_4->radius_x;
+    float test_radius_y = param_9 + param_4->radius_y;
+    float span_x = test_radius_x + test_radius_x;
+    float span_y = test_radius_y + test_radius_y;
+    short pass = 1;
+
+    while (true) {
+        for (short tries = 0; tries < 0x32; ++tries) {
+            int r = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xF3A);
+            switch ((r * 4) / 0x7FFF) {
+            case 0:
+                *param_2 = test_radius_x + param_6;
+                r = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xF3E);
+                *param_3 = ((float)r * span_y * 3.051851e-05f - test_radius_y) + param_7;
+                break;
+            case 1:
+                *param_2 = param_6 - test_radius_x;
+                r = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xF42);
+                *param_3 = ((float)r * span_y * 3.051851e-05f - test_radius_y) + param_7;
+                break;
+            case 2:
+                *param_3 = test_radius_y + param_7;
+                r = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xF46);
+                *param_2 = ((float)r * span_x * 3.051851e-05f - test_radius_x) + param_6;
+                break;
+            default:
+                *param_3 = param_7 - test_radius_y;
+                r = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xF4A);
+                *param_2 = ((float)r * span_x * 3.051851e-05f - test_radius_x) + param_6;
+                break;
+            }
+
+            if ((0.0f <= *param_2) && (0.0f <= *param_3) &&
+                (*param_2 < (float)map->map_width) && (*param_3 < (float)map->map_height)) {
+                if (param_1 != -1) {
+                    int zone_y = (int)(*param_3);
+                    int zone_x = (int)(*param_2);
+                    uchar zone = this->lookupZone(zone_x, zone_y);
+                    if (param_1 != (int)(uint)zone) {
+                        continue;
+                    }
+                }
+
+                uchar blocked = param_4->check_placement(this->owner, *param_2, *param_3, nullptr, 1, 1, 1, 0, 1, 1);
+                if ((blocked == 0) && (param_5->passableTile(*param_2, *param_3, 0) == 1)) {
+                    return 1;
+                }
+            }
+        }
+
+        test_radius_x = param_4->radius_x + param_4->radius_x + test_radius_x;
+        test_radius_y = param_4->radius_y + param_4->radius_y + test_radius_y;
+        span_x = param_4->radius_x * 4.0f + span_x;
+        span_y = param_4->radius_y * 4.0f + span_y;
+        pass = (short)(pass + 1);
+        if (1 < pass) {
+            return 0;
+        }
+    }
+}
+
+RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6740
+    float rx = this->master_obj->radius_x;
+    float ry = this->master_obj->radius_y;
+    if ((rx <= 0.0f) || (ry <= 0.0f) || (this->master_obj->radius_z <= 0.0f)) {
+        return nullptr;
+    }
+
+    int min_x = (int)(this->world_x - rx - param_1);
+    int min_y = (int)(this->world_y - ry - param_1);
+    int max_x = (int)(this->world_x + rx + param_1);
+    int max_y = (int)(this->world_y + ry + param_1);
+
+    RGE_Map* map = this->owner->world->map;
+    RGE_Check_List* check_list = new (std::nothrow) RGE_Check_List();
+    if (check_list == nullptr) {
+        return nullptr;
+    }
+    check_list->list = nullptr;
+
+    if (min_x < 0) {
+        min_x = 0;
+    }
+    if (max_x >= map->map_width) {
+        max_x = map->map_width - 1;
+    }
+    if (min_y < 0) {
+        min_y = 0;
+    }
+    if (max_y >= map->map_height) {
+        max_y = map->map_height - 1;
+    }
+
+    for (int y = min_y; y <= max_y; ++y) {
+        for (int x = min_x; x <= max_x; ++x) {
+            for (RGE_Object_Node* node = map->map_row_offset[y][x].objects.list; node != nullptr; node = node->next) {
+                RGE_Static_Object* obj = node->node;
+                if (obj == this) {
+                    continue;
+                }
+
+                RGE_Master_Static_Object* other_master = obj->master_obj;
+                if ((other_master->radius_y > 0.0f) && (other_master->radius_x > 0.0f)) {
+                    float dz = obj->world_z - this->world_z;
+                    if ((-other_master->radius_z <= dz) && (dz <= this->master_obj->radius_z)) {
+                        float dx = obj->world_x - this->world_x;
+                        uchar flag = (dx < 0.0f) ? 1 : 0;
+                        float dy = obj->world_y - this->world_y;
+                        if (dx < 0.0f) {
+                            dx = -dx;
+                        }
+                        if (dy < 0.0f) {
+                            flag = (uchar)(flag + 2);
+                            dy = -dy;
+                        }
+                        dx = dx - (other_master->radius_x + rx);
+                        dy = dy - (other_master->radius_y + ry);
+                        if ((dx < param_1) && (dy < param_1) && ((0.0f <= dy) || (0.0f <= dx))) {
+                            rge_static_add_check_node(check_list, obj, dx, dy, flag);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (check_list->list == nullptr) {
+        rge_static_delete_check_list(check_list);
+        return nullptr;
+    }
+    return check_list;
+}
+
+int RGE_Static_Object::boundToFacet(float param_1, float param_2, int param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6AA0
+    int best = -1;
+    float best_distance = 0.0f;
+    double angle = atan2((double)this->world_y - (double)param_2, (double)this->world_x - (double)param_1);
+    if (angle < 0.0) {
+        angle = angle - -6.2831855;
+    }
+
+    if (param_3 == -1) {
+        param_3 = (this->sprite != nullptr) ? (int)this->sprite->facet_num : 0;
+    }
+
+    double candidate = 0.0;
+    for (int i = 0; i < param_3; ++i) {
+        double distance = angle - candidate;
+        if (distance < 0.0) {
+            distance = -distance;
+        }
+        if ((best == -1) || (distance < (double)best_distance)) {
+            best_distance = (float)distance;
+            best = i;
+        }
+        candidate = candidate + (double)(6.2831855f / (float)param_3);
+    }
+    return best;
+}
+
+int RGE_Static_Object::numberFacets() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6B50
+    if (this->sprite != nullptr) {
+        return (int)this->sprite->facet_num;
+    }
+    return 0;
+}
+
+void RGE_Static_Object::changeInfluenceMap(InfluenceMap* param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6DA0
+    float left = this->world_x - this->master_obj->radius_x;
+    int min_x = 0;
+    int max_x = 0;
+    int min_y = 0;
+    float y_extent = 0.0f;
+
+    if (param_4 == 0) {
+        min_x = (int)floor((double)left);
+        max_x = (int)ceil((double)(this->master_obj->radius_x + this->world_x));
+        min_y = (int)floor((double)(this->world_y - this->master_obj->radius_y));
+        y_extent = this->master_obj->radius_y;
+    } else {
+        min_x = (int)floor((double)(left - this->master_obj->los));
+        max_x = (int)ceil((double)(this->master_obj->radius_x + this->master_obj->los + this->world_x));
+        min_y = (int)floor((double)((this->world_y - this->master_obj->radius_y) - this->master_obj->los));
+        y_extent = this->master_obj->radius_y + this->master_obj->los;
+    }
+
+    int max_y = (int)ceil((double)(y_extent + this->world_y));
+    for (int y = min_y; y < max_y; ++y) {
+        for (int x = min_x; x < max_x; ++x) {
+            uchar value = (param_3 == 0) ? 0xFF : (uchar)param_3;
+            rge_static_change_influence_value(param_1, x, y, value, (param_2 == 1) ? 1 : 0);
+        }
+    }
+}
+
+RGE_Check_List* RGE_Static_Object::objectCollisionList(float param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7030
+    RGE_Master_Static_Object* self_master = this->master_obj;
+    if ((self_master->radius_x <= 0.0f) || (self_master->radius_y <= 0.0f) || (self_master->radius_z <= 0.0f)) {
+        return nullptr;
+    }
+
+    RGE_Map* map = this->owner->world->map;
+    int min_x = (int)this->world_x - 3;
+    int max_x = (int)this->world_x + 3;
+    int min_y = (int)this->world_y - 3;
+    int max_y = (int)this->world_y + 3;
+    if (min_x < 0) {
+        min_x = 0;
+    }
+    if (max_x >= map->map_width) {
+        max_x = map->map_width - 1;
+    }
+    if (min_y < 0) {
+        min_y = 0;
+    }
+    if (max_y >= map->map_height) {
+        max_y = map->map_height - 1;
+    }
+
+    RGE_Check_List* list = nullptr;
+    for (int y = min_y; y <= max_y; ++y) {
+        for (int x = min_x; x <= max_x; ++x) {
+            for (RGE_Object_Node* node = map->map_row_offset[y][x].objects.list; node != nullptr; node = node->next) {
+                RGE_Static_Object* obj = node->node;
+                if (obj == this) {
+                    continue;
+                }
+
+                RGE_Master_Static_Object* other_master = obj->master_obj;
+                if (other_master->radius_z <= 0.0f) {
+                    continue;
+                }
+                float other_rx = other_master->radius_x;
+                float other_ry = other_master->radius_y;
+                if ((other_rx <= 0.0f) || (other_ry <= 0.0f)) {
+                    continue;
+                }
+
+                float dz = obj->world_z - this->world_z;
+                if (((dz > 0.0f) && (dz > self_master->radius_z)) || ((dz < 0.0f) && (-other_master->radius_z > dz))) {
+                    continue;
+                }
+
+                bool x_ok = false;
+                if (obj->world_x <= this->world_x) {
+                    if (-param_1 <= (other_rx + obj->world_x) - (this->world_x - self_master->radius_x)) {
+                        x_ok = true;
+                    }
+                } else if ((obj->world_x - other_rx) - (self_master->radius_x + this->world_x) <= param_1) {
+                    x_ok = true;
+                }
+                if (!x_ok) {
+                    continue;
+                }
+
+                bool y_ok = false;
+                if (obj->world_y <= this->world_y) {
+                    if (-param_1 <= (other_ry + obj->world_y) - (this->world_y - self_master->radius_y)) {
+                        y_ok = true;
+                    }
+                } else if ((obj->world_y - other_ry) - (self_master->radius_y + this->world_y) <= param_1) {
+                    y_ok = true;
+                }
+                if (!y_ok) {
+                    continue;
+                }
+
+                if (list == nullptr) {
+                    list = new (std::nothrow) RGE_Check_List();
+                    if (list == nullptr) {
+                        return nullptr;
+                    }
+                    list->list = nullptr;
+                }
+                rge_static_add_check_node(list, obj, 0.0f, 0.0f, 0);
+            }
+        }
+    }
+
+    return list;
+}
+
 // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7430
 uchar RGE_Static_Object::lookupZone(XYPoint param_1) {
     return this->lookupZone(param_1.x, param_1.y);
@@ -1230,6 +1767,24 @@ uchar RGE_Static_Object::lookupZone(int param_1, int param_2) {
     }
 
     return (zone_map != nullptr) ? zone_map->get_zone_info((long)param_1, (long)param_2) : 0;
+}
+
+uchar RGE_Static_Object::currentZone() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7530
+    RGE_Zone_Map* zone_map = nullptr;
+    if (this->zoneMapIndex == -1) {
+        RGE_Game_World* world = this->owner->world;
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], (int)world->terrain_size, &this->zoneMapIndex);
+    } else {
+        zone_map = this->owner->world->map->map_zones->get_zone_map((long)this->zoneMapIndex);
+    }
+
+    if (zone_map != nullptr) {
+        long y = (long)this->world_y;
+        long x = (long)this->world_x;
+        return zone_map->get_zone_info(x, y);
+    }
+    return 0;
 }
 
 int RGE_Static_Object::withinRangeOfZoneAtPoint(uchar param_1, float param_2, XYPoint* param_3) {
@@ -1273,6 +1828,22 @@ int RGE_Static_Object::withinRangeOfZone(uchar param_1, float param_2) {
         pos.y = y;
         pos.x = x;
         return zone_map->withinRange(param_1, pos, param_2);
+    }
+    return 0;
+}
+
+int RGE_Static_Object::findClosestPointInTerrainType(XYPoint param_1, XYPoint* param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C76C0
+    RGE_Zone_Map* zone_map = nullptr;
+    if (this->zoneMapIndex == -1) {
+        RGE_Game_World* world = this->owner->world;
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], (int)world->terrain_size, &this->zoneMapIndex);
+    } else {
+        zone_map = this->owner->world->map->map_zones->get_zone_map((long)this->zoneMapIndex);
+    }
+
+    if (zone_map != nullptr) {
+        return zone_map->findClosestPointInTerrainType(param_1, param_2, param_3, param_4, param_5);
     }
     return 0;
 }
@@ -2436,6 +3007,14 @@ void RGE_Static_Object::set_attack(RGE_Static_Object* param_1) {
 }
 void RGE_Static_Object::play_command_sound() {}
 void RGE_Static_Object::play_move_sound() {}
+int RGE_Static_Object::isGroupCommander() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7740
+    return (this->id == this->groupCommanderValue) ? 1 : 0;
+}
+int RGE_Static_Object::inGroup() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7760
+    return (0 < this->groupMembers.numberValue) ? 1 : 0;
+}
 int RGE_Static_Object::unitIsInGroup(int param_1) {
     // Source of truth: stat_obj.cpp.decomp @ 0x004C7770
     int count = this->groupMembers.numberValue;
@@ -2909,6 +3488,17 @@ void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* /*param_1*/) 
         ((this->object_state == 2 && 0.0f <= this->hp) || (this->object_state == 6))) {
         rge_static_set_sleep_flag(this, 1);
     }
+}
+UnitAIModule* RGE_Static_Object::unitAI() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7420
+    return this->unitAIValue;
+}
+uchar RGE_Static_Object::is_dying() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5860
+    if ((2 < this->object_state) && (this->object_state != 6)) {
+        return 1;
+    }
+    return 0;
 }
 uchar RGE_Static_Object::is_moving() { return 0; }
 RGE_Static_Object* RGE_Static_Object::get_target_obj() { return nullptr; }
