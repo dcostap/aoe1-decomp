@@ -2,8 +2,13 @@
 #include "common.h"
 #include "ConstructionAIModule.h"
 
+struct PlacementState;
+
 class TribeConstructionAIModule : public ConstructionAIModule {
 public:
+    TribeConstructionAIModule(void* param_1, int param_2);
+    TribeConstructionAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TribeConstructionAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -29,6 +34,16 @@ public:
     virtual void decrementBuildAttempts(float param_1, float param_2, int param_3) const; // vt[21] (0x54)
     virtual void incrementBuildAttempts(float param_1, float param_2, int param_3) const; // vt[22] (0x58)
 
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    int canPlace(BuildItem* param_1);
+    ConstructionItem* placeStructure(BuildItem* param_1, int param_2, PlacementState* param_3, ulong param_4);
+    ConstructionItem* placeDock(BuildItem* param_1);
+    void setBuilt(RGE_Static_Object* param_1, int param_2);
+
+protected:
+    ConstructionItem* compare(ConstructionItem* param_1, ConstructionItem* param_2);
+
+public:
     TribeMainDecisionAIModule* md;
 };
 static_assert(sizeof(TribeConstructionAIModule) == 0x318, "Size mismatch");
