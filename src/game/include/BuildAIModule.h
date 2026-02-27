@@ -4,6 +4,9 @@
 
 class BuildAIModule {
 public:
+    BuildAIModule(void* param_1, int param_2);
+    BuildAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~BuildAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -24,6 +27,29 @@ public:
     virtual void displayBuildList(); // vt[16] (0x40)
     virtual int loadBuildList(char* param_1, RGE_Player* param_2); // vt[17] (0x44)
     virtual int numberBuiltOrInProgressItemsOfType(int param_1, int param_2); // vt[18] (0x48)
+
+    int buildListLength() const;
+    char* buildListName();
+    int haveBuildList() const;
+    int insertItem(RGE_Player* param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7);
+    int numberItemsBuilt() const;
+    int numberItemsInProgress() const;
+    int numberItemsBuiltOrInProgress() const;
+    int numberItemsIntoBuildList() const;
+    char* lastBuildItemRequested() const;
+    char* currentBuildItemRequested() const;
+    char* nextBuildItemRequested() const;
+    int numberItemsOfType(int param_1, int param_2);
+    int numberBuiltItemsOfType(int param_1, int param_2);
+    int numberUnbuiltItemsOfType(int param_1, int param_2);
+    int numberInProgressItemsOfType(int param_1, int param_2);
+
+protected:
+    void removeOldList();
+    BuildItem* anyBuildListItem(int param_1, int param_2, int param_3);
+    BuildItem* specificBuildListItem(int param_1);
+
+public:
 
     int padding0;
     int padding1;
@@ -84,7 +110,6 @@ public:
     int padding56;
     int padding57;
     int padding58;
-    int padding;
     BuildItem buildList;
     int buildListLengthValue;
     char buildListNameValue[257];
