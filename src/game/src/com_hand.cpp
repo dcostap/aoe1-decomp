@@ -2887,3 +2887,3666 @@ long TCommunications_Handler::SendChecksumMessage(ulong world_time, uint random,
     const long hr = this->CommOut('M', &cs, 0x24, 0);
     return hr;
 }
+
+
+
+
+// BEGIN Task 222 decomp gap implementations
+// Enumerated missing wrappers from com_hand.cpp.decomp; transliteration pass in progress.
+// TODO: STUB: RESENDER/HOLDER constructor wrappers (0x00426450, 0x004264A0, 0x004265E0, 0x00426600) are tracked for follow-up.
+
+char* TCommunications_Handler::WaitingOnNamedInfo(uint param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425780
+    char* wait_info = this->WaitingOnInfo(param_2);
+    char* player_name = this->GetPlayerName(param_2);
+    ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x8E);
+    int quiet_msec = (int)(now - this->LastPlayerCommunication[param_2]);
+    sprintf(this->TBuff, "%d %s : %s QUIET %d msec T# %lu", param_2, player_name, wait_info, quiet_msec,
+            this->LastTurnAck[param_2]);
+    return this->TBuff;
+}
+
+char* TCommunications_Handler::WaitingOnInfo(uint param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425800
+    if (this->IsPlayerComputer(param_2) != 0) {
+        return (char*)"Computer";
+    }
+    if (this->IsPlayerHuman(param_2) == 0) {
+        return (char*)"Empty";
+    }
+    if (this->LastTurnAck[param_2] < 4) {
+        return (char*)"Loading";
+    }
+    if (this->LastTurnAck[param_2] < this->current_turn) {
+        return (char*)"Waiting";
+    }
+    return (char*)"Ready";
+}
+
+void TCommunications_Handler::StopIfSyncFail(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004258E0
+    if (this->Sync == nullptr) {
+        return;
+    }
+    this->Sync->SetDialogOnFail(param_2);
+    this->Sync->SetStopOnFail(param_2);
+}
+
+void TCommunications_Handler::ShowSyncChatMsgs(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425910
+    if (this->Sync != nullptr) {
+        this->Sync->SendChatMsgsAtChecksum(param_2);
+    }
+}
+
+void TCommunications_Handler::DropPacketsIntentionally(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
+    this->IntentionallyDropPackets = param_2;
+}
+
+void TCommunications_Handler::SetStepMode(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425960
+    this->StepMode = param_2;
+}
+
+void TCommunications_Handler::SetSpeedControl(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425970
+    if (this->Speed != nullptr) {
+        this->Speed->EnableSpeedControl(param_2);
+    }
+}
+
+void TCommunications_Handler::Step(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425A20
+    this->Steps += param_2;
+}
+
+void TCommunications_Handler::KillAnyMissingPlayers(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00426350
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x00426350
+    // void KillAnyMissingPlayers(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: dwSize */
+    //     // /* protected: void __thiscall TCommunications_Handler::KillAnyMissingPlayers(void) */
+    //     // 
+    //     // void __thiscall TCommunications_Handler::KillAnyMissingPlayers(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   void *pvVar2;
+    //     //   uint unaff_EBP;
+    //     //   ulong *puVar3;
+    //     //   uint uVar4;
+    //     //   ulong dwSize;
+    //     //   long hr;
+    //     //   MSGFORMAT_KILL_PLAYER kp;
+    //     //   
+    //     //   uVar4 = 1;
+    //     //   if (this->MaxGamePlayers != 0) {
+    //     //     puVar3 = (this->PlayerOptions).dcoID;
+    //     //     do {
+    //     //       puVar3 = puVar3 + 1;
+    //     //       iVar1 = IsPlayerHuman(this,uVar4);
+    //     //       if (iVar1 != 0) {
+    //     //         hr = 0;
+    //     //         (**(code **)(*DAT_0062c5ec + 0x54))(DAT_0062c5ec,*puVar3,0,&hr);
+    //     //         pvVar2 = operator_new(unaff_EBP);
+    //     //         kp.PlayerNo = (**(code **)(*DAT_0062c5ec + 0x54))
+    //     //                                 (DAT_0062c5ec,*puVar3,pvVar2,&stack0xffffffdc);
+    //     //         operator_delete(pvVar2);
+    //     //         if (kp.PlayerNo != 0) {
+    //     //           kp.CurrentTurn = *puVar3;
+    //     //           kp.dcoID = uVar4;
+    //     //           TDebuggingLog::Log((TDebuggingLog *)this->current_turn,(char *)L,s___>TX_KP___d___d_,uVar4
+    //     //                              ,0xc);
+    //     //           CommOut(this,0,'K',&kp.dcoID,0xc,'\0');
+    //     //           if (puVar3[-0x6a] == 0) {
+    //     //             DropDeadPlayer(this,uVar4,*puVar3);
+    //     //           }
+    //     //         }
+    //     //       }
+    //     //       uVar4 = uVar4 + 1;
+    //     //     } while (uVar4 <= this->MaxGamePlayers);
+    //     //   }
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+int TCommunications_Handler::HasKicked(uint param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426D40
+    if (param_2 >= 10) {
+        return 0;
+    }
+    return this->Kicked[param_2];
+}
+
+long TCommunications_Handler::SendPlayerName(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00426D50
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x00426D50
+    // long SendPlayerName(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: dpnSetName */
+    //     // /* protected: long __thiscall TCommunications_Handler::SendPlayerName(void) */
+    //     // 
+    //     // long __thiscall TCommunications_Handler::SendPlayerName(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   long lVar1;
+    //     //   DPNAME dpnSetName;
+    //     //   
+    //     //   dpnSetName.field2_0x8.lpszShortName = (ushort *)0x0;
+    //     //   dpnSetName.field3_0xc.lpszLongName = (ushort *)this->MyFriendlyName;
+    //     //   dpnSetName.dwFlags = 0x10;
+    //     //   lVar1 = (**(code **)(*DAT_0062c5ec + 0x78))(DAT_0062c5ec,DAT_0062cf04,&dpnSetName.dwFlags,2);
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,lVar1,s_Send_Player_Name);
+    //     //   return lVar1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+void TCommunications_Handler::LogRXMsg(uint param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00426DC0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x00426DC0
+    // void LogRXMsg(TCommunications_Handler* this_, uint param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: void __thiscall TCommunications_Handler::LogRXMsg(unsigned int,unsigned int,unsigned
+    //     //    long,unsigned char,unsigned char) */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::LogRXMsg
+    //     //           (TCommunications_Handler *this,uint param_1,uint param_2,ulong param_3,uchar param_4,
+    //     //           uchar param_5)
+    //     // 
+    //     // {
+    //     //   if (this->RGE_Guaranteed_Delivery != '\0') {
+    //     //     TDebuggingLog::Log(L,(char *)L,s_GTD__RX_Ser__d_From_P__d_T__ld_T,param_1,param_2,
+    //     //                        this->current_turn,param_3,param_4,param_4,param_5);
+    //     //   }
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+int TCommunications_Handler::TXPing(uint param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00427390
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x00427390
+    // int TXPing(TCommunications_Handler* this_, uint param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: int __thiscall TCommunications_Handler::TXPing(unsigned int) */
+    //     // 
+    //     // int __thiscall TCommunications_Handler::TXPing(TCommunications_Handler *this,uint param_1)
+    //     // 
+    //     // {
+    //     //   ulong uVar1;
+    //     //   long lVar2;
+    //     //   TDebuggingLog *pTVar3;
+    //     //   ulong *puVar4;
+    //     //   
+    //     //   uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x470);
+    //     //   UNK_0062cef4._4_1_ = 0x31;
+    //     //   pTVar3 = (TDebuggingLog *)this->current_turn;
+    //     //   UNK_0062cef4._8_4_ = uVar1;
+    //     //   UNK_0062cef4._12_4_ = pTVar3;
+    //     //   if (param_1 == 0) {
+    //     //     pTVar3 = (TDebuggingLog *)0x1;
+    //     //     if (this->MaxGamePlayers != 0) {
+    //     //       puVar4 = this->LastTXPing;
+    //     //       do {
+    //     //         puVar4 = puVar4 + 1;
+    //     //         *puVar4 = uVar1;
+    //     //         pTVar3 = (TDebuggingLog *)((int)&pTVar3->Timestamp + 1);
+    //     //       } while (pTVar3 <= (TDebuggingLog *)(uint)this->MaxGamePlayers);
+    //     //     }
+    //     //     uVar1 = 0;
+    //     //   }
+    //     //   else {
+    //     //     this->LastTXPing[param_1] = uVar1;
+    //     //     uVar1 = (this->PlayerOptions).dcoID[param_1];
+    //     //   }
+    //     //   TDebuggingLog::Log(pTVar3,(char *)L,s___>TX_PING___d___d_,param_1,0xc);
+    //     //   lVar2 = FastSend(this,uVar1,&UNK_0062cef4.field_0x4,0xc,0,0);
+    //     //   return (uint)(lVar2 == 0);
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::TXDebugPing(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00427440
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x00427440
+    // int TXDebugPing(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::TXDebugPing(void) */
+    //     // 
+    //     // int __thiscall TCommunications_Handler::TXDebugPing(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   long lVar1;
+    //     //   
+    //     //   UNK_0062c5d1._7_1_ = 0x33;
+    //     //   UNK_0062c5d1._11_4_ = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x496);
+    //     //   UNK_0062c5d1._15_4_ = this->current_turn;
+    //     //   TDebuggingLog::Log(L,(char *)L,s___>TX_DEBUG_PING___d___d_,0,0xc);
+    //     //   lVar1 = FastSend(this,0,&UNK_0062c5d1.field_0x7,0xc,0,0);
+    //     //   return (uint)(lVar1 == 0);
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+long TCommunications_Handler::FastSend(ulong param_2, void* param_3, ulong param_4, int param_5, int param_6) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x004274B0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x004274B0
+    // long FastSend(TCommunications_Handler* this_, ulong param_2, void* param_3, ulong param_4, int param_5, int param_6) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: long __thiscall TCommunications_Handler::FastSend(unsigned long,void *,unsigned
+    //     //    long,int,int) */
+    //     // 
+    //     // long __thiscall
+    //     // TCommunications_Handler::FastSend
+    //     //           (TCommunications_Handler *this,ulong param_1,void *param_2,ulong param_3,int param_4,
+    //     //           int param_5)
+    //     // 
+    //     // {
+    //     //   ulong uVar1;
+    //     //   int iVar2;
+    //     //   ulong uVar3;
+    //     //   int iVar4;
+    //     //   TDebuggingLog *this_00;
+    //     //   int iVar5;
+    //     //   int unaff_ESI;
+    //     //   uint uVar6;
+    //     //   
+    //     //   if (param_1 == DAT_0062cf04) {
+    //     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_No_send_to_self_FastTX);
+    //     //     return -0x7fffbffb;
+    //     //   }
+    //     //   if (DAT_0062cf04 != 0) {
+    //     //     uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x4ca);
+    //     //     iVar2 = (**(code **)(*DAT_0062c5ec + 0x68))(DAT_0062c5ec,DAT_0062cf04,param_1,0,param_2,param_3)
+    //     //     ;
+    //     //     uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x4d3);
+    //     //     if (0x32 < uVar3 - uVar1) {
+    //     //       TDebuggingLog::Log(this_00,(char *)L,s____FastSend_slow____ld_msec,uVar3 - uVar1);
+    //     //     }
+    //     //     if (param_1 == 0) {
+    //     //       uVar6 = 1;
+    //     //       iVar5 = 0;
+    //     //       if (this->MaxGamePlayers != 0) {
+    //     //         do {
+    //     //           iVar4 = IsPlayerHuman(this,uVar6);
+    //     //           if ((iVar4 != 0) && (uVar6 != this->Me)) {
+    //     //             iVar5 = iVar5 + 1;
+    //     //           }
+    //     //           uVar6 = uVar6 + 1;
+    //     //         } while (uVar6 <= this->MaxGamePlayers);
+    //     //       }
+    //     //     }
+    //     //     else {
+    //     //       iVar5 = 1;
+    //     //     }
+    //     //     this->TXPacketLength = this->TXPacketLength + iVar5 * unaff_ESI;
+    //     //     if (iVar2 != -0x7ff8ffa9) {
+    //     //       if (iVar2 != 0) {
+    //     //         RGE_Comm_Error::ShowReturn(this->Err,iVar2,s_FastTX);
+    //     //       }
+    //     //       return iVar2;
+    //     //     }
+    //     //     TDebuggingLog::Log(L,(char *)L,s_FastTX_to_invalidparams_ignored);
+    //     //     return -0x7ff8ffa9;
+    //     //   }
+    //     //   TDebuggingLog::Log(L,(char *)L,s____BAD_DCOID_0_NO_TX);
+    //     //   return -0x7fffbffb;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::EvaluatePlayerMessage(ulong param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6, char* param_7, uint param_8, ulong param_9, ulong param_10) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x004282C0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x004282C0
+    // int EvaluatePlayerMessage(TCommunications_Handler* this_, ulong param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6, char* param_7, uint param_8, ulong param_9, ulong param_10) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: int __thiscall TCommunications_Handler::EvaluatePlayerMessage(unsigned long,unsigned
+    //     //    int,unsigned long,unsigned char,unsigned char,char *,unsigned int,unsigned long,unsigned long) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::EvaluatePlayerMessage
+    //     //           (TCommunications_Handler *this,ulong param_1,uint param_2,ulong param_3,uchar param_4,
+    //     //           uchar param_5,char *param_6,uint param_7,ulong param_8,ulong param_9)
+    //     // 
+    //     // {
+    //     //   TDebuggingLog *pTVar1;
+    //     //   ulong uVar2;
+    //     //   uint uVar3;
+    //     //   ulong *puVar4;
+    //     //   uint uVar5;
+    //     //   
+    //     //   if (this->Multiplayer == 0) {
+    //     //     return 0;
+    //     //   }
+    //     //   uVar3 = (uint)param_4;
+    //     //   pTVar1 = (TDebuggingLog *)(uVar3 - 0x2b);
+    //     //   switch(uVar3) {
+    //     //   case 0x2b:
+    //     //     if (this->MeHost != 0) {
+    //     //       SendPauseGame(this,0);
+    //     //       TDebuggingLog::Log(L,(char *)L,s_Non_host_requested_resume);
+    //     //       LocalResumeGame(this,param_2);
+    //     //       return 1;
+    //     //     }
+    //     //     break;
+    //     //   default:
+    //     //     TDebuggingLog::Log(pTVar1,(char *)L,s_Unknown_message____d___c_,uVar3,uVar3);
+    //     //     break;
+    //     //   case 0x3e:
+    //     //     AddCommand(this,param_3,param_6,param_1,param_2,param_5,0);
+    //     //     return 1;
+    //     //   case 0x43:
+    //     //     TDebuggingLog::Log((TDebuggingLog *)param_2,(char *)L,s_CHAT_RX_from_P__d__d__RXID__d_Ch,param_2
+    //     //                        ,param_8,param_9,param_6 + 0x11,*(undefined4 *)(param_6 + 0xc),param_7,
+    //     //                        (uint)(byte)param_6[0x10]);
+    //     //     if ((param_6[this->Me + 1] == 'Y') || ((this->PlayerOptions).ProgramState == COMM_STATE_JOINNOW)
+    //     //        ) {
+    //     //       TChat::AddChatMsg(this->Chat,this->FriendlyName[(byte)*param_6].Text,param_6 + 0x11,'\0');
+    //     //       return 1;
+    //     //     }
+    //     //     break;
+    //     //   case 0x44:
+    //     //     RGE_Communications_Speed::SetPlayerTurnSpeed(this->Speed,param_2,param_6[9],param_6[8]);
+    //     //     if (((int)(this->PlayerOptions).ProgramState < 5) || (this->current_turn < 6)) {
+    //     //       pTVar1 = (TDebuggingLog *)this->current_turn;
+    //     //       if (*(TDebuggingLog **)(param_6 + 4) < pTVar1) {
+    //     //         TDebuggingLog::Log(pTVar1,(char *)L,s____REGRESSION_WARNING__Current__,pTVar1,
+    //     //                            *(TDebuggingLog **)(param_6 + 4));
+    //     //         return 0;
+    //     //       }
+    //     //     }
+    //     //     uVar3 = *(int *)(param_6 + 4) - (uint)(this->PlayerOptions).CommandTurnIncrement;
+    //     //     if (uVar3 <= this->LastTurnAck[param_2]) {
+    //     //       uVar3 = this->LastTurnAck[param_2];
+    //     //     }
+    //     //     this->LastTurnAck[param_2] = uVar3;
+    //     //     return 1;
+    //     //   case 0x4b:
+    //     //     TDebuggingLog::Log(*(TDebuggingLog **)param_6,(char *)L,s_KILL_Message_recieved_from__d_to,
+    //     //                        param_2,*(TDebuggingLog **)param_6);
+    //     //     uVar2 = *(ulong *)(param_6 + 4);
+    //     //     if (uVar2 != 0) {
+    //     //       uVar3 = (uint)(this->PlayerOptions).LowPlayerNumber;
+    //     //       uVar5 = (uint)(this->PlayerOptions).HighPlayerNumber;
+    //     //       if (uVar3 <= uVar5) {
+    //     //         puVar4 = (this->PlayerOptions).dcoID + uVar3;
+    //     //         do {
+    //     //           if (*puVar4 == uVar2) goto LAB_004285e0;
+    //     //           uVar3 = uVar3 + 1;
+    //     //           puVar4 = puVar4 + 1;
+    //     //         } while ((int)uVar3 <= (int)uVar5);
+    //     //       }
+    //     //     }
+    //     //     uVar3 = 0;
+    //     // LAB_004285e0:
+    //     //     if (uVar3 != 0) {
+    //     //       if (this->PlayerStopTurn[uVar3] == 0) {
+    //     //         DropDeadPlayer(this,uVar3,uVar2);
+    //     //       }
+    //     //       if (uVar3 == this->Me) {
+    //     //         NotifyWindow(this,COMM_PLAYER_KICKED);
+    //     //         return 1;
+    //     //       }
+    //     //       if (this->PlayerStopTurn[uVar3] == 0) {
+    //     //         NotifyWindowParam(this,COMM_OTHER_PLAYER_DROPPED,uVar3);
+    //     //         return 1;
+    //     //       }
+    //     //     }
+    //     //     break;
+    //     //   case 0x4d:
+    //     //     RGE_Communications_Synchronize::Add
+    //     //               (this->Sync,param_2,*(ulong *)param_6,*(ulong *)(param_6 + 4),*(ulong *)(param_6 + 8),
+    //     //                *(long *)(param_6 + 0xc),*(long *)(param_6 + 0x10),*(long *)(param_6 + 0x14),
+    //     //                *(long *)(param_6 + 0x18),*(long *)(param_6 + 0x1c));
+    //     //     return 1;
+    //     //   case 0x4e:
+    //     //     if (this->MeHost == 0) {
+    //     //       TDebuggingLog::Log(L,(char *)L,s_Host_requested_we_delete_and_rec);
+    //     //       return 1;
+    //     //     }
+    //     //     break;
+    //     //   case 0x50:
+    //     //     TDebuggingLog::Log(pTVar1,(char *)L,s_P__d_Requested_pause);
+    //     //     LocalPauseGame(this,param_2);
+    //     //     RGE_Communications_Synchronize::LogChecksums(this->Sync,0,0,0,0,0,0,0,0,0);
+    //     //     return 1;
+    //     //   case 0x51:
+    //     //     SetPlayerStopTurn(this,param_2,*(ulong *)param_6);
+    //     //     return 1;
+    //     //   case 0x53:
+    //     //     RGE_Communications_Speed::SetFutureSpeedChange
+    //     //               (this->Speed,(uint)*(ushort *)param_6,(uint)*(ushort *)(param_6 + 2),param_3);
+    //     //     return 1;
+    //     //   case 0x55:
+    //     //     TDebuggingLog::Log(pTVar1,(char *)L,s_Resume_msg_rcvd);
+    //     //     LocalResumeGame(this,param_2);
+    //     //     return 1;
+    //     //   case 0x57:
+    //     //     if (this->MeHost != 0) {
+    //     //       SendPauseGame(this,1);
+    //     //       LocalPauseGame(this,param_2);
+    //     //       return 1;
+    //     //     }
+    //     //   }
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+void TCommunications_Handler::SetPlayerStopTurn(uint param_2, ulong param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004286F0
+    if (param_2 < 10) {
+        this->PlayerStopTurn[param_2] = param_3;
+    }
+}
+
+void TCommunications_Handler::CheckPlayerStopTurn(ulong param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00428710
+    (void)param_2;
+}
+
+int TCommunications_Handler::TEST(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x004289A0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x004289A0
+    // int TEST(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: int __thiscall TCommunications_Handler::TEST(void) */
+    //     // 
+    //     // int __thiscall TCommunications_Handler::TEST(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   TTaunt *pTVar1;
+    //     //   int iVar2;
+    //     //   undefined4 *unaff_FS_OFFSET;
+    //     //   undefined4 local_c;
+    //     //   code *pcStack_8;
+    //     //   undefined4 local_4;
+    //     //   
+    //     //   local_4 = 0xffffffff;
+    //     //   pcStack_8 = FUN_0055ccdb;
+    //     //   local_c = *unaff_FS_OFFSET;
+    //     //   *unaff_FS_OFFSET = &local_c;
+    //     //   pTVar1 = (TTaunt *)operator_new(0x198);
+    //     //   local_4 = 0;
+    //     //   if (pTVar1 == (TTaunt *)0x0) {
+    //     //     pTVar1 = (TTaunt *)0x0;
+    //     //   }
+    //     //   else {
+    //     //     pTVar1 = (TTaunt *)TTaunt::TTaunt(pTVar1,sound_driver);
+    //     //   }
+    //     //   local_4 = 0xffffffff;
+    //     //   iVar2 = debug_rand(s_C__msdev_work_age1_x1_Com_hand_c,0x8f2);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Playing_Taunt___d,(iVar2 * 0xf) / 0x7fff);
+    //     //   TTaunt::PlayTauntNo(pTVar1,4);
+    //     //   if (pTVar1 != (TTaunt *)0x0) {
+    //     //     TTaunt::~TTaunt(pTVar1);
+    //     //     operator_delete(pTVar1);
+    //     //   }
+    //     //   *unaff_FS_OFFSET = local_c;
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+ulong TCommunications_Handler::HiTurnAcknowledged(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00429BD0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x00429BD0
+    // ulong HiTurnAcknowledged(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: unsigned long __thiscall TCommunications_Handler::HiTurnAcknowledged(void) */
+    //     // 
+    //     // ulong __thiscall TCommunications_Handler::HiTurnAcknowledged(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   ulong *puVar2;
+    //     //   uint uVar3;
+    //     //   
+    //     //   DAT_0062c5e8 = 0;
+    //     //   uVar3 = (uint)(this->PlayerOptions).LowPlayerNumber;
+    //     //   if (uVar3 <= (this->PlayerOptions).HighPlayerNumber) {
+    //     //     puVar2 = this->LastTurnAck + uVar3;
+    //     //     do {
+    //     //       iVar1 = IsPlayerHuman(this,uVar3);
+    //     //       if ((iVar1 != 0) && (DAT_0062c5e8 < *puVar2)) {
+    //     //         DAT_0062c5e8 = *puVar2;
+    //     //       }
+    //     //       uVar3 = uVar3 + 1;
+    //     //       puVar2 = puVar2 + 1;
+    //     //     } while ((int)uVar3 <= (int)(uint)(this->PlayerOptions).HighPlayerNumber);
+    //     //   }
+    //     //   return DAT_0062c5e8;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+void TCommunications_Handler::ClearRXForPlayer(uint param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042A060
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042A060
+    // void ClearRXForPlayer(TCommunications_Handler* this_, uint param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: void __thiscall TCommunications_Handler::ClearRXForPlayer(unsigned int) */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::ClearRXForPlayer(TCommunications_Handler *this,uint param_1)
+    //     // 
+    //     // {
+    //     //   undefined4 *puVar1;
+    //     //   uint uVar2;
+    //     //   
+    //     //   uVar2 = 0;
+    //     //   do {
+    //     //     puVar1 = (undefined4 *)((int)&this->OnHold->HoldMsg + uVar2);
+    //     //     if (*(ulong *)((int)&this->OnHold->dcoFromID + uVar2) == (this->PlayerOptions).dcoID[param_1]) {
+    //     //       if ((void *)*puVar1 != (void *)0x0) {
+    //     //         operator_delete((void *)*puVar1);
+    //     //       }
+    //     //       *puVar1 = 0;
+    //     //       puVar1[1] = 0;
+    //     //       puVar1[2] = 0;
+    //     //       puVar1[3] = 0;
+    //     //       puVar1[4] = 0;
+    //     //     }
+    //     //     uVar2 = uVar2 + 0x18;
+    //     //   } while (uVar2 < 0x2ef9);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::ClearTXForPlayer(uint param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042A130
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042A130
+    // void ClearTXForPlayer(TCommunications_Handler* this_, uint param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: void __thiscall TCommunications_Handler::ClearTXForPlayer(unsigned int) */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::ClearTXForPlayer(TCommunications_Handler *this,uint param_1)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   int iVar2;
+    //     //   
+    //     //   iVar2 = 0x1f6;
+    //     //   iVar1 = param_1 * 4 + 0x10;
+    //     //   do {
+    //     //     iVar2 = iVar2 + -1;
+    //     //     *(undefined4 *)((int)this->Resend->DestMap + iVar1 + -0x10) = 0;
+    //     //     iVar1 = iVar1 + 0x38;
+    //     //   } while (iVar2 != 0);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::ClearRXTXForPlayer(uint param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042A160
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042A160
+    // void ClearRXTXForPlayer(TCommunications_Handler* this_, uint param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* protected: void __thiscall TCommunications_Handler::ClearRXTXForPlayer(unsigned int) */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::ClearRXTXForPlayer(TCommunications_Handler *this,uint param_1)
+    //     // 
+    //     // {
+    //     //   ClearTXForPlayer(this,param_1);
+    //     //   ClearRXForPlayer(this,param_1);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+int TCommunications_Handler::StoreIncoming(uint param_2, char* param_3, uint param_4, ulong param_5, ulong param_6) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A180
+    comm_store_incoming(this, param_2, param_3, (ulong)param_4, param_5, param_6);
+    return 1;
+}
+
+int TCommunications_Handler::StoreForResend(uint param_2, char* param_3, uint param_4, uint* param_5) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042A330
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042A330
+    // int StoreForResend(TCommunications_Handler* this_, uint param_2, char* param_3, uint param_4, uint* param_5) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::StoreForResend(unsigned int,char *,unsigned
+    //     //    int,unsigned int *) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::StoreForResend
+    //     //           (TCommunications_Handler *this,uint param_1,char *param_2,uint param_3,uint *param_4)
+    //     // 
+    //     // {
+    //     //   RESENDER *pRVar1;
+    //     //   char *pcVar2;
+    //     //   ulong uVar3;
+    //     //   int iVar4;
+    //     //   TDebuggingLog *this_00;
+    //     //   uint uVar5;
+    //     //   int iVar6;
+    //     //   int iVar7;
+    //     //   uint uVar8;
+    //     //   uint *puVar9;
+    //     //   uint *puVar10;
+    //     //   
+    //     //   if (this->Multiplayer != 0) {
+    //     //     if (this->RGE_Guaranteed_Delivery == '\0') {
+    //     //       TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_____RGEGTD_Store);
+    //     //       return 0;
+    //     //     }
+    //     //     iVar7 = 0;
+    //     //     uVar8 = 0;
+    //     //     do {
+    //     //       pRVar1 = this->Resend;
+    //     //       iVar6 = *(int *)((int)pRVar1->DestMap + (uVar8 - 0xc));
+    //     //       if (iVar6 == 0) {
+    //     //         this->Resend[iVar7].Length = param_3;
+    //     //         if (param_3 != 0) {
+    //     //           pRVar1 = this->Resend;
+    //     //           pcVar2 = (char *)operator_new(pRVar1[iVar7].Length);
+    //     //           pRVar1[iVar7].ResendMsg = pcVar2;
+    //     //           if (pcVar2 != (char *)0x0) {
+    //     //             uVar8 = pRVar1[iVar7].Length;
+    //     //             for (uVar5 = uVar8 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     //               *(undefined4 *)pcVar2 = *(undefined4 *)param_2;
+    //     //               param_2 = param_2 + 4;
+    //     //               pcVar2 = pcVar2 + 4;
+    //     //             }
+    //     //             for (uVar8 = uVar8 & 3; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //     //               *pcVar2 = *param_2;
+    //     //               param_2 = param_2 + 1;
+    //     //               pcVar2 = pcVar2 + 1;
+    //     //             }
+    //     //             pRVar1[iVar7].Length = param_3;
+    //     //           }
+    //     //         }
+    //     //         this->Resend[iVar7].Serial = param_1;
+    //     //         puVar9 = param_4;
+    //     //         puVar10 = this->Resend[iVar7].DestMap;
+    //     //         for (uVar8 = (uint)this->MaxGamePlayers * 4 + 4 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //     //           *puVar10 = *puVar9;
+    //     //           puVar9 = puVar9 + 1;
+    //     //           puVar10 = puVar10 + 1;
+    //     //         }
+    //     //         for (iVar6 = 0; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //     //           *(char *)puVar10 = (char)*puVar9;
+    //     //           puVar9 = (uint *)((int)puVar9 + 1);
+    //     //           puVar10 = (uint *)((int)puVar10 + 1);
+    //     //         }
+    //     //         TDebuggingLog::Log((TDebuggingLog *)(uint)this->MaxGamePlayers,(char *)L,
+    //     //                            s_Stored__db_for_resend__Slot___d_,param_3,iVar7,param_1,
+    //     //                            (TDebuggingLog *)(uint)this->MaxGamePlayers);
+    //     //         uVar8 = 1;
+    //     //         if (this->MaxGamePlayers != 0) {
+    //     //           iVar6 = iVar7 * 0x38 + 0x14;
+    //     //           do {
+    //     //             param_4 = param_4 + 1;
+    //     //             if (*(int *)((int)this->Resend->DestMap + iVar6 + -0x10) != 0) {
+    //     //               TDebuggingLog::Log((TDebuggingLog *)*param_4,(char *)L,s_______to__>_P__d__retries__d,
+    //     //                                  uVar8,(TDebuggingLog *)*param_4);
+    //     //             }
+    //     //             uVar8 = uVar8 + 1;
+    //     //             iVar6 = iVar6 + 4;
+    //     //           } while (uVar8 <= this->MaxGamePlayers);
+    //     //         }
+    //     //         uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xd12);
+    //     //         this->Resend[iVar7].TimeSent = uVar3;
+    //     //         return 1;
+    //     //       }
+    //     //       iVar4 = (int)**(char **)((int)pRVar1->DestMap + (uVar8 - 8));
+    //     //       TDebuggingLog::Log(L,(char *)L,s_QUEUE_Has_Ser___d__Slot__d__Cmd_,iVar6,iVar7,iVar4,iVar4,
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + (uVar8 - 4)),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 4),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 8),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 0xc),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 0x10),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 0x14),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 0x18),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 0x1c),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + uVar8 + 0x20));
+    //     //       uVar8 = uVar8 + 0x38;
+    //     //       iVar7 = iVar7 + 1;
+    //     //     } while (uVar8 < 0x6d98);
+    //     //     TDebuggingLog::Log(this_00,(char *)L,s_RESEND_buffer_filled_up__slots__,iVar7);
+    //     //   }
+    //     //   return 0;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::TXAcknowledgeMessage(uint param_2, uint param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
+    comm_tx_ack(this, param_2, param_3);
+    return 1;
+}
+
+int TCommunications_Handler::RXAcknowledgeStoredMessage(uint param_2, uint param_3) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042A650
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042A650
+    // int RXAcknowledgeStoredMessage(TCommunications_Handler* this_, uint param_2, uint param_3) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int,unsigned
+    //     //    int) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::RXAcknowledgeStoredMessage
+    //     //           (TCommunications_Handler *this,uint param_1,uint param_2)
+    //     // 
+    //     // {
+    //     //   uint uVar1;
+    //     //   uint uVar2;
+    //     //   int iVar3;
+    //     //   
+    //     //   if (this->RGE_Guaranteed_Delivery == '\0') {
+    //     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s__RGEGTD_RxAck);
+    //     //     return 0;
+    //     //   }
+    //     //   TDebuggingLog::Log(L,(char *)L,s_COMM__RX_ACK_from_P__d_for_Ser__,param_2,param_1);
+    //     //   this->WaitingForAck = 0;
+    //     //   uVar2 = 0;
+    //     //   iVar3 = param_2 * 4 + 0x10;
+    //     //   do {
+    //     //     uVar1 = *(uint *)((int)this->Resend->DestMap + (uVar2 - 0xc));
+    //     //     if ((uVar1 == param_1) && (uVar1 != 0)) {
+    //     //       *(undefined4 *)((int)this->Resend->DestMap + iVar3 + -0x10) = 0;
+    //     //     }
+    //     //     uVar2 = uVar2 + 0x38;
+    //     //     iVar3 = iVar3 + 0x38;
+    //     //   } while (uVar2 < 0x6d99);
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::PurgeAcknowledgedStoredMessages(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042A6E0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042A6E0
+    // int PurgeAcknowledgedStoredMessages(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: NonAckCount */
+    //     // /* public: int __thiscall TCommunications_Handler::PurgeAcknowledgedStoredMessages(void) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::PurgeAcknowledgedStoredMessages(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   uint *puVar2;
+    //     //   int iVar3;
+    //     //   uint uVar4;
+    //     //   undefined4 *puVar5;
+    //     //   uint NonAckCount;
+    //     //   uint i;
+    //     //   int local_8;
+    //     //   uint local_4;
+    //     //   
+    //     //   iVar3 = 0;
+    //     //   local_8 = 0;
+    //     //   local_4 = 4;
+    //     //   do {
+    //     //     i = 0;
+    //     //     if (*(int *)((int)this->Resend->DestMap + iVar3 + -0xc) != 0) {
+    //     //       uVar4 = 1;
+    //     //       if (this->MaxGamePlayers != 0) {
+    //     //         do {
+    //     //           iVar1 = IsPlayerHuman(this,uVar4);
+    //     //           if ((iVar1 != 0) && (this->Resend->DestMap[uVar4 + local_4 + -4] != 0)) {
+    //     //             i = i + 1;
+    //     //           }
+    //     //           uVar4 = uVar4 + 1;
+    //     //         } while (uVar4 <= this->MaxGamePlayers);
+    //     //       }
+    //     //       if (i == 0) {
+    //     //         TDebuggingLog::Log(L,(char *)L,s_GTD__Ser___d_Slot__d__Ackd_by_al,
+    //     //                            *(undefined4 *)((int)this->Resend->DestMap + iVar3 + -0xc),local_8);
+    //     //         puVar5 = (undefined4 *)((int)this->Resend->DestMap + iVar3 + -0x10);
+    //     //         *puVar5 = 0;
+    //     //         if ((void *)puVar5[2] != (void *)0x0) {
+    //     //           operator_delete((void *)puVar5[2]);
+    //     //         }
+    //     //         puVar5[2] = 0;
+    //     //         puVar5[1] = 0;
+    //     //         puVar5[3] = 0;
+    //     //         puVar5 = puVar5 + 4;
+    //     //         for (iVar1 = 10; iVar1 != 0; iVar1 = iVar1 + -1) {
+    //     //           *puVar5 = 0;
+    //     //           puVar5 = puVar5 + 1;
+    //     //         }
+    //     //       }
+    //     //     }
+    //     //     local_4 = local_4 + 0xe;
+    //     //     local_8 = local_8 + 1;
+    //     //     iVar3 = iVar3 + 0x38;
+    //     //   } while (local_4 < 0x1b6b);
+    //     //   iVar3 = 0x1f6;
+    //     //   puVar2 = &this->Resend->Serial;
+    //     //   do {
+    //     //     if (*puVar2 != 0) {
+    //     //       this->WaitingForAck = this->WaitingForAck + 1;
+    //     //     }
+    //     //     puVar2 = puVar2 + 0xe;
+    //     //     iVar3 = iVar3 + -1;
+    //     //   } while (iVar3 != 0);
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::TXResendReply(uint param_2, uint param_3) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042AD10
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042AD10
+    // int TXResendReply(TCommunications_Handler* this_, uint param_2, uint param_3) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: BadTransmitCount */
+    //     // /* public: int __thiscall TCommunications_Handler::TXResendReply(unsigned int,unsigned int) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::TXResendReply(TCommunications_Handler *this,uint param_1,uint param_2)
+    //     // 
+    //     // {
+    //     //   TDebuggingLog *this_00;
+    //     //   RESENDER *pRVar1;
+    //     //   uint uVar2;
+    //     //   ulong uVar3;
+    //     //   ulong uVar4;
+    //     //   uint uVar5;
+    //     //   TCommunications_Handler *this_01;
+    //     //   TDebuggingLog *this_02;
+    //     //   TDebuggingLog *this_03;
+    //     //   TDebuggingLog *this_04;
+    //     //   uint uVar6;
+    //     //   char *pcVar7;
+    //     //   uint BadTransmitCount;
+    //     //   uint i;
+    //     //   uint GoodTransmitCount;
+    //     //   long hr;
+    //     //   MSGFORMAT_RESEND nosuch;
+    //     //   
+    //     //   uVar2 = param_2;
+    //     //   if (this->RGE_Guaranteed_Delivery == '\0') {
+    //     //     return 0;
+    //     //   }
+    //     //   uVar6 = 0;
+    //     //   if ((this->PlayerOptions).dcoID[param_2] == 0) {
+    //     //     pcVar7 = s_Invalid_player_req_;
+    //     //     this_01 = this;
+    //     // LAB_0042b07b:
+    //     //     TDebuggingLog::Log((TDebuggingLog *)this_01,(char *)L,pcVar7);
+    //     //     return 0;
+    //     //   }
+    //     //   if (DAT_0062cf04 == 0) {
+    //     //     return 0;
+    //     //   }
+    //     //   uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xee7);
+    //     //   if ((param_1 == this->LastSerialRepliedTX[param_2]) &&
+    //     //      (uVar5 = uVar3 - this->LastRequestRepliedTX[param_2], uVar5 < 500)) {
+    //     //     TDebuggingLog::Log(L,(char *)L,s_Res_reply_too_soon___u__u,param_1,uVar5);
+    //     //     return 0;
+    //     //   }
+    //     //   this->LastSerialRepliedTX[param_2] = param_1;
+    //     //   this->LastRequestRepliedTX[param_2] = uVar3;
+    //     //   hr = 0;
+    //     //   i = 0;
+    //     //   GoodTransmitCount = 0;
+    //     //   param_2 = param_2 * 4 + 0x10;
+    //     //   do {
+    //     //     uVar5 = *(uint *)((int)this->Resend->DestMap + (uVar6 - 0xc));
+    //     //     if (uVar5 == param_1) {
+    //     //       sprintf(this->TBuff,s_Found_Resend_Ser__d_for_P__d,uVar5,uVar2);
+    //     //       TDebuggingLog::Log(L,(char *)L,this->TBuff);
+    //     //       nosuch.Serialno = (uint)operator_new(*(uint *)((int)this->Resend->DestMap + (uVar6 - 4)));
+    //     //       this_01 = (TCommunications_Handler *)
+    //     //                 (*(int *)((int)this->Resend->DestMap + (param_2 - 0x10)) + -1);
+    //     //       *(TCommunications_Handler **)((int)this->Resend->DestMap + (param_2 - 0x10)) = this_01;
+    //     //       if (DAT_0062cf04 == 0) {
+    //     //         pcVar7 = s____BAD_DCOID_0_NO_TX;
+    //     //         goto LAB_0042b07b;
+    //     //       }
+    //     //       uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xf19);
+    //     //       this_00 = *(TDebuggingLog **)((int)this->Resend->DestMap + (uVar6 - 4));
+    //     //       TDebuggingLog::Log(this_00,(char *)L,s___>TX_RES_REP___d__d___d_,uVar2,param_1,this_00);
+    //     //       nosuch._0_4_ = (**(code **)(*DAT_0062c5ec + 0x68))
+    //     //                                (DAT_0062c5ec,DAT_0062cf04,(this->PlayerOptions).dcoID[uVar2],0,
+    //     //                                 *(undefined4 *)((int)this->Resend->DestMap + (uVar6 - 8)),
+    //     //                                 *(undefined4 *)((int)this->Resend->DestMap + (uVar6 - 4)));
+    //     //       uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xf28);
+    //     //       if (0x32 < uVar4 - uVar3) {
+    //     //         TDebuggingLog::Log(this_02,(char *)L,s____TXResendReply_slow____ld_msec,uVar4 - uVar3);
+    //     //       }
+    //     //       if (nosuch._0_4_ == 0) {
+    //     //         hr = hr + 1;
+    //     //         this->TXPacketLength =
+    //     //              this->TXPacketLength + *(int *)((int)this->Resend->DestMap + (uVar6 - 4));
+    //     //       }
+    //     //       else {
+    //     //         RGE_Comm_Error::ShowReturn(this->Err,nosuch._0_4_,s_Resend_TX);
+    //     //         i = i + 1;
+    //     //       }
+    //     //       pRVar1 = this->Resend;
+    //     //                     /* language.dll match for 0xf42: "Right-click to board this transport." */
+    //     //       nosuch._0_4_ = SEXT14(**(char **)((int)pRVar1->DestMap + (uVar6 - 8)));
+    //     //       uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xf42);
+    //     //       TDebuggingLog::Log(L,(char *)L,s_COMM__>>>>>_RETRANSMIT_P__d_Ser_,uVar2,
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + (uVar6 - 0xc)),GoodTransmitCount,
+    //     //                          nosuch._0_4_,nosuch._0_4_,
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + (uVar6 - 4)),
+    //     //                          *(undefined4 *)((int)pRVar1->DestMap + (param_2 - 0x10)),uVar3);
+    //     //       operator_delete((void *)nosuch.Serialno);
+    //     //     }
+    //     //     uVar6 = uVar6 + 0x38;
+    //     //     GoodTransmitCount = GoodTransmitCount + 1;
+    //     //     param_2 = param_2 + 0x38;
+    //     //     if (0x6d98 < uVar6) {
+    //     //       if ((hr == 0) && (i == 0)) {
+    //     //         if ((this->PlayerOptions).ProgramState == COMM_STATE_JOINNOW) {
+    //     //           TDebuggingLog::Log(L,(char *)L,s_____Did_not_have_requested_Ser__,param_1,uVar2);
+    //     //           nosuch.Serialno = CONCAT31(nosuch.Serialno._1_3_,0x59);
+    //     //           TDebuggingLog::Log(this_03,(char *)L,s___>TX_RNSM___d__d___d_,uVar2,param_1,8);
+    //     //           FastSend(this,(this->PlayerOptions).dcoID[uVar2],&nosuch.Serialno,8,0,0);
+    //     //           TDebuggingLog::Log(this_04,(char *)L,s_____TX__No_such_message_as___d__,param_1);
+    //     //           ClearTXForPlayer(this,uVar2);
+    //     //         }
+    //     //       }
+    //     //       else {
+    //     //         TDebuggingLog::Log((TDebuggingLog *)hr,(char *)L,s_RESEND_to_P__d_FULFILLED___GoodT,uVar2,hr
+    //     //                            ,i,i + hr);
+    //     //       }
+    //     //       PurgeAcknowledgedStoredMessages(this);
+    //     //       return 1;
+    //     //     }
+    //     //   } while( true );
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::TXResendRequest(uint param_2, uint param_3) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042B0A0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042B0A0
+    // int TXResendRequest(TCommunications_Handler* this_, uint param_2, uint param_3) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::TXResendRequest(unsigned int,unsigned int) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::TXResendRequest(TCommunications_Handler *this,uint param_1,uint param_2)
+    //     // 
+    //     // {
+    //     //   ulong uVar1;
+    //     //   undefined1 *puVar2;
+    //     //   int iVar3;
+    //     //   TDebuggingLog *this_00;
+    //     //   TDebuggingLog *this_01;
+    //     //   TDebuggingLog *this_02;
+    //     //   int unaff_EDI;
+    //     //   
+    //     //   if (this->RGE_Guaranteed_Delivery != '\0') {
+    //     //     uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xf8c);
+    //     //     if ((param_1 != this->LastSerialRequestedTX[param_2]) ||
+    //     //        (499 < uVar1 - this->LastRequestHonoredTX[param_2])) {
+    //     //       this->LastSerialRequestedTX[param_2] = param_1;
+    //     //       this->LastRequestHonoredTX[param_2] = uVar1;
+    //     //       puVar2 = (undefined1 *)operator_new(8);
+    //     //       *puVar2 = 0x58;
+    //     //       *(uint *)(puVar2 + 4) = param_1;
+    //     //       TDebuggingLog::Log(this_00,(char *)L,s_GTD__TX_RESEND_REQ_to_P__d__Ser_,param_2,param_1);
+    //     //       if (DAT_0062cf04 == 0) {
+    //     //         TDebuggingLog::Log(this_01,(char *)L,s____BAD_DCOID_0_NO_TX);
+    //     //         return 0;
+    //     //       }
+    //     //                     /* language.dll match for 0xfa9: "?" */
+    //     //       debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xfa9);
+    //     //       TDebuggingLog::Log(L,(char *)L,s___>TX_RES_REQ___d__d___d_,param_2,param_1,8);
+    //     //       iVar3 = (**(code **)(*DAT_0062c5ec + 0x68))
+    //     //                         (DAT_0062c5ec,DAT_0062cf04,(this->PlayerOptions).dcoID[param_2],0,puVar2,8);
+    //     //       uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xfb8);
+    //     //       if (0x32 < uVar1 - unaff_EDI) {
+    //     //         TDebuggingLog::Log(this_02,(char *)L,s____GetNextSequence_slow____ld_ms,uVar1 - unaff_EDI);
+    //     //       }
+    //     //       operator_delete(puVar2);
+    //     //       if (iVar3 == 0) {
+    //     //         this->TXPacketLength = this->TXPacketLength + 8;
+    //     //         return 1;
+    //     //       }
+    //     //     }
+    //     //   }
+    //     //   return 0;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+uchar TCommunications_Handler::GetNextSequence(ulong param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042B200
+    return comm_get_next_sequence(param_2, this->PlayerOptions.ProgramState);
+}
+
+void TCommunications_Handler::DestroyMultiplayerGame(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042B860
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042B860
+    // void DestroyMultiplayerGame(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: void __thiscall TCommunications_Handler::DestroyMultiplayerGame(void) */
+    //     // 
+    //     // void __thiscall TCommunications_Handler::DestroyMultiplayerGame(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   char cVar1;
+    //     //   ushort uVar2;
+    //     //   ulong uVar3;
+    //     //   int *piVar4;
+    //     //   uint uVar5;
+    //     //   uint uVar6;
+    //     //   int iVar7;
+    //     //   char *pcVar8;
+    //     //   char *pcVar9;
+    //     //   ulong *puVar10;
+    //     //   
+    //     //   DestroyMyPlayer(this);
+    //     //   uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_com_hand_h,0x267);
+    //     //   this->RXPacketLength = 0;
+    //     //   this->RXPacketLengthHigh = 0;
+    //     //   this->TXPacketLength = 0;
+    //     //   this->TXPacketLengthHigh = 0;
+    //     //   this->lastRXDataRate = 0.0;
+    //     //   this->lastTXDataRate = 0.0;
+    //     //   this->HoldCount = 0;
+    //     //   this->ServiceTimeout = 0;
+    //     //   this->TXPackets = 0;
+    //     //   this->RXPackets = 0;
+    //     //   this->RGE_Guaranteed_Delivery = '\0';
+    //     //   this->ResendAcknowledgements = 0;
+    //     //   this->ResentToOther = 0;
+    //     //   this->DroppedPacketCount = 0;
+    //     //   this->LobbyLaunched = 0;
+    //     //   this->GTDSerialNo = 0;
+    //     //   this->dwStopTime = 0;
+    //     //   this->OutOfSyncFlag = 0;
+    //     //   TDebuggingLog::Time(L);
+    //     //   uVar5 = 0xffffffff;
+    //     //   this->AvgTurnTime = 0;
+    //     //   this->PauseChangePending = 0;
+    //     //   this->StepMode = 0;
+    //     //   this->IntentionallyDropPackets = 0;
+    //     //   (this->PlayerOptions).LastSentTime = uVar3;
+    //     //   pcVar8 = &s__;
+    //     //   do {
+    //     //     pcVar9 = pcVar8;
+    //     //     if (uVar5 == 0) break;
+    //     //     uVar5 = uVar5 - 1;
+    //     //     pcVar9 = pcVar8 + 1;
+    //     //     cVar1 = *pcVar8;
+    //     //     pcVar8 = pcVar9;
+    //     //   } while (cVar1 != '\0');
+    //     //   uVar5 = ~uVar5;
+    //     //   pcVar8 = pcVar9 + -uVar5;
+    //     //   pcVar9 = this->MyGameTitle;
+    //     //   for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     //     *(undefined4 *)pcVar9 = *(undefined4 *)pcVar8;
+    //     //     pcVar8 = pcVar8 + 4;
+    //     //     pcVar9 = pcVar9 + 4;
+    //     //   }
+    //     //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     //     *pcVar9 = *pcVar8;
+    //     //     pcVar8 = pcVar8 + 1;
+    //     //     pcVar9 = pcVar9 + 1;
+    //     //   }
+    //     //   uVar5 = 0xffffffff;
+    //     //   pcVar8 = &s__;
+    //     //   do {
+    //     //     pcVar9 = pcVar8;
+    //     //     if (uVar5 == 0) break;
+    //     //     uVar5 = uVar5 - 1;
+    //     //     pcVar9 = pcVar8 + 1;
+    //     //     cVar1 = *pcVar8;
+    //     //     pcVar8 = pcVar9;
+    //     //   } while (cVar1 != '\0');
+    //     //   uVar5 = ~uVar5;
+    //     //   pcVar8 = pcVar9 + -uVar5;
+    //     //   pcVar9 = this->MyFriendlyName;
+    //     //   for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     //     *(undefined4 *)pcVar9 = *(undefined4 *)pcVar8;
+    //     //     pcVar8 = pcVar8 + 4;
+    //     //     pcVar9 = pcVar9 + 4;
+    //     //   }
+    //     //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     //     *pcVar9 = *pcVar8;
+    //     //     pcVar8 = pcVar8 + 1;
+    //     //     pcVar9 = pcVar9 + 1;
+    //     //   }
+    //     //   uVar5 = 0xffffffff;
+    //     //   pcVar8 = &s__;
+    //     //   do {
+    //     //     pcVar9 = pcVar8;
+    //     //     if (uVar5 == 0) break;
+    //     //     uVar5 = uVar5 - 1;
+    //     //     pcVar9 = pcVar8 + 1;
+    //     //     cVar1 = *pcVar8;
+    //     //     pcVar8 = pcVar9;
+    //     //   } while (cVar1 != '\0');
+    //     //   uVar5 = ~uVar5;
+    //     //   pcVar8 = pcVar9 + -uVar5;
+    //     //   pcVar9 = this->MyFormalName;
+    //     //   for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     //     *(undefined4 *)pcVar9 = *(undefined4 *)pcVar8;
+    //     //     pcVar8 = pcVar8 + 4;
+    //     //     pcVar9 = pcVar9 + 4;
+    //     //   }
+    //     //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     //     *pcVar9 = *pcVar8;
+    //     //     pcVar8 = pcVar8 + 1;
+    //     //     pcVar9 = pcVar9 + 1;
+    //     //   }
+    //     //   uVar2 = this->MaxGamePlayers;
+    //     //   this->TickStart = 0;
+    //     //   this->TickCount = 0;
+    //     //   this->LastTimeoutMessageTime = 0;
+    //     //   (this->PlayerOptions).LowPlayerNumber = 1;
+    //     //   (this->PlayerOptions).HighPlayerNumber = uVar2;
+    //     //   (this->PlayerOptions).GameHasStarted = 0;
+    //     //   (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
+    //     //   this->MeHost = 0;
+    //     //   this->HaveHostInit = 0;
+    //     //   (this->PlayerOptions).CommandTurnIncrement = '\x02';
+    //     //   this->current_turn = 4;
+    //     //   (this->PlayerOptions).CurrentTurn = 4;
+    //     //   (this->PlayerOptions).NeedsToBeSent = '\0';
+    //     //   this->AcknowledgeAfterMsec = 0x32;
+    //     //   this->Me = 0;
+    //     //   this->Multiplayer = 0;
+    //     //   this->turnstart = 0;
+    //     //   this->mselapsed = 0;
+    //     //   TDebuggingLog::Log((TDebuggingLog *)(uint)uVar2,(char *)L,s_Initialize_Player_List);
+    //     //   uVar5 = 1;
+    //     //   if (this->MaxGamePlayers != 0) {
+    //     //     do {
+    //     //       InitPlayerInformation(this,uVar5,0,&s__,&s__);
+    //     //       uVar5 = uVar5 + 1;
+    //     //     } while ((int)uVar5 <= (int)(uint)this->MaxGamePlayers);
+    //     //   }
+    //     //   (this->PlayerOptions).NeedsToBeSent = '\0';
+    //     //   (this->PlayerOptions).LastSentTime = 0;
+    //     //   ClearAllSerialNumbers(this);
+    //     //   ClearRXandTX(this);
+    //     //   puVar10 = this->PlayerStopTurn;
+    //     //   for (iVar7 = 9; puVar10 = puVar10 + 1, iVar7 != 0; iVar7 = iVar7 + -1) {
+    //     //     *puVar10 = 0;
+    //     //   }
+    //     //   this->Steps = 1;
+    //     //   ResetLastCommunicationTimes(this);
+    //     //   this->WaitingForAck = 0;
+    //     //   if (this->InQ != (RGE_Communications_Queue *)0x0) {
+    //     //     RGE_Communications_Queue::FlushAll(this->InQ);
+    //     //   }
+    //     //   if (this->OutQ != (RGE_Communications_Queue *)0x0) {
+    //     //     RGE_Communications_Queue::FlushAll(this->OutQ);
+    //     //   }
+    //     //   this->ShuttingDown = 0;
+    //     //   piVar4 = this->Kicked;
+    //     //   iVar7 = 10;
+    //     //   do {
+    //     //     piVar4[-0x4c] = 0;
+    //     //     *piVar4 = 0;
+    //     //     piVar4[0xac] = 0;
+    //     //     piVar4 = piVar4 + 1;
+    //     //     iVar7 = iVar7 + -1;
+    //     //   } while (iVar7 != 0);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::SetRandomSeed(int param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+    this->PlayerOptions.RandomSeed = (ulong)param_2;
+}
+
+char* TCommunications_Handler::GetCommStateStr(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042CB20
+    switch (this->PlayerOptions.ProgramState) {
+    case 0: return (char*)"None";
+    case 1: return (char*)"Init";
+    case 2: return (char*)"Loading";
+    case 3: return (char*)"JoinNow";
+    case 4: return (char*)"Paused";
+    case 5: return (char*)"Running";
+    default: return (char*)"Unknown";
+    }
+}
+
+char* TCommunications_Handler::GetReadyPlayerStr(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+    if (this->AllPlayersReady() != 0) {
+        return (char*)"Ready";
+    }
+    return (char*)"Not Ready";
+}
+
+int TCommunications_Handler::GetActivePlayerCount(void) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC90
+    int count = 0;
+    for (uint p = 1; p <= (uint)this->MaxGamePlayers && p < 10; ++p) {
+        if (this->IsPlayerHuman(p) != 0 || this->IsPlayerComputer(p) != 0) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+int TCommunications_Handler::IsPlayerComputer(uint param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CD10
+    if (param_2 == 0 || param_2 > (uint)this->MaxGamePlayers || param_2 >= 10) {
+        return 0;
+    }
+    return (this->PlayerOptions.Humanity[param_2] == kPlayerHumanityComputer) ? 1 : 0;
+}
+
+char* TCommunications_Handler::GetCommInfo(uchar param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042CD50
+    uint player = (uint)param_2;
+    if (player == 0 || player > (uint)this->MaxGamePlayers) {
+        sprintf(this->TBuff, "Player %u invalid", player);
+        return this->TBuff;
+    }
+    return this->WaitingOnNamedInfo(player);
+}
+
+void TCommunications_Handler::UpdatePlayerInformation(ulong param_2, char* param_3, char* param_4) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D120
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042D120
+    // void UpdatePlayerInformation(TCommunications_Handler* this_, ulong param_2, char* param_3, char* param_4) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: void __thiscall TCommunications_Handler::UpdatePlayerInformation(unsigned long,char
+    //     //    *,char *) */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::UpdatePlayerInformation
+    //     //           (TCommunications_Handler *this,ulong param_1,char *param_2,char *param_3)
+    //     // 
+    //     // {
+    //     //   uint uVar1;
+    //     //   ulong *puVar2;
+    //     //   uint uVar3;
+    //     //   
+    //     //   if (param_1 != 0) {
+    //     //     uVar1 = (uint)(this->PlayerOptions).LowPlayerNumber;
+    //     //     uVar3 = (uint)(this->PlayerOptions).HighPlayerNumber;
+    //     //     if (uVar1 <= uVar3) {
+    //     //       puVar2 = (this->PlayerOptions).dcoID + uVar1;
+    //     //       do {
+    //     //         if (*puVar2 == param_1) goto LAB_0042d155;
+    //     //         uVar1 = uVar1 + 1;
+    //     //         puVar2 = puVar2 + 1;
+    //     //       } while ((int)uVar1 <= (int)uVar3);
+    //     //     }
+    //     //   }
+    //     //   uVar1 = 0;
+    //     // LAB_0042d155:
+    //     //   if (uVar1 == 0) {
+    //     //     InitPlayerInformation(this,0,param_1,param_2,param_3);
+    //     //   }
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+int TCommunications_Handler::LaunchLobbyGame(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D180
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042D180
+    // int LaunchLobbyGame(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: NewDPConv */
+    //     // /* public: int __thiscall TCommunications_Handler::LaunchLobbyGame(void) */
+    //     // 
+    //     // int __thiscall TCommunications_Handler::LaunchLobbyGame(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   byte bVar1;
+    //     //   undefined4 uVar3;
+    //     //   TDebuggingLog *this_00;
+    //     //   IDirectPlay3 *NewDPConv;
+    //     //   char *name;
+    //     //   DPSESSIONDESC2 test;
+    //     //   uint uVar2;
+    //     //   
+    //     //   name = (char *)0x0;
+    //     //   bVar1 = RGE_Lobby::CheckForLobbyLaunch(this->Lobby,(IDirectPlay3 **)&name);
+    //     //   uVar2 = (uint)bVar1;
+    //     //   if (uVar2 != 0) {
+    //     //     if (DAT_0062c5ec != (int *)0x0) {
+    //     //       uVar3 = (**(code **)(*DAT_0062c5ec + 8))(DAT_0062c5ec);
+    //     //       TDebuggingLog::Log(this_00,(char *)L,s_Release_count____d,uVar3);
+    //     //     }
+    //     //     DAT_0062c5ec = (int *)name;
+    //     //     if (name == (char *)0x0) {
+    //     //       return (int)name;
+    //     //     }
+    //     //     bVar1 = RGE_Lobby::GetSessionInfo(this->Lobby,(DPSESSIONDESC2 *)&test.dwFlags);
+    //     //     uVar2 = (uint)bVar1;
+    //     //     if (uVar2 != 0) {
+    //     //       DebugSessionInformation(this,(DPSESSIONDESC2 *)&test.dwFlags);
+    //     //     }
+    //     //     CommGetCaps(this);
+    //     //     this->Multiplayer = 1;
+    //     //     DPlayGetSessionDesc(this);
+    //     //     RGE_Lobby::GetPlayerInfo(this->Lobby,(char **)&test);
+    //     //     SetMyPlayerName(this,(char *)test.dwSize);
+    //     //     (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
+    //     //     AddSelfPlayer(this);
+    //     //     bVar1 = RGE_Lobby::IsThisHost(this->Lobby);
+    //     //     this->MeHost = (uint)bVar1;
+    //     //     if (bVar1 != 0) {
+    //     //       this->Me = 1;
+    //     //       (this->PlayerOptions).dcoID[1] = DAT_0062cf04;
+    //     //       (this->PlayerOptions).Humanity[this->Me] = ME_HUMAN;
+    //     //       this->HaveHostInit = 1;
+    //     //       (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
+    //     //       SetRandomSeed(this,rge_base_game->random_game_seed);
+    //     //                     /* language.dll match for 0x7d1: "Error" */
+    //     //       this->GTDSerialNo = 0x7d1;
+    //     //     }
+    //     //     UpdatePlayers(this);
+    //     //   }
+    //     //   this->LobbyLaunched = uVar2;
+    //     //   return uVar2;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::SetGameTitle(char* param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D3B0
+    if (param_2 == nullptr) {
+        this->MyGameTitle[0] = '\0';
+        return 0;
+    }
+    strncpy(this->MyGameTitle, param_2, sizeof(this->MyGameTitle) - 1);
+    this->MyGameTitle[sizeof(this->MyGameTitle) - 1] = '\0';
+    return 1;
+}
+
+void TCommunications_Handler::SetMyPlayerName(char* param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D3E0
+    if (param_2 == nullptr) {
+        this->MyFriendlyName[0] = '\0';
+        this->MyFormalName[0] = '\0';
+        return;
+    }
+    strncpy(this->MyFriendlyName, param_2, sizeof(this->MyFriendlyName) - 1);
+    this->MyFriendlyName[sizeof(this->MyFriendlyName) - 1] = '\0';
+    strncpy(this->MyFormalName, param_2, sizeof(this->MyFormalName) - 1);
+    this->MyFormalName[sizeof(this->MyFormalName) - 1] = '\0';
+}
+
+long TCommunications_Handler::CreateDirectPlayConversation(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D4A0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042D4A0
+    // long CreateDirectPlayConversation(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: lpIDC */
+    //     // /* protected: long __thiscall TCommunications_Handler::CreateDirectPlayConversation(void) */
+    //     // 
+    //     // long __thiscall TCommunications_Handler::CreateDirectPlayConversation(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   ushort uVar1;
+    //     //   int iVar2;
+    //     //   undefined4 uVar3;
+    //     //   TDebuggingLog *this_00;
+    //     //   TDebuggingLog *this_01;
+    //     //   int *unaff_EDI;
+    //     //   IDirectPlay *lpIDC;
+    //     //   TCommunications_Handler *local_4;
+    //     //   
+    //     //   local_4 = this;
+    //     //   iVar2 = _DirectPlayCreate_12(&this->ServiceGUID,&local_4,0);
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,iVar2,s_DPCreate);
+    //     //   if (DAT_0062c5ec != 0) {
+    //     //     TDebuggingLog::Log(L,(char *)L,s_Already_have_conversation_);
+    //     //     return -0x7788fffb;
+    //     //   }
+    //     //   if (iVar2 != 0) {
+    //     //     (this->ServiceGUID).Data1 = (this->NullGUID).Data1;
+    //     //     uVar1 = (this->NullGUID).Data3;
+    //     //     (this->ServiceGUID).Data2 = (this->NullGUID).Data2;
+    //     //     (this->ServiceGUID).Data3 = uVar1;
+    //     //     *(undefined4 *)(this->ServiceGUID).Data4 = *(undefined4 *)(this->NullGUID).Data4;
+    //     //     *(undefined4 *)((this->ServiceGUID).Data4 + 4) = *(undefined4 *)((this->NullGUID).Data4 + 4);
+    //     //     return iVar2;
+    //     //   }
+    //     //   if (local_4 != (TCommunications_Handler *)0x0) {
+    //     //     iVar2 = (**(code **)local_4->OptionsChanged)(local_4,&_IID_IDirectPlay3A,&DAT_0062c5ec);
+    //     //     if (iVar2 != 0) {
+    //     //       TDebuggingLog::Log(this_00,(char *)L,s_Get_glpIDC_returns____ld,iVar2);
+    //     //       return iVar2;
+    //     //     }
+    //     //     uVar3 = (**(code **)(*unaff_EDI + 8))(unaff_EDI);
+    //     //     TDebuggingLog::Log(this_01,(char *)L,s_Release__Links__d,uVar3);
+    //     //   }
+    //     //   return 0;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::OpenMultiplayerConnection(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D580
+    if (this->CreateDirectPlayConversation() != 0) {
+        return -1;
+    }
+    return 1;
+}
+
+int TCommunications_Handler::CreateMultiplayerGame(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D590
+    if (this->OpenMultiplayerConnection() <= 0) {
+        return 0;
+    }
+    return (this->AddSelfPlayer() != 0) ? 1 : 0;
+}
+
+int TCommunications_Handler::AddSelfPlayer(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042D960
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042D960
+    // int AddSelfPlayer(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: names */
+    //     // /* protected: int __thiscall TCommunications_Handler::AddSelfPlayer(void) */
+    //     // 
+    //     // int __thiscall TCommunications_Handler::AddSelfPlayer(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   DPNAME names;
+    //     //   
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_Create_the_player);
+    //     //   names.field3_0xc.lpszLongName = (ushort *)this->MyFriendlyName;
+    //     //   names.field2_0x8.lpszShortName = (ushort *)0x0;
+    //     //   names.dwFlags = 0x10;
+    //     //   TDebuggingLog::Log((TDebuggingLog *)0x0,(char *)L,s_Adding_player___s_,
+    //     //                      names.field3_0xc.lpszLongName);
+    //     //   if (DAT_0062c5ec == (int *)0x0) {
+    //     //     return 0;
+    //     //   }
+    //     //   iVar1 = (**(code **)(*DAT_0062c5ec + 0x18))(DAT_0062c5ec,&DAT_0062cf04,&names.dwFlags,0,0,0,0);
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,iVar1,s_Add_SELF_PLAYER);
+    //     //   if (iVar1 != 0) {
+    //     //     CloseSession(this);
+    //     //     ReleaseComm(this);
+    //     //     (this->PlayerOptions).ProgramState = COMM_STATE_ERROR;
+    //     //     return 0;
+    //     //   }
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Rcvd_DPID_of__d,DAT_0062cf04);
+    //     //   GetMyMultiPlayerCaps(this);
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+long TCommunications_Handler::InitJoinGame(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042DA50
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042DA50
+    // long InitJoinGame(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: long __thiscall TCommunications_Handler::InitJoinGame(void) */
+    //     // 
+    //     // long __thiscall TCommunications_Handler::InitJoinGame(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   long lVar1;
+    //     //   
+    //     //   TChat::ClearChat(this->Chat);
+    //     //   this->Multiplayer = 1;
+    //     //   this->HaveHostInit = 0;
+    //     //   this->MeHost = 0;
+    //     //   this->GTDSerialNo = 0;
+    //     //   lVar1 = CreateDirectPlayConversation(this);
+    //     //   return lVar1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::JoinMultiplayerGame(_GUID* param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042DA80
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042DA80
+    // int JoinMultiplayerGame(TCommunications_Handler* this_, _GUID* param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: dSess2 */
+    //     // /* public: int __thiscall TCommunications_Handler::JoinMultiplayerGame(struct _GUID *) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::JoinMultiplayerGame(TCommunications_Handler *this,_GUID *param_1)
+    //     // 
+    //     // {
+    //     //   undefined4 uVar1;
+    //     //   ushort uVar2;
+    //     //   int iVar3;
+    //     //   DPSESSIONDESC2 *pDVar4;
+    //     //   DPSESSIONDESC2 dSess2;
+    //     //   
+    //     //   if (DAT_0062c5ec == (int *)0x0) {
+    //     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_JMPG__Create_w_no_valid_glpIDC);
+    //     //     return 0;
+    //     //   }
+    //     //   pDVar4 = &dSess2;
+    //     //   for (iVar3 = 0x14; pDVar4 = (DPSESSIONDESC2 *)&pDVar4->dwFlags, iVar3 != 0; iVar3 = iVar3 + -1) {
+    //     //     *(ulong *)pDVar4 = 0;
+    //     //   }
+    //     //   dSess2.dwFlags = 0x50;
+    //     //   (this->SessionGUID).Data1 = param_1->Data1;
+    //     //   uVar2 = param_1->Data3;
+    //     //   (this->SessionGUID).Data2 = param_1->Data2;
+    //     //   (this->SessionGUID).Data3 = uVar2;
+    //     //   *(undefined4 *)(this->SessionGUID).Data4 = *(undefined4 *)param_1->Data4;
+    //     //   uVar1 = *(undefined4 *)(param_1->Data4 + 4);
+    //     //   this->MeHost = 0;
+    //     //   *(undefined4 *)((this->SessionGUID).Data4 + 4) = uVar1;
+    //     //   dSess2.guidInstance._4_4_ = param_1->Data1;
+    //     //   dSess2.guidInstance.Data4._0_4_ = *(undefined4 *)&param_1->Data2;
+    //     //   dSess2.guidInstance.Data4._4_4_ = *(undefined4 *)param_1->Data4;
+    //     //   dSess2.guidApplication.Data1 = *(ulong *)(param_1->Data4 + 4);
+    //     //   dSess2.guidApplication._4_4_ = (this->ApplicationGUID).Data1;
+    //     //   dSess2.guidApplication.Data4._0_4_ = *(undefined4 *)&(this->ApplicationGUID).Data2;
+    //     //   dSess2.guidApplication.Data4._4_4_ = *(undefined4 *)(this->ApplicationGUID).Data4;
+    //     //   dSess2.dwMaxPlayers = *(ulong *)((this->ApplicationGUID).Data4 + 4);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Open_session_for_JOIN___Session_,(this->SessionGUID).Data1);
+    //     //   iVar3 = (**(code **)(*DAT_0062c5ec + 0x60))(DAT_0062c5ec,&dSess2.dwFlags,1);
+    //     //   if (iVar3 == -0x7788fea2) {
+    //     //     RGE_Comm_Error::ShowReturn(this->Err,-0x7788fea2,s_Join_MP_Game);
+    //     //     return 0;
+    //     //   }
+    //     //   if (iVar3 == -0x7788fffb) {
+    //     //     RGE_Comm_Error::ShowReturn(this->Err,-0x7788fffb,s_Join_MP_Game);
+    //     //     return 0;
+    //     //   }
+    //     //   if (iVar3 == -0x7788feb6) {
+    //     //     RGE_Comm_Error::ShowReturn(this->Err,-0x7788feb6,s_Join_MP_Game);
+    //     //     NotifyWindow(this,COMM_NO_NEW_PLAYERS);
+    //     //     return 0;
+    //     //   }
+    //     //   if (iVar3 != 0) {
+    //     //     RGE_Comm_Error::ShowReturn(this->Err,iVar3,s_Join_MP_Game);
+    //     //     (this->PlayerOptions).ProgramState = COMM_STATE_ERROR;
+    //     //     return 0;
+    //     //   }
+    //     //   iVar3 = AddSelfPlayer(this);
+    //     //   if (iVar3 == 0) {
+    //     //     return 0;
+    //     //   }
+    //     //   (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+long TCommunications_Handler::GetMyMultiPlayerCaps(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042DD70
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042DD70
+    // long GetMyMultiPlayerCaps(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: dpCaps */
+    //     // /* protected: long __thiscall TCommunications_Handler::GetMyMultiPlayerCaps(void) */
+    //     // 
+    //     // long __thiscall TCommunications_Handler::GetMyMultiPlayerCaps(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   TDebuggingLog *this_00;
+    //     //   ulong unaff_ESI;
+    //     //   ulong unaff_EDI;
+    //     //   ulong *puVar2;
+    //     //   DPCAPS dpCaps;
+    //     //   
+    //     //   if (DAT_0062c5ec == (int *)0x0) {
+    //     //     return -0x7fffbffb;
+    //     //   }
+    //     //   puVar2 = &dpCaps.dwFlags;
+    //     //   for (iVar1 = 10; iVar1 != 0; iVar1 = iVar1 + -1) {
+    //     //     *puVar2 = 0;
+    //     //     puVar2 = puVar2 + 1;
+    //     //   }
+    //     //   dpCaps.dwFlags = 0x28;
+    //     //   if (DAT_0062cf04 == 0) {
+    //     //     return -0x7fffbffb;
+    //     //   }
+    //     //   dpCaps.dwSize = unaff_ESI;
+    //     //   iVar1 = (**(code **)(*DAT_0062c5ec + 0x4c))(DAT_0062c5ec,DAT_0062cf04,&dpCaps.dwFlags);
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,iVar1,s_Get_Player_Caps);
+    //     //   if (iVar1 != 0) {
+    //     //     return iVar1;
+    //     //   }
+    //     //   this->dwFlags = 1;
+    //     //   this->dwMaxBufferSize = unaff_EDI;
+    //     //   this->dwMaxQueueSize = dpCaps.dwSize;
+    //     //   this->RGE_Guaranteed_Delivery = '\x01';
+    //     //   this->dwMaxPlayers = dpCaps.dwFlags;
+    //     //   this->dwHundredBaud = dpCaps.dwMaxBufferSize;
+    //     //   this->dwLatency = dpCaps.dwMaxQueueSize;
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Enumerated_player_caps___);
+    //     //   TDebuggingLog::Log(this_00,(char *)L,s_Latency____d,this->dwLatency);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this->dwMaxQueueSize,(char *)L,s_MaxQueueSize__d,
+    //     //                      (TDebuggingLog *)this->dwMaxQueueSize);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_RGE_Gtd_Delivery__d,(uint)this->RGE_Guaranteed_Delivery);
+    //     //   return 0;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+void TCommunications_Handler::SetApplicationGUID(_GUID param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DEA0
+    this->ApplicationGUID = param_2;
+}
+
+void TCommunications_Handler::SetServiceGUID(_GUID param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DEE0
+    this->ServiceGUID = param_2;
+}
+
+void TCommunications_Handler::SetSessionGUID(_GUID param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DF10
+    this->SessionGUID = param_2;
+}
+
+int TCommunications_Handler::SetMyReadiness(int param_2, ulong param_3, ulong param_4, ulong param_5, ulong param_6, ulong param_7, ulong param_8, ulong param_9) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042E380
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042E380
+    // int SetMyReadiness(TCommunications_Handler* this_, int param_2, ulong param_3, ulong param_4, ulong param_5, ulong param_6, ulong param_7, ulong param_8, ulong param_9) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: rdy */
+    //     // /* public: int __thiscall TCommunications_Handler::SetMyReadiness(int,unsigned long,unsigned
+    //     //    long,unsigned long,unsigned long,unsigned long,unsigned long,unsigned long) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::SetMyReadiness
+    //     //           (TCommunications_Handler *this,int param_1,ulong param_2,ulong param_3,ulong param_4,
+    //     //           ulong param_5,ulong param_6,ulong param_7,ulong param_8)
+    //     // 
+    //     // {
+    //     //   uint uVar1;
+    //     //   TDebuggingLog *this_00;
+    //     //   MSGFORMAT_SETREADYOPTIONS rdy;
+    //     //   
+    //     //   uVar1 = this->Me;
+    //     //   this_00 = (TDebuggingLog *)(this->PlayerOptions).User1[uVar1];
+    //     //   TDebuggingLog::Log(this_00,(char *)L,s_SET_MY_READINESS__P__d_RDY__d_O1,uVar1,
+    //     //                      (this->PlayerOptions).PlayerReady[uVar1],this_00,
+    //     //                      (this->PlayerOptions).User2[uVar1],(this->PlayerOptions).User3[uVar1],
+    //     //                      (this->PlayerOptions).User4[uVar1],(this->PlayerOptions).User5[uVar1],
+    //     //                      (this->PlayerOptions).User6[uVar1],(this->PlayerOptions).User7[uVar1]);
+    //     //   (this->PlayerOptions).PlayerReady[this->Me] = param_1;
+    //     //   (this->PlayerOptions).User1[this->Me] = param_2;
+    //     //   (this->PlayerOptions).User2[this->Me] = param_3;
+    //     //   (this->PlayerOptions).User3[this->Me] = param_4;
+    //     //   (this->PlayerOptions).User4[this->Me] = param_5;
+    //     //   (this->PlayerOptions).User5[this->Me] = param_6;
+    //     //   (this->PlayerOptions).User6[this->Me] = param_7;
+    //     //   (this->PlayerOptions).User7[this->Me] = param_8;
+    //     //   rdy.User1._1_1_ = (undefined1)param_1;
+    //     //   rdy.User2 = param_2;
+    //     //   rdy.User5 = param_5;
+    //     //   rdy._36_4_ = this->CommunicationsVersionCode;
+    //     //   rdy.User3 = param_3;
+    //     //   rdy.User6 = param_6;
+    //     //   rdy.User4 = param_4;
+    //     //   rdy.User7 = param_7;
+    //     //   rdy.CommunicationsVersionCode = param_8;
+    //     //   rdy.User1._0_1_ = 0x52;
+    //     //   if (this->MeHost == 0) {
+    //     //     TDebuggingLog::Log((TDebuggingLog *)CONCAT31((int3)(param_6 >> 8),this->RGE_Guaranteed_Delivery)
+    //     //                        ,(char *)L,s___>TX_RDY___d_,0x28);
+    //     //     FastSend(this,0,&rdy.User1,0x28,0,0);
+    //     //   }
+    //     //   NotifyWindow(this,COMM_UPDATE_PARAMS);
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::GetClientReadiness(uint param_2, int* param_3, ulong* param_4, ulong* param_5, ulong* param_6, ulong* param_7, ulong* param_8, ulong* param_9, ulong* param_10) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042E500
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042E500
+    // int GetClientReadiness(TCommunications_Handler* this_, uint param_2, int* param_3, ulong* param_4, ulong* param_5, ulong* param_6, ulong* param_7, ulong* param_8, ulong* param_9, ulong* param_10) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::GetClientReadiness(unsigned int,int *,unsigned
+    //     //    long *,unsigned long *,unsigned long *,unsigned long *,unsigned long *,unsigned long *,unsigned
+    //     //    long *) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::GetClientReadiness
+    //     //           (TCommunications_Handler *this,uint param_1,int *param_2,ulong *param_3,ulong *param_4,
+    //     //           ulong *param_5,ulong *param_6,ulong *param_7,ulong *param_8,ulong *param_9)
+    //     // 
+    //     // {
+    //     //   *param_2 = (this->PlayerOptions).PlayerReady[param_1];
+    //     //   *param_3 = (this->PlayerOptions).User1[param_1];
+    //     //   *param_4 = (this->PlayerOptions).User2[param_1];
+    //     //   *param_5 = (this->PlayerOptions).User3[param_1];
+    //     //   *param_6 = (this->PlayerOptions).User4[param_1];
+    //     //   *param_7 = (this->PlayerOptions).User5[param_1];
+    //     //   *param_8 = (this->PlayerOptions).User6[param_1];
+    //     //   *param_9 = (this->PlayerOptions).User7[param_1];
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::IsPlayerReady(uint param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E580
+    if (param_2 == 0 || param_2 >= 10 || param_2 > (uint)this->MaxGamePlayers) {
+        return 0;
+    }
+    return this->PlayerOptions.PlayerReady[param_2];
+}
+
+int TCommunications_Handler::ComputerPlayerGameStart(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042E5B0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042E5B0
+    // int ComputerPlayerGameStart(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::ComputerPlayerGameStart(void) */
+    //     // 
+    //     // int __thiscall TCommunications_Handler::ComputerPlayerGameStart(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   if (this->Multiplayer == 0) {
+    //     //     return 1;
+    //     //   }
+    //     //   return (uint)(6 < this->current_turn);
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+long TCommunications_Handler::DPlayGetSessionDesc(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042E670
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042E670
+    // long DPlayGetSessionDesc(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: dwSize */
+    //     // /* protected: long __thiscall TCommunications_Handler::DPlayGetSessionDesc(void) */
+    //     // 
+    //     // long __thiscall TCommunications_Handler::DPlayGetSessionDesc(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   undefined4 uVar1;
+    //     //   ulong uVar2;
+    //     //   int iVar3;
+    //     //   int iVar4;
+    //     //   undefined4 unaff_EDI;
+    //     //   ulong dwSize;
+    //     //   TCommunications_Handler *local_4;
+    //     //   
+    //     //   if (DAT_0062c5ec == (int *)0x0) {
+    //     //     return -0x7fffbffb;
+    //     //   }
+    //     //   local_4 = this;
+    //     //   (**(code **)(*DAT_0062c5ec + 0x58))(DAT_0062c5ec,0,&local_4);
+    //     //   iVar3 = calloc(unaff_EDI,1);
+    //     //   if (iVar3 == 0) {
+    //     //     return -0x7ff8fff2;
+    //     //   }
+    //     //   iVar4 = (**(code **)(*DAT_0062c5ec + 0x58))(DAT_0062c5ec,iVar3,&stack0xfffffff0);
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,iVar4,s_Get_Session_Desc);
+    //     //   if (iVar4 == 0) {
+    //     //     (this->SessionGUID).Data1 = *(ulong *)(iVar3 + 8);
+    //     //     uVar1 = *(undefined4 *)(iVar3 + 0xc);
+    //     //     (this->SessionGUID).Data2 = (short)uVar1;
+    //     //     (this->SessionGUID).Data3 = (short)((uint)uVar1 >> 0x10);
+    //     //     *(undefined4 *)(this->SessionGUID).Data4 = *(undefined4 *)(iVar3 + 0x10);
+    //     //     *(undefined4 *)((this->SessionGUID).Data4 + 4) = *(undefined4 *)(iVar3 + 0x14);
+    //     //     uVar2 = *(ulong *)(iVar3 + 0x2c);
+    //     //     this->CurrentPlayers = uVar2;
+    //     //     TDebuggingLog::Log(L,(char *)L,s_RX_Current_Players__d,uVar2);
+    //     //   }
+    //     //   free(iVar3);
+    //     //   return iVar4;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+long TCommunications_Handler::CommGetCaps(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042E730
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042E730
+    // long CommGetCaps(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: DPCaps */
+    //     // /* protected: long __thiscall TCommunications_Handler::CommGetCaps(void) */
+    //     // 
+    //     // long __thiscall TCommunications_Handler::CommGetCaps(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   int *piVar1;
+    //     //   long lVar2;
+    //     //   TDebuggingLog *this_00;
+    //     //   TDebuggingLog *this_01;
+    //     //   TDebuggingLog *this_02;
+    //     //   TDebuggingLog *extraout_ECX;
+    //     //   TDebuggingLog *extraout_ECX_00;
+    //     //   TDebuggingLog *this_03;
+    //     //   TDebuggingLog *extraout_ECX_01;
+    //     //   TDebuggingLog *pTVar3;
+    //     //   ulong unaff_ESI;
+    //     //   undefined4 unaff_EDI;
+    //     //   char *pcVar4;
+    //     //   undefined4 uStack_34;
+    //     //   DPCAPS DPCaps;
+    //     //   
+    //     //   piVar1 = DAT_0062c5ec;
+    //     //   if (DAT_0062c5ec == (int *)0x0) {
+    //     //     return -0x7fffbffb;
+    //     //   }
+    //     //   uStack_34 = 0;
+    //     //   DPCaps.dwFlags = 0x28;
+    //     //   DPCaps.dwSize = unaff_ESI;
+    //     //   lVar2 = (**(code **)(*DAT_0062c5ec + 0x38))();
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,lVar2,s_Get_Caps);
+    //     //   lVar2 = (**(code **)(*DAT_0062c5ec + 0x38))(DAT_0062c5ec,&uStack_34,1);
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,lVar2,s_Get_guaranteed_Caps);
+    //     //   TDebuggingLog::Log(this_00,(char *)L,s____________Direct_Play_III_Capab);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)&DPCaps.dwFlags,(char *)L,s_Max_Buffer_Size____d,
+    //     //                      &DPCaps.dwFlags);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Max_Queue_Size_____d,uStack_34);
+    //     //   TDebuggingLog::Log(this_01,(char *)L,s_Max_Players________d,unaff_EDI);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)DPCaps.dwSize,(char *)L,s_Baud_Rate__________d00,DPCaps.dwSize
+    //     //                     );
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Latency____________d,DPCaps.dwFlags);
+    //     //   TDebuggingLog::Log(this_02,(char *)L,s_Header_Length______d,DPCaps.dwMaxQueueSize);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)DPCaps.dwMaxPlayers,(char *)L,s_Timeout____________d,
+    //     //                      DPCaps.dwMaxPlayers);
+    //     //   this->ServiceTimeout = DPCaps.dwMaxPlayers;
+    //     //   if (((uint)piVar1 & 0x20) == 0) {
+    //     //     pcVar4 = s_NOT_Guaranteed_Optimized_;
+    //     //     pTVar3 = extraout_ECX;
+    //     //   }
+    //     //   else {
+    //     //     pcVar4 = s_Guaranteed_Optimized_;
+    //     //     pTVar3 = L;
+    //     //   }
+    //     //   TDebuggingLog::Log(pTVar3,(char *)L,pcVar4);
+    //     //   if (((uint)piVar1 & 2) == 0) {
+    //     //     pcVar4 = s_Not_the_host_;
+    //     //     pTVar3 = L;
+    //     //   }
+    //     //   else {
+    //     //     pcVar4 = s_This_player_is_the_Session_Host_;
+    //     //     pTVar3 = extraout_ECX_00;
+    //     //   }
+    //     //   TDebuggingLog::Log(pTVar3,(char *)L,pcVar4);
+    //     //   if (((uint)piVar1 & 0x10) == 0) {
+    //     //     pcVar4 = s_Not_optimized_for_keepalive_;
+    //     //   }
+    //     //   else {
+    //     //     pcVar4 = s_Optimized_keepalive_detection_;
+    //     //   }
+    //     //   TDebuggingLog::Log(this_03,(char *)L,pcVar4);
+    //     //   if (((uint)piVar1 & 0x40) == 0) {
+    //     //     pcVar4 = s_NOT_Guaranteed_Service_;
+    //     //     pTVar3 = extraout_ECX_01;
+    //     //   }
+    //     //   else {
+    //     //     pcVar4 = s_Guaranteed_delivery_is_Supported;
+    //     //     pTVar3 = L;
+    //     //   }
+    //     //   TDebuggingLog::Log(pTVar3,(char *)L,pcVar4);
+    //     //   this->RGE_Guaranteed_Delivery = '\x01';
+    //     //   return lVar2;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int TCommunications_Handler::SetMyGameOptions(char* param_2, ulong param_3) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042EB60
+    this->FreeOptions();
+    if (param_2 == nullptr || param_3 == 0) {
+        this->PlayerOptions.DataSizeToFollow = 0;
+        return 1;
+    }
+    this->OptionsData = (char*)::operator new((size_t)param_3, std::nothrow);
+    if (this->OptionsData == nullptr) {
+        this->PlayerOptions.DataSizeToFollow = 0;
+        return 0;
+    }
+    memcpy(this->OptionsData, param_2, (size_t)param_3);
+    this->PlayerOptions.DataSizeToFollow = param_3;
+    this->PlayerOptions.NeedsToBeSent = 1;
+    return 1;
+}
+
+void* TCommunications_Handler::GetMyGameOptions(ulong* param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042EBF0
+    if (param_2 != nullptr) {
+        *param_2 = this->PlayerOptions.DataSizeToFollow;
+    }
+    return this->OptionsData;
+}
+
+void TCommunications_Handler::SetHostPlayerNumber(uint param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042ECC0
+    this->PlayerOptions.HostPlayerNumber = param_2;
+}
+
+uint TCommunications_Handler::GetHostPlayerNumber(void) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042ECD0
+    return this->PlayerOptions.HostPlayerNumber;
+}
+
+void TCommunications_Handler::DebugSessionInformation(DPSESSIONDESC2* param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042ECE0
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042ECE0
+    // void DebugSessionInformation(TCommunications_Handler* this_, DPSESSIONDESC2* param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: wszSPGuid */
+    //     // /* public: void __thiscall TCommunications_Handler::DebugSessionInformation(struct DPSESSIONDESC2 *)
+    //     //     */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::DebugSessionInformation
+    //     //           (TCommunications_Handler *this,DPSESSIONDESC2 *param_1)
+    //     // 
+    //     // {
+    //     //   uchar *this_00;
+    //     //   TDebuggingLog *this_01;
+    //     //   TDebuggingLog *pTVar1;
+    //     //   TDebuggingLog *this_02;
+    //     //   TDebuggingLog *this_03;
+    //     //   TDebuggingLog *this_04;
+    //     //   TDebuggingLog *this_05;
+    //     //   TDebuggingLog *this_06;
+    //     //   TDebuggingLog *this_07;
+    //     //   ushort wszSPGuid [39];
+    //     //   
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s___Information_in_DPSESSIONDESC2_);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)param_1->dwSize,(char *)L,s_Size_DPSESSIONDESC2___d,
+    //     //                      (TDebuggingLog *)param_1->dwSize);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Flags_________________d,param_1->dwFlags);
+    //     //   TDebuggingLog::Log(this_01,(char *)L,s_Instance_guid__DATA1__u,(param_1->guidInstance).Data1);
+    //     //   pTVar1 = (TDebuggingLog *)(uint)(param_1->guidInstance).Data2;
+    //     //   TDebuggingLog::Log(pTVar1,(char *)L,s________________DATA2__d,pTVar1);
+    //     //   TDebuggingLog::Log(L,(char *)L,s________________DATA3__d,(uint)(param_1->guidInstance).Data3);
+    //     //   TDebuggingLog::Log(this_02,(char *)L,s________________DATA4__u,(param_1->guidInstance).Data4);
+    //     //   StringFromGUID(&param_1->guidInstance,wszSPGuid + 2);
+    //     //   TDebuggingLog::Log(this_03,(char *)L,s_Instance_GUID__str____s,wszSPGuid + 2);
+    //     //   pTVar1 = (TDebuggingLog *)(param_1->guidApplication).Data1;
+    //     //   TDebuggingLog::Log(pTVar1,(char *)L,s_Applicatn_guid_DATA1__u,pTVar1);
+    //     //   TDebuggingLog::Log(L,(char *)L,s________________DATA2__d,(uint)(param_1->guidApplication).Data2);
+    //     //   TDebuggingLog::Log(this_04,(char *)L,s________________DATA3__d,
+    //     //                      (uint)(param_1->guidApplication).Data3);
+    //     //   this_00 = (param_1->guidApplication).Data4;
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this_00,(char *)L,s________________DATA4__u,this_00);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Max_Players___________d,param_1->dwMaxPlayers);
+    //     //   TDebuggingLog::Log(this_05,(char *)L,s_Current_Players_______d,param_1->dwCurrentPlayers);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)param_1->dwReserved1,(char *)L,s_Reserved_1____________d,
+    //     //                      (TDebuggingLog *)param_1->dwReserved1);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Reserved_2____________d,param_1->dwReserved2);
+    //     //   TDebuggingLog::Log(this_06,(char *)L,s_User_1________________d,param_1->dwUser1);
+    //     //   TDebuggingLog::Log((TDebuggingLog *)param_1->dwUser2,(char *)L,s_User_2________________d,
+    //     //                      (TDebuggingLog *)param_1->dwUser2);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_User_3________________d,param_1->dwUser3);
+    //     //   TDebuggingLog::Log(this_07,(char *)L,s_User_4________________d,param_1->dwUser4);
+    //     //   TDebuggingLog::Log(L,(char *)L,s______end____);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::OutOfSync(int param_2, ulong param_3) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042EF60
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042EF60
+    // void OutOfSync(TCommunications_Handler* this_, int param_2, ulong param_3) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: void __thiscall TCommunications_Handler::OutOfSync(int,unsigned long) */
+    //     // 
+    //     // void __thiscall
+    //     // TCommunications_Handler::OutOfSync(TCommunications_Handler *this,int param_1,ulong param_2)
+    //     // 
+    //     // {
+    //     //   this->OutOfSyncFlag = param_1;
+    //     //   this->dwStopTime = param_2;
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+int TCommunications_Handler::SendZoneMessage(char* param_2, ulong param_3) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042EF80
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042EF80
+    // int SendZoneMessage(TCommunications_Handler* this_, char* param_2, ulong param_3) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: int __thiscall TCommunications_Handler::SendZoneMessage(char *,unsigned long) */
+    //     // 
+    //     // int __thiscall
+    //     // TCommunications_Handler::SendZoneMessage(TCommunications_Handler *this,char *param_1,ulong param_2)
+    //     // 
+    //     // {
+    //     //   int iVar1;
+    //     //   long lVar2;
+    //     //   TDebuggingLog *this_00;
+    //     //   TDebuggingLog *this_01;
+    //     //   
+    //     //   iVar1 = IsLobbyLaunched(this);
+    //     //   if (iVar1 == 0) {
+    //     //     TDebuggingLog::Log(this_00,(char *)L,s_NOT_LOBBY_LAUNCHED___EXITING);
+    //     //     return 0;
+    //     //   }
+    //     //   TDebuggingLog::Log(L,(char *)L,s_Sending_zone_message_);
+    //     //   TDebuggingLog::Log(this_01,(char *)L,s___>TX_ZONE_MSG___u_,param_2);
+    //     //   lVar2 = RGE_Lobby::SendZoneMessage
+    //     //                     (this->Lobby,param_1,param_2,rge_base_game->prog_info->zone_guid);
+    //     //   if (lVar2 == 0) {
+    //     //     return 1;
+    //     //   }
+    //     //   RGE_Comm_Error::ShowReturn(this->Err,lVar2,s_SendGameOptions);
+    //     //   return 0;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+void TCommunications_Handler::ForcePlayerEnumeration(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042F110
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042F110
+    // void ForcePlayerEnumeration(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: void __thiscall TCommunications_Handler::ForcePlayerEnumeration(void) */
+    //     // 
+    //     // void __thiscall TCommunications_Handler::ForcePlayerEnumeration(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_Force_Calling_enumeration_of_pla);
+    //     //   (**(code **)(*DAT_0062c5ec + 0x30))(DAT_0062c5ec,0,EnumPlayersCallback2,this,0);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::ForcePlayerDestroyAndCreate(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042F140
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042F140
+    // void ForcePlayerDestroyAndCreate(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* public: void __thiscall TCommunications_Handler::ForcePlayerDestroyAndCreate(void) */
+    //     // 
+    //     // void __thiscall TCommunications_Handler::ForcePlayerDestroyAndCreate(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   TDebuggingLog *this_00;
+    //     //   
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_Force_Self_player_destroy_and_cr);
+    //     //   (**(code **)(*DAT_0062c5ec + 0x24))(DAT_0062c5ec,DAT_0062cf04);
+    //     //   DAT_0062cf04 = 0;
+    //     //   AddSelfPlayer(this);
+    //     //   TDebuggingLog::Log(this_00,(char *)L,s_Create_called_);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::ForceNameChange(void) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042F190
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042F190
+    // void ForceNameChange(TCommunications_Handler* this_) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* WARNING: Variable defined which should be unmapped: dpn */
+    //     // /* public: void __thiscall TCommunications_Handler::ForceNameChange(void) */
+    //     // 
+    //     // void __thiscall TCommunications_Handler::ForceNameChange(TCommunications_Handler *this)
+    //     // 
+    //     // {
+    //     //   DPNAME dpn;
+    //     //   char test [32];
+    //     //   
+    //     //   dpn.dwSize = (ulong)s_Force_Name_Change;
+    //     //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_Force_Name_Change);
+    //     //   test[0xc] = (char)DAT_005832c4;
+    //     //   test[0xd] = DAT_005832c4._1_1_;
+    //     //   test[0xe] = DAT_005832c4._2_1_;
+    //     //   test[0xf] = DAT_005832c4._3_1_;
+    //     //   test[8] = (char)DAT_005832c0;
+    //     //   test[9] = DAT_005832c0._1_1_;
+    //     //   test[10] = DAT_005832c0._2_1_;
+    //     //   test[0xb] = DAT_005832c0._3_1_;
+    //     //   test[0x13] = '\0';
+    //     //   test[0x14] = '\0';
+    //     //   test[0x15] = '\0';
+    //     //   test[0x16] = '\0';
+    //     //   test[0x17] = '\0';
+    //     //   test[0x18] = '\0';
+    //     //   test[0x19] = '\0';
+    //     //   test[0x1a] = '\0';
+    //     //   test[0x12] = DAT_005832ca;
+    //     //   test[0x1b] = '\0';
+    //     //   test[0x1c] = '\0';
+    //     //   test[0x1d] = '\0';
+    //     //   test[0x1e] = '\0';
+    //     //   test._0_4_ = test + 4;
+    //     //   test[4] = (char)s_TEMPORARY_NAME;
+    //     //   test[5] = s_TEMPORARY_NAME._1_1_;
+    //     //   test[6] = s_TEMPORARY_NAME._2_1_;
+    //     //   test[7] = s_TEMPORARY_NAME._3_1_;
+    //     //   stack0xfffffffb = 0;
+    //     //   test[0x10] = (char)DAT_005832c8;
+    //     //   test[0x11] = DAT_005832c8._1_1_;
+    //     //   dpn.dwSize = 2;
+    //     //   dpn.field3_0xc.lpszLongName = (ushort *)(test + 4);
+    //     //   dpn.dwFlags = 0x10;
+    //     //   (**(code **)(*DAT_0062c5ec + 0x78))(DAT_0062c5ec,DAT_0062cf04,&dpn.dwFlags,2);
+    //     //   return;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+}
+
+void TCommunications_Handler::SetSpeedV1(ulong param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042F230
+    if (this->Speed != nullptr) {
+        this->Speed->SetV1(param_2);
+    }
+}
+
+void TCommunications_Handler::SetSpeedV2(ulong param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042F250
+    if (this->Speed != nullptr) {
+        this->Speed->SetV2(param_2);
+    }
+}
+
+int StringFromGUID(_GUID* param_1, ushort* param_2) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042EC40
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042EC40
+    // int StringFromGUID(_GUID* param_1, ushort* param_2) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* int __cdecl StringFromGUID(struct _GUID *,unsigned short *) */
+    //     // 
+    //     // int __cdecl StringFromGUID(_GUID *param_1,ushort *param_2)
+    //     // 
+    //     // {
+    //     //   wchar_t *pwVar1;
+    //     //   wchar_t *pwVar2;
+    //     //   uint uVar3;
+    //     //   
+    //     //   *param_2 = 0x7b;
+    //     //   pwVar1 = (wchar_t *)(param_2 + 1);
+    //     //   uVar3 = 0;
+    //     //   do {
+    //     //     if ((&DAT_0056f218)[uVar3] == 0x2d) {
+    //     //       *pwVar1 = L'-';
+    //     //       pwVar2 = pwVar1;
+    //     //     }
+    //     //     else {
+    //     //       pwVar2 = pwVar1 + 1;
+    //     //       *pwVar1 = L"0123456789ABCDEF"[param_1->Data4[(byte)(&DAT_0056f218)[uVar3] - 8] >> 4];
+    //     //       *pwVar2 = L"0123456789ABCDEF"[param_1->Data4[(byte)(&DAT_0056f218)[uVar3] - 8] & 0xf];
+    //     //     }
+    //     //     pwVar1 = pwVar2 + 1;
+    //     //     uVar3 = uVar3 + 1;
+    //     //   } while (uVar3 < 0x14);
+    //     //   *pwVar1 = L'}';
+    //     //   pwVar2[2] = L'\0';
+    //     //   return 0x26;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+int EnumPlayersCallback2(ulong param_1, ulong param_2, DPNAME* param_3, ulong param_4, void* param_5) {
+    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x0042F040
+    // --- Ghidra decompiler output kept inline for parity audit ---
+    // // Offset: 0x0042F040
+    // int EnumPlayersCallback2(ulong param_1, ulong param_2, DPNAME* param_3, ulong param_4, void* param_5) {
+    //     // --- Ghidra decompiler output ---
+    //     // 
+    //     // /* int __stdcall EnumPlayersCallback2(unsigned long,unsigned long,struct DPNAME *,unsigned long,void
+    //     //    *) */
+    //     // 
+    //     // int EnumPlayersCallback2(ulong param_1,ulong param_2,DPNAME *param_3,ulong param_4,void *param_5)
+    //     // 
+    //     // {
+    //     //   uint uVar1;
+    //     //   ulong *puVar2;
+    //     //   TDebuggingLog *this;
+    //     //   
+    //     //   if (param_1 != 0) {
+    //     //     uVar1 = (uint)*(ushort *)((int)param_5 + 0x1712);
+    //     //     if (uVar1 <= *(ushort *)((int)param_5 + 0x1710)) {
+    //     //       puVar2 = (ulong *)((int)param_5 + uVar1 * 4 + 0x1564);
+    //     //       do {
+    //     //         if (*puVar2 == param_1) goto LAB_0042f07f;
+    //     //         uVar1 = uVar1 + 1;
+    //     //         puVar2 = puVar2 + 1;
+    //     //       } while ((int)uVar1 <= (int)(uint)*(ushort *)((int)param_5 + 0x1710));
+    //     //     }
+    //     //   }
+    //     //   uVar1 = 0;
+    //     // LAB_0042f07f:
+    //     //   sprintf(&DAT_0062c5f0,s_ENUM__d_name__s_id__d,param_1,(param_3->field2_0x8).lpszShortName,uVar1);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_ENUM_DEBUG___s,&DAT_0062c5f0);
+    //     //   TDebuggingLog::Log(this,(char *)L,s_FORCEENUM__d_name__s_id__d,param_1,
+    //     //                      (param_3->field2_0x8).lpszShortName,uVar1);
+    //     //   TDebuggingLog::Log(L,(char *)L,s_FILL_PLAYER_INFORMATION_);
+    //     //   TCommunications_Handler::UpdatePlayerInformation
+    //     //             ((TCommunications_Handler *)param_5,param_1,(param_3->field2_0x8).lpszShortNameA,
+    //     //              (param_3->field3_0xc).lpszLongNameA);
+    //     //   return 1;
+    //     // }
+    //     // 
+    //     // 
+    // }
+    // 
+    return 0;
+}
+
+// BEGIN Task 222 decomp reference bundle
+// Inline preserved decomp snippets for implemented wrappers (audit trail).
+// ---- WaitingOnNamedInfo ----
+// // Offset: 0x00425780
+// char* WaitingOnNamedInfo(TCommunications_Handler* this_, uint param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: char * __thiscall TCommunications_Handler::WaitingOnNamedInfo(unsigned int) */
+//     // 
+//     // char * __thiscall
+//     // TCommunications_Handler::WaitingOnNamedInfo(TCommunications_Handler *this,uint param_1)
+//     // 
+//     // {
+//     //   char *pcVar1;
+//     //   char *pcVar2;
+//     //   char *pcVar3;
+//     //   ulong uVar4;
+//     //   int iVar5;
+//     //   
+//     //   pcVar1 = this->TBuff;
+//     //   pcVar2 = WaitingOnInfo(this,param_1);
+//     //   pcVar3 = GetPlayerName(this,param_1);
+//     //   sprintf(pcVar1,s___d___s____s,param_1,pcVar3,pcVar2);
+//     //   uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x8e);
+//     //   iVar5 = uVar4 - this->LastPlayerCommunication[param_1];
+//     //   uVar4 = this->LastTurnAck[param_1];
+//     //   pcVar2 = WaitingOnInfo(this,param_1);
+//     //   pcVar3 = GetPlayerName(this,param_1);
+//     //   sprintf(pcVar1,s___d___s____s__QUIET__d_msec__T__,param_1,pcVar3,pcVar2,iVar5,uVar4);
+//     //   return pcVar1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- WaitingOnInfo ----
+// // Offset: 0x00425800
+// char* WaitingOnInfo(TCommunications_Handler* this_, uint param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: char * __thiscall TCommunications_Handler::WaitingOnInfo(unsigned int) */
+//     // 
+//     // char * __thiscall TCommunications_Handler::WaitingOnInfo(TCommunications_Handler *this,uint param_1)
+//     // 
+//     // {
+//     //   int iVar1;
+//     //   
+//     //   iVar1 = IsPlayerComputer(this,param_1);
+//     //   if (iVar1 != 0) {
+//     //                     /* language.dll match for 0x4b1: "Computer" */
+//     //     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b1,0x62c588,0x20);
+//     //     return &UNK_0062c585.field_0x3;
+//     //   }
+//     //   iVar1 = IsPlayerHuman(this,param_1);
+//     //   if (iVar1 == 0) {
+//     //                     /* language.dll match for 0x4b2: "Empty" */
+//     //     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b2,0x62c588,0x20);
+//     //     return &UNK_0062c585.field_0x3;
+//     //   }
+//     //   if (this->LastTurnAck[param_1] < 4) {
+//     //                     /* language.dll match for 0x4b3: "Loading" */
+//     //     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b3,0x62c588,0x20);
+//     //     return &UNK_0062c585.field_0x3;
+//     //   }
+//     //   if (this->LastTurnAck[param_1] < this->current_turn) {
+//     //                     /* language.dll match for 0x4b4: "Waiting" */
+//     //     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b4,0x62c588,0x20);
+//     //     return &UNK_0062c585.field_0x3;
+//     //   }
+//     //                     /* language.dll match for 0x4b0: "Ready" */
+//     //   (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b0,0x62c588,0x20);
+//     //   return &UNK_0062c585.field_0x3;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- StopIfSyncFail ----
+// // Offset: 0x004258E0
+// void StopIfSyncFail(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::StopIfSyncFail(int) */
+//     // 
+//     // void __thiscall TCommunications_Handler::StopIfSyncFail(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   RGE_Communications_Synchronize::SetDialogOnFail(this->Sync,param_1);
+//     //   RGE_Communications_Synchronize::SetStopOnFail(this->Sync,param_1);
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- ShowSyncChatMsgs ----
+// // Offset: 0x00425910
+// void ShowSyncChatMsgs(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::ShowSyncChatMsgs(int) */
+//     // 
+//     // void __thiscall TCommunications_Handler::ShowSyncChatMsgs(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   RGE_Communications_Synchronize::SendChatMsgsAtChecksum(this->Sync,param_1);
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- DropPacketsIntentionally ----
+// // Offset: 0x00425930
+// void DropPacketsIntentionally(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::DropPacketsIntentionally(int) */
+//     // 
+//     // void __thiscall
+//     // TCommunications_Handler::DropPacketsIntentionally(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   this->IntentionallyDropPackets = param_1;
+//     //   if (param_1 != 0) {
+//     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_DROPPING_PACKETS_INTENTIONALLY__);
+//     //   }
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetStepMode ----
+// // Offset: 0x00425960
+// void SetStepMode(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetStepMode(int) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetStepMode(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   this->StepMode = param_1;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetSpeedControl ----
+// // Offset: 0x00425970
+// void SetSpeedControl(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetSpeedControl(int) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetSpeedControl(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   RGE_Communications_Speed::EnableSpeedControl(this->Speed,param_1);
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- Step ----
+// // Offset: 0x00425A20
+// void Step(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::Step(int) */
+//     // 
+//     // void __thiscall TCommunications_Handler::Step(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   TEST(this);
+//     //   this->Steps = this->Steps + param_1;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- HasKicked ----
+// // Offset: 0x00426D40
+// int HasKicked(TCommunications_Handler* this_, uint param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::HasKicked(unsigned int) */
+//     // 
+//     // int __thiscall TCommunications_Handler::HasKicked(TCommunications_Handler *this,uint param_1)
+//     // 
+//     // {
+//     //   return this->Kicked[param_1];
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetPlayerStopTurn ----
+// // Offset: 0x004286F0
+// void SetPlayerStopTurn(TCommunications_Handler* this_, uint param_2, ulong param_3) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* protected: void __thiscall TCommunications_Handler::SetPlayerStopTurn(unsigned int,unsigned long)
+//     //     */
+//     // 
+//     // void __thiscall
+//     // TCommunications_Handler::SetPlayerStopTurn(TCommunications_Handler *this,uint param_1,ulong param_2)
+//     // 
+//     // {
+//     //   this->PlayerStopTurn[param_1] = param_2;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- StoreIncoming ----
+// // Offset: 0x0042A180
+// int StoreIncoming(TCommunications_Handler* this_, uint param_2, char* param_3, uint param_4, ulong param_5, ulong param_6) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::StoreIncoming(unsigned int,char *,unsigned
+//     //    int,unsigned long,unsigned long) */
+//     // 
+//     // int __thiscall
+//     // TCommunications_Handler::StoreIncoming
+//     //           (TCommunications_Handler *this,uint param_1,char *param_2,uint param_3,ulong param_4,
+//     //           ulong param_5)
+//     // 
+//     // {
+//     //   ulong *puVar1;
+//     //   uint *puVar2;
+//     //   char *pcVar3;
+//     //   undefined4 *puVar4;
+//     //   uint uVar5;
+//     //   uint uVar6;
+//     //   uint uVar7;
+//     //   TDebuggingLog *this_00;
+//     //   int iVar8;
+//     //   HOLDER *pHVar9;
+//     //   int iVar10;
+//     //   
+//     //   if (param_3 == 0) {
+//     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s____StoreIncoming_called_for_zero);
+//     //   }
+//     //   pHVar9 = this->OnHold;
+//     //   uVar5 = 0;
+//     //   puVar1 = &pHVar9->dcoFromID;
+//     //   while ((puVar1[-2] != param_1 || (*puVar1 != param_4))) {
+//     //     uVar5 = uVar5 + 1;
+//     //     puVar1 = puVar1 + 6;
+//     //     if (0x1f5 < uVar5) {
+//     //       uVar5 = 0;
+//     //       puVar2 = &pHVar9->Length;
+//     //       while ((*puVar2 != 0 || (param_3 == 0))) {
+//     //         uVar5 = uVar5 + 1;
+//     //         puVar2 = puVar2 + 6;
+//     //         if (500 < uVar5) {
+//     //           TDebuggingLog::Log(L,(char *)L,s_____DID_NOT_STORE___);
+//     //           if (0x1eb < uVar5) {
+//     //             TDebuggingLog::Log(this_00,(char *)L,s_HOLD_FULL_WARNING___COUNT__d,uVar5);
+//     //             iVar10 = 0;
+//     //             uVar5 = 0;
+//     //             do {
+//     //               puVar4 = (undefined4 *)((int)&this->OnHold->HoldMsg + uVar5);
+//     //               if (puVar4[2] != 0) {
+//     //                 iVar8 = (int)*(char *)*puVar4;
+//     //                 TDebuggingLog::Log(L,(char *)L,s_S__d__Ser__d_FromID__d_Len__d__C,iVar10,puVar4[1],
+//     //                                    puVar4[3],puVar4[2],iVar8,iVar8,(int)((char *)*puVar4)[1]);
+//     //               }
+//     //               uVar5 = uVar5 + 0x18;
+//     //               iVar10 = iVar10 + 1;
+//     //             } while (uVar5 < 0x2ef8);
+//     //           }
+//     //           return 1;
+//     //         }
+//     //       }
+//     //       pHVar9[uVar5].Length = param_3;
+//     //       pHVar9 = this->OnHold + uVar5;
+//     //       pcVar3 = (char *)operator_new(pHVar9->Length);
+//     //       pHVar9->HoldMsg = pcVar3;
+//     //       if (pcVar3 != (char *)0x0) {
+//     //         uVar7 = pHVar9->Length;
+//     //         for (uVar6 = uVar7 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+//     //           *(undefined4 *)pcVar3 = *(undefined4 *)param_2;
+//     //           param_2 = param_2 + 4;
+//     //           pcVar3 = pcVar3 + 4;
+//     //         }
+//     //         for (uVar7 = uVar7 & 3; uVar7 != 0; uVar7 = uVar7 - 1) {
+//     //           *pcVar3 = *param_2;
+//     //           param_2 = param_2 + 1;
+//     //           pcVar3 = pcVar3 + 1;
+//     //         }
+//     //         pHVar9->Length = param_3;
+//     //       }
+//     //       this->OnHold[uVar5].Serial = param_1;
+//     //       this->OnHold[uVar5].dcoFromID = param_4;
+//     //       this->OnHold[uVar5].dcoReceiveID = param_5;
+//     //       return 1;
+//     //     }
+//     //   }
+//     //   TDebuggingLog::Log(L,(char *)L,s_Future_Ser__d_previously_stored_,param_1,uVar5);
+//     //   return 1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- TXAcknowledgeMessage ----
+// // Offset: 0x0042A540
+// int TXAcknowledgeMessage(TCommunications_Handler* this_, uint param_2, uint param_3) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::TXAcknowledgeMessage(unsigned int,unsigned int)
+//     //     */
+//     // 
+//     // int __thiscall
+//     // TCommunications_Handler::TXAcknowledgeMessage
+//     //           (TCommunications_Handler *this,uint param_1,uint param_2)
+//     // 
+//     // {
+//     //   undefined1 *puVar1;
+//     //   ulong uVar2;
+//     //   int iVar3;
+//     //   ulong uVar4;
+//     //   TDebuggingLog *this_00;
+//     //   
+//     //   if (this->RGE_Guaranteed_Delivery == '\0') {
+//     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s__RGEGTD_Ack);
+//     //     return 0;
+//     //   }
+//     //   puVar1 = (undefined1 *)operator_new(8);
+//     //   *puVar1 = 0x41;
+//     //   *(uint *)(puVar1 + 4) = param_1;
+//     //   if (DAT_0062cf04 == 0) {
+//     //     TDebuggingLog::Log((TDebuggingLog *)param_1,(char *)L,s____BAD_DCOID_0_NO_TX);
+//     //     return 0;
+//     //   }
+//     //   uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xd53);
+//     //   iVar3 = (**(code **)(*DAT_0062c5ec + 0x68))
+//     //                     (DAT_0062c5ec,DAT_0062cf04,(this->PlayerOptions).dcoID[param_2],0,puVar1,8);
+//     //   uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xd5e);
+//     //   if (0x32 < uVar4 - uVar2) {
+//     //     TDebuggingLog::Log(this_00,(char *)L,s____TXAcknowledgeMessage_slow____,uVar4 - uVar2);
+//     //   }
+//     //   this->TXPacketLength = this->TXPacketLength + 8;
+//     //   operator_delete(puVar1);
+//     //   if (iVar3 == 0) {
+//     //     return 1;
+//     //   }
+//     //   RGE_Comm_Error::ShowReturn(this->Err,iVar3,s_GTD_ACK);
+//     //   return 0;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetNextSequence ----
+// // Offset: 0x0042B200
+// uchar GetNextSequence(TCommunications_Handler* this_, ulong param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: unsigned char __thiscall TCommunications_Handler::GetNextSequence(unsigned long) */
+//     // 
+//     // uchar __thiscall
+//     // TCommunications_Handler::GetNextSequence(TCommunications_Handler *this,ulong param_1)
+//     // 
+//     // {
+//     //   byte bVar1;
+//     //   
+//     //   if (param_1 != DAT_0062cf30) {
+//     //     DAT_0062cf30 = param_1;
+//     //     DAT_0062cf2c = CONCAT31(DAT_0062cf2c._1_3_,1);
+//     //     return '\x01';
+//     //   }
+//     //   bVar1 = (char)DAT_0062cf2c + 1;
+//     //   DAT_0062cf2c = CONCAT31(DAT_0062cf2c._1_3_,bVar1);
+//     //   if (bVar1 == 0xff) {
+//     //     TDebuggingLog::Log(L,(char *)L,s____Too_many_commands_in_one_comm,0xff);
+//     //     return '\0';
+//     //   }
+//     //   if (((this->PlayerOptions).ProgramState == COMM_STATE_PAUSE) && (100 < bVar1)) {
+//     //     DAT_0062cf2c = CONCAT31(DAT_0062cf2c._1_3_,100);
+//     //     bVar1 = 100;
+//     //   }
+//     //   return bVar1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetRandomSeed ----
+// // Offset: 0x0042CA20
+// void SetRandomSeed(TCommunications_Handler* this_, int param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetRandomSeed(int) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetRandomSeed(TCommunications_Handler *this,int param_1)
+//     // 
+//     // {
+//     //   ulong uVar1;
+//     //   
+//     //   if (this->MeHost != 0) {
+//     //     if (param_1 == -1) {
+//     //       uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x1320);
+//     //       debug_srand(s_C__msdev_work_age1_x1_Com_hand_c,0x1320,uVar1);
+//     //       param_1 = debug_rand(s_C__msdev_work_age1_x1_Com_hand_c,0x1321);
+//     //     }
+//     //     (this->PlayerOptions).RandomSeed = param_1;
+//     //     (this->PlayerOptions).NeedsToBeSent = '\x01';
+//     //     SendSharedData(this,0);
+//     //   }
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetActivePlayerCount ----
+// // Offset: 0x0042CC90
+// int GetActivePlayerCount(TCommunications_Handler* this_) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::GetActivePlayerCount(void) */
+//     // 
+//     // int __thiscall TCommunications_Handler::GetActivePlayerCount(TCommunications_Handler *this)
+//     // 
+//     // {
+//     //   int iVar1;
+//     //   int iVar2;
+//     //   uint uVar3;
+//     //   
+//     //   uVar3 = 0;
+//     //   iVar2 = 0;
+//     //   do {
+//     //     iVar1 = IsPlayerHuman(this,uVar3);
+//     //     if ((iVar1 != 0) || (iVar1 = IsPlayerComputer(this,uVar3), iVar1 != 0)) {
+//     //       iVar2 = iVar2 + 1;
+//     //     }
+//     //     uVar3 = uVar3 + 1;
+//     //   } while ((int)uVar3 <= (int)(uint)this->MaxGamePlayers);
+//     //   return iVar2;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- IsPlayerComputer ----
+// // Offset: 0x0042CD10
+// int IsPlayerComputer(TCommunications_Handler* this_, uint param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::IsPlayerComputer(unsigned int) */
+//     // 
+//     // int __thiscall TCommunications_Handler::IsPlayerComputer(TCommunications_Handler *this,uint param_1)
+//     // 
+//     // {
+//     //   if ((param_1 != 0) && (param_1 <= this->MaxGamePlayers)) {
+//     //     return (uint)((this->PlayerOptions).Humanity[param_1] == ME_COMPUTER);
+//     //   }
+//     //   return 0;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetGameTitle ----
+// // Offset: 0x0042D3B0
+// int SetGameTitle(TCommunications_Handler* this_, char* param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::SetGameTitle(char *) */
+//     // 
+//     // int __thiscall TCommunications_Handler::SetGameTitle(TCommunications_Handler *this,char *param_1)
+//     // 
+//     // {
+//     //   sprintf(this->MyGameTitle,s__s___s_,param_1,this->MyFriendlyName);
+//     //   return 1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetMyPlayerName ----
+// // Offset: 0x0042D3E0
+// void SetMyPlayerName(TCommunications_Handler* this_, char* param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetMyPlayerName(char *) */
+//     // 
+//     // void __thiscall
+//     // TCommunications_Handler::SetMyPlayerName(TCommunications_Handler *this,char *param_1)
+//     // 
+//     // {
+//     //   char cVar1;
+//     //   uint uVar2;
+//     //   uint uVar3;
+//     //   char *pcVar4;
+//     //   char *pcVar5;
+//     //   
+//     //   uVar2 = 0xffffffff;
+//     //   do {
+//     //     pcVar4 = param_1;
+//     //     if (uVar2 == 0) break;
+//     //     uVar2 = uVar2 - 1;
+//     //     pcVar4 = param_1 + 1;
+//     //     cVar1 = *param_1;
+//     //     param_1 = pcVar4;
+//     //   } while (cVar1 != '\0');
+//     //   uVar2 = ~uVar2;
+//     //   pcVar4 = pcVar4 + -uVar2;
+//     //   pcVar5 = this->MyFriendlyName;
+//     //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+//     //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+//     //     pcVar4 = pcVar4 + 4;
+//     //     pcVar5 = pcVar5 + 4;
+//     //   }
+//     //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+//     //     *pcVar5 = *pcVar4;
+//     //     pcVar4 = pcVar4 + 1;
+//     //     pcVar5 = pcVar5 + 1;
+//     //   }
+//     //   uVar2 = 0xffffffff;
+//     //   pcVar4 = &s_Optional_Information;
+//     //   do {
+//     //     pcVar5 = pcVar4;
+//     //     if (uVar2 == 0) break;
+//     //     uVar2 = uVar2 - 1;
+//     //     pcVar5 = pcVar4 + 1;
+//     //     cVar1 = *pcVar4;
+//     //     pcVar4 = pcVar5;
+//     //   } while (cVar1 != '\0');
+//     //   uVar2 = ~uVar2;
+//     //   pcVar4 = pcVar5 + -uVar2;
+//     //   pcVar5 = this->MyFormalName;
+//     //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+//     //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+//     //     pcVar4 = pcVar4 + 4;
+//     //     pcVar5 = pcVar5 + 4;
+//     //   }
+//     //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+//     //     *pcVar5 = *pcVar4;
+//     //     pcVar4 = pcVar4 + 1;
+//     //     pcVar5 = pcVar5 + 1;
+//     //   }
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetApplicationGUID ----
+// // Offset: 0x0042DEA0
+// void SetApplicationGUID(TCommunications_Handler* this_, _GUID param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetApplicationGUID(struct _GUID) */
+//     // 
+//     // void __thiscall
+//     // TCommunications_Handler::SetApplicationGUID(TCommunications_Handler *this,_GUID param_1)
+//     // 
+//     // {
+//     //   (this->ApplicationGUID).Data1 = param_1.Data1;
+//     //   (this->ApplicationGUID).Data2 = param_1.Data2;
+//     //   (this->ApplicationGUID).Data3 = param_1.Data3;
+//     //   *(undefined4 *)(this->ApplicationGUID).Data4 = param_1.Data4._0_4_;
+//     //   *(undefined4 *)((this->ApplicationGUID).Data4 + 4) = param_1.Data4._4_4_;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetServiceGUID ----
+// // Offset: 0x0042DEE0
+// void SetServiceGUID(TCommunications_Handler* this_, _GUID param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetServiceGUID(struct _GUID) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetServiceGUID(TCommunications_Handler *this,_GUID param_1)
+//     // 
+//     // {
+//     //   (this->ServiceGUID).Data1 = param_1.Data1;
+//     //   (this->ServiceGUID).Data2 = param_1.Data2;
+//     //   (this->ServiceGUID).Data3 = param_1.Data3;
+//     //   *(undefined4 *)(this->ServiceGUID).Data4 = param_1.Data4._0_4_;
+//     //   *(undefined4 *)((this->ServiceGUID).Data4 + 4) = param_1.Data4._4_4_;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetSessionGUID ----
+// // Offset: 0x0042DF10
+// void SetSessionGUID(TCommunications_Handler* this_, _GUID param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetSessionGUID(struct _GUID) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetSessionGUID(TCommunications_Handler *this,_GUID param_1)
+//     // 
+//     // {
+//     //   (this->SessionGUID).Data1 = param_1.Data1;
+//     //   (this->SessionGUID).Data2 = param_1.Data2;
+//     //   (this->SessionGUID).Data3 = param_1.Data3;
+//     //   *(undefined4 *)(this->SessionGUID).Data4 = param_1.Data4._0_4_;
+//     //   *(undefined4 *)((this->SessionGUID).Data4 + 4) = param_1.Data4._4_4_;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- IsPlayerReady ----
+// // Offset: 0x0042E580
+// int IsPlayerReady(TCommunications_Handler* this_, uint param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::IsPlayerReady(unsigned int) */
+//     // 
+//     // int __thiscall TCommunications_Handler::IsPlayerReady(TCommunications_Handler *this,uint param_1)
+//     // 
+//     // {
+//     //   if ((param_1 != 0) && (param_1 <= this->MaxGamePlayers)) {
+//     //     return (this->PlayerOptions).PlayerReady[param_1];
+//     //   }
+//     //   return 0;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetHostPlayerNumber ----
+// // Offset: 0x0042ECC0
+// void SetHostPlayerNumber(TCommunications_Handler* this_, uint param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* protected: void __thiscall TCommunications_Handler::SetHostPlayerNumber(unsigned int) */
+//     // 
+//     // void __thiscall
+//     // TCommunications_Handler::SetHostPlayerNumber(TCommunications_Handler *this,uint param_1)
+//     // 
+//     // {
+//     //   (this->PlayerOptions).HostPlayerNumber = param_1;
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetHostPlayerNumber ----
+// // Offset: 0x0042ECD0
+// uint GetHostPlayerNumber(TCommunications_Handler* this_) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: unsigned int __thiscall TCommunications_Handler::GetHostPlayerNumber(void) */
+//     // 
+//     // uint __thiscall TCommunications_Handler::GetHostPlayerNumber(TCommunications_Handler *this)
+//     // 
+//     // {
+//     //   return (this->PlayerOptions).HostPlayerNumber;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetSpeedV1 ----
+// // Offset: 0x0042F230
+// void SetSpeedV1(TCommunications_Handler* this_, ulong param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetSpeedV1(unsigned long) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetSpeedV1(TCommunications_Handler *this,ulong param_1)
+//     // 
+//     // {
+//     //   RGE_Communications_Speed::SetV1(this->Speed,param_1);
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetSpeedV2 ----
+// // Offset: 0x0042F250
+// void SetSpeedV2(TCommunications_Handler* this_, ulong param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void __thiscall TCommunications_Handler::SetSpeedV2(unsigned long) */
+//     // 
+//     // void __thiscall TCommunications_Handler::SetSpeedV2(TCommunications_Handler *this,ulong param_1)
+//     // 
+//     // {
+//     //   RGE_Communications_Speed::SetV2(this->Speed,param_1);
+//     //   return;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetCommStateStr ----
+// // Offset: 0x0042CB20
+// char* GetCommStateStr(TCommunications_Handler* this_) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: char * __thiscall TCommunications_Handler::GetCommStateStr(void) */
+//     // 
+//     // char * __thiscall TCommunications_Handler::GetCommStateStr(TCommunications_Handler *this)
+//     // 
+//     // {
+//     //   return (char *)0x0;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetReadyPlayerStr ----
+// // Offset: 0x0042CB30
+// char* GetReadyPlayerStr(TCommunications_Handler* this_) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: char * __thiscall TCommunications_Handler::GetReadyPlayerStr(void) */
+//     // 
+//     // char * __thiscall TCommunications_Handler::GetReadyPlayerStr(TCommunications_Handler *this)
+//     // 
+//     // {
+//     //   char cVar1;
+//     //   uint uVar2;
+//     //   uint uVar3;
+//     //   PLAYERHUMANITY *pPVar4;
+//     //   char *pcVar5;
+//     //   char *pcVar6;
+//     //   
+//     //   uVar2 = 0xffffffff;
+//     //   pcVar5 = &s_Ready_________________________;
+//     //   do {
+//     //     pcVar6 = pcVar5;
+//     //     if (uVar2 == 0) break;
+//     //     uVar2 = uVar2 - 1;
+//     //     pcVar6 = pcVar5 + 1;
+//     //     cVar1 = *pcVar5;
+//     //     pcVar5 = pcVar6;
+//     //   } while (cVar1 != '\0');
+//     //   uVar2 = ~uVar2;
+//     //   pcVar5 = pcVar6 + -uVar2;
+//     //   pcVar6 = (char *)&DAT_0062c5b0;
+//     //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+//     //     *(undefined4 *)pcVar6 = *(undefined4 *)pcVar5;
+//     //     pcVar5 = pcVar5 + 4;
+//     //     pcVar6 = pcVar6 + 4;
+//     //   }
+//     //   uVar3 = 1;
+//     //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+//     //     *pcVar6 = *pcVar5;
+//     //     pcVar5 = pcVar5 + 1;
+//     //     pcVar6 = pcVar6 + 1;
+//     //   }
+//     //   if (this->MaxGamePlayers != 0) {
+//     //     pPVar4 = (this->PlayerOptions).Humanity;
+//     //     do {
+//     //       pPVar4 = pPVar4 + 1;
+//     //       if (pPVar4[0x13] < this->current_turn) {
+//     //         switch(*pPVar4) {
+//     //         case ME_ABSENT:
+//     //           (&UNK_0062c5b6)[uVar3] = 0x2d;
+//     //           break;
+//     //         default:
+//     //           (&UNK_0062c5b6)[uVar3] = 0x3f;
+//     //           break;
+//     //         case ME_HUMAN:
+//     //           (&UNK_0062c5b6)[uVar3] = 0x57;
+//     //           break;
+//     //         case ME_COMPUTER:
+//     //           (&UNK_0062c5b6)[uVar3] = 0x43;
+//     //           break;
+//     //         case ME_CYBORG:
+//     //           (&UNK_0062c5b6)[uVar3] = 0x58;
+//     //           break;
+//     //         case ME_VIEWONLY:
+//     //           (&UNK_0062c5b6)[uVar3] = 0x56;
+//     //         }
+//     //       }
+//     //       else {
+//     //         (&UNK_0062c5b6)[uVar3] = 0x41;
+//     //       }
+//     //       uVar3 = uVar3 + 1;
+//     //     } while (uVar3 <= this->MaxGamePlayers);
+//     //   }
+//     //   return (char *)&DAT_0062c5b0;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetCommInfo ----
+// // Offset: 0x0042CD50
+// char* GetCommInfo(TCommunications_Handler* this_, uchar param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: char * __thiscall TCommunications_Handler::GetCommInfo(unsigned char) */
+//     // 
+//     // char * __thiscall TCommunications_Handler::GetCommInfo(TCommunications_Handler *this,uchar param_1)
+//     // 
+//     // {
+//     //   float fVar1;
+//     //   char cVar2;
+//     //   ulong uVar3;
+//     //   int iVar4;
+//     //   int iVar5;
+//     //   uint uVar6;
+//     //   uint uVar7;
+//     //   char *pcVar8;
+//     //   int iVar9;
+//     //   char *pcVar10;
+//     //   char *pcVar11;
+//     //   char *pcVar12;
+//     //   double dVar13;
+//     //   double dVar14;
+//     //   ulong dwCount;
+//     //   int iStack_110;
+//     //   int iStack_10c;
+//     //   int iStack_108;
+//     //   char tmp [255];
+//     //   
+//     //   iVar9 = 0;
+//     //   pcVar12 = (char *)&DAT_0062c6f0;
+//     //   if (this->Multiplayer == 0) {
+//     //     do {
+//     //       uVar6 = 0xffffffff;
+//     //       pcVar10 = &s_>;
+//     //       do {
+//     //         pcVar11 = pcVar10;
+//     //         if (uVar6 == 0) break;
+//     //         uVar6 = uVar6 - 1;
+//     //         pcVar11 = pcVar10 + 1;
+//     //         cVar2 = *pcVar10;
+//     //         pcVar10 = pcVar11;
+//     //       } while (cVar2 != '\0');
+//     //       uVar6 = ~uVar6;
+//     //       pcVar8 = pcVar12 + 0x100;
+//     //       pcVar10 = pcVar11 + -uVar6;
+//     //       for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+//     //         *(undefined4 *)pcVar12 = *(undefined4 *)pcVar10;
+//     //         pcVar10 = pcVar10 + 4;
+//     //         pcVar12 = pcVar12 + 4;
+//     //       }
+//     //       for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+//     //         *pcVar12 = *pcVar10;
+//     //         pcVar10 = pcVar10 + 1;
+//     //         pcVar12 = pcVar12 + 1;
+//     //       }
+//     //       pcVar12 = pcVar8;
+//     //     } while ((int)pcVar8 < 0x62cdf0);
+//     //     sprintf();
+//     //   }
+//     //   else {
+//     //     do {
+//     //       uVar6 = 0xffffffff;
+//     //       pcVar10 = &s__;
+//     //       do {
+//     //         pcVar11 = pcVar10;
+//     //         if (uVar6 == 0) break;
+//     //         uVar6 = uVar6 - 1;
+//     //         pcVar11 = pcVar10 + 1;
+//     //         cVar2 = *pcVar10;
+//     //         pcVar10 = pcVar11;
+//     //       } while (cVar2 != '\0');
+//     //       uVar6 = ~uVar6;
+//     //       pcVar8 = pcVar12 + 0x100;
+//     //       pcVar10 = pcVar11 + -uVar6;
+//     //       for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+//     //         *(undefined4 *)pcVar12 = *(undefined4 *)pcVar10;
+//     //         pcVar10 = pcVar10 + 4;
+//     //         pcVar12 = pcVar12 + 4;
+//     //       }
+//     //       for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+//     //         *pcVar12 = *pcVar10;
+//     //         pcVar10 = pcVar10 + 1;
+//     //         pcVar12 = pcVar12 + 1;
+//     //       }
+//     //       pcVar12 = pcVar8;
+//     //     } while ((int)pcVar8 < 0x62cdf0);
+//     //     uVar6 = 0xffffffff;
+//     //     pcVar12 = tmp;
+//     //     pcVar10 = s_;
+//     //     do {
+//     //       pcVar11 = pcVar10;
+//     //       if (uVar6 == 0) break;
+//     //       uVar6 = uVar6 - 1;
+//     //       pcVar11 = pcVar10 + 1;
+//     //       cVar2 = *pcVar10;
+//     //       pcVar10 = pcVar11;
+//     //     } while (cVar2 != '\0');
+//     //     uVar6 = ~uVar6;
+//     //     pcVar10 = tmp;
+//     //     pcVar11 = pcVar11 + -uVar6;
+//     //     for (uVar7 = uVar6 >> 2; pcVar12 = pcVar12 + 4, uVar7 != 0; uVar7 = uVar7 - 1) {
+//     //       *(undefined4 *)pcVar12 = *(undefined4 *)pcVar11;
+//     //       pcVar11 = pcVar11 + 4;
+//     //     }
+//     //     iVar4 = this->MeHost;
+//     //     for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+//     //       *pcVar12 = *pcVar11;
+//     //       pcVar11 = pcVar11 + 1;
+//     //       pcVar12 = pcVar12 + 1;
+//     //     }
+//     //     pcVar12 = s_Host;
+//     //     if (iVar4 == 0) {
+//     //       pcVar12 = &s_Client;
+//     //     }
+//     //     uVar6 = 0xffffffff;
+//     //     do {
+//     //       pcVar11 = pcVar12;
+//     //       if (uVar6 == 0) break;
+//     //       uVar6 = uVar6 - 1;
+//     //       pcVar11 = pcVar12 + 1;
+//     //       cVar2 = *pcVar12;
+//     //       pcVar12 = pcVar11;
+//     //     } while (cVar2 != '\0');
+//     //     fVar1 = this->lastRXDataRate;
+//     //     uVar6 = ~uVar6;
+//     //     pcVar12 = pcVar11 + -uVar6;
+//     //     for (uVar7 = uVar6 >> 2; pcVar10 = pcVar10 + 4, uVar7 != 0; uVar7 = uVar7 - 1) {
+//     //       *(undefined4 *)pcVar10 = *(undefined4 *)pcVar12;
+//     //       pcVar12 = pcVar12 + 4;
+//     //     }
+//     //     dVar14 = (double)fVar1;
+//     //     dVar13 = (double)this->lastTXDataRate;
+//     //     for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+//     //       *pcVar10 = *pcVar12;
+//     //       pcVar12 = pcVar12 + 1;
+//     //       pcVar10 = pcVar10 + 1;
+//     //     }
+//     //     pcVar12 = GetReadyPlayerStr(this);
+//     //     sprintf(&DAT_0062c6f0,s_P_d_T__6ld____7s___s__TX___0_1f_,this->Me,this->current_turn,tmp + 4,
+//     //             pcVar12,dVar13,dVar14);
+//     //     RGE_Communications_Speed::GetLatencyInfo(this->Speed);
+//     //     sprintf();
+//     //     RGE_Communications_Speed::GetAdjustmentCount(this->Speed);
+//     //     pcVar12 = RGE_Communications_Speed::GetMachineSpeedInfo(this->Speed);
+//     //     sprintf(0x62c8f0,s__s__Speed_Adjusts__d_,pcVar12);
+//     //     (**(code **)(*DAT_0062c5ec + 0x44))();
+//     //     pcVar12 = RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr(this->Speed);
+//     //     sprintf(0x62c9f0,s__s__DPMsgs_d_,pcVar12);
+//     //     RGE_Communications_Speed::GetPlayerSpeedStatusStr(this->Speed,0);
+//     //     sprintf();
+//     //                     /* language.dll match for 0x1468: "Stone path 5" */
+//     //     uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x1468);
+//     //     iVar4 = IsPlayerHuman(this,8);
+//     //     if ((iVar4 == 0) || (this->Me == 8)) {
+//     //       tmp[0] = '\0';
+//     //       tmp[1] = '\0';
+//     //       tmp[2] = '\0';
+//     //       tmp[3] = '\0';
+//     //     }
+//     //     else {
+//     //       tmp._0_4_ = uVar3 - this->LastPlayerCommunication[8];
+//     //     }
+//     //     iVar4 = IsPlayerHuman(this,7);
+//     //     if ((iVar4 == 0) || (this->Me == 7)) {
+//     //       iStack_10c = 0;
+//     //     }
+//     //     else {
+//     //       iStack_10c = uVar3 - this->LastPlayerCommunication[7];
+//     //     }
+//     //     iVar4 = IsPlayerHuman(this,6);
+//     //     if ((iVar4 == 0) || (this->Me == 6)) {
+//     //       dwCount = 0;
+//     //     }
+//     //     else {
+//     //       dwCount = uVar3 - this->LastPlayerCommunication[6];
+//     //     }
+//     //     iVar4 = IsPlayerHuman(this,5);
+//     //     if ((iVar4 == 0) || (this->Me == 5)) {
+//     //       iStack_110 = 0;
+//     //     }
+//     //     else {
+//     //       iStack_110 = uVar3 - this->LastPlayerCommunication[5];
+//     //     }
+//     //     iVar4 = IsPlayerHuman(this,4);
+//     //     if ((iVar4 == 0) || (this->Me == 4)) {
+//     //       iStack_108 = 0;
+//     //     }
+//     //     else {
+//     //       iStack_108 = uVar3 - this->LastPlayerCommunication[4];
+//     //     }
+//     //     iVar4 = IsPlayerHuman(this,3);
+//     //     if ((iVar4 != 0) && (this->Me != 3)) {
+//     //       iVar9 = uVar3 - this->LastPlayerCommunication[3];
+//     //     }
+//     //     iVar4 = IsPlayerHuman(this,2);
+//     //     if ((iVar4 == 0) || (this->Me == 2)) {
+//     //       iVar4 = 0;
+//     //     }
+//     //     else {
+//     //       iVar4 = uVar3 - this->LastPlayerCommunication[2];
+//     //     }
+//     //     iVar5 = IsPlayerHuman(this,1);
+//     //     if ((iVar5 == 0) || (this->Me == 1)) {
+//     //       iVar5 = 0;
+//     //     }
+//     //     else {
+//     //       iVar5 = uVar3 - this->LastPlayerCommunication[1];
+//     //     }
+//     //     sprintf(0x62cbf0,s_LastComm__P1___5d__P2___5d__P3__,iVar5,iVar4,iVar9,iStack_108,iStack_110,
+//     //             dwCount,iStack_10c,tmp._0_4_);
+//     //   }
+//     //   return (char *)(&DAT_0062c6f0 + (uint)(byte)(param_1 - 1) * 0x40);
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- OpenMultiplayerConnection ----
+// // Offset: 0x0042D580
+// int OpenMultiplayerConnection(TCommunications_Handler* this_) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::OpenMultiplayerConnection(void) */
+//     // 
+//     // int __thiscall TCommunications_Handler::OpenMultiplayerConnection(TCommunications_Handler *this)
+//     // 
+//     // {
+//     //   return -1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- CreateMultiplayerGame ----
+// // Offset: 0x0042D590
+// int CreateMultiplayerGame(TCommunications_Handler* this_) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* WARNING: Variable defined which should be unmapped: dSess2 */
+//     // /* public: int __thiscall TCommunications_Handler::CreateMultiplayerGame(void) */
+//     // 
+//     // int __thiscall TCommunications_Handler::CreateMultiplayerGame(TCommunications_Handler *this)
+//     // 
+//     // {
+//     //   TChat *this_00;
+//     //   long lVar1;
+//     //   int iVar2;
+//     //   DPSESSIONDESC2 *pDVar3;
+//     //   DPSESSIONDESC2 dSess2;
+//     //   
+//     //   this_00 = this->Chat;
+//     //   this->Multiplayer = 1;
+//     //   this->HaveHostInit = 0;
+//     //   (this->PlayerOptions).CommandTurnIncrement = '\x02';
+//     //   this->current_turn = 4;
+//     //   (this->PlayerOptions).CurrentTurn = 4;
+//     //   TChat::ClearChat(this_00);
+//     //   lVar1 = CreateDirectPlayConversation(this);
+//     //   RGE_Comm_Error::ShowReturn(this->Err,lVar1,s_DPCreateConv);
+//     //   pDVar3 = &dSess2;
+//     //   this->MeHost = 1;
+//     //   for (iVar2 = 0x14; pDVar3 = (DPSESSIONDESC2 *)&pDVar3->dwFlags, iVar2 != 0; iVar2 = iVar2 + -1) {
+//     //     *(ulong *)pDVar3 = 0;
+//     //   }
+//     //   dSess2.dwCurrentPlayers = (ulong)this->MaxGamePlayers;
+//     //   dSess2.dwFlags = 0x50;
+//     //   dSess2.guidApplication._4_4_ = (this->ApplicationGUID).Data1;
+//     //   dSess2.field6_0x30 = (DPSESSIONDESC2_u_48)0x1;
+//     //   dSess2.guidInstance.Data1 = 0x44;
+//     //   dSess2.guidApplication.Data4._0_4_ = *(undefined4 *)&(this->ApplicationGUID).Data2;
+//     //   dSess2.guidApplication.Data4._4_4_ = *(undefined4 *)(this->ApplicationGUID).Data4;
+//     //   dSess2.dwMaxPlayers = *(ulong *)((this->ApplicationGUID).Data4 + 4);
+//     //   dSess2.field7_0x34.lpszPassword = (ushort *)this->MyGameTitle;
+//     //   DebugSessionInformation(this,(DPSESSIONDESC2 *)&dSess2.dwFlags);
+//     //   iVar2 = (**(code **)(*DAT_0062c5ec + 0x60))(DAT_0062c5ec,&dSess2.dwFlags,2);
+//     //   RGE_Comm_Error::ShowReturn(this->Err,iVar2,s_DP_Open_Create);
+//     //   if (iVar2 != 0) {
+//     //     if (iVar2 == -0x7788ff56) {
+//     //       NotifyWindow(this,COMM_NO_LINK);
+//     //       return 0;
+//     //     }
+//     //     (this->PlayerOptions).ProgramState = COMM_STATE_ERROR;
+//     //     return 0;
+//     //   }
+//     //   SetRandomSeed(this,rge_base_game->random_game_seed);
+//     //   AddSelfPlayer(this);
+//     //   CommGetCaps(this);
+//     //   DPlayGetSessionDesc(this);
+//     //   this->Me = 1;
+//     //   (this->PlayerOptions).HostPlayerNumber = 1;
+//     //   (this->PlayerOptions).dcoID[1] = DAT_0062cf04;
+//     //   (this->PlayerOptions).Humanity[this->Me] = ME_HUMAN;
+//     //   this->HaveHostInit = 1;
+//     //   (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
+//     //                     /* language.dll match for 0x7d1: "Error" */
+//     //   this->GTDSerialNo = 0x7d1;
+//     //   UpdatePlayers(this);
+//     //   return 1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- SetMyGameOptions ----
+// // Offset: 0x0042EB60
+// int SetMyGameOptions(TCommunications_Handler* this_, char* param_2, ulong param_3) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: int __thiscall TCommunications_Handler::SetMyGameOptions(char *,unsigned long) */
+//     // 
+//     // int __thiscall
+//     // TCommunications_Handler::SetMyGameOptions(TCommunications_Handler *this,char *param_1,ulong param_2)
+//     // 
+//     // {
+//     //   char *pcVar1;
+//     //   TDebuggingLog *extraout_ECX;
+//     //   uint uVar2;
+//     //   TDebuggingLog *this_00;
+//     //   
+//     //   if (2000 < param_2) {
+//     //     return 0;
+//     //   }
+//     //   FreeOptions(this);
+//     //   this_00 = extraout_ECX;
+//     //   if ((param_1 != (char *)0x0) && (param_2 != 0)) {
+//     //     pcVar1 = (char *)operator_new(param_2 + 1);
+//     //     this->OptionsData = pcVar1;
+//     //     if (pcVar1 == (char *)0x0) {
+//     //       return 0;
+//     //     }
+//     //     for (uVar2 = param_2 >> 2; uVar2 != 0; uVar2 = uVar2 - 1) {
+//     //       *(undefined4 *)pcVar1 = *(undefined4 *)param_1;
+//     //       param_1 = param_1 + 4;
+//     //       pcVar1 = pcVar1 + 4;
+//     //     }
+//     //     for (uVar2 = param_2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+//     //       *pcVar1 = *param_1;
+//     //       param_1 = param_1 + 1;
+//     //       pcVar1 = pcVar1 + 1;
+//     //     }
+//     //     (this->PlayerOptions).DataSizeToFollow = param_2;
+//     //     this_00 = (TDebuggingLog *)0x0;
+//     //   }
+//     //   if (this->MeHost != 0) {
+//     //     (this->PlayerOptions).NeedsToBeSent = '\x01';
+//     //   }
+//     //   TDebuggingLog::Log(this_00,(char *)L,s_Host_Set_Options_to_size__d,param_2);
+//     //   return 1;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// ---- GetMyGameOptions ----
+// // Offset: 0x0042EBF0
+// void* GetMyGameOptions(TCommunications_Handler* this_, ulong* param_2) {
+//     // --- Ghidra decompiler output ---
+//     // 
+//     // /* public: void * __thiscall TCommunications_Handler::GetMyGameOptions(unsigned long *) */
+//     // 
+//     // void * __thiscall
+//     // TCommunications_Handler::GetMyGameOptions(TCommunications_Handler *this,ulong *param_1)
+//     // 
+//     // {
+//     //   *param_1 = (this->PlayerOptions).DataSizeToFollow;
+//     //   return this->OptionsData;
+//     // }
+//     // 
+//     // 
+// }
+// 
+//
+// END Task 222 decomp reference bundle
+// END Task 222 decomp gap implementations
