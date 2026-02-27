@@ -79,9 +79,6 @@ static void initResourceItemWithCount(ResourceItem& item, int count) {
     }
 }
 
-// Fully verified. Source of truth: airesitm.cpp.decomp @ 0x004120A0
-ResourceItem::~ResourceItem() {}
-
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004ED1C0
 TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     : TacticalAIModule(param_1, param_2) {
