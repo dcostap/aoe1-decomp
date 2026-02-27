@@ -25,6 +25,8 @@ public:
     virtual void play_move_sound(); // vt[12] (0x30)
     virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8); // vt[13] (0x34)
     virtual RGE_Task_List* create_task_list(); // vt[14] (0x38)
+    RGE_Task* get_task(short param_1);
+    RGE_Task* getTaskByTaskID(int param_1) const;
 
     RGE_Task_List* tasks;
     short default_task;
