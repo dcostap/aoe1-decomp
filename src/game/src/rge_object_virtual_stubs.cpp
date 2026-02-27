@@ -34,16 +34,8 @@ void forward_log_debug_to_static(RGE_Static_Object* object, const char* format, 
 
 // --- Forwarding stubs: same signature as RGE_Static_Object ---
 void RGE_Animated_Object::recycle_out_of_game() { RGE_Static_Object::recycle_out_of_game(); } // TODO: STUB
-void RGE_Animated_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::draw_front_frame(param_1, param_2, param_3); } // TODO: STUB
-void RGE_Animated_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::draw_back_frame(param_1, param_2, param_3); } // TODO: STUB
-void RGE_Animated_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Static_Object::draw_frame(param_1, param_2, param_3); } // TODO: STUB
 
-void RGE_Animated_Object::check_damage_sprites() { RGE_Static_Object::check_damage_sprites(); } // TODO: STUB
-void RGE_Animated_Object::rehook() { RGE_Static_Object::rehook(); } // TODO: STUB
 float RGE_Animated_Object::teleport(float param_1, float param_2, float param_3) { return RGE_Static_Object::teleport(param_1, param_2, param_3); } // TODO: STUB
-void RGE_Animated_Object::new_sprite(RGE_Sprite* param_1) { RGE_Static_Object::new_sprite(param_1); } // TODO: STUB
-void RGE_Animated_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Static_Object::add_overlay_sprite(param_1, param_2); } // TODO: STUB
-void RGE_Animated_Object::remove_overlay_sprite(RGE_Sprite* param_1) { RGE_Static_Object::remove_overlay_sprite(param_1); } // TODO: STUB
 void RGE_Animated_Object::change_ownership(RGE_Player* param_1) { RGE_Static_Object::change_ownership(param_1); } // TODO: STUB
 void RGE_Animated_Object::modify(float param_1, uchar param_2) { RGE_Static_Object::modify(param_1, param_2); } // TODO: STUB
 void RGE_Animated_Object::modify_delta(float param_1, uchar param_2) { RGE_Static_Object::modify_delta(param_1, param_2); } // TODO: STUB
