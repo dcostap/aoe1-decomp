@@ -94,6 +94,7 @@ public:
     int pathingDelayCap();
     void setPathingDelayCap(int param_1);
     int currentUpdatePathingAttempts();
+    void load_master_object(int param_1, short param_2, uchar param_3, RGE_Sprite** param_4, RGE_Sound** param_5);
     int availablePathingAttempts(int param_1);
     void incrementPathingAttempts();
     void __cdecl sendChatMessage(int param_1, int param_2, char* param_3, ...);
@@ -108,6 +109,7 @@ public:
     void set_allied_victory(uchar param_1);
     uchar get_allied_victory();
     uchar relation(long param_1);
+    void destroy_objects();
     void reset_selected();
     void unselect_one_object(RGE_Static_Object* param_1);
     void unselect_one_object(short param_1);
@@ -115,6 +117,13 @@ public:
     int select_one_object(RGE_Static_Object* param_1, int param_2);
     void select_area(long param_1, long param_2, long param_3, long param_4);
     void unselect_area();
+    int group_objects(int param_1);
+    int select_group(int param_1);
+    int own_selected();
+    int is_category_selected(short param_1);
+    int is_group_selected(short param_1);
+    uchar unit_level_selected();
+    void ungroup_objects();
     void unselect_object();
     void update_selected();
     int select_object(RGE_Static_Object* param_1);
