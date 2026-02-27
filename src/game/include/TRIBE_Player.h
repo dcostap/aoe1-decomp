@@ -2,6 +2,10 @@
 #include "common.h"
 #include "RGE_Player.h"
 
+struct Item_Avail;
+struct Trade_Avail;
+class ResourceItem;
+
 class TRIBE_Player : public RGE_Player {
 public:
     TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3);
@@ -96,6 +100,43 @@ public:
     uchar command_attack_ground(float x, float y);
     uchar command_make_repair(RGE_Static_Object* target);
     uchar command_make_unload(float x, float y);
+    uchar command_building_make_tech(short tech_id);
+    uchar command_building_cancel();
+    uchar command_delete_object(RGE_Static_Object* target);
+    uchar command_trade_attribute(long attribute_type);
+    uchar command_trade_attribute(int player_id, long attribute_type);
+    uchar command_building_make_obj(short object_id);
+    uchar check_tech_cost(short tech_id, short* missing_attr);
+    uchar pay_tech_cost(short tech_id);
+    void tech_cost(short tech_id, short* inv_1, short* amt_1, short* inv_2, short* amt_2, short* inv_3, short* amt_3);
+    RGE_Static_Object* find_obj(short master_obj_id, RGE_Static_Object* start_after);
+    int objectAvailable(int object_id);
+    int researchAvailable(int tech_id);
+    int researchEverAvailable(int tech_id);
+    uchar researchState(int tech_id);
+    void researchCost(int tech_id, int unused, ResourceItem* resource_cost, int unused2);
+    void interface_tech_avail(Item_Avail** out_items, short* out_count, short button_location);
+    void interface_item_avail(Item_Avail** out_items, short* out_count, short button_location);
+    void interface_trade_avail(Trade_Avail** out_items, short* out_count);
+    int intelligentCivSelection(int param_1, int param_2, int param_3);
+    void intelligentBuildListAndRulesSelection(char* build_list_name, char* rule_set_name, int map_type, int victory_type, int map_size);
+    void setupEgyptian(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupGreek(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupBabylonian(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupAssyrian(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupMinoan(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupHittite(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupPhoenician(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupSumerian(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupPersian(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupShang(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupYamato(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupChoson(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupRoman(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupCarthaginian(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupPalmyran(int* build_lists, int map_type, int victory_type, int map_size);
+    void setupMacedonian(int* build_lists, int map_type, int victory_type, int map_size);
+    void get_achievement(uchar achievement_id, char* out_text);
 
     TRIBE_Player_Tech* tech_tree;
     long fog_update;
