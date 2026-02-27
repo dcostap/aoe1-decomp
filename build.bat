@@ -125,6 +125,7 @@ if "%NEED_RES_COMPILE%"=="1" (
 )
 
 REM --- Discover sources and compute incremental compile list ---
+REM --- Includes src\game\src\InformationAIModule.cpp and TribeInformationAIModule.cpp automatically ---
 set "SOURCE_META=%OBJ_DIR%\source_meta.env"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build_discover_sources.ps1" ^
     -SrcDir "%SRC_DIR%" ^
