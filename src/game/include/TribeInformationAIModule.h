@@ -1,9 +1,19 @@
 #pragma once
 #include "common.h"
 #include "InformationAIModule.h"
+#include "AttackMemory.h"
+#include "BuildingLot.h"
+#include "InfluenceMap.h"
+#include "ObjectMemory.h"
+#include "QuadrantLog.h"
+#include "ResourceMemory.h"
+#include "XYPoint.h"
 
 class TribeInformationAIModule : public InformationAIModule {
 public:
+    TribeInformationAIModule(void* param_1, int param_2);
+    TribeInformationAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TribeInformationAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -20,6 +30,25 @@ public:
     virtual int update(int param_1); // vt[12] (0x30)
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
+
+    int initialize();
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    int save(int param_1);
+    void blotExploredMap(int param_1, int param_2, int param_3, int param_4);
+    int closestUnexploredTile(int param_1, float param_2, float param_3, float* param_4, float* param_5);
+    int fullyExploredZone(int param_1);
+    void setFullyExploredZone(int param_1, int param_2);
+    int tileUncovered(int param_1, int param_2);
+    void setTileExplored(int param_1, int param_2);
+    int mapXSize();
+    int mapYSize();
+    int mapBound(XYPoint& param_1);
+    int addImportantObject(RGE_Static_Object* param_1, int param_2);
+    int addImportantObject(int param_1);
+    int importantObject(int param_1);
+    int importantUnit(int param_1);
+    int importantResource(int param_1);
+    int importantMisc(int param_1);
 
     ManagedArray<int> farmsTaskedThisUpdate;
     TribeMainDecisionAIModule* md;
