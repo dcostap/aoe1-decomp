@@ -3097,7 +3097,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 219 — TRIBE_Screen_Game massive parity tranche: fill the 7400-line decomp gap
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `8d44734` (1204 insertions). Command/button/input routing + UI message paths implemented. Remaining sections marked TODO Part 2.
 - Assignment note: worker-6 (`aoe1_clone_6`)
 - Goal: close the ~7400-line gap between `scr_game.cpp.decomp` (9061 lines) and `TRIBE_Screen_Game.cpp` (1638 lines). This covers the bulk of in-game UI handling: button/panel setup, minimap interactions, unit command routing, chat, diplomacy panel, and achievement display.
 - Implement (decomp-first from `scr_game.cpp.decomp`):
@@ -3296,7 +3297,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: combined gap cut by at least 3000 lines.
 
 ## Task 231 — TribeStrategyAIModule parity (~2270-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: close the gap in the AI strategy module: `taistrmd.cpp.decomp` (3298 lines) → `TribeStrategyAIModule.cpp` (1029 lines) = gap ~2270. This module controls high-level AI strategy decisions (when to attack, when to build up, tech priorities, etc.).
 - Implement (decomp-first from `taistrmd.cpp.decomp`):
