@@ -1223,7 +1223,7 @@ int RGE_Main_View::command_make_move(long param_1, long param_2) {
     const uchar pick_res = this->pick1('*', '\x01', param_1, param_2, &pick_info, nullptr, 1);
     if (pick_res != '2') {
         this->fixup_pick_info(&pick_info);
-        res = (uint)this->player->command_make_move(pick_info.object, pick_info.x, pick_info.y);
+        res = (uint)this->player->command_make_move((RGE_Static_Object*)pick_info.tile, pick_info.x, pick_info.y);
         this->set_redraw(TPanel::RedrawMode::Redraw);
     }
 
@@ -1279,7 +1279,7 @@ int RGE_Main_View::command_make_work(long param_1, long param_2) {
 }
 
 int RGE_Main_View::command_place_multi_object(long param_1, long param_2, long param_3, long param_4, int param_5) {
-    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x005405C0
+    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x005405C0
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -1498,15 +1498,16 @@ int RGE_Main_View::pick_objects1(long param_1, long param_2, RGE_Static_Object**
     while (count != param_4) {
         RGE_Pick_Info pick_info;
         const uchar res = RGE_View::pick(')', '\0', param_1, param_2, &pick_info, last);
-        if (res != '4' || pick_info.object == nullptr) {
+        if (res != '4') {
             break;
         }
-        if (count > 0 && pick_info.object == param_3[0]) {
+        RGE_Static_Object* picked = (RGE_Static_Object*)pick_info.tile;
+        if (count > 0 && picked == param_3[0]) {
             return count;
         }
-        *out++ = pick_info.object;
+        *out++ = picked;
         ++count;
-        last = pick_info.object;
+        last = picked;
     }
 
     return count;
@@ -1574,7 +1575,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long param_1, long param_2, i
                 continue;
             }
 
-            RGE_Player* owner_player = selected_obj->owner;
+            RGE_Player* owner_player = this->player;
             if (owner_player == nullptr || owner_player->master_objects == nullptr) {
                 continue;
             }
