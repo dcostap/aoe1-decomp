@@ -4,6 +4,7 @@
 
 class TribePriestUnitAIModule : public UnitAIModule {
 public:
+    TribePriestUnitAIModule(RGE_Static_Object* param_1, int param_2);
     // Virtuals (best-effort)
     virtual ~TribePriestUnitAIModule(); // vt[0] (0x0)
     virtual void save(int param_1); // vt[1] (0x4)
