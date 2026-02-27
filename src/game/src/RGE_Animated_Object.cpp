@@ -83,6 +83,46 @@ void RGE_Animated_Object::normal_draw(TDrawArea* param_1, short param_2, short p
     RGE_Static_Object::normal_draw(param_1, param_2, param_3);
 }
 
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[6] in RGE_Animated_Object.h
+void RGE_Animated_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Static_Object::draw_front_frame(param_1, param_2, param_3);
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[7] in RGE_Animated_Object.h
+void RGE_Animated_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Static_Object::draw_back_frame(param_1, param_2, param_3);
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[8] in RGE_Animated_Object.h
+void RGE_Animated_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) {
+    RGE_Static_Object::draw_frame(param_1, param_2, param_3);
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[10] in RGE_Animated_Object.h
+void RGE_Animated_Object::check_damage_sprites() {
+    RGE_Static_Object::check_damage_sprites();
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[11] in RGE_Animated_Object.h, obj_list.cpp.asm @ 0x0046391C (dispatch slot +0x2C)
+void RGE_Animated_Object::rehook() {
+    RGE_Static_Object::rehook();
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[14] in RGE_Animated_Object.h
+void RGE_Animated_Object::new_sprite(RGE_Sprite* param_1) {
+    RGE_Static_Object::new_sprite(param_1);
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[15] in RGE_Animated_Object.h
+void RGE_Animated_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) {
+    RGE_Static_Object::add_overlay_sprite(param_1, param_2);
+}
+
+// Fully verified. Source of truth: ani_obj.cpp.decomp/asm (no dedicated override body), vt[16] in RGE_Animated_Object.h
+void RGE_Animated_Object::remove_overlay_sprite(RGE_Sprite* param_1) {
+    RGE_Static_Object::remove_overlay_sprite(param_1);
+}
+
 // Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A350
 uchar RGE_Animated_Object::update() {
     uchar uVar1 = RGE_Static_Object::update();
