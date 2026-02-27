@@ -1,8 +1,10 @@
 #pragma once
-#include "common.h"
+#include "AIModule.h"
 
-class StrategyAIModule {
+class StrategyAIModule : public AIModule {
 public:
+    StrategyAIModule(void* param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~StrategyAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)

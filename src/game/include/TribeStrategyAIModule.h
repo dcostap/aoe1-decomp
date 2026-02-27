@@ -1,9 +1,14 @@
 #pragma once
 #include "common.h"
 #include "StrategyAIModule.h"
+#include "VictoryConditionRuleSystem.h"
+#include "Waypoint.h"
 
 class TribeStrategyAIModule : public StrategyAIModule {
 public:
+    TribeStrategyAIModule(void* param_1, int param_2);
+    TribeStrategyAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TribeStrategyAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -21,6 +26,25 @@ public:
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
     virtual int save(int param_1); // vt[15] (0x3C)
+
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    char* ruleSetName();
+    int loadRules(char* param_1);
+    void setRule(int param_1, int param_2);
+    int rule(int param_1);
+    void setDifficultyLevel(int param_1);
+    int currentVictoryCondition() const;
+    int targetID() const;
+    int targetType() const;
+    int secondTargetID() const;
+    int secondTargetType() const;
+    const Waypoint& targetPoint1() const;
+    const Waypoint& targetPoint2() const;
+    int targetAttribute() const;
+    int targetNumber() const;
+    void setVictoryCondition(int param_1);
+    int isRuleExecuting(int param_1);
+    int isRuleIdle(int param_1);
 
     TribeMainDecisionAIModule* md;
     int currentVictoryConditionValue;
