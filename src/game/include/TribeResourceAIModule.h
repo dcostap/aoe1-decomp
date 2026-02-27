@@ -2,8 +2,13 @@
 #include "common.h"
 #include "AIModule.h"
 
+class ResourceItem;
+
 class TribeResourceAIModule : public AIModule {
 public:
+    TribeResourceAIModule(void* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    TribeResourceAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TribeResourceAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -21,6 +26,13 @@ public:
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
     virtual int save(int param_1); // vt[15] (0x3C)
+
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    int numberResources() const;
+    int resource(int param_1) const;
+    int resourcesAvailable(ResourceItem* param_1);
+    int unavailableResource(ResourceItem* param_1);
+    char* resourceName(int param_1);
 
     TribeMainDecisionAIModule* md;
     int numberResourcesValue;

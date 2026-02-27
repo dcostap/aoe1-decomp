@@ -1,8 +1,12 @@
 #pragma once
 #include "common.h"
 
+class ResourceItem;
+
 class ResourceAIModule {
 public:
+    ResourceAIModule(void* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+
     // Virtuals (best-effort)
     virtual ~ResourceAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -19,6 +23,26 @@ public:
     virtual int update(int param_1); // vt[12] (0x30)
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
+
+    void setMainDecisionAI(MainDecisionAIModule* param_1);
+    int numberResources() const;
+    int resource(int param_1) const;
+    int resourcesAvailable(ResourceItem* param_1);
+    int unavailableResource(ResourceItem* param_1);
+    int minValueOfResource(int param_1) const;
+    int maxValueOfResource(int param_1) const;
+    void setResource(int param_1, int param_2);
+    void setResources(ResourceItem* param_1);
+    void incrementResource(int param_1, int param_2);
+    void incrementResources(ResourceItem* param_1);
+    void decrementResource(int param_1, int param_2);
+    void decrementResources(ResourceItem* param_1);
+    void setResourceMin(int param_1, int param_2);
+    void setResourceMax(int param_1, int param_2);
+    void addResourceType(int param_1, int param_2);
+    int isResourceType(int param_1, int param_2);
+    int numberResourceTypes(int param_1);
+    int lowestResourceType() const;
 
     int padding0;
     int padding1;
@@ -79,7 +103,6 @@ public:
     int padding56;
     int padding57;
     int padding58;
-    int padding;
     MainDecisionAIModule* md;
     int numberResourcesValue;
     int* resourceValue;
