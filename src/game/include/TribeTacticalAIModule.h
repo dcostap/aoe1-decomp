@@ -1,9 +1,17 @@
 #pragma once
 #include "common.h"
+#include "AttackState.h"
+#include "PlacementState.h"
+#include "ResourceItem.h"
+#include "TacticalAIGroup.h"
 #include "TacticalAIModule.h"
+#include "UnitData.h"
 
 class TribeTacticalAIModule : public TacticalAIModule {
 public:
+    TribeTacticalAIModule(void* param_1, int param_2);
+    TribeTacticalAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TribeTacticalAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -22,6 +30,22 @@ public:
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
     virtual int save(int param_1); // vt[15] (0x3C)
     virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt[16] (0x40)
+
+    char* updateAreaName();
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    int doSomething();
+    void enableAttack(int param_1);
+    TacticalAIGroup* createGroup(int param_1);
+    int removeGroup(int param_1);
+    int removeAllGroups(int param_1);
+    TacticalAIGroup* group(int param_1, int param_2, int param_3, int param_4);
+    int addToGroup(int param_1, int param_2);
+    int removeFromGroup(int param_1, int param_2);
+    int removeFromGroup(int param_1);
+    TacticalAIGroup* groupUnitIsIn(int param_1);
+    TacticalAIGroup* addGroup(int param_1);
+    TacticalAIGroup* findGroup(int param_1, int param_2, int param_3, int param_4);
+    TacticalAIGroup* getGroup(int param_1);
 
     TribeMainDecisionAIModule* md;
     ManagedArray<int> civilians;

@@ -1,5 +1,7 @@
 #pragma once
 #include "common.h"
+#include "BuildItem.h"
+#include "XYPoint.h"
 
 struct PlacementState {
     int buildingTypeID;

@@ -749,6 +749,131 @@ void RGE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) 
         this->attributes[param_1] = this->attributes[param_1] + param_2;
     }
 }
+void RGE_Player::make_available(short param_1, uchar param_2) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470100
+    if (this->master_objects[param_1] != nullptr) {
+        this->master_objects[param_1]->make_available(param_2);
+    }
+}
+void RGE_Player::modify_tobj(short param_1, short param_2, float param_3, uchar param_4) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470840
+    if (param_1 < 0) {
+        if (param_2 >= 0 && this->master_object_num > 0) {
+            short index = 0;
+            do {
+                RGE_Master_Static_Object* master = this->master_objects[index];
+                if (master != nullptr && master->object_group == param_2) {
+                    if (this->objects != nullptr) {
+                        for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                            if (node->node->master_obj == master) {
+                                node->node->modify(param_3, param_4);
+                            }
+                        }
+                    }
+                    master->modify(param_3, param_4);
+                }
+                index = (short)(index + 1);
+            } while (index < this->master_object_num);
+        }
+    } else {
+        int index = (int)param_1;
+        if (this->master_objects[index] != nullptr) {
+            if (this->objects != nullptr) {
+                for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                    if (node->node->master_obj == this->master_objects[index]) {
+                        node->node->modify(param_3, param_4);
+                    }
+                }
+            }
+            this->master_objects[index]->modify(param_3, param_4);
+        }
+    }
+}
+void RGE_Player::modify_tobj_delta(short param_1, short param_2, float param_3, uchar param_4) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470940
+    if (param_1 < 0) {
+        if (param_2 >= 0 && this->master_object_num > 0) {
+            short index = 0;
+            do {
+                RGE_Master_Static_Object* master = this->master_objects[index];
+                if (master != nullptr && master->object_group == param_2) {
+                    if (this->objects != nullptr) {
+                        for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                            if (node->node->master_obj == master) {
+                                node->node->modify_delta(param_3, param_4);
+                            }
+                        }
+                    }
+                    master->modify_delta(param_3, param_4);
+                }
+                index = (short)(index + 1);
+            } while (index < this->master_object_num);
+        }
+    } else {
+        int index = (int)param_1;
+        if (this->master_objects[index] != nullptr) {
+            if (this->objects != nullptr) {
+                for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                    if (node->node->master_obj == this->master_objects[index]) {
+                        node->node->modify_delta(param_3, param_4);
+                    }
+                }
+            }
+            this->master_objects[index]->modify_delta(param_3, param_4);
+        }
+    }
+}
+void RGE_Player::modify_tobj_percent(short param_1, short param_2, float param_3, uchar param_4) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470A40
+    if (param_1 < 0) {
+        if (param_2 >= 0 && this->master_object_num > 0) {
+            short index = 0;
+            do {
+                RGE_Master_Static_Object* master = this->master_objects[index];
+                if (master != nullptr && master->object_group == param_2) {
+                    if (this->objects != nullptr) {
+                        for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                            if (node->node->master_obj == master) {
+                                node->node->modify_percent(param_3, param_4);
+                            }
+                        }
+                    }
+                    master->modify_percent(param_3, param_4);
+                }
+                index = (short)(index + 1);
+            } while (index < this->master_object_num);
+        }
+    } else {
+        int index = (int)param_1;
+        if (this->master_objects[index] != nullptr) {
+            if (this->objects != nullptr) {
+                for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                    if (node->node->master_obj == this->master_objects[index]) {
+                        node->node->modify_percent(param_3, param_4);
+                    }
+                }
+            }
+            this->master_objects[index]->modify_percent(param_3, param_4);
+        }
+    }
+}
+void RGE_Player::copy_obj(short param_1, short param_2) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470B40
+    int index1 = (int)param_1;
+    if (this->master_objects[index1] != nullptr) {
+        int index2 = (int)param_2;
+        if (this->master_objects[index2] != nullptr) {
+            if (this->objects != nullptr) {
+                for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
+                    if (node->node->master_obj == this->master_objects[index1]) {
+                        node->node->copy_obj(this->master_objects[index2]);
+                    }
+                }
+            }
+            this->master_objects[index1]->copy_obj(this->master_objects[index2]);
+        }
+    }
+}
 void RGE_Player::update() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00470120
     CUSTOM_DEBUG_LOG_FMT("RGE_Player::update this=%p id=%d objects=%p dopple=%p", this, (int)this->id, this->objects, this->doppleganger_objects);

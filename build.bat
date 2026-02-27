@@ -94,6 +94,15 @@ if not exist "%OUT_DIR%\languagex.dll" (
     echo          Copy game assets to %OUT_DIR% before running!
 )
 
+REM --- Required AI item source files ---
+for %%F in (BuildItem.cpp ConstructionItem.cpp ResearchItem.cpp TechItem.cpp) do (
+    if not exist "%SRC_DIR%\%%F" (
+        echo ERROR: required source file missing: %SRC_DIR%\%%F
+        popd
+        exit /b 1
+    )
+)
+
 REM --- Header invalidation ---
 set "REBUILD_ALL=0"
 if not exist "%BUILD_STAMP%" (
@@ -127,6 +136,7 @@ if "%NEED_RES_COMPILE%"=="1" (
 )
 
 REM --- Discover sources and compute incremental compile list ---
+REM --- Includes src\game\src\InformationAIModule.cpp and TribeInformationAIModule.cpp automatically ---
 set "SOURCE_META=%OBJ_DIR%\source_meta.env"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build_discover_sources.ps1" ^
     -SrcDir "%SRC_DIR%" ^
