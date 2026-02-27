@@ -2,6 +2,9 @@
 #include "common.h"
 #include "XYZPoint.h"
 
+struct RGE_Check_List;
+class InfluenceMap;
+
 class RGE_Static_Object {
 public:
     RGE_Static_Object();
@@ -153,15 +156,32 @@ public:
     void get_starting_attribute();
     void give_attribute_to_owner();
     void take_attribute_from_owner();
+    RGE_Static_Object* check_object_bounds();
     void capture_frame(TDrawArea* param_1, short param_2, short param_3);
     int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
     int inRange(RGE_Static_Object* param_1, float param_2);
     float distance_to_object(RGE_Static_Object* param_1);
     float distance_to_position(float param_1, float param_2, float param_3);
+    uchar hit_test(short param_1, short param_2, short param_3, short param_4, short param_5);
+    uchar box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6);
+    void set_location(float param_1, float param_2, float param_3);
+    uchar drop_held_objects(int param_1);
+    uchar find_drop_location(int param_1, float* param_2, float* param_3, RGE_Master_Static_Object* param_4, RGE_Static_Object* param_5, float param_6, float param_7, float param_8, float param_9);
+    RGE_Check_List* make_object_bounds_list(float param_1);
+    int boundToFacet(float param_1, float param_2, int param_3);
+    int numberFacets();
+    void changeInfluenceMap(InfluenceMap* param_1, int param_2, int param_3, int param_4);
+    RGE_Check_List* objectCollisionList(float param_1);
+    UnitAIModule* unitAI();
     int withinRangeOfZoneAtPoint(uchar param_1, float param_2, XYPoint* param_3);
     int withinRangeOfZone(uchar param_1, float param_2);
     uchar lookupZone(XYPoint param_1);
     uchar lookupZone(int param_1, int param_2);
+    uchar currentZone();
+    int findClosestPointInTerrainType(XYPoint param_1, XYPoint* param_2, int param_3, int param_4, int param_5);
+    int isGroupCommander();
+    int inGroup();
+    uchar is_dying();
     float get_terrain_speed(unsigned char terrain_type);
 
     // Non-virtual draw helpers (stat_obj.cpp).
