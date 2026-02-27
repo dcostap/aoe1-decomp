@@ -74,6 +74,11 @@ public:
 
     // Non-virtual methods
     void new_attribute_num(short param_1, float param_2);
+    void make_available(short param_1, uchar param_2);
+    void modify_tobj(short param_1, short param_2, float param_3, uchar param_4);
+    void modify_tobj_delta(short param_1, short param_2, float param_3, uchar param_4);
+    void modify_tobj_percent(short param_1, short param_2, float param_3, uchar param_4);
+    void copy_obj(short param_1, short param_2);
     long get_checksum();
     uchar get_checksums(long& cs1, long& cs2, long& cs3);
     long create_checksum();
