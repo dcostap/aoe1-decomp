@@ -1,8 +1,13 @@
 #pragma once
 #include "common.h"
 
+class MainDecisionAIModule;
+
 class DiplomacyAIModule {
 public:
+    DiplomacyAIModule(void* param_1, int param_2);
+    DiplomacyAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~DiplomacyAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -20,6 +25,23 @@ public:
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
     virtual int save(int param_1); // vt[15] (0x3C)
+
+    void setMainDecisionAI(MainDecisionAIModule* param_1);
+    int stance(int param_1, int param_2) const;
+    void changeStance(int param_1, int param_2, int param_3);
+    void setStance(int param_1, int param_2, int param_3);
+    int isDisliked(int param_1) const;
+    int isAmbivalent(int param_1) const;
+    int isLiked(int param_1) const;
+    int isChangeable(int param_1) const;
+    void setChangeable(int param_1, uchar param_2);
+    int mostHated(int param_1, int param_2, int param_3, int param_4) const;
+    int mostLiked(int param_1, int param_2) const;
+    int isEnemy(int param_1) const;
+    int isNeutral(int param_1) const;
+    int isAlly(int param_1) const;
+    int isAlliedWithMe(int param_1) const;
+    void setRelation(int param_1, int param_2);
 
     int padding0;
     int padding1;
@@ -80,7 +102,6 @@ public:
     int padding56;
     int padding57;
     int padding58;
-    int padding;
     MainDecisionAIModule* md;
     int dislikeTable[10];
     int likeTable[10];
