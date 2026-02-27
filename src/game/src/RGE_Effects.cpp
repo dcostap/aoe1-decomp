@@ -1,6 +1,7 @@
 #include "../include/RGE_Effects.h"
 #include "../include/RGE_Effect.h"
 #include "../include/RGE_Effect_Command.h"
+#include "../include/RGE_Player.h"
 #include "../include/globals.h"
 #include <stdlib.h>
 #include <string.h>
@@ -72,4 +73,44 @@ void RGE_Effects::save(int fd) {
     }
 }
 
-void RGE_Effects::do_effect(short p1, RGE_Player* p2) {}
+void RGE_Effects::do_effect(short p1, RGE_Player* p2) {
+    // Fully verified. Source of truth: effects.cpp.decomp @ 0x004495C0
+    if ((int)p1 < this->effect_num) {
+        RGE_Effect* effect = this->effects + p1;
+        if (effect != nullptr && effect->effect_list_num > 0) {
+            short i = 0;
+            do {
+                RGE_Effect_Command* command_list = effect->effect_list;
+                switch (command_list[i].command) {
+                case 0:
+                    p2->modify_tobj(command_list[i].change_num1, command_list[i].change_num2, command_list[i].change_amount, (uchar)command_list[i].change_num3);
+                    break;
+                case 1:
+                    if (command_list[i].change_num1 >= 0) {
+                        if (command_list[i].change_num2 == 0) {
+                            p2->new_attribute_num(command_list[i].change_num1, command_list[i].change_amount);
+                        } else {
+                            p2->add_attribute_num(command_list[i].change_num1, command_list[i].change_amount, 0);
+                        }
+                    }
+                    break;
+                case 2:
+                    if (command_list[i].change_num1 >= 0) {
+                        p2->make_available(command_list[i].change_num1, (uchar)command_list[i].change_num2);
+                    }
+                    break;
+                case 3:
+                    p2->copy_obj(command_list[i].change_num1, command_list[i].change_num2);
+                    break;
+                case 4:
+                    p2->modify_tobj_delta(command_list[i].change_num1, command_list[i].change_num2, command_list[i].change_amount, (uchar)command_list[i].change_num3);
+                    break;
+                case 5:
+                    p2->modify_tobj_percent(command_list[i].change_num1, command_list[i].change_num2, command_list[i].change_amount, (uchar)command_list[i].change_num3);
+                    break;
+                }
+                i = i + 1;
+            } while (i < effect->effect_list_num);
+        }
+    }
+}

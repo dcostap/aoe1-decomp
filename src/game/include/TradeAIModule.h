@@ -4,6 +4,9 @@
 
 class TradeAIModule : public AIModule {
 public:
+    TradeAIModule(void* param_1, int param_2);
+    TradeAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TradeAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -21,6 +24,8 @@ public:
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
     virtual int save(int param_1); // vt[15] (0x3C)
+
+    void setMainDecisionAI(MainDecisionAIModule* param_1);
 
     MainDecisionAIModule* md;
 };

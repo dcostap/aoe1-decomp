@@ -83,6 +83,15 @@ if not exist "%OUT_DIR%\languagex.dll" (
     echo          Copy game assets to %OUT_DIR% before running!
 )
 
+REM --- Required AI item source files ---
+for %%F in (BuildItem.cpp ConstructionItem.cpp ResearchItem.cpp TechItem.cpp) do (
+    if not exist "%SRC_DIR%\%%F" (
+        echo ERROR: required source file missing: %SRC_DIR%\%%F
+        popd
+        exit /b 1
+    )
+)
+
 REM --- Header invalidation ---
 set "REBUILD_ALL=0"
 if not exist "%BUILD_STAMP%" (

@@ -3,6 +3,9 @@
 
 class EmotionalAIModule {
 public:
+    EmotionalAIModule(void* param_1, int param_2);
+    EmotionalAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~EmotionalAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -20,6 +23,16 @@ public:
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
     virtual int save(int param_1); // vt[15] (0x3C)
+
+    void setMainDecisionAI(MainDecisionAIModule* param_1);
+    char* stateName(int param_1);
+    int state(int param_1) const;
+    void setState(int param_1, int param_2);
+    void incrementState(int param_1, int param_2);
+    void decrementState(int param_1, int param_2);
+    int overallState() const;
+    void setOverallState(int param_1);
+    int defaultState() const;
 
     int padding0;
     int padding1;
@@ -80,9 +93,8 @@ public:
     int padding56;
     int padding57;
     int padding58;
-    int padding;
     MainDecisionAIModule* md;
     int stateValue[6];
-    char stateNameValue[6];
+    char stateNameValue[6][30];
 };
 static_assert(sizeof(EmotionalAIModule) == 0x1C0, "Size mismatch");
