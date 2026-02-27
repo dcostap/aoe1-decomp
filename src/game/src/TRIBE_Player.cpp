@@ -38,16 +38,6 @@ public:
     int cancelResearch(int param_1, int param_2, int param_3, int param_4);
 };
 
-static short tribe_player_attr_as_short(TRIBE_Player* player, int index) {
-    if (player == nullptr || player->attributes == nullptr) {
-        return 0;
-    }
-    if (index < 0 || index >= player->attribute_num) {
-        return 0;
-    }
-    return (short)((long)player->attributes[index]);
-}
-
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player(world, master, player_id, name, civ, '\0', '\0', ai1, ai2, ai3) {
@@ -278,11 +268,8 @@ void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) 
 void TRIBE_Player::load(int param_1) { RGE_Player::load(param_1); }
 void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) { RGE_Player::add_attribute_num(param_1, param_2, param_3); }
 void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
-    // Source of truth: tplayer.cpp.decomp @ 0x00513DA0
-    // Temporary-safe: tech_tree construction is still partial in current decomp state.
-    if (this->tech_tree == nullptr) {
-        return;
-    }
+    // Fully verified. Source of truth: tplayer.cpp.asm @ 0x00513DA0
+    // tech_tree is constructed in TRIBE_Player init/load paths (0x00511BD0, 0x00511E20, 0x00512690).
     if (param_2 != 0) {
         this->tech_tree->enable((short)param_1);
         return;
@@ -290,43 +277,35 @@ void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
     this->tech_tree->disable((short)param_1);
 }
 void TRIBE_Player::rev_tech(long param_1) {
-    // Source of truth: tplayer.cpp.asm @ 0x00513DD0
-    if (this->tech_tree == nullptr) {
-        return;
-    }
-
-    short attr_00 = tribe_player_attr_as_short(this, 0);
-    short attr_17 = tribe_player_attr_as_short(this, 0x17);
-    short attr_18 = tribe_player_attr_as_short(this, 0x18);
-    short attr_19 = tribe_player_attr_as_short(this, 0x19);
-
+    // Fully verified. Source of truth: tplayer.cpp.asm @ 0x00513DD0
+    // Original runtime flow dereferences tech_tree/attributes directly in this tech-tree toggle path.
     switch (param_1) {
     case 0x17:
-        this->tech_tree->disable(attr_17);
-        this->tech_tree->rev_tech(attr_00);
-        this->tech_tree->enable(attr_17);
-        this->tech_tree->do_tech(attr_17);
+        this->tech_tree->disable((short)((long)this->attributes[0x17]));
+        this->tech_tree->rev_tech((short)((long)this->attributes[0]));
+        this->tech_tree->enable((short)((long)this->attributes[0x17]));
+        this->tech_tree->do_tech((short)((long)this->attributes[0x17]));
         return;
     case 0x18:
-        this->tech_tree->disable(attr_00);
-        this->tech_tree->disable(attr_18);
-        this->tech_tree->rev_tech(attr_19);
-        this->tech_tree->enable(attr_00);
-        this->tech_tree->rev_tech(attr_17);
-        this->tech_tree->enable(attr_18);
-        this->tech_tree->do_tech(attr_00);
+        this->tech_tree->disable((short)((long)this->attributes[0]));
+        this->tech_tree->disable((short)((long)this->attributes[0x18]));
+        this->tech_tree->rev_tech((short)((long)this->attributes[0x19]));
+        this->tech_tree->enable((short)((long)this->attributes[0]));
+        this->tech_tree->rev_tech((short)((long)this->attributes[0x17]));
+        this->tech_tree->enable((short)((long)this->attributes[0x18]));
+        this->tech_tree->do_tech((short)((long)this->attributes[0]));
         return;
     case 0x19:
-        this->tech_tree->do_tech(attr_19);
+        this->tech_tree->do_tech((short)((long)this->attributes[0x19]));
         return;
     case 1:
-        this->tech_tree->disable(attr_17);
-        this->tech_tree->disable(attr_18);
-        this->tech_tree->rev_tech(attr_00);
-        this->tech_tree->enable(attr_17);
-        this->tech_tree->rev_tech(attr_17);
-        this->tech_tree->enable(attr_00);
-        this->tech_tree->rev_tech(attr_18);
+        this->tech_tree->disable((short)((long)this->attributes[0x17]));
+        this->tech_tree->disable((short)((long)this->attributes[0x18]));
+        this->tech_tree->rev_tech((short)((long)this->attributes[0]));
+        this->tech_tree->enable((short)((long)this->attributes[0x17]));
+        this->tech_tree->rev_tech((short)((long)this->attributes[0x17]));
+        this->tech_tree->enable((short)((long)this->attributes[0]));
+        this->tech_tree->rev_tech((short)((long)this->attributes[0x18]));
         return;
     default:
         return;
