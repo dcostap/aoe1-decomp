@@ -23,7 +23,9 @@
 #include "../include/TRIBE_Panel_Pop.h"
 #include "../include/TRIBE_Panel_Time.h"
 #include "../include/TRIBE_Player.h"
+#include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_World.h"
+#include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/RGE_Communications_Speed.h"
@@ -145,6 +147,71 @@ static void delete_panel_safe(TPanel*& panel) {
         delete panel;
         panel = nullptr;
     }
+}
+
+static int& scr_game_field_i32(TRIBE_Screen_Game* self, size_t offset) {
+    return *(int*)((unsigned char*)self + offset);
+}
+
+static ulong& scr_game_field_u32(TRIBE_Screen_Game* self, size_t offset) {
+    return *(ulong*)((unsigned char*)self + offset);
+}
+
+static short& scr_game_field_i16(TRIBE_Screen_Game* self, size_t offset) {
+    return *(short*)((unsigned char*)self + offset);
+}
+
+static void scr_game_set_info_file(TEasy_Panel* panel, const char* file_name, long info_id) {
+    panel->info_id = info_id;
+    if (file_name != nullptr) {
+        strncpy(panel->info_file_name, file_name, sizeof(panel->info_file_name) - 1);
+        panel->info_file_name[sizeof(panel->info_file_name) - 1] = '\0';
+    } else {
+        panel->info_file_name[0] = '\0';
+    }
+}
+
+static void scr_game_set_popup_info_file(TEasy_Panel* panel, const char* file_name, long info_id) {
+    panel->popup_info_id = info_id;
+    if (file_name != nullptr) {
+        strncpy(panel->popup_info_file_name, file_name, sizeof(panel->popup_info_file_name) - 1);
+        panel->popup_info_file_name[sizeof(panel->popup_info_file_name) - 1] = '\0';
+    } else {
+        panel->popup_info_file_name[0] = '\0';
+    }
+}
+
+static void scr_game_set_button_pics(TEasy_Panel* panel, const char* file_name, long pic_id) {
+    delete_shape_safe(panel->button_pics);
+    if (file_name != nullptr) {
+        panel->button_pics = new TShape((char*)file_name, pic_id);
+    }
+}
+
+static void scr_game_set_bevel_colors(TEasy_Panel* panel, uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
+    panel->bevel_color1 = c1;
+    panel->bevel_color2 = c2;
+    panel->bevel_color3 = c3;
+    panel->bevel_color4 = c4;
+    panel->bevel_color5 = c5;
+    panel->bevel_color6 = c6;
+}
+
+static void scr_game_set_button_text_color(TRIBE_Panel_Button* button, ulong color1, ulong color2) {
+    if (button == nullptr) {
+        return;
+    }
+    button->text_color1[0] = color1;
+    button->text_color2[0] = color2;
+}
+
+static void scr_game_reload_shape(TShape*& shape, const char* format, uint style, long style4_id, long base_id) {
+    char file_name[64];
+    _snprintf(file_name, sizeof(file_name), format, style);
+    file_name[sizeof(file_name) - 1] = '\0';
+    delete_shape_safe(shape);
+    const long shape_id = (style == 4) ? style4_id : (base_id + (long)style);
+    shape = new TShape(file_name, shape_id);
 }
 
 static TMessagePanel* create_message_panel_checked(
@@ -820,7 +887,7 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
 }
 
 void TRIBE_Screen_Game::handle_game_update() {
-    // TODO: Remaining world-step/game-over branches from 0x00496800 are still pending transliteration.
+    // Source of truth: scr_game.cpp.decomp @ 0x00496800
     if (rge_base_game == nullptr) {
         return;
     }
@@ -830,6 +897,44 @@ void TRIBE_Screen_Game::handle_game_update() {
     }
 
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
+    auto command_unselect = [this]() {
+        if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
+            return;
+        }
+
+        RGE_Player* unselect_player = rge_base_game->get_player();
+        if (unselect_player != nullptr) {
+            unselect_player->unselect_object();
+            unselect_player->unselect_area();
+        }
+        if (this->runtime.main_view != nullptr) {
+            this->runtime.main_view->set_redraw(TPanel::Redraw);
+        }
+    };
+    auto command_cancel = [this, &command_unselect]() {
+        if (rge_base_game == nullptr) {
+            return;
+        }
+
+        if (this->help_mode != 0) {
+            this->clear_popup_help();
+            return;
+        }
+
+        if (rge_base_game->get_paused() != 0) {
+            return;
+        }
+
+        if (rge_base_game->game_mode != 0) {
+            if (rge_base_game->game_mode == 0x15 && this->runtime.main_view != nullptr) {
+                ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
+            }
+            rge_base_game->set_game_mode(0, 0);
+            return;
+        }
+
+        command_unselect();
+    };
 
     if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
         RGE_View* main_view = (RGE_View*)this->runtime.main_view;
@@ -848,22 +953,230 @@ void TRIBE_Screen_Game::handle_game_update() {
     int update_counter = 0;
     const ulong update_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x63F);
     if (update_time - this->runtime.last_update_time >= this->runtime.update_interval) {
-        this->runtime.last_update_time = update_time;
-        update_counter = 1;
-    }
+        ulong calc_game_time = 1;
+        if (rge_base_game->prog_mode != 6) {
+            if (rge_base_game->multiplayerGame() != 0) {
+                const ulong last_single_time2 = rge_base_game->timings[2].last_single_time;
+                const ulong last_single_time3 = rge_base_game->timings[3].last_single_time;
 
-    if (update_counter != 0 && this->runtime.reset_after_update != 0) {
-        this->reset_clocks();
-        this->runtime.reset_after_update = 0;
-    }
+                ulong avg_world_time = 1;
+                const ulong world_update_count = rge_base_game->get_last_world_update_count();
+                if (world_update_count != 0) {
+                    avg_world_time = rge_base_game->timings[1].last_time / world_update_count;
+                    if (avg_world_time == 0) {
+                        avg_world_time = 1;
+                    }
+                }
 
-    if (update_counter != 0 &&
-        this->runtime.object_panel != nullptr &&
-        player != nullptr &&
-        (this->runtime.last_selected_obj != player->selected_obj ||
-         this->runtime.last_sel_count != player->sel_count)) {
-        this->runtime.object_panel->set_object(player->selected_obj);
-        this->object_changed();
+                uint player_avg_msec = 0;
+                TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+                if (comm_handler != nullptr && comm_handler->Speed != nullptr) {
+                    int who_am_i = comm_handler->WhoAmI();
+                    if (who_am_i >= 0 && who_am_i < 9) {
+                        player_avg_msec = comm_handler->Speed->PlayerAvgFramesMsec[who_am_i];
+                    }
+                }
+
+                calc_game_time = 2;
+                const int single_time_sum = (int)(last_single_time2 + last_single_time3);
+                const int ratio_is_too_high =
+                    (single_time_sum <= 0) || (((float)avg_world_time / (float)single_time_sum) > 2.0f);
+                if (multi_updates == 0 || player_avg_msec < 0x43 || player_avg_msec > 0x7D || ratio_is_too_high) {
+                    calc_game_time = 1;
+                }
+
+                rge_base_game->timings[2].last_single_time = 0;
+                rge_base_game->timings[3].last_single_time = 0;
+            }
+        }
+
+        for (int num_updates = 0; num_updates < (int)calc_game_time; ++num_updates) {
+            const ulong world_step_start_time =
+                debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x692);
+
+            int world_state_ok = 0;
+            int& game_over_state = scr_game_field_i32(this, 0x7B4);
+            if (start_paused == 0) {
+                if (game_over_state == 0) {
+                    const int game_state = (this->runtime.world != nullptr) ? this->runtime.world->get_game_state() : 0;
+                    if (out_of_sync2 != 0) {
+                        return;
+                    }
+
+                    if (game_state == 1) {
+                        game_over_state = 1;
+                        if (this->runtime.main_view != nullptr) {
+                            ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
+                        }
+                        rge_base_game->set_game_mode(0, 0);
+                        command_unselect();
+                        if (rge_base_game->multiplayerGame() != 0 && this->runtime.world != nullptr) {
+                            this->runtime.world->send_zone_score_info();
+                        }
+                    }
+                    world_state_ok = game_state;
+                } else {
+                    world_state_ok = 1;
+                }
+            } else {
+                rge_base_game->set_prog_mode(6);
+            }
+
+            if (out_of_sync2 != 0) {
+                return;
+            }
+
+            const ulong world_step_end_time =
+                debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x6BB);
+            this->runtime.last_update_time = world_step_end_time;
+
+            if (this->runtime.world != nullptr && this->runtime.world->world_time_delta != 0) {
+                rge_base_game->add_to_timing(1, world_step_end_time - world_step_start_time);
+                rge_base_game->increment_world_update_count();
+                update_counter += (int)this->runtime.world->world_time_delta;
+            }
+
+            if (this->runtime.reset_after_update != 0) {
+                this->reset_clocks();
+                this->runtime.reset_after_update = 0;
+            }
+
+            if (scr_game_field_i32(this, 0x7B0) != 0) {
+                if (rge_base_game->get_paused() == 0) {
+                    RGE_Player* view_player = rge_base_game->get_player();
+                    if (view_player != nullptr && view_player->selected_obj != nullptr) {
+                        const float view_x = view_player->selected_obj->world_x;
+                        const float view_y = view_player->selected_obj->world_y;
+                        view_player->set_view_loc(view_x, view_y);
+                        view_player->set_map_loc((short)view_x, (short)view_y);
+                    }
+                }
+            }
+
+            player = (TRIBE_Player*)rge_base_game->get_player();
+            if (this->runtime.object_panel != nullptr &&
+                player != nullptr &&
+                (this->runtime.last_selected_obj != player->selected_obj ||
+                 this->runtime.last_sel_count != player->sel_count)) {
+                this->runtime.object_panel->set_object(player->selected_obj);
+                this->object_changed();
+            }
+
+            int current_player_status = 0;
+            if (this->runtime.world != nullptr && this->runtime.world->players != nullptr) {
+                const int current_player = this->runtime.world->curr_player;
+                if (current_player >= 0 && current_player < this->runtime.world->player_num) {
+                    RGE_Player* status_player = this->runtime.world->players[current_player];
+                    if (status_player != nullptr) {
+                        current_player_status = status_player->game_status;
+                    }
+                }
+            }
+
+            if (start_paused == 0 &&
+                (world_state_ok != 0 || current_player_status == 2 || this->runtime.watch_mode == 1)) {
+                int& game_over_pending = scr_game_field_i32(this, 0x720);
+                ulong& game_over_time = scr_game_field_u32(this, 0x71C);
+
+                if (rge_base_game->prog_mode == 5) {
+                    if (game_over_pending != 0) {
+                        const ulong elapsed_time =
+                            debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x734);
+                        if (elapsed_time - game_over_time > 5000) {
+                            game_over_pending = 0;
+                            if (rge_base_game->multiplayerGame() == 0) {
+                                if (this->runtime.main_view != nullptr) {
+                                    ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
+                                }
+                                rge_base_game->set_game_mode(0, 0);
+                                command_unselect();
+                                ((TRIBE_Game*)rge_base_game)->do_game_over();
+                                return;
+                            }
+
+                            if (rge_base_game->get_paused() == 0 && this->runtime.pause_text != nullptr) {
+                                this->runtime.pause_text->set_active(0);
+                            }
+
+                            rge_base_game->set_map_visible(1);
+                            rge_base_game->set_map_fog(0);
+                            if (this->runtime.main_view != nullptr) {
+                                this->runtime.main_view->set_redraw(TPanel::RedrawFull);
+                            }
+                            if (this->runtime.map_view != nullptr) {
+                                this->runtime.map_view->set_redraw(TPanel::RedrawFull);
+                            }
+                            if (this->runtime.quit_message_panel != nullptr) {
+                                this->runtime.quit_message_panel->set_active(1);
+                            }
+                            if (this->runtime.pop_panel != nullptr) {
+                                this->runtime.pop_panel->set_active(0);
+                            }
+                        }
+                    }
+                } else {
+                    command_cancel();
+                    command_unselect();
+
+                    if (this->runtime.text_line_panel != nullptr) {
+                        this->runtime.text_line_panel->remove_message();
+                    }
+                    for (int i = 0; i < 6; ++i) {
+                        if (this->runtime.message_panel[i] != nullptr) {
+                            this->runtime.message_panel[i]->remove_message();
+                        }
+                    }
+
+                    rge_base_game->set_prog_mode(5);
+
+                    if (panel_system != nullptr) {
+                        if (panel_system->mouseOwnerValue != nullptr) {
+                            panel_system->mouseOwnerValue->release_mouse();
+                        }
+                        panel_system->setCurrentPanel((char*)"Game Screen", 0);
+                    }
+                    if (this->runtime.main_view != nullptr) {
+                        this->set_curr_child(this->runtime.main_view);
+                    }
+                    ((TRIBE_Game*)rge_base_game)->close_game_screens(0);
+
+                    if (this->runtime.pause_text != nullptr) {
+                        this->runtime.pause_text->set_active(1);
+                        if (player != nullptr && player->game_status == 1) {
+                            this->runtime.pause_text->set_text(0x232C);
+                        } else {
+                            this->runtime.pause_text->set_text(0x232D);
+                        }
+                    }
+                    if (this->runtime.main_view != nullptr) {
+                        this->runtime.main_view->set_redraw(TPanel::Redraw);
+                    }
+
+                    if (rge_base_game->prog_info != nullptr &&
+                        rge_base_game->prog_info->use_sound != 0 &&
+                        rge_base_game->sound_system != nullptr) {
+                        if (this->runtime.game_over_sound != nullptr) {
+                            delete this->runtime.game_over_sound;
+                            this->runtime.game_over_sound = nullptr;
+                        }
+
+                        const int won_game = (player != nullptr && player->game_status == 1) ? 1 : 0;
+                        this->runtime.game_over_sound = new TDigital(
+                            rge_base_game->sound_system,
+                            won_game != 0 ? (char*)"won.wav" : (char*)"lost.wav",
+                            won_game != 0 ? 0xC490 : 0xC491);
+
+                        if (this->runtime.game_over_sound != nullptr) {
+                            this->runtime.game_over_sound->load(nullptr, -1);
+                            this->runtime.game_over_sound->play();
+                        }
+                    }
+
+                    game_over_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x72C);
+                    game_over_pending = 1;
+                }
+            }
+        }
     }
 
     if (panel_system != nullptr && panel_system->currentPanel() == this) {
@@ -925,10 +1238,14 @@ void TRIBE_Screen_Game::game_mode_changed(int new_mode, int old_mode) {
 }
 
 void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
-    // TODO: Civilization theme/picture refresh branch from 0x00498AD0 is still pending transliteration.
+    // Source of truth: scr_game.cpp.decomp @ 0x00498A50
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
 
-    ((RGE_View*)this->runtime.main_view)->player = (RGE_Player*)player;
+    RGE_View* main_view = (RGE_View*)this->runtime.main_view;
+    main_view->player = (RGE_Player*)player;
+    main_view->last_view_x = -9999.0f;
+    main_view->last_view_y = -9999.0f;
+    main_view->set_redraw(TPanel::RedrawFull);
     ((RGE_Diamond_Map*)this->runtime.map_view)->set_player((RGE_Player*)player);
     this->runtime.inven_panel->set_player(player);
     this->runtime.object_panel->set_player(player);
@@ -936,6 +1253,124 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     this->game_mode_changed(rge_base_game->game_mode, rge_base_game->game_mode);
     this->object_changed();
     this->age_changed();
+
+    if (player != nullptr && player->id != 0) {
+        const int civ_raw = (int)player->culture;
+        int& saved_civ = scr_game_field_i32(this, 0x714);
+        int& saved_width = scr_game_field_i32(this, 0x718);
+        if (saved_civ != civ_raw || saved_width != this->pnl_wid) {
+            saved_civ = civ_raw;
+            saved_width = this->pnl_wid;
+
+            uint civ_style = (uint)civ_raw;
+            if (civ_style > 4) {
+                civ_style = 0;
+            }
+
+            char file_name[64];
+            _snprintf(file_name, sizeof(file_name), "dlg6_%d", civ_style);
+            file_name[sizeof(file_name) - 1] = '\0';
+            const long info_id = (civ_style == 4) ? 0xCF08 : (0xC356 + (long)civ_style);
+            scr_game_set_info_file(this, file_name, info_id);
+            scr_game_set_popup_info_file(this, file_name, info_id);
+
+            _snprintf(file_name, sizeof(file_name), "btn6_%d", civ_style);
+            file_name[sizeof(file_name) - 1] = '\0';
+            const long button_pic_id = (civ_style == 4) ? 0xCF0C : (0xC5AD + (long)civ_style);
+            scr_game_set_button_pics(this, file_name, button_pic_id);
+
+            switch (civ_style) {
+            case 0:
+                scr_game_set_bevel_colors(this, 0x7E, 0x6D, 0x6F, 0x6F, 0xEE, 0x38);
+                break;
+            case 1:
+                scr_game_set_bevel_colors(this, 0x72, 0x73, 0x74, 0x74, 0xB7, 0xB8);
+                break;
+            case 2:
+                scr_game_set_bevel_colors(this, 0xB9, 0x77, 0x78, 0x78, 0x78, 0x79);
+                break;
+            case 3:
+                scr_game_set_bevel_colors(this, 0x8A, 0xED, 0xEE, 0xEE, 0x38, 0x95);
+                break;
+            case 4:
+                scr_game_set_bevel_colors(this, 0x73, 0x74, 0x75, 0x75, 0x76, 0x77);
+                break;
+            default:
+                break;
+            }
+
+            const int b1 = (int)this->bevel_color1;
+            const int b2 = (int)this->bevel_color2;
+            const int b3 = (int)this->bevel_color3;
+            const int b4 = (int)this->bevel_color4;
+            const int b5 = (int)this->bevel_color5;
+            const int b6 = (int)this->bevel_color6;
+            if (this->runtime.button_panel[12] != nullptr) this->runtime.button_panel[12]->set_bevel_info(3, b1, b2, b3, b4, b5, b6);
+            if (this->runtime.button_panel[13] != nullptr) this->runtime.button_panel[13]->set_bevel_info(3, b1, b2, b3, b4, b5, b6);
+            if (this->runtime.button_panel[14] != nullptr) this->runtime.button_panel[14]->set_bevel_info(3, b1, b2, b3, b4, b5, b6);
+            if (this->runtime.button_panel[15] != nullptr) this->runtime.button_panel[15]->set_bevel_info(4, b1, b2, b3, b4, b5, b6);
+            if (this->runtime.button_panel[16] != nullptr) this->runtime.button_panel[16]->set_bevel_info(4, b1, b2, b3, b4, b5, b6);
+
+            scr_game_reload_shape(this->runtime.button_border1_pic, "btnbrda%d.shp", civ_style, 0xCF0E, 0xC619);
+            scr_game_reload_shape(this->runtime.button_other_pic, "btnoth%d.shp", civ_style, 0xCF11, 0xC625);
+            scr_game_reload_shape(this->runtime.button_border2_pic, "btnbrdb%d.shp", civ_style, 0xCF0F, 0xC61D);
+            scr_game_reload_shape(this->runtime.button_border3_pic, "btnbrdc%d.shp", civ_style, 0xCF10, 0xC63B);
+
+            if ((this->pnl_wid < 0x400) || (this->pnl_hgt < 0x300)) {
+                if ((this->pnl_wid < 800) || (this->pnl_hgt < 600)) {
+                    scr_game_reload_shape(this->runtime.game_screen_pic, "gamea%d.shp", civ_style, 0xCF12, 0xC62D);
+                } else {
+                    scr_game_reload_shape(this->runtime.game_screen_pic, "gameb%d.shp", civ_style, 0xCF13, 0xC631);
+                }
+            } else {
+                scr_game_reload_shape(this->runtime.game_screen_pic, "gamec%d.shp", civ_style, 0xCF14, 0xC635);
+            }
+
+            for (int i = 0; i < 17; ++i) {
+                if (this->runtime.button_panel[i] != nullptr) {
+                    this->runtime.button_panel[i]->border_pic =
+                        (i < 12) ? this->runtime.button_border1_pic : this->runtime.button_border2_pic;
+                }
+            }
+
+            if ((this->pnl_wid < 800) || (this->pnl_hgt < 600)) {
+                this->runtime.more_cancel_pic = this->runtime.button_other_pic;
+            } else {
+                this->runtime.more_cancel_pic = this->runtime.button_cmd_pic;
+            }
+
+            if (this->runtime.button_panel[5] != nullptr) {
+                this->runtime.button_panel[5]->set_picture(
+                    0,
+                    this->runtime.more_cancel_pic,
+                    scr_game_field_i16(this, 0x4B0));
+            }
+
+            if (this->runtime.button_panel[11] != nullptr) {
+                const short frame =
+                    (this->runtime.button_panel[11]->id[0] == 6)
+                        ? scr_game_field_i16(this, 0x4B4)
+                        : scr_game_field_i16(this, 0x4B2);
+                this->runtime.button_panel[11]->set_picture(0, this->runtime.more_cancel_pic, frame);
+            }
+
+            const int dark_style = (civ_style == 2 || civ_style == 3 || civ_style == 4) ? 1 : 0;
+            if (this->runtime.inven_panel != nullptr) {
+                this->runtime.inven_panel->set_text_color(dark_style ? 0xFFFFFF : 0, dark_style ? 0 : 0xFFFFFF);
+            }
+            if (this->runtime.age_panel != nullptr) {
+                this->runtime.age_panel->set_text_color(dark_style ? 0xFFFFFF : 0, dark_style ? 0 : 0xFFFFFF);
+            }
+
+            const ulong text_color1 = dark_style ? 0xFFFFFF : 0;
+            const ulong text_color2 = dark_style ? 0 : 0xFFFFFF;
+            scr_game_set_button_text_color(this->runtime.button_panel[12], text_color1, text_color2);
+            scr_game_set_button_text_color(this->runtime.button_panel[13], text_color1, text_color2);
+            scr_game_set_button_text_color(this->runtime.button_panel[14], text_color1, text_color2);
+            scr_game_set_button_text_color(this->runtime.button_panel[15], text_color1, text_color2);
+            scr_game_set_button_text_color(this->runtime.button_panel[16], text_color1, text_color2);
+        }
+    }
 
     this->setup_buttons();
     this->set_redraw(TPanel::Redraw);
@@ -1096,18 +1531,18 @@ void TRIBE_Screen_Game::display_system_message(char* text) {
 }
 
 void TRIBE_Screen_Game::setup_buttons() {
-    // Source-aligned command-panel refresh slice. Source: scr_game.cpp.decomp @ 0x004996C0
+    // Source-backed command-panel refresh slice. Source: scr_game.cpp.decomp @ 0x004996C0
     this->runtime.start_item = 0;
     this->runtime.current_item = -1;
 
     for (int i = 0; i < 12; ++i) {
-        if (this->runtime.button_panel[i] != nullptr) {
-            this->runtime.button_panel[i]->in_use = 0;
-            this->runtime.button_panel[i]->set_redraw(TPanel::Redraw);
-        }
+        this->runtime.button_panel[i]->in_use = 0;
     }
 
-    if (this->runtime.object_panel == nullptr || this->runtime.object_panel->game_obj == nullptr) {
+    scr_game_field_i32(this, 0x708) = -1;
+    scr_game_field_i32(this, 0x70C) = -1;
+
+    if (this->runtime.last_selected_obj == nullptr) {
         this->set_redraw(TPanel::Redraw);
         return;
     }

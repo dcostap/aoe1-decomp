@@ -2,10 +2,15 @@
 
 #include "../include/DiplomacyAIModule.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Static_Object.h"
 #include "../include/ResourceItem.h"
 #include "../include/TribeMainDecisionAIModule.h"
+#include "../include/UnitAIModule.h"
+#include "../include/globals.h"
 
+#include <cstring>
 #include <new>
 
 static void resetManagedArray(ManagedArray<int>& arr) {
@@ -76,6 +81,33 @@ static void initResourceItemWithCount(ResourceItem& item, int count) {
         }
         item.sortedValue[i] = -1;
         item.sortedIndexValue[i] = -1;
+    }
+}
+
+static void appendManagedArrayUnique(ManagedArray<int>& arr, int value) {
+    if (containsManagedArray(arr, value) == 0) {
+        appendManagedArray(arr, value);
+    }
+}
+
+static void readManagedArrayUnique(int fd, ManagedArray<int>& arr) {
+    int count = 0;
+    rge_read(fd, &count, 4);
+    for (int i = 0; i < count; ++i) {
+        int value = 0;
+        rge_read(fd, &value, 4);
+        appendManagedArrayUnique(arr, value);
+    }
+}
+
+static void writeManagedArray(int fd, ManagedArray<int>& arr) {
+    rge_write(fd, &arr.numberValue, 4);
+    for (int i = 0; i < arr.numberValue; ++i) {
+        if (arr.maximumSizeValue <= i) {
+            ensureManagedArrayCapacity(arr, i + 1);
+        }
+        int value = arr.value[i];
+        rge_write(fd, &value, 4);
     }
 }
 
@@ -158,10 +190,181 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     this->attackStateValue.active = 0;
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004ED4F0
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
     : TribeTacticalAIModule(nullptr, param_1) {
-    // TODO: Part 2 - transliterate full save/load constructor parity from taitacmd.cpp.decomp @ 0x004ED4F0.
-    (void)param_2;
+    struct OldUnitData16 {
+        int id;
+        int data1;
+        int data2;
+        int data3;
+    };
+    struct OldUnitData20 {
+        int id;
+        int data1;
+        int data2;
+        int data3;
+        int target;
+    };
+
+    readManagedArrayUnique(param_2, this->civilians);
+    readManagedArrayUnique(param_2, this->civilianExplorers);
+
+    rge_read(param_2, &this->numberGatherersValue, 4);
+    rge_read(param_2, &this->desiredNumberGatherersValue, 4);
+
+    if (save_game_version < 7.19f) {
+        if (save_game_version < 7.17f) {
+            for (int i = 0; i < 50; ++i) {
+                OldUnitData16 temp = {};
+                rge_read(param_2, &temp, sizeof(OldUnitData16));
+                this->gatherers[i].id = temp.id;
+                this->gatherers[i].data1 = temp.data1;
+                this->gatherers[i].data2 = temp.data2;
+                this->gatherers[i].data3 = temp.data3;
+                this->gatherers[i].target = -1;
+                this->gatherers[i].lastTaskTime = 0;
+            }
+        } else {
+            for (int i = 0; i < 50; ++i) {
+                OldUnitData20 temp = {};
+                rge_read(param_2, &temp, sizeof(OldUnitData20));
+                this->gatherers[i].id = temp.id;
+                this->gatherers[i].data1 = temp.data1;
+                this->gatherers[i].data2 = temp.data2;
+                this->gatherers[i].data3 = temp.data3;
+                this->gatherers[i].target = temp.target;
+                this->gatherers[i].lastTaskTime = 0;
+            }
+        }
+    } else {
+        rge_read(param_2, this->gatherers, 0x4B0);
+    }
+
+    readManagedArrayUnique(param_2, this->soldiers);
+    if (save_game_version >= 2.3f) {
+        readManagedArrayUnique(param_2, this->ungroupedSoldiers);
+    }
+    readManagedArrayUnique(param_2, this->boats);
+    readManagedArrayUnique(param_2, this->warBoats);
+    readManagedArrayUnique(param_2, this->fishingBoats);
+    readManagedArrayUnique(param_2, this->tradeBoats);
+    readManagedArrayUnique(param_2, this->transportBoats);
+    if (save_game_version >= 1.4f) {
+        readManagedArrayUnique(param_2, this->artifacts);
+    }
+
+    int strategicCount = 0;
+    rge_read(param_2, &strategicCount, 4);
+    for (int i = 0; i < strategicCount; ++i) {
+        int value = 0;
+        rge_read(param_2, &value, 4);
+        if (i < 0xE2) {
+            this->sn[i] = value;
+        }
+    }
+
+    readManagedArrayUnique(param_2, this->playersToAttack);
+    readManagedArrayUnique(param_2, this->playersToDefend);
+    readManagedArrayUnique(param_2, this->workingArea);
+    readManagedArrayUnique(param_2, this->unitsTaskedThisUpdate);
+
+    for (int i = 0; i < 4; ++i) {
+        rge_read(param_2, &this->actualGathererDistribution[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_read(param_2, &this->desiredGathererDistribution[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_read(param_2, &this->neededResourceValue[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_read(param_2, &this->resourceDifferenceValue[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_read(param_2, &this->numberStoragePitsBuilt[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_read(param_2, &this->numberGranariesBuilt[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        int value = 0;
+        rge_read(param_2, &value, 4);
+        this->neededResources.setValue(i, value);
+    }
+
+    rge_read(param_2, &this->groupIDValue, 4);
+    rge_read(param_2, &this->numberGroupsValue, 4);
+    int numberGroups = this->numberGroupsValue;
+    for (int i = 0; i < numberGroups; ++i) {
+        TacticalAIGroup* newGroup = createGroup(0);
+        if (newGroup != nullptr) {
+            newGroup->load(param_2);
+        }
+    }
+
+    rge_read(param_2, &this->lastGroupAttackTime, 4);
+    if (save_game_version >= 2.4f) {
+        rge_read(param_2, &this->lastGroupRebalanceTime, 4);
+    }
+    rge_read(param_2, &this->lastAttackResponseTime, 4);
+    rge_read(param_2, &this->lastBoatAttackResponseTime, 4);
+    rge_read(param_2, &this->lastScalingUpdateValue, 4);
+    rge_read(param_2, &this->numberBuildUpdatesSkipped, 4);
+    rge_read(param_2, &this->randomizedAttackSeparationTime, 4);
+    if (save_game_version >= 2.2f) {
+        rge_read(param_2, &this->attackEnabledValue, 4);
+    }
+    rge_read(param_2, &this->updateArea, 4);
+    if (save_game_version >= 6.1f) {
+        rge_read(param_2, &this->wonderInProgressValue, 4);
+        rge_read(param_2, &this->wonderBuiltValue, 4);
+    }
+    if (save_game_version < 6.2f) {
+        std::memset(&this->placementStateValue, 0, sizeof(PlacementState));
+    } else {
+        rge_read(param_2, &this->placementStateValue, 0x130);
+    }
+    this->placementStateValue.active = 0;
+    if (save_game_version >= 6.3f) {
+        rge_read(param_2, &this->nextCivilianToTaskValue, 4);
+    }
+    if (save_game_version >= 6.4f) {
+        rge_read(param_2, &this->nextIdleSoldierGroupToTaskValue, 4);
+        rge_read(param_2, &this->nextActiveSoldierGroupToTaskValue, 4);
+    }
+    if (save_game_version >= 6.9f) {
+        rge_read(param_2, &this->builtFirstStoragePit, 4);
+        rge_read(param_2, &this->builtFirstGranary, 4);
+    }
+    if (save_game_version >= 6.95f) {
+        rge_read(param_2, &this->lastBuildTime, 4);
+        rge_read(param_2, &this->lastAttackResponseBuildInsertionTime, 4);
+        rge_read(param_2, &this->lastCoopTributeDemandTime, 4);
+    }
+    if (save_game_version >= 7.18f) {
+        rge_read(param_2, &this->lastCoopTributeGiftTime, 4);
+    }
+    if (save_game_version >= 6.96f) {
+        rge_read(param_2, &this->zoomingToNextAge, 4);
+    }
+    if (save_game_version >= 6.98f) {
+        rge_read(param_2, &this->lastCoopAttackDemandTime, 4);
+    }
+    if (save_game_version >= 6.993f) {
+        rge_read(param_2, &this->lastUngroupedSoldierTaskTime, 4);
+    }
+    if (save_game_version < 7.04f) {
+        std::memset(&this->attackStateValue, 0, sizeof(AttackState));
+    } else {
+        rge_read(param_2, &this->attackStateValue, 0x2C);
+    }
+    this->attackStateValue.active = 0;
+    if (save_game_version < 7.15f) {
+        std::memset(this->hitsByPlayer, 0, sizeof(this->hitsByPlayer));
+    } else {
+        rge_read(param_2, this->hitsByPlayer, 0x24);
+    }
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EEB40
@@ -231,7 +434,6 @@ int TribeTacticalAIModule::update(int param_1) {
     (void)param_1;
     TribeMainDecisionAIModule* pTVar7 = this->md;
     if ((pTVar7 == nullptr) || (pTVar7->player == nullptr) || (pTVar7->player->world == nullptr)) {
-        // TODO: Part 2 - remove defensive checks once full tactical module wiring parity is in place.
         return 0;
     }
     unsigned long worldTime = pTVar7->player->world->world_time;
@@ -280,7 +482,6 @@ int TribeTacticalAIModule::update(int param_1) {
         this->lastScalingUpdateValue = worldTime;
     }
     this->unitsTaskedThisUpdate.numberValue = 0;
-    // TODO: Part 2 - reset informationAI.farmsTaskedThisUpdate.numberValue with exact field parity.
     if (static_cast<uint>(this->sn[0x68]) <= (worldTime / 1000)) {
         enableAttack(2);
     }
@@ -336,24 +537,412 @@ void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* param_1
     this->md = param_1;
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EF4E0
 int TribeTacticalAIModule::save(int param_1) {
-    // TODO: Part 2 - transliterate full tactical save parity from taitacmd.cpp.decomp @ 0x004EF4E0.
-    (void)param_1;
+    writeManagedArray(param_1, this->civilians);
+    writeManagedArray(param_1, this->civilianExplorers);
+    rge_write(param_1, &this->numberGatherersValue, 4);
+    rge_write(param_1, &this->desiredNumberGatherersValue, 4);
+    rge_write(param_1, this->gatherers, 0x4B0);
+    writeManagedArray(param_1, this->soldiers);
+    writeManagedArray(param_1, this->ungroupedSoldiers);
+    writeManagedArray(param_1, this->boats);
+    writeManagedArray(param_1, this->warBoats);
+    writeManagedArray(param_1, this->fishingBoats);
+    writeManagedArray(param_1, this->tradeBoats);
+    writeManagedArray(param_1, this->transportBoats);
+    writeManagedArray(param_1, this->artifacts);
+
+    int strategicCount = 0xE2;
+    rge_write(param_1, &strategicCount, 4);
+    for (int i = 0; i < strategicCount; ++i) {
+        rge_write(param_1, &this->sn[i], 4);
+    }
+
+    writeManagedArray(param_1, this->playersToAttack);
+    writeManagedArray(param_1, this->playersToDefend);
+    writeManagedArray(param_1, this->workingArea);
+    writeManagedArray(param_1, this->unitsTaskedThisUpdate);
+
+    for (int i = 0; i < 4; ++i) {
+        rge_write(param_1, &this->actualGathererDistribution[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_write(param_1, &this->desiredGathererDistribution[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_write(param_1, &this->neededResourceValue[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_write(param_1, &this->resourceDifferenceValue[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_write(param_1, &this->numberStoragePitsBuilt[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        rge_write(param_1, &this->numberGranariesBuilt[i], 4);
+    }
+    for (int i = 0; i < 4; ++i) {
+        int value = this->neededResources.value(i);
+        rge_write(param_1, &value, 4);
+    }
+
+    rge_write(param_1, &this->groupIDValue, 4);
+    rge_write(param_1, &this->numberGroupsValue, 4);
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != &this->groups) && (current != nullptr);
+         current = current->next) {
+        current->save(param_1);
+    }
+
+    rge_write(param_1, &this->lastGroupAttackTime, 4);
+    rge_write(param_1, &this->lastGroupRebalanceTime, 4);
+    rge_write(param_1, &this->lastAttackResponseTime, 4);
+    rge_write(param_1, &this->lastBoatAttackResponseTime, 4);
+    rge_write(param_1, &this->lastScalingUpdateValue, 4);
+    rge_write(param_1, &this->numberBuildUpdatesSkipped, 4);
+    rge_write(param_1, &this->randomizedAttackSeparationTime, 4);
+    rge_write(param_1, &this->attackEnabledValue, 4);
+    rge_write(param_1, &this->updateArea, 4);
+    rge_write(param_1, &this->wonderInProgressValue, 4);
+    rge_write(param_1, &this->wonderBuiltValue, 4);
+    rge_write(param_1, &this->placementStateValue, 0x130);
+    rge_write(param_1, &this->nextCivilianToTaskValue, 4);
+    rge_write(param_1, &this->nextIdleSoldierGroupToTaskValue, 4);
+    rge_write(param_1, &this->nextActiveSoldierGroupToTaskValue, 4);
+    rge_write(param_1, &this->builtFirstStoragePit, 4);
+    rge_write(param_1, &this->builtFirstGranary, 4);
+    rge_write(param_1, &this->lastBuildTime, 4);
+    rge_write(param_1, &this->lastAttackResponseBuildInsertionTime, 4);
+    rge_write(param_1, &this->lastCoopTributeDemandTime, 4);
+    rge_write(param_1, &this->lastCoopTributeGiftTime, 4);
+    rge_write(param_1, &this->zoomingToNextAge, 4);
+    rge_write(param_1, &this->lastCoopAttackDemandTime, 4);
+    rge_write(param_1, &this->lastUngroupedSoldierTaskTime, 4);
+    rge_write(param_1, &this->attackStateValue, 0x2C);
+    rge_write(param_1, this->hitsByPlayer, 0x24);
     return 1;
 }
 
+int TribeTacticalAIModule::numberCivilians() const { return this->civilians.numberValue; }
+int TribeTacticalAIModule::numberCivilianExplorers() const { return this->civilianExplorers.numberValue; }
+int TribeTacticalAIModule::numberGatherers() const { return this->numberGatherersValue; }
+int TribeTacticalAIModule::desiredNumberCivilianExplorers() const { return this->civilianExplorers.desiredNumberValue; }
+int TribeTacticalAIModule::desiredNumberGatherers() const { return this->desiredNumberGatherersValue; }
+int TribeTacticalAIModule::numberSoldiers() const { return this->soldiers.numberValue; }
+int TribeTacticalAIModule::numberBoats() const { return this->boats.numberValue; }
+
+int TribeTacticalAIModule::numberSoldierExplorers() {
+    // TODO: STUB - numberUnitsInGroups helper is not transliterated yet.
+    return 0;
+}
+
+int TribeTacticalAIModule::neededResource(int param_1) const {
+    if ((param_1 >= 0) && (param_1 < 4)) {
+        return this->neededResourceValue[param_1];
+    }
+    return -1;
+}
+
+int TribeTacticalAIModule::neededResourceAmount(int param_1) const {
+    if ((param_1 >= 0) && (param_1 < 4)) {
+        return this->neededResources.value(this->neededResourceValue[param_1]);
+    }
+    return -1;
+}
+
+void TribeTacticalAIModule::detask(int param_1) {
+    if (param_1 == -1) {
+        return;
+    }
+    // TODO: STUB - removeFromTaskLists/stopUnit helpers are not transliterated yet.
+}
+
+int TribeTacticalAIModule::strategicNumber(int param_1) {
+    if ((param_1 >= 0) && (param_1 < 0xE2)) {
+        return this->sn[param_1];
+    }
+    return -1;
+}
+
+void TribeTacticalAIModule::setStrategicNumber(int param_1, int param_2) {
+    if ((param_1 < 0) || (param_1 >= 0xE2)) {
+        return;
+    }
+    this->sn[param_1] = param_2;
+    if ((param_1 == 0x75) || (param_1 == 0x76) || (param_1 == 0x77) || (param_1 == 0x78) ||
+        (param_1 == 0x9C) || (param_1 == 0x9D) || (param_1 == 0x9E) || (param_1 == 0x9F)) {
+        if (param_2 < 0) {
+            this->sn[param_1] = 0;
+        } else if (param_2 > 100) {
+            this->sn[param_1] = 100;
+        }
+    }
+    if (param_1 == 0x69) {
+        // TODO: STUB - TribeInformationAIModule::setSaveLearnInformation is not declared yet.
+    }
+}
+
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
-    // TODO: Part 2 - transliterate full tactical notify parity from taitacmd.cpp.decomp @ 0x004F62C0.
-    (void)param_1;
     (void)param_2;
-    (void)param_3;
-    (void)param_4;
     (void)param_5;
     (void)param_6;
+    if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
+        return;
+    }
+
+    RGE_Game_World* world = this->md->player->world;
+    RGE_Static_Object* callerObject = world->object(param_1);
+    if ((param_3 != 0x72) && (param_3 != 0x74) && (callerObject == nullptr)) {
+        return;
+    }
+
+    if (param_3 == 0x72) {
+        // TODO: STUB - artifact capture response branch (artifactToCapture/defender tasking) is not transliterated yet.
+        return;
+    }
+    if (param_3 == 0x74) {
+        // TODO: STUB - ruin capture response branch (ruinToCapture/defender tasking) is not transliterated yet.
+        return;
+    }
+    if (param_3 != 0x201) {
+        return;
+    }
+
+    RGE_Static_Object* targetObj = world->object((int)param_4);
+    if ((targetObj == nullptr) || (targetObj->owner == nullptr)) {
+        return;
+    }
+    const int targetOwner = targetObj->owner->id;
+    if (targetOwner == this->md->player->id) {
+        return;
+    }
+    if (callerObject == nullptr) {
+        return;
+    }
+    if (targetOwner == 0) {
+        if ((this->zoomingToNextAge != 0) && (targetObj->master_obj != nullptr)) {
+            const short masterObjectID = targetObj->master_obj->id;
+            if ((masterObjectID == 0x7E) || (masterObjectID == 0x59)) {
+                return;
+            }
+        }
+        // TODO: STUB - dealWithGAIAAttacker branch is not transliterated yet.
+        return;
+    }
+
+    UnitAIModule* callerAI = callerObject->unitAIValue;
+    if ((callerAI == nullptr) || (callerAI->currentOrderValue != 0x2C1)) {
+        if (world->difficultyLevelValue == 3) {
+            this->sn[0x68] -= 2;
+        } else if (world->difficultyLevelValue == 4) {
+            this->sn[0x68] -= 1;
+        } else {
+            enableAttack(3);
+        }
+    }
+    // TODO: STUB - checkForAttackResponseBuildInsertions is not transliterated yet.
+
+    if ((targetOwner >= 0) && (targetOwner < 9)) {
+        this->hitsByPlayer[targetOwner] += 1;
+    }
+
+    DiplomacyAIModule* diplomacy = reinterpret_cast<DiplomacyAIModule*>(this->md->diplomacyAI);
+    if (targetObj->owner->computerPlayer() == 0) {
+        if ((targetOwner >= 0) && (targetOwner < 9) && (this->sn[0xDD] <= this->hitsByPlayer[targetOwner]) &&
+            (this->sn[0xD7] == 1)) {
+            diplomacy->setChangeable(targetOwner, 1);
+            diplomacy->setStance(targetOwner, 0, 100);
+            diplomacy->setRelation(targetOwner, 3);
+            diplomacy->setChangeable(targetOwner, 0);
+        } else {
+            diplomacy->changeStance(targetOwner, 2, this->sn[0xB2]);
+            diplomacy->changeStance(targetOwner, 0, this->sn[0xB2]);
+        }
+    } else if (this->md->player->isAlly(targetOwner) == 1) {
+        diplomacy->setChangeable(targetOwner, 1);
+        diplomacy->setStance(targetOwner, 0, 100);
+        diplomacy->setRelation(targetOwner, 3);
+        diplomacy->setChangeable(targetOwner, 0);
+    }
+
+    if ((this->sn[0x7C] > 0) && (this->sn[0x80] == targetOwner) && (this->sn[0x85] == 1)) {
+        // TODO: STUB - revokeTributeAlliance is not declared in current TribeMainDecisionAIModule header.
+    }
+
+    if ((this->lastAttackResponseTime != 0) &&
+        (((world->world_time - this->lastAttackResponseTime) / 1000) < (unsigned long)this->sn[0x30])) {
+        return;
+    }
+
+    // TODO: STUB - storeAttackMemory, readyAndIdleGroup, and attacker/defender response tasking are not transliterated yet.
 }
 
 int TribeTacticalAIModule::doSomething() {
-    // TODO: Part 2 - transliterate tactical per-update area scheduler from taitacmd.cpp.decomp @ 0x004F0190.
+    if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
+        return 1;
+    }
+
+    if ((this->updateArea < 0) || (this->updateArea > 0x15)) {
+        this->updateArea = 0;
+    }
+
+    RGE_Game_World* world = this->md->player->world;
+    const unsigned long startTime = world->world_time;
+    const unsigned long availableTime = world->availableComputerPlayerUpdateTime;
+
+    if (availableTime == 0) {
+        return 1;
+    }
+
+    while (true) {
+        const unsigned long updateAreaStartTime = world->world_time;
+        bool incUpdateArea = true;
+
+        switch (this->updateArea) {
+            case 0:
+                // TODO: STUB - setupSoldierGroups is not transliterated yet.
+                break;
+            case 1:
+                if (this->civilians.numberValue > 0) {
+                    if (this->firstNeededResourceUpdateDone == 0) {
+                        this->firstNeededResourceUpdateDone = 1;
+                        // TODO: STUB - updateNeededResources is not transliterated yet.
+                    }
+                    // TODO: STUB - evaluateCivilianDistribution is not transliterated yet.
+                }
+                break;
+            case 2:
+                // TODO: STUB - taskCivilians not transliterated yet.
+                if (this->nextCivilianToTaskValue != -1) {
+                    incUpdateArea = false;
+                }
+                break;
+            case 3:
+                if (this->boats.numberValue > 0) {
+                    // TODO: STUB - setupBoatGroups is not transliterated yet.
+                }
+                break;
+            case 4:
+                if (this->boats.numberValue > 0) {
+                    // TODO: STUB - fillBoatGroups is not transliterated yet.
+                }
+                break;
+            case 5:
+                if (this->boats.numberValue > 0) {
+                    // TODO: STUB - taskBoats is not transliterated yet.
+                }
+                break;
+            case 6:
+                if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0)) {
+                    // TODO: STUB - fillSoldierGroups is not transliterated yet.
+                }
+                break;
+            case 7:
+                if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) ||
+                    (this->artifacts.numberValue > 0)) {
+                    // TODO: STUB - taskIdleSoldiers is not transliterated yet.
+                    if (this->nextIdleSoldierGroupToTaskValue != -1) {
+                        incUpdateArea = false;
+                    }
+                }
+                break;
+            case 8:
+                if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) ||
+                    (this->artifacts.numberValue > 0)) {
+                    // TODO: STUB - taskActiveSoldiers is not transliterated yet.
+                    if (this->nextActiveSoldierGroupToTaskValue != -1) {
+                        incUpdateArea = false;
+                    }
+                }
+                break;
+            case 9:
+                if (this->soldiers.numberValue > 0) {
+                    // TODO: STUB - playTaskSoldiers is not transliterated yet.
+                }
+                break;
+            case 0xA:
+                // TODO: STUB - saveTheTown lookup/tasking flow is not transliterated yet.
+                break;
+            case 0xB:
+                this->numberBuildUpdatesSkipped += 1;
+                // TODO: STUB - build-list research tasking is not transliterated yet.
+                break;
+            case 0xC:
+                // TODO: STUB - train tasking flow is not transliterated yet.
+                break;
+            case 0xD:
+                // TODO: STUB - build placement dispatch/updateNeededResources flow is not transliterated yet.
+                break;
+            case 0xE:
+                // TODO: STUB - wonder builder tasking flow is not transliterated yet.
+                break;
+            case 0xF:
+                // TODO: STUB - damaged building repairer tasking flow is not transliterated yet.
+                break;
+            case 0x10:
+                // TODO: STUB - damaged wall repairer tasking flow is not transliterated yet.
+                break;
+            case 0x11:
+                // TODO: STUB - generic builder tasking flow is not transliterated yet.
+                break;
+            case 0x12:
+                // TODO: STUB - placement continuation/taskBuilder integration not transliterated yet.
+                if (this->placementStateValue.active == 1) {
+                    incUpdateArea = false;
+                }
+                break;
+            case 0x13:
+                // TODO: STUB - open task/build insertion and coop checks not transliterated yet.
+                break;
+            case 0x14:
+                // TODO: STUB - dropsite refresh check is not transliterated yet.
+                break;
+            case 0x15: {
+                // TODO: STUB - evaluateBuildListInsertions and unskipBuildList not transliterated yet.
+                const unsigned long now = world->world_time;
+                this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
+                this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+                this->updateAreaAverageCount += 1;
+                if (this->updateAreaAverageCount > 0x13) {
+                    this->averageUpdateAreaTimeValue = this->updateAreaAverageTotal / this->updateAreaAverageCount;
+                    this->updateAreaAverageTotal = 0;
+                    this->updateAreaAverageCount = 0;
+                }
+                this->updateArea = 0;
+                world->selectNextComputerPlayer(3);
+                return 1;
+            }
+            default:
+                // TODO: STUB - remaining update-area handlers are not transliterated yet.
+                break;
+        }
+
+        const unsigned long now = world->world_time;
+        this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
+        this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+        this->updateAreaAverageCount += 1;
+        if (this->updateAreaAverageCount > 0x13) {
+            this->averageUpdateAreaTimeValue = this->updateAreaAverageTotal / 0x14;
+            this->updateAreaAverageTotal = 0;
+            this->updateAreaAverageCount = 0;
+        }
+
+        if (incUpdateArea) {
+            this->updateArea += 1;
+            if (this->updateArea > 0x15) {
+                this->updateArea = 0;
+            }
+        }
+
+        if ((now - startTime) >= availableTime) {
+            break;
+        }
+        if (now == updateAreaStartTime) {
+            break;
+        }
+    }
+
     return 1;
 }
 
