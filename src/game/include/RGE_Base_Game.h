@@ -134,12 +134,24 @@ public:
     void setMpPathFinding(unsigned char p1);
     void setNumberPlayers(int p1);
     void setScenarioName(char* p1);
+    float version();
+    int savedGame();
+    int mapZSize();
+    int allowCheatCodes();
+    int cheatNotification();
+    int coloredChat();
+    int gameDeveloperMode();
+    unsigned char playerCDAndVersion(int index);
+    int difficulty();
     int check_for_cd(int p1);
+    void set_windows_mouse(int p1);
     void set_mouse_cursor(void* p1);
     void set_mouse_facet(long p1);
+    void get_mouse_info(uint param_1, long param_2, tagPOINT* param_3, int* param_4, int* param_5, int* param_6, int* param_7);
     void disable_input();
     void enable_input();
     void set_render_all();
+    void set_screen_size(long width, long height);
     int check_paint();
     void draw_window();
     void clear_window();
@@ -168,6 +180,8 @@ public:
     int play_sound(int sound_id);
     
     void* create_font(void* dc, int id1, int id2);
+    void* make_font(void* dc, long id, int strikeout);
+    void* make_font(void* dc, char* face_name, int point_size, int weight, int strikeout);
 
     // Accessor methods used by create_game and game start paths
     int numberPlayers();
@@ -196,7 +210,12 @@ public:
     void set_paused(int p1, int p2);
     void request_pause();
     void reset_timings();
+    void set_last_single_time(int param_1, ulong param_2);
+    unsigned long get_last_time(int param_1);
+    unsigned long get_last_single_time(int param_1);
     unsigned long get_accum_time(int param_1);
+    unsigned long get_max_time(int param_1);
+    unsigned long get_last_max_time(int param_1);
     void add_to_timing(int param_1, ulong param_2);
     void increment_world_update_count();
     void increment_view_update_count();
@@ -210,7 +229,20 @@ public:
     RGE_Scenario* get_scenario_info(char* p1, int p2);
     RGE_Scenario_Header* get_scenario_header(char* p1, int p2);
     long get_scenario_checksum(char* p1);
+    unsigned char check_scenario_checksum(char* p1, long p2);
+    void dump_memory_usage(char* p1);
     void write_scenario_header(int param_1);
+    void set_game_options(::RGE_Game_Options* param_1);
+    void get_game_options(::RGE_Game_Options* param_1);
+    void get_countdown_timer(long param_1, long* param_2);
+    int play_video(char* param_1);
+    void close_video();
+    void handle_video_notify();
+    void set_game_speed(float param_1);
+    int get_single_player_difficulty();
+    void set_single_player_difficulty(int param_1);
+    void turn_world_sound_off();
+    void reload_scenarios_info();
 
     RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)
     RGE_Scenario_File_Info* scenario_info; // +0x8 (Size: 0x4)
