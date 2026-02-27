@@ -1,10 +1,18 @@
 #include "../include/BaseItem.h"
+#include "../include/BuildingLot.h"
 #include "../include/BuildItem.h"
+#include "../include/ConstructionAIModule.h"
+#include "../include/ConstructionItem.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/ResourceItem.h"
+#include "../include/TribeInformationAIModule.h"
 #include "../include/TribeMainDecisionAIModule.h"
+#include "../include/TribeResourceAIModule.h"
+#include "../include/TribeTacticalAIModule.h"
+#include "../include/UnitAIModule.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -79,40 +87,330 @@ RGE_Static_Object* tribe_build_ai_object(TribeBuildAIModule* build_ai, int objec
     return md->player->world->object(object_id);
 }
 
+ConstructionAIModule* tribe_build_ai_construction_ai(TribeBuildAIModule* build_ai) {
+    TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
+    if (md == nullptr) {
+        return nullptr;
+    }
+    return reinterpret_cast<ConstructionAIModule*>(md->constructionAI);
+}
+
+TribeInformationAIModule* tribe_build_ai_information_ai(TribeBuildAIModule* build_ai) {
+    TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
+    if (md == nullptr) {
+        return nullptr;
+    }
+    return reinterpret_cast<TribeInformationAIModule*>(md->informationAI);
+}
+
+TribeTacticalAIModule* tribe_build_ai_tactical_ai(TribeBuildAIModule* build_ai) {
+    TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
+    if (md == nullptr) {
+        return nullptr;
+    }
+    return reinterpret_cast<TribeTacticalAIModule*>(md->tacticalAI);
+}
+
+TribeResourceAIModule* tribe_build_ai_resource_ai(TribeBuildAIModule* build_ai) {
+    TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
+    if (md == nullptr) {
+        return nullptr;
+    }
+    return reinterpret_cast<TribeResourceAIModule*>(md->resourceAI);
+}
+
+void tribe_build_ai_send_unit_ai_order(TribeMainDecisionAIModule* md,
+                                       int object_id,
+                                       int order_type,
+                                       int target_id,
+                                       int target_owner,
+                                       float target_x,
+                                       float target_y,
+                                       float target_z,
+                                       float range,
+                                       int command_order) {
+    if ((md == nullptr) || (md->player == nullptr)) {
+        return;
+    }
+
+    md->player->sendUnitAIOrder((int)md->player->id,
+                                object_id,
+                                order_type,
+                                target_id,
+                                target_owner,
+                                target_x,
+                                target_y,
+                                target_z,
+                                range,
+                                1,
+                                0,
+                                command_order);
+}
+
+int tribe_build_ai_busy_with_action(TribeBuildAIModule* build_ai, int object_id, int action_id) {
+    RGE_Static_Object* object = tribe_build_ai_object(build_ai, object_id);
+    if ((object == nullptr) || (object->unitAIValue == nullptr)) {
+        return 0;
+    }
+    return (object->unitAIValue->currentActionValue == action_id) ? 1 : 0;
+}
+
+void tribe_build_ai_remove_from_task_array(ManagedArray<int>& array, int object_id) {
+    if ((array.value == nullptr) || (array.numberValue < 1)) {
+        return;
+    }
+
+    int write_index = 0;
+    for (int read_index = 0; read_index < array.numberValue; ++read_index) {
+        if ((read_index < array.maximumSizeValue) && (array.value[read_index] != object_id)) {
+            array.value[write_index] = array.value[read_index];
+            write_index = write_index + 1;
+        }
+    }
+    array.numberValue = write_index;
+}
+
+void tribe_build_ai_display_build_list(TribeBuildAIModule* build_ai) {
+    void** vtable = *(void***)build_ai;
+    if ((vtable != nullptr) && (vtable[16] != nullptr)) {
+        typedef void(__thiscall* DisplayBuildListFn)(TribeBuildAIModule*);
+        DisplayBuildListFn display_build_list = (DisplayBuildListFn)vtable[16];
+        display_build_list(build_ai);
+    }
+}
+
 void tribe_build_ai_detask(TribeBuildAIModule* build_ai, int task_id) {
-    (void)build_ai;
-    (void)task_id;
-    // TODO: STUB - TribeMainDecisionAIModule::detask not transliterated yet.
+    if (task_id == -1) {
+        return;
+    }
+
+    TribeTacticalAIModule* tactical_ai = tribe_build_ai_tactical_ai(build_ai);
+    if (tactical_ai != nullptr) {
+        tribe_build_ai_remove_from_task_array(tactical_ai->civilianExplorers, task_id);
+        tribe_build_ai_remove_from_task_array(tactical_ai->unitsTaskedThisUpdate, task_id);
+        tactical_ai->removeFromGroup(task_id);
+
+        RGE_Static_Object* object = tribe_build_ai_object(build_ai, task_id);
+        int action_id = -1;
+        if ((object != nullptr) && (object->unitAIValue != nullptr)) {
+            action_id = object->unitAIValue->currentActionValue;
+        }
+
+        for (int i = 0; i < 50; ++i) {
+            if (tactical_ai->gatherers[i].id == task_id) {
+                if ((action_id == 0x261) || (action_id == 0x265)) {
+                    int resource_id = tactical_ai->gatherers[i].data1;
+                    if ((0 <= resource_id) && (resource_id < 4)) {
+                        tactical_ai->actualGathererDistribution[resource_id] =
+                            tactical_ai->actualGathererDistribution[resource_id] - 1;
+                    }
+                }
+                tactical_ai->gatherers[i].id = -1;
+                tactical_ai->gatherers[i].data1 = -1;
+                tactical_ai->gatherers[i].data2 = -1;
+                tactical_ai->gatherers[i].data3 = -1;
+                tactical_ai->gatherers[i].target = -1;
+            }
+        }
+    }
+
+    tribe_build_ai_send_unit_ai_order(tribe_build_ai_md(build_ai),
+                                      task_id,
+                                      0x2C2,
+                                      -1,
+                                      -1,
+                                      -1.0f,
+                                      -1.0f,
+                                      -1.0f,
+                                      -1.0f,
+                                      100);
 }
 
 int tribe_build_ai_is_moveable(TribeBuildAIModule* build_ai, int object_id) {
-    (void)build_ai;
-    (void)object_id;
-    // TODO: STUB - TribeMainDecisionAIModule::isMoveable not transliterated yet.
+    RGE_Static_Object* object = tribe_build_ai_object(build_ai, object_id);
+    if ((object != nullptr) && (object->master_obj != nullptr)) {
+        short object_group = object->master_obj->object_group;
+        if ((object_group != 3) &&
+            (object_group != 0x1B) &&
+            (object_group != 0x1E) &&
+            (object_group != 0x1F) &&
+            (object_group != 5) &&
+            (object_group != 0x21) &&
+            (object_group != 7) &&
+            (object_group != 8) &&
+            (object_group != 0x20) &&
+            (object_group != 0x10) &&
+            (object_group != 0xE) &&
+            (object_group != 0xF)) {
+            return 1;
+        }
+    }
     return 0;
 }
 
 void tribe_build_ai_clear_area(TribeBuildAIModule* build_ai, int object_id, float min_x, float min_y, float max_x, float max_y) {
-    (void)build_ai;
-    (void)object_id;
-    (void)min_x;
-    (void)min_y;
-    (void)max_x;
-    (void)max_y;
-    // TODO: STUB - TribeTacticalAIModule::clearArea not transliterated yet.
+    if (tribe_build_ai_busy_with_action(build_ai, object_id, -1) != 1) {
+        return;
+    }
+
+    RGE_Static_Object* object = tribe_build_ai_object(build_ai, object_id);
+    if (object == nullptr) {
+        return;
+    }
+
+    float best_x = -1.0f;
+    float best_y = -1.0f;
+    float best_distance = -1.0f;
+    float test_x = -1.0f;
+    float test_y = -1.0f;
+
+    for (int i = 0; i < 8; ++i) {
+        switch (i) {
+        case 0:
+            test_x = min_x - 2.0f;
+            test_y = min_y - 2.0f;
+            break;
+        case 1:
+        case 5:
+            test_x = (max_x + min_x) * 0.5f;
+            break;
+        case 2:
+            test_x = max_x + 2.0f;
+            break;
+        case 3:
+        case 7:
+            test_y = (max_y + min_y) * 0.5f;
+            break;
+        case 4:
+            test_y = max_y + 2.0f;
+            break;
+        case 6:
+            test_x = min_x - 2.0f;
+            break;
+        }
+
+        int can_move = object->passableTile(test_x, test_y, 1);
+        if (can_move != 0) {
+            float distance = object->distance_to_position(test_x, test_y, object->world_z);
+            if ((best_distance == -1.0f) || (distance < best_distance)) {
+                best_x = test_x;
+                best_y = test_y;
+                best_distance = distance;
+            }
+        }
+    }
+
+    if (best_distance != -1.0f) {
+        tribe_build_ai_send_unit_ai_order(tribe_build_ai_md(build_ai),
+                                          object_id,
+                                          0x2C6,
+                                          -1,
+                                          -1,
+                                          best_x,
+                                          best_y,
+                                          1.0f,
+                                          1.0f,
+                                          100);
+    }
 }
 
-void tribe_build_ai_remove_lot(TribeBuildAIModule* build_ai, int type_id, int x, int y) {
-    (void)build_ai;
-    (void)type_id;
-    (void)x;
-    (void)y;
-    // TODO: STUB - TribeInformationAIModule::removeLot not transliterated yet.
+void tribe_build_ai_remove_lot(TribeBuildAIModule* build_ai, int type_id, int x, int y, int lot_status) {
+    TribeInformationAIModule* information_ai = tribe_build_ai_information_ai(build_ai);
+    if ((information_ai == nullptr) || (information_ai->buildingLots == nullptr)) {
+        return;
+    }
+
+    for (int i = 0; i < information_ai->maxBuildingLots; ++i) {
+        BuildingLot* lot = &information_ai->buildingLots[i];
+        if ((lot->typeID == type_id) && (lot->x == (uchar)x) && (lot->y == (uchar)y)) {
+            if ((uchar)lot_status != '\x03') {
+                lot->status = (uchar)lot_status;
+            } else {
+                lot->typeID = -1;
+                lot->x = '\0';
+                lot->y = '\0';
+                lot->status = '\x03';
+            }
+            return;
+        }
+    }
 }
 
 void tribe_build_ai_update_needed_resources(TribeBuildAIModule* build_ai) {
-    (void)build_ai;
-    // TODO: STUB - TribeTacticalAIModule::updateNeededResources not transliterated yet.
+    TribeTacticalAIModule* tactical_ai = tribe_build_ai_tactical_ai(build_ai);
+    TribeResourceAIModule* resource_ai = tribe_build_ai_resource_ai(build_ai);
+    if ((tactical_ai == nullptr) || (resource_ai == nullptr)) {
+        return;
+    }
+
+    int assigned_resource[4] = {0, 0, 0, 0};
+    int temp_needed_resource[4] = {0, -1, -1, -1};
+    int temp_resource_difference[4] = {-1, -1, -1, -1};
+
+    for (int i = 0; i < 4; ++i) {
+        int available = resource_ai->resource(i);
+        int needed = tactical_ai->neededResources.value(i);
+        tactical_ai->resourceDifferenceValue[i] = available - needed;
+    }
+
+    for (int slot = 0; slot < 4; ++slot) {
+        int best_resource = -1;
+        int best_difference = 0x7FFFFFFF;
+        for (int resource_id = 0; resource_id < 4; ++resource_id) {
+            if (resource_id == 0) {
+                if (resource_ai->resource(0) >= tactical_ai->sn[0xBE]) {
+                    continue;
+                }
+            } else if (resource_id == 1) {
+                if (tactical_ai->sn[0xBF] <= resource_ai->resource(1)) {
+                    continue;
+                }
+            } else if (resource_id == 3) {
+                if (tactical_ai->sn[0xC1] <= resource_ai->resource(3)) {
+                    continue;
+                }
+            } else if (resource_id == 2) {
+                if (tactical_ai->sn[0xC0] <= resource_ai->resource(2)) {
+                    continue;
+                }
+            }
+
+            int needed = tactical_ai->neededResources.value(resource_id);
+            if ((0 < needed) &&
+                ((best_resource == -1) || (tactical_ai->resourceDifferenceValue[resource_id] < best_difference)) &&
+                (assigned_resource[resource_id] == 0)) {
+                best_difference = tactical_ai->resourceDifferenceValue[resource_id];
+                best_resource = resource_id;
+            }
+        }
+
+        if (best_resource == -1) {
+            for (int resource_id = 0; resource_id < 4; ++resource_id) {
+                if (((best_resource == -1) || (tactical_ai->resourceDifferenceValue[resource_id] < best_difference)) &&
+                    (assigned_resource[resource_id] == 0)) {
+                    best_difference = tactical_ai->resourceDifferenceValue[resource_id];
+                    best_resource = resource_id;
+                }
+            }
+        }
+
+        if (best_resource < 0) {
+            continue;
+        }
+
+        assigned_resource[best_resource] = 1;
+        temp_needed_resource[slot] = best_resource;
+        temp_resource_difference[slot] = best_difference;
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        int resource_id = temp_needed_resource[i];
+        int resource_diff = temp_resource_difference[i];
+        tactical_ai->neededResourceValue[i] = resource_id;
+        if ((0 <= resource_id) && (resource_id < 4)) {
+            tactical_ai->resourceDifferenceValue[resource_id] = resource_diff;
+        }
+    }
 }
 }
 
@@ -123,7 +421,6 @@ void TribeBuildAIModule::setMainDecisionAI(TribeMainDecisionAIModule* param_1) {
 }
 
 // Offset: 0x004D5170
-// TODO: Partial parity pending non-transliterated AI module dependencies.
 int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* param_1, int param_2) {
     int found = 0;
     BuildItem* head = tribe_build_ai_build_list(this);
@@ -159,7 +456,6 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* param_1, int param_2) {
 }
 
 // Offset: 0x004D5310
-// TODO: Partial parity pending non-transliterated AI module dependencies.
 int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
     (void)param_6;
     if (param_7 != -1) {
@@ -168,10 +464,12 @@ int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, f
 
     int clear_placement = 0;
     int is_building = 0;
+    int new_lot_status = 2;
     switch (param_1) {
     default:
         clear_placement = 1;
         is_building = 0;
+        new_lot_status = 0;
         break;
     case 1:
     case 2:
@@ -188,20 +486,31 @@ int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, f
     case -1:
         clear_placement = 1;
         is_building = 0;
+        new_lot_status = 0;
         break;
     }
 
+    ConstructionAIModule* construction_ai = tribe_build_ai_construction_ai(this);
     RGE_Static_Object* object = tribe_build_ai_object(this, param_2);
-    if ((object != nullptr) && (is_building != 0)) {
+    if ((object != nullptr) && (is_building != 0) && (construction_ai != nullptr)) {
         if (tribe_build_ai_is_moveable(this, param_2) == 1) {
-            tribe_build_ai_clear_area(this, param_2, param_4 - 2.0f, param_5 - 2.0f, param_4 + 2.0f, param_5 + 2.0f);
+            ConstructionItem* lot = construction_ai->lot(param_4, param_5);
+            if (lot == nullptr) {
+                tribe_build_ai_clear_area(this, param_2, param_4 - 2.0f, param_5 - 2.0f, param_4 + 2.0f, param_5 + 2.0f);
+            } else {
+                float max_y = ((BaseItem*)lot)->y() - (((BaseItem*)lot)->ySize() * -0.5f);
+                float max_x = ((BaseItem*)lot)->x() - (((BaseItem*)lot)->xSize() * -0.5f);
+                float min_y = ((BaseItem*)lot)->y() - (((BaseItem*)lot)->ySize() * 0.5f);
+                float min_x = ((BaseItem*)lot)->x() - (((BaseItem*)lot)->xSize() * 0.5f);
+                tribe_build_ai_clear_area(this, param_2, min_x, min_y, max_x, max_y);
+            }
         } else {
-            // TODO: STUB - ConstructionAIModule::incrementBuildAttempts not transliterated yet.
+            construction_ai->incrementBuildAttempts(param_4, param_5, 10);
         }
     }
 
-    if (clear_placement != 0) {
-        // TODO: STUB - ConstructionAIModule::unplaceStructure(float,float,int) not transliterated yet.
+    if (construction_ai != nullptr) {
+        construction_ai->unplaceStructure(param_4, param_5, clear_placement);
     }
 
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
@@ -209,7 +518,7 @@ int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, f
         item->progressValue = 0;
         int lot_x = (int)param_4;
         int lot_y = (int)param_5;
-        tribe_build_ai_remove_lot(this, ((BaseItem*)item)->typeID(), lot_x, lot_y);
+        tribe_build_ai_remove_lot(this, ((BaseItem*)item)->typeID(), lot_x, lot_y, new_lot_status);
         if (((BaseItem*)item)->typeID() == 0x114) {
             tribe_build_ai_set_wonder_value(this, kWonderInProgressOffset, 0);
         }
@@ -219,7 +528,6 @@ int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, f
 }
 
 // Offset: 0x004D5590
-// TODO: Partial parity pending non-transliterated AI module dependencies.
 int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, int param_4) {
     (void)param_1;
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
@@ -235,7 +543,6 @@ int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, in
 }
 
 // Offset: 0x004D5600
-// TODO: Partial parity pending non-transliterated AI module dependencies.
 int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, int param_4) {
     (void)param_1;
     (void)param_2;
@@ -243,15 +550,14 @@ int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, i
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_4);
     if (item != nullptr) {
         item->progressValue = 0;
-        // TODO: STUB - BuildAIModule::displayBuildList not transliterated yet.
+        tribe_build_ai_display_build_list(this);
         return 1;
     }
-    // TODO: STUB - BuildAIModule::displayBuildList not transliterated yet.
+    tribe_build_ai_display_build_list(this);
     return 1;
 }
 
 // Offset: 0x004D5690
-// TODO: Partial parity pending non-transliterated AI module dependencies.
 int TribeBuildAIModule::addResearch(int param_1, int param_2, int param_3) {
     (void)param_1;
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
@@ -266,7 +572,6 @@ int TribeBuildAIModule::addResearch(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x004D56F0
-// TODO: Partial parity pending non-transliterated AI module dependencies.
 int TribeBuildAIModule::cancelResearch(int param_1, int param_2, int param_3, int param_4) {
     (void)param_1;
     (void)param_2;
@@ -274,9 +579,9 @@ int TribeBuildAIModule::cancelResearch(int param_1, int param_2, int param_3, in
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_4);
     if (item != nullptr) {
         item->progressValue = 0;
-        // TODO: STUB - BuildAIModule::displayBuildList not transliterated yet.
+        tribe_build_ai_display_build_list(this);
         return 1;
     }
-    // TODO: STUB - BuildAIModule::displayBuildList not transliterated yet.
+    tribe_build_ai_display_build_list(this);
     return 1;
 }
