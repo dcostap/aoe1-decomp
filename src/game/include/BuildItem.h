@@ -3,8 +3,40 @@
 
 class BuildItem {
 public:
+    BuildItem();
+    BuildItem(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, char* param_7, float param_8, float param_9, float param_10,
+              int param_11, int param_12, int param_13, int param_14);
+    BuildItem(BuildItem* param_1);
+    BuildItem(const BuildItem& param_1);
+
     // Virtuals (best-effort)
     virtual ~BuildItem(); // vt[0] (0x0)
+
+    int buildCategory() const;
+    int number() const;
+    int priority() const;
+    int inProgress() const;
+    int built() const;
+    int buildAttempts() const;
+    int buildFrom() const;
+    int terrainSet() const;
+    int terrainAdjacency(int param_1) const;
+    int placeOnElevation() const;
+    void setInProgress(int param_1);
+    void setBuilt(int param_1);
+    void setBuildAttempts(int param_1);
+    void incrementBuildAttempts();
+    void decrementBuildAttempts();
+    int numberBuilds();
+    void incrementNumberBuilds();
+    void setNumberBuilds(int param_1);
+    int buildCap();
+    void setBuildCap(int param_1);
+    int skipCycles();
+    void incrementSkipCycles();
+    void setSkipCycles(int param_1);
+    uchar permanentSkip();
+    void setPermanentSkip(uchar param_1);
 
     int padding0;
     int padding1;
@@ -49,4 +81,10 @@ public:
     int skipCyclesValue;
     uchar permanentSkipValue;
 };
+
+int operator==(const BuildItem& param_1, const BuildItem& param_2);
+int operator!=(const BuildItem& param_1, const BuildItem& param_2);
+int operator<(const BuildItem& param_1, const BuildItem& param_2);
+int operator>(const BuildItem& param_1, const BuildItem& param_2);
+
 static_assert(sizeof(BuildItem) == 0xB0, "Size mismatch");

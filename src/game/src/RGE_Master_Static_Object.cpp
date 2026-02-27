@@ -1061,6 +1061,11 @@ long RGE_Master_Static_Object::get_help_page() {
     return this->help_page_id;
 }
 
+void RGE_Master_Static_Object::make_available(uchar param_1) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004543C0
+    this->available = param_1;
+}
+
 uchar RGE_Master_Static_Object::alignment_box(RGE_Game_World* world, float col, float row,
                                                short* x4, short* local_12, short* scr_y,
                                                short* y3, short* y4, short* y1, short* x2,
