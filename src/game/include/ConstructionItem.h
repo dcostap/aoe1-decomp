@@ -3,8 +3,22 @@
 
 class ConstructionItem {
 public:
+    ConstructionItem();
+    ConstructionItem(float param_1, float param_2, float param_3, float param_4, float param_5, float param_6, int param_7, char* param_8);
+    ConstructionItem(ConstructionItem* param_1);
+    ConstructionItem(const ConstructionItem& param_1);
+
     // Virtuals (best-effort)
     virtual ~ConstructionItem(); // vt[0] (0x0)
+
+    int inProgress() const;
+    int built() const;
+    int buildAttempts() const;
+    void setInProgress(int param_1);
+    void setBuilt(int param_1);
+    void incrementBuildAttempts();
+    void decrementBuildAttempts();
+    void setBuildAttempts(int param_1);
 
     int padding0;
     int padding1;
@@ -38,4 +52,10 @@ public:
     int builtValue;
     int buildAttemptsValue;
 };
+
+int operator==(const ConstructionItem& param_1, const ConstructionItem& param_2);
+int operator!=(const ConstructionItem& param_1, const ConstructionItem& param_2);
+int operator<(const ConstructionItem& param_1, const ConstructionItem& param_2);
+int operator>(const ConstructionItem& param_1, const ConstructionItem& param_2);
+
 static_assert(sizeof(ConstructionItem) == 0x80, "Size mismatch");
