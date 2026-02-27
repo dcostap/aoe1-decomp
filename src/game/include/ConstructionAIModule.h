@@ -9,6 +9,9 @@ public:
         PlacementResult_0 = 0,
     };
 
+    ConstructionAIModule(void* param_1, int param_2);
+    ConstructionAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~ConstructionAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -33,6 +36,14 @@ public:
     virtual int unplaceStructure(ConstructionItem* param_1, int param_2) const; // vt[20] (0x50)
     virtual void decrementBuildAttempts(float param_1, float param_2, int param_3) const; // vt[21] (0x54)
     virtual void incrementBuildAttempts(float param_1, float param_2, int param_3) const; // vt[22] (0x58)
+
+    char* constructionPlanName();
+    void setReferencePoint(int param_1, int param_2, float param_3, float param_4, float param_5);
+    float xReferencePoint();
+    float yReferencePoint();
+    PlacementResult lastPlacementReturnCode();
+    ConstructionItem* lot(float param_1, float param_2);
+    ConstructionItem* randomLot(float param_1, float param_2);
 
     int padding0;
     int padding1;
@@ -93,7 +104,6 @@ public:
     int padding56;
     int padding57;
     int padding58;
-    int padding;
     int numberConstructionLotsValue;
     ConstructionItem constructionLots;
     int numberRandomConstructionLotsValue;
@@ -105,5 +115,8 @@ public:
     int mapXSizeValue;
     int mapYSizeValue;
     PlacementResult lastPlacementReturnCodeValue;
+
+protected:
+    void removeOldLots();
 };
 static_assert(sizeof(ConstructionAIModule) == 0x314, "Size mismatch");
