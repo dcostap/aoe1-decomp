@@ -129,15 +129,6 @@ void append_technology_item(ResearchAIModule* self, TechnologyItem* tech) {
 }
 }
 
-// TODO: STUB - TechnologyItem destructor body not yet transliterated from aitchitm.cpp.decomp.
-TechnologyItem::~TechnologyItem() {
-    delete this->resourceCostValue;
-    this->resourceCostValue = nullptr;
-}
-
-// TODO: STUB - ResourceItem destructor body not yet transliterated from airesitm.cpp.decomp.
-ResourceItem::~ResourceItem() {}
-
 // Offset: 0x00411670
 // Fully verified. Source of truth: airchmod.cpp.decomp @ 0x00411670
 ResearchAIModule::ResearchAIModule(void* param_1, int param_2) {
