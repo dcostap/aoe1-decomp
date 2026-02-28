@@ -3958,7 +3958,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 279 — Victory Conditions + Sound Driver (87 functions)
 - [x] Assigned to agent (worker-2, clone_2, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `32bb56e`. 99 insertions — added markers+stubs but thin on full transliteration. Victory/Sound still need deeper work.
 - Goal: Two modules with very low coverage:
   - victory.cpp.decomp: 59 funcs, only 7 impl refs → ~52 missing (RGE_Victory_Conditions + TRIBE_Victory_Conditions — win/loss condition checking, score calculation, achievement evaluation, standard/conquest/wonder victory)
   - sounddrv.cpp.decomp: 36 funcs, only 1 impl ref → ~35 missing (sound driver — DirectSound wrappers, WAV playback, volume control, sound caching, 3D audio positioning)
@@ -4041,3 +4042,16 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `panel_ez.cpp.decomp`, `dsutil.cpp.decomp`, `m_mo_obj.cpp.decomp`, `m_mi_obj.cpp.decomp`, `m_an_obj.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
 - Non-overlap: do NOT touch TRIBE_Screen_*.cpp, AI modules, tribegam, victory, sound (Sounddrv.cpp), action files, command.cpp
 - Done when: all decomp offsets covered. Expect 1500+ lines.
+
+## Task 285 — Victory Conditions DEEP transliteration + Sound Driver DEEP transliteration (87 functions — REDO)
+- [x] Assigned to agent (worker-2, clone_2, copilot)
+- [ ] Finished
+- Goal: Task 279 only added offset markers (~99 lines). This task REQUIRES FULL FUNCTION BODY TRANSLITERATION. Do NOT just add comment markers — you must transliterate every function body from the decomp.
+  - victory.cpp.decomp: 59 funcs — RGE_Victory_Conditions.cpp and TRIBE_Victory_Conditions.cpp need the ACTUAL CODE from each decomp function translated to C++. Read the decomp, translate the control flow, variables, and logic. Each function should be 10-50+ lines of real C++ code.
+  - sounddrv.cpp.decomp: 36 funcs — Sounddrv.cpp needs actual DirectSound API calls, buffer management code, playback logic, etc. from the decomp.
+  CRITICAL: "Adding a // Source of truth marker" alone is NOT transliteration. You must write the actual C++ function body that matches the decomp's logic.
+- Implement: For each function in the decomp, write the full C++ implementation matching the decomp's control flow, constants, API calls, and logic. Add the source-of-truth marker AND the full function body.
+- Where: `src/game/src/RGE_Victory_Conditions.cpp`, `src/game/src/TRIBE_Victory_Conditions.cpp`, `src/game/src/Sounddrv.cpp` + headers
+- Source of truth: `victory.cpp.decomp`, `sounddrv.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
+- Non-overlap: do NOT touch panel, AI, action, basegame, command, tribegam files
+- Done when: all functions have FULL CODE BODIES (not just markers). Expect 1500+ lines of actual C++ logic.
