@@ -32,9 +32,10 @@ This affects all subsequent copilot CLI launches in this session.
 | `rename_session` | Rename a session |
 
 **Important `send_input` conventions:**
-- Append `\n` to execute a command: `send_input(session="worker-1", input="dir\n")`
+- Append `\n` to execute a **shell command**: `send_input(session="worker-1", input="dir\n")`
 - Use `\x03` for Ctrl+C, `\x04` for Ctrl+D, `\t` for Tab
-- **`send_input` drops `$` characters.** NEVER write prompt files via `send_input`. Always write from your own powershell shell using `Set-Content`.
+- **Copilot CLI TUI** is different from shell — see "Phase 3" for exact submit keys
+- **`send_input` may drop `$` characters** in some contexts. For shell commands with `$`, this is usually fine since PowerShell processes them. For literal text, write files from your own shell instead.
 
 ## Architecture
 
@@ -61,65 +62,113 @@ send_input(session="worker-1", input="git fetch origin --prune && git switch mas
 ```
 Wait a few seconds, `read_screen` to verify sync succeeded.
 
-### Phase 2: Write Task Prompt
-
-Write the **task body only** to `worker_prompt.txt` from your own shell (NOT via `send_input`):
-
-```powershell
-$taskBody = @'
-## Task NNN - Title here
-- Goal: ...
-- Implement: ...
-- Where: ...
-- Source of truth: ...
-- Done when: ...
-'@
-Set-Content -Path "C:\Projects\my_decomps\aoe1_clone_N\worker_prompt.txt" -Value $taskBody -Encoding UTF8
-```
-
-The system prompt is handled by the `decomp-worker` agent file — do NOT inline it.
-
-### Phase 3: Launch Copilot
+### Phase 2: Launch Copilot CLI with the Worker Agent
 
 ```
-send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo -p $prompt -s\n")
+send_input(session="worker-1", input="copilot --agent decomp-worker --yolo -s\n")
 ```
 
 **Key flags:**
 - `--agent decomp-worker` — custom agent with system prompt + persistent loop behavior
-- **NO `--no-ask-user`** — workers must call `ask_user` to report completion
+- `--yolo` — auto-approve tool calls (file edits, shell commands)
+- `-s` — start in agent mode
+- **NO `--no-ask-user`** — workers MUST call `ask_user` to report completion and await next task
 - **NO `--share`** — not needed since worker reports via `ask_user`
+- **NO `--model`** — model is set in the agent's frontmatter
+- **NO `-p`** — we type the task directly into the TUI (see Phase 3)
+
+Wait a few seconds, then `read_screen` to verify Copilot started (you should see the welcome banner, "Selected custom agent: Decomp Worker", and the compose prompt `❯`).
+
+### Phase 3: Send First Task via Compose Prompt
+
+After Copilot shows the compose prompt (`❯ Type @ to mention files...`):
+
+```
+# Step 1: Send the task text
+send_input(session="worker-1", input="<full task body here>")
+
+# Step 2: Submit with \r (carriage return) — MUST be a separate call!
+send_input(session="worker-1", input="\r")
+```
+
+**⚠️ CRITICAL TUI KEYBINDING RULES:**
+
+| Context | Submit key | Newline key | Notes |
+|---------|-----------|-------------|-------|
+| **Initial compose prompt** (first task, `❯`) | `\r` (CR, carriage return) | `\n` (LF) | `\n` adds newlines in multi-line compose |
+| **`ask_user` dialog** (subsequent tasks) | `\n` (LF, Enter) | N/A (single-line) | Dialog says "Enter to submit" |
+
+**⚠️ SUBMIT KEY MUST ALWAYS BE A SEPARATE `send_input` CALL.**
+Never append `\r` or `\n` to the text in the same `send_input` call — it will be treated as a newline within the text, NOT as a submit action.
+
+**Example — WRONG:**
+```
+send_input(session="worker-1", input="Do the task\r")  // \r treated as newline, NOT submit!
+```
+
+**Example — CORRECT:**
+```
+send_input(session="worker-1", input="Do the task")    // Step 1: type text
+send_input(session="worker-1", input="\r")             // Step 2: submit (separate call!)
+```
+
+**Other TUI keys to know:**
+- `\x03` (Ctrl+C) — **clears the compose prompt** (erases typed text). Also cancels active operations.
+- `\x1b` (Escape) — exits menus/autocomplete popups, cancels thinking
+- `\x13` (Ctrl+S) — opens the **slash command menu** (`/add-dir`, `/clear`, etc.) — this is NOT a submit key!
+- `\x1b[Z` (Shift+Tab) — switches compose mode — not typically needed
 
 ### Phase 4: Monitor
 
 Check each worker every 3-5 minutes via `read_screen(session="worker-N", lines=15)`.
 
 **What to look for:**
-- **Actively working:** File edits, git commands, build output. Leave it alone.
-- **`ask_user` prompt visible:** Task is DONE. Worker is waiting for next task. Proceed to Phase 5.
-- **Rate limit errors:** Wait 2-5 minutes. If copilot exits, re-launch.
-- **PS prompt returned:** Copilot exited unexpectedly. Sync and re-launch.
+- **Actively working:** File edits, git commands, build output, "Thinking", tool calls visible. Leave it alone.
+- **`ask_user` prompt visible** (box with "TASK COMPLETE", "❯ Type your answer...", "Enter to submit"): Task is DONE. Worker is waiting for next task. Proceed to Phase 5.
+- **Rate limit errors:** Wait 2-5 minutes. If copilot exits, re-launch from Phase 2.
+- **PS prompt returned (PowerShell `PS C:\...>`):** Copilot exited unexpectedly. Sync and re-launch from Phase 1.
+- **TUI frozen** (input doesn't appear in compose): Kill the session, recreate from Phase 1.
 
-**Worker detection heuristic (when copilot uses alt-screen):**
+**Worker detection heuristic (when copilot uses alt-screen and you can't see tool output):**
 ```
 branch = git -C clone_N rev-parse --abbrev-ref HEAD
 If branch != master → worker is ACTIVE (on a task branch)
 If branch == master and PS prompt visible → worker is IDLE
 ```
 
-### Phase 5: Feed Next Task
+**Copilot CLI output caveat:** Copilot CLI renders to an alternate terminal screen (TUI). You can only see the current screen state via `read_screen`. There is no streaming output file — `read_screen` is your only window into what the worker is doing.
 
-When you see the `ask_user` prompt:
-1. Read the completion report from screen
-2. `git pull` in your own repo to get commits
-3. Review commits briefly
-4. Update `multiple_agents_task_queue.md` — mark task done with commit hash
-5. Write new `worker_prompt.txt` (Phase 2)
-6. Send next task: `send_input(session="worker-1", input="Read your next task from worker_prompt.txt and execute it.\n")`
+### Phase 5: Feed Next Task (Persistent Loop)
+
+When the `ask_user` dialog appears (worker finished a task and is awaiting next):
+
+1. **Read the completion report** from the `ask_user` box on screen
+2. **`git pull`** in your own repo to get the worker's commits
+3. **Review commits** briefly (check diff size, files changed)
+4. **Update `multiple_agents_task_queue.md`** — mark task done with commit hash and line count
+5. **Send next task directly into the `ask_user` dialog:**
+
+```
+# Step 1: Type the next task body into the ask_user input field
+send_input(session="worker-1", input="<next full task body>")
+
+# Step 2: Submit with \n (Enter) — MUST be separate! (ask_user uses Enter, not \r)
+send_input(session="worker-1", input="\n")
+```
+
+6. **Verify submission:** `read_screen` should show the agent working (thinking, tool calls, etc.), NOT still showing the ask_user dialog.
+
+**⚠️ TIMING IS CRITICAL:** Only send input AFTER you confirm the `ask_user` dialog is visible on screen. Sending keystrokes before the dialog renders can cause "User skipped question" errors and freeze the TUI.
 
 ### Phase 6: Recovery
 
-If copilot exits (PS prompt returns): sync clone, write new prompt, re-launch from Phase 3.
+| Problem | Fix |
+|---------|-----|
+| Copilot exited (PS prompt visible) | Sync clone, re-launch from Phase 2 |
+| TUI frozen (keystrokes ignored) | `kill_session`, recreate from Phase 1 |
+| `ask_user` was skipped ("User skipped question") | TUI may freeze — kill and restart |
+| Rate limit hit | Wait 3-5 min, then re-launch if exited |
+| Worker on wrong branch after crash | `git switch master && git pull` before re-launch |
 
 ## Task Queue Management
 
@@ -180,8 +229,9 @@ Get-Content worker_prompt.txt | codex exec --dangerously-bypass-approvals-and-sa
 2. Read `multiple_agents_task_queue.md` — find next 3 unassigned tasks
 3. Create 3 terminal sessions in clone folders 1, 2, 3
 4. Sync each clone to latest master
-5. Write `worker_prompt.txt` (task body only) for each
-6. Launch each: `copilot --agent decomp-worker --yolo -p $prompt -s`
-7. Enter monitoring loop
+5. Launch each: `copilot --agent decomp-worker --yolo -s`
+6. Wait for compose prompt (`❯`), then send task text + `\r` (separate call)
+7. Enter monitoring loop — check workers every 3-5 min
+8. When `ask_user` appears: read report, git pull, update queue, send next task + `\n` (separate call)
 
 **You are fully independent. Start working.**
