@@ -3865,3 +3865,38 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `scr_game.cpp.decomp`, `drawarea.cpp.decomp`, `view.cpp.decomp` + `.asm` files
 - Non-overlap: do NOT touch panel files, AI files, basegame, command.cpp
 - Done when: all decomp offsets covered across all 3 files. Expect 500+ lines.
+## Task 273 — Tribe AI Information Module (127 greenfield functions — taiinfmd.cpp.decomp)
+- [x] Assigned to agent (worker-2, clone_2, copilot)
+- [ ] Finished
+- Goal: taiinfmd.cpp.decomp has 127 functions with NO implementation at all. This is the AI information-gathering module — scouting, map exploration, threat assessment, resource knowledge, enemy base detection. Fully greenfield.
+- Implement: Create new impl file(s) and transliterate ALL 127 functions from the decomp. Every function must have offset markers.
+- Where: new file(s) in `src/game/src/` + headers
+- Source of truth: `taiinfmd.cpp.decomp` + `taiinfmd.cpp.asm`
+- Non-overlap: do NOT touch TacticalAI, UnitAIModule, TribeBuildAI, panel, or basegame files
+- Done when: all 127 decomp offsets have impl coverage. Expect 2000+ lines.
+
+## Task 274 — Communicable Object + AI Building Object (104 greenfield functions)
+- [x] Assigned to agent (worker-5, clone_5, copilot)
+- [ ] Finished
+- Goal: Two modules with NO implementation:
+  - com_obj.cpp.decomp: 50 functions (RGE_Communicable_Object — messaging, command handling, interaction)
+  - aibobj.cpp.decomp: 54 functions (AI_Building_Object — AI building placement logic, evaluation, priority)
+- Implement: Create new impl files, transliterate ALL functions from both decomps with offset markers.
+- Where: new files in `src/game/src/` + headers
+- Source of truth: `com_obj.cpp.decomp`, `aibobj.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch action objects, static objects, master objects, panel files, or AI module files
+- Done when: all 104 decomp offsets have impl coverage. Expect 1500+ lines.
+
+## Task 275 — Action Sprite + View Main + TRIBE object remaining (100 functions)
+- [x] Assigned to agent (worker-6, clone_6, copilot)
+- [ ] Finished
+- Goal: Two greenfield modules plus two partial modules:
+  - asprite.cpp.decomp: 35 functions, NO IMPL (action sprite — SLP frame management, animation)
+  - vw_main.cpp.decomp: 28 functions, NO IMPL (main view controller — camera, scroll, zoom)
+  - t_b_obj.cpp.decomp: 40 funcs, 23 refs → ~17 missing (TRIBE_Building_Object)
+  - t_c_obj.cpp.decomp: 39 funcs, 19 refs → ~20 missing (TRIBE_Combat_Object)
+- Implement: Create new impl files for greenfield modules, extend existing files for partial modules. Transliterate all missing functions with offset markers.
+- Where: new files + `src/game/src/TRIBE_Building_Object.cpp`, `src/game/src/TRIBE_Combat_Object.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files
+- Non-overlap: do NOT touch panel files, AI module files, basegame, RGE_Static_Object, or RGE_Moving_Object
+- Done when: all decomp offsets have impl coverage across all 4 modules. Expect 1200+ lines.
