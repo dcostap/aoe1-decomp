@@ -29,6 +29,15 @@ public:
     virtual int objectGroupThatCanPerformAction(int param_1); // vt[18] (0x48)
     virtual int canPerformAction(int param_1, int param_2); // vt[19] (0x4C)
 
+    void kick(int param_1);
+    void detask(int param_1);
+    int isMoveable(int param_1);
+    void updateBuildAIWithObjects();
+    void tributeNotify(int param_1, int param_2, int param_3);
+    void revokeTributeAlliance();
+    int processAICommand(int param_1, int param_2, int param_3, int param_4, int param_5);
+    int currentScore(int param_1);
+
     // Opaque storage: these embedded AI modules are not transliterated yet, but must exist at the
     // correct offsets for `TribeMainDecisionAIModule` layout/vtable parity.
     alignas(4) unsigned char buildAI[0x5C0];

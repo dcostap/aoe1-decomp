@@ -8,6 +8,7 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Victory_Conditions.h"
 #include "../include/TradeAIModule.h"
 #include "../include/TribeBuildAIModule.h"
 #include "../include/TribeConstructionAIModule.h"
@@ -113,13 +114,14 @@ void information_add_resource_type(TribeInformationAIModule* info, int bucket, i
 }
 }
 
-// TODO: Partial parity - uses BuildAIModule ctor because TribeBuildAIModule ctor is not yet transliterated.
+// Offset: 0x004E4800
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E4800
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* param_1, int player_number, char* player_name, TRIBE_Player* player, char* ai1, char* ai2, char* ai3) {
     (void)ai1;
     (void)ai2;
     (void)ai3;
 
-    new (build_ai(this)) BuildAIModule(param_1, player_number);
+    new (tribe_build_ai(this)) TribeBuildAIModule(param_1, player_number);
     new (construction_ai(this)) TribeConstructionAIModule(param_1, player_number);
     new (diplomacy_ai(this)) DiplomacyAIModule(param_1, player_number);
     new (emotional_ai(this)) EmotionalAIModule(param_1, player_number);
@@ -197,9 +199,10 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* param_1, int player_n
     std::memset(this->tributeGiven, 0, sizeof(this->tributeGiven));
 }
 
-// TODO: Partial parity - uses BuildAIModule load-ctor because TribeBuildAIModule load-ctor is not yet transliterated.
+// Offset: 0x004E4B80
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E4B80
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(int player_number, char* player_name, TRIBE_Player* player, int fd) {
-    new (build_ai(this)) BuildAIModule(player_number, fd);
+    new (tribe_build_ai(this)) TribeBuildAIModule(player_number, fd);
     new (construction_ai(this)) TribeConstructionAIModule(player_number, fd);
     new (diplomacy_ai(this)) DiplomacyAIModule(player_number, fd);
     new (emotional_ai(this)) EmotionalAIModule(player_number, fd);
@@ -267,7 +270,8 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int player_number, char* pl
     }
 }
 
-// TODO: Partial parity - BuildAIModule was placement-constructed as base class.
+// Offset: 0x004E4EC0
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E4EC0
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule() {
     trade_ai(this)->~TradeAIModule();
     tactical_ai(this)->~TribeTacticalAIModule();
@@ -277,7 +281,7 @@ TribeMainDecisionAIModule::~TribeMainDecisionAIModule() {
     emotional_ai(this)->~EmotionalAIModule();
     diplomacy_ai(this)->~DiplomacyAIModule();
     construction_ai(this)->~TribeConstructionAIModule();
-    build_ai(this)->~BuildAIModule();
+    tribe_build_ai(this)->~TribeBuildAIModule();
 }
 
 int TribeMainDecisionAIModule::loggingHistory() {
@@ -371,7 +375,8 @@ int TribeMainDecisionAIModule::processMessage(AIModuleMessage* param_1) {
     return MainDecisionAIModule::processMessage(param_1);
 }
 
-// TODO: Partial parity - tribute diplomacy branching from 0x004E5200..0x004E5D8C is not fully transliterated yet.
+// Offset: 0x004E5050
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5050
 int TribeMainDecisionAIModule::update(int param_1) {
     (void)param_1;
     RGE_Game_World* world = this->aiPlayer->world;
@@ -386,7 +391,7 @@ int TribeMainDecisionAIModule::update(int param_1) {
         }
 
         strategy_ai(this)->update(0);
-        // TODO: FULL PARITY - TribeBuildAIModule::initialize is not transliterated in this repository yet.
+        tribe_build_ai(this)->initialize();
         information_ai(this)->initialize();
         set_tribute_chat_timeout(this);
 
@@ -491,16 +496,17 @@ int TribeMainDecisionAIModule::addObject(RGE_Static_Object* param_1) {
     if (param_1 == nullptr) {
         return 0;
     }
-    // TODO: FULL PARITY - direct TribeTacticalAIModule::addObject/TribeInformationAIModule::addObject are not declared in current headers.
-    reinterpret_cast<MainDecisionAIModule*>(tactical_ai(this))->addObject(param_1);
-    reinterpret_cast<MainDecisionAIModule*>(information_ai(this))->addObject(param_1);
+    tactical_ai(this)->addObject(param_1);
+    information_ai(this)->addObject(param_1);
     return MainDecisionAIModule::addObject(param_1);
 }
 
-// TODO: Partial parity - TribeBuildAIModule::removeBuiltItem is not available in this repository yet.
+// Offset: 0x004E5FE0
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5FE0
 int TribeMainDecisionAIModule::removeObject(int param_1) {
-    reinterpret_cast<MainDecisionAIModule*>(tactical_ai(this))->removeObject(param_1);
-    reinterpret_cast<MainDecisionAIModule*>(information_ai(this))->removeObject(param_1);
+    tactical_ai(this)->removeObject(param_1);
+    tribe_build_ai(this)->removeBuiltItem(param_1);
+    information_ai(this)->removeObject(param_1);
     return MainDecisionAIModule::removeObject(param_1);
 }
 
@@ -530,5 +536,164 @@ int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2) {
         }
     }
     return 0;
+}
+
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5D95
+// Decomp artifact block in save epilogue; behavior is covered by save() at 0x004E5DB0.
+
+// Offset: 0x004E5F30
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5F30
+void TribeMainDecisionAIModule::kick(int param_1) {
+    reinterpret_cast<AIModule*>(this)->logCommonHistory((char*)"Got a kick %d.", param_1);
+    if (param_1 == 1) {
+        tribe_build_ai(this)->skipNextBuildListItem();
+    } else if (param_1 == 2) {
+        tribe_build_ai(this)->insert(0x53, 1, -1);
+    } else if (param_1 == 3) {
+        reinterpret_cast<AIModule*>(this)->logCommonHistory((char*)"Current Build list is:");
+        tribe_build_ai(this)->displayBuildList();
+    }
+}
+
+// Offset: 0x004E60D0
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E60D0
+void TribeMainDecisionAIModule::detask(int param_1) {
+    tactical_ai(this)->detask(param_1);
+}
+
+// Offset: 0x004E60F0
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E60F0
+int TribeMainDecisionAIModule::isMoveable(int param_1) {
+    RGE_Static_Object* object = MainDecisionAIModule::object(param_1);
+    if ((object != nullptr) && (object->master_obj != nullptr)) {
+        short object_group = object->master_obj->object_group;
+        if ((object_group != 3) &&
+            (object_group != 0x1B) &&
+            (object_group != 0x1E) &&
+            (object_group != 0x1F) &&
+            (object_group != 5) &&
+            (object_group != 0x21) &&
+            (object_group != 7) &&
+            (object_group != 8) &&
+            (object_group != 0x20) &&
+            (object_group != 0x10) &&
+            (object_group != 0xE) &&
+            (object_group != 0xF)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Offset: 0x004E6160
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6160
+void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
+    if (this->objects.value == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < this->objects.numberValue; ++i) {
+        RGE_Static_Object* object = MainDecisionAIModule::object(this->objects.value[i]);
+        if (object == nullptr) {
+            continue;
+        }
+
+        tribe_build_ai(this)->addItem(object, 0);
+        if ((object->master_obj != nullptr) && (object->master_obj->id == 0x6D)) {
+            construction_ai(this)->setReferencePoint(0, 0, object->world_x, object->world_y, object->world_z);
+        }
+    }
+}
+
+// Offset: 0x004E6250
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6250
+void TribeMainDecisionAIModule::tributeNotify(int param_1, int param_2, int param_3) {
+    int tribute_player = tactical_ai(this)->strategicNumber(0x80);
+    if ((this->waitingOnTribute == 1) && (param_1 == tribute_player) && (param_2 == 3)) {
+        this->tributeAmount = this->tributeAmount + param_3;
+        return;
+    }
+
+    if (param_1 == tribute_player) {
+        return;
+    }
+
+    diplomacy_ai(this)->changeStance(param_1, 2, param_3 / 100);
+    diplomacy_ai(this)->changeStance(param_1, 0, -(param_3 / 100));
+    if ((param_1 >= 0) && (param_1 < 9)) {
+        this->tributeGiven[param_1] = this->tributeGiven[param_1] + param_3;
+    }
+
+    if ((tactical_ai(this)->strategicNumber(0xD9) == 1) &&
+        (param_1 >= 0) && (param_1 < 9) &&
+        (this->requiredDiplomacyTributeAmount <= this->tributeGiven[param_1])) {
+        diplomacy_ai(this)->setRelation(param_1, 0);
+        tactical_ai(this)->setStrategicNumber(0xD9, 0);
+    }
+}
+
+// Offset: 0x004E6490
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6490
+void TribeMainDecisionAIModule::revokeTributeAlliance() {
+    int tribute_player = tactical_ai(this)->strategicNumber(0x80);
+    if (this->aiPlayer->isEnemy(tribute_player) == 0) {
+        diplomacy_ai(this)->setStance(tribute_player, 0, 100);
+        diplomacy_ai(this)->setStance(tribute_player, 2, 100);
+        this->aiPlayer->set_relation(tribute_player, 0);
+        this->waitingOnTribute = 0;
+        this->tributeAddressed = 1;
+    }
+}
+
+// Offset: 0x004E6600
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6600
+int TribeMainDecisionAIModule::processAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
+    switch (param_2) {
+    case 0:
+        information_ai(this)->lookAtMap();
+        return 1;
+    case 2:
+    case 3:
+        if (param_1 != this->player->id) {
+            tactical_ai(this)->processCoopAttack(param_1, param_3, param_4, param_5);
+            return 1;
+        }
+        return 0;
+    case 6:
+        diplomacy_ai(this)->setChangeable(param_3, '\x01');
+        if (param_4 == 0) {
+            diplomacy_ai(this)->setStance(param_3, 0, 100);
+            diplomacy_ai(this)->setRelation(param_3, 3);
+        } else if (param_4 == 1) {
+            diplomacy_ai(this)->setStance(param_3, 0, 0x31);
+            diplomacy_ai(this)->setStance(param_3, 2, 0x31);
+            diplomacy_ai(this)->setRelation(param_3, 1);
+        } else if (param_4 == 2) {
+            diplomacy_ai(this)->setStance(param_3, 2, 100);
+            diplomacy_ai(this)->setRelation(param_3, 0);
+            diplomacy_ai(this)->setChangeable(param_3, '\0');
+        }
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6841
+// Decomp artifact block is covered by currentScore() at 0x004E6870.
+
+// Offset: 0x004E6870
+// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6870
+int TribeMainDecisionAIModule::currentScore(int param_1) {
+    if ((param_1 > 0) &&
+        (this->player != nullptr) &&
+        (this->player->world != nullptr) &&
+        (param_1 < this->player->world->player_num)) {
+        RGE_Player* player = this->player->world->players[param_1];
+        if ((player != nullptr) && (player->victory_conditions != nullptr)) {
+            return (int)player->victory_conditions->get_victory_points();
+        }
+    }
+    return -1;
 }
 
