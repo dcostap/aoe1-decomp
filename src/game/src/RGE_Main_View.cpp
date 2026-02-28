@@ -42,7 +42,7 @@ static float calc_scroll_dist(unsigned long delta, unsigned long interval) {
 }
 
 RGE_Main_View::RGE_Main_View() {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053DAB0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053DAB0
     this->map_view = nullptr;
     this->last_mouse_scroll_time = 0;
     this->mouse_scrolling = 0;
@@ -120,7 +120,7 @@ int RGE_Main_View::do_paint(long param_1, long param_2, long param_3, long param
 // -----------------------------------------------------------------------------
 
 long RGE_Main_View::handle_idle() {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053DB40
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053DB40
     color_log('E', 'E', 5);
     this->do_auto_scroll();
     color_log('E', '\x16', 5);
@@ -132,7 +132,7 @@ long RGE_Main_View::handle_idle() {
 }
 
 int RGE_Main_View::do_auto_scroll() {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053DBA0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053DBA0
     const int prog_mode = rge_base_game->prog_mode;
     if ((prog_mode != 4) && (prog_mode != 6) && (prog_mode != 7) && (prog_mode != 5)) {
         this->mouse_scrolling = 0;
@@ -248,7 +248,7 @@ done:
 }
 
 int RGE_Main_View::handle_keys() {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053DEB0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053DEB0
     if (rge_base_game->get_paused() != 0) {
         this->key_scrolling = 0;
         return 0;
@@ -374,7 +374,7 @@ done:
 }
 
 long RGE_Main_View::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053E280
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E280
     const ulong start = debug_timeGetTime(kVwMainPath, 0x1AE);
     long ret = TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5);
     const ulong end = debug_timeGetTime(kVwMainPath, 0x1B0);
@@ -402,7 +402,7 @@ long RGE_Main_View::mouse_move_action(long param_1, long param_2, int param_3, i
 }
 
 long RGE_Main_View::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053E340
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E340
     if (rge_base_game->get_paused() != 0) {
         return 0;
     }
@@ -547,7 +547,7 @@ long RGE_Main_View::mouse_left_down_action(long param_1, long param_2, int param
 }
 
 long RGE_Main_View::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053E7F0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E7F0
     const int prog_mode = rge_base_game->prog_mode;
     if ((prog_mode != 4) && (prog_mode != 6) && (prog_mode != 7) && (prog_mode != 5)) {
         return 0;
@@ -585,7 +585,7 @@ long RGE_Main_View::mouse_left_move_action(long param_1, long param_2, int param
 
 // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E8E9 (decompiler artifact thunk)
 long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053E910
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E910
     const int prog_mode = rge_base_game->prog_mode;
     if ((prog_mode != 4) && (prog_mode != 6) && (prog_mode != 7) && (prog_mode != 5)) {
         return 0;
@@ -878,7 +878,7 @@ long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3
 }
 
 long RGE_Main_View::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053F220
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053F220
     if (rge_base_game->get_paused() != 0) {
         return 0;
     }
@@ -904,7 +904,7 @@ long RGE_Main_View::mouse_right_down_action(long param_1, long param_2, int para
 }
 
 long RGE_Main_View::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053F2F0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053F2F0
     const int prog_mode = rge_base_game->prog_mode;
     if ((prog_mode != 4) && (prog_mode != 6) && (prog_mode != 7) && (prog_mode != 5)) {
         return 0;
@@ -935,7 +935,7 @@ long RGE_Main_View::mouse_right_move_action(long param_1, long param_2, int para
 }
 
 long RGE_Main_View::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053F3D0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053F3D0
     (void)param_3;
 
     const int prog_mode = rge_base_game->prog_mode;
@@ -1044,7 +1044,7 @@ int RGE_Main_View::handle_scroll_view(long param_1, long param_2) {
 }
 
 void RGE_Main_View::draw() {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053F6F0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053F6F0
     const ulong start = debug_timeGetTime(kVwMainPath, 0x522);
     const ulong accum0 = rge_base_game->get_accum_time(0xB);
 
@@ -1080,7 +1080,7 @@ void RGE_Main_View::draw_multi_object_outline() {
 }
 
 int RGE_Main_View::command_place_object(long param_1, long param_2, int param_3) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053F810
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053F810
     if (allow_user_commands == 0) {
         return 0;
     }
@@ -1155,7 +1155,7 @@ int RGE_Main_View::command_place_object(long param_1, long param_2, int param_3)
 }
 
 int RGE_Main_View::command_make_do(long param_1, long param_2, int param_3, short param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053FA10
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053FA10
     if (allow_user_commands == 0) {
         return 0;
     }
@@ -1206,7 +1206,7 @@ int RGE_Main_View::command_make_do(long param_1, long param_2, int param_3, shor
 }
 
 int RGE_Main_View::command_make_move(long param_1, long param_2) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x00540350
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x00540350
     if (allow_user_commands == 0) {
         return 0;
     }
@@ -1233,7 +1233,7 @@ int RGE_Main_View::command_make_move(long param_1, long param_2) {
 }
 
 int RGE_Main_View::command_make_work(long param_1, long param_2) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x00540420
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x00540420
     if (allow_user_commands == 0) {
         return 0;
     }
@@ -1280,7 +1280,7 @@ int RGE_Main_View::command_make_work(long param_1, long param_2) {
 }
 
 int RGE_Main_View::command_place_multi_object(long param_1, long param_2, long param_3, long param_4, int param_5) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x005405C0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x005405C0
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -1357,7 +1357,7 @@ void RGE_Main_View::reset_display_object_selection(int param_1) {
 }
 
 uchar RGE_Main_View::pick1(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6, int param_7) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053FBD0
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053FBD0
     if (param_1 != ')') {
         if (param_1 == '*') {
             const uchar res = this->pick1(')', param_2, param_3, param_4, param_5, param_6, 1);
@@ -1515,7 +1515,7 @@ int RGE_Main_View::pick_objects1(long param_1, long param_2, RGE_Static_Object**
 }
 
 RGE_Static_Object* RGE_Main_View::pick_best_target(long param_1, long param_2, int* param_3, short param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.asm @ 0x00540010
+    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x00540010
     if (param_3 != nullptr) {
         *param_3 = 0;
     }

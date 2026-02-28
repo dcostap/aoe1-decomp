@@ -788,7 +788,7 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3, uchar
 // -----------------------------------------------------------------------------
 
 static void FUN_00437bd9() {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00437BD9 (switch jump-table thunk)
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437BD9 (switch jump-table thunk)
 }
 
 void RGE_Diamond_Map::draw_selected_area() {
@@ -1051,7 +1051,7 @@ void RGE_Diamond_Map::draw_clipped_horz_line(short param_1, short param_2, short
 }
 
 void RGE_Diamond_Map::draw_view_rect() {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00438250
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438250
     if (this->player == nullptr || this->map == nullptr || this->map_tile_rows == nullptr || this->map_image_lines == nullptr) {
         return;
     }
@@ -1151,7 +1151,7 @@ void RGE_Diamond_Map::draw_view_rect() {
 // -----------------------------------------------------------------------------
 
 int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short* param_4, RGE_Tile** param_5) {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00438530
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438530
     if (this->map == nullptr || this->map_image_lines == nullptr) {
         return 0;
     }
@@ -1197,7 +1197,7 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short
 }
 
 long RGE_Diamond_Map::handle_size(long param_1, long param_2) {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00438630
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438630
     TPanel::handle_size(param_1, param_2);
     this->view_col = -1;
     this->view_row = -1;
@@ -1206,7 +1206,7 @@ long RGE_Diamond_Map::handle_size(long param_1, long param_2) {
 }
 
 void RGE_Diamond_Map::start_scroll_view(long param_1, long param_2) {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00438670
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438670
     short col = 0;
     short row = 0;
     RGE_Tile* tile = nullptr;
@@ -1228,7 +1228,7 @@ void RGE_Diamond_Map::start_scroll_view(long param_1, long param_2) {
 }
 
 void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00438720
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438720
     short col = 0;
     short row = 0;
     RGE_Tile* tile = nullptr;
@@ -1248,13 +1248,13 @@ void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
 }
 
 void RGE_Diamond_Map::end_scroll_view() {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x004387C0
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004387C0
     this->scrolling = 0;
     this->release_mouse();
 }
 
 int RGE_Diamond_Map::is_inside(long param_1, long param_2) {
-    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x004387D0
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004387D0
     if (TPanel::is_inside(param_1, param_2) == 0) {
         return 0;
     }
