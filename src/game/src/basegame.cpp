@@ -1197,12 +1197,10 @@ void RGE_Base_Game::set_screen_size(long param_1, long param_2) {
 }
 
 void RGE_Base_Game::mouse_on() {
-    // Source of truth: basegame.cpp.decomp @ 0x00420370
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420370
     if (this->is_mouse_on == 0) {
         if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
-            if (this->mouse_pointer) {
-                this->mouse_pointer->on();
-            }
+            this->mouse_pointer->on();
             this->is_mouse_on = 1;
             return;
         }
@@ -1213,12 +1211,10 @@ void RGE_Base_Game::mouse_on() {
 }
 
 void RGE_Base_Game::mouse_off() {
-    // Source of truth: basegame.cpp.decomp @ 0x004203E0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004203E0
     if (this->is_mouse_on != 0) {
         if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
-            if (this->mouse_pointer) {
-                this->mouse_pointer->off();
-            }
+            this->mouse_pointer->off();
             this->is_mouse_on = 0;
             return;
         }
@@ -1228,18 +1224,12 @@ void RGE_Base_Game::mouse_off() {
     }
 }
 int RGE_Base_Game::get_error_code() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C990
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C990
     return this->error_code;
 }
 char* RGE_Base_Game::get_string(int p1, long p2, char* p3, int p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C9F0
-    if (StringTable) {
-        if (LoadStringA(StringTable, p1, p3, p4) > 0) {
-            return p3;
-        }
-    }
-    if (p4 > 0) p3[0] = '\0';
-    return p3;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C9F0
+    return this->get_string2(p1, p2, 0, p3, p4);
 }
 char* RGE_Base_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CA10
@@ -1541,11 +1531,11 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
     return DefWindowProcA((HWND)p1, p2, p3, p4); 
 }
 void RGE_Base_Game::set_prog_mode(int p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C240
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C240
     this->prog_mode = p1;
 }
 void RGE_Base_Game::set_game_mode(int p1, int p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x00420130
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420130
     this->game_mode = p1;
     this->sub_game_mode = p2;
 }
@@ -1558,17 +1548,15 @@ void RGE_Base_Game::set_player(short p1) {
     }
 }
 char* RGE_Base_Game::get_string(long p1, char* p2, int p3) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C9C0
-    if (StringTable) {
-        if (LoadStringA(StringTable, p1, p2, p3) > 0) {
-            return p2;
-        }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C9C0
+    if (LoadStringA(StringTable, p1, p2, p3) == 0) {
+        *p2 = '\0';
     }
-    if (p3 > 0) p2[0] = '\0';
+    p2[p3 - 1] = '\0';
     return p2;
 }
 char* RGE_Base_Game::get_string(long p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C9A0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C9A0
     // Loads string into a static buffer and returns it.
     static char static_string_buf[512];
     this->get_string(p1, static_string_buf, sizeof(static_string_buf));
@@ -3476,9 +3464,9 @@ void RGE_Base_Game::set_render_all() {
 }
 
 RGE_Font* RGE_Base_Game::get_font(int index) {
-    // Source of truth: basegame.cpp.decomp @ 0x004201A0
-    if (index >= 0 && index < this->font_num) {
-        return &this->fonts[index];
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004201A0
+    if (this->fonts != nullptr) {
+        return this->fonts + index;
     }
     return nullptr;
 }
@@ -3492,9 +3480,7 @@ TShape* RGE_Base_Game::get_shape(int index) {
 }
 
 TDigital* RGE_Base_Game::get_sound(int index) {
-    // Source of truth: basegame.cpp.decomp @ 0x004201E0
-    // Source of truth: `src/game/src/basegame.cpp.decomp` (`RGE_Base_Game::get_sound`).
-    // The original only checks for null `sounds` and then indexes directly.
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004201E0
     if (!this->sounds) {
         return nullptr;
     }
@@ -3507,22 +3493,22 @@ unsigned long RGE_Base_Game::get_last_max_time() {
 }
 
 unsigned long RGE_Base_Game::get_last_world_update_count() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C950
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C950
     return this->last_world_update_count;
 }
 
 unsigned long RGE_Base_Game::get_last_view_update_count() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C960
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C960
     return this->last_view_update_count;
 }
 
 unsigned long RGE_Base_Game::get_world_update_count() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C970
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C970
     return this->world_update_count;
 }
 
 unsigned long RGE_Base_Game::get_view_update_count() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C980
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C980
     return this->view_update_count;
 }
 
@@ -3534,7 +3520,7 @@ float RGE_Base_Game::version() {
 }
 
 int RGE_Base_Game::savedGame() {
-    // Source of truth: basegame.cpp.decomp @ 0x004223D0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223D0
     return this->savedGameValue;
 }
 
@@ -3544,12 +3530,12 @@ int RGE_Base_Game::numberPlayers() {
 }
 
 int RGE_Base_Game::mapXSize() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422410
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422410
     return (int)this->rge_game_options.mapXSizeValue;
 }
 
 int RGE_Base_Game::mapYSize() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422420
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422420
     return (int)this->rge_game_options.mapYSizeValue;
 }
 
@@ -3559,22 +3545,22 @@ int RGE_Base_Game::mapZSize() {
 }
 
 int RGE_Base_Game::scenarioGame() {
-    // Source of truth: basegame.cpp.decomp @ 0x004223A0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223A0
     return (int)this->rge_game_options.scenarioGameValue;
 }
 
 int RGE_Base_Game::campaignGame() {
-    // Source of truth: basegame.cpp.decomp @ 0x004223C0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223C0
     return this->campaignGameValue;
 }
 
 int RGE_Base_Game::multiplayerGame() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422400
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422400
     return (int)this->rge_game_options.multiplayerGameValue;
 }
 
 int RGE_Base_Game::singlePlayerGame() {
-    // Source of truth: basegame.cpp.decomp @ 0x004223F0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223F0
     return (int)this->rge_game_options.singlePlayerGameValue;
 }
 
@@ -3675,73 +3661,63 @@ int RGE_Base_Game::difficulty() {
 }
 
 int RGE_Base_Game::randomGame() {
-    // Source of truth: basegame.cpp.decomp @ 0x004223B0
-    // Random game = not scenario and not campaign
-    return (this->rge_game_options.scenarioGameValue == 0 && this->campaignGameValue == 0) ? 1 : 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223B0
+    return (this->rge_game_options.scenarioGameValue == 0) ? 1 : 0;
 }
 
 int RGE_Base_Game::fullVisibility() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422460
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422460
     return (int)this->rge_game_options.fullVisibilityValue;
 }
 
 int RGE_Base_Game::fogOfWar() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422470
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422470
     return (int)this->rge_game_options.fogOfWarValue;
 }
 
 int RGE_Base_Game::playerID(int index) {
-    // Source of truth: basegame.cpp.decomp @ 0x00422D90
-    if (index >= 0 && index < 9) {
-        return this->playerIDValue[index];
-    }
-    return 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422D90
+    return this->playerIDValue[index];
 }
 
 void RGE_Base_Game::setPlayerID(int index, int value) {
-    // Source of truth: basegame.cpp.decomp @ 0x00422DA0
-    if (index >= 0 && index < 9) {
-        this->playerIDValue[index] = value;
-    }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422DA0
+    this->playerIDValue[index] = value;
 }
 
 unsigned char RGE_Base_Game::pathFinding() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422670
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422670
     return this->pathFindingValue;
 }
 
 unsigned char RGE_Base_Game::mpPathFinding() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422680
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422680
     return this->rge_game_options.mpPathFindingValue;
 }
 
 void RGE_Base_Game::set_map_visible(unsigned char p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x004228C0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004228C0
     if (this->world != nullptr) {
         this->world->set_map_visible(p1);
     }
 }
 
 void RGE_Base_Game::set_map_fog(unsigned char p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x004228E0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004228E0
     if (this->world != nullptr) {
         this->world->set_map_fog(p1);
     }
 }
 
 void RGE_Base_Game::reset_countdown_timer(int p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x00422DC0
-    if (p1 >= 0 && p1 < 9) {
-        this->countdown_timer[p1] = -1;
-    }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422DC0
+    this->countdown_timer[p1] = -1;
 }
 
 void RGE_Base_Game::set_countdown_timer(int p1, long p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x00422DE0
-    if (p1 >= 0 && p1 < 9) {
-        if ((p2 < this->countdown_timer[p1]) || (this->countdown_timer[p1] < 0)) {
-            this->countdown_timer[p1] = p2;
-        }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422DE0
+    if ((p2 < this->countdown_timer[p1]) || (this->countdown_timer[p1] < 0)) {
+        this->countdown_timer[p1] = p2;
     }
 }
 
@@ -3758,7 +3734,7 @@ void RGE_Base_Game::get_countdown_timer(long param_1, long* param_2) {
 }
 
 void RGE_Base_Game::set_paused(int p1, int p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x00420220
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420220
     int was_paused = this->get_paused();
     this->save_paused = was_paused;
     if (p1 != was_paused) {
@@ -3787,10 +3763,7 @@ char* RGE_Base_Game::scenarioName() {
 }
 
 int RGE_Base_Game::campaign_open_scenario() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422910
-    if (this->player_game_info == nullptr) {
-        return -1;
-    }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422910
     return this->player_game_info->open_scenario();
 }
 
@@ -3827,38 +3800,14 @@ long RGE_Base_Game::GetWorldChecksum() {
 }
 
 void RGE_Base_Game::get_campaign_info(long* param_1, long* param_2, long* param_3) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041CF30
-    if (param_1 != nullptr) {
-        *param_1 = -1;
-    }
-    if (param_2 != nullptr) {
-        *param_2 = -1;
-    }
-    if (param_3 != nullptr) {
-        *param_3 = -1;
-    }
-
-    if (this->player_game_info == nullptr) {
-        return;
-    }
-
-    if (param_1 != nullptr) {
-        *param_1 = this->player_game_info->get_current_campaign();
-    }
-    if (param_2 != nullptr) {
-        *param_2 = this->player_game_info->get_current_player();
-    }
-    if (param_3 != nullptr) {
-        *param_3 = this->player_game_info->get_current_scenario();
-    }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CF30
+    *param_1 = this->player_game_info->get_current_campaign();
+    *param_2 = this->player_game_info->get_current_player();
+    *param_3 = this->player_game_info->get_current_scenario();
 }
 
 uchar RGE_Base_Game::set_campaign_info(long param_1, long param_2, long param_3) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041CF70
-    if (this->player_game_info == nullptr) {
-        return '\0';
-    }
-
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CF70
     if (this->player_game_info->set_current_campaign(param_1) != '\0') {
         if (this->player_game_info->set_current_person(param_2) != '\0') {
             if (this->player_game_info->set_current_scenario(param_3) != '\0') {
@@ -3870,7 +3819,7 @@ uchar RGE_Base_Game::set_campaign_info(long param_1, long param_2, long param_3)
 }
 
 void RGE_Base_Game::set_campaign_win() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041CFC0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CFC0
     this->player_game_info->notify_of_scenario_complete();
 }
 
@@ -3971,7 +3920,7 @@ RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* p1, int p2) {
 }
 
 long RGE_Base_Game::get_scenario_checksum(char* p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x00422D20
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422D20
     RGE_Scenario_Header* header = this->get_scenario_header(p1, 0);
     if (header == nullptr) {
         return 0;
