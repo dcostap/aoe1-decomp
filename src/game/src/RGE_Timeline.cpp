@@ -197,6 +197,8 @@ void RGE_Timeline::update() {
     this->old_time = current_time;
 }
 
+// TODO: STUB — decomp output corrupted/unreadable at timeline.cpp.decomp @ 0x0050DAF5
+
 // Source of truth: timeline.cpp.decomp @ 0x0050DB10
 void RGE_Timeline::mock_update(float time) {
     if ((time < this->old_time) && (this->time_list != nullptr)) {

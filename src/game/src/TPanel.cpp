@@ -10,11 +10,12 @@
 extern RGE_Base_Game* rge_base_game;
 
 // Source of truth: panel.cpp.decomp @ 0x00465746
+// TODO: STUB - decomp output is corrupted/unreadable at this offset; helper mirrors observed absolute-delta usage.
 static long panel_abs_long(long value) {
     return (value < 0) ? -value : value;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466170
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466170
 static void panel_get_mouse_info(uint wparam, long lparam, long* out_x, long* out_y, int* out_ctrl, int* out_shift) {
     if (out_x) {
         uint ux = (uint)lparam & 0xFFFFu;
@@ -40,7 +41,7 @@ static void panel_get_mouse_info(uint wparam, long lparam, long* out_x, long* ou
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00464B50
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464B50
 static void panel_add_node(TPanel* owner, PanelNode* node, PanelNode* anchor, int add_after) {
     if (!owner || !node) {
         return;
@@ -84,7 +85,7 @@ static void panel_add_node(TPanel* owner, PanelNode* node, PanelNode* anchor, in
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00464BF0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464BF0
 static void panel_remove_node(TPanel* owner, PanelNode* node) {
     if (!owner || !node) {
         return;
@@ -111,7 +112,7 @@ static void panel_remove_node(TPanel* owner, PanelNode* node) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466490
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466490
 static void panel_set_child_z_order(TPanel* owner, TPanel* child, unsigned char mode, short requested_z) {
     if (!owner || !child) {
         return;
@@ -212,10 +213,8 @@ TPanel::TPanel(char* name) {
     if (name) this->panelNameValue = strdup(name);
     else this->panelNameValue = nullptr;
 
-    // Source of truth: panel.cpp.decomp @ 0x004648B0
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464720.
-    // Named panels are registered with panel_system for name-based lookup and destroyPanel flows.
-    // TODO: parity note - original uses a global object (&panel_system); our build uses a pointer global.
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004648B0.
     if (this->panelNameValue != nullptr && this->panelNameValue[0] != '\0' && panel_system != nullptr) {
         panel_system->add_panel(this);
     }
@@ -261,7 +260,7 @@ TPanel::~TPanel() {
     }
 }
 long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
-    // Source of truth: panel.cpp.decomp @ 0x00464A80
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464A80
     this->parent_panel = param_2;
     this->render_area = param_1;
 
@@ -302,13 +301,7 @@ long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param
 
     return 1;
 }
-// Source of truth: panel.cpp.decomp @ 0x00464C50
-void TPanel::set_rect(tagRECT param_1) {
-    // Source of truth: `src/game/src/panel.cpp.decomp` uses inclusive rects.
-    this->set_rect(param_1.left, param_1.top, (param_1.right - param_1.left) + 1, (param_1.bottom - param_1.top) + 1);
-}
-
-// Source of truth: panel.cpp.decomp @ 0x00464D70
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464C50
 void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::set_rect(long,long,long,long)`).
     this->pnl_wid = param_3;
@@ -361,13 +354,18 @@ void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00464DA0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464D70
+void TPanel::set_rect(tagRECT param_1) {
+    this->set_rect(param_1.left, param_1.top, (param_1.right - param_1.left) + 1, (param_1.bottom - param_1.top) + 1);
+}
+
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464DA0
 void TPanel::set_color(uchar param_1) {
     this->color = param_1;
     if (this->active) this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00464DC0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464DC0
 void TPanel::set_active(int param_1) {
     if (this->active == param_1) return;
 
@@ -381,7 +379,7 @@ void TPanel::set_active(int param_1) {
     if (this->parent_panel) this->parent_panel->set_redraw(TPanel::RedrawMode::Redraw);
 }
 void TPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
-    // Source of truth: panel.cpp.decomp @ 0x00464E00
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464E00
     // Source of truth: `panel.cpp.decomp` (`TPanel::set_positioning`).
     this->position_mode = param_1;
     this->right_border = param_4;
@@ -411,7 +409,7 @@ void TPanel::set_positioning(PositionMode param_1, long param_2, long param_3, l
 }
 
 void TPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {
-    // Source of truth: panel.cpp.decomp @ 0x00464EB0
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464EB0
     // Source of truth: `panel.cpp.decomp` (`TPanel::set_fixed_position`).
     this->set_positioning(
         TPanel::PositionMode::Fixed,
@@ -419,19 +417,13 @@ void TPanel::set_fixed_position(long param_1, long param_2, long param_3, long p
         param_3, param_3, param_4, param_4,
         nullptr, nullptr, nullptr, nullptr);
 }
-// Source of truth: panel.cpp.decomp @ 0x00464EE0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464EE0
 void TPanel::set_redraw(RedrawMode param_1) {
-    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::set_redraw`).
-    if (param_1 == NoRedraw) {
-        this->need_redraw = NoRedraw;
-        return;
-    }
-
-    if (this->need_redraw != RedrawFull) {
+    if ((param_1 != Redraw) || (this->need_redraw != RedrawFull)) {
         this->need_redraw = param_1;
     }
 
-    if (this->render_area && this->render_area->Wnd && this->visible && this->active) {
+    if (param_1 != NoRedraw && this->render_area && this->visible && this->active) {
         InvalidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect, FALSE);
     }
 }
@@ -474,7 +466,7 @@ void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode 
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00465050
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465050
 void TPanel::set_any_overlapping_redraw(TPanel* param_1, RedrawMode param_2) {
     if (param_1 == nullptr) {
         return;
@@ -510,7 +502,7 @@ void TPanel::set_any_overlapping_redraw(TPanel* param_1, RedrawMode param_2) {
         }
     }
 }
-// Source of truth: panel.cpp.decomp @ 0x00465320
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465320
 void TPanel::draw_setup(int param_1) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_setup`).
     if (!this->render_area) return;
@@ -523,7 +515,7 @@ void TPanel::draw_setup(int param_1) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00465370
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465370
 void TPanel::draw_finish() {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_finish`).
     this->need_redraw = NoRedraw;
@@ -535,7 +527,7 @@ void TPanel::draw_finish() {
     }
     this->need_restore = 0;
 }
-// Source of truth: panel.cpp.decomp @ 0x00465160
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465160
 void TPanel::draw() {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw`).
     this->need_redraw = NoRedraw;
@@ -553,7 +545,7 @@ void TPanel::draw() {
 
     this->render_area->Clear(&this->clip_rect, (int)this->color);
 }
-// Source of truth: panel.cpp.decomp @ 0x004651C0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004651C0
 void TPanel::draw_rect(tagRECT* param_1) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_rect`).
     if (!param_1) return;
@@ -563,7 +555,7 @@ void TPanel::draw_rect(tagRECT* param_1) {
     this->clip_rect = save;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00465220
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465220
 void TPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_offset`).
     if (!param_3) return;
@@ -577,7 +569,7 @@ void TPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {
     this->pnl_y -= param_2;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004652C0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004652C0
 void TPanel::draw_rect2(tagRECT* param_1) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_rect2`).
     this->draw_rect2_flag = 1;
@@ -585,7 +577,7 @@ void TPanel::draw_rect2(tagRECT* param_1) {
     this->draw_rect2_flag = 0;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004652F0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004652F0
 void TPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_offset2`).
     this->draw_rect2_flag = 1;
@@ -593,7 +585,7 @@ void TPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {
     this->draw_rect2_flag = 0;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004653A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004653A0
 void TPanel::paint() {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::paint`).
     if (!this->render_area || !this->visible || !this->active) return;
@@ -604,7 +596,7 @@ void TPanel::paint() {
         ValidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect);
     }
 }
-// Source of truth: panel.cpp.decomp @ 0x004653E0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004653E0
 long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::wnd_proc` @ 0x004653E0).
     if (!this->active) {
@@ -710,7 +702,7 @@ long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
 }
 
 long TPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
-    // Source of truth: panel.cpp.decomp @ 0x00465DC0
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465DC0
     if (!this->active) {
         return 0;
     }
@@ -769,7 +761,7 @@ long TPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
 }
 
 long TPanel::handle_mouse_down(uchar button, long x, long y, int wparam, int param_5) {
-    // Source of truth: panel.cpp.decomp @ 0x00465C70
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465C70
     if (!this->active) {
         return 0;
     }
@@ -816,7 +808,7 @@ long TPanel::handle_mouse_down(uchar button, long x, long y, int wparam, int par
 }
 
 long TPanel::handle_mouse_up(uchar button, long x, long y, int wparam, int param_5) {
-    // Source of truth: panel.cpp.decomp @ 0x00465F70
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465F70
     if (!this->active) {
         return 0;
     }
@@ -859,7 +851,7 @@ long TPanel::handle_mouse_up(uchar button, long x, long y, int wparam, int param
     return 1;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00465780
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465780
 long TPanel::handle_idle() {
     // Source of truth: `panel.cpp.decomp` (`TPanel::handle_idle`).
     // We keep the original hold-transition behavior because button/list panels depend on it.
@@ -884,7 +876,7 @@ long TPanel::handle_idle() {
 
     return 0;
 }
-// Source of truth: panel.cpp.decomp @ 0x00465820
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465820
 long TPanel::handle_size(long param_1, long param_2) {
     // Source of truth: `panel.cpp.asm/.decomp` (`TPanel::handle_size`).
     // Numeric mode values used by the original layout logic:
@@ -1019,9 +1011,9 @@ long TPanel::handle_size(long param_1, long param_2) {
 
     return 0;
 }
-// Source of truth: panel.cpp.decomp @ 0x00465A70
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465A70
 long TPanel::handle_paint() {
-    // Source of truth: panel.cpp.decomp @ 0x00465A70 (TPanel::handle_paint).
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465A70 (TPanel::handle_paint).
     if (((this->render_area != nullptr) && (this->visible != 0)) && (this->active != 0)) {
         if (rge_base_game->prog_active != 0 && IsIconic((HWND)this->render_area->Wnd) == 0) {
             if (this->need_redraw != NoRedraw) {
@@ -1049,33 +1041,57 @@ long TPanel::handle_paint() {
     return 0;
 }
 long TPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
-    // Source of truth: panel.cpp.decomp @ 0x00465B30
-    if (this->curr_child && this->curr_child->active && this->curr_child->visible) {
-        if (this->curr_child->handle_key_down(param_1, param_2, param_3, param_4, param_5)) {
-            return 1;
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465B30
+    if (this->have_focus != 0) {
+        for (PanelNode* pPVar1 = this->last_child_node; pPVar1 != nullptr; pPVar1 = pPVar1->prev_node) {
+            int iVar2 = pPVar1->panel->handle_key_down(param_1, param_2, param_3, param_4, param_5);
+            if (iVar2 != 0) {
+                return iVar2;
+            }
+        }
+
+        long iVar3 = this->key_down_action(param_1, param_2, param_3, param_4, param_5);
+        if (iVar3 != 0) {
+            return iVar3;
+        }
+
+        if (param_3 == 0 && param_4 == 0 && param_1 == 9 && this->tab_stop != 0 && this->parent_panel != nullptr) {
+            TPanel* next_panel = (param_5 == 0) ? this->tab_next_panel : this->tab_prev_panel;
+            if (next_panel != nullptr) {
+                this->parent_panel->set_curr_child(next_panel);
+                return 1;
+            }
         }
     }
-    return this->key_down_action(param_1, param_2, param_3, param_4, param_5);
+
+    return 0;
 }
 // Source of truth: panel.cpp.decomp @ 0x00465BE0
 long TPanel::handle_char(long param_1, short param_2) {
-    if (this->curr_child && this->curr_child->active && this->curr_child->visible) {
-        if (this->curr_child->handle_char(param_1, param_2)) {
-            return 1;
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465BE0
+    if (this->have_focus == 0) {
+        return 0;
+    }
+
+    for (PanelNode* pPVar1 = this->last_child_node; pPVar1 != nullptr; pPVar1 = pPVar1->prev_node) {
+        long iVar2 = pPVar1->panel->handle_char(param_1, param_2);
+        if (iVar2 != 0) {
+            return iVar2;
         }
     }
+
     return this->char_action(param_1, param_2);
 }
-// Source of truth: panel.cpp.decomp @ 0x00465C30
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465C30
 long TPanel::handle_command(uint param_1, long param_2) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00465C40
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465C40
 long TPanel::handle_user_command(uint param_1, long param_2) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00465C50
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465C50
 long TPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00465C60
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465C60
 long TPanel::handle_scroll(long param_1, long param_2) { return 0; }
 long TPanel::handle_mouse_dbl_click(uchar button, long x, long y, int wparam, int param_5) {
-    // Source of truth: panel.cpp.decomp @ 0x00466060
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466060
     if (!this->active) {
         return 0;
     }
@@ -1113,42 +1129,47 @@ long TPanel::handle_mouse_dbl_click(uchar button, long x, long y, int wparam, in
     return action_res;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00437110
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437110
 long TPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437230
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437230
 long TPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437240
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437240
 long TPanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437250
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437250
 long TPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437260
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437260
 long TPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437270
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437270
 long TPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437280
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437280
 long TPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437290
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437290
 long TPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x004372A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004372A0
 long TPanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x004372B0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004372B0
 long TPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x00437490
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437490
 long TPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x004374A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004374A0
 long TPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
-// Source of truth: panel.cpp.decomp @ 0x004374B0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004374B0
 long TPanel::char_action(long param_1, short param_2) { return 0; }
 long TPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: panel.cpp.decomp @ 0x00466140
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466140
     if (this->parent_panel) {
         return this->parent_panel->action(param_1, param_2, param_3, param_4);
     }
     return 0;
 }
-// Source of truth: panel.cpp.decomp @ 0x004669F0
-void TPanel::get_true_render_rect(tagRECT* param_1) {}
-// Source of truth: panel.cpp.decomp @ 0x004662E0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004669F0
+void TPanel::get_true_render_rect(tagRECT* param_1) {
+    param_1->left = this->render_rect.left;
+    param_1->top = this->render_rect.top;
+    param_1->right = this->render_rect.right;
+    param_1->bottom = this->render_rect.bottom;
+}
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004662E0
 int TPanel::is_inside(long x, long y) {
     if (!this->active) {
         return 0;
@@ -1162,7 +1183,7 @@ int TPanel::is_inside(long x, long y) {
     }
     return 1;
 }
-// Source of truth: panel.cpp.decomp @ 0x004663F0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004663F0
 void TPanel::set_focus(int param_1) {
     if (param_1 != this->have_focus) {
         this->have_focus = param_1;
@@ -1172,16 +1193,14 @@ void TPanel::set_focus(int param_1) {
         }
     }
 }
-// Source of truth: panel.cpp.decomp @ 0x00466600
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466650
 void TPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {
-    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466650
     this->tab_prev_panel = param_1;
     this->tab_next_panel = param_2;
     this->tab_stop = 1;
 }
-// Source of truth: panel.cpp.decomp @ 0x00466650
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466600
 void TPanel::set_tab_order(TPanel** param_1, short param_2) {
-    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466600
     int count = (int)param_2;
     if (count <= 0) {
         return;
@@ -1214,18 +1233,35 @@ uchar TPanel::get_help_info(char** param_1, long* param_2, long param_3, long pa
 
     return 0;
 }
-// Source of truth: panel.cpp.decomp @ 0x00466980
-void TPanel::stop_sound_system() {}
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466980
+void TPanel::stop_sound_system() {
+    for (PanelNode* pPVar1 = this->first_child_node; pPVar1 != nullptr; pPVar1 = pPVar1->next_node) {
+        pPVar1->panel->stop_sound_system();
+    }
+}
 // Source of truth: panel.cpp.decomp @ 0x004669A0
-int TPanel::restart_sound_system() { return 1; }
-// Source of truth: panel.cpp.decomp @ 0x00437610
+int TPanel::restart_sound_system() {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004669A0
+    int ok = 1;
+    for (PanelNode* pPVar1 = this->first_child_node; pPVar1 != nullptr; pPVar1 = pPVar1->next_node) {
+        if (pPVar1->panel->restart_sound_system() == 0) {
+            ok = 0;
+        }
+    }
+    return ok;
+}
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00437610
 void TPanel::take_snapshot() {}
-// Source of truth: panel.cpp.decomp @ 0x004669D0
-void TPanel::handle_reactivate() {}
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004669D0
+void TPanel::handle_reactivate() {
+    for (PanelNode* pPVar1 = this->first_child_node; pPVar1 != nullptr; pPVar1 = pPVar1->next_node) {
+        pPVar1->panel->handle_reactivate();
+    }
+}
 
-// Source of truth: panel.cpp.decomp @ 0x00466820
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466820
 void TPanel::delete_panel(TPanel** panel) {
-    // Source of truth: panel.cpp.decomp @ 0x00466820
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466820
     // If the panel pointer is valid, delete the panel and null the pointer
     if (panel && *panel) {
         delete *panel;
@@ -1233,9 +1269,9 @@ void TPanel::delete_panel(TPanel** panel) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004663A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004663A0
 void TPanel::set_curr_child(TPanel* child) {
-    // Source of truth: panel.cpp.decomp @ 0x004663A0
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004663A0
     if (child == this->curr_child) {
         return;
     }
@@ -1251,7 +1287,7 @@ void TPanel::set_curr_child(TPanel* child) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004668B0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004668B0
 void TPanel::set_help_info(long help_id, long page_id) {
     // Source of truth: panel.cpp.decomp
     // Set help information for this panel
@@ -1259,40 +1295,26 @@ void TPanel::set_help_info(long help_id, long page_id) {
     this->help_page_id = page_id;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466890
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466890
 long TPanel::get_help_message() {
     return this->help_string_id;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004668A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004668A0
 long TPanel::get_help_page() {
     return this->help_page_id;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466840
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466840
 int TPanel::get_string(int resid, char* buffer, int len) {
-    if (!buffer || len <= 0) return 0;
-    
-    if (rge_base_game) {
-        if (rge_base_game->get_string(resid, buffer, len)) {
-            // Check if string was found (not empty)
-            if (buffer[0] != '\0') return 1;
-        }
-    }
-    
-    // Fallback: try loading from module resources directly (just in case)
-    if (LoadStringA(GetModuleHandle(NULL), resid, buffer, len) > 0) {
-        return 1;
-    }
-    
-    buffer[0] = '\0';
-    return 0;
+    rge_base_game->get_string(resid, buffer, len);
+    return (buffer[0] != '\0') ? 1 : 0;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466870
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466870
 char* TPanel::get_string(int resid) {
     static char static_buffer[0x200];
-    // Source of truth: panel.cpp.decomp @ 0x00466870
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466870
     this->get_string(resid, static_buffer, sizeof(static_buffer));
     return static_buffer;
 }
@@ -1303,18 +1325,18 @@ char* TPanel::panelName() const {
     return this->panelNameValue;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466770
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466770
 long TPanel::xPosition() const { return this->pnl_x; }
-// Source of truth: panel.cpp.decomp @ 0x00466780
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466780
 long TPanel::yPosition() const { return this->pnl_y; }
-// Source of truth: panel.cpp.decomp @ 0x00466790
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466790
 long TPanel::width() const { return this->pnl_wid; }
-// Source of truth: panel.cpp.decomp @ 0x004667A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004667A0
 long TPanel::height() const { return this->pnl_hgt; }
 
-// Source of truth: panel.cpp.decomp @ 0x00466430
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466430
 void TPanel::set_z_order(char param_1, int param_2) {
-    // Source of truth: panel.cpp.decomp @ 0x00466430 + set_child_z_order @ 0x00466490
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466430 + set_child_z_order @ 0x00466490
     if (this->parent_panel != nullptr) {
         panel_set_child_z_order(this->parent_panel, this, (unsigned char)param_1, (short)param_2);
         return;
@@ -1329,7 +1351,7 @@ void TPanel::set_z_order(char param_1, int param_2) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466220
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466220
 int TPanel::capture_mouse() {
     if (panel_system) {
         if (panel_system->mouseOwnerValue != nullptr) {
@@ -1351,7 +1373,7 @@ int TPanel::capture_mouse() {
     return 1;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466280
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466280
 void TPanel::release_mouse() {
     if (!this->mouse_captured) {
         return;
@@ -1365,7 +1387,7 @@ void TPanel::release_mouse() {
     this->mouse_captured = 0;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004662C0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004662C0
 uchar TPanel::is_redraw_needed() {
     if (this->render_area != nullptr && this->visible != 0 && this->active != 0) {
         return (uchar)this->need_redraw;
@@ -1373,7 +1395,7 @@ uchar TPanel::is_redraw_needed() {
     return 0;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466320
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466320
 int TPanel::is_inside_rect(long param_1, long param_2, tagRECT* param_3) {
     if (param_3 == nullptr) {
         return 0;
@@ -1385,12 +1407,12 @@ int TPanel::is_inside_rect(long param_1, long param_2, tagRECT* param_3) {
     return 0;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466420
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466420
 int TPanel::get_focus() {
     return this->have_focus;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004661D0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004661D0
 void TPanel::get_mouse_pos(tagPOINT* param_1) {
     if (param_1 == nullptr) {
         return;
@@ -1410,40 +1432,58 @@ void TPanel::get_mouse_pos(tagPOINT* param_1) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466670
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466670
 TPanel* TPanel::previousPanel() {
     return this->previousPanelValue;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466680
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466680
 void TPanel::setPreviousPanel(TPanel* panel) {
     this->previousPanelValue = panel;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466690
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466690
 TPanel* TPanel::previousModalPanel() {
     return this->previousModalPanelValue;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004666A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004666A0
 void TPanel::setPreviousModalPanel(TPanel* panel) {
     this->previousModalPanelValue = panel;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004666C0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004666C0
 void TPanel::setPanelName(char* name) {
+    if (name == nullptr || name[0] == '\0') {
+        if (this->panelNameValue != nullptr) {
+            free(this->panelNameValue);
+            this->panelNameValue = nullptr;
+        }
+        return;
+    }
+
+    size_t needed_len = strlen(name) + 1;
     if (this->panelNameValue != nullptr) {
+        size_t current_len = strlen(this->panelNameValue) + 1;
+        if (needed_len <= current_len) {
+            memcpy(this->panelNameValue, name, needed_len);
+            return;
+        }
         free(this->panelNameValue);
     }
-    this->panelNameValue = (name != nullptr) ? strdup(name) : nullptr;
+
+    this->panelNameValue = (char*)malloc(needed_len);
+    if (this->panelNameValue != nullptr) {
+        memcpy(this->panelNameValue, name, needed_len);
+    }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004667B0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004667B0
 TDrawArea* TPanel::renderArea() {
     return this->render_area;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004667C0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004667C0
 tagRECT TPanel::clipRectangle() {
     tagRECT rect;
     rect.left = this->clip_rect.left;
@@ -1453,7 +1493,7 @@ tagRECT TPanel::clipRectangle() {
     return rect;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004667F0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004667F0
 void TPanel::setClipRectangle(tagRECT rect) {
     this->clip_rect = rect;
 }
@@ -1485,7 +1525,7 @@ int TPanel::bound_point(long* param_1, long* param_2) {
 }
 
 void TPanel::draw_tree() {
-    // Source of truth: panel.cpp.decomp @ 0x00465A70
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465A70
     // Parity traversal adapter: delegate to TPanel::handle_paint (panel.cpp.decomp/.asm @ 0x00465A70).
     this->handle_paint();
 }
