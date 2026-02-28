@@ -9,7 +9,6 @@ public:
 
     // Virtuals (best-effort)
     virtual ~RGE_Active_Animated_Sprite(); // vt[0] (0x0)
-    virtual void set_offset(long param_1, long param_2); // vt[1] (0x4)
     virtual void save(int param_1); // vt[2] (0x8)
     virtual void update(float param_1, float param_2); // vt[3] (0xC)
     virtual void draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7); // vt[4] (0x10)
