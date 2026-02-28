@@ -333,16 +333,187 @@ void UnitAIModule::load(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413810
 RGE_Player* UnitAIModule::owner() const {
-    return (this->objectValue != nullptr) ? this->objectValue->owner : nullptr;
+    return this->objectValue->owner;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413820
 RGE_Static_Object* UnitAIModule::object() const {
     return this->objectValue;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413830
 int UnitAIModule::objectID() const {
-    return (this->objectValue != nullptr) ? (int)this->objectValue->id : -1;
+    return (int)this->objectValue->id;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413840
+int UnitAIModule::objectCategory() const {
+    return this->objectCategoryValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413850
+int UnitAIModule::mood() const {
+    return this->moodValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413860
+unsigned long UnitAIModule::lastUpdateTime() const {
+    return this->lastUpdateTimeValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413870
+unsigned long UnitAIModule::idleTimer() const {
+    return this->idleTimerValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413880
+unsigned long UnitAIModule::idleTimeout() const {
+    return this->idleTimeoutValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413890
+unsigned long UnitAIModule::secondaryTimer() const {
+    return this->secondaryTimerValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138A0
+float UnitAIModule::defenseBuffer() const {
+    return this->defenseBufferValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138C0
+void UnitAIModule::setDefenseBuffer(float param_1) {
+    this->defenseBufferValue = param_1;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138D0
+int UnitAIModule::orderQueueSize() const {
+    return this->orderQueueSizeValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138E0
+OrderEvent* UnitAIModule::orderQueueElement(int param_1) const {
+    if ((-1 < param_1) && (param_1 < this->orderQueueSizeValue) && (this->orderQueueValue != nullptr)) {
+        return this->orderQueueValue + param_1;
+    }
+    return nullptr;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413910
+void UnitAIModule::purgeOrderQueue() {
+    this->orderQueueSizeValue = 0;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413920
+int UnitAIModule::currentOrder() const {
+    return this->currentOrderValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413930
+void UnitAIModule::setCurrentOrder(int param_1) {
+    this->lastOrderValue = this->currentOrderValue;
+    this->currentOrderValue = param_1;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413940
+int UnitAIModule::currentOrderPriority() const {
+    return this->currentOrderPriorityValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413950
+void UnitAIModule::setCurrentOrderPriority(int param_1) {
+    this->currentOrderPriorityValue = param_1;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413960
+int UnitAIModule::currentAction() const {
+    return this->currentActionValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413970
+void UnitAIModule::setCurrentAction(int param_1) {
+    this->lastActionValue = this->currentActionValue;
+    this->currentActionValue = param_1;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413980
+int UnitAIModule::currentTarget() const {
+    return this->currentTargetValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413990
+int UnitAIModule::currentTargetType() const {
+    return this->currentTargetTypeValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004139A0
+float UnitAIModule::currentTargetX() const {
+    return this->currentTargetXValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004139B0
+float UnitAIModule::currentTargetY() const {
+    return this->currentTargetYValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004139C0
+float UnitAIModule::currentTargetZ() const {
+    return this->currentTargetZValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004139D0
+int UnitAIModule::lastAction() const {
+    return this->lastActionValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004139E0
+int UnitAIModule::lastOrder() const {
+    return this->lastOrderValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004139F0
+int UnitAIModule::lastTarget() const {
+    return this->lastTargetValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413A00
+int UnitAIModule::lastTargetType() const {
+    return this->lastTargetTypeValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413A10
+float UnitAIModule::desiredTargetDistance() const {
+    return this->desiredTargetDistanceValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413A20
+int UnitAIModule::attackingUnitID(int param_1) {
+    if ((param_1 < 0) || (this->attackingUnitsValue.numberValue <= param_1)) {
+        return -1;
+    }
+    if ((this->attackingUnitsValue.maximumSizeValue - 1) < param_1) {
+        const int newMaximum = param_1 + 1;
+        int* newValues = (int*)::operator new((size_t)newMaximum * sizeof(int), std::nothrow);
+        if (newValues != nullptr) {
+            for (int i = 0; i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+                if (newMaximum <= i) {
+                    break;
+                }
+                newValues[i] = this->attackingUnitsValue.value[i];
+            }
+            ::operator delete(this->attackingUnitsValue.value);
+            this->attackingUnitsValue.value = newValues;
+            this->attackingUnitsValue.maximumSizeValue = newMaximum;
+        }
+    }
+    return this->attackingUnitsValue.value[param_1];
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413AA0
+int UnitAIModule::numberAttackingUnits() const {
+    return this->attackingUnitsValue.numberValue;
 }
 
 // TODO: aiuaimod parity pass is still in progress for UnitAIModule decision logic.
@@ -476,15 +647,58 @@ int UnitAIModule::closestUndiscoveredTile(int* param_1, int* param_2, int param_
     return 0;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004161D0
+Waypoint* UnitAIModule::waypoint(int param_1) const {
+    (void)param_1;
+    return nullptr;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004161E0
+int UnitAIModule::waypointQueueSize() const {
+    return this->waypointQueueSizeValue;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004161F0
+int UnitAIModule::addToWaypointQueue(int param_1, int param_2) {
+    if (this->waypointQueueSizeValue > 7) {
+        this->waypointQueueSizeValue = 0;
+    }
+    this->waypointQueue[this->waypointQueueSizeValue].x = (float)param_1;
+    this->waypointQueue[this->waypointQueueSizeValue].y = (float)param_2;
+    this->waypointQueueSizeValue = this->waypointQueueSizeValue + 1;
+    return 1;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416240
+int UnitAIModule::inWaypointQueue(int param_1, int param_2) const {
+    if (this->waypointQueueSizeValue < 1) {
+        return 0;
+    }
+    for (int i = 0; i < this->waypointQueueSizeValue; ++i) {
+        if ((this->waypointQueue[i].x == (float)param_1) && (this->waypointQueue[i].y == (float)param_2)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416290
+void UnitAIModule::clearWaypointQueue() {
+    this->waypointQueueSizeValue = 0;
+}
+
 // TODO: aiuaimod parity pass is still in progress for debug logging parity.
 void UnitAIModule::logDebug(char* param_1) {
     (void)param_1;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004162A0
 int UnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
-    return param_1 != nullptr;
+    (void)param_1;
+    return 1;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004162B0
 int UnitAIModule::canAttackUnitAtNeutrality(int param_1) {
     (void)param_1;
     return 0;
@@ -674,11 +888,13 @@ int UnitAIModule::importantObject(int param_1) {
     return 0;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004177C0
 int UnitAIModule::convertToLOSResourceType(int param_1) {
     (void)param_1;
     return -1;
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138B0
 int UnitAIModule::canConvert(int param_1) {
     (void)param_1;
     return 0;
