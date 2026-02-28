@@ -9,6 +9,7 @@ struct Blit_Queue_Entry;
 struct RGE_Pick_Info;
 struct RGE_SPick_Info;
 struct DClipInfo_List;
+struct DClipInfo_Node;
 struct Ov_Sprite_Draw_Rec;
 class TMessagePanel;
 class Shape_Info;
@@ -23,6 +24,7 @@ public:
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, char* param_9);
     virtual void set_rect(tagRECT param_1) override;
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4) override;
+    virtual void set_redraw(RedrawMode param_1) override;
     virtual void draw() override;
     virtual void set_focus(int param_1) override;
 
@@ -37,10 +39,13 @@ public:
 
     void set_selection_area(long param_1, long param_2, long param_3, long param_4);
     unsigned char pick(unsigned char param_1, unsigned char param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
+    unsigned char pick(unsigned char param_1, unsigned char param_2, tagPOINT* param_3, tagPOINT* param_4, void** param_5, float* param_6, float* param_7, short* param_8, short* param_9);
     unsigned char pick_multi(unsigned char param_1, long param_2, long param_3, long param_4, long param_5);
     int pick_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7);
     int pick_multi_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, unsigned char param_8, int param_9);
     int sprite_check(unsigned char* param_1, Shape_Info* param_2, int param_3, int param_4);
+    void set_world(RGE_Game_World* param_1);
+    void set_player(RGE_Player* param_1);
 
     // Overlay helpers (view.cpp.decomp: selection flashes + overlay sprites).
     void display_object_selection(int id, int duration, int select_type, int reset_type);
@@ -55,6 +60,19 @@ public:
     void calc_draw_vars();
     void draw_object_outline();
     void draw_paint_brush();
+    void CreateBlitQueue(tagRECT* old_rect, tagRECT* new_rect, int dx, int dy);
+    void ProcessQueuedBlit(int force);
+    void Update_Render_Pointers();
+    void Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* mask);
+    void Draw_GDI_Object(DClipInfo_Node* node, TDrawArea* area);
+    void draw_terrain_obstruction_map(int x, int y, TShape* shape, int frame, int tile_col, int tile_row);
+    int Get_Cursor_Position(tagPOINT* point, int x_off, int y_off);
+    int Pick_Tile(long x, long y, int* out_col, int* out_row);
+    void get_tile_bounding_coords(int col, int row, int* out_min_x, int* out_min_y, int* out_max_x, int* out_max_y);
+    int pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int* out_object_id);
+    int hit_tile(RGE_Tile* tile, short draw_x, short draw_y, short map_col, short map_row, tagPOINT* point);
+    RGE_Static_Object* hit_object(RGE_Tile* tile, short draw_x, short draw_y, short map_col, short map_row, tagPOINT* mouse_pos, tagPOINT* start_pos, short* out_scr_x, short* out_scr_y, RGE_Static_Object* last_picked, uchar fogged);
+    void reset_cyclic_overlay_sprites();
 
     int get_tile_screen_coords(short col, short row, short* out_x, short* out_y, int adjust_elev);
     void get_center_screen_pos(short* out_y, short* out_x);

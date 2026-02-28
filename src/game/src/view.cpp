@@ -17,7 +17,10 @@
 #include "RGE_Sprite.h"
 #include "RGE_Active_Sprite_List.h"
 #include "RGE_Color_Table.h"
+#include "PathingSystem.h"
 #include "TShape.h"
+#include "TDrawSystem.h"
+#include "Blit_Queue_Entry.h"
 #include "DClipInfo_List.h"
 #include "DClipInfo_Node.h"
 #include "TMousePointer.h"
@@ -344,6 +347,29 @@ void RGE_View::reset_overlay_sprites() {
     this->extra_sprites = nullptr;
 }
 
+void RGE_View::reset_cyclic_overlay_sprites() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053AC70
+    Ov_Sprite_Draw_Rec* cur = this->extra_sprites;
+    while (cur != nullptr) {
+        if (cur->displayfunction == 1) {
+            if (cur->prev != nullptr) {
+                cur->prev->next = cur->next;
+            }
+            if (cur->next != nullptr) {
+                cur->next->prev = cur->prev;
+            }
+            if (cur->prev == nullptr) {
+                this->extra_sprites = cur->next;
+            }
+            Ov_Sprite_Draw_Rec* next = cur->next;
+            delete cur;
+            cur = next;
+        } else {
+            cur = cur->next;
+        }
+    }
+}
+
 void RGE_View::add_overlay_sprite(
     TShape* shape,
     int facet,
@@ -564,6 +590,44 @@ void RGE_View::set_rect(long param_1, long param_2, long param_3, long param_4) 
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+void RGE_View::set_redraw(RedrawMode param_1) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534420
+    TPanel::set_redraw(param_1);
+    if (param_1 == TPanel::RedrawMode::RedrawFull) {
+        this->render_terrain_mode = 0;
+    }
+}
+
+void RGE_View::set_world(RGE_Game_World* param_1) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534440
+    this->world = param_1;
+    if (param_1 != nullptr) {
+        this->map = param_1->map;
+        this->map->coordinate_map();
+        this->tile_wid = this->map->tile_width;
+        this->tile_hgt = this->map->tile_height;
+        this->tile_half_wid = this->map->tile_half_width;
+        this->tile_half_hgt = this->map->tile_half_height;
+        this->elev_hgt = this->map->elev_height;
+    } else {
+        this->map = nullptr;
+        this->tile_wid = 0;
+        this->tile_hgt = 0;
+        this->tile_half_wid = 0;
+        this->tile_half_hgt = 0;
+        this->elev_hgt = 0;
+    }
+    this->calc_draw_vars();
+}
+
+void RGE_View::set_player(RGE_Player* param_1) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534500
+    this->player = param_1;
+    this->last_view_x = -9999.0f;
+    this->last_view_y = -9999.0f;
+    this->set_redraw(TPanel::RedrawMode::RedrawFull);
+}
+
 void RGE_View::delete_surfaces() {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00534100
     if (this->save_area1 != nullptr) {
@@ -637,6 +701,134 @@ void RGE_View::calc_draw_vars() {
     this->center_scr_row_offset = 0;
 }
 
+void RGE_View::CreateBlitQueue(tagRECT* old_rect, tagRECT* new_rect, int dx, int dy) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005346F0
+    bool one_blt = false;
+    int v_blits = 0;
+    tagRECT blt_src = { 0, 0, 0, 0 };
+    int src_bottom = 0;
+    int blt_delta_x = 0;
+    int blt_delta_y = 0;
+
+    if ((dx == 0) && (dy == 0)) {
+        return;
+    }
+
+    if ((new_rect->bottom < old_rect->top) || (new_rect->right < old_rect->left) ||
+        (old_rect->bottom < new_rect->top) || (old_rect->right < new_rect->left)) {
+        one_blt = true;
+        v_blits = 1;
+    } else {
+        const int abs_dy = (dy < 0) ? -dy : dy;
+        const int abs_dx = (dx < 0) ? -dx : dx;
+        int h_blits = 9999;
+        int one_dim = 9999;
+        if (dy != 0) {
+            one_dim = (abs_dy + (old_rect->bottom - old_rect->top)) / abs_dy;
+        }
+        if (dx != 0) {
+            h_blits = (abs_dx + (old_rect->right - old_rect->left)) / abs_dx;
+        }
+
+        blt_src.left = old_rect->left;
+        blt_src.top = old_rect->top;
+        blt_src.right = old_rect->right;
+        src_bottom = old_rect->bottom;
+
+        if (one_dim < h_blits) {
+            v_blits = one_dim;
+            blt_delta_x = dy;
+            if (dy < 0) {
+                blt_src.top = old_rect->top + dy + 1;
+            } else {
+                src_bottom = old_rect->top + dy - 1;
+            }
+        } else {
+            v_blits = h_blits;
+            blt_delta_y = dx;
+            if (dx < 0) {
+                blt_src.left = old_rect->right + dx + 1;
+            } else {
+                blt_src.right = old_rect->left + dx - 1;
+            }
+        }
+    }
+
+    if (this->Blt_Queue_Allocated < v_blits) {
+        if (this->Blit_Queue != nullptr) {
+            std::free(this->Blit_Queue);
+        }
+        this->Blit_Queue = nullptr;
+    }
+    if (this->Blit_Queue == nullptr) {
+        this->Blit_Queue = (Blit_Queue_Entry*)std::calloc((size_t)v_blits, sizeof(Blit_Queue_Entry));
+        this->Blt_Queue_Allocated = v_blits;
+    }
+
+    if (this->Blit_Queue == nullptr) {
+        return;
+    }
+
+    if (one_blt) {
+        this->Blit_Queue[0].src = *old_rect;
+        this->Blit_Queue[0].dest = *new_rect;
+    } else if (v_blits > 0) {
+        for (int i = 0; i < v_blits; ++i) {
+            Blit_Queue_Entry* entry = &this->Blit_Queue[i];
+            entry->src.left = blt_src.left;
+            entry->src.top = blt_src.top;
+            entry->src.right = blt_src.right;
+            entry->src.bottom = src_bottom;
+            entry->dest.top = blt_src.top - dy;
+            entry->dest.left = blt_src.left - dx;
+            entry->dest.bottom = src_bottom - dy;
+            entry->dest.right = blt_src.right - dx;
+
+            blt_src.top += blt_delta_x;
+            src_bottom += blt_delta_x;
+            blt_src.left += blt_delta_y;
+            blt_src.right += blt_delta_y;
+            if (blt_src.top < old_rect->top) blt_src.top = old_rect->top;
+            if (blt_src.left < old_rect->left) blt_src.left = old_rect->left;
+            if (old_rect->right < blt_src.right) blt_src.right = old_rect->right;
+            if (old_rect->bottom < src_bottom) src_bottom = old_rect->bottom;
+        }
+    }
+
+    this->Queued_Blits = 1;
+    this->Blit_Queue_Size = v_blits;
+    this->Current_Blit = -1;
+    this->Blit_Offset_X = this->pnl_x;
+    this->Blit_Offset_Y = this->pnl_y;
+}
+
+void RGE_View::ProcessQueuedBlit(int force) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534A00
+    if (this->Queued_Blits == 0) {
+        return;
+    }
+    if ((force == 0) && this->render_area != nullptr && this->render_area->DrawSystem != nullptr) {
+        if (this->render_area->DrawSystem->CheckSurfaces() != 0) {
+            return;
+        }
+    }
+
+    this->Current_Blit = this->Current_Blit + 1;
+    if ((this->Blit_Queue != nullptr) && (this->Current_Blit >= 0) && (this->Current_Blit < this->Blit_Queue_Size) && this->render_area != nullptr) {
+        Blit_Queue_Entry* q = &this->Blit_Queue[this->Current_Blit];
+        tagRECT src;
+        src.left = q->src.left + this->Blit_Offset_X;
+        src.top = q->src.top + this->Blit_Offset_Y;
+        src.right = q->src.right + this->Blit_Offset_X + 1;
+        src.bottom = q->src.bottom + this->Blit_Offset_Y + 1;
+        this->render_area->Copy(this->render_area, q->dest.left + this->Blit_Offset_X, q->dest.top + this->Blit_Offset_Y, &src, 0x10);
+        if (this->Current_Blit + 1 < this->Blit_Queue_Size) {
+            return;
+        }
+    }
+    this->Queued_Blits = 0;
+}
+
 void RGE_View::set_focus(int param_1) {
     // Fully verified. Source of truth: view.cpp.asm @ 0x00533AC0
     TPanel::set_focus(param_1);
@@ -696,6 +888,12 @@ uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, R
         param_5->tile = (RGE_Tile*)picked;
     }
     return c;
+}
+
+uchar RGE_View::pick(uchar param_1, uchar param_2, tagPOINT* param_3, tagPOINT* param_4, void** param_5, float* param_6, float* param_7, short* param_8, short* param_9) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535C70
+    const long l = this->view_function(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9);
+    return (uchar)l;
 }
 
 uchar RGE_View::pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5) {
@@ -2046,6 +2244,7 @@ void RGE_View::draw_paint_brush() {
 
 void RGE_View::draw()
 {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534AE0
     tiles_drawn = 0;
     s_view_debug_masked_draws = 0;
     s_view_debug_fog_masked_draws = 0;
@@ -2142,6 +2341,7 @@ void RGE_View::draw()
 
 void RGE_View::update()
 {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535210
     if (this->player == nullptr) return;
     if (this->map == nullptr) return;
 
@@ -2771,8 +2971,361 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     fog_next_shape = 0;
 }
 
+void RGE_View::Update_Render_Pointers() {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005381C0
+    if (this->render_area == nullptr) {
+        return;
+    }
+    uchar* bits = this->render_area->Bits;
+    const int size = (this->render_area->ClipRect.bottom - this->render_area->ClipRect.top) + 1;
+    if ((this->LastRenderBits == bits) && (this->LastRenderSize == size)) {
+        return;
+    }
+    if (size <= 0 || bits == nullptr) {
+        return;
+    }
+
+    if ((size != this->LastRenderSize) || (this->RenderOffsets == nullptr)) {
+        if (this->RenderOffsets != nullptr) {
+            std::free(this->RenderOffsets);
+        }
+        this->RenderOffsets = (void**)std::malloc((size_t)size * sizeof(void*));
+        this->LastRenderSize = size;
+    }
+    if (this->RenderOffsets == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        this->RenderOffsets[i] = (void*)((uchar*)this->render_area->DisplayOffsets[i + this->render_area->ClipRect.top] + this->render_rect.left);
+    }
+}
+
+void RGE_View::Add_GDI_Clip_Mask(DClipInfo_Node* node, TSpan_List_Manager* mask) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538280
+    if (node->Node_Type == 1) {
+        mask->AddLine_Align((int)node->x1, (int)node->y1, (int)node->x2, (int)node->y2);
+        mask->AddLine_Align((int)node->x2, (int)node->y2, (int)node->x3, (int)node->y3);
+        mask->AddLine_Align((int)node->x3, (int)node->y3, (int)node->x4, (int)node->y4);
+        mask->AddLine_Align((int)node->x4, (int)node->y4, (int)node->x1, (int)node->y1);
+        return;
+    }
+
+    if (node->Node_Type == 2 || node->Node_Type == 3) {
+        const short x1 = node->x1;
+        const short x2 = node->x2;
+        int y0 = (int)node->y1;
+        int y1 = (int)node->y2;
+        int y_min = y0;
+        int y_max = y1;
+        if (y1 < y0) {
+            y_min = y1;
+            y_max = y0;
+        }
+        for (int y = y_min; y <= y_max; ++y) {
+            mask->AddSpan(((uint)x1) & 0xFFFFFFFCu, ((uint)x2) | 3u, y);
+        }
+    }
+
+    if (node->Node_Type == 4) {
+        uint x1 = (uint)node->x1;
+        uint x2 = (uint)node->x2;
+        if ((int)x2 < (int)x1) {
+            const uint t = x1;
+            x1 = x2;
+            x2 = t;
+        }
+        int y0 = (int)node->y1;
+        int y1 = (int)node->y2;
+        if (y1 < y0) {
+            const int t = y0;
+            y0 = y1;
+            y1 = t;
+        }
+        const uint xa = x1 & 0xFFFFFFFCu;
+        const uint xb = x2 | 3u;
+        mask->AddSpan(xa, xb, y0);
+        mask->AddSpan(xa, xb, y1);
+        for (int y = y0 + 1; y < y1; ++y) {
+            mask->AddSpan(xa, x1 | 3u, y);
+            mask->AddSpan(x2 & 0xFFFFFFFCu, xb, y);
+        }
+    }
+}
+
+void RGE_View::Draw_GDI_Object(DClipInfo_Node* node, TDrawArea* area) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538420
+    if (node->Node_Type == 1) {
+        area->DrawLine((int)node->x1, (int)node->y1, (int)node->x2, (int)node->y2, (uchar)node->Draw_Flag);
+        area->DrawLine((int)node->x2, (int)node->y2, (int)node->x3, (int)node->y3, (uchar)node->Draw_Flag);
+        area->DrawLine((int)node->x3, (int)node->y3, (int)node->x4, (int)node->y4, (uchar)node->Draw_Flag);
+        area->DrawLine((int)node->x4, (int)node->y4, (int)node->x1, (int)node->y1, (uchar)node->Draw_Flag);
+        return;
+    }
+    if ((node->Node_Type == 2) && ((int)node->y1 <= (int)node->y2)) {
+        for (int y = (int)node->y1; y <= (int)node->y2; ++y) {
+            if (node->y3 != 0) {
+                area->DrawLine((int)node->x1, y, (int)node->x3, y, 'J');
+            }
+            if (node->y4 != 0) {
+                area->DrawLine((int)node->x4, y, (int)node->x2, y, 0x97);
+            }
+        }
+    }
+    if (node->Node_Type == 4) {
+        area->DrawLine((int)node->x1, (int)node->y1, (int)node->x2, (int)node->y1, 0xFF);
+        area->DrawLine((int)node->x1, (int)node->y2, (int)node->x2, (int)node->y2, 0xFF);
+        area->DrawLine((int)node->x1, (int)node->y1, (int)node->x1, (int)node->y2, 0xFF);
+        area->DrawLine((int)node->x2, (int)node->y1, (int)node->x2, (int)node->y2, 0xFF);
+    }
+}
+
+void RGE_View::draw_terrain_obstruction_map(int x, int y, TShape* shape, int frame, int tile_col, int tile_row) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538D60
+    const int tile_x4 = tile_col * 4;
+    this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
+    shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
+
+    TShape* obs_shape = rge_base_game->get_shape(0);
+    for (int r = 0; r < 4; ++r) {
+        int sx = r * 8;
+        int sy = r * 4;
+        for (int c = 0; c < 4; ++c) {
+            const uchar obs = pathSystem.obstruction(c + tile_x4, r + tile_row * 4);
+            if (obs != 0) {
+                obs_shape->shape_draw(this->cur_render_area, x + 2 + sx, y + 0x0D + sy, obs - 1, 0, nullptr);
+            }
+            sx += 8;
+            sy -= 4;
+        }
+    }
+}
+
+int RGE_View::Get_Cursor_Position(tagPOINT* point, int x_off, int y_off) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538E60
+    GetCursorPos((LPPOINT)point);
+    if (this->render_area->DrawSystem->ScreenMode == 1) {
+        ScreenToClient((HWND)this->render_area->Wnd, (LPPOINT)point);
+        if (point->x > 0x7FFF) point->x -= 0x10000;
+        if (point->y > 0x7FFF) point->y -= 0x10000;
+    }
+    point->x += x_off;
+    point->y += y_off;
+    if ((this->render_rect.left <= point->x) && (point->x <= this->render_rect.right) &&
+        (this->render_rect.top <= point->y) && (point->y <= this->render_rect.bottom)) {
+        return 1;
+    }
+    return 0;
+}
+
+void RGE_View::get_tile_bounding_coords(int col, int row, int* out_min_x, int* out_min_y, int* out_max_x, int* out_max_y) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539030
+    RGE_Tile* trow = this->map->map_row_offset[row];
+    const short sx = trow[col].screen_xpos;
+    const uchar tile_type = trow[col].tile_type;
+    *out_min_x = (int)sx;
+    *out_max_x = (int)sx + this->map->tilesizes[tile_type].width - 1;
+    *out_min_y = (int)trow[col].screen_ypos - (int)this->tile_half_hgt;
+    this->tile_half_hgt = 0;
+    this->tile_half_wid = 0;
+    this->elev_hgt = 0;
+    *out_max_y = *out_min_y + this->map->tilesizes[tile_type].height - 1;
+}
+
+int RGE_View::Pick_Tile(long x, long y, int* out_col, int* out_row) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538F00
+    const int map_w = this->map->map_width;
+    const int map_h = this->map->map_height;
+    int sx = (this->map_scr_x_offset - this->render_rect.left) + (int)x;
+    int sy = (this->map_scr_y_offset - this->render_rect.top) + (int)y;
+    if (sx < 0) {
+        *out_col = -1;
+        *out_row = -1;
+        return 0;
+    }
+    if (sx >= map_w * (int)this->tile_wid) {
+        *out_col = map_w + 1;
+        *out_row = map_h + 1;
+        return 0;
+    }
+
+    int c = sx / (int)this->tile_wid;
+    int r = sy / (int)this->tile_hgt;
+    int map_col = c + r;
+    int map_row = c - r;
+    while ((map_row < 0) || (map_col >= map_w)) {
+        map_col -= 1;
+        map_row += 1;
+    }
+    while ((map_h <= map_row) || (map_col < 0)) {
+        map_col += 1;
+        map_row -= 1;
+    }
+
+    for (;;) {
+        int min_x = 0;
+        int min_y = 0;
+        int max_x = 0;
+        int max_y = 0;
+        this->get_tile_bounding_coords(map_col, map_row, &min_x, &min_y, &max_x, &max_y);
+        if (sy < min_y) {
+            map_col += 1;
+            map_row -= 1;
+        } else if (max_y < sy) {
+            map_col -= 1;
+            map_row += 1;
+        } else {
+            break;
+        }
+    }
+
+    *out_col = map_col;
+    *out_row = map_row;
+    this->tile_half_hgt = 0;
+    this->tile_half_wid = 0;
+    return 0;
+}
+
+int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_level, int max_level, int* out_object_id) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539930
+    *out_object_id = 0;
+    if ((min_level <= max_level) &&
+        (this->render_rect.left <= x) && (x <= this->render_rect.right) &&
+        (this->render_rect.top <= y) && (y <= this->render_rect.bottom) &&
+        (min_level < 0x29) && (-1 < max_level)) {
+        if (min_level < 0) {
+            min_level = 0;
+        }
+        if (0x28 < max_level) {
+            max_level = 0x28;
+        }
+
+        for (; min_level <= max_level; --max_level) {
+            bool found = false;
+            for (DClipInfo_Node* node = list->Draw_Level_Head[max_level]; node != nullptr; node = node->NextOnLevel) {
+                if (node->Node_Type != 0) {
+                    continue;
+                }
+                int hit = 0;
+                if ((node->Draw_Flag & 2) == 2) {
+                    hit = this->sprite_check(node->Shape_Base, node->Shape, node->x2 - x, y - node->y1);
+                } else {
+                    hit = this->sprite_check(node->Shape_Base, node->Shape, x - node->x1, y - node->y1);
+                }
+                if (hit == 2) {
+                    found = true;
+                    *out_object_id = node->Object_ID;
+                }
+            }
+            if (found) {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int RGE_View::hit_tile(RGE_Tile* tile, short draw_x, short draw_y, short map_col, short map_row, tagPOINT* point) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539D90
+    ushort terr = 0;
+    ushort tile_type = 0;
+    if (tile != nullptr) {
+        terr = (ushort)(tile->terrain_type & 0x1F);
+        tile_type = (ushort)tile->tile_type;
+    }
+
+    if (point->x < draw_x) return 0;
+    const int i_tile_type = (int)tile_type;
+    if (point->x >= draw_x + this->map->tilesizes[i_tile_type].width) return 0;
+    if (point->y < draw_y) return 0;
+    if (point->y >= draw_y + this->map->tilesizes[i_tile_type].height) return 0;
+
+    if ((short)terr < this->map->num_terrain && this->map->terrain_types[(short)terr].loaded != 0) {
+        TShape* shape = this->map->terrain_types[(short)terr].shape;
+        short pic = this->get_tile_picture((uchar)terr, (uchar)tile_type, map_col, map_row);
+        if ((shape != nullptr) && (pic != -1)) {
+            if (shape->shape_check(point->x - draw_x, point->y - draw_y, (int)pic) == 0) {
+                return 0;
+            }
+            return 1;
+        }
+    }
+    return 1;
+}
+
+RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short draw_x, short draw_y, short map_col, short map_row, tagPOINT* mouse_pos, tagPOINT* start_pos, short* out_scr_x, short* out_scr_y, RGE_Static_Object* last_picked, uchar fogged) {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539EC0
+    (void)map_col;
+    (void)map_row;
+    RGE_Object_Node* sorted = tile->objects.sort();
+    RGE_Object_Node* to_free = sorted;
+    RGE_Static_Object* picked = nullptr;
+    RGE_Object_Node* node = sorted;
+    while (node != nullptr) {
+        RGE_Static_Object* obj = node->node;
+        if (obj != nullptr && obj->object_state < 7 &&
+            ((fogged == 0) || (obj->master_obj->fog_flag != 0)) &&
+            (this->function_parm <= obj->master_obj->select_level)) {
+            const char mode = (char)this->function_mode;
+            if (mode == '+' || mode == ',') {
+                if (obj->owner == this->player) {
+                    if (mode == ',') {
+                        const uchar hit_box = obj->box_hit_test(draw_x, draw_y, (short)start_pos->x, (short)start_pos->y, (short)mouse_pos->x, (short)mouse_pos->y);
+                        if (hit_box != 0) {
+                            if (this->player->select_one_object(obj, 0) == 0) {
+                                while (to_free != nullptr) {
+                                    RGE_Object_Node* next = to_free->next;
+                                    std::free(to_free);
+                                    to_free = next;
+                                }
+                                return obj;
+                            }
+                            picked = obj;
+                        }
+                    }
+                    if (mode == '+') {
+                        goto do_hit_test;
+                    }
+                }
+            } else {
+do_hit_test:
+                const uchar hit = obj->hit_test(draw_x, draw_y, (short)mouse_pos->x, (short)mouse_pos->y, 5);
+                if (hit != 0) {
+                    if ((last_picked != nullptr) && (obj == last_picked) && (picked != nullptr)) {
+                        return picked;
+                    }
+                    if ((picked == nullptr) ||
+                        ((obj->owner == this->player) || (picked->owner != this->player)) &&
+                            (picked->master_obj->select_level <= obj->master_obj->select_level)) {
+                        picked = obj;
+                        short min_y = 0;
+                        short min_x = 0;
+                        short max_y = 0;
+                        short max_x = 0;
+                        if (obj->get_frame(&min_y, &min_x, &max_y, &max_x) == 0) {
+                            min_y = 0;
+                            min_x = 0;
+                        }
+                        *out_scr_x = (short)(obj->screen_x_offset + min_y + draw_x);
+                        *out_scr_y = (short)(obj->screen_y_offset + min_x + draw_y);
+                    }
+                }
+            }
+        }
+        node = node->next;
+    }
+    while (to_free != nullptr) {
+        RGE_Object_Node* next = to_free->next;
+        std::free(to_free);
+        to_free = next;
+    }
+    return picked;
+}
+
 short RGE_View::get_tile_picture(uchar terrain_type, uchar vis, short col, short row)
 {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539AA0
     if (this->map == nullptr) {
         return (short)0xFFFF;
     }
