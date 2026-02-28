@@ -6,6 +6,8 @@
 #include "../include/RGE_Sprite.h"
 #include "../include/RGE_Task_List.h"
 #include "../include/RGE_Task.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Player.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/globals.h"
 
@@ -182,14 +184,17 @@ void RGE_Action::save(int param_1) {
     rge_write(param_1, &sprite_id, 2);
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x004078D0
 short RGE_Action::type() {
     return this->action_type;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x004078E0
 void RGE_Action::first_in_stack(uchar param_1) {
     (void)param_1;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407950
 uchar RGE_Action::inside_obj_update() {
     if ((this->target_obj != nullptr) && (this->target_obj->object_state > 6)) {
         this->set_target_obj(nullptr);
@@ -200,6 +205,7 @@ uchar RGE_Action::inside_obj_update() {
     return 1;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407990
 uchar RGE_Action::idle_update() {
     if ((this->target_obj != nullptr) && (this->target_obj->object_state > 6)) {
         this->set_target_obj(nullptr);
@@ -310,49 +316,84 @@ void RGE_Action::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* p
     (void)param_3;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407C10
 void RGE_Action::get_state_name(char* param_1) {
-    if (param_1 == nullptr) {
-        return;
-    }
+    const char* state_name = "Unknown";
     switch (this->state) {
-    case 0: strncpy(param_1, "None", 5); break;
-    case 1: strncpy(param_1, "Done", 5); break;
-    case 2: strncpy(param_1, "Wait", 5); break;
-    case 3: strncpy(param_1, "Search", 7); break;
-    case 4: strncpy(param_1, "Goto", 5); break;
-    case 5: strncpy(param_1, "Goto2", 6); break;
-    case 6: strncpy(param_1, "Work", 5); break;
-    case 7: strncpy(param_1, "Work2", 6); break;
-    case 8: strncpy(param_1, "Return", 7); break;
-    case 9: strncpy(param_1, "Turn", 5); break;
-    case 10: strncpy(param_1, "Delay", 6); break;
-    case 11: strncpy(param_1, "Move", 5); break;
-    case 12: strncpy(param_1, "Attack", 7); break;
-    case 13: strncpy(param_1, "Failed", 7); break;
-    case 14: strncpy(param_1, "Invalidated", 11); break;
-    case 15: strncpy(param_1, "MoveNoSearch", 13); break;
-    default: strncpy(param_1, "Unknown", 8); break;
+    case 0: state_name = "None"; break;
+    case 1: state_name = "Done"; break;
+    case 2: state_name = "Wait"; break;
+    case 3: state_name = "Search"; break;
+    case 4: state_name = "Goto"; break;
+    case 5: state_name = "Goto2"; break;
+    case 6: state_name = "Work"; break;
+    case 7: state_name = "Work2"; break;
+    case 8: state_name = "Return"; break;
+    case 9: state_name = "Turn"; break;
+    case 10: state_name = "Delay"; break;
+    case 11: state_name = "Move"; break;
+    case 12: state_name = "Attack"; break;
+    case 13: state_name = "Failed"; break;
+    case 14: state_name = "Invalidated"; break;
+    case 15: state_name = "MoveNoSearch"; break;
+    default: break;
     }
+    strcpy(param_1, state_name);
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00401130
 RGE_Static_Object* RGE_Action::get_target_obj() {
     return this->target_obj;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00401140
 RGE_Static_Object* RGE_Action::get_target_obj2() {
     return this->target_obj2;
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407A20
 void RGE_Action::set_target_obj(RGE_Static_Object* param_1) {
-    this->target_obj = param_1;
-    this->targetID = (param_1 != nullptr) ? param_1->id : -1;
+    if ((this->target_obj != nullptr) && (this->target_obj != param_1)) {
+        RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
+        RGE_Static_Object* current_target = (world != nullptr) ? world->object(this->targetID) : nullptr;
+        if (current_target != nullptr) {
+            current_target->release_being_worked_on(this->obj);
+        }
+    }
+
+    if (this->target_obj != param_1) {
+        this->target_obj = param_1;
+        if (param_1 != nullptr) {
+            this->targetID = param_1->id;
+            param_1->set_being_worked_on(this->obj, this->action_type, 0);
+            return;
+        }
+        this->targetID = -1;
+    }
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407A90
 void RGE_Action::set_target_obj2(RGE_Static_Object* param_1) {
-    this->target_obj2 = param_1;
-    this->target2ID = (param_1 != nullptr) ? param_1->id : -1;
+    if ((this->target_obj2 != nullptr) && (this->target_obj2 != param_1)) {
+        RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
+        RGE_Static_Object* current_target = (world != nullptr) ? world->object(this->target2ID) : nullptr;
+        if (current_target != nullptr) {
+            current_target->release_being_worked_on(this->obj);
+        }
+    }
+
+    if (this->target_obj2 != param_1) {
+        this->target_obj2 = param_1;
+        if (param_1 != nullptr) {
+            this->target2ID = param_1->id;
+            param_1->set_being_worked_on(this->obj, this->action_type, 0);
+            return;
+        }
+        this->target2ID = -1;
+    }
 }
 
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407940
 void RGE_Action::set_state(uchar param_1) {
     this->state = param_1;
 }
