@@ -12,8 +12,37 @@
 #include <direct.h>
 
 static ResFile* resFileHead = nullptr;
+static int g_resfile_missing_flag = 0;
 
-void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int use_mapping) {
+static void FUN_0047f00c() {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F00C
+    MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+}
+
+static void FUN_0047f076(ResFile* newRes, char* tag) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F076
+    if (resFileHead == nullptr) {
+        resFileHead = newRes;
+    } else {
+        ResFile* curr = resFileHead;
+        while (curr->next != nullptr) {
+            curr = curr->next;
+        }
+        curr->next = newRes;
+    }
+
+    unsigned char* base = (unsigned char*)newRes->base_pointer;
+    if (strcmp((char*)(base + 0x2c), tag) != 0) {
+        MessageBoxA(0, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        return;
+    }
+    if (strncmp((char*)(base + 0x28), "1.00", 4) != 0) {
+        MessageBoxA(0, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+    }
+}
+
+void RESFILE_open_new_resource_file(char* filename, char* tag, char* path, int use_mapping) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047EE90
     char fullPath[260];
     sprintf(fullPath, "%s%s", path, filename);
 
@@ -26,7 +55,7 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
             char errorMsg[512];
             char cwd[260];
             _getcwd(cwd, sizeof(cwd));
-            sprintf(errorMsg, "Error: Open_new_ResFile, file not found: [%s]\nPath arg: [%s]\nFilename arg: [%s]\nCWD: [%s]\nGLE: %lu", 
+            sprintf(errorMsg, "Error: Open_new_ResFile, file not found: [%s]\nPath arg: [%s]\nFilename arg: [%s]\nCWD: [%s]\nGLE: %lu",
                     fullPath, path, filename, cwd, GetLastError());
             MessageBoxA(NULL, errorMsg, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
             return;
@@ -51,6 +80,9 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
 
     ResFile* newRes = (ResFile*)malloc(sizeof(ResFile));
     if (!newRes) {
+        if (mappedData != nullptr) {
+            UnmapViewOfFile(mappedData);
+        }
         MessageBoxA(NULL, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
         return;
     }
@@ -77,6 +109,8 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
                 else if (strncmp(header + 0x28, "1.00", 4) != 0) {
                     MessageBoxA(NULL, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
                 }
+            } else {
+                FUN_0047f00c();
             }
         }
     } else {
@@ -87,7 +121,11 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
     }
     newRes->next = nullptr;
 
-    // Append to list (ASM at FUN_0047f076)
+    if (newRes->base_pointer) {
+        FUN_0047f076(newRes, tag);
+        return;
+    }
+
     if (!resFileHead) {
         resFileHead = newRes;
     } else {
@@ -95,22 +133,10 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
         while (curr->next) curr = curr->next;
         curr->next = newRes;
     }
-
-    // Validation for mapped files (ASM at 0047f09b-0047f121)
-    if (newRes->base_pointer) {
-        unsigned char* base = (unsigned char*)newRes->base_pointer;
-        // ASM compares string at base+0x2c with the tag
-        if (strcmp((char*)(base + 0x2c), tag) != 0) {
-            MessageBoxA(NULL, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
-        }
-        // ASM compares string at base+0x28 with "1.00"
-        else if (strncmp((char*)(base + 0x28), "1.00", 4) != 0) {
-            MessageBoxA(NULL, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
-        }
-    }
 }
 
 void RESFILE_close_new_resource_file(char* filename) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F180
     ResFile* curr = resFileHead;
     ResFile* prev = nullptr;
 
@@ -137,6 +163,7 @@ void RESFILE_close_new_resource_file(char* filename) {
 }
 
 int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, int* offset, unsigned char** data, int* size) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F230
     *handle = -1;
     *offset = 0;
     *data = nullptr;
@@ -215,6 +242,7 @@ int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, i
 }
 
 unsigned char* RESFILE_load(unsigned long type, unsigned long id, int* size, int* out_type) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F320
     int handle, offset, resSize;
     unsigned char* mappedData;
 
@@ -231,10 +259,17 @@ unsigned char* RESFILE_load(unsigned long type, unsigned long id, int* size, int
             return buffer;
         }
     }
+    if (g_resfile_missing_flag != 0) {
+        char error_string[100];
+        sprintf(error_string, "ERROR: res_read_bin, resource type %lu, id %lu missing.", type, id);
+        MessageBoxA(0, error_string, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+    }
+
     return nullptr;
 }
 
 int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FILE** file) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F480
     int size, out_type;
     unsigned char* data = RESFILE_load(type, id, &size, &out_type);
     if (data) {
@@ -248,6 +283,11 @@ int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FI
         if (out_type == 1) free(data);
     }
     return 0;
+}
+
+void RESFILE_Set_Missing_Flag(int param_1) {
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F580
+    g_resfile_missing_flag = param_1;
 }
 
 int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2) {
@@ -323,7 +363,7 @@ static void BUILDRES_free_lists(BuildResTypeNode* head) {
 }
 
 static unsigned long BUILDRES_get_files_resource_type(const char* filename) {
-    // Transliteration of res_file.cpp.decomp BUILDRES_get_files_resource_type @ 0x0047FC50.
+    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047FC50
     size_t len = strlen(filename);
     if (len <= 4 || len >= 0x104) {
         return 0;

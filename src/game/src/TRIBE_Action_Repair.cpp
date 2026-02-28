@@ -15,6 +15,7 @@
 
 #include <new>
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1680
 TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2, int param_3) {
     this->save_target_command_flag = 0;
     RGE_Action::setup(param_1, param_2);
@@ -30,6 +31,7 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2
     }
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1720
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
     RGE_Action::setup(param_1);
     this->action_type = 0x6a;
@@ -44,6 +46,7 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* p
     }
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D17B0
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {
     RGE_Action::setup(param_1);
     this->action_type = 0x6a;
@@ -59,6 +62,7 @@ TRIBE_Action_Repair::~TRIBE_Action_Repair() {}
 int TRIBE_Action_Repair::setup(RGE_Action_Object* param_1) { this->save_target_command_flag = 0; int r = RGE_Action::setup(param_1); this->action_type = 0x6a; return r; }
 
 int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2) {
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1800
     int r = RGE_Action::setup(param_1, param_2);
     this->action_type = 0x6a;
     if (6.5f <= save_game_version) {
@@ -79,6 +83,7 @@ void TRIBE_Action_Repair::save(int param_1) {
 short TRIBE_Action_Repair::type() { return this->action_type; }
 
 void TRIBE_Action_Repair::first_in_stack(uchar param_1) {
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1880
     if ((param_1 != 0) && (this->target_obj != nullptr)) {
         this->set_state(4);
         return;
@@ -90,7 +95,7 @@ uchar TRIBE_Action_Repair::inside_obj_update() { return RGE_Action::inside_obj_u
 uchar TRIBE_Action_Repair::idle_update() { return RGE_Action::idle_update(); }
 
 void TRIBE_Action_Repair::meet_target() {
-    // Fully verified. Source of truth: tact_rep.cpp.asm @ 0x004D2020
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D2020
     if (!this->obj || !this->target_obj) {
         return;
     }
@@ -158,6 +163,7 @@ void TRIBE_Action_Repair::meet_target() {
 }
 
 void TRIBE_Action_Repair::set_state(uchar param_1) {
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D18B0
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
     }
@@ -177,7 +183,7 @@ void TRIBE_Action_Repair::set_state(uchar param_1) {
 }
 
 uchar TRIBE_Action_Repair::update() {
-    // Fully verified. Source of truth: tact_rep.cpp.asm @ 0x004D1BB0
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1BB0
     if (!this->obj) {
         return 0;
     }
