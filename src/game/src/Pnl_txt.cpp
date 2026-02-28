@@ -227,3 +227,6 @@ void TScrollTextPanel::draw() {
     this->draw_finish();
 }
 
+// Task 254 relocation shim: keep TTextPanel parity implementation in the legacy pnl_txt.cpp unit.
+#include "TTextPanel.cpp"
+
