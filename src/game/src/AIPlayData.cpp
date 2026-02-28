@@ -477,7 +477,7 @@ AIPlayPhase* AIPlay::phase(int index) {
     return nullptr;
 }
 
-// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F9E0
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F9B0
 int AIPlay::groupGivenCommandOnPhase(int groupNumber, int commandType, int phaseIndex) {
     if ((((-1 < groupNumber) && (groupNumber < 5)) && (-1 < phaseIndex)) && (phaseIndex < 10)) {
         int i = 0;
