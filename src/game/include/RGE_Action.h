@@ -3,6 +3,10 @@
 
 class RGE_Action {
 public:
+    RGE_Action();
+    RGE_Action(int param_1, RGE_Action_Object* param_2, int param_3);
+    RGE_Action(RGE_Action_Object* param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~RGE_Action(); // vt[0] (0x0)
     virtual int setup(RGE_Action_Object* param_1); // vt[1] (0x4)
@@ -32,6 +36,9 @@ public:
     // Non-virtual helpers
     uchar subAction() const;
     void setSubAction(uchar param_1);
+    float targetX() const;
+    float targetY() const;
+    float targetZ() const;
 
     short action_type;
     RGE_Action_Object* obj;
