@@ -98,7 +98,7 @@ static char* rge_read_string16_alloc(int handle) {
 }
 
 static int rge_write_temp_blob(const char* temp_dir, const char* name_fmt, int index, const unsigned char* data, int size,
-                              char* out_path) {
+                               char* out_path) {
     if (out_path == nullptr || name_fmt == nullptr || temp_dir == nullptr) {
         return -1;
     }
@@ -113,6 +113,61 @@ static int rge_write_temp_blob(const char* temp_dir, const char* name_fmt, int i
     (void)_write(fd, data, (unsigned int)size);
     _close(fd);
     return fd;
+}
+
+static unsigned short rge_scenario_string_len16(const char* text, int include_null) {
+    if (text == nullptr) {
+        return 0;
+    }
+
+    size_t len = strlen(text);
+    if (include_null != 0) {
+        len = len + 1;
+    }
+
+    return (unsigned short)len;
+}
+
+static void rge_scenario_write_string16(int fd, const char* text, int include_null) {
+    unsigned short length = rge_scenario_string_len16(text, include_null);
+    rge_write(fd, &length, 2);
+    if (((short)length > 0) && text != nullptr) {
+        rge_write(fd, (void*)text, (int)length);
+    }
+}
+
+static void rge_scenario_write_string16_unchecked(int fd, const char* text) {
+    unsigned short length = (unsigned short)strlen(text);
+    rge_write(fd, &length, 2);
+    if ((short)length > 0) {
+        rge_write(fd, (void*)text, (int)length);
+    }
+}
+
+static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_base, const char* ext,
+                                         unsigned char** out_data, int* out_size) {
+    if (out_data == nullptr || out_size == nullptr) {
+        return;
+    }
+
+    char path[300];
+    sprintf(path, "%s%s%s", ai_dir, file_base, ext);
+    int fd = _open(path, _O_BINARY | _O_RDONLY);
+    if (fd == -1) {
+        return;
+    }
+
+    long file_size = _lseek(fd, 0, SEEK_END);
+
+    *out_size = (int)file_size;
+    if (*out_data != nullptr) {
+        free(*out_data);
+    }
+    *out_data = (unsigned char*)calloc((size_t)(*out_size), 1);
+
+    _lseek(fd, 0, SEEK_SET);
+    (void)_read(fd, *out_data, (unsigned int)(*out_size));
+    _close(fd);
 }
 } // namespace
 
@@ -735,5 +790,188 @@ char* RGE_Scenario::Get_message(long param_1) {
         default:
             return nullptr;
     }
+}
+
+RGE_Scenario::~RGE_Scenario() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B5A0
+    if (this->time_line != nullptr) {
+        delete this->time_line;
+        this->time_line = nullptr;
+    }
+
+    if (this->description != nullptr) {
+        free(this->description);
+        this->description = nullptr;
+    }
+    if (this->hints != nullptr) {
+        free(this->hints);
+        this->hints = nullptr;
+    }
+    if (this->win_message != nullptr) {
+        free(this->win_message);
+        this->win_message = nullptr;
+    }
+    if (this->loss_message != nullptr) {
+        free(this->loss_message);
+        this->loss_message = nullptr;
+    }
+    if (this->historicle_notes != nullptr) {
+        free(this->historicle_notes);
+        this->historicle_notes = nullptr;
+    }
+
+    operator delete(this->scenario_name);
+    this->scenario_name = nullptr;
+
+    if (this->mission_picture != nullptr) {
+        delete this->mission_picture;
+        this->mission_picture = nullptr;
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        operator delete(this->BuildList[i]);
+        this->BuildList[i] = nullptr;
+        operator delete(this->CityPlan[i]);
+        this->CityPlan[i] = nullptr;
+        operator delete(this->AiRules[i]);
+        this->AiRules[i] = nullptr;
+
+        if (this->BuildListFile[i] != nullptr) {
+            free(this->BuildListFile[i]);
+            this->BuildListFile[i] = nullptr;
+        }
+        if (this->CityPlanFile[i] != nullptr) {
+            free(this->CityPlanFile[i]);
+            this->CityPlanFile[i] = nullptr;
+        }
+        if (this->AiRulesFile[i] != nullptr) {
+            free(this->AiRulesFile[i]);
+            this->AiRulesFile[i] = nullptr;
+        }
+    }
+}
+
+RGE_Static_Object* RGE_Scenario::get_object_pointer(int param_1) {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B580
+    (void)param_1;
+    return nullptr;
+}
+
+void RGE_Scenario::rehook() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B590
+    return;
+}
+
+float RGE_Scenario::Get_Version() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C0D0
+    return 1.15f;
+}
+
+uchar RGE_Scenario::Get_conquest_victory() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048CCC0
+    return this->victory_conquest;
+}
+
+void RGE_Scenario::update() {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C3D0
+    if (this->time_line != nullptr) {
+        this->time_line->update();
+    }
+}
+
+void RGE_Scenario::save(int param_1) {
+    // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048C3E0
+    this->Version = this->Get_Version();
+    rge_write(param_1, &this->Version, 4);
+
+    for (int i = 0; i < 16; ++i) {
+        rge_write(param_1, this->player_name[i], 0x100);
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        rge_write(param_1, &this->PlActive[i], 4);
+        rge_write(param_1, &this->PlType[i], 4);
+        rge_write(param_1, &this->PlCivilization[i], 4);
+        rge_write(param_1, &this->PlayerPosture[i], 4);
+    }
+
+    rge_write(param_1, &this->victory_conquest, 1);
+    if (this->time_line != nullptr) {
+        this->time_line->save(param_1);
+    }
+
+    rge_scenario_write_string16(param_1, this->scenario_name, 0);
+    rge_scenario_write_string16(param_1, this->description, 1);
+    rge_scenario_write_string16(param_1, this->hints, 1);
+    rge_scenario_write_string16(param_1, this->win_message, 1);
+    rge_scenario_write_string16(param_1, this->loss_message, 1);
+    rge_scenario_write_string16(param_1, this->historicle_notes, 1);
+
+    rge_scenario_write_string16_unchecked(param_1, this->Cine_PreGame);
+    rge_scenario_write_string16_unchecked(param_1, this->Cine_Victory);
+    rge_scenario_write_string16_unchecked(param_1, this->Cine_Loss);
+    rge_scenario_write_string16_unchecked(param_1, this->Mission_Bmp);
+
+    char mission_file[260];
+    sprintf(mission_file, "%s.bmp", this->Mission_Bmp);
+    TPicture* loaded_picture = new TPicture(mission_file, -1, 0, nullptr, 0);
+    if (this->mission_picture != nullptr) {
+        if (loaded_picture->Dib == nullptr) {
+            delete loaded_picture;
+        } else {
+            delete this->mission_picture;
+            this->mission_picture = loaded_picture;
+        }
+    } else {
+        this->mission_picture = loaded_picture;
+    }
+
+    this->mission_picture->Save(param_1);
+
+    for (int i = 0; i < 16; ++i) {
+        rge_scenario_write_string16_unchecked(param_1, this->BuildList[i]);
+    }
+    for (int i = 0; i < 16; ++i) {
+        rge_scenario_write_string16_unchecked(param_1, this->CityPlan[i]);
+    }
+    if (this->Version >= 1.08f) {
+        for (int i = 0; i < 16; ++i) {
+            rge_scenario_write_string16_unchecked(param_1, this->AiRules[i]);
+        }
+    }
+
+    for (int i = 0; i < 16; ++i) {
+        if (this->BuildList[i] != nullptr) {
+            rge_scenario_refresh_ai_blob(rge_base_game->prog_info->ai_dir, this->BuildList[i], ".ai",
+                                         &this->BuildListFile[i], &this->BuildListFileSize[i]);
+        }
+        if (this->CityPlan[i] != nullptr) {
+            rge_scenario_refresh_ai_blob(rge_base_game->prog_info->ai_dir, this->CityPlan[i], ".cty",
+                                         &this->CityPlanFile[i], &this->CityPlanFileSize[i]);
+        }
+        if (this->AiRules[i] != nullptr) {
+            rge_scenario_refresh_ai_blob(rge_base_game->prog_info->ai_dir, this->AiRules[i], ".per",
+                                         &this->AiRulesFile[i], &this->AiRulesFileSize[i]);
+        }
+
+        rge_write(param_1, &this->BuildListFileSize[i], 4);
+        rge_write(param_1, &this->CityPlanFileSize[i], 4);
+        if (this->Version >= 1.08f) {
+            rge_write(param_1, &this->AiRulesFileSize[i], 4);
+        }
+
+        if (this->BuildListFile[i] != nullptr) {
+            rge_write(param_1, this->BuildListFile[i], this->BuildListFileSize[i]);
+        }
+        if (this->CityPlanFile[i] != nullptr) {
+            rge_write(param_1, this->CityPlanFile[i], this->CityPlanFileSize[i]);
+        }
+        if (this->AiRulesFile[i] != nullptr) {
+            rge_write(param_1, this->AiRulesFile[i], this->AiRulesFileSize[i]);
+        }
+    }
+
+    int checksum = -99;
+    rge_write(param_1, &checksum, 4);
 }
 
