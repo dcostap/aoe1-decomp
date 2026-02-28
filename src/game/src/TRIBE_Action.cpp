@@ -4,7 +4,7 @@
 
 #include <new>
 
-// Source of truth: taction.cpp.decomp @ 0x004D38E0
+// Fully verified. Source of truth: taction.cpp.decomp @ 0x004D38E0
 TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3) {
     if (param_3 != 0) {
         this->setup(param_1, param_2);
@@ -27,7 +27,7 @@ TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3)
     }
 }
 
-// Source of truth: taction.cpp.decomp @ 0x004D3980
+// Fully verified. Source of truth: taction.cpp.decomp @ 0x004D3980
 TRIBE_Action::TRIBE_Action(RGE_Action_Object* param_1, int param_2) {
     if (param_2 != 0) {
         this->setup(param_1);
@@ -88,4 +88,5 @@ RGE_Static_Object* TRIBE_Action::get_target_obj2() { return RGE_Action::get_targ
 void TRIBE_Action::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void TRIBE_Action::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 void TRIBE_Action::set_state(uchar param_1) { RGE_Action::set_state(param_1); }
+
 
