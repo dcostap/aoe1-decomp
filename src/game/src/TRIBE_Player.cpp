@@ -31,6 +31,7 @@
 #include "../include/TribeMainDecisionAIModule.h"
 #include "../include/TribeStrategyAIModule.h"
 #include "../include/TribeInformationAIModule.h"
+#include "../include/TribeTacticalAIModule.h"
 #include "../include/RGE_Game_Info.h"
 
 #include <new>
@@ -113,6 +114,33 @@ static void unitsThatAreMostBuiltParity(TribeInformationAIModule* information_ai
             highest = history[i];
         }
     }
+}
+
+static void interface_obj_cost(TRIBE_Player* player, short obj_id,
+                               short* inv_1, short* amt_1, short* inv_2, short* amt_2, short* inv_3, short* amt_3);
+
+int FUN_00513f95() {
+    // TODO: decomp for this offset is bad-instruction data.
+    // Source of truth: tplayer.cpp.decomp @ 0x00513F95
+    return 0;
+}
+
+int FUN_005159ba() {
+    // TODO: decomp for this offset is corrupted/junk control flow.
+    // Source of truth: tplayer.cpp.decomp @ 0x005159BA
+    return 0;
+}
+
+int FUN_00519465() {
+    // TODO: decomp for this offset is corrupted/junk control flow.
+    // Source of truth: tplayer.cpp.decomp @ 0x00519465
+    return 0;
+}
+
+int FUN_00519ab2() {
+    // TODO: decomp for this offset is corrupted/junk control flow.
+    // Source of truth: tplayer.cpp.decomp @ 0x00519AB2
+    return 0;
 }
 
 // --- TRIBE_Player constructors ---
@@ -255,7 +283,46 @@ TRIBE_Gaia::TRIBE_Gaia(int param_1, RGE_Game_World* world, uchar player_id)
 }
 
 TRIBE_Gaia::~TRIBE_Gaia() {}
-void TRIBE_Gaia::update() { TRIBE_Player::update(); }
+void TRIBE_Gaia::update() {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519CA0
+    this->update_time = this->update_time + this->world->world_time_delta_seconds;
+    while (this->update_time > 1.0f) {
+        this->update_nature = this->update_nature + 1;
+        this->update_time = this->update_time - 1.0f;
+        if (this->update_nature == 0x1E) {
+            this->update_nature = 0;
+        }
+    }
+    RGE_Player::update();
+}
+void TRIBE_Gaia::changeToHumanPlayer() {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514700
+}
+void TRIBE_Gaia::changeToComputerPlayer() {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514710
+}
+void TRIBE_Gaia::save(int param_1) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519C40
+    TRIBE_Player::save(param_1);
+    rge_write(param_1, &this->update_time, 4);
+    rge_write(param_1, &this->update_nature, 4);
+    rge_write(param_1, &this->animal_max, 4);
+    rge_write(param_1, &this->last_count, 4);
+}
+void TRIBE_Gaia::random_start() {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D40
+}
+void TRIBE_Gaia::scenario_postload(int param_1, long* param_2, float param_3) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D50
+    TRIBE_Player::scenario_postload(param_1, param_2, param_3);
+    if (this->attributes != nullptr && this->attributes[0x32] > 0.0f) {
+        this->world->update_mutual_allies();
+    }
+}
+void TRIBE_Gaia::load_master_object(int param_1, short param_2, uchar param_3, RGE_Sprite** param_4, RGE_Sound** param_5) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D10
+    RGE_Player::load_master_object(param_1, param_2, param_3, param_4, param_5);
+}
 
 // --- TRIBE_Master_Player constructors ---
 TRIBE_Master_Player::TRIBE_Master_Player(int param_1)
@@ -267,6 +334,7 @@ TRIBE_Master_Player::TRIBE_Master_Player(FILE* param_1)
 TRIBE_Master_Player::~TRIBE_Master_Player() {}
 void TRIBE_Master_Player::finish_init(int p1, RGE_Sprite** p2, RGE_Sound** p3) { RGE_Master_Player::finish_init(p1, p2, p3); }
 void TRIBE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00512A90 (pending exact TRIBE_Player helper parity).
     RGE_Master_Static_Object* loaded = nullptr;
 
     if (p2 == 'F') {
@@ -308,26 +376,65 @@ void TRIBE_Player::set_game_status(uchar param_1) { RGE_Player::set_game_status(
 void TRIBE_Player::do_resign(int param_1) { RGE_Player::do_resign(param_1); }
 void TRIBE_Player::changeToHumanPlayer() { RGE_Player::changeToHumanPlayer(); }
 void TRIBE_Player::changeToComputerPlayer() { RGE_Player::changeToComputerPlayer(); }
-char* TRIBE_Player::aiStatus(int param_1) { return RGE_Player::aiStatus(param_1); }
+char* TRIBE_Player::aiStatus(int param_1) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00514720 (pending full AI status formatting parity).
+    return RGE_Player::aiStatus(param_1);
+}
 int TRIBE_Player::isEnemy(int param_1) { return RGE_Player::isEnemy(param_1); }
 int TRIBE_Player::isAlly(int param_1) { return RGE_Player::isAlly(param_1); }
 int TRIBE_Player::isNeutral(int param_1) { return RGE_Player::isNeutral(param_1); }
 int TRIBE_Player::isAllNeutral() { return RGE_Player::isAllNeutral(); }
-void TRIBE_Player::setDiplomaticStance(int param_1, int param_2) { RGE_Player::setDiplomaticStance(param_1, param_2); }
-void TRIBE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) { RGE_Player::loadAIInformation(param_1, param_2, param_3, param_4, param_5); }
+void TRIBE_Player::setDiplomaticStance(int param_1, int param_2) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005153B0
+    ((TRIBE_Command*)this->world->commands)->command_relation((short)this->id, (short)param_1, (short)param_2);
+}
+void TRIBE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005153D0 (pending full AI setup parity).
+    RGE_Player::loadAIInformation(param_1, param_2, param_3, param_4, param_5);
+}
 void TRIBE_Player::sendUnitAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) { RGE_Player::sendUnitAIOrder(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
 void TRIBE_Player::processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) { RGE_Player::processAIOrder(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
-void TRIBE_Player::kickAI(int param_1) { RGE_Player::kickAI(param_1); }
-int TRIBE_Player::strategicNumber(int param_1) { return RGE_Player::strategicNumber(param_1); }
+void TRIBE_Player::kickAI(int param_1) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00514F90 (pending direct AI kick parity call-site).
+    RGE_Player::kickAI(param_1);
+}
+int TRIBE_Player::strategicNumber(int param_1) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514FB0
+    if (this->playerAI != nullptr) {
+        return ((TribeTacticalAIModule*)this->playerAI->tacticalAI)->strategicNumber(param_1);
+    }
+    return -1;
+}
 void TRIBE_Player::sendGameOrder(RGE_Static_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4) { RGE_Player::sendGameOrder(param_1, param_2, param_3, param_4); }
 void TRIBE_Player::sendAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) { RGE_Player::sendAddWaypointCommand(param_1, param_2, param_3); }
 void TRIBE_Player::processAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) { RGE_Player::processAddWaypointCommand(param_1, param_2, param_3); }
 void TRIBE_Player::sendPlayCommand(int param_1, int* param_2, int param_3, int param_4, int param_5) { RGE_Player::sendPlayCommand(param_1, param_2, param_3, param_4, param_5); }
 void TRIBE_Player::sendPlayCommand(int param_1, int param_2, int param_3) { RGE_Player::sendPlayCommand(param_1, param_2, param_3); }
-int TRIBE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) { return RGE_Player::sendAICommand(param_1, param_2, param_3, param_4, param_5); }
-int TRIBE_Player::objectCostByType(int param_1) { return RGE_Player::objectCostByType(param_1); }
-void TRIBE_Player::trackUnitGather(int param_1, int param_2, int param_3) { RGE_Player::trackUnitGather(param_1, param_2, param_3); }
-RGE_Static_Object* TRIBE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) { return RGE_Player::make_scenario_obj(param_1, param_2, param_3, param_4, param_5, param_6); }
+int TRIBE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00515040 (pending direct AI command parity call-site).
+    return RGE_Player::sendAICommand(param_1, param_2, param_3, param_4, param_5);
+}
+int TRIBE_Player::objectCostByType(int param_1) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514590
+    short inv_1 = -1;
+    short amt_1 = 0;
+    short inv_2 = -1;
+    short amt_2 = 0;
+    short inv_3 = -1;
+    short amt_3 = 0;
+    interface_obj_cost(this, (short)param_1, &inv_1, &amt_1, &inv_2, &amt_2, &inv_3, &amt_3);
+    return (int)amt_1 + (int)amt_2 + (int)amt_3;
+}
+void TRIBE_Player::trackUnitGather(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005192F0
+    if (this->playerAI != nullptr) {
+        ((TribeTacticalAIModule*)this->playerAI->tacticalAI)->trackUnitGather(param_1, param_2, param_3);
+    }
+}
+RGE_Static_Object* TRIBE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005121A0 (needs full parity object init path).
+    return RGE_Player::make_scenario_obj(param_1, param_2, param_3, param_4, param_5, param_6);
+}
 void TRIBE_Player::scenario_save(int param_1) {
     // Source of truth: tplayer.cpp.decomp @ 0x00512630
     RGE_Player::scenario_save(param_1);
@@ -342,8 +449,14 @@ void TRIBE_Player::scenario_save(int param_1) {
 void TRIBE_Player::scenario_load(int param_1, long* param_2, float param_3) { RGE_Player::scenario_load(param_1, param_2, param_3); }
 void TRIBE_Player::scenario_postsave(int param_1) { RGE_Player::scenario_postsave(param_1); }
 void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) { RGE_Player::scenario_postload(param_1, param_2, param_3); }
-void TRIBE_Player::load(int param_1) { RGE_Player::load(param_1); }
-void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) { RGE_Player::add_attribute_num(param_1, param_2, param_3); }
+void TRIBE_Player::load(int param_1) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005128A0 (complex load path not yet transliterated).
+    RGE_Player::load(param_1);
+}
+void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00519570 (pending special-case parity).
+    RGE_Player::add_attribute_num(param_1, param_2, param_3);
+}
 void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
     // Fully verified. Source of truth: tplayer.cpp.asm @ 0x00513DA0
     // tech_tree is constructed in TRIBE_Player init/load paths (0x00511BD0, 0x00511E20, 0x00512690).
@@ -585,7 +698,10 @@ void TRIBE_Player::update() {
         MouseSystem->Poll();
     }
 }
-void TRIBE_Player::update_dopplegangers() { RGE_Player::update_dopplegangers(); }
+void TRIBE_Player::update_dopplegangers() {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00512620 (pending full doppleganger parity path).
+    RGE_Player::update_dopplegangers();
+}
 void TRIBE_Player::save(int param_1) {
     // Source of truth: tplayer.cpp.decomp @ 0x00512250
     color_log(0x16, 0x16, 2);
@@ -620,10 +736,23 @@ void TRIBE_Player::save(int param_1) {
 }
 void TRIBE_Player::save2(int param_1) { RGE_Player::save2(param_1); }
 void TRIBE_Player::save_info(int param_1) { RGE_Player::save_info(param_1); }
-void TRIBE_Player::random_start() { RGE_Player::random_start(); }
-RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) { return RGE_Player::make_new_object(param_1, param_2, param_3, param_4, param_5); }
-void TRIBE_Player::analyize_selected_objects() { RGE_Player::analyize_selected_objects(); }
-int TRIBE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) { return RGE_Player::get_mouse_pointer_action_vars(param_1, param_2, param_3); }
+void TRIBE_Player::random_start() {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00514010 (pending full random start parity).
+    RGE_Player::random_start();
+}
+RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512F60
+    // TODO: Remaining parity details for editor-mode call path are deferred.
+    return RGE_Player::make_new_object(param_1, param_2, param_3, param_4, param_5);
+}
+void TRIBE_Player::analyize_selected_objects() {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005195D0 (pending full selected-object analysis parity).
+    RGE_Player::analyize_selected_objects();
+}
+int TRIBE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005196E0 (pending full pointer-action parity).
+    return RGE_Player::get_mouse_pointer_action_vars(param_1, param_2, param_3);
+}
 uchar TRIBE_Player::command_make_move(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_move(param_1, param_2, param_3); }
 uchar TRIBE_Player::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_work(param_1, param_2, param_3); }
 uchar TRIBE_Player::command_make_do(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_do(param_1, param_2, param_3); }
@@ -639,15 +768,32 @@ uchar TRIBE_Player::command_remove_from_group(int param_1, int param_2) { return
 uchar TRIBE_Player::command_destroy_group(int param_1) { return RGE_Player::command_destroy_group(param_1); }
 uchar TRIBE_Player::command_resign(int param_1, int param_2) { return RGE_Player::command_resign(param_1, param_2); }
 uchar TRIBE_Player::command_add_waypoint(float param_1, float param_2, float param_3) { return RGE_Player::command_add_waypoint(param_1, param_2, param_3); }
-RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) { return RGE_Player::addObject(param_1, param_2, param_3); }
-void TRIBE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) { RGE_Player::removeObject(param_1, param_2, param_3, param_4); }
-void TRIBE_Player::logMessage(char* param_1) { RGE_Player::logMessage(param_1); }
-void TRIBE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Player::notify(param_1, param_2, param_3, param_4, param_5, param_6); }
-void TRIBE_Player::logStatus(FILE* param_1, int param_2) { RGE_Player::logStatus(param_1, param_2); }
+RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00515070 (pending AI-side addObject parity hooks).
+    return RGE_Player::addObject(param_1, param_2, param_3);
+}
+void TRIBE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005150E0 (pending AI-side removeObject parity hooks).
+    RGE_Player::removeObject(param_1, param_2, param_3, param_4);
+}
+void TRIBE_Player::logMessage(char* param_1) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00514FE0 (pending varargs logMessage parity).
+    RGE_Player::logMessage(param_1);
+}
+void TRIBE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005159D0 (pending full notify parity).
+    RGE_Player::notify(param_1, param_2, param_3, param_4, param_5, param_6);
+}
+void TRIBE_Player::logStatus(FILE* param_1, int param_2) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00518F00 (pending full status logging parity).
+    RGE_Player::logStatus(param_1, param_2);
+}
 void TRIBE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519490
     this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this, param_1, param_2, param_3);
 }
 void TRIBE_Player::new_victory() {
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519500
     this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this);
 }
 uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param_3, float param_4) {
@@ -748,7 +894,9 @@ void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, f
     ((RGE_Command*)this->world->commands)->command_work((int)this->id, allocated_ids, 1, param_2, param_3, param_4, param_5);
     free(allocated_ids);
 }
-void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
+void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00515BB0 (pending tactical notify parity).
+}
 
 // Offset: 0x00513690
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513690
@@ -986,6 +1134,7 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
 
 static void interface_obj_cost(TRIBE_Player* player, short obj_id,
                                short* inv_1, short* amt_1, short* inv_2, short* amt_2, short* inv_3, short* amt_3) {
+    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00512C30 (pending exact obj_cost signature parity).
     TRIBE_Master_Combat_Object* master;
     short shortage = 0;
     uchar can_afford;
@@ -1241,6 +1390,23 @@ uchar TRIBE_Player::check_tech_cost(short tech_id, short* missing_attr) {
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513D80
 uchar TRIBE_Player::pay_tech_cost(short tech_id) {
     return this->tech_tree->start_research(tech_id, 1, nullptr);
+}
+
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514510
+void TRIBE_Player::objectCost(int object_id, int unused, ResourceItem* resource_cost, int unused2) {
+    short inv_1 = -1;
+    short amt_1 = 0;
+    short inv_2 = -1;
+    short amt_2 = 0;
+    short inv_3 = -1;
+    short amt_3 = 0;
+    (void)unused;
+    (void)unused2;
+
+    interface_obj_cost(this, (short)object_id, &inv_1, &amt_1, &inv_2, &amt_2, &inv_3, &amt_3);
+    resource_cost->incrementValue((int)inv_1, (int)amt_1);
+    resource_cost->incrementValue((int)inv_2, (int)amt_2);
+    resource_cost->incrementValue((int)inv_3, (int)amt_3);
 }
 
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005145E0
