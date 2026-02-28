@@ -764,6 +764,15 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
     managed_array_reset(&this->vcRuleSet);
 }
 
+// Fully verified. Source of truth: TribeStrategyAIModule.decomp @ 0x004E9240
+void* TribeStrategyAIModule::vector_deleting_destructor(uint param_1) {
+    this->~TribeStrategyAIModule();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
+
 int TribeStrategyAIModule::loggingHistory() { return StrategyAIModule::loggingHistory(); }
 void TribeStrategyAIModule::setLogHistory(int param_1) { StrategyAIModule::setLogHistory(param_1); }
 void TribeStrategyAIModule::toggleLogHistory() { StrategyAIModule::toggleLogHistory(); }
