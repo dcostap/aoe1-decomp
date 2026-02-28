@@ -28,6 +28,19 @@
 
 namespace {
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5610 (implemented in TRIBE_Screen_Wait.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6050 (implemented in TRIBE_Screen_Wait.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A60E0 (implemented in TRIBE_Screen_Wait.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6100 (implemented in TRIBE_Screen_Wait.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6120 (implemented in TRIBE_Screen_Wait.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6170 (implemented in TRIBE_Screen_Wait.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A61A0 (implemented in TRIBE_Screen_Disconnect.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6290 (implemented in TRIBE_Screen_Disconnect.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A62F0 (implemented in TRIBE_Screen_Disconnect.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6310 (implemented in TRIBE_Screen_Disconnect.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6330 (implemented in TRIBE_Screen_Disconnect.cpp)
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A63C0 (implemented in TRIBE_Screen_Disconnect.cpp)
+
 static int mps_clamp(int value, int lo, int hi) {
     if (value < lo) return lo;
     if (value > hi) return hi;
