@@ -13,7 +13,7 @@
 #include <new>
 
 int RGE_Campaign::open_scenario(long param_1) {
-    // Source of truth: campaign.cpp.decomp @ 0x00423690
+    // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423690
     if (param_1 < 0 || param_1 >= this->campaign_header.scenario_num || this->scenario_offsets == nullptr) {
         return -1;
     }
@@ -1026,4 +1026,5 @@ void RGE_Campaign_Info(RGE_Campaign_Info* this_) {
     // 
 
 #endif
+
 

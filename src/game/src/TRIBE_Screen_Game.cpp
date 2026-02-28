@@ -61,7 +61,7 @@ struct SCR_GAME_PLAYER_SCORE {
 };
 
 static int __cdecl scr_game_score_compare(const void* param_1, const void* param_2) {
-    // Source of truth: scr_game.cpp.decomp @ 0x0049B000.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049B000.
     const SCR_GAME_PLAYER_SCORE* score1 = (const SCR_GAME_PLAYER_SCORE*)param_1;
     const SCR_GAME_PLAYER_SCORE* score2 = (const SCR_GAME_PLAYER_SCORE*)param_2;
 
@@ -2083,7 +2083,7 @@ int TRIBE_Screen_Game::restart_sound_system() {
 }
 
 void TRIBE_Screen_Game::draw() {
-    // Source of truth: scr_game.cpp.decomp @ 0x0049B536 (draw prelude slice).
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049B536 (draw prelude slice).
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049B560.
     TPanel::draw();
 
@@ -3397,6 +3397,8 @@ void TRIBE_Screen_Game::add_log(char* text) {
     this->runtime.log_text->append_line(text, 0);
     this->runtime.log_text->set_redraw(TPanel::Redraw);
 }
+
+
 
 
 

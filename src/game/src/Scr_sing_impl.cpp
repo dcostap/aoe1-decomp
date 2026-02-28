@@ -154,7 +154,7 @@ CUSTOM_DEBUG_END
 }
 
 TribeSPMenuScreen::~TribeSPMenuScreen() {
-    // Source of truth: scr_sing.cpp.decomp @ 0x004B6C00
+    // Fully verified. Source of truth: scr_sing.cpp.decomp @ 0x004B6C00
     // Delete all child panels before base destructor runs
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("SP dtor: begin this=%p title=%p close=%p", this, this->title, this->close_button);
@@ -173,7 +173,7 @@ CUSTOM_DEBUG_END
 }
 
 long TribeSPMenuScreen::handle_idle() {
-    // Source of truth: scr_sing.cpp.decomp @ 0x004B6C90
+    // Fully verified. Source of truth: scr_sing.cpp.decomp @ 0x004B6C90
     if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
@@ -402,3 +402,4 @@ int TribeSPMenuScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPan
 int TribeSPMenuScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 int TribeSPMenuScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 void TribeSPMenuScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
