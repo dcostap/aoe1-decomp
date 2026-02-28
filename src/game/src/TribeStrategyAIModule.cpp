@@ -187,6 +187,11 @@ int append_rule_if_missing(ManagedArray<int>* array, int rule_id) {
 
 } // namespace
 
+// ASM audit note:
+// Offsets 0x004E7646, 0x004E8C42, and 0x004E90E9 in taistrmd.cpp.asm are switch-table data labels
+// (MOV EDI,EDI + switchdata xrefs), not standalone callable routines, so there are no missing C++
+// method bodies for those entries.
+
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E6E10
 VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
     static const int kDefaultSN[226] = {

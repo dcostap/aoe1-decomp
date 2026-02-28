@@ -166,6 +166,29 @@ public:
     virtual int create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt[72] (0x120)
     virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // vt[73] (0x124)
 
+    // Task 227 decomp helper declarations (scr_sed.cpp.decomp coverage)
+    static void set_string(TRIBE_Screen_Sed* this_, char* param_2, long param_3, int param_4);
+    static int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, long param_4, int param_5);
+    static int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, char* param_4, char* param_5, char* param_6, char* param_7);
+    static int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, long param_4);
+    static int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, char* param_4);
+    static int create_input(TRIBE_Screen_Sed* this_, TPanel* param_2, TInputPanel** param_3, char* param_4, short param_5, FormatType param_6);
+    static int create_edit(TRIBE_Screen_Sed* this_, TPanel* param_2, TEditPanel** param_3, char* param_4, short param_5, FormatType param_6, int param_7, int param_8);
+    static int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownPanel** param_3);
+    static int SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2);
+    static int create_list(TRIBE_Screen_Sed* this_, TPanel* param_2, TListPanel** param_3, TScrollBarPanel** param_4);
+    static void set_paint_object_mode(TRIBE_Screen_Sed* this_);
+    static void set_terrain(TRIBE_Screen_Sed* this_, short param_2);
+    static void set_elevation(TRIBE_Screen_Sed* this_, short param_2);
+    static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2);
+    static void command_cancel(TRIBE_Screen_Sed* this_);
+    static void command_outline(TRIBE_Screen_Sed* this_);
+    static void command_player(TRIBE_Screen_Sed* this_, int param_2);
+    static void command_save_as(TRIBE_Screen_Sed* this_, unsigned char param_2);
+    static char* scenario_get_default_name(TRIBE_Screen_Sed* this_);
+    static void command_quick_save(TRIBE_Screen_Sed* this_);
+    static char* scenario_save_defaulted(TRIBE_Screen_Sed* this_);
+
     int is_multi_player;
     int set_player_first_flag;
     RGE_Static_Object* SelectedObject;
