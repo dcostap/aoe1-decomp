@@ -10,7 +10,7 @@
 extern RGE_Base_Game* rge_base_game;
 
 // Source of truth: panel.cpp.decomp @ 0x00465746
-// TODO: STUB - decomp output is corrupted/unreadable at this offset; helper mirrors observed absolute-delta usage.
+// TODO: Partial transliteration - decomp output is corrupted/unreadable at this offset.
 static long panel_abs_long(long value) {
     return (value < 0) ? -value : value;
 }
