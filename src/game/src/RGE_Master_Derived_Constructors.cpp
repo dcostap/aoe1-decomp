@@ -69,6 +69,7 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object()
     this->speed = 0.0f;
 }
 
+// Fully verified. Source of truth: m_an_obj.cpp.decomp @ 0x0044F9C0
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(RGE_Master_Animated_Object* param_1, int param_2)
     : RGE_Master_Static_Object((RGE_Master_Static_Object*)param_1, 0) {
     this->master_type = 0x14;
@@ -78,6 +79,7 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(RGE_Master_Animated_Objec
     }
 }
 
+// Fully verified. Source of truth: m_an_obj.cpp.decomp @ 0x0044FA40
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Static_Object(param_1, param_2, param_3, 0) {
     this->master_type = 0x14;
@@ -87,6 +89,7 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(int param_1, RGE_Sprite**
     }
 }
 
+// Fully verified. Source of truth: m_an_obj.cpp.decomp @ 0x0044FAB0
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
     : RGE_Master_Static_Object(param_1, param_2, param_3, param_4, 0) {
     this->master_type = 0x14;
@@ -133,6 +136,7 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object()
     this->move_algorithem = 0;
 }
 
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451A20
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(RGE_Master_Moving_Object* param_1, int param_2)
     : RGE_Master_Animated_Object((RGE_Master_Animated_Object*)param_1, 0) {
     this->master_type = 0x1E;
@@ -150,6 +154,7 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object(RGE_Master_Moving_Object* par
     }
 }
 
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451AA0
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Animated_Object(param_1, param_2, param_3, 0) {
     this->master_type = 0x1E;
@@ -167,6 +172,7 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object(int param_1, RGE_Sprite** par
     }
 }
 
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451B10
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
     : RGE_Master_Animated_Object(param_1, param_2, param_3, param_4, 0) {
     this->master_type = 0x1E;
@@ -733,6 +739,7 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object()
     this->ballistics_ratio = 0.0f;
 }
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451440
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(RGE_Master_Missile_Object* param_1, int param_2)
     : RGE_Master_Combat_Object((RGE_Master_Combat_Object*)param_1, 0) {
     this->master_type = 0x3C;
@@ -747,6 +754,7 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object(RGE_Master_Missile_Object* 
     }
 }
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x004514C0
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Combat_Object(param_1, param_2, param_3, 0) {
     this->master_type = 0x3C;
@@ -762,6 +770,7 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object(int param_1, RGE_Sprite** p
     }
 }
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451530
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
     : RGE_Master_Combat_Object(param_1, param_2, param_3, param_4, 0) {
     this->master_type = 0x3C;

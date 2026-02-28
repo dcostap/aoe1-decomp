@@ -88,8 +88,8 @@ void TRIBE_Master_Tree_Object::modify_delta(float param_1, uchar param_2) { this
 void TRIBE_Master_Tree_Object::modify_percent(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_percent(param_1, param_2); }
 void TRIBE_Master_Tree_Object::save(int param_1) { this->RGE_Master_Static_Object::save(param_1); }
 
-// TODO: Parity gap: tm_tre_o.cpp.decomp @ 0x0050F320 allocates TRIBE_Tree_Object.
-// Until t_tre_ob.cpp is transliterated, we keep the base static-object allocation path.
+// TODO: STUB: tm_tre_o.cpp.decomp @ 0x0050F320 allocates TRIBE_Tree_Object.
+// Keep base allocation path until full TRIBE_Tree_Object vtable coverage is implemented.
 RGE_Static_Object* TRIBE_Master_Tree_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
     return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4);
 }
