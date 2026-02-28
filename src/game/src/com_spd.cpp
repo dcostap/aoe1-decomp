@@ -13,7 +13,7 @@ static char s_machine_speed_info_str[512];
 }
 
 RGE_Communications_Speed::RGE_Communications_Speed(TCommunications_Handler* comm) {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432620
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432620
     this->Comm = comm;
     this->CurrentBufferGranularity = 0x5A;
     this->OptimalBufferGranularity = 0x5A;
@@ -52,11 +52,9 @@ RGE_Communications_Speed::RGE_Communications_Speed(TCommunications_Handler* comm
 }
 
 RGE_Communications_Speed::~RGE_Communications_Speed() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432780
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432780
     delete this->FrameTSLC;
-    this->FrameTSLC = nullptr;
     delete this->TurnTSLC;
-    this->TurnTSLC = nullptr;
 }
 
 void RGE_Communications_Speed::SetPlayerTurnSpeed(uint player, uchar avg_frames_msec, uchar high_latency_centi) {
@@ -144,13 +142,11 @@ void RGE_Communications_Speed::ReloadBufferFrames() {
 }
 
 uint RGE_Communications_Speed::BufferTimeToUse(ulong frame_no) {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432970
-    if (this->FrameTSLC != nullptr) {
-        if (this->LastFrameHadTime == 0) {
-            this->FrameTSLC->Skip();
-        } else {
-            (void)this->FrameTSLC->Set();
-        }
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432970
+    if (this->LastFrameHadTime == 0) {
+        this->FrameTSLC->Skip();
+    } else {
+        (void)this->FrameTSLC->Set();
     }
 
     this->LastFrameHadTime = 0;
@@ -160,16 +156,9 @@ uint RGE_Communications_Speed::BufferTimeToUse(ulong frame_no) {
         return 0;
     }
 
-    if (this->TurnTSLC != nullptr) {
-        this->RealTimePassed = this->TurnTSLC->Get();
-    } else {
-        this->RealTimePassed = 0;
-    }
-
-    if (this->Comm != nullptr) {
-        if (this->Comm->AllPlayersAcknowledged() != 0) {
-            this->AllAcknowledgedBuffersRemaining += this->TotalBufferFramesRemaining;
-        }
+    this->RealTimePassed = this->TurnTSLC->Get();
+    if (this->Comm->AllPlayersAcknowledged() != 0) {
+        this->AllAcknowledgedBuffersRemaining += this->TotalBufferFramesRemaining;
     }
 
     const uint buffer_time = (this->CurrentBufferFrames - this->TotalBufferFramesRemaining) * this->CurrentBufferGranularity;
@@ -198,11 +187,11 @@ void RGE_Communications_Speed::Skip() {
 }
 
 uchar RGE_Communications_Speed::GetHighLatencyCenti() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432A90
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432A90
     uint highest = 0;
     uint player = 1;
     do {
-        if (this->Comm != nullptr && this->Comm->IsPlayerHuman(player) != 0) {
+        if (this->Comm->IsPlayerHuman(player) != 0) {
             if (highest <= this->ActualLatency[player]) {
                 highest = this->ActualLatency[player];
             }
@@ -226,70 +215,64 @@ ulong RGE_Communications_Speed::GetPlayerLatency(uint player) {
 }
 
 char* RGE_Communications_Speed::GetLatencyInfo() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432B20
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432B20
     strcpy(this->TBuff, "Latency> ");
-
     for (uint p = 1; p <= 9; ++p) {
-        if (this->Comm != nullptr && this->Comm->IsPlayerHuman(p) != 0) {
-            char buf[32];
-            sprintf(buf, "P%d=%d,", p, (int)this->ActualLatency[p]);
-            strncat(this->TBuff, buf, sizeof(this->TBuff) - strlen(this->TBuff) - 1);
+        if (this->Comm->IsPlayerHuman(p) != 0) {
+            char buf[24];
+            sprintf(buf, "P%d=%d ", p, (int)this->ActualLatency[p]);
+            strcat(this->TBuff, buf);
         }
     }
-
     return this->TBuff;
 }
 
 char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432BD0
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432BD0
     const uint frames = this->GetRecommendedBufferFrames();
     const uint gran = this->GetRecommendedBufferGranularity();
-
-    const int fps = (gran != 0) ? (int)(1000 / (int)gran) : 0;
-    sprintf(s_self_optimal_speed_str, "MeOptimal: Buf %3d Gran %3d  Tar %d  %d", frames, gran, fps, gran * frames);
+    sprintf(s_self_optimal_speed_str, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d  Turn=%d", frames, gran, (int)(1000 / gran),
+            gran * frames);
     return s_self_optimal_speed_str;
 }
 
 char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player) {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432C10
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432C10
     if (player > -1 && player < 10) {
         const uint gran = this->CurrentBufferGranularity;
         const uint frames = this->CurrentBufferFrames;
-        const char* hilo = (this->FrameTSLC != nullptr) ? this->FrameTSLC->GetHiLoInfo(0x32) : "";
-        sprintf(s_player_speed_status_str, "Buf %3d/%3d  Gran %3dms  turn=%d  %s", this->TotalBufferFramesRemaining, frames, gran,
-                frames * gran, hilo);
+        const char* hilo = this->FrameTSLC->GetHiLoInfo(0x32);
+        sprintf(s_player_speed_status_str, "Buf=%3d / %3d * Gran=%3dms = turn %4dms   %s", this->TotalBufferFramesRemaining, frames,
+                gran, frames * gran, hilo);
         return s_player_speed_status_str;
     }
     return nullptr;
 }
 
 char* RGE_Communications_Speed::GetMachineSpeedInfo() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432C70
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432C70
     strcpy(s_machine_speed_info_str, "PlrSpeed> ");
-
     for (uint p = 1; p <= 9; ++p) {
-        if (this->Comm != nullptr && this->Comm->IsPlayerHuman(p) != 0) {
-            char buf[48];
-            sprintf(buf, "P%1d fr=%d lat=%d,", p, (int)this->PlayerAvgFramesMsec[p], (int)this->PlayerHighLatencyMsec[p]);
-            strncat(s_machine_speed_info_str, buf, sizeof(s_machine_speed_info_str) - strlen(s_machine_speed_info_str) - 1);
+        if (this->Comm->IsPlayerHuman(p) != 0) {
+            char buf[24];
+            sprintf(buf, "P#%1d(fr%d lat%d) ", p, (int)this->PlayerAvgFramesMsec[p], (int)this->PlayerHighLatencyMsec[p]);
+            strcat(s_machine_speed_info_str, buf);
         }
     }
-
     return s_machine_speed_info_str;
 }
 
 uint RGE_Communications_Speed::GetRecommendedBufferFrames() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432D20
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432D20
     uint highest = 0;
     for (uint p = 1; p < 10; ++p) {
-        if (this->Comm != nullptr && this->Comm->IsPlayerHuman(p) != 0) {
+        if (this->Comm->IsPlayerHuman(p) != 0) {
             if (highest <= this->ActualLatency[p]) {
                 highest = this->ActualLatency[p];
             }
         }
     }
-
-    uint frames = (this->CurrentBufferGranularity != 0) ? (highest / this->CurrentBufferGranularity) : 0;
+    uint frames = highest / this->CurrentBufferGranularity;
     this->OptimalBufferFrames = frames;
     if (frames > 0x13) frames = 0x14;
     this->OptimalBufferFrames = frames;
@@ -304,8 +287,8 @@ uint RGE_Communications_Speed::GetAvgFrameRate() {
 }
 
 uint RGE_Communications_Speed::GetRecommendedBufferGranularity() {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432DA0
-    uint gran = (this->FrameTSLC != nullptr) ? (uint)this->FrameTSLC->GetAvg(0x32) : 0;
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432DA0
+    uint gran = (uint)this->FrameTSLC->GetAvg(0x32);
     this->OptimalBufferGranularity = gran;
     if (gran > 0x96) gran = 0x96;
     this->OptimalBufferGranularity = gran;
@@ -315,8 +298,8 @@ uint RGE_Communications_Speed::GetRecommendedBufferGranularity() {
 }
 
 int RGE_Communications_Speed::AnalyzeGameSpeed(uint* out_granularity, uint* out_frames, int apply_change) {
-    // Source of truth: com_spd.cpp.decomp @ 0x00432DE0
-    if (this->Comm == nullptr || this->Comm->IsHost() == 0) {
+    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432DE0
+    if (this->Comm->IsHost() == 0) {
         return 0;
     }
     if (this->NextLatencyChangeTurn != 0) {
@@ -364,18 +347,20 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(uint* out_granularity, uint* out_
     }
 
     const uint cur_frames = this->CurrentBufferFrames;
-    const uint delta = new_gran * new_frames - cur_frames * cur_gran;
-    const uint abs_delta = (uint)((int)delta < 0 ? -(int)delta : (int)delta);
+    const uint new_turn_time = new_gran * new_frames;
+    const uint cur_turn_time = cur_frames * cur_gran;
+    const int signed_delta = (int)(new_turn_time - cur_turn_time);
+    const uint abs_delta = (uint)(signed_delta < 0 ? -signed_delta : signed_delta);
     if (abs_delta < 0x0B) {
         return 0;
     }
 
-    if ((new_gran * new_frames < cur_frames * cur_gran) && (abs_delta > 100) && (cur_frames > 4)) {
+    if ((new_turn_time < cur_turn_time) && (abs_delta > 100) && (cur_frames > 4)) {
         new_frames = cur_frames - 1;
     }
 
-    if (out_granularity != nullptr) *out_granularity = new_gran;
-    if (out_frames != nullptr) *out_frames = new_frames;
+    *out_granularity = new_gran;
+    *out_frames = new_frames;
 
     if (apply_change != 0 && this->SpeedControlEnabled != 0) {
         this->SetFutureSpeedChange(new_frames, new_gran, (ulong)change_turn);
