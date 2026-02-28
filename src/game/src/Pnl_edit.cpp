@@ -191,9 +191,16 @@ char* TEditPanel::get_text() {
     return this->text;
 }
 
+char* TEditPanel::get_input_buffer() {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B00
+    this->update_text();
+    return this->text;
+}
+
 char* TEditPanel::currentLine() {
-    // Parity helper: scr_mp.cpp references TEditPanel::currentLine; in this codebase it's equivalent to get_text().
-    return this->get_text();
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B10
+    this->update_text();
+    return this->text;
 }
 
 void TEditPanel::set_active(int param_1) {
@@ -604,6 +611,59 @@ int TEditPanel::verify_char(int param_1) {
     }
 }
 
+int TEditPanel::is_blank() {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476A60
+    this->update_text();
+    char* s = this->text;
+    if (s && *s) {
+        for (; *s; s = (char*)_mbsinc((unsigned char*)s)) {
+            if (_ismbcspace((unsigned char)*s) == 0) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+char* TEditPanel::get_trimmed_str(char* out, int out_len) {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476AB0
+    if (!out || out_len <= 0) {
+        return out;
+    }
+
+    this->update_text();
+    memset(out, 0, (size_t)out_len);
+
+    char temp[256];
+    memset(temp, 0, sizeof(temp));
+
+    const char* cur = this->text;
+    if (!cur) cur = "";
+    strncpy(temp + 4, cur, sizeof(temp) - 5);
+
+    unsigned char* s = (unsigned char*)(temp + 4);
+    while (*s && _ismbcspace(*s) != 0) {
+        s = _mbsinc(s);
+    }
+
+    unsigned char* d = (unsigned char*)out;
+    while (*s) {
+        _mbsncpy(d, s, 1);
+        d = _mbsinc(d);
+        s = _mbsinc(s);
+    }
+
+    while (d != (unsigned char*)out) {
+        *d = '\0';
+        unsigned char* prev = _mbsdec((unsigned char*)out, d);
+        if (!prev || _ismbcspace(*prev) == 0) {
+            break;
+        }
+        d = prev;
+    }
+    return out;
+}
+
 // Boilerplate virtual forwards
 void TEditPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
 void TEditPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
@@ -654,5 +714,14 @@ uchar TEditPanel::get_help_info(char** param_1, long* param_2, long param_3, lon
 void TEditPanel::stop_sound_system() { TPanel::stop_sound_system(); }
 int TEditPanel::restart_sound_system() { return TPanel::restart_sound_system(); }
 void TEditPanel::take_snapshot() { TPanel::take_snapshot(); }
-void TEditPanel::handle_reactivate() { TPanel::handle_reactivate(); }
+void TEditPanel::handle_reactivate() {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476BB0
+    if (this->edit_wnd && this->have_focus != 0) {
+        HWND focused = GetFocus();
+        HWND edit = (HWND)this->edit_wnd;
+        if (focused != edit) {
+            SetFocus(edit);
+        }
+    }
+}
 
