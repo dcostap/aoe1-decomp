@@ -231,6 +231,34 @@ void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uch
     }
 }
 
+RGE_Object_Node* RGE_Object_List::sort() {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463260
+    RGE_Object_Node* src = this->list;
+    RGE_Object_Node* sorted = nullptr;
+    while (src != nullptr) {
+        RGE_Object_Node** insert_at = &sorted;
+        const uchar sort_a = src->node->master_obj->sort_number;
+        for (RGE_Object_Node* it = sorted; it != nullptr; it = it->next) {
+            const uchar sort_b = it->node->master_obj->sort_number;
+            if ((sort_b < sort_a) || ((sort_b == sort_a) && (src->node->screen_y_offset < it->node->screen_y_offset))) {
+                break;
+            }
+            insert_at = &it->next;
+        }
+
+        RGE_Object_Node* n = (RGE_Object_Node*)std::calloc(1, sizeof(RGE_Object_Node));
+        n->next = *insert_at;
+        if (*insert_at != nullptr) {
+            n->prev = (*insert_at)->prev;
+            (*insert_at)->prev = n;
+        }
+        n->node = src->node;
+        *insert_at = n;
+        src = src->next;
+    }
+    return sorted;
+}
+
 void RGE_Object_List::load(uchar param_1, int param_2, RGE_Game_World* param_3) {
     // Source of truth: obj_list.cpp.decomp @ 0x00463930
     switch (param_1) {

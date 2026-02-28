@@ -756,6 +756,218 @@ void TDrawSystem::HandleSize(void* wnd, uint msg, uint wparam, long lparam) {
     }
 }
 
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443460
+void TDrawSystem::HandlePaletteChanged(void* wnd, uint msg, uint wparam, long lparam) {
+    if (wnd != this->Wnd) {
+        this->HandleQueryNewPalette(wnd, msg, wparam, lparam);
+    }
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443490
+int TDrawSystem::HandleQueryNewPalette(void* wnd, uint msg, uint wparam, long lparam) {
+    (void)wnd;
+    (void)msg;
+    (void)wparam;
+    (void)lparam;
+
+    if (this->Pal != nullptr && (this->DrawType == 1 || this->ScreenMode == 1)) {
+        HDC dc = GetDC((HWND)this->Wnd);
+        if (dc != nullptr) {
+            if (this->Pal != nullptr) {
+                SelectPalette(dc, (HPALETTE)this->Pal, FALSE);
+            }
+            UINT changed = RealizePalette(dc);
+            ReleaseDC((HWND)this->Wnd, dc);
+            if (changed != 0) {
+                InvalidateRect((HWND)this->Wnd, nullptr, FALSE);
+                return 1;
+            }
+        }
+    }
+    this->ModifyPalette(0, 256, this->palette);
+    return 0;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443680
+int TDrawSystem::GetIsLostErrorNum(long err) {
+    if (err < -0x7789ff7d) {
+        if (err == -0x7789ff7e) return 0x6a4;
+        if (err == -0x7ff8ffa9) return 0x6a5;
+    } else {
+        if (err == -0x7789fe3e) return 0x6a6;
+        if (err == 0) return 0;
+    }
+    return 0x707;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004436D0
+int TDrawSystem::GetRestoreErrorNum(long err) {
+    if (err < -0x7fffbffa) {
+        if (err == -0x7fffbffb) return 0x708;
+        if (err == -0x7fffbfff) return 0x70f;
+    } else if (err < -0x7ff8ffa8) {
+        if (err == -0x7ff8ffa9) return 0x70c;
+        if (err == -0x7ff8fff2) return 0x70e;
+    } else if (err < -0x7789ff7d) {
+        if (err == -0x7789ff7e) return 0x70b;
+        if (err == -0x7789ffa1) return 0x70a;
+    } else if (err < -0x7789fdb4) {
+        if (err == -0x7789fdb5) return 0x710;
+        if (err == -0x7789ff1f) return 0x70d;
+    } else {
+        if (err == -0x7789fdb4) return 0x709;
+        if (err == 0) return 0;
+    }
+    return 0x76b;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443780
+int TDrawSystem::GetSetDispModeErrorNum(long err) {
+    if (err < -0x7fffbffa) {
+        if (err == -0x7fffbffb) return 0x76c;
+        if (err == -0x7fffbfff) return 0x773;
+    } else if (err < -0x7789ff87) {
+        if (err == -0x7789ff88) return 0x76d;
+        if (err == -0x7ff8ffa9) return 0x76f;
+    } else if (err < -0x7789ff5f) {
+        if (err == -0x7789ff60) return 0x770;
+        if (err == -0x7789ff7e) return 0x76e;
+    } else if (err < -0x7789fe51) {
+        if (err == -0x7789fe52) return 0x772;
+        if (err == -0x7789ff1f) return 0x771;
+    } else {
+        if (err == -0x7789fde4) return 0x775;
+        if (err == -0x7789fdb2) return 0x774;
+        if (err == 0) return 0;
+    }
+    return 1999;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443840
+int TDrawSystem::GetLockErrorNum(long err) {
+    if (err < -0x7ff8fff1) {
+        if (err == -0x7ff8fff2) return 0x7d6;
+        if (err == -0x7fffbffb) return 2000;
+    } else if (err < -0x7789ff7d) {
+        if (err == -0x7789ff7e) return 0x7d1;
+        if (err == -0x7ff8ffa9) return 0x7d2;
+    } else if (err < -0x7789fe51) {
+        if (err == -0x7789fe52) return 0x7d3;
+        if (err == -0x7789ff6a) return 0x7d8;
+    } else if (err < -0x7789fde3) {
+        if (err == -0x7789fde4) return 0x7d5;
+        if (err == -0x7789fe3e) return 0x7d4;
+    } else {
+        if (err == -0x7789fdb8) return 0x7d7;
+        if (err == 0) return 0;
+    }
+    return 0x833;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004438F0
+int TDrawSystem::GetDCErrorNum(long err) {
+    if (err < -0x7fffbffa) {
+        if (err == -0x7fffbffb) return 0x834;
+        if (err == -0x7fffbfff) return 0x83a;
+    } else if (err < -0x7789ff7d) {
+        if (err == -0x7789ff7e) return 0x836;
+        if (err == -0x7ff8ffa9) return 0x837;
+    } else if (err < -0x7789fde3) {
+        if (err == -0x7789fde4) return 0x83b;
+        if (err == -0x7789fe3e) return 0x839;
+    } else {
+        if (err == -0x7789fdb0) return 0x838;
+        if (err == -0x7789fd94) return 0x835;
+        if (err == 0) return 0;
+    }
+    return 0x897;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443990
+int TDrawSystem::GetBlitErrorNum(long err) {
+    if (err < -0x7fffbffa) {
+        if (err == -0x7fffbffb) return 0x898;
+        if (err == -0x7fffbfff) return 0x8a3;
+    } else if (err < -0x7789ff91) {
+        if (err == -0x7789ff92) return 0x89c;
+        if (err == -0x7ff8ffa9) return 0x89a;
+    } else if (err < -0x7789ff69) {
+        if (err == -0x7789ff6a) return 0x89d;
+        if (err == -0x7789ff7e) return 0x899;
+    } else if (err < -0x7789ff32) {
+        if (err == -0x7789ff33) return 0x8a0;
+        if (err == -0x7789ff4c) return 0x89e;
+    } else if (err < -0x7789fee7) {
+        if (err == -0x7789fee8) return 0x8a5;
+        if (err == -0x7789ff06) return 0x8a4;
+    } else if (err < -0x7789fec9) {
+        if (err == -0x7789feca) return 0x8a7;
+        if (err == -0x7789fede) return 0x8a6;
+    } else if (err < -0x7789fe51) {
+        if (err == -0x7789fe52) return 0x8a8;
+        if (err == -0x7789feac) return 0x89b;
+    } else if (err < -0x7789fdc0) {
+        if (err == -0x7789fdc1) return 0x89f;
+        if (err == -0x7789fe3e) return 0x8a2;
+    } else {
+        if (err == -0x7789fdc0) return 0x8a1;
+        if (err == 0) return 0;
+    }
+    return 0x8fb;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443AD0
+int TDrawSystem::GetCreateErrorNum(long err) {
+    if (err < -0x7ff8fff1) {
+        if (err == -0x7ff8fff2) return 0x908;
+        if (err == -0x7fffbffb) return 0x8fc;
+    } else if (err < -0x7789ffa0) {
+        if (err == -0x7789ffa1) return 0x90b;
+        if (err == -0x7ff8ffa9) return 0x8fe;
+    } else if (err < -0x7789ff7d) {
+        if (err == -0x7789ff7e) return 0x8fd;
+        if (err == -0x7789ff9c) return 0x902;
+    } else if (err < -0x7789ff4b) {
+        if (err == -0x7789ff4c) return 0x904;
+        if (err == -0x7789ff6f) return 0x903;
+    } else if (err < -0x7789ff1e) {
+        if (err == -0x7789ff1f) return 0x907;
+        if (err == -0x7789ff2c) return 0x901;
+    } else if (err < -0x7789feab) {
+        if (err == -0x7789feac) return 0x906;
+        if (err == -0x7789ff1a) return 0x905;
+    } else if (err < -0x7789fdcc) {
+        if (err == -0x7789fdcd) return 0x900;
+        if (err == -0x7789fe84) return 0x8ff;
+    } else {
+        if (err == -0x7789fdcc) return 0x909;
+        if (err == -0x7789fdcb) return 0x90a;
+        if (err == 0) return 0;
+    }
+    return 0x95f;
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443C00
+int TDrawSystem::GetColorKeyErrorNum(long err) {
+    if (err < -0x7fffbffa) {
+        if (err == -0x7fffbffb) return 0x960;
+        if (err == -0x7fffbfff) return 0x967;
+    } else if (err < -0x7789ff7d) {
+        if (err == -0x7789ff7e) return 0x961;
+        if (err == -0x7ff8ffa9) return 0x962;
+    } else if (err < -0x7789fe3d) {
+        if (err == -0x7789fe3e) return 0x966;
+        if (err == -0x7789fefc) return 0x964;
+    } else if (err < -0x7789fdbb) {
+        if (err == -0x7789fdbc) return 0x965;
+        if (err == -0x7789fde4) return 0x968;
+    } else {
+        if (err == -0x7789fdb0) return 0x963;
+        if (err == 0) return 0;
+    }
+    return 0x9c3;
+}
+
 // TDrawArea Implementation
 
 TDrawArea::TDrawArea(char* name) {
@@ -1034,8 +1246,110 @@ void TDrawArea::Clear(tagRECT* rect, int color) {
     this->DrawSurface->Blt(&dr, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
 }
 
-void TDrawArea::PtrClear(tagRECT* rect, int color) {}
-void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {}
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444850
+void TDrawArea::PtrClear(tagRECT* rect, int color) {
+    long x1, y1, x2, y2;
+    if (rect == nullptr) {
+        x1 = 0;
+        y1 = 0;
+        x2 = this->Width - 1;
+        y2 = this->Height - 1;
+    } else {
+        x1 = rect->left;
+        y1 = rect->top;
+        x2 = rect->right;
+        y2 = rect->bottom;
+    }
+
+    if (x2 < 0 || x1 > x2 || x1 >= this->Width || y2 < 0 || y1 > y2 || y1 >= this->Height) return;
+    if (x1 < 0) x1 = 0;
+    if (x2 >= this->Width) x2 = this->Width - 1;
+    if (y1 < 0) y1 = 0;
+    if (y2 >= this->Height) y2 = this->Height - 1;
+
+    int nlines = (int)((y2 - y1) + 1);
+    int nwidth = (int)((x2 - x1) + 1);
+    if (nlines <= 0 || nwidth <= 0) return;
+
+    bool locked_here = false;
+    if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
+        if (this->Lock((char*)"PtrClear", 1) == nullptr) return;
+        locked_here = true;
+    }
+
+    unsigned char fill = (unsigned char)color;
+    for (int row = 0; row < nlines; ++row) {
+        unsigned char* p = (unsigned char*)this->CurDisplayOffsets[(int)y1 + row] + x1;
+        memset(p, fill, (size_t)nwidth);
+    }
+
+    if (locked_here) {
+        this->Unlock((char*)"PtrClear");
+    }
+}
+
+void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {
+    if (src == nullptr || rect == nullptr) return;
+    tagRECT dst;
+    dst.left = x;
+    dst.top = y;
+    dst.right = x + (rect->right - rect->left);
+    dst.bottom = y + (rect->bottom - rect->top);
+    this->OverlayMemCopy(rect, &dst, x - rect->left, y - rect->top, rect->left, rect->top);
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445580
+void TDrawArea::OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int dy, int src_x_off, int dst_y_off) {
+    (void)dx;
+    (void)dy;
+    if (!src_rect || !dst_rect) return;
+    if (src_x_off == 0 && dst_y_off == 0) return;
+
+    bool locked_here = false;
+    if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
+        if (this->Lock((char*)"OverlayMemCopy", 1) == nullptr) return;
+        locked_here = true;
+    }
+
+    int lines = (src_rect->bottom - src_rect->top) + 1;
+    int src_x_start = src_rect->left + src_x_off;
+    int dwords = ((src_rect->right - src_rect->left) + 4) >> 2;
+    int dst_x_start = src_x_off + dst_rect->left;
+    int src_y = src_rect->top + dst_y_off;
+    int dst_y = dst_rect->top + dst_y_off;
+    int y_step = 1;
+    bool backwards = false;
+
+    if (dy < 0) {
+        y_step = -1;
+        src_y = src_rect->bottom + dst_y_off;
+        dst_y = dst_rect->bottom + dst_y_off;
+    } else if (dy == 0 && src_x_off < 0) {
+        backwards = true;
+        src_x_start = (src_rect->right - 3) + src_x_off;
+        dst_x_start = (dst_rect->right - 3) + src_x_off;
+    }
+
+    for (int i = 0; i < lines; ++i) {
+        unsigned int* src_p = (unsigned int*)((unsigned char*)this->CurDisplayOffsets[src_y] + src_x_start);
+        unsigned int* dst_p = (unsigned int*)((unsigned char*)this->CurDisplayOffsets[dst_y] + dst_x_start);
+        if (backwards) {
+            for (int j = 0; j < dwords; ++j) {
+                *dst_p-- = *src_p--;
+            }
+        } else {
+            for (int j = 0; j < dwords; ++j) {
+                *dst_p++ = *src_p++;
+            }
+        }
+        src_y += y_step;
+        dst_y += y_step;
+    }
+
+    if (locked_here) {
+        this->Unlock((char*)"OverlayMemCopy");
+    }
+}
 
 // Source of truth: Drawarea.cpp.decomp @ 0x00444270
 uchar* TDrawArea::Lock(char* name, int p2) {
@@ -1084,6 +1398,21 @@ void TDrawArea::SetTrans(int enabled, uchar trans_color) {
             ddck.dwColorSpaceLowValue = (DWORD)this->TransColor;
             ddck.dwColorSpaceHighValue = (DWORD)this->TransColor;
             surf->SetColorKey(DDCKEY_SRCBLT, &ddck);
+        }
+    }
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445780
+void TDrawArea::SetOverlayTrans(int enabled, uchar trans_color) {
+    this->UseTrans = enabled;
+    this->TransColor = trans_color;
+    if (enabled != 0) {
+        IDirectDrawSurface* surf = this->DrawSurface;
+        if (surf != nullptr && this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
+            DDCOLORKEY ddck;
+            ddck.dwColorSpaceLowValue = (DWORD)trans_color;
+            ddck.dwColorSpaceHighValue = (DWORD)trans_color;
+            surf->SetColorKey(DDCKEY_DESTOVERLAY, &ddck);
         }
     }
 }
@@ -1146,8 +1475,204 @@ void TDrawArea::SetAccessOffsets() {
     this->LastBits = this->Bits;
 }
 
-void TDrawArea::PtrSpanCopy(TDrawArea* src, int x, int y) {}
-void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, uchar color) {}
+void TDrawArea::PtrSpanCopy(TDrawArea* src, int x, int y) {
+    if (src == nullptr) return;
+    tagRECT rect;
+    rect.left = 0;
+    rect.top = 0;
+    rect.right = this->Width - 1;
+    rect.bottom = this->Height - 1;
+    uchar** spans = (uchar**)(this->SpanList ? this->SpanList->Line_Head_Ptrs : nullptr);
+    this->PtrSpanCopy(src, x, y, &rect, spans);
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445250
+void TDrawArea::PtrSpanCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, uchar** span_heads) {
+    if (!src || !dst_rect || !span_heads) return;
+    if (dst_rect->left < 0 || dst_rect->left > dst_rect->right || dst_rect->right >= this->Width) return;
+    if (dst_rect->top < 0 || dst_rect->top > dst_rect->bottom || dst_rect->bottom >= this->Height) return;
+    if (src_x < 0 || src_x >= src->Width || src_y < 0 || src_y >= src->Height) return;
+
+    int lines = (int)((dst_rect->bottom - dst_rect->top) + 1);
+    if (src->Height < lines + src_y) lines = (int)(src->Height - src_y);
+    if (lines <= 0) return;
+
+    if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
+        if (src->Lock((char*)"PtrSpanCopy", 1) == nullptr) return;
+    }
+
+    int dst_x_base = (int)dst_rect->left;
+    int dst_y = (int)dst_rect->top;
+    int src_row = (int)src_y;
+    for (int row = 0; row < lines; ++row) {
+        unsigned char* dst_line = (unsigned char*)this->CurDisplayOffsets[dst_y];
+        unsigned char* src_line = (unsigned char*)src->CurDisplayOffsets[src_row];
+        for (unsigned char* node = span_heads[dst_y]; node != nullptr; node = *(unsigned char**)node) {
+            int span_start = *(int*)(node + 8);
+            int span_end = *(int*)(node + 12);
+            int width = (span_end - span_start) + 1;
+            if (width <= 0) continue;
+            memcpy(dst_line + span_start + dst_x_base, src_line + span_start + (int)src_x, (size_t)width);
+        }
+        dst_y++;
+        src_row++;
+    }
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004450C0
+void TDrawArea::PtrCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect) {
+    if (!src || !dst_rect) return;
+    if (dst_rect->left < 0 || dst_rect->left > dst_rect->right || dst_rect->right >= this->Width) return;
+    if (dst_rect->top < 0 || dst_rect->top > dst_rect->bottom || dst_rect->bottom >= this->Height) return;
+
+    int n_lines = (int)((dst_rect->bottom - dst_rect->top) + 1);
+    int n_width = (int)((dst_rect->right - dst_rect->left) + 1);
+    if (src_x < 0 || src_x >= src->Width || src_y < 0 || src_y >= src->Height) return;
+    if (src->Width < n_width + src_x) n_width = (int)(src->Width - src_x);
+    if (src->Height < n_lines + src_y) n_lines = (int)(src->Height - src_y);
+    if (n_lines <= 0 || n_width <= 0) return;
+
+    bool locked_this = false;
+    bool locked_src = false;
+    if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
+        if (this->Lock((char*)"PtrCopy1", 1) == nullptr) return;
+        locked_this = true;
+        if (src->Lock((char*)"PtrCopy2", 1) == nullptr) {
+            this->Unlock((char*)"PtrCopy1");
+            return;
+        }
+        locked_src = true;
+    }
+
+    int dst_y = (int)dst_rect->top;
+    int src_row = (int)src_y;
+    for (int row = 0; row < n_lines; ++row) {
+        unsigned char* dst_ptr = (unsigned char*)this->CurDisplayOffsets[dst_y] + dst_rect->left;
+        unsigned char* src_ptr = (unsigned char*)src->CurDisplayOffsets[src_row] + src_x;
+        memcpy(dst_ptr, src_ptr, (size_t)n_width);
+        dst_y++;
+        src_row++;
+    }
+
+    if (locked_src) src->Unlock((char*)"PtrCopy2");
+    if (locked_this) this->Unlock((char*)"PtrCopy1");
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004453A0
+void TDrawArea::PtrSurfaceCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, int lock_dst, int lock_src) {
+    if (!src || !dst_rect) return;
+    if (dst_rect->left < 0 || dst_rect->left > dst_rect->right || dst_rect->right >= this->Width) return;
+    if (dst_rect->top < 0 || dst_rect->top > dst_rect->bottom || dst_rect->bottom >= this->Height) return;
+
+    int n_lines = (int)((dst_rect->bottom - dst_rect->top) + 1);
+    int n_width = (int)((dst_rect->right - dst_rect->left) + 1);
+    if (src_x < 0 || src_x >= src->Width || src_y < 0 || src_y >= src->Height) return;
+    if (src->Width < n_width + src_x) n_width = (int)(src->Width - src_x);
+    if (src->Height < n_lines + src_y) n_lines = (int)(src->Height - src_y);
+    if (n_lines <= 0 || n_width <= 0) return;
+
+    bool locked_this = false;
+    bool locked_srcf = false;
+    if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
+        if (lock_dst != 0) {
+            if (this->Lock((char*)"PtrSurfaceCopy1", 1) == nullptr) return;
+            locked_this = true;
+        }
+        if (lock_src != 0) {
+            if (src->Lock((char*)"PtrSurfaceCopy2", 1) == nullptr) {
+                if (locked_this) this->Unlock((char*)"PtrSurfaceCopy1");
+                return;
+            }
+            locked_srcf = true;
+        }
+    }
+
+    int dst_y = (int)dst_rect->top;
+    int src_row = (int)src_y;
+    for (int row = 0; row < n_lines; ++row) {
+        unsigned char* dst_ptr = (unsigned char*)this->CurDisplayOffsets[dst_y] + dst_rect->left;
+        unsigned char* src_ptr = (unsigned char*)src->CurDisplayOffsets[src_row] + src_x;
+        memcpy(dst_ptr, src_ptr, (size_t)n_width);
+        dst_y++;
+        src_row++;
+    }
+
+    if (locked_this) this->Unlock((char*)"PtrSurfaceCopy1");
+    if (locked_srcf) src->Unlock((char*)"PtrSurfaceCopy2");
+}
+
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445840
+void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, uchar color) {
+    if (x1 == x2) {
+        int y = y1;
+        if (y1 > y2) {
+            y = y2;
+            y2 = y1;
+        }
+        while (y <= y2) {
+            this->DrawHorzLine(x1, y, 1, color);
+            y++;
+        }
+        return;
+    }
+
+    if (y1 == y2) {
+        int xl = x1;
+        int xr = x2;
+        if (xr < xl) {
+            xl = x2;
+            xr = x1;
+        }
+        this->DrawHorzLine(xl, y1, (xr - xl) + 1, color);
+        return;
+    }
+
+    int x_start = x1;
+    int y_start = y1;
+    int x_end = x2;
+    int y_end = y2;
+    if (x_end < x_start) {
+        x_end = x1;
+        y_end = y1;
+        x_start = x2;
+        y_start = y2;
+    }
+
+    int dx = (x_end - x_start) + 1;
+    int y_step = (y_start < y_end) ? 1 : -1;
+    int dy = ((y_start < y_end) ? (y_end - y_start) : (y_start - y_end)) + 1;
+
+    if (dy <= dx) {
+        int acc = 0;
+        int seg_x = x_start;
+        int x = x_start;
+        while (x < x_end) {
+            acc += dy;
+            if (acc >= dx) {
+                this->DrawHorzLine(seg_x, y_start, (x - seg_x) + 1, color);
+                y_start += y_step;
+                acc -= dx;
+                seg_x = x + 1;
+            }
+            x++;
+        }
+        this->DrawHorzLine(seg_x, y_start, (x_end - seg_x) + 1, color);
+        return;
+    }
+
+    int acc = 0;
+    int x = x_start;
+    while (true) {
+        this->DrawHorzLine(x, y_start, 1, color);
+        if (y_start == y_end) break;
+        y_start += y_step;
+        acc += dx;
+        if (acc >= dy) {
+            x++;
+            acc -= dy;
+        }
+    }
+}
 
 static void normalize_inclusive(long* a, long* b) {
     if (!a || !b) return;

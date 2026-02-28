@@ -1,12 +1,16 @@
 #include "../include/TribeMPSetupScreen.h"
 #include "../include/TribeGameSettingsScreen.h"
 #include "../include/TribeSPMenuScreen.h"
+#include "../include/TribeJoinScreen.h"
+#include "../include/TribeSelectScenarioScreen.h"
+#include "../include/TRIBE_Screen_Main_Error.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TChat.h"
 #include "../include/TTextPanel.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TDropDownPanel.h"
+#include "../include/TEditPanel.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
@@ -673,6 +677,264 @@ void mps_enable_input() {
     if (!rge_base_game) return;
     rge_base_game->enable_input();
 }
+
+} // namespace
+
+// TODO: Partial transliteration. Source of truth: scr_mps.cpp.decomp @ 0x004A0D80
+void TribeMPSetupScreen::init_vars() {
+    this->title = nullptr;
+    this->playerTitle = nullptr;
+    this->civTitle = nullptr;
+    this->settingsTitle = nullptr;
+    this->colorTitle = nullptr;
+    this->teamTitle = nullptr;
+
+    for (int i = 0; i < 8; ++i) {
+        this->playerNameText[i] = nullptr;
+        this->playerCivText[i] = nullptr;
+        this->scenarioPlayerText[i] = nullptr;
+        this->playerCDText[i] = nullptr;
+        this->playerVersionText[i] = nullptr;
+        this->playerColorText[i] = nullptr;
+        this->playerTeamText[i] = nullptr;
+        this->playerColor[i] = nullptr;
+        this->playerTeam[i] = nullptr;
+        this->playerNameDrop[i] = nullptr;
+        this->playerCivDrop[i] = nullptr;
+        this->scenarioPlayerDrop[i] = nullptr;
+    }
+
+    this->chatInput = nullptr;
+    this->chatTitle = nullptr;
+    this->chatScrollbar = nullptr;
+    this->chatBox = nullptr;
+    this->gameSettingsButton = nullptr;
+    this->scenarioName = nullptr;
+    this->victoryFixedText = nullptr;
+
+    for (int i = 0; i < 20; ++i) {
+        this->settingText[i] = nullptr;
+        this->settingValue[i] = nullptr;
+    }
+
+    this->mapSizeLabel = nullptr;
+    this->mapSizeDrop = nullptr;
+    this->mapTypeLabel = nullptr;
+    this->mapTypeDrop = nullptr;
+    this->numberPlayersTitle = nullptr;
+    this->numberPlayersDrop = nullptr;
+    this->numberPlayersText = nullptr;
+    this->hiddenMapButton = nullptr;
+    this->hiddenMapText = nullptr;
+    this->victoryTypeLabel = nullptr;
+    this->victoryTypeDrop = nullptr;
+    this->victoryAmountLabel = nullptr;
+    this->victoryAmountInput = nullptr;
+    this->ready_button_label = nullptr;
+    this->startButton = nullptr;
+    this->readyButtons[0] = nullptr;
+    this->readyButtons[1] = nullptr;
+    this->cancelButton = nullptr;
+    this->help_button = nullptr;
+    this->ready_button = nullptr;
+    this->close_button = nullptr;
+    this->cancelMode = 0;
+    this->playerToKick = 0;
+    this->myCivilization = 0;
+    this->myScenarioPlayer = -1;
+    this->myPlayerColor = 0;
+    this->myPlayerTeam = 0;
+    this->myScenarioChecksum = 0;
+    this->saveScenarioName[0] = '\0';
+    this->saveRandomGame = (rge_base_game != nullptr) ? rge_base_game->randomGame() : 0;
+    this->saveScenarioChecksum = 0;
+    this->scenarioInfo = nullptr;
+    this->numberAnyPlayers = 8;
+    this->scenarioPlayerCount = 8;
+    this->settingsFixed = 0;
+    this->sent_cd_status = 0;
+    this->netInfoButton = nullptr;
+    this->i_am_ready = 0;
+    this->last_send_shared = 0;
+    this->resend_game_options = 0;
+
+    for (int i = 0; i < 8; ++i) {
+        this->defaultColor[i] = (unsigned char)(i + 1);
+        this->scenarioCheckSum[i] = 0;
+    }
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5130
+void TribeMPSetupScreen::setupTabOrder() {
+    if (rge_base_game && rge_base_game->singlePlayerGame() != 0) {
+        TPanel* tabList[5];
+        tabList[1] = (TPanel*)this->startButton;
+        tabList[2] = (TPanel*)this->cancelButton;
+        tabList[3] = (TPanel*)this->gameSettingsButton;
+        this->set_tab_order(tabList + 1, 3);
+        this->set_curr_child((TPanel*)this->startButton);
+        return;
+    }
+
+    TPanel* tabList[5];
+    tabList[1] = (TPanel*)this->chatInput;
+    if (this->gameSettingsButton != nullptr) {
+        tabList[2] = (TPanel*)this->startButton;
+        tabList[3] = (TPanel*)this->cancelButton;
+        tabList[4] = (TPanel*)this->gameSettingsButton;
+        this->set_tab_order(tabList + 1, 4);
+        this->set_curr_child((TPanel*)this->chatInput);
+        return;
+    }
+
+    tabList[2] = (TPanel*)this->ready_button;
+    tabList[3] = (TPanel*)this->cancelButton;
+    this->set_tab_order(tabList + 1, 3);
+    this->set_curr_child((TPanel*)this->chatInput);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4100
+void TribeMPSetupScreen::fillChat(int param_1) {
+    if (!rge_base_game || rge_base_game->singlePlayerGame() != 0 || this->chatBox == nullptr) {
+        return;
+    }
+
+    const int lines = this->chatBox->numberLines();
+    const bool at_bottom = (lines > 0 && (int)this->chatBox->bot_line == (lines - 1));
+    if (lines > 99) {
+        this->chatBox->delete_line(0);
+    }
+
+    char* msg = (chat != nullptr) ? ((TChat*)chat)->GetChatMsg(param_1) : nullptr;
+    this->chatBox->word_wrap_append(msg ? msg : (char*)"");
+    if (at_bottom) {
+        this->chatBox->scroll('\a', 0, 1);
+    }
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5440
+void TribeMPSetupScreen::fillNumberPlayers() {
+    mps_fill_number_players(this);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A54C0
+void TribeMPSetupScreen::fillPlayerColors() {
+    mps_fill_player_colors(this);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5060
+void TribeMPSetupScreen::activateVictoryPanels() {
+    if (this->victoryTypeDrop == nullptr) {
+        return;
+    }
+
+    const long victory_id = this->victoryTypeDrop->get_id();
+    if (victory_id == 0 || victory_id == 1) {
+        if (this->victoryAmountLabel) this->victoryAmountLabel->set_active(0);
+        if (this->victoryAmountInput) this->victoryAmountInput->set_active(0);
+        return;
+    }
+
+    if (this->victoryAmountLabel) this->victoryAmountLabel->set_active(1);
+    if (this->victoryAmountInput) this->victoryAmountInput->set_active(1);
+
+    if (this->victoryAmountLabel == nullptr) {
+        return;
+    }
+
+    switch (victory_id) {
+    case 2:
+        this->victoryAmountLabel->set_text(0x25cb);
+        break;
+    case 3:
+    case 4:
+    case 5:
+        this->victoryAmountLabel->set_text(0x25cc);
+        break;
+    case 6:
+        this->victoryAmountLabel->set_text(0x25cd);
+        break;
+    default:
+        break;
+    }
+}
+
+void TribeMPSetupScreen::showNetInfo() {
+    // TODO: scr_mps.cpp.decomp @ 0x004A2910 - full network address listing parity.
+    this->popupOKDialog(0x238d, (char*)0, 0x1c2, 100);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4FC0
+void TribeMPSetupScreen::kickPlayer(int player_number) {
+    this->playerToKick = player_number;
+    const char* name = (comm != nullptr) ? ((TCommunications_Handler*)comm)->GetPlayerName((uint)player_number) : "";
+    char text[256];
+    char* fmt = this->get_string(0x25c8);
+    _snprintf(text, sizeof(text), (fmt != nullptr && fmt[0] != '\0') ? fmt : "Do you want to eject %s?", name ? name : "");
+    text[sizeof(text) - 1] = '\0';
+    this->popupYesNoDialog(text, (char*)"Kick Dialog", 0x1c2, 100);
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5020
+void TribeMPSetupScreen::handleKickedPlayer(int was_disconnect) {
+    this->cancelScreen(0);
+    TEasy_Panel* current = (panel_system != nullptr) ? dynamic_cast<TEasy_Panel*>(panel_system->currentPanelValue) : nullptr;
+    if (current != nullptr) {
+        current->popupOKDialog(0x25ca - (was_disconnect != 0), (char*)0, 0x1c2, 100);
+    }
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2BA0
+void TribeMPSetupScreen::cancelScreen(int timed_out) {
+    if (rge_base_game == nullptr || panel_system == nullptr) {
+        return;
+    }
+
+    if (rge_base_game->singlePlayerGame() == 0) {
+        if (comm != nullptr && ((TCommunications_Handler*)comm)->IsLobbyLaunched() != 0) {
+            if (timed_out != 0) {
+                TRIBE_Screen_Main_Error* err = new TRIBE_Screen_Main_Error();
+                if (err != nullptr && err->error_code == 0) {
+                    err->set_text(0x96a);
+                    panel_system->setCurrentPanel((char*)"Main Error Screen", 0);
+                    panel_system->destroyPanel((char*)"MP Setup Screen");
+                    return;
+                }
+            }
+            rge_base_game->close();
+            return;
+        }
+
+        rge_base_game->disable_input();
+        if (comm != nullptr) {
+            ((TCommunications_Handler*)comm)->UnlinkToLevel(SERVICE_AVAILABLE);
+        }
+        TribeJoinScreen* join = new TribeJoinScreen();
+        if (join != nullptr && join->error_code == 0) {
+            panel_system->setCurrentPanel((char*)"Join Screen", 0);
+            panel_system->destroyPanel((char*)"MP Setup Screen");
+        }
+        return;
+    }
+
+    rge_base_game->disable_input();
+    if (rge_base_game->scenarioGame() == 0) {
+        TribeSPMenuScreen* menu = new TribeSPMenuScreen();
+        if (menu != nullptr && menu->error_code == 0) {
+            panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
+            panel_system->destroyPanel((char*)"MP Setup Screen");
+        }
+        return;
+    }
+
+    TribeSelectScenarioScreen* select = new TribeSelectScenarioScreen();
+    if (select != nullptr && select->error_code == 0) {
+        panel_system->setCurrentPanel((char*)"Select Scenario Screen", 0);
+        panel_system->destroyPanel((char*)"MP Setup Screen");
+    }
+}
+
+namespace {
 
 static int mps_ensure_multiplayer_comm() {
     if (!rge_base_game || rge_base_game->multiplayerGame() == 0) {
@@ -2035,6 +2297,229 @@ long TribeMPSetupScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
+// TODO: Partial transliteration. Source of truth: scr_mps.cpp.decomp @ 0x004A2D50
+long TribeMPSetupScreen::handle_user_command(uint param_1, long param_2) {
+    if (!rge_base_game || !comm) {
+        return 1;
+    }
+    if (rge_base_game->singlePlayerGame() != 0) {
+        return 1;
+    }
+
+    TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+
+    switch (param_1) {
+    case 0x17A4: {
+        int changed = 0;
+        if (comm_handler->IsHost() != 0 && this->sent_cd_status == 0) {
+            this->sent_cd_status = 1;
+            if (rge_base_game->check_for_cd(0) != 0) {
+                const int who = (int)comm_handler->WhoAmI();
+                rge_base_game->setPlayerHasCD(who - 1, 1);
+                changed = 1;
+            }
+        }
+
+        if (comm_handler->IsHost() != 0) {
+            for (int i = 0; i < 8; ++i) {
+                const uint player_num = (uint)(i + 1);
+                const int humanity = comm_handler->GetPlayerHumanity(player_num);
+                const uint who = comm_handler->WhoAmI();
+
+                if (who != player_num && humanity == 2) {
+                    int message = 0;
+                    int ready = 0;
+                    ulong user3 = 0, user6 = 0, user7 = 0, user1 = 0, user4 = 0, user2 = 0;
+                    comm_handler->GetClientReadiness(player_num, &message, &user3, &user6, &user7, &user1, &user4, (ulong*)&ready, &user2);
+
+                    if (user3 != 0 && user3 != (ulong)game->civilization(i)) {
+                        game->setCivilization(i, (int)user3);
+                        changed = 1;
+                    }
+                    if (user6 != 0 && (int)(user6 - 1) != game->scenarioPlayer(i)) {
+                        game->setScenarioPlayer(i, (int)(user6 - 1));
+                        changed = 1;
+                    }
+                    if (user7 == 1 && rge_base_game->playerHasCD(i) == 1) {
+                        rge_base_game->setPlayerHasCD(i, 0);
+                        changed = 1;
+                    } else if (user7 == 2 && rge_base_game->playerHasCD(i) == 0) {
+                        rge_base_game->setPlayerHasCD(i, 1);
+                        changed = 1;
+                    }
+                    if (user1 != 0 && user1 != (ulong)game->playerColor(i)) {
+                        game->setPlayerColor(i, (int)user1);
+                        changed = 1;
+                    }
+                    if (user4 != 0 && user4 != (ulong)rge_base_game->playerTeam(i)) {
+                        rge_base_game->setPlayerTeam(i, (int)user4);
+                        changed = 1;
+                    }
+                    if (user2 != 0) {
+                        rge_base_game->setPlayerVersion(i, (int)user2);
+                        changed = 1;
+                    }
+                    if (ready != 0) {
+                        this->scenarioCheckSum[i] = ready;
+                    }
+                } else if (humanity != 4) {
+                    int rand_civ = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x6d6);
+                    int sign = rand_civ >> 0x1f;
+                    rand_civ = (((rand_civ ^ sign) - sign) & 0xf);
+                    rand_civ = (rand_civ ^ sign) - sign + 1;
+
+                    if (game->civilization(i) != rand_civ) {
+                        game->setCivilization(i, rand_civ);
+                        changed = 1;
+                    }
+                    if (game->scenarioPlayer(i) != i) {
+                        game->setScenarioPlayer(i, i);
+                        changed = 1;
+                    }
+                    if (rge_base_game->playerHasCD(i) != 0) {
+                        rge_base_game->setPlayerHasCD(i, 0);
+                        changed = 1;
+                    }
+                    if (game->playerColor(i) != this->defaultColor[i]) {
+                        game->setPlayerColor(i, this->defaultColor[i]);
+                        changed = 1;
+                    }
+                    if (rge_base_game->playerTeam(i) != 1) {
+                        rge_base_game->setPlayerTeam(i, 1);
+                        changed = 1;
+                    }
+                    if (rge_base_game->playerVersion(i) != 0) {
+                        rge_base_game->setPlayerVersion(i, 0);
+                        changed = 1;
+                    }
+                    this->scenarioCheckSum[i] = 0;
+                }
+            }
+
+            if (changed != 0) {
+                rge_base_game->send_game_options();
+                this->resend_game_options = 0;
+            }
+        }
+
+        this->fillPlayers();
+        this->set_redraw((RedrawMode)1);
+        return 1;
+    }
+    case 0x17A6: {
+        rge_base_game->receive_game_options();
+        const int num_players = rge_base_game->numberPlayers();
+        for (int i = 0; i < num_players; ++i) {
+            int civ = game->civilization(i);
+            if (civ > 0x31) {
+                game->setCivilization(i, civ - 0x32);
+                if (i + 1 == (int)comm_handler->WhoAmI()) {
+                    this->myCivilization = 0;
+                }
+            }
+            int team = rge_base_game->playerTeam(i);
+            if (team > 0x31) {
+                rge_base_game->setPlayerTeam(i, team - 0x32);
+                if (i + 1 == (int)comm_handler->WhoAmI()) {
+                    this->myPlayerTeam = 0;
+                }
+            }
+        }
+
+        if (this->myScenarioPlayer != 0 && strcmp(this->saveScenarioName, rge_base_game->scenarioName()) != 0) {
+            this->myScenarioPlayer = -1;
+        }
+
+        this->updateSummary();
+        if (comm_handler->IsHost() == 0) {
+            if (this->sent_cd_status != 0 && this->myScenarioChecksum == this->saveScenarioChecksum) {
+                const uint me = comm_handler->WhoAmI();
+                const int ready_now = comm_handler->IsPlayerReady(me);
+                if (ready_now == this->i_am_ready) {
+                    return 1;
+                }
+            }
+
+            this->sent_cd_status = 1;
+            this->saveScenarioChecksum = this->myScenarioChecksum;
+            const int has_cd = rge_base_game->check_for_cd(0);
+            comm_handler->SetMyReadiness(this->i_am_ready, 0, 0, (ulong)(has_cd + 1), 0, 0, this->myScenarioChecksum, 1);
+            return 1;
+        }
+        return 1;
+    }
+    case 0x17A7:
+        if (chat != nullptr) {
+            ((TChat*)chat)->setWindowHandle((void*)AppWnd);
+        }
+        comm_handler->SetWindowHandle((void*)AppWnd);
+        game->start_game(0);
+        return 1;
+    case 0x17A8:
+    case 0x17A9:
+        this->handleKickedPlayer(0);
+        return 1;
+    case 0x17AA:
+    case 0x17B2:
+        this->handleKickedPlayer(1);
+        return 1;
+    case 0x17AE:
+        this->cancelScreen(0);
+        return 1;
+    case 0x17B3:
+        this->fillPlayers();
+        return 1;
+    case 0x17B6:
+    case 0x17B7: {
+        const char* name = comm_handler->GetPlayerName((uint)param_2);
+        const int resid = (param_1 == 0x17B6) ? 0x25dd : 0x25de;
+        char* fmt = this->get_string(resid);
+        char message[256];
+        _snprintf(message, sizeof(message), (fmt != nullptr && fmt[0] != '\0') ? fmt : "%s", name ? name : "");
+        message[sizeof(message) - 1] = '\0';
+        this->popupOKDialog(message, (char*)0, 0x1c2, 100);
+        return 1;
+    }
+    case 0x17B9:
+        if (comm_handler->IsLobbyLaunched() != 0) {
+            this->cancelScreen(1);
+        } else {
+            this->handleKickedPlayer(0);
+        }
+        return 1;
+    case 0x17BB:
+        if (comm_handler->IsHost() != 0) {
+            const int num_players = rge_base_game->numberPlayers();
+            for (int i = 0; i < num_players; ++i) {
+                int civ = game->civilization(i);
+                if (civ > 0x31) {
+                    game->setCivilization(i, civ - 0x32);
+                    this->resend_game_options = 1;
+                }
+                int team = rge_base_game->playerTeam(i);
+                if (team > 0x31) {
+                    rge_base_game->setPlayerTeam(i, team - 0x32);
+                    this->resend_game_options = 1;
+                }
+            }
+        }
+        return 1;
+    case 0x17D5:
+        this->fillChat((int)param_2);
+        return 1;
+    default:
+        return 1;
+    }
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A37C0
+long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) {
+    (void)param_1;
+    (void)param_2;
+    return 1;
+}
+
 void TribeMPSetupScreen::calcRandomPositions() {
     // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
     if (!rge_base_game || !comm) {
@@ -2542,8 +3027,7 @@ long TribeMPSetupScreen::handle_paint() { return TScreenPanel::handle_paint(); }
 long TribeMPSetupScreen::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TScreenPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
 long TribeMPSetupScreen::handle_char(long param_1, short param_2) { return TScreenPanel::handle_char(param_1, param_2); }
 long TribeMPSetupScreen::handle_command(uint param_1, long param_2) { return TScreenPanel::handle_command(param_1, param_2); }
-long TribeMPSetupScreen::handle_user_command(uint param_1, long param_2) { return TScreenPanel::handle_user_command(param_1, param_2); }
-long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) { return TScreenPanel::handle_timer_command(param_1, param_2); }
+// handle_user_command and handle_timer_command implemented above for multiplayer parity.
 long TribeMPSetupScreen::handle_scroll(long param_1, long param_2) { return TScreenPanel::handle_scroll(param_1, param_2); }
 long TribeMPSetupScreen::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
 long TribeMPSetupScreen::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
