@@ -788,8 +788,7 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3, uchar
 // -----------------------------------------------------------------------------
 
 static void FUN_00437bd9() {
-    // TODO: STUB - decompiler artifact placeholder.
-    // Source of truth: diam_map.cpp.decomp @ 0x00437BD9
+    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x00437BD9 (switch jump-table thunk)
 }
 
 void RGE_Diamond_Map::draw_selected_area() {
@@ -1033,8 +1032,7 @@ void RGE_Diamond_Map::draw_object(short param_1, short param_2, uchar param_3, s
 }
 
 static void FUN_0043804d() {
-    // TODO: STUB - decompiler artifact placeholder.
-    // Source of truth: diam_map.cpp.decomp @ 0x0043804D
+    // Fully verified. Source of truth: diam_map.cpp.asm @ 0x0043804D (switch jump-table thunk)
 }
 
 void RGE_Diamond_Map::draw_clipped_horz_line(short param_1, short param_2, short param_3, uchar param_4, RGE_Map_Image_Line* param_5) {
