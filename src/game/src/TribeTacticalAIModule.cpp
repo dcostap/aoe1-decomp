@@ -1,12 +1,15 @@
 #include "../include/TribeTacticalAIModule.h"
 
 #include "../include/DiplomacyAIModule.h"
+#include "../include/BuildAIModule.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/ResourceItem.h"
+#include "../include/TribeBuildAIModule.h"
 #include "../include/TribeMainDecisionAIModule.h"
+#include "../include/TribeResourceAIModule.h"
 #include "../include/UnitAIModule.h"
 #include "../include/globals.h"
 
@@ -624,17 +627,117 @@ int TribeTacticalAIModule::save(int param_1) {
     return 1;
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6100
 int TribeTacticalAIModule::numberCivilians() const { return this->civilians.numberValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6110
 int TribeTacticalAIModule::numberCivilianExplorers() const { return this->civilianExplorers.numberValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6120
 int TribeTacticalAIModule::numberGatherers() const { return this->numberGatherersValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6130
 int TribeTacticalAIModule::desiredNumberCivilianExplorers() const { return this->civilianExplorers.desiredNumberValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6140
 int TribeTacticalAIModule::desiredNumberGatherers() const { return this->desiredNumberGatherersValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6150
 int TribeTacticalAIModule::numberSoldiers() const { return this->soldiers.numberValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6170
 int TribeTacticalAIModule::numberBoats() const { return this->boats.numberValue; }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6160
 int TribeTacticalAIModule::numberSoldierExplorers() {
-    // TODO: STUB - numberUnitsInGroups helper is not transliterated yet.
+    int count = 0;
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != &this->groups) && (current != nullptr);
+         current = current->next) {
+        if (current->type() == 0x66) {
+            count += current->numberUnits();
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0180
+void TribeTacticalAIModule::logGroupDebug(int param_1, char* param_2, ...) {
+    (void)param_1;
+    (void)param_2;
+}
+
+// TODO: 0x004F0BC0 clearArea transliteration is blocked on missing pathing/task helpers.
+int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, float param_4, float param_5) {
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
     return 0;
+}
+
+// TODO: 0x004F0D70 addObject transliteration is blocked on missing classification/task helpers.
+void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
+    if ((param_1 != nullptr) && (param_1->master_obj != nullptr) && (param_1->master_obj->object_group == 4)) {
+        appendManagedArrayUnique(this->civilians, param_1->id);
+    }
+}
+
+// TODO: 0x004F1090 removeObject transliteration is blocked on missing removeFromTaskLists helper.
+void TribeTacticalAIModule::removeObject(int param_1) {
+    ManagedArray<int>* arrays[] = {&this->civilians,        &this->civilianExplorers, &this->soldiers,
+                                   &this->ungroupedSoldiers, &this->boats,             &this->warBoats,
+                                   &this->fishingBoats,      &this->tradeBoats,        &this->transportBoats,
+                                   &this->artifacts};
+    for (ManagedArray<int>* arr : arrays) {
+        for (int i = 0; i < arr->numberValue && i < arr->maximumSizeValue; ++i) {
+            if (arr->value[i] != param_1) {
+                continue;
+            }
+            for (int j = i; j + 1 < arr->numberValue && j + 1 < arr->maximumSizeValue; ++j) {
+                arr->value[j] = arr->value[j + 1];
+            }
+            arr->numberValue -= 1;
+            break;
+        }
+    }
+}
+
+// TODO: 0x004F13F0 evaluateCivilianDistribution transliteration is blocked on missing info-AI helpers.
+void TribeTacticalAIModule::evaluateCivilianDistribution() {}
+
+// TODO: 0x004F1600 taskCivilians transliteration is blocked on missing gatherer/task helpers.
+int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
+    (void)param_1;
+    (void)param_2;
+    return 0;
+}
+
+// TODO: 0x004F1E10 taskIdleSoldiers transliteration is blocked on missing tactical helper graph.
+void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned long param_2) {
+    (void)param_1;
+    (void)param_2;
+}
+
+// TODO: 0x004F21F0 taskActiveSoldiers transliteration is blocked on missing targeting/combat helpers.
+void TribeTacticalAIModule::taskActiveSoldiers(unsigned long param_1, unsigned long param_2) {
+    (void)param_1;
+    (void)param_2;
+}
+
+// TODO: 0x004F4760 playTaskSoldiers transliteration is blocked on missing playbook/target helpers.
+void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1, unsigned long param_2) {
+    (void)param_1;
+    (void)param_2;
+}
+
+// TODO: 0x004F4AA0 taskUngroupedSoldiers transliteration is blocked on missing group creation helpers.
+void TribeTacticalAIModule::taskUngroupedSoldiers() {}
+
+// TODO: 0x004F4D90 taskBoats transliteration is blocked on missing transport/attack helpers.
+void TribeTacticalAIModule::taskBoats() {}
+
+// TODO: 0x004F57C0 evaluateOpenTasks transliteration is blocked on missing tactical helper graph.
+void TribeTacticalAIModule::evaluateOpenTasks() {}
+
+// TODO: 0x004F5FB0 evaluateBuildListInsertions transliteration is blocked on missing TribeBuildAIModule::insert wrapper.
+void TribeTacticalAIModule::evaluateBuildListInsertions() {
+    // TODO: STUB - requires unresolved md->buildAI wrapper APIs in current headers.
 }
 
 int TribeTacticalAIModule::neededResource(int param_1) const {
@@ -778,6 +881,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
     // TODO: STUB - storeAttackMemory, readyAndIdleGroup, and attacker/defender response tasking are not transliterated yet.
 }
 
+// TODO: 0x004F0190 doSomething is partially transliterated; remaining update-area handlers are still pending.
 int TribeTacticalAIModule::doSomething() {
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
         return 1;
@@ -809,11 +913,11 @@ int TribeTacticalAIModule::doSomething() {
                         this->firstNeededResourceUpdateDone = 1;
                         // TODO: STUB - updateNeededResources is not transliterated yet.
                     }
-                    // TODO: STUB - evaluateCivilianDistribution is not transliterated yet.
+                    evaluateCivilianDistribution();
                 }
                 break;
             case 2:
-                // TODO: STUB - taskCivilians not transliterated yet.
+                taskCivilians(startTime, availableTime);
                 if (this->nextCivilianToTaskValue != -1) {
                     incUpdateArea = false;
                 }
@@ -830,7 +934,7 @@ int TribeTacticalAIModule::doSomething() {
                 break;
             case 5:
                 if (this->boats.numberValue > 0) {
-                    // TODO: STUB - taskBoats is not transliterated yet.
+                    taskBoats();
                 }
                 break;
             case 6:
@@ -841,7 +945,7 @@ int TribeTacticalAIModule::doSomething() {
             case 7:
                 if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) ||
                     (this->artifacts.numberValue > 0)) {
-                    // TODO: STUB - taskIdleSoldiers is not transliterated yet.
+                    taskIdleSoldiers(startTime, availableTime);
                     if (this->nextIdleSoldierGroupToTaskValue != -1) {
                         incUpdateArea = false;
                     }
@@ -850,7 +954,7 @@ int TribeTacticalAIModule::doSomething() {
             case 8:
                 if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) ||
                     (this->artifacts.numberValue > 0)) {
-                    // TODO: STUB - taskActiveSoldiers is not transliterated yet.
+                    taskActiveSoldiers(startTime, availableTime);
                     if (this->nextActiveSoldierGroupToTaskValue != -1) {
                         incUpdateArea = false;
                     }
@@ -858,7 +962,7 @@ int TribeTacticalAIModule::doSomething() {
                 break;
             case 9:
                 if (this->soldiers.numberValue > 0) {
-                    // TODO: STUB - playTaskSoldiers is not transliterated yet.
+                    playTaskSoldiers(startTime, availableTime);
                 }
                 break;
             case 0xA:
@@ -893,13 +997,14 @@ int TribeTacticalAIModule::doSomething() {
                 }
                 break;
             case 0x13:
-                // TODO: STUB - open task/build insertion and coop checks not transliterated yet.
+                evaluateOpenTasks();
                 break;
             case 0x14:
                 // TODO: STUB - dropsite refresh check is not transliterated yet.
                 break;
             case 0x15: {
-                // TODO: STUB - evaluateBuildListInsertions and unskipBuildList not transliterated yet.
+                evaluateBuildListInsertions();
+                // TODO: STUB - unskipBuildList is not transliterated yet.
                 const unsigned long now = world->world_time;
                 this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
                 this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
