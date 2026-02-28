@@ -2741,6 +2741,7 @@ int RGE_View::get_tile_mask_num(int param_1, int param_2, int param_3, int param
     return (uint)this->EdgeNumber[mask_bits];
 }
 
+// Source of truth: view.cpp.decomp @ 0x00538710
 int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, short row, uchar fog, int param_9, int param_10)
 {
     if (tile == nullptr || this->map == nullptr) {
