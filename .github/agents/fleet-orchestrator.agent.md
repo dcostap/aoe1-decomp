@@ -1,6 +1,7 @@
 ---
 name: Fleet Orchestrator
 description: Autonomous fleet orchestrator that manages parallel decomp worker agents via Terminal Fleet MCP. Dispatches tasks, monitors workers, handles completions/failures, discovers new tasks, and maintains the task queue.
+model: claude-opus-4.6
 tools:
   - "*"
 ---
@@ -81,7 +82,7 @@ The system prompt is handled by the `decomp-worker` agent file — do NOT inline
 ### Phase 3: Launch Copilot
 
 ```
-send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo --model \"gpt-5.3-codex\" -p $prompt -s\n")
+send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo -p $prompt -s\n")
 ```
 
 **Key flags:**
@@ -180,7 +181,7 @@ Get-Content worker_prompt.txt | codex exec --dangerously-bypass-approvals-and-sa
 3. Create 3 terminal sessions in clone folders 1, 2, 3
 4. Sync each clone to latest master
 5. Write `worker_prompt.txt` (task body only) for each
-6. Launch each: `copilot --agent decomp-worker --yolo --model "gpt-5.3-codex" -p $prompt -s`
+6. Launch each: `copilot --agent decomp-worker --yolo -p $prompt -s`
 7. Enter monitoring loop
 
 **You are fully independent. Start working.**

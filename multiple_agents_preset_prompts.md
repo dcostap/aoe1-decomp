@@ -151,7 +151,7 @@ Set-Content -Path "C:\Projects\my_decomps\aoe1_clone_N\worker_prompt.txt" -Value
 ### Phase 4: Launch Copilot with the custom agent
 
 ```
-send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo --model \"gpt-5.3-codex\" -p $prompt -s\n")
+send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo -p $prompt -s\n")
 ```
 
 **Key changes from old pattern:**
@@ -240,7 +240,7 @@ When the user tells you to start:
 2. Create 3 terminal sessions (worker-1, worker-2, worker-3) in clone folders 1, 2, 3
 3. Sync each clone to latest master
 4. In each clone, write `worker_prompt.txt` with task body only (system prompt is in the agent file)
-5. Launch: `copilot --agent decomp-worker --yolo --model "gpt-5.3-codex" -p $prompt -s`
+5. Launch: `copilot --agent decomp-worker --yolo -p $prompt -s`
 6. Monitor sessions; when worker's `ask_user` prompt appears, review output, pull commits, send next task
 7. Enter monitoring loop: check workers every few minutes, handle completions/failures, assign new tasks
 8. Periodically `git pull` in your own repo to stay current
@@ -355,7 +355,7 @@ Each sub-agent reports back with structured findings. The orchestrator then synt
 1. Write worker_prompt.txt (TASK BODY ONLY) FROM ORCHESTRATOR SHELL (not send_input)
 2. Sync clone: send_input -> "git fetch origin --prune && git switch master && git pull --ff-only origin master\n"
 3. Wait 6-8 seconds, read_screen to confirm sync succeeded
-4. Launch: send_input -> '$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo --model "gpt-5.3-codex" -p $prompt -s\n'
+4. Launch: send_input -> '$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo -p $prompt -s\n'
 5. Wait 10 seconds, read_screen to confirm copilot is launching
 6. Mark task as assigned in queue file IMMEDIATELY
 7. When worker finishes (ask_user prompt visible): read report, pull commits, update queue, write next task, send next task via send_input
