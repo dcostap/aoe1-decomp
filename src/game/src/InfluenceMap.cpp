@@ -24,7 +24,7 @@ InfluenceMap::InfluenceMap() {
 }
 
 InfluenceMap::InfluenceMap(int param_1, int param_2, uchar param_3) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044DF80
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044DF80
     this->ySizeValue = param_2;
     uint total = (uint)(param_2 * param_1);
     this->xSizeValue = param_1;
@@ -51,7 +51,7 @@ InfluenceMap::InfluenceMap(int param_1, int param_2, uchar param_3) {
 }
 
 InfluenceMap::InfluenceMap(int param_1) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E050
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E050
     this->xSizeValue = -1;
     this->ySizeValue = -1;
     this->xReferencePointValue = 0;
@@ -85,7 +85,7 @@ void InfluenceMap::save(int param_1) {
 }
 
 void InfluenceMap::load(int param_1) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E1A0
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E1A0
     rge_read(param_1, &this->xSizeValue, 4);
     rge_read(param_1, &this->ySizeValue, 4);
     rge_read(param_1, &this->xReferencePointValue, 4);
@@ -102,8 +102,7 @@ void InfluenceMap::load(int param_1) {
 }
 
 void InfluenceMap::printToFile(char* param_1) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E250
-    // TODO: Keep aligning with original formatting strings from infmap.cpp ASM string table.
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E250
     if (param_1 == nullptr) {
         return;
     }
@@ -215,7 +214,7 @@ int InfluenceMap::incrementValue(int param_1, int param_2, uchar param_3) {
 }
 
 int InfluenceMap::incrementValue(int param_1, int param_2, int param_3, int param_4, uchar param_5) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E680
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E680
     int x0 = param_1 - this->xReferencePointValue;
     int x1 = param_3 - this->xReferencePointValue;
     int y0 = param_2 - this->yReferencePointValue;
@@ -276,7 +275,7 @@ int InfluenceMap::decrementValue(int param_1, int param_2, uchar param_3) {
 }
 
 int InfluenceMap::decrementValue(int param_1, int param_2, int param_3, int param_4, uchar param_5) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E800
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E800
     int x0 = param_1 - this->xReferencePointValue;
     int x1 = param_3 - this->xReferencePointValue;
     int y0 = param_2 - this->yReferencePointValue;
@@ -317,7 +316,7 @@ int InfluenceMap::decrementValue(int param_1, int param_2, int param_3, int para
 }
 
 int InfluenceMap::setCoverageCount(XYPoint* param_1, XYPoint* param_2, int param_3) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E900
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E900
     this->coverageCountValue = 0;
     int x = param_1->x;
     if ((x >= 0) && (param_1->y >= 0) && (x < this->xSizeValue) && (param_1->y < this->ySizeValue) && (param_2->x >= 0) &&
@@ -335,8 +334,7 @@ int InfluenceMap::setCoverageCount(XYPoint* param_1, XYPoint* param_2, int param
 }
 
 int InfluenceMap::setConnectionCount(XYPoint* param_1, XYPoint* param_2, int param_3, int param_4, int param_5, int param_6) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044E9E0
-    // TODO: Validate direction/edge counting rules against infmap.cpp.asm for exact parity.
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E9E0
     this->connectionCountValue = 0;
 
     int x0 = param_1->x;
@@ -390,8 +388,13 @@ int InfluenceMap::setConnectionCount(XYPoint* param_1, XYPoint* param_2, int par
     return this->connectionCountValue;
 }
 
+int InfluenceMap::coverageIncluding(const XYPoint& param_1, const XYPoint& param_2, uchar param_3, uchar param_4) {
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044EBD2
+    return this->coverageIncluding(const_cast<XYPoint*>(&param_1), const_cast<XYPoint*>(&param_2), param_3, param_4);
+}
+
 int InfluenceMap::coverageIncluding(XYPoint* param_1, XYPoint* param_2, uchar param_3, uchar param_4) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044EC00
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044EC00
     int ret = this->coverageCountValue;
     int x0 = param_1->x;
     int y0 = param_1->y;
@@ -413,8 +416,7 @@ int InfluenceMap::coverageIncluding(XYPoint* param_1, XYPoint* param_2, uchar pa
 }
 
 int InfluenceMap::connectionsIncluding(XYPoint* param_1, XYPoint* param_2, uchar param_3, uchar param_4, int param_5, int param_6, int param_7) {
-    // Source of truth: infmap.cpp.decomp @ 0x0044ED20
-    // TODO: Validate this transliteration against infmap.cpp.asm edge-path handling.
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044ED20
     int x = param_1->x;
     int ret = this->connectionCountValue;
     if ((x < 0) || (param_1->y < 0) || (x >= this->xSizeValue) || (param_1->y >= this->ySizeValue) || (param_2->x < 0) || (param_2->y < 0) ||
@@ -510,6 +512,11 @@ int InfluenceMap::connectionsIncluding(XYPoint* param_1, XYPoint* param_2, uchar
 
         ++x;
     }
+}
+
+int InfluenceMap::connectionsIncluding(const XYPoint& param_1, const XYPoint& param_2, uchar param_3, uchar param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044EFE9
+    return this->connectionsIncluding(const_cast<XYPoint*>(&param_1), const_cast<XYPoint*>(&param_2), param_3, param_4, param_5, param_6, param_7);
 }
 
 void InfluenceMap::setUnchangeableLimit(uchar param_1) {

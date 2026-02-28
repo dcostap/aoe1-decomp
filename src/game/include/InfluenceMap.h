@@ -26,6 +26,8 @@ public:
     int setConnectionCount(XYPoint* param_1, XYPoint* param_2, int param_3, int param_4, int param_5, int param_6);
     int coverageIncluding(XYPoint* param_1, XYPoint* param_2, uchar param_3, uchar param_4);
     int connectionsIncluding(XYPoint* param_1, XYPoint* param_2, uchar param_3, uchar param_4, int param_5, int param_6, int param_7);
+    int coverageIncluding(const XYPoint& param_1, const XYPoint& param_2, uchar param_3, uchar param_4);
+    int connectionsIncluding(const XYPoint& param_1, const XYPoint& param_2, uchar param_3, uchar param_4, int param_5, int param_6, int param_7);
     void setUnchangeableLimit(uchar param_1);
     int maxValue();
 

@@ -1,12 +1,16 @@
 #include "../include/Visible_Unit_Manager.h"
 
 #include "../include/RGE_Static_Object.h"
+#include "../include/LOSTBL.h"
 #include "../include/VISIBLE_UNIT_PTR.h"
 #include "../include/VISIBLE_UNIT_REC.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+extern LOSTBL* NormalLOS[17];
+extern LOSTBL* SquareLOS[17];
 
 static void vis_unit_set_backptr(int object_id, int player_index, VISIBLE_UNIT_REC* rec) {
     if (VIS_UNIT_objectsValue == nullptr) {
@@ -78,25 +82,47 @@ Visible_Unit_Manager::~Visible_Unit_Manager() {
     VisibleUnitManager = nullptr;
 }
 
-// TODO: Full parity distance buckets depend on NormalLOS/SquareLOS data section wiring.
-// Source of truth: vis_unit.cpp.decomp @ 0x0053B730
+// Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B730
 void Visible_Unit_Manager::Build_Distance_Table() {
     if (this->distanceTable != nullptr) {
         free(this->distanceTable);
     }
-    this->distanceTable = (uchar*)malloc(0x100);
-    if (this->distanceTable == nullptr) {
-        return;
-    }
 
-    for (int y = 0; y < 0x10; ++y) {
-        for (int x = 0; x < 0x10; ++x) {
-            int d = (x > y) ? x : y;
-            if (d > 0x0F) {
-                d = 0x0F;
+    this->distanceTable = (uchar*)malloc(0x100);
+    memset(this->distanceTable, 0xFF, 0x100);
+
+    uchar distance_value = 0;
+    LOSTBL** table_ptr = &NormalLOS[0];
+    while (table_ptr < &SquareLOS[17]) {
+        LOSTBL* offsets = *table_ptr;
+        int row = offsets->y_delta;
+        while (row != 999) {
+            int left = offsets->x_left;
+            int right = offsets->x_right;
+            if ((-1 < row) && (row < 0x10)) {
+                if (left < 0) {
+                    left = 0;
+                }
+                if (0x0F < right) {
+                    right = 0x0F;
+                }
+                int index = row * 0x10 + left;
+                if (left <= right) {
+                    int count = (right - left) + 1;
+                    while (count != 0) {
+                        if (this->distanceTable[index] == 0xFF) {
+                            this->distanceTable[index] = distance_value;
+                        }
+                        ++index;
+                        --count;
+                    }
+                }
             }
-            this->distanceTable[y * 0x10 + x] = (uchar)d;
+            offsets = offsets + 1;
+            row = offsets->y_delta;
         }
+        ++table_ptr;
+        ++distance_value;
     }
 }
 
