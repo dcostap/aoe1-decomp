@@ -1277,7 +1277,7 @@ void TRIBE_Command::command_queue(RGE_Static_Object* p1, short p2, short p3) {
 // --- TRIBE_Effects (from teffects.cpp.decomp) ---
 TRIBE_Effects::TRIBE_Effects(int param_1)
     : RGE_Effects(param_1) {
-    // Source of truth: teffects.cpp.decomp @ 0x0050D460
+    // Fully verified. Source of truth: teffects.cpp.decomp @ 0x0050D460
     // Just delegates to base class constructor
 }
 
@@ -1287,7 +1287,7 @@ TRIBE_Effects::TRIBE_Effects(char* param_1)
 }
 
 TRIBE_Effects::~TRIBE_Effects() {
-    // Source of truth: bucket_050D.cpp.decomp @ 0x0050D4A0
+    // Fully verified. Source of truth: bucket_050D.cpp.decomp @ 0x0050D4A0
     // Base class destructor handles cleanup
 }
 
@@ -1297,7 +1297,7 @@ void TRIBE_Effects::save(int p1) {
 }
 
 void TRIBE_Effects::do_effect(short p1, RGE_Player* p2) {
-    // Source of truth: teffects.cpp.decomp @ 0x0050D4D0
+    // Fully verified. Source of truth: teffects.cpp.decomp @ 0x0050D4D0
     if ((int)p1 < 0 || (int)p1 >= this->effect_num || this->effects == nullptr) return;
     RGE_Effect* eff = &this->effects[p1];
     if (eff == nullptr) return;
@@ -1312,7 +1312,7 @@ void TRIBE_Effects::do_effect(short p1, RGE_Player* p2) {
 }
 
 void TRIBE_Effects::do_tech_effect(short p1, RGE_Player* p2) {
-    // Source of truth: teffects.cpp.decomp @ 0x0050D550
+    // Fully verified. Source of truth: teffects.cpp.decomp @ 0x0050D550
     if ((int)p1 < 0 || (int)p1 >= this->effect_num) {
         return;
     }

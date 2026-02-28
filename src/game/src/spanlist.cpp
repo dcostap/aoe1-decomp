@@ -780,7 +780,7 @@ void TSpan_List_Manager::AlignamizeSpans() {
 }
 
 void TSpan_List_Manager::ScrollSpansHorizontally(int param_1, int param_2) {
-    // Source of truth: spanlist.cpp.decomp @ 0x004BE750
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE750
     if (param_1 == 0) {
         return;
     }
@@ -826,7 +826,7 @@ void TSpan_List_Manager::ScrollSpansHorizontally(int param_1, int param_2) {
 }
 
 void TSpan_List_Manager::ScrollSpansVertically(int param_1, int param_2) {
-    // Source of truth: spanlist.cpp.decomp @ 0x004BE850
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE850
     if (param_1 == 0) {
         return;
     }
