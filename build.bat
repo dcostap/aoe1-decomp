@@ -55,6 +55,11 @@ if not exist "%SRC_DIR%\AIBuildItem.cpp" (
     popd
     exit /b 1
 )
+if not exist "%SRC_DIR%\AIBaseItem.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\AIBaseItem.cpp"
+    popd
+    exit /b 1
+)
 
 REM --- Setup VS Environment (only if required tools are not already available) ---
 where cl >nul 2>nul
