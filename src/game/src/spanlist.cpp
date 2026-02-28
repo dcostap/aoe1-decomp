@@ -22,6 +22,7 @@
 // -------------------------
 
 TSpan_Node_List::TSpan_Node_List(int initial_zone_size, int default_grow_size, int element_size) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD5E0
     this->Free_Pool_Zone = -1;
     this->Free_Pool_Index = -1;
     this->Zone_Ptrs = (VSpan_Node**)0;
@@ -39,6 +40,7 @@ TSpan_Node_List::TSpan_Node_List(int initial_zone_size, int default_grow_size, i
 }
 
 TSpan_Node_List::~TSpan_Node_List() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD640
     for (int i = 0; i < this->Used_Zones; ++i) {
         if (this->Zone_Ptrs && this->Zone_Ptrs[i]) {
             free(this->Zone_Ptrs[i]);
@@ -49,6 +51,7 @@ TSpan_Node_List::~TSpan_Node_List() {
 }
 
 void TSpan_Node_List::SetNumZones(int num_zones) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD690
     if (this->Max_Zones <= num_zones) {
         VSpan_Node** new_zone_ptrs = (VSpan_Node**)calloc((size_t)num_zones, 4);
         int* new_zone_sizes = (int*)calloc((size_t)num_zones, 4);
@@ -67,6 +70,7 @@ void TSpan_Node_List::SetNumZones(int num_zones) {
 }
 
 void TSpan_Node_List::InitNewZone(int zone_size) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD720
     if (this->Used_Zones == this->Max_Zones) {
         this->SetNumZones(this->Used_Zones + 4);
     }
@@ -89,6 +93,7 @@ void TSpan_Node_List::InitNewZone(int zone_size) {
 }
 
 VSpan_Node* TSpan_Node_List::GetNode() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD790
     if (this->Free_Blocks == 0) {
         this->InitNewZone(this->Default_Grow_Size);
     }
@@ -120,6 +125,7 @@ VSpan_Node* TSpan_Node_List::GetNode() {
 }
 
 void TSpan_Node_List::FreeNode(VSpan_Node* node) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD800
     if (!node) return;
     node->Next = this->Free_Head;
     node->Prev = (VSpan_Node*)0;
@@ -128,6 +134,7 @@ void TSpan_Node_List::FreeNode(VSpan_Node* node) {
 }
 
 int TSpan_Node_List::FreeThread(VSpan_Node* head, VSpan_Node* tail) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD820
     int count = 0;
     if (!head) return count;
 
@@ -161,6 +168,7 @@ int TSpan_Node_List::FreeThread(VSpan_Node* head, VSpan_Node* tail) {
 }
 
 void TSpan_Node_List::ReclaimAllNodes() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD880
     this->Free_Head = (VSpan_Node*)0;
     this->Free_Pool_Zone = 0;
     this->Free_Pool_Index = 0;
@@ -169,6 +177,7 @@ void TSpan_Node_List::ReclaimAllNodes() {
 }
 
 void TSpan_Node_List::ResetStats() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD8A0
     this->Alloc_Count = 0;
     this->Dealloc_Count = 0;
     this->NewZone_Count = 0;
@@ -188,6 +197,7 @@ static int span_initial_zone_size_from_pixels(int num_pixels, int num_lines) {
 
 TSpan_List_Manager::TSpan_List_Manager(int num_pixels, int num_lines)
     : VSList(span_initial_zone_size_from_pixels(num_pixels, num_lines), num_lines << 4, 0x10) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD8B0
     this->Num_Lines = num_lines;
     if (this->Num_Lines < 0x10) this->Num_Lines = 0x10;
 
@@ -204,6 +214,7 @@ TSpan_List_Manager::TSpan_List_Manager(int num_pixels, int num_lines)
 }
 
 TSpan_List_Manager::~TSpan_List_Manager() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BD9A0
     if (this->Line_Head_Ptrs) free(this->Line_Head_Ptrs);
     if (this->Line_Tail_Ptrs) free(this->Line_Tail_Ptrs);
     if (this->LeftMostPx) free(this->LeftMostPx);
@@ -212,6 +223,7 @@ TSpan_List_Manager::~TSpan_List_Manager() {
 }
 
 void TSpan_List_Manager::SetSpanRegions(int left_px, int top_line, int right_px, int bottom_line) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BDA00
     int right = right_px;
     if (right_px < left_px) {
         right = left_px;
@@ -241,6 +253,7 @@ void TSpan_List_Manager::SetSpanRegions(int left_px, int top_line, int right_px,
 }
 
 void TSpan_List_Manager::ResetAll() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BDA70
     this->VSList.ReclaimAllNodes();
     if (this->Line_Head_Ptrs) memset(this->Line_Head_Ptrs, 0, (size_t)this->Num_Lines * 4);
     if (this->Line_Tail_Ptrs) memset(this->Line_Tail_Ptrs, 0, (size_t)this->Num_Lines * 4);
@@ -250,6 +263,7 @@ void TSpan_List_Manager::ResetAll() {
 }
 
 void TSpan_List_Manager::AddSpan(int start_px, int end_px, int line) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BDB00
     if (line < this->Min_Line || line > this->Max_Line) return;
 
     if (end_px < start_px) {
@@ -523,6 +537,7 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2) {
 }
 
 void TSpan_List_Manager::AddMiniList(VSpanMiniList* mini_list, int x_off, int y_off) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE1F0
     if (mini_list == nullptr) {
         return;
     }
