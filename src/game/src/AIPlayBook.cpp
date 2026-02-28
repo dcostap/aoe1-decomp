@@ -1,5 +1,8 @@
 #include "../include/AIPlayBook.h"
 #include "../include/AIPlay.h"
+#include "../include/AIPlayStatus.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Static_Object.h"
 #include "../include/XYZ.h"
 
 #include <ctype.h>
@@ -677,3 +680,417 @@ int AIPlayBook::loadPlays(char* param_1) {
     fclose(file);
     return 1;
 }
+
+// TODO: STUB - invalid instruction/data block in source decomp.
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EC4E
+static void FUN_0040ec4e() {}
+
+// TODO: STUB - invalid instruction/data block in source decomp.
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F066
+static void FUN_0040f066() {}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F530
+int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount, RGE_Game_World* world) {
+    int minUnits = 1;
+    int unitsByTypeCount[6] = {0, 0, 0, 0, 0, 0};
+    int unitsByType[6][50];
+
+    AIPlay* playValue = world->playbook->play(status->playNumberValue);
+    if (playValue == nullptr) {
+        return 0;
+    }
+
+    for (int i = 0; i < 6; ++i) {
+        for (int j = 0; j < 50; ++j) {
+            unitsByType[i][j] = -1;
+        }
+    }
+
+    for (int j = 0; j < unitCount; ++j) {
+        RGE_Static_Object* obj = world->object(units[j]);
+        int type = -1;
+        if (obj != nullptr) {
+            type = world->playbook->convertUnitToIntType(obj);
+        }
+
+        if ((type < 0) || (5 < type)) {
+            minUnits = 0;
+            continue;
+        }
+
+        int count = unitsByTypeCount[type];
+        if (count < 50) {
+            unitsByType[type][count] = units[j];
+            unitsByTypeCount[type] = count + 1;
+        }
+    }
+
+    for (int groupIndex = 0; groupIndex < playValue->numberGroupsValue; ++groupIndex) {
+        AIPlayGroup* groupValue = playValue->group(groupIndex);
+        if (groupValue == nullptr) {
+            return 0;
+        }
+
+        for (int type = 0; type < 6; ++type) {
+            unsigned char minimum = groupValue->minimum(type);
+            int added = 0;
+            for (int idx = 0; (idx < unitsByTypeCount[type]) && (added < minimum); ++idx) {
+                if (unitsByType[type][idx] == -1) {
+                    continue;
+                }
+                if (status->addGrouping(unitsByType[type][idx], (unsigned char)groupIndex, (unsigned char)type) == 1) {
+                    unitsByType[type][idx] = -1;
+                    ++added;
+                    if (status->numberInPlay() == playValue->maximumNumberUnitsValue) {
+                        goto done_grouping;
+                    }
+                } else {
+                    minUnits = 0;
+                }
+            }
+        }
+    }
+
+    for (int type = 0; type < 6; ++type) {
+        for (int idx = 0; idx < unitsByTypeCount[type]; ++idx) {
+            int unitId = unitsByType[type][idx];
+            if (unitId == -1) {
+                continue;
+            }
+
+            if (playValue->overflowValue == 1) {
+                int bestGroup = -1;
+                int smallestGroup = 0;
+                for (int groupIndex = 0; groupIndex < playValue->numberGroupsValue; ++groupIndex) {
+                    AIPlayGroup* groupValue = playValue->group(groupIndex);
+                    if (groupValue == nullptr) {
+                        continue;
+                    }
+                    unsigned char typeCount = status->numberOfTypeInGroup(groupIndex, type);
+                    if (typeCount >= groupValue->maximum(type)) {
+                        continue;
+                    }
+                    unsigned char groupCount = status->numberInGroup(groupIndex);
+                    if ((bestGroup == -1) || ((int)groupCount < smallestGroup)) {
+                        bestGroup = groupIndex;
+                        smallestGroup = (int)groupCount;
+                    }
+                }
+                if (bestGroup != -1) {
+                    if (status->addGrouping(unitId, (unsigned char)bestGroup, (unsigned char)type) == 1) {
+                        unitsByType[type][idx] = -1;
+                        if (status->numberInPlay() == playValue->maximumNumberUnitsValue) {
+                            goto done_grouping;
+                        }
+                    } else {
+                        minUnits = 0;
+                    }
+                }
+            } else if (playValue->overflowValue == 2) {
+                for (int groupIndex = 0; groupIndex < playValue->numberGroupsValue; ++groupIndex) {
+                    AIPlayGroup* groupValue = playValue->group(groupIndex);
+                    if (groupValue == nullptr) {
+                        continue;
+                    }
+                    unsigned char typeCount = status->numberOfTypeInGroup(groupIndex, type);
+                    if (typeCount >= groupValue->maximum(type)) {
+                        continue;
+                    }
+                    if (status->addGrouping(unitId, (unsigned char)groupIndex, (unsigned char)type) == 1) {
+                        unitsByType[type][idx] = -1;
+                        if (status->numberInPlay() == playValue->maximumNumberUnitsValue) {
+                            goto done_grouping;
+                        }
+                        break;
+                    }
+                    minUnits = 0;
+                }
+            }
+        }
+    }
+
+done_grouping:
+    unsigned char deviation = 0;
+    for (int groupIndex = 0; groupIndex < playValue->numberGroupsValue; ++groupIndex) {
+        AIPlayGroup* groupValue = playValue->group(groupIndex);
+        if (groupValue == nullptr) {
+            continue;
+        }
+        for (int type = 0; type < 6; ++type) {
+            unsigned char minimum = groupValue->minimum(type);
+            unsigned char have = status->numberOfTypeInGroup(groupIndex, type);
+            if (have < minimum) {
+                deviation = (unsigned char)(deviation + (minimum - have));
+            }
+        }
+    }
+    status->deviationValue = deviation;
+    return minUnits;
+}
+
+// TODO: STUB - invalid thunk block in source decomp.
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB9E
+static int FUN_0040fb9e(AIPlay* this_, int xOffset, int yOffset, int width, int height) {
+    return this_->locationsOnMap(xOffset, yOffset, width, height);
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FC30
+static void AIPlayStatus_ctor_0040FC30(AIPlayStatus* this_) {
+    this_->playNumberValue = -1;
+    this_->targetValue = -1;
+    this_->originalPointValue.xValue = 0;
+    this_->originalPointValue.yValue = 0;
+    this_->originalPointValue.zValue = 0;
+    this_->currentPhaseValue = 0xFD;
+    this_->savedAttackerValue = -1;
+    this_->lastPhaseChangeTimeValue = 0;
+    this_->deviationValue = 0;
+    this_->zeroAllGroupings();
+    for (int i = 0; i < 5; ++i) {
+        this_->originalHitPointsValue[i] = -1;
+    }
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FCB0
+int AIPlayStatus::originalHitPoints(int index) const {
+    if ((-1 < index) && (index < 5)) {
+        return this->originalHitPointsValue[index];
+    }
+    return -1;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FCD0
+void AIPlayStatus::setOriginalHitPoints(int index, int value) {
+    if ((-1 < index) && (index < 5)) {
+        this->originalHitPointsValue[index] = value;
+    }
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FCF0
+unsigned char AIPlayStatus::numberInPlay() const {
+    unsigned char count = 0;
+    for (int i = 0; i < 50; ++i) {
+        if (this->groupings[i].id != -1) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FD10
+unsigned char AIPlayStatus::numberInGroup(int group) const {
+    unsigned char count = 0;
+    for (int i = 0; i < 50; ++i) {
+        if ((this->groupings[i].id != -1) && ((int)this->groupings[i].groupID == group)) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FD40
+unsigned char AIPlayStatus::numberOfTypeInGroup(int group, int type) const {
+    unsigned char count = 0;
+    for (int i = 0; i < 50; ++i) {
+        if ((this->groupings[i].id != -1) && ((int)this->groupings[i].groupID == group) && ((int)this->groupings[i].type == type)) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FD80
+unsigned char AIPlayStatus::group(int unitId) const {
+    if (unitId < 0) {
+        return 0xFF;
+    }
+    for (int i = 0; i < 50; ++i) {
+        if (this->groupings[i].id == unitId) {
+            return this->groupings[i].groupID;
+        }
+    }
+    return 0xFF;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FDB0
+int AIPlayStatus::addGrouping(int unitId, unsigned char groupValue, unsigned char typeValue) {
+    for (int i = 0; i < 50; ++i) {
+        if (this->groupings[i].id == -1) {
+            this->groupings[i].id = unitId;
+            this->groupings[i].groupID = groupValue;
+            this->groupings[i].type = typeValue;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FDF0
+int AIPlayStatus::removeGrouping(int unitId) {
+    for (int i = 0; i < 50; ++i) {
+        if (this->groupings[i].id == unitId) {
+            this->groupings[i].id = -1;
+            this->groupings[i].groupID = 0xFF;
+            this->groupings[i].type = 0xFF;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FE30
+void AIPlayStatus::zeroAllGroupings() {
+    for (int i = 0; i < 50; ++i) {
+        this->groupings[i].id = -1;
+        this->groupings[i].groupID = 0xFF;
+        this->groupings[i].type = 0xFF;
+    }
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FE50
+void AIPlayStatus::copyUnits(int* units, int* count) {
+    *count = 0;
+    for (int i = 0; i < 50; ++i) {
+        if (this->groupings[i].id != -1) {
+            units[*count] = this->groupings[i].id;
+            *count = *count + 1;
+        }
+    }
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FE90
+static void AIPlayStatus_load_0040FE90(AIPlayStatus* this_, int param_2) {
+    (void)this_;
+    (void)param_2;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FF70
+static void AIPlayStatus_save_0040FF70(AIPlayStatus* this_, int param_2) {
+    (void)this_;
+    (void)param_2;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x00410050
+void AIPlayStatus::copy(AIPlayStatus* src) {
+    this->playNumberValue = src->playNumberValue;
+    this->targetValue = src->targetValue;
+    this->originalPointValue = src->originalPointValue;
+    this->currentPhaseValue = src->currentPhaseValue;
+    this->savedAttackerValue = src->savedAttackerValue;
+    this->lastPhaseChangeTimeValue = src->lastPhaseChangeTimeValue;
+    this->deviationValue = src->deviationValue;
+    for (int i = 0; i < 50; ++i) {
+        this->groupings[i] = src->groupings[i];
+    }
+    for (int i = 0; i < 5; ++i) {
+        this->originalHitPointsValue[i] = src->originalHitPointsValue[i];
+    }
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x00410100
+void AIPlayStatus::removeDeadUnits(int, RGE_Game_World* world) {
+    for (int i = 0; i < 50; ++i) {
+        if (this->groupings[i].id == -1) {
+            continue;
+        }
+        RGE_Static_Object* obj = world->object(this->groupings[i].id);
+        if ((obj == nullptr) || (2 < obj->object_state)) {
+            this->groupings[i].id = -1;
+            this->groupings[i].groupID = 0xFF;
+            this->groupings[i].type = 0xFF;
+        }
+    }
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x00410150
+void AIPlayStatus::resetHitPoints(int groupValue, RGE_Game_World* world) {
+    int totalHP = 0;
+    for (int i = 0; i < 50; ++i) {
+        if ((this->groupings[i].id == -1) || ((int)this->groupings[i].groupID != groupValue)) {
+            continue;
+        }
+        RGE_Static_Object* obj = world->object(this->groupings[i].id);
+        if (obj != nullptr) {
+            totalHP += (int)obj->hp;
+        }
+    }
+    this->setOriginalHitPoints(groupValue, totalHP);
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x00411340
+AIPlay* AIPlayBook::play(int index) {
+    if ((this->plays != nullptr) && (-1 < index) && (index < this->numberPlaysValue)) {
+        return this->plays + index;
+    }
+    return nullptr;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x00411370
+AIPlay* AIPlayBook::play(char* name) {
+    if (this->plays == nullptr) {
+        return nullptr;
+    }
+
+    for (int i = 0; i < this->numberPlaysValue; ++i) {
+        if (strcmp(this->plays[i].nameValue, name) == 0) {
+            return this->plays + i;
+        }
+    }
+    return nullptr;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x00411400
+int AIPlayBook::playNumber(char* name) {
+    if (this->plays == nullptr) {
+        return -1;
+    }
+
+    for (int i = 0; i < this->numberPlaysValue; ++i) {
+        if (strcmp(this->plays[i].nameValue, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040E930 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040E950 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040E980 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040E9C0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040E9D0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EBF0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EC70 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EC90 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040ECC0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040ED00 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040ED10 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EFF0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F0A0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F110 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F130 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F150 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F1A0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F200 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F230 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F240 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F260 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F280 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F2A0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F2C0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F2E0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F360 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F380 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F3A0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F3B0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F3D0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F3F0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F420 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F440 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F460 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F490 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F4E0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F500 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F9B0 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FA40 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB60 (implemented in AIPlayData.cpp)
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FBB0 (implemented in AIPlayData.cpp)
