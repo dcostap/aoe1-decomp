@@ -12,6 +12,7 @@
 
 // Offset: 0x004BBE40
 RGE_Sound::RGE_Sound(FILE* infile, short param_id) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BBE40
     this->id = param_id;
     this->play_at_update_count = 0;
     fscanf(infile, " %hd", &this->sound_num);
@@ -34,6 +35,7 @@ RGE_Sound::RGE_Sound(FILE* infile, short param_id) {
 
 // Offset: 0x004BBF30
 RGE_Sound::RGE_Sound(int handle, TSound_Driver* driver) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BBF30
     rge_read(handle, &this->id, 2);
     rge_read(handle, &this->play_at_update_count, 2); // reads into offset 0x0
     rge_read(handle, &this->sound_num, 2);
@@ -57,6 +59,7 @@ RGE_Sound::RGE_Sound(int handle, TSound_Driver* driver) {
 
 // Offset: 0x004BC070
 RGE_Sound::RGE_Sound() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC070
     this->play_at_update_count = 0;
     this->sound_num = 0;
     this->sounds = nullptr;
@@ -64,6 +67,7 @@ RGE_Sound::RGE_Sound() {
 
 // Offset: 0x004BC080
 RGE_Sound::~RGE_Sound() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC080
     this->play_at_update_count = 0;
     if (this->sounds != nullptr) {
         for (int i = 0; i < this->sound_num; i++) {
@@ -81,6 +85,7 @@ RGE_Sound::~RGE_Sound() {
 
 // Offset: 0x004BC0F0
 void RGE_Sound::save(int handle) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC0F0
     rge_write(handle, &this->id, 2);
     rge_write(handle, &this->play_at_update_count, 2);
     rge_write(handle, &this->sound_num, 2);
@@ -97,6 +102,7 @@ void RGE_Sound::save(int handle) {
 
 // Offset: 0x004BC190
 void RGE_Sound::restart_sound(TSound_Driver* driver) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC190
     for (int i = 0; i < this->sound_num; i++) {
         if (this->sounds[i].digital_sound != nullptr) {
             delete this->sounds[i].digital_sound;
@@ -113,6 +119,7 @@ void RGE_Sound::restart_sound(TSound_Driver* driver) {
 
 // Offset: 0x004BC270
 void RGE_Sound::update(ulong time) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC270
     if (this->sound_num <= 0 || this->cache_time == 0) return;
 
     for (int i = 0; i < this->sound_num; i++) {
@@ -126,16 +133,19 @@ void RGE_Sound::update(ulong time) {
 
 // Offset: 0x004BC2D0
 void RGE_Sound::set_cache_time(ulong time) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC2D0
     this->cache_time = time;
 }
 
 // Offset: 0x004BC2E0
 void RGE_Sound::play_at_update() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC2E0
     this->play_at_update_count++;
 }
 
 // Offset: 0x004BC2F0
 void RGE_Sound::update_play() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC2F0
     if (this->play_at_update_count > 0) {
         this->play(1);
         this->play_at_update_count = 0;
@@ -144,6 +154,7 @@ void RGE_Sound::update_play() {
 
 // Offset: 0x004BC310
 void RGE_Sound::play(int add_to_list) {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC310
     if (this->sound_num <= 0) return;
 
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
@@ -205,6 +216,7 @@ void RGE_Sound::play(int add_to_list) {
 
 // Offset: 0x004BC470
 char* RGE_Sound::get_file_name() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC470
     if (this->sound_num <= 0) return nullptr;
 
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x11C);
@@ -224,6 +236,7 @@ char* RGE_Sound::get_file_name() {
 
 // Offset: 0x004BC4F0
 void RGE_Sound::stop() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC4F0
     if (this->sound_num <= 0) return;
     for (int i = 0; i < this->sound_num; i++) {
         if (this->sounds[i].digital_sound != nullptr &&
@@ -235,6 +248,7 @@ void RGE_Sound::stop() {
 
 // Offset: 0x004BC540
 int RGE_Sound::is_playing() {
+    // Fully verified. Source of truth: sound.cpp.decomp @ 0x004BC540
     if (this->sound_num <= 0) return 0;
     for (int i = 0; i < this->sound_num; i++) {
         if (this->sounds[i].digital_sound != nullptr) {
