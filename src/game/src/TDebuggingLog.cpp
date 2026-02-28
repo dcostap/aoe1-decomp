@@ -9,6 +9,7 @@
 
 static FILE* logstream = NULL;
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436220
 TDebuggingLog::TDebuggingLog() {
     this->LogToFile = 0;
     this->LogToOutput = 0;
@@ -33,30 +34,36 @@ TDebuggingLog::TDebuggingLog() {
     strcpy(this->Filename, "C:\\APPLOGERR.TXT");
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004362A0
 TDebuggingLog::~TDebuggingLog() {
     this->CloseLog();
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004362B0
 void TDebuggingLog::LogFile(int enable) {
     this->LogToFile = (enable != 0);
     this->Log("Logging to File %s", this->YesOrNo(enable));
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004362F0
 void TDebuggingLog::LogOutput(int enable) {
     this->LogToOutput = (enable != 0);
     this->Log("Logging to OUTPUT %s", this->YesOrNo(enable));
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436330
 void TDebuggingLog::LogTimestamp(int enable) {
     this->Timestamp = (enable != 0);
     this->Log("Timestamp milliseconds %s", this->YesOrNo(enable));
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436360
 void TDebuggingLog::LogDateTimestamp(int enable) {
     this->DateTimestamp = (enable != 0);
     this->Log("Date & Time stamp%s", this->YesOrNo(enable));
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436470
 void TDebuggingLog::LogSequence(int enable) {
     if (enable) {
         this->Sequence = 1;
@@ -67,15 +74,18 @@ void TDebuggingLog::LogSequence(int enable) {
     this->Log("Sequence numbering%s", this->YesOrNo(enable));
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436430
 void TDebuggingLog::FlushToDisk(int enable) {
     this->Flush = (enable != 0);
     this->Log("Flush queue each message %s", this->YesOrNo(enable));
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436810
 const char* TDebuggingLog::YesOrNo(int val) {
     return val ? " is now ACTIVE." : " has been deactivated.";
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004364B0
 void TDebuggingLog::OpenLog() {
     if (!this->LogToFile) return;
     if (this->LogIsOpen && this->LogError) return;
@@ -104,6 +114,7 @@ void TDebuggingLog::OpenLog() {
     this->LogIsOpen = 0;
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004365C0
 void TDebuggingLog::CloseLog() {
     if (this->LogToFile) {
         if (this->Filename[0]) {
@@ -119,12 +130,14 @@ void TDebuggingLog::CloseLog() {
     }
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004365A0
 void TDebuggingLog::FlushLog() {
     if (this->LogToFile && logstream) {
         fflush(logstream);
     }
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x004363A0
 void TDebuggingLog::Time() {
     DWORD ticks = GetTickCount();
     time_t now = time(NULL);
@@ -146,6 +159,7 @@ void TDebuggingLog::Time() {
     this->Log(">>>TIME>>>  %s   [%7.1f sec. elapsed]", temp_time, elapsed);
 }
 
+// Fully verified. Source of truth: debuglog.cpp.decomp @ 0x00436610
 void TDebuggingLog::Log(const char* format, ...) {
     if (!this->LogToFile && !this->LogToOutput) return;
     if (this->LogError) return;

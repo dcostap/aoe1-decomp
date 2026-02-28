@@ -102,18 +102,18 @@ int RGE_Missile_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* p
     return 1;
 }
 
-// Fully verified. Source of truth: misl_obj.cpp.asm @ 0x0045A900
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A900
 void RGE_Missile_Object::rehook() {
     RGE_Action_Object::rehook();
 }
 
-// Fully verified. Source of truth: misl_obj.cpp.asm @ 0x0045A910
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A910
 void RGE_Missile_Object::save(int param_1) {
     RGE_Combat_Object::save(param_1);
     rge_write(param_1, &this->max_range, 4);
 }
 
-// Fully verified. Source of truth: misl_obj.cpp.asm @ 0x0045A940
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A940
 uchar RGE_Missile_Object::update() {
     return RGE_Combat_Object::update();
 }

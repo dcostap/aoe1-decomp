@@ -6,6 +6,7 @@ class RGE_Action_Bird : public RGE_Action {
 public:
     RGE_Action_Bird() = default;
     RGE_Action_Bird(int param_1, RGE_Action_Object* param_2);
+    RGE_Action_Bird(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5);
 
     // Virtuals (best-effort)
     virtual ~RGE_Action_Bird(); // vt[0] (0x0)

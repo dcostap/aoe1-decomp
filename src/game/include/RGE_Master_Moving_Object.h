@@ -33,5 +33,10 @@ public:
     unsigned char obj_trail_options;
     float obj_trail_spacing;
     unsigned char move_algorithem;
+
+protected:
+    int setup(RGE_Master_Moving_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 };
 static_assert(sizeof(RGE_Master_Moving_Object) == 0xD8, "Size mismatch");

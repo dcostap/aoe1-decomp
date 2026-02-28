@@ -36,6 +36,7 @@
 #include "../include/TMousePointer.h"
 #include "../include/TEasy_Panel.h"
 #include "../include/TDebuggingLog.h"
+#include "../include/MouseClickInfo.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Mission_Screen.h"
@@ -52,6 +53,15 @@ static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     }
     return strcmp(lhs, rhs) == 0;
 }
+
+static MouseClickInfo Tribe1btnMouseRightClickTable[0x28] = {};
+static int Tribe1btnMouseRightClickTableSize = 0x28;
+static MouseClickInfo Tribe1btnMouseLeftClickTable[0x28] = {};
+static int Tribe1btnMouseLeftClickTableSize = 0x28;
+static MouseClickInfo Tribe2btnMouseRightClickTable[0x28] = {};
+static int Tribe2btnMouseRightClickTableSize = 0x28;
+static MouseClickInfo Tribe2btnMouseLeftClickTable[0x28] = {};
+static int Tribe2btnMouseLeftClickTableSize = 0x28;
 
 struct TRIBE_Screen_Game_Runtime_Panel_Prefix {
     TShape* game_screen_pic;
@@ -1043,13 +1053,11 @@ char* TRIBE_Game::game_over_msg() {
 }
 
 long TRIBE_Game::get_achievement_info(unsigned char p1, char** p2) {
-    // TODO: STUB - TRIBE_World::get_achievement is not yet declared/implemented in this tree.
-    (void)p1;
-    (void)p2;
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A080
     if (this->world == nullptr) {
         return 0;
     }
-    return 0;
+    return ((TRIBE_World*)this->world)->get_achievement(p1, p2);
 }
 
 int TRIBE_Game::create_game(int p1) {
@@ -3395,7 +3403,14 @@ void TRIBE_Game::SetClickTables(MouseClickInfo* p1, int p2, MouseClickInfo* p3, 
 }
 
 void TRIBE_Game::set_interface_messages() {
-    // TODO: Transliterate full table wiring from tribegam.cpp.decomp @ 0x0052A210.
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A210
+    if (this->campaignGame() == 1) {
+        this->SetClickTables(Tribe1btnMouseRightClickTable, Tribe1btnMouseRightClickTableSize,
+                             Tribe1btnMouseLeftClickTable, Tribe1btnMouseLeftClickTableSize);
+        return;
+    }
+    this->SetClickTables(Tribe2btnMouseRightClickTable, Tribe2btnMouseRightClickTableSize,
+                         Tribe2btnMouseLeftClickTable, Tribe2btnMouseLeftClickTableSize);
 }
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A630
