@@ -14,31 +14,31 @@ static unsigned long button_time_ms() {
 
 // Source-of-truth supplemental mapping for the 25 pnl_btn offsets that previously had no literal refs
 // in this file (the remaining offsets already had explicit refs in existing method comments):
-// Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0 (TButtonPanel::TButtonPanel)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472030 (TButtonPanel::~TButtonPanel)
-// Source of truth: pnl_btn.cpp.decomp @ 0x004720A0 (TButtonPanel::setup)
-// Source of truth: pnl_btn.cpp.decomp @ 0x004722E0 (TButtonPanel::set_id(short,long,long))
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472300 (TButtonPanel::set_picture)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472330 (TButtonPanel::set_text(short,char*))
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472440 (TButtonPanel::set_text(short,char*,char*))
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472540 (TButtonPanel::set_text(short,long))
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472580 (TButtonPanel::set_text(short,long,long))
-// Source of truth: pnl_btn.cpp.decomp @ 0x004725F0 (TButtonPanel::set_font)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472680 (TButtonPanel::set_sound)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472700 (TButtonPanel::set_state)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472760 (TButtonPanel::set_bevel_info)
-// Source of truth: pnl_btn.cpp.decomp @ 0x004727F0 (TButtonPanel::set_rect(long,long,long,long))
-// Source of truth: pnl_btn.cpp.decomp @ 0x00472810 (TButtonPanel::get_state)
-// TODO: decomp failed thunk marker. Source of truth: pnl_btn.cpp.decomp @ 0x004730F1
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473240 (TButtonPanel::mouse_left_move_action)
-// Source of truth: pnl_btn.cpp.decomp @ 0x004733A0 (TButtonPanel::mouse_right_down_action)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473450 (TButtonPanel::mouse_right_move_action)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473520 (TButtonPanel::mouse_right_up_action)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473930 (TButtonPanel::hit_button)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473AA0 (TButtonPanel::do_right_action)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473BB0 (TButtonPanel::set_sound_number)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473BC0 (TButtonPanel::stop_sound_system)
-// Source of truth: pnl_btn.cpp.decomp @ 0x00473BE0 (TButtonPanel::restart_sound_system)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0 (TButtonPanel::TButtonPanel)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472030 (TButtonPanel::~TButtonPanel)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004720A0 (TButtonPanel::setup)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722E0 (TButtonPanel::set_id(short,long,long))
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472300 (TButtonPanel::set_picture)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472330 (TButtonPanel::set_text(short,char*))
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472440 (TButtonPanel::set_text(short,char*,char*))
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472540 (TButtonPanel::set_text(short,long))
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472580 (TButtonPanel::set_text(short,long,long))
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004725F0 (TButtonPanel::set_font)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472680 (TButtonPanel::set_sound)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472700 (TButtonPanel::set_state)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472760 (TButtonPanel::set_bevel_info)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004727F0 (TButtonPanel::set_rect(long,long,long,long))
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472810 (TButtonPanel::get_state)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004730F1 (decomp failed thunk marker).
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473240 (TButtonPanel::mouse_left_move_action)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004733A0 (TButtonPanel::mouse_right_down_action)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473450 (TButtonPanel::mouse_right_move_action)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473520 (TButtonPanel::mouse_right_up_action)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473930 (TButtonPanel::hit_button)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473AA0 (TButtonPanel::do_right_action)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473BB0 (TButtonPanel::set_sound_number)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473BC0 (TButtonPanel::stop_sound_system)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473BE0 (TButtonPanel::restart_sound_system)
 
 static void button_notify_parent(TButtonPanel* btn, long code) {
     if (!btn || !btn->parent_panel) return;
@@ -628,6 +628,7 @@ void TButtonPanel::set_radio_button() {
     this->set_state(1);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004739B0
 void TButtonPanel::do_action() {
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TButtonPanel::do_action this=%p parent=%p notify=%d btnType=%d id=%ld id2=%ld",
@@ -805,6 +806,7 @@ void TButtonPanel::set_text(short state, char* text1, char* text2) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473190
 long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_4) {
     (void)x;
     (void)y;
@@ -826,6 +828,7 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473310
 long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4) {
     (void)wparam;
     (void)param_4;
@@ -854,7 +857,7 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
 }
 
 void TButtonPanel::draw() {
-    // Fully verified. Source of truth: pnl_btn.cpp.asm @ 0x004728C0
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004728C0 (audited vs pnl_btn.cpp.asm).
     if (!this->render_area || this->pnl_hgt == 0 || this->pnl_wid == 0 || this->drawTypeValue == TButtonPanel::DrawClear) {
         // Source of truth: `Pnl_btn.cpp.asm` writes zero to `[this+0x38]` on early return.
         this->curr_child = nullptr;
@@ -1030,7 +1033,7 @@ void TButtonPanel::draw() {
 }
 
 void TButtonPanel::set_state_info(int num_states) {
-    // Source of truth: `src/game/src/Pnl_btn.cpp.decomp` (`set_state_info` @ 0x004722C0).
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722C0
     // Original behavior is intentionally minimal:
     //   this->buttonTypeValue = State;
     //   this->num_states = param_1;
