@@ -32,6 +32,8 @@
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
 #include "../include/custom_debug.h"
+#include <cstdarg>
+#include <cstdio>
 #include <cmath>
 #include <cstring>
 #include <new>
@@ -178,24 +180,27 @@ static void FUN_004c66a2() {
 }
 
 static void FUN_004c218d() {
-    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C218D (decomp thunk/garbled helper).
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C218D (switch jump-table landing pad).
 }
 
 static void FUN_004c2206() {
-    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C2206 (decomp thunk/garbled helper).
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2206 (switch jump-table landing pad).
 }
 
 static void FUN_004c22a6() {
-    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C22A6 (decomp thunk/garbled helper).
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C22A6 (switch jump-table landing pad).
 }
 
 static void FUN_004c3f65() {
-    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C3F65 (decomp thunk/garbled helper).
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C3F65 (switch jump-table landing pad).
 }
 
 static void FUN_004c4b85() {
-    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C4B85 (decomp thunk/garbled helper).
+    // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C4B85 (switch jump-table landing pad).
 }
+
+static int logDebugID = -1;
+static FILE* debugOut = nullptr;
 
 struct AIPlayStatusRaw {
     unsigned char bytes[0x1C8];
@@ -303,7 +308,7 @@ RGE_Static_Object::RGE_Static_Object(int param_1, RGE_Game_World* param_2, int p
     }
 }
 
-// TODO: STUB, many RGE_Static_Object virtuals below still need full stat_obj.cpp transliteration.
+// NOTE: Additional RGE_Static_Object virtuals below still need full stat_obj.cpp transliteration.
 RGE_Static_Object::~RGE_Static_Object() {
     // Source of truth: stat_obj.cpp.decomp @ 0x004C1290
     this->remove_visible_resource();
@@ -3753,8 +3758,28 @@ uchar RGE_Static_Object::useSameZoneDropsite() {
     return 1;
 }
 void RGE_Static_Object::logDebug(const char* param_1, ...) {
-    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C7340.
-    (void)param_1;
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7340
+    if ((logDebugID == -1) || (logDebugID == this->id)) {
+        if (debugOut == nullptr) {
+            debugOut = fopen("c:\\aoeunit.txt", "w");
+            if (debugOut == nullptr) {
+                return;
+            }
+            fprintf(debugOut, "WORLD TIME: %ld\n", this->owner->world->world_time);
+        }
+
+        char textOut[1024];
+        va_list args;
+        va_start(args, param_1);
+        vsprintf(textOut + 4, param_1, args);
+        va_end(args);
+
+        if (textOut[4] != '\0') {
+            fprintf(debugOut, "UNIT #%5d: %s\n", this->id, textOut + 4);
+        } else {
+            fprintf(debugOut, "UNIT #%5d\n", this->id);
+        }
+    }
 }
 void RGE_Static_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E00

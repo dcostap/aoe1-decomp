@@ -2962,60 +2962,46 @@ void TCommunications_Handler::Step(int param_2) {
 }
 
 void TCommunications_Handler::KillAnyMissingPlayers(void) {
-    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00426350
-    // --- Ghidra decompiler output kept inline for parity audit ---
-    // // Offset: 0x00426350
-    // void KillAnyMissingPlayers(TCommunications_Handler* this_) {
-    //     // --- Ghidra decompiler output ---
-    //     // 
-    //     // /* WARNING: Variable defined which should be unmapped: dwSize */
-    //     // /* protected: void __thiscall TCommunications_Handler::KillAnyMissingPlayers(void) */
-    //     // 
-    //     // void __thiscall TCommunications_Handler::KillAnyMissingPlayers(TCommunications_Handler *this)
-    //     // 
-    //     // {
-    //     //   int iVar1;
-    //     //   void *pvVar2;
-    //     //   uint unaff_EBP;
-    //     //   ulong *puVar3;
-    //     //   uint uVar4;
-    //     //   ulong dwSize;
-    //     //   long hr;
-    //     //   MSGFORMAT_KILL_PLAYER kp;
-    //     //   
-    //     //   uVar4 = 1;
-    //     //   if (this->MaxGamePlayers != 0) {
-    //     //     puVar3 = (this->PlayerOptions).dcoID;
-    //     //     do {
-    //     //       puVar3 = puVar3 + 1;
-    //     //       iVar1 = IsPlayerHuman(this,uVar4);
-    //     //       if (iVar1 != 0) {
-    //     //         hr = 0;
-    //     //         (**(code **)(*DAT_0062c5ec + 0x54))(DAT_0062c5ec,*puVar3,0,&hr);
-    //     //         pvVar2 = operator_new(unaff_EBP);
-    //     //         kp.PlayerNo = (**(code **)(*DAT_0062c5ec + 0x54))
-    //     //                                 (DAT_0062c5ec,*puVar3,pvVar2,&stack0xffffffdc);
-    //     //         operator_delete(pvVar2);
-    //     //         if (kp.PlayerNo != 0) {
-    //     //           kp.CurrentTurn = *puVar3;
-    //     //           kp.dcoID = uVar4;
-    //     //           TDebuggingLog::Log((TDebuggingLog *)this->current_turn,(char *)L,s___>TX_KP___d___d_,uVar4
-    //     //                              ,0xc);
-    //     //           CommOut(this,0,'K',&kp.dcoID,0xc,'\0');
-    //     //           if (puVar3[-0x6a] == 0) {
-    //     //             DropDeadPlayer(this,uVar4,*puVar3);
-    //     //           }
-    //     //         }
-    //     //       }
-    //     //       uVar4 = uVar4 + 1;
-    //     //     } while (uVar4 <= this->MaxGamePlayers);
-    //     //   }
-    //     //   return;
-    //     // }
-    //     // 
-    //     // 
-    // }
-    // 
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426350
+    struct MsgKillPlayer {
+        ulong dcoID;
+        ulong currentTurn;
+        long playerNo;
+    } kill_msg;
+
+    IDirectPlay2* dp = comm_get_dplay(this);
+    if (dp == nullptr) {
+        return;
+    }
+
+    for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+        if (this->IsPlayerHuman(player) == 0) {
+            continue;
+        }
+
+        ulong dpid = this->PlayerOptions.dcoID[player];
+        DWORD size = 0;
+        (void)dp->GetPlayerName((DPID)dpid, nullptr, &size);
+
+        void* name_buffer = (size != 0) ? ::operator new((size_t)size, std::nothrow) : nullptr;
+        HRESULT hr = dp->GetPlayerName((DPID)dpid, name_buffer, &size);
+        if (name_buffer != nullptr) {
+            ::operator delete(name_buffer);
+        }
+
+        if (hr != DP_OK) {
+            kill_msg.dcoID = player;
+            kill_msg.currentTurn = dpid;
+            kill_msg.playerNo = (long)hr;
+            L->Log("--->TX KP: %d %d", (long)player, 0x0C);
+            (void)this->CommOut((uchar)'K', &kill_msg, 0x0C, 0);
+            if (this->PlayerStopTurn[player] == 0) {
+                this->DropDeadPlayer(player, dpid);
+            }
+        }
+    }
+
+    (void)dp->Release();
 }
 
 int TCommunications_Handler::HasKicked(uint param_2) {
@@ -3027,211 +3013,159 @@ int TCommunications_Handler::HasKicked(uint param_2) {
 }
 
 long TCommunications_Handler::SendPlayerName(void) {
-    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00426D50
-    // --- Ghidra decompiler output kept inline for parity audit ---
-    // // Offset: 0x00426D50
-    // long SendPlayerName(TCommunications_Handler* this_) {
-    //     // --- Ghidra decompiler output ---
-    //     // 
-    //     // /* WARNING: Variable defined which should be unmapped: dpnSetName */
-    //     // /* protected: long __thiscall TCommunications_Handler::SendPlayerName(void) */
-    //     // 
-    //     // long __thiscall TCommunications_Handler::SendPlayerName(TCommunications_Handler *this)
-    //     // 
-    //     // {
-    //     //   long lVar1;
-    //     //   DPNAME dpnSetName;
-    //     //   
-    //     //   dpnSetName.field2_0x8.lpszShortName = (ushort *)0x0;
-    //     //   dpnSetName.field3_0xc.lpszLongName = (ushort *)this->MyFriendlyName;
-    //     //   dpnSetName.dwFlags = 0x10;
-    //     //   lVar1 = (**(code **)(*DAT_0062c5ec + 0x78))(DAT_0062c5ec,DAT_0062cf04,&dpnSetName.dwFlags,2);
-    //     //   RGE_Comm_Error::ShowReturn(this->Err,lVar1,s_Send_Player_Name);
-    //     //   return lVar1;
-    //     // }
-    //     // 
-    //     // 
-    // }
-    // 
-    return 0;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426D50
+    DPNAME set_name;
+    memset(&set_name, 0, sizeof(set_name));
+    set_name.dwSize = sizeof(set_name);
+    set_name.dwFlags = 0x10;
+    set_name.lpszShortNameA = nullptr;
+    set_name.lpszLongNameA = this->MyFriendlyName;
+
+    IDirectPlay2* dp = comm_get_dplay(this);
+    if (dp == nullptr) {
+        if (this->Err != nullptr) {
+            this->Err->ShowReturn(DPERR_INVALIDPLAYER, "Send Player Name");
+        }
+        return DPERR_INVALIDPLAYER;
+    }
+
+    ulong local_dpid = s_localPlayerDpid;
+    if (local_dpid == 0 && this->Me != 0 && this->Me <= (uint)this->MaxGamePlayers) {
+        local_dpid = this->PlayerOptions.dcoID[this->Me];
+        if (local_dpid != 0) {
+            s_localPlayerDpid = local_dpid;
+        }
+    }
+
+    long hr = (local_dpid != 0) ? (long)dp->SetPlayerName((DPID)local_dpid, &set_name, 2) : (long)DPERR_INVALIDPLAYER;
+    (void)dp->Release();
+    if (this->Err != nullptr) {
+        this->Err->ShowReturn(hr, "Send Player Name");
+    }
+    return hr;
 }
 
 void TCommunications_Handler::LogRXMsg(uint param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6) {
-    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00426DC0
-    // --- Ghidra decompiler output kept inline for parity audit ---
-    // // Offset: 0x00426DC0
-    // void LogRXMsg(TCommunications_Handler* this_, uint param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6) {
-    //     // --- Ghidra decompiler output ---
-    //     // 
-    //     // /* protected: void __thiscall TCommunications_Handler::LogRXMsg(unsigned int,unsigned int,unsigned
-    //     //    long,unsigned char,unsigned char) */
-    //     // 
-    //     // void __thiscall
-    //     // TCommunications_Handler::LogRXMsg
-    //     //           (TCommunications_Handler *this,uint param_1,uint param_2,ulong param_3,uchar param_4,
-    //     //           uchar param_5)
-    //     // 
-    //     // {
-    //     //   if (this->RGE_Guaranteed_Delivery != '\0') {
-    //     //     TDebuggingLog::Log(L,(char *)L,s_GTD__RX_Ser__d_From_P__d_T__ld_T,param_1,param_2,
-    //     //                        this->current_turn,param_3,param_4,param_4,param_5);
-    //     //   }
-    //     //   return;
-    //     // }
-    //     // 
-    //     // 
-    // }
-    // 
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426DC0
+    if (this->RGE_Guaranteed_Delivery != 0) {
+        L->Log("GTD: RX Ser# %d From P# %d T# %ld Type=%lu Seq=%d Ack=%d",
+            (long)param_2, (long)param_3, this->current_turn, param_4, (int)param_5, (int)param_6);
+    }
 }
 
 int TCommunications_Handler::TXPing(uint param_2) {
-    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00427390
-    // --- Ghidra decompiler output kept inline for parity audit ---
-    // // Offset: 0x00427390
-    // int TXPing(TCommunications_Handler* this_, uint param_2) {
-    //     // --- Ghidra decompiler output ---
-    //     // 
-    //     // /* protected: int __thiscall TCommunications_Handler::TXPing(unsigned int) */
-    //     // 
-    //     // int __thiscall TCommunications_Handler::TXPing(TCommunications_Handler *this,uint param_1)
-    //     // 
-    //     // {
-    //     //   ulong uVar1;
-    //     //   long lVar2;
-    //     //   TDebuggingLog *pTVar3;
-    //     //   ulong *puVar4;
-    //     //   
-    //     //   uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x470);
-    //     //   UNK_0062cef4._4_1_ = 0x31;
-    //     //   pTVar3 = (TDebuggingLog *)this->current_turn;
-    //     //   UNK_0062cef4._8_4_ = uVar1;
-    //     //   UNK_0062cef4._12_4_ = pTVar3;
-    //     //   if (param_1 == 0) {
-    //     //     pTVar3 = (TDebuggingLog *)0x1;
-    //     //     if (this->MaxGamePlayers != 0) {
-    //     //       puVar4 = this->LastTXPing;
-    //     //       do {
-    //     //         puVar4 = puVar4 + 1;
-    //     //         *puVar4 = uVar1;
-    //     //         pTVar3 = (TDebuggingLog *)((int)&pTVar3->Timestamp + 1);
-    //     //       } while (pTVar3 <= (TDebuggingLog *)(uint)this->MaxGamePlayers);
-    //     //     }
-    //     //     uVar1 = 0;
-    //     //   }
-    //     //   else {
-    //     //     this->LastTXPing[param_1] = uVar1;
-    //     //     uVar1 = (this->PlayerOptions).dcoID[param_1];
-    //     //   }
-    //     //   TDebuggingLog::Log(pTVar3,(char *)L,s___>TX_PING___d___d_,param_1,0xc);
-    //     //   lVar2 = FastSend(this,uVar1,&UNK_0062cef4.field_0x4,0xc,0,0);
-    //     //   return (uint)(lVar2 == 0);
-    //     // }
-    //     // 
-    //     // 
-    // }
-    // 
-    return 0;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00427390
+    struct MsgPing {
+        uchar command;
+        uchar _pad0;
+        uchar _pad1;
+        uchar _pad2;
+        ulong initiated;
+        ulong current_turn;
+    } ping_msg;
+
+    ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x470);
+    memset(&ping_msg, 0, sizeof(ping_msg));
+    ping_msg.command = (uchar)'1';
+    ping_msg.initiated = now;
+    ping_msg.current_turn = this->current_turn;
+
+    ulong target_dpid = 0;
+    if (param_2 == 0) {
+        for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+            this->LastTXPing[player] = now;
+        }
+    } else {
+        this->LastTXPing[param_2] = now;
+        target_dpid = this->PlayerOptions.dcoID[param_2];
+    }
+
+    L->Log("--->TX PING: %d %d", (long)param_2, 0x0C);
+    long hr = this->FastSend(target_dpid, &ping_msg, 0x0C, 0, 0);
+    return (hr == 0) ? 1 : 0;
 }
 
 int TCommunications_Handler::TXDebugPing(void) {
-    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x00427440
-    // --- Ghidra decompiler output kept inline for parity audit ---
-    // // Offset: 0x00427440
-    // int TXDebugPing(TCommunications_Handler* this_) {
-    //     // --- Ghidra decompiler output ---
-    //     // 
-    //     // /* public: int __thiscall TCommunications_Handler::TXDebugPing(void) */
-    //     // 
-    //     // int __thiscall TCommunications_Handler::TXDebugPing(TCommunications_Handler *this)
-    //     // 
-    //     // {
-    //     //   long lVar1;
-    //     //   
-    //     //   UNK_0062c5d1._7_1_ = 0x33;
-    //     //   UNK_0062c5d1._11_4_ = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x496);
-    //     //   UNK_0062c5d1._15_4_ = this->current_turn;
-    //     //   TDebuggingLog::Log(L,(char *)L,s___>TX_DEBUG_PING___d___d_,0,0xc);
-    //     //   lVar1 = FastSend(this,0,&UNK_0062c5d1.field_0x7,0xc,0,0);
-    //     //   return (uint)(lVar1 == 0);
-    //     // }
-    //     // 
-    //     // 
-    // }
-    // 
-    return 0;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00427440
+    struct MsgDebugPing {
+        uchar command;
+        uchar _pad0;
+        uchar _pad1;
+        uchar _pad2;
+        ulong initiated;
+        ulong current_turn;
+    } debug_ping_msg;
+
+    memset(&debug_ping_msg, 0, sizeof(debug_ping_msg));
+    debug_ping_msg.command = (uchar)'3';
+    debug_ping_msg.initiated = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x496);
+    debug_ping_msg.current_turn = this->current_turn;
+
+    L->Log("--->TX DEBUG PING: %d %d", 0, 0x0C);
+    long hr = this->FastSend(0, &debug_ping_msg, 0x0C, 0, 0);
+    return (hr == 0) ? 1 : 0;
 }
 
 long TCommunications_Handler::FastSend(ulong param_2, void* param_3, ulong param_4, int param_5, int param_6) {
-    // TODO: partial transliteration. Source of truth: com_hand.cpp.decomp @ 0x004274B0
-    // --- Ghidra decompiler output kept inline for parity audit ---
-    // // Offset: 0x004274B0
-    // long FastSend(TCommunications_Handler* this_, ulong param_2, void* param_3, ulong param_4, int param_5, int param_6) {
-    //     // --- Ghidra decompiler output ---
-    //     // 
-    //     // /* public: long __thiscall TCommunications_Handler::FastSend(unsigned long,void *,unsigned
-    //     //    long,int,int) */
-    //     // 
-    //     // long __thiscall
-    //     // TCommunications_Handler::FastSend
-    //     //           (TCommunications_Handler *this,ulong param_1,void *param_2,ulong param_3,int param_4,
-    //     //           int param_5)
-    //     // 
-    //     // {
-    //     //   ulong uVar1;
-    //     //   int iVar2;
-    //     //   ulong uVar3;
-    //     //   int iVar4;
-    //     //   TDebuggingLog *this_00;
-    //     //   int iVar5;
-    //     //   int unaff_ESI;
-    //     //   uint uVar6;
-    //     //   
-    //     //   if (param_1 == DAT_0062cf04) {
-    //     //     TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_No_send_to_self_FastTX);
-    //     //     return -0x7fffbffb;
-    //     //   }
-    //     //   if (DAT_0062cf04 != 0) {
-    //     //     uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x4ca);
-    //     //     iVar2 = (**(code **)(*DAT_0062c5ec + 0x68))(DAT_0062c5ec,DAT_0062cf04,param_1,0,param_2,param_3)
-    //     //     ;
-    //     //     uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x4d3);
-    //     //     if (0x32 < uVar3 - uVar1) {
-    //     //       TDebuggingLog::Log(this_00,(char *)L,s____FastSend_slow____ld_msec,uVar3 - uVar1);
-    //     //     }
-    //     //     if (param_1 == 0) {
-    //     //       uVar6 = 1;
-    //     //       iVar5 = 0;
-    //     //       if (this->MaxGamePlayers != 0) {
-    //     //         do {
-    //     //           iVar4 = IsPlayerHuman(this,uVar6);
-    //     //           if ((iVar4 != 0) && (uVar6 != this->Me)) {
-    //     //             iVar5 = iVar5 + 1;
-    //     //           }
-    //     //           uVar6 = uVar6 + 1;
-    //     //         } while (uVar6 <= this->MaxGamePlayers);
-    //     //       }
-    //     //     }
-    //     //     else {
-    //     //       iVar5 = 1;
-    //     //     }
-    //     //     this->TXPacketLength = this->TXPacketLength + iVar5 * unaff_ESI;
-    //     //     if (iVar2 != -0x7ff8ffa9) {
-    //     //       if (iVar2 != 0) {
-    //     //         RGE_Comm_Error::ShowReturn(this->Err,iVar2,s_FastTX);
-    //     //       }
-    //     //       return iVar2;
-    //     //     }
-    //     //     TDebuggingLog::Log(L,(char *)L,s_FastTX_to_invalidparams_ignored);
-    //     //     return -0x7ff8ffa9;
-    //     //   }
-    //     //   TDebuggingLog::Log(L,(char *)L,s____BAD_DCOID_0_NO_TX);
-    //     //   return -0x7fffbffb;
-    //     // }
-    //     // 
-    //     // 
-    // }
-    // 
-    return 0;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004274B0
+    (void)param_5;
+    (void)param_6;
+
+    ulong local_dpid = s_localPlayerDpid;
+    if (local_dpid == 0 && this->Me != 0 && this->Me <= (uint)this->MaxGamePlayers) {
+        local_dpid = this->PlayerOptions.dcoID[this->Me];
+        if (local_dpid != 0) {
+            s_localPlayerDpid = local_dpid;
+        }
+    }
+
+    if (param_2 == local_dpid) {
+        L->Log("No send to self FastTX");
+        return DPERR_INVALIDPLAYER;
+    }
+
+    if (local_dpid == 0) {
+        L->Log("   BAD DCOID 0 NO TX");
+        return DPERR_INVALIDPLAYER;
+    }
+
+    IDirectPlay2* dp = comm_get_dplay(this);
+    if (dp == nullptr) {
+        L->Log("   BAD DCOID 0 NO TX");
+        return DPERR_INVALIDPLAYER;
+    }
+
+    ulong start = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x4CA);
+    long hr = (long)dp->Send((DPID)local_dpid, (DPID)param_2, 0, param_3, (DWORD)param_4);
+    ulong stop = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x4D3);
+    if (stop - start > 0x32) {
+        L->Log("   FastSend slow : %ld msec", (long)(stop - start));
+    }
+
+    int recipients = 1;
+    if (param_2 == 0) {
+        recipients = 0;
+        for (uint player = 1; player <= (uint)this->MaxGamePlayers; ++player) {
+            if (this->IsPlayerHuman(player) != 0 && player != this->Me) {
+                recipients += 1;
+            }
+        }
+    }
+    this->TXPacketLength += (ulong)(recipients * (int)param_4);
+
+    (void)dp->Release();
+
+    if (hr != DPERR_INVALIDPARAMS) {
+        if (hr != DP_OK) {
+            if (this->Err != nullptr) {
+                this->Err->ShowReturn(hr, "FastTX");
+            }
+        }
+        return hr;
+    }
+
+    L->Log("FastTX to invalidparams ignored");
+    return DPERR_INVALIDPARAMS;
 }
 
 int TCommunications_Handler::EvaluatePlayerMessage(ulong param_2, uint param_3, ulong param_4, uchar param_5, uchar param_6, char* param_7, uint param_8, ulong param_9, ulong param_10) {
