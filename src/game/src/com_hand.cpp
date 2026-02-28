@@ -515,7 +515,7 @@ static int comm_evaluate_player_message(TCommunications_Handler* comm, ulong ful
 }
 
 TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game_players) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00425A40 (constructor)
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425A40
     memset(this, 0, sizeof(*this));
 
     this->HostHWND = host_hwnd;
@@ -590,7 +590,7 @@ TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game
 }
 
 TCommunications_Handler::~TCommunications_Handler() {
-    // Source of truth: com_hand.cpp.decomp @ 0x004261E0 (destructor)
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004261E0
     this->ClearRXandTX();
 
     if (this->InQ != nullptr) {
@@ -1056,7 +1056,7 @@ void TCommunications_Handler::UpdatePlayers() {
 }
 
 void TCommunications_Handler::UpdatePlayer(uint id, int timeout) {
-    // Source of truth: com_hand.cpp.decomp/.asm @ 0x0042DF90
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DF90
     COMMPLAYEROPTIONS* opts = &this->PlayerOptions;
     const int humanity = opts->Humanity[id];
     const ulong dpid = opts->dcoID[id];
@@ -2443,7 +2443,7 @@ void TCommunications_Handler::GameOver() {
 }
 
 COMMSTATUS TCommunications_Handler::GetCommunicationsStatus() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042BAD0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042BAD0
     COMMSTATUS st = this->AnalyzeCommunicationsStatus();
     this->CommunicationsStatus = st;
     return st;
@@ -2505,7 +2505,7 @@ void TCommunications_Handler::FreeOptions() {
 }
 
 long TCommunications_Handler::ReleaseComm() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042E9B0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E9B0
     if (this->Lobby != nullptr && this->Lobby->glpDP != nullptr) {
         (void)this->Lobby->glpDP->Release();
         this->Lobby->glpDP = nullptr;
@@ -2515,7 +2515,7 @@ long TCommunications_Handler::ReleaseComm() {
 }
 
 long TCommunications_Handler::CloseSession() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042E920
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E920
     long hr = 0;
     if (this->Lobby != nullptr && this->Lobby->glpDP != nullptr) {
         hr = (long)this->Lobby->glpDP->Close();
@@ -2530,7 +2530,7 @@ long TCommunications_Handler::CloseSession() {
 }
 
 long TCommunications_Handler::DestroyMyPlayer() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042EB10
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042EB10
     IDirectPlay2* dp = comm_get_dplay(this);
     if (dp == nullptr) {
         return 0;
@@ -2552,7 +2552,7 @@ long TCommunications_Handler::DestroyMyPlayer() {
 }
 
 int TCommunications_Handler::Kick(uint player_number) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042EA10
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042EA10
     if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
         return 0;
     }
@@ -2592,7 +2592,7 @@ int TCommunications_Handler::Kick(uint player_number) {
 }
 
 void TCommunications_Handler::DropAllHostedPlayers() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042C800
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C800
     if (this->MeHost != 0 && this->current_turn < 7) {
         for (uint player = 1; player <= (uint)this->MaxGamePlayers && player < 10; ++player) {
             (void)this->Kick(player);
@@ -2601,7 +2601,7 @@ void TCommunications_Handler::DropAllHostedPlayers() {
 }
 
 COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042BAE0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042BAE0
     switch (this->CommunicationsStatus) {
     case UNINITIALIZED:
     case INITIALIZED:
@@ -2864,7 +2864,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 }
 
 COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS level) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042C5D0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C5D0
     COMMSTATUS current = this->AnalyzeCommunicationsStatus();
     this->CommunicationsStatus = current;
 
@@ -2906,7 +2906,7 @@ IDirectPlay3* TCommunications_Handler::GetDPInterface() {
 }
 
 void TCommunications_Handler::SendSpeedChange(uint buffer_frames, uint buffer_granularity) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00429A30
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429A30
     if (this->MeHost != 0 && this->Multiplayer != 0) {
         const uint packed = ((buffer_granularity & 0xFFFF) << 16) | (buffer_frames & 0xFFFF);
         (void)this->CommOut('S', (void*)&packed, 4, 0);
@@ -2914,7 +2914,7 @@ void TCommunications_Handler::SendSpeedChange(uint buffer_frames, uint buffer_gr
 }
 
 int TCommunications_Handler::AllPlayersAcknowledged() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00429C40
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429C40
     if (this->Multiplayer == 0) {
         return 0;
     }
