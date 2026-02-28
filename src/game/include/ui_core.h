@@ -365,6 +365,7 @@ struct TPanelSystem {
     void* get_palette(char* file, long id);
     void release_palette(void* pal);
     void DisableIME();
+    void EnableIME();
 
     long check_message(void* hwnd, uint msg, uint wparam, long lparam);
     void add_panel(TPanel* panel);
