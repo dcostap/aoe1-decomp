@@ -378,7 +378,7 @@ CUSTOM_DEBUG_END
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
 
-    // Video codec availability gate used by start_video (Source of truth: tribegam.cpp.decomp @ 0x00521B3F).
+    // Video codec availability gate used by start_video (Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521B3F).
     ICINFO ici;
     memset(&ici, 0, sizeof(ici));
     video_codec_available = (int)ICInfo(mmioFOURCC('v', 'i', 'd', 'c'), mmioFOURCC('i', 'v', '4', '1'), &ici);
@@ -1148,7 +1148,7 @@ int TRIBE_Game::create_game(int p1) {
     no_other_humans_count = 0;
 
     // --- Phase 2: Quick start game handling ---
-    // Source of truth: tribegam.cpp.decomp @ 0xcdd-0xcf8
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0xcdd-0xcf8
     if (this->quickStartGame() != 0) {
         MapType mt;
         if (quick_start_game_mode == 1) {
