@@ -362,15 +362,35 @@ struct TPanelSystem {
     unsigned long save_back_color;
     unsigned long save_text_color;
 
+    TPanelSystem();
+    ~TPanelSystem();
+
     void* get_palette(char* file, long id);
     void release_palette(void* pal);
     void DisableIME();
     void EnableIME();
+    int IsIMEEnabled();
+    void TurnIMEOn();
+    void TurnIMEOff();
+    int IsIMEOn();
+    int GetInputEnabled();
+    void EnableInput();
+    void DisableInput();
+    void stop_sound_system();
+    int restart_sound_system();
+    void restore_system_colors();
 
     long check_message(void* hwnd, uint msg, uint wparam, long lparam);
     void add_panel(TPanel* panel);
     void remove_panel(TPanel* panel);
     TPanel* currentPanel();
+    TPanel* previousPanel();
+    TPanel* mouseOwner();
+    TPanel* keyboardOwner();
+    TPanel* modalPanel();
+    int numberActivePanels();
+    int addPanel(TPanel* panel, int set_current, int modal);
+    int removePanel(char* name);
 
     // Missing methods needed for original game behavior
     TPanel* panel(char* name);
@@ -378,7 +398,14 @@ struct TPanelSystem {
     void setCurrentPanel(TPanel* panel, int modal);
     int restorePreviousPanel(int destroy_current);
     int destroyPanel(char* name);
+    int inSystem(char* name);
+    int inSystem(TPanel* panel);
+    int setup();
+    PanelNode* findPanelNode(char* name);
+    void setMouseOwner(TPanel* panel);
+    void setKeyboardOwner(TPanel* panel);
     void setModalPanel(TPanel* panel);
+    void setCurrentPanelModal();
     int restorePreviousModalPanel();
     void set_restore();
 };
