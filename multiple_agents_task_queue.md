@@ -3835,7 +3835,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all decomp offsets have impl coverage across all 4 modules. Expect 600+ lines.
 ## Task 270 — AI Playbook remaining 58 functions (aipbook.cpp.decomp)
 - [x] Assigned to agent (worker-1, clone_1, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `3a46325`. 465 insertions. AIPlayBook.cpp + AIPlayStatus.h expanded.
 - Goal: aipbook.cpp.decomp has 71 functions. AIPlayBook.cpp + TribeAIPlayBook.cpp combined have only 13 offset refs → ~58 missing functions. These are AI strategy/build-order recipe functions (playbook rules, condition evaluation, action execution, playbook loading).
 - Implement: Cross-reference every decomp '// Offset:' against AIPlayBook.cpp and TribeAIPlayBook.cpp. Transliterate every missing function with offset markers.
 - Where: `src/game/src/AIPlayBook.cpp`, `src/game/src/TribeAIPlayBook.cpp` + headers
@@ -3844,7 +3845,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 71 decomp offsets have impl coverage. Expect 1000+ lines.
 ## Task 271 — RGE_Player remaining 46 functions (player.cpp.decomp)
 - [x] Assigned to agent (worker-3, clone_3, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `c794744`. 228 insertions. RGE_Player.cpp expanded with remaining offsets.
 - Goal: player.cpp.decomp has 126 functions. RGE_Player.cpp has ~80 offset refs → ~46 missing. These are base player management functions: resource tracking, diplomacy, technology, unit ownership, score.
 - Implement: Cross-reference every decomp '// Offset:' against RGE_Player.cpp. Transliterate every missing function with offset markers.
 - Where: `src/game/src/RGE_Player.cpp` + `src/game/include/RGE_Player.h`
@@ -3854,7 +3856,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 272 — Screen Game + Drawarea + View remaining functions (30 combined)
 - [x] Assigned to agent (worker-4, clone_4, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `2e7147f`. 64 insertions. Drawarea.cpp, view.cpp expanded.
 - Goal: Three rendering/UI modules with small remaining gaps:
   - scr_game.cpp.decomp: 100 funcs, TRIBE_Screen_Game.cpp has ~94 refs → ~6 missing
   - drawarea.cpp.decomp: 67 funcs, Drawarea.cpp has ~49 refs → ~18 missing
@@ -3900,3 +3903,49 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: corresponding `.decomp` + `.asm` files
 - Non-overlap: do NOT touch panel files, AI module files, basegame, RGE_Static_Object, or RGE_Moving_Object
 - Done when: all decomp offsets have impl coverage across all 4 modules. Expect 1200+ lines.
+
+## Task 276 — Action Files Cluster: act_list + act_gath + act_atak + act_move + act_tran (76 greenfield functions)
+- [x] Assigned to agent (worker-1, clone_1, copilot)
+- [ ] Finished
+- Goal: Five action-related modules with NO implementation at all:
+  - act_list.cpp.decomp: 27 functions (RGE_Action_List — action queue management, priority sorting, action chaining)
+  - act_gath.cpp.decomp: 12 functions (gathering/resource collection actions)
+  - act_atak.cpp.decomp: 15 functions (attack actions — targeting, damage, range checks)
+  - act_move.cpp.decomp: 11 functions (movement actions — pathfinding triggers, waypoint handling)
+  - act_tran.cpp.decomp: 11 functions (transport actions — loading/unloading units)
+  Total: 76 functions, all greenfield.
+- Implement: Create new impl files (or extend existing RGE_Action_*.cpp files if they exist) and transliterate ALL functions from each decomp with '// Source of truth: xxx.cpp.decomp @ 0xNNNNNNNN' offset markers.
+- Where: `src/game/src/` + headers. Check if RGE_Action_List.cpp etc. already exist and extend them, otherwise create new files.
+- Source of truth: `act_list.cpp.decomp`, `act_gath.cpp.decomp`, `act_atak.cpp.decomp`, `act_move.cpp.decomp`, `act_tran.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch RGE_Static_Object, RGE_Moving_Object, RGE_Action_Object base class, panel files, AI module files, or command.cpp
+- Done when: all 76 decomp offsets have impl coverage. Expect 1000+ lines.
+
+## Task 277 — Screen Editor + Credits + Campaign (80 greenfield functions)
+- [x] Assigned to agent (worker-3, clone_3, copilot)
+- [ ] Finished
+- Goal: Three screen modules with NO implementation at all:
+  - scr_sed.cpp.decomp: 51 functions (TRIBE_Screen_Scenario_Editor — scenario editor UI, terrain painting, object placement, trigger editing)
+  - scr_cred.cpp.decomp: 16 functions (credits screen — scrolling text, timing, input handling)
+  - scr_cam.cpp.decomp: 13 functions (campaign screen — campaign selection, mission progression, briefing display)
+  Total: 80 functions, all greenfield.
+- Implement: Create new impl files and transliterate ALL functions from each decomp with '// Source of truth' offset markers.
+- Where: `src/game/src/` + headers. Check if TRIBE_Screen_*.cpp already exist and extend them, otherwise create new files.
+- Source of truth: `scr_sed.cpp.decomp`, `scr_cred.cpp.decomp`, `scr_cam.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch TRIBE_Screen_Game.cpp, panel files, AI files, basegame, command.cpp
+- Done when: all 80 decomp offsets have impl coverage. Expect 1200+ lines.
+
+## Task 278 — Panel_ez remaining + Tribe Panels + AI Decision Module (110 functions)
+- [x] Assigned to agent (worker-4, clone_4, copilot)
+- [ ] Finished
+- Goal: Mixed cluster of partial and greenfield modules:
+  - panel_ez.cpp.decomp: 76 funcs, Panel_ez.cpp has 39 refs → ~37 missing (easy dialog panels, message boxes, input panels)
+  - tpnl_tml.cpp.decomp: 29 funcs, NO IMPL (TRIBE_Panel_Timeline — timeline display, age progression UI)
+  - tpnl_obj.cpp.decomp: 15 funcs, NO IMPL (TRIBE_Panel_Object — object info panel, stats display)
+  - tpnl_tim.cpp.decomp: 11 funcs, NO IMPL (TRIBE_Panel_Timer — game timer display)
+  - aimdmod.cpp.decomp: 20 funcs, MainDecisionAIModule.cpp has 2 refs → ~18 missing (AI main decision-making: priority evaluation, strategy switching)
+  Total: ~110 functions.
+- Implement: Extend Panel_ez.cpp and MainDecisionAIModule.cpp for partial gaps. Create new impl files for greenfield tribe panels. Transliterate all missing functions with offset markers.
+- Where: `src/game/src/Panel_ez.cpp`, `src/game/src/MainDecisionAIModule.cpp`, new files for tribe panels + headers
+- Source of truth: `panel_ez.cpp.decomp`, `tpnl_tml.cpp.decomp`, `tpnl_obj.cpp.decomp`, `tpnl_tim.cpp.decomp`, `aimdmod.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch TRIBE_Screen_*.cpp, Pnl_txt/Pnl_btn/Pnl_scbr/Pnl_lst, command.cpp, basegame, or action files
+- Done when: all decomp offsets covered. Expect 1500+ lines.
