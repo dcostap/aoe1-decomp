@@ -42,6 +42,40 @@ public:
     virtual RGE_Player* owner() const;              // vt[3]
     virtual RGE_Static_Object* object() const;      // vt[4]
     virtual int objectID() const;                   // vt[5]
+    int objectCategory() const;
+    int mood() const;
+    unsigned long lastUpdateTime() const;
+    unsigned long idleTimer() const;
+    unsigned long idleTimeout() const;
+    unsigned long secondaryTimer() const;
+    float defenseBuffer() const;
+    void setDefenseBuffer(float param_1);
+    int orderQueueSize() const;
+    OrderEvent* orderQueueElement(int param_1) const;
+    void purgeOrderQueue();
+    int currentOrder() const;
+    void setCurrentOrder(int param_1);
+    int currentOrderPriority() const;
+    void setCurrentOrderPriority(int param_1);
+    int currentAction() const;
+    void setCurrentAction(int param_1);
+    int currentTarget() const;
+    int currentTargetType() const;
+    float currentTargetX() const;
+    float currentTargetY() const;
+    float currentTargetZ() const;
+    int lastAction() const;
+    int lastOrder() const;
+    int lastTarget() const;
+    int lastTargetType() const;
+    float desiredTargetDistance() const;
+    int attackingUnitID(int param_1);
+    int numberAttackingUnits() const;
+    Waypoint* waypoint(int param_1) const;
+    int waypointQueueSize() const;
+    int addToWaypointQueue(int param_1, int param_2);
+    int inWaypointQueue(int param_1, int param_2) const;
+    void clearWaypointQueue();
     virtual int order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11); // vt[6]
     virtual int notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt[7]
     virtual int notifyCommander(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt[8]
