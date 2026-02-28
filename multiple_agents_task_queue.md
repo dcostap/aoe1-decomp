@@ -4019,7 +4019,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 283 — UnitAIModule remaining + TribeUnitAIModuleTypes (95 functions)
 - [x] Assigned to agent (worker-3, clone_3, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `05b51b5`, merged via `dca52a0`. UnitAIModule + TribeUnitAIModuleTypes parity work.
 - Goal: Two related AI modules with significant gaps:
   - aiuaimod.cpp.decomp: 118 funcs, ~63 impl refs → ~55 missing (UnitAIModule — unit-level AI decision making, state transitions, target selection, retreat logic)
   - taiuaimd.cpp.decomp: 66 funcs, ~26 impl refs → ~40 missing (TribeUnitAIModuleTypes — tribe-specific unit AI behaviors, formation handling, garrison logic)
@@ -4060,3 +4061,37 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `victory.cpp.decomp`, `sounddrv.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
 - Non-overlap: do NOT touch panel, AI, action, basegame, command, tribegam files
 - Done when: all functions have FULL CODE BODIES (not just markers). Expect 1500+ lines of actual C++ logic.
+
+## Task 286 — TRIBE_Screen_Game remaining 54 missing offsets (scr_game.cpp.decomp)
+- [x] Assigned to agent (worker-1, clone_1, copilot)
+- [ ] Finished
+- Goal: TRIBE_Screen_Game.cpp is the MAIN GAME SCREEN and still has 54 of 100 decomp offsets MISSING (only 46 covered). Task 282 added 259 lines but left 54 functions completely unimplemented. This file handles the core rendering loop, mouse/keyboard handling, unit selection, minimap interaction, research/tech buttons, game-speed controls, multiplayer chat.
+- Implement: Open `src/game/decomp/scr_game.cpp.decomp`, identify EVERY function offset. Cross-reference `src/game/src/TRIBE_Screen_Game.cpp`. For every offset NOT present in the impl, transliterate the FULL function body from the decomp. This means writing actual C++ code matching the decomp's control flow, variables, and logic — NOT just adding offset markers or stubs.
+  CRITICAL: Each function MUST have a real body, not just a `// Source of truth` comment. Read the decomp function, translate the logic into C++.
+- Where: `src/game/src/TRIBE_Screen_Game.cpp` + `src/game/include/TRIBE_Screen_Game.h`
+- Source of truth: `scr_game.cpp.decomp` + `scr_game.cpp.asm` (in `src/game/decomp/`)
+- Non-overlap: do NOT touch any other screen files, panel files, AI files, basegame, command.cpp, tribegam
+- Done when: ALL 100 scr_game.cpp.decomp offsets have impl coverage with FULL function bodies. Expect 2000+ lines.
+
+## Task 287 — tribegam.cpp remaining 47 missing offsets (TRIBE_Game implementation)
+- [x] Assigned to agent (worker-2, clone_2, copilot)
+- [ ] Finished
+- Goal: tribegam.cpp is the central TRIBE_Game class and still has 47 of 119 decomp offsets MISSING (only 72 covered). Many missing offsets are in the 0x00529xxx range (game state getters/setters/query methods) plus several large functions at 0x00521xxx-0x00523xxx (save/load, game processing). Previous Task 247 only added 123 lines.
+- Missing offsets: 0x00521020, 0x00521120, 0x00521790, 0x005222C0, 0x00522770, 0x00522860, 0x005228A0, 0x00522930, 0x00523AE0, 0x00523EF6, 0x005291F0, 0x005292A0, 0x005292B0, 0x005292D0, 0x005292F0, 0x00529300, 0x00529310, 0x00529320, 0x00529340, 0x00529350, 0x00529380, 0x005293A0, 0x005293B0, 0x005293D0, 0x005293E0, 0x00529400, 0x00529410, 0x00529420, 0x00529430, 0x00529440, 0x00529450, 0x00529470, 0x00529480, 0x005294A0, 0x005294C0, 0x005294D0, 0x005294E0, 0x005294F0, 0x00529500, 0x00529510, 0x00529520, 0x00529530, 0x00529540, 0x00529550, 0x00529560, 0x00529580, 0x0052A170
+- Implement: Open `src/game/decomp/tribegam.cpp.decomp`, find each missing offset, transliterate the FULL function body. Write actual C++ code matching the decomp's control flow. Add method declarations to the header.
+- Where: `src/game/src/tribegam.cpp` + `src/game/include/TRIBE_Game.h`
+- Source of truth: `tribegam.cpp.decomp` + `tribegam.cpp.asm` (in `src/game/decomp/`)
+- Non-overlap: do NOT touch basegame.cpp, TRIBE_Player.cpp, command.cpp, screen files, panel files, AI files
+- Done when: ALL 119 tribegam.cpp.decomp offsets have impl coverage with FULL function bodies. Expect 1500+ lines.
+
+## Task 288 — TribeTacticalAIModule deep transliteration: replace 143 STUB bodies (taitacmd.cpp.decomp)
+- [x] Assigned to agent (worker-3, clone_3, copilot)
+- [ ] Finished
+- Goal: TribeTacticalAIModule.cpp has ALL 230 offset markers covered, BUT 143 of those are `// TODO: STUB` empty bodies. The decomp is 20,813 lines — the real function logic exists in `taitacmd.cpp.decomp` and needs to be translated into C++. This handles all TRIBE tactical AI command processing — attack targeting, group movement, formation AI, civilian tasking, military strategy.
+- Implement: Open `src/game/decomp/taitacmd.cpp.decomp`. For EVERY function that currently has a `// TODO: STUB` marker in `TribeTacticalAIModule.cpp` or `TacticalAIGroup.cpp`, read the decomp function body at that offset and transliterate it into real C++ code.
+  CRITICAL: Do NOT just add markers. Read the decomp, translate the actual control flow, switch statements, conditionals, API calls. Each function should be 10-100+ lines of real C++ code.
+  Start from the FIRST stub function and work sequentially. Aim to replace as many stubs as possible.
+- Where: `src/game/src/TribeTacticalAIModule.cpp`, `src/game/src/TacticalAIGroup.cpp` + headers
+- Source of truth: `taitacmd.cpp.decomp` + `taitacmd.cpp.asm` (in `src/game/decomp/`)
+- Non-overlap: do NOT touch UnitAIModule, TribeInformationAI, TribeBuildAI, panel files, command.cpp, basegame, tribegam, any screen files
+- Done when: at least 80 of the 143 STUB bodies replaced with real decomp-translated code. Expect 3000+ lines.
