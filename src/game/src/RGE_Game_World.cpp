@@ -1390,6 +1390,20 @@ void RGE_Game_World::selectNextComputerPlayer(int param_1) {
     }
 }
 
+void RGE_Game_World::useComputerPlayerUpdateTime(ulong param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545BC0
+    if (this->availableComputerPlayerUpdateTime < param_1) {
+        this->availableComputerPlayerUpdateTime = 0;
+        return;
+    }
+    this->availableComputerPlayerUpdateTime = this->availableComputerPlayerUpdateTime - param_1;
+}
+
+int RGE_Game_World::computerPlayerUpdateTimeAvailable() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545BF0
+    return (int)(this->availableComputerPlayerUpdateTime != 0);
+}
+
 void RGE_Game_World::update_sounds(ulong param_1) {
     // Fully verified. Source of truth: world.cpp.decomp @ 0x00542E50
     if ((int)this->sound_num <= this->sound_update_index) {
@@ -1618,7 +1632,18 @@ uchar RGE_Game_World::update() {
 }
 
 uchar RGE_Game_World::get_game_state() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005433B0
     return this->game_state;
+}
+
+int RGE_Game_World::is_player_turn(int param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00543380
+    return (int)(this->player_turn == param_1);
+}
+
+ulong RGE_Game_World::get_accum_time_delta(int param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005433A0
+    return this->player_time_delta[param_1];
 }
 
 uchar RGE_Game_World::check_game_state() {
@@ -2189,23 +2214,37 @@ RGE_Scenario* RGE_Game_World::get_scenario_info(char* param_1) {
 }
 
 void RGE_Game_World::pause(uchar param_1) {
-    // param_1: 1 = pause, 0 = unpause
-    this->temp_pause = param_1;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540D30
+    if (param_1 != '\0') {
+        int i = 0;
+        while (i < this->sound_num) {
+            this->sounds[i]->stop();
+            i = i + 1;
+        }
+    }
+}
+
+void RGE_Game_World::set_game_speed(float param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542470
+    this->game_speed = param_1;
 }
 
 void RGE_Game_World::set_map_visible(uchar param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540D60
     if (this->map != nullptr) {
         this->map->set_map_visible(param_1);
     }
 }
 
 void RGE_Game_World::set_map_fog(uchar param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540D80
     if (this->map != nullptr) {
         this->map->set_map_fog(param_1);
     }
 }
 
 void RGE_Game_World::reset_object_count() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540CF0
     this->world_time = 0;
     this->old_world_time = 0;
     this->world_time_delta = 0;
@@ -2221,7 +2260,7 @@ void RGE_Game_World::reset_object_count() {
 }
 
 void RGE_Game_World::reset_player_visible_maps() {
-    // Source of truth: world.cpp.decomp @ 0x00541E90
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541EB0
     if (this->players == nullptr) {
         return;
     }
@@ -2230,6 +2269,11 @@ void RGE_Game_World::reset_player_visible_maps() {
             this->players[i]->remake_visible_map();
         }
     }
+}
+
+void RGE_Game_World::reset_communications(TCommunications_Handler* param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541EA0
+    this->commands->reset_communications(param_1);
 }
 
 void RGE_Game_World::update_mutual_allies() {
@@ -2330,6 +2374,24 @@ int RGE_Game_World::initializePathingSystem() {
 int RGE_Game_World::numberObjects() {
     // Source of truth: world.cpp.decomp @ 0x00545D10
     return this->numberObjectsValue;
+}
+
+int RGE_Game_World::difficultyLevel() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545CB0
+    if (this->difficultyLevelValue == -1) {
+        this->difficultyLevelValue = rge_base_game->difficulty();
+    }
+    return this->difficultyLevelValue;
+}
+
+int RGE_Game_World::maxNumberObjects() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545CF0
+    return this->maxNumberObjectsValue;
+}
+
+int RGE_Game_World::maxNumberNegativeObjects() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545D00
+    return this->maxNumberNegativeObjectsValue;
 }
 
 int RGE_Game_World::numberNegativeObjects() {
