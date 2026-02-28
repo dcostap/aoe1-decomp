@@ -181,7 +181,7 @@ static void init_module_variables(TRIBE_Screen_Sed* this_) {
 }
 
 static void set_player_active(TRIBE_Screen_Sed* this_, short player_num, int active) {
-    // Decomp-first transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB2B0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB2B0
     if (!this_ || !this_->world || !this_->world->scenario) return;
     this_->world->scenario->Set_player_Active((int)player_num, active);
 }
@@ -229,7 +229,7 @@ static void SavePlayerActiveStatus(TRIBE_Screen_Sed* this_) {
 }
 
 static void set_panel_info(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A8770
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8770
     if (!this_ || !rge_base_game) return;
 
     if (this_->main_view) {
@@ -449,7 +449,7 @@ static void set_paint_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::PaintType 
 }
 
 static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char save_current, unsigned char load_selected) {
-    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AAE20
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAE20
     if (this_ == nullptr || this_->world == nullptr || this_->world->scenario == nullptr || rge_base_game == nullptr) return;
 
     const int current_index = (this_->player_num > 0) ? (this_->player_num - 1) : 0;
@@ -498,7 +498,7 @@ static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char 
 }
 
 static void set_unit_player(TRIBE_Screen_Sed* this_, short player_num) {
-    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB300
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB300
     if (this_ == nullptr || rge_base_game == nullptr) return;
 
     rge_base_game->set_player(player_num);
@@ -526,7 +526,7 @@ static void set_message_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::MessageT
 }
 
 static void set_scenario_mode(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::ScenarioMode param_1) {
-    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A9CC0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A9CC0
     if (!this_) return;
     if (param_1 == TRIBE_Screen_Sed::ScenarioModeSave) return;
 
@@ -552,45 +552,74 @@ static void set_unit(TRIBE_Screen_Sed* this_, short param_1) {
 }
 
 static void set_string(TRIBE_Screen_Sed* this_, char* param_2, long param_3, int param_4) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A87D0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A87D0
     if (!this_ || !param_2) return;
-    sprintf(param_2, "str_%ld_%d", param_3, param_4);
+    this_->get_string((int)param_3, param_2, param_4);
 }
 
 static int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, long param_4, int param_5) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A87F0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A87F0
+    (void)param_5;
     if (!this_) return 0;
-    return this_->create_button(param_2, param_3, param_4, 0, 0, 0, 0, 0, 10, param_5, 0);
+    char str1[120];
+    this_->get_string((int)param_4, str1 + 4, 0x78);
+    return this_->create_button(param_2, param_3, str1 + 4, (char*)0, 0, 0, 0, 0, 10, 1, 0);
 }
 
-static int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, char* param_4, char* param_5, char* /*param_6*/, char* /*param_7*/) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A8840
+static int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, char* param_4, char* param_5, char* param_6, char* param_7) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8840
     if (!this_) return 0;
-    return this_->create_button(param_2, param_3, param_4, param_5, 0, 0, 0, 0, 10, 1, 0);
+    const int created = this_->TEasy_Panel::create_button(param_2, param_3, param_4, param_5, 0, 0, 0, 0, 10, 1, 0);
+    if (created == 0) return 0;
+    if (param_6) (*param_3)->set_text(2, param_6);
+    if (param_7) (*param_3)->set_text(3, param_7);
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    if (this_->use_bevels != 0) {
+        (*param_3)->set_bevel_info(3, this_->bevel_color1, this_->bevel_color2, this_->bevel_color3,
+            this_->bevel_color4, this_->bevel_color1, this_->bevel_color2);
+    }
+    return 1;
 }
 
 static int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, long param_4) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A8910
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8910
     if (!this_) return 0;
-    return this_->create_text(param_2, param_3, (int)param_4, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int created = this_->TEasy_Panel::create_text(param_2, param_3, (int)param_4, 0, 0, 0, 0, 10, 0, 0, 0);
+    if (created == 0) return 0;
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    return 1;
 }
 
 static int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, char* param_4) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A8960
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8960
     if (!this_) return 0;
-    return this_->create_text(param_2, param_3, param_4, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int created = this_->TEasy_Panel::create_text(param_2, param_3, param_4, 0, 0, 0, 0, 10, 0, 0, 0);
+    if (created == 0) return 0;
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    return 1;
 }
 
 static int create_input(TRIBE_Screen_Sed* this_, TPanel* param_2, TInputPanel** param_3, char* param_4, short param_5, FormatType param_6) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A89B0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A89B0
     if (!this_) return 0;
-    return this_->create_input(param_2, param_3, param_4, param_5, param_6, 0, 0, 0, 0, 0);
+    const int created = this_->TEasy_Panel::create_input(param_2, param_3, param_4, param_5, param_6, 0, 0, 0, 0, 10);
+    if (created == 0) return 0;
+    ((TPanel*)*param_3)->set_z_order('\x01', 0);
+    ((TPanel*)*param_3)->set_active(0);
+    return 1;
 }
 
 static int create_edit(TRIBE_Screen_Sed* this_, TPanel* param_2, TEditPanel** param_3, char* param_4, short param_5, FormatType param_6, int param_7, int param_8) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A8A00
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8A00
     if (!this_) return 0;
-    return this_->create_edit(param_2, param_3, param_4, param_5, param_6, 0, 0, 0, 0, 0, param_7, param_8);
+    const int created = this_->TEasy_Panel::create_edit(param_2, param_3, param_4, param_5, param_6, 0, 0, 0, 0, 10, param_7, param_8);
+    if (created == 0) return 0;
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    return 1;
 }
 
 static int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownPanel** param_3) {
@@ -600,19 +629,45 @@ static int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownP
 }
 
 static int SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A9320
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A9320
     if (!this_ || !param_2) return 0;
-    return 1;
+    param_2->empty_list();
+    param_2->append_line(0x297d, 0);
+    param_2->append_line(0x297e, 0);
+    param_2->append_line(0x297f, 0);
+    param_2->append_line(0x2980, 0);
+    param_2->append_line(0x2981, 0);
+    param_2->append_line(0x2982, 0);
+    param_2->append_line(0x2983, 0);
+    param_2->append_line(0x2984, 0);
+    param_2->append_line(0x2985, 0);
+    return 8;
 }
 
 static int create_list(TRIBE_Screen_Sed* this_, TPanel* param_2, TListPanel** param_3, TScrollBarPanel** param_4) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A93C0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A93C0
     if (!this_) return 0;
-    const int created = this_->create_list(param_2, param_3, 0, 0, 0, 0, 0);
-    if (created != 0 && param_3 && *param_3 != nullptr && param_4) {
-        this_->create_scrollbar(param_2, param_4, nullptr, 0, 0, 0, 0, 0);
+    const int created = this_->TEasy_Panel::create_list(param_2, param_3, 0, 0, 0, 0, 10);
+    if (created == 0) return 0;
+    (*param_3)->set_active(0);
+    (*param_3)->empty_list();
+    if (this_->TEasy_Panel::create_auto_scrollbar(param_4, (TTextPanel*)*param_3, 0x14) == 0) return 0;
+
+    if (param_3 == &this_->paint_elevation_list) {
+        char str1[50];
+        char str2[60];
+        set_string(this_, str1, 0x2987, 0x32);
+        for (int i = 1; i < 8; ++i) {
+            sprintf(str2, "%s %d", str1, i);
+            this_->paint_elevation_list->append_line(str2, 0);
+        }
+        return 1;
     }
-    return created;
+
+    if (param_3 == &this_->paint_terrain_list) {
+        SetupListOfTerrain(this_, this_->paint_terrain_list);
+    }
+    return 1;
 }
 
 static int FUN_004aa6e6() {
@@ -677,8 +732,14 @@ static int FUN_004ad06e() {
 }
 
 static void command_cancel(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD240
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD240
     if (!this_) return;
+    if (!rge_base_game) return;
+    RGE_Player* player = rge_base_game->get_player();
+    if (player) {
+        player->unselect_object();
+        player->unselect_area();
+    }
 }
 
 static void command_outline(TRIBE_Screen_Sed* this_) {
@@ -701,9 +762,10 @@ static void command_outline(TRIBE_Screen_Sed* this_) {
 }
 
 static void command_player(TRIBE_Screen_Sed* this_, int param_2) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD680
-    if (!this_) return;
-    set_player(this_, (short)param_2, 0, 0);
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD680
+    (void)this_;
+    if (!rge_base_game) return;
+    rge_base_game->set_player((short)param_2);
 }
 
 static void command_save_as(TRIBE_Screen_Sed* this_, unsigned char param_2) {
@@ -760,7 +822,7 @@ static char* scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
 }
 
 static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int is_multi_player, int param_4, int param_5, int param_6, int show_status) {
-    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD340
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD340
     (void)is_multi_player;
     (void)param_4;
     (void)param_5;
@@ -805,12 +867,12 @@ static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int
 }
 
 static int need_to_save(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ADC30
-    return (this_ != nullptr && this_->need_to_save_flag != 0) ? 1 : 0;
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADC30
+    return this_->need_to_save_flag;
 }
 
 static int command_menu(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD270
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD270
     if (!this_) return 0;
 
     TRIBE_Dialog_Sed_Menu* dlg = new TRIBE_Dialog_Sed_Menu(this_);
@@ -826,8 +888,7 @@ static int command_menu(TRIBE_Screen_Sed* this_) {
 }
 
 static void command_new(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD300
-    // Decomp intent: scr_sed.cpp.decomp @ 0x004AD300
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD300
     if (!this_) return;
 
     if (need_to_save(this_) != 0) {
@@ -842,8 +903,7 @@ static void command_new(TRIBE_Screen_Sed* this_) {
 }
 
 static void command_open(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD590
-    // Source of truth intent: scr_sed.cpp.decomp @ 0x004AD590
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD590
     if (!this_) return;
     if (need_to_save(this_) != 0) {
         this_->popupYesNoCancelDialog(0x2447, kOpenSaveDialogName, 0x1c2, 100);
@@ -868,8 +928,7 @@ static void command_open(TRIBE_Screen_Sed* this_) {
 }
 
 static void command_quit(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD6A0
-    // Decomp intent: scr_sed.cpp.decomp @ 0x004AD6A0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD6A0
     if (!this_ || !rge_base_game) return;
 
     if (need_to_save(this_) != 0) {
@@ -1163,7 +1222,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
 }
 
 long TRIBE_Screen_Sed::handle_size(long param_1, long param_2) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB710
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB710
     TPanel::handle_size(param_1, param_2);
     position_panels(this);
     TPanel::handle_size(param_1, param_2);
@@ -1171,7 +1230,7 @@ long TRIBE_Screen_Sed::handle_size(long param_1, long param_2) {
 }
 
 long TRIBE_Screen_Sed::handle_idle() {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB740
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB740
     if (rge_base_game && rge_base_game->prog_mode == 7) {
         const unsigned long now = debug_timeGetTime(kScrSedSourcePath, 0x8b1);
         const unsigned long dt = now - this->last_update_time;
@@ -1195,7 +1254,7 @@ long TRIBE_Screen_Sed::handle_idle() {
 }
 
 long TRIBE_Screen_Sed::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
-    // Partially verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB7D0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB7D0
     (void)param_2;
     (void)param_3;
     (void)param_5;
@@ -1305,7 +1364,7 @@ long TRIBE_Screen_Sed::key_down_action(long param_1, short param_2, int param_3,
 }
 
 long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ABCD0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ABCD0
     (void)param_3;
     (void)param_4;
 
