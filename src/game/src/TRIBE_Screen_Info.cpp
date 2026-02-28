@@ -38,7 +38,7 @@ static const char kScrInfQu[] = "scrinfqu";
 
 } // namespace
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D550
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D550
 TRIBE_Screen_Info::TRIBE_Screen_Info(char* panel_name, char* screen_file, long screen_id, ulong timer_)
     : TScreenPanel(panel_name) {
     this->timer = timer_;
@@ -51,11 +51,11 @@ TRIBE_Screen_Info::TRIBE_Screen_Info(char* panel_name, char* screen_file, long s
     }
 }
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D600
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D600
 TRIBE_Screen_Info::~TRIBE_Screen_Info() {
 }
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D610
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D610
 long TRIBE_Screen_Info::handle_idle() {
     if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
@@ -77,7 +77,7 @@ long TRIBE_Screen_Info::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D690
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D690
 long TRIBE_Screen_Info::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     (void)param_2;
     (void)param_3;
@@ -91,7 +91,7 @@ long TRIBE_Screen_Info::key_down_action(long param_1, short param_2, int param_3
     return 0;
 }
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D6B0
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D6B0
 long TRIBE_Screen_Info::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
     (void)param_1;
     (void)param_2;
@@ -102,17 +102,14 @@ long TRIBE_Screen_Info::mouse_left_down_action(long param_1, long param_2, int p
     return 0;
 }
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D6C0
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D6C0
 long TRIBE_Screen_Info::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// Fully verified. Source of truth: scr_info.cpp.asm @ 0x0049D6E0
+// Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D6E0
 void TRIBE_Screen_Info::close_screen() {
     char* name = this->panelNameValue;
-    if (name == nullptr) {
-        name = (char*)"";
-    }
 
     if (strcmp(name, kRandomMap) == 0) {
         rge_base_game->disable_input();

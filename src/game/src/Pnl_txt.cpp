@@ -154,7 +154,7 @@ void TScrollTextPanel::set_text(char* text) {
 }
 
 long TScrollTextPanel::handle_idle() {
-    // Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492FB0
+    // Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492FB0
     if (this->last_time == 0) {
         this->last_time = debug_timeGetTime(kScrCredSourcePath, 0x1DC);
     } else {
@@ -176,7 +176,7 @@ long TScrollTextPanel::handle_idle() {
 }
 
 void TScrollTextPanel::draw_scrolled_line(void* hdc_void, short draw_index, short line_index, ulong color1, ulong color2) {
-    // Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00493160
+    // Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00493160
     HDC hdc = (HDC)hdc_void;
 
     const char* text = this->get_text((long)line_index);
@@ -255,7 +255,7 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc_void, short draw_index, shor
 }
 
 void TScrollTextPanel::draw() {
-    // Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00493070
+    // Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00493070
     this->need_redraw = TPanel::RedrawMode::NoRedraw;
     if (!this->render_area || !this->active || !this->visible) {
         return;
