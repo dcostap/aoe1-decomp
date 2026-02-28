@@ -444,6 +444,11 @@ void RGE_Master_Combat_Object::modify(float param_1, uchar param_2) {
     }
 }
 
+// Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x00450B09
+static void FUN_00450b09() {
+    // Alignment thunk/jump-table entry emitted between modify and modify_delta.
+}
+
 // Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x00450B40 (ASM-audited with m_co_obj.cpp.asm)
 void RGE_Master_Combat_Object::modify_delta(float param_1, uchar param_2) {
     switch (param_2) {
@@ -526,6 +531,11 @@ void RGE_Master_Combat_Object::modify_percent(float param_1, uchar param_2) {
         RGE_Master_Action_Object::modify_percent(param_1, param_2);
         return;
     }
+}
+
+// Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x00450DEA
+static void FUN_00450dea() {
+    // Alignment thunk/jump-table entry emitted between modify_percent and save.
 }
 
 // Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x00450E20

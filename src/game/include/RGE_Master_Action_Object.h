@@ -38,5 +38,10 @@ public:
     RGE_Sound* command_sound;
     RGE_Sound* move_sound;
     unsigned char run_pattern;
+
+protected:
+    int setup(RGE_Master_Action_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 };
 static_assert(sizeof(RGE_Master_Action_Object) == 0xFC, "Size mismatch");
