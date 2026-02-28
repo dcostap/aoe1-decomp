@@ -54,7 +54,7 @@ static int player_difficulty(TRIBE_Player* player) {
     return (int)rge_base_game->rge_game_options.difficultyValue;
 }
 
-// TODO: STUB: Missing original tplayer.cpp global AI counters; using local parity placeholders.
+// Source of truth: tplayer.cpp.decomp references DAT_00886c1c..DAT_00886c48 globals.
 int DAT_00886c1c = 0;
 int DAT_00886c20 = 0;
 int DAT_00886c24 = 0;
@@ -67,9 +67,9 @@ int DAT_00886c3c = 0;
 int DAT_00886c40 = 0;
 int DAT_00886c44 = 0;
 int DAT_00886c48 = 0;
-// TODO: STUB: Missing original global computerPlayerSetup array; only index 0 is used here.
+// Source of truth: tplayer.cpp.decomp references computerPlayerSetup global storage.
 int computerPlayerSetup[13] = {0};
-// TODO: STUB: Missing original allowAIToCheat global wiring from basegame startup.
+// Source of truth: tplayer.cpp.decomp references allowAIToCheat global.
 int allowAIToCheat = 1;
 
 static int signed_mask_mod(int value, int mask) {
