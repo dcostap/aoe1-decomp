@@ -374,8 +374,6 @@ void RGE_Action_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
 // RGE_Combat_Object  (parent: RGE_Action_Object)
 // =====================================================================
 
-RGE_Combat_Object::~RGE_Combat_Object() {} // TODO: STUB
-
 // --- Forwarding stubs: same signature as RGE_Action_Object ---
 
 void RGE_Combat_Object::recycle_out_of_game() { RGE_Action_Object::recycle_out_of_game(); } // TODO: STUB
@@ -386,7 +384,6 @@ void RGE_Combat_Object::draw_frame(TDrawArea* param_1, short param_2, short para
 void RGE_Combat_Object::check_damage_sprites() { RGE_Action_Object::check_damage_sprites(); } // TODO: STUB
 void RGE_Combat_Object::rehook() { RGE_Action_Object::rehook(); } // TODO: STUB
 // save(int) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
-float RGE_Combat_Object::teleport(float param_1, float param_2, float param_3) { return RGE_Action_Object::teleport(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Combat_Object::new_sprite(RGE_Sprite* param_1) { RGE_Action_Object::new_sprite(param_1); } // TODO: STUB
 void RGE_Combat_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Action_Object::add_overlay_sprite(param_1, param_2); } // TODO: STUB
 void RGE_Combat_Object::remove_overlay_sprite(RGE_Sprite* param_1) { RGE_Action_Object::remove_overlay_sprite(param_1); } // TODO: STUB
@@ -395,7 +392,6 @@ void RGE_Combat_Object::modify(float param_1, uchar param_2) { RGE_Action_Object
 void RGE_Combat_Object::modify_delta(float param_1, uchar param_2) { RGE_Action_Object::modify_delta(param_1, param_2); } // TODO: STUB
 void RGE_Combat_Object::modify_percent(float param_1, uchar param_2) { RGE_Action_Object::modify_percent(param_1, param_2); } // TODO: STUB
 void RGE_Combat_Object::transform(RGE_Master_Static_Object* param_1) { RGE_Action_Object::transform(param_1); } // TODO: STUB
-void RGE_Combat_Object::copy_obj(RGE_Master_Static_Object* param_1) { RGE_Action_Object::copy_obj(param_1); } // TODO: STUB
 void RGE_Combat_Object::set_object_state(uchar param_1) { RGE_Action_Object::set_object_state(param_1); } // TODO: STUB
 void RGE_Combat_Object::remove_visible_resource() { RGE_Action_Object::remove_visible_resource(); } // TODO: STUB
 void RGE_Combat_Object::create_doppleganger_when_dying() { RGE_Action_Object::create_doppleganger_when_dying(); } // TODO: STUB
@@ -421,10 +417,8 @@ void RGE_Combat_Object::play_move_sound() { RGE_Action_Object::play_move_sound()
 void RGE_Combat_Object::new_angle(float param_1) { RGE_Action_Object::new_angle(param_1); } // TODO: STUB
 RGE_Static_Object* RGE_Combat_Object::spawn_death_obj() { return RGE_Action_Object::spawn_death_obj(); } // TODO: STUB
 RGE_Master_Static_Object* RGE_Combat_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action_Object::get_command_master(param_1, param_2, param_3, param_4); } // TODO: STUB
-void RGE_Combat_Object::release_being_worked_on(RGE_Static_Object* param_1) { RGE_Action_Object::release_being_worked_on(param_1); } // TODO: STUB
 uchar RGE_Combat_Object::is_moving() { return RGE_Action_Object::is_moving(); } // TODO: STUB
 RGE_Static_Object* RGE_Combat_Object::get_target_obj() { return RGE_Action_Object::get_target_obj(); } // TODO: STUB
-void RGE_Combat_Object::enter_obj(RGE_Static_Object* param_1) { RGE_Action_Object::enter_obj(param_1); } // TODO: STUB
 void RGE_Combat_Object::exit_obj() { RGE_Action_Object::exit_obj(); } // TODO: STUB
 int RGE_Combat_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { return RGE_Action_Object::explore_terrain(param_1, param_2, param_3); } // TODO: STUB
 void RGE_Combat_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { RGE_Action_Object::unexplore_terrain(param_1, param_2, param_3); } // TODO: STUB
@@ -455,22 +449,12 @@ void RGE_Combat_Object::logDebug(const char* param_1, ...) {
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
 } // TODO: STUB
-void RGE_Combat_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Action_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB
 // attack(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
-int RGE_Combat_Object::moveTo(float param_1, float param_2, float param_3, float param_4, int param_5) { return RGE_Action_Object::moveTo(param_1, param_2, param_3, param_4, param_5); } // TODO: STUB
-int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3) { return RGE_Action_Object::moveTo(param_1, param_2, param_3); } // TODO: STUB
-int RGE_Combat_Object::moveTo(int param_1, int param_2) { return RGE_Action_Object::moveTo(param_1, param_2); } // TODO: STUB
-int RGE_Combat_Object::moveAwayFrom(int param_1, int param_2) { return RGE_Action_Object::moveAwayFrom(param_1, param_2); } // TODO: STUB
 int RGE_Combat_Object::hunt(int param_1, int param_2) { return RGE_Action_Object::hunt(param_1, param_2); } // TODO: STUB
-int RGE_Combat_Object::gather(int param_1, int param_2) { return RGE_Action_Object::gather(param_1, param_2); } // TODO: STUB
 int RGE_Combat_Object::convert(int param_1, int param_2) { return RGE_Action_Object::convert(param_1, param_2); } // TODO: STUB
 int RGE_Combat_Object::repair(int param_1, int param_2) { return RGE_Action_Object::repair(param_1, param_2); } // TODO: STUB
 int RGE_Combat_Object::build(int param_1, int param_2) { return RGE_Action_Object::build(param_1, param_2); } // TODO: STUB
 int RGE_Combat_Object::trade(int param_1, int param_2) { return RGE_Action_Object::trade(param_1, param_2); } // TODO: STUB
-int RGE_Combat_Object::explore(int param_1, int param_2, int param_3) { return RGE_Action_Object::explore(param_1, param_2, param_3); } // TODO: STUB
-int RGE_Combat_Object::enter(int param_1, int param_2) { return RGE_Action_Object::enter(param_1, param_2); } // TODO: STUB
-int RGE_Combat_Object::unload(int param_1, float param_2, float param_3, float param_4) { return RGE_Action_Object::unload(param_1, param_2, param_3, param_4); } // TODO: STUB
-int RGE_Combat_Object::transport(float param_1, float param_2, float param_3, int param_4) { return RGE_Action_Object::transport(param_1, param_2, param_3, param_4); } // TODO: STUB
 // stopAction() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 // pause() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 int RGE_Combat_Object::canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6) { return RGE_Action_Object::canPath(param_1, param_2, param_3, param_4, param_5, param_6); } // TODO: STUB

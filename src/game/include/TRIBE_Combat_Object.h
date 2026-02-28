@@ -14,12 +14,32 @@ public:
     virtual ~TRIBE_Combat_Object();
     virtual int setup(int param_1, RGE_Game_World* param_2);
     virtual RGE_Action_List* create_action_list() override;
+    virtual void save(int param_1) override;
+    virtual uchar update() override;
+    virtual void modify(float param_1, uchar param_2) override;
+    virtual void transform(RGE_Master_Static_Object* param_1) override;
+    virtual void set_object_state(uchar param_1) override;
     virtual void cancel_object();
+    virtual void die_die_die() override;
+    virtual void damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) override;
+    virtual void change_ownership(RGE_Player* param_1) override;
+    virtual float calc_attack_modifier(RGE_Static_Object* param_1) override;
     virtual uchar attack(RGE_Static_Object* param_1, RGE_Combat_Object* param_2) override;
     virtual uchar do_attack(RGE_Static_Object* param_1, RGE_Combat_Object* param_2, float param_3, float param_4, float param_5) override;
     virtual uchar area_attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4, RGE_Static_Object* param_5) override;
     virtual void get_armor(short& param_1, short& param_2) override;
     virtual void get_pierce_armor(short& param_1, short& param_2);
+    virtual int hunt(int param_1, int param_2) override;
+    virtual int convert(int param_1, int param_2) override;
+    virtual int heal(int param_1, int param_2) override;
+    virtual int repair(int param_1, int param_2) override;
+    virtual int build(int param_1, int param_2) override;
+    virtual int trade(int param_1, int param_2) override;
+    virtual uchar keepGatheringWhenObjectIsOut(int param_1) override;
+    virtual uchar produceWhenKilledBy(int param_1) override;
+    virtual uchar useSameZoneDropsite() override;
+    virtual uchar heal(float param_1) override;
+    virtual int canRepair() override;
 
 protected:
     // Fully verified. Source of truth: t_c_obj.cpp.asm @ 0x004CA300
