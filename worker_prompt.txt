@@ -1,0 +1,17 @@
+Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are now one of the workers.
+
+Mandatory:
+1. To validate your changes, after everything compiles, launch 1 to 2 parallel sub-agents that receive the needed context of the task. These sub-agents ARE READ-ONLY and MUST check all your changes and review them, validate their parity with the sources of truth, and finally feed you their feedback. You iterate on the feedback until everything is perfect + compiles. NOTE: If you hit 429 rate limits on sub-agents, skip the parallel validation and do a thorough self-review instead.
+2. Run autonomously, without stopping, until you are finished completely (changes pushed). You only may stop if a major issue or major blocker arises, in which case you explain in simple terms what the deal is, to the user.
+
+Your task right now is to...
+## Task 282 — TRIBE_Screen_Game remaining 81 functions (scr_game.cpp.decomp)
+
+CRITICAL INSTRUCTION: You must write FULL FUNCTION BODIES, not just comment markers. Each function should be 10-50+ lines of real C++ code matching the decomp's logic.
+
+- Goal: scr_game.cpp.decomp has 100 functions but TRIBE_Screen_Game.cpp only has ~19 with proper source-of-truth markers -> ~81 MISSING. This is the main game screen — core rendering, mouse/keyboard, unit selection, minimap, research buttons, game speed, chat.
+- Implement: Open src/game/decomp/scr_game.cpp.decomp. For every function offset NOT yet present as a full transliterated body in TRIBE_Screen_Game.cpp, write the complete C++ function matching the decomp's control flow, variables, constants, and API calls. Mark each with '// Source of truth: scr_game.cpp.decomp @ 0xNNNNNNNN'.
+- Where: src/game/src/TRIBE_Screen_Game.cpp + src/game/include/TRIBE_Screen_Game.h
+- Source of truth: scr_game.cpp.decomp + scr_game.cpp.asm (in src/game/decomp/)
+- Non-overlap: do NOT touch any other screen files, panel files, AI files, basegame, command.cpp
+- Done when: ALL 100 scr_game.cpp.decomp offsets have full C++ function bodies (not just markers). Expect 1500+ lines.
