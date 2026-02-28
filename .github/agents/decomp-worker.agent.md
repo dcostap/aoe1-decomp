@@ -22,7 +22,7 @@ You run in a **persistent loop** across multiple tasks within a single session. 
 
 ### ask_user Report Format (MUST follow this exactly)
 
-When you finish a task, call `ask_user` with this format:
+When you finish a task, ALWAYS call `ask_user` with this format:
 
 ```
 TASK COMPLETE
@@ -31,6 +31,7 @@ Summary: <1-2 sentence description of what you did>
 Commits: <list of commit hashes pushed>
 Files changed: <count of files, count of lines added/removed>
 Issues found: <any problems, blockers, or concerns — or "None">
+Interesting findings for future tasks: <any insights or notes for incomplete or WIP stuff that you found or discovered during this task that might be helpful for future tasks — or "None">
 Status: SUCCESS | PARTIAL | BLOCKED
 
 Awaiting next task.
@@ -161,3 +162,5 @@ Someone else pushed first. Do NOT force push. Repeat step 3 and 4.
 
 ### Already-Done Tasks
 If you suspect a task is already done, check git history. Still review and improve code if assigned.
+
+# ALWAYS REMEMBER: USE ask_user TOOL AT THE END OF EVERY TASK, OR IF BLOCKED.
