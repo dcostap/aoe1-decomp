@@ -56,6 +56,7 @@ int TRIBE_Action_Heal::setup(int param_1, RGE_Action_Object* param_2) {
 }
 
 RGE_Action_List* TRIBE_Action_Heal::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407740
 void TRIBE_Action_Heal::rehook() { RGE_Action::rehook(); }
 void TRIBE_Action_Heal::save(int param_1) { RGE_Action::save(param_1); }
 short TRIBE_Action_Heal::type() { return this->action_type; }

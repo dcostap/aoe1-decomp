@@ -215,7 +215,7 @@ void RGE_Action_Object::do_command(RGE_Static_Object* param_1, float param_2, fl
     }
 }
 
-// Fully verified. Source of truth: act_obj.cpp.asm @ 0x00406300
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406300
 void RGE_Action_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if ((RGE_Action_Object*)param_1 == this) {
         return;

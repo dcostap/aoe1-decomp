@@ -297,7 +297,7 @@ void ResearchAIModule::research(BuildItem* param_1) {
 }
 
 // Offset: 0x00411B80
-// TODO: Partial parity - file parsing format string still needs asm audit.
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x00411B80
 int ResearchAIModule::loadTechnologyTree(char* param_1) {
     if (0 < this->techTreeLengthValue) {
         removeOldTechTree();

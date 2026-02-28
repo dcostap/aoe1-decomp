@@ -481,7 +481,7 @@ long TileDibBlt(BITMAPINFO256* param_1, uchar* param_2, tagRECT* param_3, long p
     return param_7 * param_6;
 }
 
-// Fully verified. Source of truth: dib.cpp.asm @ 0x0043AA60
+// Fully verified. Source of truth: dib.cpp.decomp @ 0x0043AA60
 static void xlatClut8(uchar* param_1, int param_2, const uchar* param_3) {
     if (param_2 != 0) {
         do {
@@ -492,7 +492,7 @@ static void xlatClut8(uchar* param_1, int param_2, const uchar* param_3) {
     }
 }
 
-// Fully verified. Source of truth: dib.cpp.asm @ 0x0043AA90
+// Fully verified. Source of truth: dib.cpp.decomp @ 0x0043AA90
 static void xlatClut4(uchar* param_1, int param_2, const uchar* param_3) {
     if (param_2 != 0) {
         do {
@@ -503,7 +503,7 @@ static void xlatClut4(uchar* param_1, int param_2, const uchar* param_3) {
     }
 }
 
-// Fully verified. Source of truth: dib.cpp.asm @ 0x0043AAD0
+// Fully verified. Source of truth: dib.cpp.decomp @ 0x0043AAD0
 static void xlatRle8(uchar* param_1, int /*param_2*/, const uchar* param_3) {
     // NOTE: `param_2` is ignored; RLE streams terminate via end markers.
     uchar* pbVar2 = param_1;
@@ -541,10 +541,10 @@ static void xlatRle8(uchar* param_1, int /*param_2*/, const uchar* param_3) {
 }
 
 static void xlatRle4(uchar* /*param_1*/, int /*param_2*/, const uchar* /*param_3*/) {
-    // Fully verified. Source of truth: dib.cpp.asm @ 0x0043AB40 (function is a RET stub in original)
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x0043AB40 (function is a RET stub in original)
 }
 
-// Fully verified. Source of truth: dib.cpp.asm @ 0x0043A660
+// Fully verified. Source of truth: dib.cpp.decomp @ 0x0043A660
 void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, int param_4) {
     if (param_2 == nullptr) return;
     if (param_1 == nullptr) return;
@@ -650,6 +650,7 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
                               ((param_1->biCompression == BI_BITFIELDS) ? 0xc : (nPalEntries * (int)sizeof(RGBQUAD)));
                 }
             }
+            // Fully verified. Source of truth: dib.cpp.decomp @ 0x0043AB50 (CRT import thunk for memmove)
             memmove(newBits, oldBits, (size_t)sizeImage);
             bits = newBits;
         } else {

@@ -180,7 +180,7 @@ long TInputPanel::handle_idle() {
 }
 
 void TInputPanel::draw() {
-    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x004777C0
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x004777C0
     TTextPanel::draw();
 
     if (!this->render_area) return;
@@ -295,7 +295,7 @@ int TInputPanel::insert_character(long ch) {
 }
 
 int TInputPanel::delete_character() {
-    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477AF0
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477AF0
     if (this->input_len <= this->input_pos) {
         return 0;
     }
@@ -366,7 +366,7 @@ int TInputPanel::backspace_character() {
 }
 
 int TInputPanel::paste() {
-    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477CB0
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477CB0
     if (!IsClipboardFormatAvailable(CF_TEXT)) {
         return 0;
     }
@@ -423,7 +423,7 @@ int TInputPanel::paste() {
 }
 
 void TInputPanel::reformat() {
-    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477E90
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477E90
     const short old_top = this->top_line;
     const short old_cur = this->cur_line;
 
@@ -472,7 +472,7 @@ void TInputPanel::calc_input_pos() {
 }
 
 void TInputPanel::calc_cur_line_col() {
-    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00478010
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00478010
     this->cur_line = 0;
     this->cur_col = 0;
 
@@ -636,7 +636,7 @@ long TInputPanel::char_action(long key, short repeat) {
 }
 
 long TInputPanel::key_down_action(long key, short /*param_2*/, int alt, int ctrl, int shift) {
-    // Fully verified. Source of truth: pnl_inp.cpp.asm @ 0x00477220
+    // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477220
     (void)alt;
 
     short sVar1;
