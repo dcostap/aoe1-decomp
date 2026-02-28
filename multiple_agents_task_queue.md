@@ -3761,7 +3761,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 264 — Random map base + FLC animation (40 greenfield functions)
 - [x] Assigned to agent (worker-6, clone_6, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `27084a0` (1212 insertions!). rmm_base.cpp + flics.cpp created. Excellent greenfield.
 - Goal: Two greenfield utility modules:
   - rmm_base.cpp.decomp: 24 functions (random map base — terrain generation, map setup)
   - flics.cpp.decomp: 16 functions (FLC animation playback — frame loading, palette, display)
@@ -3799,3 +3800,15 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `aiuaimod.cpp.decomp` + `aiuaimod.cpp.asm`
 - Non-overlap: do NOT touch TacticalAI, TribeBuildAI, command.cpp, panel files, or TRIBE_Player
 - Done when: all 118 decomp offsets have impl coverage. Expect 1000+ lines.
+## Task 268 — Panel text + button remaining functions (65 total: pnl_txt 43 + pnl_btn 22)
+- [x] Assigned to agent (worker-6, clone_6, copilot)
+- [ ] Finished
+- Goal: After Task 254, there are still significant gaps:
+  - pnl_txt.cpp.decomp: 67 functions, Pnl_txt.cpp has only 24 offset refs → ~43 missing
+  - pnl_btn.cpp.decomp: 57 functions, Pnl_btn.cpp has only 35 offset refs → ~22 missing
+  These are panel control methods: text input handling, validation, selection, button click/hover/state management.
+- Implement: Cross-reference decomp offsets vs impl. For every missing function, transliterate the full body with '// Source of truth' markers.
+- Where: `src/game/src/Pnl_txt.cpp`, `src/game/src/Pnl_btn.cpp` + headers
+- Source of truth: `pnl_txt.cpp.decomp`, `pnl_btn.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch TPanelSystem.cpp, Pnl_scbr, Pnl_lst, Pnl_msg, or any non-panel files
+- Done when: all 67+57=124 decomp offsets have impl coverage. Expect 800+ lines.
