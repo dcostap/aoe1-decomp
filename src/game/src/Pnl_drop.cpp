@@ -9,7 +9,7 @@
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
-// Constructor - from decomp/asm at 0x00473ED0
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00473ED0
 TDropDownPanel::TDropDownPanel() : TPanel() {
     this->val_panel = nullptr;
     this->btn_panel = nullptr;
@@ -24,7 +24,7 @@ TDropDownPanel::TDropDownPanel() : TPanel() {
     this->draw_val_rect = 1;
 }
 
-// Destructor - from decomp at 0x00473F50
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00473F50
 TDropDownPanel::~TDropDownPanel() {
     delete_panel((TPanel**)&this->btn_panel);
     delete_panel((TPanel**)&this->list_panel);
@@ -32,7 +32,7 @@ TDropDownPanel::~TDropDownPanel() {
     delete_panel((TPanel**)&this->val_panel);
 }
 
-// Setup - from decomp at 0x00473FD0
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00473FD0
 // Decomp param mapping (1-indexed from decomp, this_ is implicit):
 //   param_1=draw_area, param_2=parent, param_3=font, param_4=font_wid, param_5=font_hgt,
 //   param_6=fill_back(int), param_7=back_color(uchar), param_8=have_outline(int), param_9=outline_color(uchar),
@@ -181,7 +181,7 @@ static long dropdown_calc_list_hgt(TDropDownPanel* self, int use_draw_lines) {
     return lines * (self->font_hgt + 1 + spacer * 2) + border * 2;
 }
 
-// set_mode - from decomp at 0x00474880.
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474880
 void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode param_1) {
     if (param_1 == this->mode) {
         return;
@@ -397,7 +397,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode param_1) {
 }
 
 void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle style) {
-    // From decomp at 0x00474600
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474600
     this->draw_style = style;
     if (this->val_panel != nullptr) {
         DropdownMode saved = this->mode;
@@ -407,7 +407,7 @@ void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle style) {
 }
 
 void TDropDownPanel::set_draw_val_rect(int draw) {
-    // From decomp at 0x00474630
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474630
     this->draw_val_rect = draw;
     if (this->val_panel != nullptr) {
         this->val_panel->set_outline(draw, (uchar)this->outline_color);
@@ -416,12 +416,14 @@ void TDropDownPanel::set_draw_val_rect(int draw) {
 }
 
 void TDropDownPanel::empty_list() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475460
     if (this->list_panel) {
         this->list_panel->empty_list();
     }
 }
 
 int TDropDownPanel::append_line(char* text, long id) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004752A0
     if (this->list_panel) {
         return this->list_panel->append_line(text, id);
     }
@@ -429,6 +431,7 @@ int TDropDownPanel::append_line(char* text, long id) {
 }
 
 int TDropDownPanel::append_line(long str_id, long id) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004752D0
     if (this->list_panel) {
         return this->list_panel->append_line(str_id, id);
     }
@@ -459,7 +462,7 @@ int TDropDownPanel::delete_line(long line_num) {
     return 0;
 }
 
-// Source of truth: ASM @ 0x00475250
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475250
 void TDropDownPanel::set_line(long line_num) {
     this->val_num = (short)line_num;
     if (this->list_panel) {
@@ -528,16 +531,16 @@ int TDropDownPanel::get_sorted() {
     return 0;
 }
 
-// Decomp @ 0x00475380: get_line() - returns current line index
 long TDropDownPanel::get_line() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475380
     if (this->list_panel) {
         return ((TTextPanel*)this->list_panel)->get_line();
     }
     return 0;
 }
 
-// Decomp @ 0x004753A0: get_line(long) - find line by id
 long TDropDownPanel::get_line(long id) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004753A0
     if (this->list_panel) {
         return ((TTextPanel*)this->list_panel)->get_line(id);
     }
@@ -553,6 +556,7 @@ long TDropDownPanel::get_line(char* text) {
 }
 
 long TDropDownPanel::get_id() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475420
     if (this->list_panel) {
         return this->list_panel->get_id();
     }
@@ -584,12 +588,14 @@ char* TDropDownPanel::get_text(long line_num) {
 }
 
 void TDropDownPanel::set_val_text_color(unsigned long c1, unsigned long c2) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004745E0
     if (this->val_panel) {
         this->val_panel->set_text_color(c1, c2);
     }
 }
 
 void TDropDownPanel::set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474670
     // val_panel: bevel mapping 1->1, 2->5, 3->6, 4->7, default->0
     if (this->val_panel) {
         int val_bevel;
@@ -646,7 +652,8 @@ void TDropDownPanel::set_bevel_info(int bevel_type, int c1, int c2, int c3, int 
 }
 
 void TDropDownPanel::set_buttons(TShape* button_pics, int pic_id, int highlight_id,
-                               int w, int h, int offset) {
+                                int w, int h, int offset) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474820
     // btn_panel: set_picture with the button pic
     if (this->btn_panel) {
         if (button_pics) {
@@ -661,7 +668,7 @@ void TDropDownPanel::set_buttons(TShape* button_pics, int pic_id, int highlight_
     }
 }
 
-// Action handler - from decomp at 0x004744A0
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004744A0
 long TDropDownPanel::action(TPanel* p, long a, ulong p3, ulong p4) {
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::action this=%p p=%p a=%ld p3=%lu p4=%lu btn=%p list=%p mode=%d",
@@ -694,8 +701,7 @@ long TDropDownPanel::action(TPanel* p, long a, ulong p3, ulong p4) {
     return TPanel::action(p, a, p3, p4);
 }
 
-// handle_key_down - from decomp at 0x00474450
-// ASM @ 0x00474450: checks [ECX+0x6C] (active), then key==0x28||0x26, then mode==ModeValue
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474450
 long TDropDownPanel::handle_key_down(long k, short s, int p1, int p2, int p3) {
     if (this->active != 0 && (k == 0x28 || k == 0x26) && this->mode == ModeValue) {
         this->set_mode(ModeList);
@@ -704,10 +710,7 @@ long TDropDownPanel::handle_key_down(long k, short s, int p1, int p2, int p3) {
     return TPanel::handle_key_down(k, s, p1, p2, p3);
 }
 
-// handle_mouse_down - from decomp at 0x00474350
-// Critical override: when dropdown is open (ModeList), clicking outside
-// the list/scrollbar closes the dropdown instead of letting the click
-// propagate to child buttons (which would trigger spurious actions).
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474350
 long TDropDownPanel::handle_mouse_down(uchar b, long x, long y, int p1, int p2) {
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::handle_mouse_down this=%p mode=%d x=%ld y=%ld",
@@ -739,13 +742,12 @@ long TDropDownPanel::handle_mouse_down(uchar b, long x, long y, int p1, int p2) 
     return TPanel::handle_mouse_down(b, x, y, p1, p2);
 }
 
-// draw - from ASM at 0x00474340: JMP TPanel::draw
-// The original just delegates to TPanel::draw. No custom rendering.
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474340
 void TDropDownPanel::draw() {
     TPanel::draw();
 }
 
-// set_rect - from decomp at 0x00474550
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474550
 void TDropDownPanel::set_rect(long x, long y, long w, long h) {
     TPanel::set_rect(x, y, w, h);
 
@@ -793,8 +795,14 @@ long TDropDownPanel::handle_command(uint c, long p) { return TPanel::handle_comm
 long TDropDownPanel::handle_user_command(uint c, long p) { return TPanel::handle_user_command(c, p); }
 long TDropDownPanel::handle_timer_command(uint c, long p) { return TPanel::handle_timer_command(c, p); }
 long TDropDownPanel::handle_scroll(long p1, long p2) { return TPanel::handle_scroll(p1, p2); }
-long TDropDownPanel::handle_mouse_move(long x, long y, int p1, int p2) { return TPanel::handle_mouse_move(x, y, p1, p2); }
-long TDropDownPanel::handle_mouse_up(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_up(b, x, y, p1, p2); }
+long TDropDownPanel::handle_mouse_move(long x, long y, int p1, int p2) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474400
+    return TPanel::handle_mouse_move(x, y, p1, p2);
+}
+long TDropDownPanel::handle_mouse_up(uchar b, long x, long y, int p1, int p2) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474420
+    return TPanel::handle_mouse_up(b, x, y, p1, p2);
+}
 long TDropDownPanel::handle_mouse_dbl_click(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_dbl_click(b, x, y, p1, p2); }
 long TDropDownPanel::mouse_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_move_action(x, y, p1, p2); }
 long TDropDownPanel::mouse_left_down_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_down_action(x, y, p1, p2); }
@@ -812,7 +820,7 @@ long TDropDownPanel::char_action(long p1, short p2) { return TPanel::char_action
 void TDropDownPanel::get_true_render_rect(tagRECT* r) { TPanel::get_true_render_rect(r); }
 int TDropDownPanel::is_inside(long x, long y) { return TPanel::is_inside(x, y); }
 void TDropDownPanel::set_focus(int f) { TPanel::set_focus(f); }
-// Source of truth: ASM @ 0x004751E0
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004751E0
 void TDropDownPanel::set_tab_order(TPanel* p1, TPanel* p2) {
     TPanel::set_tab_order(p1, p2);
     if (this->val_panel != nullptr) {

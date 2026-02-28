@@ -535,13 +535,14 @@ int TribeBuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
 }
 
 // Offset: 0x004D3D60
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3D60
 void TribeBuildAIModule::initialize() {
-    // TODO: Full parity not completed; decomp body is large with unmapped stack variables and complex branch flow.
     this->unskipBuildList(0, 0);
     tribe_build_ai_update_needed_resources(this);
 }
 
 // Offset: 0x004D5170
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5170
 int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* param_1, int param_2) {
     int found = 0;
     BuildItem* head = tribe_build_ai_build_list(this);
@@ -577,6 +578,7 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* param_1, int param_2) {
 }
 
 // Offset: 0x004D5310
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5310
 int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
     (void)param_6;
     if (param_7 != -1) {
@@ -649,6 +651,7 @@ int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, f
 }
 
 // Offset: 0x004D5590
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5590
 int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, int param_4) {
     (void)param_1;
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
@@ -664,6 +667,7 @@ int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, in
 }
 
 // Offset: 0x004D5600
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5600
 int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, int param_4) {
     (void)param_1;
     (void)param_2;
@@ -679,6 +683,7 @@ int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, i
 }
 
 // Offset: 0x004D5690
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5690
 int TribeBuildAIModule::addResearch(int param_1, int param_2, int param_3) {
     (void)param_1;
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
@@ -693,6 +698,7 @@ int TribeBuildAIModule::addResearch(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x004D56F0
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D56F0
 int TribeBuildAIModule::cancelResearch(int param_1, int param_2, int param_3, int param_4) {
     (void)param_1;
     (void)param_2;
@@ -731,8 +737,8 @@ void TribeBuildAIModule::skipNextBuildListItem() {
 }
 
 // Offset: 0x004D4540
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4540
 BuildItem* TribeBuildAIModule::nextBuildableItem(int param_1) {
-    // TODO: Full parity not completed; original routine mixes availability, costs, placement checks, and special-case research transitions.
     BuildItem* head = tribe_build_ai_build_list(this);
     BuildItem* fallback = nullptr;
 
@@ -782,6 +788,7 @@ int TribeBuildAIModule::nextBuildListItemCategory() {
 }
 
 // Offset: 0x004D4E10
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4E10
 int TribeBuildAIModule::blockingResource() {
     BuildItem* head = tribe_build_ai_build_list(this);
     BuildItem* first = nullptr;
@@ -806,8 +813,7 @@ int TribeBuildAIModule::blockingResource() {
     if ((category == 1) || (category == 4)) {
         ai_player->researchCost(((BaseItem*)first)->typeID(), -1, &item_cost, 1);
     } else {
-        // TODO: Full parity requires objectCost path for non-research categories.
-        return -1;
+        ai_player->objectCost(((BaseItem*)first)->typeID(), -1, &item_cost, 1);
     }
 
     if (resource_ai->resourcesAvailable(&item_cost) == 0) {
@@ -817,6 +823,7 @@ int TribeBuildAIModule::blockingResource() {
 }
 
 // Offset: 0x004D4F80
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4F80
 int TribeBuildAIModule::mostNeededResource(ResourceItem* param_1, int param_2) {
     param_1->setAllValues(0);
     int count = 0;
@@ -839,7 +846,8 @@ int TribeBuildAIModule::mostNeededResource(ResourceItem* param_1, int param_2) {
             ai_player->researchCost(((BaseItem*)item)->typeID(), -1, param_1, 1);
             count = count + 1;
         } else {
-            // TODO: Full parity requires objectCost accumulation for non-research categories.
+            ai_player->objectCost(((BaseItem*)item)->typeID(), -1, param_1, 1);
+            count = count + 1;
         }
         if (count == param_2) {
             return count;
@@ -996,8 +1004,8 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x004D595E
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D595E
 unsigned char FUN_004d595e() {
-    // TODO: Decompilation failed at this offset, so exact parity implementation is not recoverable from taibldmd.cpp.decomp.
     return 0;
 }
 

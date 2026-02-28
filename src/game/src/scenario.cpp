@@ -1,6 +1,7 @@
 #include "../include/RGE_Scenario.h"
 
 #include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Scenario_Header.h"
 #include "../include/RGE_Timeline.h"
 #include "../include/TPicture.h"
 #include "../include/globals.h"
@@ -12,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 
 namespace {
 static void rge_get_none_and_random(char* none_out, int none_out_size, char* random_out, int random_out_size) {
@@ -170,6 +172,86 @@ static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_ba
     _close(fd);
 }
 } // namespace
+
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AB10
+RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario) {
+    this->error_code = 0;
+    this->version = 2;
+    this->checksum = (unsigned long)time(nullptr);
+    this->description = nullptr;
+
+    if (scenario != nullptr && scenario->description != nullptr) {
+        size_t desc_size = strlen(scenario->description) + 1;
+        this->description = (char*)malloc(desc_size);
+        if (this->description != nullptr) {
+            memcpy(this->description, scenario->description, desc_size);
+        } else {
+            this->error_code = 1;
+        }
+    }
+}
+
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048ABB0
+RGE_Scenario_Header::RGE_Scenario_Header(int p1) {
+    this->error_code = 0;
+    this->version = 0;
+    this->checksum = 0;
+    this->description = nullptr;
+
+    long header_size = 0;
+    rge_read(p1, &header_size, 4);
+    rge_read(p1, &this->version, 4);
+    if (this->version > 1) {
+        rge_read(p1, &this->checksum, 4);
+    }
+
+    int desc_size = 0;
+    rge_read(p1, &desc_size, 4);
+    if (desc_size > 0) {
+        this->description = (char*)malloc((size_t)desc_size);
+        if (this->description == nullptr) {
+            this->error_code = 1;
+            return;
+        }
+        rge_read(p1, this->description, desc_size);
+    }
+}
+
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AC70
+RGE_Scenario_Header::~RGE_Scenario_Header() {
+    if (this->description != nullptr) {
+        free(this->description);
+        this->description = nullptr;
+    }
+}
+
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048ACA0
+long RGE_Scenario_Header::get_size() {
+    if (this->description == nullptr) {
+        return 0xC;
+    }
+    return (long)(strlen(this->description) + 0xD);
+}
+
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048ACC0
+void RGE_Scenario_Header::save(int p1) {
+    long header_size = this->get_size();
+    rge_write(p1, &header_size, 4);
+    rge_write(p1, &this->version, 4);
+
+    if (this->version > 1) {
+        rge_write(p1, &this->checksum, 4);
+    }
+
+    int desc_size = 0;
+    if (this->description != nullptr) {
+        desc_size = (int)strlen(this->description) + 1;
+    }
+    rge_write(p1, &desc_size, 4);
+    if (desc_size > 0) {
+        rge_write(p1, this->description, desc_size);
+    }
+}
 
 RGE_Scenario::RGE_Scenario(RGE_Game_World* param_1) {
     // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AD60
