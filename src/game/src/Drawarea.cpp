@@ -735,10 +735,53 @@ void TDrawSystem::ClearRestored() {
 }
 
 int TDrawSystem::SetDisplaySize(long p1, long p2, int p3) {
-    return 1;
+    // Fully verified. Source of truth: drawarea.cpp.decomp/.asm @ 0x00442DC0
+    if (this->DrawType == 2 && this->ScreenMode == 2) {
+        system_ignore_size_messages = 1;
+
+        DDBLTFX ddbltfx;
+        memset(&ddbltfx, 0, sizeof(ddbltfx));
+        ddbltfx.dwSize = sizeof(ddbltfx);
+        ddbltfx.dwFillColor = 0;
+        if (this->PrimarySurface != nullptr) {
+            this->PrimarySurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+        }
+
+        long save_wid = this->ScreenWidth;
+        long save_hgt = this->ScreenHeight;
+
+        this->ScreenWidth = p1;
+        this->ScreenHeight = p2;
+        HRESULT hr = this->DirDraw->SetDisplayMode(p1, p2, p3);
+
+        system_ignore_size_messages = 0;
+        if (hr != DD_OK) {
+            this->ScreenWidth = save_wid;
+            this->ScreenHeight = save_hgt;
+            return 0;
+        }
+
+        this->ColorBits = p3;
+        this->ChangedMode = 1;
+
+        if (this->PrimarySurface != nullptr) {
+            this->PrimarySurface->Release();
+            this->PrimarySurface = nullptr;
+        }
+
+        this->CreateSurfaces();
+        if (this->DrawArea != nullptr) {
+            this->DrawArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
+        }
+
+        SendMessageA((HWND)this->Wnd, WM_SIZE, 0, (LPARAM)(((p2 & 0xFFFF) << 16) | (p1 & 0xFFFF)));
+        return 1;
+    }
+
+    return 0;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442DC0
+// Source of truth: Drawarea.cpp.decomp @ 0x004433F0
 void TDrawSystem::HandleSize(void* wnd, uint msg, uint wparam, long lparam) {
     (void)wnd;
     (void)msg;
