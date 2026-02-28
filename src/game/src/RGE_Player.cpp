@@ -121,6 +121,38 @@ static void rge_player_remove_node(RGE_Object_List* list, RGE_Object_Node* node)
     list->number_of_objects = (short)(list->number_of_objects - 1);
 }
 
+static void rge_object_list_invert(RGE_Object_List* list) {
+    if (list == nullptr) {
+        return;
+    }
+    RGE_Object_Node* node = list->list;
+    RGE_Object_Node* prev = nullptr;
+    while (node != nullptr) {
+        RGE_Object_Node* next = node->next;
+        node->next = prev;
+        node->prev = next;
+        prev = node;
+        node = next;
+    }
+    list->list = prev;
+}
+
+static void rge_object_list_load_list(RGE_Object_List* list, int file_handle, RGE_Game_World* world) {
+    if (list == nullptr) {
+        return;
+    }
+
+    while (true) {
+        unsigned char object_type = 0;
+        rge_read(file_handle, &object_type, 1);
+        if ((char)object_type == '\0') {
+            break;
+        }
+        list->load(object_type, file_handle, world);
+    }
+    rge_object_list_invert(list);
+}
+
 // --- RGE_Player constructors ---
 RGE_Player::RGE_Player() {
     this->computerPlayerValue = 0;
@@ -425,9 +457,24 @@ void RGE_Player::do_resign(int param_1) {
         rge_base_game->notification(5, (long)this->id, param_1, 0, 0);
     }
 }
-void RGE_Player::changeToHumanPlayer() {}
-void RGE_Player::changeToComputerPlayer() {}
-char* RGE_Player::aiStatus(int param_1) { return nullptr; }
+// Offset: 0x0046EC80
+void RGE_Player::changeToHumanPlayer() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EC80
+    return;
+}
+
+// Offset: 0x0046EC90
+void RGE_Player::changeToComputerPlayer() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EC90
+    return;
+}
+
+// Offset: 0x0046EDA0
+char* RGE_Player::aiStatus(int param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EDA0
+    (void)param_1;
+    return nullptr;
+}
 int RGE_Player::isEnemy(int param_1) {
     // Source of truth: player.cpp.decomp @ 0x0046EDC0
     if (param_1 != this->id && param_1 > 0 && param_1 < this->world->player_num
@@ -463,20 +510,70 @@ int RGE_Player::isAllNeutral() {
     }
     return 1;
 }
-void RGE_Player::setDiplomaticStance(int param_1, int param_2) {}
-void RGE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) {}
+// Offset: 0x0046EED0
+void RGE_Player::setDiplomaticStance(int param_1, int param_2) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EED0
+    (void)param_1;
+    (void)param_2;
+    return;
+}
+
+// Offset: 0x0046EEE0
+void RGE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EEE0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    return;
+}
 void RGE_Player::sendUnitAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) {}
 void RGE_Player::processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) {}
-void RGE_Player::kickAI(int param_1) {}
-int RGE_Player::strategicNumber(int param_1) { return -1; }
+// Offset: 0x0046ECA0
+void RGE_Player::kickAI(int param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ECA0
+    (void)param_1;
+    return;
+}
+
+// Offset: 0x0046ECB0
+int RGE_Player::strategicNumber(int param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ECB0
+    (void)param_1;
+    return -1;
+}
 void RGE_Player::sendGameOrder(RGE_Static_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4) {}
 void RGE_Player::sendAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) {}
 void RGE_Player::processAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) {}
 void RGE_Player::sendPlayCommand(int param_1, int* param_2, int param_3, int param_4, int param_5) {}
 void RGE_Player::sendPlayCommand(int param_1, int param_2, int param_3) {}
-int RGE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) { return 0; }
-int RGE_Player::objectCostByType(int param_1) { return 0; }
-void RGE_Player::trackUnitGather(int param_1, int param_2, int param_3) {}
+// Offset: 0x0046ECC0
+int RGE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ECC0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    return 0;
+}
+
+// Offset: 0x0046ECD0
+int RGE_Player::objectCostByType(int param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ECD0
+    (void)param_1;
+    return -1;
+}
+
+// Offset: 0x0046ED30
+void RGE_Player::trackUnitGather(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ED30
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    return;
+}
 RGE_Static_Object* RGE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) {
     // Source of truth: player.cpp.decomp @ 0x0046F3A0
     if (param_4 < 0 || this->master_objects == nullptr || param_4 >= this->master_object_num ||
@@ -497,7 +594,12 @@ RGE_Static_Object* RGE_Player::make_scenario_obj(float param_1, float param_2, f
     obj->new_angle(param_6);
     return obj;
 }
-void RGE_Player::scenario_save(int param_1) {}
+// Offset: 0x0046F410
+void RGE_Player::scenario_save(int param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F410
+    (void)param_1;
+    return;
+}
 void RGE_Player::scenario_load(int param_1, long* param_2, float param_3) {
     // Source of truth: player.cpp.decomp @ 0x0046F420
     if (param_3 > 1.05f) {
@@ -672,7 +774,39 @@ void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {
     }
     this->load_victory(param_1, param_2, (param_3 >= 1.09f) ? 1 : 0);
 }
-void RGE_Player::load(int param_1) {}
+// Offset: 0x0046FA60
+void RGE_Player::load(int param_1) {
+    // Source of truth: player.cpp.decomp @ 0x0046FA60
+    rge_read(param_1, &this->master_object_num, 2);
+    if (this->master_object_num < 1) {
+        this->master_objects = nullptr;
+    } else {
+        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
+        rge_read(param_1, this->master_objects, (int)this->master_object_num << 2);
+        short index = 0;
+        while (index < this->master_object_num) {
+            if (this->master_objects[index] != nullptr) {
+                unsigned char master_type = 0;
+                rge_read(param_1, &master_type, 1);
+                this->load_master_object(param_1, index, master_type, this->world->sprites, this->world->sounds);
+            }
+            index = (short)(index + 1);
+        }
+    }
+
+    this->visible = new (std::nothrow) RGE_Visible_Map(param_1, this->world);
+    this->VR_List = new (std::nothrow) Visible_Resource_Manager(param_1, this);
+
+    this->objects = new (std::nothrow) RGE_Object_List();
+    rge_object_list_load_list(this->objects, param_1, this->world);
+
+    this->sleeping_objects = new (std::nothrow) RGE_Object_List();
+    this->doppleganger_objects = new (std::nothrow) RGE_Object_List();
+    rge_object_list_load_list(this->sleeping_objects, param_1, this->world);
+    if (save_game_version >= 7.09f) {
+        rge_object_list_load_list(this->doppleganger_objects, param_1, this->world);
+    }
+}
 
 void RGE_Player::load_master_object(int param_1, short param_2, uchar param_3, RGE_Sprite** param_4, RGE_Sound** param_5) {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FC40
@@ -985,7 +1119,12 @@ void RGE_Player::save(int param_1) {
 }
 void RGE_Player::save2(int param_1) {}
 void RGE_Player::save_info(int param_1) {}
-void RGE_Player::random_start() {}
+
+// Offset: 0x00470570
+void RGE_Player::random_start() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470570
+    return;
+}
 void RGE_Player::destroy_objects() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00470580
     for (RGE_Object_Node* node = this->objects->list; node != nullptr; node = node->next) {
@@ -993,17 +1132,18 @@ void RGE_Player::destroy_objects() {
     }
 }
 RGE_Static_Object* RGE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
+    // Offset: 0x00470C70
+    // Source of truth: player.cpp.decomp @ 0x00470C70
     (void)param_5;
-    if (param_1 < 0 || this->master_objects == nullptr || param_1 >= this->master_object_num) {
+    if (param_1 < 0) {
         return nullptr;
     }
 
-    RGE_Master_Static_Object* master = this->master_objects[param_1];
-    if (master == nullptr) {
+    if (this->master_objects[param_1] == nullptr) {
         return nullptr;
     }
 
-    return master->make_new_obj(this, param_2, param_3, param_4);
+    return this->master_objects[param_1]->make_new_obj(this, param_2, param_3, param_4);
 }
 void RGE_Player::analyize_selected_objects() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471520
@@ -1143,48 +1283,79 @@ uchar RGE_Player::command_remove_from_group(int param_1, int param_2) { return 1
 uchar RGE_Player::command_destroy_group(int param_1) { return 1; }
 uchar RGE_Player::command_resign(int param_1, int param_2) { return 1; }
 uchar RGE_Player::command_add_waypoint(float param_1, float param_2, float param_3) { return 1; }
+// Offset: 0x00471B20
 RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) {
-    RGE_Object_List* list = rge_player_ensure_list(this, param_2, param_3);
-    if (list == nullptr) {
-        return nullptr;
+    // Source of truth: player.cpp.decomp @ 0x00471B20
+    RGE_Object_List* list = nullptr;
+    if (param_2 == 0) {
+        if (param_3 == 0) {
+            list = this->objects;
+        } else {
+            list = this->doppleganger_objects;
+        }
+    } else {
+        list = this->sleeping_objects;
     }
 
-    RGE_Object_Node* node = rge_player_add_node(list, param_1);
-    if (node != nullptr && this->world != nullptr) {
-        this->world->addObject(param_1);
-    }
+    RGE_Object_Node* node = list->add_node(param_1);
+    this->world->addObject(param_1);
     return node;
 }
 
+// Offset: 0x00471B70
 void RGE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) {
-    RGE_Object_List* list = rge_player_get_list(this, param_2, param_3);
-    if (list == nullptr) {
-        return;
+    // Source of truth: player.cpp.decomp @ 0x00471B70
+    RGE_Object_List* list = nullptr;
+    if (param_2 == 0) {
+        if (param_3 == 0) {
+            list = this->objects;
+        } else {
+            list = this->doppleganger_objects;
+        }
+    } else {
+        list = this->sleeping_objects;
     }
 
-    RGE_Object_Node* node = param_4;
-    if (node == nullptr) {
-        node = list->list;
-        while (node != nullptr && node->node != param_1) {
-            node = node->next;
-        }
-        if (node == nullptr) {
-            return;
-        }
-    }
-
-    rge_player_remove_node(list, node);
-    if (this->world != nullptr && param_1 != nullptr) {
-        this->world->removeObject((int)param_1->id);
-    }
+    list->remove_node(param_1, param_4);
+    this->world->removeObject((int)param_1->id);
 }
-void RGE_Player::logMessage(char* param_1) {}
-void RGE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
-void RGE_Player::logStatus(FILE* param_1, int param_2) {}
+
+// Offset: 0x00471BD0
+void RGE_Player::logMessage(char* param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471BD0
+    (void)param_1;
+    return;
+}
+
+// Offset: 0x00471BE0
+void RGE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471BE0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    return;
+}
+
+// Offset: 0x0046ED40
+void RGE_Player::logStatus(FILE* param_1, int param_2) {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ED40
+    (void)param_1;
+    (void)param_2;
+    return;
+}
+
+// Offset: 0x00471C90
 void RGE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
+    // Source of truth: player.cpp.decomp @ 0x00471C90
     this->victory_conditions = new RGE_Victory_Conditions(this, param_1, param_2, param_3);
 }
+
+// Offset: 0x00471D00
 void RGE_Player::new_victory() {
+    // Source of truth: player.cpp.decomp @ 0x00471D00
     this->victory_conditions = new RGE_Victory_Conditions(this);
 }
 
@@ -1678,6 +1849,8 @@ void RGE_Player::set_view_loc(float x, float y) {
 }
 
 void RGE_Player::set_map_loc(short x, short y) {
+    // Offset: 0x004704A0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x004704A0
     this->map_x = x;
     this->map_y = y;
 }
@@ -1758,8 +1931,17 @@ void RGE_Player::remake_visible_map() {
     this->visible = vis;
 }
 
-uchar RGE_Player::get_resigned() { return this->resigned; }
-int RGE_Player::computerPlayer() { return this->computerPlayerValue; }
+// Offset: 0x0046ED90
+uchar RGE_Player::get_resigned() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046ED90
+    return this->resigned;
+}
+
+// Offset: 0x0046EDB0
+int RGE_Player::computerPlayer() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EDB0
+    return this->computerPlayerValue;
+}
 int RGE_Player::pathingAttemptCap() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F200
     return this->pathingAttemptCapValue;

@@ -2,6 +2,10 @@
 #include "common.h"
 
 struct RGE_Unified_Visible_Map {
+    RGE_Unified_Visible_Map(int map_width, int map_height);
+    RGE_Unified_Visible_Map(int param_1, RGE_Game_World* param_2);
+    ~RGE_Unified_Visible_Map();
+
     int mapWidth;
     int mapHeight;
     ulong* UnifiedVisibleMap;
