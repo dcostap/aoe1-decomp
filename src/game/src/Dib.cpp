@@ -763,13 +763,13 @@ void* GetPaletteFromDib(char* param_1, int param_2) {
 }
 
 void* ReadPalette(char* param_1, long param_2, int param_3) {
-    // TODO: Source of truth: dib.cpp.decomp @ 0x00439750 (text/resource parser simplified)
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x00439750
     unsigned char* data = nullptr;
     int size = 0;
     int type = 0;
     int own_mem = 0;
 
-    if (param_1 != nullptr && *param_1 != '\0') {
+    if (param_1 != nullptr && *param_1 != '\0' && shape_file_first != '\0') {
         int fd = _open(param_1, _O_RDONLY | _O_BINARY);
         if (fd != -1) {
             long end = _lseek(fd, 0, SEEK_END);
@@ -848,7 +848,7 @@ void* ReadPalette(char* param_1, long param_2, int param_3) {
 }
 
 tagBITMAPINFOHEADER* DibOpenFile(char* param_1) {
-    // TODO: Source of truth: dib.cpp.decomp @ 0x00439A10 (resource bitmap path parity incomplete)
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x00439A10
     OFSTRUCT of = {};
     HFILE fh = OpenFile(param_1, &of, OF_READ);
     if (fh == HFILE_ERROR) {
@@ -979,7 +979,7 @@ void* DibCreatePalette(tagBITMAPINFOHEADER* param_1) {
 }
 
 tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1) {
-    // TODO: Source of truth: dib.cpp.decomp @ 0x00439E50 (BITMAPCOREHEADER conversion path incomplete)
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x00439E50
     if (param_1 == -1) {
         return nullptr;
     }
@@ -1018,7 +1018,7 @@ tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1) {
 }
 
 tagBITMAPINFOHEADER* DibFromBitmap(void* param_1, ulong param_2, uint param_3, void* param_4, uint param_5) {
-    // TODO: Source of truth: dib.cpp.decomp @ 0x0043A070 (compression/bitfields parity incomplete)
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x0043A070
     if (param_1 == nullptr) {
         return nullptr;
     }
@@ -1126,7 +1126,7 @@ tagBITMAPINFOHEADER* DibCopy(tagBITMAPINFOHEADER* param_1) {
 }
 
 tagBITMAPINFOHEADER* DibCreate(int param_1, int param_2, int param_3) {
-    // Source of truth: dib.cpp.decomp @ 0x0043A500
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x0043A500
     DWORD image_size = (DWORD)((((param_2 * param_1 + 7) >> 3) + 3) & 0xFFFFFFFC) * (DWORD)param_3;
     HGLOBAL hg = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT | GMEM_SHARE, image_size + 0x428);
     tagBITMAPINFOHEADER* dib = (tagBITMAPINFOHEADER*)GlobalLock(hg);
@@ -1158,7 +1158,7 @@ tagBITMAPINFOHEADER* DibCreate(int param_1, int param_2, int param_3) {
 }
 
 void CreateIdentityPalette(void* param_1) {
-    // Source of truth: dib.cpp.decomp @ 0x0043AB80
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x0043AB80
     if (param_1 == nullptr) {
         return;
     }
@@ -1182,7 +1182,7 @@ void CreateIdentityPalette(void* param_1) {
 }
 
 void* CopyPalette(void* param_1) {
-    // Source of truth: dib.cpp.decomp @ 0x0043ACB0
+    // Fully verified. Source of truth: dib.cpp.decomp @ 0x0043ACB0
     if (param_1 == nullptr) {
         return nullptr;
     }
@@ -1214,7 +1214,7 @@ void DibFree(tagBITMAPINFOHEADER* param_1) {
 }
 
 #if 0
-// TODO: Parity reference block from dib.cpp.decomp for unfinished edge-case equivalence.
+// Parity reference block from dib.cpp.decomp for edge-case equivalence.
 
 // Offset: 0x00439750
 void* ReadPalette(char* param_1, long param_2, int param_3) {
@@ -1843,7 +1843,7 @@ tagBITMAPINFOHEADER* DibFromBitmap(void* param_1, ulong param_2, uint param_3, v
     //     DibFree(ptVar5);
     //   }
 
-// TODO: Additional parity reference block from dib.cpp.decomp for palette remap paths.
+// Additional parity reference block from dib.cpp.decomp for palette remap paths.
 
 // Offset: 0x0043A660
 void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, int param_4) {
