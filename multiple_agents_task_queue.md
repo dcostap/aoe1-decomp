@@ -3894,7 +3894,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 275 — Action Sprite + View Main + TRIBE object remaining (100 functions)
 - [x] Assigned to agent (worker-6, clone_6, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `e341ea5`. 623 insertions. TRIBE_Building_Object + TRIBE_Combat_Object expanded.
 - Goal: Two greenfield modules plus two partial modules:
   - asprite.cpp.decomp: 35 functions, NO IMPL (action sprite — SLP frame management, animation)
   - vw_main.cpp.decomp: 28 functions, NO IMPL (main view controller — camera, scroll, zoom)
@@ -3978,3 +3979,23 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `tribegam.cpp.decomp`, `pnl_drop.cpp.decomp`, `act_bird.cpp.decomp`, `act_expl.cpp.decomp`, `act_make.cpp.decomp` + `.asm` files
 - Non-overlap: do NOT touch TRIBE_Screen_*.cpp, AI module files, victory/sound files, basegame, command.cpp
 - Done when: all decomp offsets covered. Expect 1000+ lines.
+
+## Task 281 — Object Hierarchy + Triggers + Task List + Debug + Small Screens + Tribe Population Panel (100 functions)
+- [x] Assigned to agent (worker-6, clone_6, copilot)
+- [ ] Finished
+- Goal: Sweep of small unimplemented modules — all greenfield or nearly so:
+  - m_dg_obj.cpp.decomp: 11 funcs (Master_Doppleganger_Object — master template for doppleganger objects)
+  - misl_obj.cpp.decomp: 11 funcs (TRIBE_Missile_Object — missile projectile behavior)
+  - ani_obj.cpp.decomp: 11 funcs (animation object — animated game elements)
+  - trig.cpp.decomp: 12 funcs (trigger system — event triggers, conditions, effects)
+  - task_lst.cpp.decomp: 11 funcs (task list — unit task queue management)
+  - vis_unit.cpp.decomp: 13 funcs (visible unit — unit rendering, selection graphics)
+  - debuglog.cpp.decomp: 14 funcs (debug logging — log file management, debug output)
+  - tpnl_pop.cpp.decomp: 9 funcs (TRIBE_Panel_Population — population display)
+  - scr_name.cpp.decomp: 11 funcs (name screen — player name entry)
+  Total: ~103 functions, mostly greenfield.
+- Implement: Create new impl files for each module. Transliterate ALL functions from each decomp with '// Source of truth' offset markers.
+- Where: `src/game/src/` — new files + headers. Check if impl files already exist and extend them.
+- Source of truth: all listed `.decomp` + `.asm` files in `src/game/decomp/`
+- Non-overlap: do NOT touch tribegam, victory, sound, panel_ez, action cluster files, AI modules, or screen editor/credits/campaign files
+- Done when: all decomp offsets covered. Expect 800+ lines.
