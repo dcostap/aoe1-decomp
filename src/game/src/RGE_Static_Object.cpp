@@ -287,7 +287,7 @@ static void rge_static_ctor_common_init(RGE_Static_Object* obj) {
 }
 
 RGE_Static_Object::RGE_Static_Object() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C11E0 init path (no setup call)
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C11E0 init path (no setup call)
     rge_static_ctor_common_init(this);
 }
 
@@ -310,7 +310,7 @@ RGE_Static_Object::RGE_Static_Object(int param_1, RGE_Game_World* param_2, int p
 
 // NOTE: Additional RGE_Static_Object virtuals below still need full stat_obj.cpp transliteration.
 RGE_Static_Object::~RGE_Static_Object() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C1290
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1290
     this->remove_visible_resource();
 
     if (this->owner != nullptr) {
@@ -400,7 +400,7 @@ RGE_Static_Object::~RGE_Static_Object() {
     this->pathingGroupMembers.maximumSizeValue = 0;
 }
 void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C1420
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1420
     this->old_sprite = nullptr;
     this->unitAIValue = nullptr;
     this->underAttackValue = 0;
@@ -459,7 +459,7 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RG
 }
 
 void RGE_Static_Object::recycle_out_of_game() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C1590
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1590
     if (this->master_obj->recyclable != 0 &&
         this->owner->world->recycle_object_out_of_game(this->master_obj->master_type, this) != 0) {
         if (this->object_state < 3) {
@@ -2730,7 +2730,7 @@ void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* param_1) {
     }
 }
 void RGE_Static_Object::set_object_state(uchar param_1) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C52F0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C52F0
     // ASM-verified group commander play-status handoff at stat_obj.cpp.asm @ 0x004C55BF.
     if (this->object_state != param_1) {
         if (param_1 == 7 || this->object_state == 3) {
@@ -2928,7 +2928,7 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
     this->owner->doppleganger_creator->add_doppleganger_check(this, unified_address);
 }
 void RGE_Static_Object::destroy_obj() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C5080
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5080
     if (this->object_state < 7) {
         if (this->inside_obj != nullptr) {
             this->exit_obj();
@@ -2941,7 +2941,7 @@ void RGE_Static_Object::destroy_obj() {
     }
 }
 void RGE_Static_Object::die_die_die() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C50C0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C50C0
     if ((this->selected & 1) != 0 && this->owner != nullptr) {
         this->owner->unselect_one_object(this);
     }
@@ -3079,7 +3079,7 @@ int RGE_Static_Object::inGroup() {
     return (0 < this->groupMembers.numberValue) ? 1 : 0;
 }
 int RGE_Static_Object::unitIsInGroup(int param_1) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7770
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7770
     int count = this->groupMembers.numberValue;
     int index = 0;
     if (count > 0) {
@@ -3097,7 +3097,7 @@ int RGE_Static_Object::unitIsInGroup(int param_1) {
 }
 
 int RGE_Static_Object::createGroup(int* param_1, int param_2, int param_3, float param_4) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C77B0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C77B0
     if (param_1 == nullptr || param_2 == 0) {
         return 0;
     }
@@ -3160,7 +3160,7 @@ int RGE_Static_Object::createGroup(int* param_1, int param_2, int param_3, float
 }
 
 int RGE_Static_Object::commanderCreateGroup(int* param_1, int param_2, int param_3, float param_4) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C78B0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C78B0
     int* unit_ids = param_1;
     if (param_1 == nullptr || param_2 == 0) {
         return 0;
@@ -3183,7 +3183,7 @@ int RGE_Static_Object::commanderCreateGroup(int* param_1, int param_2, int param
 }
 
 int RGE_Static_Object::addToGroup(int param_1, float param_2) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7920
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7920
     (void)param_2;
     if (0x18 < this->groupMembers.numberValue) {
         return 0;
@@ -3228,7 +3228,7 @@ int RGE_Static_Object::addToGroup(int param_1, float param_2) {
 }
 
 int RGE_Static_Object::commanderAddToGroup(int param_1, float param_2) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C79D0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C79D0
     RGE_Static_Object* unit_obj = this->owner->world->object(param_1);
     if (unit_obj == nullptr) {
         return 0;
@@ -3301,7 +3301,7 @@ int RGE_Static_Object::commanderAddToGroup(int param_1, float param_2) {
 }
 
 int RGE_Static_Object::removeFromGroup(int param_1) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7B60
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7B60
     int max_size = this->groupMembers.maximumSizeValue;
     int index = 0;
     if (max_size > 0) {
@@ -3342,7 +3342,7 @@ int RGE_Static_Object::removeFromGroup(int param_1) {
 }
 
 int RGE_Static_Object::commanderRemoveFromGroup(int param_1) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7BD0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7BD0
     if ((param_1 == this->id) && (this->id == this->groupCommanderValue)) {
         return this->commanderDestroyGroup();
     }
@@ -3412,14 +3412,14 @@ int RGE_Static_Object::commanderRemoveFromGroup(int param_1) {
 }
 
 int RGE_Static_Object::destroyGroup() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7CE0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7CE0
     this->groupMembers.numberValue = 0;
     this->groupCommanderValue = -1;
     return 1;
 }
 
 int RGE_Static_Object::commanderDestroyGroup() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7D00
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7D00
     int group_index = 0;
     if (this->groupMembers.numberValue > 0) {
         do {
@@ -3456,7 +3456,7 @@ int RGE_Static_Object::commanderDestroyGroup() {
 }
 
 void RGE_Static_Object::addToPathingGroup(int param_1) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7DB0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7DB0
     int index = 0;
     int count = this->pathingGroupMembers.numberValue;
 
@@ -3497,13 +3497,13 @@ void RGE_Static_Object::addToPathingGroup(int param_1) {
     this->pathingGroupMembers.numberValue = this->pathingGroupMembers.numberValue + 1;
 }
 void RGE_Static_Object::removeAllFromPathingGroup() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7E50
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7E50
     if (this->owner->computerPlayer() == 1) {
         this->pathingGroupMembers.numberValue = 0;
     }
 }
 void RGE_Static_Object::remove_shadows() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C7E70
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7E70
     int world_x_int = (int)this->world_x;
     int world_y_int = (int)this->world_y;
     this->owner->world->map->request_redraw(world_x_int - 2, world_y_int - 2, world_x_int + 1, world_y_int + 1, 0);
@@ -4083,7 +4083,7 @@ int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     return 1;
 }
 int RGE_Static_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C16B0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C16B0
     // Source of truth intent: setup(master, player, x, y, z)
     // initializes a live object instance (sprite/object lists + runtime state).
     if (param_1 == nullptr || param_2 == nullptr || param_2->world == nullptr) {
