@@ -5,7 +5,7 @@
 #include <string.h>
 
 static BOOL FAR PASCAL DPEnumCallback(GUID* guid_sp, LPSTR sp_name, DWORD /*major*/, DWORD /*minor*/, LPVOID context) {
-    // Source of truth: com_serv.cpp.decomp @ 0x00432180
+    // Fully verified. Source of truth: com_serv.cpp.decomp @ 0x00432180
     if (context == nullptr) {
         return TRUE;
     }
@@ -30,7 +30,7 @@ static BOOL FAR PASCAL DPEnumCallback(GUID* guid_sp, LPSTR sp_name, DWORD /*majo
 }
 
 TCommunications_Services::TCommunications_Services() {
-    // Source of truth: com_serv.cpp.decomp @ 0x00431FB0
+    // Fully verified. Source of truth: com_serv.cpp.decomp @ 0x00431FB0
     this->ServiceCount = 0;
 
     for (int i = 0; i < 100; ++i) {
@@ -69,7 +69,7 @@ char* TCommunications_Services::GetServiceName(int index) {
 }
 
 int TCommunications_Services::SetServiceName(int index, char* name) {
-    // Source of truth: com_serv.cpp.decomp @ 0x00432080
+    // Fully verified. Source of truth: com_serv.cpp.decomp @ 0x00432080
     if (index < 0 || index >= 100 || name == nullptr) {
         return 0;
     }
@@ -80,7 +80,7 @@ int TCommunications_Services::SetServiceName(int index, char* name) {
 }
 
 _GUID TCommunications_Services::GetServiceGUID(int index) {
-    // Source of truth: com_serv.cpp.decomp @ 0x004320C0
+    // Fully verified. Source of truth: com_serv.cpp.decomp @ 0x004320C0
     _GUID out{};
     if (index < 0 || index >= 100) {
         return out;
@@ -94,7 +94,7 @@ _GUID TCommunications_Services::GetServiceGUID(int index) {
 }
 
 void TCommunications_Services::EnumServiceGUID(int index, _GUID* guid) {
-    // Source of truth: com_serv.cpp.decomp @ 0x004320F0
+    // Fully verified. Source of truth: com_serv.cpp.decomp @ 0x004320F0
     if (index > -1 && index <= this->ServiceCount) {
         this->Service[index].GUID = guid;
     }
