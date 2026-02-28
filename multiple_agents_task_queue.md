@@ -3616,7 +3616,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 252 — command.cpp RGE command system parity (~2482-line gap)
 - [x] Assigned to agent (worker-5, clone_5, codex)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `dc81b0e` (1576 insertions!). Full command.cpp created via codex. Excellent delivery.
 - Goal: Task 238 only added 107 lines to tcommand.cpp but left command.cpp untouched. Close the remaining gap: command.cpp.decomp (2482) -> command.cpp (essentially empty beyond stubs). RGE_Command handles all game commands — move, attack, build, research, etc.
 - Implement (decomp-first from command.cpp.decomp): Enumerate ALL missing functions. Focus on: command dispatch, move commands, attack commands, build commands, formation commands, trade commands.
 - Where: `src/game/src/command.cpp` + `src/game/include/RGE_Command.h` (or similar headers)
@@ -3689,3 +3690,17 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Where: `src/game/src/TPanelSystem.cpp` + headers
 - Source of truth: `src/game/decomp/panel.cpp.decomp` + `panel.cpp.asm`.
 - Done when: all 132 functions transliterated. Expect 3000+ lines.
+
+## Task 259 — Dynamic strings + file_stf + zone_map utilities (94 unimplemented functions)
+- [x] Assigned to agent (worker-5, clone_5, codex)
+- [ ] Finished
+- Goal: Three utility modules have NO implementation at all:
+  - dstring.cpp.decomp: 50 functions (dynamic string management — allocation, formatting, concatenation)
+  - file_stf.cpp.decomp: 22 functions (file I/O utilities — path handling, buffered reads)
+  - zone_map.cpp.decomp: 22 functions (zone map for random map generation)
+  Combined: 94 functions, all greenfield.
+- Implement (decomp-first): Create impl files for each module. Transliterate ALL functions from all three decomps.
+- Where: new files in `src/game/src/` + headers as needed
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch fractal, pathsys, RGE_Map, or any game logic files.
+- Done when: all 94 functions transliterated. Expect 2000+ lines.
