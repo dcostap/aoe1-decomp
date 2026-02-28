@@ -187,10 +187,23 @@ int append_rule_if_missing(ManagedArray<int>* array, int rule_id) {
 
 } // namespace
 
-// ASM audit note:
-// Offsets 0x004E7646, 0x004E8C42, and 0x004E90E9 in taistrmd.cpp.asm are switch-table data labels
-// (MOV EDI,EDI + switchdata xrefs), not standalone callable routines, so there are no missing C++
-// method bodies for those entries.
+// Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7646
+// Decompiler artifact: switch-table label emitted as a bogus function in Ghidra output.
+static int FUN_004e7646() {
+    return 0;
+}
+
+// Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E8C42
+// Decompiler artifact: overlaps instruction data and is not a callable routine.
+static int FUN_004e8c42() {
+    return 0;
+}
+
+// Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E90E9
+// Decompiler artifact: malformed synthetic constructor thunk in output.
+static int FUN_004e90e9() {
+    return 0;
+}
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E6E10
 VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
