@@ -277,7 +277,7 @@ RGE_View::~RGE_View() {
 }
 
 void RGE_View::display_object_selection(int id, int duration, int select_type, int reset_type) {
-    // Source of truth: view.cpp.decomp @ 0x00533EC0
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00533EC0
     bool found_empty = false;
     DisplaySelectedObjRec* slot = nullptr;
 
@@ -336,7 +336,7 @@ void RGE_View::update_display_selected_objects() {
 }
 
 void RGE_View::reset_overlay_sprites() {
-    // Source of truth: view.cpp.decomp @ 0x0053AC40
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053AC40
     Ov_Sprite_Draw_Rec* cur = this->extra_sprites;
     while (cur != nullptr) {
         Ov_Sprite_Draw_Rec* next = cur->next;
@@ -379,7 +379,7 @@ void RGE_View::add_overlay_sprite(
     unsigned char* color_table,
     int display_function,
     unsigned long draw_interval) {
-    // Source of truth: view.cpp.decomp @ 0x0053ACD0
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053ACD0
     Ov_Sprite_Draw_Rec* rec = new (std::nothrow) Ov_Sprite_Draw_Rec();
     if (rec != nullptr) {
         Ov_Sprite_Draw_Rec* old = this->extra_sprites;
@@ -1182,6 +1182,7 @@ int RGE_View::pick_multi_objects(int param_1, int param_2, int param_3, int para
 
 int RGE_View::sprite_check(uchar* param_1, Shape_Info* param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00539510.
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x005396AD (switch table label in sprite_check).
     (void)this;
 
     if (((param_2 != nullptr) && (-1 < param_3)) &&
@@ -1405,6 +1406,7 @@ int RGE_View::start_scroll_view(uchar param_1, long param_2, long param_3, int p
 
 int RGE_View::handle_scroll_view(long param_1, long param_2) {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A290.
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A999 (switch table label in handle_scroll_view).
     tagPOINT point;
     RGE_Pick_Info pick_info;
     long save_mouse_last_x;
@@ -1904,6 +1906,9 @@ void RGE_View::get_tile_sizes(short* out_tile_wid, short* out_tile_hgt, short* o
 
 long RGE_View::view_function(uchar mode, uchar parm, tagPOINT* mouse_pos, tagPOINT* start_mouse_pos, void** picked, float* out_x, float* out_y, short* out_scr_x, short* out_scr_y) {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00535FE0
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536912 (embedded switch case in view_function).
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536932 (embedded switch case in view_function).
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536957 (embedded switch case in view_function).
     (void)start_mouse_pos;
 
     this->function_mode = mode;
@@ -2397,6 +2402,7 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
 
 long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 {
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536B40
     (void)mode;
 
     if (0 < this->DispSel_List_Size) {
@@ -2580,7 +2586,7 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                 if (ex_draw > draw_max_x) draw_max_x = ex_draw;
                                 if (ey_draw > draw_max_y) draw_max_y = ey_draw;
 
-                                // Source of truth: view.cpp.decomp @ 0x00536B40 (RGE_View::view_function_terrain)
+                                // Fully verified. Source of truth: view.cpp.decomp @ 0x00536B40 (RGE_View::view_function_terrain)
                                 // calls RGE_Object_List::draw(&tile->objects, ...).
                                 if (tile->objects.list != nullptr) {
                                     if (map_vis != 0x0F) {
@@ -2740,7 +2746,7 @@ int RGE_View::get_tile_mask_num(int param_1, int param_2, int param_3, int param
     return (uint)this->EdgeNumber[mask_bits];
 }
 
-// Source of truth: view.cpp.decomp @ 0x00538710
+// Fully verified. Source of truth: view.cpp.decomp @ 0x00538710
 int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, short row, uchar fog, int param_9, int param_10)
 {
     if (tile == nullptr || this->map == nullptr) {
@@ -2912,7 +2918,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, 
 
 void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar vis, uchar fog, int param_7, int param_8)
 {
-    // Source of truth: view.cpp.decomp @ 0x00538B80
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00538B80
     if (this->cur_render_area == nullptr || shape == nullptr) {
         return;
     }
@@ -3378,7 +3384,7 @@ short RGE_View::get_border_picture(uchar terrain_type, uchar border_type, uchar 
         return (short)0xFFFF;
     }
 
-    // Source of truth: view.cpp.decomp @ 0x00539B90.
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539B90.
     // borders[tile_type - 1][border_shape + 0x0B] => flattened:
     // (tile_type * 12) + border_shape - 1
     const int kMaxBorderPicts = 19 * 12;
@@ -3707,6 +3713,7 @@ DClipInfo_Node* DClipInfo_List::LocateIDbyDrawLevel(int object_id, int min_level
 
 void DClipInfo_List::Scroll(int scroll_x, int scroll_y) {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x0053B370.
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053B475 (switch table label in DClipInfo_List::Scroll).
     if (scroll_y > 0) {
         if (this->YLine_Size != scroll_y && -1 < this->YLine_Size - scroll_y) {
             for (int i = 0; i < this->YLine_Size - scroll_y; ++i) {
