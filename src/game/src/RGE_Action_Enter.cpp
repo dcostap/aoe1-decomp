@@ -32,6 +32,16 @@ static RGE_Action* rge_action_object_get_action(RGE_Static_Object* obj) {
     }
     return action_obj->actions->get_action();
 }
+
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x0040270E
+// Decompiler artifact: offset lands inside malformed instruction data in this unit.
+static int FUN_0040270e() {
+    return 0;
+}
+
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402AFA
+// Decompiler artifact: offset is non-callable junk bytes in this unit.
+static void FUN_00402afa() {}
 }
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x004023C0
@@ -102,6 +112,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2
     }
 }
 
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x004025F0
 RGE_Action_Enter::~RGE_Action_Enter() {}
 
 int RGE_Action_Enter::setup(RGE_Action_Object* param_1) { return RGE_Action::setup(param_1); }

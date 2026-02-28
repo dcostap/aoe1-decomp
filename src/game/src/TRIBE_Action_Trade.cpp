@@ -14,6 +14,7 @@
 #include <new>
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(int param_1, RGE_Action_Object* param_2) {
+    // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2660
     this->pick_up_x = -1.0f;
     this->pick_up_y = -1.0f;
     RGE_Action::setup(param_1, param_2);
@@ -23,6 +24,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(int param_1, RGE_Action_Object* param_2) 
 }
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
+    // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2710
     RGE_Action::setup(param_1);
     this->action_type = 0x6f;
     this->task = param_2;
@@ -35,6 +37,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* param_1, RGE_Task* par
 }
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {
+    // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D27A0
     RGE_Action::setup(param_1);
     this->action_type = 0x6f;
     this->task = param_2;
