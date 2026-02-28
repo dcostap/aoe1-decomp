@@ -23,11 +23,13 @@ static float tact_art_read_master_float(RGE_Master_Static_Object* master, int of
     return v;
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCBA0
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x6b;
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCC00
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
     RGE_Action::setup(param_1);
     this->action_type = 0x6b;
@@ -35,6 +37,7 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Tas
     this->set_target_obj(param_3);
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCC30
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {
     RGE_Action::setup(param_1);
     this->task = param_2;
@@ -53,6 +56,7 @@ void TRIBE_Action_Artifact::rehook() { RGE_Action::rehook(); }
 void TRIBE_Action_Artifact::save(int param_1) { RGE_Action::save(param_1); }
 short TRIBE_Action_Artifact::type() { return this->action_type; }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCC70
 void TRIBE_Action_Artifact::first_in_stack(uchar param_1) {
     if (param_1 == 0) return;
     if (this->target_obj != nullptr) {
@@ -69,6 +73,7 @@ void TRIBE_Action_Artifact::first_in_stack(uchar param_1) {
 uchar TRIBE_Action_Artifact::inside_obj_update() { return RGE_Action::inside_obj_update(); }
 uchar TRIBE_Action_Artifact::idle_update() { return RGE_Action::idle_update(); }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCCB0
 void TRIBE_Action_Artifact::set_state(uchar param_1) {
     this->state = param_1;
     if (param_1 == 4) {
@@ -106,6 +111,7 @@ void TRIBE_Action_Artifact::set_state(uchar param_1) {
     }
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCDF0
 uchar TRIBE_Action_Artifact::update() {
     if (this->sub_actions != nullptr) {
         uchar u = this->sub_actions->update();
@@ -156,8 +162,10 @@ uchar TRIBE_Action_Artifact::update() {
     }
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CD120
 int TRIBE_Action_Artifact::stop() { this->set_state(6); return 1; }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CD130
 int TRIBE_Action_Artifact::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     this->target_x = param_2;
@@ -167,6 +175,7 @@ int TRIBE_Action_Artifact::move_to(RGE_Static_Object* param_1, float param_2, fl
     return 1;
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CD160
 int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if (param_1 != nullptr) {
         this->target_obj = param_1;
@@ -190,6 +199,7 @@ RGE_Static_Object* TRIBE_Action_Artifact::get_target_obj2() { return RGE_Action:
 void TRIBE_Action_Artifact::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void TRIBE_Action_Artifact::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCF30
 RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     if (this->obj == nullptr || this->obj->owner == nullptr || this->obj->owner->world == nullptr) {
         return nullptr;
@@ -267,6 +277,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     return nullptr;
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CD1A0
 void TRIBE_Action_Artifact::reset_owner() {
     this->set_state(100);
 }

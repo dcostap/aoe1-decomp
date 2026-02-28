@@ -34,6 +34,9 @@ public:
     virtual void set_target_obj2(RGE_Static_Object* param_1); // vt[22] (0x58)
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
 
+    RGE_Sprite* get_move_sprite();
+    RGE_Sprite* get_wait_sprite();
+
     int targetType;
 };
 static_assert(sizeof(TRIBE_Action_Hunt) == 0x44, "Size mismatch");

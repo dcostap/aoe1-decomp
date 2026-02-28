@@ -34,6 +34,8 @@ public:
     virtual void set_target_obj2(RGE_Static_Object* param_1); // vt[22] (0x58)
     virtual void set_state(uchar param_1); // vt[23] (0x5C)
 
+    void martyrdom();
+
     unsigned char was_same_owner;
     float requiredRange;
 };
