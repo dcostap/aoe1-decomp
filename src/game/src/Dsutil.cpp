@@ -45,12 +45,14 @@ static int          _bStopping = 0;          // stop request
 // ============================================================================
 // Offset: 0x004477D0
 void ShowErrMsg() {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004477D0
     // Empty in original
 }
 
 // ============================================================================
 // Offset: 0x00447C60
 int DSParseWaveResource(void* pvRes, tWAVEFORMATEX** ppWaveHeader, unsigned char** ppbData, unsigned long* pdwDataSize) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447C60
     int* pRes = (int*)pvRes;
 
     if (ppWaveHeader != nullptr) *ppWaveHeader = nullptr;
@@ -99,6 +101,7 @@ int DSParseWaveResource(void* pvRes, tWAVEFORMATEX** ppWaveHeader, unsigned char
 // ============================================================================
 // Offset: 0x00447BC0
 int DSFillSoundBuffer(IDirectSoundBuffer* pDSB, unsigned char* pbData, unsigned long dwDataSize) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447BC0
     void* pMem1 = nullptr;
     void* pMem2 = nullptr;
     unsigned long dwLen1 = 0;
@@ -121,6 +124,7 @@ int DSFillSoundBuffer(IDirectSoundBuffer* pDSB, unsigned char* pbData, unsigned 
 // ============================================================================
 // Offset: 0x004478F0
 int DSGetWaveResource(HMODULE hModule, void* pRes, tWAVEFORMATEX** ppWaveHeader, unsigned char** ppbData, unsigned long* pdwDataSize) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004478F0
     HRSRC hRsrc = FindResourceA(hModule, (LPCSTR)pRes, "WAVE");
     if (hRsrc != nullptr) {
         HGLOBAL hGlobal = LoadResource(hModule, hRsrc);
@@ -138,6 +142,7 @@ int DSGetWaveResource(HMODULE hModule, void* pRes, tWAVEFORMATEX** ppWaveHeader,
 // ============================================================================
 // Offset: 0x004477E0
 IDirectSoundBuffer* DSLoadSoundBuffer(IDirectSound* pDS, void* pRes) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004477E0
     DSBUFFERDESC dsBD;
     tWAVEFORMATEX* pwfx = nullptr;
     unsigned char* pbData = nullptr;
@@ -171,6 +176,7 @@ IDirectSoundBuffer* DSLoadSoundBuffer(IDirectSound* pDS, void* pRes) {
 // ============================================================================
 // Offset: 0x00447890
 int DSReloadSoundBuffer(IDirectSoundBuffer* pDSB, void* pRes) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447890
     tWAVEFORMATEX* pwfx = nullptr;
     unsigned char* pbData = nullptr;
     unsigned long dwDataSize = 0;
@@ -192,6 +198,7 @@ int DSReloadSoundBuffer(IDirectSoundBuffer* pDSB, void* pRes) {
 // Offset: 0x00447950
 // SndObj layout: [pbData(4), cbData(4), nBufs(4), curBuf(4), pDSB[nBufs]...]
 void* SndObjCreate(IDirectSound* pDS, void* pRes, int nConcurrent) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447950
     tWAVEFORMATEX* pwfx = nullptr;
     unsigned char* pbData = nullptr;
     unsigned long dwDataSize = 0;
@@ -232,6 +239,7 @@ void* SndObjCreate(IDirectSound* pDS, void* pRes, int nConcurrent) {
 // ============================================================================
 // Offset: 0x00447A20
 void SndObjDestroy(void* pSO) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447A20
     if (pSO == nullptr) return;
     unsigned long* p = (unsigned long*)pSO;
     int nBufs = (int)p[2];
@@ -248,6 +256,7 @@ void SndObjDestroy(void* pSO) {
 // ============================================================================
 // Offset: 0x00447A60
 IDirectSoundBuffer* SndObjGetFreeBuffer(void* pSO) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447A60
     if (pSO == nullptr) return nullptr;
     unsigned long* p = (unsigned long*)pSO;
 
@@ -289,6 +298,7 @@ IDirectSoundBuffer* SndObjGetFreeBuffer(void* pSO) {
 // ============================================================================
 // Offset: 0x00447B20
 int SndObjPlay(void* pSO, DWORD dwFlags) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447B20
     if (pSO == nullptr) return 0;
     unsigned long* p = (unsigned long*)pSO;
 
@@ -306,6 +316,7 @@ int SndObjPlay(void* pSO, DWORD dwFlags) {
 // ============================================================================
 // Offset: 0x00447B70
 int SndObjStop(void* pSO) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447B70
     if (pSO == nullptr) return 0;
     unsigned long* p = (unsigned long*)pSO;
     int nBufs = (int)p[2];
@@ -325,6 +336,7 @@ int SndObjStop(void* pSO) {
 
 // Offset: 0x00447D50
 int WaveOpenFile(char* pszFileName, void** phmmioIn, tWAVEFORMATEX** ppwfxInfo, MMCKINFO* pckInRiff) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447D50
     HMMIO hmmio;
     MMCKINFO ckIn;
     PCMWAVEFORMAT pcmWaveFormat;
@@ -401,6 +413,7 @@ error:
 // ============================================================================
 // Offset: 0x00447EF0
 int WaveStartDataRead(void** phmmioIn, MMCKINFO* pckIn, MMCKINFO* pckInRiff) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447EF0
     HMMIO hmmio = *(HMMIO*)phmmioIn;
     int seekResult = mmioSeek(hmmio, pckInRiff->dwDataOffset + 4, SEEK_SET);
     if (seekResult == -1) return 1;
@@ -413,6 +426,7 @@ int WaveStartDataRead(void** phmmioIn, MMCKINFO* pckIn, MMCKINFO* pckInRiff) {
 // ============================================================================
 // Offset: 0x00447F40
 int WaveReadFile(HMMIO hmmioIn, unsigned long cbRead, unsigned char* pbDest, MMCKINFO* pckIn, unsigned long* pcbActualRead) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00447F40
     MMIOINFO mmioinfoIn;
 
     *pcbActualRead = 0;
@@ -458,6 +472,7 @@ int WaveReadFile(HMMIO hmmioIn, unsigned long cbRead, unsigned char* pbDest, MMC
 // ============================================================================
 // Offset: 0x00448040
 int WaveCloseReadFile(HMMIO* phmmio, tWAVEFORMATEX** ppwfx) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448040
     if (*ppwfx != nullptr) {
         GlobalFree(*ppwfx);
         *ppwfx = nullptr;
@@ -534,6 +549,7 @@ int WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, tWAVEFORMATEX* pwfxDest,
 // ============================================================================
 // Offset: 0x004481A0
 void WaveStartDataWrite(HMMIO* phmmioOut, MMCKINFO* pckOut, MMIOINFO* pmmioinfoOut) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004481A0
     pckOut->ckid = mmioFOURCC('d','a','t','a');
     pckOut->cksize = 0;
     int result = mmioCreateChunk(*phmmioOut, pckOut, 0);
@@ -545,6 +561,7 @@ void WaveStartDataWrite(HMMIO* phmmioOut, MMCKINFO* pckOut, MMIOINFO* pmmioinfoO
 // ============================================================================
 // Offset: 0x004481E0
 void WaveWriteFile(HMMIO hmmioOut, unsigned long cbWrite, unsigned char* pbSrc, MMCKINFO* pckOut, unsigned long* pcbActualWrite, MMIOINFO* pmmioinfoOut) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004481E0
     *pcbActualWrite = 0;
     unsigned long cbWritten = 0;
     while (cbWritten < cbWrite) {
@@ -564,6 +581,7 @@ void WaveWriteFile(HMMIO hmmioOut, unsigned long cbWrite, unsigned char* pbSrc, 
 // ============================================================================
 // Offset: 0x00448250
 int WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF, MMIOINFO* pmmioinfoOut, unsigned long cSamples) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448250
     if (*phmmioOut == nullptr) return 0;
 
     pmmioinfoOut->dwFlags |= MMIO_DIRTY;
@@ -603,6 +621,7 @@ cleanup:
 // ============================================================================
 // Offset: 0x00448340
 int WaveCopyUselessChunks(HMMIO* phmmioIn, MMCKINFO* pckIn, MMCKINFO* pckInRiff) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448340
     int seekResult = mmioSeek(*phmmioIn, pckInRiff->dwDataOffset + 4, SEEK_SET);
     if (seekResult == -1) return 0xE102;
 
@@ -624,6 +643,7 @@ int WaveCopyUselessChunks(HMMIO* phmmioIn, MMCKINFO* pckIn, MMCKINFO* pckInRiff)
 // ============================================================================
 // Offset: 0x00448400
 int riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst, MMCKINFO* pckIn) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448400
     MMCKINFO ckOut;
     void* pBuf;
     HGLOBAL hBuf;
@@ -667,6 +687,7 @@ fail:
 // ============================================================================
 // Offset: 0x004484D0
 int WaveLoadFile(char* pszFileName, unsigned long* pcbWaveSize, unsigned long* pcbHeaderSize, unsigned char** ppbWaveData, tWAVEFORMATEX** ppWaveHeader) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004484D0
     HMMIO hmmio = nullptr;
     MMCKINFO ckIn;
     MMCKINFO ckInRiff;
@@ -717,6 +738,7 @@ error:
 // ============================================================================
 // Offset: 0x004485C0
 void WaveSaveFile(char* pszFileName, unsigned long cbWaveSize, unsigned long cSamples, unsigned char* pbWaveData, tWAVEFORMATEX* pwfx) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004485C0
     HMMIO hmmioOut = nullptr;
     MMCKINFO ckOut;
     MMCKINFO ckOutRIFF;
@@ -740,6 +762,7 @@ void WaveSaveFile(char* pszFileName, unsigned long cbWaveSize, unsigned long cSa
 
 // Offset: 0x00448660
 void ds_stream_init(void* main_wnd, IDirectSound* lpDS, IDirectSoundBuffer* lpBuffer) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448660
     _uLastPercent = 100;
     _lpDSBStreamBuffer = nullptr;
     _bFileOpen = 0;
@@ -755,6 +778,7 @@ void ds_stream_init(void* main_wnd, IDirectSound* lpDS, IDirectSoundBuffer* lpBu
 // ============================================================================
 // Offset: 0x004486B0
 void ds_stream_exit() {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004486B0
     if (_ds_ready != 0) {
         if (_bFileOpen != 0 || _bPlaying != 0 || _bTimerInstalled != 0) {
             ds_stream_stop();
@@ -766,6 +790,7 @@ void ds_stream_exit() {
 // ============================================================================
 // Offset: 0x004486F0
 int ds_stream_file(char* filename, int loop, long volume) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x004486F0
     DSBUFFERDESC dsbd;
     HRESULT hr;
 
@@ -878,6 +903,7 @@ int ds_stream_file(char* filename, int loop, long volume) {
 // ============================================================================
 // Offset: 0x00448A40
 int ds_stream_volume(long volume) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448A40
     if (_lpDSBStreamBuffer == nullptr) return 0;
     HRESULT hr = _lpDSBStreamBuffer->SetVolume(volume);
     return (hr == DS_OK) ? 1 : 0;
@@ -886,12 +912,14 @@ int ds_stream_volume(long volume) {
 // ============================================================================
 // Offset: 0x00448A60
 void ds_stream_pause() {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448A60
     _stream_paused = 1;
 }
 
 // ============================================================================
 // Offset: 0x00448A70
 int ds_stream_resume() {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448A70
     _stream_paused = 0;
     return 1;
 }
@@ -899,6 +927,7 @@ int ds_stream_resume() {
 // ============================================================================
 // Offset: 0x00448A80
 int ds_stream_stop() {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448A80
     _bStopping = 1;
 
     if (_bTimerInstalled != 0) {
@@ -933,11 +962,18 @@ int ds_stream_stop() {
 // ============================================================================
 // Offset: 0x00448B30
 int ds_stream_messages(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448B30
     if (msg == 0x500) {
         ds_stream_stop();
     } else if (msg == 0x502) {
-        // Progress message — compute percentage
-        // Simplified: just return 0
+        if (_dwStreamBufSize < _dwBytesPlayed) {
+            _dwBytesPlayed = _dwBytesPlayed - _dwStreamBufSize;
+        }
+        int percent = (int)((_dwBytesPlayed * 100) / _dwStreamBufSize);
+        if (percent != _uLastPercent) {
+            _uLastPercent = percent;
+            return 0;
+        }
     }
     return 0;
 }
@@ -948,6 +984,7 @@ int ds_stream_messages(void* hwnd, unsigned int msg, unsigned int wParam, long l
 static volatile int _timer_guard = 0;
 
 void CALLBACK ds_stream_time_func(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2) {
+    // Fully verified. Source of truth: dsutil.cpp.decomp @ 0x00448BA0
     if (_timer_guard != 0) return;
     if (_stream_paused != 0) return;
 
