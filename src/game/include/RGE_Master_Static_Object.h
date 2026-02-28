@@ -29,6 +29,7 @@ public:
     int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
     long get_help_message();
     long get_help_page();
+    long get_hotkey();
     void make_available(uchar param_1);
 
     // Computes the 8 screen-space bounding corners of this object's footprint at (col, row).
