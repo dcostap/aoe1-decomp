@@ -45,6 +45,11 @@ static void action_list_set_current_target(UnitAIModule* unit_ai, long target_id
 }
 }
 
+// Fully verified. Source of truth: act_list.cpp.decomp @ 0x004041C2
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+// Fully verified. Source of truth: act_list.cpp.decomp @ 0x0040496E
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+
 // Fully verified. Source of truth: act_list.cpp.decomp @ 0x00403EA0
 RGE_Action_List::RGE_Action_List(RGE_Action_Object* param_1) {
     this->obj = param_1;

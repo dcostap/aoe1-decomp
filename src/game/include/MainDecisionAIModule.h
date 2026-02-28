@@ -4,6 +4,8 @@
 class MainDecisionAIModule {
 public:
     MainDecisionAIModule();
+    MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3);
+    MainDecisionAIModule(int param_1, RGE_Player* param_2, int param_3);
 
     // Virtuals (best-effort)
     virtual ~MainDecisionAIModule(); // vt[0] (0x0)
@@ -26,6 +28,18 @@ public:
     virtual int removeObject(int param_1); // vt[17] (0x44)
     virtual int objectGroupThatCanPerformAction(int param_1); // vt[18] (0x48)
     virtual int canPerformAction(int param_1, int param_2); // vt[19] (0x4C)
+
+    int numberObjects();
+    int numberObjectsWithAction(int param_1);
+    int numberObjectsWithGroup(int param_1);
+    int numberObjectsWithActionAndTarget(int param_1, int param_2);
+    int numberObjectsWithTargetType(int param_1);
+    int numberObjectsWithActionAndTargetType(int param_1, int param_2);
+    RGE_Static_Object* object(int param_1);
+    RGE_Static_Object* object(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, int param_10);
+    RGE_Static_Object* object(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    int numberBusyObjects();
+    RGE_Static_Object* mostDamaged(int param_1, int param_2);
 
     int padding0;
     int padding1;

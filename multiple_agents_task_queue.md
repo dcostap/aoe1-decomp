@@ -3909,8 +3909,9 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 276 — Action Files Cluster: act_list + act_gath + act_atak + act_move + act_tran (76 greenfield functions)
 - [x] Assigned to agent (worker-1, clone_1, copilot)
-- [ ] Finished
-- Goal: Five action-related modules with NO implementation at all:
+- [x] Finished
+- Status note: landed as commit `e4cf356`. Only 18 insertions — worker added offset markers but functions were already covered in existing files. Task was over-scoped (action files already had impl).
+- Goal: Five action-related moduleswith NO implementation at all:
   - act_list.cpp.decomp: 27 functions (RGE_Action_List — action queue management, priority sorting, action chaining)
   - act_gath.cpp.decomp: 12 functions (gathering/resource collection actions)
   - act_atak.cpp.decomp: 15 functions (attack actions — targeting, damage, range checks)
@@ -3925,8 +3926,9 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 277 — Screen Editor + Credits + Campaign (80 greenfield functions)
 - [x] Assigned to agent (worker-3, clone_3, copilot)
-- [ ] Finished
-- Goal: Three screen modules with NO implementation at all:
+- [x] Finished
+- Status note: landed as commit `5ca693e`. 50 insertions — Screen_Sed refactored markers. scr_cred/scr_cam were already covered. Thin delivery.
+- Goal: Three screen moduleswith NO implementation at all:
   - scr_sed.cpp.decomp: 51 functions (TRIBE_Screen_Scenario_Editor — scenario editor UI, terrain painting, object placement, trigger editing)
   - scr_cred.cpp.decomp: 16 functions (credits screen — scrolling text, timing, input handling)
   - scr_cam.cpp.decomp: 13 functions (campaign screen — campaign selection, mission progression, briefing display)
@@ -3939,7 +3941,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 278 — Panel_ez remaining + Tribe Panels + AI Decision Module (110 functions)
 - [x] Assigned to agent (worker-4, clone_4, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `1b913c7`. 814 insertions. MainDecisionAIModule.cpp + Time_Line_Panel.cpp fully expanded. Good delivery.
 - Goal: Mixed cluster of partial and greenfield modules:
   - panel_ez.cpp.decomp: 76 funcs, Panel_ez.cpp has 39 refs → ~37 missing (easy dialog panels, message boxes, input panels)
   - tpnl_tml.cpp.decomp: 29 funcs, NO IMPL (TRIBE_Panel_Timeline — timeline display, age progression UI)
@@ -3955,7 +3958,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 279 — Victory Conditions + Sound Driver (87 functions)
 - [x] Assigned to agent (worker-2, clone_2, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `32bb56e`. 99 insertions — added markers+stubs but thin on full transliteration. Victory/Sound still need deeper work.
 - Goal: Two modules with very low coverage:
   - victory.cpp.decomp: 59 funcs, only 7 impl refs → ~52 missing (RGE_Victory_Conditions + TRIBE_Victory_Conditions — win/loss condition checking, score calculation, achievement evaluation, standard/conquest/wonder victory)
   - sounddrv.cpp.decomp: 36 funcs, only 1 impl ref → ~35 missing (sound driver — DirectSound wrappers, WAV playback, volume control, sound caching, 3D audio positioning)
@@ -3999,3 +4003,55 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: all listed `.decomp` + `.asm` files in `src/game/decomp/`
 - Non-overlap: do NOT touch tribegam, victory, sound, panel_ez, action cluster files, AI modules, or screen editor/credits/campaign files
 - Done when: all decomp offsets covered. Expect 800+ lines.
+
+## Task 282 — TRIBE_Screen_Game remaining 81 functions (scr_game.cpp.decomp)
+- [x] Assigned to agent (worker-1, clone_1, copilot)
+- [ ] Finished
+- Goal: scr_game.cpp.decomp has 100 functions but TRIBE_Screen_Game.cpp only has ~19 with 'Source of truth: scr_game.cpp.decomp' markers → ~81 MISSING. This is the main game screen — the core rendering loop, mouse/keyboard handling, unit selection, minimap interaction, research/tech buttons, game-speed controls, multiplayer chat. This is one of the biggest single-file gaps remaining.
+- Implement: Open src/game/decomp/scr_game.cpp.decomp, identify every function offset. Cross-reference src/game/src/TRIBE_Screen_Game.cpp. For every offset NOT yet present, transliterate the full function body. Mark each with '// Source of truth: scr_game.cpp.decomp @ 0xNNNNNNNN'. Add declarations to the header.
+- Where: `src/game/src/TRIBE_Screen_Game.cpp` + `src/game/include/TRIBE_Screen_Game.h`
+- Source of truth: `scr_game.cpp.decomp` + `scr_game.cpp.asm` (in `src/game/decomp/`)
+- Non-overlap: do NOT touch any other screen files, panel files, AI files, basegame, command.cpp
+- Done when: ALL 100 scr_game.cpp.decomp offsets have impl coverage. Expect 1500+ lines.
+
+## Task 283 — UnitAIModule remaining + TribeUnitAIModuleTypes (95 functions)
+- [x] Assigned to agent (worker-3, clone_3, copilot)
+- [ ] Finished
+- Goal: Two related AI modules with significant gaps:
+  - aiuaimod.cpp.decomp: 118 funcs, ~63 impl refs → ~55 missing (UnitAIModule — unit-level AI decision making, state transitions, target selection, retreat logic)
+  - taiuaimd.cpp.decomp: 66 funcs, ~26 impl refs → ~40 missing (TribeUnitAIModuleTypes — tribe-specific unit AI behaviors, formation handling, garrison logic)
+  Total: ~95 functions.
+- Implement: Extend existing UnitAIModule.cpp and TribeUnitAIModuleTypes.cpp. For every missing decomp offset, transliterate the full function body with '// Source of truth' markers.
+- Where: `src/game/src/UnitAIModule.cpp`, `src/game/src/TribeUnitAIModuleTypes.cpp` + headers
+- Source of truth: `aiuaimod.cpp.decomp`, `taiuaimd.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
+- Non-overlap: do NOT touch TacticalAI, TribeBuildAI, panel files, screen files, basegame, command.cpp
+- Done when: all 184 decomp offsets have impl coverage. Expect 1200+ lines.
+
+## Task 284 — Panel_ez remaining + DirectSound Util + Master Objects (107 functions)
+- [x] Assigned to agent (worker-4, clone_4, copilot)
+- [ ] Finished
+- Goal: Mixed modules — one partial panel + one greenfield audio util + master object templates:
+  - panel_ez.cpp.decomp: 76 funcs, 39 impl refs → ~37 missing (easy dialog panels, message boxes, confirmation dialogs, input panels)
+  - dsutil.cpp.decomp: 32 funcs, NO IMPL (DirectSound utility — buffer management, WAV loading, 3D sound, mixing helpers)
+  - m_mo_obj.cpp.decomp: 14 funcs, 1 impl ref → ~13 missing (Master Moving Object template)
+  - m_mi_obj.cpp.decomp: 14 funcs, 1 impl ref → ~13 missing (Master Missile Object template)
+  - m_an_obj.cpp.decomp: 14 funcs, 2 impl refs → ~12 missing (Master Action Object template)
+  Total: ~107 functions.
+- Implement: Extend Panel_ez.cpp for remaining funcs. Create or extend dsutil impl. Extend master object files. All with '// Source of truth' offset markers.
+- Where: `src/game/src/Panel_ez.cpp`, `src/game/src/` for dsutil and master objects + headers
+- Source of truth: `panel_ez.cpp.decomp`, `dsutil.cpp.decomp`, `m_mo_obj.cpp.decomp`, `m_mi_obj.cpp.decomp`, `m_an_obj.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
+- Non-overlap: do NOT touch TRIBE_Screen_*.cpp, AI modules, tribegam, victory, sound (Sounddrv.cpp), action files, command.cpp
+- Done when: all decomp offsets covered. Expect 1500+ lines.
+
+## Task 285 — Victory Conditions DEEP transliteration + Sound Driver DEEP transliteration (87 functions — REDO)
+- [x] Assigned to agent (worker-2, clone_2, copilot)
+- [ ] Finished
+- Goal: Task 279 only added offset markers (~99 lines). This task REQUIRES FULL FUNCTION BODY TRANSLITERATION. Do NOT just add comment markers — you must transliterate every function body from the decomp.
+  - victory.cpp.decomp: 59 funcs — RGE_Victory_Conditions.cpp and TRIBE_Victory_Conditions.cpp need the ACTUAL CODE from each decomp function translated to C++. Read the decomp, translate the control flow, variables, and logic. Each function should be 10-50+ lines of real C++ code.
+  - sounddrv.cpp.decomp: 36 funcs — Sounddrv.cpp needs actual DirectSound API calls, buffer management code, playback logic, etc. from the decomp.
+  CRITICAL: "Adding a // Source of truth marker" alone is NOT transliteration. You must write the actual C++ function body that matches the decomp's logic.
+- Implement: For each function in the decomp, write the full C++ implementation matching the decomp's control flow, constants, API calls, and logic. Add the source-of-truth marker AND the full function body.
+- Where: `src/game/src/RGE_Victory_Conditions.cpp`, `src/game/src/TRIBE_Victory_Conditions.cpp`, `src/game/src/Sounddrv.cpp` + headers
+- Source of truth: `victory.cpp.decomp`, `sounddrv.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
+- Non-overlap: do NOT touch panel, AI, action, basegame, command, tribegam files
+- Done when: all functions have FULL CODE BODIES (not just markers). Expect 1500+ lines of actual C++ logic.

@@ -3,6 +3,7 @@
 #include "TEasy_Panel.h"
 
 struct Special_Events;
+class TRIBE_History_Info;
 
 class Time_Line_Panel : public TEasy_Panel {
 public:
@@ -105,6 +106,17 @@ public:
     void set_body_font(void* font, long wid, long hgt);
     void set_back_color(int fill_back, uchar back_color);
     void init_timeline();
+    void draw_border();
+    void add_pop_total_special_event(long param_1, long param_2, long param_3, int param_4);
+    void record_special_event(uchar param_1, TRIBE_History_Info* param_2, uchar param_3, long param_4, long param_5, long param_6, long param_7);
+    int calculate_icon_location(Special_Events* param_1, short param_2, uchar param_3);
+    void draw_axis();
+    void draw_special_events();
+    void draw_background();
+    void draw_civilization_names();
+    void draw_timeline();
+    void draw_icon(Special_Events* param_1, short param_2, uchar param_3);
+    void draw_legend();
 
     void* axis_font;
     long axis_font_wid;

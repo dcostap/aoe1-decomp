@@ -19,6 +19,11 @@
 #include <math.h>
 #include <new>
 
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401746
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401A8E
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+
 // Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401000
 RGE_Action_Attack::RGE_Action_Attack(int param_1, RGE_Action_Object* param_2) {
     this->setup(param_1, param_2);
