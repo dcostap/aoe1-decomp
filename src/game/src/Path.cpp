@@ -377,6 +377,7 @@ float Path::distanceToNextWaypoint() const {
     return dist;
 }
 
+// Fully verified. Source of truth: path.cpp.decomp @ 0x0046A810
 std::ostream& operator<<(std::ostream& os, const Path& path) {
     for (int i = 0; i < path.currentSizeValue; ++i) {
         const Waypoint& wp = path.pathValue[i];

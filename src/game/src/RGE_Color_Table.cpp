@@ -1,5 +1,6 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/TDrawArea.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
 #include "../include/mystring.h"
 
@@ -49,6 +50,62 @@ static void RGE_translate_palette(tagPALETTEENTRY* in_pal, tagPALETTEENTRY* out_
         out_pal[index1].peBlue = (BYTE)(blue + (delta_b / 100));
         out_pal[index1].peFlags = in_pal[index1].peFlags;
     }
+}
+
+// Fully verified. Source of truth: color.cpp.decomp @ 0x004240B0
+void RGE_fade_palette(TDrawArea* param_1, tagPALETTEENTRY param_2, float param_3, uchar param_4, tagPALETTEENTRY* param_5, int param_6, int param_7) {
+    tagPALETTEENTRY palette1[257];
+    tagPALETTEENTRY palette2[257];
+    memset(palette1, 0, sizeof(palette1));
+    memset(palette2, 0, sizeof(palette2));
+
+    if (param_5 == nullptr) {
+        param_1->GetPalette(palette1 + 1);
+    } else {
+        memcpy(palette1 + 1, param_5, 0x100 * sizeof(tagPALETTEENTRY));
+    }
+
+    int done = 0;
+    const ulong old_time = debug_timeGetTime((char*)"C:/msdev/work/age1_x1/color.cpp", 0x69);
+
+    if (param_4 != 1) {
+        do {
+            const ulong now = debug_timeGetTime((char*)"C:/msdev/work/age1_x1/color.cpp", 0x88);
+            const float fade_time2 = param_3 - (float)(int)(now - old_time) * 0.001f;
+
+            long delta_time = 0;
+            if (!((param_3 <= 0.0f) || (param_3 < fade_time2) || (fade_time2 < 0.0f))) {
+                delta_time = (long)fade_time2;
+            }
+
+            if (delta_time < 1) {
+                delta_time = 0;
+                done = 1;
+            }
+
+            RGE_translate_palette(palette1 + 1, palette2 + 1, param_2, delta_time, param_6, param_7);
+            param_1->SetPalette(palette2 + 1);
+        } while (done == 0);
+        return;
+    }
+
+    do {
+        const ulong now = debug_timeGetTime((char*)"C:/msdev/work/age1_x1/color.cpp", 0x70);
+        const float fade_time2 = (float)(int)(now - old_time) * 0.001f;
+
+        long delta_time = 100;
+        if (!((param_3 <= 0.0f) || (param_3 < fade_time2) || (fade_time2 < 0.0f))) {
+            delta_time = (long)fade_time2;
+        }
+
+        if (99 < delta_time) {
+            delta_time = 100;
+            done = 1;
+        }
+
+        RGE_translate_palette(palette1 + 1, palette2 + 1, param_2, delta_time, param_6, param_7);
+        param_1->SetPalette(palette2 + 1);
+    } while (done == 0);
 }
 
 RGE_Color_Table::RGE_Color_Table() {
@@ -126,7 +183,7 @@ RGE_Color_Table::RGE_Color_Table(char* param_1) {
 }
 
 RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount_percent, tagPALETTEENTRY* base_color_or_null, tagPALETTEENTRY* palette_or_null) {
-    // Fully verified. Source of truth: color.cpp.asm @ 0x004245F0
+    // Fully verified. Source of truth: color.cpp.decomp @ 0x004245F0
     tagPALETTEENTRY palette[257];
     tagPALETTEENTRY temp_palette[257];
 

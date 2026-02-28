@@ -32,6 +32,7 @@ long TVerticalSliderPanel::setup(TDrawArea* area, TPanel* parent, long x, long y
 }
 
 void TVerticalSliderPanel::set_rect(tagRECT param_1) { TScrollBarPanel::set_rect(param_1); }
+// Fully verified. Source of truth: pnl_sld.cpp.decomp @ 0x0047BDC0
 void TVerticalSliderPanel::set_rect(long param_1, long param_2, long param_3, long param_4) { TScrollBarPanel::set_rect(param_1, param_2, param_3, param_4); }
 void TVerticalSliderPanel::set_color(uchar param_1) { TScrollBarPanel::set_color(param_1); }
 void TVerticalSliderPanel::set_active(int param_1) { TScrollBarPanel::set_active(param_1); }
@@ -44,7 +45,7 @@ void TVerticalSliderPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_
 void TVerticalSliderPanel::draw_setup(int param_1) { TScrollBarPanel::draw_setup(param_1); }
 void TVerticalSliderPanel::draw_finish() { TScrollBarPanel::draw_finish(); }
 void TVerticalSliderPanel::draw() {
-    // Fully verified. Source of truth: pnl_sld.cpp.asm @ 0x0047BDE0
+    // Fully verified. Source of truth: pnl_sld.cpp.decomp @ 0x0047BDE0
     TScrollBarPanel::draw();
 }
 void TVerticalSliderPanel::draw_rect(tagRECT* param_1) { TScrollBarPanel::draw_rect(param_1); }
@@ -146,7 +147,7 @@ void THorizontalSliderPanel::set_overlapped_redraw(TPanel* param_1, TPanel* para
 void THorizontalSliderPanel::draw_setup(int param_1) { TScrollBarPanel::draw_setup(param_1); }
 void THorizontalSliderPanel::draw_finish() { TScrollBarPanel::draw_finish(); }
 void THorizontalSliderPanel::draw() {
-    // Fully verified. Source of truth: pnl_sld.cpp.asm @ 0x0047BF30
+    // Fully verified. Source of truth: pnl_sld.cpp.decomp @ 0x0047BF30
     TScrollBarPanel::draw();
 }
 void THorizontalSliderPanel::draw_rect(tagRECT* param_1) { TScrollBarPanel::draw_rect(param_1); }
