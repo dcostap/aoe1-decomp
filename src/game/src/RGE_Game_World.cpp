@@ -579,7 +579,7 @@ void RGE_Game_World::terrain_tables_init(int fd) {
     CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::terrain_tables_init: terrain_num=%d terrain_size=%d stream_pos=%ld",
         (int)this->terrain_num, (int)this->terrain_size, rge_stream_tell(fd));
     if (this->terrain_num > 0 && this->terrain_size > 0) {
-        // Source of truth: world.cpp.decomp @ 0x00541880.
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00541880.
         // Serialized data stores pointer-presence flags first, then optional float tables.
         this->terrains = (float**)calloc(this->terrain_num, sizeof(float*));
         rge_read(fd, this->terrains, (long)this->terrain_num * (long)sizeof(float*));
@@ -612,8 +612,7 @@ void RGE_Game_World::init_sprites(int fd) {
         this->sprites = nullptr;
         return;
     }
-
-    // Source of truth: world.cpp.decomp @ 0x00541A80.
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00541A80.
     // Read serialized sprite pointer flags first; only non-null entries are materialized.
     this->sprites = (RGE_Sprite**)calloc(this->sprite_num, sizeof(RGE_Sprite*));
     rge_read(fd, this->sprites, (long)this->sprite_num * (long)sizeof(RGE_Sprite*));
@@ -816,7 +815,7 @@ void RGE_Game_World::save(int param_1) {
 
 // Scenario loading virtuals
 void RGE_Game_World::scenario_make_player(short param_1, uchar param_2, uchar param_3, uchar param_4, char* param_5) {
-    // Source of truth: world.cpp.decomp @ 0x00544250
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00544250
     (void)param_2;
     if (param_3 == '\0') {
         RGE_Master_Player* master = nullptr;
@@ -834,14 +833,14 @@ void RGE_Game_World::scenario_make_player(short param_1, uchar param_2, uchar pa
 }
 
 void RGE_Game_World::scenario_make_map(int param_1) {
-    // Source of truth: world.cpp.decomp @ 0x005442E0
+// Fully verified. Source of truth: world.cpp.decomp @ 0x005442E0
     if (this->map != nullptr) {
         this->map->scenario_load(param_1, nullptr);
     }
 }
 
 uchar RGE_Game_World::load_scenario(RGE_Player_Info* param_1) {
-    // Source of truth: world.cpp.decomp @ 0x00544090
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00544090
     world_update_counter = 0;
     if (rge_base_game == nullptr) {
         return 0;
@@ -896,7 +895,7 @@ uchar RGE_Game_World::load_scenario(RGE_Player_Info* param_1) {
 }
 
 uchar RGE_Game_World::load_scenario(char* param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00543E00
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00543E00
     world_update_counter = 0;
     if (param_1 == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
         return 0;
@@ -955,42 +954,42 @@ uchar RGE_Game_World::load_scenario(char* param_1, RGE_Player_Info* param_2) {
 }
 
 void RGE_Game_World::load_scenario1(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00544300
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00544300
     rge_world_load_scenario_common(this, param_1, param_2, 1.0f, 0);
 }
 
 void RGE_Game_World::load_scenario2(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x005445C0
+// Fully verified. Source of truth: world.cpp.decomp @ 0x005445C0
     rge_world_load_scenario_common(this, param_1, param_2, 1.03f, 0);
 }
 
 void RGE_Game_World::load_scenario3(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00544880
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00544880
     rge_world_load_scenario_common(this, param_1, param_2, 1.04f, 1);
 }
 
 void RGE_Game_World::load_scenario4(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00544B90
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00544B90
     rge_world_load_scenario_common(this, param_1, param_2, 1.06f, 1);
 }
 
 void RGE_Game_World::load_scenario5(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00544E70
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00544E70
     rge_world_load_scenario_common(this, param_1, param_2, 1.06f, 1);
 }
 
 void RGE_Game_World::load_scenario6(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x005451A0
+// Fully verified. Source of truth: world.cpp.decomp @ 0x005451A0
     rge_world_load_scenario_common(this, param_1, param_2, 1.07f, 1);
 }
 
 void RGE_Game_World::load_scenario7(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x005454D0
+// Fully verified. Source of truth: world.cpp.decomp @ 0x005454D0
     rge_world_load_scenario_common(this, param_1, param_2, 1.08f, 1);
 }
 
 void RGE_Game_World::load_scenario8(int param_1, RGE_Player_Info* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00545800
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545800
     rge_world_load_scenario_common(this, param_1, param_2, 1.11f, 1);
 }
 
@@ -2329,7 +2328,7 @@ void RGE_Game_World::update_mutual_allies() {
 }
 
 int RGE_Game_World::initializePathingSystem() {
-    // Source of truth: world.cpp.decomp @ 0x00546030
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00546030
     RGE_Map* map_ptr = this->map;
     if (map_ptr == nullptr) {
         return 0;
@@ -2342,7 +2341,7 @@ int RGE_Game_World::initializePathingSystem() {
 }
 
 int RGE_Game_World::numberObjects() {
-    // Source of truth: world.cpp.decomp @ 0x00545D10
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D10
     return this->numberObjectsValue;
 }
 
@@ -2365,12 +2364,12 @@ int RGE_Game_World::maxNumberNegativeObjects() {
 }
 
 int RGE_Game_World::numberNegativeObjects() {
-    // Source of truth: world.cpp.decomp @ 0x00545D20
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D20
     return this->numberNegativeObjectsValue;
 }
 
 RGE_Static_Object* RGE_Game_World::object(int param_1) {
-    // Source of truth: world.cpp.decomp @ 0x00545D30
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D30
     if (param_1 < 0) {
         int neg_idx = -param_1;
         if (neg_idx < this->maxNumberNegativeObjectsValue && this->negativeObjectsValue != nullptr) {
@@ -2384,7 +2383,7 @@ RGE_Static_Object* RGE_Game_World::object(int param_1) {
 }
 
 RGE_Static_Object* RGE_Game_World::object_ptr(int param_1) {
-    // Source of truth: world.cpp.decomp @ 0x00545D80
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D80
     return this->object(param_1);
 }
 
@@ -2454,7 +2453,7 @@ long RGE_Game_World::get_next_reusable_object_id() {
 }
 
 uchar RGE_Game_World::recycle_object_out_of_game(uchar param_1, RGE_Static_Object* param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00546070
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00546070
     switch (param_1) {
     case 0x0A:
         this->reusable_static_objects->add_node(param_2);
