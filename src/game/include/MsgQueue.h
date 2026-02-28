@@ -2,6 +2,9 @@
 #include "common.h"
 
 struct MsgQueue {
+    MsgQueue();
+    ~MsgQueue();
+
     ulong Code;
     ulong ExecTurn;
     uchar SeqNo;

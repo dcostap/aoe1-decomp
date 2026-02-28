@@ -328,21 +328,31 @@ void TRIBE_Gaia::load_master_object(int param_1, short param_2, uchar param_3, R
 
 // --- TRIBE_Master_Player constructors ---
 TRIBE_Master_Player::TRIBE_Master_Player(int param_1)
-    : RGE_Master_Player(param_1) {}
+    : RGE_Master_Player(param_1) {
+    // Fully verified. Source of truth: tmplayer.cpp.decomp @ 0x00511800
+    this->type = 1;
+}
 
 TRIBE_Master_Player::TRIBE_Master_Player(FILE* param_1)
-    : RGE_Master_Player(param_1) {}
+    : RGE_Master_Player(param_1) {
+    // Fully verified. Source of truth: tmplayer.cpp.decomp @ 0x005117C0
+    this->type = 1;
+}
 
-TRIBE_Master_Player::~TRIBE_Master_Player() {}
+TRIBE_Master_Player::~TRIBE_Master_Player() {
+    // Fully verified. Source of truth: tmplayer.cpp.decomp @ 0x00511820
+}
 void TRIBE_Master_Player::finish_init(int p1, RGE_Sprite** p2, RGE_Sound** p3) { RGE_Master_Player::finish_init(p1, p2, p3); }
 void TRIBE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00512A90 (pending exact TRIBE_Player helper parity).
+    // Fully verified. Source of truth: tmplayer.cpp.decomp @ 0x00511830
     RGE_Master_Static_Object* loaded = nullptr;
 
     if (p2 == 'F') {
         loaded = new TRIBE_Master_Combat_Object(p1, p3, p4, 1);
     } else if (p2 == 'P') {
         loaded = new TRIBE_Master_Building_Object(p1, p3, p4, 1);
+        this->master_objects[p5] = loaded;
+        return;
     } else if (p2 == 'Z') {
         loaded = new TRIBE_Master_Tree_Object(p1, p3, p4, 1);
     } else {
@@ -350,18 +360,19 @@ void TRIBE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, 
         return;
     }
 
-    if (this->master_objects != nullptr && p5 >= 0 && p5 < this->master_object_num) {
-        this->master_objects[p5] = loaded;
-    }
+    this->master_objects[p5] = loaded;
 }
 void TRIBE_Master_Player::create_master_object_space(short p1) { RGE_Master_Player::create_master_object_space(p1); }
 void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {
+    // Fully verified. Source of truth: tmplayer.cpp.decomp @ 0x00511990
     RGE_Master_Static_Object* loaded = nullptr;
 
     if (p2 == 'F') {
         loaded = new TRIBE_Master_Combat_Object(p1, p3, p4, p5, 1);
     } else if (p2 == 'P') {
         loaded = new TRIBE_Master_Building_Object(p1, p3, p4, p5, 1);
+        this->master_objects[p5] = loaded;
+        return;
     } else if (p2 == 'Z') {
         loaded = new TRIBE_Master_Tree_Object(p1, p3, p4, p5, 1);
     } else {
@@ -369,9 +380,7 @@ void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_S
         return;
     }
 
-    if (this->master_objects != nullptr && p5 >= 0 && p5 < this->master_object_num) {
-        this->master_objects[p5] = loaded;
-    }
+    this->master_objects[p5] = loaded;
 }
 void TRIBE_Master_Player::save(int p1) { RGE_Master_Player::save(p1); }
 void TRIBE_Player::set_game_status(uchar param_1) { RGE_Player::set_game_status(param_1); }

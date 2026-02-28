@@ -122,6 +122,7 @@ int rge_close(int handle);
 void debug_random_write();
 void dump_vismap_log();
 void rge_read(int handle, void* buf, int size);
+void rge_read_uncompressed(int handle, void* buf, int size);
 void rge_write(int handle, void* buf, int size);
 void rge_write_uncompressed(int handle, void* buf, int size);
 long rge_stream_tell(int handle);

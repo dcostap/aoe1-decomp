@@ -16,6 +16,12 @@ public:
     virtual ~TRIBE_Panel_Button();
 
     void set_text_msg(char* text);
+    void set_display_garrison(int value);
+    void set_garrison_number(int value);
+    int get_garrison_number();
+
+    virtual int is_inside(long param_1, long param_2) override;
+    virtual void draw() override;
 
     int display_garrison;
     int garrsion_number;
