@@ -58,6 +58,121 @@ UnitAIModule* CreateTribeUnitAIModule(RGE_Static_Object* object, short object_gr
     }
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413150
+void TribeElephantUnitAIModule::save(int param_1) {
+    UnitAIModule::save(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413450
+void TribeElephantUnitAIModule::load(int param_1) {
+    UnitAIModule::load(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413810
+RGE_Player* TribeElephantUnitAIModule::owner() const {
+    return UnitAIModule::owner();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413820
+RGE_Static_Object* TribeElephantUnitAIModule::object() const {
+    return UnitAIModule::object();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413830
+int TribeElephantUnitAIModule::objectID() const {
+    return UnitAIModule::objectID();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413840
+int TribeElephantUnitAIModule::objectCategory() const {
+    return UnitAIModule::objectCategory();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413850
+int TribeElephantUnitAIModule::mood() const {
+    return UnitAIModule::mood();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413860
+unsigned long TribeElephantUnitAIModule::lastUpdateTime() const {
+    return UnitAIModule::lastUpdateTime();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413870
+unsigned long TribeElephantUnitAIModule::idleTimer() const {
+    return UnitAIModule::idleTimer();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413880
+unsigned long TribeElephantUnitAIModule::idleTimeout() const {
+    return UnitAIModule::idleTimeout();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413890
+unsigned long TribeElephantUnitAIModule::secondaryTimer() const {
+    return UnitAIModule::secondaryTimer();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138A0
+float TribeElephantUnitAIModule::defenseBuffer() const {
+    return UnitAIModule::defenseBuffer();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138C0
+void TribeElephantUnitAIModule::setDefenseBuffer(float param_1) {
+    UnitAIModule::setDefenseBuffer(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138D0
+int TribeElephantUnitAIModule::orderQueueSize() const {
+    return UnitAIModule::orderQueueSize();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138E0
+OrderEvent* TribeElephantUnitAIModule::orderQueueElement(int param_1) const {
+    return UnitAIModule::orderQueueElement(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413910
+void TribeElephantUnitAIModule::purgeOrderQueue() {
+    UnitAIModule::purgeOrderQueue();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413920
+int TribeElephantUnitAIModule::currentOrder() const {
+    return UnitAIModule::currentOrder();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138B0
+int TribeElephantUnitAIModule::canConvert(int param_1) {
+    return UnitAIModule::canConvert(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414D40
+int TribeElephantUnitAIModule::order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11) {
+    return UnitAIModule::order(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414E80
+int TribeElephantUnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    return UnitAIModule::notify(param_1, param_2, param_3, param_4, param_5, param_6);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414F40
+int TribeElephantUnitAIModule::notifyCommander(NotifyEvent* param_1) {
+    return UnitAIModule::notifyCommander(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414F70
+int TribeElephantUnitAIModule::notifyCommander(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    return UnitAIModule::notifyCommander(param_1, param_2, param_3, param_4, param_5, param_6);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415040
+void TribeElephantUnitAIModule::search() {
+    UnitAIModule::search();
+}
+
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415120
 int TribeElephantUnitAIModule::importantWhenDead(int param_1) {
     return UnitAIModule::importantWhenDead(param_1);
@@ -243,6 +358,11 @@ int TribeElephantUnitAIModule::exploreAndDestroy(int param_1, int param_2, int p
     return UnitAIModule::exploreAndDestroy(param_1, param_2, param_3);
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417640
+int TribeElephantUnitAIModule::importantObject(int param_1) {
+    return UnitAIModule::importantObject(param_1);
+}
+
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004177C0
 int TribeElephantUnitAIModule::convertToLOSResourceType(int param_1) {
     return UnitAIModule::convertToLOSResourceType(param_1);
@@ -266,6 +386,56 @@ int TribeElephantUnitAIModule::processMisc() {
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419BC0
 int TribeElephantUnitAIModule::processRetryableOrder() {
     return UnitAIModule::processRetryableOrder();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x0041A100
+void TribeElephantUnitAIModule::logDebug(char* param_1) {
+    UnitAIModule::logDebug(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413150
+void TribeSoldierUnitAIModule::save(int param_1) {
+    UnitAIModule::save(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413450
+void TribeSoldierUnitAIModule::load(int param_1) {
+    UnitAIModule::load(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413810
+RGE_Player* TribeSoldierUnitAIModule::owner() const {
+    return UnitAIModule::owner();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004138B0
+int TribeSoldierUnitAIModule::canConvert(int param_1) {
+    return UnitAIModule::canConvert(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414D40
+int TribeSoldierUnitAIModule::order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11) {
+    return UnitAIModule::order(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414E80
+int TribeSoldierUnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    return UnitAIModule::notify(param_1, param_2, param_3, param_4, param_5, param_6);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414F40
+int TribeSoldierUnitAIModule::notifyCommander(NotifyEvent* param_1) {
+    return UnitAIModule::notifyCommander(param_1);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414F70
+int TribeSoldierUnitAIModule::notifyCommander(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    return UnitAIModule::notifyCommander(param_1, param_2, param_3, param_4, param_5, param_6);
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415040
+void TribeSoldierUnitAIModule::search() {
+    UnitAIModule::search();
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415120
@@ -443,6 +613,11 @@ int TribeSoldierUnitAIModule::exploreAndDestroy(int param_1, int param_2, int pa
     return UnitAIModule::exploreAndDestroy(param_1, param_2, param_3);
 }
 
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417640
+int TribeSoldierUnitAIModule::importantObject(int param_1) {
+    return UnitAIModule::importantObject(param_1);
+}
+
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004177C0
 int TribeSoldierUnitAIModule::convertToLOSResourceType(int param_1) {
     return UnitAIModule::convertToLOSResourceType(param_1);
@@ -466,4 +641,9 @@ int TribeSoldierUnitAIModule::processMisc() {
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419BC0
 int TribeSoldierUnitAIModule::processRetryableOrder() {
     return UnitAIModule::processRetryableOrder();
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x0041A100
+void TribeSoldierUnitAIModule::logDebug(char* param_1) {
+    UnitAIModule::logDebug(param_1);
 }
