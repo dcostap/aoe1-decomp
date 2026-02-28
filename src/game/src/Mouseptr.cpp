@@ -33,6 +33,28 @@ TMousePointer::~TMousePointer() {
     MouseSystem = nullptr;
 }
 
+int TMousePointer::Shutdown_Mouse() {
+    // Fully verified. Source of truth: mouseptr.cpp.decomp @ 0x0045B040
+    if (this->Shutdown != 0) {
+        return 0;
+    }
+    if (this->custom_draw == 0) {
+        return 1;
+    }
+    if (this->Setup == 0) {
+        return 0;
+    }
+    this->reset();
+    this->render_area = nullptr;
+    this->restoreSurface = nullptr;
+    this->renderSurface = nullptr;
+    this->PrimarySurface = nullptr;
+    this->primary_area = nullptr;
+    this->active = 0;
+    this->Shutdown = 1;
+    return 1;
+}
+
 int TMousePointer::setup(int custom_draw_flag, TDrawArea* draw_area, char* filename, int file_id, int max_cursors) {
     // Fully verified. Source of truth: mouseptr.cpp.decomp @ 0x0045B120
     MouseSystem = this;
@@ -399,14 +421,13 @@ void TMousePointer::delete_surfaces() {
 }
 
 void TMousePointer::reset() {
-    // Assembly at 0x0045BF80
-    // Lines 2068-2071
+    // Fully verified. Source of truth: mouseptr.cpp.decomp @ 0x0045BF80
     this->save_area_valid = 0;
     this->drawn = 0;
 }
 
 int TMousePointer::Restore_Mouse(TDrawArea* param_1) {
-    // Source of truth: Mouseptr.cpp.decomp @ 0x0045B0A0 (TMousePointer::Restore_Mouse).
+    // Fully verified. Source of truth: mouseptr.cpp.decomp @ 0x0045B0A0
     if (this->Shutdown == 0) {
         return 0;
     }

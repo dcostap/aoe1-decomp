@@ -14,6 +14,7 @@ public:
     };
 
     RGE_Moving_Object();
+    RGE_Moving_Object(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     float angle_to_object(RGE_Static_Object* param_1, float param_2, float param_3);
