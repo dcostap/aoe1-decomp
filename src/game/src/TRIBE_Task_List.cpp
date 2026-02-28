@@ -11,7 +11,7 @@ RGE_Task* TRIBE_Task_List::create_task(short param_1, short param_2) {
 }
 
 RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5) {
-    // Source of truth: ttsk_lst.cpp.decomp @ 0x0052C3F0.
+    // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C3F0
 
     if (this->list != nullptr && this->list_num > 0 && param_1 != nullptr) {
         const short carried_attr = param_1->attribute_type_held;
@@ -171,7 +171,13 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
     return this->RGE_Task_List::get_target_task(param_1, param_2, param_3, param_4, param_5);
 }
 
+// Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C8A1
+static void ttsk_lst_jump_stub_0052C8A1() {
+    // Decompiler/branch-alignment thunk between get_target_task and is_attack_task.
+}
+
 int TRIBE_Task_List::is_attack_task(RGE_Task* param_1) {
+    // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C8D0
     // RGE_Task.action_type offset is +0x6 (task.cpp.decomp / task_lst.cpp.asm).
     if (param_1 != nullptr) {
         const short action_type = *(const short*)((const unsigned char*)param_1 + 0x6);

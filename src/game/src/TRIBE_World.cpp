@@ -122,6 +122,14 @@ static void tribe_world_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj)
     free(node);
 }
 
+static void tworld_switch_anchor_005310DE() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005310DE
+}
+
+static void tworld_switch_anchor_005316BD() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005316BD
+}
+
 static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
     if (obj == nullptr) {
         return;

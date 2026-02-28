@@ -7,6 +7,7 @@
 
 // Source of truth: scr_mps.cpp.decomp @ 0x004A5610, 0x004A6050, 0x004A60E0, 0x004A6100, 0x004A6120, 0x004A6170.
 TRIBE_Screen_Wait::TRIBE_Screen_Wait()
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5610
     : TScreenPanel((char*)"Multiplayer Wait Screen") {
     this->message = nullptr;
     this->cancel_button = nullptr;
@@ -52,6 +53,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait()
 }
 
 TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6050
     this->delete_panel((TPanel**)&this->message);
     this->delete_panel((TPanel**)&this->close_button);
     this->delete_panel((TPanel**)&this->scenarioName);
@@ -73,6 +75,7 @@ void TRIBE_Screen_Wait::set_text(long text_id) {
 }
 
 long TRIBE_Screen_Wait::action(TPanel* panel, long action_id, ulong param_3, ulong param_4) {
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6120
     if (panel != nullptr && panel == this->close_button && action_id == 1) {
         if (rge_base_game != nullptr) {
             rge_base_game->close();
@@ -83,6 +86,7 @@ long TRIBE_Screen_Wait::action(TPanel* panel, long action_id, ulong param_3, ulo
 }
 
 long TRIBE_Screen_Wait::handle_idle() {
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6170
     if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
