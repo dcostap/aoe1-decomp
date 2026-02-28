@@ -2,6 +2,9 @@
 #include "common.h"
 
 struct RESENDER {
+    RESENDER();
+    ~RESENDER();
+
     ulong TimeSent;
     uint Serial;
     char* ResendMsg;

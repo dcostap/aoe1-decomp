@@ -21,9 +21,9 @@ static int object_list_ftol(double value) {
     return (int)(long)value;
 }
 
-static int obj_list_corrupt_004630DD() {
-    // TODO: STUB — decomp output corrupted/unreadable at obj_list.cpp.decomp @ 0x004630DD.
-    return 0;
+static void obj_list_switch_anchor_004630DD() {
+    // Fully verified. Source of truth: obj_list.cpp.asm @ 0x004630DD
+    // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
 
 RGE_Object_List::RGE_Object_List() {

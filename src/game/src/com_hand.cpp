@@ -1,4 +1,5 @@
 #include "../include/TCommunications_Handler.h"
+#include "../include/RESENDER.h"
 #include "../include/NAME.h"
 #include "../include/TChat.h"
 #include "../include/RGE_Communications_Queue.h"
@@ -15,6 +16,19 @@
 #include <string.h>
 #include <new>
 #include <dplay.h>
+
+struct HOLDER {
+    char* HoldMsg;
+    uint Serial;
+    uint Length;
+    ulong dcoFromID;
+    ulong dcoReceiveID;
+    ulong _padding_14;
+
+    HOLDER();
+    ~HOLDER();
+};
+static_assert(sizeof(HOLDER) == 0x18, "Size mismatch");
 
 namespace {
 // COMMPLAYEROPTIONS::Humanity offset inside PlayerOptions.
@@ -503,14 +517,18 @@ TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game
         this->Lobby->glpDP = nullptr;
     }
 
-    // Arrays sized like original (0x1f6 entries).
-    this->Resend = (RESENDER*)::operator new((size_t)0x6DD0, std::nothrow);
-    this->OnHold = (HOLDER*)::operator new((size_t)0x2F10, std::nothrow);
+    // Source of truth: com_hand.cpp.decomp @ 0x00425A40 allocates/constructs 0x1F6 entries.
+    this->Resend = (RESENDER*)::operator new(sizeof(RESENDER) * (size_t)0x1F6, std::nothrow);
+    this->OnHold = (HOLDER*)::operator new(sizeof(HOLDER) * (size_t)0x1F6, std::nothrow);
     if (this->Resend != nullptr) {
-        memset(this->Resend, 0, 0x6DD0);
+        for (int i = 0; i < 0x1F6; ++i) {
+            new (&this->Resend[i]) RESENDER();
+        }
     }
     if (this->OnHold != nullptr) {
-        memset(this->OnHold, 0, 0x2F10);
+        for (int i = 0; i < 0x1F6; ++i) {
+            new (&this->OnHold[i]) HOLDER();
+        }
     }
 
     this->FriendlyName = new NAME[(size_t)max_game_players + 1];
@@ -582,10 +600,16 @@ TCommunications_Handler::~TCommunications_Handler() {
     }
 
     if (this->Resend != nullptr) {
+        for (int i = 0; i < 0x1F6; ++i) {
+            this->Resend[i].~RESENDER();
+        }
         ::operator delete(this->Resend);
         this->Resend = nullptr;
     }
     if (this->OnHold != nullptr) {
+        for (int i = 0; i < 0x1F6; ++i) {
+            this->OnHold[i].~HOLDER();
+        }
         ::operator delete(this->OnHold);
         this->OnHold = nullptr;
     }
@@ -1592,6 +1616,52 @@ void TCommunications_Handler::ClearAllSerialNumbers() {
         this->LastSerialRepliedTX[player] = 0;
         this->LastRequestRepliedTX[player] = 0;
     }
+}
+
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426450
+RESENDER::RESENDER() {
+    this->TimeSent = 0;
+    this->ResendMsg = nullptr;
+    this->Serial = 0;
+    this->Length = 0;
+    for (int i = 0; i < 10; ++i) {
+        this->DestMap[i] = 0;
+    }
+}
+
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004264A0
+RESENDER::~RESENDER() {
+    this->TimeSent = 0;
+    if (this->ResendMsg != nullptr) {
+        ::operator delete(this->ResendMsg);
+    }
+    this->ResendMsg = nullptr;
+    this->Serial = 0;
+    this->Length = 0;
+    for (int i = 0; i < 10; ++i) {
+        this->DestMap[i] = 0;
+    }
+}
+
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004265E0
+HOLDER::HOLDER() {
+    this->HoldMsg = nullptr;
+    this->Serial = 0;
+    this->Length = 0;
+    this->dcoFromID = 0;
+    this->dcoReceiveID = 0;
+}
+
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426600
+HOLDER::~HOLDER() {
+    if (this->HoldMsg != nullptr) {
+        ::operator delete(this->HoldMsg);
+    }
+    this->HoldMsg = nullptr;
+    this->Serial = 0;
+    this->Length = 0;
+    this->dcoFromID = 0;
+    this->dcoReceiveID = 0;
 }
 
 int TCommunications_Handler::AddCommand(ulong p1, void* p2, ulong p3, int p4, uchar p5, int p6) {
@@ -2893,8 +2963,6 @@ long TCommunications_Handler::SendChecksumMessage(ulong world_time, uint random,
 
 // BEGIN Task 222 decomp gap implementations
 // Enumerated missing wrappers from com_hand.cpp.decomp; transliteration pass in progress.
-// TODO: STUB: RESENDER/HOLDER constructor wrappers (0x00426450, 0x004264A0, 0x004265E0, 0x00426600) are tracked for follow-up.
-
 char* TCommunications_Handler::WaitingOnNamedInfo(uint param_2) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425780
     char* wait_info = this->WaitingOnInfo(param_2);

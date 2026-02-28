@@ -197,7 +197,10 @@ void RGE_Timeline::update() {
     this->old_time = current_time;
 }
 
-// TODO: STUB — decomp output corrupted/unreadable at timeline.cpp.decomp @ 0x0050DAF5
+// Fully verified. Source of truth: timeline.cpp.asm @ 0x0050DAF5
+static void timeline_switch_anchor_0050DAF5() {
+    // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
+}
 
 // Source of truth: timeline.cpp.decomp @ 0x0050DB10
 void RGE_Timeline::mock_update(float time) {
