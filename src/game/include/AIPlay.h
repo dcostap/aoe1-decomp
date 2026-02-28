@@ -4,6 +4,9 @@
 #include "AIPlayGroup.h"
 #include "AIPlayPhase.h"
 
+class AIPlayStatus;
+class RGE_Game_World;
+
 struct AIPlay {
     char nameValue[65];
     uchar minimumNumberUnitsValue;
@@ -32,6 +35,7 @@ struct AIPlay {
     int gatherTolerance(int unused, int phaseIndex);
     AIPlayGroup* group(int index);
     AIPlayPhase* phase(int index);
+    int fillGroups(AIPlayStatus* status, int* units, int unitCount, RGE_Game_World* world);
     int groupGivenCommandOnPhase(int groupNumber, int commandType, int phaseIndex);
     int locationsOnMap(int xOffset, int yOffset, int width, int height);
 

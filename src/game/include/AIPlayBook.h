@@ -14,6 +14,9 @@ public:
     virtual int convertUnitNameToIntType(char* param_1); // vt[3] (0xC)
     virtual int convertUnitToIntType(RGE_Static_Object* param_1); // vt[4] (0x10)
     int loadPlays(char* param_1);
+    AIPlay* play(int index);
+    AIPlay* play(char* name);
+    int playNumber(char* name);
 
     int numberPlaysValue;
     char nameValue[65];
