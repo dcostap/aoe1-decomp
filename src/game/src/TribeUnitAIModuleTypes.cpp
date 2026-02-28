@@ -153,3 +153,252 @@ TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(RGE_Static_Object* param_1, i
     : UnitAIModule(param_1, param_2) {}
 
 TribeRangedUnitAIModule2::~TribeRangedUnitAIModule2() = default;
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x005040A0
+int TribePreditorUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    (void)param_1;
+    return 1;
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005040B0)
+int TribePreditorUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00503D30)
+int TribeHuntedAnimalUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00503E30)
+int TribeHuntedAnimalUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005041C0)
+int TribeElephantUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x005042D0
+int TribeElephantUnitAIModule::processIdle(int param_1) {
+    (void)param_1;
+    return 5;
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504430
+int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    (void)param_1;
+    return 1;
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00504440)
+int TribeLionUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005044F0)
+int TribeLionUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00504600)
+int TribeRangedUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00504780)
+int TribeRangedUnitAIModule2::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417710)
+int TribeRangedUnitAIModule2::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D30
+int TribeCivilianUnitAIModule::importantWhenDead(int param_1) {
+    return this->importantObject(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00504D50)
+int TribeCivilianUnitAIModule::attackObject(int param_1, int param_2) {
+    return UnitAIModule::attackObject(param_1, param_2);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504DE0
+int TribeCivilianUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    return UnitAIModule::canAttackUnit(param_1);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504E20
+int TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    (void)param_1;
+    return 0;
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504E30
+int TribeCivilianUnitAIModule::retryableOrder(int param_1) {
+    return UnitAIModule::retryableOrder(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00504E70)
+int TribeCivilianUnitAIModule::convertToLOSResourceType(int param_1) {
+    return UnitAIModule::convertToLOSResourceType(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00505360)
+int TribeCivilianUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00505740)
+int TribeCivilianUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00505780)
+int TribeCivilianUnitAIModule::processMisc() {
+    return UnitAIModule::processMisc();
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005059D0)
+int TribePriestUnitAIModule::attackObject(int param_1, int param_2) {
+    return UnitAIModule::attackObject(param_1, param_2);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505A70
+int TribePriestUnitAIModule::retryableOrder(int param_1) {
+    switch (param_1) {
+        case 1:
+        case 2:
+        case 6:
+        case 7:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505AB0
+int TribePriestUnitAIModule::canConvert(int param_1) {
+    (void)param_1;
+    return 1;
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00505B20)
+int TribePriestUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    return UnitAIModule::canAttackUnit(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00505EA0)
+int TribePriestUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506160)
+int TribePriestUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506200)
+int TribePriestUnitAIModule::processMisc() {
+    return UnitAIModule::processMisc();
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506410)
+int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506660)
+int TribeTradeShipUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506950)
+int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506AB0)
+int TribeTransportShipUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506D00
+int TribeFishingShipUnitAIModule::importantWhenDead(int param_1) {
+    return this->importantObject(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506D40)
+int TribeFishingShipUnitAIModule::convertToLOSResourceType(int param_1) {
+    return UnitAIModule::convertToLOSResourceType(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506D80)
+int TribeFishingShipUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00506F20)
+int TribeFishingShipUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00507190)
+int TribeSoldierUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    return UnitAIModule::canAttackUnit(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005071D0)
+int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    return UnitAIModule::canAttackUnitAtNeutrality(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00507220)
+int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005074A0)
+int TribeSoldierUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00507A30)
+int TribeArtifactUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00507D90)
+int TribeArtifactUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00507DF0)
+int TribeArtifactUnitAIModule::processMisc() {
+    return UnitAIModule::processMisc();
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00507FC0)
+int TribeTowerUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    return UnitAIModule::canAttackUnit(param_1);
+}
+
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00508020
+int TribeTowerUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    (void)param_1;
+    return 1;
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x005082F0)
+int TribeBuildingUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
+    return UnitAIModule::processNotify(param_1, param_2);
+}
+
+// TODO: decomp transliteration in progress (taiuaimd.cpp.decomp @ 0x00508470)
+int TribeBuildingUnitAIModule::processIdle(int param_1) {
+    return UnitAIModule::processIdle(param_1);
+}
