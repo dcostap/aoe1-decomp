@@ -76,6 +76,9 @@ public:
     void set_auto_track(int track);
     void setDrawHighlightBar(int draw);
     void scroll_cur_line(uchar mode, short line, int update_scrollbar);
+    short item_at(long x, long y);
+    void goto_item(long x, long y);
+    void draw_highlight_bar();
 
     // Non-virtual setup (matches TTextPanel signature)
     long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,

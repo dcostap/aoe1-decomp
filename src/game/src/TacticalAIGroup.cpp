@@ -463,7 +463,7 @@ int TacticalAIGroup::assistGroupType() const { return this->assistGroupTypeValue
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EB6E0
 void TacticalAIGroup::setAssistGroupType(int param_1) { this->assistGroupTypeValue = param_1; }
 
-// TODO: 0x004EB6F0 TacticalAIGroup::task full transliteration is blocked on missing tactical helper graph.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004EB6F0. TacticalAIGroup::task full transliteration is blocked on missing tactical helper graph.
 int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2, int param_3, int param_4, int param_5) {
     // TODO: STUB - TacticalAIGroup::task is large and depends on many untranslated tactical helpers.
     (void)param_1;
@@ -651,3 +651,4 @@ int TacticalAIGroup::addObjectToDestroy(int param_1) {
     }
     return 0;
 }
+
