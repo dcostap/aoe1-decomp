@@ -583,6 +583,7 @@ long RGE_Main_View::mouse_left_move_action(long param_1, long param_2, int param
     }
 }
 
+// Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E8E9 (decompiler artifact thunk)
 long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: vw_main.cpp.asm @ 0x0053E910
     const int prog_mode = rge_base_game->prog_mode;

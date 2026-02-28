@@ -181,6 +181,7 @@ long TribeSPMenuScreen::handle_idle() {
 }
 
 long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // Fully verified. Source of truth: scr_sing.cpp.decomp @ 0x004B6CC0
     if (param_1 && (param_2 == 1)) {
         if ((TButtonPanel*)param_1 == this->button[0]) {
 CUSTOM_DEBUG_BEGIN

@@ -2378,6 +2378,11 @@ TRIBE_Effects::TRIBE_Effects(int param_1)
     // Just delegates to base class constructor
 }
 
+TRIBE_Effects::TRIBE_Effects(char* param_1)
+    : RGE_Effects(param_1) {
+    // Fully verified. Source of truth: teffects.cpp.decomp @ 0x0050D4B0
+}
+
 TRIBE_Effects::~TRIBE_Effects() {
     // Source of truth: bucket_050D.cpp.decomp @ 0x0050D4A0
     // Base class destructor handles cleanup
