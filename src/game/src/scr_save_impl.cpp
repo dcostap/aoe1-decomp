@@ -161,7 +161,7 @@ void save_set_scenario_name(RGE_Scenario* scenario, const char* name) {
 
 TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* file_name, int quit_after_save)
     : TScreenPanel((char*)kSaveGameScreenName) {
-    // Source of truth: scr_save.cpp.decomp @ 0x004A71F0
+    // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A71F0
     this->quit_after_save = quit_after_save;
     this->modeValue = mode;
     this->title = nullptr;
@@ -268,7 +268,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* file_name, int quit_af
 }
 
 TribeSaveGameScreen::~TribeSaveGameScreen() {
-    // Source of truth: scr_save.cpp.decomp @ 0x004A75C0
+    // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A75C0
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->input);
     this->delete_panel((TPanel**)&this->list);
@@ -279,7 +279,7 @@ TribeSaveGameScreen::~TribeSaveGameScreen() {
 }
 
 void TribeSaveGameScreen::fillList() {
-    // Source of truth: scr_save.cpp.decomp @ 0x004A7670
+    // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7670
     if (this->list == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
         return;
     }
@@ -348,7 +348,7 @@ void TribeSaveGameScreen::fillList() {
 }
 
 long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: scr_save.cpp.decomp @ 0x004A7850
+    // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7850
     if (param_1 != nullptr) {
         const char* panel_name = param_1->panelName();
         if (panel_name != nullptr) {
@@ -510,7 +510,7 @@ long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, u
 }
 
 void TribeSaveGameScreen::save_for_scenario_editor() {
-    // Source of truth: scr_save.cpp.decomp @ 0x004A8060
+    // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A8060
     ((TRIBE_Game*)rge_base_game)->show_status_message(0x450, (char*)0, -1);
     if (rge_base_game != nullptr && rge_base_game->world != nullptr) {
         save_set_scenario_name(rge_base_game->world->scenario, this->fileName);
