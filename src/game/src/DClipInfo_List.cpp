@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 
+#if 0 // Implemented in view.cpp for view.cpp.decomp parity
 DClipInfo_List::DClipInfo_List(int initial_blocks, int grow_size, int element_size, int y_min, int y_max, int max_draw_levels) {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x0053AD90.
     this->Free_Pool_Zone = -1;
@@ -418,4 +419,4 @@ void DClipInfo_List::ResetStats() {
     this->NewZone_Count = 0;
     this->Reset_Count = 0;
 }
-
+#endif
