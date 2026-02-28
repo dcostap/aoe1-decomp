@@ -5,6 +5,10 @@ Mandatory:
     the needed context of the task, and these sub agents ARE READ-ONLY and MUST check all your changes and review
     them, validate their parity with the sources of truth, and finally feed you their feedback. You iterate on the
     feedback until everything is perfect + compiles. 
+    **NOTE:** If sub-agent launches fail due to rate limits (429 errors, quota exceeded), that is OK and expected.
+    In that case, perform the review pass yourself without sub-agents — read each changed file, compare against
+    the decomp source of truth, verify parity, and ensure the build passes. Do NOT let rate-limited sub-agents
+    block your progress.
 2. Run autonomously, without stopping, until you are finished completely (changes pushed). You only may stop if a major issue or major blocker arises, in which case you explain in simple terms what the
     deal is, to the user. 
      
@@ -402,9 +406,39 @@ Track a mental ledger:
 - **100-300 lines**: Still too small. Batch these together next time.
 - **300-700 lines**: Acceptable but on the lean side. OK for focused tasks.
 - **700-2000+ lines**: Sweet spot. This is what a worker cycle should produce.
-- **> 3000 lines**: Too much work for one run. Agent may start rushing and quality may drop. Avoid.
+- **> 4000 lines**: Too much work for one run. Agent may start rushing and quality may drop. Avoid.
 
 Use this data to calibrate future task scoping. If you notice a pattern of small outputs, stop and re-scope remaining tasks to be bigger before dispatching more workers.
+
+### Codex CLI as Alternative Worker Runtime (TESTED AND WORKING)
+
+**OpenAI Codex CLI (`codex exec`)** is a viable drop-in alternative to GitHub Copilot CLI. Key facts:
+
+**Launch command:**
+```
+Get-Content worker_prompt.txt | codex exec --dangerously-bypass-approvals-and-sandbox -o session_output.md
+```
+
+**Advantages over copilot:**
+- **Real-time monitoring:** Codex outputs its thinking and tool activity directly to the terminal (no alternate screen buffer). `read_screen` shows exactly what it's doing — file edits, git commands, build output, everything. This is a HUGE improvement over copilot's opaque session.
+- **Separate rate limits:** Uses ChatGPT/OpenAI quota, not GitHub Copilot quota. Running both effectively doubles throughput capacity.
+- **Same workflow compatibility:** Codex correctly reads `@AGENTS.md` references, follows `multiple_agents_workflow.md`, creates task branches, commits, and pushes.
+
+**Differences to be aware of:**
+- `-o session_output.md` writes only the **last agent message**, not a full transcript like copilot's `--share`. But since you can see everything in real-time via terminal, this is fine.
+- Default model is `gpt-5.3-codex` (same quality tier as copilot's gpt-5.3-codex).
+- Windows support is officially "experimental" but works fine in practice.
+- `--full-auto` is a lighter alternative to `--dangerously-bypass-approvals-and-sandbox` (workspace-write sandbox only).
+- Codex sometimes creates temp probe files (e.g., `test_layout.c`) during analysis. Harmless, gets cleaned up.
+
+**CRITICAL — Token Quota Management:**
+Codex bills by tokens (not by request like copilot). Before dispatching a new task to codex:
+- Check remaining quota if possible (`codex usage` or similar, if available)
+- If the remaining quota may not be enough to complete the task, skip codex and use copilot instead
+- Large tasks (1000+ expected lines) consume more tokens — factor this into dispatch decisions
+- When in doubt, prefer copilot for large tasks and codex for medium tasks
+
+**Mixing strategy:** Run a mix of copilot and codex workers simultaneously. If one hits rate limits, the other can continue. Typical split: 4 copilot + 2 codex, or adjust based on current quota availability.
 
 ### Self-Improvement Protocol — Update This File As You Learn
 

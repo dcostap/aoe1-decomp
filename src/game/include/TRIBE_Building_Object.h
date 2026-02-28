@@ -14,10 +14,22 @@ public:
 
     virtual ~TRIBE_Building_Object();
     virtual int setup(int param_1, RGE_Game_World* param_2);
+    virtual void cancel_object();
 
     unsigned char build(float param_1);
     void add_to_production_queue(short param_1, short param_2);
     void remove_from_production_queue(short param_1, short param_2);
+    void cancel_build();
+    int work_status(short& param_1, short& param_2, short& param_3, char* param_4, short param_5);
+    short get_construction_progress();
+    void advance_production_queue();
+    void empty_production_queue();
+    void enable_production_queue(int param_1);
+    void update_production_queue();
+    int production_queue_status(short& param_1, short& param_2);
+    virtual void take_building_attribute_from_owner();
+    virtual void give_building_attribute_to_owner();
+    void transform(TRIBE_Master_Building_Object* param_1);
 
     Production_Queue_Record* production_queue;
     short production_queue_size;
