@@ -45,6 +45,7 @@ public:
     void setVictoryCondition(int param_1);
     int isRuleExecuting(int param_1);
     int isRuleIdle(int param_1);
+    void* vector_deleting_destructor(uint param_1);
 
     TribeMainDecisionAIModule* md;
     int currentVictoryConditionValue;
