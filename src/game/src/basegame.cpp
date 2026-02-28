@@ -162,7 +162,8 @@ static void RESFILE_Set_Missing_Flag(int flag) {
 
 
 // Source coverage notes (basegame offsets implemented in sibling units):
-// 0x0041B620 and 0x0041B650 -> src/game/src/debug_helpers.cpp (write_draw_log/write_draw_log2).
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B620 (implemented in src/game/src/debug_helpers.cpp as write_draw_log)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B650 (implemented in src/game/src/debug_helpers.cpp as write_draw_log2)
 // 0x004226A0 -> src/game/src/RGE_Base_Game_campaigns.cpp (RGE_Base_Game::find_campaigns).
 // 0x00423010 and 0x00423030 -> src/game/src/globals.cpp (debug_random_reset/debug_random_write path, with write implementation present).
 // 0x004230A0, 0x00423140, 0x004231E0 -> src/game/src/debug_helpers.cpp (debug_rand/debug_srand/debug_timeGetTime).
@@ -336,8 +337,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
 }
 
 RGE_Base_Game::~RGE_Base_Game() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C270
-    // Source of truth: basegame.cpp.decomp @ destructor
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C270
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor start");
     CUSTOM_DEBUG_END
@@ -659,7 +659,7 @@ int RGE_Base_Game::setup_debugging_log() {
 }
 
 int RGE_Base_Game::setup() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041BAA0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041BAA0
     // ASM order: srand -> registry -> empires.exe check -> cmd_options -> language.dll -> memory check
     //            -> music -> expiration -> multi_copies -> DX version -> system params -> setup chain
 
@@ -1355,7 +1355,7 @@ int RGE_Base_Game::check_multi_copies() {
     return 0;
 }
 
-// Source of truth: basegame.cpp.decomp @ 0x004206D0
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x004206D0
 long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { 
     // p1=HWND, p2=message, p3=wParam, p4=lParam
     long result = 0;
@@ -2640,7 +2640,7 @@ RGE_Game_World* RGE_Base_Game::create_world() {
     return new RGE_Game_World();
 }
 int RGE_Base_Game::run() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041CFD0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CFD0
     MSG msg;
     
     while (1) {
@@ -2730,15 +2730,14 @@ int RGE_Base_Game::handle_idle() {
     return 1;
 }
 int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x00421110
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421110
     if (this->prog_ready == 0) {
         return 1;
     }
 
     // Custom mouse pointer update
     if (this->custom_mouse != 0 && this->windows_mouse == 0) {
-        // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421110
-    if (this->mouse_pointer->in_game_mode() == 0) {
+        if (this->mouse_pointer->in_game_mode() == 0) {
             this->mouse_pointer->draw(0);
         } else {
             this->mouse_pointer->Poll();
@@ -3015,7 +3014,7 @@ LAB_004214dc:
     return 1;
 }
 int RGE_Base_Game::handle_activate(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x00421830
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421830
     // p3 (wParam): 0 = deactivated, nonzero = activated
     if (p3 == 0) {
         this->prog_active = 0;
@@ -3082,7 +3081,7 @@ int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) {
     return 1;
 }
 int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x004219F0
+    // TODO: Partial transliteration. Source of truth: basegame.cpp.decomp @ 0x004219F0
     // TODO: basegame decomp parity would call TDrawSystem::HandlePaletteChanged, but this symbol is
     // not implemented in this branch yet.
     (void)p2;
@@ -3099,7 +3098,7 @@ int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) {
 }
 
 int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x00421A80
+    // TODO: Partial transliteration. Source of truth: basegame.cpp.decomp @ 0x00421A80
     // TODO: basegame decomp parity would call TDrawSystem::HandleQueryNewPalette, but this symbol is
     // not implemented in this branch yet.
     (void)p2;
@@ -3423,7 +3422,7 @@ void RGE_Base_Game::show_timings() {
 }
 
 void RGE_Base_Game::show_comm() {
-    // Source of truth: basegame.cpp.decomp @ 0x00422050
+    // TODO: Partial transliteration. Source of truth: basegame.cpp.decomp @ 0x00422050
     // TODO: decomp references TCommunications_Handler::GetCommInfo, which is not exported in this branch.
     char str[256];
     sprintf(str, "Comm status: %d", this->comm_handler != nullptr ? (int)this->comm_handler->GetCommunicationsStatus() : -1);
@@ -3831,7 +3830,7 @@ void RGE_Base_Game::turn_world_sound_off() {
 }
 
 RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041CB80
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CB80
     char temp_name[300];
     memset(temp_name, 0, sizeof(temp_name));
     sprintf(temp_name, "%s%s", this->prog_info->scenario_dir, p1 ? p1 : "");
@@ -3877,7 +3876,7 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
 }
 
 RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* p1, int p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041CCA0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CCA0
     char temp_name[300];
     memset(temp_name, 0, sizeof(temp_name));
     sprintf(temp_name, "%s%s", this->prog_info->scenario_dir, p1 ? p1 : "");

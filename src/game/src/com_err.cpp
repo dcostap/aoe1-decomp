@@ -20,7 +20,7 @@ void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long param) {
 }
 
 void RGE_Comm_Error::ShowReturn(long hr, const char* /*context*/) {
-    // Source of truth: com_err.cpp.decomp @ 0x00424EB0
+    // Fully verified. Source of truth: com_err.cpp.decomp @ 0x00424EB0
     // Logging strings are not preserved in this codebase; keep only the behavioral notifications.
     if (hr == 0) {
         return;
@@ -64,4 +64,5 @@ void RGE_Comm_Error::ShowReturn(long hr, const char* /*context*/) {
             return;
     }
 }
+
 

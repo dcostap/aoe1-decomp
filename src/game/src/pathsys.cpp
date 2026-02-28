@@ -104,7 +104,7 @@ void E14() {
 
 PathingSystem::PathingSystem(int param_1, int param_2, int param_3, RGE_Map* param_4,
                              RGE_Game_World* param_5) {
-    // Source of truth: pathsys.cpp.decomp @ 0x0046B0F0
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B0F0
     this->initialCollidingObjects.value = nullptr;
     this->initialCollidingObjects.numberValue = 0;
     this->initialCollidingObjects.desiredNumberValue = 0;
@@ -149,7 +149,7 @@ PathingSystem::PathingSystem(int param_1, int param_2, int param_3, RGE_Map* par
 }
 
 PathingSystem::~PathingSystem() {
-    // Source of truth: pathsys.cpp.decomp @ 0x0046B270
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B270
     if (this->currentUnobstructibles.value != nullptr) {
         ::operator delete(this->currentUnobstructibles.value);
         this->currentUnobstructibles.value = nullptr;
@@ -1482,3 +1482,4 @@ LAB_0046d19f:
     }
     return 0;
 }
+
