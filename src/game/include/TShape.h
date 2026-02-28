@@ -36,11 +36,13 @@ class TDrawArea;
 class TShape {
 public:
     // Constructor/Destructor
+    TShape();
     TShape(char* filename, int file_id);
     ~TShape();
     
     // Methods
     int is_loaded();
+    unsigned char shape_bounds(long shape_idx, short* width, short* height);
     long shape_count();
 
     // Source of truth: `src/game/src/Panel_ez.cpp.asm` / `.decomp` call sites use `shape_minmax` to
@@ -88,3 +90,4 @@ private:
     unsigned char shape_dithered_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1, long param_8, long param_9);
 };
 static_assert(sizeof(TShape) == 0x20, "Size mismatch");
+

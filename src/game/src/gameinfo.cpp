@@ -29,13 +29,13 @@ int RGE_Campaign::open_scenario(long param_1) {
 }
 
 long RGE_Campaign_Info::get_current_scenario() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D0E0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CBB0
     return this->current_scenario;
 }
 
 int RGE_Campaign_Info::open_scenario() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D180
-    if (this->campaign == nullptr) {
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CC20
+    if (this->current_scenario < 0 || this->campaign == nullptr) {
         return -1;
     }
     return this->campaign->open_scenario(this->current_scenario);
@@ -86,6 +86,56 @@ RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* param_1) {
             this->scenario_info = (RGE_Scenario_Info*)calloc((size_t)this->scenario_num, 1);
             if (this->scenario_info != nullptr) {
                 this->scenario_info[0].scenario_status = '\x02';
+            }
+        }
+    }
+}
+
+RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long param_3) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044C5A0
+    rge_read(param_1, this, 0xFF);
+    rge_read(param_1, &this->current_scenario, 4);
+    rge_read(param_1, &this->scenario_num, 4);
+    rge_read(param_1, &this->last_scenario, 4);
+
+    if (this->scenario_num < 1) {
+        this->scenario_info = nullptr;
+    } else {
+        this->scenario_info = (RGE_Scenario_Info*)calloc((size_t)this->scenario_num, 1);
+        if (this->scenario_info != nullptr) {
+            rge_read(param_1, this->scenario_info, (int)this->scenario_num);
+        }
+    }
+
+    this->campaign = nullptr;
+    if (param_2 != nullptr && param_3 > 0) {
+        for (long i = 0; i < param_3; ++i) {
+            RGE_Campaign* camp = param_2[i];
+            if (camp == nullptr) {
+                continue;
+            }
+            if (strcmp(camp->get_name(), this->campaign_name) == 0) {
+                this->campaign = camp;
+                long new_num = camp->scenario_number();
+                if (this->scenario_num != new_num) {
+                    long copy_num = this->scenario_num;
+                    if (copy_num > new_num) {
+                        copy_num = new_num;
+                    }
+                    RGE_Scenario_Info* new_info = (RGE_Scenario_Info*)calloc((size_t)new_num, 1);
+                    if (new_info != nullptr && this->scenario_info != nullptr && copy_num > 0) {
+                        memcpy(new_info, this->scenario_info, (size_t)copy_num);
+                    }
+                    free(this->scenario_info);
+                    this->scenario_info = new_info;
+                    this->scenario_num = new_num;
+                }
+                if (this->scenario_num <= this->last_scenario) {
+                    this->last_scenario = this->scenario_num - 1;
+                }
+                if (this->last_scenario < this->current_scenario) {
+                    this->current_scenario = this->last_scenario;
+                }
             }
         }
     }
@@ -221,6 +271,31 @@ RGE_Person_Info::RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long par
     this->campaign_num = param_3;
 }
 
+RGE_Person_Info::RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param_3) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044CC40
+    this->campaign_num = param_3;
+    this->campaigns = param_2;
+    rge_read(param_1, this, 0xFF);
+    rge_read(param_1, &this->current_campaign, 4);
+    rge_read(param_1, &this->campaign_info_num, 4);
+
+    if (this->campaign_info_num < 1) {
+        this->campaign_info = nullptr;
+        return;
+    }
+
+    this->campaign_info = (RGE_Campaign_Info**)calloc((size_t)this->campaign_info_num, 4);
+    if (this->campaign_info == nullptr) {
+        this->campaign_info_num = 0;
+        return;
+    }
+
+    for (int i = 0; i < this->campaign_info_num; ++i) {
+        RGE_Campaign_Info* info = new (std::nothrow) RGE_Campaign_Info(param_1, this->campaigns, this->campaign_num);
+        this->campaign_info[i] = info;
+    }
+}
+
 RGE_Person_Info::~RGE_Person_Info() {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044CDA0
     if (this->campaign_info != nullptr) {
@@ -260,15 +335,13 @@ long RGE_Person_Info::get_current_campaign() {
 }
 
 long RGE_Person_Info::get_current_scenario() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D0D0
-    if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0C0
+    int iVar1 = (int)this->current_campaign;
+    if (iVar1 < 0 || this->campaigns == nullptr || this->campaigns[iVar1] == nullptr || this->campaign_info == nullptr ||
+        this->campaign_info[iVar1] == nullptr) {
         return -1;
     }
-    RGE_Campaign_Info* info = this->campaign_info[this->current_campaign];
-    if (info == nullptr) {
-        return -1;
-    }
-    return info->get_current_scenario();
+    return this->campaign_info[iVar1]->get_current_scenario();
 }
 
 long RGE_Person_Info::get_scenario_list(char*** param_1, long* param_2) {
@@ -289,6 +362,87 @@ int RGE_Person_Info::open_scenario() {
         return -1;
     }
     return info->open_scenario();
+}
+
+RGE_Game_Info::RGE_Game_Info(char* param_1) {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044D1A0
+    this->people_info = nullptr;
+    this->people_num = 0;
+    this->campaign_num = 0;
+    this->campaigns = nullptr;
+    this->save_filename[0] = '\0';
+
+    this->find_campaigns();
+    if (param_1 != nullptr) {
+        strncpy(this->save_filename, param_1, sizeof(this->save_filename) - 1);
+        this->save_filename[sizeof(this->save_filename) - 1] = '\0';
+    }
+
+    int fd = rge_open(param_1, 0x8000);
+    if (fd < 0) {
+        this->current_person = -1;
+        this->people_num = 0;
+        this->people_info = nullptr;
+        return;
+    }
+
+    char version[4] = {0};
+    rge_read(fd, version, 4);
+    if (memcmp(version, "1.00", 4) != 0) {
+        rge_close(fd);
+        this->current_person = -1;
+        this->people_num = 0;
+        this->people_info = nullptr;
+        return;
+    }
+
+    rge_read(fd, this, 4);
+    rge_read(fd, &this->people_num, 4);
+    if (this->people_num < 1) {
+        this->people_info = nullptr;
+        rge_close(fd);
+        return;
+    }
+
+    this->people_info = (RGE_Person_Info**)calloc((size_t)this->people_num, 4);
+    if (this->people_info == nullptr) {
+        this->people_num = 0;
+        rge_close(fd);
+        return;
+    }
+
+    for (int i = 0; i < this->people_num; ++i) {
+        this->people_info[i] = new (std::nothrow) RGE_Person_Info(fd, this->campaigns, this->campaign_num);
+    }
+
+    rge_close(fd);
+}
+
+RGE_Game_Info::~RGE_Game_Info() {
+    // Source of truth: gameinfo.cpp.decomp @ 0x0044D300
+    if (this->save_filename[0] != '\0') {
+        this->save(this->save_filename);
+    }
+
+    if (this->campaigns != nullptr) {
+        for (int i = 0; i < this->campaign_num; ++i) {
+            if (this->campaigns[i] != nullptr) {
+                delete this->campaigns[i];
+            }
+        }
+        free(this->campaigns);
+        this->campaigns = nullptr;
+    }
+
+    if (this->people_info != nullptr) {
+        for (int i = 0; i < this->people_num; ++i) {
+            if (this->people_info[i] != nullptr) {
+                delete this->people_info[i];
+            }
+        }
+        free(this->people_info);
+        this->people_info = nullptr;
+    }
 }
 
 void RGE_Person_Info::save(int param_1) {
@@ -649,3 +803,227 @@ void RGE_Game_Info::remove_player(long param_1) {
         }
     }
 }
+
+#if 0
+// TODO: Parity reference block from gameinfo.cpp.decomp load/save constructor edge paths.
+
+// Offset: 0x0044C5A0
+undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, int param_2, RGE_Campaign** param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Campaign_Info::RGE_Campaign_Info(int,class RGE_Campaign * *,long) */
+    // 
+    // RGE_Campaign_Info * __thiscall
+    // RGE_Campaign_Info::RGE_Campaign_Info
+    //           (RGE_Campaign_Info *this,int param_1,RGE_Campaign **param_2,long param_3)
+    // 
+    // {
+    //   long *plVar1;
+    //   byte bVar2;
+    //   RGE_Campaign *this_00;
+    //   RGE_Scenario_Info *pRVar3;
+    //   byte *pbVar4;
+    //   int iVar5;
+    //   long lVar6;
+    //   RGE_Scenario_Info *pRVar7;
+    //   uint uVar8;
+    //   uint uVar9;
+    //   RGE_Campaign_Info *pRVar10;
+    //   RGE_Scenario_Info *pRVar11;
+    //   bool bVar12;
+    //   undefined4 uVar13;
+    //   
+    //   rge_read(param_1,this,0xff);
+    //   rge_read(param_1,&this->current_scenario,4);
+    //   plVar1 = &this->scenario_num;
+    //   rge_read(param_1,plVar1,4);
+    //   rge_read(param_1,&this->last_scenario,4);
+    //   if (*plVar1 < 1) {
+    //     this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar3 = (RGE_Scenario_Info *)calloc(*plVar1,1);
+    //     this->scenario_info = pRVar3;
+    //     rge_read(param_1,pRVar3,*plVar1);
+    //   }
+    //   this->campaign = (RGE_Campaign *)0x0;
+    //   if (0 < param_3) {
+    //     param_1 = (int)param_2;
+    //     do {
+    //       pbVar4 = (byte *)RGE_Campaign::get_name(*(RGE_Campaign **)param_1);
+    //       pRVar10 = this;
+    //       do {
+    //         bVar2 = *pbVar4;
+    //         bVar12 = bVar2 < (byte)pRVar10->campaign_name[0];
+    //         if (bVar2 != pRVar10->campaign_name[0]) {
+    // LAB_0044c66c:
+    //           iVar5 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //           goto LAB_0044c671;
+    //         }
+    //         if (bVar2 == 0) break;
+    //         bVar2 = pbVar4[1];
+    //         bVar12 = bVar2 < (byte)pRVar10->campaign_name[1];
+    //         if (bVar2 != pRVar10->campaign_name[1]) goto LAB_0044c66c;
+    //         pbVar4 = pbVar4 + 2;
+    //         pRVar10 = (RGE_Campaign_Info *)(pRVar10->campaign_name + 2);
+    //       } while (bVar2 != 0);
+    //       iVar5 = 0;
+    // LAB_0044c671:
+    //       if (iVar5 == 0) {
+    //         this_00 = *(RGE_Campaign **)param_1;
+    //         this->campaign = this_00;
+    //         lVar6 = RGE_Campaign::scenario_number(this_00);
+    //         if (this->scenario_num != lVar6) {
+    //           lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //           if (lVar6 < this->scenario_num) {
+    //             uVar13 = 1;
+    //             lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //             pRVar7 = (RGE_Scenario_Info *)calloc(lVar6,uVar13);
+    //             uVar9 = this->scenario_num;
+    //             lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //             pRVar3 = pRVar7;
+    //             if ((int)uVar9 < lVar6) {
+    //               pRVar11 = this->scenario_info;
+    //               for (uVar8 = uVar9 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //                 *(undefined4 *)pRVar3 = *(undefined4 *)pRVar11;
+    //                 pRVar11 = pRVar11 + 4;
+    //                 pRVar3 = pRVar3 + 4;
+    //               }
+    //             }
+    //             else {
+    //               uVar9 = RGE_Campaign::scenario_number(this->campaign);
+    //               pRVar11 = this->scenario_info;
+    //               for (uVar8 = uVar9 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //                 *(undefined4 *)pRVar3 = *(undefined4 *)pRVar11;
+    //                 pRVar11 = pRVar11 + 4;
+    //                 pRVar3 = pRVar3 + 4;
+    //               }
+    //             }
+    //             for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+    //               pRVar3->scenario_status = pRVar11->scenario_status;
+    //               pRVar11 = pRVar11 + 1;
+    //               pRVar3 = pRVar3 + 1;
+    //             }
+    //             free(this->scenario_info);
+    //             this->scenario_info = pRVar7;
+    //           }
+    //           lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //           this->scenario_num = lVar6;
+    //           if (lVar6 <= this->last_scenario) {
+    //             this->last_scenario = lVar6 + -1;
+    //           }
+    //           if (this->last_scenario < this->current_scenario) {
+    //             this->current_scenario = this->last_scenario;
+    //           }
+    //         }
+    //       }
+    //       param_1 = param_1 + 4;
+    //       param_3 = param_3 + -1;
+    //     } while (param_3 != 0);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044C780
+undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, RGE_Campaign* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Campaign_Info::RGE_Campaign_Info(class RGE_Campaign *) */
+    // 
+    // RGE_Campaign_Info * __thiscall
+    // RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign_Info *this,RGE_Campaign *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   char *pcVar2;
+    //   long lVar3;
+    //   RGE_Scenario_Info *pRVar4;
+    //   uint uVar5;
+    //   uint uVar6;
+    //   char *pcVar7;
+    //   RGE_Campaign_Info *pRVar8;
+    //   
+    //   if (param_1 == (RGE_Campaign *)0x0) {
+    //     uVar5 = 0xffffffff;
+    //     this->campaign = (RGE_Campaign *)0x0;
+    //     pcVar2 = s_;
+    //     do {
+    //       pcVar7 = pcVar2;
+    //       if (uVar5 == 0) break;
+    //       uVar5 = uVar5 - 1;
+    //       pcVar7 = pcVar2 + 1;
+    //       cVar1 = *pcVar2;
+    //       pcVar2 = pcVar7;
+    //     } while (cVar1 != '\0');
+    //     uVar5 = ~uVar5;
+    //     pcVar2 = pcVar7 + -uVar5;
+    //     pRVar8 = this;
+    //     for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //       *(undefined4 *)pRVar8->campaign_name = *(undefined4 *)pcVar2;
+    //       pcVar2 = pcVar2 + 4;
+    //       pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 4);
+    //     }
+    //     for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //       pRVar8->campaign_name[0] = *pcVar2;
+    //       pcVar2 = pcVar2 + 1;
+    //       pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 1);
+    //     }
+    //     this->current_scenario = 0;
+    //     this->last_scenario = 0;
+    //     this->scenario_num = 0;
+    //     this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //     return this;
+    //   }
+    //   this->campaign = param_1;
+    //   pcVar2 = RGE_Campaign::get_name(param_1);
+    //   uVar5 = 0xffffffff;
+    //   do {
+    //     pcVar7 = pcVar2;
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     pcVar7 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar5 = ~uVar5;
+    //   pcVar2 = pcVar7 + -uVar5;
+    //   pRVar8 = this;
+    //   for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     *(undefined4 *)pRVar8->campaign_name = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //     pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 4);
+    //   }
+    //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     pRVar8->campaign_name[0] = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 1);
+    //   }
+    //   lVar3 = RGE_Campaign::scenario_number(this->campaign);
+    //   this->scenario_num = lVar3;
+    //   if (0 < lVar3) {
+    //     this->current_scenario = 0;
+    //     this->last_scenario = 0;
+    //     pRVar4 = (RGE_Scenario_Info *)calloc(lVar3,1);
+    //     this->scenario_info = pRVar4;
+    //     pRVar4->scenario_status = '\x02';
+    //     return this;
+    //   }
+    //   this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //   this->current_scenario = -1;
+    //   this->last_scenario = -1;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044C870
+void RGE_Campaign_Info(RGE_Campaign_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+
+#endif
+

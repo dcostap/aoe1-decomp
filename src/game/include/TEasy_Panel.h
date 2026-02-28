@@ -51,6 +51,36 @@ public:
     // Source of truth: panel_ez.cpp.asm/.decomp @ 0x0046A150 / 0x0046A1A0
     void popupYesNoCancelDialog(long text_id, char* panel_name, int param_4, int param_5);
     void popupYesNoCancelDialog(char* text, char* panel_name, int param_4, int param_5);
+    void set_info_file(char* file, long id);
+    int set_background(char* file, long id);
+    int set_background2(char* file, long id);
+    void set_background_colors(uchar color1, uchar color2);
+    int set_palette(char* file, long id);
+    int set_cursor(char* file, long id);
+    void set_use_bevels(int enabled);
+    void set_background_pos(int pos);
+    void set_bevel_colors(uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6);
+    void set_text_colors(ulong c1, ulong c2);
+    void set_focus_colors(ulong c1, ulong c2);
+    void set_state_colors(ulong c1, ulong c2);
+    void set_popup_info_file(char* file, long id);
+    void set_button_pics(char* file, long id);
+    void set_enable_ime(int enabled);
+    TShape* get_background();
+    TShape* get_background2();
+    void* get_palette();
+    char* get_cursor();
+    int get_use_bevels();
+    int get_background_pos();
+    void get_bevel_colors(uchar& c1, uchar& c2, uchar& c3, uchar& c4, uchar& c5, uchar& c6);
+    void get_text_colors(ulong& c1, ulong& c2);
+    void get_focus_colors(ulong& c1, ulong& c2);
+    long get_shadow_amount();
+    void get_state_colors(ulong& c1, ulong& c2);
+    TShape* get_button_pics();
+    RGE_Color_Table* get_shadow_color_table();
+    int get_enable_ime();
+    void set_system_colors();
 
     // Virtuals (best-effort)
     virtual ~TEasy_Panel(); // vt[0] (0x0)

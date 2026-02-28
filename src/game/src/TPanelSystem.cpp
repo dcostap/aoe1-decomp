@@ -88,6 +88,13 @@ void TPanelSystem::DisableIME() {
     }
 }
 
+void TPanelSystem::EnableIME() {
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464510
+    if ((this->Imc != 0) && (this->ImeEnabled == 0)) {
+        ImmAssociateContext(AppWnd, (HIMC)this->Imc);
+    }
+}
+
 void TPanelSystem::add_panel(TPanel* panel) {
     if (!panel) return;
 

@@ -4,6 +4,7 @@
 #include "RGE_Campaign.h"
 
 struct RGE_Person_Info {
+    RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param_3);
     RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long param_3);
     ~RGE_Person_Info();
 
