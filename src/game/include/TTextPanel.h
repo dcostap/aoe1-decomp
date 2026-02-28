@@ -135,7 +135,9 @@ public:
     // List management methods (needed for TDropDownPanel / TListPanel)
     void empty_list();
     int append_line(char* text, long id);
+    int append_line(char* text, char* text2, long id);
     int append_line(long str_id, long id);
+    int append_line(long str1_id, long str2_id, long id);
     int insert_line(long line_num, char* text, long id);
     int insert_line(long line_num, char* text, char* text2, long id);
     int insert_line(long line_num, long str_id, long id);
@@ -150,7 +152,9 @@ public:
     long get_line(char* text);
     long get_id();
     long get_id(long line_num);
+    char* get_text();
     char* get_text(long line_num);
+    char* get_text2();
     char* get_text2(long line_num);
     void free_text();
     void set_second_column_pos(long pos);

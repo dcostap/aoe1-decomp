@@ -6,7 +6,6 @@
 #include "../include/debug_helpers.h"
 
 #include <math.h>
-#include <new>
 #include <string.h>
 
 RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
@@ -25,10 +24,6 @@ RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
 
 uchar RGE_RMM_Terrain_Generator::generate() {
     // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488920
-    if (this->map == nullptr) {
-        return 0;
-    }
-
     this->generate_modifiers();
 
     float terrain_table[99];
@@ -38,15 +33,8 @@ uchar RGE_RMM_Terrain_Generator::generate() {
         terrain_table[0] = terrain_table[0] + 1.0f;
     }
 
-    if (this->map->map_zones == nullptr) {
-        this->map->map_zones = new (std::nothrow) RGE_Zone_Map_List(this->map);
-    }
-    if (this->map->map_zones != nullptr) {
-        long index = this->map->map_zones->create_zone_map(terrain_table + 1, 99);
-        this->map_zone = this->map->map_zones->get_zone_map(index);
-    } else {
-        this->map_zone = nullptr;
-    }
+    long index = this->map->map_zones->create_zone_map(terrain_table + 1, 99);
+    this->map_zone = this->map->map_zones->get_zone_map(index);
 
     for (long i = 0; i < this->info.terrain_num; ++i) {
         RGE_Terrain_Info_Line line;
