@@ -5,6 +5,7 @@
 
 class RGE_Static_Object;
 class RGE_Player;
+class RGE_Visible_Map;
 
 // Size/layout source of truth: all_types_ground_truth.h
 struct NotifyEvent {
@@ -130,10 +131,27 @@ public:
     virtual int processRetryableOrder(); // vt[57]
     virtual int update(unsigned long param_1); // vt[58]
     virtual void updateGroup(unsigned long param_1); // vt[59]
+    int selectNewPlayPhase(unsigned int param_1, int param_2);
+    void removeCurrentTarget();
+    void setCurrentTarget(int param_1, float param_2, float param_3, float param_4);
+    void setCurrentTarget(int param_1, int param_2, float param_3, float param_4, float param_5);
+    int isEnemyOwner(int param_1);
+    int isAllyOwner(int param_1);
+    int isNeutralOwner(int param_1);
+    unsigned char visibleStatus(RGE_Visible_Map* param_1, int param_2, int param_3);
+    void setTaskedByPlayer();
+    void setPlayStatus(AIPlayStatus* param_1);
+    void lookAround();
+    int hasOrderOnQueue(int param_1);
+    void askForHelp(int param_1);
+    void purgeNotifyQueue(unsigned long param_1);
+    RGE_Static_Object* lookupObject(int param_1);
 
 protected:
     int addToOrderQueue(const OrderEvent* param_1, int param_2);
+    int addToOrderQueue(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10);
     int addToNotifyQueue(const NotifyEvent* param_1);
+    int addToNotifyQueue(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
     void setAdjustedIdleTimeout();
 
 public:
