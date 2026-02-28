@@ -3554,7 +3554,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 247 — tribegam.cpp TRIBE game implementation parity (~5347-line gap)
 - [x] Assigned to agent (worker-2, clone_2)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `99855b2` (123 insertions). tribegam comm/timing/show functions. Gap reduction small — worker says 5283-line gap remains (mostly line-count inflation).
 - Goal: close the massive gap in TRIBE game core: tribegam.cpp.decomp (8725) -> tribegam.cpp (3378) = gap ~5347. This is the central TRIBE game class — save/load, game tick, player management, victory conditions.
 - Implement (decomp-first from tribegam.cpp.decomp): Enumerate ALL missing functions. Focus on the largest blocks: save/load game state, game tick processing, player init, victory/diplomacy logic, achievement tracking.
 - Where: `src/game/src/tribegam.cpp` + `src/game/include/TRIBE_Game.h`
@@ -3598,7 +3599,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: gap cut by at least 1200 lines. ALL rendering functions must be transliterated.
 
 ## Task 251 — RMM random map generators parity (~2100-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent (worker-4, clone_4)
 - [ ] Finished
 - Goal: close the gap in random map generation subsystem:
   - rmm_elev.cpp.decomp (1177) -> RGE_RMM_Elevation_Generator.cpp (289) = gap ~888
@@ -3612,7 +3613,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: combined gap cut by at least 1500 lines.
 
 ## Task 252 — command.cpp RGE command system parity (~2482-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent (worker-5, clone_5, codex)
 - [ ] Finished
 - Goal: Task 238 only added 107 lines to tcommand.cpp but left command.cpp untouched. Close the remaining gap: command.cpp.decomp (2482) -> command.cpp (essentially empty beyond stubs). RGE_Command handles all game commands — move, attack, build, research, etc.
 - Implement (decomp-first from command.cpp.decomp): Enumerate ALL missing functions. Focus on: command dispatch, move commands, attack commands, build commands, formation commands, trade commands.
@@ -3620,3 +3621,59 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `src/game/decomp/command.cpp.decomp` + `command.cpp.asm`.
 - Non-overlap: do NOT touch tcommand.cpp (already done), com_hand.cpp, or any action files.
 - Done when: gap cut by at least 1800 lines.
+
+## Task 253 — Victory conditions parity (58 missing functions, greenfield)
+- [x] Assigned to agent (worker-1, clone_1)
+- [ ] Finished
+- Goal: RGE_Victory_Conditions and TRIBE_Victory_Conditions have barely any implementation. victory.cpp.decomp has 59 functions, only 1 offset ref exists in the impl files. These handle game victory/loss detection, score tracking, achievements, and game-over conditions.
+- Implement (decomp-first from victory.cpp.decomp): Create or expand RGE_Victory_Conditions.cpp and TRIBE_Victory_Conditions.cpp. Transliterate ALL 58+ missing functions.
+- Where: `src/game/src/RGE_Victory_Conditions.cpp`, `src/game/src/TRIBE_Victory_Conditions.cpp` + headers
+- Source of truth: `src/game/decomp/victory.cpp.decomp` + `victory.cpp.asm`.
+- Non-overlap: do NOT touch tribegam.cpp, basegame.cpp, or screen files.
+- Done when: all 58 functions transliterated. Expect 1500+ lines of output.
+
+## Task 254 — Panel text + button controls parity (118 missing functions combined)
+- [x] Assigned to agent (worker-2, clone_2)
+- [ ] Finished
+- Goal: Two panel control types are barely implemented:
+  - pnl_txt.cpp.decomp: 67 functions, only 6 offset refs in Pnl_txt.cpp = 61 missing
+  - pnl_btn.cpp.decomp: 57 functions, NO impl = 57 missing
+  These handle text display panels and clickable button panels used throughout the UI.
+- Implement (decomp-first): Expand Pnl_txt.cpp with all missing functions. Create Pnl_btn.cpp (or similar) for button panel functions. Transliterate ALL missing functions from both decomps.
+- Where: `src/game/src/Pnl_txt.cpp`, new `src/game/src/Pnl_btn.cpp` + headers
+- Source of truth: `src/game/decomp/pnl_txt.cpp.decomp`, `pnl_btn.cpp.decomp` + `.asm` files.
+- Non-overlap: do NOT touch Pnl_edit.cpp, Pnl_inp.cpp, Panel_ez.cpp, or any screen files.
+- Done when: combined 118 functions transliterated. Expect 2000+ lines.
+
+## Task 255 — Tactical AI commands Part 1 (first ~100 functions of 204 missing)
+- [x] Assigned to agent (worker-3, clone_3)
+- [ ] Finished
+- Goal: taitacmd.cpp.decomp is the single largest gap: 230 functions, only 26 offset refs in existing impl files. This handles all TRIBE tactical AI command processing — attack targeting, group movement, formation AI, etc.
+- Implement (decomp-first from taitacmd.cpp.decomp): Start from the FIRST offset in the decomp and transliterate the first ~100 functions sequentially. Do NOT skip around — work through them in order.
+- Where: `src/game/src/TribeTacticalAIModule.cpp` and/or `src/game/src/TacticalAIModule.cpp` + headers
+- Source of truth: `src/game/decomp/taitacmd.cpp.decomp` + `taitacmd.cpp.asm`.
+- Non-overlap: do NOT touch any other AI files (taiinfmd, aiuaimod, aipbook). Only tactical AI command functions.
+- Done when: at least 80 new functions transliterated. Expect 3000+ lines.
+
+## Task 256 — Drawarea + view remaining functions (~35 combined missing)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: Close the remaining function gaps in rendering:
+  - drawarea.cpp.decomp: 67 functions, 49 offset refs = 18 missing
+  - view.cpp.decomp: 85 functions, 68 offset refs = 17 missing
+  Combined: 35 missing functions in the core rendering pipeline.
+- Implement (decomp-first): For each decomp, find the specific offsets NOT present in the impl. Transliterate each missing function.
+- Where: `src/game/src/Drawarea.cpp`, `src/game/src/view.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch TShape, Dib, Panel, or any game logic files.
+- Done when: all 35 missing functions transliterated.
+
+## Task 257 — Unit AI module continuation (46 missing functions)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: aiuaimod.cpp.decomp has 118 functions, existing impls have 72 offset refs = 46 missing. These handle unit AI decision-making — combat AI, gathering AI, idle behavior, task assignment.
+- Implement (decomp-first from aiuaimod.cpp.decomp): Find the specific offsets NOT present in TribeUnitAIModules.cpp / TribeUnitAIModuleTypes.cpp / UnitAIModule.cpp. Transliterate each missing function.
+- Where: `src/game/src/TribeUnitAIModules.cpp`, `src/game/src/TribeUnitAIModuleTypes.cpp`, `src/game/src/UnitAIModule.cpp` + headers
+- Source of truth: `src/game/decomp/aiuaimod.cpp.decomp` + `aiuaimod.cpp.asm`.
+- Non-overlap: do NOT touch tactical AI (taitacmd), information AI (taiinfmd), or playbook files.
+- Done when: at least 35 of 46 missing functions transliterated.
