@@ -319,7 +319,7 @@ uchar TRIBE_World::data_load_sounds(char* param_1) { return RGE_Game_World::data
 uchar TRIBE_World::data_load_color_tables(char* param_1) { return RGE_Game_World::data_load_color_tables(param_1); }
 uchar TRIBE_World::data_load_sprites(char* param_1) { return RGE_Game_World::data_load_sprites(param_1); }
 void TRIBE_World::data_load_players_type(short param_1, short param_2, FILE* param_3) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E220
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E220
     // If param_2 == 1, create a TRIBE_Master_Player from file; otherwise delegate to base.
     if (param_2 != 1) {
         RGE_Game_World::data_load_players_type(param_1, param_2, param_3);
@@ -330,7 +330,7 @@ void TRIBE_World::data_load_players_type(short param_1, short param_2, FILE* par
 }
 void TRIBE_World::data_load_effects(char* param_1) { RGE_Game_World::data_load_effects(param_1); }
 void TRIBE_World::data_load_map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8, char* param_9) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E2B0
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E2B0
     // Creates a TRIBE_Map from terrain data files, then loads terrain object types.
     this->map = new TRIBE_Map(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8);
     if (this->map) {
@@ -339,7 +339,7 @@ void TRIBE_World::data_load_map(char* param_1, char* param_2, char* param_3, cha
 }
 void TRIBE_World::data_load_random_map(char* param_1, char* param_2, char* param_3, char* param_4) { RGE_Game_World::data_load_random_map(param_1, param_2, param_3, param_4); }
 uchar TRIBE_World::init_player_type(int param_1, short param_2, uchar param_3) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E400
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E400
     // If param_3 == 1, create a TRIBE_Master_Player; otherwise delegate to base.
     if (param_3 != 1) {
         return RGE_Game_World::init_player_type(param_1, param_2, param_3);
@@ -352,7 +352,7 @@ uchar TRIBE_World::init_player_type(int param_1, short param_2, uchar param_3) {
 }
 uchar TRIBE_World::init_player(int param_1) { return RGE_Game_World::init_player(param_1); }
 void TRIBE_World::load_player(int param_1, uchar param_2, short param_3) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E830
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E830
     if (param_2 == 1 || param_2 == 3) {
         // Human or scenario player -> TRIBE_Player
         TRIBE_Player* p = new TRIBE_Player(param_1, this, (uchar)param_3);
@@ -378,18 +378,18 @@ void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
     this->map = created_map;
 }
 void TRIBE_World::effects_init(int param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E650
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E650
     this->effects = new TRIBE_Effects(param_1);
 }
 void TRIBE_World::master_player_init(int param_1) {
     RGE_Game_World::master_player_init(param_1);
 }
 void TRIBE_World::command_init(int param_1, TCommunications_Handler* param_2) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E530
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E530
     this->commands = new TRIBE_Command(this, param_2);
 }
 void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E6B0
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E6B0
     // Calls base world_init, then creates TRIBE_Tech with (param_1, this).
     RGE_Game_World::world_init(param_1, param_2, param_3);
 
@@ -406,14 +406,14 @@ void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunication
     this->score_displayed = 0;
 }
 void TRIBE_World::setup_gaia() {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E920
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E920
     // Creates a TRIBE_Gaia player (player 0) using master_players[0].
     RGE_Master_Player* mp = (this->master_players && this->master_player_num > 0) ? this->master_players[0] : nullptr;
     TRIBE_Gaia* gaia = new TRIBE_Gaia(this, mp, '\0', "GAIA", '\0');
     this->players[0] = (RGE_Player*)gaia;
 }
 void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E990
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E990
     // Creates TRIBE_Player objects for each player slot (1..player_num-1).
     // Decomp note: param_1->type[iVar4 + 8] is actually param_1->tribe[iVar4 - 1]
     // due to struct memory aliasing (type is at +0x249, tribe is at +0x252 = type + 9).
@@ -440,7 +440,7 @@ void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
 }
 
 void TRIBE_World::check_destructables(short param_1, short param_2, float param_3, float param_4, uchar param_5) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052EAC0
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052EAC0
     if (this->players == nullptr || this->map == nullptr || this->map->map_row_offset == nullptr) {
         return;
     }
@@ -981,7 +981,7 @@ uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
     return RGE_Game_World::new_random_game(param_1);
 }
 void TRIBE_World::save(int param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E790
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E790
     RGE_Game_World::save(param_1);
     rge_write(param_1, &this->victory_type, 4);
     rge_write(param_1, &this->artifact_count, 4);
@@ -992,7 +992,7 @@ void TRIBE_World::save(int param_1) {
     rge_write(param_1, &this->controllingComputerPlayer, 1);
 }
 void TRIBE_World::scenario_make_player(short param_1, uchar param_2, uchar param_3, uchar param_4, char* param_5) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052ECF0
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052ECF0
     // param_1 = player index, param_2 = civilization/master_player index
     // param_3 = player type (0=human, 4=computer), param_4 unused, param_5 = name
     TRIBE_Player* player = nullptr;
@@ -1307,7 +1307,7 @@ uchar TRIBE_World::check_game_state() {
     return RGE_Game_World::check_game_state();
 }
 uchar TRIBE_World::load_world(int param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052EDF0
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052EDF0
     uchar result = RGE_Game_World::load_world(param_1);
     if (result == 0) return 0;
 
@@ -1350,7 +1350,7 @@ uchar TRIBE_World::load_world(int param_1) {
 }
 uchar TRIBE_World::load_game(char* param_1) { return RGE_Game_World::load_game(param_1); }
 uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052EF30
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052EF30
     CUSTOM_DEBUG_LOG("TRIBE_World::new_game enter");
     this->score_displayed = 0;
     this->controllingComputerPlayer = 0xFF;
@@ -1712,7 +1712,7 @@ void FUN_005316bd() {
 }
 
 uchar TRIBE_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
-    // Source of truth: tworld.cpp.decomp @ 0x00530370
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530370
     uchar result = RGE_Game_World::new_scenario(param_1, param_2);
     // Set starting resources for non-gaia players
     // Attribute indices: 0=food, 1=wood, 2=gold, 3=stone
@@ -1730,7 +1730,7 @@ uchar TRIBE_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
 uchar TRIBE_World::save_game(char* param_1) { return RGE_Game_World::save_game(param_1); }
 void TRIBE_World::base_save(char* param_1) { RGE_Game_World::base_save(param_1); }
 void TRIBE_World::base_save(int param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E770
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E770
     RGE_Game_World::base_save(param_1);
     if (this->tech) {
         this->tech->save(param_1);
@@ -1740,11 +1740,11 @@ uchar TRIBE_World::save_scenario(char* param_1) { return RGE_Game_World::save_sc
 RGE_Scenario* TRIBE_World::get_scenario_info(char* param_1) { return RGE_Game_World::get_scenario_info(param_1); }
 void TRIBE_World::pause(uchar param_1) { RGE_Game_World::pause(param_1); }
 void TRIBE_World::scenario_init(RGE_Game_World* param_1) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E5F0
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E5F0
     this->scenario = new T_Scenario(param_1);
 }
 void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E590
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E590
     this->scenario = new T_Scenario(param_1, param_2);
 }
 int TRIBE_World::addObject(RGE_Static_Object* param_1) { return RGE_Game_World::addObject(param_1); }
