@@ -325,15 +325,15 @@ CUSTOM_DEBUG_END
         RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "interfac.rm");
     }
 
-    RESFILE_open_new_resource_file(this->prog_info->resource_dir, "sounds.drs", "tribe", 1);
-    RESFILE_open_new_resource_file(this->prog_info->resource_dir, "graphics.drs", "tribe", 0);
-    RESFILE_open_new_resource_file(this->prog_info->resource_dir, "Interfac.drs", "tribe", 0);
+    RESFILE_open_new_resource_file("sounds.drs", "tribe", this->prog_info->resource_dir, 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe", this->prog_info->resource_dir, 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe", this->prog_info->resource_dir, 0);
 
-    RESFILE_open_new_resource_file("data\\", "sounds.drs", "tribe", 1);
-    RESFILE_open_new_resource_file("data\\", "graphics.drs", "tribe", 0);
-    RESFILE_open_new_resource_file("data\\", "Terrain.drs", "tribe", 0);
-    RESFILE_open_new_resource_file("data\\", "Border.drs", "tribe", 0);
-    RESFILE_open_new_resource_file("data\\", "Interfac.drs", "tribe", 0);
+    RESFILE_open_new_resource_file("sounds.drs", "tribe", (char*)"data\\", 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe", (char*)"data\\", 0);
+    RESFILE_open_new_resource_file("Terrain.drs", "tribe", (char*)"data\\", 0);
+    RESFILE_open_new_resource_file("Border.drs", "tribe", (char*)"data\\", 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe", (char*)"data\\", 0);
 
     if (RGE_Base_Game::setup() == 0) {
         return 0;
