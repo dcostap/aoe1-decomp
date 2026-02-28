@@ -232,6 +232,46 @@ int RGE_Communications_Queue::AddItem(ulong exec_turn, void* payload, ulong payl
     return 1;
 }
 
+uint RGE_Communications_Queue::GetQueueDepth() {
+    // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431D10
+    return this->QueueDepth;
+}
+
+uint RGE_Communications_Queue::GetHighQueueDepth() {
+    // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431D20
+    return this->HighQueueDepth;
+}
+
+void* RGE_Communications_Queue::GetSpecificItem(uint from_player, ulong exec_turn, uchar sequence, uint* out_size) {
+    // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431D30
+    const ulong code = (ulong)((uint)sequence + from_player * 1000);
+    uint index = 0;
+    MsgQueue* entry = this->Queue;
+
+    while (entry->Code != code || entry->ExecTurn != exec_turn) {
+        ++index;
+        ++entry;
+        if (this->HighQueueDepth < index) {
+            return nullptr;
+        }
+    }
+
+    if (out_size != nullptr) {
+        *out_size = this->Queue[index].Size;
+    }
+
+    void* send_msg = this->Queue[index].msgptr;
+    this->Queue[index].msgptr = nullptr;
+    entry = this->Queue + index;
+    entry->Code = 0;
+    entry->ExecTurn = 0;
+    entry->SeqNo = 0;
+    entry->From = 0;
+    entry->Size = 0;
+    entry->ControlCommand = 0;
+    return send_msg;
+}
+
 void* RGE_Communications_Queue::GetNextItemSingle() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431DD0
     for (uint index = 0; index <= this->HighQueueDepth; ++index) {
@@ -306,4 +346,29 @@ uchar RGE_Communications_Queue::GetNextSequence(ulong current_turn) {
 
 void RGE_Communications_Queue::TestShowQueue() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F50
+}
+
+MsgQueue::MsgQueue() {
+    // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F60
+    this->Code = 0;
+    this->ExecTurn = 0;
+    this->SeqNo = 0;
+    this->From = 0;
+    this->Size = 0;
+    this->ControlCommand = 0;
+    this->msgptr = nullptr;
+}
+
+MsgQueue::~MsgQueue() {
+    // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F80
+    this->Code = 0;
+    this->ExecTurn = 0;
+    this->SeqNo = 0;
+    this->From = 0;
+    this->Size = 0;
+    this->ControlCommand = 0;
+    if (this->msgptr != nullptr) {
+        ::operator delete(this->msgptr);
+    }
+    this->msgptr = nullptr;
 }

@@ -178,6 +178,7 @@ LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 }
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B6A0
     rge_base_game = this;
     
     // ASM at 0x0041B6A0
@@ -222,7 +223,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->prog_info = info;
     this->prog_window = nullptr;
     this->prog_ready = 0; // ASM 0x0041b7b9
-    this->prog_active = 0;
+    this->prog_active = 1;
     this->prog_palette = nullptr;
     this->prog_mutex = nullptr;
     
@@ -2450,7 +2451,7 @@ int RGE_Base_Game::setup_fonts() {
 }
 
 int RGE_Base_Game::setup_sounds() {
-    // Offset: 0x0041F400
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F400
     // Creates 3 UI sounds: button1.wav (0xC47C), button2.wav (0xC47D), chatrcvd.wav (0xC47E)
     this->sound_num = 3;
     this->sounds = (TDigital**)calloc(3, sizeof(TDigital*));
@@ -3781,6 +3782,7 @@ void RGE_Base_Game::request_pause() {
 }
 
 char* RGE_Base_Game::scenarioName() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223E0
     return this->rge_game_options.scenarioNameValue;
 }
 
@@ -3990,7 +3992,7 @@ unsigned char RGE_Base_Game::check_scenario_checksum(char* p1, long p2) {
 }
 
 void RGE_Base_Game::dump_memory_usage(char* p1) {
-    // TODO: decomp body is empty at 0x00422D80; keep placeholder for parity hook.
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422D80
     (void)p1;
 }
 
@@ -4035,7 +4037,7 @@ int RGE_Base_Game::setup_comm() {
     return 1;
 }
 int RGE_Base_Game::setup_sound_system() {
-    // Offset: 0x0041F030
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F030
     int vol = 0;
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("setup_sound_system: use_sound=%d, prog_window=%p, sounds_dir=%s",
