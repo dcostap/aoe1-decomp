@@ -1,4 +1,6 @@
 #include "../include/globals.h"
+#include "../include/TRIGONOMETRY.h"
+#include "../include/Visible_Unit_Manager.h"
 #include <io.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -75,6 +77,14 @@ unsigned char die_die_die = 0;
 int allow_user_commands = 1; // default per original (toggled by scr_game.cpp paths)
 int world_update_counter = 0;
 RGE_Static_Object** VIS_UNIT_objectsValue = nullptr;
+Visible_Unit_Manager* VisibleUnitManager = nullptr;
+VISIBLE_UNIT_REC* VisibleUnitList[5] = {nullptr, nullptr, nullptr, nullptr, nullptr};
+int VisibleUnitList_Size[5] = {0, 0, 0, 0, 0};
+int DAT_0087d7cc = 0;
+int DAT_0087d7d0 = 0;
+int DAT_0087d7d4 = 0;
+int DAT_0087d7d8 = 0;
+TRIGONOMETRY trig;
 unsigned long* unified_map_offsets[256] = {0};
 int ENABLE_COMPRESSION = 1;
 int rge_write_error = 0;
