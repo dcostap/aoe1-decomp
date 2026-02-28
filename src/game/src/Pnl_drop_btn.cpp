@@ -3,7 +3,7 @@
 #include "../include/TListPanel.h"
 #include "../include/TScrollBarPanel.h"
 
-// Constructor - from decomp at 0x00475470
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475470
 TDropDownButtonPanel::TDropDownButtonPanel(TDropDownPanel* drop_down) : TButtonPanel() {
     this->drop_down_panel = drop_down;
 }
@@ -12,9 +12,8 @@ TDropDownButtonPanel::TDropDownButtonPanel(TDropDownPanel* drop_down) : TButtonP
 TDropDownButtonPanel::~TDropDownButtonPanel() {
 }
 
-// handle_mouse_move - from decomp at 0x004754C0
+// Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004754C0
 // Forwards mouse capture from the button to list/scbar while dropdown is open.
-// Source of truth: src/game/src/Pnl_drop.cpp.decomp/.asm (immutable references).
 long TDropDownButtonPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
     // ASM checks button mouse-capture state first (offset 0x68 in TPanel).
     // This prevents forwarding unless the dropdown button currently owns the drag.
