@@ -4,6 +4,7 @@
 
 class TRIBE_Dialog_List : public RGE_Dialog_List {
 public:
+    TRIBE_Dialog_List(char* name);
     // Virtuals (best-effort)
     virtual ~TRIBE_Dialog_List(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
