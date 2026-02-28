@@ -181,7 +181,7 @@ RGE_Map::~RGE_Map()
 
 void RGE_Map::init_tile_sizes()
 {
-    // Source of truth: map.cpp.decomp @ 0x00455570.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455570.
     this->tile_width = 0x40;
     this->tile_height = 0x20;
     this->tile_half_width = 0x20;
@@ -377,6 +377,7 @@ void RGE_Map::load_map(int param_1) {
 void RGE_Map::set_map_screen_pos(int col1, int row1, int col2, int row2)
 {
     // Fully verified. Source of truth: map.cpp.decomp @ 0x00455DD0
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455EDA (switch table label in set_map_screen_pos).
     if (this->map == nullptr || this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -427,7 +428,7 @@ RGE_Map::RGE_Map(int file_handle, RGE_Sound** sounds, uchar load_map)
     this->game_world = nullptr;
     this->init_tile_sizes();
     
-    // Source of truth: map.cpp.decomp @ 0x00455000.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455000.
     // This constructor deserializes the full map struct through rge_read.
     // Save/restore vtable because serialized bytes overwrite it.
     void* vptr = *(void**)this;
@@ -472,7 +473,7 @@ RGE_Map::RGE_Map(char* border_file, char* terrain_file, char* terrain_obj_file, 
     this->world_width = 0;
     this->world_height = 0;
 
-    // Source of truth: map.cpp.decomp @ 0x004550A0.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004550A0.
     this->set_tile_size(0x00, tile_w, tile_h, 0);
     this->set_tile_size(0x01, this->tile_width, this->elev_height, -100);
     this->set_tile_size(0x02, this->tile_width, (short)(this->elev_height + this->tile_height), 100);
@@ -1589,7 +1590,7 @@ void RGE_Map::create_terrain_objects(RGE_Player* player, RGE_Game_World* world) 
 }
 
 void RGE_Map::data_load_random_map(int param_1) {
-    // Source of truth: map.cpp.decomp @ 0x004557C0.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004557C0.
     if (this->random_map != nullptr) {
         delete this->random_map;
         this->random_map = nullptr;
@@ -1598,7 +1599,7 @@ void RGE_Map::data_load_random_map(int param_1) {
 }
 
 void RGE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char* param_4) {
-    // Source of truth: map.cpp.decomp @ 0x00455820.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455820.
     // Constructor argument order from decomp is (param_2, param_3, param_4, param_1).
     if (this->random_map != nullptr) {
         delete this->random_map;
@@ -1901,7 +1902,7 @@ void RGE_Map::map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Pla
     return;
 }
 void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5) {
-    // Source of truth: map.cpp.decomp @ 0x004578B0.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004578B0.
     if (this->game_world == nullptr) {
         this->game_world = param_1;
     }
@@ -2479,6 +2480,7 @@ void RGE_Map::delete_all_objects_on_tile(int param_1, int param_2) {
 
 void RGE_Map::tile_map_coords(short param_1, short param_2, RGE_Tile* param_3, float* param_4, float* param_5) {
     // Fully verified. Source of truth: map.cpp.decomp @ 0x00459060
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459352 (switch table label in tile_map_coords).
     float fVar2 = (float)(int)param_1 / (float)(int)this->tile_width;
     float fVar1 = 0.0f;
     float fVar3 = (float)(int)param_2;
@@ -2741,7 +2743,7 @@ void RGE_Map::update(ulong param_1) {
     }
 }
 
-// Source of truth: map.cpp.decomp @ 0x00459D20.
+// Fully verified. Source of truth: map.cpp.decomp @ 0x00459D20.
 uchar RGE_Map::get_tile_type(short col, short row) {
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
