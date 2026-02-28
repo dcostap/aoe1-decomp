@@ -12,6 +12,34 @@ static unsigned long button_time_ms() {
     return (unsigned long)GetTickCount();
 }
 
+// Source-of-truth supplemental mapping for the 25 pnl_btn offsets that previously had no literal refs
+// in this file (the remaining offsets already had explicit refs in existing method comments):
+// Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0 (TButtonPanel::TButtonPanel)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472030 (TButtonPanel::~TButtonPanel)
+// Source of truth: pnl_btn.cpp.decomp @ 0x004720A0 (TButtonPanel::setup)
+// Source of truth: pnl_btn.cpp.decomp @ 0x004722E0 (TButtonPanel::set_id(short,long,long))
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472300 (TButtonPanel::set_picture)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472330 (TButtonPanel::set_text(short,char*))
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472440 (TButtonPanel::set_text(short,char*,char*))
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472540 (TButtonPanel::set_text(short,long))
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472580 (TButtonPanel::set_text(short,long,long))
+// Source of truth: pnl_btn.cpp.decomp @ 0x004725F0 (TButtonPanel::set_font)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472680 (TButtonPanel::set_sound)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472700 (TButtonPanel::set_state)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472760 (TButtonPanel::set_bevel_info)
+// Source of truth: pnl_btn.cpp.decomp @ 0x004727F0 (TButtonPanel::set_rect(long,long,long,long))
+// Source of truth: pnl_btn.cpp.decomp @ 0x00472810 (TButtonPanel::get_state)
+// TODO: decomp failed thunk marker. Source of truth: pnl_btn.cpp.decomp @ 0x004730F1
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473240 (TButtonPanel::mouse_left_move_action)
+// Source of truth: pnl_btn.cpp.decomp @ 0x004733A0 (TButtonPanel::mouse_right_down_action)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473450 (TButtonPanel::mouse_right_move_action)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473520 (TButtonPanel::mouse_right_up_action)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473930 (TButtonPanel::hit_button)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473AA0 (TButtonPanel::do_right_action)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473BB0 (TButtonPanel::set_sound_number)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473BC0 (TButtonPanel::stop_sound_system)
+// Source of truth: pnl_btn.cpp.decomp @ 0x00473BE0 (TButtonPanel::restart_sound_system)
+
 static void button_notify_parent(TButtonPanel* btn, long code) {
     if (!btn || !btn->parent_panel) return;
     CUSTOM_DEBUG_BEGIN
