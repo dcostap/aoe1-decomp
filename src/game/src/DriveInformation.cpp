@@ -192,7 +192,7 @@ int DriveInformation::numberOfFilesWithFilenameOrAttribute(char* param_1, int pa
     iVar3 = 1;
     iVar2 = _findnext(iVar1, &fileInfo);
     while (iVar2 != -1) {
-        if ((((int)fileInfo.attrib & param_2) != 0) || (strstr(fileInfo.name, param_1) != 0)) {
+        if ((((int)fileInfo.attrib & param_2) != 0) || (strstr(fileInfo.name + 4, param_1) != 0)) {
             iVar3 = iVar3 + 1;
         }
         iVar2 = _findnext(iVar1, &fileInfo);

@@ -5,6 +5,8 @@
 char driveAsLetter(int param_1);
 // Offset: 0x00449760
 int driveAsInt(char param_1);
+// Offset: 0x00449710
+int compareFilenameStrings(void const* param_1, void const* param_2);
 
 struct DriveInformation {
     // Offset: 0x00449770
