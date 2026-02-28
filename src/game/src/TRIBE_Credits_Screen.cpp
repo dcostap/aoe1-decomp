@@ -151,7 +151,7 @@ int RGE_fade_palette_step() {
     return done;
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x004926E0
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x004926E0
 TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     : TScreenPanel((char*)"Credits Screen") {
     this->text_panel = nullptr;
@@ -221,7 +221,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     }
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492970
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492970
 TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     for (int i = 0; i < 7; ++i) {
         if (this->back_pics[i] != nullptr) {
@@ -242,13 +242,13 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     }
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492A40
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492A40
 long TRIBE_Credits_Screen::handle_mouse_down(uchar /*param_1*/, long /*param_2*/, long /*param_3*/, int /*param_4*/, int /*param_5*/) {
     this->close_screen();
     return 1;
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492A50
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492A50
 long TRIBE_Credits_Screen::handle_idle() {
     if (this->mode == ModeNone) {
         if (this->last_picture_time == 0) {
@@ -334,7 +334,7 @@ long TRIBE_Credits_Screen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492CC0
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492CC0
 void TRIBE_Credits_Screen::draw() {
     if (this->mode == ModePause) {
         const bool palette_mode =
@@ -359,7 +359,7 @@ void TRIBE_Credits_Screen::draw() {
     TScreenPanel::draw();
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492D50
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492D50
 long TRIBE_Credits_Screen::key_down_action(long param_1, short /*param_2*/, int /*param_3*/, int /*param_4*/, int /*param_5*/) {
     if ((param_1 != 0xd) && (param_1 != 0x1b)) {
         return 0;
@@ -368,7 +368,7 @@ long TRIBE_Credits_Screen::key_down_action(long param_1, short /*param_2*/, int 
     return 1;
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492D70
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492D70
 long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1 != nullptr && (param_1 == (TPanel*)this->text_panel) && (param_2 == 1)) {
         this->text_done = 1;
@@ -377,12 +377,8 @@ long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2, ulong param_3, 
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// Fully verified. Source of truth: scr_cred.cpp.asm @ 0x00492DB0
+// Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00492DB0
 void TRIBE_Credits_Screen::close_screen() {
-    if (panel_system == nullptr) {
-        return;
-    }
-
     TPanel* game_screen = panel_system->panel((char*)"Game Screen");
     char* next_name = nullptr;
     if (game_screen == nullptr) {
