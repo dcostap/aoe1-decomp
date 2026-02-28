@@ -11,6 +11,8 @@
 // External declaration from Dib.cpp
 void* ReadPalette(char* filename, long resource_id, int flag);
 
+// Source of truth: panel.cpp.decomp @ 0x00463BE0
+// Source of truth: panel.cpp.decomp @ 0x00463BB0
 TPanelSystem::TPanelSystem() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463BE0
     this->ImeEnabled = 1;
@@ -34,6 +36,7 @@ TPanelSystem::TPanelSystem() {
     this->setup();
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463C50
 TPanelSystem::~TPanelSystem() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463C50
     this->restore_system_colors();
@@ -73,6 +76,7 @@ TPanelSystem::~TPanelSystem() {
     this->EnableIME();
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464150
 int TPanelSystem::setup() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464150
     PanelNode* sentinel = (PanelNode*)calloc(1, sizeof(PanelNode));
@@ -91,6 +95,7 @@ int TPanelSystem::setup() {
     return 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004641B0
 PanelNode* TPanelSystem::findPanelNode(char* name) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004641B0
     if (name == nullptr || this->panelListValue == nullptr) {
@@ -109,6 +114,7 @@ PanelNode* TPanelSystem::findPanelNode(char* name) {
     return nullptr;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004642C0
 void* TPanelSystem::get_palette(char* file, long id) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004642C0
     CUSTOM_DEBUG_LOG_FMT("TPanelSystem::get_palette: requested file=%s, id=%d", file ? file : "NULL", (int)id);
@@ -162,6 +168,7 @@ void* TPanelSystem::get_palette(char* file, long id) {
     return pal;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464480
 void TPanelSystem::release_palette(void* pal) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464480
     if (!pal) return;
@@ -181,6 +188,7 @@ void TPanelSystem::release_palette(void* pal) {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004644E0
 void TPanelSystem::DisableIME() {
     // Fully verified. Source of truth: panel.cpp.asm @ 0x004644E0
     if (this->ImeEnabled != 0) {
@@ -189,6 +197,7 @@ void TPanelSystem::DisableIME() {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464510
 void TPanelSystem::EnableIME() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464510
     if ((this->Imc != 0) && (this->ImeEnabled == 0)) {
@@ -196,11 +205,13 @@ void TPanelSystem::EnableIME() {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464540
 int TPanelSystem::IsIMEEnabled() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464540
     return this->ImeEnabled;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464550
 void TPanelSystem::TurnIMEOn() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464550
     if (this->ImeOn == 0 && this->ImeEnabled != 0 && this->Imc != 0) {
@@ -209,6 +220,7 @@ void TPanelSystem::TurnIMEOn() {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464590
 void TPanelSystem::TurnIMEOff() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464590
     if (this->ImeOn != 0 && this->ImeEnabled != 0 && this->Imc != 0) {
@@ -217,26 +229,31 @@ void TPanelSystem::TurnIMEOff() {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004645D0
 int TPanelSystem::IsIMEOn() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004645D0
     return this->ImeOn;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004645E0
 int TPanelSystem::GetInputEnabled() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004645E0
     return this->InputEnabled;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004645F0
 void TPanelSystem::EnableInput() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004645F0
     this->InputEnabled = 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464600
 void TPanelSystem::DisableInput() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464600
     this->InputEnabled = 0;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464610
 void TPanelSystem::stop_sound_system() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464610
     if (this->panelListValue == nullptr) {
@@ -251,6 +268,7 @@ void TPanelSystem::stop_sound_system() {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464640
 int TPanelSystem::restart_sound_system() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464640
     int ok = 1;
@@ -267,6 +285,7 @@ int TPanelSystem::restart_sound_system() {
     return ok;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464680
 void TPanelSystem::restore_system_colors() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464680
     if (this->saved_colors == 0) {
@@ -329,11 +348,13 @@ long TPanelSystem::check_message(void* hwnd, uint msg, uint wparam, long lparam)
     return 0;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D00
 TPanel* TPanelSystem::currentPanel() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D00
     return this->currentPanelValue;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D10
 TPanel* TPanelSystem::previousPanel() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D10
     if (this->currentPanelValue != nullptr) {
@@ -342,21 +363,25 @@ TPanel* TPanelSystem::previousPanel() {
     return nullptr;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D20
 TPanel* TPanelSystem::mouseOwner() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D20
     return this->mouseOwnerValue;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D30
 TPanel* TPanelSystem::keyboardOwner() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D30
     return this->keyboardOwnerValue;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D40
 TPanel* TPanelSystem::modalPanel() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D40
     return this->modalPanelValue;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D50
 TPanel* TPanelSystem::panel(char* name) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D50
     PanelNode* node = this->findPanelNode(name);
@@ -366,11 +391,13 @@ TPanel* TPanelSystem::panel(char* name) {
     return nullptr;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D70
 int TPanelSystem::numberActivePanels() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D70
     return this->numberActivePanelsValue;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463D80
 int TPanelSystem::addPanel(TPanel* panel, int set_current, int modal) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463D80
     if (panel == nullptr) {
@@ -401,6 +428,7 @@ int TPanelSystem::addPanel(TPanel* panel, int set_current, int modal) {
     return 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463E10
 int TPanelSystem::removePanel(char* name) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463E10
     if (name == nullptr) {
@@ -417,6 +445,7 @@ int TPanelSystem::removePanel(char* name) {
     return 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463E60
 int TPanelSystem::setCurrentPanel(char* name, int modal) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463E60
     PanelNode* node = this->findPanelNode(name);
@@ -432,6 +461,7 @@ int TPanelSystem::setCurrentPanel(char* name, int modal) {
     return 0;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464260
 void TPanelSystem::setCurrentPanel(TPanel* panel, int modal) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464260
     if (panel == nullptr) return;
@@ -444,6 +474,7 @@ void TPanelSystem::setCurrentPanel(TPanel* panel, int modal) {
     if (modal != 0) this->setCurrentPanelModal();
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464060
 int TPanelSystem::destroyPanel(char* name) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464060
     if (name == nullptr) {
@@ -468,6 +499,7 @@ int TPanelSystem::destroyPanel(char* name) {
     return 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463EB0
 int TPanelSystem::restorePreviousPanel(int destroy_current) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463EB0
     if (this->currentPanelValue == nullptr) return 0;
@@ -491,16 +523,19 @@ int TPanelSystem::restorePreviousPanel(int destroy_current) {
     return 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463F40
 void TPanelSystem::setMouseOwner(TPanel* panel) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463F40
     this->mouseOwnerValue = panel;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463F50
 void TPanelSystem::setKeyboardOwner(TPanel* panel) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463F50
     this->keyboardOwnerValue = panel;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463F60
 void TPanelSystem::setModalPanel(TPanel* panel) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463F60
     if (this->modalPanelValue != nullptr && panel != nullptr) {
@@ -531,6 +566,7 @@ void TPanelSystem::setModalPanel(TPanel* panel) {
     }
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00463FF0
 void TPanelSystem::setCurrentPanelModal() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463FF0
     if (this->modalPanelValue != nullptr && this->modalPanelValue != this->currentPanelValue &&
@@ -540,6 +576,7 @@ void TPanelSystem::setCurrentPanelModal() {
     this->modalPanelValue = this->currentPanelValue;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464010
 int TPanelSystem::restorePreviousModalPanel() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464010
     if (this->modalPanelValue == nullptr) return 0;
@@ -552,11 +589,13 @@ int TPanelSystem::restorePreviousModalPanel() {
     return 1;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464100
 int TPanelSystem::inSystem(char* name) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464100
     return this->findPanelNode(name) != nullptr;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x00464120
 int TPanelSystem::inSystem(TPanel* panel) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464120
     if (panel != nullptr) {
@@ -565,6 +604,7 @@ int TPanelSystem::inSystem(TPanel* panel) {
     return 0;
 }
 
+// Source of truth: panel.cpp.decomp @ 0x004646F0
 void TPanelSystem::set_restore() {
     // Fully verified. Source of truth: panel.cpp.asm @ 0x004646F0
     if (this->panelListValue == nullptr) {

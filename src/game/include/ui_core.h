@@ -43,6 +43,7 @@ public:
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4);
     virtual void set_redraw(RedrawMode param_1);
     virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3);
+    void set_any_overlapping_redraw(TPanel* param_1, RedrawMode param_2);
     virtual void draw_setup(int param_1);
     virtual void draw_finish();
     virtual void draw();
@@ -79,6 +80,20 @@ public:
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5);
     virtual long char_action(long param_1, short param_2);
     virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4);
+    void get_mouse_pos(tagPOINT* param_1);
+    uchar is_redraw_needed();
+    int is_inside_rect(long param_1, long param_2, tagRECT* param_3);
+    int get_focus();
+    TPanel* previousPanel();
+    void setPreviousPanel(TPanel* panel);
+    TPanel* previousModalPanel();
+    void setPreviousModalPanel(TPanel* panel);
+    void setPanelName(char* name);
+    TDrawArea* renderArea();
+    tagRECT clipRectangle();
+    void setClipRectangle(tagRECT rect);
+    long get_help_message();
+    long get_help_page();
     virtual void get_true_render_rect(tagRECT* param_1);
     virtual int is_inside(long param_1, long param_2);
     virtual void set_focus(int param_1);
