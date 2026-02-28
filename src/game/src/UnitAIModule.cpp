@@ -1,17 +1,94 @@
 #include "../include/UnitAIModule.h"
 
 #include "../include/RGE_Static_Object.h"
+#include "../include/RGE_Action_List.h"
+#include "../include/RGE_Action_Object.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Map.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Visible_Map.h"
+#include "../include/Visible_Resource_Manager.h"
+#include "../include/VISIBLE_UNIT_REC.h"
+#include "../include/VISIBLE_UNIT_PTR.h"
+#include "../include/Visible_Unit_Manager.h"
+#include "../include/XYZPoint.h"
+#include "../include/AIPlayBook.h"
+#include "../include/AIPlay.h"
+#include "../include/AIPlayPhase.h"
+#include "../include/AIPlayPhaseTrigger.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
 #include <new>
 #include <string.h>
+
+Visible_Unit_Manager* VisibleUnitManager = nullptr;
+VISIBLE_UNIT_REC* VisibleUnitList[5] = {};
+int VisibleUnitList_Size[5] = {};
+int DAT_0087d7cc[5] = {};
+int DAT_0087d7d8[5] = {};
+int* DAT_0087d7e4[5] = {};
+VISIBLE_UNIT_REC* DAT_0087d7f0[5] = {};
+int taskedThisUpdate = 0;
+int searchedThisUpdate = 0;
+int numberVisibleObjects = 0;
+int numberDifferentPlayerObjectsVisible = 0;
+
+int GetVisibleUnits(Visible_Unit_Manager* this_, int param_2, int param_3, int param_4, int param_5, int* param_6, int param_7, int* param_8) {
+    if (param_6 == nullptr || param_8 == nullptr || this_ == nullptr) {
+        return 0;
+    }
+    for (int i = 0; i < 5; ++i) {
+        VisibleUnitList_Size[i] = 0;
+        DAT_0087d7cc[i] = 0;
+        DAT_0087d7d8[i] = 0;
+    }
+    if (param_7 < 1 || param_5 < 0 || param_5 >= this_->Player_Count) {
+        return 0;
+    }
+    if (param_4 > 0x0F) {
+        param_4 = 0x0F;
+    }
+    VISIBLE_UNIT_PTR* playerData = this_->PlayerDataPtrs[param_5];
+    if (playerData == nullptr || this_->distanceTable == nullptr) {
+        return 0;
+    }
+    int found = 0;
+    for (int i = 0; i < param_7; ++i) {
+        const int listIndex = param_6[i];
+        VISIBLE_UNIT_REC* unitList = playerData[listIndex].unit_list;
+        int used = (int)playerData[listIndex].used;
+        for (int j = 0; j < used; ++j) {
+            const VISIBLE_UNIT_REC& rec = unitList[j];
+            const int dx = abs((int)rec.pos_x - param_2);
+            const int dy = abs((int)rec.pos_y - param_3);
+            const uchar dist = this_->distanceTable[(dx & 0x0F) + ((dy & 0x0F) * 0x10)];
+            if ((int)dist > param_4) {
+                continue;
+            }
+            const int category = param_8[rec.player];
+            if (category < 0 || category >= 5) {
+                continue;
+            }
+            const int idx = VisibleUnitList_Size[category];
+            if (idx < 0x100) {
+                if (VisibleUnitList[category] != nullptr) {
+                    VISIBLE_UNIT_REC** out = (VISIBLE_UNIT_REC**)&VisibleUnitList[category];
+                    out[idx * 2] = (VISIBLE_UNIT_REC*)(intptr_t)rec.object_id;
+                    out[idx * 2 + 1] = (VISIBLE_UNIT_REC*)(intptr_t)(uint)dist;
+                }
+                VisibleUnitList_Size[category] = idx + 1;
+                ++found;
+            }
+        }
+    }
+    return found;
+}
 
 AIPlayStatus::AIPlayStatus() {
     memset(this->bytes, 0, sizeof(this->bytes));
@@ -489,83 +566,156 @@ int UnitAIModule::numberAttackingUnits() const {
     return this->attackingUnitsValue.numberValue;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414D12)
-// TODO: unresolved decompiler helper/thunk at this offset.
-// Offset: 0x00414D12
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414D40)
+// Source of truth: aiuaimod.cpp.decomp @ 0x00414D12 (decompiler helper/thunk label coverage).
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414D40
 int UnitAIModule::order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11) {
-    if (this->objectValue->object_state >= 3) {
-        return 1;
+    if (this->objectValue->object_state < 3) {
+        if (param_9 == 0) {
+            this->addToOrderQueue(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_10, param_11);
+            return 1;
+        }
+        if (param_10 == 1) {
+            this->addToOrderQueue((int)this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1, this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, this->desiredTargetDistanceValue, 1, this->currentOrderPriorityValue);
+        }
+        this->addToOrderQueue(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, 1, param_11);
+        if (param_2 != 0x2D9) {
+            this->removeCurrentTarget();
+            if (actionFile != nullptr) {
+                const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x6F3);
+            }
+            this->stopObject(1);
+        }
+        this->purgeNotifyQueue(0);
+        this->processOrder(this->orderQueueValue, 0);
     }
-    if (param_9 == 0) {
-        this->addToOrderQueue(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_10, param_11);
-        return 1;
-    }
-    if (param_10 == 1) {
-        this->addToOrderQueue((int)this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1, this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, this->desiredTargetDistanceValue, 1, this->currentOrderPriorityValue);
-    }
-    this->addToOrderQueue(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, 1, param_11);
-    if (param_2 != 0x2D9) {
-        this->removeCurrentTarget();
-    }
-    this->purgeNotifyQueue(0);
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414E80)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414E80
 int UnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     if (this->objectValue->object_state != 2) {
         return 0;
     }
     if (param_3 == 699) {
-        int i = 0;
-        while (i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue) {
-            if (this->attackingUnitsValue.value[i] == param_1) {
-                break;
+        const int maxCount = this->attackingUnitsValue.numberValue;
+        int index = 0;
+        if (0 < maxCount) {
+            while (index < this->attackingUnitsValue.maximumSizeValue) {
+                if (this->attackingUnitsValue.value[index] == param_1) {
+                    break;
+                }
+                index = index + 1;
+                if (maxCount <= index) {
+                    return 0;
+                }
             }
-            ++i;
         }
-        if (i >= this->attackingUnitsValue.numberValue) {
+    }
+    else {
+        if ((param_3 == 0x1FB) && (param_4 != this->currentActionValue)) {
             return 0;
         }
     }
-    if ((param_3 == 0x1FB) && (param_4 != this->currentActionValue)) {
-        return 0;
-    }
-    if ((param_3 == 0x1FA) && (param_4 == 0x262) && (this->currentActionValue != 0x262) && (this->currentActionValue != 0x268)) {
+    if ((param_3 == 0x1FA) &&
+        (((param_4 == 0x262 && (this->currentActionValue != 0x262)) && (this->currentActionValue != 0x268)))) {
         return 1;
     }
     return this->addToNotifyQueue(param_1, param_2, param_3, param_4, param_5, param_6);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414F70)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414F70
 int UnitAIModule::notifyCommander(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
-    return this->notify(param_1, param_2, param_3, param_4, param_5, param_6);
+    if (this->objectValue->inGroup() == 1) {
+        NotifyEvent nEvent;
+        nEvent.recipient = param_1;
+        nEvent.mType = param_2;
+        nEvent.p1 = param_3;
+        nEvent.p2 = param_4;
+        nEvent.p3 = param_5;
+        const int commanderId = this->objectValue->groupCommanderValue;
+        if (this->objectValue->id == commanderId) {
+            this->notifyCommander(&nEvent);
+        }
+        else {
+            RGE_Static_Object* commander = this->lookupObject(commanderId);
+            if (commander != nullptr) {
+                UnitAIModule* commanderAI = commander->unitAI();
+                if (commanderAI != nullptr) {
+                    commanderAI->notifyCommander(&nEvent);
+                }
+            }
+        }
+    }
+    this->objectValue->owner->notify(param_1, param_2, param_3, param_4, param_5, param_6);
+    return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414F40)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414F40
 int UnitAIModule::notifyCommander(NotifyEvent* param_1) {
-    if (param_1 == nullptr) {
-        return 0;
-    }
     return this->notify(param_1->caller, param_1->recipient, param_1->mType, param_1->p1, param_1->p2, param_1->p3);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415040)
-void UnitAIModule::search() {}
-
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415120)
-int UnitAIModule::importantWhenDead(int param_1) {
-    return this->importantObject(param_1);
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415040
+void UnitAIModule::search() {
+    if (searchedThisUpdate == 1) {
+        return;
+    }
+    searchedThisUpdate = 1;
+    if (this->importantObjects != nullptr) {
+        RGE_Static_Object* target = nullptr;
+        int searchRange = 0;
+        int ownerId = 0;
+        int* diplomacy = nullptr;
+        const int importantCount = this->numberImportantObjects;
+        int* importantObjects = this->importantObjects;
+        if ((this->currentOrderValue == 0x2BD) && (this->defendTargetValue != -1)) {
+            target = this->lookupObject(this->defendTargetValue);
+            if (target != nullptr && target->unitAI() != nullptr) {
+                searchRange = (int)target->master_obj->los;
+                diplomacy = this->objectValue->owner->unitDiplomacy;
+                ownerId = (int)target->owner->id;
+                const int tileY = (int)target->world_y;
+                const int tileX = (int)target->world_x;
+                numberVisibleObjects = GetVisibleUnits(VisibleUnitManager, tileX, tileY, searchRange, ownerId, importantObjects, importantCount, diplomacy);
+                return;
+            }
+        }
+        target = this->objectValue;
+        searchRange = (int)target->master_obj->los;
+        if (target->master_obj->id == 0x76) {
+            searchRange = searchRange * 2;
+        }
+        diplomacy = target->owner->unitDiplomacy;
+        ownerId = (int)target->owner->id;
+        const int tileY = (int)target->world_y;
+        const int tileX = (int)target->world_x;
+        numberVisibleObjects = GetVisibleUnits(VisibleUnitManager, tileX, tileY, searchRange, ownerId, importantObjects, importantCount, diplomacy);
+        return;
+    }
+    searchedThisUpdate = 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415150)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415120
+int UnitAIModule::importantWhenDead(int param_1) {
+    if ((param_1 != 7) &&
+        (param_1 != 9) &&
+        (param_1 != 10) &&
+        (param_1 != 0x0F) &&
+        (param_1 != 8) &&
+        (param_1 != 0x20)) {
+        return 0;
+    }
+    return 1;
+}
+
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415150
 int UnitAIModule::retryableOrder(int param_1) {
     (void)param_1;
     return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415160)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415160
 int UnitAIModule::actionRequiresLiveTarget(int param_1) {
     if ((this->stopAfterTargetKilledValue != 1) &&
         (param_1 != 600) &&
@@ -579,7 +729,7 @@ int UnitAIModule::actionRequiresLiveTarget(int param_1) {
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004151B0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004151B0
 int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3) {
     (void)param_1;
     (void)param_2;
@@ -590,21 +740,21 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3) {
 }
 
 int UnitAIModule::mostDangerousEnemy(float* param_1) {
-    // TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415A10)
+    // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415A10
     return this->bestUnitToAttack(1, 0, param_1);
 }
 
 int UnitAIModule::weakestEnemy(float* param_1) {
-    // TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415AD0)
+    // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415AD0
     return this->bestUnitToAttack(2, 0, param_1);
 }
 
 int UnitAIModule::closestAttacker(float* param_1) {
-    // TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415B50)
+    // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415B50
     return this->bestUnitToAttack(3, 0, param_1);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415CA0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415CA0
 int UnitAIModule::closestObject(int param_1, int param_2, int param_3, int param_4, int* param_5) {
     (void)param_1;
     (void)param_2;
@@ -617,11 +767,11 @@ int UnitAIModule::closestObject(int param_1, int param_2, int param_3, int param
 }
 
 int UnitAIModule::closestResourceObject(int param_1, int* param_2) {
-    // TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415E50)
+    // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415E50
     return this->closestObject(-1, -1, param_1, -1, param_2);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00415F40)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00415F40
 int UnitAIModule::closestUndiscoveredTile(int* param_1, int* param_2, int param_3) {
     (void)param_3;
     if (param_1 != nullptr) {
@@ -685,183 +835,357 @@ int UnitAIModule::canAttackUnitAtNeutrality(int param_1) {
     return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004162C0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004162C0
 int UnitAIModule::stopObject(int param_1) {
-    this->currentOrderValue = -1;
-    this->currentActionValue = -1;
-    this->currentTargetValue = -1;
-    this->currentTargetTypeValue = -1;
-    if (param_1 != 0) {
-        this->orderQueueSizeValue = 0;
+    if (actionFile != nullptr) {
+        fprintf(actionFile, "t%ld uID=%d sO cOAA %d\n", this->objectValue->owner->world->world_time, this->objectValue->id, param_1);
     }
+    this->lastActionValue = this->currentActionValue;
+    if ((param_1 == 0) || (this->currentActionValue + 100 == this->currentOrderValue)) {
+        const int prevOrder = this->currentOrderValue;
+        this->currentOrderValue = -1;
+        this->lastOrderValue = prevOrder;
+        this->currentOrderPriorityValue = -1;
+    }
+    this->objectValue->stopAction();
+    this->currentActionValue = -1;
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416340)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416340
 int UnitAIModule::attackObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 1;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue == -1)) {
+        RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+        if (target != nullptr) {
+            if (this->canAttackUnit(target) != 0) {
+                if (this->objectValue->attack(param_1, param_2) == 1) {
+                    this->setCurrentAction(600);
+                    this->setCurrentTarget(param_1, target->world_x, target->world_y, target->world_z);
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004163C0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004163C0
 int UnitAIModule::attackRoundupObject(int param_1) {
-    return this->attackObject(param_1, 0);
+    if (this->currentTargetValue != param_1) {
+        RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+        if (target != nullptr && this->canAttackUnit(target) != 0) {
+            if (this->currentActionValue != -1) {
+                const float weaponRange = this->objectValue->weaponRange();
+                if (this->objectValue->canPath(param_1, weaponRange, nullptr, 0, -1, -1) == 0) {
+                    return 0;
+                }
+            }
+            if (this->objectValue->attack(param_1, 1) == 1) {
+                this->setCurrentAction(600);
+                this->setCurrentTarget(param_1, target->world_x, target->world_y, target->world_z);
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416470)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416470
 int UnitAIModule::huntObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 2;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x265)) {
+        if (actionFile != nullptr) {
+            const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+            fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xC48);
+        }
+        this->stopObject(1);
+        if (this->objectValue->hunt(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x265);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416690)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416690
 int UnitAIModule::gatherObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 3;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x261)) {
+        if (this->objectValue->gather(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x261);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416550)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416550
 int UnitAIModule::convertObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 4;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x25C)) {
+        if (this->objectValue->convert(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x25C);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004165F0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004165F0
 int UnitAIModule::healObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 5;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x25B)) {
+        if (this->objectValue->heal(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x25B);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416730)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416730
 int UnitAIModule::repairObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 6;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x26A)) {
+        if (this->objectValue->repair(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x26A);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004167D0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004167D0
 int UnitAIModule::buildObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 7;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x25A)) {
+        if (this->objectValue->build(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x25A);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416870)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416870
 int UnitAIModule::tradeWithObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 8;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue != 0x267)) {
+        if (this->objectValue->trade(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x267);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, (int)target->master_obj->object_group, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416910)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416910
 int UnitAIModule::explore(int param_1, int param_2, int param_3) {
-    this->currentActionValue = 9;
-    this->currentTargetValue = -1;
-    this->currentTargetTypeValue = param_1;
-    this->currentTargetXValue = (float)param_2;
-    this->currentTargetYValue = (float)param_3;
-    return 1;
+    if ((param_3 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->explore(param_1, param_2, param_3) == 1) {
+            this->setCurrentAction(0x25D);
+            this->setCurrentTarget(-1, (float)param_3, (float)param_2, 1.0f);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416980)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416980
 int UnitAIModule::enterObject(int param_1, int param_2) {
-    this->currentTargetValue = param_1;
-    this->currentTargetTypeValue = param_2;
-    this->currentActionValue = 10;
-    return 1;
+    if ((param_2 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->enter(param_1, param_2) == 1) {
+            this->setCurrentAction(0x269);
+            this->setCurrentTarget(param_1, -1.0f, -1.0f, -1.0f);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416A50)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416A50
 int UnitAIModule::unload(int param_1, float param_2, float param_3) {
-    (void)param_1;
-    this->currentActionValue = 11;
-    this->currentTargetXValue = param_2;
-    this->currentTargetYValue = param_3;
-    return 1;
+    if ((param_1 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->unload(param_1, param_2, param_3, this->objectValue->world_z) == 1) {
+            RGE_Static_Object* self = this->objectValue;
+            this->setCurrentAction(0x26D);
+            if (self == nullptr) {
+                this->setCurrentTarget(this->objectValue->id, -1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(this->objectValue->id, (int)self->master_obj->object_group, self->world_x, self->world_y, self->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004169E0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004169E0
 int UnitAIModule::transportObject(float param_1, float param_2, float param_3, int param_4) {
-    this->currentActionValue = 12;
-    this->currentTargetXValue = param_1;
-    this->currentTargetYValue = param_2;
-    this->currentTargetZValue = param_3;
-    this->currentTargetTypeValue = param_4;
-    return 1;
+    if ((param_4 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->transport(param_1, param_2, param_3, param_4) == 1) {
+            this->setCurrentAction(0x266);
+            this->setCurrentTarget(-1, param_1, param_2, param_3);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416AF0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416AF0
 int UnitAIModule::moveTo(float param_1, float param_2, float param_3, float param_4, int param_5) {
-    this->currentActionValue = 13;
-    this->currentTargetXValue = param_1;
-    this->currentTargetYValue = param_2;
-    this->currentTargetZValue = param_3;
-    this->desiredTargetDistanceValue = param_4;
-    this->currentTargetTypeValue = param_5;
-    return 1;
+    if ((param_5 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->moveTo(param_1, param_2, param_3, param_4, param_5) == 1) {
+            this->setCurrentAction(0x262);
+            this->setCurrentTarget(-1, param_1, param_2, param_3);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416B80)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416B80
 int UnitAIModule::moveTo(int param_1, float param_2, int param_3) {
-    return this->moveTo((float)param_1, param_2, this->currentTargetZValue, this->desiredTargetDistanceValue, param_3);
+    if ((param_3 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->moveTo(param_1, param_2, param_3) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x262);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416C10)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416C10
 int UnitAIModule::moveTo(int param_1, int param_2) {
-    return this->moveTo((float)param_1, (float)param_2, this->currentTargetZValue, this->desiredTargetDistanceValue, this->currentTargetTypeValue);
+    if ((param_2 != 0) || (this->currentActionValue == -1)) {
+        if (this->objectValue->moveTo(param_1, param_2) == 1) {
+            RGE_Static_Object* target = this->objectValue->owner->world->object(param_1);
+            this->setCurrentAction(0x262);
+            if (target == nullptr) {
+                this->setCurrentTarget(param_1, 0.0f, 0.0f, 0.0f);
+                return 1;
+            }
+            this->setCurrentTarget(param_1, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+    return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416C80)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416C80
 int UnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
     return this->moveTo(param_1, param_2, param_3, 1.0f, param_4);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00416F30)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416F30
 int UnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
     (void)param_5;
     return this->evasiveMoveTo(param_1, param_2, param_3, param_4);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004171CA)
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004171F0)
+// Source of truth: aiuaimod.cpp.decomp @ 0x004171CA (decompiler helper/thunk label coverage).
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004171F0
 int UnitAIModule::runAwayFromAttackers(int param_1) {
-    (void)param_1;
-    return 0;
+    if ((param_1 == 0) && (this->currentActionValue != -1)) {
+        return 0;
+    }
+    float xDiff = 0.0f;
+    float yDiff = 0.0f;
+    for (int i = 0; i < this->attackingUnitsValue.numberValue; ++i) {
+        if (i >= this->attackingUnitsValue.maximumSizeValue) {
+            break;
+        }
+        RGE_Static_Object* attacker = this->lookupObject(this->attackingUnitsValue.value[i]);
+        if (attacker != nullptr) {
+            xDiff += (attacker->world_x - this->objectValue->world_x);
+            yDiff += (attacker->world_y - this->objectValue->world_y);
+        }
+    }
+    const float distance = (float)sqrt((xDiff * xDiff) + (yDiff * yDiff));
+    if (distance <= 0.0f) {
+        return 0;
+    }
+    const float moveDistance = this->objectValue->maximumSpeed() * 4.0f;
+    return this->evasiveMoveTo(
+        this->objectValue->world_x - ((xDiff / distance) * moveDistance),
+        this->objectValue->world_y - ((yDiff / distance) * moveDistance),
+        this->objectValue->world_z,
+        1);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417360)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417360
 int UnitAIModule::followObject(int param_1, float param_2, int param_3) {
-    this->currentActionValue = 14;
-    this->currentTargetValue = param_1;
+    if ((param_3 == 0) && (this->currentActionValue != -1)) {
+        return 0;
+    }
+    RGE_Static_Object* target = this->lookupObject(param_1);
+    if (target == nullptr) {
+        return 0;
+    }
+    this->setCurrentAction(0x264);
+    this->setCurrentTarget(param_1, target->world_x, target->world_y, target->world_z);
     this->desiredTargetDistanceValue = param_2;
-    this->currentTargetTypeValue = param_3;
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004173D0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004173D0
 int UnitAIModule::defendObject(int param_1, float param_2, int param_3) {
-    this->currentActionValue = 15;
-    this->currentTargetValue = param_1;
+    if ((param_3 == 0) && (this->currentActionValue != -1)) {
+        return 0;
+    }
+    RGE_Static_Object* target = this->lookupObject(param_1);
+    if (target == nullptr) {
+        return 0;
+    }
+    this->setCurrentAction(0x259);
+    this->setCurrentTarget(param_1, target->world_x, target->world_y, target->world_z);
     this->desiredTargetDistanceValue = param_2;
-    this->currentTargetTypeValue = param_3;
     this->defendTargetValue = param_1;
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417440)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417440
 int UnitAIModule::defendPosition(float param_1, float param_2, float param_3, int param_4) {
     this->currentActionValue = 16;
     this->currentTargetXValue = param_1;
@@ -871,7 +1195,7 @@ int UnitAIModule::defendPosition(float param_1, float param_2, float param_3, in
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004174A0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004174A0
 int UnitAIModule::seekAndDestroy(int param_1, int param_2, int param_3, int param_4) {
     (void)param_2;
     (void)param_3;
@@ -881,12 +1205,12 @@ int UnitAIModule::seekAndDestroy(int param_1, int param_2, int param_3, int para
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417510)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417510
 int UnitAIModule::exploreAndDestroy(int param_1, int param_2, int param_3) {
     return this->seekAndDestroy(param_1, param_2, param_3, this->currentOrderPriorityValue);
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417640)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417640
 int UnitAIModule::importantObject(int param_1) {
     for (int i = 0; i < this->numberImportantObjects; ++i) {
         if (this->importantObjects != nullptr && this->importantObjects[i] == param_1) {
@@ -908,7 +1232,7 @@ int UnitAIModule::canConvert(int param_1) {
     return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417B50)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417B50
 int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     if (param_1 == nullptr) {
         return 0;
@@ -945,9 +1269,9 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     }
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004180C0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004180C0
 int UnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
-    // Offset: 0x00418045 (decomp branch label coverage)
+    // Source of truth: aiuaimod.cpp.decomp @ 0x00418045 (decomp branch label coverage)
     (void)param_2;
     if (param_1 == nullptr) {
         return 0;
@@ -962,31 +1286,65 @@ int UnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00419510)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419510
 void UnitAIModule::processGroupNotify(NotifyEvent* param_1) {
-    (void)param_1;
+    if (this->playStatus == nullptr || this->objectValue == nullptr || this->objectValue->owner == nullptr || this->objectValue->owner->world == nullptr || this->objectValue->owner->world->playbook == nullptr || param_1 == nullptr || param_1->mType != 500) {
+        return;
+    }
+    AIPlay* play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue);
+    if (play == nullptr) {
+        return;
+    }
+    AIPlayPhase* phase = play->phase(this->playStatus->currentPhaseValue);
+    if (phase == nullptr) {
+        return;
+    }
+    this->playStatus->savedAttackerValue = param_1->caller;
+    for (int i = 0; i < 3; ++i) {
+        AIPlayPhaseTrigger* trigger = phase->trigger(i);
+        if (trigger == nullptr || trigger->typeValue == 0) {
+            continue;
+        }
+        if ((trigger->typeValue == 5) || ((trigger->typeValue == 4) && (trigger->value1Value == this->playStatus->group(param_1->recipient)))) {
+            this->selectNewPlayPhase((unsigned int)trigger->nextPhaseValue, 0);
+        }
+    }
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x004195F0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004195F0
 int UnitAIModule::processIdle(int param_1) {
-    (void)param_1;
+    if ((param_1 == 1) && (this->currentActionValue == 8)) {
+        return 6;
+    }
+    const int target = this->bestUnitToAttack(1, 0, nullptr);
+    if ((target != -1) && (this->attackObject(target, 1) == 1)) {
+        return 6;
+    }
     return 5;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00419650)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419650
 int UnitAIModule::processMisc() {
     return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00419BC0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419BC0
 int UnitAIModule::processRetryableOrder() {
-    if (this->orderQueueSizeValue <= 0 || this->orderQueueValue == nullptr) {
-        return 0;
+    if (this->retryableOrder(this->lastOrderValue) == 1) {
+        const int target = this->closestObject(this->lastTargetTypeValue, -1, -1, -1, nullptr);
+        if (target != -1) {
+            if (this->lastOrderValue == 0x2C5) {
+                return (this->convertObject(target, 0) == 1) ? 8 : 7;
+            }
+            if (this->lastOrderValue == 0x2C9) {
+                return (this->gatherObject(target, 0) == 1) ? 8 : 7;
+            }
+        }
     }
-    return this->processOrder(&this->orderQueueValue[0], 1);
+    return 7;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00413AB0)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413AB0
 int UnitAIModule::update(unsigned long param_1) {
     if (this->objectValue == nullptr) {
         return 0;
@@ -1026,12 +1384,12 @@ int UnitAIModule::update(unsigned long param_1) {
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414040)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414040
 void UnitAIModule::updateGroup(unsigned long param_1) {
     (void)param_1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00414800)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414800
 int UnitAIModule::selectNewPlayPhase(unsigned int param_1, int param_2) {
     (void)param_1;
     (void)param_2;
@@ -1131,7 +1489,7 @@ void UnitAIModule::setPlayStatus(AIPlayStatus* param_1) {
     }
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417860)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417860
 void UnitAIModule::lookAround() {
     this->lookAroundTimerValue = 0;
     const int r = debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xF92);
@@ -1148,7 +1506,7 @@ int UnitAIModule::hasOrderOnQueue(int param_1) {
     return 0;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x00417960)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417960
 void UnitAIModule::askForHelp(int param_1) {
     (void)param_1;
 }
@@ -1240,7 +1598,7 @@ int UnitAIModule::addToNotifyQueue(int param_1, int param_2, int param_3, long p
     return 1;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x0041A020)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x0041A020
 void UnitAIModule::purgeNotifyQueue(unsigned long param_1) {
     this->notifyQueueSizeValue = 0;
     this->lastUpdateTimeValue = param_1;
@@ -1254,7 +1612,7 @@ RGE_Static_Object* UnitAIModule::lookupObject(int param_1) {
     return nullptr;
 }
 
-// TODO: decomp transliteration in progress (aiuaimod.cpp.decomp @ 0x0041A100)
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x0041A100
 void UnitAIModule::logDebug(char* param_1) {
     if (param_1 == nullptr) {
         return;
@@ -1265,4 +1623,5 @@ void UnitAIModule::logDebug(char* param_1) {
     vsnprintf(textOut, sizeof(textOut), param_1, args);
     va_end(args);
 }
+
 

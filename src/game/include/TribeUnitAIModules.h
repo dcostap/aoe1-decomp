@@ -35,6 +35,8 @@ public:
     virtual int retryableOrder(int param_1) override;
     virtual int canConvert(int param_1) override;
     virtual int canAttackUnit(RGE_Static_Object* param_1) override;
+    int bestUnitToHeal(int param_1, float* param_2);
+    int bestUnitToConvert(float* param_1);
     virtual int processNotify(NotifyEvent* param_1, unsigned long param_2) override;
     virtual int processIdle(int param_1) override;
     virtual int processMisc() override;
