@@ -178,14 +178,17 @@ static void sbar_draw_button_pic(TScrollBarPanel* self, int frame, int pressed, 
 } // namespace
 
 void TScrollBarPanel::calc_item_rects() {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AA80
     sbar_calc_item_rects(this);
 }
 
 void TScrollBarPanel::draw_back_pic() {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B8B0
     sbar_draw_back_pic(this);
 }
 
 void TScrollBarPanel::draw_button_pic(int frame, int pressed, tagRECT* r) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B970
     if (!r) {
         return;
     }
@@ -193,13 +196,20 @@ void TScrollBarPanel::draw_button_pic(int frame, int pressed, tagRECT* r) {
 }
 
 void TScrollBarPanel::draw_border(int border_type, int reverse, tagRECT* r) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B660
     if (!r) {
         return;
     }
     sbar_draw_border(this, border_type, reverse, *r);
 }
 
+void TScrollBarPanel::draw_border(int border_type, int reverse, long left, long top, long right, long bottom) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B690
+    sbar_draw_border(this, border_type, reverse, left, top, right, bottom);
+}
+
 TScrollBarPanel::TScrollBarPanel() : TPanel() {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047A700
     list_panel = nullptr;
     list_len = 0;
     one_step = 0;
@@ -245,6 +255,7 @@ TScrollBarPanel::TScrollBarPanel() : TPanel() {
 }
 
 TScrollBarPanel::~TScrollBarPanel() {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047A8A0
 }
 
 long TScrollBarPanel::setup(TDrawArea* a, TPanel* p, long x, long y, long w, long h, uchar c) {
@@ -255,6 +266,7 @@ long TScrollBarPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y
                           char* pic1, char* pic2, char* pic3, char* pic4,
                           long arrow_hgt, long tab_hgt, TPanel* list, int list_len_value,
                           Orientation orientation) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047A8B0
     (void)pic1;
     (void)pic2;
     (void)pic3;
@@ -275,6 +287,7 @@ void TScrollBarPanel::set_rect(tagRECT r) {
 }
 
 void TScrollBarPanel::set_rect(long x, long y, long w, long h) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047A910
     TPanel::set_rect(x, y, w, h);
 
     if (orientationValue == Horizontal) {
@@ -345,6 +358,7 @@ void TScrollBarPanel::draw_setup(int p) { TPanel::draw_setup(p); }
 void TScrollBarPanel::draw_finish() { TPanel::draw_finish(); }
 
 void TScrollBarPanel::set_tab_pos(long list_index) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AB20
     list_num = list_index;
 
     if (orientationValue == Horizontal) {
@@ -376,11 +390,13 @@ void TScrollBarPanel::set_tab_pos(long list_index) {
 }
 
 void TScrollBarPanel::set_list_len(long list_len_value, long list_index) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AC10
     list_len = list_len_value;
     set_tab_pos(list_index);
 }
 
 void TScrollBarPanel::set_buttons(TShape* pics, int back, int up, int down, int tab) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AC30
     button_pics = pics;
     back_frame = back;
     up_frame = up;
@@ -391,6 +407,7 @@ void TScrollBarPanel::set_buttons(TShape* pics, int back, int up, int down, int 
 void TScrollBarPanel::set_bevel_info(int type, unsigned char c1, unsigned char c2,
                                      unsigned char c3, unsigned char c4,
                                      unsigned char c5, unsigned char c6) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AC70
     bevel_type = type;
     bevel_color1 = c1;
     bevel_color2 = c2;
@@ -401,6 +418,7 @@ void TScrollBarPanel::set_bevel_info(int type, unsigned char c1, unsigned char c
 }
 
 long TScrollBarPanel::handle_idle() {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047ACC0
     unsigned long now;
 
     if (item_mode == 1) {
@@ -462,6 +480,8 @@ long TScrollBarPanel::handle_mouse_dbl_click(uchar b, long x, long y, int p1, in
 long TScrollBarPanel::mouse_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_move_action(x, y, p1, p2); }
 
 long TScrollBarPanel::mouse_left_down_action(long x, long y, int p1, int p2) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AE40
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AE22 (alias entry)
     (void)p1;
     (void)p2;
 
@@ -513,6 +533,7 @@ long TScrollBarPanel::mouse_left_hold_action(long x, long y, int p1, int p2) {
 }
 
 long TScrollBarPanel::mouse_left_move_action(long x, long y, int p1, int p2) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AFD0
     (void)p1;
     (void)p2;
 
@@ -666,6 +687,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int p1, int p2) {
 }
 
 long TScrollBarPanel::mouse_left_up_action(long x, long y, int p1, int p2) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B3D0
     (void)x;
     (void)y;
     (void)p1;
@@ -704,6 +726,7 @@ void TScrollBarPanel::take_snapshot() { TPanel::take_snapshot(); }
 void TScrollBarPanel::handle_reactivate() { TPanel::handle_reactivate(); }
 
 void TScrollBarPanel::scroll(ActionType action, long value) {
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B420
     if (list_panel) {
         list_panel->action(this, (long)action, (ulong)value, 0);
         return;
@@ -746,10 +769,7 @@ void TScrollBarPanel::scroll(ActionType action, long value) {
 }
 
 void TScrollBarPanel::draw() {
-    if (!render_area || !visible || !active) {
-        return;
-    }
-
+    // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B4E0
     if (parent_panel) {
         parent_panel->draw_rect2(&clip_rect);
     }

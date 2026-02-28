@@ -138,5 +138,6 @@ protected:
     void draw_back_pic();
     void draw_button_pic(int frame, int pressed, tagRECT* r);
     void draw_border(int border_type, int reverse, tagRECT* r);
+    void draw_border(int border_type, int reverse, long left, long top, long right, long bottom);
 };
 static_assert(sizeof(TScrollBarPanel) == 0x1C4, "Size mismatch");

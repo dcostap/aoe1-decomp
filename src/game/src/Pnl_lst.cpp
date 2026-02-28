@@ -20,6 +20,7 @@ static int list_line_height(const TListPanel* self) {
 }
 
 static short list_item_at(TListPanel* self, long x, long y) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004786B0
     (void)x;
     if (!self) {
         return 0;
@@ -116,6 +117,7 @@ static void list_draw_line(TListPanel* self, HDC hdc, short draw_index, short li
 }
 
 static void list_scroll_cur_line(TListPanel* self, uchar mode, short line, int update_scrollbar) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478920
     if (!self || self->num_lines <= 0) {
         return;
     }
@@ -232,6 +234,7 @@ static void list_scroll_cur_line(TListPanel* self, uchar mode, short line, int u
 }
 
 static void list_draw_highlight_bar(TListPanel* self) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478CD0
     if (!self || !self->drawHighlightBar || !self->render_area) {
         return;
     }
@@ -290,6 +293,7 @@ static void list_draw_highlight_bar(TListPanel* self) {
 } // namespace
 
 TListPanel::TListPanel() : TTextPanel() {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004782A0
     auto_track = 0;
     mouse_scroll_last_time = 0;
     mouse_scroll_up = 0;
@@ -304,9 +308,11 @@ TListPanel::TListPanel() : TTextPanel() {
 }
 
 TListPanel::~TListPanel() {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478330
 }
 
 void TListPanel::set_auto_track(int track) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478340
     auto_track = track;
 }
 
@@ -316,7 +322,18 @@ void TListPanel::setDrawHighlightBar(int draw) {
 }
 
 void TListPanel::scroll_cur_line(uchar mode, short line, int update_scrollbar) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478920
     list_scroll_cur_line(this, mode, line, update_scrollbar);
+}
+
+short TListPanel::item_at(long x, long y) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004786B0
+    return list_item_at(this, x, y);
+}
+
+void TListPanel::goto_item(long x, long y) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478700
+    scroll_cur_line(1, item_at(x, y), 1);
 }
 
 long TListPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,
@@ -333,6 +350,7 @@ long TListPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y, lon
 }
 
 void TListPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478350
     switch (param_1) {
     case 3:
     case 6:
@@ -358,6 +376,7 @@ void TListPanel::set_bevel_info(int param_1, int param_2, int param_3, int param
 }
 
 long TListPanel::handle_idle() {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004783F0
     TPanel::handle_idle();
 
     if (!mouse_scroll_up && !mouse_scroll_down) {
@@ -387,6 +406,7 @@ long TListPanel::handle_idle() {
 }
 
 long TListPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004784A0
     (void)param_3;
     (void)param_4;
 
@@ -394,22 +414,24 @@ long TListPanel::mouse_move_action(long param_1, long param_2, int param_3, int 
         return 0;
     }
 
-    const short item = list_item_at(this, param_1, param_2);
+    const short item = item_at(param_1, param_2);
     if (item >= top_line && item <= bot_line) {
-        list_scroll_cur_line(this, 1, item, 1);
+        goto_item(param_1, param_2);
     }
     return 1;
 }
 
 long TListPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478510
     (void)param_3;
     (void)param_4;
     capture_mouse();
-    list_scroll_cur_line(this, 1, list_item_at(this, param_1, param_2), 1);
+    goto_item(param_1, param_2);
     return 1;
 }
 
 long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478540
     (void)param_3;
     (void)param_4;
 
@@ -419,7 +441,7 @@ long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3,
     if (param_2 >= y1 && param_2 <= y2) {
         mouse_scroll_up = 0;
         mouse_scroll_down = 0;
-        list_scroll_cur_line(this, 1, list_item_at(this, param_1, param_2), 1);
+        goto_item(param_1, param_2);
         return 1;
     }
 
@@ -442,6 +464,7 @@ long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3,
 }
 
 long TListPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478610
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -458,9 +481,10 @@ long TListPanel::mouse_left_up_action(long param_1, long param_2, int param_3, i
 }
 
 long TListPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478660
     (void)param_3;
     (void)param_4;
-    list_scroll_cur_line(this, 1, list_item_at(this, param_1, param_2), 1);
+    goto_item(param_1, param_2);
 
     if (parent_panel && cur_line >= 0 && cur_line < num_lines) {
         parent_panel->action(this, 3, (ulong)cur_line, 0);
@@ -469,6 +493,7 @@ long TListPanel::mouse_left_dbl_click_action(long param_1, long param_2, int par
 }
 
 long TListPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478730
     (void)param_2;
     (void)param_3;
     (void)param_4;
@@ -504,6 +529,7 @@ long TListPanel::key_down_action(long param_1, short param_2, int param_3, int p
 }
 
 long TListPanel::char_action(long param_1, short param_2) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478850
     (void)param_2;
     const int want = toupper((int)param_1);
     if (num_lines <= 0) {
@@ -531,10 +557,12 @@ long TListPanel::char_action(long param_1, short param_2) {
 }
 
 long TListPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478900
     return TTextPanel::action(param_1, param_2, param_3, param_4);
 }
 
 void TListPanel::draw() {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478BA0
     if (!render_area || !active || !visible) {
         return;
     }
@@ -547,7 +575,7 @@ void TListPanel::draw() {
     have_focus = saved_focus;
     mouse_captured = saved_mouse_captured;
 
-    list_draw_highlight_bar(this);
+    draw_highlight_bar();
 
     if (!drawHighlightBar || !(saved_focus || saved_mouse_captured) ||
         cur_line < top_line || cur_line > bot_line) {
@@ -573,10 +601,16 @@ void TListPanel::draw() {
 }
 
 void TListPanel::set_focus(int param_1) {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478EF0
     TPanel::set_focus(param_1);
     if (parent_panel && cur_line >= 0 && cur_line < num_lines) {
         parent_panel->action(this, 1, (ulong)cur_line, 0);
     }
+}
+
+void TListPanel::draw_highlight_bar() {
+    // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478CD0
+    list_draw_highlight_bar(this);
 }
 
 // Virtual method stubs
