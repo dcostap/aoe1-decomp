@@ -61,6 +61,19 @@ RGE_Moving_Object::RGE_Moving_Object()
     rge_moving_ctor_common_init(this);
 }
 
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045C450
+RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* param_1, RGE_Player* param_2,
+                                     float param_3, float param_4, float param_5, int param_6)
+    : RGE_Animated_Object((RGE_Master_Animated_Object*)param_1, param_2, param_3, param_4, param_5, 0),
+      pathValue(10), exceptionPathValue(10)
+{
+    rge_moving_ctor_common_init(this);
+
+    if (param_6 != 0) {
+        this->setup(param_1, param_2, param_3, param_4, param_5);
+    }
+}
+
 // Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045C5C0
 RGE_Moving_Object::RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int param_3)
     : RGE_Animated_Object(param_1, param_2, 0), pathValue(10), exceptionPathValue(10)
