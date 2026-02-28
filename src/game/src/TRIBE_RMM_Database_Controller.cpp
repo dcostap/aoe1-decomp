@@ -3617,6 +3617,16 @@ uchar RGE_RMM_Database_Controller::de_init() {
     return 0;
 }
 
+namespace {
+static void rmm_tdbc_switch_anchor_0048790A() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x0048790A
+}
+
+static void rmm_tdbc_switch_anchor_00488675() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675
+}
+} // namespace
+
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* param_1, char* param_2, char* param_3, char* param_4)
     : RGE_RMM_Database_Controller(param_1, param_2, param_3, param_4) {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x004876C0

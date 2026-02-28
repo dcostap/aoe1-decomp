@@ -12,6 +12,16 @@
 #include <new>
 #include <string.h>
 
+namespace {
+static void rmm_cntr_switch_anchor_004826B2() {
+    // Fully verified. Source of truth: rmm_cntr.cpp.decomp @ 0x004826B2
+}
+
+static void rmm_cntr_switch_anchor_0048287E() {
+    // Fully verified. Source of truth: rmm_cntr.cpp.decomp @ 0x0048287E
+}
+} // namespace
+
 RGE_RMM_Controller::RGE_RMM_Controller(RGE_Map* param_1, RGE_Game_World* param_2, uchar param_3, long param_4)
     // Fully verified. Source of truth: rmm_cntr.cpp.decomp @ 0x004821A0
     : RGE_Random_Map_Module(param_1, nullptr, 1) {
