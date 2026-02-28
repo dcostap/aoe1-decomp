@@ -70,6 +70,28 @@ public:
     Shape_Info* shape_info; // +0x1C (Size: 0x4)
     
 private:
+    friend unsigned char shape_bounds(TShape* this_, long param_2, short* param_3, short* param_4);
+    friend long shape_count(TShape* this_);
+    friend unsigned char shape_minmax(TShape* this_, long* param_2, long* param_3, long* param_4, long* param_5, long param_6);
+    friend unsigned char shape_check(TShape* this_, long param_2, long param_3, long param_4);
+    friend unsigned char shape_draw(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char param_6, unsigned char* param_7);
+    friend unsigned char shape_draw_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5);
+    friend unsigned char shape_color_trans_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char* param_6);
+    friend unsigned char shape_shadow_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, unsigned char* param_5);
+    friend unsigned char shape_draw_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8);
+    friend unsigned char shape_color_trans_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, unsigned char* param_10);
+    friend unsigned char shape_shadow_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, unsigned char* param_9);
+    friend unsigned char shape_mirror(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char param_6, unsigned char* param_7);
+    friend unsigned char shape_mirror_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4);
+    friend unsigned char shape_mirror_color_trans_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char* param_6);
+    friend unsigned char shape_mirror_shadow_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, unsigned char* param_5);
+    friend unsigned char shape_mirror_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8);
+    friend unsigned char shape_mirror_color_trans_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, unsigned char* param_10);
+    friend unsigned char shape_mirror_shadow_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, unsigned char* param_9);
+    friend unsigned char shape_dither(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
+    friend unsigned char shape_dithered_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6);
+    friend unsigned char shape_dithered_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10);
+
     unsigned char Check_shape(long param_1, char* param_2);
 
     unsigned char shape_draw_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx);
