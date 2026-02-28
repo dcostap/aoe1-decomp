@@ -143,7 +143,25 @@ void GetDibDim(BITMAPINFO256* param_1, long* param_2, long* param_3, long* param
 long TileDibBlt(BITMAPINFO256* param_1, uchar* param_2, tagRECT* param_3, long param_4, long param_5, long param_6, long param_7,
                 long param_8, long param_9, BITMAPINFO256* param_10, uchar* param_11, TRANSINFO* param_12, long param_13, long param_14,
                 long param_15, long param_16, int param_17, int param_18, int param_19);
+int DibCheckTrans(BITMAPINFO256* param_1, TRANSINFO* param_2, uchar* param_3);
+void* GetPaletteFromDib(char* param_1, int param_2);
+void* ReadPalette(char* param_1, long param_2, int param_3);
+tagBITMAPINFOHEADER* DibOpenFile(char* param_1);
+uchar* ReadDibBits(char* param_1);
+int DibWriteClipped(tagBITMAPINFOHEADER* param_1, char* param_2, long param_3, long param_4, long param_5, long param_6);
+int DibWriteFile(tagBITMAPINFOHEADER* param_1, char* param_2);
+void* DibCreatePalette(tagBITMAPINFOHEADER* param_1);
+tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1);
+tagBITMAPINFOHEADER* DibFromBitmap(void* param_1, ulong param_2, uint param_3, void* param_4, uint param_5);
+int DibSetUsage(tagBITMAPINFOHEADER* param_1, void* param_2, uint param_3);
+int DibDraw(void* param_1, int param_2, int param_3, int param_4, int param_5, tagBITMAPINFOHEADER* param_6, int param_7, int param_8,
+            int param_9, int param_10, long param_11, uint param_12);
+tagBITMAPINFOHEADER* DibCopy(tagBITMAPINFOHEADER* param_1);
+tagBITMAPINFOHEADER* DibCreate(int param_1, int param_2, int param_3);
 void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, int param_4);
+void CreateIdentityPalette(void* param_1);
+void* CopyPalette(void* param_1);
+void DibFree(tagBITMAPINFOHEADER* param_1);
 
 // Forward declare these structs — real definitions are in dedicated headers
 struct RGE_Tile_Size;
