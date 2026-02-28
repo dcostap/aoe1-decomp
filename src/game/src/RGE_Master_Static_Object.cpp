@@ -11,6 +11,7 @@
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Visible_Map.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/DClipInfo_List.h"
 #include "../include/globals.h"
 #include "../include/mystring.h"
 
@@ -136,6 +137,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object() {
     rge_master_static_reset_fields(this);
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452120
 RGE_Master_Static_Object::RGE_Master_Static_Object(RGE_Master_Static_Object* param_1, int param_2) {
     rge_master_static_reset_fields(this);
     if (param_2 != 0 && param_1 != nullptr) {
@@ -143,6 +145,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(RGE_Master_Static_Object* par
     }
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452170
 RGE_Master_Static_Object::RGE_Master_Static_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4) {
     rge_master_static_reset_fields(this);
     if (param_4 != 0) {
@@ -150,6 +153,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(int param_1, RGE_Sprite** par
     }
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004521A0
 RGE_Master_Static_Object::RGE_Master_Static_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5) {
     rge_master_static_reset_fields(this);
     if (param_5 != 0) {
@@ -157,6 +161,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(FILE* param_1, RGE_Sprite** p
     }
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452FA0
 RGE_Master_Static_Object::~RGE_Master_Static_Object() {
     if (this->name != nullptr) {
         free(this->name);
@@ -500,6 +505,7 @@ void RGE_Master_Static_Object::save(int param_1) {
     rge_write(param_1, &this->copy_id, 2);
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452FE0
 RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
     if (param_1 == nullptr) {
         return nullptr;
@@ -529,10 +535,12 @@ RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* param_1, f
     return obj;
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004530B0
 RGE_Master_Static_Object* RGE_Master_Static_Object::make_new_master() {
     return new RGE_Master_Static_Object(this, 1);
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00453C40
 uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) {
     (void)param_7;
     if (param_4 != nullptr) {
@@ -725,6 +733,7 @@ uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param
     return '\0';
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004543D0
 uchar RGE_Master_Static_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) {
     if (param_1 == nullptr || param_2 == nullptr || param_3 == nullptr || param_3->map == nullptr) {
         return '\x01';
@@ -795,14 +804,54 @@ uchar RGE_Master_Static_Object::alignment(float* param_1, float* param_2, RGE_Ga
     return '\x01';
 }
 
+// TODO: Confirm exact __ftol accumulation behavior with m_s_obj.cpp.asm @ 0x00454980.
 long RGE_Master_Static_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) {
     return 0;
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x0044FE20
 void RGE_Master_Static_Object::play_command_sound() {}
-void RGE_Master_Static_Object::play_move_sound() {}
-void RGE_Master_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) {}
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x0044FE30
+void RGE_Master_Static_Object::play_move_sound() {}
+
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004547F0
+void RGE_Master_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3,
+                                    RGE_Color_Table* param_4, long param_5, long param_6,
+                                    int param_7, uchar param_8)
+{
+    short screen_x = param_2;
+    short screen_y = param_3;
+
+    if (this->sprite != nullptr) {
+        int draw_line = (int)param_3;
+        this->sprite->draw(param_5, param_6, (int)param_2, draw_line, (int)param_2, draw_line, param_4, param_1, '\n');
+
+        if (param_7 != 0) {
+            float rx = this->outline_radius_x;
+            float ry = this->outline_radius_y;
+            RGE_Map* map = rge_base_game->world->map;
+
+            short x1 = 0;
+            short y1 = 0;
+            short x2 = 0;
+            short y2 = 0;
+            short x3 = 0;
+            short y3 = 0;
+            short x4 = 0;
+            short y4 = 0;
+
+            map->get_point(&x1, &y1, rx, -ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x2, &y2, rx,  ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x3, &y3, -rx, ry, 0.0f, screen_x, screen_y);
+            map->get_point(&x4, &y4, -rx, -ry, 0.0f, screen_x, screen_y);
+
+            SDI_List->AddGDINode(1, draw_line, (int)x1, (int)y1, (int)x2, (int)y2, (int)x3, (int)y3, (int)x4, (int)y4, 10, (int)param_8, (int)SDI_Object_ID);
+        }
+    }
+}
+
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004521E0
 int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* param_1) {
     if (param_1 == nullptr) {
         return 0;
@@ -893,6 +942,7 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* param_1) {
     return 1;
 }
 
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004524E0
 int RGE_Master_Static_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     short name_len = 0;
     short sprite_idx = -1;
@@ -1027,25 +1077,203 @@ int RGE_Master_Static_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound
 }
 
 int RGE_Master_Static_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4) {
-    (void)param_2;
-    (void)param_3;
-
+    // TODO: Verify exact fscanf token layout against m_s_obj.cpp.asm @ 0x00452B00.
     this->master_type = 0x0A;
     this->id = param_4;
-    this->copy_id = this->id;
+    short temp_area_effect_object_level = 0;
+    short temp_combat_level = 0;
+    short temp_damage_sprite = 0;
+    short temp_select_level = 0;
+    short temp_flag = 0;
+    short temp_map_draw_level = 0;
+    short temp_death_sound = 0;
+    short temp_command_level = 0;
+    short temp_sprite = 0;
+    short temp_terrain = 0;
+    short temp_undead_sprite = 0;
+    short temp_undead_flag = 0;
+    short temp_fog_flag = 0;
+    short temp_hide_in_scenario_editor = 0;
+    short temp_sort_number = 0;
+    short temp_attack_reaction = 0;
+    short temp_available = 0;
+    short temp_convert_terrain_flag = 0;
+    short temp_attribute_flag = 0;
+    short temp_map_color = 0;
+    short temp_selected_sound = 0;
+    short temp_track_as_resource = 0;
+    short temp_death_sprite = 0;
+    short temp_create_doppleganger_on_death = 0;
+    short temp_obj_max = 0;
+    short temp_resource_group = 0;
+    short temp_movement_type = 0;
+    short temp_draw_flag = 0;
+    short temp_created_sound = 0;
+    short temp_draw_color = 0;
+    short temp_can_be_built_on = 0;
+    short temp_elevation_flag = 0;
+    short temp_damage_percent = 0;
+    short local_84 = 0;
+    short temp_damage_sprite_num = 0;
+    char temp_name[120];
+    memset(temp_name, 0, sizeof(temp_name));
 
-    char tmp_name[120];
-    memset(tmp_name, 0, sizeof(tmp_name));
+    fscanf(param_1, " %s", temp_name + 4);
+    fscanf(param_1, " %hd", &this->string_id);
+    fscanf(param_1, " %hd", &this->string_id2);
+    fscanf(param_1, " %hd", &this->object_group);
+    fscanf(param_1, " %hd", &temp_undead_sprite);
+    fscanf(param_1, " %hd", &temp_obj_max);
+    fscanf(param_1, " %hd", &temp_fog_flag);
+    fscanf(param_1, " %hd", &temp_hide_in_scenario_editor);
+    fscanf(param_1, " %hd", &this->hp);
+    fscanf(param_1, " %f", &this->los);
+    fscanf(param_1, " %hd", &temp_movement_type);
+    fscanf(param_1, " %f", &this->radius_x);
+    fscanf(param_1, " %f", &this->radius_y);
+    fscanf(param_1, " %f", &this->radius_z);
+    fscanf(param_1, " %hd", &this->death_spawn_obj_id);
+    fscanf(param_1, " %hd", &temp_available);
+    fscanf(param_1, " %hd", &temp_damage_percent);
+    fscanf(param_1, " %hd", &this->button_pict);
+    fscanf(param_1, " %hd", &temp_attack_reaction);
+    fscanf(param_1, " %hd", &this->portrait_pict);
+    fscanf(param_1, " %hd", &temp_attribute_flag);
+    fscanf(param_1, " %hd", &this->tile_req1);
+    fscanf(param_1, " %hd", &this->tile_req2);
+    fscanf(param_1, " %hd", &this->center_tile_req1);
+    fscanf(param_1, " %hd", &this->center_tile_req2);
+    fscanf(param_1, " %f", &this->construction_radius_x);
+    fscanf(param_1, " %f", &this->construction_radius_y);
+    fscanf(param_1, " %hd", &local_84);
+    fscanf(param_1, " %hd", &temp_sort_number);
+    fscanf(param_1, " %hd", &temp_undead_flag);
+    fscanf(param_1, " %hd", &temp_can_be_built_on);
+    fscanf(param_1, " %hd", &temp_created_sound);
+    fscanf(param_1, " %hd", &this->attribute_max_amount);
+    fscanf(param_1, " %f", &this->multiple_attribute_mod);
+    fscanf(param_1, " %f", &this->attribute_rot);
+    fscanf(param_1, " %hd", &temp_damage_sprite);
+    fscanf(param_1, " %hd", &temp_select_level);
+    fscanf(param_1, " %hd", &temp_map_draw_level);
+    fscanf(param_1, " %hd", &temp_command_level);
+    fscanf(param_1, " %hd", &temp_terrain);
+    fscanf(param_1, " %hd", &temp_track_as_resource);
+    fscanf(param_1, " %ld", &this->help_string_id);
+    fscanf(param_1, " %ld", &this->help_page_id);
+    fscanf(param_1, " %ld", &this->hotkey_id);
+    fscanf(param_1, " %hd", &temp_create_doppleganger_on_death);
+    fscanf(param_1, " %hd", &temp_resource_group);
+    fscanf(param_1, " %hd", &temp_draw_flag);
+    fscanf(param_1, " %hd", &temp_draw_color);
+    fscanf(param_1, " %hd", &temp_elevation_flag);
+    fscanf(param_1, " %f", &this->outline_radius_x);
+    fscanf(param_1, " %f", &this->outline_radius_y);
+    fscanf(param_1, " %f", &this->outline_radius_z);
 
-    short temp_group = 0;
-    if (param_1 != nullptr) {
-        if (fscanf(param_1, " %119s %hd", tmp_name, &temp_group) == 2) {
-            this->object_group = temp_group;
-            if (this->name != nullptr) {
-                free(this->name);
+    for (int i = 0; i < 3; ++i) {
+        fscanf(param_1, " %hd", &this->attribute_type_held[i]);
+        fscanf(param_1, " %f", &this->attribute_amount_held[i]);
+        fscanf(param_1, " %hd", &temp_selected_sound);
+        this->attribute_flag[i] = (uchar)temp_selected_sound;
+    }
+
+    fscanf(param_1, " %hd", &temp_damage_sprite_num);
+    this->damage_sprite_num = (uchar)temp_damage_sprite_num;
+    if (this->damage_sprite_num != '\0') {
+        this->damage_sprites = (RGE_Damage_Sprite_Info*)calloc(this->damage_sprite_num & 0xFF, 8);
+        short s = 0;
+        while (s < (short)(ushort)this->damage_sprite_num) {
+            short temp_damage_percent_local = 0;
+            fscanf(param_1, " %hd", &temp_flag);
+            fscanf(param_1, " %hd", &temp_damage_percent_local);
+            fscanf(param_1, " %hd", &temp_death_sound);
+
+            RGE_Sprite* sprite_ptr = nullptr;
+            if (temp_flag >= 0) {
+                sprite_ptr = param_2[temp_flag];
             }
-            this->name = rge_strdup_local(tmp_name);
+            this->damage_sprites[s].sprite = sprite_ptr;
+            this->damage_sprites[s].damage_percent = (uchar)temp_damage_percent_local;
+            this->damage_sprites[s].flag = (uchar)temp_death_sound;
+            ++s;
         }
+    } else {
+        this->damage_sprites = nullptr;
+    }
+
+    fscanf(param_1, " %hd", &temp_death_sprite);
+    fscanf(param_1, " %hd", &temp_sprite);
+    fscanf(param_1, " %hd", &temp_convert_terrain_flag);
+    fscanf(param_1, " %hd", &temp_map_color);
+
+    this->selected_sound = (temp_death_sprite < 0) ? nullptr : param_3[temp_death_sprite];
+    this->death_sound = (temp_sprite < 0) ? nullptr : param_3[temp_sprite];
+    this->created_sound = (temp_can_be_built_on < 0) ? nullptr : param_3[temp_can_be_built_on];
+
+    this->sprite = (temp_undead_sprite < 0) ? nullptr : param_2[temp_undead_sprite];
+    this->death_sprite = (temp_obj_max < 0) ? nullptr : param_2[temp_obj_max];
+    this->undead_sprite = (temp_fog_flag < 0) ? nullptr : param_2[temp_fog_flag];
+
+    this->elevation_flag = (uchar)local_84;
+    this->sort_number = (uchar)temp_available;
+    this->movement_type = (uchar)temp_created_sound;
+    this->fog_flag = (uchar)temp_sort_number;
+    this->select_level = (uchar)temp_map_draw_level;
+    this->obj_max = (uchar)temp_movement_type;
+    this->can_be_built_on = (uchar)temp_damage_percent;
+    this->available = (uchar)temp_attribute_flag;
+    this->area_effect_object_level = (uchar)temp_damage_sprite;
+    this->terrain = (ushort)(uchar)temp_undead_flag;
+    this->combat_level = (uchar)temp_select_level;
+    this->map_draw_level = (uchar)temp_command_level;
+    this->attack_reaction = (uchar)temp_convert_terrain_flag;
+    this->unit_level = (uchar)temp_terrain;
+    this->undead_flag = (uchar)temp_hide_in_scenario_editor;
+    this->track_as_resource = (uchar)temp_create_doppleganger_on_death;
+    this->hide_in_scenario_editor = (uchar)temp_attack_reaction;
+    this->convert_terrain_flag = (uchar)temp_map_color;
+    this->draw_flag = (uchar)temp_draw_color;
+    this->map_color = (uchar)temp_track_as_resource;
+    this->create_doppleganger_on_death = (uchar)temp_resource_group;
+    this->resource_group = (uchar)temp_draw_flag;
+    this->draw_color = (uchar)temp_elevation_flag;
+
+    // Preserve decomp locals that may alias packed bytes in the original parser.
+    (void)temp_area_effect_object_level;
+    (void)temp_combat_level;
+
+    if (this->outline_radius_x == 0.0f) {
+        this->outline_radius_x = this->radius_x;
+    }
+    if (this->outline_radius_y == 0.0f) {
+        this->outline_radius_y = this->radius_y;
+    }
+    if (this->outline_radius_z == 0.0f) {
+        this->outline_radius_z = this->radius_z;
+    }
+
+    this->recyclable = '\0';
+    this->copy_id = this->id;
+    if (this->object_group == 0x0B) {
+        this->recyclable = '\x01';
+    }
+
+    int iVar5 = -1;
+    char* pcVar11 = temp_name + 4;
+    char cVar1;
+    do {
+        if (iVar5 == 0) {
+            break;
+        }
+        --iVar5;
+        cVar1 = *pcVar11;
+        ++pcVar11;
+    } while (cVar1 != '\0');
+
+    if (0 < (short)(~(ushort)iVar5 - 1)) {
+        this->name = nullptr;
+        getstring(&this->name, temp_name + 4);
     }
 
     return 1;
@@ -1059,6 +1287,11 @@ long RGE_Master_Static_Object::get_help_message() {
 long RGE_Master_Static_Object::get_help_page() {
     // Source of truth: m_s_obj.cpp.decomp @ 0x00454960
     return this->help_page_id;
+}
+
+long RGE_Master_Static_Object::get_hotkey() {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00454970
+    return this->hotkey_id;
 }
 
 void RGE_Master_Static_Object::make_available(uchar param_1) {

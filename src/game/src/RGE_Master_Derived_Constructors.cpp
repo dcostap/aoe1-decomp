@@ -370,6 +370,7 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object()
     this->orig_speed_of_attack = 0.0f;
 }
 
+// Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x0044FE40
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(RGE_Master_Combat_Object* param_1, int param_2)
     : RGE_Master_Action_Object((RGE_Master_Action_Object*)param_1, (param_2 != 0) ? 1 : 0) {
     this->master_type = 0x32;
@@ -437,6 +438,7 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object(RGE_Master_Combat_Object* par
     }
 }
 
+// Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x0044FEC0
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
     : RGE_Master_Action_Object(param_1, param_2, param_3, (param_4 != 0) ? 1 : 0) {
     this->master_type = 0x32;
@@ -526,6 +528,7 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object(int param_1, RGE_Sprite** par
     }
 }
 
+// Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x0044FF30
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
     : RGE_Master_Action_Object(param_1, param_2, param_3, param_4, (param_5 != 0) ? 1 : 0) {
     this->master_type = 0x32;
