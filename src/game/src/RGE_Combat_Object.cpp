@@ -1,16 +1,24 @@
 #include "../include/RGE_Combat_Object.h"
 #include "../include/RGE_Action.h"
+#include "../include/RGE_Action_Attack.h"
+#include "../include/RGE_Action_Enter.h"
+#include "../include/RGE_Action_Explore.h"
+#include "../include/RGE_Action_Gather.h"
 #include "../include/RGE_Action_List.h"
+#include "../include/RGE_Action_Move_To.h"
+#include "../include/RGE_Action_Transport.h"
 #include "../include/RGE_Armor_Weapon_Info.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Master_Combat_Object.h"
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Player.h"
+#include "../include/VISIBLE_UNIT_REC.h"
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
 
 #include <math.h>
+#include <new>
 #include <stdio.h>
 #include <string.h>
 
@@ -50,6 +58,11 @@ RGE_Combat_Object::RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int p
     if (param_3 != 0) {
         this->setup(param_1, param_2);
     }
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x0042FA50
+RGE_Combat_Object::~RGE_Combat_Object() {
+    // TODO: parity - decomp also updates visible-unit manager entries before base dtor.
 }
 
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FAF0
@@ -172,6 +185,21 @@ void RGE_Combat_Object::get_speed_of_attack(float& param_1, float& param_2) {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     param_1 = (master != nullptr) ? master->speed_of_attack : 0.0f;
     param_2 = (master != nullptr) ? master->orig_speed_of_attack : 0.0f;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x004305D0
+void RGE_Combat_Object::release_being_worked_on(RGE_Static_Object* param_1) {
+    RGE_Action_Object::release_being_worked_on(param_1);
+    if (param_1 != nullptr && param_1->id >= 0 && param_1->master_obj != nullptr) {
+        this->notify((int)param_1->id, (int)this->id, 699, (long)param_1->master_obj->object_group, 0, 0);
+    }
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430610
+void RGE_Combat_Object::enter_obj(RGE_Static_Object* param_1) {
+    RGE_Static_Object::enter_obj(param_1);
+    // TODO: parity - decomp calls Visible_Unit_Manager::Update_Unit_Info and clears Unified_Map_Value.
+    this->Unified_Map_Value = 0;
 }
 
 // Source of truth: com_obj.cpp.decomp @ 0x004304B0
@@ -541,6 +569,18 @@ int RGE_Combat_Object::attack(int param_1, int /*param_2*/) {
     return 1;
 }
 
+// Source of truth: com_obj.cpp.decomp @ 0x00430810
+void RGE_Combat_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    // TODO: parity - decomp conditionally preserves current death sound before base copy.
+    RGE_Action_Object::copy_obj(param_1);
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430850
+void RGE_Combat_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    // TODO: parity - decomp routes through comm-module hooks before fallback notify.
+    RGE_Action_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6);
+}
+
 // Source of truth: com_obj.cpp.decomp @ 0x00430A90
 int RGE_Combat_Object::attack(float param_1, float param_2, float param_3, int /*param_4*/) {
     if (this->can_attack() == 0) {
@@ -552,4 +592,206 @@ int RGE_Combat_Object::attack(float param_1, float param_2, float param_3, int /
         return 1;
     }
     return 0;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430C10
+int RGE_Combat_Object::moveTo(int param_1, int param_2) {
+    return this->moveTo(param_1, 1.0f, param_2);
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430C30
+int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3) {
+    if (this->owner == nullptr || this->owner->world == nullptr) {
+        return 0;
+    }
+    RGE_Static_Object* target = this->owner->world->object(param_1);
+    if (target == nullptr) {
+        return 0;
+    }
+    if (param_3 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr && cur->get_target_obj() == target && cur->type() == 1) {
+            return 1;
+        }
+    }
+
+    RGE_Sprite* move_sprite = (this->sprite != nullptr) ? this->sprite : this->old_sprite;
+    RGE_Action_Move_To* act = new (std::nothrow) RGE_Action_Move_To(this, target, param_2, move_sprite);
+    if (act == nullptr) {
+        return 0;
+    }
+    this->set_only_action(act);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430D50
+int RGE_Combat_Object::moveTo(float param_1, float param_2, float param_3, float param_4, int param_5) {
+    if (this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr) {
+            if (param_5 == 0 && cur->targetX() == param_1 && cur->targetY() == param_2 && cur->targetZ() == param_3 && cur->type() == 1) {
+                return 1;
+            }
+            if (cur->move_to(nullptr, param_1, param_2, param_3) == 1) {
+                return 1;
+            }
+        }
+    }
+
+    RGE_Sprite* move_sprite = (this->sprite != nullptr) ? this->sprite : this->old_sprite;
+    RGE_Action_Move_To* act = new (std::nothrow) RGE_Action_Move_To(this, param_1, param_2, param_3, param_4, move_sprite);
+    if (act == nullptr) {
+        return 0;
+    }
+    this->set_only_action(act);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430EC0
+int RGE_Combat_Object::moveAwayFrom(int /*param_1*/, int /*param_2*/) {
+    return 0;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00430ED0
+int RGE_Combat_Object::gather(int param_1, int param_2) {
+    if (this->owner == nullptr || this->owner->world == nullptr) {
+        return 0;
+    }
+    RGE_Static_Object* target = this->owner->world->object(param_1);
+    if (target == nullptr) {
+        return 0;
+    }
+    if (param_2 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr && cur->get_target_obj() == target && cur->type() == 5) {
+            return 1;
+        }
+    }
+    if (this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr && cur->type() == 5) {
+            cur->work(target, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
+    if (task == nullptr) {
+        return 0;
+    }
+    RGE_Action_Gather* act = new (std::nothrow) RGE_Action_Gather(this, task, target);
+    if (act == nullptr) {
+        return 0;
+    }
+    this->set_only_action(act);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00431020
+int RGE_Combat_Object::explore(int param_1, int param_2, int param_3) {
+    if (param_3 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr && cur->type() == 4) {
+            return 1;
+        }
+    }
+    if (this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr && cur->type() == 4) {
+            cur->work(nullptr, (float)param_1, (float)param_2, (float)this->id);
+            return 1;
+        }
+    }
+
+    RGE_Action_Explore* act = new (std::nothrow) RGE_Action_Explore(0, this);
+    if (act == nullptr) {
+        return 0;
+    }
+    act->work(nullptr, (float)param_1, (float)param_2, (float)this->id);
+    this->set_only_action(act);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00431150
+int RGE_Combat_Object::enter(int param_1, int param_2) {
+    if (this->owner == nullptr || this->owner->world == nullptr) {
+        return 0;
+    }
+    RGE_Static_Object* target = this->owner->world->object(param_1);
+    if (target == nullptr) {
+        return 0;
+    }
+    if (param_2 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* cur = this->actions->get_action();
+        if (cur != nullptr && cur->get_target_obj() == target && cur->type() == 3) {
+            return 1;
+        }
+    }
+
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
+    if (task == nullptr) {
+        return 0;
+    }
+    RGE_Action_Enter* act = new (std::nothrow) RGE_Action_Enter(this, task, target);
+    if (act == nullptr) {
+        return 0;
+    }
+    this->set_only_action(act);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00431250
+int RGE_Combat_Object::transport(float param_1, float param_2, float param_3, int /*param_4*/) {
+    RGE_Action* cur = (this->actions != nullptr && this->actions->have_action() == 1) ? this->actions->get_action() : nullptr;
+    if (cur != nullptr && cur->type() == 12) {
+        cur->work(nullptr, param_1, param_2, param_3);
+        return 1;
+    }
+
+    RGE_Action_Transport* act = new (std::nothrow) RGE_Action_Transport(this, nullptr, param_1, param_2, param_3);
+    if (act == nullptr) {
+        return 0;
+    }
+    this->set_only_action(act);
+    act->work(nullptr, param_1, param_2, param_3);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x00431340
+int RGE_Combat_Object::unload(int /*param_1*/, float param_2, float param_3, float param_4) {
+    RGE_Action* cur = (this->actions != nullptr && this->actions->have_action() == 1) ? this->actions->get_action() : nullptr;
+    if (cur != nullptr && cur->type() == 12) {
+        cur->work(nullptr, param_2, param_3, param_4);
+        return 1;
+    }
+
+    RGE_Action_Transport* act = new (std::nothrow) RGE_Action_Transport(this, nullptr, 0.0f, 0.0f, 0.0f);
+    if (act == nullptr) {
+        return 0;
+    }
+    this->set_only_action(act);
+    act->work(nullptr, param_2, param_3, param_4);
+    return 1;
+}
+
+// Source of truth: com_obj.cpp.decomp @ 0x004316A0
+float RGE_Combat_Object::teleport(float param_1, float param_2, float param_3) {
+    float old_x = this->world_x;
+    float old_y = this->world_y;
+    float result = RGE_Action_Object::teleport(param_1, param_2, param_3);
+    if (this->id >= 0) {
+        const int prev_ix = (int)old_x;
+        const int prev_iy = (int)old_y;
+        const int new_ix = (int)this->world_x;
+        const int new_iy = (int)this->world_y;
+        if (prev_ix != new_ix || prev_iy != new_iy) {
+            for (int i = 0; i < 9; ++i) {
+                if (this->VUR_Ptrs[i] != nullptr) {
+                    this->VUR_Ptrs[i]->pos_x = (uchar)new_ix;
+                    this->VUR_Ptrs[i]->pos_y = (uchar)new_iy;
+                }
+            }
+        }
+    }
+    return result;
 }
