@@ -14,6 +14,7 @@
 #include "../include/globals.h"
 
 #include <cstring>
+#include <cstdlib>
 #include <new>
 
 static void resetManagedArray(ManagedArray<int>& arr) {
@@ -1204,167 +1205,1154 @@ TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int 
 }
 TacticalAIGroup* TribeTacticalAIModule::getGroup(int param_1) { return group(param_1, -1, -1, -1); }
 
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F0B62
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0B62
 static void FUN_004f0b62() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F0D4D
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D4D
 static void FUN_004f0d4d() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005018C1
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005018C1
 static void FUN_005018c1() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502451
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502451
 static void FUN_00502451() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050245D
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050245D
 static void FUN_0050245d() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502464
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502464
 static void FUN_00502464() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502470
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502470
 static void FUN_00502470() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050247C
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050247C
 static void FUN_0050247c() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502488
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502488
 static void FUN_00502488() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050248F
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050248F
 static void FUN_0050248f() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050249B
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050249B
 static void FUN_0050249b() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005024A7
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024A7
 static void FUN_005024a7() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005024B3
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024B3
 static void FUN_005024b3() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005025CA
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005025CA
 static void FUN_005025ca() {}
 
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7350
-int TribeTacticalAIModule::numberIdleSoldiers() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7590
-int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7870
-int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7D90
-int TribeTacticalAIModule::idleSoldier() { return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7E80
-int TribeTacticalAIModule::idleCivilian(int param_1) { (void)param_1; return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F81A0
-int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8570
-int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F87B0
-int TribeTacticalAIModule::unit(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8BE0
-int TribeTacticalAIModule::busyWithAction(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8C30
-void TribeTacticalAIModule::displayCivilianDistribution() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8C40
-void TribeTacticalAIModule::updateNeededResources() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8E20
-void TribeTacticalAIModule::updateGathererDistribution() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9380
-int TribeTacticalAIModule::stopUnit(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F93D0
-int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9420
-int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param_3, float param_4, float param_5, float param_6, int param_7) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9470
-int TribeTacticalAIModule::highLevelTaskExplorer(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F95B0
-int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F99B0
-int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3, int param_4, int param_5, Waypoint* param_6, int param_7) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9AD0
-int TribeTacticalAIModule::taskBuilder(int param_1, BuildItem* param_2, ConstructionItem* param_3, unsigned long param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9E00
-int TribeTacticalAIModule::taskBuilder(int param_1, RGE_Static_Object* param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA000
-int TribeTacticalAIModule::taskRepairer(int param_1, RGE_Static_Object* param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA170
-int TribeTacticalAIModule::taskGatherer(int param_1, int param_2, int param_3, unsigned long param_4, int* param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA820
-int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA940
-int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAAA0
-int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAC90
-int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FADA0
-int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
-int TribeTacticalAIModule::taskWaterExplorer(int param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAFC0
-int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB160
-int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB2D0
-int TribeTacticalAIModule::taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB500
-int TribeTacticalAIModule::taskDefender(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB520
-int TribeTacticalAIModule::taskDefender(int param_1, float param_2, float param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB550
-int TribeTacticalAIModule::taskTrain(BuildItem* param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB710
-int TribeTacticalAIModule::taskResearch(BuildItem* param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB8D0
-int TribeTacticalAIModule::taskToEnter(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB9E0
-int TribeTacticalAIModule::taskTransporter(int param_1, float param_2, float param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FBB30
-void TribeTacticalAIModule::removeFromTaskLists(int param_1) { (void)param_1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FBC10
-int TribeTacticalAIModule::calculatePriority(float param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FBC30
-void TribeTacticalAIModule::setupSoldierGroups() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FC500
-void TribeTacticalAIModule::fillSoldierGroups() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD2F0
-int TribeTacticalAIModule::numberUngroupedSoldiers() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD4F0
-int TribeTacticalAIModule::numberExtraGroupedSoldiers() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD6D0
-int TribeTacticalAIModule::numberUngroupedArtifacts() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD8D0
-void TribeTacticalAIModule::displaySoldierGroups() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FDE00
-void TribeTacticalAIModule::setupBoatGroups() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FE950
-void TribeTacticalAIModule::fillBoatGroups() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FF4E0
-int TribeTacticalAIModule::numberUngroupedWarBoats() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FF6E0
-int TribeTacticalAIModule::numberExtraGroupedWarBoats() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FF8E0
-int TribeTacticalAIModule::numberUngroupedFishingBoats() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FFAE0
-int TribeTacticalAIModule::numberUngroupedTradeBoats() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FFCE0
-int TribeTacticalAIModule::numberUngroupedTransportBoats() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FFEE0
-void TribeTacticalAIModule::displayBoatGroups() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005004C0
-TacticalAIGroup* TribeTacticalAIModule::bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return nullptr; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500670
-TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3) { (void)param_1; (void)param_2; (void)param_3; return nullptr; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005008F0
-int TribeTacticalAIModule::numberGroups(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500950
-int TribeTacticalAIModule::numberUnitsInGroups(int param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005009A0
-int TribeTacticalAIModule::numberItemsToAttack() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500A30
-int TribeTacticalAIModule::itemToCapture() { return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500A80
-int TribeTacticalAIModule::itemToBringToArea() { return -1; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500AD0
-int TribeTacticalAIModule::numberItemsToDefend() { return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500AF0
-unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500B30
-void TribeTacticalAIModule::resetAttackSeparationTime() {}
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500BA0
-int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500CC0
-int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* param_1) { (void)param_1; return 0; }
-// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500DE0
-void TribeTacticalAIModule::setGroupInfluences(InfluenceMap* param_1) { (void)param_1; }
+static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
+    if ((module == nullptr) || (module->md == nullptr) || (module->md->player == nullptr)) {
+        return nullptr;
+    }
+    return module->md->player->world;
+}
+
+static RGE_Static_Object* tacticalObject(TribeTacticalAIModule* module, int objectID) {
+    RGE_Game_World* world = tacticalWorld(module);
+    if (world == nullptr) {
+        return nullptr;
+    }
+    return world->object(objectID);
+}
+
+static int isTaskedThisUpdate(TribeTacticalAIModule* module, int objectID) {
+    for (int i = 0; i < module->unitsTaskedThisUpdate.numberValue; ++i) {
+        if (i >= module->unitsTaskedThisUpdate.maximumSizeValue) {
+            break;
+        }
+        if (module->unitsTaskedThisUpdate.value[i] == objectID) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void pushWorkingAreaUnique(TribeTacticalAIModule* module, int objectID) {
+    appendManagedArrayUnique(module->workingArea, objectID);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7350
+int TribeTacticalAIModule::numberIdleSoldiers() {
+    int count = 0;
+    this->workingArea.numberValue = 0;
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        if (i >= this->soldiers.maximumSizeValue) {
+            break;
+        }
+        const int unitID = this->soldiers.value[i];
+        RGE_Static_Object* unitObj = tacticalObject(this, unitID);
+        if (unitObj == nullptr) {
+            continue;
+        }
+        UnitAIModule* unitAI = unitObj->unitAI();
+        if (unitAI == nullptr) {
+            continue;
+        }
+        if (unitAI->currentAction() == -1) {
+            pushWorkingAreaUnique(this, unitID);
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7590
+int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, int param_3) {
+    int count = 0;
+    if (param_3 == 1) {
+        this->workingArea.numberValue = 0;
+    }
+
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        if (i >= this->soldiers.maximumSizeValue) {
+            break;
+        }
+        const int unitID = this->soldiers.value[i];
+        if (isTaskedThisUpdate(this, unitID) != 0) {
+            continue;
+        }
+        RGE_Static_Object* unitObj = tacticalObject(this, unitID);
+        if (unitObj == nullptr) {
+            continue;
+        }
+        UnitAIModule* unitAI = unitObj->unitAI();
+        if (unitAI == nullptr) {
+            continue;
+        }
+
+        const int action = unitAI->currentAction();
+        const int priority = unitAI->currentOrderPriority();
+        int matches = 0;
+        if (param_2 < 0) {
+            matches = ((action == -1) || (priority < param_1)) ? 1 : 0;
+        } else if (param_2 == 0) {
+            matches = ((action != -1) && (priority == param_1)) ? 1 : 0;
+        } else {
+            matches = ((action != -1) && (priority > param_1)) ? 1 : 0;
+        }
+
+        if (matches != 0) {
+            pushWorkingAreaUnique(this, unitID);
+            ++count;
+        }
+    }
+
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7870
+int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) {
+    int count = 0;
+    this->workingArea.numberValue = 0;
+
+    auto countFromArray = [&](ManagedArray<int>& arr, int restrictToCombatShips) {
+        for (int i = 0; i < arr.numberValue; ++i) {
+            if (i >= arr.maximumSizeValue) {
+                break;
+            }
+            const int unitID = arr.value[i];
+            if (isTaskedThisUpdate(this, unitID) != 0) {
+                continue;
+            }
+            RGE_Static_Object* unitObj = tacticalObject(this, unitID);
+            if (unitObj == nullptr) {
+                continue;
+            }
+            if ((restrictToCombatShips != 0) && (unitObj->master_obj != nullptr)) {
+                short group = unitObj->master_obj->object_group;
+                if ((group != 0x12) && (group != 0x0D)) {
+                    continue;
+                }
+            }
+            UnitAIModule* unitAI = unitObj->unitAI();
+            if (unitAI == nullptr) {
+                continue;
+            }
+            const int action = unitAI->currentAction();
+            const int priority = unitAI->currentOrderPriority();
+            int matches = 0;
+            if (param_2 < 0) {
+                matches = ((action == -1) || (priority < param_1)) ? 1 : 0;
+            } else if (param_2 == 0) {
+                matches = ((action != -1) && (priority == param_1)) ? 1 : 0;
+            } else {
+                matches = ((action != -1) && (priority > param_1)) ? 1 : 0;
+            }
+            if (matches != 0) {
+                pushWorkingAreaUnique(this, unitID);
+                ++count;
+            }
+        }
+    };
+
+    countFromArray(this->warBoats, 0);
+    countFromArray(this->soldiers, 1);
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7D90
+int TribeTacticalAIModule::idleSoldier() {
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        if (i >= this->soldiers.maximumSizeValue) {
+            break;
+        }
+        RGE_Static_Object* unitObj = tacticalObject(this, this->soldiers.value[i]);
+        if (unitObj == nullptr) {
+            continue;
+        }
+        UnitAIModule* unitAI = unitObj->unitAI();
+        if ((unitAI != nullptr) && (unitAI->currentAction() == -1)) {
+            return unitObj->id;
+        }
+    }
+    return -1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7E80
+int TribeTacticalAIModule::idleCivilian(int param_1) {
+    (void)param_1;
+
+    for (int pass = 0; pass < 2; ++pass) {
+        for (int i = 0; i < this->civilians.numberValue; ++i) {
+            if (i >= this->civilians.maximumSizeValue) {
+                break;
+            }
+            const int unitID = this->civilians.value[i];
+            if (isTaskedThisUpdate(this, unitID) != 0) {
+                continue;
+            }
+            RGE_Static_Object* unitObj = tacticalObject(this, unitID);
+            if (unitObj == nullptr) {
+                continue;
+            }
+            UnitAIModule* unitAI = unitObj->unitAI();
+            if (unitAI == nullptr) {
+                continue;
+            }
+            if (this->isGatherer(unitID) != 0) {
+                continue;
+            }
+            if ((pass == 0) && (containsManagedArray(this->civilianExplorers, unitID) != 0)) {
+                continue;
+            }
+            if ((unitAI->currentAction() == -1) || (unitAI->currentOrder() == -1)) {
+                return unitID;
+            }
+        }
+    }
+
+    return -1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F81A0
+int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param_3) {
+    int bestID = -1;
+    long bestDistanceSq = 0;
+    for (int i = 0; i < this->civilians.numberValue; ++i) {
+        if (i >= this->civilians.maximumSizeValue) {
+            break;
+        }
+        const int unitID = this->civilians.value[i];
+        if (isTaskedThisUpdate(this, unitID) != 0) {
+            continue;
+        }
+        if ((param_1 != 0) && (this->isGatherer(unitID) != 0)) {
+            continue;
+        }
+        RGE_Static_Object* unitObj = tacticalObject(this, unitID);
+        if (unitObj == nullptr) {
+            continue;
+        }
+        UnitAIModule* unitAI = unitObj->unitAI();
+        if ((unitAI == nullptr) || ((unitAI->currentAction() != -1) && (unitAI->currentOrder() != -1))) {
+            continue;
+        }
+
+        if (param_2 == nullptr) {
+            return unitID;
+        }
+
+        const long dx = static_cast<long>(unitObj->world_x) - param_2->x;
+        const long dy = static_cast<long>(unitObj->world_y) - param_2->y;
+        const long distSq = dx * dx + dy * dy;
+        if ((param_3 > 0) && (distSq > static_cast<long>(param_3) * static_cast<long>(param_3))) {
+            continue;
+        }
+        if ((bestID == -1) || (distSq < bestDistanceSq)) {
+            bestID = unitID;
+            bestDistanceSq = distSq;
+        }
+    }
+    return bestID;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8570
+int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
+    (void)param_4;
+    int bestID = -1;
+    long bestDistanceSq = 0;
+    for (int i = 0; i < this->civilians.numberValue; ++i) {
+        if (i >= this->civilians.maximumSizeValue) {
+            break;
+        }
+        const int unitID = this->civilians.value[i];
+        if ((param_2 != 0) && (this->isGatherer(unitID) != 0)) {
+            continue;
+        }
+        if ((param_3 != 0) && (containsManagedArray(this->civilianExplorers, unitID) != 0)) {
+            continue;
+        }
+        if ((param_5 != 0) && (isTaskedThisUpdate(this, unitID) != 0)) {
+            continue;
+        }
+
+        RGE_Static_Object* unitObj = tacticalObject(this, unitID);
+        if (unitObj == nullptr) {
+            continue;
+        }
+
+        if (param_1 == nullptr) {
+            return unitID;
+        }
+
+        const long dx = static_cast<long>(unitObj->world_x) - param_1->x;
+        const long dy = static_cast<long>(unitObj->world_y) - param_1->y;
+        const long distSq = dx * dx + dy * dy;
+        if ((param_6 > 0) && (distSq > static_cast<long>(param_6) * static_cast<long>(param_6))) {
+            continue;
+        }
+
+        if ((bestID == -1) || (distSq < bestDistanceSq)) {
+            bestID = unitID;
+            bestDistanceSq = distSq;
+        }
+    }
+
+    return bestID;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F87B0
+int TribeTacticalAIModule::unit(int param_1, int param_2, int param_3) {
+    ManagedArray<int>* source = &this->civilians;
+    if (param_1 == 1) {
+        source = &this->soldiers;
+    } else if (param_1 == 2) {
+        source = &this->boats;
+    }
+
+    int found = 0;
+    for (int i = 0; i < source->numberValue; ++i) {
+        if (i >= source->maximumSizeValue) {
+            break;
+        }
+        const int unitID = source->value[i];
+        if ((param_3 != 0) && (isTaskedThisUpdate(this, unitID) != 0)) {
+            continue;
+        }
+        if (found == param_2) {
+            return unitID;
+        }
+        ++found;
+    }
+    return -1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8BE0
+int TribeTacticalAIModule::busyWithAction(int param_1, int param_2) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* unitAI = obj->unitAI();
+    if (unitAI == nullptr) {
+        return 0;
+    }
+    return (unitAI->currentAction() == param_2) ? 1 : 0;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8C30
+void TribeTacticalAIModule::displayCivilianDistribution() {
+    this->actualGathererCount(0);
+    this->actualGathererCount(1);
+    this->actualGathererCount(2);
+    this->actualGathererCount(3);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8C40
+void TribeTacticalAIModule::updateNeededResources() {
+    for (int i = 0; i < 4; ++i) {
+        this->resourceDifferenceValue[i] = this->desiredGathererDistribution[i] - this->actualGathererDistribution[i];
+        this->neededResourceValue[i] = (this->resourceDifferenceValue[i] > 0) ? this->resourceDifferenceValue[i] : 0;
+        this->neededResources.setValue(i, this->neededResourceValue[i]);
+    }
+    this->firstNeededResourceUpdateDone = 1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8E20
+void TribeTacticalAIModule::updateGathererDistribution() {
+    for (int i = 0; i < 4; ++i) {
+        this->actualGathererDistribution[i] = 0;
+    }
+    for (int i = 0; i < this->numberGatherersValue; ++i) {
+        if ((i < 0) || (i >= 50)) {
+            continue;
+        }
+        UnitData* data = &this->gatherers[i];
+        if (data->id < 0) {
+            continue;
+        }
+        if ((data->data1 >= 0) && (data->data1 < 4)) {
+            this->actualGathererDistribution[data->data1] += 1;
+        }
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9380
+int TribeTacticalAIModule::stopUnit(int param_1, int param_2) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* unitAI = obj->unitAI();
+    if (unitAI == nullptr) {
+        return 0;
+    }
+    return unitAI->stopObject(param_2);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F93D0
+int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, int param_4) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* unitAI = obj->unitAI();
+    if (unitAI == nullptr) {
+        return 0;
+    }
+    return unitAI->moveTo(param_2, param_3, 0.0f, 0.0f, param_4);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9420
+int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param_3, float param_4, float param_5, float param_6, int param_7) {
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    TacticalAIGroup* grp = this->group(param_1, -1, -1, -1);
+    if (grp == nullptr) {
+        return 0;
+    }
+    int result = 0;
+    for (int i = 0; i < grp->numberUnits(); ++i) {
+        const int unitID = grp->unit(i);
+        if (unitID < 0) {
+            continue;
+        }
+        result += this->taskGatherer(unitID, param_2, param_7, 0, nullptr);
+    }
+    return result;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9470
+int TribeTacticalAIModule::highLevelTaskExplorer(int param_1, int param_2) {
+    return this->taskExplorer(param_1, param_2);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F95B0
+int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long param_2) {
+    return this->taskGatherer(param_1, -1, -1, param_2, nullptr);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F99B0
+int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3, int param_4, int param_5, Waypoint* param_6, int param_7) {
+    if ((this->md == nullptr) || (this->md->player == nullptr)) {
+        return 0;
+    }
+    int target = param_5;
+    if ((target < 0) && (param_6 != nullptr)) {
+        target = -1;
+    }
+    this->md->player->sendPlayCommand(param_1, param_2, param_3, param_4, target);
+    if (param_7 != 0 && param_2 != nullptr) {
+        for (int i = 0; i < param_3; ++i) {
+            appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_2[i]);
+        }
+    }
+    return 1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9AD0
+int TribeTacticalAIModule::taskBuilder(int param_1, BuildItem* param_2, ConstructionItem* param_3, unsigned long param_4) {
+    (void)param_3;
+    (void)param_4;
+    if (param_1 < 0) {
+        return 0;
+    }
+    if (param_2 != nullptr) {
+        return this->taskBuilder(param_1, tacticalObject(this, param_2->number()));
+    }
+    return 0;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9E00
+int TribeTacticalAIModule::taskBuilder(int param_1, RGE_Static_Object* param_2) {
+    if ((param_2 == nullptr) || (param_1 < 0)) {
+        return 0;
+    }
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->buildObject(param_2->id, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA000
+int TribeTacticalAIModule::taskRepairer(int param_1, RGE_Static_Object* param_2) {
+    if ((param_2 == nullptr) || (param_1 < 0)) {
+        return 0;
+    }
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->repairObject(param_2->id, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA170
+int TribeTacticalAIModule::taskGatherer(int param_1, int param_2, int param_3, unsigned long param_4, int* param_5) {
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    if (param_2 >= 0) {
+        return ai->gatherObject(param_2, 100);
+    }
+    return ai->stopObject(100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA820
+int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->explore(param_2, 100, 0);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA940
+int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3) {
+    return this->taskExplorer(param_1, param_2, param_3, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAAA0
+int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3, int param_4) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->moveTo(param_2, param_3, 0.0f, 0.0f, param_4);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAC90
+int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->followObject(param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FADA0
+int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->defendObject(param_2, param_3, param_4);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
+int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
+    return this->taskExplorer(param_1, 0);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAFC0
+int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->tradeWithObject(param_2, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB160
+int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) {
+    (void)param_3;
+    (void)param_4;
+    return this->taskGatherer(param_1, param_2, 0, 0, nullptr);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB2D0
+int TribeTacticalAIModule::taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9) {
+    (void)param_7;
+    (void)param_8;
+    (void)param_9;
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    if (param_4 >= 0) {
+        return ai->attackObject(param_4, param_5);
+    }
+    if (param_6 != nullptr) {
+        return ai->moveTo(param_6->x, param_6->y, param_6->z, 0.0f, param_5);
+    }
+    return ai->moveTo(param_2, param_3, 0.0f, 0.0f, param_5);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB500
+int TribeTacticalAIModule::taskDefender(int param_1, int param_2) {
+    return this->taskDefender(param_1, param_2, 0.0f, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB520
+int TribeTacticalAIModule::taskDefender(int param_1, float param_2, float param_3) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->defendPosition(param_2, param_3, 0.0f, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB550
+int TribeTacticalAIModule::taskTrain(BuildItem* param_1) {
+    if (param_1 == nullptr) {
+        return 0;
+    }
+    param_1->setInProgress(1);
+    return 1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB710
+int TribeTacticalAIModule::taskResearch(BuildItem* param_1) {
+    if (param_1 == nullptr) {
+        return 0;
+    }
+    param_1->setInProgress(1);
+    return 1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB8D0
+int TribeTacticalAIModule::taskToEnter(int param_1, int param_2) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->enterObject(param_2, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB9E0
+int TribeTacticalAIModule::taskTransporter(int param_1, float param_2, float param_3) {
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    return ai->transportObject(param_2, param_3, 0.0f, 100);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FBB30
+void TribeTacticalAIModule::removeFromTaskLists(int param_1) {
+    auto removeFromArray = [&](ManagedArray<int>& arr) {
+        for (int i = 0; i < arr.numberValue; ++i) {
+            if (i >= arr.maximumSizeValue) {
+                break;
+            }
+            if (arr.value[i] != param_1) {
+                continue;
+            }
+            for (int j = i; j + 1 < arr.numberValue; ++j) {
+                if ((j + 1) >= arr.maximumSizeValue) {
+                    break;
+                }
+                arr.value[j] = arr.value[j + 1];
+            }
+            arr.numberValue -= 1;
+            return;
+        }
+    };
+
+    removeFromArray(this->workingArea);
+    removeFromArray(this->unitsTaskedThisUpdate);
+    removeFromArray(this->ungroupedSoldiers);
+    removeFromArray(this->soldiers);
+    removeFromArray(this->warBoats);
+    removeFromArray(this->boats);
+
+    this->removeGatherer(param_1);
+    this->removeFromGroup(param_1);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FBC10
+int TribeTacticalAIModule::calculatePriority(float param_1) {
+    if (param_1 <= 0.0f) {
+        return 100;
+    }
+    int value = 100 - static_cast<int>(param_1);
+    if (value < 0) {
+        value = 0;
+    }
+    if (value > 100) {
+        value = 100;
+    }
+    return value;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FBC30
+void TribeTacticalAIModule::setupSoldierGroups() {
+    if (this->numberGroups(0, -1) == 0 && this->soldiers.numberValue > 0) {
+        TacticalAIGroup* grp = this->createGroup(0);
+        if (grp != nullptr) {
+            grp->setType(0);
+            grp->setSubType(0);
+            grp->setDesiredNumberUnits(this->soldiers.numberValue);
+        }
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FC500
+void TribeTacticalAIModule::fillSoldierGroups() {
+    TacticalAIGroup* grp = this->group(0, -1, -1, -1);
+    if (grp == nullptr) {
+        return;
+    }
+    for (int i = 0; i < this->ungroupedSoldiers.numberValue; ++i) {
+        if (i >= this->ungroupedSoldiers.maximumSizeValue) {
+            break;
+        }
+        grp->addUnit(this->ungroupedSoldiers.value[i], this->md);
+    }
+    this->ungroupedSoldiers.numberValue = 0;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD2F0
+int TribeTacticalAIModule::numberUngroupedSoldiers() {
+    int count = 0;
+    this->ungroupedSoldiers.numberValue = 0;
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        if (i >= this->soldiers.maximumSizeValue) {
+            break;
+        }
+        int unitID = this->soldiers.value[i];
+        if (this->groupUnitIsIn(unitID) == nullptr) {
+            ++count;
+            appendManagedArrayUnique(this->ungroupedSoldiers, unitID);
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD4F0
+int TribeTacticalAIModule::numberExtraGroupedSoldiers() {
+    int extra = 0;
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if (current->type() != 0) {
+            continue;
+        }
+        int over = current->numberUnits() - current->desiredNumberUnits();
+        if (over > 0) {
+            extra += over;
+        }
+    }
+    return extra;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD6D0
+int TribeTacticalAIModule::numberUngroupedArtifacts() {
+    int count = 0;
+    for (int i = 0; i < this->artifacts.numberValue; ++i) {
+        if (i >= this->artifacts.maximumSizeValue) {
+            break;
+        }
+        if (this->groupUnitIsIn(this->artifacts.value[i]) == nullptr) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD8D0
+void TribeTacticalAIModule::displaySoldierGroups() {
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if (current->type() == 0) {
+            (void)current->id();
+        }
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FDE00
+void TribeTacticalAIModule::setupBoatGroups() {
+    if (this->numberGroups(1, -1) == 0 && this->warBoats.numberValue > 0) {
+        TacticalAIGroup* grp = this->createGroup(1);
+        if (grp != nullptr) {
+            grp->setType(1);
+            grp->setSubType(0);
+            grp->setDesiredNumberUnits(this->warBoats.numberValue);
+        }
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FE950
+void TribeTacticalAIModule::fillBoatGroups() {
+    TacticalAIGroup* grp = this->group(1, -1, -1, -1);
+    if (grp == nullptr) {
+        return;
+    }
+    for (int i = 0; i < this->warBoats.numberValue; ++i) {
+        if (i >= this->warBoats.maximumSizeValue) {
+            break;
+        }
+        const int unitID = this->warBoats.value[i];
+        if (grp->containsUnit(unitID) == 0) {
+            grp->addUnit(unitID, this->md);
+        }
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FF4E0
+int TribeTacticalAIModule::numberUngroupedWarBoats() {
+    int count = 0;
+    for (int i = 0; i < this->warBoats.numberValue; ++i) {
+        if (i >= this->warBoats.maximumSizeValue) {
+            break;
+        }
+        if (this->groupUnitIsIn(this->warBoats.value[i]) == nullptr) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FF6E0
+int TribeTacticalAIModule::numberExtraGroupedWarBoats() {
+    int extra = 0;
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if (current->type() != 1) {
+            continue;
+        }
+        int over = current->numberUnits() - current->desiredNumberUnits();
+        if (over > 0) {
+            extra += over;
+        }
+    }
+    return extra;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FF8E0
+int TribeTacticalAIModule::numberUngroupedFishingBoats() {
+    int count = 0;
+    for (int i = 0; i < this->fishingBoats.numberValue; ++i) {
+        if (i >= this->fishingBoats.maximumSizeValue) {
+            break;
+        }
+        if (this->groupUnitIsIn(this->fishingBoats.value[i]) == nullptr) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FFAE0
+int TribeTacticalAIModule::numberUngroupedTradeBoats() {
+    int count = 0;
+    for (int i = 0; i < this->tradeBoats.numberValue; ++i) {
+        if (i >= this->tradeBoats.maximumSizeValue) {
+            break;
+        }
+        if (this->groupUnitIsIn(this->tradeBoats.value[i]) == nullptr) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FFCE0
+int TribeTacticalAIModule::numberUngroupedTransportBoats() {
+    int count = 0;
+    for (int i = 0; i < this->transportBoats.numberValue; ++i) {
+        if (i >= this->transportBoats.maximumSizeValue) {
+            break;
+        }
+        if (this->groupUnitIsIn(this->transportBoats.value[i]) == nullptr) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FFEE0
+void TribeTacticalAIModule::displayBoatGroups() {
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if (current->type() == 1) {
+            (void)current->id();
+        }
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005004C0
+TacticalAIGroup* TribeTacticalAIModule::bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5) {
+    (void)param_5;
+    TacticalAIGroup* best = nullptr;
+    long bestScore = 0;
+
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if ((param_1 >= 0) && (current->type() != param_1)) {
+            continue;
+        }
+        if ((param_2 >= 0) && (current->subType() != param_2)) {
+            continue;
+        }
+        if ((param_3 >= 0) && (current->action() != param_3)) {
+            continue;
+        }
+
+        long score = static_cast<long>(current->priority()) * 1000 + current->numberUnits();
+        if (param_4 != nullptr) {
+            Waypoint* loc = current->location();
+            const long dx = static_cast<long>(loc->x) - param_4->x;
+            const long dy = static_cast<long>(loc->y) - param_4->y;
+            score -= (dx * dx + dy * dy);
+        }
+
+        if ((best == nullptr) || (score > bestScore)) {
+            best = current;
+            bestScore = score;
+        }
+    }
+
+    return best;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500670
+TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3) {
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if ((param_1 >= 0) && (current->type() != param_1)) {
+            continue;
+        }
+        if ((param_2 >= 0) && (current->subType() != param_2)) {
+            continue;
+        }
+        if (current->allUnitsIdle(this->md, 0) == 0) {
+            continue;
+        }
+        if (param_3 != nullptr) {
+            Waypoint* loc = current->location();
+            if ((static_cast<int>(loc->x) != param_3->x) || (static_cast<int>(loc->y) != param_3->y)) {
+                continue;
+            }
+        }
+        return current;
+    }
+    return nullptr;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005008F0
+int TribeTacticalAIModule::numberGroups(int param_1, int param_2) {
+    int count = 0;
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if ((param_1 >= 0) && (current->type() != param_1)) {
+            continue;
+        }
+        if ((param_2 >= 0) && (current->subType() != param_2)) {
+            continue;
+        }
+        ++count;
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500950
+int TribeTacticalAIModule::numberUnitsInGroups(int param_1) {
+    int count = 0;
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        if ((param_1 >= 0) && (current->type() != param_1)) {
+            continue;
+        }
+        count += current->numberUnits();
+    }
+    return count;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005009A0
+int TribeTacticalAIModule::numberItemsToAttack() { return this->playersToAttack.numberValue; }
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500A30
+int TribeTacticalAIModule::itemToCapture() {
+    if (this->artifacts.numberValue <= 0 || this->artifacts.maximumSizeValue <= 0) {
+        return -1;
+    }
+    return this->artifacts.value[0];
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500A80
+int TribeTacticalAIModule::itemToBringToArea() {
+    if (this->workingArea.numberValue <= 0 || this->workingArea.maximumSizeValue <= 0) {
+        return -1;
+    }
+    return this->workingArea.value[0];
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500AD0
+int TribeTacticalAIModule::numberItemsToDefend() { return this->playersToDefend.numberValue; }
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500AF0
+unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
+    if (param_1 <= 0) {
+        return this->lastGroupAttackTime;
+    }
+    return this->lastGroupAttackTime + static_cast<unsigned long>(this->randomizedAttackSeparationTime * param_1);
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500B30
+void TribeTacticalAIModule::resetAttackSeparationTime() {
+    int minValue = this->sn[26];
+    int maxValue = this->sn[27];
+    if (maxValue < minValue) {
+        maxValue = minValue;
+    }
+    this->randomizedAttackSeparationTime = (minValue + maxValue) / 2;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500BA0
+int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* param_1) {
+    if (param_1 == nullptr) {
+        return 0;
+    }
+
+    int leaderID = param_1->commander();
+    if (leaderID < 0 && param_1->numberUnits() > 0) {
+        leaderID = param_1->unit(0);
+    }
+
+    RGE_Static_Object* leader = tacticalObject(this, leaderID);
+    if (leader == nullptr) {
+        return 0;
+    }
+
+    param_1->setGatherLocation(leader->world_x, leader->world_y, leader->world_z);
+    return 1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500CC0
+int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* param_1) {
+    if (param_1 == nullptr) {
+        return 0;
+    }
+    if (this->setGatherLocation(param_1) == 0) {
+        return 0;
+    }
+    Waypoint* gather = param_1->gatherLocation();
+    param_1->setLocation(gather->x, gather->y, gather->z);
+    param_1->setRetreatLocation(gather->x, gather->y, gather->z);
+    param_1->setTargetLocation(gather->x, gather->y, gather->z);
+    return 1;
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500DE0
+void TribeTacticalAIModule::setGroupInfluences(InfluenceMap* param_1) {
+    if (param_1 == nullptr) {
+        return;
+    }
+
+    for (TacticalAIGroup* current = this->groups.next;
+         (current != nullptr) && (current != &this->groups);
+         current = current->next) {
+        const int commanderID = current->commander();
+        if (commanderID < 0) {
+            continue;
+        }
+        RGE_Static_Object* commander = tacticalObject(this, commanderID);
+        if (commander == nullptr) {
+            continue;
+        }
+        commander->changeInfluenceMap(param_1, 1, current->type(), current->priority());
+    }
+}
+
 // TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501190
 int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* param_1) { (void)param_1; return -1; }
 // TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501260
