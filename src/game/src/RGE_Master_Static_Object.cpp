@@ -1,4 +1,6 @@
 #include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Master_Combat_Object.h"
+#include "../include/RGE_Armor_Weapon_Info.h"
 
 #include "../include/RGE_Damage_Sprite_Info.h"
 #include "../include/RGE_Game_World.h"
@@ -804,9 +806,21 @@ uchar RGE_Master_Static_Object::alignment(float* param_1, float* param_2, RGE_Ga
     return '\x01';
 }
 
-// TODO: Confirm exact __ftol accumulation behavior with m_s_obj.cpp.asm @ 0x00454980.
+// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00454980, m_s_obj.cpp.asm @ 0x00454980
 long RGE_Master_Static_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) {
-    return 0;
+    float total_damage = 0.0f;
+    if (param_1 != nullptr && param_1->weapon != nullptr && param_1->weapon_num > 0) {
+        for (short i = 0; i < param_1->weapon_num; ++i) {
+            int weapon_value = (int)param_1->weapon[i].value;
+            if (weapon_value > 0) {
+                total_damage = total_damage + (float)weapon_value;
+            }
+        }
+    }
+    if (total_damage < 1.0f) {
+        total_damage = 1.0f;
+    }
+    return rge_ftol(total_damage);
 }
 
 // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x0044FE20
@@ -1280,12 +1294,12 @@ int RGE_Master_Static_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sou
 }
 
 long RGE_Master_Static_Object::get_help_message() {
-    // Source of truth: m_s_obj.cpp.decomp @ 0x00454950
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00454950
     return this->help_string_id;
 }
 
 long RGE_Master_Static_Object::get_help_page() {
-    // Source of truth: m_s_obj.cpp.decomp @ 0x00454960
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00454960
     return this->help_page_id;
 }
 
