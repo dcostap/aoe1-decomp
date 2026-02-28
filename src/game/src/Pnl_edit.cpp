@@ -1,6 +1,7 @@
 #include "../include/TEditPanel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TDrawArea.h"
+#include "../include/TDrawSystem.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/globals.h"
 
@@ -10,6 +11,7 @@
 #include <imm.h>
 
 static LRESULT CALLBACK pnl_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475930
     TEditPanel* panel = (TEditPanel*)GetWindowLongPtrA(hwnd, GWLP_USERDATA);
     if (panel) {
         return (LRESULT)panel->sub_wnd_proc(hwnd, msg, (uint)wparam, (long)lparam);
@@ -516,6 +518,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
 
 int TEditPanel::verify_char(int param_1) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476440
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476422 (decompiler artifact thunk)
     if (DAT_0086b244 != 0) {
         DAT_0086b244 = 0;
         return 0;
@@ -673,12 +676,111 @@ void TEditPanel::set_fixed_position(long param_1, long param_2, long param_3, lo
 void TEditPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
 void TEditPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TEditPanel::draw_finish() { TPanel::draw_finish(); }
-void TEditPanel::draw() { TPanel::draw(); }
+void TEditPanel::draw() {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476680
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x0047664D (decompiler artifact thunk)
+    this->just_drawn = 0;
+    if (this->visible == 0) {
+        return;
+    }
+
+    this->draw_setup(0);
+
+    if ((this->brush == nullptr) || (this->have_focus == 0) || (this->active == 0)) {
+        if (this->render_area != nullptr) {
+            if ((this->bevel_type < 2) || (7 < this->bevel_type)) {
+                this->draw_rect(&this->render_rect);
+            } else {
+                this->draw_rect2(&this->render_rect);
+            }
+        }
+    } else if (this->render_area != nullptr) {
+        if (this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
+            const uchar fill_color = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, (COLORREF)this->back_color);
+            this->render_area->Clear(&this->render_rect, (int)fill_color);
+        } else {
+            this->render_area->Clear(&this->render_rect, (int)this->color);
+        }
+    }
+
+    if (this->bevel_type != 0 && this->render_area != nullptr) {
+        if (this->render_area->Lock((char*)"pnl_edit::draw", 1) != nullptr) {
+            const long x1 = this->pnl_x;
+            const long y1 = this->pnl_y;
+            const long x2 = this->pnl_x + this->pnl_wid - 1;
+            const long y2 = this->pnl_y + this->pnl_hgt - 1;
+            switch (this->bevel_type) {
+            case 1:
+                this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color1);
+                break;
+            case 2:
+                this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                break;
+            case 3:
+                this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
+                break;
+            case 4:
+                this->render_area->DrawBevel3(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                break;
+            case 5:
+                this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
+                break;
+            case 6:
+                this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
+                break;
+            case 7:
+                this->render_area->DrawBevel3(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                break;
+            default:
+                break;
+            }
+            this->render_area->Unlock((char*)"pnl_edit::draw");
+        }
+    }
+
+    if (this->edit_wnd != nullptr && this->active != 0 && this->render_area != nullptr) {
+        if (this->have_focus == 0) {
+            if (this->hidden == 0) {
+                ShowWindow((HWND)this->edit_wnd, SW_HIDE);
+                this->hidden = 1;
+            }
+            HDC hdc = (HDC)this->render_area->GetDc((char*)"pnl_edit::draw");
+            if (hdc != nullptr) {
+                SelectClipRgn(hdc, (HRGN)this->clip_rgn);
+                HGDIOBJ old_font = SelectObject(hdc, (HGDIOBJ)this->font);
+                SetBkMode(hdc, TRANSPARENT);
+                SetTextColor(hdc, (COLORREF)this->text_color2);
+                tagRECT shadow_rect = this->draw_rect_value;
+                shadow_rect.left -= 1;
+                shadow_rect.top += 1;
+                shadow_rect.right -= 1;
+                shadow_rect.bottom += 1;
+                char* display_text = this->text != nullptr ? this->text : (char*)"";
+                DrawTextExA(hdc, display_text, -1, &shadow_rect, this->draw_format, nullptr);
+                SetTextColor(hdc, (COLORREF)this->text_color1);
+                DrawTextExA(hdc, display_text, -1, &this->draw_rect_value, this->draw_format, nullptr);
+                SelectObject(hdc, old_font);
+                SelectClipRgn(hdc, nullptr);
+                this->render_area->ReleaseDc((char*)"pnl_edit::draw");
+            }
+        } else if (this->hidden != 0) {
+            ShowWindow((HWND)this->edit_wnd, SW_SHOW);
+            InvalidateRect((HWND)this->edit_wnd, nullptr, TRUE);
+            this->hidden = 0;
+            this->draw_finish();
+            return;
+        }
+    }
+
+    this->draw_finish();
+}
 void TEditPanel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
 void TEditPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset(param_1, param_2, param_3); }
 void TEditPanel::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
 void TEditPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
-void TEditPanel::paint() { TPanel::paint(); }
+void TEditPanel::paint() {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476A50
+}
 long TEditPanel::handle_idle() { return TPanel::handle_idle(); }
 long TEditPanel::handle_size(long param_1, long param_2) { return TPanel::handle_size(param_1, param_2); }
 long TEditPanel::handle_paint() { return TPanel::handle_paint(); }
@@ -688,7 +790,10 @@ long TEditPanel::handle_command(uint param_1, long param_2) { return TPanel::han
 long TEditPanel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
 long TEditPanel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
 long TEditPanel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
-long TEditPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+long TEditPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476BE0
+    return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
+}
 long TEditPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
 long TEditPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
 long TEditPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }

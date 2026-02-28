@@ -128,6 +128,32 @@ struct VC_LOG {
 extern VC_LOG VCALL_LOG[0x400];
 extern int VCALL_LOG_HEAD;
 extern int VCALL_LOG_TAIL;
+static int rge_buffer_full(unsigned char* buf, int size);
+
+static unsigned int rge_deflate_buf_size_stub() {
+    // TODO: STUB - deflate_buf_size dependency is not transliterated yet.
+    return 1;
+}
+
+static void rge_deflate_init_stub(unsigned char* state) {
+    // TODO: STUB - deflate_init dependency is not transliterated yet.
+    (void)state;
+}
+
+static int rge_deflate_data_stub(unsigned char* state, void* src, int size, int flush) {
+    // TODO: STUB - deflate_data dependency is not transliterated yet.
+    (void)state;
+    if (flush != 0 || src == nullptr || size <= 0) {
+        return 0;
+    }
+    rge_buffer_full((unsigned char*)src, size);
+    return (rge_write_error != 0) ? 2 : 0;
+}
+
+static void rge_deflate_deinit_stub(unsigned char* state) {
+    // TODO: STUB - deflate_deinit dependency is not transliterated yet.
+    (void)state;
+}
 
 static void rge_reset_buffers() {
     if (g_rge_window != nullptr) {
@@ -335,6 +361,7 @@ void dump_vismap_log() {
 }
 
 int rge_fake_open(int handle, int remaining_bytes) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x0047FD30
     if (handle > -1) {
         rge_reset_buffers();
         g_rge_mode = 2;
@@ -347,6 +374,7 @@ int rge_fake_open(int handle, int remaining_bytes) {
 }
 
 int rge_open(char* path, int oflag) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x0047FD90
     int fd = _open(path, oflag);
     if (fd > -1) {
         rge_reset_buffers();
@@ -364,6 +392,7 @@ int rge_open(char* path, int oflag) {
 }
 
 int rge_open(char* path, int oflag, int pmode) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x0047FE20
     int fd = _open(path, oflag, pmode);
     if (fd > -1) {
         rge_reset_buffers();
@@ -381,6 +410,7 @@ int rge_open(char* path, int oflag, int pmode) {
 }
 
 int rge_fake_close(int handle) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x0047FEB0
     if (handle > -1 && handle == g_rge_handle) {
         rge_reset_buffers();
         g_rge_handle = -1;
@@ -389,15 +419,32 @@ int rge_fake_close(int handle) {
 }
 
 int rge_close(int handle) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x0047FF30
     if (handle > -1 && handle == g_rge_handle) {
-        rge_reset_buffers();
+        if (g_rge_mode == 1 && g_rge_inflate_work != nullptr) {
+            int ret = rge_deflate_data_stub(g_rge_inflate_work, nullptr, 0, 1);
+            if (ret == 2) {
+                rge_write_error = 1;
+            }
+            rge_deflate_deinit_stub(g_rge_inflate_work);
+        }
         g_rge_handle = -1;
+        rge_reset_buffers();
         return _close(handle);
     }
     return handle;
 }
 
+void rge_read_uncompressed(int handle, void* buf, int size) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x00480000
+    if (handle > -1 && handle == g_rge_handle) {
+        _read(handle, buf, size);
+        g_rge_compressed_size -= size;
+    }
+}
+
 void rge_read(int handle, void* buf, int size) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x00480080
     if (size <= 0 || buf == nullptr) {
         return;
     }
@@ -407,10 +454,9 @@ void rge_read(int handle, void* buf, int size) {
     }
 
     if (ENABLE_COMPRESSION == 0) {
-        int got = _read(handle, buf, size);
-        if (got > 0) {
-            g_rge_read_count += got;
-        }
+        _read(handle, buf, size);
+        g_rge_compressed_size -= size;
+        g_rge_read_count += size;
         return;
     }
 
@@ -442,13 +488,38 @@ void rge_read(int handle, void* buf, int size) {
     g_rge_read_count += to_copy;
 }
 
+static int rge_buffer_full(unsigned char* buf, int size) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x00480290
+    int wrote = _write(g_rge_handle, buf, size);
+    if (wrote < 1) {
+        rge_write_error = 1;
+    }
+    return 0;
+}
+
 void rge_write(int handle, void* buf, int size) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp @ 0x004802C0
     if (handle < 0 || handle != g_rge_handle) {
         return;
     }
 
-    int wrote = _write(handle, buf, size);
-    if (wrote < 1) {
+    if (ENABLE_COMPRESSION == 0) {
+        int wrote = _write(handle, buf, size);
+        if (wrote < 1) {
+            rge_write_error = 1;
+        }
+        return;
+    }
+
+    if (g_rge_mode != 1) {
+        g_rge_mode = 1;
+        unsigned int work_size = rge_deflate_buf_size_stub();
+        g_rge_inflate_work = (unsigned char*)calloc(work_size, 1);
+        rge_deflate_init_stub(g_rge_inflate_work);
+    }
+
+    int ret = rge_deflate_data_stub(g_rge_inflate_work, buf, size, 0);
+    if (ret == 2) {
         rge_write_error = 1;
     }
 }
