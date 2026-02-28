@@ -179,9 +179,6 @@ void initialize_ai_prefix(BuildAIModule* self, int player_number) {
 }
 }
 
-// Fully verified. Source of truth: aiblditm.cpp.decomp @ 0x00408470
-BuildItem::~BuildItem() {}
-
 // Fully verified. Source of truth: aibldmod.cpp.decomp @ 0x004086B0
 BuildAIModule::BuildAIModule(void* param_1, int param_2) {
     (void)param_1;
