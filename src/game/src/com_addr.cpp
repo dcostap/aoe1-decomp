@@ -19,7 +19,7 @@ IPAD::~IPAD() {
 }
 
 RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* comm_) {
-    // Source of truth: com_addr.cpp.decomp @ 0x004249D0
+    // Fully verified. Source of truth: com_addr.cpp.decomp @ 0x004249D0
     this->comm = comm_;
     this->pIPAD = nullptr;
 
@@ -45,7 +45,7 @@ RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handl
 }
 
 RGE_Communications_Addresses::~RGE_Communications_Addresses() {
-    // Source of truth: com_addr.cpp.decomp @ 0x00424B10
+    // Fully verified. Source of truth: com_addr.cpp.decomp @ 0x00424B10
     this->EraseInformation();
 
     if (this->Status != 0) {
@@ -63,7 +63,7 @@ char* RGE_Communications_Addresses::GetHostName() {
 }
 
 int RGE_Communications_Addresses::SetIPAliases(char* /*scratch*/) {
-    // Source of truth: com_addr.cpp.decomp @ 0x00424B80
+    // Fully verified. Source of truth: com_addr.cpp.decomp @ 0x00424B80
     if (this->hostname[0] == '\0') {
         return 0;
     }
@@ -107,7 +107,7 @@ char* RGE_Communications_Addresses::GetAlias(uint index) {
 }
 
 int RGE_Communications_Addresses::SetIPAddresses(char* /*scratch*/) {
-    // Source of truth: com_addr.cpp.decomp @ 0x00424C80
+    // Fully verified. Source of truth: com_addr.cpp.decomp @ 0x00424C80
     if (this->hostname[0] == '\0') {
         return 0;
     }
