@@ -3870,7 +3870,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all decomp offsets covered across all 3 files. Expect 500+ lines.
 ## Task 273 — Tribe AI Information Module (127 greenfield functions — taiinfmd.cpp.decomp)
 - [x] Assigned to agent (worker-2, clone_2, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `6ce521e`. 207 insertions. TribeInformationAIModule.cpp expanded with all 127 offsets.
 - Goal: taiinfmd.cpp.decomp has 127 functions with NO implementation at all. This is the AI information-gathering module — scouting, map exploration, threat assessment, resource knowledge, enemy base detection. Fully greenfield.
 - Implement: Create new impl file(s) and transliterate ALL 127 functions from the decomp. Every function must have offset markers.
 - Where: new file(s) in `src/game/src/` + headers
@@ -3880,7 +3881,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 274 — Communicable Object + AI Building Object (104 greenfield functions)
 - [x] Assigned to agent (worker-5, clone_5, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `4d5f5db`. 242 insertions. RGE_Combat_Object.cpp expanded (com_obj 50/50, aibobj 54/54).
 - Goal: Two modules with NO implementation:
   - com_obj.cpp.decomp: 50 functions (RGE_Communicable_Object — messaging, command handling, interaction)
   - aibobj.cpp.decomp: 54 functions (AI_Building_Object — AI building placement logic, evaluation, priority)
@@ -3949,3 +3951,30 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `panel_ez.cpp.decomp`, `tpnl_tml.cpp.decomp`, `tpnl_obj.cpp.decomp`, `tpnl_tim.cpp.decomp`, `aimdmod.cpp.decomp` + `.asm` files
 - Non-overlap: do NOT touch TRIBE_Screen_*.cpp, Pnl_txt/Pnl_btn/Pnl_scbr/Pnl_lst, command.cpp, basegame, or action files
 - Done when: all decomp offsets covered. Expect 1500+ lines.
+
+## Task 279 — Victory Conditions + Sound Driver (87 functions)
+- [x] Assigned to agent (worker-2, clone_2, copilot)
+- [ ] Finished
+- Goal: Two modules with very low coverage:
+  - victory.cpp.decomp: 59 funcs, only 7 impl refs → ~52 missing (RGE_Victory_Conditions + TRIBE_Victory_Conditions — win/loss condition checking, score calculation, achievement evaluation, standard/conquest/wonder victory)
+  - sounddrv.cpp.decomp: 36 funcs, only 1 impl ref → ~35 missing (sound driver — DirectSound wrappers, WAV playback, volume control, sound caching, 3D audio positioning)
+  Total: ~87 functions.
+- Implement: Extend existing files (RGE_Victory_Conditions.cpp, TRIBE_Victory_Conditions.cpp, Sounddrv.cpp) with missing offset implementations. Every function needs '// Source of truth' offset markers.
+- Where: `src/game/src/RGE_Victory_Conditions.cpp`, `src/game/src/TRIBE_Victory_Conditions.cpp`, `src/game/src/Sounddrv.cpp` + headers
+- Source of truth: `victory.cpp.decomp`, `sounddrv.cpp.decomp` + `.asm` files (in `src/game/decomp/`)
+- Non-overlap: do NOT touch panel files, AI files, action files, basegame, command.cpp, tribegam
+- Done when: all decomp offsets covered across both modules. Expect 1200+ lines.
+
+## Task 280 — Tribe Game remaining + Drop Panels + Small Action Files (80 functions)
+- [x] Assigned to agent (worker-5, clone_5, copilot)
+- [ ] Finished
+- Goal: Mixed cluster — one big partial module + two small modules:
+  - tribegam.cpp.decomp: 119 funcs, 80 impl refs → ~39 missing (Tribe Game main — game loop, turn processing, game state management, multiplayer sync)
+  - pnl_drop.cpp.decomp: 40 funcs, 16 impl refs → ~24 missing (drop-down panel — combo box UI, list rendering, selection handling)
+  - act_bird.cpp.decomp: 5 funcs + act_expl.cpp.decomp: 7 funcs + act_make.cpp.decomp: 5 funcs = 17 small action funcs (greenfield)
+  Total: ~80 functions.
+- Implement: Extend existing tribegam.cpp and Pnl_drop*.cpp. Create new impl for small action files. Transliterate all missing with offset markers.
+- Where: `src/game/src/tribegam.cpp`, `src/game/src/Pnl_drop.cpp`, `src/game/src/Pnl_drop_btn.cpp`, new action files + headers
+- Source of truth: `tribegam.cpp.decomp`, `pnl_drop.cpp.decomp`, `act_bird.cpp.decomp`, `act_expl.cpp.decomp`, `act_make.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch TRIBE_Screen_*.cpp, AI module files, victory/sound files, basegame, command.cpp
+- Done when: all decomp offsets covered. Expect 1000+ lines.
