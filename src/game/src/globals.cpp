@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 extern "C" {
 #include "../../third_party/puff/puff.h"
@@ -232,7 +233,36 @@ static int rge_prepare_read_cache(int handle) {
     return 1;
 }
 
-void run_log(char* param_1, int param_2) {}
+void run_log(char* param_1, int param_2) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521020
+    if (do_run_log == 0) {
+        return;
+    }
+
+    if (run_log_created == 0) {
+        run_log_file = fopen("c:\\aoerun.txt", "w");
+        run_log_created = 1;
+    } else {
+        run_log_file = fopen("c:\\aoerun.txt", "a");
+    }
+
+    if (run_log_file == nullptr) {
+        return;
+    }
+
+    if (param_2 != 0) {
+        time_t now;
+        time(&now);
+        char stime[26];
+        memset(stime, 0, sizeof(stime));
+        ctime_s(stime + 4, sizeof(stime) - 4, &now);
+        fprintf(run_log_file, "%s: %s\n", stime + 4, param_1);
+    } else {
+        fprintf(run_log_file, "%s\n", param_1);
+    }
+
+    fclose(run_log_file);
+}
 
 void debug_random_write() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423030

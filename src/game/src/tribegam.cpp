@@ -20,6 +20,7 @@
 #include "../include/TPanelSystem.h"
 #include "../include/TScreenPanel.h"
 #include "../include/TMusic_System.h"
+#include "../include/TDigital.h"
 #include "../include/RGE_Player_Info.h"
 #include "../include/RGE_Map_Gen_Info.h"
 #include "../include/RGE_Scenario.h"
@@ -120,6 +121,7 @@ static void tribe_close_video_window(TRIBE_Game* game) {
 }
 
 static LRESULT CALLBACK tribe_video_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523AE0
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
     if (game != nullptr) {
         return (LRESULT)game->video_wnd_proc((void*)hwnd, (uint)msg, (uint)wParam, (long)lParam);
@@ -128,6 +130,7 @@ static LRESULT CALLBACK tribe_video_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wPa
 }
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521120
     // tribegam.cpp:263
     // Assembly at 0x00521150
     this->cur_video = -1; // [ESI + 0xbf0] = -1
@@ -152,16 +155,22 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
     
     // Lines 258-268: Initialize various strings and values
     this->testing_scenario[0] = '\0'; // [ESI + 0xc58]
+    StringTableX = nullptr;
     this->startup_scenario[0] = '\0'; // [ESI + 0xd5c]
     this->startup_game[0] = '\0';     // [ESI + 0xe64]
     this->save_game_name[0] = '\0';   // [ESI + 0xf68]
     this->load_game_name[0] = '\0';   // [ESI + 0x106c]
     this->auto_exit_time = 0;         // [ESI + 0xe60]
+    this->timing_text2[0] = '\0';
     
     // Lines 270-274: Initialize global flags
     disable_terrain_sounds = 0;
     out_of_sync = 0;
     out_of_sync2 = 0;
+    this->MouseRightClickTable = nullptr;
+    this->MouseRightClickTableSize = 0;
+    this->MouseLeftClickTable = nullptr;
+    this->MouseLeftClickTableSize = 0;
     
     // Lines 287-302: Set default game options
     setMapSize(static_cast<MapSize>(2));
@@ -193,14 +202,15 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0
     // Arrays are size 9 per TRIBE_Game_Options.h
     for (int i = 0; i < 9; i++) {
         setCivilization(i, (i % 16) + 1);
-        setScenarioPlayer(i, 0);
-        setPlayerColor(i, i + 1); // Default: player i gets color i+1 (1-based)
+        setScenarioPlayer(i, i);
+        setPlayerColor(i, 1);
         setComputerName(i, 0);
+        player_dropped[i] = 0;
     }
     
     // Line 401-405: Initialize save_humanity array
     for (int i = 0; i < 9; i++) {
-        this->save_humanity[i] = 4; // STOSD in ASM 0x00521333 sets to 4
+        this->save_humanity[i] = 0;
     }
 
     this->handleIdleLock = nullptr;
@@ -301,6 +311,7 @@ TRIBE_Game::~TRIBE_Game() {
 }
 
 int TRIBE_Game::setup() {
+    // Source of truth: tribegam.cpp.decomp @ 0x00521790
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
 CUSTOM_DEBUG_END
@@ -658,28 +669,47 @@ void TRIBE_Game::setMapSize(MapSize p1) {
         default: break;
     }
 }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292B0
 void TRIBE_Game::setMapType(MapType p1) { this->tribe_game_options.mapTypeValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292D0
 void TRIBE_Game::setAnimals(int p1) { this->tribe_game_options.animalsValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292F0
 void TRIBE_Game::setPredators(int p1) { this->tribe_game_options.predatorsValue = p1; }
-void TRIBE_Game::setVictoryType(VictoryType p1, int p2) { 
-    this->tribe_game_options.victoryTypeValue = p1; 
-    this->tribe_game_options.victoryAmountValue = p2; 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529320
+void TRIBE_Game::setVictoryType(VictoryType p1, int p2) {
+    this->tribe_game_options.victoryTypeValue = p1;
+    this->tribe_game_options.victoryAmountValue = p2;
 }
-void TRIBE_Game::setAllowTrading(int p1) { this->tribe_game_options.allowTradingValue = p1; }
-void TRIBE_Game::setLongCombat(int p1) { this->tribe_game_options.longCombatValue = p1; }
-void TRIBE_Game::setRandomizePositions(int p1) { this->tribe_game_options.randomizePositionsValue = p1; }
-void TRIBE_Game::setFullTechTree(int p1) { this->tribe_game_options.fullTechTreeValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294C0
+void TRIBE_Game::setAllowTrading(int p1) { this->tribe_game_options.allowTradingValue = (uchar)p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294D0
+void TRIBE_Game::setLongCombat(int p1) { this->tribe_game_options.longCombatValue = (uchar)p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294E0
+void TRIBE_Game::setRandomizePositions(int p1) { this->tribe_game_options.randomizePositionsValue = (uchar)p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294F0
+void TRIBE_Game::setFullTechTree(int p1) { this->tribe_game_options.fullTechTreeValue = (uchar)p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529500
 void TRIBE_Game::setResourceLevel(ResourceLevel p1) { this->tribe_game_options.resourceLevelValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529510
 void TRIBE_Game::setStartingAge(Age p1) { this->tribe_game_options.startingAgeValue = p1; }
-void TRIBE_Game::setStartingUnits(int p1) { this->tribe_game_options.startingUnitsValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529520
+void TRIBE_Game::setStartingUnits(int p1) { this->tribe_game_options.startingUnitsValue = (uchar)p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529530
 void TRIBE_Game::setDeathMatch(unsigned char p1) { this->tribe_game_options.deathMatchValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529540
 void TRIBE_Game::setPopLimit(unsigned char p1) { this->tribe_game_options.popLimitValue = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529550
 void TRIBE_Game::setQuickStartGame(unsigned char p1) { this->quick_start_game = p1; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529560
 void TRIBE_Game::setRandomStartValue(int p1) { this->random_start_value = p1; }
-void TRIBE_Game::setCivilization(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.civilizationValue[p1] = p2; }
-void TRIBE_Game::setScenarioPlayer(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.scenarioPlayerValue[p1] = p2; }
-void TRIBE_Game::setPlayerColor(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.playerColorValue[p1] = p2; }
-void TRIBE_Game::setComputerName(int p1, int p2) { if (p1 >= 0 && p1 < 9) this->tribe_game_options.computerNameValue[p1] = p2; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529350
+void TRIBE_Game::setCivilization(int p1, int p2) { this->tribe_game_options.civilizationValue[p1] = (uchar)p2; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529380
+void TRIBE_Game::setScenarioPlayer(int p1, int p2) { this->tribe_game_options.scenarioPlayerValue[p1] = p2; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005293B0
+void TRIBE_Game::setPlayerColor(int p1, int p2) { this->tribe_game_options.playerColorValue[p1] = (uchar)p2; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005293E0
+void TRIBE_Game::setComputerName(int p1, int p2) { this->tribe_game_options.computerNameValue[p1] = (uchar)p2; }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529000
 void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* p1) {
     int i = 0;
@@ -751,28 +781,30 @@ void TRIBE_Game::get_tribe_options(TRIBE_Game_Options* p1) {
     p1->popLimitValue = u;
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A170
 void TRIBE_Game::resetRandomComputerName() {
     memset(this->computerNameUsed, 0, sizeof(this->computerNameUsed));
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00522860
 void TRIBE_Game::set_save_game_name(char* p1) {
     if (!p1) {
         this->save_game_name[0] = '\0';
         return;
     }
-    strncpy(this->save_game_name, p1, sizeof(this->save_game_name) - 1);
-    this->save_game_name[sizeof(this->save_game_name) - 1] = '\0';
+    strcpy(this->save_game_name, p1);
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005228A0
 void TRIBE_Game::set_load_game_name(char* p1) {
     if (!p1) {
         this->load_game_name[0] = '\0';
         return;
     }
-    strncpy(this->load_game_name, p1, sizeof(this->load_game_name) - 1);
-    this->load_game_name[sizeof(this->load_game_name) - 1] = '\0';
+    strcpy(this->load_game_name, p1);
 }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294A0
 unsigned char TRIBE_Game::quickStartGame() { return this->quick_start_game; }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292C0
 int TRIBE_Game::animals() { return this->tribe_game_options.animalsValue; }
@@ -789,12 +821,8 @@ char* TRIBE_Game::get_load_game_name() {
     return this->load_game_name;
 }
 
-int TRIBE_Game::civilization(int p1) {
-    if (p1 >= 0 && p1 < 9) {
-        return (int)this->tribe_game_options.civilizationValue[p1];
-    }
-    return 0;
-}
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529340
+int TRIBE_Game::civilization(int p1) { return (uint)this->tribe_game_options.civilizationValue[p1]; }
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529370
 int TRIBE_Game::scenarioPlayer(int p1) {
@@ -804,34 +832,43 @@ int TRIBE_Game::scenarioPlayer(int p1) {
     return 0;
 }
 
-int TRIBE_Game::playerColor(int p1) {
-    if (p1 >= 0 && p1 < 9) {
-        return (int)this->tribe_game_options.playerColorValue[p1];
-    }
-    return 1;
-}
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005293A0
+int TRIBE_Game::playerColor(int p1) { return (uint)this->tribe_game_options.playerColorValue[p1]; }
 
-int TRIBE_Game::computerName(int p1) {
-    if (p1 >= 0 && p1 < 9) {
-        return (int)this->tribe_game_options.computerNameValue[p1];
-    }
-    return 0;
-}
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005293D0
+int TRIBE_Game::computerName(int p1) { return (uint)this->tribe_game_options.computerNameValue[p1]; }
 
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005291F0
 MapSize TRIBE_Game::mapSize() { return this->tribe_game_options.mapSizeValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005292A0
 MapType TRIBE_Game::mapType() { return this->tribe_game_options.mapTypeValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529300
 VictoryType TRIBE_Game::victoryType() { return this->tribe_game_options.victoryTypeValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529310
 int TRIBE_Game::victoryAmount() { return this->tribe_game_options.victoryAmountValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529440
 ResourceLevel TRIBE_Game::resourceLevel() { return this->tribe_game_options.resourceLevelValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529450
 Age TRIBE_Game::startingAge() { return this->tribe_game_options.startingAgeValue; }
-int TRIBE_Game::randomizePositions() { return this->tribe_game_options.randomizePositionsValue; }
-int TRIBE_Game::fullTechTree() { return this->tribe_game_options.fullTechTreeValue; }
-int TRIBE_Game::allowTrading() { return this->tribe_game_options.allowTradingValue; }
-int TRIBE_Game::longCombat() { return this->tribe_game_options.longCombatValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529420
+int TRIBE_Game::randomizePositions() { return (uint)this->tribe_game_options.randomizePositionsValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529430
+int TRIBE_Game::fullTechTree() { return (uint)this->tribe_game_options.fullTechTreeValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529400
+int TRIBE_Game::allowTrading() { return (uint)this->tribe_game_options.allowTradingValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529410
+int TRIBE_Game::longCombat() { return (uint)this->tribe_game_options.longCombatValue; }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529460
 int TRIBE_Game::startingUnits() { return (uint)this->tribe_game_options.startingUnitsValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529470
 unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMatchValue; }
-unsigned char TRIBE_Game::popLimit() { return this->tribe_game_options.popLimitValue; }
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529480
+unsigned char TRIBE_Game::popLimit() {
+    if (this->multiplayerGame() != 0) {
+        return this->tribe_game_options.popLimitValue;
+    }
+    return '2';
+}
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005294B0
 int TRIBE_Game::randomStartValue() { return this->random_start_value; }
 
@@ -928,6 +965,7 @@ int TRIBE_Game::load_game_data() {
         if (!world) {
             return 0;
         }
+        this->world = world;
 
         // Source of truth uses virtual dispatch. Current decomp tree still has vtable fidelity gaps,
         // so call the base implementation explicitly to keep binary data bootstrap deterministic.
@@ -2156,7 +2194,8 @@ int TRIBE_Game::load_db_files() {
 }
 
 int TRIBE_Game::start_campaign_menu() {
-    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00523F10
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523EF6
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523F10
     if (this->video_setup != 0) {
         this->shutdown_video_system();
     }
@@ -2731,7 +2770,26 @@ void TRIBE_Game::disconnect_multiplayer_game() {
 
 // Virtual overrides
 int TRIBE_Game::run() { return RGE_Base_Game::run(); }
-long TRIBE_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::wnd_proc(p1, p2, p3, p4); }
+long TRIBE_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529580
+    if (p2 < 0x201) {
+        if (p2 == 0x200) {
+            if (this->prog_mode == 1) {
+                SetCursor(0);
+            }
+        } else if (p2 == 7) {
+            if (this->input_enabled == 0) {
+                this->disable_input();
+            } else {
+                this->enable_input();
+            }
+        }
+    } else if ((p2 == 0x201 || p2 == 0x204) && this->prog_mode == 1) {
+        this->stop_video(1);
+        return 0;
+    }
+    return RGE_Base_Game::wnd_proc(p1, p2, p3, p4);
+}
 
 void TRIBE_Game::set_prog_mode(int p1) {
     // TRIBE_Game doesn't seem to override this, but uses base
@@ -2776,7 +2834,147 @@ char* TRIBE_Game::get_string(long p1, char* p2, int p3) {
     return p2;
 }
 char* TRIBE_Game::get_string(long p1) { return RGE_Base_Game::get_string(p1); }
-char* TRIBE_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) { return RGE_Base_Game::get_string2(p1, p2, p3, p4, p5); }
+char* TRIBE_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00522930
+    *p4 = '\0';
+    switch (p1) {
+    case 1:
+        switch (p2) {
+        case 100:
+        case 0x65:
+        case 0x66: return this->get_string(0x961, p4, p5);
+        case 0x67: return this->get_string(0x962, p4, p5);
+        case 0x68: return this->get_string(0x963, p4, p5);
+        case 0x69: return this->get_string(0x964, p4, p5);
+        case 0x6A: return this->get_string(0x965, p4, p5);
+        default: return RGE_Base_Game::get_string2(p1, p2, p3, p4, p5);
+        }
+    case 100:
+        switch (p2) {
+        case 0:
+        case 0x0F:
+        case 0x10:
+        case 0x11: return this->get_string(0x10CD, p4, p5);
+        case 1: return this->get_string(0x10CE, p4, p5);
+        case 2: return this->get_string(0x10CF, p4, p5);
+        case 3: return this->get_string(0x10D0, p4, p5);
+        case 9: return this->get_string(0x10DB, p4, p5);
+        }
+        break;
+    case 0x65:
+        switch (p2) {
+        case 1: return this->get_string(0x1069, p4, p5);
+        case 2: return this->get_string(0x106A, p4, p5);
+        case 3: return this->get_string(0x106B, p4, p5);
+        case 4: return this->get_string(0x106C, p4, p5);
+        }
+        break;
+    case 0x66:
+        switch (p2) {
+        case 1: return this->get_string(0x1005, p4, p5);
+        case 2: return this->get_string(0x1006, p4, p5);
+        case 3: return this->get_string(0x1007, p4, p5);
+        case 4: return this->get_string(0x1008, p4, p5);
+        case 5: return this->get_string(0x1009, p4, p5);
+        case 6: return this->get_string(0x100A, p4, p5);
+        case 7: return this->get_string(0x100B, p4, p5);
+        case 8: return this->get_string(0x100C, p4, p5);
+        case 9: return this->get_string(0x100D, p4, p5);
+        case 10: return this->get_string(0x100E, p4, p5);
+        case 0x0B: return this->get_string(0x100F, p4, p5);
+        case 0x0C: return this->get_string(0x1010, p4, p5);
+        case 0x0D: return this->get_string(0x1011, p4, p5);
+        case 0x0E: return this->get_string(0x1012, p4, p5);
+        case 0x0F: return this->get_string(0x1013, p4, p5);
+        case 0x10: return this->get_string(0x1014, p4, p5);
+        case 0x11: return this->get_string(0x1015, p4, p5);
+        case 0x12: return this->get_string(0x1016, p4, p5);
+        case 0x13: return this->get_string(0x1017, p4, p5);
+        case 0x14: return this->get_string(0x1018, p4, p5);
+        case 0x15: return this->get_string(0x1019, p4, p5);
+        case 0x16: return this->get_string(0x101A, p4, p5);
+        case 0x17: return this->get_string(0x101B, p4, p5);
+        case 0x19: return this->get_string(0x1020, p4, p5);
+        case 0x1A: return this->get_string(0x1021, p4, p5);
+        case 0x1B: return this->get_string(0x1022, p4, p5);
+        case 0x1C: return this->get_string(0x101C, p4, p5);
+        case 0x1D: return this->get_string(0x101D, p4, p5);
+        case 0x1E: return this->get_string(0x101E, p4, p5);
+        case 0x1F: return this->get_string(0x101F, p4, p5);
+        case 0x20: return this->get_string(0x1025, p4, p5);
+        case 0x21: return this->get_string(0x1026, p4, p5);
+        }
+        break;
+    case 0x67:
+        if (p2 < 0x66) {
+            if (p2 == 0x65) {
+                return this->get_string(0x0BBE, p4, p5);
+            }
+            if (p2 == 1) {
+                switch (p3) {
+                case 0: return this->get_string(0x0BB9, p4, p5);
+                case 1: return this->get_string(0x0BBA, p4, p5);
+                case 2: return this->get_string(0x0BBB, p4, p5);
+                case 3: return this->get_string(0x0BBC, p4, p5);
+                case 4: return this->get_string(0x0BBD, p4, p5);
+                case 0x20: return this->get_string(0x0BE6, p4, p5);
+                }
+            }
+        } else if (p2 < 0x3E9) {
+            if (p2 == 1000) {
+                return this->get_string(0x0BC2, p4, p5);
+            }
+            switch (p2) {
+            case 0x66: return this->get_string(0x0BBF, p4, p5);
+            case 0x67: return this->get_string(0x0BC0, p4, p5);
+            case 0x68: return this->get_string(0x0BC1, p4, p5);
+            case 0x69: return this->get_string(0x0BC3, p4, p5);
+            case 0x6A: return this->get_string(0x0BCA, p4, p5);
+            }
+        }
+        break;
+    case 0x68:
+        switch (p2) {
+        case 1: return this->get_string(0x10D4, p4, p5);
+        case 2: return this->get_string(0x10D1, p4, p5);
+        case 3: return this->get_string(0x10D2, p4, p5);
+        case 4: return this->get_string(0x10D3, p4, p5);
+        case 5: return this->get_string(0x10D5, p4, p5);
+        case 6: return this->get_string(0x10D6, p4, p5);
+        case 7: return this->get_string(0x10D7, p4, p5);
+        case 8: return this->get_string(0x10D8, p4, p5);
+        case 9: return this->get_string(0x10D9, p4, p5);
+        case 10: return this->get_string(0x10DA, p4, p5);
+        case 0x0B: return this->get_string(0x10DC, p4, p5);
+        }
+        break;
+    case 0x69:
+        switch (p2) {
+        case 1: this->get_string(0x27F7, p4, p5); break;
+        case 2: this->get_string(0x27F8, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 3: this->get_string(0x27F9, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 4: this->get_string(0x27FA, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 5: this->get_string(0x27FB, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 6: this->get_string(0x27FC, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 7: this->get_string(0x27FD, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 8: this->get_string(0x27FE, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 9: this->get_string(0x27FF, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 10: this->get_string(0x2800, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 0x0B: this->get_string(0x2801, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 0x0C: this->get_string(0x2802, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 0x0D: this->get_string(0x2806, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 0x0E: this->get_string(0x2807, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 0x0F: this->get_string(0x2809, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        case 0x10: this->get_string(0x2808, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        default: this->get_string(0x2804, p4, p5); p4[p5 - 1] = '\0'; return p4;
+        }
+        break;
+    default:
+        return RGE_Base_Game::get_string2(p1, p2, p3, p4, p5);
+    }
+    p4[p5 - 1] = '\0';
+    return p4;
+}
 
 TPanel* TRIBE_Game::get_view_panel() {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523450
@@ -2925,7 +3123,35 @@ int TRIBE_Game::setup_chat() { return RGE_Base_Game::setup_chat(); }
 int TRIBE_Game::setup_comm() { return RGE_Base_Game::setup_comm(); }
 int TRIBE_Game::setup_sound_system() { return RGE_Base_Game::setup_sound_system(); }
 int TRIBE_Game::setup_fonts() { return RGE_Base_Game::setup_fonts(); }
-int TRIBE_Game::setup_sounds() { return RGE_Base_Game::setup_sounds(); }
+int TRIBE_Game::setup_sounds() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005222C0
+    this->sound_num = 0x11;
+    this->sounds = (TDigital**)calloc((size_t)this->sound_num, sizeof(TDigital*));
+    if (this->sounds == nullptr) {
+        return 0;
+    }
+
+    for (int i = 0; i < this->sound_num; ++i) {
+        this->sounds[i] = nullptr;
+    }
+
+    static const char* kSoundFiles[0x11] = {
+        "button1.wav", "button2.wav", "chatrcvd.wav", "cantdo.wav", "tribute.wav", "resdone.wav",
+        "pkilled.wav", "pdropped.wav", "mstart.wav", "mdone.wav", "mkilled.wav", "artheld.wav",
+        "artlost.wav", "convwarn.wav", "convdone.wav", "res.wav", "farmdie.wav"
+    };
+
+    for (int i = 0; i < this->sound_num; ++i) {
+        this->sounds[i] = new TDigital(this->sound_system, (char*)kSoundFiles[i], 0xC47C + i);
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        if (this->sounds[i] != nullptr) {
+            this->sounds[i]->load((char*)0, -1);
+        }
+    }
+    return 1;
+}
 int TRIBE_Game::setup_shapes() { return RGE_Base_Game::setup_shapes(); }
 int TRIBE_Game::setup_blank_screen() { return RGE_Base_Game::setup_blank_screen(); }
 void TRIBE_Game::setup_timings() { RGE_Base_Game::setup_timings(); }
@@ -2935,12 +3161,9 @@ int TRIBE_Game::restart_sound_system() { return 1; }
 void TRIBE_Game::stop_music_system() { RGE_Base_Game::stop_music_system(); }
 int TRIBE_Game::restart_music_system() { return RGE_Base_Game::restart_music_system(); }
 
-RGE_Game_World* TRIBE_Game::create_world() { 
-    if (this->world) {
-        delete this->world;
-    }
-    this->world = (RGE_Game_World*)new TRIBE_World();
-    return this->world;
+RGE_Game_World* TRIBE_Game::create_world() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00522770
+    return (RGE_Game_World*)new TRIBE_World();
 }
 
 int TRIBE_Game::handle_message(struct tagMSG* p1) { return RGE_Base_Game::handle_message(p1); }
