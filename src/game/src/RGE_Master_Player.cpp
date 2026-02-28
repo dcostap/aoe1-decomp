@@ -6,7 +6,6 @@
 #include "../include/RGE_Master_Combat_Object.h"
 #include "../include/RGE_Master_Missile_Object.h"
 #include "../include/RGE_Master_Doppleganger_Object.h"
-#include "../include/custom_debug.h"
 #include "../include/globals.h"
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +22,7 @@ RGE_Master_Player::RGE_Master_Player() {
     this->tribe_effect = 0;
 }
 
-// Source of truth: mst_play.cpp.decomp / mst_play.cpp.asm
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004610C0
 RGE_Master_Player::RGE_Master_Player(int fd) {
     memset(this->name, 0, sizeof(this->name));
     rge_read(fd, this->name, 20);
@@ -41,6 +40,7 @@ RGE_Master_Player::RGE_Master_Player(int fd) {
     this->type = 0; // Default or read from somewhere? Decomp shows it set to 0.
 }
 
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00460FD0
 RGE_Master_Player::RGE_Master_Player(FILE* f) {
     memset(this->name, 0, sizeof(this->name));
     this->type = 0;
@@ -70,73 +70,49 @@ RGE_Master_Player::RGE_Master_Player(FILE* f) {
     this->master_objects = nullptr;
 }
 
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461150
 RGE_Master_Player::~RGE_Master_Player() {
-    if (this->attributes) {
+    if (this->attribute_num > 0 && this->attributes != nullptr) {
         free(this->attributes);
+        this->attributes = nullptr;
+        this->attribute_num = 0;
     }
-    if (this->master_objects) {
+
+    if (this->master_object_num > 0 && this->master_objects != nullptr) {
+        for (short i = 0; i < this->master_object_num; ++i) {
+            if (this->master_objects[i] != nullptr) {
+                delete this->master_objects[i];
+                this->master_objects[i] = nullptr;
+            }
+        }
         free(this->master_objects);
+        this->master_objects = nullptr;
+        this->master_object_num = 0;
     }
 }
 
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004611D0
 void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
-    const long begin_pos = rge_stream_tell(param_1);
     short* object_count = &this->master_object_num;
     rge_read(param_1, object_count, 2);
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_Master_Player::finish_init begin stream_pos=%ld master_object_num=%d",
-        begin_pos,
-        (int)this->master_object_num);
 
     if (*object_count < 1) {
         this->master_objects = nullptr;
-        CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init no objects stream_pos=%ld", rge_stream_tell(param_1));
         return;
     }
 
     this->master_objects = (RGE_Master_Static_Object**)calloc((int)*object_count, sizeof(RGE_Master_Static_Object*));
-    if (this->master_objects == nullptr) {
-        this->master_object_num = 0;
-        CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init alloc failed stream_pos=%ld", rge_stream_tell(param_1));
-        return;
-    }
-
     rge_read(param_1, this->master_objects, (int)*object_count * (int)sizeof(RGE_Master_Static_Object*));
-    int marker_non_null = 0;
-    for (short i = 0; i < *object_count; ++i) {
-        if (this->master_objects[i] != nullptr) {
-            marker_non_null++;
-        }
-    }
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_Master_Player::finish_init marker_table_done stream_pos=%ld non_null=%d/%d",
-        rge_stream_tell(param_1),
-        marker_non_null,
-        (int)*object_count);
-
     for (short i = 0; i < *object_count; ++i) {
         if (this->master_objects[i] != nullptr) {
             uchar master_type = 0;
-            const long type_pos = rge_stream_tell(param_1);
             rge_read(param_1, &master_type, 1);
-            if (i < 24 || i + 1 == *object_count) {
-                CUSTOM_DEBUG_LOG_FMT(
-                    "RGE_Master_Player::finish_init object idx=%d type=0x%02X type_pos=%ld after_type_pos=%ld",
-                    (int)i,
-                    (unsigned int)master_type,
-                    type_pos,
-                    rge_stream_tell(param_1));
-            }
             this->load_master_object(param_1, master_type, param_2, param_3, i);
         }
     }
-
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_Master_Player::finish_init end stream_pos=%ld consumed=%ld",
-        rge_stream_tell(param_1),
-        rge_stream_tell(param_1) - begin_pos);
 }
 
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461270
 void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
     RGE_Master_Static_Object* loaded = nullptr;
 
@@ -171,12 +147,14 @@ void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprit
         this->master_objects[param_5] = loaded;
     }
 }
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461530
 void RGE_Master_Player::create_master_object_space(short param_1) {
     this->master_object_num = param_1;
     if (param_1 > 0) {
         this->master_objects = (RGE_Master_Static_Object**)calloc(param_1, sizeof(RGE_Master_Static_Object*));
     }
 }
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461560
 void RGE_Master_Player::load_object(FILE* param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
     RGE_Master_Static_Object* loaded = nullptr;
 
@@ -211,4 +189,23 @@ void RGE_Master_Player::load_object(FILE* param_1, uchar param_2, RGE_Sprite** p
         this->master_objects[param_5] = loaded;
     }
 }
-void RGE_Master_Player::save(int param_1) {}
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461840
+void RGE_Master_Player::save(int param_1) {
+    rge_write(param_1, &this->type, 1);
+    rge_write(param_1, this->name, 0x14);
+    rge_write(param_1, &this->attribute_num, 2);
+    rge_write(param_1, &this->tribe_effect, 2);
+    if (this->attribute_num > 0) {
+        rge_write(param_1, this->attributes, (int)this->attribute_num << 2);
+    }
+    rge_write(param_1, &this->culture, 1);
+    rge_write(param_1, &this->master_object_num, 2);
+    if (this->master_object_num > 0) {
+        rge_write(param_1, this->master_objects, (int)this->master_object_num << 2);
+        for (short i = 0; i < this->master_object_num; ++i) {
+            if (this->master_objects[i] != nullptr) {
+                this->master_objects[i]->save(param_1);
+            }
+        }
+    }
+}
