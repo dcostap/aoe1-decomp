@@ -798,34 +798,258 @@ void TRIBE_Building_Object::stop() {
     }
 }
 
-// TODO: STUB - Full adjacency scan parity pending deep map-node transliteration.
-// Source of truth: t_b_obj.cpp.decomp @ 0x004C8ED0
+static TRIBE_Building_Object* tribe_find_adjacent_building(RGE_Map* map, short tile_x, short tile_y, int master_id) {
+    if (map == nullptr || map->map_row_offset == nullptr) {
+        return nullptr;
+    }
+    if (tile_x < 0 || tile_y < 0 || (int)map->map_width <= tile_x || (int)map->map_height <= tile_y) {
+        return nullptr;
+    }
+    RGE_Tile* row = map->map_row_offset[tile_y];
+    if (row == nullptr) {
+        return nullptr;
+    }
+    RGE_Static_Object* found = row[tile_x].objects.find_by_master_id(master_id, -1.0f, -1.0f, 0, 0, nullptr);
+    return reinterpret_cast<TRIBE_Building_Object*>(found);
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8ED0
 long TRIBE_Building_Object::check(TRIBE_Building_Object** param_1) {
-    if (param_1 != nullptr) {
-        for (int i = 0; i < 4; ++i) {
-            param_1[i] = nullptr;
+    if (param_1 == nullptr) {
+        return 0;
+    }
+
+    param_1[0] = nullptr;
+    param_1[1] = nullptr;
+    param_1[2] = nullptr;
+    param_1[3] = nullptr;
+
+    if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr || this->master_obj == nullptr) {
+        return 0;
+    }
+
+    RGE_Map* map = this->owner->world->map;
+    const short tile_x = (short)this->world_x;
+    const short tile_y = (short)this->world_y;
+    const int master_id = this->master_obj->id;
+    long count = 0;
+
+    if (tile_y > 0) {
+        TRIBE_Building_Object* north = tribe_find_adjacent_building(map, tile_x, (short)(tile_y - 1), master_id);
+        if (north != nullptr && north->owner == this->owner) {
+            param_1[0] = north;
+            count = count + 1;
         }
     }
-    return 0;
+
+    if (tile_x > 0) {
+        TRIBE_Building_Object* west = tribe_find_adjacent_building(map, (short)(tile_x - 1), tile_y, master_id);
+        if (west != nullptr && west->owner == this->owner) {
+            param_1[1] = west;
+            count = count + 1;
+        }
+    }
+
+    if (tile_x < (short)(map->map_width - 1)) {
+        TRIBE_Building_Object* east = tribe_find_adjacent_building(map, (short)(tile_x + 1), tile_y, master_id);
+        if (east != nullptr && east->owner == this->owner) {
+            param_1[2] = east;
+            count = count + 1;
+        }
+    }
+
+    if (tile_y < (short)(map->map_height - 1)) {
+        TRIBE_Building_Object* south = tribe_find_adjacent_building(map, tile_x, (short)(tile_y + 1), master_id);
+        if (south != nullptr && south->owner == this->owner) {
+            param_1[3] = south;
+            count = count + 1;
+        }
+    }
+
+    return count;
 }
 
-// TODO: STUB - Full wall/connectivity parity pending check()/rotate() support completion.
-// Source of truth: t_b_obj.cpp.decomp @ 0x004C90E0
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C90B0
 void TRIBE_Building_Object::connect() {
+    if (this->master_obj == nullptr) {
+        return;
+    }
+    if (*reinterpret_cast<short*>(reinterpret_cast<char*>(this->master_obj) + 0x60) != 3) {
+        this->facet = 0;
+        return;
+    }
+
+    this->RGE_Moving_Object::set_angle();
+
+    TRIBE_Building_Object* checks[4] = {nullptr, nullptr, nullptr, nullptr};
+    this->check(checks);
+
+    TRIBE_Building_Object* north = checks[0];
+    TRIBE_Building_Object* west = checks[1];
+    TRIBE_Building_Object* east = checks[2];
+    TRIBE_Building_Object* south = checks[3];
+
+    int rotate_delta = 2 - (int)this->facet;
+    if ((north == nullptr) || (south == nullptr)) {
+        if ((west != nullptr) && (east != nullptr) && (north == nullptr) && (south == nullptr)) {
+            rotate_delta = -(int)this->facet;
+        }
+    } else {
+        if ((west == nullptr) && (east == nullptr)) {
+            rotate_delta = 1 - (int)this->facet;
+        }
+    }
+
+    this->RGE_Moving_Object::rotate(rotate_delta);
+    if (north != nullptr) {
+        north->connect2();
+    }
+    if (west != nullptr) {
+        west->connect2();
+    }
+    if (east != nullptr) {
+        east->connect2();
+    }
+    if (south != nullptr) {
+        south->connect2();
+    }
 }
 
-// TODO: STUB - Full secondary connectivity parity pending check()/rotate() support completion.
-// Source of truth: t_b_obj.cpp.decomp @ 0x004C9230
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9180
 void TRIBE_Building_Object::connect2() {
+    if (this->master_obj == nullptr) {
+        return;
+    }
+    if (*reinterpret_cast<short*>(reinterpret_cast<char*>(this->master_obj) + 0x60) != 3) {
+        this->facet = 0;
+        return;
+    }
+
+    TRIBE_Building_Object* checks[4] = {nullptr, nullptr, nullptr, nullptr};
+    this->check(checks);
+
+    TRIBE_Building_Object* north = checks[0];
+    TRIBE_Building_Object* west = checks[1];
+    TRIBE_Building_Object* east = checks[2];
+    TRIBE_Building_Object* south = checks[3];
+
+    int rotate_delta = 2 - (int)this->facet;
+    if ((north == nullptr) || (south == nullptr)) {
+        if ((west != nullptr) && (east != nullptr) && (north == nullptr) && (south == nullptr)) {
+            rotate_delta = -(int)this->facet;
+        }
+    } else {
+        if ((west == nullptr) && (east == nullptr)) {
+            rotate_delta = 1 - (int)this->facet;
+        }
+    }
+
+    this->RGE_Moving_Object::rotate(rotate_delta);
 }
 
-// TODO: STUB - Full terrain stamping parity pending asm-guided tile footprint audit.
-// Source of truth: t_b_obj.cpp.decomp @ 0x004C9370
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9230
 void TRIBE_Building_Object::lay_down_impassable_terrain() {
+    if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr || this->master_obj == nullptr) {
+        return;
+    }
+    if (*reinterpret_cast<unsigned short*>(reinterpret_cast<char*>(this->master_obj) + 0x174) <= 0x7FFF) {
+        return;
+    }
+
+    RGE_Map* map = this->owner->world->map;
+    const float half_w = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x30);
+    const float half_h = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x34);
+
+    short min_x = (short)(this->world_x - half_w);
+    short max_x = (short)((this->world_x + half_w) - 10.0f);
+    short min_y = (short)(this->world_y - half_h);
+    short max_y = (short)((this->world_y + half_h) - 10.0f);
+
+    if (min_x < 0) {
+        min_x = 0;
+    }
+    if (min_y < 0) {
+        min_y = 0;
+    }
+    if ((int)map->map_width <= max_x) {
+        max_x = (short)(map->map_width - 1);
+    }
+    if ((int)map->map_height <= max_y) {
+        max_y = (short)(map->map_height - 1);
+    }
+
+    for (int y = min_y; y <= max_y; ++y) {
+        RGE_Tile* row = map->map_row_offset[y];
+        if (row == nullptr) {
+            continue;
+        }
+
+        for (int x = min_x; x <= max_x; ++x) {
+            unsigned char* terrain_bits = reinterpret_cast<unsigned char*>(&row[x]) + 5;
+            unsigned char value = *terrain_bits;
+            unsigned char terrain_code = value & 0x1F;
+            if (terrain_code == 0) {
+                value = (unsigned char)((value & 0xF0) | 0x10);
+            } else if (terrain_code == 1) {
+                value = (unsigned char)((value & 0xEF) | 0x0F);
+            } else if (terrain_code == 6) {
+                value = (unsigned char)((value & 0xEE) | 0x0E);
+            }
+            *terrain_bits = value;
+        }
+    }
 }
 
-// TODO: STUB - Full terrain restore parity pending asm-guided tile footprint audit.
-// Source of truth: t_b_obj.cpp.decomp @ 0x004C93F0
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9360
 void TRIBE_Building_Object::lay_down_passable_terrain() {
+    if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr || this->master_obj == nullptr) {
+        return;
+    }
+    if (*reinterpret_cast<unsigned short*>(reinterpret_cast<char*>(this->master_obj) + 0x174) <= 0x7FFF) {
+        return;
+    }
+
+    RGE_Map* map = this->owner->world->map;
+    const float half_w = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x30);
+    const float half_h = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x34);
+
+    short min_x = (short)(this->world_x - half_w);
+    short max_x = (short)((this->world_x + half_w) - 10.0f);
+    short min_y = (short)(this->world_y - half_h);
+    short max_y = (short)((this->world_y + half_h) - 10.0f);
+
+    if (min_x < 0) {
+        min_x = 0;
+    }
+    if (min_y < 0) {
+        min_y = 0;
+    }
+    if ((int)map->map_width <= max_x) {
+        max_x = (short)(map->map_width - 1);
+    }
+    if ((int)map->map_height <= max_y) {
+        max_y = (short)(map->map_height - 1);
+    }
+
+    for (int y = min_y; y <= max_y; ++y) {
+        RGE_Tile* row = map->map_row_offset[y];
+        if (row == nullptr) {
+            continue;
+        }
+
+        for (int x = min_x; x <= max_x; ++x) {
+            unsigned char* terrain_bits = reinterpret_cast<unsigned char*>(&row[x]) + 5;
+            unsigned char value = *terrain_bits;
+            unsigned char terrain_code = value & 0x1F;
+            if (terrain_code == 0x0E) {
+                value = (unsigned char)((value & 0xE6) | 0x06);
+            } else if (terrain_code == 0x0F) {
+                value = (unsigned char)((value & 0xE1) | 0x01);
+            } else if (terrain_code == 0x10) {
+                value = (unsigned char)(value & 0xE0);
+            }
+            *terrain_bits = value;
+        }
+    }
 }
 

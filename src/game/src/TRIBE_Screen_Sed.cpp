@@ -6,6 +6,7 @@
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Main_View.h"
 #include "../include/RGE_Map.h"
+#include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_View.h"
 #include "../include/TButtonPanel.h"
@@ -44,39 +45,139 @@ static void set_terrain(TRIBE_Screen_Sed* this_, short param_2);
 static void set_elevation(TRIBE_Screen_Sed* this_, short param_2);
 
 static void init_module_variables(TRIBE_Screen_Sed* this_) {
-    // TODO: STUB (partial): scr_sed2.cpp.decomp has a full initializer; this just nulls fields we use.
-    if (!this_) return;
+    // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004AF320
+    if (this_ == nullptr) return;
 
     this_->background_pic = nullptr;
     this_->main_view = nullptr;
     this_->map_view = nullptr;
     this_->message_panel = nullptr;
     this_->bottom_panel = nullptr;
+    this_->set_player_first_flag = 0;
 
-    for (int i = 0; i < 10; ++i) this_->scenario_mode_button[i] = nullptr;
+    memset(this_->scenario_mode_button, 0, sizeof(this_->scenario_mode_button));
     this_->menu_button = nullptr;
     this_->help_button = nullptr;
 
-    for (int i = 0; i < 3; ++i) {
-        this_->map_type_button[i] = nullptr;
-        this_->map_type_text[i] = nullptr;
-    }
+    memset(this_->map_type_button, 0, sizeof(this_->map_type_button));
+    memset(this_->map_type_text, 0, sizeof(this_->map_type_text));
     this_->map_type_label = nullptr;
+    this_->default_terrain_drop = nullptr;
+    this_->default_terrain_label = nullptr;
+    this_->map_size_drop = nullptr;
+    this_->map_size_label = nullptr;
+    this_->map_style_drop = nullptr;
+    this_->map_style_label = nullptr;
+    this_->map_generating_text = nullptr;
+    this_->random_seed_label = nullptr;
+    this_->random_seed_input = nullptr;
+    this_->random_seed_used_label = nullptr;
+    this_->random_seed_used_text = nullptr;
+    this_->generate_map_button = nullptr;
+    this_->brush_size_label = nullptr;
+    this_->paint_type_label = nullptr;
+    this_->paint_terrain_label = nullptr;
 
-    for (int i = 0; i < 5; ++i) {
-        this_->brush_size_button[i] = nullptr;
-        this_->brush_size_button_label[i] = nullptr;
-    }
-    for (int i = 0; i < 3; ++i) {
-        this_->paint_type_button[i] = nullptr;
-        this_->paint_type_button_label[i] = nullptr;
-    }
+    memset(this_->brush_size_button, 0, sizeof(this_->brush_size_button));
+    memset(this_->brush_size_button_label, 0, sizeof(this_->brush_size_button_label));
+    memset(this_->paint_type_button, 0, sizeof(this_->paint_type_button));
+    memset(this_->paint_type_button_label, 0, sizeof(this_->paint_type_button_label));
 
-    this_->world = nullptr;
+    this_->paint_terrain_list = nullptr;
+    this_->paint_terrain_scrollbar = nullptr;
+    this_->paint_elevation_list = nullptr;
+    this_->paint_elevation_scrollbar = nullptr;
+    this_->player_advance_civilization_drop = nullptr;
+    this_->player_label = nullptr;
+    this_->player_starting_age_label = nullptr;
+    this_->player_build_text = nullptr;
+    this_->player_city_text = nullptr;
+    this_->AiRules_text = nullptr;
+    this_->player_list = nullptr;
+    this_->player_number_list = nullptr;
+
+    memset(this_->player_inven_label, 0, sizeof(this_->player_inven_label));
+    memset(this_->player_inven_input, 0, sizeof(this_->player_inven_input));
+    memset(this_->player_setting_label, 0, sizeof(this_->player_setting_label));
+    memset(this_->player_setting_drop, 0, sizeof(this_->player_setting_drop));
+
+    this_->BuildList = nullptr;
+    this_->CityLayout = nullptr;
+    this_->AiRules = nullptr;
+    this_->unit_player_list = nullptr;
+    memset(this_->unit_mode_select, 0, sizeof(this_->unit_mode_select));
+    memset(this_->unit_mode_select_label, 0, sizeof(this_->unit_mode_select_label));
+    this_->unit_list = nullptr;
+    this_->unit_scrollbar = nullptr;
     this_->unit_list_info = nullptr;
     this_->button_unit_pics = nullptr;
-    for (int i = 0; i < 5; ++i) this_->button_bldg_pics[i] = nullptr;
+    memset(this_->button_bldg_pics, 0, sizeof(this_->button_bldg_pics));
     this_->object_panel = nullptr;
+    this_->unit_list_size = 0;
+
+    memset(this_->victory_cond_on, 0, sizeof(this_->victory_cond_on));
+    memset(this_->victory_and_or, 0, sizeof(this_->victory_and_or));
+    this_->victory_condition_label = nullptr;
+    this_->victory_amount_label = nullptr;
+    this_->victory_long_label = nullptr;
+    memset(this_->victory_text_and_or, 0, sizeof(this_->victory_text_and_or));
+    this_->victory_label_conquest = nullptr;
+    this_->victory_label_explore = nullptr;
+    this_->victory_label_explore_percent = nullptr;
+    this_->victory_label_ruins = nullptr;
+    this_->victory_label_artifacts = nullptr;
+    this_->victory_label_discoveries = nullptr;
+    this_->victory_label_gold = nullptr;
+    this_->victory_condition_explore = nullptr;
+    this_->victory_condition_ruins = nullptr;
+    this_->victory_condition_artifacts = nullptr;
+    this_->victory_condition_discoveries = nullptr;
+    this_->victory_condition_gold = nullptr;
+    memset(this_->victory_cond_type_label, 0, sizeof(this_->victory_cond_type_label));
+    memset(this_->victory_cond_type, 0, sizeof(this_->victory_cond_type));
+    this_->victory_score_label = nullptr;
+    this_->victory_score = nullptr;
+    this_->victory_time_label = nullptr;
+    this_->victory_time = nullptr;
+    memset(this_->victory_button, 0, sizeof(this_->victory_button));
+    this_->victory_drop_down = nullptr;
+    this_->victory_object_list = nullptr;
+    this_->victory_player_list = nullptr;
+    this_->victory_enemy_player_list = nullptr;
+    this_->victory_attribute_list = nullptr;
+    this_->victory_ages_list = nullptr;
+    this_->victory_tech_list = nullptr;
+    this_->victory_button_set_object = nullptr;
+    this_->victory_button_set_destination = nullptr;
+    this_->victory_button_go_to_dest = nullptr;
+    this_->victory_condition_text = nullptr;
+    this_->victory_condition_type = nullptr;
+    this_->victory_amount_text = nullptr;
+    this_->victory_which_enemy_text = nullptr;
+    this_->victory_amount_input = nullptr;
+    this_->victory_object_scrollbar = nullptr;
+
+    this_->message_input = nullptr;
+    memset(this_->message_button, 0, sizeof(this_->message_button));
+    memset(this_->message_button_label, 0, sizeof(this_->message_button_label));
+    this_->current_message = 0;
+
+    memset(this_->cinematic_label, 0, sizeof(this_->cinematic_label));
+    memset(this_->cinematic_input, 0, sizeof(this_->cinematic_input));
+    memset(this_->options_label, 0, sizeof(this_->options_label));
+    memset(this_->options_button, 0, sizeof(this_->options_button));
+    this_->options_player_list = nullptr;
+    this_->options_disable_tech_text = nullptr;
+    memset(this_->options_disable_button, 0, sizeof(this_->options_disable_button));
+    memset(this_->options_disable_text, 0, sizeof(this_->options_disable_text));
+
+    memset(this_->Diplomacy_opponent_label, 0, sizeof(this_->Diplomacy_opponent_label));
+    memset(this_->Diplomacy_player_text, 0, sizeof(this_->Diplomacy_player_text));
+    this_->Diplomacy_player_list = nullptr;
+    memset(this_->Diplomacy_status_label, 0, sizeof(this_->Diplomacy_status_label));
+    memset(this_->Diplomacy_friend_box, 0, sizeof(this_->Diplomacy_friend_box));
+    memset(this_->Diplomacy_AlliedVictory, 0, sizeof(this_->Diplomacy_AlliedVictory));
+    this_->world = nullptr;
 }
 
 static void set_player_active(TRIBE_Screen_Sed* this_, short player_num, int active) {
@@ -347,18 +448,73 @@ static void set_paint_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::PaintType 
     if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
 }
 
-static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char /*param_2*/, unsigned char /*param_3*/) {
-    // TODO: STUB (partial). Source of truth: scr_sed.cpp.decomp @ 0x004AAE20
-    if (!this_) return;
+static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char save_current, unsigned char load_selected) {
+    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AAE20
+    if (this_ == nullptr || this_->world == nullptr || this_->world->scenario == nullptr || rge_base_game == nullptr) return;
+
+    const int current_index = (this_->player_num > 0) ? (this_->player_num - 1) : 0;
+    RGE_Player* current_player = rge_base_game->get_player();
+    if (current_player != nullptr) current_player->unselect_object();
+
+    if (save_current != 0) {
+        const int food = (this_->player_inven_input[0] != nullptr) ? atoi(this_->player_inven_input[0]->currentLine()) : 0;
+        const int wood = (this_->player_inven_input[1] != nullptr) ? atoi(this_->player_inven_input[1]->currentLine()) : 0;
+        const int stone = (this_->player_inven_input[2] != nullptr) ? atoi(this_->player_inven_input[2]->currentLine()) : 0;
+        const int gold = (this_->player_inven_input[3] != nullptr) ? atoi(this_->player_inven_input[3]->currentLine()) : 0;
+        ((T_Scenario*)this_->world->scenario)->Set_player_Food(current_index, food);
+        ((T_Scenario*)this_->world->scenario)->Set_player_Wood(current_index, wood);
+        ((T_Scenario*)this_->world->scenario)->Set_player_Stone(current_index, stone);
+        ((T_Scenario*)this_->world->scenario)->Set_player_Gold(current_index, gold);
+
+        if (this_->player_inven_input[4] != nullptr) this_->world->scenario->SetPlayerName(current_index, this_->player_inven_input[4]->currentLine());
+        if (this_->player_setting_drop[0] != nullptr) this_->world->scenario->Set_player_Type(current_index, this_->player_setting_drop[0]->currentLineNumber());
+        if (this_->player_setting_drop[1] != nullptr) this_->world->scenario->Set_player_Civ(current_index, this_->player_setting_drop[1]->currentLineNumber() + 1);
+        if (this_->AiRules != nullptr) this_->world->scenario->Set_player_AI(current_index, this_->AiRules->currentLine(), 0);
+        if (this_->BuildList != nullptr) this_->world->scenario->Set_BuildList(current_index, this_->BuildList->currentLine(), 0);
+        if (this_->CityLayout != nullptr) this_->world->scenario->Set_CityPlan(current_index, this_->CityLayout->currentLine(), 0);
+    }
+
     this_->player_num = player_num;
+    if (player_num <= 0) return;
+
+    const int new_index = player_num - 1;
+    if (this_->player_list != nullptr) this_->player_list->set_line(new_index);
+    rge_base_game->set_player(player_num);
+
+    if (load_selected != 0) {
+        char buffer[30];
+        sprintf(buffer, "%d", ((T_Scenario*)this_->world->scenario)->Get_player_Food(new_index));
+        if (this_->player_inven_input[0] != nullptr) this_->player_inven_input[0]->set_text(buffer);
+        sprintf(buffer, "%d", ((T_Scenario*)this_->world->scenario)->Get_player_Wood(new_index));
+        if (this_->player_inven_input[1] != nullptr) this_->player_inven_input[1]->set_text(buffer);
+        sprintf(buffer, "%d", ((T_Scenario*)this_->world->scenario)->Get_player_Stone(new_index));
+        if (this_->player_inven_input[2] != nullptr) this_->player_inven_input[2]->set_text(buffer);
+        sprintf(buffer, "%d", ((T_Scenario*)this_->world->scenario)->Get_player_Gold(new_index));
+        if (this_->player_inven_input[3] != nullptr) this_->player_inven_input[3]->set_text(buffer);
+        if (this_->player_inven_input[4] != nullptr) this_->player_inven_input[4]->set_text(this_->world->scenario->GetPlayerName(new_index));
+        if (this_->player_setting_drop[0] != nullptr) this_->player_setting_drop[0]->setCurrentLineNumber(this_->world->scenario->Get_player_Type(new_index));
+        if (this_->player_setting_drop[1] != nullptr) this_->player_setting_drop[1]->setCurrentLineNumber(this_->world->scenario->Get_player_Civ(new_index) - 1);
+    }
 }
 
 static void set_unit_player(TRIBE_Screen_Sed* this_, short player_num) {
-    // TODO: STUB (partial). Source of truth: scr_sed.cpp.decomp @ 0x004AB300
-    if (!this_) return;
-    if (this_->unit_player_list) {
-        this_->unit_player_list->set_line(player_num);
+    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB300
+    if (this_ == nullptr || rge_base_game == nullptr) return;
+
+    rge_base_game->set_player(player_num);
+    this_->player_num = player_num;
+
+    if (this_->main_view != nullptr) ((RGE_View*)this_->main_view)->set_player(rge_base_game->get_player());
+    if (this_->map_view != nullptr) ((RGE_Diamond_Map*)this_->map_view)->set_player(rge_base_game->get_player());
+    if (this_->unit_player_list != nullptr) this_->unit_player_list->setCurrentLineNumber(player_num);
+    if (this_->unit_list != nullptr) this_->unit_list->empty_list();
+
+    if (this_->unit_list_info != nullptr) {
+        free(this_->unit_list_info);
+        this_->unit_list_info = nullptr;
     }
+
+    this_->unit_list_size = 0;
 }
 
 static void set_message_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::MessageType param_1, int param_2) {
@@ -370,9 +526,14 @@ static void set_message_type(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::MessageT
 }
 
 static void set_scenario_mode(TRIBE_Screen_Sed* this_, TRIBE_Screen_Sed::ScenarioMode param_1) {
-    // TODO: STUB (partial). Source of truth: scr_sed.cpp.decomp @ 0x004A9CC0
+    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A9CC0
     if (!this_) return;
+    if (param_1 == TRIBE_Screen_Sed::ScenarioModeSave) return;
+
+    this_->valid_save_spot_flag = 0;
     this_->scenario_mode = param_1;
+    const int index = (int)param_1 - (int)TRIBE_Screen_Sed::ScenarioModeMap;
+    if (index >= 0 && index < 10 && this_->scenario_mode_button[index]) this_->scenario_mode_button[index]->set_radio_button();
     if (this_->bottom_panel) this_->bottom_panel->set_redraw(TPanel::Redraw);
 }
 
@@ -455,7 +616,9 @@ static int create_list(TRIBE_Screen_Sed* this_, TPanel* param_2, TListPanel** pa
 }
 
 static int FUN_004aa6e6() {
-    // TODO: STUB — decomp output corrupted/unreadable at this offset (scr_sed.cpp.decomp @ 0x004AA6E6)
+    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AA6E6
+    if (rge_base_game == nullptr) return 0;
+    rge_base_game->set_game_mode(8, rge_base_game->sub_game_mode);
     return 0;
 }
 
@@ -465,7 +628,7 @@ static void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
 }
 
 static int FUN_004aab4a() {
-    // TODO: STUB — decomp output corrupted/unreadable at this offset (scr_sed.cpp.decomp @ 0x004AAB4A)
+    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AAB4A (bad instruction data)
     return 0;
 }
 
@@ -504,12 +667,12 @@ static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
 }
 
 static int FUN_004abc31() {
-    // TODO: STUB — decomp output corrupted/unreadable at this offset (scr_sed.cpp.decomp @ 0x004ABC31)
+    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ABC31 (corrupted control flow)
     return 0;
 }
 
 static int FUN_004ad06e() {
-    // TODO: STUB — decomp output corrupted/unreadable at this offset (scr_sed.cpp.decomp @ 0x004AD06E)
+    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD06E (corrupted control flow)
     return 0;
 }
 
@@ -597,7 +760,7 @@ static char* scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
 }
 
 static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int is_multi_player, int param_4, int param_5, int param_6, int show_status) {
-    // TODO: STUB (partial). Source of truth: scr_sed.cpp.decomp @ 0x004AD340
+    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD340
     (void)is_multi_player;
     (void)param_4;
     (void)param_5;
@@ -625,6 +788,14 @@ static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int
 
     if (scenario_filename != nullptr && this_->world && this_->world->scenario) {
         this_->world->scenario->Set_scenario_name(scenario_filename);
+    }
+    if (this_->player_number_list != nullptr && this_->world && this_->world->scenario) {
+        int active_count = 0;
+        while (active_count < 8) {
+            if (this_->world->scenario->Get_player_Active(active_count) == 0) break;
+            active_count++;
+        }
+        this_->player_number_list->set_line((active_count > 0) ? (active_count - 1) : 0);
     }
     if (show_status != 0) {
         ((TRIBE_Game*)rge_base_game)->close_status_message();
@@ -783,16 +954,14 @@ static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned
 }
 
 static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
-    // TODO: STUB (partial): Full parity is scr_sed2.cpp.decomp @ 0x004AF6C0.
+    // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004AF6C0
     if (!this_) return;
 
     // Scenario mode buttons (Map/Terrain/Players/Units/Diplomacy/Individual Victory/Global Victory/Options/Messages/Cinematics)
     const long mode_ids[10] = { 0x271a, 0x271b, 0x271c, 0x271d, 0x2722, 0x271e, 0x2723, 0x2721, 0x271f, 0x2720 };
     for (int i = 0; i < 10; ++i) {
         (void)this_->create_button((TPanel*)this_, &this_->scenario_mode_button[i], mode_ids[i], 0, 0, 0, 0, 0, 10, 1, 0);
-        if (this_->scenario_mode_button[i]) {
-            this_->scenario_mode_button[i]->set_z_order('\x01', 0);
-        }
+        if (this_->scenario_mode_button[i]) this_->scenario_mode_button[i]->set_active(1);
     }
 
     (void)this_->create_button((TPanel*)this_, &this_->menu_button, 0x2724, 0, 0, 0, 0, 0, 10, 1, 0);
@@ -800,25 +969,17 @@ static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
 }
 
 static void position_panels(TRIBE_Screen_Sed* this_) {
-    // TODO: STUB (partial): Full parity is scr_sed2.cpp.decomp @ 0x004B29E0.
-    if (!this_ || !rge_base_game || !rge_base_game->draw_area) return;
+    // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004B1A50
+    if (this_ == nullptr || this_->main_view == nullptr) return;
 
-    const long screen_w = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->main_wid : rge_base_game->draw_area->Width;
-    const long screen_h = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->main_hgt : rge_base_game->draw_area->Height;
-    const long bottom_h = 0xA1; // matches common original UI split.
+    const long width = this_->width();
+    const long height = this_->height();
+    const long bottom_height = 0x89;
 
-    if (this_->bottom_panel) {
-        this_->bottom_panel->set_rect(0, screen_h - bottom_h, screen_w, bottom_h);
-    }
-    if (this_->main_view) {
-        ((TPanel*)this_->main_view)->set_rect(0, 0, screen_w, screen_h - bottom_h);
-    }
-    if (this_->map_view) {
-        ((TPanel*)this_->map_view)->set_rect(screen_w - 0xA1, 0, 0xA1, 0xA1);
-    }
-    if (this_->message_panel) {
-        ((TPanel*)this_->message_panel)->set_rect(0, 0, screen_w - 0xA1, 0x28);
-    }
+    if (this_->bottom_panel != nullptr) this_->bottom_panel->set_rect(0, height - bottom_height, width, bottom_height);
+    if (this_->main_view != nullptr) ((TPanel*)this_->main_view)->set_rect(0, 0, width, height - bottom_height);
+    if (this_->map_view != nullptr) ((TPanel*)this_->map_view)->set_rect(width - 0x87, 0, 0x87, 0x87);
+    if (this_->message_panel != nullptr) ((TPanel*)this_->message_panel)->set_rect(0, 0, width - 0x87, 0x18);
 }
 
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
@@ -917,7 +1078,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
 
     create_all_buttons_etc(this);
 
-    // TODO: STUB - Best-effort processing; replace with strict scr_sed parity for player-state/name flow.
+    // Decomp transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0 (player-state/name flow)
     int player_num_line = 1;
     if (scenario_name == nullptr || *scenario_name == '\0') {
         set_player_active(this, 0, 1);

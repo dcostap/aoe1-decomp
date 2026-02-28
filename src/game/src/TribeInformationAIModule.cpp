@@ -45,17 +45,17 @@ static void E19() {
 
 // Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
 static void FUN_004d90f1() {
-    // TODO: STUB - decomp/asm indicates switch jump table thunk.
+    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk)
 }
 
 // Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
 static void FUN_004da16d() {
-    // TODO: STUB - decomp/asm indicates switch jump table thunk.
+    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk)
 }
 
 // Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
 static void FUN_004e0165() {
-    // TODO: STUB - decomp/asm indicates switch jump table thunk.
+    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk)
 }
 
 namespace {

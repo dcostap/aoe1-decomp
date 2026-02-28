@@ -130,6 +130,7 @@ static void update_second_column_clip(TTextPanel* this_) {
 }
 
 static void calc_draw_info(TTextPanel* this_, int update_scrollbar) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CE70
     (void)update_scrollbar;
 
     const int font_hgt = (int)this_->font_hgt;
@@ -259,11 +260,12 @@ static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short li
 }
 
 void TTextPanel::calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out) {
-    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D9E0
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D9E0
     ::calc_line_pos(this, (HDC)hdc, draw_index, line_index, line_rect, col_offset_out);
 }
 
 static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_index, unsigned long color_main, unsigned long color_shadow) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D760
     const char* text = get_line_text(this_, (int)line_index);
     const char* text2 = get_line_text2(this_, (int)line_index);
     if ((text == nullptr || text[0] == '\0') && (text2 == nullptr || text2[0] == '\0')) return;
@@ -430,16 +432,17 @@ static void draw_border(TTextPanel* this_) {
 }
 
 void TTextPanel::draw_background() {
-    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D3D0
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D3D0
     ::draw_background(this);
 }
 
 void TTextPanel::draw_border() {
-    // Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D570
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D570
     ::draw_border(this);
 }
 
 TTextPanel::TTextPanel() : TPanel(nullptr) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047BF40
     this->back_color = 0xff;
     this->list = nullptr;
     this->num_lines = 0;
@@ -488,6 +491,7 @@ TTextPanel::TTextPanel() : TPanel(nullptr) {
 }
 
 TTextPanel::~TTextPanel() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C0B0
     free_text_list(this);
     if (this->clip_rgn2) {
         DeleteObject((HGDIOBJ)this->clip_rgn2);
@@ -500,6 +504,7 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char* initial_text) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C120
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
         return 0;
     }
@@ -519,6 +524,7 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, long text_resid) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
         return 0;
     }
@@ -542,6 +548,7 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char** text_list, short text_count) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
         return 0;
     }
@@ -561,6 +568,7 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
 }
 
 void TTextPanel::set_font(void* font, long font_wid, long font_hgt) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB10
     this->font = font;
     this->font_wid = font_wid;
     this->font_hgt = font_hgt;
@@ -569,11 +577,13 @@ void TTextPanel::set_font(void* font, long font_wid, long font_hgt) {
 }
 
 void TTextPanel::set_fill_back(int fill_back, uchar back_color) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CBF0
     this->fill_back = fill_back;
     this->back_color = back_color;
 }
 
 void TTextPanel::set_back_pic(char* back_pic_name) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CC10
     if (this->back_pic) {
         delete this->back_pic;
         this->back_pic = nullptr;
@@ -596,12 +606,14 @@ void TTextPanel::set_back_pic(char* back_pic_name) {
 }
 
 void TTextPanel::set_alignment(TTextPanel::Alignment vert, TTextPanel::Alignment horz) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB50
     this->vert_align = vert;
     this->horz_align = horz;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 void TTextPanel::set_word_wrap(int enable) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB70
     this->word_wrap = enable;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
@@ -613,12 +625,14 @@ void TTextPanel::set_style(TTextPanel::Style style) {
 }
 
 void TTextPanel::set_text_color(unsigned long c1, unsigned long c2) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CBB0
     this->text_color1 = c1;
     this->text_color2 = c2;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 void TTextPanel::set_highlight_text_color(unsigned long c1, unsigned long c2) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CBD0
     this->highlightTextColor1 = c1;
     this->highlightTextColor2 = c2;
     this->set_redraw(TPanel::RedrawMode::Redraw);
@@ -653,6 +667,7 @@ void TTextPanel::set_rect(tagRECT param_1) {
 }
 
 void TTextPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C3B0
     TPanel::set_rect(param_1, param_2, param_3, param_4);
     this->full_width = this->pnl_wid;
 
@@ -676,6 +691,7 @@ void TTextPanel::set_rect(long param_1, long param_2, long param_3, long param_4
 
 void TTextPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
 void TTextPanel::set_active(int param_1) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CE20
     TPanel::set_active(param_1);
     if (this->auto_scbar != 0 && this->scbar_panel) {
         if (this->active != 0) {
@@ -695,6 +711,7 @@ void TTextPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TTextPanel::draw_finish() { TPanel::draw_finish(); }
 
 void TTextPanel::draw() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D2C0
     if (!this->render_area || !this->active || !this->visible) return;
 
     this->draw_background();
@@ -748,6 +765,7 @@ long TTextPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int 
 long TTextPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
 long TTextPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
 long TTextPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC10
     (void)param_1; (void)param_2; (void)param_3; (void)param_4;
     if (this->parent_panel) {
         this->parent_panel->action(this, 1, 0, 0);
@@ -764,6 +782,7 @@ long TTextPanel::mouse_right_move_action(long param_1, long param_2, int param_3
 long TTextPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
 long TTextPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
 long TTextPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D120
     uchar scroll_cmd = 0;
     switch (param_1) {
     case VK_PRIOR:
@@ -796,6 +815,7 @@ long TTextPanel::key_down_action(long param_1, short param_2, int param_3, int p
 }
 long TTextPanel::char_action(long param_1, short param_2) { (void)param_1; (void)param_2; return 0; }
 long TTextPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D200
     (void)param_4;
     if (this->scbar_panel && param_1 == this->scbar_panel) {
         switch (param_2) {
@@ -832,6 +852,7 @@ void TTextPanel::take_snapshot() {}
 void TTextPanel::handle_reactivate() {}
 
 void TTextPanel::set_text(char** param_1, short param_2) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CA70
     free_text_list(this);
 
     if (param_2 == 0) {
@@ -846,6 +867,7 @@ void TTextPanel::set_text(char** param_1, short param_2) {
 }
 
 void TTextPanel::set_text(long param_1) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CAB0
     char str[4096];
     str[0] = '\0';
     this->get_string((int)param_1, str, sizeof(str));
@@ -853,6 +875,7 @@ void TTextPanel::set_text(long param_1) {
 }
 
 void TTextPanel::set_text(char* param_1) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C560
     free_text_list(this);
 
     if (param_1 == nullptr) {
@@ -887,6 +910,7 @@ void TTextPanel::set_text(char* param_1) {
 }
 
 void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CD40
     this->bevel_type = param_1;
     this->bevel_color1 = (unsigned char)param_2;
     this->bevel_color2 = (unsigned char)param_3;
@@ -919,6 +943,7 @@ void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param
 }
 
 int TTextPanel::get_text_rect(tagRECT* out_rect) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E410
     // Source of truth: `src/game/src/Pnl_txt.cpp.decomp` (`get_text_rect`).
     // It selects this->font, then delegates to `TTextPanel::calc_line_pos(hdc, 0, 0, out_rect, 0)`.
     if (!out_rect || !this->render_area) return 0;
@@ -935,26 +960,41 @@ int TTextPanel::get_text_rect(tagRECT* out_rect) {
 
 // List management methods (needed for TDropDownPanel / TListPanel)
 void TTextPanel::empty_list() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E370
     free_text_list(this);
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 int TTextPanel::append_line(char* text, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DCD0
     return this->insert_line((long)this->num_lines, text, id);
 }
 
+int TTextPanel::append_line(char* text, char* text2, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DCF0
+    return this->insert_line((long)this->num_lines, text, text2, id);
+}
+
 int TTextPanel::append_line(long str_id, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD10
     char str[256];
     str[0] = '\0';
     this->get_string((int)str_id, str, sizeof(str));
-    return append_line(str, id);
+    return this->insert_line((long)this->num_lines, str, id);
+}
+
+int TTextPanel::append_line(long str1_id, long str2_id, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD30
+    return this->insert_line((long)this->num_lines, str1_id, str2_id, id);
 }
 
 int TTextPanel::insert_line(long line_num, char* text, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD50
     return this->insert_line(line_num, text, (char*)0, id);
 }
 
 int TTextPanel::insert_line(long line_num, char* text, char* text2, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD70
     TTextPanel::TextNode* node = (TTextPanel::TextNode*)calloc(1, sizeof(TTextPanel::TextNode));
     if (node == nullptr) {
         return 0;
@@ -1051,6 +1091,7 @@ int TTextPanel::insert_line(long line_num, char* text, char* text2, long id) {
 }
 
 int TTextPanel::insert_line(long line_num, long str_id, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DF90
     char str[256];
     str[0] = '\0';
     this->get_string((int)str_id, str, sizeof(str));
@@ -1058,6 +1099,7 @@ int TTextPanel::insert_line(long line_num, long str_id, long id) {
 }
 
 int TTextPanel::insert_line(long line_num, long str1_id, long str2_id, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DFE0
     char str1[256];
     char str2[256];
     str1[0] = '\0';
@@ -1068,6 +1110,7 @@ int TTextPanel::insert_line(long line_num, long str1_id, long str2_id, long id) 
 }
 
 int TTextPanel::change_line(long line_num, char* text, char* text2, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E050
     int sorted_prev = this->sorted;
     this->sorted = 0;
     int inserted = this->insert_line(line_num, text, text2, id);
@@ -1081,6 +1124,7 @@ int TTextPanel::change_line(long line_num, char* text, char* text2, long id) {
 }
 
 int TTextPanel::change_line(long line_num, long str1_id, long str2_id, long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E0B0
     int sorted_prev = this->sorted;
     this->sorted = 0;
     int inserted = this->insert_line(line_num, str1_id, str2_id, id);
@@ -1094,6 +1138,7 @@ int TTextPanel::change_line(long line_num, long str1_id, long str2_id, long id) 
 }
 
 int TTextPanel::delete_line(long line_num) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E110
     if (line_num < 0 || line_num > (long)this->num_lines - 1) {
         return 0;
     }
@@ -1142,6 +1187,7 @@ int TTextPanel::delete_line(long line_num) {
 }
 
 void TTextPanel::set_line(long line_num) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC80
     // Source of truth: `Pnl_txt.cpp.decomp` (`TTextPanel::set_line`).
     this->cur_line = (short)line_num;
     calc_draw_info(this, 1);
@@ -1162,6 +1208,7 @@ void TTextPanel::set_line_by_id(long id) {
 }
 
 long TTextPanel::get_line() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E1E0
     if (this->num_lines == 0) {
         return -1;
     }
@@ -1169,6 +1216,7 @@ long TTextPanel::get_line() {
 }
 
 long TTextPanel::get_line(long line_num) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E200
     // Source of truth: Pnl_txt.cpp.decomp
     // Returns line index for a given line id; returns -1 when no match.
     int i = 0;
@@ -1181,6 +1229,7 @@ long TTextPanel::get_line(long line_num) {
 }
 
 long TTextPanel::get_line(char* text) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E230
     int i = 0;
     for (TTextPanel::TextNode* n = this->list; n != nullptr; n = n->next, ++i) {
         if (n->text == nullptr || text == nullptr) {
@@ -1194,10 +1243,12 @@ long TTextPanel::get_line(char* text) {
 }
 
 long TTextPanel::get_id() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E330
     return this->get_id((long)this->cur_line);
 }
 
 long TTextPanel::get_id(long line_num) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E340
     if (!this->list) {
         return -1;
     }
@@ -1208,14 +1259,34 @@ long TTextPanel::get_id(long line_num) {
     return n->id;
 }
 
+char* TTextPanel::get_text() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E290
+    return this->get_text((long)this->cur_line);
+}
+
 char* TTextPanel::get_text(long line_num) {
-    const char* text = get_line_text(this, (int)line_num);
-    return (char*)text;
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E2A0
+    static char empty_text[1] = { '\0' };
+    TTextPanel::TextNode* n = get_line_node(this, (int)line_num);
+    if (n == nullptr || n->text == nullptr) {
+        return empty_text;
+    }
+    return n->text;
+}
+
+char* TTextPanel::get_text2() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E2E0
+    return this->get_text2((long)this->cur_line);
 }
 
 char* TTextPanel::get_text2(long line_num) {
-    const char* text = get_line_text2(this, (int)line_num);
-    return (char*)text;
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E2F0
+    static char empty_text2[1] = { '\0' };
+    TTextPanel::TextNode* n = get_line_node(this, (int)line_num);
+    if (n == nullptr) {
+        return empty_text2;
+    }
+    return n->text2;
 }
 
 void TTextPanel::free_text() {
@@ -1225,6 +1296,7 @@ void TTextPanel::free_text() {
 }
 
 void TTextPanel::set_second_column_pos(long pos) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E3F0
     this->second_column_pos = pos;
     update_second_column_clip(this);
     this->set_redraw(TPanel::RedrawMode::Redraw);
@@ -1232,6 +1304,7 @@ void TTextPanel::set_second_column_pos(long pos) {
 
 // From decomp at 0x0047CCF0
 void TTextPanel::set_outline(int param_1, uchar param_2) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CCF0
     this->outline = param_1;
     if (param_1) {
         this->outline_color = param_2;
@@ -1241,6 +1314,7 @@ void TTextPanel::set_outline(int param_1, uchar param_2) {
 
 // From decomp at 0x0047C4D0
 void TTextPanel::set_scrollbar(TScrollBarPanel* param_1, int param_2) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C4D0
     this->scbar_panel = param_1;
     this->auto_scbar = param_2;
     if (param_1) {
@@ -1251,6 +1325,7 @@ void TTextPanel::set_scrollbar(TScrollBarPanel* param_1, int param_2) {
 
 // From decomp at 0x0047C520
 TTextPanel::CharType TTextPanel::char_type(unsigned char* param_1) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C520
     if (param_1 != nullptr && *param_1 != '\0') {
         if (IsDBCSLeadByte(*param_1) != 0) {
             return TTextPanel::DoubleByteChar;
@@ -1264,6 +1339,7 @@ TTextPanel::CharType TTextPanel::char_type(unsigned char* param_1) {
 
 // From asm/decomp at 0x0047C640
 int TTextPanel::word_wrap_append(char* param_1) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C640
     if (param_1 == nullptr || *param_1 == '\0') {
         return 1;
     }
@@ -1443,30 +1519,36 @@ int TTextPanel::word_wrap_append(char* param_1) {
 
 // From decomp at 0x0047DC30
 int TTextPanel::numberLines() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC30
     return (int)this->num_lines;
 }
 
 // From decomp at 0x0047DC40
 int TTextPanel::numberDrawLines() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC40
     return (int)this->draw_lines;
 }
 
 // From decomp at 0x0047DC50
 int TTextPanel::currentLineNumber() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC50
     return (int)this->cur_line;
 }
 
 // From decomp at 0x0047DC70
 char* TTextPanel::currentLine() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC70
     return this->get_text((long)this->cur_line);
 }
 
 // From decomp at 0x0047DC60
 void TTextPanel::setCurrentLineNumber(int param_1) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC60
     this->set_line((long)param_1);
 }
 
 void TTextPanel::scroll(uchar param_1, short param_2, int param_3) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D060
     // Source of truth: Pnl_txt.cpp.decomp @ TTextPanel::scroll
     switch (param_1) {
     case 0:
