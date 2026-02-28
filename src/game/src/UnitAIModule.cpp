@@ -27,11 +27,9 @@
 #include <new>
 #include <string.h>
 
-Visible_Unit_Manager* VisibleUnitManager = nullptr;
-VISIBLE_UNIT_REC* VisibleUnitList[5] = {};
-int VisibleUnitList_Size[5] = {};
-int DAT_0087d7cc[5] = {};
-int DAT_0087d7d8[5] = {};
+// DAT_0087d7cc and DAT_0087d7d8 are individual ints in globals.cpp;
+// code accesses consecutive memory via pointer arithmetic (&DAT_0087d7cc)[i].
+// VisibleUnitManager, VisibleUnitList, VisibleUnitList_Size are defined in globals.cpp.
 int* DAT_0087d7e4[5] = {};
 VISIBLE_UNIT_REC* DAT_0087d7f0[5] = {};
 int taskedThisUpdate = 0;
@@ -45,8 +43,8 @@ int GetVisibleUnits(Visible_Unit_Manager* this_, int param_2, int param_3, int p
     }
     for (int i = 0; i < 5; ++i) {
         VisibleUnitList_Size[i] = 0;
-        DAT_0087d7cc[i] = 0;
-        DAT_0087d7d8[i] = 0;
+        (&DAT_0087d7cc)[i] = 0;
+        (&DAT_0087d7d8)[i] = 0;
     }
     if (param_7 < 1 || param_5 < 0 || param_5 >= this_->Player_Count) {
         return 0;

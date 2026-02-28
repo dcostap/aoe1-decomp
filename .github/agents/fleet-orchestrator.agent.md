@@ -250,10 +250,21 @@ send_input(session="worker-N", input="Get-Content worker_prompt.txt | codex exec
 6. **Document everything.** Update task statuses with commit hashes.
 7. **Self-improve.** Update `multiple_agents_preset_prompts.md` with lessons learned.
 
+## Prerequisite: Understand Worker Behavior
+
+**Before launching any workers, read `.github/agents/decomp-worker.agent.md`** to understand:
+- How workers branch, merge, and push to master (they push directly — this is by design)
+- The `ask_user` report format they use when done
+- What "transliteration" means to them vs just adding markers
+- Their git workflow (task branches → merge to master → push)
+
+This prevents misinterpreting worker output or being surprised by their git operations.
+
 ## Quick Start
 
 1. Set reasoning_effort to high (see Setup section)
-2. Read `multiple_agents_task_queue.md` — find next 3 unassigned tasks
+2. **Read `.github/agents/decomp-worker.agent.md`** to understand worker behavior
+3. Read `multiple_agents_task_queue.md` — find next 3 unassigned tasks
 3. Create 3 terminal sessions in clone folders 1, 2, 3
 4. Sync each clone to latest master
 5. Launch each: `copilot --agent decomp-worker --yolo -s`
