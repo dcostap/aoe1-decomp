@@ -3699,7 +3699,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 ## Task 259 — Dynamic strings + file_stf + zone_map utilities (94 unimplemented functions)
 - [x] Assigned to agent (worker-1, clone_1, copilot)
 - Status note: Codex hit rate limit at 114k tokens, no code committed. Reassigning to copilot.
-- [ ] Finished
+- [x] Finished
+- Status note: COPILOT RETRY landed as commit `5355f27` (659 insertions). dstring 50 funcs + file_stf + zone_map complete.
 - Goal: Three utility modules have NO implementation at all:
   - dstring.cpp.decomp: 50 functions (dynamic string management — allocation, formatting, concatenation)
   - file_stf.cpp.decomp: 22 functions (file I/O utilities — path handling, buffered reads)
@@ -3827,3 +3828,12 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: corresponding .decomp + .asm files
 - Non-overlap: do NOT touch panel files, command.cpp, AI files, basegame, or tactical AI
 - Done when: all decomp offsets have impl coverage across all 4 modules. Expect 600+ lines.
+## Task 270 — AI Playbook remaining 58 functions (aipbook.cpp.decomp)
+- [x] Assigned to agent (worker-1, clone_1, copilot)
+- [ ] Finished
+- Goal: aipbook.cpp.decomp has 71 functions. AIPlayBook.cpp + TribeAIPlayBook.cpp combined have only 13 offset refs → ~58 missing functions. These are AI strategy/build-order recipe functions (playbook rules, condition evaluation, action execution, playbook loading).
+- Implement: Cross-reference every decomp '// Offset:' against AIPlayBook.cpp and TribeAIPlayBook.cpp. Transliterate every missing function with offset markers.
+- Where: `src/game/src/AIPlayBook.cpp`, `src/game/src/TribeAIPlayBook.cpp` + headers
+- Source of truth: `aipbook.cpp.decomp` + `aipbook.cpp.asm`
+- Non-overlap: do NOT touch UnitAIModule, TacticalAI, TribeBuildAI, command.cpp, or panel files
+- Done when: all 71 decomp offsets have impl coverage. Expect 1000+ lines.

@@ -14,40 +14,37 @@ struct Zone_Queue {
     long y;
 };
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546720
 static uchar zone_pop(Zone_Queue** head, Zone_Queue** tail, long* x, long* y) {
-    Zone_Queue* n = (head != nullptr) ? *head : nullptr;
+    Zone_Queue* n = *head;
     if (n == nullptr) {
         return 0;
     }
-    if (x != nullptr) *x = n->x;
-    if (y != nullptr) *y = n->y;
+    *x = n->x;
+    *y = n->y;
     *head = n->next;
     free(n);
-    if (*head == nullptr && tail != nullptr) {
+    if (*head == nullptr) {
         *tail = nullptr;
     }
     return 1;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546770
 static void zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y) {
-    if (head == nullptr || tail == nullptr) {
-        return;
-    }
     Zone_Queue* n = (Zone_Queue*)calloc(1, sizeof(Zone_Queue));
-    if (n == nullptr) {
-        return;
-    }
-    n->x = x;
-    n->y = y;
     if (*tail != nullptr) {
         (*tail)->next = n;
     }
+    n->x = x;
+    n->y = y;
     *tail = n;
     if (*head == nullptr) {
         *head = n;
     }
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005467B0
 RGE_Zone_Map::RGE_Zone_Map(int param_1, RGE_Map* param_2) {
     this->map = param_2;
     memset(this->numberTilesInZoneValue, 0, sizeof(this->numberTilesInZoneValue));
@@ -57,39 +54,28 @@ RGE_Zone_Map::RGE_Zone_Map(int param_1, RGE_Map* param_2) {
     this->zone_map = nullptr;
     this->zone_map_rows = nullptr;
 
-    if (this->map == nullptr || this->map->map_width <= 0 || this->map->map_height <= 0) {
-        return;
-    }
-
     const long map_w = this->map->map_width;
     const long map_h = this->map->map_height;
     this->zone_map = (uchar*)calloc((size_t)(map_w * map_h), 1);
     this->zone_map_rows = (uchar**)calloc((size_t)map_h, sizeof(uchar*));
-    if (this->zone_map_rows != nullptr && this->zone_map != nullptr) {
-        for (long y = 0; y < map_h; ++y) {
-            this->zone_map_rows[y] = this->zone_map + y * map_w;
-        }
+    for (long y = 0; y < map_h; ++y) {
+        this->zone_map_rows[y] = this->zone_map + y * map_w;
     }
 
     rge_read(param_1, this->zone_info, 0xff);
     rge_read(param_1, this, 0x3fc);
-    if (this->zone_map != nullptr) {
-        rge_read(param_1, this->zone_map, map_w * map_h);
-    }
+    rge_read(param_1, this->zone_map, map_w * map_h);
 
     rge_read(param_1, &this->terrain_passability_rules_num, 4);
     if (this->terrain_passability_rules_num > 0) {
         this->terrain_passability_rules = (float*)calloc((size_t)this->terrain_passability_rules_num, sizeof(float));
-        if (this->terrain_passability_rules != nullptr) {
-            rge_read(param_1, this->terrain_passability_rules, this->terrain_passability_rules_num * (long)sizeof(float));
-        } else {
-            this->terrain_passability_rules_num = 0;
-        }
+        rge_read(param_1, this->terrain_passability_rules, this->terrain_passability_rules_num * (long)sizeof(float));
     } else {
         this->terrain_passability_rules = nullptr;
     }
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005468C0
 RGE_Zone_Map::RGE_Zone_Map(RGE_Map* param_1, float* param_2, long param_3) {
     this->map = param_1;
     memset(this->numberTilesInZoneValue, 0, sizeof(this->numberTilesInZoneValue));
@@ -99,81 +85,49 @@ RGE_Zone_Map::RGE_Zone_Map(RGE_Map* param_1, float* param_2, long param_3) {
     this->zone_map = nullptr;
     this->zone_map_rows = nullptr;
 
-    if (this->map == nullptr || this->map->map_width <= 0 || this->map->map_height <= 0) {
-        return;
-    }
-
     const long map_w = this->map->map_width;
     const long map_h = this->map->map_height;
     this->zone_map = (uchar*)calloc((size_t)(map_w * map_h), 1);
-    if (this->zone_map != nullptr) {
-        memset(this->zone_map, 0xff, (size_t)(map_w * map_h));
-    }
+    memset(this->zone_map, 0xff, (size_t)(map_w * map_h));
     this->zone_map_rows = (uchar**)calloc((size_t)map_h, sizeof(uchar*));
-    if (this->zone_map_rows != nullptr && this->zone_map != nullptr) {
-        for (long y = 0; y < map_h; ++y) {
-            this->zone_map_rows[y] = this->zone_map + y * map_w;
-        }
+    for (long y = 0; y < map_h; ++y) {
+        this->zone_map_rows[y] = this->zone_map + y * map_w;
     }
 
     this->terrain_passability_rules_num = param_3;
+    this->terrain_passability_rules = (float*)calloc((size_t)param_3, sizeof(float));
     if (param_3 > 0) {
-        this->terrain_passability_rules = (float*)calloc((size_t)param_3, sizeof(float));
-        if (this->terrain_passability_rules != nullptr && param_2 != nullptr) {
-            memcpy(this->terrain_passability_rules, param_2, (size_t)param_3 * sizeof(float));
-        }
+        memcpy(this->terrain_passability_rules, param_2, (size_t)param_3 * sizeof(float));
     }
 
     this->do_zone_map();
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005469C0
 RGE_Zone_Map::~RGE_Zone_Map() {
-    if (this->zone_map != nullptr) {
-        free(this->zone_map);
-        this->zone_map = nullptr;
-    }
-    if (this->zone_map_rows != nullptr) {
-        free(this->zone_map_rows);
-        this->zone_map_rows = nullptr;
-    }
-    if (this->terrain_passability_rules != nullptr) {
-        free(this->terrain_passability_rules);
-        this->terrain_passability_rules = nullptr;
-    }
-    this->terrain_passability_rules_num = 0;
+    free(this->zone_map);
+    free(this->zone_map_rows);
+    free(this->terrain_passability_rules);
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546A00
 void RGE_Zone_Map::save(int param_1) {
-    if (this->map == nullptr) {
-        return;
-    }
     rge_write(param_1, this->zone_info, 0xff);
     rge_write(param_1, this, 0x3fc);
-    if (this->zone_map != nullptr) {
-        rge_write(param_1, this->zone_map, this->map->map_height * this->map->map_width);
-    }
+    rge_write(param_1, this->zone_map, this->map->map_height * this->map->map_width);
     rge_write(param_1, &this->terrain_passability_rules_num, 4);
-    if (this->terrain_passability_rules_num > 0 && this->terrain_passability_rules != nullptr) {
+    if (this->terrain_passability_rules_num > 0) {
         rge_write(param_1, this->terrain_passability_rules, this->terrain_passability_rules_num * (int)sizeof(float));
     }
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546A90
 uchar RGE_Zone_Map::do_zone_map() {
-    if (this->map == nullptr || this->zone_map == nullptr || this->zone_map_rows == nullptr ||
-        this->map->map_row_offset == nullptr || this->terrain_passability_rules == nullptr ||
-        this->terrain_passability_rules_num <= 0) {
-        return 0;
-    }
-
     const long map_w = this->map->map_width;
     const long map_h = this->map->map_height;
-    if (map_w <= 0 || map_h <= 0) {
-        return 0;
-    }
 
     memset(this->zone_info, 0xff, sizeof(this->zone_info));
     memset(this->zone_map, 0xff, (size_t)(map_w * map_h));
-    memset(this->numberTilesInZoneValue, 0, sizeof(this->numberTilesInZoneValue));
 
     int zone_id = 0;
     for (long y = 0; y < map_h; ++y) {
@@ -186,7 +140,7 @@ uchar RGE_Zone_Map::do_zone_map() {
             }
             const uchar tt = (uchar)(this->map->map_row_offset[y][x].terrain_type & 0x1f);
             uchar passable = 0;
-            if (tt < (uchar)this->terrain_passability_rules_num && this->terrain_passability_rules[tt] > 0.0f) {
+            if (this->terrain_passability_rules[tt] > 0.0f) {
                 passable = 1;
             }
             this->zone_map_rows[y][x] = (uchar)zone_id;
@@ -197,11 +151,8 @@ uchar RGE_Zone_Map::do_zone_map() {
     return 1;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546BB0
 void RGE_Zone_Map::do_zone_map_area(long param_1, long param_2, uchar param_3, uchar param_4) {
-    if (this->map == nullptr || this->zone_map_rows == nullptr || this->map->map_row_offset == nullptr) {
-        return;
-    }
-
     const long max_x = this->map->map_width - 1;
     const long max_y = this->map->map_height - 1;
     Zone_Queue* queue_head = nullptr;
@@ -216,7 +167,7 @@ void RGE_Zone_Map::do_zone_map_area(long param_1, long param_2, uchar param_3, u
             if (this->zone_map_rows[ny][nx] == 0xff) {
                 const uchar tt = (uchar)(this->map->map_row_offset[ny][nx].terrain_type & 0x1f);
                 uchar passable = 0;
-                if (tt < (uchar)this->terrain_passability_rules_num && this->terrain_passability_rules[tt] > 0.0f) {
+                if (this->terrain_passability_rules[tt] > 0.0f) {
                     passable = 1;
                 }
                 if (passable == param_3) {
@@ -231,7 +182,7 @@ void RGE_Zone_Map::do_zone_map_area(long param_1, long param_2, uchar param_3, u
             if (this->zone_map_rows[ny][nx] == 0xff) {
                 const uchar tt = (uchar)(this->map->map_row_offset[ny][nx].terrain_type & 0x1f);
                 uchar passable = 0;
-                if (tt < (uchar)this->terrain_passability_rules_num && this->terrain_passability_rules[tt] > 0.0f) {
+                if (this->terrain_passability_rules[tt] > 0.0f) {
                     passable = 1;
                 }
                 if (passable == param_3) {
@@ -246,7 +197,7 @@ void RGE_Zone_Map::do_zone_map_area(long param_1, long param_2, uchar param_3, u
             if (this->zone_map_rows[ny][nx] == 0xff) {
                 const uchar tt = (uchar)(this->map->map_row_offset[ny][nx].terrain_type & 0x1f);
                 uchar passable = 0;
-                if (tt < (uchar)this->terrain_passability_rules_num && this->terrain_passability_rules[tt] > 0.0f) {
+                if (this->terrain_passability_rules[tt] > 0.0f) {
                     passable = 1;
                 }
                 if (passable == param_3) {
@@ -261,7 +212,7 @@ void RGE_Zone_Map::do_zone_map_area(long param_1, long param_2, uchar param_3, u
             if (this->zone_map_rows[ny][nx] == 0xff) {
                 const uchar tt = (uchar)(this->map->map_row_offset[ny][nx].terrain_type & 0x1f);
                 uchar passable = 0;
-                if (tt < (uchar)this->terrain_passability_rules_num && this->terrain_passability_rules[tt] > 0.0f) {
+                if (this->terrain_passability_rules[tt] > 0.0f) {
                     passable = 1;
                 }
                 if (passable == param_3) {
@@ -273,14 +224,11 @@ void RGE_Zone_Map::do_zone_map_area(long param_1, long param_2, uchar param_3, u
     } while (zone_pop(&queue_head, &queue_tail, &x, &y) != 0);
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546E50
 RGE_Zone_Map* RGE_Zone_Map::check_info(float* param_1, long param_2) {
     if (param_2 != this->terrain_passability_rules_num) {
         return nullptr;
     }
-    if (param_2 > 0 && (param_1 == nullptr || this->terrain_passability_rules == nullptr)) {
-        return nullptr;
-    }
-
     for (long i = 0; i < param_2; ++i) {
         const int a = (param_1[i] > 0.0f) ? 1 : 0;
         const int b = (this->terrain_passability_rules[i] > 0.0f) ? 1 : 0;
@@ -291,27 +239,18 @@ RGE_Zone_Map* RGE_Zone_Map::check_info(float* param_1, long param_2) {
     return this;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546EB0
 uchar RGE_Zone_Map::get_zone_info(long param_1, long param_2) {
-    if (this->map == nullptr || this->zone_map_rows == nullptr ||
-        param_1 < 0 || param_2 < 0 || param_1 >= this->map->map_width || param_2 >= this->map->map_height) {
-        return 0xff;
-    }
     return this->zone_map_rows[param_2][param_1];
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546ED0
 int RGE_Zone_Map::withinRange(XYPoint param_1, XYPoint param_2, float param_3) {
-    if (this->map == nullptr || this->zone_map_rows == nullptr ||
-        param_1.x < 0 || param_1.y < 0 || param_1.x >= this->map->map_width || param_1.y >= this->map->map_height) {
-        return 0;
-    }
     return this->withinRange(this->zone_map_rows[param_1.y][param_1.x], param_2, param_3);
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00546F00
 int RGE_Zone_Map::withinRange(uchar param_1, XYPoint param_2, float param_3) {
-    if (this->map == nullptr || this->zone_map_rows == nullptr) {
-        return 0;
-    }
-
     int r = (int)param_3;
     int min_x = param_2.x - r;
     int min_y = param_2.y - r;
@@ -335,16 +274,11 @@ int RGE_Zone_Map::withinRange(uchar param_1, XYPoint param_2, float param_3) {
     return 0;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00547000
 int RGE_Zone_Map::numberTilesInZone(uchar param_1) {
     const unsigned int zone = (unsigned int)param_1;
-    if (zone >= 257) {
-        return 0;
-    }
     int cached = this->numberTilesInZoneValue[zone];
     if (cached < 1) {
-        if (this->map == nullptr || this->zone_map_rows == nullptr) {
-            return 0;
-        }
         int count = 0;
         for (long y = 0; y < this->map->map_height; ++y) {
             for (long x = 0; x < this->map->map_width; ++x) {
@@ -359,16 +293,13 @@ int RGE_Zone_Map::numberTilesInZone(uchar param_1) {
     return cached;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00547080
 int RGE_Zone_Map::findClosestPointInTerrainType(
     XYPoint param_1,
     XYPoint* param_2,
     int param_3,
     int param_4,
     int param_5) {
-    if (this->map == nullptr || param_2 == nullptr) {
-        return 0;
-    }
-
     int min_x = param_1.x - param_5;
     int min_y = param_1.y - param_5;
     if (min_x < 0) min_x = 0;
@@ -399,6 +330,7 @@ int RGE_Zone_Map::findClosestPointInTerrainType(
     return (best_d2 != -1) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00547180
 RGE_Zone_Map_List::RGE_Zone_Map_List(int param_1, RGE_Map* param_2) {
     this->zone_maps = nullptr;
     this->zone_map_num = 0;
@@ -407,50 +339,45 @@ RGE_Zone_Map_List::RGE_Zone_Map_List(int param_1, RGE_Map* param_2) {
     rge_read(param_1, &this->zone_map_num, 4);
     if (this->zone_map_num > 0) {
         this->zone_maps = (RGE_Zone_Map**)calloc((size_t)this->zone_map_num, sizeof(RGE_Zone_Map*));
-        if (this->zone_maps != nullptr) {
-            for (long i = 0; i < this->zone_map_num; ++i) {
-                this->zone_maps[i] = new (std::nothrow) RGE_Zone_Map(param_1, this->map);
-            }
-        } else {
-            this->zone_map_num = 0;
+        for (long i = 0; i < this->zone_map_num; ++i) {
+            this->zone_maps[i] = new (std::nothrow) RGE_Zone_Map(param_1, this->map);
         }
     }
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00547240
 RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Map* param_1) {
     this->map = param_1;
     this->zone_maps = nullptr;
     this->zone_map_num = 0;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00547260
 RGE_Zone_Map_List::~RGE_Zone_Map_List() {
     this->delete_zone_maps();
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x00547270
 void RGE_Zone_Map_List::save(int param_1) {
     rge_write(param_1, &this->zone_map_num, 4);
-    if (this->zone_map_num > 0 && this->zone_maps != nullptr) {
+    if (this->zone_map_num > 0) {
         for (long i = 0; i < this->zone_map_num; ++i) {
-            if (this->zone_maps[i] != nullptr) {
-                this->zone_maps[i]->save(param_1);
-            }
+            this->zone_maps[i]->save(param_1);
         }
     }
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005472B0
 long RGE_Zone_Map_List::create_zone_map(float* param_1, long param_2) {
     for (long i = 0; i < this->zone_map_num; ++i) {
         RGE_Zone_Map* zm = this->zone_maps[i];
-        if (zm != nullptr && zm->check_info(param_1, param_2) != nullptr) {
+        if (zm->check_info(param_1, param_2) != nullptr) {
             return (zm->do_zone_map() != 0) ? i : -1;
         }
     }
 
     RGE_Zone_Map** next = (RGE_Zone_Map**)calloc((size_t)(this->zone_map_num + 1), sizeof(RGE_Zone_Map*));
-    if (next == nullptr) {
-        return -1;
-    }
-    if (this->zone_maps != nullptr && this->zone_map_num > 0) {
+    if (this->zone_maps != nullptr) {
         memcpy(next, this->zone_maps, (size_t)this->zone_map_num * sizeof(RGE_Zone_Map*));
         free(this->zone_maps);
     }
@@ -463,22 +390,18 @@ long RGE_Zone_Map_List::create_zone_map(float* param_1, long param_2) {
     return index;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005473B0
 RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(float* param_1, long param_2, int* param_3) {
     for (long i = 0; i < this->zone_map_num; ++i) {
         RGE_Zone_Map* zm = this->zone_maps[i];
-        if (zm != nullptr && zm->check_info(param_1, param_2) != nullptr) {
-            if (param_3 != nullptr) {
-                *param_3 = (int)i;
-            }
+        if (zm->check_info(param_1, param_2) != nullptr) {
+            *param_3 = (int)i;
             return zm;
         }
     }
 
     RGE_Zone_Map** next = (RGE_Zone_Map**)calloc((size_t)(this->zone_map_num + 1), sizeof(RGE_Zone_Map*));
-    if (next == nullptr) {
-        return nullptr;
-    }
-    if (this->zone_maps != nullptr && this->zone_map_num > 0) {
+    if (this->zone_maps != nullptr) {
         memcpy(next, this->zone_maps, (size_t)this->zone_map_num * sizeof(RGE_Zone_Map*));
         free(this->zone_maps);
     }
@@ -488,29 +411,28 @@ RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(float* param_1, long param_2, int*
     long idx = this->zone_map_num;
     this->zone_maps = next;
     this->zone_map_num = this->zone_map_num + 1;
-    if (param_3 != nullptr) {
-        *param_3 = (int)idx;
-    }
+    *param_3 = (int)idx;
     return created;
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005474B0
 RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(long param_1) {
-    if (param_1 < 0 || param_1 >= this->zone_map_num || this->zone_maps == nullptr) {
+    if (param_1 < 0 || param_1 >= this->zone_map_num) {
         return nullptr;
     }
     return this->zone_maps[param_1];
 }
 
+// Fully verified. Source of truth: zone_map.cpp.decomp @ 0x005474D0
 void RGE_Zone_Map_List::delete_zone_maps() {
     if (this->zone_maps != nullptr && this->zone_map_num > 0) {
         for (long i = 0; i < this->zone_map_num; ++i) {
             if (this->zone_maps[i] != nullptr) {
                 delete this->zone_maps[i];
-                this->zone_maps[i] = nullptr;
             }
         }
         free(this->zone_maps);
         this->zone_maps = nullptr;
+        this->zone_map_num = 0;
     }
-    this->zone_map_num = 0;
 }
