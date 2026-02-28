@@ -348,4 +348,7 @@ RGE_Static_Object* TRIBE_Action_Heal::get_target_obj2() { return RGE_Action::get
 void TRIBE_Action_Heal::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void TRIBE_Action_Heal::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
-// TODO: STUB — tact_hea.cpp.decomp @ 0x004CECC6 is bad instruction data in source decomp output.
+// Fully verified. Source of truth: tact_hea.cpp.asm @ 0x004CECC6
+static void tact_hea_switch_anchor_004CECC6() {
+    // Listing body is only a switch-table anchor (MOV EDI, EDI).
+}

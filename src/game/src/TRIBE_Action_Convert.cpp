@@ -464,5 +464,12 @@ RGE_Static_Object* TRIBE_Action_Convert::get_target_obj2() { return RGE_Action::
 void TRIBE_Action_Convert::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void TRIBE_Action_Convert::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
-// Fully verified. Source of truth: tact_cnv.cpp.asm @ 0x004CE02D (switch jump-table thunk)
-// Fully verified. Source of truth: tact_cnv.cpp.asm @ 0x004CE3FA (switch jump-table thunk)
+// Fully verified. Source of truth: tact_cnv.cpp.asm @ 0x004CE02D
+static void tact_cnv_switch_anchor_004CE02D() {
+    // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
+}
+
+// Fully verified. Source of truth: tact_cnv.cpp.asm @ 0x004CE3FA
+static void tact_cnv_switch_anchor_004CE3FA() {
+    // Listing body is only a switch-table anchor (MOV EDI, EDI).
+}
