@@ -3626,7 +3626,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 253 — Victory conditions parity (58 missing functions, greenfield)
 - [x] Assigned to agent (worker-1, clone_1)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `36bb2ec` (9 insertions). Worker says victory functions already present/overrides.
 - Goal: RGE_Victory_Conditions and TRIBE_Victory_Conditions have barely any implementation. victory.cpp.decomp has 59 functions, only 1 offset ref exists in the impl files. These handle game victory/loss detection, score tracking, achievements, and game-over conditions.
 - Implement (decomp-first from victory.cpp.decomp): Create or expand RGE_Victory_Conditions.cpp and TRIBE_Victory_Conditions.cpp. Transliterate ALL 58+ missing functions.
 - Where: `src/game/src/RGE_Victory_Conditions.cpp`, `src/game/src/TRIBE_Victory_Conditions.cpp` + headers
@@ -3679,3 +3680,12 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `src/game/decomp/aiuaimod.cpp.decomp` + `aiuaimod.cpp.asm`.
 - Non-overlap: do NOT touch tactical AI (taitacmd), information AI (taiinfmd), or playbook files.
 - Done when: at least 35 of 46 missing functions transliterated.
+
+## Task 258 — TPanelSystem core panel management (132 unimplemented functions)
+- [x] Assigned to agent (worker-1, clone_1)
+- [ ] Finished
+- Goal: panel.cpp.decomp has 132 functions at offsets starting from 0x00437110. TPanelSystem manages all UI panels. None of these offsets exist in any current .cpp file.
+- Implement (decomp-first from panel.cpp.decomp): Transliterate ALL functions into TPanelSystem.cpp.
+- Where: `src/game/src/TPanelSystem.cpp` + headers
+- Source of truth: `src/game/decomp/panel.cpp.decomp` + `panel.cpp.asm`.
+- Done when: all 132 functions transliterated. Expect 3000+ lines.
