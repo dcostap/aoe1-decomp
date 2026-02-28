@@ -6,12 +6,11 @@
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/VISIBLE_UNIT_REC.h"
+#include "../include/globals.h"
 
 #include <cmath>
 #include <new>
 
-extern int DAT_0087d7cc[5];
-extern int DAT_0087d7d8[5];
 extern int* DAT_0087d7e4[5];
 extern VISIBLE_UNIT_REC* DAT_0087d7f0[5];
 
@@ -547,12 +546,12 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2) {
 
     for (int pass = 1; pass <= relationshipPasses; ++pass) {
         const int listIndex = pass - 1;
-        if (DAT_0087d7cc[listIndex] <= 0) {
+        if ((&DAT_0087d7cc)[listIndex] <= 0) {
             continue;
         }
 
         int* listBase = DAT_0087d7e4[listIndex];
-        for (int i = 0; i < DAT_0087d7cc[listIndex]; ++i) {
+        for (int i = 0; i < (&DAT_0087d7cc)[listIndex]; ++i) {
             const int entryOffset = i * 2;
             const int objectID = listBase[entryOffset];
             const int playerRelation = listBase[entryOffset + 1];
@@ -604,7 +603,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2) {
 int TribePriestUnitAIModule::bestUnitToConvert(float* param_1) {
     int bestTargetID = -1;
     int bestScore = 0;
-    for (int i = 0; i < DAT_0087d7d8[0]; ++i) {
+    for (int i = 0; i < (&DAT_0087d7d8)[0]; ++i) {
         const int objectID = DAT_0087d7f0[0][i].object_id;
         const int enemyPlayer = DAT_0087d7f0[0][i].player;
         if (this->objectValue->owner->isEnemy(enemyPlayer) == 0) {
