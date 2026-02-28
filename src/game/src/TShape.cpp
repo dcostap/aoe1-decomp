@@ -395,6 +395,18 @@ static void shape_free_loaded_data(unsigned char* ptr, int load_type, int load_s
     }
 }
 
+TShape::TShape() {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8B30
+    this->shape = 0;
+    this->shape_header = 0;
+    this->head = 0;
+    this->offsets = 0;
+    this->FShape = 0;
+    this->shape_info = 0;
+    this->load_type = -1;
+    this->load_size = 0;
+}
+
 TShape::TShape(char* filename, int file_id) {
     this->shape = 0;
     this->shape_header = 0;
@@ -514,6 +526,24 @@ unsigned char TShape::Check_shape(long shape_idx, char* msg) {
 
 int TShape::is_loaded() {
     return (this->shape || this->FShape) ? 1 : 0;
+}
+
+unsigned char TShape::shape_bounds(long shape_idx, short* width, short* height) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8FB0
+    if (this->FShape != 0) {
+        *width = (short)this->shape_info[shape_idx].Width;
+        *height = (short)this->shape_info[shape_idx].Height;
+        return 1;
+    }
+
+    if (shape_idx >= 0 && this->Check_shape(shape_idx, (char*)"RGL_shape_resolution") == 0) {
+        this->shape_header = (Shape_Header*)(this->shape + this->offsets[shape_idx].shape);
+        *width = (short)(this->shape_header->bounds >> 16);
+        *height = (short)this->shape_header->bounds;
+        return 1;
+    }
+
+    return 0;
 }
 
 long TShape::shape_count() {
@@ -2059,3 +2089,4 @@ unsigned char TShape::shape_dithered_clipped(TDrawArea* draw_area, long shape_x1
 
     return 1;
 }
+
