@@ -173,6 +173,9 @@ static uchar rge_static_drop_held_objects(RGE_Static_Object* self, int zone) {
 }
 }
 
+// Fully verified. Source of truth: act_tran.cpp.decomp @ 0x0040712E
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+
 RGE_Action_Transport::RGE_Action_Transport(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x00406D60
     RGE_Action::setup(param_1, param_2);
