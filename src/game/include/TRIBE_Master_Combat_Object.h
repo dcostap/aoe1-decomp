@@ -27,6 +27,12 @@ public:
     virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8); // vt[13] (0x34)
     virtual RGE_Task_List* create_task_list(); // vt[14] (0x38)
 
+protected:
+    int setup(TRIBE_Master_Combat_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
+
+public:
     Attribute_Cost build_inventory[3];
     short build_pts_required;
     short id_of_building_obj;

@@ -27,6 +27,12 @@ public:
     virtual RGE_Task_List* create_task_list(); // vt[14] (0x38)
     virtual RGE_Static_Object* make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4, int param_5); // vt[15] (0x3C)
 
+protected:
+    int setup(TRIBE_Master_Building_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
+
+public:
     RGE_Sound* construction_sound;
     RGE_Sprite* construction_sprite;
     unsigned char building_connect_flag;
