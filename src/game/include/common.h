@@ -187,4 +187,13 @@ template <typename T> struct ManagedArray {
     int numberValue;
     int desiredNumberValue;
     int maximumSizeValue;
+
+    ~ManagedArray();
+    int contains(const T& param_1);
+    int add(T param_1);
+    T& operator[](int param_1);
+    int remove(T param_1);
+
+protected:
+    int resize(int param_1);
 };

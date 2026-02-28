@@ -11,11 +11,13 @@
 #include "../include/globals.h"
 
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(int param_1, RGE_Action_Object* param_2) {
+    // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3470
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x78;
 }
 
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* param_1) {
+    // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D34C0
     RGE_Action::setup(param_1);
     this->action_type = 0x78;
     this->timer = 0.0f;
