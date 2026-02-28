@@ -1546,6 +1546,7 @@ void TRIBE_Scenario_Header::save(int p1) {
     rge_write(p1, &this->active_player_count, 4);
 }
 
+#if 0 // Implemented in tcommand.cpp for tcommand.cpp.decomp parity
 // --- TRIBE_Command ---
 
 TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* comm)
@@ -2447,6 +2448,8 @@ void TRIBE_Command::command_queue(RGE_Static_Object* p1, short p2, short p3) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Queue));
 }
+
+#endif
 
 // --- TRIBE_Effects (from teffects.cpp.decomp) ---
 TRIBE_Effects::TRIBE_Effects(int param_1)

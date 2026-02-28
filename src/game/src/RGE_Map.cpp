@@ -160,6 +160,7 @@ RGE_Map::RGE_Map(RGE_Game_World* world, long w, long h)
 
 RGE_Map::~RGE_Map()
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455430
     if (this->map) {
         free(this->map);
         this->map = nullptr;
@@ -210,6 +211,7 @@ void RGE_Map::init_tile_sizes()
 
 void RGE_Map::set_tile_size(uchar index, short width, short height, short y_delta)
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459020
     unsigned int i = (unsigned int)index;
     if (i >= 19) {
         return;
@@ -221,6 +223,7 @@ void RGE_Map::set_tile_size(uchar index, short width, short height, short y_delt
 
 void RGE_Map::new_map(long w, long h)
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455910
     if (w <= 0 || h <= 0) {
         return;
     }
@@ -373,6 +376,7 @@ void RGE_Map::load_map(int param_1) {
 
 void RGE_Map::set_map_screen_pos(int col1, int row1, int col2, int row2)
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455DD0
     if (this->map == nullptr || this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -521,6 +525,7 @@ RGE_Map::RGE_Map(char* border_file, char* terrain_file, char* terrain_obj_file, 
 
 void RGE_Map::clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain, long w, long h)
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004558B0
     this->new_map(w, h);
     if (world != nullptr) {
         world->reset_object_count();
@@ -535,6 +540,7 @@ void RGE_Map::clear_map(RGE_Player* player, RGE_Game_World* world, uchar terrain
 
 void RGE_Map::clear_map(uchar terrain, uchar height)
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455C20
     if (this->map == nullptr || this->map_row_offset == nullptr) {
         return;
     }
@@ -567,6 +573,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, short col, 
 }
 
 void RGE_Map::set_terrain(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459900
     if (this->map_row_offset == nullptr || col < 0 || row < 0 || col >= this->map_width || row >= this->map_height) {
         return;
     }
@@ -603,6 +610,7 @@ void RGE_Map::set_terrain(RGE_Game_World* world, short col, short row, uchar ter
 }
 
 void RGE_Map::set_terrain_absolute(RGE_Game_World* world, short col, short row, uchar terrain, int param_6, int param_7) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459A00
     if (this->map_row_offset == nullptr || col < 0 || row < 0 || col >= this->map_width || row >= this->map_height) {
         return;
     }
@@ -624,6 +632,7 @@ void RGE_Map::set_terrain_absolute(RGE_Game_World* world, short col, short row, 
 }
 
 void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, short col0, short row0, short col1, short row1, uchar terrain, uchar apply_terrain, int object_behavior) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459A90
     if (terrain >= this->num_terrain) {
         return;
     }
@@ -706,6 +715,7 @@ void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world, short col0,
 }
 
 uchar RGE_Map::postclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00456170
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -769,6 +779,7 @@ uchar RGE_Map::postclean_elevation(long param_1, long param_2, long param_3, lon
 }
 
 void RGE_Map::preclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004564E0
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -854,6 +865,7 @@ void RGE_Map::preclean_elevation(long param_1, long param_2, long param_3, long 
 }
 
 void RGE_Map::clean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004568C0
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1000,6 +1012,7 @@ void RGE_Map::set_elev(
     uchar param_5,
     short param_6,
     uchar param_7) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004595E0
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1089,6 +1102,7 @@ void RGE_Map::set_elev(
 }
 
 void RGE_Map::clean_terrain(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00456E90
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1256,6 +1270,7 @@ NEXT_TILE:
 
 void RGE_Map::load_terrain_obj_types(char* filename)
 {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458600
     FILE* infile = fopen(filename, "r");
     if (infile != nullptr) {
         short header_count = 0;
@@ -1288,6 +1303,7 @@ void RGE_Map::load_terrain_obj_types(char* filename)
 }
 
 uchar RGE_Map::get_terrain(short col, short row) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00459400
     if (this->map_row_offset == nullptr || col < 0 || row < 0 || col >= this->map_width || row >= this->map_height) {
         return 0;
     }
@@ -1301,6 +1317,7 @@ uchar RGE_Map::get_terrain(short col, short row) {
 }
 
 void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458820
     (void)world;
     if (player == nullptr || this->map_row_offset == nullptr || row < 0 || col < 0 || row >= this->map_height || col >= this->map_width) {
         return;
@@ -1403,6 +1420,7 @@ void RGE_Map::create_terrain_object(RGE_Player* player, RGE_Game_World* world, s
 }
 
 int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row, short col, short old_terrain, int remove_now, int min_obj_id, int max_obj_id) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458B40
     (void)world;
     (void)this->get_terrain(col, row);
     if (this->map_row_offset == nullptr || row < 0 || col < 0 || row >= this->map_height || col >= this->map_width) {
@@ -1470,6 +1488,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row, short col, s
 }
 
 void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world, short row, short col, int object_id, int single_placement) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458C90
     (void)world;
     (void)object_id;
     if (player == nullptr || player->master_objects == nullptr || this->map_row_offset == nullptr || row < 0 || col < 0 || row >= this->map_height || col >= this->map_width) {
@@ -1557,6 +1576,7 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* world, sh
 }
 
 void RGE_Map::create_terrain_objects(RGE_Player* player, RGE_Game_World* world) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458FD0
     if (player == nullptr || this->map_row_offset == nullptr) {
         return;
     }
@@ -1587,6 +1607,7 @@ void RGE_Map::load_random_map(char* param_1, char* param_2, char* param_3, char*
     this->random_map = new RGE_RMM_Database_Controller(param_2, param_3, param_4, param_1);
 }
 uchar RGE_Map::do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457320
     long x0 = param_1 - param_3;
     long x1 = param_1 + param_3;
     long y0 = param_2 - param_3;
@@ -1615,6 +1636,7 @@ uchar RGE_Map::do_terrain_brush(long param_1, long param_2, long param_3, uchar 
 }
 
 uchar RGE_Map::do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004573C0
     long radius = param_5 >> 1;
 
     if (param_1 < 0) {
@@ -1660,6 +1682,7 @@ uchar RGE_Map::do_terrain_brush_stroke(long param_1, long param_2, long param_3,
 }
 
 uchar RGE_Map::do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457510
     long x0 = param_1 - param_3;
     long x1 = param_1 + param_3;
     long y0 = param_2 - param_3;
@@ -1689,6 +1712,7 @@ uchar RGE_Map::do_elevation_brush(long param_1, long param_2, long param_3, ucha
 }
 
 uchar RGE_Map::do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004575C0
     long radius = param_5 >> 1;
 
     if (param_1 < 0) {
@@ -1756,6 +1780,7 @@ uchar RGE_Map::do_elevation_brush_stroke(long param_1, long param_2, long param_
 }
 
 uchar RGE_Map::do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457750
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -1764,6 +1789,7 @@ uchar RGE_Map::do_cliff_brush(long param_1, long param_2, uchar param_3, uchar p
 }
 
 uchar RGE_Map::do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457760
     if (param_1 < 0) {
         param_1 = 0;
     }
@@ -1866,7 +1892,14 @@ void RGE_Map::scenario_load(int param_1, uchar* param_2) {
                       (short)(this->map_width - 1), (short)(this->map_height - 1), 0, 0, 0);
 }
 
-void RGE_Map::map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4) {}
+void RGE_Map::map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004578A0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return;
+}
 void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5) {
     // Source of truth: map.cpp.decomp @ 0x004578B0.
     if (this->game_world == nullptr) {
@@ -2009,7 +2042,7 @@ void RGE_Map::save(int param_1) {
 
 void RGE_Map::load_terrain_types(RGE_Sound** sounds)
 {
-    // Source of truth: map.cpp.asm @ 0x00457EB0.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457EB0, map.cpp.asm @ 0x00457EB0.
     // This pass always iterates all 32 terrain slots, honoring serialized loaded flags.
     for (int i = 0; i < 32; ++i) {
         RGE_Tile_Set* ts = &this->terrain_types[i];
@@ -2043,7 +2076,7 @@ void RGE_Map::load_terrain_types(RGE_Sound** sounds)
 
 void RGE_Map::load_border_types(RGE_Sound** sounds)
 {
-    // Source of truth: map.cpp.asm @ 0x00458280.
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458280, map.cpp.asm @ 0x00458280.
     // This pass always iterates all 16 border slots, honoring serialized loaded flags.
     for (int i = 0; i < 16; ++i) {
         RGE_Border_Set* bs = &this->border_types[i];
@@ -2075,6 +2108,7 @@ void RGE_Map::load_border_types(RGE_Sound** sounds)
     }
 }
 void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00457F80
     for (int i = 0; i < 32; ++i) {
         this->terrain_types[i].loaded = 0;
     }
@@ -2192,6 +2226,7 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds) {
 }
 
 void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00458350
     for (int i = 0; i < 16; ++i) {
         this->border_types[i].loaded = 0;
     }
@@ -2285,12 +2320,15 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds) {
     fclose(infile);
 }
 void RGE_Map::coordinate_map() {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455DB0
     this->set_map_screen_pos(0, 0, this->map_width - 1, this->map_height - 1);
 }
 void RGE_Map::set_map_visible(uchar flag) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455890
     this->map_visible_flag = flag;
 }
 void RGE_Map::set_map_fog(uchar flag) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x004558A0
     this->fog_flag = flag;
 }
 void RGE_Map::get_point(short* param_1, short* param_2, float param_3, float param_4, float param_5, short param_6, short param_7) {
@@ -2305,6 +2343,7 @@ void RGE_Map::get_point(short* param_1, short* param_2, float param_3, float par
     *param_2 = (short)y;
 }
 void RGE_Map::request_redraw(int col0, int row0, int col1, int row1, uchar attr) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455CB0
     int x0 = col0;
     int y0 = row0;
     int x1 = col1;
@@ -2350,6 +2389,7 @@ void RGE_Map::request_redraw(int col0, int row0, int col1, int row1, uchar attr)
     }
 }
 void RGE_Map::clear_map_view_info() {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x00455D60
     if (this->map == nullptr || this->map_row_offset == nullptr) {
         return;
     }
@@ -2827,6 +2867,7 @@ void RGE_Map::rebuild_tile_types(short col0, short row0, short col1, short row1)
 }
 
 uchar RGE_Map::get_border_type(short col, short row) {
+    // Fully verified. Source of truth: map.cpp.decomp @ 0x0045A030
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
