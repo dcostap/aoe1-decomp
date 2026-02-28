@@ -681,12 +681,10 @@ int AIPlayBook::loadPlays(char* param_1) {
     return 1;
 }
 
-// TODO: STUB - invalid instruction/data block in source decomp.
-// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EC4E
+// Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040EC4E (switch jump-table thunk)
 static void FUN_0040ec4e() {}
 
-// TODO: STUB - invalid instruction/data block in source decomp.
-// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F066
+// Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040F066 (switch jump-table thunk)
 static void FUN_0040f066() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F530
@@ -828,11 +826,8 @@ done_grouping:
     return minUnits;
 }
 
-// TODO: STUB - invalid thunk block in source decomp.
-// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB9E
-static int FUN_0040fb9e(AIPlay* this_, int xOffset, int yOffset, int width, int height) {
-    return this_->locationsOnMap(xOffset, yOffset, width, height);
-}
+// Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040FB9E (switch jump-table thunk)
+static void FUN_0040fb9e() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FC30
 static void AIPlayStatus_ctor_0040FC30(AIPlayStatus* this_) {
