@@ -160,6 +160,11 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info* param_1, long param_2, l
     (void)new (std::nothrow) RGE_RMM_Land_Generator(this->map, this, param_1);
 }
 
+void FUN_004826b2() {
+    // Fully verified. Source of truth: rmm_cntr.cpp.decomp @ 0x004826B2
+    // Switch jump-table padding thunk (`mov edi, edi`).
+}
+
 void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info* param_1, RGE_Land_Info* param_2, long param_3) {
     // Fully verified. Source of truth: rmm_cntr.cpp.decomp @ 0x004826E0
     if (param_1 == nullptr || param_2 == nullptr) {
@@ -212,6 +217,11 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info* param_1, RGE_Land_
     }
 
     (void)new (std::nothrow) RGE_RMM_Terrain_Generator(this->map, this, param_1);
+}
+
+void FUN_0048287e() {
+    // Fully verified. Source of truth: rmm_cntr.cpp.decomp @ 0x0048287E
+    // Switch jump-table padding thunk (`mov edi, edi`).
 }
 
 long RGE_RMM_Controller::count_map_tiles(uchar param_1) {

@@ -20,6 +20,7 @@ typedef BOOL(WINAPI* VerQueryValueA_t)(LPCVOID, LPCSTR, LPVOID*, PUINT);
 
 // Offset: 0x0044DEE0
 static int IsDPlay501a() {
+    // Fully verified. Source of truth: getdxver.cpp.decomp @ 0x0044DEE0
     HMODULE hVersion = LoadLibraryA("version.dll");
     if (!hVersion) return 0;
 
@@ -71,6 +72,7 @@ static int IsDPlay501a() {
 
 // Offset: 0x0044DAC0
 void GetDXVersion(unsigned long* dx_version, unsigned long* dx_platform) {
+    // Fully verified. Source of truth: getdxver.cpp.decomp @ 0x0044DAC0
     if (dx_version) *dx_version = 0;
     if (dx_platform) *dx_platform = 0;
 

@@ -171,7 +171,13 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
     return this->RGE_Task_List::get_target_task(param_1, param_2, param_3, param_4, param_5);
 }
 
+void FUN_0052c8a1() {
+    // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C8A1
+    // Switch jump-table padding thunk (`nop; mov edi, edi`).
+}
+
 int TRIBE_Task_List::is_attack_task(RGE_Task* param_1) {
+    // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C8D0
     // RGE_Task.action_type offset is +0x6 (task.cpp.decomp / task_lst.cpp.asm).
     if (param_1 != nullptr) {
         const short action_type = *(const short*)((const unsigned char*)param_1 + 0x6);

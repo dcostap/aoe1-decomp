@@ -42,7 +42,7 @@ int RGE_Campaign_Info::open_scenario() {
 }
 
 char* RGE_Campaign::get_name() {
-    // Source of truth: gameinfo.cpp.decomp (used by campaign info matching)
+    // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423710
     return this->campaign_header.name;
 }
 
@@ -52,7 +52,7 @@ char* RGE_Campaign::get_scenario_name(long param_1) {
 }
 
 long RGE_Campaign::scenario_number() {
-    // Source of truth: gameinfo.cpp.decomp (used by campaign info sizing)
+    // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423720
     return this->campaign_header.scenario_num;
 }
 

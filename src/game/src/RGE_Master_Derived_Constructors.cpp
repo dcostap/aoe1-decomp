@@ -70,6 +70,7 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object()
 }
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(RGE_Master_Animated_Object* param_1, int param_2)
+    // Fully verified. Source of truth: m_an_obj.cpp.decomp @ 0x0044F9C0
     : RGE_Master_Static_Object((RGE_Master_Static_Object*)param_1, 0) {
     this->master_type = 0x14;
     this->speed = 0.0f;
@@ -79,6 +80,7 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(RGE_Master_Animated_Objec
 }
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
+    // Fully verified. Source of truth: m_an_obj.cpp.decomp @ 0x0044FA40
     : RGE_Master_Static_Object(param_1, param_2, param_3, 0) {
     this->master_type = 0x14;
     this->speed = 0.0f;
