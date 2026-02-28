@@ -14,6 +14,20 @@ public:
 
     virtual ~TRIBE_Building_Object();
     virtual int setup(int param_1, RGE_Game_World* param_2);
+    virtual void recycle_out_of_game();
+    virtual void destroy_obj();
+    virtual uchar heal(float param_1);
+    virtual void set_object_state(uchar param_1);
+    virtual void rehook();
+    virtual uchar update();
+    virtual int explore_terrain(RGE_Player* param_1, uchar param_2, int param_3);
+    virtual void save(int param_1);
+    virtual void change_ownership(RGE_Player* param_1);
+    virtual void modify(float param_1, uchar param_2);
+    virtual void copy_obj(RGE_Master_Static_Object* param_1);
+    virtual void rotate(long param_1);
+    virtual void damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5);
+    virtual void stop();
     virtual void cancel_object();
 
     unsigned char build(float param_1);
@@ -27,6 +41,11 @@ public:
     void enable_production_queue(int param_1);
     void update_production_queue();
     int production_queue_status(short& param_1, short& param_2);
+    long check(TRIBE_Building_Object** param_1);
+    void connect();
+    void connect2();
+    void lay_down_impassable_terrain();
+    void lay_down_passable_terrain();
     virtual void take_building_attribute_from_owner();
     virtual void give_building_attribute_to_owner();
     void transform(TRIBE_Master_Building_Object* param_1);
