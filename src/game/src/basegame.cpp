@@ -151,9 +151,10 @@ static int cmd_parse_long_value(const char* cmd_line_upper, const char* key_uppe
     return 1;
 }
 
+static int DAT_0086b258 = 0;
+
 static void RESFILE_Set_Missing_Flag(int flag) {
-    (void)flag;
-    // TODO: STUB: resource-file missing flag plumbing is not exported in this decomp branch yet.
+    DAT_0086b258 = flag;
 }
 
 #include "../include/globals.h"
@@ -169,11 +170,11 @@ static void RESFILE_Set_Missing_Flag(int flag) {
 
 
 LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041E7A0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041E7A0
     if (rge_base_game) {
         return rge_base_game->wnd_proc(hWnd, (uint)msg, (uint)wParam, (long)lParam);
     }
-    return DefWindowProcA(hWnd, msg, wParam, lParam);
+    return 0;
 }
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
@@ -639,25 +640,21 @@ void RGE_Base_Game::setScenarioName(char* p1) {
 }
 
 int RGE_Base_Game::setup_registry() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041ED70
-    if (this->prog_info) {
-        this->registry = new TRegistry(this->prog_info->registry_key);
-        return (this->registry != NULL);
-    }
-    return 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041ED70
+    this->registry = new TRegistry(this->prog_info->registry_key);
+    return (this->registry != nullptr) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_debugging_log() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041EDE0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EDE0
     this->debugLog = new TDebuggingLog();
-    if (this->debugLog) {
-        L = this->debugLog;
-        this->debugLog->LogFile(this->log_comm);
-        this->debugLog->LogOutput(log_output);
-        this->debugLog->LogTimestamp(1);
-        return 1;
+    if (this->debugLog == nullptr) {
+        return 0;
     }
-    return 0;
+    this->debugLog->LogFile(this->log_comm);
+    this->debugLog->LogOutput(log_output);
+    this->debugLog->LogTimestamp(1);
+    return 1;
 }
 
 int RGE_Base_Game::setup() {
@@ -1700,8 +1697,7 @@ void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {
     (void)p5;
 }
 int RGE_Base_Game::reset_comm() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041EFF0
-    // Tear down existing comm object, then re-run setup_comm() via virtual dispatch.
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EFF0
     if (this->comm_handler != nullptr) {
         delete this->comm_handler;
         this->comm_handler = nullptr;
@@ -2183,13 +2179,11 @@ int RGE_Base_Game::setup_cmd_options() {
     return 1;
 }
 int RGE_Base_Game::setup_class() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041E700
-    CUSTOM_DEBUG_FUNC_ENTER();
-    if (!this->prog_info) {
-        CUSTOM_DEBUG_LOG("setup_class: prog_info is NULL");
-        return 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041E700
+    if (this->prog_info->prev_instance != nullptr) {
+        return 1;
     }
-    
+
     WNDCLASSA cls;
     memset(&cls, 0, sizeof(cls));
     cls.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
@@ -2197,36 +2191,19 @@ int RGE_Base_Game::setup_class() {
     cls.cbClsExtra = 0;
     cls.cbWndExtra = 0;
     cls.hInstance = (HINSTANCE)this->prog_info->instance;
-    cls.hIcon = LoadIconA((HINSTANCE)this->prog_info->instance, (char*)this->prog_info + 0x61C);
-    cls.hCursor = LoadCursorA(NULL, IDC_ARROW);
-    cls.hbrBackground = NULL;
-    cls.lpszMenuName = NULL;
-    cls.lpszClassName = (char*)this->prog_info + 0x645;
-    
-    CUSTOM_DEBUG_LOG_FMT("setup_class: className='%s'", cls.lpszClassName);
-    
-    if (RegisterClassA(&cls)) {
-        CUSTOM_DEBUG_LOG("setup_class: RegisterClassA succeeded");
-        return 1;
-    }
-    CUSTOM_DEBUG_WIN_ERROR("RegisterClassA");
-    return 0;
+    cls.hIcon = LoadIconA((HINSTANCE)this->prog_info->instance, this->prog_info->icon_name);
+    cls.hCursor = nullptr;
+    cls.hbrBackground = nullptr;
+    cls.lpszMenuName = nullptr;
+    cls.lpszClassName = (this->prog_info->menu_name[0] != '\0') ? this->prog_info->menu_name : "";
+    return (RegisterClassA(&cls) != 0) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_main_window() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041E7D0
-    CUSTOM_DEBUG_FUNC_ENTER();
-    if (!this->prog_info) {
-        CUSTOM_DEBUG_LOG("setup_main_window: prog_info is NULL");
-        return 0;
-    }
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041E7D0
 
     int screen_wid = GetSystemMetrics(SM_CXSCREEN);
     int screen_hgt = GetSystemMetrics(SM_CYSCREEN);
-
-    CUSTOM_DEBUG_LOG_FMT("setup_main_window: screen=%dx%d, main=%ldx%ld",
-                         screen_wid, screen_hgt, this->prog_info->main_wid, this->prog_info->main_hgt);
-
     int wnd_w = screen_wid;
     int wnd_h = screen_hgt;
     DWORD style = 0x82080000;
@@ -2237,19 +2214,12 @@ int RGE_Base_Game::setup_main_window() {
         wnd_h = (int)this->prog_info->main_hgt;
     }
 
-    const char* className = (char*)this->prog_info + 0x645;
-    const char* windowTitle = (char*)this->prog_info + 0x7A;
-    CUSTOM_DEBUG_LOG_FMT("setup_main_window: className='%s', title='%s', style=0x%lx", className, windowTitle, style);
-
-    this->prog_window = CreateWindowExA(0, className, windowTitle, style, 0, 0, wnd_w, wnd_h, NULL, NULL,
-                                        (HINSTANCE)this->prog_info->instance, NULL);
-
-    if (!this->prog_window) {
-        CUSTOM_DEBUG_WIN_ERROR("CreateWindowExA");
+    const char* class_name = (this->prog_info->menu_name[0] != '\0') ? this->prog_info->menu_name : "";
+    this->prog_window = CreateWindowExA(0, class_name, this->prog_info->prog_title, style, 0, 0, wnd_w,
+                                        wnd_h, nullptr, nullptr, (HINSTANCE)this->prog_info->instance, nullptr);
+    if (this->prog_window == nullptr) {
         return 0;
     }
-
-    CUSTOM_DEBUG_LOG("setup_main_window: window created successfully");
 
     RECT win_rect;
     RECT client_rect;
@@ -2271,16 +2241,12 @@ int RGE_Base_Game::setup_main_window() {
     }
 
     AppWnd = (HWND)this->prog_window;
-    if (panel_system) {
-        panel_system->DisableIME();
-    }
-
+    panel_system->DisableIME();
     return 1;
 }
 
-// Source of truth: basegame.cpp.decomp @ 0x0041E920
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041E920
 int RGE_Base_Game::setup_graphics_system() {
-    // Device caps check — need at least 8-bit color when using DirectDraw
     if (this->prog_info->use_dir_draw != 0) {
         HDC hdc = GetDC(NULL);
         int bits = GetDeviceCaps(hdc, BITSPIXEL);
@@ -2295,71 +2261,51 @@ int RGE_Base_Game::setup_graphics_system() {
     int iVar2 = this->prog_info->use_sys_mem;
     int iVar3 = this->prog_info->full_screen;
 
-    TDrawSystem* ds = new TDrawSystem();
-    if (!ds) return 0;
-    this->draw_system = ds;
-
-    // Decomp passes full_screen to CheckAvailModes
-    ds->CheckAvailModes(this->prog_info->full_screen);
-    // Modern Windows: fullscreen 8-bit enum finds nothing — retry windowed
-    if (this->prog_info->full_screen && !ds->ModeAvail640) {
-        ds->CheckAvailModes(0);
-    }
-
-    // Mode fallback chain per decomp
-    long w = this->prog_info->main_wid;
-    long h = this->prog_info->main_hgt;
-    if (!ds->IsModeAvail(w, 0, 8)) {
-        if (w != 640 && ds->IsModeAvail(640, 0, 8)) {
-            w = 640; h = 480;
-        } else if (w != 800 && ds->IsModeAvail(800, 0, 8)) {
-            w = 800; h = 600;
-        } else if (w != 1024 && ds->IsModeAvail(1024, 0, 8)) {
-            w = 1024; h = 768;
-        } else if (w != 1280 && ds->IsModeAvail(1280, 0, 8)) {
-            w = 1280; h = 1024;
-        } else {
-            return 0;
-        }
-        this->prog_info->main_wid = w;
-        this->prog_info->main_hgt = h;
-    }
-
-    // Decomp: draw_type = (use_dir_draw != 0) + 1  →  1=WinG, 2=DirectDraw
-    //         draw_mode = (full_screen != 0) + 1    →  1=windowed, 2=fullscreen
-    uchar draw_type = (uchar)((iVar5 != 0) + 1);
-    uchar draw_mode = (uchar)((iVar3 != 0) + 1);
-
-    if (!ds->Init(this->prog_info->instance, this->prog_window, this->prog_palette,
-                  draw_type, draw_mode, w, h, (ulong)(iVar2 != 0))) {
+    this->draw_system = new TDrawSystem();
+    if (this->draw_system == nullptr) {
         return 0;
     }
 
-    if (panel_system) {
-        panel_system->release_palette(this->prog_palette);
-        this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50500);
+    this->draw_system->CheckAvailModes(this->prog_info->full_screen);
+    if (this->draw_system->IsModeAvail(this->prog_info->main_wid, 0, 8) == 0) {
+        if ((this->prog_info->main_wid != 640) && (this->draw_system->IsModeAvail(640, 0, 8) != 0)) {
+            this->prog_info->main_wid = 640;
+            this->prog_info->main_hgt = 480;
+        } else if ((this->prog_info->main_wid != 800) && (this->draw_system->IsModeAvail(800, 0, 8) != 0)) {
+            this->prog_info->main_wid = 800;
+            this->prog_info->main_hgt = 600;
+        } else if ((this->prog_info->main_wid != 1024) && (this->draw_system->IsModeAvail(1024, 0, 8) != 0)) {
+            this->prog_info->main_wid = 1024;
+            this->prog_info->main_hgt = 768;
+        } else {
+            if ((this->prog_info->main_wid == 1280) || (this->draw_system->IsModeAvail(1024, 0, 8) == 0)) {
+                return 0;
+            }
+            this->prog_info->main_wid = 1280;
+            this->prog_info->main_hgt = 1024;
+        }
     }
 
-    this->draw_area = ds->DrawArea;
-    if (this->draw_area) {
-        this->draw_area->Clear(NULL, 0);
+    uchar draw_type = (uchar)((iVar5 != 0) + 1);
+    uchar draw_mode = (uchar)((iVar3 != 0) + 1);
+    if (this->draw_system->Init(this->prog_info->instance, this->prog_window, this->prog_palette, draw_type,
+                                draw_mode, this->prog_info->main_wid, this->prog_info->main_hgt,
+                                (ulong)(iVar2 != 0)) == 0) {
+        return 0;
     }
 
+    panel_system->release_palette(this->prog_palette);
+    this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50500);
+    this->draw_area = this->draw_system->DrawArea;
+    this->draw_area->Clear(nullptr, 0);
     this->draw_system->Paint(NULL);
-
     return 1;
 }
 
 int RGE_Base_Game::setup_palette() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041EBC0
-    if (!this->prog_info || !panel_system) return 0;
-
-    void* pal = panel_system->get_palette(this->prog_info->pal_file, 50500); // 0xc544 per decomp
-    if (pal) {
-        this->prog_palette = pal;
-        return 1;
-    }
-    return 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EBC0
+    this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50500);
+    return (this->prog_palette != nullptr) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_mouse() {
@@ -4063,54 +4009,29 @@ int RGE_Base_Game::setup_chat() {
     return (chat_obj != nullptr) ? 1 : 0;
 }
 int RGE_Base_Game::setup_comm() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041EE90
-    // NOTE: This used to memset a default-constructed handler (temporary stub).
-    // Now that we have a real comm handler ctor, we must not clobber its internal allocations/state.
-    ushort max_players = 8;
-    if (this->prog_info != nullptr && this->prog_info->max_players > 0) {
-        max_players = (ushort)this->prog_info->max_players;
-    }
-    if (max_players > 9) {
-        max_players = 9;
-    }
-
-    TCommunications_Handler* handler = new TCommunications_Handler(this->prog_window, (uchar)max_players);
-    if (handler == nullptr) {
-        this->comm_handler = nullptr;
-        comm = nullptr;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EE90
+    this->comm_handler = new TCommunications_Handler(this->prog_window, (uchar)this->prog_info->max_players);
+    if (this->comm_handler == nullptr) {
         return 0;
     }
 
-    handler->Chat = (TChat*)chat;
-    if (this->prog_info != nullptr) {
-        handler->ApplicationGUID = this->prog_info->game_guid;
-    } else {
-        memset(&handler->ApplicationGUID, 0, sizeof(handler->ApplicationGUID));
+    this->comm_handler->Chat = (TChat*)chat;
+    this->comm_handler->ApplicationGUID = this->prog_info->game_guid;
+    this->comm_handler->StopIfSyncFail(this->comm_syncstop);
+    this->comm_handler->ShowSyncChatMsgs(this->comm_syncmsg);
+    this->comm_handler->SetStepMode(this->comm_stepmode);
+    this->comm_handler->SetSpeedControl(this->comm_speed);
+    this->comm_handler->DropPacketsIntentionally(this->comm_droppackets);
+    comm = this->comm_handler;
+    if (this->world != nullptr) {
+        this->world->reset_communications(this->comm_handler);
     }
-
-    handler->Me = 1;
-    handler->Multiplayer = (this->rge_game_options.multiplayerGameValue != 0) ? 1 : 0;
-    handler->MeHost = (handler->Multiplayer == 0) ? 1 : 0;
-    handler->CommunicationsStatus = COMM_IDLE;
-    if (handler->Sync != nullptr) {
-        handler->Sync->DialogOnSyncFail = this->comm_syncstop;
-        handler->Sync->StopOnSyncFail = this->comm_syncstop;
-        handler->Sync->SendChatMsgs = this->comm_syncmsg;
+    if (speed_val1 != 0) {
+        this->comm_handler->SetSpeedV1(speed_val1);
     }
-    if (handler->Speed != nullptr) {
-        handler->Speed->SpeedControlEnabled = this->comm_speed;
+    if (speed_val2 != 0) {
+        this->comm_handler->SetSpeedV1(speed_val2);
     }
-    handler->StepMode = this->comm_stepmode;
-    handler->IntentionallyDropPackets = this->comm_droppackets;
-
-    // Default SP humanity profile expected by create_game() mapping pass.
-    handler->PlayerOptions.Humanity[1] = 2;
-    for (int i = 2; i < 10; ++i) {
-        handler->PlayerOptions.Humanity[i] = 4;
-    }
-
-    this->comm_handler = handler;
-    comm = handler;
     return 1;
 }
 int RGE_Base_Game::setup_sound_system() {

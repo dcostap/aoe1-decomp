@@ -653,7 +653,7 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem() {
 }
 
 void T_Scenario::InitializeVictoryValues() {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B250
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B240
     this->victory.MP_Conquest = 1;
     this->victory.MP_Ruins = 0;
     this->victory.MP_Artifacts = 0;
@@ -664,7 +664,7 @@ void T_Scenario::InitializeVictoryValues() {
 }
 
 void T_Scenario::Set_victory_all_flag(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B1D0
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B170
     if (param_1 < 0) {
         param_1 = 0;
     }
@@ -675,12 +675,12 @@ void T_Scenario::Set_victory_all_flag(int param_1) {
 }
 
 int T_Scenario::Get_victory_all_flag() {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B200
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B190
     return this->victory_all_flag;
 }
 
 void T_Scenario::SetMPVictory(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B3E0
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B1A0
     this->mp_victory_type = param_1;
     if (param_1 != 4) {
         this->victory_conquest = 1;
@@ -688,32 +688,32 @@ void T_Scenario::SetMPVictory(int param_1) {
 }
 
 int T_Scenario::GetMPVictory() {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B420
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B1C0
     return this->mp_victory_type;
 }
 
 void T_Scenario::SetVictoryScore(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B430
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B1D0
     this->victory_score = param_1;
 }
 
 int T_Scenario::GetVictoryScore() {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B440
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B1E0
     return this->victory_score;
 }
 
 void T_Scenario::SetVictoryTime(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B450
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B1F0
     this->victory_time = param_1;
 }
 
 int T_Scenario::GetVictoryTime() {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B460
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B200
     return this->victory_time;
 }
 
 void T_Scenario::Set_Multi_Conquest(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B3F0
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B400
     if (param_1 != 0) {
         this->victory.MP_Conquest = 1;
         this->victory_conquest = 1;
@@ -724,27 +724,27 @@ void T_Scenario::Set_Multi_Conquest(int param_1) {
 }
 
 void T_Scenario::Set_Multi_Ruins(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B470
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B430
     this->victory.MP_Ruins = param_1;
 }
 
 void T_Scenario::Set_Multi_Artifacts(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B4A0
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B440
     this->victory.MP_Artifacts = param_1;
 }
 
 void T_Scenario::Set_Multi_Discoveries(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B4D0
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B450
     this->victory.MP_Discoveries = param_1;
 }
 
 void T_Scenario::Set_Multi_Exploration(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B500
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B460
     this->victory.MP_Exploration = param_1;
 }
 
 void T_Scenario::Set_Multi_Gold(int param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B520
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B470
     this->victory.MP_Gold = param_1;
 }
 

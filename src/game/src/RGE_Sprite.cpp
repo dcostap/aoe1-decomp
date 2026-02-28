@@ -336,7 +336,7 @@ void RGE_Sprite::save(int param_1) {
 }
 
 RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0F90
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0F90
     if ((this->flag & 1) == 0) {
         RGE_Active_Sprite* active = (RGE_Active_Sprite*)::operator new(sizeof(RGE_Active_Sprite), std::nothrow);
         if (active != nullptr) {
@@ -353,7 +353,7 @@ RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
 }
 
 int RGE_Sprite::check_for_shadows() {
-    // Source of truth: sprite.cpp.decomp @ 0x004C1030
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C1030
     short draw_count = this->draw_list_num;
     if (draw_count < 1 || this->draw_list == nullptr) {
         if (this->draw_level != 0) {
@@ -391,7 +391,7 @@ static void sprite_ensure_shape_loaded(RGE_Sprite* sprite) {
 }
 
 void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
-    // Source of truth: sprite.cpp.decomp @ 0x004BFFF0
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFFF0
     if (this->facet_num <= param_3) {
         param_3 = 0;
     }
@@ -432,7 +432,7 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
 }
 
 unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param_3) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C00E0
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C00E0
     unsigned char mirror = this->mirror_flag;
     if ((mirror != 0) && (this->facet_num == 2)) {
         *param_3 = param_2;
@@ -461,7 +461,7 @@ unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param
 }
 
 void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C01A0
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C01A0
     if (this->frame_num <= param_2) {
         param_2 = 0;
     }
@@ -493,7 +493,7 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
 }
 
 unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, unsigned char param_9) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C04F0
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C04F0
     if (this->facet_num <= param_1) {
         param_1 = 0;
     }
@@ -534,7 +534,7 @@ unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long pa
 }
 
 unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0620
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0620
     long facet = param_1;
     if (this->facet_num <= param_1) {
         facet = 0;
@@ -571,7 +571,7 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3, 
 }
 
 unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0720
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0720
     long facet = param_1;
     if (this->facet_num <= param_1) {
         facet = 0;
@@ -608,7 +608,7 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3, 
 }
 
 int RGE_Sprite::get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0840
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0840
     sprite_ensure_shape_loaded(this);
     if (this->shape == nullptr) {
         return 0;
@@ -617,7 +617,7 @@ int RGE_Sprite::get_size(long* param_1, long* param_2, long* param_3, long* para
 }
 
 int RGE_Sprite::get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0B70
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0B70
     long frame = param_6;
     if (this->frame_num <= param_6) {
         frame = 0;
@@ -654,7 +654,7 @@ int RGE_Sprite::get_frame_min_max(short* param_1, short* param_2, short* param_3
 }
 
 int RGE_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6) {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0960
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0960
     sprite_ensure_shape_loaded(this);
     if (this->shape == nullptr) {
         return 0;
@@ -702,7 +702,7 @@ int RGE_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short*
 }
 
 unsigned char RGE_Sprite::get_lowest_draw_level() {
-    // Source of truth: sprite.cpp.decomp @ 0x004C0C50
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0C50
     short draw_count = this->draw_list_num;
     if (draw_count == 0) {
         return this->draw_level;
@@ -791,3 +791,4 @@ uchar RGE_Sprite::shape_hit_test(short param_1, short param_2, long param_3, lon
 
     return 0;
 }
+
