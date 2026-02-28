@@ -2830,6 +2830,7 @@ void TRIBE_Scenario_Header::save(int p1) {
 
 TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* comm)
     : RGE_Command(world, comm) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509720
 }
 
 TRIBE_Command::~TRIBE_Command() {}
