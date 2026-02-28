@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* param_1, int param_2) {
-    // Source of truth: dpl_obj.cpp.decomp @ 0x00442100
+    // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442100
     this->Objects = (RGE_Static_Object**)calloc((size_t)param_2, 4);
     this->Map_Addresses = (ulong**)calloc((size_t)param_2, 4);
     this->Last_Map_Value = (ulong*)calloc((size_t)param_2, 4);
@@ -19,7 +19,7 @@ RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* param_1, int para
 }
 
 RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
-    // Source of truth: dpl_obj.cpp.decomp @ 0x00442180
+    // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442180
     if (this->Objects != nullptr) {
         free(this->Objects);
         this->Objects = nullptr;
@@ -75,7 +75,7 @@ void RGE_Doppleganger_Creator::expand_allocations(int param_1) {
 }
 
 int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* param_1, ulong* param_2) {
-    // Source of truth: dpl_obj.cpp.decomp @ 0x004421F0
+    // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x004421F0
     if (this->allocated_size <= this->active_size) {
         this->expand_allocations(0x1E);
         if (this->allocated_size <= this->active_size) {
@@ -106,7 +106,7 @@ int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* param_1,
 }
 
 int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* param_1) {
-    // Source of truth: dpl_obj.cpp.decomp @ 0x004422B0
+    // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x004422B0
     int active_count = this->active_size;
     if (active_count > 0) {
         for (int index = 0; index < active_count; index++) {
@@ -173,3 +173,4 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
         }
     }
 }
+
