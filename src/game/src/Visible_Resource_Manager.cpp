@@ -14,6 +14,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
+static int vis_unit_ftol(double value) {
+    return (int)(long)value;
+}
 
 Visible_Resource_Manager::Visible_Resource_Manager(RGE_Player* param_1, int param_2) {
     // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BB30
@@ -216,4 +221,67 @@ int Visible_Resource_Manager::Remove_Resource(int param_1, int param_2) {
     }
 
     return 0;
+}
+
+VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int param_1, int param_2, int param_3, int param_4, int* param_5, int param_6) {
+    // Source of truth: vis_unit.cpp.decomp @ 0x0053C050
+    // TODO: Confirm DAT_005776d0 / DAT_005776d8 exact constants from ASM-backed data section.
+    (void)param_3;
+    if (param_4 < 0 || this->num_visible_resource_lists == 0 || param_4 >= this->num_visible_resource_lists) {
+        return nullptr;
+    }
+
+    int count = this->VR_ListUsed[param_4];
+    if (count <= 0) {
+        return nullptr;
+    }
+
+    VISIBLE_RESOURCE_REC* records = this->VR_List[param_4];
+    int best_score = 9999;
+    VISIBLE_RESOURCE_REC* best = nullptr;
+    for (int i = 0; i < count; ++i) {
+        VISIBLE_RESOURCE_REC* rec = &records[i];
+        int xd = (int)rec->pos_x;
+        int yd = (int)rec->pos_y;
+
+        int dx = xd - param_1;
+        if (dx < 0) {
+            dx = -dx;
+        }
+        int dy = yd - param_2;
+        if (dy < 0) {
+            dy = -dy;
+        }
+
+        int score = dy;
+        if (dx > dy) {
+            score = (dx - vis_unit_ftol(0.85 - ((double)dy * 0.66))) - dy;
+        } else {
+            score = (dy - vis_unit_ftol(0.85 - ((double)dx * 0.66))) - dx;
+        }
+
+        if (score < best_score) {
+            int rejected = 0;
+            if (param_6 != 0 && param_5 != nullptr) {
+                for (int j = 0; j < param_6; ++j) {
+                    if (rec->object_id == param_5[j]) {
+                        rejected = 1;
+                        break;
+                    }
+                }
+            }
+            if (rejected == 0) {
+                best_score = score;
+                best = rec;
+            }
+        }
+    }
+
+    if (best_score > 0xFF) {
+        best_score = 0xFF;
+    }
+    if (best != nullptr) {
+        best->distance = (uchar)best_score;
+    }
+    return best;
 }

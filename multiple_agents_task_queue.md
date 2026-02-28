@@ -3522,7 +3522,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 245 — Music + sound driver + mouseptr parity (~2140-line gap)
 - [x] Assigned to agent (worker-4, clone_4)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `8383f58` (27 insertions). Only Mouseptr::Shutdown_Mouse added. Severely under-delivered: 2130-line gap remains.
 - Goal: close the gap in audio/input infrastructure:
   - `music.cpp.decomp` (1307) → `music.cpp` (711) = gap ~596
   - `sounddrv.cpp.decomp` (1366) → `Sounddrv.cpp` (862) = gap ~504
@@ -3537,7 +3538,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 246 — Pnl_edit + Pnl_inp parity (~1430-line gap)
 - [x] Assigned to agent (worker-6, clone_6)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `f44afc7` (75 insertions to Pnl_edit.cpp). Under-delivered: 1359-line gap remains.
 - Goal: close the gap in text input/edit panels:
   - `pnl_edit.cpp.decomp` (1582) → `Pnl_edit.cpp` (658) = gap ~924
   - `pnl_inp.cpp.decomp` (1343) → `Pnl_inp.cpp` (833) = gap ~510
@@ -3569,7 +3571,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: gap cut by at least 2500 lines.
 
 ## Task 249 — Scenario + TRIBE scenario parity (~3000-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent (worker-4, clone_4)
 - [ ] Finished
 - Goal: close the gap in scenario management:
   - scenario.cpp.decomp (2903) -> scenario.cpp (977) = gap ~1926
@@ -3582,7 +3584,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: combined gap cut by at least 2000 lines.
 
 ## Task 250 — TShape sprite rendering continuation (~1745-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent (worker-6, clone_6)
 - [ ] Finished
 - Goal: Task 241 only added 34 lines. This continuation must close the real gap: shape.cpp.decomp (3837) -> TShape.cpp (2092) = gap ~1745. TShape handles SLP sprite loading, frame rendering, palette application, shadow drawing.
 - Implement (decomp-first from shape.cpp.decomp): Enumerate EVERY missing function. There should be 20+ unimplemented functions. Focus on: SLP frame decoding, draw methods, palette transforms, outline rendering, shadow methods.
