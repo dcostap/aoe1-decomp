@@ -19,6 +19,7 @@ static short tact_dar_player_num(RGE_Action_Object* obj) {
     return obj->owner->world->player_num;
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE530
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x6c;
@@ -30,6 +31,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(int param_1, RG
     }
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE5F0
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
     RGE_Action::setup(param_1);
     this->task = param_2;
@@ -40,6 +42,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Obje
     this->flags = (uchar*)calloc((int)player_num, 1);
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE670
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {
     RGE_Action::setup(param_1);
     this->task = param_2;
@@ -64,6 +67,7 @@ int TRIBE_Action_Discovery_Artifact::setup(int param_1, RGE_Action_Object* param
 RGE_Action_List* TRIBE_Action_Discovery_Artifact::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
 void TRIBE_Action_Discovery_Artifact::rehook() { RGE_Action::rehook(); }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE6D0
 void TRIBE_Action_Discovery_Artifact::save(int param_1) {
     RGE_Action::save(param_1);
     short player_num = tact_dar_player_num(this->obj);
@@ -74,6 +78,7 @@ void TRIBE_Action_Discovery_Artifact::save(int param_1) {
 
 short TRIBE_Action_Discovery_Artifact::type() { return this->action_type; }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE700
 void TRIBE_Action_Discovery_Artifact::first_in_stack(uchar param_1) {
     if (param_1 != 0) {
         this->set_state(6);
@@ -83,6 +88,7 @@ void TRIBE_Action_Discovery_Artifact::first_in_stack(uchar param_1) {
 uchar TRIBE_Action_Discovery_Artifact::inside_obj_update() { return RGE_Action::inside_obj_update(); }
 uchar TRIBE_Action_Discovery_Artifact::idle_update() { return RGE_Action::idle_update(); }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE720
 void TRIBE_Action_Discovery_Artifact::set_state(uchar param_1) {
     this->state = param_1;
     if (param_1 == 10) {
@@ -98,6 +104,7 @@ static float tact_dar_read_master_float(RGE_Master_Static_Object* master, int of
     return v;
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE7A0
 void TRIBE_Action_Discovery_Artifact::check_objects() {
     if (this->obj == nullptr || this->obj->owner == nullptr || this->obj->owner->world == nullptr) {
         return;
@@ -140,6 +147,17 @@ void TRIBE_Action_Discovery_Artifact::check_objects() {
                                 short player_num = world->player_num;
                                 if ((0 <= pid) && (pid < player_num) && (this->flags[pid] == 0)) {
                                     this->flags[pid] = 1;
+                                    int ai_container = *(int*)((char*)o->owner + 0x24);
+                                    if (ai_container != 0) {
+                                        int ai_module = *(int*)(ai_container + 0x288);
+                                        if (ai_module != 0) {
+                                            typedef void(__thiscall* DiscoveryCallback)(void*, RGE_Player*, float, float, float);
+                                            DiscoveryCallback cb = *(DiscoveryCallback*)(*(int*)ai_module + 0x18);
+                                            if (cb != nullptr) {
+                                                cb((void*)ai_module, o->owner, o->world_x, o->world_y, o->world_z);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             node = node->next;
@@ -151,6 +169,7 @@ void TRIBE_Action_Discovery_Artifact::check_objects() {
     }
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740
 uchar TRIBE_Action_Discovery_Artifact::update() {
     if (this->state == 1) return 1;
     if (this->state == 6) {
