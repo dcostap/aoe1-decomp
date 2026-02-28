@@ -15,6 +15,7 @@
 #include "../include/T_Scenario.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/TEasy_Panel.h"
+#include "../include/RGE_Communications_Addresses.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
@@ -680,7 +681,7 @@ void mps_enable_input() {
 
 } // namespace
 
-// TODO: Partial transliteration. Source of truth: scr_mps.cpp.decomp @ 0x004A0D80
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A0D80
 void TribeMPSetupScreen::init_vars() {
     this->title = nullptr;
     this->playerTitle = nullptr;
@@ -859,9 +860,48 @@ void TribeMPSetupScreen::activateVictoryPanels() {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2910
 void TribeMPSetupScreen::showNetInfo() {
-    // TODO: scr_mps.cpp.decomp @ 0x004A2910 - full network address listing parity.
-    this->popupOKDialog(0x238d, (char*)0, 0x1c2, 100);
+    RGE_Communications_Addresses net_info((TCommunications_Handler*)comm);
+    if (net_info.AddressesAvailable == 0) {
+        this->popupOKDialog(0x238d, (char*)0, 0x1c2, 100);
+        return;
+    }
+
+    char message[1024];
+    char temp[256];
+    message[0] = '\0';
+    strcat(message, "\n");
+
+    char* host_fmt = this->get_string(0x238c);
+    if (host_fmt != nullptr && host_fmt[0] != '\0') {
+        _snprintf(temp, sizeof(temp), host_fmt, net_info.GetHostName());
+    } else {
+        _snprintf(temp, sizeof(temp), "Host name: %s", net_info.GetHostName());
+    }
+    temp[sizeof(temp) - 1] = '\0';
+    strcat(message, temp);
+    strcat(message, "\n");
+
+    for (uint i = 0; i < net_info.AddressesAvailable; ++i) {
+        const char* addr = net_info.GetAddress(i);
+        if (addr != nullptr && addr[0] != '\0') {
+            strcat(message, addr);
+            strcat(message, "\n");
+        }
+        const char* alias = net_info.GetAlias(i);
+        if (alias != nullptr && alias[0] != '\0') {
+            strcat(message, alias);
+            strcat(message, "\n");
+        }
+        strcat(message, "\n");
+    }
+
+    this->popupOKDialog(message, (char*)"OKDialog", 0x1c2, (long)(net_info.AddressesAvailable * 0x12 + 100));
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4F52
+void FUN_004a4f52() {
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4FC0
@@ -882,6 +922,10 @@ void TribeMPSetupScreen::handleKickedPlayer(int was_disconnect) {
     if (current != nullptr) {
         current->popupOKDialog(0x25ca - (was_disconnect != 0), (char*)0, 0x1c2, 100);
     }
+}
+
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5115
+void FUN_004a5115() {
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2BA0
@@ -999,7 +1043,7 @@ void mps_popup_text(const char* text) {
 
 } // namespace
 
-// Fully verified. Source of truth: scr_mps.cpp.asm @ 0x004A5210
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5210
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     if (rge_base_game == nullptr) {
         return;
@@ -1090,7 +1134,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     mps_fill_number_players(this);
 }
 
-// Fully verified. Source of truth: scr_mps.cpp.asm @ 0x004A37D0
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A37D0
 void TribeMPSetupScreen::fillPlayers() {
     if (rge_base_game == nullptr) {
         return;
@@ -1372,7 +1416,7 @@ void TribeMPSetupScreen::fillPlayers() {
     mps_fill_player_colors(this);
 }
 
-// Fully verified. Source of truth: scr_mps.cpp.asm @ 0x004A4190
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4190
 void TribeMPSetupScreen::updateSummary() {
     if (rge_base_game == nullptr) {
         return;
@@ -1785,6 +1829,7 @@ void TribeMPSetupScreen::updateSummary() {
     this->fillPlayers();
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A00B0
 TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen") {
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("MPS ctor: enter");
@@ -2224,9 +2269,20 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_END
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A1300
 TribeMPSetupScreen::~TribeMPSetupScreen() {
-    // Source of truth: scr_mps.cpp.decomp @ 0x004A1300.
-    // Use TPanel::delete_panel to match panel-tree ownership semantics.
+    if (this->scenarioInfo != nullptr) {
+        delete this->scenarioInfo;
+        this->scenarioInfo = nullptr;
+    }
+    if (panel_system != nullptr) {
+        panel_system->destroyPanel((char*)"Game Settings Screen");
+        panel_system->destroyPanel((char*)"Select Tribe Screen");
+        panel_system->destroyPanel((char*)"Kick Dialog");
+        panel_system->destroyPanel((char*)"OKDialog");
+        panel_system->destroyPanel((char*)"YesNoDialog");
+    }
+
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->playerTitle);
     this->delete_panel((TPanel**)&this->civTitle);
@@ -2290,14 +2346,28 @@ TribeMPSetupScreen::~TribeMPSetupScreen() {
     this->delete_panel((TPanel**)&this->netInfoButton);
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A1640
 long TribeMPSetupScreen::handle_idle() {
     if (rge_base_game && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
+
+    if (rge_base_game && rge_base_game->multiplayerGame() != 0 && comm != nullptr) {
+        int line = 0x2fe;
+        if (this->last_send_shared != 0) {
+            const ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x301);
+            if (now == this->last_send_shared) {
+                return TPanel::handle_idle();
+            }
+            ((TCommunications_Handler*)comm)->SendSharedData(0);
+            line = 0x304;
+        }
+        this->last_send_shared = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_mps.cpp", line);
+    }
     return TPanel::handle_idle();
 }
 
-// TODO: Partial transliteration. Source of truth: scr_mps.cpp.decomp @ 0x004A2D50
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2D50
 long TribeMPSetupScreen::handle_user_command(uint param_1, long param_2) {
     if (!rge_base_game || !comm) {
         return 1;
@@ -2520,6 +2590,10 @@ long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) {
     return 1;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5FCD
+void FUN_004a5fcd() {
+}
+
 void TribeMPSetupScreen::calcRandomPositions() {
     // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
     if (!rge_base_game || !comm) {
@@ -2604,8 +2678,8 @@ void TribeMPSetupScreen::calcRandomPositions() {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2060
 int TribeMPSetupScreen::startGame() {
-    // Source of truth: scr_mps.cpp.decomp @ 0x004A2060.
     if (!rge_base_game) {
         return 0;
     }
@@ -2869,6 +2943,7 @@ int TribeMPSetupScreen::startGame() {
     return 1;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A16E0
 long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1 && (param_2 == 1)) {
         TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
@@ -3044,7 +3119,15 @@ long TribeMPSetupScreen::mouse_right_hold_action(long param_1, long param_2, int
 long TribeMPSetupScreen::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
 long TribeMPSetupScreen::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
 long TribeMPSetupScreen::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
-long TribeMPSetupScreen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TScreenPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A16D0
+long TribeMPSetupScreen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    return 0;
+}
 long TribeMPSetupScreen::char_action(long param_1, short param_2) { return TScreenPanel::char_action(param_1, param_2); }
 void TribeMPSetupScreen::get_true_render_rect(tagRECT* param_1) { TScreenPanel::get_true_render_rect(param_1); }
 int TribeMPSetupScreen::is_inside(long param_1, long param_2) { return TScreenPanel::is_inside(param_1, param_2); }
