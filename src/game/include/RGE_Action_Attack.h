@@ -6,6 +6,10 @@ class RGE_Action_Attack : public RGE_Action {
 public:
     RGE_Action_Attack() = default;
     RGE_Action_Attack(int param_1, RGE_Action_Object* param_2);
+    RGE_Action_Attack(RGE_Action_Object* param_1, RGE_Static_Object* param_2, RGE_Sprite* param_3, RGE_Sprite* param_4, RGE_Sprite* param_5,
+                      float param_6, float param_7, short param_8, short param_9);
+    RGE_Action_Attack(RGE_Action_Object* param_1, float param_2, float param_3, float param_4, RGE_Sprite* param_5, RGE_Sprite* param_6,
+                      RGE_Sprite* param_7, float param_8, float param_9, short param_10, short param_11);
 
     // Virtuals (best-effort)
     virtual ~RGE_Action_Attack(); // vt[0] (0x0)

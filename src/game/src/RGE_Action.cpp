@@ -18,6 +18,42 @@ static RGE_Action_List* action_alloc_list(RGE_Action_Object* obj) {
 }
 }
 
+RGE_Action::RGE_Action() {
+    this->action_type = 0;
+    this->obj = nullptr;
+    this->state = 0;
+    this->target_obj = nullptr;
+    this->target_obj2 = nullptr;
+    this->targetID = -1;
+    this->target2ID = -1;
+    this->target_x = 0.0f;
+    this->target_y = 0.0f;
+    this->target_z = 0.0f;
+    this->timer = 0.0f;
+    this->task = nullptr;
+    this->sub_actions = nullptr;
+    this->sprite = nullptr;
+    this->subActionValue = 0;
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407460
+RGE_Action::RGE_Action(int param_1, RGE_Action_Object* param_2, int param_3) {
+    this->targetID = -1;
+    this->target2ID = -1;
+    if (param_3 != 0) {
+        this->setup(param_1, param_2);
+    }
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x004074C0
+RGE_Action::RGE_Action(RGE_Action_Object* param_1, int param_2) {
+    this->targetID = -1;
+    this->target2ID = -1;
+    if (param_2 != 0) {
+        this->setup(param_1);
+    }
+}
+
 // Fully verified. Source of truth: action.cpp.decomp @ 0x004074F0
 RGE_Action::~RGE_Action() {
     this->set_target_obj(nullptr);
@@ -329,4 +365,19 @@ uchar RGE_Action::subAction() const {
 // Fully verified. Source of truth: action.cpp.decomp @ 0x00407D70
 void RGE_Action::setSubAction(uchar param_1) {
     this->subActionValue = param_1;
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407D30
+float RGE_Action::targetX() const {
+    return this->target_x;
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407D40
+float RGE_Action::targetY() const {
+    return this->target_y;
+}
+
+// Fully verified. Source of truth: action.cpp.decomp @ 0x00407D50
+float RGE_Action::targetZ() const {
+    return this->target_z;
 }
