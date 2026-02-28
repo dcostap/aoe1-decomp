@@ -8,6 +8,11 @@
 #include "../include/XYZBYTEPoint.h"
 #include "../include/globals.h"
 
+// Fully verified. Source of truth: act_move.cpp.decomp @ 0x0040582E
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+// Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405BCA
+// ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405510
 RGE_Action_Move_To::RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);

@@ -24,6 +24,40 @@
 #include <cmath>
 #include <new>
 
+static InfluenceMap iMap;
+static InfluenceMap losMap;
+static InfluenceMap attackMap;
+
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D6AD0
+static void E9() {
+    iMap = InfluenceMap(0xFE, 0xFE, 0);
+}
+
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D6B20
+static void E14() {
+    losMap = InfluenceMap(0x32, 0x32, 0);
+}
+
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D6B70
+static void E19() {
+    attackMap = InfluenceMap(0x32, 0x32, 0);
+}
+
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
+static void FUN_004d90f1() {
+    // TODO: STUB - decomp/asm indicates switch jump table thunk.
+}
+
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
+static void FUN_004da16d() {
+    // TODO: STUB - decomp/asm indicates switch jump table thunk.
+}
+
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
+static void FUN_004e0165() {
+    // TODO: STUB - decomp/asm indicates switch jump table thunk.
+}
+
 namespace {
 constexpr int kResourceTypeSlots = 4;
 constexpr int kQuadrantCount = 4;
@@ -2170,83 +2204,124 @@ int TribeInformationAIModule::numberStoragePits() {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004D9B20
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D9B20
+
 ConstructionItem* TribeInformationAIModule::placeDock(BuildItem*, float, float, int, int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004D9EC0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D9EC0
+
 int TribeInformationAIModule::numberDocksInZone(int, RGE_Zone_Map*) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004D9FC0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D9FC0
+
 int TribeInformationAIModule::closestDockDistance(int, int) {
     return -1;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB620
+// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB0D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB0D0
+
 int TribeInformationAIModule::isBuilding(RGE_Static_Object* param_1) {
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
         return 0;
     }
-    return ((param_1->master_obj->construction_radius_x > 0.0f) || (param_1->master_obj->construction_radius_y > 0.0f)) ? 1 : 0;
+    short object_group = param_1->master_obj->object_group;
+    return ((object_group == 3) || (object_group == 0x1B)) ? 1 : 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB640
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB100
+
 int TribeInformationAIModule::isUnitBuilding(RGE_Static_Object* param_1) {
-    return this->isBuilding(param_1);
+    if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
+        return 0;
+    }
+    if (param_1->master_obj->object_group != 3) {
+        return 0;
+    }
+    short id = param_1->master_obj->id;
+    if ((id != 0x6D) && (id != 0x0C) && (id != 0x57) && (id != 0x31) && (id != 0x2D) && (id != 0x00) && (id != 0x65) && (id != 0x68)) {
+        return 0;
+    }
+    return 1;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB660
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB160
+
 int TribeInformationAIModule::isBoat(RGE_Static_Object* param_1) {
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
         return 0;
     }
-    return (param_1->master_obj->object_group == 4) ? 1 : 0;
+    short object_group = param_1->master_obj->object_group;
+    return ((object_group == 0x15) || (object_group == 2) || (object_group == 0x14) || (object_group == 0x16)) ? 1 : 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB680
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB190
+
 int TribeInformationAIModule::isWall(RGE_Static_Object* param_1) {
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
         return 0;
     }
-    return (param_1->master_obj->id == 0x48) ? 1 : 0;
+    return (param_1->master_obj->object_group == 0x1B) ? 1 : 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB6A0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB1B0
+
 int TribeInformationAIModule::isTower(RGE_Static_Object* param_1) {
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
         return 0;
     }
-    return (param_1->master_obj->id == 0x4B) ? 1 : 0;
+    short id = param_1->master_obj->id;
+    return ((id == 0x4F) || (id == 199) || (id == 0x45) || (id == 0x17F) || (id == 0x17C)) ? 1 : 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB6C0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB1F0
+
 int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object*, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DB940
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB240
+
 int TribeInformationAIModule::isLandAccessible(RGE_Static_Object*, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DBA20
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB280
+
 int TribeInformationAIModule::influenceCanPlaceStructure(BuildItem*) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DBA70
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DB290
+
 ConstructionItem* TribeInformationAIModule::influencePlaceStructure(BuildItem*, int, int, float, char*, int, int, int, int, PlacementState*, ulong) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DC6D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DC1B0
+
 void TribeInformationAIModule::addObject(RGE_Static_Object* param_1) {
     this->addImportantObject(param_1, 0);
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DC8D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DC3A0
+
 void TribeInformationAIModule::removeObject(int param_1) {
     for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
         if (this->importantObjectMemory[i].id == param_1) {
@@ -2257,70 +2332,98 @@ void TribeInformationAIModule::removeObject(int param_1) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DCAC0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DC490
+
 ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(int, int*, int, int*, int*, int*, int*) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DCCF0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DC750
+
 ObjectMemory* TribeInformationAIModule::objectToAttack(int, int, int, int, int*) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD130
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DCF10
+
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(int, TacticalAIGroup*, AttackState*, ulong) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD620
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DDD40
+
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int, int*, int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD890
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DE1F0
+
 ObjectMemory* TribeInformationAIModule::objectToDefend(int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD930
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DE330
+
 ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int, int, int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DDA20
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DE4A0
+
 int TribeInformationAIModule::defendPriority(int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DDA90
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DE600
+
 int TribeInformationAIModule::checkDefend(RGE_Static_Object*) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DDC10
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DEA70
+
 int TribeInformationAIModule::numberItemsToDefend() {
     return this->itemsToDefend.numberValue;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DDC30
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DEA80
+
 ObjectMemory* TribeInformationAIModule::objectToTradeWith(int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DDD70
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DEBA0
+
 int TribeInformationAIModule::findGatherPosition(XYPoint*, int, int, int, int, RGE_Static_Object*, XYPoint*) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DE560
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DEE90
+
 void TribeInformationAIModule::setupInfluenceMap(int, int, XYPoint*, XYPoint*, XYPoint*) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFC70
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DFD40
+
 int TribeInformationAIModule::groupInfluenceDimension(int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFD60
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DFD60
+
 ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int, int, int*, int*) {
     ObjectMemory result{};
     result.id = -1;
@@ -2330,6 +2433,8 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int, int, int*, in
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFEF0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0040
+
 int TribeInformationAIModule::isNextTo(XYPoint* param_1, XYPoint* param_2, int param_3) {
     if ((param_1 == nullptr) || (param_2 == nullptr)) {
         return 0;
@@ -2343,54 +2448,76 @@ int TribeInformationAIModule::isNextTo(XYPoint* param_1, XYPoint* param_2, int p
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFF60
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0090
+
 int TribeInformationAIModule::facetTo(XYPoint*, XYPoint*) {
     return -1;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFFB0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0100
+
 int TribeInformationAIModule::placementCode(int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFFE0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E02A0
+
 void TribeInformationAIModule::storeLot(int, uchar, uchar, uchar) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E01D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0470
+
 void TribeInformationAIModule::removeLot(int, uchar, uchar, uchar) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0320
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0510
+
 BuildingLot* TribeInformationAIModule::availableLot(int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E03A0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0560
+
 int TribeInformationAIModule::invalidLot(int, uchar, uchar) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0460
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E05C0
+
 int TribeInformationAIModule::undesirableLot(int, uchar, uchar, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0720
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0670
+
 void TribeInformationAIModule::setupWalls(int, int, int, int, int, int, int, int) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0D70
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0F40
+
 int TribeInformationAIModule::insideGate(int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0DF0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0F90
+
 int TribeInformationAIModule::storeAttackMemory(uchar param_1, uchar param_2, uchar param_3, uchar param_4, uchar param_5, short param_6, uchar param_7,
                                                 ulong param_8, int param_9) {
     return this->storeAttackMemory(param_1, param_2, param_3, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9);
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0EE0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0FD0
+
 int TribeInformationAIModule::storeAttackMemory(uchar param_1, uchar param_2, uchar param_3, uchar param_4, uchar param_5, uchar param_6, uchar param_7,
                                                 short param_8, uchar param_9, ulong param_10, int param_11) {
     if (this->attackMemories == nullptr) {
@@ -2417,6 +2544,8 @@ int TribeInformationAIModule::storeAttackMemory(uchar param_1, uchar param_2, uc
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E10F0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1190
+
 void TribeInformationAIModule::removeAttackMemory(int param_1) {
     if ((param_1 < 0) || (param_1 >= this->maxAttackMemories) || (this->attackMemories == nullptr)) {
         return;
@@ -2425,6 +2554,8 @@ void TribeInformationAIModule::removeAttackMemory(int param_1) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1120
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1230
+
 AttackMemory* TribeInformationAIModule::attackMemory(int param_1) {
     if ((param_1 < 0) || (param_1 >= this->maxAttackMemories) || (this->attackMemories == nullptr)) {
         return nullptr;
@@ -2436,46 +2567,64 @@ AttackMemory* TribeInformationAIModule::attackMemory(int param_1) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1520
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1730
+
 int TribeInformationAIModule::unexploredPlayerLocation(int, XYPoint*) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E16D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1930
+
 int TribeInformationAIModule::numberUnitsWithinXTiles(int, int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E17B0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1A00
+
 int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(RGE_Static_Object*, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E18D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1AF0
+
 int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Static_Object*, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1A40
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1BD0
+
 int TribeInformationAIModule::withinXTilesOfObject(RGE_Static_Object*, int, int, int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1BD0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E1D10
+
 int TribeInformationAIModule::findStagingPoint(XYPoint, XYPoint*, int, int, int, int, int) {
     return -1;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1F70
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E21E0
+
 int TribeInformationAIModule::setupLOSMap(int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E2030
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E22F0
+
 int TribeInformationAIModule::setupAttackMap(int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E30E0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3140
+
 int TribeInformationAIModule::numberGranaries() {
     int count = 0;
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
@@ -2491,95 +2640,133 @@ int TribeInformationAIModule::numberGranaries() {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3130
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3210
+
 int TribeInformationAIModule::amountForageBushesInXTiles(int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3230
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E32C0
+
 int TribeInformationAIModule::amountResourceTypesInXTiles(int, int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3380
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3390
+
 float TribeInformationAIModule::damagePerSecond(int, int, int) {
     return 0.0f;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E35A0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E34C0
+
 int TribeInformationAIModule::costToLoseUnit(int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3690
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3500
+
 int TribeInformationAIModule::benefitToKillUnit(int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E37D0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3530
+
 int TribeInformationAIModule::inRangeOfUnits(int, int, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3A10
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3640
+
 ObjectMemory* TribeInformationAIModule::wonderToAttack(int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3A90
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3840
+
 ObjectMemory* TribeInformationAIModule::ruinToCapture(int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3B10
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E39D0
+
 ObjectMemory* TribeInformationAIModule::artifactToCapture(int) {
     return nullptr;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3B90
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3B80
+
 int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3BF0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3C90
+
 int TribeInformationAIModule::dropsitesWithinRequiredDistance(int*, int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3D40
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3E90
+
 int TribeInformationAIModule::numberAvailableStoragePits(int) {
     return this->numberStoragePits();
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3D90
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E3F80
+
 int TribeInformationAIModule::numberAvailableGranaries() {
     return this->numberGranaries();
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3DE0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4040
+
 void TribeInformationAIModule::lookAtMap() {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3E40
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E41C0
+
 float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup*, RGE_Static_Object*) {
     return 0.0f;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3F40
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4240
+
 float TribeInformationAIModule::damageInflictedPerSecond(int*, int, RGE_Static_Object*) {
     return 0.0f;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4070
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E42B0
+
 float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup*, RGE_Static_Object*) {
     return 0.0f;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4170
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4350
+
 float TribeInformationAIModule::timeToBeKilled(int*, int, RGE_Static_Object*) {
     return 0.0f;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E42B0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E43E0
+
 int TribeInformationAIModule::closestDropsiteResID(int param_1) {
     if ((param_1 < 0) || (param_1 >= kResourceTypeSlots)) {
         return -1;
@@ -2588,20 +2775,28 @@ int TribeInformationAIModule::closestDropsiteResID(int param_1) {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4300
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4400
+
 int TribeInformationAIModule::calculatePlayVariation(int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E43E0
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4450
+
 int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* param_1) {
     return tribe_convert_unit_to_history_index(param_1);
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4480
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4500
+
 void TribeInformationAIModule::loadUnitHistory() {
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4510
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E45A0
+
 void TribeInformationAIModule::unitsThatAreMostBuilt(int* param_1, int* param_2) {
     if (param_1 != nullptr) {
         *param_1 = -1;
@@ -2612,6 +2807,8 @@ void TribeInformationAIModule::unitsThatAreMostBuilt(int* param_1, int* param_2)
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4590
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4610
+
 void TribeInformationAIModule::unitsThatAreLeastBuilt(int* param_1, int* param_2) {
     if (param_1 != nullptr) {
         *param_1 = -1;
@@ -2622,11 +2819,15 @@ void TribeInformationAIModule::unitsThatAreLeastBuilt(int* param_1, int* param_2
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4610
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4680
+
 int TribeInformationAIModule::acceptablePotentialDropsiteArea(int, int) {
     return 0;
 }
 
 // TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E4740
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E4790
+
 int TribeInformationAIModule::percentTilesExploredInPositionQuadrant(int, int) {
     return 0;
 }
