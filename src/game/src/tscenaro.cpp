@@ -15,68 +15,6 @@
 #include <string.h>
 
 namespace {
-static int t_scenario_get_player_food(T_Scenario* scenario, int idx) {
-    if (scenario == nullptr || idx < 0 || idx >= 16) {
-        return 0;
-    }
-    return scenario->player_info[idx].Food;
-}
-
-static int t_scenario_get_player_stone(T_Scenario* scenario, int idx) {
-    if (scenario == nullptr || idx < 0 || idx >= 16) {
-        return 0;
-    }
-    return scenario->player_info[idx].Stone;
-}
-
-static int t_scenario_get_player_gold(T_Scenario* scenario, int idx) {
-    if (scenario == nullptr || idx < 0 || idx >= 16) {
-        return 0;
-    }
-    return scenario->player_info[idx].Gold;
-}
-
-static int t_scenario_get_player_wood(T_Scenario* scenario, int idx) {
-    if (scenario == nullptr || idx < 0 || idx >= 16) {
-        return 0;
-    }
-    return scenario->player_info[idx].Wood;
-}
-
-static void t_scenario_save_attributes_into_players(T_Scenario* scenario) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052BA90
-    int player_slot = 1;
-    if (scenario->world->player_num <= 1) {
-        return;
-    }
-
-    int allied_idx = 0;
-    int opp_row = 0;
-    do {
-        int scen_player = player_slot - 1;
-        RGE_Player* player = scenario->world->players[player_slot];
-        player->new_attribute_num(0, (float)t_scenario_get_player_food(scenario, scen_player));
-        player->new_attribute_num(2, (float)t_scenario_get_player_stone(scenario, scen_player));
-        player->new_attribute_num(3, (float)t_scenario_get_player_gold(scenario, scen_player));
-        player->new_attribute_num(1, (float)t_scenario_get_player_wood(scenario, scen_player));
-
-        int rel_player = 1;
-        if (scenario->world->player_num > 1) {
-            do {
-                if (rel_player != player_slot) {
-                    player->set_relation(rel_player, (uchar)scenario->Opponent[opp_row].Attitude[rel_player - 1]);
-                }
-                rel_player = rel_player + 1;
-            } while (rel_player < scenario->world->player_num);
-        }
-
-        player->set_allied_victory((uchar)scenario->AlliedVictory[allied_idx]);
-
-        player_slot = player_slot + 1;
-        opp_row = opp_row + 1;
-        allied_idx = allied_idx + 1;
-    } while (player_slot < scenario->world->player_num);
-}
 } // namespace
 
 T_Scenario::T_Scenario(RGE_Game_World* param_1)
@@ -510,6 +448,41 @@ void T_Scenario::update() {
     RGE_Scenario::update();
 }
 
+void T_Scenario::SaveAttributesIntoPlayers() {
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052BA90
+    int player_slot = 1;
+    if (this->world->player_num <= 1) {
+        return;
+    }
+
+    int allied_idx = 0;
+    int opp_row = 0;
+    do {
+        int scen_player = player_slot - 1;
+        RGE_Player* player = this->world->players[player_slot];
+        player->new_attribute_num(0, (float)this->Get_player_Food(scen_player));
+        player->new_attribute_num(2, (float)this->Get_player_Stone(scen_player));
+        player->new_attribute_num(3, (float)this->Get_player_Gold(scen_player));
+        player->new_attribute_num(1, (float)this->Get_player_Wood(scen_player));
+
+        int rel_player = 1;
+        if (this->world->player_num > 1) {
+            do {
+                if (rel_player != player_slot) {
+                    player->set_relation(rel_player, (uchar)this->Opponent[opp_row].Attitude[rel_player - 1]);
+                }
+                rel_player = rel_player + 1;
+            } while (rel_player < this->world->player_num);
+        }
+
+        player->set_allied_victory((uchar)this->AlliedVictory[allied_idx]);
+
+        player_slot = player_slot + 1;
+        opp_row = opp_row + 1;
+        allied_idx = allied_idx + 1;
+    } while (player_slot < this->world->player_num);
+}
+
 int T_Scenario::any_sp_victory() {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052C1E0
     for (int player = 0; player < 16; ++player) {
@@ -817,7 +790,7 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
     }
 
     if (param_1 != 0) {
-        t_scenario_save_attributes_into_players(this);
+        this->SaveAttributesIntoPlayers();
     }
 
     int player_num = this->world->player_num;
