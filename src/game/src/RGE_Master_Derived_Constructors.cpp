@@ -710,20 +710,29 @@ RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object()
     this->master_type = 0x19;
 }
 
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x004510C0
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(RGE_Master_Doppleganger_Object* param_1, int param_2)
-    : RGE_Master_Animated_Object((RGE_Master_Animated_Object*)param_1, (param_2 != 0) ? 1 : 0) {
+    : RGE_Master_Animated_Object((RGE_Master_Animated_Object*)param_1, 0) {
     this->master_type = 0x19;
+    if (param_2 != 0) {
+        this->setup(param_1);
+    }
 }
 
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x00451140
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
-    : RGE_Master_Animated_Object(param_1, param_2, param_3, (param_4 != 0) ? 1 : 0) {
+    : RGE_Master_Animated_Object(param_1, param_2, param_3, 0) {
     this->master_type = 0x19;
+    if (param_4 != 0) {
+        this->setup(param_1, param_2, param_3);
+    }
 }
 
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x004511B0
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
-    : RGE_Master_Animated_Object(param_1, param_2, param_3, param_4, (param_5 != 0) ? 1 : 0) {
+    : RGE_Master_Animated_Object(param_1, param_2, param_3, param_4, 0) {
     this->master_type = 0x19;
     if (param_5 != 0) {
-        this->recyclable = 1;
+        this->setup(param_1, param_2, param_3, param_4);
     }
 }
