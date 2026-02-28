@@ -1072,7 +1072,7 @@ TDrawArea::~TDrawArea() {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444110
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444110
 // Returns: 0=OK, 1=display mode changed, 2=restored, 3=fatal
 uchar TDrawArea::CheckSurface() {
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
@@ -1118,7 +1118,7 @@ uchar TDrawArea::CheckSurface() {
     return 0;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444040
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444040
 // Decomp signature: Init(TDrawSystem*, long width, long height, int use_trans, int is_primary)
 // Our signature keeps wnd/use_sys_mem for compat but ignores them per decomp
 int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem) {
@@ -1158,7 +1158,7 @@ int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int u
     return 1;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004443D0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004443D0
 void TDrawArea::SetSize(long width, long height, int pitch) {
     TDrawSystem* ds = this->DrawSystem;
 
@@ -1169,6 +1169,12 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
 
         if (width < 1) width = 1;
         if (height < 1) height = 1;
+        long surface_height = (pitch == 0) ? height : (height + 10);
+        this->ExtendedLines = pitch;
+        if (this->BitmapInfo != nullptr) {
+            this->BitmapInfo->bmiHeader.biWidth = width;
+            this->BitmapInfo->bmiHeader.biHeight = (this->Orien == 1) ? -surface_height : surface_height;
+        }
 
         this->Width = width;
         this->Height = height;
@@ -1192,7 +1198,7 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
                 ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
             }
             ddsd.dwWidth = width;
-            ddsd.dwHeight = height;
+            ddsd.dwHeight = surface_height;
 
             HRESULT hr = ds->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
             if (hr == DD_OK) {
@@ -1207,6 +1213,8 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
                     ddbltfx.dwSize = sizeof(ddbltfx);
                     ddbltfx.dwFillColor = 0;
                     this->DrawSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+                } else if (this->DrawSystem != nullptr) {
+                    this->DrawSystem->GetCreateErrorNum(hr);
                 }
             }
         } else {
@@ -1235,7 +1243,7 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
     this->CurSpanList = this->SpanList;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444A60
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444A60
 void TDrawArea::SetFloatOffsets(int p1, int p2) {
     // Source of truth: `Drawarea.cpp.decomp` / `Drawarea.cpp.asm`.
     int bytes = this->Height << 2;
@@ -1266,7 +1274,7 @@ void TDrawArea::SetFloatOffsets(int p1, int p2) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444680
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444680
 void TDrawArea::Clear(tagRECT* rect, int color) {
     if (!this->DrawSurface) return;
 
@@ -1401,7 +1409,7 @@ void TDrawArea::OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444270
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444270
 uchar* TDrawArea::Lock(char* name, int p2) {
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 1) {
         return this->Bits; // WinG path
@@ -1423,7 +1431,7 @@ uchar* TDrawArea::Lock(char* name, int p2) {
     return this->Bits;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444300
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444300
 void TDrawArea::Unlock(char* name) {
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 1) return;
     if (this->DrawSurface != nullptr && this->Bits != nullptr) {
@@ -1467,7 +1475,7 @@ void TDrawArea::SetOverlayTrans(int enabled, uchar trans_color) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444B10
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444B10
 void TDrawArea::SetInfo() {
     // Source of truth: `Drawarea.cpp.decomp` / `.asm`.
     this->Pitch = (int)this->SurfaceDesc.lPitch;
@@ -1484,7 +1492,7 @@ void TDrawArea::SetInfo() {
     this->UsingVidMem = 1;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444990
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444990
 void TDrawArea::SetAccessOffsets() {
     // Source of truth: `Drawarea.cpp.decomp` / `.asm`.
     int bytes = this->Height << 2;
@@ -1735,7 +1743,7 @@ static void normalize_inclusive(long* a, long* b) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445B80
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445B80
 void TDrawArea::FillRect(long left, long top, long right, long bottom, uchar color) {
     int locked_here = 0;
     if (!this->Bits) {
@@ -1897,7 +1905,7 @@ void TDrawArea::SaveBitmap(char* filename) {
     CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Saved to %s (%dx%d @ %dbpp)", filename, width, height, depth);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445A60
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445A60
 void TDrawArea::DrawHorzLine(long x, long y, long len, uchar color) {
     int locked_here = 0;
     if (!this->Bits) {
@@ -1940,7 +1948,7 @@ void TDrawArea::DrawHorzLine(long x, long y, long len, uchar color) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445AF0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445AF0
 void TDrawArea::DrawVertLine(long x, long y, long len, uchar color) {
     int locked_here = 0;
     if (!this->Bits) {
@@ -1993,7 +2001,7 @@ void TDrawArea::DrawVertLine(long x, long y, long len, uchar color) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004457E0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004457E0
 void TDrawArea::SetPixel(long x, long y, uchar color) {
     if (!this->Bits) return;
     if (x < this->ClipRect.left || x > this->ClipRect.right) return;
@@ -2012,7 +2020,7 @@ void TDrawArea::SetPixel(long x, long y, uchar color) {
     drawarea_store_pixel(this->Bits + off + x * bytes_per_pixel, bytes_per_pixel, px);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004459A0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004459A0
 void TDrawArea::DrawRect(long x1, long y1, long x2, long y2, uchar color) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2025,13 +2033,13 @@ void TDrawArea::DrawRect(long x1, long y1, long x2, long y2, uchar color) {
     this->DrawVertLine(x2, y1, h, color);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445A40
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445A40
 void TDrawArea::DrawRect(tagRECT* rect, uchar color) {
     if (!rect) return;
     this->DrawRect(rect->left, rect->top, rect->right, rect->bottom, color);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445C70
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445C70
 void TDrawArea::DrawBevel(long x1, long y1, long x2, long y2, uchar c_tl, uchar c_br) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2045,7 +2053,7 @@ void TDrawArea::DrawBevel(long x1, long y1, long x2, long y2, uchar c_tl, uchar 
     this->DrawVertLine(x1, y1, h_minus_1, c_br);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445D20
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445D20
 void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2066,7 +2074,7 @@ void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2, uchar c1, uchar c
     this->DrawVertLine(x1p1, y1p1, h_minus_1 - 2, c3);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445FE0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445FE0
 void TDrawArea::DrawBevel21(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2083,7 +2091,7 @@ void TDrawArea::DrawBevel21(long x1, long y1, long x2, long y2, uchar c1, uchar 
     this->DrawVertLine(x1, y1, h_minus_1, c4);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00445E40
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445E40
 void TDrawArea::DrawBevel3(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2115,7 +2123,7 @@ void TDrawArea::DrawBevel3(long x1, long y1, long x2, long y2, uchar c1, uchar c
     this->DrawVertLine(x1p2, y1p2, h_minus_1 - 4, c4);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004460C0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004460C0
 void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2138,38 +2146,30 @@ void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2, uchar c1, uchar 
     this->DrawVertLine(x1p1, y1p1, h_minus_1 - 2, c5);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444340
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444340
 void* TDrawArea::GetDc(char* name) {
-    if (!this->DrawSurface) return nullptr;
-
-    HDC hdc = nullptr;
-    HRESULT hr = this->DrawSurface->GetDC(&hdc);
-    if (hr == DDERR_SURFACELOST) {
-        if (this->DrawSurface->Restore() == DD_OK) {
-            hr = this->DrawSurface->GetDC(&hdc);
-        }
+    if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 1) {
+        return this->DrawDc;
     }
-
-    if (SUCCEEDED(hr)) {
-        if (this->DrawSystem && this->DrawSystem->Pal) {
-            SelectPalette(hdc, (HPALETTE)this->DrawSystem->Pal, FALSE);
-            RealizePalette(hdc);
+    if (this->DrawSurface == nullptr) return nullptr;
+    void* dc = this->DrawDc;
+    if (dc == nullptr) {
+        if (this->Bits != nullptr) {
+            return nullptr;
         }
-        this->DrawDc = hdc;
-        return hdc;
+        this->DrawSurface->GetDC((HDC*)&this->DrawDc);
+        dc = this->DrawDc;
     }
-
-    CUSTOM_DEBUG_LOG_FMT("TDrawArea::GetDc: Failed to get DC from surface hr=0x%x", hr);
-    return nullptr;
+    return dc;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444B40
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444B40
 long TDrawArea::AlignedWidth() {
     // Source of truth: `Drawarea.cpp.decomp` returns `this->Pitch`.
     return (long)this->Pitch;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444B50
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444B50
 void TDrawArea::SetClipRect(tagRECT* rect) {
     if (!rect) {
         this->ClipRect.left = 0;
@@ -2223,7 +2223,7 @@ void TDrawArea::SetClipRect(tagRECT* rect) {
     this->SetClipRect(this->ClipRect.left, this->ClipRect.top, this->ClipRect.right, this->ClipRect.bottom);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444C30
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444C30
 void TDrawArea::SetClipRect(long left, long top, long right, long bottom) {
     this->ClipRect.left = left;
     this->ClipRect.top = top;
@@ -2249,7 +2249,7 @@ void TDrawArea::SetClipRect(long left, long top, long right, long bottom) {
     this->CurSpanList = this->SpanList;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444D50
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444D50
 void TDrawArea::Copy(TDrawArea* dest, long x, long y, tagRECT* src_rect, int flags) {
     if (!dest) return;
     if (!this->DrawSurface || !dest->DrawSurface) return;
@@ -2355,12 +2355,12 @@ void TDrawArea::Copy(TDrawArea* dest, long x, long y, tagRECT* src_rect, int fla
     dest->DrawSurface->Blt(&dr, this->DrawSurface, &sr, blt_flags, NULL);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00446220
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446220
 void TDrawArea::SetShadowTable(RGE_Color_Table* table) {
     this->shadow_color_table = table;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00446230
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446230
 void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
     if (!this->shadow_color_table) return;
     if (!this->Bits) return;
@@ -2507,7 +2507,7 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00446340
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446340
 void TDrawArea::GetPalette(tagPALETTEENTRY* out_entries) {
     if (!out_entries) return;
     if (!this->DrawSystem) {
@@ -2517,7 +2517,7 @@ void TDrawArea::GetPalette(tagPALETTEENTRY* out_entries) {
     memcpy(out_entries, this->DrawSystem->palette, sizeof(tagPALETTEENTRY) * 256);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00446370
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446370
 void TDrawArea::SetPalette(tagPALETTEENTRY* entries) {
     if (!entries) return;
     if (this->DrawSystem) {
@@ -2525,9 +2525,9 @@ void TDrawArea::SetPalette(tagPALETTEENTRY* entries) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00444390
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444390
 void TDrawArea::ReleaseDc(char* name) {
-    if (this->DrawSurface && this->DrawDc) {
+    if ((this->DrawSystem == nullptr || this->DrawSystem->DrawType != 1) && this->DrawSurface && this->DrawDc) {
         this->DrawSurface->ReleaseDC((HDC)this->DrawDc);
         this->DrawDc = nullptr;
     }
@@ -2628,3 +2628,4 @@ void TDrawArea::take_snapshot(char* filename_fmt, int* snapshot_number) {
     }
     free(line_buf);
 }
+
