@@ -589,6 +589,7 @@ long TribeGameSettingsScreen::handle_user_command(uint param_1, long param_2)
 // ============================================================================
 long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4)
 {
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B5CB0
     if (param_1 == nullptr || this->scenariosLoaded == 0) {
         return TEasy_Panel::action(param_1, param_2, param_3, param_4);
     }
@@ -597,10 +598,7 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, ulong param_
     if ((TButtonPanel*)param_1 == this->okButton && param_2 == 1) {
         this->set_curr_child((TPanel*)this->scenarioList);
         this->sendSettings();
-        // Decomp: chat_scr->action(this, 1, 0, 0) - notify parent we're done with OK
-        if (this->chat_scr != nullptr) {
-            this->chat_scr->action(this, 1, 0, 0);
-        }
+        this->chat_scr->action(this, 1, 0, 0);
         return 1;
     }
 
@@ -608,10 +606,7 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, ulong param_
     if ((TButtonPanel*)param_1 == this->cancelButton && param_2 == 1) {
         this->set_curr_child((TPanel*)this->scenarioList);
         this->getSettings();
-        // Decomp: chat_scr->action(this, 0, 0, 0) - notify parent we cancelled
-        if (this->chat_scr != nullptr) {
-            this->chat_scr->action(this, 0, 0, 0);
-        }
+        this->chat_scr->action(this, 0, 0, 0);
         return 1;
     }
 
@@ -827,6 +822,7 @@ void TribeGameSettingsScreen::fillMissionText()
 // ============================================================================
 void TribeGameSettingsScreen::getSettings()
 {
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B6230
     CUSTOM_DEBUG_FUNC_ENTER();
     if (!rge_base_game) return;
 
@@ -932,6 +928,7 @@ void TribeGameSettingsScreen::getSettings()
 // ============================================================================
 void TribeGameSettingsScreen::sendSettings()
 {
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B6500
     CUSTOM_DEBUG_FUNC_ENTER();
     if (!rge_base_game) return;
 
@@ -1046,6 +1043,7 @@ void TribeGameSettingsScreen::sendSettings()
 // ============================================================================
 void TribeGameSettingsScreen::activatePanels()
 {
+    // Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B6740
     CUSTOM_DEBUG_FUNC_ENTER();
 
     // Decomp: show/hide panels based on state (random vs scenario)
