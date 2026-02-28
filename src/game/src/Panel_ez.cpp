@@ -49,7 +49,7 @@ static void trim_in_place(char* s) {
 }
 
 static void init_vars(TEasy_Panel* this_) {
-    // Matches `TEasy_Panel::init_vars` in `src/game/src/Panel_ez.cpp.decomp` (immutable reference).
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467150
     this_->ideal_width = 0x280;
     this_->ideal_height = 0x1e0;
     this_->info_file_name[0] = '\0';
@@ -91,14 +91,17 @@ static void init_vars(TEasy_Panel* this_) {
 }
 
 TEasy_Panel::TEasy_Panel() : TPanel(nullptr) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467100
     init_vars(this);
 }
 
 TEasy_Panel::TEasy_Panel(char* name) : TPanel(name) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00466A20
     init_vars(this);
 }
 
 TEasy_Panel::~TEasy_Panel() {
+// Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467250
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: begin panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
     CUSTOM_DEBUG_LOG_FMT(
@@ -158,14 +161,14 @@ void TEasy_Panel::prepare_for_close() {
     }
 }
 
-// Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
+// Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469EE0
 void TEasy_Panel::popupOKDialog(long text_id, char* panel_name, int param_4, int param_5) {
     char text[256];
     this->get_string(text_id, text, sizeof(text));
     this->popupOKDialog(text, panel_name, param_4, param_5);
 }
 
-// Source of truth: panel_ez.cpp.decomp @ 0x00469F30
+// Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469F30
 void TEasy_Panel::popupOKDialog(char* text, char* panel_name, int param_4, int param_5) {
     if (panel_name == nullptr || *panel_name == '\0') {
         panel_name = (char*)"OKDialog";
@@ -184,14 +187,14 @@ void TEasy_Panel::popupOKDialog(char* text, char* panel_name, int param_4, int p
     }
 }
 
-// Source of truth: panel_ez.cpp.decomp @ 0x0046A040
+// Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A040
 void TEasy_Panel::popupYesNoDialog(long text_id, char* panel_name, int param_4, int param_5) {
     char text[256];
     this->get_string(text_id, text, sizeof(text));
     this->popupYesNoDialog(text, panel_name, param_4, param_5);
 }
 
-// Source of truth: panel_ez.cpp.decomp @ 0x0046A090
+// Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A090
 void TEasy_Panel::popupYesNoDialog(char* text, char* panel_name, int param_4, int param_5) {
     if (panel_name == nullptr || *panel_name == '\0') {
         panel_name = (char*)"YesNoDialog";
@@ -461,7 +464,7 @@ static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackgr
 }
 
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
-    // Source of truth: panel_ez.cpp.asm @ 0x00466A90
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00466A90
     this->allow_shadow_area = param_10;
     ::set_info_file(this, param_3, param_4);
 
@@ -642,7 +645,10 @@ void TEasy_Panel::set_positioning(PositionMode param_1, long param_2, long param
 void TEasy_Panel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
 void TEasy_Panel::set_redraw(RedrawMode param_1) { TPanel::set_redraw(param_1); }
 void TEasy_Panel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
-void TEasy_Panel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+void TEasy_Panel::draw_setup(int param_1) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467560
+    TPanel::draw_setup(param_1);
+}
 void TEasy_Panel::draw_finish() { TPanel::draw_finish(); }
 
 void TEasy_Panel::draw() {
@@ -891,7 +897,7 @@ draw_bevel_and_finish:
 }
 
 void TEasy_Panel::set_shadow_amount(long amount_percent) {
-    // Source of truth: `Panel_ez.cpp.decomp` (`TEasy_Panel::set_shadow_amount`).
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004681D0
     if (amount_percent == -1) {
         this->shadow_amount = 0;
     } else {
@@ -933,7 +939,7 @@ void TEasy_Panel::set_shadow_amount(long amount_percent) {
 }
 
 void TEasy_Panel::setup_popup_help() {
-    // Source of truth: `Panel_ez.cpp.decomp` (`setup_popup_help` @ 0x0046A360).
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A360
     this->help_mode = 1;
     if (rge_base_game) {
         void* cursor = (void*)LoadCursorA(0, (LPCSTR)0x7f8b);
@@ -947,7 +953,7 @@ void TEasy_Panel::setup_popup_help() {
 }
 
 void TEasy_Panel::clear_popup_help() {
-    // Source of truth: `Panel_ez.cpp.decomp` (`clear_popup_help` @ 0x0046A3C0).
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A3C0
     this->help_mode = 0;
     if (rge_base_game) {
         void* cursor = (void*)LoadCursorA(0, (LPCSTR)0x7f00);
@@ -960,7 +966,7 @@ void TEasy_Panel::clear_popup_help() {
 }
 
 void TEasy_Panel::command_help(char* param_1, long param_2, long param_3, long param_4, long param_5) {
-    // Source of truth: panel_ez.cpp.decomp @ 0x0046A260
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A260
     if (param_2 < 0) {
         return;
     }
@@ -974,7 +980,7 @@ void TEasy_Panel::command_help(char* param_1, long param_2, long param_3, long p
 }
 
 void TEasy_Panel::command_help(char* param_1, char* param_2, long param_3, long param_4, long param_5) {
-    // Source of truth: panel_ez.cpp.decomp @ 0x0046A2E0
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A2E0
     if ((param_2 == nullptr) || (*param_2 == '\0')) {
         return;
     }
@@ -988,7 +994,7 @@ void TEasy_Panel::command_help(char* param_1, char* param_2, long param_3, long 
 }
 
 long TEasy_Panel::command_do_popup_help(uchar param_1, long param_2, long param_3) {
-    // Source of truth: panel_ez.cpp.decomp @ 0x0046A410
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A410
     char help_string2[1000];
     char** help_text = reinterpret_cast<char**>(help_string2);
     *help_text = help_string2 + 4;
@@ -1027,23 +1033,79 @@ long TEasy_Panel::get_info_id() {
     return this->info_id;
 }
 
-TShape* TEasy_Panel::get_background() { return this->background_pic; }
-TShape* TEasy_Panel::get_background2() { return this->background_pic2; }
-void* TEasy_Panel::get_palette() { return this->palette; }
-char* TEasy_Panel::get_cursor() { return this->cursor_file; }
-int TEasy_Panel::get_use_bevels() { return this->use_bevels; }
-int TEasy_Panel::get_background_pos() { return this->background_pos; }
+TShape* TEasy_Panel::get_background() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468320
+    return this->background_pic;
+}
+
+TShape* TEasy_Panel::get_background2() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468330
+    return this->background_pic2;
+}
+
+void* TEasy_Panel::get_palette() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468340
+    return this->palette;
+}
+
+char* TEasy_Panel::get_cursor() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468350
+    return this->cursor_file;
+}
+
+int TEasy_Panel::get_use_bevels() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468360
+    return this->use_bevels;
+}
+
+int TEasy_Panel::get_background_pos() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468370
+    return this->background_pos;
+}
+
 void TEasy_Panel::get_bevel_colors(uchar& c1, uchar& c2, uchar& c3, uchar& c4, uchar& c5, uchar& c6) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468380
     c1 = this->bevel_color1; c2 = this->bevel_color2; c3 = this->bevel_color3;
     c4 = this->bevel_color4; c5 = this->bevel_color5; c6 = this->bevel_color6;
 }
-void TEasy_Panel::get_text_colors(ulong& c1, ulong& c2) { c1 = this->text_color1; c2 = this->text_color2; }
-void TEasy_Panel::get_focus_colors(ulong& c1, ulong& c2) { c1 = this->focus_color1; c2 = this->focus_color2; }
-long TEasy_Panel::get_shadow_amount() { return this->shadow_amount; }
-void TEasy_Panel::get_state_colors(ulong& c1, ulong& c2) { c1 = this->state_color1; c2 = this->state_color2; }
-TShape* TEasy_Panel::get_button_pics() { return this->button_pics; }
-RGE_Color_Table* TEasy_Panel::get_shadow_color_table() { return this->shadow_color_table; }
-int TEasy_Panel::get_enable_ime() { return this->enable_ime; }
+
+void TEasy_Panel::get_text_colors(ulong& c1, ulong& c2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004683D0
+    c1 = this->text_color1;
+    c2 = this->text_color2;
+}
+
+void TEasy_Panel::get_focus_colors(ulong& c1, ulong& c2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004683F0
+    c1 = this->focus_color1;
+    c2 = this->focus_color2;
+}
+
+long TEasy_Panel::get_shadow_amount() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468410
+    return this->shadow_amount;
+}
+
+void TEasy_Panel::get_state_colors(ulong& c1, ulong& c2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468420
+    c1 = this->state_color1;
+    c2 = this->state_color2;
+}
+
+TShape* TEasy_Panel::get_button_pics() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468460
+    return this->button_pics;
+}
+
+RGE_Color_Table* TEasy_Panel::get_shadow_color_table() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468470
+    return this->shadow_color_table;
+}
+
+int TEasy_Panel::get_enable_ime() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468480
+    return this->enable_ime;
+}
 
 void TEasy_Panel::set_system_colors() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A670
@@ -1080,7 +1142,7 @@ void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param
 }
 
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
-    // Source of truth: `Panel_ez.cpp.decomp` (`TEasy_Panel::setup_shadow_area`).
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467380
     if (!this->allow_shadow_area) return;
     if (!this->background_pic) return;
     if (!this->shadow_color_table) return;
@@ -1114,6 +1176,7 @@ void TEasy_Panel::setup_shadow_area(int force_rebuild) {
 }
 
 void TEasy_Panel::set_ideal_size(long param_1, long param_2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467A50
     this->ideal_width = param_1;
     this->ideal_height = param_2;
 }
@@ -1191,17 +1254,42 @@ int TEasy_Panel::set_cursor(char* file, long id) {
     return 1;
 }
 
-void TEasy_Panel::set_use_bevels(int enabled) { this->use_bevels = enabled; }
-void TEasy_Panel::set_background_pos(int pos) { this->background_pos = pos; }
+void TEasy_Panel::set_use_bevels(int enabled) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467F40
+    this->use_bevels = enabled;
+}
+
+void TEasy_Panel::set_background_pos(int pos) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467F50
+    this->background_pos = pos;
+}
+
 void TEasy_Panel::set_bevel_colors(uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467F60
     this->bevel_color1 = c1; this->bevel_color2 = c2; this->bevel_color3 = c3;
     this->bevel_color4 = c4; this->bevel_color5 = c5; this->bevel_color6 = c6;
 }
-void TEasy_Panel::set_text_colors(ulong c1, ulong c2) { this->text_color1 = c1; this->text_color2 = c2; }
-void TEasy_Panel::set_focus_colors(ulong c1, ulong c2) { this->focus_color1 = c1; this->focus_color2 = c2; }
-void TEasy_Panel::set_state_colors(ulong c1, ulong c2) { this->state_color1 = c1; this->state_color2 = c2; }
+
+void TEasy_Panel::set_text_colors(ulong c1, ulong c2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467FA0
+    this->text_color1 = c1;
+    this->text_color2 = c2;
+}
+
+void TEasy_Panel::set_focus_colors(ulong c1, ulong c2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467FC0
+    this->focus_color1 = c1;
+    this->focus_color2 = c2;
+}
+
+void TEasy_Panel::set_state_colors(ulong c1, ulong c2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467FE0
+    this->state_color1 = c1;
+    this->state_color2 = c2;
+}
 
 void TEasy_Panel::set_popup_info_file(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468000
     if (file != nullptr) {
         strncpy(this->popup_info_file_name, file, sizeof(this->popup_info_file_name) - 1);
         this->popup_info_file_name[sizeof(this->popup_info_file_name) - 1] = '\0';
@@ -1212,6 +1300,7 @@ void TEasy_Panel::set_popup_info_file(char* file, long id) {
 }
 
 void TEasy_Panel::set_button_pics(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468060
     if (this->button_pics != nullptr) {
         delete this->button_pics;
         this->button_pics = nullptr;
@@ -1220,6 +1309,7 @@ void TEasy_Panel::set_button_pics(char* file, long id) {
 }
 
 void TEasy_Panel::set_enable_ime(int enabled) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004682D0
     this->enable_ime = enabled;
     if ((this->have_focus != 0) && (panel_system != nullptr)) {
         if (enabled != 0) {
@@ -1231,8 +1321,8 @@ void TEasy_Panel::set_enable_ime(int enabled) {
 }
 
 int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468490
     // String-id overload: load strings then call string overload.
-    // Source of truth: `src/game/src/Panel_ez.cpp.decomp` (immutable reference).
     char text1[120];
     char text2[120];
     text1[0] = '\0';
@@ -1243,6 +1333,7 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, long par
 }
 
 int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468530
     if (!param_2) return 0;
 
     *param_2 = new TButtonPanel();
@@ -1311,7 +1402,7 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* pa
 }
 
 int TEasy_Panel::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
-    // Source of truth: Panel_ez.cpp.decomp @ 0x00468760
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468760
     // params: parent, out_ptr, x, y, w, h, sound_id, unk
     if (!param_2) return 0;
 
@@ -1388,11 +1479,73 @@ int TEasy_Panel::create_check_box(TPanel* param_1, TButtonPanel** param_2, long 
 }
 
 int TEasy_Panel::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8;
-    return 0;
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004689C0
+    if (!param_2) return 0;
+
+    *param_2 = new TButtonPanel();
+    if (!*param_2) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    long scaled_x = (this->ideal_width > 0) ? (param_3 * this->pnl_wid) / this->ideal_width : param_3;
+    long scaled_y = (this->ideal_height > 0) ? (param_4 * this->pnl_hgt) / this->ideal_height : param_4;
+    long scaled_w = (this->ideal_width > 0) ? (param_5 * this->pnl_wid) / this->ideal_width : param_5;
+    long scaled_h = (this->ideal_height > 0) ? (param_6 * this->pnl_hgt) / this->ideal_height : param_6;
+
+    TDigital* sound = nullptr;
+    if (rge_base_game && (int)param_7 >= 0) {
+        sound = rge_base_game->get_sound((int)param_7);
+    }
+
+    long ok = (*param_2)->setup(this->render_area, param_1, scaled_x, scaled_y, scaled_w, scaled_h,
+                                TButtonPanel::DrawPicture, sound, TButtonPanel::NotifyAction, param_8);
+    if (!ok) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    (*param_2)->set_sound_number((int)param_7);
+    if (this->button_pics == nullptr) {
+        RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(0) : nullptr;
+        if (font) {
+            (*param_2)->set_font(font->font, font->font_wid, font->font_hgt);
+        }
+        (*param_2)->text_x = -1;
+        (*param_2)->text_y = -1;
+        (*param_2)->set_text(0, (char*)"");
+        (*param_2)->set_text(1, (char*)"X");
+        (*param_2)->drawTypeValue = TButtonPanel::DrawTextA;
+    } else {
+        (*param_2)->drawTypeValue = TButtonPanel::DrawBevelPicture;
+        (*param_2)->set_picture(0, this->button_pics, 4);
+        (*param_2)->set_picture(1, this->button_pics, 6);
+    }
+
+    if (this->use_bevels) {
+        (*param_2)->bevel_type = 4;
+        (*param_2)->bevel_color1 = this->bevel_color1;
+        (*param_2)->bevel_color2 = this->bevel_color2;
+        (*param_2)->bevel_color3 = this->bevel_color3;
+        (*param_2)->bevel_color4 = this->bevel_color4;
+        (*param_2)->bevel_color5 = this->bevel_color5;
+        (*param_2)->bevel_color6 = this->bevel_color6;
+    }
+
+    (*param_2)->text_color1[0] = this->text_color1;
+    (*param_2)->text_color2[0] = this->text_color2;
+    (*param_2)->highlight_text_color1[0] = this->focus_color1;
+    (*param_2)->highlight_text_color2[0] = this->focus_color2;
+    (*param_2)->text_color1[1] = this->state_color1;
+    (*param_2)->text_color2[1] = this->state_color2;
+    (*param_2)->highlight_text_color1[1] = this->focus_color1;
+    (*param_2)->highlight_text_color2[1] = this->focus_color2;
+
+    return 1;
 }
 
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468C20
     char text[256];
     text[0] = '\0';
     this->get_string(param_3, text, sizeof(text));
@@ -1400,6 +1553,7 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, int param_3,
 }
 
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468E50
     if (!param_2) return 0;
 
     *param_2 = new TTextPanel();
@@ -1434,6 +1588,7 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char** param
 }
 
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468CB0
     if (!param_2) return 0;
 
     *param_2 = new TTextPanel();
@@ -1574,7 +1729,7 @@ int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_
 }
 
 int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
-    // Source of truth: Panel_ez.cpp.decomp @ 0x00469380
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469380
     // param_1=parent, param_2=out_ptr, param_3=val_width, param_4=val_height,
     // param_5=x, param_6=y, param_7=wid, param_8=hgt, param_9=font_id
     if (!param_2) return 0;
@@ -1678,7 +1833,7 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
 }
 
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
-    // Source of truth: Panel_ez.cpp.decomp @ 0x004696B0
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004696B0
     // params: parent, out_ptr, x, y, w, h, font_index
 
     // Scale from ideal coords to current panel size (source of truth uses unconditional division).
@@ -1761,7 +1916,7 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
 }
 
 int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
-    // Fully verified. Source of truth: Panel_ez.cpp.decomp @ 0x00469910
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469910
     long scaled_x = (this->pnl_wid * param_5) / this->ideal_width;
     long scaled_y = (param_6 * this->pnl_hgt) / this->ideal_height;
     long scaled_h = (param_8 * this->pnl_hgt) / this->ideal_height;
@@ -1810,7 +1965,7 @@ int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TT
 }
 
 int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) {
-    // Fully verified. Source of truth: Panel_ez.cpp.decomp @ 0x00469A80
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469A80
     int ok = this->create_scrollbar(param_2->parent_panel, param_1, param_2, 0, 0, 0, param_3, 0);
     if (ok == 0) {
         return 0;

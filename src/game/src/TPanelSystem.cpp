@@ -15,6 +15,7 @@ void* ReadPalette(char* filename, long resource_id, int flag);
 // Source of truth: panel.cpp.decomp @ 0x00463BB0
 TPanelSystem::TPanelSystem() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463BE0
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00463BB0
     this->ImeEnabled = 1;
     this->InputEnabled = 1;
     this->mouseOwnerValue = nullptr;
@@ -190,7 +191,7 @@ void TPanelSystem::release_palette(void* pal) {
 
 // Source of truth: panel.cpp.decomp @ 0x004644E0
 void TPanelSystem::DisableIME() {
-    // Fully verified. Source of truth: panel.cpp.asm @ 0x004644E0
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004644E0
     if (this->ImeEnabled != 0) {
         this->Imc = (unsigned long)ImmAssociateContext(AppWnd, 0);
         this->ImeEnabled = 0;
@@ -606,7 +607,7 @@ int TPanelSystem::inSystem(TPanel* panel) {
 
 // Source of truth: panel.cpp.decomp @ 0x004646F0
 void TPanelSystem::set_restore() {
-    // Fully verified. Source of truth: panel.cpp.asm @ 0x004646F0
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x004646F0
     if (this->panelListValue == nullptr) {
         return;
     }
