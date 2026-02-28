@@ -990,7 +990,7 @@ void RGE_Base_Game::set_mouse_facet(long p1) {
 
 
 int enum_wnd_proc(void* param_1, long param_2) {
-    // Source of truth: basegame.cpp.decomp @ 0x00420580
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420580
     (void)param_2;
     char wnd_title[256];
     wnd_title[0] = (char)0xFF;
@@ -1002,7 +1002,7 @@ int enum_wnd_proc(void* param_1, long param_2) {
 }
 
 int enum_child_proc(void* param_1, long param_2) {
-    // Source of truth: basegame.cpp.decomp @ 0x004205B0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004205B0
     (void)param_2;
     char wnd_title[256];
     wnd_title[0] = (char)0xFF;
@@ -1014,7 +1014,7 @@ int enum_child_proc(void* param_1, long param_2) {
 }
 
 int enum_thread_proc(void* param_1, long param_2) {
-    // Source of truth: basegame.cpp.decomp @ 0x004205E0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004205E0
     (void)param_2;
     char wnd_title[256];
     wnd_title[0] = (char)0xFF;
@@ -1026,7 +1026,7 @@ int enum_thread_proc(void* param_1, long param_2) {
 }
 
 int close_thread_windows(void* param_1, long param_2) {
-    // Source of truth: basegame.cpp.decomp @ 0x00420610
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420610
     (void)param_2;
     if (param_1 != AppWnd) {
         void* parent = (void*)GetParent((HWND)param_1);
@@ -1038,7 +1038,7 @@ int close_thread_windows(void* param_1, long param_2) {
 }
 
 int close_child_windows(void* param_1, long param_2) {
-    // Source of truth: basegame.cpp.decomp @ 0x00420650
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420650
     (void)param_2;
     char str[256];
     str[4] = '\0';
@@ -1282,7 +1282,7 @@ char* RGE_Base_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) {
     return p4;
 }
 unsigned char RGE_Base_Game::check_prog_argument(const char* p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x00422CC0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422CC0
     if (!this->prog_info || !this->prog_info->cmd_line || !p1) return 0;
     char cmd_line[256];
     char token[128];
@@ -1295,7 +1295,7 @@ unsigned char RGE_Base_Game::check_prog_argument(const char* p1) {
     return (strstr(cmd_line, token) != nullptr) ? 1 : 0;
 }
 void RGE_Base_Game::close() {
-    // Source of truth: basegame.cpp.decomp @ 0x004200B0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004200B0
     if (this->prog_window) {
         SendMessageA((HWND)this->prog_window, WM_CLOSE, 0, 0);
     }
@@ -2676,7 +2676,7 @@ int RGE_Base_Game::run() {
     return msg.lParam;
 }
 int RGE_Base_Game::handle_message(struct tagMSG* p1) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C700
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C700
     // Base class just returns 1 (not consumed). All message routing is done in wnd_proc.
     return 1;
 }
@@ -2758,7 +2758,7 @@ int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) {
     return 1;
 }
 int RGE_Base_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x004211D0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004211D0
     if (this->prog_ready == 0) {
         return 1;
     }
@@ -3049,17 +3049,17 @@ int RGE_Base_Game::handle_activate(void* p1, uint p2, uint p3, long p4) {
     return 1;
 }
 int RGE_Base_Game::handle_init_menu(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x00421910
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421910
     int result = this->action_init_menu();
     return (result != 0) ? 1 : 0;
 }
 int RGE_Base_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x00421930
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421930
     int result = this->action_exit_menu();
     return (result != 0) ? 1 : 0;
 }
 int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) {
-    // Source of truth: basegame.cpp.decomp @ 0x00421950
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421950
     // p3 (wParam): SIZE_MINIMIZED = 1
     if (p3 == 1) {
         return 1; // minimized — do nothing
@@ -3150,55 +3150,55 @@ int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
     return 1;
 }
 int RGE_Base_Game::action_update() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C710
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C710
     return 1;
 }
 int RGE_Base_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C720
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C720
     return 1;
 }
 int RGE_Base_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C730
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C730
     return 1;
 }
 int RGE_Base_Game::action_user_command(ulong p1, ulong p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C740
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C740
     return 1;
 }
 int RGE_Base_Game::action_command(ulong p1, ulong p2) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C750
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C750
     return 1;
 }
 int RGE_Base_Game::action_music_done() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C760
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C760
     return 1;
 }
 int RGE_Base_Game::action_activate() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C770
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C770
     return 1;
 }
 int RGE_Base_Game::action_deactivate() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C780
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C780
     return 1;
 }
 int RGE_Base_Game::action_init_menu() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C790
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C790
     return 1;
 }
 int RGE_Base_Game::action_exit_menu() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C7A0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7A0
     return 1;
 }
 int RGE_Base_Game::action_size() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C7B0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7B0
     return 1;
 }
 int RGE_Base_Game::action_close() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C7C0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7C0
     return 1;
 }
 void RGE_Base_Game::reset_timings() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C7D0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7D0
     this->frame_count = 0;
     this->world_update_count = 0;
     this->view_update_count = 0;
@@ -3219,12 +3219,12 @@ void RGE_Base_Game::reset_timings() {
 }
 
 unsigned long RGE_Base_Game::get_accum_time(int param_1) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C8F0
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C8F0
     return this->timings[param_1].accum_time;
 }
 
 void RGE_Base_Game::add_to_timing(int param_1, ulong param_2) {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C830
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C830
     this->timings[param_1].accum_time += param_2;
     this->timings[param_1].last_single_time = param_2;
     if (this->timings[param_1].max_time < param_2) {
@@ -3232,11 +3232,11 @@ void RGE_Base_Game::add_to_timing(int param_1, ulong param_2) {
     }
 }
 void RGE_Base_Game::increment_world_update_count() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C870
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C870
     this->world_update_count++;
 }
 void RGE_Base_Game::increment_view_update_count() {
-    // Source of truth: basegame.cpp.decomp @ 0x0041C880
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C880
     this->view_update_count++;
 }
 void RGE_Base_Game::set_last_single_time(int param_1, ulong param_2) {
@@ -3748,7 +3748,7 @@ void RGE_Base_Game::set_paused(int p1, int p2) {
 }
 
 void RGE_Base_Game::request_pause() {
-    // Source of truth: basegame.cpp.decomp @ 0x00420200
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420200
     if (this->comm_handler) {
         this->comm_handler->TogglePauseGame();
     }

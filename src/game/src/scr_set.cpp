@@ -44,7 +44,7 @@ static void tribe_settings_delete_panel_logged(TribeGameSettingsScreen* self, TP
 }
 
 // ============================================================================
-// init_vars  (decomp @ 0x004B5810)
+// Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B5810
 // ============================================================================
 void TribeGameSettingsScreen::init_vars()
 {
@@ -96,7 +96,7 @@ void TribeGameSettingsScreen::init_vars()
 }
 
 // ============================================================================
-// Constructor  (decomp @ 0x004B4880)
+// Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B4880
 //
 // The constructor does ALL work: registers with panel_system via
 // TScreenPanel("Game Settings Screen"), loads background, creates every
@@ -472,7 +472,7 @@ fail:
 }
 
 // ============================================================================
-// Destructor  (decomp @ 0x004B5920)
+// Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B5920
 // ============================================================================
 TribeGameSettingsScreen::~TribeGameSettingsScreen()
 {
@@ -537,7 +537,7 @@ TribeGameSettingsScreen::~TribeGameSettingsScreen()
 }
 
 // ============================================================================
-// handle_idle  (decomp @ 0x004B5BB0)
+// Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B5BB0
 // ============================================================================
 long TribeGameSettingsScreen::handle_idle()
 {
@@ -572,7 +572,7 @@ long TribeGameSettingsScreen::handle_idle()
 }
 
 // ============================================================================
-// handle_user_command  (decomp @ 0x004B5C70)
+// Fully verified. Source of truth: scr_set.cpp.decomp @ 0x004B5C70
 // ============================================================================
 long TribeGameSettingsScreen::handle_user_command(uint param_1, long param_2)
 {
