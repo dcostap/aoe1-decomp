@@ -11,6 +11,7 @@
 #include "../include/TribeMainDecisionAIModule.h"
 #include "../include/TribeResourceAIModule.h"
 #include "../include/UnitAIModule.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
 #include <cstring>
@@ -1482,21 +1483,14 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8570
 int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
-    (void)param_4;
     int bestID = -1;
-    long bestDistanceSq = 0;
+    int bestDistance = 0;
     for (int i = 0; i < this->civilians.numberValue; ++i) {
         if (i >= this->civilians.maximumSizeValue) {
             break;
         }
         const int unitID = this->civilians.value[i];
-        if ((param_2 != 0) && (this->isGatherer(unitID) != 0)) {
-            continue;
-        }
-        if ((param_3 != 0) && (containsManagedArray(this->civilianExplorers, unitID) != 0)) {
-            continue;
-        }
-        if ((param_5 != 0) && (isTaskedThisUpdate(this, unitID) != 0)) {
+        if (isTaskedThisUpdate(this, unitID) != 0) {
             continue;
         }
 
@@ -1504,21 +1498,30 @@ int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, 
         if (unitObj == nullptr) {
             continue;
         }
+        UnitAIModule* unitAI = unitObj->unitAI();
+        if (unitAI == nullptr) {
+            continue;
+        }
+        if ((param_6 == 0) && (unitObj->master_obj != nullptr) && (unitObj->master_obj->id == 0x103)) {
+            continue;
+        }
+        const int currentOrder = unitAI->currentOrder();
+        if ((currentOrder == param_3) || (currentOrder == param_4) || (currentOrder == param_5)) {
+            continue;
+        }
 
         if (param_1 == nullptr) {
             return unitID;
         }
 
-        const long dx = static_cast<long>(unitObj->world_x) - param_1->x;
-        const long dy = static_cast<long>(unitObj->world_y) - param_1->y;
-        const long distSq = dx * dx + dy * dy;
-        if ((param_6 > 0) && (distSq > static_cast<long>(param_6) * static_cast<long>(param_6))) {
-            continue;
-        }
-
-        if ((bestID == -1) || (distSq < bestDistanceSq)) {
+        const int distance = static_cast<int>(unitObj->distance_to_position(static_cast<float>(param_1->x),
+                                                                             static_cast<float>(param_1->y),
+                                                                             unitObj->world_z));
+        if ((bestID == -1) ||
+            ((param_2 == 1) && (distance < bestDistance)) ||
+            ((param_2 == 0) && (bestDistance < distance))) {
             bestID = unitID;
-            bestDistanceSq = distSq;
+            bestDistance = distance;
         }
     }
 
@@ -2289,12 +2292,17 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500B30
 void TribeTacticalAIModule::resetAttackSeparationTime() {
-    int minValue = this->sn[26];
-    int maxValue = this->sn[27];
-    if (maxValue < minValue) {
-        maxValue = minValue;
+    int attackSeparationVariance = this->sn[0x66];
+    if (attackSeparationVariance < 1) {
+        this->randomizedAttackSeparationTime = this->sn[0x2E];
+    } else {
+        const int randomValue = debug_rand("C:\\msdev\\work\\age1_x1\\taitacmd.c", 0x2D35);
+        this->randomizedAttackSeparationTime =
+            (randomValue % attackSeparationVariance) + (this->sn[0x2E] - attackSeparationVariance / 2);
     }
-    this->randomizedAttackSeparationTime = (minValue + maxValue) / 2;
+    if (this->randomizedAttackSeparationTime < 0) {
+        this->randomizedAttackSeparationTime = 0;
+    }
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500BA0
