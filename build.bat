@@ -45,6 +45,11 @@ if not exist "%SRC_DIR%\AIBuildObject.cpp" (
     popd
     exit /b 1
 )
+if not exist "%SRC_DIR%\TRIBE_Map.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\TRIBE_Map.cpp"
+    popd
+    exit /b 1
+)
 if not exist "%SRC_DIR%\AIBuildItem.cpp" (
     echo ERROR: missing required source "%SRC_DIR%\AIBuildItem.cpp"
     popd
