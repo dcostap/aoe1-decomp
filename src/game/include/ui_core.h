@@ -204,6 +204,12 @@ public:
     TButtonPanel();
     virtual ~TButtonPanel();
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, DrawType param_7, TDigital* param_8, NotifyType param_9, long param_10);
+    ButtonType buttonType();
+    DrawType drawType();
+    NotifyType notifyType();
+    void setDrawType(DrawType type);
+    void setButtonType(ButtonType type);
+    void set_picture_info(TShape* pic, short pic_index, long x, long y, int all_hot, int auto_pic_pos);
     
     void set_text(short state, char* text);
     void set_text(short state, long resid);
@@ -228,6 +234,15 @@ public:
     void set_text_info(char* text, void* font, long wid, long hgt, long x, long y);
     void set_text_info(long resid, void* font, long wid, long hgt, long x, long y);
     void set_radio_info(TButtonPanel** buttons, short count);
+    long get_id();
+    long get_id2();
+    int get_text(short state, char** text1, char** text2);
+    void get_text_color(short state, ulong* color1, ulong* color2);
+    void set_text_color(int state, ulong color1, ulong color2);
+    void set_highlight_text_color(int state, ulong color1, ulong color2);
+    void set_state_by_id(long id);
+    void set_disabled(int disabled);
+    void reset();
 
     virtual void set_rect(tagRECT param_1) override;
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4) override;
@@ -251,10 +266,12 @@ public:
     virtual long handle_user_command(uint param_1, long param_2) override;
     virtual long handle_timer_command(uint param_1, long param_2) override;
     virtual long handle_scroll(long param_1, long param_2) override;
+    virtual long handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) override;
     virtual long handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) override;
     virtual long handle_mouse_move(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_move_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) override;
+    virtual long mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) override;

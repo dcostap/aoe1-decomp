@@ -606,6 +606,12 @@ void TTextPanel::set_word_wrap(int enable) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+void TTextPanel::set_style(TTextPanel::Style style) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB90
+    this->text_style = style;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+}
+
 void TTextPanel::set_text_color(unsigned long c1, unsigned long c2) {
     this->text_color1 = c1;
     this->text_color2 = c2;
@@ -1141,6 +1147,20 @@ void TTextPanel::set_line(long line_num) {
     calc_draw_info(this, 1);
 }
 
+void TTextPanel::set_line_by_id(long id) {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DCA0
+    TTextPanel::TextNode* node = this->list;
+    int line_index = 0;
+    while (node != nullptr) {
+        if (node->id == id) {
+            this->set_line(line_index);
+            return;
+        }
+        node = node->next;
+        ++line_index;
+    }
+}
+
 long TTextPanel::get_line() {
     if (this->num_lines == 0) {
         return -1;
@@ -1196,6 +1216,12 @@ char* TTextPanel::get_text(long line_num) {
 char* TTextPanel::get_text2(long line_num) {
     const char* text = get_line_text2(this, (int)line_num);
     return (char*)text;
+}
+
+void TTextPanel::free_text() {
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E380
+    free_text_list(this);
+    this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 void TTextPanel::set_second_column_pos(long pos) {
