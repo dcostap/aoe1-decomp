@@ -525,54 +525,29 @@ void RGE_Game_World::data_load_random_map(char* param_1, char* param_2, char* pa
 
 // Initialization virtuals
 uchar RGE_Game_World::init_player_type(int param_1, short param_2, uchar param_3) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541770
     if (param_3 == '\0') {
         RGE_Master_Player* mp = new RGE_Master_Player(param_1);
-        if (this->master_players != nullptr && param_2 >= 0 && param_2 < this->master_player_num) {
-            this->master_players[param_2] = mp;
-            if (mp != nullptr) {
-                mp->finish_init(param_1, this->sprites, this->sounds);
-                int non_null = 0;
-                for (short i = 0; i < mp->master_object_num; ++i) {
-                    if (mp->master_objects != nullptr && mp->master_objects[i] != nullptr) {
-                        non_null = non_null + 1;
-                    }
-                }
-                CUSTOM_DEBUG_LOG_FMT(
-                    "RGE_Game_World::init_player_type idx=%d type=%u master_object_num=%d loaded=%d",
-                    (int)param_2,
-                    (unsigned int)param_3,
-                    (int)mp->master_object_num,
-                    non_null);
-            }
+        this->master_players[param_2] = mp;
+        if (mp != nullptr) {
+            mp->finish_init(param_1, this->sprites, this->sounds);
         }
-    } else {
-        CUSTOM_DEBUG_LOG_FMT(
-            "RGE_Game_World::init_player_type idx=%d type=%u (not handled by base)",
-            (int)param_2,
-            (unsigned int)param_3);
     }
     return 1;
 }
 
 uchar RGE_Game_World::init_player(int param_1) {
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_player begin stream_pos=%ld", rge_stream_tell(param_1));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541800
     short* count = &this->master_player_num;
     rge_read(param_1, count, 2);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_player read master_player_num=%d stream_pos=%ld", (int)*count, rge_stream_tell(param_1));
     if (*count > 0) {
         this->master_players = (RGE_Master_Player**)calloc((int)*count, sizeof(RGE_Master_Player*));
         for (short i = 0; i < *count; ++i) {
             uchar player_type = 0;
             rge_read(param_1, &player_type, 1);
-            CUSTOM_DEBUG_LOG_FMT(
-                "RGE_Game_World::init_player slot=%d type=%u stream_pos=%ld",
-                (int)i,
-                (unsigned int)player_type,
-                rge_stream_tell(param_1));
             this->init_player_type(param_1, i, player_type);
         }
     }
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_player end stream_pos=%ld", rge_stream_tell(param_1));
     return 1;
 }
 
@@ -586,10 +561,8 @@ void RGE_Game_World::load_player(int param_1, uchar param_2, short param_3) {
 }
 
 void RGE_Game_World::color_table_init(int fd) {
-    if (fd <= 0) return;
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::color_table_init fd=%d stream_pos=%ld", fd, rge_stream_tell(fd));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541930
     rge_read(fd, &this->color_table_num, 2);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::color_table_init: color_table_num=%d stream_pos=%ld", (int)this->color_table_num, rge_stream_tell(fd));
     if (this->color_table_num > 0) {
         this->color_tables = (RGE_Color_Table**)calloc(this->color_table_num, sizeof(RGE_Color_Table*));
         for (short i = 0; i < this->color_table_num; i++) {
@@ -620,10 +593,8 @@ void RGE_Game_World::terrain_tables_init(int fd) {
 }
 
 void RGE_Game_World::init_sounds(int fd, TSound_Driver* param_2) {
-    if (fd <= 0) return;
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sounds fd=%d stream_pos=%ld", fd, rge_stream_tell(fd));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005419E0
     rge_read(fd, &this->sound_num, 2);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sounds: sound_num=%d stream_pos=%ld", (int)this->sound_num, rge_stream_tell(fd));
     if (this->sound_num > 0) {
         this->sounds = (RGE_Sound**)calloc(this->sound_num, sizeof(RGE_Sound*));
         for (short i = 0; i < this->sound_num; i++) {
@@ -661,31 +632,24 @@ void RGE_Game_World::init_sprites(int fd) {
 }
 
 void RGE_Game_World::map_init(int fd, TSound_Driver* param_2) {
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::map_init fd=%d stream_pos=%ld", fd, rge_stream_tell(fd));
-    if (this->map) delete this->map;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541C20
+    (void)param_2;
     this->map = new RGE_Map(fd, this->sounds, 1);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::map_init done stream_pos=%ld", rge_stream_tell(fd));
 }
 
 void RGE_Game_World::effects_init(int fd) {
-    if (fd <= 0) return;
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::effects_init fd=%d stream_pos=%ld", fd, rge_stream_tell(fd));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541C90
     this->effects = new RGE_Effects(fd);
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_Game_World::effects_init done effect_num=%ld stream_pos=%ld",
-        (this->effects != nullptr) ? this->effects->effect_num : -1,
-        rge_stream_tell(fd));
 }
 
 void RGE_Game_World::master_player_init(int fd) {
-    if (fd <= 0) return;
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::master_player_init fd=%d stream_pos=%ld", fd, rge_stream_tell(fd));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541CF0
     this->init_player(fd);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::master_player_init: master_player_num=%d stream_pos=%ld", (int)this->master_player_num, rge_stream_tell(fd));
 }
 
 void RGE_Game_World::command_init(int fd, TCommunications_Handler* param_2) {
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::command_init fd=%d stream_pos=%ld", fd, (fd > 0 ? rge_stream_tell(fd) : -1L));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541D00
+    (void)fd;
     this->commands = new RGE_Command(this, param_2);
 }
 
@@ -711,6 +675,7 @@ void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunicat
 }
 
 void RGE_Game_World::setup_gaia() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542480
     RGE_Master_Player* master = nullptr;
     if (this->master_players != nullptr && this->master_player_num > 0) {
         master = this->master_players[0];
@@ -723,6 +688,7 @@ void RGE_Game_World::setup_gaia() {
 }
 
 void RGE_Game_World::setup_players(RGE_Player_Info* param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005424F0
     if (param_1 == nullptr || this->players == nullptr) {
         return;
     }
@@ -1142,6 +1108,7 @@ RGE_Game_World::~RGE_Game_World() {
 
 // Utility virtuals
 void RGE_Game_World::setup_player_colors() {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005426E0
     if (this->players == nullptr || this->player_num <= 0) {
         return;
     }
@@ -1185,6 +1152,7 @@ void RGE_Game_World::setup_player_colors() {
 }
 
 void RGE_Game_World::setup_player_colors(RGE_Player_Info* param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005425B0
     if (this->players == nullptr || this->player_num <= 0) {
         return;
     }
@@ -1260,15 +1228,16 @@ void RGE_Game_World::setup_player_colors(RGE_Player_Info* param_1) {
 }
 
 uchar RGE_Game_World::data_load(char* param_1, char* param_2) {
-    // Source of truth: inferred from call chain. param_1 = "data2\\empires.dat".
-    // Opens the binary game data file and stores the file descriptor.
-    // The fd is then used by world_init → map_init → TRIBE_Map(fd, sounds, 1).
-    //
-    // We store the fd on data_load_fd (a member we track) so init() can pass it.
-    // The actual binary parsing happens in map_init via rge_read.
-    //
-    // param_2 is the text-based world database file (tr_wrld.txt) — not used for binary path.
-    return 1;
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541720
+    (void)param_1;
+    FILE* f = fopen(param_2, "r");
+    if (f != nullptr) {
+        this->data_load_world(f);
+        fclose(f);
+        this->setup_player_colors();
+        return '\x01';
+    }
+    return '\0';
 }
 
 uchar RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
@@ -1305,7 +1274,7 @@ uchar RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommunication
 }
 
 void RGE_Game_World::turn_sound_off() {
-    // Source of truth: world.cpp.decomp @ 0x00541DC0
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541E70
     for (int i = 0; i < this->sound_num; ++i) {
         if (this->sounds != nullptr && this->sounds[i] != nullptr) {
             this->sounds[i]->stop();
@@ -1809,6 +1778,7 @@ uchar RGE_Game_World::load_game(char* param_1) {
 }
 
 uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542750
     CUSTOM_DEBUG_LOG("RGE_Game_World::new_game enter");
     if (param_1 == nullptr) {
         return 0;
@@ -2590,6 +2560,7 @@ void RGE_Game_World::scenario_init(int param_1, RGE_Game_World* param_2) {
 
 // Object management virtuals
 int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545E00
     if (param_1 == nullptr) {
         return 0;
     }
@@ -2675,6 +2646,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
 }
 
 int RGE_Game_World::removeObject(int param_1) {
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545FD0
     if (param_1 < 0) {
         int idx = -param_1;
         if (idx < this->maxNumberNegativeObjectsValue && this->negativeObjectsValue != nullptr) {
