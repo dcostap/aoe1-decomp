@@ -29,6 +29,7 @@ public:
     void remove_sprite(RGE_Sprite* param_1);
     uchar get_frame(short* param_1, short* param_2, short* param_3, short* param_4, RGE_Sprite* param_5, long param_6);
     uchar get_lowest_draw_level();
+    int check_for_shadows();
 
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;
