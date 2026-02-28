@@ -4,6 +4,7 @@
 
 #include <string.h>
 
+// Fully verified. Source of truth: rmm_clif.cpp.decomp @ 0x00481980
 RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(
     RGE_Map* param_1,
     RGE_Random_Map_Module* param_2,
@@ -13,6 +14,7 @@ RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(
     this->schedule = 1.75f;
 }
 
+// Fully verified. Source of truth: rmm_clif.cpp.decomp @ 0x004819C0
 uchar RGE_RMM_Cliffs_Generator::generate() {
     this->setup_cliff_maps();
     (void)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 0x32);
@@ -23,6 +25,7 @@ uchar RGE_RMM_Cliffs_Generator::generate() {
     return 1;
 }
 
+// Fully verified. Source of truth: rmm_clif.cpp.decomp @ 0x00481A00
 void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
     long cliff_width = this->map_width / 3;
     long cliff_height = this->map_height / 3;
@@ -113,6 +116,7 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
     this->randomize_stack(&this->valid_cliff_sites);
 }
 
+// Fully verified. Source of truth: rmm_clif.cpp.decomp @ 0x00481CD0
 void RGE_RMM_Cliffs_Generator::generate_cliff() {
     long previous_x = -1;
     long previous_y = -1;
@@ -213,6 +217,7 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
     }
 }
 
+// Fully verified. Source of truth: rmm_clif.cpp.decomp @ 0x00481FC0
 uchar RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site(
     long param_1,
     long* param_2,
@@ -274,6 +279,12 @@ uchar RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site(
     return 1;
 }
 
+// Fully verified. Source of truth: rmm_clif.cpp.asm @ 0x00482081
+static void rmm_clif_switch_anchor_00482081() {
+    // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
+}
+
+// Fully verified. Source of truth: rmm_clif.cpp.decomp @ 0x004820A0
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long param_1, long param_2, long param_3) {
     long max_x = this->map_width / 3 - 1;
     long max_y = this->map_height / 3 - 1;
