@@ -11,8 +11,11 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Master_Combat_Object.h"
+#include "../include/RGE_Missile_Object.h"
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Player.h"
+#include "../include/UnitAIModule.h"
+#include "../include/Visible_Unit_Manager.h"
 #include "../include/VISIBLE_UNIT_REC.h"
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
@@ -60,9 +63,16 @@ RGE_Combat_Object::RGE_Combat_Object(int param_1, RGE_Game_World* param_2, int p
     }
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x0042FA50
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FA50
 RGE_Combat_Object::~RGE_Combat_Object() {
-    // TODO: parity - decomp also updates visible-unit manager entries before base dtor.
+    if (this->id >= 0) {
+        const unsigned long old_map_value = this->Unified_Map_Value;
+        const int world_x = (int)this->world_x;
+        const int world_y = (int)this->world_y;
+        const int object_group = (this->master_obj != nullptr) ? (int)this->master_obj->object_group : 0;
+        const int owner_id = (this->owner != nullptr) ? (int)this->owner->id : 0;
+        VisibleUnitManager->Update_Unit_Info(this->id, owner_id, world_x, world_y, object_group, old_map_value, 0, this->VUR_Ptrs);
+    }
 }
 
 // Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FAF0
@@ -142,7 +152,7 @@ void RGE_Combat_Object::save(int param_1) {
     rge_write(param_1, &this->capture_flag, 1);
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x0042FC50
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FC50
 void RGE_Combat_Object::stop() {
     RGE_Action_Object::stop();
 
@@ -162,7 +172,7 @@ float RGE_Combat_Object::calc_attack_modifier(RGE_Static_Object* /*param_1*/) {
     return 1.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004304A0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004304A0
 void RGE_Combat_Object::reset_attack_timer() {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     this->attack_timer = master->speed_of_attack;
@@ -173,21 +183,21 @@ uchar RGE_Combat_Object::can_attack() {
     return (0.0f < this->attack_timer) ? 0 : 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430570
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430570
 void RGE_Combat_Object::get_weapon_range(float& param_1, float& param_2) {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     param_1 = (master != nullptr) ? master->weapon_range : 0.0f;
     param_2 = (master != nullptr) ? master->minimum_weapon_range : 0.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004305A0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004305A0
 void RGE_Combat_Object::get_speed_of_attack(float& param_1, float& param_2) {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     param_1 = (master != nullptr) ? master->speed_of_attack : 0.0f;
     param_2 = (master != nullptr) ? master->orig_speed_of_attack : 0.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004305D0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004305D0
 void RGE_Combat_Object::release_being_worked_on(RGE_Static_Object* param_1) {
     RGE_Action_Object::release_being_worked_on(param_1);
     if (param_1 != nullptr && param_1->id >= 0 && param_1->master_obj != nullptr) {
@@ -195,14 +205,21 @@ void RGE_Combat_Object::release_being_worked_on(RGE_Static_Object* param_1) {
     }
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430610
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430610
 void RGE_Combat_Object::enter_obj(RGE_Static_Object* param_1) {
     RGE_Static_Object::enter_obj(param_1);
-    // TODO: parity - decomp calls Visible_Unit_Manager::Update_Unit_Info and clears Unified_Map_Value.
-    this->Unified_Map_Value = 0;
+    if (this->id >= 0) {
+        const unsigned long old_map_value = this->Unified_Map_Value;
+        const int world_x = (int)this->world_x;
+        const int world_y = (int)this->world_y;
+        const int object_group = (this->master_obj != nullptr) ? (int)this->master_obj->object_group : 0;
+        const int owner_id = (this->owner != nullptr) ? (int)this->owner->id : 0;
+        VisibleUnitManager->Update_Unit_Info(this->id, owner_id, world_x, world_y, object_group, old_map_value, 0, this->VUR_Ptrs);
+        this->Unified_Map_Value = 0;
+    }
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004304B0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004304B0
 void RGE_Combat_Object::get_armor(short& param_1, short& param_2) {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     if (master == nullptr) {
@@ -224,7 +241,7 @@ void RGE_Combat_Object::get_armor(short& param_1, short& param_2) {
     param_2 = master->orig_armor;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430510
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430510
 void RGE_Combat_Object::get_weapon(short& param_1, short& param_2) {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     if (master == nullptr) {
@@ -246,7 +263,7 @@ void RGE_Combat_Object::get_weapon(short& param_1, short& param_2) {
     param_2 = master->orig_weapon;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004303A0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004303A0
 float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* /*param_4*/, RGE_Static_Object* /*param_5*/) {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     if (master == nullptr) {
@@ -286,7 +303,7 @@ float RGE_Combat_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* par
     return total;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430320
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430320
 void RGE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {
     float dmg = this->calculateDamage(param_1, param_2, param_3, param_4, param_5);
     float result = this->hp - dmg;
@@ -306,7 +323,7 @@ void RGE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, floa
     }
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430230
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430230
 uchar RGE_Combat_Object::do_attack(RGE_Static_Object* param_1, RGE_Combat_Object* param_2, float param_3, float param_4, float param_5) {
     if (param_1 == nullptr) {
         return 0;
@@ -333,7 +350,7 @@ uchar RGE_Combat_Object::do_attack(RGE_Static_Object* param_1, RGE_Combat_Object
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x0042FCA0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FCA0
 uchar RGE_Combat_Object::area_attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4, RGE_Static_Object* param_5) {
     (void)param_3;
 
@@ -401,20 +418,78 @@ uchar RGE_Combat_Object::area_attack(float param_1, float param_2, float param_3
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x0042FF50
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x0042FF50
 uchar RGE_Combat_Object::attack(RGE_Static_Object* param_1, RGE_Combat_Object* param_2) {
     if (param_1 == nullptr) {
         return 0;
     }
-    return this->do_attack(param_1, param_2, param_1->world_x, param_1->world_y, param_1->world_z);
+
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
+    if (master != nullptr && master->missile_id >= 0) {
+        if (this->owner == nullptr || this->owner->master_objects == nullptr) {
+            return 0;
+        }
+        const float c = cosf(this->angle);
+        const float s = sinf(this->angle);
+        const float weapon_x = master->weapon_offset_x;
+        const float weapon_y = master->weapon_offset_y;
+        const float weapon_z = master->weapon_offset_z;
+        const float spawn_x = this->world_x + (c * weapon_y) - (s * weapon_x);
+        const float spawn_y = this->world_y + (s * weapon_y) + (c * weapon_x);
+        const float spawn_z = this->world_z + weapon_z;
+        const float max_range = sqrtf((weapon_x * weapon_x) + (weapon_y * weapon_y)) + master->weapon_range + 6.0f;
+
+        RGE_Master_Static_Object* missile_master = this->owner->master_objects[(unsigned short)master->missile_id];
+        if (missile_master == nullptr) {
+            return 0;
+        }
+        RGE_Missile_Object* missile = (RGE_Missile_Object*)missile_master->make_new_obj(this->owner, spawn_x, spawn_y, spawn_z);
+        missile->init_missile(param_2, param_1, max_range);
+
+        this->notify((int)this->id, (int)this->id, 0x200, 600, (long)param_1->id, 0);
+
+        if ((master->weapon_range > 1.0f) && (param_1->owner != nullptr) && (param_1->owner->computerPlayer() == 1)) {
+            const long current_hp = (long)param_1->hp;
+            const long max_hp = (param_1->master_obj != nullptr) ? (long)(int)param_1->master_obj->hp : 0;
+            param_1->notify((int)this->id, (int)param_1->id, 0x20F, (long)this->id, current_hp, max_hp);
+        }
+        return 1;
+    }
+
+    return this->do_attack(param_1, param_2, this->world_x, this->world_y, this->world_z);
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004300F0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004300F0
 uchar RGE_Combat_Object::attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4) {
-    return this->area_attack(param_1, param_2, param_3, param_4, nullptr);
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
+    if (master == nullptr || master->missile_id < 0) {
+        return 0;
+    }
+    if (this->owner == nullptr || this->owner->master_objects == nullptr) {
+        return 0;
+    }
+
+    const float c = cosf(this->angle);
+    const float s = sinf(this->angle);
+    const float weapon_x = master->weapon_offset_x;
+    const float weapon_y = master->weapon_offset_y;
+    const float weapon_z = master->weapon_offset_z;
+    const float spawn_x = this->world_x + (c * weapon_y) - (s * weapon_x);
+    const float spawn_y = this->world_y + (s * weapon_y) + (c * weapon_x);
+    const float spawn_z = this->world_z + weapon_z;
+    const float max_range = sqrtf((weapon_x * weapon_x) + (weapon_y * weapon_y)) + master->weapon_range + 6.0f;
+
+    RGE_Master_Static_Object* missile_master = this->owner->master_objects[(unsigned short)master->missile_id];
+    if (missile_master == nullptr) {
+        return 0;
+    }
+    RGE_Missile_Object* missile = (RGE_Missile_Object*)missile_master->make_new_obj(this->owner, spawn_x, spawn_y, spawn_z);
+    missile->init_missile(param_4, param_1, param_2, param_3, max_range);
+    this->notify((int)this->id, (int)this->id, 0x200, 600, -1, 0);
+    return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430680
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430680
 uchar RGE_Combat_Object::update() {
     if (this->attack_timer > 0.0f && this->owner != nullptr && this->owner->world != nullptr) {
         this->attack_timer = this->attack_timer - this->owner->world->world_time_delta_seconds;
@@ -422,28 +497,75 @@ uchar RGE_Combat_Object::update() {
             this->attack_timer = 0.0f;
         }
     }
-    return RGE_Action_Object::update();
+
+    const uchar result = RGE_Action_Object::update();
+
+    if (this->id >= 0 && this->inside_obj == nullptr && this->owner != nullptr && this->owner->world != nullptr && this->owner->world->map != nullptr) {
+        const int world_x = (int)this->world_x;
+        const int world_y = (int)this->world_y;
+        if (world_x >= 0 && world_y >= 0 && world_x < this->owner->world->map->map_width && world_y < this->owner->world->map->map_height) {
+            const unsigned long old_map_value = this->Unified_Map_Value;
+            const unsigned long new_map_value = unified_map_offsets[world_y][world_x];
+            this->Unified_Map_Value = new_map_value;
+
+            if (new_map_value != old_map_value) {
+                const int object_group = (this->master_obj != nullptr) ? (int)this->master_obj->object_group : 0;
+                VisibleUnitManager->Update_Unit_Info(this->id, (int)this->owner->id, world_x, world_y, object_group, old_map_value, new_map_value, this->VUR_Ptrs);
+
+                if (this->capture_flag != 0) {
+                    int sighted_by_player = -1;
+                    RGE_Game_World* world = this->owner->world;
+                    for (int i = 1; i < (int)world->player_num; ++i) {
+                        if (i != (int)this->owner->id && (new_map_value & (1UL << (i & 0x1f))) != 0) {
+                            sighted_by_player = i;
+                            break;
+                        }
+                    }
+
+                    if (sighted_by_player >= 0) {
+                        RGE_Player* new_owner = world->players[sighted_by_player];
+                        if (new_owner != nullptr && new_owner->computerPlayer() == 0) {
+                            this->change_ownership(new_owner);
+                            if (this->capture_flag == 1) {
+                                this->capture_flag = 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (this->unitAIValue != nullptr && this->owner != nullptr && this->owner->world != nullptr) {
+        const int owner_id = (int)this->owner->id;
+        if (this->owner->world->is_player_turn(owner_id) != 0) {
+            const unsigned long time_delta = this->owner->world->get_accum_time_delta(owner_id);
+            this->unitAIValue->update(time_delta);
+        }
+    }
+
+    return result;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431490
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431490
 float RGE_Combat_Object::rateOfFire() {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     return (master != nullptr) ? master->speed_of_attack : 0.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004315A0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004315A0
 float RGE_Combat_Object::weaponRange() {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     return (master != nullptr) ? master->weapon_range : 0.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004315B0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004315B0
 float RGE_Combat_Object::minimumWeaponRange() {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     return (master != nullptr) ? master->minimum_weapon_range : 0.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004314A0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004314A0
 float RGE_Combat_Object::damageCapability() {
     RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
     if (master == nullptr || master->weapon == nullptr || master->weapon_num <= 0) {
@@ -459,7 +581,7 @@ float RGE_Combat_Object::damageCapability() {
     return total;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004314F0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004314F0
 float RGE_Combat_Object::damageCapability(RGE_Static_Object* param_1) {
     if (param_1 == nullptr) {
         return 0.0f;
@@ -473,26 +595,21 @@ float RGE_Combat_Object::damageCapability(RGE_Static_Object* param_1) {
     return param_1->calculateDamage((int)master->weapon_num, master->weapon, attack_modifier, this->owner, this);
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431530
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431530
 int RGE_Combat_Object::inAttackRange(RGE_Static_Object* param_1) {
     if (param_1 == nullptr) {
         return 0;
     }
 
-    RGE_Master_Static_Object* target_master = param_1->master_obj;
-    float rx = (target_master != nullptr) ? target_master->radius_x : 0.0f;
-    float ry = (target_master != nullptr) ? target_master->radius_y : 0.0f;
-    float rad = sqrtf(rx * rx + ry * ry);
-
-    float dx = this->world_x - param_1->world_x;
-    float dy = this->world_y - param_1->world_y;
-    float dist = sqrtf(dx * dx + dy * dy);
-
-    float range = this->weaponRange();
-    return (dist <= (range + rad + 0.3f)) ? 1 : 0;
+    RGE_Master_Static_Object* master = this->master_obj;
+    const float radius_x = (master != nullptr) ? master->radius_x : 0.0f;
+    const float radius_y = (master != nullptr) ? master->radius_y : 0.0f;
+    const float radius = sqrtf((radius_x * radius_x) + (radius_y * radius_y));
+    const float range = this->weaponRange() + radius + 0.3f;
+    return (this->distance_to_object(param_1) <= range) ? 1 : 0;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004315C0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004315C0
 int RGE_Combat_Object::currentTargetID() {
     if (this->actions != nullptr && this->actions->have_action() == 1) {
         RGE_Action* action = this->actions->get_action();
@@ -506,7 +623,7 @@ int RGE_Combat_Object::currentTargetID() {
     return -1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431610
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431610
 float RGE_Combat_Object::currentTargetX() {
     if (this->actions != nullptr && this->actions->have_action() == 1) {
         RGE_Action* action = this->actions->get_action();
@@ -517,7 +634,7 @@ float RGE_Combat_Object::currentTargetX() {
     return -1.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431640
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431640
 float RGE_Combat_Object::currentTargetY() {
     if (this->actions != nullptr && this->actions->have_action() == 1) {
         RGE_Action* action = this->actions->get_action();
@@ -528,7 +645,7 @@ float RGE_Combat_Object::currentTargetY() {
     return -1.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431670
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431670
 float RGE_Combat_Object::currentTargetZ() {
     if (this->actions != nullptr && this->actions->have_action() == 1) {
         RGE_Action* action = this->actions->get_action();
@@ -539,67 +656,137 @@ float RGE_Combat_Object::currentTargetZ() {
     return -1.0f;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431440
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431440
 int RGE_Combat_Object::stopAction() {
     if (this->actions != nullptr) {
         this->actions->delete_list();
     }
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
+    if (master != nullptr) {
+        this->new_sprite(master->sprite);
+    }
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431470
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431470
 int RGE_Combat_Object::pause() {
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
+    if (master != nullptr) {
+        this->new_sprite(master->sprite);
+    }
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004308C0
-int RGE_Combat_Object::attack(int param_1, int /*param_2*/) {
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004308C0
+int RGE_Combat_Object::attack(int param_1, int param_2) {
     if (this->owner == nullptr || this->owner->world == nullptr) {
         return 0;
     }
+
     RGE_Static_Object* target = this->owner->world->object(param_1);
     if (target == nullptr) {
         return 0;
     }
-    if (this->can_attack() == 0) {
+
+    if (param_2 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* action = this->actions->get_action();
+        if (action != nullptr && action->get_target_obj() == target) {
+            const short type = action->type();
+            if (type == 9 || type == 7) {
+                return 1;
+            }
+        }
+    }
+
+    if (this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* action = this->actions->get_action();
+        if (action != nullptr && action->get_target_obj() == target && action->type() == 9) {
+            action->work(target, target->world_x, target->world_y, target->world_z);
+            return 1;
+        }
+    }
+
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
+    if (master == nullptr) {
         return 0;
     }
-    this->do_attack(target, this, target->world_x, target->world_y, target->world_z);
-    this->reset_attack_timer();
+    if (master != nullptr && master->object_group == 4 && this->owner->master_objects != nullptr) {
+        RGE_Master_Static_Object* transform_master = this->owner->master_objects[0x53];
+        if (transform_master != nullptr) {
+            this->transform(transform_master);
+        }
+    }
+
+    RGE_Action_Attack* new_action =
+        new (std::nothrow) RGE_Action_Attack(this, target, nullptr, nullptr, nullptr, master->weapon_range, master->minimum_weapon_range,
+                                             master->missile_id, master->fire_missile_at_frame);
+    if (new_action == nullptr) {
+        return 0;
+    }
+
+    this->set_only_action(new_action);
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430810
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430810
 void RGE_Combat_Object::copy_obj(RGE_Master_Static_Object* param_1) {
-    // TODO: parity - decomp conditionally preserves current death sound before base copy.
+    RGE_Sprite* death_sprite = nullptr;
+    if (this->master_obj != nullptr && this->sprite == this->master_obj->death_sprite) {
+        death_sprite = param_1->death_sprite;
+    }
+    if (death_sprite != nullptr) {
+        this->new_sprite(death_sprite);
+    }
     RGE_Action_Object::copy_obj(param_1);
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430850
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430850
 void RGE_Combat_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
-    // TODO: parity - decomp routes through comm-module hooks before fallback notify.
-    RGE_Action_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6);
+    if (this->object_state == 2) {
+        int ai_handled = 0;
+        if (this->unitAIValue != nullptr) {
+            ai_handled = this->unitAIValue->notify(param_1, param_2, param_3, param_4, param_5, param_6);
+        }
+
+        if (ai_handled == 0 && param_3 != 699 && this->owner != nullptr) {
+            this->owner->notify(param_1, param_2, param_3, param_4, param_5, param_6);
+        }
+    }
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430A90
-int RGE_Combat_Object::attack(float param_1, float param_2, float param_3, int /*param_4*/) {
-    if (this->can_attack() == 0) {
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430A90
+int RGE_Combat_Object::attack(float param_1, float param_2, float param_3, int param_4) {
+    if (param_4 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
+        RGE_Action* action = this->actions->get_action();
+        if (action != nullptr && action->targetX() == param_1 && action->targetY() == param_2 && action->targetZ() == param_3) {
+            const short type = action->type();
+            if (type == 9 || type == 7) {
+                return 1;
+            }
+        }
+    }
+
+    RGE_Master_Combat_Object* master = (RGE_Master_Combat_Object*)this->master_obj;
+    if (master == nullptr) {
         return 0;
     }
-    uchar ok = this->attack(param_1, param_2, param_3, this);
-    if (ok != 0) {
-        this->reset_attack_timer();
-        return 1;
+    RGE_Action_Attack* new_action = new (std::nothrow) RGE_Action_Attack(this, param_1, param_2, param_3, nullptr, nullptr, nullptr,
+                                                                          master->weapon_range, master->minimum_weapon_range, master->missile_id,
+                                                                          master->fire_missile_at_frame);
+    if (new_action == nullptr) {
+        return 0;
     }
-    return 0;
+
+    this->set_only_action(new_action);
+    return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430C10
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430C10
 int RGE_Combat_Object::moveTo(int param_1, int param_2) {
     return this->moveTo(param_1, 1.0f, param_2);
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430C30
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430C30
 int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3) {
     if (this->owner == nullptr || this->owner->world == nullptr) {
         return 0;
@@ -624,7 +811,7 @@ int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3) {
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430D50
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430D50
 int RGE_Combat_Object::moveTo(float param_1, float param_2, float param_3, float param_4, int param_5) {
     if (this->actions != nullptr && this->actions->have_action() == 1) {
         RGE_Action* cur = this->actions->get_action();
@@ -647,12 +834,12 @@ int RGE_Combat_Object::moveTo(float param_1, float param_2, float param_3, float
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430EC0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430EC0
 int RGE_Combat_Object::moveAwayFrom(int /*param_1*/, int /*param_2*/) {
     return 0;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00430ED0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00430ED0
 int RGE_Combat_Object::gather(int param_1, int param_2) {
     if (this->owner == nullptr || this->owner->world == nullptr) {
         return 0;
@@ -687,7 +874,7 @@ int RGE_Combat_Object::gather(int param_1, int param_2) {
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431020
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431020
 int RGE_Combat_Object::explore(int param_1, int param_2, int param_3) {
     if (param_3 == 0 && this->actions != nullptr && this->actions->have_action() == 1) {
         RGE_Action* cur = this->actions->get_action();
@@ -712,7 +899,7 @@ int RGE_Combat_Object::explore(int param_1, int param_2, int param_3) {
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431150
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431150
 int RGE_Combat_Object::enter(int param_1, int param_2) {
     if (this->owner == nullptr || this->owner->world == nullptr) {
         return 0;
@@ -740,7 +927,7 @@ int RGE_Combat_Object::enter(int param_1, int param_2) {
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431250
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431250
 int RGE_Combat_Object::transport(float param_1, float param_2, float param_3, int /*param_4*/) {
     RGE_Action* cur = (this->actions != nullptr && this->actions->have_action() == 1) ? this->actions->get_action() : nullptr;
     if (cur != nullptr && cur->type() == 12) {
@@ -757,7 +944,7 @@ int RGE_Combat_Object::transport(float param_1, float param_2, float param_3, in
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x00431340
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x00431340
 int RGE_Combat_Object::unload(int /*param_1*/, float param_2, float param_3, float param_4) {
     RGE_Action* cur = (this->actions != nullptr && this->actions->have_action() == 1) ? this->actions->get_action() : nullptr;
     if (cur != nullptr && cur->type() == 12) {
@@ -774,7 +961,7 @@ int RGE_Combat_Object::unload(int /*param_1*/, float param_2, float param_3, flo
     return 1;
 }
 
-// Source of truth: com_obj.cpp.decomp @ 0x004316A0
+// Fully verified. Source of truth: com_obj.cpp.decomp @ 0x004316A0
 float RGE_Combat_Object::teleport(float param_1, float param_2, float param_3) {
     float old_x = this->world_x;
     float old_y = this->world_y;

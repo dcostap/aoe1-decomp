@@ -30,7 +30,7 @@
 
 // --- RGE_Command (base class) ---
 static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner, const uchar* command_data) {
-    // Source of truth: command.cpp.decomp @ 0x00435110
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435110
     const uchar* last_order = command_owner->last_order;
     const uint unit_count = (uint)command_data[8];
 
@@ -66,7 +66,7 @@ static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner,
 }
 
 static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, const uchar* command_data) {
-    // Source of truth: command.cpp.decomp @ 0x004351B0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004351B0
     const uchar* last_order = command_owner->last_order;
     const uint unit_count = (uint)command_data[1];
 
@@ -86,7 +86,7 @@ static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, 
 }
 
 static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data) {
-    // Source of truth: command.cpp.decomp @ 0x00435210
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435210
     switch (command_data[0]) {
     case 0:
     case 2:
@@ -100,7 +100,7 @@ static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_own
 }
 
 static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data, long command_size) {
-    // Source of truth: command.cpp.decomp @ 0x00435260
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435260
     if ((command_owner->last_order != nullptr) &&
         (command_owner->last_order_size == command_size) &&
         (command_owner->last_order[0] == command_data[0])) {
@@ -300,7 +300,7 @@ void RGE_Command::do_commands() {
 }
 
 void RGE_Command::submit(void* p1, long p2) {
-    // Source of truth: command.cpp.decomp @ 0x004352C0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004352C0
     uchar duplicate_order = rge_check_for_duplicate_orders(this, (uchar*)p1, p2);
     if (duplicate_order == 0) {
         this->com_hand->new_command(p1, (int)p2);
@@ -325,7 +325,7 @@ RGE_Command::~RGE_Command() {
     }
 }
 void RGE_Command::do_command_create(RGE_Command_Create* p1) {
-    // Source of truth: command.cpp.decomp @ 0x004348B0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004348B0
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -336,7 +336,7 @@ void RGE_Command::do_command_create(RGE_Command_Create* p1) {
     player->make_new_object((long)p1->obj_catagory, p1->location_x, p1->location_y, p1->location_z, 0);
 }
 void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
-    // Source of truth: command.cpp.decomp @ 0x004348F0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004348F0
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -347,7 +347,7 @@ void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
     player->add_attribute_num((short)p1->attr_id, p1->attr_amount, 0);
 }
 void RGE_Command::do_command_order(RGE_Command_Order* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00433F20
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00433F20
     int unit_num = (int)p1->unit_num;
     float unit_num_float = (float)unit_num;
     RGE_Obj_Info* units = (RGE_Obj_Info*)(p1 + 1);
@@ -455,7 +455,7 @@ void RGE_Command::do_command_order(RGE_Command_Order* p1) {
     }
 }
 void RGE_Command::do_command_work(RGE_Command_Order* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00434320
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00434320
     int unit_num = (int)p1->unit_num;
     RGE_Static_Object* target = this->get_obj(p1->target);
     RGE_Obj_Info* units = (RGE_Obj_Info*)(p1 + 1);
@@ -477,7 +477,7 @@ void RGE_Command::do_command_work(RGE_Command_Order* p1) {
     }
 }
 void RGE_Command::do_command_move(RGE_Command_Order* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00434400
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00434400
     int unit_num = (int)p1->unit_num;
     float unit_num_float = (float)unit_num;
     RGE_Obj_Info* units = (RGE_Obj_Info*)(p1 + 1);
@@ -606,7 +606,7 @@ void RGE_Command::do_command_move(RGE_Command_Order* p1) {
     }
 }
 void RGE_Command::do_command_formation(RGE_Command_Formation* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00434A00
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00434A00
     int unit_num = p1->unitNum;
     RGE_Obj_Info* units = (RGE_Obj_Info*)(p1 + 1);
 
@@ -722,28 +722,28 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* p1) {
     }
 }
 void RGE_Command::do_command_create_group(RGE_Command_Create_Group* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00435020
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435020
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
     if ((commander != nullptr) && (commander->owner->id == (ushort)p1->player_id)) {
         commander->commanderCreateGroup(p1->unitsToGroup, (int)p1->numberUnitsToGroup, p1->groupCommander, p1->groupRange);
     }
 }
 void RGE_Command::do_command_add_to_group(RGE_Command_Add_To_Group* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00435060
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435060
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
     if ((commander != nullptr) && (commander->owner->id == (ushort)p1->player_id)) {
         commander->commanderAddToGroup(p1->newUnit, p1->groupRange);
     }
 }
 void RGE_Command::do_command_remove_from_group(RGE_Command_Remove_From_Group* p1) {
-    // Source of truth: command.cpp.decomp @ 0x004350A0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004350A0
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
     if ((commander != nullptr) && (commander->owner->id == (ushort)p1->player_id)) {
         commander->commanderRemoveFromGroup(p1->unit);
     }
 }
 void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* p1) {
-    // Source of truth: command.cpp.decomp @ 0x004350E0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004350E0
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
     if ((commander != nullptr) && (commander->owner->id == (ushort)p1->player_id)) {
         commander->commanderDestroyGroup();
@@ -882,7 +882,7 @@ void RGE_Command::do_command_resign(RGE_Command_Resign* p1) {
     }
 }
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
-    // Source of truth: command.cpp.decomp @ 0x00434920
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00434920
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -988,7 +988,7 @@ void RGE_Command::do_command(void* p1) {
     }
 }
 void RGE_Command::command_order(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3, float p4, float p5) {
-    // Source of truth: command.cpp.decomp @ 0x00435320
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435320
     int count = (int)p2;
     int size = count * 4 + 0x14;
     if ((p1 == nullptr) || (p2 <= 0)) {
@@ -1030,7 +1030,7 @@ void RGE_Command::command_order(RGE_Static_Object** p1, short p2, RGE_Static_Obj
     this->submit(cmd, size);
 }
 void RGE_Command::command_stop(RGE_Static_Object** p1, short p2) {
-    // Source of truth: command.cpp.decomp @ 0x00435420
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435420
     int count = (int)p2;
     int size = count * 4 + 2;
     if ((p1 == nullptr) || (p2 <= 0)) {
@@ -1064,7 +1064,7 @@ void RGE_Command::command_stop(RGE_Static_Object** p1, short p2) {
     this->submit(cmd, size);
 }
 void RGE_Command::command_stop(int p1, int* p2, int p3) {
-    // Source of truth: command.cpp.decomp @ 0x004354F0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004354F0
     (void)p1;
     if ((p2 == nullptr) || (p3 <= 0)) {
         return;
@@ -1092,7 +1092,7 @@ void RGE_Command::command_stop(int p1, int* p2, int p3) {
     this->submit(cmd, size);
 }
 void RGE_Command::command_pause(int p1, int* p2, int p3) {
-    // Source of truth: command.cpp.decomp @ 0x004355A0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004355A0
     (void)p1;
     if ((p2 == nullptr) || (p3 <= 0)) {
         return;
@@ -1120,7 +1120,7 @@ void RGE_Command::command_pause(int p1, int* p2, int p3) {
     this->submit(cmd, size);
 }
 void RGE_Command::command_work(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3, float p4, float p5) {
-    // Source of truth: command.cpp.decomp @ 0x00435620
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435620
     int count = (int)p2;
     int size = count * 4 + 0x14;
     if ((p1 == nullptr) || (p2 <= 0)) {
@@ -1162,7 +1162,7 @@ void RGE_Command::command_work(RGE_Static_Object** p1, short p2, RGE_Static_Obje
     this->submit(cmd, size);
 }
 void RGE_Command::command_work(int p1, int* p2, int p3, int p4, int p5, float p6, float p7) {
-    // Source of truth: command.cpp.decomp @ 0x00435720
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435720
     (void)p1;
     (void)p5;
     if ((p2 == nullptr) || (p3 <= 0)) {
@@ -1194,7 +1194,7 @@ void RGE_Command::command_work(int p1, int* p2, int p3, int p4, int p5, float p6
     this->submit(cmd, size);
 }
 void RGE_Command::command_move(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3, float p4, float p5) {
-    // Source of truth: command.cpp.decomp @ 0x00435810
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435810
     int count = (int)p2;
     int size = count * 4 + 0x14;
     if ((p1 == nullptr) || (p2 <= 0)) {
@@ -1236,7 +1236,7 @@ void RGE_Command::command_move(RGE_Static_Object** p1, short p2, RGE_Static_Obje
     this->submit(cmd, size);
 }
 void RGE_Command::command_move(int p1, int* p2, int p3, int p4, int p5, float p6, float p7) {
-    // Source of truth: command.cpp.decomp @ 0x00435900
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435900
     (void)p1;
     (void)p5;
     if ((p2 == nullptr) || (p3 <= 0)) {
@@ -1268,7 +1268,7 @@ void RGE_Command::command_move(int p1, int* p2, int p3, int p4, int p5, float p6
     this->submit(cmd, size);
 }
 void RGE_Command::command_create(short p1, short p2, float p3, float p4, float p5) {
-    // Source of truth: command.cpp.decomp @ 0x004359C0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004359C0
     RGE_Command_Create* cmd = (RGE_Command_Create*)calloc(1, sizeof(RGE_Command_Create));
     if (cmd == nullptr) {
         return;
@@ -1283,7 +1283,7 @@ void RGE_Command::command_create(short p1, short p2, float p3, float p4, float p
     this->submit(cmd, sizeof(RGE_Command_Create));
 }
 void RGE_Command::command_add_attribute(int p1, int p2, float p3) {
-    // Source of truth: command.cpp.decomp @ 0x00435A30
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435A30
     RGE_Command_Add_Attribute* cmd = (RGE_Command_Add_Attribute*)calloc(1, sizeof(RGE_Command_Add_Attribute));
     if (cmd == nullptr) {
         return;
@@ -1296,7 +1296,7 @@ void RGE_Command::command_add_attribute(int p1, int p2, float p3) {
     this->submit(cmd, sizeof(RGE_Command_Add_Attribute));
 }
 void RGE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
-    // Source of truth: command.cpp.decomp @ 0x00435A80
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435A80
     RGE_Command_Give_Attribute* cmd = (RGE_Command_Give_Attribute*)calloc(1, sizeof(RGE_Command_Give_Attribute));
     if (cmd == nullptr) {
         return;
@@ -1310,7 +1310,7 @@ void RGE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
     this->submit(cmd, sizeof(RGE_Command_Give_Attribute));
 }
 void RGE_Command::command_formation(RGE_Static_Object** p1, int p2, int p3) {
-    // Source of truth: command.cpp.decomp @ 0x00435AE0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435AE0
     int size = p2 * 4 + 0xC;
     if ((p1 == nullptr) || (p2 <= 0)) {
         return;
@@ -1342,7 +1342,7 @@ void RGE_Command::command_formation(RGE_Static_Object** p1, int p2, int p3) {
     this->submit(cmd, size);
 }
 void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, float p5) {
-    // Source of truth: command.cpp.decomp @ 0x00435BB0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435BB0
     RGE_Command_Create_Group* cmd = (RGE_Command_Create_Group*)calloc(1, sizeof(RGE_Command_Create_Group));
     if (cmd == nullptr) {
         return;
@@ -1368,7 +1368,7 @@ void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, float p5
     this->submit(cmd, sizeof(RGE_Command_Create_Group));
 }
 void RGE_Command::command_add_to_group(int p1, int p2, int p3, float p4) {
-    // Source of truth: command.cpp.decomp @ 0x00435C50
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435C50
     RGE_Command_Add_To_Group* cmd = (RGE_Command_Add_To_Group*)calloc(1, sizeof(RGE_Command_Add_To_Group));
     if (cmd == nullptr) {
         return;
@@ -1383,7 +1383,7 @@ void RGE_Command::command_add_to_group(int p1, int p2, int p3, float p4) {
     this->submit(cmd, sizeof(RGE_Command_Add_To_Group));
 }
 void RGE_Command::command_remove_from_group(int p1, int p2, int p3) {
-    // Source of truth: command.cpp.decomp @ 0x00435CD0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435CD0
     RGE_Command_Remove_From_Group* cmd = (RGE_Command_Remove_From_Group*)calloc(1, sizeof(RGE_Command_Remove_From_Group));
     if (cmd == nullptr) {
         return;
@@ -1397,7 +1397,7 @@ void RGE_Command::command_remove_from_group(int p1, int p2, int p3) {
     this->submit(cmd, sizeof(RGE_Command_Remove_From_Group));
 }
 void RGE_Command::command_destroy_group(int p1, int p2) {
-    // Source of truth: command.cpp.decomp @ 0x00435D40
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435D40
     RGE_Command_Destroy_Group* cmd = (RGE_Command_Destroy_Group*)calloc(1, sizeof(RGE_Command_Destroy_Group));
     if (cmd == nullptr) {
         return;
@@ -1410,7 +1410,7 @@ void RGE_Command::command_destroy_group(int p1, int p2) {
     this->submit(cmd, sizeof(RGE_Command_Destroy_Group));
 }
 void RGE_Command::command_ai_order(int p1, int p2, int p3, int p4, int p5, int p6, float p7, float p8, float p9, float p10, uchar p11, uchar p12, uchar p13) {
-    // Source of truth: command.cpp.decomp @ 0x00435D90
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435D90
     RGE_Command_AI_Order* cmd = (RGE_Command_AI_Order*)calloc(1, sizeof(RGE_Command_AI_Order));
     if (cmd == nullptr) {
         return;
@@ -1434,7 +1434,7 @@ void RGE_Command::command_ai_order(int p1, int p2, int p3, int p4, int p5, int p
     this->submit(cmd, sizeof(RGE_Command_AI_Order));
 }
 void RGE_Command::command_group_ai_order(int p1, int p2, RGE_Static_Object** p3, short p4, int p5, int p6, int p7, float p8, float p9, float p10, float p11, uchar p12, uchar p13, uchar p14) {
-    // Source of truth: command.cpp.decomp @ 0x00435EA0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435EA0
     if ((p3 == nullptr) || (p4 <= 0)) {
         return;
     }
@@ -1480,7 +1480,7 @@ void RGE_Command::command_group_ai_order(int p1, int p2, RGE_Static_Object** p3,
     this->submit(cmd, size);
 }
 void RGE_Command::command_resign(int p1, int p2, int p3) {
-    // Source of truth: command.cpp.decomp @ 0x00435FE0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435FE0
     RGE_Command_Resign* cmd = (RGE_Command_Resign*)calloc(1, sizeof(RGE_Command_Resign));
     if (cmd == nullptr) {
         return;
@@ -1494,7 +1494,7 @@ void RGE_Command::command_resign(int p1, int p2, int p3) {
     this->submit(cmd, sizeof(RGE_Command_Resign));
 }
 void RGE_Command::command_add_waypoint(int p1, int p2, XYZBYTEPoint* p3, int p4) {
-    // Source of truth: command.cpp.decomp @ 0x00436030
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00436030
     RGE_Command_Add_Waypoint* cmd = (RGE_Command_Add_Waypoint*)calloc(1, sizeof(RGE_Command_Add_Waypoint));
     if (cmd == nullptr) {
         return;
@@ -1521,7 +1521,7 @@ void RGE_Command::command_add_waypoint(int p1, int p2, XYZBYTEPoint* p3, int p4)
     this->submit(cmd, sizeof(RGE_Command_Add_Waypoint));
 }
 void RGE_Command::command_add_waypoint(int p1, int p2, uchar p3, uchar p4, uchar p5) {
-    // Source of truth: command.cpp.decomp @ 0x004360D0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004360D0
     RGE_Command_Add_Waypoint* cmd = (RGE_Command_Add_Waypoint*)calloc(1, sizeof(RGE_Command_Add_Waypoint));
     if (cmd == nullptr) {
         return;
@@ -1538,7 +1538,7 @@ void RGE_Command::command_add_waypoint(int p1, int p2, uchar p3, uchar p4, uchar
     this->submit(cmd, sizeof(RGE_Command_Add_Waypoint));
 }
 void RGE_Command::command_group_waypoint(RGE_Static_Object** p1, short p2, uchar p3, uchar p4) {
-    // Source of truth: command.cpp.decomp @ 0x00436150
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00436150
     int count = (int)p2;
     int size = count * 4 + 4;
     if ((p1 == nullptr) || (p2 <= 0)) {
