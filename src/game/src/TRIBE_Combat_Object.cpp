@@ -246,7 +246,7 @@ void TRIBE_Combat_Object::get_pierce_armor(short& param_1, short& param_2) {
     param_2 = master->orig_pierce_armor;
 }
 
-// TODO: Full cliff-aware artifact relocation parity pending deeper asm audit.
+// Source of truth: t_c_obj.cpp.decomp @ 0x004CACE0, t_c_obj.cpp.asm @ 0x004CACE0
 void TRIBE_Combat_Object::reposition_artifact() {
     if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr) {
         return;
@@ -337,7 +337,7 @@ int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* param_1, int 
     return 0;
 }
 
-// TODO: Full parity path-tracing logic (tile stepping + cliff side tests) pending asm-guided transliteration.
+// Source of truth: t_c_obj.cpp.decomp @ 0x004CBEF0, t_c_obj.cpp.asm @ 0x004CBEF0
 int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* param_1) {
     if (param_1 == nullptr) {
         return 0;
@@ -345,12 +345,132 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* param_1) {
     if (param_1->world_z < this->world_z) {
         return 1;
     }
-    return 0;
+
+    if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr) {
+        return 0;
+    }
+
+    float start_x = this->world_x;
+    float start_y = this->world_y;
+    float dest_x = param_1->world_x;
+    float dest_y = param_1->world_y;
+    float dx = dest_x - start_x;
+    float dy = dest_y - start_y;
+    if (dx == 0.0f && dy == 0.0f) {
+        return 0;
+    }
+
+    float max_delta = (fabsf(dx) >= fabsf(dy)) ? fabsf(dx) : fabsf(dy);
+    int steps = ((int)max_delta) * 2;
+    if (steps <= 0) {
+        return 0;
+    }
+
+    float x_step = dx / (float)steps;
+    float y_step = dy / (float)steps;
+    bool y_major = fabsf(y_step) > fabsf(x_step);
+    int tile_dx1 = y_major ? -1 : 0;
+    int tile_dy2 = y_major ? 0 : -1;
+    int tile_dx2 = y_major ? 0 : 1;
+    int local_8 = y_major ? 1 : 0;
+
+    int prior_x = -999;
+    int prior_y = -999;
+    int cliff_hits = 0;
+    float angle_to_target = -1.0f;
+    float x_tile = start_x;
+    float y_tile = start_y;
+    RGE_Map* map = this->owner->world->map;
+
+    for (int i = 0; i < steps; ++i) {
+        x_tile = x_tile + x_step;
+        y_tile = y_tile + y_step;
+        int tile_x = (int)x_tile;
+        int tile_y = (int)y_tile;
+        if (tile_x != prior_x || tile_y != prior_y) {
+            prior_x = tile_x;
+            prior_y = tile_y;
+            if (this->higher_check_for_cliff(param_1, tile_x, tile_y, start_x, start_y, dest_x, dest_y, map, param_1, angle_to_target, cliff_hits) == 0 &&
+                this->higher_check_for_cliff(param_1, tile_x + tile_dy2, tile_y + tile_dx1, start_x, start_y, dest_x, dest_y, map, param_1, angle_to_target, cliff_hits) == 0) {
+                this->higher_check_for_cliff(param_1, tile_x + local_8, tile_y + tile_dx2, start_x, start_y, dest_x, dest_y, map, param_1, angle_to_target, cliff_hits);
+            }
+        }
+    }
+
+    return cliff_hits > 0 ? 1 : 0;
 }
 
-// TODO: Full parity filter for special IDs/friendly-fire edge-cases pending asm audit.
+// Source of truth: t_c_obj.cpp.decomp @ 0x004CC1B0, t_c_obj.cpp.asm @ 0x004CC1B0
 uchar TRIBE_Combat_Object::area_attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4, RGE_Static_Object* param_5) {
-    return RGE_Combat_Object::area_attack(param_1, param_2, param_3, param_4, param_5);
+    (void)param_3;
+
+    TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_obj;
+    if (master == nullptr || master->area_effect_range <= 0.0f) {
+        return 0;
+    }
+    if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr) {
+        return 0;
+    }
+
+    RGE_Map* map = this->owner->world->map;
+    int max_x = (int)map->map_width - 1;
+    int max_y = (int)map->map_height - 1;
+    int x0 = (int)(param_1 - master->area_effect_range) - 2;
+    int x1 = (int)(param_1 + master->area_effect_range) + 2;
+    int y0 = (int)(param_2 - master->area_effect_range) - 2;
+    int y1 = (int)(param_2 + master->area_effect_range) + 2;
+    if (x0 < 0) x0 = 0;
+    if (x1 > max_x + 1) x1 = max_x + 1;
+    if (y0 < 0) y0 = 0;
+    if (y1 > max_y + 1) y1 = max_y + 1;
+
+    float r2 = master->area_effect_range * master->area_effect_range;
+    for (int y = y0; y < y1; ++y) {
+        for (int x = x0; x < x1; ++x) {
+            RGE_Object_Node* node = map->map_row_offset[y][x].objects.list;
+            while (node != nullptr) {
+                RGE_Static_Object* obj = node->node;
+                node = node->next;
+                if (obj == nullptr || obj == param_5 || obj == this || obj->master_obj == nullptr) {
+                    continue;
+                }
+
+                short master_id = master->id;
+                if ((master_id == 0x2E || master_id == 0x28 || master_id == 0x153 || master_id == 0x159) && obj->owner == this->owner) {
+                    continue;
+                }
+                if (obj->master_obj->combat_level < master->area_effect_level) {
+                    continue;
+                }
+
+                float dx = fabsf(obj->world_x - param_1);
+                float dy = fabsf(obj->world_y - param_2);
+                if (dx <= obj->master_obj->radius_x) {
+                    dx = 0.0f;
+                } else {
+                    dx = dx - obj->master_obj->radius_x;
+                }
+                if (dy <= obj->master_obj->radius_y) {
+                    dy = 0.0f;
+                } else {
+                    dy = dy - obj->master_obj->radius_y;
+                }
+
+                if (dx * dx + dy * dy < r2) {
+                    int rv = debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 0x653);
+                    if ((rv * 100) / 0x7fff <= (int)master->base_hit_chance) {
+                        float attack_modifier = this->calc_attack_modifier(obj);
+                        obj->damage((int)master->weapon_num, master->weapon, attack_modifier, this->owner, (RGE_Static_Object*)param_4);
+                        if (obj->hp < 1.0f) {
+                            obj->set_attribute_amount(0.0f, 0, 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return 1;
 }
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CC5B0
@@ -522,10 +642,19 @@ void TRIBE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, fl
     }
 }
 
-// TODO: Full parity pending for all ownership-transfer side effects and master-object replacement rules.
+// Source of truth: t_c_obj.cpp.decomp @ 0x004CA8C0, t_c_obj.cpp.asm @ 0x004CA8C0
 void TRIBE_Combat_Object::change_ownership(RGE_Player* param_1) {
     if (this->master_obj == nullptr) {
         return;
+    }
+
+    if (*(int*)((char*)this + 4) >= 0) {
+        int* pointers = (int*)((char*)this + 0x194);
+        for (int i = 0; i < 9; ++i) {
+            if (pointers[i] != 0) {
+                *(char*)(pointers[i] + 5) = (char)param_1->id;
+            }
+        }
     }
 
     if (this->master_obj != nullptr && this->master_obj->object_group == 1) {
@@ -541,17 +670,23 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* param_1) {
         this->owner->unselect_one_object(this);
     }
 
+    RGE_Player* old_owner = this->owner;
     this->take_attribute_from_owner();
-    this->master_obj = param_1->master_objects[this->master_obj->id];
+    old_owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
+    this->player_object_node = param_1->addObject(this, this->sleep_flag, this->dopple_flag);
+    if (this->object_state == 2) {
+        this->unexplore_terrain(old_owner, 0, -1);
+    }
+
     this->owner = param_1;
     if (this->own_master == 0) {
-        RGE_Master_Static_Object* new_master = this->master_obj->make_new_master();
-        if (new_master == nullptr) {
-            return;
-        }
-        this->master_obj = new_master;
+        this->master_obj = this->master_obj->make_new_master();
         this->own_master = 1;
     }
+    if (this->object_state == 2) {
+        this->explore_terrain(this->owner, 0, -1);
+    }
+
     this->give_attribute_to_owner();
 
     if (this->unitAIValue != nullptr && this->owner != nullptr && this->owner->world != nullptr) {

@@ -12,6 +12,7 @@
 #include "../include/TRIBE_Command.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Tech.h"
+#include "../include/TRIBE_Effects.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Object_List.h"
 #include "../include/RGE_Object_Node.h"
@@ -24,6 +25,7 @@
 #include "../include/Visible_Resource_Manager.h"
 #include "../include/TCommunications_Handler.h"
 #include "../include/TMousePointer.h"
+#include "../include/T_Scenario.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
@@ -54,7 +56,7 @@ static int player_difficulty(TRIBE_Player* player) {
     return (int)rge_base_game->rge_game_options.difficultyValue;
 }
 
-// Source of truth: tplayer.cpp.decomp references DAT_00886c1c..DAT_00886c48 globals.
+// Source of truth: tplayer.cpp.decomp references globals at 0x00516BB2 / 0x00516BC2.
 int DAT_00886c1c = 0;
 int DAT_00886c20 = 0;
 int DAT_00886c24 = 0;
@@ -67,9 +69,9 @@ int DAT_00886c3c = 0;
 int DAT_00886c40 = 0;
 int DAT_00886c44 = 0;
 int DAT_00886c48 = 0;
-// Source of truth: tplayer.cpp.decomp references computerPlayerSetup global storage.
+// Source of truth: tplayer.cpp.decomp @ 0x00518A66
 int computerPlayerSetup[13] = {0};
-// Source of truth: tplayer.cpp.decomp references allowAIToCheat global.
+// Source of truth: tplayer.cpp.decomp @ 0x0051748E
 int allowAIToCheat = 1;
 
 static int signed_mask_mod(int value, int mask) {
@@ -446,7 +448,52 @@ void TRIBE_Player::scenario_save(int param_1) {
         rge_write(param_1, &this->attributes[2], 4); // gold  (offset 0x8 = index 2)
     }
 }
-void TRIBE_Player::scenario_load(int param_1, long* param_2, float param_3) { RGE_Player::scenario_load(param_1, param_2, param_3); }
+void TRIBE_Player::scenario_load(int param_1, long* param_2, float param_3) {
+    // Source of truth: tplayer.cpp.decomp @ 0x00512690, tplayer.cpp.asm @ 0x00512690
+    RGE_Player::scenario_load(param_1, param_2, param_3);
+
+    if (this->tech_tree != nullptr) {
+        delete this->tech_tree;
+        this->tech_tree = nullptr;
+    }
+
+    for (int i = 0; i < this->master_object_num; ++i) {
+        RGE_Master_Static_Object* master = this->master_objects[i];
+        if (master != nullptr) {
+            master->make_available(0);
+        }
+    }
+
+    if (param_3 > 1.06f) {
+        rge_read(param_1, &this->attributes[0], 4);
+        rge_read(param_1, &this->attributes[1], 4);
+        rge_read(param_1, &this->attributes[3], 4);
+        rge_read(param_1, &this->attributes[2], 4);
+    }
+
+    this->update_count = 0;
+    this->update_history_count = 0;
+
+    TRIBE_World* tribe_world = (TRIBE_World*)this->world;
+    if (param_3 <= 1.03f) {
+        this->tech_tree = new (std::nothrow) TRIBE_Player_Tech(param_1, tribe_world->tech, (RGE_Player*)this, 1);
+        return;
+    }
+
+    this->tech_tree = new (std::nothrow) TRIBE_Player_Tech(tribe_world->tech, (RGE_Player*)this, 0);
+
+    short tech_id = (short)0xD2;
+    if (this->id >= 0 && ((TRIBE_Game*)rge_base_game)->fullTechTree() == 0 &&
+        ((T_Scenario*)tribe_world->scenario)->GetScenarioOption(2) == 0) {
+        tech_id = (short)this->id;
+    }
+
+    ((TRIBE_Effects*)tribe_world->effects)->do_tech_effect(tech_id, (RGE_Player*)this);
+    if (rge_base_game->game_mode != 7) {
+        ((T_Scenario*)tribe_world->scenario)->set_player_tech(this);
+    }
+    this->tech_tree->check_for_new_tech();
+}
 void TRIBE_Player::scenario_postsave(int param_1) { RGE_Player::scenario_postsave(param_1); }
 void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) { RGE_Player::scenario_postload(param_1, param_2, param_3); }
 void TRIBE_Player::load(int param_1) {
@@ -458,8 +505,7 @@ void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3
     RGE_Player::add_attribute_num(param_1, param_2, param_3);
 }
 void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
-    // Fully verified. Source of truth: tplayer.cpp.asm @ 0x00513DA0
-    // tech_tree is constructed in TRIBE_Player init/load paths (0x00511BD0, 0x00511E20, 0x00512690).
+    // Source of truth: tplayer.cpp.decomp @ 0x00513DA0, tplayer.cpp.asm @ 0x00513DA0
     if (param_2 != 0) {
         this->tech_tree->enable((short)param_1);
         return;
@@ -467,8 +513,7 @@ void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
     this->tech_tree->disable((short)param_1);
 }
 void TRIBE_Player::rev_tech(long param_1) {
-    // Fully verified. Source of truth: tplayer.cpp.asm @ 0x00513DD0
-    // Original runtime flow dereferences tech_tree/attributes directly in this tech-tree toggle path.
+    // Source of truth: tplayer.cpp.decomp @ 0x00513DD0, tplayer.cpp.asm @ 0x00513DD0
     switch (param_1) {
     case 0x17:
         this->tech_tree->disable((short)((long)this->attributes[0x17]));
@@ -502,7 +547,7 @@ void TRIBE_Player::rev_tech(long param_1) {
     }
 }
 void TRIBE_Player::add_population_entry() {
-    // Source of truth: tplayer.cpp.asm @ 0x00513FD0
+    // Source of truth: tplayer.cpp.decomp @ 0x00513FD0, tplayer.cpp.asm @ 0x00513FD0
     if (this->history == nullptr || this->attributes == nullptr || this->attribute_num <= 0x0B) {
         return;
     }
