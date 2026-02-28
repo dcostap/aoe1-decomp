@@ -107,6 +107,9 @@ Run **3 workers at a time** (unless the user says otherwise).
 
 ## Worker Lifecycle (step by step)
 
+Workers use the **persistent loop pattern**: one Copilot CLI session runs the custom `decomp-worker` agent (`.github/agents/decomp-worker.agent.md`), which stays alive across multiple tasks via `ask_user`. This saves Copilot credits — one launch serves many tasks.
+
+
 ### Phase 1: Spawn a worker session
 
 ```
@@ -123,82 +126,72 @@ send_input(session="worker-1", input="git fetch origin --prune && git switch mas
 
 Wait a few seconds, then `read_screen(session="worker-1", lines=5)` to verify it succeeded.
 
-### Phase 3: Write the full prompt to a file
+### Phase 3: Write the task prompt to a file
 
-Before launching Copilot, write the full prompt to `worker_prompt.txt` in the worker clone folder (for example: `C:\Projects\my_decomps\aoe1_clone_1\worker_prompt.txt`).
+Write the **task-only** prompt to `worker_prompt.txt`. The system prompt is handled by the custom agent file (`.github/agents/decomp-worker.agent.md`), so you only need the task body.
 
-The prompt is composed of two parts:
+```powershell
+# In orchestrator's own powershell (NOT send_input):
+$taskBody = @'
+## Task NNN - Title here
+- Goal: ...
+- Implement: ...
+- Where: ...
+- Source of truth: ...
+- Done when: ...
+'@
+Set-Content -Path "C:\Projects\my_decomps\aoe1_clone_N\worker_prompt.txt" -Value $taskBody -Encoding UTF8
+```
 
 **CRITICAL dispatch rule (MUST):**
-- Do **not** send reference-only instructions like “execute Task XXX from `multiple_agents_task_queue.md`”.
-- Always include the **entire worker system prompt dump** and the **entire task body dump**.
-- Assume worker clones may be stale or not at the same commit; the prompt must be self-contained.
+- Do **not** send reference-only instructions like "execute Task XXX from `multiple_agents_task_queue.md`".
+- Always include the **entire task body dump** — the worker must be self-contained.
+- The worker system prompt is handled by the `decomp-worker` agent and does NOT need to be inlined.
 
-**Part 1 — The standard worker system prompt** (always the same):
+### Phase 4: Launch Copilot with the custom agent
+
 ```
-Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are now one of the workers.
-
-Mandatory: 
-1. to validate your changes, after everything compiles, launch 1 to 2 parallel sub-agents, that receive the needed context of the task, and these sub agents ARE READ-ONLY and MUST check all your changes and review them, validate their parity with the sources of truth, and finally feed you their feedback. You iterate on the feedback until everything is perfect + compiles. NOTE: If you hit 429 rate limits on sub-agents, skip the parallel validation and do a thorough self-review instead.
-2. Run autonomously, without stopping, until you are finished completely (changes pushed). You only may stop if a major issue or major blocker arises, in which case you explain in simple terms what the deal is, to the user. 
-
-Your task right now is to...
+send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo --model \"gpt-5.3-codex\" -p $prompt -s\n")
 ```
 
-**Part 2 — The specific task body dump** (copy the full task text from `multiple_agents_task_queue.md`, including Goal, Implement, Where, Source of truth, Done when, and any status constraints).
+**Key changes from old pattern:**
+- `--agent decomp-worker` — uses the custom agent file for system prompt + behavior rules
+- **NO `--no-ask-user`** — the worker MUST be able to call `ask_user` to report completion and receive the next task
+- **NO `--share session_output.md`** — no longer needed since the worker stays alive and reports via `ask_user`
 
-### Phase 4: Launch Copilot programmatically via Terminal Fleet
+### Phase 5: Monitor the worker (persistent loop)
 
-Clean stale output first:
-```
-send_input(session="worker-1", input="Remove-Item session_output.md -ErrorAction SilentlyContinue\n")
-```
+The worker will:
+1. Execute the task (read decomp, transliterate, build, validate, push)
+2. Call `ask_user` with a structured completion report
+3. **Wait for the orchestrator to send the next task**
 
-Then run Copilot in one command using the prompt file:
-```
-send_input(session="worker-1", input="$prompt = Get-Content -Raw worker_prompt.txt; copilot --yolo --model \"gpt-5.3-codex\" --no-ask-user -p $prompt --share session_output.md -s\n")
-```
+**What to look for when monitoring via `read_screen`:**
+- **Worker is actively working:** You'll see file edits, git commands, build output. Leave it alone.
+- **Worker called `ask_user`:** You'll see the completion report and a freeform text input prompt. This means the task is DONE and the worker is waiting for the next task.
+- **Worker hit a rate limit:** Rate limit errors visible. Wait 2-5 minutes, the worker may retry. If it exits, re-launch.
+- **Worker is stuck or errored:** Read the last 30 lines, improvise: send `\x03`, or recreate the session.
+- **Copilot exited (PS prompt returned):** The persistent loop broke. Re-launch from Phase 4.
 
-This keeps orchestration terminal-first (via Terminal Fleet MCP) while avoiding interactive compose steps. The output file name is always `session_output.md` in each clone.
+**Monitoring cadence:** Check each worker every 3-5 minutes.
 
-### Phase 5: Monitor the worker
+### Phase 6: Feed the next task (via Terminal Fleet send_input)
 
-Periodically check each worker's progress:
-```
-read_screen(session="worker-1", lines=15)
-```
+When you see the `ask_user` prompt on screen (worker finished and is waiting):
 
-**What to look for:**
-- **Worker is actively working:** You'll see file edits, git commands, build output, etc. Leave it alone.
-- **Worker finished this run:** You'll see the PowerShell prompt return. The command exited; read `session_output.md`.
-- **Worker hit a rate limit:** You'll see an error about "rate limit" or "quota exceeded". **Action:** Wait 2-5 minutes, then re-run the same Phase 4 command.
-- **Worker is stuck or errored:** You'll see repeated failures or command hangs. **Action:** Read the last 30 lines, then improvise: retry command, send `\x03`, or recreate the terminal session if needed.
-- **Terminal session became unhealthy:** Use `kill_session`, create a fresh session, resync git, and run Phase 4 again.
-
-**Monitoring cadence:** Check each worker every 2-5 minutes. Don't spam `read_screen` — the workers are autonomous and need time.
-
-### Phase 6: Post-completion
-
-When a worker finishes this run:
-1. **Read `session_output.md` directly** in that clone to inspect full output and determine whether task is complete.
+1. **Read the completion report** from the screen output
 2. **In your own repo (aoe1/),** do `git pull` to get the new commits
-2. **Review** the new commits briefly to ensure quality
-3. **Handle merge conflicts** if any arise from concurrent workers
+3. **Review** the new commits briefly to ensure quality
 4. **Update `multiple_agents_task_queue.md`**: mark the task as finished with a status note
-5. **Clean transient files before next task**:
+5. **Write the next task** as `worker_prompt.txt` in the clone (same as Phase 3)
+6. **Send the next task** to the waiting worker via `send_input`:
    ```
-   send_input(session="worker-1", input="Remove-Item worker_prompt.txt, session_output.md -ErrorAction SilentlyContinue\n")
+   send_input(session="worker-1", input="Read your next task from worker_prompt.txt and execute it.\n")
    ```
-6. **Assign the next task** from the queue to a free worker
 
-### Phase 7: If task is incomplete, retry with full context
+### Phase 7: If copilot exits unexpectedly
 
-Because we use `-p` without autopilot, a run may end with partial progress. If `session_output.md` shows incomplete work or an interruption, rerun with a new `worker_prompt.txt` that includes:
-
-1. Original full task prompt (system prompt + task body).
-2. An appended section stating previous run was incomplete, what was done, what failed, and what remains.
-
-Then re-run the same Phase 4 command. Repeat until complete or truly blocked.
+If the copilot process exits (PS prompt returns), the persistent loop broke. Recovery: sync the clone (Phase 2), write a new prompt (Phase 3), and re-launch (Phase 4).
 
 ## Handling Rate Limits
 
@@ -246,9 +239,9 @@ When the user tells you to start:
 1. Read `multiple_agents_task_queue.md` — identify the next 3 unassigned, uncompleted tasks
 2. Create 3 terminal sessions (worker-1, worker-2, worker-3) in clone folders 1, 2, 3
 3. Sync each clone to latest master
-4. In each clone, write `worker_prompt.txt` with full inlined system prompt + full task body
-5. Run the Phase 4 command (`copilot --yolo --model "gpt-5.3-codex" --no-ask-user -p ... --share session_output.md -s`)
-6. Monitor sessions and inspect each clone's `session_output.md` for completion or retry context
+4. In each clone, write `worker_prompt.txt` with task body only (system prompt is in the agent file)
+5. Launch: `copilot --agent decomp-worker --yolo --model "gpt-5.3-codex" -p $prompt -s`
+6. Monitor sessions; when worker's `ask_user` prompt appears, review output, pull commits, send next task
 7. Enter monitoring loop: check workers every few minutes, handle completions/failures, assign new tasks
 8. Periodically `git pull` in your own repo to stay current
 
@@ -359,12 +352,13 @@ Each sub-agent reports back with structured findings. The orchestrator then synt
 ### Dispatch Sequence Checklist (Do This Every Time)
 
 ```
-1. Write worker_prompt.txt FROM ORCHESTRATOR SHELL (not send_input)
-2. Sync clone: send_input → "git fetch origin --prune && git switch master && git pull --ff-only origin master\n"
+1. Write worker_prompt.txt (TASK BODY ONLY) FROM ORCHESTRATOR SHELL (not send_input)
+2. Sync clone: send_input -> "git fetch origin --prune && git switch master && git pull --ff-only origin master\n"
 3. Wait 6-8 seconds, read_screen to confirm sync succeeded
-4. Launch: send_input → 'Remove-Item session_output.md -ErrorAction SilentlyContinue; $prompt = Get-Content -Raw worker_prompt.txt; copilot --yolo --model "gpt-5.3-codex" --no-ask-user -p $prompt --share session_output.md -s\n'
-5. Wait 10 seconds, read_screen to confirm copilot is launching (no error message visible)
+4. Launch: send_input -> '$prompt = Get-Content -Raw worker_prompt.txt; copilot --agent decomp-worker --yolo --model "gpt-5.3-codex" -p $prompt -s\n'
+5. Wait 10 seconds, read_screen to confirm copilot is launching
 6. Mark task as assigned in queue file IMMEDIATELY
+7. When worker finishes (ask_user prompt visible): read report, pull commits, update queue, write next task, send next task via send_input
 ```
 
 ### Common Failure Modes & Fixes
@@ -383,12 +377,6 @@ The orchestrator must write `worker_prompt.txt` from its **own powershell shell*
 
 ```powershell
 # In orchestrator's own powershell (NOT send_input):
-$systemPrompt = @'
-Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are now one of the workers.
-...
-Your task right now is to...
-'@
-
 $taskBody = @'
 ## Task NNN — Title here
 - Goal: ...
@@ -398,7 +386,9 @@ $taskBody = @'
 - Done when: ...
 '@
 
-Set-Content -Path "C:\Projects\my_decomps\aoe1_clone_N\worker_prompt.txt" -Value ($systemPrompt + "`n`n" + $taskBody) -Encoding UTF8
+Set-Content -Path "C:\Projects\my_decomps\aoe1_clone_N\worker_prompt.txt" -Value $taskBody -Encoding UTF8
+
+# NOTE: System prompt is now in .github/agents/decomp-worker.agent.md — no need to inline it
 ```
 
 **Why this matters:**
