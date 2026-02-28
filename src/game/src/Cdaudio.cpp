@@ -5,12 +5,14 @@
 
 // Offset: 0x004237C0
 CCDAudio::CCDAudio() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x004237C0
     this->m_Wnd = nullptr;
     this->m_bOpened = 0;
 }
 
 // Offset: 0x004237D0
 CCDAudio::~CCDAudio() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x004237D0
     int playing = 0;
     this->IsPlaying(playing);
     if (playing != 0) {
@@ -21,6 +23,7 @@ CCDAudio::~CCDAudio() {
 
 // Offset: 0x00423800
 ulong CCDAudio::Open(void* param_1) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423800
     ulong uVar1;
     MCI_OPEN_PARMSA mciOpenParms;
     MCI_SET_PARMS mciSetInfo;
@@ -46,6 +49,7 @@ ulong CCDAudio::Open(void* param_1) {
 
 // Offset: 0x00423880
 ulong CCDAudio::Close() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423880
     ulong uVar1 = 0;
     if (this->m_bOpened != 0) {
         uVar1 = mciSendCommandA(this->m_nDeviceID, MCI_CLOSE, MCI_WAIT, 0);
@@ -59,6 +63,7 @@ ulong CCDAudio::Close() {
 
 // Offset: 0x004238C0
 ulong CCDAudio::Stop() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x004238C0
     ulong uVar1;
     uVar1 = mciSendCommandA(this->m_nDeviceID, MCI_STOP, MCI_WAIT, 0);
     uVar1 = this->DisplayErrorMsg(uVar1);
@@ -67,6 +72,7 @@ ulong CCDAudio::Stop() {
 
 // Offset: 0x004238E0
 ulong CCDAudio::Play(uchar param_1) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x004238E0
     ulong uVar1;
     this->m_mciPlayParms.dwCallback = (DWORD_PTR)this->m_Wnd;
     this->m_mciPlayParms.dwFrom = (DWORD)param_1;
@@ -80,6 +86,7 @@ ulong CCDAudio::Play(uchar param_1) {
 
 // Offset: 0x00423930
 ulong CCDAudio::Pause() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423930
     ulong uVar1;
     uVar1 = mciSendCommandA(this->m_nDeviceID, MCI_PAUSE, MCI_WAIT, 0);
     uVar1 = this->DisplayErrorMsg(uVar1);
@@ -88,6 +95,7 @@ ulong CCDAudio::Pause() {
 
 // Offset: 0x00423950
 ulong CCDAudio::ResumePlay() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423950
     ulong uVar1;
     uVar1 = mciSendCommandA(this->m_nDeviceID, MCI_PLAY, 0, (DWORD_PTR)&this->m_mciPlayParms);
     uVar1 = this->DisplayErrorMsg(uVar1);
@@ -96,6 +104,7 @@ ulong CCDAudio::ResumePlay() {
 
 // Offset: 0x00423980
 ulong CCDAudio::Eject() {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423980
     ulong uVar1;
     uVar1 = mciSendCommandA(this->m_nDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, 0);
     uVar1 = this->DisplayErrorMsg(uVar1);
@@ -104,6 +113,7 @@ ulong CCDAudio::Eject() {
 
 // Offset: 0x004239B0
 ulong CCDAudio::GetNumberOfTracks(uchar& param_1) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x004239B0
     ulong uVar1;
     MCI_STATUS_PARMS mciStatusInfo;
     memset(&mciStatusInfo, 0, sizeof(mciStatusInfo));
@@ -118,6 +128,7 @@ ulong CCDAudio::GetNumberOfTracks(uchar& param_1) {
 
 // Offset: 0x004239F0
 ulong CCDAudio::IsMediaPresent(int& param_1) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x004239F0
     ulong uVar1;
     MCI_STATUS_PARMS mciStatusParms;
     memset(&mciStatusParms, 0, sizeof(mciStatusParms));
@@ -132,6 +143,7 @@ ulong CCDAudio::IsMediaPresent(int& param_1) {
 
 // Offset: 0x00423A40
 ulong CCDAudio::IsPlaying(int& param_1) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423A40
     ulong uVar1;
     MCI_STATUS_PARMS mciStatusParms;
     memset(&mciStatusParms, 0, sizeof(mciStatusParms));
@@ -153,6 +165,7 @@ ulong CCDAudio::IsPlaying(int& param_1) {
 
 // Offset: 0x00423AC0
 ulong CCDAudio::GetLength(uchar& param_1, uchar& param_2) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423AC0
     ulong uVar1;
     MCI_STATUS_PARMS mciStatusParms;
     memset(&mciStatusParms, 0, sizeof(mciStatusParms));
@@ -168,6 +181,7 @@ ulong CCDAudio::GetLength(uchar& param_1, uchar& param_2) {
 
 // Offset: 0x00423B10
 ulong CCDAudio::GetTrackLength(uchar param_1, uchar& param_2, uchar& param_3) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423B10
     ulong uVar1;
     MCI_STATUS_PARMS mciStatusParms;
     memset(&mciStatusParms, 0, sizeof(mciStatusParms));
@@ -184,6 +198,7 @@ ulong CCDAudio::GetTrackLength(uchar param_1, uchar& param_2, uchar& param_3) {
 
 // Offset: 0x00423B70
 ulong CCDAudio::GetPosition(uchar& param_1, uchar& param_2, uchar& param_3) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423B70
     ulong uVar1;
     MCI_STATUS_PARMS mciStatusParms;
     memset(&mciStatusParms, 0, sizeof(mciStatusParms));
@@ -200,6 +215,7 @@ ulong CCDAudio::GetPosition(uchar& param_1, uchar& param_2, uchar& param_3) {
 
 // Offset: 0x00423BD0
 ulong CCDAudio::DisplayErrorMsg(ulong param_1) {
+    // Fully verified. Source of truth: cdaudio.cpp.decomp @ 0x00423BD0
     char szErrorMsg[256];
     if (param_1 != 0) {
         int iVar2 = mciGetErrorStringA(param_1, szErrorMsg, 256);
