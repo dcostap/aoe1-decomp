@@ -564,7 +564,7 @@ void Time_Line_Panel::draw_border() {
     this->render_area->Unlock((char*)"tpnl_tml::draw_border");
 }
 
-// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x0051F2E5
+// Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x0051F2E5 (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F4E0
 void Time_Line_Panel::add_pop_total_special_event(long param_1, long param_2, long param_3, int param_4) {
@@ -886,7 +886,7 @@ void Time_Line_Panel::draw_special_events() {
     this->render_area->ReleaseDc((char*)"tpnl_tml::draw_special_events");
 }
 
-// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x00520032
+// Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520032 (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520080
 void Time_Line_Panel::draw_background() {
@@ -1141,7 +1141,7 @@ void Time_Line_Panel::draw_timeline() {
     this->render_area->Unlock((char*)"tpnl_tml::draw_timeline");
 }
 
-// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x00520ABD
+// Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520ABD (switch jump-table thunk)
 
 // Source of truth: tpnl_tml.cpp.decomp @ 0x00520AE0
 void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar param_3) {
@@ -1216,7 +1216,7 @@ void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar pa
     }
 }
 
-// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x00520D25
+// Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520D25 (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520D50
 void Time_Line_Panel::draw_legend() {

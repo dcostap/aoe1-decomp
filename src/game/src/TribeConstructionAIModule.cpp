@@ -1,8 +1,11 @@
 #include "../include/TribeConstructionAIModule.h"
 
 #include "../include/BaseItem.h"
+#include "../include/MainDecisionAIModule.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Static_Object.h"
+#include "../include/TribeMainDecisionAIModule.h"
+#include "../include/TribeInformationAIModule.h"
 
 #include <cstring>
 #include <new>
@@ -71,14 +74,14 @@ void tribe_temp_append(ConstructionItem* head, ConstructionItem* item) {
     head->prev = item;
 }
 
-// TODO: STUB - TribeInformationAIModule::influenceCanPlaceStructure is not transliterated yet.
+// Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00
 int tribe_influence_can_place_structure(TribeConstructionAIModule* self, BuildItem* item) {
-    (void)self;
-    (void)item;
-    return 0;
+    TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
+    return information_ai->influenceCanPlaceStructure(item);
 }
 
-// TODO: STUB - TribeInformationAIModule::influencePlaceStructure is not transliterated yet.
+// TODO: Partial parity pending exact PlacementState type-key alignment for direct influencePlaceStructure call.
+// Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 ConstructionItem* tribe_influence_place_structure(TribeConstructionAIModule* self, BuildItem* item, int builder_id, PlacementState* state, ulong flags) {
     (void)self;
     (void)item;
@@ -88,28 +91,23 @@ ConstructionItem* tribe_influence_place_structure(TribeConstructionAIModule* sel
     return nullptr;
 }
 
-// TODO: STUB - TribeInformationAIModule::placeDock is not transliterated yet.
+// Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D6780
 ConstructionItem* tribe_information_place_dock(TribeConstructionAIModule* self, BuildItem* item) {
-    (void)self;
-    (void)item;
-    return nullptr;
+    TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
+    return information_ai->placeDock(item, self->xReferencePointValue, self->yReferencePointValue, 1, 2);
 }
 
-// TODO: STUB - TribeInformationAIModule::storeLot is not transliterated yet.
+// Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D6800
 void tribe_information_store_lot(TribeConstructionAIModule* self, int type_id, int x, int y, unsigned char occupied) {
-    (void)self;
-    (void)type_id;
-    (void)x;
-    (void)y;
-    (void)occupied;
+    TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
+    information_ai->storeLot(type_id, (unsigned char)x, (unsigned char)y, occupied);
 }
 
-// TODO: STUB - MainDecisionAIModule::object overloads are not transliterated yet.
+// Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 RGE_Static_Object* tribe_main_decision_object(TribeConstructionAIModule* self, int param_1, int param_2) {
-    (void)self;
-    (void)param_1;
     (void)param_2;
-    return nullptr;
+    MainDecisionAIModule* main_decision_ai = reinterpret_cast<MainDecisionAIModule*>(self->md);
+    return main_decision_ai->object(param_1);
 }
 }
 

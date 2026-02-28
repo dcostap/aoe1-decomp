@@ -8,8 +8,11 @@
 #include <io.h>
 #include <new>
 
-// TODO: STUB - Full ConstructionItem transliteration is not yet present in this repository.
-ConstructionItem::~ConstructionItem() {}
+// Fully verified. Source of truth: aiconitm.cpp.decomp @ 0x0040A950
+ConstructionItem::~ConstructionItem() {
+    BaseItem* base = reinterpret_cast<BaseItem*>(this);
+    base->~BaseItem();
+}
 
 namespace {
 BaseItem* construction_base_item(ConstructionItem* item) {
@@ -74,7 +77,7 @@ void construction_destroy_list_nodes(ConstructionItem* head) {
     ConstructionItem* item = head->next;
     while ((item != head) && (item != nullptr)) {
         ConstructionItem* next = item->next;
-        // TODO: STUB - original uses ConstructionItem scalar-deleting destructor dispatch.
+        item->~ConstructionItem();
         ::operator delete(item);
         item = next;
     }
