@@ -218,6 +218,28 @@ static void set_info_file(TEasy_Panel* this_, char* info_file, long info_id) {
     }
 }
 
+static TShape* load_optional_shape(char* file, long id) {
+    if (((file == nullptr) || (*file == '\0') || (_stricmp(file, "none") == 0)) && (id == -1)) {
+        return nullptr;
+    }
+
+    char resolved[260];
+    if ((file == nullptr) || (*file == '\0') || (_stricmp(file, "none") == 0)) {
+        resolved[0] = '\0';
+    } else if (strchr(file, '.') == nullptr) {
+        sprintf(resolved, "%s.shp", file);
+    } else {
+        sprintf(resolved, "%s", file);
+    }
+
+    TShape* shape = new TShape(resolved, (int)id);
+    if ((shape != nullptr) && (shape->is_loaded() == 0)) {
+        delete shape;
+        shape = nullptr;
+    }
+    return shape;
+}
+
 struct EasyCfgBackground {
     char file1[260];
     char file2[260];
@@ -441,7 +463,7 @@ static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackgr
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
     // Source of truth: panel_ez.cpp.asm @ 0x00466A90
     this->allow_shadow_area = param_10;
-    set_info_file(this, param_3, param_4);
+    ::set_info_file(this, param_3, param_4);
 
     // Compute panel rect.
     long x = param_6;
@@ -718,7 +740,32 @@ long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong par
 }
 void TEasy_Panel::get_true_render_rect(tagRECT* param_1) { TPanel::get_true_render_rect(param_1); }
 int TEasy_Panel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
-void TEasy_Panel::set_focus(int param_1) { TPanel::set_focus(param_1); }
+void TEasy_Panel::set_focus(int param_1) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469E10
+    TPanel::set_focus(param_1);
+    if (this->have_focus != 0) {
+        if (((this->cursor_file[0] != '\0') || (this->cursor_id >= 0)) && (rge_base_game->mouse_pointer != nullptr)) {
+            rge_base_game->mouse_pointer->LoadCursors(this->cursor_file, this->cursor_id, 0);
+        }
+        if ((this->render_area != nullptr) && (this->render_area->DrawSystem != nullptr)) {
+            void* pal = (this->palette != nullptr) ? this->palette : rge_base_game->prog_palette;
+            if ((pal != nullptr) && (this->render_area->DrawSystem->Pal != pal)) {
+                this->render_area->Clear(nullptr, 0);
+                this->render_area->DrawSystem->Paint(nullptr);
+                this->render_area->DrawSystem->SetPalette(pal);
+                this->set_redraw(TPanel::RedrawMode::RedrawFull);
+            }
+        }
+    }
+
+    if ((this->enable_ime != 0) && (panel_system != nullptr)) {
+        if (this->have_focus != 0) {
+            panel_system->EnableIME();
+        } else {
+            panel_system->DisableIME();
+        }
+    }
+}
 void TEasy_Panel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
 void TEasy_Panel::set_tab_order(TPanel** param_1, short param_2) { TPanel::set_tab_order(param_1, param_2); }
 uchar TEasy_Panel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TPanel::get_help_info(param_1, param_2, param_3, param_4); }
@@ -980,6 +1027,40 @@ long TEasy_Panel::get_info_id() {
     return this->info_id;
 }
 
+TShape* TEasy_Panel::get_background() { return this->background_pic; }
+TShape* TEasy_Panel::get_background2() { return this->background_pic2; }
+void* TEasy_Panel::get_palette() { return this->palette; }
+char* TEasy_Panel::get_cursor() { return this->cursor_file; }
+int TEasy_Panel::get_use_bevels() { return this->use_bevels; }
+int TEasy_Panel::get_background_pos() { return this->background_pos; }
+void TEasy_Panel::get_bevel_colors(uchar& c1, uchar& c2, uchar& c3, uchar& c4, uchar& c5, uchar& c6) {
+    c1 = this->bevel_color1; c2 = this->bevel_color2; c3 = this->bevel_color3;
+    c4 = this->bevel_color4; c5 = this->bevel_color5; c6 = this->bevel_color6;
+}
+void TEasy_Panel::get_text_colors(ulong& c1, ulong& c2) { c1 = this->text_color1; c2 = this->text_color2; }
+void TEasy_Panel::get_focus_colors(ulong& c1, ulong& c2) { c1 = this->focus_color1; c2 = this->focus_color2; }
+long TEasy_Panel::get_shadow_amount() { return this->shadow_amount; }
+void TEasy_Panel::get_state_colors(ulong& c1, ulong& c2) { c1 = this->state_color1; c2 = this->state_color2; }
+TShape* TEasy_Panel::get_button_pics() { return this->button_pics; }
+RGE_Color_Table* TEasy_Panel::get_shadow_color_table() { return this->shadow_color_table; }
+int TEasy_Panel::get_enable_ime() { return this->enable_ime; }
+
+void TEasy_Panel::set_system_colors() {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A670
+    tagPALETTEENTRY pe;
+    int elem = 5;
+    if (GetPaletteEntries((HPALETTE)this->palette, this->color, 1, &pe) != 0) {
+        COLORREF col = RGB(pe.peRed, pe.peGreen, pe.peBlue);
+        SetSysColors(1, &elem, &col);
+    }
+
+    elem = 8;
+    if (GetPaletteEntries((HPALETTE)this->palette, (UINT)this->text_color1, 1, &pe) != 0) {
+        COLORREF col = RGB(pe.peRed, pe.peGreen, pe.peBlue);
+        SetSysColors(1, &elem, &col);
+    }
+}
+
 void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A150
     char text[256];
@@ -1035,6 +1116,118 @@ void TEasy_Panel::setup_shadow_area(int force_rebuild) {
 void TEasy_Panel::set_ideal_size(long param_1, long param_2) {
     this->ideal_width = param_1;
     this->ideal_height = param_2;
+}
+
+void TEasy_Panel::set_info_file(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004679F0
+    ::set_info_file(this, file, id);
+}
+
+int TEasy_Panel::set_background(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467A70
+    if (this->background_pic != nullptr) {
+        delete this->background_pic;
+        this->background_pic = nullptr;
+    }
+    this->background_pic = load_optional_shape(file, id);
+    return this->background_pic != nullptr;
+}
+
+int TEasy_Panel::set_background2(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467BE0
+    if (this->background_pic2 != nullptr) {
+        delete this->background_pic2;
+        this->background_pic2 = nullptr;
+    }
+    this->background_pic2 = load_optional_shape(file, id);
+    return this->background_pic2 != nullptr;
+}
+
+void TEasy_Panel::set_background_colors(uchar color1, uchar color2) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467D50
+    (void)color2;
+    this->set_color(color1);
+    this->background_color1 = color1;
+    this->background_color2 = color1;
+    this->brush = GetStockObject(BLACK_BRUSH);
+    this->stock_brush = 1;
+    this->brush_color = 0;
+}
+
+int TEasy_Panel::set_palette(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467DA0
+    if (this->palette != nullptr) {
+        panel_system->release_palette(this->palette);
+        this->palette = nullptr;
+    }
+    if (this->shadow_color_table != nullptr) {
+        delete this->shadow_color_table;
+        this->shadow_color_table = nullptr;
+    }
+
+    if ((id == -1) && ((file == nullptr) || (*file == '\0') || (_stricmp(file, "none") == 0))) {
+        return 1;
+    }
+
+    this->palette = panel_system->get_palette(file, id);
+    if ((this->palette == nullptr) || (this->shadow_amount < 1)) {
+        return 0;
+    }
+
+    tagPALETTEENTRY palette_entries[256];
+    if (GetPaletteEntries((HPALETTE)this->palette, 0, 256, palette_entries) != 0) {
+        this->shadow_color_table = new RGE_Color_Table(this->render_area, this->shadow_amount, nullptr, palette_entries);
+        return 1;
+    }
+
+    return 1;
+}
+
+int TEasy_Panel::set_cursor(char* file, long id) {
+    // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467EF0
+    strncpy(this->cursor_file, file, sizeof(this->cursor_file) - 1);
+    this->cursor_file[sizeof(this->cursor_file) - 1] = '\0';
+    this->cursor_id = id;
+    return 1;
+}
+
+void TEasy_Panel::set_use_bevels(int enabled) { this->use_bevels = enabled; }
+void TEasy_Panel::set_background_pos(int pos) { this->background_pos = pos; }
+void TEasy_Panel::set_bevel_colors(uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
+    this->bevel_color1 = c1; this->bevel_color2 = c2; this->bevel_color3 = c3;
+    this->bevel_color4 = c4; this->bevel_color5 = c5; this->bevel_color6 = c6;
+}
+void TEasy_Panel::set_text_colors(ulong c1, ulong c2) { this->text_color1 = c1; this->text_color2 = c2; }
+void TEasy_Panel::set_focus_colors(ulong c1, ulong c2) { this->focus_color1 = c1; this->focus_color2 = c2; }
+void TEasy_Panel::set_state_colors(ulong c1, ulong c2) { this->state_color1 = c1; this->state_color2 = c2; }
+
+void TEasy_Panel::set_popup_info_file(char* file, long id) {
+    if (file != nullptr) {
+        strncpy(this->popup_info_file_name, file, sizeof(this->popup_info_file_name) - 1);
+        this->popup_info_file_name[sizeof(this->popup_info_file_name) - 1] = '\0';
+    } else {
+        this->popup_info_file_name[0] = '\0';
+    }
+    this->popup_info_id = id;
+}
+
+void TEasy_Panel::set_button_pics(char* file, long id) {
+    if (this->button_pics != nullptr) {
+        delete this->button_pics;
+        this->button_pics = nullptr;
+    }
+    this->button_pics = load_optional_shape(file, id);
+}
+
+void TEasy_Panel::set_enable_ime(int enabled) {
+    this->enable_ime = enabled;
+    if ((this->have_focus != 0) && (panel_system != nullptr)) {
+        if (enabled != 0) {
+            panel_system->EnableIME();
+        } else {
+            panel_system->DisableIME();
+        }
+    }
 }
 
 int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
