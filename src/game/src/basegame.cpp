@@ -1571,10 +1571,25 @@ void RGE_Base_Game::delete_dialog(TPanel** dialog) {
     }
 }
 
-TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
-TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
-RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return new RGE_Scenario_Header(p1); }
-RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) { return new RGE_Scenario_Header(p1); }
+TPanel* RGE_Base_Game::get_view_panel() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C250
+    return nullptr;
+}
+
+TPanel* RGE_Base_Game::get_map_panel() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C260
+    return nullptr;
+}
+
+RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CE60
+    return new RGE_Scenario_Header(p1);
+}
+
+RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CE00
+    return new RGE_Scenario_Header(p1);
+}
 
 void RGE_Base_Game::write_scenario_header(int param_1) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CDA0
@@ -1589,7 +1604,10 @@ void RGE_Base_Game::write_scenario_header(int param_1) {
     rge_write_uncompressed(param_1, &header_size, 4);
 }
 
-RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) { return nullptr; }
+RGE_Scenario* RGE_Base_Game::new_scenario_info(int p1) {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CEC0
+    return new RGE_Scenario(p1, nullptr);
+}
 void RGE_Base_Game::notification(int p1, long p2, long p3, long p4, long p5) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C6E0
     (void)p1;
@@ -2597,11 +2615,8 @@ int RGE_Base_Game::restart_music_system() {
     return 1;
 }
 RGE_Game_World* RGE_Base_Game::create_world() {
-    if (this->world) {
-        delete this->world;
-    }
-    this->world = new RGE_Game_World();
-    return this->world;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420050
+    return new RGE_Game_World();
 }
 int RGE_Base_Game::run() {
     // Source of truth: basegame.cpp.decomp @ 0x0041CFD0
