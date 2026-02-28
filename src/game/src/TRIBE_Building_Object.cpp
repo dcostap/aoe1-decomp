@@ -10,8 +10,10 @@
 #include "../include/TRIBE_Action_Make_Obj.h"
 #include "../include/TRIBE_Action_Make_Tech.h"
 #include "../include/TRIBE_Master_Building_Object.h"
+#include "../include/TRIBE_Player_Tech.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/TRIBE_World.h"
+#include "../include/RGE_Object_List.h"
 #include "../include/globals.h"
 
 #include <new>
@@ -546,4 +548,284 @@ int TRIBE_Building_Object::production_queue_status(short& param_1, short& param_
     return 0;
 }
 
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8370
+void TRIBE_Building_Object::recycle_out_of_game() {
+    if (this->production_queue_actions != nullptr) {
+        this->production_queue_actions->delete_list();
+    }
+    if (this->production_queue != nullptr) {
+        free(this->production_queue);
+        this->production_queue = nullptr;
+        this->production_queue_size = 0;
+        this->production_queue_count = 0;
+        this->production_queue_enabled = 1;
+        this->production_queue_change_flag = 0;
+        this->production_queue_auto_paused = 0;
+        this->production_queue_need_attr = -1;
+    }
+    RGE_Action_Object::recycle_out_of_game();
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8690
+void TRIBE_Building_Object::destroy_obj() {
+    this->take_building_attribute_from_owner();
+    RGE_Action_Object::destroy_obj();
+    if (this->DoppleInstalled != 0 && this->owner != nullptr && this->owner->doppleganger_creator != nullptr) {
+        this->owner->doppleganger_creator->remove_doppleganger_check(this);
+        this->DoppleInstalled = 0;
+    }
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C86C0
+uchar TRIBE_Building_Object::heal(float param_1) {
+    TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)this->master_obj;
+    if (master == nullptr || master->build_pts_required <= 0) {
+        return 2;
+    }
+
+    float max_hp = (float)(int)this->master_obj->hp;
+    float heal_amount = (param_1 * max_hp) / (float)(int)master->build_pts_required;
+    if (max_hp < heal_amount + this->hp) {
+        heal_amount = max_hp - this->hp;
+    }
+
+    uchar paid = ((TRIBE_Player*)this->owner)->pay_obj_cost(master->id, heal_amount / (float)(int)(this->master_obj->hp * 2), 0);
+    if (paid == 0) {
+        return 2;
+    }
+    return TRIBE_Combat_Object::heal(heal_amount);
+}
+
+// TODO: Full parity pending for all build-complete side effects and map-layer edits.
+void TRIBE_Building_Object::set_object_state(uchar param_1) {
+    if (param_1 == 2) {
+        TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)this->master_obj;
+        this->build_pts = (float)(int)master->build_pts_required;
+        this->built = 1;
+        this->take_building_attribute_from_owner();
+        this->give_building_attribute_to_owner();
+        if (master->on_build_make_tech >= 0) {
+            TRIBE_Player* tribe_player = (TRIBE_Player*)this->owner;
+            if (tribe_player != nullptr && tribe_player->tech_tree != nullptr) {
+                tribe_player->tech_tree->do_tech(master->on_build_make_tech);
+            }
+        }
+        this->notify((int)this->id, (int)this->id, 0x69, (long)this->owner->id, (long)master->id, 0);
+    }
+
+    bool became_dead = (param_1 == 3 && this->object_state == 2);
+    if (became_dead && this->DoppleInstalled != 0 && this->owner != nullptr && this->owner->doppleganger_creator != nullptr) {
+        this->take_building_attribute_from_owner();
+        this->owner->doppleganger_creator->remove_doppleganger_check(this);
+        this->DoppleInstalled = 0;
+    }
+
+    RGE_Static_Object::set_object_state(param_1);
+
+    if (became_dead && this->owner != nullptr && this->owner->objects != nullptr && this->master_obj != nullptr) {
+        RGE_Static_Object* same_master = this->owner->objects->find_by_master_ids((int)this->master_obj->id, -1, -1.0f, -1.0f, 1, 2, nullptr);
+        if (same_master == nullptr) {
+            TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)this->master_obj;
+            TRIBE_Player* tribe_player = (TRIBE_Player*)this->owner;
+            if (tribe_player != nullptr && tribe_player->tech_tree != nullptr) {
+                if (master->on_build_make_tech >= 0) {
+                    tribe_player->tech_tree->undo_tech(master->on_build_make_tech);
+                }
+                tribe_player->tech_tree->undo_tech(0x4A);
+                tribe_player->tech_tree->undo_tech(0x4B);
+                tribe_player->tech_tree->undo_tech(0x4C);
+            }
+        }
+    }
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8A60
+void TRIBE_Building_Object::rehook() {
+    RGE_Action_Object::rehook();
+    if (this->production_queue_actions != nullptr) {
+        this->production_queue_actions->rehook();
+    }
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8A80
+uchar TRIBE_Building_Object::update() {
+    if (this->object_state == 0 && this->master_obj != nullptr) {
+        short build_pts_required = ((TRIBE_Master_Building_Object*)this->master_obj)->build_pts_required;
+        uchar new_facet = (uchar)(int)(((this->build_pts * 100.0f) / (float)(int)build_pts_required) * 0.01f * build_pts_required);
+        if ((short)new_facet < this->master_obj->radius_x && new_facet != this->facet) {
+            this->facet = new_facet;
+        }
+        if (this->build_pts >= (float)(int)build_pts_required) {
+            this->set_object_state(2);
+        }
+    }
+
+    this->PriorMap3 = this->PriorMap2;
+    this->PriorMap2 = this->PriorMap1;
+    this->PriorTurn3 = this->PriorTurn2;
+    this->PriorTurn2 = this->PriorTurn1;
+    this->PriorTurn1 = world_update_counter;
+
+    uchar rv = TRIBE_Combat_Object::update();
+    if (this->object_state > 2) {
+        this->empty_production_queue();
+        this->PriorMap1 = this->Unified_Map_Value;
+        return rv;
+    }
+
+    this->update_production_queue();
+    this->PriorMap1 = this->Unified_Map_Value;
+    return rv;
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8B80
+int TRIBE_Building_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int param_3) {
+    if (this->built != 0) {
+        return RGE_Static_Object::explore_terrain(param_1, param_2, param_3);
+    }
+    return RGE_Static_Object::explore_terrain(param_1, 1, param_3);
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8BC0
+void TRIBE_Building_Object::save(int param_1) {
+    TRIBE_Combat_Object::save(param_1);
+    rge_write(param_1, &this->built, 1);
+    rge_write(param_1, &this->build_pts, 4);
+    rge_write(param_1, &this->unique_build_id, 4);
+    rge_write(param_1, &this->culture, 1);
+    rge_write(param_1, &this->production_queue_size, 2);
+    for (short i = 0; i < this->production_queue_size; ++i) {
+        rge_write(param_1, &this->production_queue[i].master_id, 2);
+        rge_write(param_1, &this->production_queue[i].unit_count, 2);
+    }
+    rge_write(param_1, &this->production_queue_count, 2);
+    rge_write(param_1, &this->production_queue_enabled, 1);
+    this->production_queue_actions->save(param_1);
+}
+
+// TODO: Full parity pending for ownership transfer side effects tied to construction-state visuals.
+void TRIBE_Building_Object::change_ownership(RGE_Player* param_1) {
+    if (this->object_state == 2) {
+        this->take_building_attribute_from_owner();
+    }
+
+    if (this->object_state == 0) {
+        this->set_attribute_amount(1.0f, 1, 0xFF);
+    }
+
+    if (this->production_queue_count > 0) {
+        if (this->production_queue_need_attr == 4) {
+            this->production_queue_need_attr = -1;
+            int owner_id = (int)this->owner->id;
+            int* ai_queue_counter = (int*)((char*)rge_base_game + owner_id * 4 + 0xA34);
+            *ai_queue_counter = *ai_queue_counter - 1;
+        }
+        this->production_queue_count = 1;
+        this->production_queue->unit_count = 1;
+    }
+
+    this->production_queue_actions->delete_list();
+    TRIBE_Combat_Object::change_ownership(param_1);
+
+    if (this->object_state == 2) {
+        this->give_building_attribute_to_owner();
+        TRIBE_Master_Building_Object* master = (TRIBE_Master_Building_Object*)this->master_obj;
+        if (master != nullptr && master->on_build_make_tech >= 0) {
+            TRIBE_Player* tribe_player = (TRIBE_Player*)this->owner;
+            if (tribe_player != nullptr && tribe_player->tech_tree != nullptr) {
+                tribe_player->tech_tree->do_tech(master->on_build_make_tech);
+            }
+        }
+    }
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8E60
+void TRIBE_Building_Object::modify(float param_1, uchar param_2) {
+    if (param_2 != 0x11) {
+        TRIBE_Combat_Object::modify(param_1, param_2);
+        return;
+    }
+    this->facet = (uchar)(int)param_1;
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9710
+void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    if (this->sprite == ((TRIBE_Master_Building_Object*)this->master_obj)->construction_sprite) {
+        this->new_sprite(((TRIBE_Master_Building_Object*)param_1)->construction_sprite);
+    }
+    RGE_Combat_Object::copy_obj(param_1);
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9760
+void TRIBE_Building_Object::rotate(long) {
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9770
+void TRIBE_Building_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {
+    float temp_hp = this->hp;
+    if (this->hp <= 0.0f) {
+        return;
+    }
+
+    RGE_Combat_Object::damage(param_1, param_2, param_3, param_4, param_5);
+
+    if (param_5 == nullptr || param_5->master_obj == nullptr) {
+        return;
+    }
+
+    short group_or_id = param_5->master_obj->object_group;
+    bool siege_like = (group_or_id == 0 || group_or_id == 0x17 || group_or_id == 0x24 || group_or_id == 0x1A);
+    if (!siege_like) {
+        short id = param_5->master_obj->id;
+        siege_like = (id == 0x4F || id == 0x45 || id == 199 || id == 0x17F || id == 0x17C);
+    }
+
+    float min_delta = siege_like ? 0.1f : 1.0f;
+    if (temp_hp - this->hp < min_delta) {
+        this->hp = temp_hp - min_delta;
+    }
+
+    if (this->owner->id > 0 && this->hp < 1.0f) {
+        param_4->command_add_attribute(0x2B, 1.0f);
+    }
+}
+
+// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004CA0B0
+void TRIBE_Building_Object::stop() {
+    RGE_Combat_Object::stop();
+    while (this->production_queue_count > 0) {
+        this->remove_from_production_queue(this->production_queue->master_id, 1);
+    }
+}
+
+// TODO: STUB - Full adjacency scan parity pending deep map-node transliteration.
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C8ED0
+long TRIBE_Building_Object::check(TRIBE_Building_Object** param_1) {
+    if (param_1 != nullptr) {
+        for (int i = 0; i < 4; ++i) {
+            param_1[i] = nullptr;
+        }
+    }
+    return 0;
+}
+
+// TODO: STUB - Full wall/connectivity parity pending check()/rotate() support completion.
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C90E0
+void TRIBE_Building_Object::connect() {
+}
+
+// TODO: STUB - Full secondary connectivity parity pending check()/rotate() support completion.
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C9230
+void TRIBE_Building_Object::connect2() {
+}
+
+// TODO: STUB - Full terrain stamping parity pending asm-guided tile footprint audit.
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C9370
+void TRIBE_Building_Object::lay_down_impassable_terrain() {
+}
+
+// TODO: STUB - Full terrain restore parity pending asm-guided tile footprint audit.
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C93F0
+void TRIBE_Building_Object::lay_down_passable_terrain() {
+}
 
