@@ -16,66 +16,45 @@
 
 namespace {
 static RGE_Task* action_object_get_task_by_id(RGE_Master_Action_Object* master, short task_id) {
-    if (master == nullptr || master->tasks == nullptr || task_id < 0) {
+    if (master == nullptr || task_id < 0) {
         return nullptr;
     }
-
-    for (short i = 0; i < master->tasks->list_num; ++i) {
-        if (master->tasks->list != nullptr && master->tasks->list[i] != nullptr && master->tasks->list[i]->id == task_id) {
-            return master->tasks->list[i];
-        }
-    }
-    return nullptr;
+    return master->get_task(task_id);
 }
 
 static RGE_Task* action_object_get_task_by_task_id(RGE_Master_Action_Object* master, int task_type_id) {
-    if (master == nullptr || master->tasks == nullptr) {
+    if (master == nullptr) {
         return nullptr;
     }
-
-    for (short i = 0; i < master->tasks->list_num; ++i) {
-        if (master->tasks->list != nullptr && master->tasks->list[i] != nullptr && master->tasks->list[i]->task_type == task_type_id) {
-            return master->tasks->list[i];
-        }
-    }
-    return nullptr;
+    return master->getTaskByTaskID(task_type_id);
 }
 
 static void action_object_set_current_order(UnitAIModule* unit_ai, int order_value) {
     if (unit_ai == nullptr) {
         return;
     }
-    unit_ai->lastOrderValue = unit_ai->currentOrderValue;
-    unit_ai->currentOrderValue = order_value;
+    unit_ai->setCurrentOrder(order_value);
 }
 
 static void action_object_set_current_action(UnitAIModule* unit_ai, int action_value) {
     if (unit_ai == nullptr) {
         return;
     }
-    unit_ai->lastActionValue = unit_ai->currentActionValue;
-    unit_ai->currentActionValue = action_value;
+    unit_ai->setCurrentAction(action_value);
 }
 
 static void action_object_set_current_target(UnitAIModule* unit_ai, long target_id, int target_type, float x, float y, float z) {
     if (unit_ai == nullptr) {
         return;
     }
-    unit_ai->lastTargetValue = unit_ai->currentTargetValue;
-    unit_ai->lastTargetTypeValue = unit_ai->currentTargetTypeValue;
-    unit_ai->currentTargetValue = (int)target_id;
-    unit_ai->currentTargetTypeValue = target_type;
-    unit_ai->currentTargetXValue = x;
-    unit_ai->currentTargetYValue = y;
-    unit_ai->currentTargetZValue = z;
+    unit_ai->setCurrentTarget((int)target_id, target_type, x, y, z);
 }
 
 static void action_object_set_tasked_by_player(UnitAIModule* unit_ai) {
     if (unit_ai == nullptr) {
         return;
     }
-    unit_ai->notifyQueueSizeValue = 0;
-    unit_ai->secondaryTimerValue = 0;
+    unit_ai->setTaskedByPlayer();
 }
 }
 
@@ -279,7 +258,7 @@ void RGE_Action_Object::work(RGE_Static_Object* param_1, float param_2, float pa
     }
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406470
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406470
 void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float param_3, float param_4, uchar param_5) {
     (void)param_5;
     if ((RGE_Action_Object*)param_1 == this) {
@@ -287,12 +266,11 @@ void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float p
     }
 
     RGE_Task* new_task = this->getTask(param_1, param_2, param_3, param_4);
-    RGE_Task* cur_task = (this->actions != nullptr) ? this->actions->get_task() : nullptr;
+    RGE_Task* cur_task = this->actions->get_task();
     short action_type = -1;
     int reused_action = 0;
 
-    if (cur_task != nullptr && new_task == cur_task && this->actions != nullptr &&
-        this->actions->action_work(param_1, param_2, param_3, param_4) != 0) {
+    if (cur_task != nullptr && new_task == cur_task && this->actions->action_work(param_1, param_2, param_3, param_4) != 0) {
         RGE_Action* action = this->actions->get_action();
         if (action != nullptr) {
             action_type = action->type();
@@ -300,7 +278,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float p
         }
     }
 
-    if (!reused_action && this->actions != nullptr && this->actions->have_action()) {
+    if (!reused_action && this->actions->have_action()) {
         RGE_Action* action = this->actions->get_action();
         if (action != nullptr && action->get_target_obj() == param_1 && action->type() == 9) {
             if (action->work(param_1, param_2, param_3, param_4) != 0) {
@@ -312,7 +290,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float p
 
     if (!reused_action) {
         RGE_Action* action = nullptr;
-        if (new_task != nullptr && this->actions != nullptr) {
+        if (new_task != nullptr) {
             action = this->actions->create_task_action(new_task, param_1, param_2, param_3, param_4);
         }
         if (action == nullptr) {
@@ -415,19 +393,47 @@ void RGE_Action_Object::play_move_sound() {
     }
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406860
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406860
 RGE_Master_Static_Object* RGE_Action_Object::get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
+    RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
+    if ((RGE_Action_Object*)param_1 != this && master != nullptr && master->task_by_group != 0) {
+        if (master->tasks != nullptr) {
+            RGE_Task* task = master->tasks->get_target_task(this, param_1, param_2, param_3, param_4);
+            if (task != nullptr) {
+                return this->master_obj;
+            }
+        }
+
+        if (this->owner != nullptr && this->owner->master_objects != nullptr) {
+            for (int i = 0; i < this->owner->master_object_num; ++i) {
+                RGE_Master_Static_Object* alt_master = this->owner->master_objects[i];
+                if (alt_master == nullptr || alt_master->id == master->id) {
+                    continue;
+                }
+                if (alt_master->object_group != master->object_group || alt_master->master_type != master->master_type) {
+                    continue;
+                }
+
+                RGE_Master_Action_Object* alt_action_master = (RGE_Master_Action_Object*)alt_master;
+                if (alt_action_master->task_by_group != master->task_by_group || alt_action_master->tasks == nullptr) {
+                    continue;
+                }
+
+                RGE_Task* task = alt_action_master->tasks->get_target_task(this, param_1, param_2, param_3, param_4);
+                if (task != nullptr) {
+                    return alt_master;
+                }
+            }
+        }
+    }
     return this->master_obj;
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406940
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406940
 void RGE_Action_Object::set_task(short param_1) {
     RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
     RGE_Task* task = action_object_get_task_by_id(master, param_1);
-    if (task != nullptr && this->actions != nullptr) {
+    if (task != nullptr) {
         RGE_Action* action = this->actions->create_task_action(task, nullptr, -1.0f, -1.0f, -1.0f);
         if (action != nullptr) {
             this->set_only_action(action);
@@ -435,11 +441,11 @@ void RGE_Action_Object::set_task(short param_1) {
     }
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406990
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406990
 void RGE_Action_Object::setTaskByTaskID(int param_1) {
     RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
     RGE_Task* task = action_object_get_task_by_task_id(master, param_1);
-    if (task != nullptr && this->actions != nullptr) {
+    if (task != nullptr) {
         RGE_Action* action = this->actions->create_task_action(task, nullptr, -1.0f, -1.0f, -1.0f);
         if (action != nullptr) {
             this->set_only_action(action);
@@ -481,7 +487,7 @@ void RGE_Action_Object::stop() {
     }
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406A70
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406A70
 uchar RGE_Action_Object::update() {
     if (actionFile != nullptr) {
         int action_value = -1;
@@ -511,7 +517,7 @@ uchar RGE_Action_Object::update() {
     uchar object_state = this->object_state;
 
     if (object_state < 3) {
-        if (list == nullptr || list->list == nullptr) {
+        if (list->list == nullptr) {
             if (object_state == 2) {
                 RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
                 if (master != nullptr && master->default_task != -1) {
@@ -529,7 +535,7 @@ uchar RGE_Action_Object::update() {
                 list->remove_action();
             }
         }
-    } else if (list != nullptr && list->list != nullptr) {
+    } else if (list->list != nullptr) {
         list->delete_list();
         return ret;
     }
@@ -568,7 +574,7 @@ RGE_Static_Object* RGE_Action_Object::get_target_obj() {
     return nullptr;
 }
 
-// Source of truth: act_obj.cpp.decomp @ 0x00406C30
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406C30
 RGE_Task* RGE_Action_Object::getTask(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
     if (master == nullptr || master->tasks == nullptr) {
