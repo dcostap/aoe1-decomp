@@ -11,6 +11,16 @@ public:
     void calcRandomPositions();
     void updateSummary();
     void fillPlayers();
+    void init_vars();
+    void setupTabOrder();
+    void fillChat(int param_1);
+    void fillNumberPlayers();
+    void fillPlayerColors();
+    void activateVictoryPanels();
+    void showNetInfo();
+    void kickPlayer(int player_number);
+    void handleKickedPlayer(int was_disconnect);
+    void cancelScreen(int timed_out);
     void setupSinglePlayerPlayers();
 
     // Virtuals (best-effort)

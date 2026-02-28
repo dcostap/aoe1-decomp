@@ -3286,6 +3286,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 230 — World system parity: RGE_Game_World + TRIBE_World (~5100-line gap)
 - [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `dfc9def` (~99 insertions). Only helper wrappers added. Gap mostly remains (~5000 lines). Needs follow-up with explicit function list.
 - [ ] Finished
 - Goal: close the gap in the world simulation system:
   - `world.cpp.decomp` (5804 lines) → `RGE_Game_World.cpp` (2631 lines) = gap ~3170
@@ -3341,6 +3343,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 233 — Panel system parity: text panels, buttons, dropdowns (~5900-line gap)
 - [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `7385f1e` (268 insertions). Only helper wrappers added. Gap mostly remains (~5600 lines). Needs follow-up with explicit function list.
 - [ ] Finished
 - Goal: close the gap in the UI panel system (core widgets):
   - `pnl_txt.cpp.decomp` (2861 lines) → `Pnl_txt.cpp` (229 lines) = gap ~2632
@@ -3360,6 +3364,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 234 — Drawarea + shape rendering parity (~3690-line gap)
 - [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `bb105cb` (542 insertions). Drawarea expanded but TShape was not touched. Gap partially closed.
 - [ ] Finished
 - Goal: close the gap in the rendering pipeline:
   - `drawarea.cpp.decomp` (3940 lines) → `Drawarea.cpp` (2033 lines) = gap ~1907
@@ -3378,7 +3384,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 235 — RGE Action system parity: action objects across 8 decomps (~3260-line gap)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `e33e78c` (126 insertions). Only RGE_Action constructors + RGE_Action_Attack constructors added. Most of the 3260-line gap remains.
 - Goal: close the gap across the entire RGE action system — these are the fundamental unit action classes:
   - `action.cpp.decomp` (871) → `RGE_Action.cpp` (332) = gap ~539
   - `act_obj.cpp.decomp` (1165) → `RGE_Action_Object.cpp` (622) = gap ~543
@@ -3397,7 +3404,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 236 — Multiplayer screens parity: scr_mps (~2150-line gap)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `f80e7da` (488 insertions to scr_mps_impl.cpp). Multiplayer command handling + setup methods implemented.
 - Goal: close the gap in multiplayer screen handling: `scr_mps.cpp.decomp` (4742) → `scr_mps_impl.cpp` (2592) = gap ~2150. Handles multiplayer lobby, game creation, player slots, and network setup.
 - Implement (decomp-first from `scr_mps.cpp.decomp`): Enumerate ALL functions not yet in `scr_mps_impl.cpp`. Focus on: player slot management, game creation/join, network setup, chat, ready state.
 - Where: `src/game/src/scr_mps_impl.cpp` + relevant headers
@@ -3406,7 +3414,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: gap cut by at least 1500 lines.
 
 ## Task 237 — RGE_Moving_Object + master object parity (~3300-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: close the gap in the object hierarchy middle layers:
   - `move_obj.cpp.decomp` (3485) → `RGE_Moving_Object.cpp` (2068) = gap ~1420
@@ -3421,7 +3429,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 238 — Command system parity: command.cpp + tcommand.cpp (~4570-line gap)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `9b08e9e` (107 insertions). tcommand.cpp created with 7 TRIBE_Command methods. command.cpp not touched — still has full 2482-line gap.
 - Goal: close the gap in the command/order dispatch system:
   - `command.cpp.decomp` (2482) → no impl yet = gap ~2482
   - `tcommand.cpp.decomp` (2087) → no impl yet = gap ~2087
@@ -3433,8 +3442,9 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: combined gap cut by at least 3000 lines.
 
 ## Task 239 — Panel_ez + panel system base parity (~4250-line gap)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `35be8b9` (233 insertions). Panel_ez setters/getters + TEasy panel APIs + TPanelSystem::EnableIME. Gap remains large.
 - Goal: close the gap in the panel system foundation:
   - `panel_ez.cpp.decomp` (3517) → `Panel_ez.cpp` (1712) = gap ~1805
   - `panel.cpp.decomp` (4154) → also maps to `Panel_ez.cpp` = gap ~2442
@@ -3446,8 +3456,9 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: gap cut by at least 2500 lines.
 
 ## Task 240 — Gameinfo + span list + DIB parity (~3270-line gap)
-- [ ] Assigned to agent
-- [ ] Finished
+- [x] Assigned to agent
+- [x] Finished
+- Status note: landed as commit `aaec660` (2280 insertions). Dib.cpp +1449, gameinfo.cpp +398, spanlist.cpp +528. Met 2000-line target.
 - Goal: close the gap in utility/infrastructure systems:
   - `gameinfo.cpp.decomp` (1695) → `gameinfo.cpp` (651) = gap ~1044
   - `spanlist.cpp.decomp` (1649) → `spanlist.cpp` (554) = gap ~1095
@@ -3458,3 +3469,150 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: corresponding `.decomp` + `.asm` files.
 - Non-overlap: do NOT touch Drawarea, Panel, or any game logic files.
 - Done when: combined gap cut by at least 2000 lines.
+
+## Task 241 — TShape rendering parity (~1776-line gap)
+- [x] Assigned to agent (worker-1, clone_1)
+- [x] Finished
+- Status note: landed as commit `81ecd19` (34 insertions). Only TShape ctor + shape_bounds added. Severely under-delivered: 1742-line gap remains.
+- Goal: close the gap in shape/sprite rendering: `shape.cpp.decomp` (3837) → `TShape.cpp` (2061) = gap ~1776. TShape handles sprite loading, frame management, and rendering.
+- Implement (decomp-first from `shape.cpp.decomp`): Enumerate ALL missing functions. Focus on: sprite frame loading, animation, rendering, palette handling.
+- Where: `src/game/src/TShape.cpp` + `src/game/include/TShape.h`
+- Source of truth: `src/game/decomp/shape.cpp.decomp` + `shape.cpp.asm`.
+- Non-overlap: do NOT touch Drawarea, view, or any game logic files.
+- Done when: gap cut by at least 1200 lines.
+
+## Task 242 — Fractal map + diamond map + pathsys parity (~3280-line gap)
+- [x] Assigned to agent (worker-2, clone_2)
+- [x] Finished
+- Status note: landed as commit `400aaad` (31 insertions). pathsys +20, RGE_Diamond_Map +11 only. Under-delivered: 3249-line gap remains.
+- Goal: close the gap in map generation/pathfinding infrastructure:
+  - `fractal.cpp.decomp` (1704) → `fractal.cpp` (871) = gap ~833
+  - `diam_map.cpp.decomp` (1664) → no impl yet = gap ~1664
+  - `pathsys.cpp.decomp` (2246) → `pathsys.cpp` (1464) = gap ~782
+  Combined gap: ~3280 lines. These handle terrain generation, diamond tile mapping, and pathfinding.
+- Implement (decomp-first): For each decomp, enumerate ALL missing functions. Create diam_map impl if needed.
+- Where: `src/game/src/fractal.cpp`, new file for diam_map, `src/game/src/pathsys.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch RGE_Map, view, or any game logic files.
+- Done when: combined gap cut by at least 2000 lines.
+
+## Task 243 — scr_sed2 scenario editor part 2 parity (~3930-line gap)
+- [x] Assigned to agent (worker-3, clone_3)
+- [x] Finished
+- Status note: landed as commit `4a709b1` (3946 insertions!). Full TRIBE_Screen_Sed2.cpp created. Outstanding delivery.
+- Goal: close the gap in the second half of scenario editor: `scr_sed2.cpp.decomp` (3930) → no impl yet = gap ~3930. This is the terrain painting, trigger editing, and object placement portion of the editor.
+- Implement (decomp-first from `scr_sed2.cpp.decomp`): Create impl file, enumerate ALL functions, transliterate them.
+- Where: Create `src/game/src/TRIBE_Screen_Sed2.cpp` or similar + headers
+- Source of truth: `src/game/decomp/scr_sed2.cpp.decomp` + `scr_sed2.cpp.asm`.
+- Non-overlap: do NOT touch TRIBE_Screen_Sed.cpp (that's the first part, already implemented), or any game logic files.
+- Done when: gap cut by at least 2500 lines.
+
+## Task 244 — Visible resource manager + information map parity (~2100-line gap)
+- [x] Assigned to agent (worker-1, clone_1)
+- [ ] Finished
+- Goal: close the gap in visibility/exploration systems:
+  - `visible.cpp.decomp` (1215) → `Visible_Resource_Manager.cpp` (219) = gap ~996
+  - `infmap.cpp.decomp` (1103) → no impl yet = gap ~1103
+  Combined gap: ~2100 lines. Visible_Resource_Manager tracks explored/unexplored tiles; infmap handles AI information mapping.
+- Implement (decomp-first): For each decomp, enumerate ALL missing functions. Create infmap impl if needed.
+- Where: `src/game/src/Visible_Resource_Manager.cpp`, new file for infmap + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch RGE_Visible_Map.cpp, view.cpp, or any screen/AI files.
+- Done when: combined gap cut by at least 1500 lines.
+
+## Task 245 — Music + sound driver + mouseptr parity (~2140-line gap)
+- [x] Assigned to agent (worker-4, clone_4)
+- [x] Finished
+- Status note: landed as commit `8383f58` (27 insertions). Only Mouseptr::Shutdown_Mouse added. Severely under-delivered: 2130-line gap remains.
+- Goal: close the gap in audio/input infrastructure:
+  - `music.cpp.decomp` (1307) → `music.cpp` (711) = gap ~596
+  - `sounddrv.cpp.decomp` (1366) → `Sounddrv.cpp` (862) = gap ~504
+  - `mouseptr.cpp.decomp` (1285) → `Mouseptr.cpp` (740) = gap ~545
+  Combined gap: ~1645 (plus partial undercounts). Also add `com_spd.cpp.decomp` (913) → `com_spd.cpp` (395) = gap ~518.
+  Total gap: ~2160 lines.
+- Implement (decomp-first): For each decomp, enumerate ALL missing functions. Focus on: MIDI playback, DirectSound wrappers, cursor management, speed settings.
+- Where: respective `.cpp` files + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch any game logic, AI, or screen files.
+- Done when: combined gap cut by at least 1500 lines.
+
+## Task 246 — Pnl_edit + Pnl_inp parity (~1430-line gap)
+- [x] Assigned to agent (worker-6, clone_6)
+- [x] Finished
+- Status note: landed as commit `f44afc7` (75 insertions to Pnl_edit.cpp). Under-delivered: 1359-line gap remains.
+- Goal: close the gap in text input/edit panels:
+  - `pnl_edit.cpp.decomp` (1582) → `Pnl_edit.cpp` (658) = gap ~924
+  - `pnl_inp.cpp.decomp` (1343) → `Pnl_inp.cpp` (833) = gap ~510
+  Combined gap: ~1434 lines. These handle text editing, input validation, and clipboard.
+- Implement (decomp-first): For each decomp, enumerate ALL missing functions. Focus on: text cursor, selection, clipboard, validation callbacks.
+- Where: `src/game/src/Pnl_edit.cpp`, `src/game/src/Pnl_inp.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch Panel_ez, Pnl_txt, Pnl_drop, or any screen/game files.
+- Done when: combined gap cut by at least 1000 lines.
+
+## Task 247 — tribegam.cpp TRIBE game implementation parity (~5347-line gap)
+- [x] Assigned to agent (worker-2, clone_2)
+- [ ] Finished
+- Goal: close the massive gap in TRIBE game core: tribegam.cpp.decomp (8725) -> tribegam.cpp (3378) = gap ~5347. This is the central TRIBE game class — save/load, game tick, player management, victory conditions.
+- Implement (decomp-first from tribegam.cpp.decomp): Enumerate ALL missing functions. Focus on the largest blocks: save/load game state, game tick processing, player init, victory/diplomacy logic, achievement tracking.
+- Where: `src/game/src/tribegam.cpp` + `src/game/include/TRIBE_Game.h`
+- Source of truth: `src/game/decomp/tribegam.cpp.decomp` + `tribegam.cpp.asm`.
+- Non-overlap: do NOT touch basegame.cpp, TRIBE_Player.cpp, or screen files.
+- Done when: gap cut by at least 3000 lines. This is a large task — prioritize completeness.
+
+## Task 248 — basegame.cpp core game parity part 2 (~3804-line gap)
+- [x] Assigned to agent (worker-3, clone_3)
+- [ ] Finished
+- Goal: close the remaining gap in the base game class: basegame.cpp.decomp (7841) -> basegame.cpp (4037) = gap ~3804. RGE_Base_Game is the parent of TRIBE_Game, handles game loop, timing, world setup.
+- Implement (decomp-first from basegame.cpp.decomp): Enumerate ALL missing functions systematically. Focus on: game loop callbacks, world init/shutdown, timing, messaging, player slots.
+- Where: `src/game/src/basegame.cpp` + `src/game/include/RGE_Base_Game.h`
+- Source of truth: `src/game/decomp/basegame.cpp.decomp` + `basegame.cpp.asm`.
+- Non-overlap: do NOT touch tribegam.cpp, command.cpp, or screen files.
+- Done when: gap cut by at least 2500 lines.
+
+## Task 249 — Scenario + TRIBE scenario parity (~3000-line gap)
+- [x] Assigned to agent (worker-4, clone_4)
+- [ ] Finished
+- Goal: close the gap in scenario management:
+  - scenario.cpp.decomp (2903) -> scenario.cpp (977) = gap ~1926
+  - tscenaro.cpp.decomp (2045) -> tscenaro.cpp (971) = gap ~1074
+  Combined gap: ~3000 lines. These handle scenario file I/O, player setup, triggers, objectives.
+- Implement (decomp-first): For each decomp, enumerate ALL missing functions. Focus on: scenario save/load, player config, trigger evaluation, map setup.
+- Where: `src/game/src/scenario.cpp`, `src/game/src/tscenaro.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch scr_sed, scr_sed2, or any screen files.
+- Done when: combined gap cut by at least 2000 lines.
+
+## Task 250 — TShape sprite rendering continuation (~1745-line gap)
+- [x] Assigned to agent (worker-6, clone_6)
+- [ ] Finished
+- Goal: Task 241 only added 34 lines. This continuation must close the real gap: shape.cpp.decomp (3837) -> TShape.cpp (2092) = gap ~1745. TShape handles SLP sprite loading, frame rendering, palette application, shadow drawing.
+- Implement (decomp-first from shape.cpp.decomp): Enumerate EVERY missing function. There should be 20+ unimplemented functions. Focus on: SLP frame decoding, draw methods, palette transforms, outline rendering, shadow methods.
+- Where: `src/game/src/TShape.cpp` + `src/game/include/TShape.h`
+- Source of truth: `src/game/decomp/shape.cpp.decomp` + `shape.cpp.asm`.
+- Non-overlap: do NOT touch Drawarea, Dib, or any game logic files.
+- Done when: gap cut by at least 1200 lines. ALL rendering functions must be transliterated.
+
+## Task 251 — RMM random map generators parity (~2100-line gap)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: close the gap in random map generation subsystem:
+  - rmm_elev.cpp.decomp (1177) -> RGE_RMM_Elevation_Generator.cpp (289) = gap ~888
+  - rmm_terr.cpp.decomp (826) -> no impl yet = gap ~826
+  - rmm_cntr.cpp.decomp (735) -> RGE_RMM_Controller.cpp (324) = gap ~411
+  Combined gap: ~2125 lines. These generate terrain elevation, terrain types, and coordinate random map creation.
+- Implement (decomp-first): For each decomp, enumerate ALL missing functions. Create rmm_terr impl if needed.
+- Where: `src/game/src/RGE_RMM_Elevation_Generator.cpp`, new file for rmm_terr, `src/game/src/RGE_RMM_Controller.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files.
+- Non-overlap: do NOT touch RGE_RMM_Object_Generator, fractal, or any game logic files.
+- Done when: combined gap cut by at least 1500 lines.
+
+## Task 252 — command.cpp RGE command system parity (~2482-line gap)
+- [ ] Assigned to agent
+- [ ] Finished
+- Goal: Task 238 only added 107 lines to tcommand.cpp but left command.cpp untouched. Close the remaining gap: command.cpp.decomp (2482) -> command.cpp (essentially empty beyond stubs). RGE_Command handles all game commands — move, attack, build, research, etc.
+- Implement (decomp-first from command.cpp.decomp): Enumerate ALL missing functions. Focus on: command dispatch, move commands, attack commands, build commands, formation commands, trade commands.
+- Where: `src/game/src/command.cpp` + `src/game/include/RGE_Command.h` (or similar headers)
+- Source of truth: `src/game/decomp/command.cpp.decomp` + `command.cpp.asm`.
+- Non-overlap: do NOT touch tcommand.cpp (already done), com_hand.cpp, or any action files.
+- Done when: gap cut by at least 1800 lines.

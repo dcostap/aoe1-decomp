@@ -1,7 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
+#include <io.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/stat.h>
 #include "../include/TSpan_List_Manager.h"
 #include "../include/VSpanMiniList.h"
+#include "../include/TShape.h"
+#include "../include/Shape_Info.h"
+#include "../include/TDrawArea.h"
 #include "../include/custom_debug.h"
 
 // NOTE: This file is a reimplementation based on immutable references:
@@ -364,6 +371,75 @@ void TSpan_List_Manager::AddSpan(int start_px, int end_px, int line) {
     if (cur->EndPx > this->RightMostPx[line]) this->RightMostPx[line] = cur->EndPx;
 }
 
+void TSpan_List_Manager::AddShape(TShape* param_1, int param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BDEA0
+    if (param_1 == nullptr || param_1->FShape == nullptr || param_1->shape_info == nullptr) {
+        return;
+    }
+
+    Shape_Info* shape_info = param_1->shape_info;
+    long* outline = (long*)(param_1->FShape->Version + shape_info[param_2].Shape_Outline_Offset);
+    int right = (int)shape_info[param_2].Width - 1 + param_3;
+    int y = param_4;
+    int end_y = param_4 + (int)shape_info[param_2].Height;
+
+    if (param_5 == 0) {
+        while (y < end_y) {
+            long lVar = *outline++;
+            ushort* puVar = (ushort*)((char*)outline - 2);
+            if (this->Min_Line <= y && y <= this->Max_Line && (((ushort)lVar & 0x8000) == 0)) {
+                this->AddSpan((short)(ushort)lVar + param_3, right - (short)(*puVar), y);
+            }
+            y++;
+        }
+        return;
+    }
+
+    while (y < end_y) {
+        long lVar = *outline++;
+        ushort* puVar = (ushort*)((char*)outline - 2);
+        if (this->Min_Line <= y && y <= this->Max_Line && (((*puVar) & 0x8000) == 0)) {
+            this->AddSpan((short)(*puVar) + param_3, right - (short)(ushort)lVar, y);
+        }
+        y++;
+    }
+}
+
+void TSpan_List_Manager::AddShape_Align(uchar* param_1, Shape_Info* param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BDFA0
+    if (param_2 == nullptr) {
+        return;
+    }
+
+    ushort* outline = (ushort*)(param_1 + param_2->Shape_Outline_Offset);
+    int right = (int)param_2->Width - 1 + param_3;
+    int y = param_4;
+    int end_y = param_4 + (int)param_2->Height;
+
+    if (param_5 == 0) {
+        while (y < end_y) {
+            ushort start = outline[0];
+            ushort end = outline[1];
+            outline += 2;
+            if (this->Min_Line <= y && y <= this->Max_Line && ((start & 0x8000) == 0)) {
+                this->AddSpan(((short)start + param_3) & 0xFFFFFFFC, (right - (short)end) | 3, y);
+            }
+            y++;
+        }
+        return;
+    }
+
+    while (y < end_y) {
+        ushort start = outline[0];
+        ushort end = outline[1];
+        outline += 2;
+        if (this->Min_Line <= y && y <= this->Max_Line && ((end & 0x8000) == 0)) {
+            this->AddSpan(((short)end + param_3) & 0xFFFFFFFC, (right - (short)start) | 3, y);
+        }
+        y++;
+    }
+}
+
 void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini_list, int x_off, int y_off) {
     // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE240
     if (mini_list != (VSpanMiniList*)0) {
@@ -620,4 +696,456 @@ void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* list_a, TSpan_List_Ma
         if (num_lines <= i) return;
     }
 }
+
+void TSpan_List_Manager::DeleteShape(TShape* param_1, int param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE4B0
+    if (param_1 == nullptr || param_1->FShape == nullptr || param_1->shape_info == nullptr) {
+        return;
+    }
+
+    Shape_Info* shape_info = param_1->shape_info;
+    long* outline = (long*)(param_1->FShape->Version + shape_info[param_2].Shape_Outline_Offset);
+    int right = (int)shape_info[param_2].Width - 1 + param_3;
+    int y = param_4;
+    int end_y = param_4 + (int)shape_info[param_2].Height;
+
+    if (param_5 == 0) {
+        while (y < end_y) {
+            long lVar = *outline++;
+            ushort* puVar = (ushort*)((char*)outline - 2);
+            if (((ushort)lVar & 0x8000) == 0) {
+                this->DeleteSpan(param_3 + (short)(ushort)lVar, right - (short)*puVar, y);
+            }
+            y++;
+        }
+        return;
+    }
+
+    while (y < end_y) {
+        long lVar = *outline++;
+        ushort* puVar = (ushort*)((char*)outline - 2);
+        if (((*puVar) & 0x8000) == 0) {
+            this->DeleteSpan(param_3 + (short)*puVar, right - (short)(ushort)lVar, y);
+        }
+        y++;
+    }
+}
+
+void TSpan_List_Manager::AlignamizeSpans() {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE690
+    for (int y = 0; y < this->Num_Lines; ++y) {
+        VSpan_Node* node = this->Line_Head_Ptrs[y];
+        if (node == nullptr) {
+            continue;
+        }
+
+        while (node != nullptr) {
+            VSpan_Node* next = node->Next;
+            node->StartPx &= 0xFFFFFFFC;
+            node->EndPx |= 3;
+            if (next != nullptr && node->EndPx >= ((next->StartPx & 0x7FFFFFFC) - 1)) {
+                node->EndPx = next->EndPx | 3;
+                node->Next = next->Next;
+                if (next == this->Line_Tail_Ptrs[y]) {
+                    this->Line_Tail_Ptrs[y] = node;
+                }
+                if (next->Next != nullptr) {
+                    next->Next->Prev = node;
+                }
+                this->VSList.FreeNode(next);
+                this->Span_Count[y] = this->Span_Count[y] - 1;
+            } else {
+                node = node->Next;
+            }
+        }
+
+        this->LeftMostPx[y] = this->Line_Head_Ptrs[y]->StartPx;
+        this->RightMostPx[y] = this->Line_Tail_Ptrs[y]->EndPx;
+    }
+}
+
+void TSpan_List_Manager::ScrollSpansHorizontally(int param_1, int param_2) {
+    // Source of truth: spanlist.cpp.decomp @ 0x004BE750
+    if (param_1 == 0) {
+        return;
+    }
+    if (param_2 != 0) {
+        int abs_dx = (param_1 < 0) ? -param_1 : param_1;
+        if ((this->Max_Span_Px - this->Min_Span_Px) < abs_dx) {
+            this->ResetAll();
+            return;
+        }
+    }
+
+    for (int y = 0; y < this->Num_Lines; ++y) {
+        VSpan_Node* node = this->Line_Head_Ptrs[y];
+        while (node != nullptr) {
+            VSpan_Node* next = node->Next;
+            int start = node->StartPx + param_1;
+            int end = node->EndPx + param_1;
+            if (param_2 != 0) {
+                if (end < this->Min_Span_Px || this->Max_Span_Px < start) {
+                    if (node->Prev != nullptr) {
+                        node->Prev->Next = next;
+                    } else {
+                        this->Line_Head_Ptrs[y] = next;
+                    }
+                    if (next != nullptr) {
+                        next->Prev = node->Prev;
+                    } else {
+                        this->Line_Tail_Ptrs[y] = node->Prev;
+                    }
+                    this->VSList.FreeNode(node);
+                    this->Span_Count[y] = this->Span_Count[y] - 1;
+                    node = next;
+                    continue;
+                }
+                if (start < this->Min_Span_Px) start = this->Min_Span_Px;
+                if (this->Max_Span_Px < end) end = this->Max_Span_Px;
+            }
+            node->StartPx = start;
+            node->EndPx = end;
+            node = next;
+        }
+    }
+}
+
+void TSpan_List_Manager::ScrollSpansVertically(int param_1, int param_2) {
+    // Source of truth: spanlist.cpp.decomp @ 0x004BE850
+    if (param_1 == 0) {
+        return;
+    }
+
+    int min_line = (param_2 == 0) ? 0 : this->Min_Line;
+    int max_line = (param_2 == 0) ? (this->Num_Lines - 1) : this->Max_Line;
+    int abs_dy = (param_1 < 0) ? -param_1 : param_1;
+    if ((max_line - min_line) < abs_dy) {
+        this->ResetAll();
+        return;
+    }
+
+    for (int y = 0; y < this->Num_Lines; ++y) {
+        int dst = y + param_1;
+        if (this->Line_Head_Ptrs[y] != nullptr && (dst < min_line || max_line < dst)) {
+            this->VSList.FreeThread(this->Line_Head_Ptrs[y], this->Line_Tail_Ptrs[y]);
+            this->Line_Head_Ptrs[y] = nullptr;
+            this->Line_Tail_Ptrs[y] = nullptr;
+            this->Span_Count[y] = 0;
+            this->LeftMostPx[y] = 0;
+            this->RightMostPx[y] = 0;
+        }
+    }
+
+    if (param_1 < 0) {
+        for (int y = this->Num_Lines - 1; y + param_1 >= 0; --y) {
+            this->Line_Head_Ptrs[y + param_1] = this->Line_Head_Ptrs[y];
+            this->Line_Tail_Ptrs[y + param_1] = this->Line_Tail_Ptrs[y];
+            this->Span_Count[y + param_1] = this->Span_Count[y];
+            this->LeftMostPx[y + param_1] = this->LeftMostPx[y];
+            this->RightMostPx[y + param_1] = this->RightMostPx[y];
+        }
+        for (int y = this->Num_Lines + param_1; y < this->Num_Lines; ++y) {
+            if (y >= 0) {
+                this->Line_Head_Ptrs[y] = nullptr;
+                this->Line_Tail_Ptrs[y] = nullptr;
+                this->Span_Count[y] = 0;
+                this->LeftMostPx[y] = 0;
+                this->RightMostPx[y] = 0;
+            }
+        }
+    } else {
+        for (int y = 0; y + param_1 < this->Num_Lines; ++y) {
+            this->Line_Head_Ptrs[y + param_1] = this->Line_Head_Ptrs[y];
+            this->Line_Tail_Ptrs[y + param_1] = this->Line_Tail_Ptrs[y];
+            this->Span_Count[y + param_1] = this->Span_Count[y];
+            this->LeftMostPx[y + param_1] = this->LeftMostPx[y];
+            this->RightMostPx[y + param_1] = this->RightMostPx[y];
+        }
+        for (int y = 0; y < param_1; ++y) {
+            this->Line_Head_Ptrs[y] = nullptr;
+            this->Line_Tail_Ptrs[y] = nullptr;
+            this->Span_Count[y] = 0;
+            this->LeftMostPx[y] = 0;
+            this->RightMostPx[y] = 0;
+        }
+    }
+}
+
+int TSpan_List_Manager::ValidateSpan(int param_1) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE9E0
+    int span_num = 0;
+    if (param_1 < 0 || param_1 >= this->Num_Lines) {
+        return 0;
+    }
+
+    if (this->Line_Head_Ptrs[param_1] == nullptr) {
+        return (this->Line_Tail_Ptrs[param_1] == nullptr && this->Span_Count[param_1] == 0 && this->LeftMostPx[param_1] == 0 &&
+                this->RightMostPx[param_1] == 0)
+                   ? 1
+                   : 0;
+    }
+
+    VSpan_Node* node = this->Line_Head_Ptrs[param_1];
+    VSpan_Node* prev = nullptr;
+    int prev_end = 0;
+    while (node != nullptr) {
+        span_num++;
+        if (span_num == 1 && node->StartPx != this->LeftMostPx[param_1]) {
+            return 0;
+        }
+        if (node->Prev != prev) {
+            return 0;
+        }
+        if (node->EndPx < node->StartPx) {
+            return 0;
+        }
+        if (span_num > 1 && node->StartPx <= prev_end) {
+            return 0;
+        }
+        prev_end = node->EndPx;
+        prev = node;
+        node = node->Next;
+    }
+
+    if (this->Span_Count[param_1] != span_num || this->Line_Tail_Ptrs[param_1] != prev || prev->EndPx != this->RightMostPx[param_1]) {
+        return 0;
+    }
+    return (this->LeftMostPx[param_1] <= this->RightMostPx[param_1]) ? 1 : 0;
+}
+
+int TSpan_List_Manager::DecodeLine(uchar* param_1, int param_2, uchar param_3, int /*param_4*/) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BEAD0
+    int num = 0;
+    if (param_1 == nullptr || param_2 < 0 || param_2 >= this->Num_Lines) {
+        return 0;
+    }
+    for (VSpan_Node* n = this->Line_Head_Ptrs[param_2]; n != nullptr; n = n->Next) {
+        for (int x = n->StartPx; x <= n->EndPx; ++x) {
+            param_1[x] = param_1[x] + param_3;
+        }
+        num++;
+    }
+    return num;
+}
+
+void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* param_3, int param_4, TSpan_List_Manager** param_5,
+                                       int* param_6, int param_7) {
+    // TODO: Source of truth: spanlist.cpp.decomp @ 0x004BEB10 (I/O/error path parity still incomplete)
+    if (param_2 == nullptr || param_3 == nullptr) {
+        return;
+    }
+    for (int i = 0; i < param_7; ++i) {
+        if (param_5 == nullptr || param_5[i] == nullptr) {
+            return;
+        }
+    }
+
+    int width = this->Num_Pixels;
+    int height = this->Num_Lines;
+    int stride = (width + 3) & 0xFFFC;
+    uchar* line = (uchar*)malloc((size_t)stride);
+    if (line == nullptr) {
+        return;
+    }
+
+    char bmp_name[64] = {0};
+    if (*param_2 < 0) {
+        *param_2 = 0;
+    }
+    const char* fmt = (param_1 != nullptr) ? param_1 : "snapshot_%03d.bmp";
+    sprintf(bmp_name, fmt, *param_2);
+    *param_2 = *param_2 + 1;
+
+    int fd = _open(bmp_name, _O_CREAT | _O_TRUNC | _O_BINARY | _O_WRONLY, _S_IREAD | _S_IWRITE);
+    if (fd != -1) {
+        tagBITMAPFILEHEADER fh = {};
+        tagBITMAPINFOHEADER ih = {};
+        tagRGBQUAD pal[256] = {};
+        tagPALETTEENTRY draw_pal[256] = {};
+
+        fh.bfType = 0x4D42;
+        fh.bfOffBits = sizeof(tagBITMAPFILEHEADER) + sizeof(tagBITMAPINFOHEADER) + sizeof(pal);
+        fh.bfSize = fh.bfOffBits + (DWORD)(height * stride);
+        ih.biSize = sizeof(tagBITMAPINFOHEADER);
+        ih.biWidth = width;
+        ih.biHeight = height;
+        ih.biPlanes = 1;
+        ih.biBitCount = 8;
+        ih.biCompression = BI_RGB;
+        ih.biSizeImage = (DWORD)(height * stride);
+        param_3->GetPalette(draw_pal);
+        for (int i = 0; i < 256; ++i) {
+            pal[i].rgbBlue = draw_pal[i].peBlue;
+            pal[i].rgbGreen = draw_pal[i].peGreen;
+            pal[i].rgbRed = draw_pal[i].peRed;
+            pal[i].rgbReserved = 0;
+        }
+
+        _write(fd, &fh, sizeof(fh));
+        _write(fd, &ih, sizeof(ih));
+        _write(fd, pal, sizeof(pal));
+
+        for (int y = height - 1; y >= 0; --y) {
+            memset(line, 0, (size_t)stride);
+            this->DecodeLine(line, y, (uchar)param_4, width);
+            for (int i = 0; i < param_7; ++i) {
+                int overlay_value = (param_6 != nullptr) ? param_6[i] : 0;
+                param_5[i]->DecodeLine(line, y, (uchar)overlay_value, width);
+            }
+            _write(fd, line, stride);
+        }
+        _close(fd);
+    }
+
+    free(line);
+}
+
+
+#if 0
+// TODO: Parity reference block from spanlist.cpp.decomp for take_snapshot exact behavior.
+
+// Offset: 0x004BEB10
+void take_snapshot(TSpan_List_Manager* this_, char* param_2, int* param_3, TDrawArea* param_4, int param_5, TSpan_List_Manager** param_6, int* param_7, int param_8) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: Height */
+    // /* public: void __thiscall TSpan_List_Manager::take_snapshot(char *,int &,class TDrawArea
+    //    *,int,class TSpan_List_Manager * *,int *,int) */
+    // 
+    // void __thiscall
+    // TSpan_List_Manager::take_snapshot
+    //           (TSpan_List_Manager *this,char *param_1,int *param_2,TDrawArea *param_3,int param_4,
+    //           TSpan_List_Manager **param_5,int *param_6,int param_7)
+    // 
+    // {
+    //   uchar uVar1;
+    //   uchar uVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   uchar *puVar7;
+    //   uint uVar8;
+    //   TSpan_List_Manager **ppTVar9;
+    //   uint uVar10;
+    //   uchar *puVar11;
+    //   char *pcVar12;
+    //   int Height;
+    //   int Width;
+    //   int infile;
+    //   int bmWide;
+    //   tagBITMAPFILEHEADER bmFH;
+    //   tagBITMAPINFOHEADER bmIH;
+    //   char BMPFile [60];
+    //   tagRGBQUAD bmPAL [256];
+    //   tagPALETTEENTRY thePal [256];
+    //   
+    //   if ((0 < param_7) && (iVar4 = 0, ppTVar9 = param_5, 0 < param_7)) {
+    //     do {
+    //       if (*ppTVar9 == (TSpan_List_Manager *)0x0) {
+    //         return;
+    //       }
+    //       iVar4 = iVar4 + 1;
+    //       ppTVar9 = ppTVar9 + 1;
+    //     } while (iVar4 < param_7);
+    //   }
+    //   iVar4 = this->Num_Pixels;
+    //   iVar3 = this->Num_Lines;
+    //   uVar10 = iVar4 + 3U & 0xfffc;
+    //   bmFH._6_4_ = iVar3 * uVar10 + 0x436;
+    //   bmFH.bfSize._2_2_ = 0x4d42;
+    //   bmFH.bfOffBits._0_2_ = 0;
+    //   bmFH.bfOffBits._2_2_ = 0;
+    //   bmIH.biWidth = 0x28;
+    //   bmIH.biCompression._0_2_ = 1;
+    //   bmIH.biCompression._2_2_ = 8;
+    //   bmIH.biSizeImage = 0;
+    //   bmIH.biXPelsPerMeter = 0;
+    //   bmIH.biYPelsPerMeter = 0;
+    //   bmIH.biClrUsed = 0;
+    //   bmIH.biClrImportant = 0;
+    //   BMPFile[0] = '\0';
+    //   BMPFile[1] = '\0';
+    //   BMPFile[2] = '\0';
+    //   BMPFile[3] = '\0';
+    //   bmFH._0_4_ = this;
+    //   bmIH.biHeight = iVar4;
+    //   bmIH._12_4_ = iVar3;
+    //   TDrawArea::GetPalette(param_3,thePal + 1);
+    //   iVar5 = 0;
+    //   do {
+    //     uVar1 = (&thePal[1].peGreen)[iVar5];
+    //     (&bmPAL[1].rgbBlue)[iVar5] = (&thePal[1].peBlue)[iVar5];
+    //     uVar2 = (&thePal[1].peRed)[iVar5];
+    //     (&bmPAL[1].rgbGreen)[iVar5] = uVar1;
+    //     (&bmPAL[1].rgbRed)[iVar5] = uVar2;
+    //     (&bmPAL[1].rgbReserved)[iVar5] = '\0';
+    //     iVar5 = iVar5 + 4;
+    //   } while (iVar5 < 0x400);
+    //   iVar5 = 0;
+    //   if (*param_2 < 0) {
+    //     *param_2 = 0;
+    //   }
+    //   while( true ) {
+    //     if (param_1 == (char *)0x0) {
+    //       iVar6 = *param_2;
+    //       pcVar12 = s_C__AOE__03d_BMP;
+    //     }
+    //     else {
+    //       iVar6 = *param_2;
+    //       pcVar12 = param_1;
+    //     }
+    //     sprintf(BMPFile + 4,pcVar12,iVar6);
+    //     iVar5 = iVar5 + 1;
+    //     iVar6 = __open(BMPFile + 4,0);
+    //     if (iVar6 == -1) break;
+    //     *param_2 = *param_2 + 1;
+    //     close(iVar6);
+    //     if (1000 < iVar5) {
+    //       return;
+    //     }
+    //   }
+    //   puVar7 = (uchar *)malloc(uVar10);
+    //   iVar5 = __open(BMPFile + 4,0x8301,0x180);
+    //   if (iVar5 != -1) {
+    //     write(iVar5,(undefined1 *)((int)&bmFH.bfSize + 2),0xe);
+    //     write(iVar5,&bmIH.biWidth,0x28);
+    //     write(iVar5,bmPAL + 1,0x400);
+    //     while (iVar3 = iVar3 + -1, -1 < iVar3) {
+    //       puVar11 = puVar7;
+    //       for (uVar8 = uVar10 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //         puVar11[0] = '\0';
+    //         puVar11[1] = '\0';
+    //         puVar11[2] = '\0';
+    //         puVar11[3] = '\0';
+    //         puVar11 = puVar11 + 4;
+    //       }
+    //       for (iVar6 = 0; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //         *puVar11 = '\0';
+    //         puVar11 = puVar11 + 1;
+    //       }
+    //       DecodeLine((TSpan_List_Manager *)bmFH._0_4_,puVar7,iVar3,(uchar)param_4,iVar4);
+    //       if (0 < param_7) {
+    //         Width = param_7;
+    //         ppTVar9 = param_5;
+    //         do {
+    //           DecodeLine(*ppTVar9,puVar7,iVar3,*(uchar *)(((int)param_6 - (int)param_5) + (int)ppTVar9),
+    //                      iVar4);
+    //           ppTVar9 = ppTVar9 + 1;
+    //           Width = Width + -1;
+    //         } while (Width != 0);
+    //       }
+    //       write(iVar5,puVar7,uVar10);
+    //     }
+    //     close(iVar5);
+    //   }
+    //   free(puVar7);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+
+#endif
 

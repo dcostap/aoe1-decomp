@@ -5,11 +5,12 @@
 struct RGE_Campaign;
 
 struct RGE_Campaign_Info {
+    RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long param_3);
+    RGE_Campaign_Info(RGE_Campaign* param_1);
     ~RGE_Campaign_Info();
 
     long get_current_scenario();
     int open_scenario();
-    RGE_Campaign_Info(RGE_Campaign* param_1);
     long get_scenario_list(char*** param_1, long* param_2);
     void save(int param_1);
     void rehook_campaigns(RGE_Campaign** param_1, long param_2);

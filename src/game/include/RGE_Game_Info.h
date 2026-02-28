@@ -4,6 +4,9 @@
 #include "RGE_Campaign.h"
 
 struct RGE_Game_Info {
+    RGE_Game_Info(char* param_1);
+    ~RGE_Game_Info();
+
     long get_current_scenario();
     long get_current_campaign();
     long get_current_player();

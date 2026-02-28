@@ -92,6 +92,16 @@ static const unsigned int kFacetSkipMask[9] = {
 PathingSystem pathSystem(0xFF, 0xFF, 0, nullptr, nullptr);
 PathingSystem aiPathSystem(0xFF, 0xFF, 1, nullptr, nullptr);
 
+void E9() {
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B060
+    new (&pathSystem) PathingSystem(0xFF, 0xFF, 0, nullptr, nullptr);
+}
+
+void E14() {
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B0B0
+    new (&aiPathSystem) PathingSystem(0xFF, 0xFF, 1, nullptr, nullptr);
+}
+
 PathingSystem::PathingSystem(int param_1, int param_2, int param_3, RGE_Map* param_4,
                              RGE_Game_World* param_5) {
     // Source of truth: pathsys.cpp.decomp @ 0x0046B0F0
@@ -670,6 +680,16 @@ int PathingSystem::copyPath(int step) {
         wp.z = this->currentObject->world_z;
         cVar14 = cVar7;
     }
+}
+
+int PathingSystem::FUN_0046d202(int step) {
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046D202
+    return this->copyPath(step);
+}
+
+void PathingSystem::FUN_0046dc8a(ManagedArray<int>& out) {
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046DC8A
+    this->copyUnobstructibles(out);
 }
 
 void PathingSystem::copyUnobstructibles(ManagedArray<int>& out) {
