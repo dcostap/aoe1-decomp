@@ -54,7 +54,7 @@ You receive a task specifying which decomp modules to transliterate. You must:
 2. Read the `.decomp` files (Ghidra output) from `src/game/decomp/`
 3. Transliterate **FULL FUNCTION BODIES** into compilable C++ — not just markers or stubs
 4. Follow `@AGENTS.md` for all decomp rules and coding conventions
-5. Follow `@multiple_agents_workflow.md` for the git branch/merge/push workflow
+5. Follow the Git Workflow (see below) for branching, merging, and pushing
 6. Build with `build.bat` and fix any compilation errors
 7. Validate with 1-2 parallel read-only sub-agents (skip if 429 rate limited — do thorough self-review instead)
 8. Push to `origin/master` when done
@@ -107,3 +107,57 @@ After all code compiles:
 - Do NOT ask the user questions mid-task — figure it out from the decomp/asm sources
 - If a function's decomp output is corrupted or unreadable, add a `// TODO: STUB — decomp output corrupted/unreadable at this offset` and move on
 - **NEVER exit/end the session** — always loop back to `ask_user` for the next task
+
+## Git Workflow (Multi-Agent Safe)
+
+You share `master` with other concurrent agents. Follow these rules exactly.
+
+### Hard Rules
+1. **Never force-push to `master`** (no `--force`, no `--force-with-lease`).
+2. **Never commit directly on `master`** — work on a task branch.
+3. **Before merging into `master`, merge `origin/master` into your task branch** and resolve conflicts locally.
+4. **Only fast-forward your local `master` from `origin/master`**.
+5. **Only push to `master` if the thing compiles.**
+6. **Never run the actual game / executable.**
+
+### Per-Task Git Flow
+
+**0) Start clean:**
+```bash
+git fetch origin --prune
+git switch master
+git pull --ff-only origin master
+```
+
+**1) Create a task branch:**
+```bash
+git switch -c agent/<short-task-name>
+```
+Include task number in the branch name (e.g., `agent/task-283-unit-ai`).
+
+**2) Work and commit:**
+```bash
+git add -A
+git commit -m "Descriptive message with detail in body if needed"
+```
+
+**3) Integrate latest master into your branch:**
+```bash
+git fetch origin --prune
+git merge origin/master -m "Merge latest master into task branch"
+```
+Resolve any conflicts locally.
+
+**4) Merge into master and push:**
+```bash
+git switch master
+git pull --ff-only origin master
+git merge --no-ff agent/<short-task-name> -m "Merge agent/<short-task-name>"
+git push origin master
+```
+
+### If Push Is Rejected
+Someone else pushed first. Do NOT force push. Repeat step 3 and 4.
+
+### Already-Done Tasks
+If you suspect a task is already done, check git history. Still review and improve code if assigned.
