@@ -4,15 +4,31 @@
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/Special_Events.h"
+#include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/TRIBE_History_Info.h"
 #include "../include/TShape.h"
 #include "../include/TDrawArea.h"
+#include "../include/TDrawSystem.h"
 #include "../include/globals.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+static unsigned long timeline_player_color_to_rgb(long color_id) {
+    switch (color_id) {
+    case 0: return 0xC40000;
+    case 1: return 200;
+    case 2: return 0xEAEA;
+    case 3: return 0x215A8C;
+    case 4: return 0x80FF;
+    case 5: return 0x8000;
+    case 6: return 0x808080;
+    case 7: return 0x808040;
+    default: return 0xFFFFFF;
+    }
+}
 
 // Source of truth: tpnl_tml.cpp.decomp @ 0x0051E650
 Time_Line_Panel::Time_Line_Panel()
@@ -108,8 +124,8 @@ void Time_Line_Panel::set_redraw(RedrawMode param_1) { TEasy_Panel::set_redraw(p
 void Time_Line_Panel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TEasy_Panel::set_overlapped_redraw(param_1, param_2, param_3); }
 void Time_Line_Panel::draw_setup(int param_1) { TEasy_Panel::draw_setup(param_1); }
 void Time_Line_Panel::draw_finish() { TEasy_Panel::draw_finish(); }
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051FA30
 void Time_Line_Panel::draw() {
-    // TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x0051FA30
     TPanel::draw();
     this->need_redraw = TPanel::NoRedraw;
     if (this->render_area != nullptr && this->active != 0 && this->visible != 0) {
@@ -503,7 +519,7 @@ void Time_Line_Panel::init_timeline() {
     this->pop_reading_rate = (long)((float)(this->num_entries_page - 1) / 12.0f);
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F120
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F120
 void Time_Line_Panel::draw_border() {
     if (this->bevel_type == 0 || this->render_area == nullptr) {
         return;
@@ -547,6 +563,8 @@ void Time_Line_Panel::draw_border() {
 
     this->render_area->Unlock((char*)"tpnl_tml::draw_border");
 }
+
+// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x0051F2E5
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F4E0
 void Time_Line_Panel::add_pop_total_special_event(long param_1, long param_2, long param_3, int param_4) {
@@ -615,49 +633,144 @@ void Time_Line_Panel::record_special_event(uchar param_1, TRIBE_History_Info* pa
     }
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F600
+// Source of truth: tpnl_tml.cpp.decomp @ 0x0051F600
 int Time_Line_Panel::calculate_icon_location(Special_Events* param_1, short param_2, uchar param_3) {
     (void)param_3;
-    int use_icon = 0;
+    int ret_val = 0;
+    long temp_start_x = 0;
+    long temp_start_txt_x1 = 0;
+    int local_4 = 0;
+
     param_1->icon_flag = 0;
 
-    if (this->special_events_pic != nullptr && this->special_events_pic->shape_count() != 0 && this->special_events_pic->shape_count() >= param_2) {
-        if (param_1->intermediate_y_line_segment >= this->special_events_pic_hgt) {
-            const int half = this->special_events_pic_wid / 2;
-            const long icon_x = param_1->X_line_pos - half;
-            const long icon_y = (param_1->intermediate_y_line_segment / 2 + param_1->Y_line_pos * 2) - (int)this->special_events_pic_hgt / 2;
-            if (icon_x >= this->X_start_line_pos && (param_1->X_line_pos + half) <= (this->X_line_max_width + this->X_start_line_pos)) {
-                param_1->start_x = icon_x;
-                param_1->start_y = icon_y;
-                use_icon = 1;
+    if (this->special_events_pic != nullptr) {
+        ret_val = (this->special_events_pic->shape_count() != 0) ? 1 : 0;
+        if (this->special_events_pic->shape_count() < param_2) {
+            ret_val = 0;
+        }
+
+        if (ret_val != 0) {
+            short width = 0;
+            short height = 0;
+            this->special_events_pic->shape_bounds((long)param_2, &width, &height);
+            if (width > 0) {
+                this->special_events_pic_wid = width;
+            }
+            if (height > 0) {
+                this->special_events_pic_hgt = height;
+            }
+
+            if (param_1->intermediate_y_line_segment < (int)this->special_events_pic_hgt) {
+                ret_val = 0;
+            }
+
+            int half_wid = (int)this->special_events_pic_wid / 2;
+            if (this->X_line_max_width + this->X_start_line_pos < param_1->X_line_pos + half_wid) {
+                ret_val = 0;
+            }
+
+            int icon_left = param_1->X_line_pos - half_wid;
+            if (icon_left < this->X_start_line_pos) {
+                ret_val = 0;
+            }
+
+            if (ret_val != 0) {
+                temp_start_x = (param_1->intermediate_y_line_segment / 2 + param_1->Y_line_pos * 2) - ((int)this->special_events_pic_hgt / 2);
+                local_4 = icon_left;
             }
         }
     }
 
-    const int text_w = this->body_font_wid * (int)strlen(param_1->text1);
-    long text_x = param_1->X_line_pos + 2;
-    if (text_x + text_w >= this->X_start_line_pos + this->X_line_max_width) {
-        text_x = (this->X_line_max_width - text_w) - 3 + this->X_start_line_pos;
+    int text_y = 0;
+    switch (param_1->event) {
+    case 0:
+    case 2: {
+        param_1->text_length1 = (int)strlen(param_1->text1);
+        int text_w = this->body_font_wid * param_1->text_length1;
+        if (text_w + 2 + param_1->X_line_pos < this->X_line_max_width + this->X_start_line_pos) {
+            temp_start_txt_x1 = param_1->X_line_pos + 2;
+        } else {
+            temp_start_txt_x1 = (this->X_line_max_width - text_w) - 3 + this->X_start_line_pos;
+        }
+
+        text_y = (param_1->Y_line_pos + param_1->intermediate_y_line_segment) - this->body_font_hgt - 2;
+        if (text_y < this->Y_start_line_pos) {
+            text_y = this->Y_start_line_pos + 2;
+        } else {
+            int y_max = this->Y_start_line_pos + this->Y_line_max_length;
+            if (y_max <= text_y) {
+                text_y = (y_max - this->body_font_hgt) - 3;
+            }
+        }
+        break;
     }
-    long text_y = (param_1->Y_line_pos + param_1->intermediate_y_line_segment) - this->body_font_hgt - 2;
-    if (text_y < this->Y_start_line_pos) {
-        text_y = this->Y_start_line_pos + 2;
+    case 1: {
+        param_1->text_length1 = (int)strlen(param_1->text1);
+        int text_w = this->body_font_wid * param_1->text_length1;
+        if (text_w + 2 + param_1->X_line_pos < this->X_line_max_width + this->X_start_line_pos) {
+            temp_start_txt_x1 = param_1->X_line_pos + 2;
+        } else {
+            temp_start_txt_x1 = (this->X_line_max_width - text_w) - 8 + this->X_start_line_pos;
+        }
+
+        int y_max = this->Y_start_line_pos + this->Y_line_max_length;
+        if (y_max <= this->body_font_hgt + 2 + param_1->Y_line_pos) {
+            text_y = (y_max - this->body_font_hgt) - 2;
+        } else {
+            text_y = param_1->Y_line_pos + 2;
+        }
+        break;
+    }
+    case 6:
+    case 8: {
+        int x_max = this->X_start_line_pos + this->X_line_max_width;
+        int text_len = (int)strlen(param_1->text1);
+        if (x_max < text_len * this->body_font_wid + param_1->X_line_pos) {
+            param_1->text_length1 = (x_max - param_1->X_line_pos) / this->body_font_wid;
+        } else {
+            param_1->text_length1 = text_len;
+        }
+
+        int max_len = (param_1->event == 6) ? 2 : 5;
+        if (param_1->text_length1 > max_len) {
+            param_1->text_length1 = max_len;
+        }
+
+        int y_total = this->Y_start_line_pos + this->Y_line_max_length;
+        int required = (int)temp_start_x + this->body_font_hgt + 1 + (int)this->special_events_pic_hgt;
+        if (y_total < required) {
+            temp_start_x = ((this->Y_line_max_length - this->body_font_hgt) - (int)this->special_events_pic_hgt) - 1 + this->Y_start_line_pos;
+        }
+
+        temp_start_txt_x1 = local_4;
+        text_y = (int)temp_start_x + 1 + (int)this->special_events_pic_hgt;
+        break;
+    }
+    default:
+        break;
     }
 
-    param_1->start_txt_x1 = text_x;
+    param_1->start_x = local_4;
+    param_1->start_txt_x1 = temp_start_txt_x1;
+    param_1->start_y = temp_start_x;
     param_1->start_txt_y1 = text_y;
-    if (use_icon != 0) {
+    if (ret_val != 0) {
         param_1->icon_flag = 1;
     }
-    return use_icon;
+    return ret_val;
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x0051FA90
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051FA90
 void Time_Line_Panel::draw_axis() {
     if (this->render_area == nullptr) {
         return;
     }
+
     uchar white = 0xFF;
+    if (this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
+        white = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0xFFFFFF);
+    }
+
     if (this->render_area->Lock((char*)"tpnl_tml::draw_axis", 1) != nullptr) {
         const long x = this->xPosition();
         const long y = this->yPosition();
@@ -687,20 +800,29 @@ void Time_Line_Panel::draw_axis() {
     this->render_area->ReleaseDc((char*)"tpnl_tml::draw_axis");
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x0051FD90
+// Source of truth: tpnl_tml.cpp.decomp @ 0x0051FD90
 void Time_Line_Panel::draw_special_events() {
     if (this->timeline_flag == 0 || this->render_area == nullptr) {
         return;
+    }
+
+    uchar white = 0xFF;
+    uchar black = 0;
+    if (this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
+        white = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0xFFFFFF);
+        black = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0);
     }
 
     if (this->render_area->Lock((char*)"tpnl_tml::draw_special_events", 1) != nullptr) {
         for (Special_Events* e = this->time_slice_events; e != nullptr; e = e->next) {
             short icon = -1;
             switch (e->event) {
-            case 0: icon = -1; break;
-            case 1: icon = -1; break;
-            case 2: icon = -1; break;
-            case 3: icon = -1; break;
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                icon = -1;
+                break;
             case 4: icon = 0; break;
             case 5: icon = 1; break;
             case 6: icon = 2; break;
@@ -714,35 +836,63 @@ void Time_Line_Panel::draw_special_events() {
     this->render_area->Unlock((char*)"tpnl_tml::draw_special_events");
 
     HDC dc = (HDC)this->render_area->GetDc((char*)"tpnl_tml::draw_special_events");
-    if (dc == nullptr) {
+    if (dc == nullptr || this->body_font == nullptr) {
         return;
     }
+
     SetBkMode(dc, 1);
     HGDIOBJ old_font = SelectObject(dc, this->body_font);
     for (Special_Events* e = this->time_slice_events; e != nullptr; e = e->next) {
         if ((e->event == 6 || e->event == 8) && e->icon_flag == 0) {
             continue;
         }
-        SetTextColor(dc, 0);
-        if (e->text_length1 <= 0) {
-            e->text_length1 = (int)strlen(e->text1);
+
+        switch (e->event) {
+        case 0:
+        case 1:
+        case 2:
+            SetTextColor(dc, black);
+            TextOutA(dc, e->start_txt_x1, e->start_txt_y1, e->text1, e->text_length1);
+            break;
+        case 3: {
+            const int x_offset = (e->time_slice == 0) ? 2 : -2;
+
+            SetTextColor(dc, white);
+            int len1 = (int)strlen(e->text1);
+            TextOutA(dc,
+                     e->X_line_pos + x_offset - ((len1 >> 1) * this->axis_font_wid),
+                     this->yPosition() + 8 + this->axis_font_hgt,
+                     e->text1,
+                     len1);
+
+            int len2 = (int)strlen(e->text2);
+            TextOutA(dc,
+                     e->X_line_pos + x_offset - ((len2 >> 1) * this->axis_font_wid),
+                     this->yPosition() + this->height() - this->axis_font_hgt * 2 - 7,
+                     e->text2,
+                     len2);
+            break;
         }
-        TextOutA(dc, e->start_txt_x1, e->start_txt_y1, e->text1, e->text_length1);
-        if (e->event == 3) {
-            SetTextColor(dc, 0xFFFFFF);
-            const int len2 = (int)strlen(e->text2);
-            TextOutA(dc, e->start_txt_x2, e->start_txt_y2, e->text2, len2);
+        case 6:
+        case 8:
+            SetTextColor(dc, black);
+            TextOutA(dc, e->start_txt_x1, e->start_txt_y1, e->text1, e->text_length1);
+            break;
+        default:
+            break;
         }
     }
     SelectObject(dc, old_font);
     this->render_area->ReleaseDc((char*)"tpnl_tml::draw_special_events");
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x00520080
+// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x00520032
+
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520080
 void Time_Line_Panel::draw_background() {
     if (this->background_pic == nullptr) {
         if (this->fill_back == 0) {
-            if (this->bevel_type > 1 && this->bevel_type < 8) {
+            if (this->parent_panel != nullptr && this->bevel_type > 1 && this->bevel_type < 8) {
                 this->parent_panel->draw_offset(this->pnl_x, this->pnl_y, &this->clip_rect);
             } else if (this->parent_panel != nullptr) {
                 this->parent_panel->draw_rect(&this->clip_rect);
@@ -785,7 +935,7 @@ void Time_Line_Panel::draw_background() {
     this->render_area->Unlock((char*)"tpnl_tml::draw_background");
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x00520220
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520220
 void Time_Line_Panel::draw_civilization_names() {
     if (this->timeline_flag == 0 || this->render_area == nullptr) {
         return;
@@ -827,9 +977,9 @@ void Time_Line_Panel::draw_civilization_names() {
     this->render_area->ReleaseDc((char*)"tpnl_tml::draw_civilization_name");
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x005204A0
+// Source of truth: tpnl_tml.cpp.decomp @ 0x005204A0
 void Time_Line_Panel::draw_timeline() {
-    if (this->timeline_flag == 0 || this->render_area == nullptr) {
+    if (this->timeline_flag == 0 || this->render_area == nullptr || rge_base_game == nullptr || rge_base_game->world == nullptr) {
         return;
     }
     if (this->render_area->Lock((char*)"tpnl_tml::draw_timeline", 1) == nullptr) {
@@ -837,51 +987,169 @@ void Time_Line_Panel::draw_timeline() {
     }
 
     this->X_line_pos = this->X_start_line_pos;
-    long pop_sample_counter = 0;
-    long sample_counter = 0;
-    float time_slice = 0.0f;
+    long pop_sample_cntr = 0;
+    long drawn_entries = 0;
+    float next_pop_total = 0.0f;
+    float keep_accumulator = 0.0f;
+    float thickness_accumulator = 0.0f;
 
-    while ((int)time_slice < this->num_history_entries && sample_counter < this->num_entries_page) {
-        float total_pop = 0.0f;
-        RGE_Game_World* w = rge_base_game->world;
-        for (int i = 1; i < w->player_num; ++i) {
-            TRIBE_Player* p = (TRIBE_Player*)w->players[i];
-            total_pop += (float)p->history->get_history_entry(0, (long)time_slice);
-        }
-        if (total_pop == 0.0f) {
+    while ((int)next_pop_total < this->num_history_entries && drawn_entries < this->num_entries_page) {
+        const long time_slice = (long)next_pop_total;
+        RGE_Game_World* world = rge_base_game->world;
+        if (world == nullptr) {
             break;
         }
 
-        if (pop_sample_counter == this->pop_reading_rate - 1 || time_slice == 0.0f) {
-            this->add_pop_total_special_event((long)time_slice, (long)total_pop, this->X_line_pos, 1);
-            pop_sample_counter = 0;
-        } else {
-            pop_sample_counter++;
+        float pop_total = 0.0f;
+        int special_event_flag = 0;
+        for (int i = 1; i < world->player_num; ++i) {
+            TRIBE_Player* player = (TRIBE_Player*)world->players[i];
+            if (player == nullptr || player->history == nullptr) {
+                continue;
+            }
+
+            pop_total += (float)player->history->get_history_entry(0, time_slice);
+            uchar event = 0;
+            if (player->history->get_history_event(time_slice, &event) != 0) {
+                special_event_flag = 1;
+            }
         }
 
-        long y = this->Y_start_line_pos;
-        for (int i = 1; i < w->player_num; ++i) {
-            TRIBE_Player* p = (TRIBE_Player*)w->players[i];
-            const float value = (float)p->history->get_history_entry(0, (long)time_slice);
-            const long seg = (long)((value / total_pop) * this->Y_line_max_length);
-            uchar color = 0xFF;
-            this->render_area->DrawVertLine(this->X_line_pos, y, seg, color);
-            this->record_special_event((uchar)i, p->history, color, (long)time_slice, this->X_line_pos, y, seg);
-            y += seg;
+        if (pop_total == 0.0f) {
+            break;
         }
 
-        this->X_line_pos += 1;
-        sample_counter += 1;
-        time_slice += 1.0f;
+        int draw_this_slice = 1;
+        if (this->drop_flag != 0 && special_event_flag == 0) {
+            float keep_rate = 1.0f;
+            if (this->num_history_entries > 0) {
+                keep_rate = (float)this->num_entries_page / (float)this->num_history_entries;
+            }
+            keep_accumulator += keep_rate;
+            if (keep_accumulator < 1.0f && drawn_entries + 1 < this->num_entries_page) {
+                draw_this_slice = 0;
+            } else if (keep_accumulator >= 1.0f) {
+                keep_accumulator -= 1.0f;
+            }
+        }
+
+        if (draw_this_slice != 0) {
+            drawn_entries = drawn_entries + 1;
+
+            float float_remainder = pop_total;
+            if (time_slice != this->num_entries_page - 1) {
+                float_remainder = 0.0f;
+                for (int i = 1; i < world->player_num; ++i) {
+                    TRIBE_Player* player = (TRIBE_Player*)world->players[i];
+                    if (player == nullptr || player->history == nullptr) {
+                        continue;
+                    }
+                    float_remainder += (float)player->history->get_history_entry(0, time_slice + 1);
+                }
+                if (float_remainder == 0.0f) {
+                    break;
+                }
+            }
+
+            if (pop_sample_cntr == this->pop_reading_rate - 1 || time_slice == 0) {
+                this->add_pop_total_special_event(time_slice, (long)pop_total, this->X_line_pos, 1);
+                pop_sample_cntr = 0;
+            } else {
+                pop_sample_cntr = pop_sample_cntr + 1;
+            }
+
+            long thickness_count = 1;
+            if (this->bar_thickness != 1.0f) {
+                float old_accumulator = thickness_accumulator;
+                thickness_accumulator += this->bar_thickness;
+                thickness_count = (long)thickness_accumulator - (long)old_accumulator;
+                if (thickness_count < 1) {
+                    thickness_count = 1;
+                }
+            }
+
+            for (long intermediate_x_pos = 0; intermediate_x_pos < thickness_count; ++intermediate_x_pos) {
+                this->Y_line_pos = this->Y_start_line_pos;
+                long y_line_total = 0;
+
+                float t = 0.0f;
+                if (thickness_count > 1) {
+                    t = (float)intermediate_x_pos / (float)thickness_count;
+                }
+
+                for (int i = 1; i < world->player_num; ++i) {
+                    TRIBE_Player* player = (TRIBE_Player*)world->players[i];
+                    TRIBE_History_Info* history = (player != nullptr) ? player->history : nullptr;
+
+                    float value = 0.0f;
+                    float value_next = 0.0f;
+                    if (history != nullptr) {
+                        value = (float)history->get_history_entry(0, time_slice);
+                        if (time_slice != this->num_entries_page - 1) {
+                            value_next = (float)history->get_history_entry(0, time_slice + 1);
+                        } else {
+                            value_next = value;
+                        }
+                    }
+
+                    float draw_value = value;
+                    float draw_total = pop_total;
+                    if (this->bar_thickness != 1.0f) {
+                        draw_value = value + (value_next - value) * t;
+                        draw_total = pop_total + (float_remainder - pop_total) * t;
+                    }
+
+                    long y_line_segment_length = 0;
+                    if (draw_total > 0.0f) {
+                        y_line_segment_length = (long)((draw_value / draw_total) * (float)this->Y_line_max_length);
+                    }
+                    if (draw_value >= 1.0f && y_line_segment_length < 1) {
+                        y_line_segment_length = 1;
+                    }
+
+                    if (i == world->player_num - 1) {
+                        long y_left = this->Y_line_max_length - y_line_total;
+                        if (y_left < 0) {
+                            y_left = 0;
+                        }
+                        y_line_segment_length = y_left;
+                    }
+
+                    long color_id = ((TRIBE_Game*)rge_base_game)->playerColor(i);
+                    unsigned long rgb = timeline_player_color_to_rgb(color_id);
+                    uchar temp_color = 0xFF;
+                    if (this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
+                        temp_color = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, rgb);
+                    }
+
+                    this->render_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, y_line_segment_length, temp_color);
+                    if (intermediate_x_pos == 0 && history != nullptr) {
+                        this->record_special_event((uchar)i, history, temp_color, time_slice, this->X_line_pos, this->Y_line_pos, y_line_segment_length);
+                    }
+
+                    this->Y_line_pos = this->Y_line_pos + y_line_segment_length;
+                    y_line_total = y_line_total + y_line_segment_length;
+                }
+
+                this->X_line_pos = this->X_line_pos + 1;
+            }
+        }
+
+        next_pop_total = (float)(time_slice + 1);
     }
 
     this->render_area->Unlock((char*)"tpnl_tml::draw_timeline");
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x00520AE0
+// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x00520ABD
+
+// Source of truth: tpnl_tml.cpp.decomp @ 0x00520AE0
 void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar param_3) {
-    (void)param_3;
     uchar black = 0;
+    if (this->render_area != nullptr && this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
+        black = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0);
+    }
+
     switch (param_1->event) {
     case 0:
         if (this->get_string(0x106A, param_1->text1, 50) == 0) {
@@ -898,7 +1166,11 @@ void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar pa
             param_1->text1[0] = '\0';
         }
         break;
+    case 8:
+        sprintf(param_1->text1, "%ld/%1ld", param_1->interger_value_1, param_1->interger_value_2);
+        break;
     case 3: {
+        // Pop total + timestamp labels.
         sprintf(param_1->text1, "%ld", param_1->pop_total);
         int h = 0;
         int m = 0;
@@ -918,7 +1190,21 @@ void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar pa
         break;
     }
 
-    param_1->text_length1 = (int)strlen(param_1->text1);
+    if (param_1->event == 3 || param_1->event == 8) {
+        int iVar4 = 0;
+        int iVar6 = 0;
+        int iVar2 = (int)param_1->time_slice * 0x0F;
+        if (iVar2 > 0x3B) {
+            iVar6 = iVar2 / 0x3C;
+            if (iVar6 > 0x3B) {
+                iVar4 = iVar6 / 0x3C;
+                iVar6 = iVar6 % 0x3C;
+            }
+        }
+        sprintf(param_1->text2, "%1d:%02d", iVar4, iVar6);
+        param_1->text_length2 = (int)strlen(param_1->text2);
+    }
+
     const int draw_icon_flag = this->calculate_icon_location(param_1, param_2, param_3);
     if (param_1->event == 0 || param_1->event == 1 || param_1->event == 2) {
         this->render_area->DrawVertLine(param_1->X_line_pos, param_1->Y_line_pos, param_1->intermediate_y_line_segment, black);
@@ -930,7 +1216,9 @@ void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar pa
     }
 }
 
-// TODO: Partial transliteration. Source of truth: tpnl_tml.cpp.decomp @ 0x00520D50
+// TODO: STUB — decomp output corrupted/unreadable at tpnl_tml.cpp.decomp @ 0x00520D25
+
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520D50
 void Time_Line_Panel::draw_legend() {
     if (this->special_events_pic != nullptr && this->special_events_pic->shape_count() != 0) {
         (void)this->width();

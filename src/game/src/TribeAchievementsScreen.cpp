@@ -284,6 +284,8 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* /*summary_text*/, int end
     this->set_mode((this->win_loss_text == nullptr) ? 0 : 5);
 }
 
+// TODO: STUB — decomp output corrupted/unreadable at scr_ach.cpp.decomp @ 0x0048E1C6
+
 // Source of truth: scr_ach.cpp.decomp @ 0x0048E210
 TribeAchievementsScreen::~TribeAchievementsScreen() {
     if (panel_system != nullptr) {
@@ -673,6 +675,8 @@ void TribeAchievementsScreen::draw() {
         }
     }
 }
+
+// TODO: STUB — decomp output corrupted/unreadable at scr_ach.cpp.decomp @ 0x0048F085
 
 // Source of truth: scr_ach.cpp.decomp @ 0x0048F190
 long TribeAchievementsScreen::handle_mouse_down(uchar btn, long x, long y, int p4, int p5) {
