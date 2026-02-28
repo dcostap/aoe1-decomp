@@ -1,10 +1,25 @@
 #include "../include/TScreenPanel.h"
+#include "../include/TDrawArea.h"
+#include "../include/TDrawSystem.h"
 
-TScreenPanel::TScreenPanel() : TEasy_Panel() {}
+namespace {
+TScreenPanel* last_screen = nullptr;
 
-TScreenPanel::TScreenPanel(char* name) : TEasy_Panel(name) {}
+// TODO: STUB - color.cpp.decomp parity dependency is not transliterated in this task.
+static void RGE_fade_palette_stub(TDrawArea*, tagPALETTEENTRY, float, uchar, tagPALETTEENTRY*, int, int) {}
+}
 
-TScreenPanel::~TScreenPanel() {}
+TScreenPanel::TScreenPanel() : TEasy_Panel() {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BA70
+}
+
+TScreenPanel::TScreenPanel(char* name) : TEasy_Panel(name) {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BAB0
+}
+
+TScreenPanel::~TScreenPanel() {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BAD0
+}
 
 // Virtual setup (base signature): forward.
 long TScreenPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
@@ -13,12 +28,14 @@ long TScreenPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long
 
 // Non-virtual overload: `Pnl_scr.cpp.decomp` / `.asm` source of truth.
 long TScreenPanel::setup(TDrawArea* param_1, char* param_2, long param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BAE0
     long ok = TEasy_Panel::setup(param_1, (TPanel*)0, param_2, param_3, 1, 0, 0, 0, 0, param_4);
     return (ok != 0) ? 1 : 0;
 }
 
 // Non-virtual overload: used for blank screens in original.
 long TScreenPanel::setup(TDrawArea* param_1, char* param_2, long param_3, uchar param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BB10
     (void)param_2;
     (void)param_3;
     (void)param_4;
@@ -48,7 +65,11 @@ void TScreenPanel::paint() { TEasy_Panel::paint(); }
 long TScreenPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TEasy_Panel::wnd_proc(param_1, param_2, param_3, param_4); }
 long TScreenPanel::handle_idle() { return TEasy_Panel::handle_idle(); }
 long TScreenPanel::handle_size(long param_1, long param_2) { return TEasy_Panel::handle_size(param_1, param_2); }
-long TScreenPanel::handle_paint() { return TEasy_Panel::handle_paint(); }
+long TScreenPanel::handle_paint() {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BB50
+    TPanel::handle_paint();
+    return 0;
+}
 long TScreenPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TEasy_Panel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
 long TScreenPanel::handle_char(long param_1, short param_2) { return TEasy_Panel::handle_char(param_1, param_2); }
 long TScreenPanel::handle_command(uint param_1, long param_2) { return TEasy_Panel::handle_command(param_1, param_2); }
@@ -75,7 +96,43 @@ long TScreenPanel::char_action(long param_1, short param_2) { return TEasy_Panel
 long TScreenPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TEasy_Panel::action(param_1, param_2, param_3, param_4); }
 void TScreenPanel::get_true_render_rect(tagRECT* param_1) { TEasy_Panel::get_true_render_rect(param_1); }
 int TScreenPanel::is_inside(long param_1, long param_2) { return TEasy_Panel::is_inside(param_1, param_2); }
-void TScreenPanel::set_focus(int param_1) { TEasy_Panel::set_focus(param_1); }
+void TScreenPanel::set_focus(int param_1) {
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BB60
+    tagPALETTEENTRY save_focus = {};
+    tagPALETTEENTRY color_table[256];
+    const int old_focus = this->have_focus;
+
+    const bool change_screen = (this != last_screen);
+    TDrawArea* draw_area = this->render_area;
+    if (draw_area != nullptr && draw_area->DrawSystem != nullptr && param_1 != 0 && change_screen &&
+        (draw_area->DrawSystem->ScreenMode == 2 || draw_area->DrawSystem->DrawType == 1)) {
+        if (this->palette == nullptr) {
+            draw_area->GetPalette(color_table + 1);
+        } else {
+            GetPaletteEntries((HPALETTE)this->palette, 0, 0x100, color_table + 1);
+        }
+
+        RGE_fade_palette_stub(draw_area, save_focus, 0.13f, 1, nullptr, -1, -1);
+        draw_area->Clear(nullptr, 0);
+        draw_area->DrawSystem->Paint(nullptr);
+    }
+
+    TEasy_Panel::set_focus(param_1);
+
+    draw_area = this->render_area;
+    if (draw_area != nullptr && draw_area->DrawSystem != nullptr && param_1 != 0 && change_screen &&
+        (draw_area->DrawSystem->ScreenMode == 2 || draw_area->DrawSystem->DrawType == 1)) {
+        RGE_fade_palette_stub(draw_area, save_focus, 0.0f, 2, color_table + 1, -1, -1);
+        this->handle_paint();
+        RGE_fade_palette_stub(draw_area, save_focus, 0.0f, 1, nullptr, -1, -1);
+        draw_area->DrawSystem->Paint(nullptr);
+        RGE_fade_palette_stub(draw_area, save_focus, 0.13f, 2, color_table + 1, -1, -1);
+    }
+
+    if (param_1 != old_focus && this->overlapping_children != 0) {
+        last_screen = this;
+    }
+}
 void TScreenPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TEasy_Panel::set_tab_order(param_1, param_2); }
 void TScreenPanel::set_tab_order(TPanel** param_1, short param_2) { TEasy_Panel::set_tab_order(param_1, param_2); }
 uchar TScreenPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TEasy_Panel::get_help_info(param_1, param_2, param_3, param_4); }

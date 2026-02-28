@@ -123,7 +123,7 @@ void construction_item_set_built(ConstructionItem* item, int value) {
 }
 
 // Offset: 0x0040AA90
-// TODO: Partial parity pending flattened AIModule base layout.
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90
 ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2) {
     (void)param_1;
     (void)param_2;
@@ -141,7 +141,7 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2) {
 }
 
 // Offset: 0x0040ABB0
-// TODO: Partial parity pending flattened AIModule base layout and ConstructionItem constructor parity.
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040ABB0
 ConstructionAIModule::ConstructionAIModule(int param_1, int param_2) {
     (void)param_1;
     this->numberConstructionLotsValue = 0;
@@ -317,7 +317,7 @@ ConstructionAIModule::ConstructionAIModule(int param_1, int param_2) {
 }
 
 // Offset: 0x0040B120
-// TODO: Partial parity pending ConstructionItem destructor parity.
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B120
 ConstructionAIModule::~ConstructionAIModule() {
     if (0 < this->numberConstructionLotsValue) {
         this->removeOldLots();
@@ -383,7 +383,7 @@ int ConstructionAIModule::filterOutMessage(AIModuleMessage* param_1) {
 }
 
 // Offset: 0x0040B1A0
-// TODO: Partial parity pending ConstructionItem constructor/destructor parity.
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0
 int ConstructionAIModule::save(int param_1) const {
     rge_write(param_1, (void*)&this->numberConstructionLotsValue, 4);
 
@@ -476,7 +476,7 @@ int ConstructionAIModule::save(int param_1) const {
 }
 
 // Offset: 0x0040B690
-// TODO: Partial parity pending ConstructionItem constructor/destructor parity.
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B690
 int ConstructionAIModule::loadConstructionPlan(char* param_1, int param_2, int param_3, float param_4, float param_5, float param_6) const {
     ConstructionAIModule* self = const_cast<ConstructionAIModule*>(this);
     self->setReferencePoint(param_2, param_3, param_4, param_5, param_6);
@@ -740,7 +740,7 @@ ConstructionItem* ConstructionAIModule::randomLot(float param_1, float param_2) 
 }
 
 // Offset: 0x0040BE70
-// TODO: Partial parity pending ConstructionItem scalar deleting destructor parity.
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040BE70
 void ConstructionAIModule::removeOldLots() {
     construction_destroy_list_nodes(&this->constructionLots);
     this->numberConstructionLotsValue = 0;
