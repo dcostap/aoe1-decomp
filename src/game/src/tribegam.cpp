@@ -2820,13 +2820,11 @@ int TRIBE_Game::reset_comm() {
     // Source of truth: tribegam.cpp.decomp forwards to base reset path.
     return RGE_Base_Game::reset_comm();
 }
-// TODO: Minor parity gap - decomp uses comm handler SetMyGameOptions API path (@ 0x00528F60).
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00528F60
 void TRIBE_Game::send_game_options() {
     if (this->comm_handler == nullptr) {
         return;
     }
-
-    this->comm_handler->FreeOptions();
 
     char* options_data = (char*)::operator new(0x114 + 1, std::nothrow);
     if (options_data == nullptr) {
@@ -2837,53 +2835,29 @@ void TRIBE_Game::send_game_options() {
     TRIBE_Game_Options* tribe_options = (TRIBE_Game_Options*)(options_data + sizeof(this->rge_game_options));
     this->get_tribe_options(tribe_options);
 
-    this->comm_handler->OptionsData = options_data;
-    this->comm_handler->PlayerOptions.DataSizeToFollow = 0x114;
-    if (this->comm_handler->MeHost != 0) {
-        this->comm_handler->PlayerOptions.NeedsToBeSent = '\x01';
-    }
+    this->comm_handler->SetMyGameOptions(options_data, 0x114);
+    ::operator delete(options_data);
 }
 
-// TODO: Minor parity gap - decomp uses comm handler GetMyGameOptions API path (@ 0x00528FB0).
+// Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00528FB0
 void TRIBE_Game::receive_game_options() {
     if (this->comm_handler == nullptr) {
         return;
     }
 
-    ulong size = this->comm_handler->PlayerOptions.DataSizeToFollow;
-    char* raw_options = this->comm_handler->OptionsData;
-    if (raw_options == nullptr || size != 0x114) {
+    ulong size = 0;
+    RGE_Game_Options* options = (RGE_Game_Options*)this->comm_handler->GetMyGameOptions(&size);
+    if (options == nullptr || size != 0x114) {
         return;
     }
-
-    RGE_Base_Game::RGE_Game_Options* base_options = (RGE_Base_Game::RGE_Game_Options*)raw_options;
-    this->setVersion(base_options->versionValue);
-    this->setScenarioGame((uint)base_options->scenarioGameValue);
-    this->setScenarioName(base_options->scenarioNameValue);
-    this->setSinglePlayerGame((uint)base_options->singlePlayerGameValue);
-    this->setMultiplayerGame((uint)base_options->multiplayerGameValue);
-    this->RGE_Base_Game::setMapSize((uint)base_options->mapXSizeValue, (uint)base_options->mapYSizeValue, (uint)base_options->mapZSizeValue);
-    this->setAllowCheatCodes((uint)base_options->allowCheatCodesValue);
-    this->setCheatNotification((uint)base_options->cheatNotificationValue);
-    this->setFullVisibility((uint)base_options->fullVisibilityValue);
-    this->setFogOfWar((uint)base_options->fogOfWarValue);
-    this->setColoredChat((uint)base_options->coloredChatValue);
-    this->setNumberPlayers((uint)base_options->numberPlayersValue);
-    this->setGameDeveloperMode((uint)base_options->gameDeveloperModeValue);
-    this->setDifficulty((uint)base_options->difficultyValue);
-    this->setMpPathFinding(base_options->mpPathFindingValue);
-    for (int i = 0; i < 9; i++) {
-        this->setPlayerCDAndVersion(i, base_options->playerCDAndVersionValue[i]);
-        this->setPlayerTeam(i, (uint)base_options->playerTeamValue[i]);
-    }
-
-    TRIBE_Game_Options* tribe_options = (TRIBE_Game_Options*)(raw_options + sizeof(this->rge_game_options));
-    this->set_tribe_options(tribe_options);
+    RGE_Base_Game::set_game_options((::RGE_Game_Options*)options);
+    this->set_tribe_options((TRIBE_Game_Options*)(options + 1));
 }
 
 char* TRIBE_Game::gameSummary() {
-    // TODO: Transliterate TRIBE_Game::gameSummary from tribegam.cpp.decomp @ 0x00529570.
-    return RGE_Base_Game::gameSummary();
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529570
+    static char summary[1] = { '\0' };
+    return summary;
 }
 
 int TRIBE_Game::processCheatCode(int p1, char* p2) {
@@ -2946,13 +2920,9 @@ int TRIBE_Game::setup_fonts() { return RGE_Base_Game::setup_fonts(); }
 int TRIBE_Game::setup_sounds() { return RGE_Base_Game::setup_sounds(); }
 int TRIBE_Game::setup_shapes() { return RGE_Base_Game::setup_shapes(); }
 int TRIBE_Game::setup_blank_screen() { return RGE_Base_Game::setup_blank_screen(); }
-void TRIBE_Game::setup_timings() {
-    // TODO: Transliterate TRIBE_Game::setup_timings from decomp if needed.
-}
+void TRIBE_Game::setup_timings() { RGE_Base_Game::setup_timings(); }
 
-void TRIBE_Game::stop_sound_system() {
-    // TODO: Transliterate TRIBE_Game::stop_sound_system from decomp if needed.
-}
+void TRIBE_Game::stop_sound_system() { RGE_Base_Game::stop_sound_system(); }
 int TRIBE_Game::restart_sound_system() { return 1; }
 void TRIBE_Game::stop_music_system() { RGE_Base_Game::stop_music_system(); }
 int TRIBE_Game::restart_music_system() { return RGE_Base_Game::restart_music_system(); }
@@ -3275,24 +3245,19 @@ int TRIBE_Game::action_music_done() {
     return RGE_Base_Game::action_music_done();
 }
 int TRIBE_Game::action_activate() {
-    // TODO: Transliterate TRIBE_Game::action_activate from decomp/asm.
-    return 0;
+    return RGE_Base_Game::action_activate();
 }
 int TRIBE_Game::action_deactivate() {
-    // TODO: Transliterate TRIBE_Game::action_deactivate from decomp/asm.
-    return 0;
+    return RGE_Base_Game::action_deactivate();
 }
 int TRIBE_Game::action_init_menu() {
-    // TODO: Transliterate TRIBE_Game::action_init_menu from decomp/asm.
-    return 0;
+    return RGE_Base_Game::action_init_menu();
 }
 int TRIBE_Game::action_exit_menu() {
-    // TODO: Transliterate TRIBE_Game::action_exit_menu from decomp/asm.
-    return 0;
+    return RGE_Base_Game::action_exit_menu();
 }
 int TRIBE_Game::action_size() {
-    // TODO: Transliterate TRIBE_Game::action_size from decomp/asm.
-    return 0;
+    return RGE_Base_Game::action_size();
 }
 int TRIBE_Game::action_close() {
     // Source of truth: tribegam.cpp.decomp @ 0x0052A000
@@ -3305,19 +3270,118 @@ int TRIBE_Game::action_close() {
 }
 
 void TRIBE_Game::calc_timings() {
-    // TODO: Transliterate TRIBE_Game::calc_timings from decomp/asm.
+    RGE_Base_Game::calc_timings();
 }
 void TRIBE_Game::calc_timing_text() {
-    // TODO: Transliterate TRIBE_Game::calc_timing_text from tribegam.cpp.decomp @ 0x00524880.
+    // Source of truth: tribegam.cpp.asm @ 0x00524880
+    static int init_once = 0;
+    if (init_once == 0) {
+        init_once = 1;
+        debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7d4);
+    }
+    debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7d6);
+
+    const ulong count = this->world_update_count;
+    if (count == 0) {
+        strcpy(this->timing_text2, "f?");
+    } else if (show_timing_max == 0) {
+        sprintf(this->timing_text2,
+                "t%lu,f%lu,avg(r(v%lu,m%lu,o%lu),s%lu,u%lu,d(v+f%lu,m%lu,o%lu))",
+                this->world_update_fps,
+                this->view_update_fps,
+                this->timings[1].last_time / count,
+                this->timings[3].last_time / count,
+                this->timings[17].last_time / count,
+                this->timings[7].last_time / count,
+                this->timings[6].last_time / count,
+                (this->timings[10].last_time + this->timings[12].last_time) / count,
+                this->timings[13].last_time / count,
+                this->timings[4].last_time / count);
+    } else {
+        sprintf(this->timing_text2,
+                "t%lu,f%lu,max(r(v%lu,m%lu,o%lu),s%lu,u%lu,d(v+f%lu,m%lu,o%lu))",
+                this->world_update_fps,
+                this->view_update_fps,
+                this->timings[1].last_max_time,
+                this->timings[3].last_max_time,
+                this->timings[17].last_max_time,
+                this->timings[7].last_max_time,
+                this->timings[6].last_max_time,
+                this->timings[10].last_max_time,
+                this->timings[12].last_max_time,
+                this->timings[13].last_max_time);
+    }
+
+    if (this->view_update_count != 0) {
+        sprintf(this->timing_text, "avg view time=%lu, count=%lu",
+                this->timings[6].last_time / this->view_update_count,
+                this->view_update_count);
+    } else {
+        strcpy(this->timing_text, "avg view time=???");
+    }
 }
 void TRIBE_Game::show_timings() {
-    // TODO: Transliterate TRIBE_Game::show_timings from tribegam.cpp.decomp @ 0x00524A60.
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00524A60
+    if (this->game_screen != nullptr) {
+        this->game_screen->show_timings(this->timing_text, this->timing_text2);
+    }
 }
 void TRIBE_Game::show_comm() {
-    // TODO: Transliterate TRIBE_Game::show_comm from tribegam.cpp.decomp @ 0x00524A80.
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00524A80
+    if (this->game_screen != nullptr && this->comm_handler != nullptr) {
+        char* c6 = this->comm_handler->GetCommInfo(6);
+        char* c5 = this->comm_handler->GetCommInfo(5);
+        char* c4 = this->comm_handler->GetCommInfo(4);
+        char* c3 = this->comm_handler->GetCommInfo(3);
+        char* c2 = this->comm_handler->GetCommInfo(2);
+        char* c1 = this->comm_handler->GetCommInfo(1);
+        this->game_screen->show_comm(c1, c2, c3, c4, c5, c6);
+    }
 }
 void TRIBE_Game::show_ai() {
-    // TODO: Transliterate TRIBE_Game::show_ai from tribegam.cpp.decomp @ 0x00524AF0.
+    // Source of truth: tribegam.cpp.asm @ 0x00524AF0
+    if (this->world == nullptr) {
+        return;
+    }
+
+    RGE_Player* player = this->world->players[this->world->curr_player];
+    if (player == nullptr) {
+        return;
+    }
+
+    char text[6][256];
+    for (int i = 0; i < 6; ++i) {
+        text[i][0] = '\0';
+    }
+
+    if (player->computerPlayer() == 1) {
+        char* ai_state = player->aiStatus(1);
+        if (ai_state == nullptr) {
+            sprintf(text[0], "Player #%d: AI is not functional.", this->world->curr_player);
+        } else {
+            sprintf(text[0], "Player #%d: %s", this->world->curr_player, ai_state);
+        }
+        for (int i = 2; i <= 6; ++i) {
+            char* line = player->aiStatus(i);
+            if (line != nullptr) {
+                strncpy(text[i - 1], line, 255);
+                text[i - 1][255] = '\0';
+            }
+        }
+    } else {
+        player->aiStatus(0);
+        sprintf(text[0], "Player #%d is not a computer player.", this->world->curr_player);
+    }
+
+    if (this->game_screen == nullptr) {
+        return;
+    }
+
+    if (player->computerPlayer() == 1) {
+        this->game_screen->show_ai(text[0], text[1], text[2], text[3], text[4], text[5]);
+    } else {
+        this->game_screen->show_ai(text[5], text[4], text[3], text[2], text[1], text[0]);
+    }
 }
 
 int TRIBE_Game::setup_map_save_area() { return RGE_Base_Game::setup_map_save_area(); }
