@@ -206,12 +206,39 @@ Check `orchestrator_hotfile.md` every monitoring cycle. If it has content, follo
 
 ## Codex CLI as Alternative Runtime
 
+**Default runtime is Copilot CLI.** Only use Codex CLI when the user explicitly requests it (e.g., "launch one with codex", "use codex for this task"). Do NOT switch to Codex on your own.
+
+### When the user requests Codex CLI:
+
+**Launch command:**
 ```
-Get-Content worker_prompt.txt | codex exec --dangerously-bypass-approvals-and-sandbox -o session_output.md
+send_input(session="worker-N", input="Get-Content worker_prompt.txt | codex exec --dangerously-bypass-approvals-and-sandbox -o session_output.md\n")
 ```
-- Real-time terminal monitoring (no alt-screen)
-- Separate rate limits from Copilot
-- Token-based billing — prefer copilot for large tasks
+
+Or with inline prompt (preferred — no temp file needed):
+```powershell
+# Write prompt to file from orchestrator shell first:
+Set-Content -Path "C:\Projects\my_decomps\aoe1_clone_N\worker_prompt.txt" -Value $taskBody -Encoding UTF8
+# Then launch in the worker session:
+send_input(session="worker-N", input="Get-Content worker_prompt.txt | codex exec --dangerously-bypass-approvals-and-sandbox -o session_output.md\n")
+```
+
+### Key differences from Copilot CLI:
+
+| Feature | Copilot CLI | Codex CLI |
+|---------|------------|-----------|
+| TUI / alt-screen | Yes (hard to monitor) | No (real-time terminal output) |
+| Persistent loop | Yes (via ask_user) | No (one-shot only) |
+| Rate limits | Request-based, shared pool | Token-based, separate billing |
+| Cost model | Included in subscription | Pay per token — expensive for large tasks |
+| Output file | None (read_screen only) | `-o session_output.md` dumps full output |
+| Submit mechanism | Complex TUI keys (see Phase 3) | Simple shell pipe, no TUI interaction |
+| Custom agents | `--agent decomp-worker` | No agent support — full prompt must be inlined |
+
+### Codex monitoring:
+- Output is visible directly in terminal (no alt-screen) — `read_screen` shows real-time progress
+- When done, the shell prompt returns AND `session_output.md` contains full output
+- Read `session_output.md` to review completionFor Codex tasks, you MUST include the full system prompt in `worker_prompt.txt` since there's no custom agent support. Include the decomp guidelines, git workflow, and task body all in one file.
 
 ## Operational Principles
 
