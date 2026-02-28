@@ -30,7 +30,7 @@ static unsigned long timeline_player_color_to_rgb(long color_id) {
     }
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051E650
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E650
 Time_Line_Panel::Time_Line_Panel()
     : TEasy_Panel() {
     this->text_style = ChiseledStyle;
@@ -84,7 +84,7 @@ Time_Line_Panel::Time_Line_Panel()
     this->legend_entry_text[2] = nullptr;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051E790
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E790
 Time_Line_Panel::~Time_Line_Panel() {
     Special_Events* e = this->time_slice_events;
     while (e != nullptr) {
@@ -229,7 +229,7 @@ int Time_Line_Panel::create_horz_slider(TPanel* param_1, THorizontalSliderPanel*
 }
 void Time_Line_Panel::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TEasy_Panel::position_panel(param_1, param_2, param_3, param_4, param_5); }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051E860
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E860
 long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, long x, long y, long wid, long hgt, long axis_font_id, long body_font_id, long base_w, long base_h) {
     if (out == nullptr || parent == nullptr) {
         return 0;
@@ -272,7 +272,7 @@ long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, lon
     return 1;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051E9E0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E9E0
 long Time_Line_Panel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,
                             void* axis_font, long axis_font_wid, long axis_font_hgt,
                             void* body_font, long body_font_wid, long body_font_hgt,
@@ -293,12 +293,15 @@ long Time_Line_Panel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y
     this->set_background(background_file);
     this->set_special_events(special_events_file);
 
-    // Decomp uses GetNearestPaletteIndex(..., 0). If we don't have palette context, default to 0.
-    this->set_back_color(1, 0);
+    uchar nearest_black = 0;
+    if (this->render_area != nullptr && this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
+        nearest_black = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0);
+    }
+    this->set_back_color(1, nearest_black);
     return 1;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051EAB0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EAB0
 void Time_Line_Panel::set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6) {
     this->bevel_type = bevel_type;
     this->bevel_color1 = (uchar)c1;
@@ -309,7 +312,7 @@ void Time_Line_Panel::set_bevel_info(int bevel_type, int c1, int c2, int c3, int
     this->bevel_color6 = (uchar)c6;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051EB00
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EB00
 int Time_Line_Panel::set_background(char* file) {
     if (this->background_pic != nullptr) {
         delete this->background_pic;
@@ -331,7 +334,7 @@ int Time_Line_Panel::set_background(char* file) {
     return 0;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051EC10
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EC10
 int Time_Line_Panel::set_background(char* file, long id) {
     if (this->background_pic != nullptr) {
         delete this->background_pic;
@@ -373,7 +376,7 @@ int Time_Line_Panel::set_background(char* file, long id) {
     return (this->background_pic != nullptr) ? 1 : 0;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051EDD0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EDD0
 int Time_Line_Panel::set_special_events(char* file) {
     if (this->special_events_pic != nullptr) {
         delete this->special_events_pic;
@@ -395,7 +398,7 @@ int Time_Line_Panel::set_special_events(char* file) {
     return 0;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051EEE0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EEE0
 int Time_Line_Panel::set_special_events(char* file, long id) {
     if (this->special_events_pic != nullptr) {
         delete this->special_events_pic;
@@ -437,7 +440,7 @@ int Time_Line_Panel::set_special_events(char* file, long id) {
     return (this->special_events_pic != nullptr) ? 1 : 0;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051F0A0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F0A0
 void Time_Line_Panel::set_axis_font(void* font, long wid, long hgt) {
     this->axis_font = font;
     this->axis_font_wid = wid;
@@ -445,7 +448,7 @@ void Time_Line_Panel::set_axis_font(void* font, long wid, long hgt) {
     this->set_redraw(TPanel::Redraw);
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051F0D0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F0D0
 void Time_Line_Panel::set_body_font(void* font, long wid, long hgt) {
     this->body_font = font;
     this->body_font_wid = wid;
@@ -459,7 +462,7 @@ void Time_Line_Panel::set_back_color(int fill_back, uchar back_color) {
     this->back_color = back_color;
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051F310
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F310
 void Time_Line_Panel::init_timeline() {
     this->num_history_entries = 0;
 
@@ -526,7 +529,6 @@ void Time_Line_Panel::draw_border() {
     }
 
     if (this->render_area->Lock((char*)"tpnl_tml::draw_border", 1) == nullptr) {
-        this->render_area->Unlock((char*)"tpnl_tml::draw_border");
         return;
     }
 
@@ -569,9 +571,6 @@ void Time_Line_Panel::draw_border() {
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F4E0
 void Time_Line_Panel::add_pop_total_special_event(long param_1, long param_2, long param_3, int param_4) {
     Special_Events* e = (Special_Events*)calloc(1, sizeof(Special_Events));
-    if (e == nullptr) {
-        return;
-    }
     e->time_slice = param_1;
     e->X_line_pos = param_3;
     e->Y_line_pos = 0;
@@ -603,10 +602,6 @@ void Time_Line_Panel::record_special_event(uchar param_1, TRIBE_History_Info* pa
     const long time_slice = param_4;
     if (param_2->get_history_event(param_4, &event) != 0) {
         Special_Events* e = (Special_Events*)calloc(1, sizeof(Special_Events));
-        if (e == nullptr) {
-            return;
-        }
-
         e->X_line_pos = param_5;
         e->Y_line_pos = param_6;
         e->intermediate_y_line_segment = param_7;
@@ -633,7 +628,7 @@ void Time_Line_Panel::record_special_event(uchar param_1, TRIBE_History_Info* pa
     }
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051F600
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F600
 int Time_Line_Panel::calculate_icon_location(Special_Events* param_1, short param_2, uchar param_3) {
     (void)param_3;
     int ret_val = 0;
@@ -800,7 +795,7 @@ void Time_Line_Panel::draw_axis() {
     this->render_area->ReleaseDc((char*)"tpnl_tml::draw_axis");
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x0051FD90
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051FD90
 void Time_Line_Panel::draw_special_events() {
     if (this->timeline_flag == 0 || this->render_area == nullptr) {
         return;
@@ -894,7 +889,7 @@ void Time_Line_Panel::draw_background() {
         if (this->fill_back == 0) {
             if (this->parent_panel != nullptr && this->bevel_type > 1 && this->bevel_type < 8) {
                 this->parent_panel->draw_offset(this->pnl_x, this->pnl_y, &this->clip_rect);
-            } else if (this->parent_panel != nullptr) {
+            } else if (this->parent_panel != nullptr && this->parent_panel->just_drawn == 0) {
                 this->parent_panel->draw_rect(&this->clip_rect);
             }
             return;
@@ -977,9 +972,9 @@ void Time_Line_Panel::draw_civilization_names() {
     this->render_area->ReleaseDc((char*)"tpnl_tml::draw_civilization_name");
 }
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x005204A0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x005204A0
 void Time_Line_Panel::draw_timeline() {
-    if (this->timeline_flag == 0 || this->render_area == nullptr || rge_base_game == nullptr || rge_base_game->world == nullptr) {
+    if (this->timeline_flag == 0 || this->render_area == nullptr) {
         return;
     }
     if (this->render_area->Lock((char*)"tpnl_tml::draw_timeline", 1) == nullptr) {
@@ -1143,7 +1138,7 @@ void Time_Line_Panel::draw_timeline() {
 
 // Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520ABD (switch jump-table thunk)
 
-// Source of truth: tpnl_tml.cpp.decomp @ 0x00520AE0
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520AE0
 void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar param_3) {
     uchar black = 0;
     if (this->render_area != nullptr && this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
