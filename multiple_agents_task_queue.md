@@ -3972,8 +3972,9 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 280 — Tribe Game remaining + Drop Panels + Small Action Files (80 functions)
 - [x] Assigned to agent (worker-5, clone_5, copilot)
-- [ ] Finished
-- Goal: Mixed cluster — one big partial module + two small modules:
+- [x] Finished
+- Status note: landed as commit `cb943f0`. 42 insertions — thin delivery, mostly Bird/Explore constructors + small tribegam additions. Pnl_drop and act_make not touched. tribegam still has large gap.
+- Goal: Mixed cluster
   - tribegam.cpp.decomp: 119 funcs, 80 impl refs → ~39 missing (Tribe Game main — game loop, turn processing, game state management, multiplayer sync)
   - pnl_drop.cpp.decomp: 40 funcs, 16 impl refs → ~24 missing (drop-down panel — combo box UI, list rendering, selection handling)
   - act_bird.cpp.decomp: 5 funcs + act_expl.cpp.decomp: 7 funcs + act_make.cpp.decomp: 5 funcs = 17 small action funcs (greenfield)
@@ -3986,8 +3987,9 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 281 — Object Hierarchy + Triggers + Task List + Debug + Small Screens + Tribe Population Panel (100 functions)
 - [x] Assigned to agent (worker-6, clone_6, copilot)
-- [ ] Finished
-- Goal: Sweep of small unimplemented modules — all greenfield or nearly so:
+- [x] Finished
+- Status note: landed as commit `899956b`. 482 insertions. TRIGONOMETRY.cpp (104 lines) + Visible_Unit_Manager.cpp (244 lines) created. Good delivery.
+- Goal: Sweep of small unimplemented modules
   - m_dg_obj.cpp.decomp: 11 funcs (Master_Doppleganger_Object — master template for doppleganger objects)
   - misl_obj.cpp.decomp: 11 funcs (TRIBE_Missile_Object — missile projectile behavior)
   - ani_obj.cpp.decomp: 11 funcs (animation object — animated game elements)

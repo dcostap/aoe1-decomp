@@ -26,5 +26,9 @@ public:
     virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8); // vt[13] (0x34)
     virtual RGE_Static_Object* make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4, RGE_Static_Object* param_5); // vt[14] (0x38)
 
+protected:
+    int setup(RGE_Master_Doppleganger_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 };
 static_assert(sizeof(RGE_Master_Doppleganger_Object) == 0xBC, "Size mismatch");

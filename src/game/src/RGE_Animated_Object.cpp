@@ -13,6 +13,7 @@ RGE_Animated_Object::RGE_Animated_Object()
     this->speed = 0.0f;
 }
 
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x0041A150
 RGE_Animated_Object::RGE_Animated_Object(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3,
                                          float param_4, float param_5, int param_6)
     : RGE_Static_Object()
@@ -45,12 +46,12 @@ int RGE_Animated_Object::setup(int param_1, RGE_Game_World* param_2) {
 RGE_Animated_Object::~RGE_Animated_Object() {
 }
 
-// Fully verified. Source of truth: ani_obj.cpp.asm @ 0x00405F40
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x00405F40
 float RGE_Animated_Object::getSpeed() {
     return this->speed;
 }
 
-// Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A280
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x0041A280
 void RGE_Animated_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3,
                                              float param_4, float param_5) {
     RGE_Static_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5);
@@ -58,7 +59,7 @@ void RGE_Animated_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, 
     this->set_sleep_flag(0);
 }
 
-// Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A2C0
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x0041A2C0
 int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4,
                                float param_5) {
     RGE_Static_Object::setup((RGE_Master_Static_Object*)param_1, param_2, param_3, param_4, param_5);
@@ -123,7 +124,7 @@ void RGE_Animated_Object::remove_overlay_sprite(RGE_Sprite* param_1) {
     RGE_Static_Object::remove_overlay_sprite(param_1);
 }
 
-// Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A350
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x0041A350
 uchar RGE_Animated_Object::update() {
     uchar uVar1 = RGE_Static_Object::update();
 
@@ -145,13 +146,13 @@ uchar RGE_Animated_Object::update() {
     return uVar1;
 }
 
-// Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A3D0
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x0041A3D0
 void RGE_Animated_Object::save(int param_1) {
     RGE_Static_Object::save(param_1);
     rge_write(param_1, &this->speed, 4);
 }
 
-// Fully verified. Source of truth: ani_obj.cpp.asm @ 0x0041A400
+// Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x0041A400
 void RGE_Animated_Object::transform(RGE_Master_Static_Object* param_1) {
     RGE_Static_Object::transform(param_1);
 }

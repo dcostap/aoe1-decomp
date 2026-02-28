@@ -731,23 +731,54 @@ void RGE_Master_Missile_Object::play_move_sound() { this->RGE_Master_Static_Obje
 void RGE_Master_Missile_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 RGE_Task_List* RGE_Master_Missile_Object::create_task_list() { return new RGE_Task_List(); }
 
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x004512C0
 RGE_Master_Doppleganger_Object::~RGE_Master_Doppleganger_Object() {}
-void RGE_Master_Doppleganger_Object::copy_obj(RGE_Master_Static_Object* param_1) { if (param_1) this->RGE_Master_Static_Object::setup(param_1); }
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x00451420
+void RGE_Master_Doppleganger_Object::copy_obj(RGE_Master_Static_Object* param_1) { this->RGE_Master_Animated_Object::copy_obj(param_1); }
 void RGE_Master_Doppleganger_Object::modify(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify(param_1, param_2); }
 void RGE_Master_Doppleganger_Object::modify_delta(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_delta(param_1, param_2); }
 void RGE_Master_Doppleganger_Object::modify_percent(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_percent(param_1, param_2); }
-void RGE_Master_Doppleganger_Object::save(int param_1) { this->RGE_Master_Static_Object::save(param_1); }
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x00451430
+void RGE_Master_Doppleganger_Object::save(int param_1) { this->RGE_Master_Animated_Object::save(param_1); }
 // Fully verified. Source of truth: m_an_obj.cpp.decomp @ 0x0044FC00
 RGE_Static_Object* RGE_Master_Doppleganger_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
     return this->RGE_Master_Animated_Object::make_new_obj(param_1, param_2, param_3, param_4);
 }
-RGE_Master_Static_Object* RGE_Master_Doppleganger_Object::make_new_master() { return this->RGE_Master_Static_Object::make_new_master(); }
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x004513B0
+RGE_Master_Static_Object* RGE_Master_Doppleganger_Object::make_new_master() {
+    RGE_Master_Doppleganger_Object* obj =
+        (RGE_Master_Doppleganger_Object*)::operator new(sizeof(RGE_Master_Doppleganger_Object), std::nothrow);
+    if (obj != nullptr) {
+        obj = new (obj) RGE_Master_Doppleganger_Object(this, 1);
+        return obj;
+    }
+    return nullptr;
+}
 uchar RGE_Master_Doppleganger_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 uchar RGE_Master_Doppleganger_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
 long RGE_Master_Doppleganger_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) { return this->RGE_Master_Static_Object::calc_base_damage_ability(param_1); }
 void RGE_Master_Doppleganger_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
 void RGE_Master_Doppleganger_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 void RGE_Master_Doppleganger_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x00451230
+int RGE_Master_Doppleganger_Object::setup(RGE_Master_Doppleganger_Object* param_1) {
+    this->RGE_Master_Animated_Object::setup((RGE_Master_Animated_Object*)param_1);
+    this->master_type = 0x19;
+    return 1;
+}
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x00451250
+int RGE_Master_Doppleganger_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    this->RGE_Master_Animated_Object::setup(param_1, param_2, param_3);
+    this->master_type = 0x19;
+    return 1;
+}
+// Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x00451280
+int RGE_Master_Doppleganger_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4) {
+    this->RGE_Master_Animated_Object::setup(param_1, param_2, param_3, param_4);
+    this->master_type = 0x19;
+    this->recyclable = 1;
+    return 1;
+}
 // Fully verified. Source of truth: m_dg_obj.cpp.decomp @ 0x004512D0
 RGE_Static_Object* RGE_Master_Doppleganger_Object::make_new_obj(
     RGE_Player* param_1, float param_2, float param_3, float param_4, RGE_Static_Object* param_5) {
