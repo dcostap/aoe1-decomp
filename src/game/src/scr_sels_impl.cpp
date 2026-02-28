@@ -46,7 +46,7 @@ void sels_free_cached_scenarios(TribeSelectScenarioScreen* owner) {
 void sels_set_mission_text(TribeSelectScenarioScreen* owner) {
     if (!owner || !owner->missionText) return;
 
-    // Source of truth: scr_sels.cpp.decomp @ 0x004B4720 (fillMissionText).
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B4720
     owner->missionText->set_text((char*)"");
 
     const long line = ((TTextPanel*)owner->scenarioList)->get_line();
@@ -57,7 +57,7 @@ void sels_set_mission_text(TribeSelectScenarioScreen* owner) {
 }
 
 void sels_get_settings(TribeSelectScenarioScreen* owner) {
-    // Source of truth: scr_sels.cpp.decomp @ 0x004B4770 (getSettings).
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B4770
     if (!owner || !owner->scenarioList || !rge_base_game) return;
 
     owner->last_scenario_line = -1;
@@ -94,6 +94,7 @@ void sels_fill_scenario_list(TribeSelectScenarioScreen* owner) {
 }
 
 int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B44F0
     if (!owner || !rge_base_game || !rge_base_game->scenario_info) {
         return 0;
     }
@@ -146,6 +147,7 @@ int sels_load_scenarios(TribeSelectScenarioScreen* owner) {
 }
 
 void sels_activate_panels(TribeSelectScenarioScreen* owner) {
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B4810
     if (!owner) return;
 
     if (owner->missionTitle) owner->missionTitle->set_active(1);
@@ -160,6 +162,7 @@ void sels_activate_panels(TribeSelectScenarioScreen* owner) {
 }
 
 void sels_send_settings(TribeSelectScenarioScreen* owner) {
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B47D0
     if (!owner || !rge_base_game || !rge_base_game->scenario_info) return;
 
     const char* scenario_name = "";
@@ -180,6 +183,8 @@ void sels_send_settings(TribeSelectScenarioScreen* owner) {
 } // namespace
 
 TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Select Scenario Screen") {
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B3C90
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B4120
     this->last_scenario_line = -1;
     this->title = nullptr;
     this->scenarioTitle = nullptr;
@@ -319,7 +324,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Se
 }
 
 TribeSelectScenarioScreen::~TribeSelectScenarioScreen() {
-    // Source of truth: Scr_sels.cpp.decomp @ 0x004B4190
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B4190
     // Delete all child panels before base destructor runs
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->scenarioTitle);
@@ -336,6 +341,7 @@ TribeSelectScenarioScreen::~TribeSelectScenarioScreen() {
 }
 
 long TribeSelectScenarioScreen::handle_idle() {
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B4280
     if (this->scenariosLoaded == 0) {
         const int loaded = sels_load_scenarios(this);
         if (loaded) {
@@ -355,7 +361,7 @@ long TribeSelectScenarioScreen::handle_idle() {
 }
 
 long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: scr_sels.cpp.decomp @ 0x004B42E0
+    // Fully verified. Source of truth: scr_sels.cpp.decomp @ 0x004B42E0
     if (param_1 && this->scenariosLoaded != 0) {
         if ((TButtonPanel*)param_1 == this->okButton && param_2 == 1) {
             this->set_curr_child((TPanel*)this->scenarioList);

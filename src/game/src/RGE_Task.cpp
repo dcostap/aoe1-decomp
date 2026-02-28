@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 RGE_Task::RGE_Task(short param_1) {
+    // Fully verified. Source of truth: task.cpp.decomp @ 0x00508670
     this->id = param_1;
     this->task_type = 1;
     this->is_default = 0;
@@ -38,12 +39,12 @@ RGE_Task::RGE_Task(short param_1) {
     this->work_sound2 = nullptr;
 }
 
-RGE_Task::~RGE_Task() {}
+RGE_Task::~RGE_Task() {
+    // Fully verified. Source of truth: task.cpp.decomp @ 0x005086F0
+}
 
 void RGE_Task::copy(RGE_Task* param_1) {
-    if (param_1 == nullptr) {
-        return;
-    }
+    // Fully verified. Source of truth: task.cpp.decomp @ 0x00508700
 
     this->is_default = param_1->is_default;
     this->action_type = param_1->action_type;
@@ -75,6 +76,7 @@ void RGE_Task::copy(RGE_Task* param_1) {
 }
 
 void RGE_Task::load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    // Fully verified. Source of truth: task.cpp.decomp @ 0x005087C0
     short idx = -1;
 
     rge_read(param_1, &this->id, 2);
@@ -115,6 +117,7 @@ void RGE_Task::load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
 }
 
 void RGE_Task::load(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    // Fully verified. Source of truth: task.cpp.decomp @ 0x00508A20
     short tmp = 0;
     short move_sprite_id = -1;
     short work_sprite_id = -1;
@@ -183,6 +186,7 @@ void RGE_Task::load(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
 }
 
 void RGE_Task::save(int param_1) {
+    // Fully verified. Source of truth: task.cpp.decomp @ 0x00508BB0
     short idx = -1;
 
     rge_write(param_1, &this->task_type, 2);

@@ -15,6 +15,9 @@ struct RGE_Communications_Queue {
     uint FlushForTurn(ulong turn);
     uint FlushThruTurn(ulong turn);
     int AddItem(ulong exec_turn, void* payload, ulong payload_size, uint from_player, uchar sequence, int control_command);
+    uint GetQueueDepth();
+    uint GetHighQueueDepth();
+    void* GetSpecificItem(uint from_player, ulong exec_turn, uchar sequence, uint* out_size);
     void* GetNextItemSingle();
     void* GetNextItemOrdered(ulong current_turn);
     uchar GetNextSequence(ulong current_turn);

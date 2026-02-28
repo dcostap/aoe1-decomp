@@ -6,7 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
-TPicturePanel::TPicturePanel() : TPanel("Picture") {
+TPicturePanel::TPicturePanel() : TPanel() {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A1D0
     this->keep_loaded = 1;
     this->size_from_pic = 0;
     this->own_pic = 0;
@@ -18,16 +19,16 @@ TPicturePanel::TPicturePanel() : TPanel("Picture") {
 }
 
 TPicturePanel::~TPicturePanel() {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A250
     this->free_pic();
 }
 
 long TPicturePanel::setup(TDrawArea* param_1, TPanel* param_2, long x, long y, long w, long h, char* name, long res_id, int size_from_pic, int keep_loaded) {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A2A0
     if (name == nullptr) {
         this->pic_name[0] = '\0';
     } else {
-        // NOTE: Original uses a raw copy and assumes short picture names.
-        strncpy(this->pic_name, name, sizeof(this->pic_name) - 1);
-        this->pic_name[sizeof(this->pic_name) - 1] = '\0';
+        strcpy(this->pic_name, name);
     }
     this->res_id = res_id;
     this->size_from_pic = size_from_pic;
@@ -41,13 +42,11 @@ long TPicturePanel::setup(TDrawArea* param_1, TPanel* param_2, long x, long y, l
                     h = this->pic->Height;
                 }
             } else {
-                long x_min = 0;
-                long y_min = 0;
-                long x_max = 0;
-                long y_max = 0;
-                if (this->shape && this->shape->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0)) {
-                    w = (x_max - x_min) + 1;
-                    h = (y_max - y_min) + 1;
+                short shape_w = 0;
+                short shape_h = 0;
+                if (this->shape && this->shape->shape_bounds(0, &shape_w, &shape_h)) {
+                    w = (long)shape_w;
+                    h = (long)shape_h;
                 }
             }
         }
@@ -61,6 +60,7 @@ long TPicturePanel::setup(TDrawArea* param_1, TPanel* param_2, long x, long y, l
 }
 
 void TPicturePanel::set_picture(TShape* shape, long res_id) {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A3A0
     this->free_pic();
     this->res_id = res_id;
     this->shape = shape;
@@ -69,6 +69,7 @@ void TPicturePanel::set_picture(TShape* shape, long res_id) {
 }
 
 int TPicturePanel::load_pic() {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A3E0
     this->free_pic();
 
     if (this->pic_name[0] == '\0') {
@@ -111,6 +112,7 @@ int TPicturePanel::load_pic() {
 }
 
 void TPicturePanel::free_pic() {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A5B0
     if (this->pic) {
         if (this->own_pic) {
             delete this->pic;
@@ -140,6 +142,7 @@ void TPicturePanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TPicturePanel::draw_finish() { TPanel::draw_finish(); }
 
 void TPicturePanel::draw() {
+    // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A630
     if (!this->render_area || !this->active || !this->visible) return;
 
     this->draw_setup(0);

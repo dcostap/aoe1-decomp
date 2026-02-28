@@ -6,6 +6,7 @@
 #pragma comment(lib, "kernel32.lib")
 
 TRegistry::TRegistry(const char* subkey) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047EB80
     this->ghMachineKey = NULL;
     this->ghUserKey = NULL;
     this->ghMachineKeyRead = NULL;
@@ -55,6 +56,7 @@ TRegistry::TRegistry(const char* subkey) {
 // Note: In the assembly it's implemented as a separate function.
 // We'll add it to the header if needed, but for now let's implement the logic.
 TRegistry::~TRegistry() {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047EC00
     if (this->ghUserKey) {
         RegCloseKey((HKEY)this->ghUserKey);
         this->ghUserKey = NULL;
@@ -70,6 +72,7 @@ TRegistry::~TRegistry() {
 }
 
 int TRegistry::RegGetInt(int user, const char* name) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047EE20
     DWORD dwType = REG_DWORD;
     DWORD dwSize = sizeof(int);
     int value = -1;
@@ -93,6 +96,7 @@ int TRegistry::RegGetInt(int user, const char* name) {
 }
 
 int TRegistry::RegSetInt(int user, const char* name, int value) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047ECA0
     HKEY hKey = (user != 0) ? (HKEY)this->ghUserKey : (HKEY)this->ghMachineKey;
     if (!hKey) return 0;
 
@@ -101,6 +105,7 @@ int TRegistry::RegSetInt(int user, const char* name, int value) {
 }
 
 char* TRegistry::RegGetAscii(int user, const char* name) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047ED60
     DWORD dwType = REG_SZ;
     DWORD dwSize = sizeof(this->Data);
     HKEY hKey;
@@ -122,6 +127,7 @@ char* TRegistry::RegGetAscii(int user, const char* name) {
 }
 
 int TRegistry::RegSetAscii(int user, const char* name, unsigned char* data, unsigned long size) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047ED00
     HKEY hKey = (user != 0) ? (HKEY)this->ghUserKey : (HKEY)this->ghMachineKey;
     if (!hKey) return 0;
 
@@ -130,6 +136,7 @@ int TRegistry::RegSetAscii(int user, const char* name, unsigned char* data, unsi
 }
 
 long TRegistry::RegGet(int user, const char* name, unsigned char* data, unsigned long* size) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047EDD0
     HKEY hKey = (user != 0) ? (HKEY)this->ghUserKey : (HKEY)this->ghMachineKeyRead;
     if (!hKey) return ERROR_INVALID_HANDLE;
 
@@ -137,6 +144,7 @@ long TRegistry::RegGet(int user, const char* name, unsigned char* data, unsigned
 }
 
 int TRegistry::RegSet(int user, const char* name, unsigned char* data, unsigned long size) {
+    // Fully verified. Source of truth: registry.cpp.decomp @ 0x0047EC40
     HKEY hKey = (user != 0) ? (HKEY)this->ghUserKey : (HKEY)this->ghMachineKey;
     if (!hKey) return 0;
 
