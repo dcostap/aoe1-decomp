@@ -193,13 +193,12 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
     for (int i = 0; i < 5; ++i) tab_list[i + 1] = (TPanel*)this->button[i];
     this->set_tab_order(tab_list + 1, 5);
 
-    // Source of truth: Scr_main.cpp.decomp @ 0x0049E6D0
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049E6D0
     this->set_curr_child((TPanel*)this->button[0]);
 }
 
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
-    // Source of truth: Scr_main.cpp.decomp
-    // Delete all child panels before base destructor runs
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049EC00
     this->delete_panel((TPanel**)&this->title1);
     this->delete_panel((TPanel**)&this->title2);
     for (int i = 0; i < 7; ++i) {

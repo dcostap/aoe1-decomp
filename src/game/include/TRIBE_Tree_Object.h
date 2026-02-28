@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include "RGE_Static_Object.h"
+class TRIBE_Master_Tree_Object;
 
 class TRIBE_Master_Tree_Object;
 

@@ -4,6 +4,9 @@
 
 class TRIBE_Panel_Text_Line : public TPanel {
 public:
+    TRIBE_Panel_Text_Line(TDrawArea* param_1, TPanel* param_2, void* param_3);
+    void set_info(uchar param_1, char* param_2, long param_3);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Panel_Text_Line(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
