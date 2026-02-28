@@ -22,5 +22,7 @@ public:
     virtual void setCallbackMessage(AIModuleMessage* param_1); // vt[13] (0x34)
     virtual int filterOutMessage(AIModuleMessage* param_1); // vt[14] (0x38)
 
+    void* vector_deleting_destructor(uint param_1);
+
 };
 static_assert(sizeof(StrategyAIModule) == 0xF0, "Size mismatch");

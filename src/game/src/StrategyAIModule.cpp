@@ -1,5 +1,7 @@
 #include "../include/StrategyAIModule.h"
 
+#include <new>
+
 StrategyAIModule::StrategyAIModule(void* param_1, int param_2)
     : AIModule((char*)"Strategy AI", 0x3F0, param_2, param_1) {
     // Fully verified. Source of truth: aistrmod.cpp.decomp @ 0x00412AF0
@@ -7,6 +9,15 @@ StrategyAIModule::StrategyAIModule(void* param_1, int param_2)
 
 // Fully verified. Source of truth: aistrmod.cpp.decomp @ 0x00412B40
 StrategyAIModule::~StrategyAIModule() {}
+
+// Fully verified. Source of truth: StrategyAIModule.decomp @ 0x00412B20
+void* StrategyAIModule::vector_deleting_destructor(uint param_1) {
+    this->~StrategyAIModule();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
 
 int StrategyAIModule::loggingHistory() { return AIModule::loggingHistory(); }
 void StrategyAIModule::setLogHistory(int param_1) { AIModule::setLogHistory(param_1); }
