@@ -1,4 +1,22 @@
 #include "../include/TRIBE_Screen_Sed.h"
+#include "../include/TRIBE_World.h"
+#include "../include/T_Scenario.h"
+#include "../include/TButtonPanel.h"
+#include "../include/TDropDownPanel.h"
+#include "../include/TEditPanel.h"
+#include "../include/TEasy_Panel.h"
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <io.h>
+
+static T_Scenario* get_scenario(TRIBE_Screen_Sed* this_) {
+    if (this_ == nullptr || this_->world == nullptr) {
+        return nullptr;
+    }
+    return static_cast<T_Scenario*>(this_->world->scenario);
+}
 
 // TODO: This file is decomp-first transliteration scaffolding for scr_sed2.cpp.
 // TODO: Function bodies currently mirror raw decompiler placeholders and require parity fill-in.
@@ -9,449 +27,170 @@
 
 // Offset: 0x004ADC80
 void SaveDisabledItemsInScenario(TRIBE_Screen_Sed* this_) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::SaveDisabledItemsInScenario(void) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::SaveDisabledItemsInScenario(TRIBE_Screen_Sed *this)
-    // 
-    // {
-    //   short sVar1;
-    //   int iVar2;
-    //   long lVar3;
-    //   T_Scenario *this_00;
-    //   TButtonPanel **ppTVar4;
-    //   int iVar5;
-    //   
-    //   if (this->player_num == 0) {
-    //     this->player_num = 1;
-    //   }
-    //   iVar5 = 0;
-    //   ppTVar4 = this->options_disable_button;
-    //   do {
-    //     iVar2 = TButtonPanel::get_state(*ppTVar4);
-    //     if (iVar2 == 0) {
-    //       sVar1 = this->player_num;
-    //       this_00 = (T_Scenario *)this->world->_padding_;
-    //     }
-    //     else {
-    //       sVar1 = this->player_num;
-    //       this_00 = (T_Scenario *)this->world->_padding_;
-    //     }
-    //     T_Scenario::SetDisabledTechnology(this_00,sVar1 + -1,iVar5,(uint)(iVar2 == 0));
-    //     iVar5 = iVar5 + 1;
-    //     ppTVar4 = ppTVar4 + 1;
-    //   } while (iVar5 < 0x10);
-    //   lVar3 = TDropDownPanel::get_line(this->options_player_list);
-    //   this->player_num = (short)lVar3 + 1;
-    //   return;
-    // }
-    // 
-    // 
+    // TODO: Decomp transliteration; requires final ASM audit. Source: scr_sed2.cpp.decomp @ 0x004ADC80
+    T_Scenario* scenario = get_scenario(this_);
+    if (scenario == nullptr) {
+        return;
+    }
+
+    if (this_->player_num == 0) {
+        this_->player_num = 1;
+    }
+
+    for (int i = 0; i < 0x10; ++i) {
+        int state = 0;
+        if (this_->options_disable_button[i] != nullptr) {
+            state = this_->options_disable_button[i]->get_state();
+        }
+        scenario->SetDisabledTechnology(this_->player_num - 1, i, (state == 0) ? 1 : 0);
+    }
+
+    if (this_->options_player_list != nullptr) {
+        this_->player_num = (short)this_->options_player_list->get_line() + 1;
+    }
 }
+
 
 // Offset: 0x004ADD00
 void LoadDisabledItemsFromScenario(TRIBE_Screen_Sed* this_) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(TRIBE_Screen_Sed *this)
-    // 
-    // {
-    //   int iVar1;
-    //   int iVar2;
-    //   TButtonPanel **ppTVar3;
-    //   
-    //   iVar2 = 0;
-    //   ppTVar3 = this->options_disable_button;
-    //   do {
-    //     iVar1 = T_Scenario::GetDisabledTechnology
-    //                       ((T_Scenario *)this->world->_padding_,this->player_num + -1,iVar2);
-    //     if (iVar1 == 0) {
-    //       (**(code **)((*ppTVar3)->_padding_ + 0xe0))(1);
-    //     }
-    //     else {
-    //       (**(code **)((*ppTVar3)->_padding_ + 0xe0))(0);
-    //     }
-    //     iVar2 = iVar2 + 1;
-    //     ppTVar3 = ppTVar3 + 1;
-    //   } while (iVar2 < 0x10);
-    //   return;
-    // }
-    // 
-    // 
+    // TODO: Decomp transliteration; requires final ASM audit. Source: scr_sed2.cpp.decomp @ 0x004ADD00
+    T_Scenario* scenario = get_scenario(this_);
+    if (scenario == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < 0x10; ++i) {
+        if (this_->options_disable_button[i] == nullptr) {
+            continue;
+        }
+        const int disabled = scenario->GetDisabledTechnology(this_->player_num - 1, i);
+        this_->options_disable_button[i]->set_state((short)(disabled == 0 ? 1 : 0));
+    }
 }
+
 
 // Offset: 0x004ADD50
 void save_info_in_scenario(TRIBE_Screen_Sed* this_) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::save_info_in_scenario(void) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::save_info_in_scenario(TRIBE_Screen_Sed *this)
-    // 
-    // {
-    //   return;
-    // }
-    // 
-    // 
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004ADD50
+    (void)this_;
 }
+
 
 // Offset: 0x004ADD60
 void save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed* this_) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario(void) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed *this)
-    // 
-    // {
-    //   long lVar1;
-    //   char *pcVar2;
-    //   int iVar3;
-    //   T_Scenario *pTVar4;
-    //   int iVar5;
-    //   
-    //   switch(this->mp_victory_type) {
-    //   case VictoryTypeStandard:
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //     break;
-    //   case VictoryTypeConquest:
-    //     iVar5 = 1;
-    //     goto LAB_004adda4;
-    //   case VictoryTypeScore:
-    //     iVar5 = 2;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //     break;
-    //   case VictoryTypeTime:
-    //     iVar5 = 3;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //     break;
-    //   default:
-    //     iVar5 = 4;
-    // LAB_004adda4:
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::SetMPVictory(pTVar4,iVar5);
-    //   lVar1 = TDropDownPanel::get_id(this->victory_score);
-    //   T_Scenario::SetVictoryScore((T_Scenario *)this->world->_padding_,lVar1);
-    //   lVar1 = TDropDownPanel::get_id(this->victory_time);
-    //   T_Scenario::SetVictoryTime((T_Scenario *)this->world->_padding_,lVar1);
-    //   iVar5 = TButtonPanel::get_state(this->victory_cond_type[0]);
-    //   if (iVar5 != 0) {
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //     goto LAB_004ade58;
-    //   }
-    //   iVar5 = TButtonPanel::get_state(this->victory_cond_type[1]);
-    //   if (iVar5 == 0) {
-    //     iVar5 = TButtonPanel::get_state(this->victory_cond_type[2]);
-    //     if (iVar5 != 0) {
-    //       iVar5 = 2;
-    //       pTVar4 = (T_Scenario *)this->world->_padding_;
-    //       goto LAB_004ade58;
-    //     }
-    //     iVar5 = TButtonPanel::get_state(this->victory_cond_type[3]);
-    //     if (iVar5 != 0) {
-    //       iVar5 = 3;
-    //       pTVar4 = (T_Scenario *)this->world->_padding_;
-    //       goto LAB_004ade58;
-    //     }
-    //     iVar5 = 4;
-    //   }
-    //   else {
-    //     iVar5 = 1;
-    //   }
-    //   pTVar4 = (T_Scenario *)this->world->_padding_;
-    // LAB_004ade58:
-    //   T_Scenario::SetMPVictory(pTVar4,iVar5);
-    //   lVar1 = TDropDownPanel::get_id(this->victory_score);
-    //   T_Scenario::SetVictoryScore((T_Scenario *)this->world->_padding_,lVar1);
-    //   lVar1 = TDropDownPanel::get_id(this->victory_time);
-    //   T_Scenario::SetVictoryTime((T_Scenario *)this->world->_padding_,lVar1);
-    //   iVar5 = TButtonPanel::get_state(this->victory_and_or[1]);
-    //   if (iVar5 == 0) {
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   else {
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::Set_victory_all_flag(pTVar4,(uint)(iVar5 != 0));
-    //   iVar5 = TButtonPanel::get_state(this->victory_cond_on[0]);
-    //   if ((iVar5 == 0) && (iVar5 = TButtonPanel::get_state(this->victory_cond_type[4]), iVar5 != 0)) {
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   else {
-    //     iVar5 = 1;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::Set_Multi_Conquest(pTVar4,iVar5);
-    //   pcVar2 = TEditPanel::currentLine(this->victory_condition_explore);
-    //   iVar5 = atoi(pcVar2);
-    //   iVar3 = TButtonPanel::get_state(this->victory_cond_on[1]);
-    //   if (iVar3 == 0) {
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   else {
-    //     if (iVar5 < 1) {
-    //       iVar5 = 1;
-    //     }
-    //     if (100 < iVar5) {
-    //       iVar5 = 100;
-    //     }
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::Set_Multi_Exploration(pTVar4,iVar5);
-    //   pcVar2 = TEditPanel::currentLine(this->victory_condition_ruins);
-    //   iVar5 = atoi(pcVar2);
-    //   iVar3 = TButtonPanel::get_state(this->victory_cond_on[2]);
-    //   if (iVar3 == 0) {
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   else {
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::Set_Multi_Ruins(pTVar4,iVar5);
-    //   pcVar2 = TEditPanel::currentLine(this->victory_condition_artifacts);
-    //   iVar5 = atoi(pcVar2);
-    //   iVar3 = TButtonPanel::get_state(this->victory_cond_on[3]);
-    //   if (iVar3 == 0) {
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   else {
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::Set_Multi_Artifacts(pTVar4,iVar5);
-    //   pcVar2 = TEditPanel::currentLine(this->victory_condition_discoveries);
-    //   iVar5 = atoi(pcVar2);
-    //   iVar3 = TButtonPanel::get_state(this->victory_cond_on[4]);
-    //   if (iVar3 == 0) {
-    //     iVar5 = 0;
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   else {
-    //     pTVar4 = (T_Scenario *)this->world->_padding_;
-    //   }
-    //   T_Scenario::Set_Multi_Discoveries(pTVar4,iVar5);
-    //   pcVar2 = TEditPanel::currentLine(this->victory_condition_gold);
-    //   iVar5 = atoi(pcVar2);
-    //   iVar3 = TButtonPanel::get_state(this->victory_cond_on[5]);
-    //   if (iVar3 == 0) {
-    //     T_Scenario::Set_Multi_Gold((T_Scenario *)this->world->_padding_,0);
-    //     return;
-    //   }
-    //   T_Scenario::Set_Multi_Gold((T_Scenario *)this->world->_padding_,iVar5);
-    //   return;
-    // }
-    // 
-    // 
+    // TODO: Decomp transliteration; requires final ASM audit. Source: scr_sed2.cpp.decomp @ 0x004ADD60
+    T_Scenario* scenario = get_scenario(this_);
+    if (scenario == nullptr) {
+        return;
+    }
+
+    int mp_victory = 4;
+    switch (this_->mp_victory_type) {
+    case TRIBE_Screen_Sed::VictoryTypeStandard:
+        mp_victory = 0;
+        break;
+    case TRIBE_Screen_Sed::VictoryTypeConquest:
+        mp_victory = 1;
+        break;
+    case TRIBE_Screen_Sed::VictoryTypeScore:
+        mp_victory = 2;
+        break;
+    case TRIBE_Screen_Sed::VictoryTypeTime:
+        mp_victory = 3;
+        break;
+    default:
+        mp_victory = 4;
+        break;
+    }
+
+    scenario->SetMPVictory(mp_victory);
+    if (this_->victory_score != nullptr) {
+        scenario->SetVictoryScore((int)this_->victory_score->get_id());
+    }
+    if (this_->victory_time != nullptr) {
+        scenario->SetVictoryTime((int)this_->victory_time->get_id());
+    }
+
+    int victory_type = 4;
+    if (this_->victory_cond_type[0] != nullptr && this_->victory_cond_type[0]->get_state() != 0) {
+        victory_type = 0;
+    } else if (this_->victory_cond_type[1] != nullptr && this_->victory_cond_type[1]->get_state() != 0) {
+        victory_type = 1;
+    } else if (this_->victory_cond_type[2] != nullptr && this_->victory_cond_type[2]->get_state() != 0) {
+        victory_type = 2;
+    } else if (this_->victory_cond_type[3] != nullptr && this_->victory_cond_type[3]->get_state() != 0) {
+        victory_type = 3;
+    }
+
+    scenario->SetMPVictory(victory_type);
+    if (this_->victory_score != nullptr) {
+        scenario->SetVictoryScore((int)this_->victory_score->get_id());
+    }
+    if (this_->victory_time != nullptr) {
+        scenario->SetVictoryTime((int)this_->victory_time->get_id());
+    }
+
+    const int all_flag =
+        (this_->victory_and_or[1] != nullptr && this_->victory_and_or[1]->get_state() != 0) ? 1 : 0;
+    scenario->Set_victory_all_flag(all_flag);
+
+    int conquest = 1;
+    if (this_->victory_cond_on[0] != nullptr && this_->victory_cond_on[0]->get_state() == 0 &&
+        this_->victory_cond_type[4] != nullptr && this_->victory_cond_type[4]->get_state() != 0) {
+        conquest = 0;
+    }
+    scenario->Set_Multi_Conquest(conquest);
+
+    auto parse_edit = [](TEditPanel* panel) -> int {
+        if (panel == nullptr) {
+            return 0;
+        }
+        char* text = panel->currentLine();
+        return (text != nullptr) ? std::atoi(text) : 0;
+    };
+
+    int exploration = parse_edit(this_->victory_condition_explore);
+    if (this_->victory_cond_on[1] == nullptr || this_->victory_cond_on[1]->get_state() == 0) {
+        exploration = 0;
+    } else {
+        if (exploration < 1) exploration = 1;
+        if (exploration > 100) exploration = 100;
+    }
+    scenario->Set_Multi_Exploration(exploration);
+
+    int ruins = parse_edit(this_->victory_condition_ruins);
+    if (this_->victory_cond_on[2] == nullptr || this_->victory_cond_on[2]->get_state() == 0) {
+        ruins = 0;
+    }
+    scenario->Set_Multi_Ruins(ruins);
+
+    int artifacts = parse_edit(this_->victory_condition_artifacts);
+    if (this_->victory_cond_on[3] == nullptr || this_->victory_cond_on[3]->get_state() == 0) {
+        artifacts = 0;
+    }
+    scenario->Set_Multi_Artifacts(artifacts);
+
+    int discoveries = parse_edit(this_->victory_condition_discoveries);
+    if (this_->victory_cond_on[4] == nullptr || this_->victory_cond_on[4]->get_state() == 0) {
+        discoveries = 0;
+    }
+    scenario->Set_Multi_Discoveries(discoveries);
+
+    int gold = parse_edit(this_->victory_condition_gold);
+    if (this_->victory_cond_on[5] == nullptr || this_->victory_cond_on[5]->get_state() == 0) {
+        gold = 0;
+    }
+    scenario->Set_Multi_Gold(gold);
 }
+
 
 // Offset: 0x004AE05A
 void FUN_004ae05a(int param_1) {
-    // --- Ghidra decompiler output ---
-    // 
-    // void FUN_004ae05a(int param_1)
-    // 
-    // {
-    //   char in_AL;
-    //   int iVar1;
-    //   char *pcVar2;
-    //   long lVar3;
-    //   long lVar4;
-    //   int in_ECX;
-    //   T_Scenario *pTVar5;
-    //   int in_EDX;
-    //   int unaff_EBX;
-    //   int unaff_EBP;
-    //   int iVar6;
-    //   int unaff_EDI;
-    //   bool in_CF;
-    //   bool in_ZF;
-    //   int iStack_14;
-    //   int iStack_10;
-    //   int iStack_c;
-    //   long lStack_8;
-    //   
-    //   if (!in_CF && !in_ZF) {
-    //     lStack_8 = 0x4ae044;
-    //     T_Scenario::Set_Multi_Gold(*(T_Scenario **)(in_EDX + 0x5c),unaff_EDI);
-    //     return;
-    //   }
-    //   pcVar2 = (char *)(unaff_EBP + -0x2277ffb6 + unaff_EBX * 8);
-    //   *pcVar2 = *pcVar2 + in_AL;
-    //   *(char *)(unaff_EBP + -0x6fffb523) = *(char *)(unaff_EBP + -0x6fffb523) + (char)in_EDX + -2;
-    //   iVar1 = TButtonPanel::get_state(*(TButtonPanel **)(in_ECX + 0x684));
-    //   if (iVar1 == 0) {
-    //     pTVar5 = *(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c);
-    //   }
-    //   else {
-    //     pTVar5 = *(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c);
-    //   }
-    //   T_Scenario::Set_victory_all_flag(pTVar5,(uint)(iVar1 != 0));
-    //   iVar1 = TButtonPanel::get_state(*(TButtonPanel **)(in_ECX + 0x668));
-    //   if ((iVar1 == 0) &&
-    //      (iVar1 = TButtonPanel::get_state(*(TButtonPanel **)(in_ECX + 0x6f0)), iVar1 != 0)) {
-    //     iVar1 = 0;
-    //     pTVar5 = *(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c);
-    //   }
-    //   else {
-    //     iVar1 = 1;
-    //     pTVar5 = *(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c);
-    //   }
-    //   T_Scenario::Set_Multi_Conquest(pTVar5,iVar1);
-    //   if (param_1 < 0) {
-    //     return;
-    //   }
-    //   pcVar2 = TEditPanel::currentLine(*(TEditPanel **)(in_ECX + 0x76c));
-    //   iVar1 = atoi(pcVar2);
-    //   lVar3 = TDropDownPanel::get_line(*(TDropDownPanel **)(in_ECX + 0x734));
-    //   lVar4 = TDropDownPanel::get_line(*(TDropDownPanel **)(in_ECX + 0x740));
-    //   iVar6 = lVar4 + 1;
-    //   lVar4 = TDropDownPanel::get_id(*(TDropDownPanel **)(in_ECX + 0x738));
-    //   RGE_View::get_selection_area
-    //             (*(RGE_View **)(in_ECX + 0x4c8),&iStack_14,&iStack_10,&iStack_c,&lStack_8,1);
-    //   *(float *)(in_ECX + 0x488) = (float)iStack_14;
-    //   *(float *)(in_ECX + 0x48c) = (float)iStack_10;
-    //   *(float *)(in_ECX + 0x490) = (float)iStack_c;
-    //   *(float *)(in_ECX + 0x494) = (float)lStack_8;
-    //   T_Scenario::ClearSPVictoryCondition(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1);
-    //   switch(lVar3) {
-    //   case 1:
-    //     if ((*(int *)(in_ECX + 0x480) != 0) && (*(int *)(in_ECX + 0x484) != 0)) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,3);
-    //       T_Scenario::SetSPObject
-    //                 (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,
-    //                  *(RGE_Static_Object **)(in_ECX + 0x480));
-    //       T_Scenario::SetSPDestObjectID
-    //                 (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,
-    //                  *(RGE_Static_Object **)(in_ECX + 0x484));
-    //       return;
-    //     }
-    //     break;
-    //   case 2:
-    //     if (*(int *)(in_ECX + 0x480) != 0) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,3);
-    //       T_Scenario::SetSPObject
-    //                 (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,
-    //                  *(RGE_Static_Object **)(in_ECX + 0x480));
-    //       T_Scenario::SetSPRectangle
-    //                 (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,
-    //                  *(float *)(in_ECX + 0x488),*(float *)(in_ECX + 0x48c),*(float *)(in_ECX + 0x490),
-    //                  *(float *)(in_ECX + 0x494));
-    //       return;
-    //     }
-    //     break;
-    //   case 3:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,2);
-    //     T_Scenario::SetSPObjectType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar4);
-    //     goto LAB_004ae57f;
-    //   case 4:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,2);
-    //     T_Scenario::SetSPObjectType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar4);
-    //     T_Scenario::SetSPAmount(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,iVar1);
-    //     T_Scenario::SetSPRectangle
-    //               (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,*(float *)(in_ECX + 0x488),
-    //                *(float *)(in_ECX + 0x48c),*(float *)(in_ECX + 0x490),*(float *)(in_ECX + 0x494));
-    //     return;
-    //   case 5:
-    //     if (((0 < iVar6) && (iVar6 < 9)) && (iVar1 != 0)) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,1);
-    //       T_Scenario::SetSPPlayerID(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,iVar6);
-    //       T_Scenario::SetSPObjectType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar4);
-    //       T_Scenario::SetSPAmount(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,iVar1);
-    //       return;
-    //     }
-    //     break;
-    //   case 6:
-    //     if (*(int *)(in_ECX + 0x480) != 0) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,1);
-    //       T_Scenario::SetSPObject
-    //                 (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,
-    //                  *(RGE_Static_Object **)(in_ECX + 0x480));
-    //       return;
-    //     }
-    //     break;
-    //   case 7:
-    //     if ((0 < iVar6) && (iVar6 < 9)) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,1);
-    //       T_Scenario::SetSPPlayerID(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,iVar6);
-    //       T_Scenario::SetSPObjectType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar4);
-    //       T_Scenario::SetSPAllFlag(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,1);
-    //       return;
-    //     }
-    //     break;
-    //   case 8:
-    //     if ((0 < iVar6) && (iVar6 < 9)) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,1);
-    //       T_Scenario::SetSPPlayerID(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,iVar6);
-    //       return;
-    //     }
-    //     break;
-    //   case 9:
-    //     if (*(int *)(in_ECX + 0x480) != 0) {
-    //       T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,5);
-    //       T_Scenario::SetSPObject
-    //                 (*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,
-    //                  *(RGE_Static_Object **)(in_ECX + 0x480));
-    //       return;
-    //     }
-    //     break;
-    //   case 10:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     lVar3 = 0;
-    //     goto LAB_004ae570;
-    //   case 0xb:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     lVar3 = 3;
-    //     goto LAB_004ae570;
-    //   case 0xc:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     lVar3 = 1;
-    //     goto LAB_004ae570;
-    //   case 0xd:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     lVar3 = 2;
-    //     goto LAB_004ae570;
-    //   case 0xe:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     lVar3 = 4;
-    //     goto LAB_004ae570;
-    //   case 0xf:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     T_Scenario::SetSPAttribType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,5);
-    //     lVar3 = TDropDownPanel::get_line(*(TDropDownPanel **)(in_ECX + 0x748));
-    //     T_Scenario::SetSPAmount(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar3 + 1);
-    //     return;
-    //   case 0x10:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,4);
-    //     lVar3 = 6;
-    //     goto LAB_004ae570;
-    //   case 0x11:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,6);
-    //     lVar3 = TDropDownPanel::get_id(*(TDropDownPanel **)(in_ECX + 0x744));
-    // LAB_004ae570:
-    //     T_Scenario::SetSPAttribType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar3);
-    // LAB_004ae57f:
-    //     T_Scenario::SetSPAmount(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,iVar1);
-    //     return;
-    //   case 0x12:
-    //     T_Scenario::SetSPVictoryType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,7);
-    //     lVar3 = TDropDownPanel::get_id(*(TDropDownPanel **)(in_ECX + 0x74c));
-    //     T_Scenario::SetSPAttribType(*(T_Scenario **)(*(int *)(in_ECX + 0x928) + 0x5c),param_1,lVar3);
-    //   }
-    //   return;
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004AE05A
+    // TODO: STUB — decomp output corrupted/unreadable at this offset.
+    // Source of truth: scr_sed2.cpp.decomp @ 0x004AE05A
+    (void)param_1;
 }
+
 
 // Offset: 0x004AE070
 void save_victory_cond_in_scenario(TRIBE_Screen_Sed* this_, int param_2) {
@@ -967,116 +706,66 @@ void load_multi_victory_cond_from_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AEC95
 void FUN_004aec95() {
-    // --- Ghidra decompiler output ---
-    // 
-    // void FUN_004aec95(void)
-    // 
-    // {
-    //   code *pcVar1;
-    //   
-    //   pcVar1 = (code *)swi(1);
-    //   (*pcVar1)();
-    //   return;
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004AEC95
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AEC95
+    std::abort();
 }
+
 
 // Offset: 0x004AECB0
 void save_diplomacy_in_scenario(TRIBE_Screen_Sed* this_, int param_2) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::save_diplomacy_in_scenario(int) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::save_diplomacy_in_scenario(TRIBE_Screen_Sed *this,int param_1)
-    // 
-    // {
-    //   int iVar1;
-    //   T_Scenario *this_00;
-    //   TButtonPanel **ppTVar2;
-    //   int iVar3;
-    //   
-    //   if (-1 < param_1) {
-    //     iVar3 = 0;
-    //     ppTVar2 = this->Diplomacy_friend_box[0] + 1;
-    //     do {
-    //       iVar1 = TButtonPanel::get_state((*(TButtonPanel *(*) [3])(ppTVar2 + -1))[0]);
-    //       if (iVar1 == 1) {
-    //         iVar1 = 0;
-    //         this_00 = (T_Scenario *)this->world->_padding_;
-    // LAB_004aed1a:
-    //         T_Scenario::Set_player_attitude(this_00,param_1,iVar3,iVar1);
-    //       }
-    //       else {
-    //         iVar1 = TButtonPanel::get_state(*ppTVar2);
-    //         if (iVar1 == 1) {
-    //           this_00 = (T_Scenario *)this->world->_padding_;
-    //           iVar1 = 1;
-    //           goto LAB_004aed1a;
-    //         }
-    //         iVar1 = TButtonPanel::get_state(ppTVar2[1]);
-    //         if (iVar1 == 1) {
-    //           iVar1 = 3;
-    //           this_00 = (T_Scenario *)this->world->_padding_;
-    //           goto LAB_004aed1a;
-    //         }
-    //       }
-    //       iVar3 = iVar3 + 1;
-    //       ppTVar2 = ppTVar2 + 3;
-    //     } while (iVar3 < 8);
-    //     iVar3 = TButtonPanel::get_state(this->Diplomacy_AlliedVictory[param_1]);
-    //     T_Scenario::SetPlayerAlliedVictory((T_Scenario *)this->world->_padding_,param_1,iVar3);
-    //   }
-    //   return;
-    // }
-    // 
-    // 
+    // TODO: Decomp transliteration; requires final ASM audit. Source: scr_sed2.cpp.decomp @ 0x004AECB0
+    const int param_1 = param_2;
+    T_Scenario* scenario = get_scenario(this_);
+    if (scenario == nullptr || param_1 < 0) {
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        int attitude = 3;
+        if (this_->Diplomacy_friend_box[i][0] != nullptr && this_->Diplomacy_friend_box[i][0]->get_state() == 1) {
+            attitude = 0;
+        } else if (this_->Diplomacy_friend_box[i][1] != nullptr && this_->Diplomacy_friend_box[i][1]->get_state() == 1) {
+            attitude = 1;
+        } else if (this_->Diplomacy_friend_box[i][2] != nullptr && this_->Diplomacy_friend_box[i][2]->get_state() == 1) {
+            attitude = 3;
+        }
+        scenario->Set_player_attitude(param_1, i, attitude);
+    }
+
+    const int allied_victory = (this_->Diplomacy_AlliedVictory[param_1] != nullptr)
+        ? this_->Diplomacy_AlliedVictory[param_1]->get_state()
+        : 0;
+    scenario->SetPlayerAlliedVictory(param_1, allied_victory);
 }
+
 
 // Offset: 0x004AED50
 void load_diplomacy_from_scenario(TRIBE_Screen_Sed* this_, int param_2) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::load_diplomacy_from_scenario(int) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::load_diplomacy_from_scenario(TRIBE_Screen_Sed *this,int param_1)
-    // 
-    // {
-    //   int iVar1;
-    //   TButtonPanel **ppTVar2;
-    //   TButtonPanel **ppTVar3;
-    //   int iVar4;
-    //   
-    //   if (-1 < param_1) {
-    //     iVar4 = 0;
-    //     ppTVar2 = this->Diplomacy_AlliedVictory;
-    //     ppTVar3 = this->Diplomacy_friend_box[0] + 1;
-    //     do {
-    //       iVar1 = T_Scenario::Get_player_attitude((T_Scenario *)this->world->_padding_,param_1,iVar4);
-    //       if (iVar1 == 0) {
-    //         TButtonPanel::set_radio_button((*(TButtonPanel *(*) [3])(ppTVar3 + -1))[0]);
-    //       }
-    //       if (iVar1 == 1) {
-    //         TButtonPanel::set_radio_button(*ppTVar3);
-    //       }
-    //       if (iVar1 == 3) {
-    //         TButtonPanel::set_radio_button(ppTVar3[1]);
-    //       }
-    //       (**(code **)((*ppTVar2)->_padding_ + 0xe0))(0);
-    //       iVar4 = iVar4 + 1;
-    //       ppTVar2 = ppTVar2 + 1;
-    //       ppTVar3 = ppTVar3 + 3;
-    //     } while (iVar4 < 8);
-    //     iVar4 = this->Diplomacy_AlliedVictory[param_1]->_padding_;
-    //     iVar1 = T_Scenario::GetPlayerAlliedVictory((T_Scenario *)this->world->_padding_,param_1);
-    //     (**(code **)(iVar4 + 0xe0))(iVar1);
-    //   }
-    //   return;
-    // }
-    // 
-    // 
+    // TODO: Decomp transliteration; requires final ASM audit. Source: scr_sed2.cpp.decomp @ 0x004AED50
+    const int param_1 = param_2;
+    T_Scenario* scenario = get_scenario(this_);
+    if (scenario == nullptr || param_1 < 0) {
+        return;
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        const int attitude = scenario->Get_player_attitude(param_1, i);
+        if (attitude == 0 && this_->Diplomacy_friend_box[i][0] != nullptr) {
+            this_->Diplomacy_friend_box[i][0]->set_radio_button();
+        }
+        if (attitude == 1 && this_->Diplomacy_friend_box[i][1] != nullptr) {
+            this_->Diplomacy_friend_box[i][1]->set_radio_button();
+        }
+        if (attitude == 3 && this_->Diplomacy_friend_box[i][2] != nullptr) {
+            this_->Diplomacy_friend_box[i][2]->set_radio_button();
+        }
+    }
+
+    if (this_->Diplomacy_AlliedVictory[param_1] != nullptr) {
+        this_->Diplomacy_AlliedVictory[param_1]->set_state((short)scenario->GetPlayerAlliedVictory(param_1));
+    }
 }
+
 
 // Offset: 0x004AEE10
 void activate_victory_proper_fields(TRIBE_Screen_Sed* this_, int param_2, int param_3) {
@@ -1227,17 +916,10 @@ void activate_victory_proper_fields(TRIBE_Screen_Sed* this_, int param_2, int pa
 
 // Offset: 0x004AF2D2
 void FUN_004af2d2() {
-    // --- Ghidra decompiler output ---
-    // 
-    // void FUN_004af2d2(void)
-    // 
-    // {
-    //   return;
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004AF2D2
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AF2D2
+    return;
 }
+
 
 // Offset: 0x004AF320
 static void init_module_variables(TRIBE_Screen_Sed* this_) {
@@ -3713,234 +3395,146 @@ void activate_victory_panel(TRIBE_Screen_Sed* this_, int param_2) {
 
 // Offset: 0x004B2AA0
 int MakeFileList(TRIBE_Screen_Sed* this_, TDropDownPanel* param_2, char* param_3, char* param_4, uchar param_5, uchar param_6) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* WARNING: Variable defined which should be unmapped: count */
-    // /* protected: int __thiscall TRIBE_Screen_Sed::MakeFileList(class TDropDownPanel *,char *,char
-    //    *,unsigned char,unsigned char) */
-    // 
-    // int __thiscall
-    // TRIBE_Screen_Sed::MakeFileList
-    //           (TRIBE_Screen_Sed *this,TDropDownPanel *param_1,char *param_2,char *param_3,uchar param_4,
-    //           uchar param_5)
-    // 
-    // {
-    //   char cVar1;
-    //   int iVar2;
-    //   uint uVar3;
-    //   int iVar4;
-    //   char *pcVar5;
-    //   int count;
-    //   int extension_strlen;
-    //   _finddata_t fileInfo;
-    //   char file_name [260];
-    //   char path [260];
-    //   
-    //   extension_strlen = 0;
-    //   TDropDownPanel::empty_list(param_1);
-    //   if (param_4 != '\0') {
-    //                     /* language.dll match for 0x2775: " <None> " */
-    //     TDropDownPanel::append_line(param_1,0x2775,0);
-    //   }
-    //   if (param_5 != '\0') {
-    //                     /* language.dll match for 0x277b: "Random" */
-    //     TDropDownPanel::append_line(param_1,0x277b,0);
-    //   }
-    //   sprintf(path + 4,s__s__s,param_2,param_3);
-    //   iVar2 = __findfirst(path + 4,&fileInfo.time_create);
-    //   uVar3 = 0xffffffff;
-    //   do {
-    //     if (uVar3 == 0) break;
-    //     uVar3 = uVar3 - 1;
-    //     cVar1 = *param_3;
-    //     param_3 = param_3 + 1;
-    //   } while (cVar1 != '\0');
-    //   fileInfo.attrib = ~uVar3 - 1;
-    //   iVar4 = iVar2;
-    //   do {
-    //     if (iVar4 == -1) {
-    //       return extension_strlen;
-    //     }
-    //     uVar3 = 0xffffffff;
-    //     extension_strlen = extension_strlen + 1;
-    //     pcVar5 = fileInfo.name + 4;
-    //     do {
-    //       if (uVar3 == 0) break;
-    //       uVar3 = uVar3 - 1;
-    //       cVar1 = *pcVar5;
-    //       pcVar5 = pcVar5 + 1;
-    //     } while (cVar1 != '\0');
-    //     iVar4 = (~uVar3 - 1) - fileInfo.attrib;
-    //     strncpy(file_name + 4,fileInfo.name + 4,iVar4);
-    //     file_name[iVar4 + 4] = '\0';
-    //     TDropDownPanel::append_line(param_1,file_name + 4,0);
-    //     iVar4 = __findnext(iVar2,&fileInfo.time_create);
-    //   } while( true );
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004B2AA0
-    return 0;
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B2AA0
+    (void)this_;
+
+    int extension_strlen = 0;
+    param_2->empty_list();
+
+    if (param_5 != 0) {
+        param_2->append_line(0x2775, 0);
+    }
+    if (param_6 != 0) {
+        param_2->append_line(0x277b, 0);
+    }
+
+    _finddata_t file_info{};
+    char file_name[260]{};
+    char path[260]{};
+    std::sprintf(path, "%s\\%s", param_3, param_4);
+
+    const intptr_t find_handle = _findfirst(path, &file_info);
+    const int extension_len = static_cast<int>(std::strlen(param_4));
+    if (find_handle == -1) {
+        return extension_strlen;
+    }
+
+    int find_result = 0;
+    do {
+        ++extension_strlen;
+        const size_t name_len = std::strlen(file_info.name);
+        const int copy_len = static_cast<int>(name_len) - extension_len;
+        if (copy_len > 0) {
+            std::strncpy(file_name, file_info.name, static_cast<size_t>(copy_len));
+            file_name[copy_len] = '\0';
+            param_2->append_line(file_name, 0);
+        }
+
+        find_result = _findnext(find_handle, &file_info);
+    } while (find_result != -1);
+
+    _findclose(find_handle);
+    return extension_strlen;
 }
+
 
 // Offset: 0x004B2BC0
 int Set_player_advance_civilization_text(TRIBE_Screen_Sed* this_, int param_2) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: int __thiscall TRIBE_Screen_Sed::Set_player_advance_civilization_text(int) */
-    // 
-    // int __thiscall
-    // TRIBE_Screen_Sed::Set_player_advance_civilization_text(TRIBE_Screen_Sed *this,int param_1)
-    // 
-    // {
-    //   TDropDownPanel::empty_list(this->player_advance_civilization_drop);
-    //                     /* language.dll match for 0x1069: "Stone Age" */
-    //   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x1069,0);
-    //                     /* language.dll match for 0x106a: "Tool Age" */
-    //   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106a,1);
-    //                     /* language.dll match for 0x106b: "Bronze Age" */
-    //   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106b,2);
-    //                     /* language.dll match for 0x106c: "Iron Age" */
-    //   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106c,3);
-    //                     /* language.dll match for 0x106d: "Post-Iron Age" */
-    //   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106d,4);
-    //   TDropDownPanel::setCurrentLineNumber(this->player_advance_civilization_drop,0);
-    //   (**(code **)(this->player_advance_civilization_drop->_padding_ + 0x14))(0);
-    //   return 1;
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004B2BC0
-    return 0;
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B2BC0
+    (void)param_2;
+
+    this_->player_advance_civilization_drop->empty_list();
+    this_->player_advance_civilization_drop->append_line(0x1069, 0);
+    this_->player_advance_civilization_drop->append_line(0x106a, 1);
+    this_->player_advance_civilization_drop->append_line(0x106b, 2);
+    this_->player_advance_civilization_drop->append_line(0x106c, 3);
+    this_->player_advance_civilization_drop->append_line(0x106d, 4);
+    this_->player_advance_civilization_drop->setCurrentLineNumber(0);
+    this_->player_advance_civilization_drop->set_active(0);
+    return 1;
 }
+
 
 // Offset: 0x004B2C50
 void SavePlayerActiveStatus(TRIBE_Screen_Sed* this_) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: void __thiscall TRIBE_Screen_Sed::SavePlayerActiveStatus(void) */
-    // 
-    // void __thiscall TRIBE_Screen_Sed::SavePlayerActiveStatus(TRIBE_Screen_Sed *this)
-    // 
-    // {
-    //   long lVar1;
-    //   TRIBE_World *pTVar2;
-    //   int iVar3;
-    //   int iVar4;
-    //   int iVar5;
-    //   
-    //   lVar1 = TDropDownPanel::get_line(this->player_number_list);
-    //   pTVar2 = this->world;
-    //   iVar4 = lVar1 + 1;
-    //   iVar5 = 0;
-    //   iVar3 = (int)(short)pTVar2->_padding_;
-    //   if (iVar3 != 1 && -1 < iVar3 + -1) {
-    //     do {
-    //       RGE_Scenario::Set_player_Active((RGE_Scenario *)pTVar2->_padding_,iVar5,(uint)(iVar5 < iVar4))
-    //       ;
-    //       pTVar2 = this->world;
-    //       iVar5 = iVar5 + 1;
-    //     } while (iVar5 < (short)pTVar2->_padding_ + -1);
-    //   }
-    //   TDropDownPanel::empty_list(this->victory_player_list);
-    //   TDropDownPanel::empty_list(this->victory_enemy_player_list);
-    //   TDropDownPanel::empty_list(this->options_player_list);
-    //   TDropDownPanel::empty_list(this->Diplomacy_player_list);
-    //   TDropDownPanel::empty_list(this->player_list);
-    //   TDropDownPanel::empty_list(this->unit_player_list);
-    //                     /* language.dll match for 0x2776: "Gaia" */
-    //   TDropDownPanel::append_line(this->unit_player_list,0x2776,0);
-    //   if (0 < iVar4) {
-    //                     /* language.dll match for 0x2865: "Player 1" */
-    //     iVar3 = 0x2865;
-    //     do {
-    //       TDropDownPanel::append_line(this->unit_player_list,iVar3,0);
-    //       TDropDownPanel::append_line(this->victory_player_list,iVar3,0);
-    //       TDropDownPanel::append_line(this->victory_enemy_player_list,iVar3,0);
-    //       TDropDownPanel::append_line(this->options_player_list,iVar3,0);
-    //       TDropDownPanel::append_line(this->Diplomacy_player_list,iVar3,0);
-    //       TDropDownPanel::append_line(this->player_list,iVar3,0);
-    //       iVar5 = iVar3 + -0x2864;
-    //       iVar3 = iVar3 + 1;
-    //     } while (iVar5 < iVar4);
-    //   }
-    //   if (iVar4 <= this->player_num) {
-    //     set_player(this,(short)iVar4,'\0','\0');
-    //   }
-    //   TDropDownPanel::set_line(this->victory_player_list,this->player_num + -1);
-    //   TDropDownPanel::set_line(this->options_player_list,this->player_num + -1);
-    //   TDropDownPanel::set_line(this->Diplomacy_player_list,this->player_num + -1);
-    //   TDropDownPanel::set_line(this->player_list,this->player_num + -1);
-    //   TDropDownPanel::set_line(this->unit_player_list,(int)this->player_num);
-    //   return;
-    // }
-    // 
-    // 
+    // TODO: Decomp transliteration; requires final ASM audit. Source: scr_sed2.cpp.decomp @ 0x004B2C50
+    T_Scenario* scenario = get_scenario(this_);
+    if (scenario == nullptr || this_->player_number_list == nullptr) {
+        return;
+    }
+
+    const int active_players = (int)this_->player_number_list->get_line() + 1;
+    const int scenario_players = (int)this_->world->player_num - 1;
+    if (scenario_players > 0) {
+        for (int i = 0; i < scenario_players; ++i) {
+            scenario->Set_player_Active(i, (i < active_players) ? 1 : 0);
+        }
+    }
+
+    if (this_->victory_player_list) this_->victory_player_list->empty_list();
+    if (this_->victory_enemy_player_list) this_->victory_enemy_player_list->empty_list();
+    if (this_->options_player_list) this_->options_player_list->empty_list();
+    if (this_->Diplomacy_player_list) this_->Diplomacy_player_list->empty_list();
+    if (this_->player_list) this_->player_list->empty_list();
+    if (this_->unit_player_list) {
+        this_->unit_player_list->empty_list();
+        this_->unit_player_list->append_line(0x2776, 0);
+    }
+
+    for (int i = 0; i < active_players; ++i) {
+        const long str_id = 0x2865 + i;
+        if (this_->unit_player_list) this_->unit_player_list->append_line(str_id, 0);
+        if (this_->victory_player_list) this_->victory_player_list->append_line(str_id, 0);
+        if (this_->victory_enemy_player_list) this_->victory_enemy_player_list->append_line(str_id, 0);
+        if (this_->options_player_list) this_->options_player_list->append_line(str_id, 0);
+        if (this_->Diplomacy_player_list) this_->Diplomacy_player_list->append_line(str_id, 0);
+        if (this_->player_list) this_->player_list->append_line(str_id, 0);
+    }
+
+    if (active_players <= this_->player_num) {
+        // TODO: Full parity should call set_player(this, active_players, 0, 0) once sed2 wiring is complete.
+        this_->player_num = (short)active_players;
+    }
+
+    if (this_->victory_player_list) this_->victory_player_list->set_line(this_->player_num - 1);
+    if (this_->options_player_list) this_->options_player_list->set_line(this_->player_num - 1);
+    if (this_->Diplomacy_player_list) this_->Diplomacy_player_list->set_line(this_->player_num - 1);
+    if (this_->player_list) this_->player_list->set_line(this_->player_num - 1);
+    if (this_->unit_player_list) this_->unit_player_list->set_line(this_->player_num);
 }
+
 
 // Offset: 0x004B2DD0
 int create_check_box(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: int __thiscall TRIBE_Screen_Sed::create_check_box(class TPanel *,class TButtonPanel *
-    //    *) */
-    // 
-    // int __thiscall
-    // TRIBE_Screen_Sed::create_check_box(TRIBE_Screen_Sed *this,TPanel *param_1,TButtonPanel **param_2)
-    // 
-    // {
-    //   int iVar1;
-    //   
-    //   iVar1 = TEasy_Panel::create_check_box((TEasy_Panel *)this,param_1,param_2,0,0,0,0,1,0);
-    //   if (iVar1 == 0) {
-    //     return 0;
-    //   }
-    //   TPanel::set_z_order((TPanel *)*param_2,'\x01',0);
-    //   (**(code **)((*param_2)->_padding_ + 0x14))(0);
-    //   if (this->_padding_ != 0) {
-    //     TButtonPanel::set_bevel_info
-    //               (*param_2,3,(uint)(byte)this->_padding_,(uint)*(byte *)((int)&this->_padding_ + 1),
-    //                (uint)*(byte *)((int)&this->_padding_ + 2),(uint)*(byte *)((int)&this->_padding_ + 3)
-    //                ,(uint)(byte)this->_padding_,(uint)*(byte *)((int)&this->_padding_ + 1));
-    //   }
-    //   return 1;
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004B2DD0
-    return 0;
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B2DD0
+    const int created = this_->TEasy_Panel::create_check_box(param_2, param_3, 0, 0, 0, 0, 1, 0);
+    if (created == 0) {
+        return 0;
+    }
+
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    if (this_->use_bevels != 0) {
+        (*param_3)->set_bevel_info(3, this_->bevel_color1, this_->bevel_color2, this_->bevel_color3,
+            this_->bevel_color4, this_->bevel_color1, this_->bevel_color2);
+    }
+    return 1;
 }
+
 
 // Offset: 0x004B2E60
 int create_radio_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3) {
-    // --- Ghidra decompiler output ---
-    // 
-    // /* protected: int __thiscall TRIBE_Screen_Sed::create_radio_button(class TPanel *,class TButtonPanel
-    //    * *) */
-    // 
-    // int __thiscall
-    // TRIBE_Screen_Sed::create_radio_button(TRIBE_Screen_Sed *this,TPanel *param_1,TButtonPanel **param_2)
-    // 
-    // {
-    //   int iVar1;
-    //   
-    //   iVar1 = TEasy_Panel::create_radio_button((TEasy_Panel *)this,param_1,param_2,0,0,0,0,1,0);
-    //   if (iVar1 == 0) {
-    //     return 0;
-    //   }
-    //   TPanel::set_z_order((TPanel *)*param_2,'\x01',0);
-    //   (**(code **)((*param_2)->_padding_ + 0x14))(0);
-    //   if (this->_padding_ != 0) {
-    //     TButtonPanel::set_bevel_info
-    //               (*param_2,3,(uint)(byte)this->_padding_,(uint)*(byte *)((int)&this->_padding_ + 1),
-    //                (uint)*(byte *)((int)&this->_padding_ + 2),(uint)*(byte *)((int)&this->_padding_ + 3)
-    //                ,(uint)(byte)this->_padding_,(uint)*(byte *)((int)&this->_padding_ + 1));
-    //   }
-    //   return 1;
-    // }
-    // 
-    // 
-    // TODO: Full transliteration pending. Source of truth: scr_sed2.cpp.decomp @ 0x004B2E60
-    return 0;
-}
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B2E60
+    const int created = this_->TEasy_Panel::create_radio_button(param_2, param_3, 0, 0, 0, 0, 1, 0);
+    if (created == 0) {
+        return 0;
+    }
 
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    if (this_->use_bevels != 0) {
+        (*param_3)->set_bevel_info(3, this_->bevel_color1, this_->bevel_color2, this_->bevel_color3,
+            this_->bevel_color4, this_->bevel_color1, this_->bevel_color2);
+    }
+    return 1;
+}

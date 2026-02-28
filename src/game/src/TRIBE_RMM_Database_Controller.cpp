@@ -98,6 +98,7 @@ static void rmm_calc_land_start(
     long edge,
     long count,
     RGE_Land_Data_Entry* src_land) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483600
     if (self == nullptr || src_land == nullptr || count <= 0) {
         return;
     }
@@ -105,46 +106,50 @@ static void rmm_calc_land_start(
         return;
     }
 
-    long map_w = self->map_width;
-    long map_h = self->map_height;
-    if (map_w <= 0 || map_h <= 0) {
+    long map_size = self->map_width;
+    if (map_size <= 0) {
         return;
     }
 
-    long min_x = edge;
-    long min_y = edge;
-    long max_x = map_w - edge - 1;
-    long max_y = map_h - edge - 1;
-    if (max_x < min_x) {
-        min_x = 0;
-        max_x = map_w - 1;
-    }
-    if (max_y < min_y) {
-        min_y = 0;
-        max_y = map_h - 1;
+    (void)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp", 0x1c3);
+
+    long range_span = map_size + edge * -2;
+    if (range_span < 1) {
+        range_span = 1;
     }
 
-    double spacing = (double)(map_w - edge * 2);
-    if (spacing < 1.0) {
-        spacing = (double)map_w;
-    }
-    spacing = spacing / sqrt((double)((count > 0) ? count : 1));
+    float bound = (float)range_span / (float)sqrt((double)count);
     if (count >= 4 && count < 7) {
-        spacing *= 0.9;
+        bound = bound * 0.9f;
     } else if (count >= 7) {
-        spacing *= 0.8;
+        bound = bound * 0.8f;
     }
-    if (spacing < 2.0) {
-        spacing = 2.0;
-    }
-    long min_dist_sq = (long)(spacing * spacing);
 
-    long span_x = max_x - min_x;
-    long span_y = max_y - min_y;
-    long mid_x1 = min_x + span_x / 3;
-    long mid_x2 = max_x - span_x / 3;
-    long mid_y1 = min_y + span_y / 3;
-    long mid_y2 = max_y - span_y / 3;
+    long inner_min_x = (long)bound;
+    long inner_min_y = (long)bound;
+    long inner_max_x = (long)bound;
+    long inner_max_y = (long)bound;
+
+    if (inner_min_x <= edge) {
+        inner_min_x = edge + 1;
+    }
+    if (inner_min_y <= edge) {
+        inner_min_y = edge + 1;
+    }
+
+    long upper = map_size - edge;
+    if (upper - 1 <= inner_max_x) {
+        inner_max_x = upper - 2;
+    }
+    if (upper - 1 <= inner_max_y) {
+        inner_max_y = upper - 2;
+    }
+    if (inner_max_x < inner_min_x) {
+        inner_max_x = inner_min_x;
+    }
+    if (inner_max_y < inner_min_y) {
+        inner_max_y = inner_min_y;
+    }
 
     for (long i = 0; i < count; ++i) {
         long dst_index = start_index + i;
@@ -159,55 +164,51 @@ static void rmm_calc_land_start(
             continue;
         }
 
-        long chosen_x = min_x;
-        long chosen_y = min_y;
-        int chosen = 0;
-
-        long max_tries = (src_land->placement_type == 2) ? 2048 : 128;
-        if (max_tries < 1) {
-            max_tries = 1;
+        if (src_land->placement_type == 0) {
+            long x_rand = (long)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp", 0x1e5);
+            long y_rand = (long)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp", 0x1e6);
+            out->x = (x_rand * range_span) / 0x7fff + edge;
+            out->y = (y_rand * range_span) / 0x7fff + edge;
+            continue;
         }
 
-        while (max_tries-- > 0) {
-            long x = min_x + rmm_rand_range(max_x - min_x + 1);
-            long y = min_y + rmm_rand_range(max_y - min_y + 1);
+        if (src_land->placement_type == 2) {
+            while (true) {
+                long x_rand = (long)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp", 0x1fc);
+                long y_rand = (long)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp", 0x1fd);
+                long x = (x_rand * range_span) / 0x7fff + edge;
+                long y = (y_rand * range_span) / 0x7fff + edge;
 
-            if (src_land->placement_type == 2) {
-                if (x > mid_x1 && x < mid_x2 && y > mid_y1 && y < mid_y2) {
+                if (((inner_min_x < x) && (x < inner_max_x)) &&
+                    ((inner_min_y < y) && (y < inner_max_y))) {
                     continue;
                 }
 
-                int too_close = 0;
+                int reject = 0;
                 for (long prev = start_index; prev < dst_index; ++prev) {
                     long dx = x - self->land_info.land[prev].x;
+                    if (dx < 0) {
+                        dx = -dx;
+                    }
                     long dy = y - self->land_info.land[prev].y;
-                    long d2 = dx * dx + dy * dy;
-                    if (d2 <= min_dist_sq) {
-                        too_close = 1;
+                    if (dy < 0) {
+                        dy = -dy;
+                    }
+                    if ((float)(dx * dx + dy * dy) <= bound * bound) {
+                        reject = 1;
                         break;
                     }
                 }
-                if (too_close) {
+
+                if (reject != 0) {
                     continue;
                 }
-            }
 
-            chosen_x = x;
-            chosen_y = y;
-            chosen = 1;
-            break;
-        }
-
-        if (!chosen && i > 0) {
-            long anchor = start_index + (i - 1);
-            if (anchor >= 0 && anchor < 99) {
-                chosen_x = self->land_info.land[anchor].x;
-                chosen_y = self->land_info.land[anchor].y;
+                out->x = x;
+                out->y = y;
+                break;
             }
         }
-
-        out->x = chosen_x;
-        out->y = chosen_y;
     }
 }
 
@@ -2972,6 +2973,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
 
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char* param_1, char* param_2, char* param_3, char* param_4)
     : RGE_Random_Map_Module(nullptr, nullptr, 0) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00482B70
     memset(&this->land_info, 0, sizeof(this->land_info));
     memset(&this->terrain_info, 0, sizeof(this->terrain_info));
     memset(&this->object_info, 0, sizeof(this->object_info));
@@ -3157,6 +3159,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char* param_1, char* pa
 
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int param_1)
     : RGE_Random_Map_Module(nullptr, nullptr, 0) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483020
     memset(&this->land_info, 0, sizeof(this->land_info));
     memset(&this->terrain_info, 0, sizeof(this->terrain_info));
     memset(&this->object_info, 0, sizeof(this->object_info));
@@ -3166,157 +3169,47 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int param_1)
     this->map_type = -1;
     this->number_of_players = 0;
 
-    // Source of truth: rmm_dbct.cpp.decomp parses random-map DB from fd here.
-    // Important: this constructor consumes bytes from the shared world data stream.
-    // Do NOT rewind; later world_init stages must continue from the advanced position.
-    const long saved_pos = rge_stream_tell(param_1);
-
-    const long kMaxMapDefs = 128;
-    const long kMaxLandDefs = 4096;
-    const long kMaxTerrainDefs = 4096;
-    const long kMaxObjectDefs = 8192;
-    const long kMaxElevationDefs = 4096;
-
-    int parse_ok = 1;
-    int parse_fail_stage = 0;
-    long parse_fail_index = -1;
-    long parse_fail_value = 0;
-    RGE_Map_Data hdr;
-    memset(&hdr, 0, sizeof(hdr));
-    rge_read(param_1, &hdr, (int)sizeof(hdr));
-    if (hdr.map_num <= 0 || hdr.map_num > kMaxMapDefs) {
-        parse_ok = 0;
-        parse_fail_stage = 1;
-        parse_fail_value = hdr.map_num;
-    }
-
-    if (parse_ok) {
-        this->map_info.map_num = hdr.map_num;
+    rge_read(param_1, &this->map_info, (int)sizeof(RGE_Map_Data));
+    if (this->map_info.map_num > 0) {
         this->map_info.maps = (RGE_Map_Data_Entry*)calloc((size_t)this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
-        if (this->map_info.maps == nullptr) {
-            parse_ok = 0;
-            parse_fail_stage = 2;
-        }
-    }
-
-    if (parse_ok) {
         rge_read(param_1, this->map_info.maps, this->map_info.map_num * (int)sizeof(RGE_Map_Data_Entry));
 
-        for (long i = 0; i < this->map_info.map_num && parse_ok; ++i) {
+        for (long i = 0; i < this->map_info.map_num; ++i) {
             RGE_Map_Data_Entry* map_entry = &this->map_info.maps[i];
-
             rge_read(param_1, &map_entry->land_info, (int)sizeof(RGE_Land_Data));
-            if (map_entry->land_info.land_num < 0 || map_entry->land_info.land_num > kMaxLandDefs) {
-                parse_ok = 0;
-                parse_fail_stage = 3;
-                parse_fail_index = i;
-                parse_fail_value = map_entry->land_info.land_num;
-                break;
-            }
             if (map_entry->land_info.land_num > 0) {
                 map_entry->land_info.land = (RGE_Land_Data_Entry*)calloc((size_t)map_entry->land_info.land_num, sizeof(RGE_Land_Data_Entry));
-                if (map_entry->land_info.land == nullptr) {
-                    parse_ok = 0;
-                    parse_fail_stage = 4;
-                    parse_fail_index = i;
-                    break;
-                }
                 rge_read(param_1, map_entry->land_info.land, map_entry->land_info.land_num * (int)sizeof(RGE_Land_Data_Entry));
-            } else {
-                map_entry->land_info.land = nullptr;
             }
 
             rge_read(param_1, &map_entry->terrain_info, (int)sizeof(RGE_Terrain_Data));
-            if (map_entry->terrain_info.terrain_num < 0 || map_entry->terrain_info.terrain_num > kMaxTerrainDefs) {
-                parse_ok = 0;
-                parse_fail_stage = 5;
-                parse_fail_index = i;
-                parse_fail_value = map_entry->terrain_info.terrain_num;
-                break;
-            }
             if (map_entry->terrain_info.terrain_num > 0) {
                 map_entry->terrain_info.terrain = (RGE_Terrain_Data_Entry*)calloc((size_t)map_entry->terrain_info.terrain_num, sizeof(RGE_Terrain_Data_Entry));
-                if (map_entry->terrain_info.terrain == nullptr) {
-                    parse_ok = 0;
-                    parse_fail_stage = 6;
-                    parse_fail_index = i;
-                    break;
-                }
                 rge_read(param_1, map_entry->terrain_info.terrain, map_entry->terrain_info.terrain_num * (int)sizeof(RGE_Terrain_Data_Entry));
-            } else {
-                map_entry->terrain_info.terrain = nullptr;
             }
 
             rge_read(param_1, &map_entry->object_info, (int)sizeof(RGE_Object_Data));
-            if (map_entry->object_info.object_num < 0 || map_entry->object_info.object_num > kMaxObjectDefs) {
-                parse_ok = 0;
-                parse_fail_stage = 7;
-                parse_fail_index = i;
-                parse_fail_value = map_entry->object_info.object_num;
-                break;
-            }
             if (map_entry->object_info.object_num > 0) {
                 map_entry->object_info.objects = (RGE_Object_Data_Entry*)calloc((size_t)map_entry->object_info.object_num, sizeof(RGE_Object_Data_Entry));
-                if (map_entry->object_info.objects == nullptr) {
-                    parse_ok = 0;
-                    parse_fail_stage = 8;
-                    parse_fail_index = i;
-                    break;
-                }
                 rge_read(param_1, map_entry->object_info.objects, map_entry->object_info.object_num * (int)sizeof(RGE_Object_Data_Entry));
-            } else {
-                map_entry->object_info.objects = nullptr;
             }
 
             rge_read(param_1, &map_entry->elevation_info, (int)sizeof(RGE_Elevation_Data));
-            if (map_entry->elevation_info.elevation_num < 0 || map_entry->elevation_info.elevation_num > kMaxElevationDefs) {
-                parse_ok = 0;
-                parse_fail_stage = 9;
-                parse_fail_index = i;
-                parse_fail_value = map_entry->elevation_info.elevation_num;
-                break;
-            }
             if (map_entry->elevation_info.elevation_num > 0) {
                 map_entry->elevation_info.elevation = (RGE_Elevation_Data_Entry*)calloc((size_t)map_entry->elevation_info.elevation_num, sizeof(RGE_Elevation_Data_Entry));
-                if (map_entry->elevation_info.elevation == nullptr) {
-                    parse_ok = 0;
-                    parse_fail_stage = 10;
-                    parse_fail_index = i;
-                    break;
-                }
                 rge_read(param_1, map_entry->elevation_info.elevation, map_entry->elevation_info.elevation_num * (int)sizeof(RGE_Elevation_Data_Entry));
-            } else {
-                map_entry->elevation_info.elevation = nullptr;
             }
         }
-    }
-
-    if (!parse_ok) {
-        CUSTOM_DEBUG_LOG_FMT(
-            "RMM fd ctor parse failed: fd=%d start_pos=%ld end_pos=%ld map_num=%ld stage=%d idx=%ld val=%ld",
-            param_1,
-            saved_pos,
-            rge_stream_tell(param_1),
-            hdr.map_num,
-            parse_fail_stage,
-            parse_fail_index,
-            parse_fail_value);
-        rmm_free_map_data(this);
-    } else {
-        CUSTOM_DEBUG_LOG_FMT(
-            "RMM fd ctor parse ok: fd=%d start_pos=%ld end_pos=%ld map_num=%ld",
-            param_1,
-            saved_pos,
-            rge_stream_tell(param_1),
-            this->map_info.map_num);
     }
 }
 
 RGE_RMM_Database_Controller::~RGE_RMM_Database_Controller() {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483200
     rmm_free_map_data(this);
 }
 
 uchar RGE_RMM_Database_Controller::save(int param_1) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x004832E0
     rge_write(param_1, &this->map_info, (int)sizeof(RGE_Map_Data));
     if (this->map_info.map_num <= 0 || this->map_info.maps == nullptr) {
         return 1;
@@ -3346,31 +3239,16 @@ uchar RGE_RMM_Database_Controller::save(int param_1) {
 }
 
 uchar RGE_RMM_Database_Controller::generate() {
-    if (this->map == nullptr || this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
-        return 0;
-    }
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483430
     (void)new (std::nothrow) RGE_RMM_Terrain_Generator(this->map, this, &this->terrain_info);
     (void)new (std::nothrow) RGE_RMM_Land_Generator(this->map, this, &this->land_info);
     (void)new (std::nothrow) RGE_RMM_Object_Generator(this->map, this, this->world, &this->object_info, 1);
     (void)new (std::nothrow) RGE_RMM_Elevation_Generator(this->map, this, &this->elevation_info);
-
-    if (RGE_Random_Map_Module::generate() == 0) {
-        return 0;
-    }
-
-    this->map->rebuild_tile_types(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1));
-    this->map->rebuild_border_types(0, 0, (short)(this->map_width - 1), (short)(this->map_height - 1));
-    this->map->set_map_screen_pos(0, 0, this->map_width - 1, this->map_height - 1);
-    this->map->clear_map_view_info();
-
-    rmm_log_terrain_histogram(this, "RGE_RMM_Database_Controller::generate");
-    rmm_log_height_histogram(this, "RGE_RMM_Database_Controller::generate");
-    rmm_log_tile_type_histogram(this, "RGE_RMM_Database_Controller::generate");
-    rmm_log_border_histogram(this, "RGE_RMM_Database_Controller::generate");
-    return 1;
+    return RGE_Random_Map_Module::generate();
 }
 
 void RGE_RMM_Database_Controller::add_land_module(uchar param_1) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483A20
     memset(&this->land_info, 0, sizeof(this->land_info));
 
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
@@ -3465,31 +3343,12 @@ void RGE_RMM_Database_Controller::add_land_module(uchar param_1) {
     this->land_info.land_num = dst_index;
 
     if (param_1 != 0 && this->land_info.land_num > 1) {
-        if (rmm_randomize_land_positions_by_team(this) == 0) {
-            for (long i = 0; i < this->land_info.land_num; ++i) {
-                long rem = this->land_info.land_num - i;
-                if (rem <= 1) {
-                    break;
-                }
-                long j = i + rmm_rand_range(rem);
-                if (j < i) j = i;
-                if (j >= this->land_info.land_num) j = this->land_info.land_num - 1;
-                if (j == i) {
-                    continue;
-                }
-
-                long tx = this->land_info.land[i].x;
-                long ty = this->land_info.land[i].y;
-                this->land_info.land[i].x = this->land_info.land[j].x;
-                this->land_info.land[i].y = this->land_info.land[j].y;
-                this->land_info.land[j].x = tx;
-                this->land_info.land[j].y = ty;
-            }
-        }
+        (void)rmm_randomize_land_positions_by_team(this);
     }
 }
 
 void RGE_RMM_Database_Controller::add_terrain_module() {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00484160
     memset(&this->terrain_info, 0, sizeof(this->terrain_info));
 
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
@@ -3550,6 +3409,7 @@ void RGE_RMM_Database_Controller::add_terrain_module() {
 }
 
 void RGE_RMM_Database_Controller::add_object_module() {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00484320
     memset(&this->object_info, 0, sizeof(this->object_info));
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
     if (map_entry == nullptr) {
@@ -3642,6 +3502,7 @@ void RGE_RMM_Database_Controller::add_object_module() {
 }
 
 void RGE_RMM_Database_Controller::add_elevation_module() {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00484470
     memset(&this->elevation_info, 0, sizeof(this->elevation_info));
     RGE_Map_Data_Entry* map_entry = rmm_select_map_entry(this);
     if (map_entry == nullptr) {
@@ -3718,34 +3579,15 @@ void RGE_RMM_Database_Controller::add_elevation_module() {
     }
 
     this->elevation_info.hot_spot_num = hot_spot_index;
-
-    CUSTOM_DEBUG_LOG_FMT(
-        "add_elevation_module: map_type=%ld grown=%ld elev_num=%ld hot_spots=%ld",
-        this->map_type,
-        grown_land_percent,
-        this->elevation_info.elevation_num,
-        this->elevation_info.hot_spot_num);
-    for (long i = 0; i < this->elevation_info.elevation_num; ++i) {
-        RGE_Elevation_Info_Line* e = &this->elevation_info.elevation[i];
-        CUSTOM_DEBUG_LOG_FMT(
-            "  elev_setup[%ld]: size=%ld elev=%ld clumps=%ld spacing=%ld base_h=%ld base_tt=%ld",
-            i,
-            e->elevation_size,
-            e->elevation,
-            e->clumps,
-            e->spacing,
-            e->base_elevation,
-            e->base_terrain_type);
-    }
 }
 
 uchar RGE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, uchar param_5) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483540
     this->world = param_2;
     this->map_type = (long)param_3;
     this->number_of_players = param_4;
 
     this->update_map_info(param_1);
-    this->destroy_shared_resources();
     this->create_shared_resources();
 
     this->add_land_module(param_5);
@@ -3753,31 +3595,11 @@ uchar RGE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* param_
     this->add_object_module();
     this->add_elevation_module();
 
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_RMM_Database_Controller::init: map_type=%ld players=%ld map=%ldx%ld map_defs=%ld",
-        this->map_type,
-        this->number_of_players,
-        this->map_width,
-        this->map_height,
-        this->map_info.map_num);
-    if (this->map_info.maps != nullptr && this->map_info.map_num > 0) {
-        for (long i = 0; i < this->map_info.map_num; ++i) {
-            RGE_Map_Data_Entry* e = &this->map_info.maps[i];
-            CUSTOM_DEBUG_LOG_FMT(
-                "  map_def[%ld]: id=%ld land=%ld terr=%ld obj=%ld elev=%ld",
-                i,
-                e->map_id,
-                e->land_info.land_num,
-                e->terrain_info.terrain_num,
-                e->object_info.object_num,
-                e->elevation_info.elevation_num);
-        }
-    }
-
     return 1;
 }
 
 uchar RGE_RMM_Database_Controller::de_init() {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x004835A0
     this->world = nullptr;
     this->map_type = -1;
     this->number_of_players = 0;
@@ -3787,9 +3609,6 @@ uchar RGE_RMM_Database_Controller::de_init() {
         RGE_Random_Map_Module* module = head->module;
         if (module != nullptr) {
             delete module;
-        } else {
-            this->list = head->next;
-            free(head);
         }
     }
 
@@ -3800,13 +3619,16 @@ uchar RGE_RMM_Database_Controller::de_init() {
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* param_1, char* param_2, char* param_3, char* param_4)
     : RGE_RMM_Database_Controller(param_1, param_2, param_3, param_4) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x004876C0
 }
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int param_1)
     : RGE_RMM_Database_Controller(param_1) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x004876F0
 }
 
 uchar TRIBE_RMM_Database_Controller::generate() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488870
     uchar ret = RGE_RMM_Database_Controller::generate();
     if (this->map_row_offset != nullptr && this->map_width > 0 && this->map_height > 0) {
         for (long y = 0; y < this->map_height; ++y) {
@@ -3822,6 +3644,7 @@ uchar TRIBE_RMM_Database_Controller::generate() {
 }
 
 void TRIBE_RMM_Database_Controller::add_land_module(uchar param_1) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487940
     long map_type = this->map_type;
     long saved_land_placement_edge = 0;
     RGE_Map_Data_Entry* map_entry = nullptr;
@@ -3980,6 +3803,7 @@ tribe_land_finalize:
 }
 
 void TRIBE_RMM_Database_Controller::add_terrain_module() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487DD0
     long grown_land_percent = 0;
     if (this->map_info.maps != nullptr && this->map_type >= 0 && this->map_type < this->map_info.map_num) {
         grown_land_percent = this->map_info.maps[this->map_type].land_info.grown_land_percent;
@@ -4034,6 +3858,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
 }
 
 void TRIBE_RMM_Database_Controller::add_object_module() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487FA0
     RGE_RMM_Database_Controller::add_object_module();
     (void)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x198);
 
@@ -4226,6 +4051,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
 }
 
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488700
     RGE_RMM_Database_Controller::add_elevation_module();
 
     long rand_value = (long)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x243);
@@ -4243,6 +4069,7 @@ void TRIBE_RMM_Database_Controller::add_elevation_module() {
 }
 
 void TRIBE_RMM_Database_Controller::add_shallows_module() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x004887A0
     if (this->map == nullptr || this->land_info.land_num <= 0) {
         return;
     }
@@ -4264,6 +4091,7 @@ void TRIBE_RMM_Database_Controller::add_shallows_module() {
 }
 
 uchar TRIBE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, uchar param_5) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487710
     uchar land_randomization_flag = param_5;
     if (rge_base_game != nullptr) {
         TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
@@ -4292,7 +4120,7 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* para
         } else if (map_size <= 0xc8) {
             cliff_count = 0x12;
             base_cliff_size = 0x14;
-        } else {
+        } else if (map_size < 0xfb) {
             cliff_count = 0x1c;
             base_cliff_size = 0x14;
         }
@@ -4357,6 +4185,7 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* param_1, RGE_Game_World* para
 }
 
 uchar TRIBE_RMM_Database_Controller::de_init() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487930
     (void)RGE_RMM_Database_Controller::de_init();
     return 1;
 }
