@@ -193,13 +193,12 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
     for (int i = 0; i < 5; ++i) tab_list[i + 1] = (TPanel*)this->button[i];
     this->set_tab_order(tab_list + 1, 5);
 
-    // Source of truth: Scr_main.cpp.decomp @ 0x0049E6D0
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049E6D0
     this->set_curr_child((TPanel*)this->button[0]);
 }
 
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
-    // Source of truth: Scr_main.cpp.decomp
-    // Delete all child panels before base destructor runs
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049EC00
     this->delete_panel((TPanel**)&this->title1);
     this->delete_panel((TPanel**)&this->title2);
     for (int i = 0; i < 7; ++i) {
@@ -232,7 +231,7 @@ void TRIBE_Screen_Main_Menu::draw_offset2(long param_1, long param_2, tagRECT* p
 void TRIBE_Screen_Main_Menu::paint() { TScreenPanel::paint(); }
 long TRIBE_Screen_Main_Menu::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4); }
 long TRIBE_Screen_Main_Menu::handle_idle() {
-    // Source of truth: `src/game/src/Scr_main.cpp.decomp` (`handle_idle` @ 0x0049ECD0).
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049ECD0
     if (rge_base_game && rge_base_game->input_enabled == 0) {
         menu_enable_input();
     }
@@ -266,7 +265,7 @@ long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int pa
     (void)param_3;
     (void)param_5;
 
-    // Source of truth: `src/game/src/Scr_main.cpp.decomp` (`key_down_action` @ 0x0049ED00).
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049ED00
     // Original behavior reacts on key-up transitions (`param_4 != 0`).
     if (param_4 == 0) {
         return 0;
@@ -298,7 +297,7 @@ long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int pa
 long TRIBE_Screen_Main_Menu::char_action(long param_1, short param_2) { return TScreenPanel::char_action(param_1, param_2); }
 
 long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: `src/game/src/Scr_main.cpp.decomp` (`action` @ 0x0049EE00).
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049EE00
     if (param_1 && param_1->panelNameValue && (_stricmp(param_1->panelNameValue, "Confirm Dialog") == 0) && (param_2 == 0)) {
         if (panel_system) {
             panel_system->destroyPanel((char*)"Confirm Dialog");

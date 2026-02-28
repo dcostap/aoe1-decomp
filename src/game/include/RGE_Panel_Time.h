@@ -4,6 +4,8 @@
 
 class RGE_Panel_Time : public TPanel {
 public:
+    RGE_Panel_Time(TDrawArea* param_1, TPanel* param_2, void* param_3);
+
     // Virtuals (best-effort)
     virtual ~RGE_Panel_Time(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

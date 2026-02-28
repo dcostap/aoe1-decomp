@@ -1,9 +1,13 @@
 #pragma once
 #include "common.h"
 #include "RGE_Static_Object.h"
+class TRIBE_Master_Tree_Object;
 
 class TRIBE_Tree_Object : public RGE_Static_Object {
 public:
+    TRIBE_Tree_Object(TRIBE_Master_Tree_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
+    TRIBE_Tree_Object(int param_1, RGE_Game_World* param_2, int param_3);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Tree_Object(); // vt[0] (0x0)
     virtual void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // vt[1] (0x4)
