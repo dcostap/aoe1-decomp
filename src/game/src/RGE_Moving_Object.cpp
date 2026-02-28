@@ -112,7 +112,7 @@ void RGE_Moving_Object::setGoal(float x, float y, float z) {
     this->goalValue.z = z;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x0045D360
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D360
 // Computes facet from angle based on sprite's number of facets.
 void RGE_Moving_Object::set_angle() {
     RGE_Sprite* spr = this->sprite;
@@ -482,7 +482,7 @@ void RGE_Moving_Object::new_angle(float param_1) {
     set_angle();
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x0045D3D0
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D3D0
 float RGE_Moving_Object::teleport(float param_1, float param_2, float param_3) {
     RGE_Master_Moving_Object* master = (RGE_Master_Moving_Object*)this->master_obj;
     if (master != nullptr) {
@@ -567,7 +567,7 @@ void RGE_Moving_Object::setTargetRadius(float param_1, float param_2) {
     this->targetRadiusY = param_2;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x0045D6C0
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D6C0
 RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
     RGE_Master_Static_Object* master = this->master_obj;
     if (master != nullptr && master->radius_z <= 0.0f) {
@@ -694,7 +694,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
     return PathFound;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x0045DB90
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045DB90
 int RGE_Moving_Object::doMove() {
     this->setWaitingToMove(0);
 
@@ -1030,7 +1030,7 @@ in_range:
     return 1;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x0045E970
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045E970
 int RGE_Moving_Object::doTrivialMove(float param_1, float param_2) {
     int already_moving = 1;
     if (this->speed == 0.0f) {
@@ -1379,7 +1379,7 @@ int RGE_Moving_Object::doTrivialMove(float param_1, float param_2) {
     return 0;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x004608D0
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x004608D0
 float RGE_Moving_Object::maximumSpeed() {
     if (this->sprite != nullptr) {
         float sprite_speed = *(float*)((char*)this->sprite + 0x64);
@@ -1644,7 +1644,7 @@ int RGE_Moving_Object::canPathWithAdditionalPassability(XYZPoint param_1, float 
     return ok;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.asm @ 0x00460210
+// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x00460210
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3) {
     Path* p = &this->exceptionPathValue;
     int n = p->numberOfWaypoints();
