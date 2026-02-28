@@ -16,7 +16,7 @@ RGE_Active_Sprite_List::RGE_Active_Sprite_List(RGE_Static_Object* param_1) {
 }
 
 RGE_Active_Sprite::RGE_Active_Sprite(RGE_Sprite* param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AD20
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AD20
     this->sprite = param_1;
     this->type = 1;
     this->offset_x = 0;
@@ -24,7 +24,7 @@ RGE_Active_Sprite::RGE_Active_Sprite(RGE_Sprite* param_1) {
 }
 
 RGE_Active_Sprite::RGE_Active_Sprite(int param_1, RGE_Sprite** param_2) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AD60
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AD60
     this->type = 1;
 
     short sprite_id = -1;
@@ -40,91 +40,85 @@ RGE_Active_Sprite::RGE_Active_Sprite(int param_1, RGE_Sprite** param_2) {
 }
 
 RGE_Active_Sprite::~RGE_Active_Sprite() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041ADD0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041ADD0
 }
 
 void RGE_Active_Sprite::set_offset(long param_1, long param_2) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041ADE0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041ADE0
     this->offset_x = param_1;
     this->offset_y = param_2;
 }
 
 void RGE_Active_Sprite::save(int param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AE00
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AE00
     rge_write(param_1, &this->type, 1);
-
-    short sprite_id = -1;
-    if (this->sprite != nullptr) {
-        sprite_id = this->sprite->id;
-    }
-    rge_write(param_1, &sprite_id, 2);
-
+    rge_write(param_1, &this->sprite->id, 2);
     rge_write(param_1, &this->offset_x, 4);
     rge_write(param_1, &this->offset_y, 4);
 }
 
 void RGE_Active_Sprite::update(float param_1, float param_2) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AE50
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AE50
 }
 
 void RGE_Active_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AE60
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AE60
     this->sprite->draw((long)param_1, 0, param_2 + this->offset_x, param_3 + this->offset_y,
         param_4 + this->offset_x, param_5 + this->offset_y, param_6, param_7, 0);
 }
 
 void RGE_Active_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AEB0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AEB0
     this->sprite->normal_draw((long)param_1, 0, this->offset_x + param_2, this->offset_y + param_3, param_4, param_5);
 }
 
 void RGE_Active_Sprite::shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AEF0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AEF0
     this->sprite->shadow_draw((long)param_1, 0, this->offset_x + param_2, this->offset_y + param_3, param_4, param_5, param_6);
 }
 
 short RGE_Active_Sprite::what_frame() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AF30
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF30
     return 0;
 }
 
 uchar RGE_Active_Sprite::is_animating() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AF50
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF50
     return 0;
 }
 
 void RGE_Active_Sprite::set_frame(short param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AF40
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF40
 }
 
 uchar RGE_Active_Sprite::frame_passed(short param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AF60
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF60
     return 0;
 }
 
 uchar RGE_Active_Sprite::looped() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AF70
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF70
     return 0;
 }
 
 short RGE_Active_Sprite::get_facetindex(short param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AF80
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF80
     long facet_index = 0;
     this->sprite->get_facetindex((long)param_1, 0, &facet_index);
     return (short)facet_index;
 }
 
 uchar RGE_Active_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AFB0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AFB0
     return (uchar)this->sprite->get_frame(param_1, param_2, param_3, param_4, param_5, 0);
 }
 
 void RGE_Active_Sprite::setToFirstFrame() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041AFF0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AFF0
 }
 
 int RGE_Active_Sprite::check_for_shadows() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B000
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B000
     if (this->sprite != nullptr) {
         return this->sprite->check_for_shadows();
     }
@@ -141,7 +135,7 @@ unsigned char RGE_Active_Sprite::get_lowest_draw_level() {
 
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* param_1)
     : RGE_Active_Sprite(param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B010
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B010
     this->type = 2;
     this->last_frame = 0;
 
@@ -177,7 +171,7 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* param_1)
 
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2)
     : RGE_Active_Sprite(param_1, param_2) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B140
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B140
     this->type = 2;
     rge_read(param_1, &this->frame, 2);
     rge_read(param_1, &this->animate_interval, 4);
@@ -189,17 +183,17 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int param_1, RGE_Sprite**
 }
 
 RGE_Active_Animated_Sprite::~RGE_Active_Animated_Sprite() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B200
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B200
 }
 
 void RGE_Active_Animated_Sprite::set_offset(long param_1, long param_2) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041ADE0 (base virtual)
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041ADE0 (base virtual)
     this->offset_x = param_1;
     this->offset_y = param_2;
 }
 
 void RGE_Active_Animated_Sprite::save(int param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B210
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B210
     RGE_Active_Sprite::save(param_1);
     rge_write(param_1, &this->frame, 2);
     rge_write(param_1, &this->animate_interval, 4);
@@ -211,7 +205,7 @@ void RGE_Active_Animated_Sprite::save(int param_1) {
 }
 
 void RGE_Active_Animated_Sprite::update(float param_1, float param_2) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B290
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B290
     RGE_Sprite* sprite = this->sprite;
 
     this->frame_changed = 0;
@@ -278,15 +272,18 @@ void RGE_Active_Animated_Sprite::update(float param_1, float param_2) {
 }
 
 void RGE_Active_Animated_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B430
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B430
     this->sprite->draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5, param_6, param_7, 0);
     if (this->frame_changed != 0) {
+        if (fog_next_shape == 0) {
+            this->sprite->play_sound(this->last_frame, this->frame, param_1);
+        }
         this->frame_changed = 0;
     }
 }
 
 void RGE_Active_Animated_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B4A0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B4A0
     this->sprite->normal_draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5);
     if (this->frame_changed != 0) {
         this->sprite->play_sound(this->last_frame, this->frame, param_1);
@@ -295,17 +292,17 @@ void RGE_Active_Animated_Sprite::normal_draw(short param_1, long param_2, long p
 }
 
 void RGE_Active_Animated_Sprite::shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B4F0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B4F0
     this->sprite->shadow_draw((long)param_1, (long)this->frame, param_2, param_3, param_4, param_5, param_6);
 }
 
 short RGE_Active_Animated_Sprite::what_frame() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B520
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B520
     return this->frame;
 }
 
 uchar RGE_Active_Animated_Sprite::is_animating() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B530
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B530
     if (this->animate_flag == 0) {
         return 0;
     }
@@ -316,12 +313,12 @@ uchar RGE_Active_Animated_Sprite::is_animating() {
 }
 
 void RGE_Active_Animated_Sprite::set_frame(short param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B550
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B550
     this->frame = param_1;
 }
 
 uchar RGE_Active_Animated_Sprite::frame_passed(short param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B560
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B560
     if (this->frame_changed != 0 &&
         (this->frame_looped != 0 || (param_1 <= this->frame && this->last_frame < param_1))) {
         return 1;
@@ -330,31 +327,31 @@ uchar RGE_Active_Animated_Sprite::frame_passed(short param_1) {
 }
 
 uchar RGE_Active_Animated_Sprite::looped() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B590
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B590
     return this->frame_looped;
 }
 
 short RGE_Active_Animated_Sprite::get_facetindex(short param_1) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B5A0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B5A0
     long facet_index = 0;
     this->sprite->get_facetindex((long)param_1, (long)this->frame, &facet_index);
     return (short)facet_index;
 }
 
 uchar RGE_Active_Animated_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5) {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B5D0
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B5D0
     return (uchar)this->sprite->get_frame(param_1, param_2, param_3, param_4, param_5, (long)this->frame);
 }
 
 void RGE_Active_Animated_Sprite::setToFirstFrame() {
-    // Source of truth: asprite.cpp.decomp @ 0x0041B600
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041B600
     this->frame_changed = 1;
     this->last_frame = this->frame;
     this->frame = 0;
 }
 
 void RGE_Active_Sprite_List::save(int param_1) {
-    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A830
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A820
     RGE_Active_Sprite_Node* cur = this->list;
     while (cur != nullptr) {
         cur->node->save(param_1);
@@ -366,7 +363,7 @@ void RGE_Active_Sprite_List::save(int param_1) {
 }
 
 void RGE_Active_Sprite_List::delete_list() {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041A860
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A860
     RGE_Active_Sprite_Node* cur = this->list;
     while (cur != nullptr) {
         RGE_Active_Sprite_Node* next = cur->next;
@@ -482,8 +479,20 @@ uchar RGE_Active_Sprite_List::get_lowest_draw_level() {
     return bVar3;
 }
 
+int RGE_Active_Sprite_List::check_for_shadows() {
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041ACF0
+    RGE_Active_Sprite_Node* node = this->list;
+    while (node != nullptr) {
+        if (node->node->check_for_shadows() != 0) {
+            return 1;
+        }
+        node = node->next;
+    }
+    return 0;
+}
+
 RGE_Active_Sprite_List::~RGE_Active_Sprite_List() {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041A680
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A680
     this->delete_list();
 }
 
@@ -506,7 +515,7 @@ void RGE_Active_Sprite_List::load(int param_1, RGE_Sprite** param_2) {
 }
 
 uchar RGE_Active_Sprite_List::load_node(int param_1, uchar param_2, RGE_Sprite** param_3) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041A6F0
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A6F0
     if (param_2 == 0) {
         return 0;
     }
@@ -549,35 +558,35 @@ uchar RGE_Active_Sprite_List::load_node(int param_1, uchar param_2, RGE_Sprite**
 }
 
 void RGE_Active_Sprite_List::update(float param_1, float param_2) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AA20
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AA20
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         node->node->update(param_1, param_2);
     }
 }
 
 void RGE_Active_Sprite_List::draw(short param_1, short param_2, short param_3, short param_4, short param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AA50
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AA50
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         node->node->draw(param_1, (long)param_2, (long)param_3, (long)param_4, (long)param_5, param_6, param_7);
     }
 }
 
 void RGE_Active_Sprite_List::normal_draw(short param_1, short param_2, short param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AAA0
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AAA0
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         node->node->normal_draw(param_1, (long)param_2, (long)param_3, param_4, param_5);
     }
 }
 
 void RGE_Active_Sprite_List::shadow_draw(short param_1, short param_2, short param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AAE0
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AAE0
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         node->node->shadow_draw(param_1, (long)param_2, (long)param_3, param_4, param_5, param_6);
     }
 }
 
 short RGE_Active_Sprite_List::frame(RGE_Sprite* param_1) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AB20
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AB20
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_1) {
             return node->node->what_frame();
@@ -587,7 +596,7 @@ short RGE_Active_Sprite_List::frame(RGE_Sprite* param_1) {
 }
 
 uchar RGE_Active_Sprite_List::is_animating(RGE_Sprite* param_1) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AB60
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AB60
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_1) {
             return node->node->is_animating();
@@ -597,7 +606,7 @@ uchar RGE_Active_Sprite_List::is_animating(RGE_Sprite* param_1) {
 }
 
 void RGE_Active_Sprite_List::set_frame(RGE_Sprite* param_1, short param_2) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AB90
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AB90
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_1) {
             node->node->set_frame(param_2);
@@ -606,7 +615,7 @@ void RGE_Active_Sprite_List::set_frame(RGE_Sprite* param_1, short param_2) {
 }
 
 uchar RGE_Active_Sprite_List::frame_passed(RGE_Sprite* param_1, short param_2) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041ABC0
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041ABC0
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_1) {
             return node->node->frame_passed(param_2);
@@ -616,7 +625,7 @@ uchar RGE_Active_Sprite_List::frame_passed(RGE_Sprite* param_1, short param_2) {
 }
 
 uchar RGE_Active_Sprite_List::looped(RGE_Sprite* param_1) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AC00
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AC00
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_1) {
             return node->node->looped();
@@ -626,7 +635,7 @@ uchar RGE_Active_Sprite_List::looped(RGE_Sprite* param_1) {
 }
 
 short RGE_Active_Sprite_List::get_facetindex(RGE_Sprite* param_1, short param_2) {
-    // Source of truth: asp_list.cpp.decomp @ 0x0041AC30
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AC30
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_1) {
             return node->node->get_facetindex(param_2);
@@ -644,3 +653,4 @@ uchar RGE_Active_Sprite_List::get_frame(short* param_1, short* param_2, short* p
     }
     return 0;
 }
+
