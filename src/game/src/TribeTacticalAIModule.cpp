@@ -661,7 +661,7 @@ void TribeTacticalAIModule::logGroupDebug(int param_1, char* param_2, ...) {
     (void)param_2;
 }
 
-// TODO: 0x004F0BC0 clearArea transliteration is blocked on missing pathing/task helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F0BC0. clearArea transliteration is blocked on missing pathing/task helpers.
 int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, float param_4, float param_5) {
     (void)param_1;
     (void)param_2;
@@ -671,14 +671,14 @@ int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, 
     return 0;
 }
 
-// TODO: 0x004F0D70 addObject transliteration is blocked on missing classification/task helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F0D70. addObject transliteration is blocked on missing classification/task helpers.
 void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
     if ((param_1 != nullptr) && (param_1->master_obj != nullptr) && (param_1->master_obj->object_group == 4)) {
         appendManagedArrayUnique(this->civilians, param_1->id);
     }
 }
 
-// TODO: 0x004F1090 removeObject transliteration is blocked on missing removeFromTaskLists helper.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F1090. removeObject transliteration is blocked on missing removeFromTaskLists helper.
 void TribeTacticalAIModule::removeObject(int param_1) {
     ManagedArray<int>* arrays[] = {&this->civilians,        &this->civilianExplorers, &this->soldiers,
                                    &this->ungroupedSoldiers, &this->boats,             &this->warBoats,
@@ -698,48 +698,49 @@ void TribeTacticalAIModule::removeObject(int param_1) {
     }
 }
 
-// TODO: 0x004F13F0 evaluateCivilianDistribution transliteration is blocked on missing info-AI helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F13F0. evaluateCivilianDistribution transliteration is blocked on missing info-AI helpers.
 void TribeTacticalAIModule::evaluateCivilianDistribution() {}
 
-// TODO: 0x004F1600 taskCivilians transliteration is blocked on missing gatherer/task helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F1600. taskCivilians transliteration is blocked on missing gatherer/task helpers.
 int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
     (void)param_1;
     (void)param_2;
     return 0;
 }
 
-// TODO: 0x004F1E10 taskIdleSoldiers transliteration is blocked on missing tactical helper graph.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F1E10. taskIdleSoldiers transliteration is blocked on missing tactical helper graph.
 void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned long param_2) {
     (void)param_1;
     (void)param_2;
 }
 
-// TODO: 0x004F21F0 taskActiveSoldiers transliteration is blocked on missing targeting/combat helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F21F0. taskActiveSoldiers transliteration is blocked on missing targeting/combat helpers.
 void TribeTacticalAIModule::taskActiveSoldiers(unsigned long param_1, unsigned long param_2) {
     (void)param_1;
     (void)param_2;
 }
 
-// TODO: 0x004F4760 playTaskSoldiers transliteration is blocked on missing playbook/target helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4760. playTaskSoldiers transliteration is blocked on missing playbook/target helpers.
 void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1, unsigned long param_2) {
     (void)param_1;
     (void)param_2;
 }
 
-// TODO: 0x004F4AA0 taskUngroupedSoldiers transliteration is blocked on missing group creation helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4AA0. taskUngroupedSoldiers transliteration is blocked on missing group creation helpers.
 void TribeTacticalAIModule::taskUngroupedSoldiers() {}
 
-// TODO: 0x004F4D90 taskBoats transliteration is blocked on missing transport/attack helpers.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4D90. taskBoats transliteration is blocked on missing transport/attack helpers.
 void TribeTacticalAIModule::taskBoats() {}
 
-// TODO: 0x004F57C0 evaluateOpenTasks transliteration is blocked on missing tactical helper graph.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F57C0. evaluateOpenTasks transliteration is blocked on missing tactical helper graph.
 void TribeTacticalAIModule::evaluateOpenTasks() {}
 
-// TODO: 0x004F5FB0 evaluateBuildListInsertions transliteration is blocked on missing TribeBuildAIModule::insert wrapper.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F5FB0. evaluateBuildListInsertions transliteration is blocked on missing TribeBuildAIModule::insert wrapper.
 void TribeTacticalAIModule::evaluateBuildListInsertions() {
     // TODO: STUB - requires unresolved md->buildAI wrapper APIs in current headers.
 }
 
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F6180. Full parity pending.
 int TribeTacticalAIModule::neededResource(int param_1) const {
     if ((param_1 >= 0) && (param_1 < 4)) {
         return this->neededResourceValue[param_1];
@@ -747,6 +748,7 @@ int TribeTacticalAIModule::neededResource(int param_1) const {
     return -1;
 }
 
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F61A0. Full parity pending.
 int TribeTacticalAIModule::neededResourceAmount(int param_1) const {
     if ((param_1 >= 0) && (param_1 < 4)) {
         return this->neededResources.value(this->neededResourceValue[param_1]);
@@ -754,6 +756,7 @@ int TribeTacticalAIModule::neededResourceAmount(int param_1) const {
     return -1;
 }
 
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F61D0. Full parity pending.
 void TribeTacticalAIModule::detask(int param_1) {
     if (param_1 == -1) {
         return;
@@ -761,6 +764,7 @@ void TribeTacticalAIModule::detask(int param_1) {
     // TODO: STUB - removeFromTaskLists/stopUnit helpers are not transliterated yet.
 }
 
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F6210. Full parity pending.
 int TribeTacticalAIModule::strategicNumber(int param_1) {
     if ((param_1 >= 0) && (param_1 < 0xE2)) {
         return this->sn[param_1];
@@ -768,6 +772,7 @@ int TribeTacticalAIModule::strategicNumber(int param_1) {
     return -1;
 }
 
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F6230. Full parity pending.
 void TribeTacticalAIModule::setStrategicNumber(int param_1, int param_2) {
     if ((param_1 < 0) || (param_1 >= 0xE2)) {
         return;
@@ -786,6 +791,7 @@ void TribeTacticalAIModule::setStrategicNumber(int param_1, int param_2) {
     }
 }
 
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F62C0. Full parity pending.
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     (void)param_2;
     (void)param_5;
@@ -881,7 +887,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
     // TODO: STUB - storeAttackMemory, readyAndIdleGroup, and attacker/defender response tasking are not transliterated yet.
 }
 
-// TODO: 0x004F0190 doSomething is partially transliterated; remaining update-area handlers are still pending.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F0190. doSomething is partially transliterated; remaining update-area handlers are still pending.
 int TribeTacticalAIModule::doSomething() {
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
         return 1;
@@ -1197,3 +1203,240 @@ TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int 
     return group(param_1, param_2, param_3, param_4);
 }
 TacticalAIGroup* TribeTacticalAIModule::getGroup(int param_1) { return group(param_1, -1, -1, -1); }
+
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F0B62
+static void FUN_004f0b62() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F0D4D
+static void FUN_004f0d4d() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005018C1
+static void FUN_005018c1() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502451
+static void FUN_00502451() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050245D
+static void FUN_0050245d() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502464
+static void FUN_00502464() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502470
+static void FUN_00502470() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050247C
+static void FUN_0050247c() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502488
+static void FUN_00502488() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050248F
+static void FUN_0050248f() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x0050249B
+static void FUN_0050249b() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005024A7
+static void FUN_005024a7() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005024B3
+static void FUN_005024b3() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005025CA
+static void FUN_005025ca() {}
+
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7350
+int TribeTacticalAIModule::numberIdleSoldiers() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7590
+int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7870
+int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7D90
+int TribeTacticalAIModule::idleSoldier() { return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F7E80
+int TribeTacticalAIModule::idleCivilian(int param_1) { (void)param_1; return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F81A0
+int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8570
+int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F87B0
+int TribeTacticalAIModule::unit(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8BE0
+int TribeTacticalAIModule::busyWithAction(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8C30
+void TribeTacticalAIModule::displayCivilianDistribution() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8C40
+void TribeTacticalAIModule::updateNeededResources() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F8E20
+void TribeTacticalAIModule::updateGathererDistribution() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9380
+int TribeTacticalAIModule::stopUnit(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F93D0
+int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9420
+int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param_3, float param_4, float param_5, float param_6, int param_7) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9470
+int TribeTacticalAIModule::highLevelTaskExplorer(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F95B0
+int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F99B0
+int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3, int param_4, int param_5, Waypoint* param_6, int param_7) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9AD0
+int TribeTacticalAIModule::taskBuilder(int param_1, BuildItem* param_2, ConstructionItem* param_3, unsigned long param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004F9E00
+int TribeTacticalAIModule::taskBuilder(int param_1, RGE_Static_Object* param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA000
+int TribeTacticalAIModule::taskRepairer(int param_1, RGE_Static_Object* param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA170
+int TribeTacticalAIModule::taskGatherer(int param_1, int param_2, int param_3, unsigned long param_4, int* param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA820
+int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FA940
+int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAAA0
+int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAC90
+int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FADA0
+int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
+int TribeTacticalAIModule::taskWaterExplorer(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FAFC0
+int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB160
+int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB2D0
+int TribeTacticalAIModule::taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB500
+int TribeTacticalAIModule::taskDefender(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB520
+int TribeTacticalAIModule::taskDefender(int param_1, float param_2, float param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB550
+int TribeTacticalAIModule::taskTrain(BuildItem* param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB710
+int TribeTacticalAIModule::taskResearch(BuildItem* param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB8D0
+int TribeTacticalAIModule::taskToEnter(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FB9E0
+int TribeTacticalAIModule::taskTransporter(int param_1, float param_2, float param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FBB30
+void TribeTacticalAIModule::removeFromTaskLists(int param_1) { (void)param_1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FBC10
+int TribeTacticalAIModule::calculatePriority(float param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FBC30
+void TribeTacticalAIModule::setupSoldierGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FC500
+void TribeTacticalAIModule::fillSoldierGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD2F0
+int TribeTacticalAIModule::numberUngroupedSoldiers() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD4F0
+int TribeTacticalAIModule::numberExtraGroupedSoldiers() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD6D0
+int TribeTacticalAIModule::numberUngroupedArtifacts() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FD8D0
+void TribeTacticalAIModule::displaySoldierGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FDE00
+void TribeTacticalAIModule::setupBoatGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FE950
+void TribeTacticalAIModule::fillBoatGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FF4E0
+int TribeTacticalAIModule::numberUngroupedWarBoats() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FF6E0
+int TribeTacticalAIModule::numberExtraGroupedWarBoats() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FF8E0
+int TribeTacticalAIModule::numberUngroupedFishingBoats() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FFAE0
+int TribeTacticalAIModule::numberUngroupedTradeBoats() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FFCE0
+int TribeTacticalAIModule::numberUngroupedTransportBoats() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x004FFEE0
+void TribeTacticalAIModule::displayBoatGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005004C0
+TacticalAIGroup* TribeTacticalAIModule::bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; return nullptr; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500670
+TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3) { (void)param_1; (void)param_2; (void)param_3; return nullptr; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005008F0
+int TribeTacticalAIModule::numberGroups(int param_1, int param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500950
+int TribeTacticalAIModule::numberUnitsInGroups(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005009A0
+int TribeTacticalAIModule::numberItemsToAttack() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500A30
+int TribeTacticalAIModule::itemToCapture() { return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500A80
+int TribeTacticalAIModule::itemToBringToArea() { return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500AD0
+int TribeTacticalAIModule::numberItemsToDefend() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500AF0
+unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500B30
+void TribeTacticalAIModule::resetAttackSeparationTime() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500BA0
+int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500CC0
+int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00500DE0
+void TribeTacticalAIModule::setGroupInfluences(InfluenceMap* param_1) { (void)param_1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501190
+int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* param_1) { (void)param_1; return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501260
+int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>* param_1) { (void)param_1; return -1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501430
+int TribeTacticalAIModule::dealWithGAIAAttacker(RGE_Static_Object* param_1, RGE_Static_Object* param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005015E0
+void TribeTacticalAIModule::addWaypoint(int param_1, unsigned char param_2, unsigned char param_3) { (void)param_1; (void)param_2; (void)param_3; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501620
+int TribeTacticalAIModule::importantGroupLeader(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501690
+int TribeTacticalAIModule::unexploredArea(int param_1, XYPoint* param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005018F0
+UnitData* TribeTacticalAIModule::gatherer(int param_1) { (void)param_1; return nullptr; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501920
+UnitData* TribeTacticalAIModule::addGatherer(int param_1) { (void)param_1; return nullptr; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005019C0
+int TribeTacticalAIModule::removeGatherer(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501A80
+int TribeTacticalAIModule::isGatherer(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501AB0
+int TribeTacticalAIModule::requiredGatherAmount(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501AF0
+void TribeTacticalAIModule::trackUnitGather(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501B50
+int TribeTacticalAIModule::deleteUnit(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501B90
+int TribeTacticalAIModule::numberAvailableStoragePits(int* param_1, int* param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501C70
+int TribeTacticalAIModule::numberAvailableGranaries(int* param_1, int* param_2) { (void)param_1; (void)param_2; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501D20
+int TribeTacticalAIModule::initialExplorationSatisfied() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00501D70
+void TribeTacticalAIModule::checkForBuildInsertion(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005020A0
+int TribeTacticalAIModule::isFarmer(RGE_Static_Object* param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502100
+int TribeTacticalAIModule::numberFarmers() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502200
+int TribeTacticalAIModule::inAge(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502230
+void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* param_1, Path* param_2) { (void)param_1; (void)param_2; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502310
+void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int param_1) { (void)param_1; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502600
+void TribeTacticalAIModule::checkForCoopTributeDemand() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502920
+void TribeTacticalAIModule::checkForCoopTributeGift() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502BF0
+void TribeTacticalAIModule::checkForASAPAgeResearch() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502D50
+void TribeTacticalAIModule::checkForCoopAttack(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502F30
+int TribeTacticalAIModule::processCoopAttack(int param_1, int param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502FC0
+int TribeTacticalAIModule::resourceDifference(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00502FF0
+int TribeTacticalAIModule::actualGathererCount(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00503020
+int TribeTacticalAIModule::actualGathererCountByRealResourceID(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00503040
+int TribeTacticalAIModule::desiredGathererCount(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00503070
+void TribeTacticalAIModule::taskElephantGatherers(int param_1, int param_2, int param_3) { (void)param_1; (void)param_2; (void)param_3; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005032E0
+void TribeTacticalAIModule::checkTradeBoats() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00503480
+int TribeTacticalAIModule::numberGatherersWithTarget(int param_1) { (void)param_1; return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x005034B0
+void TribeTacticalAIModule::checkStaleAttackGroups() {}
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00503580
+int TribeTacticalAIModule::numberWaterExplorers() { return 0; }
+// TODO: STUB - Source of truth: taitacmd.cpp.decomp @ 0x00503600
+void TribeTacticalAIModule::saveTheTown(int param_1) { (void)param_1; }
+
