@@ -50,6 +50,11 @@ if not exist "%SRC_DIR%\TRIBE_Map.cpp" (
     popd
     exit /b 1
 )
+if not exist "%SRC_DIR%\AIBuildItem.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\AIBuildItem.cpp"
+    popd
+    exit /b 1
+)
 
 REM --- Setup VS Environment (only if required tools are not already available) ---
 where cl >nul 2>nul
