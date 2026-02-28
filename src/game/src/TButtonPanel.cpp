@@ -113,6 +113,34 @@ long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long
     this->set_id(0, param_10, 0);
     return 1;
 }
+TButtonPanel::ButtonType TButtonPanel::buttonType() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472110
+    return this->buttonTypeValue;
+}
+TButtonPanel::DrawType TButtonPanel::drawType() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472120
+    return this->drawTypeValue;
+}
+TButtonPanel::NotifyType TButtonPanel::notifyType() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472130
+    return this->notifyTypeValue;
+}
+void TButtonPanel::setDrawType(TButtonPanel::DrawType type) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472140
+    this->drawTypeValue = type;
+}
+void TButtonPanel::setButtonType(TButtonPanel::ButtonType type) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472150
+    this->buttonTypeValue = type;
+}
+void TButtonPanel::set_picture_info(TShape* pic, short pic_index, long x, long y, int all_hot, int auto_pic_pos) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472160
+    this->pic_x = x;
+    this->pic_y = y;
+    this->all_hot = all_hot;
+    this->auto_pic_pos = auto_pic_pos;
+    this->set_picture(0, pic, pic_index);
+}
 void TButtonPanel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
 void TButtonPanel::set_rect(long param_1, long param_2, long param_3, long param_4) { TPanel::set_rect(param_1, param_2, param_3, param_4); }
 void TButtonPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
@@ -183,6 +211,16 @@ long TButtonPanel::handle_char(long param_1, short param_2) { return TPanel::han
 long TButtonPanel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
 long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
 long TButtonPanel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
+long TButtonPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473120
+    if (!this->active || this->disabled != 0) {
+        return 0;
+    }
+    if (!this->is_inside(param_2, param_3)) {
+        return 0;
+    }
+    return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
+}
 // ASM: TButtonPanel does NOT override handle_mouse_dbl_click — inherit TPanel's default
 // which includes is_inside check and fallback to handle_mouse_down.
 long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
@@ -229,6 +267,14 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int wparam, int param_
     }
 
     return 1;
+}
+long TButtonPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473180
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    return 0;
 }
 long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
     (void)param_1;
@@ -418,6 +464,73 @@ void TButtonPanel::set_text_info(long resid, void* font, long wid, long hgt, lon
 // Decomp @ Pnl_btn.cpp: returns (int)this->cur_state
 int TButtonPanel::get_state() {
     return (int)this->cur_state;
+}
+long TButtonPanel::get_id() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472820
+    return this->id[this->cur_state];
+}
+long TButtonPanel::get_id2() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472830
+    return this->id2[this->cur_state];
+}
+int TButtonPanel::get_text(short state, char** text1, char** text2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472840
+    if (state == -1) {
+        state = this->cur_state;
+    }
+    *text1 = this->text1[state];
+    *text2 = this->text2[state];
+    return (*text1 != nullptr) ? 1 : 0;
+}
+void TButtonPanel::get_text_color(short state, ulong* color1, ulong* color2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472880
+    if (state == -1) {
+        state = this->cur_state;
+    }
+    *color1 = this->text_color1[state];
+    *color2 = this->text_color2[state];
+}
+void TButtonPanel::set_text_color(int state, ulong color1, ulong color2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472620
+    if (state >= 0 && state < 9) {
+        this->text_color1[state] = color1;
+        this->text_color2[state] = color2;
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+}
+void TButtonPanel::set_highlight_text_color(int state, ulong color1, ulong color2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472650
+    if (state >= 0 && state < 9) {
+        this->highlight_text_color1[state] = color1;
+        this->highlight_text_color2[state] = color2;
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+}
+void TButtonPanel::set_state_by_id(long id) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472720
+    for (int i = 0; i < this->num_states; ++i) {
+        if (this->id[i] == id) {
+            this->cur_state = (short)i;
+            this->set_redraw(TPanel::RedrawMode::Redraw);
+            return;
+        }
+    }
+}
+void TButtonPanel::set_disabled(int disabled) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004727B0
+    this->disabled = disabled;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    this->handle_mouse_input = (this->disabled != 0) ? 0 : 1;
+}
+void TButtonPanel::reset() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473B80
+    this->release_mouse();
+    if (this->is_down != 0) {
+        if (this->buttonTypeValue != TButtonPanel::Radio) {
+            this->is_down = 0;
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
 }
 int TButtonPanel::hit_button(long x, long y) {
     if (!this->is_inside(x, y)) return 0;

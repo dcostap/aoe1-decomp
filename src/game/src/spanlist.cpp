@@ -377,6 +377,75 @@ void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini_list, int x_off, i
     }
 }
 
+void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2) {
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE090
+    int end_x = x2;
+    if (x1 == x2) {
+        int end_y = y2;
+        if (y2 < y1) {
+            end_y = y1;
+            y1 = y2;
+        }
+        for (; y1 <= end_y; ++y1) {
+            this->AddSpan(x1 & 0xFFFFFFFC, x1 | 3, y1);
+        }
+        return;
+    }
+
+    if (y1 == y2) {
+        this->AddSpan(x1 & 0xFFFFFFFC, x2 | 3, y1);
+        return;
+    }
+
+    int cur_y = y1;
+    int target_y = y2;
+    if (x2 < x1) {
+        x2 = x1;
+        x1 = end_x;
+        cur_y = y2;
+        target_y = y1;
+    }
+
+    const int width = (x2 - x1) + 1;
+    int y_step = 1;
+    int height = (target_y - cur_y);
+    if (target_y < cur_y) {
+        height = cur_y - target_y;
+        y_step = -1;
+    }
+    height += 1;
+
+    if (height <= width) {
+        int err = 0;
+        uint span_start = (uint)x1;
+        for (; x1 < x2; ++x1) {
+            err += height;
+            if (width <= err) {
+                this->AddSpan(span_start & 0xFFFFFFFCu, x1 | 3, cur_y);
+                cur_y += y_step;
+                err -= width;
+                span_start = (uint)(x1 + 1);
+            }
+        }
+        this->AddSpan(span_start & 0xFFFFFFFCu, x1 | 3, cur_y);
+        return;
+    }
+
+    int err = 0;
+    for (;;) {
+        this->AddSpan(x1 & 0xFFFFFFFC, x1 | 3, cur_y);
+        if (cur_y == target_y) {
+            break;
+        }
+        cur_y += y_step;
+        err += width;
+        if (height <= err) {
+            ++x1;
+            err -= height;
+        }
+    }
+}
+
 void TSpan_List_Manager::AddMiniList(VSpanMiniList* mini_list, int x_off, int y_off) {
     if (mini_list == nullptr) {
         return;
