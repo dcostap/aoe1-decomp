@@ -24,6 +24,81 @@ RGE_Action_Attack::RGE_Action_Attack(int param_1, RGE_Action_Object* param_2) {
     this->setup(param_1, param_2);
 }
 
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401170
+RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* param_1, RGE_Static_Object* param_2, RGE_Sprite* param_3, RGE_Sprite* param_4,
+                                     RGE_Sprite* param_5, float param_6, float param_7, short param_8, short param_9) {
+    this->setup(param_1);
+    this->set_target_obj(param_2);
+    this->wait_sprite = param_5;
+    this->range = param_6;
+    this->min_range = param_7;
+    this->missile_id = param_8;
+    this->target_x = -4.0f;
+    this->target_y = -4.0f;
+    this->target_z = -4.0f;
+    this->move_sprite = param_3;
+    this->fight_sprite = param_4;
+    this->fire_missile_at_frame = param_9;
+    this->need_to_attack = 0;
+    this->indirect_fire_flag = 0;
+    this->was_same_owner = ((param_2 != nullptr) && (param_2->owner == param_1->owner)) ? 1 : 0;
+
+    RGE_Master_Combat_Object* master = (param_1 != nullptr) ? (RGE_Master_Combat_Object*)param_1->master_obj : nullptr;
+    if ((this->move_sprite == nullptr) && (master != nullptr)) {
+        this->move_sprite = (master->move_sprite != nullptr) ? master->move_sprite : master->sprite;
+    }
+    if ((this->fight_sprite == nullptr) && (master != nullptr)) {
+        this->fight_sprite = master->fight_sprite;
+    }
+    if ((this->wait_sprite == nullptr) && (master != nullptr)) {
+        this->wait_sprite = master->sprite;
+    }
+
+    if (this->range == 0.0f) {
+        this->range = (master != nullptr) ? master->weapon_range : 0.0f;
+        if (this->range == 0.0f) {
+            this->range = 0.4f;
+        }
+    }
+}
+
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x004012B0
+RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* param_1, float param_2, float param_3, float param_4, RGE_Sprite* param_5,
+                                     RGE_Sprite* param_6, RGE_Sprite* param_7, float param_8, float param_9, short param_10, short param_11) {
+    this->setup(param_1);
+    this->target_x = param_2;
+    this->target_y = param_3;
+    this->target_z = param_4;
+    this->range = param_8;
+    this->min_range = param_9;
+    this->missile_id = param_10;
+    this->move_sprite = param_5;
+    this->fight_sprite = param_6;
+    this->wait_sprite = param_7;
+    this->fire_missile_at_frame = param_11;
+    this->need_to_attack = 0;
+    this->was_same_owner = 0;
+    this->indirect_fire_flag = 2;
+
+    RGE_Master_Combat_Object* master = (param_1 != nullptr) ? (RGE_Master_Combat_Object*)param_1->master_obj : nullptr;
+    if ((this->move_sprite == nullptr) && (master != nullptr)) {
+        this->move_sprite = (master->move_sprite != nullptr) ? master->move_sprite : master->sprite;
+    }
+    if ((this->fight_sprite == nullptr) && (master != nullptr)) {
+        this->fight_sprite = master->fight_sprite;
+    }
+    if ((this->wait_sprite == nullptr) && (master != nullptr)) {
+        this->wait_sprite = master->sprite;
+    }
+
+    if (this->range == 0.0f) {
+        this->range = (master != nullptr) ? master->weapon_range : 0.0f;
+        if (this->range == 0.0f) {
+            this->range = 0.4f;
+        }
+    }
+}
+
 // Fully verified. Source of truth: act_atak.cpp.decomp @ 0x004013A0
 RGE_Action_Attack::~RGE_Action_Attack() = default;
 
