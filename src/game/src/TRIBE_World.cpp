@@ -364,8 +364,10 @@ void TRIBE_World::terrain_tables_init(int param_1) { RGE_Game_World::terrain_tab
 void TRIBE_World::init_sounds(int param_1, TSound_Driver* param_2) { RGE_Game_World::init_sounds(param_1, param_2); }
 void TRIBE_World::init_sprites(int param_1) { RGE_Game_World::init_sprites(param_1); }
 void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
-    // Source of truth: tworld.cpp.decomp @ 0x0052E500.
-    this->map = new TRIBE_Map(param_1, this->sounds, (char)1);
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E4C0
+    (void)param_2;
+    TRIBE_Map* created_map = new (std::nothrow) TRIBE_Map(param_1, this->sounds, (char)1);
+    this->map = created_map;
 }
 void TRIBE_World::effects_init(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E650
@@ -505,6 +507,21 @@ void TRIBE_World::check_destructables(short param_1, short param_2, float param_
             }
         }
     }
+}
+
+long TRIBE_World::get_achievement(uchar param_1, char** param_2) {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530A70
+    int i = 1;
+    if (1 < (short)this->player_num) {
+        while (i < (short)this->player_num) {
+            TRIBE_Player* player = (TRIBE_Player*)this->players[i];
+            if (player != nullptr) {
+                player->get_achievement(param_1, param_2[i]);
+            }
+            i = i + 1;
+        }
+    }
+    return (long)(short)this->player_num;
 }
 
 // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530AC0
@@ -1028,6 +1045,7 @@ void TRIBE_World::logStatus(FILE* param_1, int param_2) {
     }
 }
 TRIBE_World::~TRIBE_World() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E040
     if (this->tech) {
         delete this->tech;
         this->tech = nullptr;
@@ -1036,7 +1054,10 @@ TRIBE_World::~TRIBE_World() {
 void TRIBE_World::setup_player_colors() { RGE_Game_World::setup_player_colors(); }
 void TRIBE_World::setup_player_colors(RGE_Player_Info* param_1) { RGE_Game_World::setup_player_colors(param_1); }
 uchar TRIBE_World::data_load(char* param_1, char* param_2) { return RGE_Game_World::data_load(param_1, param_2); }
-uchar TRIBE_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) { return RGE_Game_World::init(param_1, param_2, param_3); }
+uchar TRIBE_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E750
+    return RGE_Game_World::init(param_1, param_2, param_3);
+}
 void TRIBE_World::turn_sound_off() { RGE_Game_World::turn_sound_off(); }
 void TRIBE_World::del_game_info() { RGE_Game_World::del_game_info(); }
 uchar TRIBE_World::update() { return RGE_Game_World::update(); }
