@@ -32,5 +32,10 @@ public:
     unsigned char missile_die_info;
     unsigned char area_effect_specials;
     float ballistics_ratio;
+
+protected:
+    int setup(RGE_Master_Missile_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
 };
 static_assert(sizeof(RGE_Master_Missile_Object) == 0x154, "Size mismatch");

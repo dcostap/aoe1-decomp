@@ -53,3 +53,4 @@ dist/decomp_debug.log
 
 # Output exe if accidentally placed in root
 /empiresx.exe
+orchestrator_hotfile.md

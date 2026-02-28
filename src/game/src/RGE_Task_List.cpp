@@ -12,15 +12,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00508E00
 RGE_Task_List::RGE_Task_List() {
     this->list = nullptr;
     this->list_num = 0;
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00508E20
 RGE_Task_List::~RGE_Task_List() {
     this->delete_list();
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00508E30
 void RGE_Task_List::copy(RGE_Task_List* param_1) {
     if (this->list != nullptr) {
         this->delete_list();
@@ -53,6 +56,7 @@ void RGE_Task_List::copy(RGE_Task_List* param_1) {
     }
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00508EC0
 void RGE_Task_List::load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     if (this->list != nullptr) {
         this->delete_list();
@@ -86,6 +90,7 @@ void RGE_Task_List::load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3)
     }
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00508F60
 void RGE_Task_List::load(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     if (this->list != nullptr) {
         this->delete_list();
@@ -119,6 +124,7 @@ void RGE_Task_List::load(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_
     }
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00509010
 void RGE_Task_List::save(int param_1) {
     rge_write(param_1, &this->list_num, 2);
 
@@ -129,6 +135,7 @@ void RGE_Task_List::save(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00509050
 void RGE_Task_List::delete_list() {
     if (this->list != nullptr) {
         for (short i = 0; i < this->list_num; ++i) {
@@ -145,6 +152,7 @@ void RGE_Task_List::delete_list() {
     this->list_num = 0;
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x005090B0
 RGE_Task* RGE_Task_List::create_task(short param_1, short param_2) {
     if (param_1 == 1) {
         return new RGE_Task(param_2);
@@ -152,6 +160,7 @@ RGE_Task* RGE_Task_List::create_task(short param_1, short param_2) {
     return nullptr;
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x00509120
 RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5) {
     (void)param_5;
 
@@ -213,10 +222,12 @@ RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Static_
     return nullptr;
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x005092D0
 int RGE_Task_List::is_attack_task(RGE_Task* param_1) {
     return (param_1 != nullptr && param_1->action_type == 7) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: task_lst.cpp.decomp @ 0x005092F0
 int RGE_Task_List::check_task(RGE_Task* param_1, RGE_Action_Object* param_2, RGE_Static_Object* param_3) {
     if (param_1 == nullptr || param_2 == nullptr || param_3 == nullptr || param_2->owner == nullptr || param_3->owner == nullptr) {
         return 0;

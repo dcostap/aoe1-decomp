@@ -442,9 +442,10 @@ void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* par
     }
 }
 
-// TODO: STUB - decompiler split artifact block at 0x00531F71 is non-parity pseudo-code with undefined register state.
-// Source of truth: victory.cpp.decomp @ 0x00531F71
-void FUN_00531f71() {}
+// Fully verified. Source of truth: victory.cpp.asm @ 0x00531F71
+void FUN_00531f71() {
+    // ASM is padding/jump-table anchor (`NOP; MOV EDI,EDI`) between switch stubs.
+}
 
 // Fully verified. Source of truth: victory.cpp.decomp @ 0x00531F90
 void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* param_1) {

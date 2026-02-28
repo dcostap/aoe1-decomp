@@ -16,11 +16,8 @@ TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(RGE_Player* param_1, int para
 }
 
 // Fully verified. Source of truth: tvictory.cpp.decomp @ 0x0052C940
-TRIBE_Victory_Conditions::~TRIBE_Victory_Conditions() {}
-
-// TODO: passthrough override retained for linkage; not present in tvictory.cpp.decomp.
-void TRIBE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* param_1) {
-    RGE_Victory_Conditions::handle_point_condition(param_1);
+TRIBE_Victory_Conditions::~TRIBE_Victory_Conditions() {
+    // Base destructor call is implicit; ASM is a jump into RGE_Victory_Conditions::~RGE_Victory_Conditions.
 }
 
 // Fully verified. Source of truth: tvictory.cpp.decomp @ 0x0052C950
@@ -30,16 +27,6 @@ void TRIBE_Victory_Conditions::handle_condition(RGE_Victory_Entry* param_1) {
         return;
     }
     this->handle_tech(param_1);
-}
-
-// TODO: passthrough override retained for linkage; not present in tvictory.cpp.decomp.
-char* TRIBE_Victory_Conditions::condition_description(RGE_Victory_Entry* param_1) {
-    return RGE_Victory_Conditions::condition_description(param_1);
-}
-
-// TODO: passthrough override retained for linkage; not present in tvictory.cpp.decomp.
-void TRIBE_Victory_Conditions::save(int param_1) {
-    RGE_Victory_Conditions::save(param_1);
 }
 
 // Fully verified. Source of truth: tvictory.cpp.decomp @ 0x0052C970
