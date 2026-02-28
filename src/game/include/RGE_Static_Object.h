@@ -8,6 +8,7 @@ class InfluenceMap;
 class RGE_Static_Object {
 public:
     RGE_Static_Object();
+    RGE_Static_Object(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Static_Object(int param_1, RGE_Game_World* param_2, int param_3);
 
     // Virtuals (best-effort)

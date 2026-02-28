@@ -63,7 +63,7 @@ static void rge_static_set_sleep_flag(RGE_Static_Object* obj, uchar sleep_flag) 
 }
 
 void RGE_Static_Object::set_sleep_flag(uchar sleep_flag) {
-    // Fully verified. Source of truth: stat_obj.cpp.asm calls this helper via RGE_Static_Object::set_sleep_flag.
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7EB0
     rge_static_set_sleep_flag(this, sleep_flag);
 }
 
@@ -116,6 +116,7 @@ static void rge_static_add_unique_member(ManagedArray<int>& arr, int value) {
 }
 
 static void rge_static_add_check_node(RGE_Check_List* list, RGE_Static_Object* obj, float dx, float dy, uchar flag) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6700
     if (list == nullptr) {
         return;
     }
@@ -132,6 +133,7 @@ static void rge_static_add_check_node(RGE_Check_List* list, RGE_Static_Object* o
 }
 
 static void rge_static_delete_check_list(RGE_Check_List* list) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C66D0
     if (list == nullptr) {
         return;
     }
@@ -142,6 +144,13 @@ static void rge_static_delete_check_list(RGE_Check_List* list) {
         node = next;
     }
     delete list;
+}
+
+static void rge_static_init_check_list(RGE_Check_List* list) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C66C0
+    if (list != nullptr) {
+        list->list = nullptr;
+    }
 }
 
 static void rge_static_change_influence_value(InfluenceMap* map, int x, int y, uchar value, int increase) {
@@ -162,6 +171,30 @@ static void rge_static_change_influence_value(InfluenceMap* map, int x, int y, u
     } else {
         *cell = (*cell <= value) ? 0 : (uchar)(*cell - value);
     }
+}
+
+static void FUN_004c66a2() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C66A2
+}
+
+static void FUN_004c218d() {
+    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C218D (decomp thunk/garbled helper).
+}
+
+static void FUN_004c2206() {
+    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C2206 (decomp thunk/garbled helper).
+}
+
+static void FUN_004c22a6() {
+    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C22A6 (decomp thunk/garbled helper).
+}
+
+static void FUN_004c3f65() {
+    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C3F65 (decomp thunk/garbled helper).
+}
+
+static void FUN_004c4b85() {
+    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C4B85 (decomp thunk/garbled helper).
 }
 
 struct AIPlayStatusRaw {
@@ -251,6 +284,14 @@ static void rge_static_ctor_common_init(RGE_Static_Object* obj) {
 RGE_Static_Object::RGE_Static_Object() {
     // Source of truth: stat_obj.cpp.decomp @ 0x004C11E0 init path (no setup call)
     rge_static_ctor_common_init(this);
+}
+
+RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1100
+    rge_static_ctor_common_init(this);
+    if (param_6 != 0) {
+        this->setup(param_1, param_2, param_3, param_4, param_5);
+    }
 }
 
 RGE_Static_Object::RGE_Static_Object(int param_1, RGE_Game_World* param_2, int param_3) {
@@ -1535,6 +1576,7 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float param_1) {
     if (check_list == nullptr) {
         return nullptr;
     }
+    rge_static_init_check_list(check_list);
     check_list->list = nullptr;
 
     if (min_x < 0) {
@@ -1733,6 +1775,7 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float param_1) {
                     if (list == nullptr) {
                         return nullptr;
                     }
+                    rge_static_init_check_list(list);
                     list->list = nullptr;
                 }
                 rge_static_add_check_node(list, obj, 0.0f, 0.0f, 0);
@@ -2486,7 +2529,7 @@ void RGE_Static_Object::get_starting_attribute() {
 }
 
 void RGE_Static_Object::give_attribute_to_owner() {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ give_attribute_to_owner
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1E70
     // Iterates 3 attribute slots in master_obj, calling owner->add_attribute_num
     // for slots with attribute_flag == 1 or 2 and valid attribute type.
     for (int i = 0; i < 3; i++) {
@@ -2501,7 +2544,7 @@ void RGE_Static_Object::give_attribute_to_owner() {
 }
 
 void RGE_Static_Object::take_attribute_from_owner() {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ take_attribute_from_owner
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1ED0
     // Iterates 3 attribute slots in master_obj, calling owner->add_attribute_num
     // with negated amount for slots with attribute_flag == 2 and valid type.
     for (int i = 0; i < 3; i++) {
@@ -2936,7 +2979,10 @@ void RGE_Static_Object::rotate(long param_1) {
     }
     this->facet = (uchar)newFacet;
 }
-uchar RGE_Static_Object::can_attack() { return 0; }
+uchar RGE_Static_Object::can_attack() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D00
+    return 0;
+}
 void RGE_Static_Object::set_attribute(short param_1, float param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5C40
     this->attribute_type_held = param_1;
@@ -2956,7 +3002,12 @@ void RGE_Static_Object::set_attribute_amount(float param_1, uchar param_2, uchar
         }
     }
 }
-int RGE_Static_Object::heal(int param_1, int param_2) { return 0; }
+int RGE_Static_Object::heal(int param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405EA0
+    (void)param_1;
+    (void)param_2;
+    return 0;
+}
 uchar RGE_Static_Object::heal(float param_1) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5CB0
     float newHp = param_1 + this->hp;
@@ -2971,7 +3022,10 @@ uchar RGE_Static_Object::heal(float param_1) {
     this->hp = maxHp;
     return 1;
 }
-int RGE_Static_Object::canRepair() { return 0; }
+int RGE_Static_Object::canRepair() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D10
+    return 0;
+}
 void RGE_Static_Object::notify_of_relation(long param_1, uchar param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5D10
     (void)param_1;
@@ -3005,8 +3059,12 @@ void RGE_Static_Object::set_attack(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A490
     (void)param_1;
 }
-void RGE_Static_Object::play_command_sound() {}
-void RGE_Static_Object::play_move_sound() {}
+void RGE_Static_Object::play_command_sound() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4A0
+}
+void RGE_Static_Object::play_move_sound() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4B0
+}
 int RGE_Static_Object::isGroupCommander() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7740
     return (this->id == this->groupCommanderValue) ? 1 : 0;
@@ -3500,8 +3558,14 @@ uchar RGE_Static_Object::is_dying() {
     }
     return 0;
 }
-uchar RGE_Static_Object::is_moving() { return 0; }
-RGE_Static_Object* RGE_Static_Object::get_target_obj() { return nullptr; }
+uchar RGE_Static_Object::is_moving() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5850
+    return 0;
+}
+RGE_Static_Object* RGE_Static_Object::get_target_obj() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4D0
+    return nullptr;
+}
 void RGE_Static_Object::enter_obj(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C58E0
     if (param_1->more_room() != 0) {
@@ -3590,7 +3654,10 @@ LOSTBL* RGE_Static_Object::get_los_table() {
     int losValue = (int)(long)this->master_obj->los;
     return pRVar1->visible->get_los_table(losValue, 0);
 }
-int RGE_Static_Object::inAttackRange(RGE_Static_Object* /*param_1*/) { return 0; }
+int RGE_Static_Object::inAttackRange(RGE_Static_Object* /*param_1*/) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D20
+    return 0;
+}
 uchar RGE_Static_Object::underAttack() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6B60
     return this->underAttackValue;
@@ -3599,15 +3666,42 @@ void RGE_Static_Object::setUnderAttack(uchar param_1) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6B70
     this->underAttackValue = param_1;
 }
-float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* /*param_1*/) { return 1.0f; }
-float RGE_Static_Object::getSpeed() { return 0.0f; }
-float RGE_Static_Object::getAngle() { return 0.0f; }
-float RGE_Static_Object::maximumSpeed() { return 0.0f; }
-float RGE_Static_Object::rateOfFire() { return 0.0f; }
-float RGE_Static_Object::damageCapability(RGE_Static_Object* param_1) { return 0.0f; }
-float RGE_Static_Object::damageCapability() { return 0.0f; }
-float RGE_Static_Object::weaponRange() { return 0.0f; }
-float RGE_Static_Object::minimumWeaponRange() { return 0.0f; }
+float RGE_Static_Object::calc_attack_modifier(RGE_Static_Object* /*param_1*/) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D30
+    return 1.0f;
+}
+float RGE_Static_Object::getSpeed() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1CE0
+    return 0.0f;
+}
+float RGE_Static_Object::getAngle() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4E0
+    return 0.0f;
+}
+float RGE_Static_Object::maximumSpeed() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A4F0
+    return 0.0f;
+}
+float RGE_Static_Object::rateOfFire() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D40
+    return 0.0f;
+}
+float RGE_Static_Object::damageCapability(RGE_Static_Object* /*param_1*/) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D60
+    return 0.0f;
+}
+float RGE_Static_Object::damageCapability() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D50
+    return 0.0f;
+}
+float RGE_Static_Object::weaponRange() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D70
+    return 0.0f;
+}
+float RGE_Static_Object::minimumWeaponRange() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D80
+    return 0.0f;
+}
 int RGE_Static_Object::passableTile(float /*param_1*/, float /*param_2*/, int /*param_3*/) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A500
     return 0;
@@ -3616,18 +3710,61 @@ uchar RGE_Static_Object::facetToNextWaypoint() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A510
     return 0xFF;
 }
-int RGE_Static_Object::currentTargetID() { return -1; }
-float RGE_Static_Object::currentTargetX() { return -1.0f; }
-float RGE_Static_Object::currentTargetY() { return -1.0f; }
-float RGE_Static_Object::currentTargetZ() { return -1.0f; }
-void RGE_Static_Object::setWaitingToMove(uchar param_1) {}
-uchar RGE_Static_Object::waitingToMove() { return 0; }
-uchar RGE_Static_Object::actionState() { return 0; }
-uchar RGE_Static_Object::keepGatheringWhenObjectIsOut(int param_1) { return 0; }
-uchar RGE_Static_Object::produceWhenKilledBy(int param_1) { return 0; }
-uchar RGE_Static_Object::useSameZoneDropsite() { return 0; }
-void RGE_Static_Object::logDebug(const char* param_1, ...) {}
-void RGE_Static_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {}
+int RGE_Static_Object::currentTargetID() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405D90
+    return -1;
+}
+float RGE_Static_Object::currentTargetX() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405DA0
+    return -1.0f;
+}
+float RGE_Static_Object::currentTargetY() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405DB0
+    return -1.0f;
+}
+float RGE_Static_Object::currentTargetZ() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405DC0
+    return -1.0f;
+}
+void RGE_Static_Object::setWaitingToMove(uchar param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A520
+    (void)param_1;
+}
+uchar RGE_Static_Object::waitingToMove() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A530
+    return 0;
+}
+uchar RGE_Static_Object::actionState() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A540
+    return 0;
+}
+uchar RGE_Static_Object::keepGatheringWhenObjectIsOut(int param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405DD0
+    (void)param_1;
+    return 0;
+}
+uchar RGE_Static_Object::produceWhenKilledBy(int param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405DE0
+    (void)param_1;
+    return 1;
+}
+uchar RGE_Static_Object::useSameZoneDropsite() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405DF0
+    return 1;
+}
+void RGE_Static_Object::logDebug(const char* param_1, ...) {
+    // TODO: STUB. Source of truth: stat_obj.cpp.decomp @ 0x004C7340.
+    (void)param_1;
+}
+void RGE_Static_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E00
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+}
 int RGE_Static_Object::attack(float param_1, float param_2, float param_3, int param_4) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x00405E20
     return 0;
@@ -3734,18 +3871,80 @@ int RGE_Static_Object::canPathWithAdditionalPassability(XYZPoint /*param_1*/, fl
     // ASM spot-audit: XOR EAX,EAX; RET 0x2C
     return 0;
 }
-int RGE_Static_Object::findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3) { return 0; }
-int RGE_Static_Object::canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6) { return 0; }
-int RGE_Static_Object::canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5) { return 0; }
-int RGE_Static_Object::firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6) { return 0; }
-XYZBYTEPoint* RGE_Static_Object::userDefinedWaypoint(int param_1) { return nullptr; }
-int RGE_Static_Object::addUserDefinedWaypoint(XYZBYTEPoint* param_1, int param_2) { return 0; }
-void RGE_Static_Object::removeAllUserDefinedWaypoints(int param_1) {}
-void RGE_Static_Object::removeUserDefinedWaypoint(int param_1) {}
-int RGE_Static_Object::numberUserDefinedWaypoints() { return 0; }
-Path* RGE_Static_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int param_3) { return nullptr; }
-long RGE_Static_Object::get_action_checksum() { return 0; }
-long RGE_Static_Object::get_waypoint_checksum() { return 0; }
+int RGE_Static_Object::findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A5A0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    return 0;
+}
+int RGE_Static_Object::canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A5C0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    return 0;
+}
+int RGE_Static_Object::canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A5B0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    return 0;
+}
+int RGE_Static_Object::firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A5D0
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    return 0;
+}
+XYZBYTEPoint* RGE_Static_Object::userDefinedWaypoint(int param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A5E0
+    (void)param_1;
+    return nullptr;
+}
+int RGE_Static_Object::addUserDefinedWaypoint(XYZBYTEPoint* param_1, int param_2) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A5F0
+    (void)param_1;
+    (void)param_2;
+    return 0;
+}
+void RGE_Static_Object::removeAllUserDefinedWaypoints(int param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A600
+    (void)param_1;
+}
+void RGE_Static_Object::removeUserDefinedWaypoint(int param_1) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A610
+    (void)param_1;
+}
+int RGE_Static_Object::numberUserDefinedWaypoints() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A620
+    return 0;
+}
+Path* RGE_Static_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int param_3) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x0041A630
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    return nullptr;
+}
+long RGE_Static_Object::get_action_checksum() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7F30
+    return 0;
+}
+long RGE_Static_Object::get_waypoint_checksum() {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C7F40
+    return 0;
+}
 int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1840
     int fd = param_1;
@@ -3859,7 +4058,8 @@ int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     return 1;
 }
 int RGE_Static_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
-    // Source of truth intent: stat_obj.cpp.decomp setup(master, player, x, y, z)
+    // Source of truth: stat_obj.cpp.decomp @ 0x004C16B0
+    // Source of truth intent: setup(master, player, x, y, z)
     // initializes a live object instance (sprite/object lists + runtime state).
     if (param_1 == nullptr || param_2 == nullptr || param_2->world == nullptr) {
         return 0;
