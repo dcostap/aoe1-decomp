@@ -107,6 +107,7 @@ public:
     int victory_time;
 
 private:
+    void SaveAttributesIntoPlayers();
     int get_object_ID(RGE_Static_Object* param_1);
 };
 static_assert(sizeof(T_Scenario) == 0x514C, "Size mismatch");
