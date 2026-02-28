@@ -129,7 +129,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
         return;
     }
 
-    // Source of truth: scr_load.cpp.decomp @ 0x0049DD40 (setup tuple copied from current panel).
+    // Fully verified. Source of truth: scr_load.cpp.decomp @ 0x0049DD40 (setup tuple copied from current panel).
     TEasy_Panel* from_panel = (TEasy_Panel*)panel_system->currentPanel();
     char info_file[260];
     strncpy(info_file, from_panel->get_info_file(), sizeof(info_file) - 1);
@@ -215,7 +215,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
 }
 
 TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen() {
-    // Source of truth: scr_load.cpp.decomp @ 0x0049E0A0
+    // Fully verified. Source of truth: scr_load.cpp.decomp @ 0x0049E0A0
     // Delete all child panels before base destructor runs
     this->delete_panel((TPanel**)&this->screenTitle);
     this->delete_panel((TPanel**)&this->listTitle);
@@ -227,7 +227,7 @@ TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen() {
 }
 
 void TribeLoadSavedGameScreen::fillList() {
-    // Source of truth: scr_load.cpp.decomp @ 0x0049E150
+    // Fully verified. Source of truth: scr_load.cpp.decomp @ 0x0049E150
     if (!this->list || !rge_base_game || !rge_base_game->prog_info) {
         return;
     }
@@ -287,7 +287,7 @@ void TribeLoadSavedGameScreen::fillList() {
 }
 
 long TribeLoadSavedGameScreen::handle_idle() {
-    // Source of truth: scr_load.cpp.decomp @ 0x0049E2B0
+    // Fully verified. Source of truth: scr_load.cpp.decomp @ 0x0049E2B0
     if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }

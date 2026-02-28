@@ -349,7 +349,7 @@ int CreateMultiplayerGame(TCommunications_Handler* comm_handler) {
 } // namespace tribe_mp_ui
 
 TribeJoinScreen::TribeJoinScreen() : TScreenPanel((char*)"Join Screen") {
-    // Source of truth: scr_cj.cpp.decomp @ 0x00491650
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491650
     this->startedSession = 0;
     this->listFilled = 0;
     Sess = nullptr;
@@ -440,7 +440,7 @@ TribeJoinScreen::TribeJoinScreen() : TScreenPanel((char*)"Join Screen") {
 }
 
 TribeJoinScreen::~TribeJoinScreen() {
-    // Source of truth: scr_cj.cpp.decomp @ 0x00491990
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491990
     if (Sess != nullptr) {
         delete Sess;
         Sess = nullptr;
@@ -458,7 +458,7 @@ TribeJoinScreen::~TribeJoinScreen() {
 }
 
 long TribeJoinScreen::handle_idle() {
-    // Source of truth: scr_cj.cpp.decomp @ 0x00491A80
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491A80
     if (this->waitingToStart == 0) {
         if (this->listFilled != 0 && rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
             rge_base_game->enable_input();
@@ -482,7 +482,7 @@ long TribeJoinScreen::handle_idle() {
 }
 
 long TribeJoinScreen::handle_user_command(uint param_1, long param_2) {
-    // Source of truth: scr_cj.cpp.decomp @ 0x00491B20
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491B20
     switch (param_1) {
     case 0x17a8:
     case 0x17a9:
@@ -518,7 +518,7 @@ long TribeJoinScreen::handle_user_command(uint param_1, long param_2) {
 
 void TribeJoinScreen::fillList() {
     // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491C42 (decompiler artifact thunk)
-    // Source of truth: scr_cj.cpp.decomp @ 0x00491C70
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491C70
     if (rge_base_game != nullptr) {
         rge_base_game->disable_input();
     }
@@ -570,7 +570,7 @@ void TribeJoinScreen::fillList() {
 }
 
 long TribeJoinScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: scr_cj.cpp.decomp @ 0x00491E20
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491E20
     if (param_1 == nullptr) {
         return TEasy_Panel::action(param_1, param_2, param_3, param_4);
     }
@@ -647,7 +647,7 @@ long TribeJoinScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong
 }
 
 TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent) : TDialogPanel((char*)"Create Dialog") {
-    // Source of truth: scr_cj.cpp.decomp @ 0x004920C0
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x004920C0
     this->title = nullptr;
     this->input_title = nullptr;
     this->inputGamename = nullptr;
@@ -708,7 +708,7 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent) : TDialogPanel((char*)"
 }
 
 TribeMPCreateDialog::~TribeMPCreateDialog() {
-    // Source of truth: scr_cj.cpp.decomp @ 0x00492330
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00492330
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->input_title);
     this->delete_panel((TPanel**)&this->inputGamename);
@@ -717,7 +717,7 @@ TribeMPCreateDialog::~TribeMPCreateDialog() {
 }
 
 long TribeMPCreateDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: scr_cj.cpp.decomp @ 0x004923C0
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x004923C0
     if (param_1 != nullptr) {
         if ((((TButtonPanel*)param_1 == this->okButton) && (param_2 == 1)) ||
             (((TEditPanel*)param_1 == this->inputGamename) && (param_2 == 0))) {
@@ -1024,4 +1024,5 @@ int TribeJoinScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel*
 void TribeJoinScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) {
     TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5);
 }
+
 

@@ -21,7 +21,7 @@
 #include <string.h>
 
 static unsigned long ach_player_color_to_rgb(long color_id) {
-    // Source of truth: scr_ach.cpp.decomp @ 0x0048D530 (player color mapping)
+    // Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048D530 (player color mapping)
     switch (color_id) {
     case 0: return 0xC40000;
     case 1: return 200;
@@ -35,7 +35,7 @@ static unsigned long ach_player_color_to_rgb(long color_id) {
     }
 }
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048D530
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048D530
 TribeAchievementsScreen::TribeAchievementsScreen(char* /*summary_text*/, int end_game_flag)
     : TScreenPanel((char*)"Achievements Screen") {
     this->end_game_flag = end_game_flag;
@@ -286,7 +286,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* /*summary_text*/, int end
 
 // Fully verified. Source of truth: scr_ach.cpp.asm @ 0x0048E1C6 (switch jump-table thunk)
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048E210
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048E210
 TribeAchievementsScreen::~TribeAchievementsScreen() {
     if (panel_system != nullptr) {
         panel_system->destroyPanel((char*)"YesNoDialog");
@@ -322,7 +322,7 @@ TribeAchievementsScreen::~TribeAchievementsScreen() {
     }
 }
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048E400
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048E400
 void TribeAchievementsScreen::set_mode(long mode) {
     if (rge_base_game != nullptr) {
         rge_base_game->disable_input();
@@ -652,7 +652,7 @@ void TribeAchievementsScreen::set_mode(long mode) {
     }
 }
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048F0B0
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048F0B0
 void TribeAchievementsScreen::draw() {
     TScreenPanel::draw();
 
@@ -678,7 +678,7 @@ void TribeAchievementsScreen::draw() {
 
 // Fully verified. Source of truth: scr_ach.cpp.asm @ 0x0048F085 (switch jump-table thunk)
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048F190
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048F190
 long TribeAchievementsScreen::handle_mouse_down(uchar btn, long x, long y, int p4, int p5) {
     long ret = TEasy_Panel::handle_mouse_down(btn, x, y, p4, p5);
     if (this->current_mode == 0) {
@@ -703,7 +703,7 @@ long TribeAchievementsScreen::handle_mouse_down(uchar btn, long x, long y, int p
     return ret;
 }
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048F280
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048F280
 long TribeAchievementsScreen::action(TPanel* panel, long action_id, ulong param_3, ulong param_4) {
     if (((TButtonPanel*)panel == this->okButton) && (action_id == 1)) {
         if (this->end_game_flag == 0) {
@@ -780,7 +780,7 @@ long TribeAchievementsScreen::action(TPanel* panel, long action_id, ulong param_
     return TEasy_Panel::action(panel, action_id, param_3, param_4);
 }
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048F500
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048F500
 long TribeAchievementsScreen::handle_idle() {
     if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
@@ -788,7 +788,7 @@ long TribeAchievementsScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// Source of truth: scr_ach.cpp.decomp @ 0x0048F530
+// Fully verified. Source of truth: scr_ach.cpp.decomp @ 0x0048F530
 long TribeAchievementsScreen::wnd_proc(void* wnd, uint msg, uint wparam, long lparam) {
     // Fully verified. Source of truth: scr_ach.cpp.asm @ 0x0048F530
     if (msg == 0x10 && confirmed_close == 0) { // WM_CLOSE
@@ -875,4 +875,5 @@ int TribeAchievementsScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TT
 int TribeAchievementsScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 int TribeAchievementsScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 void TribeAchievementsScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

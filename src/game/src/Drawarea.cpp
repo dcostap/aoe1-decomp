@@ -247,7 +247,7 @@ static unsigned long drawarea_palette_checksum(const tagPALETTEENTRY* entries, i
     return hash;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442680
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442680
 TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
     this->ColorBits = 8; // Default to 8-bit
@@ -255,7 +255,7 @@ TDrawSystem::TDrawSystem() {
     _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442710
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442710
 TDrawSystem::~TDrawSystem() {
     // In fullscreen, clear the primary surface before shutdown
     if (this->ScreenMode == 2 && this->PrimarySurface != nullptr) {
@@ -284,7 +284,7 @@ TDrawSystem::~TDrawSystem() {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442A90
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442A90
 int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar screen_mode, long width, long height, ulong flags) {
     this->Wnd = wnd;
     this->Pal = pal;
@@ -420,7 +420,7 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
     return 1;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004430F0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004430F0
 int TDrawSystem::CreateSurfaces() {
     // When DrawType == 2 (DirectDraw), create the DD primary surface
     if (this->DrawType == 2) {
@@ -488,7 +488,7 @@ int TDrawSystem::CreateSurfaces() {
     return 1;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004427A0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004427A0
 void TDrawSystem::CheckAvailModes(int p1) {
     if (p1 == 0) {
         // Windowed mode: check desktop resolution via GDI
@@ -518,7 +518,7 @@ void TDrawSystem::CheckAvailModes(int p1) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442860
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442860
 long __stdcall TDrawSystem::CheckAvailModesCallback(_DDSURFACEDESC* p1, void* p2) {
     TDrawSystem* ds = (TDrawSystem*)p2;
     if (p1->ddpfPixelFormat.dwRGBBitCount == 8) {
@@ -530,7 +530,7 @@ long __stdcall TDrawSystem::CheckAvailModesCallback(_DDSURFACEDESC* p1, void* p2
     return DDENUMRET_OK;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004429C0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004429C0
 int TDrawSystem::IsModeAvail(long w, long h, int bpp) {
     // Decomp calls this with h=0 for width-only checks
     if (bpp == 8) {
@@ -542,7 +542,7 @@ int TDrawSystem::IsModeAvail(long w, long h, int bpp) {
     return 0;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443090
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443090
 void TDrawSystem::DeleteSurfaces() {
     // Delete back buffer first
     if (this->DrawArea != nullptr) {
@@ -560,7 +560,7 @@ void TDrawSystem::DeleteSurfaces() {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443520
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443520
 void TDrawSystem::Paint(tagRECT* param_rect) {
     if (this->DrawType == 1) return;
     if (this->PrimarySurface == nullptr) return;
@@ -610,7 +610,7 @@ void TDrawSystem::Paint(tagRECT* param_rect) {
     this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src, DDBLT_WAIT, NULL);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443CB0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443CB0
 void TDrawSystem::SetPalette(void* pal) {
     this->Pal = pal;
     PALETTEENTRY color_table[256];
@@ -654,7 +654,7 @@ void TDrawSystem::SetPalette(void* pal) {
     this->ModifyPalette(0, 256, color_table);
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443D40
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443D40
 void TDrawSystem::ModifyPalette(int start, int count, tagPALETTEENTRY* entries) {
     if (start < start + count) {
         memcpy(&this->palette[start], entries, count * sizeof(tagPALETTEENTRY));
@@ -664,7 +664,7 @@ void TDrawSystem::ModifyPalette(int start, int count, tagPALETTEENTRY* entries) 
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442EF0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442EF0
 void TDrawSystem::ClearPrimarySurface() {
     if (this->ScreenMode == 2 && this->PrimarySurface != nullptr) {
         DDBLTFX ddbltfx;
@@ -675,7 +675,7 @@ void TDrawSystem::ClearPrimarySurface() {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00442F30
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442F30
 // Returns: 0=OK, 1=display mode changed, 2=surfaces restored, 3=fatal error
 uchar TDrawSystem::CheckSurfaces() {
     if (this->DrawType != 2) return 0;
@@ -725,7 +725,7 @@ uchar TDrawSystem::CheckSurfaces() {
     return result;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443070
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443070
 void TDrawSystem::ClearRestored() {
     this->Restored = 0;
     DrawAreaNode* node = this->DrawAreaList;
@@ -735,7 +735,7 @@ void TDrawSystem::ClearRestored() {
 }
 
 int TDrawSystem::SetDisplaySize(long p1, long p2, int p3) {
-    // Fully verified. Source of truth: drawarea.cpp.decomp/.asm @ 0x00442DC0
+    // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442DC0
     if (this->DrawType == 2 && this->ScreenMode == 2) {
         system_ignore_size_messages = 1;
 
@@ -781,7 +781,7 @@ int TDrawSystem::SetDisplaySize(long p1, long p2, int p3) {
     return 0;
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x004433F0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004433F0
 void TDrawSystem::HandleSize(void* wnd, uint msg, uint wparam, long lparam) {
     (void)wnd;
     (void)msg;
@@ -1017,7 +1017,7 @@ int TDrawSystem::GetColorKeyErrorNum(long err) {
 
 // TDrawArea Implementation
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443DE0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443DE0
 TDrawArea::TDrawArea(char* name) {
     memset(this, 0, sizeof(TDrawArea));
     this->TransColor = 0xFF;
@@ -1026,7 +1026,7 @@ TDrawArea::TDrawArea(char* name) {
     }
 }
 
-// Source of truth: Drawarea.cpp.decomp @ 0x00443F10
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443F10
 TDrawArea::~TDrawArea() {
     // Unlink from DrawSystem's DrawAreaList
     if (this->Node != nullptr) {
@@ -2533,7 +2533,7 @@ void TDrawArea::ReleaseDc(char* name) {
     }
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp/.asm @ 0x004463B0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004463B0
 void TDrawArea::take_snapshot(char* filename_fmt, int* snapshot_number) {
     // Matches original implementation: 8-bit paletted BMP with DWORD-aligned scanlines.
     unsigned int bmWide = ((unsigned int)this->Width + 3u) & 0xFFFFFFFCu;
