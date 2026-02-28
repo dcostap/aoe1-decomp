@@ -3536,7 +3536,7 @@ int RGE_Base_Game::mapXSize() {
 
 int RGE_Base_Game::mapYSize() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422420
-    return (int)this->rge_game_options.mapYSizeValue;
+    return (uint)this->rge_game_options.mapYSizeValue;
 }
 
 int RGE_Base_Game::mapZSize() {
@@ -3662,7 +3662,7 @@ int RGE_Base_Game::difficulty() {
 
 int RGE_Base_Game::randomGame() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004223B0
-    return (this->rge_game_options.scenarioGameValue == 0) ? 1 : 0;
+    return (uint)(this->rge_game_options.scenarioGameValue == 0);
 }
 
 int RGE_Base_Game::fullVisibility() {
@@ -3926,9 +3926,9 @@ long RGE_Base_Game::get_scenario_checksum(char* p1) {
         return 0;
     }
 
-    const long checksum = (long)header->checksum;
+    const unsigned long checksum = header->checksum;
     delete header;
-    return checksum;
+    return (long)checksum;
 }
 
 unsigned char RGE_Base_Game::check_scenario_checksum(char* p1, long p2) {
