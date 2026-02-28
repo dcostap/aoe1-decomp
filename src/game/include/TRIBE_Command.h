@@ -53,9 +53,16 @@ public:
     void command_build(int param_1, int* param_2, int param_3, int param_4, float param_5, float param_6, int param_7);
     void command_build_wall(RGE_Static_Object** param_1, short param_2, short param_3, long param_4, long param_5, long param_6, long param_7);
     void command_explore(int param_1, int* param_2, int param_3, float param_4, float param_5);
+    void command_allied_victory(short param_1, uchar param_2);
+    void command_relation(short param_1, short param_2, short param_3);
     void command_game_speed(float param_1);
     void command_save_game();
+    void command_inventory(short param_1, short param_2, float param_3);
+    void command_upgrade_town(short param_1);
+    void command_quick_build(short param_1);
+    void command_shared_los(short param_1);
     void command_cancel_build(RGE_Static_Object* param_1);
+    void command_cheat(short param_1, short param_2);
     void command_attack_ground(RGE_Static_Object** param_1, short param_2, float param_3, float param_4);
 
     void command_trade_attribute(RGE_Static_Object** param_1, short param_2, long param_3);
