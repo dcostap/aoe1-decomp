@@ -2284,10 +2284,17 @@ int TribeTacticalAIModule::numberItemsToDefend() { return this->playersToDefend.
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500AF0
 unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
-    if (param_1 <= 0) {
-        return this->lastGroupAttackTime;
+    if (this->sn[0x47] == 1) {
+        unsigned long limiter = static_cast<unsigned long>(this->randomizedAttackSeparationTime);
+        if (this->sn[0x30] <= static_cast<int>(limiter)) {
+            return static_cast<unsigned long>(this->sn[0x30]);
+        }
+        return limiter;
     }
-    return this->lastGroupAttackTime + static_cast<unsigned long>(this->randomizedAttackSeparationTime * param_1);
+    else if (param_1 == 0x2E) {
+        return static_cast<unsigned long>(this->randomizedAttackSeparationTime);
+    }
+    return static_cast<unsigned long>(this->sn[0x30]);
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500B30
