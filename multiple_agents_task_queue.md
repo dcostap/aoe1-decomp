@@ -3301,6 +3301,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 ## Task 231 — TribeStrategyAIModule parity (~2270-line gap)
 - [x] Assigned to agent
 - [ ] Finished
+- Status note: **INCOMPLETE** — commit `02ddab7` only added 5 lines (ASM audit note). Gap still ~2264 lines. Needs re-dispatch with explicit function list.
+- [ ] Finished
 - Goal: close the gap in the AI strategy module: `taistrmd.cpp.decomp` (3298 lines) → `TribeStrategyAIModule.cpp` (1029 lines) = gap ~2270. This module controls high-level AI strategy decisions (when to attack, when to build up, tech priorities, etc.).
 - Implement (decomp-first from `taistrmd.cpp.decomp`):
   - Enumerate ALL functions in `taistrmd.cpp.decomp` not yet in `TribeStrategyAIModule.cpp`.
@@ -3332,7 +3334,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: combined gap cut by at least 2500 lines.
 
 ## Task 233 — Panel system parity: text panels, buttons, dropdowns (~5900-line gap)
-- [ ] Assigned to agent
+- [x] Assigned to agent
 - [ ] Finished
 - Goal: close the gap in the UI panel system (core widgets):
   - `pnl_txt.cpp.decomp` (2861 lines) → `Pnl_txt.cpp` (229 lines) = gap ~2632
