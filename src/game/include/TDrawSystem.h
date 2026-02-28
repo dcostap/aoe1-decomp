@@ -23,6 +23,14 @@ struct TDrawSystem {
     void ModifyPalette(int start, int count, tagPALETTEENTRY* entries);
     int CreateSurfaces();
     int SetDisplaySize(long p1, long p2, int p3);
+    int GetIsLostErrorNum(long err);
+    int GetRestoreErrorNum(long err);
+    int GetSetDispModeErrorNum(long err);
+    int GetLockErrorNum(long err);
+    int GetDCErrorNum(long err);
+    int GetBlitErrorNum(long err);
+    int GetCreateErrorNum(long err);
+    int GetColorKeyErrorNum(long err);
 
     void* Inst;
     void* Wnd;
