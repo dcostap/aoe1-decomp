@@ -982,7 +982,7 @@ void TRIBE_Command::command_queue(RGE_Static_Object* p1, short p2, short p3) {
 }
 
 void TRIBE_Command::command_allied_victory(short param_1, uchar param_2) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AD00 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AD00 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -997,7 +997,7 @@ void TRIBE_Command::command_allied_victory(short param_1, uchar param_2) {
 }
 
 void TRIBE_Command::command_relation(short param_1, short param_2, short param_3) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AD70 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AD70 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -1014,7 +1014,7 @@ void TRIBE_Command::command_relation(short param_1, short param_2, short param_3
 }
 
 void TRIBE_Command::command_inventory(short param_1, short param_2, float param_3) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AE80 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AE80 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -1030,7 +1030,7 @@ void TRIBE_Command::command_inventory(short param_1, short param_2, float param_
 }
 
 void TRIBE_Command::command_upgrade_town(short param_1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AEE0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AEE0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -1044,7 +1044,7 @@ void TRIBE_Command::command_upgrade_town(short param_1) {
 }
 
 void TRIBE_Command::command_quick_build(short param_1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AF30 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AF30 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -1058,7 +1058,7 @@ void TRIBE_Command::command_quick_build(short param_1) {
 }
 
 void TRIBE_Command::command_shared_los(short param_1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AF80 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AF80 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -1072,7 +1072,7 @@ void TRIBE_Command::command_shared_los(short param_1) {
 }
 
 void TRIBE_Command::command_cheat(short param_1, short param_2) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B0D0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B0D0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
