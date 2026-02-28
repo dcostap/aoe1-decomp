@@ -13,6 +13,13 @@
 #include <string.h>
 #include <stdio.h>
 
+// Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049F0D0 (implemented in TRIBE_Screen_Main_Error.cpp)
+// Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049F240 (implemented in TRIBE_Screen_Main_Error.cpp)
+// Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049F2B0 (implemented in TRIBE_Screen_Main_Error.cpp)
+// Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049F2D0 (implemented in TRIBE_Screen_Main_Error.cpp)
+// Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049F2F0 (implemented in TRIBE_Screen_Main_Error.cpp)
+// Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049F340 (implemented in TRIBE_Screen_Main_Error.cpp)
+
 namespace {
 
 void menu_disable_input() {
