@@ -3775,7 +3775,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 40 functions transliterated. Expect 700+ lines.
 ## Task 265 — TPanelSystem deep transliteration Part 2 (93 remaining functions from panel.cpp.decomp)
 - [x] Assigned to agent (worker-2, clone_2, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `38a5dda`. TPanelSystem 132/132 offset coverage. Full panel system complete.
 - Goal: panel.cpp.decomp has 132 functions. TPanelSystem.cpp currently has only 39 offset references. Transliterate the remaining ~93 functions.
 - Implement: Open panel.cpp.decomp, cross-reference every '// Offset:' against TPanelSystem.cpp. For every function offset NOT found, transliterate the full function body. Each transliterated function MUST have a '// Source of truth: panel.cpp.decomp @ 0x00XXXXXX' marker.
 - Where: `src/game/src/TPanelSystem.cpp` + `src/game/include/ui_core.h`
@@ -3806,7 +3807,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 118 decomp offsets have impl coverage. Expect 1000+ lines.
 ## Task 268 — Panel text + button remaining functions (65 total: pnl_txt 43 + pnl_btn 22)
 - [x] Assigned to agent (worker-6, clone_6, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `49173e5`. pnl_txt 67/67 + pnl_btn 57/57 full coverage.
 - Goal: After Task 254, there are still significant gaps:
   - pnl_txt.cpp.decomp: 67 functions, Pnl_txt.cpp has only 24 offset refs → ~43 missing
   - pnl_btn.cpp.decomp: 57 functions, Pnl_btn.cpp has only 35 offset refs → ~22 missing
@@ -3818,7 +3820,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 67+57=124 decomp offsets have impl coverage. Expect 800+ lines.
 ## Task 269 — TRIBE_Player + Visible_Map + Scenario + Sprite remaining (44 functions across 4 files)
 - [x] Assigned to agent (worker-5, clone_5, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `7121f81`. All 4 modules (player/visible/scenario/sprite) offset coverage complete.
 - Goal: Four partially-implemented modules with small-to-medium gaps:
   - tplayer.cpp.decomp: 107 funcs, TRIBE_Player.cpp has 89 refs → ~18 missing
   - visible.cpp.decomp: 27 funcs, RGE_Visible_Map.cpp has 16 refs → ~11 missing
