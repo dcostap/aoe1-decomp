@@ -102,7 +102,7 @@ uchar TRIBE_Action_Wonder::inside_obj_update() { return RGE_Action::inside_obj_u
 uchar TRIBE_Action_Wonder::idle_update() { return RGE_Action::idle_update(); }
 
 uchar TRIBE_Action_Wonder::update() {
-    // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D3810
+    // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3810
     if (this->state == 2) {
         if (this->obj->object_state == 2) {
             this->set_state(6);
@@ -141,7 +141,7 @@ RGE_Static_Object* TRIBE_Action_Wonder::get_target_obj2() { return RGE_Action::g
 void TRIBE_Action_Wonder::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void TRIBE_Action_Wonder::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 void TRIBE_Action_Wonder::set_state(uchar param_1) {
-    // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D36B0
+    // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D36B0
     this->state = param_1;
 
     if (rge_base_game == nullptr) {

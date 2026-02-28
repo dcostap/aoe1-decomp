@@ -1700,6 +1700,17 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
     CUSTOM_DEBUG_LOG_FMT("TRIBE_World::new_game exit result=%d", (int)result);
     return result;
 }
+
+void FUN_005310de() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005310DE
+    // Switch jump-table padding thunk (`mov edi, edi`).
+}
+
+void FUN_005316bd() {
+    // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005316BD
+    // Switch jump-table padding thunk (`nop; mov edi, edi`).
+}
+
 uchar TRIBE_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
     // Source of truth: tworld.cpp.decomp @ 0x00530370
     uchar result = RGE_Game_World::new_scenario(param_1, param_2);

@@ -777,9 +777,14 @@ void TRIBE_Panel_Object::draw_item(int param_1, int param_2, ValueType param_3, 
     this->render_area->ReleaseDc((char*)"tpnl_obj::draw_item");
 }
 
-// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C3DA
-static void tpnl_obj_jump_stub_0051C3DA() {
-    // Decompiler/branch-alignment thunk between draw_item and handle_idle.
+void FUN_0051c1f6() {
+    // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C1F6
+    // Switch jump-table padding thunk (`mov edi, edi`).
+}
+
+void FUN_0051c3da() {
+    // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C3DA
+    // Switch jump-table padding thunk (`mov edi, edi`).
 }
 
 long TRIBE_Panel_Object::handle_idle() {

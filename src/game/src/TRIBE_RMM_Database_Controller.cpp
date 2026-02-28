@@ -3653,6 +3653,11 @@ uchar TRIBE_RMM_Database_Controller::generate() {
     return ret;
 }
 
+void FUN_0048790a() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x0048790A
+    // Switch jump-table padding thunk (`mov edi, edi`).
+}
+
 void TRIBE_RMM_Database_Controller::add_land_module(uchar param_1) {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487940
     long map_type = this->map_type;
@@ -4058,6 +4063,11 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
     }
 
     (void)debug_rand("C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp", 0x236);
+}
+
+void FUN_00488675() {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675
+    // Switch jump-table padding thunk (`nop; mov edi, edi`).
 }
 
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
