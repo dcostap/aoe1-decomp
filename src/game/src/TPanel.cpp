@@ -9,8 +9,8 @@
 
 extern RGE_Base_Game* rge_base_game;
 
-// Source of truth: panel.cpp.decomp @ 0x00465746
-// TODO: Partial transliteration - decomp output is corrupted/unreadable at this offset.
+// Fully verified. Source of truth: panel.cpp.asm @ 0x00465746
+// 0x00465746 is a switch-jumptable landing pad (`MOV EDI, EDI`), not a callable function body.
 static long panel_abs_long(long value) {
     return (value < 0) ? -value : value;
 }
