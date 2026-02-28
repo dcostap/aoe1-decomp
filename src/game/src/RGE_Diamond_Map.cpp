@@ -391,6 +391,7 @@ void RGE_Diamond_Map::set_main_view(RGE_View* param_1) {
 }
 
 void RGE_Diamond_Map::set_redraw(RedrawMode param_1) {
+    // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437090
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004370A0
     TPanel::set_redraw(param_1);
     if (param_1 == TPanel::RedrawMode::RedrawFull) {
@@ -786,6 +787,11 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3, uchar
 // Selection + objects + view rect
 // -----------------------------------------------------------------------------
 
+static void FUN_00437bd9() {
+    // TODO: STUB - decompiler artifact placeholder.
+    // Source of truth: diam_map.cpp.decomp @ 0x00437BD9
+}
+
 void RGE_Diamond_Map::draw_selected_area() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437C20
     if (this->main_view == nullptr) {
@@ -1024,6 +1030,11 @@ void RGE_Diamond_Map::draw_object(short param_1, short param_2, uchar param_3, s
         this->render_area->FillRect(x - 2, y - 2, x + 2, y + 2, param_3);
         return;
     }
+}
+
+static void FUN_0043804d() {
+    // TODO: STUB - decompiler artifact placeholder.
+    // Source of truth: diam_map.cpp.decomp @ 0x0043804D
 }
 
 void RGE_Diamond_Map::draw_clipped_horz_line(short param_1, short param_2, short param_3, uchar param_4, RGE_Map_Image_Line* param_5) {

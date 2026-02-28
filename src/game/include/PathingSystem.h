@@ -88,6 +88,8 @@ public:
 protected:
     void printState(RGE_Moving_Object* obj);
     int copyPath(int param_1);
+    int FUN_0046d202(int param_1);
+    void FUN_0046dc8a(ManagedArray<int>& out);
 };
 static_assert(sizeof(PathingSystem) == 0x11DCF8, "Size mismatch");
 
