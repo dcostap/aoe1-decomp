@@ -65,7 +65,7 @@ RGE_Campaign_Info::~RGE_Campaign_Info() {
 }
 
 RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044C780
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C780
     this->campaign = param_1;
 
     memset(this->campaign_name, 0, sizeof(this->campaign_name));
@@ -92,7 +92,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* param_1) {
 }
 
 RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long param_3) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044C5A0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C5A0
     rge_read(param_1, this, 0xFF);
     rge_read(param_1, &this->current_scenario, 4);
     rge_read(param_1, &this->scenario_num, 4);
@@ -142,7 +142,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long p
 }
 
 uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0
     if (param_1 == nullptr) {
         return '\0';
     }
@@ -150,7 +150,7 @@ uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
 }
 
 uchar RGE_Campaign_Info::set_current_scenario(long param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CA90
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CA90
     if (param_1 < 0 || param_1 >= this->scenario_num || this->scenario_info == nullptr) {
         return '\0';
     }
@@ -169,7 +169,7 @@ uchar RGE_Campaign_Info::set_current_scenario(long param_1) {
 }
 
 void RGE_Campaign_Info::notify_of_scenario_complete() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CBC0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CBC0
     if (this->current_scenario < 0 || this->scenario_info == nullptr) {
         return;
     }
@@ -191,7 +191,7 @@ void RGE_Campaign_Info::notify_of_scenario_complete() {
 }
 
 void RGE_Campaign_Info::save(int param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044C8A0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C8A0
     rge_write(param_1, this, 0xFF);
     rge_write(param_1, &this->current_scenario, 4);
     rge_write(param_1, &this->scenario_num, 4);
@@ -202,7 +202,7 @@ void RGE_Campaign_Info::save(int param_1) {
 }
 
 void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044C930
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C930
     this->campaign = nullptr;
     if (param_2 > 0) {
         for (long i = 0; i < param_2; ++i) {
@@ -272,7 +272,7 @@ RGE_Person_Info::RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long par
 }
 
 RGE_Person_Info::RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param_3) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CC40
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CC40
     this->campaign_num = param_3;
     this->campaigns = param_2;
     rge_read(param_1, this, 0xFF);
@@ -353,7 +353,7 @@ long RGE_Person_Info::get_scenario_list(char*** param_1, long* param_2) {
 }
 
 int RGE_Person_Info::open_scenario() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D180
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D180
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
         return -1;
     }
@@ -365,7 +365,7 @@ int RGE_Person_Info::open_scenario() {
 }
 
 RGE_Game_Info::RGE_Game_Info(char* param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D1A0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D1A0
     this->people_info = nullptr;
     this->people_num = 0;
     this->campaign_num = 0;
@@ -419,7 +419,7 @@ RGE_Game_Info::RGE_Game_Info(char* param_1) {
 }
 
 RGE_Game_Info::~RGE_Game_Info() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D300
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D300
     if (this->save_filename[0] != '\0') {
         this->save(this->save_filename);
     }
@@ -446,7 +446,7 @@ RGE_Game_Info::~RGE_Game_Info() {
 }
 
 void RGE_Person_Info::save(int param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CE10
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CE10
     rge_write(param_1, this, 0xFF);
     rge_write(param_1, &this->current_campaign, 4);
     rge_write(param_1, &this->campaign_info_num, 4);
@@ -458,7 +458,7 @@ void RGE_Person_Info::save(int param_1) {
 }
 
 void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CE90
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CE90
     this->campaign_num = param_2;
     this->campaigns = param_1;
     if (this->campaign_info_num > 0) {
@@ -469,7 +469,7 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
 }
 
 uchar RGE_Person_Info::set_current_campaign(long param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0 (simplified: no exception frame)
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0 (simplified: no exception frame)
     if (param_1 < 0 || param_1 >= this->campaign_num || this->campaigns == nullptr || this->campaigns[param_1] == nullptr) {
         return '\0';
     }
@@ -508,7 +508,7 @@ uchar RGE_Person_Info::set_current_campaign(long param_1) {
 }
 
 uchar RGE_Person_Info::set_current_scenario(long param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D0F0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0F0
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
         return '\0';
     }
@@ -520,7 +520,7 @@ uchar RGE_Person_Info::set_current_scenario(long param_1) {
 }
 
 void RGE_Person_Info::notify_of_scenario_complete() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D160
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D160
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
         return;
     }
@@ -531,7 +531,7 @@ void RGE_Person_Info::notify_of_scenario_complete() {
 }
 
 long RGE_Game_Info::get_current_scenario() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D990
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D990
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
         return -1;
     }
@@ -543,7 +543,7 @@ long RGE_Game_Info::get_current_scenario() {
 }
 
 long RGE_Game_Info::get_current_campaign() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D9B0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D9B0
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
         return -1;
     }
@@ -555,7 +555,7 @@ long RGE_Game_Info::get_current_campaign() {
 }
 
 long RGE_Game_Info::get_current_player() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D9D0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D9D0
     return this->current_person;
 }
 
@@ -568,7 +568,7 @@ char* RGE_Game_Info::get_current_player_name() {
 }
 
 int RGE_Game_Info::open_scenario() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044DA30
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044DA30
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
         return -1;
     }
@@ -580,7 +580,7 @@ int RGE_Game_Info::open_scenario() {
 }
 
 uchar RGE_Game_Info::set_current_person(long param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D7D0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D7D0
     if (param_1 < this->people_num) {
         this->current_person = param_1;
         return '\x01';
@@ -590,7 +590,7 @@ uchar RGE_Game_Info::set_current_person(long param_1) {
 }
 
 uchar RGE_Game_Info::set_current_campaign(long param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D7F0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D7F0
     int idx = (int)this->current_person;
     if (idx >= 0 && idx < this->people_num && this->people_info != nullptr && this->people_info[idx] != nullptr) {
         return this->people_info[idx]->set_current_campaign(param_1);
@@ -599,7 +599,7 @@ uchar RGE_Game_Info::set_current_campaign(long param_1) {
 }
 
 uchar RGE_Game_Info::set_current_scenario(long param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D820
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D820
     int idx = (int)this->current_person;
     if (idx >= 0 && idx < this->people_num && this->people_info != nullptr && this->people_info[idx] != nullptr) {
         return this->people_info[idx]->set_current_scenario(param_1);
@@ -608,7 +608,7 @@ uchar RGE_Game_Info::set_current_scenario(long param_1) {
 }
 
 void RGE_Game_Info::save(char* param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D3B0
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D3B0
     static const char kPifVersion[4] = {'1', '.', '0', '0'};
 
     strcpy(this->save_filename, param_1);
@@ -628,7 +628,7 @@ void RGE_Game_Info::save(char* param_1) {
 }
 
 void RGE_Game_Info::find_campaigns() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D470
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D470
     if (this->campaigns != nullptr) {
         if (this->campaign_num > 0) {
             for (int i = 0; i < this->campaign_num; ++i) {
@@ -699,7 +699,7 @@ void RGE_Game_Info::find_campaigns() {
 }
 
 void RGE_Game_Info::notify_of_scenario_complete() {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044DA00
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044DA00
     int idx = (int)this->current_person;
     if (idx >= 0 && idx < this->people_num && this->people_info != nullptr && this->people_info[idx] != nullptr) {
         this->people_info[idx]->notify_of_scenario_complete();
@@ -708,7 +708,7 @@ void RGE_Game_Info::notify_of_scenario_complete() {
 }
 
 uchar RGE_Game_Info::add_new_person(char* param_1) {
-    // Source of truth: gameinfo.cpp.decomp @ 0x0044D710
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D710
     RGE_Person_Info** ppRVar1 = (RGE_Person_Info**)calloc((size_t)this->people_num + 1, 4);
     if (ppRVar1 == nullptr) {
         return '\0';
