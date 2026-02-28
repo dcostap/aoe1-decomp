@@ -3751,7 +3751,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 263 — RGE_Static_Object remaining 46 missing functions
 - [x] Assigned to agent (worker-5, clone_5, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `a55b9b4` (246 net insertions). Static object coverage improved.
 - Goal: stat_obj.cpp.decomp has 189 functions. RGE_Static_Object.cpp has 143 offset refs. Find and transliterate the remaining ~46 missing functions.
 - Implement: Cross-reference decomp offsets vs impl offsets. Transliterate every missing function.
 - Where: `src/game/src/RGE_Static_Object.cpp` + header
@@ -3812,3 +3813,17 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `pnl_txt.cpp.decomp`, `pnl_btn.cpp.decomp` + `.asm` files
 - Non-overlap: do NOT touch TPanelSystem.cpp, Pnl_scbr, Pnl_lst, Pnl_msg, or any non-panel files
 - Done when: all 67+57=124 decomp offsets have impl coverage. Expect 800+ lines.
+## Task 269 — TRIBE_Player + Visible_Map + Scenario + Sprite remaining (44 functions across 4 files)
+- [x] Assigned to agent (worker-5, clone_5, copilot)
+- [ ] Finished
+- Goal: Four partially-implemented modules with small-to-medium gaps:
+  - tplayer.cpp.decomp: 107 funcs, TRIBE_Player.cpp has 89 refs → ~18 missing
+  - visible.cpp.decomp: 27 funcs, RGE_Visible_Map.cpp has 16 refs → ~11 missing
+  - scenario.cpp.decomp: 53 funcs, ~45 refs in various files → ~8 missing
+  - sprite.cpp.decomp: 22 funcs, RGE_Sprite.cpp has 15 refs → ~7 missing
+  Total: ~44 functions to transliterate.
+- Implement: For each module, cross-reference decomp '// Offset:' markers against the impl. Transliterate every missing function with offset markers.
+- Where: TRIBE_Player.cpp, RGE_Visible_Map.cpp, scenario-related files, RGE_Sprite.cpp + headers
+- Source of truth: corresponding .decomp + .asm files
+- Non-overlap: do NOT touch panel files, command.cpp, AI files, basegame, or tactical AI
+- Done when: all decomp offsets have impl coverage across all 4 modules. Expect 600+ lines.
