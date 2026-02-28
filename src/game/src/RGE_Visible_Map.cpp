@@ -727,7 +727,7 @@ static LOSTBL Edge_Offsets_T16[] = {
     {999, 0, 0},
 };
 
-static LOSTBL* NormalLOS[17] = {
+LOSTBL* NormalLOS[17] = {
     Edge_Offsets_N0,
     Edge_Offsets_N1,
     Edge_Offsets_N2,
@@ -747,7 +747,7 @@ static LOSTBL* NormalLOS[17] = {
     Edge_Offsets_N16,
 };
 
-static LOSTBL* SquareLOS[17] = {
+LOSTBL* SquareLOS[17] = {
     Edge_Offsets_T0,
     Edge_Offsets_T1,
     Edge_Offsets_T2,
@@ -776,7 +776,7 @@ int VCALL_LOG_HEAD = -1;
 int VCALL_LOG_TAIL = -1;
 
 static void log_map_call(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9) {
-    // Source of truth: visible.cpp.decomp @ 0x0053D150
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053D150
     int iVar1 = VCALL_LOG_HEAD + 1;
     if (iVar1 < 0x400) {
         if (-1 < VCALL_LOG_TAIL) {
@@ -940,19 +940,12 @@ ulong RGE_Visible_Map::checksumUnifiedVisible() {
 }
 
 uchar RGE_Visible_Map::get_visible(int col, int row) {
-    // Source of truth: visible.cpp.decomp @ 0x0053C490
-    if (this->player == nullptr || row < 0 || col < 0) {
-        return 0;
-    }
-    if (row >= 0x100 || unified_map_offsets[row] == nullptr) {
-        return 0;
-    }
-
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053C490
     ulong tile_mask = unified_map_offsets[row][col];
     if ((tile_mask & this->player->mutualVisibleMask) != 0) {
         return 0x0F;
     }
-    return (uchar)(((this->player->mutualExploredMask & tile_mask) != 0) ? 0x80 : 0x00);
+    return (uchar)(-((this->player->mutualExploredMask & tile_mask) != 0) & 0x80);
 }
 
 void RGE_Visible_Map::set_all(uchar param_1) {

@@ -17,6 +17,15 @@
 #include <stdlib.h>
 #include <new>
 
+static int object_list_ftol(double value) {
+    return (int)(long)value;
+}
+
+static int obj_list_corrupt_004630DD() {
+    // TODO: STUB — decomp output corrupted/unreadable at obj_list.cpp.decomp @ 0x004630DD.
+    return 0;
+}
+
 RGE_Object_List::RGE_Object_List() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462E80
     this->list = nullptr;
@@ -24,7 +33,7 @@ RGE_Object_List::RGE_Object_List() {
 }
 
 RGE_Object_List::~RGE_Object_List() {
-    // Source of truth: obj_list.cpp.decomp @ 0x00462EA0
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462EA0
     RGE_Object_Node* node = this->list;
     while (node != nullptr) {
         RGE_Object_Node* next = node->next;
@@ -41,6 +50,20 @@ RGE_Object_List::~RGE_Object_List() {
         node = next;
     }
 
+    this->list = nullptr;
+    this->number_of_objects = 0;
+}
+
+void RGE_Object_List::removeAllObjects() {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462EF0
+    RGE_Object_Node* node = this->list;
+    while (node != nullptr) {
+        RGE_Object_Node* next = node->next;
+        if (node->node != nullptr) {
+            delete node->node;
+        }
+        node = next;
+    }
     this->list = nullptr;
     this->number_of_objects = 0;
 }
@@ -89,8 +112,25 @@ void RGE_Object_List::remove_node(RGE_Static_Object* param_1, RGE_Object_Node* p
     this->number_of_objects = this->number_of_objects + -1;
 }
 
+void RGE_Object_List::invert() {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462FD0
+    RGE_Object_Node* node = this->list;
+    RGE_Object_Node* prev = nullptr;
+    while (node != nullptr) {
+        this->list = node->next;
+        node->next = prev;
+        if (prev != nullptr) {
+            prev->prev = node;
+        }
+        node->prev = nullptr;
+        prev = node;
+        node = this->list;
+    }
+    this->list = prev;
+}
+
 RGE_Static_Object* RGE_Object_List::find_by_id(long param_1) {
-    // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463490
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463490
     RGE_Object_Node* cur = this->list;
     if (cur == nullptr) return nullptr;
     while (cur != nullptr) {
@@ -101,6 +141,91 @@ RGE_Static_Object* RGE_Object_List::find_by_id(long param_1) {
         cur = cur->next;
     }
     return nullptr;
+}
+
+RGE_Static_Object* RGE_Object_List::find_by_group(long param_1) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004632E0
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if ((obj != nullptr) && (obj->master_obj->object_group == param_1)) {
+            return obj;
+        }
+    }
+    return nullptr;
+}
+
+RGE_Static_Object* RGE_Object_List::find_by_group(long param_1, float param_2, float param_3, uchar param_4, uchar param_5, RGE_Static_Object* param_6) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463310
+    uint zone = 0xFFFFFFFF;
+    if (!((param_2 <= -1.0f) || (param_3 <= -1.0f)) && (param_6 != nullptr)) {
+        int x = object_list_ftol(param_2);
+        int y = object_list_ftol(param_3);
+        zone = (uint)param_6->lookupZone(y, x);
+    }
+
+    RGE_Static_Object* found = nullptr;
+    float best_dist2 = -1.0f;
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if ((obj != nullptr) && (obj->master_obj->object_group == param_1) && ((param_4 == 0) || (obj->object_state == param_5))) {
+            if ((param_2 == -1.0f) || (param_3 == -1.0f)) {
+                return obj;
+            }
+            if ((int)zone > -1) {
+                int ox = object_list_ftol(obj->world_x);
+                int oy = object_list_ftol(obj->world_y);
+                if (param_6->lookupZone(oy, ox) != zone) {
+                    continue;
+                }
+            }
+
+            float dx = param_2 - obj->world_x;
+            float dy = param_3 - obj->world_y;
+            float dist2 = dy * dy + dx * dx;
+            if ((best_dist2 == -1.0f) || (dist2 < best_dist2)) {
+                best_dist2 = dist2;
+                found = obj;
+            }
+        }
+    }
+    return found;
+}
+
+RGE_Static_Object* RGE_Object_List::find_by_master_id(long param_1, float param_2, float param_3, uchar param_4, uchar param_5, RGE_Static_Object* param_6) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004634C0
+    uint zone = 0xFFFFFFFF;
+    if (!((param_2 <= -1.0f) || (param_3 <= -1.0f)) && (param_6 != nullptr)) {
+        int x = object_list_ftol(param_2);
+        int y = object_list_ftol(param_3);
+        zone = (uint)param_6->lookupZone(y, x);
+    }
+
+    RGE_Static_Object* found = nullptr;
+    float best_dist2 = -1.0f;
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if ((obj != nullptr) && (obj->master_obj->id == param_1) && ((param_4 == 0) || (obj->object_state == param_5))) {
+            if ((param_2 == -1.0f) || (param_3 == -1.0f)) {
+                return obj;
+            }
+            if ((int)zone > -1) {
+                int ox = object_list_ftol(obj->world_x);
+                int oy = object_list_ftol(obj->world_y);
+                if (param_6->lookupZone(oy, ox) != zone) {
+                    continue;
+                }
+            }
+
+            float dx = param_2 - obj->world_x;
+            float dy = param_3 - obj->world_y;
+            float dist2 = dy * dy + dx * dx;
+            if ((best_dist2 == -1.0f) || (dist2 < best_dist2)) {
+                best_dist2 = dist2;
+                found = obj;
+            }
+        }
+    }
+    return found;
 }
 
 // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463640
@@ -151,6 +276,53 @@ RGE_Static_Object* RGE_Object_List::find_by_master_ids(long param_1, long param_
     return found;
 }
 
+RGE_Static_Object* RGE_Object_List::find_by_type(uchar param_1, float param_2, float param_3, uchar param_4, uchar param_5) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004637C0
+    RGE_Static_Object* found = nullptr;
+    float best_dist2 = -1.0f;
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        RGE_Static_Object* obj = node->node;
+        if ((obj != nullptr) && (obj->type == param_1) && ((param_4 == 0) || (obj->object_state == param_5))) {
+            if ((param_2 == -1.0f) && (param_3 == -1.0f)) {
+                return obj;
+            }
+
+            float dx = param_2 - obj->world_x;
+            float dy = param_3 - obj->world_y;
+            float dist2 = dy * dy + dx * dx;
+            if ((best_dist2 == -1.0f) || (dist2 < best_dist2)) {
+                best_dist2 = dist2;
+                found = obj;
+            }
+        }
+    }
+    return found;
+}
+
+void RGE_Object_List::save(int param_1) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463890
+    for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+        if (node->node != nullptr) {
+            node->node->save(param_1);
+        }
+    }
+    uchar finished = 0;
+    rge_write(param_1, &finished, 1);
+}
+
+void RGE_Object_List::load_list(int param_1, RGE_Game_World* param_2) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004638D0
+    while (true) {
+        uchar object_type = 0;
+        rge_read(param_1, &object_type, 1);
+        if ((char)object_type == '\0') {
+            break;
+        }
+        this->load(object_type, param_1, param_2);
+    }
+    this->invert();
+}
+
 void RGE_Object_List::rehook_list() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463910
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
@@ -161,7 +333,7 @@ void RGE_Object_List::rehook_list() {
 }
 
 void RGE_Object_List::update() {
-    // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463210
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463210
     int polled_objects = 0;
     RGE_Object_Node* node = this->list;
     while (node != nullptr) {
@@ -231,6 +403,49 @@ void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uch
     }
 }
 
+void RGE_Object_List::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4, uchar param_5) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463100
+    if (param_5 == 0) {
+        for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+            if (node->node != nullptr) {
+                node->node->shadow_draw(param_1, param_2, param_3, param_4);
+            }
+        }
+    } else {
+        for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
+            RGE_Static_Object* obj = node->node;
+            if ((obj != nullptr) && (obj->master_obj->fog_flag != 0)) {
+                obj->shadow_draw(param_1, param_2, param_3, param_4);
+            }
+        }
+    }
+}
+
+void RGE_Object_List::normal_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463180
+    RGE_Object_Node* sorted = this->sort();
+    if (param_4 == 0) {
+        for (RGE_Object_Node* node = sorted; node != nullptr; node = node->next) {
+            if (node->node != nullptr) {
+                node->node->normal_draw(param_1, param_2, param_3);
+            }
+        }
+    } else {
+        for (RGE_Object_Node* node = sorted; node != nullptr; node = node->next) {
+            RGE_Static_Object* obj = node->node;
+            if ((obj != nullptr) && (obj->master_obj->fog_flag != 0)) {
+                obj->normal_draw(param_1, param_2, param_3);
+            }
+        }
+    }
+
+    while (sorted != nullptr) {
+        RGE_Object_Node* next = sorted->next;
+        free(sorted);
+        sorted = next;
+    }
+}
+
 RGE_Object_Node* RGE_Object_List::sort() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463260
     RGE_Object_Node* src = this->list;
@@ -260,7 +475,7 @@ RGE_Object_Node* RGE_Object_List::sort() {
 }
 
 void RGE_Object_List::load(uchar param_1, int param_2, RGE_Game_World* param_3) {
-    // Source of truth: obj_list.cpp.decomp @ 0x00463930
+    // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463930
     switch (param_1) {
     case 0x0A: {
         RGE_Static_Object* static_object =
