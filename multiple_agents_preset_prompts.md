@@ -1,11 +1,12 @@
 Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are now one of the workers.
 
 Mandatory: 
-1. to validate your changes, after everything compiles, launch 3 to 5 parallel sub-agents, that receive
+1. to validate your changes, after everything compiles, launch 1 to 2 parallel sub-agents, that receive
     the needed context of the task, and these sub agents ARE READ-ONLY and MUST check all your changes and review
     them, validate their parity with the sources of truth, and finally feed you their feedback. You iterate on the
     feedback until everything is perfect + compiles. 
-    **NOTE:** If sub-agent launches fail due to rate limits (429 errors, quota exceeded), that is OK and expected.
+    **NOTE:** Keep sub-agent count LOW (1-2 max) to avoid rate limit pressure across the fleet.
+    If sub-agent launches fail due to rate limits (429 errors, quota exceeded), that is OK and expected.
     In that case, perform the review pass yourself without sub-agents — read each changed file, compare against
     the decomp source of truth, verify parity, and ensure the build passes. Do NOT let rate-limited sub-agents
     block your progress.
@@ -138,7 +139,7 @@ The prompt is composed of two parts:
 Carefully read @AGENTS.md and carefully follow @multiple_agents_workflow.md. You are now one of the workers.
 
 Mandatory: 
-1. to validate your changes, after everything compiles, launch 3 to 5 parallel sub-agents, that receive the needed context of the task, and these sub agents ARE READ-ONLY and MUST check all your changes and review them, validate their parity with the sources of truth, and finally feed you their feedback. You iterate on the feedback until everything is perfect + compiles. 
+1. to validate your changes, after everything compiles, launch 1 to 2 parallel sub-agents, that receive the needed context of the task, and these sub agents ARE READ-ONLY and MUST check all your changes and review them, validate their parity with the sources of truth, and finally feed you their feedback. You iterate on the feedback until everything is perfect + compiles. NOTE: If you hit 429 rate limits on sub-agents, skip the parallel validation and do a thorough self-review instead.
 2. Run autonomously, without stopping, until you are finished completely (changes pushed). You only may stop if a major issue or major blocker arises, in which case you explain in simple terms what the deal is, to the user. 
 
 Your task right now is to...
@@ -289,10 +290,27 @@ When the user tells you to start:
 - **MINIMUM task size: 300+ lines of net code changes.** Anything smaller wastes a full worker cycle.
 - **IDEAL task size: 500-2000+ lines of net changes.** Big enough to justify overhead, small enough to complete in one copilot run.
 - **DO NOT create tasks that target a single small function** (e.g., "implement debug_random_write" = 82 lines). Instead, batch related functions into one task.
-- **Use the gap analysis** to find tasks: compare decomp file sizes vs implementation sizes. Target files with 2000+ line gaps.
 - **When in doubt, make the task BIGGER.** A worker that produces 1500 lines in one run is far more efficient than 5 workers producing 300 lines each.
 
+#### CRITICAL: Use FUNCTION-LEVEL gap analysis, NOT line-count gaps
+
+**Line-count gaps are UNRELIABLE and inflate estimates 2-3x.** Comparing `wc -l decomp.cpp.decomp` vs `wc -l impl.cpp` produces wildly misleading numbers because:
+- Ghidra decomp output is ~50 lines per function vs ~25 in clean impl
+- Functions may be split across multiple impl files
+- Impl files include headers/comments not in decomp
+
+**The correct method is FUNCTION-LEVEL analysis:**
+1. Count `// Offset:` markers in the decomp file → number of decomp functions
+2. Count distinct `0x00XXXXXX` offset references in the impl file(s) → number of implemented functions
+3. The difference is the TRUE gap
+
+**Example of how line-counts mislead:** music.cpp showed "596-line gap" but function analysis revealed 22 decomp functions vs 21 implemented — only 1 function was actually missing. Workers who reported "already implemented" were CORRECT.
+
+**Track commit insertion counts** per worker task completion. If a task produces <50 insertions, the task was either already done or too small. Learn from this for future task scoping.
+
 ### Task Creation — Quality Over Quantity
+
+**Creating new tasks is NOT a duty to be taken lightly.** Each task represents a full worker cycle. Be thorough and careful when investigating what's left to implement.
 
 1. **Every task body must be fully self-contained.** The worker gets ONLY the task body + AGENTS.md + workflow.md. It knows nothing about other tasks, the queue, or the orchestrator. Include: Goal, all function names to implement, file paths, decomp source filenames, non-overlap constraints, and done-when criteria.
 
@@ -302,13 +320,15 @@ When the user tells you to start:
 
 4. **Mark stale tasks.** If a task was assigned in a previous session but never completed (no commit hash), mark it as stale and either reassign or supersede it with a new, better-scoped task.
 
+5. **Verify the gap actually exists before creating the task.** Run the function-level analysis yourself (or via explore sub-agents) BEFORE adding a task to the queue. Never assign a task based on a rough line-count estimate alone.
+
 ### Task DISCOVERY — Equally Important as Task Execution
 
 **Finding new tasks is AS IMPORTANT as executing existing ones.** The orchestrator must actively and continuously analyze the codebase to identify what needs doing. Don't just burn through the pre-existing queue — expand it.
 
 #### Parallel Exploration Sub-Agents (RECOMMENDED)
 
-When searching for new tasks, launch **3-5 parallel `explore` sub-agents** that each investigate a different area of the codebase. This is dramatically faster than sequential analysis. Example dispatch pattern:
+When searching for new tasks, launch **2-3 parallel `explore` sub-agents** (keep count low to avoid rate limit pressure) that each investigate a different area of the codebase. This is dramatically faster than sequential analysis. Example dispatch pattern:
 
 ```
 Sub-agent 1: "Compare src/game/decomp/tplayer.cpp.decomp functions against src/game/src/TRIBE_Player.cpp. List every function in the decomp that has NO implementation in the .cpp. Include function signatures and approximate line counts."
@@ -440,6 +460,25 @@ Codex bills by tokens (not by request like copilot). Before dispatching a new ta
 
 **Mixing strategy:** Run a mix of copilot and codex workers simultaneously. If one hits rate limits, the other can continue. Typical split: 4 copilot + 2 codex, or adjust based on current quota availability.
 
+### Hotfile — Async Communication Channel From User
+
+The file `orchestrator_hotfile.md` in the repo root is a **live communication channel** from the user to the orchestrator. The user may write hints, instructions, or commands into it at any time without sending a chat message.
+
+**Protocol:**
+1. **Check the hotfile every monitoring cycle** (i.e., every time you check on workers — every 3-5 minutes). Read it with a simple `Get-Content orchestrator_hotfile.md` call.
+2. **CRITICALLY: Always check the hotfile BEFORE every sleep/wait command.** Make it a force of habit — before `Start-Sleep`, always read the hotfile first.
+3. **If the file is empty or whitespace-only:** Do nothing, continue your loop.
+4. **If the file has content:** Read it, follow the instructions/hints, then **clear the file** by writing empty content (`Set-Content orchestrator_hotfile.md "" -NoNewline`). This signals to the user that you've consumed the message.
+5. **The hotfile is gitignored** — it's local-only, never committed.
+6. Treat hotfile instructions with the same priority as direct user messages.
+
+Examples of what the user might write:
+- `"pause dispatching for 10 minutes"`
+- `"worker-3 seems stuck, check on it"`
+- `"prioritize TShape tasks next"`
+- `"scale down to 4 workers"`
+- `"add a task for view.cpp parity"`
+
 ### Self-Improvement Protocol — Update This File As You Learn
 
 **This `multiple_agents_preset_prompts.md` file is a living document.** The current orchestrator agent MUST update it whenever it discovers:
@@ -460,7 +499,7 @@ Do NOT treat task discovery as an afterthought. The orchestrator's value is spli
 
 If the task backlog drops below 6 unassigned tasks, **STOP dispatching and focus on discovery**. An idle worker waiting 5 minutes for a good task is better than a busy worker executing a poorly-scoped 80-line task.
 
-Use the parallel exploration sub-agent pattern (documented above) aggressively. 5 sub-agents exploring different decomp files simultaneously can map the entire codebase gap in under 2 minutes, versus 15+ minutes of sequential orchestrator analysis.
+Use the parallel exploration sub-agent pattern (documented above) — 2-3 sub-agents exploring different decomp files simultaneously can map codebase gaps quickly, versus 15+ minutes of sequential orchestrator analysis.
 
 ### CRITICAL: Line-Count Gap Estimates Are Unreliable — Use Function-Level Analysis
 
