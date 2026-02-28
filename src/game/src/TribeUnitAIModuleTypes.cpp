@@ -462,7 +462,7 @@ int TribeCivilianUnitAIModule::convertToLOSResourceType(int param_1) {
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504E10
 int TribeCivilianUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
-    // Source of truth: taiuaimd.cpp.decomp @ 0x00504DC6 (decompiler helper/thunk label coverage).
+    // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504DC6 (decompiler helper/thunk label coverage).
     if (param_1->mType == 500 || param_1->mType == 0x20F) {
         if (param_1->p2 < 1) {
             this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x209, param_1->caller, 0, 0);
@@ -484,7 +484,7 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505800
 int TribeCivilianUnitAIModule::processIdle(int param_1) {
-    // Source of truth: taiuaimd.cpp.decomp @ 0x005057BE (decompiler helper/thunk label coverage).
+    // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x005057BE (decompiler helper/thunk label coverage).
     (void)param_1;
     return 5;
 }
@@ -654,7 +654,7 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long p
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505FD0
 int TribePriestUnitAIModule::processIdle(int param_1) {
-    // Source of truth: taiuaimd.cpp.decomp @ 0x00505FA9 (decompiler helper/thunk label coverage).
+    // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505FA9 (decompiler helper/thunk label coverage).
     (void)param_1;
     if (this->objectValue->owner->computerPlayer() != 0) {
         if (UnitAIModule::processIdle(1) == 6) {

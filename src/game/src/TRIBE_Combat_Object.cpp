@@ -246,7 +246,7 @@ void TRIBE_Combat_Object::get_pierce_armor(short& param_1, short& param_2) {
     param_2 = master->orig_pierce_armor;
 }
 
-// Source of truth: t_c_obj.cpp.decomp @ 0x004CACE0, t_c_obj.cpp.asm @ 0x004CACE0
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CACE0, t_c_obj.cpp.asm @ 0x004CACE0
 void TRIBE_Combat_Object::reposition_artifact() {
     if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr) {
         return;
@@ -337,7 +337,7 @@ int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* param_1, int 
     return 0;
 }
 
-// Source of truth: t_c_obj.cpp.decomp @ 0x004CBEF0, t_c_obj.cpp.asm @ 0x004CBEF0
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CBEF0, t_c_obj.cpp.asm @ 0x004CBEF0
 int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* param_1) {
     if (param_1 == nullptr) {
         return 0;
@@ -400,7 +400,7 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* param_1) {
     return cliff_hits > 0 ? 1 : 0;
 }
 
-// Source of truth: t_c_obj.cpp.decomp @ 0x004CC1B0, t_c_obj.cpp.asm @ 0x004CC1B0
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CC1B0, t_c_obj.cpp.asm @ 0x004CC1B0
 uchar TRIBE_Combat_Object::area_attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4, RGE_Static_Object* param_5) {
     (void)param_3;
 
@@ -642,7 +642,7 @@ void TRIBE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, fl
     }
 }
 
-// Source of truth: t_c_obj.cpp.decomp @ 0x004CA8C0, t_c_obj.cpp.asm @ 0x004CA8C0
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA8C0, t_c_obj.cpp.asm @ 0x004CA8C0
 void TRIBE_Combat_Object::change_ownership(RGE_Player* param_1) {
     if (this->master_obj == nullptr) {
         return;
