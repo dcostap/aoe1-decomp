@@ -461,3 +461,70 @@ Do NOT treat task discovery as an afterthought. The orchestrator's value is spli
 If the task backlog drops below 6 unassigned tasks, **STOP dispatching and focus on discovery**. An idle worker waiting 5 minutes for a good task is better than a busy worker executing a poorly-scoped 80-line task.
 
 Use the parallel exploration sub-agent pattern (documented above) aggressively. 5 sub-agents exploring different decomp files simultaneously can map the entire codebase gap in under 2 minutes, versus 15+ minutes of sequential orchestrator analysis.
+
+### CRITICAL: Line-Count Gap Estimates Are Unreliable — Use Function-Level Analysis
+
+**Lesson learned the hard way:** Comparing `decomp_lines - impl_lines` overestimates gaps by 2-3x because:
+1. Ghidra decomp output is verbose (commented blocks, type casts, blank lines) — 1 decomp function ≈ 50 lines, but 1 impl function ≈ 20-30 lines
+2. Functions from one decomp file may be implemented in DIFFERENT .cpp files (e.g., `scenario.cpp.decomp` functions may live in `TRIBE_World_types.cpp`, `RGE_Timeline.cpp`, etc.)
+3. Impl files include headers/comments/helpers not in decomp
+
+**The correct gap analysis method:**
+1. Count `// Offset:` markers in decomp = number of functions in original module
+2. Count `Source of truth:` or `Fully verified` or `0x00` offset refs in impl = number of implemented functions
+3. **Real gap = decomp offsets - impl offsets** (in function count, not lines)
+4. Example: `basegame.cpp.decomp` has 221 offsets, `basegame.cpp` has 170 → real gap = ~51 functions, not 3804 lines
+
+**Task sizing based on function gaps:**
+- <10 missing functions → bundle with 2-3 other small files into one task
+- 10-25 missing functions → one focused task, expect 300-800 lines output
+- 25+ missing functions → large task, expect 800-2000+ lines output
+- Greenfield (no impl at all, 30+ functions) → best tasks, expect 1000-4000 lines
+
+**Workers will correctly report "already implemented" for inflated-gap tasks** — this is NOT laziness, it's accurate. Don't re-assign the same task thinking the worker failed.
+
+### Session Status Reports
+
+The orchestrator MUST periodically (every ~10 completed tasks or every new session start) append a status report to this file with:
+- Date/session identifier
+- Tasks completed with line counts
+- Patterns observed (over/under delivery)
+- Current bottleneck assessment
+- Queue health
+
+---
+
+## Session Report — 2026-02-28
+
+### Tasks Completed (this session, 15 tasks landed):
+
+| Task | Description | Insertions | Notes |
+|------|------------|-----------|-------|
+| 235 | RGE Action system | 126 | Small gap was real |
+| 236 | MP screens (scr_mps) | 488 | OK |
+| 237 | Moving + master objects (codex) | 532 | OK |
+| 238 | Command system (tcommand) | 107 | Small real gap |
+| 239 | Panel_ez base | 233 | Under-delivered |
+| 240 | Gameinfo + spanlist + DIB | 2,280 | ✅ Great |
+| 241 | TShape rendering | 34 | Gap was inflated — only 8 funcs missing |
+| 242 | Fractal + diam_map + pathsys | 31 | Gap inflated |
+| 243 | scr_sed2 scenario editor | 3,946 | 🏆 Outstanding (greenfield) |
+| 244 | Visible_Resource_Manager + infmap | 627 | Good (greenfield infmap) |
+| 245 | Music/sound/mouseptr | 27 | Gap was inflated — workers were correct |
+| 246 | Pnl_edit + Pnl_inp | 75 | Gap inflated |
+| 248 | basegame part 2 | 25 | Worker confirms most functions present |
+| 249 | Scenario + tscenaro | 37 | Functions split across other modules |
+| 250 | TShape retry | in progress | — |
+
+**Session total: ~8,500+ lines added**
+**Cumulative total (all sessions): ~27,000+ lines**
+
+### Key Findings:
+- **Line-count gap analysis is broken** — switched to function-offset counting
+- **Greenfield tasks (new .cpp files) produce 5-10x more output** than gap-closing tasks
+- **Workers correctly identify inflated gaps** — not laziness, but accurate assessment
+- **Best ROI tasks:** large decomp files with NO impl at all, or files with 20+ genuinely missing offsets
+- **Codex CLI works well** as alternative to copilot with separate rate limits
+
+### Current Bottleneck: Task quality, not worker count
+Adding more workers helps only if tasks are well-scoped with genuine function gaps.

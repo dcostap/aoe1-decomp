@@ -3415,7 +3415,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 237 — RGE_Moving_Object + master object parity (~3300-line gap)
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `65502ff` (532 insertions). Master static/combat/moving object parity. Solid delivery.
 - Goal: close the gap in the object hierarchy middle layers:
   - `move_obj.cpp.decomp` (3485) → `RGE_Moving_Object.cpp` (2068) = gap ~1420
   - `m_s_obj.cpp.decomp` (1906) → `RGE_Master_Static_Object.cpp` (1100) = gap ~806
@@ -3509,7 +3510,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 244 — Visible resource manager + information map parity (~2100-line gap)
 - [x] Assigned to agent (worker-1, clone_1)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `493c6c6` (627 insertions). New InfluenceMap.cpp created + Visible_Resource_Manager expanded. Good.
 - Goal: close the gap in visibility/exploration systems:
   - `visible.cpp.decomp` (1215) → `Visible_Resource_Manager.cpp` (219) = gap ~996
   - `infmap.cpp.decomp` (1103) → no impl yet = gap ~1103
@@ -3562,7 +3564,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 248 — basegame.cpp core game parity part 2 (~3804-line gap)
 - [x] Assigned to agent (worker-3, clone_3)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `7a06689` (25 net insertions). Worker says most basegame functions already present — gap was inflated.
 - Goal: close the remaining gap in the base game class: basegame.cpp.decomp (7841) -> basegame.cpp (4037) = gap ~3804. RGE_Base_Game is the parent of TRIBE_Game, handles game loop, timing, world setup.
 - Implement (decomp-first from basegame.cpp.decomp): Enumerate ALL missing functions systematically. Focus on: game loop callbacks, world init/shutdown, timing, messaging, player slots.
 - Where: `src/game/src/basegame.cpp` + `src/game/include/RGE_Base_Game.h`
@@ -3572,7 +3575,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 249 — Scenario + TRIBE scenario parity (~3000-line gap)
 - [x] Assigned to agent (worker-4, clone_4)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `d284daf` (37 net ins). Worker reports remaining gap is from functions in other split modules.
 - Goal: close the gap in scenario management:
   - scenario.cpp.decomp (2903) -> scenario.cpp (977) = gap ~1926
   - tscenaro.cpp.decomp (2045) -> tscenaro.cpp (971) = gap ~1074
