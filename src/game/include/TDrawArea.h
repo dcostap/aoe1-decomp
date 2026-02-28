@@ -13,12 +13,17 @@ struct TDrawArea {
     void Clear(tagRECT* rect, int color);
     void PtrClear(tagRECT* rect, int color);
     void OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y);
+    void OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int dy, int src_x_off, int dst_y_off);
     uchar* Lock(char* name, int p2);
     void Unlock(char* name);
     void SetTrans(int enabled, uchar trans_color);
+    void SetOverlayTrans(int enabled, uchar trans_color);
     void SetAccessOffsets();
     void SetInfo();
     void PtrSpanCopy(TDrawArea* src, int x, int y);
+    void PtrSpanCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, uchar** span_heads);
+    void PtrCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect);
+    void PtrSurfaceCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, int lock_dst, int lock_src);
     void DrawLine(int x1, int y1, int x2, int y2, uchar color);
     void SetPixel(long x, long y, uchar color);
     // NOTE: coordinates are inclusive (matches `Drawarea.cpp.decomp`).

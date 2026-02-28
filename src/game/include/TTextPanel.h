@@ -110,6 +110,7 @@ public:
     void set_back_pic(char* back_pic_name);
     void set_alignment(Alignment vert, Alignment horz);
     void set_word_wrap(int enable);
+    void set_style(Style style);
     void set_text_color(unsigned long c1, unsigned long c2);
     void set_highlight_text_color(unsigned long c1, unsigned long c2);
     void set_spacer_size(int size);
@@ -143,6 +144,7 @@ public:
     int change_line(long line_num, long str1_id, long str2_id, long id);
     int delete_line(long line_num);
     void set_line(long line_num);
+    void set_line_by_id(long id);
     long get_line();
     long get_line(long line_num);
     long get_line(char* text);
@@ -150,6 +152,7 @@ public:
     long get_id(long line_num);
     char* get_text(long line_num);
     char* get_text2(long line_num);
+    void free_text();
     void set_second_column_pos(long pos);
 
     TTextPanel::TextNode* list;

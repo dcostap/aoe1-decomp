@@ -435,6 +435,30 @@ int TDropDownPanel::append_line(long str_id, long id) {
     return 0;
 }
 
+int TDropDownPanel::insert_line(long line_num, char* text, long id) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475300
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->insert_line(line_num, text, id);
+    }
+    return 0;
+}
+
+int TDropDownPanel::insert_line(long line_num, long str_id, long id) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475330
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->insert_line(line_num, str_id, id);
+    }
+    return 0;
+}
+
+int TDropDownPanel::delete_line(long line_num) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475360
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->delete_line(line_num);
+    }
+    return 0;
+}
+
 // Source of truth: ASM @ 0x00475250
 void TDropDownPanel::set_line(long line_num) {
     this->val_num = (short)line_num;
@@ -445,6 +469,63 @@ void TDropDownPanel::set_line(long line_num) {
             this->val_panel->set_text(text);
         }
     }
+}
+
+int TDropDownPanel::numberLines() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475110
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->numberLines();
+    }
+    return 0;
+}
+
+int TDropDownPanel::currentLineNumber() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475130
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->currentLineNumber();
+    }
+    return 0;
+}
+
+void TDropDownPanel::setCurrentLineNumber(int line_num) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475150
+    this->set_line(line_num);
+}
+
+void TDropDownPanel::setCurrentLineId(int id) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475160
+    if (this->list_panel) {
+        TTextPanel* text_panel = (TTextPanel*)this->list_panel;
+        text_panel->set_line_by_id(id);
+        const long line_num = text_panel->get_line();
+        this->val_num = (short)line_num;
+        if (this->val_panel) {
+            this->val_panel->set_text(text_panel->get_text((int)(short)line_num));
+        }
+    }
+}
+
+char* TDropDownPanel::currentLine() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004751C0
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->currentLine();
+    }
+    return nullptr;
+}
+
+void TDropDownPanel::set_sorted(int sorted) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475210
+    if (this->list_panel) {
+        this->list_panel->sorted = sorted;
+    }
+}
+
+int TDropDownPanel::get_sorted() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475230
+    if (this->list_panel) {
+        return this->list_panel->sorted;
+    }
+    return 0;
 }
 
 // Decomp @ 0x00475380: get_line() - returns current line index
@@ -484,6 +565,22 @@ long TDropDownPanel::get_id(long line_num) {
         return this->list_panel->get_id(line_num);
     }
     return 0;
+}
+
+char* TDropDownPanel::get_text() {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004753E0
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->currentLine();
+    }
+    return nullptr;
+}
+
+char* TDropDownPanel::get_text(long line_num) {
+    // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475400
+    if (this->list_panel) {
+        return this->list_panel->get_text(line_num);
+    }
+    return nullptr;
 }
 
 void TDropDownPanel::set_val_text_color(unsigned long c1, unsigned long c2) {

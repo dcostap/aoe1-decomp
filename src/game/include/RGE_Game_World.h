@@ -76,13 +76,22 @@ public:
     // Non-virtual methods
     void reset_object_count();
     void reset_player_visible_maps();
+    void reset_communications(TCommunications_Handler* param_1);
     void update_mutual_allies();
+    void set_game_speed(float param_1);
     void set_map_visible(uchar param_1);
     void set_map_fog(uchar param_1);
     void selectNextComputerPlayer(int param_1);
+    void useComputerPlayerUpdateTime(ulong param_1);
+    int computerPlayerUpdateTimeAvailable();
     void update_sounds(ulong param_1);
     void update_sprites(ulong param_1);
     int initializePathingSystem();
+    int is_player_turn(int param_1);
+    ulong get_accum_time_delta(int param_1);
+    int difficultyLevel();
+    int maxNumberObjects();
+    int maxNumberNegativeObjects();
     int numberObjects();
     int numberNegativeObjects();
     RGE_Static_Object* object(int param_1);
