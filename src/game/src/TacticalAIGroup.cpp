@@ -261,7 +261,7 @@ int TacticalAIGroup::removeUnboardedUnits(TribeTacticalAIModule* param_1, TribeM
             } else if ((this->commanderValue != -1) && (param_2 != nullptr) && (param_2->player != nullptr)) {
                 param_2->player->command_remove_from_group(this->commanderValue, unitId);
             }
-            // TODO: STUB - TribeTacticalAIModule::stopUnit declaration is missing in current headers.
+            param_1->stopUnit(unitId, 100);
             this->unitsValue[i] = -1;
             this->unitsOriginalHitPointsValue[i] = -1;
             this->numberUnitsValue -= 1;
@@ -463,15 +463,172 @@ int TacticalAIGroup::assistGroupType() const { return this->assistGroupTypeValue
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EB6E0
 void TacticalAIGroup::setAssistGroupType(int param_1) { this->assistGroupTypeValue = param_1; }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004EB6F0. TacticalAIGroup::task full transliteration is blocked on missing tactical helper graph.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004EB6F0. Partial parity transliteration.
 int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2, int param_3, int param_4, int param_5) {
-    // TODO: STUB - TacticalAIGroup::task is large and depends on many untranslated tactical helpers.
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
-    (void)param_5;
-    return 0;
+    if ((param_1 == nullptr) || (param_2 == nullptr)) {
+        return 0;
+    }
+    if (this->commanderValue == -1) {
+        return 0;
+    }
+    if ((param_3 != 9) && (param_3 != 0xE)) {
+        this->consecutiveGatherAttemptsValue = 0;
+    }
+
+    int totalHitPoints = 0;
+    switch (param_3) {
+        case 0:
+        case 1: {
+            for (int i = 0; i < 40; ++i) {
+                int unitID = this->unitsValue[i];
+                if (unitID == -1) {
+                    continue;
+                }
+                RGE_Static_Object* obj = param_2->object(unitID);
+                UnitAIModule* unitAI = (obj != nullptr) ? obj->unitAI() : nullptr;
+                if ((obj == nullptr) || (unitAI == nullptr)) {
+                    removeUnitByIndex(i, param_2);
+                    continue;
+                }
+                int hp = static_cast<int>(obj->hp);
+                this->unitsOriginalHitPointsValue[i] = hp;
+                totalHitPoints += hp;
+                param_1->stopUnit(unitID, 100);
+            }
+            this->inUseValue = 0;
+            return totalHitPoints;
+        }
+        case 2:
+        case 0x15: {
+            int count = 0;
+            int packedUnits[40];
+            for (int i = 0; i < 40; ++i) {
+                int unitID = this->unitsValue[i];
+                if (unitID == -1) {
+                    continue;
+                }
+                RGE_Static_Object* obj = param_2->object(unitID);
+                UnitAIModule* unitAI = (obj != nullptr) ? obj->unitAI() : nullptr;
+                if ((obj == nullptr) || (unitAI == nullptr)) {
+                    removeUnitByIndex(i, param_2);
+                    continue;
+                }
+                int hp = static_cast<int>(obj->hp);
+                this->unitsOriginalHitPointsValue[i] = hp;
+                totalHitPoints += hp;
+                packedUnits[count++] = unitID;
+                if (this->playNumberValue == -1) {
+                    if ((this->subTypeValue == 0) || (this->subTypeValue == 4)) {
+                        param_1->taskDefender(unitID, this->targetValue, 2.0f, 100);
+                    } else {
+                        if (param_3 == 0x15) {
+                            param_1->moveUnit(unitID, this->targetLocationValue.x, this->targetLocationValue.y, 100);
+                        } else {
+                            int targetOwner = -1;
+                            RGE_Static_Object* targetObj = param_2->object(this->targetValue);
+                            if ((targetObj != nullptr) && (targetObj->owner != nullptr)) {
+                                targetOwner = targetObj->owner->id;
+                            }
+                            param_1->taskAttacker(unitID,
+                                                  this->targetLocationValue.x,
+                                                  this->targetLocationValue.y,
+                                                  this->targetValue,
+                                                  targetOwner,
+                                                  this->attackWaypoints,
+                                                  this->numberAttackWaypointsValue,
+                                                  this->commanderValue,
+                                                  0);
+                        }
+                    }
+                }
+            }
+            if ((this->playNumberValue != -1) && (count > 0)) {
+                param_1->taskPlay(this->commanderValue,
+                                  packedUnits,
+                                  count,
+                                  this->targetValue,
+                                  this->playNumberValue,
+                                  this->attackWaypoints,
+                                  this->numberAttackWaypointsValue);
+                return 0;
+            }
+            this->inUseValue = 1;
+            return totalHitPoints;
+        }
+        case 3: {
+            for (int i = 0; i < 40; ++i) {
+                int unitID = this->unitsValue[i];
+                if (unitID == -1) {
+                    continue;
+                }
+                RGE_Static_Object* obj = param_2->object(unitID);
+                UnitAIModule* unitAI = (obj != nullptr) ? obj->unitAI() : nullptr;
+                if ((obj == nullptr) || (unitAI == nullptr)) {
+                    removeUnitByIndex(i, param_2);
+                    continue;
+                }
+                param_1->moveUnit(unitID, this->retreatLocationValue.x, this->retreatLocationValue.y, 100);
+            }
+            return 1;
+        }
+        case 4: {
+            for (int i = 0; i < 40; ++i) {
+                int unitID = this->unitsValue[i];
+                if (unitID == -1) {
+                    continue;
+                }
+                RGE_Static_Object* obj = param_2->object(unitID);
+                UnitAIModule* unitAI = (obj != nullptr) ? obj->unitAI() : nullptr;
+                if ((obj == nullptr) || (unitAI == nullptr)) {
+                    removeUnitByIndex(i, param_2);
+                    continue;
+                }
+                int hp = static_cast<int>(obj->hp);
+                this->unitsOriginalHitPointsValue[i] = hp;
+                totalHitPoints += hp;
+                if ((param_5 == 0) && (unitAI->currentAction() != -1)) {
+                    continue;
+                }
+                int distance = static_cast<int>(obj->distance_to_position(this->targetLocationValue.x,
+                                                                          this->targetLocationValue.y,
+                                                                          this->targetLocationValue.z));
+                int priority = param_1->calculatePriority(static_cast<float>(distance));
+                float defendDistance = static_cast<float>((this->targetTypeValue == 0x6D) ? param_1->strategicNumber(0x16)
+                                                                                           : param_1->strategicNumber(0x39));
+                param_1->taskDefender(unitID, this->targetValue, defendDistance, priority);
+            }
+            this->inUseValue = 1;
+            return totalHitPoints;
+        }
+        case 5:
+        case 6:
+        case 0xC:
+        case 0x13: {
+            for (int i = 0; i < 40; ++i) {
+                int unitID = this->unitsValue[i];
+                if (unitID == -1) {
+                    continue;
+                }
+                RGE_Static_Object* obj = param_2->object(unitID);
+                UnitAIModule* unitAI = (obj != nullptr) ? obj->unitAI() : nullptr;
+                if ((obj == nullptr) || (unitAI == nullptr)) {
+                    removeUnitByIndex(i, param_2);
+                    continue;
+                }
+                int hp = static_cast<int>(obj->hp);
+                this->unitsOriginalHitPointsValue[i] = hp;
+                totalHitPoints += hp;
+                if ((param_5 == 0) && (unitAI->currentAction() != -1)) {
+                    continue;
+                }
+                param_1->taskDefender(unitID, this->targetValue, 2.0f, this->priorityValue);
+            }
+            this->inUseValue = 1;
+            return totalHitPoints;
+        }
+        default:
+            return 0;
+    }
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004ECD80
