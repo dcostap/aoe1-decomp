@@ -3636,7 +3636,7 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 254 — Panel text + button controls parity (118 missing functions combined)
 - [x] Assigned to agent (worker-2, clone_2)
-- [ ] Finished
+- [ ] Finished — RETRYING (worker only added #include wiring, 4 lines. Redispatching with explicit transliteration instructions)
 - Goal: Two panel control types are barely implemented:
   - pnl_txt.cpp.decomp: 67 functions, only 6 offset refs in Pnl_txt.cpp = 61 missing
   - pnl_btn.cpp.decomp: 57 functions, NO impl = 57 missing
