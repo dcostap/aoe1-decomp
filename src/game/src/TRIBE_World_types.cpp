@@ -1518,14 +1518,14 @@ void RGE_Scenario_Header::save(int p1) {
 
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
     : RGE_Scenario_Header((RGE_Scenario*)scenario) {
-    // Source of truth: tscenaro.cpp.decomp @ 0x0052A990
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052A990
     this->any_sp_victory = tribe_scenario_any_sp_victory(scenario);
     this->active_player_count = rge_scenario_active_player_count((RGE_Scenario*)scenario);
 }
 
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(int p1)
     : RGE_Scenario_Header(p1) {
-    // Source of truth: tscenaro.cpp.decomp @ 0x0052A9F0
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052A9F0
     this->any_sp_victory = 0;
     this->active_player_count = 0;
     if (this->error_code == 0) {
@@ -1535,12 +1535,12 @@ TRIBE_Scenario_Header::TRIBE_Scenario_Header(int p1)
 }
 
 long TRIBE_Scenario_Header::get_size() {
-    // Source of truth: tscenaro.cpp.decomp @ 0x0052AA70
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052AA70
     return RGE_Scenario_Header::get_size() + 8;
 }
 
 void TRIBE_Scenario_Header::save(int p1) {
-    // Source of truth: tscenaro.cpp.decomp @ 0x0052AA80
+    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052AA80
     RGE_Scenario_Header::save(p1);
     rge_write(p1, &this->any_sp_victory, 4);
     rge_write(p1, &this->active_player_count, 4);
