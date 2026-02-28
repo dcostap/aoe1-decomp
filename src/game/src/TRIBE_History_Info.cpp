@@ -8,7 +8,7 @@
 // Source of truth: t_histry.cpp.decomp
 
 TRIBE_History_Info::TRIBE_History_Info(int param_1) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC730
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC730
     this->history = nullptr;
     this->events = nullptr;
     this->number_of_entries = 0;
@@ -20,7 +20,7 @@ TRIBE_History_Info::TRIBE_History_Info(int param_1) {
 }
 
 TRIBE_History_Info::~TRIBE_History_Info() {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC760
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC760
     if (this->history != nullptr) {
         free(this->history);
     }
@@ -33,7 +33,7 @@ TRIBE_History_Info::~TRIBE_History_Info() {
 }
 
 void TRIBE_History_Info::save(int param_1) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC7A0
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC7A0
     rge_write(param_1, &this->number_of_entries, 4);
     rge_write(param_1, &this->number_of_events, 4);
     rge_write(param_1, &this->max_number_of_entries, 4);
@@ -50,7 +50,7 @@ void TRIBE_History_Info::save(int param_1) {
 }
 
 void TRIBE_History_Info::load(int param_1) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC840
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC840
     rge_read(param_1, &this->number_of_entries, 4);
     rge_read(param_1, &this->number_of_events, 4);
     rge_read(param_1, &this->max_number_of_entries, 4);
@@ -68,7 +68,7 @@ void TRIBE_History_Info::load(int param_1) {
 }
 
 void TRIBE_History_Info::add_history_entry(uchar param_1, uchar param_2) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC8E0
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC8E0
     if ((long)(unsigned long)this->max_number_of_entries <= this->number_of_entries) {
         long old_size = this->max_number_of_entries;
         this->max_number_of_entries = old_size + 0x3c;
@@ -86,7 +86,7 @@ void TRIBE_History_Info::add_history_entry(uchar param_1, uchar param_2) {
 }
 
 void TRIBE_History_Info::add_history_event(uchar param_1) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC990
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC990
     if (this->number_of_entries > 0) {
         TRIBE_History_Events* evt = (TRIBE_History_Events*)calloc(1, 0x10);
         evt->next = this->events;
@@ -98,17 +98,17 @@ void TRIBE_History_Info::add_history_event(uchar param_1) {
 }
 
 long TRIBE_History_Info::get_history_entry_num() {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC950
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC950
     return this->number_of_entries;
 }
 
 long TRIBE_History_Info::get_history_event_num() {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC9E0
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC9E0
     return this->number_of_events;
 }
 
 uchar TRIBE_History_Info::get_history_entry(uchar param_1, long param_2) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC960
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC960
     if (param_2 < this->number_of_entries && param_2 >= 0 && param_1 == 0) {
         return this->history[param_2].population;
     }
@@ -116,7 +116,7 @@ uchar TRIBE_History_Info::get_history_entry(uchar param_1, long param_2) {
 }
 
 uchar TRIBE_History_Info::get_history_event(long param_1, uchar* param_2, long* param_3) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CC9F0
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CC9F0
     TRIBE_History_Events* evt = this->events;
     if (evt == nullptr) return 0;
     do {
@@ -131,7 +131,7 @@ uchar TRIBE_History_Info::get_history_event(long param_1, uchar* param_2, long* 
 }
 
 uchar TRIBE_History_Info::get_history_event(long param_1, uchar* param_2) {
-    // Source of truth: t_histry.cpp.decomp @ 0x004CCA30
+    // Fully verified. Source of truth: t_histry.cpp.decomp @ 0x004CCA30
     TRIBE_History_Events* evt = this->events;
     if (evt == nullptr) return 0;
     do {
