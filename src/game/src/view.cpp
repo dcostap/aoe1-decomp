@@ -63,8 +63,7 @@ static const float kView_Scroll_Factor = 0.0625f; // Source of truth: view.cpp.a
 static const float kView_Pick_Offset = 0.5f;      // Source of truth: view.cpp.asm uses DAT_005776c0 (=-0.5), i.e. +0.5 bias.
 static const float kView_Cliff_Brush_Snap_Scale = 0.33333334f; // Source of truth: view.cpp.asm uses DAT_005776b8.
 
-static int rge_view_get_border_edge_pictures(
-    RGE_View* self,
+int RGE_View::get_border_edge_pictures(
     uchar border_type,
     uchar tile_type,
     uchar border_shape_bits,
@@ -74,37 +73,37 @@ static int rge_view_get_border_edge_pictures(
     int* bottom_index,
     int* right_index,
     int* center_index) {
-    if (left_index) *left_index = -1;
-    if (bottom_index) *bottom_index = -1;
-    if (right_index) *right_index = -1;
-    if (center_index) *center_index = -1;
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00539C80
+    *left_index = -1;
+    *right_index = -1;
+    *bottom_index = -1;
+    *center_index = -1;
 
-    if (self == nullptr || self->map == nullptr || border_type >= 16) {
+    if (this->map == nullptr || border_type >= 16) {
         return 0;
     }
-    if (self->map->border_types[border_type].shape == nullptr) {
+    if (this->map->border_types[border_type].shape == nullptr) {
         return 0;
     }
     if (border_shape_bits == 0) {
         return 0;
     }
 
-    // Source of truth: view.cpp.decomp @ 0x00539C80.
     if ((border_shape_bits & 0x01) != 0) {
-        short s = self->get_border_picture(border_type, tile_type, 0x01, col, row);
-        if (left_index) *left_index = (int)s;
+        short s = this->get_border_picture(border_type, tile_type, 0x01, col, row);
+        *left_index = (int)s;
     }
     if ((border_shape_bits & 0x02) != 0) {
-        short s = self->get_border_picture(border_type, tile_type, 0x04, col, row);
-        if (center_index) *center_index = (int)s;
+        short s = this->get_border_picture(border_type, tile_type, 0x04, col, row);
+        *center_index = (int)s;
     }
     if ((border_shape_bits & 0x04) != 0) {
-        short s = self->get_border_picture(border_type, tile_type, 0x03, col, row);
-        if (right_index) *right_index = (int)s;
+        short s = this->get_border_picture(border_type, tile_type, 0x03, col, row);
+        *right_index = (int)s;
     }
     if ((border_shape_bits & 0x08) != 0) {
-        short s = self->get_border_picture(border_type, tile_type, 0x02, col, row);
-        if (bottom_index) *bottom_index = (int)s;
+        short s = this->get_border_picture(border_type, tile_type, 0x02, col, row);
+        *bottom_index = (int)s;
     }
     return 1;
 }
@@ -2775,8 +2774,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, 
                 draw_terrain = this->map->border_types[border_type].draw_tile;
             }
         } else {
-            if (rge_view_get_border_edge_pictures(
-                    this,
+            if (this->get_border_edge_pictures(
                     border_type,
                     tile->tile_type,
                     border_shape,
@@ -2874,8 +2872,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, uchar vis, short x, short y, short col, 
             center_index = -1;
         }
     } else {
-        if (!rge_view_get_border_edge_pictures(
-                this,
+        if (!this->get_border_edge_pictures(
                 border_type,
                 tile->tile_type,
                 tile->border_shape,

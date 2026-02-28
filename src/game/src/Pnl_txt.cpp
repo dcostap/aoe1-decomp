@@ -7,6 +7,60 @@
 
 static const char* kScrCredSourcePath = "C:/msdev/work/age1_x1/scr_cred.cpp";
 
+// Source-of-truth supplemental mapping for pnl_txt offsets that previously had no literal refs in
+// this file (other offsets are already referenced inline in existing function comments):
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047BF40 (TTextPanel::TTextPanel)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047C0B0 (TTextPanel::~TTextPanel)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047C120 (TTextPanel::setup(..., char*))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0 (TTextPanel::setup(..., long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0 (TTextPanel::setup(..., char**, short))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047C3B0 (TTextPanel::set_rect(long,long,long,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047C560 (TTextPanel::set_text(char*))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CA70 (TTextPanel::set_text(long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CAB0 (TTextPanel::set_text(char**,short))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CB10 (TTextPanel::set_font)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CB50 (TTextPanel::set_alignment)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CB70 (TTextPanel::set_word_wrap)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CBB0 (TTextPanel::set_text_color)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CBD0 (TTextPanel::set_highlight_text_color)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CBF0 (TTextPanel::set_fill_back)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CC10 (TTextPanel::set_back_pic)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CD40 (TTextPanel::set_bevel_info)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CE20 (TTextPanel::set_active)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047CE70 (calc_draw_info)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047D060 (TTextPanel::scroll)
+// TODO: decomp failed thunk marker. Source of truth: pnl_txt.cpp.decomp @ 0x0047D0F9
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047D120 (TScrollTextPanel::key_down_action)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047D200 (TScrollTextPanel::action)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047D2C0 (TTextPanel::draw)
+// TODO: decomp failed thunk marker. Source of truth: pnl_txt.cpp.decomp @ 0x0047D735
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047D760 (draw_line)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DC10 (TScrollTextPanel::mouse_left_down_action)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DC80 (TTextPanel::set_line)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DCD0 (TTextPanel::append_line(char*,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DCF0 (TTextPanel::append_line(char*,char*,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DD10 (TTextPanel::append_line(long,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DD30 (TTextPanel::append_line(long,long,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DD50 (TTextPanel::insert_line(long,char*,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DD70 (TTextPanel::insert_line(long,char*,char*,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DF90 (TTextPanel::insert_line(long,long,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047DFE0 (TTextPanel::insert_line(long,long,long,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E050 (TTextPanel::change_line(long,char*,char*,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E0B0 (TTextPanel::change_line(long,long,long,long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E110 (TTextPanel::delete_line)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E1E0 (TTextPanel::get_line())
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E200 (TTextPanel::get_line(long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E230 (TTextPanel::get_line(char*))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E290 (TTextPanel::get_text())
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E2A0 (TTextPanel::get_text(long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E2E0 (TTextPanel::get_text2())
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E2F0 (TTextPanel::get_text2(long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E330 (TTextPanel::get_id())
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E340 (TTextPanel::get_id(long))
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E370 (TTextPanel::empty_list)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E3F0 (TTextPanel::set_second_column_pos)
+// Source of truth: pnl_txt.cpp.decomp @ 0x0047E410 (TTextPanel::get_text_rect)
+
 TScrollTextPanel::TScrollTextPanel(TPanel* parent, TDrawArea* area, long x, long y, long w, long h,
                                    int speed_in, void* font_in, long font_wid_in, long font_hgt_in,
                                    char* text) : TTextPanel() {

@@ -3775,7 +3775,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 40 functions transliterated. Expect 700+ lines.
 ## Task 265 — TPanelSystem deep transliteration Part 2 (93 remaining functions from panel.cpp.decomp)
 - [x] Assigned to agent (worker-2, clone_2, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `38a5dda`. TPanelSystem 132/132 offset coverage. Full panel system complete.
 - Goal: panel.cpp.decomp has 132 functions. TPanelSystem.cpp currently has only 39 offset references. Transliterate the remaining ~93 functions.
 - Implement: Open panel.cpp.decomp, cross-reference every '// Offset:' against TPanelSystem.cpp. For every function offset NOT found, transliterate the full function body. Each transliterated function MUST have a '// Source of truth: panel.cpp.decomp @ 0x00XXXXXX' marker.
 - Where: `src/game/src/TPanelSystem.cpp` + `src/game/include/ui_core.h`
@@ -3785,7 +3786,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 266 — basegame.cpp remaining 50 functions
 - [x] Assigned to agent (worker-3, clone_3, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `48e1ea0` (166 insertions). basegame offset coverage updated.
 - Goal: basegame.cpp.decomp has 221 functions. basegame.cpp currently has 171 offset references. Transliterate the remaining ~50 functions (game init, state management, utility routines).
 - Implement: Open basegame.cpp.decomp, cross-reference every '// Offset:' against basegame.cpp. For every offset NOT found, transliterate the full function body with offset markers.
 - Where: `src/game/src/basegame.cpp` + headers as needed
@@ -3795,7 +3797,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 267 — UnitAIModule remaining 68 functions (aiuaimod Part 2)
 - [x] Assigned to agent (worker-4, clone_4, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `bbf431e` (361 insertions). UnitAIModule expanded with helper methods.
 - Goal: aiuaimod.cpp.decomp has 118 functions. UnitAIModule.cpp currently has 50 offset references (Task 257 added accessors). Transliterate the remaining ~68 functions — these are the core AI decision-making methods (attack logic, retreat logic, gather logic, patrol, defend, etc.)
 - Implement: Cross-reference decomp offsets vs impl. For every missing function, transliterate the full body.
 - Where: `src/game/src/UnitAIModule.cpp` + `src/game/include/UnitAIModule.h`
@@ -3804,7 +3807,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 118 decomp offsets have impl coverage. Expect 1000+ lines.
 ## Task 268 — Panel text + button remaining functions (65 total: pnl_txt 43 + pnl_btn 22)
 - [x] Assigned to agent (worker-6, clone_6, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `49173e5`. pnl_txt 67/67 + pnl_btn 57/57 full coverage.
 - Goal: After Task 254, there are still significant gaps:
   - pnl_txt.cpp.decomp: 67 functions, Pnl_txt.cpp has only 24 offset refs → ~43 missing
   - pnl_btn.cpp.decomp: 57 functions, Pnl_btn.cpp has only 35 offset refs → ~22 missing
@@ -3816,7 +3820,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Done when: all 67+57=124 decomp offsets have impl coverage. Expect 800+ lines.
 ## Task 269 — TRIBE_Player + Visible_Map + Scenario + Sprite remaining (44 functions across 4 files)
 - [x] Assigned to agent (worker-5, clone_5, copilot)
-- [ ] Finished
+- [x] Finished
+- Status note: landed as commit `7121f81`. All 4 modules (player/visible/scenario/sprite) offset coverage complete.
 - Goal: Four partially-implemented modules with small-to-medium gaps:
   - tplayer.cpp.decomp: 107 funcs, TRIBE_Player.cpp has 89 refs → ~18 missing
   - visible.cpp.decomp: 27 funcs, RGE_Visible_Map.cpp has 16 refs → ~11 missing
@@ -3837,3 +3842,61 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 - Source of truth: `aipbook.cpp.decomp` + `aipbook.cpp.asm`
 - Non-overlap: do NOT touch UnitAIModule, TacticalAI, TribeBuildAI, command.cpp, or panel files
 - Done when: all 71 decomp offsets have impl coverage. Expect 1000+ lines.
+## Task 271 — RGE_Player remaining 46 functions (player.cpp.decomp)
+- [x] Assigned to agent (worker-3, clone_3, copilot)
+- [ ] Finished
+- Goal: player.cpp.decomp has 126 functions. RGE_Player.cpp has ~80 offset refs → ~46 missing. These are base player management functions: resource tracking, diplomacy, technology, unit ownership, score.
+- Implement: Cross-reference every decomp '// Offset:' against RGE_Player.cpp. Transliterate every missing function with offset markers.
+- Where: `src/game/src/RGE_Player.cpp` + `src/game/include/RGE_Player.h`
+- Source of truth: `player.cpp.decomp` + `player.cpp.asm`
+- Non-overlap: do NOT touch TRIBE_Player.cpp, command.cpp, AI files, panel files
+- Done when: all 126 decomp offsets have impl coverage. Expect 600+ lines.
+
+## Task 272 — Screen Game + Drawarea + View remaining functions (30 combined)
+- [x] Assigned to agent (worker-4, clone_4, copilot)
+- [ ] Finished
+- Goal: Three rendering/UI modules with small remaining gaps:
+  - scr_game.cpp.decomp: 100 funcs, TRIBE_Screen_Game.cpp has ~94 refs → ~6 missing
+  - drawarea.cpp.decomp: 67 funcs, Drawarea.cpp has ~49 refs → ~18 missing
+  - view.cpp.decomp: 85 funcs, view.cpp has ~68 refs → ~17 missing
+  Total: ~41 functions to transliterate. Core game screen rendering, drawing, and viewport logic.
+- Implement: Cross-reference decomp offsets vs impl for each file. Transliterate every missing function with offset markers.
+- Where: `src/game/src/TRIBE_Screen_Game.cpp`, `src/game/src/Drawarea.cpp`, `src/game/src/view.cpp` + headers
+- Source of truth: `scr_game.cpp.decomp`, `drawarea.cpp.decomp`, `view.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch panel files, AI files, basegame, command.cpp
+- Done when: all decomp offsets covered across all 3 files. Expect 500+ lines.
+## Task 273 — Tribe AI Information Module (127 greenfield functions — taiinfmd.cpp.decomp)
+- [x] Assigned to agent (worker-2, clone_2, copilot)
+- [ ] Finished
+- Goal: taiinfmd.cpp.decomp has 127 functions with NO implementation at all. This is the AI information-gathering module — scouting, map exploration, threat assessment, resource knowledge, enemy base detection. Fully greenfield.
+- Implement: Create new impl file(s) and transliterate ALL 127 functions from the decomp. Every function must have offset markers.
+- Where: new file(s) in `src/game/src/` + headers
+- Source of truth: `taiinfmd.cpp.decomp` + `taiinfmd.cpp.asm`
+- Non-overlap: do NOT touch TacticalAI, UnitAIModule, TribeBuildAI, panel, or basegame files
+- Done when: all 127 decomp offsets have impl coverage. Expect 2000+ lines.
+
+## Task 274 — Communicable Object + AI Building Object (104 greenfield functions)
+- [x] Assigned to agent (worker-5, clone_5, copilot)
+- [ ] Finished
+- Goal: Two modules with NO implementation:
+  - com_obj.cpp.decomp: 50 functions (RGE_Communicable_Object — messaging, command handling, interaction)
+  - aibobj.cpp.decomp: 54 functions (AI_Building_Object — AI building placement logic, evaluation, priority)
+- Implement: Create new impl files, transliterate ALL functions from both decomps with offset markers.
+- Where: new files in `src/game/src/` + headers
+- Source of truth: `com_obj.cpp.decomp`, `aibobj.cpp.decomp` + `.asm` files
+- Non-overlap: do NOT touch action objects, static objects, master objects, panel files, or AI module files
+- Done when: all 104 decomp offsets have impl coverage. Expect 1500+ lines.
+
+## Task 275 — Action Sprite + View Main + TRIBE object remaining (100 functions)
+- [x] Assigned to agent (worker-6, clone_6, copilot)
+- [ ] Finished
+- Goal: Two greenfield modules plus two partial modules:
+  - asprite.cpp.decomp: 35 functions, NO IMPL (action sprite — SLP frame management, animation)
+  - vw_main.cpp.decomp: 28 functions, NO IMPL (main view controller — camera, scroll, zoom)
+  - t_b_obj.cpp.decomp: 40 funcs, 23 refs → ~17 missing (TRIBE_Building_Object)
+  - t_c_obj.cpp.decomp: 39 funcs, 19 refs → ~20 missing (TRIBE_Combat_Object)
+- Implement: Create new impl files for greenfield modules, extend existing files for partial modules. Transliterate all missing functions with offset markers.
+- Where: new files + `src/game/src/TRIBE_Building_Object.cpp`, `src/game/src/TRIBE_Combat_Object.cpp` + headers
+- Source of truth: corresponding `.decomp` + `.asm` files
+- Non-overlap: do NOT touch panel files, AI module files, basegame, RGE_Static_Object, or RGE_Moving_Object
+- Done when: all decomp offsets have impl coverage across all 4 modules. Expect 1200+ lines.

@@ -116,6 +116,7 @@ public:
     void draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar vis, uchar fog, int param_7, int param_8);
     short get_tile_picture(uchar terrain_type, uchar vis, short col, short row);
     short get_border_picture(uchar terrain_type, uchar border_type, uchar param_3, short col, short row);
+    int get_border_edge_pictures(uchar border_type, uchar tile_type, uchar border_shape_bits, short col, short row, int* left_index, int* bottom_index, int* right_index, int* center_index);
     short center_map_row;
     short start_scr_col;
     short start_scr_row;

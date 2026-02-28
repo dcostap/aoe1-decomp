@@ -114,6 +114,7 @@ public:
     int researchAvailable(int tech_id);
     int researchEverAvailable(int tech_id);
     uchar researchState(int tech_id);
+    void objectCost(int object_id, int unused, ResourceItem* resource_cost, int unused2);
     void researchCost(int tech_id, int unused, ResourceItem* resource_cost, int unused2);
     void interface_tech_avail(Item_Avail** out_items, short* out_count, short button_location);
     void interface_item_avail(Item_Avail** out_items, short* out_count, short button_location);

@@ -14,6 +14,10 @@ struct RGE_Visible_Map {
     void unexplore_terrain(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
     int explore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
     void unexplore_terrain_sq(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    void set_all(uchar param_1);
+    void explore_all();
+    void recomputeExplored();
+    ulong checksum_visible_inputs();
 
     long checksumVisible();
     ulong checksumUnifiedVisible();
