@@ -45,6 +45,7 @@ public:
     void set_wrap(int param_1);
     void set_icon(int param_1);
     void set_justification(int param_1, int param_2, int param_3);
+    void show_message(int param_1, char* param_2, unsigned char param_3, unsigned char param_4, void* param_5, long param_6, long param_7);
     void show_message2(int param_1, char* param_2, unsigned long param_3, unsigned long param_4, void* param_5, long param_6, long param_7, TShape* param_8, int param_9, TShape* param_10, int param_11);
     void remove_message();
 

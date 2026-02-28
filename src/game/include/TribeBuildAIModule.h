@@ -2,8 +2,13 @@
 #include "common.h"
 #include "BuildAIModule.h"
 
+class ResourceItem;
+
 class TribeBuildAIModule : public BuildAIModule {
 public:
+    TribeBuildAIModule(void* param_1, int param_2);
+    TribeBuildAIModule(int param_1, int param_2);
+
     // Virtuals (best-effort)
     virtual ~TribeBuildAIModule(); // vt[0] (0x0)
     virtual int loggingHistory(); // vt[1] (0x4)
@@ -32,6 +37,22 @@ public:
     int cancelTrainUnit(int param_1, int param_2, int param_3, int param_4);
     int addResearch(int param_1, int param_2, int param_3);
     int cancelResearch(int param_1, int param_2, int param_3, int param_4);
+    void initialize();
+    void skipNextBuildListItem();
+    BuildItem* nextBuildableItem(int param_1);
+    int nextBuildListItemCategory();
+    int blockingResource();
+    int mostNeededResource(ResourceItem* param_1, int param_2);
+    int addItem(RGE_Static_Object* param_1, int param_2);
+    int removeBuiltItem(int param_1);
+    int isAgeResearch(int param_1);
+    int insert(int param_1, int param_2, int param_3);
+    int insertResearch(int param_1, int param_2);
+    int insertGathererPercentage(int param_1, int param_2, int param_3);
+    int allBuilt(int param_1, int param_2);
+    int readyToResearch(int param_1, int param_2);
+    void unskipBuildList(int param_1, int param_2);
+    BuildItem* buildItem(int param_1, int param_2, int param_3);
 
     TribeMainDecisionAIModule* md;
 };

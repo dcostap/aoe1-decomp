@@ -73,11 +73,13 @@ TMessagePanel::TMessagePanel() : TPanel() {
 }
 
 TMessagePanel::TMessagePanel(void* param_1, long param_2, long param_3) : TPanel() {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00478F40
     init_fields(this, param_1, param_2, param_3);
     this->set_active(0);
 }
 
 TMessagePanel::~TMessagePanel() {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479050
     if (this->image_clip_region != nullptr) {
         DeleteObject((HGDIOBJ)this->image_clip_region);
         this->image_clip_region = nullptr;
@@ -138,23 +140,37 @@ void TMessagePanel::set_rect(long param_1, long param_2, long param_3, long para
 }
 
 void TMessagePanel::set_justification(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479270
     this->horz_just = (JustType)param_1;
     this->vert_just = (JustType)param_2;
     this->word_wrap = param_3;
 }
 
-void TMessagePanel::set_message(char* param_1) {
-    if (param_1 == nullptr) {
-        this->clear_message();
-        return;
+void TMessagePanel::show_message(int param_1, char* param_2, unsigned char param_3, unsigned char param_4, void* param_5, long param_6, long param_7) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x004792A0
+    const char* message = (param_2 != nullptr) ? param_2 : "";
+
+    if ((this->showing_message != 0) && (this->message_type == (MessageType)param_1) && (strncmp(message, this->text, 0x1FF) == 0)) {
+        if ((param_5 == nullptr) || (param_5 == this->font)) {
+            return;
+        }
     }
 
-    this->message_type = InfoMessage;
+    if (param_5 != nullptr) {
+        this->font = param_5;
+        this->font_wid = param_6;
+        this->font_hgt = param_7;
+    }
+
+    this->message_type = (MessageType)param_1;
     clear_text_buffer(this);
-    strncpy(this->text, param_1, 0x1FF);
-    this->showing_message = 1;
+    strncpy(this->text, message, 0x1FF);
     this->display_changed_count = this->display_changed_count + 1;
-    this->start_time = debug_timeGetTime(kPnlMsgSourcePath, 0x9e);
+    this->showing_message = 1;
+    this->start_time = debug_timeGetTime(kPnlMsgSourcePath, 0x9E);
+    this->font_color = param_3;
+    this->index_color = 1;
+    this->back_color = param_4;
 
     if (this->ImageBuffer != nullptr) {
         this->render_to_image_buffer();
@@ -163,6 +179,14 @@ void TMessagePanel::set_message(char* param_1) {
     this->set_active(1);
     this->set_redraw(TPanel::Redraw);
     mark_parent_redraw(this);
+}
+
+void TMessagePanel::set_message(char* param_1) {
+    if (param_1 == nullptr) {
+        this->clear_message();
+        return;
+    }
+    show_message(InfoMessage, param_1, this->font_color, this->back_color, nullptr, 0, 0);
 }
 
 void TMessagePanel::set_message(int param_1) {
@@ -367,6 +391,7 @@ void TMessagePanel::draw() {
 }
 
 void TMessagePanel::get_true_render_rect(tagRECT* param_1) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479A10
     if (param_1 == nullptr) {
         return;
     }
@@ -584,6 +609,7 @@ int TMessagePanel::render_to_image_buffer() {
 }
 
 long TMessagePanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A160
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -593,6 +619,7 @@ long TMessagePanel::handle_mouse_down(uchar param_1, long param_2, long param_3,
 }
 
 long TMessagePanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A170
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -601,6 +628,7 @@ long TMessagePanel::handle_mouse_move(long param_1, long param_2, int param_3, i
 }
 
 long TMessagePanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A180
     (void)param_1;
     (void)param_2;
     (void)param_3;

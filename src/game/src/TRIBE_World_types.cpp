@@ -185,6 +185,8 @@ static void tribe_mark_cliff_dirty(TRIBE_Map* map, RGE_Static_Object* obj) {
 }
 
 // --- TRIBE_Map ---
+// Offset: 0x0050F410
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F410
 TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
     : RGE_Map(param_1, param_2, 0) { // Decomp passes 0 (false) for load_map
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Map::TRIBE_Map(binary) param_1=%d param_3=%d", param_1, (int)param_3);
@@ -206,6 +208,8 @@ TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
     tribe_init_cliff_master_table(this);
 }
 
+// Offset: 0x0050F760
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F760
 TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8)
     : RGE_Map(param_1, param_3, param_4, param_5, param_6, param_7, param_8) {
     // Source of truth: tmap.cpp.decomp
@@ -223,6 +227,8 @@ TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4,
     tribe_init_cliff_master_table(this);
 }
 
+// Offset: 0x0050F7A0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F7A0
 TRIBE_Map::~TRIBE_Map() {}
 void TRIBE_Map::data_load_random_map(int p1) {
     // Source of truth: tmap.cpp.decomp @ 0x0050F800.
@@ -338,6 +344,8 @@ void TRIBE_Map::change_terrain(short p1, short p2, uchar p3, RGE_Game_World* p4)
     }
 }
 
+// Offset: 0x0050FE90
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050FE90
 void TRIBE_Map::setup_cliff_type(long p1, long p2, long p3, long p4, long p5, long p6, long p7, long p8, float p9, float p10) {
     int index = (int)(p3 + (p2 + p1 * 4) * 4);
     TRIBE_Master_Cliff_Info* info = &this->cliff_master_table[index * 4 + p4 + 0x55];
@@ -353,6 +361,8 @@ void TRIBE_Map::setup_cliff_type(long p1, long p2, long p3, long p4, long p5, lo
     info->info.info[3] = p4;
 }
 
+// Offset: 0x00510C90
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x00510C90
 uchar TRIBE_Map::water(uchar p1) {
     if (p1 == 1) {
         return p1;
@@ -363,6 +373,8 @@ uchar TRIBE_Map::water(uchar p1) {
     return (uchar)(p1 == 4);
 }
 
+// Offset: 0x00510CB0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x00510CB0
 void TRIBE_Map::clean_borders(long p1, long p2, long p3, long p4, uchar p5) {
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -426,6 +438,8 @@ void TRIBE_Map::clean_borders(long p1, long p2, long p3, long p4, uchar p5) {
     }
 }
 
+// Offset: 0x0050FC40
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050FC40
 uchar TRIBE_Map::do_terrain_brush(long p1, long p2, long p3, uchar p4) {
     long x0 = p1 - p3;
     long x1 = p1 + p3;
@@ -457,6 +471,8 @@ uchar TRIBE_Map::do_terrain_brush(long p1, long p2, long p3, uchar p4) {
     return 1;
 }
 
+// Offset: 0x0050FD40
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050FD40
 uchar TRIBE_Map::do_terrain_brush_stroke(long p1, long p2, long p3, long p4, long p5, uchar p6) {
     RGE_Map::do_terrain_brush_stroke(p1, p2, p3, p4, p5, p6);
 
@@ -488,6 +504,8 @@ uchar TRIBE_Map::do_elevation_brush(long p1, long p2, long p3, uchar p4) {
     return RGE_Map::do_elevation_brush(p1, p2, p3, p4);
 }
 
+// Offset: 0x0050FDD0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050FDD0
 uchar TRIBE_Map::do_elevation_brush_stroke(long p1, long p2, long p3, long p4, long p5, uchar p6) {
     RGE_Map::do_elevation_brush_stroke(p1, p2, p3, p4, p5, p6);
 
@@ -914,6 +932,8 @@ uchar TRIBE_Map::do_cliff_brush(long p1, long p2, uchar p3, uchar p4) {
     return 1;
 }
 
+// Offset: 0x00510C10
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x00510C10
 uchar TRIBE_Map::do_cliff_brush_stroke(long p1, long p2, long p3, long p4, uchar p5, uchar p6) {
     if ((this->safe_cliff_x != p1 / 3) || (this->safe_cliff_y != p2 / 3)) {
         this->old_cliff_x = -1;
@@ -927,6 +947,8 @@ uchar TRIBE_Map::do_cliff_brush_stroke(long p1, long p2, long p3, long p4, uchar
     return 1;
 }
 
+// Offset: 0x0050F7C0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F7C0
 void TRIBE_Map::map_generate(RGE_Player* p1, RGE_Game_World* p2, RGE_Player_Info* p3, uchar* p4) {
     this->rge_game_world = p2;
     this->rge_player = p1;
@@ -939,6 +961,8 @@ void TRIBE_Map::map_generate(RGE_Player_Info* p1) {
     // Source of truth: tmap.cpp.decomp @ 0x0050F7F0 (intentional no-op).
 }
 
+// Offset: 0x0050F7B0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F7B0
 void TRIBE_Map::save(int p1) {
     RGE_Map::save(p1);
 }
@@ -961,6 +985,8 @@ void TRIBE_Map::delete_cliff(long p1, long p2) {
     tribe_delete_object_now(cliff);
 }
 
+// Offset: 0x00511000
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x00511000
 uchar TRIBE_Map::do_terrain_brush_check(long p1, long p2) {
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -1006,6 +1032,8 @@ uchar TRIBE_Map::do_terrain_brush_check(long p1, long p2) {
     return 1;
 }
 
+// Offset: 0x005110E0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x005110E0
 void TRIBE_Map::tribe_clean_elevation(long p1, long p2, long p3, long p4) {
     if (p1 < 0) {
         p1 = 0;
@@ -1030,6 +1058,8 @@ void TRIBE_Map::tribe_clean_elevation(long p1, long p2, long p3, long p4) {
     }
 }
 
+// Offset: 0x005111A0
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x005111A0
 void TRIBE_Map::tribe_clean_terrain(long p1, long p2, long p3, long p4, uchar p5, uchar p6) {
     (void)p5;
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
