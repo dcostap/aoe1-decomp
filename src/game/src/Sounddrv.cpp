@@ -17,18 +17,18 @@
 // TSound_Driver
 // ============================================================================
 
-// Offset: 0x004BC590
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC590
 TSound_Driver::TSound_Driver() {
     this->init_vars();
 }
 
-// Offset: 0x004BC5A0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC5A0
 TSound_Driver::TSound_Driver(void* wnd, char* path) {
     this->init_vars();
     this->init(wnd, path);
 }
 
-// Offset: 0x004BC5C0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC5C0
 TSound_Driver::~TSound_Driver() {
     this->close_mixer();
     if (this->ready != 0) {
@@ -46,7 +46,7 @@ TSound_Driver::~TSound_Driver() {
     }
 }
 
-// Offset: 0x004BC5D0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC5D0
 void TSound_Driver::init_vars() {
     this->start_volume = 1;
     this->ready = 0;
@@ -62,7 +62,7 @@ void TSound_Driver::init_vars() {
     this->path[0] = '\0';
 }
 
-// Offset: 0x004BC610
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC610
 int TSound_Driver::init(void* wnd, char* path) {
     DSBUFFERDESC dsBD;
     DSCAPS dscaps;
@@ -165,7 +165,7 @@ coop_ok:
     return 0;
 }
 
-// Offset: 0x004BC7C0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC7C0
 void TSound_Driver::exit() {
     this->close_mixer();
     if (this->ready != 0) {
@@ -183,7 +183,7 @@ void TSound_Driver::exit() {
     }
 }
 
-// Offset: 0x004BC810
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC810
 void TSound_Driver::set_path(char* p) {
     if (p == nullptr) {
         this->path[0] = '\0';
@@ -192,17 +192,17 @@ void TSound_Driver::set_path(char* p) {
     strcpy(this->path, p);
 }
 
-// Offset: 0x004BC850
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC850
 int TSound_Driver::driver_active() {
     return (int)this->ready;
 }
 
-// Offset: 0x004BC860
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC860
 long TSound_Driver::get_volume() {
     return this->volume;
 }
 
-// Offset: 0x004BC870
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC870
 void TSound_Driver::set_volume(long vol, int save) {
     if (save != 0) {
         this->volume = vol;
@@ -216,7 +216,7 @@ void TSound_Driver::set_volume(long vol, int save) {
     }
 }
 
-// Offset: 0x004BC8D0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC8D0
 int TSound_Driver::stream_file(char* filename, int loop, long vol) {
     char file_name2[260];
     if (this->ready == 0) return 0;
@@ -225,38 +225,38 @@ int TSound_Driver::stream_file(char* filename, int loop, long vol) {
     return result;
 }
 
-// Offset: 0x004BC930
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC930
 int TSound_Driver::set_stream_volume(long vol) {
     if (this->ready == 0) return 0;
     return ds_stream_volume(vol);
 }
 
-// Offset: 0x004BC950
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC950
 int TSound_Driver::pause_stream() {
     if (this->ready == 0) return 0;
     ds_stream_pause();
     return 1;
 }
 
-// Offset: 0x004BC960
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC960
 int TSound_Driver::resume_stream() {
     if (this->ready == 0) return 0;
     return ds_stream_resume();
 }
 
-// Offset: 0x004BC970
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC970
 int TSound_Driver::stop_stream() {
     if (this->ready == 0) return 0;
     return ds_stream_stop();
 }
 
-// Offset: 0x004BC980
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC980
 uint TSound_Driver::handle_messages(void* hwnd, uint msg, uint wParam, long lParam) {
     if (this->ready == 0) return 0;
     return ds_stream_messages(hwnd, msg, wParam, lParam);
 }
 
-// Offset: 0x004BC9B0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC9B0
 int TSound_Driver::add_to_play_list(TDigital* digital) {
     if (this->play_list_count != 255 && this->mute == 0) {
         this->sound_play_list[this->play_list_count] = digital;
@@ -266,19 +266,19 @@ int TSound_Driver::add_to_play_list(TDigital* digital) {
     return 0;
 }
 
-// Offset: 0x004BC9F0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC9F0
 void TSound_Driver::play_list() {
     for (int i = 0; i < this->play_list_count; i++) {
         this->sound_play_list[i]->play();
     }
 }
 
-// Offset: 0x004BCA20
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCA20
 void TSound_Driver::reset_play_list() {
     this->play_list_count = 0;
 }
 
-// Offset: 0x004BCA30
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCA30
 int TSound_Driver::open_mixer() {
     uint numDevs = mixerGetNumDevs();
     if (numDevs == 0) return 0;
@@ -340,7 +340,7 @@ int TSound_Driver::open_mixer() {
     return 0;
 }
 
-// Offset: 0x004BCBF0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCBF0
 void TSound_Driver::close_mixer() {
     if (this->mixer_open != 0) {
         if (this->start_volume != 1) {
@@ -359,7 +359,7 @@ void TSound_Driver::close_mixer() {
 // TDigital
 // ============================================================================
 
-// Offset: 0x004BCC40
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCC40
 TDigital::TDigital(TSound_Driver* driver, char* file, long resId) {
     this->init_vars();
     this->sound_system = driver;
@@ -370,7 +370,7 @@ TDigital::TDigital(TSound_Driver* driver, char* file, long resId) {
     }
 }
 
-// Offset: 0x004BCC80
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCC80
 TDigital::TDigital(TDigital* src) {
     this->init_vars();
     this->owner = src;
@@ -380,14 +380,14 @@ TDigital::TDigital(TDigital* src) {
     this->loop = src->loop;
 }
 
-// Offset: 0x004BCCB0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCCB0
 TDigital::~TDigital() {
     // Fully verified. Source of truth: sounddrv.cpp.asm @ 0x004BCCB0
     // Destructor is just `JMP TDigital::exit`.
     this->exit();
 }
 
-// Offset: 0x004BCCC0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCCC0
 void TDigital::init_vars() {
     this->sound_system = nullptr;
     this->owner = nullptr;
@@ -404,7 +404,7 @@ void TDigital::init_vars() {
     this->loop = 0;
 }
 
-// Offset: 0x004BCCF0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCCF0
 void TDigital::exit() {
     if (this->owner != nullptr) {
         this->owner->exit();
@@ -418,7 +418,7 @@ void TDigital::exit() {
     }
 }
 
-// Offset: 0x004BCD30
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BCD30
 int TDigital::load(char* file, long resId) {
     char file_with_path[260];
     _tag_wavheader wave_hdr;
@@ -661,7 +661,7 @@ int TDigital::load(char* file, long resId) {
     return 0;
 }
 
-// Offset: 0x004BD300
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD300
 void TDigital::unload() {
     TDigital* cur = this;
     while (cur->owner != nullptr) {
@@ -686,7 +686,7 @@ void TDigital::unload() {
     cur->failed = 0;
 }
 
-// Offset: 0x004BD370
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD370
 int TDigital::play() {
     TDigital* actual = this->owner;
     if (actual == nullptr) actual = this;
@@ -786,7 +786,7 @@ int TDigital::play() {
     return 1;
 }
 
-// Offset: 0x004BD490
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD490
 void TDigital::stop() {
     TDigital* cur = this;
     while (cur->owner != nullptr) {
@@ -798,7 +798,7 @@ void TDigital::stop() {
     }
 }
 
-// Offset: 0x004BD4C0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD4C0
 void TDigital::set_loop(short val) {
     if (val == 0) {
         this->loop = 0;
@@ -807,7 +807,7 @@ void TDigital::set_loop(short val) {
     }
 }
 
-// Offset: 0x004BD4E0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD4E0
 void TDigital::set_volume(long vol) {
     this->volume = vol;
     TDigital* actual = this->owner;
@@ -817,7 +817,7 @@ void TDigital::set_volume(long vol) {
     }
 }
 
-// Offset: 0x004BD510
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD510
 void TDigital::set_pitch(ulong p) {
     this->pitch = p;
     TDigital* actual = this->owner;
@@ -827,7 +827,7 @@ void TDigital::set_pitch(ulong p) {
     }
 }
 
-// Offset: 0x004BD540
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD540
 void TDigital::set_pan(long p) {
     this->pan = p;
     TDigital* actual = this->owner;
@@ -837,7 +837,7 @@ void TDigital::set_pan(long p) {
     }
 }
 
-// Offset: 0x004BD570
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD570
 int TDigital::is_playing() {
     TDigital* actual = this->owner;
     if (actual == nullptr) actual = this;
@@ -852,7 +852,7 @@ int TDigital::is_playing() {
     return 0;
 }
 
-// Offset: 0x004BD5C0
+// Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BD5C0
 int TDigital::add_to_play_list() {
     TSound_Driver* drv = this->sound_system;
     if (drv != nullptr && drv->mute == 0) {
@@ -860,3 +860,4 @@ int TDigital::add_to_play_list() {
     }
     return 0;
 }
+

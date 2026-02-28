@@ -69,6 +69,7 @@ static float vc_percent_explored(RGE_Player* player) {
     return (float)player->visible->numberTilesExploredValue / (float)player->visible->numberTotalTilesValue;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531750
 RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* param_1) {
     this->victory_list = nullptr;
     this->list_num = 0;
@@ -79,6 +80,7 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* param_1) {
     this->tot_victory_points = 0;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531AF0
 RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* param_1, int param_2, long* param_3, uchar param_4) {
     float save_version = 0.0f;
     this->victory_list = nullptr;
@@ -193,6 +195,7 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* param_1, int param_2,
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531B20
 RGE_Victory_Conditions::~RGE_Victory_Conditions() {
     while (this->victory_list != nullptr) {
         this->sub(this->victory_list);
@@ -206,6 +209,7 @@ RGE_Victory_Conditions::~RGE_Victory_Conditions() {
     this->player = nullptr;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531B70
 void RGE_Victory_Conditions::save(int param_1) {
     float save_version = 1.0f;
     rge_write(param_1, &save_version, 4);
@@ -261,6 +265,7 @@ void RGE_Victory_Conditions::save(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532930
 RGE_Victory_Entry* RGE_Victory_Conditions::add(uchar param_1, uchar param_2) {
     RGE_Victory_Entry* entry = (RGE_Victory_Entry*)calloc(1, sizeof(RGE_Victory_Entry));
     if (entry != nullptr) {
@@ -275,6 +280,7 @@ RGE_Victory_Entry* RGE_Victory_Conditions::add(uchar param_1, uchar param_2) {
     return entry;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532C10
 void RGE_Victory_Conditions::sub(RGE_Victory_Entry* param_1) {
     RGE_Victory_Entry* entry = this->victory_list;
     RGE_Victory_Entry** prev_next = &this->victory_list;
@@ -290,6 +296,7 @@ void RGE_Victory_Conditions::sub(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532F50
 RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(uchar param_1, uchar param_2) {
     RGE_Victory_Point_Entry* point = (RGE_Victory_Point_Entry*)calloc(1, sizeof(RGE_Victory_Point_Entry));
     if (point != nullptr) {
@@ -308,6 +315,7 @@ RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(uchar param_1, uchar 
     return point;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532FA0
 void RGE_Victory_Conditions::sub_point(RGE_Victory_Point_Entry* param_1) {
     RGE_Victory_Point_Entry* point = this->victory_point_list;
     RGE_Victory_Point_Entry** prev_next = &this->victory_point_list;
@@ -323,6 +331,7 @@ void RGE_Victory_Conditions::sub_point(RGE_Victory_Point_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531DB0
 void RGE_Victory_Conditions::check_for_victory() {
     long failed_group_num = 0;
     long curr_victory_group = 0;
@@ -380,6 +389,7 @@ void RGE_Victory_Conditions::check_for_victory() {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531E90
 uchar RGE_Victory_Conditions::update() {
     for (RGE_Victory_Point_Entry* point = this->victory_point_list; point != nullptr; point = point->next) {
         if (point->state != '\x03' && point->state != '\x01') {
@@ -397,6 +407,7 @@ uchar RGE_Victory_Conditions::update() {
     return this->victory;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531EF0
 void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* param_1) {
     RGE_Victory_Entry* entry = this->victory_list;
     while (entry != nullptr) {
@@ -408,6 +419,7 @@ void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531F30
 void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* param_1) {
     switch (param_1->command) {
     case '\0':
@@ -430,6 +442,11 @@ void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* par
     }
 }
 
+// TODO: STUB - decompiler split artifact block at 0x00531F71 is non-parity pseudo-code with undefined register state.
+// Source of truth: victory.cpp.decomp @ 0x00531F71
+void FUN_00531f71() {}
+
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00531F90
 void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* param_1) {
     switch (param_1->command) {
     case '\0':
@@ -473,6 +490,7 @@ void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532050
 void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* param_1) {
     RGE_Static_Object* obj = param_1->target_obj;
     if (obj == nullptr) {
@@ -506,6 +524,7 @@ void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532110
 void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* param_1) {
     if (this->player == nullptr || this->player->objects == nullptr) {
         return;
@@ -546,6 +565,7 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* param_1) {
     param_1->state = (count < param_1->number) ? '\0' : '\x02';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532220
 void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* param_1) {
     if (this->player == nullptr || this->player->objects == nullptr) {
         return;
@@ -590,6 +610,7 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* param_1) {
     param_1->state = (count < param_1->number) ? '\0' : '\x02';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005323B0
 void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* param_1) {
     if (param_1->target_obj != nullptr && param_1->target_obj->object_state == '\a') {
         param_1->state = '\x02';
@@ -597,6 +618,7 @@ void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005323D0
 void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* param_1) {
     if (param_1->state != '\0' || this->player == nullptr) {
         return;
@@ -637,6 +659,7 @@ void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* param_1)
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005324A0
 void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* param_1) {
     if (this->player == nullptr) {
         return;
@@ -678,12 +701,14 @@ void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* param_1) {
     param_1->state = '\x02';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532570
 void RGE_Victory_Conditions::handle_destroy_player(RGE_Victory_Entry* param_1) {
     if (param_1->target_player != nullptr) {
         param_1->state = (param_1->target_player->game_status == '\x02') ? '\x02' : '\0';
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005325A0
 void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* param_1) {
     RGE_Static_Object* obj = param_1->this_obj;
     if (obj == nullptr) {
@@ -705,6 +730,7 @@ void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532610
 void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* param_1) {
     RGE_Static_Object* obj = param_1->this_obj;
     RGE_Static_Object* target = param_1->target_obj;
@@ -735,6 +761,7 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005326F0
 void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* param_1) {
     RGE_Player* self = this->player;
     if (self == nullptr) {
@@ -761,6 +788,7 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* param_1) {
     param_1->state = ((float)param_1->count <= total) ? '\x02' : '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005327A0
 void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* param_1) {
     if (param_1->state != '\0' || this->player == nullptr) {
         return;
@@ -791,6 +819,7 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532880
 void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* param_1) {
     if (this->player == nullptr) {
         return;
@@ -823,6 +852,7 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* param_1) {
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532970
 uchar RGE_Victory_Conditions::add_capture(uchar param_1, RGE_Static_Object* param_2, uchar param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);
     if (entry != nullptr && param_2 != nullptr) {
@@ -834,6 +864,7 @@ uchar RGE_Victory_Conditions::add_capture(uchar param_1, RGE_Static_Object* para
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005329A0
 uchar RGE_Victory_Conditions::add_create(uchar param_1, long param_2, long param_3, uchar param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, param_4);
     if (entry != nullptr) {
@@ -845,6 +876,7 @@ uchar RGE_Victory_Conditions::add_create(uchar param_1, long param_2, long param
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005329D0
 uchar RGE_Victory_Conditions::add_create(uchar param_1, long param_2, long param_3, float param_4, float param_5, float param_6, float param_7, uchar param_8) {
     RGE_Victory_Entry* entry = this->add(param_1, param_8);
     if (entry != nullptr) {
@@ -860,6 +892,7 @@ uchar RGE_Victory_Conditions::add_create(uchar param_1, long param_2, long param
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532A20
 uchar RGE_Victory_Conditions::add_destroy(uchar param_1, RGE_Static_Object* param_2) {
     RGE_Victory_Entry* entry = this->add(param_1, '\0');
     if (entry != nullptr && param_2 != nullptr) {
@@ -871,6 +904,7 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, RGE_Static_Object* para
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532A50
 uchar RGE_Victory_Conditions::add_destroy(uchar param_1, long param_2, long param_3, RGE_Player* param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, '\0');
     if (entry != nullptr) {
@@ -883,6 +917,7 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, long param_2, long para
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532A90
 uchar RGE_Victory_Conditions::add_destroy(uchar param_1, long param_2, RGE_Player* param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, '\0');
     if (entry != nullptr) {
@@ -894,6 +929,7 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, long param_2, RGE_Playe
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532AC0
 uchar RGE_Victory_Conditions::add_destroy(uchar param_1, RGE_Player* param_2) {
     RGE_Victory_Entry* entry = this->add(param_1, '\0');
     if (entry != nullptr) {
@@ -904,6 +940,7 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, RGE_Player* param_2) {
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532AF0
 uchar RGE_Victory_Conditions::add_bring(uchar param_1, RGE_Static_Object* param_2, RGE_Static_Object* param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, '\0');
     if (entry != nullptr && param_2 != nullptr && param_3 != nullptr) {
@@ -916,6 +953,7 @@ uchar RGE_Victory_Conditions::add_bring(uchar param_1, RGE_Static_Object* param_
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532B30
 uchar RGE_Victory_Conditions::add_bring(uchar param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5, float param_6) {
     RGE_Victory_Entry* entry = this->add(param_1, '\0');
     if (entry != nullptr && param_2 != nullptr) {
@@ -930,6 +968,7 @@ uchar RGE_Victory_Conditions::add_bring(uchar param_1, RGE_Static_Object* param_
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532B70
 uchar RGE_Victory_Conditions::add_attributes(uchar param_1, long param_2, long param_3, uchar param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, param_4);
     if (entry != nullptr) {
@@ -941,6 +980,7 @@ uchar RGE_Victory_Conditions::add_attributes(uchar param_1, long param_2, long p
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532BA0
 uchar RGE_Victory_Conditions::add_explore(uchar param_1, long param_2, uchar param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);
     if (entry != nullptr) {
@@ -957,6 +997,7 @@ uchar RGE_Victory_Conditions::add_explore(uchar param_1, long param_2, uchar par
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532BE0
 uchar RGE_Victory_Conditions::add_victory_points(uchar param_1, long param_2, uchar param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);
     if (entry != nullptr) {
@@ -967,12 +1008,14 @@ uchar RGE_Victory_Conditions::add_victory_points(uchar param_1, long param_2, uc
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532C50
 void RGE_Victory_Conditions::destroy_all() {
     while (this->victory_list != nullptr) {
         this->sub(this->victory_list);
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532C70
 uchar RGE_Victory_Conditions::condition_info(long param_1, char** param_2, uchar* param_3) {
     int index = 0;
     for (RGE_Victory_Entry* entry = this->victory_list; entry != nullptr; entry = entry->next) {
@@ -993,6 +1036,7 @@ uchar RGE_Victory_Conditions::condition_info(long param_1, char** param_2, uchar
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532CC0
 char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* param_1) {
     // Fully verified. Source of truth: victory.cpp.decomp @ 0x00532CC0
     char* description = nullptr;
@@ -1062,6 +1106,7 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* param_1) 
     return description;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532ED0
 RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long param_1) {
     int index = 0;
     for (RGE_Victory_Entry* entry = this->victory_list; entry != nullptr; entry = entry->next) {
@@ -1073,15 +1118,18 @@ RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long param_1) {
     return nullptr;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532EF0
 long RGE_Victory_Conditions::condition_number(long param_1) {
     (void)param_1;
     return this->list_num;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532F00
 uchar RGE_Victory_Conditions::victory_achieved() {
     return (this->victory == '\x02') ? '\x01' : '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532F10
 uchar RGE_Victory_Conditions::remove_condition(long param_1) {
     int index = 0;
     for (RGE_Victory_Entry* entry = this->victory_list; entry != nullptr; entry = entry->next) {
@@ -1094,6 +1142,7 @@ uchar RGE_Victory_Conditions::remove_condition(long param_1) {
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00532FE0
 uchar RGE_Victory_Conditions::add_points_attribute_amount(uchar param_1, uchar param_2, long param_3, long param_4, long param_5) {
     RGE_Victory_Point_Entry* point = this->add_point(param_2, param_1);
     if (point != nullptr) {
@@ -1106,6 +1155,7 @@ uchar RGE_Victory_Conditions::add_points_attribute_amount(uchar param_1, uchar p
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533020
 uchar RGE_Victory_Conditions::add_points_attribute_first(uchar param_1, uchar param_2, long param_3, long param_4, long param_5) {
     RGE_Victory_Point_Entry* point = this->add_point(param_2, param_1);
     if (point != nullptr) {
@@ -1118,6 +1168,7 @@ uchar RGE_Victory_Conditions::add_points_attribute_first(uchar param_1, uchar pa
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533060
 uchar RGE_Victory_Conditions::add_points_highest_attribute(uchar param_1, uchar param_2, long param_3, long param_4, long param_5) {
     RGE_Victory_Point_Entry* point = this->add_point(param_2, param_1);
     if (point != nullptr) {
@@ -1130,6 +1181,7 @@ uchar RGE_Victory_Conditions::add_points_highest_attribute(uchar param_1, uchar 
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005330A0
 uchar RGE_Victory_Conditions::add_points_high_attribute_once(uchar param_1, uchar param_2, long param_3, long param_4, long param_5) {
     RGE_Victory_Point_Entry* point = this->add_point(param_2, param_1);
     if (point != nullptr) {
@@ -1142,6 +1194,7 @@ uchar RGE_Victory_Conditions::add_points_high_attribute_once(uchar param_1, ucha
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005330E0
 uchar RGE_Victory_Conditions::add_points_high_attribute_amount(uchar param_1, uchar param_2, long param_3, long param_4, long param_5) {
     RGE_Victory_Point_Entry* point = this->add_point(param_2, param_1);
     if (point != nullptr) {
@@ -1154,6 +1207,7 @@ uchar RGE_Victory_Conditions::add_points_high_attribute_amount(uchar param_1, uc
     return '\0';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533120
 void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state != '\0') {
         return;
@@ -1174,6 +1228,7 @@ void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_En
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533180
 void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state != '\0' || this->player == nullptr || this->player->world == nullptr || this->player->world->players == nullptr) {
         return;
@@ -1202,6 +1257,7 @@ void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Ent
     param_1->state = '\x02';
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533240
 void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state != '\0' || this->player == nullptr || this->player->world == nullptr || this->player->world->players == nullptr) {
         return;
@@ -1240,6 +1296,7 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533330
 void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state != '\0' || this->player == nullptr || this->player->world == nullptr || this->player->world->players == nullptr) {
         return;
@@ -1274,6 +1331,7 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533410
 void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state != '\0') {
         return;
@@ -1296,10 +1354,12 @@ void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Poi
     }
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533480
 long RGE_Victory_Conditions::get_victory_points() {
     return this->tot_victory_points;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x00533490
 long RGE_Victory_Conditions::get_victory_points_group(uchar param_1) {
     int sum = 0;
     for (RGE_Victory_Point_Entry* point = this->victory_point_list; point != nullptr; point = point->next) {
@@ -1310,6 +1370,7 @@ long RGE_Victory_Conditions::get_victory_points_group(uchar param_1) {
     return sum;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005334C0
 long RGE_Victory_Conditions::get_victory_points_id(uchar param_1) {
     long value = 0;
     for (RGE_Victory_Point_Entry* point = this->victory_point_list; point != nullptr; point = point->next) {
@@ -1320,6 +1381,7 @@ long RGE_Victory_Conditions::get_victory_points_id(uchar param_1) {
     return value;
 }
 
+// Fully verified. Source of truth: victory.cpp.decomp @ 0x005334E0
 long RGE_Victory_Conditions::get_attribute_id(uchar param_1) {
     long value = 0;
     for (RGE_Victory_Point_Entry* point = this->victory_point_list; point != nullptr; point = point->next) {
