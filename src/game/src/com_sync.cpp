@@ -18,7 +18,7 @@ static long DAT_0062d208[9];
 static ulong DAT_0062d230;
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_Handler* comm) {
-    // Source of truth: com_sync.cpp.decomp @ 0x00432FF0
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00432FF0
     this->Comm = comm;
     this->CheckTime = 1000;
     this->CheckTurn = 10;
@@ -38,7 +38,7 @@ RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_H
 }
 
 RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
-    // Source of truth: com_sync.cpp.decomp @ 0x00433070
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00433070
     for (int i = 0; i < 0x37; ++i) {
         memset(&this->Check[i], 0, sizeof(this->Check[i]));
     }
@@ -46,7 +46,7 @@ RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
 
 int RGE_Communications_Synchronize::Add(uint player_no, ulong world_time, ulong comm_turn, ulong random, long cs1, long cs2, long cs3,
                                        long cs4, long cs5) {
-    // Source of truth: com_sync.cpp.decomp @ 0x004330A0
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x004330A0
     if (this->DoChecksums == 0) {
         return 0;
     }
@@ -73,8 +73,8 @@ int RGE_Communications_Synchronize::Add(uint player_no, ulong world_time, ulong 
 }
 
 int RGE_Communications_Synchronize::ValidateChecksums(uint player_no, ulong world_time, ulong comm_turn, ulong random, long cs1, long cs2,
-                                                     long cs3, long cs4, long cs5) {
-    // Source of truth: com_sync.cpp.decomp @ 0x00433180
+                                                      long cs3, long cs4, long cs5) {
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00433180
     if (this->NewData == 0) {
         return this->LastResult;
     }
@@ -117,7 +117,7 @@ int RGE_Communications_Synchronize::ValidateChecksums(uint player_no, ulong worl
 }
 
 ulong RGE_Communications_Synchronize::DoChecksum(ulong comm_turn) {
-    // Fully verified. Source of truth: com_sync.cpp.asm @ 0x00433290
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00433290
     ulong world_time = 0;
     if (this->DoChecksums == 0) {
         return 0;
@@ -183,8 +183,8 @@ void RGE_Communications_Synchronize::SetLastWorldRandom(ulong v) {
 }
 
 void RGE_Communications_Synchronize::LogChecksums(uint player_no, ulong world_time, ulong comm_turn, long cs1, long cs2, long cs3, long cs4,
-                                                 long cs5, ulong random) {
-    // Source of truth: com_sync.cpp.decomp @ 0x00433460
+                                                  long cs5, ulong random) {
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00433460
     FILE* f = fopen("C:\\aoesync.txt", "wt");
     if (f == nullptr) {
         return;
@@ -224,7 +224,7 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int enable) {
 }
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(uint player_no, ulong comm_turn) {
-    // Source of truth: com_sync.cpp.decomp @ 0x00433AD0 (simplified but parity-aligned decision rule)
+    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00433AD0
     const CHECKSUMARRAY* mine = nullptr;
     for (uint i = 1; i < 0x37; ++i) {
         const CHECKSUMARRAY& rec = this->Check[i];

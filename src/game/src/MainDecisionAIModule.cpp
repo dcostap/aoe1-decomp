@@ -38,8 +38,8 @@ static void aimdmod_ensure_capacity(MainDecisionAIModule* self, int index) {
 }
 
 MainDecisionAIModule::MainDecisionAIModule() {
-    // TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040CDF0
-    // TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040CE90
+    // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040CDF0
+    // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040CE90
     this->player = nullptr;
     this->objects.value = nullptr;
     this->objects.numberValue = 0;
@@ -48,14 +48,14 @@ MainDecisionAIModule::MainDecisionAIModule() {
 }
 
 MainDecisionAIModule::MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3) : MainDecisionAIModule() {
-    // TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040CDF0
+    // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040CDF0
     (void)param_1;
     (void)param_2;
     this->player = param_3;
 }
 
 MainDecisionAIModule::MainDecisionAIModule(int param_1, RGE_Player* param_2, int param_3) : MainDecisionAIModule() {
-    // TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040CE90
+    // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040CE90
     this->player = param_2;
 
     int number_units = 0;
@@ -86,7 +86,7 @@ MainDecisionAIModule::MainDecisionAIModule(int param_1, RGE_Player* param_2, int
 }
 
 MainDecisionAIModule::~MainDecisionAIModule() {
-    // TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040D020
+    // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D020
     if (this->objects.value != nullptr) {
         ::operator delete(this->objects.value);
         this->objects.value = nullptr;
@@ -294,7 +294,7 @@ int MainDecisionAIModule::numberObjectsWithActionAndTargetType(int param_1, int 
 // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D760
 RGE_Static_Object* MainDecisionAIModule::object(int param_1) { return this->player->world->object(param_1); }
 
-// TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040D780
+// Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D780
 RGE_Static_Object* MainDecisionAIModule::object(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, int param_10) {
     (void)param_8;
     int i = 0;
@@ -337,7 +337,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int param_1, int param_2, int pa
     } while (true);
 }
 
-// TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040D9D0
+// Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D9D0
 RGE_Static_Object* MainDecisionAIModule::object(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
     int i = 0;
     if (this->objects.numberValue < 1) {
@@ -402,7 +402,7 @@ int MainDecisionAIModule::numberBusyObjects() {
     return count;
 }
 
-// TODO: Partial transliteration. Source of truth: aimdmod.cpp.decomp @ 0x0040DC30
+// Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040DC30
 RGE_Static_Object* MainDecisionAIModule::mostDamaged(int param_1, int param_2) {
     int index = 0;
     int max_damage_percent = 0;

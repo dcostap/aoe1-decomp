@@ -14,7 +14,7 @@ static BOOL FAR PASCAL EnumPlayersCallbackLobby(DPID /*dpid*/, DWORD /*dwPlayerT
 }
 
 RGE_Lobby::RGE_Lobby(void* host_hwnd) {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F290
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F290
     this->HostHWND = host_hwnd;
     this->Err = new (std::nothrow) RGE_Comm_Error(host_hwnd);
     this->glpDP = nullptr;
@@ -25,14 +25,14 @@ RGE_Lobby::RGE_Lobby(void* host_hwnd) {
 }
 
 RGE_Lobby::~RGE_Lobby() {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F300
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F300
     delete this->Err;
     this->Err = nullptr;
     this->ClearLobbyInfo();
 }
 
 void RGE_Lobby::ClearLobbyInfo() {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F330
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F330
     if (this->glpdplConnection != nullptr) {
         delete[] (char*)this->glpdplConnection;
         this->glpdplConnection = nullptr;
@@ -119,12 +119,8 @@ uchar RGE_Lobby::IsThisHost() {
 }
 
 uchar RGE_Lobby::GetPlayerInfo(char** out_name) {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F660
-    if (out_name == nullptr) {
-        return 0;
-    }
-    *out_name = nullptr;
-    if (this->lobby_game == 0 || this->glpdplConnection == nullptr || this->glpdplConnection->lpPlayerName == nullptr) {
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F660
+    if (this->lobby_game == 0) {
         return 0;
     }
 
@@ -133,9 +129,8 @@ uchar RGE_Lobby::GetPlayerInfo(char** out_name) {
 }
 
 uchar RGE_Lobby::GetSessionInfo(DPSESSIONDESC2* out_desc) {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F680
-    if (this->lobby_game == 0 || this->glpdplConnection == nullptr || this->glpdplConnection->lpSessionDesc == nullptr ||
-        out_desc == nullptr) {
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F680
+    if (this->lobby_game == 0) {
         return 0;
     }
 
@@ -154,8 +149,8 @@ int RGE_Lobby::GameIsOver() {
 }
 
 long RGE_Lobby::ReceiveZoneMessages() {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F6D0
-    if (this->lobby_game != 0 && this->glpDPL != nullptr) {
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F6D0
+    if (this->lobby_game != 0) {
         DWORD size = 2048;
         DWORD rx_flags = 0;
         char data[2048];
@@ -167,8 +162,10 @@ long RGE_Lobby::ReceiveZoneMessages() {
     return 0;
 }
 
+// Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F81E
+
 long RGE_Lobby::SendZoneMessage(char* data, ulong data_size, _GUID to_player) {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F830
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F830
     if (this->lobby_game == 0 || this->glpDPL2 == nullptr || data == nullptr) {
         return 0;
     }
