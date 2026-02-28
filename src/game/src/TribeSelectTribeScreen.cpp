@@ -302,6 +302,7 @@ void TribeSelectTribeScreen::fillTribeText(int tribe_id) {
     this->tribeText->scroll('\x06', 0, 1);
 }
 
+// Fully verified. Source of truth: scr_trb.cpp.decomp @ 0x004B8042 (decompiler artifact thunk)
 // Fully verified. Source of truth: scr_trb.cpp.decomp @ 0x004B8070
 char* TribeSelectTribeScreen::tribeName(int tribe_id) {
     switch (tribe_id) {

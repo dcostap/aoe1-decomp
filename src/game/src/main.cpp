@@ -15,6 +15,7 @@ const _GUID AGE1_TRIBE_GUID = { 0x08F50797, 0x46A8, 0xF2E8, { 0xE2, 0xEB, 0xD1, 
 const _GUID AGE1_ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+    // Fully verified. Source of truth: main.cpp.decomp @ 0x004549E0
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_INIT();
     CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");

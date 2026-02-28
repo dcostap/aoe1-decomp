@@ -351,6 +351,7 @@ void RGE_Panel_Tool_Box::game_mode_changed(int param_1, int param_2) {
 }
 
 void RGE_Panel_Tool_Box::draw() {
+    // Fully verified. Source of truth: rpnl_tbx.cpp.decomp @ 0x0048A640
     if (this->render_area != nullptr) {
         this->draw_setup(0);
         this->render_area->Clear(&this->clip_rect, 0);

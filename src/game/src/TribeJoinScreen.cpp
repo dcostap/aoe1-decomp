@@ -517,6 +517,7 @@ long TribeJoinScreen::handle_user_command(uint param_1, long param_2) {
 }
 
 void TribeJoinScreen::fillList() {
+    // Fully verified. Source of truth: scr_cj.cpp.decomp @ 0x00491C42 (decompiler artifact thunk)
     // Source of truth: scr_cj.cpp.decomp @ 0x00491C70
     if (rge_base_game != nullptr) {
         rge_base_game->disable_input();
