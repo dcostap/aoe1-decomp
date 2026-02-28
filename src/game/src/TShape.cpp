@@ -395,6 +395,1296 @@ static void shape_free_loaded_data(unsigned char* ptr, int load_type, int load_s
     }
 }
 
+static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* xlate, unsigned int draw_flag);
+static unsigned char* shp_skip_row(unsigned char* src);
+
+unsigned char shape_bounds(TShape* this_, long param_2, short* param_3, short* param_4) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8FB0
+    if (this_->FShape != 0) {
+        *param_3 = (short)this_->shape_info[param_2].Width;
+        *param_4 = (short)this_->shape_info[param_2].Height;
+        return 1;
+    }
+
+    if (param_2 >= 0 && this_->Check_shape(param_2, (char*)"RGL_shape_resolution") == 0) {
+        this_->shape_header = (Shape_Header*)(this_->shape + this_->offsets[param_2].shape);
+        *param_3 = (short)(this_->shape_header->bounds >> 16);
+        *param_4 = (short)this_->shape_header->bounds;
+        return 1;
+    }
+
+    return 0;
+}
+
+long shape_count(TShape* this_) {
+    if (this_->Check_shape(-1, (char*)"RGL_shape_count")) return 0;
+    if (this_->FShape) return this_->FShape->Num_Shapes;
+    if (this_->head) return this_->head->shape_num;
+    return 0;
+}
+
+unsigned char shape_minmax(TShape* this_, long* param_2, long* param_3, long* param_4, long* param_5, long param_6) {
+    if (param_2) *param_2 = 0;
+    if (param_3) *param_3 = 0;
+    if (param_4) *param_4 = 0;
+    if (param_5) *param_5 = 0;
+
+    if (param_6 < 0) return 0;
+    if (this_->Check_shape(param_6, (char*)"RGL_shape_minxy")) return 0;
+
+    if (this_->FShape && this_->shape_info) {
+        Shape_Info* info = &this_->shape_info[param_6];
+        long xmin = -info->Hotspot_X;
+        long ymin = -info->Hotspot_Y;
+        long xmax = (info->Width - info->Hotspot_X) - 1;
+        long ymax = (info->Height - info->Hotspot_Y) - 1;
+        if (param_2) *param_2 = xmin;
+        if (param_3) *param_3 = ymin;
+        if (param_4) *param_4 = xmax;
+        if (param_5) *param_5 = ymax;
+        return 1;
+    }
+
+    if (!this_->shape || !this_->offsets) return 0;
+    this_->shape_header = (Shape_Header*)(this_->shape + this_->offsets[param_6].shape);
+    if (!this_->shape_header) return 0;
+
+    if (param_2) *param_2 = this_->shape_header->xmin;
+    if (param_3) *param_3 = this_->shape_header->ymin;
+    if (param_4) *param_4 = this_->shape_header->xmax;
+    if (param_5) *param_5 = this_->shape_header->ymax;
+    return 1;
+}
+
+unsigned char shape_check(TShape* this_, long param_2, long param_3, long param_4) {
+    if (param_4 < 0) return 0;
+    if (this_->Check_shape(param_4, (char*)"RGL_shape_draw")) return 0;
+
+    if (this_->shape && this_->offsets) {
+        Shape_Header* hdr = (Shape_Header*)(this_->shape + this_->offsets[param_4].shape);
+        if (!hdr) return 0;
+        this_->shape_header = hdr;
+
+        if (param_3 < hdr->ymin || param_3 > hdr->ymax || param_2 < hdr->xmin || param_2 > hdr->xmax) return 0;
+        unsigned char* src = (unsigned char*)(hdr + 1);
+        unsigned char* end = this_->shape + this_->load_size;
+        long row = param_3 - hdr->ymin;
+
+        for (long r = 0; r < row; ++r) {
+            while (src < end) {
+                unsigned char cmd = *src++;
+                unsigned int run = (unsigned int)(cmd >> 1);
+                if (cmd & 1) {
+                    if (run == 0) {
+                        if (src >= end) return 0;
+                        src++;
+                    } else {
+                        if (src + run > end) return 0;
+                        src += run;
+                    }
+                } else {
+                    if (run == 0) break;
+                    if (src >= end) return 0;
+                    src++;
+                }
+            }
+        }
+
+        long cur_x = hdr->xmin;
+        while (src < end) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    if (src >= end) return 0;
+                    cur_x += *src++;
+                    if (param_2 < cur_x) return 0;
+                } else {
+                    if (src + run > end) return 0;
+                    if (param_2 < cur_x + (long)run) return 1;
+                    cur_x += run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) return 0;
+                if (src >= end) return 0;
+                if (param_2 < cur_x + (long)run) return 1;
+                cur_x += run;
+                src++;
+            }
+        }
+        return 0;
+    }
+
+    if (!this_->FShape || !this_->shape_info) return 0;
+    Shape_Info* info = &this_->shape_info[param_4];
+    long lx = info->Hotspot_X + param_2;
+    long ly = info->Hotspot_Y + param_3;
+    if (lx < 0 || ly < 0 || lx >= info->Width || ly >= info->Height) return 0;
+
+    unsigned char* base = (unsigned char*)this_->FShape;
+    unsigned char* end = base + this_->load_size;
+    unsigned long outline_off = info->Shape_Outline_Offset + (unsigned long)(ly * 4);
+    unsigned long data_off_tbl = info->Shape_Data_Offsets + (unsigned long)(ly * 4);
+    if (outline_off + 4 > (unsigned long)this_->load_size) return 0;
+    if (data_off_tbl + 4 > (unsigned long)this_->load_size) return 0;
+
+    short left = *(short*)(base + outline_off);
+    short right = *(short*)(base + outline_off + 2);
+    if (left < 0) return 0;
+
+    long row_max_x = info->Width - right;
+    if (lx < left || lx > row_max_x) return 0;
+
+    unsigned long row_off = *(unsigned long*)(base + data_off_tbl);
+    if (row_off >= (unsigned long)this_->load_size) return 0;
+    unsigned char* src = base + row_off;
+    long cur_x = left;
+
+    while (src < end && cur_x <= lx) {
+        unsigned char cmd = *src++;
+        unsigned char op = (unsigned char)(cmd & 0x0F);
+        unsigned int run = 0;
+
+        if (op == 0x0F) return 0;
+        if (op == 0x02 || op == 0x03) {
+            if (src >= end) return 0;
+            run = (unsigned int)(((cmd & 0xF0) << 4) | *src++);
+            if (op == 0x02) {
+                if (lx < cur_x + (long)run) return 1;
+                if (src + run > end) return 0;
+                src += run;
+            }
+            cur_x += run;
+            continue;
+        }
+        if (op == 0x07 || op == 0x0A || op == 0x06 || op == 0x0B) {
+            run = (unsigned int)(cmd >> 4);
+            if (run == 0) {
+                if (src >= end) return 0;
+                run = *src++;
+            }
+            if (lx < cur_x + (long)run) return 1;
+            cur_x += run;
+            if (op == 0x07) {
+                if (src >= end) return 0;
+                src++;
+            } else if (op == 0x0A) {
+                if (src >= end) return 0;
+                src++;
+            } else if (op == 0x06) {
+                if (src + run > end) return 0;
+                src += run;
+            } else if (op == 0x0B) {
+                // Shadow draw (0x0B) consumes no pixel payload bytes.
+            }
+            continue;
+        }
+        if (op == 0x0E) {
+            unsigned char ext = (unsigned char)(cmd >> 4);
+            if (ext == 0x04 || ext == 0x06) {
+                run = 1;
+            } else if (ext == 0x05 || ext == 0x07) {
+                if (src >= end) return 0;
+                run = (unsigned int)(*src++);
+                if (run == 0) run = 1;
+            } else {
+                run = 0;
+            }
+
+            if (run) {
+                if (lx < cur_x + (long)run) return 1;
+                cur_x += run;
+            }
+            continue;
+        }
+        if ((op & 0x03) == 0x00 || (op & 0x03) == 0x01) {
+            run = (unsigned int)(cmd >> 2);
+            if ((op & 0x03) == 0x01 && run == 0) {
+                if (src >= end) return 0;
+                run = (unsigned int)(*src++);
+            }
+            if ((op & 0x03) == 0x00) {
+                if (lx < cur_x + (long)run) return 1;
+                if (src + run > end) return 0;
+                src += run;
+            }
+            cur_x += run;
+            continue;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+unsigned char shape_draw(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char param_6, unsigned char* param_7) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9440
+    if (param_5 < 0) return 0;
+    if (this_->Check_shape(param_5, (char*)"RGL_shape_draw")) return 0;
+
+    // Parity: original code sets the global xlate table only when a non-null transform table is passed.
+    if (param_7 != (unsigned char*)0) {
+        _ASMSet_Xlate_Table(param_7);
+    }
+
+    if (this_->FShape != (SLhape_File_Header*)0) {
+        if (SDI_Capture_Info != 0) {
+            Shape_Info* info = &this_->shape_info[param_5];
+            const int draw_level = SDI_Draw_Level;
+            const int object_id = (int)SDI_Object_ID;
+            const int xform_mask = (int)_ASMGet_Color_Xform();
+            if (SDI_List) {
+                SDI_List->AddDrawNode(this_->FShape,
+                    info,
+                    SDI_Draw_Line,
+                    (int)(param_3 - info->Hotspot_X),
+                    (int)(param_4 - info->Hotspot_Y),
+                    fog_next_shape,
+                    param_7,
+                    xform_mask,
+                    draw_level,
+                    object_id);
+            }
+            return 1;
+        }
+
+        TSpan_List_Manager* cur_spans = param_2->CurSpanList;
+        int max_lines = 0;
+        if (param_2->SpanList && cur_spans) {
+            max_lines = param_2->SpanList->Num_Lines;
+            if (cur_spans->Num_Lines < max_lines) max_lines = cur_spans->Num_Lines;
+        }
+        if (cur_spans && max_lines > 0) {
+            _ASMSet_Surface_Info(param_2->CurDisplayOffsets, cur_spans->Line_Head_Ptrs, cur_spans->Line_Tail_Ptrs, 0, 0, cur_spans->Max_Span_Px, max_lines - 1);
+        }
+
+        if (param_7 != (unsigned char*)0) {
+            _ASMSet_Xlate_Table(param_7);
+        }
+
+        return shape_draw_slp_internal(this_, param_2, param_3, param_4, param_5, param_7, (unsigned int)fog_next_shape);
+    }
+
+    if (this_->shape != (unsigned char*)0) {
+        Shape_Header* hdr = (Shape_Header*)(this_->shape + this_->offsets[param_5].shape);
+        this_->shape_header = hdr;
+
+        tagRECT clip = param_2->ClipRect;
+        long clip_l = clip.left;
+        long clip_t = clip.top;
+        long clip_r = clip.right;
+        long clip_b = clip.bottom;
+
+        const long shape_x0 = hdr->xmin + param_3;
+        const long shape_y0 = hdr->ymin + param_4;
+        const long shape_x1 = hdr->xmax + param_3;
+        const long shape_y1 = hdr->ymax + param_4;
+
+        long draw_l = shape_x0;
+        if (draw_l < clip_l) draw_l = clip_l;
+        long draw_t = shape_y0;
+        if (draw_t < clip_t) draw_t = clip_t;
+        long draw_r = shape_x1;
+        if (draw_r > clip_r) draw_r = clip_r;
+        long draw_b = shape_y1;
+        if (draw_b > clip_b) draw_b = clip_b;
+
+        if (draw_l < 0) draw_l = 0;
+        if (draw_t < 0) draw_t = 0;
+        if (param_2->Width <= draw_r) draw_r = param_2->Width - 1;
+        if (param_2->Height <= draw_b) draw_b = param_2->Height - 1;
+
+        if (draw_l <= draw_r && draw_t <= draw_b) {
+            int locked_here = 0;
+            if (param_2->Bits == (unsigned char*)0) {
+                if (!param_2->Lock((char*)"shape_draw", 0)) return 0;
+                locked_here = 1;
+            }
+
+            unsigned char ret = 0;
+            if (draw_l != shape_x0 || draw_t != shape_y0 || draw_r != shape_x1 || draw_b != shape_y1) {
+                if (param_6 != 0) {
+                    if (param_6 == 1) {
+                        if (param_7 != (unsigned char*)0) {
+                            ret = shape_color_trans_clipped(this_, param_2, shape_x0, shape_y0, param_5, draw_l, draw_t, draw_r, draw_b, param_7);
+                        } else {
+                            ret = shape_draw_clipped(this_, param_2, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else if (param_6 == 2) {
+                        if (param_7 != (unsigned char*)0) {
+                            ret = shape_shadow_clipped(this_, param_2, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b, param_7);
+                        } else {
+                            ret = shape_draw_clipped(this_, param_2, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else {
+                        ret = 0;
+                    }
+                } else {
+                    ret = shape_draw_clipped(this_, param_2, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b);
+                }
+            } else {
+                if (param_6 == 0) {
+                    ret = shape_draw_unclipped(this_, param_2, shape_x0, shape_y0, param_5);
+                } else if (param_6 == 1) {
+                    if (param_7 == (unsigned char*)0) {
+                        ret = shape_draw_unclipped(this_, param_2, shape_x0, shape_y0, param_5);
+                    } else {
+                        ret = shape_color_trans_unclipped(this_, param_2, shape_x0, shape_y0, param_5, param_7);
+                    }
+                } else if (param_6 == 2) {
+                    if (param_7 == (unsigned char*)0) {
+                        ret = shape_draw_unclipped(this_, param_2, shape_x0, shape_y0, param_5);
+                    } else {
+                        ret = shape_shadow_unclipped(this_, param_2, shape_x0, shape_y0, param_7);
+                    }
+                } else {
+                    ret = 0;
+                }
+            }
+
+            if (locked_here) param_2->Unlock((char*)"shape_draw");
+            return ret;
+        }
+    }
+
+    return 0;
+}
+
+unsigned char shape_draw_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B97F0
+    (void)param_5;
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = param_4;
+    if (orien < 1) {
+        dst_y = (dst_y - param_2->Height) + 1;
+    }
+
+    unsigned char* dst_line = param_2->Bits + param_3 + dst_y * stride;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst += *src++;
+                } else {
+                    memcpy(dst, src, run);
+                    dst += run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                memset(dst, (int)fill, run);
+                dst += run;
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char shape_color_trans_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char* param_6) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B98E0
+    (void)param_5;
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_6) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = param_4;
+    if (orien < 1) {
+        dst_y = (dst_y - param_2->Height) + 1;
+    }
+
+    unsigned char* dst_line = param_2->Bits + param_3 + dst_y * stride;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        *dst++ = param_6[*src++];
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = param_6[*src++];
+                memset(dst, (int)fill, run);
+                dst += run;
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char shape_shadow_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, unsigned char* param_5) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B99F0
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_5) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = param_4;
+    if (orien < 1) {
+        dst_y = (dst_y - param_2->Height) + 1;
+    }
+
+    unsigned char* dst_line = param_2->Bits + param_3 + dst_y * stride;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        dst[i] = param_5[dst[i]];
+                    }
+                    dst += run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                for (unsigned int i = 0; i < run; ++i) {
+                    dst[i] = param_5[dst[i]];
+                }
+                dst += run;
+                src++; // consume fill byte
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char shape_draw_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9AF0
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_6) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_8) {
+            break;
+        }
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    const long seg_x0 = cur_x;
+                    const long seg_x1 = cur_x + (long)run - 1;
+                    if (seg_x1 >= param_5 && seg_x0 <= param_7) {
+                        const long out_x0 = (seg_x0 < param_5) ? param_5 : seg_x0;
+                        const long out_x1 = (seg_x1 > param_7) ? param_7 : seg_x1;
+                        const unsigned int skip = (unsigned int)(out_x0 - seg_x0);
+                        const unsigned int count = (unsigned int)(out_x1 - out_x0 + 1);
+                        memcpy(line + out_x0, src + skip, count);
+                    }
+                    cur_x += (long)run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                const long seg_x0 = cur_x;
+                const long seg_x1 = cur_x + (long)run - 1;
+                if (seg_x1 >= param_5 && seg_x0 <= param_7) {
+                    const long out_x0 = (seg_x0 < param_5) ? param_5 : seg_x0;
+                    const long out_x1 = (seg_x1 > param_7) ? param_7 : seg_x1;
+                    memset(line + out_x0, (int)fill, (size_t)(out_x1 - out_x0 + 1));
+                }
+                cur_x += (long)run;
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_color_trans_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, unsigned char* param_10) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9E20
+    (void)param_5;
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_10) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_7) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_9) {
+            break;
+        }
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    const long seg_x0 = cur_x;
+                    const long seg_x1 = cur_x + (long)run - 1;
+                    if (seg_x1 >= param_6 && seg_x0 <= param_8) {
+                        const long out_x0 = (seg_x0 < param_6) ? param_6 : seg_x0;
+                        const long out_x1 = (seg_x1 > param_8) ? param_8 : seg_x1;
+                        unsigned int skip = (unsigned int)(out_x0 - seg_x0);
+                        for (long xx = out_x0; xx <= out_x1; ++xx, ++skip) {
+                            line[xx] = param_10[src[skip]];
+                        }
+                    }
+                    cur_x += (long)run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = param_10[*src++];
+                const long seg_x0 = cur_x;
+                const long seg_x1 = cur_x + (long)run - 1;
+                if (seg_x1 >= param_6 && seg_x0 <= param_8) {
+                    const long out_x0 = (seg_x0 < param_6) ? param_6 : seg_x0;
+                    const long out_x1 = (seg_x1 > param_8) ? param_8 : seg_x1;
+                    memset(line + out_x0, (int)fill, (size_t)(out_x1 - out_x0 + 1));
+                }
+                cur_x += (long)run;
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_shadow_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, unsigned char* param_9) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA1C0
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_9) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_6) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_8) {
+            break;
+        }
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    const long seg_x0 = cur_x;
+                    const long seg_x1 = cur_x + (long)run - 1;
+                    if (seg_x1 >= param_5 && seg_x0 <= param_7) {
+                        const long out_x0 = (seg_x0 < param_5) ? param_5 : seg_x0;
+                        const long out_x1 = (seg_x1 > param_7) ? param_7 : seg_x1;
+                        for (long xx = out_x0; xx <= out_x1; ++xx) {
+                            line[xx] = param_9[line[xx]];
+                        }
+                    }
+                    cur_x += (long)run;
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                const long seg_x0 = cur_x;
+                const long seg_x1 = cur_x + (long)run - 1;
+                if (seg_x1 >= param_5 && seg_x0 <= param_7) {
+                    const long out_x0 = (seg_x0 < param_5) ? param_5 : seg_x0;
+                    const long out_x1 = (seg_x1 > param_7) ? param_7 : seg_x1;
+                    for (long xx = out_x0; xx <= out_x1; ++xx) {
+                        line[xx] = param_9[line[xx]];
+                    }
+                }
+                cur_x += (long)run;
+                src++; // consume fill byte
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_mirror(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char param_6, unsigned char* param_7) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA550
+    if (param_5 < 0) return 0;
+    if (this_->Check_shape(param_5, (char*)"RGL_shape_draw")) return 0;
+
+    if (param_7 != (unsigned char*)0) {
+        _ASMSet_Xlate_Table(param_7);
+    }
+
+    if (this_->FShape != (SLhape_File_Header*)0) {
+        if (SDI_Capture_Info != 0) {
+            Shape_Info* info = &this_->shape_info[param_5];
+            const int draw_level = SDI_Draw_Level;
+            const int object_id = (int)SDI_Object_ID;
+            const int xform_mask = (int)_ASMGet_Color_Xform();
+            if (SDI_List) {
+                SDI_List->AddDrawNode(this_->FShape,
+                    info,
+                    SDI_Draw_Line,
+                    (int)((info->Hotspot_X - info->Width) + param_3),
+                    (int)(param_4 - info->Hotspot_Y),
+                    fog_next_shape + 2,
+                    param_7,
+                    xform_mask,
+                    draw_level,
+                    object_id);
+            }
+            return 1;
+        }
+
+        TSpan_List_Manager* cur_spans = param_2->CurSpanList;
+        int max_lines = 0;
+        if (param_2->SpanList && cur_spans) {
+            max_lines = param_2->SpanList->Num_Lines;
+            if (cur_spans->Num_Lines < max_lines) max_lines = cur_spans->Num_Lines;
+        }
+        if (cur_spans && max_lines > 0) {
+            _ASMSet_Surface_Info(param_2->CurDisplayOffsets, cur_spans->Line_Head_Ptrs, cur_spans->Line_Tail_Ptrs, 0, 0, cur_spans->Max_Span_Px, max_lines - 1);
+        }
+
+        if (param_7 != (unsigned char*)0) {
+            _ASMSet_Xlate_Table(param_7);
+        }
+
+        // NOTE: Original dispatches to _ASMDraw_Sprite with mirror flag; we use the software SLP path.
+        return shape_draw_slp_internal(this_, param_2, param_3, param_4, param_5, param_7, (unsigned int)(fog_next_shape + 2));
+    }
+
+    if (this_->shape != (unsigned char*)0) {
+        Shape_Header* hdr = (Shape_Header*)(this_->shape + this_->offsets[param_5].shape);
+        this_->shape_header = hdr;
+
+        tagRECT clip = param_2->ClipRect;
+        long clip_l = clip.left;
+        long clip_t = clip.top;
+        long clip_r = clip.right;
+        long clip_b = clip.bottom;
+
+        const long shape_l = param_3 - hdr->xmax;
+        const long shape_t = param_4 + hdr->ymin;
+        const long shape_r = param_3 - hdr->xmin;
+        const long shape_b = param_4 + hdr->ymax;
+
+        long draw_l = shape_l;
+        if (draw_l < clip_l) draw_l = clip_l;
+        long draw_t = shape_t;
+        if (draw_t < clip_t) draw_t = clip_t;
+        long draw_r = shape_r;
+        if (draw_r > clip_r) draw_r = clip_r;
+        long draw_b = shape_b;
+        if (draw_b > clip_b) draw_b = clip_b;
+
+        if (draw_l < 0) draw_l = 0;
+        if (draw_t < 0) draw_t = 0;
+        if (param_2->Width <= draw_r) draw_r = param_2->Width - 1;
+        if (param_2->Height <= draw_b) draw_b = param_2->Height - 1;
+
+        if (draw_l <= draw_r && draw_t <= draw_b) {
+            int locked_here = 0;
+            if (param_2->Bits == (unsigned char*)0) {
+                if (!param_2->Lock((char*)"shape_mirror", 0)) return 0;
+                locked_here = 1;
+            }
+
+            unsigned char ret = 0;
+            if (draw_l != shape_l || draw_t != shape_t || draw_r != shape_r || draw_b != shape_b) {
+                if (param_6 != 0) {
+                    if (param_6 == 1) {
+                        if (param_7 != (unsigned char*)0) {
+                            ret = shape_mirror_color_trans_clipped(this_, param_2, shape_r, shape_t, param_5, draw_l, draw_t, draw_r, draw_b, param_7);
+                        } else {
+                            ret = shape_mirror_clipped(this_, param_2, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else if (param_6 == 2) {
+                        if (param_7 != (unsigned char*)0) {
+                            ret = shape_mirror_shadow_clipped(this_, param_2, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b, param_7);
+                        } else {
+                            ret = shape_mirror_clipped(this_, param_2, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b);
+                        }
+                    } else {
+                        ret = 0;
+                    }
+                } else {
+                    ret = shape_mirror_clipped(this_, param_2, shape_r, shape_t, draw_l, draw_t, draw_r, draw_b);
+                }
+            } else {
+                if (param_6 == 0) {
+                    ret = shape_mirror_unclipped(this_, param_2, shape_r, shape_t);
+                } else if (param_6 == 1) {
+                    if (param_7 == (unsigned char*)0) {
+                        ret = shape_mirror_unclipped(this_, param_2, shape_r, shape_t);
+                    } else {
+                        ret = shape_mirror_color_trans_unclipped(this_, param_2, shape_r, shape_t, param_5, param_7);
+                    }
+                } else if (param_6 == 2) {
+                    if (param_7 == (unsigned char*)0) {
+                        ret = shape_mirror_unclipped(this_, param_2, shape_r, shape_t);
+                    } else {
+                        ret = shape_mirror_shadow_unclipped(this_, param_2, shape_r, shape_t, param_7);
+                    }
+                } else {
+                    ret = 0;
+                }
+            }
+
+            if (locked_here) param_2->Unlock((char*)"shape_mirror");
+            return ret;
+        }
+    }
+
+    return 0;
+}
+
+unsigned char shape_mirror_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA900
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = param_4;
+    if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+
+    unsigned char* dst_line = param_2->Bits + param_3 + dst_y * stride + 1;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        *--dst = *src++;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                dst -= run;
+                memset(dst, (int)fill, run);
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char shape_mirror_color_trans_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, unsigned char* param_6) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA9E0
+    (void)param_5;
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_6) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = param_4;
+    if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+
+    unsigned char* dst_line = param_2->Bits + param_3 + dst_y * stride + 1;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        *--dst = param_6[*src++];
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = param_6[*src++];
+                dst -= run;
+                memset(dst, (int)fill, run);
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char shape_mirror_shadow_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, unsigned char* param_5) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BAAF0
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_5) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    long dst_y = param_4;
+    if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+
+    unsigned char* dst_line = param_2->Bits + param_3 + dst_y * stride + 1;
+    unsigned char* src = (unsigned char*)(hdr + 1);
+
+    long rows = (hdr->ymax - hdr->ymin) + 1;
+    for (long r = 0; r < rows; ++r) {
+        unsigned char* dst = dst_line;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    dst -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        --dst;
+                        *dst = param_5[*dst];
+                    }
+                    src += run;
+                }
+            } else {
+                if (run == 0) break;
+                for (unsigned int i = 0; i < run; ++i) {
+                    --dst;
+                    *dst = param_5[*dst];
+                }
+                src++; // consume fill byte
+            }
+        }
+        dst_line += stride;
+    }
+
+    return 1;
+}
+
+unsigned char shape_mirror_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BAC00
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_6) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_8) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= param_5 && cur_x <= param_7) {
+                            line[cur_x] = *src;
+                        }
+                        src++;
+                        cur_x--;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = *src++;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= param_5 && cur_x <= param_7) {
+                        line[cur_x] = fill;
+                    }
+                    cur_x--;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_mirror_color_trans_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, unsigned char* param_10) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BAF20
+    (void)param_5;
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_10) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_7) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_9) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= param_6 && cur_x <= param_8) {
+                            line[cur_x] = param_10[*src];
+                        }
+                        src++;
+                        cur_x--;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                unsigned char fill = param_10[*src++];
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= param_6 && cur_x <= param_8) {
+                        line[cur_x] = fill;
+                    }
+                    cur_x--;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_mirror_shadow_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, unsigned char* param_9) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB280
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits || !param_9) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_6) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_8) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x -= *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= param_5 && cur_x <= param_7) {
+                            line[cur_x] = param_9[line[cur_x]];
+                        }
+                        src++;
+                        cur_x--;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= param_5 && cur_x <= param_7) {
+                        line[cur_x] = param_9[line[cur_x]];
+                    }
+                    cur_x--;
+                }
+                src++; // consume fill byte
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_dither(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB5E0
+    if (!param_2) return 0;
+    if (param_5 < 0) return 0;
+    if (this_->Check_shape(param_5, (char*)"RGL_shape_draw")) return 0;
+    if (this_->shape == (unsigned char*)0 || this_->offsets == (Shape_Offsets*)0) return 0;
+
+    Shape_Header* hdr = (Shape_Header*)(this_->shape + this_->offsets[param_5].shape);
+    this_->shape_header = hdr;
+
+    tagRECT clip = param_2->ClipRect;
+    long clip_l = clip.left;
+    long clip_t = clip.top;
+    long clip_r = clip.right;
+    long clip_b = clip.bottom;
+
+    const long shape_x0 = hdr->xmin + param_3;
+    const long shape_y0 = hdr->ymin + param_4;
+    const long shape_x1 = hdr->xmax + param_3;
+    const long shape_y1 = hdr->ymax + param_4;
+
+    long draw_l = shape_x0;
+    if (draw_l < clip_l) draw_l = clip_l;
+    long draw_t = shape_y0;
+    if (draw_t < clip_t) draw_t = clip_t;
+    long draw_r = shape_x1;
+    if (draw_r > clip_r) draw_r = clip_r;
+    long draw_b = shape_y1;
+    if (draw_b > clip_b) draw_b = clip_b;
+
+    if (draw_l < 0) draw_l = 0;
+    if (draw_t < 0) draw_t = 0;
+    if (param_2->Width <= draw_r) draw_r = param_2->Width - 1;
+    if (param_2->Height <= draw_b) draw_b = param_2->Height - 1;
+
+    if (draw_l <= draw_r && draw_t <= draw_b) {
+        int locked_here = 0;
+        if (param_2->Bits == (unsigned char*)0) {
+            if (!param_2->Lock((char*)"shape_dither", 0)) return 0;
+            locked_here = 1;
+        }
+
+        unsigned char ret = 0;
+        if (draw_l == shape_x0 && draw_t == shape_y0 && draw_r == shape_x1 && draw_b == shape_y1) {
+            ret = shape_dithered_unclipped(this_, param_2, shape_x0, shape_y0, param_6, param_7);
+        } else {
+            ret = shape_dithered_clipped(this_, param_2, shape_x0, shape_y0, draw_l, draw_t, draw_r, draw_b, param_6, param_7);
+        }
+
+        if (locked_here) param_2->Unlock((char*)"shape_dither");
+        return ret;
+    }
+
+    return 0;
+}
+
+unsigned char shape_dithered_unclipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB770
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (((cur_x + param_5 + dst_y_screen + param_6) & 1) == 0) {
+                            line[cur_x] = 0;
+                        }
+                        cur_x++;
+                        src++;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                // fill byte consumed but unused
+                src++;
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (((cur_x + param_5 + dst_y_screen + param_6) & 1) == 0) {
+                        line[cur_x] = 0;
+                    }
+                    cur_x++;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
+unsigned char shape_dithered_clipped(TShape* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10) {
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB910
+    Shape_Header* hdr = this_->shape_header;
+    if (!param_2 || !hdr || !param_2->Bits) return 0;
+
+    const int orien = param_2->Orien;
+    const long pitch = param_2->AlignedWidth();
+    const long stride = pitch * (long)orien;
+
+    unsigned char* src = (unsigned char*)(hdr + 1);
+    const long rows = (hdr->ymax - hdr->ymin) + 1;
+
+    for (long r = 0; r < rows; ++r) {
+        const long dst_y_screen = param_4 + r;
+        if (dst_y_screen < param_6) {
+            src = shp_skip_row(src);
+            continue;
+        }
+        if (dst_y_screen > param_8) break;
+
+        long dst_y = dst_y_screen;
+        if (orien < 1) dst_y = (dst_y - param_2->Height) + 1;
+        unsigned char* line = param_2->Bits + dst_y * stride;
+
+        long cur_x = param_3;
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned int run = (unsigned int)(cmd >> 1);
+            if (cmd & 1) {
+                if (run == 0) {
+                    cur_x += *src++;
+                } else {
+                    for (unsigned int i = 0; i < run; ++i) {
+                        if (cur_x >= param_5 && cur_x <= param_7) {
+                            if (((cur_x + param_9 + dst_y_screen + param_10) & 1) == 0) {
+                                line[cur_x] = 0;
+                            }
+                        }
+                        cur_x++;
+                        src++;
+                    }
+                }
+            } else {
+                if (run == 0) break;
+                src++; // fill byte
+                for (unsigned int i = 0; i < run; ++i) {
+                    if (cur_x >= param_5 && cur_x <= param_7) {
+                        if (((cur_x + param_9 + dst_y_screen + param_10) & 1) == 0) {
+                            line[cur_x] = 0;
+                        }
+                    }
+                    cur_x++;
+                }
+            }
+        }
+    }
+
+    return 1;
+}
+
 TShape::TShape() {
     // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8B30
     this->shape = 0;
@@ -628,6 +1918,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
                 if (run == 0) {
                     if (src >= end) return 0;
                     cur_x += *src++;
+                    if (x < cur_x) return 0;
                 } else {
                     if (src + run > end) return 0;
                     if (x < cur_x + (long)run) return 1;
@@ -662,7 +1953,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
     short right = *(short*)(base + outline_off + 2);
     if (left < 0) return 0;
 
-    long row_max_x = (info->Width - right) - 1;
+    long row_max_x = info->Width - right;
     if (lx < left || lx > row_max_x) return 0;
 
     unsigned long row_off = *(unsigned long*)(base + data_off_tbl);
