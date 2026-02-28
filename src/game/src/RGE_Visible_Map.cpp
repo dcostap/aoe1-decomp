@@ -955,6 +955,73 @@ uchar RGE_Visible_Map::get_visible(int col, int row) {
     return (uchar)(((this->player->mutualExploredMask & tile_mask) != 0) ? 0x80 : 0x00);
 }
 
+void RGE_Visible_Map::set_all(uchar param_1) {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053C4D0
+    log_map_call(this->world->world_time, (int)this->player->id, 5, 0, (int)param_1, 0, 0, 0, 0);
+
+    for (int row = 0; row < this->heightValue; ++row) {
+        for (int col = 0; col < this->widthValue; ++col) {
+            this->map_offsets[row][col] = param_1;
+        }
+    }
+
+    if (param_1 == 0xFF || param_1 == 0) {
+        uint clear_mask = this->PlayerVisibleMaskInvertValue;
+        if (param_1 == 0xFF) {
+            clear_mask = clear_mask & this->PlayerExploredMaskInvertValue;
+        }
+        for (int row = 0; row < this->heightValue; ++row) {
+            for (int col = 0; col < this->widthValue; ++col) {
+                unified_map_offsets[row][col] = unified_map_offsets[row][col] & clear_mask;
+            }
+        }
+    } else {
+        uint set_mask = this->PlayerVisibleMaskValue | this->PlayerExploredMaskValue;
+        for (int row = 0; row < this->heightValue; ++row) {
+            for (int col = 0; col < this->widthValue; ++col) {
+                unified_map_offsets[row][col] = unified_map_offsets[row][col] | set_mask;
+            }
+        }
+    }
+
+    this->numberTilesExploredValue = (param_1 == 0xFF) ? 0 : this->numberTotalTilesValue;
+}
+
+void RGE_Visible_Map::explore_all() {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053C5D0
+    log_map_call(this->world->world_time, (int)this->player->id, 6, 0, 0, 0, 0, 0, 0);
+    for (int row = 0; row < this->heightValue; ++row) {
+        for (int col = 0; col < this->widthValue; ++col) {
+            if (this->map_offsets[row][col] == 0xFF) {
+                this->map_offsets[row][col] = 0;
+                this->numberTilesExploredValue = this->numberTilesExploredValue + 1;
+                unified_map_offsets[row][col] = unified_map_offsets[row][col] | this->PlayerExploredMaskValue;
+                this->player->tile_list.add_node(col, row);
+            }
+        }
+    }
+    this->player->tile_list.collapse_list = 1;
+}
+
+void RGE_Visible_Map::recomputeExplored() {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053C680
+    this->numberTilesExploredValue = 0;
+    for (int row = 0; row < this->heightValue; ++row) {
+        for (int col = 0; col < this->widthValue; ++col) {
+            if (this->map_offsets[row][col] != 0xFF) {
+                this->numberTilesExploredValue = this->numberTilesExploredValue + 1;
+            }
+        }
+    }
+}
+
+ulong RGE_Visible_Map::checksum_visible_inputs() {
+    // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053CE70
+    ulong value = this->input_csum;
+    this->input_csum = 0;
+    return value;
+}
+
 float RGE_Visible_Map::percentExplored() {
     // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053C670
     if (this->numberTotalTilesValue == 0) {

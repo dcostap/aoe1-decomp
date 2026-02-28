@@ -792,6 +792,24 @@ char* RGE_Scenario::Get_message(long param_1) {
     }
 }
 
+int FUN_0048c33d() {
+    // TODO: decomp for this offset is corrupted/bad-instruction data.
+    // Source of truth: scenario.cpp.decomp @ 0x0048C33D
+    return 0;
+}
+
+int FUN_0048ce21() {
+    // TODO: decomp for this offset is corrupted/junk control flow.
+    // Source of truth: scenario.cpp.decomp @ 0x0048CE21
+    return 0;
+}
+
+RGE_Scenario_File_Info* FUN_0048ce82() {
+    // TODO: decomp for this offset is corrupted/junk control flow.
+    // Source of truth: scenario.cpp.decomp @ 0x0048CE82
+    return nullptr;
+}
+
 RGE_Scenario::~RGE_Scenario() {
     // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048B5A0
     if (this->time_line != nullptr) {

@@ -13,7 +13,7 @@
 #include <stdio.h>
 
 RGE_Sprite::RGE_Sprite(short sprite_id) {
-    // Source of truth: sprite.cpp.asm line 6
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BF720
     memset(this, 0, sizeof(RGE_Sprite));
     this->id = sprite_id;
     this->color_tables = nullptr;
@@ -162,7 +162,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds) {
 }
 
 RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
-    // Source of truth: sprite.cpp.decomp line 50 / sprite.cpp.asm line 82
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BF790
     memset(this, 0, sizeof(RGE_Sprite));
     this->color_tables = colors;
 
@@ -225,7 +225,7 @@ RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
 }
 
 RGE_Sprite::~RGE_Sprite() {
-    // Source of truth: sprite.cpp.decomp line 304
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFCE0
     if (this->shape && this->loaded != 0) {
         delete this->shape;
         this->shape = nullptr;
@@ -242,7 +242,7 @@ RGE_Sprite::~RGE_Sprite() {
 }
 
 void RGE_Sprite::rehook(RGE_Sprite** sprites) {
-    // Source of truth: sprite.cpp.decomp line 339
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFD40
     if (this->draw_list_num > 0 && this->draw_list) {
         for (short i = 0; i < this->draw_list_num; i++) {
             if (this->draw_list[i].picture_num == -1) {
@@ -256,6 +256,7 @@ void RGE_Sprite::rehook(RGE_Sprite** sprites) {
 }
 
 void RGE_Sprite::load_facets(RGE_Sprite** sprites) {
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFFE0
     // For now, shape loading is deferred to first draw as in decomp do_draw
     this->shape = nullptr;
     this->loaded = 1;
@@ -720,4 +721,73 @@ unsigned char RGE_Sprite::get_lowest_draw_level() {
         } while (count != 0);
     }
     return lowest;
+}
+
+uchar RGE_Sprite::hit_test(short param_1, short param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0C90
+    if (((this->box_x1 != 0) || (this->box_x2 != 0)) &&
+        ((this->box_y1 != 0) || (this->box_y2 != 0)) &&
+        (this->box_x1 <= param_1) && (param_1 <= this->box_x2) &&
+        (this->box_y1 <= param_2) && (param_2 <= this->box_y2)) {
+        return 1;
+    }
+
+    if ((this->draw_list_num > 0) && (this->draw_list != nullptr)) {
+        for (int i = 0; i < this->draw_list_num; ++i) {
+            RGE_Picture_List* list = &this->draw_list[i];
+            RGE_Sprite* child = list->sprite;
+            if (child != nullptr &&
+                child->shape_hit_test((short)(param_1 - list->offset_x),
+                                      (short)(param_2 - list->offset_y),
+                                      (child->facet_num * param_3) / (int)this->facet_num,
+                                      param_4) != 0) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    return this->shape_hit_test(param_1, param_2, param_3, param_4);
+}
+
+uchar RGE_Sprite::shape_hit_test(short param_1, short param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0D80
+    sprite_ensure_shape_loaded(this);
+    if (this->shape == nullptr) {
+        return 0;
+    }
+
+    if (this->frame_num < param_4) {
+        param_4 = 0;
+    }
+
+    long shape_num = 0;
+    uchar mirrored = this->get_facetindex(param_3, param_4, &shape_num);
+    if (this->transparent_picking_flag == 1) {
+        return (mirrored == 0)
+            ? this->shape->shape_check((long)param_1, (long)param_2, shape_num)
+            : this->shape->shape_check((long)-param_1, (long)param_2, shape_num);
+    }
+
+    if (this->transparent_picking_flag == 2) {
+        long x_min = 0;
+        long y_min = 0;
+        long x_max = 0;
+        long y_max = 0;
+        this->shape->shape_minmax(&x_min, &y_min, &x_max, &y_max, (int)shape_num);
+        int x = (int)param_1;
+        if (mirrored != 0) {
+            if (x < -x_max) {
+                return 0;
+            }
+            x_min = -y_min;
+        } else if (x < x_min) {
+            return 0;
+        }
+        if ((x <= x_min) && (y_min <= param_2) && (param_2 <= y_max)) {
+            return 1;
+        }
+    }
+
+    return 0;
 }

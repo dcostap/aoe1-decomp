@@ -79,6 +79,8 @@ public:
     int get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5);
     int get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6);
     int get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8);
+    uchar hit_test(short param_1, short param_2, long param_3, long param_4);
+    uchar shape_hit_test(short param_1, short param_2, long param_3, long param_4);
     unsigned char get_lowest_draw_level();
     RGE_Active_Sprite* make_active_sprite();
     int check_for_shadows();
