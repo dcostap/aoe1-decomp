@@ -13,6 +13,16 @@
 namespace {
 static int kUseInfluencePlacement = 0;
 
+static long construction_ftol(float value) {
+    // Fully verified. Source of truth: taiconmd.cpp.asm (__ftol call sites).
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
+}
+
 // Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 BaseItem* tribe_base_item(ConstructionItem* item) {
     return reinterpret_cast<BaseItem*>(item);
@@ -251,7 +261,7 @@ void TribeConstructionAIModule::setMainDecisionAI(TribeMainDecisionAIModule* par
 }
 
 // Offset: 0x004D5F00
-// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00
+// Fully verified. Source of truth: taiconmd.cpp.decomp + taiconmd.cpp.asm @ 0x004D5F00
 int TribeConstructionAIModule::canPlace(BuildItem* param_1) {
     if ((0.0f < this->xReferencePointValue) &&
         (0.0f < this->yReferencePointValue) &&
@@ -392,7 +402,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, 
 }
 
 // Offset: 0x004D6780
-// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D6780
+// Fully verified. Source of truth: taiconmd.cpp.decomp + taiconmd.cpp.asm @ 0x004D6780
 ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* param_1) {
     ConstructionItem* item = tribe_information_place_dock(this, param_1);
     if (item != nullptr) {
@@ -409,7 +419,7 @@ ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* param_1) {
 }
 
 // Offset: 0x004D6800
-// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D6800
+// Fully verified. Source of truth: taiconmd.cpp.decomp + taiconmd.cpp.asm @ 0x004D6800
 void TribeConstructionAIModule::setBuilt(RGE_Static_Object* param_1, int param_2) {
     ConstructionItem* item = this->constructionLots.next;
     while ((item != &this->constructionLots) && (item != nullptr)) {
@@ -422,11 +432,15 @@ void TribeConstructionAIModule::setBuilt(RGE_Static_Object* param_1, int param_2
         item = item->next;
     }
 
-    tribe_information_store_lot(this, param_1->master_obj->id, (int)param_1->world_x, (int)param_1->world_y, 1);
+    tribe_information_store_lot(this,
+                                param_1->master_obj->id,
+                                static_cast<int>(construction_ftol(param_1->world_x)),
+                                static_cast<int>(construction_ftol(param_1->world_y)),
+                                1);
 }
 
 // Offset: 0x004D68A0
-// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D68A0
+// Fully verified. Source of truth: taiconmd.cpp.decomp + taiconmd.cpp.asm @ 0x004D68A0
 ConstructionItem* TribeConstructionAIModule::compare(ConstructionItem* param_1, ConstructionItem* param_2) {
     int attempts_1 = tribe_lot_build_attempts(param_1);
     int attempts_2 = tribe_lot_build_attempts(param_2);

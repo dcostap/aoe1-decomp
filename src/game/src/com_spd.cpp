@@ -9,7 +9,7 @@
 namespace {
 static char s_self_optimal_speed_str[256];
 static char s_player_speed_status_str[256];
-static char s_machine_speed_info_str[512];
+static char s_machine_speed_info_str[256];
 }
 
 RGE_Communications_Speed::RGE_Communications_Speed(TCommunications_Handler* comm) {
@@ -133,9 +133,7 @@ void RGE_Communications_Speed::AdjustLocalSpeed() {
 
 void RGE_Communications_Speed::ReloadBufferFrames() {
     // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432940
-    if (this->TurnTSLC != nullptr) {
-        (void)this->TurnTSLC->Set();
-    }
+    (void)this->TurnTSLC->Set();
     this->DroppedFramesTurn = 0;
     this->AdjustLocalSpeed();
     this->TotalBufferFramesRemaining = this->CurrentBufferFrames;
@@ -180,9 +178,7 @@ uint RGE_Communications_Speed::BufferTimeToUse(ulong frame_no) {
 
 void RGE_Communications_Speed::Skip() {
     // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432A70
-    if (this->FrameTSLC != nullptr) {
-        this->FrameTSLC->Skip();
-    }
+    this->FrameTSLC->Skip();
     this->LastFrameHadTime = 0;
 }
 
@@ -283,7 +279,7 @@ uint RGE_Communications_Speed::GetRecommendedBufferFrames() {
 
 uint RGE_Communications_Speed::GetAvgFrameRate() {
     // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432D90
-    return (this->FrameTSLC != nullptr) ? (uint)this->FrameTSLC->GetAvg(0x32) : 0;
+    return (uint)this->FrameTSLC->GetAvg(0x32);
 }
 
 uint RGE_Communications_Speed::GetRecommendedBufferGranularity() {
@@ -333,8 +329,9 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(uint* out_granularity, uint* out_
     if (new_gran > 0x96) new_gran = 0x96;
 
     const uint cur_gran = this->CurrentBufferGranularity;
-    const int diff = (int)new_gran - (int)cur_gran;
-    if (diff < 10 && diff > -10) {
+    const uint gran_delta = new_gran - cur_gran;
+    const uint gran_sign = (uint)((int)gran_delta >> 0x1f);
+    if (((gran_delta ^ gran_sign) - gran_sign) < 10) {
         new_gran = cur_gran;
     }
 
@@ -349,8 +346,9 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(uint* out_granularity, uint* out_
     const uint cur_frames = this->CurrentBufferFrames;
     const uint new_turn_time = new_gran * new_frames;
     const uint cur_turn_time = cur_frames * cur_gran;
-    const int signed_delta = (int)(new_turn_time - cur_turn_time);
-    const uint abs_delta = (uint)(signed_delta < 0 ? -signed_delta : signed_delta);
+    const uint turn_delta = new_turn_time - cur_turn_time;
+    const uint turn_sign = (uint)((int)turn_delta >> 0x1f);
+    const uint abs_delta = (turn_delta ^ turn_sign) - turn_sign;
     if (abs_delta < 0x0B) {
         return 0;
     }

@@ -5,12 +5,12 @@ char kInformationAIName[] = "InfAI";
 }
 
 // Offset: 0x0040CD90
-// Fully verified. Source of truth: aiinfmod.cpp.decomp @ 0x0040CD90
+// Fully verified. Source of truth: aiinfmod.cpp.decomp @ 0x0040CD90, aiinfmod.cpp.asm @ 0x0040CD90
 InformationAIModule::InformationAIModule(void* param_1, int param_2)
     : AIModule(kInformationAIName, 0x3ED, param_2, param_1) {}
 
 // Offset: 0x0040CDE0
-// Fully verified. Source of truth: aiinfmod.cpp.decomp @ 0x0040CDE0
+// Fully verified. Source of truth: aiinfmod.cpp.decomp @ 0x0040CDE0, aiinfmod.cpp.asm @ 0x0040CDE0
 InformationAIModule::~InformationAIModule() {}
 
 int InformationAIModule::loggingHistory() {

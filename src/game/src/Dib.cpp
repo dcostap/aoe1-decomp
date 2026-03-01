@@ -561,9 +561,9 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
 
     int sizeImage = (int)param_1->biSizeImage;
     if (sizeImage == 0) {
-        int height = (int)param_1->biHeight;
-        if (height < 0) height = -height;
-        sizeImage = (int)(((((long long)param_1->biWidth * (uint)param_1->biBitCount) + 0x1f) >> 3) & 0x1ffffffc) * height;
+        const uint rowBits = ((uint)param_1->biWidth * (uint)param_1->biBitCount) + 0x1fU;
+        const uint rowBytes = (rowBits >> 3) & 0x1ffffffcU;
+        sizeImage = (int)(rowBytes * (uint)param_1->biHeight);
     }
 
     uchar* bits = (uchar*)param_1 + (int)param_1->biSize +
@@ -577,12 +577,9 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
 
     if (param_3 != 0) {
         if (param_4 == 0) {
-            long stride = ((param_1->biWidth + 3U) & 0xfffffffc);
-            int height = (int)param_1->biHeight;
-            if (height < 0) height = -height;
-            if (height > 0) {
-                HitEnd = *(uchar*)(bits + (stride * (height - 1)));
-            }
+            const uint stride = ((uint)param_1->biWidth + 3U) & 0xfffffffcU;
+            const uint rowOffset = stride * (uint)(param_1->biHeight - 1);
+            HitEnd = *(uchar*)(bits + rowOffset);
         } else {
             HitEnd = 0;
         }

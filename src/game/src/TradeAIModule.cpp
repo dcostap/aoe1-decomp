@@ -5,20 +5,20 @@ char kTradeAIName[] = "Trade AI";
 }
 
 // Offset: 0x00412E40
-// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412E40
+// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412E40, aitrdmod.cpp.asm @ 0x00412E40
 TradeAIModule::TradeAIModule(void* param_1, int param_2) : AIModule(kTradeAIName, 0x3F2, param_2, param_1) {
     this->md = nullptr;
 }
 
 // Offset: 0x00412EA0
-// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412EA0
+// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412EA0, aitrdmod.cpp.asm @ 0x00412EA0
 TradeAIModule::TradeAIModule(int param_1, int param_2) : AIModule(kTradeAIName, 0x3F2, param_1, nullptr) {
     (void)param_2;
     this->md = nullptr;
 }
 
 // Offset: 0x00412ED0
-// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412ED0
+// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412ED0, aitrdmod.cpp.asm @ 0x00412ED0
 TradeAIModule::~TradeAIModule() {}
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
@@ -88,17 +88,18 @@ void TradeAIModule::setCallbackMessage(AIModuleMessage* param_1) {
 }
 
 int TradeAIModule::filterOutMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::filterOutMessage(param_1);
 }
 
 // Offset: 0x00412EE0
-// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412EE0
+// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412EE0, aitrdmod.cpp.asm @ 0x00412EE0
 void TradeAIModule::setMainDecisionAI(MainDecisionAIModule* param_1) {
     this->md = param_1;
 }
 
 // Offset: 0x00412EF0
-// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412EF0
+// Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412EF0, aitrdmod.cpp.asm @ 0x00412EF0
 int TradeAIModule::save(int param_1) {
     (void)param_1;
     return 1;
