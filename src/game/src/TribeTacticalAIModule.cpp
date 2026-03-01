@@ -525,6 +525,10 @@ int TribeTacticalAIModule::update(int param_1) {
         this->lastScalingUpdateValue = worldTime;
     }
     this->unitsTaskedThisUpdate.numberValue = 0;
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    if (infoAI != nullptr) {
+        infoAI->farmsTaskedThisUpdate.numberValue = 0;
+    }
     if (static_cast<uint>(this->sn[0x68]) <= (worldTime / 1000)) {
         enableAttack(2);
     }
@@ -4684,27 +4688,58 @@ int TribeTacticalAIModule::numberUnitsInGroups(int param_1) {
     return count;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005009A0
-int TribeTacticalAIModule::numberItemsToAttack() { return this->playersToAttack.numberValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005009A0
+int TribeTacticalAIModule::numberItemsToAttack() {
+    ensureManagedArrayCapacity(this->playersToAttack, 1);
+    if ((this->md == nullptr) || (this->playersToAttack.maximumSizeValue < 1) || (this->playersToAttack.value == nullptr)) {
+        return 0;
+    }
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    if (infoAI == nullptr) {
+        return 0;
+    }
+    return infoAI->numberGameIDsOwnedBy(-1, this->playersToAttack.value[0]);
+}
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500A30
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500A30
 int TribeTacticalAIModule::itemToCapture() {
-    if (this->artifacts.numberValue <= 0 || this->artifacts.maximumSizeValue <= 0) {
-        return -1;
+    if (this->md != nullptr) {
+        TribeStrategyAIModule* strategyAI = reinterpret_cast<TribeStrategyAIModule*>(&this->md->strategyAI);
+        if ((strategyAI != nullptr) && (strategyAI->currentVictoryCondition() == 0)) {
+            int targetID = strategyAI->targetID();
+            if (group(-1, -1, -1, targetID) == nullptr) {
+                return targetID;
+            }
+        }
     }
-    return this->artifacts.value[0];
+    return -1;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500A80
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500A80
 int TribeTacticalAIModule::itemToBringToArea() {
-    if (this->workingArea.numberValue <= 0 || this->workingArea.maximumSizeValue <= 0) {
-        return -1;
+    if (this->md != nullptr) {
+        TribeStrategyAIModule* strategyAI = reinterpret_cast<TribeStrategyAIModule*>(&this->md->strategyAI);
+        if ((strategyAI != nullptr) && (strategyAI->currentVictoryCondition() == 4)) {
+            int targetID = strategyAI->secondTargetID();
+            if (group(-1, -1, -1, targetID) == nullptr) {
+                return targetID;
+            }
+        }
     }
-    return this->workingArea.value[0];
+    return -1;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500AD0
-int TribeTacticalAIModule::numberItemsToDefend() { return this->playersToDefend.numberValue; }
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500AD0
+int TribeTacticalAIModule::numberItemsToDefend() {
+    if (this->md == nullptr) {
+        return 0;
+    }
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    if (infoAI == nullptr) {
+        return 0;
+    }
+    return infoAI->numberItemsToDefend();
+}
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500AF0
 unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
@@ -5634,6 +5669,7 @@ void TribeTacticalAIModule::saveTheTown(int param_1) {
     if (world == nullptr) {
         return;
     }
+    unsigned long saveTheTownStartTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3420);
     RGE_Static_Object* targetObj = this->md->object(param_1);
     if (targetObj == nullptr) {
         return;
@@ -5658,14 +5694,16 @@ void TribeTacticalAIModule::saveTheTown(int param_1) {
         }
     }
 
-    const unsigned long entryTime = world->world_time;
     int responded = 0;
     for (int i = 0; (i < this->soldiers.numberValue) && (responded < 6); ++i) {
         if (i >= this->soldiers.maximumSizeValue) {
             break;
         }
-        if ((responded > 1) && ((world->world_time - entryTime) > 10)) {
-            return;
+        if (responded > 1) {
+            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3447);
+            if (now - saveTheTownStartTime > 10) {
+                return;
+            }
         }
         int unitID = this->soldiers.value[i];
         RGE_Static_Object* soldierObj = world->object(unitID);
