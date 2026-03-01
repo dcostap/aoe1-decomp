@@ -55,6 +55,7 @@ void TScreenPanel::draw_setup(int param_1) { TEasy_Panel::draw_setup(param_1); }
 void TScreenPanel::draw_finish() { TEasy_Panel::draw_finish(); }
 void TScreenPanel::draw() {
     // Fully verified. Source of truth: pnl_scr.cpp.asm @ 0x0047BB40
+    // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BB40
     TEasy_Panel::draw();
 }
 void TScreenPanel::draw_rect(tagRECT* param_1) { TEasy_Panel::draw_rect(param_1); }
