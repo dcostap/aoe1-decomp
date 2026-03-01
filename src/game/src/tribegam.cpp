@@ -1323,12 +1323,11 @@ int TRIBE_Game::create_game(int p1) {
         int humanity = comm_handler->GetPlayerHumanity(slot);
         if (humanity == 2) {
             int colorVal = this->playerColor(slot - 1);
-            int colorIndex = colorVal - 1;
-            if (position_used[colorIndex] == -1) {
-                position_used[colorIndex] = scenario_player;
+            if (position_used[colorVal] == -1) {
+                position_used[colorVal] = scenario_player;
                 scenario_player++;
             }
-            this->setPlayerID(slot, position_used[colorIndex] + 1);
+            this->setPlayerID(slot, position_used[colorVal] + 1);
         } else if (humanity == 4) {
             // Find an unused color position
             for (int c = 0; c < 8; ++c) {

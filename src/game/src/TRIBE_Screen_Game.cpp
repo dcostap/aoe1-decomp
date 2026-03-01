@@ -928,44 +928,6 @@ void TRIBE_Screen_Game::handle_game_update() {
     }
 
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
-    auto command_unselect = [this]() {
-        if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
-            return;
-        }
-
-        RGE_Player* unselect_player = rge_base_game->get_player();
-        if (unselect_player != nullptr) {
-            unselect_player->unselect_object();
-            unselect_player->unselect_area();
-        }
-        if (this->runtime.main_view != nullptr) {
-            this->runtime.main_view->set_redraw(TPanel::Redraw);
-        }
-    };
-    auto command_cancel = [this, &command_unselect]() {
-        if (rge_base_game == nullptr) {
-            return;
-        }
-
-        if (this->help_mode != 0) {
-            this->clear_popup_help();
-            return;
-        }
-
-        if (rge_base_game->get_paused() != 0) {
-            return;
-        }
-
-        if (rge_base_game->game_mode != 0) {
-            if (rge_base_game->game_mode == 0x15 && this->runtime.main_view != nullptr) {
-                ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
-            }
-            rge_base_game->set_game_mode(0, 0);
-            return;
-        }
-
-        command_unselect();
-    };
 
     if (this->runtime.main_view != nullptr && this->runtime.main_view != this) {
         RGE_View* main_view = (RGE_View*)this->runtime.main_view;
@@ -1040,7 +1002,7 @@ void TRIBE_Screen_Game::handle_game_update() {
                             ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
                         }
                         rge_base_game->set_game_mode(0, 0);
-                        command_unselect();
+                        this->command_unselect();
                         if (rge_base_game->multiplayerGame() != 0 && this->runtime.world != nullptr) {
                             this->runtime.world->send_zone_score_info();
                         }
@@ -1073,15 +1035,7 @@ void TRIBE_Screen_Game::handle_game_update() {
             }
 
             if (scr_game_field_i32(this, 0x7B0) != 0) {
-                if (rge_base_game->get_paused() == 0) {
-                    RGE_Player* view_player = rge_base_game->get_player();
-                    if (view_player != nullptr && view_player->selected_obj != nullptr) {
-                        const float view_x = view_player->selected_obj->world_x;
-                        const float view_y = view_player->selected_obj->world_y;
-                        view_player->set_view_loc(view_x, view_y);
-                        view_player->set_map_loc((short)view_x, (short)view_y);
-                    }
-                }
+                this->command_view_selected();
             }
 
             player = (TRIBE_Player*)rge_base_game->get_player();
@@ -1105,7 +1059,7 @@ void TRIBE_Screen_Game::handle_game_update() {
             }
 
             if (start_paused == 0 &&
-                (world_state_ok != 0 || current_player_status == 2 || this->runtime.watch_mode == 1)) {
+                (world_state_ok == 1 || current_player_status == 2 || this->runtime.watch_mode == 1)) {
                 int& game_over_pending = scr_game_field_i32(this, 0x720);
                 ulong& game_over_time = scr_game_field_u32(this, 0x71C);
 
@@ -1120,7 +1074,7 @@ void TRIBE_Screen_Game::handle_game_update() {
                                     ((RGE_View*)this->runtime.main_view)->set_selection_area(-1, -1, -1, -1);
                                 }
                                 rge_base_game->set_game_mode(0, 0);
-                                command_unselect();
+                                this->command_unselect();
                                 ((TRIBE_Game*)rge_base_game)->do_game_over();
                                 return;
                             }
@@ -1154,8 +1108,8 @@ void TRIBE_Screen_Game::handle_game_update() {
                         }
                     }
                 } else {
-                    command_cancel();
-                    command_unselect();
+                    this->command_cancel();
+                    this->command_unselect();
 
                     if (this->runtime.text_line_panel != nullptr) {
                         this->runtime.text_line_panel->remove_message();
@@ -1238,7 +1192,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 
         int has_focus = 0;
         if (this->runtime.main_view != nullptr) {
-            has_focus = this->runtime.main_view->have_focus;
+            has_focus = this->runtime.main_view->get_focus();
         }
 
         TPanel* quick_message_dialog = panel_system->panel((char*)"Send Quick Message Dialog");

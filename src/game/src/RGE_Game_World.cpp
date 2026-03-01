@@ -33,71 +33,41 @@
 #include <string.h>
 #include <new>
 
-static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Player_Info* info,
-                                           float scenario_version, int has_uncompressed_header) {
-    if (world == nullptr || fd < 0) {
-        return;
-    }
-
-    world_update_counter = 0;
-
-    if (has_uncompressed_header != 0) {
-        long header_size = 0;
-        rge_read(fd, &header_size, 4);
-        if (header_size > 0) {
-            void* header_data = malloc((size_t)header_size);
-            if (header_data == nullptr) {
-                rge_close(fd);
-                return;
-            }
-            rge_read(fd, header_data, (int)header_size);
-            free(header_data);
-        }
-    }
-
-    long scenario_player_num = 0;
-    rge_read(fd, &scenario_player_num, 4);
-
-    world->scenario_init(fd, world);
-    world->scenario_make_map(fd);
-
-    int player_id_map[9];
+static void rge_world_build_player_id_map(RGE_Game_World* world, RGE_Player_Info* info, long* player_id_map) {
     for (int i = 0; i < 9; ++i) {
         player_id_map[i] = -1;
     }
 
-    if (info != nullptr) {
+    if (world != nullptr && info != nullptr) {
         for (int i = 0; i < world->player_num && i < 9; ++i) {
             int hash = (int)info->player_id_hash[i];
             if (hash >= 0 && hash < 9) {
                 player_id_map[hash] = i;
             }
         }
-    } else {
-        for (int i = 0; i < world->player_num && i < 9; ++i) {
-            player_id_map[i] = i;
-        }
+    }
+}
+
+static RGE_Player* rge_world_resolve_scenario_player(RGE_Game_World* world, const long* player_id_map,
+                                                      int scen_player, int allow_fallback) {
+    if (world == nullptr || world->players == nullptr) {
+        return nullptr;
     }
 
-    world->reset_player_visible_maps();
-
-    long preload_player_count = 0;
-    rge_read(fd, &preload_player_count, 4);
-    for (int scen_player = 1; scen_player < preload_player_count; ++scen_player) {
-        int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
-        RGE_Player* player = nullptr;
-        if (mapped >= 0 && mapped < world->player_num && world->players != nullptr) {
-            player = world->players[mapped];
-        }
-        if (player == nullptr && world->players != nullptr && world->player_num > 0) {
-            player = world->players[0];
-        }
-        if (player != nullptr) {
-            player->scenario_load(fd, (long*)player_id_map, scenario_version);
-        }
+    int mapped = (scen_player >= 0 && scen_player < 9) ? (int)player_id_map[scen_player] : -1;
+    if (mapped >= 0 && mapped < world->player_num && world->players[mapped] != nullptr) {
+        return world->players[mapped];
     }
 
-    for (int scen_player = 0; scen_player < preload_player_count; ++scen_player) {
+    if (allow_fallback != 0 && world->player_num > 0) {
+        return world->players[0];
+    }
+
+    return nullptr;
+}
+
+static void rge_world_load_scenario_objects(RGE_Game_World* world, int fd, const long* player_id_map, long scenario_player_count) {
+    for (int scen_player = 0; scen_player < scenario_player_count; ++scen_player) {
         long object_count = 0;
         rge_read(fd, &object_count, 4);
         for (int obj_idx = 0; obj_idx < object_count; ++obj_idx) {
@@ -117,8 +87,9 @@ static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Pl
             rge_read(fd, &obj_state, 1);
             rge_read(fd, &obj_angle, 4);
 
-            int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
-            if (mapped >= 0 && mapped < world->player_num && world->players != nullptr && world->players[mapped] != nullptr) {
+            int mapped = (scen_player >= 0 && scen_player < 9) ? (int)player_id_map[scen_player] : -1;
+            if (world != nullptr && world->players != nullptr &&
+                mapped >= 0 && mapped < world->player_num && world->players[mapped] != nullptr) {
                 world->scenario_object_flag = '\x01';
                 world->scenario_object_id = obj_id;
                 world->players[mapped]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state, obj_angle);
@@ -126,42 +97,139 @@ static void rge_world_load_scenario_common(RGE_Game_World* world, int fd, RGE_Pl
             }
         }
     }
+}
 
+static void rge_world_load_scenario_ai(RGE_Game_World* world, const long* player_id_map, long scenario_player_count) {
+    if (world == nullptr || world->scenario == nullptr || world->players == nullptr) {
+        return;
+    }
+
+    for (int scen_player = 1; scen_player < world->player_num; ++scen_player) {
+        if (scenario_player_count <= scen_player) {
+            return;
+        }
+
+        int mapped = (int)player_id_map[scen_player];
+        if (world->players[scen_player] != nullptr &&
+            mapped >= 0 && mapped < world->player_num && world->players[mapped] != nullptr) {
+            world->players[mapped]->loadAIInformation(
+                world->scenario->BuildList[scen_player - 1],
+                world->scenario->CityPlan[scen_player - 1],
+                world->scenario->AiRules[scen_player - 1],
+                world->scenario->PlayerPosture[scen_player - 1],
+                -1);
+        }
+    }
+}
+
+static int rge_world_read_scenario_header(int fd, int has_uncompressed_header) {
+    if (has_uncompressed_header == 0) {
+        return 1;
+    }
+
+    long header_size = 0;
+    rge_read(fd, &header_size, 4);
+    if (header_size > 0) {
+        void* header_data = malloc((size_t)header_size);
+        if (header_data == nullptr) {
+            rge_close(fd);
+            return 0;
+        }
+        rge_read(fd, header_data, (int)header_size);
+        free(header_data);
+    }
+    return 1;
+}
+
+static void rge_world_load_scenario_legacy(RGE_Game_World* world, int fd, RGE_Player_Info* info, float scenario_version,
+                                            int has_uncompressed_header) {
+    if (world == nullptr || fd < 0) {
+        return;
+    }
+
+    world_update_counter = 0;
+    if (rge_world_read_scenario_header(fd, has_uncompressed_header) == 0) {
+        return;
+    }
+
+    long scenario_player_count = 0;
+    rge_read(fd, &scenario_player_count, 4);
+    world->scenario_init(fd, world);
+    world->scenario_make_map(fd);
+
+    long player_id_map[9];
+    rge_world_build_player_id_map(world, info, player_id_map);
+    world->reset_player_visible_maps();
+
+    for (int scen_player = 0; scen_player < scenario_player_count; ++scen_player) {
+        uchar master_player_id = 0;
+        uchar unused = 0;
+        rge_read(fd, &master_player_id, 1);
+        rge_read(fd, &unused, 1);
+    }
+
+    rge_world_load_scenario_objects(world, fd, player_id_map, scenario_player_count);
     rge_read(fd, &world->next_object_id, 4);
 
-    long postload_player_count = 0;
-    rge_read(fd, &postload_player_count, 4);
-    for (int scen_player = 1; scen_player < postload_player_count; ++scen_player) {
-        int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
-        RGE_Player* player = nullptr;
-        if (mapped >= 0 && mapped < world->player_num && world->players != nullptr) {
-            player = world->players[mapped];
-        }
-        if (player == nullptr && world->players != nullptr && world->player_num > 0) {
-            player = world->players[0];
-        }
+    char legacy_player_blob[13];
+    rge_read(fd, legacy_player_blob, 13);
+    for (int scen_player = 1; scen_player < scenario_player_count; ++scen_player) {
+        RGE_Player* player = rge_world_resolve_scenario_player(world, player_id_map, scen_player, 1);
         if (player != nullptr) {
-            player->scenario_postload(fd, (long*)player_id_map, scenario_version);
+            player->scenario_load(fd, player_id_map, scenario_version);
         }
     }
 
-    if (world->scenario != nullptr && world->players != nullptr) {
-        for (int scen_player = 1; scen_player < world->player_num && scen_player < postload_player_count; ++scen_player) {
-            int mapped = (scen_player >= 0 && scen_player < 9) ? player_id_map[scen_player] : -1;
-            int scenario_idx = scen_player - 1;
-            if (mapped >= 0 && mapped < world->player_num && world->players[mapped] != nullptr &&
-                scenario_idx >= 0 && scenario_idx < 16) {
-                world->players[mapped]->loadAIInformation(
-                    world->scenario->BuildList[scenario_idx],
-                    world->scenario->CityPlan[scenario_idx],
-                    world->scenario->AiRules[scenario_idx],
-                    world->scenario->PlayerPosture[scenario_idx],
-                    -1);
+    rge_close(fd);
+    rge_world_load_scenario_ai(world, player_id_map, scenario_player_count);
+}
+
+static void rge_world_load_scenario_modern(RGE_Game_World* world, int fd, RGE_Player_Info* info, float scenario_version,
+                                           int has_uncompressed_header, int has_postload) {
+    if (world == nullptr || fd < 0) {
+        return;
+    }
+
+    world_update_counter = 0;
+    if (rge_world_read_scenario_header(fd, has_uncompressed_header) == 0) {
+        return;
+    }
+
+    long scenario_player_count = 0;
+    rge_read(fd, &scenario_player_count, 4);
+    world->scenario_init(fd, world);
+    world->scenario_make_map(fd);
+
+    long player_id_map[9];
+    rge_world_build_player_id_map(world, info, player_id_map);
+    world->reset_player_visible_maps();
+
+    for (int scen_player = 1; scen_player < scenario_player_count; ++scen_player) {
+        RGE_Player* player = rge_world_resolve_scenario_player(world, player_id_map, scen_player, 1);
+        if (player != nullptr) {
+            player->scenario_load(fd, player_id_map, scenario_version);
+        }
+    }
+
+    rge_world_load_scenario_objects(world, fd, player_id_map, scenario_player_count);
+    rge_read(fd, &world->next_object_id, 4);
+
+    long ai_player_count = scenario_player_count;
+    if (has_postload != 0) {
+        long postload_player_count = 0;
+        rge_read(fd, &postload_player_count, 4);
+        ai_player_count = postload_player_count;
+
+        for (int scen_player = 1; scen_player < postload_player_count; ++scen_player) {
+            RGE_Player* player = rge_world_resolve_scenario_player(world, player_id_map, scen_player, 1);
+            if (player != nullptr) {
+                player->scenario_postload(fd, player_id_map, scenario_version);
             }
         }
     }
 
     rge_close(fd);
+    rge_world_load_scenario_ai(world, player_id_map, ai_player_count);
 }
 
 // Forward declarations for types used in function signatures
@@ -853,15 +921,16 @@ uchar RGE_Game_World::load_scenario(RGE_Player_Info* param_1) {
         }
         this->load_scenario2(fd, param_1);
     } else if (memcmp(version_tag, "1.04", 4) == 0) {
-        this->load_scenario4(fd, param_1);
+        this->load_scenario3(fd, param_1);
     } else if (memcmp(version_tag, "1.05", 4) == 0) {
-        this->load_scenario5(fd, param_1);
+        this->load_scenario4(fd, param_1);
     } else if (memcmp(version_tag, "1.06", 4) == 0) {
-        this->load_scenario6(fd, param_1);
+        this->load_scenario5(fd, param_1);
     } else if (memcmp(version_tag, "1.07", 4) == 0) {
+        this->load_scenario6(fd, param_1);
+    } else if (memcmp(version_tag, "1.08", 4) == 0) {
         this->load_scenario7(fd, param_1);
-    } else if (memcmp(version_tag, "1.08", 4) == 0 ||
-               memcmp(version_tag, "1.09", 4) == 0 ||
+    } else if (memcmp(version_tag, "1.09", 4) == 0 ||
                memcmp(version_tag, "1.10", 4) == 0 ||
                memcmp(version_tag, "1.11", 4) == 0) {
         this->load_scenario8(fd, param_1);
@@ -913,15 +982,16 @@ uchar RGE_Game_World::load_scenario(char* param_1, RGE_Player_Info* param_2) {
         }
         this->load_scenario2(fd, param_2);
     } else if (memcmp(version_tag, "1.04", 4) == 0) {
-        this->load_scenario4(fd, param_2);
+        this->load_scenario3(fd, param_2);
     } else if (memcmp(version_tag, "1.05", 4) == 0) {
-        this->load_scenario5(fd, param_2);
+        this->load_scenario4(fd, param_2);
     } else if (memcmp(version_tag, "1.06", 4) == 0) {
-        this->load_scenario6(fd, param_2);
+        this->load_scenario5(fd, param_2);
     } else if (memcmp(version_tag, "1.07", 4) == 0) {
+        this->load_scenario6(fd, param_2);
+    } else if (memcmp(version_tag, "1.08", 4) == 0) {
         this->load_scenario7(fd, param_2);
-    } else if (memcmp(version_tag, "1.08", 4) == 0 ||
-               memcmp(version_tag, "1.09", 4) == 0 ||
+    } else if (memcmp(version_tag, "1.09", 4) == 0 ||
                memcmp(version_tag, "1.10", 4) == 0 ||
                memcmp(version_tag, "1.11", 4) == 0) {
         this->load_scenario8(fd, param_2);
@@ -936,42 +1006,42 @@ uchar RGE_Game_World::load_scenario(char* param_1, RGE_Player_Info* param_2) {
 
 void RGE_Game_World::load_scenario1(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x00544300
-    rge_world_load_scenario_common(this, param_1, param_2, 1.0f, 0);
+    rge_world_load_scenario_legacy(this, param_1, param_2, 1.0f, 0);
 }
 
 void RGE_Game_World::load_scenario2(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x005445C0
-    rge_world_load_scenario_common(this, param_1, param_2, 1.03f, 0);
+    rge_world_load_scenario_legacy(this, param_1, param_2, 1.03f, 0);
 }
 
 void RGE_Game_World::load_scenario3(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x00544880
-    rge_world_load_scenario_common(this, param_1, param_2, 1.04f, 1);
+    rge_world_load_scenario_legacy(this, param_1, param_2, 1.04f, 1);
 }
 
 void RGE_Game_World::load_scenario4(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x00544B90
-    rge_world_load_scenario_common(this, param_1, param_2, 1.06f, 1);
+    rge_world_load_scenario_modern(this, param_1, param_2, 1.05f, 1, 0);
 }
 
 void RGE_Game_World::load_scenario5(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x00544E70
-    rge_world_load_scenario_common(this, param_1, param_2, 1.06f, 1);
+    rge_world_load_scenario_modern(this, param_1, param_2, 1.06f, 1, 1);
 }
 
 void RGE_Game_World::load_scenario6(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x005451A0
-    rge_world_load_scenario_common(this, param_1, param_2, 1.07f, 1);
+    rge_world_load_scenario_modern(this, param_1, param_2, 1.07f, 1, 1);
 }
 
 void RGE_Game_World::load_scenario7(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x005454D0
-    rge_world_load_scenario_common(this, param_1, param_2, 1.08f, 1);
+    rge_world_load_scenario_modern(this, param_1, param_2, 1.08f, 1, 1);
 }
 
 void RGE_Game_World::load_scenario8(int param_1, RGE_Player_Info* param_2) {
 // Fully verified. Source of truth: world.cpp.decomp @ 0x00545800
-    rge_world_load_scenario_common(this, param_1, param_2, 1.11f, 1);
+    rge_world_load_scenario_modern(this, param_1, param_2, 1.11f, 1, 1);
 }
 
 void RGE_Game_World::logStatus(FILE* param_1, int param_2) {

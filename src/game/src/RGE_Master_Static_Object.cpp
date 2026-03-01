@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <new>
 
 static long rge_ftol(float v) {
     // Fully verified. Source of truth: m_s_obj.cpp.decomp (helper implementation).
@@ -514,32 +515,20 @@ void RGE_Master_Static_Object::save(int param_1) {
 
 // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452FE0
 RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
-    if (param_1 == nullptr) {
-        return nullptr;
-    }
-
-    RGE_Static_Object* obj = new RGE_Static_Object();
-    if (obj == nullptr) {
-        return nullptr;
-    }
-
-    if (obj->setup(this, param_1, param_2, param_3, param_4) == 0) {
-        delete obj;
-        obj = nullptr;
-        return nullptr;
-    }
-
-    if (obj->tile == nullptr && param_1->world != nullptr && param_1->world->map != nullptr) {
-        int tile_x = (int)param_2;
-        int tile_y = (int)param_3;
-        RGE_Tile* tile = param_1->world->map->get_tile(tile_x, tile_y);
-        if (tile != nullptr) {
-            obj->tile = tile;
-            rge_master_add_tile_node(&tile->objects, obj);
+    if (this->recyclable != 0) {
+        RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
+        if (recycled != nullptr) {
+            recycled->recycle_in_to_game(this, param_1, param_2, param_3, param_4);
+            return recycled;
         }
     }
 
-    return obj;
+    RGE_Static_Object* obj = (RGE_Static_Object*)::operator new(sizeof(RGE_Static_Object), std::nothrow);
+    if (obj != nullptr) {
+        obj = new (obj) RGE_Static_Object(this, param_1, param_2, param_3, param_4, 1);
+        return obj;
+    }
+    return nullptr;
 }
 
 // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004530B0

@@ -577,7 +577,7 @@ void TRIBE_Panel_Object::draw() {
                         int pop = (int)panel_ftol(obj->owner->attributes[11]);
                         int max_pop = (int)panel_ftol(obj->owner->attributes[4] + obj->owner->attributes[11]);
                         int max_pop_cap = (int)panel_ftol(obj->owner->attributes[32]);
-                        if (max_pop_cap < max_pop) {
+                        if (max_pop_cap >= max_pop) {
                             max_pop_cap = max_pop;
                         }
                         this->draw_item(row, 4, ValueTypeCompare, pop, max_pop_cap);
