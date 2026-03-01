@@ -6,6 +6,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <new>
 #include "../include/Res_file.h"
 #include "../include/custom_debug.h"  // Must be after windows.h for MessageBox suppression
 
@@ -363,11 +364,11 @@ static void BUILDRES_free_lists(BuildResTypeNode* head) {
                 free(id->resData);
             }
             BuildResIdNode* nextId = id->next;
-            free(id);
+            delete id;
             id = nextId;
         }
         BuildResTypeNode* nextType = head->next;
-        free(head);
+        delete head;
         head = nextType;
     }
 }
@@ -481,7 +482,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         }
 
         if (typeNode == nullptr) {
-            typeNode = (BuildResTypeNode*)malloc(sizeof(BuildResTypeNode));
+            typeNode = new (std::nothrow) BuildResTypeNode;
             if (typeNode == nullptr) {
                 CUSTOM_DEBUG_LOG("Error: out of memory #1");
                 goto cleanup;
@@ -513,7 +514,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
             }
         }
 
-        BuildResIdNode* idNode = (BuildResIdNode*)malloc(sizeof(BuildResIdNode));
+        BuildResIdNode* idNode = new (std::nothrow) BuildResIdNode;
         if (idNode == nullptr) {
             CUSTOM_DEBUG_LOG("Error: out of memory #2");
             goto cleanup;
@@ -525,7 +526,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         int fd = _open(data_filename, _O_BINARY | _O_RDONLY);
         if (fd == -1) {
             CUSTOM_DEBUG_LOG_FMT("Error: unable to open file: %s", data_filename);
-            free(idNode);
+            delete idNode;
             continue;
         }
 
