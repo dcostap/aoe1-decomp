@@ -73,7 +73,7 @@
 
 // --- RGE_Command (base class) ---
 static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner, const uchar* command_data) {
-    // Source of truth: command.cpp.decomp @ 0x00435110
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435110
     const uchar* last_order = command_owner->last_order;
     const uint unit_count = (uint)command_data[8];
 
@@ -109,7 +109,7 @@ static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner,
 }
 
 static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, const uchar* command_data) {
-    // Source of truth: command.cpp.decomp @ 0x004351B0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x004351B0
     const uchar* last_order = command_owner->last_order;
     const uint unit_count = (uint)command_data[1];
 
@@ -129,7 +129,7 @@ static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, 
 }
 
 static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data) {
-    // Source of truth: command.cpp.decomp @ 0x00435210
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435210
     switch (command_data[0]) {
     case 0:
     case 2:
@@ -143,7 +143,7 @@ static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_own
 }
 
 static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data, long command_size) {
-    // Source of truth: command.cpp.decomp @ 0x00435260
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00435260
     if ((command_owner->last_order != nullptr) &&
         (command_owner->last_order_size == command_size) &&
         (command_owner->last_order[0] == command_data[0])) {
