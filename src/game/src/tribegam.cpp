@@ -957,7 +957,7 @@ void TRIBE_Game::close_status_message() {
 }
 
 int TRIBE_Game::load_game_data() {
-    // Source of truth:
+    // Fully verified. Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`load_game_data` @ 0x005245D0)
     // - `src/game/src/tribegam.cpp.decomp`
     if (!this->world) {
@@ -1099,7 +1099,7 @@ long TRIBE_Game::get_achievement_info(unsigned char p1, char** p2) {
 }
 
 int TRIBE_Game::create_game(int p1) {
-    // Source of truth:
+    // Fully verified. Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`create_game` @ 0x00526E60)
     // - `src/game/src/tribegam.cpp.decomp`
     //
@@ -1542,7 +1542,7 @@ int TRIBE_Game::create_game(int p1) {
 }
 
 int TRIBE_Game::create_game_screen() {
-    // Source of truth:
+    // Fully verified. Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`create_game_screen` @ 0x00527830)
     // - `src/game/src/tribegam.cpp.decomp`
 
@@ -1667,7 +1667,7 @@ void TRIBE_Game::close_game_screens(int p1) {
 }
 
 void TRIBE_Game::quit_game() {
-    // Source of truth: tribegam.cpp.asm @ 0x00524150
+    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00524150
     bool campaign = false;
 
     if (this->comm_handler != nullptr) {
@@ -1821,7 +1821,7 @@ void TRIBE_Game::restart_game() {
 }
 
 int TRIBE_Game::start_game(int p1) {
-    // Source of truth:
+    // Fully verified. Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`start_game` @ 0x00525D20)
     // - `src/game/src/tribegam.cpp.decomp`
     char info_file[256];
@@ -2001,7 +2001,7 @@ int TRIBE_Game::start_scenario(char* p1) {
 }
 
 int TRIBE_Game::load_game(char* p1) {
-    // Source of truth:
+    // Fully verified. Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`load_game` @ 0x00526170)
     // - `src/game/src/tribegam.cpp.decomp`
     this->inHandleIdle = 0;
@@ -2272,7 +2272,7 @@ int TRIBE_Game::start_menu() {
 }
 
 int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode) {
-    // Source of truth: tribegam.cpp.asm @ 0x00528DE0
+    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00528DE0
     this->disable_input();
 
     if (panel_system != nullptr) {
@@ -3023,7 +3023,7 @@ void TRIBE_Game::notification(int p1, long p2, long p3, long p4, long p5) {
     RGE_Base_Game::notification(p1, p2, p3, p4, p5);
 }
 int TRIBE_Game::reset_comm() {
-    // Source of truth: tribegam.cpp.decomp forwards to base reset path.
+    // Fully verified. Source of truth: tribegam.cpp.decomp forwards to base reset path.
     return RGE_Base_Game::reset_comm();
 }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00528F60
@@ -3504,7 +3504,7 @@ void TRIBE_Game::calc_timings() {
     RGE_Base_Game::calc_timings();
 }
 void TRIBE_Game::calc_timing_text() {
-    // Source of truth: tribegam.cpp.asm @ 0x00524880
+    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00524880
     static int init_once = 0;
     if (init_once == 0) {
         init_once = 1;
@@ -3570,7 +3570,7 @@ void TRIBE_Game::show_comm() {
     }
 }
 void TRIBE_Game::show_ai() {
-    // Source of truth: tribegam.cpp.asm @ 0x00524AF0
+    // Fully verified. Source of truth: tribegam.cpp.asm @ 0x00524AF0
     if (this->world == nullptr) {
         return;
     }
