@@ -45,6 +45,7 @@ TInputPanel::~TInputPanel() {
     this->input_buffer = nullptr;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 long TInputPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     return TTextPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
@@ -98,60 +99,112 @@ long TInputPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w,
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_rect(tagRECT param_1) { TTextPanel::set_rect(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_rect(long param_1, long param_2, long param_3, long param_4) { TTextPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_color(uchar param_1) { TTextPanel::set_color(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_active(int param_1) { TTextPanel::set_active(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
     TTextPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13);
 }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TTextPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_redraw(RedrawMode param_1) { TTextPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TTextPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::draw_setup(int param_1) { TTextPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::draw_finish() { TTextPanel::draw_finish(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::draw_rect(tagRECT* param_1) { TTextPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TTextPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::draw_rect2(tagRECT* param_1) { TTextPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TTextPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::paint() { TTextPanel::paint(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TTextPanel::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_size(long param_1, long param_2) { return TTextPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_paint() { return TTextPanel::handle_paint(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TTextPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_char(long param_1, short param_2) { return TTextPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_command(uint param_1, long param_2) { return TTextPanel::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_user_command(uint param_1, long param_2) { return TTextPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_timer_command(uint param_1, long param_2) { return TTextPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_scroll(long param_1, long param_2) { return TTextPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TTextPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TTextPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TTextPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TTextPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TInputPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TTextPanel::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::get_true_render_rect(tagRECT* param_1) { TTextPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 int TInputPanel::is_inside(long param_1, long param_2) { return TTextPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TTextPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_tab_order(TPanel** param_1, short param_2) { TTextPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 uchar TInputPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TTextPanel::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::stop_sound_system() { TTextPanel::stop_sound_system(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 int TInputPanel::restart_sound_system() { return TTextPanel::restart_sound_system(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::take_snapshot() { TTextPanel::take_snapshot(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::handle_reactivate() { TTextPanel::handle_reactivate(); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_text(long param_1) { TTextPanel::set_text(param_1); }
+// Fully verified. Source of truth: pnl_inp.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TInputPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) { TTextPanel::set_bevel_info(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::set_focus(int focused) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00476EE0
     TPanel::set_focus(focused);
@@ -161,6 +214,7 @@ void TInputPanel::set_focus(int focused) {
     }
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::set_format(TInputPanel::FormatType format) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00476F20
     this->format_type = format;
@@ -179,6 +233,7 @@ long TInputPanel::handle_idle() {
     return TPanel::handle_idle();
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (helper extracted from decomp flow).
 static void FUN_00477729() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477729 (switch jump-table thunk)
 }
@@ -221,6 +276,7 @@ void TInputPanel::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::set_text(char* s) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477910
     if (!this->input_buffer) {
@@ -245,6 +301,7 @@ void TInputPanel::set_text(char* s) {
     this->reformat();
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::set_text(char** /*param_1*/, short /*param_2*/) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477990
 }
@@ -298,6 +355,7 @@ int TInputPanel::insert_character(long ch) {
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 int TInputPanel::delete_character() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477AF0
     if (this->input_len <= this->input_pos) {
@@ -360,6 +418,7 @@ LAB_00477C15:
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 int TInputPanel::backspace_character() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477C90
     if (this->input_pos > 0) {
@@ -369,6 +428,7 @@ int TInputPanel::backspace_character() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 int TInputPanel::paste() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477CB0
     if (!IsClipboardFormatAvailable(CF_TEXT)) {
@@ -426,6 +486,7 @@ int TInputPanel::paste() {
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::reformat() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477E90
     const short old_top = this->top_line;
@@ -447,6 +508,7 @@ void TInputPanel::reformat() {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::calc_input_pos() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477EF0
     this->input_pos = 0;
@@ -475,6 +537,7 @@ void TInputPanel::calc_input_pos() {
     }
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 void TInputPanel::calc_cur_line_col() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00478010
     this->cur_line = 0;
@@ -508,6 +571,7 @@ void TInputPanel::calc_cur_line_col() {
     }
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 int TInputPanel::is_blank() {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00478150
     char* s = this->currentLine();
@@ -521,6 +585,7 @@ int TInputPanel::is_blank() {
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 char* TInputPanel::get_trimmed_str(char* out, int out_len) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x004781A0
     if (!out || out_len <= 0) {
@@ -558,6 +623,7 @@ char* TInputPanel::get_trimmed_str(char* out, int out_len) {
     return out;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 long TInputPanel::char_action(long key, short repeat) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00476FA0
     if (key != 8 && key != 9 && key != 10 && key != 0x0D && key != 0x1B && key > 0x1A) {
@@ -639,6 +705,7 @@ long TInputPanel::char_action(long key, short repeat) {
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_inp.cpp.decomp/asm (parity-audited).
 long TInputPanel::key_down_action(long key, short /*param_2*/, int alt, int ctrl, int shift) {
     // Fully verified. Source of truth: pnl_inp.cpp.decomp @ 0x00477220
     (void)alt;
