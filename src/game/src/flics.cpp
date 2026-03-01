@@ -53,7 +53,7 @@ RGE_Flic_Player::~RGE_Flic_Player() {
     }
 }
 
-// Fully verified. Source of truth: flics.cpp.decomp @ 0x00449C50
+// Fully verified. Source of truth: flics.cpp.decomp + flics.cpp.asm @ 0x00449C50
 void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
     int* local_8 = (int*)0x0;
     intptr_t index1 = 0;
@@ -291,7 +291,7 @@ void RGE_Flic_Player::literal() {
     }
 }
 
-// Fully verified. Source of truth: flics.cpp.decomp @ 0x0044A100
+// Fully verified. Source of truth: flics.cpp.decomp + flics.cpp.asm @ 0x0044A100
 void RGE_Flic_Player::delta_flc() {
     int local_4 = (int)*(short*)this->chunk;
     ushort* puVar8 = (ushort*)((intptr_t)this->chunk + 2);
