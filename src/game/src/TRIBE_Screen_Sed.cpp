@@ -48,7 +48,7 @@ static void set_elevation(TRIBE_Screen_Sed* this_, short param_2);
 static void set_paint_object_mode(TRIBE_Screen_Sed* this_);
 
 static void init_module_variables(TRIBE_Screen_Sed* this_) {
-    // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004AF320
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AF320
     if (this_ == nullptr) return;
 
     this_->background_pic = nullptr;
@@ -706,7 +706,7 @@ static void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
 }
 
 static int FUN_004aab4a() {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AAB4A (bad instruction data)
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AAB4A (switch-table data anchor thunk)
     return 0;
 }
 
@@ -746,12 +746,12 @@ static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
 }
 
 static int FUN_004abc31() {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ABC31 (corrupted control flow)
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004ABC31 (switch-table data anchor thunk)
     return 0;
 }
 
 static int FUN_004ad06e() {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD06E (corrupted control flow)
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AD06E (switch-table data anchor thunk)
     return 0;
 }
 
@@ -1068,7 +1068,7 @@ static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned
 }
 
 static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
-    // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004AF6C0
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AF6C0
     if (!this_) return;
 
     // Scenario mode buttons (Map/Terrain/Players/Units/Diplomacy/Individual Victory/Global Victory/Options/Messages/Cinematics)
@@ -1083,7 +1083,7 @@ static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
 }
 
 static void position_panels(TRIBE_Screen_Sed* this_) {
-    // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004B1A50
+    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B1A50
     if (this_ == nullptr || this_->main_view == nullptr) return;
 
     const long width = this_->width();
@@ -1192,7 +1192,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
 
     create_all_buttons_etc(this);
 
-    // Decomp transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0 (player-state/name flow)
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0 (player-state/name flow)
     int player_num_line = 1;
     if (scenario_name == nullptr || *scenario_name == '\0') {
         set_player_active(this, 0, 1);

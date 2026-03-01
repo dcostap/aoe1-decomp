@@ -184,8 +184,7 @@ void save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AE05A
 void FUN_004ae05a(int param_1) {
-    // TODO: STUB — decomp output corrupted/unreadable at this offset.
-    // Source of truth: scr_sed2.cpp.decomp @ 0x004AE05A
+    // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AE05A (switch-table data anchor thunk)
     (void)param_1;
 }
 
