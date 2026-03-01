@@ -387,10 +387,15 @@ void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_S
     this->master_objects[p5] = loaded;
 }
 void TRIBE_Master_Player::save(int p1) { RGE_Master_Player::save(p1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::set_game_status(uchar param_1) { RGE_Player::set_game_status(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::do_resign(int param_1) { RGE_Player::do_resign(param_1); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514700
 void TRIBE_Player::changeToHumanPlayer() { RGE_Player::changeToHumanPlayer(); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514710
 void TRIBE_Player::changeToComputerPlayer() { RGE_Player::changeToComputerPlayer(); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514720
 char* TRIBE_Player::aiStatus(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514720
     TribeMainDecisionAIModule* ai = this->playerAI;
@@ -501,14 +506,20 @@ char* TRIBE_Player::aiStatus(int param_1) {
 
     return (char*)"Invalid status line number.";
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 int TRIBE_Player::isEnemy(int param_1) { return RGE_Player::isEnemy(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 int TRIBE_Player::isAlly(int param_1) { return RGE_Player::isAlly(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 int TRIBE_Player::isNeutral(int param_1) { return RGE_Player::isNeutral(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 int TRIBE_Player::isAllNeutral() { return RGE_Player::isAllNeutral(); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005153B0
 void TRIBE_Player::setDiplomaticStance(int param_1, int param_2) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005153B0
     ((TRIBE_Command*)this->world->commands)->command_relation((short)this->id, (short)param_1, (short)param_2);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005153D0
 void TRIBE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005153D0
     (void)param_5;
@@ -607,14 +618,18 @@ void TRIBE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3
     debug_random_on = save_debug_random_on;
     debug_srand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x8fd, save_rand);
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::sendUnitAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) { RGE_Player::sendUnitAIOrder(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) { RGE_Player::processAIOrder(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514F90
 void TRIBE_Player::kickAI(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514F90
     if (this->playerAI != nullptr) {
         this->playerAI->kick(param_1);
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514FB0
 int TRIBE_Player::strategicNumber(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514FB0
     if (this->playerAI != nullptr) {
@@ -622,11 +637,17 @@ int TRIBE_Player::strategicNumber(int param_1) {
     }
     return -1;
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::sendGameOrder(RGE_Static_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4) { RGE_Player::sendGameOrder(param_1, param_2, param_3, param_4); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::sendAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) { RGE_Player::sendAddWaypointCommand(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::processAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) { RGE_Player::processAddWaypointCommand(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::sendPlayCommand(int param_1, int* param_2, int param_3, int param_4, int param_5) { RGE_Player::sendPlayCommand(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::sendPlayCommand(int param_1, int param_2, int param_3) { RGE_Player::sendPlayCommand(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515040
 int TRIBE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515040
     if (this->playerAI == nullptr) {
@@ -634,6 +655,7 @@ int TRIBE_Player::sendAICommand(int param_1, int param_2, int param_3, int param
     }
     return this->playerAI->processAICommand(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514590
 int TRIBE_Player::objectCostByType(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514590
     short inv_1 = -1;
@@ -645,12 +667,14 @@ int TRIBE_Player::objectCostByType(int param_1) {
     interface_obj_cost(this, (short)param_1, &inv_1, &amt_1, &inv_2, &amt_2, &inv_3, &amt_3);
     return (int)amt_1 + (int)amt_2 + (int)amt_3;
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005192F0
 void TRIBE_Player::trackUnitGather(int param_1, int param_2, int param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005192F0
     if (this->playerAI != nullptr) {
         ((TribeTacticalAIModule*)this->playerAI->tacticalAI)->trackUnitGather(param_1, param_2, param_3);
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005121A0
 RGE_Static_Object* TRIBE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005121A0.
     RGE_Static_Object* obj = RGE_Player::make_scenario_obj(param_1, param_2, param_3, param_4, param_5, param_6);
@@ -663,6 +687,7 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float param_1, float param_2,
     }
     return obj;
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512630
 void TRIBE_Player::scenario_save(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512630
     RGE_Player::scenario_save(param_1);
@@ -674,6 +699,7 @@ void TRIBE_Player::scenario_save(int param_1) {
         rge_write(param_1, &this->attributes[2], 4); // gold  (offset 0x8 = index 2)
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512690
 void TRIBE_Player::scenario_load(int param_1, long* param_2, float param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512690, tplayer.cpp.asm @ 0x00512690
     RGE_Player::scenario_load(param_1, param_2, param_3);
@@ -720,8 +746,11 @@ void TRIBE_Player::scenario_load(int param_1, long* param_2, float param_3) {
     }
     this->tech_tree->check_for_new_tech();
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::scenario_postsave(int param_1) { RGE_Player::scenario_postsave(param_1); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D50
 void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) { RGE_Player::scenario_postload(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005128A0
 void TRIBE_Player::load(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005128A0
     rge_read(param_1, &this->master_object_num, 2);
@@ -764,6 +793,7 @@ void TRIBE_Player::load(int param_1) {
         this->doppleganger_objects->load_list(param_1, this->world);
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519570
 void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519570
     if ((param_1 == 3) && (param_3 != '\0')) {
@@ -775,6 +805,7 @@ void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3
     }
     RGE_Player::add_attribute_num(param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513DA0
 void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513DA0, tplayer.cpp.asm @ 0x00513DA0
     if (param_2 != 0) {
@@ -783,6 +814,7 @@ void TRIBE_Player::tech_abling(long param_1, uchar param_2) {
     }
     this->tech_tree->disable((short)param_1);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513DD0
 void TRIBE_Player::rev_tech(long param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513DD0, tplayer.cpp.asm @ 0x00513DD0
     switch (param_1) {
@@ -817,6 +849,7 @@ void TRIBE_Player::rev_tech(long param_1) {
         return;
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513FD0
 void TRIBE_Player::add_population_entry() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513FD0, tplayer.cpp.asm @ 0x00513FD0
     if (this->history == nullptr || this->attributes == nullptr || this->attribute_num <= 0x0B) {
@@ -830,6 +863,7 @@ void TRIBE_Player::add_population_entry() {
         this->history->add_history_entry(0, (uchar)((long)population));
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513AF0
 uchar TRIBE_Player::check_obj_cost(short param_1, short* param_2, float param_3, int param_4) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513AF0
     float reserve_resource = this->attributes[3];
@@ -889,6 +923,7 @@ uchar TRIBE_Player::check_obj_cost(short param_1, short* param_2, float param_3,
 
     return 1;
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513C50
 uchar TRIBE_Player::pay_obj_cost(short param_1, float param_2, int param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513C50
     if (this->check_obj_cost(param_1, nullptr, param_2, param_3) != 0) {
@@ -913,6 +948,7 @@ uchar TRIBE_Player::pay_obj_cost(short param_1, float param_2, int param_3) {
 
     return 0;
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513D00
 void TRIBE_Player::reimburse_obj_cost(short param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513D00
     TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_objects[param_1];
@@ -926,6 +962,7 @@ void TRIBE_Player::reimburse_obj_cost(short param_1) {
         }
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005123B0
 void TRIBE_Player::update() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005123B0
     this->update_time = this->world->world_time_delta_seconds + this->update_time;
@@ -1014,6 +1051,7 @@ void TRIBE_Player::update() {
         MouseSystem->Poll();
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512620
 void TRIBE_Player::update_dopplegangers() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512620.
     if (MouseSystem != nullptr) {
@@ -1026,6 +1064,7 @@ void TRIBE_Player::update_dopplegangers() {
         this->doppleganger_creator->perform_doppleganger_checks();
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512250
 void TRIBE_Player::save(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512250
     color_log(0x16, 0x16, 2);
@@ -1058,8 +1097,11 @@ void TRIBE_Player::save(int param_1) {
     }
     color_log(0x16, 0x5F, 2);
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::save2(int param_1) { RGE_Player::save2(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::save_info(int param_1) { RGE_Player::save_info(param_1); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514010
 void TRIBE_Player::random_start() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514010
     bool found_ally = false;
@@ -1146,6 +1188,7 @@ void TRIBE_Player::random_start() {
         }
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512F60
 RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512F60
     TRIBE_Building_Object* building = (TRIBE_Building_Object*)RGE_Player::make_new_object(param_1, param_2, param_3, param_4, param_5);
@@ -1166,6 +1209,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, fl
     }
     return (RGE_Static_Object*)building;
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005195D0
 void TRIBE_Player::analyize_selected_objects() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005195D0
     int scan_index = 0;
@@ -1206,6 +1250,7 @@ void TRIBE_Player::analyize_selected_objects() {
         } while (scan_index < 0x19);
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005196E0
 int TRIBE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005196E0
     RGE_Static_Object* target = this->world->object(param_1);
@@ -1390,21 +1435,37 @@ redo_mouseFunc:
     retry_other_table = false;
     goto retry_table;
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_make_move(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_move(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_work(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_make_do(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_do(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_stop() { return RGE_Player::command_stop(); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_place_object(short param_1, float param_2, float param_3, float param_4) { return RGE_Player::command_place_object(param_1, param_2, param_3, param_4); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_add_attribute(int param_1, float param_2) { return RGE_Player::command_add_attribute(param_1, param_2); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param_3) { return RGE_Player::command_give_attribute(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_formation(int param_1) { return RGE_Player::command_formation(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_stand_ground() { return RGE_Player::command_stand_ground(); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_create_group(int param_1, int* param_2, int param_3, float param_4) { return RGE_Player::command_create_group(param_1, param_2, param_3, param_4); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_add_to_group(int param_1, int param_2, float param_3) { return RGE_Player::command_add_to_group(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_remove_from_group(int param_1, int param_2) { return RGE_Player::command_remove_from_group(param_1, param_2); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_destroy_group(int param_1) { return RGE_Player::command_destroy_group(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_resign(int param_1, int param_2) { return RGE_Player::command_resign(param_1, param_2); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 uchar TRIBE_Player::command_add_waypoint(float param_1, float param_2, float param_3) { return RGE_Player::command_add_waypoint(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515070
 RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515070.
     RGE_Object_Node* node = RGE_Player::addObject(param_1, param_2, param_3);
@@ -1414,6 +1475,7 @@ RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* param_1, int param_2
     }
     return node;
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005150E0
 void TRIBE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005150E0.
     RGE_Player::removeObject(param_1, param_2, param_3, param_4);
@@ -1421,12 +1483,14 @@ void TRIBE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int par
         this->playerAI->removeObject(param_1->id);
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514FE0
 void TRIBE_Player::logMessage(char* param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514FE0.
     if (this->playerAI != nullptr) {
         ((AIModule*)this->playerAI)->logCommonHistory((char*)"%s", param_1);
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005159D0
 void TRIBE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005159D0
     switch (param_3) {
@@ -1477,6 +1541,7 @@ void TRIBE_Player::notify(int param_1, int param_2, int param_3, long param_4, l
     debug_random_on = save_debug_random_on;
     debug_srand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x956, save_rand);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00518F00
 void TRIBE_Player::logStatus(FILE* param_1, int param_2) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00518F00
     if (param_1 == nullptr) {
@@ -1534,14 +1599,17 @@ void TRIBE_Player::logStatus(FILE* param_1, int param_2) {
         fprintf(param_1, " Soldiers: %d\n", tactical_ai->numberSoldiers());
     }
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519490
 void TRIBE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519490
     this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this, param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519500
 void TRIBE_Player::new_victory() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519500
     this->victory_conditions = new TRIBE_Victory_Conditions((RGE_Player*)this);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005138D0
 uchar TRIBE_Player::command_give_attribute(int param_1, int param_2, float param_3, float param_4) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005138D0
     if (param_2 == -1 || param_3 == 0.0f) {
@@ -1640,6 +1708,7 @@ void TRIBE_Player::taskResourceGatherer(int param_1, int param_2, int param_3, f
     ((RGE_Command*)this->world->commands)->command_work((int)this->id, allocated_ids, 1, param_2, param_3, param_4, param_5);
     free(allocated_ids);
 }
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515BB0
 void TRIBE_Player::notifyAI(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515BB0.
     if (this->playerAI == nullptr || this->world == nullptr) {
