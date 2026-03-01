@@ -39,7 +39,7 @@ void SetServiceGUID(TCommunications_Handler* comm_handler, _GUID guid);
 } // namespace tribe_mp_ui
 
 TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel((char*)"MP Startup Screen") {
-    // Source of truth: scr_mp.cpp.decomp @ 0x0049F370
+    // Fully verified. Source of truth: scr_mp.cpp.decomp @ 0x0049F370
     this->title = nullptr;
     this->inputTitle = nullptr;
     this->input = nullptr;
@@ -184,7 +184,7 @@ TribeMPStartupScreen::TribeMPStartupScreen() : TScreenPanel((char*)"MP Startup S
 }
 
 TribeMPStartupScreen::~TribeMPStartupScreen() {
-    // Source of truth: scr_mp.cpp.decomp @ 0x0049F890
+    // Fully verified. Source of truth: scr_mp.cpp.decomp @ 0x0049F890
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->inputTitle);
     this->delete_panel((TPanel**)&this->input);
@@ -212,12 +212,12 @@ long TribeMPStartupScreen::handle_idle() {
 }
 
 long TribeMPStartupScreen::handle_user_command(uint /*param_1*/, long /*param_2*/) {
-    // Source of truth: scr_mp.cpp.decomp @ 0x004A00A0
+    // Fully verified. Source of truth: scr_mp.cpp.decomp @ 0x004A00A0
     return 1;
 }
 
 long TribeMPStartupScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Source of truth: scr_mp.cpp.decomp @ 0x0049F9D0
+    // Fully verified. Source of truth: scr_mp.cpp.decomp @ 0x0049F9D0
     if (param_1 == nullptr) {
         return TEasy_Panel::action(param_1, param_2, param_3, param_4);
     }
@@ -367,7 +367,7 @@ long TribeMPStartupScreen::action(TPanel* param_1, long param_2, ulong param_3, 
 }
 
 void TribeMPStartupScreen::fillList() {
-    // Source of truth: scr_mp.cpp.decomp @ 0x0049FED0
+    // Fully verified. Source of truth: scr_mp.cpp.decomp @ 0x0049FED0
     if (this->list == nullptr) {
         return;
     }
