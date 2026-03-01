@@ -12,7 +12,7 @@ struct TMousePointer;
 struct DClipInfo_List;
 struct DriveInformation;
 struct VISIBLE_UNIT_REC;
-class Visible_Unit_Manager;
+struct Visible_Unit_Manager;
 
 extern RGE_Base_Game* rge_base_game;
 extern TDebuggingLog* L;
