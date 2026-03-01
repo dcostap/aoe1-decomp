@@ -18,6 +18,15 @@
 namespace {
 static const char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
+static long act_tran_ftol(float v) {
+    long result;
+    __asm {
+        fld v
+        fistp result
+    }
+    return result;
+}
+
 // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6210
 static void rge_static_set_location(RGE_Static_Object* obj, float x, float y, float z) {
     obj->world_x = x;
@@ -286,8 +295,8 @@ uchar RGE_Action_Transport::update() {
             if (has_drop_terrain == 0) {
                 RGE_Map* map = this->obj->owner->world->map;
                 if (this->target_x != -1.0f) {
-                    short col = (short)(int)this->target_x;
-                    short row = (short)(int)this->target_y;
+                    short col = (short)act_tran_ftol(this->target_x);
+                    short row = (short)act_tran_ftol(this->target_y);
                     uchar terrain = map->get_terrain(col, row);
                     if (terrain == 1) {
                         goto done;
@@ -440,7 +449,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain() {
 
     int zone = this->targetZone();
     if (this->target_x != -1.0f) {
-        zone = (int)obj->lookupZone((int)this->target_x, (int)this->target_y);
+        zone = (int)obj->lookupZone((int)act_tran_ftol(this->target_x), (int)act_tran_ftol(this->target_y));
     }
 
     for (int row = min_row; row <= max_row; row = row + 1) {
@@ -465,7 +474,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain() {
 // ASM-verified lookupZone arg order (x,y) at act_tran.cpp.asm @ 0x0040742C.
 int RGE_Action_Transport::targetZone() {
     if (this->target_x != -1.0f) {
-        return (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y);
+        return (int)this->obj->lookupZone((int)act_tran_ftol(this->target_x), (int)act_tran_ftol(this->target_y));
     }
     return -1;
 }

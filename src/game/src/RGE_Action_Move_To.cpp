@@ -8,6 +8,15 @@
 #include "../include/XYZBYTEPoint.h"
 #include "../include/globals.h"
 
+static long act_move_ftol(float v) {
+    long result;
+    __asm {
+        fld v
+        fistp result
+    }
+    return result;
+}
+
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x0040582E
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405BCA
@@ -183,10 +192,8 @@ uchar RGE_Action_Move_To::update() {
     }
 
     RGE_Game_World* world = (this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
-    int missing_id = -1;
 
     if ((this->targetID != -1) && (world != nullptr) && (world->object(this->targetID) == nullptr)) {
-        missing_id = this->targetID;
         this->set_target_obj(nullptr);
         goto missing_target;
     }
@@ -196,7 +203,6 @@ uchar RGE_Action_Move_To::update() {
     }
 
     if ((this->target_obj != nullptr) && (this->target_obj->object_state > 6)) {
-        missing_id = this->targetID;
         this->set_target_obj(nullptr);
         goto missing_target;
     }
@@ -226,9 +232,9 @@ uchar RGE_Action_Move_To::update() {
         this->obj->setGoal(this->target_x, this->target_y, 1.0f);
 
         XYZBYTEPoint wp;
-        wp.x = (uchar)(int)this->target_x;
-        wp.y = (uchar)(int)this->target_y;
-        wp.z = (uchar)(int)this->target_z;
+        wp.x = (uchar)act_move_ftol(this->target_x);
+        wp.y = (uchar)act_move_ftol(this->target_y);
+        wp.z = (uchar)act_move_ftol(this->target_z);
 
         if ((char)this->obj->storePathInExceptionPath == '\0') {
             this->obj->addUserDefinedWaypoint(&wp, 0);
@@ -303,7 +309,7 @@ missing_target:
     if (this->state == 1) {
         return 5;
     }
-    this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1FB, 0x262, missing_id, 0);
+    this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1FB, 0x262, this->targetID, 0);
     return 4;
 
 target_moved:
