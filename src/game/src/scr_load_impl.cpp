@@ -302,6 +302,7 @@ long TribeLoadSavedGameScreen::mouse_left_dbl_click_action(long param_1, long pa
     return TScreenPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: scr_load.cpp.decomp @ 0x0049E2E0
 long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1) {
         const char* panel_name = param_1->panelName();

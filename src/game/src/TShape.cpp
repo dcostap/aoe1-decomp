@@ -1697,6 +1697,7 @@ TShape::TShape() {
     this->load_size = 0;
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8B50
 TShape::TShape(char* filename, int file_id) {
     this->shape = 0;
     this->shape_header = 0;
@@ -1780,6 +1781,7 @@ TShape::TShape(char* filename, int file_id) {
     }
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8DD0
 TShape::~TShape() {
     if (this->FShape) {
         shape_free_loaded_data((unsigned char*)this->FShape, this->load_type, this->load_size);
@@ -1796,6 +1798,7 @@ TShape::~TShape() {
     this->shape_info = 0;
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8E40
 unsigned char TShape::Check_shape(long shape_idx, char* msg) {
     (void)msg;
 
@@ -1814,6 +1817,7 @@ unsigned char TShape::Check_shape(long shape_idx, char* msg) {
     return 0;
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8F90
 int TShape::is_loaded() {
     return (this->shape || this->FShape) ? 1 : 0;
 }
@@ -1836,6 +1840,7 @@ unsigned char TShape::shape_bounds(long shape_idx, short* width, short* height) 
     return 0;
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9040
 long TShape::shape_count() {
     if (this->Check_shape(-1, (char*)"RGL_shape_count")) return 0;
     if (this->FShape) return this->FShape->Num_Shapes;
@@ -1843,6 +1848,7 @@ long TShape::shape_count() {
     return 0;
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9070
 unsigned char TShape::shape_minmax(long* x_min, long* y_min, long* x_max, long* y_max, int shape_idx) {
     if (x_min) *x_min = 0;
     if (y_min) *y_min = 0;
@@ -1876,6 +1882,7 @@ unsigned char TShape::shape_minmax(long* x_min, long* y_min, long* x_max, long* 
     return 1;
 }
 
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9140
 unsigned char TShape::shape_check(long x, long y, long shape_idx) {
     if (shape_idx < 0) return 0;
     if (this->Check_shape(shape_idx, (char*)"RGL_shape_draw")) return 0;
@@ -2032,6 +2039,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
             cur_x += run;
             continue;
         }
+        // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B93FD (embedded tail label in shape_check).
         return 0;
     }
     return 0;

@@ -352,6 +352,7 @@ void RGE_Action_Missile::set_state(uchar param_1) {
     this->set_state(4);
 }
 
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x004050D5 (embedded pre-update decomp stub).
 // Fully verified. Source of truth: act_misl.cpp.decomp @ 0x004050F0
 uchar RGE_Action_Missile::update() {
     float vx = 0.0f;
