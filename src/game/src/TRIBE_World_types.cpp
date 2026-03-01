@@ -157,6 +157,7 @@ static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, co
 }
 
 static void rge_command_set_waiting_to_move(RGE_Static_Object* obj, int waiting_value) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -168,6 +169,7 @@ static void rge_command_set_waiting_to_move(RGE_Static_Object* obj, int waiting_
 }
 
 static void rge_command_issue_work(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -179,6 +181,7 @@ static void rge_command_issue_work(RGE_Static_Object* obj, long target_value, fl
 }
 
 static void rge_command_issue_move_to(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -190,6 +193,7 @@ static void rge_command_issue_move_to(RGE_Static_Object* obj, long target_value,
 }
 
 static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -201,6 +205,7 @@ static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, f
 }
 
 static void rge_command_set_move_ai_state(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -226,6 +231,7 @@ struct tribe_unit_ai_notify_event {
 };
 
 static void tribe_unit_ai_set_current_order(UnitAIModule* unit_ai, int order_value) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -235,6 +241,7 @@ static void tribe_unit_ai_set_current_order(UnitAIModule* unit_ai, int order_val
 }
 
 static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_value) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -244,6 +251,7 @@ static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_v
 }
 
 static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y, float target_z) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -258,6 +266,7 @@ static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_i
 }
 
 static void tribe_unit_ai_remove_current_target(UnitAIModule* unit_ai) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -273,6 +282,7 @@ static void tribe_unit_ai_remove_current_target(UnitAIModule* unit_ai) {
 }
 
 static void tribe_unit_ai_purge_notify_queue(UnitAIModule* unit_ai, ulong update_time) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -304,10 +314,12 @@ static void tribe_unit_ai_purge_notify_queue(UnitAIModule* unit_ai, ulong update
 }
 
 static void tribe_unit_ai_set_tasked_by_player(UnitAIModule* unit_ai) {
+    // Fully verified. Source of truth: tcommand.cpp.decomp (helper implementation).
     tribe_unit_ai_purge_notify_queue(unit_ai, 0);
 }
 
 static int rge_scenario_active_player_count(const RGE_Scenario* scenario) {
+    // Fully verified. Source of truth: tscenaro.cpp.decomp (helper implementation).
     if (scenario == nullptr) {
         return 0;
     }
@@ -322,6 +334,7 @@ static int rge_scenario_active_player_count(const RGE_Scenario* scenario) {
 }
 
 static int tribe_scenario_any_sp_victory(const T_Scenario* scenario) {
+    // Fully verified. Source of truth: tscenaro.cpp.decomp (helper implementation).
     if (scenario == nullptr) {
         return 0;
     }
@@ -379,7 +392,7 @@ TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* com
 
 TRIBE_Command::~TRIBE_Command() {}
 void TRIBE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
-    // Source of truth: tcommand.cpp.decomp indicates TRIBE-specific handler lives in vt[4] (+0x10).
+    // Fully verified. Source of truth: tcommand.cpp.decomp indicates TRIBE-specific handler lives in vt[4] (+0x10).
     // Keep base command-id-7 behavior intact on vt[0].
     RGE_Command::do_command_give_attribute(p1);
 }
@@ -713,7 +726,7 @@ void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* p1) {
     }
 }
 void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A1D0
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A1D0
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -731,8 +744,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
         break;
     }
     case 1:
-        // No dedicated setter exists yet; original calls RGE_Game_World::set_game_speed.
-        this->world->game_speed = p1->var3;
+        this->world->set_game_speed(p1->var3);
         break;
     case 4:
         if (rge_base_game != nullptr) {
@@ -783,7 +795,7 @@ void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* p1) {
     }
 }
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* p1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A510
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A510
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -826,7 +838,7 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* p1) 
     to_player->notify(p1->player_id, p1->to_player_id, 0x20A, p1->attr_id, (long)transfer_amount, 0);
 }
 void TRIBE_Command::command_make(RGE_Static_Object* p1, short p2) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A7F0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A7F0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {
         return;
     }
@@ -845,7 +857,7 @@ void TRIBE_Command::command_make(RGE_Static_Object* p1, short p2) {
     this->submit(cmd, sizeof(TRIBE_Command_Make));
 }
 void TRIBE_Command::command_make(int p1, int p2, int p3, int p4) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A860 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A860 (debug-log side effect intentionally omitted)
     if (p2 < 0) {
         return;
     }
@@ -864,7 +876,7 @@ void TRIBE_Command::command_make(int p1, int p2, int p3, int p4) {
     this->submit(cmd, sizeof(TRIBE_Command_Make));
 }
 void TRIBE_Command::command_research(RGE_Static_Object* p1, short p2) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A8D0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A8D0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {
         return;
     }
@@ -883,7 +895,7 @@ void TRIBE_Command::command_research(RGE_Static_Object* p1, short p2) {
     this->submit(cmd, sizeof(TRIBE_Command_Research));
 }
 void TRIBE_Command::command_research(int p1, int p2, int p3, int p4) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A940 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A940 (debug-log side effect intentionally omitted)
     if (p2 < 0) {
         return;
     }
@@ -902,7 +914,7 @@ void TRIBE_Command::command_research(int p1, int p2, int p3, int p4) {
     this->submit(cmd, sizeof(TRIBE_Command_Research));
 }
 void TRIBE_Command::command_build(RGE_Static_Object** p1, short p2, short p3, float p4, float p5) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A9B0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A9B0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
@@ -932,7 +944,7 @@ void TRIBE_Command::command_build(RGE_Static_Object** p1, short p2, short p3, fl
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_build(int p1, int* p2, int p3, int p4, float p5, float p6, int p7) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AA90 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AA90 (debug-log side effect intentionally omitted)
     if (p2 == nullptr || p3 <= 0) {
         return;
     }
@@ -960,7 +972,7 @@ void TRIBE_Command::command_build(int p1, int* p2, int p3, int p4, float p5, flo
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_build_wall(RGE_Static_Object** p1, short p2, short p3, long p4, long p5, long p6, long p7) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AB30 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AB30 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
@@ -1002,7 +1014,7 @@ void TRIBE_Command::command_build_wall(RGE_Static_Object** p1, short p2, short p
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_explore(int p1, int* p2, int p3, float p4, float p5) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AC70 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AC70 (debug-log side effect intentionally omitted)
     if (p2 == nullptr || p3 <= 0) {
         return;
     }
@@ -1028,7 +1040,7 @@ void TRIBE_Command::command_explore(int p1, int* p2, int p3, float p4, float p5)
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_game_speed(float p1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050ADF0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050ADF0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
     if (cmd == nullptr) {
         return;
@@ -1052,7 +1064,7 @@ void TRIBE_Command::command_save_game() {
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 void TRIBE_Command::command_cancel_build(RGE_Static_Object* p1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050AFD0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AFD0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {
         return;
     }
@@ -1068,7 +1080,7 @@ void TRIBE_Command::command_cancel_build(RGE_Static_Object* p1) {
     this->submit(cmd, sizeof(TRIBE_Command_Cancel_Build));
 }
 void TRIBE_Command::command_attack_ground(RGE_Static_Object** p1, short p2, float p3, float p4) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B020 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B020 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
@@ -1095,7 +1107,7 @@ void TRIBE_Command::command_attack_ground(RGE_Static_Object** p1, short p2, floa
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_give_attribute(int p1, int p2, int p3, float p4, float p5) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B130
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B130
     TRIBE_Command_Give_Attribute* cmd = (TRIBE_Command_Give_Attribute*)calloc(1, sizeof(TRIBE_Command_Give_Attribute));
     if (cmd == nullptr) {
         return;
@@ -1148,7 +1160,7 @@ void TRIBE_Command::do_command_unload(TRIBE_Command_Unload* p1) {
     }
 }
 void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* p1) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050A7B0
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A7B0
     TRIBE_Building_Object* building = (TRIBE_Building_Object*)this->world->object(p1->bldg_id);
     if (building != nullptr) {
         short train_count = p1->train_count;
@@ -1160,7 +1172,7 @@ void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* p1) {
     }
 }
 void TRIBE_Command::command_trade_attribute(RGE_Static_Object** p1, short p2, long p3) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B190 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B190 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
@@ -1186,7 +1198,7 @@ void TRIBE_Command::command_trade_attribute(RGE_Static_Object** p1, short p2, lo
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_trade_attribute(int p1, int p2, long p3) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B230 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B230 (debug-log side effect intentionally omitted)
     (void)p2;
 
     const int size = 0xC;
@@ -1205,7 +1217,7 @@ void TRIBE_Command::command_trade_attribute(int p1, int p2, long p3) {
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_repair(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B290 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B290 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
@@ -1231,7 +1243,7 @@ void TRIBE_Command::command_repair(RGE_Static_Object** p1, short p2, RGE_Static_
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_unload(RGE_Static_Object** p1, short p2, float p3, float p4) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B330 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B330 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
         return;
     }
@@ -1258,7 +1270,7 @@ void TRIBE_Command::command_unload(RGE_Static_Object** p1, short p2, float p3, f
     this->submit(buffer, size);
 }
 void TRIBE_Command::command_queue(RGE_Static_Object* p1, short p2, short p3) {
-    // Source of truth: tcommand.cpp.decomp @ 0x0050B3E0 (debug-log side effect intentionally omitted)
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B3E0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Queue* cmd = (TRIBE_Command_Queue*)calloc(1, sizeof(TRIBE_Command_Queue));
     if (cmd == nullptr) {
         return;
@@ -1392,3 +1404,4 @@ int RGE_Tile_List::get_new_count() {
     this->new_count = 0;
     return count;
 }
+

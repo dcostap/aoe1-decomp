@@ -39,7 +39,6 @@ static TribeResourceAIModule* tacticalResourceAI(TribeTacticalAIModule* module);
 static TribeConstructionAIModule* tacticalConstructionAI(TribeTacticalAIModule* module);
 
 static void resetManagedArray(ManagedArray<int>& arr) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     arr.value = nullptr;
     arr.numberValue = 0;
     arr.desiredNumberValue = 0;
@@ -47,7 +46,6 @@ static void resetManagedArray(ManagedArray<int>& arr) {
 }
 
 static void freeManagedArray(ManagedArray<int>& arr) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (arr.value != nullptr) {
         delete[] arr.value;
         arr.value = nullptr;
@@ -58,7 +56,6 @@ static void freeManagedArray(ManagedArray<int>& arr) {
 }
 
 static void ensureManagedArrayCapacity(ManagedArray<int>& arr, int requiredCount) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (arr.maximumSizeValue >= requiredCount) {
         return;
     }
@@ -75,7 +72,6 @@ static void ensureManagedArrayCapacity(ManagedArray<int>& arr, int requiredCount
 }
 
 static void appendManagedArray(ManagedArray<int>& arr, int value) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (arr.maximumSizeValue <= arr.numberValue) {
         ensureManagedArrayCapacity(arr, arr.numberValue + 1);
     }
@@ -87,7 +83,6 @@ static void appendManagedArray(ManagedArray<int>& arr, int value) {
 }
 
 static int containsManagedArray(const ManagedArray<int>& arr, int value) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < arr.numberValue; ++i) {
         if (arr.maximumSizeValue <= i) {
             break;
@@ -100,7 +95,6 @@ static int containsManagedArray(const ManagedArray<int>& arr, int value) {
 }
 
 static void initResourceItemWithCount(ResourceItem& item, int count) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     item.next = nullptr;
     item.prev = nullptr;
     item.numberValue = count;
@@ -116,14 +110,12 @@ static void initResourceItemWithCount(ResourceItem& item, int count) {
 }
 
 static void appendManagedArrayUnique(ManagedArray<int>& arr, int value) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (containsManagedArray(arr, value) == 0) {
         appendManagedArray(arr, value);
     }
 }
 
 static void readManagedArrayUnique(int fd, ManagedArray<int>& arr) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     rge_read(fd, &count, 4);
     for (int i = 0; i < count; ++i) {
@@ -134,7 +126,6 @@ static void readManagedArrayUnique(int fd, ManagedArray<int>& arr) {
 }
 
 static void writeManagedArray(int fd, ManagedArray<int>& arr) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     rge_write(fd, &arr.numberValue, 4);
     for (int i = 0; i < arr.numberValue; ++i) {
         if (arr.maximumSizeValue <= i) {
@@ -420,23 +411,14 @@ TribeTacticalAIModule::~TribeTacticalAIModule() {
     freeManagedArray(this->civilians);
 }
 
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 int TribeTacticalAIModule::loggingHistory() { return TacticalAIModule::loggingHistory(); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 void TribeTacticalAIModule::setLogHistory(int param_1) { TacticalAIModule::setLogHistory(param_1); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 void TribeTacticalAIModule::toggleLogHistory() { TacticalAIModule::toggleLogHistory(); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 void TribeTacticalAIModule::setHistoryFilename(char* param_1) { TacticalAIModule::setHistoryFilename(param_1); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 int TribeTacticalAIModule::loggingCommonHistory() { return TacticalAIModule::loggingCommonHistory(); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 void TribeTacticalAIModule::setLogCommonHistory(int param_1) { TacticalAIModule::setLogCommonHistory(param_1); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 void TribeTacticalAIModule::toggleLogCommonHistory() { TacticalAIModule::toggleLogCommonHistory(); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 int TribeTacticalAIModule::loadState(char* param_1) { return TacticalAIModule::loadState(param_1); }
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 int TribeTacticalAIModule::saveState(char* param_1) { return TacticalAIModule::saveState(param_1); }
 int TribeTacticalAIModule::gleanState(int param_1) { return TacticalAIModule::gleanState(param_1); }
 int TribeTacticalAIModule::processMessage(AIModuleMessage* param_1) { return TacticalAIModule::processMessage(param_1); }
@@ -445,7 +427,6 @@ int TribeTacticalAIModule::filterOutMessage(AIModuleMessage* param_1) { return T
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EEE40
 char* TribeTacticalAIModule::updateAreaName() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     switch (this->updateArea) {
         case 0: return (char*)"Setup SolGroups";
         case 1: return (char*)"Eval CivDist";
@@ -475,7 +456,6 @@ char* TribeTacticalAIModule::updateAreaName() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EEF40
 int TribeTacticalAIModule::update(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_1;
     TribeMainDecisionAIModule* pTVar7 = this->md;
     if ((pTVar7 == nullptr) || (pTVar7->player == nullptr) || (pTVar7->player->world == nullptr)) {
@@ -584,7 +564,6 @@ void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* param_1
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EF4E0
 int TribeTacticalAIModule::save(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     writeManagedArray(param_1, this->civilians);
     writeManagedArray(param_1, this->civilianExplorers);
     rge_write(param_1, &this->numberGatherersValue, 4);
@@ -687,7 +666,6 @@ int TribeTacticalAIModule::numberBoats() const { return this->boats.numberValue;
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6160
 int TribeTacticalAIModule::numberSoldierExplorers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (TacticalAIGroup* current = this->groups.next;
          (current != &this->groups) && (current != nullptr);
@@ -707,7 +685,6 @@ void TribeTacticalAIModule::logGroupDebug(int param_1, char* param_2, ...) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0BC0
 int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, float param_4, float param_5) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((busyWithAction(param_1, -1) == 1) && (this->md != nullptr)) {
         RGE_Static_Object* unitObj = this->md->object(param_1);
         if (unitObj != nullptr) {
@@ -766,7 +743,6 @@ int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D70
 void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 != nullptr) && (param_1->master_obj != nullptr) && (param_1->master_obj->object_group == 4)) {
         appendManagedArrayUnique(this->civilians, param_1->id);
     }
@@ -774,7 +750,6 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F1090
 void TribeTacticalAIModule::removeObject(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     ManagedArray<int>* arrays[] = {&this->civilians,        &this->civilianExplorers, &this->soldiers,
                                    &this->ungroupedSoldiers, &this->boats,             &this->warBoats,
                                    &this->fishingBoats,      &this->tradeBoats,        &this->transportBoats,
@@ -795,7 +770,6 @@ void TribeTacticalAIModule::removeObject(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F13F0
 void TribeTacticalAIModule::evaluateCivilianDistribution() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->visible == nullptr)) {
         return;
     }
@@ -894,7 +868,6 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F1600
 int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->civilians.numberValue < 1) {
         this->nextCivilianToTaskValue = -1;
         return 0;
@@ -1061,7 +1034,6 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F1E10
 void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned long param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
         this->nextIdleSoldierGroupToTaskValue = -1;
         return;
@@ -1194,7 +1166,6 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned lon
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F21F0
 void TribeTacticalAIModule::taskActiveSoldiers(unsigned long param_1, unsigned long param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     if ((world == nullptr) || (this->md == nullptr)) {
         this->nextActiveSoldierGroupToTaskValue = -1;
@@ -2227,7 +2198,6 @@ LAB_004f4552:
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4760
 void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1, unsigned long param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_1;
     (void)param_2;
 
@@ -2309,7 +2279,6 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1, unsigned lon
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4AA0
 void TribeTacticalAIModule::taskUngroupedSoldiers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     if (world == nullptr) {
         return;
@@ -2380,7 +2349,6 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4D90
 void TribeTacticalAIModule::taskBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
 
     TacticalAIGroup* group = this->groups.next;
@@ -2684,7 +2652,6 @@ void TribeTacticalAIModule::taskBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F57C0
 void TribeTacticalAIModule::evaluateOpenTasks() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < this->civilians.numberValue; ++i) {
         ensureManagedArrayCapacity(this->civilians, i + 1);
         RGE_Static_Object* civilianObj = tacticalObject(this, this->civilians.value[i]);
@@ -2772,7 +2739,6 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F5FB0
 void TribeTacticalAIModule::evaluateBuildListInsertions() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeBuildAIModule* buildAI = tacticalBuildAI(this);
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
@@ -2825,7 +2791,6 @@ int TribeTacticalAIModule::neededResourceAmount(int param_1) const {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F61D0
 void TribeTacticalAIModule::detask(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == -1) {
         return;
     }
@@ -2835,7 +2800,6 @@ void TribeTacticalAIModule::detask(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6210
 int TribeTacticalAIModule::strategicNumber(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_1 < 0xE2)) {
         return this->sn[param_1];
     }
@@ -2844,7 +2808,6 @@ int TribeTacticalAIModule::strategicNumber(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F6230
 void TribeTacticalAIModule::setStrategicNumber(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 < 0) || (param_1 >= 0xE2)) {
         return;
     }
@@ -2867,7 +2830,6 @@ void TribeTacticalAIModule::setStrategicNumber(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F62C0
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_2;
     (void)param_5;
     (void)param_6;
@@ -3192,7 +3154,6 @@ LAB_NOTIFY_AFTER_ATTACK_RESPONSE:
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0190
 int TribeTacticalAIModule::doSomething() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
         return 1;
     }
@@ -3467,7 +3428,6 @@ int TribeTacticalAIModule::doSomething() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501660
 void TribeTacticalAIModule::enableAttack(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->attackEnabledValue != 1) && ((this->sn[0x86] == 0) || (this->sn[0x86] == param_1))) {
         this->attackEnabledValue = 1;
     }
@@ -3475,7 +3435,6 @@ void TribeTacticalAIModule::enableAttack(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500260
 TacticalAIGroup* TribeTacticalAIModule::createGroup(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* newGroup = new(std::nothrow) TacticalAIGroup();
     if (newGroup == nullptr) {
         return nullptr;
@@ -3495,7 +3454,6 @@ TacticalAIGroup* TribeTacticalAIModule::createGroup(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500320
 int TribeTacticalAIModule::removeGroup(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
         while (current != nullptr) {
@@ -3517,7 +3475,6 @@ int TribeTacticalAIModule::removeGroup(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005003A0
 int TribeTacticalAIModule::removeAllGroups(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
         do {
@@ -3540,7 +3497,6 @@ int TribeTacticalAIModule::removeAllGroups(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500420
 TacticalAIGroup* TribeTacticalAIModule::group(int param_1, int param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
         while (current != nullptr) {
@@ -3561,7 +3517,6 @@ TacticalAIGroup* TribeTacticalAIModule::group(int param_1, int param_2, int para
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005007B0
 int TribeTacticalAIModule::addToGroup(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* found = group(param_2, -1, -1, -1);
     if (found == nullptr) {
         return 0;
@@ -3571,7 +3526,6 @@ int TribeTacticalAIModule::addToGroup(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005007F0
 int TribeTacticalAIModule::removeFromGroup(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* found = group(param_2, -1, -1, -1);
     if (found == nullptr) {
         return 0;
@@ -3585,7 +3539,6 @@ int TribeTacticalAIModule::removeFromGroup(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500850
 int TribeTacticalAIModule::removeFromGroup(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* found = groupUnitIsIn(param_1);
     if (found == nullptr) {
         return 0;
@@ -3599,7 +3552,6 @@ int TribeTacticalAIModule::removeFromGroup(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005008A0
 TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
         while (current != nullptr) {
@@ -3615,7 +3567,6 @@ TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int param_1) {
     return nullptr;
 }
 
-// Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
 TacticalAIGroup* TribeTacticalAIModule::addGroup(int param_1) { return createGroup(param_1); }
 TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int param_3, int param_4) {
     return group(param_1, param_2, param_3, param_4);
@@ -3652,7 +3603,6 @@ static void FUN_005024b3() {}
 static void FUN_005025ca() {}
 
 static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr) || (module->md->player == nullptr)) {
         return nullptr;
     }
@@ -3660,7 +3610,6 @@ static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
 }
 
 static RGE_Static_Object* tacticalObject(TribeTacticalAIModule* module, int objectID) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(module);
     if (world == nullptr) {
         return nullptr;
@@ -3669,7 +3618,6 @@ static RGE_Static_Object* tacticalObject(TribeTacticalAIModule* module, int obje
 }
 
 static TribeBuildAIModule* tacticalBuildAI(TribeTacticalAIModule* module) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3677,7 +3625,6 @@ static TribeBuildAIModule* tacticalBuildAI(TribeTacticalAIModule* module) {
 }
 
 static TribeInformationAIModule* tacticalInformationAI(TribeTacticalAIModule* module) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3685,7 +3632,6 @@ static TribeInformationAIModule* tacticalInformationAI(TribeTacticalAIModule* mo
 }
 
 static TribeResourceAIModule* tacticalResourceAI(TribeTacticalAIModule* module) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3693,7 +3639,6 @@ static TribeResourceAIModule* tacticalResourceAI(TribeTacticalAIModule* module) 
 }
 
 static TribeConstructionAIModule* tacticalConstructionAI(TribeTacticalAIModule* module) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3701,7 +3646,6 @@ static TribeConstructionAIModule* tacticalConstructionAI(TribeTacticalAIModule* 
 }
 
 static int isTaskedThisUpdate(TribeTacticalAIModule* module, int objectID) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < module->unitsTaskedThisUpdate.numberValue; ++i) {
         if (i >= module->unitsTaskedThisUpdate.maximumSizeValue) {
             break;
@@ -3719,7 +3663,6 @@ static void pushWorkingAreaUnique(TribeTacticalAIModule* module, int objectID) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7350
 int TribeTacticalAIModule::numberIdleSoldiers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     this->workingArea.numberValue = 0;
     for (int i = 0; i < this->soldiers.numberValue; ++i) {
@@ -3745,7 +3688,6 @@ int TribeTacticalAIModule::numberIdleSoldiers() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7590
 int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     if (param_3 == 1) {
         this->workingArea.numberValue = 0;
@@ -3790,7 +3732,6 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7870
 int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     this->workingArea.numberValue = 0;
 
@@ -3841,7 +3782,6 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7D90
 int TribeTacticalAIModule::idleSoldier() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < this->soldiers.numberValue; ++i) {
         if (i >= this->soldiers.maximumSizeValue) {
             break;
@@ -3860,7 +3800,6 @@ int TribeTacticalAIModule::idleSoldier() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F7E80
 int TribeTacticalAIModule::idleCivilian(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_1;
 
     for (int pass = 0; pass < 2; ++pass) {
@@ -3897,7 +3836,6 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F81A0
 int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int bestID = -1;
     long bestDistanceSq = 0;
     for (int i = 0; i < this->civilians.numberValue; ++i) {
@@ -3940,7 +3878,6 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8570
 int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int bestID = -1;
     int bestDistance = 0;
     for (int i = 0; i < this->civilians.numberValue; ++i) {
@@ -3988,7 +3925,6 @@ int TribeTacticalAIModule::civilian(XYPoint* param_1, int param_2, int param_3, 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F87B0
 int TribeTacticalAIModule::unit(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     ManagedArray<int>* source = &this->civilians;
     if (param_1 == 1) {
         source = &this->soldiers;
@@ -4015,7 +3951,6 @@ int TribeTacticalAIModule::unit(int param_1, int param_2, int param_3) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8BE0
 int TribeTacticalAIModule::busyWithAction(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4029,7 +3964,6 @@ int TribeTacticalAIModule::busyWithAction(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8C30
 void TribeTacticalAIModule::displayCivilianDistribution() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     this->actualGathererCount(0);
     this->actualGathererCount(1);
     this->actualGathererCount(2);
@@ -4038,7 +3972,6 @@ void TribeTacticalAIModule::displayCivilianDistribution() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8C40
 void TribeTacticalAIModule::updateNeededResources() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < 4; ++i) {
         this->resourceDifferenceValue[i] = this->desiredGathererDistribution[i] - this->actualGathererDistribution[i];
         this->neededResourceValue[i] = (this->resourceDifferenceValue[i] > 0) ? this->resourceDifferenceValue[i] : 0;
@@ -4049,7 +3982,6 @@ void TribeTacticalAIModule::updateNeededResources() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F8E20
 void TribeTacticalAIModule::updateGathererDistribution() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < 4; ++i) {
         this->actualGathererDistribution[i] = 0;
     }
@@ -4069,7 +4001,6 @@ void TribeTacticalAIModule::updateGathererDistribution() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9380
 int TribeTacticalAIModule::stopUnit(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4083,7 +4014,6 @@ int TribeTacticalAIModule::stopUnit(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F93D0
 int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, int param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4097,7 +4027,6 @@ int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, i
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9420
 int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param_3, float param_4, float param_5, float param_6, int param_7) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_3;
     (void)param_4;
     (void)param_5;
@@ -4129,7 +4058,6 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long para
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F99B0
 int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3, int param_4, int param_5, Waypoint* param_6, int param_7) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->player == nullptr)) {
         return 0;
     }
@@ -4148,7 +4076,6 @@ int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3, int 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9AD0
 int TribeTacticalAIModule::taskBuilder(int param_1, BuildItem* param_2, ConstructionItem* param_3, unsigned long param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_3;
     (void)param_4;
     if (param_1 < 0) {
@@ -4162,7 +4089,6 @@ int TribeTacticalAIModule::taskBuilder(int param_1, BuildItem* param_2, Construc
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9E00
 int TribeTacticalAIModule::taskBuilder(int param_1, RGE_Static_Object* param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_2 == nullptr) || (param_1 < 0)) {
         return 0;
     }
@@ -4180,7 +4106,6 @@ int TribeTacticalAIModule::taskBuilder(int param_1, RGE_Static_Object* param_2) 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA000
 int TribeTacticalAIModule::taskRepairer(int param_1, RGE_Static_Object* param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_2 == nullptr) || (param_1 < 0)) {
         return 0;
     }
@@ -4198,7 +4123,6 @@ int TribeTacticalAIModule::taskRepairer(int param_1, RGE_Static_Object* param_2)
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA170
 int TribeTacticalAIModule::taskGatherer(int param_1, int param_2, int param_3, unsigned long param_4, int* param_5) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_3;
     (void)param_4;
     (void)param_5;
@@ -4219,7 +4143,6 @@ int TribeTacticalAIModule::taskGatherer(int param_1, int param_2, int param_3, u
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA820
 int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4239,7 +4162,6 @@ int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAAA0
 int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3, int param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4254,7 +4176,6 @@ int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAC90
 int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4269,7 +4190,6 @@ int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3,
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FADA0
 int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4289,7 +4209,6 @@ int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAFC0
 int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4304,7 +4223,6 @@ int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB160
 int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_3;
     (void)param_4;
     return this->taskGatherer(param_1, param_2, 0, 0, nullptr);
@@ -4312,7 +4230,6 @@ int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB2D0
 int TribeTacticalAIModule::taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_7;
     (void)param_8;
     (void)param_9;
@@ -4342,7 +4259,6 @@ int TribeTacticalAIModule::taskDefender(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB520
 int TribeTacticalAIModule::taskDefender(int param_1, float param_2, float param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4357,7 +4273,6 @@ int TribeTacticalAIModule::taskDefender(int param_1, float param_2, float param_
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB550
 int TribeTacticalAIModule::taskTrain(BuildItem* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return 0;
     }
@@ -4367,7 +4282,6 @@ int TribeTacticalAIModule::taskTrain(BuildItem* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB710
 int TribeTacticalAIModule::taskResearch(BuildItem* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return 0;
     }
@@ -4377,7 +4291,6 @@ int TribeTacticalAIModule::taskResearch(BuildItem* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB8D0
 int TribeTacticalAIModule::taskToEnter(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4392,7 +4305,6 @@ int TribeTacticalAIModule::taskToEnter(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB9E0
 int TribeTacticalAIModule::taskTransporter(int param_1, float param_2, float param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* obj = tacticalObject(this, param_1);
     if (obj == nullptr) {
         return 0;
@@ -4407,7 +4319,6 @@ int TribeTacticalAIModule::taskTransporter(int param_1, float param_2, float par
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FBB30
 void TribeTacticalAIModule::removeFromTaskLists(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     auto removeFromArray = [&](ManagedArray<int>& arr) {
         for (int i = 0; i < arr.numberValue; ++i) {
             if (i >= arr.maximumSizeValue) {
@@ -4440,7 +4351,6 @@ void TribeTacticalAIModule::removeFromTaskLists(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FBC10
 int TribeTacticalAIModule::calculatePriority(float param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 <= 0.0f) {
         return 100;
     }
@@ -4456,7 +4366,6 @@ int TribeTacticalAIModule::calculatePriority(float param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FBC30
 void TribeTacticalAIModule::setupSoldierGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->numberGroups(0, -1) == 0 && this->soldiers.numberValue > 0) {
         TacticalAIGroup* grp = this->createGroup(0);
         if (grp != nullptr) {
@@ -4469,7 +4378,6 @@ void TribeTacticalAIModule::setupSoldierGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FC500
 void TribeTacticalAIModule::fillSoldierGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* grp = this->group(0, -1, -1, -1);
     if (grp == nullptr) {
         return;
@@ -4485,7 +4393,6 @@ void TribeTacticalAIModule::fillSoldierGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD2F0
 int TribeTacticalAIModule::numberUngroupedSoldiers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     this->ungroupedSoldiers.numberValue = 0;
     for (int i = 0; i < this->soldiers.numberValue; ++i) {
@@ -4503,7 +4410,6 @@ int TribeTacticalAIModule::numberUngroupedSoldiers() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD4F0
 int TribeTacticalAIModule::numberExtraGroupedSoldiers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int extra = 0;
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
@@ -4521,7 +4427,6 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD6D0
 int TribeTacticalAIModule::numberUngroupedArtifacts() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->artifacts.numberValue; ++i) {
         if (i >= this->artifacts.maximumSizeValue) {
@@ -4536,7 +4441,6 @@ int TribeTacticalAIModule::numberUngroupedArtifacts() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FD8D0
 void TribeTacticalAIModule::displaySoldierGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
          current = current->next) {
@@ -4548,7 +4452,6 @@ void TribeTacticalAIModule::displaySoldierGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FDE00
 void TribeTacticalAIModule::setupBoatGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->numberGroups(1, -1) == 0 && this->warBoats.numberValue > 0) {
         TacticalAIGroup* grp = this->createGroup(1);
         if (grp != nullptr) {
@@ -4561,7 +4464,6 @@ void TribeTacticalAIModule::setupBoatGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FE950
 void TribeTacticalAIModule::fillBoatGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TacticalAIGroup* grp = this->group(1, -1, -1, -1);
     if (grp == nullptr) {
         return;
@@ -4579,7 +4481,6 @@ void TribeTacticalAIModule::fillBoatGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FF4E0
 int TribeTacticalAIModule::numberUngroupedWarBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->warBoats.numberValue; ++i) {
         if (i >= this->warBoats.maximumSizeValue) {
@@ -4594,7 +4495,6 @@ int TribeTacticalAIModule::numberUngroupedWarBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FF6E0
 int TribeTacticalAIModule::numberExtraGroupedWarBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int extra = 0;
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
@@ -4612,7 +4512,6 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FF8E0
 int TribeTacticalAIModule::numberUngroupedFishingBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->fishingBoats.numberValue; ++i) {
         if (i >= this->fishingBoats.maximumSizeValue) {
@@ -4627,7 +4526,6 @@ int TribeTacticalAIModule::numberUngroupedFishingBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FFAE0
 int TribeTacticalAIModule::numberUngroupedTradeBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->tradeBoats.numberValue; ++i) {
         if (i >= this->tradeBoats.maximumSizeValue) {
@@ -4642,7 +4540,6 @@ int TribeTacticalAIModule::numberUngroupedTradeBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FFCE0
 int TribeTacticalAIModule::numberUngroupedTransportBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->transportBoats.numberValue; ++i) {
         if (i >= this->transportBoats.maximumSizeValue) {
@@ -4657,7 +4554,6 @@ int TribeTacticalAIModule::numberUngroupedTransportBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FFEE0
 void TribeTacticalAIModule::displayBoatGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
          current = current->next) {
@@ -4669,7 +4565,6 @@ void TribeTacticalAIModule::displayBoatGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005004C0
 TacticalAIGroup* TribeTacticalAIModule::bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_5;
     TacticalAIGroup* best = nullptr;
     long bestScore = 0;
@@ -4706,7 +4601,6 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(int param_1, int param_2, int 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500670
 TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
          current = current->next) {
@@ -4732,7 +4626,6 @@ TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(int param_1, int param
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005008F0
 int TribeTacticalAIModule::numberGroups(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
@@ -4750,7 +4643,6 @@ int TribeTacticalAIModule::numberGroups(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500950
 int TribeTacticalAIModule::numberUnitsInGroups(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
@@ -4768,7 +4660,6 @@ int TribeTacticalAIModule::numberItemsToAttack() { return this->playersToAttack.
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500A30
 int TribeTacticalAIModule::itemToCapture() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->artifacts.numberValue <= 0 || this->artifacts.maximumSizeValue <= 0) {
         return -1;
     }
@@ -4777,7 +4668,6 @@ int TribeTacticalAIModule::itemToCapture() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500A80
 int TribeTacticalAIModule::itemToBringToArea() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->workingArea.numberValue <= 0 || this->workingArea.maximumSizeValue <= 0) {
         return -1;
     }
@@ -4789,7 +4679,6 @@ int TribeTacticalAIModule::numberItemsToDefend() { return this->playersToDefend.
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500AF0
 unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->sn[0x47] == 1) {
         unsigned long limiter = static_cast<unsigned long>(this->randomizedAttackSeparationTime);
         if (this->sn[0x30] <= static_cast<int>(limiter)) {
@@ -4805,7 +4694,6 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500B30
 void TribeTacticalAIModule::resetAttackSeparationTime() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int attackSeparationVariance = this->sn[0x66];
     if (attackSeparationVariance < 1) {
         this->randomizedAttackSeparationTime = this->sn[0x2E];
@@ -4821,7 +4709,6 @@ void TribeTacticalAIModule::resetAttackSeparationTime() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500BA0
 int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return 0;
     }
@@ -4842,7 +4729,6 @@ int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500CC0
 int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return 0;
     }
@@ -4858,7 +4744,6 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500DE0
 void TribeTacticalAIModule::setGroupInfluences(InfluenceMap* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return;
     }
@@ -4880,7 +4765,6 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501190
 int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return -1;
     }
@@ -4908,7 +4792,6 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501260
 int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return -1;
     }
@@ -4939,7 +4822,6 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501430
 int TribeTacticalAIModule::dealWithGAIAAttacker(RGE_Static_Object* param_1, RGE_Static_Object* param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_2 == nullptr)) {
         return 0;
     }
@@ -4973,7 +4855,6 @@ int TribeTacticalAIModule::dealWithGAIAAttacker(RGE_Static_Object* param_1, RGE_
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005015E0
 void TribeTacticalAIModule::addWaypoint(int param_1, unsigned char param_2, unsigned char param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->aiPlayer == nullptr)) {
         return;
     }
@@ -4983,7 +4864,6 @@ void TribeTacticalAIModule::addWaypoint(int param_1, unsigned char param_2, unsi
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501620
 int TribeTacticalAIModule::importantGroupLeader(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* unitObj = this->md->object(param_1);
     if ((unitObj == nullptr) || (unitObj->master_obj == nullptr)) {
         return 0;
@@ -4994,7 +4874,6 @@ int TribeTacticalAIModule::importantGroupLeader(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501690
 int TribeTacticalAIModule::unexploredArea(int param_1, XYPoint* param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_2 == nullptr) {
         return 0;
     }
@@ -5051,7 +4930,6 @@ int TribeTacticalAIModule::unexploredArea(int param_1, XYPoint* param_2) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005018F0
 UnitData* TribeTacticalAIModule::gatherer(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < 0x32; ++i) {
         if (this->gatherers[i].id == param_1) {
             return &this->gatherers[i];
@@ -5062,7 +4940,6 @@ UnitData* TribeTacticalAIModule::gatherer(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501920
 UnitData* TribeTacticalAIModule::addGatherer(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == -1) {
         return nullptr;
     }
@@ -5087,7 +4964,6 @@ UnitData* TribeTacticalAIModule::addGatherer(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005019C0
 int TribeTacticalAIModule::removeGatherer(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (param_1 == -1) {
         return 0;
     }
@@ -5116,7 +4992,6 @@ int TribeTacticalAIModule::removeGatherer(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501A80
 int TribeTacticalAIModule::isGatherer(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     for (int i = 0; i < 0x32; ++i) {
         if (this->gatherers[i].id == param_1) {
             return 1;
@@ -5127,7 +5002,6 @@ int TribeTacticalAIModule::isGatherer(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501AB0
 int TribeTacticalAIModule::requiredGatherAmount(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->desiredGathererDistribution[param_1] == 0) {
         return this->sn[0x94];
     }
@@ -5136,7 +5010,6 @@ int TribeTacticalAIModule::requiredGatherAmount(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501AF0
 void TribeTacticalAIModule::trackUnitGather(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->resourceDifferenceValue[param_2] < 0) {
         TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
         if ((resourceAI != nullptr) && (0 < resourceAI->resource(param_2) + this->resourceDifferenceValue[param_2])) {
@@ -5151,7 +5024,6 @@ void TribeTacticalAIModule::trackUnitGather(int param_1, int param_2, int param_
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501B50
 int TribeTacticalAIModule::deleteUnit(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Static_Object* unitObj = this->md->object(param_1);
     if ((unitObj != nullptr) && (this->md->aiPlayer != nullptr) && (this->md->aiPlayer->command_delete_object(unitObj) == 1)) {
         return 1;
@@ -5161,7 +5033,6 @@ int TribeTacticalAIModule::deleteUnit(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501B90
 int TribeTacticalAIModule::numberAvailableStoragePits(int* param_1, int* param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeBuildAIModule* buildAI = tacticalBuildAI(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
@@ -5192,7 +5063,6 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int* param_1, int* param_2
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501C70
 int TribeTacticalAIModule::numberAvailableGranaries(int* param_1, int* param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeBuildAIModule* buildAI = tacticalBuildAI(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
@@ -5220,7 +5090,6 @@ int TribeTacticalAIModule::numberAvailableGranaries(int* param_1, int* param_2) 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501D20
 int TribeTacticalAIModule::initialExplorationSatisfied() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->sn[0xA7] < 1) {
         return 1;
     }
@@ -5233,7 +5102,6 @@ int TribeTacticalAIModule::initialExplorationSatisfied() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00501D70
 void TribeTacticalAIModule::checkForBuildInsertion(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeBuildAIModule* buildAI = tacticalBuildAI(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
@@ -5288,7 +5156,6 @@ void TribeTacticalAIModule::checkForBuildInsertion(int param_1, int param_2, int
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005020A0
 int TribeTacticalAIModule::isFarmer(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr) || (param_1->master_obj->id != 0x103)) {
         return 0;
     }
@@ -5302,7 +5169,6 @@ int TribeTacticalAIModule::isFarmer(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502100
 int TribeTacticalAIModule::numberFarmers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->civilians.numberValue; ++i) {
         if (i >= this->civilians.maximumSizeValue) {
@@ -5318,7 +5184,6 @@ int TribeTacticalAIModule::numberFarmers() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502200
 int TribeTacticalAIModule::inAge(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->attributes == nullptr)) {
         return 0;
     }
@@ -5331,7 +5196,6 @@ int TribeTacticalAIModule::inAge(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502230
 void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* param_1, Path* param_2) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_2 == nullptr)) {
         return;
     }
@@ -5358,7 +5222,6 @@ void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* param_1, Path* p
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502310
 void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
     TribeBuildAIModule* buildAI = tacticalBuildAI(this);
@@ -5431,7 +5294,6 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502600
 void TribeTacticalAIModule::checkForCoopTributeDemand() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     if ((world == nullptr) || (resourceAI == nullptr) || (this->sn[0xBA] == -1)) {
@@ -5472,7 +5334,6 @@ void TribeTacticalAIModule::checkForCoopTributeDemand() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502920
 void TribeTacticalAIModule::checkForCoopTributeGift() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     if ((world == nullptr) || (resourceAI == nullptr) || (this->sn[0xBA] == -1) || (this->md == nullptr) ||
@@ -5510,7 +5371,6 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502BF0
 void TribeTacticalAIModule::checkForASAPAgeResearch() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeBuildAIModule* buildAI = tacticalBuildAI(this);
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     if ((buildAI == nullptr) || (resourceAI == nullptr)) {
@@ -5538,7 +5398,6 @@ void TribeTacticalAIModule::checkForASAPAgeResearch() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502D50
 void TribeTacticalAIModule::checkForCoopAttack(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     if ((world == nullptr) || (this->sn[0xC4] != 1)) {
         return;
@@ -5559,7 +5418,6 @@ void TribeTacticalAIModule::checkForCoopAttack(int param_1, int param_2, int par
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502F30
 int TribeTacticalAIModule::processCoopAttack(int param_1, int param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     (void)param_1;
     (void)param_3;
     (void)param_4;
@@ -5582,7 +5440,6 @@ int TribeTacticalAIModule::processCoopAttack(int param_1, int param_2, int param
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502FC0
 int TribeTacticalAIModule::resourceDifference(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_1 < 4)) {
         return this->resourceDifferenceValue[this->neededResourceValue[param_1]];
     }
@@ -5591,7 +5448,6 @@ int TribeTacticalAIModule::resourceDifference(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502FF0
 int TribeTacticalAIModule::actualGathererCount(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_1 < 4)) {
         return this->actualGathererDistribution[this->neededResourceValue[param_1]];
     }
@@ -5600,7 +5456,6 @@ int TribeTacticalAIModule::actualGathererCount(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00503020
 int TribeTacticalAIModule::actualGathererCountByRealResourceID(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_1 < 4)) {
         return this->actualGathererDistribution[param_1];
     }
@@ -5609,7 +5464,6 @@ int TribeTacticalAIModule::actualGathererCountByRealResourceID(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00503040
 int TribeTacticalAIModule::desiredGathererCount(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_1 < 4)) {
         return this->desiredGathererDistribution[this->neededResourceValue[param_1]];
     }
@@ -5618,7 +5472,6 @@ int TribeTacticalAIModule::desiredGathererCount(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00503070
 void TribeTacticalAIModule::taskElephantGatherers(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->aiPlayer == nullptr)) {
         return;
     }
@@ -5669,7 +5522,6 @@ void TribeTacticalAIModule::taskElephantGatherers(int param_1, int param_2, int 
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005032E0
 void TribeTacticalAIModule::checkTradeBoats() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
     if ((resourceAI == nullptr) || (this->md == nullptr) || (this->md->aiPlayer == nullptr)) {
         return;
@@ -5697,7 +5549,6 @@ void TribeTacticalAIModule::checkTradeBoats() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00503480
 int TribeTacticalAIModule::numberGatherersWithTarget(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->numberGatherersValue; ++i) {
         if (this->gatherers[i].target == param_1) {
@@ -5709,7 +5560,6 @@ int TribeTacticalAIModule::numberGatherersWithTarget(int param_1) {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005034B0
 void TribeTacticalAIModule::checkStaleAttackGroups() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     if (this->attackEnabledValue == 0) {
         return;
     }
@@ -5735,7 +5585,6 @@ void TribeTacticalAIModule::checkStaleAttackGroups() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00503580
 int TribeTacticalAIModule::numberWaterExplorers() {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     int count = 0;
     for (TacticalAIGroup* current = this->groups.next;
          (current != nullptr) && (current != &this->groups);
@@ -5752,7 +5601,6 @@ int TribeTacticalAIModule::numberWaterExplorers() {
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00503600
 void TribeTacticalAIModule::saveTheTown(int param_1) {
-    // Fully verified. Source of truth: TribeTacticalAIModule.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(this);
     if (world == nullptr) {
         return;

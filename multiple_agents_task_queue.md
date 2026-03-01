@@ -2560,7 +2560,8 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 
 ## Task 194 — In-game screen parity follow-up: finalize remaining command-panel refresh slice in `TRIBE_Screen_Game`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: validated on current `master` snapshot — all 10 scoped files now contain 0 `TODO: STUB` markers.
 - Assignment note: worker-3 (`aoe1_clone_3`)
 - Goal: close the remaining `TRIBE_Screen_Game` in-game parity gaps left after Task 182 (world-step/game-over branch, player-change civ-refresh branch, and command-panel refresh slice).
 - Implement:
@@ -2591,8 +2592,8 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 
 ## Task 196 — TRIBE AI build-module dependency parity: retire helper stubs in `TribeBuildAIModule.cpp`
 - [x] Assigned to agent
-- [ ] Finished
-- Status note: assigned to `worker-2` (`aoe1_clone_4`) for execution.
+- [x] Finished
+- Status note: verified complete in `master` (helper stubs removed, helper/add-cancel methods fully verified).
 - Goal: remove helper-level TODO stubs currently short-circuiting AI build/train/research bookkeeping during in-game updates.
 - Implement:
   - Replace local helper stubs with source-backed behavior: `tribe_build_ai_detask`, `tribe_build_ai_is_moveable`, `tribe_build_ai_clear_area`, `tribe_build_ai_remove_lot`, `tribe_build_ai_update_needed_resources`.
@@ -4409,7 +4410,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 315 — TPanel gap closure (panel — ~10 functions)
 - [x] Assigned to agent (Worker-2, clone_2)
-- [ ] Finished
+- [x] Finished
+- Status note: validated on current `master` snapshot — `TPanel.cpp` has no `TODO`/`STUB` markers and no remaining unverified function gaps in Task 315 scope.
 - Goal: TPanel.cpp has 122 verified functions but panel.cpp.decomp has 132 (gap=10). Also 1 TODO: STUB to remove. Close the remaining panel function gaps.
 - Implement: Read panel.cpp.decomp. Find unverified offsets not in TPanel.cpp. Transliterate. Remove the stub. Build with build.bat.
 - Where: `src/game/src/TPanel.cpp` + headers
@@ -4429,7 +4431,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 317 — TRIBE_Combat_Object + TRIBE_Player small gap cleanup
 - [x] Assigned to agent (Worker-5, clone_5)
-- [ ] Finished
+- [x] Finished
+- Status note: verified on `master` — TRIBE_Combat_Object and TRIBE_Player now both have 0 missing decomp offsets for this task scope.
 - Goal: Two small cleanup targets:
   1. TRIBE_Combat_Object.cpp: 35 verified vs 39 in t_c_obj.cpp.decomp (gap=4)
   2. TRIBE_Player.cpp: 106 verified vs 107 in tplayer.cpp.decomp (gap=1), plus 3 TODO: STUB markers

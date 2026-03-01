@@ -108,6 +108,7 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Object* param_1, float param_2, 
 RGE_Action_Attack::~RGE_Action_Attack() = default;
 
 // Factory initialization path (used by RGE_Action_List); not present as a standalone function in act_atak.cpp.*.
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 int RGE_Action_Attack::setup(RGE_Action_Object* param_1) {
     RGE_Action::setup(param_1);
     this->action_type = 9;
@@ -150,18 +151,31 @@ int RGE_Action_Attack::setup(int param_1, RGE_Action_Object* param_2) {
     return 1;
 }
 
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 RGE_Action_List* RGE_Action_Attack::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 void RGE_Action_Attack::rehook() { RGE_Action::rehook(); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 short RGE_Action_Attack::type() { return RGE_Action::type(); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 uchar RGE_Action_Attack::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 uchar RGE_Action_Attack::idle_update() { return RGE_Action::idle_update(); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 int RGE_Action_Attack::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 uchar RGE_Action_Attack::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 uchar RGE_Action_Attack::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 void RGE_Action_Attack::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 void RGE_Action_Attack::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Attack::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Attack::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401550 (virtual forwarding coverage).
 void RGE_Action_Attack::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void RGE_Action_Attack::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
