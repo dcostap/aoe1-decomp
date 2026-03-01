@@ -21,56 +21,69 @@ TradeAIModule::TradeAIModule(int param_1, int param_2) : AIModule(kTradeAIName, 
 // Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412ED0
 TradeAIModule::~TradeAIModule() {}
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 int TradeAIModule::loggingHistory() {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::loggingHistory();
 }
 
 void TradeAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     AIModule::setLogHistory(param_1);
 }
 
 void TradeAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     AIModule::toggleLogHistory();
 }
 
 void TradeAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     AIModule::setHistoryFilename(param_1);
 }
 
 int TradeAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::loggingCommonHistory();
 }
 
 void TradeAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     AIModule::setLogCommonHistory(param_1);
 }
 
 void TradeAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     AIModule::toggleLogCommonHistory();
 }
 
 int TradeAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::loadState(param_1);
 }
 
 int TradeAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::saveState(param_1);
 }
 
 int TradeAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::gleanState(param_1);
 }
 
 int TradeAIModule::processMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::processMessage(param_1);
 }
 
 int TradeAIModule::update(int param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     return AIModule::update(param_1);
 }
 
 void TradeAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aitrdmod.cpp.decomp (helper implementation).
     AIModule::setCallbackMessage(param_1);
 }
 

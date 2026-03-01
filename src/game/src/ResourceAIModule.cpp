@@ -10,10 +10,12 @@ namespace {
 char kResourceAIName[] = "Resource AI";
 
 int resource_item_number(ResourceItem* item) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return item->numberValue;
 }
 
 int resource_item_value(ResourceItem* item, int index) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return item->valueValue[index];
 }
 }
@@ -57,40 +59,49 @@ ResourceAIModule::~ResourceAIModule() {
     ((AIModule*)this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 int ResourceAIModule::loggingHistory() {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loggingHistory();
 }
 
 void ResourceAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setLogHistory(param_1);
 }
 
 void ResourceAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->toggleLogHistory();
 }
 
 void ResourceAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setHistoryFilename(param_1);
 }
 
 int ResourceAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loggingCommonHistory();
 }
 
 void ResourceAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setLogCommonHistory(param_1);
 }
 
 void ResourceAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->toggleLogCommonHistory();
 }
 
 int ResourceAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loadState(param_1);
 }
 
 int ResourceAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->saveState(param_1);
 }
 

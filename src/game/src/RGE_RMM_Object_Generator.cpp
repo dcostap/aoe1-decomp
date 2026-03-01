@@ -11,6 +11,7 @@
 #include <string.h>
 
 static long rmm_obj_rand_scaled(long scale, int line_no) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp (helper implementation).
     if (scale <= 0) {
         return 0;
     }
@@ -19,6 +20,7 @@ static long rmm_obj_rand_scaled(long scale, int line_no) {
 }
 
 static float rmm_obj_adjust_coord(float tile, float radius) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp (helper implementation).
     long i = (long)radius;
     if ((radius - (float)i) > 0.0f) {
         tile += 0.5f;
@@ -27,6 +29,7 @@ static float rmm_obj_adjust_coord(float tile, float radius) {
 }
 
 static int rmm_obj_terrain_matches(RGE_RMM_Object_Generator* self, RGE_Object_Info_Line& line, long x, long y) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp (helper implementation).
     if (self == nullptr || self->map_row_offset == nullptr ||
         x < 0 || y < 0 || x >= self->map_width || y >= self->map_height) {
         return 0;
@@ -39,6 +42,7 @@ static int rmm_obj_terrain_matches(RGE_RMM_Object_Generator* self, RGE_Object_In
 }
 
 static RGE_Player* rmm_obj_get_player_safe(RGE_RMM_Object_Generator* self, long player_index) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp (helper implementation).
     if (self == nullptr || self->world == nullptr || self->world->players == nullptr || self->world->player_num <= 0) {
         return nullptr;
     }

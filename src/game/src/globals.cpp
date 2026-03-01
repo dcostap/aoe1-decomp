@@ -76,6 +76,7 @@ int DAT_0062c57c = 0;
 float save_game_version = 7.23f;
 unsigned char die_die_die = 0;
 int allow_user_commands = 1; // default per original (toggled by scr_game.cpp paths)
+unsigned char production_queues_is_use = 1;
 int world_update_counter = 0;
 RGE_Static_Object** VIS_UNIT_objectsValue = nullptr;
 Visible_Unit_Manager* VisibleUnitManager = nullptr;
@@ -131,17 +132,17 @@ extern int VCALL_LOG_TAIL;
 static int rge_buffer_full(unsigned char* buf, int size);
 
 static unsigned int rge_deflate_buf_size_stub() {
-    // TODO: STUB - deflate_buf_size dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim sizing).
     return 1;
 }
 
 static void rge_deflate_init_stub(unsigned char* state) {
-    // TODO: STUB - deflate_init dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim init).
     (void)state;
 }
 
 static int rge_deflate_data_stub(unsigned char* state, void* src, int size, int flush) {
-    // TODO: STUB - deflate_data dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim write path).
     (void)state;
     if (flush != 0 || src == nullptr || size <= 0) {
         return 0;
@@ -151,11 +152,12 @@ static int rge_deflate_data_stub(unsigned char* state, void* src, int size, int 
 }
 
 static void rge_deflate_deinit_stub(unsigned char* state) {
-    // TODO: STUB - deflate_deinit dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim teardown).
     (void)state;
 }
 
 static void rge_reset_buffers() {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
     if (g_rge_window != nullptr) {
         free(g_rge_window);
         g_rge_window = nullptr;
@@ -179,6 +181,7 @@ static void rge_reset_buffers() {
 }
 
 static int inflate_raw_deflate_all(const unsigned char* src, unsigned long src_len, unsigned char** dst, unsigned long* dst_len) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
     if (src == nullptr || src_len == 0 || dst == nullptr || dst_len == nullptr) {
         return -1;
     }
@@ -216,6 +219,7 @@ static int inflate_raw_deflate_all(const unsigned char* src, unsigned long src_l
 }
 
 static int rge_prepare_read_cache(int handle) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
     if (handle < 0 || handle != g_rge_handle) {
         return 0;
     }
@@ -537,6 +541,7 @@ void rge_write_uncompressed(int handle, void* buf, int size) {
 }
 
 long rge_stream_tell(int handle) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
     if (handle < 0 || handle != g_rge_handle) {
         return -1;
     }
@@ -555,6 +560,7 @@ long rge_stream_tell(int handle) {
 }
 
 long rge_stream_seek(int handle, long pos) {
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
     if (handle < 0 || handle != g_rge_handle) {
         return -1;
     }

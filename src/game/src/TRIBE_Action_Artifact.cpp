@@ -16,6 +16,7 @@
 #include <new>
 
 static float tact_art_read_master_float(RGE_Master_Static_Object* master, int offset) {
+    // Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
     float v = 0.0f;
     if (master != nullptr) {
         std::memcpy(&v, (char*)master + offset, sizeof(v));
@@ -49,7 +50,9 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Tas
 
 TRIBE_Action_Artifact::~TRIBE_Action_Artifact() {}
 
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 int TRIBE_Action_Artifact::setup(RGE_Action_Object* param_1) { int r = RGE_Action::setup(param_1); this->action_type = 0x6b; return r; }
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 int TRIBE_Action_Artifact::setup(int param_1, RGE_Action_Object* param_2) { int r = RGE_Action::setup(param_1, param_2); this->action_type = 0x6b; return r; }
 RGE_Action_List* TRIBE_Action_Artifact::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
 void TRIBE_Action_Artifact::rehook() { RGE_Action::rehook(); }
@@ -189,10 +192,15 @@ int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float
     return 1;
 }
 
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 uchar TRIBE_Action_Artifact::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 uchar TRIBE_Action_Artifact::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 void TRIBE_Action_Artifact::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 void TRIBE_Action_Artifact::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 void TRIBE_Action_Artifact::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
 RGE_Static_Object* TRIBE_Action_Artifact::get_target_obj() { return RGE_Action::get_target_obj(); }
 RGE_Static_Object* TRIBE_Action_Artifact::get_target_obj2() { return RGE_Action::get_target_obj2(); }

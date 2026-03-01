@@ -138,13 +138,21 @@ uchar TRIBE_Action_Wonder::update() {
     return 0;
 }
 
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 int TRIBE_Action_Wonder::stop() { this->set_state(2); return 1; }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 int TRIBE_Action_Wonder::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 int TRIBE_Action_Wonder::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::work(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 uchar TRIBE_Action_Wonder::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 uchar TRIBE_Action_Wonder::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 void TRIBE_Action_Wonder::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 void TRIBE_Action_Wonder::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 void TRIBE_Action_Wonder::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
 RGE_Static_Object* TRIBE_Action_Wonder::get_target_obj() { return RGE_Action::get_target_obj(); }
 RGE_Static_Object* TRIBE_Action_Wonder::get_target_obj2() { return RGE_Action::get_target_obj2(); }

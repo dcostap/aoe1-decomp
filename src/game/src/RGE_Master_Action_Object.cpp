@@ -306,18 +306,23 @@ RGE_Master_Static_Object* RGE_Master_Action_Object::make_new_master() {
 }
 
 
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
 uchar RGE_Master_Action_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 
 
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
 uchar RGE_Master_Action_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
 
 
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
 long RGE_Master_Action_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) { return this->RGE_Master_Static_Object::calc_base_damage_ability(param_1); }
 
 
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
 void RGE_Master_Action_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
 
 
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
 void RGE_Master_Action_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 
 

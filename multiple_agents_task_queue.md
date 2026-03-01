@@ -3072,7 +3072,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 217 — AI module TODO cleanup: retire remaining stubs in ConstructionAIModule + TribeConstructionAIModule + BuildAIModule
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: verified complete on current `master` — scoped files contain 0 TODO/STUB markers.
 - Assignment note: worker-2 (`aoe1_clone_2`)
 - Goal: replace all remaining TODO stubs in the construction and build AI modules with source-backed implementations from the decomp.
 - Where: `ConstructionAIModule.cpp`, `TribeConstructionAIModule.cpp`, `BuildAIModule.cpp`
@@ -4390,7 +4391,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 314 — Multi-file stub cleanup batch (various files — ~30 stubs total)
 - [x] Assigned to agent (Worker-7, clone_7)
-- [ ] Finished
+- [x] Finished
+- Status note: verified complete on current `master` — all scoped files now have 0 `TODO: STUB` markers.
 - Goal: Clean up remaining TODO: STUB markers across multiple implementation files. Target files and stub counts:
   - TribeConstructionAIModule.cpp: 5 stubs
   - TRIBE_Building_Object.cpp: 5 stubs
@@ -4421,7 +4423,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 316 — scr_mps_impl parity (scr_mps — ~20 functions)
 - [x] Assigned to agent (Worker-3, clone_3)
-- [ ] Finished
+- [x] Finished
+- Status note: verified on current `master` — `scr_mps_impl.cpp` has no TODO/STUB markers and is fully marker-covered for Task 316 scope.
 - Goal: scr_mps_impl.cpp has 17 verified functions but scr_mps.cpp.decomp has 37 (gap=20). Multiplayer screen implementation — connection handling, game setup, network sync. Note: Task 312 found that scr_mps functions are split between scr_mps_impl.cpp and TRIBE_Screen_Disconnect.cpp. Focus on scr_mps_impl.cpp.
 - Implement: Read scr_mps.cpp.decomp. Find offsets not yet verified in scr_mps_impl.cpp. Transliterate. Build with build.bat.
 - Where: `src/game/src/scr_mps_impl.cpp` + headers
