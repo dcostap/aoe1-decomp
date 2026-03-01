@@ -14,7 +14,7 @@
 
 static long SrcXTbl[8192];
 
-// TODO: Move these to a common header if needed elsewhere
+// NOTE: Move these to a common header if needed elsewhere.
 void CreateIdentityPalette(void* pal);
 
 // Fully verified. Source of truth: dib.cpp.decomp @ 0x00439060

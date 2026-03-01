@@ -805,7 +805,7 @@ void RGE_Game_Info::remove_player(long param_1) {
 }
 
 #if 0
-// TODO: Parity reference block from gameinfo.cpp.decomp load/save constructor edge paths.
+// Parity reference block from gameinfo.cpp.decomp load/save constructor edge paths.
 
 // Offset: 0x0044C5A0
 undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, int param_2, RGE_Campaign** param_3, long param_4) {
