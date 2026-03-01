@@ -2796,7 +2796,7 @@ void TRIBE_Screen_Game::command_ai_info() {
 }
 
 void TRIBE_Screen_Game::command_attack() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CC10.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049BD20
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -2810,7 +2810,7 @@ void TRIBE_Screen_Game::command_attack() {
 }
 
 void TRIBE_Screen_Game::command_build() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CD00.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049BD70
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -2820,7 +2820,7 @@ void TRIBE_Screen_Game::command_build() {
 }
 
 void TRIBE_Screen_Game::command_building(int param_1) {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CD80.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049BDB0
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -2846,7 +2846,7 @@ void TRIBE_Screen_Game::command_building(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_cancel() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049BEA0
     if (scr_game_field_i32(this, 0x45C) != 0) {
         this->clear_popup_help();
         return;
@@ -2865,7 +2865,7 @@ void TRIBE_Screen_Game::command_cancel() {
 }
 
 void TRIBE_Screen_Game::command_cancel_building() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CF60.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049BF20
     if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -2876,7 +2876,7 @@ void TRIBE_Screen_Game::command_cancel_building() {
 }
 
 void TRIBE_Screen_Game::command_chat() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049BF50
     if (rge_base_game == nullptr) {
         return;
     }
@@ -2895,7 +2895,7 @@ void TRIBE_Screen_Game::command_chat() {
 }
 
 void TRIBE_Screen_Game::command_quick_chat() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D220.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C010
     if (rge_base_game == nullptr) {
         return;
     }
@@ -2910,7 +2910,7 @@ void TRIBE_Screen_Game::command_quick_chat() {
 }
 
 void TRIBE_Screen_Game::command_comm_info() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D390.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C0B0
     if (rge_base_game == nullptr) {
         return;
     }
@@ -2936,7 +2936,7 @@ void TRIBE_Screen_Game::command_comm_info() {
 }
 
 void TRIBE_Screen_Game::command_convert() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D450.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C160
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -2950,7 +2950,7 @@ void TRIBE_Screen_Game::command_convert() {
 }
 
 void TRIBE_Screen_Game::command_diplomacy() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D520.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C1B0
     if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -2961,7 +2961,7 @@ void TRIBE_Screen_Game::command_diplomacy() {
 }
 
 void TRIBE_Screen_Game::command_fog_of_war() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D610.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C230
     if (rge_base_game != nullptr && rge_base_game->allowCheatCodes() != 0) {
         rge_base_game->set_map_fog((unsigned char)(rge_base_game->fogOfWar() == 0));
         if (this->runtime.main_view != nullptr) {
@@ -2993,7 +2993,7 @@ void TRIBE_Screen_Game::command_fps() {
 }
 
 void TRIBE_Screen_Game::command_game_speed(int param_1) {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D750.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C300
     if (rge_base_game == nullptr || this->runtime.world == nullptr) {
         return;
     }
@@ -3044,7 +3044,7 @@ void TRIBE_Screen_Game::command_game_speed(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_group() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049DB70.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C540
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3082,7 +3082,7 @@ void TRIBE_Screen_Game::command_group_by_number(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_heal() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049DC90.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C5B0
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3096,7 +3096,7 @@ void TRIBE_Screen_Game::command_heal() {
 }
 
 void TRIBE_Screen_Game::command_repair() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049DD80.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C600
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3137,7 +3137,7 @@ void TRIBE_Screen_Game::command_select_group(int param_1, int param_2) {
 }
 
 void TRIBE_Screen_Game::command_menu() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049DFC0.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C770
     if (rge_base_game == nullptr) {
         return;
     }
