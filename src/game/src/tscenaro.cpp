@@ -500,21 +500,12 @@ int T_Scenario::any_sp_victory() {
 
 void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052C230
-    if (param_1 == nullptr) {
-        return;
-    }
-
     int player_index = (int)param_1->id - 1;
-    if (player_index < 0 || player_index >= 16) {
+    if (player_index < 0) {
         return;
     }
 
     int* disabled = this->DisabledTechnology[player_index];
-
-    if (this->ScenarioOptions[0] != 0 && this->world != nullptr && this->world->effects != nullptr) {
-        this->world->effects->do_effect(100, param_1);
-    }
-
     param_1->tech_abling(0x58, (uchar)disabled[0]);
     param_1->tech_abling(0x59, (uchar)disabled[1]);
     param_1->tech_abling(0x5A, (uchar)disabled[2]);
@@ -531,33 +522,33 @@ void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
     param_1->tech_abling(0x67, (uchar)disabled[13]);
     param_1->tech_abling(0x73, (uchar)disabled[14]);
     param_1->tech_abling(0x74, (uchar)disabled[15]);
+    param_1->tech_tree->check_for_new_tech();
 
-    if (param_1->tech_tree != nullptr) {
-        param_1->tech_tree->check_for_new_tech();
+    if (this->ScenarioOptions[0] != 0) {
+        this->world->effects->do_effect(100, param_1);
     }
 
-    if (rge_base_game != nullptr && rge_base_game->prog_mode != 7) {
-        long tech = 0;
+    if (rge_base_game->prog_mode != 7) {
         switch (this->PlayerAge[player_index]) {
             case 1:
-                tech = 0x19;
+                param_1->rev_tech(0x19);
                 break;
             case 2:
-                tech = 0x17;
+                param_1->rev_tech(0x17);
                 break;
             case 3:
-                tech = 0x18;
+                param_1->rev_tech(0x18);
                 break;
             case 4:
-                tech = 1;
+                param_1->rev_tech(1);
                 break;
             default:
-                tech = 0;
                 break;
         }
-        if (tech != 0) {
-            param_1->rev_tech(tech);
-        }
+    }
+
+    if ((float)disabled[14] == 0.0f) {
+        param_1->attributes[48] = 1.0f;
     }
 }
 
