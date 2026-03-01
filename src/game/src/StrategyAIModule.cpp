@@ -10,7 +10,7 @@ StrategyAIModule::StrategyAIModule(void* param_1, int param_2)
 // Fully verified. Source of truth: aistrmod.cpp.decomp @ 0x00412B40
 StrategyAIModule::~StrategyAIModule() {}
 
-// Fully verified. Source of truth: StrategyAIModule.decomp @ 0x00412B20
+// Fully verified. Source of truth: aistrmod.cpp.asm @ 0x00412B20
 void* StrategyAIModule::vector_deleting_destructor(uint param_1) {
     this->~StrategyAIModule();
     if ((param_1 & 1) != 0) {
