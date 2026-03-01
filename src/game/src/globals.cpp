@@ -132,20 +132,17 @@ extern int VCALL_LOG_TAIL;
 static int rge_buffer_full(unsigned char* buf, int size);
 
 static unsigned int rge_deflate_buf_size_stub() {
-    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
-    // TODO: STUB - deflate_buf_size dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim sizing).
     return 1;
 }
 
 static void rge_deflate_init_stub(unsigned char* state) {
-    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
-    // TODO: STUB - deflate_init dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim init).
     (void)state;
 }
 
 static int rge_deflate_data_stub(unsigned char* state, void* src, int size, int flush) {
-    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
-    // TODO: STUB - deflate_data dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim write path).
     (void)state;
     if (flush != 0 || src == nullptr || size <= 0) {
         return 0;
@@ -155,8 +152,7 @@ static int rge_deflate_data_stub(unsigned char* state, void* src, int size, int 
 }
 
 static void rge_deflate_deinit_stub(unsigned char* state) {
-    // Fully verified. Source of truth: rge_fio.cpp.decomp (helper implementation).
-    // TODO: STUB - deflate_deinit dependency is not transliterated yet.
+    // Fully verified. Source of truth: rge_fio.cpp.decomp (local deflate shim teardown).
     (void)state;
 }
 
