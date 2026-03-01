@@ -22,8 +22,7 @@ AIModule* as_ai(EmotionalAIModule* self) {
 
 void copy_state_name(char (&dest)[30], const char* src) {
     // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
-    strncpy(dest, src, 0x1D);
-    dest[0x1D] = '\0';
+    strcpy(dest, src);
 }
 
 void initialize_state_names(EmotionalAIModule* self) {
