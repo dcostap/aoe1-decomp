@@ -138,18 +138,18 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
             retval = game->run();
         } else {
-            int err = game->get_error_code();
+            int init_error = game->get_error_code();
 CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_ERROR(err, "Game initialization failed");
+            CUSTOM_DEBUG_ERROR(init_error, "Game initialization failed");
 CUSTOM_DEBUG_END
-            if (err != 4) {
+            if (init_error != 4) {
                 char msg[256];
                 char title[256];
                 game->get_string(2001, title, sizeof(title));
-                game->get_string2(err, 0, err, msg, sizeof(msg));
+                game->get_string2(init_error, 0, init_error, msg, sizeof(msg));
                 MessageBoxA(NULL, msg, title, MB_OK | MB_ICONERROR);
             }
-            retval = err;
+            retval = init_error;
         }
         delete game;
     } else {
