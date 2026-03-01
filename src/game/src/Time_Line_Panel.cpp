@@ -567,6 +567,7 @@ void Time_Line_Panel::draw_border() {
 }
 
 // Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x0051F2E5 (switch jump-table thunk)
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F2E5 (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051F4E0
 void Time_Line_Panel::add_pop_total_special_event(long param_1, long param_2, long param_3, int param_4) {
@@ -882,6 +883,7 @@ void Time_Line_Panel::draw_special_events() {
 }
 
 // Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520032 (switch jump-table thunk)
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520032 (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520080
 void Time_Line_Panel::draw_background() {
@@ -1137,6 +1139,7 @@ void Time_Line_Panel::draw_timeline() {
 }
 
 // Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520ABD (switch jump-table thunk)
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520ABD (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520AE0
 void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar param_3) {
@@ -1212,6 +1215,7 @@ void Time_Line_Panel::draw_icon(Special_Events* param_1, short param_2, uchar pa
 }
 
 // Fully verified. Source of truth: tpnl_tml.cpp.asm @ 0x00520D25 (switch jump-table thunk)
+// Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520D25 (switch jump-table thunk)
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x00520D50
 void Time_Line_Panel::draw_legend() {

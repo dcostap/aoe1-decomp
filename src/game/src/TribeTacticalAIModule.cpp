@@ -2,8 +2,12 @@
 
 #include "../include/DiplomacyAIModule.h"
 #include "../include/BuildAIModule.h"
+#include "../include/RGE_Action.h"
+#include "../include/RGE_Action_List.h"
+#include "../include/RGE_Action_Object.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Object_List.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Visible_Map.h"
@@ -19,10 +23,12 @@
 #include "../include/UnitAIModule.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
+#include "../include/BaseItem.h"
 
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 #include <new>
 
 static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module);
@@ -860,11 +866,170 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
     updateGathererDistribution();
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F1600. taskCivilians transliteration is blocked on missing gatherer/task helpers.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F1600
 int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
-    (void)param_1;
-    (void)param_2;
-    return 0;
+    if (this->civilians.numberValue < 1) {
+        this->nextCivilianToTaskValue = -1;
+        return 0;
+    }
+
+    int taskedCount = 0;
+
+    if (this->nextCivilianToTaskValue == -1) {
+        while (this->civilianExplorers.numberValue < this->civilianExplorers.desiredNumberValue) {
+            int civilianID = -1;
+            RGE_Static_Object* townCenterObj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+            if (townCenterObj == nullptr) {
+                civilianID = idleCivilian(-1);
+            } else {
+                XYPoint tcPosition = {static_cast<int>(townCenterObj->world_x), static_cast<int>(townCenterObj->world_y)};
+                civilianID = idleCivilian(-1, &tcPosition, 0);
+            }
+
+            if (civilianID == -1) {
+                if (this->desiredNumberGatherersValue < this->numberGatherersValue) {
+                    for (int neededIndex = 3; (neededIndex >= 0) && (civilianID == -1); --neededIndex) {
+                        RGE_Static_Object* gathererObj = this->md->object(-1,
+                                                                          -1,
+                                                                          -1,
+                                                                          0x261,
+                                                                          0x25D,
+                                                                          -1,
+                                                                          -1,
+                                                                          this->neededResourceValue[neededIndex],
+                                                                          -1,
+                                                                          0);
+                        if (gathererObj == nullptr) {
+                            gathererObj = this->md->object(-1,
+                                                           -1,
+                                                           -1,
+                                                           0x265,
+                                                           0x25D,
+                                                           -1,
+                                                           -1,
+                                                           this->neededResourceValue[neededIndex],
+                                                           -1,
+                                                           0);
+                        }
+                        if ((gathererObj != nullptr) && (gathererObj->attribute_amount_held == 0.0f)) {
+                            int gathererID = gathererObj->id;
+                            if (containsManagedArray(this->civilianExplorers, gathererID) == 0) {
+                                removeGatherer(gathererID);
+                                civilianID = gathererID;
+                            }
+                        }
+                    }
+                }
+
+                if (civilianID == -1) {
+                    break;
+                }
+            }
+
+            appendManagedArrayUnique(this->civilianExplorers, civilianID);
+        }
+
+        while (this->civilianExplorers.desiredNumberValue < this->civilianExplorers.numberValue) {
+            if (this->civilianExplorers.numberValue < 1) {
+                break;
+            }
+
+            ensureManagedArrayCapacity(this->civilianExplorers, 1);
+            int explorerID = this->civilianExplorers.value[0];
+            int removeIndex = 0;
+            while ((removeIndex < this->civilianExplorers.maximumSizeValue) &&
+                   (this->civilianExplorers.value[removeIndex] != explorerID)) {
+                removeIndex += 1;
+            }
+            if (removeIndex < this->civilianExplorers.maximumSizeValue) {
+                while (removeIndex < this->civilianExplorers.maximumSizeValue - 1) {
+                    this->civilianExplorers.value[removeIndex] = this->civilianExplorers.value[removeIndex + 1];
+                    removeIndex += 1;
+                }
+                this->civilianExplorers.numberValue -= 1;
+                if (this->civilianExplorers.numberValue < 0) {
+                    this->civilianExplorers.numberValue = 0;
+                }
+            }
+            stopUnit(explorerID, 100);
+        }
+
+        while (this->numberGatherersValue < this->desiredNumberGatherersValue) {
+            int civilianID = -1;
+            RGE_Static_Object* townCenterObj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+            if (townCenterObj == nullptr) {
+                civilianID = idleCivilian(-1);
+            } else {
+                XYPoint tcPosition = {static_cast<int>(townCenterObj->world_x), static_cast<int>(townCenterObj->world_y)};
+                civilianID = idleCivilian(-1, &tcPosition, 0);
+            }
+
+            if (civilianID == -1) {
+                break;
+            }
+            if (addGatherer(civilianID) == nullptr) {
+                break;
+            }
+        }
+
+        ensureManagedArrayCapacity(this->civilians, 1);
+        this->nextCivilianToTaskValue = this->civilians.value[0];
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xD8A);
+        if (param_2 <= now - param_1) {
+            return 0;
+        }
+    }
+
+    int civilianIndex = 0;
+    while (civilianIndex < this->civilians.numberValue) {
+        ensureManagedArrayCapacity(this->civilians, civilianIndex + 1);
+        if (this->nextCivilianToTaskValue == this->civilians.value[civilianIndex]) {
+            break;
+        }
+        civilianIndex += 1;
+    }
+
+    if (this->civilians.numberValue <= civilianIndex) {
+        this->nextCivilianToTaskValue = -1;
+        return taskedCount;
+    }
+
+    int currentTaskedCount = civilianIndex + 1;
+    while (civilianIndex < this->civilians.numberValue) {
+        taskedCount += 1;
+        ensureManagedArrayCapacity(this->civilians, currentTaskedCount);
+        int civilianID = this->civilians.value[civilianIndex];
+
+        if (containsManagedArray(this->civilianExplorers, civilianID) != 0) {
+            highLevelTaskExplorer(civilianID, 1);
+        } else {
+            if (highLevelTaskGatherer(civilianID, param_1) == 0) {
+                addGatherer(civilianID);
+            }
+        }
+
+        updateGathererDistribution();
+
+        civilianIndex += 1;
+        currentTaskedCount += 1;
+        if (this->civilians.numberValue <= civilianIndex) {
+            this->nextCivilianToTaskValue = -1;
+            return taskedCount;
+        }
+
+        ensureManagedArrayCapacity(this->civilians, currentTaskedCount);
+        this->nextCivilianToTaskValue = this->civilians.value[civilianIndex];
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xDC6);
+        if (param_2 <= now - param_1) {
+            if (civilianIndex > 0) {
+                ensureManagedArrayCapacity(this->civilians, civilianIndex);
+            }
+            return taskedCount;
+        }
+    }
+
+    this->nextCivilianToTaskValue = -1;
+    return taskedCount;
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F1E10
@@ -999,10 +1164,1036 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned lon
     }
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F21F0. taskActiveSoldiers transliteration is blocked on missing targeting/combat helpers.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F21F0
 void TribeTacticalAIModule::taskActiveSoldiers(unsigned long param_1, unsigned long param_2) {
-    (void)param_1;
-    (void)param_2;
+    RGE_Game_World* world = tacticalWorld(this);
+    if ((world == nullptr) || (this->md == nullptr)) {
+        this->nextActiveSoldierGroupToTaskValue = -1;
+        return;
+    }
+    ensureManagedArrayCapacity(this->playersToAttack, 1);
+    if ((this->playersToAttack.maximumSizeValue < 1) || (this->playersToAttack.value == nullptr)) {
+        this->nextActiveSoldierGroupToTaskValue = -1;
+        return;
+    }
+    if (this->playersToAttack.numberValue < 1) {
+        this->playersToAttack.value[0] = -1;
+    }
+
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    TribeStrategyAIModule* strategyAI = reinterpret_cast<TribeStrategyAIModule*>(&this->md->strategyAI);
+    TacticalAIGroup* grp = this->groups.next;
+
+    if (this->nextActiveSoldierGroupToTaskValue != -1) {
+        while ((grp != &this->groups) && (grp != nullptr) && (grp->id() != this->nextActiveSoldierGroupToTaskValue)) {
+            grp = grp->next;
+        }
+        if (grp->id() != this->nextActiveSoldierGroupToTaskValue) {
+            grp = this->groups.next;
+        }
+    }
+
+    if (grp == &this->groups) {
+        this->nextActiveSoldierGroupToTaskValue = -1;
+        return;
+    }
+
+    do {
+        if (grp == nullptr) break;
+        int grpType = grp->type();
+        if ((grpType == 0x6B) || (grpType == 0x6C) || (grpType == 0x6A) ||
+            (grp->action() == 0) || (grp->action() == 1)) {
+            grp = grp->next;
+        } else {
+            if (grp->allUnitsIdle(this->md, 1) == 0) {
+                grp->setConsecutiveIdleUnitCount(world->world_time);
+            }
+
+            ObjectMemory* pOVar27 = nullptr;
+            RGE_Static_Object* pRVar26 = nullptr;
+            int allOutsideTransport = 1;
+
+            if (grp->inUse() == 0) {
+                grpType = grp->type();
+                if ((grpType == 100) || (grpType == 0x67)) {
+                    // types 100 and 0x67 fall through directly to LAB_004f2d49
+                    goto LAB_004f2d49;
+                } else if ((grpType == 0x65) || (grpType == 0x68)) {
+                    // Defense group logic
+                    pOVar27 = (infoAI != nullptr) ? infoAI->objectToDefend(grp->commander()) : nullptr;
+                    if (pOVar27 == nullptr) {
+                        grp->setAction(1);
+                    } else {
+                        pRVar26 = this->md->object(grp->commander());
+                        if (pRVar26 == nullptr) {
+                            grp->setAction(1);
+                        } else {
+                            int searchRange;
+                            if (pOVar27->type == 0x6D) {
+                                searchRange = this->sn[0x16];
+                            } else {
+                                searchRange = this->sn[0x39];
+                            }
+                            float pathDistance = 0.0f;
+                            // Decomp: weaponRange() at vt[67](0x10C) + stack reuse for canPath at vt[102](0x198)
+                            // Effective: canPath(XYZPoint{x,y,z}, weaponRange, targetID, &pathDist, 1, -1, -1)
+                            float wRange = pRVar26->weaponRange();
+                            XYZPoint targetXYZ = {
+                                static_cast<int>(pOVar27->x),
+                                static_cast<int>(pOVar27->y),
+                                static_cast<int>(pOVar27->z)
+                            };
+                            int iVar35 = pRVar26->canPath(targetXYZ, wRange, pOVar27->id, &pathDistance, 1, -1, -1);
+                            if (iVar35 != 0) {
+                                pOVar27->attackAttempts = 1;
+                                grp->setTarget(pOVar27->id);
+                                grp->setTargetType(static_cast<int>(pOVar27->type));
+                                grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                       static_cast<float>(pOVar27->y),
+                                                       static_cast<float>(pOVar27->z));
+                                grp->setGatherLocation(static_cast<float>(pOVar27->x),
+                                                       static_cast<float>(pOVar27->y),
+                                                       static_cast<float>(pOVar27->z));
+                                grp->setInUse(1);
+                                goto LAB_004f2d49;
+                            }
+                            // Try canPathWithAdditionalPassability (uses searchRange, not weaponRange)
+                            float gatherX = 0.0f, gatherY = 0.0f;
+                            int canPathAP = pRVar26->canPathWithAdditionalPassability(
+                                targetXYZ, static_cast<float>(searchRange), pOVar27->id, &pathDistance, 1, 0x16, 1, -1, -1);
+                            if ((canPathAP != 0) &&
+                                (pRVar26->findFirstTerrainAlongExceptionPath(2, &gatherX, &gatherY) == 1)) {
+                                pOVar27->attackAttempts = 1;
+                                grp->task(this, this->md, 0x0E, 1, 0);
+                                grp->setAction(0x0D);
+                                grp->setTarget(pOVar27->id);
+                                grp->setTargetType(static_cast<int>(pOVar27->type));
+                                grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                       static_cast<float>(pOVar27->y),
+                                                       static_cast<float>(pOVar27->z));
+                                grp->setInUse(1);
+                                grp->setWaitCode(200);
+                                goto LAB_004f4548;
+                            }
+                            grp->setAction(1);
+                        }
+                    }
+                    goto LAB_004f4548;
+                } else if (grpType == 0x6D) {
+                    // Town center escort group
+                    unsigned long idleTime = grp->consecutiveIdleUnitCount();
+                    if (((world->world_time - idleTime) / 1000) < 0x3C) {
+                        grp->setAction(1);
+                    } else {
+                        RGE_Static_Object* pRVar15 = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+                        if (pRVar15 == nullptr) {
+                            grp->setAction(1);
+                        } else {
+                            pRVar26 = this->md->object(grp->commander());
+                            if (pRVar26 == nullptr) {
+                                grp->setAction(1);
+                            } else {
+                                XYZPoint tcXYZ = {
+                                    static_cast<int>(pRVar15->world_x),
+                                    static_cast<int>(pRVar15->world_y),
+                                    static_cast<int>(pRVar15->world_z)
+                                };
+                                float pathDist = 0.0f;
+                                int canP = pRVar26->canPath(tcXYZ, static_cast<float>(this->sn[0x17]),
+                                                           pRVar15->id, &pathDist, 1, -1, -1);
+                                if (canP != 0) {
+                                    grp->setTarget(pRVar15->id);
+                                    grp->setTargetType(static_cast<int>(pRVar15->type));
+                                    grp->setTargetLocation(pRVar15->world_x, pRVar15->world_y, pRVar15->world_z);
+                                    grp->setGatherLocation(pRVar15->world_x, pRVar15->world_y, pRVar15->world_z);
+                                    grp->setInUse(1);
+                                    goto LAB_004f2d49;
+                                }
+                                float gatherX2 = 0.0f, pathDistE = 0.0f;
+                                int canPAP = pRVar26->canPathWithAdditionalPassability(
+                                    tcXYZ, static_cast<float>(this->sn[0x17]),
+                                    pRVar15->id, &pathDist, 1, 0x16, 1, -1, -1);
+                                if (canPAP == 0) {
+                                    grp->setConsecutiveIdleUnitCount(world->world_time);
+                                    grp->setAction(1);
+                                } else {
+                                    int terrainResult = pRVar26->findFirstTerrainAlongExceptionPath(2, &gatherX2, &pathDistE);
+                                    if (terrainResult != 1) {
+                                        grp->setAction(1);
+                                    } else {
+                                        grp->task(this, this->md, 0x0E, 1, 0);
+                                        grp->setAction(0x0D);
+                                        grp->setTarget(pRVar15->id);
+                                        grp->setTargetType(static_cast<int>(pRVar15->type));
+                                        grp->setTargetLocation(pRVar15->world_x, pRVar15->world_y, pRVar15->world_z);
+                                        grp->setInUse(1);
+                                        grp->setWaitCode(200);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    goto LAB_004f4548;
+                } else {
+                    // Non-defense, non-TC escort: attack target selection
+                    if (this->attackEnabledValue == 0) {
+                        this->attackStateValue.active = 0;
+                    } else {
+                        // sn[0xa2] play-based attack targeting
+                        if ((this->sn[0xA2] != 0) && (grp->type() != 0x67)) {
+                            pOVar27 = (infoAI != nullptr) ? infoAI->objectMemory(grp->target()) : nullptr;
+                            goto LAB_004f2ae2;
+                        }
+                        unsigned int timeSinceAttack = (world->world_time - this->lastGroupAttackTime) / 1000;
+                        if (((this->lastGroupAttackTime == 0) || (this->sn[0x2F] != 2) || (timeSinceAttack == 0)) ||
+                            (this->attackLimiterTime(0x2E) <= timeSinceAttack)) {
+                            if (((this->lastGroupAttackTime == 0) || (this->sn[0x2F] != 1)) ||
+                                (this->attackLimiterTime(0x2E) <= timeSinceAttack)) {
+                                int victoryCondition = strategyAI->currentVictoryCondition();
+                                if (victoryCondition == 0) {
+                                    // Standard victory: try to capture items first
+                                    int captureItem = this->itemToCapture();
+                                    pOVar27 = (infoAI != nullptr) ? infoAI->objectMemory(captureItem) : nullptr;
+                                    if (pOVar27 == nullptr) {
+                                        ensureManagedArrayCapacity(this->playersToAttack, 1);
+                                        int allOutside2 = 0;
+                                        pOVar27 = (infoAI != nullptr) ?
+                                            infoAI->objectToAttack(this->playersToAttack.value[0], 1, 1, grp->commander(), &allOutside2) : nullptr;
+                                        if (pOVar27 == nullptr) {
+                                            grp->setAction(1);
+                                            this->attackStateValue.active = 0;
+                                            goto LAB_004f4552;
+                                        }
+                                    }
+                                } else if (victoryCondition != 4) {
+                                    // Non-conquest, non-bring-to-area victory
+                                    ensureManagedArrayCapacity(this->playersToAttack, 1);
+                                    pOVar27 = (infoAI != nullptr) ?
+                                        infoAI->objectToAttackByGroup(this->playersToAttack.value[0], grp, &this->attackStateValue, param_1) : nullptr;
+                                    if (this->attackStateValue.active == 1) goto LAB_004f45bf;
+                                    if (pOVar27 == nullptr) {
+                                        grp->setAction(1);
+                                        this->attackStateValue.active = 0;
+                                        goto LAB_004f4552;
+                                    }
+                                } else {
+                                    // Bring-to-area victory
+                                    int bringItem = this->itemToBringToArea();
+                                    pOVar27 = (infoAI != nullptr) ? infoAI->objectMemory(bringItem) : nullptr;
+                                    if (pOVar27 == nullptr) {
+                                        ensureManagedArrayCapacity(this->playersToAttack, 1);
+                                        int allOutside3 = 0;
+                                        pOVar27 = (infoAI != nullptr) ?
+                                            infoAI->objectToAttack(this->playersToAttack.value[0], 1, 1, grp->commander(), &allOutside3) : nullptr;
+                                        if (pOVar27 == nullptr) {
+                                            grp->setAction(1);
+                                            this->attackStateValue.active = 0;
+                                            goto LAB_004f4552;
+                                        }
+                                    }
+                                }
+                                pOVar27->attackAttempts = pOVar27->attackAttempts + 1;
+                                goto LAB_004f2ae2;
+                            } else {
+                                this->attackStateValue.active = 0;
+                            }
+                        } else {
+                            this->attackStateValue.active = 0;
+                        }
+                    }
+                    goto LAB_004f4548;
+
+LAB_004f2ae2:
+                    pRVar26 = this->md->object(grp->commander());
+                    if (pRVar26 == nullptr) {
+                        grp->setAction(1);
+                    } else {
+                        float pathDist88 = 0.0f;
+                        XYZPoint atkXYZ = {
+                            static_cast<int>(pOVar27->x),
+                            static_cast<int>(pOVar27->y),
+                            static_cast<int>(pOVar27->z)
+                        };
+                        float wRange2 = pRVar26->weaponRange();
+                        // Decomp: weaponRange() + stack-reuse → canPath(XYZPoint, range, id, &pathDist, 1, owner, 0x1b)
+                        int canP = pRVar26->canPath(atkXYZ, wRange2, pOVar27->id, &pathDist88, 1,
+                                                    static_cast<int>(pOVar27->owner), 0x1B);
+                        if (canP != 0) {
+                            this->lastGroupAttackTime = world->world_time;
+                            if (this->sn[0x47] == 1) {
+                                this->lastAttackResponseTime = world->world_time;
+                            }
+                            grp->setTarget(pOVar27->id);
+                            grp->setTargetType(static_cast<int>(pOVar27->type));
+                            grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                   static_cast<float>(pOVar27->y),
+                                                   static_cast<float>(pOVar27->z));
+                            grp->setInUse(1);
+                            checkForCoopAttack(static_cast<int>(pOVar27->owner),
+                                              static_cast<int>(pOVar27->x),
+                                              static_cast<int>(pOVar27->y));
+                            goto LAB_004f2d49;
+                        }
+                        if (grp->type() != 0x67) {
+                            float gatherY3 = 0.0f, gatherYd = 0.0f;
+                            // canPathWithAdditionalPassability at vt[105](0x1A4)
+                            int canPAP2 = pRVar26->canPathWithAdditionalPassability(
+                                atkXYZ, wRange2, pOVar27->id, &pathDist88, 1, 0x16, 1,
+                                static_cast<int>(pOVar27->owner), 0x1B);
+                            if (canPAP2 == 0) {
+                                grp->numberObjectsToDestroyValue = 0;
+                                grp->setAction(1);
+                                grp->playNumberValue = -1;
+                                this->attackStateValue.active = 0;
+                                goto LAB_004f4552;
+                            }
+                            int terrResult = pRVar26->findFirstTerrainAlongExceptionPath(2, &gatherY3, &gatherYd);
+                            if (terrResult == 1) {
+                                grp->task(this, this->md, 0x0E, 1, 0);
+                                grp->setAction(0x0D);
+                                grp->setTarget(pOVar27->id);
+                                grp->setTargetType(static_cast<int>(pOVar27->type));
+                                grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                       static_cast<float>(pOVar27->y),
+                                                       static_cast<float>(pOVar27->z));
+                                grp->setInUse(1);
+                                grp->setWaitCode(200);
+                                grp->playNumberValue = -1;
+                                goto LAB_004f4548;
+                            }
+                        }
+                        grp->setAction(1);
+                        grp->playNumberValue = -1;
+                    }
+                    goto LAB_004f4548;
+                }
+
+LAB_004f2d49:
+                {
+                    int vc = strategyAI->currentVictoryCondition();
+                    if ((vc == 0x0B) &&
+                        ((grp->type() == 100) || (grp->type() == 0x67)) &&
+                        (this->sn[0x67] == 1) &&
+                        (pOVar27 != nullptr) && (pRVar26 != nullptr)) {
+                        infoAI->addEnemyInfluences(static_cast<int>(pOVar27->owner), pOVar27->id);
+                        infoAI->addPriorAttackInfluences(static_cast<int>(pOVar27->owner), pOVar27->id);
+                        XYZPoint avoidPoint = {
+                            static_cast<int>(pOVar27->x),
+                            static_cast<int>(pOVar27->y),
+                            0
+                        };
+                        float avoidRange = pRVar26->weaponRange();
+                        Path* avoidPath = pRVar26->findAvoidancePath(&avoidPoint, avoidRange, pOVar27->id);
+                        if (avoidPath != nullptr) {
+                            stuffAvoidancePath(grp, avoidPath);
+                        }
+                    }
+                    if ((allOutsideTransport != 0) || (grp->action() != 2)) {
+                        grp->task(this, this->md, grp->action(), 1, 0);
+                    } else {
+                        grp->task(this, this->md, 0x15, 1, 0);
+                    }
+                }
+            } else {
+                // inUse() != 0 branch
+                int grpAction = grp->action();
+                if (grpAction == 0x0D) {
+                    // Water-crossing transport wait
+                    if (grp->waitCode() == 200) {
+                        TacticalAIGroup* pTVar21 = nullptr;
+                        if (grp->assistGroupID() == -1) {
+                            pRVar26 = this->md->object(grp->commander());
+                            if (pRVar26 == nullptr) {
+                                this->attackStateValue.active = 0;
+                                goto LAB_004f4552;
+                            }
+                            XYPoint commanderPt = {
+                                static_cast<int>(pRVar26->world_x),
+                                static_cast<int>(pRVar26->world_y)
+                            };
+                            pTVar21 = bestGroup(0x6A, 1, -1, &commanderPt, -1);
+                            if (pTVar21 == nullptr) {
+                                pTVar21 = bestGroup(0x6A, 0, -1, &commanderPt, -1);
+                            }
+                            if (pTVar21 != nullptr) {
+                                grp->setAssistGroupID(pTVar21->id());
+                                grp->setAssistGroupType(pTVar21->type());
+                                pTVar21->setAction(0x0C);
+                                pTVar21->setInUse(1);
+                                pTVar21->setAssistGroupID(grp->id());
+                                goto LAB_004f2f57;
+                            }
+                        } else {
+                            pTVar21 = group(grp->assistGroupID(), -1, -1, -1);
+LAB_004f2f57:
+                            if (pTVar21 != nullptr) {
+                                pRVar26 = this->md->object(pTVar21->commander());
+                                if ((pRVar26 == nullptr) ||
+                                    (pRVar26->objects->number_of_objects < static_cast<short>(pRVar26->master_obj->obj_max))) {
+                                    int unitTasked = 0;
+                                    int idx = 0;
+                                    int numUnits = grp->numberUnits();
+                                    while (idx < numUnits) {
+                                        int unitID = grp->unit(idx);
+                                        RGE_Static_Object* unitObj = this->md->object(unitID);
+                                        if ((unitObj != nullptr) && (unitObj->unitAI() != nullptr)) {
+                                            if (unitObj->unitAI()->currentAction() == -1) {
+                                                unitTasked = 1;
+                                                taskToEnter(unitID, pTVar21->commander());
+                                            }
+                                        }
+                                        idx = idx + 1;
+                                        numUnits = grp->numberUnits();
+                                    }
+                                    if (unitTasked != 0) goto LAB_004f43ca;
+                                    grp->setAction(0x0F);
+                                    this->attackStateValue.active = 0;
+                                } else {
+                                    grp->setAction(0x0F);
+                                    this->attackStateValue.active = 0;
+                                }
+                                goto LAB_004f4552;
+                            }
+                        }
+                        grp->setAssistGroupID(-1);
+                        grp->setAssistGroupType(-1);
+                        this->attackStateValue.active = 0;
+                        goto LAB_004f4552;
+                    }
+LAB_004f43ca:
+                    this->attackStateValue.active = 0;
+                } else if (grpAction == 0x0F) {
+                    // Unit boarding/loading into transport
+                    TacticalAIGroup* pTVar21 = group(grp->assistGroupID(), -1, -1, -1);
+                    if (pTVar21 != nullptr) {
+                        pRVar26 = this->md->object(pTVar21->commander());
+                        if (pRVar26 != nullptr) {
+                            if (static_cast<short>(pRVar26->master_obj->obj_max) <= pRVar26->objects->number_of_objects) {
+                                grp->removeUnboardedUnits(this, this->md);
+                            }
+                            int targetZone = 0xFF;
+                            int allInside = 1;
+                            int allInsideIdx = 0;
+                            int numUnits = grp->numberUnits();
+                            while (allInsideIdx < numUnits) {
+                                int unitID = grp->unit(allInsideIdx);
+                                RGE_Static_Object* unitObj = this->md->object(unitID);
+                                if (unitObj == nullptr) {
+                                    // invalid unit - skip
+                                } else {
+                                    UnitAIModule* uAI = unitObj->unitAI();
+                                    if (uAI == nullptr) {
+                                        // invalid unitAI - skip
+                                    } else {
+                                        // Check if this is the commander; if so, determine target zone
+                                        if (grp->unit(allInsideIdx) == grp->commander()) {
+                                            Waypoint* tLoc = grp->targetLocation();
+                                            int tx = static_cast<int>(tLoc->x);
+                                            tLoc = grp->targetLocation();
+                                            int ty = static_cast<int>(tLoc->y);
+                                            XYPoint zonePoint = { tx, ty };
+                                            targetZone = static_cast<int>(unitObj->lookupZone(zonePoint));
+                                        }
+                                        // Check if unit is inside the transport
+                                        RGE_Static_Object* insideObj = unitObj->inside_obj;
+                                        if ((insideObj != nullptr) && (insideObj->id == pTVar21->commander())) {
+                                            UnitAIModule* uAI2 = unitObj->unitAI();
+                                            if (uAI2->currentAction() != -1) {
+                                                stopUnit(unitObj->id, 100);
+                                                goto LAB_004f323d;
+                                            }
+                                        }
+                                        insideObj = unitObj->inside_obj;
+                                        if ((insideObj == nullptr) || (insideObj->id == pTVar21->commander())) {
+                                            if (unitObj->inside_obj == nullptr) {
+                                                allInside = 0;
+                                                UnitAIModule* uAI3 = unitObj->unitAI();
+                                                if (uAI3->currentOrder() != 700) {
+                                                    uAI3 = unitObj->unitAI();
+                                                    if (uAI3->currentOrder() != 0x2CD) {
+                                                        taskToEnter(grp->unit(allInsideIdx), pTVar21->commander());
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            grp->removeUnit(unitObj->id, this->md);
+                                        }
+                                    }
+                                }
+LAB_004f323d:
+                                allInsideIdx = allInsideIdx + 1;
+                                numUnits = grp->numberUnits();
+                            }
+                            if (allInside != 0) {
+                                // All units boarded: send transport to staging point
+                                Waypoint* tLoc = grp->targetLocation();
+                                int tx = static_cast<int>(tLoc->x);
+                                tLoc = grp->targetLocation();
+                                int ty = static_cast<int>(tLoc->y);
+                                XYPoint targetPt = { tx, ty };
+                                XYPoint stagingPt = {};
+                                int targetID = grp->target();
+                                int commanderID = grp->commander();
+                                int foundStaging = (infoAI != nullptr) ?
+                                    infoAI->findStagingPoint(targetPt, &stagingPt, 1, 1, targetID, 0x0F, commanderID) : 0;
+                                if (foundStaging == 0) {
+                                    tLoc = grp->targetLocation();
+                                    stagingPt.x = static_cast<int>(tLoc->x);
+                                    tLoc = grp->targetLocation();
+                                    stagingPt.y = static_cast<int>(tLoc->y);
+                                }
+                                float stageX = static_cast<float>(stagingPt.x) + 0.5f;
+                                float stageY = static_cast<float>(stagingPt.y) + 0.5f;
+                                taskTransporter(pTVar21->commander(), stageX, stageY);
+                                pTVar21->setTargetLocation(static_cast<float>(stagingPt.x),
+                                                           static_cast<float>(stagingPt.y), -1.0f);
+                                pTVar21->setAction(0x0C);
+                                pTVar21->setTargetType(targetZone);
+                                grp->setAction(0x10);
+                                grp->task(this, this->md, 0x16, 0, 1);
+                                // Task extra transport units as defenders
+                                if (1 < pTVar21->numberUnits()) {
+                                    int idx2 = 0;
+                                    int numTUnits = pTVar21->numberUnits();
+                                    while (idx2 < numTUnits) {
+                                        int tUnitID = pTVar21->unit(idx2);
+                                        int tCommanderID = pTVar21->commander();
+                                        if (tUnitID != tCommanderID) {
+                                            RGE_Static_Object* tUnitObj = this->md->object(pTVar21->unit(idx2));
+                                            if (tUnitObj != nullptr) {
+                                                float defRadius = tUnitObj->master_obj->los * 0.5f;
+                                                taskDefender(pTVar21->unit(idx2), pTVar21->commander(), defRadius, 99);
+                                            }
+                                        }
+                                        idx2 = idx2 + 1;
+                                        numTUnits = pTVar21->numberUnits();
+                                    }
+                                }
+                            }
+                            goto LAB_004f4548;
+                        }
+                    }
+                    goto LAB_004f37f1;
+                } else if (grpAction == 0x10) {
+                    // Units in transit (on transport)
+                    TacticalAIGroup* pTVar21 = group(grp->assistGroupID(), -1, -1, -1);
+                    if (pTVar21 != nullptr) {
+                        pRVar26 = this->md->object(pTVar21->commander());
+                        if ((pRVar26 != nullptr) && (pRVar26->unitAI() != nullptr) &&
+                            (pRVar26->owner->id == this->md->player->id)) {
+                            int allUnitsInside = 1;
+                            int allOutside = 1;
+                            int transitIdx = 0;
+                            int numUnits = grp->numberUnits();
+                            while (transitIdx < numUnits) {
+                                int unitID = grp->unit(transitIdx);
+                                RGE_Static_Object* unitObj = this->md->object(unitID);
+                                if ((unitObj != nullptr) && (unitObj->unitAI() != nullptr)) {
+                                    if (unitObj->inside_obj == nullptr) {
+                                        allOutside = 0;
+                                        RGE_Static_Object* targetObj = this->md->object(grp->target());
+                                        if ((grp->type() == 100) && (targetObj != nullptr)) {
+                                            UnitAIModule* uAI = unitObj->unitAI();
+                                            if (uAI != nullptr) {
+                                                if (uAI->currentTarget() != grp->target()) {
+                                                    float wRange = unitObj->weaponRange();
+                                                    int canP = unitObj->canPath(grp->target(), wRange, nullptr, 1, -1, -1);
+                                                    if (canP == 1) {
+                                                        Waypoint* tLoc = grp->targetLocation();
+                                                        float ty = tLoc->y;
+                                                        tLoc = grp->targetLocation();
+                                                        float tx = tLoc->x;
+                                                        taskAttacker(grp->unit(transitIdx), tx, ty, grp->target(), -1, nullptr, 0, -1, 0);
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            stopUnit(grp->unit(transitIdx), 100);
+                                        }
+                                    } else {
+                                        allUnitsInside = 0;
+                                    }
+                                }
+                                transitIdx = transitIdx + 1;
+                                numUnits = grp->numberUnits();
+                            }
+                            if (allOutside == 1) {
+                                // All units disembarked: check transport idle
+                                RGE_Action_Object* transportActionObj = reinterpret_cast<RGE_Action_Object*>(pRVar26);
+                                if ((transportActionObj->have_action() == 0) ||
+                                    (transportActionObj->actions->get_action()->state == 0x02)) {
+                                    Waypoint* tLoc = pTVar21->targetLocation();
+                                    float tY = tLoc->y + 0.5f;
+                                    tLoc = pTVar21->targetLocation();
+                                    float tX = tLoc->x + 0.5f;
+                                    taskTransporter(pTVar21->commander(), tX, tY);
+                                    pTVar21->setAction(0x0C);
+                                }
+                            } else if (allUnitsInside != 0) {
+                                // Reset transport group
+                                TacticalAIGroup* assistGrp = group(grp->assistGroupID(), -1, -1, -1);
+                                if (assistGrp != nullptr) {
+                                    assistGrp->setTarget(-1);
+                                    assistGrp->setTargetType(-1);
+                                    assistGrp->setAction(1);
+                                    assistGrp->setInUse(0);
+                                    RGE_Static_Object* dockObj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+                                    if (dockObj != nullptr) {
+                                        moveUnit(assistGrp->commander(), dockObj->world_x, dockObj->world_y, 0x32);
+                                    }
+                                }
+                                if (grp->type() != 100) {
+                                    if ((grp->type() != 0x65) && (grp->type() != 0x6D)) {
+                                        goto LAB_004f3825;
+                                    }
+                                    Waypoint* tLoc = grp->targetLocation();
+                                    float tz = tLoc->z;
+                                    tLoc = grp->targetLocation();
+                                    float ty = tLoc->y;
+                                    tLoc = grp->targetLocation();
+                                    grp->setGatherLocation(tLoc->x, ty, tz);
+                                    grp->setInUse(0);
+                                    grp->setAction(1);
+                                    grp->task(this, this->md, 1, 1, 1);
+                                } else {
+                                    pRVar26 = this->md->object(grp->commander());
+                                    if (pRVar26 == nullptr) {
+                                        goto LAB_004f376c;
+                                    }
+                                    float wRange = pRVar26->weaponRange();
+                                    int canP = pRVar26->canPath(grp->target(), wRange, nullptr, 1, -1, -1);
+                                    if (canP != 1) {
+LAB_004f376c:
+                                        grp->setInUse(1);
+                                        grp->setAction(7);
+                                        grp->task(this, this->md, 7, 0, 1);
+                                    } else {
+                                        this->lastGroupAttackTime = world->world_time;
+                                        if (this->sn[0x47] == 1) {
+                                            this->lastAttackResponseTime = world->world_time;
+                                        }
+                                        grp->setAction(2);
+                                        goto LAB_004f452d;
+                                    }
+                                }
+                            }
+                            goto LAB_004f4548;
+                        }
+                    }
+LAB_004f37f1:
+                    grp->setTarget(-1);
+                    grp->numberObjectsToDestroyValue = 0;
+                    grp->setTargetType(-1);
+                    grp->setAction(1);
+                    grp->setInUse(0);
+                    this->attackStateValue.active = 0;
+                } else {
+LAB_004f3825:
+                    if (grpAction == 0x0C) {
+                        // Transport tasking: just check idle timeout
+                        unsigned long idleCount = grp->consecutiveIdleUnitCount();
+                        if (static_cast<unsigned int>(this->sn[0x4C]) <
+                            (world->world_time - idleCount) / 1000) {
+                            grp->setInUse(0);
+                            grp->setAction(1);
+                            grp->setTarget(-1);
+                            grp->numberObjectsToDestroyValue = 0;
+                            grp->setTargetType(-1);
+                            grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            this->attackStateValue.active = 0;
+                            goto LAB_004f4552;
+                        }
+                        int gathered = grp->isGathered(this, this->md);
+                        if (gathered == 0) goto LAB_004f3a51;
+                        grp->setAction(1);
+                        grp->setInUse(0);
+                        if ((grp->type() == 0x65) || (grp->type() == 0x68)) {
+                            int targetID = grp->target();
+                            pOVar27 = (infoAI != nullptr) ? infoAI->objectMemory(targetID) : nullptr;
+                            if (pOVar27 != nullptr) {
+                                pOVar27->attackAttempts = 0;
+                            }
+                        }
+                        {
+                            TribeBuildAIModule* buildAI = tacticalBuildAI(this);
+                            int buildLen = (buildAI != nullptr) ? buildAI->buildListLength() : 0;
+                            if ((buildLen == 0) &&
+                                (((grp->type() == 100) && (numberGroups(100, -1) > 1)) ||
+                                 (grp->type() != 100))) {
+                                if (grp->type() == 0x66) {
+                                    this->sn[0x2A] = this->sn[0x2A] - 1;
+                                } else if (grp->type() == 0x65) {
+                                    this->sn[0x26] = this->sn[0x26] - 1;
+                                } else if (grp->type() == 100) {
+                                    this->sn[0x24] = this->sn[0x24] - 1;
+                                }
+                                grp->removeUnits(this->md);
+                                grp->setAction(0);
+                                this->attackStateValue.active = 0;
+                                goto LAB_004f4552;
+                            }
+                        }
+                        this->attackStateValue.active = 0;
+                        goto LAB_004f4552;
+                    } else if (grpAction == 0x13) {
+                        // Gather/staging wait
+                        unsigned long idleCount = grp->consecutiveIdleUnitCount();
+                        if (static_cast<unsigned int>(this->sn[0x4C]) <
+                            (world->world_time - idleCount) / 1000) {
+                            grp->setInUse(0);
+                            grp->setAction(1);
+                            grp->setTarget(-1);
+                            grp->numberObjectsToDestroyValue = 0;
+                            grp->setTargetType(-1);
+                            grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            this->attackStateValue.active = 0;
+                            goto LAB_004f4552;
+                        }
+                        int gathered = grp->isGathered(this, this->md);
+                        if (gathered == 0) {
+                            // Not gathered yet; check if units are idle and re-task
+                            unsigned long idleCount2 = grp->consecutiveIdleUnitCount();
+                            int allIdle = grp->allUnitsIdle(this->md, 1);
+                            if ((allIdle == 1) && (5 < (world->world_time - idleCount2) / 1000)) {
+                                grp->setConsecutiveIdleUnitCount(world->world_time);
+                                grp->task(this, this->md, 9, 1, 0);
+                            }
+                        }
+                    } else if (grpAction != 3) {
+LAB_004f3a51:
+                        if (grpAction == 7) {
+                            // Patrol/roaming attack
+                            pRVar26 = this->md->object(grp->commander());
+                            ensureManagedArrayCapacity(this->playersToAttack, 1);
+                            pOVar27 = (infoAI != nullptr) ?
+                                infoAI->objectToAttackByGroup(this->playersToAttack.value[0], grp, &this->attackStateValue, param_1) : nullptr;
+                            if (this->attackStateValue.active == 1) goto LAB_004f45bf;
+                            RGE_Static_Object* pRVar15 = nullptr;
+                            if (pOVar27 != nullptr) {
+                                pRVar15 = this->md->object(pOVar27->id);
+                            }
+                            if ((pRVar26 == nullptr) || (pOVar27 == nullptr) || (pRVar15 == nullptr)) {
+                                goto LAB_004f3d28;
+                            }
+                            {
+                                float pathDist7 = 0.0f;
+                                float wRange = pRVar26->weaponRange();
+                                // canPath at vt[102] (XYZPoint overload)
+                                XYZPoint atkXYZ2 = {
+                                    static_cast<int>(pOVar27->x),
+                                    static_cast<int>(pOVar27->y),
+                                    static_cast<int>(pOVar27->z)
+                                };
+                                int canP = pRVar26->canPath(atkXYZ2, wRange, pOVar27->id, &pathDist7, 1,
+                                                           static_cast<int>(pOVar27->owner), 0x1B);
+                                if (canP == 1) {
+                                    grp->setAction(2);
+                                    grp->setTarget(pOVar27->id);
+                                    grp->setTargetType(static_cast<int>(pOVar27->type));
+                                    grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                           static_cast<float>(pOVar27->y),
+                                                           static_cast<float>(pOVar27->z));
+                                    grp->setInUse(1);
+                                    grp->task(this, this->md, 2, 0, 1);
+                                } else {
+                                    // canPathWithAdditionalPassability
+                                    float gatherYe = 0.0f;
+                                    XYPoint startPt = {};
+                                    int canPAP = pRVar26->canPathWithAdditionalPassability(
+                                        atkXYZ2, wRange, pOVar27->id, &pathDist7, 1, 0x16, 1,
+                                        static_cast<int>(pOVar27->owner), 0x1B);
+                                    if ((canPAP != 1) ||
+                                        (pRVar26->findFirstTerrainAlongExceptionPath(2, &gatherYe, reinterpret_cast<float*>(&startPt)) != 1)) {
+                                        goto LAB_004f3d28;
+                                    }
+                                    grp->task(this, this->md, 0x0E, 1, 0);
+                                    grp->setAction(0x0D);
+                                    grp->setTarget(pOVar27->id);
+                                    grp->setTargetType(static_cast<int>(pOVar27->type));
+                                    grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                           static_cast<float>(pOVar27->y),
+                                                           static_cast<float>(pOVar27->z));
+                                    grp->setInUse(1);
+                                    grp->setWaitCode(200);
+                                    grp->playNumberValue = -1;
+                                    goto LAB_004f4548;
+                                }
+                            }
+                        } else {
+LAB_004f3d75:
+                            if ((grp->action() == 2) && (grp->playNumberValue == -1)) {
+                                // Retreat wounded units
+                                if (this->sn[0x5B] < 100) {
+                                    int idx = 0;
+                                    int numUnits = grp->numberUnits();
+                                    while (idx < numUnits) {
+                                        RGE_Static_Object* unitObj = this->md->object(grp->unit(idx));
+                                        if (unitObj == nullptr) {
+                                            idx = idx + 1;
+                                        } else {
+                                            int origHP = grp->unitOriginalHitPoints(idx);
+                                            int curHP = static_cast<int>(unitObj->hp);
+                                            int origHP2 = grp->unitOriginalHitPoints(idx);
+                                            if (((origHP - curHP) * 100) / origHP2 <= this->sn[0x5B]) {
+                                                idx = idx + 1;
+                                            } else {
+                                                Waypoint* retreatLoc = grp->retreatLocation();
+                                                float ry = retreatLoc->y;
+                                                retreatLoc = grp->retreatLocation();
+                                                float rx = retreatLoc->x;
+                                                moveUnit(grp->unit(idx), rx, ry, 100);
+                                                grp->removeUnit(grp->unit(idx), this->md);
+                                                if (grp->numberUnits() == 0) break;
+                                            }
+                                        }
+                                        numUnits = grp->numberUnits();
+                                    }
+                                }
+                                // Check if target is still alive and reachable
+                                pRVar26 = this->md->object(grp->target());
+                                if ((pRVar26 != nullptr) && (pRVar26->object_state < 3)) {
+                                    int subType = grp->subType();
+                                    if (subType == -1) {
+                                        // Standard attack
+                                        if (this->md->player->isAlly(static_cast<int>(pRVar26->owner->id)) == 0) {
+                                            if (grp->allUnitsIdle(this->md, 0) != 1) {
+                                                grp->task(this, this->md, 0x14, 0, 1);
+                                            } else {
+                                                pRVar26 = this->md->object(grp->commander());
+                                                if (pRVar26 == nullptr) {
+                                                    this->attackStateValue.active = 0;
+                                                    goto LAB_004f4552;
+                                                }
+                                                float wRange = pRVar26->weaponRange();
+                                                int canP = pRVar26->canPath(grp->target(), wRange, nullptr, 1, -1, -1);
+                                                if (canP == 1) {
+                                                    grp->task(this, this->md, 0x14, 1, 0);
+                                                } else {
+                                                    grp->setGatherLocation(pRVar26->world_x, pRVar26->world_y, pRVar26->world_z);
+                                                    grp->setInUse(0);
+                                                    grp->setAction(1);
+                                                    grp->setTarget(-1);
+                                                    grp->setTargetType(-1);
+                                                    grp->numberObjectsToDestroyValue = 0;
+                                                    grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                                }
+                                            }
+                                        } else {
+                                            // Target became ally
+                                            grp->setInUse(0);
+                                            grp->setAction(1);
+                                            grp->setTarget(-1);
+                                            grp->setTargetType(-1);
+                                            grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                            grp->numberObjectsToDestroyValue = 0;
+                                            pRVar26 = this->md->object(grp->commander());
+                                            if (pRVar26 != nullptr) {
+                                                grp->setGatherLocation(pRVar26->world_x, pRVar26->world_y, pRVar26->world_z);
+                                            }
+                                        }
+                                        goto LAB_004f4548;
+                                    }
+                                    // subType != -1: check for bringing target to area
+                                    if ((subType == 4) &&
+                                        (pRVar26->owner->id == this->md->player->id) &&
+                                        (this->md->isMoveable(pRVar26->id) != 0)) {
+                                        grp->addUnit(pRVar26->id, this->md);
+                                        const Waypoint& tp1 = strategyAI->targetPoint1();
+                                        const Waypoint& tp2 = strategyAI->targetPoint2();
+                                        grp->setInUse(0);
+                                        grp->setAction(1);
+                                        grp->setTarget(-1);
+                                        grp->numberObjectsToDestroyValue = 0;
+                                        grp->setTargetType(-1);
+                                        grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                        grp->setGatherLocation((tp2.x + tp1.x) * 0.5f,
+                                                               (tp2.y + tp1.y) * 0.5f,
+                                                               (tp2.z + tp1.z) * 0.5f);
+                                    }
+                                    // Check idle timeout
+                                    unsigned long idleCount = grp->consecutiveIdleUnitCount();
+                                    if (static_cast<unsigned int>(this->sn[0x4C]) <
+                                        (world->world_time - idleCount) / 1000) {
+                                        grp->setInUse(0);
+                                        grp->setAction(1);
+                                        grp->setTarget(-1);
+                                        grp->setTargetType(-1);
+                                        grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                        grp->numberObjectsToDestroyValue = 0;
+                                        this->attackStateValue.active = 0;
+                                        goto LAB_004f4552;
+                                    }
+                                    goto LAB_004f436b;
+                                }
+                                // Target dead or invalid - check re-engagement
+                                if (this->sn[0x31] == 2) {
+                                    grp->setAction(1);
+                                    grp->setTarget(-1);
+                                    grp->numberObjectsToDestroyValue = 0;
+                                    grp->setTargetType(-1);
+                                    grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                    grp->task(this, this->md, grp->action(), 1, 0);
+                                } else {
+                                    pRVar26 = this->md->object(grp->commander());
+                                    if (pRVar26 == nullptr) {
+                                        this->attackStateValue.active = 0;
+                                        goto LAB_004f4552;
+                                    }
+                                    ensureManagedArrayCapacity(this->playersToAttack, 1);
+                                    pOVar27 = (infoAI != nullptr) ?
+                                        infoAI->objectToAttackByGroup(this->playersToAttack.value[0], grp, &this->attackStateValue, param_1) : nullptr;
+                                    if (this->attackStateValue.active == 1) {
+LAB_004f45bf:
+                                        this->nextActiveSoldierGroupToTaskValue = grp->id();
+                                        return;
+                                    }
+                                    if (pOVar27 != nullptr) {
+                                        XYZPoint atkXYZ3 = {
+                                            static_cast<int>(pOVar27->x),
+                                            static_cast<int>(pOVar27->y),
+                                            static_cast<int>(pOVar27->z)
+                                        };
+                                        float pathDistRe = 0.0f;
+                                        float wRange = pRVar26->weaponRange();
+                                        int canP = pRVar26->canPath(atkXYZ3, wRange, pOVar27->id, &pathDistRe, 1,
+                                                                   static_cast<int>(pOVar27->owner), 0x1B);
+                                        if (canP == 1) {
+                                            grp->setTarget(pOVar27->id);
+                                            grp->setTargetType(static_cast<int>(pOVar27->type));
+                                            grp->setTargetLocation(static_cast<float>(pOVar27->x),
+                                                                   static_cast<float>(pOVar27->y),
+                                                                   static_cast<float>(pOVar27->z));
+                                            grp->setInUse(1);
+                                            grp->task(this, this->md, 2, 0, 0);
+                                        }
+                                    }
+                                    {
+                                        int prevTargetType = grp->targetType();
+                                        grp->setInUse(0);
+                                        grp->setAction(1);
+                                        grp->setTarget(-1);
+                                        grp->numberObjectsToDestroyValue = 0;
+                                        grp->setTargetType(-1);
+                                        grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                        if (this->sn[0x31] == 0) {
+                                            grp->setGatherLocation(pRVar26->world_x, pRVar26->world_y, pRVar26->world_z);
+                                            goto LAB_004f4548;
+                                        }
+                                        if ((this->sn[0x31] != 3) || (prevTargetType == 0x7E) || (prevTargetType == 0x59)) {
+                                            goto LAB_004f4548;
+                                        }
+                                        if (this->sn[0x87] == 1) {
+                                            int cmdX = static_cast<int>(pRVar26->world_x);
+                                            int blotRange = this->sn[0x88];
+                                            int cmdY = static_cast<int>(pRVar26->world_y);
+                                            if (infoAI != nullptr) {
+                                                infoAI->blotExploredMap(cmdY - blotRange, cmdX - blotRange,
+                                                                       cmdY + blotRange, blotRange + cmdX);
+                                            }
+                                        }
+                                        grp->setInUse(1);
+                                        grp->setAction(7);
+                                        grp->task(this, this->md, 7, 0, 1);
+                                    }
+                                }
+                            } else {
+LAB_004f436b:
+                                if ((grp->action() == 2) && (grp->playNumberValue != -1)) {
+                                    pRVar26 = this->md->object(grp->commander());
+                                    if ((pRVar26 != nullptr) && (pRVar26->unitAI() != nullptr) &&
+                                        (pRVar26->unitAI()->playStatus == nullptr)) {
+                                        grp->playNumberValue = -1;
+                                        this->attackStateValue.active = 0;
+                                        goto LAB_004f4552;
+                                    }
+                                    goto LAB_004f43ca;
+                                }
+                                if (grp->action() == 4) {
+                                    // Gathered check for action 4
+                                    int allIdle = grp->allUnitsIdle(this->md, 1);
+                                    int gathered = grp->isGathered(this, this->md);
+                                    if ((allIdle != 1) || (gathered != 0)) {
+                                        pRVar26 = this->md->object(grp->target());
+                                        if (pRVar26 != nullptr) {
+                                            int objGroup = static_cast<int>(pRVar26->master_obj->object_group);
+                                            int tType = grp->targetType();
+                                            int cmdr = grp->commander();
+                                            ObjectMemory* higherPrio = (infoAI != nullptr) ?
+                                                infoAI->higherPriorityObjectToDefend(cmdr, tType, objGroup) : nullptr;
+                                            if (higherPrio == nullptr) goto LAB_004f4499;
+                                            int targetID = grp->target();
+                                            pOVar27 = (infoAI != nullptr) ? infoAI->objectMemory(targetID) : nullptr;
+                                            if (pOVar27 != nullptr) {
+                                                pOVar27->attackAttempts = 0;
+                                            }
+                                        }
+                                        grp->setAction(1);
+                                        grp->setInUse(0);
+                                        this->attackStateValue.active = 0;
+                                        goto LAB_004f4552;
+                                    }
+                                    grp->task(this, this->md, 9, 1, 0);
+                                } else {
+LAB_004f4499:
+                                    if ((grp->action() != 3) && (grp->action() != 0x0D)) {
+                                        // Check retreat condition
+                                        int curHP = grp->currentHitPoints(this->md);
+                                        int origHP = grp->originalHitPoints();
+                                        int origHP2 = grp->originalHitPoints();
+                                        int numUnits = grp->numberUnits();
+                                        int origUnitNum = grp->originalUnitNumber();
+                                        int origUnitNum2 = grp->originalUnitNumber();
+                                        if ((this->sn[0x1E] < ((origHP - curHP) * 100) / origHP2) ||
+                                            (this->sn[0x1F] < ((origUnitNum - numUnits) * 100) / origUnitNum2)) {
+                                            grp->setAction(3);
+                                            goto LAB_004f452d;
+                                        }
+                                    }
+                                    goto LAB_004f4552;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            goto LAB_004f4548;
+
+LAB_004f3d28:
+            {
+                unsigned long idleCount = grp->consecutiveIdleUnitCount();
+                if (static_cast<unsigned int>(this->sn[0x58] << 2) <
+                    (world->world_time - idleCount) / 1000) {
+                    grp->setAction(7);
+                    grp->task(this, this->md, 7, 0, 1);
+                }
+            }
+            goto LAB_004f3d75;
+
+LAB_004f452d:
+            grp->task(this, this->md, grp->action(), 1, 0);
+
+LAB_004f4548:
+            this->attackStateValue.active = 0;
+        }
+LAB_004f4552:
+        if (this->attackStateValue.active != 0) {
+            return;
+        }
+        grp = grp->next;
+        if ((grp == &this->groups) || (grp == nullptr)) {
+            this->nextActiveSoldierGroupToTaskValue = -1;
+        } else {
+            this->nextActiveSoldierGroupToTaskValue = grp->id();
+        }
+        {
+            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x14FE);
+            if (param_2 <= (now - param_1)) {
+                return;
+            }
+        }
+    } while (grp != &this->groups);
+
+    this->nextActiveSoldierGroupToTaskValue = -1;
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4760
@@ -1156,11 +2347,395 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
     }
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4D90. taskBoats transliteration is blocked on missing transport/attack helpers.
-void TribeTacticalAIModule::taskBoats() {}
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4D90
+void TribeTacticalAIModule::taskBoats() {
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F57C0. evaluateOpenTasks transliteration is blocked on missing tactical helper graph.
-void TribeTacticalAIModule::evaluateOpenTasks() {}
+    TacticalAIGroup* group = this->groups.next;
+    if (group != &this->groups) {
+        do {
+            if (group == nullptr) {
+                break;
+            }
+            int type = group->type();
+            if ((type != 100) && (type != 0x65) && (type != 0x66) && (type != 0x67) && (type != 0x68) && (type != 0x69) &&
+                ((group->action() == 0) || (group->action() == 1))) {
+                bool ready = true;
+                int isGathered = group->isGathered(this, this->md);
+                int numberUnits = group->numberUnits();
+                int desiredUnits = group->desiredNumberUnits();
+                if ((numberUnits < desiredUnits) || (((isGathered == 0) && (group->numberUnits() > 1)) || (group->allUnitsIdle(this->md, 1) == 0))) {
+                    ready = false;
+                }
+                if (ready) {
+                    type = group->type();
+                    if (type == 0x6B) {
+                        group->setAction(10);
+                    } else if (type == 0x6C) {
+                        group->setAction(0xB);
+                    } else if (type == 0x6A) {
+                        group->setAction(1);
+                    }
+                } else if (isGathered == 0) {
+                    group->task(this, this->md, 9, 1, 0);
+                }
+            }
+            group = group->next;
+        } while (group != &this->groups);
+    }
+
+    group = this->groups.next;
+    if (group != &this->groups) {
+        do {
+            if (group == nullptr) {
+                return;
+            }
+
+            int type = group->type();
+            if ((type == 100) || (type == 0x65) || (type == 0x66) || (type == 0x67) || (type == 0x68) || (type == 0x69) ||
+                (group->action() == 0) || (group->action() == 1)) {
+                group = group->next;
+                continue;
+            }
+
+            if (group->inUse() == 0) {
+                type = group->type();
+                if (type == 0x6B) {
+                    RGE_Static_Object* commanderObj = this->md->object(group->commander());
+                    if (commanderObj == nullptr) {
+                        group->setAction(1);
+                        group = group->next;
+                        continue;
+                    }
+
+                    int targetID = -1;
+                    int dropsiteID = -1;
+                    int exclusions[6] = {};
+                    int numExclusions = 0;
+                    if (this->numberWaterExplorers() > 0) {
+                        if (infoAI->fullyExploredZone(group->commander()) == 1) {
+                            int* exclusionPtr = &exclusions[1];
+                            int tries = 0;
+                            int canPathResult = 0;
+                            do {
+                                float resourceX = 0.0f;
+                                float resourceY = 0.0f;
+                                dropsiteID = 0;
+                                targetID = infoAI->gameIDOfResourceObject(0,
+                                                                          static_cast<int>(commanderObj->id),
+                                                                          &resourceX,
+                                                                          &resourceY,
+                                                                          &dropsiteID,
+                                                                          &exclusions[1],
+                                                                          numExclusions);
+                                XYZPoint point = {static_cast<int>(resourceX), static_cast<int>(resourceY), static_cast<int>(commanderObj->world_z)};
+                                if (dropsiteID == -1) {
+                                    canPathResult = commanderObj->canPath(point, 1.0f, targetID, nullptr, 1, -1, -1);
+                                } else {
+                                    canPathResult = commanderObj->canBidirectionPath(targetID, dropsiteID, 1.0f, nullptr, 1, -1, -1);
+                                }
+                                if (canPathResult == 0) {
+                                    numExclusions += 1;
+                                    *exclusionPtr = targetID;
+                                    ++exclusionPtr;
+                                }
+                                tries += 1;
+                            } while ((canPathResult != 1) && (tries < 5));
+                        }
+                    }
+
+                    RGE_Static_Object* targetObj = this->md->object(targetID);
+                    if ((targetID >= 0) && (targetObj != nullptr)) {
+                        group->setTarget(targetID);
+                        group->setTargetType((targetObj->master_obj != nullptr) ? targetObj->master_obj->id : -1);
+                        group->setTargetLocation(targetObj->world_x, targetObj->world_y, targetObj->world_z);
+                        group->setInUse(1);
+                        group->task(this, this->md, group->action(), 1, 0);
+                        group = group->next;
+                        continue;
+                    }
+
+                    if (infoAI->fullyExploredZone(group->commander()) == 1) {
+                        group->setAction(8);
+                        group->task(this, this->md, group->action(), 1, 0);
+                        group->setInUse(1);
+                        group = group->next;
+                        continue;
+                    }
+
+                    group->setAction(1);
+                    group = group->next;
+                    continue;
+                }
+
+                type = group->type();
+                if (type == 0x6C) {
+                    RGE_Static_Object* commanderObj = this->md->object(group->commander());
+                    if (commanderObj == nullptr) {
+                        group->setAction(1);
+                        group = group->next;
+                        continue;
+                    }
+
+                    ObjectMemory* tradeMemory = infoAI->objectToTradeWith(group->commander());
+                    if (tradeMemory == nullptr) {
+                        if (infoAI->fullyExploredZone(group->commander()) != 1) {
+                            group->setAction(1);
+                            group = group->next;
+                            continue;
+                        }
+                        group->setAction(8);
+                        group->task(this, this->md, group->action(), 1, 0);
+                        group->setInUse(1);
+                        group = group->next;
+                        continue;
+                    }
+
+                    float pathDistance = 0.0f;
+                    XYZPoint point = {static_cast<int>(tradeMemory->x), static_cast<int>(tradeMemory->y), static_cast<int>(tradeMemory->z)};
+                    if (commanderObj->canPath(point, 1.0f, tradeMemory->id, &pathDistance, 1, -1, -1) == 0) {
+                        group->setAction(1);
+                        group = group->next;
+                        continue;
+                    }
+
+                    group->setTarget(tradeMemory->id);
+                    group->setTargetType(static_cast<int>(tradeMemory->type));
+                    group->setTargetLocation(static_cast<float>(tradeMemory->x),
+                                             static_cast<float>(tradeMemory->y),
+                                             static_cast<float>(tradeMemory->z));
+                    group->setInUse(1);
+                    group->task(this, this->md, group->action(), 1, 0);
+                    group = group->next;
+                    continue;
+                }
+
+                group->task(this, this->md, group->action(), 1, 0);
+            } else {
+                int action = group->action();
+                if (action == 8) {
+                    int shouldReset = 0;
+                    if (group->type() == 0x6C) {
+                        ObjectMemory* tradeMemory = infoAI->objectToTradeWith(group->commander());
+                        if (tradeMemory != nullptr) {
+                            shouldReset = 1;
+                        }
+                    }
+
+                    if (group->type() == 0x6B) {
+                        if (this->numberWaterExplorers() < 2) {
+                            RGE_Static_Object* commanderObj = this->md->object(group->commander());
+                            if ((commanderObj != nullptr) && (commanderObj->unitAI() != nullptr)) {
+                                UnitAIModule* commanderAI = commanderObj->unitAI();
+                                if (commanderAI->currentOrder() != 0x2C1) {
+                                    group->setAction(8);
+                                    group->task(this, this->md, group->action(), 1, 0);
+                                    group->setInUse(1);
+                                }
+                            }
+                        } else {
+                            float pathDistance = 0.0f;
+                            float resourceX = 0.0f;
+                            int dropsiteID = -1;
+                            if (infoAI->gameIDOfResourceObject(0, group->commander(), &pathDistance, &resourceX, &dropsiteID, nullptr, 0) != -1) {
+                                shouldReset = 1;
+                            }
+                        }
+                    }
+
+                    if (shouldReset == 1) {
+                        RGE_Static_Object* commanderObj = this->md->object(group->commander());
+                        if (commanderObj == nullptr) {
+                            group = group->next;
+                            continue;
+                        }
+                        group->setInUse(0);
+                        group->setAction(1);
+                        group->setTarget(-1);
+                        group->numberObjectsToDestroyValue = 0;
+                        group->setTargetType(-1);
+                        group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                        group->setGatherLocation(commanderObj->world_x, commanderObj->world_y, commanderObj->world_z);
+                        group->task(this, this->md, group->action(), 1, 0);
+                    }
+                }
+
+                action = group->action();
+                if (action == 10) {
+                    RGE_Static_Object* targetObj = this->md->object(group->target());
+                    if (targetObj == nullptr) {
+                        group->setInUse(0);
+                        group->setAction(1);
+                        group->setTarget(-1);
+                        group->setTargetType(-1);
+                        group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                        group->numberObjectsToDestroyValue = 0;
+                        group = group->next;
+                        continue;
+                    }
+
+                    RGE_Static_Object* commanderObj = this->md->object(group->commander());
+                    if ((commanderObj != nullptr) && (commanderObj->unitAI() != nullptr)) {
+                        UnitAIModule* commanderAI = commanderObj->unitAI();
+                        if (commanderAI->currentAction() == -1) {
+                            group->setInUse(0);
+                            group->setAction(1);
+                            group->setTarget(-1);
+                            group->numberObjectsToDestroyValue = 0;
+                            group->setTargetType(-1);
+                            group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                            group = group->next;
+                        }
+                    }
+                }
+
+                action = group->action();
+                if (action == 0xB) {
+                    RGE_Static_Object* targetObj = this->md->object(group->target());
+                    if (targetObj == nullptr) {
+                        group->setInUse(0);
+                        group->setAction(1);
+                        group->setTarget(-1);
+                        group->numberObjectsToDestroyValue = 0;
+                        group->setTargetType(-1);
+                        group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                    } else {
+                        RGE_Static_Object* commanderObj = this->md->object(group->commander());
+                        if ((commanderObj != nullptr) && (commanderObj->unitAI() != nullptr)) {
+                            UnitAIModule* commanderAI = commanderObj->unitAI();
+                            if (commanderAI->currentAction() == -1) {
+                                group->setInUse(0);
+                                group->setAction(1);
+                                group->setTarget(-1);
+                                group->numberObjectsToDestroyValue = 0;
+                                group->setTargetType(-1);
+                                group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                                group = group->next;
+                            } else {
+                                RGE_Action_Object* commanderActionObj = reinterpret_cast<RGE_Action_Object*>(commanderObj);
+                                if (commanderActionObj->have_action() != 0) {
+                                    RGE_Action* actionObj = commanderActionObj->actions->get_action();
+                                    ObjectMemory* tradeMemory = infoAI->objectToTradeWith(actionObj->target2ID);
+                                    if (tradeMemory != nullptr) {
+                                        if (tradeMemory->id != group->target()) {
+                                            float pathDistance = 0.0f;
+                                            XYZPoint point = {
+                                                static_cast<int>(tradeMemory->x),
+                                                static_cast<int>(tradeMemory->y),
+                                                static_cast<int>(tradeMemory->z),
+                                            };
+                                            if (commanderObj->canPath(point, 1.0f, tradeMemory->id, &pathDistance, 1, -1, -1) == 0) {
+                                                group->setAction(1);
+                                                group = group->next;
+                                                continue;
+                                            }
+                                            group->setTarget(tradeMemory->id);
+                                            group->setTargetType(static_cast<int>(tradeMemory->type));
+                                            group->setTargetLocation(static_cast<float>(tradeMemory->x),
+                                                                     static_cast<float>(tradeMemory->y),
+                                                                     static_cast<float>(tradeMemory->z));
+                                            group->setInUse(1);
+                                            group->task(this, this->md, group->action(), 1, 1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            group = group->next;
+        } while (group != &this->groups);
+    }
+}
+
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F57C0
+void TribeTacticalAIModule::evaluateOpenTasks() {
+    for (int i = 0; i < this->civilians.numberValue; ++i) {
+        ensureManagedArrayCapacity(this->civilians, i + 1);
+        RGE_Static_Object* civilianObj = tacticalObject(this, this->civilians.value[i]);
+        if ((civilianObj != nullptr) && (civilianObj->unitAI() != nullptr)) {
+            if (containsManagedArray(this->unitsTaskedThisUpdate, this->civilians.value[i]) == 0) {
+                if ((civilianObj->getSpeed() != 0.0f) || (civilianObj->attribute_amount_held <= 0.0f) ||
+                    (civilianObj->waitingToMove() != 0) || (civilianObj->actionState() > 2)) {
+                    UnitAIModule* unitAI = civilianObj->unitAI();
+                    if (unitAI->currentOrder() == 700) {
+                        RGE_Static_Object* targetObj = this->md->object(unitAI->currentTarget());
+                        if ((targetObj == nullptr) || (targetObj->object_state > 2)) {
+                            stopUnit(this->civilians.value[i], 100);
+                        }
+                    }
+                } else {
+                    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+                    RGE_Static_Object* dropsite = infoAI->findClosestReturnDropsite(civilianObj);
+                    if (dropsite == nullptr) {
+                        stopUnit(this->civilians.value[i], 100);
+                    } else {
+                        this->md->player->sendGameOrder(civilianObj, dropsite, dropsite->world_x, dropsite->world_y);
+                        appendManagedArrayUnique(this->unitsTaskedThisUpdate, this->civilians.value[i]);
+                    }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < this->civilians.numberValue; ++i) {
+        ensureManagedArrayCapacity(this->civilians, i + 1);
+        RGE_Static_Object* civilianObj = tacticalObject(this, this->civilians.value[i]);
+        if ((civilianObj == nullptr) || (civilianObj->hp < 1.0f) || (civilianObj->unitAI() == nullptr)) {
+            removeObject(this->civilians.value[i]);
+        }
+    }
+
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        ensureManagedArrayCapacity(this->soldiers, i + 1);
+        RGE_Static_Object* soldierObj = tacticalObject(this, this->soldiers.value[i]);
+        if ((soldierObj == nullptr) || (soldierObj->hp < 1.0f) || (soldierObj->unitAI() == nullptr)) {
+            removeObject(this->soldiers.value[i]);
+        }
+    }
+
+    for (int i = 0; i < this->boats.numberValue; ++i) {
+        ensureManagedArrayCapacity(this->boats, i + 1);
+        RGE_Static_Object* boatObj = tacticalObject(this, this->boats.value[i]);
+        if ((boatObj == nullptr) || (boatObj->hp < 1.0f) || (boatObj->unitAI() == nullptr)) {
+            removeObject(this->boats.value[i]);
+        }
+    }
+
+    TacticalAIGroup* current = this->groups.next;
+    if (current != &this->groups) {
+        do {
+            if (current == nullptr) {
+                return;
+            }
+            if ((current->type() == 0x6A) && (current->action() == 0xC)) {
+                TacticalAIGroup* assistGroup = group(current->assistGroupID(), -1, -1, -1);
+                if ((current->assistGroupID() == -1) || (assistGroup == nullptr)) {
+                    current->setAction(1);
+                    current->setTarget(-1);
+                    current->setTargetType(-1);
+                    current->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                    current->setGatherLocation(-1.0f, -1.0f, -1.0f);
+                    current->setRetreatLocation(-1.0f, -1.0f, -1.0f);
+                    current->setInUse(0);
+                    current->setWaitCode(-1);
+                    current->playNumberValue = -1;
+                } else {
+                    RGE_Static_Object* commanderObj = this->md->object(current->commander());
+                    if ((commanderObj != nullptr) && (commanderObj->actionState() == 2) && (assistGroup->action() == 0x10)) {
+                        RGE_Static_Object* assistCommanderObj = this->md->object(assistGroup->commander());
+                        if ((assistCommanderObj != nullptr) && (assistCommanderObj->objects->number_of_objects > 0)) {
+                            assistGroup->setAction(0xF);
+                        }
+                    }
+                }
+            }
+            current = current->next;
+        } while (current != &this->groups);
+    }
+}
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F5FB0
 void TribeTacticalAIModule::evaluateBuildListInsertions() {
@@ -1253,26 +2828,24 @@ void TribeTacticalAIModule::setStrategicNumber(int param_1, int param_2) {
     }
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F62C0. Full parity pending.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F62C0
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
     (void)param_2;
     (void)param_5;
     (void)param_6;
-    if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
+    RGE_Game_World* world = tacticalWorld(this);
+    if ((world == nullptr) || (this->md == nullptr) || (this->md->player == nullptr)) {
         return;
     }
 
-    RGE_Game_World* world = this->md->player->world;
-    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
     RGE_Static_Object* callerObject = world->object(param_1);
     if ((param_3 != 0x72) && (param_3 != 0x74) && (callerObject == nullptr)) {
         return;
     }
+    const unsigned long entryTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1904);
 
     if ((param_3 == 0x72) || (param_3 == 0x74)) {
-        if (infoAI == nullptr) {
-            return;
-        }
+        TribeInformationAIModule* infoAI = tacticalInformationAI(this);
         ObjectMemory* targetMemory = (param_3 == 0x72) ? infoAI->artifactToCapture(-1) : infoAI->ruinToCapture(-1);
         if (targetMemory == nullptr) {
             return;
@@ -1290,6 +2863,9 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
             RGE_Static_Object* unitObject = world->object(unitID);
             UnitAIModule* unitAI = (unitObject != nullptr) ? unitObject->unitAI() : nullptr;
             if ((unitObject == nullptr) || (unitAI == nullptr)) {
+                continue;
+            }
+            if (unitObject->canPath(targetMemory->id, 0x40000000, nullptr, 1, -1, -1) == 0) {
                 continue;
             }
             if (taskDefender(unitID, targetMemory->id, 2.0f, 100) == 1) {
@@ -1317,20 +2893,26 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
     }
 
     if (targetOwner == 0) {
+        bool skipGAIAResponse = false;
         if ((this->zoomingToNextAge != 0) && (targetObj->master_obj != nullptr)) {
             const short masterObjectID = targetObj->master_obj->id;
             if ((masterObjectID == 0x7E) || (masterObjectID == 0x59)) {
-                return;
+                skipGAIAResponse = true;
             }
         }
-        if (dealWithGAIAAttacker(targetObj, callerObject) == 1) {
+        if (!skipGAIAResponse && (dealWithGAIAAttacker(targetObj, callerObject) == 1)) {
             return;
         }
     }
 
     if (targetOwner != 0) {
-        UnitAIModule* callerAI = callerObject->unitAI();
-        if ((callerAI == nullptr) || (callerAI->currentOrder() != 0x2C1)) {
+        int skipOrderBypass = 0;
+        if ((containsManagedArray(this->civilians, param_1) != 0) &&
+            (containsManagedArray(this->civilianExplorers, param_1) == 0)) {
+            skipOrderBypass = 1;
+        }
+
+        if (skipOrderBypass != 0) {
             if (world->difficultyLevel() == 3) {
                 this->sn[0x68] -= 2;
             } else if (world->difficultyLevel() == 4) {
@@ -1338,17 +2920,29 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
             } else {
                 enableAttack(3);
             }
+            checkForAttackResponseBuildInsertions(targetOwner);
+        } else {
+            UnitAIModule* callerAI = callerObject->unitAI();
+            if ((callerAI != nullptr) && (callerAI->currentOrder() == 0x2C1)) {
+                goto LAB_NOTIFY_AFTER_ATTACK_RESPONSE;
+            }
+            if (world->difficultyLevel() == 3) {
+                this->sn[0x68] -= 2;
+            } else if (world->difficultyLevel() == 4) {
+                this->sn[0x68] -= 1;
+            } else {
+                enableAttack(3);
+            }
+            checkForAttackResponseBuildInsertions(targetOwner);
         }
-        checkForAttackResponseBuildInsertions(targetOwner);
     }
 
-    if ((targetOwner >= 0) && (targetOwner < 9)) {
-        this->hitsByPlayer[targetOwner] += 1;
-    }
+LAB_NOTIFY_AFTER_ATTACK_RESPONSE:
+    this->hitsByPlayer[targetOwner] += 1;
 
     DiplomacyAIModule* diplomacy = reinterpret_cast<DiplomacyAIModule*>(&this->md->diplomacyAI);
     if (targetObj->owner->computerPlayer() == 0) {
-        if ((targetOwner >= 0) && (targetOwner < 9) && (this->sn[0xDD] <= this->hitsByPlayer[targetOwner]) &&
+        if ((this->md->player->isAlly(targetOwner) == 1) && (this->sn[0xDD] <= this->hitsByPlayer[targetOwner]) &&
             (this->sn[0xD7] == 1)) {
             diplomacy->setChangeable(targetOwner, 1);
             diplomacy->setStance(targetOwner, 0, 100);
@@ -1359,27 +2953,32 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
             diplomacy->changeStance(targetOwner, 0, this->sn[0xB2]);
         }
     } else if (this->md->player->isAlly(targetOwner) == 1) {
-        diplomacy->setChangeable(targetOwner, 1);
-        diplomacy->setStance(targetOwner, 0, 100);
-        diplomacy->setRelation(targetOwner, 3);
-        diplomacy->setChangeable(targetOwner, 0);
+        RGE_Player* targetPlayer = nullptr;
+        if ((world->players != nullptr) && (targetOwner >= 0) && (targetOwner < world->player_num)) {
+            targetPlayer = world->players[targetOwner];
+        }
+        if ((targetPlayer != nullptr) && (targetPlayer->isEnemy(this->md->player->id) == 1)) {
+            diplomacy->setChangeable(targetOwner, 1);
+            diplomacy->setStance(targetOwner, 0, 100);
+            diplomacy->setRelation(targetOwner, 3);
+            diplomacy->setChangeable(targetOwner, 0);
+        }
     }
 
     if ((this->sn[0x7C] > 0) && (this->sn[0x80] == targetOwner) && (this->sn[0x85] == 1)) {
-        this->sn[0x85] = 0;
+        this->md->revokeTributeAlliance();
     }
 
-    if (infoAI != nullptr) {
-        infoAI->storeAttackMemory(0,
-                                  static_cast<uchar>(targetObj->world_y),
-                                  static_cast<uchar>(targetObj->world_x),
-                                  static_cast<uchar>(targetOwner),
-                                  static_cast<uchar>(this->md->player->id),
-                                  0,
-                                  0,
-                                  world->world_time,
-                                  -1);
-    }
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    infoAI->storeAttackMemory(0,
+                              static_cast<uchar>(targetObj->world_y),
+                              static_cast<uchar>(targetObj->world_x),
+                              static_cast<uchar>(targetOwner),
+                              static_cast<uchar>(this->md->player->id),
+                              0,
+                              0,
+                              world->world_time,
+                              -1);
 
     if ((this->lastAttackResponseTime != 0) &&
         (((world->world_time - this->lastAttackResponseTime) / 1000) < attackLimiterTime(0x30))) {
@@ -1400,274 +2999,369 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3, long p
     if (responseGroup != nullptr) {
         int commanderID = responseGroup->commander();
         RGE_Static_Object* commanderObj = world->object(commanderID);
-        float pathDistance = 0.0f;
-        if ((commanderObj != nullptr) && (commanderObj->canPath(targetObj->id, 0x40000000, &pathDistance, 1, -1, -1) == 1)) {
-            responseGroup->setTarget(callerObject->id);
-            responseGroup->setTargetType(targetObj->master_obj != nullptr ? targetObj->master_obj->id : -1);
-            responseGroup->setTargetLocation(targetObj->world_x, targetObj->world_y, targetObj->world_z);
-            responseGroup->setAction(2);
-            responseGroup->task(this, this->md, 2, 1, 0);
-            this->lastAttackResponseTime = world->world_time;
-            if (this->sn[0x47] == 1) {
-                this->lastGroupAttackTime = world->world_time;
+        if (commanderObj != nullptr) {
+            XYZPoint point = {
+                static_cast<int>(targetObj->world_x),
+                static_cast<int>(targetObj->world_y),
+                static_cast<int>(targetObj->world_z)
+            };
+            float pathDistance = 0.0f;
+            if (commanderObj->canPath(point, commanderObj->weaponRange(), targetObj->id, &pathDistance, 1, -1, -1) == 1) {
+                responseGroup->setTarget(callerObject->id);
+                responseGroup->setTargetType(targetObj->master_obj != nullptr ? targetObj->master_obj->id : -1);
+                responseGroup->setTargetLocation(targetObj->world_x, targetObj->world_y, targetObj->world_z);
+                responseGroup->setAction(2);
+                responseGroup->task(this, this->md, 2, 1, 0);
+                this->lastAttackResponseTime = world->world_time;
+                if (this->sn[0x47] == 1) {
+                    this->lastGroupAttackTime = world->world_time;
+                }
+                return;
             }
-            return;
         }
     }
 
-    int responsePool = numberWarshipsWithPriority(this->sn[0x14], -1);
-    if ((infoAI == nullptr) || (infoAI->isBoat(targetObj) == 0)) {
-        responsePool += numberSoldiersWithPriority(this->sn[0x14], -1, 0);
+    RGE_Static_Object* townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    int numberToRespond = 0;
+    int coopAttackY = static_cast<int>(targetObj->world_y);
+    int coopAttackX = static_cast<int>(targetObj->world_x);
+    if (townCenter != nullptr) {
+        const float dx = townCenter->world_x - targetObj->world_x;
+        const float dy = townCenter->world_y - targetObj->world_y;
+        const int townCenterDistance = static_cast<int>(std::sqrt(dx * dx + dy * dy));
+        if (townCenterDistance < 0x14) {
+            int responsePool = numberWarshipsWithPriority(100, -1);
+            responsePool += numberSoldiersWithPriority(100, -1, 0);
+            numberToRespond = responsePool;
+            if ((numberToRespond == 0) && (infoAI->isBoat(targetObj) == 0) && (this->sn[0xE1] == 1) &&
+                ((world->world_time / 1000) < static_cast<unsigned int>(this->sn[0x68]))) {
+                for (int i = 0; i < this->civilians.numberValue; ++i) {
+                    if (i >= this->civilians.maximumSizeValue) {
+                        break;
+                    }
+                    appendManagedArrayUnique(this->workingArea, this->civilians.value[i]);
+                }
+                numberToRespond = this->civilians.numberValue;
+            }
+            coopAttackY = static_cast<int>(townCenter->world_y);
+            coopAttackX = static_cast<int>(townCenter->world_x);
+        } else {
+            int responsePool = 0;
+            if (infoAI->isBoat(targetObj) == 1) {
+                responsePool = numberWarshipsWithPriority(this->sn[0x14], -1);
+            } else {
+                responsePool = numberWarshipsWithPriority(this->sn[0x14], -1);
+                responsePool += numberSoldiersWithPriority(this->sn[0x14], -1, 0);
+            }
+            numberToRespond = (this->sn[0x13] * responsePool) / 100;
+            coopAttackY = static_cast<int>(townCenter->world_y);
+            coopAttackX = static_cast<int>(townCenter->world_x);
+        }
+    } else {
+        int responsePool = 0;
+        if (infoAI->isBoat(targetObj) == 1) {
+            responsePool = numberWarshipsWithPriority(this->sn[0x14], -1);
+        } else {
+            responsePool = numberWarshipsWithPriority(this->sn[0x14], -1);
+            responsePool += numberSoldiersWithPriority(this->sn[0x14], -1, 0);
+        }
+        numberToRespond = (this->sn[0x13] * responsePool) / 100;
     }
-    int numberToRespond = (this->sn[0x13] * responsePool) / 100;
-    checkForCoopAttack(targetOwner, static_cast<int>(targetObj->world_y), static_cast<int>(targetObj->world_x));
 
+    checkForCoopAttack(targetOwner, coopAttackY, coopAttackX);
+
+    ensureManagedArrayCapacity(this->playersToAttack, 1);
     int responded = 0;
-    const unsigned long entryTime = world->world_time;
-    for (int i = 0; (i < this->workingArea.numberValue) && (responded < numberToRespond); ++i) {
+    for (int i = 0; i < this->workingArea.numberValue; ++i) {
+        if (responded >= numberToRespond) {
+            return;
+        }
+        if (i > 1) {
+            const unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1A54);
+            if ((now - entryTime) > 10) {
+                return;
+            }
+        }
         if (i >= this->workingArea.maximumSizeValue) {
             break;
         }
-        if ((responded > 1) && ((world->world_time - entryTime) > 10)) {
-            break;
-        }
-        int unitID = this->workingArea.value[i];
+        const int unitID = this->workingArea.value[i];
         RGE_Static_Object* unitObj = world->object(unitID);
-        UnitAIModule* unitAI = (unitObj != nullptr) ? unitObj->unitAI() : nullptr;
-        if ((unitObj == nullptr) || (unitAI == nullptr)) {
+        if (unitObj == nullptr) {
             continue;
         }
+        UnitAIModule* unitAI = unitObj->unitAI();
+        if (unitAI == nullptr) {
+            continue;
+        }
+
+        if (unitAI->currentAction() == 600) {
+            const int currentTarget = unitAI->currentTarget();
+            if (currentTarget != -1) {
+                if (currentTarget == targetObj->id) {
+                    responded += 1;
+                    continue;
+                }
+                RGE_Static_Object* currentTargetObj = world->object(currentTarget);
+                if ((currentTargetObj != nullptr) && (this->playersToAttack.value != nullptr) &&
+                    (this->playersToAttack.maximumSizeValue > 0) &&
+                    (currentTargetObj->owner != nullptr) &&
+                    (static_cast<int>(currentTargetObj->owner->id) == this->playersToAttack.value[0])) {
+                    continue;
+                }
+            }
+        }
+
+        XYZPoint point = {
+            static_cast<int>(targetObj->world_x),
+            static_cast<int>(targetObj->world_y),
+            static_cast<int>(targetObj->world_z)
+        };
         float pathDistance = 0.0f;
-        if (unitObj->canPath(targetObj->id, 0x40000000, &pathDistance, 1, -1, -1) == 0) {
+        if (unitID == param_1) {
+            if (unitAI->currentOrderPriority() == 100) {
+                continue;
+            }
+            if (unitObj->canPath(point, unitObj->weaponRange(), targetObj->id, &pathDistance, 1, -1, -1) == 0) {
+                continue;
+            }
+            if (taskAttacker(unitID, targetObj->world_x, targetObj->world_y, targetObj->id, targetOwner, nullptr, 0, -1, 0) == 1) {
+                this->lastAttackResponseTime = world->world_time;
+                if (this->sn[0x47] == 1) {
+                    this->lastGroupAttackTime = world->world_time;
+                }
+                responded += 1;
+            }
+            continue;
+        }
+
+        const float distance = callerObject->distance_to_object(unitObj);
+        const int priority = calculatePriority(distance);
+        if (distance >= static_cast<float>(this->sn[0x14])) {
+            continue;
+        }
+        if ((priority <= 0) || (unitAI->currentOrderPriority() >= priority)) {
+            continue;
+        }
+        if (unitObj->canPath(point, unitObj->weaponRange(), targetObj->id, &pathDistance, 1, -1, -1) == 0) {
             continue;
         }
         if (taskAttacker(unitID, targetObj->world_x, targetObj->world_y, targetObj->id, targetOwner, nullptr, 0, -1, 0) == 1) {
             responded += 1;
-            this->lastAttackResponseTime = world->world_time;
-            if (this->sn[0x47] == 1) {
-                this->lastGroupAttackTime = world->world_time;
-            }
         }
     }
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F0190. doSomething is partially transliterated; remaining update-area handlers are still pending.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0190
 int TribeTacticalAIModule::doSomething() {
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
         return 1;
     }
 
-    if ((this->updateArea < 0) || (this->updateArea > 0x15)) {
-        this->updateArea = 0;
-    }
-
     RGE_Game_World* world = this->md->player->world;
-    const unsigned long startTime = world->world_time;
     const unsigned long availableTime = world->availableComputerPlayerUpdateTime;
+    const unsigned long startTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x99C);
+    if (availableTime != 0) {
+        unsigned long now = startTime;
+        do {
+            const unsigned long updateAreaStartTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x99F);
+            bool incUpdateArea = true;
 
-    if (availableTime == 0) {
-        return 1;
-    }
-
-    while (true) {
-        const unsigned long updateAreaStartTime = world->world_time;
-        bool incUpdateArea = true;
-
-        switch (this->updateArea) {
-            case 0:
-                setupSoldierGroups();
-                break;
-            case 1:
-                if (this->civilians.numberValue > 0) {
-                    if (this->firstNeededResourceUpdateDone == 0) {
-                        this->firstNeededResourceUpdateDone = 1;
-                        updateNeededResources();
+            switch (this->updateArea) {
+                case 0:
+                    setupSoldierGroups();
+                    break;
+                case 1:
+                    if (this->civilians.numberValue > 0) {
+                        if (this->firstNeededResourceUpdateDone == 0) {
+                            this->firstNeededResourceUpdateDone = 1;
+                            updateNeededResources();
+                        }
+                        evaluateCivilianDistribution();
                     }
-                    evaluateCivilianDistribution();
-                }
-                break;
-            case 2:
-                taskCivilians(startTime, availableTime);
-                if (this->nextCivilianToTaskValue != -1) {
-                    incUpdateArea = false;
-                }
-                break;
-            case 3:
-                if (this->boats.numberValue > 0) {
-                    setupBoatGroups();
-                }
-                break;
-            case 4:
-                if (this->boats.numberValue > 0) {
-                    fillBoatGroups();
-                }
-                break;
-            case 5:
-                if (this->boats.numberValue > 0) {
-                    taskBoats();
-                }
-                break;
-            case 6:
-                if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0)) {
-                    fillSoldierGroups();
-                }
-                break;
-            case 7:
-                if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) ||
-                    (this->artifacts.numberValue > 0)) {
-                    taskIdleSoldiers(startTime, availableTime);
-                    if (this->nextIdleSoldierGroupToTaskValue != -1) {
+                    break;
+                case 2:
+                    taskCivilians(startTime, availableTime);
+                    if (this->nextCivilianToTaskValue != -1) {
                         incUpdateArea = false;
                     }
-                }
-                break;
-            case 8:
-                if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) ||
-                    (this->artifacts.numberValue > 0)) {
-                    taskActiveSoldiers(startTime, availableTime);
-                    if (this->nextActiveSoldierGroupToTaskValue != -1) {
-                        incUpdateArea = false;
+                    break;
+                case 3:
+                    if (this->boats.numberValue > 0) {
+                        setupBoatGroups();
                     }
-                }
-                break;
-            case 9:
-                if (this->soldiers.numberValue > 0) {
-                    playTaskSoldiers(startTime, availableTime);
-                }
-                break;
-            case 0xA: {
-                TribeInformationAIModule* infoAI = tacticalInformationAI(this);
-                RGE_Static_Object* townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-                if ((infoAI != nullptr) && (townCenter != nullptr)) {
-                    int underAttack = infoAI->withinXTilesOfObject(townCenter, 0x14, 0x4F, 199, 0x45, 0x116);
-                    if (underAttack != -1) {
-                        saveTheTown(underAttack);
+                    break;
+                case 4:
+                    if (this->boats.numberValue > 0) {
+                        fillBoatGroups();
                     }
+                    break;
+                case 5:
+                    if (this->boats.numberValue > 0) {
+                        taskBoats();
+                    }
+                    break;
+                case 6:
+                    if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0)) {
+                        fillSoldierGroups();
+                    }
+                    break;
+                case 7:
+                    if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) || (this->artifacts.numberValue > 0)) {
+                        taskIdleSoldiers(startTime, availableTime);
+                        if (this->nextIdleSoldierGroupToTaskValue != -1) {
+                            incUpdateArea = false;
+                        }
+                    }
+                    break;
+                case 8:
+                    if ((this->boats.numberValue > 0) || (this->soldiers.numberValue > 0) || (this->artifacts.numberValue > 0)) {
+                        taskActiveSoldiers(startTime, availableTime);
+                        if (this->nextActiveSoldierGroupToTaskValue != -1) {
+                            incUpdateArea = false;
+                        }
+                    }
+                    break;
+                case 9:
+                    if (this->soldiers.numberValue > 0) {
+                        playTaskSoldiers(startTime, availableTime);
+                    }
+                    break;
+                case 0xA: {
+                    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+                    RGE_Static_Object* townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+                    if (townCenter != nullptr) {
+                        int underAttack = infoAI->withinXTilesOfObject(townCenter, 0x14, 0x4F, 199, 0x45, 0x116);
+                        if (underAttack != -1) {
+                            saveTheTown(underAttack);
+                        }
+                    }
+                    break;
                 }
-                break;
-            }
-            case 0xB:
-                this->numberBuildUpdatesSkipped += 1;
-                if (TribeBuildAIModule* buildAI = tacticalBuildAI(this)) {
+                case 0xB: {
+                    this->numberBuildUpdatesSkipped += 1;
+                    TribeBuildAIModule* buildAI = tacticalBuildAI(this);
                     if ((buildAI->buildListLength() > 0) && (this->sn[0x65] <= this->numberBuildUpdatesSkipped)) {
                         BuildItem* nextResearch = buildAI->nextBuildableItem(1);
                         if (nextResearch != nullptr) {
                             taskResearch(nextResearch);
                         }
                     }
+                    break;
                 }
-                break;
-            case 0xC:
-                if (TribeBuildAIModule* buildAI = tacticalBuildAI(this)) {
-                    if ((buildAI->buildListLength() > 0) && (this->sn[0x65] <= this->numberBuildUpdatesSkipped)) {
+                case 0xC: {
+                    float* resources = *reinterpret_cast<float**>(reinterpret_cast<unsigned char*>(this->md) + 0x50);
+                    TribeBuildAIModule* buildAI = tacticalBuildAI(this);
+                    if ((resources != nullptr) && (resources[0x2C / 4] < resources[0x80 / 4]) &&
+                        (buildAI->buildListLength() > 0) && (this->sn[0x65] <= this->numberBuildUpdatesSkipped)) {
                         BuildItem* nextTrain = buildAI->nextBuildableItem(2);
                         if (nextTrain != nullptr) {
                             taskTrain(nextTrain);
                         }
                     }
+                    break;
                 }
-                break;
-            case 0xD:
-                if (TribeBuildAIModule* buildAI = tacticalBuildAI(this)) {
+                case 0xD: {
+                    TribeBuildAIModule* buildAI = tacticalBuildAI(this);
                     if ((buildAI->buildListLength() > 0) && (this->sn[0x65] <= this->numberBuildUpdatesSkipped)) {
                         BuildItem* nextBuild = buildAI->nextBuildableItem(3);
                         if (nextBuild != nullptr) {
-                            taskBuilder(-1, nextBuild, nullptr, startTime);
+                            char tempName[256];
+                            std::sprintf(tempName, "%s.bld", reinterpret_cast<BaseItem*>(nextBuild)->name());
+                            buildAI->loadBuildList(tempName, this->md->aiPlayer);
+                            this->md->updateBuildAIWithObjects();
                             updateNeededResources();
                         }
                         this->numberBuildUpdatesSkipped = 0;
                     }
+                    break;
                 }
-                break;
-            case 0xE: {
-                const int canBuildWonder = initialExplorationSatisfied();
-                if ((canBuildWonder != 0) &&
-                    ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) || (this->wonderInProgressValue != 0) ||
-                     (this->wonderBuiltValue != 0))) {
-                    RGE_Static_Object* wonderTarget = this->md->object(-1, -1, -1, -1, -1, -1, -1, -1, 0, -1);
-                    if (wonderTarget != nullptr) {
-                        RGE_Static_Object* wonderBuilder = this->md->object(-1, -1, -1, 0x25A, -1, wonderTarget->id, -1, -1, -1, -1);
-                        if ((this->wonderInProgressValue != 0) || (wonderBuilder == nullptr)) {
-                            XYPoint position = {static_cast<int>(wonderTarget->world_x), static_cast<int>(wonderTarget->world_y)};
-                            int builderID = civilian(&position, 1, 0x2BE, 0x2CE, 700, 0);
-                            if ((builderID != -1) && (taskBuilder(builderID, wonderTarget) == 1)) {
-                                this->lastBuildTime = world->world_time;
+                case 0xE: {
+                    if ((initialExplorationSatisfied() != 0) &&
+                        ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) || (this->wonderInProgressValue != 0) ||
+                         (this->wonderBuiltValue != 0))) {
+                        RGE_Static_Object* wonderTarget = this->md->object(-1, -1, -1, -1, -1, -1, -1, -1, 0, -1);
+                        if (wonderTarget != nullptr) {
+                            RGE_Static_Object* wonderBuilder =
+                                this->md->object(-1, -1, -1, 0x25A, -1, wonderTarget->id, -1, -1, -1, -1);
+                            if ((this->wonderInProgressValue != 0) || (wonderBuilder == nullptr)) {
+                                XYPoint position = {static_cast<int>(wonderTarget->world_x), static_cast<int>(wonderTarget->world_y)};
+                                int builderID = civilian(&position, 1, 0x2BE, 0x2CE, 700, 0);
+                                if ((builderID != -1) && (taskBuilder(builderID, wonderTarget) == 1)) {
+                                    this->lastBuildTime = world->world_time;
+                                }
                             }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 0xF: {
-                if ((initialExplorationSatisfied() != 0) &&
-                    ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) || (this->wonderInProgressValue != 0) ||
-                     (this->wonderBuiltValue != 0))) {
-                    int wonderType = (this->wonderBuiltValue == 1) ? 0x114 : -1;
-                    RGE_Static_Object* damaged = this->md->mostDamaged(3, wonderType);
-                    if ((damaged != nullptr) && (damaged->object_state == 2) &&
-                        (this->md->object(-1, -1, -1, 0x26A, -1, damaged->id, -1, -1, -1, -1) == nullptr)) {
-                        XYPoint position = {static_cast<int>(damaged->world_x), static_cast<int>(damaged->world_y)};
-                        int repairerID = civilian(&position, 1, 0x2BE, 0x2CE, 700, 0);
-                        if (repairerID != -1) {
-                            taskRepairer(repairerID, damaged);
+                case 0xF: {
+                    if ((initialExplorationSatisfied() != 0) &&
+                        ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) || (this->wonderInProgressValue != 0) ||
+                         (this->wonderBuiltValue != 0))) {
+                        int wonderType = (this->wonderBuiltValue == 1) ? 0x114 : -1;
+                        RGE_Static_Object* damaged = this->md->mostDamaged(3, wonderType);
+                        if ((damaged != nullptr) && (damaged->object_state == 2) &&
+                            (this->md->object(-1, -1, -1, 0x26A, -1, damaged->id, -1, -1, -1, -1) == nullptr)) {
+                            XYPoint position = {static_cast<int>(damaged->world_x), static_cast<int>(damaged->world_y)};
+                            int repairerID = civilian(&position, 1, 0x2BE, 0x2CE, 700, 0);
+                            if (repairerID != -1) {
+                                taskRepairer(repairerID, damaged);
+                            }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 0x10: {
-                if ((initialExplorationSatisfied() != 0) &&
-                    ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) || (this->wonderInProgressValue != 0) ||
-                     (this->wonderBuiltValue != 0))) {
-                    RGE_Static_Object* damagedWall = this->md->mostDamaged(0x1B, -1);
-                    if ((damagedWall != nullptr) && (damagedWall->object_state == 2) &&
-                        (this->md->object(-1, -1, -1, 0x26A, -1, damagedWall->id, -1, -1, -1, -1) == nullptr)) {
-                        XYPoint position = {static_cast<int>(damagedWall->world_x), static_cast<int>(damagedWall->world_y)};
-                        int repairerID = civilian(&position, 1, 0x2BE, 0x2CE, 700, 0);
-                        if (repairerID != -1) {
-                            taskRepairer(repairerID, damagedWall);
+                case 0x10: {
+                    if ((initialExplorationSatisfied() != 0) &&
+                        ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) || (this->wonderInProgressValue != 0) ||
+                         (this->wonderBuiltValue != 0))) {
+                        RGE_Static_Object* damagedWall = this->md->mostDamaged(0x1B, -1);
+                        if ((damagedWall != nullptr) && (damagedWall->object_state == 2) &&
+                            (this->md->object(-1, -1, -1, 0x26A, -1, damagedWall->id, -1, -1, -1, -1) == nullptr)) {
+                            XYPoint position = {static_cast<int>(damagedWall->world_x), static_cast<int>(damagedWall->world_y)};
+                            int repairerID = civilian(&position, 1, 0x2BE, 0x2CE, 700, 0);
+                            if (repairerID != -1) {
+                                taskRepairer(repairerID, damagedWall);
+                            }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 0x11: {
-                if ((initialExplorationSatisfied() != 0) && (this->wonderInProgressValue == 0) &&
-                    (this->md->numberObjectsWithAction(0x25A) < this->sn[4])) {
-                    if (TribeBuildAIModule* buildAI = tacticalBuildAI(this)) {
+                case 0x11: {
+                    if ((initialExplorationSatisfied() != 0) &&
+                        ((this->md->numberObjectsWithAction(0x25A) < this->sn[4]) ||
+                         ((this->wonderInProgressValue == 0) && (this->wonderBuiltValue != 0))) &&
+                        (this->wonderInProgressValue == 0)) {
+                        TribeBuildAIModule* buildAI = tacticalBuildAI(this);
                         BuildItem* nextBuild = buildAI->nextBuildableItem(0);
                         if ((nextBuild != nullptr) && (taskBuilder(-1, nextBuild, nullptr, startTime) == 1)) {
                             this->lastBuildTime = world->world_time;
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 0x12: {
-                if (this->placementStateValue.active == 1) {
-                    TribeConstructionAIModule* constructionAI = tacticalConstructionAI(this);
-                    if (constructionAI != nullptr) {
+                case 0x12: {
+                    if (this->placementStateValue.active == 1) {
+                        TribeConstructionAIModule* constructionAI = tacticalConstructionAI(this);
                         ConstructionItem* placed = constructionAI->placeStructure(this->placementStateValue.buildItem,
-                                                                                 this->placementStateValue.builderID,
-                                                                                 &this->placementStateValue,
-                                                                                 startTime);
+                                                                                  this->placementStateValue.builderID,
+                                                                                  &this->placementStateValue,
+                                                                                  startTime);
                         if ((placed != nullptr) &&
-                            (taskBuilder(this->placementStateValue.builderID,
-                                         this->placementStateValue.buildItem,
-                                         placed,
-                                         startTime) == 1)) {
+                            (taskBuilder(this->placementStateValue.builderID, this->placementStateValue.buildItem, placed, startTime) ==
+                             1)) {
                             this->lastBuildTime = world->world_time;
                         }
+                        if (this->placementStateValue.active == 1) {
+                            incUpdateArea = false;
+                        }
                     }
+                    break;
                 }
-                if (this->placementStateValue.active == 1) {
-                    incUpdateArea = false;
-                }
-                break;
-            }
-            case 0x13:
-                evaluateOpenTasks();
-                if (TribeResourceAIModule* resourceAI = tacticalResourceAI(this)) {
+                case 0x13: {
+                    evaluateOpenTasks();
+                    TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
                     for (int i = 0; i < 4; ++i) {
                         if ((this->resourceDifferenceValue[i] > 0) &&
                             ((resourceAI->resource(i) + this->resourceDifferenceValue[i]) < 0)) {
@@ -1675,71 +3369,60 @@ int TribeTacticalAIModule::doSomething() {
                             break;
                         }
                     }
+                    checkForCoopTributeDemand();
+                    checkForCoopTributeGift();
+                    checkForASAPAgeResearch();
+                    checkTradeBoats();
+                    checkStaleAttackGroups();
+                    break;
                 }
-                checkForCoopTributeDemand();
-                checkForCoopTributeGift();
-                checkForASAPAgeResearch();
-                checkTradeBoats();
-                checkStaleAttackGroups();
-                break;
-            case 0x14:
-                if (TribeInformationAIModule* infoAI = tacticalInformationAI(this)) {
+                case 0x14: {
+                    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
                     int dropsiteID = infoAI->closestDropsiteResID(0);
                     if (world->object(dropsiteID) == nullptr) {
                         infoAI->updateResourceDropsites(0);
                     }
+                    break;
                 }
-                break;
-            case 0x15: {
-                evaluateBuildListInsertions();
-                if ((world->world_time - this->lastBuildTime) / 60000 > 5) {
-                    if (TribeBuildAIModule* buildAI = tacticalBuildAI(this)) {
-                        buildAI->unskipBuildList(this->builtFirstStoragePit, this->builtFirstGranary);
+                case 0x15: {
+                    evaluateBuildListInsertions();
+                    if ((int)(world->world_time - this->lastBuildTime) / 60000 > 5) {
+                        tacticalBuildAI(this)->unskipBuildList(this->builtFirstStoragePit, this->builtFirstGranary);
                         this->lastBuildTime = world->world_time;
                     }
+                    now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xB92);
+                    world->useComputerPlayerUpdateTime(now - startTime);
+                    this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
+                    this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+                    this->updateAreaAverageCount += 1;
+                    if (this->updateAreaAverageCount > 0x13) {
+                        this->averageUpdateAreaTimeValue = this->updateAreaAverageTotal / this->updateAreaAverageCount;
+                        this->updateAreaAverageTotal = 0;
+                        this->updateAreaAverageCount = 0;
+                    }
+                    this->updateArea = 0;
+                    world->selectNextComputerPlayer(3);
+                    return 1;
                 }
-                const unsigned long now = world->world_time;
-                this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
-                this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
-                this->updateAreaAverageCount += 1;
-                if (this->updateAreaAverageCount > 0x13) {
-                    this->averageUpdateAreaTimeValue = this->updateAreaAverageTotal / this->updateAreaAverageCount;
-                    this->updateAreaAverageTotal = 0;
-                    this->updateAreaAverageCount = 0;
-                }
-                this->updateArea = 0;
-                world->selectNextComputerPlayer(3);
-                return 1;
             }
-            default:
-                break;
-        }
 
-        const unsigned long now = world->world_time;
-        this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
-        this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
-        this->updateAreaAverageCount += 1;
-        if (this->updateAreaAverageCount > 0x13) {
-            this->averageUpdateAreaTimeValue = this->updateAreaAverageTotal / 0x14;
-            this->updateAreaAverageTotal = 0;
-            this->updateAreaAverageCount = 0;
-        }
-
-        if (incUpdateArea) {
-            this->updateArea += 1;
-            if (this->updateArea > 0x15) {
-                this->updateArea = 0;
+            now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xBAA);
+            this->lastUpdateAreaTimeValue = (int)(now - updateAreaStartTime);
+            this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+            this->updateAreaAverageCount += 1;
+            if (this->updateAreaAverageCount > 0x13) {
+                this->averageUpdateAreaTimeValue = this->updateAreaAverageTotal / 0x14;
+                this->updateAreaAverageTotal = 0;
+                this->updateAreaAverageCount = 0;
             }
-        }
-
-        if ((now - startTime) >= availableTime) {
-            break;
-        }
-        if (now == updateAreaStartTime) {
-            break;
-        }
+            if (incUpdateArea) {
+                this->updateArea += 1;
+            }
+        } while ((now - startTime) < availableTime);
     }
 
+    const unsigned long endTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xBC9);
+    world->useComputerPlayerUpdateTime(endTime - startTime);
     return 1;
 }
 
