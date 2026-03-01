@@ -1061,10 +1061,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     } else {
         numberIterationCap = (iVar20 * numberPathingIterations) / 100;
     }
-    if ((obj->owner != nullptr) && (obj->owner->id == 0) && (100 < numberIterationCap)) {
+    if ((obj->owner->id == 0) && (100 < numberIterationCap)) {
         numberIterationCap = 100;
     }
-    if ((obj->owner != nullptr) && (obj->owner->computerPlayer() == 1)) {
+    if (obj->owner->computerPlayer() == 1) {
         numberIterationCap = (iVar20 * 0x9c4) / 100;
     }
 
@@ -1384,12 +1384,75 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             }
 
         LAB_0046c83b:
-            if (param_14 == 0) {
-                goto LAB_0046ca94;
+            int unobstructibleObjectBlocking = 0;
+            float unobstructibleObjectHitpoints = 0.0f;
+            if (param_14 == 0xfe) {
+                if (this->currentUnobstructibleGroupID == -1) {
+                    goto LAB_0046ca94;
+                }
+                int scanX = bestPathPoint.x - 1;
+                if (scanX < 0) {
+                    scanX = 0;
+                }
+                int blockedByOther = 0;
+                while ((scanX <= bestPathPoint.x + 1) && (scanX < this->xSizeValue) && (blockedByOther == 0)) {
+                    int scanY = bestPathPoint.y - 1;
+                    if (scanY < 0) {
+                        scanY = 0;
+                    }
+                    int maxScanY = bestPathPoint.y + 1;
+                    if (scanY <= maxScanY) {
+                        do {
+                            if ((this->ySizeValue <= scanY) || (blockedByOther != 0)) {
+                                break;
+                            }
+                            int objectCountOnTile = blockedByOther;
+                            int hitObjectID = this->worldValue->objectGroupOnTile(this->currentUnobstructiblePlayerID,
+                                                                                  this->currentUnobstructibleGroupID, scanX,
+                                                                                  scanY, objectCountOnTile);
+                            if (hitObjectID == -1) {
+                                if (0 < objectCountOnTile) {
+                                    blockedByOther = 1;
+                                }
+                            } else {
+                                RGE_Static_Object* hitObject = this->worldValue->object(hitObjectID);
+                                if (hitObject != nullptr) {
+                                    unobstructibleObjectHitpoints = hitObject->hp;
+                                    unobstructibleObjectBlocking = 1;
+                                }
+                            }
+                            scanY = scanY + 1;
+                        } while (scanY <= maxScanY);
+                    }
+                    scanX = scanX + 1;
+                }
+                if (blockedByOther == 1) {
+                    goto LAB_0046ca94;
+                }
             }
 
             // Cost adjust and heap insert.
             newTotal = newTotal + (unsigned int)this->miscValue[bestPathPoint.x][bestPathPoint.y] * 0x10;
+            if (unobstructibleObjectBlocking == 1) {
+                if (unobstructibleObjectHitpoints < 10.0f) {
+                    newTotal = newTotal + 0x10;
+                } else {
+                    newTotal = newTotal + 0x3c;
+                }
+            }
+            uchar currentFacet = this->facetValue[uVar34][uVar10];
+            unsigned int local_50;
+            if ((currentFacet & 0xf8) == this->CurrentFacetMask) {
+                local_50 = currentFacet & 7;
+            } else {
+                local_50 = 0xff;
+            }
+            if (i != (int)local_50) {
+                newTotal = newTotal + 1;
+            }
+            if (param_14 == 0) {
+                newTotal = 0;
+            }
             this->MGP_costValue[bestPathPoint.x][bestPathPoint.y] = newTotal;
             *puVar12 = (uchar)(i & 7) | this->CurrentFacetMask;
 
@@ -1416,6 +1479,20 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                     this->MGP_openPaths[pos].y = sy;
                     this->MGP_openPaths[pos].total = st;
                 }
+            }
+            if (param_14 == 0) {
+                if ((clearPathOnFail == 1) && (this->copyPath(step) == 0)) {
+                    Path* p = &obj->pathValue;
+                    if (obj->storePathInExceptionPath != 0) {
+                        p = &obj->exceptionPathValue;
+                    }
+                    p->killPath();
+                    goto LAB_0046d19f;
+                }
+                if (pathDistanceOut != nullptr) {
+                    *pathDistanceOut = (float)this->MGP_costValue[uVar34][uVar10];
+                }
+                goto LAB_0046ceaf;
             }
 
         LAB_0046ca94:
