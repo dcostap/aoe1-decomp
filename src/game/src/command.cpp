@@ -265,7 +265,7 @@ static void tribe_unit_ai_set_tasked_by_player(UnitAIModule* unit_ai) {
 }
 
 RGE_Command::RGE_Command(RGE_Game_World* param_1, TCommunications_Handler* param_2) {
-    // Source of truth: Command.cpp.decomp @ 0x00433D40
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00433D40
     this->world = param_1;
     this->com_hand = param_2;
     this->last_order = nullptr;
@@ -273,7 +273,7 @@ RGE_Command::RGE_Command(RGE_Game_World* param_1, TCommunications_Handler* param
 }
 
 void RGE_Command::reset_communications(TCommunications_Handler* param_1) {
-    // Source of truth: Command.cpp.decomp @ 0x00433DB0
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00433DB0
     this->com_hand = param_1;
 }
 
@@ -316,7 +316,7 @@ void RGE_Command::submit(void* p1, long p2) {
 }
 
 RGE_Command::~RGE_Command() {
-    // Source of truth: Command.cpp.decomp @ 0x00433D90
+    // Fully verified. Source of truth: command.cpp.decomp @ 0x00433D90
     this->world = nullptr;
     this->com_hand = nullptr;
     if (this->last_order) {

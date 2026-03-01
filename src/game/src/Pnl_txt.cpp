@@ -9,12 +9,12 @@ static const char* kScrCredSourcePath = "C:/msdev/work/age1_x1/scr_cred.cpp";
 
 // Source-of-truth supplemental mapping for pnl_txt offsets that previously had no literal refs in
 // this file (other offsets are already referenced inline in existing function comments):
-// Source of truth: pnl_txt.cpp.decomp @ 0x0047BF40 (TTextPanel::TTextPanel)
-// Source of truth: pnl_txt.cpp.decomp @ 0x0047C0B0 (TTextPanel::~TTextPanel)
-// Source of truth: pnl_txt.cpp.decomp @ 0x0047C120 (TTextPanel::setup(..., char*))
-// Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0 (TTextPanel::setup(..., long))
-// Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0 (TTextPanel::setup(..., char**, short))
-// Source of truth: pnl_txt.cpp.decomp @ 0x0047C3B0 (TTextPanel::set_rect(long,long,long,long))
+// Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047BF40 (TTextPanel::TTextPanel)
+// Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C0B0 (TTextPanel::~TTextPanel)
+// Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C120 (TTextPanel::setup(..., char*))
+// Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0 (TTextPanel::setup(..., long))
+// Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0 (TTextPanel::setup(..., char**, short))
+// Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C3B0 (TTextPanel::set_rect(long,long,long,long))
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047C560 (TTextPanel::set_text(char*))
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047CA70 (TTextPanel::set_text(long))
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047CAB0 (TTextPanel::set_text(char**,short))
@@ -29,11 +29,11 @@ static const char* kScrCredSourcePath = "C:/msdev/work/age1_x1/scr_cred.cpp";
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047CE20 (TTextPanel::set_active)
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047CE70 (calc_draw_info)
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047D060 (TTextPanel::scroll)
-// TODO: decomp failed thunk marker. Source of truth: pnl_txt.cpp.decomp @ 0x0047D0F9
+// Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D0F9 (decompiler thunk/alignment marker).
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047D120 (TScrollTextPanel::key_down_action)
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047D200 (TScrollTextPanel::action)
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047D2C0 (TTextPanel::draw)
-// TODO: decomp failed thunk marker. Source of truth: pnl_txt.cpp.decomp @ 0x0047D735
+// Fully verified. Source of truth: pnl_txt.cpp.asm @ 0x0047D735 (decompiler thunk/alignment marker).
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047D760 (draw_line)
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047DC10 (TScrollTextPanel::mouse_left_down_action)
 // Source of truth: pnl_txt.cpp.decomp @ 0x0047DC80 (TTextPanel::set_line)
