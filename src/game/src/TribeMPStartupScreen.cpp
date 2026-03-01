@@ -206,7 +206,7 @@ TribeMPStartupScreen::~TribeMPStartupScreen() {
 // Fully verified. Source of truth: scr_mp.cpp.decomp/asm (TScreenPanel forwarding parity).
 long TribeMPStartupScreen::handle_idle() {
     // Fully verified. Source of truth: scr_mp.cpp.decomp @ 0x0049F9A0
-    if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
+    if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
     return TPanel::handle_idle();

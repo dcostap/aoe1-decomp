@@ -133,7 +133,7 @@ void save_update_delete_button_from_list(TribeSaveGameScreen* owner) {
 int save_execute_mode_save(TribeSaveGameScreen* owner) {
     // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (owner->modeValue == TribeSaveGameScreen::SaveGame) {
-        int ok = (rge_base_game != nullptr && rge_base_game->world != nullptr) ? rge_base_game->world->save_game(owner->fileName) : 0;
+        int ok = (rge_base_game != nullptr) ? ((TRIBE_Game*)rge_base_game)->save_game(owner->fileName) : 0;
         if (ok == 0) {
             save_show_message_id(owner, 0x962, "The game could not be saved. Free some disk space, and then try again.");
             return 0;
@@ -141,7 +141,7 @@ int save_execute_mode_save(TribeSaveGameScreen* owner) {
         return 1;
     }
     if (owner->modeValue == TribeSaveGameScreen::SaveScenario) {
-        int ok = (rge_base_game != nullptr && rge_base_game->world != nullptr) ? rge_base_game->world->save_scenario(owner->fileName) : 0;
+        int ok = (rge_base_game != nullptr) ? ((TRIBE_Game*)rge_base_game)->save_scenario(owner->fileName) : 0;
         if (ok == 0) {
             save_show_message_id(owner, 0x963, "The scenario could not be saved. Free some disk space, and then try again.");
             return 0;
@@ -411,7 +411,7 @@ long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, u
                 if (panel_system != nullptr) {
                     panel_system->destroyPanel((char*)kSaveCancelDialogName);
                 }
-                if (param_2 == 0 && save_selected_line(this)[0] != '\0') {
+                if (param_2 == 0) {
                     char path[600];
                     if (this->modeValue == SaveGame) {
                         sprintf(path, "%s%s.gam", rge_base_game->prog_info->save_dir, save_selected_line(this));
@@ -430,7 +430,6 @@ long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, u
                     save_set_input_text(this, save_selected_line(this));
                     save_update_delete_button_from_list(this);
                 }
-                this->set_curr_child((TPanel*)this->input);
                 return 1;
             }
         }
@@ -442,7 +441,6 @@ long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, u
             char text[1024];
             sprintf(text, fmt, save_selected_line(this));
             this->popupYesNoDialog((char*)text, (char*)kSaveCancelDialogName, 0x1c2, 100);
-            return 1;
         }
 
         if ((TListPanel*)param_1 == this->list && param_2 == 1) {

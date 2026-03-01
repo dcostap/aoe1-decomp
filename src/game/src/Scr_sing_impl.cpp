@@ -201,14 +201,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
-            if (setup && setup->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
-                panel_system->destroyPanel((char*)"Single Player Menu");
-                return 1;
-            } else {
-                if (setup) delete setup;
-                sp_enable_input();
-            }
+            (void)setup;
+            panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+            panel_system->destroyPanel((char*)"Single Player Menu");
             return 1;
         }
 
@@ -224,14 +219,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
-            if (setup && setup->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
-                panel_system->destroyPanel((char*)"Single Player Menu");
-                return 1;
-            } else {
-                if (setup) delete setup;
-                sp_enable_input();
-            }
+            (void)setup;
+            panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+            panel_system->destroyPanel((char*)"Single Player Menu");
             return 1;
         }
 
@@ -244,14 +234,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TribeSelectScenarioScreen* scenario = new TribeSelectScenarioScreen();
-            if (scenario && scenario->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"Select Scenario Screen", 0);
-                panel_system->destroyPanel((char*)"Single Player Menu");
-                return 1;
-            } else {
-                if (scenario) delete scenario;
-                sp_enable_input();
-            }
+            (void)scenario;
+            panel_system->setCurrentPanel((char*)"Select Scenario Screen", 0);
+            panel_system->destroyPanel((char*)"Single Player Menu");
             return 1;
         }
 
@@ -259,14 +244,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TribeLoadSavedGameScreen* load_screen = new TribeLoadSavedGameScreen();
-            if (load_screen && load_screen->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"Load Saved Game Screen", 0);
-                panel_system->destroyPanel((char*)"Single Player Menu");
-                return 1;
-            } else {
-                if (load_screen) delete load_screen;
-                sp_enable_input();
-            }
+            (void)load_screen;
+            panel_system->setCurrentPanel((char*)"Load Saved Game Screen", 0);
+            panel_system->destroyPanel((char*)"Single Player Menu");
             return 1;
         }
 
@@ -275,40 +255,23 @@ CUSTOM_DEBUG_END
 
             char** players = nullptr;
             long curr_index = 0;
-            const long count = (rge_base_game && rge_base_game->player_game_info)
-                ? rge_base_game->player_game_info->get_people_list(&players, &curr_index)
-                : 0;
+            const long count = rge_base_game->player_game_info->get_people_list(&players, &curr_index);
 
-            if (count > 0 && players) {
+            if (count > 0) {
                 for (long i = 0; i < count; ++i) {
                     free(players[i]);
                 }
                 free(players);
 
                 TRIBE_Screen_Name* name_screen = new TRIBE_Screen_Name();
-                if (name_screen && name_screen->error_code == 0) {
-                    panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
-                    panel_system->destroyPanel((char*)"Single Player Menu");
-                    return 1;
-                }
-
-                if (name_screen) delete name_screen;
-                sp_enable_input();
+                (void)name_screen;
+                panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
+                panel_system->destroyPanel((char*)"Single Player Menu");
                 return 1;
             }
 
-            if (players) {
-                for (long i = 0; i < count; ++i) {
-                    free(players[i]);
-                }
-                free(players);
-            }
-
             TRIBE_Dialog_Name* dlg = new TRIBE_Dialog_Name((TScreenPanel*)this);
-            if (!dlg || dlg->error_code != 0) {
-                if (dlg) delete dlg;
-                sp_enable_input();
-            }
+            (void)dlg;
             return 1;
         }
 
@@ -316,14 +279,9 @@ CUSTOM_DEBUG_END
             rge_base_game->disable_input();
 
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
-            if (menu && menu->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"Main Menu", 0);
-                panel_system->destroyPanel((char*)"Single Player Menu");
-                return 1;
-            } else {
-                if (menu) delete menu;
-                sp_enable_input();
-            }
+            (void)menu;
+            panel_system->setCurrentPanel((char*)"Main Menu", 0);
+            panel_system->destroyPanel((char*)"Single Player Menu");
             return 1;
         }
 
