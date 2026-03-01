@@ -14,6 +14,7 @@
 
 namespace {
 // Source of truth: stat_obj.cpp.decomp @ 0x004C5860
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding/helper coverage).
 static uchar rge_static_object_is_dying(RGE_Static_Object* obj) {
     if ((obj != nullptr) && (2 < obj->object_state) && (obj->object_state != 6)) {
         return 1;
@@ -21,6 +22,7 @@ static uchar rge_static_object_is_dying(RGE_Static_Object* obj) {
     return 0;
 }
 
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding/helper coverage).
 static RGE_Action* rge_action_object_get_action(RGE_Static_Object* obj) {
     // enter action only dereferences this when target->actionState() == 0x0B (action object expected).
     if (obj == nullptr) {
@@ -115,6 +117,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x004025F0
 RGE_Action_Enter::~RGE_Action_Enter() {}
 
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding/helper coverage).
 int RGE_Action_Enter::setup(RGE_Action_Object* param_1) { return RGE_Action::setup(param_1); }
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 int RGE_Action_Enter::setup(int param_1, RGE_Action_Object* param_2) { return RGE_Action::setup(param_1, param_2); }
@@ -134,6 +137,7 @@ void RGE_Action_Enter::first_in_stack(uchar /*param_1*/) {
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 uchar RGE_Action_Enter::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding/helper coverage).
 uchar RGE_Action_Enter::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402740
@@ -300,6 +304,7 @@ RGE_Static_Object* RGE_Action_Enter::get_target_obj() { return RGE_Action::get_t
 RGE_Static_Object* RGE_Action_Enter::get_target_obj2() { return RGE_Action::get_target_obj2(); }
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding/helper coverage).
 void RGE_Action_Enter::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610

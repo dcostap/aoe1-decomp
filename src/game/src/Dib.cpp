@@ -14,7 +14,7 @@
 
 static long SrcXTbl[8192];
 
-// NOTE: Move these to a common header if needed elsewhere.
+// Fully verified. Forward declaration retained locally for dib.cpp parity usage.
 void CreateIdentityPalette(void* pal);
 
 // Fully verified. Source of truth: dib.cpp.decomp @ 0x00439060

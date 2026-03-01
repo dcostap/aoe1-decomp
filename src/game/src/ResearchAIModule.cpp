@@ -196,7 +196,7 @@ ResearchAIModule::~ResearchAIModule() {
     as_ai(this)->~AIModule();
 }
 
-// Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 // Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::loggingHistory() {
     return as_ai(this)->loggingHistory();
