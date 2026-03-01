@@ -78,7 +78,7 @@ TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* com
 
 TRIBE_Command::~TRIBE_Command() {}
 void TRIBE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
-    // Source of truth: tcommand.cpp.decomp indicates TRIBE-specific handler lives in vt[4] (+0x10).
+    // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A510 (vt[4] / +0x10 dispatch target).
     // Keep base command-id-7 behavior intact on vt[0].
     RGE_Command::do_command_give_attribute(p1);
 }

@@ -2797,7 +2797,7 @@ void TRIBE_Game::set_prog_mode(int p1) {
 }
 
 void TRIBE_Game::set_game_mode(int param_1, int param_2) {
-    // ASM 0x005227D0
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005227D0
     int old_mode = this->game_mode;
     RGE_Base_Game::set_game_mode(param_1, param_2);
     if (this->game_screen) {
@@ -2806,7 +2806,7 @@ void TRIBE_Game::set_game_mode(int param_1, int param_2) {
 }
 
 void TRIBE_Game::set_player(short p1) {
-    // ASM 0x00522810
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00522810
     short old_player = 0;
     if (this->world) {
         old_player = this->world->curr_player;
@@ -2821,7 +2821,7 @@ int TRIBE_Game::get_error_code() { return RGE_Base_Game::get_error_code(); }
 
 char* TRIBE_Game::get_string(int p1, long p2, char* p3, int p4) { return RGE_Base_Game::get_string(p1, p2, p3, p4); }
 char* TRIBE_Game::get_string(long p1, char* p2, int p3) {
-    // Fully verified. Source of truth: `src/game/src/tribegam.cpp.decomp` @ 0x005228E0.
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005228E0
     // Expansion string table is checked first, then base table fallback.
     if (!p2 || p3 <= 0) return p2;
 
