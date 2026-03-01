@@ -121,13 +121,7 @@ TribeTacticalAIModule* tactical_ai(TRIBE_Player* player) {
 
 void tactical_set_sn(TRIBE_Player* player, int id, int value) {
     // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
-    TribeTacticalAIModule* tactical = tactical_ai(player);
-    if (tactical == nullptr) {
-        return;
-    }
-    if (id < 0 || id >= 226) {
-        return;
-    }
+    TribeTacticalAIModule* tactical = (TribeTacticalAIModule*)player->playerAI->tacticalAI;
     tactical->setStrategicNumber(id, value);
 }
 

@@ -82,87 +82,27 @@ static uchar rge_missile_move(RGE_Missile_Object* obj) {
 
 // Source of truth: misl_obj.cpp.decomp @ 0x0045AB20
 static RGE_Check_List* rge_make_object_collision_list(RGE_Missile_Object* obj, float extra) {
-    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
-    if ((obj == nullptr) || (obj->owner == nullptr) || (obj->owner->world == nullptr) || (obj->owner->world->map == nullptr) ||
-        (obj->master_obj == nullptr)) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp + misl_obj.cpp.asm (helper wiring).
+    if (obj == nullptr) {
         return nullptr;
     }
+    return obj->make_object_collision_list(extra);
+}
 
-    float radius_x = obj->master_obj->radius_x;
-    float radius_y = obj->master_obj->radius_y;
-    if ((radius_x <= 0.0f) || (radius_y <= 0.0f)) {
-        return nullptr;
+static void rge_missile_direct_attack(RGE_Missile_Object* missile, RGE_Static_Object* hit_obj, RGE_Static_Object* attack_source_override) {
+    if (missile == nullptr) {
+        return;
     }
+    RGE_Combat_Object* attack_source = reinterpret_cast<RGE_Combat_Object*>(attack_source_override != nullptr ? attack_source_override : missile);
+    attack_source->do_attack(hit_obj, attack_source, missile->world_x, missile->world_y, missile->world_z);
+}
 
-    int col0 = (int)(obj->world_x - (radius_x + extra));
-    int col1 = (int)(obj->world_x + (radius_x + extra));
-    int row0 = (int)(obj->world_y - (radius_y + extra));
-    int row1 = (int)(obj->world_y + (radius_y + extra));
-
-    RGE_Map* map = obj->owner->world->map;
-    if (col0 < 0) {
-        col0 = 0;
+static void rge_missile_area_attack(RGE_Missile_Object* missile, RGE_Static_Object* attack_source_override) {
+    if (missile == nullptr) {
+        return;
     }
-    if (col1 >= map->map_width) {
-        col1 = map->map_width - 1;
-    }
-    if (row0 < 0) {
-        row0 = 0;
-    }
-    if (row1 >= map->map_height) {
-        row1 = map->map_height - 1;
-    }
-
-    RGE_Check_List* check_list = new (std::nothrow) RGE_Check_List();
-    if (check_list == nullptr) {
-        return nullptr;
-    }
-    check_list->list = nullptr;
-
-    for (int row = row0; row <= row1; ++row) {
-        for (int col = col0; col <= col1; ++col) {
-            RGE_Tile* tile = &map->map_row_offset[row][col];
-            for (RGE_Object_Node* node = tile->objects.list; node != nullptr; node = node->next) {
-                RGE_Static_Object* other = node->node;
-                if ((other == nullptr) || (other == obj) || (other->master_obj == nullptr)) {
-                    continue;
-                }
-
-                float other_rx = other->master_obj->radius_x;
-                float other_ry = other->master_obj->radius_y;
-                if ((other_rx <= 0.0f) || (other_ry <= 0.0f)) {
-                    continue;
-                }
-
-                float dz = other->world_z - obj->world_z;
-                if ((dz < -(other->master_obj->radius_z + 0.1f)) || (dz > (obj->master_obj->radius_z + 0.1f))) {
-                    continue;
-                }
-
-                float dx = other->world_x - obj->world_x;
-                float dy = other->world_y - obj->world_y;
-                if (dx < 0.0f) {
-                    dx = -dx;
-                }
-                if (dy < 0.0f) {
-                    dy = -dy;
-                }
-
-                dx = dx - (other_rx + radius_x + extra);
-                dy = dy - (other_ry + radius_y + extra);
-                if ((dx <= 0.0f) && (dy <= 0.0f)) {
-                    rge_check_list_add_node(check_list, other, dx, dy, 0);
-                }
-            }
-        }
-    }
-
-    if (check_list->list == nullptr) {
-        rge_check_list_delete(check_list);
-        return nullptr;
-    }
-
-    return check_list;
+    RGE_Combat_Object* attack_source = reinterpret_cast<RGE_Combat_Object*>(attack_source_override != nullptr ? attack_source_override : missile);
+    attack_source->area_attack(missile->world_x, missile->world_y, missile->world_z, attack_source, nullptr);
 }
 }
 
@@ -263,18 +203,16 @@ void RGE_Action_Missile::intercept(float& param_1, float& param_2, float& param_
     param_3 = (radius_z * 0.5f) + this->target_obj->world_z;
 }
 
-// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0
+// Fully verified. Source of truth: act_misl.cpp.decomp + act_misl.cpp.asm @ 0x00404DB0
 void RGE_Action_Missile::set_state(uchar param_1) {
     this->state = param_1;
 
     if (param_1 == 1) {
-        if (this->obj != nullptr) {
-            this->obj->die_die_die();
-        }
+        this->obj->die_die_die();
         return;
     }
 
-    if ((param_1 != 3) || (this->obj == nullptr) || (this->obj->master_obj == nullptr)) {
+    if (param_1 != 3) {
         return;
     }
 
@@ -318,9 +256,7 @@ void RGE_Action_Missile::set_state(uchar param_1) {
         this->velocity_x = dx / speed;
         this->velocity_y = dy / speed;
         this->velocity_z = dz / speed;
-        if (this->obj != nullptr) {
-            this->obj->new_angle(atan2f(this->velocity_y, this->velocity_x));
-        }
+        this->obj->new_angle(atan2f(this->velocity_y, this->velocity_x));
         this->timer = 0.0f;
         break;
     }
@@ -334,9 +270,7 @@ void RGE_Action_Missile::set_state(uchar param_1) {
         this->velocity_x = dx;
         this->velocity_y = dy;
         this->velocity_z = dz;
-        if (this->obj != nullptr) {
-            this->obj->new_angle(atan2f(this->velocity_y, this->velocity_x));
-        }
+        this->obj->new_angle(atan2f(this->velocity_y, this->velocity_x));
         break;
     default:
         break;
@@ -360,8 +294,7 @@ void RGE_Action_Missile::set_state(uchar param_1) {
     this->set_state(4);
 }
 
-// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x004050D5 (embedded pre-update decomp stub).
-// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x004050F0
+// Fully verified. Source of truth: act_misl.cpp.decomp + act_misl.cpp.asm @ 0x004050F0
 uchar RGE_Action_Missile::update() {
     float vx = 0.0f;
     float vy = 0.0f;
@@ -424,9 +357,7 @@ uchar RGE_Action_Missile::update() {
         vz = (dv * 0.5f + old_v) * dt + vz;
     }
 
-    this->obj->velocity_x = vx;
-    this->obj->velocity_y = vy;
-    this->obj->velocity_z = vz;
+    missile->set_velocity(vx, vy, vz);
 
     hit_ground = rge_missile_move(missile);
 
@@ -442,11 +373,13 @@ uchar RGE_Action_Missile::update() {
                 switch (master->missile_hit_info) {
                 case 0:
                     if (hit == this->target_obj) {
+                        rge_missile_direct_attack(missile, this->target_obj, this->target_obj2);
                         this->set_state(1);
                     }
                     break;
                 case 1:
-                    if ((hit->owner != this->obj->owner) && (hit->owner != nullptr) && (hit->owner->id != 0)) {
+                    if ((hit->owner != this->obj->owner) && (hit->owner->id != 0)) {
+                        rge_missile_direct_attack(missile, hit, this->target_obj2);
                         this->set_state(1);
                     }
                     break;
@@ -454,13 +387,16 @@ uchar RGE_Action_Missile::update() {
                     if (hit == this->target_obj2) {
                         break;
                     }
+                    if ((this->target_obj2 == nullptr) && (hit->owner == this->obj->owner || hit->owner->id == 0)) {
+                        rge_missile_area_attack(missile, nullptr);
+                    } else if ((this->target_obj2 != nullptr) && (hit->owner == this->obj->owner || hit->owner->id == 0)) {
+                        rge_missile_area_attack(missile, this->target_obj2);
+                    } else {
+                        rge_missile_direct_attack(missile, hit, this->target_obj2);
+                    }
                     this->set_state(1);
                     break;
                 default:
-                    break;
-                }
-
-                if (this->state == 1) {
                     break;
                 }
             }
@@ -468,10 +404,12 @@ uchar RGE_Action_Missile::update() {
             bounds = nullptr;
         }
     } else if (master->missile_type == 3) {
+        rge_missile_direct_attack(missile, this->target_obj, this->target_obj2);
         this->set_state(1);
     }
 
     if ((hit_ground != 0) && (this->state != 1)) {
+        rge_missile_area_attack(missile, this->target_obj2);
         this->set_state(1);
     }
 

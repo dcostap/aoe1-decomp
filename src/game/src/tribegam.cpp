@@ -324,9 +324,9 @@ CUSTOM_DEBUG_END
     }
 
     if (strstr(this->prog_info->cmd_line, "makeres") || strstr(this->prog_info->cmd_line, "Makeres") || strstr(this->prog_info->cmd_line, "MAKERES")) {
-        RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "graphics.rm");
-        RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "sounds.rm");
-        RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "interfac.rm");
+        RESFILE_build_res_file("graphics.rm", "resource\\", this->prog_info->resource_dir);
+        RESFILE_build_res_file("sounds.rm", "resource\\", this->prog_info->resource_dir);
+        RESFILE_build_res_file("interfac.rm", "resource\\", this->prog_info->resource_dir);
     }
 
     RESFILE_open_new_resource_file("sounds.drs", "tribe", this->prog_info->resource_dir, 1);

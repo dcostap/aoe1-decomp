@@ -460,7 +460,7 @@ int TDigital::load(char* file, long resId) {
     // Try file first, or if resource_id < 0
     if (sound_file_first != 0 || resId < 0) {
         sprintf(file_with_path, "%s%s", this->sound_system->path, this->sound_file);
-        int fd = _open(file_with_path, _O_RDONLY | _O_BINARY);
+        int fd = _open(file_with_path, 0, 0);
         if (fd != -1) {
             int bytesRead = _read(fd, &wave_hdr, 0x2C);
             if (bytesRead != 0) {
@@ -518,7 +518,7 @@ int TDigital::load(char* file, long resId) {
 
                 HRESULT hr = this->sound_system->direct_sound->CreateSoundBuffer(
                     &buffer_desc, &this->sound_buffer, nullptr);
-                if (FAILED(hr)) {
+                if (hr != 0) {
                     this->failed = 1;
                     this->sound_buffer = nullptr;
                     free(this->wave_info);
@@ -534,7 +534,7 @@ int TDigital::load(char* file, long resId) {
                 void* mem2 = nullptr;
                 unsigned long size1 = 0, size2 = 0;
                 hr = this->sound_buffer->Lock(0, this->data_size, &mem1, &size1, &mem2, &size2, 0);
-                if (FAILED(hr)) {
+                if (hr != 0) {
                     this->failed = 1;
                     this->sound_buffer->Release();
                     this->sound_buffer = nullptr;
@@ -605,8 +605,9 @@ int TDigital::load(char* file, long resId) {
     this->wave_info = (tWAVEFORMATEX*)malloc(sizeof(tWAVEFORMATEX));
     if (this->wave_info == nullptr) {
         this->failed = 1;
-        free(this->wave_data);
-        this->wave_data = nullptr;
+        if (resType == 1) {
+            free(resData);
+        }
         color_log(0xBA, '_', 1);
         return 0;
     }
@@ -627,12 +628,12 @@ int TDigital::load(char* file, long resId) {
 
     HRESULT hr = this->sound_system->direct_sound->CreateSoundBuffer(
         &buffer_desc, &this->sound_buffer, nullptr);
-    if (SUCCEEDED(hr)) {
+    if (hr == 0) {
         void* mem1 = nullptr;
         void* mem2 = nullptr;
         unsigned long size1 = 0, size2 = 0;
         hr = this->sound_buffer->Lock(0, this->data_size, &mem1, &size1, &mem2, &size2, 0);
-        if (SUCCEEDED(hr)) {
+        if (hr == 0) {
             memcpy(mem1, this->wave_data, size1);
             if (mem2 != nullptr) {
                 memcpy(mem2, this->wave_data + size1, size2);
@@ -640,8 +641,6 @@ int TDigital::load(char* file, long resId) {
             this->sound_buffer->Unlock(mem1, size1, mem2, size2);
             free(this->wave_info);
             this->wave_info = nullptr;
-            free(this->wave_data);
-            this->wave_data = nullptr;
 
             this->loaded = 1;
             color_log(0xBA, '_', 1);
@@ -655,8 +654,6 @@ int TDigital::load(char* file, long resId) {
     this->sound_buffer = nullptr;
     free(this->wave_info);
     this->wave_info = nullptr;
-    free(this->wave_data);
-    this->wave_data = nullptr;
     color_log(0xBA, '_', 1);
     return 0;
 }
