@@ -17,6 +17,7 @@
 #include "../include/RGE_Object_List.h"
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
+#include "../include/custom_debug.h"
 
 #include <new>
 #include <stdlib.h>
@@ -725,8 +726,24 @@ void TRIBE_Building_Object::rehook() {
 
 // Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8A80
 uchar TRIBE_Building_Object::update() {
+    CUSTOM_DEBUG_LOG_FMT(
+        "TRIBE_Building_Object::update enter this=%p vtbl=%p id=%d state=%d built=%d master=%p master_type=%d build_pts=%f",
+        this,
+        this ? *(void**)this : nullptr,
+        (int)this->id,
+        (int)this->object_state,
+        (int)this->built,
+        this->master_obj,
+        this->master_obj ? (int)this->master_obj->master_type : -1,
+        this->build_pts);
     if (this->object_state == 0 && this->master_obj != nullptr) {
         short build_pts_required = ((TRIBE_Master_Building_Object*)this->master_obj)->build_pts_required;
+        CUSTOM_DEBUG_LOG_FMT(
+            "TRIBE_Building_Object::update construction this=%p build_pts_required=%d facet=%d radius_x=%f",
+            this,
+            (int)build_pts_required,
+            (int)this->facet,
+            this->master_obj->radius_x);
         uchar new_facet = (uchar)(int)(((this->build_pts * 100.0f) / (float)(int)build_pts_required) * 0.01f * build_pts_required);
         if ((short)new_facet < this->master_obj->radius_x && new_facet != this->facet) {
             this->facet = new_facet;
@@ -742,15 +759,20 @@ uchar TRIBE_Building_Object::update() {
     this->PriorTurn2 = this->PriorTurn1;
     this->PriorTurn1 = world_update_counter;
 
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Building_Object::update before TRIBE_Combat_Object::update this=%p", this);
     uchar rv = TRIBE_Combat_Object::update();
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Building_Object::update after TRIBE_Combat_Object::update this=%p rv=%d state=%d", this, (int)rv, (int)this->object_state);
     if (this->object_state > 2) {
         this->empty_production_queue();
         this->PriorMap1 = this->Unified_Map_Value;
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Building_Object::update exit-dead this=%p", this);
         return rv;
     }
 
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Building_Object::update before update_production_queue this=%p", this);
     this->update_production_queue();
     this->PriorMap1 = this->Unified_Map_Value;
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Building_Object::update exit this=%p", this);
     return rv;
 }
 

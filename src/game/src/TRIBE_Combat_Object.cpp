@@ -25,6 +25,7 @@
 #include "../include/UnitAIModule.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <cstddef>
 #include <math.h>
@@ -57,7 +58,16 @@ TRIBE_Combat_Object::TRIBE_Combat_Object(int param_1, RGE_Game_World* param_2, i
 TRIBE_Combat_Object::~TRIBE_Combat_Object() {
     if (this->own_master != 0) {
         if (this->master_obj != nullptr) {
+            short old_master_id = this->master_obj->id;
             delete this->master_obj;
+            if (this->owner != nullptr && this->owner->master_objects != nullptr &&
+                old_master_id >= 0 && old_master_id < this->owner->master_object_num) {
+                this->master_obj = this->owner->master_objects[old_master_id];
+            } else {
+                this->master_obj = nullptr;
+            }
+        } else {
+            this->master_obj = nullptr;
         }
         this->own_master = 0;
     }
@@ -559,15 +569,28 @@ void TRIBE_Combat_Object::save(int param_1) {
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA5F0
 uchar TRIBE_Combat_Object::update() {
+    CUSTOM_DEBUG_LOG_FMT(
+        "TRIBE_Combat_Object::update enter this=%p vtbl=%p id=%d type=%d state=%d master=%p own_master=%d",
+        this,
+        this ? *(void**)this : nullptr,
+        (int)this->id,
+        (int)this->type,
+        (int)this->object_state,
+        this->master_obj,
+        (int)this->own_master);
     if (this->master_obj != nullptr && this->owner != nullptr && this->owner->world != nullptr &&
         this->master_obj->object_group == 0x12 && this->object_state == 2) {
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Combat_Object::update relic-branch this=%p", this);
         this->attribute_amount_held = this->owner->attributes[0x23] * this->owner->world->world_time_delta_seconds + this->attribute_amount_held;
         if (this->attribute_amount_held >= 100.0f) {
             this->attribute_amount_held = 100.0f;
         }
         this->attribute_type_held = 0x22;
     }
-    return RGE_Combat_Object::update();
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Combat_Object::update before RGE_Combat_Object::update this=%p", this);
+    uchar rv = RGE_Combat_Object::update();
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Combat_Object::update exit this=%p rv=%d", this, (int)rv);
+    return rv;
 }
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA640

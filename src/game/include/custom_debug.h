@@ -37,7 +37,7 @@
 // This is custom behavior and not part of the original executable.
 // NOTE: CD audio won't play if no CD is present.
 #ifndef CUSTOM_DEBUG_FORCE_CD_AUDIO
-#define CUSTOM_DEBUG_FORCE_CD_AUDIO 1
+#define CUSTOM_DEBUG_FORCE_CD_AUDIO 0
 #endif
 
 // Set to 1 to auto-drive UI for crash repro: Main Menu -> Single Player -> Random Map -> Start Game.

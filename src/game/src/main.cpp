@@ -20,6 +20,20 @@ CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_INIT();
     CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
     CUSTOM_DEBUG_LOG_FMT("CmdLine: %s", lpCmdLine ? lpCmdLine : "(null)");
+    {
+        HMODULE module = GetModuleHandleA(nullptr);
+        if (module != nullptr) {
+            IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER*)module;
+            if (dos->e_magic == IMAGE_DOS_SIGNATURE) {
+                IMAGE_NT_HEADERS* nt = (IMAGE_NT_HEADERS*)((unsigned char*)module + dos->e_lfanew);
+                if (nt->Signature == IMAGE_NT_SIGNATURE) {
+                    unsigned char* base = (unsigned char*)module;
+                    unsigned char* end = base + nt->OptionalHeader.SizeOfImage;
+                    CUSTOM_DEBUG_LOG_FMT("Module range: base=%p end=%p size=0x%X", base, end, (unsigned int)nt->OptionalHeader.SizeOfImage);
+                }
+            }
+        }
+    }
 CUSTOM_DEBUG_END
 
     RGE_Prog_Info info;

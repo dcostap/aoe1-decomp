@@ -5,6 +5,7 @@
 #include "../include/VISIBLE_UNIT_PTR.h"
 #include "../include/VISIBLE_UNIT_REC.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +27,7 @@ static void vis_unit_set_backptr(int object_id, int player_index, VISIBLE_UNIT_R
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B5A0
 Visible_Unit_Manager::Visible_Unit_Manager(int param_1, int param_2) {
+    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor enter this=%p players=%d categories_in=%d", this, param_1, param_2);
     this->Player_Count = param_1;
     this->Category_Count = param_2 + 1;
     this->distanceTable = nullptr;
@@ -48,8 +50,11 @@ Visible_Unit_Manager::Visible_Unit_Manager(int param_1, int param_2) {
         VisibleUnitList_Size[i] = 0;
     }
 
+    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor before Build_Distance_Table this=%p", this);
     Build_Distance_Table();
+    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor after Build_Distance_Table this=%p distanceTable=%p", this, this->distanceTable);
     VisibleUnitManager = this;
+    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor exit this=%p", this);
 }
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B670
@@ -85,6 +90,7 @@ Visible_Unit_Manager::~Visible_Unit_Manager() {
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B730
 void Visible_Unit_Manager::Build_Distance_Table() {
+    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::Build_Distance_Table enter this=%p NormalLOS0=%p SquareLOS0=%p", this, NormalLOS[0], SquareLOS[0]);
     if (this->distanceTable != nullptr) {
         free(this->distanceTable);
     }
@@ -93,37 +99,47 @@ void Visible_Unit_Manager::Build_Distance_Table() {
     memset(this->distanceTable, 0xFF, 0x100);
 
     uchar distance_value = 0;
-    LOSTBL** table_ptr = &NormalLOS[0];
-    while (table_ptr < &SquareLOS[17]) {
-        LOSTBL* offsets = *table_ptr;
-        int row = offsets->y_delta;
-        while (row != 999) {
-            int left = offsets->x_left;
-            int right = offsets->x_right;
-            if ((-1 < row) && (row < 0x10)) {
-                if (left < 0) {
-                    left = 0;
-                }
-                if (0x0F < right) {
-                    right = 0x0F;
-                }
-                int index = row * 0x10 + left;
-                if (left <= right) {
-                    int count = (right - left) + 1;
-                    while (count != 0) {
-                        if (this->distanceTable[index] == 0xFF) {
-                            this->distanceTable[index] = distance_value;
+    for (int group = 0; group < 2; ++group) {
+        LOSTBL** los_tables = (group == 0) ? &NormalLOS[0] : &SquareLOS[0];
+        for (int table_index = 0; table_index < 17; ++table_index) {
+            LOSTBL* offsets = los_tables[table_index];
+            if (offsets == nullptr) {
+                CUSTOM_DEBUG_LOG_FMT(
+                    "Visible_Unit_Manager::Build_Distance_Table null LOS table group=%d idx=%d",
+                    group,
+                    table_index);
+                ++distance_value;
+                continue;
+            }
+
+            int row = offsets->y_delta;
+            while (row != 999) {
+                int left = offsets->x_left;
+                int right = offsets->x_right;
+                if ((-1 < row) && (row < 0x10)) {
+                    if (left < 0) {
+                        left = 0;
+                    }
+                    if (0x0F < right) {
+                        right = 0x0F;
+                    }
+                    int index = row * 0x10 + left;
+                    if (left <= right) {
+                        int count = (right - left) + 1;
+                        while (count != 0) {
+                            if (this->distanceTable[index] == 0xFF) {
+                                this->distanceTable[index] = distance_value;
+                            }
+                            ++index;
+                            --count;
                         }
-                        ++index;
-                        --count;
                     }
                 }
+                offsets = offsets + 1;
+                row = offsets->y_delta;
             }
-            offsets = offsets + 1;
-            row = offsets->y_delta;
+            ++distance_value;
         }
-        ++table_ptr;
-        ++distance_value;
     }
 }
 

@@ -11,6 +11,7 @@
 #include "RGE_RMM_Database_Controller.h"
 #include "RGE_Zone_Map_List.h"
 #include "RGE_Unified_Visible_Map.h"
+#include "Visible_Unit_Manager.h"
 #include "TShape.h"
 #include "custom_debug.h"
 #include "debug_helpers.h"
@@ -142,6 +143,10 @@ RGE_Map::RGE_Map()
     this->search_map = nullptr;
     this->map = nullptr;
     this->num_terrain = 0;
+    this->random_map = nullptr;
+    this->map_zones = nullptr;
+    this->unified_vis_map = nullptr;
+    this->unit_manager = nullptr;
 
     this->init_tile_sizes();
 }
@@ -157,6 +162,10 @@ RGE_Map::RGE_Map(RGE_Game_World* world, long w, long h)
     this->search_map = nullptr;
     this->map = nullptr;
     this->num_terrain = 0;
+    this->random_map = nullptr;
+    this->map_zones = nullptr;
+    this->unified_vis_map = nullptr;
+    this->unit_manager = nullptr;
 
     this->init_tile_sizes();
 
@@ -231,6 +240,16 @@ void RGE_Map::set_tile_size(uchar index, short width, short height, short y_delt
 void RGE_Map::new_map(long w, long h)
 {
     // Fully verified. Source of truth: map.cpp.decomp @ 0x00455910
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Map::new_map enter this=%p w=%ld h=%ld game_world=%p player_num=%d map_zones=%p unified=%p unit_manager=%p",
+        this,
+        w,
+        h,
+        this->game_world,
+        (this->game_world != nullptr) ? (int)this->game_world->player_num : -1,
+        this->map_zones,
+        this->unified_vis_map,
+        this->unit_manager);
     if (w <= 0 || h <= 0) {
         return;
     }
@@ -282,12 +301,15 @@ void RGE_Map::new_map(long w, long h)
     // Source of truth: map.cpp.decomp new_map() constructs fresh zone maps + unified vis map.
     // Required for doppleganger checks (unified_map_offsets) during New Game random map generation.
     if (this->map_zones != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Map::new_map deleting old map_zones=%p", this->map_zones);
         delete this->map_zones;
         this->map_zones = nullptr;
     }
+    CUSTOM_DEBUG_LOG("RGE_Map::new_map creating map_zones");
     this->map_zones = new (std::nothrow) RGE_Zone_Map_List(this);
 
     if (this->unified_vis_map != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Map::new_map freeing old unified_vis_map=%p data=%p", this->unified_vis_map, this->unified_vis_map->UnifiedVisibleMap);
         if (this->unified_vis_map->UnifiedVisibleMap != nullptr) {
             free(this->unified_vis_map->UnifiedVisibleMap);
             this->unified_vis_map->UnifiedVisibleMap = nullptr;
@@ -296,6 +318,7 @@ void RGE_Map::new_map(long w, long h)
         this->unified_vis_map = nullptr;
     }
 
+    CUSTOM_DEBUG_LOG("RGE_Map::new_map allocating unified_vis_map");
     this->unified_vis_map = (RGE_Unified_Visible_Map*)calloc(1, sizeof(RGE_Unified_Visible_Map));
     if (this->unified_vis_map != nullptr) {
         this->unified_vis_map->mapWidth = (int)w;
@@ -304,6 +327,17 @@ void RGE_Map::new_map(long w, long h)
             (ulong*)calloc((size_t)w * (size_t)h, sizeof(ulong));
         this->unified_vis_map->Set_Map_Offsets();
     }
+
+    if (this->unit_manager != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Map::new_map deleting old unit_manager=%p", this->unit_manager);
+        delete this->unit_manager;
+        this->unit_manager = nullptr;
+    }
+    if (this->game_world != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Map::new_map creating unit_manager player_num=%d", (int)this->game_world->player_num);
+        this->unit_manager = new (std::nothrow) Visible_Unit_Manager((int)this->game_world->player_num, 0x40);
+    }
+    CUSTOM_DEBUG_LOG_FMT("RGE_Map::new_map exit unit_manager=%p", this->unit_manager);
 }
 
 void RGE_Map::load_map(int param_1) {

@@ -53,6 +53,37 @@ static int snapshot_number = 1;
 // TODO: Debug-only automation state for reproducing start-game crashes via real UI action handlers.
 static int debug_autoplay_sp_random_start_state = 0;
 static int debug_autoplay_sp_random_start_wait_frames = 0;
+static int debug_autoplay_sp_random_start_enabled = -1;
+
+static int debug_is_autoplay_sp_random_start_enabled() {
+    if (debug_autoplay_sp_random_start_enabled >= 0) {
+        return debug_autoplay_sp_random_start_enabled;
+    }
+
+    char value[16];
+    DWORD n = GetEnvironmentVariableA("AOE_AUTOPLAY_SP_RANDOM_START", value, sizeof(value));
+    if (n == 0 || n >= sizeof(value)) {
+        debug_autoplay_sp_random_start_enabled = 0;
+        CUSTOM_DEBUG_LOG("AUTOPLAY: env AOE_AUTOPLAY_SP_RANDOM_START not set");
+        return 0;
+    }
+
+    value[sizeof(value) - 1] = '\0';
+    char* start = value;
+    while (*start != '\0' && isspace((unsigned char)*start)) {
+        ++start;
+    }
+    char* end = start + strlen(start);
+    while (end > start && isspace((unsigned char)end[-1])) {
+        --end;
+    }
+    *end = '\0';
+
+    debug_autoplay_sp_random_start_enabled =
+        (strcmp(start, "1") == 0 || _stricmp(start, "true") == 0 || _stricmp(start, "yes") == 0) ? 1 : 0;
+    CUSTOM_DEBUG_LOG_FMT("AUTOPLAY: env AOE_AUTOPLAY_SP_RANDOM_START='%s' enabled=%d", start, debug_autoplay_sp_random_start_enabled);
+    return debug_autoplay_sp_random_start_enabled;
+}
 #endif
 static void* last_mouse_cursor = nullptr;
 
@@ -2709,7 +2740,17 @@ int RGE_Base_Game::handle_idle() {
 
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
     // TODO: Debug-only automation path. Not parity with original executable.
-    if (curPanel != nullptr && curPanel->panelNameValue != nullptr) {
+    if (debug_is_autoplay_sp_random_start_enabled() != 0 &&
+        curPanel != nullptr &&
+        curPanel->panelNameValue != nullptr) {
+        static const char* debug_last_autoplay_panel = nullptr;
+        if (debug_last_autoplay_panel != curPanel->panelNameValue) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "AUTOPLAY: state=%d panel='%s'",
+                debug_autoplay_sp_random_start_state,
+                curPanel->panelNameValue);
+            debug_last_autoplay_panel = curPanel->panelNameValue;
+        }
         debug_autoplay_sp_random_start_wait_frames = debug_autoplay_sp_random_start_wait_frames + 1;
 
         if (debug_autoplay_sp_random_start_state == 0 &&

@@ -19,6 +19,7 @@
 #include "../include/VISIBLE_UNIT_REC.h"
 #include "../include/globals.h"
 #include "../include/debug_helpers.h"
+#include "../include/custom_debug.h"
 
 #include <math.h>
 #include <new>
@@ -496,38 +497,97 @@ uchar RGE_Combat_Object::update() {
         }
     }
 
-    const uchar result = RGE_Action_Object::update();
+    uchar result = 0;
+    __try {
+        result = RGE_Action_Object::update();
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "RGE_Combat_Object::update EXCEPTION step=RGE_Action_Object::update this=%p id=%d type=%d state=%d owner=%p owner_id=%d code=0x%08X",
+            this,
+            (int)this->id,
+            (int)this->type,
+            (int)this->object_state,
+            this->owner,
+            (this->owner != nullptr) ? (int)this->owner->id : -1,
+            (unsigned int)GetExceptionCode());
+        return 0;
+    }
 
     if (this->id >= 0 && this->inside_obj == nullptr && this->owner != nullptr && this->owner->world != nullptr && this->owner->world->map != nullptr) {
         const int world_x = (int)this->world_x;
         const int world_y = (int)this->world_y;
         if (world_x >= 0 && world_y >= 0 && world_x < this->owner->world->map->map_width && world_y < this->owner->world->map->map_height) {
             const unsigned long old_map_value = this->Unified_Map_Value;
-            const unsigned long new_map_value = unified_map_offsets[world_y][world_x];
-            this->Unified_Map_Value = new_map_value;
+            unsigned long new_map_value = old_map_value;
+            __try {
+                new_map_value = unified_map_offsets[world_y][world_x];
+                this->Unified_Map_Value = new_map_value;
+            } __except(EXCEPTION_EXECUTE_HANDLER) {
+                unsigned long** map_rows = unified_map_offsets;
+                unsigned long* row_ptr = (map_rows != nullptr && world_y >= 0) ? map_rows[world_y] : nullptr;
+                CUSTOM_DEBUG_LOG_FMT(
+                    "RGE_Combat_Object::update EXCEPTION step=unified_map_read this=%p id=%d type=%d owner_id=%d x=%d y=%d uoff=%p row=%p code=0x%08X",
+                    this,
+                    (int)this->id,
+                    (int)this->type,
+                    (this->owner != nullptr) ? (int)this->owner->id : -1,
+                    world_x,
+                    world_y,
+                    map_rows,
+                    row_ptr,
+                    (unsigned int)GetExceptionCode());
+                return result;
+            }
 
             if (new_map_value != old_map_value) {
                 const int object_group = (this->master_obj != nullptr) ? (int)this->master_obj->object_group : 0;
-                VisibleUnitManager->Update_Unit_Info(this->id, (int)this->owner->id, world_x, world_y, object_group, old_map_value, new_map_value, this->VUR_Ptrs);
+                __try {
+                    VisibleUnitManager->Update_Unit_Info(this->id, (int)this->owner->id, world_x, world_y, object_group, old_map_value, new_map_value, this->VUR_Ptrs);
+                } __except(EXCEPTION_EXECUTE_HANDLER) {
+                    CUSTOM_DEBUG_LOG_FMT(
+                        "RGE_Combat_Object::update EXCEPTION step=Update_Unit_Info this=%p id=%d type=%d owner_id=%d VUM=%p x=%d y=%d old=0x%08lX new=0x%08lX code=0x%08X",
+                        this,
+                        (int)this->id,
+                        (int)this->type,
+                        (this->owner != nullptr) ? (int)this->owner->id : -1,
+                        VisibleUnitManager,
+                        world_x,
+                        world_y,
+                        old_map_value,
+                        new_map_value,
+                        (unsigned int)GetExceptionCode());
+                    return result;
+                }
 
                 if (this->capture_flag != 0) {
-                    int sighted_by_player = -1;
-                    RGE_Game_World* world = this->owner->world;
-                    for (int i = 1; i < (int)world->player_num; ++i) {
-                        if (i != (int)this->owner->id && (new_map_value & (1UL << (i & 0x1f))) != 0) {
-                            sighted_by_player = i;
-                            break;
-                        }
-                    }
-
-                    if (sighted_by_player >= 0) {
-                        RGE_Player* new_owner = world->players[sighted_by_player];
-                        if (new_owner != nullptr && new_owner->computerPlayer() == 0) {
-                            this->change_ownership(new_owner);
-                            if (this->capture_flag == 1) {
-                                this->capture_flag = 0;
+                    __try {
+                        int sighted_by_player = -1;
+                        RGE_Game_World* world = this->owner->world;
+                        for (int i = 1; i < (int)world->player_num; ++i) {
+                            if (i != (int)this->owner->id && (new_map_value & (1UL << (i & 0x1f))) != 0) {
+                                sighted_by_player = i;
+                                break;
                             }
                         }
+
+                        if (sighted_by_player >= 0) {
+                            RGE_Player* new_owner = world->players[sighted_by_player];
+                            if (new_owner != nullptr && new_owner->computerPlayer() == 0) {
+                                this->change_ownership(new_owner);
+                                if (this->capture_flag == 1) {
+                                    this->capture_flag = 0;
+                                }
+                            }
+                        }
+                    } __except(EXCEPTION_EXECUTE_HANDLER) {
+                        CUSTOM_DEBUG_LOG_FMT(
+                            "RGE_Combat_Object::update EXCEPTION step=capture this=%p id=%d type=%d owner_id=%d code=0x%08X",
+                            this,
+                            (int)this->id,
+                            (int)this->type,
+                            (this->owner != nullptr) ? (int)this->owner->id : -1,
+                            (unsigned int)GetExceptionCode());
+                        return result;
                     }
                 }
             }
@@ -535,10 +595,22 @@ uchar RGE_Combat_Object::update() {
     }
 
     if (this->unitAIValue != nullptr && this->owner != nullptr && this->owner->world != nullptr) {
-        const int owner_id = (int)this->owner->id;
-        if (this->owner->world->is_player_turn(owner_id) != 0) {
-            const unsigned long time_delta = this->owner->world->get_accum_time_delta(owner_id);
-            this->unitAIValue->update(time_delta);
+        __try {
+            const int owner_id = (int)this->owner->id;
+            if (this->owner->world->is_player_turn(owner_id) != 0) {
+                const unsigned long time_delta = this->owner->world->get_accum_time_delta(owner_id);
+                this->unitAIValue->update(time_delta);
+            }
+        } __except(EXCEPTION_EXECUTE_HANDLER) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "RGE_Combat_Object::update EXCEPTION step=unitAI this=%p id=%d type=%d owner_id=%d unitAI=%p code=0x%08X",
+                this,
+                (int)this->id,
+                (int)this->type,
+                (this->owner != nullptr) ? (int)this->owner->id : -1,
+                this->unitAIValue,
+                (unsigned int)GetExceptionCode());
+            return result;
         }
     }
 
