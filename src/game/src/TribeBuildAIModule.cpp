@@ -31,30 +31,37 @@ constexpr ptrdiff_t kWonderInProgressOffset = 0x122B0;
 constexpr ptrdiff_t kWonderBuiltOffset = 0x122B4;
 
 unsigned char* tribe_build_ai_raw(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return (unsigned char*)build_ai;
 }
 
 BuildItem* tribe_build_ai_build_list(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return (BuildItem*)(tribe_build_ai_raw(build_ai) + kBuildListOffset);
 }
 
 char* tribe_build_ai_current_build_item_requested(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return (char*)(tribe_build_ai_raw(build_ai) + kCurrentBuildItemRequestedOffset);
 }
 
 int* tribe_build_ai_number_items_into_build_list(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return (int*)(tribe_build_ai_raw(build_ai) + kNumberItemsIntoBuildListOffset);
 }
 
 TribeMainDecisionAIModule** tribe_build_ai_md_slot(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return (TribeMainDecisionAIModule**)(tribe_build_ai_raw(build_ai) + kMdOffset);
 }
 
 TribeMainDecisionAIModule* tribe_build_ai_md(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return *tribe_build_ai_md_slot(build_ai);
 }
 
 void tribe_build_ai_set_wonder_value(TribeBuildAIModule* build_ai, ptrdiff_t offset, int value) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
     if (md != nullptr) {
         *(int*)((unsigned char*)md + offset) = value;
@@ -62,6 +69,7 @@ void tribe_build_ai_set_wonder_value(TribeBuildAIModule* build_ai, ptrdiff_t off
 }
 
 BuildItem* tribe_build_ai_specific_build_item(TribeBuildAIModule* build_ai, int unique_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(build_ai);
     BuildItem* item = head->next;
     while ((item != head) && (item != nullptr)) {
@@ -74,6 +82,7 @@ BuildItem* tribe_build_ai_specific_build_item(TribeBuildAIModule* build_ai, int 
 }
 
 RGE_Static_Object* tribe_build_ai_object(TribeBuildAIModule* build_ai, int object_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
     if (md == nullptr || md->player == nullptr || md->player->world == nullptr) {
         return nullptr;
@@ -82,6 +91,7 @@ RGE_Static_Object* tribe_build_ai_object(TribeBuildAIModule* build_ai, int objec
 }
 
 ConstructionAIModule* tribe_build_ai_construction_ai(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
     if (md == nullptr) {
         return nullptr;
@@ -90,6 +100,7 @@ ConstructionAIModule* tribe_build_ai_construction_ai(TribeBuildAIModule* build_a
 }
 
 TribeInformationAIModule* tribe_build_ai_information_ai(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
     if (md == nullptr) {
         return nullptr;
@@ -98,6 +109,7 @@ TribeInformationAIModule* tribe_build_ai_information_ai(TribeBuildAIModule* buil
 }
 
 TribeTacticalAIModule* tribe_build_ai_tactical_ai(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
     if (md == nullptr) {
         return nullptr;
@@ -106,6 +118,7 @@ TribeTacticalAIModule* tribe_build_ai_tactical_ai(TribeBuildAIModule* build_ai) 
 }
 
 TribeResourceAIModule* tribe_build_ai_resource_ai(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
     if (md == nullptr) {
         return nullptr;
@@ -142,6 +155,7 @@ void tribe_build_ai_send_unit_ai_order(TribeMainDecisionAIModule* md,
 }
 
 int tribe_build_ai_busy_with_action(TribeBuildAIModule* build_ai, int object_id, int action_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     RGE_Static_Object* object = tribe_build_ai_object(build_ai, object_id);
     if ((object == nullptr) || (object->unitAIValue == nullptr)) {
         return 0;
@@ -150,6 +164,7 @@ int tribe_build_ai_busy_with_action(TribeBuildAIModule* build_ai, int object_id,
 }
 
 void tribe_build_ai_remove_from_task_array(ManagedArray<int>& array, int object_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     if ((array.value == nullptr) || (array.numberValue < 1)) {
         return;
     }
@@ -165,6 +180,7 @@ void tribe_build_ai_remove_from_task_array(ManagedArray<int>& array, int object_
 }
 
 void tribe_build_ai_display_build_list(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     void** vtable = *(void***)build_ai;
     if ((vtable != nullptr) && (vtable[16] != nullptr)) {
         typedef void(__thiscall* DisplayBuildListFn)(TribeBuildAIModule*);
@@ -174,6 +190,7 @@ void tribe_build_ai_display_build_list(TribeBuildAIModule* build_ai) {
 }
 
 void tribe_build_ai_detask(TribeBuildAIModule* build_ai, int task_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     if (task_id == -1) {
         return;
     }
@@ -221,6 +238,7 @@ void tribe_build_ai_detask(TribeBuildAIModule* build_ai, int task_id) {
 }
 
 int tribe_build_ai_is_moveable(TribeBuildAIModule* build_ai, int object_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     RGE_Static_Object* object = tribe_build_ai_object(build_ai, object_id);
     if ((object != nullptr) && (object->master_obj != nullptr)) {
         short object_group = object->master_obj->object_group;
@@ -243,6 +261,7 @@ int tribe_build_ai_is_moveable(TribeBuildAIModule* build_ai, int object_id) {
 }
 
 void tribe_build_ai_clear_area(TribeBuildAIModule* build_ai, int object_id, float min_x, float min_y, float max_x, float max_y) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     if (tribe_build_ai_busy_with_action(build_ai, object_id, -1) != 1) {
         return;
     }
@@ -309,6 +328,7 @@ void tribe_build_ai_clear_area(TribeBuildAIModule* build_ai, int object_id, floa
 }
 
 void tribe_build_ai_remove_lot(TribeBuildAIModule* build_ai, int type_id, int x, int y, int lot_status) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeInformationAIModule* information_ai = tribe_build_ai_information_ai(build_ai);
     if ((information_ai == nullptr) || (information_ai->buildingLots == nullptr)) {
         return;
@@ -331,6 +351,7 @@ void tribe_build_ai_remove_lot(TribeBuildAIModule* build_ai, int type_id, int x,
 }
 
 void tribe_build_ai_update_needed_resources(TribeBuildAIModule* build_ai) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeTacticalAIModule* tactical_ai = tribe_build_ai_tactical_ai(build_ai);
     TribeResourceAIModule* resource_ai = tribe_build_ai_resource_ai(build_ai);
     if ((tactical_ai == nullptr) || (resource_ai == nullptr)) {
@@ -408,6 +429,7 @@ void tribe_build_ai_update_needed_resources(TribeBuildAIModule* build_ai) {
 }
 
 void tribe_build_ai_add_ignore_type(TribeBuildAIModule* build_ai, int type_id) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     int found = 0;
     for (int i = 0; i < build_ai->typesToIgnore.numberValue; ++i) {
         if (build_ai->typesToIgnore.value[i] == type_id) {
@@ -456,62 +478,77 @@ TribeBuildAIModule::TribeBuildAIModule(int param_1, int param_2)
 TribeBuildAIModule::~TribeBuildAIModule() {}
 
 int TribeBuildAIModule::loggingHistory() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::loggingHistory();
 }
 
 void TribeBuildAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildAIModule::setLogHistory(param_1);
 }
 
 void TribeBuildAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildAIModule::toggleLogHistory();
 }
 
 void TribeBuildAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildAIModule::setHistoryFilename(param_1);
 }
 
 int TribeBuildAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::loggingCommonHistory();
 }
 
 void TribeBuildAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildAIModule::setLogCommonHistory(param_1);
 }
 
 void TribeBuildAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildAIModule::toggleLogCommonHistory();
 }
 
 int TribeBuildAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::loadState(param_1);
 }
 
 int TribeBuildAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::saveState(param_1);
 }
 
 int TribeBuildAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::gleanState(param_1);
 }
 
 int TribeBuildAIModule::processMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::processMessage(param_1);
 }
 
 int TribeBuildAIModule::update(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::update(param_1);
 }
 
 void TribeBuildAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildAIModule::setCallbackMessage(param_1);
 }
 
 int TribeBuildAIModule::filterOutMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::filterOutMessage(param_1);
 }
 
 int TribeBuildAIModule::save(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     return BuildAIModule::save(param_1);
 }
 
@@ -528,6 +565,7 @@ void TribeBuildAIModule::setMainDecisionAI(TribeMainDecisionAIModule* param_1) {
 // Offset: 0x004D3B20
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3B20
 int TribeBuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     tribe_build_ai_add_ignore_type(this, 0x46);
     tribe_build_ai_add_ignore_type(this, 0x67);
     tribe_build_ai_add_ignore_type(this, 0x44);
@@ -537,6 +575,7 @@ int TribeBuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
 // Offset: 0x004D3D60
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3D60
 void TribeBuildAIModule::initialize() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     this->unskipBuildList(0, 0);
     tribe_build_ai_update_needed_resources(this);
 }
@@ -544,6 +583,7 @@ void TribeBuildAIModule::initialize() {
 // Offset: 0x004D5170
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5170
 int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     int found = 0;
     BuildItem* head = tribe_build_ai_build_list(this);
     BuildItem* item = head->next;
@@ -580,6 +620,7 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* param_1, int param_2) {
 // Offset: 0x004D5310
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5310
 int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     (void)param_6;
     if (param_7 != -1) {
         tribe_build_ai_detask(this, param_7);
@@ -653,6 +694,7 @@ int TribeBuildAIModule::cancelBuildItem(int param_1, int param_2, int param_3, f
 // Offset: 0x004D5590
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5590
 int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     (void)param_1;
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
     if (item != nullptr) {
@@ -669,6 +711,7 @@ int TribeBuildAIModule::addTrainedUnit(int param_1, int param_2, int param_3, in
 // Offset: 0x004D5600
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5600
 int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -685,6 +728,7 @@ int TribeBuildAIModule::cancelTrainUnit(int param_1, int param_2, int param_3, i
 // Offset: 0x004D5690
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5690
 int TribeBuildAIModule::addResearch(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     (void)param_1;
     BuildItem* item = tribe_build_ai_specific_build_item(this, param_3);
     if (item != nullptr) {
@@ -700,6 +744,7 @@ int TribeBuildAIModule::addResearch(int param_1, int param_2, int param_3) {
 // Offset: 0x004D56F0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D56F0
 int TribeBuildAIModule::cancelResearch(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -716,6 +761,7 @@ int TribeBuildAIModule::cancelResearch(int param_1, int param_2, int param_3, in
 // Offset: 0x004D4460
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4460
 void TribeBuildAIModule::skipNextBuildListItem() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
         if ((item->built() == 0) && (item->inProgress() == 0) && (((BaseItem*)item)->skip() != 1)) {
@@ -739,6 +785,7 @@ void TribeBuildAIModule::skipNextBuildListItem() {
 // Offset: 0x004D4540
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4540
 BuildItem* TribeBuildAIModule::nextBuildableItem(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     BuildItem* fallback = nullptr;
 
@@ -778,6 +825,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int param_1) {
 // Offset: 0x004D4DB0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4DB0
 int TribeBuildAIModule::nextBuildListItemCategory() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
         if ((item->built() == 0) && (item->inProgress() == 0) && (((BaseItem*)item)->skip() != 1) && (item->permanentSkip() == '\0')) {
@@ -790,6 +838,7 @@ int TribeBuildAIModule::nextBuildListItemCategory() {
 // Offset: 0x004D4E10
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4E10
 int TribeBuildAIModule::blockingResource() {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     BuildItem* first = nullptr;
     for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
@@ -825,6 +874,7 @@ int TribeBuildAIModule::blockingResource() {
 // Offset: 0x004D4F80
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D4F80
 int TribeBuildAIModule::mostNeededResource(ResourceItem* param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     param_1->setAllValues(0);
     int count = 0;
     TRIBE_Player* ai_player = (this->md != nullptr) ? this->md->aiPlayer : nullptr;
@@ -859,6 +909,7 @@ int TribeBuildAIModule::mostNeededResource(ResourceItem* param_1, int param_2) {
 // Offset: 0x004D5090
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5090
 int TribeBuildAIModule::addItem(RGE_Static_Object* param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TribeInformationAIModule* information_ai = tribe_build_ai_information_ai(this);
     if ((information_ai != nullptr) && (information_ai->isBuilding(param_1) != 0)) {
         ConstructionAIModule* construction_ai = tribe_build_ai_construction_ai(this);
@@ -890,6 +941,7 @@ int TribeBuildAIModule::addItem(RGE_Static_Object* param_1, int param_2) {
 // Offset: 0x004D5270
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5270
 int TribeBuildAIModule::removeBuiltItem(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
         if ((((BaseItem*)item)->gameID() == param_1) && (item->built() == 1)) {
@@ -910,6 +962,7 @@ int TribeBuildAIModule::removeBuiltItem(int param_1) {
 // Offset: 0x004D5780
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5780
 int TribeBuildAIModule::isAgeResearch(int param_1) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     if ((param_1 != 0x65) && (param_1 != 0x66) && (param_1 != 0x67)) {
         return 0;
     }
@@ -919,6 +972,7 @@ int TribeBuildAIModule::isAgeResearch(int param_1) {
 // Offset: 0x004D57A0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D57A0
 int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     int build_from = -1;
     int build_category = 0;
     switch (param_1) {
@@ -1012,6 +1066,7 @@ unsigned char FUN_004d595e() {
 // Offset: 0x004D5AD0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5AD0
 int TribeBuildAIModule::insertResearch(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     if ((param_1 != 5) && (param_1 != 7) && (param_1 != 8)) {
         return 0;
     }
@@ -1035,6 +1090,7 @@ int TribeBuildAIModule::insertResearch(int param_1, int param_2) {
 // Offset: 0x004D5B80
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5B80
 int TribeBuildAIModule::insertGathererPercentage(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     RGE_Player* player = (this->md != nullptr) ? this->md->player : nullptr;
     if (player == nullptr) {
         return 0;
@@ -1045,6 +1101,7 @@ int TribeBuildAIModule::insertGathererPercentage(int param_1, int param_2, int p
 // Offset: 0x004D5BB0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5BB0
 int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     if ((param_2 == 0) && ((param_1 == 0x67) || (param_1 == 0x44))) {
         int in_progress = BuildAIModule::numberInProgressItemsOfType(param_1, 0);
         TribeInformationAIModule* information_ai = tribe_build_ai_information_ai(this);
@@ -1062,6 +1119,7 @@ int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int param_1, int para
 // Offset: 0x004D5C20
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5C20
 int TribeBuildAIModule::allBuilt(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
         int category = item->buildCategory();
@@ -1075,6 +1133,7 @@ int TribeBuildAIModule::allBuilt(int param_1, int param_2) {
 // Offset: 0x004D5CA0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5CA0
 int TribeBuildAIModule::readyToResearch(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     TRIBE_Player* ai_player = (this->md != nullptr) ? this->md->aiPlayer : nullptr;
     if (ai_player == nullptr) {
         return 0;
@@ -1100,6 +1159,7 @@ int TribeBuildAIModule::readyToResearch(int param_1, int param_2) {
 // Offset: 0x004D5D40
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5D40
 void TribeBuildAIModule::unskipBuildList(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     (void)param_1;
     (void)param_2;
 
@@ -1121,6 +1181,7 @@ void TribeBuildAIModule::unskipBuildList(int param_1, int param_2) {
 // Offset: 0x004D5DE0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D5DE0
 BuildItem* TribeBuildAIModule::buildItem(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     BuildItem* head = tribe_build_ai_build_list(this);
     for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
         if ((item->built() == 0) && (item->inProgress() == 0) &&
