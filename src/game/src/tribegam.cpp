@@ -2769,7 +2769,10 @@ void TRIBE_Game::disconnect_multiplayer_game() {
 }
 
 // Virtual overrides
-int TRIBE_Game::run() { return RGE_Base_Game::run(); }
+int TRIBE_Game::run() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CFD0
+    return RGE_Base_Game::run();
+}
 long TRIBE_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529580
     if (p2 < 0x201) {
@@ -2817,7 +2820,10 @@ void TRIBE_Game::set_player(short p1) {
     }
 }
 
-int TRIBE_Game::get_error_code() { return RGE_Base_Game::get_error_code(); }
+int TRIBE_Game::get_error_code() {
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C990
+    return RGE_Base_Game::get_error_code();
+}
 
 char* TRIBE_Game::get_string(int p1, long p2, char* p3, int p4) { return RGE_Base_Game::get_string(p1, p2, p3, p4); }
 char* TRIBE_Game::get_string(long p1, char* p2, int p3) {
