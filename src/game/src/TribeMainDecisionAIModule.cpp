@@ -5,12 +5,15 @@
 #include "../include/debug_helpers.h"
 #include "../include/DiplomacyAIModule.h"
 #include "../include/EmotionalAIModule.h"
+#include "../include/RGE_Base_Game.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Object_List.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Victory_Conditions.h"
 #include "../include/TradeAIModule.h"
 #include "../include/TribeBuildAIModule.h"
+#include "../include/TRIBE_Command.h"
 #include "../include/TribeConstructionAIModule.h"
 #include "../include/TribeInformationAIModule.h"
 #include "../include/TribeResourceAIModule.h"
@@ -485,7 +488,7 @@ int TribeMainDecisionAIModule::filterOutMessage(AIModuleMessage* param_1) {
     return MainDecisionAIModule::filterOutMessage(param_1);
 }
 
-// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5DB0
+// Fully verified. Source of truth: taimdmd.cpp.decomp + taimdmd.cpp.asm @ 0x004E5DB0
 int TribeMainDecisionAIModule::save(int param_1) {
     MainDecisionAIModule::save(param_1);
     build_ai(this)->save(param_1);
@@ -548,9 +551,9 @@ int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int param_1) {
     }
 }
 
-// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6090
+// Fully verified. Source of truth: taimdmd.cpp.decomp + taimdmd.cpp.asm @ 0x004E6090
 int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2) {
-    RGE_Static_Object* object = this->aiPlayer->world->object(param_1);
+    RGE_Static_Object* object = MainDecisionAIModule::object(param_1);
     if (object != nullptr) {
         int object_group = this->objectGroupThatCanPerformAction(param_2);
         if (object->master_obj->object_group == object_group) {
@@ -668,11 +671,20 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
 }
 
 // Offset: 0x004E6600
-// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6600
+// Fully verified. Source of truth: taimdmd.cpp.decomp + taimdmd.cpp.asm @ 0x004E6600
 int TribeMainDecisionAIModule::processAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
     switch (param_2) {
     case 0:
         information_ai(this)->lookAtMap();
+        return 1;
+    case 1:
+        if ((param_1 != this->player->id) &&
+            (this->aiPlayer->objects->find_by_master_id(0x54, -1.0f, -1.0f, '\0', '\x02', nullptr) != nullptr)) {
+            float tributeBaseline = 0.0f;
+            std::memcpy(&tributeBaseline, &this->aiPlayer->world->player_time_delta[1], sizeof(float));
+            this->aiPlayer->command_give_attribute(param_1, param_3, static_cast<float>(param_4), tributeBaseline);
+            return 1;
+        }
         return 1;
     case 2:
     case 3:
@@ -680,21 +692,42 @@ int TribeMainDecisionAIModule::processAICommand(int param_1, int param_2, int pa
             tactical_ai(this)->processCoopAttack(param_1, param_3, param_4, param_5);
             return 1;
         }
-        return 0;
+        return 1;
     case 6:
-        diplomacy_ai(this)->setChangeable(param_3, '\x01');
+    {
+        DiplomacyAIModule* diplomacy = diplomacy_ai(this);
+        diplomacy->setChangeable(param_3, '\x01');
         if (param_4 == 0) {
-            diplomacy_ai(this)->setStance(param_3, 0, 100);
-            diplomacy_ai(this)->setRelation(param_3, 3);
+            diplomacy->setStance(param_3, 0, 100);
+            diplomacy->setRelation(param_3, 3);
         } else if (param_4 == 1) {
-            diplomacy_ai(this)->setStance(param_3, 0, 0x31);
-            diplomacy_ai(this)->setStance(param_3, 2, 0x31);
-            diplomacy_ai(this)->setRelation(param_3, 1);
+            diplomacy->setStance(param_3, 0, 0x31);
+            diplomacy->setStance(param_3, 2, 0x31);
+            diplomacy->setRelation(param_3, 1);
         } else if (param_4 == 2) {
-            diplomacy_ai(this)->setStance(param_3, 2, 100);
-            diplomacy_ai(this)->setRelation(param_3, 0);
-            diplomacy_ai(this)->setChangeable(param_3, '\0');
+            diplomacy->setStance(param_3, 2, 100);
+            diplomacy->setRelation(param_3, 0);
+            if (rge_base_game->difficulty() != 4) {
+                reinterpret_cast<TRIBE_Command*>(this->player->world->commands)->command_allied_victory(this->player->id, '\x01');
+                diplomacy->setChangeable(param_3, '\0');
+                return 1;
+            }
+            RGE_Player* otherPlayer = this->player->world->players[param_3];
+            if (otherPlayer->computerPlayer() == 0) {
+                reinterpret_cast<TRIBE_Command*>(this->player->world->commands)->command_allied_victory(this->player->id, '\x01');
+                diplomacy->setChangeable(param_3, '\0');
+                return 1;
+            }
+            reinterpret_cast<TRIBE_Command*>(this->player->world->commands)->command_allied_victory(this->player->id, '\0');
+            diplomacy->setChangeable(param_3, '\0');
+            return 1;
         }
+        diplomacy->setChangeable(param_3, '\0');
+        return 1;
+    }
+    case 7:
+        this->requiredDiplomacyTributeAmount = param_3;
+        tactical_ai(this)->setStrategicNumber(0xD9, 1);
         return 1;
     default:
         return 0;
@@ -705,16 +738,10 @@ int TribeMainDecisionAIModule::processAICommand(int param_1, int param_2, int pa
 // Decomp artifact block is covered by currentScore() at 0x004E6870.
 
 // Offset: 0x004E6870
-// Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6870
+// Fully verified. Source of truth: taimdmd.cpp.decomp + taimdmd.cpp.asm @ 0x004E6870
 int TribeMainDecisionAIModule::currentScore(int param_1) {
-    if ((param_1 > 0) &&
-        (this->player != nullptr) &&
-        (this->player->world != nullptr) &&
-        (param_1 < this->player->world->player_num)) {
-        RGE_Player* player = this->player->world->players[param_1];
-        if ((player != nullptr) && (player->victory_conditions != nullptr)) {
-            return (int)player->victory_conditions->get_victory_points();
-        }
+    if ((param_1 >= 1) && (param_1 <= this->player->world->player_num)) {
+        return (int)this->player->world->players[param_1]->victory_conditions->get_victory_points();
     }
     return -1;
 }
