@@ -79,30 +79,23 @@ CUSTOM_DEBUG_END
     info.update_interval = 0;
     info.check_multi_copies = 1;
     info.skip_startup = 1;
-    // Development convenience: always launch windowed during crash triage.
     info.full_screen = 0;
     info.fixed_window_size = 1;
     info.use_dir_draw = 1;
     info.use_sys_mem = 1;
-    info.use_music = 1;
+    info.use_music = 0;
     info.use_sound = 1;
-#if CUSTOM_DEBUG_FORCE_CD_AUDIO
     info.use_cd_audio = 1;
     info.use_midi = 0;
     info.use_wave_music = 0;
-#else
-    info.use_cd_audio = 0;
-    info.use_midi = 1;
-    info.use_wave_music = 0;
-#endif
     info.auto_scroll = 1;
     info.mouse_scroll_edge = 1;
     info.mouse_scroll_interval = 3;
     info.key_scroll_interval = 4;
     info.key_scroll_object_move = 1.2f; // 0x3f99999a
     info.interface_style = 2;
-    info.main_wid = 640;
-    info.main_hgt = 480;
+    info.main_wid = 800;
+    info.main_hgt = 600;
 
     // main.cpp:156 (Directories)
     strcpy(info.data_dir, "data2\\");
@@ -137,6 +130,7 @@ CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_CHECKPOINT("Starting game->run()");
 CUSTOM_DEBUG_END
             retval = game->run();
+            (void)game->get_error_code();
         } else {
             int err = game->get_error_code();
 CUSTOM_DEBUG_BEGIN
@@ -146,7 +140,7 @@ CUSTOM_DEBUG_END
                 char msg[256];
                 char title[256];
                 game->get_string(2001, title, sizeof(title));
-                game->get_string2(err, 0, err, msg, sizeof(msg));
+                game->get_string2(1, err, 0, msg, sizeof(msg));
                 MessageBoxA(NULL, msg, title, MB_OK | MB_ICONERROR);
             }
             retval = err;
