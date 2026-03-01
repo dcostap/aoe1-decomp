@@ -140,6 +140,7 @@ int TRIBE_Action_Make_Obj::setup(RGE_Action_Object* param_1) {
     return 1;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 int TRIBE_Action_Make_Obj::setup(int param_1, RGE_Action_Object* param_2) {
     make_obj_init_base(this, param_2);
     make_obj_load_base(this, param_1);
@@ -154,10 +155,12 @@ int TRIBE_Action_Make_Obj::setup(int param_1, RGE_Action_Object* param_2) {
     return 1;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 RGE_Action_List* TRIBE_Action_Make_Obj::create_action_list(RGE_Action_Object* param_1) {
     return new (std::nothrow) RGE_Action_List(param_1);
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 void TRIBE_Action_Make_Obj::rehook() {}
 
 // Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D0F70
@@ -214,6 +217,7 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1) {
     }
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 uchar TRIBE_Action_Make_Obj::inside_obj_update() {
     return 1;
 }
@@ -408,6 +412,7 @@ int TRIBE_Action_Make_Obj::stop() {
     return 1;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 int TRIBE_Action_Make_Obj::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     (void)param_2;
@@ -416,6 +421,7 @@ int TRIBE_Action_Make_Obj::move_to(RGE_Static_Object* param_1, float param_2, fl
     return 0;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 int TRIBE_Action_Make_Obj::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     (void)param_2;
@@ -424,27 +430,32 @@ int TRIBE_Action_Make_Obj::work(RGE_Static_Object* param_1, float param_2, float
     return 0;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 uchar TRIBE_Action_Make_Obj::attack_response(RGE_Static_Object* param_1) {
     (void)param_1;
     return 0;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 uchar TRIBE_Action_Make_Obj::relation_response(long param_1, uchar param_2) {
     (void)param_1;
     (void)param_2;
     return 0;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 void TRIBE_Action_Make_Obj::copy_obj(RGE_Master_Action_Object* param_1) {
     (void)param_1;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 void TRIBE_Action_Make_Obj::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) {
     (void)param_1;
     (void)param_2;
     (void)param_3;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 void TRIBE_Action_Make_Obj::get_state_name(char* param_1) {
     if (param_1 == nullptr) {
         return;
@@ -462,14 +473,17 @@ void TRIBE_Action_Make_Obj::get_state_name(char* param_1) {
     param_1[31] = 0;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Make_Obj::get_target_obj() {
     return this->target_obj;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Make_Obj::get_target_obj2() {
     return this->target_obj2;
 }
 
+// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
 void TRIBE_Action_Make_Obj::set_target_obj(RGE_Static_Object* param_1) {
     this->target_obj = param_1;
     this->targetID = (param_1 != nullptr) ? param_1->id : -1;

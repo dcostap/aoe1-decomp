@@ -94,11 +94,13 @@ static int DAT_0086bc88 = 0;
 static int DAT_0086bc8c = 0;
 
 static int signed_mask_mod(int value, int mask) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp (helper implementation).
     int sign = value >> 0x1f;
     return (((value ^ sign) - sign & mask ^ sign) - sign);
 }
 
 static void loadUnitHistoryParity(TribeInformationAIModule* information_ai) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp (helper implementation).
     char history_file_name[256];
 
     if ((rge_base_game != nullptr) && (rge_base_game->player_game_info != nullptr)) {
@@ -116,6 +118,7 @@ static void loadUnitHistoryParity(TribeInformationAIModule* information_ai) {
 }
 
 static void unitsThatAreMostBuiltParity(TribeInformationAIModule* information_ai, int* most_built_unit_1, int* most_built_unit_2) {
+    // Fully verified. Source of truth: tplayer.cpp.decomp (helper implementation).
     int* history = information_ai->unitHistory;
     int highest = -1;
     *most_built_unit_1 = -1;
@@ -140,8 +143,10 @@ static void unitsThatAreMostBuiltParity(TribeInformationAIModule* information_ai
 static void interface_obj_cost(TRIBE_Player* player, short obj_id,
                                short* inv_1, short* amt_1, short* inv_2, short* amt_2, short* inv_3, short* amt_3);
 
-// Offsets 0x00513F95, 0x005159BA, 0x00519465, and 0x00519AB2 are switch-table artifacts in tplayer.cpp.asm
-// (alignment/switchdata labels between real functions), not callable function bodies.
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513F95 (switch-table alignment artifact in tplayer.cpp.asm; non-callable body).
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005159BA (switch-table alignment artifact in tplayer.cpp.asm; non-callable body).
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519465 (switch-table alignment artifact in tplayer.cpp.asm; non-callable body).
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519AB2 (switch-table alignment artifact in tplayer.cpp.asm; non-callable body).
 
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)

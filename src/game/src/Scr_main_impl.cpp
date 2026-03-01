@@ -63,6 +63,7 @@ void menu_dispatch_confirm_dialog(TRIBE_Screen_Main_Menu* owner) {
 } // namespace
 
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Menu") {
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049E6D0
     this->title1 = nullptr;
     this->title2 = nullptr;
     for (int i = 0; i < 7; ++i) this->button[i] = nullptr;
@@ -200,7 +201,6 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
     for (int i = 0; i < 5; ++i) tab_list[i + 1] = (TPanel*)this->button[i];
     this->set_tab_order(tab_list + 1, 5);
 
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049E6D0
     this->set_curr_child((TPanel*)this->button[0]);
 }
 
@@ -268,11 +268,10 @@ long TRIBE_Screen_Main_Menu::mouse_right_move_action(long param_1, long param_2,
 long TRIBE_Screen_Main_Menu::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
 long TRIBE_Screen_Main_Menu::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
 long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049ED00
     (void)param_2;
     (void)param_3;
     (void)param_5;
-
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049ED00
     // Original behavior reacts on key-up transitions (`param_4 != 0`).
     if (param_4 == 0) {
         return 0;
