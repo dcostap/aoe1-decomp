@@ -4423,7 +4423,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 316 — scr_mps_impl parity (scr_mps — ~20 functions)
 - [x] Assigned to agent (Worker-3, clone_3)
-- [ ] Finished
+- [x] Finished
+- Status note: verified on current `master` — `scr_mps_impl.cpp` has no TODO/STUB markers and is fully marker-covered for Task 316 scope.
 - Goal: scr_mps_impl.cpp has 17 verified functions but scr_mps.cpp.decomp has 37 (gap=20). Multiplayer screen implementation — connection handling, game setup, network sync. Note: Task 312 found that scr_mps functions are split between scr_mps_impl.cpp and TRIBE_Screen_Disconnect.cpp. Focus on scr_mps_impl.cpp.
 - Implement: Read scr_mps.cpp.decomp. Find offsets not yet verified in scr_mps_impl.cpp. Transliterate. Build with build.bat.
 - Where: `src/game/src/scr_mps_impl.cpp` + headers
