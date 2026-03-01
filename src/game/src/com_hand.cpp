@@ -2143,7 +2143,10 @@ int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ul
         const uchar sequence = (uchar)p2[1];
         const char* payload = p2 + 8;
         const uint payload_len = (uint)(p1 - 8);
-        return comm_evaluate_player_message(this, p1, from_player, execute_on_turn, cmd, sequence, payload, payload_len, p3, p4);
+        if (this->ShuttingDown == 0) {
+            (void)this->EvaluatePlayerMessage(p1, from_player, execute_on_turn, cmd, sequence, (char*)payload, payload_len, p3, p4);
+        }
+        return 1;
     }
 
     // Guaranteed delivery path.
@@ -2190,7 +2193,7 @@ int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ul
     const uint payload_len = (uint)(p1 - 0x0C);
 
     if (this->ShuttingDown == 0) {
-        (void)comm_evaluate_player_message(this, p1, from_player, execute_on_turn, cmd, sequence, payload, payload_len, p3, p4);
+        (void)this->EvaluatePlayerMessage(p1, from_player, execute_on_turn, cmd, sequence, (char*)payload, payload_len, p3, p4);
     }
 
     return 1;

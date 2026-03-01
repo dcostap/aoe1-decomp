@@ -17,7 +17,7 @@
 #include <string.h>
 
 static void cams_init_vars(TRIBE_Screen_Campaign_Selection* this_) {
-    // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x00490E30
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x00490E30
     this_->title = nullptr;
     this_->campaignTitle = nullptr;
     this_->campaignList = nullptr;
@@ -31,24 +31,19 @@ static void cams_init_vars(TRIBE_Screen_Campaign_Selection* this_) {
     this_->cancelButton = nullptr;
     this_->close_button = nullptr;
     this_->campaignsLoaded = 0;
-    if (rge_base_game) {
-        rge_base_game->setDifficulty(rge_base_game->single_player_difficulty);
-    }
+    const int single_player_difficulty = rge_base_game->get_single_player_difficulty();
+    rge_base_game->setDifficulty(single_player_difficulty);
 }
 
 static void cams_fillCampaigns(TRIBE_Screen_Campaign_Selection* this_) {
-    // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x004911A0
-    if (!this_ || !this_->campaignList) return;
-
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x004911A0
     this_->campaignList->empty_list();
 
     char** campaigns = nullptr;
     long curr_index = 0;
-    const long count = (rge_base_game && rge_base_game->player_game_info)
-        ? rge_base_game->player_game_info->get_campaign_list(&campaigns, &curr_index)
-        : 0;
+    const long count = rge_base_game->player_game_info->get_campaign_list(&campaigns, &curr_index);
 
-    if (count != 0 && campaigns) {
+    if (count != 0) {
         this_->campaignList->handle_mouse_input = 1;
         for (long i = 0; i < count; ++i) {
             this_->campaignList->append_line(campaigns[i], i);
@@ -63,7 +58,7 @@ static void cams_fillCampaigns(TRIBE_Screen_Campaign_Selection* this_) {
         free(campaigns);
 
         const long cur_line = this_->campaignList->get_line();
-        if (cur_line != -1 && rge_base_game && rge_base_game->player_game_info) {
+        if (cur_line != -1) {
             const long id = this_->campaignList->get_id();
             rge_base_game->player_game_info->set_current_campaign(id);
         }
@@ -71,18 +66,14 @@ static void cams_fillCampaigns(TRIBE_Screen_Campaign_Selection* this_) {
 }
 
 static void cams_fillScenarios(TRIBE_Screen_Campaign_Selection* this_) {
-    // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x00491290
-    if (!this_ || !this_->scenarioList) return;
-
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x00491290
     this_->scenarioList->empty_list();
 
     char** scenarios = nullptr;
     long curr_index = 0;
-    const long count = (rge_base_game && rge_base_game->player_game_info)
-        ? rge_base_game->player_game_info->get_scenario_list(&scenarios, &curr_index)
-        : 0;
+    const long count = rge_base_game->player_game_info->get_scenario_list(&scenarios, &curr_index);
 
-    if (count != 0 && scenarios) {
+    if (count != 0) {
         for (long i = 0; i < count; ++i) {
             this_->scenarioList->append_line(scenarios[i], i);
         }
@@ -265,7 +256,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPane
     this->difficultyDrop->append_line(0x2BD1, 1);
     this->difficultyDrop->append_line(0x2BD0, 0);
 
-    const long diff_line = this->difficultyDrop->get_line(rge_base_game ? rge_base_game->rge_game_options.difficultyValue : 2);
+    const long diff_line = this->difficultyDrop->get_line(rge_base_game->difficulty());
     this->difficultyDrop->set_line(diff_line);
 
     if (!this->create_button((TPanel*)this, &this->okButton, 0xFA1, 0, 0x46, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) return;
@@ -309,7 +300,7 @@ TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection() {
 }
 
 long TRIBE_Screen_Campaign_Selection::handle_idle() {
-    // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x00490F90
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x00490F90
     if (this->campaignsLoaded == 0) {
         cams_fillCampaigns(this);
         cams_fillScenarios(this);
@@ -317,16 +308,14 @@ long TRIBE_Screen_Campaign_Selection::handle_idle() {
         this->campaignsLoaded = 1;
     }
 
-    if (rge_base_game && rge_base_game->input_enabled == 0) {
+    if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
     return TPanel::handle_idle();
 }
 
 long TRIBE_Screen_Campaign_Selection::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x00490FF0
-    (void)param_3;
-    (void)param_4;
+    // Fully verified. Source of truth: scr_cams.cpp.asm @ 0x00490FF0
 
     if (param_1 && this->campaignsLoaded != 0) {
         if ((TButtonPanel*)param_1 == this->okButton && param_2 == 1) {
@@ -334,24 +323,20 @@ long TRIBE_Screen_Campaign_Selection::action(TPanel* param_1, long param_2, ulon
             return 1;
         }
         if ((TButtonPanel*)param_1 == this->cancelButton && param_2 == 1) {
-            if (rge_base_game) rge_base_game->disable_input();
+            rge_base_game->disable_input();
             TRIBE_Screen_Name* scr = new TRIBE_Screen_Name();
-            if (panel_system) {
-                if (scr) panel_system->add_panel((TPanel*)scr);
-                panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
-                panel_system->destroyPanel((char*)"Campaign Selection Screen");
-            }
+            (void)scr;
+            panel_system->setCurrentPanel((char*)"Name Selection Screen", 0);
+            panel_system->destroyPanel((char*)"Campaign Selection Screen");
             return 1;
         }
         if ((TButtonPanel*)param_1 == this->close_button && param_2 == 1) {
-            if (rge_base_game) rge_base_game->close();
+            rge_base_game->close();
             return 1;
         }
         if ((TListPanel*)param_1 == this->campaignList && param_2 == 1) {
-            if (rge_base_game && rge_base_game->player_game_info) {
-                const long id = this->campaignList->get_id();
-                rge_base_game->player_game_info->set_current_campaign(id);
-            }
+            const long id = this->campaignList->get_id();
+            rge_base_game->player_game_info->set_current_campaign(id);
             cams_fillScenarios(this);
             return 1;
         }

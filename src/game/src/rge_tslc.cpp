@@ -6,13 +6,13 @@
 
 // Fully verified. Marker reconciliation coverage.
 RGE_TimeSinceLastCall::RGE_TimeSinceLastCall() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480390
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480390, rge_tslc.cpp.asm @ 0x00480390
     this->lowTSLC = 99999;
     this->highTSLC = 0;
     this->Offset = 0;
     this->cps = 0;
 
-    const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x0D);
+    const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x0D);
     this->FirstCall = now;
     this->Now = now;
     this->LastCall = now;
@@ -24,12 +24,12 @@ RGE_TimeSinceLastCall::RGE_TimeSinceLastCall() {
 
 // Fully verified. Marker reconciliation coverage.
 RGE_TimeSinceLastCall::~RGE_TimeSinceLastCall() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004803F0
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004803F0, rge_tslc.cpp.asm @ 0x004803F0
 }
 
 // Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::GetAvg(int sample_count) {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480400
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480400, rge_tslc.cpp.asm @ 0x00480400
     uint sum = 0;
 
     if (sample_count > 0 && sample_count < 0x65) {
@@ -52,15 +52,15 @@ ulong RGE_TimeSinceLastCall::GetAvg(int sample_count) {
 
 // Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::Get() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480460
-    const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x56);
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480460, rge_tslc.cpp.asm @ 0x00480460
+    const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x56);
     return now - this->LastCall;
 }
 
 // Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::Set() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480480
-    const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x5D);
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480480, rge_tslc.cpp.asm @ 0x00480480
+    const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x5D);
     const ulong last = this->LastCall;
     if (last == now) {
         return 0;
@@ -94,15 +94,15 @@ ulong RGE_TimeSinceLastCall::Set() {
 
 // Fully verified. Marker reconciliation coverage.
 void RGE_TimeSinceLastCall::Skip() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480510
-    (void)debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x78);
-    const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x79);
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480510, rge_tslc.cpp.asm @ 0x00480510
+    (void)debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x78);
+    const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0x79);
     this->LastCall = now;
 }
 
 // Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetAvgInfo(int sample_count) {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480540
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480540, rge_tslc.cpp.asm @ 0x00480540
     const ulong avg = this->GetAvg(sample_count);
     sprintf(this->TBuff, "Avg %d / %d", (uint)avg, sample_count);
     return this->TBuff;
@@ -132,7 +132,7 @@ static void tslc_calc_hilo(int sample_count, int offset, const ulong* samples, u
 
 // Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int sample_count) {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480570
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480570, rge_tslc.cpp.asm @ 0x00480570
     int original = sample_count;
     uint sum = 0;
     uint lo = 999999;
@@ -145,16 +145,20 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int sample_count) {
         sample_count = (int)(sum / (uint)original);
         hi = max_v;
         lo = min_v;
+    } else {
+        sample_count = original;
+        lo = (uint)original;
+        hi = (uint)original;
     }
 
-    sprintf(this->TBuff, "<LoLo %d Lo %d < Avg %d / %d > Hi %d HiHi %d", (uint)this->lowTSLC, lo, (uint)sample_count, original,
+    sprintf(this->TBuff, "(LoLo %d) Lo=%d < Avg=%d / %d > Hi=%d  (HiHi %d)", (uint)this->lowTSLC, lo, (uint)sample_count, original,
             hi, (uint)this->highTSLC);
     return this->TBuff;
 }
 
 // Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetHiLoInfo(int sample_count) {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480610
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480610, rge_tslc.cpp.asm @ 0x00480610
     int original = sample_count;
     uint sum = 0;
     uint lo = 999999;
@@ -167,15 +171,19 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int sample_count) {
         sample_count = (int)(sum / (uint)original);
         hi = max_v;
         lo = min_v;
+    } else {
+        sample_count = original;
+        lo = (uint)original;
+        hi = (uint)original;
     }
 
-    sprintf(this->TBuff, "Lo %d < Avg %d > Hi %d of %d", lo, (uint)sample_count, hi, original);
+    sprintf(this->TBuff, "Lo=%d < Avg=%d > Hi=%d of %d", lo, (uint)sample_count, hi, original);
     return this->TBuff;
 }
 
 // Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::CPS() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806A0
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806A0, rge_tslc.cpp.asm @ 0x004806A0
     this->cps = 0;
     (void)this->GetAvg(100);
     return this->cps;
@@ -183,17 +191,17 @@ ulong RGE_TimeSinceLastCall::CPS() {
 
 // Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::GetFirstCall() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806C0
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806C0, rge_tslc.cpp.asm @ 0x004806C0
     return this->FirstCall;
 }
 
 // Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetElapsedFirstCall() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806D0
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806D0, rge_tslc.cpp.asm @ 0x004806D0
     uint hours = 0;
     uint mins = 0;
 
-    const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0xB5);
+    const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp", 0xB5);
     this->Now = now;
 
     uint secs = (uint)((now - this->FirstCall) / 1000);
@@ -212,7 +220,7 @@ char* RGE_TimeSinceLastCall::GetElapsedFirstCall() {
 
 // Fully verified. Marker reconciliation coverage.
 void RGE_TimeSinceLastCall::Test() {
-    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480770
+    // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480770, rge_tslc.cpp.asm @ 0x00480770
     for (int i = 0; i < 100; ++i) {
         this->aTSLC[i] = 10;
     }

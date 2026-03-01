@@ -375,17 +375,19 @@ uchar TRIBE_Action_Hunt::update() {
         }
 
         float modifier = 1.0f;
-        if ((this->obj != nullptr) && (this->obj->attribute_type_held != -1) && (this->obj->owner != nullptr)) {
+        if ((this->obj != nullptr) && (this->task != nullptr) && (this->task->attribute_type2 != -1) && (this->obj->owner != nullptr)) {
             float* mods = *(float**)((char*)this->obj->owner + 0x50);
             if (mods != nullptr) {
-                modifier = mods[this->obj->attribute_type_held];
+                modifier = mods[this->task->attribute_type2];
             }
         }
 
+        float max_hold = 0.0f;
         if ((this->obj != nullptr) && (this->obj->master_obj != nullptr)) {
-            const float cap = (float)(int)this->obj->master_obj->attribute_max_amount * modifier - this->obj->attribute_amount_held;
+            max_hold = (float)(int)this->obj->master_obj->attribute_max_amount * modifier;
+            const float cap = max_hold - this->obj->attribute_amount_held;
             const float scaled = modifier * give_amount;
-            if (cap < scaled && modifier != 0.0f) {
+            if (cap < scaled) {
                 give_amount = give_amount - (scaled - cap) / modifier;
             }
         }
@@ -393,8 +395,7 @@ uchar TRIBE_Action_Hunt::update() {
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         if (this->obj != nullptr) {
             this->obj->set_attribute_amount(give_amount, 1, 0);
-            if ((this->obj->attribute_amount_held <= 0.0f) ||
-                ((this->obj->master_obj != nullptr) && ((float)(int)this->obj->master_obj->attribute_max_amount <= this->obj->attribute_amount_held))) {
+            if ((max_hold <= this->obj->attribute_amount_held) || (this->obj->attribute_amount_held <= 0.0f)) {
                 this->set_state(8);
                 return 0;
             }
