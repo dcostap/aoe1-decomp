@@ -166,7 +166,7 @@ void RGE_Action_Gather::first_in_stack(uchar param_1) {
     this->set_state(3);
 }
 
-// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403110
+// Fully verified. Source of truth: act_gath.cpp.decomp + act_gath.cpp.asm @ 0x00403110
 void RGE_Action_Gather::set_state(uchar param_1) {
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
@@ -220,9 +220,9 @@ void RGE_Action_Gather::set_state(uchar param_1) {
             return;
         }
 
-        move_to->subActionValue = 1;
         if (this->sub_actions != nullptr) {
             this->sub_actions->add_action(move_to);
+            move_to->setSubAction(1);
         }
         return;
     }
@@ -288,9 +288,9 @@ void RGE_Action_Gather::set_state(uchar param_1) {
                 return;
             }
 
-            move_to->subActionValue = 1;
             if (this->sub_actions != nullptr) {
                 this->sub_actions->add_action(move_to);
+                move_to->setSubAction(1);
             }
             return;
         }
@@ -314,7 +314,7 @@ void RGE_Action_Gather::set_state(uchar param_1) {
             return;
         }
 
-        move_to->subActionValue = 1;
+        move_to->setSubAction(1);
         if (this->sub_actions != nullptr) {
             this->sub_actions->add_action(move_to);
         }
@@ -330,7 +330,7 @@ void RGE_Action_Gather::set_state(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403590
+// Fully verified. Source of truth: act_gath.cpp.decomp + act_gath.cpp.asm @ 0x00403590
 uchar RGE_Action_Gather::update() {
     if ((this->targetID != -1) && (this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr) &&
         (this->obj->owner->world->object(this->targetID) == nullptr)) {
