@@ -6,7 +6,7 @@
 #include "globals.h"
 
 RGE_Diamond_Map_View::RGE_Diamond_Map_View() {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D360
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D360
     this->mouse_move_tolerance = 0;
 }
 
@@ -46,7 +46,7 @@ void RGE_Diamond_Map_View::draw_setup(int param_1) { RGE_Diamond_Map::draw_setup
 void RGE_Diamond_Map_View::draw_finish() { RGE_Diamond_Map::draw_finish(); }
 
 void RGE_Diamond_Map_View::draw() {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D890
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D890
     const ulong start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 0x10e);
     RGE_Diamond_Map::draw();
     const ulong end = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 0x112);
@@ -105,7 +105,7 @@ long RGE_Diamond_Map_View::handle_mouse_dbl_click(uchar param_1, long param_2, l
 long RGE_Diamond_Map_View::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_move_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D400
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D400
     (void)param_3;
     (void)param_4;
 
@@ -129,7 +129,7 @@ long RGE_Diamond_Map_View::mouse_left_down_action(long param_1, long param_2, in
 long RGE_Diamond_Map_View::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D480
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D480
     (void)param_3;
     (void)param_4;
 
@@ -198,7 +198,7 @@ long RGE_Diamond_Map_View::mouse_left_up_action(long param_1, long param_2, int 
 long RGE_Diamond_Map_View::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D620
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D620
     (void)param_3;
     (void)param_4;
 
@@ -223,7 +223,7 @@ long RGE_Diamond_Map_View::mouse_right_down_action(long param_1, long param_2, i
 long RGE_Diamond_Map_View::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D6A0
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D6A0
     (void)param_3;
     (void)param_4;
 
@@ -328,7 +328,7 @@ void RGE_Diamond_Map_View::draw_object(short param_1, short param_2, uchar param
 void RGE_Diamond_Map_View::draw_view_rect() { RGE_Diamond_Map::draw_view_rect(); }
 
 int RGE_Diamond_Map_View::command_make_do(long param_1, long param_2) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D8E0
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D8E0
     if (allow_user_commands == 0) {
         return 0;
     }

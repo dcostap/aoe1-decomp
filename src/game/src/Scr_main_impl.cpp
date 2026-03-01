@@ -68,7 +68,7 @@ void menu_dispatch_confirm_dialog(TRIBE_Screen_Main_Menu* owner) {
 } // namespace
 
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Menu") {
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049E6D0
+    // Fully verified. Source of truth: scr_main.cpp.decomp/asm @ 0x0049E6D0
     this->title1 = nullptr;
     this->title2 = nullptr;
     for (int i = 0; i < 7; ++i) this->button[i] = nullptr;
@@ -210,17 +210,23 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
 }
 
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049EC00
+    // Fully verified. Source of truth: scr_main.cpp.decomp/asm @ 0x0049EC00
     this->delete_panel((TPanel**)&this->title1);
     this->delete_panel((TPanel**)&this->title2);
-    for (int i = 0; i < 7; ++i) {
-        this->delete_panel((TPanel**)&this->button[i]);
-    }
-    this->delete_panel((TPanel**)&this->ms_title_text);
     this->delete_panel((TPanel**)&this->ms_copy_text1);
     this->delete_panel((TPanel**)&this->ms_copy_text2);
     this->delete_panel((TPanel**)&this->warning_text);
-    this->delete_panel((TPanel**)&this->circle_p_pic);
+    for (int i = 0; i < 7; ++i) {
+        this->delete_panel((TPanel**)&this->button[i]);
+    }
+    if (this->circle_p_pic != nullptr) {
+        delete this->circle_p_pic;
+        this->circle_p_pic = nullptr;
+    }
+    if (this->ms_title_text != nullptr) {
+        delete this->ms_title_text;
+        this->ms_title_text = nullptr;
+    }
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden.
@@ -297,8 +303,8 @@ long TRIBE_Screen_Main_Menu::wnd_proc(void* param_1, uint param_2, uint param_3,
     return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4);
 }
 long TRIBE_Screen_Main_Menu::handle_idle() {
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049ECD0
-    if (rge_base_game && rge_base_game->input_enabled == 0) {
+    // Fully verified. Source of truth: scr_main.cpp.decomp/asm @ 0x0049ECD0
+    if (rge_base_game->input_enabled == 0) {
         menu_enable_input();
     }
     return TPanel::handle_idle();
@@ -396,7 +402,7 @@ long TRIBE_Screen_Main_Menu::mouse_right_dbl_click_action(long param_1, long par
     return TScreenPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4);
 }
 long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049ED00
+    // Fully verified. Source of truth: scr_main.cpp.decomp/asm @ 0x0049ED00
     (void)param_2;
     (void)param_3;
     (void)param_5;
@@ -405,23 +411,20 @@ long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int pa
         return 0;
     }
 
-    if ((param_1 == 'C') || (param_1 == 'c')) {
+    if (param_1 == 'C') {
         TRIBE_Credits_Screen* credits = new TRIBE_Credits_Screen();
-        if (credits && credits->error_code == 0 && panel_system) {
-            panel_system->setCurrentPanel((char*)"Credits Screen", 0);
-            panel_system->destroyPanel((char*)"Main Menu");
-        } else if (credits) {
-            delete credits;
-        }
+        (void)credits;
+        panel_system->setCurrentPanel((char*)"Credits Screen", 0);
+        panel_system->destroyPanel((char*)"Main Menu");
         return 1;
     }
 
-    if (((param_1 == 'L') || (param_1 == 'l')) &&
-        rge_base_game &&
-        rge_base_game->rge_game_options.gameDeveloperModeValue) {
-        TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
-        if (!game->load_db_files()) {
-            menu_popup_resid(this, 0x7d7);
+    if (param_1 == 'L') {
+        if (rge_base_game->rge_game_options.gameDeveloperModeValue) {
+            TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+            if (!game->load_db_files()) {
+                menu_popup_resid(this, 0x7d7);
+            }
         }
         return 1;
     }
@@ -434,14 +437,10 @@ long TRIBE_Screen_Main_Menu::char_action(long param_1, short param_2) {
 }
 
 long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Fully verified. Source of truth: scr_main.cpp.decomp @ 0x0049EE00
-    if (param_1 && param_1->panelNameValue && (_stricmp(param_1->panelNameValue, "Confirm Dialog") == 0) && (param_2 == 0)) {
-        if (panel_system) {
-            panel_system->destroyPanel((char*)"Confirm Dialog");
-        }
-        if (rge_base_game && rge_base_game->prog_window) {
-            WinHelpA((HWND)rge_base_game->prog_window, "empires.hlp", HELP_FINDER, 0);
-        }
+    // Fully verified. Source of truth: scr_main.cpp.decomp/asm @ 0x0049EE00
+    if (param_1 && param_1->panelNameValue && (strcmp(param_1->panelNameValue, "Confirm Dialog") == 0) && (param_2 == 0)) {
+        panel_system->destroyPanel((char*)"Confirm Dialog");
+        WinHelpA((HWND)rge_base_game->prog_window, "empires.hlp", HELP_FINDER, 0);
         return 1;
     }
 
@@ -453,30 +452,18 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
 
             menu_disable_input();
             TribeSPMenuScreen* next = new TribeSPMenuScreen();
-            if (next && next->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
-                panel_system->destroyPanel((char*)"Main Menu");
-            } else {
-                if (next) {
-                    delete next;
-                }
-                menu_enable_input();
-            }
+            (void)next;
+            panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
+            panel_system->destroyPanel((char*)"Main Menu");
             return 1;
         }
 
         if ((TButtonPanel*)param_1 == this->button[1]) {
             menu_disable_input();
             TribeMPStartupScreen* next = new TribeMPStartupScreen();
-            if (next && next->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"MP Startup Screen", 0);
-                panel_system->destroyPanel((char*)"Main Menu");
-            } else {
-                if (next) {
-                    delete next;
-                }
-                menu_enable_input();
-            }
+            (void)next;
+            panel_system->setCurrentPanel((char*)"MP Startup Screen", 0);
+            panel_system->destroyPanel((char*)"Main Menu");
             return 1;
         }
 
@@ -492,22 +479,14 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
 
             menu_disable_input();
             TRIBE_Screen_Sed_Menu* next = new TRIBE_Screen_Sed_Menu();
-            if (next && next->error_code == 0) {
-                panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
-                panel_system->destroyPanel((char*)"Main Menu");
-            } else {
-                if (next) {
-                    delete next;
-                }
-                menu_enable_input();
-            }
+            (void)next;
+            panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
+            panel_system->destroyPanel((char*)"Main Menu");
             return 1;
         }
 
         if ((TButtonPanel*)param_1 == this->button[4]) {
-            if (rge_base_game) {
-                rge_base_game->close();
-            }
+            rge_base_game->close();
             return 1;
         }
     }
