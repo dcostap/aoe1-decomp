@@ -20,6 +20,7 @@
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Visible_Map.h"
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Map.h"
 #include "../include/RGE_Doppleganger_Creator.h"
 #include "../include/Item_Avail.h"
 #include "../include/Trade_Avail.h"
@@ -32,14 +33,20 @@
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 #include "../include/AIModule.h"
+#include "../include/BuildAIModule.h"
+#include "../include/ConstructionAIModule.h"
 #include "../include/TribeMainDecisionAIModule.h"
+#include "../include/TribeResourceAIModule.h"
 #include "../include/TribeStrategyAIModule.h"
 #include "../include/TribeInformationAIModule.h"
 #include "../include/TribeTacticalAIModule.h"
 #include "../include/TacticalAIGroup.h"
 #include "../include/DiplomacyAIModule.h"
+#include "../include/EmotionalAIModule.h"
 #include "../include/UnitAIModule.h"
 #include "../include/RGE_Game_Info.h"
+#include "../include/TChat.h"
+#include "../include/MouseClickInfo.h"
 
 #include <new>
 #include <stdlib.h>
@@ -79,6 +86,12 @@ int DAT_00886c48 = 0;
 int computerPlayerSetup[13] = {0};
 // Source of truth: tplayer.cpp.decomp @ 0x0051748E
 int allowAIToCheat = 1;
+static const int tribe_group_properties_num = 0x28;
+static const int tribe_group_properties[0x28] = {
+    0x7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+static int DAT_0086bc88 = 0;
+static int DAT_0086bc8c = 0;
 
 static int signed_mask_mod(int value, int mask) {
     int sign = value >> 0x1f;
@@ -395,8 +408,114 @@ void TRIBE_Player::do_resign(int param_1) { RGE_Player::do_resign(param_1); }
 void TRIBE_Player::changeToHumanPlayer() { RGE_Player::changeToHumanPlayer(); }
 void TRIBE_Player::changeToComputerPlayer() { RGE_Player::changeToComputerPlayer(); }
 char* TRIBE_Player::aiStatus(int param_1) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00514720 (pending full AI status formatting parity).
-    return RGE_Player::aiStatus(param_1);
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514720
+    TribeMainDecisionAIModule* ai = this->playerAI;
+    if (ai == nullptr) {
+        int cur_cp = this->world->currentUpdateComputerPlayer;
+        if (cur_cp != -1 && cur_cp > 0 && cur_cp < this->world->player_num) {
+            TRIBE_Player* cp = (TRIBE_Player*)this->world->players[cur_cp];
+            if (cp != nullptr && cp->playerAI != nullptr) {
+                TribeTacticalAIModule* tactical = (TribeTacticalAIModule*)cp->playerAI->tacticalAI;
+                const int controlling_cp = ((TRIBE_World*)this->world)->controllingComputerPlayer;
+                sprintf(this->aiStatusInformationValue, "ConCP %d CurCP %d AveUA(ms) %d/%d %s",
+                        controlling_cp,
+                        cur_cp,
+                        tactical->averageUpdateAreaTimeValue,
+                        tactical->updateAreaAverageTotal,
+                        tactical->updateAreaName());
+                return this->aiStatusInformationValue;
+            }
+        }
+        return (char*)"Invalid currentUpdateComputerPlayer";
+    }
+
+    BuildAIModule* build_ai = (BuildAIModule*)ai->buildAI;
+    ConstructionAIModule* construction_ai = (ConstructionAIModule*)ai->constructionAI;
+    TribeTacticalAIModule* tactical_ai = (TribeTacticalAIModule*)ai->tacticalAI;
+    TribeResourceAIModule* resource_ai = (TribeResourceAIModule*)ai->resourceAI;
+    TribeStrategyAIModule* strategy_ai = (TribeStrategyAIModule*)ai->strategyAI;
+    DiplomacyAIModule* diplomacy_ai = (DiplomacyAIModule*)ai->diplomacyAI;
+
+    if (param_1 == 1) {
+        sprintf(this->aiStatusInformationValue, "Build List:%s  City Plan:%s  Build:%s Next:%s Last:%s",
+                build_ai->buildListName(),
+                construction_ai->constructionPlanName(),
+                build_ai->currentBuildItemRequested(),
+                build_ai->nextBuildItemRequested(),
+                build_ai->lastBuildItemRequested());
+        return this->aiStatusInformationValue;
+    }
+
+    if (param_1 == 2) {
+        int need3 = tactical_ai->neededResource(3);
+        int need2 = tactical_ai->neededResource(2);
+        int need1 = tactical_ai->neededResource(1);
+        int need0 = tactical_ai->neededResource(0);
+        sprintf(this->aiStatusInformationValue2, "NeedRes: %s %d  %s %d  %s %d  %s %d",
+                resource_ai->resourceName(need0), tactical_ai->neededResourceAmount(0),
+                resource_ai->resourceName(need1), tactical_ai->neededResourceAmount(1),
+                resource_ai->resourceName(need2), tactical_ai->neededResourceAmount(2),
+                resource_ai->resourceName(need3), tactical_ai->neededResourceAmount(3));
+        return this->aiStatusInformationValue2;
+    }
+
+    if (param_1 == 3) {
+        sprintf(this->aiStatusInformationValue3, "Gat Act/Des: %s %d/%d  %s %d/%d  %s %d/%d  %s %d/%d",
+                resource_ai->resourceName(tactical_ai->neededResource(0)),
+                tactical_ai->actualGathererCount(0), tactical_ai->desiredGathererCount(0),
+                resource_ai->resourceName(tactical_ai->neededResource(1)),
+                tactical_ai->actualGathererCount(1), tactical_ai->desiredGathererCount(1),
+                resource_ai->resourceName(tactical_ai->neededResource(2)),
+                tactical_ai->actualGathererCount(2), tactical_ai->desiredGathererCount(2),
+                resource_ai->resourceName(tactical_ai->neededResource(3)),
+                tactical_ai->actualGathererCount(3), tactical_ai->desiredGathererCount(3));
+        return this->aiStatusInformationValue3;
+    }
+
+    if (param_1 == 4) {
+        sprintf(this->aiStatusInformationValue4, "Pers/SpecBL Food %d/%d Wood %d/%d Gold %d",
+                tactical_ai->strategicNumber(0x75),
+                tactical_ai->strategicNumber(0x9C),
+                tactical_ai->strategicNumber(0x78),
+                tactical_ai->strategicNumber(0x9D),
+                tactical_ai->strategicNumber(0x76));
+        return this->aiStatusInformationValue4;
+    }
+
+    if (param_1 == 5) {
+        sprintf(this->aiStatusInformationValue5, "Dip P1 %d/%d/%d  P2 %d/%d/%d",
+                diplomacy_ai->stance(1, 0), diplomacy_ai->stance(1, 1), diplomacy_ai->stance(1, 2),
+                diplomacy_ai->stance(2, 0), diplomacy_ai->stance(2, 1), diplomacy_ai->stance(2, 2));
+        return this->aiStatusInformationValue5;
+    }
+
+    if (param_1 == 6) {
+        int cur_cp = this->world->currentUpdateComputerPlayer;
+        int controlling_cp = ((TRIBE_World*)this->world)->controllingComputerPlayer;
+        int ave1 = 0;
+        int ave2 = 0;
+        const char* area_name = "";
+        if (cur_cp > 0 && cur_cp < this->world->player_num) {
+            TRIBE_Player* cp = (TRIBE_Player*)this->world->players[cur_cp];
+            if (cp != nullptr && cp->playerAI != nullptr) {
+                TribeTacticalAIModule* cp_tactical = (TribeTacticalAIModule*)cp->playerAI->tacticalAI;
+                ave1 = cp_tactical->averageUpdateAreaTimeValue;
+                ave2 = cp_tactical->updateAreaAverageTotal;
+                area_name = cp_tactical->updateAreaName();
+            }
+        }
+        sprintf(this->aiStatusInformationValue6, "Per:%s AttEnab:%d AttDly:%d ConCP:%d CurCP:%d Ave:%d/%d %s",
+                strategy_ai->ruleSetName(),
+                tactical_ai->attackEnabledValue,
+                tactical_ai->strategicNumber(0x68) / 0x3C,
+                controlling_cp,
+                cur_cp,
+                ave1, ave2,
+                area_name);
+        return this->aiStatusInformationValue6;
+    }
+
+    return (char*)"Invalid status line number.";
 }
 int TRIBE_Player::isEnemy(int param_1) { return RGE_Player::isEnemy(param_1); }
 int TRIBE_Player::isAlly(int param_1) { return RGE_Player::isAlly(param_1); }
@@ -407,8 +526,102 @@ void TRIBE_Player::setDiplomaticStance(int param_1, int param_2) {
     ((TRIBE_Command*)this->world->commands)->command_relation((short)this->id, (short)param_1, (short)param_2);
 }
 void TRIBE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005153D0 (pending full AI setup parity).
-    RGE_Player::loadAIInformation(param_1, param_2, param_3, param_4, param_5);
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005153D0
+    (void)param_5;
+    const uint save_rand = (uint)debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x863);
+    const int save_debug_random_on = debug_random_on;
+    debug_random_on = 0;
+
+    if (this->playerAI != nullptr) {
+        AIModule* ai_module = (AIModule*)this->playerAI;
+        BuildAIModule* build_ai = (BuildAIModule*)this->playerAI->buildAI;
+        ConstructionAIModule* construction_ai = (ConstructionAIModule*)this->playerAI->constructionAI;
+        TribeStrategyAIModule* strategy_ai = (TribeStrategyAIModule*)this->playerAI->strategyAI;
+        DiplomacyAIModule* diplomacy_ai = (DiplomacyAIModule*)this->playerAI->diplomacyAI;
+        EmotionalAIModule* emotional_ai = (EmotionalAIModule*)this->playerAI->emotionalAI;
+
+        switch (((TRIBE_Game*)rge_base_game)->mapType()) {
+        case 0: ai_module->logCommonHistory((char*)"We have an all water map."); break;
+        case 1: ai_module->logCommonHistory((char*)"We have a mostly water map."); break;
+        case 2: ai_module->logCommonHistory((char*)"We have a land and water map."); break;
+        case 3: ai_module->logCommonHistory((char*)"We have a mostly land map."); break;
+        case 4: ai_module->logCommonHistory((char*)"We have an all land map."); break;
+        default: ai_module->logCommonHistory((char*)"We do not have a specific map type.");
+        }
+
+        char none_name[256] = {};
+        char random_name[256] = {};
+        rge_base_game->get_string((long)0x2775, none_name, 0x100);
+        rge_base_game->get_string((long)0x277b, random_name, 0x100);
+
+        char build_list_name[256] = "";
+        char rule_set_name[256] = "";
+        bool default_build = (param_1 == nullptr || param_1[0] == '\0' || _stricmp(param_1, none_name) == 0);
+        bool random_build = (param_1 != nullptr && (_stricmp(param_1, random_name) == 0));
+        if (default_build || random_build) {
+            for (int i = 0; i < 16; ++i) {
+                this->intelligentBuildListAndRulesSelection(build_list_name, rule_set_name,
+                                                            ((TRIBE_Game*)rge_base_game)->mapType(),
+                                                            ((TRIBE_Game*)rge_base_game)->victoryType(),
+                                                            ((TRIBE_Game*)rge_base_game)->mapSize());
+                if (build_ai->loadBuildList(build_list_name, this) != 0) {
+                    break;
+                }
+            }
+        } else {
+            ai_module->logCommonHistory((char*)"Loading build list: %s", param_1);
+            build_ai->loadBuildList(param_1, this);
+        }
+
+        char city_plan_name[256] = "NONE";
+        if (param_2 != nullptr && param_2[0] != '\0' && _stricmp(param_2, none_name) != 0 && _stricmp(param_2, random_name) != 0) {
+            strcpy(city_plan_name, param_2);
+            ai_module->logCommonHistory((char*)"Loading city plan: %s", city_plan_name);
+        } else {
+            ai_module->logCommonHistory((char*)"Loading no city plan (influence).");
+        }
+        if (this->world != nullptr && this->world->map != nullptr) {
+            construction_ai->loadConstructionPlan(city_plan_name, this->world->map->map_height, this->world->map->map_width, 0.0f, 0.0f, 0.0f);
+        }
+
+        const char* rules_to_load = param_3;
+        if (rules_to_load == nullptr || rules_to_load[0] == '\0' || _stricmp(rules_to_load, random_name) == 0 ||
+            _stricmp(rules_to_load, "RandomGameSpecialized") == 0) {
+            rules_to_load = rule_set_name;
+        }
+        if (rules_to_load != nullptr && rules_to_load[0] != '\0') {
+            ai_module->logCommonHistory((char*)"Loading rule set: %s", rules_to_load);
+            strategy_ai->loadRules((char*)rules_to_load);
+        }
+
+        const int diff = rge_base_game->difficulty();
+        ai_module->logCommonHistory((char*)"Setting difficulty level to: %d", diff);
+        strategy_ai->setDifficultyLevel(diff);
+        this->playerAI->updateBuildAIWithObjects();
+
+        for (int i = 1; i < this->world->player_num; ++i) {
+            if (i == this->id) {
+                diplomacy_ai->setStance(i, 0, 0);
+                diplomacy_ai->setStance(i, 2, 100);
+            } else if (this->isAlly(i) != 0) {
+                diplomacy_ai->setStance(i, 0, 0x4A);
+                diplomacy_ai->setStance(i, 2, 0x18);
+            } else if (this->isNeutral(i) != 0) {
+                diplomacy_ai->setStance(i, 0, 0x18);
+                diplomacy_ai->setStance(i, 2, 0x4A);
+            }
+        }
+
+        for (int i = 1; i < this->world->player_num; ++i) {
+            const uchar can_change = (uchar)((this->isAlly(i) == 0) && (this->isNeutral(i) == 0));
+            diplomacy_ai->setChangeable(i, can_change);
+        }
+
+        emotional_ai->setOverallState(param_4);
+    }
+
+    debug_random_on = save_debug_random_on;
+    debug_srand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x8fd, save_rand);
 }
 void TRIBE_Player::sendUnitAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) { RGE_Player::sendUnitAIOrder(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
 void TRIBE_Player::processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) { RGE_Player::processAIOrder(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
@@ -526,8 +739,46 @@ void TRIBE_Player::scenario_load(int param_1, long* param_2, float param_3) {
 void TRIBE_Player::scenario_postsave(int param_1) { RGE_Player::scenario_postsave(param_1); }
 void TRIBE_Player::scenario_postload(int param_1, long* param_2, float param_3) { RGE_Player::scenario_postload(param_1, param_2, param_3); }
 void TRIBE_Player::load(int param_1) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005128A0 (complex load path not yet transliterated).
-    RGE_Player::load(param_1);
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005128A0
+    rge_read(param_1, &this->master_object_num, 2);
+    if (this->master_object_num < 1) {
+        this->master_objects = nullptr;
+    } else {
+        this->master_objects = (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
+        rge_read(param_1, this->master_objects, (int)this->master_object_num << 2);
+        for (short index = 0; index < this->master_object_num; ++index) {
+            if (this->master_objects[index] != nullptr) {
+                uchar master_type = 0;
+                rge_read(param_1, &master_type, 1);
+                RGE_Master_Static_Object* loaded = nullptr;
+                if (master_type == 'F') {
+                    loaded = new (std::nothrow) TRIBE_Master_Combat_Object(param_1, this->world->sprites, this->world->sounds, 1);
+                } else if (master_type == 'P') {
+                    loaded = new (std::nothrow) TRIBE_Master_Building_Object(param_1, this->world->sprites, this->world->sounds, 1);
+                } else if (master_type == 'Z') {
+                    loaded = new (std::nothrow) TRIBE_Master_Tree_Object(param_1, this->world->sprites, this->world->sounds, 1);
+                } else {
+                    this->load_master_object(param_1, index, master_type, this->world->sprites, this->world->sounds);
+                    continue;
+                }
+                this->master_objects[index] = loaded;
+            }
+        }
+    }
+
+    this->visible = new (std::nothrow) RGE_Visible_Map(param_1, this->world);
+    this->VR_List = new (std::nothrow) Visible_Resource_Manager(param_1, this);
+
+    this->objects = new (std::nothrow) TRIBE_Object_List();
+    this->objects->load_list(param_1, this->world);
+
+    this->sleeping_objects = new (std::nothrow) TRIBE_Object_List();
+    this->sleeping_objects->load_list(param_1, this->world);
+
+    this->doppleganger_objects = new (std::nothrow) RGE_Object_List();
+    if (save_game_version >= 7.09f) {
+        this->doppleganger_objects->load_list(param_1, this->world);
+    }
 }
 void TRIBE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519570
@@ -826,8 +1077,90 @@ void TRIBE_Player::save(int param_1) {
 void TRIBE_Player::save2(int param_1) { RGE_Player::save2(param_1); }
 void TRIBE_Player::save_info(int param_1) { RGE_Player::save_info(param_1); }
 void TRIBE_Player::random_start() {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00514010 (pending full random start parity).
-    RGE_Player::random_start();
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514010
+    bool found_ally = false;
+
+    if (this->objects != nullptr && this->objects->list == nullptr) {
+        RGE_Master_Static_Object* town_center = (this->master_objects != nullptr && this->master_object_num > 0x6d) ? this->master_objects[0x6d] : nullptr;
+        RGE_Master_Static_Object* villager = (this->master_objects != nullptr && this->master_object_num > 0x53) ? this->master_objects[0x53] : nullptr;
+        if (town_center != nullptr && this->world != nullptr && this->world->map != nullptr) {
+            float x = 0.0f;
+            float y = 0.0f;
+            int tries = 1;
+            const int max_x = this->world->map->map_width - 0x1e;
+            const int max_y = this->world->map->map_height - 0x1e;
+
+            do {
+                x = (float)((debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x631) * max_x) / 0x7fff + 0xf) + 0.5f;
+                y = (float)((debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x632) * max_y) / 0x7fff + 0xf) + 0.5f;
+                if (town_center->check_placement(this, y, x, nullptr, 0, 0, 1, 1, 1, 1) == 0) {
+                    break;
+                }
+                tries++;
+            } while (tries < 5000);
+
+            if (tries < 5000) {
+                TRIBE_Building_Object* tc = (TRIBE_Building_Object*)town_center->make_new_obj(this, y, x, 0.0f);
+                this->set_map_loc((short)((int)x), (short)((int)y));
+                this->set_view_loc(y, x);
+                if (tc != nullptr) {
+                    tc->build(10000.0f);
+                }
+
+                for (int spawned = 0; spawned < 3; ++spawned) {
+                    if (villager == nullptr) {
+                        break;
+                    }
+                    while (true) {
+                        const float vx = (float)(((debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x646) * 6) / 0x7fff) - 3) + x;
+                        const float vy = (float)(((debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x647) * 6) / 0x7fff) - 3) + y;
+                        if (vx >= 0.0f && vy >= 0.0f && vx < (float)this->world->map->map_width && vy < (float)this->world->map->map_height &&
+                            villager->check_placement(this, vy, vx, nullptr, 0, 0, 1, 1, 1, 1) == 0) {
+                            villager->make_new_obj(this, vy, vx, 0.0f);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        RGE_Static_Object* obj = this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, nullptr);
+        if (obj == nullptr && this->objects != nullptr && this->objects->list != nullptr) {
+            obj = this->objects->list->node;
+        }
+        if (obj != nullptr) {
+            this->set_map_loc((short)((int)obj->world_x), (short)((int)obj->world_y));
+            this->set_view_loc(obj->world_x, obj->world_y);
+        }
+    }
+
+    if ((rge_base_game->multiplayerGame() != 0 || rge_base_game->randomGame() != 0) && this->world->player_num > 1) {
+        for (int i = 1; i < this->world->player_num; ++i) {
+            if (i != this->id && this->isAlly(i) != 0) {
+                RGE_Static_Object* obj = this->objects->find_by_master_id(0x6d, 0.0f, 0.0f, 0, 0, nullptr);
+                if (obj == nullptr && this->objects->list != nullptr) {
+                    obj = this->objects->list->node;
+                }
+                if (obj != nullptr) {
+                    obj->explore_terrain(this->world->players[i], 0, -1);
+                    obj->unexplore_terrain(this->world->players[i], 0, -1);
+                }
+                found_ally = true;
+            }
+        }
+    }
+
+    if (this->world->curr_player == this->id && found_ally && this->world->player_num > 1) {
+        for (int i = 1; i < this->world->player_num; ++i) {
+            if (i != this->id) {
+                for (int slot = 1; slot < 9; ++slot) {
+                    if (rge_base_game->playerID(slot) == i) {
+                        ((TChat*)chat)->setInChatGroup(slot, this->isAlly(i));
+                    }
+                }
+            }
+        }
+    }
 }
 RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512F60
@@ -835,12 +1168,228 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, fl
     return RGE_Player::make_new_object(param_1, param_2, param_3, param_4, param_5);
 }
 void TRIBE_Player::analyize_selected_objects() {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005195D0 (pending full selected-object analysis parity).
-    RGE_Player::analyize_selected_objects();
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005195D0
+    int scan_index = 0;
+    DAT_0086bc8c = 0;
+    this->sel_object_properties = 0;
+    if (this->sel_count != 0) {
+        int selected_seen = 0;
+        RGE_Static_Object** sel_ptr = &this->sel_list[0];
+        do {
+            if (this->sel_count <= selected_seen) {
+                return;
+            }
+            RGE_Static_Object* obj = *sel_ptr;
+            if (obj != nullptr) {
+                if (obj->owner->id == this->id) {
+                    int obj_group = (int)obj->master_obj->object_group;
+                    if (obj_group >= 0 && obj_group < tribe_group_properties_num) {
+                        if (obj_group == 0x12) {
+                            this->sel_object_properties |= 0x16;
+                            DAT_0086bc8c = DAT_0086bc8c + 1;
+                            DAT_0086bc88 = obj->id;
+                            if (obj->hp >= 100.0f) {
+                                this->sel_object_properties |= 0x80;
+                            }
+                        } else {
+                            this->sel_object_properties |= (uint)tribe_group_properties[obj_group];
+                        }
+                    }
+                    short master_id = obj->master_obj->id;
+                    if ((master_id == 0x4f) || (master_id == 199) || (master_id == 0x45) || (master_id == 0x116)) {
+                        this->sel_object_properties |= 1;
+                    }
+                }
+                selected_seen = selected_seen + 1;
+            }
+            scan_index = scan_index + 1;
+            sel_ptr = sel_ptr + 1;
+        } while (scan_index < 0x19);
+    }
 }
 int TRIBE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005196E0 (pending full pointer-action parity).
-    return RGE_Player::get_mouse_pointer_action_vars(param_1, param_2, param_3);
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005196E0
+    RGE_Static_Object* target = this->world->object(param_1);
+    int action_text_base = 0;
+    *param_2 = 0;
+    *param_3 = 0;
+    if (target == nullptr) {
+        return 0;
+    }
+
+    int object_group;
+    int obj_player;
+    int rt_click_table;
+    int max_hp;
+    if (target->type == 0x19) {
+        RGE_Player* owner = target[1].owner;
+        object_group = owner->checksum;
+        obj_player = owner->currentUpdatePathingAttemptsValue;
+        rt_click_table = (int)(short)owner->id;
+        max_hp = owner->master_object_num;
+    } else {
+        object_group = (int)target->master_obj->object_group;
+        obj_player = (int)target->owner->id;
+        rt_click_table = (int)target->master_obj->id;
+        max_hp = (int)target->master_obj->hp;
+    }
+
+    if (obj_player < 0 || obj_player >= this->world->player_num) {
+        return 0;
+    }
+
+    this->analyize_selected_objects();
+    if (rt_click_table == 0x9e || rt_click_table == 0xa3) {
+        action_text_base = 0x32;
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    MouseClickInfo* table = game->MouseRightClickTable;
+    int table_size = game->MouseRightClickTableSize;
+    bool retry_other_table = false;
+
+retry_table:
+    MouseClickInfo* entry = nullptr;
+    if (table == nullptr || table_size <= 0) {
+        retry_other_table = false;
+    } else {
+        retry_other_table = true;
+        if (object_group >= 0 && object_group < table_size && table[object_group].object_group == object_group) {
+            entry = &table[object_group];
+        } else {
+            for (int i = 0; i < table_size; ++i) {
+                if (table[i].object_group == object_group) {
+                    entry = &table[i];
+                    break;
+                }
+            }
+        }
+        if (entry == nullptr) {
+            return 0;
+        }
+    }
+
+    int action = -1;
+    int text_id = -1;
+    const int relation = this->unitDiplomacy[obj_player];
+    switch (relation) {
+    case 0:
+        action = entry->self_action;
+        text_id = entry->self_text_id;
+        break;
+    case 1:
+        action = entry->gaia_action;
+        text_id = entry->gaia_text_id;
+        break;
+    case 2:
+        action = entry->ally_action;
+        text_id = entry->ally_text_id;
+        break;
+    case 3:
+        action = entry->neutral_action;
+        text_id = entry->neutral_text_id;
+        break;
+    case 4:
+        action = entry->enemy_action;
+        text_id = entry->enemy_text_id;
+        break;
+    default:
+        action = -1;
+        text_id = -1;
+        break;
+    }
+
+    if (action != -1) {
+redo_mouseFunc:
+        switch (action) {
+        case 0:
+            *param_2 = 0;
+            *param_3 = action_text_base + text_id;
+            break;
+        case 1:
+        case 8:
+            if ((this->sel_object_properties & 1) != 0 && target->object_state < 3) {
+                *param_2 = 4;
+                *param_3 = action_text_base + text_id;
+                break;
+            }
+            if (action == 8) {
+                action = 7;
+                goto redo_mouseFunc;
+            }
+            break;
+        case 2:
+            if ((this->sel_object_properties & 2) != 0) {
+                *param_2 = 5;
+                *param_3 = action_text_base + text_id;
+            }
+            break;
+        case 3:
+            if ((this->sel_object_properties & 4) != 0) {
+                *param_2 = 5;
+                *param_3 = action_text_base + text_id;
+            }
+            break;
+        case 4:
+            if ((this->sel_object_properties & 0x10) != 0) {
+                const int hp_now = (int)target->hp;
+                if ((DAT_0086bc8c != 1 || param_1 != DAT_0086bc88) && hp_now > 0 && hp_now < max_hp) {
+                    *param_2 = 5;
+                    *param_3 = action_text_base + text_id;
+                }
+            }
+            break;
+        case 5:
+            if ((this->sel_object_properties & 0x20) != 0) {
+                if (target->object_state == 0) {
+                    action_text_base = 0x32;
+                }
+                const int hp_now = (int)target->hp;
+                if (hp_now > 0 && hp_now < max_hp) {
+                    *param_2 = 3;
+                    *param_3 = action_text_base + text_id;
+                }
+            }
+            break;
+        case 6:
+        case 9:
+            if ((this->sel_object_properties & 0x40) != 0) {
+                *param_2 = 3;
+                *param_3 = action_text_base + text_id;
+                break;
+            }
+            if (action == 9) {
+                action = 1;
+                action_text_base = 0x32;
+                goto redo_mouseFunc;
+            }
+            break;
+        case 7:
+            if ((this->sel_object_properties & 0x80) != 0 &&
+                (object_group != 0x12 || this->attributes[0x1b] != 0.0f) &&
+                (object_group != 3 || ((this->attributes[0x1c] != 0.0f) && rt_click_table != 0x6d && rt_click_table != 0x114))) {
+                *param_2 = 5;
+                *param_3 = action_text_base + text_id;
+            }
+            break;
+        default:
+            *param_2 = 0;
+            *param_3 = 0;
+            break;
+        }
+    }
+
+    if (!retry_other_table) {
+        return 1;
+    }
+    if (*param_2 != 0 || *param_3 != 0) {
+        return 1;
+    }
+
+    table = game->MouseLeftClickTable;
+    table_size = game->MouseLeftClickTableSize;
+    retry_other_table = false;
+    goto retry_table;
 }
 uchar TRIBE_Player::command_make_move(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_move(param_1, param_2, param_3); }
 uchar TRIBE_Player::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) { return RGE_Player::command_make_work(param_1, param_2, param_3); }
@@ -880,12 +1429,111 @@ void TRIBE_Player::logMessage(char* param_1) {
     }
 }
 void TRIBE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x005159D0 (pending full notify parity).
-    RGE_Player::notify(param_1, param_2, param_3, param_4, param_5, param_6);
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005159D0
+    switch (param_3) {
+    case 0x201:
+        if (this->update_count == 0) {
+            this->update_count = 0x14;
+            RGE_Static_Object* attacked = this->world->object(param_4);
+            if (attacked != nullptr) {
+                const uint save_rand = (uint)debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x920);
+                const int save_debug_random_on = debug_random_on;
+                debug_random_on = 0;
+                if (this->world->curr_player == this->id) {
+                    const int sound_id = ((debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x920) * 4) / 0x7fff) + 0x0B;
+                    if (sound_id >= 0 && sound_id < this->world->sound_num) {
+                        RGE_Sound* snd = this->world->sounds[sound_id];
+                        if (snd != nullptr) {
+                            snd->play(1);
+                        }
+                    }
+                    ((TRIBE_Game*)rge_base_game)->add_notification_loc((long)((int)attacked->world_x), (long)((int)attacked->world_y));
+                }
+                debug_random_on = save_debug_random_on;
+                debug_srand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x931, save_rand);
+            }
+        }
+        break;
+    case 0x206:
+        rge_base_game->notification(2, (long)this->id, 0, 0, 0);
+        break;
+    case 0x207:
+        rge_base_game->notification(1, (long)this->id, 0, 0, 0);
+        break;
+    case 0x20c:
+        if (param_4 == 0x267) {
+            rge_base_game->notification(3, (long)this->id, 0, 0, 0);
+        }
+        break;
+    default:
+        break;
+    }
+
+    const uint save_rand = (uint)debug_rand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x949);
+    const int save_debug_random_on = debug_random_on;
+    debug_random_on = 0;
+    if (this->playerAI != nullptr) {
+        this->notifyAI(param_1, param_2, param_3, param_4, param_5, param_6);
+    }
+    debug_random_on = save_debug_random_on;
+    debug_srand("C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0x956, save_rand);
 }
 void TRIBE_Player::logStatus(FILE* param_1, int param_2) {
-    // TODO: Source of truth: tplayer.cpp.decomp @ 0x00518F00 (pending full status logging parity).
-    RGE_Player::logStatus(param_1, param_2);
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00518F00
+    if (param_1 == nullptr) {
+        return;
+    }
+
+    fprintf(param_1, "Player %d:\n", (int)this->id);
+    if (param_2 == 1) {
+        char civ_name[256] = {};
+        rge_base_game->get_string((long)((int)this->culture + 0x27f6), civ_name, 0x100);
+        if (this->playerAI == nullptr) {
+            fprintf(param_1, " Human Player: %s\n", civ_name);
+        } else {
+            BuildAIModule* build_ai = (BuildAIModule*)this->playerAI->buildAI;
+            ConstructionAIModule* construction_ai = (ConstructionAIModule*)this->playerAI->constructionAI;
+            TribeStrategyAIModule* strategy_ai = (TribeStrategyAIModule*)this->playerAI->strategyAI;
+            fprintf(param_1, " Computer Player: %s\n", civ_name);
+            fprintf(param_1, "  Build List: %s\n", build_ai->buildListName());
+            fprintf(param_1, "  City Plan : %s\n", construction_ai->constructionPlanName());
+            fprintf(param_1, "  VC File   : %s\n", strategy_ai->ruleSetName());
+        }
+    }
+
+    fprintf(param_1, " Points:\n");
+    fprintf(param_1, "   Combat    %ld\n", this->victory_conditions->get_victory_points_group(0));
+    fprintf(param_1, "   Economy   %ld\n", this->victory_conditions->get_victory_points_group(1));
+    fprintf(param_1, "   Religion  %ld\n", this->victory_conditions->get_victory_points_group(2));
+    fprintf(param_1, "   Science   %ld\n", this->victory_conditions->get_victory_points_group(3));
+    fprintf(param_1, "   Survival  %ld\n", this->victory_conditions->get_victory_points_id(0x16));
+    fprintf(param_1, "   Wonder    %ld\n", this->victory_conditions->get_victory_points_id(0x17));
+    fprintf(param_1, "    Total    %ld\n", this->victory_conditions->get_victory_points());
+    fprintf(param_1, " Population  %d\n", (int)this->attributes[0x0B]);
+    fprintf(param_1, " Kills       %ld\n", this->victory_conditions->get_attribute_id(0));
+    fprintf(param_1, " Kill Ratio  %ld\n", this->victory_conditions->get_attribute_id(2));
+    fprintf(param_1, " Razings     %ld\n", this->victory_conditions->get_attribute_id(1));
+    fprintf(param_1, " Food        %d\n", (int)this->attributes[0]);
+    fprintf(param_1, " Gold        %d\n", (int)this->attributes[2]);
+    fprintf(param_1, " Stone       %d\n", (int)this->attributes[3]);
+    fprintf(param_1, " Wood        %d\n", (int)this->attributes[1]);
+    fprintf(param_1, " Technology  %ld\n", this->victory_conditions->get_attribute_id(0x11));
+    fprintf(param_1, " Exploration %ld\n", this->victory_conditions->get_attribute_id(7));
+
+    if (this->playerAI != nullptr) {
+        BuildAIModule* build_ai = (BuildAIModule*)this->playerAI->buildAI;
+        TribeTacticalAIModule* tactical_ai = (TribeTacticalAIModule*)this->playerAI->tacticalAI;
+        fprintf(param_1, " Build AI: cur %s last %s progress %d/%d\n",
+                build_ai->currentBuildItemRequested(),
+                build_ai->lastBuildItemRequested(),
+                build_ai->numberItemsIntoBuildList(),
+                build_ai->buildListLength());
+        fprintf(param_1, " Civilians: total %d explorers %d/%d gatherers %d/%d\n",
+                tactical_ai->numberCivilians(),
+                tactical_ai->numberCivilianExplorers(), tactical_ai->desiredNumberCivilianExplorers(),
+                tactical_ai->numberGatherers(), tactical_ai->desiredNumberGatherers());
+        fprintf(param_1, " Soldiers: %d\n", tactical_ai->numberSoldiers());
+    }
 }
 void TRIBE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519490
