@@ -277,7 +277,7 @@ void RGE_RMM_Terrain_Generator::remove_area_from_lists(long param_1, long param_
 }
 
 uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line param_1) {
-    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00489030
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00489030 + rmm_terr.cpp.asm
     if (this->map_row_offset == nullptr || this->search_map_rows == nullptr || this->stack_offsets == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -289,13 +289,13 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
     memset(terrain_fairness_zones, 0, sizeof(terrain_fairness_zones));
     memset(terrain_fairness_zones_visited, 0, sizeof(terrain_fairness_zones_visited));
 
-    float in_zone = 0.0f;
-    float fairness_hit = 0.0f;
+    long in_zone = 0;
+    long fairness_hit = 0;
     long clump_size = 0;
     long max_x = this->map_width - 1;
     long max_y = this->map_height - 1;
 
-    if (param_1.avoid_hot_spots == 2 && this->info.hot_spot_num > 0 && this->map_zone != nullptr) {
+    if (param_1.avoid_hot_spots == 2 && this->info.hot_spot_num > 0) {
         for (long i = 0; i < this->info.hot_spot_num && i < 99; ++i) {
             RGE_Terrain_Hot_Spots* hot = &this->info.hot_spots[i];
             terrain_fairness_zones[i] = this->map_zone->get_zone_info(hot->x, hot->y);
@@ -314,12 +314,9 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
     uchar terrain_type = (uchar)param_1.terrain_type;
     this->link_stack_randomly(&loc_stack, base_terrain);
 
-    long clear_radius = 2;
-    if (param_1.clumps > 0) {
-        clear_radius = (long)(sqrt((double)param_1.terrain_size / (double)param_1.clumps) * 2.0);
-        if (clear_radius < 2) {
-            clear_radius = 2;
-        }
+    long clear_radius = (long)(sqrt((double)param_1.terrain_size / (double)param_1.clumps) * 2.0);
+    if (clear_radius < 2) {
+        clear_radius = 2;
     }
 
     if (param_1.clumps > 0) {
@@ -352,16 +349,16 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
                     this->push_stack(clump_stack, tx, ty + 1, 0.0f, 0.0f);
                 }
 
-                in_zone = in_zone + 1.0f;
+                in_zone = in_zone + 1;
                 clump_size = clump_size + 1;
                 clump_stack = clump_stack + 1;
 
-                if (param_1.avoid_hot_spots == 2 && this->map_zone != nullptr) {
+                if (param_1.avoid_hot_spots == 2) {
                     uchar zone = this->map_zone->get_zone_info(tx, ty);
                     for (long i = 0; i < this->info.hot_spot_num && i < 99; ++i) {
                         if (terrain_fairness_zones[i] == zone && terrain_fairness_zones_visited[i] == 0) {
                             terrain_fairness_zones_visited[i] = 1;
-                            fairness_hit = fairness_hit + 1.0f;
+                            fairness_hit = fairness_hit + 1;
                         }
                     }
                 }
@@ -369,9 +366,9 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
         }
     }
 
-    if (param_1.avoid_hot_spots == 2 && (long)fairness_hit < this->info.hot_spot_num) {
+    if (param_1.avoid_hot_spots == 2 && fairness_hit < this->info.hot_spot_num) {
         Map_Stack* clump_stack = &stack[clump_size];
-        while ((long)fairness_hit < this->info.hot_spot_num) {
+        while (fairness_hit < this->info.hot_spot_num) {
             long tx = 0;
             long ty = 0;
             float pop_cost = 0.0f;
@@ -382,8 +379,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
             RGE_Tile* tile = &this->map_row_offset[ty][tx];
             if (((tile->terrain_type & 0x1f) == base_terrain) &&
                 (this->check_terrain(terrain_type, tx, ty, param_1.spacing, base_terrain) != 0) &&
-                this->search_map_rows[ty][tx] < 0x1e &&
-                this->map_zone != nullptr) {
+                this->search_map_rows[ty][tx] < 0x1e) {
                 uchar zone = this->map_zone->get_zone_info(tx, ty);
                 long hit_index = this->info.hot_spot_num;
                 for (long i = 0; i < this->info.hot_spot_num && i < 99; ++i) {
@@ -393,7 +389,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
                     }
                 }
                 if (hit_index != this->info.hot_spot_num) {
-                    fairness_hit = fairness_hit + 1.0f;
+                    fairness_hit = fairness_hit + 1;
                     terrain_fairness_zones_visited[hit_index] = 1;
 
                     this->remove_area_from_lists(tx, ty, clear_radius);
@@ -412,7 +408,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
                         this->push_stack(clump_stack, tx, ty + 1, 0.0f, 0.0f);
                     }
 
-                    in_zone = in_zone + 1.0f;
+                    in_zone = in_zone + 1;
                     clump_size = clump_size + 1;
                     clump_stack = clump_stack + 1;
                 }
@@ -426,7 +422,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
             Map_Stack* clump_stack = &stack[0];
             long stack_count = clump_size;
             while (stack_count > 0) {
-                if ((long)in_zone < param_1.terrain_size) {
+                if (in_zone < param_1.terrain_size) {
                     long tx = 0;
                     long ty = 0;
                     float pop_cost = 0.0f;
@@ -461,7 +457,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
                                     this->push_stack(clump_stack, tx, ty + 1, 0.0f, push_cost);
                                 }
 
-                                in_zone = in_zone + 1.0f;
+                                in_zone = in_zone + 1;
                             }
                         }
                     }
@@ -496,7 +492,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line par
                     fill = 1;
                 } else if (ty > 0 &&
                            ((this->map_row_offset[ty - 1][tx].terrain_type & 0x1f) == terrain_type) &&
-                           (ty < max_y) &&
+                           (ty > max_y) &&
                            ((this->map_row_offset[ty + 1][tx].terrain_type & 0x1f) == terrain_type)) {
                     fill = 1;
                 }
