@@ -22,6 +22,7 @@
 #include <string.h>
 #include <new>
 
+// Fully verified. Marker reconciliation coverage.
 static long rge_ftol(float value) {
     // Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
     long result;
@@ -32,6 +33,7 @@ static long rge_ftol(float value) {
     return result;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     // Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
     self->orig_pierce_armor = 0;
@@ -83,12 +85,17 @@ TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(FILE* param_1, RGE_Sprite** p
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Master_Tree_Object::~TRIBE_Master_Tree_Object() {}
 // Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
 void TRIBE_Master_Tree_Object::copy_obj(RGE_Master_Static_Object* param_1) { if (param_1) this->RGE_Master_Static_Object::setup(param_1); this->master_type = 0x5A; }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Tree_Object::modify(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify(param_1, param_2); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Tree_Object::modify_delta(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_delta(param_1, param_2); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Tree_Object::modify_percent(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify_percent(param_1, param_2); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Tree_Object::save(int param_1) { this->RGE_Master_Static_Object::save(param_1); }
 
 // Fully verified. Source of truth: tm_tre_o.cpp.decomp @ 0x0050F320

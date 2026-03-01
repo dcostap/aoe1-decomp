@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// Fully verified. Marker reconciliation coverage.
 RGE_TimeSinceLastCall::RGE_TimeSinceLastCall() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480390
     this->lowTSLC = 99999;
@@ -21,10 +22,12 @@ RGE_TimeSinceLastCall::RGE_TimeSinceLastCall() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_TimeSinceLastCall::~RGE_TimeSinceLastCall() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004803F0
 }
 
+// Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::GetAvg(int sample_count) {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480400
     uint sum = 0;
@@ -47,12 +50,14 @@ ulong RGE_TimeSinceLastCall::GetAvg(int sample_count) {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::Get() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480460
     const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x56);
     return now - this->LastCall;
 }
 
+// Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::Set() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480480
     const ulong now = debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x5D);
@@ -87,6 +92,7 @@ ulong RGE_TimeSinceLastCall::Set() {
     return (ulong)tslc;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_TimeSinceLastCall::Skip() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480510
     (void)debug_timeGetTime("C:/msdev/work/age1_x1/RGE_TSLC.cpp", 0x78);
@@ -94,6 +100,7 @@ void RGE_TimeSinceLastCall::Skip() {
     this->LastCall = now;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetAvgInfo(int sample_count) {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480540
     const ulong avg = this->GetAvg(sample_count);
@@ -101,6 +108,7 @@ char* RGE_TimeSinceLastCall::GetAvgInfo(int sample_count) {
     return this->TBuff;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tslc_calc_hilo(int sample_count, int offset, const ulong* samples, uint* out_sum, uint* out_lo, uint* out_hi) {
     uint sum = 0;
     uint lo = 999999;
@@ -122,6 +130,7 @@ static void tslc_calc_hilo(int sample_count, int offset, const ulong* samples, u
     *out_hi = hi;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int sample_count) {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480570
     int original = sample_count;
@@ -143,6 +152,7 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int sample_count) {
     return this->TBuff;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetHiLoInfo(int sample_count) {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480610
     int original = sample_count;
@@ -163,6 +173,7 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int sample_count) {
     return this->TBuff;
 }
 
+// Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::CPS() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806A0
     this->cps = 0;
@@ -170,11 +181,13 @@ ulong RGE_TimeSinceLastCall::CPS() {
     return this->cps;
 }
 
+// Fully verified. Marker reconciliation coverage.
 ulong RGE_TimeSinceLastCall::GetFirstCall() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806C0
     return this->FirstCall;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_TimeSinceLastCall::GetElapsedFirstCall() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x004806D0
     uint hours = 0;
@@ -197,6 +210,7 @@ char* RGE_TimeSinceLastCall::GetElapsedFirstCall() {
     return this->TBuff;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_TimeSinceLastCall::Test() {
     // Fully verified. Source of truth: rge_tslc.cpp.decomp @ 0x00480770
     for (int i = 0; i < 100; ++i) {

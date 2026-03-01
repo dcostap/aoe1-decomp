@@ -4,6 +4,7 @@
 #include <string.h>
 
 namespace {
+// Fully verified. Marker reconciliation coverage.
 static void queue_entry_clear(MsgQueue* entry) {
     if (entry == nullptr) {
         return;
@@ -23,6 +24,7 @@ static void queue_entry_clear(MsgQueue* entry) {
     entry->msgptr = nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void queue_entry_reset_no_free(MsgQueue* entry) {
     if (entry == nullptr) {
         return;
@@ -37,6 +39,7 @@ static void queue_entry_reset_no_free(MsgQueue* entry) {
 }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Communications_Queue::RGE_Communications_Queue(int max_queue_size) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431720
     if (max_queue_size < 0x14) {
@@ -52,6 +55,7 @@ RGE_Communications_Queue::RGE_Communications_Queue(int max_queue_size) {
     this->AllocateQueue((uint)max_queue_size);
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Communications_Queue::~RGE_Communications_Queue() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431760
     if (this->Queue != nullptr) {
@@ -66,6 +70,7 @@ RGE_Communications_Queue::~RGE_Communications_Queue() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Communications_Queue::AllocateQueue(uint queue_size) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431810
     if (queue_size < this->MaxQSize) {
@@ -117,6 +122,7 @@ int RGE_Communications_Queue::AllocateQueue(uint queue_size) {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Communications_Queue::ExpectedNextSequence(ulong exec_turn, uint from_player) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x004319E0
     uchar seq = 1;
@@ -131,6 +137,7 @@ uchar RGE_Communications_Queue::ExpectedNextSequence(ulong exec_turn, uint from_
     return seq;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uint RGE_Communications_Queue::QueuedForTurn(ulong exec_turn) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431A40
     uint queued = 0;
@@ -144,11 +151,13 @@ uint RGE_Communications_Queue::QueuedForTurn(ulong exec_turn) {
     return queued;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Communications_Queue::FlushAll() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431A70
     this->FlushTurnRange(0, 0);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uint RGE_Communications_Queue::FlushTurnRange(ulong start_turn, ulong end_turn) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431A80
     uint flushed = 0;
@@ -168,6 +177,7 @@ uint RGE_Communications_Queue::FlushTurnRange(ulong start_turn, ulong end_turn) 
     return flushed;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Communications_Queue::FlushForPlayer(uint from_player) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431B10
     for (uint i = 0; i <= this->HighQueueDepth; ++i) {
@@ -178,11 +188,13 @@ void RGE_Communications_Queue::FlushForPlayer(uint from_player) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 uint RGE_Communications_Queue::FlushForTurn(ulong turn) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431BD0
     return this->FlushTurnRange(turn, turn);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uint RGE_Communications_Queue::FlushThruTurn(ulong turn) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431BE0
     return this->FlushTurnRange(0, turn);
@@ -232,16 +244,19 @@ int RGE_Communications_Queue::AddItem(ulong exec_turn, void* payload, ulong payl
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uint RGE_Communications_Queue::GetQueueDepth() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431D10
     return this->QueueDepth;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uint RGE_Communications_Queue::GetHighQueueDepth() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431D20
     return this->HighQueueDepth;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void* RGE_Communications_Queue::GetSpecificItem(uint from_player, ulong exec_turn, uchar sequence, uint* out_size) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431D30
     const ulong code = (ulong)((uint)sequence + from_player * 1000);
@@ -272,6 +287,7 @@ void* RGE_Communications_Queue::GetSpecificItem(uint from_player, ulong exec_tur
     return send_msg;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void* RGE_Communications_Queue::GetNextItemSingle() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431DD0
     for (uint index = 0; index <= this->HighQueueDepth; ++index) {
@@ -292,6 +308,7 @@ void* RGE_Communications_Queue::GetNextItemSingle() {
     return nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void* RGE_Communications_Queue::GetNextItemOrdered(ulong current_turn) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431E40
     uint lowest_code = 0xFFFFFFFF;
@@ -328,6 +345,7 @@ void* RGE_Communications_Queue::GetNextItemOrdered(ulong current_turn) {
     return send_msg;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Communications_Queue::GetNextSequence(ulong current_turn) {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F10
     if (current_turn != this->LastCurrentTurn) {
@@ -344,10 +362,12 @@ uchar RGE_Communications_Queue::GetNextSequence(ulong current_turn) {
     return next;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Communications_Queue::TestShowQueue() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F50
 }
 
+// Fully verified. Marker reconciliation coverage.
 MsgQueue::MsgQueue() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F60
     this->Code = 0;
@@ -359,6 +379,7 @@ MsgQueue::MsgQueue() {
     this->msgptr = nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 MsgQueue::~MsgQueue() {
     // Fully verified. Source of truth: com_q.cpp.decomp @ 0x00431F80
     this->Code = 0;

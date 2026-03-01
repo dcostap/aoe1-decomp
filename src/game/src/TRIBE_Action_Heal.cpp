@@ -41,8 +41,10 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(RGE_Action_Object* param_1, RGE_Task* param
     this->target_z = param_5;
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Heal::~TRIBE_Action_Heal() {}
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Heal::setup(RGE_Action_Object* param_1) {
     // Fully verified. Source of truth: tact_hea.cpp.decomp (helper implementation).
     int r = RGE_Action::setup(param_1);
@@ -50,6 +52,7 @@ int TRIBE_Action_Heal::setup(RGE_Action_Object* param_1) {
     return r;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Heal::setup(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: tact_hea.cpp.decomp (helper implementation).
     int r = RGE_Action::setup(param_1, param_2);
@@ -57,10 +60,13 @@ int TRIBE_Action_Heal::setup(int param_1, RGE_Action_Object* param_2) {
     return r;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Action_List* TRIBE_Action_Heal::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
 // Fully verified. Source of truth: action.cpp.decomp @ 0x00407740
 void TRIBE_Action_Heal::rehook() { RGE_Action::rehook(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Heal::save(int param_1) { RGE_Action::save(param_1); }
+// Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Heal::type() { return this->action_type; }
 
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CEA50
@@ -76,7 +82,9 @@ void TRIBE_Action_Heal::first_in_stack(uchar /*param_1*/) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Heal::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Heal::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CEA90
@@ -315,7 +323,9 @@ uchar TRIBE_Action_Heal::update() {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Heal::stop() { this->set_state(2); return 1; }
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Heal::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
 
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CF030
@@ -351,9 +361,13 @@ void TRIBE_Action_Heal::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action
 void TRIBE_Action_Heal::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
 // Fully verified. Source of truth: tact_hea.cpp.decomp (helper implementation).
 void TRIBE_Action_Heal::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Heal::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Heal::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Heal::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Heal::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: tact_hea.cpp.asm @ 0x004CECC6

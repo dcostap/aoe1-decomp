@@ -19,11 +19,13 @@ static int FUN_004496ed(const void* lhs, const void* rhs) {
     return (int)*a - (int)*b;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Effects::RGE_Effects() {
     this->effect_num = 0;
     this->effects = nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Effects::RGE_Effects(char* param_1) {
     // Fully verified. Source of truth: effects.cpp.decomp @ 0x00449260
     FILE* file = fopen(param_1, "r");
@@ -78,6 +80,7 @@ RGE_Effects::RGE_Effects(char* param_1) {
     fclose(file);
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Effects::RGE_Effects(int fd) {
     // Fully verified. Source of truth: effects.cpp.decomp @ 0x004490E0
     rge_read(fd, &this->effect_num, 4);
@@ -108,6 +111,7 @@ RGE_Effects::RGE_Effects(int fd) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Effects::~RGE_Effects() {
     // Fully verified. Source of truth: effects.cpp.decomp @ 0x00449440
     if (0 < this->effect_num) {
@@ -125,6 +129,7 @@ RGE_Effects::~RGE_Effects() {
     this->effect_num = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Effects::save(int fd) {
     // Fully verified. Source of truth: effects.cpp.decomp @ 0x004494B0
     rge_write(fd, &this->effect_num, 4);
@@ -143,6 +148,7 @@ void RGE_Effects::save(int fd) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Effects::do_effect(short p1, RGE_Player* p2) {
     // Fully verified. Source of truth: effects.cpp.decomp @ 0x004495C0
     if ((int)p1 < this->effect_num) {

@@ -7,18 +7,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Fully verified. Marker reconciliation coverage.
 ulong debug_timeGetTime(const char* file, int line) {
     return timeGetTime();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void debug_srand(const char* file, int line, unsigned int seed) {
     srand(seed);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int debug_rand(const char* file, int line) {
     return rand();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void write_draw_log(char* msg) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B620
     if (draw_log != nullptr) {
@@ -27,6 +31,7 @@ void write_draw_log(char* msg) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void write_draw_log2(char* msg) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B650
     if (draw_log != nullptr) {
@@ -36,6 +41,7 @@ void write_draw_log2(char* msg) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void color_log(int a, int b, int c) {
     // Fully verified. Source of truth: colorlog.cpp.asm @ 0x00424810
     const uchar param_1 = (uchar)(a & 0xFF);

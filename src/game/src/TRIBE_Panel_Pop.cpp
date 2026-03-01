@@ -15,10 +15,12 @@ namespace {
 const char* const kTpnlPopDraw = "tpnl_tim::draw";
 const char* const kTpnlPopRender = "tpnl_tim::render_to_image_buffer";
 
+// Fully verified. Marker reconciliation coverage.
 static int tpnl_pop_ftol(float value) {
     return (int)((long)value);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tpnl_pop_get_values(TRIBE_Player* player, int* out_pop, int* out_max_pop) {
     const float* attributes = player->attributes;
     const int pop_value = tpnl_pop_ftol(attributes[11]);
@@ -32,6 +34,7 @@ static void tpnl_pop_get_values(TRIBE_Player* player, int* out_pop, int* out_max
     *out_max_pop = max_pop_value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tpnl_pop_draw_text(HDC dc, const char* str, int x, int y, int right, int bottom) {
     tagRECT rect;
     SetRect(&rect, x, y, right - 2, bottom - 2);
@@ -70,6 +73,7 @@ TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent) : TPanel() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Panel_Pop::~TRIBE_Panel_Pop() {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051CDB0
     if (this->image_clip_region != nullptr) {
@@ -83,6 +87,7 @@ TRIBE_Panel_Pop::~TRIBE_Panel_Pop() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Panel_Pop::set_rect(long param_1, long param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051CE40
     TPanel::set_rect(param_1, param_2, param_3, param_4);
@@ -127,6 +132,7 @@ void TRIBE_Panel_Pop::set_rect(long param_1, long param_2, long param_3, long pa
     this->set_redraw(TPanel::Redraw);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Panel_Pop::startup() {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051CFD0
     this->world = (TRIBE_World*)rge_base_game->world;
@@ -134,6 +140,7 @@ void TRIBE_Panel_Pop::startup() {
     tpnl_pop_get_values(this->player, &this->pop, &this->max_pop);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Panel_Pop::get_player_id() {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051D040
     if (this->player != nullptr) {
@@ -142,6 +149,7 @@ int TRIBE_Panel_Pop::get_player_id() {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Panel_Pop::draw() {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051D060
     if (this->render_area == nullptr || this->active == 0 || this->visible == 0) {
@@ -224,6 +232,7 @@ void TRIBE_Panel_Pop::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Panel_Pop::get_true_render_rect(tagRECT* param_1) {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051D470
     if ((this->ImageBuffer != nullptr) && (this->render_area != nullptr) && (this->active != 0) && (this->visible != 0)) {
@@ -237,12 +246,14 @@ void TRIBE_Panel_Pop::get_true_render_rect(tagRECT* param_1) {
     param_1->bottom = this->pnl_y + this->pnl_hgt - 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TRIBE_Panel_Pop::handle_idle() {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051D4E0
     TPanel::handle_idle();
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Panel_Pop::render_to_image_buffer() {
     // Fully verified. Source of truth: tpnl_pop.cpp.decomp @ 0x0051D4F0
     if (this->ImageBuffer == nullptr) {

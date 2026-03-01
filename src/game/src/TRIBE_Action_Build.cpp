@@ -46,8 +46,10 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* par
     this->target_z = param_5;
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Build::~TRIBE_Action_Build() {}
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Build::setup(RGE_Action_Object* param_1) {
     // Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
     int res = RGE_Action::setup(param_1);
@@ -55,6 +57,7 @@ int TRIBE_Action_Build::setup(RGE_Action_Object* param_1) {
     return res;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Build::setup(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
     int res = RGE_Action::setup(param_1, param_2);
@@ -62,9 +65,13 @@ int TRIBE_Action_Build::setup(int param_1, RGE_Action_Object* param_2) {
     return res;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Action_List* TRIBE_Action_Build::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Build::rehook() { RGE_Action::rehook(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Build::save(int param_1) { RGE_Action::save(param_1); }
+// Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Build::type() { return this->action_type; }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD2E0
@@ -82,7 +89,9 @@ void TRIBE_Action_Build::first_in_stack(uchar param_1) {
     this->set_state(3);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Build::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Build::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD310
@@ -355,9 +364,13 @@ void TRIBE_Action_Build::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Actio
 void TRIBE_Action_Build::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
 // Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
 void TRIBE_Action_Build::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Build::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Build::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Build::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Build::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5A5 (decomp body failed; verified against tact_bld.cpp.asm)

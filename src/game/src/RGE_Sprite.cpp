@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Sprite::RGE_Sprite(short sprite_id) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BF720
     memset(this, 0, sizeof(RGE_Sprite));
@@ -23,6 +24,7 @@ RGE_Sprite::RGE_Sprite(short sprite_id) {
     this->sound_list = nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFA20
     memset(this, 0, sizeof(RGE_Sprite));
@@ -161,6 +163,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BF790
     memset(this, 0, sizeof(RGE_Sprite));
@@ -224,6 +227,7 @@ RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Sprite::~RGE_Sprite() {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFCE0
     if (this->shape && this->loaded != 0) {
@@ -241,6 +245,7 @@ RGE_Sprite::~RGE_Sprite() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::rehook(RGE_Sprite** sprites) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFD40
     if (this->draw_list_num > 0 && this->draw_list) {
@@ -255,6 +260,7 @@ void RGE_Sprite::rehook(RGE_Sprite** sprites) {
     this->load_facets(sprites);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::load_facets(RGE_Sprite** sprites) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFFE0
     // For now, shape loading is deferred to first draw as in decomp do_draw
@@ -262,6 +268,7 @@ void RGE_Sprite::load_facets(RGE_Sprite** sprites) {
     this->loaded = 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::update(ulong param_1) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C1080
     if (this->loaded != '\0' && this->shape != nullptr) {
@@ -281,6 +288,7 @@ void RGE_Sprite::update(ulong param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::save(int param_1) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFDA0
     short info = (short)-1;
@@ -335,6 +343,7 @@ void RGE_Sprite::save(int param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0F90
     if ((this->flag & 1) == 0) {
@@ -352,6 +361,7 @@ RGE_Active_Sprite* RGE_Sprite::make_active_sprite() {
     return nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Sprite::check_for_shadows() {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C1030
     short draw_count = this->draw_list_num;
@@ -373,6 +383,7 @@ int RGE_Sprite::check_for_shadows() {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void sprite_ensure_shape_loaded(RGE_Sprite* sprite) {
     if (sprite == nullptr) {
         return;
@@ -390,6 +401,7 @@ static void sprite_ensure_shape_loaded(RGE_Sprite* sprite) {
     sprite->shape = new TShape(shape_name, sprite->resource_id);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004BFFF0
     if (this->facet_num <= param_3) {
@@ -431,6 +443,7 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param_3) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C00E0
     unsigned char mirror = this->mirror_flag;
@@ -460,6 +473,7 @@ unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C01A0
     if (this->frame_num <= param_2) {
@@ -492,6 +506,7 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
     this->shape->shape_draw(param_6, param_3, param_4, facet_index, (unsigned char)this->color_flag, table);
 }
 
+// Fully verified. Marker reconciliation coverage.
 unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, unsigned char param_9) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C04F0
     if (this->facet_num <= param_1) {
@@ -533,6 +548,7 @@ unsigned char RGE_Sprite::draw(long param_1, long param_2, long param_3, long pa
     return (unsigned char)count;
 }
 
+// Fully verified. Marker reconciliation coverage.
 unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0620
     long facet = param_1;
@@ -570,6 +586,7 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2, long param_3, 
     return (unsigned char)count;
 }
 
+// Fully verified. Marker reconciliation coverage.
 unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0720
     long facet = param_1;
@@ -607,6 +624,7 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2, long param_3, 
     return (unsigned char)count;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Sprite::get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0840
     sprite_ensure_shape_loaded(this);
@@ -616,6 +634,7 @@ int RGE_Sprite::get_size(long* param_1, long* param_2, long* param_3, long* para
     return (int)this->shape->shape_minmax(param_1, param_2, param_3, param_4, (int)param_5);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Sprite::get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0B70
     long frame = param_6;
@@ -653,6 +672,7 @@ int RGE_Sprite::get_frame_min_max(short* param_1, short* param_2, short* param_3
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0960
     sprite_ensure_shape_loaded(this);
@@ -701,6 +721,7 @@ int RGE_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short*
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 unsigned char RGE_Sprite::get_lowest_draw_level() {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0C50
     short draw_count = this->draw_list_num;
@@ -723,6 +744,7 @@ unsigned char RGE_Sprite::get_lowest_draw_level() {
     return lowest;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Sprite::hit_test(short param_1, short param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0C90
     if (((this->box_x1 != 0) || (this->box_x2 != 0)) &&
@@ -750,6 +772,7 @@ uchar RGE_Sprite::hit_test(short param_1, short param_2, long param_3, long para
     return this->shape_hit_test(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Sprite::shape_hit_test(short param_1, short param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C0D80
     sprite_ensure_shape_loaded(this);

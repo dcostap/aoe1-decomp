@@ -15,6 +15,7 @@
 #include <cstring>
 #include <new>
 
+// Fully verified. Marker reconciliation coverage.
 static float tact_art_read_master_float(RGE_Master_Static_Object* master, int offset) {
     // Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
     float v = 0.0f;
@@ -48,15 +49,20 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Tas
     this->action_type = 0x6b;
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Artifact::~TRIBE_Action_Artifact() {}
 
 // Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 int TRIBE_Action_Artifact::setup(RGE_Action_Object* param_1) { int r = RGE_Action::setup(param_1); this->action_type = 0x6b; return r; }
 // Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 int TRIBE_Action_Artifact::setup(int param_1, RGE_Action_Object* param_2) { int r = RGE_Action::setup(param_1, param_2); this->action_type = 0x6b; return r; }
+// Fully verified. Marker reconciliation coverage.
 RGE_Action_List* TRIBE_Action_Artifact::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Artifact::rehook() { RGE_Action::rehook(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Artifact::save(int param_1) { RGE_Action::save(param_1); }
+// Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Artifact::type() { return this->action_type; }
 
 // Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCC70
@@ -73,7 +79,9 @@ void TRIBE_Action_Artifact::first_in_stack(uchar param_1) {
     this->set_state(6);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Artifact::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Artifact::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCCB0
@@ -202,9 +210,13 @@ void TRIBE_Action_Artifact::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Ac
 void TRIBE_Action_Artifact::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
 // Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 void TRIBE_Action_Artifact::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Artifact::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Artifact::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Artifact::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Artifact::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCF30

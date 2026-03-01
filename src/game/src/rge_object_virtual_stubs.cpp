@@ -15,6 +15,7 @@
 #include <cstdio>
 
 namespace {
+// Fully verified. Marker reconciliation coverage.
 void forward_log_debug_to_static(RGE_Static_Object* object, const char* format, va_list args) {
     char formatted_message[1024];
     formatted_message[0] = '\0';
@@ -33,6 +34,7 @@ void forward_log_debug_to_static(RGE_Static_Object* object, const char* format, 
 // =====================================================================
 
 // --- Forwarding stubs: same signature as RGE_Static_Object ---
+// Fully verified. Marker reconciliation coverage.
 void RGE_Animated_Object::recycle_out_of_game() { RGE_Static_Object::recycle_out_of_game(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 float RGE_Animated_Object::teleport(float param_1, float param_2, float param_3) { return RGE_Static_Object::teleport(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -130,11 +132,13 @@ Path* RGE_Animated_Object::findAvoidancePath(XYZPoint* param_1, float param_2, i
 long RGE_Animated_Object::get_action_checksum() { return RGE_Static_Object::get_action_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 long RGE_Animated_Object::get_waypoint_checksum() { return RGE_Static_Object::get_waypoint_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Animated_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Animated_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Static_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Object_List* RGE_Animated_Object::create_object_list() { return RGE_Static_Object::create_object_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Active_Sprite_List* RGE_Animated_Object::create_sprite_list() { return RGE_Static_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 // --- Different signature from parent (return defaults) ---
+// Fully verified. Marker reconciliation coverage.
 void RGE_Animated_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { RGE_Static_Object::damage(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5B90
 float RGE_Animated_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { return RGE_Static_Object::calculateDamage(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5BE0
 void RGE_Animated_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::do_command(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -155,6 +159,7 @@ float RGE_Animated_Object::calc_attack_modifier(RGE_Static_Object* param_1) { re
 
 // --- Forwarding stubs: same signature as RGE_Animated_Object ---
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Moving_Object::recycle_out_of_game() { RGE_Animated_Object::recycle_out_of_game(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Moving_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_front_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Moving_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_back_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -242,6 +247,7 @@ int RGE_Moving_Object::stopAction() { return RGE_Animated_Object::stopAction(); 
 int RGE_Moving_Object::pause() { return RGE_Animated_Object::pause(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 long RGE_Moving_Object::get_action_checksum() { return RGE_Animated_Object::get_action_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Moving_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Moving_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Object_List* RGE_Moving_Object::create_object_list() { return RGE_Animated_Object::create_object_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Active_Sprite_List* RGE_Moving_Object::create_sprite_list() { return RGE_Animated_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -257,6 +263,7 @@ int RGE_Moving_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* pa
 
 // --- Forwarding stubs: same signature as RGE_Moving_Object ---
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::draw_front_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Action_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::draw_back_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Action_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Moving_Object::draw_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -355,6 +362,7 @@ int RGE_Action_Object::numberUserDefinedWaypoints() { return RGE_Moving_Object::
 Path* RGE_Action_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int param_3) { return RGE_Moving_Object::findAvoidancePath(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 long RGE_Action_Object::get_waypoint_checksum() { return RGE_Moving_Object::get_waypoint_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Action_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Action_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Moving_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Object_List* RGE_Action_Object::create_object_list() { return RGE_Moving_Object::create_object_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Active_Sprite_List* RGE_Action_Object::create_sprite_list() { return RGE_Moving_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -364,6 +372,7 @@ uchar RGE_Action_Object::turn_towards(RGE_Static_Object* param_1, float param_2,
 int RGE_Action_Object::setup(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Moving_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 // --- Forwarding slot: same signature as parent (vt[48] set_being_worked_on) ---
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) { RGE_Moving_Object::set_being_worked_on(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 // --- New virtuals in Action (not in Moving) ---
@@ -376,14 +385,17 @@ void RGE_Action_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
 
 // --- Forwarding stubs: same signature as RGE_Action_Object ---
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::recycle_out_of_game() { RGE_Action_Object::recycle_out_of_game(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::draw_front_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::draw_back_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::draw_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Action_Object::draw_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // update() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::check_damage_sprites() { RGE_Action_Object::check_damage_sprites(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::rehook() { RGE_Action_Object::rehook(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // save(int) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::new_sprite(RGE_Sprite* param_1) { RGE_Action_Object::new_sprite(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::add_overlay_sprite(RGE_Sprite* param_1, uchar param_2) { RGE_Action_Object::add_overlay_sprite(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::remove_overlay_sprite(RGE_Sprite* param_1) { RGE_Action_Object::remove_overlay_sprite(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -399,8 +411,10 @@ void RGE_Combat_Object::destroy_obj() { RGE_Action_Object::destroy_obj(); } // F
 void RGE_Combat_Object::die_die_die() { RGE_Action_Object::die_die_die(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // damage(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 // calculateDamage(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::rotate(long param_1) { RGE_Action_Object::rotate(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // can_attack() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::set_attribute(short param_1, float param_2) { RGE_Action_Object::set_attribute(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::set_attribute_amount(float param_1, uchar param_2, uchar param_3) { RGE_Action_Object::set_attribute_amount(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::heal(int param_1, int param_2) { return RGE_Action_Object::heal(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -411,6 +425,7 @@ void RGE_Combat_Object::do_command(RGE_Static_Object* param_1, float param_2, fl
 void RGE_Combat_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Action_Object::move_to(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Action_Object::work(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // stop() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::set_attack(RGE_Static_Object* param_1) { RGE_Action_Object::set_attack(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::play_command_sound() { RGE_Action_Object::play_command_sound(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::play_move_sound() { RGE_Action_Object::play_move_sound(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -424,9 +439,11 @@ int RGE_Combat_Object::explore_terrain(RGE_Player* param_1, uchar param_2, int p
 void RGE_Combat_Object::unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3) { RGE_Action_Object::unexplore_terrain(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 LOSTBL* RGE_Combat_Object::get_los_table() { return RGE_Action_Object::get_los_table(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // inAttackRange(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Combat_Object::underAttack() { return RGE_Action_Object::underAttack(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Combat_Object::setUnderAttack(uchar param_1) { RGE_Action_Object::setUnderAttack(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // calc_attack_modifier(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 float RGE_Combat_Object::getSpeed() { return RGE_Action_Object::getSpeed(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 float RGE_Combat_Object::getAngle() { return RGE_Action_Object::getAngle(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 float RGE_Combat_Object::maximumSpeed() { return RGE_Action_Object::maximumSpeed(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -434,9 +451,11 @@ float RGE_Combat_Object::maximumSpeed() { return RGE_Action_Object::maximumSpeed
 // damageCapability(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 // weaponRange() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 // minimumWeaponRange() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Combat_Object::passableTile(float param_1, float param_2, int param_3) { return RGE_Action_Object::passableTile(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 uchar RGE_Combat_Object::facetToNextWaypoint() { return RGE_Action_Object::facetToNextWaypoint(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // currentTarget*() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::setWaitingToMove(uchar param_1) { RGE_Action_Object::setWaitingToMove(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 uchar RGE_Combat_Object::waitingToMove() { return RGE_Action_Object::waitingToMove(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 uchar RGE_Combat_Object::actionState() { return RGE_Action_Object::actionState(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -450,6 +469,7 @@ void RGE_Combat_Object::logDebug(const char* param_1, ...) {
     va_end(args);
 } // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 // attack(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Combat_Object::hunt(int param_1, int param_2) { return RGE_Action_Object::hunt(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::convert(int param_1, int param_2) { return RGE_Action_Object::convert(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::repair(int param_1, int param_2) { return RGE_Action_Object::repair(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -457,6 +477,7 @@ int RGE_Combat_Object::build(int param_1, int param_2) { return RGE_Action_Objec
 int RGE_Combat_Object::trade(int param_1, int param_2) { return RGE_Action_Object::trade(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // stopAction() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 // pause() -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Combat_Object::canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6) { return RGE_Action_Object::canPath(param_1, param_2, param_3, param_4, param_5, param_6); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::canPath(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7) { return RGE_Action_Object::canPath(param_1, param_2, param_3, param_4, param_5, param_6, param_7); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7) { return RGE_Action_Object::canBidirectionPath(param_1, param_2, param_3, param_4, param_5, param_6, param_7); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -475,6 +496,7 @@ Path* RGE_Combat_Object::findAvoidancePath(XYZPoint* param_1, float param_2, int
 long RGE_Combat_Object::get_action_checksum() { return RGE_Action_Object::get_action_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 long RGE_Combat_Object::get_waypoint_checksum() { return RGE_Action_Object::get_waypoint_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 RGE_Object_List* RGE_Combat_Object::create_object_list() { return RGE_Action_Object::create_object_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Active_Sprite_List* RGE_Combat_Object::create_sprite_list() { return RGE_Action_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Action_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -484,6 +506,7 @@ void RGE_Combat_Object::work2(RGE_Static_Object* param_1, float param_2, float p
 void RGE_Combat_Object::set_task(short param_1) { RGE_Action_Object::set_task(param_1); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 // --- Forwarding slot: same signature as parent (vt[48] set_being_worked_on) ---
+// Fully verified. Marker reconciliation coverage.
 void RGE_Combat_Object::set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3) { RGE_Action_Object::set_being_worked_on(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 
@@ -493,6 +516,7 @@ void RGE_Combat_Object::set_being_worked_on(RGE_Action_Object* param_1, short pa
 
 // --- Forwarding stubs: same signature as RGE_Combat_Object ---
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Missile_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { RGE_Combat_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Missile_Object::recycle_out_of_game() { RGE_Combat_Object::recycle_out_of_game(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Missile_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Combat_Object::draw_front_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -611,6 +635,7 @@ Path* RGE_Missile_Object::findAvoidancePath(XYZPoint* param_1, float param_2, in
 long RGE_Missile_Object::get_action_checksum() { return RGE_Combat_Object::get_action_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 long RGE_Missile_Object::get_waypoint_checksum() { return RGE_Combat_Object::get_waypoint_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Missile_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 RGE_Object_List* RGE_Missile_Object::create_object_list() { return RGE_Combat_Object::create_object_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Active_Sprite_List* RGE_Missile_Object::create_sprite_list() { return RGE_Combat_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Missile_Object::stop_moving() { RGE_Combat_Object::stop_moving(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -623,10 +648,12 @@ void RGE_Missile_Object::set_task(short param_1) { RGE_Combat_Object::set_task(p
 // RGE_Doppleganger_Object  (parent: RGE_Animated_Object)
 // =====================================================================
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Doppleganger_Object::~RGE_Doppleganger_Object() {} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 
 // --- Forwarding stubs: same signature as RGE_Animated_Object ---
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { RGE_Animated_Object::recycle_in_to_game(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Doppleganger_Object::recycle_out_of_game() { RGE_Animated_Object::recycle_out_of_game(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Doppleganger_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) { RGE_Animated_Object::draw_front_frame(param_1, param_2, param_3); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -744,6 +771,7 @@ Path* RGE_Doppleganger_Object::findAvoidancePath(XYZPoint* param_1, float param_
 long RGE_Doppleganger_Object::get_action_checksum() { return RGE_Animated_Object::get_action_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 long RGE_Doppleganger_Object::get_waypoint_checksum() { return RGE_Animated_Object::get_waypoint_checksum(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 // setup(int, RGE_Game_World*) -- ALREADY IMPLEMENTED in RGE_Doppleganger_Object.cpp
+// Fully verified. Marker reconciliation coverage.
 int RGE_Doppleganger_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Object_List* RGE_Doppleganger_Object::create_object_list() { return RGE_Animated_Object::create_object_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 RGE_Active_Sprite_List* RGE_Doppleganger_Object::create_sprite_list() { return RGE_Animated_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).

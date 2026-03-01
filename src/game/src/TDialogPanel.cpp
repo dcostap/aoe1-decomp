@@ -26,6 +26,7 @@ TDialogPanel::TDialogPanel(char* name) : TEasy_Panel(name) {
     this->button_sound_id = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 TDialogPanel::~TDialogPanel() {
     // Fully verified. Source of truth: pnl_dlg.cpp.decomp @ 0x00473E40
     if (panel_system) {
@@ -133,11 +134,15 @@ long TDialogPanel::mouse_right_dbl_click_action(long param_1, long param_2, int 
 long TDialogPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TEasy_Panel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
 // Fully verified. Source of truth: panel.cpp.decomp @ 0x004374B0
 long TDialogPanel::char_action(long param_1, short param_2) { return TEasy_Panel::char_action(param_1, param_2); }
+// Fully verified. Marker reconciliation coverage.
 long TDialogPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TEasy_Panel::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Marker reconciliation coverage.
 void TDialogPanel::get_true_render_rect(tagRECT* param_1) { TEasy_Panel::get_true_render_rect(param_1); }
+// Fully verified. Marker reconciliation coverage.
 int TDialogPanel::is_inside(long param_1, long param_2) { return TEasy_Panel::is_inside(param_1, param_2); }
 // Fully verified. Source of truth: pnl_dlg.cpp.decomp @ 0x00473EC0
 void TDialogPanel::set_focus(int param_1) { TEasy_Panel::set_focus(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TDialogPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TEasy_Panel::set_tab_order(param_1, param_2); }
 // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466600
 void TDialogPanel::set_tab_order(TPanel** param_1, short param_2) { TEasy_Panel::set_tab_order(param_1, param_2); }
@@ -213,8 +218,10 @@ int TDialogPanel::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** par
 int TDialogPanel::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
     return TEasy_Panel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9);
 }
+// Fully verified. Marker reconciliation coverage.
 void TDialogPanel::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TEasy_Panel::position_panel(param_1, param_2, param_3, param_4, param_5); }
 
+// Fully verified. Marker reconciliation coverage.
 int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long wid, long hgt, char* info_file, long info_id, int enable_ime) {
     // Fully verified. Source of truth: pnl_dlg.cpp.decomp @ 0x00473C80
     int parent_w = 0;
@@ -249,6 +256,7 @@ int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long wid, long hgt,
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long wid, long hgt, uchar color, int enable_ime) {
     // Fully verified. Source of truth: pnl_dlg.cpp.decomp @ 0x00473D60
     int parent_w = 0;

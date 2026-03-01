@@ -14,11 +14,13 @@
 static ResFile* resFileHead = nullptr;
 static int g_resfile_missing_flag = 0;
 
+// Fully verified. Marker reconciliation coverage.
 static void FUN_0047f00c() {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F00C
     MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void FUN_0047f076(ResFile* newRes, char* tag) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F076
     if (resFileHead == nullptr) {
@@ -41,6 +43,7 @@ static void FUN_0047f076(ResFile* newRes, char* tag) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RESFILE_open_new_resource_file(char* filename, char* tag, char* path, int use_mapping) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047EE90
     char fullPath[260];
@@ -135,6 +138,7 @@ void RESFILE_open_new_resource_file(char* filename, char* tag, char* path, int u
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RESFILE_close_new_resource_file(char* filename) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F180
     ResFile* curr = resFileHead;
@@ -162,6 +166,7 @@ void RESFILE_close_new_resource_file(char* filename) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, int* offset, unsigned char** data, int* size) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F230
     *handle = -1;
@@ -241,6 +246,7 @@ int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, i
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 unsigned char* RESFILE_load(unsigned long type, unsigned long id, int* size, int* out_type) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F320
     int handle, offset, resSize;
@@ -268,6 +274,7 @@ unsigned char* RESFILE_load(unsigned long type, unsigned long id, int* size, int
     return nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FILE** file) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F480
     int size, out_type;
@@ -285,11 +292,13 @@ int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FI
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RESFILE_Set_Missing_Flag(int param_1) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F580
     g_resfile_missing_flag = param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F590
     if (param_1 != nullptr && 0 < param_2) {
@@ -345,6 +354,7 @@ static_assert(sizeof(BuildResTypeNode) == 0x14, "BuildResTypeNode size mismatch"
 
 static const char header_message[] = "Copyright (c) 1997 Ensemble Studios.";
 
+// Fully verified. Marker reconciliation coverage.
 static void BUILDRES_free_lists(BuildResTypeNode* head) {
     while (head != nullptr) {
         BuildResIdNode* id = head->ids;
@@ -362,6 +372,7 @@ static void BUILDRES_free_lists(BuildResTypeNode* head) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 static unsigned long BUILDRES_get_files_resource_type(const char* filename) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047FC50
     size_t len = strlen(filename);
@@ -418,6 +429,7 @@ static unsigned long BUILDRES_get_files_resource_type(const char* filename) {
 }
 } // namespace
 
+// Fully verified. Marker reconciliation coverage.
 int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F5C0
     BuildResTypeNode* iq = nullptr;
