@@ -1145,6 +1145,14 @@ void TRIBE_Screen_Game::handle_game_update() {
                             }
                         }
                     }
+                    else if (this->runtime.world != nullptr && this->runtime.world->player_num > 1) {
+                        for (int i = 1; i < this->runtime.world->player_num; ++i) {
+                            RGE_Player* scan_player = this->runtime.world->players[i];
+                            if (scan_player == nullptr || ((const uchar*)scan_player)[0x80] == 0) {
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     command_cancel();
                     command_unselect();
@@ -2120,7 +2128,7 @@ void TRIBE_Screen_Game::draw() {
 }
 
 long TRIBE_Screen_Game::handle_paint() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00496550 (guard + paint dispatch shape).
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00496550.
     if (this->active == 0 || this->render_area == nullptr || this->parent_panel == nullptr) {
         return 0;
     }
@@ -2132,12 +2140,56 @@ long TRIBE_Screen_Game::handle_paint() {
     }
 
     const ulong start_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x5AA);
-    const long result = TPanel::handle_paint();
-    const ulong end_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x5D0);
-    if (rge_base_game != nullptr) {
-        rge_base_game->add_to_timing(0x11, end_time - start_time);
+    int draw_all_children = 1;
+    if (this->need_redraw != TPanel::RedrawFull &&
+        this->runtime.main_view != nullptr &&
+        this->runtime.main_view->get_focus() == 0) {
+        draw_all_children = 0;
+        if (panel_system != nullptr) {
+            TPanel* quick_message_dialog = panel_system->panel((char*)"Send Quick Message Dialog");
+            if (this->curr_child == quick_message_dialog) {
+                draw_all_children = 1;
+            } else {
+                TPanel* help_dialog = panel_system->panel((char*)"Help Dialog");
+                if (this->curr_child == help_dialog) {
+                    draw_all_children = 1;
+                }
+            }
+        }
     }
-    return result;
+
+    if (this->need_redraw != TPanel::NoRedraw) {
+        if (draw_all_children != 0) {
+            for (PanelNode* node = this->first_child_node; node != nullptr; node = node->next_node) {
+                if (node->panel != nullptr) {
+                    node->panel->set_redraw(this->need_redraw);
+                }
+            }
+            if (this->curr_child != nullptr && this->overlapping_children != 0) {
+                this->curr_child->set_overlapped_redraw(this, this, this->need_redraw);
+            }
+            this->draw();
+        }
+        this->need_redraw = TPanel::NoRedraw;
+        this->just_drawn = 1;
+    }
+
+    ulong other_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x5C2) - start_time;
+    for (PanelNode* node = this->first_child_node; node != nullptr; node = node->next_node) {
+        TPanel* child = node->panel;
+        const ulong child_start = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x5C9);
+        if (child != nullptr && (draw_all_children != 0 || child == this->curr_child)) {
+            child->handle_paint();
+        }
+        const ulong child_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x5D0) - child_start;
+        if (child != this->runtime.main_view && child != this->runtime.map_view) {
+            other_time += child_time;
+        }
+    }
+
+    rge_base_game->add_to_timing(0x11, other_time);
+    this->just_drawn = 0;
+    return 0;
 }
 
 long TRIBE_Screen_Game::handle_idle() {
@@ -2222,6 +2274,45 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2, int param_3
         this->runtime.tool_box->key_down_action(param_1, param_2, param_3, param_4, param_5) != 0) {
         return 1;
     }
+    const int game_over = (rge_base_game != nullptr && rge_base_game->prog_mode == 5) ? 1 : 0;
+
+    if (param_4 != 0 && param_5 != 0 && param_3 != 0) {
+        if (game_over == 0 && rge_base_game != nullptr) {
+            long mapped_key = param_1;
+            if (mapped_key >= 'a' && mapped_key <= 'z') {
+                mapped_key -= 0x20;
+            } else if ((mapped_key < 'A' || mapped_key > 'Z') && (mapped_key < '0' || mapped_key > '9')) {
+                mapped_key = 0;
+            }
+
+            if (mapped_key != 0) {
+                int& cheat_len = scr_game_field_i32(this, 0x734);
+                char* cheat_buffer = (char*)this + 0x738;
+                if (cheat_len < 0) {
+                    cheat_len = 0;
+                    cheat_buffer[0] = '\0';
+                }
+
+                if (cheat_len == 0x32) {
+                    ((char*)this)[0x76A] = (char)mapped_key;
+                    memmove(cheat_buffer, cheat_buffer + 1, 0x32);
+                    cheat_buffer[0x32] = '\0';
+                } else if (cheat_len < 0x32) {
+                    cheat_buffer[cheat_len] = (char)mapped_key;
+                    ++cheat_len;
+                    cheat_buffer[cheat_len] = '\0';
+                }
+
+                const int curr_player = (this->runtime.world != nullptr) ? (int)this->runtime.world->curr_player : 0;
+                if (rge_base_game->processCheatCode(curr_player, cheat_buffer) != 0) {
+                    cheat_len = 0;
+                    cheat_buffer[0] = '\0';
+                    return 1;
+                }
+            }
+        }
+        return 1;
+    }
 
     // CTRL+[0..9]: assign control group.
     if (param_4 != 0 && param_1 >= '0' && param_1 <= '9') {
@@ -2244,12 +2335,12 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2, int param_3
 
     if (param_5 != 0) {
         switch (param_1) {
-        case VK_F1: this->command_formation(0); return 1;
-        case VK_F2: this->command_formation(1); return 1;
-        case VK_F3: this->command_formation(2); return 1;
-        case VK_F4: this->command_formation(3); return 1;
-        case VK_F5: this->command_formation(4); return 1;
-        case VK_F6: this->command_formation(5); return 1;
+        case VK_F1: if (game_over == 0 && allow_user_commands != 0) { this->command_formation(0); return 1; } break;
+        case VK_F2: if (game_over == 0 && allow_user_commands != 0) { this->command_formation(1); return 1; } break;
+        case VK_F3: if (game_over == 0 && allow_user_commands != 0) { this->command_formation(2); return 1; } break;
+        case VK_F4: if (game_over == 0 && allow_user_commands != 0) { this->command_formation(3); return 1; } break;
+        case VK_F5: if (game_over == 0 && allow_user_commands != 0) { this->command_formation(4); return 1; } break;
+        case VK_F6: if (game_over == 0 && allow_user_commands != 0) { this->command_formation(5); return 1; } break;
         default: break;
         }
     }
@@ -2374,7 +2465,7 @@ long TRIBE_Screen_Game::action(TPanel* param_1, long param_2, ulong param_3, ulo
 
     char* panel_name = param_1->panelName();
     if (panel_name != nullptr) {
-        if (_stricmp(panel_name, "RestartDialog") == 0) {
+        if (strcmp(panel_name, "RestartDialog") == 0) {
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Game Screen", 0);
                 panel_system->destroyPanel((char*)"RestartDialog");
@@ -2387,7 +2478,7 @@ long TRIBE_Screen_Game::action(TPanel* param_1, long param_2, ulong param_3, ulo
                 rge_base_game->set_paused(0, 0);
             }
             return 1;
-        } else if (_stricmp(panel_name, "QuitGameDialog") == 0) {
+        } else if (strcmp(panel_name, "QuitGameDialog") == 0) {
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Game Screen", 0);
                 panel_system->destroyPanel((char*)"QuitGameDialog");
@@ -2401,7 +2492,7 @@ long TRIBE_Screen_Game::action(TPanel* param_1, long param_2, ulong param_3, ulo
                 rge_base_game->set_paused(0, 0);
             }
             return 1;
-        } else if (_stricmp(panel_name, "CloseProgramDialog") == 0) {
+        } else if (strcmp(panel_name, "CloseProgramDialog") == 0) {
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Game Screen", 0);
                 panel_system->destroyPanel((char*)"CloseProgramDialog");
@@ -2417,19 +2508,15 @@ long TRIBE_Screen_Game::action(TPanel* param_1, long param_2, ulong param_3, ulo
                 rge_base_game->set_paused(0, 0);
             }
             return 1;
-        } else if (_stricmp(panel_name, "QuitAndLoadDialog") == 0) {
+        } else if (strcmp(panel_name, "QuitAndLoadDialog") == 0) {
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Game Screen", 0);
                 panel_system->destroyPanel((char*)"QuitAndLoadDialog");
             }
             if (param_2 == 0) {
-                TribeLoadSavedGameScreen* load_screen = new TribeLoadSavedGameScreen();
-                if (load_screen != nullptr && load_screen->error_code == 0) {
-                    if (panel_system != nullptr) {
-                        panel_system->setCurrentPanel((char*)"Load Saved Game Screen", 0);
-                    }
-                } else {
-                    delete load_screen;
+                (void)new TribeLoadSavedGameScreen();
+                if (panel_system != nullptr) {
+                    panel_system->setCurrentPanel((char*)"Load Saved Game Screen", 0);
                 }
                 return 1;
             }
@@ -2437,7 +2524,7 @@ long TRIBE_Screen_Game::action(TPanel* param_1, long param_2, ulong param_3, ulo
                 rge_base_game->set_paused(0, 0);
             }
             return 1;
-        } else if (_stricmp(panel_name, "ResignDialog") == 0) {
+        } else if (strcmp(panel_name, "ResignDialog") == 0) {
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Game Screen", 0);
                 panel_system->destroyPanel((char*)"ResignDialog");
@@ -2451,7 +2538,7 @@ long TRIBE_Screen_Game::action(TPanel* param_1, long param_2, ulong param_3, ulo
                 rge_base_game->set_paused(0, 0);
             }
             return 1;
-        } else if (_stricmp(panel_name, "Diplomacy Dialog") == 0) {
+        } else if (strcmp(panel_name, "Diplomacy Dialog") == 0) {
             if (param_2 == 1) {
                 this->setup_buttons();
                 return 1;

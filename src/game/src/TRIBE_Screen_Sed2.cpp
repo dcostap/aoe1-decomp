@@ -556,8 +556,7 @@ void load_multi_victory_cond_from_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AEC95
 void FUN_004aec95() {
-    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AEC95
-    std::abort();
+    // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AEC95 (switch-table data anchor thunk)
 }
 
 
@@ -1105,7 +1104,7 @@ void SavePlayerActiveStatus(TRIBE_Screen_Sed* this_) {
     }
 
     if (active_players <= this_->player_num) {
-        this_->player_num = (short)active_players;
+        this_->player_num = static_cast<short>(active_players);
     }
 
     if (this_->victory_player_list) this_->victory_player_list->set_line(this_->player_num - 1);

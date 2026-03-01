@@ -590,6 +590,13 @@ TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game
     }
 }
 
+TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game_players, TChat* chat, _GUID application_guid)
+    : TCommunications_Handler(host_hwnd, max_game_players) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425A40
+    this->Chat = chat;
+    this->ApplicationGUID = application_guid;
+}
+
 TCommunications_Handler::~TCommunications_Handler() {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004261E0
     this->ClearRXandTX();

@@ -304,10 +304,7 @@ void Time_Line_Panel::position_panel(TPanel* param_1, long param_2, long param_3
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E860
 long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, long x, long y, long wid, long hgt, long axis_font_id, long body_font_id, long base_w, long base_h) {
-    if (out == nullptr || parent == nullptr) {
-        return 0;
-    }
-
+    // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E860, tpnl_tml.cpp.asm @ 0x0051E860
     long scaled_x = (parent->width() * x) / base_w;
     long scaled_y = (parent->height() * y) / base_h;
     long scaled_w = (parent->width() * wid) / base_w;
@@ -315,29 +312,22 @@ long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, lon
 
     Time_Line_Panel* pnl = new Time_Line_Panel();
     *out = pnl;
-    if (pnl == nullptr) {
+    if (pnl == nullptr || pnl->error_code != 0) {
+        parent->error_code = 1;
         return 0;
     }
 
     if (axis_font_id < 0) axis_font_id = 0x0B;
     if (body_font_id < 0) body_font_id = 0x0B;
-    RGE_Font* axis_font = (rge_base_game != nullptr) ? rge_base_game->get_font((int)axis_font_id) : nullptr;
-    RGE_Font* body_font = (rge_base_game != nullptr) ? rge_base_game->get_font((int)body_font_id) : nullptr;
+    RGE_Font* axis_font = rge_base_game->get_font((int)axis_font_id);
+    RGE_Font* body_font = rge_base_game->get_font((int)body_font_id);
 
-    void* axis_handle = axis_font ? axis_font->font : nullptr;
-    long axis_wid = axis_font ? axis_font->font_wid : 0;
-    long axis_hgt = axis_font ? axis_font->font_hgt : 0;
-
-    void* body_handle = body_font ? body_font->font : nullptr;
-    long body_wid = body_font ? body_font->font_wid : 0;
-    long body_hgt = body_font ? body_font->font_hgt : 0;
-
-    TDrawArea* draw_area = parent->render_area;
-    if (pnl->setup(draw_area, parent, scaled_x, scaled_y, scaled_w, scaled_h,
-                   axis_handle, axis_wid, axis_hgt,
-                   body_handle, body_wid, body_hgt,
+    if (pnl->setup(parent->renderArea(), parent, scaled_x, scaled_y, scaled_w, scaled_h,
+                   axis_font->font, axis_font->font_wid, axis_font->font_hgt,
+                   body_font->font, body_font->font_wid, body_font->font_hgt,
                    (char*)nullptr, (char*)nullptr,
                    0, 0, 0, 0) == 0) {
+        parent->error_code = 1;
         return 0;
     }
 
@@ -351,6 +341,7 @@ long Time_Line_Panel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y
                             void* body_font, long body_font_wid, long body_font_hgt,
                             char* background_file, char* special_events_file,
                             int fill_back, uchar back_color, int outline, uchar outline_color) {
+    // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051E9E0, tpnl_tml.cpp.asm @ 0x0051E9E0
     this->TPanel::setup(draw_area, parent, x, y, wid, hgt, '\0');
 
     this->fill_back = fill_back;
@@ -366,16 +357,14 @@ long Time_Line_Panel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y
     this->set_background(background_file);
     this->set_special_events(special_events_file);
 
-    uchar nearest_black = 0;
-    if (this->render_area != nullptr && this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
-        nearest_black = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0);
-    }
+    uchar nearest_black = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, 0);
     this->set_back_color(1, nearest_black);
     return 1;
 }
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EAB0
 void Time_Line_Panel::set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6) {
+    // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EAB0, tpnl_tml.cpp.asm @ 0x0051EAB0
     this->bevel_type = bevel_type;
     this->bevel_color1 = (uchar)c1;
     this->bevel_color2 = (uchar)c2;
@@ -387,6 +376,7 @@ void Time_Line_Panel::set_bevel_info(int bevel_type, int c1, int c2, int c3, int
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EB00
 int Time_Line_Panel::set_background(char* file) {
+    // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EB00, tpnl_tml.cpp.asm @ 0x0051EB00
     if (this->background_pic != nullptr) {
         delete this->background_pic;
         this->background_pic = nullptr;
@@ -409,6 +399,7 @@ int Time_Line_Panel::set_background(char* file) {
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EC10
 int Time_Line_Panel::set_background(char* file, long id) {
+    // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x0051EC10, tpnl_tml.cpp.asm @ 0x0051EC10
     if (this->background_pic != nullptr) {
         delete this->background_pic;
         this->background_pic = nullptr;
@@ -416,24 +407,20 @@ int Time_Line_Panel::set_background(char* file, long id) {
         this->background_pic_hgt = 0;
     }
 
-    if (id == -1) {
+    if (file != nullptr && *file != '\0' && _stricmp(file, "none") != 0) {
+        char name_buf[260];
+        if (strchr(file, '.') == nullptr) {
+            sprintf(name_buf, "%s.shp", file);
+        } else {
+            sprintf(name_buf, "%s", file);
+        }
+        this->background_pic = new TShape(name_buf, (int)id);
+    } else if (id != -1) {
+        this->background_pic = new TShape((char*)"", (int)id);
+    } else {
         return 0;
     }
 
-    char name_buf[260];
-    name_buf[0] = '\0';
-
-    const char* use = file;
-    if (use == nullptr || *use == '\0' || _stricmp(use, "none") == 0) {
-        use = "";
-    }
-
-    if (strchr(use, '.') == nullptr) {
-        sprintf(name_buf, "%s.shp", use);
-        use = name_buf;
-    }
-
-    this->background_pic = new TShape((char*)use, (int)id);
     if (this->background_pic != nullptr && this->background_pic->is_loaded() == 0) {
         delete this->background_pic;
         this->background_pic = nullptr;

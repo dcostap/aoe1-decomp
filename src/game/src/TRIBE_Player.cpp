@@ -873,7 +873,7 @@ uchar TRIBE_Player::check_obj_cost(short param_1, short* param_2, float param_3,
     }
 
     TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_objects[param_1];
-    if (master == nullptr || master->master_type < 'F') {
+    if (master == nullptr || static_cast<unsigned char>(master->master_type) < static_cast<unsigned char>('F')) {
         if (param_2 != nullptr) {
             *param_2 = -1;
         }
@@ -948,7 +948,7 @@ uchar TRIBE_Player::pay_obj_cost(short param_1, float param_2, int param_3) {
 void TRIBE_Player::reimburse_obj_cost(short param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513D00
     TRIBE_Master_Combat_Object* master = (TRIBE_Master_Combat_Object*)this->master_objects[param_1];
-    if (master->master_type >= 'F') {
+    if (static_cast<unsigned char>(master->master_type) >= static_cast<unsigned char>('F')) {
         Attribute_Cost* cost = &master->build_inventory[0];
         for (int i = 0; i < 3; ++i) {
             if ((cost[i].type >= 0) && (cost[i].flag != 0)) {
@@ -2025,7 +2025,7 @@ static void interface_obj_cost(TRIBE_Player* player, short obj_id,
 
     can_afford = player->check_obj_cost(obj_id, nullptr, 1.0f, 0);
     master = (TRIBE_Master_Combat_Object*)player->master_objects[(int)obj_id];
-    if ((master == nullptr) || (master->master_type < 'F')) {
+    if ((master == nullptr) || (static_cast<unsigned char>(master->master_type) < static_cast<unsigned char>('F'))) {
         return;
     }
 

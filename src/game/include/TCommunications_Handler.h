@@ -90,6 +90,7 @@ struct COMMPLAYEROPTIONS {
 class TCommunications_Handler {
 public:
     TCommunications_Handler(void* host_hwnd, uchar max_game_players);
+    TCommunications_Handler(void* host_hwnd, uchar max_game_players, TChat* chat, _GUID application_guid);
     ~TCommunications_Handler();
 
     int IsPaused();

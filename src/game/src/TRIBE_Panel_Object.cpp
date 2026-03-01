@@ -313,7 +313,7 @@ unsigned char TRIBE_Panel_Object::get_mode() {
 }
 
 void TRIBE_Panel_Object::draw() {
-    // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051B190
+    // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190
     if (this->render_area == nullptr || this->active == 0 || this->visible == 0) {
         this->need_redraw = TPanel::NoRedraw;
         return;
