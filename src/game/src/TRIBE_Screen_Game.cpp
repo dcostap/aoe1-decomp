@@ -254,7 +254,7 @@ static int scr_game_get_player_age(RGE_Player* player) {
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel((char*)"Game Screen") {
-    // Source of truth: scr_game.cpp.decomp @ 0x00493D60.
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00493D60
     // Parity-first: in-game rendering/input routes through TRIBE_Main_View/TRIBE_Diamond_Map_View.
     memset(&this->runtime, 0, sizeof(this->runtime));
     memset(this->shim_padding, 0, sizeof(this->shim_padding));

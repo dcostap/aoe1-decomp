@@ -14,11 +14,13 @@
 #include "../include/TribeInformationAIModule.h"
 #include "../include/TribeMainDecisionAIModule.h"
 #include "../include/TribeResourceAIModule.h"
+#include "../include/TribeStrategyAIModule.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/UnitAIModule.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
+#include <cmath>
 #include <cstring>
 #include <cstdlib>
 #include <new>
@@ -675,13 +677,61 @@ void TribeTacticalAIModule::logGroupDebug(int param_1, char* param_2, ...) {
     (void)param_2;
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F0BC0. clearArea transliteration is blocked on missing pathing/task helpers.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0BC0
 int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, float param_4, float param_5) {
-    (void)param_1;
-    (void)param_2;
-    (void)param_3;
-    (void)param_4;
-    (void)param_5;
+    if ((busyWithAction(param_1, -1) == 1) && (this->md != nullptr)) {
+        RGE_Static_Object* unitObj = this->md->object(param_1);
+        if (unitObj != nullptr) {
+            float bestX = -1.0f;
+            float bestY = -1.0f;
+            float bestDistance = -1.0f;
+            float testX = -1.0f;
+            float testY = -1.0f;
+
+            for (int i = 0; i < 8; ++i) {
+                switch (i) {
+                    case 0:
+                        testX = param_2 - 2.0f;
+                        testY = param_3 - 2.0f;
+                        break;
+                    case 1:
+                    case 5:
+                        testX = (param_4 + param_2) * 0.5f;
+                        break;
+                    case 2:
+                        testX = param_4 + 2.0f;
+                        break;
+                    case 3:
+                    case 7:
+                        testY = (param_5 + param_3) * 0.5f;
+                        break;
+                    case 4:
+                        testY = param_5 + 2.0f;
+                        break;
+                    case 6:
+                        testX = param_2 - 2.0f;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (unitObj->passableTile(testX, testY, 1) != 0) {
+                    float distance = unitObj->distance_to_position(testX, testY, unitObj->world_z);
+                    if ((bestDistance == -1.0f) || (distance < bestDistance)) {
+                        bestX = testX;
+                        bestY = testY;
+                        bestDistance = distance;
+                    }
+                }
+            }
+
+            if (bestDistance != -1.0f) {
+                moveUnit(param_1, bestX, bestY, 100);
+                return 1;
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -712,8 +762,103 @@ void TribeTacticalAIModule::removeObject(int param_1) {
     }
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F13F0. evaluateCivilianDistribution transliteration is blocked on missing info-AI helpers.
-void TribeTacticalAIModule::evaluateCivilianDistribution() {}
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F13F0
+void TribeTacticalAIModule::evaluateCivilianDistribution() {
+    if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->visible == nullptr)) {
+        return;
+    }
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    if (infoAI == nullptr) {
+        return;
+    }
+
+    int exploredPercent = static_cast<int>(this->md->player->visible->percentExplored());
+    ensureManagedArrayCapacity(this->playersToAttack, 1);
+    if (this->playersToAttack.maximumSizeValue < 1 || this->playersToAttack.value == nullptr) {
+        return;
+    }
+
+    int targetPlayer = -1;
+    if (this->playersToAttack.numberValue > 0) {
+        targetPlayer = this->playersToAttack.value[0];
+    }
+    int ownedByTarget = infoAI->numberGameIDsOwnedBy(-1, targetPlayer);
+    int civilianCount = this->civilians.numberValue;
+
+    if (civilianCount < 3) {
+        int desiredExplorers = 1;
+        if (civilianCount == 1) {
+            this->desiredNumberGatherersValue = 0;
+        } else {
+            int gathererCap = this->sn[5];
+            this->desiredNumberGatherersValue = 1;
+            if ((gathererCap != -1) && (gathererCap < 1)) {
+                this->desiredNumberGatherersValue = gathererCap;
+            }
+            desiredExplorers = civilianCount - this->desiredNumberGatherersValue;
+            this->civilianExplorers.desiredNumberValue = desiredExplorers;
+            int explorerCap = this->sn[3];
+            if ((explorerCap != -1) && (explorerCap < desiredExplorers)) {
+                this->civilianExplorers.desiredNumberValue = explorerCap;
+                displayCivilianDistribution();
+                updateGathererDistribution();
+                return;
+            }
+        }
+        this->civilianExplorers.desiredNumberValue = desiredExplorers;
+        displayCivilianDistribution();
+        updateGathererDistribution();
+        return;
+    }
+
+    ensureManagedArrayCapacity(this->civilians, 1);
+    if (this->civilians.maximumSizeValue < 1 || this->civilians.value == nullptr) {
+        return;
+    }
+
+    if (infoAI->fullyExploredZone(this->civilians.value[0]) == 1) {
+        int desiredExplorers = static_cast<int>(std::ceil(static_cast<double>(this->sn[0]) *
+                                                          static_cast<double>(civilianCount) * 0.01));
+        this->civilianExplorers.desiredNumberValue = desiredExplorers;
+        int soldierExplorers = numberSoldierExplorers();
+        if (this->sn[0x12] < soldierExplorers + this->civilianExplorers.desiredNumberValue) {
+            this->civilianExplorers.desiredNumberValue = this->sn[0x12] - soldierExplorers;
+        }
+        int explorerCap = this->sn[3];
+        if ((explorerCap != -1) && (explorerCap < this->civilianExplorers.desiredNumberValue)) {
+            this->civilianExplorers.desiredNumberValue = explorerCap;
+        }
+    } else {
+        this->civilianExplorers.desiredNumberValue = 0;
+    }
+
+    if ((exploredPercent < this->sn[0x20]) || (ownedByTarget <= this->sn[0x91])) {
+        if (this->sn[0xB3] <= exploredPercent) {
+            int halfExplorers = this->civilianExplorers.desiredNumberValue / 2;
+            if (halfExplorers < 1) {
+                halfExplorers = 0;
+            }
+            this->civilianExplorers.desiredNumberValue = halfExplorers;
+        }
+    } else {
+        int maxExplorers = this->sn[0x23];
+        if (maxExplorers < this->civilianExplorers.desiredNumberValue) {
+            this->civilianExplorers.desiredNumberValue = maxExplorers;
+        }
+    }
+
+    if (this->zoomingToNextAge == 1) {
+        this->civilianExplorers.desiredNumberValue = 0;
+    }
+
+    this->desiredNumberGatherersValue = civilianCount - this->civilianExplorers.desiredNumberValue;
+    if ((this->sn[5] != -1) && (this->sn[5] < this->desiredNumberGatherersValue)) {
+        this->desiredNumberGatherersValue = this->sn[5];
+    }
+
+    displayCivilianDistribution();
+    updateGathererDistribution();
+}
 
 // TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F1600. taskCivilians transliteration is blocked on missing gatherer/task helpers.
 int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
@@ -722,10 +867,136 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
     return 0;
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F1E10. taskIdleSoldiers transliteration is blocked on missing tactical helper graph.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F1E10
 void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned long param_2) {
-    (void)param_1;
-    (void)param_2;
+    if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr)) {
+        this->nextIdleSoldierGroupToTaskValue = -1;
+        return;
+    }
+
+    TacticalAIGroup* group = this->groups.next;
+    if (this->nextIdleSoldierGroupToTaskValue != -1) {
+        while ((group != &this->groups) && (group != nullptr) && (group->id() != this->nextIdleSoldierGroupToTaskValue)) {
+            group = group->next;
+        }
+        if ((group == nullptr) || (group->id() != this->nextIdleSoldierGroupToTaskValue)) {
+            group = this->groups.next;
+        }
+    }
+
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    TribeStrategyAIModule* strategyAI = reinterpret_cast<TribeStrategyAIModule*>(&this->md->strategyAI);
+    RGE_Game_World* world = this->md->player->world;
+
+    while (true) {
+        while (true) {
+            if ((group == &this->groups) || (group == nullptr)) {
+                this->nextIdleSoldierGroupToTaskValue = -1;
+                return;
+            }
+
+            int type = group->type();
+            if ((type != 0x6B) && (type != 0x6C) && (type != 0x6A)) {
+                int action = group->action();
+                if ((action == 0) || (action == 1)) {
+                    break;
+                }
+            }
+            group = group->next;
+        }
+
+        int isGathered = 1;
+        bool readyToTask = true;
+        if (group->consecutiveGatherAttemptsValue < 0x0B) {
+            isGathered = group->isGathered(this, this->md);
+        }
+
+        if (group->numberUnits() < group->desiredNumberUnits()) {
+            RGE_Static_Object* commanderObj = this->md->object(group->commander());
+            RGE_Static_Object* townCenterObj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+            if ((commanderObj == nullptr) || (townCenterObj == nullptr)) {
+                readyToTask = false;
+            } else {
+                uchar commanderZone = commanderObj->currentZone();
+                uchar townZone = commanderObj->lookupZone(static_cast<int>(townCenterObj->world_y),
+                                                          static_cast<int>(townCenterObj->world_x));
+                if (commanderZone == townZone) {
+                    readyToTask = false;
+                } else {
+                    group->setDesiredNumberUnits(group->numberUnits());
+                }
+            }
+        } else if (isGathered == 0) {
+            readyToTask = false;
+        } else if (group->allUnitsIdle(this->md, 1) == 0) {
+            readyToTask = false;
+        } else {
+            int type = group->type();
+            if ((type == 0x66) || (type == 0x69)) {
+                if ((infoAI == nullptr) || (infoAI->fullyExploredZone(group->commander()) == 0)) {
+                    readyToTask = false;
+                }
+            }
+
+            type = group->type();
+            if ((type == 100) || (type == 0x67)) {
+                int victoryCondition = (strategyAI != nullptr) ? strategyAI->currentVictoryCondition() : 0;
+                if (victoryCondition == 0) {
+                    if ((itemToCapture() == -1) && (group->type() == 100)) {
+                        readyToTask = false;
+                    } else {
+                        group->setSubType(0);
+                    }
+                }
+                victoryCondition = (strategyAI != nullptr) ? strategyAI->currentVictoryCondition() : 0;
+                if (victoryCondition == 4) {
+                    if ((itemToBringToArea() == -1) && (group->type() == 100)) {
+                        readyToTask = false;
+                    } else {
+                        group->setSubType(4);
+                    }
+                }
+            } else if (((type == 0x65) || (type == 0x68)) && (numberItemsToDefend() == 0)) {
+                readyToTask = false;
+            }
+        }
+
+        if (readyToTask) {
+            int actionToSet = -1;
+            int type = group->type();
+            if ((type == 0x66) || (type == 0x69)) {
+                actionToSet = 8;
+            } else if ((type == 100) || (type == 0x67)) {
+                if ((numberItemsToAttack() == 0) && (group->type() == 0x67)) {
+                    group->setType(0x69);
+                    actionToSet = 8;
+                } else {
+                    actionToSet = 2;
+                }
+            } else if ((type == 0x65) || (type == 0x68)) {
+                actionToSet = 4;
+            } else if (type == 0x6D) {
+                actionToSet = 0x13;
+            }
+
+            if (actionToSet != -1) {
+                group->setAction(actionToSet);
+            }
+        } else if (isGathered == 0) {
+            group->task(this, this->md, 9, 1, 0);
+        }
+
+        group = group->next;
+        if (group != nullptr) {
+            this->nextIdleSoldierGroupToTaskValue = group->id();
+        } else {
+            this->nextIdleSoldierGroupToTaskValue = -1;
+        }
+
+        if (param_2 <= (world->world_time - param_1)) {
+            return;
+        }
+    }
 }
 
 // TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F21F0. taskActiveSoldiers transliteration is blocked on missing targeting/combat helpers.
@@ -734,14 +1005,156 @@ void TribeTacticalAIModule::taskActiveSoldiers(unsigned long param_1, unsigned l
     (void)param_2;
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4760. playTaskSoldiers transliteration is blocked on missing playbook/target helpers.
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4760
 void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1, unsigned long param_2) {
     (void)param_1;
     (void)param_2;
+
+    if (this->sn[0xA2] == 0) {
+        return;
+    }
+
+    int unplayedSoldiers[51] = {};
+    int playUnits[51] = {};
+    int countUnplayedSoldiers = 0;
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        if (i >= this->soldiers.maximumSizeValue) {
+            break;
+        }
+        TacticalAIGroup* unitGroup = groupUnitIsIn(this->soldiers.value[i]);
+        if ((unitGroup == nullptr) || (unitGroup->type() != 100)) {
+            if (countUnplayedSoldiers < 50) {
+                unplayedSoldiers[countUnplayedSoldiers + 1] = this->soldiers.value[i];
+                countUnplayedSoldiers += 1;
+            }
+        }
+    }
+
+    if (countUnplayedSoldiers < 1) {
+        return;
+    }
+
+    ensureManagedArrayCapacity(this->playersToAttack, 1);
+    if ((this->playersToAttack.maximumSizeValue < 1) || (this->playersToAttack.value == nullptr)) {
+        return;
+    }
+    if (this->playersToAttack.numberValue < 1) {
+        this->playersToAttack.value[0] = -1;
+    }
+
+    int playCommanderCount = 0;
+    int playCommanderID = -1;
+    unplayedSoldiers[0] = -1;
+
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    RGE_Game_World* world = tacticalWorld(this);
+    if ((infoAI == nullptr) || (world == nullptr)) {
+        return;
+    }
+
+    ObjectMemory* targetMemory =
+        infoAI->objectToAttackWithPlay(this->playersToAttack.value[0],
+                                       &unplayedSoldiers[1],
+                                       countUnplayedSoldiers,
+                                       unplayedSoldiers,
+                                       &playUnits[1],
+                                       &playCommanderCount,
+                                       &playCommanderID);
+    RGE_Static_Object* playCommanderObj = world->object(playCommanderID);
+    if ((targetMemory == nullptr) || (playCommanderObj == nullptr)) {
+        return;
+    }
+
+    TacticalAIGroup* playGroup = createGroup(1);
+    if (playGroup == nullptr) {
+        return;
+    }
+
+    playGroup->setType(100);
+    playGroup->setDesiredNumberUnits(playCommanderCount);
+    for (int i = 0; (i < playCommanderCount) && (i < 50); ++i) {
+        playGroup->addUnit(playUnits[i + 1], this->md);
+    }
+    playGroup->setSpecificCommander(playCommanderID, this->md);
+    playGroup->setLocation(playCommanderObj->world_x, playCommanderObj->world_y, playCommanderObj->world_z);
+    playGroup->setGatherLocation(playCommanderObj->world_x, playCommanderObj->world_y, playCommanderObj->world_z);
+    playGroup->setRetreatLocation(playCommanderObj->world_x, playCommanderObj->world_y, playCommanderObj->world_z);
+    playGroup->setTarget(targetMemory->id);
+    playGroup->playNumberValue = unplayedSoldiers[0];
+    playGroup->setAction(2);
+    playGroup->setInUse(1);
+    playGroup->task(this, this->md, 2, 1, 1);
 }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4AA0. taskUngroupedSoldiers transliteration is blocked on missing group creation helpers.
-void TribeTacticalAIModule::taskUngroupedSoldiers() {}
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F4AA0
+void TribeTacticalAIModule::taskUngroupedSoldiers() {
+    RGE_Game_World* world = tacticalWorld(this);
+    if (world == nullptr) {
+        return;
+    }
+
+    unsigned long worldTime = world->world_time;
+    if (((worldTime - this->lastUngroupedSoldierTaskTime) / 1000) <= 0x3B) {
+        return;
+    }
+    this->lastUngroupedSoldierTaskTime = worldTime;
+
+    RGE_Static_Object* townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    if (townCenter == nullptr) {
+        return;
+    }
+
+    TribeInformationAIModule* infoAI = tacticalInformationAI(this);
+    XYPoint centerPoint = {static_cast<int>(townCenter->world_x), static_cast<int>(townCenter->world_y)};
+
+    auto removeFromManagedArray = [](ManagedArray<int>& arr, int value) {
+        for (int i = 0; i < arr.numberValue; ++i) {
+            if (i >= arr.maximumSizeValue) {
+                break;
+            }
+            if (arr.value[i] != value) {
+                continue;
+            }
+            for (int j = i; (j + 1 < arr.numberValue) && (j + 1 < arr.maximumSizeValue); ++j) {
+                arr.value[j] = arr.value[j + 1];
+            }
+            arr.numberValue -= 1;
+            if (arr.numberValue < 0) {
+                arr.numberValue = 0;
+            }
+            break;
+        }
+    };
+
+    for (int i = 0; i < this->soldiers.numberValue; ++i) {
+        if (i >= this->soldiers.maximumSizeValue) {
+            break;
+        }
+        int soldierID = this->soldiers.value[i];
+        TacticalAIGroup* group = groupUnitIsIn(soldierID);
+        if (group == nullptr) {
+            RGE_Static_Object* soldierObj = this->md->object(soldierID);
+            if (soldierObj == nullptr) {
+                continue;
+            }
+            appendManagedArrayUnique(this->ungroupedSoldiers, soldierID);
+            if (infoAI != nullptr) {
+                XYPoint gatherPoint = {0, 0};
+                if (infoAI->findGatherPosition(&centerPoint,
+                                               1,
+                                               1,
+                                               this->sn[0x16],
+                                               this->sn[0x48],
+                                               soldierObj,
+                                               &gatherPoint) == 1) {
+                    moveUnit(soldierID, static_cast<float>(gatherPoint.x), static_cast<float>(gatherPoint.y), 0x32);
+                }
+            }
+        } else {
+            removeFromManagedArray(this->ungroupedSoldiers, soldierID);
+        }
+    }
+}
 
 // TODO: Source of truth: taitacmd.cpp.decomp @ 0x004F4D90. taskBoats transliteration is blocked on missing transport/attack helpers.
 void TribeTacticalAIModule::taskBoats() {}
