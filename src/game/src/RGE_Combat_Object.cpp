@@ -366,20 +366,18 @@ uchar RGE_Combat_Object::area_attack(float param_1, float param_2, float param_3
     int map_w = (int)map->map_width;
     int map_h = (int)map->map_height;
 
-    int cx = (int)param_1;
-    int cy = (int)param_2;
-    int min_x = cx - 2;
-    int max_x = cx + 2;
-    int min_y = cy - 2;
-    int max_y = cy + 2;
+    float radius = master->area_effect_range;
+    float r2 = radius * radius;
+
+    int min_x = (int)(param_1 - radius) - 2;
+    int max_x = (int)(param_1 + radius) + 2;
+    int min_y = (int)(param_2 - radius) - 2;
+    int max_y = (int)(param_2 + radius) + 2;
 
     if (min_x < 0) min_x = 0;
     if (min_y < 0) min_y = 0;
     if (max_x > map_w) max_x = map_w;
     if (max_y > map_h) max_y = map_h;
-
-    float radius = master->area_effect_range;
-    float r2 = radius * radius;
 
     for (int y = min_y; y < max_y; ++y) {
         for (int x = min_x; x < max_x; ++x) {
