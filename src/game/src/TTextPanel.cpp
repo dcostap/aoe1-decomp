@@ -266,6 +266,7 @@ void TTextPanel::calc_line_pos(void* hdc, short draw_index, short line_index, ta
 
 static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_index, unsigned long color_main, unsigned long color_shadow) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D760
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D735 (corrupted decomp slice/thunk boundary adjacent to draw_line).
     const char* text = get_line_text(this_, (int)line_index);
     const char* text2 = get_line_text2(this_, (int)line_index);
     if ((text == nullptr || text[0] == '\0') && (text2 == nullptr || text2[0] == '\0')) return;
@@ -1549,6 +1550,7 @@ void TTextPanel::setCurrentLineNumber(int param_1) {
 
 void TTextPanel::scroll(uchar param_1, short param_2, int param_3) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D060
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D0F9 (corrupted decomp slice/thunk boundary adjacent to scroll).
     // Source of truth: Pnl_txt.cpp.decomp @ TTextPanel::scroll
     switch (param_1) {
     case 0:
