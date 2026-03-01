@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6D50
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_screen) : TDialogPanel((char*)"New Name Dialog") {
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6D50
     this->title = nullptr;
@@ -44,7 +45,9 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_screen) : TDialogPanel
     this->set_curr_child((TPanel*)this->name_input);
 }
 
+// Fully verified. Source of truth: TRIBE_Dialog_Name.decomp @ 0x004A6F40 (scalar deleting destructor thunk).
 TRIBE_Dialog_Name::~TRIBE_Dialog_Name() {
+    // Fully verified. Source of truth: TRIBE_Dialog_Name.decomp @ 0x004A6F40 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6F60
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->name_text);
@@ -53,6 +56,7 @@ TRIBE_Dialog_Name::~TRIBE_Dialog_Name() {
     this->delete_panel((TPanel**)&this->cancel_button);
 }
 
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6FF0
 long TRIBE_Dialog_Name::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6FF0
     (void)param_3;
@@ -104,6 +108,7 @@ long TRIBE_Dialog_Name::action(TPanel* param_1, long param_2, ulong param_3, ulo
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A71D0
 long TRIBE_Dialog_Name::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A71D0
     return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
