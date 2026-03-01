@@ -554,9 +554,10 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
     int nPalEntries = 0;
     GetObjectA(hPal, 4, &nPalEntries);
 
-    int nDibColors = (int)param_1->biClrUsed;
-    if (nDibColors == 0 && param_1->biBitCount <= 8) {
-        nDibColors = 1 << (param_1->biBitCount & 0x1f);
+    const int dibClrUsed = (int)param_1->biClrUsed;
+    int nDibColors = dibClrUsed;
+    if (nDibColors == 0 && param_1->biBitCount < 9) {
+        nDibColors = 1 << (param_1->biBitCount & 0x1F);
     }
 
     int sizeImage = (int)param_1->biSizeImage;
@@ -567,9 +568,9 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
     }
 
     uchar* bits = (uchar*)param_1 + (int)param_1->biSize +
-                  ((param_1->biCompression == BI_BITFIELDS) ? 0xc : (nDibColors * (int)sizeof(RGBQUAD)));
+                  ((param_1->biCompression == BI_BITFIELDS) ? 0xC : (dibClrUsed * (int)sizeof(RGBQUAD)));
 
-    uchar xlat[256];
+    uchar xlat[260];
     memset(xlat, 0, sizeof(xlat));
 
     uchar HitEnd = 0;
@@ -613,7 +614,7 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
     for (int i = 0; i < nDibColors && i < 256; ++i) {
         if (param_3 != 0) {
             if ((uchar)i == HitEnd) {
-                xlat[i] = 0;
+                xlat[i + 4] = 0;
                 continue;
             }
         }
@@ -621,7 +622,7 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
         if (param_3 != 0 && idx == 0) {
             idx = TransIndex;
         }
-        xlat[i] = idx;
+        xlat[i + 4] = idx;
     }
 
     int oldDibColors = nDibColors;
@@ -670,14 +671,14 @@ void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, i
 
     if (param_1->biCompression == BI_RGB) {
         if (param_1->biBitCount == 8) {
-            xlatClut8(bits, sizeImage, xlat);
+            xlatClut8(bits, sizeImage, xlat + 4);
         } else {
-            xlatClut4(bits, sizeImage, xlat);
+            xlatClut4(bits, sizeImage, xlat + 4);
         }
     } else if (param_1->biCompression == BI_RLE8) {
-        xlatRle8(bits, sizeImage, xlat);
+        xlatRle8(bits, sizeImage, xlat + 4);
     } else if (param_1->biCompression == BI_RLE4) {
-        xlatRle4(bits, sizeImage, xlat);
+        xlatRle4(bits, sizeImage, xlat + 4);
     }
 
     for (int i = 0; i < nPalEntries; ++i) {
@@ -981,25 +982,57 @@ tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1) {
     if (param_1 == -1) {
         return nullptr;
     }
-    DWORD pos = _llseek(param_1, 0, FILE_CURRENT);
+    const LONG pos = _llseek(param_1, 0, FILE_CURRENT);
     tagBITMAPFILEHEADER bf = {};
     if (_lread(param_1, (LPSTR)&bf, sizeof(bf)) != sizeof(bf)) {
         return nullptr;
     }
-    if (bf.bfType != 0x4D42) {
+    const bool has_bf = (bf.bfType == 0x4D42);
+    if (!has_bf) {
         _llseek(param_1, pos, FILE_BEGIN);
     }
 
-    tagBITMAPINFOHEADER bi = {};
-    if (_lread(param_1, (LPSTR)&bi, sizeof(bi)) != sizeof(bi)) {
+    DWORD bi_size = 0;
+    if (_lread(param_1, (LPSTR)&bi_size, sizeof(bi_size)) != sizeof(bi_size)) {
         return nullptr;
     }
+    tagBITMAPINFOHEADER bi = {};
+    bool is_core = false;
+    if (bi_size == sizeof(BITMAPCOREHEADER)) {
+        BITMAPCOREHEADER bc = {};
+        bc.bcSize = bi_size;
+        if (_lread(param_1, (LPSTR)&bc.bcWidth, sizeof(BITMAPCOREHEADER) - sizeof(DWORD)) !=
+            (sizeof(BITMAPCOREHEADER) - sizeof(DWORD))) {
+            return nullptr;
+        }
+        bi.biSize = sizeof(tagBITMAPINFOHEADER);
+        bi.biWidth = (LONG)bc.bcWidth;
+        bi.biHeight = (LONG)bc.bcHeight;
+        bi.biPlanes = bc.bcPlanes;
+        bi.biBitCount = bc.bcBitCount;
+        bi.biCompression = BI_RGB;
+        bi.biSizeImage = 0;
+        bi.biXPelsPerMeter = 0;
+        bi.biYPelsPerMeter = 0;
+        bi.biClrUsed = 0;
+        bi.biClrImportant = 0;
+        is_core = true;
+    } else {
+        bi.biSize = bi_size;
+        if (_lread(param_1, (LPSTR)&bi.biWidth, sizeof(tagBITMAPINFOHEADER) - sizeof(DWORD)) !=
+            (sizeof(tagBITMAPINFOHEADER) - sizeof(DWORD))) {
+            return nullptr;
+        }
+    }
+
     DWORD colors = bi.biClrUsed;
     if (colors == 0 && bi.biBitCount < 9) {
         colors = 1u << (bi.biBitCount & 0x1F);
     }
     if (bi.biSizeImage == 0) {
-        bi.biSizeImage = (((bi.biWidth * bi.biBitCount + 31) >> 3) & 0x1FFFFFFC) * abs(bi.biHeight);
+        const DWORD row_bytes = (((DWORD)bi.biWidth * (DWORD)bi.biBitCount + 31u) >> 3) & 0x1FFFFFFCu;
+        const DWORD h = (bi.biHeight < 0) ? (DWORD)(-bi.biHeight) : (DWORD)bi.biHeight;
+        bi.biSizeImage = row_bytes * h;
     }
     bi.biClrUsed = colors;
 
@@ -1010,7 +1043,25 @@ tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1) {
     }
     memcpy(dib, &bi, sizeof(bi));
     if (colors > 0) {
-        _lread(param_1, (LPSTR)((BYTE*)dib + bi.biSize), colors * sizeof(RGBQUAD));
+        BYTE* pal = (BYTE*)dib + bi.biSize;
+        if (is_core) {
+            const DWORD core_bytes = colors * 3;
+            if (_lread(param_1, (LPSTR)pal, core_bytes) == (LONG)core_bytes) {
+                for (LONG i = (LONG)colors - 1; i >= 0; --i) {
+                    const BYTE* src = pal + i * 3;
+                    RGBQUAD* dst = ((RGBQUAD*)pal) + i;
+                    dst->rgbBlue = src[0];
+                    dst->rgbGreen = src[1];
+                    dst->rgbRed = src[2];
+                    dst->rgbReserved = 0;
+                }
+            }
+        } else {
+            _lread(param_1, (LPSTR)pal, colors * sizeof(RGBQUAD));
+        }
+    }
+    if (has_bf && bf.bfOffBits != 0) {
+        _llseek(param_1, pos + (LONG)bf.bfOffBits, FILE_BEGIN);
     }
     return dib;
 }
@@ -1145,12 +1196,15 @@ tagBITMAPINFOHEADER* DibCreate(int param_1, int param_2, int param_3) {
     if (param_1 == 4) dib->biClrUsed = 16;
     if (param_1 == 8) dib->biClrUsed = 256;
 
+    static const RGBQUAD kVga16[16] = {
+        {0x00, 0x00, 0x00, 0x00}, {0x00, 0x00, 0x80, 0x00}, {0x00, 0x80, 0x00, 0x00}, {0x00, 0x80, 0x80, 0x00},
+        {0x80, 0x00, 0x00, 0x00}, {0x80, 0x00, 0x80, 0x00}, {0x80, 0x80, 0x00, 0x00}, {0xC0, 0xC0, 0xC0, 0x00},
+        {0x80, 0x80, 0x80, 0x00}, {0x00, 0x00, 0xFF, 0x00}, {0x00, 0xFF, 0x00, 0x00}, {0x00, 0xFF, 0xFF, 0x00},
+        {0xFF, 0x00, 0x00, 0x00}, {0xFF, 0x00, 0xFF, 0x00}, {0xFF, 0xFF, 0x00, 0x00}, {0xFF, 0xFF, 0xFF, 0x00},
+    };
     RGBQUAD* pal = (RGBQUAD*)(dib + 1);
     for (DWORD i = 0; i < dib->biClrUsed; ++i) {
-        pal[i].rgbBlue = (BYTE)i;
-        pal[i].rgbGreen = (BYTE)i;
-        pal[i].rgbRed = (BYTE)i;
-        pal[i].rgbReserved = 0;
+        pal[i] = kVga16[i & 0xF];
     }
     return dib;
 }
