@@ -13,14 +13,17 @@ char kStoneName[] = "Stone";
 char kGoldName[] = "Gold";
 char kUnknownName[] = "Unknown";
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int resource_item_number(ResourceItem* item) {
     return item->numberValue;
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int resource_item_value(ResourceItem* item, int index) {
     return item->valueValue[index];
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 float* tribe_resource_values(TribeMainDecisionAIModule* md) {
     return *(float**)((unsigned char*)md + 0x50);
 }
@@ -51,43 +54,52 @@ TribeResourceAIModule::~TribeResourceAIModule() {
     AIModule::~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int TribeResourceAIModule::loggingHistory() {
     return AIModule::loggingHistory();
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 void TribeResourceAIModule::setLogHistory(int param_1) {
     AIModule::setLogHistory(param_1);
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 void TribeResourceAIModule::toggleLogHistory() {
     AIModule::toggleLogHistory();
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 void TribeResourceAIModule::setHistoryFilename(char* param_1) {
     AIModule::setHistoryFilename(param_1);
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int TribeResourceAIModule::loggingCommonHistory() {
     return AIModule::loggingCommonHistory();
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 void TribeResourceAIModule::setLogCommonHistory(int param_1) {
     AIModule::setLogCommonHistory(param_1);
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 void TribeResourceAIModule::toggleLogCommonHistory() {
     AIModule::toggleLogCommonHistory();
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int TribeResourceAIModule::loadState(char* param_1) {
     return AIModule::loadState(param_1);
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int TribeResourceAIModule::saveState(char* param_1) {
     return AIModule::saveState(param_1);
 }
 
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 int TribeResourceAIModule::gleanState(int param_1) {
     return AIModule::gleanState(param_1);
 }

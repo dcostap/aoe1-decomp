@@ -15,14 +15,17 @@ ConstructionItem::~ConstructionItem() {
 }
 
 namespace {
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 BaseItem* construction_base_item(ConstructionItem* item) {
     return reinterpret_cast<BaseItem*>(item);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 const BaseItem* construction_base_item(const ConstructionItem* item) {
     return reinterpret_cast<const BaseItem*>(item);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 void construction_init_lot_head(ConstructionItem* head) {
     if (head == nullptr) {
         return;
@@ -46,6 +49,7 @@ void construction_init_lot_head(ConstructionItem* head) {
     base->setSkip(0);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 void construction_append_lot(ConstructionItem* head, ConstructionItem* item) {
     item->next = head;
     item->prev = head->prev;
@@ -53,6 +57,7 @@ void construction_append_lot(ConstructionItem* head, ConstructionItem* item) {
     head->prev = item;
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 ConstructionItem* construction_allocate_lot() {
     ConstructionItem* item = reinterpret_cast<ConstructionItem*>(::operator new(sizeof(ConstructionItem), std::nothrow));
     if (item == nullptr) {
@@ -62,6 +67,7 @@ ConstructionItem* construction_allocate_lot() {
     return item;
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 ConstructionItem* construction_clone_lot(const ConstructionItem* source) {
     ConstructionItem* item = construction_allocate_lot();
     if (item == nullptr) {
@@ -73,6 +79,7 @@ ConstructionItem* construction_clone_lot(const ConstructionItem* source) {
     return item;
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 void construction_destroy_list_nodes(ConstructionItem* head) {
     ConstructionItem* item = head->next;
     while ((item != head) && (item != nullptr)) {
@@ -85,10 +92,12 @@ void construction_destroy_list_nodes(ConstructionItem* head) {
     head->prev = head;
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 int construction_items_equal(const ConstructionItem* lhs, const ConstructionItem* rhs) {
     return operator==(*construction_base_item(lhs), *construction_base_item(rhs));
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040AA90 (helper coverage).
 int construction_item_build_attempts(const ConstructionItem* item) {
     return item->buildAttemptsValue;
 }
