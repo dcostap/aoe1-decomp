@@ -84,7 +84,7 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object(FILE* param_1, RGE_Sprite** p
 
 
 
-// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451B90
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp + m_mo_obj.cpp.asm @ 0x00451B90
 int RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object* param_1) {
     RGE_Master_Animated_Object::setup((RGE_Master_Animated_Object*)param_1);
     this->master_type = 0x1E;
@@ -101,7 +101,7 @@ int RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object* param_1) {
 
 
 
-// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451C10
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp + m_mo_obj.cpp.asm @ 0x00451C10
 int RGE_Master_Moving_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     short move_sprite_idx = -1;
     short run_sprite_idx = -1;
@@ -115,14 +115,14 @@ int RGE_Master_Moving_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound
     rge_read(param_1, &this->obj_trail_options, 1);
     rge_read(param_1, &this->obj_trail_spacing, 4);
     rge_read(param_1, &this->move_algorithem, 1);
-    this->move_sprite = (move_sprite_idx < 0 || param_2 == nullptr) ? nullptr : param_2[move_sprite_idx];
-    this->run_sprite = (run_sprite_idx < 0 || param_2 == nullptr) ? nullptr : param_2[run_sprite_idx];
+    this->move_sprite = (move_sprite_idx < 0) ? nullptr : param_2[move_sprite_idx];
+    this->run_sprite = (run_sprite_idx < 0) ? nullptr : param_2[run_sprite_idx];
     return 1;
 }
 
 
 
-// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451D10
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp + m_mo_obj.cpp.asm @ 0x00451D10
 int RGE_Master_Moving_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4) {
     short move_sprite_idx = -1;
     short run_sprite_idx = -1;
@@ -145,8 +145,8 @@ int RGE_Master_Moving_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sou
     this->size_class = (uchar)size_class;
     this->obj_trail_options = (uchar)obj_trail_options;
     this->move_algorithem = (uchar)move_algorithem;
-    this->move_sprite = (move_sprite_idx < 0 || param_2 == nullptr) ? nullptr : param_2[move_sprite_idx];
-    this->run_sprite = (run_sprite_idx < 0 || param_2 == nullptr) ? nullptr : param_2[run_sprite_idx];
+    this->move_sprite = (move_sprite_idx < 0) ? nullptr : param_2[move_sprite_idx];
+    this->run_sprite = (run_sprite_idx < 0) ? nullptr : param_2[run_sprite_idx];
     return 1;
 }
 
@@ -224,7 +224,7 @@ void RGE_Master_Moving_Object::save(int param_1) {
 }
 
 
-// Fully verified. Source of truth: m_mo_obj.cpp.decomp @ 0x00451DF0
+// Fully verified. Source of truth: m_mo_obj.cpp.decomp + m_mo_obj.cpp.asm @ 0x00451DF0
 RGE_Static_Object* RGE_Master_Moving_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
     if (this->recyclable != 0) {
         RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
