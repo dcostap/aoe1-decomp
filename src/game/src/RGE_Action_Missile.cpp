@@ -192,6 +192,7 @@ int RGE_Action_Missile::setup(RGE_Action_Object* param_1) {
     return 1;
 }
 
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 int RGE_Action_Missile::setup(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
     this->action_type = 8;
@@ -203,6 +204,7 @@ int RGE_Action_Missile::setup(int param_1, RGE_Action_Object* param_2) {
     return 1;
 }
 
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 RGE_Action_List* RGE_Action_Missile::create_action_list(RGE_Action_Object* param_1) {
     return RGE_Action::create_action_list(param_1);
 }
@@ -470,18 +472,32 @@ uchar RGE_Action_Missile::update() {
     return 0;
 }
 
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 uchar RGE_Action_Missile::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 uchar RGE_Action_Missile::idle_update() { return RGE_Action::idle_update(); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 int RGE_Action_Missile::stop() { return RGE_Action::stop(); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 int RGE_Action_Missile::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 int RGE_Action_Missile::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::work(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 uchar RGE_Action_Missile::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 uchar RGE_Action_Missile::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Missile::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Missile::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 

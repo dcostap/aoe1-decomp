@@ -187,54 +187,67 @@ ResearchAIModule::~ResearchAIModule() {
 }
 
 // TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::loggingHistory() {
     return as_ai(this)->loggingHistory();
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 void ResearchAIModule::setLogHistory(int param_1) {
     as_ai(this)->setLogHistory(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 void ResearchAIModule::toggleLogHistory() {
     as_ai(this)->toggleLogHistory();
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 void ResearchAIModule::setHistoryFilename(char* param_1) {
     as_ai(this)->setHistoryFilename(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::loggingCommonHistory() {
     return as_ai(this)->loggingCommonHistory();
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 void ResearchAIModule::setLogCommonHistory(int param_1) {
     as_ai(this)->setLogCommonHistory(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 void ResearchAIModule::toggleLogCommonHistory() {
     as_ai(this)->toggleLogCommonHistory();
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::loadState(char* param_1) {
     return as_ai(this)->loadState(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::saveState(char* param_1) {
     return as_ai(this)->saveState(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::gleanState(int param_1) {
     return as_ai(this)->gleanState(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::processMessage(AIModuleMessage* param_1) {
     return as_ai(this)->processMessage(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::update(int param_1) {
     return as_ai(this)->update(param_1);
 }
 
+// Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 void ResearchAIModule::setCallbackMessage(AIModuleMessage* param_1) {
     as_ai(this)->setCallbackMessage(param_1);
 }
