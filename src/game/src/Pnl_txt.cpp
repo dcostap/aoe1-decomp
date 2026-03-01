@@ -1427,12 +1427,12 @@ int TTextPanel::insert_line(long line_num, char* text, char* text2, long id) {
     if (this->list == nullptr) {
         this->list = node;
     } else if (this->sorted == 0) {
-        if (line_num <= 0) {
+        if (line_num == 0) {
             node->next = this->list;
             this->list = node;
         } else if (line_num < this->num_lines) {
             TTextPanel::TextNode* prev = this->list;
-            for (int i = 0; i != (int)line_num - 1 && prev->next != nullptr; ++i) {
+            for (int i = 0; i != (int)line_num - 1; ++i) {
                 prev = prev->next;
             }
             node->next = prev->next;
@@ -1822,9 +1822,6 @@ int TTextPanel::word_wrap_append(char* param_1) {
                 }
                 fallback_break_chars = i - 1;
             }
-            if (break_chars == 0) {
-                break_chars = 1;
-            }
 
             // Walk backward to find a break position (space, or Japanese type transition).
             unsigned char* next_char = _mbsninc(cur, break_chars);
@@ -1866,9 +1863,6 @@ int TTextPanel::word_wrap_append(char* param_1) {
             if (found_space == 0 && found_break == 0) {
                 found_break = 1;
                 scan_chars = fallback_break_chars;
-                if (scan_chars < 1) {
-                    scan_chars = 1;
-                }
             }
 
             break_chars = scan_chars;

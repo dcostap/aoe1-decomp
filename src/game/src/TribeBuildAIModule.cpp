@@ -352,80 +352,8 @@ void tribe_build_ai_remove_lot(TribeBuildAIModule* build_ai, int type_id, int x,
 
 void tribe_build_ai_update_needed_resources(TribeBuildAIModule* build_ai) {
     // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
-    TribeTacticalAIModule* tactical_ai = tribe_build_ai_tactical_ai(build_ai);
-    TribeResourceAIModule* resource_ai = tribe_build_ai_resource_ai(build_ai);
-    if ((tactical_ai == nullptr) || (resource_ai == nullptr)) {
-        return;
-    }
-
-    int assigned_resource[4] = {0, 0, 0, 0};
-    int temp_needed_resource[4] = {0, -1, -1, -1};
-    int temp_resource_difference[4] = {-1, -1, -1, -1};
-
-    for (int i = 0; i < 4; ++i) {
-        int available = resource_ai->resource(i);
-        int needed = tactical_ai->neededResources.value(i);
-        tactical_ai->resourceDifferenceValue[i] = available - needed;
-    }
-
-    for (int slot = 0; slot < 4; ++slot) {
-        int best_resource = -1;
-        int best_difference = 0x7FFFFFFF;
-        for (int resource_id = 0; resource_id < 4; ++resource_id) {
-            if (resource_id == 0) {
-                if (resource_ai->resource(0) >= tactical_ai->sn[0xBE]) {
-                    continue;
-                }
-            } else if (resource_id == 1) {
-                if (tactical_ai->sn[0xBF] <= resource_ai->resource(1)) {
-                    continue;
-                }
-            } else if (resource_id == 3) {
-                if (tactical_ai->sn[0xC1] <= resource_ai->resource(3)) {
-                    continue;
-                }
-            } else if (resource_id == 2) {
-                if (tactical_ai->sn[0xC0] <= resource_ai->resource(2)) {
-                    continue;
-                }
-            }
-
-            int needed = tactical_ai->neededResources.value(resource_id);
-            if ((0 < needed) &&
-                ((best_resource == -1) || (tactical_ai->resourceDifferenceValue[resource_id] < best_difference)) &&
-                (assigned_resource[resource_id] == 0)) {
-                best_difference = tactical_ai->resourceDifferenceValue[resource_id];
-                best_resource = resource_id;
-            }
-        }
-
-        if (best_resource == -1) {
-            for (int resource_id = 0; resource_id < 4; ++resource_id) {
-                if (((best_resource == -1) || (tactical_ai->resourceDifferenceValue[resource_id] < best_difference)) &&
-                    (assigned_resource[resource_id] == 0)) {
-                    best_difference = tactical_ai->resourceDifferenceValue[resource_id];
-                    best_resource = resource_id;
-                }
-            }
-        }
-
-        if (best_resource < 0) {
-            continue;
-        }
-
-        assigned_resource[best_resource] = 1;
-        temp_needed_resource[slot] = best_resource;
-        temp_resource_difference[slot] = best_difference;
-    }
-
-    for (int i = 0; i < 4; ++i) {
-        int resource_id = temp_needed_resource[i];
-        int resource_diff = temp_resource_difference[i];
-        tactical_ai->neededResourceValue[i] = resource_id;
-        if ((0 <= resource_id) && (resource_id < 4)) {
-            tactical_ai->resourceDifferenceValue[resource_id] = resource_diff;
-        }
-    }
+    TribeMainDecisionAIModule* md = tribe_build_ai_md(build_ai);
+    reinterpret_cast<TribeTacticalAIModule*>(md->tacticalAI)->updateNeededResources();
 }
 
 void tribe_build_ai_add_ignore_type(TribeBuildAIModule* build_ai, int type_id) {
@@ -1041,12 +969,8 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
         return 0;
     }
 
-    RGE_Player* player = (this->md != nullptr) ? this->md->player : nullptr;
-    if (player == nullptr) {
-        return 0;
-    }
     if (param_3 != -1) {
-        return BuildAIModule::insertItem(player, param_1, 1, build_category, build_from, param_2, param_3);
+        return BuildAIModule::insertItem(this->md->player, param_1, 1, build_category, build_from, param_2, param_3);
     }
 
     BuildItem* head = tribe_build_ai_build_list(this);
@@ -1054,7 +978,7 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
     for (BuildItem* item = head->next; (item != head) && (item != nullptr) && (item->built() == 1); item = item->next) {
         insertion_index = insertion_index + 1;
     }
-    return BuildAIModule::insertItem(player, param_1, 1, build_category, build_from, param_2, insertion_index);
+    return BuildAIModule::insertItem(this->md->player, param_1, 1, build_category, build_from, param_2, insertion_index);
 }
 
 // Offset: 0x004D595E
