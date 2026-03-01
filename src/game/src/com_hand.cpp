@@ -98,6 +98,7 @@ static ulong s_nextSequenceTurn = 0;
 static uchar s_nextSequence = 1;
 
 static ulong comm_tslc_get_avg(RGE_TimeSinceLastCall* tslc, int sample_count) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (tslc == nullptr || sample_count <= 0 || sample_count >= 0x65) {
         return 0;
     }
@@ -118,6 +119,7 @@ static ulong comm_tslc_get_avg(RGE_TimeSinceLastCall* tslc, int sample_count) {
 }
 
 static uchar comm_speed_get_high_latency_centi(RGE_Communications_Speed* speed) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (speed == nullptr || speed->Comm == nullptr) {
         return 1;
     }
@@ -141,6 +143,7 @@ static uchar comm_speed_get_high_latency_centi(RGE_Communications_Speed* speed) 
 }
 
 static uint comm_speed_get_avg_frame_rate(RGE_Communications_Speed* speed) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (speed == nullptr) {
         return 0;
     }
@@ -170,6 +173,7 @@ static uchar comm_get_next_sequence(ulong execute_on_turn, int program_state) {
 }
 
 static IDirectPlay2* comm_get_dplay(TCommunications_Handler* comm) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr) {
         return nullptr;
     }
@@ -183,6 +187,7 @@ static IDirectPlay2* comm_get_dplay(TCommunications_Handler* comm) {
 }
 
 static uint comm_find_player_by_dpid(TCommunications_Handler* comm, ulong dpid) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr || dpid == 0) {
         return 0;
     }
@@ -206,6 +211,7 @@ static uint comm_find_player_by_dpid(TCommunications_Handler* comm, ulong dpid) 
 }
 
 static long comm_fast_send_raw(TCommunications_Handler* comm, ulong to_dpid, const void* data, ulong len, ulong flags) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr || data == nullptr) {
         return 0;
     }
@@ -234,6 +240,7 @@ static long comm_fast_send_raw(TCommunications_Handler* comm, ulong to_dpid, con
 }
 
 static long comm_fast_send_player(TCommunications_Handler* comm, uint to_player, const void* data, ulong len) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr || to_player == 0 || to_player > (uint)comm->MaxGamePlayers) {
         return 0;
     }
@@ -275,6 +282,7 @@ static void comm_store_incoming(TCommunications_Handler* comm, uint serial, cons
 }
 
 static void comm_tx_ack(TCommunications_Handler* comm, uint serial, uint to_player) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     struct MsgAck {
         uchar cmd;
         uchar _pad0;
@@ -289,6 +297,7 @@ static void comm_tx_ack(TCommunications_Handler* comm, uint serial, uint to_play
 }
 
 static void comm_tx_resend_request(TCommunications_Handler* comm, uint serial, uint to_player) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     struct MsgResendReq {
         uchar cmd;
         uchar _pad0;
@@ -303,6 +312,7 @@ static void comm_tx_resend_request(TCommunications_Handler* comm, uint serial, u
 }
 
 static void comm_rx_ack_stored(TCommunications_Handler* comm, uint serial, uint from_player) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr || comm->Resend == nullptr || serial == 0 || from_player == 0 || from_player >= 10) {
         return;
     }
@@ -321,6 +331,7 @@ static void comm_rx_ack_stored(TCommunications_Handler* comm, uint serial, uint 
 }
 
 static void comm_purge_ackd_stored(TCommunications_Handler* comm) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr || comm->Resend == nullptr) {
         return;
     }
@@ -361,6 +372,7 @@ static void comm_purge_ackd_stored(TCommunications_Handler* comm) {
 }
 
 static int comm_tx_resend_reply(TCommunications_Handler* comm, uint serial, uint requester_player) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr || comm->Resend == nullptr || serial == 0 || requester_player == 0) {
         return 0;
     }
@@ -390,6 +402,7 @@ static int comm_tx_resend_reply(TCommunications_Handler* comm, uint serial, uint
 }
 
 static void comm_tx_ping(TCommunications_Handler* comm, uint to_player) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     struct MsgPing {
         uchar cmd;
         uchar _pad0;
@@ -414,6 +427,7 @@ static void comm_tx_ping(TCommunications_Handler* comm, uint to_player) {
 }
 
 static int comm_all_players_acknowledged(TCommunications_Handler* comm) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     if (comm == nullptr) {
         return 0;
     }

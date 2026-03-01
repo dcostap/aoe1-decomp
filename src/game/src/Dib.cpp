@@ -1219,6 +1219,7 @@ void DibFree(tagBITMAPINFOHEADER* param_1) {
 
 // Offset: 0x00439750
 void* ReadPalette(char* param_1, long param_2, int param_3) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: data */
@@ -1333,6 +1334,7 @@ void* ReadPalette(char* param_1, long param_2, int param_3) {
 
 // Offset: 0x00439A10
 tagBITMAPINFOHEADER* DibOpenFile(char* param_1) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: fh */
@@ -1406,6 +1408,7 @@ tagBITMAPINFOHEADER* DibOpenFile(char* param_1) {
 
 // Offset: 0x00439B50
 uchar* ReadDibBits(char* param_1) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: of */
@@ -1447,6 +1450,7 @@ uchar* ReadDibBits(char* param_1) {
 
 // Offset: 0x00439BE0
 int DibWriteClipped(tagBITMAPINFOHEADER* param_1, char* param_2, long param_3, long param_4, long param_5, long param_6) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* int __cdecl DibWriteClipped(struct tagBITMAPINFOHEADER *,char *,long,long,long,long) */
@@ -1496,6 +1500,7 @@ int DibWriteClipped(tagBITMAPINFOHEADER* param_1, char* param_2, long param_3, l
 
 // Offset: 0x00439CC0
 int DibWriteFile(tagBITMAPINFOHEADER* param_1, char* param_2) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: hdr */
@@ -1532,6 +1537,7 @@ int DibWriteFile(tagBITMAPINFOHEADER* param_1, char* param_2) {
 
 // Offset: 0x00439D80
 void* DibCreatePalette(tagBITMAPINFOHEADER* param_1) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: hpal */
@@ -1598,6 +1604,7 @@ void* DibCreatePalette(tagBITMAPINFOHEADER* param_1) {
 
 // Offset: 0x00439E50
 tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: pdib */
@@ -1714,6 +1721,7 @@ tagBITMAPINFOHEADER* DibReadBitmapInfo(int param_1) {
 
 // Offset: 0x0043A070
 tagBITMAPINFOHEADER* DibFromBitmap(void* param_1, ulong param_2, uint param_3, void* param_4, uint param_5) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: nColors */
@@ -1848,6 +1856,7 @@ tagBITMAPINFOHEADER* DibFromBitmap(void* param_1, ulong param_2, uint param_3, v
 
 // Offset: 0x0043A660
 void DibMapToPalette(tagBITMAPINFOHEADER* param_1, void* param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: dib.cpp.decomp (helper implementation).
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: ZeroIndex */

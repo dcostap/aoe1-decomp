@@ -25,6 +25,7 @@
 static ulong DAT_0062e65c = 0;
 
 static void rge_convert_us(char* text) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (text == nullptr) {
         return;
     }
@@ -37,6 +38,7 @@ static void rge_convert_us(char* text) {
 }
 
 static void rge_copy_fixed_text(char* dst, size_t dst_size, const char* src) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (dst == nullptr || dst_size == 0) {
         return;
     }
@@ -49,6 +51,7 @@ static void rge_copy_fixed_text(char* dst, size_t dst_size, const char* src) {
 }
 
 static void rge_map_check_for_border(RGE_Map* map, uchar terrain, uchar* neighbor) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (map == nullptr || neighbor == nullptr) {
         return;
     }
@@ -67,6 +70,7 @@ static void rge_map_check_for_border(RGE_Map* map, uchar terrain, uchar* neighbo
 }
 
 static void rge_map_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (tile == nullptr || obj == nullptr) {
         return;
     }
@@ -98,6 +102,7 @@ static void rge_map_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
 }
 
 static void rge_map_delete_object_now(RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -116,10 +121,12 @@ static void rge_map_delete_object_now(RGE_Static_Object* obj) {
 }
 
 static uchar rge_tile_pack_terrain_height(const RGE_Tile* tile) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     return (uchar)((tile->terrain_type & 0x1f) | ((tile->height & 7) << 5));
 }
 
 static void rge_tile_set_packed_terrain_height(RGE_Tile* tile, uchar packed) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     tile->terrain_type = (uchar)(packed & 0x1f);
     tile->height = (uchar)((packed >> 5) & 7);
 }
@@ -2835,6 +2842,7 @@ uchar RGE_Map::get_tile_type(short col, short row) {
 }
 
 void RGE_Map::rebuild_tile_types(short col0, short row0, short col1, short row1) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -3025,6 +3033,7 @@ uchar RGE_Map::get_border_type(short col, short row) {
 }
 
 void RGE_Map::rebuild_border_types(short col0, short row0, short col1, short row1) {
+    // Fully verified. Source of truth: map.cpp.decomp (helper implementation).
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }

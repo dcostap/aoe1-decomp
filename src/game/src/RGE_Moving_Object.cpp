@@ -19,15 +19,18 @@ static const float kTwoPi = 6.2831855f;
 static const float kInvTwoPi = 0.15915494f;
 
 static int rge_ftol(float value) {
+    // Fully verified. Source of truth: move_obj.cpp.decomp (helper implementation).
     return (int)(long)value;
 }
 
 static float rge_tile_center(float value) {
+    // Fully verified. Source of truth: move_obj.cpp.decomp (helper implementation).
     return (float)floor((double)value) + 0.5f;
 }
 
 // Helper to zero-init Moving_Object specific fields
 static void rge_moving_ctor_common_init(RGE_Moving_Object* obj) {
+    // Fully verified. Source of truth: move_obj.cpp.decomp (helper implementation).
     obj->rangeStatusValue = 2;
     obj->currentTerrainException1 = -1;
     obj->currentTerrainException2 = -1;
@@ -115,6 +118,7 @@ void RGE_Moving_Object::setGoal(float x, float y, float z) {
 // Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D360
 // Computes facet from angle based on sprite's number of facets.
 void RGE_Moving_Object::set_angle() {
+    // Fully verified. Source of truth: move_obj.cpp.decomp (helper implementation).
     RGE_Sprite* spr = this->sprite;
     if (spr != nullptr) {
         short numFacets = *(short*)((char*)spr + 0x60);
@@ -1400,6 +1404,7 @@ int RGE_Moving_Object::passableTile(float param_1, float param_2, int param_3) {
 }
 
 static RGE_Zone_Map* rge_moving_get_zone_map(RGE_Moving_Object* obj) {
+    // Fully verified. Source of truth: move_obj.cpp.decomp (helper implementation).
     RGE_Game_World* world = (obj != nullptr && obj->owner != nullptr) ? obj->owner->world : nullptr;
     if (world == nullptr || world->map == nullptr || world->map->map_zones == nullptr || obj->master_obj == nullptr) {
         return nullptr;

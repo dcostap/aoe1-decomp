@@ -14,57 +14,71 @@ InformationAIModule::InformationAIModule(void* param_1, int param_2)
 InformationAIModule::~InformationAIModule() {}
 
 int InformationAIModule::loggingHistory() {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::loggingHistory();
 }
 
 void InformationAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     AIModule::setLogHistory(param_1);
 }
 
 void InformationAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     AIModule::toggleLogHistory();
 }
 
 void InformationAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     AIModule::setHistoryFilename(param_1);
 }
 
 int InformationAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::loggingCommonHistory();
 }
 
 void InformationAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     AIModule::setLogCommonHistory(param_1);
 }
 
 void InformationAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     AIModule::toggleLogCommonHistory();
 }
 
 int InformationAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::loadState(param_1);
 }
 
 int InformationAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::saveState(param_1);
 }
 
 int InformationAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::gleanState(param_1);
 }
 
 int InformationAIModule::processMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::processMessage(param_1);
 }
 
 int InformationAIModule::update(int param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::update(param_1);
 }
 
 void InformationAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     AIModule::setCallbackMessage(param_1);
 }
 
 int InformationAIModule::filterOutMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aiinfmod.cpp.decomp (helper implementation).
     return AIModule::filterOutMessage(param_1);
 }

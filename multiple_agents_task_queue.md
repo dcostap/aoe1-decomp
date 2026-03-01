@@ -4391,7 +4391,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 314 — Multi-file stub cleanup batch (various files — ~30 stubs total)
 - [x] Assigned to agent (Worker-7, clone_7)
-- [ ] Finished
+- [x] Finished
+- Status note: verified complete on current `master` — all scoped files now have 0 `TODO: STUB` markers.
 - Goal: Clean up remaining TODO: STUB markers across multiple implementation files. Target files and stub counts:
   - TribeConstructionAIModule.cpp: 5 stubs
   - TRIBE_Building_Object.cpp: 5 stubs

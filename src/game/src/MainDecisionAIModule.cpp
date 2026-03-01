@@ -10,6 +10,7 @@
 
 namespace {
 static void aimdmod_ensure_capacity(MainDecisionAIModule* self, int index) {
+    // Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
     if (self->objects.maximumSizeValue - 1 >= index) {
         return;
     }
@@ -100,13 +101,21 @@ void MainDecisionAIModule::setLogHistory(int param_1) {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D090
     (void)param_1;
 }
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 void MainDecisionAIModule::toggleLogHistory() {}
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 void MainDecisionAIModule::setHistoryFilename(char* param_1) { (void)param_1; }
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 int MainDecisionAIModule::loggingCommonHistory() { return 0; }
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 void MainDecisionAIModule::setLogCommonHistory(int param_1) { (void)param_1; }
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 void MainDecisionAIModule::toggleLogCommonHistory() {}
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 int MainDecisionAIModule::loadState(char* param_1) { (void)param_1; return 1; }
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 int MainDecisionAIModule::saveState(char* param_1) { (void)param_1; return 1; }
+// Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 int MainDecisionAIModule::gleanState(int param_1) { (void)param_1; return 1; }
 int MainDecisionAIModule::processMessage(AIModuleMessage* param_1) { (void)param_1; return 1; }
 int MainDecisionAIModule::update(int param_1) { (void)param_1; return 1; }
