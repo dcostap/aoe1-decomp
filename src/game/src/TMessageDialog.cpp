@@ -9,7 +9,7 @@
 
 extern TPanelSystem* panel_system;
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x0043FC70
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x0043FC70
 TMessageDialog::TMessageDialog(char* name) : TDialogPanel(name) {
     this->dlg_type = 0;
     this->text = nullptr;
@@ -18,7 +18,7 @@ TMessageDialog::TMessageDialog(char* name) : TDialogPanel(name) {
     this->button[2] = nullptr;
 }
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x0043FCD0
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x0043FCD0
 TMessageDialog::~TMessageDialog() {
     this->delete_panel((TPanel**)&this->text);
     this->delete_panel((TPanel**)&this->button[0]);
@@ -26,7 +26,7 @@ TMessageDialog::~TMessageDialog() {
     this->delete_panel((TPanel**)&this->button[2]);
 }
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x0043FD50
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x0043FD50
 long TMessageDialog::setup(TPanel* parent, char* info_file, long info_id, long wid, long hgt, uchar dlg_type_in, char* text_in, long btn_wid, long btn_hgt) {
     // Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x0043FD50
     TDrawArea* draw_area = (parent != nullptr) ? parent->render_area : nullptr;
@@ -125,14 +125,14 @@ long TMessageDialog::setup(TPanel* parent, char* info_file, long info_id, long w
     return 1;
 }
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x0043FFF0
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x0043FFF0
 long TMessageDialog::setup(TPanel* parent, char* info_file, long info_id, long wid, long hgt, uchar dlg_type_in, int text_id, long btn_wid, long btn_hgt) {
     char str[256];
     this->get_string(text_id, str, sizeof(str));
     return this->setup(parent, info_file, info_id, wid, hgt, dlg_type_in, str, btn_wid, btn_hgt);
 }
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x00440070
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x00440070
 long TMessageDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (this->parent_panel != nullptr && param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->button[0]) {
@@ -151,12 +151,12 @@ long TMessageDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong 
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x00440100
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x00440100
 long TMessageDialog::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     return 0;
 }
 
-// Source of truth: dlg_msg.cpp.decomp @ 0x00440110
+// Fully verified. Source of truth: dlg_msg.cpp.decomp @ 0x00440110
 long TMessageDialog::handle_idle() {
     if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();

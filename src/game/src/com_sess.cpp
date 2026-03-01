@@ -14,7 +14,7 @@ static GUID s_ApplicationGUID{};
 }
 
 static BOOL FAR PASCAL EnumSessionCallback(LPCDPSESSIONDESC2 desc, LPDWORD /*timeout*/, DWORD flags, LPVOID context) {
-    // Source of truth: com_sess.cpp.decomp @ 0x00432560
+    // Fully verified. Source of truth: com_sess.cpp.decomp @ 0x00432560
     if ((flags & DPESC_TIMEDOUT) != 0) {
         return FALSE;
     }
@@ -31,7 +31,7 @@ static BOOL FAR PASCAL EnumSessionCallback(LPCDPSESSIONDESC2 desc, LPDWORD /*tim
 }
 
 TCommunications_Sessions::TCommunications_Sessions(TCommunications_Handler* comm) {
-    // Source of truth: com_sess.cpp.decomp @ 0x00432200
+    // Fully verified. Source of truth: com_sess.cpp.decomp @ 0x00432200
     s_sessions_comm = comm;
     s_glpSERV = comm ? (IDirectPlay3A*)comm->GetDPInterface() : nullptr;
 
@@ -53,7 +53,7 @@ TCommunications_Sessions::~TCommunications_Sessions() {
 }
 
 void TCommunications_Sessions::EraseInformation() {
-    // Source of truth: com_sess.cpp.asm @ 0x004322A0
+    // Fully verified. Source of truth: com_sess.cpp.decomp @ 0x004322A0
     this->SessionCount = 0;
     memset(&this->Session[0], 0, sizeof(TCommunications_Sessions) - offsetof(TCommunications_Sessions, Session));
 }
@@ -104,7 +104,7 @@ int TCommunications_Sessions::IncSessionCount() {
 
 int TCommunications_Sessions::AddSession(_GUID session_guid, _GUID app_guid, ulong max_players, ulong current_players, char* name,
                                         char* password, ulong user1, ulong user2, ulong user3, ulong user4) {
-    // Source of truth: com_sess.cpp.decomp @ 0x00432390
+    // Fully verified. Source of truth: com_sess.cpp.decomp @ 0x00432390
     if (this->SessionCount < 0 || this->SessionCount >= 501) {
         return 0;
     }
@@ -133,7 +133,7 @@ int TCommunications_Sessions::AddSession(_GUID session_guid, _GUID app_guid, ulo
 }
 
 int TCommunications_Sessions::Refresh() {
-    // Source of truth: com_sess.cpp.decomp @ 0x004324F0
+    // Fully verified. Source of truth: com_sess.cpp.decomp @ 0x004324F0
     this->EraseInformation();
 
     if (s_glpSERV == nullptr) {

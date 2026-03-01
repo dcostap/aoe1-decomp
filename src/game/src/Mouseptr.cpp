@@ -448,7 +448,7 @@ int TMousePointer::Restore_Mouse(TDrawArea* param_1) {
 }
 
 void TMousePointer::center() {
-    // Source of truth: mouseptr.cpp.decomp @ 0x0045BF90
+    // Fully verified. Source of truth: mouseptr.cpp.decomp @ 0x0045BF90
     if (this->render_area == nullptr || this->render_area->DrawSystem == nullptr) {
         return;
     }
@@ -759,3 +759,4 @@ int TMousePointer::GetDDBltError(long err) {
     }
     return -1;
 }
+

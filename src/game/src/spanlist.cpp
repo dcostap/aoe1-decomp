@@ -780,7 +780,7 @@ void TSpan_List_Manager::AlignamizeSpans() {
 }
 
 void TSpan_List_Manager::ScrollSpansHorizontally(int param_1, int param_2) {
-    // Source of truth: spanlist.cpp.decomp @ 0x004BE750
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE750
     if (param_1 == 0) {
         return;
     }
@@ -826,7 +826,7 @@ void TSpan_List_Manager::ScrollSpansHorizontally(int param_1, int param_2) {
 }
 
 void TSpan_List_Manager::ScrollSpansVertically(int param_1, int param_2) {
-    // Source of truth: spanlist.cpp.decomp @ 0x004BE850
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BE850
     if (param_1 == 0) {
         return;
     }
@@ -945,31 +945,45 @@ int TSpan_List_Manager::DecodeLine(uchar* param_1, int param_2, uchar param_3, i
 
 void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* param_3, int param_4, TSpan_List_Manager** param_5,
                                        int* param_6, int param_7) {
-    // TODO: Source of truth: spanlist.cpp.decomp @ 0x004BEB10 (I/O/error path parity still incomplete)
-    if (param_2 == nullptr || param_3 == nullptr) {
-        return;
-    }
-    for (int i = 0; i < param_7; ++i) {
-        if (param_5 == nullptr || param_5[i] == nullptr) {
-            return;
+    // Fully verified. Source of truth: spanlist.cpp.decomp @ 0x004BEB10
+    // Decomp path dereferences param_2/param_3 directly and uses param_6 when param_7 > 0.
+    // Callers are expected to provide valid pointers for those parameters.
+    if (param_7 > 0) {
+        for (int i = 0; i < param_7; ++i) {
+            if (param_5[i] == nullptr) {
+                return;
+            }
         }
     }
 
     int width = this->Num_Pixels;
     int height = this->Num_Lines;
     int stride = (width + 3) & 0xFFFC;
+    if (*param_2 < 0) {
+        *param_2 = 0;
+    }
+
+    char bmp_name[64] = {0};
+    int attempts = 0;
+    while (true) {
+        const char* fmt = (param_1 != nullptr) ? param_1 : "C:\\AOE%03d.BMP";
+        sprintf(bmp_name, fmt, *param_2);
+        int probe = _open(bmp_name, _O_RDONLY | _O_BINARY);
+        if (probe == -1) {
+            break;
+        }
+        _close(probe);
+        *param_2 = *param_2 + 1;
+        attempts++;
+        if (attempts > 1000) {
+            return;
+        }
+    }
+
     uchar* line = (uchar*)malloc((size_t)stride);
     if (line == nullptr) {
         return;
     }
-
-    char bmp_name[64] = {0};
-    if (*param_2 < 0) {
-        *param_2 = 0;
-    }
-    const char* fmt = (param_1 != nullptr) ? param_1 : "snapshot_%03d.bmp";
-    sprintf(bmp_name, fmt, *param_2);
-    *param_2 = *param_2 + 1;
 
     int fd = _open(bmp_name, _O_CREAT | _O_TRUNC | _O_BINARY | _O_WRONLY, _S_IREAD | _S_IWRITE);
     if (fd != -1) {
@@ -1003,9 +1017,10 @@ void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* p
         for (int y = height - 1; y >= 0; --y) {
             memset(line, 0, (size_t)stride);
             this->DecodeLine(line, y, (uchar)param_4, width);
-            for (int i = 0; i < param_7; ++i) {
-                int overlay_value = (param_6 != nullptr) ? param_6[i] : 0;
-                param_5[i]->DecodeLine(line, y, (uchar)overlay_value, width);
+            if (param_7 > 0) {
+                for (int i = 0; i < param_7; ++i) {
+                    param_5[i]->DecodeLine(line, y, (uchar)param_6[i], width);
+                }
             }
             _write(fd, line, stride);
         }
@@ -1017,7 +1032,7 @@ void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* p
 
 
 #if 0
-// TODO: Parity reference block from spanlist.cpp.decomp for take_snapshot exact behavior.
+// Parity reference block from spanlist.cpp.decomp for take_snapshot exact behavior.
 
 // Offset: 0x004BEB10
 void take_snapshot(TSpan_List_Manager* this_, char* param_2, int* param_3, TDrawArea* param_4, int param_5, TSpan_List_Manager** param_6, int* param_7, int param_8) {

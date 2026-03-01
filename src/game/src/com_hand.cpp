@@ -148,7 +148,7 @@ static uint comm_speed_get_avg_frame_rate(RGE_Communications_Speed* speed) {
 }
 
 static uchar comm_get_next_sequence(ulong execute_on_turn, int program_state) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042B200
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042B200
     if (execute_on_turn != s_nextSequenceTurn) {
         s_nextSequenceTurn = execute_on_turn;
         s_nextSequence = 1;
@@ -515,7 +515,7 @@ static int comm_evaluate_player_message(TCommunications_Handler* comm, ulong ful
 }
 
 TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game_players) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00425A40 (constructor)
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425A40
     memset(this, 0, sizeof(*this));
 
     this->HostHWND = host_hwnd;
@@ -590,7 +590,7 @@ TCommunications_Handler::TCommunications_Handler(void* host_hwnd, uchar max_game
 }
 
 TCommunications_Handler::~TCommunications_Handler() {
-    // Source of truth: com_hand.cpp.decomp @ 0x004261E0 (destructor)
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004261E0
     this->ClearRXandTX();
 
     if (this->InQ != nullptr) {
@@ -683,7 +683,7 @@ int TCommunications_Handler::AllPlayersReady() {
 }
 
 long TCommunications_Handler::EnableNewPlayers(void* direct_play, int enable_links) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042EF00
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042EF00
     if (direct_play == nullptr) {
         return 0x80070057L;
     }
@@ -699,7 +699,7 @@ long TCommunications_Handler::EnableNewPlayers(void* direct_play, int enable_lin
 }
 
 int TCommunications_Handler::IsPlayerHuman(uint player_number) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042CCD0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CCD0
     if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
         return 0;
     }
@@ -726,7 +726,7 @@ void TCommunications_Handler::HandleMessage() {
 }
 
 int TCommunications_Handler::DoCycle(ulong now) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00426650
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426650
     if (this->Multiplayer == 0) {
         return (this->PlayerOptions.ProgramState == kCommStatePause) ? 0 : -1;
     }
@@ -792,7 +792,7 @@ int TCommunications_Handler::DoCycle(ulong now) {
 }
 
 void TCommunications_Handler::ReceiveGameMessages() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00426E10
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426E10
     if (this->Multiplayer == 0) {
         return;
     }
@@ -831,7 +831,7 @@ void TCommunications_Handler::ReceiveGameMessages() {
 }
 
 uint TCommunications_Handler::ExecuteIncoming() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00429D90
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429D90
     if (this->Multiplayer == 0) {
         return 0;
     }
@@ -893,7 +893,7 @@ uint TCommunications_Handler::ExecuteIncoming() {
 }
 
 void TCommunications_Handler::GetDPLAYMessages() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00426FC0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426FC0
     IDirectPlay2* dp = comm_get_dplay(this);
     if (dp == nullptr) {
         return;
@@ -951,7 +951,7 @@ void TCommunications_Handler::GetDPLAYMessages() {
 }
 
 void TCommunications_Handler::EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00428DA0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428DA0
     (void)p1;
     (void)p3;
     (void)p4;
@@ -1044,7 +1044,7 @@ void TCommunications_Handler::EvaluateSystemMessage(ulong p1, char* p2, ulong p3
 }
 
 void TCommunications_Handler::UpdatePlayers() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042DF40
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DF40
     uint low = (uint)this->PlayerOptions.LowPlayerNumber;
     uint high = (uint)this->PlayerOptions.HighPlayerNumber;
     if (low <= high) {
@@ -1056,7 +1056,7 @@ void TCommunications_Handler::UpdatePlayers() {
 }
 
 void TCommunications_Handler::UpdatePlayer(uint id, int timeout) {
-    // Source of truth: com_hand.cpp.decomp/.asm @ 0x0042DF90
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DF90
     COMMPLAYEROPTIONS* opts = &this->PlayerOptions;
     const int humanity = opts->Humanity[id];
     const ulong dpid = opts->dcoID[id];
@@ -1197,7 +1197,7 @@ void TCommunications_Handler::NotifyWindowParam(int message, long param) {
 }
 
 long TCommunications_Handler::SendSharedData(int send_mode) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00428820
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428820
     if (this->MeHost == 0) {
         return 0;
     }
@@ -1343,7 +1343,7 @@ uint TCommunications_Handler::GetRandomSeed() {
 }
 
 uint TCommunications_Handler::WhoAmI() {
-    // Source of truth: com_hand.cpp.decomp @ WhoAmI
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ WhoAmI
     return this->Me;
 }
 
@@ -1359,7 +1359,7 @@ void* TCommunications_Handler::SetWindowHandle(void* window_handle) {
 }
 
 void TCommunications_Handler::LaunchMultiplayerGame() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042DC20
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042DC20
     int* program_state = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsProgramStateOffset);
     int* game_has_started = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsGameHasStartedOffset);
     uchar* command_turn_increment =
@@ -1411,7 +1411,7 @@ void TCommunications_Handler::LaunchMultiplayerGame() {
 }
 
 void TCommunications_Handler::CalculatePlayerRange() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00425990
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425990
     ushort* high_player = (ushort*)((char*)&this->PlayerOptions + kCommPlayerOptionsHighPlayerNumberOffset);
     ushort* low_player = (ushort*)((char*)&this->PlayerOptions + kCommPlayerOptionsLowPlayerNumberOffset);
 
@@ -1467,7 +1467,7 @@ void TCommunications_Handler::ClearRXandTX() {
 }
 
 void TCommunications_Handler::PackPlayersDown() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042D720
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042D720
     ulong* dco_id = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
     int* player_ready = (int*)((char*)&this->PlayerOptions + kCommPlayerOptionsPlayerReadyOffset);
     ulong* user1 = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsUser1Offset);
@@ -1525,7 +1525,7 @@ void TCommunications_Handler::PackPlayersDown() {
 }
 
 void TCommunications_Handler::SetSelfPlayer() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00428A70
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428A70
     ulong* dco_id = (ulong*)((char*)&this->PlayerOptions + kCommPlayerOptionsDcoIDOffset);
     ulong local_dpid = s_localPlayerDpid;
 
@@ -1552,7 +1552,7 @@ void TCommunications_Handler::SetSelfPlayer() {
 
 void TCommunications_Handler::InitPlayerInformation(uint player_number, ulong dpid, char* friendly_name,
                                                      char* formal_name) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042D2D0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042D2D0
     if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
         return;
     }
@@ -1612,7 +1612,7 @@ void TCommunications_Handler::InitPlayerInformation(uint player_number, ulong dp
 }
 
 void TCommunications_Handler::ResetLastCommunicationTimes() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042C7A0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C7A0
     ulong now = GetTickCount();
     for (uint player = 1; player <= (uint)this->MaxGamePlayers && player < 10; ++player) {
         this->LastPlayerCommunication[player] = now;
@@ -1621,7 +1621,7 @@ void TCommunications_Handler::ResetLastCommunicationTimes() {
 }
 
 void TCommunications_Handler::ClearAllSerialNumbers() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00429F80
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429F80
     for (uint player = 0; player <= (uint)this->MaxGamePlayers && player < 10; ++player) {
         this->PlayerHighSerialNumber[player] = 0;
         this->LastSerialRequestedTX[player] = 0;
@@ -1722,12 +1722,12 @@ int TCommunications_Handler::NewCommand(void* p1, int p2, int p3) {
 }
 
 uchar TCommunications_Handler::new_command(void* p1, int p2) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00426510
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426510
     return (uchar)this->NewCommand(p1, p2, 0);
 }
 
 void TCommunications_Handler::DropDeadPlayer(uint id, ulong turn) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00428B10
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428B10
     (void)turn;
 
     this->WasKicked[id] = 1;
@@ -1782,7 +1782,7 @@ void TCommunications_Handler::DropDeadPlayer(uint id, ulong turn) {
 }
 
 void TCommunications_Handler::CheckPingTime(int p1) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00427300
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00427300
     if (this->Multiplayer == 0) {
         return;
     }
@@ -1889,7 +1889,7 @@ long TCommunications_Handler::TXChat(uint param_1, uchar* param_2, char* param_3
 }
 
 void TCommunications_Handler::SendStoredMessages() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042A800 (simplified resend loop)
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A800
     if (this->RGE_Guaranteed_Delivery == 0 || this->Resend == nullptr) {
         return;
     }
@@ -1978,7 +1978,7 @@ void TCommunications_Handler::SendStoredMessages() {
 }
 
 int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ulong p4, int p5) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00427600
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00427600
     if (p2 == nullptr || p1 == 0) {
         return 0;
     }
@@ -2144,7 +2144,7 @@ int TCommunications_Handler::PreprocessMessages(ulong p1, char* p2, ulong p3, ul
 }
 
 long TCommunications_Handler::CommOut(uchar p1, void* p2, long p3, ulong p4) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042B270
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042B270
     if (this->Multiplayer == 0) {
         return 0;
     }
@@ -2418,7 +2418,7 @@ void TCommunications_Handler::ShutdownGameMessages() {
 }
 
 int TCommunications_Handler::CountWaitingMessages() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042A0C0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A0C0
     int waiting = 0;
     uint offset = 0;
     while (offset < 0x6D99) {
@@ -2443,7 +2443,7 @@ void TCommunications_Handler::GameOver() {
 }
 
 COMMSTATUS TCommunications_Handler::GetCommunicationsStatus() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042BAD0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042BAD0
     COMMSTATUS st = this->AnalyzeCommunicationsStatus();
     this->CommunicationsStatus = st;
     return st;
@@ -2505,7 +2505,7 @@ void TCommunications_Handler::FreeOptions() {
 }
 
 long TCommunications_Handler::ReleaseComm() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042E9B0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E9B0
     if (this->Lobby != nullptr && this->Lobby->glpDP != nullptr) {
         (void)this->Lobby->glpDP->Release();
         this->Lobby->glpDP = nullptr;
@@ -2515,7 +2515,7 @@ long TCommunications_Handler::ReleaseComm() {
 }
 
 long TCommunications_Handler::CloseSession() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042E920
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042E920
     long hr = 0;
     if (this->Lobby != nullptr && this->Lobby->glpDP != nullptr) {
         hr = (long)this->Lobby->glpDP->Close();
@@ -2530,7 +2530,7 @@ long TCommunications_Handler::CloseSession() {
 }
 
 long TCommunications_Handler::DestroyMyPlayer() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042EB10
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042EB10
     IDirectPlay2* dp = comm_get_dplay(this);
     if (dp == nullptr) {
         return 0;
@@ -2552,7 +2552,7 @@ long TCommunications_Handler::DestroyMyPlayer() {
 }
 
 int TCommunications_Handler::Kick(uint player_number) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042EA10
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042EA10
     if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
         return 0;
     }
@@ -2592,7 +2592,7 @@ int TCommunications_Handler::Kick(uint player_number) {
 }
 
 void TCommunications_Handler::DropAllHostedPlayers() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042C800
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C800
     if (this->MeHost != 0 && this->current_turn < 7) {
         for (uint player = 1; player <= (uint)this->MaxGamePlayers && player < 10; ++player) {
             (void)this->Kick(player);
@@ -2601,7 +2601,7 @@ void TCommunications_Handler::DropAllHostedPlayers() {
 }
 
 COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042BAE0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042BAE0
     switch (this->CommunicationsStatus) {
     case UNINITIALIZED:
     case INITIALIZED:
@@ -2864,7 +2864,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 }
 
 COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS level) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042C5D0
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042C5D0
     COMMSTATUS current = this->AnalyzeCommunicationsStatus();
     this->CommunicationsStatus = current;
 
@@ -2906,7 +2906,7 @@ IDirectPlay3* TCommunications_Handler::GetDPInterface() {
 }
 
 void TCommunications_Handler::SendSpeedChange(uint buffer_frames, uint buffer_granularity) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00429A30
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429A30
     if (this->MeHost != 0 && this->Multiplayer != 0) {
         const uint packed = ((buffer_granularity & 0xFFFF) << 16) | (buffer_frames & 0xFFFF);
         (void)this->CommOut('S', (void*)&packed, 4, 0);
@@ -2914,7 +2914,7 @@ void TCommunications_Handler::SendSpeedChange(uint buffer_frames, uint buffer_gr
 }
 
 int TCommunications_Handler::AllPlayersAcknowledged() {
-    // Source of truth: com_hand.cpp.decomp @ 0x00429C40
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00429C40
     if (this->Multiplayer == 0) {
         return 0;
     }

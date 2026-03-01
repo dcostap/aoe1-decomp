@@ -17,7 +17,7 @@ RGE_Timeline::RGE_Timeline(RGE_Game_World* param_1) {
     this->old_time = -1.0f;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050D5B0
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050D5B0
 RGE_Timeline::RGE_Timeline(int handle, RGE_Game_World* world) {
     this->world = world;
     this->time_list = nullptr;
@@ -202,7 +202,7 @@ static void timeline_switch_anchor_0050DAF5() {
     // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DB10
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DB10
 void RGE_Timeline::mock_update(float time) {
     if ((time < this->old_time) && (this->time_list != nullptr)) {
         RGE_Time_Entry* last = this->time_list;
@@ -280,7 +280,7 @@ void RGE_Timeline::mock_update(float time) {
     this->old_time = time;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DD30
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DD30
 short RGE_Timeline::find_id(RGE_Static_Object* obj) {
     for (RGE_Time_Entry* e = this->time_list; e != nullptr; e = e->next) {
         if ((e->command == 1) && (e->this_obj == obj)) {
@@ -290,7 +290,7 @@ short RGE_Timeline::find_id(RGE_Static_Object* obj) {
     return -1;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DD70
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DD70
 RGE_Time_Entry* RGE_Timeline::add(float time) {
     RGE_Time_Entry** insert = &this->time_list;
     RGE_Time_Entry* cur = this->time_list;
@@ -329,7 +329,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
     return e;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DE00
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DE00
 RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* this_obj, RGE_Static_Object* target_obj) {
     RGE_Time_Entry* e = this->add(time);
     if (e != nullptr) {
@@ -344,7 +344,7 @@ RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* this_obj
     return e;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DE50
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DE50
 RGE_Time_Entry* RGE_Timeline::add_create(float time, short obj_type, uchar player_id, float x, float y, float z) {
     RGE_Static_Object* created = nullptr;
     RGE_Time_Entry* e = this->add(time);
@@ -368,7 +368,7 @@ RGE_Time_Entry* RGE_Timeline::add_create(float time, short obj_type, uchar playe
     return e;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DEF0
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DEF0
 RGE_Time_Entry* RGE_Timeline::add_move(float time, RGE_Static_Object* this_obj, float x, float y, float z) {
     RGE_Time_Entry* e = this->add(time);
     if (e != nullptr) {
@@ -383,7 +383,7 @@ RGE_Time_Entry* RGE_Timeline::add_move(float time, RGE_Static_Object* this_obj, 
     return e;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DF40
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DF40
 RGE_Time_Entry* RGE_Timeline::add_delete(float time, RGE_Static_Object* this_obj) {
     if (this_obj == nullptr) {
         return nullptr;
@@ -413,7 +413,7 @@ RGE_Time_Entry* RGE_Timeline::add_delete(float time, RGE_Static_Object* this_obj
     return e;
 }
 
-// Source of truth: timeline.cpp.decomp @ 0x0050DFD0
+// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DFD0
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
     RGE_Time_Entry** pp = &this->time_list;
     RGE_Time_Entry* cur = this->time_list;

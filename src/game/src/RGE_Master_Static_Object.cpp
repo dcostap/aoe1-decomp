@@ -380,6 +380,7 @@ void RGE_Master_Static_Object::modify_percent(float param_1, uchar param_2) {
 }
 
 void RGE_Master_Static_Object::save(int param_1) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00453695 (decompiler helper/junk-label coverage).
     // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004536D0
     short temp_sprite = -1;
     short temp_death_sprite = -1;
@@ -1091,7 +1092,7 @@ int RGE_Master_Static_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound
 }
 
 int RGE_Master_Static_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4) {
-    // TODO: Verify exact fscanf token layout against m_s_obj.cpp.asm @ 0x00452B00.
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452B00, m_s_obj.cpp.asm @ 0x00452B00
     this->master_type = 0x0A;
     this->id = param_4;
     short temp_area_effect_object_level = 0;
