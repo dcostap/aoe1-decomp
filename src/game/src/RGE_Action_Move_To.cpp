@@ -20,7 +20,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2) 
     rge_read(param_1, &this->range, 4);
 }
 
-// Fully verified. Source of truth: act_move.cpp.decomp @ 0x004055A0
+// Fully verified. Source of truth: act_move.cpp.decomp @ 0x004055A0, act_move.cpp.asm @ 0x004055A0
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, float param_2, float param_3, float param_4, float param_5, RGE_Sprite* param_6) {
     RGE_Action::setup(param_1);
     this->action_type = 1;
@@ -45,7 +45,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, float param_2
     }
 }
 
-// Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405620
+// Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405620, act_move.cpp.asm @ 0x00405620
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, RGE_Sprite* param_4) {
     RGE_Action::setup(param_1);
     this->action_type = 1;
@@ -74,7 +74,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, RGE_Static_Ob
     }
 }
 
-// Fully verified. Source of truth: act_move.cpp.decomp @ 0x004056E0
+// Fully verified. Source of truth: act_move.cpp.decomp @ 0x004056E0, act_move.cpp.asm @ 0x004056E0
 RGE_Action_Move_To::~RGE_Action_Move_To() {
     if (this->obj != nullptr) {
         this->obj->removeAllUserDefinedWaypoints(0);
