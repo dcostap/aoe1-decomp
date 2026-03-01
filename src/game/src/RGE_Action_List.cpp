@@ -287,7 +287,7 @@ uchar RGE_Action_List::update() {
     return 1;
 }
 
-// Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404540
+// Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404540, act_list.cpp.asm @ 0x00404540
 void RGE_Action_List::add_action(RGE_Action* param_1) {
     if ((this->obj != nullptr) && (this->obj->object_state < 3)) {
         RGE_Action_Node* node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
@@ -333,7 +333,7 @@ void RGE_Action_List::add_action_at_end(RGE_Action* param_1) {
     }
 }
 
-// Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404610
+// Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404610, act_list.cpp.asm @ 0x00404610
 void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* param_1) {
     if ((this->obj == nullptr) || (2 < this->obj->object_state)) {
         if (param_1 != nullptr) {
@@ -371,7 +371,7 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* param_1) {
     }
 }
 
-// Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404710
+// Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404710, act_list.cpp.asm @ 0x00404710
 void RGE_Action_List::remove_action() {
     RGE_Action_Node* node = this->list;
     if (node != nullptr) {

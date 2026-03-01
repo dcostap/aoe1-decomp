@@ -89,7 +89,7 @@ void TRIBE_Action_Convert::save(int param_1) {
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
 short TRIBE_Action_Convert::type() { return this->action_type; }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDBB0
+// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDBB0, tact_cnv.cpp.asm @ 0x004CDBB0
 void TRIBE_Action_Convert::first_in_stack(uchar param_1) {
     if (this->target_obj != nullptr) {
         short target_group = (this->target_obj->master_obj != nullptr) ? this->target_obj->master_obj->object_group : (short)-1;
@@ -179,7 +179,7 @@ uchar TRIBE_Action_Convert::inside_obj_update() { return RGE_Action::inside_obj_
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
 uchar TRIBE_Action_Convert::idle_update() { return RGE_Action::idle_update(); }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDE10
+// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDE10, tact_cnv.cpp.asm @ 0x004CDE10
 void TRIBE_Action_Convert::set_state(uchar param_1) {
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
@@ -233,7 +233,7 @@ void TRIBE_Action_Convert::set_state(uchar param_1) {
             }
         }
         if ((this->target_obj != nullptr) && (this->target_obj->owner != nullptr) && (0 < this->target_obj->owner->id)) {
-            this->target_obj->owner->notify(0x70, (int)this->target_obj->world_x, (int)this->target_obj->world_y, (long)this->target_obj->world_z, 0, 0);
+            this->target_obj->owner->notify(0x70, (int)this->obj->world_x, (int)this->obj->world_y, (long)this->obj->world_z, 0, 0);
         }
         this->timer = (this->task != nullptr) ? this->task->work_val2 : 0.0f;
         return;
@@ -259,7 +259,7 @@ void TRIBE_Action_Convert::set_state(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE070
+// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE070, tact_cnv.cpp.asm @ 0x004CE070
 uchar TRIBE_Action_Convert::update() {
     RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
 
