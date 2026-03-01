@@ -206,7 +206,7 @@ TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uch
 
 TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
     : RGE_Player(param_1, world, player_id) {
-    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00511BD0
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00511BD0, tplayer.cpp.asm @ 0x00511BD0
     this->playerAI = nullptr;
     memset(this->aiStatusInformationValue, 0, sizeof(this->aiStatusInformationValue));
     memset(this->aiStatusInformationValue2, 0, sizeof(this->aiStatusInformationValue2));
@@ -852,10 +852,6 @@ void TRIBE_Player::rev_tech(long param_1) {
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513FD0
 void TRIBE_Player::add_population_entry() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513FD0, tplayer.cpp.asm @ 0x00513FD0
-    if (this->history == nullptr || this->attributes == nullptr || this->attribute_num <= 0x0B) {
-        return;
-    }
-
     float population = this->attributes[0x0B];
     if (population < 0.0f) {
         this->history->add_history_entry(0, 0);
@@ -865,7 +861,7 @@ void TRIBE_Player::add_population_entry() {
 }
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513AF0
 uchar TRIBE_Player::check_obj_cost(short param_1, short* param_2, float param_3, int param_4) {
-    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513AF0
+    // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00513AF0, tplayer.cpp.asm @ 0x00513AF0
     float reserve_resource = this->attributes[3];
     if (param_2 != nullptr) {
         *param_2 = -1;

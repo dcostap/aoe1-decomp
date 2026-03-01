@@ -37,7 +37,18 @@ struct RGE_Communications_Synchronize;
 struct RGE_Communications_Addresses;
 struct RGE_Comm_Error;
 struct RESENDER;
-struct HOLDER;
+struct HOLDER {
+    HOLDER();
+    ~HOLDER();
+
+    char* HoldMsg;
+    uint Serial;
+    uint Length;
+    ulong dcoFromID;
+    ulong dcoReceiveID;
+    ulong _padding_14;
+};
+static_assert(sizeof(HOLDER) == 0x18, "Size mismatch");
 struct IDirectPlay3;
 #pragma pack(push, 1)
 struct COMMPLAYEROPTIONS {
