@@ -6337,17 +6337,17 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 542
 - [ ] Assigned to: W3
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TradeAIModule.cpp.
 
 ## Task 543
 - [ ] Assigned to: W4
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TacticalAIModule.cpp.
 
 ## Task 544
 - [ ] Assigned to: W6
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of StrategyAIModule.cpp.
 
 
@@ -6358,15 +6358,36 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 546
 - [ ] Assigned to: W2
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Master_Moving_Object.cpp.
 
 ## Task 547
 - [ ] Assigned to: W7
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TRIBE_Master_Static_Object.cpp.
 
 ## Task 548
 - [ ] Assigned to: W8
 - [ ] Finished
 **Goal**: Deep ASM parity audit of RGE_Tile.cpp.
+
+
+## Task 549
+- [x] Assigned to: W2
+- [ ] Finished
+**Goal**: Deep ASM parity audit of UnitAIModule (aiuaimod.cpp) - top 5 largest functions.
+
+## Task 550
+- [x] Assigned to: W3
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TribeUnitAIModule (taiuaimd.cpp) - top 5 largest functions.
+
+## Task 551
+- [x] Assigned to: W6
+- [ ] Finished
+**Goal**: Deep ASM parity audit of victory.cpp - victory conditions.
+
+## Task 552
+- [x] Assigned to: W7
+- [ ] Finished
+**Goal**: Deep ASM parity audit of tcommand.cpp - Tribe command handler.
