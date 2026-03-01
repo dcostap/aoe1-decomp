@@ -6316,12 +6316,12 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 538
 - [ ] Assigned to: W2
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TRIBE_Action_Gather.cpp update/set_state.
 
 ## Task 539
 - [ ] Assigned to: W5
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Action_Waypoint.cpp + TRIBE_Action_Transport.cpp update.
 
 ## Task 540
@@ -6331,7 +6331,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 541
 - [ ] Assigned to: W8
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TribeResourceAIModule.cpp update/distributeResources.
 
 
@@ -6349,3 +6349,24 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 - [ ] Assigned to: W6
 - [ ] Finished
 **Goal**: Deep ASM parity audit of StrategyAIModule.cpp.
+
+
+## Task 545
+- [ ] Assigned to: W1
+- [ ] Finished
+**Goal**: Deep ASM parity audit of getdxver.cpp.
+
+## Task 546
+- [ ] Assigned to: W2
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_Master_Moving_Object.cpp.
+
+## Task 547
+- [ ] Assigned to: W7
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TRIBE_Master_Static_Object.cpp.
+
+## Task 548
+- [ ] Assigned to: W8
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_Tile.cpp.
