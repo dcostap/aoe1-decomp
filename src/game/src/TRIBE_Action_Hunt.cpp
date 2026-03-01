@@ -48,8 +48,10 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param
     this->targetType = -1;
 }
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 TRIBE_Action_Hunt::~TRIBE_Action_Hunt() {}
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 int TRIBE_Action_Hunt::setup(RGE_Action_Object* param_1) {
     int r = RGE_Action::setup(param_1);
     this->action_type = 0x6E;
@@ -57,6 +59,7 @@ int TRIBE_Action_Hunt::setup(RGE_Action_Object* param_1) {
     return r;
 }
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 int TRIBE_Action_Hunt::setup(int param_1, RGE_Action_Object* param_2) {
     int r = RGE_Action::setup(param_1, param_2);
     this->action_type = 0x6E;
@@ -64,7 +67,9 @@ int TRIBE_Action_Hunt::setup(int param_1, RGE_Action_Object* param_2) {
     return r;
 }
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 RGE_Action_List* TRIBE_Action_Hunt::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 void TRIBE_Action_Hunt::rehook() { RGE_Action::rehook(); }
 
 // Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF210
@@ -73,6 +78,7 @@ void TRIBE_Action_Hunt::save(int param_1) {
     rge_write(param_1, &this->targetType, 4);
 }
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 short TRIBE_Action_Hunt::type() { return this->action_type; }
 
 // Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF240
@@ -108,7 +114,9 @@ void TRIBE_Action_Hunt::first_in_stack(uchar param_1) {
     this->set_state(3);
 }
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 uchar TRIBE_Action_Hunt::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 uchar TRIBE_Action_Hunt::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF300
@@ -631,12 +639,21 @@ int TRIBE_Action_Hunt::work(RGE_Static_Object* param_1, float param_2, float par
     return 1;
 }
 
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 uchar TRIBE_Action_Hunt::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 uchar TRIBE_Action_Hunt::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 void TRIBE_Action_Hunt::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 void TRIBE_Action_Hunt::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 void TRIBE_Action_Hunt::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Hunt::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Hunt::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 void TRIBE_Action_Hunt::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 void TRIBE_Action_Hunt::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
