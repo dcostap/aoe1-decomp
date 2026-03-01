@@ -31,6 +31,7 @@
 #include "../include/T_Scenario.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/debug_helpers.h"
+#include "../include/custom_debug.h"
 #include "../include/globals.h"
 #include "../include/AIModule.h"
 #include "../include/BuildAIModule.h"
@@ -152,8 +153,17 @@ static void interface_obj_cost(TRIBE_Player* player, short obj_id,
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player(world, master, player_id, name, civ, '\0', '\0', ai1, ai2, ai3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00511E20
+    CUSTOM_DEBUG_LOG_FMT(
+        "TRIBE_Player::TRIBE_Player begin this=%p id=%d is_computer=%d is_active=%d world=%p tech=%p",
+        this,
+        (int)player_id,
+        (int)is_computer,
+        (int)is_active,
+        world,
+        world ? ((TRIBE_World*)world)->tech : nullptr);
     this->playerAI = nullptr;
     this->VR_List = new (std::nothrow) Visible_Resource_Manager((RGE_Player*)this, 5);
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Player::TRIBE_Player after VR_List this=%p VR_List=%p", this, this->VR_List);
 
     if (is_computer != 0) {
         this->type = 3;
@@ -198,10 +208,13 @@ TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uch
     memset(this->aiStatusInformationValue6, 0, sizeof(this->aiStatusInformationValue6));
 
     this->history = new (std::nothrow) TRIBE_History_Info(-1);
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Player::TRIBE_Player after history this=%p history=%p", this, this->history);
     this->tech_tree = new (std::nothrow) TRIBE_Player_Tech(((TRIBE_World*)world)->tech, (RGE_Player*)this, 1);
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Player::TRIBE_Player after tech_tree this=%p tech_tree=%p", this, this->tech_tree);
 
     this->ruin_held_time = -1.0f;
     this->artifact_held_time = -1.0f;
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Player::TRIBE_Player end this=%p", this);
 }
 
 TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
@@ -275,6 +288,7 @@ TRIBE_Gaia::TRIBE_Gaia(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->update_nature = 0x1d;
     this->animal_max = 0;
     this->last_count = 0;
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Gaia::TRIBE_Gaia end this=%p", this);
 }
 
 TRIBE_Gaia::TRIBE_Gaia(int param_1, RGE_Game_World* world, uchar player_id)

@@ -27,7 +27,11 @@
 #include "../include/RGE_Communications_Speed.h"
 #include "../include/RGE_Communications_Synchronize.h"
 #include "../include/DriveInformation.h"
+#include "../include/TRIBE_Screen_Main_Menu.h"
+#include "../include/TribeSPMenuScreen.h"
+#include "../include/TribeMPSetupScreen.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
@@ -45,6 +49,11 @@ struct TPanelSystem;
 extern struct TPanelSystem* panel_system;
 
 static int snapshot_number = 1;
+#if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
+// TODO: Debug-only automation state for reproducing start-game crashes via real UI action handlers.
+static int debug_autoplay_sp_random_start_state = 0;
+static int debug_autoplay_sp_random_start_wait_frames = 0;
+#endif
 static void* last_mouse_cursor = nullptr;
 
 static char s_ver_empty[] = "";
@@ -2697,6 +2706,45 @@ int RGE_Base_Game::handle_idle() {
         curPanel = panel_system->currentPanel();
         curPanel->handle_idle();
     }
+
+#if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
+    // TODO: Debug-only automation path. Not parity with original executable.
+    if (curPanel != nullptr && curPanel->panelNameValue != nullptr) {
+        debug_autoplay_sp_random_start_wait_frames = debug_autoplay_sp_random_start_wait_frames + 1;
+
+        if (debug_autoplay_sp_random_start_state == 0 &&
+            strcmp(curPanel->panelNameValue, "Main Menu") == 0 &&
+            debug_autoplay_sp_random_start_wait_frames >= 60) {
+            TRIBE_Screen_Main_Menu* main_menu = (TRIBE_Screen_Main_Menu*)curPanel;
+            if (main_menu->button[0] != nullptr) {
+                CUSTOM_DEBUG_LOG("AUTOPLAY: clicking Main Menu -> Single Player");
+                main_menu->action((TPanel*)main_menu->button[0], 1, 0, 0);
+                debug_autoplay_sp_random_start_state = 1;
+                debug_autoplay_sp_random_start_wait_frames = 0;
+            }
+        } else if (debug_autoplay_sp_random_start_state == 1 &&
+                   strcmp(curPanel->panelNameValue, "Single Player Menu") == 0 &&
+                   debug_autoplay_sp_random_start_wait_frames >= 45) {
+            TribeSPMenuScreen* sp_menu = (TribeSPMenuScreen*)curPanel;
+            if (sp_menu->button[0] != nullptr) {
+                CUSTOM_DEBUG_LOG("AUTOPLAY: clicking Single Player -> Random Map");
+                sp_menu->action((TPanel*)sp_menu->button[0], 1, 0, 0);
+                debug_autoplay_sp_random_start_state = 2;
+                debug_autoplay_sp_random_start_wait_frames = 0;
+            }
+        } else if (debug_autoplay_sp_random_start_state == 2 &&
+                   strcmp(curPanel->panelNameValue, "MP Setup Screen") == 0 &&
+                   debug_autoplay_sp_random_start_wait_frames >= 90) {
+            TribeMPSetupScreen* mps = (TribeMPSetupScreen*)curPanel;
+            if (mps->startButton != nullptr) {
+                CUSTOM_DEBUG_LOG("AUTOPLAY: clicking MP Setup -> Start Game");
+                mps->action((TPanel*)mps->startButton, 1, 0, 0);
+                debug_autoplay_sp_random_start_state = 3;
+                debug_autoplay_sp_random_start_wait_frames = 0;
+            }
+        }
+    }
+#endif
 
     // Comm handler message receiving
     if (this->comm_handler != nullptr) {

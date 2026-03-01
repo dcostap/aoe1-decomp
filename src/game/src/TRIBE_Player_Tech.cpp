@@ -19,6 +19,7 @@ static short player_tech_ftol(float value) {
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, uchar param_4) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C3A5
+    this->tech_player_tree = nullptr;
     rge_read(param_1, &this->tech_player_tree_num, 2);
     this->base_tech = param_2;
     this->owner = param_3;
@@ -47,6 +48,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Playe
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* param_1, RGE_Player* param_2, uchar param_3) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C4FC
+    this->tech_player_tree = nullptr;
     this->base_tech = param_1;
     this->owner = param_2;
     this->tech_player_tree_num = param_1->tech_tree_num;
@@ -336,6 +338,9 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3,
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::check_for_new_tech() {
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050CE68
+    if (this->base_tech == nullptr || this->owner == nullptr) {
+        return;
+    }
     Tech_Tree* tt = this->base_tech->tech_tree;
     short pending_count = 0;
     for (short i = 0; i < this->tech_player_tree_num; i++) {
@@ -362,7 +367,10 @@ void TRIBE_Player_Tech::check_for_new_tech() {
             pending_count++;
         }
     }
-    if (pending_count == 0 && this->owner->attributes[0x27] == 0.0f) {
+    if (pending_count == 0 &&
+        this->owner->attributes != nullptr &&
+        this->owner->attribute_num > 0x27 &&
+        this->owner->attributes[0x27] == 0.0f) {
         this->owner->attributes[0x27] = 1.0f;
     }
 }

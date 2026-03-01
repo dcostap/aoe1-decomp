@@ -7,6 +7,7 @@
 #include "../include/RGE_Master_Missile_Object.h"
 #include "../include/RGE_Master_Doppleganger_Object.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -93,11 +94,14 @@ RGE_Master_Player::~RGE_Master_Player() {
 
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004611D0
 void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init enter this=%p pos=%ld", this, rge_stream_tell(param_1));
     short* object_count = &this->master_object_num;
     rge_read(param_1, object_count, 2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init object_count=%d", (int)*object_count);
 
     if (*object_count < 1) {
         this->master_objects = nullptr;
+        CUSTOM_DEBUG_LOG("RGE_Master_Player::finish_init exit empty");
         return;
     }
 
@@ -107,9 +111,12 @@ void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound
         if (this->master_objects[i] != nullptr) {
             uchar master_type = 0;
             rge_read(param_1, &master_type, 1);
+            CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init idx=%d type=0x%02X", (int)i, (unsigned int)master_type);
             this->load_master_object(param_1, master_type, param_2, param_3, i);
+            CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init idx=%d loaded=%p", (int)i, this->master_objects[i]);
         }
     }
+    CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init exit pos=%ld", rge_stream_tell(param_1));
 }
 
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461270

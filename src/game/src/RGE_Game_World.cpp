@@ -419,10 +419,10 @@ uchar RGE_Game_World::data_load_players(char* param_1) {
         } else {
             this->master_players = (RGE_Master_Player**)calloc((int)this->master_player_num, sizeof(RGE_Master_Player*));
             for (short i = 0; i < count; ++i) {
-                short type = 0;
                 short id = 0;
-                if (fscanf(f, "%hd %hd", &type, &id) != -1) {
-                    this->data_load_players_type(type, id, f);
+                short type = 0;
+                if (fscanf(f, "%hd %hd", &id, &type) != -1) {
+                    this->data_load_players_type(id, type, f);
                 }
             }
         }
@@ -607,12 +607,21 @@ uchar RGE_Game_World::init_player(int param_1) {
     // Fully verified. Source of truth: world.cpp.decomp @ 0x00541800
     short* count = &this->master_player_num;
     rge_read(param_1, count, 2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_player master_player_num=%d", (int)*count);
     if (*count > 0) {
         this->master_players = (RGE_Master_Player**)calloc((int)*count, sizeof(RGE_Master_Player*));
         for (short i = 0; i < *count; ++i) {
             uchar player_type = 0;
             rge_read(param_1, &player_type, 1);
+            CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_player idx=%d player_type=0x%02X", (int)i, (unsigned int)player_type);
             this->init_player_type(param_1, i, player_type);
+            if (this->master_players != nullptr && this->master_players[i] != nullptr) {
+                CUSTOM_DEBUG_LOG_FMT(
+                    "RGE_Game_World::init_player idx=%d master=%p attr_num=%d",
+                    (int)i,
+                    this->master_players[i],
+                    (int)this->master_players[i]->attribute_num);
+            }
         }
     }
     return 1;
@@ -721,14 +730,23 @@ void RGE_Game_World::command_init(int fd, TCommunications_Handler* param_2) {
 
 void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
     // Fully verified. Source of truth: world.cpp.decomp @ 0x00541D60
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init begin fd=%d pos=%ld", param_1, rge_stream_tell(param_1));
     this->terrain_tables_init(param_1);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after terrain_tables_init pos=%ld", rge_stream_tell(param_1));
     this->color_table_init(param_1);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after color_table_init pos=%ld", rge_stream_tell(param_1));
     this->init_sounds(param_1, param_2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after init_sounds pos=%ld", rge_stream_tell(param_1));
     this->init_sprites(param_1);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after init_sprites pos=%ld", rge_stream_tell(param_1));
     this->map_init(param_1, param_2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after map_init pos=%ld", rge_stream_tell(param_1));
     this->effects_init(param_1);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after effects_init pos=%ld", rge_stream_tell(param_1));
     this->master_player_init(param_1);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after master_player_init pos=%ld", rge_stream_tell(param_1));
     this->command_init(param_1, param_3);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init after command_init pos=%ld", rge_stream_tell(param_1));
 }
 
 void RGE_Game_World::setup_gaia() {
@@ -1843,12 +1861,14 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
         return 0;
     }
 
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: init world state begin");
     world_update_counter = 0;
     pathSystem.zeroObstructionMap();
     aiPathSystem.zeroObstructionMap();
     this->currentUpdateComputerPlayer = -1;
     this->game_state = '\x03';
     this->curr_player = (short)param_2;
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: init world state done");
 
     unsigned int seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x509);
     if (rge_base_game != nullptr) {
@@ -1869,31 +1889,61 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
     }
 
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50f);
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Game_World::new_game checkpoint: before map/players old_player_num=%d players=%p map=%p",
+        (int)this->player_num,
+        this->players,
+        this->map);
 
     short old_player_num = this->player_num;
     short new_player_num = (short)(param_1->player_num + 1);
     if (this->map != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "RGE_Game_World::new_game checkpoint: map->new_map w=%d h=%d",
+            (int)param_1->map_width,
+            (int)param_1->map_height);
         this->map->new_map((long)param_1->map_width, (long)param_1->map_height);
+        CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: map->new_map done");
     }
 
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x516);
 
     if (this->players != nullptr) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "RGE_Game_World::new_game checkpoint: deleting old players count=%d ptr=%p",
+            (int)old_player_num,
+            this->players);
         for (short i = 0; i < old_player_num; ++i) {
             if (this->players[i] != nullptr) {
+                CUSTOM_DEBUG_LOG_FMT(
+                    "RGE_Game_World::new_game checkpoint: deleting player[%d]=%p",
+                    (int)i,
+                    this->players[i]);
                 delete this->players[i];
             }
         }
+        CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: freeing players array");
         free(this->players);
         this->players = nullptr;
+        CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: old players freed");
     }
 
     this->player_num = new_player_num;
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Game_World::new_game checkpoint: allocating players new_player_num=%d",
+        (int)this->player_num);
     this->players = (RGE_Player**)calloc((int)this->player_num, sizeof(RGE_Player*));
+    CUSTOM_DEBUG_LOG_FMT(
+        "RGE_Game_World::new_game checkpoint: players allocated ptr=%p",
+        this->players);
 
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: setup_gaia begin");
     this->setup_gaia();
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: setup_gaia done");
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x520);
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: setup_players begin");
     this->setup_players(param_1);
+    CUSTOM_DEBUG_LOG("RGE_Game_World::new_game checkpoint: setup_players done");
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x526);
 
     if (this->commands != nullptr && this->commands->com_hand != nullptr && rge_base_game != nullptr) {

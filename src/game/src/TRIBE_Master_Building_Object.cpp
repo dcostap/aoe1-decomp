@@ -66,7 +66,7 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(TRIBE_Master_Building
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E0C0
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
-    : TRIBE_Master_Combat_Object(param_1, param_2, param_3, (param_4 != 0) ? 1 : 0) {
+    : TRIBE_Master_Combat_Object(param_1, param_2, param_3, 0) {
     this->construction_sound = nullptr;
     this->construction_sprite = nullptr;
     this->building_connect_flag = 0;
@@ -85,7 +85,7 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int param_1, RGE_Spri
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E130
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
-    : TRIBE_Master_Combat_Object(param_1, param_2, param_3, param_4, (param_5 != 0) ? 1 : 0) {
+    : TRIBE_Master_Combat_Object(param_1, param_2, param_3, param_4, 0) {
     this->construction_sound = nullptr;
     this->construction_sprite = nullptr;
     this->building_connect_flag = 0;

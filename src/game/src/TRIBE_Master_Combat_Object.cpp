@@ -78,7 +78,7 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Objec
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050E9F0
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4)
-    : RGE_Master_Combat_Object(param_1, param_2, param_3, (param_4 != 0) ? 1 : 0) {
+    : RGE_Master_Combat_Object(param_1, param_2, param_3, 0) {
     memset(this->build_inventory, 0, sizeof(this->build_inventory));
     this->build_pts_required = 0;
     this->id_of_building_obj = 0;
@@ -93,7 +93,7 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(int param_1, RGE_Sprite**
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EA60
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5)
-    : RGE_Master_Combat_Object(param_1, param_2, param_3, param_4, (param_5 != 0) ? 1 : 0) {
+    : RGE_Master_Combat_Object(param_1, param_2, param_3, param_4, 0) {
     memset(this->build_inventory, 0, sizeof(this->build_inventory));
     this->build_pts_required = 0;
     this->id_of_building_obj = 0;
@@ -112,7 +112,7 @@ int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* param_1) {
         return 0;
     }
 
-    this->RGE_Master_Combat_Object::copy_obj((RGE_Master_Static_Object*)param_1);
+    this->RGE_Master_Combat_Object::setup((RGE_Master_Combat_Object*)param_1);
     this->master_type = 0x46;
     memcpy(this->build_inventory, param_1->build_inventory, sizeof(this->build_inventory));
     this->build_pts_required = param_1->build_pts_required;

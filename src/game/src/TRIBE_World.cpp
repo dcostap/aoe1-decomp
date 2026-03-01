@@ -359,6 +359,7 @@ void TRIBE_World::data_load_random_map(char* param_1, char* param_2, char* param
 uchar TRIBE_World::init_player_type(int param_1, short param_2, uchar param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E400
     // If param_3 == 1, create a TRIBE_Master_Player; otherwise delegate to base.
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::init_player_type idx=%d type=0x%02X", (int)param_2, (unsigned int)param_3);
     if (param_3 != 1) {
         return RGE_Game_World::init_player_type(param_1, param_2, param_3);
     }
@@ -420,12 +421,20 @@ void TRIBE_World::command_init(int param_1, TCommunications_Handler* param_2) {
 void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E6B0
     // Calls base world_init, then creates TRIBE_Tech with (param_1, this).
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::world_init begin fd=%d pos=%ld", param_1, rge_stream_tell(param_1));
     RGE_Game_World::world_init(param_1, param_2, param_3);
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::world_init after base world_init pos=%ld", rge_stream_tell(param_1));
 
     if (this->tech) {
         delete this->tech;
     }
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::world_init before TRIBE_Tech ctor pos=%ld", rge_stream_tell(param_1));
     this->tech = new TRIBE_Tech(param_1, this);
+    CUSTOM_DEBUG_LOG_FMT(
+        "TRIBE_World::world_init after TRIBE_Tech ctor pos=%ld tech=%p tech_tree_num=%d",
+        rge_stream_tell(param_1),
+        this->tech,
+        this->tech ? (int)this->tech->tech_tree_num : -1);
 
     this->victory_type = 0;
     this->artifact_count = 0;
@@ -438,9 +447,18 @@ void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunication
 void TRIBE_World::setup_gaia() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E920
     // Creates a TRIBE_Gaia player (player 0) using master_players[0].
+    CUSTOM_DEBUG_LOG_FMT(
+        "TRIBE_World::setup_gaia enter this=%p players=%p master_players=%p player_num=%d",
+        this,
+        this->players,
+        this->master_players,
+        (int)this->player_num);
     RGE_Master_Player* mp = (this->master_players != nullptr) ? this->master_players[0] : nullptr;
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::setup_gaia master=%p", mp);
     TRIBE_Gaia* gaia = new TRIBE_Gaia(this, mp, '\0', "GAIA", '\0');
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::setup_gaia gaia=%p", gaia);
     this->players[0] = (RGE_Player*)gaia;
+    CUSTOM_DEBUG_LOG("TRIBE_World::setup_gaia exit");
 }
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::setup_players(RGE_Player_Info* param_1) {

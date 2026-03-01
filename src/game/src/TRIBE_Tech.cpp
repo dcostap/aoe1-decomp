@@ -16,11 +16,8 @@ TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
     // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050B840
     this->world = param_2;
     rge_read(param_1, &this->tech_tree_num, 2);
-    if (this->tech_tree_num < 1 || this->tech_tree_num > 4096) {
-        CUSTOM_DEBUG_LOG_FMT(
-            "TRIBE_Tech::TRIBE_Tech(binary): rejecting tech_tree_num=%d (fd=%d)",
-            (int)this->tech_tree_num,
-            param_1);
+    if (this->tech_tree_num < 1) {
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Tech::TRIBE_Tech(binary): tech_tree_num=%d (fd=%d)", (int)this->tech_tree_num, param_1);
         this->tech_tree_num = 0;
         this->tech_tree = nullptr;
     } else {

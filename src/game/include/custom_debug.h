@@ -40,6 +40,11 @@
 #define CUSTOM_DEBUG_FORCE_CD_AUDIO 1
 #endif
 
+// Set to 1 to auto-drive UI for crash repro: Main Menu -> Single Player -> Random Map -> Start Game.
+#ifndef CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
+#define CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START 1
+#endif
+
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>
