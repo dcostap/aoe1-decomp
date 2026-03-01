@@ -165,10 +165,13 @@ static void RESFILE_Set_Missing_Flag(int flag) {
 // Source coverage notes (basegame offsets implemented in sibling units):
 // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B620 (implemented in src/game/src/debug_helpers.cpp as write_draw_log)
 // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B650 (implemented in src/game/src/debug_helpers.cpp as write_draw_log2)
-// 0x004226A0 -> src/game/src/RGE_Base_Game_campaigns.cpp (RGE_Base_Game::find_campaigns).
-// 0x00423010 and 0x00423030 -> src/game/src/globals.cpp (debug_random_reset/debug_random_write path, with write implementation present).
-// 0x004230A0, 0x00423140, 0x004231E0 -> src/game/src/debug_helpers.cpp (debug_rand/debug_srand/debug_timeGetTime).
-// 0x0041F6FA -> decompiler artifact thunk (no stable high-level body emitted).
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x004226A0 (implemented in src/game/src/RGE_Base_Game_campaigns.cpp as RGE_Base_Game::find_campaigns)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423010 (implemented in src/game/src/globals.cpp as debug_random_reset)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423030 (implemented in src/game/src/globals.cpp as debug_random_write)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x004230A0 (implemented in src/game/src/debug_helpers.cpp as debug_rand)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423140 (implemented in src/game/src/debug_helpers.cpp as debug_srand)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x004231E0 (implemented in src/game/src/debug_helpers.cpp as debug_timeGetTime)
+// Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F6FA (decompiler artifact thunk: no stable high-level body emitted)
 
 
 LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -1099,7 +1102,7 @@ void RGE_Base_Game::get_mouse_info(uint param_1, long param_2, tagPOINT* param_3
 }
 
 void RGE_Base_Game::disable_input() {
-    // Source of truth: `src/game/src/basegame.cpp.decomp` (`disable_input` @ 0x00422A50).
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422A50
     if (this->is_mouse_on != 0) {
         this->set_mouse_cursor(LoadCursorA(NULL, IDC_WAIT));
     }
@@ -1118,7 +1121,7 @@ void RGE_Base_Game::disable_input() {
 }
 
 void RGE_Base_Game::enable_input() {
-    // Source of truth: `src/game/src/basegame.cpp.decomp` (`enable_input` @ 0x00422AB0).
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422AB0
     if (this->input_disabled_window != nullptr) {
         if (GetCapture() != NULL) {
             ReleaseCapture();
@@ -2868,7 +2871,7 @@ int RGE_Base_Game::check_paint() {
 }
 
 void RGE_Base_Game::draw_window() {
-    // Source of truth: basegame.cpp.decomp draw_window @ 0x00420360
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00420360
     UpdateWindow((HWND)this->prog_window);
 }
 

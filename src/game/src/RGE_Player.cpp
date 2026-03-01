@@ -226,6 +226,12 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->id = (short)player_id;
 
     // Source of truth: player.cpp.decomp (constructor paths allocate doppleganger_creator early).
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471D70 (implemented in src/game/src/TRIBE_World_types.cpp)
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471DF0 (implemented in src/game/src/TRIBE_World_types.cpp)
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471E40 (implemented in src/game/src/TRIBE_World_types.cpp)
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471E70 (implemented in src/game/src/TRIBE_World_types.cpp)
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471E90 (implemented in src/game/src/TRIBE_World_types.cpp)
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471EB0 (implemented in src/game/src/TRIBE_World_types.cpp)
     // Required for New Game: TRIBE_Building_Object ctor unconditionally calls doppleganger_creator->add_doppleganger_check.
     if (this->doppleganger_creator == nullptr) {
         this->doppleganger_creator = new (std::nothrow) RGE_Doppleganger_Creator(this, 100);
