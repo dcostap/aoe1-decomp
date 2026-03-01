@@ -76,6 +76,7 @@ int DAT_0062c57c = 0;
 float save_game_version = 7.23f;
 unsigned char die_die_die = 0;
 int allow_user_commands = 1; // default per original (toggled by scr_game.cpp paths)
+unsigned char production_queues_is_use = 1;
 int world_update_counter = 0;
 RGE_Static_Object** VIS_UNIT_objectsValue = nullptr;
 Visible_Unit_Manager* VisibleUnitManager = nullptr;
