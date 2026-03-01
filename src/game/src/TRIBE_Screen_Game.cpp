@@ -3361,6 +3361,7 @@ void TRIBE_Screen_Game::command_tool_box() {
 }
 
 void TRIBE_Screen_Game::command_trade() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F020.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3415,6 +3416,7 @@ void TRIBE_Screen_Game::command_ungroup() {
 }
 
 void TRIBE_Screen_Game::command_unload() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F400.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;

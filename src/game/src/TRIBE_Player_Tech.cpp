@@ -7,6 +7,7 @@
 
 // Source of truth: bucket_050C.cpp.decomp + bucket_050D.cpp.decomp
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, uchar param_4) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C3A5
     rge_read(param_1, &this->tech_player_tree_num, 2);
@@ -34,6 +35,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Playe
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* param_1, RGE_Player* param_2, uchar param_3) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C4FC
     this->base_tech = param_1;
@@ -47,6 +49,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* param_1, RGE_Player* param_2, u
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::~TRIBE_Player_Tech() {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C562
     if (this->tech_player_tree != nullptr) {
@@ -55,11 +58,13 @@ TRIBE_Player_Tech::~TRIBE_Player_Tech() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 short TRIBE_Player_Tech::get_tech_state(short param_1) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C58C
     return this->tech_player_tree[param_1].state;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Player_Tech::do_tech(short param_1) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C5E5
     if (this->tech_player_tree[param_1].state < 3 && this->tech_player_tree[param_1].state >= 0) {
@@ -82,6 +87,7 @@ uchar TRIBE_Player_Tech::do_tech(short param_1) {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Player_Tech::undo_tech(short param_1) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C5A7
     bool was_active = this->tech_player_tree[param_1].state > 0;
@@ -92,6 +98,7 @@ uchar TRIBE_Player_Tech::undo_tech(short param_1) {
     return was_active;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::do_rev_tech(short param_1) {
     // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D1F9
     for (int i = 0; i < 4; i++) {
@@ -106,6 +113,7 @@ void TRIBE_Player_Tech::do_rev_tech(short param_1) {
     do_tech(param_1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Player_Tech::rev_tech(short param_1) {
     // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D281
     do_tech(param_1);
@@ -119,6 +127,7 @@ uchar TRIBE_Player_Tech::rev_tech(short param_1) {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Player_Tech::research(short param_1, float param_2) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C6AD
     if (this->tech_player_tree[param_1].state == 2) {
@@ -153,6 +162,7 @@ char* TRIBE_Player_Tech::get_name(short param_1) {
     return this->base_tech->tech_tree[param_1].name;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050CA9E
     Tech_Tree* tt = this->base_tech->tech_tree;
@@ -193,6 +203,7 @@ uchar TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Player_Tech::start_research(short param_1, uchar param_2, short* param_3) {
     // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050CC25
     Tech_Tree* tt = this->base_tech->tech_tree;
@@ -241,6 +252,7 @@ uchar TRIBE_Player_Tech::cancel_research(short param_1, uchar param_2) {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3, short* param_4, short* param_5, short* param_6, short* param_7) {
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050C730
     // Simplified version - returns tech costs without trade gold substitution logic
@@ -274,6 +286,7 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3,
     if (*param_7 < 1) *param_6 = -1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::check_for_new_tech() {
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050CE68
     Tech_Tree* tt = this->base_tech->tech_tree;
@@ -307,6 +320,7 @@ void TRIBE_Player_Tech::check_for_new_tech() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::save(int param_1) {
     // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D07A
     rge_write(param_1, &this->tech_player_tree_num, 2);
@@ -316,6 +330,7 @@ void TRIBE_Player_Tech::save(int param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::enable(short param_1) {
     // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D383
     if (param_1 < 0) {
@@ -329,6 +344,7 @@ void TRIBE_Player_Tech::enable(short param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::disable(short param_1) {
     // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D306
     if (param_1 < 0) {

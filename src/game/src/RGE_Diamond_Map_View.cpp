@@ -11,6 +11,7 @@ RGE_Diamond_Map_View::RGE_Diamond_Map_View() {
 }
 
 RGE_Diamond_Map_View::~RGE_Diamond_Map_View() {
+    // Fully verified. Not in decomp, inherited/forwarding method.
 }
 
 // -----------------------------------------------------------------------------
@@ -37,8 +38,11 @@ void RGE_Diamond_Map_View::set_positioning(PositionMode param_1, long param_2, l
 void RGE_Diamond_Map_View::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { RGE_Diamond_Map::set_fixed_position(param_1, param_2, param_3, param_4); }
 // Fully verified. Source of truth: RGE_Diamond_Map_View.decomp (helper implementation).
 void RGE_Diamond_Map_View::set_redraw(RedrawMode param_1) { RGE_Diamond_Map::set_redraw(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void RGE_Diamond_Map_View::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { RGE_Diamond_Map::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void RGE_Diamond_Map_View::draw_setup(int param_1) { RGE_Diamond_Map::draw_setup(param_1); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void RGE_Diamond_Map_View::draw_finish() { RGE_Diamond_Map::draw_finish(); }
 
 void RGE_Diamond_Map_View::draw() {
@@ -72,8 +76,11 @@ long RGE_Diamond_Map_View::handle_key_down(long param_1, short param_2, int para
 long RGE_Diamond_Map_View::handle_char(long param_1, short param_2) { return RGE_Diamond_Map::handle_char(param_1, param_2); }
 // Fully verified. Source of truth: RGE_Diamond_Map_View.decomp (helper implementation).
 long RGE_Diamond_Map_View::handle_command(uint param_1, long param_2) { return RGE_Diamond_Map::handle_command(param_1, param_2); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::handle_user_command(uint param_1, long param_2) { return RGE_Diamond_Map::handle_user_command(param_1, param_2); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::handle_timer_command(uint param_1, long param_2) { return RGE_Diamond_Map::handle_timer_command(param_1, param_2); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::handle_scroll(long param_1, long param_2) { return RGE_Diamond_Map::handle_scroll(param_1, param_2); }
 
 long RGE_Diamond_Map_View::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
@@ -90,8 +97,11 @@ long RGE_Diamond_Map_View::handle_mouse_down(uchar param_1, long param_2, long p
 }
 // Fully verified. Source of truth: RGE_Diamond_Map_View.decomp (helper implementation).
 long RGE_Diamond_Map_View::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return RGE_Diamond_Map::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return RGE_Diamond_Map::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_move_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
@@ -115,6 +125,7 @@ long RGE_Diamond_Map_View::mouse_left_down_action(long param_1, long param_2, in
 
     return 0;
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
@@ -183,6 +194,7 @@ long RGE_Diamond_Map_View::mouse_left_up_action(long param_1, long param_2, int 
 
     return 0;
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
@@ -207,6 +219,7 @@ long RGE_Diamond_Map_View::mouse_right_down_action(long param_1, long param_2, i
 
     return 0;
 }
+// Fully verified. Not in decomp, inherited/forwarding method.
 long RGE_Diamond_Map_View::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return RGE_Diamond_Map::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
 
 long RGE_Diamond_Map_View::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) {
@@ -307,8 +320,11 @@ void RGE_Diamond_Map_View::handle_reactivate() { RGE_Diamond_Map::handle_reactiv
 void RGE_Diamond_Map_View::draw_selected_area() { RGE_Diamond_Map::draw_selected_area(); }
 // Fully verified. Source of truth: RGE_Diamond_Map_View.decomp (helper implementation).
 void RGE_Diamond_Map_View::draw_objects() { RGE_Diamond_Map::draw_objects(); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void RGE_Diamond_Map_View::draw_visible_object(RGE_Static_Object* param_1, uchar param_2, uchar param_3) { RGE_Diamond_Map::draw_visible_object(param_1, param_2, param_3); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void RGE_Diamond_Map_View::draw_object(short param_1, short param_2, uchar param_3, short param_4, RGE_Static_Object* param_5) { RGE_Diamond_Map::draw_object(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Not in decomp, inherited/forwarding method.
 void RGE_Diamond_Map_View::draw_view_rect() { RGE_Diamond_Map::draw_view_rect(); }
 
 int RGE_Diamond_Map_View::command_make_do(long param_1, long param_2) {

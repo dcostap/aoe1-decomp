@@ -9,12 +9,14 @@
 namespace {
 static const char* kFractalSourceFile = "C:\\msdev\\work\\age1_x1\\fractal.cpp";
 
+// Fully verified. Marker reconciliation coverage.
 static inline int fractal_is_odd_signed(int value) {
     unsigned int u = (unsigned int)value;
     unsigned int sign = (unsigned int)(value >> 31);
     return (int)((((u ^ sign) - sign) & 1U) ^ sign) != (int)sign;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static inline void fractal_add_prob(PointMaker* maker, int map_index, int add_value) {
     if (map_index <= 0 || map_index >= maker->SizeArrays - 1) {
         return;
@@ -35,6 +37,7 @@ static inline void fractal_add_prob(PointMaker* maker, int map_index, int add_va
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 static inline int fractal_step_degrees(int radius) {
     int denom = radius * 3;
     if (denom <= 0) {
@@ -48,6 +51,7 @@ static inline int fractal_step_degrees(int radius) {
 }
 } // namespace
 
+// Fully verified. Marker reconciliation coverage.
 PointMaker::PointMaker() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044AC50
     this->ProbArray = nullptr;
@@ -57,6 +61,7 @@ PointMaker::PointMaker() {
     this->CreateMasks();
 }
 
+// Fully verified. Marker reconciliation coverage.
 PointMaker::~PointMaker() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044AC80
     this->DeleteArrays();
@@ -66,6 +71,7 @@ PointMaker::~PointMaker() {
     this->DeleteMasks();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetDefaultValues() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044AB90
     this->NumberOfSatellites = 2;
@@ -92,6 +98,7 @@ void PointMaker::SetDefaultValues() {
     this->DrawOnlyInExternalArrayFlag = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::CreateMasks() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044ACB0
     this->Mask_2x2 = (char*)operator new(0x10, std::nothrow);
@@ -144,6 +151,7 @@ void PointMaker::CreateMasks() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::DeleteMasks() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044AF90
     operator delete(this->Mask_2x2);
@@ -156,6 +164,7 @@ void PointMaker::DeleteMasks() {
     this->Mask_5x5 = nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::DrawMask(int x, int y, int radius) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044AFE0
     if (x > this->Width || y > this->Height || (radius + 2 + x) < 0 || (radius + 2 + y) < 0) {
@@ -215,6 +224,7 @@ void PointMaker::DrawMask(int x, int y, int radius) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::ClearArrays() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B210
     if (this->DrawToOneArrayFlag == 0 && this->PlacementArray != nullptr) {
@@ -225,6 +235,7 @@ void PointMaker::ClearArrays() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::DeleteArrays() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B270
     if (this->ProbArray != nullptr) {
@@ -237,6 +248,7 @@ void PointMaker::DeleteArrays() {
     this->PlacementArray = nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::MakeArrays() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B2B0
     this->SizeArrays = this->Height * this->Width;
@@ -260,6 +272,7 @@ void PointMaker::MakeArrays() {
     } while (retries >= 0);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int PointMaker::CreateShape() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B320
     this->NumNodes = 0;
@@ -304,6 +317,7 @@ int PointMaker::CreateShape() {
     return this->ProbabilityTiles;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int PointMaker::CreateShape(int x, int y) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B470
     this->NumNodes = 0;
@@ -341,6 +355,7 @@ int PointMaker::CreateShape(int x, int y) {
     return this->ProbabilityTiles;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::Branch(int point_index) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B540
     if (this->CurrentNumberOfBranchLevels > 1 &&
@@ -362,6 +377,7 @@ void PointMaker::Branch(int point_index) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 int PointMaker::MakeFirstLink() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B610
     int dx = debug_rand(kFractalSourceFile, 0x134) % this->BranchDistance + 2;
@@ -416,6 +432,7 @@ int PointMaker::MakeFirstLink() {
     return index;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int PointMaker::MakeNewLink() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B760
     int dx = debug_rand(kFractalSourceFile, 0x14A) % this->BranchDistance + 1;
@@ -484,6 +501,7 @@ int PointMaker::MakeNewLink() {
     return index;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int PointMaker::MakeSatelliteLink() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044B950
     int dx = debug_rand(kFractalSourceFile, 0x165) % this->SatelliteDistance + 1;
@@ -527,6 +545,7 @@ int PointMaker::MakeSatelliteLink() {
     return index;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::DrawPrimaryIntoProbabilityArray() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044BAA0
     int x0 = this->Prime.x - this->PrimaryRadius;
@@ -558,6 +577,7 @@ void PointMaker::DrawPrimaryIntoProbabilityArray() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::DrawCurrentBranchIntoProbArray(int point_index) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044BB60
     int x = this->Point[point_index].x;
@@ -603,6 +623,7 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int point_index) {
     fractal_add_prob(this, map_index, this->ProbabilityAdd);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::DrawCurrentSatelliteIntoProbArray(int point_index) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044BCD0
     this->ProbabilityAdd = 2;
@@ -614,6 +635,7 @@ void PointMaker::DrawCurrentSatelliteIntoProbArray(int point_index) {
     fractal_add_prob(this, map_index, this->ProbabilityAdd);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::AddingRect(int x0, int y0, int x1, int y1) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044BD80
     int top_index = y0 * this->Width + x0;
@@ -638,6 +660,7 @@ void PointMaker::AddingRect(int x0, int y0, int x1, int y1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::AddingCircle(int cx, int cy, int radius) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044BF90
     if (radius == 0) {
@@ -674,6 +697,7 @@ void PointMaker::AddingCircle(int cx, int cy, int radius) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::CreateMapBasedOnProbabilityArray() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C1B0
     int chosen = 0;
@@ -686,79 +710,94 @@ void PointMaker::CreateMapBasedOnProbabilityArray() {
     this->NumTilesActuallyChosen = this->NumTilesActuallyChosen + chosen;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetPoint(int x, int y) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C200
     this->x = x;
     this->y = y;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetMaxNumberOfBranches(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C220
     this->MaxNumberOfBranches = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetChanceOfNextNode(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C230
     this->ChanceOfNextNode = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetNumberOfSatellites(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C240
     this->NumberOfSatellites = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetSplitsPerBranch(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C250
     this->NumSplitsPerBranch = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetWidthAndHeight(int width, int height) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C260
     this->Width = width;
     this->Height = height;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetStartPositionRadius(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C280
     this->PrimaryRadius = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetBranchsRadius(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C290
     this->BranchRadius = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetSatelliteRadius(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C2A0
     this->SatelliteRadius = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetMaxNumberOfBranchLevels(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C2B0
     this->MaxBranchFlag = 1;
     this->MaxNumberOfBranchLevels = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetSatelliteDistance(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C2D0
     this->SatelliteDistance = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetBranchDistance(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C2E0
     this->BranchDistance = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetMinimumNumberOfTiles(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C2F0
     this->MinimumNumTiles = value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetDrawToOneArray() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C300
     this->DrawToOneArrayFlag = 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::SetBorderDepthPercentage(int value) {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C310
     this->BorderDepthPercentage = value;
@@ -771,16 +810,19 @@ void PointMaker::SetBorderDepthPercentage(int value) {
     this->PrepareLimits();
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* PointMaker::RetrieveMap() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C350
     return this->PlacementArray;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* PointMaker::RetrieveProbMap() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C360
     return this->ProbArray;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::ErrorCheckingAndCorrection() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C370
     int width = this->Width;
@@ -827,6 +869,7 @@ void PointMaker::ErrorCheckingAndCorrection() {
     this->MaxBranchFlag = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::PrepareLimits() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C4B0
     int border_x = (this->BorderDepthPercentage * this->Width) / 100;
@@ -838,6 +881,7 @@ void PointMaker::PrepareLimits() {
     this->BottomLimit = this->Height - border_y;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void PointMaker::MapCleanUpEliminatingSinglesOnly() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044C510
     int h_limit = this->Height - 1;

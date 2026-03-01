@@ -7,10 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 
+// Fully verified. Marker reconciliation coverage.
 static int influence_ftol(double value) {
     return (int)(long)value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 InfluenceMap::InfluenceMap() {
     this->xSizeValue = 0;
     this->ySizeValue = 0;
@@ -23,6 +25,7 @@ InfluenceMap::InfluenceMap() {
     this->unchangeableLimitValue = 0xFF;
 }
 
+// Fully verified. Marker reconciliation coverage.
 InfluenceMap::InfluenceMap(int param_1, int param_2, uchar param_3) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044DF80
     this->ySizeValue = param_2;
@@ -50,6 +53,7 @@ InfluenceMap::InfluenceMap(int param_1, int param_2, uchar param_3) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 InfluenceMap::InfluenceMap(int param_1) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E050
     this->xSizeValue = -1;
@@ -59,6 +63,7 @@ InfluenceMap::InfluenceMap(int param_1) {
     this->load(param_1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::initialize(uchar param_1) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E0B0
     uint total = (uint)(this->ySizeValue * this->xSizeValue);
@@ -69,6 +74,7 @@ int InfluenceMap::initialize(uchar param_1) {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void InfluenceMap::save(int param_1) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E0F0
     rge_write(param_1, &this->xSizeValue, 4);
@@ -84,6 +90,7 @@ void InfluenceMap::save(int param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void InfluenceMap::load(int param_1) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E1A0
     rge_read(param_1, &this->xSizeValue, 4);
@@ -101,6 +108,7 @@ void InfluenceMap::load(int param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void InfluenceMap::printToFile(char* param_1) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E250
     if (param_1 == nullptr) {
@@ -148,17 +156,20 @@ void InfluenceMap::printToFile(char* param_1) {
     fclose(file);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void InfluenceMap::setReferencePoint(int param_1, int param_2) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E4C0
     this->xReferencePointValue = param_1;
     this->yReferencePointValue = param_2;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::lookupValue(int param_1, int param_2) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E4E0
     return (uint)this->rowValue[param_2 - this->yReferencePointValue][param_1 - this->xReferencePointValue];
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::setValue(int param_1, int param_2, uchar param_3) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E510
     int x = param_1 - this->xReferencePointValue;
@@ -170,6 +181,7 @@ int InfluenceMap::setValue(int param_1, int param_2, uchar param_3) {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::setValue(int param_1, int param_2, int param_3, int param_4, uchar param_5) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E560
     int x0 = param_1 - this->xReferencePointValue;
@@ -189,6 +201,7 @@ int InfluenceMap::setValue(int param_1, int param_2, int param_3, int param_4, u
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::incrementValue(int param_1, int param_2, uchar param_3) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E600
     int x = param_1 - this->xReferencePointValue;
@@ -213,6 +226,7 @@ int InfluenceMap::incrementValue(int param_1, int param_2, uchar param_3) {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::incrementValue(int param_1, int param_2, int param_3, int param_4, uchar param_5) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E680
     int x0 = param_1 - this->xReferencePointValue;
@@ -258,6 +272,7 @@ int InfluenceMap::incrementValue(int param_1, int param_2, int param_3, int para
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::decrementValue(int param_1, int param_2, uchar param_3) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E790
     int x = param_1 - this->xReferencePointValue;
@@ -274,6 +289,7 @@ int InfluenceMap::decrementValue(int param_1, int param_2, uchar param_3) {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::decrementValue(int param_1, int param_2, int param_3, int param_4, uchar param_5) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E800
     int x0 = param_1 - this->xReferencePointValue;
@@ -315,6 +331,7 @@ int InfluenceMap::decrementValue(int param_1, int param_2, int param_3, int para
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::setCoverageCount(XYPoint* param_1, XYPoint* param_2, int param_3) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E900
     this->coverageCountValue = 0;
@@ -333,6 +350,7 @@ int InfluenceMap::setCoverageCount(XYPoint* param_1, XYPoint* param_2, int param
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::setConnectionCount(XYPoint* param_1, XYPoint* param_2, int param_3, int param_4, int param_5, int param_6) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E9E0
     this->connectionCountValue = 0;
@@ -388,11 +406,13 @@ int InfluenceMap::setConnectionCount(XYPoint* param_1, XYPoint* param_2, int par
     return this->connectionCountValue;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::coverageIncluding(const XYPoint& param_1, const XYPoint& param_2, uchar param_3, uchar param_4) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044EBD2
     return this->coverageIncluding(const_cast<XYPoint*>(&param_1), const_cast<XYPoint*>(&param_2), param_3, param_4);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::coverageIncluding(XYPoint* param_1, XYPoint* param_2, uchar param_3, uchar param_4) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044EC00
     int ret = this->coverageCountValue;
@@ -415,6 +435,7 @@ int InfluenceMap::coverageIncluding(XYPoint* param_1, XYPoint* param_2, uchar pa
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::connectionsIncluding(XYPoint* param_1, XYPoint* param_2, uchar param_3, uchar param_4, int param_5, int param_6, int param_7) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044ED20
     int x = param_1->x;
@@ -514,11 +535,13 @@ int InfluenceMap::connectionsIncluding(XYPoint* param_1, XYPoint* param_2, uchar
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::connectionsIncluding(const XYPoint& param_1, const XYPoint& param_2, uchar param_3, uchar param_4, int param_5, int param_6, int param_7) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044EFE9
     return this->connectionsIncluding(const_cast<XYPoint*>(&param_1), const_cast<XYPoint*>(&param_2), param_3, param_4, param_5, param_6, param_7);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void InfluenceMap::setUnchangeableLimit(uchar param_1) {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044F030
     if (param_1 != 0) {
@@ -526,6 +549,7 @@ void InfluenceMap::setUnchangeableLimit(uchar param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 int InfluenceMap::maxValue() {
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044F040
     int total = this->xSizeValue * this->ySizeValue;

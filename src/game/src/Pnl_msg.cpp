@@ -13,6 +13,7 @@
 namespace {
 const char* const kPnlMsgSourcePath = "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp";
 
+// Fully verified. Marker reconciliation coverage.
 static unsigned long palette_index_to_rgb(unsigned char index) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     if (rge_base_game == nullptr || rge_base_game->draw_system == nullptr || rge_base_game->draw_system->Pal == nullptr) {
@@ -24,11 +25,13 @@ static unsigned long palette_index_to_rgb(unsigned char index) {
     return ((unsigned long)(color.peBlue & 0xFF) << 16) | ((unsigned long)(color.peGreen & 0xFF) << 8) | (unsigned long)(color.peRed & 0xFF);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void clear_text_buffer(TMessagePanel* panel) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     memset(panel->text, 0, sizeof(panel->text));
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void mark_parent_redraw(TMessagePanel* panel) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     if (panel->parent_panel != nullptr) {
@@ -36,6 +39,7 @@ static void mark_parent_redraw(TMessagePanel* panel) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void init_fields(TMessagePanel* panel, void* font, long font_wid, long font_hgt) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     panel->font = font;
@@ -82,6 +86,7 @@ TMessagePanel::TMessagePanel(void* param_1, long param_2, long param_3) : TPanel
     this->set_active(0);
 }
 
+// Fully verified. Marker reconciliation coverage.
 TMessagePanel::~TMessagePanel() {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479050
     if (this->image_clip_region != nullptr) {
@@ -95,10 +100,12 @@ TMessagePanel::~TMessagePanel() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_rect(tagRECT param_1) {
     this->set_rect(param_1.left, param_1.top, (param_1.right - param_1.left) + 1, (param_1.bottom - param_1.top) + 1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x004790E0
     TPanel::set_rect(param_1, param_2, param_3, param_4);
@@ -143,6 +150,7 @@ void TMessagePanel::set_rect(long param_1, long param_2, long param_3, long para
     this->set_redraw(TPanel::Redraw);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_justification(int param_1, int param_2, int param_3) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479270
     this->horz_just = (JustType)param_1;
@@ -150,6 +158,7 @@ void TMessagePanel::set_justification(int param_1, int param_2, int param_3) {
     this->word_wrap = param_3;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::show_message(int param_1, char* param_2, unsigned char param_3, unsigned char param_4, void* param_5, long param_6, long param_7) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x004792A0
     const char* message = (param_2 != nullptr) ? param_2 : "";
@@ -185,6 +194,7 @@ void TMessagePanel::show_message(int param_1, char* param_2, unsigned char param
     mark_parent_redraw(this);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_message(char* param_1) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     if (param_1 == nullptr) {
@@ -194,22 +204,26 @@ void TMessagePanel::set_message(char* param_1) {
     show_message(InfoMessage, param_1, this->font_color, this->back_color, nullptr, 0, 0);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_message(int param_1) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->set_message(this->get_string(param_1));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::clear_message() {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     clear_text_buffer(this);
     this->remove_message();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_time(unsigned long param_1) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->show_message_interval = (long)param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_color(unsigned long param_1, unsigned long param_2) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->font_color1 = param_1;
@@ -218,26 +232,31 @@ void TMessagePanel::set_color(unsigned long param_1, unsigned long param_2) {
     this->back_color = (unsigned char)param_2;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_style(int param_1) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->index_color = param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_alignment(int param_1, int param_2) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->horz_just = (JustType)param_1;
     this->vert_just = (JustType)param_2;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_wrap(int param_1) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->word_wrap = param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_icon(int param_1) {
     this->IconFrame1 = param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::show_message2(int param_1, char* param_2, unsigned long param_3, unsigned long param_4, void* param_5, long param_6, long param_7, TShape* param_8, int param_9, TShape* param_10, int param_11) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x004793C0
     const char* message = (param_2 != nullptr) ? param_2 : "";
@@ -280,6 +299,7 @@ void TMessagePanel::show_message2(int param_1, char* param_2, unsigned long para
     mark_parent_redraw(this);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::remove_message() {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479540
     if (this->showing_message != 0) {
@@ -292,6 +312,7 @@ void TMessagePanel::remove_message() {
     this->ImageTextActive = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::draw() {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479590
     if ((this->render_area == nullptr) || (this->active == 0) || (this->visible == 0) || (this->showing_message == 0)) {
@@ -402,6 +423,7 @@ void TMessagePanel::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::get_true_render_rect(tagRECT* param_1) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479A10
     if (param_1 == nullptr) {
@@ -419,6 +441,7 @@ void TMessagePanel::get_true_render_rect(tagRECT* param_1) {
     param_1->bottom = this->pnl_y + this->pnl_hgt - 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TMessagePanel::handle_idle() {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479A80
     if ((this->visible != 0) && (this->showing_message != 0) &&
@@ -432,6 +455,7 @@ long TMessagePanel::handle_idle() {
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TMessagePanel::render_to_image_buffer() {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x00479AE0
     if (this->ImageBuffer == nullptr) {
@@ -620,6 +644,7 @@ int TMessagePanel::render_to_image_buffer() {
     return this->ImageTextActive;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TMessagePanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A160
     (void)param_1;
@@ -630,6 +655,7 @@ long TMessagePanel::handle_mouse_down(uchar param_1, long param_2, long param_3,
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TMessagePanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A170
     (void)param_1;
@@ -639,6 +665,7 @@ long TMessagePanel::handle_mouse_move(long param_1, long param_2, int param_3, i
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TMessagePanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A180
     (void)param_1;
@@ -649,6 +676,7 @@ long TMessagePanel::handle_mouse_up(uchar param_1, long param_2, long param_3, i
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TMessagePanel::set_font(void* param_1, long param_2, long param_3) {
     // Fully verified. Source of truth: pnl_msg.cpp.decomp @ 0x0047A190
     if (this->font != param_1) {

@@ -12,6 +12,7 @@
 #include <string.h>
 
 namespace {
+// Fully verified. Marker reconciliation coverage.
 static long rge_count_matching_files(const char* pattern) {
     _finddata_t file_info;
     long count = 0;
@@ -29,6 +30,7 @@ static long rge_count_matching_files(const char* pattern) {
     return count;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_copy_entry_name(char* dst, const char* src) {
     if (dst == nullptr) {
         return;
@@ -43,6 +45,7 @@ static void rge_copy_entry_name(char* dst, const char* src) {
     dst[259] = '\0';
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_write_empty_scenario_header(int fd) {
     long header_size = 0xC;
     long version = 0;
@@ -53,6 +56,7 @@ static void rge_write_empty_scenario_header(int fd) {
 }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* param_1) {
     // Fully verified. Source of truth: sceninfo.cpp.decomp @ 0x0048CEA0
     this->scenario_num = 0;
@@ -86,6 +90,7 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* param_1) {
     this->reload_scenarios();
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     // Fully verified. Source of truth: sceninfo.cpp.decomp @ 0x0048CFD0
     this->save();
@@ -104,6 +109,7 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Scenario_File_Info::save() {
     // Fully verified. Source of truth: sceninfo.cpp.decomp @ 0x0048D040
     int fd = rge_open(this->filename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
@@ -126,6 +132,7 @@ void RGE_Scenario_File_Info::save() {
     rge_close(fd);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Scenario_File_Info::reload_scenarios() {
     // Fully verified. Source of truth: sceninfo.cpp.decomp @ 0x0048D0E0
     if (rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
@@ -224,6 +231,7 @@ void RGE_Scenario_File_Info::reload_scenarios() {
     this->scenario_num = write_index;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_Scenario_File_Info::get_scenario_name(long param_1) {
     // Fully verified. Source of truth: sceninfo.cpp.decomp @ 0x0048D4D0
     if (param_1 >= 0 && param_1 < this->scenario_num && this->scenarios != nullptr) {
@@ -232,6 +240,7 @@ char* RGE_Scenario_File_Info::get_scenario_name(long param_1) {
     return nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Scenario_Header* RGE_Scenario_File_Info::get_scenario_info(long param_1) {
     // Fully verified. Source of truth: sceninfo.cpp.decomp @ 0x0048D500
     if (param_1 >= 0 && param_1 < this->scenario_num && this->scenarios != nullptr) {

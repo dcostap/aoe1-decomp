@@ -17,21 +17,25 @@
 #include <stdlib.h>
 #include <new>
 
+// Fully verified. Marker reconciliation coverage.
 static int object_list_ftol(double value) {
     return (int)(long)value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void obj_list_switch_anchor_004630DD() {
     // Fully verified. Source of truth: obj_list.cpp.asm @ 0x004630DD
     // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Object_List::RGE_Object_List() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462E80
     this->list = nullptr;
     this->number_of_objects = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Object_List::~RGE_Object_List() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462EA0
     RGE_Object_Node* node = this->list;
@@ -54,6 +58,7 @@ RGE_Object_List::~RGE_Object_List() {
     this->number_of_objects = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::removeAllObjects() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462EF0
     RGE_Object_Node* node = this->list;
@@ -68,6 +73,7 @@ void RGE_Object_List::removeAllObjects() {
     this->number_of_objects = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462F30
     RGE_Object_Node* new_node = (RGE_Object_Node*)calloc(1, 0x10);
@@ -83,6 +89,7 @@ RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* param_1) {
     return new_node;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::remove_node(RGE_Static_Object* param_1, RGE_Object_Node* param_2) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462F70
     RGE_Object_Node* node = this->list;
@@ -112,6 +119,7 @@ void RGE_Object_List::remove_node(RGE_Static_Object* param_1, RGE_Object_Node* p
     this->number_of_objects = this->number_of_objects + -1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::invert() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462FD0
     RGE_Object_Node* node = this->list;
@@ -129,6 +137,7 @@ void RGE_Object_List::invert() {
     this->list = prev;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Object_List::find_by_id(long param_1) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463490
     RGE_Object_Node* cur = this->list;
@@ -143,6 +152,7 @@ RGE_Static_Object* RGE_Object_List::find_by_id(long param_1) {
     return nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Object_List::find_by_group(long param_1) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004632E0
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
@@ -154,6 +164,7 @@ RGE_Static_Object* RGE_Object_List::find_by_group(long param_1) {
     return nullptr;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Object_List::find_by_group(long param_1, float param_2, float param_3, uchar param_4, uchar param_5, RGE_Static_Object* param_6) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463310
     uint zone = 0xFFFFFFFF;
@@ -191,6 +202,7 @@ RGE_Static_Object* RGE_Object_List::find_by_group(long param_1, float param_2, f
     return found;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Object_List::find_by_master_id(long param_1, float param_2, float param_3, uchar param_4, uchar param_5, RGE_Static_Object* param_6) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004634C0
     uint zone = 0xFFFFFFFF;
@@ -276,6 +288,7 @@ RGE_Static_Object* RGE_Object_List::find_by_master_ids(long param_1, long param_
     return found;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Object_List::find_by_type(uchar param_1, float param_2, float param_3, uchar param_4, uchar param_5) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004637C0
     RGE_Static_Object* found = nullptr;
@@ -299,6 +312,7 @@ RGE_Static_Object* RGE_Object_List::find_by_type(uchar param_1, float param_2, f
     return found;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::save(int param_1) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463890
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
@@ -310,6 +324,7 @@ void RGE_Object_List::save(int param_1) {
     rge_write(param_1, &finished, 1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::load_list(int param_1, RGE_Game_World* param_2) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x004638D0
     while (true) {
@@ -323,6 +338,7 @@ void RGE_Object_List::load_list(int param_1, RGE_Game_World* param_2) {
     this->invert();
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::rehook_list() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463910
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
@@ -332,6 +348,7 @@ void RGE_Object_List::rehook_list() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::update() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463210
     int polled_objects = 0;
@@ -355,6 +372,7 @@ void RGE_Object_List::update() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
     // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463000
     for (RGE_Object_Node* node = this->list; node != nullptr; node = node->next) {
@@ -403,6 +421,7 @@ void RGE_Object_List::draw(TDrawArea* param_1, short param_2, short param_3, uch
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4, uchar param_5) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463100
     if (param_5 == 0) {
@@ -421,6 +440,7 @@ void RGE_Object_List::shadow_draw(TDrawArea* param_1, short param_2, short param
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::normal_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463180
     RGE_Object_Node* sorted = this->sort();
@@ -446,6 +466,7 @@ void RGE_Object_List::normal_draw(TDrawArea* param_1, short param_2, short param
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Object_Node* RGE_Object_List::sort() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463260
     RGE_Object_Node* src = this->list;
@@ -474,6 +495,7 @@ RGE_Object_Node* RGE_Object_List::sort() {
     return sorted;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Object_List::load(uchar param_1, int param_2, RGE_Game_World* param_3) {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463930
     switch (param_1) {

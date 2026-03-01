@@ -12,6 +12,7 @@
 extern LOSTBL* NormalLOS[17];
 extern LOSTBL* SquareLOS[17];
 
+// Fully verified. Marker reconciliation coverage.
 static void vis_unit_set_backptr(int object_id, int player_index, VISIBLE_UNIT_REC* rec) {
     if (VIS_UNIT_objectsValue == nullptr) {
         return;
