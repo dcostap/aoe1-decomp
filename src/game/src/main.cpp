@@ -73,7 +73,10 @@ CUSTOM_DEBUG_END
     
     info.verify_cd = 0;
     info.max_players_per_cd = 1;
-    info.check_expiration = 8;
+    // TODO: Temporary startup unblock. Decomp parity around expiration gating is under investigation.
+    info.max_players = 8;
+    // TODO: Temporary startup unblock. Original value is 8; disabled for launch triage.
+    info.check_expiration = 0;
     info.expire_month = 0;
     info.expire_year = 0;
     info.update_interval = 0;

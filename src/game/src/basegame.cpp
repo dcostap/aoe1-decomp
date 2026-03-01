@@ -249,6 +249,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     rge_base_game = this;
     this->prog_info = info;
     this->prog_window = nullptr;
+    this->error_code = 0;
     this->prog_ready = 0; // ASM 0x0041b7b9
     this->prog_active = 1;
     this->prog_palette = nullptr;
@@ -344,6 +345,15 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->map_save_area = nullptr;
     this->game_speed = 1.0f;
     this->single_player_difficulty = 2;
+
+    // TODO: Constructor parity gap. panel_system must exist before setup_main_window()/palette setup paths.
+    if (panel_system == nullptr) {
+        panel_system = new (std::nothrow) TPanelSystem();
+        if (panel_system == nullptr) {
+            this->error_code = 1;
+            return;
+        }
+    }
 
     // Registry and Debug log setup
     if (this->setup_registry()) {
@@ -2228,7 +2238,8 @@ int RGE_Base_Game::setup_graphics_system() {
     }
 
     this->draw_system->CheckAvailModes(this->prog_info->full_screen);
-    if (this->draw_system->IsModeAvail(this->prog_info->main_wid, 0, 8) == 0) {
+    int mode_ok = this->draw_system->IsModeAvail(this->prog_info->main_wid, 0, 8);
+    if (mode_ok == 0) {
         if ((this->prog_info->main_wid != 640) && (this->draw_system->IsModeAvail(640, 0, 8) != 0)) {
             this->prog_info->main_wid = 640;
             this->prog_info->main_hgt = 480;
@@ -2249,9 +2260,10 @@ int RGE_Base_Game::setup_graphics_system() {
 
     uchar draw_type = (uchar)((iVar5 != 0) + 1);
     uchar draw_mode = (uchar)((iVar3 != 0) + 1);
-    if (this->draw_system->Init(this->prog_info->instance, this->prog_window, this->prog_palette, draw_type,
-                                draw_mode, this->prog_info->main_wid, this->prog_info->main_hgt,
-                                (ulong)(iVar2 != 0)) == 0) {
+    int init_ok = this->draw_system->Init(this->prog_info->instance, this->prog_window, this->prog_palette, draw_type,
+                                          draw_mode, this->prog_info->main_wid, this->prog_info->main_hgt,
+                                          (ulong)(iVar2 != 0));
+    if (init_ok == 0) {
         return 0;
     }
 
@@ -4044,5 +4056,6 @@ void RGE_Base_Game::close_video() {
 void RGE_Base_Game::handle_video_notify() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422E50
 }
+
 
 

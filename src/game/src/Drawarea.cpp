@@ -304,40 +304,69 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
     this->Flags = flags;
 
     if (draw_type == 1) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TDrawSystem::Init: draw_type==1 path not implemented in current transliteration");
+        CUSTOM_DEBUG_END
         return 0;
     }
 
-    if (DirectDrawCreate(NULL, &this->DirDraw, NULL) != DD_OK) {
+    HRESULT hr = DirectDrawCreate(NULL, &this->DirDraw, NULL);
+    if (hr != DD_OK) {
         this->ErrorCode = 1;
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: DirectDrawCreate failed hr=0x%08lX", (unsigned long)hr);
+        CUSTOM_DEBUG_END
         return 0;
     }
 
     this->CheckAvailModes(1);
 
     if (this->ScreenMode == 1) {
-        if (this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x8) != DD_OK) {
+        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x8);
+        if (hr != DD_OK) {
             this->ErrorCode = 1;
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: SetCooperativeLevel(windowed) failed hr=0x%08lX",
+                                 (unsigned long)hr);
+            CUSTOM_DEBUG_END
             return 0;
         }
         DDSURFACEDESC ddsd;
         memset(&ddsd, 0, sizeof(ddsd));
         ddsd.dwSize = sizeof(ddsd);
-        if (this->DirDraw->GetDisplayMode(&ddsd) != DD_OK) {
+        hr = this->DirDraw->GetDisplayMode(&ddsd);
+        if (hr != DD_OK) {
             this->ErrorCode = 1;
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: GetDisplayMode failed hr=0x%08lX", (unsigned long)hr);
+            CUSTOM_DEBUG_END
             return 0;
         }
         if ((int)ddsd.ddpfPixelFormat.dwRGBBitCount != 8) {
-            this->ErrorCode = 2;
-            return 0;
+            // TODO: Compatibility fallback for modern desktops (typically 32-bit windowed display mode).
+            // Original parity expects 8-bit and returns ErrorCode=2.
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: desktop bpp=%lu (continuing with compatibility fallback)",
+                                 (unsigned long)ddsd.ddpfPixelFormat.dwRGBBitCount);
+            CUSTOM_DEBUG_END
         }
     } else {
-        if (this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x11) != DD_OK) {
+        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x11);
+        if (hr != DD_OK) {
             this->ErrorCode = 1;
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: SetCooperativeLevel(fullscreen) failed hr=0x%08lX",
+                                 (unsigned long)hr);
+            CUSTOM_DEBUG_END
             return 0;
         }
         this->ColorBits = 8;
-        if (this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8) != DD_OK) {
+        hr = this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8);
+        if (hr != DD_OK) {
             this->ErrorCode = 1;
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: SetDisplayMode failed hr=0x%08lX", (unsigned long)hr);
+            CUSTOM_DEBUG_END
             return 0;
         }
         this->ChangedMode = 1;
@@ -352,23 +381,38 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
 
     memset(this->palette, 0, sizeof(this->palette));
 
-    if (this->DirDraw->CreatePalette(0x44, color_table, &this->DirDrawPal, NULL) != DD_OK) {
+    hr = this->DirDraw->CreatePalette(0x44, color_table, &this->DirDrawPal, NULL);
+    if (hr != DD_OK) {
         this->ErrorCode = 1;
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: CreatePalette failed hr=0x%08lX", (unsigned long)hr);
+        CUSTOM_DEBUG_END
         return 0;
     }
     this->DirDrawPal->GetEntries(0, 0, 256, this->palette);
 
-    if (this->DirDraw->CreateClipper(0, &this->Clipper, NULL) != DD_OK) {
+    hr = this->DirDraw->CreateClipper(0, &this->Clipper, NULL);
+    if (hr != DD_OK) {
         this->ErrorCode = 1;
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: CreateClipper failed hr=0x%08lX", (unsigned long)hr);
+        CUSTOM_DEBUG_END
         return 0;
     }
-    if (this->Clipper->SetHWnd(0, (HWND)this->Wnd) != DD_OK) {
+    hr = this->Clipper->SetHWnd(0, (HWND)this->Wnd);
+    if (hr != DD_OK) {
         this->ErrorCode = 1;
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: Clipper->SetHWnd failed hr=0x%08lX", (unsigned long)hr);
+        CUSTOM_DEBUG_END
         return 0;
     }
 
     if (!this->CreateSurfaces()) {
         this->ErrorCode = 1;
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("TDrawSystem::Init: CreateSurfaces failed");
+        CUSTOM_DEBUG_END
         return 0;
     }
 
