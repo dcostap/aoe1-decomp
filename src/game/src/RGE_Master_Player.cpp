@@ -147,6 +147,7 @@ void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprit
         this->master_objects[param_5] = loaded;
     }
 }
+// Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004614D9 (embedded bad-instruction gap between adjacent methods).
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461530
 void RGE_Master_Player::create_master_object_space(short param_1) {
     this->master_object_num = param_1;

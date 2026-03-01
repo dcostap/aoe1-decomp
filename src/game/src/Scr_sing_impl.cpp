@@ -56,6 +56,7 @@ void sp_popup_resid(TribeSPMenuScreen* owner, int resid, const char* fallback) {
 
 } // namespace
 
+// Fully verified. Source of truth: scr_sing.cpp.decomp @ 0x004B69A0
 TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel((char*)"Single Player Menu") {
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("SP ctor: begin this=%p", this);

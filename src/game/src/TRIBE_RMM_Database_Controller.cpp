@@ -32,12 +32,14 @@
 #include <string.h>
 
 static long rmm_clamp_long(long v, long lo, long hi) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483A20 (helper extraction coverage).
     if (v < lo) return lo;
     if (v > hi) return hi;
     return v;
 }
 
 static long rmm_rand_range(long max_value) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483A20 (helper extraction coverage).
     if (max_value <= 0) {
         return 0;
     }
@@ -46,17 +48,20 @@ static long rmm_rand_range(long max_value) {
 }
 
 static uchar rmm_clamp_terrain(long terrain) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x004889F0 (helper extraction coverage).
     if (terrain < 0) terrain = 0;
     return (uchar)(terrain & 0x1f);
 }
 
 static int rmm_is_water_terrain(uchar terrain_type) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x004889F0 (helper extraction coverage).
     return terrain_type == 1 || terrain_type == 4 || terrain_type == 22;
 }
 
 // Source of truth: rmm_terr.cpp::check_borders.
 // Any non-water tile adjacent to water (8-neighborhood) becomes terrain 2.
 static void rmm_terrain_check_borders(RGE_RMM_Database_Controller* self) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x004889F0 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;
     }
@@ -213,6 +218,7 @@ static void rmm_calc_land_start(
 }
 
 static int rmm_randomize_land_positions_by_team(RGE_RMM_Database_Controller* self) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00487710 (helper extraction coverage).
     if (self == nullptr) {
         return 0;
     }
@@ -411,6 +417,7 @@ static int rmm_randomize_land_positions_by_team(RGE_RMM_Database_Controller* sel
 }
 
 static long rmm_count_terrain_tiles(RGE_RMM_Database_Controller* self, uchar terrain_type) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488E60 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return 0;
     }
@@ -427,6 +434,7 @@ static long rmm_count_terrain_tiles(RGE_RMM_Database_Controller* self, uchar ter
 }
 
 static void rmm_free_map_data(RGE_RMM_Database_Controller* self) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483200 (helper extraction coverage).
     if (self == nullptr) {
         return;
     }
@@ -462,6 +470,7 @@ static void rmm_free_map_data(RGE_RMM_Database_Controller* self) {
 }
 
 static RGE_Map_Data_Entry* rmm_select_map_entry(RGE_RMM_Database_Controller* self) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483540 (helper extraction coverage).
     if (self == nullptr || self->map_info.maps == nullptr || self->map_info.map_num <= 0) {
         return nullptr;
     }
@@ -573,6 +582,7 @@ static long rmm_raise_disk(
 }
 
 static void rmm_log_terrain_histogram(RGE_RMM_Database_Controller* self, const char* tag) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;
     }
@@ -599,6 +609,7 @@ static void rmm_log_terrain_histogram(RGE_RMM_Database_Controller* self, const c
 }
 
 static void rmm_log_height_histogram(RGE_RMM_Database_Controller* self, const char* tag) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;
     }
@@ -627,6 +638,7 @@ static void rmm_log_height_histogram(RGE_RMM_Database_Controller* self, const ch
 }
 
 static void rmm_log_tile_type_histogram(RGE_RMM_Database_Controller* self, const char* tag) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;
     }
@@ -655,6 +667,7 @@ static void rmm_log_tile_type_histogram(RGE_RMM_Database_Controller* self, const
 }
 
 static void rmm_log_border_histogram(RGE_RMM_Database_Controller* self, const char* tag) {
+    // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return;
     }
@@ -700,6 +713,7 @@ static void rmm_log_border_histogram(RGE_RMM_Database_Controller* self, const ch
 }
 
 static uchar rmm_generate_land_stage(RGE_RMM_Database_Controller* self, RGE_Land_Info* land_info) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00483A20 (helper extraction coverage).
     if (self == nullptr || land_info == nullptr || self->map == nullptr ||
         self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return 0;
@@ -765,6 +779,7 @@ static uchar rmm_generate_land_stage(RGE_RMM_Database_Controller* self, RGE_Land
 }
 
 static uchar rmm_generate_terrain_stage(RGE_RMM_Database_Controller* self, RGE_Terrain_Info* terrain_info) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00484160 (helper extraction coverage).
     if (self == nullptr || terrain_info == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return 0;
     }
@@ -833,6 +848,7 @@ static uchar rmm_generate_terrain_stage(RGE_RMM_Database_Controller* self, RGE_T
 }
 
 static uchar rmm_generate_elevation_stage(RGE_RMM_Database_Controller* self, RGE_Elevation_Info* elevation_info) {
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00484470 (helper extraction coverage).
     if (self == nullptr || elevation_info == nullptr || self->map_row_offset == nullptr || self->map_width <= 0 || self->map_height <= 0) {
         return 0;
     }
@@ -939,6 +955,7 @@ RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
     RGE_Random_Map_Module* param_2,
     RGE_Land_Info* param_3)
     : RGE_Random_Map_Module(param_1, param_2, 1) {
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485200
     this->schedule = 1.0f;
     memset(&this->info, 0, sizeof(this->info));
     if (param_3 != nullptr) {
@@ -947,6 +964,7 @@ RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
 }
 
 uchar RGE_RMM_Land_Generator::generate() {
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485240
     if (this->map == nullptr || this->search_map == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -972,6 +990,7 @@ uchar RGE_RMM_Land_Generator::generate() {
 }
 
 static long rmm_land_rand_scaled(long scale, int line_no) {
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485520 (helper extraction coverage).
     if (scale <= 0) {
         return 0;
     }
@@ -984,6 +1003,7 @@ uchar RGE_RMM_Land_Generator::check_terrain_and_zone(
     uchar param_2,
     long param_3,
     long param_4) {
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x004852D0
     (void)param_1;
     if (this->search_map_rows == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -1051,6 +1071,7 @@ uchar RGE_RMM_Land_Generator::check_terrain_and_zone(
 }
 
 uchar RGE_RMM_Land_Generator::chance(long param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485480
     if (param_3 < 0 || param_3 >= 99) {
         return 0;
     }
@@ -1095,6 +1116,7 @@ uchar RGE_RMM_Land_Generator::chance(long param_1, long param_2, long param_3) {
 }
 
 uchar RGE_RMM_Land_Generator::base_land_generate() {
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485520
     if (this->map == nullptr || this->map_row_offset == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -1258,6 +1280,7 @@ RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
     RGE_Random_Map_Module* param_2,
     RGE_Terrain_Info* param_3)
     : RGE_Random_Map_Module(param_1, param_2, 1) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x004888E0
     this->schedule = 2.0f;
     memset(&this->info, 0, sizeof(this->info));
     if (param_3 != nullptr) {
@@ -1267,6 +1290,7 @@ RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
 }
 
 uchar RGE_RMM_Terrain_Generator::generate() {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488920
     if (this->map == nullptr) {
         return 0;
     }
@@ -1301,6 +1325,7 @@ uchar RGE_RMM_Terrain_Generator::generate() {
 }
 
 static long rmm_terr_rand_scaled(long scale, int line_no) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00489030 (helper extraction coverage).
     if (scale <= 0) {
         return 0;
     }
@@ -1309,6 +1334,7 @@ static long rmm_terr_rand_scaled(long scale, int line_no) {
 }
 
 uchar RGE_RMM_Terrain_Generator::water(uchar param_1) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x004889D0
     if (param_1 == 1) {
         return 1;
     }
@@ -1319,6 +1345,7 @@ uchar RGE_RMM_Terrain_Generator::water(uchar param_1) {
 }
 
 void RGE_RMM_Terrain_Generator::check_borders() {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x004889F0
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1360,6 +1387,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
     long param_3,
     long param_4,
     uchar param_5) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488B90
     if (this->map_row_offset == nullptr || this->map == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -1408,6 +1436,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
 }
 
 void RGE_RMM_Terrain_Generator::generate_modifiers() {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488D50
     if (this->search_map == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -1437,12 +1466,14 @@ void RGE_RMM_Terrain_Generator::generate_modifiers() {
 }
 
 float RGE_RMM_Terrain_Generator::fig_chance(long param_1, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488E40
     (void)param_2;
     (void)param_3;
     return (float)(250 - param_4 * param_1);
 }
 
 long RGE_RMM_Terrain_Generator::count_map_tiles(uchar param_1) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488E60
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -1458,6 +1489,7 @@ long RGE_RMM_Terrain_Generator::count_map_tiles(uchar param_1) {
 }
 
 void RGE_RMM_Terrain_Generator::link_stack_randomly(Map_Stack* param_1, uchar param_2) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488EA0
     (void)param_2;
     if (param_1 == nullptr || this->stack_array == nullptr || this->stack_offsets == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
@@ -1502,6 +1534,7 @@ void RGE_RMM_Terrain_Generator::link_stack_randomly(Map_Stack* param_1, uchar pa
 }
 
 void RGE_RMM_Terrain_Generator::remove_area_from_lists(long param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00488F90
     if (this->stack_offsets == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1523,6 +1556,7 @@ void RGE_RMM_Terrain_Generator::remove_area_from_lists(long param_1, long param_
 }
 
 uchar RGE_RMM_Terrain_Generator::base_terrain_generate(RGE_Terrain_Info_Line param_1) {
+    // Fully verified. Source of truth: rmm_terr.cpp.decomp @ 0x00489030
     if (this->map_row_offset == nullptr || this->search_map_rows == nullptr || this->stack_offsets == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -1771,6 +1805,7 @@ RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
     RGE_Object_Info* param_4,
     uchar param_5)
     : RGE_Random_Map_Module(param_1, param_2, 1) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00485C50
     this->schedule = 3.0f;
     this->world = param_3;
     memset(&this->info, 0, sizeof(this->info));
@@ -1782,6 +1817,7 @@ RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
 }
 
 static long rmm_obj_rand_scaled(long scale, int line_no) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00485E50 (helper extraction coverage).
     if (scale <= 0) {
         return 0;
     }
@@ -1790,6 +1826,7 @@ static long rmm_obj_rand_scaled(long scale, int line_no) {
 }
 
 static float rmm_obj_adjust_coord(float tile, float radius) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486700 (helper extraction coverage).
     long i = (long)radius;
     if ((radius - (float)i) > 0.0f) {
         tile += 0.5f;
@@ -1798,6 +1835,7 @@ static float rmm_obj_adjust_coord(float tile, float radius) {
 }
 
 static int rmm_obj_terrain_matches(RGE_RMM_Object_Generator* self, RGE_Object_Info_Line& line, long x, long y) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486110 (helper extraction coverage).
     if (self == nullptr || self->map_row_offset == nullptr ||
         x < 0 || y < 0 || x >= self->map_width || y >= self->map_height) {
         return 0;
@@ -1810,6 +1848,7 @@ static int rmm_obj_terrain_matches(RGE_RMM_Object_Generator* self, RGE_Object_In
 }
 
 static RGE_Player* rmm_obj_get_player_safe(RGE_RMM_Object_Generator* self, long player_index) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x004864F0 (helper extraction coverage).
     if (self == nullptr || self->world == nullptr || self->world->players == nullptr || self->world->player_num <= 0) {
         return nullptr;
     }
@@ -1820,6 +1859,7 @@ static RGE_Player* rmm_obj_get_player_safe(RGE_RMM_Object_Generator* self, long 
 }
 
 void RGE_RMM_Object_Generator::add_quick_obj(long param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00485CB0
     if (this->info.object_num < 0 || this->info.object_num >= 99) {
         return;
     }
@@ -1842,6 +1882,7 @@ void RGE_RMM_Object_Generator::add_quick_obj(long param_1, long param_2, long pa
 }
 
 void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& param_1) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00485E50
     if (param_1.scale_flag != 0) {
         long groups = (this->map_width * this->map_height * param_1.number_of_groups) / 0x5100;
         param_1.number_of_groups = groups;
@@ -1880,6 +1921,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     long param_3,
     long param_4,
     long param_5) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00485F10
     (void)param_4;
     param_1.next = nullptr;
     param_1.prev = nullptr;
@@ -1938,6 +1980,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
 }
 
 uchar RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line& param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486110
     for (long i = 0; i < this->info.land_num; ++i) {
         long dx = param_2 - this->info.lands[i].x;
         long dy = param_3 - this->info.lands[i].y;
@@ -1951,6 +1994,7 @@ uchar RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line& param_1, long par
 }
 
 void RGE_RMM_Object_Generator::set_search_area(long param_1, long param_2, long param_3, uchar param_4) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486180
     if (this->search_map_rows == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1973,6 +2017,7 @@ void RGE_RMM_Object_Generator::set_search_area(long param_1, long param_2, long 
 }
 
 void RGE_RMM_Object_Generator::remove_area_from_lists(long param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486210
     if (this->stack_offsets == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -1995,6 +2040,7 @@ void RGE_RMM_Object_Generator::remove_area_from_lists(long param_1, long param_2
 }
 
 void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& param_1, long param_2) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x004862B0
     (void)param_2;
     if (this->search_map == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
@@ -2051,6 +2097,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(RGE_Object_Info_Line& param_1
 }
 
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& param_1) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x004864F0
     if (this->search_map == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -2109,6 +2156,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
     long param_4,
     long param_5,
     long param_6) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486700
     if (this->search_map == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -2209,6 +2257,7 @@ void RGE_RMM_Object_Generator::place_group(
     long param_2,
     long param_3,
     RGE_Player* param_4) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486A60
     if (param_4 == nullptr) {
         return;
     }
@@ -2254,6 +2303,7 @@ void RGE_RMM_Object_Generator::place_cluster(
     long param_2,
     long param_3,
     RGE_Player* param_4) {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00486C40
     if (param_4 == nullptr || this->search_map_rows == nullptr || this->stack_offsets == nullptr) {
         return;
     }
@@ -2352,6 +2402,7 @@ void RGE_RMM_Object_Generator::place_cluster(
 }
 
 uchar RGE_RMM_Object_Generator::generate() {
+    // Fully verified. Source of truth: rmm_obj.cpp.decomp @ 0x00485DC0
     if (this->parent == nullptr) {
         return 0;
     }
@@ -2385,6 +2436,7 @@ RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
     RGE_Random_Map_Module* param_2,
     RGE_Elevation_Info* param_3)
     : RGE_Random_Map_Module(param_1, param_2, 1) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x004846C0
     this->schedule = 1.5f;
     memset(&this->info, 0, sizeof(this->info));
     if (param_3 != nullptr) {
@@ -2393,6 +2445,7 @@ RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
 }
 
 uchar RGE_RMM_Elevation_Generator::generate() {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484700
     if (this->map == nullptr || this->map_row_offset == nullptr || this->search_map == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -2424,6 +2477,7 @@ uchar RGE_RMM_Elevation_Generator::generate() {
 }
 
 static long rmm_elev_rand_scaled(long scale, int line_no) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484D00 (helper extraction coverage).
     if (scale <= 0) {
         return 0;
     }
@@ -2437,6 +2491,7 @@ uchar RGE_RMM_Elevation_Generator::check_start_elevation(
     uchar param_3,
     uchar param_4,
     uchar param_5) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x004847C0
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -2470,6 +2525,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
     long param_4,
     uchar param_5,
     uchar param_6) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x004848A0
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -2516,6 +2572,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
 }
 
 void RGE_RMM_Elevation_Generator::generate_modifiers() {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484A40
     if (this->search_map == nullptr || this->search_map_rows == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -2543,12 +2600,14 @@ void RGE_RMM_Elevation_Generator::generate_modifiers() {
 }
 
 float RGE_RMM_Elevation_Generator::fig_chance(long param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484B30
     (void)param_2;
     (void)param_3;
     return (float)(-15 * param_1 + 250);
 }
 
 long RGE_RMM_Elevation_Generator::count_map_tiles(uchar param_1) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484B50
     if (this->map_row_offset == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return 0;
     }
@@ -2565,6 +2624,7 @@ long RGE_RMM_Elevation_Generator::count_map_tiles(uchar param_1) {
 }
 
 void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484B90
     if (param_1 == nullptr || this->stack_array == nullptr || this->stack_offsets == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -2607,6 +2667,7 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1) {
 }
 
 void RGE_RMM_Elevation_Generator::remove_area_from_lists(long param_1, long param_2, long param_3) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484C80
     if (this->stack_offsets == nullptr || this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
@@ -2628,6 +2689,7 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(long param_1, long para
 }
 
 uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Line param_1) {
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484D00
     if (this->map_row_offset == nullptr || this->search_map_rows == nullptr || this->stack_offsets == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -2774,6 +2836,7 @@ RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
     RGE_Random_Map_Module* param_2,
     RGE_Shallows_Info* param_3)
     : RGE_Random_Map_Module(param_1, param_2, 1) {
+    // Fully verified. Source of truth: rmm_shal.cpp.decomp @ 0x00487010
     this->schedule = 1.1f;
     memset(&this->info, 0, sizeof(this->info));
     if (param_3 != nullptr) {
@@ -2782,6 +2845,7 @@ RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
 }
 
 uchar RGE_RMM_Shallows_Generator::generate() {
+    // Fully verified. Source of truth: rmm_shal.cpp.decomp @ 0x00487050
     this->clear_stack();
 
     long num = this->info.shallows_num;
@@ -2830,6 +2894,7 @@ uchar RGE_RMM_Shallows_Generator::generate() {
 }
 
 void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
+    // Fully verified. Source of truth: rmm_shal.cpp.decomp @ 0x00487200
     if (this->map_row_offset == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -3516,7 +3581,7 @@ void RGE_RMM_Database_Controller::add_elevation_module() {
     long grown_tiles = (this->map_width * grown_land_percent * this->map_height) / 100;
     if (grown_tiles < 0) grown_tiles = 0;
 
-    // Source of truth: rmm_dbct.cpp.decomp @ 0x00484470
+    // Fully verified. Source of truth: rmm_dbct.cpp.decomp @ 0x00484470
     this->elevation_info.elevation_num = 4;
 
     this->elevation_info.elevation[0].elevation = 1;

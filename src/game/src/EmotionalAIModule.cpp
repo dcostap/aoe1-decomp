@@ -247,6 +247,7 @@ void EmotionalAIModule::setOverallState(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: aiemomod.cpp.decomp @ 0x0040CD5E (embedded corrupted infinite-loop block).
 // Offset: 0x0040CD80
 // Fully verified. Source of truth: aiemomod.cpp.decomp @ 0x0040CD80
 int EmotionalAIModule::defaultState() const {
