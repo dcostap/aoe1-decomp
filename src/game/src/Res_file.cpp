@@ -394,7 +394,7 @@ static unsigned long BUILDRES_get_files_resource_type(const char* filename) {
 } // namespace
 
 // Fully verified. Marker reconciliation coverage.
-int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
+int RESFILE_build_res_file(char* file, char* resource_dir, char* path) {
     // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F5C0
     BuildResTypeNode* iq = nullptr;
     int numResTypes = 0;
@@ -407,29 +407,26 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
     char build_filename[260];
     char rPassword[40];
 
-    sprintf(build_filename, "%s%s", resource_dir, tag);
+    sprintf(build_filename, "%s%s", resource_dir, file);
     FILE* buildFile = fopen(build_filename, "r");
     if (buildFile == nullptr) {
-        CUSTOM_DEBUG_LOG_FMT("Error: could not find resource build file: %s", tag);
-        goto cleanup;
+        CUSTOM_DEBUG_LOG_FMT("Error: could not find resource build file: %s", file);
+        return 0;
     }
 
-    if (fscanf(buildFile, "%259s %39s", temp_filename, rPassword) != 2) {
-        CUSTOM_DEBUG_LOG_FMT("Error: could not parse resource build file header: %s", build_filename);
-        goto cleanup;
-    }
+    fscanf(buildFile, "%s %s", temp_filename, rPassword);
     sprintf(resource_filename, "%s%s", path, temp_filename);
 
     int file_id;
-    while (fscanf(buildFile, "%259s", temp_filename) == 1 &&
-           fscanf(buildFile, "%d", &file_id) == 1) {
+    while (fscanf(buildFile, "%s", temp_filename) != EOF &&
+           fscanf(buildFile, "%d", &file_id) != EOF) {
         unsigned long rId = (unsigned long)file_id; // build file provides numeric resource id
 
         sprintf(data_filename, "%s%s", resource_dir, temp_filename);
         unsigned long rType = BUILDRES_get_files_resource_type(temp_filename);
         if (rType == 0) {
             CUSTOM_DEBUG_LOG_FMT("Error: could not determine file type of: %s", temp_filename);
-            goto cleanup;
+            return 0;
         }
 
         BuildResTypeNode* prevType = nullptr;
@@ -448,7 +445,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
             typeNode = new (std::nothrow) BuildResTypeNode;
             if (typeNode == nullptr) {
                 CUSTOM_DEBUG_LOG("Error: out of memory #1");
-                goto cleanup;
+                return 0;
             }
             typeNode->type = rType;
             typeNode->dir_offset = 0;
@@ -470,7 +467,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         for (BuildResIdNode* cur = typeNode->ids; cur != nullptr; cur = cur->next) {
             if (cur->id == rId) {
                 CUSTOM_DEBUG_LOG_FMT("Error: duplicate resources: %s & %s", cur->filename, data_filename);
-                goto cleanup;
+                return 0;
             }
             if (cur->id < rId) {
                 prevId = cur;
@@ -480,7 +477,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         BuildResIdNode* idNode = new (std::nothrow) BuildResIdNode;
         if (idNode == nullptr) {
             CUSTOM_DEBUG_LOG("Error: out of memory #2");
-            goto cleanup;
+            return 0;
         }
         memset(idNode, 0, sizeof(BuildResIdNode));
         idNode->id = rId;
@@ -508,14 +505,14 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         if (fileSize < 1) {
             CUSTOM_DEBUG_LOG_FMT("Error: file is empty/NULL: %s", data_filename);
             _close(fd);
-            goto cleanup;
+            return 0;
         }
 
         idNode->resData = (unsigned char*)malloc(fileSize);
         if (idNode->resData == nullptr) {
             CUSTOM_DEBUG_LOG("Error: out of memory #3");
             _close(fd);
-            goto cleanup;
+            return 0;
         }
 
         idNode->resSize = (int)fileSize;
@@ -523,7 +520,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         if (bytesRead != fileSize) {
             CUSTOM_DEBUG_LOG_FMT("Error: error reading file: %s", data_filename);
             _close(fd);
-            goto cleanup;
+            return 0;
         }
         _close(fd);
     }
@@ -534,7 +531,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
     outFd = _open(resource_filename, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
     if (outFd == -1) {
         CUSTOM_DEBUG_LOG_FMT("Error: unable to create resource file file: %s", resource_filename);
-        goto cleanup;
+        return 0;
     }
 
     int dataOffset = 0x40 + numResTypes * 0x0c;
@@ -563,7 +560,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
     pos = _write(outFd, &theHeader, 0x40);
     if (pos != 0x40) {
         CUSTOM_DEBUG_LOG("Error writing resource file header");
-        goto cleanup;
+        return 0;
     }
 
     pos = 0x40;
@@ -575,7 +572,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         int wrote = _write(outFd, &typeDirNode, sizeof(typeDirNode));
         if (wrote != sizeof(typeDirNode)) {
             CUSTOM_DEBUG_LOG("Error writing resource file header: type node");
-            goto cleanup;
+            return 0;
         }
         pos += sizeof(typeDirNode);
     }
@@ -584,7 +581,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
     for (BuildResTypeNode* t = iq; t != nullptr; t = t->next) {
         if (pos != t->dir_offset) {
             CUSTOM_DEBUG_LOG("Error writing resource file: pos out of sync");
-            goto cleanup;
+            return 0;
         }
         for (BuildResIdNode* n = t->ids; n != nullptr; n = n->next) {
             ResfileIdDirNode idDirNode;
@@ -594,7 +591,7 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
             int wrote = _write(outFd, &idDirNode, sizeof(idDirNode));
             if (wrote != sizeof(idDirNode)) {
                 CUSTOM_DEBUG_LOG("Error writing resource file header: id node");
-                goto cleanup;
+                return 0;
             }
             pos += sizeof(idDirNode);
         }
@@ -605,12 +602,12 @@ int RESFILE_build_res_file(char* path, char* resource_dir, char* tag) {
         for (BuildResIdNode* n = t->ids; n != nullptr; n = n->next) {
             if (pos != n->data_offset) {
                 CUSTOM_DEBUG_LOG("Error writing resource file data: pos out of sync");
-                goto cleanup;
+                return 0;
             }
             int wrote = _write(outFd, n->resData, n->resSize);
             if (wrote != n->resSize) {
                 CUSTOM_DEBUG_LOG("Error writing resource file data");
-                goto cleanup;
+                return 0;
             }
             pos += n->resSize;
         }
