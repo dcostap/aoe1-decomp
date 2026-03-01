@@ -6254,19 +6254,19 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 531
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Action_Enter.cpp - update (140 lines, line 144) and constructor (60 lines, line 56). Reference tact_ent.cpp.asm. Focus on garrison/enter state machine, target validation, and distance checks.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 532
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TRIBE_Campaign_Editor_Screen.cpp - action (113 lines, line 506) and constructor (82 lines, line 45). Reference scr_ced.cpp.asm. Focus on campaign editor action handling and panel initialization.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 533
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of flics.cpp - palette (91 lines, line 57) and delta_flc (81 lines, line 295). Reference flics.cpp.asm. Focus on FLC animation palette handling and delta frame decompression.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
@@ -6309,6 +6309,27 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 537
 - [ ] Assigned to: W7
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Color_Table.cpp - setup and load. Reference col_tbl.cpp.asm.
 **Done when**: Functions verified against ASM, any parity issues fixed, build succeeds.
+
+
+## Task 538
+- [ ] Assigned to: W2
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TRIBE_Action_Gather.cpp update/set_state.
+
+## Task 539
+- [ ] Assigned to: W5
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_Action_Waypoint.cpp + TRIBE_Action_Transport.cpp update.
+
+## Task 540
+- [ ] Assigned to: W7
+- [ ] Finished
+**Goal**: Deep ASM parity audit of InformationAIModule.cpp update/processHistory.
+
+## Task 541
+- [ ] Assigned to: W8
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TribeResourceAIModule.cpp update/distributeResources.
