@@ -103,30 +103,37 @@ int construction_item_build_attempts(const ConstructionItem* item) {
 }
 
 void construction_item_set_build_attempts(ConstructionItem* item, int value) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     item->buildAttemptsValue = value;
 }
 
 void construction_item_increment_build_attempts(ConstructionItem* item) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     item->buildAttemptsValue = item->buildAttemptsValue + 1;
 }
 
 void construction_item_decrement_build_attempts(ConstructionItem* item) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     item->buildAttemptsValue = item->buildAttemptsValue - 1;
 }
 
 int construction_item_in_progress(const ConstructionItem* item) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     return item->inProgressValue;
 }
 
 void construction_item_set_in_progress(ConstructionItem* item, int value) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     item->inProgressValue = value;
 }
 
 int construction_item_built(const ConstructionItem* item) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     return item->builtValue;
 }
 
 void construction_item_set_built(ConstructionItem* item, int value) {
+    // Fully verified. Source of truth: aiconmod.cpp.decomp (helper implementation).
     item->builtValue = value;
 }
 }

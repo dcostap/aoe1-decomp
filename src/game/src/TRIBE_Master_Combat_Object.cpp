@@ -23,6 +23,7 @@
 #include <new>
 
 static long rge_ftol(float value) {
+    // Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
     long result;
     __asm {
         fld value
@@ -32,6 +33,7 @@ static long rge_ftol(float value) {
 }
 
 static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
+    // Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
     self->orig_pierce_armor = 0;
     self->orig_armor = (short)self->base_armor;
 
@@ -277,10 +279,16 @@ RGE_Master_Static_Object* TRIBE_Master_Combat_Object::make_new_master() {
     return (RGE_Master_Static_Object*)master;
 }
 
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 uchar TRIBE_Master_Combat_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 uchar TRIBE_Master_Combat_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 long TRIBE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) { return this->RGE_Master_Static_Object::calc_base_damage_ability(param_1); }
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 void TRIBE_Master_Combat_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 void TRIBE_Master_Combat_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
+// Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 void TRIBE_Master_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 

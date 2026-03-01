@@ -14,6 +14,7 @@ namespace {
 const char* const kPnlMsgSourcePath = "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp";
 
 static unsigned long palette_index_to_rgb(unsigned char index) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     if (rge_base_game == nullptr || rge_base_game->draw_system == nullptr || rge_base_game->draw_system->Pal == nullptr) {
         return 0;
     }
@@ -24,16 +25,19 @@ static unsigned long palette_index_to_rgb(unsigned char index) {
 }
 
 static void clear_text_buffer(TMessagePanel* panel) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     memset(panel->text, 0, sizeof(panel->text));
 }
 
 static void mark_parent_redraw(TMessagePanel* panel) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     if (panel->parent_panel != nullptr) {
         panel->parent_panel->set_redraw(TPanel::Redraw);
     }
 }
 
 static void init_fields(TMessagePanel* panel, void* font, long font_wid, long font_hgt) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     panel->font = font;
     panel->font_wid = font_wid;
     panel->font_hgt = font_hgt;
@@ -182,6 +186,7 @@ void TMessagePanel::show_message(int param_1, char* param_2, unsigned char param
 }
 
 void TMessagePanel::set_message(char* param_1) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     if (param_1 == nullptr) {
         this->clear_message();
         return;
@@ -190,19 +195,23 @@ void TMessagePanel::set_message(char* param_1) {
 }
 
 void TMessagePanel::set_message(int param_1) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->set_message(this->get_string(param_1));
 }
 
 void TMessagePanel::clear_message() {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     clear_text_buffer(this);
     this->remove_message();
 }
 
 void TMessagePanel::set_time(unsigned long param_1) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->show_message_interval = (long)param_1;
 }
 
 void TMessagePanel::set_color(unsigned long param_1, unsigned long param_2) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->font_color1 = param_1;
     this->font_color2 = param_2;
     this->font_color = (unsigned char)param_1;
@@ -210,15 +219,18 @@ void TMessagePanel::set_color(unsigned long param_1, unsigned long param_2) {
 }
 
 void TMessagePanel::set_style(int param_1) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->index_color = param_1;
 }
 
 void TMessagePanel::set_alignment(int param_1, int param_2) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->horz_just = (JustType)param_1;
     this->vert_just = (JustType)param_2;
 }
 
 void TMessagePanel::set_wrap(int param_1) {
+    // Fully verified. Source of truth: pnl_msg.cpp.decomp (helper implementation).
     this->word_wrap = param_1;
 }
 

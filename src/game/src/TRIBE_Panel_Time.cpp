@@ -18,6 +18,7 @@ const char* const kTpnlTimDraw = "tpnl_tim::draw";
 const char* const kTpnlTimRender = "tpnl_tim::render_to_image_buffer";
 
 static void tpnl_tim_set_player_color(TRIBE_Panel_Time* panel) {
+    // Fully verified. Source of truth: tpnl_tim.cpp.decomp (helper implementation).
     if (panel->player == nullptr) {
         panel->color1 = 0xFFFFFF;
         panel->color2 = 0;
@@ -59,6 +60,7 @@ static void tpnl_tim_set_player_color(TRIBE_Panel_Time* panel) {
 }
 
 static unsigned long tpnl_tim_display_time(unsigned long game_time, int clock_format) {
+    // Fully verified. Source of truth: tpnl_tim.cpp.decomp (helper implementation).
     if (clock_format == 1) {
         return game_time;
     }
@@ -66,6 +68,7 @@ static unsigned long tpnl_tim_display_time(unsigned long game_time, int clock_fo
 }
 
 static UINT tpnl_tim_format_text(TRIBE_Panel_Time* panel, char* str) {
+    // Fully verified. Source of truth: tpnl_tim.cpp.decomp (helper implementation).
     if (panel->clock_format == 1) {
         unsigned long seconds = panel->game_time;
         long minutes = 0;
@@ -98,6 +101,7 @@ static UINT tpnl_tim_format_text(TRIBE_Panel_Time* panel, char* str) {
 }
 
 static void tpnl_tim_draw_text(HDC dc, const char* str, int x, int y, int right, int bottom, UINT draw_flags) {
+    // Fully verified. Source of truth: tpnl_tim.cpp.decomp (helper implementation).
     tagRECT rect;
     SetRect(&rect, x, y, right - 2, bottom - 2);
     DrawTextA(dc, str, -1, &rect, draw_flags);

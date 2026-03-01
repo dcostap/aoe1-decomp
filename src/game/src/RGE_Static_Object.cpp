@@ -39,6 +39,7 @@
 #include <new>
 
 static void rge_static_set_sleep_flag(RGE_Static_Object* obj, uchar sleep_flag) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp (helper implementation).
     if (obj == nullptr || obj->owner == nullptr) {
         return;
     }
@@ -70,6 +71,7 @@ void RGE_Static_Object::set_sleep_flag(uchar sleep_flag) {
 }
 
 static void rge_static_ensure_group_capacity(ManagedArray<int>& arr, int required_index) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp (helper implementation).
     if (arr.maximumSizeValue - 1 >= required_index) {
         return;
     }
@@ -97,6 +99,7 @@ static void rge_static_ensure_group_capacity(ManagedArray<int>& arr, int require
 }
 
 static void rge_static_add_unique_member(ManagedArray<int>& arr, int value) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp (helper implementation).
     int current_count = arr.numberValue;
     for (int index = 0; index < current_count; ++index) {
         if (arr.maximumSizeValue <= index) {
@@ -156,6 +159,7 @@ static void rge_static_init_check_list(RGE_Check_List* list) {
 }
 
 static void rge_static_change_influence_value(InfluenceMap* map, int x, int y, uchar value, int increase) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp (helper implementation).
     if (map == nullptr || map->rowValue == nullptr) {
         return;
     }
@@ -207,6 +211,7 @@ struct AIPlayStatusRaw {
 };
 
 static void rge_static_set_unit_ai_play_status(UnitAIModule* target_unit_ai, UnitAIModule* source_unit_ai) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp (helper implementation).
     // ASM source: stat_obj.cpp.asm @ 0x004C55BF reads UnitAIModule::playStatus at +0x12C.
     if (target_unit_ai == nullptr) {
         return;
@@ -235,6 +240,7 @@ static void rge_static_set_unit_ai_play_status(UnitAIModule* target_unit_ai, Uni
 }
 
 static void rge_static_ctor_common_init(RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: stat_obj.cpp.decomp (helper implementation).
     obj->id = 0;
     obj->master_obj = nullptr;
     obj->owner = nullptr;

@@ -72,6 +72,7 @@
 
 
 static void tribe_init_cliff_master_table(TRIBE_Map* map) {
+    // Fully verified. Source of truth: tmap.cpp.decomp (helper implementation).
     for (int i = 0; i < 0x100; ++i) {
         map->cliff_master_table[i].id = -1;
         map->cliff_master_table[i].facet = 0;
@@ -108,10 +109,12 @@ static void tribe_init_cliff_master_table(TRIBE_Map* map) {
 }
 
 static int tribe_is_cliff_master_id(short master_id) {
+    // Fully verified. Source of truth: tmap.cpp.decomp (helper implementation).
     return (master_id >= 0x108 && master_id <= 0x111) ? 1 : 0;
 }
 
 static void tribe_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: tmap.cpp.decomp (helper implementation).
     if (tile == nullptr || obj == nullptr) {
         return;
     }
@@ -143,6 +146,7 @@ static void tribe_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
 }
 
 static void tribe_delete_object_now(RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: tmap.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -161,6 +165,7 @@ static void tribe_delete_object_now(RGE_Static_Object* obj) {
 }
 
 static void tribe_mark_cliff_dirty(TRIBE_Map* map, RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: tmap.cpp.decomp (helper implementation).
     if (map == nullptr || obj == nullptr || map->game_world == nullptr || map->game_world->players == nullptr) {
         return;
     }

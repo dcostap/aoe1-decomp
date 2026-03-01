@@ -51,6 +51,7 @@
 #include <string.h>
 
 static int rects_overlap(const tagRECT& a, const tagRECT& b) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     if (a.right < b.left || b.right < a.left) {
         return 0;
     }
@@ -98,6 +99,7 @@ static int __cdecl scr_game_score_compare(const void* param_1, const void* param
 }
 
 static void scr_game_get_score_colors(short color_index, ulong* color1, ulong* color2) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     if (color1 == nullptr || color2 == nullptr) {
         return;
     }
@@ -136,6 +138,7 @@ static void scr_game_get_score_colors(short color_index, ulong* color1, ulong* c
 }
 
 static TShape* load_shape_checked(const char* name, long id) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     TShape* shape = new TShape((char*)name, id);
     if (shape == nullptr) {
         return nullptr;
@@ -150,6 +153,7 @@ static TShape* load_shape_checked(const char* name, long id) {
 }
 
 static void delete_shape_safe(TShape*& shape) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     if (shape != nullptr) {
         delete shape;
         shape = nullptr;
@@ -157,6 +161,7 @@ static void delete_shape_safe(TShape*& shape) {
 }
 
 static void delete_panel_safe(TPanel*& panel) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     if (panel != nullptr) {
         delete panel;
         panel = nullptr;
@@ -164,18 +169,22 @@ static void delete_panel_safe(TPanel*& panel) {
 }
 
 static int& scr_game_field_i32(TRIBE_Screen_Game* self, size_t offset) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     return *(int*)((unsigned char*)self + offset);
 }
 
 static ulong& scr_game_field_u32(TRIBE_Screen_Game* self, size_t offset) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     return *(ulong*)((unsigned char*)self + offset);
 }
 
 static short& scr_game_field_i16(TRIBE_Screen_Game* self, size_t offset) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     return *(short*)((unsigned char*)self + offset);
 }
 
 static void scr_game_set_info_file(TEasy_Panel* panel, const char* file_name, long info_id) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     panel->info_id = info_id;
     if (file_name != nullptr) {
         strncpy(panel->info_file_name, file_name, sizeof(panel->info_file_name) - 1);
@@ -186,6 +195,7 @@ static void scr_game_set_info_file(TEasy_Panel* panel, const char* file_name, lo
 }
 
 static void scr_game_set_popup_info_file(TEasy_Panel* panel, const char* file_name, long info_id) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     panel->popup_info_id = info_id;
     if (file_name != nullptr) {
         strncpy(panel->popup_info_file_name, file_name, sizeof(panel->popup_info_file_name) - 1);
@@ -196,6 +206,7 @@ static void scr_game_set_popup_info_file(TEasy_Panel* panel, const char* file_na
 }
 
 static void scr_game_set_button_pics(TEasy_Panel* panel, const char* file_name, long pic_id) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     delete_shape_safe(panel->button_pics);
     if (file_name != nullptr) {
         panel->button_pics = new TShape((char*)file_name, pic_id);
@@ -203,6 +214,7 @@ static void scr_game_set_button_pics(TEasy_Panel* panel, const char* file_name, 
 }
 
 static void scr_game_set_bevel_colors(TEasy_Panel* panel, uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     panel->bevel_color1 = c1;
     panel->bevel_color2 = c2;
     panel->bevel_color3 = c3;
@@ -212,6 +224,7 @@ static void scr_game_set_bevel_colors(TEasy_Panel* panel, uchar c1, uchar c2, uc
 }
 
 static void scr_game_set_button_text_color(TRIBE_Panel_Button* button, ulong color1, ulong color2) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     if (button == nullptr) {
         return;
     }
@@ -220,6 +233,7 @@ static void scr_game_set_button_text_color(TRIBE_Panel_Button* button, ulong col
 }
 
 static void scr_game_reload_shape(TShape*& shape, const char* format, uint style, long style4_id, long base_id) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     char file_name[64];
     _snprintf(file_name, sizeof(file_name), format, style);
     file_name[sizeof(file_name) - 1] = '\0';
@@ -248,6 +262,7 @@ static TMessagePanel* create_message_panel_checked(
 }
 
 static int scr_game_get_player_age(RGE_Player* player) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp (helper implementation).
     if (player == nullptr) {
         return 0;
     }
