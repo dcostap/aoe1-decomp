@@ -2591,8 +2591,8 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 
 ## Task 196 — TRIBE AI build-module dependency parity: retire helper stubs in `TribeBuildAIModule.cpp`
 - [x] Assigned to agent
-- [ ] Finished
-- Status note: assigned to `worker-2` (`aoe1_clone_4`) for execution.
+- [x] Finished
+- Status note: verified complete in `master` (helper stubs removed, helper/add-cancel methods fully verified).
 - Goal: remove helper-level TODO stubs currently short-circuiting AI build/train/research bookkeeping during in-game updates.
 - Implement:
   - Replace local helper stubs with source-backed behavior: `tribe_build_ai_detask`, `tribe_build_ai_is_moveable`, `tribe_build_ai_clear_area`, `tribe_build_ai_remove_lot`, `tribe_build_ai_update_needed_resources`.
