@@ -116,10 +116,15 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2
 RGE_Action_Enter::~RGE_Action_Enter() {}
 
 int RGE_Action_Enter::setup(RGE_Action_Object* param_1) { return RGE_Action::setup(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 int RGE_Action_Enter::setup(int param_1, RGE_Action_Object* param_2) { return RGE_Action::setup(param_1, param_2); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 RGE_Action_List* RGE_Action_Enter::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::rehook() { RGE_Action::rehook(); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::save(int param_1) { RGE_Action::save(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 short RGE_Action_Enter::type() { return this->action_type; }
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402600
@@ -127,6 +132,7 @@ void RGE_Action_Enter::first_in_stack(uchar /*param_1*/) {
     this->set_state(4);
 }
 
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 uchar RGE_Action_Enter::inside_obj_update() { return RGE_Action::inside_obj_update(); }
 uchar RGE_Action_Enter::idle_update() { return RGE_Action::idle_update(); }
 
@@ -272,16 +278,27 @@ missing_target:
     return 4;
 }
 
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 int RGE_Action_Enter::stop() { return RGE_Action::stop(); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 int RGE_Action_Enter::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 int RGE_Action_Enter::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::work(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 uchar RGE_Action_Enter::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 uchar RGE_Action_Enter::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Enter::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Enter::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding coverage).
 void RGE_Action_Enter::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void RGE_Action_Enter::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 

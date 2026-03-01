@@ -126,58 +126,72 @@ TribeConstructionAIModule::~TribeConstructionAIModule() {
     this->md = nullptr;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::loggingHistory() {
     return ConstructionAIModule::loggingHistory();
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 void TribeConstructionAIModule::setLogHistory(int param_1) {
     ConstructionAIModule::setLogHistory(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 void TribeConstructionAIModule::toggleLogHistory() {
     ConstructionAIModule::toggleLogHistory();
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 void TribeConstructionAIModule::setHistoryFilename(char* param_1) {
     ConstructionAIModule::setHistoryFilename(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::loggingCommonHistory() {
     return ConstructionAIModule::loggingCommonHistory();
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 void TribeConstructionAIModule::setLogCommonHistory(int param_1) {
     ConstructionAIModule::setLogCommonHistory(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 void TribeConstructionAIModule::toggleLogCommonHistory() {
     ConstructionAIModule::toggleLogCommonHistory();
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::loadState(char* param_1) {
     return ConstructionAIModule::loadState(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::saveState(char* param_1) {
     return ConstructionAIModule::saveState(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::gleanState(int param_1) {
     return ConstructionAIModule::gleanState(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::processMessage(AIModuleMessage* param_1) {
     return ConstructionAIModule::processMessage(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::update(int param_1) {
     return ConstructionAIModule::update(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 void TribeConstructionAIModule::setCallbackMessage(AIModuleMessage* param_1) {
     ConstructionAIModule::setCallbackMessage(param_1);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).
 int TribeConstructionAIModule::filterOutMessage(AIModuleMessage* param_1) {
     return ConstructionAIModule::filterOutMessage(param_1);
 }
