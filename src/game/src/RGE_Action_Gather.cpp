@@ -66,18 +66,31 @@ int RGE_Action_Gather::setup(int param_1, RGE_Action_Object* param_2) {
     return 1;
 }
 
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 RGE_Action_List* RGE_Action_Gather::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 void RGE_Action_Gather::rehook() { RGE_Action::rehook(); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 short RGE_Action_Gather::type() { return RGE_Action::type(); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 uchar RGE_Action_Gather::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 uchar RGE_Action_Gather::idle_update() { return RGE_Action::idle_update(); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 uchar RGE_Action_Gather::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 uchar RGE_Action_Gather::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 void RGE_Action_Gather::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 void RGE_Action_Gather::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 void RGE_Action_Gather::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Gather::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 RGE_Static_Object* RGE_Action_Gather::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 void RGE_Action_Gather::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void RGE_Action_Gather::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 

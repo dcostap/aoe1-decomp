@@ -12,7 +12,7 @@
 // Both are data-loading constructors that require the game database.
 
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
-    // Source of truth: bucket_050B.cpp.decomp @ 0x0050B840
+    // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050B840
     this->world = param_2;
     rge_read(param_1, &this->tech_tree_num, 2);
     if (this->tech_tree_num < 1 || this->tech_tree_num > 4096) {
@@ -128,7 +128,7 @@ TRIBE_Tech::TRIBE_Tech(char* param_1) {
 }
 
 TRIBE_Tech::~TRIBE_Tech() {
-    // Decomp @ 0x0050BF28: frees tech_tree entries (name strings) then the array.
+    // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050BF28
     if (this->tech_tree) {
         for (short i = 0; i < this->tech_tree_num; i++) {
             if (this->tech_tree[i].name) {
@@ -165,14 +165,14 @@ long TRIBE_Tech::get_hotkey(short param_1) {
 }
 
 void TRIBE_Tech::do_tech(short param_1, RGE_Player* param_2) {
-    // Source of truth: bucket_050B.cpp.decomp @ 0x0050BF9C
+    // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050BF9C
     if (this->tech_tree[param_1].effect >= 0) {
         this->world->effects->do_effect(this->tech_tree[param_1].effect, param_2);
     }
 }
 
 void TRIBE_Tech::save(int param_1) {
-    // Source of truth: bucket_050B.cpp.decomp @ TRIBE_Tech::save
+    // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050BFED
     rge_write(param_1, &this->tech_tree_num, 2);
     for (short i = 0; i < this->tech_tree_num; i++) {
         // Write pre-requisites
