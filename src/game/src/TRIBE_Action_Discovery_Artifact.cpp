@@ -55,6 +55,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Obje
     this->flags = (uchar*)calloc((int)player_num, 1);
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 TRIBE_Action_Discovery_Artifact::~TRIBE_Action_Discovery_Artifact() {
     if (this->flags != nullptr) {
         free(this->flags);
@@ -62,9 +63,13 @@ TRIBE_Action_Discovery_Artifact::~TRIBE_Action_Discovery_Artifact() {
     }
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 int TRIBE_Action_Discovery_Artifact::setup(RGE_Action_Object* param_1) { int r = RGE_Action::setup(param_1); this->action_type = 0x6c; return r; }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 int TRIBE_Action_Discovery_Artifact::setup(int param_1, RGE_Action_Object* param_2) { int r = RGE_Action::setup(param_1, param_2); this->action_type = 0x6c; return r; }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 RGE_Action_List* TRIBE_Action_Discovery_Artifact::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 void TRIBE_Action_Discovery_Artifact::rehook() { RGE_Action::rehook(); }
 
 // Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE6D0
@@ -76,6 +81,7 @@ void TRIBE_Action_Discovery_Artifact::save(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 short TRIBE_Action_Discovery_Artifact::type() { return this->action_type; }
 
 // Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE700
@@ -85,6 +91,7 @@ void TRIBE_Action_Discovery_Artifact::first_in_stack(uchar param_1) {
     }
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 uchar TRIBE_Action_Discovery_Artifact::inside_obj_update() { return RGE_Action::inside_obj_update(); }
 uchar TRIBE_Action_Discovery_Artifact::idle_update() { return RGE_Action::idle_update(); }
 
@@ -189,16 +196,28 @@ uchar TRIBE_Action_Discovery_Artifact::update() {
     return 0;
 }
 
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 int TRIBE_Action_Discovery_Artifact::stop() { this->set_state(2); return 1; }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 int TRIBE_Action_Discovery_Artifact::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 int TRIBE_Action_Discovery_Artifact::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::work(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 uchar TRIBE_Action_Discovery_Artifact::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 uchar TRIBE_Action_Discovery_Artifact::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 void TRIBE_Action_Discovery_Artifact::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 void TRIBE_Action_Discovery_Artifact::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 void TRIBE_Action_Discovery_Artifact::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Discovery_Artifact::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Discovery_Artifact::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 void TRIBE_Action_Discovery_Artifact::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 void TRIBE_Action_Discovery_Artifact::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
