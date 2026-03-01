@@ -140,29 +140,8 @@ static void unitsThatAreMostBuiltParity(TribeInformationAIModule* information_ai
 static void interface_obj_cost(TRIBE_Player* player, short obj_id,
                                short* inv_1, short* amt_1, short* inv_2, short* amt_2, short* inv_3, short* amt_3);
 
-int FUN_00513f95() {
-    // TODO: decomp for this offset is bad-instruction data.
-    // Source of truth: tplayer.cpp.decomp @ 0x00513F95
-    return 0;
-}
-
-int FUN_005159ba() {
-    // TODO: decomp for this offset is corrupted/junk control flow.
-    // Source of truth: tplayer.cpp.decomp @ 0x005159BA
-    return 0;
-}
-
-int FUN_00519465() {
-    // TODO: decomp for this offset is corrupted/junk control flow.
-    // Source of truth: tplayer.cpp.decomp @ 0x00519465
-    return 0;
-}
-
-int FUN_00519ab2() {
-    // TODO: decomp for this offset is corrupted/junk control flow.
-    // Source of truth: tplayer.cpp.decomp @ 0x00519AB2
-    return 0;
-}
+// Offsets 0x00513F95, 0x005159BA, 0x00519465, and 0x00519AB2 are switch-table artifacts in tplayer.cpp.asm
+// (alignment/switchdata labels between real functions), not callable function bodies.
 
 // --- TRIBE_Player constructors ---
 TRIBE_Player::TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
