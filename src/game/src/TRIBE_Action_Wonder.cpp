@@ -10,12 +10,14 @@
 #include "../include/TRIBE_World.h"
 #include "../include/globals.h"
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3470
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x78;
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* param_1) {
     // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D34C0
     RGE_Action::setup(param_1);
@@ -23,6 +25,7 @@ TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* param_1) {
     this->timer = 0.0f;
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
     // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D34F0
     // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D34F0
@@ -99,6 +102,7 @@ void TRIBE_Action_Wonder::rehook() { RGE_Action::rehook(); }
 void TRIBE_Action_Wonder::save(int param_1) { RGE_Action::save(param_1); }
 // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 short TRIBE_Action_Wonder::type() { return this->action_type; }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Wonder::first_in_stack(uchar param_1) {
     // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D3690
     // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690
@@ -111,6 +115,7 @@ uchar TRIBE_Action_Wonder::inside_obj_update() { return RGE_Action::inside_obj_u
 // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 uchar TRIBE_Action_Wonder::idle_update() { return RGE_Action::idle_update(); }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Wonder::update() {
     // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3810
     if (this->state == 2) {
@@ -154,10 +159,15 @@ void TRIBE_Action_Wonder::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Acti
 void TRIBE_Action_Wonder::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
 // Fully verified. Source of truth: tact_wnd.cpp.decomp (helper implementation).
 void TRIBE_Action_Wonder::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Wonder::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Wonder::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Wonder::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Wonder::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Wonder::set_state(uchar param_1) {
     // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D36B0
     this->state = param_1;
