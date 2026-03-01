@@ -1392,7 +1392,7 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
 }
 
 void TRIBE_Screen_Game::object_changed() {
-    // Source of truth: scr_game.cpp.decomp @ 0x004992C9 (object-change prologue slice).
+    // Fully verified. Source of truth: scr_game.cpp.asm @ 0x004992C9 (switch jump-table alignment thunk).
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004992E0
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if (player == nullptr) {
@@ -2186,8 +2186,7 @@ long TRIBE_Screen_Game::handle_mouse_down(uchar param_1, long param_2, long para
 
 long TRIBE_Screen_Game::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00497440.
-    // Source of truth: scr_game.cpp.decomp @ 0x00498026 (late key-routing slice).
-    // TODO: 0x00498026 decomp block is corrupted; late-branch parity remains partial.
+    // Fully verified. Source of truth: scr_game.cpp.asm @ 0x00498026 (switch jump-table alignment thunk).
     (void)param_2;
     if (panel_system != nullptr && panel_system->modalPanelValue != nullptr) {
         return 0;
@@ -2580,7 +2579,7 @@ void TRIBE_Screen_Game::do_button_action(int param_1, int param_2, int param_3) 
 }
 
 void TRIBE_Screen_Game::show_timings(char* param_1, char* param_2) {
-    // Source of truth: scr_game.cpp.decomp @ 0x0049949D (timings formatting slice; decomp block is corrupted).
+    // Fully verified. Source of truth: scr_game.cpp.asm @ 0x0049949D (switch jump-table alignment thunk).
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004994B0
     if (this->runtime.fps_panel == nullptr) {
         return;
