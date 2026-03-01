@@ -505,11 +505,8 @@ long TEditPanel::sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
         SendMessageA((HWND)this->edit_wnd, EM_GETSEL, (WPARAM)&sel_start_before, (LPARAM)&sel_end_before);
     }
 
-    long ret = 0;
     WNDPROC old_proc = (WNDPROC)this->old_sub_wnd_proc;
-    if (old_proc != nullptr) {
-        ret = (long)CallWindowProcA(old_proc, (HWND)hwnd, (UINT)msg, (WPARAM)wparam, (LPARAM)lparam);
-    }
+    long ret = (long)CallWindowProcA(old_proc, (HWND)hwnd, (UINT)msg, (WPARAM)wparam, (LPARAM)lparam);
 
     if (track_sel != 0) {
         SendMessageA((HWND)this->edit_wnd, EM_GETSEL, (WPARAM)&sel_start_after, (LPARAM)&sel_end_after);
@@ -578,7 +575,7 @@ int TEditPanel::verify_char(int param_1) {
         if (0x2f < param_1 && param_1 < 0x3a) {
             return 1;
         }
-        if (param_1 == 0x2d && this->text != nullptr && *this->text == '\0' && this->format != FormatUnsignedInt) {
+        if (param_1 == 0x2d && *this->text == '\0' && this->format != FormatUnsignedInt) {
             return 1;
         }
         if (param_1 == 0x2e) {
@@ -716,18 +713,16 @@ void TEditPanel::draw() {
 
     this->draw_setup(0);
 
-    if ((this->brush == nullptr) || (this->have_focus == 0) || (this->active == 0)) {
-        if (this->render_area != nullptr) {
-            if ((this->bevel_type < 2) || (7 < this->bevel_type)) {
-                this->draw_rect(&this->render_rect);
-            } else {
-                this->draw_rect2(&this->render_rect);
+    if (this->brush != nullptr && this->active != 0 && this->have_focus != 0) {
+        const uchar fill_color = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, (COLORREF)this->back_color);
+        this->render_area->Clear(&this->render_rect, (int)fill_color);
+    } else {
+        if (this->parent_panel != nullptr) {
+            if (2 <= this->bevel_type && this->bevel_type <= 7) {
+                this->parent_panel->draw_rect2(&this->render_rect);
+            } else if (this->parent_panel->draw_rect2_flag == 0) {
+                this->parent_panel->draw_rect(&this->render_rect);
             }
-        }
-    } else if (this->render_area != nullptr) {
-        if (this->render_area->DrawSystem != nullptr && this->render_area->DrawSystem->Pal != nullptr) {
-            const uchar fill_color = (uchar)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal, (COLORREF)this->back_color);
-            this->render_area->Clear(&this->render_rect, (int)fill_color);
         } else {
             this->render_area->Clear(&this->render_rect, (int)this->color);
         }
