@@ -6,6 +6,7 @@
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Main_View.h"
 #include "../include/RGE_Map.h"
+#include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_View.h"
@@ -21,6 +22,7 @@
 #include "../include/TRIBE_Dialog_Sed_Menu.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Main_View.h"
+#include "../include/TRIBE_Master_Building_Object.h"
 #include "../include/TRIBE_Screen_Sed_Open.h"
 #include "../include/TRIBE_World.h"
 #include "../include/debug_helpers.h"
@@ -43,6 +45,7 @@ static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned
 static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char param_2, unsigned char param_3);
 static void set_terrain(TRIBE_Screen_Sed* this_, short param_2);
 static void set_elevation(TRIBE_Screen_Sed* this_, short param_2);
+static void set_paint_object_mode(TRIBE_Screen_Sed* this_);
 
 static void init_module_variables(TRIBE_Screen_Sed* this_) {
     // Decomp transliteration. Source of truth: scr_sed2.cpp.decomp @ 0x004AF320
@@ -671,15 +674,35 @@ static int create_list(TRIBE_Screen_Sed* this_, TPanel* param_2, TListPanel** pa
 }
 
 static int FUN_004aa6e6() {
-    // Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AA6E6
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AA6E6
     if (rge_base_game == nullptr) return 0;
     rge_base_game->set_game_mode(8, rge_base_game->sub_game_mode);
     return 0;
 }
 
 static void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AA730
-    if (!this_) return;
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AA730
+    if (!this_ || !rge_base_game || !this_->world) return;
+
+    bool can_place_building = false;
+    if (rge_base_game->master_obj_id != -1 &&
+        this_->player_num >= 0 &&
+        this_->player_num < this_->world->player_num) {
+        RGE_Player* player = this_->world->players[this_->player_num];
+        if (player && player->master_objects) {
+            RGE_Master_Static_Object* master = player->master_objects[rge_base_game->master_obj_id];
+            if ((master != nullptr) && (master->master_type == 'P') &&
+                (((TRIBE_Master_Building_Object*)master)->building_connect_flag != 0)) {
+                can_place_building = true;
+            }
+        }
+    }
+
+    if (can_place_building) {
+        rge_base_game->set_game_mode(0x15, 0);
+    } else {
+        rge_base_game->set_game_mode(8, rge_base_game->sub_game_mode);
+    }
 }
 
 static int FUN_004aab4a() {
@@ -714,11 +737,12 @@ static void set_elevation(TRIBE_Screen_Sed* this_, short param_2) {
 }
 
 static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AB2D0
-    const TRIBE_Screen_Sed::List_Info* a = (const TRIBE_Screen_Sed::List_Info*)param_1;
-    const TRIBE_Screen_Sed::List_Info* b = (const TRIBE_Screen_Sed::List_Info*)param_2;
-    if (!a || !b) return 0;
-    return (int)a->id - (int)b->id;
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB2D0
+    const int cmp = CompareStringA(0x400, 1, (const char*)param_1, -1, (const char*)param_2, -1);
+    if (cmp == 1) {
+        return -1;
+    }
+    return (cmp == 3) ? 1 : 0;
 }
 
 static int FUN_004abc31() {
@@ -817,8 +841,39 @@ static void command_quick_save(TRIBE_Screen_Sed* this_) {
 }
 
 static char* scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ADB10
-    return scenario_get_default_name(this_);
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADB10
+    if (!this_ || !this_->world || !this_->world->scenario || !rge_base_game || !rge_base_game->registry) {
+        return (char*)0;
+    }
+
+    set_scenario_mode(this_, TRIBE_Screen_Sed::ScenarioModeSave);
+    ((T_Scenario*)this_->world->scenario)->Save_victory_conditions_into_players(1);
+
+    if (this_->world->scenario->active_player_count() < 1) {
+        this_->popupOKDialog(0x2742, (char*)0, 0x1c2, 100);
+        return (char*)0;
+    }
+    if (this_->world->scenario->any_player_count() < 1) {
+        this_->popupOKDialog(0x2743, (char*)0, 0x1c2, 100);
+        return (char*)0;
+    }
+
+    ((TRIBE_Game*)rge_base_game)->show_status_message(0x450, (char*)0, -1);
+    const int game_file_no = rge_base_game->registry->RegGetInt(0, (char*)"Game File Number");
+    char default_scx[260];
+    sprintf(default_scx, "default%d.scx", game_file_no);
+
+    const int save_ok = this_->world->save_scenario(default_scx);
+    ((TRIBE_Game*)rge_base_game)->close_status_message();
+    if (save_ok == 0) {
+        this_->popupOKDialog(0x963, (char*)0, 0x1c2, 100);
+        return (char*)0;
+    }
+
+    char default_name[260];
+    sprintf(default_name, "default%d", game_file_no);
+    this_->world->scenario->Set_scenario_name(default_name);
+    return this_->world->scenario->Get_scenario_name();
 }
 
 static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int is_multi_player, int param_4, int param_5, int param_6, int show_status) {
@@ -1455,8 +1510,11 @@ void TRIBE_Screen_Sed::draw() {
 }
 
 void TRIBE_Screen_Sed::set_focus(int param_1) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ADC40
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADC40
     TScreenPanel::set_focus(param_1);
+    if (rge_base_game != nullptr) {
+        rge_base_game->set_windows_mouse((this->is_multi_player != 0) ? 0 : 1);
+    }
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden above.
