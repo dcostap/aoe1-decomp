@@ -40,6 +40,12 @@
 #define CUSTOM_DEBUG_FORCE_CD_AUDIO 1
 #endif
 
+// Set to 1 to automatically capture a screenshot when the main menu appears,
+// then close the game. Useful for visual regression checks.
+#ifndef CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU
+#define CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU 1
+#endif
+
 #include <windows.h>
 #include <stdio.h>
 #include <stdarg.h>

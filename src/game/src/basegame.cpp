@@ -45,6 +45,8 @@ struct TPanelSystem;
 extern struct TPanelSystem* panel_system;
 
 static int snapshot_number = 1;
+// TODO: debug automation state for custom visual regression capture path.
+static int debug_auto_snapshot_main_menu_done = 0;
 static void* last_mouse_cursor = nullptr;
 
 static char s_ver_empty[] = "";
@@ -2695,6 +2697,21 @@ int RGE_Base_Game::handle_idle() {
         curPanel = panel_system->currentPanel();
         curPanel->handle_idle();
     }
+
+#if CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU
+    // TODO: Custom debug-only automation path. Not parity with original executable.
+    if (debug_auto_snapshot_main_menu_done == 0 && this->draw_system != nullptr &&
+        this->draw_system->DrawArea != nullptr && curPanel != nullptr &&
+        curPanel->panelNameValue != nullptr &&
+        strcmp(curPanel->panelNameValue, "Main Menu") == 0) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("AUTO_SNAPSHOT: main menu detected; capturing screenshot");
+        CUSTOM_DEBUG_END
+        this->draw_system->DrawArea->take_snapshot(s_dot_AoE_04d_bmp, &snapshot_number);
+        debug_auto_snapshot_main_menu_done = 1;
+        this->close();
+    }
+#endif
 
     // Comm handler message receiving
     if (this->comm_handler != nullptr) {
