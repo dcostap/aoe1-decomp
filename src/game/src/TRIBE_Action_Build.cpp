@@ -74,7 +74,7 @@ void TRIBE_Action_Build::save(int param_1) { RGE_Action::save(param_1); }
 // Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Build::type() { return this->action_type; }
 
-// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD2E0
+// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD2E0, tact_bld.cpp.asm @ 0x004CD2E0
 void TRIBE_Action_Build::first_in_stack(uchar param_1) {
     if (param_1 == 0) {
         this->set_state(3);
@@ -94,7 +94,7 @@ uchar TRIBE_Action_Build::inside_obj_update() { return RGE_Action::inside_obj_up
 // Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Build::idle_update() { return RGE_Action::idle_update(); }
 
-// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD310
+// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD310, tact_bld.cpp.asm @ 0x004CD310
 void TRIBE_Action_Build::set_state(uchar param_1) {
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
@@ -193,7 +193,7 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5E0
+// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5E0, tact_bld.cpp.asm @ 0x004CD5E0
 uchar TRIBE_Action_Build::update() {
     RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
 

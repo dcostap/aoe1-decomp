@@ -73,7 +73,7 @@ void TRIBE_Action_Trade::save(int param_1) {
 // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D33C0 (virtual forwarding coverage).
 short TRIBE_Action_Trade::type() { return this->action_type; }
 
-// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2830
+// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2830, tact_trd.cpp.asm @ 0x004D2830
 void TRIBE_Action_Trade::first_in_stack(uchar param_1) {
     // Attribute type sanity for this unit (matches original behavior).
     short attr_type = this->obj->attribute_type_held;
@@ -97,7 +97,7 @@ uchar TRIBE_Action_Trade::inside_obj_update() { return RGE_Action::inside_obj_up
 // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D33C0 (virtual forwarding coverage).
 uchar TRIBE_Action_Trade::idle_update() { return RGE_Action::idle_update(); }
 
-// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2880
+// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2880, tact_trd.cpp.asm @ 0x004D2880
 void TRIBE_Action_Trade::set_state(uchar param_1) {
     this->sub_actions->delete_list();
     this->state = param_1;
@@ -230,7 +230,7 @@ void TRIBE_Action_Trade::set_state(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2CB0
+// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2CB0, tact_trd.cpp.asm @ 0x004D2CB0
 uchar TRIBE_Action_Trade::update() {
     if ((this->targetID != -1) && (this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr) &&
         (this->obj->owner->world->object(this->targetID) == nullptr)) {

@@ -37,7 +37,7 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param
     }
 }
 
-// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF1C0
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF1C0, tact_hnt.cpp.asm @ 0x004CF1C0
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {
     RGE_Action::setup(param_1);
     this->task = param_2;
@@ -119,7 +119,7 @@ uchar TRIBE_Action_Hunt::inside_obj_update() { return RGE_Action::inside_obj_upd
 // Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004D0080 (virtual forwarding coverage).
 uchar TRIBE_Action_Hunt::idle_update() { return RGE_Action::idle_update(); }
 
-// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF300
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF300, tact_hnt.cpp.asm @ 0x004CF300
 void TRIBE_Action_Hunt::set_state(uchar param_1) {
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
@@ -272,7 +272,7 @@ void TRIBE_Action_Hunt::set_state(uchar param_1) {
     action->setSubAction(1);
 }
 
-// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF860
+// Fully verified. Source of truth: tact_hnt.cpp.decomp @ 0x004CF860, tact_hnt.cpp.asm @ 0x004CF860
 uchar TRIBE_Action_Hunt::update() {
     RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
 

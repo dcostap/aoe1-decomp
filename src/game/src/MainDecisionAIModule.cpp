@@ -1,4 +1,5 @@
 #include "../include/MainDecisionAIModule.h"
+#include "../include/AIModule.h"
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Player.h"
@@ -36,6 +37,16 @@ static void aimdmod_ensure_capacity(MainDecisionAIModule* self, int index) {
     ::operator delete(self->objects.value);
     self->objects.value = new_values;
     self->objects.maximumSizeValue = index + 1;
+}
+
+static int aimdmod_ftol(float value) {
+    // Fully verified. Source of truth: aimdmod.cpp.asm @ 0x0040DD49 (__ftol call).
+    int result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
 }
 }
 
@@ -392,7 +403,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int param_1, int param_2, int pa
 
 // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040DB20
 int MainDecisionAIModule::objectGroupThatCanPerformAction(int param_1) {
-    (void)param_1;
+    reinterpret_cast<AIModule*>(this)->logCommonHistory((char*)"ERROR!  %d is an unrecognized action id.", param_1);
     return -1;
 }
 
@@ -440,7 +451,9 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int param_1, int param_2) {
                 obj->hp < (float)(int)obj->master_obj->hp &&
                 obj->canRepair() == 1 &&
                 (param_2 == -1 || param_2 == obj->master_obj->id)) {
-                int damage_percent = (int)((obj->hp * 100.0f) / (float)(int)obj->master_obj->hp);
+                short max_hp = obj->master_obj->hp;
+                int damage_amount = aimdmod_ftol((float)(int)max_hp - obj->hp);
+                int damage_percent = (damage_amount * 100) / (int)max_hp;
                 if (max_damage_percent < damage_percent) {
                     max_damage_percent = damage_percent;
                     best = obj;

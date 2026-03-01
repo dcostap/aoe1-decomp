@@ -65,7 +65,7 @@ void TRIBE_Action_Artifact::save(int param_1) { RGE_Action::save(param_1); }
 // Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Artifact::type() { return this->action_type; }
 
-// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCC70
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCC70, tact_art.cpp.asm @ 0x004CCC70
 void TRIBE_Action_Artifact::first_in_stack(uchar param_1) {
     if (param_1 == 0) return;
     if (this->target_obj != nullptr) {
@@ -84,7 +84,7 @@ uchar TRIBE_Action_Artifact::inside_obj_update() { return RGE_Action::inside_obj
 // Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Artifact::idle_update() { return RGE_Action::idle_update(); }
 
-// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCCB0
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCCB0, tact_art.cpp.asm @ 0x004CCCB0
 void TRIBE_Action_Artifact::set_state(uchar param_1) {
     this->state = param_1;
     if (param_1 == 4) {
@@ -122,7 +122,7 @@ void TRIBE_Action_Artifact::set_state(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCDF0
+// Fully verified. Source of truth: tact_art.cpp.decomp @ 0x004CCDF0, tact_art.cpp.asm @ 0x004CCDF0
 uchar TRIBE_Action_Artifact::update() {
     if (this->sub_actions != nullptr) {
         uchar u = this->sub_actions->update();
