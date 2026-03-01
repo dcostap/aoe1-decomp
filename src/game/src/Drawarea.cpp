@@ -1829,9 +1829,161 @@ void TDrawArea::FillRect(long left, long top, long right, long bottom, uchar col
 }
 
 void TDrawArea::SaveBitmap(char* filename) {
-    // TODO: Wrapper API; source-of-truth bitmap I/O path is take_snapshot @ drawarea.cpp.decomp 0x004463B0.
-    int snapshot_number = 0;
-    this->take_snapshot(filename, &snapshot_number);
+    // TODO: Recovered debug capture helper (non-parity). This path is used for practical visual
+    // verification in modern windowed modes where take_snapshot's 8-bit assumptions may not hold.
+    if (filename == nullptr || this->DrawSurface == nullptr) {
+        return;
+    }
+
+    DDSURFACEDESC ddsd;
+    memset(&ddsd, 0, sizeof(ddsd));
+    ddsd.dwSize = sizeof(ddsd);
+    HRESULT hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_READONLY, NULL);
+    if (FAILED(hr)) {
+        return;
+    }
+
+    int width = (int)ddsd.dwWidth;
+    int height = (int)ddsd.dwHeight;
+    int depth = (int)ddsd.ddpfPixelFormat.dwRGBBitCount;
+    int pitch = (int)ddsd.lPitch;
+    unsigned char* bits = (unsigned char*)ddsd.lpSurface;
+
+    if (width <= 0 || height <= 0 || bits == nullptr) {
+        this->DrawSurface->Unlock(NULL);
+        return;
+    }
+
+    FILE* f = fopen(filename, "wb");
+    if (f == nullptr) {
+        this->DrawSurface->Unlock(NULL);
+        return;
+    }
+
+    int out_depth = (depth == 8) ? 8 : 24;
+    int out_row_bytes = (out_depth == 8) ? width : (width * 3);
+    int out_row_pad = (4 - (out_row_bytes % 4)) % 4;
+    unsigned int image_size = (unsigned int)((out_row_bytes + out_row_pad) * height);
+
+    BITMAPFILEHEADER bmfh;
+    BITMAPINFOHEADER bmih;
+    memset(&bmfh, 0, sizeof(bmfh));
+    memset(&bmih, 0, sizeof(bmih));
+
+    bmih.biSize = sizeof(bmih);
+    bmih.biWidth = width;
+    bmih.biHeight = -height; // top-down
+    bmih.biPlanes = 1;
+    bmih.biBitCount = (WORD)out_depth;
+    bmih.biCompression = BI_RGB;
+    bmih.biSizeImage = image_size;
+
+    int palette_size = (out_depth == 8) ? (256 * 4) : 0;
+
+    bmfh.bfType = 0x4D42;
+    bmfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + palette_size;
+    bmfh.bfSize = bmfh.bfOffBits + image_size;
+
+    fwrite(&bmfh, 1, sizeof(bmfh), f);
+    fwrite(&bmih, 1, sizeof(bmih), f);
+
+    if (out_depth == 8) {
+        tagPALETTEENTRY pal[256];
+        memset(pal, 0, sizeof(pal));
+        if (this->DrawSystem != nullptr && this->DrawSystem->DirDrawPal != nullptr) {
+            this->DrawSystem->DirDrawPal->GetEntries(0, 0, 256, pal);
+        } else if (this->DrawSystem != nullptr) {
+            memcpy(pal, this->DrawSystem->palette, sizeof(pal));
+        }
+
+        for (int i = 0; i < 256; ++i) {
+            RGBQUAD rgb;
+            rgb.rgbBlue = pal[i].peBlue;
+            rgb.rgbGreen = pal[i].peGreen;
+            rgb.rgbRed = pal[i].peRed;
+            rgb.rgbReserved = 0;
+            fwrite(&rgb, 1, sizeof(rgb), f);
+        }
+    }
+
+    static unsigned char s_zero_pad[4] = {0, 0, 0, 0};
+    if (out_depth == 8) {
+        unsigned char* row = bits;
+        for (int y = 0; y < height; ++y) {
+            fwrite(row, 1, out_row_bytes, f);
+            if (out_row_pad > 0) {
+                fwrite(s_zero_pad, 1, out_row_pad, f);
+            }
+            row = row + pitch;
+        }
+    } else {
+        unsigned long rmask = ddsd.ddpfPixelFormat.dwRBitMask;
+        unsigned long gmask = ddsd.ddpfPixelFormat.dwGBitMask;
+        unsigned long bmask = ddsd.ddpfPixelFormat.dwBBitMask;
+        if (rmask == 0 && gmask == 0 && bmask == 0) {
+            // TODO: Fallback for non-masked modes in debug capture path.
+            if (depth == 16) {
+                rmask = 0xF800;
+                gmask = 0x07E0;
+                bmask = 0x001F;
+            } else {
+                rmask = 0x00FF0000;
+                gmask = 0x0000FF00;
+                bmask = 0x000000FF;
+            }
+        }
+
+        int rshift = 0;
+        int gshift = 0;
+        int bshift = 0;
+        while (((rmask >> rshift) & 1) == 0 && rshift < 32) rshift++;
+        while (((gmask >> gshift) & 1) == 0 && gshift < 32) gshift++;
+        while (((bmask >> bshift) & 1) == 0 && bshift < 32) bshift++;
+        unsigned long rmax = (rmask != 0) ? (rmask >> rshift) : 255;
+        unsigned long gmax = (gmask != 0) ? (gmask >> gshift) : 255;
+        unsigned long bmax = (bmask != 0) ? (bmask >> bshift) : 255;
+
+        int src_bpp = depth / 8;
+        if (src_bpp <= 0) src_bpp = 1;
+        if (src_bpp > 4) src_bpp = 4;
+
+        unsigned char* row_out = (unsigned char*)malloc((size_t)out_row_bytes);
+        if (row_out == nullptr) {
+            fclose(f);
+            this->DrawSurface->Unlock(NULL);
+            return;
+        }
+
+        unsigned char* row = bits;
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                unsigned char* src = row + (x * src_bpp);
+                unsigned long px = 0;
+                memcpy(&px, src, (size_t)src_bpp);
+
+                unsigned long rv = (rmask != 0) ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF);
+                unsigned long gv = (gmask != 0) ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF);
+                unsigned long bv = (bmask != 0) ? ((px & bmask) >> bshift) : (px & 0xFF);
+
+                unsigned char r8 = (unsigned char)((rmax != 0) ? ((rv * 255u + (rmax / 2u)) / rmax) : rv);
+                unsigned char g8 = (unsigned char)((gmax != 0) ? ((gv * 255u + (gmax / 2u)) / gmax) : gv);
+                unsigned char b8 = (unsigned char)((bmax != 0) ? ((bv * 255u + (bmax / 2u)) / bmax) : bv);
+
+                row_out[x * 3 + 0] = b8;
+                row_out[x * 3 + 1] = g8;
+                row_out[x * 3 + 2] = r8;
+            }
+            fwrite(row_out, 1, out_row_bytes, f);
+            if (out_row_pad > 0) {
+                fwrite(s_zero_pad, 1, out_row_pad, f);
+            }
+            row = row + pitch;
+        }
+        free(row_out);
+    }
+
+    fclose(f);
+    this->DrawSurface->Unlock(NULL);
 }
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445A60
@@ -2314,20 +2466,101 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
             row_index = (int)((top - this->Height) + 1);
         }
 
-        uchar* row_start = this->Bits + row_index * row_step + left;
-        uchar* row_end = row_start + (right - left);
-        if (top <= bottom) {
-            int row_count = (int)((bottom - top) + 1);
-            uchar* row_ptr = row_start;
-            do {
-                for (; row_start <= row_end; ++row_start) {
-                    *row_start = this->shadow_color_table->table[*row_start];
+        // Source-of-truth behavior for 8-bit surfaces.
+        DDSURFACEDESC ddsd;
+        memset(&ddsd, 0, sizeof(ddsd));
+        ddsd.dwSize = sizeof(ddsd);
+        HRESULT sdesc_hr = DDERR_GENERIC;
+        if (this->DrawSurface) {
+            sdesc_hr = this->DrawSurface->GetSurfaceDesc(&ddsd);
+        }
+        if (sdesc_hr != DD_OK && this->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
+            ddsd = this->SurfaceDesc;
+            sdesc_hr = DD_OK;
+        }
+        unsigned long bpp = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRGBBitCount : 8;
+        int bytes_per_pixel = (int)(bpp / 8);
+        if (bytes_per_pixel <= 0) bytes_per_pixel = 1;
+        if (bytes_per_pixel > 4) bytes_per_pixel = 4;
+
+        uchar* row_start = this->Bits + row_index * row_step + left * bytes_per_pixel;
+        const int row_count = (int)((bottom - top) + 1);
+        const int pixel_count = (int)((right - left) + 1);
+
+        if (bytes_per_pixel == 1) {
+            uchar* row = row_start;
+            for (int y = 0; y < row_count; ++y) {
+                uchar* p = row;
+                for (int x = 0; x < pixel_count; ++x) {
+                    *p = this->shadow_color_table->table[*p];
+                    ++p;
                 }
-                row_start = row_ptr + row_step;
-                row_end = row_end + row_step;
-                row_ptr = row_start;
-                row_count = row_count - 1;
-            } while (row_count != 0);
+                row += row_step;
+            }
+            return;
+        }
+
+        // TODO: Compatibility fallback for non-8-bit windowed mode.
+        // Approximate by mapping pixel -> nearest palette index -> shadow table -> mapped pixel.
+        unsigned long rmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRBitMask : 0x00FF0000;
+        unsigned long gmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwGBitMask : 0x0000FF00;
+        unsigned long bmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwBBitMask : 0x000000FF;
+
+        int rshift = 0, gshift = 0, bshift = 0;
+        while (rmask && ((rmask >> rshift) & 1) == 0) rshift++;
+        while (gmask && ((gmask >> gshift) & 1) == 0) gshift++;
+        while (bmask && ((bmask >> bshift) & 1) == 0) bshift++;
+        unsigned long rmax = rmask ? (rmask >> rshift) : 0xFF;
+        unsigned long gmax = gmask ? (gmask >> gshift) : 0xFF;
+        unsigned long bmax = bmask ? (bmask >> bshift) : 0xFF;
+        const unsigned long rgb_mask = rmask | gmask | bmask;
+
+        const tagPALETTEENTRY* pal = (this->DrawSystem != nullptr) ? this->DrawSystem->palette : nullptr;
+        if (pal == nullptr) return;
+
+        uchar* row = row_start;
+        for (int y = 0; y < row_count; ++y) {
+            uchar* p = row;
+            for (int x = 0; x < pixel_count; ++x) {
+                unsigned long px = 0;
+                memcpy(&px, p, (size_t)bytes_per_pixel);
+
+                unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
+                unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
+                unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
+                int r8 = (rmax != 0) ? (int)((r * 255u + (rmax / 2u)) / rmax) : (int)r;
+                int g8 = (gmax != 0) ? (int)((g * 255u + (gmax / 2u)) / gmax) : (int)g;
+                int b8 = (bmax != 0) ? (int)((b * 255u + (bmax / 2u)) / bmax) : (int)b;
+
+                int best_idx = 0;
+                int best_dist = 0x7FFFFFFF;
+                for (int i = 0; i < 256; ++i) {
+                    const int dr = r8 - (int)pal[i].peRed;
+                    const int dg = g8 - (int)pal[i].peGreen;
+                    const int db = b8 - (int)pal[i].peBlue;
+                    const int dist = dr * dr + dg * dg + db * db;
+                    if (dist < best_dist) {
+                        best_dist = dist;
+                        best_idx = i;
+                    }
+                }
+
+                uchar mapped_idx = this->shadow_color_table->table[best_idx];
+                tagPALETTEENTRY mpe = pal[mapped_idx];
+                unsigned long mr = (rmax != 0) ? (((unsigned long)mpe.peRed * rmax + 127u) / 255u) : (unsigned long)mpe.peRed;
+                unsigned long mg = (gmax != 0) ? (((unsigned long)mpe.peGreen * gmax + 127u) / 255u) : (unsigned long)mpe.peGreen;
+                unsigned long mb = (bmax != 0) ? (((unsigned long)mpe.peBlue * bmax + 127u) / 255u) : (unsigned long)mpe.peBlue;
+
+                unsigned long mapped_px = 0;
+                if (rmask) mapped_px |= (mr << rshift) & rmask;
+                if (gmask) mapped_px |= (mg << gshift) & gmask;
+                if (bmask) mapped_px |= (mb << bshift) & bmask;
+
+                unsigned long out = (rgb_mask != 0) ? ((px & ~rgb_mask) | (mapped_px & rgb_mask)) : mapped_px;
+                memcpy(p, &out, (size_t)bytes_per_pixel);
+                p += bytes_per_pixel;
+            }
+            row += row_step;
         }
     }
 }

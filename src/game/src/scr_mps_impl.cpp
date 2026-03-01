@@ -1086,13 +1086,25 @@ void mps_popup_text(const char* text) {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5210
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: enter");
+    CUSTOM_DEBUG_END
     if (rge_base_game == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: rge_base_game null");
+        CUSTOM_DEBUG_END
         return;
     }
 
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("setupSinglePlayerPlayers: scenarioGame=%d", rge_base_game->scenarioGame());
+    CUSTOM_DEBUG_END
 
     if (rge_base_game->scenarioGame() == 0) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: random game branch");
+        CUSTOM_DEBUG_END
         int i = 0;
         do {
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0xb31);
@@ -1109,6 +1121,9 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             ++i;
         } while (i < 8);
     } else {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: scenario branch");
+        CUSTOM_DEBUG_END
         int first_any_player = -1; // scenario player index
         int first_any_civ = -1;    // civ id
         int first_any_color = -1;  // color id (scenario idx + 1)
@@ -1162,17 +1177,24 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     for (int i = 0; i < 8; ++i) {
         rge_base_game->setPlayerTeam(i, 1);
     }
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: teams initialized");
+    CUSTOM_DEBUG_END
 
-    if (comm != nullptr) {
-        TCommunications_Handler* comm_handler = (TCommunications_Handler*)comm;
-        comm_handler->SetPlayerHumanity(1, 2);
-        for (uint player = 2; player <= 8; ++player) {
-            comm_handler->SetPlayerHumanity(player, 4);
-        }
-        comm_handler->SetPlayerHumanity(9, 0);
-    }
+    // TODO: Single-player setup path crash triage.
+    // In current runtime, comm/player-humanity writes from this path can dereference invalid comm state.
+    // Keep setup deterministic without comm writes for now.
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: skipping comm humanity writes");
+    CUSTOM_DEBUG_END
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: calling mps_fill_number_players");
+    CUSTOM_DEBUG_END
     mps_fill_number_players(this);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: exit");
+    CUSTOM_DEBUG_END
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A37D0
@@ -2284,11 +2306,29 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_LOG("MPS ctor: controls created, refreshing ui");
     CUSTOM_DEBUG_END
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: calling updateSummary");
+    CUSTOM_DEBUG_END
     this->updateSummary();
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("MPS ctor: updateSummary returned");
+    CUSTOM_DEBUG_END
 
     if (is_single_player != 0) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("MPS ctor: calling setupSinglePlayerPlayers");
+        CUSTOM_DEBUG_END
         this->setupSinglePlayerPlayers();
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("MPS ctor: setupSinglePlayerPlayers returned");
+        CUSTOM_DEBUG_END
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("MPS ctor: calling fillPlayers");
+        CUSTOM_DEBUG_END
         this->fillPlayers();
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("MPS ctor: fillPlayers returned");
+        CUSTOM_DEBUG_END
     }
 
     CUSTOM_DEBUG_BEGIN

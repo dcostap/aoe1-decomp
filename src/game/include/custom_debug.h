@@ -43,7 +43,7 @@
 // Set to 1 to automatically capture a screenshot when the main menu appears,
 // then close the game. Useful for visual regression checks.
 #ifndef CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU
-#define CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU 1
+#define CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU 0
 #endif
 
 #include <windows.h>
