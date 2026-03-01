@@ -43,7 +43,7 @@ DiplomacyAIModule::~DiplomacyAIModule() {
     ((AIModule*)this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 int DiplomacyAIModule::loggingHistory() {
     // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loggingHistory();

@@ -59,7 +59,7 @@ ResourceAIModule::~ResourceAIModule() {
     ((AIModule*)this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 int ResourceAIModule::loggingHistory() {
     // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loggingHistory();

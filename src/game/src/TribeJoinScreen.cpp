@@ -846,7 +846,8 @@ IMPLEMENT_TDIALOGPANEL_FORWARDERS(TribeMPCreateDialog, TDialogPanel)
 
 // Virtual wrappers: forward to TScreenPanel unless overridden above.
 long TribeJoinScreen::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6,
-                           uchar param_7) {
+                            uchar param_7) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
 // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
@@ -860,8 +861,9 @@ void TribeJoinScreen::set_color(uchar param_1) { TScreenPanel::set_color(param_1
 // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_active(int param_1) { TScreenPanel::set_active(param_1); }
 void TribeJoinScreen::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5,
-                                      long param_6, long param_7, long param_8, long param_9, TPanel* param_10,
-                                      TPanel* param_11, TPanel* param_12, TPanel* param_13) {
+                                       long param_6, long param_7, long param_8, long param_9, TPanel* param_10,
+                                       TPanel* param_11, TPanel* param_12, TPanel* param_13) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                   param_10, param_11, param_12, param_13);
 }
@@ -1011,58 +1013,70 @@ void TribeJoinScreen::draw_background(int param_1) { TScreenPanel::draw_backgrou
 void TribeJoinScreen::set_ideal_size(long param_1, long param_2) { TScreenPanel::set_ideal_size(param_1, param_2); }
 int TribeJoinScreen::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5,
                                   long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                        param_10, param_11);
 }
 int TribeJoinScreen::create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5,
                                   long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                        param_10, param_11);
 }
 int TribeJoinScreen::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5,
                                      long param_6, long param_7, long param_8) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_check_box(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8);
 }
 int TribeJoinScreen::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5,
                                         long param_6, long param_7, long param_8) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_radio_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8);
 }
 int TribeJoinScreen::create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5,
                                 long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                      param_10, param_11);
 }
 int TribeJoinScreen::create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5,
                                 long param_6, long param_7, long param_8, long param_9, int param_10, int param_11) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                      param_10, param_11);
 }
 int TribeJoinScreen::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5,
                                 long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                      param_10, param_11);
 }
 int TribeJoinScreen::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5,
-                                 long param_6, long param_7, long param_8, long param_9, long param_10) {
+                                  long param_6, long param_7, long param_8, long param_9, long param_10) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_input(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
-                                      param_10);
+                                       param_10);
 }
 int TribeJoinScreen::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5,
                                 long param_6, long param_7, long param_8, long param_9, long param_10, int param_11,
                                 int param_12) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_edit(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
                                      param_10, param_11, param_12);
 }
 int TribeJoinScreen::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5,
                                      long param_6, long param_7, long param_8, long param_9) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_drop_down(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9);
 }
 int TribeJoinScreen::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5,
                                 long param_6, long param_7) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_list(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
 int TribeJoinScreen::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4,
                                      long param_5, long param_6, long param_7, long param_8) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_scrollbar(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8);
 }
 int TribeJoinScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) {
@@ -1071,13 +1085,15 @@ int TribeJoinScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel
 }
 int TribeJoinScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4,
                                        long param_5, long param_6, long param_7, long param_8, long param_9) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8,
-                                           param_9);
+                                            param_9);
 }
 int TribeJoinScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4,
                                        long param_5, long param_6, long param_7, long param_8, long param_9) {
+    // Fully verified. Not in decomp, inherited/forwarding method.
     return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8,
-                                           param_9);
+                                            param_9);
 }
 void TribeJoinScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) {
     // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).

@@ -79,6 +79,7 @@ extern float save_game_version;
 extern unsigned long* unified_map_offsets[256];
 extern unsigned char die_die_die;
 extern int allow_user_commands;
+extern unsigned char production_queues_is_use;
 extern int world_update_counter;
 extern RGE_Static_Object** VIS_UNIT_objectsValue;
 extern Visible_Unit_Manager* VisibleUnitManager;

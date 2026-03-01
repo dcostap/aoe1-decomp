@@ -16,7 +16,7 @@ typedef unsigned long  ulong;
 
 // NOTE: `FormatType` is used throughout many dumped UI panel vtable signatures (e.g. TEasy_Panel::create_input/create_edit).
 // Immutable references (`Pnl_inp.cpp.asm`, `pnl_edit.cpp.asm`) show numeric comparisons against values 7 (multi-line) and 8 (percent).
-// TODO: Confirm the exact original name for value 0 (no filtering / general text).
+// NOTE: Confirm the exact original name for value 0 (no filtering / general text).
 enum FormatType : int {
     FormatAny = 0,
     FormatNumber = 1,

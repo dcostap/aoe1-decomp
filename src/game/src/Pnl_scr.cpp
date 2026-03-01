@@ -2,11 +2,10 @@
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
 
+void RGE_fade_palette(TDrawArea*, tagPALETTEENTRY, float, uchar, tagPALETTEENTRY*, int, int);
+
 namespace {
 TScreenPanel* last_screen = nullptr;
-
-// TODO: STUB - color.cpp.decomp parity dependency is not transliterated in this task.
-static void RGE_fade_palette_stub(TDrawArea*, tagPALETTEENTRY, float, uchar, tagPALETTEENTRY*, int, int) {}
 }
 
 TScreenPanel::TScreenPanel() : TEasy_Panel() {
@@ -158,7 +157,7 @@ void TScreenPanel::set_focus(int param_1) {
             GetPaletteEntries((HPALETTE)this->palette, 0, 0x100, color_table + 1);
         }
 
-        RGE_fade_palette_stub(draw_area, save_focus, 0.13f, 1, nullptr, -1, -1);
+        RGE_fade_palette(draw_area, save_focus, 0.13f, 1, nullptr, -1, -1);
         draw_area->Clear(nullptr, 0);
         draw_area->DrawSystem->Paint(nullptr);
     }
@@ -168,11 +167,11 @@ void TScreenPanel::set_focus(int param_1) {
     draw_area = this->render_area;
     if (draw_area != nullptr && draw_area->DrawSystem != nullptr && param_1 != 0 && change_screen &&
         (draw_area->DrawSystem->ScreenMode == 2 || draw_area->DrawSystem->DrawType == 1)) {
-        RGE_fade_palette_stub(draw_area, save_focus, 0.0f, 2, color_table + 1, -1, -1);
+        RGE_fade_palette(draw_area, save_focus, 0.0f, 2, color_table + 1, -1, -1);
         this->handle_paint();
-        RGE_fade_palette_stub(draw_area, save_focus, 0.0f, 1, nullptr, -1, -1);
+        RGE_fade_palette(draw_area, save_focus, 0.0f, 1, nullptr, -1, -1);
         draw_area->DrawSystem->Paint(nullptr);
-        RGE_fade_palette_stub(draw_area, save_focus, 0.13f, 2, color_table + 1, -1, -1);
+        RGE_fade_palette(draw_area, save_focus, 0.13f, 2, color_table + 1, -1, -1);
     }
 
     if (param_1 != old_focus && this->overlapping_children != 0) {

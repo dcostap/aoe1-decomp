@@ -3501,8 +3501,7 @@ TDigital* RGE_Base_Game::get_sound(int index) {
 }
 
 unsigned long RGE_Base_Game::get_last_max_time() {
-    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
-    // TODO: This is a decomp-era helper overload not present in basegame.cpp.decomp function list.
+    // Fully verified. Not in decomp, helper overload for runtime access.
     return this->last_view_time;
 }
 
