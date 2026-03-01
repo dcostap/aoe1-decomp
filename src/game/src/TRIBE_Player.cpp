@@ -66,7 +66,7 @@ public:
 
 static int player_difficulty(TRIBE_Player* player) {
     (void)player;
-    return (int)rge_base_game->rge_game_options.difficultyValue;
+    return rge_base_game->difficulty();
 }
 
 // Fully verified. Source of truth: tplayer.cpp.decomp references globals at 0x00516BB2 / 0x00516BC2.
@@ -2334,7 +2334,7 @@ int TRIBE_Player::intelligentCivSelection(int param_1, int param_2, int param_3)
     return 0;
 }
 
-// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00515E00
+// Fully verified. Source of truth: tplayer.cpp.decomp + tplayer.cpp.asm @ 0x00515E00
 void TRIBE_Player::intelligentBuildListAndRulesSelection(char* build_list_name, char* rule_set_name, int map_type, int victory_type, int map_size) {
     if (this->playerAI == nullptr) {
         return;
@@ -2971,13 +2971,14 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* build_list_name, 
         strategy_ai->setRule(0x8a, wood);
         strategy_ai->setRule(0x8b, food);
         strategy_ai->setRule(0x8c, gold);
+        iVar5 = iVar11;
         strategy_ai->setRule(0x8d, stone);
     }
 
     strategy_ai->setRule(0xa8, 0);
     strategy_ai->setRule(0xa2, 0);
 
-    if (iVar11 < 3) {
+    if (iVar5 < 3) {
         strategy_ai->setRule(0xc2, 1);
         iVar10 = 2;
     } else {
@@ -2986,21 +2987,21 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* build_list_name, 
     }
     strategy_ai->setRule(0x2f, iVar10);
 
-    if (iVar11 == 0) {
+    if (iVar5 == 0) {
         strategy_ai->setRule(0xba, 0xb4);
-        iVar11 = 200;
-    } else if (iVar11 == 1) {
+        iVar5 = 200;
+    } else if (iVar5 == 1) {
         strategy_ai->setRule(0xba, 0xb4);
-        iVar11 = 0x96;
-    } else if (iVar11 == 2) {
+        iVar5 = 0x96;
+    } else if (iVar5 == 2) {
         strategy_ai->setRule(0xba, 0xb4);
-        iVar11 = 100;
-    } else if (iVar11 == 3) {
+        iVar5 = 100;
+    } else if (iVar5 == 3) {
         strategy_ai->setRule(0xba, 0xb4);
-        iVar11 = 0x32;
+        iVar5 = 0x32;
     }
-    if (iVar11 == 200 || iVar11 == 0x96 || iVar11 == 100 || iVar11 == 0x32) {
-        strategy_ai->setRule(0xba, iVar11);
+    if (iVar5 == 200 || iVar5 == 0x96 || iVar5 == 100 || iVar5 == 0x32) {
+        strategy_ai->setRule(0xba, iVar5);
     }
 
     iVar5 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tplayer.cpp", 0xf50);
