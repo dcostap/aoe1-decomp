@@ -2291,7 +2291,7 @@ void RGE_Game_World::update_mutual_allies() {
 }
 
 int RGE_Game_World::initializePathingSystem() {
-// Fully verified. Source of truth: world.cpp.decomp @ 0x00546030
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00546030 (audited vs world.cpp.asm).
     RGE_Map* map_ptr = this->map;
     if (map_ptr == nullptr) {
         return 0;
@@ -2332,13 +2332,13 @@ int RGE_Game_World::numberNegativeObjects() {
 }
 
 RGE_Static_Object* RGE_Game_World::object(int param_1) {
-// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D30
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D30 (audited vs world.cpp.asm).
     if (param_1 < 0) {
         int neg_idx = -param_1;
-        if (neg_idx < this->maxNumberNegativeObjectsValue && this->negativeObjectsValue != nullptr) {
+        if (neg_idx < this->maxNumberNegativeObjectsValue) {
             return this->negativeObjectsValue[neg_idx];
         }
-    } else if (param_1 < this->maxNumberObjectsValue && this->objectsValue != nullptr) {
+    } else if (param_1 < this->maxNumberObjectsValue) {
         return this->objectsValue[param_1];
     }
 
@@ -2346,12 +2346,12 @@ RGE_Static_Object* RGE_Game_World::object(int param_1) {
 }
 
 RGE_Static_Object* RGE_Game_World::object_ptr(int param_1) {
-// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D80
+// Fully verified. Source of truth: world.cpp.decomp @ 0x00545D80 (audited vs world.cpp.asm).
     return this->object(param_1);
 }
 
 int RGE_Game_World::objectGroupOnTile(int playerId, int objectGroup, int tileX, int tileY, int& objectCountOnTile) {
-    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545C00
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545C00 (audited vs world.cpp.asm).
     if (tileX < 0 || tileY < 0 || this->map->map_width <= tileX || this->map->map_height <= tileY) {
         objectCountOnTile = 0;
         return -1;
@@ -2376,7 +2376,7 @@ int RGE_Game_World::objectGroupOnTile(int playerId, int objectGroup, int tileX, 
 }
 
 long RGE_Game_World::get_next_object_id() {
-    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545D90
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545D90 (audited vs world.cpp.asm).
     if (this->scenario_object_flag != 0) {
         return this->scenario_object_id;
     }
@@ -2399,7 +2399,7 @@ long RGE_Game_World::get_next_object_id() {
 }
 
 long RGE_Game_World::get_next_reusable_object_id() {
-    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545DD0
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545DD0 (audited vs world.cpp.asm).
     long id = 0;
     if (this->scenario_object_flag == 0) {
         id = this->next_reusable_object_id;
@@ -2522,17 +2522,14 @@ void RGE_Game_World::scenario_init(int param_1, RGE_Game_World* param_2) {
 
 // Object management virtuals
 int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545E00
-    if (param_1 == nullptr) {
-        return 0;
-    }
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545E00 (audited vs world.cpp.asm).
 
     int object_id = (int)param_1->id;
     if (object_id < 0) {
         int idx = -object_id;
         if (idx >= this->maxNumberNegativeObjectsValue) {
             int new_max = this->maxNumberNegativeObjectsValue * 2;
-            if (new_max <= idx) {
+            if (new_max < idx) {
                 new_max = idx + 1;
             }
             if (new_max < 1) {
@@ -2566,7 +2563,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
 
     if (object_id >= this->maxNumberObjectsValue) {
         int new_max = this->maxNumberObjectsValue * 2;
-        if (new_max <= object_id) {
+        if (new_max < object_id) {
             new_max = object_id + 1;
         }
         if (new_max < 1) {
@@ -2608,17 +2605,17 @@ int RGE_Game_World::addObject(RGE_Static_Object* param_1) {
 }
 
 int RGE_Game_World::removeObject(int param_1) {
-    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545FD0
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00545FD0 (audited vs world.cpp.asm).
     if (param_1 < 0) {
         int idx = -param_1;
-        if (idx < this->maxNumberNegativeObjectsValue && this->negativeObjectsValue != nullptr) {
+        if (idx < this->maxNumberNegativeObjectsValue) {
             this->negativeObjectsValue[idx] = nullptr;
             return 1;
         }
         return 0;
     }
 
-    if (param_1 < this->maxNumberObjectsValue && this->objectsValue != nullptr) {
+    if (param_1 < this->maxNumberObjectsValue) {
         this->objectsValue[param_1] = nullptr;
         return 1;
     }

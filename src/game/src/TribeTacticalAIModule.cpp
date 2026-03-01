@@ -224,7 +224,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     this->attackStateValue.active = 0;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004ED4F0
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x004ED4F0
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
     : TribeTacticalAIModule(nullptr, param_1) {
     struct OldUnitData16 {
@@ -580,7 +580,7 @@ void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* param_1
     this->md = param_1;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EF4E0
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x004EF4E0
 int TribeTacticalAIModule::save(int param_1) {
     writeManagedArray(param_1, this->civilians);
     writeManagedArray(param_1, this->civilianExplorers);
@@ -3439,7 +3439,7 @@ void TribeTacticalAIModule::enableAttack(int param_1) {
     }
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500260
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500260
 TacticalAIGroup* TribeTacticalAIModule::createGroup(int param_1) {
     TacticalAIGroup* newGroup = new(std::nothrow) TacticalAIGroup();
     if (newGroup == nullptr) {
@@ -3458,7 +3458,7 @@ TacticalAIGroup* TribeTacticalAIModule::createGroup(int param_1) {
     return newGroup;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500320
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500320
 int TribeTacticalAIModule::removeGroup(int param_1) {
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
@@ -3479,7 +3479,7 @@ int TribeTacticalAIModule::removeGroup(int param_1) {
     return 0;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005003A0
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005003A0
 int TribeTacticalAIModule::removeAllGroups(int param_1) {
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
@@ -3501,7 +3501,7 @@ int TribeTacticalAIModule::removeAllGroups(int param_1) {
     return 1;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500420
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500420
 TacticalAIGroup* TribeTacticalAIModule::group(int param_1, int param_2, int param_3, int param_4) {
     TacticalAIGroup* current = this->groups.next;
     if (current != &this->groups) {
@@ -4577,65 +4577,91 @@ void TribeTacticalAIModule::displayBoatGroups() {
     }
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005004C0
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005004C0
 TacticalAIGroup* TribeTacticalAIModule::bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5) {
-    (void)param_5;
+    TacticalAIGroup* current = this->groups.next;
     TacticalAIGroup* best = nullptr;
-    long bestScore = 0;
+    int bestDistance = -1;
 
-    for (TacticalAIGroup* current = this->groups.next;
-         (current != nullptr) && (current != &this->groups);
-         current = current->next) {
-        if ((param_1 >= 0) && (current->type() != param_1)) {
-            continue;
-        }
-        if ((param_2 >= 0) && (current->subType() != param_2)) {
-            continue;
-        }
-        if ((param_3 >= 0) && (current->action() != param_3)) {
-            continue;
-        }
-
-        long score = static_cast<long>(current->priority()) * 1000 + current->numberUnits();
-        if (param_4 != nullptr) {
-            Waypoint* loc = current->location();
-            const long dx = static_cast<long>(loc->x) - param_4->x;
-            const long dy = static_cast<long>(loc->y) - param_4->y;
-            score -= (dx * dx + dy * dy);
-        }
-
-        if ((best == nullptr) || (score > bestScore)) {
-            best = current;
-            bestScore = score;
-        }
+    if (current != &this->groups) {
+        do {
+            if (current == nullptr) {
+                return best;
+            }
+            if (((param_1 == -1) || (current->type() == param_1)) &&
+                ((param_2 == -1) || (current->action() == param_2))) {
+                int allowCandidate = 1;
+                if (param_1 == 0x6A) {
+                    TacticalAIGroup* assistCheck = this->groups.next;
+                    if (assistCheck != &this->groups) {
+                        while (assistCheck != nullptr) {
+                            if (allowCandidate == 0) {
+                                break;
+                            }
+                            if (assistCheck->assistGroupID() == current->id()) {
+                                allowCandidate = 0;
+                            }
+                            assistCheck = assistCheck->next;
+                            if (assistCheck == &this->groups) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if ((allowCandidate != 0) && (param_5 != -1)) {
+                    RGE_Static_Object* commanderObj = this->md->object(current->commander());
+                    if ((commanderObj == nullptr) ||
+                        (static_cast<unsigned int>(commanderObj->currentZone()) != static_cast<unsigned int>(param_5))) {
+                        allowCandidate = 0;
+                    }
+                }
+                if (allowCandidate != 0) {
+                    Waypoint* gather = current->gatherLocation();
+                    const int dy = param_4->y - static_cast<int>(gather->y);
+                    const int dx = param_4->x - static_cast<int>(gather->x);
+                    const int distance = static_cast<int>(std::sqrt(static_cast<double>(dx * dx + dy * dy)));
+                    if (((distance < param_3) && (bestDistance == -1)) ||
+                        ((param_3 == -1) || (distance < bestDistance))) {
+                        best = current;
+                        bestDistance = distance;
+                    }
+                }
+            }
+            current = current->next;
+        } while (current != &this->groups);
     }
-
     return best;
 }
 
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00500670
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00500670
 TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3) {
-    for (TacticalAIGroup* current = this->groups.next;
-         (current != nullptr) && (current != &this->groups);
-         current = current->next) {
-        if ((param_1 >= 0) && (current->type() != param_1)) {
-            continue;
-        }
-        if ((param_2 >= 0) && (current->subType() != param_2)) {
-            continue;
-        }
-        if (current->allUnitsIdle(this->md, 0) == 0) {
-            continue;
-        }
-        if (param_3 != nullptr) {
-            Waypoint* loc = current->location();
-            if ((static_cast<int>(loc->x) != param_3->x) || (static_cast<int>(loc->y) != param_3->y)) {
-                continue;
+    TacticalAIGroup* current = this->groups.next;
+    TacticalAIGroup* best = nullptr;
+    int bestDistance = -1;
+    if (current != &this->groups) {
+        do {
+            if (current == nullptr) {
+                return best;
             }
-        }
-        return current;
+            if ((param_1 == -1) || (current->type() == param_1)) {
+                const int desiredUnits = current->desiredNumberUnits();
+                if ((desiredUnits <= current->numberUnits()) &&
+                    (current->isGathered(this, this->md) != 0) &&
+                    (current->allUnitsIdle(this->md, 1) != 0)) {
+                    Waypoint* gather = current->gatherLocation();
+                    const int dy = param_3->y - static_cast<int>(gather->y);
+                    const int dx = param_3->x - static_cast<int>(gather->x);
+                    const int distance = static_cast<int>(std::sqrt(static_cast<double>(dx * dx + dy * dy)));
+                    if (((distance < param_2) && (bestDistance == -1)) || (distance < bestDistance)) {
+                        best = current;
+                        bestDistance = distance;
+                    }
+                }
+            }
+            current = current->next;
+        } while (current != &this->groups);
     }
-    return nullptr;
+    return best;
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005008F0
