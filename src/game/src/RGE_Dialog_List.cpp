@@ -53,6 +53,8 @@ RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047E670
 }
 
+// Fully verified. Source of truth: RGE_Dialog_List.decomp @ 0x0047E690 (compiler scalar-deleting-destructor thunk)
+
 int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file, long popup_id, int list_type, char* title) {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047E6B0
     this->list_type = list_type;
@@ -128,7 +130,7 @@ int RGE_Dialog_List::create_list() {
         return 0;
     }
 
-    // create_object_list (rdlg_lst.cpp.decomp @ 0x0047E910)
+    // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047E910 (create_object_list body inlined here)
     RGE_Player* player = rge_base_game->get_player();
     if (player == nullptr) {
         return 0;
