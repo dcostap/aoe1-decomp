@@ -294,6 +294,7 @@ TRIBE_World::TRIBE_World() : RGE_Game_World() {
     }
 }
 
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_world(FILE* param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E350
     RGE_Game_World::data_load_world(param_1);
@@ -312,12 +313,19 @@ uchar TRIBE_World::data_load_world(FILE* param_1) {
 
     return 1;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_terrain_tables(char* param_1) { return RGE_Game_World::data_load_terrain_tables(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_players(char* param_1) { return RGE_Game_World::data_load_players(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_objects(char* param_1) { return RGE_Game_World::data_load_objects(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_sounds(char* param_1) { return RGE_Game_World::data_load_sounds(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_color_tables(char* param_1) { return RGE_Game_World::data_load_color_tables(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load_sprites(char* param_1) { return RGE_Game_World::data_load_sprites(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::data_load_players_type(short param_1, short param_2, FILE* param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E220
     // If param_2 == 1, create a TRIBE_Master_Player from file; otherwise delegate to base.
@@ -328,7 +336,9 @@ void TRIBE_World::data_load_players_type(short param_1, short param_2, FILE* par
     TRIBE_Master_Player* mp = new TRIBE_Master_Player(param_3);
     this->master_players[param_1] = (RGE_Master_Player*)mp;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::data_load_effects(char* param_1) { RGE_Game_World::data_load_effects(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::data_load_map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8, char* param_9) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E2B0
     // Creates a TRIBE_Map from terrain data files, then loads terrain object types.
@@ -337,7 +347,9 @@ void TRIBE_World::data_load_map(char* param_1, char* param_2, char* param_3, cha
         this->map->load_terrain_obj_types(param_9);
     }
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::data_load_random_map(char* param_1, char* param_2, char* param_3, char* param_4) { RGE_Game_World::data_load_random_map(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::init_player_type(int param_1, short param_2, uchar param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E400
     // If param_3 == 1, create a TRIBE_Master_Player; otherwise delegate to base.
@@ -350,7 +362,9 @@ uchar TRIBE_World::init_player_type(int param_1, short param_2, uchar param_3) {
     mp->finish_init(param_1, this->sprites, this->sounds);
     return 1;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::init_player(int param_1) { return RGE_Game_World::init_player(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_player(int param_1, uchar param_2, short param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E830
     if (param_2 == 1 || param_2 == 3) {
@@ -367,27 +381,36 @@ void TRIBE_World::load_player(int param_1, uchar param_2, short param_3) {
         RGE_Game_World::load_player(param_1, param_2, param_3);
     }
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::color_table_init(int param_1) { RGE_Game_World::color_table_init(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::terrain_tables_init(int param_1) { RGE_Game_World::terrain_tables_init(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::init_sounds(int param_1, TSound_Driver* param_2) { RGE_Game_World::init_sounds(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::init_sprites(int param_1) { RGE_Game_World::init_sprites(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E4C0
     (void)param_2;
     TRIBE_Map* created_map = new (std::nothrow) TRIBE_Map(param_1, this->sounds, (char)1);
     this->map = created_map;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::effects_init(int param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E650
     this->effects = new TRIBE_Effects(param_1);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::master_player_init(int param_1) {
     RGE_Game_World::master_player_init(param_1);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::command_init(int param_1, TCommunications_Handler* param_2) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E530
     this->commands = new TRIBE_Command(this, param_2);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E6B0
     // Calls base world_init, then creates TRIBE_Tech with (param_1, this).
@@ -405,6 +428,7 @@ void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunication
     this->countdown_clock = 0.0f;
     this->score_displayed = 0;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::setup_gaia() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E920
     // Creates a TRIBE_Gaia player (player 0) using master_players[0].
@@ -412,6 +436,7 @@ void TRIBE_World::setup_gaia() {
     TRIBE_Gaia* gaia = new TRIBE_Gaia(this, mp, '\0', "GAIA", '\0');
     this->players[0] = (RGE_Player*)gaia;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E990
     // Creates TRIBE_Player objects for each player slot (1..player_num-1).
@@ -439,6 +464,7 @@ void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
     }
 }
 
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::check_destructables(short param_1, short param_2, float param_3, float param_4, uchar param_5) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052EAC0
     if (this->players == nullptr || this->map == nullptr || this->map->map_row_offset == nullptr) {
@@ -517,6 +543,7 @@ void TRIBE_World::check_destructables(short param_1, short param_2, float param_
     }
 }
 
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 long TRIBE_World::get_achievement(uchar param_1, char** param_2) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530A70
     int i = 1;
@@ -844,6 +871,7 @@ void TRIBE_World::cheat(short param_1, short param_2) {
     }
 }
 
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::send_zone_score_info() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00531350
     if (this->sent_zone_score != 0) {
@@ -973,6 +1001,7 @@ void TRIBE_World::send_zone_score_info() {
     }
 }
 
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
     // Source of truth:
     // - tworld.cpp.decomp / tworld.cpp.asm contain no dedicated TRIBE_World::new_random_game body.
@@ -980,6 +1009,7 @@ uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
     // Treat TRIBE path as inherited base behavior until a TRIBE-specific body is recovered.
     return RGE_Game_World::new_random_game(param_1);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::save(int param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E790
     RGE_Game_World::save(param_1);
@@ -991,6 +1021,7 @@ void TRIBE_World::save(int param_1) {
     rge_write(param_1, &this->score_displayed, 1);
     rge_write(param_1, &this->controllingComputerPlayer, 1);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::scenario_make_player(short param_1, uchar param_2, uchar param_3, uchar param_4, char* param_5) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052ECF0
     // param_1 = player index, param_2 = civilization/master_player index
@@ -1005,17 +1036,29 @@ void TRIBE_World::scenario_make_player(short param_1, uchar param_2, uchar param
     }
     this->players[param_1] = (RGE_Player*)player;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::scenario_make_map(int param_1) { RGE_Game_World::scenario_make_map(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::load_scenario(RGE_Player_Info* param_1) { return RGE_Game_World::load_scenario(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::load_scenario(char* param_1, RGE_Player_Info* param_2) { return RGE_Game_World::load_scenario(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario1(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario1(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario2(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario2(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario3(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario3(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario4(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario4(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario5(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario5(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario6(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario6(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario7(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario7(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::load_scenario8(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario8(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::logStatus(FILE* param_1, int param_2) {
     // Fully verified. Source of truth: tworld.cpp.asm @ 0x0052E0B0
     if (param_1 != nullptr && param_2 == 1) {
@@ -1052,24 +1095,35 @@ void TRIBE_World::logStatus(FILE* param_1, int param_2) {
         fprintf(param_1, "Victory Condition:       %s\n", buf);
     }
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 TRIBE_World::~TRIBE_World() {
+    // Fully verified. Source of truth: TRIBE_World.decomp @ 0x0052E020 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E040
     if (this->tech) {
         delete this->tech;
         this->tech = nullptr;
     }
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::setup_player_colors() { RGE_Game_World::setup_player_colors(); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::setup_player_colors(RGE_Player_Info* param_1) { RGE_Game_World::setup_player_colors(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::data_load(char* param_1, char* param_2) { return RGE_Game_World::data_load(param_1, param_2); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E750
     return RGE_Game_World::init(param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::turn_sound_off() { RGE_Game_World::turn_sound_off(); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::del_game_info() { RGE_Game_World::del_game_info(); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::update() { return RGE_Game_World::update(); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::get_game_state() { return RGE_Game_World::get_game_state(); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::check_game_state() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005303F0
     // (ASM-audited: tworld.cpp.asm @ 0x005303F0)
@@ -1306,6 +1360,7 @@ uchar TRIBE_World::check_game_state() {
 
     return RGE_Game_World::check_game_state();
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::load_world(int param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052EDF0
     uchar result = RGE_Game_World::load_world(param_1);
@@ -1348,7 +1403,9 @@ uchar TRIBE_World::load_world(int param_1) {
 
     return 1;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::load_game(char* param_1) { return RGE_Game_World::load_game(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052EF30
     CUSTOM_DEBUG_LOG("TRIBE_World::new_game enter");
@@ -1711,6 +1768,7 @@ void FUN_005316bd() {
     // Switch jump-table padding thunk (`nop; mov edi, edi`).
 }
 
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x00530370
     uchar result = RGE_Game_World::new_scenario(param_1, param_2);
@@ -1727,8 +1785,11 @@ uchar TRIBE_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
     }
     return result;
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::save_game(char* param_1) { return RGE_Game_World::save_game(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::base_save(char* param_1) { RGE_Game_World::base_save(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::base_save(int param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E770
     RGE_Game_World::base_save(param_1);
@@ -1736,16 +1797,22 @@ void TRIBE_World::base_save(int param_1) {
         this->tech->save(param_1);
     }
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::save_scenario(char* param_1) { return RGE_Game_World::save_scenario(param_1); }
 RGE_Scenario* TRIBE_World::get_scenario_info(char* param_1) { return RGE_Game_World::get_scenario_info(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::pause(uchar param_1) { RGE_Game_World::pause(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::scenario_init(RGE_Game_World* param_1) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E5F0
     this->scenario = new T_Scenario(param_1);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E590
     this->scenario = new T_Scenario(param_1, param_2);
 }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 int TRIBE_World::addObject(RGE_Static_Object* param_1) { return RGE_Game_World::addObject(param_1); }
+// Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 int TRIBE_World::removeObject(int param_1) { return RGE_Game_World::removeObject(param_1); }
