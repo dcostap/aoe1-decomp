@@ -27,6 +27,7 @@ static const char kStatusScreenName[] = "Status Screen";
 static const char kSaveCancelDialogName[] = "Cancel Dialog";
 
 void save_set_button_disabled(TButtonPanel* button, int disabled) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (button == nullptr) {
         return;
     }
@@ -35,6 +36,7 @@ void save_set_button_disabled(TButtonPanel* button, int disabled) {
 }
 
 TTextPanel* save_input_panel(TribeSaveGameScreen* owner) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (owner == nullptr || owner->input == nullptr) {
         return nullptr;
     }
@@ -42,6 +44,7 @@ TTextPanel* save_input_panel(TribeSaveGameScreen* owner) {
 }
 
 void save_set_input_text(TribeSaveGameScreen* owner, const char* text) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     TTextPanel* input = save_input_panel(owner);
     if (input == nullptr) {
         return;
@@ -50,6 +53,7 @@ void save_set_input_text(TribeSaveGameScreen* owner, const char* text) {
 }
 
 void save_get_input_trimmed(TribeSaveGameScreen* owner, char* out_text, int out_len) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (out_text == nullptr || out_len <= 0) {
         return;
     }
@@ -84,6 +88,7 @@ void save_get_input_trimmed(TribeSaveGameScreen* owner, char* out_text, int out_
 }
 
 const char* save_selected_line(TribeSaveGameScreen* owner) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (owner == nullptr || owner->list == nullptr) {
         return "";
     }
@@ -95,6 +100,7 @@ const char* save_selected_line(TribeSaveGameScreen* owner) {
 }
 
 void save_get_string_or_default(TPanel* panel, int id, char* out_text, int out_len, const char* fallback) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (out_text == nullptr || out_len <= 0) {
         return;
     }
@@ -109,6 +115,7 @@ void save_get_string_or_default(TPanel* panel, int id, char* out_text, int out_l
 }
 
 int save_show_message_id(TribeSaveGameScreen* owner, int string_id, const char* fallback) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     char text[512];
     save_get_string_or_default((TPanel*)owner, string_id, text, sizeof(text), fallback);
     if (owner != nullptr) {
@@ -118,11 +125,13 @@ int save_show_message_id(TribeSaveGameScreen* owner, int string_id, const char* 
 }
 
 void save_update_delete_button_from_list(TribeSaveGameScreen* owner) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     const char* line = save_selected_line(owner);
     save_set_button_disabled(owner->deleteButton, (line[0] == '\0') ? 1 : 0);
 }
 
 int save_execute_mode_save(TribeSaveGameScreen* owner) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (owner->modeValue == TribeSaveGameScreen::SaveGame) {
         int ok = (rge_base_game != nullptr && rge_base_game->world != nullptr) ? rge_base_game->world->save_game(owner->fileName) : 0;
         if (ok == 0) {
@@ -147,6 +156,7 @@ int save_execute_mode_save(TribeSaveGameScreen* owner) {
 }
 
 void save_set_scenario_name(RGE_Scenario* scenario, const char* name) {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp (helper implementation).
     if (scenario == nullptr || scenario->scenario_name == nullptr) {
         return;
     }

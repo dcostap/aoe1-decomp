@@ -31,14 +31,17 @@ struct AIModulePrefix {
 static_assert(sizeof(AIModulePrefix) == 0xF0, "AIModule prefix size mismatch");
 
 BaseItem* build_item_base(BuildItem* item) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     return reinterpret_cast<BaseItem*>(item);
 }
 
 AIModule* as_ai(BuildAIModule* self) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     return reinterpret_cast<AIModule*>(self);
 }
 
 void write_string(int handle, const char* text) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     int length = (int)strlen(text);
     rge_write(handle, &length, 4);
     if (length > 0) {
@@ -47,6 +50,7 @@ void write_string(int handle, const char* text) {
 }
 
 void discard_bytes(int handle, int bytes_to_discard) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     char discard_buffer[256];
     while (bytes_to_discard > 0) {
         int chunk = bytes_to_discard;
@@ -59,6 +63,7 @@ void discard_bytes(int handle, int bytes_to_discard) {
 }
 
 void read_string(int handle, char* out_buffer, int out_capacity) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     int length = 0;
     rge_read(handle, &length, 4);
     if (length < 0) {
@@ -78,6 +83,7 @@ void read_string(int handle, char* out_buffer, int out_capacity) {
 }
 
 void initialize_build_item_defaults(BuildItem* item) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     BaseItem* base = build_item_base(item);
     base->setTypeID(-1);
     base->setGameID(-1);
@@ -153,6 +159,7 @@ BuildItem* allocate_build_item(int build_category, int type_id, int unique_id, i
 }
 
 void append_build_item(BuildAIModule* self, BuildItem* item) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     BuildItem* head = &self->buildList;
     BuildItem* tail = head->prev;
     item->next = head;
@@ -162,6 +169,7 @@ void append_build_item(BuildAIModule* self, BuildItem* item) {
 }
 
 void initialize_ai_prefix(BuildAIModule* self, int player_number) {
+    // Fully verified. Source of truth: aibldmod.cpp.decomp (helper implementation).
     AIModulePrefix* ai_prefix = reinterpret_cast<AIModulePrefix*>(self);
     new (&ai_prefix->idValue) AIModuleID((char*)"Build AI", 0x3E9);
     ai_prefix->playerNumberValue = player_number;

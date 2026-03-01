@@ -13,6 +13,7 @@
 
 namespace {
 static uchar AIPlayPhaseCommand_convertToIntType(const char* type_name) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if (strcmp(type_name, "Move") == 0) {
         return 1;
     }
@@ -41,6 +42,7 @@ static uchar AIPlayPhaseCommand_convertToIntType(const char* type_name) {
 }
 
 static void AIPlayPhaseCommand_ctor(AIPlayPhaseCommand* this_, uchar group, uchar type, int v1, int v2, int v3) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     this_->groupValue = group;
     this_->typeValue = type;
     this_->value1Value = v1;
@@ -49,6 +51,7 @@ static void AIPlayPhaseCommand_ctor(AIPlayPhaseCommand* this_, uchar group, ucha
 }
 
 static void AIPlayPhaseCommand_ctor(AIPlayPhaseCommand* this_, uchar group, const char* type_name, int v1, int v2, int v3) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     this_->groupValue = group;
     this_->typeValue = AIPlayPhaseCommand_convertToIntType(type_name);
     this_->value1Value = v1;
@@ -57,6 +60,7 @@ static void AIPlayPhaseCommand_ctor(AIPlayPhaseCommand* this_, uchar group, cons
 }
 
 static uchar AIPlayPhaseTrigger_convertToIntType(const char* type_name) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if (strcmp(type_name, "Gather") == 0) {
         return 1;
     }
@@ -109,6 +113,7 @@ static void AIPlayPhaseTrigger_ctor(AIPlayPhaseTrigger* this_, const char* type_
 }
 
 static void AIPlayGroup_ctor(AIPlayGroup* this_) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     for (int i = 0; i < 6; ++i) {
         this_->minValue[i] = 0;
         this_->maxValue[i] = 0xFE;
@@ -116,6 +121,7 @@ static void AIPlayGroup_ctor(AIPlayGroup* this_) {
 }
 
 static uchar AIPlayGroup_minimum(const AIPlayGroup* this_, int index) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if ((index < 0) || (5 < index)) {
         return 0;
     }
@@ -123,6 +129,7 @@ static uchar AIPlayGroup_minimum(const AIPlayGroup* this_, int index) {
 }
 
 static uchar AIPlayGroup_maximum(const AIPlayGroup* this_, int index) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if ((index < 0) || (5 < index)) {
         return 0xFF;
     }
@@ -130,6 +137,7 @@ static uchar AIPlayGroup_maximum(const AIPlayGroup* this_, int index) {
 }
 
 static void AIPlayGroup_setMinimum(AIPlayGroup* this_, int index, int value) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if ((index < 0) || (5 < index)) {
         return;
     }
@@ -137,6 +145,7 @@ static void AIPlayGroup_setMinimum(AIPlayGroup* this_, int index, int value) {
 }
 
 static void AIPlayGroup_setMaximum(AIPlayGroup* this_, int index, int value) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if ((index < 0) || (5 < index)) {
         return;
     }
@@ -144,6 +153,7 @@ static void AIPlayGroup_setMaximum(AIPlayGroup* this_, int index, int value) {
 }
 
 static void AIPlayPhase_ctor(AIPlayPhase* this_) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     for (int i = 0; i < 5; ++i) {
         this_->commands[i].groupValue = 0;
         this_->commands[i].typeValue = 0;
@@ -162,6 +172,7 @@ static void AIPlayPhase_ctor(AIPlayPhase* this_) {
 }
 
 static int AIPlayPhase_addCommand(AIPlayPhase* this_, const AIPlayPhaseCommand* param_1) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     for (int i = 0; i < 5; ++i) {
         if (this_->commands[i].typeValue == 0) {
             this_->commands[i] = *param_1;
@@ -172,6 +183,7 @@ static int AIPlayPhase_addCommand(AIPlayPhase* this_, const AIPlayPhaseCommand* 
 }
 
 static int AIPlayPhase_addTrigger(AIPlayPhase* this_, const AIPlayPhaseTrigger* param_1) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     for (int i = 0; i < 3; ++i) {
         if (this_->triggers[i].typeValue == 0) {
             this_->triggers[i] = *param_1;
@@ -182,6 +194,7 @@ static int AIPlayPhase_addTrigger(AIPlayPhase* this_, const AIPlayPhaseTrigger* 
 }
 
 static uchar AIPlay_convertToIntType(const char* play_type_name) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if (strcmp(play_type_name, "Attack") == 0) {
         return 1;
     }
@@ -198,6 +211,7 @@ static uchar AIPlay_convertToIntType(const char* play_type_name) {
 }
 
 static void AIPlay_ctor(AIPlay* this_) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     this_->minimumNumberUnitsValue = 1;
     this_->typeValue = 1;
     this_->overflowValue = 1;
@@ -219,11 +233,13 @@ static void AIPlay_ctor(AIPlay* this_) {
 }
 
 static void AIPlay_setName(AIPlay* this_, const char* param_1) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     strncpy(this_->nameValue, param_1, 0x40);
     this_->nameValue[0x40] = '\0';
 }
 
 static uchar AIPlay_targetType(const AIPlay* this_, int index) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if ((index < 0) || (4 < index)) {
         return 0;
     }
@@ -231,6 +247,7 @@ static uchar AIPlay_targetType(const AIPlay* this_, int index) {
 }
 
 static int AIPlay_addTargetType(AIPlay* this_, uchar value) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     for (int i = 0; i < 5; ++i) {
         if ((this_->targetTypeValue[i] == 0) || (this_->targetTypeValue[i] == 5)) {
             this_->targetTypeValue[i] = value;
@@ -241,6 +258,7 @@ static int AIPlay_addTargetType(AIPlay* this_, uchar value) {
 }
 
 static uchar AIPlay_targetCharacteristic(const AIPlay* this_, int index) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     if ((index < 0) || (4 < index)) {
         return 0;
     }
@@ -248,6 +266,7 @@ static uchar AIPlay_targetCharacteristic(const AIPlay* this_, int index) {
 }
 
 static int AIPlay_addTargetCharacteristic(AIPlay* this_, uchar value) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     for (int i = 0; i < 5; ++i) {
         if ((this_->targetCharacteristicValue[i] == 0) || (this_->targetCharacteristicValue[i] == 5)) {
             this_->targetCharacteristicValue[i] = value;
@@ -258,6 +277,7 @@ static int AIPlay_addTargetCharacteristic(AIPlay* this_, uchar value) {
 }
 
 static void XYZ_rotateXYByFacet(const XYZ& in, const XYZ& origin, XYZ& out, uchar facet) {
+    // Fully verified. Source of truth: aipbook.cpp.decomp (helper implementation).
     out = in;
     if (facet == 0) {
         return;

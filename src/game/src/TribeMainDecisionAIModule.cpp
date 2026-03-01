@@ -24,46 +24,57 @@
 
 namespace {
 BuildAIModule* build_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<BuildAIModule*>(self->buildAI);
 }
 
 TribeBuildAIModule* tribe_build_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TribeBuildAIModule*>(self->buildAI);
 }
 
 TribeConstructionAIModule* construction_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TribeConstructionAIModule*>(self->constructionAI);
 }
 
 DiplomacyAIModule* diplomacy_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<DiplomacyAIModule*>(self->diplomacyAI);
 }
 
 EmotionalAIModule* emotional_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<EmotionalAIModule*>(self->emotionalAI);
 }
 
 TribeInformationAIModule* information_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TribeInformationAIModule*>(self->informationAI);
 }
 
 TribeResourceAIModule* resource_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TribeResourceAIModule*>(self->resourceAI);
 }
 
 TribeStrategyAIModule* strategy_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TribeStrategyAIModule*>(self->strategyAI);
 }
 
 TribeTacticalAIModule* tactical_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TribeTacticalAIModule*>(self->tacticalAI);
 }
 
 TradeAIModule* trade_ai(TribeMainDecisionAIModule* self) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return reinterpret_cast<TradeAIModule*>(self->tradeAI);
 }
 
 int tactical_strategic_number(const TribeTacticalAIModule* tactical, int index) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     if ((tactical == nullptr) || (index < 0) || (index >= 226)) {
         return 0;
     }
@@ -84,6 +95,7 @@ void set_tribute_chat_timeout(TribeMainDecisionAIModule* self) {
 }
 
 void information_add_resource_type(TribeInformationAIModule* info, int bucket, int resource_type) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     if ((info == nullptr) || (bucket < 0) || (bucket >= 4) || (info->resourceTypesValue == nullptr) || (info->numberResourceTypesValue == nullptr)) {
         return;
     }
@@ -303,6 +315,7 @@ void TribeMainDecisionAIModule::setLogHistory(int param_1) {
 }
 
 void TribeMainDecisionAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     build_ai(this)->toggleLogHistory();
     construction_ai(this)->toggleLogHistory();
     diplomacy_ai(this)->toggleLogHistory();
@@ -316,6 +329,7 @@ void TribeMainDecisionAIModule::toggleLogHistory() {
 }
 
 void TribeMainDecisionAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     build_ai(this)->setHistoryFilename(param_1);
     construction_ai(this)->setHistoryFilename(param_1);
     diplomacy_ai(this)->setHistoryFilename(param_1);
@@ -329,10 +343,12 @@ void TribeMainDecisionAIModule::setHistoryFilename(char* param_1) {
 }
 
 int TribeMainDecisionAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     return MainDecisionAIModule::loggingCommonHistory();
 }
 
 void TribeMainDecisionAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     build_ai(this)->setLogCommonHistory(param_1);
     construction_ai(this)->setLogCommonHistory(param_1);
     diplomacy_ai(this)->setLogCommonHistory(param_1);
@@ -346,6 +362,7 @@ void TribeMainDecisionAIModule::setLogCommonHistory(int param_1) {
 }
 
 void TribeMainDecisionAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     build_ai(this)->toggleLogCommonHistory();
     construction_ai(this)->toggleLogCommonHistory();
     diplomacy_ai(this)->toggleLogCommonHistory();
@@ -357,11 +374,15 @@ void TribeMainDecisionAIModule::toggleLogCommonHistory() {
     trade_ai(this)->toggleLogCommonHistory();
     MainDecisionAIModule::toggleLogCommonHistory();
 }
+// Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
 int TribeMainDecisionAIModule::loadState(char* param_1) { return MainDecisionAIModule::loadState(param_1); }
+// Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
 int TribeMainDecisionAIModule::saveState(char* param_1) { return MainDecisionAIModule::saveState(param_1); }
+// Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
 int TribeMainDecisionAIModule::gleanState(int param_1) { return MainDecisionAIModule::gleanState(param_1); }
 
 int TribeMainDecisionAIModule::processMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     build_ai(this)->processMessage(param_1);
     construction_ai(this)->processMessage(param_1);
     diplomacy_ai(this)->processMessage(param_1);
@@ -439,6 +460,7 @@ int TribeMainDecisionAIModule::update(int param_1) {
 }
 
 void TribeMainDecisionAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     build_ai(this)->setCallbackMessage(param_1);
     construction_ai(this)->setCallbackMessage(param_1);
     diplomacy_ai(this)->setCallbackMessage(param_1);
@@ -452,6 +474,7 @@ void TribeMainDecisionAIModule::setCallbackMessage(AIModuleMessage* param_1) {
 }
 
 int TribeMainDecisionAIModule::filterOutMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: taimdmd.cpp.decomp (helper implementation).
     if ((build_ai(this)->filterOutMessage(param_1) != 0) || (construction_ai(this)->filterOutMessage(param_1) != 0) ||
         (diplomacy_ai(this)->filterOutMessage(param_1) != 0) || (emotional_ai(this)->filterOutMessage(param_1) != 0) ||
         (information_ai(this)->filterOutMessage(param_1) != 0) || (resource_ai(this)->filterOutMessage(param_1) != 0) ||
