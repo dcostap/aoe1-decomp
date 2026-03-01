@@ -74,7 +74,7 @@ void RGE_Action_Explore::set_target_obj(RGE_Static_Object* param_1) { RGE_Action
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E40 (virtual forwarding coverage).
 void RGE_Action_Explore::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
-// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402BE0
+// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402BE0, act_expl.cpp.asm @ 0x00402BE0
 void RGE_Action_Explore::first_in_stack(uchar /*param_1*/) {
     if (this->target_x == -1.0f) {
         this->set_state(3);
@@ -83,7 +83,7 @@ void RGE_Action_Explore::first_in_stack(uchar /*param_1*/) {
     this->set_state(0x0B);
 }
 
-// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402C00
+// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402C00, act_expl.cpp.asm @ 0x00402C00
 void RGE_Action_Explore::set_state(uchar param_1) {
     this->sub_actions->delete_list();
     this->state = param_1;
@@ -136,11 +136,11 @@ void RGE_Action_Explore::set_state(uchar param_1) {
         return;
     }
 
-    move_to->subActionValue = 1;
+    move_to->setSubAction(1);
     this->sub_actions->add_action(move_to);
 }
 
-// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402D90
+// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402D90, act_expl.cpp.asm @ 0x00402D90
 uchar RGE_Action_Explore::update() {
     char cur_state = (char)this->state;
     if (cur_state == 1) {

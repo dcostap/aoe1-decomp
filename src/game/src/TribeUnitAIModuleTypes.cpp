@@ -406,12 +406,15 @@ int TribeRangedUnitAIModule2::processIdle(int param_1) {
     return UnitAIModule::processIdle(param_1);
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504C90
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504C90, taiuaimd.cpp.asm @ 0x00504C90
 int TribeCivilianUnitAIModule::importantWhenDead(int param_1) {
-    return this->importantObject(param_1);
+    if (param_1 == 7 || param_1 == 9 || param_1 == 10 || param_1 == 0x0F || param_1 == 8 || param_1 == 0x20) {
+        return 1;
+    }
+    return 0;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504CC0
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504CC0, taiuaimd.cpp.asm @ 0x00504CC0
 int TribeCivilianUnitAIModule::attackObject(int param_1, int param_2) {
     RGE_Static_Object* target = this->lookupObject(param_1);
     if (target == nullptr) {
@@ -424,9 +427,12 @@ int TribeCivilianUnitAIModule::attackObject(int param_1, int param_2) {
     return UnitAIModule::attackObject(param_1, param_2);
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D20
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D20, taiuaimd.cpp.asm @ 0x00504D20
 int TribeCivilianUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
-    return UnitAIModule::canAttackUnit(param_1);
+    if (param_1 == nullptr) {
+        return 0;
+    }
+    return static_cast<int>(param_1->master_obj->object_group != 1);
 }
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D40
@@ -435,9 +441,12 @@ int TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
     return 0;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D50
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D50, taiuaimd.cpp.asm @ 0x00504D50
 int TribeCivilianUnitAIModule::retryableOrder(int param_1) {
-    return UnitAIModule::retryableOrder(param_1);
+    if (param_1 == 0x2C1 || param_1 == 0x2C5 || param_1 == 0x2C9) {
+        return 1;
+    }
+    return 0;
 }
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D80
@@ -533,7 +542,7 @@ int TribePriestUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
     return this->canConvert(param_1->id);
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505B00
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505B00, taiuaimd.cpp.asm @ 0x00505B00
 int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2) {
     int allyToHealID = -1;
     int bestNeedScore = 0;
@@ -599,7 +608,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2) {
     return -1;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505CC0
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505CC0, taiuaimd.cpp.asm @ 0x00505CC0
 int TribePriestUnitAIModule::bestUnitToConvert(float* param_1) {
     int bestTargetID = -1;
     int bestScore = 0;
@@ -796,9 +805,12 @@ int TribeTransportShipUnitAIModule::processIdle(int param_1) {
     return 5;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506C70
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506C70, taiuaimd.cpp.asm @ 0x00506C70
 int TribeFishingShipUnitAIModule::importantWhenDead(int param_1) {
-    return this->importantObject(param_1);
+    if (param_1 == 0x1F || param_1 == 5) {
+        return 1;
+    }
+    return 0;
 }
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506C90
@@ -914,13 +926,14 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long 
     return UnitAIModule::processNotify(param_1, param_2);
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00507640
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00507640, taiuaimd.cpp.asm @ 0x00507640
 int TribeSoldierUnitAIModule::processIdle(int param_1) {
     if (param_1 == 1 && this->processRetryableOrder() == 8) {
         return 6;
     }
-    if (this->bestUnitToAttack(1, 0, nullptr) != -1) {
-        if (this->attackObject(this->bestUnitToAttack(1, 0, nullptr), 1) == 1) {
+    const int bestTargetId = this->bestUnitToAttack(1, 0, nullptr);
+    if (bestTargetId != -1) {
+        if (this->attackObject(bestTargetId, 1) == 1) {
             return 6;
         }
     }
@@ -1022,13 +1035,15 @@ int TribeTowerUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
     return static_cast<int>(this->objectValue->actionState() > 1);
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00508140
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00508140, taiuaimd.cpp.asm @ 0x00508140
 int TribeTowerUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
-    (void)param_1;
+    if (param_1 == 3 || param_1 == 0x1B || param_1 == 4 || param_1 == 0x15 || param_1 == 2) {
+        return 0;
+    }
     return 1;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00508320
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00508320, taiuaimd.cpp.asm @ 0x00508320
 int TribeBuildingUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
     if (param_1->mType == 699) {
         for (int i = 0; i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
