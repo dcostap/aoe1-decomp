@@ -353,7 +353,7 @@ RGE_Static_Object* TRIBE_Action_Build::get_target_obj2() { return RGE_Action::ge
 void TRIBE_Action_Build::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 void TRIBE_Action_Build::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
-// Fully verified. Source of truth: tact_bld.cpp.asm @ 0x004CD5A5
+// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5A5 (decomp body failed; verified against tact_bld.cpp.asm)
 static void tact_bld_switch_anchor_004CD5A5() {
     // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
