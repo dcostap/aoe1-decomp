@@ -705,9 +705,8 @@ static void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
     }
 }
 
-static int FUN_004aab4a() {
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AAB4A (switch-table data anchor thunk)
-    return 0;
+static void FUN_004aab4a() {
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AAB4A (switch jump-table alignment thunk bytes).
 }
 
 static void set_terrain(TRIBE_Screen_Sed* this_, short param_2) {
@@ -745,14 +744,12 @@ static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
     return (cmp == 3) ? 1 : 0;
 }
 
-static int FUN_004abc31() {
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004ABC31 (switch-table data anchor thunk)
-    return 0;
+static void FUN_004abc31() {
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004ABC31 (switch jump-table alignment thunk bytes).
 }
 
-static int FUN_004ad06e() {
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AD06E (switch-table data anchor thunk)
-    return 0;
+static void FUN_004ad06e() {
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AD06E (switch jump-table alignment thunk bytes).
 }
 
 static void command_cancel(TRIBE_Screen_Sed* this_) {
