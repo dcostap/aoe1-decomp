@@ -3,7 +3,11 @@
 #include "../include/TribeMainDecisionAIModule.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/AIPlayBook.h"
+#include "../include/BaseItem.h"
+#include "../include/ConstructionAIModule.h"
+#include "../include/AttackState.h"
 #include "../include/PathingSystem.h"
+#include "../include/PlacementState.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/RGE_Game_Info.h"
 #include "../include/RGE_Game_World.h"
@@ -18,6 +22,7 @@
 #include "../include/RGE_Visible_Map.h"
 #include "../include/RGE_Zone_Map.h"
 #include "../include/TacticalAIGroup.h"
+#include "../include/UnitAIModule.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
@@ -30,32 +35,32 @@ static InfluenceMap iMap;
 static InfluenceMap losMap;
 static InfluenceMap attackMap;
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004D6AD0
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D6AD0
 static void E9() {
     iMap = InfluenceMap(0xFE, 0xFE, 0);
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004D6B20
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D6B20
 static void E14() {
     losMap = InfluenceMap(0x32, 0x32, 0);
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004D6B70
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D6B70
 static void E19() {
     attackMap = InfluenceMap(0x32, 0x32, 0);
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
 static void FUN_004d90f1() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk)
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
 static void FUN_004da16d() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk)
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
 static void FUN_004e0165() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk)
 }
@@ -522,6 +527,10 @@ int tribe_distance_squared(int x1, int y1, int x2, int y2) {
     int dx = x1 - x2;
     int dy = y1 - y2;
     return dx * dx + dy * dy;
+}
+
+BaseItem* tribe_build_item_base(BuildItem* item) {
+    return reinterpret_cast<BaseItem*>(item);
 }
 
 int tribe_convert_unit_to_history_index(RGE_Static_Object* object) {
@@ -2205,11 +2214,66 @@ int TribeInformationAIModule::numberStoragePits() {
     return count;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004D9B20
-// Source of truth: taiinfmd.cpp.decomp @ 0x004D9B20
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9B20
+ConstructionItem* TribeInformationAIModule::placeDock(BuildItem* param_1, float param_2, float param_3, int param_4, int param_5) {
+    if ((this->md == nullptr) || (this->md->aiPlayer == nullptr) || (this->md->aiPlayer->visible == nullptr) || (param_1 == nullptr)) {
+        return nullptr;
+    }
 
-ConstructionItem* TribeInformationAIModule::placeDock(BuildItem*, float, float, int, int) {
-    return nullptr;
+    RGE_Visible_Map* visible_map = this->md->aiPlayer->visible;
+    RGE_Map* game_map = visible_map->map;
+    if (game_map == nullptr) {
+        return nullptr;
+    }
+
+    ConstructionAIModule* construction_ai = reinterpret_cast<ConstructionAIModule*>(&this->md->constructionAI);
+    BaseItem* base_item = tribe_build_item_base(param_1);
+    if (base_item == nullptr) {
+        return nullptr;
+    }
+
+    int best_x = -1;
+    int best_y = -1;
+    int best_score = -0x7fffffff;
+    for (int x = 1; x < (visible_map->widthValue - 1); ++x) {
+        for (int y = 1; y < (visible_map->heightValue - 1); ++y) {
+            if (visible_map->get_visible(x, y) == 0) {
+                continue;
+            }
+
+            RGE_Tile* tile = game_map->get_tile(x, y);
+            if (tile == nullptr) {
+                continue;
+            }
+            if ((param_4 != -1) && (static_cast<int>(tile->terrain_type) != param_4)) {
+                continue;
+            }
+            if (hasAdjacentTileType(x, y, param_5) == 0) {
+                continue;
+            }
+            if ((construction_ai != nullptr) && (construction_ai->randomLot(static_cast<float>(x) + 0.5f, static_cast<float>(y) + 0.5f) != nullptr)) {
+                continue;
+            }
+
+            int score = -tribe_distance_squared(x, y, static_cast<int>(param_2), static_cast<int>(param_3));
+            int dock_distance = closestDockDistance(x, y);
+            if (dock_distance != -1) {
+                score = score + (100000 / dock_distance);
+            }
+            if ((best_x == -1) || (best_score < score)) {
+                best_x = x;
+                best_y = y;
+                best_score = score;
+            }
+        }
+    }
+
+    if (best_x == -1) {
+        return nullptr;
+    }
+
+    return new (std::nothrow) ConstructionItem(static_cast<float>(best_x) + 0.5f, static_cast<float>(best_y) + 0.5f, 0.0f, base_item->xSize(), base_item->ySize(),
+                                               base_item->zSize(), base_item->typeID(), base_item->name());
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9EC0
@@ -2345,11 +2409,229 @@ int TribeInformationAIModule::influenceCanPlaceStructure(BuildItem*) {
     return 1;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DBA70
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DB290
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB290
+ConstructionItem* TribeInformationAIModule::influencePlaceStructure(BuildItem* param_1, int param_2, int param_3, float param_4, char* param_5, int param_6,
+                                                                     int param_7, int param_8, int param_9, PlacementState* param_10, ulong param_11) {
+    (void)param_11;
+    if ((this->md == nullptr) || (param_10 == nullptr)) {
+        return nullptr;
+    }
 
-ConstructionItem* TribeInformationAIModule::influencePlaceStructure(BuildItem*, int, int, float, char*, int, int, int, int, PlacementState*, ulong) {
-    return nullptr;
+    int building_type = param_3;
+    int building_size = static_cast<int>(param_4);
+    const char* building_name_src = (param_5 != nullptr) ? param_5 : "";
+    int builder_id = param_2;
+
+    if (param_10->active == 1) {
+        building_type = param_10->buildingTypeID;
+        building_size = static_cast<int>(param_10->buildingSize);
+        building_name_src = param_10->buildingName;
+        builder_id = param_10->builderID;
+    } else if (param_1 != nullptr) {
+        BaseItem* base_item = tribe_build_item_base(param_1);
+        if (base_item != nullptr) {
+            building_type = base_item->typeID();
+            building_size = static_cast<int>(base_item->xSize());
+            building_name_src = base_item->name();
+        }
+    }
+
+    if ((building_type < 0) || (building_size <= 0)) {
+        param_10->active = 0;
+        return nullptr;
+    }
+
+    int placement_type = placementCode(building_type);
+    if (placement_type == -1) {
+        param_10->active = 0;
+        return nullptr;
+    }
+
+    char building_name[256]{};
+    std::strncpy(building_name, building_name_src, sizeof(building_name) - 1);
+
+    if ((param_10->active == 0) && (param_1 != nullptr)) {
+        BuildingLot* lot = availableLot(building_type);
+        if (lot != nullptr) {
+            float place_x = static_cast<float>(lot->x);
+            float place_y = static_cast<float>(lot->y);
+            if (building_size != 2) {
+                place_x = place_x + 0.5f;
+                place_y = place_y + 0.5f;
+            }
+            lot->status = 1;
+            param_10->active = 0;
+            return new (std::nothrow) ConstructionItem(place_x, place_y, 1.0f, static_cast<float>(building_size), static_cast<float>(building_size), 1.0f,
+                                                       building_type, building_name);
+        }
+    }
+
+    RGE_Static_Object* town_center = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* group_center = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* builder = this->md->object(builder_id);
+    if (town_center == nullptr) {
+        town_center = group_center;
+    }
+    if (town_center == nullptr) {
+        town_center = builder;
+    }
+    if (town_center == nullptr) {
+        param_10->active = 0;
+        return nullptr;
+    }
+
+    XYPoint center{};
+    if ((param_1 == nullptr) && (param_10->active == 0)) {
+        center.x = param_8;
+        center.y = param_9;
+    } else {
+        center.x = static_cast<int>(town_center->world_x);
+        center.y = static_cast<int>(town_center->world_y);
+    }
+
+    int min_distance = param_6;
+    int max_distance = param_7;
+    if (param_10->active == 1) {
+        min_distance = param_10->minimumDistance;
+        max_distance = param_10->maximumDistance;
+    } else if ((param_1 != nullptr) || (param_10->active == 1)) {
+        if (placement_type == 1) {
+            min_distance = 7;
+            max_distance = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x56) : 8;
+        } else if (placement_type == 2) {
+            min_distance = 4;
+            max_distance = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x57) : 8;
+        } else {
+            min_distance = ((placement_type == 3) || (placement_type == 4)) ? ((this->md->player != nullptr) ? this->md->player->strategicNumber(0x49) : 4) : 4;
+            max_distance = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x4A) : 10;
+        }
+    }
+    if (max_distance <= min_distance) {
+        param_10->active = 0;
+        return nullptr;
+    }
+
+    XYPoint min_point{center.x - max_distance, center.y - max_distance};
+    XYPoint max_point{center.x + max_distance, center.y + max_distance};
+    mapBound(min_point);
+    mapBound(max_point);
+
+    if (param_10->active == 0) {
+        setupInfluenceMap(placement_type, building_type, &center, &min_point, &max_point);
+    }
+
+    int iteration_x = min_point.x;
+    int best_x = -1;
+    int best_y = -1;
+    int best_value = (param_10->active == 1) ? param_10->bestPointValue : -1;
+    int random_influence = (param_10->active == 1) ? param_10->randomInfluence : 0;
+    if (param_10->active == 1) {
+        iteration_x = param_10->iterationX;
+        best_x = param_10->bestPoint.x;
+        best_y = param_10->bestPoint.y;
+    }
+
+    XYPoint min_exclude{center.x - min_distance, center.y - min_distance};
+    XYPoint max_exclude{center.x + min_distance, center.y + min_distance};
+    mapBound(min_exclude);
+    mapBound(max_exclude);
+
+    for (int x = iteration_x; x <= max_point.x; ++x) {
+        for (int y = min_point.y; y <= max_point.y; ++y) {
+            if ((placement_type == 3) || (placement_type == 4)) {
+                if ((min_exclude.x <= x) && (x <= max_exclude.x) && (min_exclude.y <= y) && (y <= max_exclude.y)) {
+                    continue;
+                }
+            }
+
+            XYPoint clear_min{};
+            XYPoint clear_max{};
+            if (building_size >= 5) {
+                clear_min = {x - 2, y - 2};
+                clear_max = {x + 2, y + 2};
+            } else if (building_size == 3) {
+                clear_min = {x - 1, y - 1};
+                clear_max = {x + 1, y + 1};
+            } else if (building_size == 2) {
+                clear_min = {x - 1, y - 1};
+                clear_max = {x, y};
+            } else {
+                clear_min = {x, y};
+                clear_max = {x, y};
+            }
+
+            if ((mapBound(clear_min) != 0) || (mapBound(clear_max) != 0)) {
+                continue;
+            }
+            if (invalidLot(building_type, static_cast<uchar>(x), static_cast<uchar>(y)) != 0) {
+                continue;
+            }
+
+            int value = 0;
+            bool blocked = false;
+            for (int cx = clear_min.x; cx <= clear_max.x; ++cx) {
+                for (int cy = clear_min.y; cy <= clear_max.y; ++cy) {
+                    int influence = iMap.lookupValue(cx, cy);
+                    if (influence == 0xFF) {
+                        blocked = true;
+                        break;
+                    }
+                    value = value + influence;
+                }
+                if (blocked) {
+                    break;
+                }
+            }
+            if (blocked) {
+                continue;
+            }
+
+            if (undesirableLot(building_type, static_cast<uchar>(x), static_cast<uchar>(y), (placement_type <= 2) ? 10 : building_size) != 0) {
+                value = value / 10;
+            }
+
+            int distance_sq = tribe_distance_squared(x, y, center.x, center.y);
+            if ((placement_type == 1) || (placement_type == 2)) {
+                value = value - (distance_sq / 5);
+            }
+
+            if ((best_x == -1) || (best_value < (value + random_influence))) {
+                best_x = x;
+                best_y = y;
+                best_value = value;
+            }
+        }
+    }
+
+    if (best_x == -1) {
+        param_10->active = 0;
+        return nullptr;
+    }
+
+    if (placement_type == 4) {
+        this->lastWallPosition2 = this->lastWallPosition;
+        this->lastWallPosition.x = best_x;
+        this->lastWallPosition.y = best_y;
+    }
+
+    if (param_1 == nullptr) {
+        storeLot(building_type, static_cast<uchar>(best_x), static_cast<uchar>(best_y), 0);
+        param_10->active = 0;
+        return reinterpret_cast<ConstructionItem*>(1);
+    }
+
+    float place_x = static_cast<float>(best_x);
+    float place_y = static_cast<float>(best_y);
+    if (building_size != 2) {
+        place_x = place_x + 0.5f;
+        place_y = place_y + 0.5f;
+    }
+
+    ConstructionItem* placed = new (std::nothrow)
+        ConstructionItem(place_x, place_y, 1.0f, static_cast<float>(building_size), static_cast<float>(building_size), 1.0f, building_type, building_name);
+    storeLot(building_type, static_cast<uchar>(best_x), static_cast<uchar>(best_y), 1);
+    param_10->active = 0;
+    return placed;
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC1B0
@@ -2486,46 +2768,329 @@ void TribeInformationAIModule::removeObject(int param_1) {
     }
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DCAC0
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DC490
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC490
+ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(int param_1, int* param_2, int param_3, int* param_4, int* param_5, int* param_6, int* param_7) {
+    if (param_4 != nullptr) {
+        *param_4 = -1;
+    }
+    if (param_6 != nullptr) {
+        *param_6 = 0;
+    }
+    if (param_7 != nullptr) {
+        *param_7 = -1;
+    }
+    if ((param_2 == nullptr) || (param_3 <= 0)) {
+        return nullptr;
+    }
 
-ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(int, int*, int, int*, int*, int*, int*) {
+    ObjectMemory* target = objectToAttackByGroup2(param_1, param_2, param_3);
+    if (target == nullptr) {
+        return nullptr;
+    }
+
+    if ((param_5 != nullptr) && (param_6 != nullptr)) {
+        for (int i = 0; i < param_3; ++i) {
+            param_5[i] = param_2[i];
+        }
+        *param_6 = param_3;
+    }
+    if (param_7 != nullptr) {
+        *param_7 = param_2[0];
+    }
+    if (param_4 != nullptr) {
+        *param_4 = 0;
+    }
+    return target;
+}
+
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC750
+ObjectMemory* TribeInformationAIModule::objectToAttack(int param_1, int param_2, int param_3, int param_4, int* param_5) {
+    if (param_5 != nullptr) {
+        *param_5 = 0;
+    }
+
+    ObjectMemory* wonder = wonderToAttack(-1);
+    if (wonder != nullptr) {
+        if (param_5 != nullptr) {
+            *param_5 = 1;
+        }
+        return wonder;
+    }
+
+    if (this->md == nullptr) {
+        return nullptr;
+    }
+    RGE_Static_Object* unit = this->md->object(param_4);
+    if ((unit == nullptr) || (unit->unitAI() == nullptr)) {
+        return nullptr;
+    }
+
+    int score_attack_attempts = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x59) : 1;
+    int score_kills = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x50) : 1;
+    int score_distance = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x4D) : 1;
+    int score_same_zone = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x7A) : 0;
+    uchar unit_zone = unit->currentZone();
+
+    ObjectMemory* best_target = nullptr;
+    float best_score = 0.0f;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.id == -1) || (static_cast<int>(memory.owner) != param_1)) {
+            continue;
+        }
+
+        RGE_Static_Object* object = this->md->object(memory.id);
+        if ((object == nullptr) || (object->object_state >= 3) || (object->hp <= 0.0f)) {
+            continue;
+        }
+        if ((param_2 == 0) && (isBuilding(object) != 0)) {
+            continue;
+        }
+        if ((param_3 == 0) && (isBoat(object) != 0)) {
+            continue;
+        }
+
+        int x = static_cast<int>(memory.x);
+        int y = static_cast<int>(memory.y);
+        int ux = static_cast<int>(unit->world_x);
+        int uy = static_cast<int>(unit->world_y);
+        int distance = static_cast<int>(std::sqrt(static_cast<float>(tribe_distance_squared(x, y, ux, uy))));
+        if (distance < 1) {
+            distance = 1;
+        }
+
+        float score = static_cast<float>(score_attack_attempts * memory.attackAttempts) + static_cast<float>(score_kills * static_cast<int>(memory.kills));
+        score = score + static_cast<float>(score_distance) / static_cast<float>(distance);
+        if (unit->lookupZone(x, y) == unit_zone) {
+            score = score + static_cast<float>(score_same_zone);
+        }
+
+        if ((best_target == nullptr) || (best_score < score)) {
+            best_target = &memory;
+            best_score = score;
+        }
+    }
+
+    if ((best_target != nullptr) && (param_5 != nullptr)) {
+        *param_5 = 1;
+    }
+    return best_target;
+}
+
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DCF10
+ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(int param_1, TacticalAIGroup* param_2, AttackState* param_3, ulong) {
+    if ((param_2 == nullptr) || (param_3 == nullptr) || (this->md == nullptr)) {
+        return nullptr;
+    }
+
+    int commander_id = param_2->commander();
+    RGE_Static_Object* commander = this->md->object(commander_id);
+    if ((commander == nullptr) || (commander->unitAI() == nullptr)) {
+        param_3->active = 0;
+        return nullptr;
+    }
+
+    if (param_3->active == 0) {
+        param_3->bestTargetID = -1;
+        param_3->bestTargetValue = -1.0f;
+        param_3->bestTargetMemoryIndex = -1;
+        param_3->iterationIndex = 0;
+        param_3->attackGroupID = -1;
+        param_3->playID = -1;
+        param_3->phase = 0;
+        param_3->bestNonWallTargetID = -1;
+        param_3->bestNonWallTargetValue = -1.0f;
+        param_3->bestNonWallTargetMemoryIndex = -1;
+        param_3->active = 1;
+    }
+
+    int has_target = 0;
+    ObjectMemory* target = objectToAttack(param_1, 1, 1, commander_id, &has_target);
+    if (target != nullptr) {
+        param_2->numberObjectsToDestroyValue = 0;
+        param_2->addObjectToDestroy(target->id);
+        param_2->objectsToDestroyOwnerValue = static_cast<int>(target->owner);
+        param_2->objectsToDestroyCommanderZoneValue = static_cast<int>(commander->currentZone());
+
+        for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+            if (this->importantObjectMemory[i].id == target->id) {
+                this->importantObjectMemory[i].attackAttempts = this->importantObjectMemory[i].attackAttempts + 1;
+                param_3->bestTargetMemoryIndex = i;
+                break;
+            }
+        }
+
+        param_3->bestTargetID = target->id;
+        param_3->bestTargetValue = 1.0f;
+        param_3->active = 0;
+        return target;
+    }
+
+    if (param_3->phase == 0) {
+        param_3->phase = 1;
+        param_3->iterationIndex = 0;
+    } else {
+        param_3->active = 0;
+    }
     return nullptr;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DCCF0
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DC750
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DDD40
+ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int param_1, int* param_2, int param_3) {
+    ObjectMemory* wonder = wonderToAttack(-1);
+    if (wonder != nullptr) {
+        return wonder;
+    }
+    if ((param_2 == nullptr) || (param_3 <= 0) || (this->md == nullptr)) {
+        return nullptr;
+    }
 
-ObjectMemory* TribeInformationAIModule::objectToAttack(int, int, int, int, int*) {
-    return nullptr;
+    RGE_Static_Object* commander = this->md->object(*param_2);
+    if ((commander == nullptr) || (commander->unitAI() == nullptr)) {
+        return nullptr;
+    }
+
+    int score_attack_attempts = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x59) : 1;
+    int score_kills = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x50) : 1;
+    int score_distance = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x4D) : 1;
+    int score_damage = (this->md->player != nullptr) ? this->md->player->strategicNumber(0xB8) : 1;
+    int score_same_zone = (this->md->player != nullptr) ? this->md->player->strategicNumber(0x7A) : 0;
+    int score_in_progress = (this->md->player != nullptr) ? this->md->player->strategicNumber(0xB9) : 0;
+    uchar commander_zone = commander->currentZone();
+
+    ObjectMemory* best_target = nullptr;
+    float best_value = 0.0f;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.id == -1) || (static_cast<int>(memory.owner) != param_1)) {
+            continue;
+        }
+
+        RGE_Static_Object* object = this->md->object(memory.id);
+        if ((object == nullptr) || (object->object_state >= 3) || (object->hp <= 0.0f)) {
+            continue;
+        }
+
+        int mx = static_cast<int>(memory.x);
+        int my = static_cast<int>(memory.y);
+        int cx = static_cast<int>(commander->world_x);
+        int cy = static_cast<int>(commander->world_y);
+        int dx = mx - cx;
+        int dy = my - cy;
+        float distance = std::sqrt(static_cast<float>((dx * dx) + (dy * dy)));
+        if (distance < 1.0f) {
+            distance = 1.0f;
+        }
+
+        float damage = damageInflictedPerSecond(param_2, param_3, object);
+        float time_to_be_killed = timeToBeKilled(param_2, param_3, object);
+        if ((damage <= 0.0f) || (time_to_be_killed <= 0.0f)) {
+            continue;
+        }
+
+        int targeted_by_group = 0;
+        if (score_in_progress > 0) {
+            for (int u = 0; u < param_3; ++u) {
+                RGE_Static_Object* unit = this->md->object(param_2[u]);
+                if (unit == nullptr) {
+                    continue;
+                }
+                UnitAIModule* unit_ai = unit->unitAI();
+                if ((unit_ai != nullptr) && (unit_ai->currentTarget() == memory.id)) {
+                    targeted_by_group = targeted_by_group + 1;
+                }
+            }
+        }
+
+        float zone_bonus = 0.0f;
+        if (commander->lookupZone(mx, my) == commander_zone) {
+            zone_bonus = static_cast<float>(score_same_zone);
+        }
+
+        float kill_ratio = object->hp / damage;
+        if (kill_ratio <= 0.0f) {
+            kill_ratio = 1.0f;
+        }
+        float value = static_cast<float>(score_attack_attempts * memory.attackAttempts) + static_cast<float>(score_kills * static_cast<int>(memory.kills));
+        value = value + (static_cast<float>(score_distance) / distance) + (static_cast<float>(score_damage) * (time_to_be_killed / kill_ratio));
+        value = value + zone_bonus + static_cast<float>(score_in_progress * targeted_by_group);
+
+        if ((best_target == nullptr) || (best_value < value)) {
+            best_target = &memory;
+            best_value = value;
+        }
+    }
+
+    return best_target;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD130
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DCF10
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE1F0
+ObjectMemory* TribeInformationAIModule::objectToDefend(int param_1) {
+    RGE_Static_Object* unit = (this->md != nullptr) ? this->md->object(param_1) : nullptr;
+    if (unit == nullptr) {
+        return nullptr;
+    }
 
-ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(int, TacticalAIGroup*, AttackState*, ulong) {
-    return nullptr;
+    ObjectMemory* best_object = nullptr;
+    int best_priority = -1;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.id == -1) || (memory.attackAttempts > 0)) {
+            continue;
+        }
+        if (tribe_managed_array_contains(this->itemsToDefend, memory.id) == 0) {
+            continue;
+        }
+
+        int priority = defendPriority(memory.type, memory.group);
+        if ((best_object == nullptr) || (priority < best_priority)) {
+            best_object = &memory;
+            best_priority = priority;
+        }
+    }
+    return best_object;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD620
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DDD40
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE330
+ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int param_1, int param_2, int param_3) {
+    RGE_Static_Object* unit = (this->md != nullptr) ? this->md->object(param_1) : nullptr;
+    if (unit == nullptr) {
+        return nullptr;
+    }
 
-ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int, int*, int) {
-    return nullptr;
-}
+    uchar unit_zone = unit->currentZone();
+    int priority_threshold = defendPriority(param_2, param_3);
+    ObjectMemory* best_object = nullptr;
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD890
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DE1F0
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.id == -1) || (memory.attackAttempts > 0)) {
+            continue;
+        }
+        if (tribe_managed_array_contains(this->itemsToDefend, memory.id) == 0) {
+            continue;
+        }
 
-ObjectMemory* TribeInformationAIModule::objectToDefend(int) {
-    return nullptr;
-}
+        RGE_Static_Object* target = this->md->object(memory.id);
+        if (target == nullptr) {
+            continue;
+        }
+        uchar target_zone = target->currentZone();
+        if (target_zone != unit_zone) {
+            XYPoint target_point{static_cast<int>(memory.x), static_cast<int>(memory.y)};
+            if (unit->withinRangeOfZoneAtPoint(unit_zone, unit->master_obj->los, &target_point) != 1) {
+                continue;
+            }
+        }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DD930
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DE330
+        int priority = defendPriority(memory.type, memory.group);
+        if (priority < priority_threshold) {
+            best_object = &memory;
+            priority_threshold = priority;
+        }
+    }
 
-ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int, int, int) {
-    return nullptr;
+    return best_object;
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE4A0
@@ -2664,17 +3229,178 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1) {
     return best_dock;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DDD70
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DEBA0
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DEBA0
+int TribeInformationAIModule::findGatherPosition(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, RGE_Static_Object* param_6, XYPoint* param_7) {
+    if ((param_1 == nullptr) || (param_6 == nullptr) || (param_7 == nullptr) || (param_4 <= param_5)) {
+        return 0;
+    }
 
-int TribeInformationAIModule::findGatherPosition(XYPoint*, int, int, int, int, RGE_Static_Object*, XYPoint*) {
-    return 0;
+    XYPoint min_point{param_1->x - (param_4 + param_5), param_1->y - (param_4 + param_5)};
+    XYPoint max_point{param_1->x + (param_4 + param_5), param_1->y + (param_4 + param_5)};
+    mapBound(min_point);
+    mapBound(max_point);
+
+    setupInfluenceMap(0, -1, param_1, &min_point, &max_point);
+
+    int clear_size = groupInfluenceDimension(param_2);
+    int clear_radius = clear_size / 2;
+    int best_value = -1;
+    XYPoint best_point{};
+
+    for (int x = min_point.x; x <= max_point.x; ++x) {
+        for (int y = min_point.y; y <= max_point.y; ++y) {
+            int dx = x - param_1->x;
+            if (dx < 0) {
+                dx = -dx;
+            }
+            int dy = y - param_1->y;
+            if (dy < 0) {
+                dy = -dy;
+            }
+            if ((dx < param_5) && (dy < param_5)) {
+                continue;
+            }
+            if ((dx > param_4) || (dy > param_4)) {
+                continue;
+            }
+
+            XYPoint clear_min{x - clear_radius, y - clear_radius};
+            XYPoint clear_max{x + clear_radius, y + clear_radius};
+            if ((mapBound(clear_min) != 0) || (mapBound(clear_max) != 0)) {
+                continue;
+            }
+
+            bool blocked = false;
+            int value = 0;
+            for (int cx = clear_min.x; cx <= clear_max.x; ++cx) {
+                for (int cy = clear_min.y; cy <= clear_max.y; ++cy) {
+                    if (param_6->passableTile(static_cast<float>(cx), static_cast<float>(cy), 1) == 0) {
+                        blocked = true;
+                        break;
+                    }
+                    int influence = iMap.lookupValue(cx, cy);
+                    if (influence == 0xFF) {
+                        blocked = true;
+                        break;
+                    }
+                    value = value + influence;
+                }
+                if (blocked) {
+                    break;
+                }
+            }
+
+            if (!blocked && ((best_value == -1) || (best_value < value))) {
+                best_value = value;
+                best_point.x = x;
+                best_point.y = y;
+            }
+        }
+    }
+
+    if (best_value == -1) {
+        return 0;
+    }
+    *param_7 = best_point;
+    return 1;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DE560
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DEE90
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DEE90
+void TribeInformationAIModule::setupInfluenceMap(int param_1, int param_2, XYPoint* param_3, XYPoint* param_4, XYPoint* param_5) {
+    iMap.initialize(0x14);
+    iMap.setUnchangeableLimit(0xFF);
+    if ((param_3 == nullptr) || (param_4 == nullptr) || (param_5 == nullptr) || (this->md == nullptr)) {
+        return;
+    }
 
-void TribeInformationAIModule::setupInfluenceMap(int, int, XYPoint*, XYPoint*, XYPoint*) {
+    if ((param_1 == 0) || (param_1 == 3) || (param_1 == 4)) {
+        for (int x = param_4->x; x <= param_5->x; ++x) {
+            for (int y = param_4->y; y <= param_5->y; ++y) {
+                if ((x < 5) || (y < 5) || ((this->mapXSizeValue - 5) <= x) || ((this->mapYSizeValue - 5) <= y)) {
+                    iMap.decrementValue(x, y, 10);
+                }
+            }
+        }
+    }
+
+    int resource_focus = -1;
+    if ((param_1 == 1) || (param_1 == 2) || (param_1 == 9)) {
+        resource_focus = resourceTypeToPlaceDropsiteBy(param_1);
+        for (int slot = 0; slot < kResourceTypeSlots; ++slot) {
+            if (this->resources[slot] == nullptr) {
+                continue;
+            }
+            for (int i = 0; i < this->numResources[slot]; ++i) {
+                ResourceMemory& memory = this->resources[slot][i];
+                if (memory.gone == 1) {
+                    continue;
+                }
+
+                RGE_Static_Object* resource = this->md->object(memory.id);
+                if (resource == nullptr) {
+                    continue;
+                }
+
+                int x = static_cast<int>(resource->world_x);
+                int y = static_cast<int>(resource->world_y);
+                int radius = (slot == resource_focus) ? 3 : 2;
+                if (slot == resource_focus) {
+                    iMap.incrementValue(x - radius, y - radius, x + radius, y + radius, 8);
+                } else {
+                    iMap.decrementValue(x - radius, y - radius, x + radius, y + radius, 2);
+                }
+            }
+        }
+    }
+
+    int our_owner = (this->md->player != nullptr) ? this->md->player->id : -1;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if (memory.id == -1) {
+            continue;
+        }
+
+        RGE_Static_Object* object = this->md->object(memory.id);
+        if ((object == nullptr) || (object->master_obj == nullptr)) {
+            continue;
+        }
+
+        int x = static_cast<int>(memory.x);
+        int y = static_cast<int>(memory.y);
+        int radius = static_cast<int>(object->master_obj->los);
+        if (radius < 1) {
+            radius = 1;
+        }
+
+        bool enemy_object = (this->md->player != nullptr) && (this->md->player->isEnemy(static_cast<int>(memory.owner)) != 0);
+        if (enemy_object) {
+            iMap.decrementValue(x - radius, y - radius, x + radius, y + radius, (param_1 == 4) ? 10 : 5);
+            continue;
+        }
+        if (static_cast<int>(memory.owner) != our_owner) {
+            continue;
+        }
+
+        if ((param_1 == 4) && (isWall(object) != 0)) {
+            iMap.incrementValue(x - 1, y - 1, x + 1, y + 1, 8);
+        } else if ((param_1 == 6) && (isBuilding(object) != 0)) {
+            iMap.incrementValue(x - radius, y - radius, x + radius, y + radius, 3);
+        } else if ((param_2 == 0x2D) && (object->master_obj->id == 0x2D)) {
+            iMap.decrementValue(x - 2, y - 2, x + 2, y + 2, 4);
+        }
+    }
+
+    if ((param_1 == 3) || (param_1 == 4) || (param_1 == 6)) {
+        for (int i = 0; i < this->maxAttackMemories; ++i) {
+            const AttackMemory& memory = this->attackMemories[i];
+            if (memory.id == -1) {
+                continue;
+            }
+            if (static_cast<int>(memory.targetOwner) == our_owner) {
+                iMap.decrementValue(memory.minX, memory.minY, memory.maxX, memory.maxY, 3);
+            }
+        }
+    }
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DFD40
@@ -2685,14 +3411,94 @@ int TribeInformationAIModule::groupInfluenceDimension(int param_1) {
     return param_1 * param_1;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004DFD60
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DFD60
-
-ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int, int, int*, int*) {
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DFD60
+ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int param_1, int param_2, int* param_3, int* param_4) {
     ObjectMemory result{};
-    result.id = -1;
-    result.type = -1;
-    result.group = -1;
+    if (param_3 != nullptr) {
+        *param_3 = 0;
+    }
+    if (param_4 != nullptr) {
+        *param_4 = 0;
+    }
+
+    RGE_Static_Object* observer = (this->md != nullptr) ? this->md->object(param_2) : nullptr;
+    if (observer == nullptr) {
+        return result;
+    }
+
+    int max_distance = 0;
+    int max_hitpoints = 0;
+    int max_kills = 0;
+    float max_damage = 0.0f;
+    float max_rate_of_fire = 0.0f;
+    float max_range = 0.0f;
+    uchar observer_zone = observer->currentZone();
+
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.id == -1) || (static_cast<int>(memory.owner) != param_1)) {
+            continue;
+        }
+
+        RGE_Static_Object* object = this->md->object(memory.id);
+        if (object == nullptr) {
+            continue;
+        }
+
+        uchar memory_zone = object->currentZone();
+        if (memory_zone != observer_zone) {
+            XYPoint point{static_cast<int>(memory.x), static_cast<int>(memory.y)};
+            if (observer->withinRangeOfZoneAtPoint(observer_zone, observer->master_obj->los, &point) != 1) {
+                continue;
+            }
+        }
+
+        int mx = static_cast<int>(memory.x);
+        int my = static_cast<int>(memory.y);
+        int ox = static_cast<int>(observer->world_x);
+        int oy = static_cast<int>(observer->world_y);
+        int distance = static_cast<int>(observer->distance_to_position(static_cast<float>(mx), static_cast<float>(my), static_cast<float>(memory.z)));
+        if (max_distance < distance) {
+            max_distance = distance;
+        }
+
+        if ((memory.group != 3) && (memory.group != 0x1B) && (param_3 != nullptr)) {
+            *param_3 = *param_3 + 1;
+        }
+        if ((memory.group != 2) && (memory.group != 0x15) && (memory.group != 0x16) && (memory.group != 0x14) && (memory.type != 0x2D) && (param_4 != nullptr)) {
+            *param_4 = *param_4 + 1;
+        }
+
+        if (max_hitpoints < memory.hitPoints) {
+            max_hitpoints = memory.hitPoints;
+        }
+        if (memory.attackAttempts > max_hitpoints) {
+            max_hitpoints = memory.attackAttempts;
+        }
+        if (static_cast<int>(memory.kills) > max_hitpoints) {
+            max_hitpoints = static_cast<int>(memory.kills);
+        }
+        if (max_kills < static_cast<int>(memory.kills)) {
+            max_kills = static_cast<int>(memory.kills);
+        }
+        if (max_damage < memory.damageCapability) {
+            max_damage = memory.damageCapability;
+        }
+        if (max_rate_of_fire < memory.rateOfFire) {
+            max_rate_of_fire = memory.rateOfFire;
+        }
+        if (max_range < memory.range) {
+            max_range = memory.range;
+        }
+    }
+
+    std::memcpy(&result.type, &max_distance, sizeof(int));
+    result.attackAttempts = max_hitpoints;
+    result.kills = static_cast<uchar>(max_kills);
+    result.damageCapability = static_cast<float>(max_kills);
+    result.rateOfFire = max_damage;
+    result.range = max_rate_of_fire;
+    (void)max_range;
     return result;
 }
 
@@ -2858,10 +3664,72 @@ int TribeInformationAIModule::undesirableLot(int param_1, uchar param_2, uchar p
     return 0;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E0720
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E0670
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0670
+void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8) {
+    int gate_count = this->numberGatesValue;
+    if ((param_8 == 1) && (param_6 > 0)) {
+        gate_count = (param_6 > 4) ? 4 : param_6;
+        this->numberGatesValue = gate_count;
+        int half_width = param_7 / 2;
+        for (int i = 0; i < gate_count; ++i) {
+            switch (i & 3) {
+            case 0:
+                this->minGatePosition[i] = {param_1 - half_width, param_2 - (param_4 * 2)};
+                this->maxGatePosition[i] = {param_1 + half_width, param_2};
+                break;
+            case 1:
+                this->minGatePosition[i] = {param_1 - half_width, param_2};
+                this->maxGatePosition[i] = {param_1 + half_width, param_2 + (param_4 * 2)};
+                break;
+            case 2:
+                this->minGatePosition[i] = {param_1, param_2 - half_width};
+                this->maxGatePosition[i] = {param_1 + (param_4 * 2), param_2 + half_width};
+                break;
+            default:
+                this->minGatePosition[i] = {param_1 - (param_4 * 2), param_2 - half_width};
+                this->maxGatePosition[i] = {param_1, param_2 + half_width};
+                break;
+            }
+            mapBound(this->minGatePosition[i]);
+            mapBound(this->maxGatePosition[i]);
+        }
+    }
 
-void TribeInformationAIModule::setupWalls(int, int, int, int, int, int, int, int) {
+    int pattern = param_5;
+    if (pattern == 0) {
+        pattern = 1 + ((param_1 + param_2 + param_4) & 1);
+    }
+    if (param_3 > param_4) {
+        return;
+    }
+
+    auto place_wall_lot = [&](int x, int y) {
+        if ((x < 0) || (y < 0) || (x >= this->mapXSizeValue) || (y >= this->mapYSizeValue)) {
+            return;
+        }
+        if (insideGate(gate_count, x, y) == 0) {
+            storeLot(0x48, static_cast<uchar>(x), static_cast<uchar>(y), 0);
+        }
+    };
+
+    for (int radius = param_3; radius <= param_4; ++radius) {
+        if (pattern == 1) {
+            for (int x = param_1 - radius; x <= param_1 + radius; ++x) {
+                place_wall_lot(x, param_2 - radius);
+                place_wall_lot(x, param_2 + radius);
+            }
+            for (int y = param_2 - radius; y <= param_2 + radius; ++y) {
+                place_wall_lot(param_1 - radius, y);
+                place_wall_lot(param_1 + radius, y);
+            }
+        } else {
+            for (int dx = -radius; dx <= radius; ++dx) {
+                int dy = radius - ((dx < 0) ? -dx : dx);
+                place_wall_lot(param_1 + dx, param_2 + dy);
+                place_wall_lot(param_1 + dx, param_2 - dy);
+            }
+        }
+    }
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0F40
@@ -2970,11 +3838,50 @@ AttackMemory* TribeInformationAIModule::attackMemory(int param_1) {
     return nullptr;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1520
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E1730
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1730
+int TribeInformationAIModule::unexploredPlayerLocation(int param_1, XYPoint* param_2) {
+    if ((param_2 == nullptr) || (this->md == nullptr) || (param_1 == 0)) {
+        return 0;
+    }
 
-int TribeInformationAIModule::unexploredPlayerLocation(int, XYPoint*) {
-    return 0;
+    RGE_Static_Object* unit = this->md->object(param_1);
+    if (unit == nullptr) {
+        return 0;
+    }
+    uchar unit_zone = unit->currentZone();
+
+    ObjectMemory* best_object = nullptr;
+    int best_distance = -1;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.id == -1) || (memory.owner == 0)) {
+            continue;
+        }
+        if ((this->md->player != nullptr) && (static_cast<int>(memory.owner) == this->md->player->id)) {
+            continue;
+        }
+        if (tileUncovered(memory.x, memory.y) == 1) {
+            continue;
+        }
+        if (unit->lookupZone(static_cast<int>(memory.x), static_cast<int>(memory.y)) != unit_zone) {
+            continue;
+        }
+
+        int distance = static_cast<int>(unit->distance_to_position(static_cast<float>(memory.x), static_cast<float>(memory.y), static_cast<float>(memory.z)));
+        if ((best_object == nullptr) || (distance < best_distance)) {
+            best_object = &memory;
+            best_distance = distance;
+        }
+    }
+
+    if (best_object == nullptr) {
+        return 0;
+    }
+
+    param_2->x = static_cast<int>(best_object->x);
+    param_2->y = static_cast<int>(best_object->y);
+    this->pathMap.setValue(param_2->x, param_2->y, 0);
+    return 1;
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1930
@@ -3092,11 +3999,102 @@ int TribeInformationAIModule::withinXTilesOfObject(RGE_Static_Object* param_1, i
     return best_id;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E1BD0
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E1D10
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1D10
+int TribeInformationAIModule::findStagingPoint(XYPoint param_1, XYPoint* param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    if ((param_2 == nullptr) || (this->md == nullptr)) {
+        return 0;
+    }
 
-int TribeInformationAIModule::findStagingPoint(XYPoint, XYPoint*, int, int, int, int, int) {
-    return -1;
+    ObjectMemory* target = objectMemory(param_5);
+    if (target == nullptr) {
+        return 0;
+    }
+
+    RGE_Static_Object* commander = this->md->object(param_7);
+    if (commander == nullptr) {
+        return 0;
+    }
+
+    int terrain_class = 2;
+    int terrain_type = 0;
+    if ((isBoat(commander) == 1) && (param_3 == 0)) {
+        terrain_class = 1;
+        terrain_type = 0x16;
+    }
+
+    XYPoint zone_reference = param_1;
+    commander->findClosestPointInTerrainType(param_1, &zone_reference, terrain_class, terrain_type, 4);
+    uchar staging_zone = commander->lookupZone(zone_reference.x, zone_reference.y);
+
+    int max_los_value = setupLOSMap(static_cast<int>(target->owner), static_cast<int>(target->x), static_cast<int>(target->y));
+    int max_attack_value = setupAttackMap(static_cast<int>(target->owner), static_cast<int>(target->x), static_cast<int>(target->y));
+
+    XYPoint min_point{static_cast<int>(target->x) - param_6, static_cast<int>(target->y) - param_6};
+    XYPoint max_point{static_cast<int>(target->x) + param_6, static_cast<int>(target->y) + param_6};
+    mapBound(min_point);
+    mapBound(max_point);
+
+    RGE_Visible_Map* visible_map = (this->md->aiPlayer != nullptr) ? this->md->aiPlayer->visible : nullptr;
+    RGE_Map* game_map = (visible_map != nullptr) ? visible_map->map : nullptr;
+
+    int best_value = -0x7fffffff;
+    bool found = false;
+    for (int x = min_point.x; x <= max_point.x; ++x) {
+        for (int y = min_point.y; y <= max_point.y; ++y) {
+            RGE_Tile* tile = (game_map != nullptr) ? game_map->get_tile(x, y) : nullptr;
+            int terrain = (tile != nullptr) ? static_cast<int>(tile->terrain_type) : 0;
+
+            bool terrain_ok = false;
+            if (param_3 == 1) {
+                terrain_ok = (terrain == 2);
+            } else if (param_4 == 1) {
+                terrain_ok = (terrain != 1) && (terrain != 0x16);
+            } else {
+                terrain_ok = (terrain == 1) || (terrain == 0x16);
+            }
+            if (!terrain_ok) {
+                continue;
+            }
+            if (commander->lookupZone(x, y) != staging_zone) {
+                continue;
+            }
+
+            if (param_3 == 1) {
+                bool passable = true;
+                for (int px = x - 2; px <= x + 2; ++px) {
+                    for (int py = y - 2; py <= y + 2; ++py) {
+                        if (commander->passableTile(static_cast<float>(px), static_cast<float>(py), 1) == 0) {
+                            passable = false;
+                            break;
+                        }
+                    }
+                    if (!passable) {
+                        break;
+                    }
+                }
+                if (!passable) {
+                    continue;
+                }
+            }
+
+            XYPoint point{x, y};
+            int line_bonus = (commander->withinRangeOfZoneAtPoint(staging_zone, 1.0f, &point) == 1) ? param_6 : 0;
+            int los_penalty = (max_los_value > 0) ? (losMap.lookupValue(x, y) * param_6) / max_los_value : 0;
+            int attack_penalty = (max_attack_value > 0) ? (attackMap.lookupValue(x, y) * param_6) / max_attack_value : 0;
+            int random_value = ((x * 31) + (y * 17)) & 0x0F;
+            int distance = static_cast<int>(std::sqrt(static_cast<float>(tribe_distance_squared(x, y, static_cast<int>(target->x), static_cast<int>(target->y)))));
+
+            int candidate_value = line_bonus + random_value - los_penalty - attack_penalty - distance;
+            if (!found || (best_value < candidate_value)) {
+                param_2->x = x;
+                param_2->y = y;
+                best_value = candidate_value;
+                found = true;
+            }
+        }
+    }
+
+    return found ? 1 : 0;
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E21E0
@@ -3301,25 +4299,128 @@ int TribeInformationAIModule::inRangeOfUnits(int param_1, int param_2, int param
     return 0;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3A10
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E3640
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3640
+ObjectMemory* TribeInformationAIModule::wonderToAttack(int param_1) {
+    ObjectMemory* best_memory = nullptr;
+    float best_hp = 0.0f;
+    int best_state = 0;
 
-ObjectMemory* TribeInformationAIModule::wonderToAttack(int) {
-    return nullptr;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if (memory.type != 0x114) {
+            continue;
+        }
+        if (param_1 == -1) {
+            if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->isEnemy(static_cast<int>(memory.owner)) == 0)) {
+                continue;
+            }
+        } else if (static_cast<int>(memory.owner) != param_1) {
+            continue;
+        }
+
+        RGE_Static_Object* wonder = (this->md != nullptr) ? this->md->object(memory.id) : nullptr;
+        if ((wonder == nullptr) || (wonder->object_state >= 3)) {
+            continue;
+        }
+
+        int state = wonder->object_state;
+        float hp = wonder->hp;
+        if ((best_memory == nullptr) || (best_state < state) || ((best_state == state) && (hp < best_hp))) {
+            best_memory = &memory;
+            best_state = state;
+            best_hp = hp;
+        }
+    }
+    return best_memory;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3A90
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E3840
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3840
+ObjectMemory* TribeInformationAIModule::ruinToCapture(int param_1) {
+    RGE_Static_Object* town_center = (this->md != nullptr) ? this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1) : nullptr;
+    ObjectMemory* best_memory = nullptr;
+    int best_value = -1;
 
-ObjectMemory* TribeInformationAIModule::ruinToCapture(int) {
-    return nullptr;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if ((memory.type != 0x9E) && (memory.type != 0xA3)) {
+            continue;
+        }
+        if (param_1 == -1) {
+            if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->isEnemy(static_cast<int>(memory.owner)) == 0)) {
+                continue;
+            }
+        } else if (static_cast<int>(memory.owner) != param_1) {
+            continue;
+        }
+
+        RGE_Static_Object* ruin = (this->md != nullptr) ? this->md->object(memory.id) : nullptr;
+        if ((ruin == nullptr) || (ruin->object_state >= 3)) {
+            continue;
+        }
+
+        int x = static_cast<int>(memory.x);
+        int y = static_cast<int>(memory.y);
+        int value = numberUnitsWithinXTiles(param_1, x, y, 5);
+        if (town_center != nullptr) {
+            value = static_cast<int>(town_center->distance_to_position(static_cast<float>(x), static_cast<float>(y), static_cast<float>(memory.z))) * value;
+        }
+
+        if ((best_memory == nullptr) || (value < best_value)) {
+            best_memory = &memory;
+            best_value = value;
+        }
+    }
+
+    return best_memory;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3B10
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E39D0
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E39D0
+ObjectMemory* TribeInformationAIModule::artifactToCapture(int param_1) {
+    RGE_Static_Object* town_center = (this->md != nullptr) ? this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1) : nullptr;
+    RGE_Visible_Map* visible_map = (this->md != nullptr && this->md->aiPlayer != nullptr) ? this->md->aiPlayer->visible : nullptr;
+    ObjectMemory* best_memory = nullptr;
+    int best_value = -1;
 
-ObjectMemory* TribeInformationAIModule::artifactToCapture(int) {
-    return nullptr;
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        ObjectMemory& memory = this->importantObjectMemory[i];
+        if (memory.type != 0x9F) {
+            continue;
+        }
+        if (param_1 == -1) {
+            if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->isEnemy(static_cast<int>(memory.owner)) == 0)) {
+                continue;
+            }
+        } else if (static_cast<int>(memory.owner) != param_1) {
+            continue;
+        }
+
+        RGE_Static_Object* artifact = (this->md != nullptr) ? this->md->object(memory.id) : nullptr;
+        if ((artifact == nullptr) || (artifact->object_state >= 3)) {
+            continue;
+        }
+
+        int ax = static_cast<int>(memory.x);
+        int ay = static_cast<int>(memory.y);
+        if ((visible_map != nullptr) && (visible_map->get_visible(ax, ay) != 0)) {
+            memory.x = static_cast<uchar>(artifact->world_x);
+            memory.y = static_cast<uchar>(artifact->world_y);
+            memory.z = static_cast<uchar>(artifact->world_z);
+            ax = static_cast<int>(memory.x);
+            ay = static_cast<int>(memory.y);
+        }
+
+        int value = numberUnitsWithinXTiles(param_1, ax, ay, 5);
+        if (town_center != nullptr) {
+            value = static_cast<int>(town_center->distance_to_object(artifact)) * value;
+        }
+
+        if ((best_memory == nullptr) || (value < best_value)) {
+            best_memory = &memory;
+            best_value = value;
+        }
+    }
+
+    return best_memory;
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3B80
@@ -3453,10 +4554,66 @@ int TribeInformationAIModule::numberAvailableGranaries() {
     return (required_distance < this->closestDropsiteValue[0]) ? 1 : 0;
 }
 
-// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004E3DE0
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E4040
-
+// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4040
 void TribeInformationAIModule::lookAtMap() {
+    if ((this->md == nullptr) || (this->md->aiPlayer == nullptr) || (this->md->aiPlayer->world == nullptr) || (this->md->aiPlayer->world->map == nullptr)) {
+        return;
+    }
+
+    RGE_Map* game_map = this->md->aiPlayer->world->map;
+    this->numberFoundForestTilesValue = 0;
+    for (int qx = 0; qx < 4; ++qx) {
+        for (int qy = 0; qy < 4; ++qy) {
+            this->quadrantLog[qx][qy].numberExploredTiles = 0;
+        }
+    }
+
+    for (int x = 0; x < this->mapXSizeValue; ++x) {
+        for (int y = 0; y < this->mapYSizeValue; ++y) {
+            RGE_Tile* tile = game_map->get_tile(x, y);
+            if (tile == nullptr) {
+                continue;
+            }
+
+            int qx = (this->mapXSizeValue > 0) ? ((x * 4) / this->mapXSizeValue) : 0;
+            int qy = (this->mapYSizeValue > 0) ? ((y * 4) / this->mapYSizeValue) : 0;
+            if (qx < 0) {
+                qx = 0;
+            } else if (qx > 3) {
+                qx = 3;
+            }
+            if (qy < 0) {
+                qy = 0;
+            } else if (qy > 3) {
+                qy = 3;
+            }
+            this->quadrantLog[qx][qy].numberExploredTiles = this->quadrantLog[qx][qy].numberExploredTiles + 1;
+
+            this->pathMap.setValue(x, y, 0);
+
+            int tree_count = 0;
+            for (RGE_Object_Node* node = tile->objects.list; node != nullptr; node = node->next) {
+                RGE_Static_Object* object = node->node;
+                if ((object == nullptr) || (object->master_obj == nullptr)) {
+                    continue;
+                }
+
+                int group = static_cast<int>(object->master_obj->object_group);
+                if (importantObject(group) == 1) {
+                    addImportantObject(object, 0);
+                }
+                if (group == 0x0F) {
+                    tree_count = tree_count + 1;
+                }
+            }
+
+            int terrain_type = static_cast<int>(tile->terrain_type);
+            if ((tree_count > 0) &&
+                ((terrain_type == 10) || (terrain_type == 0x13) || (terrain_type == 0x0D) || (terrain_type == 0x14))) {
+                this->numberFoundForestTilesValue = this->numberFoundForestTilesValue + 1;
+            }
+        }
+    }
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E41C0
