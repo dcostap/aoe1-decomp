@@ -170,7 +170,7 @@ uchar RGE_RMM_Land_Generator::chance(long param_1, long param_2, long param_3) {
 }
 
 uchar RGE_RMM_Land_Generator::base_land_generate() {
-    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485520
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485520 + rmm_land.cpp.asm
     if (this->map == nullptr || this->map_row_offset == nullptr || this->search_map_rows == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;

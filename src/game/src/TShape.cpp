@@ -2082,14 +2082,10 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     unsigned char* slp_base = (unsigned char*)self->FShape;
     unsigned char* shape_end = slp_base + self->load_size;
 
-    long clip_l = draw_area->ClipRect.left;
-    long clip_t = draw_area->ClipRect.top;
-    long clip_r = draw_area->ClipRect.right;
-    long clip_b = draw_area->ClipRect.bottom;
-    if (clip_l < 0) clip_l = 0;
-    if (clip_t < 0) clip_t = 0;
-    if (draw_area->Width > 0 && clip_r >= draw_area->Width) clip_r = draw_area->Width - 1;
-    if (draw_area->Height > 0 && clip_b >= draw_area->Height) clip_b = draw_area->Height - 1;
+    long clip_l = 0;
+    long clip_t = 0;
+    long clip_r = (draw_area->Width > 0) ? (draw_area->Width - 1) : -1;
+    long clip_b = (draw_area->Height > 0) ? (draw_area->Height - 1) : -1;
 
     unsigned long need_data = info->Shape_Data_Offsets + (unsigned long)(height * 4);
     unsigned long need_outline = info->Shape_Outline_Offset + (unsigned long)(height * 4);
@@ -2123,9 +2119,6 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         } else {
             if (left & 0x8000) continue;
         }
-        left = (unsigned short)(left & 0x7FFF);
-        right = (unsigned short)(right & 0x7FFF);
-
         unsigned long row_off = row_offsets[row];
         if (row_off >= (unsigned long)self->load_size) continue;
         unsigned char* src = slp_base + row_off;
@@ -2139,8 +2132,14 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             dst_x = draw_x + (long)left;
             limit_x = (draw_x + width - 1) - (long)right;
         }
-        int off = (draw_area->Orien == 1) ? (int)(dst_y * dest_pitch) : (int)(((draw_area->Height - dst_y) - 1) * dest_pitch);
-        unsigned char* dst_row = dest_bits + off;
+        unsigned char* dst_row = (unsigned char*)0;
+        if (draw_area->CurDisplayOffsets != (void**)0 && dst_y >= 0 && dst_y < draw_area->Height) {
+            dst_row = (unsigned char*)draw_area->CurDisplayOffsets[dst_y];
+        }
+        if (dst_row == (unsigned char*)0) {
+            int off = (draw_area->Orien == 1) ? (int)(dst_y * dest_pitch) : (int)(((draw_area->Height - dst_y) - 1) * dest_pitch);
+            dst_row = dest_bits + off;
+        }
 
         VSpan_Node* span = (VSpan_Node*)0;
         if (spans && spans->Line_Head_Ptrs && spans->Line_Tail_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {

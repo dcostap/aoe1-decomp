@@ -350,8 +350,8 @@ uchar RGE_Action_Gather::update() {
         this->set_target_obj2(nullptr);
     }
 
-    if ((this->target_obj != nullptr) && (this->target_obj->master_obj != nullptr) && (this->obj != nullptr) && (this->obj->master_obj != nullptr) &&
-        (this->target_obj->master_obj->terrain != 0) && (this->target_obj->master_obj->terrain != this->obj->master_obj->terrain)) {
+    if ((this->target_obj != nullptr) && (this->target_obj->owner != nullptr) && (this->obj != nullptr) && (this->obj->owner != nullptr) &&
+        (this->target_obj->owner->id != 0) && (this->target_obj->owner->id != this->obj->owner->id)) {
         this->set_state(1);
         int id = (int)this->obj->id;
         this->obj->notify(id, id, 0x1FB, 0x261, 0, 0);

@@ -453,26 +453,6 @@ static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
 }
 
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
-static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackground* bg) {
-    if (*out1) { delete *out1; *out1 = nullptr; }
-    if (*out2) { delete *out2; *out2 = nullptr; }
-
-    if (bg->id1 >= 0 && !is_none_token(bg->file1)) {
-        *out1 = new TShape((char*)bg->file1, (int)bg->id1);
-        if (*out1 && !(*out1)->is_loaded()) {
-            delete *out1;
-            *out1 = nullptr;
-        }
-    }
-    if (bg->id2 >= 0 && !is_none_token(bg->file2)) {
-        *out2 = new TShape((char*)bg->file2, (int)bg->id2);
-        if (*out2 && !(*out2)->is_loaded()) {
-            delete *out2;
-            *out2 = nullptr;
-        }
-    }
-}
-
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00466A90
@@ -574,70 +554,20 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
             bg = &cfg.bg2;
         }
     }
-    load_bg_shape_pair(&this->background_pic, &this->background_pic2, bg);
-
+    this->set_background((char*)bg->file1, bg->id1);
+    this->set_background2((char*)bg->file2, bg->id2);
     this->set_shadow_amount(cfg.shade_amount_percent);
-
-    // Palette.
-    if (panel_system && !is_none_token(cfg.pal_file) && cfg.pal_id >= 0) {
-        void* pal = panel_system->get_palette(cfg.pal_file, cfg.pal_id);
-        this->palette = pal;
-        if (pal && param_1 && param_1->DrawSystem) {
-            param_1->DrawSystem->SetPalette(pal);
-            // Rebuild runtime shadow table against the active palette (matches original set_palette path).
-            if (this->shadow_amount > 0) {
-                this->set_shadow_amount(this->shadow_amount);
-            }
-        }
-    }
-
-    // Cursor.
-    if (!is_none_token(cfg.cursor_file)) {
-        strncpy(this->cursor_file, cfg.cursor_file, sizeof(this->cursor_file) - 1);
-        this->cursor_file[sizeof(this->cursor_file) - 1] = '\0';
-        this->cursor_id = cfg.cursor_id;
-    }
-
-    // Colors / bevels.
-    this->background_pos = cfg.background_pos;
-    this->background_color1 = (unsigned char)cfg.background_color;
-    this->background_color2 = (unsigned char)cfg.background_color;
-
-    // Source of truth: `Panel_ez.cpp.asm` calls `set_use_bevels(this,1)` on parse success.
-    this->use_bevels = 1;
-    this->bevel_color1 = (unsigned char)cfg.bevel[0];
-    this->bevel_color2 = (unsigned char)cfg.bevel[1];
-    this->bevel_color3 = (unsigned char)cfg.bevel[2];
-    this->bevel_color4 = (unsigned char)cfg.bevel[3];
-    this->bevel_color5 = (unsigned char)cfg.bevel[4];
-    this->bevel_color6 = (unsigned char)cfg.bevel[5];
-
-    this->text_color1 = RGB(cfg.text1[0], cfg.text1[1], cfg.text1[2]);
-    this->text_color2 = RGB(cfg.text2[0], cfg.text2[1], cfg.text2[2]);
-    this->focus_color1 = RGB(cfg.focus1[0], cfg.focus1[1], cfg.focus1[2]);
-    this->focus_color2 = RGB(cfg.focus2[0], cfg.focus2[1], cfg.focus2[2]);
-    this->state_color1 = RGB(cfg.state1[0], cfg.state1[1], cfg.state1[2]);
-    this->state_color2 = RGB(cfg.state2[0], cfg.state2[1], cfg.state2[2]);
-
-    // Popup dialog info.
-    if (!is_none_token(cfg.popup_file)) {
-        strncpy(this->popup_info_file_name, cfg.popup_file, sizeof(this->popup_info_file_name) - 1);
-        this->popup_info_file_name[sizeof(this->popup_info_file_name) - 1] = '\0';
-        this->popup_info_id = cfg.popup_id;
-    }
-
-    // Button pics (scr1 uses `none -1`).
-    if (!is_none_token(cfg.button_file) && cfg.button_id >= 0) {
-        if (this->button_pics) {
-            delete this->button_pics;
-            this->button_pics = nullptr;
-        }
-        this->button_pics = new TShape((char*)cfg.button_file, (int)cfg.button_id);
-        if (this->button_pics && !this->button_pics->is_loaded()) {
-            delete this->button_pics;
-            this->button_pics = nullptr;
-        }
-    }
+    this->set_palette((char*)cfg.pal_file, cfg.pal_id);
+    this->set_cursor((char*)cfg.cursor_file, cfg.cursor_id);
+    this->set_background_pos(cfg.background_pos);
+    this->set_background_colors((uchar)cfg.background_color, (uchar)cfg.background_color);
+    this->set_use_bevels(1);
+    this->set_bevel_colors((uchar)cfg.bevel[0], (uchar)cfg.bevel[1], (uchar)cfg.bevel[2], (uchar)cfg.bevel[3], (uchar)cfg.bevel[4], (uchar)cfg.bevel[5]);
+    this->set_text_colors(RGB(cfg.text1[0], cfg.text1[1], cfg.text1[2]), RGB(cfg.text2[0], cfg.text2[1], cfg.text2[2]));
+    this->set_focus_colors(RGB(cfg.focus1[0], cfg.focus1[1], cfg.focus1[2]), RGB(cfg.focus2[0], cfg.focus2[1], cfg.focus2[2]));
+    this->set_state_colors(RGB(cfg.state1[0], cfg.state1[1], cfg.state1[2]), RGB(cfg.state2[0], cfg.state2[1], cfg.state2[2]));
+    this->set_button_pics((char*)cfg.button_file, cfg.button_id);
+    this->set_popup_info_file((char*)cfg.popup_file, cfg.popup_id);
 
     return 1;
 }
@@ -848,8 +778,6 @@ void TEasy_Panel::handle_reactivate() { TPanel::handle_reactivate(); }
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::draw_background(int param_1) {
     // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004675C0
-    if (this->render_area == nullptr) return;
-
     this->draw_setup(0);
 
     if ((param_1 != 0) && (this->shadow_area != nullptr)) {

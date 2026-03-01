@@ -604,7 +604,7 @@ int TMessagePanel::render_to_image_buffer() {
         SetRect(&rect, text_left, text_top, right - 1, bottom - 1);
         DrawTextA(dc, this->text, -1, &rect, draw_flags);
 
-        if (this->Icon1 != nullptr && this->Icon1->shape_info != nullptr) {
+        if (this->Icon1 != nullptr) {
             const long frame = (long)this->IconFrame1;
             Shape_Info* info = this->Icon1->shape_info;
             const int icon_wid = info[frame].Width;
@@ -617,7 +617,7 @@ int TMessagePanel::render_to_image_buffer() {
             this->UsedImageRect.left = this->UsedImageRect.left + (-4 - icon_wid);
         }
 
-        if (this->Icon2 != nullptr && this->Icon2->shape_info != nullptr) {
+        if (this->Icon2 != nullptr) {
             const long frame = (long)this->IconFrame2;
             Shape_Info* info = this->Icon2->shape_info;
             const int icon_wid = info[frame].Width;

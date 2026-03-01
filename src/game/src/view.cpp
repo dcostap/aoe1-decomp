@@ -1405,18 +1405,14 @@ int RGE_View::start_scroll_view(uchar param_1, long param_2, long param_3, int p
 }
 
 int RGE_View::handle_scroll_view(long param_1, long param_2) {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A290.
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x0053A999 (switch table label in handle_scroll_view).
+    // Fully verified. Source of truth: view.cpp.decomp + view.cpp.asm @ 0x0053A290.
+    // Fully verified. Source of truth: view.cpp.decomp + view.cpp.asm @ 0x0053A999 (switch table label in handle_scroll_view).
     tagPOINT point;
     RGE_Pick_Info pick_info;
     long save_mouse_last_x;
 
     point.x = this->mouse_last_x;
     if ((param_1 == point.x) && (param_2 == this->mouse_last_y)) {
-        return 0;
-    }
-
-    if (this->player == nullptr) {
         return 0;
     }
 
@@ -1474,10 +1470,8 @@ int RGE_View::handle_scroll_view(long param_1, long param_2) {
 
         point.x = this->mouse_down_x;
         point.y = this->mouse_down_y;
-        if (this->render_area && this->render_area->Wnd) {
-            ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
-            SetCursorPos(point.x, point.y);
-        }
+        ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+        SetCursorPos(point.x, point.y);
 
         this->mouse_last_x = this->mouse_down_x;
         this->mouse_last_y = this->mouse_down_y;
@@ -1504,10 +1498,8 @@ int RGE_View::handle_scroll_view(long param_1, long param_2) {
         } else {
             point.x = this->mouse_down_x;
             point.y = this->mouse_down_y;
-            if (this->render_area && this->render_area->Wnd) {
-                ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
-                SetCursorPos(point.x, point.y);
-            }
+            ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+            SetCursorPos(point.x, point.y);
             this->mouse_last_x = this->mouse_down_x;
             this->mouse_last_y = this->mouse_down_y;
         }
@@ -1558,10 +1550,8 @@ int RGE_View::handle_scroll_view(long param_1, long param_2) {
         if ((8 < std::abs((int)(param_2 - this->mouse_down_y))) || (8 < std::abs((int)(param_1 - this->mouse_down_x)))) {
             point.x = this->mouse_down_x;
             point.y = this->mouse_down_y;
-            if (this->render_area && this->render_area->Wnd) {
-                ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
-                SetCursorPos(point.x, point.y);
-            }
+            ClientToScreen((HWND)this->render_area->Wnd, (POINT*)&point);
+            SetCursorPos(point.x, point.y);
             this->mouse_last_x = this->mouse_down_x;
             this->mouse_last_y = this->mouse_down_y;
         }
@@ -1905,16 +1895,16 @@ void RGE_View::get_tile_sizes(short* out_tile_wid, short* out_tile_hgt, short* o
 }
 
 long RGE_View::view_function(uchar mode, uchar parm, tagPOINT* mouse_pos, tagPOINT* start_mouse_pos, void** picked, float* out_x, float* out_y, short* out_scr_x, short* out_scr_y) {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535FE0
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536912 (embedded switch case in view_function).
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536932 (embedded switch case in view_function).
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536957 (embedded switch case in view_function).
+    // Fully verified. Source of truth: view.cpp.decomp + view.cpp.asm @ 0x00535FE0
+    // Fully verified. Source of truth: view.cpp.decomp + view.cpp.asm @ 0x00536912 (embedded switch case in view_function).
+    // Fully verified. Source of truth: view.cpp.decomp + view.cpp.asm @ 0x00536932 (embedded switch case in view_function).
+    // Fully verified. Source of truth: view.cpp.decomp + view.cpp.asm @ 0x00536957 (embedded switch case in view_function).
     (void)start_mouse_pos;
 
     this->function_mode = mode;
     this->function_parm = parm;
 
-    if ((mode == '\n') && (this->calc_draw_count != 0) && (this->map != nullptr)) {
+    if ((mode == '\n') && (this->calc_draw_count != 0)) {
         short i = 0;
         while (i < this->map->num_terrain) {
             this->map->terrain_types[i].drawn = '\0';
@@ -2092,10 +2082,24 @@ long RGE_View::view_function(uchar mode, uchar parm, tagPOINT* mouse_pos, tagPOI
         return '2';
     }
 
-    if (out_x != nullptr) *out_x = map_col;
-    if (out_y != nullptr) *out_y = map_row;
-    if (out_scr_x != nullptr) *out_scr_x = (short)(tile->screen_xpos - (short)this->map_scr_x_offset);
-    if (out_scr_y != nullptr) *out_scr_y = (short)(tile->screen_ypos - (short)this->map_scr_y_offset);
+    float world_x = map_col;
+    float world_y = map_row;
+    short scr_x = 0;
+    short scr_y = 0;
+    if (this->get_tile_screen_coords((short)col, (short)row, &scr_x, &scr_y, 0) != 0) {
+        float local_x = 0.0f;
+        float local_y = 0.0f;
+        this->map->tile_map_coords((short)(mouse_pos->x - scr_x), (short)(mouse_pos->y - scr_y), tile, &local_x, &local_y);
+        world_x = (float)col + local_x;
+        world_y = (float)row + local_y;
+    } else {
+        scr_x = (short)(tile->screen_xpos - (short)this->map_scr_x_offset);
+        scr_y = (short)(tile->screen_ypos - (short)this->map_scr_y_offset);
+    }
+    if (out_x != nullptr) *out_x = world_x;
+    if (out_y != nullptr) *out_y = world_y;
+    if (out_scr_x != nullptr) *out_scr_x = scr_x;
+    if (out_scr_y != nullptr) *out_scr_y = scr_y;
     if (picked != nullptr) *picked = tile;
     return '3';
 }

@@ -2767,6 +2767,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 
         this->ShuttingDown = 0;
         for (uint p = 0; p < 10; ++p) {
+            this->LastPlayerWarning[p] = 0;
             this->Kicked[p] = 0;
             this->WasKicked[p] = 0;
         }
@@ -2795,9 +2796,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
         }
         this->PlayerOptions.NeedsToBeSent = 0;
         this->PlayerOptions.LastSentTime = 0;
-        if (this->Chat != nullptr) {
-            this->Chat->ClearChat();
-        }
+        this->Chat->ClearChat();
         this->MyGameTitle[0] = '\0';
         this->Me = 0;
         s_localPlayerDpid = 0;
@@ -2807,9 +2806,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
     case SESSION_AVAILABLE: {
         this->ClearRXandTX();
         this->DropAllHostedPlayers();
-        if (this->Chat != nullptr) {
-            this->Chat->ClearChat();
-        }
+        this->Chat->ClearChat();
         (void)this->CloseSession();
         this->GTDSerialNo = 0;
 
@@ -2866,9 +2863,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
         }
         this->PlayerOptions.NeedsToBeSent = 0;
         this->PlayerOptions.LastSentTime = 0;
-        if (this->Chat != nullptr) {
-            this->Chat->ClearChat();
-        }
+        this->Chat->ClearChat();
         s_localPlayerDpid = 0;
         this->Me = 0;
         this->current_turn = (ulong)this->PlayerOptions.CommandTurnIncrement + 2;
@@ -2897,9 +2892,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
         (void)this->DestroyMyPlayer();
         this->Me = 0;
         s_localPlayerDpid = 0;
-        if (this->InQ != nullptr) {
-            this->InQ->FlushAll();
-        }
+        this->InQ->FlushAll();
         this->ShuttingDown = 0;
         break;
 
@@ -2927,13 +2920,9 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
         break;
 
     case GAME_IS_RUNNING:
-        if (this->Chat != nullptr) {
-            this->Chat->ClearChat();
-        }
+        this->Chat->ClearChat();
         this->LastTimeoutMessageTime = 0;
-        if (this->InQ != nullptr) {
-            this->InQ->FlushAll();
-        }
+        this->InQ->FlushAll();
         this->PlayerOptions.GameHasStarted = 0;
         this->ShuttingDown = 0;
         break;
