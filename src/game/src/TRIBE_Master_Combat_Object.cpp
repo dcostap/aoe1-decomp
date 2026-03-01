@@ -124,6 +124,7 @@ int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* param_1) {
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EB60
 int TRIBE_Master_Combat_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
+    this->RGE_Master_Combat_Object::setup(param_1, param_2, param_3);
     this->master_type = 0x46;
 
     for (int i = 0; i < 3; ++i) {
@@ -144,6 +145,7 @@ int TRIBE_Master_Combat_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sou
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EC90
 int TRIBE_Master_Combat_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4) {
+    this->RGE_Master_Combat_Object::setup(param_1, param_2, param_3, param_4);
     this->master_type = 0x46;
 
     short temp = 0;
