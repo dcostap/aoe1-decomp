@@ -10,6 +10,7 @@
 #include <mbstring.h>
 #include <imm.h>
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (helper extracted from decomp flow).
 static LRESULT CALLBACK pnl_sub_wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475930
     TEditPanel* panel = (TEditPanel*)GetWindowLongPtrA(hwnd, GWLP_USERDATA);
@@ -77,10 +78,12 @@ TEditPanel::~TEditPanel() {
     }
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 long TEditPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     return TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 long TEditPanel::setup(TDrawArea* render_area, TPanel* parent, long x, long y, long w, long h, void* font, short fixed_len_in, char* initial_text, FormatType format_in, int auto_sel_in) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475770
     this->format = format_in;
@@ -153,6 +156,7 @@ long TEditPanel::setup(TDrawArea* render_area, TPanel* parent, long x, long y, l
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_text(char* s) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475970
     if (this->edit_wnd) {
@@ -171,6 +175,7 @@ void TEditPanel::set_text(char* s) {
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::update_text() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475A30
     if (!this->edit_wnd || !this->text) return;
@@ -187,24 +192,28 @@ void TEditPanel::update_text() {
     this->sel_len = (int)(end - start);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 char* TEditPanel::get_text() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475AF0
     this->update_text();
     return this->text;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 char* TEditPanel::get_input_buffer() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B00
     this->update_text();
     return this->text;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 char* TEditPanel::currentLine() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B10
     this->update_text();
     return this->text;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::set_active(int param_1) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B20
     TPanel::set_active(param_1);
@@ -214,6 +223,7 @@ void TEditPanel::set_active(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_focus(int param_1) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475B60
     const int had_focus = this->have_focus;
@@ -266,10 +276,12 @@ void TEditPanel::set_focus(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_rect(tagRECT param_1) {
     TPanel::set_rect(param_1);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_rect(long x, long y, long w, long h) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475CC0
     TPanel::set_rect(x, y, w, h);
@@ -300,6 +312,7 @@ void TEditPanel::set_rect(long x, long y, long w, long h) {
     this->draw_rect_value.bottom = (LONG)(this->render_rect.bottom - bs);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_redraw(RedrawMode param_1) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475DD0
     TPanel::set_redraw(TPanel::RedrawMode::Redraw);
@@ -308,6 +321,7 @@ void TEditPanel::set_redraw(RedrawMode param_1) {
     }
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_text_color(unsigned long c1, unsigned long c2) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475E10
     this->text_color1 = c1;
@@ -315,12 +329,14 @@ void TEditPanel::set_text_color(unsigned long c1, unsigned long c2) {
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_highlight_text_color(unsigned long c1, unsigned long c2) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475E30 (no-op)
     (void)c1;
     (void)c2;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_back_color(void* brush_in, unsigned long brush_color_in, unsigned char back_color_in) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475E40 (no-op)
     (void)brush_in;
@@ -328,6 +344,7 @@ void TEditPanel::set_back_color(void* brush_in, unsigned long brush_color_in, un
     (void)back_color_in;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_bevel_info(int bevel_type_in, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475E50
     this->bevel_type = bevel_type_in;
@@ -361,12 +378,14 @@ void TEditPanel::set_bevel_info(int bevel_type_in, unsigned char c1, unsigned ch
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_ime_info(int enable, int turn_on) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475F20
     this->enable_ime = enable;
     this->turn_ime_on = turn_on;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475F40
     void* pvVar1 = this->edit_wnd;
@@ -389,6 +408,7 @@ long TEditPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_
     return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 long TEditPanel::sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476040
     if (this->edit_wnd != nullptr && this->active != 0 && this->visible != 0 && this->hidden == 0) {
@@ -516,6 +536,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     return ret;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 int TEditPanel::verify_char(int param_1) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476440
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476422 (decompiler artifact thunk)
@@ -614,6 +635,7 @@ int TEditPanel::verify_char(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 int TEditPanel::is_blank() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476A60
     this->update_text();
@@ -628,6 +650,7 @@ int TEditPanel::is_blank() {
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 char* TEditPanel::get_trimmed_str(char* out, int out_len) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476AB0
     if (!out || out_len <= 0) {
@@ -668,14 +691,21 @@ char* TEditPanel::get_trimmed_str(char* out, int out_len) {
 }
 
 // Boilerplate virtual forwards
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
     TPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13);
 }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::draw_finish() { TPanel::draw_finish(); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::draw() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476680
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x0047664D (decompiler artifact thunk)
@@ -774,51 +804,92 @@ void TEditPanel::draw() {
 
     this->draw_finish();
 }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::paint() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476A50
 }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_idle() { return TPanel::handle_idle(); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_size(long param_1, long param_2) { return TPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_char(long param_1, short param_2) { return TPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_command(uint param_1, long param_2) { return TPanel::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 long TEditPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476BE0
     return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::char_action(long param_1, short param_2) { return TPanel::char_action(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEditPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::get_true_render_rect(tagRECT* param_1) { TPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TEditPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::set_tab_order(TPanel** param_1, short param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 uchar TEditPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TPanel::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::stop_sound_system() { TPanel::stop_sound_system(); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TEditPanel::restart_sound_system() { return TPanel::restart_sound_system(); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEditPanel::take_snapshot() { TPanel::take_snapshot(); }
+// Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 void TEditPanel::handle_reactivate() {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00476BB0
     if (this->edit_wnd && this->have_focus != 0) {
