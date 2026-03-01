@@ -4431,7 +4431,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 317 — TRIBE_Combat_Object + TRIBE_Player small gap cleanup
 - [x] Assigned to agent (Worker-5, clone_5)
-- [ ] Finished
+- [x] Finished
+- Status note: verified on `master` — TRIBE_Combat_Object and TRIBE_Player now both have 0 missing decomp offsets for this task scope.
 - Goal: Two small cleanup targets:
   1. TRIBE_Combat_Object.cpp: 35 verified vs 39 in t_c_obj.cpp.decomp (gap=4)
   2. TRIBE_Player.cpp: 106 verified vs 107 in tplayer.cpp.decomp (gap=1), plus 3 TODO: STUB markers

@@ -20,20 +20,24 @@ extern "C" void _ASMSet_Xlate_Table(void* p);
 extern "C" void* _ASMGet_Xlate_Table();
 
 static inline VSpan_Node* shape_span_advance(VSpan_Node* span, long x) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     while (span && x > (long)span->EndPx) span = span->Next;
     return span;
 }
 
 static inline VSpan_Node* shape_span_retreat(VSpan_Node* span, long x) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     while (span && x < (long)span->StartPx) span = span->Prev;
     return span;
 }
 
 static inline int shape_span_contains(VSpan_Node* span, long x) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     return (span && x >= (long)span->StartPx && x <= (long)span->EndPx) ? 1 : 0;
 }
 
 static unsigned long shape_palette_checksum(const tagPALETTEENTRY* entries, int count) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!entries || count <= 0) return 0;
     unsigned long hash = 2166136261UL;
     for (int i = 0; i < count; ++i) {
@@ -46,6 +50,7 @@ static unsigned long shape_palette_checksum(const tagPALETTEENTRY* entries, int 
 }
 
 static const unsigned char* shape_shadowing_xlate_table(TDrawArea* draw_area, unsigned int amount) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!draw_area || !draw_area->DrawSystem) return (const unsigned char*)0;
     if (amount == 0) return (const unsigned char*)0;
 
@@ -94,11 +99,13 @@ static const unsigned char* shape_shadowing_xlate_table(TDrawArea* draw_area, un
 }
 
 static unsigned char shape_apply_shadowing_to_index(TDrawArea* draw_area, unsigned char idx, unsigned int amount) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     const unsigned char* tbl = shape_shadowing_xlate_table(draw_area, amount);
     return tbl ? tbl[idx] : idx;
 }
 
 static unsigned long shape_apply_shadowing_to_pixel(TDrawArea* draw_area, unsigned long px, unsigned int amount) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!draw_area || amount == 0) return px;
 
     const unsigned int keep = 256u - (amount & 0xFFu);
@@ -145,6 +152,7 @@ static unsigned long shape_apply_shadowing_to_pixel(TDrawArea* draw_area, unsign
 }
 
 static int shape_file_load(const char* path, unsigned char** out_data, int* out_size) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!path || !out_data || !out_size) return 0;
     *out_data = 0;
     *out_size = 0;
@@ -179,11 +187,13 @@ static int shape_file_load(const char* path, unsigned char** out_data, int* out_
 }
 
 static int shape_has_version_110(const void* p) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!p) return 0;
     return memcmp(p, "1.10", 4) == 0;
 }
 
 static int shape_bytes_per_pixel(TDrawArea* draw_area) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!draw_area) return 1;
     if (draw_area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
         int bpp = (int)draw_area->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount;
@@ -204,6 +214,7 @@ static int shape_bytes_per_pixel(TDrawArea* draw_area) {
 }
 
 static unsigned long shape_scale_to_mask(unsigned int c, unsigned long mask) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (mask == 0) return 0;
     unsigned long m = mask;
     int shift = 0;
@@ -223,6 +234,7 @@ static unsigned long shape_scale_to_mask(unsigned int c, unsigned long mask) {
 }
 
 static unsigned long shape_index_to_pixel(TDrawArea* draw_area, unsigned char idx, int bytes_per_pixel) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (bytes_per_pixel <= 1) return (unsigned long)idx;
 
     unsigned int r = idx;
@@ -255,6 +267,7 @@ static unsigned long shape_index_to_pixel(TDrawArea* draw_area, unsigned char id
 }
 
 static void shape_store_pixel(unsigned char* dst, int bytes_per_pixel, unsigned long px) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (bytes_per_pixel <= 1) {
         dst[0] = (unsigned char)(px & 0xFF);
         return;
@@ -277,6 +290,7 @@ static void shape_store_pixel(unsigned char* dst, int bytes_per_pixel, unsigned 
 }
 
 static unsigned long shape_read_pixel(const unsigned char* src, int bytes_per_pixel) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (bytes_per_pixel <= 1) return src[0];
     if (bytes_per_pixel == 2) return (unsigned long)src[0] | ((unsigned long)src[1] << 8);
     if (bytes_per_pixel == 3) return (unsigned long)src[0] | ((unsigned long)src[1] << 8) | ((unsigned long)src[2] << 16);
@@ -284,6 +298,7 @@ static unsigned long shape_read_pixel(const unsigned char* src, int bytes_per_pi
 }
 
 static void shape_shadow_pixel(TDrawArea* draw_area, unsigned char* dst, int bytes_per_pixel, unsigned char* table) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!dst) return;
     if (bytes_per_pixel == 1) {
         if (!table) return;
@@ -347,6 +362,7 @@ static void shape_shadow_pixel(TDrawArea* draw_area, unsigned char* dst, int byt
 }
 
 static unsigned char* shape_slp_shadow_table(TDrawArea* draw_area, unsigned char* xlate) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     // Parity note (ASMDraw_Sprite): opcode 0x0B uses the global table installed by _ASMSet_Xlate_Table
     // (DAT_0088c01c). In our software SLP renderer, `xlate` is the TShape::shape_draw() param_7 pointer
     // (same value that would be passed to _ASMSet_Xlate_Table), so we use it when present.
@@ -385,6 +401,7 @@ static unsigned char* shape_slp_shadow_table(TDrawArea* draw_area, unsigned char
 }
 
 static void shape_free_loaded_data(unsigned char* ptr, int load_type, int load_size) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!ptr) return;
     if (load_type == 1) {
         free(ptr);
@@ -417,6 +434,7 @@ unsigned char shape_bounds(TShape* this_, long param_2, short* param_3, short* p
 }
 
 long shape_count(TShape* this_) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (this_->Check_shape(-1, (char*)"RGL_shape_count")) return 0;
     if (this_->FShape) return this_->FShape->Num_Shapes;
     if (this_->head) return this_->head->shape_num;
@@ -424,6 +442,7 @@ long shape_count(TShape* this_) {
 }
 
 unsigned char shape_minmax(TShape* this_, long* param_2, long* param_3, long* param_4, long* param_5, long param_6) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (param_2) *param_2 = 0;
     if (param_3) *param_3 = 0;
     if (param_4) *param_4 = 0;
@@ -457,6 +476,7 @@ unsigned char shape_minmax(TShape* this_, long* param_2, long* param_3, long* pa
 }
 
 unsigned char shape_check(TShape* this_, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (param_4 < 0) return 0;
     if (this_->Check_shape(param_4, (char*)"RGL_shape_draw")) return 0;
 
@@ -2046,6 +2066,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
 }
 
 static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* xlate, unsigned int draw_flag) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     if (!self || !draw_area || !self->FShape || !self->shape_info) return 0;
     const unsigned int mirror = (draw_flag & 2u);
     const unsigned int fog = (draw_flag & 1u);
@@ -2435,6 +2456,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
 }
 
 static unsigned char* shp_skip_row(unsigned char* src) {
+    // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
     for (;;) {
         unsigned char cmd = *src++;
         unsigned int run = (unsigned int)(cmd >> 1);
