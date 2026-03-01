@@ -3,6 +3,7 @@
 #include "../include/TPanel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TScreenPanel.h"
+#include "../include/TEasy_Panel.h"
 #include "../include/TRegistry.h"
 #include "../include/TDebuggingLog.h"
 #include "../include/TCommunications_Handler.h"
@@ -3081,46 +3082,52 @@ int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) {
     return 1;
 }
 int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) {
-    // TODO: Partial transliteration. Source of truth: basegame.cpp.decomp @ 0x004219F0
-    // TODO: basegame decomp parity would call TDrawSystem::HandlePaletteChanged, but this symbol is
-    // not implemented in this branch yet.
-    (void)p2;
-    (void)p4;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x004219F0
+    if (this->draw_system != nullptr) {
+        this->draw_system->HandlePaletteChanged(p1, p2, p3, p4);
+    }
 
-    if ((void*)p3 != p1 && this->draw_system != nullptr) {
-        if (this->draw_system->DrawType == 1 || this->draw_system->ScreenMode == 1) {
+    if ((void*)p3 != p1) {
+        TDrawSystem* draw_system_ptr = this->draw_system;
+        if (draw_system_ptr == nullptr || draw_system_ptr->DrawType == 1 || draw_system_ptr->ScreenMode == 1) {
             this->handle_query_new_palette(p1, p2, p3, p4);
         } else if (this->prog_mode != 1) {
-            this->draw_system->ModifyPalette(0, 0x100, this->draw_system->palette);
+            draw_system_ptr->ModifyPalette(0, 0x100, draw_system_ptr->palette);
+            return 1;
         }
     }
+
     return 1;
 }
 
 int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) {
-    // TODO: Partial transliteration. Source of truth: basegame.cpp.decomp @ 0x00421A80
-    // TODO: basegame decomp parity would call TDrawSystem::HandleQueryNewPalette, but this symbol is
-    // not implemented in this branch yet.
-    (void)p2;
-    (void)p3;
-    (void)p4;
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421A80
     TDrawSystem* ds = this->draw_system;
     if (ds != nullptr && ds->DrawType != 1 && ds->ScreenMode != 1) {
         InvalidateRect((HWND)p1, nullptr, 0);
-        return 1;
+        return ds->HandleQueryNewPalette(p1, p2, p3, p4);
     }
 
     HDC dc = GetDC((HWND)p1);
-    if (dc != nullptr) {
-        void* pal = this->prog_palette;
-        if (pal != nullptr) {
-            SelectPalette(dc, (HPALETTE)pal, 0);
+    TPanel* panel = panel_system->currentPanel();
+    if (panel != nullptr) {
+        TEasy_Panel* easy_panel = (TEasy_Panel*)panel;
+        void* palette = easy_panel->get_palette();
+        if (palette != nullptr) {
+            SelectPalette(dc, (HPALETTE)easy_panel->get_palette(), 0);
         }
-        int realized = RealizePalette(dc);
-        ReleaseDC((HWND)p1, dc);
-        if (realized != 0) {
-            InvalidateRect((HWND)p1, nullptr, 0);
-        }
+    } else if (this->prog_palette != nullptr) {
+        SelectPalette(dc, (HPALETTE)this->prog_palette, 0);
+    }
+
+    int realized = RealizePalette(dc);
+    ReleaseDC((HWND)p1, dc);
+    if (realized != 0) {
+        InvalidateRect((HWND)p1, nullptr, 0);
+    }
+
+    if (this->draw_system != nullptr) {
+        return this->draw_system->HandleQueryNewPalette(p1, p2, p3, p4);
     }
 
     return 1;
@@ -3422,10 +3429,9 @@ void RGE_Base_Game::show_timings() {
 }
 
 void RGE_Base_Game::show_comm() {
-    // TODO: Partial transliteration. Source of truth: basegame.cpp.decomp @ 0x00422050
-    // TODO: decomp references TCommunications_Handler::GetCommInfo, which is not exported in this branch.
+    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422050
     char str[256];
-    sprintf(str, "Comm status: %d", this->comm_handler != nullptr ? (int)this->comm_handler->GetCommunicationsStatus() : -1);
+    sprintf(str, "%s", this->comm_handler->GetCommInfo('\x01'));
     SetWindowTextA((HWND)this->prog_window, str);
 }
 
