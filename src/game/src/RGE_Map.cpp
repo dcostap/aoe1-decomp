@@ -1115,7 +1115,7 @@ void RGE_Map::clean_terrain(long param_1, long param_2, long param_3, long param
         return;
     }
 
-    const uchar target_terrain = (uchar)(param_5 & 0x1f);
+    const uchar target_terrain = param_5;
     const short map_w = (short)this->map_width;
     const short offset3 = (short)(-1 - map_w);
     const short offset_top = (short)(-map_w);
