@@ -6095,7 +6095,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 505
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TribeInformationAIModule.cpp - destructor (107 lines, line 749), gameIDOfResourceObject (101 lines, line 1329), setupInfluenceMap (97 lines, line 3433). Reference taiinfmd.cpp.asm. Focus on cleanup ordering, resource object ID lookup, and influence map setup.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
@@ -6113,13 +6113,13 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 508
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of Panel_ez.cpp - TEasy_Panel::setup (167 lines, line 477), parse_easy_cfg_text (136 lines, line 318), draw_background (115 lines, line 849). Reference panel_ez.cpp.asm. Focus on config parsing, panel layout setup, and background rendering.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 509
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of Mouseptr.cpp - Poll (106 lines, line 169), update_mouse_position (105 lines, line 493), draw (103 lines, line 599). Reference mouseptr.cpp.asm. Focus on coordinate math, cursor rendering, and polling logic.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
@@ -6131,7 +6131,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 511
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of Dsutil.cpp - ds_stream_time_func (177 lines, line 986) and ds_stream_file (110 lines, line 792). Reference dsutil.cpp.asm. Focus on DirectSound streaming timer callback, buffer management, and file streaming setup.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
