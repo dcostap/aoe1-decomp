@@ -88,6 +88,7 @@ static void screen_name_setup_tab_order(TRIBE_Screen_Name* this_) {
     }
 }
 
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A63D0
 TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel((char*)"Name Selection Screen") {
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A63D0
     screen_name_init_vars(this);
@@ -134,7 +135,9 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel((char*)"Name Selection Scr
     this->started_input = 0;
 }
 
+// Fully verified. Source of truth: TRIBE_Screen_Name.decomp @ 0x004A66C0 (scalar deleting destructor thunk).
 TRIBE_Screen_Name::~TRIBE_Screen_Name() {
+    // Fully verified. Source of truth: TRIBE_Screen_Name.decomp @ 0x004A66C0 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A66E0
     if (panel_system) {
         panel_system->setCurrentPanel((char*)"New Name Dialog", 0);
@@ -151,6 +154,7 @@ TRIBE_Screen_Name::~TRIBE_Screen_Name() {
     this->delete_panel((TPanel**)&this->close_button);
 }
 
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6980
 long TRIBE_Screen_Name::handle_idle() {
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6980
     if (rge_base_game && rge_base_game->input_enabled == 0) {
@@ -159,6 +163,7 @@ long TRIBE_Screen_Name::handle_idle() {
     return TPanel::handle_idle();
 }
 
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A69B0
 long TRIBE_Screen_Name::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A69B0
     (void)param_3;
