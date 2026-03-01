@@ -189,7 +189,6 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
     // Source of truth: scr_load.cpp.decomp - set help info for buttons
     this->okButton->set_help_info(0x7531, -1);
     this->cancelButton->set_help_info(0x7532, -1);
-    this->deleteButton->set_help_info(0x7533, -1);
 
     this->fillList();
 
@@ -302,6 +301,7 @@ long TribeLoadSavedGameScreen::mouse_left_dbl_click_action(long param_1, long pa
     return TScreenPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: scr_load.cpp.decomp @ 0x0049E2E0
 long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_1) {
         const char* panel_name = param_1->panelName();
@@ -335,15 +335,17 @@ long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param
         }
 
         if ((TButtonPanel*)param_1 == this->okButton && param_2 == 1) {
-            if (!load_selected_game(this)) {
-                char text[512];
-                text[0] = '\0';
-                this->get_string(0x2501, text, sizeof(text));
-                if (text[0] == '\0') {
-                    strncpy(text, "Cannot load that saved game.", sizeof(text) - 1);
-                    text[sizeof(text) - 1] = '\0';
+            if (((TTextPanel*)this->list)->numberLines() > 0) {
+                if (!load_selected_game(this)) {
+                    char text[512];
+                    text[0] = '\0';
+                    this->get_string(0x2501, text, sizeof(text));
+                    if (text[0] == '\0') {
+                        strncpy(text, "Cannot load that saved game.", sizeof(text) - 1);
+                        text[sizeof(text) - 1] = '\0';
+                    }
+                    this->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
                 }
-                this->popupOKDialog((char*)text, (char*)0, 0x1c2, 100);
             }
             return 1;
         }

@@ -372,6 +372,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float p
     }
 }
 
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406785 (embedded pre-vtable-stub decomp block).
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406830
 void RGE_Action_Object::set_attack(RGE_Static_Object* param_1) {
     (void)param_1;

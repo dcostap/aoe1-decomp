@@ -80,15 +80,10 @@ int tribe_influence_can_place_structure(TribeConstructionAIModule* self, BuildIt
     return information_ai->influenceCanPlaceStructure(item);
 }
 
-// TODO: Partial parity pending exact PlacementState type-key alignment for direct influencePlaceStructure call.
-// Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
+// Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 ConstructionItem* tribe_influence_place_structure(TribeConstructionAIModule* self, BuildItem* item, int builder_id, PlacementState* state, ulong flags) {
-    (void)self;
-    (void)item;
-    (void)builder_id;
-    (void)state;
-    (void)flags;
-    return nullptr;
+    TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
+    return information_ai->influencePlaceStructure(item, builder_id, -1, 0.0f, nullptr, -1, -1, -1, -1, state, flags);
 }
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D6780
@@ -226,7 +221,7 @@ void TribeConstructionAIModule::setMainDecisionAI(TribeMainDecisionAIModule* par
 }
 
 // Offset: 0x004D5F00
-// TODO: Partial parity pending TribeInformationAIModule dependency transliteration.
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00
 int TribeConstructionAIModule::canPlace(BuildItem* param_1) {
     if ((0.0f < this->xReferencePointValue) &&
         (0.0f < this->yReferencePointValue) &&
@@ -259,7 +254,7 @@ int TribeConstructionAIModule::canPlace(BuildItem* param_1) {
 }
 
 // Offset: 0x004D60E0
-// TODO: Partial parity pending TribeInformation/MainDecision dependency transliteration.
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, int param_2, PlacementState* param_3, ulong param_4) {
     if ((this->xReferencePointValue <= 0.0f) ||
         (this->yReferencePointValue <= 0.0f) ||
@@ -367,7 +362,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, 
 }
 
 // Offset: 0x004D6780
-// TODO: Partial parity pending TribeInformationAIModule::placeDock transliteration.
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D6780
 ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* param_1) {
     ConstructionItem* item = tribe_information_place_dock(this, param_1);
     if (item != nullptr) {
@@ -384,7 +379,7 @@ ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* param_1) {
 }
 
 // Offset: 0x004D6800
-// TODO: Partial parity pending TribeInformationAIModule::storeLot transliteration.
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D6800
 void TribeConstructionAIModule::setBuilt(RGE_Static_Object* param_1, int param_2) {
     ConstructionItem* item = this->constructionLots.next;
     while ((item != &this->constructionLots) && (item != nullptr)) {

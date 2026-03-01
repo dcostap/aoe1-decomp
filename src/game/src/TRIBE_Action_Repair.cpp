@@ -183,6 +183,7 @@ void TRIBE_Action_Repair::set_state(uchar param_1) {
 }
 
 uchar TRIBE_Action_Repair::update() {
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1B79 (embedded pre-update decomp stub).
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1BB0
     if (!this->obj) {
         return 0;

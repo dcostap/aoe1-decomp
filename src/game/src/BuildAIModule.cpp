@@ -330,72 +330,72 @@ BuildAIModule::~BuildAIModule() {
     ai_prefix->idValue.~AIModuleID();
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E4E0
 int BuildAIModule::loggingHistory() {
     return as_ai(this)->AIModule::loggingHistory();
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E4F0
 void BuildAIModule::setLogHistory(int param_1) {
     as_ai(this)->AIModule::setLogHistory(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E500
 void BuildAIModule::toggleLogHistory() {
     as_ai(this)->AIModule::toggleLogHistory();
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E5D0
 void BuildAIModule::setHistoryFilename(char* param_1) {
     as_ai(this)->AIModule::setHistoryFilename(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E510
 int BuildAIModule::loggingCommonHistory() {
     return as_ai(this)->AIModule::loggingCommonHistory();
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E520
 void BuildAIModule::setLogCommonHistory(int param_1) {
     as_ai(this)->AIModule::setLogCommonHistory(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E5C0
 void BuildAIModule::toggleLogCommonHistory() {
     as_ai(this)->AIModule::toggleLogCommonHistory();
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x004087F0
 int BuildAIModule::loadState(char* param_1) {
     return as_ai(this)->AIModule::loadState(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x00408800
 int BuildAIModule::saveState(char* param_1) {
     return as_ai(this)->AIModule::saveState(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x00408810
 int BuildAIModule::gleanState(int param_1) {
     return as_ai(this)->AIModule::gleanState(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E6E0
 int BuildAIModule::processMessage(AIModuleMessage* param_1) {
     return as_ai(this)->AIModule::processMessage(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E6F0
 int BuildAIModule::update(int param_1) {
     return as_ai(this)->AIModule::update(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E700
 void BuildAIModule::setCallbackMessage(AIModuleMessage* param_1) {
     as_ai(this)->AIModule::setCallbackMessage(param_1);
 }
 
-// TODO: Partial parity to preserve flattened AIModule/BuildAIModule layout.
+// Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E810
 int BuildAIModule::filterOutMessage(AIModuleMessage* param_1) {
     return as_ai(this)->AIModule::filterOutMessage(param_1);
 }

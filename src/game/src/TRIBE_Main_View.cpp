@@ -209,8 +209,8 @@ void TRIBE_Main_View::draw_multi_object_outline()
 }
 
 // ---------------------------------------------------------------------------
-// Offset: 0x0052D540
-// Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D540
+// Offset: 0x0052D4F0
+// Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D4F0
 // ---------------------------------------------------------------------------
 void TRIBE_Main_View::place_line_of_walls(TRIBE_Player* player,
                                           TRIBE_Master_Building_Object* master_bldg,
@@ -376,8 +376,8 @@ LAB_0052d4c7:
 }
 
 // ---------------------------------------------------------------------------
-// Offset: 0x0052D620
-// Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D620
+// Offset: 0x0052D600
+// Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D600
 // ---------------------------------------------------------------------------
 long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
                                             int param_3, int param_4)
@@ -385,12 +385,115 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
     int prog = rge_base_game->prog_mode;
     if (prog != 4 && prog != 5 && prog != 6 && prog != 7)
         return 0;
-    return RGE_Main_View::mouse_left_up_action(param_1, param_2, param_3, param_4);
+    if (rge_base_game->get_paused() != 0)
+        return RGE_Main_View::mouse_left_up_action(param_1, param_2, param_3, param_4);
+
+    int game_mode = rge_base_game->game_mode;
+    switch (game_mode) {
+    case 100: { // 0x64: attack-ground
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            return 1;
+        RGE_Pick_Info pick_info = {};
+        uchar res = this->pick1('(', '\0', param_1, param_2, &pick_info, nullptr, 1);
+        if (res == '3') {
+            this->fixup_pick_info(&pick_info);
+            TRIBE_Player* player = (TRIBE_Player*)this->player;
+            uchar ok = player->command_attack_ground(pick_info.x, pick_info.y);
+            if (ok) {
+                this->reset_display_object_selection(2);
+                this->add_overlay_sprite(
+                    rge_base_game->shapes[2], 0,
+                    this->map_scr_x_offset + (int)param_1,
+                    this->map_scr_y_offset + (int)param_2,
+                    0, 0xf, nullptr, 2, 0x7d);
+                rge_base_game->set_game_mode(0, 0);
+                return 1;
+            }
+        }
+        rge_base_game->play_sound(3);
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+    }
+    case 0x65: { // patrol
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            return 1;
+        int ok = this->command_make_do(param_1, param_2, 0, 0x68);
+        if (!ok) rge_base_game->play_sound(3);
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+    }
+    case 0x66: { // attack-move
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            return 1;
+        int ok = this->command_make_do(param_1, param_2, 0, 0x69);
+        if (!ok) rge_base_game->play_sound(3);
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+    }
+    case 0x67: { // stand-ground move
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            return 1;
+        int ok = this->command_make_do(param_1, param_2, 0, 7);
+        if (!ok) rge_base_game->play_sound(3);
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+    }
+    case 0x68: { // repair
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            return 1;
+        RGE_Static_Object* target = this->pick_best_target(param_1, param_2, nullptr, -1);
+        if (target) {
+            TRIBE_Player* player = (TRIBE_Player*)this->player;
+            uchar ok = player->command_make_repair(target);
+            if (ok) {
+                this->display_object_selection(target->id, 0x5dc, 2, 2);
+                this->reset_overlay_sprites();
+                rge_base_game->set_game_mode(0, 0);
+                return 1;
+            }
+        }
+        rge_base_game->play_sound(3);
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+    }
+    case 0x69: { // unload
+        this->release_mouse();
+        if (this->mouse_action != 1 && this->mouse_action != 2)
+            return 1;
+        RGE_Pick_Info pick_info = {};
+        uchar res = this->pick1('(', '\0', param_1, param_2, &pick_info, nullptr, 1);
+        if (res == '3') {
+            this->fixup_pick_info(&pick_info);
+            TRIBE_Player* player = (TRIBE_Player*)this->player;
+            uchar ok = player->command_make_unload(pick_info.x, pick_info.y);
+            if (ok) {
+                this->reset_display_object_selection(2);
+                this->add_overlay_sprite(
+                    rge_base_game->shapes[2], 0,
+                    this->map_scr_x_offset + (int)param_1,
+                    this->map_scr_y_offset + (int)param_2,
+                    0, 0xf, nullptr, 2, 0x7d);
+                rge_base_game->set_game_mode(0, 0);
+                return 1;
+            }
+        }
+        rge_base_game->play_sound(3);
+        rge_base_game->set_game_mode(0, 0);
+        return 1;
+    }
+    default:
+        return RGE_Main_View::mouse_left_up_action(param_1, param_2, param_3, param_4);
+    }
 }
 
 // ---------------------------------------------------------------------------
-// Offset: 0x0052D960
-// Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D960
+// Offset: 0x0052D970
+// Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D970
 // Handles right-up in special game modes (attack, patrol, repair, unload, etc.).
 // ---------------------------------------------------------------------------
 long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,

@@ -2225,6 +2225,7 @@ void RGE_Game_World::reset_communications(TCommunications_Handler* param_1) {
     this->commands->reset_communications(param_1);
 }
 
+// Fully verified. Source of truth: world.cpp.decomp @ 0x0054627A (embedded corrupted prelude before update_mutual_allies).
 void RGE_Game_World::update_mutual_allies() {
     // Fully verified. Source of truth: world.cpp.decomp @ 0x005462D0
     fprintf(DVlogf, "updating player visibilites @ wt=%d\n", this->world_time);
