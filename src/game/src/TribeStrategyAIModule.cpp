@@ -777,7 +777,7 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
     managed_array_reset(&this->vcRuleSet);
 }
 
-// Fully verified. Source of truth: TribeStrategyAIModule.decomp @ 0x004E9240
+// Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E9240
 void* TribeStrategyAIModule::vector_deleting_destructor(uint param_1) {
     this->~TribeStrategyAIModule();
     if ((param_1 & 1) != 0) {
