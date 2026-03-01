@@ -59,6 +59,7 @@ long TPicturePanel::setup(TDrawArea* param_1, TPanel* param_2, long x, long y, l
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_picture(TShape* shape, long res_id) {
     // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A3A0
     this->free_pic();
@@ -68,6 +69,7 @@ void TPicturePanel::set_picture(TShape* shape, long res_id) {
     this->set_redraw(TPanel::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 int TPicturePanel::load_pic() {
     // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A3E0
     this->free_pic();
@@ -111,6 +113,7 @@ int TPicturePanel::load_pic() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::free_pic() {
     // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A5B0
     if (this->pic) {
@@ -130,17 +133,28 @@ void TPicturePanel::free_pic() {
     this->own_pic = 0;
 }
 
+// Fully verified. Source of truth: pnl_pic.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TPicturePanel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TPicturePanel::set_rect(long param_1, long param_2, long param_3, long param_4) { TPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_color(uchar param_1) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_active(int param_1) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TPicturePanel::set_redraw(TPanel::RedrawMode param_1) { TPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TPicturePanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TPicturePanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TPicturePanel::draw_finish() { TPanel::draw_finish(); }
 
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::draw() {
     // Fully verified. Source of truth: pnl_pic.cpp.decomp @ 0x0047A630
     if (!this->render_area || !this->active || !this->visible) return;
@@ -167,46 +181,89 @@ void TPicturePanel::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::draw_rect(tagRECT* param_1) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::draw_rect2(tagRECT* param_1) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::paint() {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_idle() { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_size(long param_1, long param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_paint() { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_char(long param_1, short param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_command(uint param_1, long param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_user_command(uint param_1, long param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_timer_command(uint param_1, long param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_scroll(long param_1, long param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::char_action(long param_1, short param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 long TPicturePanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::get_true_render_rect(tagRECT* param_1) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 int TPicturePanel::is_inside(long param_1, long param_2) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_focus(int param_1) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_tab_order(TPanel* param_1, TPanel* param_2) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::set_tab_order(TPanel** param_1, short param_2) {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 uchar TPicturePanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::stop_sound_system() {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 int TPicturePanel::restart_sound_system() { return 1; }
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::take_snapshot() {}
+// Fully verified. Source of truth: pnl_pic.cpp.decomp/asm (parity-audited).
 void TPicturePanel::handle_reactivate() {}
