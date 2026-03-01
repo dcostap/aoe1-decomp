@@ -189,8 +189,7 @@ LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041B6A0
-    rge_base_game = this;
-    
+
     // ASM at 0x0041B6A0
     this->player_game_info = nullptr; // [EBP + 0x4] = 0
     this->scenario_info = nullptr;    // [EBP + 0x8] = 0
@@ -202,6 +201,10 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
 
     // Set vftable
     // *(void**)this = RGE_Base_Game::vftable;
+    do_draw_log = 0;
+    safe_draw_log = 0;
+    draw_log_name[0] = '\0';
+    draw_log = nullptr;
 
     this->setVersion(1.0f);
     this->setScenarioGame(0);
@@ -230,6 +233,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->setNumberPlayers(4);
     this->setScenarioName("");
 
+    rge_base_game = this;
     this->prog_info = info;
     this->prog_window = nullptr;
     this->prog_ready = 0; // ASM 0x0041b7b9
@@ -321,7 +325,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
         this->playerIDValue[i] = 0;
         this->resigned[i] = 0;
     }
-    
+    this->display_selected_ids = 0;
     this->auto_paused = 0;
     this->rollover = 1;
     this->map_save_area = nullptr;
@@ -1576,10 +1580,7 @@ int RGE_Base_Game::get_paused() {
     if (this->prog_mode == 7) {
         return 0;
     }
-    if (this->comm_handler) {
-        return this->comm_handler->IsPaused();
-    }
-    return 0;
+    return this->comm_handler->IsPaused();
 }
 
 RGE_Player* RGE_Base_Game::get_player() {
