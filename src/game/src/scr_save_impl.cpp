@@ -159,6 +159,7 @@ void save_set_scenario_name(RGE_Scenario* scenario, const char* name) {
 
 } // namespace
 
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* file_name, int quit_after_save)
     : TScreenPanel((char*)kSaveGameScreenName) {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A71F0
@@ -267,7 +268,9 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode mode, char* file_name, int quit_af
     this->set_tab_order(tab_list, 5);
 }
 
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 TribeSaveGameScreen::~TribeSaveGameScreen() {
+    // Fully verified. Source of truth: TribeSaveGameScreen.decomp @ 0x004A75A0 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A75C0
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->input);
@@ -278,6 +281,7 @@ TribeSaveGameScreen::~TribeSaveGameScreen() {
     this->delete_panel((TPanel**)&this->deleteButton);
 }
 
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::fillList() {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7670
     if (this->list == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
@@ -347,6 +351,7 @@ void TribeSaveGameScreen::fillList() {
     }
 }
 
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7850
     if (param_1 != nullptr) {
@@ -509,6 +514,7 @@ long TribeSaveGameScreen::action(TPanel* param_1, long param_2, ulong param_3, u
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::save_for_scenario_editor() {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A8060
     ((TRIBE_Game*)rge_base_game)->show_status_message(0x450, (char*)0, -1);
@@ -545,75 +551,147 @@ void TribeSaveGameScreen::save_for_scenario_editor() {
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden above.
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_rect(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_color(uchar param_1) { TScreenPanel::set_color(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_active(int param_1) { TScreenPanel::set_active(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) { TScreenPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_redraw(RedrawMode param_1) { TScreenPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TScreenPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_setup(int param_1) { TScreenPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_finish() { TScreenPanel::draw_finish(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw() { TScreenPanel::draw(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_rect(tagRECT* param_1) { TScreenPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_offset(long param_1, long param_2, tagRECT* param_3) { TScreenPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_rect2(tagRECT* param_1) { TScreenPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TScreenPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::paint() { TScreenPanel::paint(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_idle() { return TScreenPanel::handle_idle(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_size(long param_1, long param_2) { return TScreenPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_paint() { return TScreenPanel::handle_paint(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TScreenPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_char(long param_1, short param_2) { return TScreenPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_command(uint param_1, long param_2) { return TScreenPanel::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_user_command(uint param_1, long param_2) { return TScreenPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_timer_command(uint param_1, long param_2) { return TScreenPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_scroll(long param_1, long param_2) { return TScreenPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TScreenPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 long TribeSaveGameScreen::char_action(long param_1, short param_2) { return TScreenPanel::char_action(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::get_true_render_rect(tagRECT* param_1) { TScreenPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::is_inside(long param_1, long param_2) { return TScreenPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_focus(int param_1) { TScreenPanel::set_focus(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_tab_order(TPanel* param_1, TPanel* param_2) { TScreenPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_tab_order(TPanel** param_1, short param_2) { TScreenPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 uchar TribeSaveGameScreen::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TScreenPanel::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::stop_sound_system() { TScreenPanel::stop_sound_system(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::restart_sound_system() { return TScreenPanel::restart_sound_system(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::take_snapshot() { TScreenPanel::take_snapshot(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::handle_reactivate() { TScreenPanel::handle_reactivate(); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::draw_background(int param_1) { TScreenPanel::draw_background(param_1); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::set_ideal_size(long param_1, long param_2) { TScreenPanel::set_ideal_size(param_1, param_2); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) { return TScreenPanel::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) { return TScreenPanel::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TScreenPanel::create_check_box(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TScreenPanel::create_radio_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) { return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11) { return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) { return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10) { return TScreenPanel::create_input(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) { return TScreenPanel::create_edit(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_drop_down(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) { return TScreenPanel::create_list(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TScreenPanel::create_scrollbar(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) { return TScreenPanel::create_auto_scrollbar(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 int TribeSaveGameScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
