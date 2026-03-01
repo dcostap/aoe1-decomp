@@ -527,19 +527,17 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* p1) {
         }
 
         if (this->unitAIValue != nullptr) {
+            UnitAIModule* unit_ai = this->unitAIValue;
             int ai_order = -1;
             int ai_action = -1;
             if (action_type == 0x6A) {
                 ai_action = 0x26A;
                 ai_order = 0x2CE;
             }
-            this->unitAIValue->currentOrderValue = ai_order;
-            this->unitAIValue->currentActionValue = ai_action;
-            this->unitAIValue->currentTargetValue = (int)p1->id;
-            this->unitAIValue->currentTargetTypeValue = (int)p1->master_obj->object_group;
-            this->unitAIValue->currentTargetXValue = p1->world_x;
-            this->unitAIValue->currentTargetYValue = p1->world_y;
-            this->unitAIValue->currentTargetZValue = p1->world_z;
+            unit_ai->setCurrentOrder(ai_order);
+            unit_ai->setCurrentAction(ai_action);
+            unit_ai->setCurrentTarget((int)p1->id, (int)p1->master_obj->object_group, p1->world_x, p1->world_y, p1->world_z);
+            unit_ai->setTaskedByPlayer();
         }
     }
 }
