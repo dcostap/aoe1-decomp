@@ -2560,7 +2560,8 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 
 ## Task 194 — In-game screen parity follow-up: finalize remaining command-panel refresh slice in `TRIBE_Screen_Game`
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: validated on current `master` snapshot — all 10 scoped files now contain 0 `TODO: STUB` markers.
 - Assignment note: worker-3 (`aoe1_clone_3`)
 - Goal: close the remaining `TRIBE_Screen_Game` in-game parity gaps left after Task 182 (world-step/game-over branch, player-change civ-refresh branch, and command-panel refresh slice).
 - Implement:

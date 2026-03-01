@@ -57,8 +57,10 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* p
     this->save_target_command_flag = 0;
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 TRIBE_Action_Repair::~TRIBE_Action_Repair() {}
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 int TRIBE_Action_Repair::setup(RGE_Action_Object* param_1) { this->save_target_command_flag = 0; int r = RGE_Action::setup(param_1); this->action_type = 0x6a; return r; }
 
 int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2) {
@@ -73,15 +75,20 @@ int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2) {
     return r;
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 RGE_Action_List* TRIBE_Action_Repair::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::rehook() { RGE_Action::rehook(); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::save(int param_1) {
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1850
     RGE_Action::save(param_1);
     rge_write(param_1, &this->save_target_command_flag, 1);
 }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 short TRIBE_Action_Repair::type() { return this->action_type; }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::first_in_stack(uchar param_1) {
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1880
     if ((param_1 != 0) && (this->target_obj != nullptr)) {
@@ -91,7 +98,9 @@ void TRIBE_Action_Repair::first_in_stack(uchar param_1) {
     this->set_state(3);
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 uchar TRIBE_Action_Repair::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 uchar TRIBE_Action_Repair::idle_update() { return RGE_Action::idle_update(); }
 
 void TRIBE_Action_Repair::meet_target() {
@@ -348,12 +357,14 @@ uchar TRIBE_Action_Repair::update() {
     return 0;
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 int TRIBE_Action_Repair::stop() {
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F50
     this->set_state(2);
     return 1;
 }
 
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 int TRIBE_Action_Repair::move_to(RGE_Static_Object* /*param_1*/, float param_2, float param_3, float param_4) {
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60
     this->target_y = param_3;
@@ -388,13 +399,22 @@ int TRIBE_Action_Repair::work(RGE_Static_Object* param_1, float param_2, float p
 
     return 1;
 }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 uchar TRIBE_Action_Repair::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 uchar TRIBE_Action_Repair::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Repair::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 RGE_Static_Object* TRIBE_Action_Repair::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
