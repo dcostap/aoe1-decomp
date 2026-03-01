@@ -338,7 +338,7 @@ void TribeAchievementsScreen::set_mode(long mode) {
     if (this->okButton != nullptr) this->okButton->set_active(0);
     if (this->aftermathButton != nullptr) this->aftermathButton->set_active(0);
     if (this->timelineButton != nullptr) this->timelineButton->set_active(0);
-    if (this->backButton != nullptr) this->backButton->set_active(0);
+    if (this->backButton != nullptr) this->backButton->set_active(1);
     if (this->backButton2 != nullptr) this->backButton2->set_active(0);
 
     this->current_mode = (int)mode;
@@ -352,7 +352,7 @@ void TribeAchievementsScreen::set_mode(long mode) {
         if (this->okButton != nullptr) this->okButton->set_active(1);
         if (this->aftermathButton != nullptr) this->aftermathButton->set_active(1);
         if (this->timelineButton != nullptr) this->timelineButton->set_active(1);
-        if (this->backButton != nullptr) this->backButton->set_active(1);
+        if (this->backButton != nullptr) this->backButton->set_active(0);
         if (this->instruction != nullptr) this->instruction->set_active(1);
 
         if (this->summary_text != nullptr) this->summary_text->set_text(0x26D9); // "Summary"
@@ -606,7 +606,7 @@ void TribeAchievementsScreen::set_mode(long mode) {
         if (this->summary_text != nullptr) this->summary_text->set_text(0x26B2);
         if (this->win_loss_text != nullptr) this->win_loss_text->set_active(1);
         if (this->time != nullptr) this->time->set_active(0);
-        if (this->backButton != nullptr) this->backButton->set_active(1);
+        if (this->backButton != nullptr) this->backButton->set_active(0);
         if (this->backButton2 != nullptr) {
             this->backButton2->set_active(1);
             this->set_curr_child((TPanel*)this->backButton2);
