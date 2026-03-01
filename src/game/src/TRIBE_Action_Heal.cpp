@@ -87,27 +87,22 @@ uchar TRIBE_Action_Heal::inside_obj_update() { return RGE_Action::inside_obj_upd
 // Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Heal::idle_update() { return RGE_Action::idle_update(); }
 
+// Fully verified. Source of truth: tact_hea.cpp.asm @ 0x004CEA90
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CEA90
 void TRIBE_Action_Heal::set_state(uchar param_1) {
-    if (this->sub_actions != nullptr) {
-        this->sub_actions->delete_list();
-    }
+    this->sub_actions->delete_list();
     this->state = param_1;
 
-    switch ((char)param_1) {
+    switch (param_1) {
     case 2:
-        if (this->obj != nullptr && this->obj->master_obj != nullptr) {
-            this->obj->new_sprite(this->obj->master_obj->sprite);
-        }
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
 
     case 3:
-        if (this->obj != nullptr) {
+        {
             const int obj_id = (int)this->obj->id;
             this->obj->notify(obj_id, obj_id, 0x202, 0x25B, 0, 0);
-            if (this->obj->master_obj != nullptr) {
-                this->obj->new_sprite(this->obj->master_obj->sprite);
-            }
+            this->obj->new_sprite(this->obj->master_obj->sprite);
         }
         return;
 
@@ -115,31 +110,22 @@ void TRIBE_Action_Heal::set_state(uchar param_1) {
         break;
 
     case 6:
-        if (this->target_obj != nullptr) {
-            this->target_x = this->target_obj->world_x;
-            this->target_y = this->target_obj->world_y;
-            this->target_z = this->target_obj->world_z;
-        }
-        if ((this->obj != nullptr) && (this->task != nullptr)) {
-            this->obj->new_sprite(this->task->move_sprite);
-        }
+        this->target_x = this->target_obj->world_x;
+        this->target_y = this->target_obj->world_y;
+        this->target_z = this->target_obj->world_z;
+        this->obj->new_sprite(this->task->move_sprite);
         return;
 
     case 7:
-        if ((this->obj != nullptr) && (this->task != nullptr)) {
-            this->obj->new_sprite(this->task->work_sprite);
-            if (this->task->work_sound != nullptr) {
-                this->task->work_sound->play(1);
-            }
+        this->obj->new_sprite(this->task->work_sprite);
+        if (this->task->work_sound != nullptr) {
+            this->task->work_sound->play(1);
         }
         return;
 
     case 0x0B: {
-        RGE_Action* move = nullptr;
-        if ((this->obj != nullptr) && (this->task != nullptr)) {
-            move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
-        }
-
+        RGE_Action* move =
+            new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
         if (move == nullptr) {
             this->set_state(0x0D);
             return;
@@ -154,17 +140,11 @@ void TRIBE_Action_Heal::set_state(uchar param_1) {
         return;
     }
 
-    if (this->target_obj != nullptr) {
-        this->target_x = this->target_obj->world_x;
-        this->target_y = this->target_obj->world_y;
-        this->target_z = this->target_obj->world_z;
-    }
+    this->target_x = this->target_obj->world_x;
+    this->target_y = this->target_obj->world_y;
+    this->target_z = this->target_obj->world_z;
 
-    RGE_Action* move = nullptr;
-    if ((this->obj != nullptr) && (this->task != nullptr) && (this->target_obj != nullptr)) {
-        move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_obj, 0.4f, this->task->move_sprite);
-    }
-
+    RGE_Action* move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_obj, 0.4f, this->task->move_sprite);
     if (move == nullptr) {
         this->set_state(0x0D);
         return;
@@ -174,17 +154,16 @@ void TRIBE_Action_Heal::set_state(uchar param_1) {
     move->setSubAction(1);
 }
 
+// Fully verified. Source of truth: tact_hea.cpp.asm @ 0x004CECF0
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CECF0
 uchar TRIBE_Action_Heal::update() {
-    RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
-
-    if ((this->targetID != -1) && (world != nullptr) && (world->object(this->targetID) == nullptr)) {
+    if ((this->targetID != -1) && (this->obj->owner->world->object(this->targetID) == nullptr)) {
         this->set_target_obj(nullptr);
         this->set_state(3);
         return 0;
     }
 
-    if ((this->target2ID != -1) && (world != nullptr) && (world->object(this->target2ID) == nullptr)) {
+    if ((this->target2ID != -1) && (this->obj->owner->world->object(this->target2ID) == nullptr)) {
         this->set_target_obj2(nullptr);
     }
 
@@ -195,8 +174,7 @@ uchar TRIBE_Action_Heal::update() {
             return 0;
         }
 
-        if ((this->obj != nullptr) && (this->obj->owner != nullptr) && (this->target_obj->owner != nullptr) &&
-            (this->obj->owner->isAlly((int)this->target_obj->owner->id) == 0)) {
+        if (this->obj->owner->isAlly((int)this->target_obj->owner->id) == 0) {
             this->set_state(1);
             const int obj_id = (int)this->obj->id;
             this->obj->notify(obj_id, obj_id, 0x1FB, 0x25B, 0, 0);
@@ -204,12 +182,12 @@ uchar TRIBE_Action_Heal::update() {
         }
     }
 
-    switch ((char)this->state) {
+    switch ((uchar)this->state) {
     case 1:
         return 1;
 
     case 4: {
-        const uchar sub_result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        const uchar sub_result = this->sub_actions->update();
         switch (sub_result) {
         case 1:
         case 2:
@@ -234,7 +212,7 @@ uchar TRIBE_Action_Heal::update() {
             this->set_state(3);
             return 0;
         }
-        if ((this->obj != nullptr) && (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0)) {
+        if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
             this->set_state(7);
             return 0;
         }
@@ -247,8 +225,8 @@ uchar TRIBE_Action_Heal::update() {
         }
 
         if ((this->target_obj->world_x != this->target_x) || (this->target_y != this->target_obj->world_y)) {
-            const float dist = (this->obj != nullptr) ? this->obj->distance_to_object(this->target_obj) : 0.0f;
-            if ((this->task != nullptr) && (this->task->work_range < dist) && (0.5f < dist)) {
+            const float dist = this->obj->distance_to_object(this->target_obj);
+            if ((this->task->work_range < dist) && (0.5f < dist)) {
                 this->set_state(3);
                 return 0;
             }
@@ -259,16 +237,12 @@ uchar TRIBE_Action_Heal::update() {
             return 0;
         }
 
-        float heal_amount = 0.0f;
-        if ((this->task != nullptr) && (this->obj != nullptr) && (this->obj->master_obj != nullptr) && (world != nullptr)) {
-            heal_amount = this->task->work_val1 * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate * world->world_time_delta_seconds;
-        }
+        float heal_amount =
+            this->task->work_val1 * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate * this->obj->owner->world->world_time_delta_seconds;
 
-        if ((this->obj != nullptr) && (this->obj->owner != nullptr)) {
-            int master_player = *(int*)((char*)this->obj->owner + 0x50);
-            if ((master_player != 0) && (0.1f < *(float*)(master_player + 0xE0))) {
-                heal_amount = heal_amount * *(float*)(master_player + 0xE0);
-            }
+        const int master_player = *(int*)((char*)this->obj->owner + 0x50);
+        if (0.1f < *(float*)(master_player + 0xE0)) {
+            heal_amount = heal_amount * *(float*)(master_player + 0xE0);
         }
 
         const uchar heal_result = this->target_obj->heal(heal_amount);
@@ -277,10 +251,8 @@ uchar TRIBE_Action_Heal::update() {
             return 0;
         }
         if (heal_result == 2) {
-            if (this->obj != nullptr) {
-                const int obj_id = (int)this->obj->id;
-                this->obj->notify(obj_id, obj_id, 0x1FB, 0x25B, 0, 0);
-            }
+            const int obj_id = (int)this->obj->id;
+            this->obj->notify(obj_id, obj_id, 0x1FB, 0x25B, 0, 0);
             this->set_state(2);
             return 0;
         }
@@ -288,7 +260,7 @@ uchar TRIBE_Action_Heal::update() {
     }
 
     case 0x0B: {
-        const uchar sub_result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        const uchar sub_result = this->sub_actions->update();
         switch (sub_result) {
         case 1:
         case 2:
@@ -309,7 +281,7 @@ uchar TRIBE_Action_Heal::update() {
     }
 
     case 0x0D:
-        if (this->obj != nullptr) {
+        {
             const int obj_id = (int)this->obj->id;
             this->obj->notify(obj_id, obj_id, 0x1F9, 0x25B, 0, 0);
         }
