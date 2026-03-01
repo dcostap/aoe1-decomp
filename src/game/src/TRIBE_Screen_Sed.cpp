@@ -6,6 +6,7 @@
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Main_View.h"
 #include "../include/RGE_Map.h"
+#include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
@@ -46,6 +47,7 @@ static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char 
 static void set_terrain(TRIBE_Screen_Sed* this_, short param_2);
 static void set_elevation(TRIBE_Screen_Sed* this_, short param_2);
 static void set_paint_object_mode(TRIBE_Screen_Sed* this_);
+int MakeFileList(TRIBE_Screen_Sed* this_, TDropDownPanel* param_2, char* param_3, char* param_4, uchar param_5, uchar param_6);
 
 static void init_module_variables(TRIBE_Screen_Sed* this_) {
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AF320
@@ -626,9 +628,120 @@ static int create_edit(TRIBE_Screen_Sed* this_, TPanel* param_2, TEditPanel** pa
 }
 
 static int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownPanel** param_3) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A8A60
-    if (!this_) return 0;
-    return this_->create_drop_down(param_2, param_3, 0, 0, 0, 0, 0, 0, 0);
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8A60
+    if (this_ == nullptr) return 0;
+
+    long width = 0x82;
+    if ((param_3 == &this_->victory_object_list) || (param_3 == &this_->victory_attribute_list) ||
+        (param_3 == &this_->victory_ages_list) || (param_3 == &this_->victory_tech_list) ||
+        (param_3 == &this_->BuildList) || (param_3 == &this_->CityLayout) ||
+        (param_3 == &this_->AiRules) || (param_3 == &this_->victory_time)) {
+        width = 0xDC;
+    } else if (param_3 == &this_->victory_drop_down) {
+        width = 0xB4;
+    } else if ((param_3 == this_->cinematic_input) || (param_3 == this_->cinematic_input + 1) ||
+               (param_3 == this_->cinematic_input + 2) || (param_3 == this_->cinematic_input + 3) ||
+               (param_3 == &this_->default_terrain_drop) || (param_3 == &this_->map_size_drop) ||
+               (param_3 == &this_->map_style_drop)) {
+        width = 0xAA;
+    } else if ((param_3 == &this_->player_advance_civilization_drop) || (param_3 == &this_->player_list) ||
+               (param_3 == &this_->player_number_list) || (param_3 == &this_->unit_player_list) ||
+               (param_3 == &this_->victory_player_list) || (param_3 == &this_->options_player_list) ||
+               (param_3 == &this_->Diplomacy_player_list) || (param_3 == &this_->victory_enemy_player_list)) {
+        width = 0x96;
+    }
+
+    const int created = this_->TEasy_Panel::create_drop_down(param_2, param_3, width, 100, 0, 0, width, 0x16, 10);
+    if (created == 0) return 0;
+
+    (*param_3)->set_z_order('\x01', 0);
+    (*param_3)->set_active(0);
+    (*param_3)->empty_list();
+
+    TDropDownPanel* panel = *param_3;
+    long selected_line = 0;
+
+    if (param_3 == &this_->map_size_drop) {
+        for (long id = 0x2973; id <= 0x2978; ++id) panel->append_line(id, 0);
+        selected_line = 3;
+    } else if (param_3 == &this_->map_style_drop) {
+        for (long id = 0x296A; id <= 0x2972; ++id) panel->append_line(id, 0);
+        selected_line = 3;
+    } else if ((param_3 == &this_->player_number_list) || (param_3 == &this_->victory_enemy_player_list)) {
+        for (int i = 0; i < 8; ++i) panel->append_line(0x2877 + i, 0);
+    } else if (param_3 == &this_->victory_attribute_list) {
+        panel->append_line(0x2882, 0x2B);
+        panel->append_line(0x2883, 0x29);
+        panel->append_line(0x2884, 0x2C);
+        panel->append_line(0x2886, 0x28);
+        panel->append_line(0x2887, 0x15);
+        panel->append_line(0x2888, 0x14);
+        panel->append_line(0x2889, 0x25);
+    } else if (param_3 == &this_->default_terrain_drop) {
+        for (long id = 0x297D; id <= 0x2985; ++id) panel->append_line(id, 0);
+    } else if (param_3 == this_->player_setting_drop) {
+        panel->append_line(0x27E3, 0);
+        panel->append_line(0x27E4, 0);
+    } else if (param_3 == &this_->victory_drop_down) {
+        for (long id = 0x2851; id <= 0x2862; ++id) panel->append_line(id, 0);
+        panel->append_line(0x284F, 0);
+    } else if (param_3 == this_->player_setting_drop + 1) {
+        panel->append_line(0x27F7, 0);
+        panel->append_line(0x27F8, 0);
+        panel->append_line(0x27F9, 0);
+        panel->append_line(0x27FA, 0);
+        panel->append_line(0x27FB, 0);
+        panel->append_line(0x27FC, 0);
+        panel->append_line(0x27FD, 0);
+        panel->append_line(0x27FE, 0);
+        panel->append_line(0x27FF, 0);
+        panel->append_line(0x2800, 0);
+        panel->append_line(0x2801, 0);
+        panel->append_line(0x2802, 0);
+        panel->append_line(0x2806, 0);
+        panel->append_line(0x2807, 0);
+        panel->append_line(0x2809, 0);
+        panel->append_line(0x2808, 0);
+    } else if (param_3 == &this_->victory_ages_list) {
+        panel->append_line(0x1069, 0);
+        panel->append_line(0x106A, 0);
+        panel->append_line(0x106B, 0);
+        panel->append_line(0x106C, 0);
+    } else if (param_3 == &this_->AiRules) {
+        (void)MakeFileList(this_, panel, rge_base_game->prog_info->ai_dir, (char*)"*.per", '\0', '\x01');
+    } else if (param_3 == &this_->BuildList) {
+        (void)MakeFileList(this_, panel, rge_base_game->prog_info->ai_dir, (char*)"*.ai", '\x01', '\x01');
+    } else if (param_3 == &this_->CityLayout) {
+        (void)MakeFileList(this_, panel, rge_base_game->prog_info->ai_dir, (char*)"*.cty", '\x01', '\0');
+    } else if ((param_3 == this_->cinematic_input) || (param_3 == this_->cinematic_input + 1) || (param_3 == this_->cinematic_input + 2)) {
+        (void)MakeFileList(this_, panel, rge_base_game->prog_info->avi_dir, (char*)"*.avi", '\x01', '\0');
+    } else if (param_3 == this_->cinematic_input + 3) {
+        (void)MakeFileList(this_, panel, (char*)"", (char*)"*.bmp", '\x01', '\0');
+    } else if (param_3 == &this_->victory_object_list) {
+        panel->set_sorted(1);
+        panel->empty_list();
+        if ((this_->world != nullptr) && (this_->world->master_players != nullptr) && (this_->world->master_player_num > 0) &&
+            (this_->world->master_players[0] != nullptr)) {
+            RGE_Master_Player* mp = this_->world->master_players[0];
+            for (int i = 0; i < mp->master_object_num; ++i) {
+                RGE_Master_Static_Object* mo = mp->master_objects[i];
+                if ((mo != nullptr) && (mo->hide_in_scenario_editor == 0)) {
+                    char str[256];
+                    str[0] = '\0';
+                    if (mo->string_id < 1) {
+                        strncpy(str, mo->name, sizeof(str) - 1);
+                        str[sizeof(str) - 1] = '\0';
+                    } else if (rge_base_game != nullptr) {
+                        rge_base_game->get_string(mo->string_id, str, sizeof(str));
+                    }
+                    if (str[0] != '\0') panel->append_line(str, i);
+                }
+            }
+        }
+    }
+
+    panel->set_line(selected_line);
+    return (uint)(this_->error_code == 0);
 }
 
 static int SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2) {
@@ -1243,7 +1356,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
 }
 
 TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004A94A0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A94A0
     if (panel_system) {
         panel_system->destroyPanel(kQuitSaveDialogName);
         panel_system->destroyPanel(kOpenSaveDialogName);
@@ -1251,6 +1364,177 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
         panel_system->destroyPanel(kSaveGameScreenName);
         panel_system->destroyPanel(kScenarioMenuDialogName);
     }
+
+    this->delete_panel((TPanel**)&this->map_type_label);
+    for (int i = 0; i < 3; ++i) {
+        this->delete_panel((TPanel**)&this->map_type_button[i]);
+        this->delete_panel((TPanel**)&this->map_type_text[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->default_terrain_label);
+    this->delete_panel((TPanel**)&this->default_terrain_drop);
+    this->delete_panel((TPanel**)&this->map_size_label);
+    this->delete_panel((TPanel**)&this->map_size_drop);
+    this->delete_panel((TPanel**)&this->map_style_drop);
+    this->delete_panel((TPanel**)&this->map_style_label);
+    this->delete_panel((TPanel**)&this->map_generating_text);
+    this->delete_panel((TPanel**)&this->random_seed_label);
+    this->delete_panel((TPanel**)&this->random_seed_input);
+    this->delete_panel((TPanel**)&this->random_seed_used_label);
+    this->delete_panel((TPanel**)&this->random_seed_used_text);
+    this->delete_panel((TPanel**)&this->generate_map_button);
+    this->delete_panel((TPanel**)&this->brush_size_label);
+
+    for (int i = 0; i < 5; ++i) {
+        this->delete_panel((TPanel**)&this->brush_size_button[i]);
+        this->delete_panel((TPanel**)&this->brush_size_button_label[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->paint_type_label);
+    for (int i = 0; i < 3; ++i) {
+        this->delete_panel((TPanel**)&this->paint_type_button[i]);
+        this->delete_panel((TPanel**)&this->paint_type_button_label[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->paint_terrain_label);
+    this->delete_panel((TPanel**)&this->paint_terrain_list);
+    this->delete_panel((TPanel**)&this->paint_terrain_scrollbar);
+    this->delete_panel((TPanel**)&this->paint_elevation_list);
+    this->delete_panel((TPanel**)&this->paint_elevation_scrollbar);
+    this->delete_panel((TPanel**)&this->player_advance_civilization_drop);
+    this->delete_panel((TPanel**)&this->player_label);
+    this->delete_panel((TPanel**)&this->player_starting_age_label);
+    this->delete_panel((TPanel**)&this->player_build_text);
+    this->delete_panel((TPanel**)&this->player_city_text);
+    this->delete_panel((TPanel**)&this->AiRules_text);
+    this->delete_panel((TPanel**)&this->player_list);
+    this->delete_panel((TPanel**)&this->player_number_list);
+
+    for (int i = 0; i < 5; ++i) {
+        this->delete_panel((TPanel**)&this->player_inven_label[i]);
+        this->delete_panel((TPanel**)&this->player_inven_input[i]);
+    }
+
+    for (int i = 0; i < 2; ++i) {
+        this->delete_panel((TPanel**)&this->player_setting_label[i]);
+        this->delete_panel((TPanel**)&this->player_setting_drop[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->BuildList);
+    this->delete_panel((TPanel**)&this->CityLayout);
+    this->delete_panel((TPanel**)&this->AiRules);
+    this->delete_panel((TPanel**)&this->unit_player_list);
+
+    for (int i = 0; i < 4; ++i) {
+        this->delete_panel((TPanel**)&this->unit_mode_select[i]);
+        this->delete_panel((TPanel**)&this->unit_mode_select_label[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->unit_list);
+    this->delete_panel((TPanel**)&this->unit_scrollbar);
+
+    if (this->unit_list_info) {
+        free(this->unit_list_info);
+        this->unit_list_info = nullptr;
+    }
+
+    if (this->object_panel) {
+        delete this->object_panel;
+        this->object_panel = nullptr;
+    }
+
+    if (this->button_unit_pics) {
+        delete this->button_unit_pics;
+        this->button_unit_pics = nullptr;
+    }
+    for (int i = 0; i < 5; ++i) {
+        if (this->button_bldg_pics[i]) {
+            delete this->button_bldg_pics[i];
+            this->button_bldg_pics[i] = nullptr;
+        }
+    }
+
+    for (int i = 0; i < 6; ++i) this->delete_panel((TPanel**)&this->victory_cond_on[i]);
+    for (int i = 0; i < 2; ++i) {
+        this->delete_panel((TPanel**)&this->victory_and_or[i]);
+        this->delete_panel((TPanel**)&this->victory_text_and_or[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->victory_amount_label);
+    this->delete_panel((TPanel**)&this->victory_long_label);
+    this->delete_panel((TPanel**)&this->victory_condition_label);
+    this->delete_panel((TPanel**)&this->victory_label_conquest);
+    this->delete_panel((TPanel**)&this->victory_label_explore);
+    this->delete_panel((TPanel**)&this->victory_label_explore_percent);
+    this->delete_panel((TPanel**)&this->victory_label_ruins);
+    this->delete_panel((TPanel**)&this->victory_label_artifacts);
+    this->delete_panel((TPanel**)&this->victory_label_discoveries);
+    this->delete_panel((TPanel**)&this->victory_label_gold);
+    this->delete_panel((TPanel**)&this->victory_condition_explore);
+    this->delete_panel((TPanel**)&this->victory_condition_ruins);
+    this->delete_panel((TPanel**)&this->victory_condition_artifacts);
+    this->delete_panel((TPanel**)&this->victory_condition_discoveries);
+    this->delete_panel((TPanel**)&this->victory_condition_gold);
+
+    for (int i = 0; i < 5; ++i) {
+        this->delete_panel((TPanel**)&this->victory_cond_type_label[i]);
+        this->delete_panel((TPanel**)&this->victory_cond_type[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->victory_score_label);
+    this->delete_panel((TPanel**)&this->victory_score);
+    this->delete_panel((TPanel**)&this->victory_time_label);
+    this->delete_panel((TPanel**)&this->victory_time);
+
+    for (int i = 0; i < 12; ++i) this->delete_panel((TPanel**)&this->victory_button[i]);
+
+    this->delete_panel((TPanel**)&this->victory_drop_down);
+    this->delete_panel((TPanel**)&this->victory_object_list);
+    this->delete_panel((TPanel**)&this->victory_player_list);
+    this->delete_panel((TPanel**)&this->victory_ages_list);
+    this->delete_panel((TPanel**)&this->victory_tech_list);
+    this->delete_panel((TPanel**)&this->victory_button_set_object);
+    this->delete_panel((TPanel**)&this->victory_button_set_destination);
+    this->delete_panel((TPanel**)&this->victory_button_go_to_dest);
+    this->delete_panel((TPanel**)&this->victory_condition_text);
+    this->delete_panel((TPanel**)&this->victory_condition_type);
+    this->delete_panel((TPanel**)&this->victory_amount_text);
+    this->delete_panel((TPanel**)&this->victory_amount_input);
+    this->delete_panel((TPanel**)&this->victory_enemy_player_list);
+    this->delete_panel((TPanel**)&this->victory_attribute_list);
+    this->delete_panel((TPanel**)&this->victory_which_enemy_text);
+    this->delete_panel((TPanel**)&this->victory_object_scrollbar);
+
+    for (int i = 0; i < 5; ++i) {
+        this->delete_panel((TPanel**)&this->message_button[i]);
+        this->delete_panel((TPanel**)&this->message_button_label[i]);
+    }
+    this->delete_panel((TPanel**)&this->message_input);
+
+    for (int i = 0; i < 4; ++i) {
+        this->delete_panel((TPanel**)&this->cinematic_label[i]);
+        this->delete_panel((TPanel**)&this->cinematic_input[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->options_label[0]);
+    this->delete_panel((TPanel**)&this->options_button[0]);
+    this->delete_panel((TPanel**)&this->options_player_list);
+    this->delete_panel((TPanel**)&this->options_disable_tech_text);
+    for (int i = 0; i < 16; ++i) {
+        this->delete_panel((TPanel**)&this->options_disable_button[i]);
+        this->delete_panel((TPanel**)&this->options_disable_text[i]);
+    }
+
+    this->delete_panel((TPanel**)&this->Diplomacy_player_list);
+    for (int i = 0; i < 8; ++i) {
+        this->delete_panel((TPanel**)&this->Diplomacy_opponent_label[i]);
+        this->delete_panel((TPanel**)&this->Diplomacy_friend_box[i][0]);
+        this->delete_panel((TPanel**)&this->Diplomacy_friend_box[i][1]);
+        this->delete_panel((TPanel**)&this->Diplomacy_friend_box[i][2]);
+        this->delete_panel((TPanel**)&this->Diplomacy_AlliedVictory[i]);
+    }
+    for (int i = 0; i < 8; ++i) this->delete_panel((TPanel**)&this->Diplomacy_player_text[i]);
+    for (int i = 0; i < 4; ++i) this->delete_panel((TPanel**)&this->Diplomacy_status_label[i]);
 
     for (int i = 0; i < 10; ++i) {
         this->delete_panel((TPanel**)&this->scenario_mode_button[i]);
@@ -1502,8 +1786,27 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulon
 }
 
 void TRIBE_Screen_Sed::draw() {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004AD0F0
-    TScreenPanel::draw();
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD0F0
+    TEasy_Panel::draw();
+
+    if ((this->render_area != nullptr) && (this->main_view != nullptr) &&
+        (this->pnl_x == this->main_view->pnl_x) && (this->pnl_y == this->main_view->pnl_y) &&
+        (this->pnl_wid == this->main_view->pnl_wid) && (this->pnl_hgt == this->main_view->pnl_hgt)) {
+        this->draw_setup(0);
+        uchar* bits = this->render_area->Lock((char*)"scr_sed::draw", 1);
+        if (bits != nullptr) {
+            const long top_end = this->main_view->pnl_y - 1;
+            const long lower_start = this->main_view->pnl_y + this->main_view->pnl_hgt + 1;
+            this->render_area->DrawBevel3(0, 0, this->pnl_wid - 1, top_end,
+                                          this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                          this->bevel_color4, this->bevel_color1, this->bevel_color2);
+            this->render_area->DrawBevel3(0, lower_start, this->pnl_wid - 1, this->pnl_hgt - 1,
+                                          this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                          this->bevel_color4, this->bevel_color1, this->bevel_color2);
+            this->render_area->Unlock((char*)"scr_sed::draw");
+        }
+        this->draw_finish();
+    }
 }
 
 void TRIBE_Screen_Sed::set_focus(int param_1) {
@@ -5916,7 +6219,7 @@ undefined FUN_004abc31() {
 
 // Offset: 0x004ABCD0
 long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // TODO: Partial transliteration. Source of truth: scr_sed.cpp.decomp @ 0x004ABCD0
+    // Reference block. Source of truth: scr_sed.cpp.decomp @ 0x004ABCD0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: x2 */

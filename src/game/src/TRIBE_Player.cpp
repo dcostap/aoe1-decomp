@@ -1164,8 +1164,23 @@ void TRIBE_Player::random_start() {
 }
 RGE_Static_Object* TRIBE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00512F60
-    // TODO: Remaining parity details for editor-mode call path are deferred.
-    return RGE_Player::make_new_object(param_1, param_2, param_3, param_4, param_5);
+    TRIBE_Building_Object* building = (TRIBE_Building_Object*)RGE_Player::make_new_object(param_1, param_2, param_3, param_4, param_5);
+    if (building != nullptr) {
+        if (param_5 != 0) {
+            ((TRIBE_World*)this->world)->check_destructables(this->id, (short)param_1, param_2, param_3, '\0');
+            if ((building->master_obj != nullptr) && (building->master_obj->master_type == 'P')) {
+                building->build(10000.0f);
+            }
+        }
+
+        if ((rge_base_game->prog_mode == 7) && (building->master_obj != nullptr)) {
+            short obj_group = building->master_obj->object_group;
+            if ((obj_group == 5) || (obj_group == 0x21)) {
+                building->set_object_state(5);
+            }
+        }
+    }
+    return (RGE_Static_Object*)building;
 }
 void TRIBE_Player::analyize_selected_objects() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005195D0
