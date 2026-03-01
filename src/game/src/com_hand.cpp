@@ -1282,8 +1282,8 @@ long TCommunications_Handler::SendSharedData(int send_mode) {
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC00
 int TCommunications_Handler::GetPlayerHumanity(uint player_number) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC00
-    if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers) || (player_number >= 10)) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC00, com_hand.cpp.asm @ 0x0042CC00
+    if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
         return 0;
     }
 
@@ -1294,8 +1294,8 @@ int TCommunications_Handler::GetPlayerHumanity(uint player_number) {
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC30
 void TCommunications_Handler::SetPlayerHumanity(uint player_number, int humanity_value) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC30
-    if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers) || (player_number >= 10)) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC30, com_hand.cpp.asm @ 0x0042CC30
+    if ((player_number == 0) || (player_number > (uint)this->MaxGamePlayers)) {
         return;
     }
 
@@ -1692,6 +1692,7 @@ RESENDER::~RESENDER() {
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004265E0
 HOLDER::HOLDER() {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004265E0, com_hand.cpp.asm @ 0x004265E0
     this->HoldMsg = nullptr;
     this->Serial = 0;
     this->Length = 0;
@@ -1701,6 +1702,7 @@ HOLDER::HOLDER() {
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426600
 HOLDER::~HOLDER() {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426600, com_hand.cpp.asm @ 0x00426600
     if (this->HoldMsg != nullptr) {
         ::operator delete(this->HoldMsg);
     }
@@ -1739,14 +1741,12 @@ void* TCommunications_Handler::get_command() {
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426530
 int TCommunications_Handler::NewCommand(void* p1, int p2, int p3) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426530
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426530, com_hand.cpp.asm @ 0x00426530
     if (this->Multiplayer != 0) {
-        (void)this->CommOut((uchar)0x3E, p1, p2, 0);
+        L->Log("  >TX CMD (%d) Cmd=%d ", p2, (uint)(*(const uchar*)p1));
+        long hr = this->CommOut((uchar)0x3E, p1, p2, 0);
+        this->Err->ShowReturn(hr, "NewCmnd");
         return 1;
-    }
-
-    if (this->InQ == nullptr) {
-        return 0;
     }
 
     const uchar* command_turn_increment =
