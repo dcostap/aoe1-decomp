@@ -84,7 +84,7 @@ long RGE_Diamond_Map_View::handle_timer_command(uint param_1, long param_2) { re
 long RGE_Diamond_Map_View::handle_scroll(long param_1, long param_2) { return RGE_Diamond_Map::handle_scroll(param_1, param_2); }
 
 long RGE_Diamond_Map_View::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D3B0
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D3B0
     short col = 0;
     short row = 0;
     RGE_Tile* tile = nullptr;
@@ -153,7 +153,7 @@ long RGE_Diamond_Map_View::mouse_left_move_action(long param_1, long param_2, in
 }
 
 long RGE_Diamond_Map_View::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D500
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D500
     (void)param_3;
 
     int prog_mode = rge_base_game->prog_mode;
@@ -247,7 +247,7 @@ long RGE_Diamond_Map_View::mouse_right_move_action(long param_1, long param_2, i
 }
 
 long RGE_Diamond_Map_View::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D720
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D720
     (void)param_3;
 
     int prog_mode = rge_base_game->prog_mode;
@@ -346,7 +346,7 @@ int RGE_Diamond_Map_View::command_make_do(long param_1, long param_2) {
 }
 
 int RGE_Diamond_Map_View::command_make_move(long param_1, long param_2) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053D970
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D970
     if (allow_user_commands == 0) {
         return 0;
     }
@@ -365,7 +365,7 @@ int RGE_Diamond_Map_View::command_make_move(long param_1, long param_2) {
 }
 
 int RGE_Diamond_Map_View::command_make_work(long param_1, long param_2) {
-    // Fully verified. Source of truth: vw_dimap.cpp.decomp @ 0x0053DA10
+    // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053DA10
     if (allow_user_commands == 0) {
         return 0;
     }

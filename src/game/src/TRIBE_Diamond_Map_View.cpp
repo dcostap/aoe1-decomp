@@ -4,13 +4,13 @@
 #include "debug_helpers.h"
 
 TRIBE_Diamond_Map_View::TRIBE_Diamond_Map_View() {
-    // Fully verified. Source of truth: tvw_dmap.cpp.decomp @ 0x0052C9E0
+    // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm @ 0x0052C9E0
     this->last_attack_time = 0;
     this->flash_on = 0;
 }
 
 TRIBE_Diamond_Map_View::~TRIBE_Diamond_Map_View() {
-    // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm (parity-audited).
+    // Fully verified. Source of truth: tvw_dmap.cpp.asm (no standalone body beyond compiler-generated destruction).
 }
 
 // -----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ void TRIBE_Diamond_Map_View::set_positioning(PositionMode param_1, long param_2,
 void TRIBE_Diamond_Map_View::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { RGE_Diamond_Map_View::set_fixed_position(param_1, param_2, param_3, param_4); }
 
 void TRIBE_Diamond_Map_View::set_redraw(RedrawMode param_1) {
-    // Fully verified. Source of truth: tvw_dmap.cpp.decomp @ 0x0052CA30
+    // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm @ 0x0052CA30
     RGE_Diamond_Map::set_redraw(param_1);
 
     if ((param_1 != NoRedraw && this->visible != 0) && this->active != 0) {
@@ -143,7 +143,7 @@ void TRIBE_Diamond_Map_View::handle_reactivate() { RGE_Diamond_Map_View::handle_
 void TRIBE_Diamond_Map_View::draw_selected_area() { RGE_Diamond_Map_View::draw_selected_area(); }
 
 void TRIBE_Diamond_Map_View::draw_objects() {
-    // Fully verified. Source of truth: tvw_dmap.cpp.decomp @ 0x0052CA60
+    // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm @ 0x0052CA60
     ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tvw_dmap.cpp", 0x40);
     if (0x14C < now - this->last_attack_time) {
         this->flash_on = (uint)(this->flash_on == 0);
@@ -156,7 +156,7 @@ void TRIBE_Diamond_Map_View::draw_objects() {
 void TRIBE_Diamond_Map_View::draw_visible_object(RGE_Static_Object* param_1, uchar param_2, uchar param_3) { RGE_Diamond_Map_View::draw_visible_object(param_1, param_2, param_3); }
 
 void TRIBE_Diamond_Map_View::draw_object(short param_1, short param_2, uchar param_3, short param_4, RGE_Static_Object* param_5) {
-    // Fully verified. Source of truth: tvw_dmap.cpp.decomp @ 0x0052CAB0
+    // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm @ 0x0052CAB0
     if (this->draw_objects_mode == 4) {
         param_3 = (uchar)(((uint)-(this->flash_on != 0) & 0x57U) - 1);
     }
