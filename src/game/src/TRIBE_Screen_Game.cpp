@@ -3184,6 +3184,7 @@ void TRIBE_Screen_Game::command_more() {
 }
 
 void TRIBE_Screen_Game::command_move() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C890.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049E1F0.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3229,6 +3230,7 @@ void TRIBE_Screen_Game::command_outline() {
 }
 
 void TRIBE_Screen_Game::command_pause() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049C970.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049E420.
     if (rge_base_game == nullptr) {
         return;
@@ -3252,6 +3254,7 @@ void TRIBE_Screen_Game::command_pause() {
 }
 
 void TRIBE_Screen_Game::command_player(int param_1) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CA10.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049E540.
     if (rge_base_game == nullptr || rge_base_game->allowCheatCodes() == 0) {
         return;
@@ -3270,6 +3273,7 @@ void TRIBE_Screen_Game::command_player(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_quick_build() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CA80.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049E650.
     if (rge_base_game == nullptr || this->runtime.world == nullptr || rge_base_game->allowCheatCodes() == 0) {
         return;
@@ -3291,6 +3295,7 @@ void TRIBE_Screen_Game::command_quit() {
 }
 
 void TRIBE_Screen_Game::command_research(int param_1) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CAF0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049E750.
     if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3312,6 +3317,7 @@ void TRIBE_Screen_Game::command_research(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_save_game() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CB90.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049E8B0.
     if (rge_base_game != nullptr && rge_base_game->prog_mode == 6 && this->runtime.world != nullptr && this->runtime.world->commands != nullptr) {
         this->runtime.world->commands->do_commands();
@@ -3323,6 +3329,7 @@ void TRIBE_Screen_Game::command_save_game() {
 }
 
 void TRIBE_Screen_Game::command_save_scenario() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CC20.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049EA20.
     if (rge_base_game != nullptr && rge_base_game->prog_mode == 6 && this->runtime.world != nullptr && this->runtime.world->commands != nullptr) {
         this->runtime.world->commands->do_commands();
@@ -3334,6 +3341,7 @@ void TRIBE_Screen_Game::command_save_scenario() {
 }
 
 void TRIBE_Screen_Game::command_select_building(int param_1) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CCB0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049EB90.
     if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3375,6 +3383,7 @@ void TRIBE_Screen_Game::command_select_building(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_stop() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CE10.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049EEA0.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3386,6 +3395,7 @@ void TRIBE_Screen_Game::command_stop() {
 }
 
 void TRIBE_Screen_Game::command_tool_box() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CE40.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049EF30.
     if (rge_base_game == nullptr || rge_base_game->multiplayerGame() != 0 || this->runtime.tool_box == nullptr) {
         return;
@@ -3399,6 +3409,7 @@ void TRIBE_Screen_Game::command_tool_box() {
 }
 
 void TRIBE_Screen_Game::command_trade() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F020.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3408,12 +3419,14 @@ void TRIBE_Screen_Game::command_trade() {
 }
 
 void TRIBE_Screen_Game::command_trade_with(int param_1) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEB0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F060.
     this->runtime.current_item = (short)param_1;
     this->command_trade();
 }
 
 void TRIBE_Screen_Game::command_train(int param_1, short param_2) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEC0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F0A0.
     if (rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3453,6 +3466,7 @@ void TRIBE_Screen_Game::command_ungroup() {
 }
 
 void TRIBE_Screen_Game::command_unload() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F400.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3532,6 +3546,7 @@ void TRIBE_Screen_Game::command_visibility() {
 }
 
 void TRIBE_Screen_Game::command_work() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D200.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F8F0.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
@@ -3566,6 +3581,7 @@ void TRIBE_Screen_Game::command_formation(int param_1) {
 }
 
 void TRIBE_Screen_Game::command_stand_ground() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D2C0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049FB40.
     if (rge_base_game == nullptr || allow_user_commands == 0 || rge_base_game->get_paused() != 0) {
         return;
@@ -3578,6 +3594,7 @@ void TRIBE_Screen_Game::command_stand_ground() {
 }
 
 void TRIBE_Screen_Game::command_attack_ground() {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D2F0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049FBB0.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
