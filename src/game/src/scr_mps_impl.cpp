@@ -2470,7 +2470,7 @@ long TribeMPSetupScreen::handle_user_command(uint param_1, long param_2) {
                     if (ready != 0) {
                         this->scenarioCheckSum[i] = ready;
                     }
-                } else if (humanity != 4) {
+                } else if (humanity != 2 && humanity != 4) {
                     int rand_civ = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x6d6);
                     int sign = rand_civ >> 0x1f;
                     rand_civ = (((rand_civ ^ sign) - sign) & 0xf);
