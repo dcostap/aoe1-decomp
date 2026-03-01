@@ -4,6 +4,7 @@
 #include "../include/TDrawSystem.h"
 #include "../include/TSpan_List_Manager.h"
 #include "../include/DClipInfo_List.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
 #include "../include/RGE_Color_Table.h"
 #include <string.h>
@@ -18,6 +19,8 @@ extern "C" unsigned int _ASMGet_Color_Xform();
 extern "C" void _ASMSet_Surface_Info(void** display_offsets, VSpan_Node** line_head_ptrs, VSpan_Node** line_tail_ptrs, int min_span_px, int min_line, int max_span_px, int max_line);
 extern "C" void _ASMSet_Xlate_Table(void* p);
 extern "C" void* _ASMGet_Xlate_Table();
+
+static int Shape_Loads = 0;
 
 static inline VSpan_Node* shape_span_advance(VSpan_Node* span, long x) {
     // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
@@ -1717,7 +1720,7 @@ TShape::TShape() {
     this->load_size = 0;
 }
 
-// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B8B50
+// Fully verified. Source of truth: shape.cpp.decomp + shape.cpp.asm @ 0x004B8B50
 TShape::TShape(char* filename, int file_id) {
     this->shape = 0;
     this->shape_header = 0;
@@ -1729,13 +1732,17 @@ TShape::TShape(char* filename, int file_id) {
     this->load_size = 0;
 
     if ((shape_file_first != 0 || file_id < 0) && filename && filename[0] != '\0') {
+        color_log('T', 'T', 1);
+        ++Shape_Loads;
         char next_file[260];
         next_file[0] = '\0';
         strncpy(next_file, filename, sizeof(next_file) - 1);
         next_file[sizeof(next_file) - 1] = '\0';
 
         int len = (int)strlen(next_file);
-        if (len < 4 || _stricmp(next_file + len - 4, ".slp") != 0) {
+        if (len >= 4) {
+            strcpy(next_file + len - 4, ".SLP");
+        } else {
             strncat(next_file, ".SLP", sizeof(next_file) - strlen(next_file) - 1);
         }
 
@@ -1746,57 +1753,53 @@ TShape::TShape(char* filename, int file_id) {
             this->shape_info = (Shape_Info*)(data + 0x20);
             this->load_type = 1;
             this->load_size = size;
-            return;
         }
 
-        strncpy(next_file, filename, sizeof(next_file) - 1);
-        next_file[sizeof(next_file) - 1] = '\0';
-        len = (int)strlen(next_file);
-        if (len >= 4 && _stricmp(next_file + len - 4, ".slp") == 0) {
-            next_file[len - 4] = '\0';
-        }
-        len = (int)strlen(next_file);
-        if (len < 4 || _stricmp(next_file + len - 4, ".shp") != 0) {
-            strncat(next_file, ".SHP", sizeof(next_file) - strlen(next_file) - 1);
-        }
+        if (!this->FShape) {
+            len = (int)strlen(next_file);
+            if (len >= 4) {
+                strcpy(next_file + len - 4, ".SHP");
+            } else {
+                strncat(next_file, ".SHP", sizeof(next_file) - strlen(next_file) - 1);
+            }
 
-        data = 0;
-        size = 0;
-        if (shape_file_load(next_file, &data, &size)) {
-            this->shape = data;
-            this->head = (Shape_File_Header*)this->shape;
-            this->offsets = (Shape_Offsets*)(this->shape + 8);
-            this->load_type = 1;
-            this->load_size = size;
-            return;
+            data = 0;
+            size = 0;
+            if (shape_file_load(next_file, &data, &size)) {
+                this->shape = data;
+                this->head = (Shape_File_Header*)this->shape;
+                this->offsets = (Shape_Offsets*)(this->shape + 8);
+                this->load_type = 1;
+                this->load_size = size;
+            }
         }
+        color_log('T', '_', 1);
     }
 
     if (file_id >= 0 && !this->FShape && !this->shape) {
+        ++Shape_Loads;
         int size = 0;
         int out_type = 0;
         this->shape = RESFILE_load(0x73687020, file_id, &size, &out_type); // 'shp '
+        this->load_type = out_type;
+        this->load_size = size;
         if (this->shape) {
             if (shape_has_version_110(this->shape)) {
                 this->head = (Shape_File_Header*)this->shape;
                 this->offsets = (Shape_Offsets*)(this->shape + 8);
-                this->load_type = out_type;
-                this->load_size = size;
                 return;
             }
-
-            shape_free_loaded_data(this->shape, out_type, size);
-            this->shape = 0;
-        }
-
-        unsigned char* slp_data = RESFILE_load(0x736c7020, file_id, &size, &out_type); // 'slp '
-        if (slp_data) {
-            this->FShape = (SLhape_File_Header*)slp_data;
-            this->shape_info = (Shape_Info*)(slp_data + 0x20);
-            this->shape = 0;
+        } else {
+            unsigned char* slp_data = RESFILE_load(0x736c7020, file_id, &size, &out_type); // 'slp '
+            this->shape = slp_data;
             this->load_type = out_type;
             this->load_size = size;
-            return;
+            if (slp_data) {
+                this->FShape = (SLhape_File_Header*)slp_data;
+                this->shape = 0;
+                this->shape_info = (Shape_Info*)(slp_data + 0x20);
+                return;
+            }
         }
     }
 }
