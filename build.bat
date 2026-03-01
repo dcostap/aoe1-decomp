@@ -60,6 +60,21 @@ if not exist "%SRC_DIR%\AIBaseItem.cpp" (
     popd
     exit /b 1
 )
+if not exist "%SRC_DIR%\RGE_Master_Combat_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\RGE_Master_Combat_Object.cpp"
+    popd
+    exit /b 1
+)
+if not exist "%SRC_DIR%\TRIBE_Master_Combat_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\TRIBE_Master_Combat_Object.cpp"
+    popd
+    exit /b 1
+)
+if not exist "%SRC_DIR%\TRIBE_Master_Building_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\TRIBE_Master_Building_Object.cpp"
+    popd
+    exit /b 1
+)
 
 REM --- Setup VS Environment (only if required tools are not already available) ---
 where cl >nul 2>nul

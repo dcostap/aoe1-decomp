@@ -217,7 +217,7 @@ RGE_Player::RGE_Player() {
 
 RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name_str, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player() {
-    // Source of truth: player.cpp.decomp @ 0x0046E770
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046E770
     this->pathingAttemptCapValue = 5;
     this->pathingDelayCapValue = 10;
     this->master_player_id = civ;
@@ -291,7 +291,7 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->checksum_created_this_update = 0;
 
     if (is_active != 0) {
-        // Source of truth: player.cpp.decomp @ 0x0046E770 (active-player allocations)
+        // Fully verified. Source of truth: player.cpp.decomp @ 0x0046E770 (active-player allocations)
         if (this->objects == nullptr) {
             this->objects = new (std::nothrow) RGE_Object_List();
         }
@@ -310,13 +310,13 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
 
 RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
     : RGE_Player() {
-    // Source of truth: player.cpp.decomp @ 0x0046E4B0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046E4B0
     this->pathingAttemptCapValue = 5;
     this->pathingDelayCapValue = 10;
     this->id = (short)player_id;
     this->world = world;
 
-    // Source of truth: player.cpp.decomp @ 0x0046E4B0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046E4B0
     if (this->doppleganger_creator == nullptr) {
         this->doppleganger_creator = new (std::nothrow) RGE_Doppleganger_Creator(this, 100);
     }
@@ -379,7 +379,7 @@ RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
 }
 
 RGE_Player::~RGE_Player() {
-    // Source of truth: player.cpp.decomp @ 0x0046EB00
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EB00
     if (this->objects != nullptr) {
         delete this->objects;
         this->objects = nullptr;
@@ -654,7 +654,7 @@ void RGE_Player::trackUnitGather(int param_1, int param_2, int param_3) {
     return;
 }
 RGE_Static_Object* RGE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) {
-    // Source of truth: player.cpp.decomp @ 0x0046F3A0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F3A0
     if (param_4 < 0 || this->master_objects == nullptr || param_4 >= this->master_object_num ||
         this->master_objects[param_4] == nullptr) {
         return nullptr;
@@ -680,7 +680,7 @@ void RGE_Player::scenario_save(int param_1) {
     return;
 }
 void RGE_Player::scenario_load(int param_1, long* param_2, float param_3) {
-    // Source of truth: player.cpp.decomp @ 0x0046F420
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F420
     if (param_3 > 1.05f) {
         return;
     }
@@ -756,7 +756,7 @@ void RGE_Player::scenario_load(int param_1, long* param_2, float param_3) {
     this->load_victory(param_1, param_2, 0);
 }
 void RGE_Player::scenario_postsave(int param_1) {
-    // Source of truth: player.cpp.decomp @ 0x0046F6B0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F6B0
     // Write name length + name
     short name_len = 0;
     if (this->name) {
@@ -782,7 +782,7 @@ void RGE_Player::scenario_postsave(int param_1) {
     }
 }
 void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {
-    // Source of truth: player.cpp.decomp @ 0x0046F7A0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046F7A0
     short name_len = 0;
     rge_read(param_1, &name_len, 2);
     if (name_len > 0) {
@@ -855,7 +855,7 @@ void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {
 }
 // Offset: 0x0046FA60
 void RGE_Player::load(int param_1) {
-    // Source of truth: player.cpp.decomp @ 0x0046FA60
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x0046FA60
     rge_read(param_1, &this->master_object_num, 2);
     if (this->master_object_num < 1) {
         this->master_objects = nullptr;
@@ -1149,7 +1149,7 @@ void RGE_Player::update() {
     }
 }
 void RGE_Player::update_dopplegangers() {
-    // Source of truth: player.cpp.decomp @ 0x00470180
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00470180
     if (MouseSystem != nullptr) {
         MouseSystem->Poll();
     }
@@ -1161,7 +1161,7 @@ void RGE_Player::update_dopplegangers() {
     }
 }
 void RGE_Player::save(int param_1) {
-    // Source of truth: player.cpp.decomp @ 0x004701B0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x004701B0
     rge_write(param_1, &this->type, 1);
     rge_write(param_1, this->relations, (int)this->world->player_num);
     rge_write(param_1, this->unitDiplomacy, 0x24);
@@ -2043,7 +2043,7 @@ void RGE_Player::set_relation(long param_1, uchar param_2) {
 }
 
 void RGE_Player::set_view_loc(float x, float y) {
-    // Source of truth: player.cpp.decomp @ 0x004704C0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x004704C0
     this->view_x = x;
     this->view_y = y;
     // Clamp to map bounds

@@ -4,6 +4,7 @@
 struct RGE_Tile_List {
     RGE_Tile_List() : list_size(0), num_active(0), new_count(0), collapse_list(0), list(nullptr) {}
     RGE_Tile_List(int param_1);
+    ~RGE_Tile_List();
     void add_node(int param_1, int param_2);
     void del_list();
     void get_list_info(RGE_Tile_List_Node** param_1, int* param_2);
