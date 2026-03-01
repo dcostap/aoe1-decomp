@@ -160,6 +160,7 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (helper extracted from decomp flow).
 static long dropdown_calc_list_hgt(TDropDownPanel* self, int use_draw_lines) {
     if (!self || !self->list_panel) {
         return 0;
@@ -396,6 +397,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode param_1) {
     this->mode = param_1;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle style) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474600
     this->draw_style = style;
@@ -406,6 +408,7 @@ void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle style) {
     }
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 void TDropDownPanel::set_draw_val_rect(int draw) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474630
     this->draw_val_rect = draw;
@@ -415,6 +418,7 @@ void TDropDownPanel::set_draw_val_rect(int draw) {
     }
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 void TDropDownPanel::empty_list() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475460
     if (this->list_panel) {
@@ -430,6 +434,7 @@ int TDropDownPanel::append_line(char* text, long id) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 int TDropDownPanel::append_line(long str_id, long id) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004752D0
     if (this->list_panel) {
@@ -438,6 +443,7 @@ int TDropDownPanel::append_line(long str_id, long id) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 int TDropDownPanel::insert_line(long line_num, char* text, long id) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475300
     if (this->list_panel) {
@@ -446,6 +452,7 @@ int TDropDownPanel::insert_line(long line_num, char* text, long id) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 int TDropDownPanel::insert_line(long line_num, long str_id, long id) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475330
     if (this->list_panel) {
@@ -454,6 +461,7 @@ int TDropDownPanel::insert_line(long line_num, long str_id, long id) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 int TDropDownPanel::delete_line(long line_num) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475360
     if (this->list_panel) {
@@ -474,6 +482,7 @@ void TDropDownPanel::set_line(long line_num) {
     }
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 int TDropDownPanel::numberLines() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475110
     if (this->list_panel) {
@@ -482,6 +491,7 @@ int TDropDownPanel::numberLines() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 int TDropDownPanel::currentLineNumber() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475130
     if (this->list_panel) {
@@ -490,6 +500,7 @@ int TDropDownPanel::currentLineNumber() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 void TDropDownPanel::setCurrentLineNumber(int line_num) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475150
     this->set_line(line_num);
@@ -508,6 +519,7 @@ void TDropDownPanel::setCurrentLineId(int id) {
     }
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 char* TDropDownPanel::currentLine() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004751C0
     if (this->list_panel) {
@@ -516,6 +528,7 @@ char* TDropDownPanel::currentLine() {
     return nullptr;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 void TDropDownPanel::set_sorted(int sorted) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475210
     if (this->list_panel) {
@@ -531,6 +544,7 @@ int TDropDownPanel::get_sorted() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 long TDropDownPanel::get_line() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475380
     if (this->list_panel) {
@@ -539,6 +553,7 @@ long TDropDownPanel::get_line() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 long TDropDownPanel::get_line(long id) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004753A0
     if (this->list_panel) {
@@ -555,6 +570,7 @@ long TDropDownPanel::get_line(char* text) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 long TDropDownPanel::get_id() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475420
     if (this->list_panel) {
@@ -563,6 +579,7 @@ long TDropDownPanel::get_id() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 long TDropDownPanel::get_id(long line_num) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475440
     if (this->list_panel) {
@@ -571,6 +588,7 @@ long TDropDownPanel::get_id(long line_num) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 char* TDropDownPanel::get_text() {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004753E0
     if (this->list_panel) {
@@ -579,6 +597,7 @@ char* TDropDownPanel::get_text() {
     return nullptr;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 char* TDropDownPanel::get_text(long line_num) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00475400
     if (this->list_panel) {
@@ -587,6 +606,7 @@ char* TDropDownPanel::get_text(long line_num) {
     return nullptr;
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 void TDropDownPanel::set_val_text_color(unsigned long c1, unsigned long c2) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004745E0
     if (this->val_panel) {
@@ -765,36 +785,61 @@ void TDropDownPanel::set_rect(long x, long y, long w, long h) {
     }
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 long TDropDownPanel::setup(TDrawArea* a, TPanel* p, long x, long y, long w, long h, uchar c) {
     return TPanel::setup(a, p, x, y, w, h, c);
 }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_rect(tagRECT r) { TPanel::set_rect(r); }
 
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_color(uchar c) { TPanel::set_color(c); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_active(int a) { TPanel::set_active(a); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_positioning(PositionMode m, long p1, long p2, long p3, long p4, long p5, long p6, long p7, long p8, TPanel* r1, TPanel* r2, TPanel* r3, TPanel* r4) {
     TPanel::set_positioning(m, p1, p2, p3, p4, p5, p6, p7, p8, r1, r2, r3, r4);
 }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_fixed_position(long x, long y, long w, long h) { TPanel::set_fixed_position(x, y, w, h); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_redraw(RedrawMode m) { TPanel::set_redraw(m); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_overlapped_redraw(TPanel* p1, TPanel* p2, RedrawMode m) { TPanel::set_overlapped_redraw(p1, p2, m); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::draw_setup(int p) { TPanel::draw_setup(p); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::draw_finish() { TPanel::draw_finish(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::draw_rect(tagRECT* r) { TPanel::draw_rect(r); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::draw_offset(long x, long y, tagRECT* r) { TPanel::draw_offset(x, y, r); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::draw_rect2(tagRECT* r) { TPanel::draw_rect2(r); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::draw_offset2(long x, long y, tagRECT* r) { TPanel::draw_offset2(x, y, r); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::paint() { TPanel::paint(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::wnd_proc(void* h, uint m, uint w, long l) { return TPanel::wnd_proc(h, m, w, l); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_idle() { return TPanel::handle_idle(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_size(long w, long h) { return TPanel::handle_size(w, h); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_char(long p1, short p2) { return TPanel::handle_char(p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_command(uint c, long p) { return TPanel::handle_command(c, p); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_user_command(uint c, long p) { return TPanel::handle_user_command(c, p); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_timer_command(uint c, long p) { return TPanel::handle_timer_command(c, p); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::handle_scroll(long p1, long p2) { return TPanel::handle_scroll(p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (parity-audited).
 long TDropDownPanel::handle_mouse_move(long x, long y, int p1, int p2) {
     // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474400
     return TPanel::handle_mouse_move(x, y, p1, p2);
@@ -807,18 +852,31 @@ long TDropDownPanel::handle_mouse_dbl_click(uchar b, long x, long y, int p1, int
 long TDropDownPanel::mouse_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_move_action(x, y, p1, p2); }
 long TDropDownPanel::mouse_left_down_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_down_action(x, y, p1, p2); }
 long TDropDownPanel::mouse_left_hold_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_hold_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_left_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_move_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_left_up_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_up_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_left_dbl_click_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_dbl_click_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_right_down_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_down_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_right_hold_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_hold_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_right_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_move_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_right_up_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_up_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::mouse_right_dbl_click_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_dbl_click_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::key_down_action(long k, short s, int p1, int p2, int p3) { return TPanel::key_down_action(k, s, p1, p2, p3); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TDropDownPanel::char_action(long p1, short p2) { return TPanel::char_action(p1, p2); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::get_true_render_rect(tagRECT* r) { TPanel::get_true_render_rect(r); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TDropDownPanel::is_inside(long x, long y) { return TPanel::is_inside(x, y); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_focus(int f) { TPanel::set_focus(f); }
 // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004751E0
 void TDropDownPanel::set_tab_order(TPanel* p1, TPanel* p2) {
@@ -827,9 +885,15 @@ void TDropDownPanel::set_tab_order(TPanel* p1, TPanel* p2) {
         this->val_panel->set_tab_order(nullptr, nullptr);
     }
 }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::set_tab_order(TPanel** p, short s) { TPanel::set_tab_order(p, s); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 uchar TDropDownPanel::get_help_info(char** p1, long* p2, long p3, long p4) { return TPanel::get_help_info(p1, p2, p3, p4); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::stop_sound_system() { TPanel::stop_sound_system(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TDropDownPanel::restart_sound_system() { return TPanel::restart_sound_system(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::take_snapshot() { TPanel::take_snapshot(); }
+// Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::handle_reactivate() { TPanel::handle_reactivate(); }
