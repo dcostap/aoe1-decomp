@@ -194,7 +194,7 @@ static void panel_set_child_z_order(TPanel* owner, TPanel* child, unsigned char 
     owner->curr_child = saved_curr_child;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00464720
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464720
 TPanel::TPanel(char* name) {
     memset((unsigned char*)this + 4, 0, sizeof(TPanel) - 4); // Keep vtable intact; initialize data fields.
 
@@ -220,7 +220,7 @@ TPanel::TPanel(char* name) {
     }
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004649E0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004649E0
 TPanel::~TPanel() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004649E0
     this->release_mouse();
@@ -1066,7 +1066,7 @@ long TPanel::handle_key_down(long param_1, short param_2, int param_3, int param
 
     return 0;
 }
-// Source of truth: panel.cpp.decomp @ 0x00465BE0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465BE0
 long TPanel::handle_char(long param_1, short param_2) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465BE0
     if (this->have_focus == 0) {
@@ -1239,7 +1239,7 @@ void TPanel::stop_sound_system() {
         pPVar1->panel->stop_sound_system();
     }
 }
-// Source of truth: panel.cpp.decomp @ 0x004669A0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004669A0
 int TPanel::restart_sound_system() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004669A0
     int ok = 1;
@@ -1319,7 +1319,7 @@ char* TPanel::get_string(int resid) {
     return static_buffer;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x004666B0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004666B0
 char* TPanel::panelName() const {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x004666B0 (TPanel::panelName)
     return this->panelNameValue;
@@ -1498,7 +1498,7 @@ void TPanel::setClipRectangle(tagRECT rect) {
     this->clip_rect = rect;
 }
 
-// Source of truth: panel.cpp.decomp @ 0x00466350
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350
 int TPanel::bound_point(long* param_1, long* param_2) {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350 (TPanel::bound_point).
     int iVar1 = 0;

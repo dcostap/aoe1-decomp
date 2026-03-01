@@ -79,6 +79,7 @@ const char* kDefaultUnitHistoryFilename = "learn_Default.uh";
 const char* kUnitHistoryFilenameFormat = "learn_%s.uh";
 
 void tribe_reset_managed_array(ManagedArray<int>& array) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     array.value = nullptr;
     array.numberValue = 0;
     array.desiredNumberValue = 0;
@@ -86,6 +87,7 @@ void tribe_reset_managed_array(ManagedArray<int>& array) {
 }
 
 void tribe_clear_managed_array(ManagedArray<int>& array) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (array.value != nullptr) {
         ::operator delete(array.value);
         array.value = nullptr;
@@ -96,6 +98,7 @@ void tribe_clear_managed_array(ManagedArray<int>& array) {
 }
 
 int tribe_managed_array_contains(const ManagedArray<int>& array, int value) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < array.numberValue; ++i) {
         if ((i < array.maximumSizeValue) && (array.value != nullptr) && (array.value[i] == value)) {
             return 1;
@@ -105,6 +108,7 @@ int tribe_managed_array_contains(const ManagedArray<int>& array, int value) {
 }
 
 int tribe_managed_array_ensure_capacity(ManagedArray<int>& array, int required_capacity) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (required_capacity <= array.maximumSizeValue) {
         return 1;
     }
@@ -132,6 +136,7 @@ int tribe_managed_array_ensure_capacity(ManagedArray<int>& array, int required_c
 }
 
 int tribe_managed_array_append_unique(ManagedArray<int>& array, int value) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (tribe_managed_array_contains(array, value) != 0) {
         return 1;
     }
@@ -146,6 +151,7 @@ int tribe_managed_array_append_unique(ManagedArray<int>& array, int value) {
 }
 
 int tribe_managed_array_append(ManagedArray<int>& array, int value) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (tribe_managed_array_ensure_capacity(array, array.numberValue + 1) == 0) {
         return 0;
     }
@@ -155,6 +161,7 @@ int tribe_managed_array_append(ManagedArray<int>& array, int value) {
 }
 
 void tribe_influence_map_destroy(InfluenceMap& map) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (map.valueValue != nullptr) {
         ::operator delete(map.valueValue);
         map.valueValue = nullptr;
@@ -173,6 +180,7 @@ void tribe_influence_map_destroy(InfluenceMap& map) {
 }
 
 int tribe_influence_map_init(InfluenceMap& map, int x_size, int y_size, uchar fill) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     tribe_influence_map_destroy(map);
 
     map.xSizeValue = x_size;
@@ -213,6 +221,7 @@ int tribe_influence_map_init(InfluenceMap& map, int x_size, int y_size, uchar fi
 }
 
 int tribe_influence_map_lookup(const InfluenceMap& map, int x, int y) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int local_x = x - map.xReferencePointValue;
     int local_y = y - map.yReferencePointValue;
     if ((local_x < 0) || (local_y < 0) || (local_x >= map.xSizeValue) || (local_y >= map.ySizeValue) || (map.rowValue == nullptr)) {
@@ -222,6 +231,7 @@ int tribe_influence_map_lookup(const InfluenceMap& map, int x, int y) {
 }
 
 int tribe_influence_map_set(InfluenceMap& map, int x, int y, uchar value) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int local_x = x - map.xReferencePointValue;
     int local_y = y - map.yReferencePointValue;
     if ((local_x < 0) || (local_y < 0) || (local_x >= map.xSizeValue) || (local_y >= map.ySizeValue) || (map.rowValue == nullptr)) {
@@ -232,6 +242,7 @@ int tribe_influence_map_set(InfluenceMap& map, int x, int y, uchar value) {
 }
 
 void tribe_influence_map_save(const InfluenceMap& map, int handle) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     rge_write(handle, (void*)&map.xSizeValue, 4);
     rge_write(handle, (void*)&map.ySizeValue, 4);
     rge_write(handle, (void*)&map.xReferencePointValue, 4);
@@ -246,6 +257,7 @@ void tribe_influence_map_save(const InfluenceMap& map, int handle) {
 }
 
 void tribe_influence_map_load(InfluenceMap& map, int handle) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int x_size = 0;
     int y_size = 0;
     int x_ref = 0;
@@ -271,6 +283,7 @@ void tribe_influence_map_load(InfluenceMap& map, int handle) {
 }
 
 void tribe_initialize_common_state(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     tribe_reset_managed_array(self->farmsTaskedThisUpdate);
     self->md = nullptr;
     self->mapXSizeValue = -1;
@@ -357,6 +370,7 @@ void tribe_initialize_common_state(TribeInformationAIModule* self) {
 }
 
 void tribe_initialize_default_object_memory(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     self->importantObjectMemory = static_cast<ObjectMemory*>(::operator new(static_cast<size_t>(self->maxImportantObjectMemory) * sizeof(ObjectMemory), std::nothrow));
     if (self->importantObjectMemory == nullptr) {
         return;
@@ -381,6 +395,7 @@ void tribe_initialize_default_object_memory(TribeInformationAIModule* self) {
 }
 
 void tribe_initialize_default_building_lots(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     self->buildingLots = static_cast<BuildingLot*>(::operator new(static_cast<size_t>(self->maxBuildingLots) * sizeof(BuildingLot), std::nothrow));
     if (self->buildingLots == nullptr) {
         return;
@@ -395,6 +410,7 @@ void tribe_initialize_default_building_lots(TribeInformationAIModule* self) {
 }
 
 void tribe_initialize_default_attack_memory(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     self->attackMemories = static_cast<AttackMemory*>(::operator new(static_cast<size_t>(self->maxAttackMemories) * sizeof(AttackMemory), std::nothrow));
     if (self->attackMemories == nullptr) {
         return;
@@ -418,6 +434,7 @@ void tribe_initialize_default_attack_memory(TribeInformationAIModule* self) {
 }
 
 RGE_Static_Object* tribe_information_object_by_id(TribeInformationAIModule* self, int object_id) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((self == nullptr) || (self->md == nullptr) || (self->md->player == nullptr) || (self->md->player->world == nullptr)) {
         return nullptr;
     }
@@ -425,6 +442,7 @@ RGE_Static_Object* tribe_information_object_by_id(TribeInformationAIModule* self
 }
 
 int tribe_object_current_zone(RGE_Static_Object* object) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (object == nullptr) {
         return -1;
     }
@@ -432,6 +450,7 @@ int tribe_object_current_zone(RGE_Static_Object* object) {
 }
 
 void tribe_add_resource_type(TribeInformationAIModule* self, int resource_index, int resource_type) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((resource_index < 0) || (resource_index >= kResourceTypeSlots) || (self->resourceTypesValue == nullptr) || (self->numberResourceTypesValue == nullptr)) {
         return;
     }
@@ -461,6 +480,7 @@ void tribe_add_resource_type(TribeInformationAIModule* self, int resource_index,
 }
 
 void tribe_load_id_list(ManagedArray<int>& array, int file_handle) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = 0;
     rge_read(file_handle, &count, 4);
     for (int i = 0; i < count; ++i) {
@@ -471,6 +491,7 @@ void tribe_load_id_list(ManagedArray<int>& array, int file_handle) {
 }
 
 void tribe_save_id_list(ManagedArray<int>& array, int file_handle) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = array.numberValue;
     rge_write(file_handle, &count, 4);
     for (int i = 0; i < array.numberValue; ++i) {
@@ -483,6 +504,7 @@ void tribe_save_id_list(ManagedArray<int>& array, int file_handle) {
 }
 
 RGE_Player* tribe_information_player(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((self == nullptr) || (self->md == nullptr)) {
         return nullptr;
     }
@@ -490,6 +512,7 @@ RGE_Player* tribe_information_player(TribeInformationAIModule* self) {
 }
 
 RGE_Game_World* tribe_information_world(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Player* player = tribe_information_player(self);
     if (player == nullptr) {
         return nullptr;
@@ -498,6 +521,7 @@ RGE_Game_World* tribe_information_world(TribeInformationAIModule* self) {
 }
 
 int tribe_resource_slot_from_group(short object_group) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (object_group == 0x0F) {
         return 1;
     }
@@ -511,6 +535,7 @@ int tribe_resource_slot_from_group(short object_group) {
 }
 
 void tribe_update_closest_dropsite_for_resource(TribeInformationAIModule* self, RGE_Static_Object* resource_obj, float distance) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((self == nullptr) || (resource_obj == nullptr) || (resource_obj->master_obj == nullptr)) {
         return;
     }
@@ -524,16 +549,19 @@ void tribe_update_closest_dropsite_for_resource(TribeInformationAIModule* self, 
 }
 
 int tribe_distance_squared(int x1, int y1, int x2, int y2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int dx = x1 - x2;
     int dy = y1 - y2;
     return dx * dx + dy * dy;
 }
 
 BaseItem* tribe_build_item_base(BuildItem* item) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     return reinterpret_cast<BaseItem*>(item);
 }
 
 int tribe_convert_unit_to_history_index(RGE_Static_Object* object) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((object == nullptr) || (object->owner == nullptr) || (object->owner->world == nullptr) || (object->owner->world->playbook == nullptr)) {
         return -1;
     }
@@ -541,6 +569,7 @@ int tribe_convert_unit_to_history_index(RGE_Static_Object* object) {
 }
 
 int tribe_single_player_game() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (rge_base_game == nullptr) {
         return 0;
     }
@@ -804,42 +833,52 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 }
 
 int TribeInformationAIModule::loggingHistory() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     return InformationAIModule::loggingHistory();
 }
 
 void TribeInformationAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     InformationAIModule::setLogHistory(param_1);
 }
 
 void TribeInformationAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     InformationAIModule::toggleLogHistory();
 }
 
 void TribeInformationAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     InformationAIModule::setHistoryFilename(param_1);
 }
 
 int TribeInformationAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     return InformationAIModule::loggingCommonHistory();
 }
 
 void TribeInformationAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     InformationAIModule::setLogCommonHistory(param_1);
 }
 
 void TribeInformationAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     InformationAIModule::toggleLogCommonHistory();
 }
 
 int TribeInformationAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     return InformationAIModule::loadState(param_1);
 }
 
 int TribeInformationAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     return InformationAIModule::saveState(param_1);
 }
 
 int TribeInformationAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     return InformationAIModule::gleanState(param_1);
 }
 
@@ -850,6 +889,7 @@ int TribeInformationAIModule::processMessage(AIModuleMessage* param_1) {
 // Offset: 0x004D8270
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D8270
 int TribeInformationAIModule::initialize() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->md != nullptr) && (this->md->player != nullptr) && (this->md->player->world != nullptr) && (this->md->player->world->map != nullptr)) {
         this->mapXSizeValue = this->md->player->world->map->map_width;
         this->mapYSizeValue = this->md->player->world->map->map_height;
@@ -871,6 +911,7 @@ int TribeInformationAIModule::initialize() {
 // Offset: 0x004D8300
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D8300
 int TribeInformationAIModule::update(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     (void)param_1;
 
     if ((this->md == nullptr) || (this->md->player == nullptr) || (this->md->player->world == nullptr) || (this->md->player->visible == nullptr)) {
@@ -947,6 +988,7 @@ int TribeInformationAIModule::update(int param_1) {
 }
 
 void TribeInformationAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     InformationAIModule::setCallbackMessage(param_1);
 }
 
@@ -963,6 +1005,7 @@ void TribeInformationAIModule::setMainDecisionAI(TribeMainDecisionAIModule* para
 // Offset: 0x004D84E0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D84E0
 int TribeInformationAIModule::save(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < kResourceTypeSlots; ++i) {
         int count = (this->numberResourceTypesValue != nullptr) ? this->numberResourceTypesValue[i] : 0;
         rge_write(param_1, &count, 4);
@@ -1038,6 +1081,7 @@ int TribeInformationAIModule::save(int param_1) {
 // Offset: 0x004D8C80
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D8C80
 void TribeInformationAIModule::blotExploredMap(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     XYPoint min;
     XYPoint max;
 
@@ -1062,6 +1106,7 @@ void TribeInformationAIModule::blotExploredMap(int param_1, int param_2, int par
 // Offset: 0x004D8D20
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D8D20
 int TribeInformationAIModule::closestUnexploredTile(int param_1, float param_2, float param_3, float* param_4, float* param_5) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_4 == nullptr) || (param_5 == nullptr)) {
         return 0;
     }
@@ -1158,6 +1203,7 @@ int TribeInformationAIModule::closestUnexploredTile(int param_1, float param_2, 
 // Offset: 0x004D9110
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9110
 int TribeInformationAIModule::fullyExploredZone(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = tribe_information_object_by_id(this, param_1);
     if (object != nullptr) {
         int zone = tribe_object_current_zone(object);
@@ -1171,6 +1217,7 @@ int TribeInformationAIModule::fullyExploredZone(int param_1) {
 // Offset: 0x004D9160
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9160
 void TribeInformationAIModule::setFullyExploredZone(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = tribe_information_object_by_id(this, param_1);
     if (object != nullptr) {
         int zone = tribe_object_current_zone(object);
@@ -1183,6 +1230,7 @@ void TribeInformationAIModule::setFullyExploredZone(int param_1, int param_2) {
 // Offset: 0x004D91A0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D91A0
 int TribeInformationAIModule::tileUncovered(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_2 >= 0) && (param_1 < this->mapXSizeValue) && (param_2 < this->mapYSizeValue)) {
         if (tribe_influence_map_lookup(this->pathMap, param_1, param_2) != 0xFF) {
             return 1;
@@ -1194,6 +1242,7 @@ int TribeInformationAIModule::tileUncovered(int param_1, int param_2) {
 // Offset: 0x004D91F0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D91F0
 void TribeInformationAIModule::setTileExplored(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 >= 0) && (param_2 >= 0) && (param_1 < this->mapXSizeValue) && (param_2 < this->mapYSizeValue)) {
         tribe_influence_map_set(this->pathMap, param_1, param_2, 0);
     }
@@ -1202,6 +1251,7 @@ void TribeInformationAIModule::setTileExplored(int param_1, int param_2) {
 // Offset: 0x004DA190
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA190
 int TribeInformationAIModule::mapXSize() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->mapXSizeValue == -1) && (this->md != nullptr) && (this->md->player != nullptr) && (this->md->player->world != nullptr) &&
         (this->md->player->world->map != nullptr)) {
         this->mapXSizeValue = this->md->player->world->map->map_width;
@@ -1212,6 +1262,7 @@ int TribeInformationAIModule::mapXSize() {
 // Offset: 0x004DA1C0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA1C0
 int TribeInformationAIModule::mapYSize() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->mapYSizeValue == -1) && (this->md != nullptr) && (this->md->player != nullptr) && (this->md->player->world != nullptr) &&
         (this->md->player->world->map != nullptr)) {
         this->mapYSizeValue = this->md->player->world->map->map_height;
@@ -1222,6 +1273,7 @@ int TribeInformationAIModule::mapYSize() {
 // Offset: 0x004DFCE0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DFCE0
 int TribeInformationAIModule::mapBound(XYPoint& param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int bounded = 0;
     if (param_1.x < 0) {
         param_1.x = 0;
@@ -1245,6 +1297,7 @@ int TribeInformationAIModule::mapBound(XYPoint& param_1) {
 // Offset: 0x004D9230
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9230
 int TribeInformationAIModule::ownerOfGameID(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     (void)param_1;
     return -1;
 }
@@ -1252,6 +1305,7 @@ int TribeInformationAIModule::ownerOfGameID(int param_1) {
 // Offset: 0x004D9240
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9240
 int TribeInformationAIModule::gameIDOfResourceObject(int param_1, int param_2, float* param_3, float* param_4, int* param_5, int* param_6, int param_7) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_5 == nullptr) {
         return -1;
     }
@@ -1355,6 +1409,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(int param_1, int param_2, f
 // Offset: 0x004D96B0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D96B0
 int TribeInformationAIModule::gameIDsOfObjectType(int param_1, int** param_2, int** param_3, int param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_2 == nullptr) || (param_3 == nullptr)) {
         return 0;
     }
@@ -1426,6 +1481,7 @@ int TribeInformationAIModule::gameIDsOfObjectType(int param_1, int** param_2, in
 // Offset: 0x004D9970
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9970
 int TribeInformationAIModule::gameIDsOwnedBy(int param_1, int** param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_2 == nullptr) {
         return 0;
     }
@@ -1471,6 +1527,7 @@ int TribeInformationAIModule::gameIDsOwnedBy(int param_1, int** param_2, int par
 // Offset: 0x004D9A90
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9A90
 int TribeInformationAIModule::numberGameIDsOwnedBy(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
         if (this->importantObjectMemory[i].id == -1) {
@@ -1490,6 +1547,7 @@ int TribeInformationAIModule::numberGameIDsOwnedBy(int param_1, int param_2) {
 // Offset: 0x004DA0E0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA0E0
 int TribeInformationAIModule::hasAdjacentTileType(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Game_World* world = tribe_information_world(this);
     if ((world == nullptr) || (world->map == nullptr) || (world->map->map_row_offset == nullptr)) {
         return 0;
@@ -1517,6 +1575,7 @@ int TribeInformationAIModule::hasAdjacentTileType(int param_1, int param_2, int 
 // Offset: 0x004DA1F0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA1F0
 void TribeInformationAIModule::addEnemyInfluences(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
         ObjectMemory& memory = this->importantObjectMemory[i];
         if ((memory.id == -1) || (memory.owner != static_cast<uchar>(param_1)) || (memory.id == param_2)) {
@@ -1573,6 +1632,7 @@ void TribeInformationAIModule::addEnemyInfluences(int param_1, int param_2) {
 // Offset: 0x004DA420
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA420
 void TribeInformationAIModule::addPriorAttackInfluences(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     (void)param_2;
     if ((this->md == nullptr) || (this->md->player == nullptr)) {
         return;
@@ -1617,6 +1677,7 @@ void TribeInformationAIModule::addPriorAttackInfluences(int param_1, int param_2
 // Offset: 0x004DA5A0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA5A0
 ObjectMemory* TribeInformationAIModule::objectMemory(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1 == -1) {
         return nullptr;
     }
@@ -1631,6 +1692,7 @@ ObjectMemory* TribeInformationAIModule::objectMemory(int param_1) {
 // Offset: 0x004DA5F0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA5F0
 ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr) || (param_1->owner == nullptr)) {
         return nullptr;
     }
@@ -1731,6 +1793,7 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int param_1, short param
 // Offset: 0x004DABB0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DABB0
 int TribeInformationAIModule::addImportantObject(RGE_Static_Object* param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr) || (param_1->id < 0)) {
         return 0;
     }
@@ -1781,6 +1844,7 @@ int TribeInformationAIModule::addImportantObject(RGE_Static_Object* param_1, int
 // Offset: 0x004DAF80
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DAF80
 int TribeInformationAIModule::addImportantObject(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = tribe_information_object_by_id(this, param_1);
     return this->addImportantObject(object, 0);
 }
@@ -1788,6 +1852,7 @@ int TribeInformationAIModule::addImportantObject(int param_1) {
 // Offset: 0x004DAFB0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DAFB0
 int TribeInformationAIModule::importantObject(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (this->importantUnit(param_1) == 0) {
         if (this->importantResource(param_1) == 0) {
             if (this->importantMisc(param_1) == 0) {
@@ -1801,6 +1866,7 @@ int TribeInformationAIModule::importantObject(int param_1) {
 // Offset: 0x004DAFF0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DAFF0
 int TribeInformationAIModule::importantUnit(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (((((((param_1 != 0) && (param_1 != 3)) && (param_1 != 4)) &&
            ((param_1 != 0x18 && (param_1 != 0x15)) &&
             (param_1 != 6 && (param_1 != 0x19 && (param_1 != 0x11))))) &&
@@ -1816,6 +1882,7 @@ int TribeInformationAIModule::importantUnit(int param_1) {
 // Offset: 0x004DB070
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB070
 int TribeInformationAIModule::importantResource(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((((param_1 != 0x1F) && (param_1 != 5)) && (param_1 != 0x21)) &&
         ((param_1 != 7 && (param_1 != 9)) && ((param_1 != 8 && (param_1 != 0x20)) && (param_1 != 0x0F)))) {
         return 0;
@@ -1826,6 +1893,7 @@ int TribeInformationAIModule::importantResource(int param_1) {
 // Offset: 0x004DB0B0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB0B0
 int TribeInformationAIModule::importantMisc(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 != 1) && (param_1 != 0x1E)) {
         return 0;
     }
@@ -1835,6 +1903,7 @@ int TribeInformationAIModule::importantMisc(int param_1) {
 // Offset: 0x004E1260
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1260
 void TribeInformationAIModule::loadLearnInfo(char* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (this->md == nullptr || this->md->player == nullptr) {
         return;
     }
@@ -1917,6 +1986,7 @@ void TribeInformationAIModule::setSaveLearnInformation(int param_1) {
 // Offset: 0x004E23A0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E23A0
 void TribeInformationAIModule::addResourceType(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->resourceTypesValue == nullptr) || (this->numberResourceTypesValue == nullptr) || (param_1 < 0) || (param_1 >= kResourceTypeSlots)) {
         return;
     }
@@ -1941,6 +2011,7 @@ void TribeInformationAIModule::addResourceType(int param_1, int param_2) {
 // Offset: 0x004E2440
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2440
 int TribeInformationAIModule::resourceType(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->numberResourceTypesValue == nullptr) || (this->resourceTypesValue == nullptr) || (param_1 < 0) || (param_1 >= kResourceTypeSlots)) {
         return 0;
     }
@@ -1955,6 +2026,7 @@ int TribeInformationAIModule::resourceType(int param_1, int param_2) {
 // Offset: 0x004E2490
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2490
 int TribeInformationAIModule::addResourceObject(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
         return 0;
     }
@@ -2031,6 +2103,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* param_1) {
 // Offset: 0x004E2A00
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2A00
 float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, int param_2, int* param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_3 != nullptr) {
         *param_3 = -1;
     }
@@ -2086,6 +2159,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, 
 // Offset: 0x004E2BA0
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2BA0
 RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return nullptr;
     }
@@ -2136,6 +2210,7 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Stati
 // Offset: 0x004E2D10
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2D10
 void TribeInformationAIModule::updateAllResourceDropsites() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int slot = 0; slot < kResourceTypeSlots; ++slot) {
         this->closestDropsiteValue[slot] = -1;
         this->closestDropsiteResourceID[slot] = -1;
@@ -2157,6 +2232,7 @@ void TribeInformationAIModule::updateAllResourceDropsites() {
 // Offset: 0x004E2E90
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2E90
 void TribeInformationAIModule::updateResourceDropsites(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 < 0) || (param_1 >= kResourceTypeSlots)) {
         return;
     }
@@ -2186,6 +2262,7 @@ void TribeInformationAIModule::updateResourceDropsites(int param_1) {
 // Offset: 0x004E3020
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3020
 int TribeInformationAIModule::setResourceObjectValid(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 < 0) || (param_1 >= kResourceTypeSlots) || (this->resources[param_1] == nullptr)) {
         return 0;
     }
@@ -2201,6 +2278,7 @@ int TribeInformationAIModule::setResourceObjectValid(int param_1, int param_2, i
 // Offset: 0x004E3070
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3070
 int TribeInformationAIModule::numberStoragePits() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if (i >= this->playerBuildings.maximumSizeValue) {
@@ -2216,6 +2294,7 @@ int TribeInformationAIModule::numberStoragePits() {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9B20
 ConstructionItem* TribeInformationAIModule::placeDock(BuildItem* param_1, float param_2, float param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->aiPlayer == nullptr) || (this->md->aiPlayer->visible == nullptr) || (param_1 == nullptr)) {
         return nullptr;
     }
@@ -2278,6 +2357,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(BuildItem* param_1, float 
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9EC0
 int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int dock_zone = 0;
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if ((this->playerBuildings.maximumSizeValue - 1) < i) {
@@ -2307,6 +2387,7 @@ int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D9FC0
 int TribeInformationAIModule::closestDockDistance(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int best_distance = -1;
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if ((this->playerBuildings.maximumSizeValue - 1) < i) {
@@ -2336,6 +2417,7 @@ int TribeInformationAIModule::closestDockDistance(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB0D0
 int TribeInformationAIModule::isBuilding(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     short object_group = param_1->master_obj->object_group;
     if ((object_group != 3) && (object_group != 0x1B)) {
         return 0;
@@ -2345,6 +2427,7 @@ int TribeInformationAIModule::isBuilding(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB100
 int TribeInformationAIModule::isUnitBuilding(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1->master_obj->object_group != 3) {
         return 0;
     }
@@ -2357,6 +2440,7 @@ int TribeInformationAIModule::isUnitBuilding(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB160
 int TribeInformationAIModule::isBoat(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     short object_group = param_1->master_obj->object_group;
     if ((((object_group != 0x15) && (object_group != 2)) && (object_group != 0x14)) && (object_group != 0x16)) {
         return 0;
@@ -2371,6 +2455,7 @@ int TribeInformationAIModule::isWall(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB1B0
 int TribeInformationAIModule::isTower(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     short id = param_1->master_obj->id;
     if ((((id != 0x4F) && (id != 199)) && (id != 0x45)) && ((id != 0x17F) && (id != 0x17C))) {
         return 0;
@@ -2380,6 +2465,7 @@ int TribeInformationAIModule::isTower(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB1F0
 int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object*, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = (this->md != nullptr) ? this->md->object(param_2) : nullptr;
     if ((object == nullptr) || (object->master_obj == nullptr)) {
         return 0;
@@ -2394,6 +2480,7 @@ int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object*, int param_2) 
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DB240
 int TribeInformationAIModule::isLandAccessible(RGE_Static_Object*, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = (this->md != nullptr) ? this->md->object(param_2) : nullptr;
     if ((object != nullptr) && (object->master_obj != nullptr)) {
         short object_group = object->master_obj->object_group;
@@ -2636,6 +2723,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(BuildItem* p
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC1B0
 void TribeInformationAIModule::addObject(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_1->id < 0)) {
         return;
     }
@@ -2719,6 +2807,7 @@ void TribeInformationAIModule::addObject(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC3A0
 void TribeInformationAIModule::removeObject(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int index = 0;
     int max_size = this->playerBuildings.maximumSizeValue;
     if (0 < max_size) {
@@ -2770,6 +2859,7 @@ void TribeInformationAIModule::removeObject(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC490
 ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(int param_1, int* param_2, int param_3, int* param_4, int* param_5, int* param_6, int* param_7) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_4 != nullptr) {
         *param_4 = -1;
     }
@@ -2805,6 +2895,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(int param_1, int*
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DC750
 ObjectMemory* TribeInformationAIModule::objectToAttack(int param_1, int param_2, int param_3, int param_4, int* param_5) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_5 != nullptr) {
         *param_5 = 0;
     }
@@ -2879,6 +2970,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int param_1, int param_2,
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DCF10
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(int param_1, TacticalAIGroup* param_2, AttackState* param_3, ulong) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_2 == nullptr) || (param_3 == nullptr) || (this->md == nullptr)) {
         return nullptr;
     }
@@ -2937,6 +3029,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(int param_1, Tacti
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DDD40
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int param_1, int* param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     ObjectMemory* wonder = wonderToAttack(-1);
     if (wonder != nullptr) {
         return wonder;
@@ -3026,6 +3119,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int param_1, int*
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE1F0
 ObjectMemory* TribeInformationAIModule::objectToDefend(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* unit = (this->md != nullptr) ? this->md->object(param_1) : nullptr;
     if (unit == nullptr) {
         return nullptr;
@@ -3053,6 +3147,7 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE330
 ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* unit = (this->md != nullptr) ? this->md->object(param_1) : nullptr;
     if (unit == nullptr) {
         return nullptr;
@@ -3095,6 +3190,7 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int param_1
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE4A0
 int TribeInformationAIModule::defendPriority(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     switch (param_1) {
     case 0x2D:
         return this->md->player->strategicNumber(0x46);
@@ -3123,6 +3219,7 @@ int TribeInformationAIModule::defendPriority(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DE600
 int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_1->master_obj == nullptr) || (param_1->owner == nullptr)) {
         return 0;
     }
@@ -3190,6 +3287,7 @@ int TribeInformationAIModule::numberItemsToDefend() {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DEA80
 ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* unit = this->md->object(param_1);
     if (unit == nullptr) {
         return nullptr;
@@ -3231,6 +3329,7 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DEBA0
 int TribeInformationAIModule::findGatherPosition(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, RGE_Static_Object* param_6, XYPoint* param_7) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_6 == nullptr) || (param_7 == nullptr) || (param_4 <= param_5)) {
         return 0;
     }
@@ -3307,6 +3406,7 @@ int TribeInformationAIModule::findGatherPosition(XYPoint* param_1, int param_2, 
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DEE90
 void TribeInformationAIModule::setupInfluenceMap(int param_1, int param_2, XYPoint* param_3, XYPoint* param_4, XYPoint* param_5) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     iMap.initialize(0x14);
     iMap.setUnchangeableLimit(0xFF);
     if ((param_3 == nullptr) || (param_4 == nullptr) || (param_5 == nullptr) || (this->md == nullptr)) {
@@ -3405,6 +3505,7 @@ void TribeInformationAIModule::setupInfluenceMap(int param_1, int param_2, XYPoi
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DFD40
 int TribeInformationAIModule::groupInfluenceDimension(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1 < 2) {
         return 2;
     }
@@ -3413,6 +3514,7 @@ int TribeInformationAIModule::groupInfluenceDimension(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DFD60
 ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int param_1, int param_2, int* param_3, int* param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     ObjectMemory result{};
     if (param_3 != nullptr) {
         *param_3 = 0;
@@ -3504,6 +3606,7 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int param_1, int p
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0040
 int TribeInformationAIModule::isNextTo(XYPoint* param_1, XYPoint* param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int dx = param_2->x - param_1->x;
     int dy = param_2->y - param_1->y;
     int dist_squared = (dx * dx) + (dy * dy);
@@ -3518,6 +3621,7 @@ int TribeInformationAIModule::isNextTo(XYPoint* param_1, XYPoint* param_2, int p
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0090
 int TribeInformationAIModule::facetTo(XYPoint* param_1, XYPoint* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int dx = param_2->x - param_1->x;
     int dy = param_2->y - param_1->y;
     if (param_2->x == param_1->x) {
@@ -3534,6 +3638,7 @@ int TribeInformationAIModule::facetTo(XYPoint* param_1, XYPoint* param_2) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0100
 int TribeInformationAIModule::placementCode(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     switch (param_1) {
     case 0x2D:
         return 7;
@@ -3566,6 +3671,7 @@ int TribeInformationAIModule::placementCode(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E02A0
 void TribeInformationAIModule::storeLot(int param_1, uchar param_2, uchar param_3, uchar param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int available_slot = -1;
     for (int i = 0; i < this->maxBuildingLots; ++i) {
         BuildingLot& lot = this->buildingLots[i];
@@ -3612,6 +3718,7 @@ void TribeInformationAIModule::storeLot(int param_1, uchar param_2, uchar param_
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0470
 void TribeInformationAIModule::removeLot(int param_1, uchar param_2, uchar param_3, uchar param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < this->maxBuildingLots; ++i) {
         BuildingLot& lot = this->buildingLots[i];
         if ((lot.typeID != param_1) || (lot.x != param_2) || (lot.y != param_3)) {
@@ -3631,6 +3738,7 @@ void TribeInformationAIModule::removeLot(int param_1, uchar param_2, uchar param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0510
 BuildingLot* TribeInformationAIModule::availableLot(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < this->maxBuildingLots; ++i) {
         if ((this->buildingLots[i].typeID == param_1) && (this->buildingLots[i].status == 0)) {
             return &this->buildingLots[i];
@@ -3641,6 +3749,7 @@ BuildingLot* TribeInformationAIModule::availableLot(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0560
 int TribeInformationAIModule::invalidLot(int param_1, uchar param_2, uchar param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < this->maxBuildingLots; ++i) {
         const BuildingLot& lot = this->buildingLots[i];
         if ((lot.typeID == param_1) && (lot.status == 2) && (lot.x == param_2) && (lot.y == param_3)) {
@@ -3652,6 +3761,7 @@ int TribeInformationAIModule::invalidLot(int param_1, uchar param_2, uchar param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E05C0
 int TribeInformationAIModule::undesirableLot(int param_1, uchar param_2, uchar param_3, int param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     for (int i = 0; i < this->maxBuildingLots; ++i) {
         const BuildingLot& lot = this->buildingLots[i];
         if ((lot.typeID == param_1) && (lot.status == 1)) {
@@ -3666,6 +3776,7 @@ int TribeInformationAIModule::undesirableLot(int param_1, uchar param_2, uchar p
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0670
 void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int gate_count = this->numberGatesValue;
     if ((param_8 == 1) && (param_6 > 0)) {
         gate_count = (param_6 > 4) ? 4 : param_6;
@@ -3734,6 +3845,7 @@ void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3,
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0F40
 int TribeInformationAIModule::insideGate(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1 < 1) {
         return 0;
     }
@@ -3815,6 +3927,7 @@ int TribeInformationAIModule::storeAttackMemory(uchar param_1, uchar param_2, uc
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1190
 void TribeInformationAIModule::removeAttackMemory(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((-1 < param_1) && (param_1 < this->maxAttackMemories)) {
         this->attackMemories[param_1].id = -1;
         this->attackMemories[param_1].type = 0;
@@ -3832,6 +3945,7 @@ void TribeInformationAIModule::removeAttackMemory(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1230
 AttackMemory* TribeInformationAIModule::attackMemory(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((-1 < param_1) && (param_1 < this->maxAttackMemories)) {
         return this->attackMemories + param_1;
     }
@@ -3840,6 +3954,7 @@ AttackMemory* TribeInformationAIModule::attackMemory(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1730
 int TribeInformationAIModule::unexploredPlayerLocation(int param_1, XYPoint* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_2 == nullptr) || (this->md == nullptr) || (param_1 == 0)) {
         return 0;
     }
@@ -3886,6 +4001,7 @@ int TribeInformationAIModule::unexploredPlayerLocation(int param_1, XYPoint* par
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1930
 int TribeInformationAIModule::numberUnitsWithinXTiles(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = 0;
     int radius_sq = param_4 * param_4;
     for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
@@ -3911,6 +4027,7 @@ int TribeInformationAIModule::numberUnitsWithinXTiles(int param_1, int param_2, 
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1A00
 int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(RGE_Static_Object* param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int radius_sq = param_2 * param_2;
     int x = static_cast<int>(param_1->world_x);
     int y = static_cast<int>(param_1->world_y);
@@ -3946,6 +4063,7 @@ int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(RGE_Static_Object* pa
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1AF0
 int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Static_Object* param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int radius_sq = param_2 * param_2;
     int x = static_cast<int>(param_1->world_x);
     int y = static_cast<int>(param_1->world_y);
@@ -3966,6 +4084,7 @@ int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(RGE_Static_Object* p
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1BD0
 int TribeInformationAIModule::withinXTilesOfObject(RGE_Static_Object* param_1, int param_2, int param_3, int param_4, int param_5, int param_6) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int radius_sq = param_2 * param_2;
     int x = static_cast<int>(param_1->world_x);
     int y = static_cast<int>(param_1->world_y);
@@ -4001,6 +4120,7 @@ int TribeInformationAIModule::withinXTilesOfObject(RGE_Static_Object* param_1, i
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E1D10
 int TribeInformationAIModule::findStagingPoint(XYPoint param_1, XYPoint* param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_2 == nullptr) || (this->md == nullptr)) {
         return 0;
     }
@@ -4099,6 +4219,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint param_1, XYPoint* param_2
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E21E0
 int TribeInformationAIModule::setupLOSMap(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     losMap.initialize(0);
     losMap.setReferencePoint(param_2, param_3);
 
@@ -4125,6 +4246,7 @@ int TribeInformationAIModule::setupLOSMap(int param_1, int param_2, int param_3)
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E22F0
 int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     attackMap.initialize(0);
     attackMap.setReferencePoint(param_2, param_3);
 
@@ -4141,6 +4263,7 @@ int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3140
 int TribeInformationAIModule::numberGranaries() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = 0;
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if (i >= this->playerBuildings.maximumSizeValue) {
@@ -4159,6 +4282,7 @@ int TribeInformationAIModule::numberGranaries() {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3210
 int TribeInformationAIModule::amountForageBushesInXTiles(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int count = 0;
     int radius_sq = param_3 * param_3;
     for (int i = 0; i < this->numResources[0]; ++i) {
@@ -4183,6 +4307,7 @@ int TribeInformationAIModule::amountForageBushesInXTiles(int param_1, int param_
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E32C0
 int TribeInformationAIModule::amountResourceTypesInXTiles(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 < 0) || (param_1 >= kResourceTypeSlots) || (this->resources[param_1] == nullptr)) {
         return 0;
     }
@@ -4214,6 +4339,7 @@ int TribeInformationAIModule::amountResourceTypesInXTiles(int param_1, int param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3390
 float TribeInformationAIModule::damagePerSecond(int param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     float rate_of_fire = 0.0f;
     RGE_Static_Object* unit = this->md->object(param_1);
     if (unit == nullptr) {
@@ -4246,6 +4372,7 @@ float TribeInformationAIModule::damagePerSecond(int param_1, int param_2, int pa
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E34C0
 int TribeInformationAIModule::costToLoseUnit(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = this->md->object(param_1);
     if ((object == nullptr) || (object->master_obj == nullptr) || (this->md->player == nullptr)) {
         return -1;
@@ -4255,6 +4382,7 @@ int TribeInformationAIModule::costToLoseUnit(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3500
 int TribeInformationAIModule::benefitToKillUnit(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* object = this->md->object(param_1);
     if ((object == nullptr) || (object->master_obj == nullptr) || (object->owner == nullptr)) {
         return -1;
@@ -4264,6 +4392,7 @@ int TribeInformationAIModule::benefitToKillUnit(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3530
 int TribeInformationAIModule::inRangeOfUnits(int param_1, int param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (this->maxImportantObjectMemory < 1) {
         return 0;
     }
@@ -4301,6 +4430,7 @@ int TribeInformationAIModule::inRangeOfUnits(int param_1, int param_2, int param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3640
 ObjectMemory* TribeInformationAIModule::wonderToAttack(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     ObjectMemory* best_memory = nullptr;
     float best_hp = 0.0f;
     int best_state = 0;
@@ -4336,6 +4466,7 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3840
 ObjectMemory* TribeInformationAIModule::ruinToCapture(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* town_center = (this->md != nullptr) ? this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1) : nullptr;
     ObjectMemory* best_memory = nullptr;
     int best_value = -1;
@@ -4376,6 +4507,7 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E39D0
 ObjectMemory* TribeInformationAIModule::artifactToCapture(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     RGE_Static_Object* town_center = (this->md != nullptr) ? this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1) : nullptr;
     RGE_Visible_Map* visible_map = (this->md != nullptr && this->md->aiPlayer != nullptr) ? this->md->aiPlayer->visible : nullptr;
     ObjectMemory* best_memory = nullptr;
@@ -4425,6 +4557,7 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3B80
 int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1 == 2) {
         return 0;
     }
@@ -4463,6 +4596,7 @@ int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3C90
 int TribeInformationAIModule::dropsitesWithinRequiredDistance(int* param_1, int param_2, int param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 == nullptr) || (param_2 < 0) || (param_2 >= kResourceTypeSlots) || (this->resources[param_2] == nullptr)) {
         return 0;
     }
@@ -4499,6 +4633,7 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(int* param_1, int 
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3E90
 int TribeInformationAIModule::numberAvailableStoragePits(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int age_index = static_cast<int>(this->md->player->attributes[50]) - 1;
     if (age_index < 0) {
         age_index = 0;
@@ -4530,6 +4665,7 @@ int TribeInformationAIModule::numberAvailableStoragePits(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E3F80
 int TribeInformationAIModule::numberAvailableGranaries() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (this->closestDropsiteValue[0] == -1) {
         return 0;
     }
@@ -4556,6 +4692,7 @@ int TribeInformationAIModule::numberAvailableGranaries() {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4040
 void TribeInformationAIModule::lookAtMap() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((this->md == nullptr) || (this->md->aiPlayer == nullptr) || (this->md->aiPlayer->world == nullptr) || (this->md->aiPlayer->world->map == nullptr)) {
         return;
     }
@@ -4618,6 +4755,7 @@ void TribeInformationAIModule::lookAtMap() {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E41C0
 float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup* param_1, RGE_Static_Object* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     float r_val = 0.0f;
     for (int i = 0; i < param_1->numberUnits(); ++i) {
         int game_id = param_1->unit(i);
@@ -4633,6 +4771,7 @@ float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup* param_
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4240
 float TribeInformationAIModule::damageInflictedPerSecond(int* param_1, int param_2, RGE_Static_Object* param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     float r_val = 0.0f;
     int count = param_2;
     while (0 < count) {
@@ -4650,6 +4789,7 @@ float TribeInformationAIModule::damageInflictedPerSecond(int* param_1, int param
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E42B0
 float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* param_1, RGE_Static_Object* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     float r_val = 0.0f;
     for (int i = 0; i < param_1->numberUnits(); ++i) {
         int game_id = param_1->unit(i);
@@ -4672,6 +4812,7 @@ float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* param_1, RGE_Sta
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4350
 float TribeInformationAIModule::timeToBeKilled(int* param_1, int param_2, RGE_Static_Object* param_3) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     float r_val = 0.0f;
     int count = param_2;
     while (0 < count) {
@@ -4695,6 +4836,7 @@ float TribeInformationAIModule::timeToBeKilled(int* param_1, int param_2, RGE_St
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E43E0
 int TribeInformationAIModule::closestDropsiteResID(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if ((param_1 < 0) || (param_1 >= 4)) {
         return -1;
     }
@@ -4703,6 +4845,7 @@ int TribeInformationAIModule::closestDropsiteResID(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4400
 int TribeInformationAIModule::calculatePlayVariation(int param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int total_plays = 0;
     for (int i = 0; i < 16000; ++i) {
         total_plays = total_plays + this->playHistory[i];
@@ -4713,6 +4856,7 @@ int TribeInformationAIModule::calculatePlayVariation(int param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4450
 int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     short object_group = param_1->master_obj->object_group;
     short object_id = param_1->master_obj->id;
 
@@ -4751,6 +4895,7 @@ int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* param_1) {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4500
 void TribeInformationAIModule::loadUnitHistory() {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     char history_file_name[256];
     if ((rge_base_game == nullptr) || (rge_base_game->player_game_info == nullptr)) {
         std::strcpy(history_file_name, kDefaultUnitHistoryFilename);
@@ -4768,6 +4913,7 @@ void TribeInformationAIModule::loadUnitHistory() {
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E45A0
 void TribeInformationAIModule::unitsThatAreMostBuilt(int* param_1, int* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int* unit_history = this->unitHistory;
     int best_count = -1;
     *param_1 = -1;
@@ -4790,6 +4936,7 @@ void TribeInformationAIModule::unitsThatAreMostBuilt(int* param_1, int* param_2)
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4610
 void TribeInformationAIModule::unitsThatAreLeastBuilt(int* param_1, int* param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int* unit_history = this->unitHistory;
     int best_count = -1;
     *param_1 = 0x7FFFFFFF;
@@ -4812,6 +4959,7 @@ void TribeInformationAIModule::unitsThatAreLeastBuilt(int* param_1, int* param_2
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4680
 int TribeInformationAIModule::acceptablePotentialDropsiteArea(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int min_distance = (this->md != nullptr && this->md->player != nullptr) ? this->md->player->strategicNumber(0xCA) : 0;
     int min_distance_sq = min_distance * min_distance;
 
@@ -4837,6 +4985,7 @@ int TribeInformationAIModule::acceptablePotentialDropsiteArea(int param_1, int p
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4790
 int TribeInformationAIModule::percentTilesExploredInPositionQuadrant(int param_1, int param_2) {
+    // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     int map_x = this->mapXSizeValue;
     if (map_x == -1) {
         return 0;

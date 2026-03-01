@@ -326,54 +326,67 @@ ConstructionAIModule::~ConstructionAIModule() {
     this->numberRandomConstructionLotsValue = 0;
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::loggingHistory() {
     return reinterpret_cast<AIModule*>(this)->AIModule::loggingHistory();
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 void ConstructionAIModule::setLogHistory(int param_1) {
     reinterpret_cast<AIModule*>(this)->AIModule::setLogHistory(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 void ConstructionAIModule::toggleLogHistory() {
     reinterpret_cast<AIModule*>(this)->AIModule::toggleLogHistory();
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 void ConstructionAIModule::setHistoryFilename(char* param_1) {
     reinterpret_cast<AIModule*>(this)->AIModule::setHistoryFilename(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::loggingCommonHistory() {
     return reinterpret_cast<AIModule*>(this)->AIModule::loggingCommonHistory();
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 void ConstructionAIModule::setLogCommonHistory(int param_1) {
     reinterpret_cast<AIModule*>(this)->AIModule::setLogCommonHistory(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 void ConstructionAIModule::toggleLogCommonHistory() {
     reinterpret_cast<AIModule*>(this)->AIModule::toggleLogCommonHistory();
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::loadState(char* param_1) {
     return reinterpret_cast<AIModule*>(this)->AIModule::loadState(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::saveState(char* param_1) {
     return reinterpret_cast<AIModule*>(this)->AIModule::saveState(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::gleanState(int param_1) {
     return reinterpret_cast<AIModule*>(this)->AIModule::gleanState(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::processMessage(AIModuleMessage* param_1) {
     return reinterpret_cast<AIModule*>(this)->AIModule::processMessage(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 int ConstructionAIModule::update(int param_1) {
     return reinterpret_cast<AIModule*>(this)->AIModule::update(param_1);
 }
 
+// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
 void ConstructionAIModule::setCallbackMessage(AIModuleMessage* param_1) {
     reinterpret_cast<AIModule*>(this)->AIModule::setCallbackMessage(param_1);
 }

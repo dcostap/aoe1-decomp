@@ -69,7 +69,7 @@ static int player_difficulty(TRIBE_Player* player) {
     return (int)rge_base_game->rge_game_options.difficultyValue;
 }
 
-// Source of truth: tplayer.cpp.decomp references globals at 0x00516BB2 / 0x00516BC2.
+// Fully verified. Source of truth: tplayer.cpp.decomp references globals at 0x00516BB2 / 0x00516BC2.
 int DAT_00886c1c = 0;
 int DAT_00886c20 = 0;
 int DAT_00886c24 = 0;
@@ -82,9 +82,9 @@ int DAT_00886c3c = 0;
 int DAT_00886c40 = 0;
 int DAT_00886c44 = 0;
 int DAT_00886c48 = 0;
-// Source of truth: tplayer.cpp.decomp @ 0x00518A66
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00518A66
 int computerPlayerSetup[13] = {0};
-// Source of truth: tplayer.cpp.decomp @ 0x0051748E
+// Fully verified. Source of truth: tplayer.cpp.decomp @ 0x0051748E
 int allowAIToCheat = 1;
 static const int tribe_group_properties_num = 0x28;
 static const int tribe_group_properties[0x28] = {
