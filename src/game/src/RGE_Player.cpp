@@ -225,7 +225,7 @@ RGE_Player::RGE_Player() {
 
 RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name_str, uchar civ, uchar is_computer)
     : RGE_Player(world, master, player_id, name_str, civ, is_computer, 1, nullptr, nullptr, nullptr) {
-    // TODO: Parity shim for player.cpp.decomp @ 0x0046E770 six-parameter constructor.
+    // Parity shim for player.cpp.decomp @ 0x0046E770 six-parameter constructor.
 }
 
 RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name_str, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)

@@ -46,107 +46,90 @@ static void FUN_0047f076(ResFile* newRes, char* tag) {
 
 // Fully verified. Marker reconciliation coverage.
 void RESFILE_open_new_resource_file(char* filename, char* tag, char* path, int use_mapping) {
-    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047EE90
-    char fullPath[260];
-    sprintf(fullPath, "%s%s", path, filename);
-
-    unsigned char* mappedData = nullptr;
+    // Fully verified. Source of truth: res_file.cpp.decomp + res_file.cpp.asm @ 0x0047EE90
+    unsigned char* mapped_file_data = nullptr;
     int fHandle = -1;
+    char resFile[260];
+    char error_msg[80];
+    char rHeader[0x40];
 
+    sprintf(resFile, "%s%s", path, filename);
     if (use_mapping == 0) {
-        HANDLE hFile = CreateFileA(fullPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        HANDLE hFile = CreateFileA(resFile, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
         if (hFile == INVALID_HANDLE_VALUE) {
-            char errorMsg[512];
-            char cwd[260];
-            _getcwd(cwd, sizeof(cwd));
-            sprintf(errorMsg, "Error: Open_new_ResFile, file not found: [%s]\nPath arg: [%s]\nFilename arg: [%s]\nCWD: [%s]\nGLE: %lu",
-                    fullPath, path, filename, cwd, GetLastError());
-            MessageBoxA(NULL, errorMsg, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+            sprintf(error_msg, "Error: Open_new_ResFile, mapped file %s not found.", filename);
+            MessageBoxA(nullptr, error_msg, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
             return;
         }
 
-        HANDLE hMapping = CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+        HANDLE hMapping = CreateFileMappingA(hFile, nullptr, PAGE_READONLY, 0, 0, nullptr);
         CloseHandle(hFile);
-
-        if (hMapping == NULL) {
-            MessageBoxA(NULL, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        if (hMapping == nullptr) {
+            MessageBoxA(nullptr, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
             return;
         }
 
-        mappedData = (unsigned char*)MapViewOfFile(hMapping, FILE_MAP_READ, 0, 0, 0);
-        if (mappedData == NULL) {
-            CloseHandle(hMapping);
-            MessageBoxA(NULL, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        mapped_file_data = (unsigned char*)MapViewOfFile(hMapping, FILE_MAP_READ, 0, 0, 0);
+        if (mapped_file_data == nullptr) {
+            MessageBoxA(nullptr, "Error: Open_Mapped_ResFile, Could not map file.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
             return;
         }
         CloseHandle(hMapping);
+    } else {
+        fHandle = _open(resFile, _O_BINARY | _O_RDONLY);
+        if (fHandle == -1) {
+            sprintf(error_msg, "Error: Open_new_ResFile, file %s not found.", filename);
+            MessageBoxA(nullptr, error_msg, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+            return;
+        }
     }
 
     ResFile* newRes = (ResFile*)malloc(sizeof(ResFile));
-    if (!newRes) {
-        if (mappedData != nullptr) {
-            UnmapViewOfFile(mappedData);
-        }
-        MessageBoxA(NULL, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+    if (newRes == nullptr) {
+        MessageBoxA(nullptr, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
         return;
     }
 
     strcpy(newRes->filename, filename);
-    if (use_mapping != 0) {
-        // Non-mapped mode: open and read via file handle
-        newRes->file_handle = _open(fullPath, _O_BINARY | _O_RDONLY);
-        newRes->mapped_data = nullptr;
-        newRes->base_pointer = nullptr;
-        
-        // For file-based access, we read header and validate
-        if (newRes->file_handle != -1) {
-            // Read header (0x40 bytes per ASM at 0047effa-0047f006)
-            char header[0x40];
-            _lseek(newRes->file_handle, 0, SEEK_SET);
-            int bytesRead = _read(newRes->file_handle, header, 0x40);
-            if (bytesRead == 0x40) {
-                // ASM compares tag at header+0x2c with param_3 (the tag)
-                if (strcmp(header + 0x2c, tag) != 0) {
-                    MessageBoxA(NULL, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
-                }
-                // ASM compares version at header+0x28 with "1.00"
-                else if (strncmp(header + 0x28, "1.00", 4) != 0) {
-                    MessageBoxA(NULL, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
-                }
-            } else {
-                FUN_0047f00c();
-            }
-        }
-    } else {
-        // Mapped mode: use memory-mapped file
-        newRes->file_handle = -1;
-        newRes->mapped_data = mappedData;
-        newRes->base_pointer = mappedData;
-    }
     newRes->next = nullptr;
-
-    if (newRes->base_pointer) {
+    if (use_mapping == 0) {
+        newRes->file_handle = -1;
+        newRes->mapped_data = mapped_file_data;
+        newRes->base_pointer = mapped_file_data;
         FUN_0047f076(newRes, tag);
         return;
     }
 
-    if (!resFileHead) {
-        resFileHead = newRes;
-    } else {
-        ResFile* curr = resFileHead;
-        while (curr->next) curr = curr->next;
-        curr->next = newRes;
+    newRes->file_handle = fHandle;
+    newRes->mapped_data = nullptr;
+    _lseek(fHandle, 0, SEEK_CUR);
+    if (_read(fHandle, rHeader, 0x40) != 0x40) {
+        FUN_0047f00c();
+        return;
     }
+
+    int directory_size = *(int*)(rHeader + 0x3c);
+    newRes->base_pointer = malloc(directory_size);
+    _lseek(fHandle, 0, SEEK_SET);
+    if (_read(fHandle, newRes->base_pointer, directory_size) != directory_size) {
+        FUN_0047f00c();
+        return;
+    }
+
+    FUN_0047f076(newRes, tag);
 }
 
 // Fully verified. Marker reconciliation coverage.
 void RESFILE_close_new_resource_file(char* filename) {
-    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F180
+    // Fully verified. Source of truth: res_file.cpp.decomp + res_file.cpp.asm @ 0x0047F180
     ResFile* curr = resFileHead;
     ResFile* prev = nullptr;
 
     while (curr) {
-        if (_stricmp(curr->filename, filename) == 0) {
+        if (strcmp(curr->filename, filename) == 0) {
+            if (curr->mapped_data == nullptr) {
+                free(curr->base_pointer);
+            }
             if (prev) {
                 prev->next = curr->next;
             } else {
@@ -156,7 +139,7 @@ void RESFILE_close_new_resource_file(char* filename) {
             if (curr->file_handle != -1) {
                 _close(curr->file_handle);
             }
-            if (curr->mapped_data) {
+            if (curr->mapped_data != nullptr) {
                 UnmapViewOfFile(curr->mapped_data);
             }
             free(curr);
@@ -169,128 +152,108 @@ void RESFILE_close_new_resource_file(char* filename) {
 
 // Fully verified. Marker reconciliation coverage.
 int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, int* offset, unsigned char** data, int* size) {
-    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F230
+    // Fully verified. Source of truth: res_file.cpp.decomp + res_file.cpp.asm @ 0x0047F230
     *handle = -1;
     *offset = 0;
     *data = nullptr;
     *size = 0;
 
-    ResFile* curr = resFileHead;
-    while (curr) {
-        unsigned char* base = (unsigned char*)curr->base_pointer;
-        if (base) {
+    ResFile* local_4 = resFileHead;
+    while (local_4 != nullptr) {
+        unsigned char* base = (unsigned char*)local_4->base_pointer;
+        if (base != nullptr) {
             int num_sections = *(int*)(base + 0x38);
-            unsigned char* section_ptr = base + 0x48;
-
+            int* section_ptr = (int*)(base + 0x48);
             for (int i = 0; i < num_sections; ++i) {
-                unsigned long section_type = *(unsigned long*)(section_ptr - 8);
-                if (section_type == type) {
-                    int section_offset = *(int*)(section_ptr - 4);
-                    int section_count = *(int*)(section_ptr);
-                    
-                    unsigned char* resource_ptr = base + section_offset;
+                if ((unsigned long)section_ptr[-2] == type) {
+                    unsigned long* resource_ptr = (unsigned long*)(base + section_ptr[-1]);
+                    int section_count = section_ptr[0];
                     for (int j = 0; j < section_count; ++j) {
-                        unsigned long res_id = *(unsigned long*)(resource_ptr);
-                        if (res_id == id) {
-                            *handle = curr->file_handle;
-                            *offset = *(int*)(resource_ptr + 4);
-                            *size = *(int*)(resource_ptr + 8);
-                            *data = curr->mapped_data;
-                            char type_str[5] = {0};
-                            memcpy(type_str, &type, 4);
-                            CUSTOM_DEBUG_LOG_FMT("RESFILE_locate_resource: found %s id %d in %s", type_str, (int)id, curr->filename);
-                            return 1;
-                        }
-                        resource_ptr += 12;
-                    }
-                }
-                section_ptr += 12;
-            }
-        } else if (curr->file_handle != -1) {
-            _lseek(curr->file_handle, 0x38, SEEK_SET);
-            int num_sections;
-            _read(curr->file_handle, &num_sections, 4);
-            
-            for (int i = 0; i < num_sections; ++i) {
-                _lseek(curr->file_handle, 0x48 + i * 12 - 8, SEEK_SET);
-                unsigned long section_type;
-                int section_offset, section_count;
-                _read(curr->file_handle, &section_type, 4);
-                _read(curr->file_handle, &section_offset, 4);
-                _read(curr->file_handle, &section_count, 4);
-                
-                if (section_type == type) {
-                    _lseek(curr->file_handle, section_offset, SEEK_SET);
-                    for (int j = 0; j < section_count; ++j) {
-                        unsigned long res_id;
-                        int res_offset, res_size;
-                        _read(curr->file_handle, &res_id, 4);
-                        _read(curr->file_handle, &res_offset, 4);
-                        _read(curr->file_handle, &res_size, 4);
-                        
-                        if (res_id == id) {
-                            *handle = curr->file_handle;
-                            *offset = res_offset;
-                            *size = res_size;
-                            *data = nullptr;
-                            char type_str[5] = {0};
-                            memcpy(type_str, &type, 4);
-                            CUSTOM_DEBUG_LOG_FMT("RESFILE_locate_resource: found %s id %d in %s (file mode)", type_str, (int)id, curr->filename);
+                        if (resource_ptr[j * 3] == id) {
+                            *handle = local_4->file_handle;
+                            *offset = (int)resource_ptr[j * 3 + 1];
+                            *data = local_4->mapped_data;
+                            *size = (int)resource_ptr[j * 3 + 2];
                             return 1;
                         }
                     }
                 }
+                section_ptr += 3;
             }
         }
-        curr = curr->next;
+        local_4 = local_4->next;
     }
     return 0;
 }
 
 // Fully verified. Marker reconciliation coverage.
 unsigned char* RESFILE_load(unsigned long type, unsigned long id, int* size, int* out_type) {
-    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F320
+    // Fully verified. Source of truth: res_file.cpp.decomp + res_file.cpp.asm @ 0x0047F320
     int handle, offset, resSize;
     unsigned char* mappedData;
+    *size = -1;
+    *out_type = 0;
 
-    if (RESFILE_locate_resource(type, id, &handle, &offset, &mappedData, &resSize)) {
-        *size = resSize;
-        if (mappedData) {
-            *out_type = 0;
-            return mappedData + offset;
-        } else if (handle != -1) {
-            *out_type = 1;
-            unsigned char* buffer = (unsigned char*)malloc(resSize);
-            _lseek(handle, offset, SEEK_SET);
-            _read(handle, buffer, resSize);
-            return buffer;
+    if (RESFILE_locate_resource(type, id, &handle, &offset, &mappedData, &resSize) == 0) {
+        if (g_resfile_missing_flag != 0) {
+            char error_string[100];
+            sprintf(error_string, "ERROR: res_read_bin, resource type %4.4c , id %d missing.", (int)type, (int)id);
+            MessageBoxA(0, error_string, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
         }
-    }
-    if (g_resfile_missing_flag != 0) {
-        char error_string[100];
-        sprintf(error_string, "ERROR: res_read_bin, resource type %lu, id %lu missing.", type, id);
-        MessageBoxA(0, error_string, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        return nullptr;
     }
 
-    return nullptr;
+    if (mappedData != nullptr) {
+        *out_type = 0;
+        *size = resSize;
+        return mappedData + offset;
+    }
+
+    *out_type = 1;
+    unsigned char* buffer = (unsigned char*)malloc(resSize);
+    *size = resSize;
+    if (buffer == nullptr) {
+        MessageBoxA(0, "Error: Out of memory in res_read_bin.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        return nullptr;
+    }
+
+    _lseek(handle, offset, SEEK_SET);
+    if (_read(handle, buffer, resSize) != resSize) {
+        MessageBoxA(0, "Error: unable to read resource", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        return nullptr;
+    }
+    return buffer;
 }
 
 // Fully verified. Marker reconciliation coverage.
 int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FILE** file) {
-    // Fully verified. Source of truth: res_file.cpp.decomp @ 0x0047F480
-    int size, out_type;
-    unsigned char* data = RESFILE_load(type, id, &size, &out_type);
-    if (data) {
-        *file = fopen(path, "wb");
-        if (*file) {
-            fwrite(data, 1, size, *file);
-            fclose(*file);
-            if (out_type == 1) free(data);
-            return 1;
-        }
-        if (out_type == 1) free(data);
+    // Fully verified. Source of truth: res_file.cpp.decomp + res_file.cpp.asm @ 0x0047F480
+    int rLoadType = 0;
+    int rDataSize = 0;
+    char temp_path[260];
+
+    *file = nullptr;
+    unsigned char* data = RESFILE_load(type, id, &rDataSize, &rLoadType);
+    if (data == nullptr) {
+        return 0;
     }
-    return 0;
+
+    if (GetTempPathA(sizeof(temp_path), temp_path) == 0) {
+        strcpy(temp_path, ".");
+    }
+
+    if (GetTempFileNameA(temp_path, "temp", 0, path) != 0) {
+        *file = fopen(path, "w+");
+        if ((*file != nullptr) && (rDataSize > 0)) {
+            fwrite(data, rDataSize, 1, *file);
+            fseek(*file, 0, SEEK_SET);
+        }
+    }
+
+    if (rLoadType == 1) {
+        free(data);
+    }
+    return (*file != nullptr) ? 1 : 0;
 }
 
 // Fully verified. Marker reconciliation coverage.

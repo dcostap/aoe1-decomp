@@ -1568,12 +1568,7 @@ int TRIBE_Game::create_game_screen() {
 
     if (screen != nullptr) {
         if (screen->error_code == 0) {
-            int mp_started = 1;
-            if (this->comm_handler != nullptr) {
-                mp_started = this->comm_handler->MultiplayerGameStart();
-            } else if (this->multiplayerGame() != 0) {
-                mp_started = 0;
-            }
+            int mp_started = this->comm_handler->MultiplayerGameStart();
             CUSTOM_DEBUG_LOG_FMT("create_game_screen: mp_started=%d", mp_started);
 
             if (mp_started != 0) {
@@ -2350,9 +2345,14 @@ void TRIBE_Game::let_game_begin() {
     // We skip the logging and focus on the critical state transitions.
 
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00528670.
-    // Panel transitions into "Game Screen" are handled by create_game_screen().
 
-    run_log((char*)"game_started", 1);
+    if (panel_system != nullptr) {
+        panel_system->setCurrentPanel((char*)"Game Screen", 0);
+        panel_system->destroyPanel((char*)"Status Screen");
+        panel_system->destroyPanel((char*)"Multiplayer");
+    }
+
+    run_log((char*)"game started", 1);
 
     TMusic_System* music = this->music_system;
     if (music != nullptr) {
