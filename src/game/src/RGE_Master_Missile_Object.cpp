@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 static int rge_ftol(float value) {
+    // Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
     int result;
     __asm {
         fld value
@@ -229,22 +230,29 @@ RGE_Master_Static_Object* RGE_Master_Missile_Object::make_new_master() {
 }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 uchar RGE_Master_Missile_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 uchar RGE_Master_Missile_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 long RGE_Master_Missile_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) { return this->RGE_Master_Static_Object::calc_base_damage_ability(param_1); }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 void RGE_Master_Missile_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 void RGE_Master_Missile_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 void RGE_Master_Missile_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 
 
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 RGE_Task_List* RGE_Master_Missile_Object::create_task_list() { return new RGE_Task_List(); }

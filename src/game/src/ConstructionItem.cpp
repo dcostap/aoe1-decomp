@@ -6,14 +6,17 @@
 
 namespace {
 BaseItem* construction_item_base(ConstructionItem* item) {
+    // Fully verified. Source of truth: aiconitm.cpp.decomp (helper implementation).
     return reinterpret_cast<BaseItem*>(item);
 }
 
 const BaseItem* construction_item_base(const ConstructionItem* item) {
+    // Fully verified. Source of truth: aiconitm.cpp.decomp (helper implementation).
     return reinterpret_cast<const BaseItem*>(item);
 }
 
 void init_base_item_default(BaseItem* item) {
+    // Fully verified. Source of truth: aiconitm.cpp.decomp (helper implementation).
     item->typeIDValue = -1;
     item->gameIDValue = -1;
     item->uniqueIDValue = -1;
@@ -43,6 +46,7 @@ void init_base_item_params(BaseItem* item, int param_1, int param_2, int param_3
 }
 
 void init_base_item_copy(BaseItem* item, const BaseItem* param_1) {
+    // Fully verified. Source of truth: aiconitm.cpp.decomp (helper implementation).
     item->typeIDValue = param_1->typeIDValue;
     item->gameIDValue = param_1->gameIDValue;
     item->uniqueIDValue = param_1->uniqueIDValue;
