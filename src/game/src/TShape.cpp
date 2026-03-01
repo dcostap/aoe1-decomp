@@ -2039,7 +2039,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
             cur_x += run;
             continue;
         }
-        // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B93FD (embedded tail label in shape_check).
+        // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B93FD
         return 0;
     }
     return 0;
@@ -3388,4 +3388,5 @@ unsigned char TShape::shape_dithered_clipped(TDrawArea* draw_area, long shape_x1
 
     return 1;
 }
+
 
