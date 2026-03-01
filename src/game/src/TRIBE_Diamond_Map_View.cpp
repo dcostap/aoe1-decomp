@@ -4,7 +4,7 @@
 #include "debug_helpers.h"
 
 TRIBE_Diamond_Map_View::TRIBE_Diamond_Map_View() {
-    // Fully verified. Source of truth: tvw_dmap.cpp.asm @ 0x0052C9E0
+    // Fully verified. Source of truth: tvw_dmap.cpp.decomp @ 0x0052C9E0
     this->last_attack_time = 0;
     this->flash_on = 0;
 }

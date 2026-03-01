@@ -34,6 +34,7 @@ static void button_send_command(TButtonPanel* btn, short state) {
 
 // Constructor
 TButtonPanel::TButtonPanel() : TPanel("Button") {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
 
     // Defaults verified against `src/game/src/Pnl_btn.cpp.decomp` / `.asm` (immutable references).
@@ -86,6 +87,7 @@ TButtonPanel::TButtonPanel() : TPanel("Button") {
 
 // Destructor
 TButtonPanel::~TButtonPanel() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472030
     for (int i = 0; i < 9; ++i) {
         if (this->text1[i]) {
             free(this->text1[i]);
@@ -105,6 +107,7 @@ TButtonPanel::~TButtonPanel() {
 
 // Virtual Implementations
 long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, TButtonPanel::DrawType param_7, TDigital* param_8, TButtonPanel::NotifyType param_9, long param_10) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004720A0
     TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, 0);
 
     this->drawTypeValue = param_7;
@@ -249,6 +252,7 @@ long TButtonPanel::mouse_move_action(long x, long y, int wparam, int param_4) {
     return 0;
 }
 long TButtonPanel::mouse_left_move_action(long x, long y, int wparam, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473240
     (void)wparam;
     (void)param_4;
 
@@ -277,6 +281,7 @@ long TButtonPanel::mouse_left_dbl_click_action(long param_1, long param_2, int p
     return 0;
 }
 long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004733A0
     (void)param_1;
     (void)param_2;
     (void)param_3;
@@ -294,6 +299,7 @@ long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param
     return 1;
 }
 long TButtonPanel::mouse_right_move_action(long x, long y, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473450
     (void)param_3;
     (void)param_4;
 
@@ -313,6 +319,7 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int param_3, int para
     return 1;
 }
 long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473520
     (void)param_3;
     (void)param_4;
 
@@ -463,6 +470,7 @@ void TButtonPanel::set_text_info(long resid, void* font, long wid, long hgt, lon
 
 // Decomp @ Pnl_btn.cpp: returns (int)this->cur_state
 int TButtonPanel::get_state() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472810
     return (int)this->cur_state;
 }
 long TButtonPanel::get_id() {
@@ -547,16 +555,23 @@ int TButtonPanel::hit_button(long x, long y) {
 
     return 1;
 }
-void TButtonPanel::set_sound_number(int num) { this->sound_number = num; }
+void TButtonPanel::set_sound_number(int num) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473BB0
+    this->sound_number = num;
+}
 void TButtonPanel::set_id(long val) {
     for (int i = 0; i < 9; ++i) this->id[i] = val;
 }
 void TButtonPanel::set_id(short state, long id, long id2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722E0
     if (state < 0 || state >= 9) return;
     this->id[state] = id;
     this->id2[state] = id2;
 }
-void TButtonPanel::set_sound(TDigital* s) { this->sound = s; }
+void TButtonPanel::set_sound(TDigital* s) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472680
+    this->sound = s;
+}
 
 void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472240
@@ -601,6 +616,7 @@ void TButtonPanel::set_radio_button() {
 }
 
 void TButtonPanel::do_action() {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004739B0
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TButtonPanel::do_action this=%p parent=%p notify=%d btnType=%d id=%ld id2=%ld",
         this, this->parent_panel, (int)this->notifyTypeValue, (int)this->buttonTypeValue,
@@ -634,6 +650,7 @@ void TButtonPanel::do_action() {
 }
 
 void TButtonPanel::do_right_action(int param_1) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473AA0
     (void)param_1;
 
     if (this->buttonTypeValue == TButtonPanel::State) {
@@ -662,6 +679,7 @@ void TButtonPanel::do_right_action(int param_1) {
 }
 
 void TButtonPanel::set_font(void* font, long wid, long hgt) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004725F0
     this->font = font;
     if (wid != -1) this->font_wid = wid;
     if (hgt != -1) this->font_hgt = hgt;
@@ -670,6 +688,7 @@ void TButtonPanel::set_font(void* font, long wid, long hgt) {
 
 // Non-Virtuals
 void TButtonPanel::set_text(short state, char* text) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472330
     if (state < 0) state = this->cur_state;
     if (state >= 9) return;
 
@@ -727,6 +746,7 @@ void TButtonPanel::set_text(short state, char* text) {
 }
 
 void TButtonPanel::set_text(short state, long resid) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472540
     char str[256];
     if (this->get_string(resid, str, 256)) {
         this->set_text(state, str);
@@ -738,6 +758,7 @@ void TButtonPanel::set_text(long resid) {
 }
 
 void TButtonPanel::set_text(short state, long resid1, long resid2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472580
     char str1[256], str2[256];
     if (this->get_string(resid1, str1, 256) && this->get_string(resid2, str2, 256)) {
         this->set_text(state, str1, str2);
@@ -745,6 +766,7 @@ void TButtonPanel::set_text(short state, long resid1, long resid2) {
 }
 
 void TButtonPanel::set_text(short state, char* text1, char* text2) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472440
     if (state < 0) state = this->cur_state;
     if (state >= 9) return;
 
@@ -778,6 +800,7 @@ void TButtonPanel::set_text(short state, char* text1, char* text2) {
 }
 
 long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473190
     (void)x;
     (void)y;
     (void)wparam;
@@ -799,6 +822,7 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_
 }
 
 long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473310
     (void)wparam;
     (void)param_4;
 
@@ -1002,17 +1026,14 @@ void TButtonPanel::draw() {
 }
 
 void TButtonPanel::set_state_info(int num_states) {
-    // Source of truth: `src/game/src/Pnl_btn.cpp.decomp` (`set_state_info` @ 0x004722C0).
-    // Original behavior is intentionally minimal:
-    //   this->buttonTypeValue = State;
-    //   this->num_states = param_1;
-    // Keep this exact so state-cycling buttons (team/color/etc.) enter the State mode path in do_action().
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722C0
     this->buttonTypeValue = TButtonPanel::State;
     this->num_states = (short)num_states;
 }
 
 // From decomp: sets a picture for a given button state
 void TButtonPanel::set_picture(short state, TShape* pic_ptr, short pic_idx) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472300
     if (state < 0 || state >= 9) return;
     this->pic[state] = pic_ptr;
     this->pic_index[state] = pic_idx;
@@ -1021,6 +1042,7 @@ void TButtonPanel::set_picture(short state, TShape* pic_ptr, short pic_idx) {
 
 // From decomp: sets bevel info on the button panel
 void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
+    // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472760
     this->bevel_type = type;
     this->bevel_color1 = (unsigned char)c1;
     this->bevel_color2 = (unsigned char)c2;
