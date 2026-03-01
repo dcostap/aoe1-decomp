@@ -303,66 +303,46 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
     this->ScreenHeight = height;
     this->Flags = flags;
 
-    // DrawType 1 = WinG (unsupported)
     if (draw_type == 1) {
         return 0;
     }
 
-    // DirectDraw initialization
-    HRESULT hr = DirectDrawCreate(NULL, &this->DirDraw, NULL);
-    if (hr != DD_OK) {
+    if (DirectDrawCreate(NULL, &this->DirDraw, NULL) != DD_OK) {
         this->ErrorCode = 1;
         return 0;
     }
 
     this->CheckAvailModes(1);
 
-    if (this->ScreenMode == 2) {
-        // Try fullscreen mode: DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE
-        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE);
-        if (hr == DD_OK) {
-            this->ColorBits = 8;
-            hr = this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8);
-        }
-        if (hr != DD_OK) {
-            // Fullscreen 8-bit failed (common on modern Windows) — fall back to windowed
-            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: Fullscreen failed (hr=0x%x), falling back to windowed", hr);
-            this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, DDSCL_NORMAL);
-            this->ScreenMode = 1;
-            this->ChangedMode = 0;
-            // Resize window to game resolution BEFORE surfaces are created
-            DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-            SetWindowLongA((HWND)this->Wnd, GWL_STYLE, style);
-            RECT rc = {0, 0, this->ScreenWidth, this->ScreenHeight};
-            AdjustWindowRect(&rc, style, FALSE);
-            SetWindowPos((HWND)this->Wnd, HWND_TOP, 0, 0,
-                         rc.right - rc.left, rc.bottom - rc.top,
-                         SWP_NOMOVE | SWP_FRAMECHANGED);
-            ShowWindow((HWND)this->Wnd, SW_SHOW);
-        } else {
-            this->ChangedMode = 1;
-        }
-    }
-
     if (this->ScreenMode == 1) {
-        // Windowed mode: DDSCL_NORMAL
-        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, DDSCL_NORMAL);
-        if (hr != DD_OK) {
+        if (this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x8) != DD_OK) {
             this->ErrorCode = 1;
             return 0;
         }
-        // Query actual display mode (don't require 8-bit — modern displays are 32-bit)
         DDSURFACEDESC ddsd;
         memset(&ddsd, 0, sizeof(ddsd));
         ddsd.dwSize = sizeof(ddsd);
-        hr = this->DirDraw->GetDisplayMode(&ddsd);
-        if (hr == DD_OK) {
-            this->ColorBits = (int)ddsd.ddpfPixelFormat.dwRGBBitCount;
-            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: Windowed mode, display=%d-bit", this->ColorBits);
+        if (this->DirDraw->GetDisplayMode(&ddsd) != DD_OK) {
+            this->ErrorCode = 1;
+            return 0;
         }
+        if ((int)ddsd.ddpfPixelFormat.dwRGBBitCount != 8) {
+            this->ErrorCode = 2;
+            return 0;
+        }
+    } else {
+        if (this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x11) != DD_OK) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+        this->ColorBits = 8;
+        if (this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8) != DD_OK) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+        this->ChangedMode = 1;
     }
 
-    // Palette initialization
     tagPALETTEENTRY color_table[256];
     if (this->Pal == nullptr) {
         memset(color_table, 0, sizeof(color_table));
@@ -370,53 +350,41 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
         GetPaletteEntries((HPALETTE)this->Pal, 0, 256, color_table);
     }
 
-    // Zero internal palette
     memset(this->palette, 0, sizeof(this->palette));
 
-    // Create DirectDraw palette (may fail on non-8-bit displays — that's OK)
-    hr = this->DirDraw->CreatePalette(DDPCAPS_8BIT | DDPCAPS_INITIALIZE, color_table, &this->DirDrawPal, NULL);
-    if (hr == DD_OK) {
-        this->DirDrawPal->GetEntries(0, 0, 256, this->palette);
-    } else {
-        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: CreatePalette failed hr=0x%x (non-8-bit display, OK)", hr);
-        // Copy color_table to internal palette directly
-        memcpy(this->palette, color_table, sizeof(this->palette));
-    }
-
-    // Create clipper
-    hr = this->DirDraw->CreateClipper(0, &this->Clipper, NULL);
-    if (hr != DD_OK) {
+    if (this->DirDraw->CreatePalette(0x44, color_table, &this->DirDrawPal, NULL) != DD_OK) {
         this->ErrorCode = 1;
         return 0;
     }
-    hr = this->Clipper->SetHWnd(0, (HWND)this->Wnd);
-    if (hr != DD_OK) {
+    this->DirDrawPal->GetEntries(0, 0, 256, this->palette);
+
+    if (this->DirDraw->CreateClipper(0, &this->Clipper, NULL) != DD_OK) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+    if (this->Clipper->SetHWnd(0, (HWND)this->Wnd) != DD_OK) {
         this->ErrorCode = 1;
         return 0;
     }
 
-    // Create surfaces
     if (!this->CreateSurfaces()) {
         this->ErrorCode = 1;
         return 0;
     }
 
-    // Query hardware caps
     this->IsBanked = 0;
     DDCAPS ddcaps;
     memset(&ddcaps, 0, sizeof(ddcaps));
     ddcaps.dwSize = sizeof(ddcaps);
-    hr = this->DirDraw->GetCaps(&ddcaps, NULL);
-    if (hr == DD_OK) {
-        if ((ddcaps.dwCaps & DDCAPS_BANKSWITCHED) != 0) {
+    if (this->DirDraw->GetCaps(&ddcaps, NULL) == DD_OK) {
+        if ((ddcaps.dwCaps & 0x08000000) != 0) {
             this->IsBanked = 1;
         }
-        if ((ddcaps.dwCaps & DDCAPS_BLT) != 0 && (ddcaps.dwCaps & DDCAPS_BLTCOLORFILL) != 0) {
+        if (((ddcaps.dwCaps & 0x00400000) != 0) && ((ddcaps.dwCKeyCaps & 0x00000200) != 0)) {
             this->CanSrcBlt = 1;
         }
     }
 
-    // Decomp: clear primary surface in fullscreen after init
     if (this->ScreenMode == 2 && this->PrimarySurface != nullptr) {
         DDBLTFX ddbltfx;
         memset(&ddbltfx, 0, sizeof(ddbltfx));
@@ -1817,112 +1785,9 @@ void TDrawArea::FillRect(long left, long top, long right, long bottom, uchar col
 }
 
 void TDrawArea::SaveBitmap(char* filename) {
-    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
-    if (!this->DrawSurface) {
-         CUSTOM_DEBUG_LOG("SaveBitmap: No DrawSurface");
-         return;
-    }
-
-    DDSURFACEDESC ddsd;
-    memset(&ddsd, 0, sizeof(ddsd));
-    ddsd.dwSize = sizeof(ddsd);
-    HRESULT hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_READONLY, NULL);
-    if (FAILED(hr)) {
-        CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Lock failed hr=0x%x", hr);
-        return;
-    }
-
-    int width = ddsd.dwWidth;
-    int height = ddsd.dwHeight;
-    int depth = ddsd.ddpfPixelFormat.dwRGBBitCount;
-    int pitch = ddsd.lPitch;
-    void* bits = ddsd.lpSurface;
-    
-    // Support 8-bit and 32-bit
-    if (depth != 8 && depth != 32) {
-         CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Unsupported depth %d", depth);
-         this->DrawSurface->Unlock(NULL);
-         return;
-    }
-
-    FILE* f = fopen(filename, "wb");
-    if (!f) {
-         CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Failed to open %s", filename);
-         this->DrawSurface->Unlock(NULL);
-         return;
-    }
-
-    // Bitmap Header
-    BITMAPFILEHEADER bmfh;
-    BITMAPINFOHEADER bmih;
-    
-    memset(&bmfh, 0, sizeof(bmfh));
-    memset(&bmih, 0, sizeof(bmih));
-
-    bmih.biSize = sizeof(bmih);
-    bmih.biWidth = width;
-    bmih.biHeight = -height; // Top-down
-    bmih.biPlanes = 1;
-    bmih.biBitCount = depth; // 8 or 32
-    bmih.biCompression = BI_RGB;
-    bmih.biSizeImage = (width * depth / 8) * height; // Rough estimate, actual size includes padding
-
-    // Palette handling
-    int paletteSize = 0;
-    if (depth == 8) {
-        paletteSize = 256 * 4; // RGBQUAD
-    }
-
-    bmfh.bfType = 0x4D42; // BM
-    bmfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + paletteSize;
-    bmfh.bfSize = bmfh.bfOffBits + bmih.biSizeImage;
-
-    fwrite(&bmfh, sizeof(bmfh), 1, f);
-    fwrite(&bmih, sizeof(bmih), 1, f);
-
-    // Write Palette (only for 8-bit)
-    if (depth == 8) {
-        PALETTEENTRY palEntries[256];
-        memset(palEntries, 0, sizeof(palEntries));
-        
-        if (this->DrawSystem && this->DrawSystem->DirDrawPal) {
-            this->DrawSystem->DirDrawPal->GetEntries(0, 0, 256, palEntries);
-        } else {
-            for(int i=0; i<256; i++) {
-                palEntries[i].peRed = i;
-                palEntries[i].peGreen = i;
-                palEntries[i].peBlue = i;
-            }
-        }
-
-        for(int i=0; i<256; i++) {
-            RGBQUAD rgb;
-            rgb.rgbBlue = palEntries[i].peBlue;
-            rgb.rgbGreen = palEntries[i].peGreen;
-            rgb.rgbRed = palEntries[i].peRed;
-            rgb.rgbReserved = 0;
-            fwrite(&rgb, sizeof(rgb), 1, f);
-        }
-    }
-
-    // Write Data
-    uchar* line = (uchar*)bits;
-    int bytesPerPixel = depth / 8;
-    int rowBytes = width * bytesPerPixel;
-    int pad = (4 - (rowBytes % 4)) % 4;
-
-    for (int y = 0; y < height; y++) {
-         fwrite(line, 1, rowBytes, f);
-         if (pad > 0) {
-             uchar zeroes[4] = {0};
-             fwrite(zeroes, 1, pad, f);
-         }
-         line += pitch;
-    }
-
-    fclose(f);
-    this->DrawSurface->Unlock(NULL);
-    CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Saved to %s (%dx%d @ %dbpp)", filename, width, height, depth);
+    // TODO: Wrapper API; source-of-truth bitmap I/O path is take_snapshot @ drawarea.cpp.decomp 0x004463B0.
+    int snapshot_number = 0;
+    this->take_snapshot(filename, &snapshot_number);
 }
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445A60
@@ -2381,8 +2246,9 @@ void TDrawArea::SetShadowTable(RGE_Color_Table* table) {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446230
 void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
-    if (!this->shadow_color_table) return;
-    if (!this->Bits) return;
+    if ((this->shadow_color_table == nullptr) || (this->Bits == nullptr)) {
+        return;
+    }
     long clip = this->ClipRect.left;
     if (left < clip) left = clip;
     clip = this->ClipRect.top;
@@ -2395,134 +2261,30 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
     if (top < 0) top = 0;
     if (this->Width <= right) right = this->Width - 1;
     if (this->Height <= bottom) bottom = this->Height - 1;
-    if ((left > right) || (top > bottom)) return;
 
-    int orien = this->Orien;
-    int row_step = (int)(this->AlignedWidth() * orien);
-    int row_index = (int)top;
-    if (orien < 1) {
-        row_index = (int)((top - this->Height) + 1);
-    }
-
-    DDSURFACEDESC ddsd;
-    memset(&ddsd, 0, sizeof(ddsd));
-    ddsd.dwSize = sizeof(ddsd);
-    HRESULT sdesc_hr = DDERR_GENERIC;
-    if (this->DrawSurface) {
-        sdesc_hr = this->DrawSurface->GetSurfaceDesc(&ddsd);
-    }
-    if (sdesc_hr != DD_OK && this->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
-        ddsd = this->SurfaceDesc;
-        sdesc_hr = DD_OK;
-    }
-
-    unsigned long bpp = 8;
-    if (sdesc_hr == DD_OK) {
-        bpp = ddsd.ddpfPixelFormat.dwRGBBitCount;
-    }
-    int bytes_per_pixel = (int)(bpp / 8);
-    if (bytes_per_pixel <= 0) bytes_per_pixel = 1;
-    if (bytes_per_pixel > 4) bytes_per_pixel = 4;
-
-    int row_count = (int)((bottom - top) + 1);
-    int pixel_count = (int)((right - left) + 1);
-    uchar* row_start = this->Bits + row_index * row_step + left * bytes_per_pixel;
-
-    if (bytes_per_pixel == 1) {
-        uchar* row = row_start;
-        for (int y = 0; y < row_count; ++y) {
-            uchar* p = row;
-            for (int x = 0; x < pixel_count; ++x) {
-                *p = this->shadow_color_table->table[*p];
-                ++p;
-            }
-            row += row_step;
+    if ((left <= right) && (top <= bottom)) {
+        int orien = this->Orien;
+        int row_step = (int)(this->AlignedWidth() * orien);
+        int row_index = (int)top;
+        if (orien < 1) {
+            row_index = (int)((top - this->Height) + 1);
         }
-        return;
-    }
 
-    unsigned long rmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRBitMask : 0x00FF0000;
-    unsigned long gmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwGBitMask : 0x0000FF00;
-    unsigned long bmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwBBitMask : 0x000000FF;
-
-    int rshift = 0, gshift = 0, bshift = 0;
-    while (rmask && ((rmask >> rshift) & 1) == 0) rshift++;
-    while (gmask && ((gmask >> gshift) & 1) == 0) gshift++;
-    while (bmask && ((bmask >> bshift) & 1) == 0) bshift++;
-
-    unsigned long rmax = rmask ? (rmask >> rshift) : 0xFF;
-    unsigned long gmax = gmask ? (gmask >> gshift) : 0xFF;
-    unsigned long bmax = bmask ? (bmask >> bshift) : 0xFF;
-
-    const tagPALETTEENTRY* pal = (this->DrawSystem != nullptr) ? this->DrawSystem->palette : nullptr;
-    if (pal != nullptr) {
-        const unsigned long rgb_mask = rmask | gmask | bmask;
-        uchar* row = row_start;
-        for (int y = 0; y < row_count; ++y) {
-            uchar* p = row;
-            for (int x = 0; x < pixel_count; ++x) {
-                unsigned long px = 0;
-                memcpy(&px, p, (size_t)bytes_per_pixel);
-
-                unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
-                unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
-                unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
-                int r8 = (rmax != 0) ? (int)((r * 255u + (rmax / 2u)) / rmax) : (int)r;
-                int g8 = (gmax != 0) ? (int)((g * 255u + (gmax / 2u)) / gmax) : (int)g;
-                int b8 = (bmax != 0) ? (int)((b * 255u + (bmax / 2u)) / bmax) : (int)b;
-
-                int best_idx = 0;
-                int best_dist = 0x7FFFFFFF;
-                for (int i = 0; i < 256; ++i) {
-                    const int dr = r8 - (int)pal[i].peRed;
-                    const int dg = g8 - (int)pal[i].peGreen;
-                    const int db = b8 - (int)pal[i].peBlue;
-                    const int dist = dr * dr + dg * dg + db * db;
-                    if (dist < best_dist) {
-                        best_dist = dist;
-                        best_idx = i;
-                    }
+        uchar* row_start = this->Bits + row_index * row_step + left;
+        uchar* row_end = row_start + (right - left);
+        if (top <= bottom) {
+            int row_count = (int)((bottom - top) + 1);
+            uchar* row_ptr = row_start;
+            do {
+                for (; row_start <= row_end; ++row_start) {
+                    *row_start = this->shadow_color_table->table[*row_start];
                 }
-
-                const uchar mapped_idx = this->shadow_color_table->table[best_idx];
-                unsigned long mapped_px = map_color_index_to_surface_pixel(this, (int)mapped_idx, (sdesc_hr == DD_OK) ? &ddsd : (const DDSURFACEDESC*)0, sdesc_hr);
-                unsigned long out = (rgb_mask != 0) ? ((px & ~rgb_mask) | (mapped_px & rgb_mask)) : mapped_px;
-                memcpy(p, &out, (size_t)bytes_per_pixel);
-                p += bytes_per_pixel;
-            }
-            row += row_step;
+                row_start = row_ptr + row_step;
+                row_end = row_end + row_step;
+                row_ptr = row_start;
+                row_count = row_count - 1;
+            } while (row_count != 0);
         }
-        return;
-    }
-
-    int percent = (int)this->shadow_color_table->id;
-    if (percent < 0) percent = 0;
-    if (percent > 100) percent = 100;
-    int keep = 100 - percent;
-
-    uchar* row = row_start;
-    for (int y = 0; y < row_count; ++y) {
-        uchar* p = row;
-        for (int x = 0; x < pixel_count; ++x) {
-            unsigned long px = 0;
-            memcpy(&px, p, (size_t)bytes_per_pixel);
-            unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
-            unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
-            unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
-            r = (r * (unsigned long)keep) / 100;
-            g = (g * (unsigned long)keep) / 100;
-            b = (b * (unsigned long)keep) / 100;
-            if (r > rmax) r = rmax;
-            if (g > gmax) g = gmax;
-            if (b > bmax) b = bmax;
-            unsigned long out = px;
-            if (rmask) out = (out & ~rmask) | ((r << rshift) & rmask);
-            if (gmask) out = (out & ~gmask) | ((g << gshift) & gmask);
-            if (bmask) out = (out & ~bmask) | ((b << bshift) & bmask);
-            memcpy(p, &out, (size_t)bytes_per_pixel);
-            p += bytes_per_pixel;
-        }
-        row += row_step;
     }
 }
 

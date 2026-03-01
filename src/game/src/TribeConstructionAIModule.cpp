@@ -294,7 +294,7 @@ int TribeConstructionAIModule::canPlace(BuildItem* param_1) {
 }
 
 // Offset: 0x004D60E0
-// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
+// Fully verified. Source of truth: taiconmd.cpp.decomp + taiconmd.cpp.asm @ 0x004D60E0
 ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, int param_2, PlacementState* param_3, ulong param_4) {
     if ((this->xReferencePointValue <= 0.0f) ||
         (this->yReferencePointValue <= 0.0f) ||
@@ -318,9 +318,14 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, 
         return tribe_influence_place_structure(this, param_1, param_2, param_3, param_4);
     }
 
-    RGE_Static_Object* builder = tribe_main_decision_object(this, param_2, -1);
-    if (builder == nullptr) {
+    RGE_Static_Object* build_test_object = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
+    if (build_test_object == nullptr) {
         return nullptr;
+    }
+    RGE_Static_Object* builder = tribe_main_decision_object(this, param_2, -1);
+    uchar builder_zone = 0;
+    if (builder != nullptr) {
+        builder_zone = builder->currentZone();
     }
 
     ConstructionItem temp_lots;
@@ -337,12 +342,37 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, 
                 (tribe_base_item(item)->ySize() == tribe_base_item(reinterpret_cast<ConstructionItem*>(param_1))->ySize()) &&
                 (tribe_lot_built(item) != 1) &&
                 (tribe_lot_in_progress(item) != 1)) {
-                ConstructionItem* cloned = tribe_clone_lot(item);
-                if (cloned != nullptr) {
-                    tribe_temp_append(&temp_lots, cloned);
-                    number_temp_lots = number_temp_lots + 1;
-                    if ((min_build_attempts == -1) || (tribe_lot_build_attempts(item) < min_build_attempts)) {
-                        min_build_attempts = tribe_lot_build_attempts(item);
+                int use_lot = 1;
+                const float lot_x = tribe_base_item(item)->x();
+                const float lot_y = tribe_base_item(item)->y();
+                const float lot_x_size = tribe_base_item(item)->xSize();
+                const float lot_y_size = tribe_base_item(item)->ySize();
+                const int min_x = static_cast<int>(construction_ftol(lot_x - lot_x_size));
+                const int min_y = static_cast<int>(construction_ftol(lot_y - lot_y_size));
+                const int max_x = static_cast<int>(construction_ftol(lot_x_size)) + min_x;
+                const int max_y = static_cast<int>(construction_ftol(lot_y_size)) + min_y;
+                if ((-1 < min_x) && (-1 < min_y) && (max_x < this->mapXSizeValue) && (max_y < this->mapYSizeValue)) {
+                    for (int x = min_x; (x < max_x) && (use_lot != 0); ++x) {
+                        for (int y = min_y; y < max_y; ++y) {
+                            if (((builder != nullptr) && (builder->lookupZone(x, y) != builder_zone)) ||
+                                (build_test_object->passableTile((float)x + 0.5f, (float)y + 0.5f, 1) == 0)) {
+                                use_lot = 0;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    use_lot = 0;
+                }
+
+                if (use_lot != 0) {
+                    ConstructionItem* cloned = tribe_clone_lot(item);
+                    if (cloned != nullptr) {
+                        tribe_temp_append(&temp_lots, cloned);
+                        number_temp_lots = number_temp_lots + 1;
+                        if ((min_build_attempts == -1) || (tribe_lot_build_attempts(item) < min_build_attempts)) {
+                            min_build_attempts = tribe_lot_build_attempts(item);
+                        }
                     }
                 }
             }
@@ -382,21 +412,13 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, 
     }
 
     ConstructionItem* source = this->lot(tribe_base_item(best)->x(), tribe_base_item(best)->y());
-    if (source == nullptr) {
-        tribe_clear_temp_list(&temp_lots);
-        this->lastPlacementReturnCodeValue = (PlacementResult)5;
-        return nullptr;
-    }
-
     tribe_lot_set_in_progress(source, 1);
     tribe_lot_increment_attempts(source);
     tribe_base_item(source)->setUniqueID(tribe_base_item(reinterpret_cast<ConstructionItem*>(param_1))->uniqueID());
     this->lastPlacementReturnCodeValue = PlacementResult_0;
 
     ConstructionItem* placed = tribe_clone_lot(source);
-    if (placed != nullptr) {
-        tribe_base_item(placed)->setTypeID(tribe_base_item(reinterpret_cast<ConstructionItem*>(param_1))->typeID());
-    }
+    tribe_base_item(placed)->setTypeID(tribe_base_item(reinterpret_cast<ConstructionItem*>(param_1))->typeID());
     tribe_clear_temp_list(&temp_lots);
     return placed;
 }

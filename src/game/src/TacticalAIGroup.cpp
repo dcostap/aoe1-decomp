@@ -496,7 +496,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIMod
                 param_1->stopUnit(unitID, 100);
             }
             this->inUseValue = 0;
-            return totalHitPoints;
+            if (param_4 == 1) {
+                this->originalHitPointsValue = totalHitPoints;
+                this->originalUnitNumberValue = this->numberUnitsValue;
+            }
+            return 1;
         }
         case 2:
         case 0x15: {
@@ -518,6 +522,12 @@ int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIMod
                 totalHitPoints += hp;
                 packedUnits[count++] = unitID;
                 if (this->playNumberValue == -1) {
+                    if (param_5 == 0) {
+                        const int current_action = unitAI->currentAction();
+                        if ((current_action == 600) && (unitAI->currentTargetType() != 0x1B)) {
+                            continue;
+                        }
+                    }
                     if ((this->subTypeValue == 0) || (this->subTypeValue == 4)) {
                         param_1->taskDefender(unitID, this->targetValue, 2.0f, 100);
                     } else {
@@ -526,7 +536,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIMod
                         } else {
                             int targetOwner = -1;
                             RGE_Static_Object* targetObj = param_2->object(this->targetValue);
-                            if ((targetObj != nullptr) && (targetObj->owner != nullptr)) {
+                            if (targetObj == nullptr) {
+                                continue;
+                            }
+                            if (targetObj->owner != nullptr) {
                                 targetOwner = targetObj->owner->id;
                             }
                             param_1->taskAttacker(unitID,
@@ -553,7 +566,12 @@ int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIMod
                 return 0;
             }
             this->inUseValue = 1;
-            return totalHitPoints;
+            if (param_4 == 1) {
+                this->originalHitPointsValue = totalHitPoints;
+                this->originalUnitNumberValue = this->numberUnitsValue;
+                this->numberAttackWaypointsValue = 0;
+            }
+            return 1;
         }
         case 3: {
             for (int i = 0; i < 40; ++i) {
@@ -598,7 +616,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIMod
                 param_1->taskDefender(unitID, this->targetValue, defendDistance, priority);
             }
             this->inUseValue = 1;
-            return totalHitPoints;
+            if (param_4 == 1) {
+                this->originalHitPointsValue = totalHitPoints;
+                this->originalUnitNumberValue = this->numberUnitsValue;
+            }
+            return 1;
         }
         case 5:
         case 6:
@@ -624,7 +646,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIMod
                 param_1->taskDefender(unitID, this->targetValue, 2.0f, this->priorityValue);
             }
             this->inUseValue = 1;
-            return totalHitPoints;
+            if (param_4 == 1) {
+                this->originalHitPointsValue = totalHitPoints;
+                this->originalUnitNumberValue = this->numberUnitsValue;
+            }
+            return 0;
         }
         default:
             return 0;
