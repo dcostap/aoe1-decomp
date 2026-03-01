@@ -50,6 +50,26 @@ if not exist "%SRC_DIR%\TRIBE_Map.cpp" (
     popd
     exit /b 1
 )
+if not exist "%SRC_DIR%\RGE_Master_Action_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\RGE_Master_Action_Object.cpp"
+    popd
+    exit /b 1
+)
+if not exist "%SRC_DIR%\RGE_Master_Animated_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\RGE_Master_Animated_Object.cpp"
+    popd
+    exit /b 1
+)
+if not exist "%SRC_DIR%\RGE_Master_Moving_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\RGE_Master_Moving_Object.cpp"
+    popd
+    exit /b 1
+)
+if not exist "%SRC_DIR%\RGE_Master_Missile_Object.cpp" (
+    echo ERROR: missing required source "%SRC_DIR%\RGE_Master_Missile_Object.cpp"
+    popd
+    exit /b 1
+)
 if not exist "%SRC_DIR%\AIBuildItem.cpp" (
     echo ERROR: missing required source "%SRC_DIR%\AIBuildItem.cpp"
     popd
