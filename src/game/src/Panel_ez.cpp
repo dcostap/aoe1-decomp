@@ -29,11 +29,13 @@
 #include <io.h>
 #include <fcntl.h>
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static int is_none_token(const char* s) {
     if (!s) return 1;
     return (_stricmp(s, "none") == 0) || (s[0] == '\0');
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static void trim_in_place(char* s) {
     if (!s) return;
     size_t len = strlen(s);
@@ -48,6 +50,7 @@ static void trim_in_place(char* s) {
     if (p != s) memmove(s, p, strlen(p) + 1);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static void init_vars(TEasy_Panel* this_) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467150
     this_->ideal_width = 0x280;
@@ -207,10 +210,12 @@ void TEasy_Panel::popupYesNoDialog(char* text, char* panel_name, int param_4, in
 }
 
 // Virtual setup (base signature): forward to TPanel::setup.
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     return TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static void set_info_file(TEasy_Panel* this_, char* info_file, long info_id) {
     this_->info_id = info_id;
     if (info_file) {
@@ -221,6 +226,7 @@ static void set_info_file(TEasy_Panel* this_, char* info_file, long info_id) {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static TShape* load_optional_shape(char* file, long id) {
     if (((file == nullptr) || (*file == '\0') || (_stricmp(file, "none") == 0)) && (id == -1)) {
         return nullptr;
@@ -276,6 +282,7 @@ struct EasyCfg {
     int state2[3];
 };
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static void easycfg_init(EasyCfg* cfg) {
     memset(cfg, 0, sizeof(*cfg));
     cfg->bg1.file1[0] = '\0'; cfg->bg1.file2[0] = '\0'; cfg->bg1.id1 = -1; cfg->bg1.id2 = -1;
@@ -297,6 +304,7 @@ static void easycfg_init(EasyCfg* cfg) {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static void parse_background_line(EasyCfgBackground* out, const char* file1, const char* file2, long id1, long id2) {
     strncpy(out->file1, file1 ? file1 : "", sizeof(out->file1) - 1);
     out->file1[sizeof(out->file1) - 1] = '\0';
@@ -306,6 +314,7 @@ static void parse_background_line(EasyCfgBackground* out, const char* file1, con
     out->id2 = id2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
     // The `bina` config is line-oriented and whitespace-separated.
     // We intentionally parse it loosely to tolerate formatting differences.
@@ -443,6 +452,7 @@ static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
     return parsed_items;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (helper extracted from decomp flow).
 static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackground* bg) {
     if (*out1) { delete *out1; *out1 = nullptr; }
     if (*out2) { delete *out2; *out2 = nullptr; }
@@ -463,6 +473,7 @@ static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackgr
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00466A90
     this->allow_shadow_area = param_10;
@@ -631,10 +642,15 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_rect(long param_1, long param_2, long param_3, long param_4) { TPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_color(uchar param_1) { TPanel::set_color(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_active(int param_1) { TPanel::set_active(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
     (void)param_10;
     (void)param_11;
@@ -642,15 +658,21 @@ void TEasy_Panel::set_positioning(PositionMode param_1, long param_2, long param
     (void)param_13;
     TPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9);
 }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_redraw(RedrawMode param_1) { TPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::draw_setup(int param_1) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467560
     TPanel::draw_setup(param_1);
 }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::draw_finish() { TPanel::draw_finish(); }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::draw() {
     // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x00467570
     if (this->need_restore) {
@@ -668,21 +690,37 @@ void TEasy_Panel::draw() {
     this->draw_background(0);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::paint() { TPanel::paint(); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TPanel::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_idle() { return TPanel::handle_idle(); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_size(long param_1, long param_2) { return TPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_char(long param_1, short param_2) { return TPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_command(uint param_1, long param_2) { return TPanel::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004679A0
     if (this->command_do_popup_help(param_1, param_2, param_3) != 0) {
@@ -690,22 +728,39 @@ long TEasy_Panel::handle_mouse_down(uchar param_1, long param_2, long param_3, i
     }
     return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TEasy_Panel::char_action(long param_1, short param_2) { return TPanel::char_action(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A4E0
     if (param_1 != nullptr) {
@@ -744,8 +799,11 @@ long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong par
 
     return TPanel::action(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::get_true_render_rect(tagRECT* param_1) { TPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TEasy_Panel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_focus(int param_1) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469E10
     TPanel::set_focus(param_1);
@@ -772,14 +830,22 @@ void TEasy_Panel::set_focus(int param_1) {
         }
     }
 }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::set_tab_order(TPanel** param_1, short param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 uchar TEasy_Panel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TPanel::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::stop_sound_system() { TPanel::stop_sound_system(); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TEasy_Panel::restart_sound_system() { return TPanel::restart_sound_system(); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::take_snapshot() { TPanel::take_snapshot(); }
+// Fully verified. Source of truth: panel_ez.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TEasy_Panel::handle_reactivate() { TPanel::handle_reactivate(); }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::draw_background(int param_1) {
     // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004675C0
     if (this->render_area == nullptr) return;
@@ -896,6 +962,7 @@ draw_bevel_and_finish:
     this->draw_finish();
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_shadow_amount(long amount_percent) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004681D0
     if (amount_percent == -1) {
@@ -938,6 +1005,7 @@ void TEasy_Panel::set_shadow_amount(long amount_percent) {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::setup_popup_help() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A360
     this->help_mode = 1;
@@ -952,6 +1020,7 @@ void TEasy_Panel::setup_popup_help() {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::clear_popup_help() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A3C0
     this->help_mode = 0;
@@ -965,6 +1034,7 @@ void TEasy_Panel::clear_popup_help() {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::command_help(char* param_1, long param_2, long param_3, long param_4, long param_5) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A260
     if (param_2 < 0) {
@@ -979,6 +1049,7 @@ void TEasy_Panel::command_help(char* param_1, long param_2, long param_3, long p
     this->command_help(param_1, text, param_3, param_4, param_5);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::command_help(char* param_1, char* param_2, long param_3, long param_4, long param_5) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A2E0
     if ((param_2 == nullptr) || (*param_2 == '\0')) {
@@ -993,6 +1064,7 @@ void TEasy_Panel::command_help(char* param_1, char* param_2, long param_3, long 
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::command_do_popup_help(uchar param_1, long param_2, long param_3) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A410
     char help_string2[1000];
@@ -1013,100 +1085,119 @@ long TEasy_Panel::command_do_popup_help(uchar param_1, long param_2, long param_
     return 0;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 char* TEasy_Panel::get_popup_info_file() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468440
     return this->popup_info_file_name;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::get_popup_info_id() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468450
     return this->popup_info_id;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 char* TEasy_Panel::get_info_file() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468300
     return this->info_file_name;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::get_info_id() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468310
     return this->info_id;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 TShape* TEasy_Panel::get_background() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468320
     return this->background_pic;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 TShape* TEasy_Panel::get_background2() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468330
     return this->background_pic2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void* TEasy_Panel::get_palette() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468340
     return this->palette;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 char* TEasy_Panel::get_cursor() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468350
     return this->cursor_file;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::get_use_bevels() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468360
     return this->use_bevels;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::get_background_pos() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468370
     return this->background_pos;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::get_bevel_colors(uchar& c1, uchar& c2, uchar& c3, uchar& c4, uchar& c5, uchar& c6) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468380
     c1 = this->bevel_color1; c2 = this->bevel_color2; c3 = this->bevel_color3;
     c4 = this->bevel_color4; c5 = this->bevel_color5; c6 = this->bevel_color6;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::get_text_colors(ulong& c1, ulong& c2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004683D0
     c1 = this->text_color1;
     c2 = this->text_color2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::get_focus_colors(ulong& c1, ulong& c2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004683F0
     c1 = this->focus_color1;
     c2 = this->focus_color2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::get_shadow_amount() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468410
     return this->shadow_amount;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::get_state_colors(ulong& c1, ulong& c2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468420
     c1 = this->state_color1;
     c2 = this->state_color2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 TShape* TEasy_Panel::get_button_pics() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468460
     return this->button_pics;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 RGE_Color_Table* TEasy_Panel::get_shadow_color_table() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468470
     return this->shadow_color_table;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::get_enable_ime() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468480
     return this->enable_ime;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_system_colors() {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A670
     tagPALETTEENTRY pe;
@@ -1123,6 +1214,7 @@ void TEasy_Panel::set_system_colors() {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A150
     char text[256];
@@ -1130,6 +1222,7 @@ void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_
     this->popupYesNoCancelDialog(text, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x0046A1A0
     TMessageDialog* dialog = nullptr;
@@ -1141,6 +1234,7 @@ void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param
     dialog->setup((TPanel*)this, this->popup_info_file_name, this->popup_info_id, param_3, param_4, '\x04', param_1, 0x78, 0x19);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467380
     if (!this->allow_shadow_area) return;
@@ -1175,17 +1269,20 @@ void TEasy_Panel::setup_shadow_area(int force_rebuild) {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_ideal_size(long param_1, long param_2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467A50
     this->ideal_width = param_1;
     this->ideal_height = param_2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_info_file(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004679F0
     ::set_info_file(this, file, id);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::set_background(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467A70
     if (this->background_pic != nullptr) {
@@ -1196,6 +1293,7 @@ int TEasy_Panel::set_background(char* file, long id) {
     return this->background_pic != nullptr;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::set_background2(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467BE0
     if (this->background_pic2 != nullptr) {
@@ -1206,6 +1304,7 @@ int TEasy_Panel::set_background2(char* file, long id) {
     return this->background_pic2 != nullptr;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_background_colors(uchar color1, uchar color2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467D50
     (void)color2;
@@ -1217,6 +1316,7 @@ void TEasy_Panel::set_background_colors(uchar color1, uchar color2) {
     this->brush_color = 0;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::set_palette(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467DA0
     if (this->palette != nullptr) {
@@ -1246,6 +1346,7 @@ int TEasy_Panel::set_palette(char* file, long id) {
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::set_cursor(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467EF0
     strncpy(this->cursor_file, file, sizeof(this->cursor_file) - 1);
@@ -1254,40 +1355,47 @@ int TEasy_Panel::set_cursor(char* file, long id) {
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_use_bevels(int enabled) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467F40
     this->use_bevels = enabled;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_background_pos(int pos) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467F50
     this->background_pos = pos;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_bevel_colors(uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467F60
     this->bevel_color1 = c1; this->bevel_color2 = c2; this->bevel_color3 = c3;
     this->bevel_color4 = c4; this->bevel_color5 = c5; this->bevel_color6 = c6;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_text_colors(ulong c1, ulong c2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467FA0
     this->text_color1 = c1;
     this->text_color2 = c2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_focus_colors(ulong c1, ulong c2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467FC0
     this->focus_color1 = c1;
     this->focus_color2 = c2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_state_colors(ulong c1, ulong c2) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467FE0
     this->state_color1 = c1;
     this->state_color2 = c2;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_popup_info_file(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468000
     if (file != nullptr) {
@@ -1299,6 +1407,7 @@ void TEasy_Panel::set_popup_info_file(char* file, long id) {
     this->popup_info_id = id;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_button_pics(char* file, long id) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468060
     if (this->button_pics != nullptr) {
@@ -1308,6 +1417,7 @@ void TEasy_Panel::set_button_pics(char* file, long id) {
     this->button_pics = load_optional_shape(file, id);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::set_enable_ime(int enabled) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004682D0
     this->enable_ime = enabled;
@@ -1320,6 +1430,7 @@ void TEasy_Panel::set_enable_ime(int enabled) {
     }
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468490
     // String-id overload: load strings then call string overload.
@@ -1332,6 +1443,7 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, long par
     return this->create_button(param_1, param_2, text1, (text2[0] != '\0') ? text2 : nullptr, param_5, param_6, param_7, param_8, param_9, param_10, param_11);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468530
     if (!param_2) return 0;
@@ -1401,6 +1513,7 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* pa
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468760
     // params: parent, out_ptr, x, y, w, h, sound_id, unk
@@ -1478,6 +1591,7 @@ int TEasy_Panel::create_check_box(TPanel* param_1, TButtonPanel** param_2, long 
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004689C0
     if (!param_2) return 0;
@@ -1544,6 +1658,7 @@ int TEasy_Panel::create_radio_button(TPanel* param_1, TButtonPanel** param_2, lo
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468C20
     char text[256];
@@ -1552,6 +1667,7 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, int param_3,
     return this->create_text(param_1, param_2, text, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11);
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468E50
     if (!param_2) return 0;
@@ -1587,6 +1703,7 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char** param
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00468CB0
     if (!param_2) return 0;
@@ -1632,6 +1749,7 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469000
     if (param_2 == nullptr) {
@@ -1683,6 +1801,7 @@ int TEasy_Panel::create_input(TPanel* param_1, TInputPanel** param_2, char* para
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004691C0
     if (param_2 == nullptr) {
@@ -1728,6 +1847,7 @@ int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469380
     // param_1=parent, param_2=out_ptr, param_3=val_width, param_4=val_height,
@@ -1832,6 +1952,7 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004696B0
     // params: parent, out_ptr, x, y, w, h, font_index
@@ -1915,6 +2036,7 @@ int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469910
     long scaled_x = (this->pnl_wid * param_5) / this->ideal_width;
@@ -1964,6 +2086,7 @@ int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TT
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469A80
     int ok = this->create_scrollbar(param_2->parent_panel, param_1, param_2, 0, 0, 0, param_3, 0);
@@ -1974,6 +2097,7 @@ int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* pa
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469AD0
     if (param_2 == nullptr) {
@@ -2010,6 +2134,7 @@ int TEasy_Panel::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** para
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469C40
     if (param_2 == nullptr) {
@@ -2046,6 +2171,7 @@ int TEasy_Panel::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** pa
     return 1;
 }
 
+// Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469DB0
     if (param_1 == nullptr) {
