@@ -4,6 +4,7 @@
 
 struct TDrawArea {
     TDrawArea(char* name);
+    TDrawArea(char* name, int system_mem_only);
     ~TDrawArea();
 
     int Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem);

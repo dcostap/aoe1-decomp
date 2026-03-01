@@ -1026,9 +1026,14 @@ int TDrawSystem::GetColorKeyErrorNum(long err) {
 
 // TDrawArea Implementation
 
+TDrawArea::TDrawArea(char* name)
+    : TDrawArea(name, 0) {
+}
+
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443DE0
-TDrawArea::TDrawArea(char* name) {
+TDrawArea::TDrawArea(char* name, int system_mem_only) {
     memset(this, 0, sizeof(TDrawArea));
+    this->SystemMemOnly = system_mem_only;
     this->TransColor = 0xFF;
     if (name) {
         this->Name = _strdup(name);
