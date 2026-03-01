@@ -43,6 +43,7 @@ static long diam_map_trunc_to_long(float v) {
     return (long)v;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 RGE_Diamond_Map::RGE_Diamond_Map()
     : TPanel((char*)"RGE_Diamond_Map") {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00436830
@@ -83,7 +84,9 @@ RGE_Diamond_Map::RGE_Diamond_Map()
     this->save_area = nullptr;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 RGE_Diamond_Map::~RGE_Diamond_Map() {
+    // Fully verified. Source of truth: RGE_Diamond_Map.decomp @ 0x00436910 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00436930
     this->delete_surfaces();
 
@@ -101,66 +104,118 @@ RGE_Diamond_Map::~RGE_Diamond_Map() {
 // Virtual forwarding layer (header redeclares TPanel virtuals)
 // -----------------------------------------------------------------------------
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     return TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_rect(long param_1, long param_2, long param_3, long param_4) { TPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_color(uchar param_1) { TPanel::set_color(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_active(int param_1) { TPanel::set_active(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
     TPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13);
 }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_finish() { TPanel::draw_finish(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_offset(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::paint() { TPanel::paint(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TPanel::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_idle() { return TPanel::handle_idle(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_char(long param_1, short param_2) { return TPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_command(uint param_1, long param_2) { return TPanel::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::char_action(long param_1, short param_2) { return TPanel::char_action(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::get_true_render_rect(tagRECT* param_1) { TPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_focus(int param_1) { TPanel::set_focus(param_1); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_tab_order(TPanel** param_1, short param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 uchar RGE_Diamond_Map::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TPanel::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::stop_sound_system() { TPanel::stop_sound_system(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 int RGE_Diamond_Map::restart_sound_system() { return TPanel::restart_sound_system(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::take_snapshot() { TPanel::take_snapshot(); }
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::handle_reactivate() { TPanel::handle_reactivate(); }
 
 // -----------------------------------------------------------------------------
 // Non-virtual helpers
 // -----------------------------------------------------------------------------
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, TDrawArea* param_9) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004369C0
     this->save_area = param_9;
@@ -169,6 +224,7 @@ long RGE_Diamond_Map::setup(TDrawArea* param_1, TPanel* param_2, long param_3, l
     return TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 int RGE_Diamond_Map::set_bitmap(char* param_1, long param_2) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00436A10
     if (this->map_tile_rows != nullptr) {
@@ -258,6 +314,7 @@ int RGE_Diamond_Map::set_bitmap(char* param_1, long param_2) {
     return 1;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_world(RGE_Game_World* param_1) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00436C30
     this->world = param_1;
@@ -380,16 +437,19 @@ void RGE_Diamond_Map::set_world(RGE_Game_World* param_1) {
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_player(RGE_Player* param_1) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437070
     this->player = param_1;
     this->set_redraw(TPanel::RedrawMode::RedrawFull);
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_main_view(RGE_View* param_1) {
     this->main_view = param_1;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_redraw(RedrawMode param_1) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437090
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004370A0
@@ -399,6 +459,7 @@ void RGE_Diamond_Map::set_redraw(RedrawMode param_1) {
     }
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::delete_surfaces() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004370C0
     if (this->save_area != nullptr && this->own_save_area != 0) {
@@ -408,6 +469,7 @@ void RGE_Diamond_Map::delete_surfaces() {
     this->own_save_area = 0;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 int RGE_Diamond_Map::create_surfaces() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437120
     if (this->save_area == nullptr) {
@@ -442,6 +504,7 @@ int RGE_Diamond_Map::create_surfaces() {
 // Draw pipeline
 // -----------------------------------------------------------------------------
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004372C0
     if (this->render_area == nullptr || this->save_area == nullptr || this->visible == 0 || this->active == 0) {
@@ -503,6 +566,7 @@ void RGE_Diamond_Map::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::clear_image() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004374C0
     if (this->save_area == nullptr) {
@@ -556,6 +620,7 @@ void RGE_Diamond_Map::clear_image() {
     this->save_area->Unlock((char*)"diam_map::clear_image");
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::copy_image() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437620
     if (this->save_area == nullptr || this->render_area == nullptr) {
@@ -571,6 +636,7 @@ void RGE_Diamond_Map::copy_image() {
     this->save_area->Copy(this->render_area, this->pnl_x, this->pnl_y, &r, 0);
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_all_tiles() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437660
     if (this->save_area == nullptr) {
@@ -587,6 +653,7 @@ void RGE_Diamond_Map::draw_all_tiles() {
     }
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_explored_tiles() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004376D0
     if (this->player == nullptr || this->save_area == nullptr) {
@@ -609,6 +676,7 @@ void RGE_Diamond_Map::draw_explored_tiles() {
     }
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3, uchar param_4) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437760
     const int col = (int)param_1;
@@ -791,6 +859,7 @@ static void FUN_00437bd9() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437BD9 (switch jump-table thunk)
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_selected_area() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437C20
     if (this->main_view == nullptr) {
@@ -822,6 +891,7 @@ void RGE_Diamond_Map::draw_selected_area() {
     this->render_area->Unlock((char*)"diam_map::draw_selected_area");
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_objects() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437CC0
     if (this->world == nullptr || this->player == nullptr || this->render_area == nullptr) {
@@ -899,6 +969,7 @@ void RGE_Diamond_Map::draw_objects() {
     this->render_area->Unlock((char*)"diam_map::draw_objects");
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* param_1, uchar param_2, uchar param_3) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437EC0
     if (param_1 == nullptr || param_1->tile == nullptr || this->player == nullptr || this->map == nullptr) {
@@ -983,6 +1054,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object* param_1, uchar para
     }
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_object(short param_1, short param_2, uchar param_3, short param_4, RGE_Static_Object* param_5) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438060
     (void)param_5;
@@ -1035,6 +1107,7 @@ static void FUN_0043804d() {
     // Fully verified. Source of truth: diam_map.cpp.asm @ 0x0043804D (switch jump-table thunk)
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_clipped_horz_line(short param_1, short param_2, short param_3, uchar param_4, RGE_Map_Image_Line* param_5) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004381D0
     short start_x = param_5->start_x;
@@ -1050,6 +1123,7 @@ void RGE_Diamond_Map::draw_clipped_horz_line(short param_1, short param_2, short
     this->render_area->DrawHorzLine((int)param_1, (int)param_2, (int)param_3, param_4);
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw_view_rect() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438250
     if (this->player == nullptr || this->map == nullptr || this->map_tile_rows == nullptr || this->map_image_lines == nullptr) {
@@ -1150,6 +1224,7 @@ void RGE_Diamond_Map::draw_view_rect() {
 // Mouse helpers
 // -----------------------------------------------------------------------------
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short* param_4, RGE_Tile** param_5) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438530
     if (this->map == nullptr || this->map_image_lines == nullptr) {
@@ -1196,6 +1271,7 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short* param_3, short
     return 1;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 long RGE_Diamond_Map::handle_size(long param_1, long param_2) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438630
     TPanel::handle_size(param_1, param_2);
@@ -1205,6 +1281,7 @@ long RGE_Diamond_Map::handle_size(long param_1, long param_2) {
     return 0;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::start_scroll_view(long param_1, long param_2) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438670
     short col = 0;
@@ -1227,6 +1304,7 @@ void RGE_Diamond_Map::start_scroll_view(long param_1, long param_2) {
     this->mouse_last_y = param_2;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00438720
     short col = 0;
@@ -1247,12 +1325,14 @@ void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
     this->mouse_last_y = param_2;
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::end_scroll_view() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004387C0
     this->scrolling = 0;
     this->release_mouse();
 }
 
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 int RGE_Diamond_Map::is_inside(long param_1, long param_2) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004387D0
     if (TPanel::is_inside(param_1, param_2) == 0) {

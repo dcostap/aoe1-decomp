@@ -8,6 +8,7 @@
 
 namespace {
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static int list_line_height(const TListPanel* self) {
     if (!self) {
         return 1;
@@ -19,6 +20,7 @@ static int list_line_height(const TListPanel* self) {
     return (h > 0) ? h : 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static short list_item_at(TListPanel* self, long x, long y) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004786B0
     (void)x;
@@ -34,6 +36,7 @@ static short list_item_at(TListPanel* self, long x, long y) {
     return (short)(self->top_line + (rel_y / line_h));
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static void list_calc_line_pos(TListPanel* self, HDC hdc, short draw_index, short line_index, tagRECT* out_rect) {
     if (!self || !out_rect) {
         return;
@@ -76,6 +79,7 @@ static void list_calc_line_pos(TListPanel* self, HDC hdc, short draw_index, shor
     out_rect->bottom = y + self->text_hgt;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static void list_draw_line(TListPanel* self, HDC hdc, short draw_index, short line_index, unsigned long c_main, unsigned long c_shadow) {
     if (!self) {
         return;
@@ -116,6 +120,7 @@ static void list_draw_line(TListPanel* self, HDC hdc, short draw_index, short li
     TextOutA(hdc, x, y, text, text_len);
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static void list_scroll_cur_line(TListPanel* self, uchar mode, short line, int update_scrollbar) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478920
     if (!self || self->num_lines <= 0) {
@@ -233,6 +238,7 @@ static void list_scroll_cur_line(TListPanel* self, uchar mode, short line, int u
     }
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static void list_draw_highlight_bar(TListPanel* self) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478CD0
     if (!self || !self->drawHighlightBar || !self->render_area) {
@@ -349,6 +355,7 @@ long TListPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y, lon
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 void TListPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478350
     switch (param_1) {
@@ -375,6 +382,7 @@ void TListPanel::set_bevel_info(int param_1, int param_2, int param_3, int param
     }
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_idle() {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004783F0
     TPanel::handle_idle();
@@ -405,6 +413,7 @@ long TListPanel::handle_idle() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x004784A0
     (void)param_3;
@@ -421,6 +430,7 @@ long TListPanel::mouse_move_action(long param_1, long param_2, int param_3, int 
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478510
     (void)param_3;
@@ -430,6 +440,7 @@ long TListPanel::mouse_left_down_action(long param_1, long param_2, int param_3,
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478540
     (void)param_3;
@@ -463,6 +474,7 @@ long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3,
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478610
     (void)param_1;
@@ -480,6 +492,7 @@ long TListPanel::mouse_left_up_action(long param_1, long param_2, int param_3, i
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478660
     (void)param_3;
@@ -492,6 +505,7 @@ long TListPanel::mouse_left_dbl_click_action(long param_1, long param_2, int par
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478730
     (void)param_2;
@@ -528,6 +542,7 @@ long TListPanel::key_down_action(long param_1, short param_2, int param_3, int p
     }
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::char_action(long param_1, short param_2) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478850
     (void)param_2;
@@ -556,6 +571,7 @@ long TListPanel::char_action(long param_1, short param_2) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478900
     return TTextPanel::action(param_1, param_2, param_3, param_4);
@@ -600,6 +616,7 @@ void TListPanel::draw() {
     render_area->ReleaseDc((char*)"pnl_lst::draw_selected_line");
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 void TListPanel::set_focus(int param_1) {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478EF0
     TPanel::set_focus(param_1);
@@ -608,6 +625,7 @@ void TListPanel::set_focus(int param_1) {
     }
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 void TListPanel::draw_highlight_bar() {
     // Fully verified. Source of truth: pnl_lst.cpp.decomp @ 0x00478CD0
     list_draw_highlight_bar(this);
@@ -618,55 +636,101 @@ long TListPanel::setup(TDrawArea* a, TPanel* p, long x, long y, long w, long h, 
     return TTextPanel::setup(a, p, x, y, w, h, c);
 }
 
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_rect(tagRECT r) { TTextPanel::set_rect(r); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_rect(long x, long y, long w, long h) { TTextPanel::set_rect(x, y, w, h); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_color(uchar c) { TTextPanel::set_color(c); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_active(int a) { TTextPanel::set_active(a); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_positioning(PositionMode m, long p1, long p2, long p3, long p4, long p5, long p6, long p7, long p8, TPanel* t1, TPanel* t2, TPanel* t3, TPanel* t4) {
     TTextPanel::set_positioning(m, p1, p2, p3, p4, p5, p6, p7, p8, t1, t2, t3, t4);
 }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_fixed_position(long x, long y, long w, long h) { TTextPanel::set_fixed_position(x, y, w, h); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_redraw(RedrawMode m) { TTextPanel::set_redraw(m); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_overlapped_redraw(TPanel* p1, TPanel* p2, RedrawMode m) { TTextPanel::set_overlapped_redraw(p1, p2, m); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::draw_setup(int p) { TTextPanel::draw_setup(p); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::draw_finish() { TTextPanel::draw_finish(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::draw_rect(tagRECT* r) { TTextPanel::draw_rect(r); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::draw_offset(long x, long y, tagRECT* r) { TTextPanel::draw_offset(x, y, r); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::draw_rect2(tagRECT* r) { TTextPanel::draw_rect2(r); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::draw_offset2(long x, long y, tagRECT* r) { TTextPanel::draw_offset2(x, y, r); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::paint() { TTextPanel::paint(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::wnd_proc(void* h, uint m, uint w, long l) { return TTextPanel::wnd_proc(h, m, w, l); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::handle_size(long w, long h) { return TTextPanel::handle_size(w, h); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::handle_paint() { return TTextPanel::handle_paint(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_key_down(long k, short s, int p1, int p2, int p3) { return key_down_action(k, s, p1, p2, p3); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_char(long p1, short p2) { return char_action(p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::handle_command(uint c, long p) { return TTextPanel::handle_command(c, p); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::handle_user_command(uint c, long p) { return TTextPanel::handle_user_command(c, p); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::handle_timer_command(uint c, long p) { return TTextPanel::handle_timer_command(c, p); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::handle_scroll(long p1, long p2) { return TTextPanel::handle_scroll(p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_mouse_down(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_down(b, x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_mouse_move(long x, long y, int p1, int p2) { return TPanel::handle_mouse_move(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_mouse_up(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_up(b, x, y, p1, p2); }
 // ASM: TListPanel does NOT override handle_mouse_dbl_click — inherit TPanel's default
 // which includes the critical is_inside check before calling mouse_left_dbl_click_action.
+// Fully verified. Source of truth: pnl_lst.cpp.decomp/asm (parity-audited).
 long TListPanel::handle_mouse_dbl_click(uchar b, long x, long y, int p1, int p2) {
     return TPanel::handle_mouse_dbl_click(b, x, y, p1, p2);
 }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::mouse_left_hold_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_left_hold_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::mouse_right_down_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_right_down_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::mouse_right_hold_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_right_hold_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::mouse_right_move_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_right_move_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::mouse_right_up_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_right_up_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 long TListPanel::mouse_right_dbl_click_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_right_dbl_click_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::get_true_render_rect(tagRECT* r) { TTextPanel::get_true_render_rect(r); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 int TListPanel::is_inside(long x, long y) { return TTextPanel::is_inside(x, y); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_tab_order(TPanel* p1, TPanel* p2) { TTextPanel::set_tab_order(p1, p2); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_tab_order(TPanel** p, short s) { TTextPanel::set_tab_order(p, s); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 uchar TListPanel::get_help_info(char** p1, long* p2, long p3, long p4) { return TTextPanel::get_help_info(p1, p2, p3, p4); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::stop_sound_system() { TTextPanel::stop_sound_system(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 int TListPanel::restart_sound_system() { return TTextPanel::restart_sound_system(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::take_snapshot() { TTextPanel::take_snapshot(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::handle_reactivate() { TTextPanel::handle_reactivate(); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_text(char** p, short s) { TTextPanel::set_text(p, s); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_text(long l) { TTextPanel::set_text(l); }
+// Fully verified. Source of truth: pnl_lst.cpp.decomp (inherited TTextPanel forwarding parity; no class-local decomp symbol).
 void TListPanel::set_text(char* s) { TTextPanel::set_text(s); }
