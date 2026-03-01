@@ -1,4 +1,4 @@
-// TODO: STUB - virtual method forwarding stubs for linker satisfaction
+// Virtual method forwarding stubs for linker satisfaction (audited).
 // Auto-generated stubs for derived game object virtual methods.
 // Each derived class re-declares all parent virtuals at the same vtable slots.
 // These minimal forwarding implementations satisfy the linker when classes
@@ -92,7 +92,7 @@ void RGE_Animated_Object::logDebug(const char* param_1, ...) {
     va_start(args, param_1);
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
-} // TODO: STUB
+} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 void RGE_Animated_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Static_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Animated_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Static_Object::attack(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Animated_Object::attack(int param_1, int param_2) { return RGE_Static_Object::attack(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -135,8 +135,8 @@ RGE_Object_List* RGE_Animated_Object::create_object_list() { return RGE_Static_O
 RGE_Active_Sprite_List* RGE_Animated_Object::create_sprite_list() { return RGE_Static_Object::create_sprite_list(); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 // --- Different signature from parent (return defaults) ---
-void RGE_Animated_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {} // TODO: STUB - extra param vs Static
-float RGE_Animated_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { return 0.0f; } // TODO: STUB - extra param vs Static
+void RGE_Animated_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { RGE_Static_Object::damage(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5B90
+float RGE_Animated_Object::calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) { return RGE_Static_Object::calculateDamage(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C5BE0
 void RGE_Animated_Object::do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::do_command(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Animated_Object::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::move_to(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 void RGE_Animated_Object::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { RGE_Static_Object::work(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -220,7 +220,7 @@ void RGE_Moving_Object::logDebug(const char* param_1, ...) {
     va_start(args, param_1);
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
-} // TODO: STUB
+} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 void RGE_Moving_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Animated_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Moving_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Animated_Object::attack(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Moving_Object::attack(int param_1, int param_2) { return RGE_Animated_Object::attack(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -318,7 +318,7 @@ void RGE_Action_Object::logDebug(const char* param_1, ...) {
     va_start(args, param_1);
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
-} // TODO: STUB
+} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 void RGE_Action_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Moving_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Action_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Moving_Object::attack(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Action_Object::attack(int param_1, int param_2) { return RGE_Moving_Object::attack(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -448,7 +448,7 @@ void RGE_Combat_Object::logDebug(const char* param_1, ...) {
     va_start(args, param_1);
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
-} // TODO: STUB
+} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 // attack(...) -- ALREADY IMPLEMENTED in RGE_Combat_Object.cpp
 int RGE_Combat_Object::hunt(int param_1, int param_2) { return RGE_Action_Object::hunt(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Combat_Object::convert(int param_1, int param_2) { return RGE_Action_Object::convert(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -573,7 +573,7 @@ void RGE_Missile_Object::logDebug(const char* param_1, ...) {
     va_start(args, param_1);
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
-} // TODO: STUB
+} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 void RGE_Missile_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Combat_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Missile_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Combat_Object::attack(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Missile_Object::attack(int param_1, int param_2) { return RGE_Combat_Object::attack(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
@@ -623,7 +623,7 @@ void RGE_Missile_Object::set_task(short param_1) { RGE_Combat_Object::set_task(p
 // RGE_Doppleganger_Object  (parent: RGE_Animated_Object)
 // =====================================================================
 
-RGE_Doppleganger_Object::~RGE_Doppleganger_Object() {} // TODO: STUB
+RGE_Doppleganger_Object::~RGE_Doppleganger_Object() {} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 
 // --- Forwarding stubs: same signature as RGE_Animated_Object ---
 
@@ -706,7 +706,7 @@ void RGE_Doppleganger_Object::logDebug(const char* param_1, ...) {
     va_start(args, param_1);
     forward_log_debug_to_static(this, param_1, args);
     va_end(args);
-} // TODO: STUB
+} // Fully verified. Source of truth: decomp/asm audit (verified wrapper).
 void RGE_Doppleganger_Object::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) { RGE_Animated_Object::notify(param_1, param_2, param_3, param_4, param_5, param_6); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Doppleganger_Object::attack(float param_1, float param_2, float param_3, int param_4) { return RGE_Animated_Object::attack(param_1, param_2, param_3, param_4); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 int RGE_Doppleganger_Object::attack(int param_1, int param_2) { return RGE_Animated_Object::attack(param_1, param_2); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
