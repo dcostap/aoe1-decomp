@@ -6353,7 +6353,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 545
 - [ ] Assigned to: W1
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of getdxver.cpp.
 
 ## Task 546
@@ -6368,26 +6368,26 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 548
 - [ ] Assigned to: W8
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Tile.cpp.
 
 
 ## Task 549
 - [x] Assigned to: W2
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of UnitAIModule (aiuaimod.cpp) - top 5 largest functions.
 
 ## Task 550
 - [x] Assigned to: W3
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TribeUnitAIModule (taiuaimd.cpp) - top 5 largest functions.
 
 ## Task 551
 - [x] Assigned to: W6
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of victory.cpp - victory conditions.
 
 ## Task 552
 - [x] Assigned to: W7
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of tcommand.cpp - Tribe command handler.
