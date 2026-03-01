@@ -25,6 +25,7 @@ TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* param_1) {
 
 TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
     // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D34F0
+    // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D34F0
     if (rge_base_game == nullptr) {
         return;
     }
@@ -94,6 +95,7 @@ void TRIBE_Action_Wonder::save(int param_1) { RGE_Action::save(param_1); }
 short TRIBE_Action_Wonder::type() { return this->action_type; }
 void TRIBE_Action_Wonder::first_in_stack(uchar param_1) {
     // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D3690
+    // Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690
     if (param_1 != 0) {
         this->set_state(2);
     }
