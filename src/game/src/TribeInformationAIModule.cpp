@@ -575,6 +575,26 @@ int tribe_single_player_game() {
     }
     return rge_base_game->singlePlayerGame();
 }
+
+int tribe_matches_local_player_context(TribeInformationAIModule* self) {
+    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D8033 / 0x004DA6C6 (player-context gate).
+    if ((self == nullptr) || (self->md == nullptr) || (self->md->player == nullptr)) {
+        return 0;
+    }
+
+    uchar* player_bytes = reinterpret_cast<uchar*>(self->md->player);
+    void* player_context = *reinterpret_cast<void**>(player_bytes + 0x3C);
+    if (player_context == nullptr) {
+        return 0;
+    }
+
+    uchar context_player_id = *reinterpret_cast<uchar*>(reinterpret_cast<uchar*>(player_context) + 0x11D);
+    ushort self_player_id = *reinterpret_cast<ushort*>(player_bytes + 0x4A);
+    if ((context_player_id == static_cast<uchar>(self_player_id)) || (context_player_id == 0xFF)) {
+        return 1;
+    }
+    return 0;
+}
 }
 
 // Offset: 0x0044E080
@@ -609,7 +629,7 @@ TribeInformationAIModule::TribeInformationAIModule(int param_1, int param_2)
         for (int j = 0; j < num_to_load; ++j) {
             int value = 0;
             rge_read(param_2, &value, 4);
-            tribe_add_resource_type(this, i, value);
+            this->addResourceType(i, value);
         }
     }
 
@@ -796,10 +816,12 @@ TribeInformationAIModule::~TribeInformationAIModule() {
         }
     }
 
-    int unit_history_file = rge_open(this->unitHistoryFilename, 0x8301, 0x180);
-    if (unit_history_file != -1) {
-        rge_write(unit_history_file, this->unitHistory, sizeof(this->unitHistory));
-        rge_close(unit_history_file);
+    if (tribe_matches_local_player_context(this) != 0) {
+        int unit_history_file = rge_open(this->unitHistoryFilename, 0x8301, 0x180);
+        if (unit_history_file != -1) {
+            rge_write(unit_history_file, this->unitHistory, sizeof(this->unitHistory));
+            rge_close(unit_history_file);
+        }
     }
 
     if (this->importantObjectMemory != nullptr) {
@@ -1720,9 +1742,11 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int param_1, short param
                                                         uchar param_7, short param_8, int param_9, uchar param_10, float param_11, float param_12,
                                                         float param_13, RGE_Static_Object* param_14) {
     int free_index = -1;
+    bool found_existing_entry = false;
     for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
         if (this->importantObjectMemory[i].id == param_1) {
             free_index = i;
+            found_existing_entry = true;
             break;
         }
         if ((this->importantObjectMemory[i].id == -1) && (free_index == -1)) {
@@ -1730,7 +1754,8 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int param_1, short param
         }
     }
 
-    if ((param_14 != nullptr) && (this->md != nullptr) && (this->md->player != nullptr) && (this->md->player->strategicNumber(0xC9) == 1) &&
+    if ((found_existing_entry == false) && (param_14 != nullptr) && (this->md != nullptr) && (this->md->player != nullptr) &&
+        (this->md->player->strategicNumber(0xC9) == 1) && (tribe_matches_local_player_context(this) != 0) &&
         (param_14->owner != nullptr) && (param_14->owner->id > 0) && (param_14->owner->computerPlayer() == 0) && (tribe_single_player_game() == 1)) {
         int history_index = tribe_convert_unit_to_history_index(param_14);
         if ((history_index >= 0) && (history_index < kUnitHistorySize)) {
@@ -3874,10 +3899,10 @@ int TribeInformationAIModule::storeAttackMemory(uchar param_1, uchar param_2, uc
         int quadrant_seed = (static_cast<int>(param_4) + static_cast<int>(param_2)) * 4;
         int x_quad = (quadrant_seed / this->mapXSizeValue) / 2;
         int y_quad = (quadrant_seed / this->mapYSizeValue) / 2;
-        if (x_quad > 3) {
+        if (x_quad > 4) {
             x_quad = 3;
         }
-        if (y_quad > 3) {
+        if (y_quad > 4) {
             y_quad = 3;
         }
 

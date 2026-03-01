@@ -14,16 +14,6 @@ char kGoldName[] = "Gold";
 char kUnknownName[] = "Unknown";
 
 // Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
-int resource_item_number(ResourceItem* item) {
-    return item->numberValue;
-}
-
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
-int resource_item_value(ResourceItem* item, int index) {
-    return item->valueValue[index];
-}
-
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
 float* tribe_resource_values(TribeMainDecisionAIModule* md) {
     return *(float**)((unsigned char*)md + 0x50);
 }
@@ -49,9 +39,8 @@ TribeResourceAIModule::TribeResourceAIModule(int param_1, int param_2)
 }
 
 // Offset: 0x004E6C20
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C20
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C20 (audited vs tairesmd.cpp.asm).
 TribeResourceAIModule::~TribeResourceAIModule() {
-    AIModule::~AIModule();
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
@@ -121,26 +110,26 @@ int TribeResourceAIModule::filterOutMessage(AIModuleMessage* param_1) {
 }
 
 // Offset: 0x004E6C30
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (audited vs tairesmd.cpp.asm).
 void TribeResourceAIModule::setMainDecisionAI(TribeMainDecisionAIModule* param_1) {
     this->md = param_1;
 }
 
 // Offset: 0x004E6C40
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C40
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C40 (audited vs tairesmd.cpp.asm).
 int TribeResourceAIModule::save(int param_1) {
     rge_write(param_1, &this->numberResourcesValue, 4);
     return 1;
 }
 
 // Offset: 0x004E6C60
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C60
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C60 (audited vs tairesmd.cpp.asm).
 int TribeResourceAIModule::numberResources() const {
     return this->numberResourcesValue;
 }
 
 // Offset: 0x004E6C70
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C70
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C70 (audited vs tairesmd.cpp.asm).
 int TribeResourceAIModule::resource(int param_1) const {
     if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
         return (int)tribe_resource_values(this->md)[param_1];
@@ -149,17 +138,17 @@ int TribeResourceAIModule::resource(int param_1) const {
 }
 
 // Offset: 0x004E6CA0
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6CA0
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6CA0 (audited vs tairesmd.cpp.asm).
 int TribeResourceAIModule::resourcesAvailable(ResourceItem* param_1) {
     if (param_1 == nullptr) {
         return 0;
     }
-    if (this->numberResourcesValue != resource_item_number(param_1)) {
+    if (this->numberResourcesValue != param_1->number()) {
         return 0;
     }
     float* resources = tribe_resource_values(this->md);
-    for (int i = 0; i < resource_item_number(param_1); ++i) {
-        if (resources[i] < (float)resource_item_value(param_1, i)) {
+    for (int i = 0; i < param_1->number(); ++i) {
+        if (resources[i] < (float)param_1->value(i)) {
             return 0;
         }
     }
@@ -167,17 +156,17 @@ int TribeResourceAIModule::resourcesAvailable(ResourceItem* param_1) {
 }
 
 // Offset: 0x004E6D40
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6D40
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6D40 (audited vs tairesmd.cpp.asm).
 int TribeResourceAIModule::unavailableResource(ResourceItem* param_1) {
     if (param_1 == nullptr) {
         return 0;
     }
-    if (this->numberResourcesValue != resource_item_number(param_1)) {
+    if (this->numberResourcesValue != param_1->number()) {
         return -1;
     }
     float* resources = tribe_resource_values(this->md);
-    for (int i = 0; i < resource_item_number(param_1); ++i) {
-        if (resources[i] < (float)resource_item_value(param_1, i)) {
+    for (int i = 0; i < param_1->number(); ++i) {
+        if (resources[i] < (float)param_1->value(i)) {
             return i;
         }
     }
@@ -185,7 +174,7 @@ int TribeResourceAIModule::unavailableResource(ResourceItem* param_1) {
 }
 
 // Offset: 0x004E6DD0
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6DD0
+// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6DD0 (audited vs tairesmd.cpp.asm).
 char* TribeResourceAIModule::resourceName(int param_1) {
     if (param_1 == 0) {
         return kFoodName;

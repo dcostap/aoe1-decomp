@@ -1113,9 +1113,8 @@ long TRIBE_Game::get_achievement_info(unsigned char p1, char** p2) {
 }
 
 int TRIBE_Game::create_game(int p1) {
-    // Fully verified. Source of truth:
-    // - `src/game/src/tribegam.cpp.asm` (`create_game` @ 0x00526E60)
-    // - `src/game/src/tribegam.cpp.decomp`
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00526E60
+    // ASM cross-check: tribegam.cpp.asm @ 0x00526E60
     //
     // Instruction-audited parity for active single-player setup path:
     // random/scenario player-info build, player ID/color mapping, world->new_game bootstrap,
@@ -1218,7 +1217,7 @@ int TRIBE_Game::create_game(int p1) {
     } else if (isScenario != 0) {
         // Scenario path
         char* scenario_name = this->scenarioName();
-        if (scenario_name == nullptr || scenario_name[0] == '\0' || this->prog_info == nullptr) {
+        if (scenario_name == nullptr) {
             return 0;
         }
 

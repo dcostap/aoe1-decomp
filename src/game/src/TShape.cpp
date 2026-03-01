@@ -1868,37 +1868,25 @@ long TShape::shape_count() {
     return 0;
 }
 
-// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9070
+// Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9070, shape.cpp.asm @ 0x004B9070
 unsigned char TShape::shape_minmax(long* x_min, long* y_min, long* x_max, long* y_max, int shape_idx) {
-    if (x_min) *x_min = 0;
-    if (y_min) *y_min = 0;
-    if (x_max) *x_max = 0;
-    if (y_max) *y_max = 0;
-
     if (shape_idx < 0) return 0;
     if (this->Check_shape(shape_idx, (char*)"RGL_shape_minxy")) return 0;
 
     if (this->FShape && this->shape_info) {
         Shape_Info* info = &this->shape_info[shape_idx];
-        long xmin = -info->Hotspot_X;
-        long ymin = -info->Hotspot_Y;
-        long xmax = (info->Width - info->Hotspot_X) - 1;
-        long ymax = (info->Height - info->Hotspot_Y) - 1;
-        if (x_min) *x_min = xmin;
-        if (y_min) *y_min = ymin;
-        if (x_max) *x_max = xmax;
-        if (y_max) *y_max = ymax;
+        *x_min = -info->Hotspot_X;
+        *y_min = -info->Hotspot_Y;
+        *x_max = (info->Width - info->Hotspot_X) - 1;
+        *y_max = (info->Height - info->Hotspot_Y) - 1;
         return 1;
     }
 
-    if (!this->shape || !this->offsets) return 0;
     this->shape_header = (Shape_Header*)(this->shape + this->offsets[shape_idx].shape);
-    if (!this->shape_header) return 0;
-
-    if (x_min) *x_min = this->shape_header->xmin;
-    if (y_min) *y_min = this->shape_header->ymin;
-    if (x_max) *x_max = this->shape_header->xmax;
-    if (y_max) *y_max = this->shape_header->ymax;
+    *x_min = this->shape_header->xmin;
+    *y_min = this->shape_header->ymin;
+    *x_max = this->shape_header->xmax;
+    *y_max = this->shape_header->ymax;
     return 1;
 }
 
@@ -2323,14 +2311,9 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 }
 
 unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char color_flag, unsigned char* color_table) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9440
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B9440, shape.cpp.asm @ 0x004B9440
     if (shape_idx < 0) return 0;
     if (this->Check_shape(shape_idx, (char*)"RGL_shape_draw")) return 0;
-
-    // Parity: original code sets the global xlate table only when a non-null transform table is passed.
-    if (color_table != (unsigned char*)0) {
-        _ASMSet_Xlate_Table(color_table);
-    }
 
     if (this->FShape != (SLhape_File_Header*)0) {
         if (SDI_Capture_Info != 0) {
@@ -2338,18 +2321,16 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
             const int draw_level = SDI_Draw_Level;
             const int object_id = (int)SDI_Object_ID;
             const int xform_mask = (int)_ASMGet_Color_Xform();
-            if (SDI_List) {
-                SDI_List->AddDrawNode(this->FShape,
-                    info,
-                    SDI_Draw_Line,
-                    (int)(x - info->Hotspot_X),
-                    (int)(y - info->Hotspot_Y),
-                    fog_next_shape,
-                    color_table,
-                    xform_mask,
-                    draw_level,
-                    object_id);
-            }
+            SDI_List->AddDrawNode(this->FShape,
+                info,
+                SDI_Draw_Line,
+                (int)(x - info->Hotspot_X),
+                (int)(y - info->Hotspot_Y),
+                fog_next_shape,
+                color_table,
+                xform_mask,
+                draw_level,
+                object_id);
             return 1;
         }
 
@@ -2477,10 +2458,9 @@ static unsigned char* shp_skip_row(unsigned char* src) {
 }
 
 unsigned char TShape::shape_draw_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B97F0
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B97F0, shape.cpp.asm @ 0x004B97F0
     (void)shape_idx;
     Shape_Header* hdr = this->shape_header;
-    if (!draw_area || !hdr || !draw_area->Bits) return 0;
 
     const int orien = draw_area->Orien;
     const long pitch = draw_area->AlignedWidth();
@@ -2522,10 +2502,9 @@ unsigned char TShape::shape_draw_unclipped(TDrawArea* draw_area, long x, long y,
 }
 
 unsigned char TShape::shape_color_trans_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* table) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B98E0
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004B98E0, shape.cpp.asm @ 0x004B98E0
     (void)shape_idx;
     Shape_Header* hdr = this->shape_header;
-    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
 
     const int orien = draw_area->Orien;
     const long pitch = draw_area->AlignedWidth();
@@ -2944,9 +2923,8 @@ unsigned char TShape::shape_mirror(TDrawArea* draw_area, long x, long y, long sh
 }
 
 unsigned char TShape::shape_mirror_unclipped(TDrawArea* draw_area, long x, long y) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA900
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA900, shape.cpp.asm @ 0x004BA900
     Shape_Header* hdr = this->shape_header;
-    if (!draw_area || !hdr || !draw_area->Bits) return 0;
 
     const int orien = draw_area->Orien;
     const long pitch = draw_area->AlignedWidth();
@@ -2986,10 +2964,9 @@ unsigned char TShape::shape_mirror_unclipped(TDrawArea* draw_area, long x, long 
 }
 
 unsigned char TShape::shape_mirror_color_trans_unclipped(TDrawArea* draw_area, long x, long y, long shape_idx, unsigned char* table) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA9E0
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BA9E0, shape.cpp.asm @ 0x004BA9E0
     (void)shape_idx;
     Shape_Header* hdr = this->shape_header;
-    if (!draw_area || !hdr || !draw_area->Bits || !table) return 0;
 
     const int orien = draw_area->Orien;
     const long pitch = draw_area->AlignedWidth();
@@ -3300,9 +3277,8 @@ unsigned char TShape::shape_dither(TDrawArea* draw_area, long x, long y, long sh
 }
 
 unsigned char TShape::shape_dithered_unclipped(TDrawArea* draw_area, long x, long y, long param_4, long param_5) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB770
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB770, shape.cpp.asm @ 0x004BB770
     Shape_Header* hdr = this->shape_header;
-    if (!draw_area || !hdr || !draw_area->Bits) return 0;
 
     const int orien = draw_area->Orien;
     const long pitch = draw_area->AlignedWidth();
@@ -3352,9 +3328,8 @@ unsigned char TShape::shape_dithered_unclipped(TDrawArea* draw_area, long x, lon
 }
 
 unsigned char TShape::shape_dithered_clipped(TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0, long clip_y0, long clip_x1, long clip_y1, long param_8, long param_9) {
-    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB910
+    // Fully verified. Source of truth: shape.cpp.decomp @ 0x004BB910, shape.cpp.asm @ 0x004BB910
     Shape_Header* hdr = this->shape_header;
-    if (!draw_area || !hdr || !draw_area->Bits) return 0;
 
     const int orien = draw_area->Orien;
     const long pitch = draw_area->AlignedWidth();
