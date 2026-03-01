@@ -7,6 +7,7 @@
 #include "../include/RGE_Victory_Entry.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/TribeMainDecisionAIModule.h"
+#include "../include/TribeTacticalAIModule.h"
 #include "../include/globals.h"
 
 #include <cmath>
@@ -98,40 +99,44 @@ int scale_positive_int(int value, float scale) {
     if (value <= 0) {
         return value;
     }
-    int scaled = (int)std::lround((double)value * (double)scale);
+    int scaled = 0;
+    const float scaled_f = (float)value * scale;
+    __asm {
+        fld scaled_f
+        fistp scaled
+    }
     if (scaled == 0) {
         scaled = 1;
     }
     return scaled;
 }
 
-int* tactical_sn_array(TRIBE_Player* player) {
+TribeTacticalAIModule* tactical_ai(TRIBE_Player* player) {
     // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (player == nullptr || player->playerAI == nullptr) {
         return nullptr;
     }
-    unsigned char* tactical = player->playerAI->tacticalAI;
-    return (int*)(tactical + 0x194);
+    return (TribeTacticalAIModule*)player->playerAI->tacticalAI;
 }
 
 void tactical_set_sn(TRIBE_Player* player, int id, int value) {
     // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
-    int* sn = tactical_sn_array(player);
-    if (sn == nullptr) {
+    TribeTacticalAIModule* tactical = tactical_ai(player);
+    if (tactical == nullptr) {
         return;
     }
     if (id < 0 || id >= 226) {
         return;
     }
-    sn[id] = value;
+    tactical->setStrategicNumber(id, value);
 }
 
-void apply_rule_writes(TRIBE_Player* player, const int* pairs, int pair_count) {
+void apply_rule_writes(TRIBE_Player* player, const int* source_sn, const int* pairs, int pair_count) {
     // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     for (int i = 0; i < pair_count; ++i) {
         int dst = pairs[i * 2];
         int src = pairs[i * 2 + 1];
-        tactical_set_sn(player, dst, src);
+        tactical_set_sn(player, dst, source_sn[src]);
     }
 }
 
@@ -260,7 +265,7 @@ int VictoryConditionRuleSystem::loadRules(char* param_1) {
     while (std::fgets(temp, sizeof(temp), file) != nullptr) {
         char c0 = 0;
         char c1 = 0;
-        std::sscanf(temp, "%c%c", &c0, &c1);
+        std::sscanf(temp, " %c%c", &c0, &c1);
 
         if ((c0 == '/' && c1 == '/') || (c0 == 'D' && c1 == 'E') || (c0 == 'V' && c1 == 'C')) {
             continue;
@@ -271,7 +276,7 @@ int VictoryConditionRuleSystem::loadRules(char* param_1) {
 
         int rule_index = -1;
         int rule_value = 0;
-        std::sscanf(temp, "%d %d", &rule_index, &rule_value);
+        std::sscanf(temp, " %d %d ", &rule_index, &rule_value);
         if (-1 < rule_index && rule_index < 0xE2) {
             this->sn[rule_index] = rule_value;
         }
@@ -367,14 +372,14 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
     switch (param_3) {
     case 1: {
         static const int pairs[] = {0,0,1,1,2,2,3,3,4,4,5,5,35,35,100,100,225,225,117,117,118,118,119,119,120,120,156,156,159,159,158,158,157,157,160,160,142,142,148,148,149,149,203,203,163,163,164,164,166,166,165,165,167,167,179,179,180,180,205,205,207,207,206,206,220,220,222,222,208,208,209,209,210,210,211,211,223,223,212,212,213,213,214,214,224,224,169,169,170,170,171,171,172,172,173,173,190,190,191,191,192,192,193,193,174,174};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0xCC;
         final_src = 0xCC;
         break;
     }
     case 2: {
         static const int pairs[] = {16,16,26,26,36,36,37,37,93,93,94,94,98,98,121,121,131,131,143,143};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0xA2;
         final_src = 0xA2;
         break;
@@ -393,7 +398,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x10: {
         static const int pairs[] = {22,22,72,72,57,57};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0x5C;
         final_src = 0x5C;
         break;
@@ -408,7 +413,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x15: {
         static const int pairs[] = {25,25,28,28,38,38};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0x27;
         final_src = 0x27;
         break;
@@ -419,7 +424,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x17: {
         static const int pairs[] = {32,32};
-        apply_rule_writes(param_1, pairs, 1);
+        apply_rule_writes(param_1, this->sn, pairs, 1);
         final_dst = 0x91;
         final_src = 0x91;
         break;
@@ -430,7 +435,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x19: {
         static const int pairs[] = {40,40};
-        apply_rule_writes(param_1, pairs, 1);
+        apply_rule_writes(param_1, this->sn, pairs, 1);
         final_dst = 0x4B;
         final_src = 0x4B;
         break;
@@ -441,21 +446,21 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x1B: {
         static const int pairs[] = {43,43,44,44,42,42};
-        apply_rule_writes(param_1, pairs, 3);
+        apply_rule_writes(param_1, this->sn, pairs, 3);
         final_dst = 0x2D;
         final_src = 0x2D;
         break;
     }
     case 0x1C: {
         static const int pairs[] = {30,30,31,31,91,91,95,95,96,96};
-        apply_rule_writes(param_1, pairs, 5);
+        apply_rule_writes(param_1, this->sn, pairs, 5);
         final_dst = 0x61;
         final_src = 0x61;
         break;
     }
     case 0x1D: {
         static const int pairs[] = {46,46,102,102,47,47,103,103,104,104};
-        apply_rule_writes(param_1, pairs, 5);
+        apply_rule_writes(param_1, this->sn, pairs, 5);
         final_dst = 0x86;
         final_src = 0x86;
         break;
@@ -466,42 +471,42 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x1F: {
         static const int pairs[] = {49,49,135,135,136,136};
-        apply_rule_writes(param_1, pairs, 3);
+        apply_rule_writes(param_1, this->sn, pairs, 3);
         final_dst = 200;
         final_src = 200;
         break;
     }
     case 0x20: {
         static const int pairs[] = {50,50,51,51,52,52,53,53,54,54,55,55,56,56};
-        apply_rule_writes(param_1, pairs, 7);
+        apply_rule_writes(param_1, this->sn, pairs, 7);
         final_dst = 0x46;
         final_src = 0x46;
         break;
     }
     case 0x21: {
         static const int pairs[] = {58,58,59,59};
-        apply_rule_writes(param_1, pairs, 2);
+        apply_rule_writes(param_1, this->sn, pairs, 2);
         final_dst = 0x3C;
         final_src = 0x3C;
         break;
     }
     case 0x22: {
         static const int pairs[] = {61,61,62,62};
-        apply_rule_writes(param_1, pairs, 2);
+        apply_rule_writes(param_1, this->sn, pairs, 2);
         final_dst = 0x3F;
         final_src = 0x3F;
         break;
     }
     case 0x23: {
         static const int pairs[] = {64,64,65,65,66,66};
-        apply_rule_writes(param_1, pairs, 3);
+        apply_rule_writes(param_1, this->sn, pairs, 3);
         final_dst = 0xD8;
         final_src = 0xD8;
         break;
     }
     case 0x24: {
         static const int pairs[] = {67,67,68,68};
-        apply_rule_writes(param_1, pairs, 2);
+        apply_rule_writes(param_1, this->sn, pairs, 2);
         final_dst = 0x45;
         final_src = 0x45;
         break;
@@ -512,7 +517,7 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x26: {
         static const int pairs[] = {73,73};
-        apply_rule_writes(param_1, pairs, 1);
+        apply_rule_writes(param_1, this->sn, pairs, 1);
         final_dst = 0x4A;
         final_src = 0x4A;
         break;
@@ -523,28 +528,28 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x28: {
         static const int pairs[] = {77,77,78,78,79,79,80,80,81,81,82,82,83,83,89,89,90,90,106,106,107,107,108,108,109,109,110,110,111,111,122,122,123,123,144,144,184,184};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0xB9;
         final_src = 0xB9;
         break;
     }
     case 0x29: {
         static const int pairs[] = {84,84,85,85};
-        apply_rule_writes(param_1, pairs, 2);
+        apply_rule_writes(param_1, this->sn, pairs, 2);
         final_dst = 0x89;
         final_src = 0x89;
         break;
     }
     case 0x2A: {
         static const int pairs[] = {86,86,87,87,202,202,150,150,151,151,152,152,161,161};
-        apply_rule_writes(param_1, pairs, 7);
+        apply_rule_writes(param_1, this->sn, pairs, 7);
         final_dst = 0xA8;
         final_src = 0xA8;
         break;
     }
     case 0x2B: {
         static const int pairs[] = {88,88,101,101,155,155,175,175,176,176,177,177,181,181,182,182,183,183,186,186,187,187,194,194,196,196,197,197,188,188,195,195,189,189,198,198,199,199,215,215,217,217,218,218,219,219};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0xDD;
         final_src = 0xDD;
         break;
@@ -563,21 +568,21 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* param_1, int param_2, int 
         break;
     case 0x2F: {
         static const int pairs[] = {113,113,114,114,115,115,116,116,146,146};
-        apply_rule_writes(param_1, pairs, 5);
+        apply_rule_writes(param_1, this->sn, pairs, 5);
         final_dst = 0x93;
         final_src = 0x93;
         break;
     }
     case 0x30: {
         static const int pairs[] = {124,124,125,125,126,126,127,127,128,128,129,129,130,130,132,132,133,133,178,178};
-        apply_rule_writes(param_1, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
+        apply_rule_writes(param_1, this->sn, pairs, (int)(sizeof(pairs) / sizeof(int) / 2));
         final_dst = 0xC9;
         final_src = 0xC9;
         break;
     }
     case 0x31: {
         static const int pairs[] = {138,138,139,139,140,140};
-        apply_rule_writes(param_1, pairs, 3);
+        apply_rule_writes(param_1, this->sn, pairs, 3);
         final_dst = 0x8D;
         final_src = 0x8D;
         break;
@@ -948,9 +953,7 @@ int TribeStrategyAIModule::save(int param_1) {
 
     int len = (int)std::strlen(this->ruleSetNameValue);
     rge_write(param_1, &len, 4);
-    if (len > 0) {
-        rge_write(param_1, this->ruleSetNameValue, len);
-    }
+    rge_write(param_1, this->ruleSetNameValue, len);
 
     int count = this->vcRuleSet.numberValue;
     rge_write(param_1, &count, 4);
