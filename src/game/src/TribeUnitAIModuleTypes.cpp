@@ -5,7 +5,9 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Visible_Map.h"
 #include "../include/VISIBLE_UNIT_REC.h"
+#include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
 #include <cmath>
@@ -13,6 +15,7 @@
 
 extern int* DAT_0087d7e4[5];
 extern VISIBLE_UNIT_REC* DAT_0087d7f0[5];
+extern int taskedThisUpdate;
 
 namespace {
 void initializeImportantObjects(UnitAIModule* module, const int* values, int count) {
@@ -57,6 +60,11 @@ void addAttackingUnitIfMissing(UnitAIModule* module, int attackerId) {
 
     module->attackingUnitsValue.value[module->attackingUnitsValue.numberValue] = attackerId;
     module->attackingUnitsValue.numberValue = module->attackingUnitsValue.numberValue + 1;
+}
+
+int signedModulo8(int value) {
+    int sign = value >> 31;
+    return (((value ^ sign) - sign) & 7 ^ sign) - sign;
 }
 } // namespace
 
@@ -469,26 +477,271 @@ int TribeCivilianUnitAIModule::convertToLOSResourceType(int param_1) {
     }
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504E10
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504E10, taiuaimd.cpp.asm @ 0x00504E10
 int TribeCivilianUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
-    // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504DC6 (decompiler helper/thunk label coverage).
-    if (param_1->mType == 500 || param_1->mType == 0x20F) {
-        if (param_1->p2 < 1) {
-            this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x209, param_1->caller, 0, 0);
-            this->purgeNotifyQueue(param_2);
-            return 4;
+    switch (param_1->mType) {
+        case 0x1F9:
+            if (this->currentOrderValue != param_1->p1) {
+                return 2;
+            }
+            this->removeCurrentTarget();
+            this->stopObject(1);
+            this->processGroupNotify(param_1);
+            return 2;
+        case 0x1FA:
+            if (this->currentOrderValue != param_1->p1) {
+                return 2;
+            }
+            this->removeCurrentTarget();
+            this->stopObject(1);
+            this->processGroupNotify(param_1);
+            return 2;
+        case 0x1FB:
+        case 0x202: {
+            if (this->currentOrderValue == 0x265) {
+                int objectType = this->currentTargetTypeValue;
+                if (objectType == -1) {
+                    objectType = this->lastTargetTypeValue;
+                }
+                if (objectType == -1) {
+                    this->removeCurrentTarget();
+                    this->stopObject(1);
+                    this->processGroupNotify(param_1);
+                    return 2;
+                }
+
+                const int losType = this->convertToLOSResourceType(objectType);
+                int targetId;
+                if (losType == -1) {
+                    targetId = this->closestObject(objectType, -1, -1, -1, nullptr);
+                } else {
+                    targetId = this->closestResourceObject(losType, nullptr);
+                }
+
+                if (targetId == -1) {
+                    if (this->objectValue->owner->computerPlayer() == 1) {
+                        this->removeCurrentTarget();
+                        this->stopObject(1);
+                        this->processGroupNotify(param_1);
+                    }
+                    goto handle_failed_order_notify;
+                }
+
+                if (this->huntObject(targetId, 1) == 1) {
+                    return 3;
+                }
+
+                this->removeCurrentTarget();
+                this->stopObject(1);
+                this->processGroupNotify(param_1);
+                goto handle_failed_order_notify;
+            }
+
+            if (this->currentOrderValue == 0x261) {
+                int objectType = this->currentTargetTypeValue;
+                if (objectType == -1) {
+                    objectType = this->lastTargetTypeValue;
+                }
+                if (objectType == -1) {
+                    this->removeCurrentTarget();
+                    this->stopObject(1);
+                    this->processGroupNotify(param_1);
+                    return 2;
+                }
+
+                const int losType = this->convertToLOSResourceType(objectType);
+                int targetId;
+                if (losType == -1) {
+                    int classFilter = -1;
+                    int typeFilter = -1;
+                    if (param_1->p2 == 0x32) {
+                        classFilter = 2;
+                        typeFilter = 0x32;
+                    }
+                    targetId = this->closestObject(objectType, -1, classFilter, typeFilter, nullptr);
+                } else {
+                    targetId = this->closestResourceObject(losType, nullptr);
+                }
+
+                if (targetId != -1) {
+                    if (this->gatherObject(targetId, 1) == 1) {
+                        return 3;
+                    }
+                    this->removeCurrentTarget();
+                    this->stopObject(1);
+                    this->processGroupNotify(param_1);
+                    goto handle_failed_order_notify;
+                }
+
+                if (this->objectValue->owner->computerPlayer() == 1) {
+                    this->removeCurrentTarget();
+                    this->stopObject(1);
+                    this->processGroupNotify(param_1);
+                    goto handle_failed_order_notify;
+                }
+
+                if (param_1->p2 == 0x32) {
+                    const float adjustedX = this->objectValue->world_x - ((this->objectValue->world_x <= 5.0f) ? -2.5f : 2.5f);
+                    const float adjustedY = this->objectValue->world_y - ((this->objectValue->world_y <= 5.0f) ? -2.5f : 2.5f);
+                    this->evasiveMoveTo(adjustedX, adjustedY, this->objectValue->world_z, 1);
+                }
+                goto handle_failed_order_notify;
+            }
+
+            if (this->currentOrderValue == 0x25A) {
+                int targetId = this->closestObject(this->currentTargetTypeValue, 3, 0, -1, nullptr);
+                if (targetId == -1) {
+                    const int alternateType = (this->currentTargetTypeValue == 0x1B) ? 3 : 0x1B;
+                    targetId = this->closestObject(alternateType, 3, 0, -1, nullptr);
+                }
+
+                if (targetId != -1 && this->objectValue->canPath(targetId, 1.0f, nullptr, 0, -1, -1) == 1) {
+                    if (this->buildObject(targetId, 1) == 1) {
+                        return 3;
+                    }
+                    goto handle_failed_order_notify;
+                }
+
+                RGE_Static_Object* currentTargetObject = this->lookupObject(this->currentTargetValue);
+                if (currentTargetObject == nullptr || this->objectValue->distance_to_object(currentTargetObject) > 1.0f) {
+                    this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, 1.0f, 1);
+                }
+                goto handle_failed_order_notify;
+            }
+
+            if (this->currentOrderValue == 0x25D) {
+                int tileX = 0;
+                int tileY = 0;
+                if (this->closestUndiscoveredTile(&tileX, &tileY, 1) == 1) {
+                    this->addToWaypointQueue(tileX, tileY);
+                    if (this->explore(tileX, tileY, 1) != 0) {
+                        goto handle_failed_order_notify;
+                    }
+                    this->removeCurrentTarget();
+                    this->stopObject(1);
+                    this->processGroupNotify(param_1);
+                    goto handle_failed_order_notify;
+                }
+
+                this->removeCurrentTarget();
+                this->stopObject(1);
+                this->processGroupNotify(param_1);
+                goto handle_failed_order_notify;
+            }
+
+        handle_failed_order_notify:
+            if (param_1->mType == 0x202) {
+                return 2;
+            }
+            this->removeCurrentTarget();
+            this->stopObject(1);
+            this->processGroupNotify(param_1);
+            return 2;
         }
-        if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
-            this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x201, param_1->caller, 0, 0);
+        case 0x20F:
+            if (this->objectValue->owner->world->difficultyLevel() > 2) {
+                return 2;
+            }
+            [[fallthrough]];
+        case 500: {
+            if (param_1->p2 < 1) {
+                this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x209, param_1->caller, 0, 0);
+                this->purgeNotifyQueue(param_2);
+                return 4;
+            }
+
+            RGE_Static_Object* attacker = this->lookupObject(param_1->caller);
+            RGE_Static_Object* currentTargetObject = this->lookupObject(this->currentTargetValue);
+            if (attacker == nullptr) {
+                return 2;
+            }
+
+            if (this->objectValue->owner->computerPlayer() == 1) {
+                if (!(attacker->owner->id == 0 && attacker->id == this->currentTargetValue)) {
+                    this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x201, param_1->caller, 0, 0);
+                }
+            } else if (this->attackingUnitsValue.numberValue == 0) {
+                this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x201, param_1->caller, 0, 0);
+            }
+
+            bool attackerAlreadyTracked = false;
+            for (int i = 0; i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+                if (this->attackingUnitsValue.value[i] == param_1->caller) {
+                    attackerAlreadyTracked = true;
+                    break;
+                }
+            }
+            if (!attackerAlreadyTracked && this->objectValue->owner->computerPlayer() == 0 && this->currentTargetValue != param_1->caller) {
+                this->askForHelp(param_1->caller);
+            }
+
+            addAttackingUnitIfMissing(this, param_1->caller);
+            this->objectValue->setUnderAttack(1);
+
+            const float currentSpeed = this->objectValue->getSpeed();
+            const unsigned char objectActionState = this->objectValue->actionState();
+            const int currentAction = this->currentActionValue;
+
+            if (currentAction == 0x2C6 && currentSpeed > 0.0f) {
+                return 2;
+            }
+            if (currentAction == 700) {
+                return 2;
+            }
+            if (currentAction == 0x2C9 && objectActionState == 0x0C && currentTargetObject != nullptr && currentTargetObject->master_obj->id == 10 &&
+                attacker->owner->id == 0) {
+                return 2;
+            }
+            if (currentAction == 0x2CE) {
+                return 2;
+            }
+
+            if (attacker->owner->id != 0) {
+                if (this->currentOrderValue == 0x262 && currentSpeed != 0.0f) {
+                    return 3;
+                }
+
+                this->order(this->objectValue->id,
+                            currentAction,
+                            this->currentTargetValue,
+                            -1,
+                            this->currentTargetXValue,
+                            this->currentTargetYValue,
+                            this->currentTargetZValue,
+                            this->desiredTargetDistanceValue,
+                            0,
+                            0,
+                            this->currentOrderPriorityValue);
+                this->stopObject(1);
+                this->runAwayFromAttackers(1);
+                return 3;
+            }
+
+            if (currentAction != -1) {
+                this->order(this->objectValue->id,
+                            currentAction,
+                            this->currentTargetValue,
+                            -1,
+                            this->currentTargetXValue,
+                            this->currentTargetYValue,
+                            this->currentTargetZValue,
+                            this->desiredTargetDistanceValue,
+                            0,
+                            0,
+                            this->currentOrderPriorityValue);
+                this->currentActionValue = 700;
+                this->currentOrderPriorityValue = 100;
+                this->attackObject(param_1->caller, 1);
+                this->stopAfterTargetKilledValue = 1;
+                return 3;
+            }
+
+            this->attackObject(param_1->caller, 1);
+            return 3;
         }
-        addAttackingUnitIfMissing(this, param_1->caller);
-        this->objectValue->setUnderAttack(1);
-        if (this->currentOrderValue != 700) {
-            this->runAwayFromAttackers(1);
-        }
-        return 3;
+        default:
+            return UnitAIModule::processNotify(param_1, param_2);
     }
-    return UnitAIModule::processNotify(param_1, param_2);
 }
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00505800
@@ -707,11 +960,48 @@ int TribePriestUnitAIModule::processMisc() {
     return 9;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506320
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506320, taiuaimd.cpp.asm @ 0x00506320
 int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
-    if (param_1->mType != 500 && param_1->mType != 0x20F) {
-        return UnitAIModule::processNotify(param_1, param_2);
+    if (param_1->mType != 500) {
+        if (param_1->mType == 0x202) {
+            if (this->currentOrderValue == 0x267) {
+                int targetId = this->closestObject(-1, 0, 2, 0x2D, nullptr);
+                if (targetId != -1 && this->tradeWithObject(targetId, 1) == 1) {
+                    return 6;
+                }
+
+                targetId = this->closestObject(-1, 1, 2, 0x2D, nullptr);
+                if (targetId != -1 && this->tradeWithObject(targetId, 1) == 1) {
+                    return 6;
+                }
+            } else if (this->currentOrderValue == 0x25D) {
+                int tileX = 0;
+                int tileY = 0;
+                if (this->closestUndiscoveredTile(&tileX, &tileY, 1) == 1) {
+                    this->addToWaypointQueue(tileX, tileY);
+                    if (this->explore(tileX, tileY, 1) == 0) {
+                        this->removeCurrentTarget();
+                        this->stopObject(1);
+                        this->processGroupNotify(param_1);
+                    }
+                } else {
+                    this->removeCurrentTarget();
+                    this->stopObject(1);
+                    this->processGroupNotify(param_1);
+                }
+            }
+
+            this->removeCurrentTarget();
+            this->stopObject(1);
+            this->processGroupNotify(param_1);
+            return 2;
+        }
+
+        if (param_1->mType != 0x20F) {
+            return UnitAIModule::processNotify(param_1, param_2);
+        }
     }
+
     if (param_1->p2 < 1) {
         this->objectValue->owner->notify(this->objectValue->id, this->objectValue->id, 0x209, param_1->caller, 0, 0);
         this->purgeNotifyQueue(param_2);
@@ -725,13 +1015,24 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* param_1, unsigned lon
     }
     addAttackingUnitIfMissing(this, param_1->caller);
     this->objectValue->setUnderAttack(1);
-    if (!(this->objectValue->owner->computerPlayer() == 0 && this->currentActionValue != -1)) {
-        if (this->currentOrderValue != 0x262) {
-            this->order(this->objectValue->id, this->currentActionValue, this->currentOrderPriorityValue, this->currentTargetValue, -1, this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, 0.0f, 0, this->currentActionValue);
-            this->stopObject(1);
-        }
-        this->runAwayFromAttackers(1);
+    if (this->objectValue->owner->computerPlayer() == 0 && this->currentActionValue != -1) {
+        return 2;
     }
+    if (this->currentOrderValue != 0x262) {
+        this->order(this->objectValue->id,
+                    this->currentActionValue,
+                    this->currentTargetValue,
+                    -1,
+                    this->currentTargetXValue,
+                    this->currentTargetYValue,
+                    this->currentTargetZValue,
+                    this->desiredTargetDistanceValue,
+                    0,
+                    0,
+                    this->currentOrderPriorityValue);
+        this->stopObject(1);
+    }
+    this->runAwayFromAttackers(1);
     return 3;
 }
 
@@ -888,17 +1189,33 @@ int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
     return 1;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x005071F0
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x005071F0, taiuaimd.cpp.asm @ 0x005071F0
 int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
-    if (param_1->mType == 0x200 && this->objectValue->owner->computerPlayer() != 0 && this->objectValue->weaponRange() >= 1.0f && this->objectValue->master_obj->id != 0x1A) {
-        if (this->currentOrderValue == 600) {
+    if (param_1->mType == 0x200) {
+        if (this->objectValue->owner->computerPlayer() != 0 && this->objectValue->weaponRange() >= 1.0f && this->objectValue->master_obj->id != 0x1A) {
+            if (this->currentOrderValue != 600) {
+                return 2;
+            }
+
             RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
             if (target != nullptr) {
                 const float distanceDiff = this->objectValue->weaponRange() - this->objectValue->distance_to_object(target);
                 if (distanceDiff >= 1.0f) {
-                    this->order(this->objectValue->id, 700, this->currentOrderPriorityValue, this->currentTargetValue, -1, this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, 0.0f, 1, this->currentActionValue);
+                    this->order(this->objectValue->id,
+                                700,
+                                this->currentTargetValue,
+                                -1,
+                                this->currentTargetXValue,
+                                this->currentTargetYValue,
+                                this->currentTargetZValue,
+                                this->desiredTargetDistanceValue,
+                                0,
+                                1,
+                                this->currentOrderPriorityValue);
+
                     float xDiff = 0.0f;
-                    float yDiff = this->currentTargetZValue;
+                    float yDiff = this->desiredTargetDistanceValue;
+                    const float evasiveMoveDistance = this->currentTargetXValue;
                     for (int i = 0; i < this->attackingUnitsValue.numberValue && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
                         if (this->attackingUnitsValue.value[i] == this->currentTargetValue) {
                             continue;
@@ -909,9 +1226,10 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long 
                             yDiff += attacker->world_y - this->objectValue->world_y;
                         }
                     }
+
                     const float distance = std::sqrt((yDiff * yDiff) + (xDiff * xDiff));
-                    if (this->intelligentEvasiveMoveTo(((-xDiff / distance) * this->currentTargetXValue) + this->objectValue->world_x,
-                                                       ((-yDiff / distance) * this->currentTargetXValue) + this->objectValue->world_y,
+                    if (this->intelligentEvasiveMoveTo(((-xDiff / distance) * evasiveMoveDistance) + this->objectValue->world_x,
+                                                       ((-yDiff / distance) * evasiveMoveDistance) + this->objectValue->world_y,
                                                        this->objectValue->world_z,
                                                        0,
                                                        1) == 1) {
@@ -921,7 +1239,38 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long 
                 }
             }
         }
-        return 2;
+    } else if (param_1->mType == 0x20F && this->objectValue->owner->computerPlayer() != 0) {
+        RGE_Static_Object* callerObject = this->lookupObject(param_1->caller);
+        if (callerObject != nullptr && (callerObject->master_obj->id == 0x23 || callerObject->master_obj->id == 0x24) && this->currentOrderValue != -1) {
+            if (this->currentActionValue != -1) {
+                this->order(this->objectValue->id,
+                            this->currentActionValue,
+                            this->currentTargetValue,
+                            -1,
+                            this->currentTargetXValue,
+                            this->currentTargetYValue,
+                            this->currentTargetZValue,
+                            this->desiredTargetDistanceValue,
+                            0,
+                            0,
+                            this->currentOrderPriorityValue);
+            }
+
+            float newX = (this->objectValue->world_x - 4.0f) + (float)signedModulo8(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x97C));
+            if (newX == this->objectValue->world_x) {
+                newX = newX - ((newX <= 10.0f) ? -2.0f : 2.0f);
+            }
+
+            float newY = (this->objectValue->world_y - 4.0f) + (float)signedModulo8(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x983));
+            if (newY == this->objectValue->world_y) {
+                newY = newY - ((newY <= 10.0f) ? -2.0f : 2.0f);
+            }
+
+            if (this->intelligentEvasiveMoveTo(newX, newY, this->objectValue->world_z, 1, 1) == 1) {
+                taskedThisUpdate = 1;
+                return 3;
+            }
+        }
     }
     return UnitAIModule::processNotify(param_1, param_2);
 }
@@ -957,41 +1306,74 @@ int TribeSoldierUnitAIModule::processIdle(int param_1) {
     return 5;
 }
 
-// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00507A30
+// Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00507A30, taiuaimd.cpp.asm @ 0x00507A30
 int TribeArtifactUnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
     switch (param_1->mType) {
+        case 500:
+        case 0x1F6:
+        case 0x1F7:
+        case 0x1F8:
+        case 0x1FD:
+        case 0x1FE:
+        case 0x1FF:
+        case 0x200:
+        case 0x202:
+        case 0x203:
+        case 0x20B:
+        case 0x20F:
+        case 0x259:
+        case 0x25A:
+        case 0x25B:
+        case 0x25C:
+        case 0x25D:
+        case 0x25E:
+        case 0x25F:
+        case 0x260:
+        case 0x261:
+        case 0x262:
+        case 0x265:
+        case 0x266:
+        case 0x267:
+        case 0x268:
+        case 0x269:
+        case 699:
+            return 2;
         case 600:
             addAttackingUnitIfMissing(this, param_1->caller);
             this->objectValue->setUnderAttack(1);
             return 2;
         case 0x1FC: {
+            RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
+            if (target != nullptr) {
+                const int tileX = static_cast<int>(target->world_x);
+                const int tileY = static_cast<int>(target->world_y);
+                if (this->objectValue->owner->visible->get_visible(tileX, tileY) == 0x0F) {
+                    return 2;
+                }
+            }
             this->removeCurrentTarget();
             break;
         }
         case 0x1F9:
         case 0x1FA:
-        case 0x1FB:
-            if (this->currentActionValue != -1 && this->currentOrderValue + 100 == this->currentActionValue) {
-                this->removeCurrentTarget();
-                break;
+        case 0x1FB: {
+            const int currentAction = this->currentActionValue;
+            if (currentAction != -1) {
+                if (this->currentOrderValue + 100 == currentAction) {
+                    this->removeCurrentTarget();
+                    break;
+                }
+                return 2;
             }
             if (this->currentOrderValue != param_1->p1) {
                 return 2;
             }
             this->removeCurrentTarget();
             break;
+        }
         default:
-            if (param_1->mType != 500 && param_1->mType != 0x1F6 && param_1->mType != 0x1F7 && param_1->mType != 0x1F8 &&
-                param_1->mType != 0x1FD && param_1->mType != 0x1FE && param_1->mType != 0x1FF && param_1->mType != 0x200 &&
-                param_1->mType != 0x202 && param_1->mType != 0x203 && param_1->mType != 0x20B && param_1->mType != 0x20F &&
-                param_1->mType != 0x259 && param_1->mType != 0x25A && param_1->mType != 0x25B && param_1->mType != 0x25C &&
-                param_1->mType != 0x25D && param_1->mType != 0x25E && param_1->mType != 0x25F && param_1->mType != 0x260 &&
-                param_1->mType != 0x261 && param_1->mType != 0x262 && param_1->mType != 0x265 && param_1->mType != 0x266 &&
-                param_1->mType != 0x267 && param_1->mType != 0x268 && param_1->mType != 0x269 && param_1->mType != 699) {
-                this->removeCurrentTarget();
-                break;
-            }
-            return 2;
+            this->removeCurrentTarget();
+            break;
     }
     this->stopObject(1);
     this->processGroupNotify(param_1);
