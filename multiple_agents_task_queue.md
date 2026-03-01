@@ -4410,7 +4410,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 315 — TPanel gap closure (panel — ~10 functions)
 - [x] Assigned to agent (Worker-2, clone_2)
-- [ ] Finished
+- [x] Finished
+- Status note: validated on current `master` snapshot — `TPanel.cpp` has no `TODO`/`STUB` markers and no remaining unverified function gaps in Task 315 scope.
 - Goal: TPanel.cpp has 122 verified functions but panel.cpp.decomp has 132 (gap=10). Also 1 TODO: STUB to remove. Close the remaining panel function gaps.
 - Implement: Read panel.cpp.decomp. Find unverified offsets not in TPanel.cpp. Transliterate. Remove the stub. Build with build.bat.
 - Where: `src/game/src/TPanel.cpp` + headers
