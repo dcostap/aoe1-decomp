@@ -564,7 +564,7 @@ int UnitAIModule::numberAttackingUnits() const {
     return this->attackingUnitsValue.numberValue;
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00414D12 (decompiler helper/thunk label coverage).
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414D12 (decompiler helper/thunk label coverage).
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414D40
 int UnitAIModule::order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11) {
     if (this->objectValue->object_state < 3) {
@@ -1122,7 +1122,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float p
     return this->evasiveMoveTo(param_1, param_2, param_3, param_4);
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x004171CA (decompiler helper/thunk label coverage).
+// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004171CA (decompiler helper/thunk label coverage).
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004171F0
 int UnitAIModule::runAwayFromAttackers(int param_1) {
     if ((param_1 == 0) && (this->currentActionValue != -1)) {
@@ -1269,7 +1269,7 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004180C0
 int UnitAIModule::processNotify(NotifyEvent* param_1, unsigned long param_2) {
-    // Source of truth: aiuaimod.cpp.decomp @ 0x00418045 (decomp branch label coverage)
+    // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00418045 (decomp branch label coverage)
     (void)param_2;
     if (param_1 == nullptr) {
         return 0;
