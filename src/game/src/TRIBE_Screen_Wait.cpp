@@ -63,12 +63,14 @@ TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
 }
 
 void TRIBE_Screen_Wait::set_text(char* text) {
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A60E0
     if (this->message != nullptr) {
         this->message->set_text(text);
     }
 }
 
 void TRIBE_Screen_Wait::set_text(long text_id) {
+    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A6100
     if (this->message != nullptr) {
         this->message->set_text(text_id);
     }
