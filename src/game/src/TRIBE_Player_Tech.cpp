@@ -8,7 +8,7 @@
 // Source of truth: bucket_050C.cpp.decomp + bucket_050D.cpp.decomp
 
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, uchar param_4) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C3A5
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C3A5
     rge_read(param_1, &this->tech_player_tree_num, 2);
     this->base_tech = param_2;
     this->owner = param_3;
@@ -35,7 +35,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Playe
 }
 
 TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* param_1, RGE_Player* param_2, uchar param_3) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C4FC
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C4FC
     this->base_tech = param_1;
     this->owner = param_2;
     this->tech_player_tree_num = param_1->tech_tree_num;
@@ -48,7 +48,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* param_1, RGE_Player* param_2, u
 }
 
 TRIBE_Player_Tech::~TRIBE_Player_Tech() {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C562
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C562
     if (this->tech_player_tree != nullptr) {
         free(this->tech_player_tree);
         this->tech_player_tree = nullptr;
@@ -56,7 +56,7 @@ TRIBE_Player_Tech::~TRIBE_Player_Tech() {
 }
 
 short TRIBE_Player_Tech::get_tech_state(short param_1) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C58C
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C58C
     return this->tech_player_tree[param_1].state;
 }
 
@@ -83,7 +83,7 @@ uchar TRIBE_Player_Tech::do_tech(short param_1) {
 }
 
 uchar TRIBE_Player_Tech::undo_tech(short param_1) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C5A7
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C5A7
     bool was_active = this->tech_player_tree[param_1].state > 0;
     if (was_active) {
         this->tech_player_tree[param_1].state = 0;
@@ -93,7 +93,7 @@ uchar TRIBE_Player_Tech::undo_tech(short param_1) {
 }
 
 void TRIBE_Player_Tech::do_rev_tech(short param_1) {
-    // Source of truth: bucket_050D.decomp @ 0x0050D1F9
+    // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D1F9
     for (int i = 0; i < 4; i++) {
         short prereq = this->base_tech->tech_tree[param_1].pre_reqs[i];
         int prereq_index = (int)prereq;
@@ -107,7 +107,7 @@ void TRIBE_Player_Tech::do_rev_tech(short param_1) {
 }
 
 uchar TRIBE_Player_Tech::rev_tech(short param_1) {
-    // Source of truth: bucket_050D.decomp @ 0x0050D281
+    // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D281
     do_tech(param_1);
     for (int i = 0; i < this->tech_player_tree_num; i++) {
         for (int j = 0; j < 4; j++) {
@@ -120,7 +120,7 @@ uchar TRIBE_Player_Tech::rev_tech(short param_1) {
 }
 
 uchar TRIBE_Player_Tech::research(short param_1, float param_2) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C6AD
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C6AD
     if (this->tech_player_tree[param_1].state == 2) {
         this->tech_player_tree[param_1].research_done += param_2;
         if (this->tech_player_tree[param_1].research_done < (float)(int)this->base_tech->tech_tree[param_1].research) {
@@ -154,7 +154,7 @@ char* TRIBE_Player_Tech::get_name(short param_1) {
 }
 
 uchar TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050CA9E
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050CA9E
     Tech_Tree* tt = this->base_tech->tech_tree;
     float gold_pool = this->owner->attributes[3];
     bool has_trade = this->owner->attributes[0x1d] >= 1.0f;
@@ -194,7 +194,7 @@ uchar TRIBE_Player_Tech::check_tech_cost(short param_1, short* param_2) {
 }
 
 uchar TRIBE_Player_Tech::start_research(short param_1, uchar param_2, short* param_3) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050CC25
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050CC25
     Tech_Tree* tt = this->base_tech->tech_tree;
     uchar result = check_tech_cost(param_1, param_3);
     if (result == 0) {
@@ -308,7 +308,7 @@ void TRIBE_Player_Tech::check_for_new_tech() {
 }
 
 void TRIBE_Player_Tech::save(int param_1) {
-    // Source of truth: bucket_050D.cpp.decomp @ 0x0050D07A
+    // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D07A
     rge_write(param_1, &this->tech_player_tree_num, 2);
     for (short i = 0; i < this->tech_player_tree_num; i++) {
         rge_write(param_1, &this->tech_player_tree[i], 4);
@@ -317,7 +317,7 @@ void TRIBE_Player_Tech::save(int param_1) {
 }
 
 void TRIBE_Player_Tech::enable(short param_1) {
-    // Source of truth: bucket_050D.cpp.decomp @ 0x0050D383
+    // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D383
     if (param_1 < 0) {
         for (int i = 0; i < this->tech_player_tree_num; i++) {
             if (this->tech_player_tree[i].state == -1) {
@@ -330,7 +330,7 @@ void TRIBE_Player_Tech::enable(short param_1) {
 }
 
 void TRIBE_Player_Tech::disable(short param_1) {
-    // Source of truth: bucket_050D.cpp.decomp @ 0x0050D306
+    // Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D306
     if (param_1 < 0) {
         for (int i = 0; i < this->tech_player_tree_num; i++) {
             if (this->tech_player_tree[i].state != 3) {
