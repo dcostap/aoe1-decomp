@@ -300,8 +300,8 @@ uchar TRIBE_Action_Repair::update() {
         if (heal_result == 2) {
             const int id = (int)this->obj->id;
             this->obj->notify(id, id, 0x1FB, 0x26A, 0, 0);
-            if (rge_base_game != nullptr && this->obj->master_obj != nullptr && this->target_obj != nullptr) {
-                rge_base_game->notification(0x6B, (long)this->obj->master_obj->id, (long)this->target_obj->id, 0, 0);
+            if (rge_base_game != nullptr && this->obj->owner != nullptr && this->target_obj != nullptr) {
+                rge_base_game->notification(0x6B, (long)this->obj->owner->id, (long)this->target_obj->id, 0, 0);
             }
             this->set_state(2);
             return 0;
