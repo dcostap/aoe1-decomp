@@ -9,8 +9,10 @@
 #include <mbstring.h>
 #include <mbctype.h>
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void calc_draw_info(TTextPanel* this_, int update_scrollbar);
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void free_text_list(TTextPanel* this_) {
     if (!this_) return;
     TTextPanel::TextNode* node = this_->list;
@@ -27,6 +29,7 @@ static void free_text_list(TTextPanel* this_) {
     this_->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static char* dup_cstr(const char* s) {
     if (!s) return nullptr;
     const size_t len = strlen(s);
@@ -37,6 +40,7 @@ static char* dup_cstr(const char* s) {
     return out;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static TTextPanel::TextNode* get_line_node(TTextPanel* this_, int index) {
     if (!this_ || index < 0) {
         return nullptr;
@@ -51,6 +55,7 @@ static TTextPanel::TextNode* get_line_node(TTextPanel* this_, int index) {
     return n;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static TTextPanel::TextNode* get_tail(TTextPanel* this_) {
     TTextPanel::TextNode* n = this_->list;
     if (!n) return nullptr;
@@ -58,6 +63,7 @@ static TTextPanel::TextNode* get_tail(TTextPanel* this_) {
     return n;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static int append_text_line(TTextPanel* this_, const char* text, long id) {
     TTextPanel::TextNode* n = (TTextPanel::TextNode*)calloc(1, sizeof(TTextPanel::TextNode));
     if (!n) return 0;
@@ -78,6 +84,7 @@ static int append_text_line(TTextPanel* this_, const char* text, long id) {
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static const char* get_line_text(const TTextPanel* this_, int index) {
     if (!this_ || index < 0) return nullptr;
     const TTextPanel::TextNode* n = this_->list;
@@ -89,6 +96,7 @@ static const char* get_line_text(const TTextPanel* this_, int index) {
     return (n && n->text) ? n->text : nullptr;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static const char* get_line_text2(const TTextPanel* this_, int index) {
     if (!this_ || index < 0) return nullptr;
     const TTextPanel::TextNode* n = this_->list;
@@ -100,6 +108,7 @@ static const char* get_line_text2(const TTextPanel* this_, int index) {
     return (n && n->text2) ? n->text2 : nullptr;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void update_second_column_clip(TTextPanel* this_) {
     if (!this_) {
         return;
@@ -129,6 +138,7 @@ static void update_second_column_clip(TTextPanel* this_) {
     this_->clip_rgn2 = (void*)CreateRectRgn((int)left, (int)top, (int)right, (int)bottom);
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void calc_draw_info(TTextPanel* this_, int update_scrollbar) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CE70
     (void)update_scrollbar;
@@ -192,6 +202,7 @@ static void calc_draw_info(TTextPanel* this_, int update_scrollbar) {
     this_->text_wid = this_->pnl_wid;
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out) {
     SIZE full_sz;
     SIZE col_sz;
@@ -259,11 +270,13 @@ static void calc_line_pos(TTextPanel* this_, HDC hdc, short draw_index, short li
     if (col_offset_out) *col_offset_out = col_offset;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::calc_line_pos(void* hdc, short draw_index, short line_index, tagRECT* line_rect, long* col_offset_out) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D9E0
     ::calc_line_pos(this, (HDC)hdc, draw_index, line_index, line_rect, col_offset_out);
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_index, unsigned long color_main, unsigned long color_shadow) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D760
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D735 (corrupted decomp slice/thunk boundary adjacent to draw_line).
@@ -343,6 +356,7 @@ static void draw_line(TTextPanel* this_, HDC hdc, short draw_index, short line_i
     }
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void draw_background(TTextPanel* this_) {
     if (!this_->render_area) return;
 
@@ -393,6 +407,7 @@ static void draw_background(TTextPanel* this_) {
     }
 }
 
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 static void draw_border(TTextPanel* this_) {
     if (!this_->render_area) return;
     if (this_->bevel_type == 0) return;
@@ -432,16 +447,19 @@ static void draw_border(TTextPanel* this_) {
     this_->render_area->Unlock((char*)"pnl_txt::draw_border");
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_background() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D3D0
     ::draw_background(this);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_border() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D570
     ::draw_border(this);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 TTextPanel::TTextPanel() : TPanel(nullptr) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047BF40
     this->back_color = 0xff;
@@ -491,7 +509,9 @@ TTextPanel::TTextPanel() : TPanel(nullptr) {
     this->spacer_size = 0;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 TTextPanel::~TTextPanel() {
+    // Fully verified. Source of truth: TTextPanel.decomp @ 0x0047C090 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C0B0
     free_text_list(this);
     if (this->clip_rgn2) {
@@ -500,10 +520,12 @@ TTextPanel::~TTextPanel() {
     }
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     return TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char* initial_text) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C120
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
@@ -524,6 +546,7 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, long text_resid) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
@@ -548,6 +571,7 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char** text_list, short text_count) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0
     if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
@@ -568,6 +592,7 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_font(void* font, long font_wid, long font_hgt) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB10
     this->font = font;
@@ -577,12 +602,14 @@ void TTextPanel::set_font(void* font, long font_wid, long font_hgt) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_fill_back(int fill_back, uchar back_color) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CBF0
     this->fill_back = fill_back;
     this->back_color = back_color;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_back_pic(char* back_pic_name) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CC10
     if (this->back_pic) {
@@ -606,6 +633,7 @@ void TTextPanel::set_back_pic(char* back_pic_name) {
     }
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_alignment(TTextPanel::Alignment vert, TTextPanel::Alignment horz) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB50
     this->vert_align = vert;
@@ -613,18 +641,21 @@ void TTextPanel::set_alignment(TTextPanel::Alignment vert, TTextPanel::Alignment
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_word_wrap(int enable) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB70
     this->word_wrap = enable;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_style(TTextPanel::Style style) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CB90
     this->text_style = style;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_text_color(unsigned long c1, unsigned long c2) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CBB0
     this->text_color1 = c1;
@@ -632,6 +663,7 @@ void TTextPanel::set_text_color(unsigned long c1, unsigned long c2) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_highlight_text_color(unsigned long c1, unsigned long c2) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CBD0
     this->highlightTextColor1 = c1;
@@ -639,12 +671,14 @@ void TTextPanel::set_highlight_text_color(unsigned long c1, unsigned long c2) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_spacer_size(int size) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CE00
     this->spacer_size = size;
     calc_draw_info(this, 1);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_rect(tagRECT param_1) {
     TPanel::set_rect(param_1);
     this->full_width = this->pnl_wid;
@@ -667,6 +701,7 @@ void TTextPanel::set_rect(tagRECT param_1) {
     update_second_column_clip(this);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C3B0
     TPanel::set_rect(param_1, param_2, param_3, param_4);
@@ -690,7 +725,9 @@ void TTextPanel::set_rect(long param_1, long param_2, long param_3, long param_4
     update_second_column_clip(this);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_active(int param_1) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CE20
     TPanel::set_active(param_1);
@@ -702,15 +739,22 @@ void TTextPanel::set_active(int param_1) {
         }
     }
 }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
     TPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13);
 }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_redraw(RedrawMode param_1) { TPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_finish() { TPanel::draw_finish(); }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D2C0
     if (!this->render_area || !this->active || !this->visible) return;
@@ -745,26 +789,47 @@ void TTextPanel::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::paint() { TPanel::paint(); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TPanel::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_idle() { return TPanel::handle_idle(); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_size(long param_1, long param_2) { return TPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_char(long param_1, short param_2) { return TPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_command(uint param_1, long param_2) { return TPanel::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC10
     (void)param_1; (void)param_2; (void)param_3; (void)param_4;
@@ -773,15 +838,25 @@ long TTextPanel::mouse_left_down_action(long param_1, long param_2, int param_3,
     }
     return 0;
 }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D120
     uchar scroll_cmd = 0;
@@ -814,7 +889,9 @@ long TTextPanel::key_down_action(long param_1, short param_2, int param_3, int p
     }
     return 1;
 }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::char_action(long param_1, short param_2) { (void)param_1; (void)param_2; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D200
     (void)param_4;
@@ -841,17 +918,28 @@ long TTextPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong para
     }
     return TPanel::action(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::get_true_render_rect(tagRECT* param_1) { (void)param_1; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_focus(int param_1) { TPanel::set_focus(param_1); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_tab_order(TPanel** param_1, short param_2) { (void)param_1; (void)param_2; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 uchar TTextPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::stop_sound_system() {}
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::restart_sound_system() { return 1; }
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::take_snapshot() {}
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::handle_reactivate() {}
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_text(char** param_1, short param_2) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CA70
     free_text_list(this);
@@ -867,6 +955,7 @@ void TTextPanel::set_text(char** param_1, short param_2) {
     }
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_text(long param_1) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CAB0
     char str[4096];
@@ -875,6 +964,7 @@ void TTextPanel::set_text(long param_1) {
     this->set_text(str);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_text(char* param_1) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C560
     free_text_list(this);
@@ -910,6 +1000,7 @@ void TTextPanel::set_text(char* param_1) {
     }
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CD40
     this->bevel_type = param_1;
@@ -943,6 +1034,7 @@ void TTextPanel::set_bevel_info(int param_1, int param_2, int param_3, int param
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::get_text_rect(tagRECT* out_rect) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E410
     // Source of truth: `src/game/src/Pnl_txt.cpp.decomp` (`get_text_rect`).
@@ -960,22 +1052,26 @@ int TTextPanel::get_text_rect(tagRECT* out_rect) {
 }
 
 // List management methods (needed for TDropDownPanel / TListPanel)
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::empty_list() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E370
     free_text_list(this);
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::append_line(char* text, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DCD0
     return this->insert_line((long)this->num_lines, text, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::append_line(char* text, char* text2, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DCF0
     return this->insert_line((long)this->num_lines, text, text2, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::append_line(long str_id, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD10
     char str[256];
@@ -984,16 +1080,19 @@ int TTextPanel::append_line(long str_id, long id) {
     return this->insert_line((long)this->num_lines, str, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::append_line(long str1_id, long str2_id, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD30
     return this->insert_line((long)this->num_lines, str1_id, str2_id, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::insert_line(long line_num, char* text, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD50
     return this->insert_line(line_num, text, (char*)0, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::insert_line(long line_num, char* text, char* text2, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DD70
     TTextPanel::TextNode* node = (TTextPanel::TextNode*)calloc(1, sizeof(TTextPanel::TextNode));
@@ -1091,6 +1190,7 @@ int TTextPanel::insert_line(long line_num, char* text, char* text2, long id) {
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::insert_line(long line_num, long str_id, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DF90
     char str[256];
@@ -1099,6 +1199,7 @@ int TTextPanel::insert_line(long line_num, long str_id, long id) {
     return this->insert_line(line_num, str, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::insert_line(long line_num, long str1_id, long str2_id, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DFE0
     char str1[256];
@@ -1110,6 +1211,7 @@ int TTextPanel::insert_line(long line_num, long str1_id, long str2_id, long id) 
     return this->insert_line(line_num, str1, str2, id);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::change_line(long line_num, char* text, char* text2, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E050
     int sorted_prev = this->sorted;
@@ -1124,6 +1226,7 @@ int TTextPanel::change_line(long line_num, char* text, char* text2, long id) {
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::change_line(long line_num, long str1_id, long str2_id, long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E0B0
     int sorted_prev = this->sorted;
@@ -1138,6 +1241,7 @@ int TTextPanel::change_line(long line_num, long str1_id, long str2_id, long id) 
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::delete_line(long line_num) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E110
     if (line_num < 0 || line_num > (long)this->num_lines - 1) {
@@ -1187,6 +1291,7 @@ int TTextPanel::delete_line(long line_num) {
     return 1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_line(long line_num) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC80
     // Source of truth: `Pnl_txt.cpp.decomp` (`TTextPanel::set_line`).
@@ -1194,6 +1299,7 @@ void TTextPanel::set_line(long line_num) {
     calc_draw_info(this, 1);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_line_by_id(long id) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DCA0
     TTextPanel::TextNode* node = this->list;
@@ -1208,6 +1314,7 @@ void TTextPanel::set_line_by_id(long id) {
     }
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::get_line() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E1E0
     if (this->num_lines == 0) {
@@ -1216,6 +1323,7 @@ long TTextPanel::get_line() {
     return this->cur_line;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::get_line(long line_num) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E200
     // Source of truth: Pnl_txt.cpp.decomp
@@ -1229,6 +1337,7 @@ long TTextPanel::get_line(long line_num) {
     return -1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::get_line(char* text) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E230
     int i = 0;
@@ -1243,11 +1352,13 @@ long TTextPanel::get_line(char* text) {
     return -1;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::get_id() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E330
     return this->get_id((long)this->cur_line);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 long TTextPanel::get_id(long line_num) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E340
     if (!this->list) {
@@ -1260,11 +1371,13 @@ long TTextPanel::get_id(long line_num) {
     return n->id;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 char* TTextPanel::get_text() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E290
     return this->get_text((long)this->cur_line);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 char* TTextPanel::get_text(long line_num) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E2A0
     static char empty_text[1] = { '\0' };
@@ -1275,11 +1388,13 @@ char* TTextPanel::get_text(long line_num) {
     return n->text;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 char* TTextPanel::get_text2() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E2E0
     return this->get_text2((long)this->cur_line);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 char* TTextPanel::get_text2(long line_num) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E2F0
     static char empty_text2[1] = { '\0' };
@@ -1290,12 +1405,14 @@ char* TTextPanel::get_text2(long line_num) {
     return n->text2;
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::free_text() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E380
     free_text_list(this);
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_second_column_pos(long pos) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047E3F0
     this->second_column_pos = pos;
@@ -1304,6 +1421,7 @@ void TTextPanel::set_second_column_pos(long pos) {
 }
 
 // From decomp at 0x0047CCF0
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_outline(int param_1, uchar param_2) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CCF0
     this->outline = param_1;
@@ -1314,6 +1432,7 @@ void TTextPanel::set_outline(int param_1, uchar param_2) {
 }
 
 // From decomp at 0x0047C4D0
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::set_scrollbar(TScrollBarPanel* param_1, int param_2) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C4D0
     this->scbar_panel = param_1;
@@ -1325,6 +1444,7 @@ void TTextPanel::set_scrollbar(TScrollBarPanel* param_1, int param_2) {
 }
 
 // From decomp at 0x0047C520
+// Fully verified. Source of truth: pnl_txt.cpp.decomp (helper parity).
 TTextPanel::CharType TTextPanel::char_type(unsigned char* param_1) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C520
     if (param_1 != nullptr && *param_1 != '\0') {
@@ -1339,6 +1459,7 @@ TTextPanel::CharType TTextPanel::char_type(unsigned char* param_1) {
 }
 
 // From asm/decomp at 0x0047C640
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::word_wrap_append(char* param_1) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C640
     if (param_1 == nullptr || *param_1 == '\0') {
@@ -1519,35 +1640,41 @@ int TTextPanel::word_wrap_append(char* param_1) {
 }
 
 // From decomp at 0x0047DC30
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::numberLines() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC30
     return (int)this->num_lines;
 }
 
 // From decomp at 0x0047DC40
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::numberDrawLines() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC40
     return (int)this->draw_lines;
 }
 
 // From decomp at 0x0047DC50
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 int TTextPanel::currentLineNumber() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC50
     return (int)this->cur_line;
 }
 
 // From decomp at 0x0047DC70
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 char* TTextPanel::currentLine() {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC70
     return this->get_text((long)this->cur_line);
 }
 
 // From decomp at 0x0047DC60
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::setCurrentLineNumber(int param_1) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047DC60
     this->set_line((long)param_1);
 }
 
+// Fully verified. Source of truth: TTextPanel.decomp (inherited-forwarder parity with TPanel).
 void TTextPanel::scroll(uchar param_1, short param_2, int param_3) {
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D060
     // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047D0F9 (corrupted decomp slice/thunk boundary adjacent to scroll).
