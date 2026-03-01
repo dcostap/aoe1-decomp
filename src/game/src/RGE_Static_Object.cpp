@@ -588,7 +588,7 @@ void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, R
 }
 
 void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2030
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2030, stat_obj.cpp.asm @ 0x004C2030
     static int s_static_shadow_guard_logs = 0;
     if (this->owner == nullptr || this->sprite_list == nullptr) {
         CUSTOM_DEBUG_BEGIN
@@ -611,7 +611,7 @@ void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short par
 }
 
 void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2080
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2080, stat_obj.cpp.asm @ 0x004C2080
     static int s_static_normal_guard_logs = 0;
     if (this->owner == nullptr || this->sprite_list == nullptr) {
         CUSTOM_DEBUG_BEGIN
@@ -641,7 +641,7 @@ void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short par
 }
 
 void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2110
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2110, stat_obj.cpp.asm @ 0x004C2110
     if (rge_base_game->game_mode != 1) {
         switch (rge_base_game->outline_type) {
         case 0:
@@ -661,7 +661,7 @@ void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, shor
 }
 
 void RGE_Static_Object::draw_back_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C21A0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C21A0, stat_obj.cpp.asm @ 0x004C21A0
     if (rge_base_game->game_mode == 1) {
         this->draw_frame_3d_cube_back(param_1, param_2, param_3);
         return;
@@ -713,7 +713,7 @@ void RGE_Static_Object::draw_frame(TDrawArea* param_1, short param_2, short para
 }
 
 void RGE_Static_Object::capture_frame(TDrawArea* param_1, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2220
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2220, stat_obj.cpp.asm @ 0x004C2220
     if (SDI_Capture_Info != 0) {
         if (rge_base_game->game_mode == 1) {
             this->capture_frame_3d_cube(param_1, param_2, param_3);
@@ -735,7 +735,7 @@ void RGE_Static_Object::capture_frame(TDrawArea* param_1, short param_2, short p
 }
 
 void RGE_Static_Object::capture_square_frame(TDrawArea* /*param_1*/, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C22C0
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C22C0, stat_obj.cpp.asm @ 0x004C22C0
     if ((this->sprite != nullptr) && (this->sprite_list != nullptr)) {
         this->sprite_list->get_facetindex(this->sprite, this->facet);
         short min_x = 0;
@@ -772,7 +772,7 @@ void RGE_Static_Object::capture_frame_3d_cube(TDrawArea* /*param_1*/, short /*pa
 }
 
 void RGE_Static_Object::capture_frame_3d_square(TDrawArea* /*param_1*/, short param_2, short param_3) {
-    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2400
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C2400, stat_obj.cpp.asm @ 0x004C2400
     RGE_Master_Static_Object* master = this->master_obj;
     RGE_Map* map = this->owner->world->map;
 
