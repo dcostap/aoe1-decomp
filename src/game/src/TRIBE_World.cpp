@@ -438,7 +438,7 @@ void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunication
 void TRIBE_World::setup_gaia() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x0052E920
     // Creates a TRIBE_Gaia player (player 0) using master_players[0].
-    RGE_Master_Player* mp = (this->master_players && this->master_player_num > 0) ? this->master_players[0] : nullptr;
+    RGE_Master_Player* mp = (this->master_players != nullptr) ? this->master_players[0] : nullptr;
     TRIBE_Gaia* gaia = new TRIBE_Gaia(this, mp, '\0', "GAIA", '\0');
     this->players[0] = (RGE_Player*)gaia;
 }

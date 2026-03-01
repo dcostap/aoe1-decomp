@@ -27,8 +27,6 @@
 #include "../include/RGE_Communications_Speed.h"
 #include "../include/RGE_Communications_Synchronize.h"
 #include "../include/DriveInformation.h"
-#include "../include/TribeMPSetupScreen.h"
-#include "../include/TribeSPMenuScreen.h"
 #include "../include/globals.h"
 #include <windows.h>
 #include <stdio.h>
@@ -47,14 +45,6 @@ struct TPanelSystem;
 extern struct TPanelSystem* panel_system;
 
 static int snapshot_number = 1;
-// TODO: debug automation state for custom visual regression capture path.
-static int debug_auto_snapshot_main_menu_done = 0;
-// TODO: debug automation state for transitioning into Single Player Menu before capture.
-static int debug_auto_snapshot_enter_sp_menu_done = 0;
-// TODO: debug automation state for transitioning into MP Setup screen before capture.
-static int debug_auto_snapshot_enter_mps_done = 0;
-// TODO: debug automation tuning for main menu snapshot timing.
-static int debug_auto_snapshot_main_menu_frames = 0;
 static void* last_mouse_cursor = nullptr;
 
 static char s_ver_empty[] = "";
@@ -341,6 +331,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     AppWnd = nullptr;
     chat = nullptr;
     comm = nullptr;
+    L = nullptr;
     Regs = nullptr;
     sound_driver = nullptr;
     driveInfo = nullptr;
@@ -369,6 +360,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     if (this->setup_registry()) {
         Regs = this->registry; 
         if (this->setup_debugging_log()) {
+            L = this->debugLog;
             if (param_2 && this->setup() == 0) {
                 if (this->error_code == 0) {
                     this->error_code = 1;
@@ -2705,75 +2697,6 @@ int RGE_Base_Game::handle_idle() {
         curPanel = panel_system->currentPanel();
         curPanel->handle_idle();
     }
-
-#if CUSTOM_DEBUG_AUTO_SNAPSHOT_MAIN_MENU
-    // TODO: Custom debug-only automation path. Not parity with original executable.
-    if (debug_auto_snapshot_main_menu_done == 0 && this->draw_system != nullptr &&
-        this->draw_system->DrawArea != nullptr && curPanel != nullptr &&
-        curPanel->panelNameValue != nullptr) {
-        const int on_main_menu = (strcmp(curPanel->panelNameValue, "Main Menu") == 0);
-        const int on_sp_menu = (strcmp(curPanel->panelNameValue, "Single Player Menu") == 0);
-        const int on_mps_menu = (strcmp(curPanel->panelNameValue, "MP Setup Screen") == 0);
-
-        if (debug_auto_snapshot_enter_sp_menu_done == 0 && on_main_menu != 0) {
-            debug_auto_snapshot_main_menu_frames = debug_auto_snapshot_main_menu_frames + 1;
-            if (debug_auto_snapshot_main_menu_frames >= 45) {
-                CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG("AUTO_SNAPSHOT: opening Single Player Menu");
-                CUSTOM_DEBUG_END
-                this->disable_input();
-                TribeSPMenuScreen* next = new TribeSPMenuScreen();
-                (void)next;
-                panel_system->setCurrentPanel((char*)"Single Player Menu", 0);
-                panel_system->destroyPanel((char*)"Main Menu");
-                debug_auto_snapshot_enter_sp_menu_done = 1;
-                debug_auto_snapshot_main_menu_frames = 0;
-                curPanel = panel_system->currentPanel();
-            }
-        } else if (debug_auto_snapshot_enter_sp_menu_done != 0 &&
-                   debug_auto_snapshot_enter_mps_done == 0 && on_sp_menu != 0) {
-            debug_auto_snapshot_main_menu_frames = debug_auto_snapshot_main_menu_frames + 1;
-            if (debug_auto_snapshot_main_menu_frames >= 45) {
-                CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG("AUTO_SNAPSHOT: opening MP Setup Screen");
-                CUSTOM_DEBUG_END
-                this->disable_input();
-                TribeMPSetupScreen* next = new TribeMPSetupScreen();
-                (void)next;
-                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
-                panel_system->destroyPanel((char*)"Single Player Menu");
-                debug_auto_snapshot_enter_mps_done = 1;
-                debug_auto_snapshot_main_menu_frames = 0;
-                curPanel = panel_system->currentPanel();
-            }
-        } else if (debug_auto_snapshot_enter_mps_done != 0 && on_mps_menu != 0) {
-            debug_auto_snapshot_main_menu_frames = debug_auto_snapshot_main_menu_frames + 1;
-        } else {
-            debug_auto_snapshot_main_menu_frames = 0;
-        }
-    }
-
-    TPanel* autoCapPanel = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
-    if (debug_auto_snapshot_main_menu_done == 0 && this->draw_system != nullptr &&
-        this->draw_system->DrawArea != nullptr &&
-        autoCapPanel != nullptr && autoCapPanel->panelNameValue != nullptr &&
-        strcmp(autoCapPanel->panelNameValue, "MP Setup Screen") == 0 &&
-        debug_auto_snapshot_main_menu_frames >= 120) {
-        CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("AUTO_SNAPSHOT: mp setup screen stable for %d frames; capturing screenshot",
-                             debug_auto_snapshot_main_menu_frames);
-        CUSTOM_DEBUG_END
-        char snapshot_file[64];
-        sprintf(snapshot_file, s_dot_AoE_04d_bmp, snapshot_number);
-        this->draw_system->DrawArea->SaveBitmap(snapshot_file);
-        snapshot_number = snapshot_number + 1;
-        CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG_FMT("AUTO_SNAPSHOT: wrote %s", snapshot_file);
-        CUSTOM_DEBUG_END
-        debug_auto_snapshot_main_menu_done = 1;
-        this->close();
-    }
-#endif
 
     // Comm handler message receiving
     if (this->comm_handler != nullptr) {

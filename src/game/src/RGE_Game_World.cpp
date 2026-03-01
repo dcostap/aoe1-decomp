@@ -734,7 +734,7 @@ void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunicat
 void RGE_Game_World::setup_gaia() {
     // Fully verified. Source of truth: world.cpp.decomp @ 0x00542480
     RGE_Master_Player* master = nullptr;
-    if (this->master_players != nullptr && this->master_player_num > 0) {
+    if (this->master_players != nullptr) {
         master = this->master_players[0];
     }
 

@@ -1181,12 +1181,20 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: teams initialized");
     CUSTOM_DEBUG_END
 
-    // TODO: Single-player setup path crash triage.
-    // In current runtime, comm/player-humanity writes from this path can dereference invalid comm state.
-    // Keep setup deterministic without comm writes for now.
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: skipping comm humanity writes");
-    CUSTOM_DEBUG_END
+    TCommunications_Handler* comm_handler = nullptr;
+    if (rge_base_game->comm_handler != nullptr) {
+        comm_handler = rge_base_game->comm_handler;
+    } else if (comm != nullptr) {
+        comm_handler = (TCommunications_Handler*)comm;
+    }
+
+    if (comm_handler != nullptr) {
+        comm_handler->SetPlayerHumanity(1, 2);
+        for (uint player = 2; player <= 8; ++player) {
+            comm_handler->SetPlayerHumanity(player, 4);
+        }
+        comm_handler->SetPlayerHumanity(9, 0);
+    }
 
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("setupSinglePlayerPlayers: calling mps_fill_number_players");
