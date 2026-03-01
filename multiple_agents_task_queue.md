@@ -6272,19 +6272,19 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 534
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TribeBuildAIModule.cpp - insert (85 lines, line 974) and tribe_build_ai_update_needed_resources (77 lines, line 353). Reference taibldmd.cpp.asm. Focus on build list insertion and resource requirement tracking.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 535
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of Pnl_txt.cpp - word_wrap_append (178 lines, line 1734) and insert_line (96 lines, line 1380). Reference pnl_txt.cpp.asm. Focus on text wrapping algorithm, line buffer management, and scroll handling.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 536
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of BuildAIModule.cpp - loadBuildList (119 lines, line 493) and constructor (105 lines, line 213). Reference aibldmod.cpp.asm. Focus on build list file parsing and module initialization.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
@@ -6326,10 +6326,26 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 540
 - [ ] Assigned to: W7
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of InformationAIModule.cpp update/processHistory.
 
 ## Task 541
 - [ ] Assigned to: W8
 - [ ] Finished
 **Goal**: Deep ASM parity audit of TribeResourceAIModule.cpp update/distributeResources.
+
+
+## Task 542
+- [ ] Assigned to: W3
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TradeAIModule.cpp.
+
+## Task 543
+- [ ] Assigned to: W4
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TacticalAIModule.cpp.
+
+## Task 544
+- [ ] Assigned to: W6
+- [ ] Finished
+**Goal**: Deep ASM parity audit of StrategyAIModule.cpp.
