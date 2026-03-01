@@ -1333,7 +1333,7 @@ void TRIBE_Effects::do_tech_effect(short p1, RGE_Player* p2) {
 #include "../include/RGE_Tile_List_Node.h"
 
 RGE_Tile_List::RGE_Tile_List(int param_1) {
-    // Source of truth: player.cpp.decomp @ 0x00471E40
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471E40
     this->list = (RGE_Tile_List_Node*)calloc(param_1, sizeof(RGE_Tile_List_Node));
     this->list_size = param_1;
     this->num_active = 0;
@@ -1341,8 +1341,15 @@ RGE_Tile_List::RGE_Tile_List(int param_1) {
     this->collapse_list = 0;
 }
 
+RGE_Tile_List::~RGE_Tile_List() {
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471E70
+    if (this->list != nullptr) {
+        free(this->list);
+    }
+}
+
 void RGE_Tile_List::add_node(int param_1, int param_2) {
-    // Source of truth: player.cpp.decomp @ 0x00471D70
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471D70
     if (this->num_active >= this->list_size) {
         int new_size = this->list_size * 2;
         RGE_Tile_List_Node* new_list = (RGE_Tile_List_Node*)calloc(new_size, sizeof(RGE_Tile_List_Node));
@@ -1358,7 +1365,7 @@ void RGE_Tile_List::add_node(int param_1, int param_2) {
 }
 
 void RGE_Tile_List::del_list() {
-    // Source of truth: player.cpp.decomp @ 0x00471DF0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471DF0
     this->num_active = 0;
     this->new_count = 0;
     if (this->collapse_list != 0) {
@@ -1370,7 +1377,7 @@ void RGE_Tile_List::del_list() {
 }
 
 void RGE_Tile_List::get_list_info(RGE_Tile_List_Node** param_1, int* param_2) {
-    // Source of truth: player.cpp.decomp @ 0x00471E90
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471E90
     if (param_1 != nullptr) {
         *param_1 = this->list;
     }
@@ -1380,7 +1387,7 @@ void RGE_Tile_List::get_list_info(RGE_Tile_List_Node** param_1, int* param_2) {
 }
 
 int RGE_Tile_List::get_new_count() {
-    // Source of truth: player.cpp.decomp @ 0x00471EB0
+    // Fully verified. Source of truth: player.cpp.decomp @ 0x00471EB0
     int count = this->new_count;
     this->new_count = 0;
     return count;

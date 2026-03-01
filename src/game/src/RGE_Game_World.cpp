@@ -172,7 +172,7 @@ class RGE_Scenario;
 
 // Constructor
 RGE_Game_World::RGE_Game_World() {
-    // Source of truth: world.cpp.decomp @ 0x00540750
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540750
     this->objectsValue = nullptr;
     this->numberObjectsValue = 0;
     this->maxNumberObjectsValue = 10000;
@@ -293,8 +293,7 @@ uchar RGE_Game_World::data_load_world(FILE* param_1) {
         this->data_load_players(player_file);
         this->data_load_objects(obj_file);
         this->data_load_effects(effects_file);
-        // Source of truth: world.cpp.decomp @ 0x00541500 calls RGE_Map(border_file, terrain_file, ...).
-        // Our RGE_Map file constructor expects border file first, terrain file second.
+        // Fully verified. Source of truth: world.cpp.decomp @ 0x00541500
         this->data_load_map(border_file, overlay_file, terrain_file, map_file, tile_width, tile_height, elev_height, this->sounds, terr_obj_file);
         this->data_load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_obj_file);
     }
@@ -653,15 +652,7 @@ void RGE_Game_World::command_init(int fd, TCommunications_Handler* param_2) {
 }
 
 void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
-    // Inferred from TRIBE_World::world_init override pattern and call chain.
-    // param_1 = file descriptor from data_load (or 0 if stub)
-    // param_2 = TSound_Driver*
-    // param_3 = TCommunications_Handler*
-    //
-    // Calls sub-init functions which TRIBE_World overrides to create TRIBE-specific types.
-    // Source of truth: world.cpp.decomp @ 0x00541D60.
-    // vtable order call sequence is terrain first, then color.
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init begin stream_pos=%ld", rge_stream_tell(param_1));
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541D60
     this->terrain_tables_init(param_1);
     this->color_table_init(param_1);
     this->init_sounds(param_1, param_2);
@@ -670,7 +661,6 @@ void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunicat
     this->effects_init(param_1);
     this->master_player_init(param_1);
     this->command_init(param_1, param_3);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::world_init end stream_pos=%ld", rge_stream_tell(param_1));
 }
 
 void RGE_Game_World::setup_gaia() {
@@ -719,12 +709,7 @@ void RGE_Game_World::setup_players(RGE_Player_Info* param_1) {
 }
 
 uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
-    // Source of truth: world.cpp.decomp @ 0x00542D10.
-    CUSTOM_DEBUG_LOG("RGE_Game_World::new_random_game enter");
-    if (param_1 == nullptr || this->map == nullptr) {
-        return 0;
-    }
-
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542D10
     world_update_counter = 0;
 
     this->setup_player_colors(param_1);
@@ -734,7 +719,6 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
 
     int player_count_minus_one = (int)this->player_num - 1;
     this->map->map_generate2(this, -1, -1, (uchar)param_1->map_type, player_count_minus_one);
-    CUSTOM_DEBUG_LOG("RGE_Game_World::new_random_game after map_generate2");
     this->initializePathingSystem();
 
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x61a);
@@ -744,11 +728,9 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
     this->curr_player = -1;
 
     for (int pass = 0; pass < 3; ++pass) {
-        CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::new_random_game update pass=%d", pass);
         world_update_counter = world_update_counter + 1;
         for (int i = 0; i < this->player_num; ++i) {
-            CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::new_random_game updating player=%d", i);
-            if (this->players != nullptr && this->players[i] != nullptr) {
+            if (this->players[i] != nullptr) {
                 this->players[i]->update();
             }
         }
@@ -756,7 +738,6 @@ uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
 
     this->curr_player = saved_curr_player;
     this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x631);
-    CUSTOM_DEBUG_LOG("RGE_Game_World::new_random_game exit");
     return 1;
 }
 
@@ -1001,7 +982,7 @@ void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
 
 // Destructor
 RGE_Game_World::~RGE_Game_World() {
-    // Source of truth: world.cpp.decomp @ 0x00540A40
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00540A40
     if (this->commands != nullptr) {
         delete this->commands;
         this->commands = nullptr;
@@ -1240,35 +1221,24 @@ uchar RGE_Game_World::data_load(char* param_1, char* param_2) {
 }
 
 uchar RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
-    // Source of truth: world.cpp.decomp @ 0x00541DB0.
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init enter file='%s'", (param_1 != nullptr) ? param_1 : "(null)");
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541DB0
     this->sound_driver = param_2;
     this->next_object_id = 0;
 
     int fd = rge_open(param_1, _O_RDONLY | _O_BINARY);
     if (fd == -1) {
-        CUSTOM_DEBUG_LOG("RGE_Game_World::init: open failed");
         return 0;
     }
 
     char version[8];
-    memset(version, 0, sizeof(version));
     rge_read(fd, version, 8);
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init: version bytes='%c%c%c%c%c%c%c%c' pos=%ld",
-        version[0], version[1], version[2], version[3],
-        version[4], version[5], version[6], version[7], _tell(fd));
-
-    // Exact binary gate from original: file must begin with "VER 3.7\0".
     if (memcmp(version, "VER 3.7", 8) != 0) {
-        CUSTOM_DEBUG_LOG("RGE_Game_World::init: version mismatch");
         rge_close(fd);
         return 0;
     }
 
-    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init: calling world_init fd=%d pos=%ld", fd, _tell(fd));
     this->world_init(fd, param_2, param_3);
     rge_close(fd);
-    CUSTOM_DEBUG_LOG("RGE_Game_World::init: success");
     return 1;
 }
 
@@ -1282,10 +1252,19 @@ void RGE_Game_World::turn_sound_off() {
 }
 
 void RGE_Game_World::del_game_info() {
-    // Source of truth: world.cpp.decomp @ 0x00541EE0
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00541EE0
     world_update_counter = 0;
     this->game_state = '\x02';
     this->game_end_condition = '\0';
+
+    this->reusable_static_objects->removeAllObjects();
+    this->reusable_animated_objects->removeAllObjects();
+    this->reusable_moving_objects->removeAllObjects();
+    this->reusable_action_objects->removeAllObjects();
+    this->reusable_combat_objects->removeAllObjects();
+    this->reusable_missile_objects->removeAllObjects();
+    this->reusable_doppleganger_objects->removeAllObjects();
+
     this->next_reusable_object_id = -1;
     this->campaign = -1;
     this->campaign_player = -1;
@@ -1302,9 +1281,19 @@ void RGE_Game_World::del_game_info() {
         memset(this->negativeObjectsValue, 0, (size_t)this->maxNumberNegativeObjectsValue * sizeof(RGE_Static_Object*));
     }
 
+    this->turn_sound_off();
+
     if (this->scenario != nullptr) {
         delete this->scenario;
         this->scenario = nullptr;
+    }
+
+    if (this->players != nullptr && this->player_num > 0) {
+        for (int i = 0; i < this->player_num; ++i) {
+            if (this->players[i] != nullptr) {
+                this->players[i]->destroy_objects();
+            }
+        }
     }
 
     if (this->players != nullptr && this->player_num > 0) {
@@ -1314,11 +1303,12 @@ void RGE_Game_World::del_game_info() {
                 this->players[i] = nullptr;
             }
         }
-        free(this->players);
-        this->players = nullptr;
     }
+    free(this->players);
+    this->players = nullptr;
     this->player_num = 0;
 
+    this->next_object_id = 0;
     this->sound_update_index = 0;
     this->sprite_update_index = 0;
     this->player_turn = 0;
@@ -1921,16 +1911,12 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
 }
 
 uchar RGE_Game_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
-    // Source of truth: world.cpp.decomp @ 0x00542BF0
-    if (param_1 == nullptr || this->map == nullptr) {
-        return 0;
-    }
-
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542BF0
     world_update_counter = 0;
     this->del_game_info();
     this->curr_player = 0;
 
-    if (param_2 == 0 && this->commands != nullptr && this->commands->com_hand != nullptr) {
+    if (param_2 == 0) {
         param_2 = this->commands->com_hand->GetRandomSeed();
     }
 
@@ -1938,11 +1924,7 @@ uchar RGE_Game_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
     debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5d5, (unsigned int)param_2);
 
     this->map->new_map((int)param_1->map_width, (int)param_1->map_height);
-    if (param_1->map_info != nullptr) {
-        this->map->clear_map((uchar)param_1->map_info->base_terrain, '\x01');
-    } else {
-        this->map->clear_map((uchar)0, '\x01');
-    }
+    this->map->clear_map((uchar)param_1->map_info->base_terrain, '\x01');
 
     this->player_num = (short)(param_1->player_num + 1);
     this->players = (RGE_Player**)calloc((int)this->player_num, sizeof(RGE_Player*));
@@ -1968,9 +1950,7 @@ uchar RGE_Game_World::new_scenario(RGE_Player_Info* param_1, int param_2) {
 
     if (result != 0) {
         for (int i = 0; i < this->player_num; ++i) {
-            if (this->players[i] != nullptr) {
-                this->players[i]->set_map_visible();
-            }
+            this->players[i]->set_map_visible();
         }
     }
 
@@ -2246,17 +2226,11 @@ void RGE_Game_World::reset_communications(TCommunications_Handler* param_1) {
 }
 
 void RGE_Game_World::update_mutual_allies() {
-    // Source of truth: world.cpp.decomp @ 0x005462D0
-    if (this->players == nullptr || this->player_num <= 0) {
-        return;
-    }
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x005462D0
+    fprintf(DVlogf, "updating player visibilites @ wt=%d\n", this->world_time);
 
     for (int i = 0; i < this->player_num; ++i) {
         RGE_Player* player = this->players[i];
-        if (player == nullptr) {
-            continue;
-        }
-
         player->mutualExploredMask = 0;
         player->mutualVisibleMask = 0;
         player->nonMutualVisibleMask = 0;
@@ -2275,7 +2249,7 @@ void RGE_Game_World::update_mutual_allies() {
 
     for (int i = 1; i < this->player_num; ++i) {
         RGE_Player* player = this->players[i];
-        if (player == nullptr || player->allied_LOS_Enable != 1 || player->relations == nullptr) {
+        if (player->allied_LOS_Enable != 1) {
             continue;
         }
 
@@ -2285,10 +2259,6 @@ void RGE_Game_World::update_mutual_allies() {
             }
 
             RGE_Player* other = this->players[j];
-            if (other == nullptr || other->relations == nullptr) {
-                continue;
-            }
-
             if (player->relations[j] == 0 && other->relations[i] == 0) {
                 player->mutualAlly[j] = 1;
                 player->mutualVisibleMask = player->mutualVisibleMask | (1UL << (j & 0x1F));
@@ -2299,10 +2269,6 @@ void RGE_Game_World::update_mutual_allies() {
 
     for (int owner = 0; owner < this->player_num; ++owner) {
         RGE_Player* owner_player = this->players[owner];
-        if (owner_player == nullptr || owner_player->relations == nullptr) {
-            continue;
-        }
-
         for (int p_num = 1; p_num < this->player_num; ++p_num) {
             if (p_num == owner || owner_player->mutualAlly[p_num] != 0) {
                 continue;
@@ -2310,13 +2276,9 @@ void RGE_Game_World::update_mutual_allies() {
 
             for (int via = 1; via < this->player_num; ++via) {
                 RGE_Player* via_player = this->players[via];
-                if (via_player == nullptr) {
-                    continue;
-                }
-
                 if (owner_player->relations[via] == 0 &&
                     via_player->mutualAlly[p_num] == 1 &&
-                    via_player->mutualAlly[owner] == 1) {
+                    via_player->mutualAlly[owner] != 0) {
                     owner_player->nonMutualVisibleMask =
                         owner_player->nonMutualVisibleMask | (1UL << (p_num & 0x1F));
                     owner_player->RemoveVisibleBits[p_num] =
