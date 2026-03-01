@@ -80,15 +80,10 @@ int tribe_influence_can_place_structure(TribeConstructionAIModule* self, BuildIt
     return information_ai->influenceCanPlaceStructure(item);
 }
 
-// TODO: STUB — unresolved linkage for TribeInformationAIModule::influencePlaceStructure in current build graph.
-// Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
+// Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 ConstructionItem* tribe_influence_place_structure(TribeConstructionAIModule* self, BuildItem* item, int builder_id, PlacementState* state, ulong flags) {
-    (void)self;
-    (void)item;
-    (void)builder_id;
-    (void)state;
-    (void)flags;
-    return nullptr;
+    TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
+    return information_ai->influencePlaceStructure(item, builder_id, -1, 0.0f, nullptr, -1, -1, -1, -1, state, flags);
 }
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D6780
@@ -259,8 +254,7 @@ int TribeConstructionAIModule::canPlace(BuildItem* param_1) {
 }
 
 // Offset: 0x004D60E0
-// TODO: STUB — dependency unresolved; influence placement path falls back to null result.
-// Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* param_1, int param_2, PlacementState* param_3, ulong param_4) {
     if ((this->xReferencePointValue <= 0.0f) ||
         (this->yReferencePointValue <= 0.0f) ||
