@@ -225,7 +225,7 @@ int Visible_Resource_Manager::Remove_Resource(int param_1, int param_2) {
 
 VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int param_1, int param_2, int param_3, int param_4, int* param_5, int param_6) {
     // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053C050
-    // TODO: Confirm DAT_005776d0 / DAT_005776d8 exact constants from ASM-backed data section.
+    // TODO: Pending ASM-backed data symbol mapping for DAT_005776d0 / DAT_005776d8 constants in this scoring formula.
     (void)param_3;
     if (param_4 < 0 || this->num_visible_resource_lists == 0 || param_4 >= this->num_visible_resource_lists) {
         return nullptr;

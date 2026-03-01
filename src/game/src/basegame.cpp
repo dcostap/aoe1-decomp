@@ -3496,7 +3496,7 @@ TDigital* RGE_Base_Game::get_sound(int index) {
 }
 
 unsigned long RGE_Base_Game::get_last_max_time() {
-    // TODO: This is a decomp-era helper overload not present in basegame.cpp.decomp function list.
+    // NOTE: Decomp-era helper overload used by reconstructed callers; not present in basegame.cpp.decomp function list.
     return this->last_view_time;
 }
 

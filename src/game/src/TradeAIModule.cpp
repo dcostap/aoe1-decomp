@@ -21,7 +21,7 @@ TradeAIModule::TradeAIModule(int param_1, int param_2) : AIModule(kTradeAIName, 
 // Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412ED0
 TradeAIModule::~TradeAIModule() {}
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Header model declares explicit overrides; forward to AIModule base behavior.
 int TradeAIModule::loggingHistory() {
     return AIModule::loggingHistory();
 }

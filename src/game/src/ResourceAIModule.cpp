@@ -57,7 +57,7 @@ ResourceAIModule::~ResourceAIModule() {
     ((AIModule*)this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Header model declares explicit overrides; forward to AIModule base behavior.
 int ResourceAIModule::loggingHistory() {
     return ((AIModule*)this)->loggingHistory();
 }

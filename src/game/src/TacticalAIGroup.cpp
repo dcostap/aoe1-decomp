@@ -463,7 +463,7 @@ int TacticalAIGroup::assistGroupType() const { return this->assistGroupTypeValue
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004EB6E0
 void TacticalAIGroup::setAssistGroupType(int param_1) { this->assistGroupTypeValue = param_1; }
 
-// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004EB6F0. Partial parity transliteration.
+// TODO: Source of truth: taitacmd.cpp.decomp @ 0x004EB6F0. Partial parity transliteration; remaining branch-level behavior needs dedicated full-pass parity audit.
 int TacticalAIGroup::task(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2, int param_3, int param_4, int param_5) {
     if ((param_1 == nullptr) || (param_2 == nullptr)) {
         return 0;

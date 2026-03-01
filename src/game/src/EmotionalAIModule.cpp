@@ -62,7 +62,7 @@ EmotionalAIModule::~EmotionalAIModule() {
     as_ai(this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Header model declares explicit overrides; forward to AIModule base behavior.
 int EmotionalAIModule::loggingHistory() {
     return as_ai(this)->loggingHistory();
 }
