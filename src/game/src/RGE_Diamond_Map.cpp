@@ -221,7 +221,8 @@ long RGE_Diamond_Map::setup(TDrawArea* param_1, TPanel* param_2, long param_3, l
     this->save_area = param_9;
     this->own_save_area = 0;
     (void)param_8;
-    return TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+    TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+    return 1;
 }
 
 // Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
@@ -534,14 +535,14 @@ void RGE_Diamond_Map::draw() {
 
         this->copy_image();
 
-        if (rge_base_game == nullptr || rge_base_game->game_mode != 0x15) {
+        if (rge_base_game->game_mode != 0x15) {
             this->draw_selected_area();
         }
         this->draw_objects();
 
-        if (this->render_area->Lock((char*)"diam_map::draw_view_rect", 1) != nullptr) {
+        if (this->render_area->Lock((char*)"diam_map::draw", 1) != nullptr) {
             this->draw_view_rect();
-            this->render_area->Unlock((char*)"diam_map::draw_view_rect");
+            this->render_area->Unlock((char*)"diam_map::draw");
         }
 
         this->draw_finish();
@@ -809,8 +810,7 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3, uchar
 
                 RGE_Object_Node* node = this->map->map_row_offset[(int)scan_row][(int)scan_col].objects.list;
                 while (node != nullptr) {
-                    if (node->node != nullptr && node->node->master_obj != nullptr &&
-                        node->node->master_obj->map_draw_level == 4) {
+                    if (node->node->master_obj->map_draw_level == 4) {
                         color = (long)node->node->master_obj->map_color;
                         break;
                     }
