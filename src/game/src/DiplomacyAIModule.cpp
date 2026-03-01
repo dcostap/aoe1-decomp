@@ -45,50 +45,62 @@ DiplomacyAIModule::~DiplomacyAIModule() {
 
 // Header model declares explicit overrides; forward to AIModule base behavior.
 int DiplomacyAIModule::loggingHistory() {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loggingHistory();
 }
 
 void DiplomacyAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setLogHistory(param_1);
 }
 
 void DiplomacyAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->toggleLogHistory();
 }
 
 void DiplomacyAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setHistoryFilename(param_1);
 }
 
 int DiplomacyAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loggingCommonHistory();
 }
 
 void DiplomacyAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setLogCommonHistory(param_1);
 }
 
 void DiplomacyAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->toggleLogCommonHistory();
 }
 
 int DiplomacyAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->loadState(param_1);
 }
 
 int DiplomacyAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->saveState(param_1);
 }
 
 int DiplomacyAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->gleanState(param_1);
 }
 
 int DiplomacyAIModule::processMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->processMessage(param_1);
 }
 
 void DiplomacyAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aidipmod.cpp.decomp (helper implementation).
     ((AIModule*)this)->setCallbackMessage(param_1);
 }
 

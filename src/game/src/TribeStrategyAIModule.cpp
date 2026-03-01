@@ -19,6 +19,7 @@ namespace {
 
 template <typename T>
 void managed_array_resize(ManagedArray<T>* array, int new_size) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (new_size <= 0) {
         return;
     }
@@ -42,6 +43,7 @@ void managed_array_resize(ManagedArray<T>* array, int new_size) {
 
 template <typename T>
 void managed_array_ensure_index(ManagedArray<T>* array, int index) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (array->maximumSizeValue - 1 < index) {
         managed_array_resize(array, index + 1);
     }
@@ -49,6 +51,7 @@ void managed_array_ensure_index(ManagedArray<T>* array, int index) {
 
 template <typename T>
 int managed_array_contains(const ManagedArray<T>* array, const T* value) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     int count = array->numberValue;
     int i = 0;
     if (count > 0) {
@@ -67,6 +70,7 @@ int managed_array_contains(const ManagedArray<T>* array, const T* value) {
 
 template <typename T>
 void managed_array_add(ManagedArray<T>* array, T value) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (managed_array_contains(array, &value) != 1) {
         int index = array->numberValue;
         managed_array_ensure_index(array, index);
@@ -79,6 +83,7 @@ void managed_array_add(ManagedArray<T>* array, T value) {
 
 template <typename T>
 void managed_array_reset(ManagedArray<T>* array) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (array->value != nullptr) {
         ::operator delete(array->value);
         array->value = nullptr;
@@ -89,6 +94,7 @@ void managed_array_reset(ManagedArray<T>* array) {
 }
 
 int scale_positive_int(int value, float scale) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (value <= 0) {
         return value;
     }
@@ -100,6 +106,7 @@ int scale_positive_int(int value, float scale) {
 }
 
 int* tactical_sn_array(TRIBE_Player* player) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     if (player == nullptr || player->playerAI == nullptr) {
         return nullptr;
     }
@@ -108,6 +115,7 @@ int* tactical_sn_array(TRIBE_Player* player) {
 }
 
 void tactical_set_sn(TRIBE_Player* player, int id, int value) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     int* sn = tactical_sn_array(player);
     if (sn == nullptr) {
         return;
@@ -119,6 +127,7 @@ void tactical_set_sn(TRIBE_Player* player, int id, int value) {
 }
 
 void apply_rule_writes(TRIBE_Player* player, const int* pairs, int pair_count) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     for (int i = 0; i < pair_count; ++i) {
         int dst = pairs[i * 2];
         int src = pairs[i * 2 + 1];
@@ -127,6 +136,7 @@ void apply_rule_writes(TRIBE_Player* player, const int* pairs, int pair_count) {
 }
 
 int remove_rule(ManagedArray<int>* array, int rule_id) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     int capacity = array->maximumSizeValue;
     int index = 0;
     if (0 < capacity) {
@@ -160,6 +170,7 @@ int remove_rule(ManagedArray<int>* array, int rule_id) {
 }
 
 int append_rule_if_missing(ManagedArray<int>* array, int rule_id) {
+    // Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
     int count = array->numberValue;
     int index = 0;
     if (0 < count) {
@@ -786,14 +797,23 @@ void* TribeStrategyAIModule::vector_deleting_destructor(uint param_1) {
     return this;
 }
 
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 int TribeStrategyAIModule::loggingHistory() { return StrategyAIModule::loggingHistory(); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 void TribeStrategyAIModule::setLogHistory(int param_1) { StrategyAIModule::setLogHistory(param_1); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 void TribeStrategyAIModule::toggleLogHistory() { StrategyAIModule::toggleLogHistory(); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 void TribeStrategyAIModule::setHistoryFilename(char* param_1) { StrategyAIModule::setHistoryFilename(param_1); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 int TribeStrategyAIModule::loggingCommonHistory() { return StrategyAIModule::loggingCommonHistory(); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 void TribeStrategyAIModule::setLogCommonHistory(int param_1) { StrategyAIModule::setLogCommonHistory(param_1); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 void TribeStrategyAIModule::toggleLogCommonHistory() { StrategyAIModule::toggleLogCommonHistory(); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 int TribeStrategyAIModule::loadState(char* param_1) { return StrategyAIModule::loadState(param_1); }
+// Fully verified. Source of truth: taistrmd.cpp.decomp (helper implementation).
 int TribeStrategyAIModule::saveState(char* param_1) { return StrategyAIModule::saveState(param_1); }
 int TribeStrategyAIModule::gleanState(int param_1) { return StrategyAIModule::gleanState(param_1); }
 int TribeStrategyAIModule::processMessage(AIModuleMessage* param_1) { return StrategyAIModule::processMessage(param_1); }

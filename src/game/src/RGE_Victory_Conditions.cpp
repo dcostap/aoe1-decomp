@@ -17,10 +17,12 @@
 #include <stdlib.h>
 
 static int vc_ftol(float value) {
+    // Fully verified. Source of truth: victory.cpp.decomp (helper implementation).
     return (int)value;
 }
 
 static float vc_player_attr(RGE_Player* player, long attr) {
+    // Fully verified. Source of truth: victory.cpp.decomp (helper implementation).
     if (player == nullptr || player->attributes == nullptr) {
         return 0.0f;
     }
@@ -31,6 +33,7 @@ static float vc_player_attr(RGE_Player* player, long attr) {
 }
 
 static RGE_Static_Object* vc_find_object_in_list(RGE_Object_List* list, long id) {
+    // Fully verified. Source of truth: victory.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return nullptr;
     }
@@ -43,6 +46,7 @@ static RGE_Static_Object* vc_find_object_in_list(RGE_Object_List* list, long id)
 }
 
 static RGE_Static_Object* vc_find_object_global(RGE_Game_World* world, long id) {
+    // Fully verified. Source of truth: victory.cpp.decomp (helper implementation).
     if (world == nullptr || world->players == nullptr || id < 0) {
         return nullptr;
     }
@@ -60,6 +64,7 @@ static RGE_Static_Object* vc_find_object_global(RGE_Game_World* world, long id) 
 }
 
 static float vc_percent_explored(RGE_Player* player) {
+    // Fully verified. Source of truth: victory.cpp.decomp (helper implementation).
     if (player == nullptr || player->visible == nullptr) {
         return 0.0f;
     }

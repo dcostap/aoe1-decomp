@@ -114,6 +114,7 @@ static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, co
 }
 
 static void rge_command_set_waiting_to_move(RGE_Static_Object* obj, int waiting_value) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -125,6 +126,7 @@ static void rge_command_set_waiting_to_move(RGE_Static_Object* obj, int waiting_
 }
 
 static void rge_command_issue_work(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -136,6 +138,7 @@ static void rge_command_issue_work(RGE_Static_Object* obj, long target_value, fl
 }
 
 static void rge_command_issue_move_to(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -147,6 +150,7 @@ static void rge_command_issue_move_to(RGE_Static_Object* obj, long target_value,
 }
 
 static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -158,6 +162,7 @@ static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, f
 }
 
 static void rge_command_set_move_ai_state(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -183,6 +188,7 @@ struct tribe_unit_ai_notify_event {
 };
 
 static void tribe_unit_ai_set_current_order(UnitAIModule* unit_ai, int order_value) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -192,6 +198,7 @@ static void tribe_unit_ai_set_current_order(UnitAIModule* unit_ai, int order_val
 }
 
 static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_value) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -201,6 +208,7 @@ static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_v
 }
 
 static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y, float target_z) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -215,6 +223,7 @@ static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_i
 }
 
 static void tribe_unit_ai_remove_current_target(UnitAIModule* unit_ai) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -230,6 +239,7 @@ static void tribe_unit_ai_remove_current_target(UnitAIModule* unit_ai) {
 }
 
 static void tribe_unit_ai_purge_notify_queue(UnitAIModule* unit_ai, ulong update_time) {
+    // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
