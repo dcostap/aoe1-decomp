@@ -855,10 +855,8 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char* initial_text) {
-    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C120
-    if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
-        return 0;
-    }
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C120, pnl_txt.cpp.asm @ 0x0047C120
+    TPanel::setup(area, parent, x, y, w, h, 0);
 
     this->fill_back = fill_back;
     this->back_color = back_color;
@@ -875,10 +873,8 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, long text_resid) {
-    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0
-    if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
-        return 0;
-    }
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C1E0, pnl_txt.cpp.asm @ 0x0047C1E0
+    TPanel::setup(area, parent, x, y, w, h, 0);
 
     this->fill_back = fill_back;
     this->back_color = back_color;
@@ -899,10 +895,8 @@ long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, 
 }
 
 long TTextPanel::setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char** text_list, short text_count) {
-    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0
-    if (!TPanel::setup(area, parent, x, y, w, h, 0)) {
-        return 0;
-    }
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C2F0, pnl_txt.cpp.asm @ 0x0047C2F0
+    TPanel::setup(area, parent, x, y, w, h, 0);
 
     this->fill_back = fill_back;
     this->back_color = back_color;
@@ -934,7 +928,7 @@ void TTextPanel::set_fill_back(int fill_back, uchar back_color) {
 }
 
 void TTextPanel::set_back_pic(char* back_pic_name) {
-    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CC10
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047CC10, pnl_txt.cpp.asm @ 0x0047CC10
     if (this->back_pic) {
         delete this->back_pic;
         this->back_pic = nullptr;
@@ -1267,7 +1261,7 @@ void TTextPanel::set_text(long param_1) {
 }
 
 void TTextPanel::set_text(char* param_1) {
-    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C560
+    // Fully verified. Source of truth: pnl_txt.cpp.decomp @ 0x0047C560, pnl_txt.cpp.asm @ 0x0047C560
     free_text_list(this);
 
     if (param_1 == nullptr) {

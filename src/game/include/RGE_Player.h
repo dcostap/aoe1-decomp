@@ -5,6 +5,7 @@
 class RGE_Player {
 public:
     RGE_Player();
+    RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer);
     RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3);
     RGE_Player(int param_1, RGE_Game_World* world, uchar player_id);
 
