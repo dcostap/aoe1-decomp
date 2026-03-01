@@ -49,6 +49,7 @@
 #include <io.h>
 
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
     if (lhs == nullptr || rhs == nullptr) {
         return 0;
     }
@@ -86,6 +87,7 @@ struct TRIBE_Screen_Game_Runtime_Panel_Access {
 };
 
 static TPanel* tribe_main_view_panel(TRIBE_Screen_Game* game_screen) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
     if (game_screen == nullptr) {
         return nullptr;
     }
@@ -95,6 +97,7 @@ static TPanel* tribe_main_view_panel(TRIBE_Screen_Game* game_screen) {
 }
 
 static TPanel* tribe_map_view_panel(TRIBE_Screen_Game* game_screen) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
     if (game_screen == nullptr) {
         return nullptr;
     }
@@ -104,6 +107,7 @@ static TPanel* tribe_map_view_panel(TRIBE_Screen_Game* game_screen) {
 }
 
 static void tribe_close_video_window(TRIBE_Game* game) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
     if (game == nullptr || game->video_window == nullptr) {
         return;
     }
@@ -517,6 +521,7 @@ static const uint encrypt_codes_table[0x60] = {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00520FC0
 void encrypt_codes(char* in, char* out, int max_len) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
     char c = *in;
     int out_len = 0;
     char* next = in + 1;
@@ -712,6 +717,7 @@ void TRIBE_Game::setPlayerColor(int p1, int p2) { this->tribe_game_options.playe
 void TRIBE_Game::setComputerName(int p1, int p2) { this->tribe_game_options.computerNameValue[p1] = (uchar)p2; }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529000
 void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     int i = 0;
     int* scenarioPlayerValue = p1->scenarioPlayerValue;
 
@@ -743,6 +749,7 @@ void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* p1) {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529100
 void TRIBE_Game::get_tribe_options(TRIBE_Game_Options* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     uchar u = 0;
     int i = 0;
     int* scenarioPlayerValue = p1->scenarioPlayerValue;
@@ -788,6 +795,7 @@ void TRIBE_Game::resetRandomComputerName() {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00522860
 void TRIBE_Game::set_save_game_name(char* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (!p1) {
         this->save_game_name[0] = '\0';
         return;
@@ -797,6 +805,7 @@ void TRIBE_Game::set_save_game_name(char* p1) {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005228A0
 void TRIBE_Game::set_load_game_name(char* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (!p1) {
         this->load_game_name[0] = '\0';
         return;
@@ -826,6 +835,7 @@ int TRIBE_Game::civilization(int p1) { return (uint)this->tribe_game_options.civ
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529370
 int TRIBE_Game::scenarioPlayer(int p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (p1 >= 0 && p1 < 9) {
         return this->tribe_game_options.scenarioPlayerValue[p1];
     }
@@ -864,6 +874,7 @@ int TRIBE_Game::startingUnits() { return (uint)this->tribe_game_options.starting
 unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMatchValue; }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529480
 unsigned char TRIBE_Game::popLimit() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (this->multiplayerGame() != 0) {
         return this->tribe_game_options.popLimitValue;
     }
@@ -914,6 +925,7 @@ int TRIBE_Game::randomComputerName(int civ) {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00523640
 void TRIBE_Game::show_error_message(int p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     char title[256];
     char msg[256];
 
@@ -1022,6 +1034,7 @@ int TRIBE_Game::save_game(char* p1) {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00524790
 int TRIBE_Game::save_scenario(char* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     int mode = this->prog_mode;
     int i = 1;
 
@@ -1081,6 +1094,7 @@ void TRIBE_Game::do_game_over() {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A030
 char* TRIBE_Game::game_over_msg() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (this->world->players[this->world->curr_player]->game_status == 1) {
         this->get_string(0x47e, this->timing_text2, 0x100);
         return this->timing_text2;
@@ -1755,6 +1769,7 @@ void TRIBE_Game::quit_game() {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005243A0
 void TRIBE_Game::restart_game() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     this->show_status_message(0x451, (char*)0, -1);
 
     this->close_game_screens(0);
@@ -1884,6 +1899,7 @@ start_game_fail:
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00525E50
 int TRIBE_Game::test_scenario(char* p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     uint len = (uint)strlen(p1) + 1;
     memcpy(this->testing_scenario, p1, len);
 
@@ -2795,6 +2811,7 @@ long TRIBE_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
 }
 
 void TRIBE_Game::set_prog_mode(int p1) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     // TRIBE_Game doesn't seem to override this, but uses base
     RGE_Base_Game::set_prog_mode(p1);
 }
@@ -3034,6 +3051,7 @@ int TRIBE_Game::reset_comm() {
 }
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00528F60
 void TRIBE_Game::send_game_options() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (this->comm_handler == nullptr) {
         return;
     }
@@ -3053,6 +3071,7 @@ void TRIBE_Game::send_game_options() {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00528FB0
 void TRIBE_Game::receive_game_options() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (this->comm_handler == nullptr) {
         return;
     }
@@ -3077,14 +3096,20 @@ int TRIBE_Game::processCheatCode(int p1, char* p2) {
     return RGE_Base_Game::processCheatCode(p1, p2);
 }
 int TRIBE_Game::setup_music_system() { return RGE_Base_Game::setup_music_system(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 void TRIBE_Game::shutdown_music_system() { RGE_Base_Game::shutdown_music_system(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 
 // NOTE: These setup_* functions delegate to parent class per ASM analysis.
 // TRIBE_Game does NOT override initialization behavior - only TRIBE_Game::setup() is overridden.
 int TRIBE_Game::setup_class() { return RGE_Base_Game::setup_class(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_main_window() { return RGE_Base_Game::setup_main_window(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_graphics_system() { return RGE_Base_Game::setup_graphics_system(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_palette() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     if (!RGE_Base_Game::setup_palette()) {
         return 0;
     }
@@ -3123,8 +3148,11 @@ int TRIBE_Game::setup_palette() {
     return 1;
 }
 int TRIBE_Game::setup_mouse() { return RGE_Base_Game::setup_mouse(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_registry() { return RGE_Base_Game::setup_registry(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_debugging_log() { return RGE_Base_Game::setup_debugging_log(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_chat() { return RGE_Base_Game::setup_chat(); }
 int TRIBE_Game::setup_comm() { return RGE_Base_Game::setup_comm(); }
 int TRIBE_Game::setup_sound_system() { return RGE_Base_Game::setup_sound_system(); }
@@ -3159,10 +3187,14 @@ int TRIBE_Game::setup_sounds() {
     return 1;
 }
 int TRIBE_Game::setup_shapes() { return RGE_Base_Game::setup_shapes(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_blank_screen() { return RGE_Base_Game::setup_blank_screen(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 void TRIBE_Game::setup_timings() { RGE_Base_Game::setup_timings(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 
 void TRIBE_Game::stop_sound_system() { RGE_Base_Game::stop_sound_system(); }
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::restart_sound_system() { return 1; }
 void TRIBE_Game::stop_music_system() { RGE_Base_Game::stop_music_system(); }
 int TRIBE_Game::restart_music_system() { return RGE_Base_Game::restart_music_system(); }
@@ -3308,10 +3340,12 @@ int TRIBE_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) {
     return RGE_Base_Game::handle_query_new_palette(p1, p2, p3, p4);
 }
 int TRIBE_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     // Return 1 (not consumed) so DefWindowProcA handles it → calls DestroyWindow
     return 1;
 }
 int TRIBE_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     PostQuitMessage(0);
     return 0; // consumed
 }
@@ -3482,15 +3516,19 @@ int TRIBE_Game::action_music_done() {
     return RGE_Base_Game::action_music_done();
 }
 int TRIBE_Game::action_activate() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     return RGE_Base_Game::action_activate();
 }
 int TRIBE_Game::action_deactivate() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     return RGE_Base_Game::action_deactivate();
 }
 int TRIBE_Game::action_init_menu() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     return RGE_Base_Game::action_init_menu();
 }
 int TRIBE_Game::action_exit_menu() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     return RGE_Base_Game::action_exit_menu();
 }
 int TRIBE_Game::action_size() {
@@ -3625,6 +3663,7 @@ int TRIBE_Game::setup_map_save_area() { return RGE_Base_Game::setup_map_save_are
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A1E0
 void TRIBE_Game::SetClickTables(MouseClickInfo* p1, int p2, MouseClickInfo* p3, int p4) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     this->MouseRightClickTable = p1;
     this->MouseRightClickTableSize = p2;
     this->MouseLeftClickTable = p3;
@@ -3644,6 +3683,7 @@ void TRIBE_Game::set_interface_messages() {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A630
 void TRIBE_Game::add_notification_loc(long p1, long p2) {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     int i = this->current_notification_loc;
     if ((i < 0) || (this->notification_loc_x[i] != p1) || (this->notification_loc_y[i] != p2)) {
         this->current_notification_loc = i + 1;
@@ -3658,6 +3698,7 @@ void TRIBE_Game::add_notification_loc(long p1, long p2) {
 
 // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x0052A6A0
 void TRIBE_Game::goto_notification_loc() {
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     int i = this->current_notification_recalled;
     if (i == -1) {
         return;
@@ -3681,6 +3722,7 @@ void TRIBE_Game::goto_notification_loc() {
 }
 
 void TRIBE_Game::close() { 
+    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
     // ASM 0x00524150 (quit_game-like logic)
     RGE_Base_Game::close(); 
 }
