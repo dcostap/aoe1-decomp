@@ -610,7 +610,6 @@ void TMousePointer::draw(int param_1) {
                 this->LastDrawTime = now;
 
                 if (this->save_area_valid != 0 &&
-                    this->restoreSurface != nullptr &&
                     this->restoreSurface != this->PrimarySurface) {
                     HRESULT hr = this->restoreSurface->Blt(&this->restore_rect, this->save_area->DrawSurface,
                         &this->save_rect, DDBLT_WAIT, nullptr);
