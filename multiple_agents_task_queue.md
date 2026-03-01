@@ -3072,7 +3072,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 217 — AI module TODO cleanup: retire remaining stubs in ConstructionAIModule + TribeConstructionAIModule + BuildAIModule
 - [x] Assigned to agent
-- [ ] Finished
+- [x] Finished
+- Status note: verified complete on current `master` — scoped files contain 0 TODO/STUB markers.
 - Assignment note: worker-2 (`aoe1_clone_2`)
 - Goal: replace all remaining TODO stubs in the construction and build AI modules with source-backed implementations from the decomp.
 - Where: `ConstructionAIModule.cpp`, `TribeConstructionAIModule.cpp`, `BuildAIModule.cpp`
