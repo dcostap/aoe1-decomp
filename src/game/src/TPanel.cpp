@@ -301,7 +301,7 @@ long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param
 
     return 1;
 }
-// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464C50
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00464C50, panel.cpp.asm @ 0x00464C50
 void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::set_rect(long,long,long,long)`).
     this->pnl_wid = param_3;
@@ -331,8 +331,8 @@ void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     if (this->clip_rect.top < 0) this->clip_rect.top = 0;
 
     if (this->render_area) {
-        if (this->render_area->Width > 0 && this->clip_rect.right >= this->render_area->Width) this->clip_rect.right = this->render_area->Width - 1;
-        if (this->render_area->Height > 0 && this->clip_rect.bottom >= this->render_area->Height) this->clip_rect.bottom = this->render_area->Height - 1;
+        if (this->clip_rect.right >= this->render_area->Width) this->clip_rect.right = this->render_area->Width - 1;
+        if (this->clip_rect.bottom >= this->render_area->Height) this->clip_rect.bottom = this->render_area->Height - 1;
     }
 
     if (this->clip_rgn) {
@@ -555,10 +555,9 @@ void TPanel::draw_rect(tagRECT* param_1) {
     this->clip_rect = save;
 }
 
-// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465220
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465220, panel.cpp.asm @ 0x00465220
 void TPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_offset`).
-    if (!param_3) return;
     this->pnl_x += param_1;
     this->pnl_y += param_2;
     tagRECT save = this->clip_rect;
@@ -577,7 +576,7 @@ void TPanel::draw_rect2(tagRECT* param_1) {
     this->draw_rect2_flag = 0;
 }
 
-// Fully verified. Source of truth: panel.cpp.decomp @ 0x004652F0
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x004652F0, panel.cpp.asm @ 0x004652F0
 void TPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_offset2`).
     this->draw_rect2_flag = 1;
@@ -876,7 +875,7 @@ long TPanel::handle_idle() {
 
     return 0;
 }
-// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465820
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00465820, panel.cpp.asm @ 0x00465820
 long TPanel::handle_size(long param_1, long param_2) {
     // Source of truth: `panel.cpp.asm/.decomp` (`TPanel::handle_size`).
     // Numeric mode values used by the original layout logic:
@@ -1498,9 +1497,9 @@ void TPanel::setClipRectangle(tagRECT rect) {
     this->clip_rect = rect;
 }
 
-// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350
+// Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350, panel.cpp.asm @ 0x00466350
 int TPanel::bound_point(long* param_1, long* param_2) {
-    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350 (TPanel::bound_point).
+    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00466350, panel.cpp.asm @ 0x00466350.
     int iVar1 = 0;
 
     int iVar2 = this->clip_rect.left + 1;

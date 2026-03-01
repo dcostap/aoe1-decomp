@@ -1679,7 +1679,7 @@ void TDrawArea::PtrSurfaceCopy(TDrawArea* src, long src_x, long src_y, tagRECT* 
     if (locked_srcf) src->Unlock((char*)"PtrSurfaceCopy2");
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445840
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445840, drawarea.cpp.asm @ 0x00445840
 void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, uchar color) {
     if (x1 == x2) {
         int y = y1;
@@ -2040,7 +2040,7 @@ void TDrawArea::SetPixel(long x, long y, uchar color) {
     drawarea_store_pixel(this->Bits + off + x * bytes_per_pixel, bytes_per_pixel, px);
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004459A0
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004459A0, drawarea.cpp.asm @ 0x004459A0
 void TDrawArea::DrawRect(long x1, long y1, long x2, long y2, uchar color) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2053,13 +2053,12 @@ void TDrawArea::DrawRect(long x1, long y1, long x2, long y2, uchar color) {
     this->DrawVertLine(x2, y1, h, color);
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445A40
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445A40, drawarea.cpp.asm @ 0x00445A40
 void TDrawArea::DrawRect(tagRECT* rect, uchar color) {
-    if (!rect) return;
     this->DrawRect(rect->left, rect->top, rect->right, rect->bottom, color);
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445C70
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445C70, drawarea.cpp.asm @ 0x00445C70
 void TDrawArea::DrawBevel(long x1, long y1, long x2, long y2, uchar c_tl, uchar c_br) {
     normalize_inclusive(&x1, &x2);
     normalize_inclusive(&y1, &y2);
@@ -2375,7 +2374,7 @@ void TDrawArea::Copy(TDrawArea* dest, long x, long y, tagRECT* src_rect, int fla
     dest->DrawSurface->Blt(&dr, this->DrawSurface, &sr, blt_flags, NULL);
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446220
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00446220, drawarea.cpp.asm @ 0x00446220
 void TDrawArea::SetShadowTable(RGE_Color_Table* table) {
     this->shadow_color_table = table;
 }
