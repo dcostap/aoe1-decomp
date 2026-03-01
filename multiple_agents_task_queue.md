@@ -6040,37 +6040,37 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 496
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of VictoryConditionRuleSystem::execute (236 lines, line 364 of TribeStrategyAIModule.cpp), TDigital::load (241 lines, line 422 of Sounddrv.cpp), and RESFILE_build_res_file (236 lines, line 397 of Res_file.cpp). Three different subsystems (AI victory, audio, resources) with complex parsing logic.
 - **Done when**: All 3 functions verified against ASM, build passes, pushed to master.
 
 ## Task 497
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of RGE_RMM_Terrain_Generator::base_terrain_generate (242 lines, line 279) and RGE_RMM_Land_Generator::base_land_generate (159 lines, line 172). Reference terrain.cpp.asm and land_gen.cpp.asm. Focus on terrain generation algorithms and random seed usage.
 - **Done when**: Both functions verified against ASM, build passes, pushed to master.
 
 ## Task 498
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of input/dropdown panels: TDropDownPanel::set_mode (213 lines, line 186 of Pnl_drop.cpp), TInputPanel::key_down_action (195 lines, line 709 of Pnl_inp.cpp), TScrollBarPanel::mouse_left_move_action (153 lines, line 578 of Pnl_scbr.cpp). Focus on input handling parity.
 - **Done when**: All 3 functions verified against ASM, build passes, pushed to master.
 
 ## Task 499
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of rendering: TRIBE_Scenario_Editor_Panel_Object::draw (184 lines, line 58 of spnl_obj.cpp), RGE_Diamond_Map::draw_tile (173 lines, line 680 of RGE_Diamond_Map.cpp), Time_Line_Panel::draw_timeline (162 lines, line 1038 of Time_Line_Panel.cpp). Focus on coordinate calculations and draw offsets.
 - **Done when**: All 3 functions verified against ASM, build passes, pushed to master.
 
 ## Task 500
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of action updates: TRIBE_Action_Repair::update (165 lines, line 194), TRIBE_Action_Convert::update (159 lines, line 263), RGE_Action_Attack::update (152 lines, line 303). These are combat/interaction state machines. Reference the corresponding .asm files.
 - **Done when**: All 3 functions verified against ASM, build passes, pushed to master.
 
 ## Task 501
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of pathfinding: PathingSystem::copyPath (161 lines, line 523) and PathingSystem::passable (149 lines, line 331) in pathsys.cpp. Reference pathsys.cpp.asm. Focus on boundary conditions, array indexing, and passability checks.
 - **Done when**: Both functions verified against ASM, build passes, pushed to master.
 
