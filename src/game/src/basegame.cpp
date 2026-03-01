@@ -96,6 +96,19 @@ static int speed_val1 = 0;
 static int speed_val2 = 0;
 static FILE* fps_log = nullptr;
 
+static long basegame_ftol(float value) {
+#if defined(_MSC_VER) && defined(_M_IX86)
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
+#else
+    return (long)value;
+#endif
+}
+
 static int cmd_has_token(const char* cmd_line_upper, const char* token) {
     // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
     return (cmd_line_upper != nullptr && token != nullptr && strstr(cmd_line_upper, token) != nullptr) ? 1 : 0;
@@ -350,24 +363,22 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
 }
 
 RGE_Base_Game::~RGE_Base_Game() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C270
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor start");
-    CUSTOM_DEBUG_END
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041C270
+    if (do_debug_random != 0) {
+        debug_random_write();
+        dump_vismap_log();
+    }
 
-    // Save settings to registry before cleanup
-    if (this->registry && this->draw_system) {
+    if (this->draw_system != nullptr) {
         this->registry->RegSetInt(1, "Screen Size", this->draw_system->ScreenWidth);
     }
-    if (this->registry) {
-        this->registry->RegSetInt(1, "Rollover Text", 2 - (this->rollover != 0 ? 1 : 0));
-        int mouse_style = (this->prog_info && this->prog_info->interface_style == 2) ? 2 : 1;
-        this->registry->RegSetInt(1, "Mouse Style", mouse_style);
-        this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
-        if (this->prog_info) {
-            this->registry->RegSetInt(1, "Scroll Speed", this->prog_info->mouse_scroll_interval);
-        }
-    }
+    this->registry->RegSetInt(1, "Rollover Text", 2 - (this->rollover != 0 ? 1 : 0));
+    this->registry->RegSetInt(1, "Mouse Style", (this->prog_info->interface_style == 2) ? 2 : 1);
+    this->registry->RegSetInt(1, "Game Speed", basegame_ftol(this->game_speed * 10.0f));
+    this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
+    this->registry->RegSetInt(1, "Path Finding", (int)this->pathFinding() + 1);
+    this->registry->RegSetInt(1, "MP Path Finding", (int)this->mpPathFinding() + 1);
+    this->registry->RegSetInt(1, "Scroll Speed", this->prog_info->mouse_scroll_interval);
 
     // Close log files
     if (actionFile != nullptr) {
@@ -389,40 +400,39 @@ RGE_Base_Game::~RGE_Base_Game() {
         this->scenario_info = nullptr;
     }
 
-    // Delete player game info
     if (this->player_game_info != nullptr) {
+        int game_file_num = this->registry->RegGetInt(0, "Game File Number");
+        if (game_file_num >= 0) {
+            char filename[16];
+            sprintf(filename, "game%d.nfo", this->registry->RegGetInt(0, "Game File Number"));
+            this->player_game_info->save(filename);
+        }
         delete this->player_game_info;
         this->player_game_info = nullptr;
     }
 
     this->prog_mode = 0;
 
-    // Delete world
     if (this->world != nullptr) {
-        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: deleting world");
         delete this->world;
         this->world = nullptr;
     }
 
-    // Delete map save area
     if (this->map_save_area != nullptr) {
         delete this->map_save_area;
         this->map_save_area = nullptr;
     }
 
-    // Delete mouse pointer
     if (this->mouse_pointer != nullptr) {
         delete this->mouse_pointer;
         this->mouse_pointer = nullptr;
     }
 
-    // Delete drive info
     if (driveInfo != nullptr) {
         delete driveInfo;
         driveInfo = nullptr;
     }
 
-    // Delete comm handler
     if (this->comm_handler != nullptr) {
         delete this->comm_handler;
         this->comm_handler = nullptr;
@@ -445,42 +455,11 @@ RGE_Base_Game::~RGE_Base_Game() {
         this->fonts = nullptr;
     }
 
-    // Stop sound system
     this->stop_sound_system();
-
-    // Delete sounds array
-    if (this->sounds != nullptr) {
-        for (int i = 0; i < this->sound_num; i++) {
-            if (this->sounds[i] != nullptr) {
-                delete this->sounds[i];
-                this->sounds[i] = nullptr;
-            }
-        }
-        free(this->sounds);
-        this->sounds = nullptr;
-    }
-
-    // Delete sound system
-    if (this->sound_system != nullptr) {
-        delete this->sound_system;
-        this->sound_system = nullptr;
-        sound_driver = nullptr;
-    }
-
-    // Delete music system
-    if (this->music_system != nullptr) {
-        delete this->music_system;
-        this->music_system = nullptr;
-    }
-
-    // Destroy blank screen
-    if (panel_system) {
-        panel_system->destroyPanel((char*)"Blank Screen");
-    }
+    panel_system->destroyPanel((char*)"Blank Screen");
 
     // Delete draw system
     if (this->draw_system != nullptr) {
-        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: deleting draw system");
         delete this->draw_system;
         this->draw_system = nullptr;
         this->draw_area = nullptr;
@@ -518,8 +497,16 @@ RGE_Base_Game::~RGE_Base_Game() {
 
     // Destroy window
     if (this->prog_window != nullptr) {
-        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: destroying window");
         DestroyWindow((HWND)this->prog_window);
+    }
+
+    char help_window_title[256];
+    this->get_string(0x3eb, help_window_title, sizeof(help_window_title));
+    if (help_window_title[0] != '\0') {
+        HWND help_window = FindWindowA("MS_WINHELP", help_window_title);
+        if (help_window != nullptr) {
+            SendMessageA(help_window, WM_CLOSE, 0, 0);
+        }
     }
 
     // Free string table
@@ -544,15 +531,6 @@ RGE_Base_Game::~RGE_Base_Game() {
         free(this->shapes);
         this->shapes = nullptr;
     }
-
-    // Delete panel system
-    if (panel_system) {
-        CUSTOM_DEBUG_LOG("RGE_Base_Game dtor: deleting panel system");
-        delete panel_system;
-        panel_system = nullptr;
-    }
-
-    CUSTOM_DEBUG_LOG("RGE_Base_Game::~RGE_Base_Game: destructor end");
 }
 
 void RGE_Base_Game::setVersion(float p1) {
@@ -672,105 +650,76 @@ int RGE_Base_Game::setup_debugging_log() {
 }
 
 int RGE_Base_Game::setup() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041BAA0
-    // ASM order: srand -> registry -> empires.exe check -> cmd_options -> language.dll -> memory check
-    //            -> music -> expiration -> multi_copies -> DX version -> system params -> setup chain
-
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_FUNC_ENTER();
-CUSTOM_DEBUG_END
-
-    // Random seed initialization (ASM 0x0041bacb)
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041BAA0
     debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522));
 
-    // Registry settings
-    if (this->registry) {
-        int screen_size = this->registry->RegGetInt(1, "Screen Size");
-        if (screen_size == 640) {
-            this->prog_info->main_wid = 640;
-            this->prog_info->main_hgt = 480;
-        } else if (screen_size == 800) {
-            this->prog_info->main_wid = 800;
-            this->prog_info->main_hgt = 600;
-        } else if (screen_size == 1024) {
-            this->prog_info->main_wid = 1024;
-            this->prog_info->main_hgt = 768;
-        } else if (screen_size == 1280) {
-            this->prog_info->main_wid = 1280;
-            this->prog_info->main_hgt = 1024;
-        }
-
-        this->rollover = this->registry->RegGetInt(1, "Rollover Text") != 2;
-        
-        int interface_style_reg = this->registry->RegGetInt(1, "Mouse Style");
-        if (interface_style_reg == 2) {
-            this->prog_info->interface_style = 2;
-        } else if (interface_style_reg == 1) {
-            this->prog_info->interface_style = 1;
-        }
-
-        int game_speed_reg = this->registry->RegGetInt(1, "Game Speed");
-        if (game_speed_reg != -1) {
-            this->game_speed = (float)game_speed_reg * 0.01f;
-        }
-
-        int difficulty_reg = this->registry->RegGetInt(1, "Difficulty");
-        if (difficulty_reg != -1) {
-            this->single_player_difficulty = difficulty_reg;
-        }
-
-        int pf_reg = this->registry->RegGetInt(1, "Path Finding");
-        if (pf_reg >= 1 && pf_reg <= 3) {
-            this->setPathFinding((unsigned char)(pf_reg - 1));
-        }
-
-        int mp_pf_reg = this->registry->RegGetInt(1, "MP Path Finding");
-        if (mp_pf_reg >= 1 && mp_pf_reg <= 3) {
-            this->setMpPathFinding((unsigned char)(mp_pf_reg - 1));
-        }
-
-        int scroll_speed = this->registry->RegGetInt(1, "Scroll Speed");
-        if (scroll_speed != -1 && scroll_speed >= 10 && scroll_speed <= 200) {
-            this->prog_info->mouse_scroll_interval = scroll_speed;
-            this->prog_info->key_scroll_interval = scroll_speed;
-        }
+    int screen_size = this->registry->RegGetInt(1, "Screen Size");
+    if (screen_size == 640) {
+        this->prog_info->main_wid = 640;
+        this->prog_info->main_hgt = 480;
+    } else if (screen_size == 800) {
+        this->prog_info->main_wid = 800;
+        this->prog_info->main_hgt = 600;
+    } else if (screen_size == 1024) {
+        this->prog_info->main_wid = 1024;
+        this->prog_info->main_hgt = 768;
+    } else if (screen_size == 1280) {
+        this->prog_info->main_wid = 1280;
+        this->prog_info->main_hgt = 1024;
     }
 
-    // Check if empires.exe exists (minimal version check)
-    // NOTE: Also accept empiresx.exe for decompiled version
+    this->rollover = this->registry->RegGetInt(1, "Rollover Text") != 2;
+
+    int interface_style_reg = this->registry->RegGetInt(1, "Mouse Style");
+    if (interface_style_reg == 2) {
+        this->prog_info->interface_style = 2;
+    } else if (interface_style_reg == 1) {
+        this->prog_info->interface_style = 1;
+    }
+
+    int game_speed_reg = this->registry->RegGetInt(1, "Game Speed");
+    if (game_speed_reg != -1) {
+        this->game_speed = (float)game_speed_reg * 0.1f;
+    }
+
+    int difficulty_reg = this->registry->RegGetInt(1, "Difficulty");
+    if (difficulty_reg != -1) {
+        this->single_player_difficulty = difficulty_reg;
+    }
+
+    int pf_reg = this->registry->RegGetInt(1, "Path Finding");
+    if (pf_reg >= 1 && pf_reg <= 3) {
+        this->setPathFinding((unsigned char)(pf_reg - 1));
+    }
+
+    int mp_pf_reg = this->registry->RegGetInt(1, "MP Path Finding");
+    if (mp_pf_reg >= 1 && mp_pf_reg <= 3) {
+        this->setMpPathFinding((unsigned char)(mp_pf_reg - 1));
+    }
+
+    int scroll_speed = this->registry->RegGetInt(1, "Scroll Speed");
+    if (scroll_speed != -1 && scroll_speed >= 10 && scroll_speed <= 200) {
+        this->prog_info->mouse_scroll_interval = scroll_speed;
+        this->prog_info->key_scroll_interval = scroll_speed;
+    }
+
     struct _finddata_t file_info;
-    if (_findfirst("empires.exe", &file_info) == -1 &&
-        _findfirst("empiresx.exe", &file_info) == -1) {
-CUSTOM_DEBUG_BEGIN
-        char cwd[260];
-        _getcwd(cwd, sizeof(cwd));
-        CUSTOM_DEBUG_LOG_FMT("Failed empires.exe check. CWD: %s", cwd);
-CUSTOM_DEBUG_END
+    if (_findfirst("empires.exe", &file_info) == -1) {
         this->error_code = 0x17;
         return 0;
     }
 
-    // Call setup_cmd_options (offset 0x64 in vtable)
     if (!this->setup_cmd_options()) {
         this->error_code = 2;
         return 0;
     }
 
-    if (do_fps_log != 0) {
-        fps_log = fopen("c:\\fps.txt", "w");
-        if (fps_log == nullptr) {
-            do_fps_log = 0;
-        }
-    }
-
-    // Source of truth: `basegame.cpp.decomp` loads exactly `this->string_dll_name`.
     StringTable = LoadLibraryA(this->string_dll_name);
     if (!StringTable) {
         this->error_code = 1;
         return 0;
     }
 
-    // Check Memory
     MEMORYSTATUS memStatus;
     GlobalMemoryStatus(&memStatus);
     if ((((memStatus.dwTotalPageFile < 0x1400000) || (memStatus.dwTotalVirtual < 0xa00000)) &&
@@ -780,24 +729,21 @@ CUSTOM_DEBUG_END
         return 0;
     }
 
-    // Music setup
-    if (!this->setup_music_system()) {
-        // ...
+    this->setup_music_system();
+    if (debugActions == 1) {
+        actionFile = fopen("c:\\aoeact.txt", "w");
     }
 
-    // Expiration check (ASM 0x0041bd56)
     if (this->prog_info->check_expiration && !this->check_expiration()) {
         this->error_code = 3;
         return 0;
     }
 
-    // Multi-copy check (ASM 0x0041bd7a) - NOTE: this is after expiration check per ASM order
     if (this->prog_info->check_multi_copies && !this->check_multi_copies()) {
         this->error_code = 4;
         return 0;
     }
 
-    // DX Version check (ASM 0x0041bd9e-0x0041bdd2)
     extern void GetDXVersion(unsigned long*, unsigned long*);
     if (!this->check_prog_argument("NODXCHECK")) {
         unsigned long dx_version, dx_platform;
@@ -808,26 +754,16 @@ CUSTOM_DEBUG_END
         }
     }
 
-    // System Parameter updates (ASM 0x0041bdd7)
-    SystemParametersInfoA(SPI_GETMOUSE, 0, &this->screen_saver_enabled, 0); // ESI + 0x38
+    SystemParametersInfoA(0x10, 0, &this->screen_saver_enabled, 0);
     if (this->screen_saver_enabled != 0) {
-        SystemParametersInfoA(SPI_SETMOUSE, 0, &this->screen_saver_enabled, 0);
+        SystemParametersInfoA(0x11, 0, nullptr, 2);
     }
-    SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &this->low_power_enabled, 0); // ESI + 0x3C
+    SystemParametersInfoA(0x53, 0, &this->low_power_enabled, 0);
     if (this->low_power_enabled != 0) {
-        SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, &this->low_power_enabled, 0);
+        SystemParametersInfoA(0x55, 0, nullptr, 2);
     }
 
-    // CD check (ASM 0x0041be15)
-    this->save_check_for_cd = this->check_for_cd(0); // ESI + 0x9AC
-
-    // Initialization sequence
-    if (!panel_system) {
-        panel_system = new TPanelSystem;
-        memset(panel_system, 0, sizeof(TPanelSystem));
-        panel_system->InputEnabled = 1;
-        panel_system->ImeEnabled = 1;
-    }
+    this->save_check_for_cd = this->check_for_cd(0);
 
     if (!this->setup_class()) {
         this->error_code = 5;
@@ -842,12 +778,6 @@ CUSTOM_DEBUG_END
     if (!this->setup_graphics_system()) {
         if (this->error_code == 0) this->error_code = 7;
         return 0;
-    }
-
-    // Sync prog_info if fullscreen fell back to windowed inside Init
-    if (this->draw_system && this->draw_system->ScreenMode == 1 &&
-        this->prog_info->full_screen != 0) {
-        this->prog_info->full_screen = 0;
     }
 
     if (!this->setup_palette()) {
@@ -895,34 +825,69 @@ CUSTOM_DEBUG_END
         return 0;
     }
 
-    if (this->scenario_info == nullptr) {
-        char scenario_info_file[300];
-        sprintf(scenario_info_file, "%sscenario.inf", this->prog_info->scenario_dir);
-        this->scenario_info = new RGE_Scenario_File_Info(scenario_info_file);
-    }
-
-    // Drive Info (ASM 0x0041bf40)
     driveInfo = new (std::nothrow) DriveInformation();
     if (driveInfo == nullptr) {
         return 0;
     }
     
-    if (!this->setup_blank_screen()) { // vtable offset 0x9c (index 39)
+    if (!this->setup_blank_screen()) {
         this->error_code = 0xd;
         return 0;
     }
 
-    this->set_prog_mode(0); // vtable offset 0xc (index 3)
+    this->set_prog_mode(0);
     this->setup_timings();
-
-    this->handle_size((void*)this->prog_window, WM_SIZE, 0, 0);
+    this->handle_size((void*)this->prog_window, 0, 0, 0);
+    this->prog_ready = 1;
 
     ShowWindow((HWND)this->prog_window, SW_SHOW);
     SetFocus((HWND)this->prog_window);
-
     this->mouse_on();
+    this->is_timer = SetTimer((HWND)this->prog_window, 1, 0x32, nullptr);
 
-    this->is_timer = SetTimer((HWND)this->prog_window, 1, 0, NULL);
+    int game_file_number = this->registry->RegGetInt(0, "Game File Number");
+    char filename[260];
+    if (game_file_number < 0) {
+        for (int i = 0; i < 9999; ++i) {
+            sprintf(filename, "game%d.nfo", i);
+            if (_findfirst(filename, &file_info) == -1) {
+                this->registry->RegSetInt(0, "Game File Number", i);
+                this->player_game_info = new (std::nothrow) RGE_Game_Info(filename);
+                break;
+            }
+        }
+    } else {
+        sprintf(filename, "game%d.nfo", this->registry->RegGetInt(0, "Game File Number"));
+        this->player_game_info = new (std::nothrow) RGE_Game_Info(filename);
+    }
+
+    sprintf(filename, "%sscenario.inf", this->prog_info->scenario_dir);
+    this->scenario_info = new (std::nothrow) RGE_Scenario_File_Info(filename);
+
+    if (do_draw_log != 0) {
+        if (draw_log_name[0] == '\0') {
+            _OFSTRUCT of;
+            char draw_filename[256];
+            for (int i = 0; i < 1000; ++i) {
+                sprintf(draw_filename, "drawlog%d.txt", i);
+                if (OpenFile(draw_filename, &of, OF_EXIST) == -1) {
+                    draw_log = fopen(draw_filename, "w");
+                    strncpy(draw_log_name, draw_filename, sizeof(draw_log_name) - 1);
+                    draw_log_name[sizeof(draw_log_name) - 1] = '\0';
+                    break;
+                }
+            }
+        } else {
+            draw_log = fopen(draw_log_name, "w");
+        }
+    }
+
+    if (do_fps_log != 0) {
+        fps_log = fopen("c:\\fps.txt", "w");
+        if (fps_log == nullptr) {
+            do_fps_log = 0;
+        }
+    }
 
     return 1;
 }
@@ -1860,14 +1825,11 @@ void RGE_Base_Game::shutdown_music_system() {
     }
 }
 int RGE_Base_Game::setup_cmd_options() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041D0A0
-    if (this->prog_info == nullptr || this->prog_info->cmd_line == nullptr) {
-        return 1;
-    }
+    // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041D0A0
 
-    char cmd_line[1024];
-    strncpy(cmd_line, this->prog_info->cmd_line, sizeof(cmd_line) - 1);
-    cmd_line[sizeof(cmd_line) - 1] = '\0';
+    char cmd_line[256];
+    strncpy(cmd_line, this->prog_info->cmd_line, 0xFF);
+    cmd_line[0xFF] = '\0';
     CharUpperA(cmd_line);
 
     if (cmd_has_any3(cmd_line, "NOSTARTUP", "NO STARTUP", "NO_STARTUP") != 0) {
@@ -1914,10 +1876,10 @@ int RGE_Base_Game::setup_cmd_options() {
     }
 
     long parsed_value = 0;
-    if (cmd_parse_long_value(cmd_line, "RESEND1", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "RESEND1=", &parsed_value) != 0) {
         resend_adj1 = (int)parsed_value;
     }
-    if (cmd_parse_long_value(cmd_line, "RESEND2", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "RESEND2=", &parsed_value) != 0) {
         resend_adj2 = (int)parsed_value;
     }
 
@@ -2039,10 +2001,10 @@ int RGE_Base_Game::setup_cmd_options() {
     if (cmd_has_token(cmd_line, "COLORLOG") != 0) {
         do_color_log = 1;
     }
-    if (cmd_parse_long_value(cmd_line, "LOGAI", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "LOGAI=", &parsed_value) != 0) {
         specificAIPlayerToLog = (int)parsed_value;
     }
-    if (cmd_parse_long_value(cmd_line, "LOGDEBUG", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "LOGDEBUG=", &parsed_value) != 0) {
         logDebugID = (int)parsed_value;
     }
     if (cmd_has_token(cmd_line, "NOPATHCAP") != 0) {
@@ -2089,33 +2051,33 @@ int RGE_Base_Game::setup_cmd_options() {
         RESFILE_Set_Missing_Flag(1);
     }
 
-    char value_buf[512];
-    if (cmd_parse_value(cmd_line, "SCENARIOS", value_buf, sizeof(value_buf)) != 0) {
+    char value_buf[256];
+    if (cmd_parse_value(cmd_line, "SCENARIOS=", value_buf, sizeof(value_buf)) != 0) {
         strncpy(this->prog_info->scenario_dir, value_buf, sizeof(this->prog_info->scenario_dir) - 2);
         this->prog_info->scenario_dir[sizeof(this->prog_info->scenario_dir) - 2] = '\0';
         strcat(this->prog_info->scenario_dir, "\\");
     }
-    if (cmd_parse_value(cmd_line, "WORLD", value_buf, sizeof(value_buf)) != 0) {
+    if (cmd_parse_value(cmd_line, "WORLD=", value_buf, sizeof(value_buf)) != 0) {
         strncpy(this->prog_info->world_db_file, value_buf, sizeof(this->prog_info->world_db_file) - 1);
         this->prog_info->world_db_file[sizeof(this->prog_info->world_db_file) - 1] = '\0';
     }
-    if (cmd_parse_long_value(cmd_line, "FIXEDUPDATE", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "FIXEDUPDATE=", &parsed_value) != 0) {
         debug_timeGetTime_on = 1;
         do_fixed_update = 1;
         fixed_update_time = (int)parsed_value;
     }
-    if (cmd_parse_long_value(cmd_line, "AISPEED", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "AISPEED=", &parsed_value) != 0) {
         debug_timeGetTime_on = 1;
         do_fixed_update = 1;
         debug_timeGetTime_interval = (int)parsed_value;
     }
-    if (cmd_parse_long_value(cmd_line, "RANDOMGAME", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "RANDOMGAME=", &parsed_value) != 0) {
         this->random_game_seed = (int)parsed_value;
     }
-    if (cmd_parse_long_value(cmd_line, "RANDOMMAP", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "RANDOMMAP=", &parsed_value) != 0) {
         this->random_map_seed = (int)parsed_value;
     }
-    if (cmd_parse_value(cmd_line, "DRAWLOG", value_buf, sizeof(value_buf)) != 0) {
+    if (cmd_parse_value(cmd_line, "DRAWLOG=", value_buf, sizeof(value_buf)) != 0) {
         strncpy(draw_log_name, value_buf, sizeof(draw_log_name) - 1);
         draw_log_name[sizeof(draw_log_name) - 1] = '\0';
     }
@@ -2125,7 +2087,7 @@ int RGE_Base_Game::setup_cmd_options() {
     if (cmd_has_token(cmd_line, "SAFEDRAWLOG") != 0) {
         safe_draw_log = 1;
     }
-    if (cmd_parse_value(cmd_line, "DATA", value_buf, sizeof(value_buf)) != 0) {
+    if (cmd_parse_value(cmd_line, "DATA=", value_buf, sizeof(value_buf)) != 0) {
         strncpy(this->prog_info->game_data_file, value_buf, sizeof(this->prog_info->game_data_file) - 1);
         this->prog_info->game_data_file[sizeof(this->prog_info->game_data_file) - 1] = '\0';
     }
@@ -2159,10 +2121,10 @@ int RGE_Base_Game::setup_cmd_options() {
     if (cmd_has_token(cmd_line, "DEVELOPER") != 0) {
         this->setGameDeveloperMode(1);
     }
-    if (cmd_parse_long_value(cmd_line, "SPEED1", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "SPEED1=", &parsed_value) != 0) {
         speed_val1 = (int)parsed_value;
     }
-    if (cmd_parse_long_value(cmd_line, "SPEED2", &parsed_value) != 0) {
+    if (cmd_parse_long_value(cmd_line, "SPEED2=", &parsed_value) != 0) {
         speed_val2 = (int)parsed_value;
     }
     if ((this->prog_info->use_sound == 0) || cmd_has_any3(cmd_line, "NOMUSIC", "NO MUSIC", "NO_MUSIC") != 0) {
