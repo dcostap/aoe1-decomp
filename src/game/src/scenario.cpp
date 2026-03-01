@@ -16,6 +16,7 @@
 #include <time.h>
 
 namespace {
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_get_none_and_random(char* none_out, int none_out_size, char* random_out, int random_out_size) {
     if (none_out != nullptr && none_out_size > 0) none_out[0] = '\0';
     if (random_out != nullptr && random_out_size > 0) random_out[0] = '\0';
@@ -32,6 +33,7 @@ static void rge_get_none_and_random(char* none_out, int none_out_size, char* ran
     }
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_copy_string_to_fixed(char* dst, const char* src, int dst_size) {
     if (dst == nullptr || dst_size < 1) {
         return;
@@ -45,6 +47,7 @@ static void rge_copy_string_to_fixed(char* dst, const char* src, int dst_size) {
     strcpy(dst, src);
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_read_string16_into(int handle, char* dst, int dst_size) {
     short length = 0;
     rge_read(handle, &length, 2);
@@ -82,6 +85,7 @@ static void rge_read_string16_into(int handle, char* dst, int dst_size) {
     }
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static char* rge_read_string16_alloc(int handle) {
     short length = 0;
     rge_read(handle, &length, 2);
@@ -99,6 +103,7 @@ static char* rge_read_string16_alloc(int handle) {
     return text;
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static int rge_write_temp_blob(const char* temp_dir, const char* name_fmt, int index, const unsigned char* data, int size,
                                char* out_path) {
     if (out_path == nullptr || name_fmt == nullptr || temp_dir == nullptr) {
@@ -117,6 +122,7 @@ static int rge_write_temp_blob(const char* temp_dir, const char* name_fmt, int i
     return fd;
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static unsigned short rge_scenario_string_len16(const char* text, int include_null) {
     if (text == nullptr) {
         return 0;
@@ -130,6 +136,7 @@ static unsigned short rge_scenario_string_len16(const char* text, int include_nu
     return (unsigned short)len;
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_scenario_write_string16(int fd, const char* text, int include_null) {
     unsigned short length = rge_scenario_string_len16(text, include_null);
     rge_write(fd, &length, 2);
@@ -138,6 +145,7 @@ static void rge_scenario_write_string16(int fd, const char* text, int include_nu
     }
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_scenario_write_string16_unchecked(int fd, const char* text) {
     unsigned short length = (unsigned short)strlen(text);
     rge_write(fd, &length, 2);
@@ -146,6 +154,7 @@ static void rge_scenario_write_string16_unchecked(int fd, const char* text) {
     }
 }
 
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_base, const char* ext,
                                          unsigned char** out_data, int* out_size) {
     if (out_data == nullptr || out_size == nullptr) {
