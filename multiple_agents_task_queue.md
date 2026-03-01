@@ -2592,8 +2592,8 @@ Status note: implemented in commit `2af58df` (direct on `master`).
 
 ## Task 196 — TRIBE AI build-module dependency parity: retire helper stubs in `TribeBuildAIModule.cpp`
 - [x] Assigned to agent
-- [ ] Finished
-- Status note: assigned to `worker-2` (`aoe1_clone_4`) for execution.
+- [x] Finished
+- Status note: verified complete in `master` (helper stubs removed, helper/add-cancel methods fully verified).
 - Goal: remove helper-level TODO stubs currently short-circuiting AI build/train/research bookkeeping during in-game updates.
 - Implement:
   - Replace local helper stubs with source-backed behavior: `tribe_build_ai_detask`, `tribe_build_ai_is_moveable`, `tribe_build_ai_clear_area`, `tribe_build_ai_remove_lot`, `tribe_build_ai_update_needed_resources`.
@@ -4410,7 +4410,8 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 
 ## Task 315 — TPanel gap closure (panel — ~10 functions)
 - [x] Assigned to agent (Worker-2, clone_2)
-- [ ] Finished
+- [x] Finished
+- Status note: validated on current `master` snapshot — `TPanel.cpp` has no `TODO`/`STUB` markers and no remaining unverified function gaps in Task 315 scope.
 - Goal: TPanel.cpp has 122 verified functions but panel.cpp.decomp has 132 (gap=10). Also 1 TODO: STUB to remove. Close the remaining panel function gaps.
 - Implement: Read panel.cpp.decomp. Find unverified offsets not in TPanel.cpp. Transliterate. Remove the stub. Build with build.bat.
 - Where: `src/game/src/TPanel.cpp` + headers
