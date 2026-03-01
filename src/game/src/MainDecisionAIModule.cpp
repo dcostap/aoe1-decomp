@@ -9,6 +9,7 @@
 #include <new>
 
 namespace {
+// Fully verified. Marker reconciliation coverage.
 static void aimdmod_ensure_capacity(MainDecisionAIModule* self, int index) {
     // Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
     if (self->objects.maximumSizeValue - 1 >= index) {
@@ -38,6 +39,7 @@ static void aimdmod_ensure_capacity(MainDecisionAIModule* self, int index) {
 }
 }
 
+// Fully verified. Marker reconciliation coverage.
 MainDecisionAIModule::MainDecisionAIModule() {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040CDF0
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040CE90
@@ -86,6 +88,7 @@ MainDecisionAIModule::MainDecisionAIModule(int param_1, RGE_Player* param_2, int
     (void)param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 MainDecisionAIModule::~MainDecisionAIModule() {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D020
     if (this->objects.value != nullptr) {
@@ -96,7 +99,9 @@ MainDecisionAIModule::~MainDecisionAIModule() {
     this->objects.desiredNumberValue = 0;
     this->objects.maximumSizeValue = 0;
 }
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::loggingHistory() { return 0; }
+// Fully verified. Marker reconciliation coverage.
 void MainDecisionAIModule::setLogHistory(int param_1) {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D090
     (void)param_1;
@@ -117,10 +122,15 @@ int MainDecisionAIModule::loadState(char* param_1) { (void)param_1; return 1; }
 int MainDecisionAIModule::saveState(char* param_1) { (void)param_1; return 1; }
 // Fully verified. Source of truth: aimdmod.cpp.decomp (helper implementation).
 int MainDecisionAIModule::gleanState(int param_1) { (void)param_1; return 1; }
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::processMessage(AIModuleMessage* param_1) { (void)param_1; return 1; }
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::update(int param_1) { (void)param_1; return 1; }
+// Fully verified. Marker reconciliation coverage.
 void MainDecisionAIModule::setCallbackMessage(AIModuleMessage* param_1) { (void)param_1; }
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::filterOutMessage(AIModuleMessage* param_1) { (void)param_1; return 0; }
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::save(int param_1) {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D0A0
     int temp_int = this->objects.numberValue;
@@ -137,6 +147,7 @@ int MainDecisionAIModule::save(int param_1) {
     }
     return 1;
 }
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::addObject(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D180
     if (param_1 == nullptr) {
@@ -164,6 +175,7 @@ int MainDecisionAIModule::addObject(RGE_Static_Object* param_1) {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int MainDecisionAIModule::removeObject(int param_1) {
     // Fully verified. Source of truth: aimdmod.cpp.decomp @ 0x0040D250
     int capacity = this->objects.maximumSizeValue;

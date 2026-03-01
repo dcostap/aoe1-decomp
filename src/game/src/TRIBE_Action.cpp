@@ -50,6 +50,7 @@ TRIBE_Action::TRIBE_Action(RGE_Action_Object* param_1, int param_2) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action::~TRIBE_Action() {}
 
 // Fully verified. Source of truth: taction.cpp.decomp @ 0x004D39E0

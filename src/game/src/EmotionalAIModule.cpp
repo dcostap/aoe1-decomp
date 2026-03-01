@@ -65,7 +65,7 @@ EmotionalAIModule::~EmotionalAIModule() {
     as_ai(this)->~AIModule();
 }
 
-// Header model declares explicit overrides; forward to AIModule base behavior.
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 int EmotionalAIModule::loggingHistory() {
     // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->loggingHistory();

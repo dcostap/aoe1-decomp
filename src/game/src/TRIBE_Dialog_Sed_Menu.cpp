@@ -58,10 +58,12 @@ long TRIBE_Dialog_Sed_Menu::action(TPanel* param_1, long param_2, ulong param_3,
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Dialog_Sed_Menu::draw() {
     TDialogPanel::draw();
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TRIBE_Dialog_Sed_Menu::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     return TDialogPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }

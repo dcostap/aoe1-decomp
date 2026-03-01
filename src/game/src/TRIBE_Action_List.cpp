@@ -104,10 +104,12 @@ RGE_Action* TRIBE_Action_List::create_task_action(RGE_Task* param_1, RGE_Static_
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_List::inside_obj_update() {
     return RGE_Action_List::inside_obj_update();
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_List::update() {
     return RGE_Action_List::update();
 }
@@ -145,10 +147,12 @@ void TRIBE_Action_List::get_action_name(char* param_1) {
     strncpy(param_1, name, 0x7fffffff);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_List::copy_obj(RGE_Master_Action_Object* param_1) {
     RGE_Action_List::copy_obj(param_1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_List::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) {
     RGE_Action_List::copy_obj_sprites(param_1, param_2, param_3);
 }

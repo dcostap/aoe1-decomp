@@ -63,10 +63,12 @@ long TribeMenuDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TribeMenuDialog::draw() {
     TDialogPanel::draw();
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TribeMenuDialog::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     return TDialogPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }

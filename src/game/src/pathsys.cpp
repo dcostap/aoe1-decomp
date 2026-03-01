@@ -244,7 +244,7 @@ void PathingSystem::printToFile(char* path) {
             iVar6 = 0;
             if (0 < this->xSizeValue) {
                 do {
-                    fprintf(f, "---- ", iVar6); // 0x0046B417
+                    fprintf(f, "---- "); // 0x0046B417
                     iVar6 = iVar6 + 1;
                 } while (iVar6 < this->xSizeValue);
             }
@@ -1186,7 +1186,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             }
 
             // Heuristic newTotal (decomp structure preserved).
-            int iVar20 = this->MGP_costValue[uVar34][uVar10];
+            int neighborCost = this->MGP_costValue[uVar34][uVar10];
 
             // Distance from neighbor to goal using DiagionalDistance lookup (tile units * 16).
             int iVar23 = goalX;
@@ -1201,17 +1201,17 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 iVar31 = goalY;
                 iVar38 = bestPathPoint.y;
             }
-            unsigned int dx2 = (unsigned int)(iVar23 - iVar43);
-            unsigned int dy2 = (unsigned int)(iVar38 - iVar31);
+            unsigned int dxGoal = (unsigned int)(iVar23 - iVar43);
+            unsigned int dyGoal = (unsigned int)(iVar38 - iVar31);
             int diff2;
-            if ((int)dx2 < (int)dy2) {
-                diff2 = (int)(dy2 - dx2);
+            if ((int)dxGoal < (int)dyGoal) {
+                diff2 = (int)(dyGoal - dxGoal);
             } else {
-                diff2 = (int)(dx2 - dy2);
-                dx2 = dy2;
+                diff2 = (int)(dxGoal - dyGoal);
+                dxGoal = dyGoal;
             }
 
-            int newTotal = DiagionalDistance[dx2 & 0xff] + iVar20 + diff2 * 0x10;
+            int newTotal = DiagionalDistance[dxGoal & 0xff] + neighborCost + diff2 * 0x10;
 
             uchar* puVar12 = this->facetValue[bestPathPoint.x] + bestPathPoint.y;
             uchar prev = *puVar12;

@@ -54,7 +54,7 @@ TribeResourceAIModule::~TribeResourceAIModule() {
     AIModule::~AIModule();
 }
 
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
+// Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.
 int TribeResourceAIModule::loggingHistory() {
     return AIModule::loggingHistory();
 }

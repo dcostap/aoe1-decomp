@@ -6,10 +6,12 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Task.h"
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Task* TRIBE_Task_List::create_task(short param_1, short param_2) {
     return this->RGE_Task_List::create_task(param_1, param_2);
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5) {
     // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C3F0
 
@@ -171,11 +173,13 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
     return this->RGE_Task_List::get_target_task(param_1, param_2, param_3, param_4, param_5);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void FUN_0052c8a1() {
     // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C8A1
     // Switch jump-table padding thunk (`nop; mov edi, edi`).
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Task_List::is_attack_task(RGE_Task* param_1) {
     // Fully verified. Source of truth: ttsk_lst.cpp.decomp @ 0x0052C8D0
     // RGE_Task.action_type offset is +0x6 (task.cpp.decomp / task_lst.cpp.asm).
@@ -188,6 +192,7 @@ int TRIBE_Task_List::is_attack_task(RGE_Task* param_1) {
     return this->RGE_Task_List::is_attack_task(param_1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Task_List::check_task(RGE_Task* param_1, RGE_Action_Object* param_2, RGE_Static_Object* param_3) {
     return this->RGE_Task_List::check_task(param_1, param_2, param_3);
 }

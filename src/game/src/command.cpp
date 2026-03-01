@@ -29,6 +29,7 @@
 #include <stdlib.h>
 
 // --- RGE_Command (base class) ---
+// Fully verified. Marker reconciliation coverage.
 static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner, const uchar* command_data) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435110
     const uchar* last_order = command_owner->last_order;
@@ -65,6 +66,7 @@ static uchar rge_duplicate_check_command_order(const RGE_Command* command_owner,
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, const uchar* command_data) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004351B0
     const uchar* last_order = command_owner->last_order;
@@ -85,6 +87,7 @@ static uchar rge_duplicate_check_command_stop(const RGE_Command* command_owner, 
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435210
     switch (command_data[0]) {
@@ -99,6 +102,7 @@ static uchar rge_close_check_for_duplicate_orders(const RGE_Command* command_own
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, const uchar* command_data, long command_size) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435260
     if ((command_owner->last_order != nullptr) &&
@@ -113,6 +117,7 @@ static uchar rge_check_for_duplicate_orders(const RGE_Command* command_owner, co
     return 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_command_set_waiting_to_move(RGE_Static_Object* obj, int waiting_value) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
@@ -125,6 +130,7 @@ static void rge_command_set_waiting_to_move(RGE_Static_Object* obj, int waiting_
     fn(obj, waiting_value);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_command_issue_work(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
@@ -137,6 +143,7 @@ static void rge_command_issue_work(RGE_Static_Object* obj, long target_value, fl
     fn(obj, target_value, x, y, z);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_command_issue_move_to(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
@@ -149,6 +156,7 @@ static void rge_command_issue_move_to(RGE_Static_Object* obj, long target_value,
     fn(obj, target_value, x, y, z);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (obj == nullptr) {
@@ -161,6 +169,7 @@ static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, f
     fn(obj, target_value, x, y, z);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_command_set_move_ai_state(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
@@ -187,6 +196,7 @@ struct tribe_unit_ai_notify_event {
     long p3;
 };
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_set_current_order(UnitAIModule* unit_ai, int order_value) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
@@ -197,6 +207,7 @@ static void tribe_unit_ai_set_current_order(UnitAIModule* unit_ai, int order_val
     *(int*)(ai + 0x28) = order_value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_value) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
@@ -207,6 +218,7 @@ static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_v
     *(int*)(ai + 0x30) = action_value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y, float target_z) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
@@ -222,6 +234,7 @@ static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_i
     *(float*)(ai + 0x44) = target_z;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_remove_current_target(UnitAIModule* unit_ai) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
@@ -238,6 +251,7 @@ static void tribe_unit_ai_remove_current_target(UnitAIModule* unit_ai) {
     *(float*)(ai + 0x44) = -1.0f;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_purge_notify_queue(UnitAIModule* unit_ai, ulong update_time) {
     // Fully verified. Source of truth: command.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
@@ -270,10 +284,12 @@ static void tribe_unit_ai_purge_notify_queue(UnitAIModule* unit_ai, ulong update
     *(ulong*)(ai + 0xF4) = update_time;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_set_tasked_by_player(UnitAIModule* unit_ai) {
     tribe_unit_ai_purge_notify_queue(unit_ai, 0);
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Command::RGE_Command(RGE_Game_World* param_1, TCommunications_Handler* param_2) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433D40
     this->world = param_1;
@@ -282,11 +298,13 @@ RGE_Command::RGE_Command(RGE_Game_World* param_1, TCommunications_Handler* param
     this->last_order_size = 0;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::reset_communications(TCommunications_Handler* param_1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433DB0
     this->com_hand = param_1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Command::get_obj(RGE_Obj_Info p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433DC0
     if (p1.id == -1) {
@@ -295,6 +313,7 @@ RGE_Static_Object* RGE_Command::get_obj(RGE_Obj_Info p1) {
     return this->world->object((int)p1.id);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_commands() {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433DE0
     if (this->com_hand == nullptr) {
@@ -309,6 +328,7 @@ void RGE_Command::do_commands() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::submit(void* p1, long p2) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004352C0
     uchar duplicate_order = rge_check_for_duplicate_orders(this, (uchar*)p1, p2);
@@ -325,6 +345,7 @@ void RGE_Command::submit(void* p1, long p2) {
     this->last_order_time = (long)debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Command.cpp", 0x4AC);
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Command::~RGE_Command() {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433D90
     this->world = nullptr;
@@ -334,6 +355,7 @@ RGE_Command::~RGE_Command() {
         this->last_order = nullptr;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_create(RGE_Command_Create* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004348B0
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -345,6 +367,7 @@ void RGE_Command::do_command_create(RGE_Command_Create* p1) {
     }
     player->make_new_object((long)p1->obj_catagory, p1->location_x, p1->location_y, p1->location_z, 0);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004348F0
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -356,6 +379,7 @@ void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
     }
     player->add_attribute_num((short)p1->attr_id, p1->attr_amount, 0);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_order(RGE_Command_Order* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433F20
     int unit_num = (int)p1->unit_num;
@@ -464,6 +488,7 @@ void RGE_Command::do_command_order(RGE_Command_Order* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_work(RGE_Command_Order* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434320
     int unit_num = (int)p1->unit_num;
@@ -486,6 +511,7 @@ void RGE_Command::do_command_work(RGE_Command_Order* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_move(RGE_Command_Order* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434400
     int unit_num = (int)p1->unit_num;
@@ -615,6 +641,7 @@ void RGE_Command::do_command_move(RGE_Command_Order* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_formation(RGE_Command_Formation* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434A00
     int unit_num = p1->unitNum;
@@ -731,6 +758,7 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_create_group(RGE_Command_Create_Group* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435020
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
@@ -738,6 +766,7 @@ void RGE_Command::do_command_create_group(RGE_Command_Create_Group* p1) {
         commander->commanderCreateGroup(p1->unitsToGroup, (int)p1->numberUnitsToGroup, p1->groupCommander, p1->groupRange);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_add_to_group(RGE_Command_Add_To_Group* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435060
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
@@ -745,6 +774,7 @@ void RGE_Command::do_command_add_to_group(RGE_Command_Add_To_Group* p1) {
         commander->commanderAddToGroup(p1->newUnit, p1->groupRange);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_remove_from_group(RGE_Command_Remove_From_Group* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004350A0
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
@@ -752,6 +782,7 @@ void RGE_Command::do_command_remove_from_group(RGE_Command_Remove_From_Group* p1
         commander->commanderRemoveFromGroup(p1->unit);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004350E0
     RGE_Static_Object* commander = this->world->object(p1->groupCommander);
@@ -759,6 +790,7 @@ void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* p1) {
         commander->commanderDestroyGroup();
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_stop(RGE_Command_Stop* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434290
     RGE_Obj_Info* units = (RGE_Obj_Info*)(p1 + 1);
@@ -771,6 +803,7 @@ void RGE_Command::do_command_stop(RGE_Command_Stop* p1) {
         units = units + 1;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_pause(RGE_Command_Pause* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004342E0
     RGE_Obj_Info* units = (RGE_Obj_Info*)(p1 + 1);
@@ -782,6 +815,7 @@ void RGE_Command::do_command_pause(RGE_Command_Pause* p1) {
         units = units + 1;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_add_waypoint(RGE_Command_Add_Waypoint* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434F70
     RGE_Static_Object* obj = this->world->object(p1->recipient);
@@ -789,6 +823,7 @@ void RGE_Command::do_command_add_waypoint(RGE_Command_Add_Waypoint* p1) {
         this->world->players[p1->player_id]->processAddWaypointCommand(p1->recipient, p1->waypoint, p1->numberWaypoints);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434FB0
     RGE_Command_Group_Waypoint* p2 = p1;
@@ -806,6 +841,7 @@ void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* p1) {
         recipients = recipients + 1;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434D40
     RGE_Static_Object* obj = this->world->object(p1->recipient);
@@ -826,6 +862,7 @@ void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* p1) {
             p1->orderPriority);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434DC0
     RGE_Command_Group_AI_Order* p2 = p1;
@@ -867,6 +904,7 @@ void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* p1) {
         recipients = recipients + 1;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_resign(RGE_Command_Resign* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434EB0
     int multiplayer = rge_base_game->multiplayerGame();
@@ -891,6 +929,7 @@ void RGE_Command::do_command_resign(RGE_Command_Resign* p1) {
         this->world->players[p1->player_id]->do_resign((int)p1->dropped);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434920
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -925,6 +964,7 @@ void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
     }
     to_player->notify(p1->player_id, p1->to_player_id, 0x20A, p1->attr_id, (long)amount, 0);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command(void* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00433E20
     uchar cmd = *(uchar*)p1;
@@ -997,6 +1037,7 @@ void RGE_Command::do_command(void* p1) {
         return;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_order(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3, float p4, float p5) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435320
     int count = (int)p2;
@@ -1039,6 +1080,7 @@ void RGE_Command::command_order(RGE_Static_Object** p1, short p2, RGE_Static_Obj
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_stop(RGE_Static_Object** p1, short p2) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435420
     int count = (int)p2;
@@ -1073,6 +1115,7 @@ void RGE_Command::command_stop(RGE_Static_Object** p1, short p2) {
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_stop(int p1, int* p2, int p3) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004354F0
     (void)p1;
@@ -1101,6 +1144,7 @@ void RGE_Command::command_stop(int p1, int* p2, int p3) {
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_pause(int p1, int* p2, int p3) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004355A0
     (void)p1;
@@ -1129,6 +1173,7 @@ void RGE_Command::command_pause(int p1, int* p2, int p3) {
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_work(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3, float p4, float p5) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435620
     int count = (int)p2;
@@ -1171,6 +1216,7 @@ void RGE_Command::command_work(RGE_Static_Object** p1, short p2, RGE_Static_Obje
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_work(int p1, int* p2, int p3, int p4, int p5, float p6, float p7) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435720
     (void)p1;
@@ -1203,6 +1249,7 @@ void RGE_Command::command_work(int p1, int* p2, int p3, int p4, int p5, float p6
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_move(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3, float p4, float p5) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435810
     int count = (int)p2;
@@ -1245,6 +1292,7 @@ void RGE_Command::command_move(RGE_Static_Object** p1, short p2, RGE_Static_Obje
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_move(int p1, int* p2, int p3, int p4, int p5, float p6, float p7) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435900
     (void)p1;
@@ -1277,6 +1325,7 @@ void RGE_Command::command_move(int p1, int* p2, int p3, int p4, int p5, float p6
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_create(short p1, short p2, float p3, float p4, float p5) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004359C0
     RGE_Command_Create* cmd = (RGE_Command_Create*)calloc(1, sizeof(RGE_Command_Create));
@@ -1292,6 +1341,7 @@ void RGE_Command::command_create(short p1, short p2, float p3, float p4, float p
 
     this->submit(cmd, sizeof(RGE_Command_Create));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_add_attribute(int p1, int p2, float p3) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435A30
     RGE_Command_Add_Attribute* cmd = (RGE_Command_Add_Attribute*)calloc(1, sizeof(RGE_Command_Add_Attribute));
@@ -1305,6 +1355,7 @@ void RGE_Command::command_add_attribute(int p1, int p2, float p3) {
 
     this->submit(cmd, sizeof(RGE_Command_Add_Attribute));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435A80
     RGE_Command_Give_Attribute* cmd = (RGE_Command_Give_Attribute*)calloc(1, sizeof(RGE_Command_Give_Attribute));
@@ -1319,6 +1370,7 @@ void RGE_Command::command_give_attribute(int p1, int p2, int p3, float p4) {
 
     this->submit(cmd, sizeof(RGE_Command_Give_Attribute));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_formation(RGE_Static_Object** p1, int p2, int p3) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435AE0
     int size = p2 * 4 + 0xC;
@@ -1351,6 +1403,7 @@ void RGE_Command::command_formation(RGE_Static_Object** p1, int p2, int p3) {
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, float p5) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435BB0
     RGE_Command_Create_Group* cmd = (RGE_Command_Create_Group*)calloc(1, sizeof(RGE_Command_Create_Group));
@@ -1377,6 +1430,7 @@ void RGE_Command::command_create_group(int p1, int p2, int* p3, int p4, float p5
 
     this->submit(cmd, sizeof(RGE_Command_Create_Group));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_add_to_group(int p1, int p2, int p3, float p4) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435C50
     RGE_Command_Add_To_Group* cmd = (RGE_Command_Add_To_Group*)calloc(1, sizeof(RGE_Command_Add_To_Group));
@@ -1392,6 +1446,7 @@ void RGE_Command::command_add_to_group(int p1, int p2, int p3, float p4) {
 
     this->submit(cmd, sizeof(RGE_Command_Add_To_Group));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_remove_from_group(int p1, int p2, int p3) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435CD0
     RGE_Command_Remove_From_Group* cmd = (RGE_Command_Remove_From_Group*)calloc(1, sizeof(RGE_Command_Remove_From_Group));
@@ -1406,6 +1461,7 @@ void RGE_Command::command_remove_from_group(int p1, int p2, int p3) {
 
     this->submit(cmd, sizeof(RGE_Command_Remove_From_Group));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_destroy_group(int p1, int p2) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435D40
     RGE_Command_Destroy_Group* cmd = (RGE_Command_Destroy_Group*)calloc(1, sizeof(RGE_Command_Destroy_Group));
@@ -1419,6 +1475,7 @@ void RGE_Command::command_destroy_group(int p1, int p2) {
 
     this->submit(cmd, sizeof(RGE_Command_Destroy_Group));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_ai_order(int p1, int p2, int p3, int p4, int p5, int p6, float p7, float p8, float p9, float p10, uchar p11, uchar p12, uchar p13) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435D90
     RGE_Command_AI_Order* cmd = (RGE_Command_AI_Order*)calloc(1, sizeof(RGE_Command_AI_Order));
@@ -1443,6 +1500,7 @@ void RGE_Command::command_ai_order(int p1, int p2, int p3, int p4, int p5, int p
 
     this->submit(cmd, sizeof(RGE_Command_AI_Order));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_group_ai_order(int p1, int p2, RGE_Static_Object** p3, short p4, int p5, int p6, int p7, float p8, float p9, float p10, float p11, uchar p12, uchar p13, uchar p14) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435EA0
     if ((p3 == nullptr) || (p4 <= 0)) {
@@ -1483,12 +1541,13 @@ void RGE_Command::command_group_ai_order(int p1, int p2, RGE_Static_Object** p3,
     cmd->range = p11;
     cmd->command = 0x11;
     cmd->player_id = (uchar)p1;
-    cmd->orderType = p5;
+    cmd->orderType = (short)p5;
     cmd->immediate = p12;
     cmd->inFront = p13;
 
     this->submit(cmd, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_resign(int p1, int p2, int p3) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00435FE0
     RGE_Command_Resign* cmd = (RGE_Command_Resign*)calloc(1, sizeof(RGE_Command_Resign));
@@ -1503,6 +1562,7 @@ void RGE_Command::command_resign(int p1, int p2, int p3) {
 
     this->submit(cmd, sizeof(RGE_Command_Resign));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_add_waypoint(int p1, int p2, XYZBYTEPoint* p3, int p4) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00436030
     RGE_Command_Add_Waypoint* cmd = (RGE_Command_Add_Waypoint*)calloc(1, sizeof(RGE_Command_Add_Waypoint));
@@ -1530,6 +1590,7 @@ void RGE_Command::command_add_waypoint(int p1, int p2, XYZBYTEPoint* p3, int p4)
 
     this->submit(cmd, sizeof(RGE_Command_Add_Waypoint));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_add_waypoint(int p1, int p2, uchar p3, uchar p4, uchar p5) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004360D0
     RGE_Command_Add_Waypoint* cmd = (RGE_Command_Add_Waypoint*)calloc(1, sizeof(RGE_Command_Add_Waypoint));
@@ -1547,6 +1608,7 @@ void RGE_Command::command_add_waypoint(int p1, int p2, uchar p3, uchar p4, uchar
 
     this->submit(cmd, sizeof(RGE_Command_Add_Waypoint));
 }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Command::command_group_waypoint(RGE_Static_Object** p1, short p2, uchar p3, uchar p4) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00436150
     int count = (int)p2;

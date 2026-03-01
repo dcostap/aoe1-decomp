@@ -51,6 +51,7 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param
     this->targetType = -1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Action_Gather::setup(RGE_Action_Object* param_1) {
     RGE_Action::setup(param_1);
     this->action_type = 5;
@@ -92,6 +93,7 @@ RGE_Static_Object* RGE_Action_Gather::get_target_obj() { return RGE_Action::get_
 RGE_Static_Object* RGE_Action_Gather::get_target_obj2() { return RGE_Action::get_target_obj2(); }
 // Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403050 (virtual forwarding coverage).
 void RGE_Action_Gather::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Gather::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00403020

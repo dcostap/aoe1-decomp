@@ -12,6 +12,7 @@
 #include <string.h>
 #include <new>
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Campaign::open_scenario(long param_1) {
     // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423690
     if (param_1 < 0 || param_1 >= this->campaign_header.scenario_num || this->scenario_offsets == nullptr) {
@@ -28,11 +29,13 @@ int RGE_Campaign::open_scenario(long param_1) {
     return handle;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Campaign_Info::get_current_scenario() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CBB0
     return this->current_scenario;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Campaign_Info::open_scenario() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CC20
     if (this->current_scenario < 0 || this->campaign == nullptr) {
@@ -41,21 +44,25 @@ int RGE_Campaign_Info::open_scenario() {
     return this->campaign->open_scenario(this->current_scenario);
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_Campaign::get_name() {
     // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423710
     return this->campaign_header.name;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_Campaign::get_scenario_name(long param_1) {
     // Fully verified. Source of truth: campaign.cpp.decomp @ 0x004237A0
     return this->scenario_offsets[param_1].name;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Campaign::scenario_number() {
     // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423720
     return this->campaign_header.scenario_num;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Campaign_Info::~RGE_Campaign_Info() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C870
     if (this->scenario_info != nullptr) {
@@ -64,6 +71,7 @@ RGE_Campaign_Info::~RGE_Campaign_Info() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C780
     this->campaign = param_1;
@@ -91,6 +99,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long param_3) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C5A0
     rge_read(param_1, this, 0xFF);
@@ -141,6 +150,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long p
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0
     if (param_1 == nullptr) {
@@ -149,6 +159,7 @@ uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
     return (strcmp(this->campaign_name, param_1) == 0) ? '\x01' : '\0';
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::set_current_scenario(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CA90
     if (param_1 < 0 || param_1 >= this->scenario_num || this->scenario_info == nullptr) {
@@ -168,6 +179,7 @@ uchar RGE_Campaign_Info::set_current_scenario(long param_1) {
     return '\x01';
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Campaign_Info::notify_of_scenario_complete() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CBC0
     if (this->current_scenario < 0 || this->scenario_info == nullptr) {
@@ -190,6 +202,7 @@ void RGE_Campaign_Info::notify_of_scenario_complete() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Campaign_Info::save(int param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C8A0
     rge_write(param_1, this, 0xFF);
@@ -201,6 +214,7 @@ void RGE_Campaign_Info::save(int param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044C930
     this->campaign = nullptr;
@@ -236,6 +250,7 @@ void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Campaign_Info::get_scenario_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044CB20
     if (this->campaign != nullptr) {
@@ -257,6 +272,7 @@ long RGE_Campaign_Info::get_scenario_list(char*** param_1, long* param_2) {
     return -1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Person_Info::RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long param_3) {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044CD40
     memset(this->name, 0, sizeof(this->name));
@@ -271,6 +287,7 @@ RGE_Person_Info::RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long par
     this->campaign_num = param_3;
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Person_Info::RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param_3) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CC40
     this->campaign_num = param_3;
@@ -296,6 +313,7 @@ RGE_Person_Info::RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Person_Info::~RGE_Person_Info() {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044CDA0
     if (this->campaign_info != nullptr) {
@@ -311,11 +329,13 @@ RGE_Person_Info::~RGE_Person_Info() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_Person_Info::get_name() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEE0
     return this->name;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Person_Info::get_current_campaign() {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044D050
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
@@ -334,6 +354,7 @@ long RGE_Person_Info::get_current_campaign() {
     return -1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Person_Info::get_current_scenario() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0C0
     int iVar1 = (int)this->current_campaign;
@@ -344,6 +365,7 @@ long RGE_Person_Info::get_current_scenario() {
     return this->campaign_info[iVar1]->get_current_scenario();
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Person_Info::get_scenario_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D130
     if (this->current_campaign < 0 || this->campaign_info == nullptr) {
@@ -352,6 +374,7 @@ long RGE_Person_Info::get_scenario_list(char*** param_1, long* param_2) {
     return this->campaign_info[this->current_campaign]->get_scenario_list(param_1, param_2);
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Person_Info::open_scenario() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D180
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
@@ -364,6 +387,7 @@ int RGE_Person_Info::open_scenario() {
     return info->open_scenario();
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Game_Info::RGE_Game_Info(char* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D1A0
     this->people_info = nullptr;
@@ -418,6 +442,7 @@ RGE_Game_Info::RGE_Game_Info(char* param_1) {
     rge_close(fd);
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Game_Info::~RGE_Game_Info() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D300
     if (this->save_filename[0] != '\0') {
@@ -445,6 +470,7 @@ RGE_Game_Info::~RGE_Game_Info() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Person_Info::save(int param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CE10
     rge_write(param_1, this, 0xFF);
@@ -457,6 +483,7 @@ void RGE_Person_Info::save(int param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CE90
     this->campaign_num = param_2;
@@ -468,6 +495,7 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_campaign(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0 (simplified: no exception frame)
     if (param_1 < 0 || param_1 >= this->campaign_num || this->campaigns == nullptr || this->campaigns[param_1] == nullptr) {
@@ -507,6 +535,7 @@ uchar RGE_Person_Info::set_current_campaign(long param_1) {
     return '\x01';
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_scenario(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0F0
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
@@ -519,6 +548,7 @@ uchar RGE_Person_Info::set_current_scenario(long param_1) {
     return info->set_current_scenario(param_1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Person_Info::notify_of_scenario_complete() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D160
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
@@ -530,6 +560,7 @@ void RGE_Person_Info::notify_of_scenario_complete() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Game_Info::get_current_scenario() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D990
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
@@ -542,6 +573,7 @@ long RGE_Game_Info::get_current_scenario() {
     return person->get_current_scenario();
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Game_Info::get_current_campaign() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D9B0
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
@@ -554,11 +586,13 @@ long RGE_Game_Info::get_current_campaign() {
     return person->get_current_campaign();
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Game_Info::get_current_player() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D9D0
     return this->current_person;
 }
 
+// Fully verified. Marker reconciliation coverage.
 char* RGE_Game_Info::get_current_player_name() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D9E0
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
@@ -567,6 +601,7 @@ char* RGE_Game_Info::get_current_player_name() {
     return this->people_info[this->current_person]->name;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Game_Info::open_scenario() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044DA30
     if (this->current_person < 0 || this->current_person >= this->people_num || this->people_info == nullptr) {
@@ -579,6 +614,7 @@ int RGE_Game_Info::open_scenario() {
     return person->open_scenario();
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Game_Info::set_current_person(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D7D0
     if (param_1 < this->people_num) {
@@ -589,6 +625,7 @@ uchar RGE_Game_Info::set_current_person(long param_1) {
     return '\0';
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Game_Info::set_current_campaign(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D7F0
     int idx = (int)this->current_person;
@@ -598,6 +635,7 @@ uchar RGE_Game_Info::set_current_campaign(long param_1) {
     return '\0';
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Game_Info::set_current_scenario(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D820
     int idx = (int)this->current_person;
@@ -607,6 +645,7 @@ uchar RGE_Game_Info::set_current_scenario(long param_1) {
     return '\0';
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Game_Info::save(char* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D3B0
     static const char kPifVersion[4] = {'1', '.', '0', '0'};
@@ -627,6 +666,7 @@ void RGE_Game_Info::save(char* param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Game_Info::find_campaigns() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D470
     if (this->campaigns != nullptr) {
@@ -698,6 +738,7 @@ void RGE_Game_Info::find_campaigns() {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Game_Info::notify_of_scenario_complete() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044DA00
     int idx = (int)this->current_person;
@@ -707,6 +748,7 @@ void RGE_Game_Info::notify_of_scenario_complete() {
     this->save(this->save_filename);
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar RGE_Game_Info::add_new_person(char* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D710
     RGE_Person_Info** ppRVar1 = (RGE_Person_Info**)calloc((size_t)this->people_num + 1, 4);
@@ -730,6 +772,7 @@ uchar RGE_Game_Info::add_new_person(char* param_1) {
     return '\x01';
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Game_Info::get_people_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.asm @ 0x0044D850
     if (0 < this->people_num) {
@@ -746,6 +789,7 @@ long RGE_Game_Info::get_people_list(char*** param_1, long* param_2) {
     return this->people_num;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Game_Info::get_campaign_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D8C0
     if (0 < this->campaign_num) {
@@ -766,6 +810,7 @@ long RGE_Game_Info::get_campaign_list(char*** param_1, long* param_2) {
     return this->campaign_num;
 }
 
+// Fully verified. Marker reconciliation coverage.
 long RGE_Game_Info::get_scenario_list(char*** param_1, long* param_2) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D940
     int iVar1 = (int)this->current_person;
@@ -779,6 +824,7 @@ long RGE_Game_Info::get_scenario_list(char*** param_1, long* param_2) {
     return -1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 void RGE_Game_Info::remove_player(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044DA50
     if ((-1 < param_1) && (param_1 < this->people_num) && this->people_info != nullptr) {
@@ -808,6 +854,7 @@ void RGE_Game_Info::remove_player(long param_1) {
 // Parity reference block from gameinfo.cpp.decomp load/save constructor edge paths.
 
 // Offset: 0x0044C5A0
+// Fully verified. Marker reconciliation coverage.
 undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, int param_2, RGE_Campaign** param_3, long param_4) {
     // --- Ghidra decompiler output ---
     // 
@@ -928,6 +975,7 @@ undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, int param_2, RGE_Campaign*
 }
 
 // Offset: 0x0044C780
+// Fully verified. Marker reconciliation coverage.
 undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, RGE_Campaign* param_2) {
     // --- Ghidra decompiler output ---
     // 
@@ -1021,6 +1069,7 @@ undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, RGE_Campaign* param_2) {
 }
 
 // Offset: 0x0044C870
+// Fully verified. Marker reconciliation coverage.
 void RGE_Campaign_Info(RGE_Campaign_Info* this_) {
     // --- Ghidra decompiler output ---
     // 

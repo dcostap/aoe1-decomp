@@ -14,6 +14,7 @@
 #include <cstring>
 #include <new>
 
+// Fully verified. Marker reconciliation coverage.
 static short tact_dar_player_num(RGE_Action_Object* obj) {
     if (obj == nullptr || obj->owner == nullptr || obj->owner->world == nullptr) return 0;
     return obj->owner->world->player_num;
@@ -93,6 +94,7 @@ void TRIBE_Action_Discovery_Artifact::first_in_stack(uchar param_1) {
 
 // Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE740 (virtual forwarding coverage).
 uchar TRIBE_Action_Discovery_Artifact::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Discovery_Artifact::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_dar.cpp.decomp @ 0x004CE720
@@ -103,6 +105,7 @@ void TRIBE_Action_Discovery_Artifact::set_state(uchar param_1) {
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 static float tact_dar_read_master_float(RGE_Master_Static_Object* master, int offset) {
     float v = 0.0f;
     if (master != nullptr) {

@@ -1053,6 +1053,58 @@ static char* scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
     return this_->world->scenario->Get_scenario_name();
 }
 
+void TRIBE_Screen_Sed::set_string(TRIBE_Screen_Sed* this_, char* param_2, long param_3, int param_4) {
+    ::set_string(this_, param_2, param_3, param_4);
+}
+
+int TRIBE_Screen_Sed::SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2) {
+    return ::SetupListOfTerrain(this_, param_2);
+}
+
+void TRIBE_Screen_Sed::set_paint_object_mode(TRIBE_Screen_Sed* this_) {
+    ::set_paint_object_mode(this_);
+}
+
+void TRIBE_Screen_Sed::set_terrain(TRIBE_Screen_Sed* this_, short param_2) {
+    ::set_terrain(this_, param_2);
+}
+
+void TRIBE_Screen_Sed::set_elevation(TRIBE_Screen_Sed* this_, short param_2) {
+    ::set_elevation(this_, param_2);
+}
+
+int TRIBE_Screen_Sed::TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
+    return ::TRIBE_Screen_Sed_unit_list_compare(param_1, param_2);
+}
+
+void TRIBE_Screen_Sed::command_cancel(TRIBE_Screen_Sed* this_) {
+    ::command_cancel(this_);
+}
+
+void TRIBE_Screen_Sed::command_outline(TRIBE_Screen_Sed* this_) {
+    ::command_outline(this_);
+}
+
+void TRIBE_Screen_Sed::command_player(TRIBE_Screen_Sed* this_, int param_2) {
+    ::command_player(this_, param_2);
+}
+
+void TRIBE_Screen_Sed::command_save_as(TRIBE_Screen_Sed* this_, unsigned char param_2) {
+    ::command_save_as(this_, param_2);
+}
+
+char* TRIBE_Screen_Sed::scenario_get_default_name(TRIBE_Screen_Sed* this_) {
+    return ::scenario_get_default_name(this_);
+}
+
+void TRIBE_Screen_Sed::command_quick_save(TRIBE_Screen_Sed* this_) {
+    ::command_quick_save(this_);
+}
+
+char* TRIBE_Screen_Sed::scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
+    return ::scenario_save_defaulted(this_);
+}
+
 static int command_new_map(TRIBE_Screen_Sed* this_, char* scenario_filename, int is_multi_player, int param_4, int param_5, int param_6, int show_status) {
     // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD340
     (void)is_multi_player;

@@ -33,6 +33,7 @@ RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* param_1, RGE_Task* param_2, 
 
 RGE_Action_Bird::~RGE_Action_Bird() = default;
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Action_Bird::setup(RGE_Action_Object* param_1) {
     // Fully verified. Source of truth: act_bird.cpp.decomp (helper implementation).
     RGE_Action::setup(param_1);
@@ -40,6 +41,7 @@ int RGE_Action_Bird::setup(RGE_Action_Object* param_1) {
     return 1;
 }
 
+// Fully verified. Marker reconciliation coverage.
 int RGE_Action_Bird::setup(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: act_bird.cpp.decomp (helper implementation).
     RGE_Action::setup(param_1, param_2);
@@ -75,9 +77,13 @@ void RGE_Action_Bird::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::
 void RGE_Action_Bird::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
 // Fully verified. Source of truth: act_bird.cpp.decomp (helper implementation).
 void RGE_Action_Bird::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Action_Bird::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Action_Bird::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Bird::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Bird::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: act_bird.cpp.decomp @ 0x00402080

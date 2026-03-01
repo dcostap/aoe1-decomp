@@ -197,6 +197,22 @@ static void cams_startGame(TRIBE_Screen_Campaign_Selection* this_) {
     }
 }
 
+void TRIBE_Screen_Campaign_Selection::init_vars() {
+    cams_init_vars(this);
+}
+
+void TRIBE_Screen_Campaign_Selection::fillCampaigns() {
+    cams_fillCampaigns(this);
+}
+
+void TRIBE_Screen_Campaign_Selection::fillScenarios() {
+    cams_fillScenarios(this);
+}
+
+void TRIBE_Screen_Campaign_Selection::startGame() {
+    cams_startGame(this);
+}
+
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection() : TScreenPanel((char*)"Campaign Selection Screen") {
     // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x004909D0
     cams_init_vars(this);

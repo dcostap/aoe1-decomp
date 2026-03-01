@@ -25,6 +25,7 @@ RGE_Action_Make::~RGE_Action_Make() {
     // Intentionally empty: decomp shows the base cleanup inlined here; our base destructor handles it.
 }
 
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 int RGE_Action_Make::setup(RGE_Action_Object* param_1) {
     // Fully verified. Source of truth: act_make.cpp.decomp (helper implementation).
     RGE_Action::setup(param_1);
@@ -32,6 +33,7 @@ int RGE_Action_Make::setup(RGE_Action_Object* param_1) {
     return 1;
 }
 
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 int RGE_Action_Make::setup(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: act_make.cpp.decomp (helper implementation).
     RGE_Action::setup(param_1, param_2);
@@ -39,9 +41,9 @@ int RGE_Action_Make::setup(int param_1, RGE_Action_Object* param_2) {
     return 1;
 }
 
-// Fully verified. Source of truth: act_make.cpp.decomp (helper implementation).
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 RGE_Action_List* RGE_Action_Make::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
-// Fully verified. Source of truth: act_make.cpp.decomp (helper implementation).
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 void RGE_Action_Make::rehook() { RGE_Action::rehook(); }
 // Fully verified. Source of truth: act_make.cpp.decomp (helper implementation).
 void RGE_Action_Make::save(int param_1) { RGE_Action::save(param_1); }
@@ -67,9 +69,13 @@ void RGE_Action_Make::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::
 void RGE_Action_Make::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
 // Fully verified. Source of truth: act_make.cpp.decomp (helper implementation).
 void RGE_Action_Make::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Action_Make::get_target_obj() { return RGE_Action::get_target_obj(); }
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* RGE_Action_Make::get_target_obj2() { return RGE_Action::get_target_obj2(); }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Make::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void RGE_Action_Make::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A40

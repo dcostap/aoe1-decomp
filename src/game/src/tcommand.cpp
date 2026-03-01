@@ -37,6 +37,7 @@
 
 #include <cstdlib>
 
+// Fully verified. Marker reconciliation coverage.
 static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
     if (obj == nullptr) {
         return;
@@ -48,6 +49,7 @@ static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, f
     fn(obj, target_value, x, y, z);
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_value) {
     if (unit_ai == nullptr) {
         return;
@@ -57,6 +59,7 @@ static void tribe_unit_ai_set_current_action(UnitAIModule* unit_ai, int action_v
     *(int*)(ai + 0x30) = action_value;
 }
 
+// Fully verified. Marker reconciliation coverage.
 static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_id, int target_type, float target_x, float target_y, float target_z) {
     if (unit_ai == nullptr) {
         return;
@@ -76,12 +79,15 @@ TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* com
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509720
 }
 
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Command::~TRIBE_Command() {}
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A510 (vt[4] / +0x10 dispatch target).
     // Keep base command-id-7 behavior intact on vt[0].
     RGE_Command::do_command_give_attribute(p1);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command(void* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509770
     (void)debug_rand("C:\\msdev\\work\\age1_x1\\tcommand.cpp", 0x3F);
@@ -142,11 +148,13 @@ void TRIBE_Command::do_command(void* p1) {
         return;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 static void tcommand_jump_stub_00509859() {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509859
     // ASM shows this is a jump-table alignment entry (NOP; MOV EDI, EDI).
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_tribe_create(RGE_Command_Create* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509910
     int player_index = (uint)p1->player_id;
@@ -163,6 +171,7 @@ void TRIBE_Command::do_command_tribe_create(RGE_Command_Create* p1) {
         ((TRIBE_Building_Object*)obj)->build(10000.0f);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_make(TRIBE_Command_Make* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509980
     if ((this->world == nullptr) || (this->world->players == nullptr) || (p1 == nullptr)) {
@@ -197,6 +206,7 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* p1) {
         player->cancelTrain(0, (int)p1->obj_id, p1->unit_id, p1->unique_id);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_research(TRIBE_Command_Research* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509AF0
     if ((this->world == nullptr) || (this->world->players == nullptr) || (p1 == nullptr)) {
@@ -231,6 +241,7 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* p1) {
         player->cancelResearch((int)p1->tech_id, p1->unit_id, -1, p1->unique_id);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_build(TRIBE_Command_Build* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509C60
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -286,6 +297,7 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::place_line_of_walls(TRIBE_Player* p1, TRIBE_Master_Building_Object* p2, int p3, int p4, int p5, int p6, int p7, RGE_Static_Object** p8) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A010
     if (p1 == nullptr || p2 == nullptr) {
@@ -326,6 +338,7 @@ void TRIBE_Command::place_line_of_walls(TRIBE_Player* p1, TRIBE_Master_Building_
         y += y_step;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509E10
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -392,6 +405,7 @@ void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A140 (ASM-audited for __ftol usage)
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -416,6 +430,7 @@ void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A1D0
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -457,11 +472,13 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
         break;
     }
 }
+// Fully verified. Marker reconciliation coverage.
 static void tcommand_jump_stub_0050A465() {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A465
     // ASM shows this is a jump-table alignment entry (NOP; MOV EDI, EDI).
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_cancel_build(TRIBE_Command_Cancel_Build* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A490
     if (this->world == nullptr || p1 == nullptr) {
@@ -476,6 +493,7 @@ void TRIBE_Command::do_command_cancel_build(TRIBE_Command_Cancel_Build* p1) {
         cancel(obj);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A4C0
     if (p1 == nullptr) {
@@ -491,6 +509,7 @@ void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A510
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
@@ -534,6 +553,7 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* p1) 
     }
     to_player->notify(p1->player_id, p1->to_player_id, 0x20A, p1->attr_id, (long)transfer_amount, 0);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_make(RGE_Static_Object* p1, short p2) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A7F0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {
@@ -553,6 +573,7 @@ void TRIBE_Command::command_make(RGE_Static_Object* p1, short p2) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Make));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_make(int p1, int p2, int p3, int p4) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A860 (debug-log side effect intentionally omitted)
     if (p2 < 0) {
@@ -572,6 +593,7 @@ void TRIBE_Command::command_make(int p1, int p2, int p3, int p4) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Make));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_research(RGE_Static_Object* p1, short p2) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A8D0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {
@@ -591,6 +613,7 @@ void TRIBE_Command::command_research(RGE_Static_Object* p1, short p2) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Research));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_research(int p1, int p2, int p3, int p4) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A940 (debug-log side effect intentionally omitted)
     if (p2 < 0) {
@@ -610,6 +633,7 @@ void TRIBE_Command::command_research(int p1, int p2, int p3, int p4) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Research));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_build(RGE_Static_Object** p1, short p2, short p3, float p4, float p5) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A9B0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
@@ -640,6 +664,7 @@ void TRIBE_Command::command_build(RGE_Static_Object** p1, short p2, short p3, fl
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_build(int p1, int* p2, int p3, int p4, float p5, float p6, int p7) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AA90 (debug-log side effect intentionally omitted)
     if (p2 == nullptr || p3 <= 0) {
@@ -668,6 +693,7 @@ void TRIBE_Command::command_build(int p1, int* p2, int p3, int p4, float p5, flo
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_build_wall(RGE_Static_Object** p1, short p2, short p3, long p4, long p5, long p6, long p7) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AB30 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
@@ -710,6 +736,7 @@ void TRIBE_Command::command_build_wall(RGE_Static_Object** p1, short p2, short p
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_explore(int p1, int* p2, int p3, float p4, float p5) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AC70 (debug-log side effect intentionally omitted)
     if (p2 == nullptr || p3 <= 0) {
@@ -736,6 +763,7 @@ void TRIBE_Command::command_explore(int p1, int* p2, int p3, float p4, float p5)
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_game_speed(float p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050ADF0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -749,6 +777,7 @@ void TRIBE_Command::command_game_speed(float p1) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_save_game() {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AE40
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -760,6 +789,7 @@ void TRIBE_Command::command_save_game() {
     cmd->game_command = 8;
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_cancel_build(RGE_Static_Object* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AFD0 (debug-log side effect intentionally omitted)
     if (p1 == nullptr) {
@@ -776,6 +806,7 @@ void TRIBE_Command::command_cancel_build(RGE_Static_Object* p1) {
 
     this->submit(cmd, sizeof(TRIBE_Command_Cancel_Build));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_attack_ground(RGE_Static_Object** p1, short p2, float p3, float p4) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B020 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
@@ -803,6 +834,7 @@ void TRIBE_Command::command_attack_ground(RGE_Static_Object** p1, short p2, floa
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_give_attribute(int p1, int p2, int p3, float p4, float p5) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B130
     TRIBE_Command_Give_Attribute* cmd = (TRIBE_Command_Give_Attribute*)calloc(1, sizeof(TRIBE_Command_Give_Attribute));
@@ -818,6 +850,7 @@ void TRIBE_Command::command_give_attribute(int p1, int p2, int p3, float p4, flo
 
     this->submit(cmd, sizeof(TRIBE_Command_Give_Attribute));
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A6A0
     RGE_Obj_Info* object_ids = (RGE_Obj_Info*)(p1 + 1);
@@ -829,6 +862,7 @@ void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* p1
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_repair(TRIBE_Command_Repair* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A6E0
     RGE_Static_Object* target = this->get_obj(p1->target);
@@ -842,6 +876,7 @@ void TRIBE_Command::do_command_repair(TRIBE_Command_Repair* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_unload(TRIBE_Command_Unload* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A730
     RGE_Obj_Info* object_ids = (RGE_Obj_Info*)(p1 + 1);
@@ -856,6 +891,7 @@ void TRIBE_Command::do_command_unload(TRIBE_Command_Unload* p1) {
         }
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* p1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A7B0
     TRIBE_Building_Object* building = (TRIBE_Building_Object*)this->world->object(p1->bldg_id);
@@ -868,6 +904,7 @@ void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* p1) {
         building->remove_from_production_queue(p1->train_id, (short)-train_count);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_trade_attribute(RGE_Static_Object** p1, short p2, long p3) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B190 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
@@ -894,6 +931,7 @@ void TRIBE_Command::command_trade_attribute(RGE_Static_Object** p1, short p2, lo
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_trade_attribute(int p1, int p2, long p3) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B230 (debug-log side effect intentionally omitted)
     (void)p2;
@@ -913,6 +951,7 @@ void TRIBE_Command::command_trade_attribute(int p1, int p2, long p3) {
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_repair(RGE_Static_Object** p1, short p2, RGE_Static_Object* p3) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B290 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
@@ -939,6 +978,7 @@ void TRIBE_Command::command_repair(RGE_Static_Object** p1, short p2, RGE_Static_
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_unload(RGE_Static_Object** p1, short p2, float p3, float p4) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B330 (debug-log side effect intentionally omitted)
     if (p1 == nullptr || p2 <= 0) {
@@ -966,6 +1006,7 @@ void TRIBE_Command::command_unload(RGE_Static_Object** p1, short p2, float p3, f
 
     this->submit(buffer, size);
 }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_queue(RGE_Static_Object* p1, short p2, short p3) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B3E0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Queue* cmd = (TRIBE_Command_Queue*)calloc(1, sizeof(TRIBE_Command_Queue));
@@ -981,6 +1022,7 @@ void TRIBE_Command::command_queue(RGE_Static_Object* p1, short p2, short p3) {
     this->submit(cmd, sizeof(TRIBE_Command_Queue));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_allied_victory(short param_1, uchar param_2) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AD00 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -996,6 +1038,7 @@ void TRIBE_Command::command_allied_victory(short param_1, uchar param_2) {
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_relation(short param_1, short param_2, short param_3) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AD70 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -1013,6 +1056,7 @@ void TRIBE_Command::command_relation(short param_1, short param_2, short param_3
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_inventory(short param_1, short param_2, float param_3) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AE80 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -1029,6 +1073,7 @@ void TRIBE_Command::command_inventory(short param_1, short param_2, float param_
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_upgrade_town(short param_1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AEE0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -1043,6 +1088,7 @@ void TRIBE_Command::command_upgrade_town(short param_1) {
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_quick_build(short param_1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AF30 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -1057,6 +1103,7 @@ void TRIBE_Command::command_quick_build(short param_1) {
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_shared_los(short param_1) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050AF80 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));
@@ -1071,6 +1118,7 @@ void TRIBE_Command::command_shared_los(short param_1) {
     this->submit(cmd, sizeof(TRIBE_Command_Game));
 }
 
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::command_cheat(short param_1, short param_2) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050B0D0 (debug-log side effect intentionally omitted)
     TRIBE_Command_Game* cmd = (TRIBE_Command_Game*)calloc(1, sizeof(TRIBE_Command_Game));

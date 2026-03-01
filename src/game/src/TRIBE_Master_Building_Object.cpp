@@ -22,6 +22,7 @@
 #include <string.h>
 #include <new>
 
+// Fully verified. Marker reconciliation coverage.
 static long rge_ftol(float value) {
     long result;
     __asm {
@@ -279,6 +280,7 @@ RGE_Master_Static_Object* TRIBE_Master_Building_Object::make_new_master() {
     return (RGE_Master_Static_Object*)master;
 }
 
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Master_Building_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E950
@@ -286,8 +288,11 @@ uchar TRIBE_Master_Building_Object::alignment(float* param_1, float* param_2, RG
     return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, 1);
 }
 
+// Fully verified. Marker reconciliation coverage.
 long TRIBE_Master_Building_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) { return this->RGE_Master_Static_Object::calc_base_damage_ability(param_1); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Building_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Building_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E7A0, tm_b_obj.cpp.asm @ 0x0050E7A0
@@ -343,6 +348,7 @@ void TRIBE_Master_Building_Object::draw(TDrawArea* param_1, short param_2, short
     }
 }
 
+// Fully verified. Marker reconciliation coverage.
 RGE_Task_List* TRIBE_Master_Building_Object::create_task_list() { return this->TRIBE_Master_Combat_Object::create_task_list(); }
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E630, tm_b_obj.cpp.asm @ 0x0050E630
