@@ -885,19 +885,26 @@ in_range:
         if ((path_ok == 0) && (this->pathValue.numberOfWaypoints() == 1)) {
             float center_x = rge_tile_center(this->world_x);
             float center_y = rge_tile_center(this->world_y);
-            if (pathSystem.passable(this, center_x, center_y, 1) != 0) {
-                float frac_x = this->world_x - (float)floor((double)this->world_x);
-                float frac_y = this->world_y - (float)floor((double)this->world_y);
-                if ((frac_x == 0.5f) && (frac_y == 0.5f)) {
-                    this->rangeStatusValue = 2;
-                    if (this->numberUserDefinedWaypointsValue < 2) {
-                        return 0;
-                    }
-                    this->continueCounter = this->continueCounter + 5;
-                    return 1;
+            int center_passable = pathSystem.passable(this, center_x, center_y, 1);
+            if (center_passable == 0) {
+                this->rangeStatusValue = 2;
+                if (this->numberUserDefinedWaypointsValue < 2) {
+                    return 0;
                 }
-                (void)this->teleport(center_x, center_y, this->world_z);
+                this->continueCounter = this->continueCounter + 5;
+                return 1;
             }
+            float frac_x = this->world_x - (float)floor((double)this->world_x);
+            float frac_y = this->world_y - (float)floor((double)this->world_y);
+            if ((frac_x == 0.5f) && (frac_y == 0.5f)) {
+                this->rangeStatusValue = 2;
+                if (this->numberUserDefinedWaypointsValue < 2) {
+                    return 0;
+                }
+                this->continueCounter = this->continueCounter + 5;
+                return 1;
+            }
+            (void)this->teleport(center_x, center_y, this->world_z);
         }
 
         if ((displayPathingFlags != 0) && ((this->selected & 1) != 0)) {
