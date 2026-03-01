@@ -8,19 +8,18 @@
 #include "../include/XYZBYTEPoint.h"
 #include "../include/globals.h"
 
-static long act_move_ftol(float v) {
-    long result;
-    __asm {
-        fld v
-        fistp result
-    }
-    return result;
-}
-
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x0040582E
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405BCA
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
+static long action_move_ftol(float value) {
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
+}
 
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405510
 RGE_Action_Move_To::RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2) {
@@ -172,33 +171,24 @@ void RGE_Action_Move_To::set_state(uchar param_1) {
     case 0x0D:
     case 0x0E:
         if ((char)this->subActionValue == '\0') {
-            if ((this->obj != nullptr) && (this->obj->master_obj != nullptr)) {
-                this->obj->new_sprite(this->obj->master_obj->sprite);
-            }
+            this->obj->new_sprite(this->obj->master_obj->sprite);
         }
         break;
     case 4:
-        if (this->obj != nullptr) {
-            this->obj->new_sprite(this->sprite);
-        }
+        this->obj->new_sprite(this->sprite);
         return;
     }
 }
 
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405850
 uchar RGE_Action_Move_To::update() {
-    if (this->obj == nullptr) {
-        return 0;
-    }
-
-    RGE_Game_World* world = (this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
-
-    if ((this->targetID != -1) && (world != nullptr) && (world->object(this->targetID) == nullptr)) {
+    RGE_Game_World* world = this->obj->owner->world;
+    if ((this->targetID != -1) && (world->object(this->targetID) == nullptr)) {
         this->set_target_obj(nullptr);
         goto missing_target;
     }
 
-    if ((this->target2ID != -1) && (world != nullptr) && (world->object(this->target2ID) == nullptr)) {
+    if ((this->target2ID != -1) && (world->object(this->target2ID) == nullptr)) {
         this->set_target_obj2(nullptr);
     }
 
@@ -232,9 +222,9 @@ uchar RGE_Action_Move_To::update() {
         this->obj->setGoal(this->target_x, this->target_y, 1.0f);
 
         XYZBYTEPoint wp;
-        wp.x = (uchar)act_move_ftol(this->target_x);
-        wp.y = (uchar)act_move_ftol(this->target_y);
-        wp.z = (uchar)act_move_ftol(this->target_z);
+        wp.x = (uchar)action_move_ftol(this->target_x);
+        wp.y = (uchar)action_move_ftol(this->target_y);
+        wp.z = (uchar)action_move_ftol(this->target_z);
 
         if ((char)this->obj->storePathInExceptionPath == '\0') {
             this->obj->addUserDefinedWaypoint(&wp, 0);
@@ -248,9 +238,7 @@ uchar RGE_Action_Move_To::update() {
         } else {
             this->obj->setTargetID((int)this->target_obj->id);
             RGE_Master_Static_Object* master = this->target_obj->master_obj;
-            float rx = (master != nullptr) ? master->radius_x : 0.0f;
-            float ry = (master != nullptr) ? master->radius_y : 0.0f;
-            this->obj->setTargetRadius(rx, ry);
+            this->obj->setTargetRadius(master->radius_x, master->radius_y);
         }
 
         if (this->obj->findPath() == RGE_Moving_Object::PathFound) {
