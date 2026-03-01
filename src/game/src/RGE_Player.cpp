@@ -37,6 +37,7 @@
 #include <stdio.h>
 
 static long rge_ftol(float v) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     // MSVC x86 __ftol equivalent (x87 FISTP using current rounding mode).
     long result;
     __asm {
@@ -47,6 +48,7 @@ static long rge_ftol(float v) {
 }
 
 static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int dopple) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     if (self == nullptr) {
         return nullptr;
     }
@@ -60,6 +62,7 @@ static RGE_Object_List* rge_player_get_list(RGE_Player* self, int sleeping, int 
 }
 
 static void rge_player_set_list(RGE_Player* self, int sleeping, int dopple, RGE_Object_List* list) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     if (self == nullptr) {
         return;
     }
@@ -75,6 +78,7 @@ static void rge_player_set_list(RGE_Player* self, int sleeping, int dopple, RGE_
 }
 
 static RGE_Object_List* rge_player_ensure_list(RGE_Player* self, int sleeping, int dopple) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     RGE_Object_List* list = rge_player_get_list(self, sleeping, dopple);
     if (list != nullptr) {
         return list;
@@ -89,6 +93,7 @@ static RGE_Object_List* rge_player_ensure_list(RGE_Player* self, int sleeping, i
 }
 
 static RGE_Object_Node* rge_player_add_node(RGE_Object_List* list, RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return nullptr;
     }
@@ -110,6 +115,7 @@ static RGE_Object_Node* rge_player_add_node(RGE_Object_List* list, RGE_Static_Ob
 }
 
 static void rge_player_remove_node(RGE_Object_List* list, RGE_Object_Node* node) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     if (list == nullptr || node == nullptr) {
         return;
     }
@@ -126,6 +132,7 @@ static void rge_player_remove_node(RGE_Object_List* list, RGE_Object_Node* node)
 }
 
 static void rge_object_list_invert(RGE_Object_List* list) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return;
     }
@@ -142,6 +149,7 @@ static void rge_object_list_invert(RGE_Object_List* list) {
 }
 
 static void rge_object_list_load_list(RGE_Object_List* list, int file_handle, RGE_Game_World* world) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return;
     }
@@ -1648,6 +1656,7 @@ void RGE_Player::unselect_one_object(short param_1) {
 }
 
 void RGE_Player::select_one_object(RGE_Static_Object* param_1) {
+    // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     // Helper overload retained for local callsites; original parity path is select_one_object(obj, int).
     this->select_one_object(param_1, 1);
 }

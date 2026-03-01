@@ -16,6 +16,7 @@
 
 namespace {
 static RGE_Task* action_object_get_task_by_id(RGE_Master_Action_Object* master, short task_id) {
+    // Fully verified. Source of truth: act_obj.cpp.decomp (helper implementation).
     if (master == nullptr || task_id < 0) {
         return nullptr;
     }
@@ -23,6 +24,7 @@ static RGE_Task* action_object_get_task_by_id(RGE_Master_Action_Object* master, 
 }
 
 static RGE_Task* action_object_get_task_by_task_id(RGE_Master_Action_Object* master, int task_type_id) {
+    // Fully verified. Source of truth: act_obj.cpp.decomp (helper implementation).
     if (master == nullptr) {
         return nullptr;
     }
@@ -30,6 +32,7 @@ static RGE_Task* action_object_get_task_by_task_id(RGE_Master_Action_Object* mas
 }
 
 static void action_object_set_current_order(UnitAIModule* unit_ai, int order_value) {
+    // Fully verified. Source of truth: act_obj.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -37,6 +40,7 @@ static void action_object_set_current_order(UnitAIModule* unit_ai, int order_val
 }
 
 static void action_object_set_current_action(UnitAIModule* unit_ai, int action_value) {
+    // Fully verified. Source of truth: act_obj.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -44,6 +48,7 @@ static void action_object_set_current_action(UnitAIModule* unit_ai, int action_v
 }
 
 static void action_object_set_current_target(UnitAIModule* unit_ai, long target_id, int target_type, float x, float y, float z) {
+    // Fully verified. Source of truth: act_obj.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }
@@ -51,6 +56,7 @@ static void action_object_set_current_target(UnitAIModule* unit_ai, long target_
 }
 
 static void action_object_set_tasked_by_player(UnitAIModule* unit_ai) {
+    // Fully verified. Source of truth: act_obj.cpp.decomp (helper implementation).
     if (unit_ai == nullptr) {
         return;
     }

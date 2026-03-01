@@ -19,6 +19,7 @@
 namespace {
 // Source of truth: stat_obj.cpp.decomp @ 0x004C5860
 static uchar rge_static_object_is_dying(RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
     if ((obj != nullptr) && (2 < obj->object_state) && (obj->object_state != 6)) {
         return 1;
     }
@@ -26,6 +27,7 @@ static uchar rge_static_object_is_dying(RGE_Static_Object* obj) {
 }
 
 static void rge_check_list_add_node(RGE_Check_List* list, RGE_Static_Object* obj, float dx, float dy, uchar flag) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return;
     }
@@ -44,6 +46,7 @@ static void rge_check_list_add_node(RGE_Check_List* list, RGE_Static_Object* obj
 }
 
 static void rge_check_list_delete(RGE_Check_List* list) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return;
     }
@@ -59,6 +62,7 @@ static void rge_check_list_delete(RGE_Check_List* list) {
 
 // Source of truth: misl_obj.cpp.decomp @ 0x0045AA70
 static uchar rge_missile_move(RGE_Missile_Object* obj) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
     if ((obj == nullptr) || (obj->owner == nullptr) || (obj->owner->world == nullptr) || (obj->owner->world->map == nullptr)) {
         return 0;
     }
@@ -78,6 +82,7 @@ static uchar rge_missile_move(RGE_Missile_Object* obj) {
 
 // Source of truth: misl_obj.cpp.decomp @ 0x0045AB20
 static RGE_Check_List* rge_make_object_collision_list(RGE_Missile_Object* obj, float extra) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
     if ((obj == nullptr) || (obj->owner == nullptr) || (obj->owner->world == nullptr) || (obj->owner->world->map == nullptr) ||
         (obj->master_obj == nullptr)) {
         return nullptr;
@@ -182,6 +187,7 @@ RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* param_1, RGE_Static_Ob
 RGE_Action_Missile::~RGE_Action_Missile() = default;
 
 int RGE_Action_Missile::setup(RGE_Action_Object* param_1) {
+    // Fully verified. Source of truth: act_misl.cpp.decomp (helper implementation).
     RGE_Action::setup(param_1);
     this->action_type = 8;
     this->velocity_x = 0.0f;

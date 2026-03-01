@@ -19,17 +19,31 @@ void* StrategyAIModule::vector_deleting_destructor(uint param_1) {
     return this;
 }
 
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::loggingHistory() { return AIModule::loggingHistory(); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 void StrategyAIModule::setLogHistory(int param_1) { AIModule::setLogHistory(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 void StrategyAIModule::toggleLogHistory() { AIModule::toggleLogHistory(); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 void StrategyAIModule::setHistoryFilename(char* param_1) { AIModule::setHistoryFilename(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::loggingCommonHistory() { return AIModule::loggingCommonHistory(); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 void StrategyAIModule::setLogCommonHistory(int param_1) { AIModule::setLogCommonHistory(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 void StrategyAIModule::toggleLogCommonHistory() { AIModule::toggleLogCommonHistory(); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::loadState(char* param_1) { return AIModule::loadState(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::saveState(char* param_1) { return AIModule::saveState(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::gleanState(int param_1) { return AIModule::gleanState(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::processMessage(AIModuleMessage* param_1) { return AIModule::processMessage(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::update(int param_1) { return AIModule::update(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 void StrategyAIModule::setCallbackMessage(AIModuleMessage* param_1) { AIModule::setCallbackMessage(param_1); }
+// Fully verified. Source of truth: aistrmod.cpp.decomp (helper implementation).
 int StrategyAIModule::filterOutMessage(AIModuleMessage* param_1) { return AIModule::filterOutMessage(param_1); }

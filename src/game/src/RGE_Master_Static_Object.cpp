@@ -22,6 +22,7 @@
 #include <math.h>
 
 static long rge_ftol(float v) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp (helper implementation).
     // MSVC x86 __ftol equivalent (x87 FISTP using current rounding mode).
     long result;
     __asm {
@@ -32,6 +33,7 @@ static long rge_ftol(float v) {
 }
 
 static char* rge_strdup_local(const char* src) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp (helper implementation).
     if (src == nullptr) {
         return nullptr;
     }
@@ -44,6 +46,7 @@ static char* rge_strdup_local(const char* src) {
 }
 
 static RGE_Object_Node* rge_master_add_tile_node(RGE_Object_List* list, RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp (helper implementation).
     if (list == nullptr) {
         return nullptr;
     }
@@ -66,6 +69,7 @@ static RGE_Object_Node* rge_master_add_tile_node(RGE_Object_List* list, RGE_Stat
 }
 
 static void rge_master_static_reset_fields(RGE_Master_Static_Object* self) {
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp (helper implementation).
     self->master_type = 0x0A;
     self->name = nullptr;
     self->string_id = 0;

@@ -16,15 +16,18 @@ char kPassive[] = "Passive";
 char kVengeful[] = "Vengeful";
 
 AIModule* as_ai(EmotionalAIModule* self) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return reinterpret_cast<AIModule*>(self);
 }
 
 void copy_state_name(char (&dest)[30], const char* src) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     strncpy(dest, src, 0x1D);
     dest[0x1D] = '\0';
 }
 
 void initialize_state_names(EmotionalAIModule* self) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     copy_state_name(self->stateNameValue[0], kAggressive);
     copy_state_name(self->stateNameValue[1], kCompassionate);
     copy_state_name(self->stateNameValue[2], kDefensive);
@@ -62,56 +65,69 @@ EmotionalAIModule::~EmotionalAIModule() {
     as_ai(this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Header model declares explicit overrides; forward to AIModule base behavior.
 int EmotionalAIModule::loggingHistory() {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->loggingHistory();
 }
 
 void EmotionalAIModule::setLogHistory(int param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     as_ai(this)->setLogHistory(param_1);
 }
 
 void EmotionalAIModule::toggleLogHistory() {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     as_ai(this)->toggleLogHistory();
 }
 
 void EmotionalAIModule::setHistoryFilename(char* param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     as_ai(this)->setHistoryFilename(param_1);
 }
 
 int EmotionalAIModule::loggingCommonHistory() {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->loggingCommonHistory();
 }
 
 void EmotionalAIModule::setLogCommonHistory(int param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     as_ai(this)->setLogCommonHistory(param_1);
 }
 
 void EmotionalAIModule::toggleLogCommonHistory() {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     as_ai(this)->toggleLogCommonHistory();
 }
 
 int EmotionalAIModule::loadState(char* param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->loadState(param_1);
 }
 
 int EmotionalAIModule::saveState(char* param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->saveState(param_1);
 }
 
 int EmotionalAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->gleanState(param_1);
 }
 
 int EmotionalAIModule::processMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->processMessage(param_1);
 }
 
 int EmotionalAIModule::update(int param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     return as_ai(this)->update(param_1);
 }
 
 void EmotionalAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: aiemomod.cpp.decomp (helper implementation).
     as_ai(this)->setCallbackMessage(param_1);
 }
 

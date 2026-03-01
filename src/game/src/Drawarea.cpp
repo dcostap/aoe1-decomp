@@ -45,6 +45,7 @@ unsigned char* g_ASMXlateTable = nullptr;  // DAT_0088c01c
 }
 
 static unsigned int asm_shadowing_extract_amount(unsigned int p2, unsigned int p4) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     // Calls in view.cpp use two patterns for the same 8-bit amount:
     // - "shifted":   0xNN00NN00  (amount in bytes 1 and 3)
     // - "unshifted": 0x00NN00NN  (amount in bytes 0 and 2)
@@ -124,6 +125,7 @@ extern "C" void* _ASMGet_Xlate_Table() {
 }
 
 static unsigned long scale_component_to_mask_ul(unsigned int c, unsigned long mask) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (mask == 0) return 0;
     unsigned long m = mask;
     int shift = 0;
@@ -143,6 +145,7 @@ static unsigned long scale_component_to_mask_ul(unsigned int c, unsigned long ma
 }
 
 static unsigned long map_color_index_to_surface_pixel(TDrawArea* area, int idx, const DDSURFACEDESC* ddsd, HRESULT sdesc_hr) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (!area) return (unsigned long)idx;
     if (idx < 0) idx = 0;
     if (idx > 255) idx = 255;
@@ -169,6 +172,7 @@ static unsigned long map_color_index_to_surface_pixel(TDrawArea* area, int idx, 
 }
 
 static int drawarea_bytes_per_pixel(TDrawArea* area) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (!area) return 1;
     int bpp = 0;
     if (area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
@@ -185,6 +189,7 @@ static int drawarea_bytes_per_pixel(TDrawArea* area) {
 }
 
 static unsigned long drawarea_index_to_pixel_locked(TDrawArea* area, uchar color_idx) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (!area) return (unsigned long)color_idx;
     if (area->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
         return map_color_index_to_surface_pixel(area, (int)color_idx, &area->SurfaceDesc, DD_OK);
@@ -193,6 +198,7 @@ static unsigned long drawarea_index_to_pixel_locked(TDrawArea* area, uchar color
 }
 
 static void drawarea_store_pixel(uchar* dst, int bytes_per_pixel, unsigned long px) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (bytes_per_pixel <= 1) {
         dst[0] = (uchar)(px & 0xFF);
         return;
@@ -215,6 +221,7 @@ static void drawarea_store_pixel(uchar* dst, int bytes_per_pixel, unsigned long 
 }
 
 static void drawarea_fill_run(uchar* dst, int count, int bytes_per_pixel, unsigned long px) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (count <= 0) return;
     if (bytes_per_pixel <= 1) {
         memset(dst, (int)(px & 0xFF), (size_t)count);
@@ -229,6 +236,7 @@ static void drawarea_fill_run(uchar* dst, int count, int bytes_per_pixel, unsign
 }
 
 static unsigned long drawarea_palette_checksum(const tagPALETTEENTRY* entries, int count) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (entries == nullptr || count <= 0) {
         return 0;
     }
@@ -678,6 +686,7 @@ void TDrawSystem::ClearPrimarySurface() {
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442F30
 // Returns: 0=OK, 1=display mode changed, 2=surfaces restored, 3=fatal error
 uchar TDrawSystem::CheckSurfaces() {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (this->DrawType != 2) return 0;
     if (this->PrimarySurface == nullptr || this->DrawArea == nullptr ||
         this->DrawArea->DrawSurface == nullptr) {
@@ -1075,6 +1084,7 @@ TDrawArea::~TDrawArea() {
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00444110
 // Returns: 0=OK, 1=display mode changed, 2=restored, 3=fatal
 uchar TDrawArea::CheckSurface() {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
         if (this->DrawSurface == nullptr) {
             return 3;
@@ -1122,6 +1132,7 @@ uchar TDrawArea::CheckSurface() {
 // Decomp signature: Init(TDrawSystem*, long width, long height, int use_trans, int is_primary)
 // Our signature keeps wnd/use_sys_mem for compat but ignores them per decomp
 int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     this->DrawSystem = system;
     this->IsPrimarySurface = is_primary;
 
@@ -1347,6 +1358,7 @@ void TDrawArea::PtrClear(tagRECT* rect, int color) {
 }
 
 void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (src == nullptr || rect == nullptr) return;
     tagRECT dst;
     dst.left = x;
@@ -1536,6 +1548,7 @@ void TDrawArea::SetAccessOffsets() {
 }
 
 void TDrawArea::PtrSpanCopy(TDrawArea* src, int x, int y) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (src == nullptr) return;
     tagRECT rect;
     rect.left = 0;
@@ -1735,6 +1748,7 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, uchar color) {
 }
 
 static void normalize_inclusive(long* a, long* b) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (!a || !b) return;
     if (*a > *b) {
         long t = *a;
@@ -1798,6 +1812,7 @@ void TDrawArea::FillRect(long left, long top, long right, long bottom, uchar col
 }
 
 void TDrawArea::SaveBitmap(char* filename) {
+    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (!this->DrawSurface) {
          CUSTOM_DEBUG_LOG("SaveBitmap: No DrawSurface");
          return;

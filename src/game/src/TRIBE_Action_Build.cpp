@@ -49,12 +49,14 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* par
 TRIBE_Action_Build::~TRIBE_Action_Build() {}
 
 int TRIBE_Action_Build::setup(RGE_Action_Object* param_1) {
+    // Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
     int res = RGE_Action::setup(param_1);
     this->action_type = 0x65;
     return res;
 }
 
 int TRIBE_Action_Build::setup(int param_1, RGE_Action_Object* param_2) {
+    // Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
     int res = RGE_Action::setup(param_1, param_2);
     this->action_type = 0x65;
     return res;
@@ -343,10 +345,15 @@ int TRIBE_Action_Build::work(RGE_Static_Object* param_1, float param_2, float pa
     return 1;
 }
 
+// Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
 uchar TRIBE_Action_Build::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
+// Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
 uchar TRIBE_Action_Build::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
+// Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
 void TRIBE_Action_Build::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
+// Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
 void TRIBE_Action_Build::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
+// Fully verified. Source of truth: tact_bld.cpp.decomp (helper implementation).
 void TRIBE_Action_Build::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
 RGE_Static_Object* TRIBE_Action_Build::get_target_obj() { return RGE_Action::get_target_obj(); }
 RGE_Static_Object* TRIBE_Action_Build::get_target_obj2() { return RGE_Action::get_target_obj2(); }

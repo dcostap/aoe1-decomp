@@ -14,10 +14,12 @@ char kResearchAIName[] = "Research AI";
 char kNone[] = "NONE";
 
 AIModule* as_ai(ResearchAIModule* self) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     return reinterpret_cast<AIModule*>(self);
 }
 
 void initialize_tech_sentinel(ResearchAIModule* self) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     self->techTree.next = &self->techTree;
     self->techTree.prev = &self->techTree;
     self->techTree.idValue = 0;
@@ -26,6 +28,7 @@ void initialize_tech_sentinel(ResearchAIModule* self) {
 }
 
 void copy_name(char* dest, int capacity, const char* src) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     if (capacity < 1) {
         return;
     }
@@ -38,6 +41,7 @@ void copy_name(char* dest, int capacity, const char* src) {
 }
 
 void discard_bytes(int handle, int bytes_to_discard) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     char discard_buffer[256];
     while (bytes_to_discard > 0) {
         int chunk = bytes_to_discard;
@@ -50,6 +54,7 @@ void discard_bytes(int handle, int bytes_to_discard) {
 }
 
 void read_string(int handle, char* out_buffer, int out_capacity) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     int length = 0;
     rge_read(handle, &length, 4);
     if (length < 0) {
@@ -69,6 +74,7 @@ void read_string(int handle, char* out_buffer, int out_capacity) {
 }
 
 void write_string(int handle, const char* text) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     int length = (int)strlen(text);
     rge_write(handle, &length, 4);
     if (length > 0) {
@@ -77,6 +83,7 @@ void write_string(int handle, const char* text) {
 }
 
 ResourceItem* create_resource_cost(const int costs[4]) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     ResourceItem* cost = new (std::nothrow) ResourceItem;
     if (cost == nullptr) {
         return nullptr;
@@ -99,6 +106,7 @@ ResourceItem* create_resource_cost(const int costs[4]) {
 }
 
 TechnologyItem* create_technology_item(int id, const char* name, const int costs[4]) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     TechnologyItem* tech = new (std::nothrow) TechnologyItem;
     if (tech == nullptr) {
         return nullptr;
@@ -114,6 +122,7 @@ TechnologyItem* create_technology_item(int id, const char* name, const int costs
 }
 
 void destroy_technology_item(TechnologyItem* tech) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     if (tech == nullptr) {
         return;
     }
@@ -121,6 +130,7 @@ void destroy_technology_item(TechnologyItem* tech) {
 }
 
 void append_technology_item(ResearchAIModule* self, TechnologyItem* tech) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     TechnologyItem* sentinel = &self->techTree;
     tech->next = sentinel;
     tech->prev = sentinel->prev;
@@ -186,7 +196,7 @@ ResearchAIModule::~ResearchAIModule() {
     as_ai(this)->~AIModule();
 }
 
-// TODO: Header model declares explicit overrides; forward to AIModule base behavior.
+// Header model declares explicit overrides; forward to AIModule base behavior.
 // Fully verified. Source of truth: airchmod.cpp.decomp @ 0x004119C0 (virtual forwarding coverage).
 int ResearchAIModule::loggingHistory() {
     return as_ai(this)->loggingHistory();

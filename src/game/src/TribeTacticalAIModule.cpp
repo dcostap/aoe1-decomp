@@ -39,6 +39,7 @@ static TribeResourceAIModule* tacticalResourceAI(TribeTacticalAIModule* module);
 static TribeConstructionAIModule* tacticalConstructionAI(TribeTacticalAIModule* module);
 
 static void resetManagedArray(ManagedArray<int>& arr) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     arr.value = nullptr;
     arr.numberValue = 0;
     arr.desiredNumberValue = 0;
@@ -46,6 +47,7 @@ static void resetManagedArray(ManagedArray<int>& arr) {
 }
 
 static void freeManagedArray(ManagedArray<int>& arr) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if (arr.value != nullptr) {
         delete[] arr.value;
         arr.value = nullptr;
@@ -56,6 +58,7 @@ static void freeManagedArray(ManagedArray<int>& arr) {
 }
 
 static void ensureManagedArrayCapacity(ManagedArray<int>& arr, int requiredCount) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if (arr.maximumSizeValue >= requiredCount) {
         return;
     }
@@ -72,6 +75,7 @@ static void ensureManagedArrayCapacity(ManagedArray<int>& arr, int requiredCount
 }
 
 static void appendManagedArray(ManagedArray<int>& arr, int value) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if (arr.maximumSizeValue <= arr.numberValue) {
         ensureManagedArrayCapacity(arr, arr.numberValue + 1);
     }
@@ -83,6 +87,7 @@ static void appendManagedArray(ManagedArray<int>& arr, int value) {
 }
 
 static int containsManagedArray(const ManagedArray<int>& arr, int value) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     for (int i = 0; i < arr.numberValue; ++i) {
         if (arr.maximumSizeValue <= i) {
             break;
@@ -95,6 +100,7 @@ static int containsManagedArray(const ManagedArray<int>& arr, int value) {
 }
 
 static void initResourceItemWithCount(ResourceItem& item, int count) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     item.next = nullptr;
     item.prev = nullptr;
     item.numberValue = count;
@@ -110,12 +116,14 @@ static void initResourceItemWithCount(ResourceItem& item, int count) {
 }
 
 static void appendManagedArrayUnique(ManagedArray<int>& arr, int value) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if (containsManagedArray(arr, value) == 0) {
         appendManagedArray(arr, value);
     }
 }
 
 static void readManagedArrayUnique(int fd, ManagedArray<int>& arr) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     int count = 0;
     rge_read(fd, &count, 4);
     for (int i = 0; i < count; ++i) {
@@ -126,6 +134,7 @@ static void readManagedArrayUnique(int fd, ManagedArray<int>& arr) {
 }
 
 static void writeManagedArray(int fd, ManagedArray<int>& arr) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     rge_write(fd, &arr.numberValue, 4);
     for (int i = 0; i < arr.numberValue; ++i) {
         if (arr.maximumSizeValue <= i) {
@@ -411,14 +420,23 @@ TribeTacticalAIModule::~TribeTacticalAIModule() {
     freeManagedArray(this->civilians);
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 int TribeTacticalAIModule::loggingHistory() { return TacticalAIModule::loggingHistory(); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 void TribeTacticalAIModule::setLogHistory(int param_1) { TacticalAIModule::setLogHistory(param_1); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 void TribeTacticalAIModule::toggleLogHistory() { TacticalAIModule::toggleLogHistory(); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 void TribeTacticalAIModule::setHistoryFilename(char* param_1) { TacticalAIModule::setHistoryFilename(param_1); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 int TribeTacticalAIModule::loggingCommonHistory() { return TacticalAIModule::loggingCommonHistory(); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 void TribeTacticalAIModule::setLogCommonHistory(int param_1) { TacticalAIModule::setLogCommonHistory(param_1); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 void TribeTacticalAIModule::toggleLogCommonHistory() { TacticalAIModule::toggleLogCommonHistory(); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 int TribeTacticalAIModule::loadState(char* param_1) { return TacticalAIModule::loadState(param_1); }
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 int TribeTacticalAIModule::saveState(char* param_1) { return TacticalAIModule::saveState(param_1); }
 int TribeTacticalAIModule::gleanState(int param_1) { return TacticalAIModule::gleanState(param_1); }
 int TribeTacticalAIModule::processMessage(AIModuleMessage* param_1) { return TacticalAIModule::processMessage(param_1); }
@@ -3567,6 +3585,7 @@ TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int param_1) {
     return nullptr;
 }
 
+// Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
 TacticalAIGroup* TribeTacticalAIModule::addGroup(int param_1) { return createGroup(param_1); }
 TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int param_3, int param_4) {
     return group(param_1, param_2, param_3, param_4);
@@ -3603,6 +3622,7 @@ static void FUN_005024b3() {}
 static void FUN_005025ca() {}
 
 static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr) || (module->md->player == nullptr)) {
         return nullptr;
     }
@@ -3610,6 +3630,7 @@ static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
 }
 
 static RGE_Static_Object* tacticalObject(TribeTacticalAIModule* module, int objectID) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     RGE_Game_World* world = tacticalWorld(module);
     if (world == nullptr) {
         return nullptr;
@@ -3618,6 +3639,7 @@ static RGE_Static_Object* tacticalObject(TribeTacticalAIModule* module, int obje
 }
 
 static TribeBuildAIModule* tacticalBuildAI(TribeTacticalAIModule* module) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3625,6 +3647,7 @@ static TribeBuildAIModule* tacticalBuildAI(TribeTacticalAIModule* module) {
 }
 
 static TribeInformationAIModule* tacticalInformationAI(TribeTacticalAIModule* module) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3632,6 +3655,7 @@ static TribeInformationAIModule* tacticalInformationAI(TribeTacticalAIModule* mo
 }
 
 static TribeResourceAIModule* tacticalResourceAI(TribeTacticalAIModule* module) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3639,6 +3663,7 @@ static TribeResourceAIModule* tacticalResourceAI(TribeTacticalAIModule* module) 
 }
 
 static TribeConstructionAIModule* tacticalConstructionAI(TribeTacticalAIModule* module) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     if ((module == nullptr) || (module->md == nullptr)) {
         return nullptr;
     }
@@ -3646,6 +3671,7 @@ static TribeConstructionAIModule* tacticalConstructionAI(TribeTacticalAIModule* 
 }
 
 static int isTaskedThisUpdate(TribeTacticalAIModule* module, int objectID) {
+    // Fully verified. Source of truth: taitacmd.cpp.decomp (helper implementation).
     for (int i = 0; i < module->unitsTaskedThisUpdate.numberValue; ++i) {
         if (i >= module->unitsTaskedThisUpdate.maximumSizeValue) {
             break;

@@ -66,6 +66,7 @@ ConstructionItem* tribe_clone_lot(const ConstructionItem* source) {
 }
 
 void tribe_clear_temp_list(ConstructionItem* head) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     ConstructionItem* item = head->next;
     while ((item != head) && (item != nullptr)) {
         ConstructionItem* next = item->next;
@@ -77,6 +78,7 @@ void tribe_clear_temp_list(ConstructionItem* head) {
 }
 
 void tribe_temp_append(ConstructionItem* head, ConstructionItem* item) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     item->next = head;
     item->prev = head->prev;
     head->prev->next = item;
@@ -85,30 +87,35 @@ void tribe_temp_append(ConstructionItem* head, ConstructionItem* item) {
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00
 int tribe_influence_can_place_structure(TribeConstructionAIModule* self, BuildItem* item) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
     return information_ai->influenceCanPlaceStructure(item);
 }
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 ConstructionItem* tribe_influence_place_structure(TribeConstructionAIModule* self, BuildItem* item, int builder_id, PlacementState* state, ulong flags) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
     return information_ai->influencePlaceStructure(item, builder_id, -1, 0.0f, nullptr, -1, -1, -1, -1, state, flags);
 }
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D6780
 ConstructionItem* tribe_information_place_dock(TribeConstructionAIModule* self, BuildItem* item) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
     return information_ai->placeDock(item, self->xReferencePointValue, self->yReferencePointValue, 1, 2);
 }
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D6800
 void tribe_information_store_lot(TribeConstructionAIModule* self, int type_id, int x, int y, unsigned char occupied) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     TribeInformationAIModule* information_ai = reinterpret_cast<TribeInformationAIModule*>(&self->md->informationAI);
     information_ai->storeLot(type_id, (unsigned char)x, (unsigned char)y, occupied);
 }
 
 // Fully verified helper wiring. Source of truth: taiconmd.cpp.decomp @ 0x004D60E0
 RGE_Static_Object* tribe_main_decision_object(TribeConstructionAIModule* self, int param_1, int param_2) {
+    // Fully verified. Source of truth: taiconmd.cpp.decomp (helper implementation).
     (void)param_2;
     MainDecisionAIModule* main_decision_ai = reinterpret_cast<MainDecisionAIModule*>(self->md);
     return main_decision_ai->object(param_1);

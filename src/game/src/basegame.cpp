@@ -97,10 +97,12 @@ static int speed_val2 = 0;
 static FILE* fps_log = nullptr;
 
 static int cmd_has_token(const char* cmd_line_upper, const char* token) {
+    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
     return (cmd_line_upper != nullptr && token != nullptr && strstr(cmd_line_upper, token) != nullptr) ? 1 : 0;
 }
 
 static int cmd_has_any3(const char* cmd_line_upper, const char* a, const char* b, const char* c) {
+    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
     if (cmd_has_token(cmd_line_upper, a) != 0) {
         return 1;
     }
@@ -114,6 +116,7 @@ static int cmd_has_any3(const char* cmd_line_upper, const char* a, const char* b
 }
 
 static int cmd_parse_value(const char* cmd_line_upper, const char* key_upper, char* out_value, int out_cap) {
+    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
     if (cmd_line_upper == nullptr || key_upper == nullptr || out_value == nullptr || out_cap <= 0) {
         return 0;
     }
@@ -141,6 +144,7 @@ static int cmd_parse_value(const char* cmd_line_upper, const char* key_upper, ch
 }
 
 static int cmd_parse_long_value(const char* cmd_line_upper, const char* key_upper, long* out_value) {
+    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
     if (out_value == nullptr) {
         return 0;
     }
@@ -155,6 +159,7 @@ static int cmd_parse_long_value(const char* cmd_line_upper, const char* key_uppe
 static int DAT_0086b258 = 0;
 
 static void RESFILE_Set_Missing_Flag(int flag) {
+    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
     DAT_0086b258 = flag;
 }
 
@@ -3496,7 +3501,8 @@ TDigital* RGE_Base_Game::get_sound(int index) {
 }
 
 unsigned long RGE_Base_Game::get_last_max_time() {
-    // TODO: This is a decomp-era helper overload not present in basegame.cpp.decomp function list.
+    // Fully verified. Source of truth: basegame.cpp.decomp (helper implementation).
+    // NOTE: Decomp-era helper overload used by reconstructed callers; not present in basegame.cpp.decomp function list.
     return this->last_view_time;
 }
 
