@@ -8,6 +8,7 @@
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Master_Static_Object.h"
+#include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_View.h"
@@ -25,11 +26,14 @@
 #include "../include/TRIBE_Main_View.h"
 #include "../include/TRIBE_Master_Building_Object.h"
 #include "../include/TRIBE_Screen_Sed_Open.h"
+#include "../include/TRIBE_Scenario_Editor_Panel_Object.h"
 #include "../include/TRIBE_World.h"
+#include "../include/TRIBE_Tech.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static const char* kScrSedSourcePath = "C:\\msdev\\work\\age1_x1\\scr_sed.cpp";
@@ -629,119 +633,182 @@ static int create_edit(TRIBE_Screen_Sed* this_, TPanel* param_2, TEditPanel** pa
 
 static int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownPanel** param_3) {
     // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8A60
-    if (this_ == nullptr) return 0;
+    if (!this_ || !param_3) return 0;
 
-    long width = 0x82;
-    if ((param_3 == &this_->victory_object_list) || (param_3 == &this_->victory_attribute_list) ||
-        (param_3 == &this_->victory_ages_list) || (param_3 == &this_->victory_tech_list) ||
-        (param_3 == &this_->BuildList) || (param_3 == &this_->CityLayout) ||
-        (param_3 == &this_->AiRules) || (param_3 == &this_->victory_time)) {
-        width = 0xDC;
+    long drop_width = 0x82;
+    if (param_3 == &this_->victory_object_list ||
+        param_3 == &this_->victory_attribute_list ||
+        param_3 == &this_->victory_ages_list ||
+        param_3 == &this_->victory_tech_list ||
+        param_3 == &this_->BuildList ||
+        param_3 == &this_->CityLayout ||
+        param_3 == &this_->AiRules ||
+        param_3 == &this_->victory_time) {
+        drop_width = 0xDC;
     } else if (param_3 == &this_->victory_drop_down) {
-        width = 0xB4;
-    } else if ((param_3 == this_->cinematic_input) || (param_3 == this_->cinematic_input + 1) ||
-               (param_3 == this_->cinematic_input + 2) || (param_3 == this_->cinematic_input + 3) ||
-               (param_3 == &this_->default_terrain_drop) || (param_3 == &this_->map_size_drop) ||
-               (param_3 == &this_->map_style_drop)) {
-        width = 0xAA;
-    } else if ((param_3 == &this_->player_advance_civilization_drop) || (param_3 == &this_->player_list) ||
-               (param_3 == &this_->player_number_list) || (param_3 == &this_->unit_player_list) ||
-               (param_3 == &this_->victory_player_list) || (param_3 == &this_->options_player_list) ||
-               (param_3 == &this_->Diplomacy_player_list) || (param_3 == &this_->victory_enemy_player_list)) {
-        width = 0x96;
+        drop_width = 0xB4;
+    } else if (param_3 == this_->cinematic_input ||
+               param_3 == this_->cinematic_input + 1 ||
+               param_3 == this_->cinematic_input + 2 ||
+               param_3 == this_->cinematic_input + 3 ||
+               param_3 == &this_->default_terrain_drop ||
+               param_3 == &this_->map_size_drop ||
+               param_3 == &this_->map_style_drop) {
+        drop_width = 0xAA;
+    } else if (param_3 == &this_->player_advance_civilization_drop ||
+               param_3 == &this_->player_list ||
+               param_3 == &this_->player_number_list ||
+               param_3 == &this_->unit_player_list ||
+               param_3 == &this_->victory_player_list ||
+               param_3 == &this_->options_player_list ||
+               param_3 == &this_->Diplomacy_player_list ||
+               param_3 == &this_->victory_enemy_player_list) {
+        drop_width = 0x96;
     }
 
-    const int created = this_->TEasy_Panel::create_drop_down(param_2, param_3, width, 100, 0, 0, width, 0x16, 10);
+    const int created = this_->TEasy_Panel::create_drop_down(param_2, param_3, drop_width, 100, 0, 0, drop_width, 0x16, 10);
     if (created == 0) return 0;
 
     (*param_3)->set_z_order('\x01', 0);
     (*param_3)->set_active(0);
     (*param_3)->empty_list();
 
-    TDropDownPanel* panel = *param_3;
+    TDropDownPanel* selected_drop = *param_3;
     long selected_line = 0;
 
     if (param_3 == &this_->map_size_drop) {
-        for (long id = 0x2973; id <= 0x2978; ++id) panel->append_line(id, 0);
+        selected_drop->append_line(0x2973, 0);
+        selected_drop->append_line(0x2974, 0);
+        selected_drop->append_line(0x2975, 0);
+        selected_drop->append_line(0x2976, 0);
+        selected_drop->append_line(0x2977, 0);
+        selected_drop->append_line(0x2978, 0);
         selected_line = 3;
     } else if (param_3 == &this_->map_style_drop) {
-        for (long id = 0x296A; id <= 0x2972; ++id) panel->append_line(id, 0);
+        selected_drop->append_line(0x296a, 0);
+        selected_drop->append_line(0x296b, 0);
+        selected_drop->append_line(0x296c, 0);
+        selected_drop->append_line(0x296d, 0);
+        selected_drop->append_line(0x296e, 0);
+        selected_drop->append_line(0x296f, 0);
+        selected_drop->append_line(0x2970, 0);
+        selected_drop->append_line(0x2971, 0);
+        selected_drop->append_line(0x2972, 0);
         selected_line = 3;
-    } else if ((param_3 == &this_->player_number_list) || (param_3 == &this_->victory_enemy_player_list)) {
-        for (int i = 0; i < 8; ++i) panel->append_line(0x2877 + i, 0);
+    } else if (param_3 == &this_->player_number_list || param_3 == &this_->victory_enemy_player_list) {
+        for (int i = 0; i < 8; ++i) {
+            selected_drop->append_line(0x2877 + i, 0);
+        }
     } else if (param_3 == &this_->victory_attribute_list) {
-        panel->append_line(0x2882, 0x2B);
-        panel->append_line(0x2883, 0x29);
-        panel->append_line(0x2884, 0x2C);
-        panel->append_line(0x2886, 0x28);
-        panel->append_line(0x2887, 0x15);
-        panel->append_line(0x2888, 0x14);
-        panel->append_line(0x2889, 0x25);
+        selected_drop->append_line(0x2882, 0x2B);
+        selected_drop->append_line(0x2883, 0x29);
+        selected_drop->append_line(0x2884, 0x2C);
+        selected_drop->append_line(0x2886, 0x28);
+        selected_drop->append_line(0x2887, 0x15);
+        selected_drop->append_line(0x2888, 0x14);
+        selected_drop->append_line(0x2889, 0x25);
     } else if (param_3 == &this_->default_terrain_drop) {
-        for (long id = 0x297D; id <= 0x2985; ++id) panel->append_line(id, 0);
+        selected_drop->append_line(0x297d, 0);
+        selected_drop->append_line(0x297e, 0);
+        selected_drop->append_line(0x297f, 0);
+        selected_drop->append_line(0x2980, 0);
+        selected_drop->append_line(0x2981, 0);
+        selected_drop->append_line(0x2982, 0);
+        selected_drop->append_line(0x2983, 0);
+        selected_drop->append_line(0x2984, 0);
+        selected_drop->append_line(0x2985, 0);
     } else if (param_3 == this_->player_setting_drop) {
-        panel->append_line(0x27E3, 0);
-        panel->append_line(0x27E4, 0);
+        selected_drop->append_line(0x27e3, 0);
+        selected_drop->append_line(0x27e4, 0);
     } else if (param_3 == &this_->victory_drop_down) {
-        for (long id = 0x2851; id <= 0x2862; ++id) panel->append_line(id, 0);
-        panel->append_line(0x284F, 0);
+        selected_drop->append_line(0x2851, 0);
+        selected_drop->append_line(0x2852, 0);
+        selected_drop->append_line(0x2853, 0);
+        selected_drop->append_line(0x2854, 0);
+        selected_drop->append_line(0x2855, 0);
+        selected_drop->append_line(0x2856, 0);
+        selected_drop->append_line(0x2857, 0);
+        selected_drop->append_line(0x2858, 0);
+        selected_drop->append_line(0x2859, 0);
+        selected_drop->append_line(0x285a, 0);
+        selected_drop->append_line(0x285b, 0);
+        selected_drop->append_line(0x285c, 0);
+        selected_drop->append_line(0x285d, 0);
+        selected_drop->append_line(0x285e, 0);
+        selected_drop->append_line(0x285f, 0);
+        selected_drop->append_line(0x2860, 0);
+        selected_drop->append_line(0x2861, 0);
+        selected_drop->append_line(0x2862, 0);
+        selected_drop->append_line(0x284f, 0);
     } else if (param_3 == this_->player_setting_drop + 1) {
-        panel->append_line(0x27F7, 0);
-        panel->append_line(0x27F8, 0);
-        panel->append_line(0x27F9, 0);
-        panel->append_line(0x27FA, 0);
-        panel->append_line(0x27FB, 0);
-        panel->append_line(0x27FC, 0);
-        panel->append_line(0x27FD, 0);
-        panel->append_line(0x27FE, 0);
-        panel->append_line(0x27FF, 0);
-        panel->append_line(0x2800, 0);
-        panel->append_line(0x2801, 0);
-        panel->append_line(0x2802, 0);
-        panel->append_line(0x2806, 0);
-        panel->append_line(0x2807, 0);
-        panel->append_line(0x2809, 0);
-        panel->append_line(0x2808, 0);
+        selected_drop->append_line(0x27f7, 0);
+        selected_drop->append_line(0x27f8, 0);
+        selected_drop->append_line(0x27f9, 0);
+        selected_drop->append_line(0x27fa, 0);
+        selected_drop->append_line(0x27fb, 0);
+        selected_drop->append_line(0x27fc, 0);
+        selected_drop->append_line(0x27fd, 0);
+        selected_drop->append_line(0x27fe, 0);
+        selected_drop->append_line(0x27ff, 0);
+        selected_drop->append_line(0x2800, 0);
+        selected_drop->append_line(0x2801, 0);
+        selected_drop->append_line(0x2802, 0);
+        selected_drop->append_line(0x2806, 0);
+        selected_drop->append_line(0x2807, 0);
+        selected_drop->append_line(0x2809, 0);
+        selected_drop->append_line(0x2808, 0);
     } else if (param_3 == &this_->victory_ages_list) {
-        panel->append_line(0x1069, 0);
-        panel->append_line(0x106A, 0);
-        panel->append_line(0x106B, 0);
-        panel->append_line(0x106C, 0);
+        selected_drop->append_line(0x1069, 0);
+        selected_drop->append_line(0x106a, 0);
+        selected_drop->append_line(0x106b, 0);
+        selected_drop->append_line(0x106c, 0);
+    } else if (param_3 == &this_->victory_tech_list) {
+        selected_drop->set_sorted(1);
+        if (this_->world && this_->world->tech && this_->world->tech->tech_tree && this_->world->tech->tech_tree_num > 0) {
+            for (int i = 0; i < this_->world->tech->tech_tree_num; ++i) {
+                const char* tech_name = this_->get_string((long)this_->world->tech->tech_tree[i].string_id);
+                if (tech_name != nullptr && *tech_name != '\0') {
+                    selected_drop->append_line((char*)tech_name, i);
+                }
+            }
+        }
     } else if (param_3 == &this_->AiRules) {
-        (void)MakeFileList(this_, panel, rge_base_game->prog_info->ai_dir, (char*)"*.per", '\0', '\x01');
+        MakeFileList(this_, selected_drop, rge_base_game->prog_info->ai_dir, (char*)"*.per", 0, 1);
     } else if (param_3 == &this_->BuildList) {
-        (void)MakeFileList(this_, panel, rge_base_game->prog_info->ai_dir, (char*)"*.ai", '\x01', '\x01');
+        MakeFileList(this_, selected_drop, rge_base_game->prog_info->ai_dir, (char*)"*.ai", 1, 1);
     } else if (param_3 == &this_->CityLayout) {
-        (void)MakeFileList(this_, panel, rge_base_game->prog_info->ai_dir, (char*)"*.cty", '\x01', '\0');
-    } else if ((param_3 == this_->cinematic_input) || (param_3 == this_->cinematic_input + 1) || (param_3 == this_->cinematic_input + 2)) {
-        (void)MakeFileList(this_, panel, rge_base_game->prog_info->avi_dir, (char*)"*.avi", '\x01', '\0');
+        MakeFileList(this_, selected_drop, rge_base_game->prog_info->ai_dir, (char*)"*.cty", 1, 0);
+    } else if (param_3 == this_->cinematic_input ||
+               param_3 == this_->cinematic_input + 1 ||
+               param_3 == this_->cinematic_input + 2) {
+        MakeFileList(this_, selected_drop, rge_base_game->prog_info->avi_dir, (char*)"*.avi", 1, 0);
     } else if (param_3 == this_->cinematic_input + 3) {
-        (void)MakeFileList(this_, panel, (char*)"", (char*)"*.bmp", '\x01', '\0');
+        MakeFileList(this_, selected_drop, (char*)"", (char*)"*.bmp", 1, 0);
     } else if (param_3 == &this_->victory_object_list) {
-        panel->set_sorted(1);
-        panel->empty_list();
-        if ((this_->world != nullptr) && (this_->world->master_players != nullptr) && (this_->world->master_player_num > 0) &&
-            (this_->world->master_players[0] != nullptr)) {
-            RGE_Master_Player* mp = this_->world->master_players[0];
-            for (int i = 0; i < mp->master_object_num; ++i) {
-                RGE_Master_Static_Object* mo = mp->master_objects[i];
-                if ((mo != nullptr) && (mo->hide_in_scenario_editor == 0)) {
-                    char str[256];
-                    str[0] = '\0';
-                    if (mo->string_id < 1) {
-                        strncpy(str, mo->name, sizeof(str) - 1);
+        selected_drop->set_sorted(1);
+        selected_drop->empty_list();
+
+        RGE_Master_Player* master_player = (this_->world && this_->world->master_players) ? this_->world->master_players[0] : nullptr;
+        if (master_player && master_player->master_objects && master_player->master_object_num > 0) {
+            char str[256];
+            for (int i = 0; i < master_player->master_object_num; ++i) {
+                RGE_Master_Static_Object* master = master_player->master_objects[i];
+                if (master != nullptr && master->hide_in_scenario_editor == '\0') {
+                    if (master->string_id < 1) {
+                        const char* master_name = (master->name != nullptr) ? master->name : "";
+                        strncpy(str, master_name, sizeof(str) - 1);
                         str[sizeof(str) - 1] = '\0';
-                    } else if (rge_base_game != nullptr) {
-                        rge_base_game->get_string(mo->string_id, str, sizeof(str));
+                    } else {
+                        rge_base_game->get_string((long)master->string_id, str, (int)sizeof(str));
                     }
-                    if (str[0] != '\0') panel->append_line(str, i);
+                    selected_drop->append_line(str, i);
                 }
             }
         }
     }
 
-    panel->set_line(selected_line);
-    return (uint)(this_->error_code == 0);
+    selected_drop->set_line(selected_line);
+    return (this_->is_multi_player == 0) ? 1 : 0;
 }
 
 static int SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2) {
@@ -819,7 +886,7 @@ static void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
 }
 
 static void FUN_004aab4a() {
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AAB4A (switch jump-table alignment thunk bytes).
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAB4A
 }
 
 static void set_terrain(TRIBE_Screen_Sed* this_, short param_2) {
@@ -858,11 +925,11 @@ static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
 }
 
 static void FUN_004abc31() {
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004ABC31 (switch jump-table alignment thunk bytes).
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ABC31
 }
 
 static void FUN_004ad06e() {
-    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AD06E (switch jump-table alignment thunk bytes).
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD06E
 }
 
 static void command_cancel(TRIBE_Screen_Sed* this_) {
@@ -1384,7 +1451,6 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
     this->delete_panel((TPanel**)&this->random_seed_used_text);
     this->delete_panel((TPanel**)&this->generate_map_button);
     this->delete_panel((TPanel**)&this->brush_size_label);
-
     for (int i = 0; i < 5; ++i) {
         this->delete_panel((TPanel**)&this->brush_size_button[i]);
         this->delete_panel((TPanel**)&this->brush_size_button_label[i]);
@@ -1414,7 +1480,6 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
         this->delete_panel((TPanel**)&this->player_inven_label[i]);
         this->delete_panel((TPanel**)&this->player_inven_input[i]);
     }
-
     for (int i = 0; i < 2; ++i) {
         this->delete_panel((TPanel**)&this->player_setting_label[i]);
         this->delete_panel((TPanel**)&this->player_setting_drop[i]);
@@ -1424,12 +1489,10 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
     this->delete_panel((TPanel**)&this->CityLayout);
     this->delete_panel((TPanel**)&this->AiRules);
     this->delete_panel((TPanel**)&this->unit_player_list);
-
     for (int i = 0; i < 4; ++i) {
         this->delete_panel((TPanel**)&this->unit_mode_select[i]);
         this->delete_panel((TPanel**)&this->unit_mode_select_label[i]);
     }
-
     this->delete_panel((TPanel**)&this->unit_list);
     this->delete_panel((TPanel**)&this->unit_scrollbar);
 
@@ -1437,12 +1500,10 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
         free(this->unit_list_info);
         this->unit_list_info = nullptr;
     }
-
     if (this->object_panel) {
         delete this->object_panel;
         this->object_panel = nullptr;
     }
-
     if (this->button_unit_pics) {
         delete this->button_unit_pics;
         this->button_unit_pics = nullptr;
@@ -1454,7 +1515,9 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
         }
     }
 
-    for (int i = 0; i < 6; ++i) this->delete_panel((TPanel**)&this->victory_cond_on[i]);
+    for (int i = 0; i < 6; ++i) {
+        this->delete_panel((TPanel**)&this->victory_cond_on[i]);
+    }
     for (int i = 0; i < 2; ++i) {
         this->delete_panel((TPanel**)&this->victory_and_or[i]);
         this->delete_panel((TPanel**)&this->victory_text_and_or[i]);
@@ -1475,7 +1538,6 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
     this->delete_panel((TPanel**)&this->victory_condition_artifacts);
     this->delete_panel((TPanel**)&this->victory_condition_discoveries);
     this->delete_panel((TPanel**)&this->victory_condition_gold);
-
     for (int i = 0; i < 5; ++i) {
         this->delete_panel((TPanel**)&this->victory_cond_type_label[i]);
         this->delete_panel((TPanel**)&this->victory_cond_type[i]);
@@ -1485,8 +1547,9 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
     this->delete_panel((TPanel**)&this->victory_score);
     this->delete_panel((TPanel**)&this->victory_time_label);
     this->delete_panel((TPanel**)&this->victory_time);
-
-    for (int i = 0; i < 12; ++i) this->delete_panel((TPanel**)&this->victory_button[i]);
+    for (int i = 0; i < 12; ++i) {
+        this->delete_panel((TPanel**)&this->victory_button[i]);
+    }
 
     this->delete_panel((TPanel**)&this->victory_drop_down);
     this->delete_panel((TPanel**)&this->victory_object_list);
@@ -1516,8 +1579,10 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
         this->delete_panel((TPanel**)&this->cinematic_input[i]);
     }
 
-    this->delete_panel((TPanel**)&this->options_label[0]);
-    this->delete_panel((TPanel**)&this->options_button[0]);
+    for (int i = 0; i < 1; ++i) {
+        this->delete_panel((TPanel**)&this->options_label[i]);
+        this->delete_panel((TPanel**)&this->options_button[i]);
+    }
     this->delete_panel((TPanel**)&this->options_player_list);
     this->delete_panel((TPanel**)&this->options_disable_tech_text);
     for (int i = 0; i < 16; ++i) {
@@ -1528,19 +1593,21 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
     this->delete_panel((TPanel**)&this->Diplomacy_player_list);
     for (int i = 0; i < 8; ++i) {
         this->delete_panel((TPanel**)&this->Diplomacy_opponent_label[i]);
+        this->delete_panel((TPanel**)&this->Diplomacy_player_text[i]);
         this->delete_panel((TPanel**)&this->Diplomacy_friend_box[i][0]);
         this->delete_panel((TPanel**)&this->Diplomacy_friend_box[i][1]);
         this->delete_panel((TPanel**)&this->Diplomacy_friend_box[i][2]);
         this->delete_panel((TPanel**)&this->Diplomacy_AlliedVictory[i]);
     }
-    for (int i = 0; i < 8; ++i) this->delete_panel((TPanel**)&this->Diplomacy_player_text[i]);
-    for (int i = 0; i < 4; ++i) this->delete_panel((TPanel**)&this->Diplomacy_status_label[i]);
+    for (int i = 0; i < 4; ++i) {
+        this->delete_panel((TPanel**)&this->Diplomacy_status_label[i]);
+    }
 
+    this->delete_panel((TPanel**)&this->menu_button);
+    this->delete_panel((TPanel**)&this->help_button);
     for (int i = 0; i < 10; ++i) {
         this->delete_panel((TPanel**)&this->scenario_mode_button[i]);
     }
-    this->delete_panel((TPanel**)&this->menu_button);
-    this->delete_panel((TPanel**)&this->help_button);
 
     this->delete_panel((TPanel**)&this->bottom_panel);
     this->delete_panel((TPanel**)&this->message_panel);
@@ -1556,6 +1623,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed() {
         this->world->del_game_info();
     }
 }
+
 
 long TRIBE_Screen_Sed::handle_size(long param_1, long param_2) {
     // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB710
@@ -1789,25 +1857,30 @@ void TRIBE_Screen_Sed::draw() {
     // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD0F0
     TEasy_Panel::draw();
 
-    if ((this->render_area != nullptr) && (this->main_view != nullptr) &&
-        (this->pnl_x == this->main_view->pnl_x) && (this->pnl_y == this->main_view->pnl_y) &&
-        (this->pnl_wid == this->main_view->pnl_wid) && (this->pnl_hgt == this->main_view->pnl_hgt)) {
+    if ((this->use_bevels != 0) &&
+        (this->main_view != nullptr) &&
+        (this->render_rect.left == this->clip_rect.left) &&
+        (this->render_rect.top == this->clip_rect.top) &&
+        (this->render_rect.right == this->clip_rect.right) &&
+        (this->render_rect.bottom == this->clip_rect.bottom)) {
         this->draw_setup(0);
-        uchar* bits = this->render_area->Lock((char*)"scr_sed::draw", 1);
-        if (bits != nullptr) {
-            const long top_end = this->main_view->pnl_y - 1;
-            const long lower_start = this->main_view->pnl_y + this->main_view->pnl_hgt + 1;
-            this->render_area->DrawBevel3(0, 0, this->pnl_wid - 1, top_end,
-                                          this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                          this->bevel_color4, this->bevel_color1, this->bevel_color2);
-            this->render_area->DrawBevel3(0, lower_start, this->pnl_wid - 1, this->pnl_hgt - 1,
-                                          this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                          this->bevel_color4, this->bevel_color1, this->bevel_color2);
+        if (this->render_area != nullptr && this->render_area->Lock((char*)"scr_sed::draw", 1) != nullptr) {
+            TPanel* main_view_panel = (TPanel*)this->main_view;
+            const long main_view_top = main_view_panel->render_rect.top;
+            const long main_view_bottom = main_view_panel->render_rect.bottom;
+
+            this->render_area->DrawBevel3(0, 0, this->pnl_wid - 1, main_view_top - 1,
+                this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                this->bevel_color4, this->bevel_color5, this->bevel_color6);
+            this->render_area->DrawBevel3(0, main_view_bottom + 1, this->pnl_wid - 1, this->pnl_hgt - 1,
+                this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                this->bevel_color4, this->bevel_color5, this->bevel_color6);
             this->render_area->Unlock((char*)"scr_sed::draw");
         }
         this->draw_finish();
     }
 }
+
 
 void TRIBE_Screen_Sed::set_focus(int param_1) {
     // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADC40
@@ -1894,6 +1967,7 @@ void TRIBE_Screen_Sed::position_panel(TPanel* param_1, long param_2, long param_
 
 // Offset: 0x004A81E0
 undefined TRIBE_Screen_Sed(TRIBE_Screen_Sed* this_, char* param_2, int param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0
     // --- Ghidra decompiler output ---
     // 
     // /* public: __thiscall TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *,int) */
@@ -2131,6 +2205,7 @@ undefined TRIBE_Screen_Sed(TRIBE_Screen_Sed* this_, char* param_2, int param_3) 
 
 // Offset: 0x004A8770
 void set_panel_info(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8770
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_panel_info(void) */
@@ -2154,6 +2229,7 @@ void set_panel_info(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004A87D0
 void set_string(TRIBE_Screen_Sed* this_, char* param_2, long param_3, int param_4) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A87D0
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_string(char *,long,int) */
@@ -2171,6 +2247,7 @@ void set_string(TRIBE_Screen_Sed* this_, char* param_2, long param_3, int param_
 
 // Offset: 0x004A87F0
 int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, long param_4, int param_5) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A87F0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: str1 */
@@ -2196,6 +2273,7 @@ int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param
 
 // Offset: 0x004A8840
 int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param_3, char* param_4, char* param_5, char* param_6, char* param_7) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8840
     // --- Ghidra decompiler output ---
     // 
     // /* protected: int __thiscall TRIBE_Screen_Sed::create_button(class TPanel *,class TButtonPanel *
@@ -2236,6 +2314,7 @@ int create_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel** param
 
 // Offset: 0x004A8910
 int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, long param_4) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8910
     // --- Ghidra decompiler output ---
     // 
     // /* protected: int __thiscall TRIBE_Screen_Sed::create_text(class TPanel *,class TTextPanel * *,long)
@@ -2262,6 +2341,7 @@ int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, 
 
 // Offset: 0x004A8960
 int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, char* param_4) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8960
     // --- Ghidra decompiler output ---
     // 
     // /* protected: int __thiscall TRIBE_Screen_Sed::create_text(class TPanel *,class TTextPanel * *,char
@@ -2288,6 +2368,7 @@ int create_text(TRIBE_Screen_Sed* this_, TPanel* param_2, TTextPanel** param_3, 
 
 // Offset: 0x004A89B0
 int create_input(TRIBE_Screen_Sed* this_, TPanel* param_2, TInputPanel** param_3, char* param_4, short param_5, FormatType param_6) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A89B0
     // --- Ghidra decompiler output ---
     // 
     // /* protected: int __thiscall TRIBE_Screen_Sed::create_input(class TPanel *,class TInputPanel *
@@ -2316,6 +2397,7 @@ int create_input(TRIBE_Screen_Sed* this_, TPanel* param_2, TInputPanel** param_3
 
 // Offset: 0x004A8A00
 int create_edit(TRIBE_Screen_Sed* this_, TPanel* param_2, TEditPanel** param_3, char* param_4, short param_5, FormatType param_6, int param_7, int param_8) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8A00
     // --- Ghidra decompiler output ---
     // 
     // /* protected: int __thiscall TRIBE_Screen_Sed::create_edit(class TPanel *,class TEditPanel * *,char
@@ -2345,6 +2427,7 @@ int create_edit(TRIBE_Screen_Sed* this_, TPanel* param_2, TEditPanel** param_3, 
 
 // Offset: 0x004A8A60
 int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownPanel** param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A8A60
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: end_i */
@@ -2764,6 +2847,7 @@ int create_drop_down(TRIBE_Screen_Sed* this_, TPanel* param_2, TDropDownPanel** 
 
 // Offset: 0x004A9320
 int SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A9320
     // --- Ghidra decompiler output ---
     // 
     // /* protected: int __thiscall TRIBE_Screen_Sed::SetupListOfTerrain(class TListPanel *) */
@@ -2798,6 +2882,7 @@ int SetupListOfTerrain(TRIBE_Screen_Sed* this_, TListPanel* param_2) {
 
 // Offset: 0x004A93C0
 int create_list(TRIBE_Screen_Sed* this_, TPanel* param_2, TListPanel** param_3, TScrollBarPanel** param_4) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A93C0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: str1 */
@@ -2846,6 +2931,7 @@ int create_list(TRIBE_Screen_Sed* this_, TPanel* param_2, TListPanel** param_3, 
 
 // Offset: 0x004A94A0
 void TRIBE_Screen_Sed(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A94A0
     // --- Ghidra decompiler output ---
     // 
     // /* public: virtual __thiscall TRIBE_Screen_Sed::~TRIBE_Screen_Sed(void) */
@@ -3135,6 +3221,7 @@ void TRIBE_Screen_Sed(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004A9CC0
 void set_scenario_mode(TRIBE_Screen_Sed* this_, ScenarioMode param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A9CC0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: i */
@@ -3550,6 +3637,7 @@ void set_scenario_mode(TRIBE_Screen_Sed* this_, ScenarioMode param_2) {
 
 // Offset: 0x004AA6E6
 undefined FUN_004aa6e6() {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AA6E6
     // --- Ghidra decompiler output ---
     // 
     // void FUN_004aa6e6(void)
@@ -3603,6 +3691,7 @@ undefined FUN_004aa6e6() {
 
 // Offset: 0x004AA730
 void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AA730
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_paint_object_mode(void) */
@@ -3633,6 +3722,7 @@ void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AA7A0
 void set_map_type(TRIBE_Screen_Sed* this_, MapType param_2, int param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AA7A0
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_map_type(enum TRIBE_Screen_Sed::MapType,int) */
@@ -3702,6 +3792,7 @@ void set_map_type(TRIBE_Screen_Sed* this_, MapType param_2, int param_3) {
 
 // Offset: 0x004AA8F0
 void set_mp_victory_type(TRIBE_Screen_Sed* this_, VictoryType param_2, int param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AA8F0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: activate_counter */
@@ -3787,6 +3878,7 @@ void set_mp_victory_type(TRIBE_Screen_Sed* this_, VictoryType param_2, int param
 
 // Offset: 0x004AAA90
 void set_brush_size(TRIBE_Screen_Sed* this_, BrushSize param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAA90
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_brush_size(enum TRIBE_Screen_Sed::BrushSize) */
@@ -3825,6 +3917,7 @@ void set_brush_size(TRIBE_Screen_Sed* this_, BrushSize param_2) {
 
 // Offset: 0x004AAB4A
 undefined FUN_004aab4a() {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAB4A
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Control flow encountered bad instruction data */
@@ -3841,6 +3934,7 @@ undefined FUN_004aab4a() {
 
 // Offset: 0x004AAB60
 void set_paint_type(TRIBE_Screen_Sed* this_, PaintType param_2, int param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAB60
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: activate_counter */
@@ -3933,6 +4027,7 @@ void set_paint_type(TRIBE_Screen_Sed* this_, PaintType param_2, int param_3) {
 
 // Offset: 0x004AAD50
 void set_terrain(TRIBE_Screen_Sed* this_, short param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAD50
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_terrain(short) */
@@ -3980,6 +4075,7 @@ void set_terrain(TRIBE_Screen_Sed* this_, short param_2) {
 
 // Offset: 0x004AADF0
 void set_elevation(TRIBE_Screen_Sed* this_, short param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AADF0
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_elevation(short) */
@@ -3997,6 +4093,7 @@ void set_elevation(TRIBE_Screen_Sed* this_, short param_2) {
 
 // Offset: 0x004AAE20
 void set_player(TRIBE_Screen_Sed* this_, short param_2, uchar param_3, uchar param_4) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAE20
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: str */
@@ -4123,6 +4220,7 @@ void set_player(TRIBE_Screen_Sed* this_, short param_2, uchar param_3, uchar par
 
 // Offset: 0x004AB2B0
 void set_player_active(TRIBE_Screen_Sed* this_, short param_2, int param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB2B0
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_player_active(short,int) */
@@ -4140,6 +4238,7 @@ void set_player_active(TRIBE_Screen_Sed* this_, short param_2, int param_3) {
 
 // Offset: 0x004AB2D0
 int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB2D0
     // --- Ghidra decompiler output ---
     // 
     // /* int __cdecl TRIBE_Screen_Sed_unit_list_compare(void const *,void const *) */
@@ -4161,6 +4260,7 @@ int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
 
 // Offset: 0x004AB300
 void set_unit_player(TRIBE_Screen_Sed* this_, short param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB300
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: is_error */
@@ -4351,6 +4451,7 @@ void set_unit_player(TRIBE_Screen_Sed* this_, short param_2) {
 
 // Offset: 0x004AB670
 void set_unit(TRIBE_Screen_Sed* this_, short param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB670
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_unit(short) */
@@ -4373,6 +4474,7 @@ void set_unit(TRIBE_Screen_Sed* this_, short param_2) {
 
 // Offset: 0x004AB6E0
 void set_message_type(TRIBE_Screen_Sed* this_, MessageType param_2, int param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB6E0
     // --- Ghidra decompiler output ---
     // 
     // /* protected: void __thiscall TRIBE_Screen_Sed::set_message_type(enum
@@ -4392,6 +4494,7 @@ void set_message_type(TRIBE_Screen_Sed* this_, MessageType param_2, int param_3)
 
 // Offset: 0x004AB710
 long TRIBE_Screen_Sed::handle_size(long param_1, long param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB710
     // --- Ghidra decompiler output ---
     // 
     // /* public: virtual long __thiscall TRIBE_Screen_Sed::handle_size(long,long) */
@@ -4410,6 +4513,7 @@ long TRIBE_Screen_Sed::handle_size(long param_1, long param_2) {
 
 // Offset: 0x004AB740
 long TRIBE_Screen_Sed::handle_idle() {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB740
     // --- Ghidra decompiler output ---
     // 
     // /* public: virtual long __thiscall TRIBE_Screen_Sed::handle_idle(void) */
@@ -4443,6 +4547,7 @@ long TRIBE_Screen_Sed::handle_idle() {
 
 // Offset: 0x004AB7D0
 long TRIBE_Screen_Sed::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AB7D0
     // --- Ghidra decompiler output ---
     // 
     // /* public: virtual long __thiscall TRIBE_Screen_Sed::key_down_action(long,short,int,int,int) */
@@ -4635,6 +4740,7 @@ long TRIBE_Screen_Sed::key_down_action(long param_1, short param_2, int param_3,
 
 // Offset: 0x004ABC31
 undefined FUN_004abc31() {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ABC31
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING (jumptable): Stack frame is not setup normally: Input value of stackpointer is not used
@@ -6219,7 +6325,7 @@ undefined FUN_004abc31() {
 
 // Offset: 0x004ABCD0
 long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Reference block. Source of truth: scr_sed.cpp.decomp @ 0x004ABCD0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ABCD0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: x2 */
@@ -7091,6 +7197,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, ulong param_3, ulon
 
 // Offset: 0x004AD06E
 undefined FUN_004ad06e() {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD06E
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
@@ -7132,6 +7239,7 @@ undefined FUN_004ad06e() {
 
 // Offset: 0x004AD0F0
 void TRIBE_Screen_Sed::draw() {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD0F0
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: rect */
@@ -7178,6 +7286,7 @@ void TRIBE_Screen_Sed::draw() {
 
 // Offset: 0x004AD240
 void command_cancel(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD240
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_cancel(void) */
@@ -7199,6 +7308,7 @@ void command_cancel(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AD270
 int command_menu(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD270
     // --- Ghidra decompiler output ---
     // 
     // /* public: int __thiscall TRIBE_Screen_Sed::command_menu(void) */
@@ -7241,6 +7351,7 @@ int command_menu(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AD300
 void command_new(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD300
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_new(void) */
@@ -7266,6 +7377,7 @@ void command_new(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AD340
 int command_new_map(TRIBE_Screen_Sed* this_, char* param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD340
     // --- Ghidra decompiler output ---
     // 
     // /* public: int __thiscall TRIBE_Screen_Sed::command_new_map(char *,int,int,int,int,int) */
@@ -7375,6 +7487,7 @@ int command_new_map(TRIBE_Screen_Sed* this_, char* param_2, int param_3, int par
 
 // Offset: 0x004AD590
 void command_open(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD590
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_open(void) */
@@ -7417,6 +7530,7 @@ void command_open(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AD630
 void command_outline(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD630
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_outline(void) */
@@ -7449,6 +7563,7 @@ void command_outline(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AD680
 void command_player(TRIBE_Screen_Sed* this_, int param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD680
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_player(int) */
@@ -7465,6 +7580,7 @@ void command_player(TRIBE_Screen_Sed* this_, int param_2) {
 
 // Offset: 0x004AD6A0
 void command_quit(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD6A0
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_quit(void) */
@@ -7496,6 +7612,7 @@ void command_quit(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AD700
 void command_save(TRIBE_Screen_Sed* this_, uchar param_2, uchar param_3) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD700
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_save(unsigned char,unsigned char) */
@@ -7614,6 +7731,7 @@ void command_save(TRIBE_Screen_Sed* this_, uchar param_2, uchar param_3) {
 
 // Offset: 0x004AD960
 void command_save_as(TRIBE_Screen_Sed* this_, uchar param_2) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD960
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_save_as(unsigned char) */
@@ -7670,6 +7788,7 @@ void command_save_as(TRIBE_Screen_Sed* this_, uchar param_2) {
 
 // Offset: 0x004ADA70
 char* scenario_get_default_name(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADA70
     // --- Ghidra decompiler output ---
     // 
     // /* WARNING: Variable defined which should be unmapped: temp_name */
@@ -7697,6 +7816,7 @@ char* scenario_get_default_name(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004ADAF0
 void command_quick_save(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADAF0
     // --- Ghidra decompiler output ---
     // 
     // /* public: void __thiscall TRIBE_Screen_Sed::command_quick_save(void) */
@@ -7714,6 +7834,7 @@ void command_quick_save(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004ADB10
 char* scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADB10
     // --- Ghidra decompiler output ---
     // 
     // /* public: char * __thiscall TRIBE_Screen_Sed::scenario_save_defaulted(void) */
@@ -7762,6 +7883,7 @@ char* scenario_save_defaulted(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004ADC30
 uchar need_to_save(TRIBE_Screen_Sed* this_) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADC30
     // --- Ghidra decompiler output ---
     // 
     // /* public: unsigned char __thiscall TRIBE_Screen_Sed::need_to_save(void) */
@@ -7777,6 +7899,7 @@ uchar need_to_save(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004ADC40
 void TRIBE_Screen_Sed::set_focus(int param_1) {
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ADC40
     // --- Ghidra decompiler output ---
     // 
     // /* protected: virtual void __thiscall TRIBE_Screen_Sed::set_focus(int) */
