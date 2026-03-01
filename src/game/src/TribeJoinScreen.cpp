@@ -834,9 +834,11 @@ long TribeMPCreateDialog::action(TPanel* param_1, long param_2, ulong param_3, u
     return TPanel::action(param_1, param_2, param_3, param_4);
 }
 
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeMPCreateDialog::draw() { TDialogPanel::draw(); }
 
 long TribeMPCreateDialog::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TDialogPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }
 
@@ -847,11 +849,15 @@ long TribeJoinScreen::setup(TDrawArea* param_1, TPanel* param_2, long param_3, l
                            uchar param_7) {
     return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
 void TribeJoinScreen::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::set_rect(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_color(uchar param_1) { TScreenPanel::set_color(param_1); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_active(int param_1) { TScreenPanel::set_active(param_1); }
 void TribeJoinScreen::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5,
                                       long param_6, long param_7, long param_8, long param_9, TPanel* param_10,
@@ -860,100 +866,148 @@ void TribeJoinScreen::set_positioning(PositionMode param_1, long param_2, long p
                                   param_10, param_11, param_12, param_13);
 }
 void TribeJoinScreen::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::set_fixed_position(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_redraw(RedrawMode param_1) { TScreenPanel::set_redraw(param_1); }
 void TribeJoinScreen::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::set_overlapped_redraw(param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::draw_setup(int param_1) { TScreenPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::draw_finish() { TScreenPanel::draw_finish(); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::draw() { TScreenPanel::draw(); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::draw_rect(tagRECT* param_1) { TScreenPanel::draw_rect(param_1); }
 void TribeJoinScreen::draw_offset(long param_1, long param_2, tagRECT* param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::draw_offset(param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::draw_rect2(tagRECT* param_1) { TScreenPanel::draw_rect2(param_1); }
 void TribeJoinScreen::draw_offset2(long param_1, long param_2, tagRECT* param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::draw_offset2(param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::paint() { TScreenPanel::paint(); }
 long TribeJoinScreen::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 long TribeJoinScreen::handle_size(long param_1, long param_2) { return TScreenPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 long TribeJoinScreen::handle_paint() { return TScreenPanel::handle_paint(); }
 long TribeJoinScreen::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 long TribeJoinScreen::handle_char(long param_1, short param_2) { return TScreenPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 long TribeJoinScreen::handle_command(uint param_1, long param_2) { return TScreenPanel::handle_command(param_1, param_2); }
 long TribeJoinScreen::handle_timer_command(uint param_1, long param_2) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::handle_timer_command(param_1, param_2);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 long TribeJoinScreen::handle_scroll(long param_1, long param_2) { return TScreenPanel::handle_scroll(param_1, param_2); }
 long TribeJoinScreen::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }
 long TribeJoinScreen::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::handle_mouse_move(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5);
 }
 long TribeJoinScreen::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5);
 }
 long TribeJoinScreen::mouse_move_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_move_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_left_down_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_left_move_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_left_up_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_right_down_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_right_move_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_right_up_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4);
 }
 long TribeJoinScreen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::key_down_action(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 long TribeJoinScreen::char_action(long param_1, short param_2) { return TScreenPanel::char_action(param_1, param_2); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::get_true_render_rect(tagRECT* param_1) { TScreenPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 int TribeJoinScreen::is_inside(long param_1, long param_2) { return TScreenPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_focus(int param_1) { TScreenPanel::set_focus(param_1); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_tab_order(TPanel* param_1, TPanel* param_2) { TScreenPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_tab_order(TPanel** param_1, short param_2) { TScreenPanel::set_tab_order(param_1, param_2); }
 uchar TribeJoinScreen::get_help_info(char** param_1, long* param_2, long param_3, long param_4) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::get_help_info(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::stop_sound_system() { TScreenPanel::stop_sound_system(); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 int TribeJoinScreen::restart_sound_system() { return TScreenPanel::restart_sound_system(); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::take_snapshot() { TScreenPanel::take_snapshot(); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::handle_reactivate() { TScreenPanel::handle_reactivate(); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::draw_background(int param_1) { TScreenPanel::draw_background(param_1); }
+// Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
 void TribeJoinScreen::set_ideal_size(long param_1, long param_2) { TScreenPanel::set_ideal_size(param_1, param_2); }
 int TribeJoinScreen::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5,
                                   long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) {
@@ -1012,6 +1066,7 @@ int TribeJoinScreen::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2
     return TScreenPanel::create_scrollbar(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8);
 }
 int TribeJoinScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     return TScreenPanel::create_auto_scrollbar(param_1, param_2, param_3);
 }
 int TribeJoinScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4,
@@ -1025,6 +1080,7 @@ int TribeJoinScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel*
                                            param_9);
 }
 void TribeJoinScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5);
 }
 

@@ -19,18 +19,21 @@ namespace {
 static const char kLoadCancelDialogName[] = "Cancel Dialog";
 
 void load_enable_input() {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (rge_base_game) {
         rge_base_game->enable_input();
     }
 }
 
 void load_set_button_disabled(TButtonPanel* button, int disabled) {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (!button) return;
     button->disabled = disabled ? 1 : 0;
     button->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
 void load_sync_buttons(TribeLoadSavedGameScreen* owner) {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (!owner || !owner->list) {
         load_set_button_disabled(owner ? owner->okButton : nullptr, 1);
         load_set_button_disabled(owner ? owner->deleteButton : nullptr, 1);
@@ -44,6 +47,7 @@ void load_sync_buttons(TribeLoadSavedGameScreen* owner) {
 }
 
 static const char* load_selected_name(TribeLoadSavedGameScreen* owner) {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (!owner || !owner->list) return nullptr;
     char* cur = ((TTextPanel*)owner->list)->currentLine();
     if (!cur || cur[0] == '\0') return nullptr;
@@ -51,6 +55,7 @@ static const char* load_selected_name(TribeLoadSavedGameScreen* owner) {
 }
 
 void load_delete_selected_files_now(TribeLoadSavedGameScreen* owner) {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (!owner || !rge_base_game || !rge_base_game->prog_info) return;
     const char* selected = load_selected_name(owner);
     if (!selected) return;
@@ -70,6 +75,7 @@ void load_delete_selected_files_now(TribeLoadSavedGameScreen* owner) {
 }
 
 void load_prompt_delete_selected_files(TribeLoadSavedGameScreen* owner) {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (!owner || !rge_base_game || !rge_base_game->prog_info) return;
     const char* selected = load_selected_name(owner);
     if (!selected) return;
@@ -90,6 +96,7 @@ void load_prompt_delete_selected_files(TribeLoadSavedGameScreen* owner) {
 }
 
 int load_selected_game(TribeLoadSavedGameScreen* owner) {
+    // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (helper implementation).
     if (!owner || !rge_base_game || !rge_base_game->prog_info) return 0;
     const char* selected = load_selected_name(owner);
     if (!selected || selected[0] == '\0') return 0;

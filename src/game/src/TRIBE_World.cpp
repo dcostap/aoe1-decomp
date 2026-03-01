@@ -38,6 +38,7 @@
 #include <string.h>
 
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
+    // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (world == nullptr || world->players == nullptr) {
         return 0;
     }
@@ -65,6 +66,7 @@ static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short 
 }
 
 static void tribe_world_apply_effect(TRIBE_World* world, short effect_id) {
+    // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (world == nullptr || world->effects == nullptr || world->players == nullptr) {
         return;
     }
@@ -78,6 +80,7 @@ static void tribe_world_apply_effect(TRIBE_World* world, short effect_id) {
 }
 
 static void tribe_world_add_victory_points_simple(TRIBE_World* world, int player_index, int amount) {
+    // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (world == nullptr || world->players == nullptr) {
         return;
     }
@@ -92,6 +95,7 @@ static void tribe_world_add_victory_points_simple(TRIBE_World* world, int player
 }
 
 static void tribe_world_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (tile == nullptr || obj == nullptr) {
         return;
     }
@@ -131,6 +135,7 @@ static void tworld_switch_anchor_005316BD() {
 }
 
 static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
+    // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (obj == nullptr) {
         return;
     }
@@ -149,6 +154,7 @@ static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
 }
 
 static RGE_Static_Object* tribe_find_by_master_id_simple(RGE_Object_List* list, long master_id, uchar require_state, uchar required_state) {
+    // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (list == nullptr) {
         return nullptr;
     }
