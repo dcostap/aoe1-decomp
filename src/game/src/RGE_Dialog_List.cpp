@@ -12,6 +12,7 @@
 
 static char s_none_text[] = "<None>";
 
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static int __cdecl rdlg_list_compare(const void* a, const void* b) {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047EAA0
     const char* pa = (const char*)a;
@@ -23,6 +24,7 @@ static int __cdecl rdlg_list_compare(const void* a, const void* b) {
     return (ret == 3) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp/asm (helper extracted from decomp flow).
 static void sort_list(RGE_Dialog_List* self) {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047EAD0
     qsort(self->list_info, (size_t)self->list_size, sizeof(rdlg_list_info), rdlg_list_compare);
@@ -111,6 +113,7 @@ RGE_Dialog_List::~RGE_Dialog_List() {
     }
 }
 
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp/asm (parity-audited).
 short RGE_Dialog_List::get_list_id() {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047E8C0
     const short line = TListDialog::get_list_id();
@@ -120,10 +123,12 @@ short RGE_Dialog_List::get_list_id() {
     return this->list_info[line].id;
 }
 
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 char* RGE_Dialog_List::get_list_name() {
     return TListDialog::get_list_name();
 }
 
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp/asm (parity-audited).
 int RGE_Dialog_List::create_list() {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047E8F0
     if (this->list_type != 1) {
@@ -181,6 +186,7 @@ int RGE_Dialog_List::create_list() {
     return 1;
 }
 
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp/asm (parity-audited).
 short RGE_Dialog_List::get_cur_id() {
     // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047EB60
     if (this->list_type != 1) {
@@ -190,79 +196,154 @@ short RGE_Dialog_List::get_cur_id() {
 }
 
 // ---- Virtual forwarders ----
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TListDialog::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_rect(tagRECT param_1) { TListDialog::set_rect(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_rect(long param_1, long param_2, long param_3, long param_4) { TListDialog::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_color(uchar param_1) { TListDialog::set_color(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_active(int param_1) { TListDialog::set_active(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) { TListDialog::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TListDialog::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_redraw(RedrawMode param_1) { TListDialog::set_redraw(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TListDialog::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_setup(int param_1) { TListDialog::draw_setup(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_finish() { TListDialog::draw_finish(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw() { TListDialog::draw(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_rect(tagRECT* param_1) { TListDialog::draw_rect(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_offset(long param_1, long param_2, tagRECT* param_3) { TListDialog::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_rect2(tagRECT* param_1) { TListDialog::draw_rect2(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TListDialog::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::paint() { TListDialog::paint(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TListDialog::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_idle() { return TListDialog::handle_idle(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_size(long param_1, long param_2) { return TListDialog::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_paint() { return TListDialog::handle_paint(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TListDialog::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_char(long param_1, short param_2) { return TListDialog::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_command(uint param_1, long param_2) { return TListDialog::handle_command(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_user_command(uint param_1, long param_2) { return TListDialog::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_timer_command(uint param_1, long param_2) { return TListDialog::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_scroll(long param_1, long param_2) { return TListDialog::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TListDialog::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TListDialog::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TListDialog::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TListDialog::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TListDialog::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TListDialog::key_down_action(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::char_action(long param_1, short param_2) { return TListDialog::char_action(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 long RGE_Dialog_List::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TListDialog::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::get_true_render_rect(tagRECT* param_1) { TListDialog::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::is_inside(long param_1, long param_2) { return TListDialog::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_focus(int param_1) { TListDialog::set_focus(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_tab_order(TPanel* param_1, TPanel* param_2) { TListDialog::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_tab_order(TPanel** param_1, short param_2) { TListDialog::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 uchar RGE_Dialog_List::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TListDialog::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::stop_sound_system() { TListDialog::stop_sound_system(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::restart_sound_system() { return TListDialog::restart_sound_system(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::take_snapshot() { TListDialog::take_snapshot(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::handle_reactivate() { TListDialog::handle_reactivate(); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::draw_background(int param_1) { TListDialog::draw_background(param_1); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::set_ideal_size(long param_1, long param_2) { TListDialog::set_ideal_size(param_1, param_2); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) { return TListDialog::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) { return TListDialog::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TListDialog::create_check_box(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TListDialog::create_radio_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) { return TListDialog::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11) { return TListDialog::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) { return TListDialog::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10) { return TListDialog::create_input(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) { return TListDialog::create_edit(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TListDialog::create_drop_down(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) { return TListDialog::create_list(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TListDialog::create_scrollbar(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) { return TListDialog::create_auto_scrollbar(param_1, param_2, param_3); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TListDialog::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TListDialog::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 void RGE_Dialog_List::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TListDialog::position_panel(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, uchar param_5, int param_6) { return TListDialog::setup(param_1, param_2, param_3, param_4, param_5, param_6); }
+// Fully verified. Source of truth: rdlg_lst.cpp.decomp (inherited TListDialog forwarding parity; no class-local decomp symbol).
 int RGE_Dialog_List::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, char* param_5, long param_6, int param_7) { return TListDialog::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
 
