@@ -18,19 +18,6 @@
 #include <new>
 #include <dplay.h>
 
-struct HOLDER {
-    char* HoldMsg;
-    uint Serial;
-    uint Length;
-    ulong dcoFromID;
-    ulong dcoReceiveID;
-    ulong _padding_14;
-
-    HOLDER();
-    ~HOLDER();
-};
-static_assert(sizeof(HOLDER) == 0x18, "Size mismatch");
-
 int StringFromGUID(_GUID* param_1, ushort* param_2);
 int EnumPlayersCallback2(ulong param_1, ulong param_2, DPNAME* param_3, ulong param_4, void* param_5);
 
