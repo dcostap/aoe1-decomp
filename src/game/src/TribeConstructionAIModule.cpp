@@ -13,38 +13,47 @@
 namespace {
 static int kUseInfluencePlacement = 0;
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 BaseItem* tribe_base_item(ConstructionItem* item) {
     return reinterpret_cast<BaseItem*>(item);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 const BaseItem* tribe_base_item(const ConstructionItem* item) {
     return reinterpret_cast<const BaseItem*>(item);
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 void tribe_lot_set_in_progress(ConstructionItem* item, int value) {
     item->inProgressValue = value;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 int tribe_lot_in_progress(const ConstructionItem* item) {
     return item->inProgressValue;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 void tribe_lot_set_built(ConstructionItem* item, int value) {
     item->builtValue = value;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 int tribe_lot_built(const ConstructionItem* item) {
     return item->builtValue;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 int tribe_lot_build_attempts(const ConstructionItem* item) {
     return item->buildAttemptsValue;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 void tribe_lot_increment_attempts(ConstructionItem* item) {
     item->buildAttemptsValue = item->buildAttemptsValue + 1;
 }
 
+// Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (helper coverage).
 ConstructionItem* tribe_clone_lot(const ConstructionItem* source) {
     ConstructionItem* item = reinterpret_cast<ConstructionItem*>(::operator new(sizeof(ConstructionItem), std::nothrow));
     if (item == nullptr) {

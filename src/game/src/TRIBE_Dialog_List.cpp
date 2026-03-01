@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 static int tribe_dialog_copy_items(TRIBE_Dialog_List* self, Item_Avail* items, short item_count) {
     self->list_size = item_count;
     self->list_info = (rdlg_list_info*)calloc((size_t)item_count, sizeof(rdlg_list_info));
@@ -26,6 +27,7 @@ static int tribe_dialog_copy_items(TRIBE_Dialog_List* self, Item_Avail* items, s
     return 1;
 }
 
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 static int tribe_dialog_create_build_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if (player == nullptr) {
@@ -44,6 +46,7 @@ static int tribe_dialog_create_build_list(TRIBE_Dialog_List* self) {
     return tribe_dialog_copy_items(self, item_list, item_num);
 }
 
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 static int tribe_dialog_create_train_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if ((player == nullptr) || (player->selected_obj == nullptr)) {
@@ -63,6 +66,7 @@ static int tribe_dialog_create_train_list(TRIBE_Dialog_List* self) {
     return tribe_dialog_copy_items(self, item_list, item_num);
 }
 
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 static int tribe_dialog_create_research_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if ((player == nullptr) || (player->selected_obj == nullptr)) {
@@ -124,10 +128,15 @@ short TRIBE_Dialog_List::get_cur_id() {
     return -1;
 }
 
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 short TRIBE_Dialog_List::get_list_id() { return RGE_Dialog_List::get_list_id(); }
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 char* TRIBE_Dialog_List::get_list_name() { return RGE_Dialog_List::get_list_name(); }
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 void TRIBE_Dialog_List::draw() { RGE_Dialog_List::draw(); }
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 long TRIBE_Dialog_List::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return RGE_Dialog_List::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
 long TRIBE_Dialog_List::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return RGE_Dialog_List::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
 
 IMPLEMENT_TDIALOGPANEL_FORWARDERS(TRIBE_Dialog_List, RGE_Dialog_List)

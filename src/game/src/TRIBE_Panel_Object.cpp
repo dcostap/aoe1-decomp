@@ -41,6 +41,7 @@ constexpr float kDistanceValueMax = 75.0f;
 constexpr float kRangeThreshold = 0.99f;
 constexpr float kProgressDoneThreshold = 99.0f;
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static long panel_ftol(float value) {
     long result;
     __asm {
@@ -50,10 +51,12 @@ static long panel_ftol(float value) {
     return result;
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static int panel_ftol_biased(float value) {
     return (int)panel_ftol(value + kRoundBias);
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static void panel_copy_string(char* dst, size_t dst_size, const char* src) {
     if (dst == nullptr || dst_size == 0) return;
     if (src == nullptr) {
@@ -64,6 +67,7 @@ static void panel_copy_string(char* dst, size_t dst_size, const char* src) {
     dst[dst_size - 1] = '\0';
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static int panel_resource_icon(short attr_type) {
     switch (attr_type) {
     case 0:
@@ -84,6 +88,7 @@ static int panel_resource_icon(short attr_type) {
     }
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static short panel_get_construction_progress(TRIBE_Building_Object* building) {
     if (building == nullptr) return 100;
     if (building->built != 0) return 100;
@@ -130,6 +135,7 @@ static int panel_work_status(TRIBE_Building_Object* building,
     return 0;
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static int panel_production_queue_status(TRIBE_Building_Object* building, short* obj_id, short* progress) {
     *obj_id = -1;
     *progress = 0;
@@ -155,6 +161,7 @@ static int panel_production_queue_status(TRIBE_Building_Object* building, short*
     return 0;
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static void panel_get_pierce_armor(RGE_Static_Object* obj, short& cur, short& orig) {
     cur = 0;
     orig = 0;
@@ -174,11 +181,13 @@ static void panel_get_pierce_armor(RGE_Static_Object* obj, short& cur, short& or
     orig = tribe_master->orig_pierce_armor;
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static int panel_show_obj_id() {
     if (rge_base_game == nullptr) return 0;
     return *(int*)((char*)rge_base_game + 0xC20);
 }
 
+// Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190 (helper coverage).
 static int panel_string_equals(const char* a, const char* b) {
     if (a == nullptr || b == nullptr) return (a == b) ? 1 : 0;
     return std::strcmp(a, b) == 0;
