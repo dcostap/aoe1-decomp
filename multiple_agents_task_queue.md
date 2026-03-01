@@ -6137,26 +6137,26 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 512
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Action_Missile.cpp - update (115 lines, line 365), set_state (95 lines, line 267), rge_make_object_collision_list (83 lines, line 84). Reference tact_mis.cpp.asm. Focus on missile trajectory, collision detection, and state transitions.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 
 ## Task 513
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of Pnl_edit.cpp - sub_wnd_proc (126 lines, line 412), draw (98 lines, line 709), verify_char (97 lines, line 540). Reference pnl_edit.cpp.asm. Focus on Windows message handling, character validation, and edit panel rendering.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 514
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TPanel.cpp - handle_size (134 lines, line 879), wnd_proc (103 lines, line 599), panel_set_child_z_order (80 lines, line 116). Reference panel.cpp.asm. Focus on window sizing, message routing, and z-order management.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 515
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of TribeAchievementsScreen.cpp - set_mode (328 lines, line 327) and action (75 lines, line 708). Reference scr_ach.cpp.asm. Focus on mode switching, panel visibility, and action dispatch.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
@@ -6168,7 +6168,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 517
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of RGE_Visible_Map.cpp - explore_terrain (98 lines, line 1040) and explore_terrain_sq (94 lines, line 1211). Reference vis_map.cpp.asm. Focus on fog of war exploration, visibility calculations, and boundary checks.
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
