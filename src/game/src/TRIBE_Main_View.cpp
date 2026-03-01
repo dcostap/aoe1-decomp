@@ -407,6 +407,7 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
                     this->map_scr_x_offset + (int)param_1,
                     this->map_scr_y_offset + (int)param_2,
                     0, 0xf, nullptr, 2, 0x7d);
+                this->set_redraw(TPanel::RedrawMode::Redraw);
                 rge_base_game->set_game_mode(0, 0);
                 return 1;
             }
@@ -453,6 +454,7 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
             if (ok) {
                 this->display_object_selection(target->id, 0x5dc, 2, 2);
                 this->reset_overlay_sprites();
+                this->set_redraw(TPanel::RedrawMode::Redraw);
                 rge_base_game->set_game_mode(0, 0);
                 return 1;
             }
@@ -478,6 +480,7 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
                     this->map_scr_x_offset + (int)param_1,
                     this->map_scr_y_offset + (int)param_2,
                     0, 0xf, nullptr, 2, 0x7d);
+                this->set_redraw(TPanel::RedrawMode::Redraw);
                 rge_base_game->set_game_mode(0, 0);
                 return 1;
             }
@@ -499,6 +502,12 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
 long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
                                              int param_3, int param_4)
 {
+    int prog = rge_base_game->prog_mode;
+    if (prog != 4 && prog != 5 && prog != 6 && prog != 7)
+        return 0;
+    if (rge_base_game->get_paused() != 0)
+        return RGE_Main_View::mouse_right_up_action(param_1, param_2, param_3, param_4);
+
     int game_mode = rge_base_game->game_mode;
 
     switch (game_mode) {
@@ -519,6 +528,7 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
                     this->map_scr_x_offset + (int)param_1,
                     this->map_scr_y_offset + (int)param_2,
                     0, 0xf, nullptr, 2, 0x7d);
+                this->set_redraw(TPanel::RedrawMode::Redraw);
                 rge_base_game->set_game_mode(0, 0);
                 return 1;
             }
@@ -565,6 +575,7 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
             if (ok) {
                 this->display_object_selection(target->id, 0x5dc, 2, 2);
                 this->reset_overlay_sprites();
+                this->set_redraw(TPanel::RedrawMode::Redraw);
                 rge_base_game->set_game_mode(0, 0);
                 return 1;
             }
@@ -590,6 +601,7 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
                     this->map_scr_x_offset + (int)param_1,
                     this->map_scr_y_offset + (int)param_2,
                     0, 0xf, nullptr, 2, 0x7d);
+                this->set_redraw(TPanel::RedrawMode::Redraw);
                 rge_base_game->set_game_mode(0, 0);
                 return 1;
             }
