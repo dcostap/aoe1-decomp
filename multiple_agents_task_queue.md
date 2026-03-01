@@ -6022,19 +6022,19 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 493
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of RGE_Static_Object::teleport (240 lines, line 2249 of RGE_Static_Object.cpp) and RGE_Game_World::update (206 lines, line 1455 of RGE_Game_World.cpp). Reference stat_obj.cpp.asm and world.cpp.asm. Focus on coordinate math and world tick logic.
 - **Done when**: Both functions verified against ASM, parity fixes applied, build passes, pushed to master.
 
 ## Task 494
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of RGE_Master_Static_Object: setup (202 lines, line 1087) and check_placement (191 lines, line 540). Reference stat_obj.cpp.asm. Focus on object initialization data parsing and placement validation bounds checking.
 - **Done when**: Both functions verified against ASM, build passes, pushed to master.
 
 ## Task 495
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of panel rendering: TRIBE_Panel_Button::draw (191 lines, line 93), TButtonPanel::draw (175 lines, line 948 of TButtonPanel.cpp), TMessagePanel::render_to_image_buffer (187 lines, line 459 of Pnl_msg.cpp). Focus on draw coordinate calculations and clipping.
 - **Done when**: All 3 draw functions verified against ASM, build passes, pushed to master.
 
@@ -6091,3 +6091,52 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 - [ ] Finished
 - **Goal**: Deep ASM parity audit of AI and task logic: TacticalAIGroup::task (166 lines, line 467 of TacticalAIGroup.cpp), ConstructionAIModule constructor (173 lines, line 161), TRIBE_Task_List::get_target_task (160 lines, line 15 of TRIBE_Task_List.cpp). Focus on AI decision tree parity.
 - **Done when**: All 3 functions verified against ASM, build passes, pushed to master.
+
+
+## Task 505
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TribeInformationAIModule.cpp - destructor (107 lines, line 749), gameIDOfResourceObject (101 lines, line 1329), setupInfluenceMap (97 lines, line 3433). Reference taiinfmd.cpp.asm. Focus on cleanup ordering, resource object ID lookup, and influence map setup.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 506
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TRIBE_Screen_Sed2.cpp - activate_victory_proper_fields (156 lines, line 618), save_victory_cond_in_scenario (145 lines, line 194), load_victory_cond_from_scenario (140 lines, line 341). Reference scr_sed2.cpp.asm. Focus on victory condition serialization and panel field activation.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 507
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of Drawarea.cpp - DrawShadowBox (145 lines, line 2383), TDrawSystem::Init (134 lines, line 296), SaveBitmap (108 lines, line 1819). Reference drawarea.cpp.asm. Focus on pixel manipulation, system initialization, and bitmap I/O.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 508
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of Panel_ez.cpp - TEasy_Panel::setup (167 lines, line 477), parse_easy_cfg_text (136 lines, line 318), draw_background (115 lines, line 849). Reference panel_ez.cpp.asm. Focus on config parsing, panel layout setup, and background rendering.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 509
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of Mouseptr.cpp - Poll (106 lines, line 169), update_mouse_position (105 lines, line 493), draw (103 lines, line 599). Reference mouseptr.cpp.asm. Focus on coordinate math, cursor rendering, and polling logic.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 510
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of command.cpp - do_command_move (129 lines, line 515), do_command_formation (116 lines, line 645), do_command_order (108 lines, line 383). Reference command.cpp.asm. Focus on command dispatch, formation logic, and move command handling.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 511
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of Dsutil.cpp - ds_stream_time_func (177 lines, line 986) and ds_stream_file (110 lines, line 792). Reference dsutil.cpp.asm. Focus on DirectSound streaming timer callback, buffer management, and file streaming setup.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 512
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_Action_Missile.cpp - update (115 lines, line 365), set_state (95 lines, line 267), rge_make_object_collision_list (83 lines, line 84). Reference tact_mis.cpp.asm. Focus on missile trajectory, collision detection, and state transitions.
+**Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
