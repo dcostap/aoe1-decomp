@@ -112,8 +112,21 @@ void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound
             uchar master_type = 0;
             rge_read(param_1, &master_type, 1);
             CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init idx=%d type=0x%02X", (int)i, (unsigned int)master_type);
+            long object_begin = 0;
+            if (*object_count == 400) {
+                object_begin = rge_stream_tell(param_1);
+            }
             this->load_master_object(param_1, master_type, param_2, param_3, i);
             CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init idx=%d loaded=%p", (int)i, this->master_objects[i]);
+            if (*object_count == 400) {
+                const long object_end = rge_stream_tell(param_1);
+                CUSTOM_DEBUG_LOG_FMT(
+                    "RGE_Master_Player::finish_init idx=%d delta=%ld pos=%ld->%ld",
+                    (int)i,
+                    object_end - object_begin,
+                    object_begin,
+                    object_end);
+            }
         }
     }
     CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init exit pos=%ld", rge_stream_tell(param_1));
