@@ -105,12 +105,7 @@ int RGE_Master_Action_Object::setup(RGE_Master_Action_Object* param_1) {
     this->move_sound = param_1->move_sound;
     this->run_pattern = param_1->run_pattern;
     this->tasks = this->create_task_list();
-    if (this->tasks == nullptr) {
-        this->tasks = new RGE_Task_List();
-    }
-    if (this->tasks != nullptr && param_1->tasks != nullptr) {
-        this->tasks->copy(param_1->tasks);
-    }
+    this->tasks->copy(param_1->tasks);
     return 1;
 }
 
@@ -137,16 +132,11 @@ int RGE_Master_Action_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound
     }
     rge_read(param_1, &this->run_pattern, 1);
 
-    this->command_sound = (command_sound_idx >= 0 && param_3 != nullptr) ? param_3[command_sound_idx] : nullptr;
-    this->move_sound = (move_sound_idx >= 0 && param_3 != nullptr) ? param_3[move_sound_idx] : nullptr;
+    this->command_sound = (command_sound_idx >= 0) ? param_3[command_sound_idx] : nullptr;
+    this->move_sound = (move_sound_idx >= 0) ? param_3[move_sound_idx] : nullptr;
 
     this->tasks = this->create_task_list();
-    if (this->tasks == nullptr) {
-        this->tasks = new RGE_Task_List();
-    }
-    if (this->tasks != nullptr) {
-        this->tasks->load(param_1, param_2, param_3);
-    }
+    this->tasks->load(param_1, param_2, param_3);
     return 1;
 }
 
@@ -172,21 +162,16 @@ int RGE_Master_Action_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sou
         &run_pattern);
     this->task_by_group = (uchar)task_by_group;
     this->run_pattern = (uchar)run_pattern;
-    this->command_sound = (command_sound_idx >= 0 && param_3 != nullptr) ? param_3[command_sound_idx] : nullptr;
-    this->move_sound = (move_sound_idx >= 0 && param_3 != nullptr) ? param_3[move_sound_idx] : nullptr;
+    this->command_sound = (command_sound_idx >= 0) ? param_3[command_sound_idx] : nullptr;
+    this->move_sound = (move_sound_idx >= 0) ? param_3[move_sound_idx] : nullptr;
 
     this->tasks = this->create_task_list();
-    if (this->tasks == nullptr) {
-        this->tasks = new RGE_Task_List();
-    }
-    if (this->tasks != nullptr) {
-        this->tasks->load(param_1, param_2, param_3);
-        this->default_task = -1;
-        for (short i = 0; i < this->tasks->list_num; ++i) {
-            if (this->tasks->list != nullptr && this->tasks->list[i] != nullptr && this->tasks->list[i]->is_default != 0) {
-                this->default_task = i;
-                break;
-            }
+    this->tasks->load(param_1, param_2, param_3);
+    this->default_task = -1;
+    for (short i = 0; i < this->tasks->list_num; ++i) {
+        if (this->tasks->list[i]->is_default != 0) {
+            this->default_task = i;
+            break;
         }
     }
     return 1;
