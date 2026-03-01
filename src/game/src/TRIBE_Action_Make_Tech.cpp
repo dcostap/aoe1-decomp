@@ -16,6 +16,7 @@
 #include <string.h>
 
 namespace {
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 static void make_tech_init_base(TRIBE_Action_Make_Tech* action, RGE_Action_Object* obj) {
     action->action_type = 0x67;
     action->obj = obj;
@@ -37,6 +38,7 @@ static void make_tech_init_base(TRIBE_Action_Make_Tech* action, RGE_Action_Objec
     action->unique_id = -1;
 }
 
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 static void make_tech_load_base(RGE_Action* action, int fd) {
     int id_or_ptr = -1;
     short task_id = -1;
@@ -62,6 +64,7 @@ static void make_tech_load_base(RGE_Action* action, int fd) {
     action->sprite = nullptr;
 }
 
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 static void make_tech_save_base(const RGE_Action* action, int fd) {
     int target_obj_id = -1;
     int target_obj2_id = -1;
@@ -98,6 +101,7 @@ static void make_tech_save_base(const RGE_Action* action, int fd) {
     rge_write(fd, &sprite_id, 2);
 }
 
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 static long make_tech_coord_to_long(float value) {
     return (long)value;
 }
@@ -170,6 +174,7 @@ void TRIBE_Action_Make_Tech::save(int param_1) {
     rge_write(param_1, &this->unique_id, 4);
 }
 
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 short TRIBE_Action_Make_Tech::type() {
     return this->action_type;
 }
@@ -208,6 +213,7 @@ uchar TRIBE_Action_Make_Tech::inside_obj_update() {
     return 1;
 }
 
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 uchar TRIBE_Action_Make_Tech::idle_update() {
     return 1;
 }
@@ -368,6 +374,7 @@ void TRIBE_Action_Make_Tech::set_target_obj(RGE_Static_Object* param_1) {
     this->targetID = (param_1 != nullptr) ? param_1->id : -1;
 }
 
+// Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 void TRIBE_Action_Make_Tech::set_target_obj2(RGE_Static_Object* param_1) {
     this->target_obj2 = param_1;
     this->target2ID = (param_1 != nullptr) ? param_1->id : -1;

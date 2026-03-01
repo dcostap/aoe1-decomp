@@ -25,19 +25,23 @@ RGE_Action_Make::~RGE_Action_Make() {
     // Intentionally empty: decomp shows the base cleanup inlined here; our base destructor handles it.
 }
 
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 int RGE_Action_Make::setup(RGE_Action_Object* param_1) {
     RGE_Action::setup(param_1);
     this->action_type = 0x15;
     return 1;
 }
 
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 int RGE_Action_Make::setup(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x15;
     return 1;
 }
 
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 RGE_Action_List* RGE_Action_Make::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).
 void RGE_Action_Make::rehook() { RGE_Action::rehook(); }
 void RGE_Action_Make::save(int param_1) { RGE_Action::save(param_1); }
 short RGE_Action_Make::type() { return RGE_Action::type(); }

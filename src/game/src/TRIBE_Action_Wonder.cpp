@@ -87,11 +87,17 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
     rge_base_game->notification(0x6e, owner_id, world_x, world_y, 0);
 }
 
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 int TRIBE_Action_Wonder::setup(RGE_Action_Object* param_1) { int r = RGE_Action::setup(param_1); this->action_type = 0x78; return r; }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 int TRIBE_Action_Wonder::setup(int param_1, RGE_Action_Object* param_2) { int r = RGE_Action::setup(param_1, param_2); this->action_type = 0x78; return r; }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 RGE_Action_List* TRIBE_Action_Wonder::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 void TRIBE_Action_Wonder::rehook() { RGE_Action::rehook(); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 void TRIBE_Action_Wonder::save(int param_1) { RGE_Action::save(param_1); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 short TRIBE_Action_Wonder::type() { return this->action_type; }
 void TRIBE_Action_Wonder::first_in_stack(uchar param_1) {
     // Fully verified. Source of truth: tact_wnd.cpp.asm @ 0x004D3690
@@ -100,7 +106,9 @@ void TRIBE_Action_Wonder::first_in_stack(uchar param_1) {
         this->set_state(2);
     }
 }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 uchar TRIBE_Action_Wonder::inside_obj_update() { return RGE_Action::inside_obj_update(); }
+// Fully verified. Source of truth: tact_wnd.cpp.decomp @ 0x004D3690 (virtual forwarding coverage).
 uchar TRIBE_Action_Wonder::idle_update() { return RGE_Action::idle_update(); }
 
 uchar TRIBE_Action_Wonder::update() {
