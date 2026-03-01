@@ -683,7 +683,8 @@ void TRIBE_Building_Object::set_object_state(uchar param_1) {
                 tribe_player->tech_tree->do_tech(master->on_build_make_tech);
             }
         }
-        this->notify((int)this->id, (int)this->id, 0x69, (long)this->owner->id, (long)master->id, 0);
+        rge_base_game->notification(0x69, (long)this->owner->id, (long)master->id, (long)(int)this->world_x, (long)(int)this->world_y);
+        ((TRIBE_Player*)this->owner)->registerBuild(this, this->unique_build_id);
     }
 
     bool became_dead = (param_1 == 3 && this->object_state == 2);

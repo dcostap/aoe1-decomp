@@ -516,7 +516,10 @@ int BuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
     this->buildListLengthValue = 0;
 
     while (fgets(temp_line, (int)sizeof(temp_line), file_in) != nullptr) {
-        if ((temp_line[0] == '/') && (temp_line[1] == '/')) {
+        char comment_char_0 = '\0';
+        char comment_char_1 = '\0';
+        sscanf(temp_line, " %c%c", &comment_char_0, &comment_char_1);
+        if ((comment_char_0 == '/') && (comment_char_1 == '/')) {
             continue;
         }
 
@@ -597,7 +600,7 @@ int BuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
             if (item == nullptr) {
                 continue;
             }
-            item->buildCapValue = build_cap;
+            item->setBuildCap(build_cap);
             append_build_item(this, item);
             this->buildListLengthValue = this->buildListLengthValue + 1;
         }

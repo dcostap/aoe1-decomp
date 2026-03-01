@@ -90,9 +90,7 @@ void RGE_Action_Explore::set_state(uchar param_1) {
 
     switch (param_1) {
     case 2: {
-        if ((this->obj != nullptr) && (this->obj->master_obj != nullptr)) {
-            this->obj->new_sprite(this->obj->master_obj->sprite);
-        }
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         this->set_target_obj(nullptr);
         this->set_target_obj2(nullptr);
         this->target_x = -1.0f;
@@ -102,19 +100,15 @@ void RGE_Action_Explore::set_state(uchar param_1) {
     }
 
     case 3: {
-        int id = (this->obj != nullptr) ? (int)this->obj->id : 0;
-        if (this->obj != nullptr) {
-            this->obj->notify(id, id, 0x202, 0x25D, 0, 0);
-        }
+        int id = (int)this->obj->id;
+        this->obj->notify(id, id, 0x202, 0x25D, 0, 0);
         // fallthrough
     }
 
     case 1:
     case 0x0D:
     case 0x0E:
-        if ((this->obj != nullptr) && (this->obj->master_obj != nullptr)) {
-            this->obj->new_sprite(this->obj->master_obj->sprite);
-        }
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
 
     default:
@@ -124,10 +118,12 @@ void RGE_Action_Explore::set_state(uchar param_1) {
         break;
     }
 
-    RGE_Sprite* move_sprite = (this->task != nullptr) ? this->task->move_sprite : nullptr;
-    if (move_sprite == nullptr) {
-        RGE_Master_Moving_Object* master = (this->obj != nullptr) ? (RGE_Master_Moving_Object*)this->obj->master_obj : nullptr;
-        move_sprite = (master != nullptr) ? master->move_sprite : nullptr;
+    RGE_Sprite* move_sprite = nullptr;
+    if ((this->task != nullptr) && (this->task->move_sprite != nullptr)) {
+        move_sprite = this->task->move_sprite;
+    } else {
+        RGE_Master_Moving_Object* master = (RGE_Master_Moving_Object*)this->obj->master_obj;
+        move_sprite = master->move_sprite;
     }
 
     RGE_Action_Move_To* move_to = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, move_sprite);
@@ -164,10 +160,8 @@ uchar RGE_Action_Explore::update() {
             return 0;
         }
     } else if (cur_state == 0x0D) {
-        int id = (this->obj != nullptr) ? (int)this->obj->id : 0;
-        if (this->obj != nullptr) {
-            this->obj->notify(id, id, 0x1F9, 0x25D, 0, 0);
-        }
+        int id = (int)this->obj->id;
+        this->obj->notify(id, id, 0x1F9, 0x25D, 0, 0);
         this->set_state(2);
         return 3;
     }

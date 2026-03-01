@@ -52,7 +52,7 @@ RGE_Action_Enter::RGE_Action_Enter(int param_1, RGE_Action_Object* param_2) {
     this->action_type = 3;
 }
 
-// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402410
+// Fully verified. Source of truth: act_entr.cpp.decomp + act_entr.cpp.asm @ 0x00402410
 RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
     RGE_Action::setup(param_1);
     this->action_type = 3;
@@ -67,7 +67,7 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2
         if (action_state == 2) {
             const uchar has_more_room = param_3->more_room();
             const int is_computer = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->computerPlayer() : 0;
-            if ((is_computer == 1) || ((has_more_room != 0) && (is_computer == 0))) {
+            if (((has_more_room == 1) && (is_computer == 0)) || ((has_more_room != 1) && (is_computer == 1))) {
                 goto compute_tile;
             }
         } else if (action_state == 0x0B) {
@@ -140,7 +140,7 @@ uchar RGE_Action_Enter::inside_obj_update() { return RGE_Action::inside_obj_upda
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402610 (virtual forwarding/helper coverage).
 uchar RGE_Action_Enter::idle_update() { return RGE_Action::idle_update(); }
 
-// Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402740
+// Fully verified. Source of truth: act_entr.cpp.decomp + act_entr.cpp.asm @ 0x00402740
 uchar RGE_Action_Enter::update() {
     RGE_Game_World* world = this->obj->owner->world;
 

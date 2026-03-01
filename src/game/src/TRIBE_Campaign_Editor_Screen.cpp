@@ -29,21 +29,10 @@ static void drop_set_sorted(TDropDownPanel* drop, int sorted) {
     }
 }
 
-// Fully verified. Source of truth: scr_cam.cpp.decomp/asm (helper extracted from decomp flow).
-static char* drop_get_text(TDropDownPanel* drop) {
-    if (drop != nullptr && drop->val_panel != nullptr) {
-        char* text = drop->val_panel->get_text(0);
-        if (text != nullptr) {
-            return text;
-        }
-    }
-    return (char*)"";
-}
 } // namespace
 
 // Fully verified. Source of truth: scr_cam.cpp.decomp @ 0x0048F5D0
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel((char*)"Campaign Editor Screen") {
-    this->need_to_save = 0;
     this->title = nullptr;
     this->filename_title = nullptr;
     this->scenarios_title = nullptr;
@@ -92,10 +81,8 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel((cha
 
     this->create_button((TPanel*)this, &this->ok_button, 0xfa1, 0, 0x14, 0x1bd, 0x118, 0x1e, 0, 0, 0);
     this->create_button((TPanel*)this, &this->cancel_button, 0xfa2, 0, 0x154, 0x1bd, 0x118, 0x1e, 0, 0, 0);
-    if (this->cancel_button != nullptr) {
-        this->cancel_button->hotkey = 0x1b;
-        this->cancel_button->hotkey_shift = 0;
-    }
+    this->cancel_button->hotkey = 0x1b;
+    this->cancel_button->hotkey_shift = 0;
 
     this->create_button((TPanel*)this, &this->move_scenario_up_button, 0x2bd5, 0, 0x212, 300, 0x5a, 0x1e, 0, 0, 0);
     this->create_button((TPanel*)this, &this->move_scenario_down_button, 0x2bd6, 0, 0x212, 0x154, 0x5a, 0x1e, 0, 0, 0);
@@ -111,16 +98,12 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen() : TScreenPanel((cha
     tab_list[7] = (TPanel*)this->cancel_button;
     this->set_tab_order(tab_list, 8);
 
-    if (this->filename_drop != nullptr && this->filename != nullptr) {
-        this->filename_drop->set_curr_child((TPanel*)this->filename);
-        this->set_curr_child((TPanel*)this->filename_drop);
-    }
+    this->filename_drop->set_curr_child((TPanel*)this->filename);
+    this->set_curr_child((TPanel*)this->filename_drop);
 
     this->fill_scenario_list();
     this->fill_campaign_drop();
-    if (this->campaign_scenarios != nullptr) {
-        ((TTextPanel*)this->campaign_scenarios)->empty_list();
-    }
+    ((TTextPanel*)this->campaign_scenarios)->empty_list();
     this->load_campaign();
     this->need_to_save = '\0';
 }
@@ -520,7 +503,7 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* param_1, long param_2, ulong p
 
         if ((TDropDownPanel*)param_1 == this->filename_drop && param_2 == 0) {
             if (this->need_to_save == '\0' || ((TTextPanel*)this->campaign_scenarios)->numberLines() < 1) {
-                char* drop_text = drop_get_text(this->filename_drop);
+                char* drop_text = this->filename_drop->get_text();
                 this->filename->set_text(drop_text);
                 this->load_campaign();
             } else {
@@ -540,10 +523,8 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* param_1, long param_2, ulong p
                 } else {
                     if ((TButtonPanel*)param_1 == this->cancel_button) {
                         new TRIBE_Screen_Sed_Menu();
-                        if (panel_system != nullptr) {
-                            panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
-                            panel_system->destroyPanel((char*)"Campaign Editor Screen");
-                        }
+                        panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
+                        panel_system->destroyPanel((char*)"Campaign Editor Screen");
                         return 1;
                     }
                     if ((TButtonPanel*)param_1 == this->add_button) {
@@ -564,50 +545,41 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* param_1, long param_2, ulong p
                     char* cur = this->filename->get_text();
                     sprintf(msg, fmt, cur);
                     this->popupYesNoCancelDialog((char*)msg, (char*)kCancelDialogName, 0x1c2, 100);
-                    return 1;
                 }
-                new TRIBE_Screen_Sed_Menu();
-                if (panel_system != nullptr) {
+                else {
+                    new TRIBE_Screen_Sed_Menu();
                     panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
                     panel_system->destroyPanel((char*)"Campaign Editor Screen");
+                    return 1;
                 }
-                return 1;
             }
         }
 
         const char* panel_name = param_1->panelName();
         if (panel_name != nullptr && strcmp(panel_name, kCancelDialogName) == 0) {
-            if (panel_system != nullptr) {
-                panel_system->destroyPanel((char*)kCancelDialogName);
-            }
+            panel_system->destroyPanel((char*)kCancelDialogName);
             if (param_2 == 0) {
                 this->make_campaign();
                 new TRIBE_Screen_Sed_Menu();
-                if (panel_system != nullptr) {
-                    panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
-                    panel_system->destroyPanel((char*)"Campaign Editor Screen");
-                }
+                panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
+                panel_system->destroyPanel((char*)"Campaign Editor Screen");
             } else if (param_2 == 1) {
                 new TRIBE_Screen_Sed_Menu();
-                if (panel_system != nullptr) {
-                    panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
-                    panel_system->destroyPanel((char*)"Campaign Editor Screen");
-                }
+                panel_system->setCurrentPanel((char*)"Scenario Editor Menu", 0);
+                panel_system->destroyPanel((char*)"Campaign Editor Screen");
             }
             return 1;
         }
 
         if (panel_name != nullptr && strcmp(panel_name, kLoadDialogName) == 0) {
-            if (panel_system != nullptr) {
-                panel_system->destroyPanel((char*)kLoadDialogName);
-            }
+            panel_system->destroyPanel((char*)kLoadDialogName);
             if (param_2 == 0) {
                 this->make_campaign();
             } else if (param_2 != 1) {
                 return 1;
             }
 
-            char* drop_text = drop_get_text(this->filename_drop);
+            char* drop_text = this->filename_drop->get_text();
             this->filename->set_text(drop_text);
             this->load_campaign();
             return 1;
