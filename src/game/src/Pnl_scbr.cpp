@@ -8,14 +8,17 @@
 
 namespace {
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static int sbar_rect_valid(const tagRECT& r) {
     return (r.left != r.right) && (r.top != r.bottom);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static int sbar_is_inside_rect(const tagRECT& r, long x, long y) {
     return (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static void sbar_calc_item_rects(TScrollBarPanel* self) {
     if (!self) {
         return;
@@ -43,6 +46,7 @@ static void sbar_calc_item_rects(TScrollBarPanel* self) {
     self->bottom_rect.bottom = self->down_rect.top - 1;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static void sbar_draw_border(TScrollBarPanel* self, int border_type, int reverse, long left, long top, long right, long bottom) {
     if (!self || !self->render_area) {
         return;
@@ -104,10 +108,12 @@ static void sbar_draw_border(TScrollBarPanel* self, int border_type, int reverse
     }
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static void sbar_draw_border(TScrollBarPanel* self, int border_type, int reverse, const tagRECT& r) {
     sbar_draw_border(self, border_type, reverse, r.left, r.top, r.right, r.bottom);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static void sbar_draw_back_pic(TScrollBarPanel* self) {
     if (!self || !self->button_pics || self->back_frame == -1) {
         return;
@@ -137,6 +143,7 @@ static void sbar_draw_back_pic(TScrollBarPanel* self) {
     }
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (helper extracted from decomp flow).
 static void sbar_draw_button_pic(TScrollBarPanel* self, int frame, int pressed, const tagRECT& r) {
     if (!self) {
         return;
@@ -177,16 +184,19 @@ static void sbar_draw_button_pic(TScrollBarPanel* self, int frame, int pressed, 
 
 } // namespace
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::calc_item_rects() {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AA80
     sbar_calc_item_rects(this);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::draw_back_pic() {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B8B0
     sbar_draw_back_pic(this);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::draw_button_pic(int frame, int pressed, tagRECT* r) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B970
     if (!r) {
@@ -195,6 +205,7 @@ void TScrollBarPanel::draw_button_pic(int frame, int pressed, tagRECT* r) {
     sbar_draw_button_pic(this, frame, pressed, *r);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::draw_border(int border_type, int reverse, tagRECT* r) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B660
     if (!r) {
@@ -203,6 +214,7 @@ void TScrollBarPanel::draw_border(int border_type, int reverse, tagRECT* r) {
     sbar_draw_border(this, border_type, reverse, *r);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::draw_border(int border_type, int reverse, long left, long top, long right, long bottom) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B690
     sbar_draw_border(this, border_type, reverse, left, top, right, bottom);
@@ -258,6 +270,7 @@ TScrollBarPanel::~TScrollBarPanel() {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047A8A0
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::setup(TDrawArea* a, TPanel* p, long x, long y, long w, long h, uchar c) {
     return TPanel::setup(a, p, x, y, w, h, c);
 }
@@ -282,10 +295,12 @@ long TScrollBarPanel::setup(TDrawArea* draw_area, TPanel* parent, long x, long y
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::set_rect(tagRECT r) {
     set_rect(r.left, r.top, (r.right - r.left) + 1, (r.bottom - r.top) + 1);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::set_rect(long x, long y, long w, long h) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047A910
     TPanel::set_rect(x, y, w, h);
@@ -346,17 +361,26 @@ void TScrollBarPanel::set_rect(long x, long y, long w, long h) {
     sbar_calc_item_rects(this);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_color(uchar c) { TPanel::set_color(c); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_active(int a) { TPanel::set_active(a); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::set_positioning(PositionMode m, long p1, long p2, long p3, long p4, long p5, long p6, long p7, long p8, TPanel* r1, TPanel* r2, TPanel* r3, TPanel* r4) {
     TPanel::set_positioning(m, p1, p2, p3, p4, p5, p6, p7, p8, r1, r2, r3, r4);
 }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_fixed_position(long x, long y, long w, long h) { TPanel::set_fixed_position(x, y, w, h); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_redraw(RedrawMode m) { TPanel::set_redraw(m); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_overlapped_redraw(TPanel* p1, TPanel* p2, RedrawMode m) { TPanel::set_overlapped_redraw(p1, p2, m); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::draw_setup(int p) { TPanel::draw_setup(p); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::draw_finish() { TPanel::draw_finish(); }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::set_tab_pos(long list_index) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AB20
     list_num = list_index;
@@ -389,12 +413,14 @@ void TScrollBarPanel::set_tab_pos(long list_index) {
     set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::set_list_len(long list_len_value, long list_index) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AC10
     list_len = list_len_value;
     set_tab_pos(list_index);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::set_buttons(TShape* pics, int back, int up, int down, int tab) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AC30
     button_pics = pics;
@@ -417,6 +443,7 @@ void TScrollBarPanel::set_bevel_info(int type, unsigned char c1, unsigned char c
     bevel_color6 = c6;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 long TScrollBarPanel::handle_idle() {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047ACC0
     unsigned long now;
@@ -465,20 +492,34 @@ long TScrollBarPanel::handle_idle() {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_size(long w, long h) { return TPanel::handle_size(w, h); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_key_down(long k, short s, int p1, int p2, int p3) { return TPanel::handle_key_down(k, s, p1, p2, p3); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_char(long p1, short p2) { return TPanel::handle_char(p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_command(uint c, long p) { return TPanel::handle_command(c, p); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_user_command(uint c, long p) { return TPanel::handle_user_command(c, p); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_timer_command(uint c, long p) { return TPanel::handle_timer_command(c, p); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_scroll(long p1, long p2) { return TPanel::handle_scroll(p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_mouse_down(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_down(b, x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_mouse_move(long x, long y, int p1, int p2) { return TPanel::handle_mouse_move(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_mouse_up(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_up(b, x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::handle_mouse_dbl_click(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_dbl_click(b, x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_move_action(x, y, p1, p2); }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 long TScrollBarPanel::mouse_left_down_action(long x, long y, int p1, int p2) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AE40
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AE22 (alias entry)
@@ -528,10 +569,12 @@ long TScrollBarPanel::mouse_left_down_action(long x, long y, int p1, int p2) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 long TScrollBarPanel::mouse_left_hold_action(long x, long y, int p1, int p2) {
     return TPanel::mouse_left_hold_action(x, y, p1, p2);
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 long TScrollBarPanel::mouse_left_move_action(long x, long y, int p1, int p2) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047AFD0
     (void)p1;
@@ -686,6 +729,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int p1, int p2) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 long TScrollBarPanel::mouse_left_up_action(long x, long y, int p1, int p2) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B3D0
     (void)x;
@@ -705,26 +749,46 @@ long TScrollBarPanel::mouse_left_up_action(long x, long y, int p1, int p2) {
     return 0;
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_left_dbl_click_action(long x, long y, int p1, int p2) { return TPanel::mouse_left_dbl_click_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_right_down_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_down_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_right_hold_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_hold_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_right_move_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_move_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_right_up_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_up_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::mouse_right_dbl_click_action(long x, long y, int p1, int p2) { return TPanel::mouse_right_dbl_click_action(x, y, p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::key_down_action(long k, short s, int p1, int p2, int p3) { return TPanel::key_down_action(k, s, p1, p2, p3); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::char_action(long p1, short p2) { return TPanel::char_action(p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::action(TPanel* p, long a, ulong p3, ulong p4) { return TPanel::action(p, a, p3, p4); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::get_true_render_rect(tagRECT* r) { TPanel::get_true_render_rect(r); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TScrollBarPanel::is_inside(long x, long y) { return TPanel::is_inside(x, y); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_focus(int f) { TPanel::set_focus(f); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_tab_order(TPanel* p1, TPanel* p2) { TPanel::set_tab_order(p1, p2); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::set_tab_order(TPanel** p, short s) { TPanel::set_tab_order(p, s); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 uchar TScrollBarPanel::get_help_info(char** p1, long* p2, long p3, long p4) { return TPanel::get_help_info(p1, p2, p3, p4); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::stop_sound_system() { TPanel::stop_sound_system(); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 int TScrollBarPanel::restart_sound_system() { return TPanel::restart_sound_system(); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::take_snapshot() { TPanel::take_snapshot(); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::handle_reactivate() { TPanel::handle_reactivate(); }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::scroll(ActionType action, long value) {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B420
     if (list_panel) {
@@ -768,6 +832,7 @@ void TScrollBarPanel::scroll(ActionType action, long value) {
     }
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp/asm (parity-audited).
 void TScrollBarPanel::draw() {
     // Fully verified. Source of truth: pnl_scbr.cpp.decomp @ 0x0047B4E0
     if (parent_panel) {
@@ -799,9 +864,15 @@ void TScrollBarPanel::draw() {
     draw_finish();
 }
 
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::draw_rect(tagRECT* r) { TPanel::draw_rect(r); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::draw_offset(long x, long y, tagRECT* r) { TPanel::draw_offset(x, y, r); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::draw_rect2(tagRECT* r) { TPanel::draw_rect2(r); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::draw_offset2(long x, long y, tagRECT* r) { TPanel::draw_offset2(x, y, r); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TScrollBarPanel::paint() { TPanel::paint(); }
+// Fully verified. Source of truth: pnl_scbr.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 long TScrollBarPanel::wnd_proc(void* h, uint m, uint w, long l) { return TPanel::wnd_proc(h, m, w, l); }

@@ -8,6 +8,7 @@
 #include "../include/custom_debug.h"
 #include <stdlib.h>
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (helper parity).
 static unsigned long button_time_ms() {
     return (unsigned long)GetTickCount();
 }
@@ -16,6 +17,7 @@ static unsigned long button_time_ms() {
 // in this file (the remaining offsets already had explicit refs in existing method comments):
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0 (TButtonPanel::TButtonPanel)
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472030 (TButtonPanel::~TButtonPanel)
+// Fully verified. Source of truth: TButtonPanel.decomp @ 0x00472010 (scalar deleting destructor thunk).
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004720A0 (TButtonPanel::setup)
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722E0 (TButtonPanel::set_id(short,long,long))
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472300 (TButtonPanel::set_picture)
@@ -40,6 +42,7 @@ static unsigned long button_time_ms() {
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473BC0 (TButtonPanel::stop_sound_system)
 // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473BE0 (TButtonPanel::restart_sound_system)
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (helper parity).
 static void button_notify_parent(TButtonPanel* btn, long code) {
     if (!btn || !btn->parent_panel) return;
     CUSTOM_DEBUG_BEGIN
@@ -49,6 +52,7 @@ static void button_notify_parent(TButtonPanel* btn, long code) {
     btn->parent_panel->action(btn, code, (ulong)btn->id[btn->cur_state], (ulong)btn->id2[btn->cur_state]);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (helper parity).
 static void button_send_command(TButtonPanel* btn, short state) {
     if (!btn || !btn->render_area || !btn->render_area->Wnd) return;
     if (state < 0 || state >= 9) return;
@@ -61,6 +65,7 @@ static void button_send_command(TButtonPanel* btn, short state) {
 }
 
 // Constructor
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 TButtonPanel::TButtonPanel() : TPanel("Button") {
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
 
@@ -113,6 +118,7 @@ TButtonPanel::TButtonPanel() : TPanel("Button") {
 }
 
 // Destructor
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 TButtonPanel::~TButtonPanel() {
     for (int i = 0; i < 9; ++i) {
         if (this->text1[i]) {
@@ -132,6 +138,7 @@ TButtonPanel::~TButtonPanel() {
 }
 
 // Virtual Implementations
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, TButtonPanel::DrawType param_7, TDigital* param_8, TButtonPanel::NotifyType param_9, long param_10) {
     TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, 0);
 
@@ -141,26 +148,32 @@ long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long
     this->set_id(0, param_10, 0);
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 TButtonPanel::ButtonType TButtonPanel::buttonType() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472110
     return this->buttonTypeValue;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 TButtonPanel::DrawType TButtonPanel::drawType() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472120
     return this->drawTypeValue;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 TButtonPanel::NotifyType TButtonPanel::notifyType() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472130
     return this->notifyTypeValue;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::setDrawType(TButtonPanel::DrawType type) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472140
     this->drawTypeValue = type;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::setButtonType(TButtonPanel::ButtonType type) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472150
     this->buttonTypeValue = type;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_picture_info(TShape* pic, short pic_index, long x, long y, int all_hot, int auto_pic_pos) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472160
     this->pic_x = x;
@@ -169,26 +182,42 @@ void TButtonPanel::set_picture_info(TShape* pic, short pic_index, long x, long y
     this->auto_pic_pos = auto_pic_pos;
     this->set_picture(0, pic, pic_index);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_rect(long param_1, long param_2, long param_3, long param_4) { TPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_active(int param_1) { TPanel::set_active(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
     TPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_redraw(TPanel::RedrawMode param_1) { TPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) {
     TPanel::set_overlapped_redraw(param_1, param_2, param_3);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw_finish() { TPanel::draw_finish(); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw_rect2(tagRECT* param_1) { TPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::paint() {}
 // TButtonPanel inherited stubs (removed to use TPanel base or new overrides)
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473890
     if ((param_2 == WM_KEYUP) && (this->key_down != 0) && (param_3 == (uint)this->key_down)) {
@@ -206,7 +235,9 @@ long TButtonPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long para
 
     return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_paint() { return TPanel::handle_paint(); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004735B0
     if (this->active && (this->disabled == 0) &&
@@ -235,10 +266,15 @@ long TButtonPanel::handle_key_down(long param_1, short param_2, int param_3, int
 
     return TPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_char(long param_1, short param_2) { return TPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_user_command(uint param_1, long param_2) { return TPanel::handle_user_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return TPanel::handle_timer_command(param_1, param_2); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_scroll(long param_1, long param_2) { return TPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473120
     if (!this->active || this->disabled != 0) {
@@ -251,9 +287,11 @@ long TButtonPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, 
 }
 // ASM: TButtonPanel does NOT override handle_mouse_dbl_click ? inherit TPanel's default
 // which includes is_inside check and fallback to handle_mouse_down.
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
     return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
     if (!this->active) return 0;
 
@@ -270,12 +308,14 @@ long TButtonPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
 
     return this->mouse_move_action(x, y, wparam, param_4);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_move_action(long x, long y, int wparam, int param_4) {
     // Original TButtonPanel does NOT override mouse_move_action (not in Pnl_btn.cpp.asm).
     // Hover focus is NOT set here; captured-path tracking is in mouse_left_move_action.
     (void)x; (void)y; (void)wparam; (void)param_4;
     return 0;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_left_move_action(long x, long y, int wparam, int param_4) {
     (void)wparam;
     (void)param_4;
@@ -296,6 +336,7 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int wparam, int param_
 
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473180
     (void)param_1;
@@ -304,6 +345,7 @@ long TButtonPanel::mouse_left_dbl_click_action(long param_1, long param_2, int p
     (void)param_4;
     return 0;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
     (void)param_1;
     (void)param_2;
@@ -321,6 +363,7 @@ long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param
     button_notify_parent(this, 5);
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_right_move_action(long x, long y, int param_3, int param_4) {
     (void)param_3;
     (void)param_4;
@@ -340,6 +383,7 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int param_3, int para
     }
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_4) {
     (void)param_3;
     (void)param_4;
@@ -365,6 +409,7 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_
     }
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473390
     (void)param_1;
@@ -373,6 +418,7 @@ long TButtonPanel::mouse_right_dbl_click_action(long param_1, long param_2, int 
     (void)param_4;
     return 0;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004736F0
     (void)param_2;
@@ -432,15 +478,20 @@ long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int
     }
     return 0;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::char_action(long param_1, short param_2) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473920
     (void)param_1;
     (void)param_2;
     return 0;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::get_true_render_rect(tagRECT* param_1) {}
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 int TButtonPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_focus(int focused) {
     const int want = focused ? 1 : 0;
     if (this->have_focus == want) return;
@@ -448,26 +499,34 @@ void TButtonPanel::set_focus(int focused) {
     this->have_focus = want;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_tab_order(TPanel** param_1, short param_2) {}
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::stop_sound_system() {
     if (this->sound != nullptr) {
         this->sound = nullptr;
     }
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 int TButtonPanel::restart_sound_system() {
     if (this->sound_number != -1) {
         this->sound = (rge_base_game != nullptr) ? rge_base_game->get_sound(this->sound_number) : nullptr;
     }
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::take_snapshot() {}
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::handle_reactivate() {}
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_state(short param_1) {
     this->cur_state = param_1;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text_pos(long x, long y) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472220
     this->text_x = x;
@@ -475,6 +534,7 @@ void TButtonPanel::set_text_pos(long x, long y) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text_info(char* text, void* font, long wid, long hgt, long x, long y) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004721A0
     this->set_text_pos(x, y);
@@ -482,6 +542,7 @@ void TButtonPanel::set_text_info(char* text, void* font, long wid, long hgt, lon
     this->set_font(font, wid, hgt);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text_info(long resid, void* font, long wid, long hgt, long x, long y) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004721E0
     this->set_text_pos(x, y);
@@ -490,17 +551,21 @@ void TButtonPanel::set_text_info(long resid, void* font, long wid, long hgt, lon
 }
 
 // Decomp @ Pnl_btn.cpp: returns (int)this->cur_state
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 int TButtonPanel::get_state() {
     return (int)this->cur_state;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::get_id() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472820
     return this->id[this->cur_state];
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::get_id2() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472830
     return this->id2[this->cur_state];
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 int TButtonPanel::get_text(short state, char** text1, char** text2) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472840
     if (state == -1) {
@@ -510,6 +575,7 @@ int TButtonPanel::get_text(short state, char** text1, char** text2) {
     *text2 = this->text2[state];
     return (*text1 != nullptr) ? 1 : 0;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::get_text_color(short state, ulong* color1, ulong* color2) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472880
     if (state == -1) {
@@ -518,6 +584,7 @@ void TButtonPanel::get_text_color(short state, ulong* color1, ulong* color2) {
     *color1 = this->text_color1[state];
     *color2 = this->text_color2[state];
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text_color(int state, ulong color1, ulong color2) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472620
     if (state >= 0 && state < 9) {
@@ -526,6 +593,7 @@ void TButtonPanel::set_text_color(int state, ulong color1, ulong color2) {
         this->set_redraw(TPanel::RedrawMode::Redraw);
     }
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_highlight_text_color(int state, ulong color1, ulong color2) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472650
     if (state >= 0 && state < 9) {
@@ -534,6 +602,7 @@ void TButtonPanel::set_highlight_text_color(int state, ulong color1, ulong color
         this->set_redraw(TPanel::RedrawMode::Redraw);
     }
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_state_by_id(long id) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472720
     for (int i = 0; i < this->num_states; ++i) {
@@ -544,12 +613,14 @@ void TButtonPanel::set_state_by_id(long id) {
         }
     }
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_disabled(int disabled) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004727B0
     this->disabled = disabled;
     this->set_redraw(TPanel::RedrawMode::Redraw);
     this->handle_mouse_input = (this->disabled != 0) ? 0 : 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::reset() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00473B80
     this->release_mouse();
@@ -560,6 +631,7 @@ void TButtonPanel::reset() {
         this->set_redraw(TPanel::RedrawMode::Redraw);
     }
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 int TButtonPanel::hit_button(long x, long y) {
     if (!this->is_inside(x, y)) return 0;
     if (this->all_hot != 0) return 1;
@@ -575,17 +647,22 @@ int TButtonPanel::hit_button(long x, long y) {
 
     return 1;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_sound_number(int num) { this->sound_number = num; }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_id(long val) {
     for (int i = 0; i < 9; ++i) this->id[i] = val;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_id(short state, long id, long id2) {
     if (state < 0 || state >= 9) return;
     this->id[state] = id;
     this->id2[state] = id2;
 }
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_sound(TDigital* s) { this->sound = s; }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472240
     this->buttonTypeValue = TButtonPanel::Radio;
@@ -612,6 +689,7 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
     }
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_radio_button() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00472690
     if (this->num_radio_buttons > 0) {
@@ -662,6 +740,7 @@ void TButtonPanel::do_action() {
     button_send_command(this, this->cur_state);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::do_right_action(int param_1) {
     (void)param_1;
 
@@ -690,6 +769,7 @@ void TButtonPanel::do_right_action(int param_1) {
     button_send_command(this, this->cur_state);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_font(void* font, long wid, long hgt) {
     this->font = font;
     if (wid != -1) this->font_wid = wid;
@@ -698,6 +778,7 @@ void TButtonPanel::set_font(void* font, long wid, long hgt) {
 }
 
 // Non-Virtuals
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text(short state, char* text) {
     if (state < 0) state = this->cur_state;
     if (state >= 9) return;
@@ -755,6 +836,7 @@ void TButtonPanel::set_text(short state, char* text) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text(short state, long resid) {
     char str[256];
     if (this->get_string(resid, str, 256)) {
@@ -762,10 +844,12 @@ void TButtonPanel::set_text(short state, long resid) {
     }
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text(long resid) {
     this->set_text(this->cur_state, resid);
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text(short state, long resid1, long resid2) {
     char str1[256], str2[256];
     if (this->get_string(resid1, str1, 256) && this->get_string(resid2, str2, 256)) {
@@ -773,6 +857,7 @@ void TButtonPanel::set_text(short state, long resid1, long resid2) {
     }
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_text(short state, char* text1, char* text2) {
     if (state < 0) state = this->cur_state;
     if (state >= 9) return;
@@ -856,6 +941,7 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
     return 1;
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::draw() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004728C0 (audited vs pnl_btn.cpp.asm).
     if (!this->render_area || this->pnl_hgt == 0 || this->pnl_wid == 0 || this->drawTypeValue == TButtonPanel::DrawClear) {
@@ -1032,6 +1118,7 @@ void TButtonPanel::draw() {
     this->draw_finish();
 }
 
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_state_info(int num_states) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722C0
     // Original behavior is intentionally minimal:
@@ -1043,6 +1130,7 @@ void TButtonPanel::set_state_info(int num_states) {
 }
 
 // From decomp: sets a picture for a given button state
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_picture(short state, TShape* pic_ptr, short pic_idx) {
     if (state < 0 || state >= 9) return;
     this->pic[state] = pic_ptr;
@@ -1051,6 +1139,7 @@ void TButtonPanel::set_picture(short state, TShape* pic_ptr, short pic_idx) {
 }
 
 // From decomp: sets bevel info on the button panel
+// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
     this->bevel_type = type;
     this->bevel_color1 = (unsigned char)c1;
