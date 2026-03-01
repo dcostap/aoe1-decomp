@@ -126,9 +126,9 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
             if (this->obj->owner->computerPlayer() == 1) {
                 this->obj->notify(obj_id, obj_id, 0x1FA, 0, 0, 0);
                 this->set_state(1);
-                return;
+            } else {
+                this->obj->notify(obj_id, obj_id, 0x202, 0x25A, 0, 0);
             }
-            this->obj->notify(obj_id, obj_id, 0x202, 0x25A, 0, 0);
         }
         if (this->obj != nullptr && this->obj->master_obj != nullptr) {
             this->obj->new_sprite(this->obj->master_obj->sprite);
@@ -152,8 +152,8 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
             return;
         }
 
-        this->sub_actions->add_action(move);
         move->setSubAction(1);
+        this->sub_actions->add_action(move);
         return;
     }
 
@@ -183,8 +183,8 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
             return;
         }
 
-        move->setSubAction(1);
         this->sub_actions->add_action(move);
+        move->setSubAction(1);
         return;
     }
 
