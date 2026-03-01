@@ -156,6 +156,7 @@ uchar RGE_Action_Explore::update() {
     return 0;
 }
 
+// Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E26 (embedded pre-work decomp stub).
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E40
 int RGE_Action_Explore::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;

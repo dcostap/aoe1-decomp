@@ -92,6 +92,7 @@ long TDialogPanel::char_action(long param_1, short param_2) { return TEasy_Panel
 long TDialogPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TEasy_Panel::action(param_1, param_2, param_3, param_4); }
 void TDialogPanel::get_true_render_rect(tagRECT* param_1) { TEasy_Panel::get_true_render_rect(param_1); }
 int TDialogPanel::is_inside(long param_1, long param_2) { return TEasy_Panel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: pnl_dlg.cpp.decomp @ 0x00473EC0
 void TDialogPanel::set_focus(int param_1) { TEasy_Panel::set_focus(param_1); }
 void TDialogPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TEasy_Panel::set_tab_order(param_1, param_2); }
 void TDialogPanel::set_tab_order(TPanel** param_1, short param_2) { TEasy_Panel::set_tab_order(param_1, param_2); }

@@ -8,6 +8,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Fully verified. Source of truth: effects.cpp.decomp @ 0x004496ED
+static int FUN_004496ed(const void* lhs, const void* rhs) {
+    const unsigned char* a = (const unsigned char*)lhs;
+    const unsigned char* b = (const unsigned char*)rhs;
+    while ((*a != 0) && (*a == *b)) {
+        ++a;
+        ++b;
+    }
+    return (int)*a - (int)*b;
+}
+
 RGE_Effects::RGE_Effects() {
     this->effect_num = 0;
     this->effects = nullptr;
