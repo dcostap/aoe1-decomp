@@ -1185,18 +1185,6 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long param_1, unsigned lon
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F21F0
 void TribeTacticalAIModule::taskActiveSoldiers(unsigned long param_1, unsigned long param_2) {
     RGE_Game_World* world = tacticalWorld(this);
-    if ((world == nullptr) || (this->md == nullptr)) {
-        this->nextActiveSoldierGroupToTaskValue = -1;
-        return;
-    }
-    ensureManagedArrayCapacity(this->playersToAttack, 1);
-    if ((this->playersToAttack.maximumSizeValue < 1) || (this->playersToAttack.value == nullptr)) {
-        this->nextActiveSoldierGroupToTaskValue = -1;
-        return;
-    }
-    if (this->playersToAttack.numberValue < 1) {
-        this->playersToAttack.value[0] = -1;
-    }
 
     TribeInformationAIModule* infoAI = tacticalInformationAI(this);
     TribeStrategyAIModule* strategyAI = reinterpret_cast<TribeStrategyAIModule*>(&this->md->strategyAI);

@@ -1459,10 +1459,6 @@ void TribeMPSetupScreen::fillPlayers() {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4190
 void TribeMPSetupScreen::updateSummary() {
-    if (rge_base_game == nullptr) {
-        return;
-    }
-
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
 
     char str1[256];
@@ -1502,7 +1498,7 @@ void TribeMPSetupScreen::updateSummary() {
             }
 
             const char* scen_name = rge_base_game->scenarioName();
-            const char* scen_dir = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->scenario_dir : "";
+            const char* scen_dir = rge_base_game->prog_info->scenario_dir;
             sprintf(file_name, "%s%s.scn", scen_dir, scen_name ? scen_name : "");
             if (_findfirst(file_name, &file_info) == -1) {
                 sprintf(str1, "%s.scx", scen_name ? scen_name : "");
@@ -1618,7 +1614,7 @@ void TribeMPSetupScreen::updateSummary() {
             this->myScenarioChecksum = 0;
         } else {
             const char* scen_name = rge_base_game->scenarioName();
-            const char* scen_dir = (rge_base_game->prog_info != nullptr) ? rge_base_game->prog_info->scenario_dir : "";
+            const char* scen_dir = rge_base_game->prog_info->scenario_dir;
             sprintf(file_name, "%s%s.scn", scen_dir, scen_name ? scen_name : "");
             if (_findfirst(file_name, &file_info) == -1) {
                 sprintf(file_name, "%s.scx", scen_name ? scen_name : "");
