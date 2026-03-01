@@ -2607,8 +2607,8 @@ long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) {
 void FUN_004a5fcd() {
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
 void TribeMPSetupScreen::calcRandomPositions() {
-    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
     if (!rge_base_game || !comm) {
         return;
     }
