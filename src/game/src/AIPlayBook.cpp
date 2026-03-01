@@ -359,18 +359,15 @@ int AIPlayBook::convertUnitToIntType(RGE_Static_Object* param_1) {
 int AIPlayBook::loadPlays(char* param_1) {
     if (param_1 == nullptr) {
         strncpy(this->nameValue, "NULL", sizeof(this->nameValue) - 1);
-        this->nameValue[sizeof(this->nameValue) - 1] = '\0';
         return 0;
     }
 
     if (strcmp(param_1, "NONE") == 0) {
         strncpy(this->nameValue, "NONE", sizeof(this->nameValue) - 1);
-        this->nameValue[sizeof(this->nameValue) - 1] = '\0';
         return 0;
     }
 
     strncpy(this->nameValue, param_1, sizeof(this->nameValue) - 1);
-    this->nameValue[sizeof(this->nameValue) - 1] = '\0';
 
     char open_name[256];
     sprintf(open_name, "%s", this->nameValue);
@@ -403,7 +400,6 @@ int AIPlayBook::loadPlays(char* param_1) {
     const int allocated_count = this->numberPlaysValue;
     AIPlay* new_plays = (AIPlay*)::operator new((size_t)allocated_count * sizeof(AIPlay), std::nothrow);
     if (new_plays == nullptr) {
-        fclose(file);
         return 0;
     }
     for (int i = 0; i < allocated_count; ++i) {
@@ -440,21 +436,26 @@ int AIPlayBook::loadPlays(char* param_1) {
         if (strcmp(temp2, "Play") == 0) {
             ++current_play;
             current_phase = -1;
-            if ((15999 < current_play) || (allocated_count <= current_play)) {
+            if (15999 < current_play) {
                 break;
             }
 
-            const char* q1 = strchr(temp, '\"');
-            if (q1 != nullptr) {
-                const char* q2 = strchr(q1 + 1, '\"');
-                if (q2 != nullptr) {
-                    const size_t len = (size_t)(q2 - (q1 + 1));
-                    const size_t copy_len = (len < (sizeof(temp2) - 1)) ? len : (sizeof(temp2) - 1);
-                    memcpy(temp2, q1 + 1, copy_len);
-                    temp2[copy_len] = '\0';
-                    AIPlay_setName(this->plays + current_play, temp2);
-                }
+            int first_quote = 0;
+            int quote_scan = 0;
+            while (temp[quote_scan] != '\"') {
+                ++quote_scan;
+                ++first_quote;
             }
+
+            int second_quote = first_quote + 1;
+            while (temp[second_quote] != '\"') {
+                ++second_quote;
+            }
+
+            int quote_len = second_quote - (first_quote + 1);
+            memcpy(temp2, temp + first_quote + 1, (size_t)quote_len);
+            temp2[quote_len] = '\0';
+            AIPlay_setName(this->plays + current_play, temp2);
             continue;
         }
 
@@ -639,10 +640,6 @@ int AIPlayBook::loadPlays(char* param_1) {
 
             for (int facet = 1; facet < 8; ++facet) {
                 const int dst_index = current_play + facet;
-                if (allocated_count <= dst_index) {
-                    break;
-                }
-
                 AIPlay* dst_play = this->plays + dst_index;
 
                 snprintf(temp2, sizeof(temp2), "%sF%d", base_play->nameValue, facet);

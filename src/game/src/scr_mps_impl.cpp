@@ -1872,79 +1872,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_LOG("MPS ctor: enter");
     CUSTOM_DEBUG_END
 
-    this->title = nullptr;
-    this->playerTitle = nullptr;
-    this->civTitle = nullptr;
-    this->settingsTitle = nullptr;
-    this->colorTitle = nullptr;
-    this->teamTitle = nullptr;
-    for (int i = 0; i < 8; ++i) {
-        this->playerNameText[i] = nullptr;
-        this->playerCivText[i] = nullptr;
-        this->scenarioPlayerText[i] = nullptr;
-        this->playerCDText[i] = nullptr;
-        this->playerVersionText[i] = nullptr;
-        this->playerColorText[i] = nullptr;
-        this->playerTeamText[i] = nullptr;
-        this->playerColor[i] = nullptr;
-        this->playerTeam[i] = nullptr;
-        this->playerNameDrop[i] = nullptr;
-        this->playerCivDrop[i] = nullptr;
-        this->scenarioPlayerDrop[i] = nullptr;
-        this->defaultColor[i] = 0;
-        this->scenarioCheckSum[i] = 0;
-    }
-    this->chatInput = nullptr;
-    this->chatTitle = nullptr;
-    this->chatBox = nullptr;
-    this->chatScrollbar = nullptr;
-    this->gameSettingsButton = nullptr;
-    this->scenarioName = nullptr;
-    this->victoryFixedText = nullptr;
-    for (int i = 0; i < 20; ++i) {
-        this->settingText[i] = nullptr;
-        this->settingValue[i] = nullptr;
-    }
-    this->mapSizeLabel = nullptr;
-    this->mapSizeDrop = nullptr;
-    this->mapTypeLabel = nullptr;
-    this->mapTypeDrop = nullptr;
-    this->numberPlayersTitle = nullptr;
-    this->numberPlayersDrop = nullptr;
-    this->numberPlayersText = nullptr;
-    this->hiddenMapButton = nullptr;
-    this->hiddenMapText = nullptr;
-    this->victoryTypeLabel = nullptr;
-    this->victoryTypeDrop = nullptr;
-    this->victoryAmountLabel = nullptr;
-    this->victoryAmountInput = nullptr;
-    this->startButton = nullptr;
-    this->readyButtons[0] = nullptr;
-    this->readyButtons[1] = nullptr;
-    this->cancelButton = nullptr;
-    this->help_button = nullptr;
-    this->ready_button = nullptr;
-    this->close_button = nullptr;
-    this->ready_button_label = nullptr;
-    this->cancelMode = 0;
-    this->playerToKick = 0;
-    this->scenarioPlayerCount = 8;
-    this->myCivilization = 0;
-    this->myScenarioPlayer = -1;
-    this->myPlayerColor = 0;
-    this->myPlayerTeam = 0;
-    this->myScenarioChecksum = 0;
-    this->saveScenarioName[0] = '\0';
-    this->saveRandomGame = 0;
-    this->saveScenarioChecksum = 0;
-    this->scenarioInfo = nullptr;
-    this->settingsFixed = 0;
-    this->numberAnyPlayers = 8;
-    this->sent_cd_status = 0;
-    this->netInfoButton = nullptr;
-    this->i_am_ready = 0;
-    this->last_send_shared = 0;
-    this->resend_game_options = 0;
+    this->init_vars();
 
     if (!rge_base_game || !rge_base_game->draw_area) {
         this->error_code = 1;
@@ -1954,6 +1882,13 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     if (!mps_ensure_multiplayer_comm()) {
         this->error_code = 1;
         return;
+    }
+
+    if (chat != nullptr) {
+        ((TChat*)chat)->ClearChat();
+        for (int i = 0; i < 9; ++i) {
+            ((TChat*)chat)->setInChatGroup(i, 1);
+        }
     }
 
     CUSTOM_DEBUG_BEGIN
@@ -1994,9 +1929,9 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("MPS ctor: creating column titles");
     CUSTOM_DEBUG_END
-    const int allow_settings_controls =
-        (rge_base_game->singlePlayerGame() != 0) ||
-        (comm != nullptr && ((TCommunications_Handler*)comm)->IsHost() != 0);
+    const int is_single_player = rge_base_game->singlePlayerGame();
+    const int is_host = (comm != nullptr) ? ((TCommunications_Handler*)comm)->IsHost() : 0;
+    const int allow_settings_controls = (is_single_player != 0) || (is_host != 0);
 
     if (!this->create_text((TPanel*)this, &this->playerTitle, 0x25d0, 0x1a, 0x32, 0xa0, 0x1e, 0, 0, 1, 0)) {
         this->error_code = 1;
@@ -2006,7 +1941,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         this->error_code = 1;
         return;
     }
-    if (allow_settings_controls) {
+    if (is_single_player == 0 && is_host == 0) {
         if (!this->create_text((TPanel*)this, &this->settingsTitle, 0x25d2, 0x1a4, 0x32, 0xd2, 0x1e, 0, 0, 1, 0)) {
             this->error_code = 1;
             return;
@@ -2050,9 +1985,10 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
             this->playerNameDrop[i]->append_line(0x25d3, 4);  // Computer
             if (rge_base_game->rge_game_options.multiplayerGameValue != 0) {
                 this->playerNameDrop[i]->append_line(0x25d4, 1);  // Closed
-                this->playerNameDrop[i]->append_line(0x25d5, 2);  // Open
+                this->playerNameDrop[i]->append_line(0x25d5, 0);  // Open
+            } else {
+                this->playerNameDrop[i]->append_line(0x25d6, 0);  // None
             }
-            this->playerNameDrop[i]->append_line(0x25d6, 0);  // None
         }
         
         // Player name text display (for single player - shows "You" or "Computer N")
@@ -2230,6 +2166,28 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         summary_y += 0x18;
     }
 
+    if (rge_base_game->multiplayerGame() != 0) {
+        if (!this->create_text((TPanel*)this, &this->chatTitle, 0x25d7, 10, 0x118, 100, 0x14, 4, 0, 1, 0)) {
+            this->error_code = 1;
+            return;
+        }
+        if (!this->create_text((TPanel*)this, &this->chatBox, (char*)"", 10, 300, 400, 0x60, 10, 0, 0, 0)) {
+            this->error_code = 1;
+            return;
+        }
+        if (!this->create_auto_scrollbar(&this->chatScrollbar, this->chatBox, 0x14)) {
+            this->error_code = 1;
+            return;
+        }
+        if (!this->create_edit((TPanel*)this, &this->chatInput, (char*)"", 0xf7, FormatAny, 10, 0x192, 400, 0x17, 10, 1, 0)) {
+            this->error_code = 1;
+            return;
+        }
+        this->chatInput->set_help_info(0x75fe, -1);
+        this->chatBox->set_help_info(0x75fd, -1);
+        this->chatBox->empty_list();
+    }
+
     // Number of Players dropdown (single player only)
     if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
         if (!this->create_text((TPanel*)this, &this->numberPlayersTitle, 0x25d8, 0x1a, 0x127, 0x14f, 0x14, 0, 0, 1, 0)) {
@@ -2242,18 +2200,68 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
         }
     }
 
-    if (!this->create_button((TPanel*)this, &this->startButton, (char*)"", (char*)0, 0x46, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
-        this->error_code = 1;
-        return;
+    this->i_am_ready = 0;
+    if (is_single_player == 0) {
+        if (is_host == 0) {
+            if (!this->create_check_box((TPanel*)this, &this->ready_button, 100, 0x1b8, 0x1e, 0x1e, 0, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            if (!this->create_text((TPanel*)this, &this->ready_button_label, 0x25bf, 0x87, 0x1b8, 0x96, 0x1e, 0, 0, 1, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            this->ready_button->set_help_info(0x7602, -1);
+            if (!this->create_button((TPanel*)this, &this->cancelButton, 0xfa2, 0, 0x14a, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            this->cancelButton->set_help_info(0x7532, -1);
+        } else {
+            if (!this->create_check_box((TPanel*)this, &this->ready_button, 10, 0x1b8, 0x1e, 0x1e, 0, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            if (!this->create_text((TPanel*)this, &this->ready_button_label, 0x25bf, 0x2d, 0x1b8, 0x96, 0x1e, 0, 0, 1, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            this->ready_button->set_help_info(0x7602, -1);
+            if (!this->create_button((TPanel*)this, &this->startButton, (char*)"", (char*)0, 0xc3, 0x1b8, 200, 0x1e, 0, 0, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            this->startButton->set_text(0, 0x25ee);
+            this->startButton->set_help_info(0x75ff, -1);
+            this->startButton->set_disabled(1);
+            if (!this->create_button((TPanel*)this, &this->cancelButton, 0xfa2, 0, 0x195, 0x1b8, 0xb4, 0x1e, 0, 0, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            this->cancelButton->set_help_info(0x7532, -1);
+            if (!this->create_button((TPanel*)this, &this->netInfoButton, 0x25ef, 0, 600, 400, 0x1e, 0x1e, 0, 0, 0)) {
+                this->error_code = 1;
+                return;
+            }
+            this->netInfoButton->set_help_info(0x7601, -1);
+            if (comm != nullptr) {
+                ((TCommunications_Handler*)comm)->SetMyReadiness(0, 0, 0, 0, 0, 0, 0, 0);
+            }
+        }
+    } else {
+        if (!this->create_button((TPanel*)this, &this->startButton, (char*)"", (char*)0, 0x46, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
+            this->error_code = 1;
+            return;
+        }
+        this->startButton->set_text(0, 0x25ee);
+        this->startButton->set_help_info(0x75ff, -1);
+        this->set_curr_child((TPanel*)this->startButton);
+        if (!this->create_button((TPanel*)this, &this->cancelButton, 0xfa2, 0, 0x14a, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
+            this->error_code = 1;
+            return;
+        }
+        this->cancelButton->set_help_info(0x7532, -1);
     }
-    this->startButton->set_text(0, 0x25ee);
-    this->startButton->set_help_info(0x75ff, -1);
-
-    if (!this->create_button((TPanel*)this, &this->cancelButton, 0xfa2, 0, 0x14a, 0x1b8, 0xf0, 0x1e, 0, 0, 0)) {
-        this->error_code = 1;
-        return;
-    }
-    this->cancelButton->set_help_info(0x7532, -1);
 
     if (!this->create_button((TPanel*)this, &this->help_button, 0xfa9, 0, 600, 0x1b8, 0x1e, 0x1e, 0, 0, 0)) {
         this->error_code = 1;
@@ -2270,36 +2278,18 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel((char*)"MP Setup Screen"
 
     this->cancelButton->hotkey = 0x1b;
     this->cancelButton->hotkey_shift = 0;
-    this->curr_child = (TPanel*)this->startButton;
-
-    if (rge_base_game->rge_game_options.multiplayerGameValue == 0) {
-        TPanel* tab_list_sp[3];
-        short tab_count_sp = 0;
-        tab_list_sp[tab_count_sp++] = (TPanel*)this->startButton;
-        tab_list_sp[tab_count_sp++] = (TPanel*)this->cancelButton;
-        if (this->gameSettingsButton != nullptr) {
-            tab_list_sp[tab_count_sp++] = (TPanel*)this->gameSettingsButton;
-        }
-        this->set_tab_order(tab_list_sp, tab_count_sp);
-        this->curr_child = (TPanel*)this->startButton;
-    } else {
-        TPanel* tab_list[5];
-        short tab_count = 0;
-        if (this->gameSettingsButton != nullptr) {
-            tab_list[tab_count++] = (TPanel*)this->gameSettingsButton;
-        }
-        tab_list[tab_count++] = (TPanel*)this->startButton;
-        tab_list[tab_count++] = (TPanel*)this->cancelButton;
-        tab_list[tab_count++] = (TPanel*)this->help_button;
-        tab_list[tab_count++] = (TPanel*)this->close_button;
-        this->set_tab_order(tab_list, tab_count);
-    }
+    this->setupTabOrder();
 
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("MPS ctor: controls created, refreshing ui");
     CUSTOM_DEBUG_END
 
     this->updateSummary();
+
+    if (is_single_player != 0) {
+        this->setupSinglePlayerPlayers();
+        this->fillPlayers();
+    }
 
     CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("MPS ctor: complete");
