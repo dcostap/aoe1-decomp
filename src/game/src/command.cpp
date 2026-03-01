@@ -1541,7 +1541,7 @@ void RGE_Command::command_group_ai_order(int p1, int p2, RGE_Static_Object** p3,
     cmd->range = p11;
     cmd->command = 0x11;
     cmd->player_id = (uchar)p1;
-    cmd->orderType = p5;
+    cmd->orderType = (short)p5;
     cmd->immediate = p12;
     cmd->inFront = p13;
 
