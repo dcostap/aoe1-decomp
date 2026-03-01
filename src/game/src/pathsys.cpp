@@ -389,7 +389,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float x, float y, int inObMa
                     RGE_Tile* tile = &this->mapValue->map_row_offset[tileY][minTileX];
                     do {
                         if ((this->initialTile.x != (int)local_14) || (this->initialTile.y != tileY)) {
-                            unsigned int terr = (unsigned int)tile->terrain_type;
+                            unsigned int terr = (unsigned int)(tile->terrain_type & 0x1f);
                             if ((terr != (unsigned int)this->currentTerrainException1) &&
                                 (terr != (unsigned int)this->currentTerrainException2) &&
                                 (this->currentTerrainTable[terr] <= 0.0f)) {
@@ -545,7 +545,7 @@ int PathingSystem::copyPath(int step) {
     wp.x = (float)uVar16 + this->currentXOffset;
     wp.y = (float)uVar15 + this->currentYOffset;
     wp.z = this->currentObject->world_z;
-    wp.facetToNextWaypoint = 0;
+    wp.facetToNextWaypoint = (uchar)tWY2;
 
     path->initToStart();
 
@@ -608,7 +608,7 @@ int PathingSystem::copyPath(int step) {
                     if (iVar9 != -1) {
                         int count = this->currentUnobstructibles.numberValue;
                         int found = 0;
-                        for (int k = 0; k < count; ++k) {
+                        for (int k = 0; k < count && k < this->currentUnobstructibles.maximumSizeValue; ++k) {
                             if (this->currentUnobstructibles.value[k] == iVar9) {
                                 found = 1;
                                 break;
@@ -678,6 +678,7 @@ int PathingSystem::copyPath(int step) {
         wp.x = (float)uVar16 + this->currentXOffset;
         wp.y = (float)uVar15 + this->currentYOffset;
         wp.z = this->currentObject->world_z;
+        wp.facetToNextWaypoint = (uchar)tWY2;
         cVar14 = cVar7;
     }
 }

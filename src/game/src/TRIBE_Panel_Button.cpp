@@ -251,7 +251,7 @@ void TRIBE_Panel_Button::draw() {
                         text2_y += 1;
                     }
 
-                    SetTextColor(dc, this->text_color1[this->cur_state]);
+                    SetTextColor(dc, this->text_color2[this->cur_state]);
                     TextOutA(dc, text2_x - 1, text2_y + 1, line2, line2_len);
                     SetTextColor(dc, this->text_color1[this->cur_state]);
                     TextOutA(dc, text2_x, text2_y, line2, line2_len);

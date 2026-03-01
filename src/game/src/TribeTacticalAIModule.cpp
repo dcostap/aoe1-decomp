@@ -1795,7 +1795,7 @@ LAB_004f37f1:
                     this->attackStateValue.active = 0;
                 } else {
 LAB_004f3825:
-                    if (grpAction == 0x0C) {
+                    if (grpAction == 3) {
                         // Transport tasking: just check idle timeout
                         unsigned long idleCount = grp->consecutiveIdleUnitCount();
                         if (static_cast<unsigned int>(this->sn[0x4C]) <
@@ -1843,18 +1843,6 @@ LAB_004f3825:
                         goto LAB_004f4552;
                     } else if (grpAction == 0x13) {
                         // Gather/staging wait
-                        unsigned long idleCount = grp->consecutiveIdleUnitCount();
-                        if (static_cast<unsigned int>(this->sn[0x4C]) <
-                            (world->world_time - idleCount) / 1000) {
-                            grp->setInUse(0);
-                            grp->setAction(1);
-                            grp->setTarget(-1);
-                            grp->numberObjectsToDestroyValue = 0;
-                            grp->setTargetType(-1);
-                            grp->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                            this->attackStateValue.active = 0;
-                            goto LAB_004f4552;
-                        }
                         int gathered = grp->isGathered(this, this->md);
                         if (gathered == 0) {
                             // Not gathered yet; check if units are idle and re-task
@@ -1865,7 +1853,7 @@ LAB_004f3825:
                                 grp->task(this, this->md, 9, 1, 0);
                             }
                         }
-                    } else if (grpAction != 3) {
+                    } else if ((grpAction != 3) && (grpAction != 0x0C)) {
 LAB_004f3a51:
                         if (grpAction == 7) {
                             // Patrol/roaming attack
@@ -2071,6 +2059,7 @@ LAB_004f45bf:
                                                                    static_cast<float>(pOVar27->z));
                                             grp->setInUse(1);
                                             grp->task(this, this->md, 2, 0, 0);
+                                            goto LAB_004f4548;
                                         }
                                     }
                                     {
