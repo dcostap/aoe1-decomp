@@ -24,57 +24,46 @@
 
 namespace {
 BuildAIModule* build_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<BuildAIModule*>(self->buildAI);
 }
 
 TribeBuildAIModule* tribe_build_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TribeBuildAIModule*>(self->buildAI);
 }
 
 TribeConstructionAIModule* construction_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TribeConstructionAIModule*>(self->constructionAI);
 }
 
 DiplomacyAIModule* diplomacy_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<DiplomacyAIModule*>(self->diplomacyAI);
 }
 
 EmotionalAIModule* emotional_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<EmotionalAIModule*>(self->emotionalAI);
 }
 
 TribeInformationAIModule* information_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TribeInformationAIModule*>(self->informationAI);
 }
 
 TribeResourceAIModule* resource_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TribeResourceAIModule*>(self->resourceAI);
 }
 
 TribeStrategyAIModule* strategy_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TribeStrategyAIModule*>(self->strategyAI);
 }
 
 TribeTacticalAIModule* tactical_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TribeTacticalAIModule*>(self->tacticalAI);
 }
 
 TradeAIModule* trade_ai(TribeMainDecisionAIModule* self) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return reinterpret_cast<TradeAIModule*>(self->tradeAI);
 }
 
 int tactical_strategic_number(const TribeTacticalAIModule* tactical, int index) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     if ((tactical == nullptr) || (index < 0) || (index >= 226)) {
         return 0;
     }
@@ -95,7 +84,6 @@ void set_tribute_chat_timeout(TribeMainDecisionAIModule* self) {
 }
 
 void information_add_resource_type(TribeInformationAIModule* info, int bucket, int resource_type) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     if ((info == nullptr) || (bucket < 0) || (bucket >= 4) || (info->resourceTypesValue == nullptr) || (info->numberResourceTypesValue == nullptr)) {
         return;
     }
@@ -302,7 +290,6 @@ int TribeMainDecisionAIModule::loggingHistory() {
 
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E4FA0
 void TribeMainDecisionAIModule::setLogHistory(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->setLogHistory(param_1);
     construction_ai(this)->setLogHistory(param_1);
     diplomacy_ai(this)->setLogHistory(param_1);
@@ -316,7 +303,6 @@ void TribeMainDecisionAIModule::setLogHistory(int param_1) {
 }
 
 void TribeMainDecisionAIModule::toggleLogHistory() {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->toggleLogHistory();
     construction_ai(this)->toggleLogHistory();
     diplomacy_ai(this)->toggleLogHistory();
@@ -330,7 +316,6 @@ void TribeMainDecisionAIModule::toggleLogHistory() {
 }
 
 void TribeMainDecisionAIModule::setHistoryFilename(char* param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->setHistoryFilename(param_1);
     construction_ai(this)->setHistoryFilename(param_1);
     diplomacy_ai(this)->setHistoryFilename(param_1);
@@ -344,12 +329,10 @@ void TribeMainDecisionAIModule::setHistoryFilename(char* param_1) {
 }
 
 int TribeMainDecisionAIModule::loggingCommonHistory() {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     return MainDecisionAIModule::loggingCommonHistory();
 }
 
 void TribeMainDecisionAIModule::setLogCommonHistory(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->setLogCommonHistory(param_1);
     construction_ai(this)->setLogCommonHistory(param_1);
     diplomacy_ai(this)->setLogCommonHistory(param_1);
@@ -363,7 +346,6 @@ void TribeMainDecisionAIModule::setLogCommonHistory(int param_1) {
 }
 
 void TribeMainDecisionAIModule::toggleLogCommonHistory() {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->toggleLogCommonHistory();
     construction_ai(this)->toggleLogCommonHistory();
     diplomacy_ai(this)->toggleLogCommonHistory();
@@ -375,16 +357,11 @@ void TribeMainDecisionAIModule::toggleLogCommonHistory() {
     trade_ai(this)->toggleLogCommonHistory();
     MainDecisionAIModule::toggleLogCommonHistory();
 }
-
-// Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
 int TribeMainDecisionAIModule::loadState(char* param_1) { return MainDecisionAIModule::loadState(param_1); }
-// Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
 int TribeMainDecisionAIModule::saveState(char* param_1) { return MainDecisionAIModule::saveState(param_1); }
-// Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
 int TribeMainDecisionAIModule::gleanState(int param_1) { return MainDecisionAIModule::gleanState(param_1); }
 
 int TribeMainDecisionAIModule::processMessage(AIModuleMessage* param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->processMessage(param_1);
     construction_ai(this)->processMessage(param_1);
     diplomacy_ai(this)->processMessage(param_1);
@@ -400,7 +377,6 @@ int TribeMainDecisionAIModule::processMessage(AIModuleMessage* param_1) {
 // Offset: 0x004E5050
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5050
 int TribeMainDecisionAIModule::update(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     (void)param_1;
     RGE_Game_World* world = this->aiPlayer->world;
     if ((world->game_state == 0) && (this->firstUpdate == 1)) {
@@ -463,7 +439,6 @@ int TribeMainDecisionAIModule::update(int param_1) {
 }
 
 void TribeMainDecisionAIModule::setCallbackMessage(AIModuleMessage* param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     build_ai(this)->setCallbackMessage(param_1);
     construction_ai(this)->setCallbackMessage(param_1);
     diplomacy_ai(this)->setCallbackMessage(param_1);
@@ -477,7 +452,6 @@ void TribeMainDecisionAIModule::setCallbackMessage(AIModuleMessage* param_1) {
 }
 
 int TribeMainDecisionAIModule::filterOutMessage(AIModuleMessage* param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     if ((build_ai(this)->filterOutMessage(param_1) != 0) || (construction_ai(this)->filterOutMessage(param_1) != 0) ||
         (diplomacy_ai(this)->filterOutMessage(param_1) != 0) || (emotional_ai(this)->filterOutMessage(param_1) != 0) ||
         (information_ai(this)->filterOutMessage(param_1) != 0) || (resource_ai(this)->filterOutMessage(param_1) != 0) ||
@@ -490,7 +464,6 @@ int TribeMainDecisionAIModule::filterOutMessage(AIModuleMessage* param_1) {
 
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5DB0
 int TribeMainDecisionAIModule::save(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     MainDecisionAIModule::save(param_1);
     build_ai(this)->save(param_1);
     construction_ai(this)->save(param_1);
@@ -519,7 +492,6 @@ int TribeMainDecisionAIModule::save(int param_1) {
 
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5FA0
 int TribeMainDecisionAIModule::addObject(RGE_Static_Object* param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
         return 0;
     }
@@ -531,7 +503,6 @@ int TribeMainDecisionAIModule::addObject(RGE_Static_Object* param_1) {
 // Offset: 0x004E5FE0
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5FE0
 int TribeMainDecisionAIModule::removeObject(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     tactical_ai(this)->removeObject(param_1);
     tribe_build_ai(this)->removeBuiltItem(param_1);
     information_ai(this)->removeObject(param_1);
@@ -540,7 +511,6 @@ int TribeMainDecisionAIModule::removeObject(int param_1) {
 
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6020
 int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     switch (param_1) {
     case 0x25A:
     case 0x25D:
@@ -557,7 +527,6 @@ int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int param_1) {
 
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6090
 int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     RGE_Static_Object* object = this->aiPlayer->world->object(param_1);
     if (object != nullptr) {
         int object_group = this->objectGroupThatCanPerformAction(param_2);
@@ -574,7 +543,6 @@ int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2) {
 // Offset: 0x004E5F30
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5F30
 void TribeMainDecisionAIModule::kick(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     reinterpret_cast<AIModule*>(this)->logCommonHistory((char*)"Got a kick %d.", param_1);
     if (param_1 == 1) {
         tribe_build_ai(this)->skipNextBuildListItem();
@@ -595,7 +563,6 @@ void TribeMainDecisionAIModule::detask(int param_1) {
 // Offset: 0x004E60F0
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E60F0
 int TribeMainDecisionAIModule::isMoveable(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     RGE_Static_Object* object = MainDecisionAIModule::object(param_1);
     if ((object != nullptr) && (object->master_obj != nullptr)) {
         short object_group = object->master_obj->object_group;
@@ -620,7 +587,6 @@ int TribeMainDecisionAIModule::isMoveable(int param_1) {
 // Offset: 0x004E6160
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6160
 void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     if (this->objects.value == nullptr) {
         return;
     }
@@ -641,7 +607,6 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
 // Offset: 0x004E6250
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6250
 void TribeMainDecisionAIModule::tributeNotify(int param_1, int param_2, int param_3) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     int tribute_player = tactical_ai(this)->strategicNumber(0x80);
     if ((this->waitingOnTribute == 1) && (param_1 == tribute_player) && (param_2 == 3)) {
         this->tributeAmount = this->tributeAmount + param_3;
@@ -669,7 +634,6 @@ void TribeMainDecisionAIModule::tributeNotify(int param_1, int param_2, int para
 // Offset: 0x004E6490
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6490
 void TribeMainDecisionAIModule::revokeTributeAlliance() {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     int tribute_player = tactical_ai(this)->strategicNumber(0x80);
     if (this->aiPlayer->isEnemy(tribute_player) == 0) {
         diplomacy_ai(this)->setStance(tribute_player, 0, 100);
@@ -683,7 +647,6 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
 // Offset: 0x004E6600
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6600
 int TribeMainDecisionAIModule::processAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     switch (param_2) {
     case 0:
         information_ai(this)->lookAtMap();
@@ -721,7 +684,6 @@ int TribeMainDecisionAIModule::processAICommand(int param_1, int param_2, int pa
 // Offset: 0x004E6870
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E6870
 int TribeMainDecisionAIModule::currentScore(int param_1) {
-    // Fully verified. Source of truth: TribeMainDecisionAIModule.decomp (helper implementation).
     if ((param_1 > 0) &&
         (this->player != nullptr) &&
         (this->player->world != nullptr) &&
