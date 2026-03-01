@@ -6,6 +6,7 @@
 #include "../include/RGE_Font.h"
 #include "../include/RGE_Main_View.h"
 #include "../include/RGE_Map.h"
+#include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Master_Player.h"
 #include "../include/RGE_Player.h"
