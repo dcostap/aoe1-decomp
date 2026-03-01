@@ -5950,49 +5950,49 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 481
 - [ ] Assigned to: Worker 1
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of TribeTacticalAIModule::taskActiveSoldiers (1018 lines at line 1186 of TribeTacticalAIModule.cpp). This is the LARGEST function in the codebase. Compare every branch, every comparison (signed vs unsigned), every loop bound against taitacmd.cpp.asm. Focus especially on array indexing, distance calculations, and the soldier-selection heuristic.
 - **Done when**: Every branch in taskActiveSoldiers has been compared against ASM, any signed/unsigned or bounds mismatches fixed, build passes, pushed to master.
 
 ## Task 482
 - [ ] Assigned to: Worker 2
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of TRIBE_Player::intelligentBuildListAndRulesSelection (674 lines at line 2338 of TRIBE_Player.cpp). This is the 2nd largest function. Cross-reference tplayer.cpp.asm for the matching offset. Focus on the build-list selection logic, rule scoring, and conditional branches.
 - **Done when**: All branches verified against ASM, parity fixes applied, build passes, pushed to master.
 
 ## Task 483
 - [ ] Assigned to: Worker 3
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of TRIBE_Game::create_game (441 lines at line 1115 of tribegam.cpp) and TribeMPSetupScreen constructor (438 lines at line 1870 of scr_mps_impl.cpp). These are complex initialization functions where struct field ordering and pointer setup must exactly match. Reference tribegam.cpp.asm and scr_mps.cpp.asm.
 - **Done when**: Both functions fully verified against ASM, any initialization ordering or type mismatches fixed, build passes, pushed to master.
 
 ## Task 484
 - [ ] Assigned to: Worker 4
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of RGE_Moving_Object::doMove (334 lines at line 702) and RGE_Moving_Object::doTrivialMove (347 lines at line 1038) in RGE_Moving_Object.cpp. These are hot-path movement functions where floating-point comparisons, coordinate rounding, and collision detection must be pixel-perfect. Reference move_obj.cpp.asm.
 - **Done when**: Both functions verified against ASM with special attention to float comparisons and coordinate math, build passes, pushed to master.
 
 ## Task 485
 - [ ] Assigned to: Worker 5
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of TRIBE_Screen_Game::handle_game_update (347 lines at line 920 of TRIBE_Screen_Game.cpp) and TRIBE_Panel_Object::draw (340 lines at line 315 of TRIBE_Panel_Object.cpp). These are the main game screen update and panel rendering functions. Reference scr_game.cpp.asm and the corresponding ASM for panel_obj.
 - **Done when**: Both functions verified against ASM, any rendering/update parity issues fixed, build passes, pushed to master.
 
 ## Task 486
 - [ ] Assigned to: Worker 6
-- [ ] Finished
+- [x] Finished
 - **Goal**: Clean up all 7 #if 0 reference blocks across the codebase. Files: DClipInfo_List.cpp (1 block, implemented in view.cpp), Dib.cpp (1 block, 9 funcs), TRIBE_RMM_Database_Controller.cpp (1 block, moved to rmm_base.cpp), TRIBE_Screen_Sed.cpp (1 block, 51 funcs from scr_sed.cpp.decomp), TRIBE_World_types.cpp (1 block, implemented in tcommand.cpp), gameinfo.cpp (1 block, 3 funcs), spanlist.cpp (1 block, 1 func). For each: verify the offset IS covered elsewhere, then remove the #if 0 block entirely. Keep the code clean.
 - **Done when**: All 7 #if 0 blocks removed, all previously-covered offsets still have verified implementations elsewhere, build passes, pushed to master.
 
 ## Task 487
 - [ ] Assigned to: Worker 7
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of AIPlayBook::loadPlays (344 lines at line 359 of AIPlayBook.cpp) and TribeMainDecisionAIModule::update (316 lines at line 409 of TribeMainDecisionAIModule.cpp). The AI playbook parser is a complex state machine and the main decision update drives all AI behavior. Reference aipbook.cpp.asm and taimddmd.cpp.asm.
 - **Done when**: Both functions verified against ASM, any parsing or decision-logic parity issues fixed, build passes, pushed to master.
 
 ## Task 488
 - [ ] Assigned to: Worker 8
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of TRIBE_World::new_game (351 lines at line 1415 of TRIBE_World.cpp) and TRIBE_World::cheat (289 lines at line 590 of TRIBE_World.cpp). new_game initializes all game state for a new match; cheat handles all cheat codes. Both are complex branching functions where every comparison matters. Reference tworld.cpp.asm.
 - **Done when**: Both functions verified against ASM, any initialization or cheat-handling parity issues fixed, build passes, pushed to master.
 

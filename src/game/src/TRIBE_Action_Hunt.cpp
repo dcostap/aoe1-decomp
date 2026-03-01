@@ -301,7 +301,7 @@ uchar TRIBE_Action_Hunt::update() {
         if (this->timer < 0.0f) {
             this->timer = this->timer + ((world != nullptr) ? world->world_time_delta_seconds : 0.0f);
             if (0.0f < this->timer) {
-                this->timer = -0.4375f;
+                this->timer = -10.0f;
                 if (this->obj != nullptr) {
                     const int obj_id = (int)this->obj->id;
                     this->obj->notify(obj_id, obj_id, 0x202, 0x265, this->targetType, 0);
@@ -395,7 +395,7 @@ uchar TRIBE_Action_Hunt::update() {
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         if (this->obj != nullptr) {
             this->obj->set_attribute_amount(give_amount, 1, 0);
-            if ((max_hold <= this->obj->attribute_amount_held) || (this->obj->attribute_amount_held <= 0.0f)) {
+            if ((max_hold <= this->obj->attribute_amount_held) || (this->target_obj->attribute_amount_held <= 0.0f)) {
                 this->set_state(8);
                 return 0;
             }
@@ -407,6 +407,7 @@ uchar TRIBE_Action_Hunt::update() {
         if (this->timer < 0.0f) {
             this->timer = this->timer + ((world != nullptr) ? world->world_time_delta_seconds : 0.0f);
             if (0.0f < this->timer) {
+                this->timer = 0.0f;
                 this->set_target_obj2(nullptr);
                 this->set_state(8);
                 return 0;
@@ -428,7 +429,7 @@ uchar TRIBE_Action_Hunt::update() {
             }
 
             if (1.0f < this->obj->distance_to_object(this->target_obj2)) {
-                this->timer = -1.5f;
+                this->timer = -3.0f;
                 this->obj->stop_moving();
                 return 0;
             }
@@ -438,7 +439,7 @@ uchar TRIBE_Action_Hunt::update() {
             }
 
             if (this->obj->owner != nullptr) {
-                short attr = (this->task != nullptr) ? this->task->attribute_type2 : (short)-1;
+                short attr = (this->task != nullptr) ? this->task->attribute_type3 : (short)-1;
                 if (attr == -1) {
                     attr = this->obj->attribute_type_held;
                 }
@@ -466,7 +467,7 @@ uchar TRIBE_Action_Hunt::update() {
         case 3:
         case 4:
         case 5:
-            this->timer = -1.5f;
+            this->timer = -3.0f;
             if (this->obj != nullptr) {
                 this->obj->stop_moving();
             }

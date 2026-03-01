@@ -641,9 +641,9 @@ long RGE_Main_View::mouse_left_move_action(long param_1, long param_2, int param
     }
 }
 
-// Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E8E9 (decompiler artifact thunk)
+// Fully verified. Source of truth: vw_main.cpp.decomp + vw_main.cpp.asm @ 0x0053E8E9 (decompiler artifact thunk)
 long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
-    // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053E910
+    // Fully verified. Source of truth: vw_main.cpp.decomp + vw_main.cpp.asm @ 0x0053E910
     const int prog_mode = rge_base_game->prog_mode;
     if ((prog_mode != 4) && (prog_mode != 6) && (prog_mode != 7) && (prog_mode != 5)) {
         return 0;
@@ -660,9 +660,7 @@ long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3
         if (rge_base_game->game_mode == 8) {
             this->command_place_object(param_1, param_2, 1);
             if (rge_base_game->sub_game_mode == 1) {
-                if (this->movable_object != nullptr) {
-                    this->movable_object->object_state = 2;
-                }
+                this->movable_object->object_state = 2;
                 this->movable_object = nullptr;
                 rge_base_game->set_game_mode(0x0F, 0);
                 if (this->save_player != nullptr) {
@@ -866,9 +864,7 @@ long RGE_Main_View::mouse_left_up_action(long param_1, long param_2, int param_3
     case 8:
         this->command_place_object(param_1, param_2, 1);
         if (rge_base_game->sub_game_mode == 1) {
-            if (this->movable_object != nullptr) {
-                this->movable_object->object_state = 2;
-            }
+            this->movable_object->object_state = 2;
             this->movable_object = nullptr;
             rge_base_game->set_game_mode(0x0F, 0);
             if (this->save_player != nullptr) {

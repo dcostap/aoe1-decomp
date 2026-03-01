@@ -539,17 +539,7 @@ RGE_Master_Static_Object* RGE_Master_Static_Object::make_new_master() {
 // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00453C40
 uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) {
     (void)param_7;
-    if (param_4 != nullptr) {
-        *param_4 = -1;
-    }
-    if (param_1 == nullptr || param_1->world == nullptr || param_1->world->map == nullptr) {
-        return '\x07';
-    }
-
     RGE_Map* map = param_1->world->map;
-    if (map->map_row_offset == nullptr || map->map_width <= 0 || map->map_height <= 0) {
-        return '\x07';
-    }
 
     float rx = (param_8 == '\0') ? this->radius_x : this->construction_radius_x;
     float ry = (param_8 == '\0') ? this->radius_y : this->construction_radius_y;
@@ -574,10 +564,6 @@ uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param
     if (this->center_tile_req1 >= 0 || this->center_tile_req2 >= 0) {
         short cx = (short)floor(param_2);
         short cy = (short)floor(param_3);
-        if (cx < 0 || cy < 0 || cx >= map->map_width || cy >= map->map_height) {
-            return '\x01';
-        }
-
         ushort center_terr = (ushort)(map->map_row_offset[(int)cy][(int)cx].terrain_type & 0x1f);
         if (center_terr != (ushort)this->center_tile_req1 && center_terr != (ushort)this->center_tile_req2) {
             return '\x01';
@@ -634,10 +620,7 @@ uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param
         }
     }
 
-    float* terrain_table = nullptr;
-    if (param_1->world->terrains != nullptr && this->terrain >= 0 && this->terrain < param_1->world->terrain_num) {
-        terrain_table = param_1->world->terrains[this->terrain];
-    }
+    float* terrain_table = param_1->world->terrains[this->terrain];
 
     int any_visible = 0;
     for (short x = x1; x <= x2; ++x) {
@@ -646,7 +629,7 @@ uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param
             int iy = (int)y;
             uchar terr = (uchar)(map->map_row_offset[iy][ix].terrain_type & 0x1f);
 
-            if (terrain_table == nullptr || terrain_table[terr] <= 0.0f) {
+            if (terrain_table[terr] <= 0.0f) {
                 return '\x02';
             }
 
@@ -696,7 +679,7 @@ uchar RGE_Master_Static_Object::check_placement(RGE_Player* param_1, float param
                 RGE_Object_Node* node = map->map_row_offset[(int)y][(int)x].objects.list;
                 while (node != nullptr) {
                     RGE_Static_Object* obj = node->node;
-                    if (obj != nullptr && obj->master_obj != nullptr && obj->object_state < 7) {
+                    if (obj->object_state < 7) {
                         if ((param_9 == '\0' || obj->master_obj->can_be_built_on != '\x01') || this->can_be_built_on != '\0') {
                             RGE_Master_Static_Object* other_master = obj->master_obj;
                             if (other_master->radius_x > 0.0f && other_master->radius_y > 0.0f) {
