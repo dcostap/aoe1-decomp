@@ -2650,7 +2650,7 @@ RGE_Game_World* RGE_Base_Game::create_world() {
     return new RGE_Game_World();
 }
 int RGE_Base_Game::run() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041CFD0
+    // Fully verified. Source of truth: basegame.cpp.decomp/asm @ 0x0041CFD0
     MSG msg;
     
     while (1) {
@@ -2661,7 +2661,7 @@ int RGE_Base_Game::run() {
                    (this->comm_handler != nullptr && this->comm_handler->IsPaused() != 0)) {
                 int ret = GetMessageA(&msg, NULL, 0, 0);
                 if (ret == 0) {
-                    return msg.lParam;
+                    return (int)msg.wParam;
                 }
                 TranslateMessage(&msg);
                 DispatchMessageA(&msg);
@@ -2683,7 +2683,7 @@ int RGE_Base_Game::run() {
         }
     }
 
-    return msg.lParam;
+    return (int)msg.wParam;
 }
 int RGE_Base_Game::handle_message(struct tagMSG* p1) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C700
@@ -2740,7 +2740,7 @@ int RGE_Base_Game::handle_idle() {
     return 1;
 }
 int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421110
+    // Fully verified. Source of truth: basegame.cpp.decomp/asm @ 0x00421110
     if (this->prog_ready == 0) {
         return 1;
     }
@@ -2763,6 +2763,7 @@ int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) {
 
     // Dispatch to virtual action_mouse_move
     this->action_mouse_move(mouse_x, mouse_y, left_btn, right_btn, ctrl_key, 0);
+    this->handle_idle();
 
     return 1;
 }

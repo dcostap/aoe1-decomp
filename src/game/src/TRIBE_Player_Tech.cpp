@@ -5,6 +5,15 @@
 #include "../include/RGE_Player.h"
 #include "../include/globals.h"
 
+static short player_tech_ftol(float value) {
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return (short)result;
+}
+
 // Source of truth: bucket_050C.cpp.decomp + bucket_050D.cpp.decomp
 
 // Fully verified. Marker reconciliation coverage.
@@ -254,33 +263,71 @@ uchar TRIBE_Player_Tech::cancel_research(short param_1, uchar param_2) {
 
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3, short* param_4, short* param_5, short* param_6, short* param_7) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C730
-    // Simplified version - returns tech costs without trade gold substitution logic
+    // Fully verified. Source of truth: bucket_050C.decomp @ 0x0050C730
     Tech_Tree* tt = this->base_tech->tech_tree;
+    short gold_shortfall = 0;
+
     *param_2 = -1;
     *param_3 = 0;
     *param_4 = -1;
     *param_5 = 0;
     *param_6 = -1;
     *param_7 = 0;
+
+    uchar can_substitute_with_gold = check_tech_cost(param_1, nullptr);
+    if (this->owner->attributes[0x1d] < 1.0f) {
+        can_substitute_with_gold = 0;
+    }
+
     if (tt[param_1].attribute_used[0] != 0) {
         *param_2 = tt[param_1].attribute[0];
         if (*param_2 >= 0) {
             *param_3 = tt[param_1].attribute_cost[0];
+            if ((this->owner->attributes[*param_2] < (float)(int)*param_3) && (can_substitute_with_gold != 0)) {
+                short owned = player_tech_ftol(this->owner->attributes[*param_2]);
+                gold_shortfall = (short)(*param_3 - owned);
+                *param_3 = owned;
+            }
         }
     }
+
     if (tt[param_1].attribute_used[1] != 0) {
         *param_4 = tt[param_1].attribute[1];
         if (*param_4 >= 0) {
             *param_5 = tt[param_1].attribute_cost[1];
+            if ((this->owner->attributes[*param_4] < (float)(int)*param_5) && (can_substitute_with_gold != 0)) {
+                short owned = player_tech_ftol(this->owner->attributes[*param_4]);
+                gold_shortfall = (short)(gold_shortfall + (short)(*param_5 - owned));
+                *param_5 = owned;
+            }
         }
     }
+
     if (tt[param_1].attribute_used[2] != 0) {
         *param_6 = tt[param_1].attribute[2];
         if (*param_6 >= 0) {
             *param_7 = tt[param_1].attribute_cost[2];
+            if ((this->owner->attributes[*param_6] < (float)(int)*param_7) && (can_substitute_with_gold != 0)) {
+                short owned = player_tech_ftol(this->owner->attributes[*param_6]);
+                gold_shortfall = (short)(gold_shortfall + (short)(*param_7 - owned));
+                *param_7 = owned;
+            }
         }
     }
+
+    if (gold_shortfall > 0) {
+        if ((*param_2 == 3) || (*param_2 == -1)) {
+            *param_2 = 3;
+            *param_3 = (short)(*param_3 + gold_shortfall);
+        } else if ((*param_4 == 3) || (*param_4 == -1)) {
+            *param_4 = 3;
+            *param_5 = (short)(*param_5 + gold_shortfall);
+        } else if ((*param_6 == 3) || (*param_6 == -1)) {
+            *param_6 = 3;
+            *param_7 = gold_shortfall;
+        }
+    }
+
     if (*param_3 < 1) *param_2 = -1;
     if (*param_5 < 1) *param_4 = -1;
     if (*param_7 < 1) *param_6 = -1;

@@ -103,7 +103,12 @@ static void make_tech_save_base(const RGE_Action* action, int fd) {
 
 // Fully verified. Source of truth: tact_tek.cpp.decomp @ 0x004D25E0 (virtual forwarding/helper coverage).
 static long make_tech_coord_to_long(float value) {
-    return (long)value;
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
 }
 } // namespace
 
@@ -138,7 +143,8 @@ TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
             int obj_runtime_id = (this->obj != nullptr) ? (int)this->obj->id : -1;
             player->cancelResearch((int)this->tech_id, obj_runtime_id, -1, this->unique_id);
             if (this->obj != nullptr) {
-                this->obj->notify((int)this->obj, (int)this->obj, 0x1F9, 0x26C, 0, 0);
+                int obj_id = (int)this->obj->id;
+                this->obj->notify(obj_id, obj_id, 0x1F9, 0x26C, 0, 0);
             }
         }
     }
@@ -203,7 +209,8 @@ void TRIBE_Action_Make_Tech::first_in_stack(uchar param_1) {
     int obj_runtime_id = (this->obj != nullptr) ? (int)this->obj->id : -1;
     player->cancelResearch((int)need_attr, (int)this->tech_id, obj_runtime_id, this->unique_id);
     if (this->obj != nullptr) {
-        this->obj->notify((int)this->obj, (int)this->obj, 0x1F9, 0x26C, 0, 0);
+        int obj_id = (int)this->obj->id;
+        this->obj->notify(obj_id, obj_id, 0x1F9, 0x26C, 0, 0);
     }
     this->set_state(1);
 }
@@ -256,14 +263,15 @@ uchar TRIBE_Action_Make_Tech::update() {
                     100,
                     (long)player->id,
                     (long)this->tech_id,
-                    make_tech_coord_to_long(this->obj->world_y),
-                    make_tech_coord_to_long(this->obj->world_x));
+                    make_tech_coord_to_long(this->obj->world_x),
+                    make_tech_coord_to_long(this->obj->world_y));
             }
 
             int obj_runtime_id = (this->obj != nullptr) ? (int)this->obj->id : -1;
             player->registerResearch((int)this->tech_id, obj_runtime_id, this->unique_id);
             if (this->obj != nullptr) {
-                this->obj->notify((int)this->obj, (int)this->obj, 0x1FA, 0x26C, 0, 0);
+                int obj_id = (int)this->obj->id;
+                this->obj->notify(obj_id, obj_id, 0x1FA, 0x26C, 0, 0);
             }
             return 1;
         }
@@ -292,7 +300,8 @@ int TRIBE_Action_Make_Tech::stop() {
         player->cancelResearch((int)this->tech_id, obj_runtime_id, -1, this->unique_id);
     }
     if (this->obj != nullptr) {
-        this->obj->notify((int)this->obj, (int)this->obj, 0x1F9, 0x26C, 0, 0);
+        int obj_id = (int)this->obj->id;
+        this->obj->notify(obj_id, obj_id, 0x1F9, 0x26C, 0, 0);
     }
     return 1;
 }
