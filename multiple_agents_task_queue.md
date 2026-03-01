@@ -6088,7 +6088,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 504
 - [ ] Assigned to: (backlog)
-- [ ] Finished
+- [x] Finished
 - **Goal**: Deep ASM parity audit of AI and task logic: TacticalAIGroup::task (166 lines, line 467 of TacticalAIGroup.cpp), ConstructionAIModule constructor (173 lines, line 161), TRIBE_Task_List::get_target_task (160 lines, line 15 of TRIBE_Task_List.cpp). Focus on AI decision tree parity.
 - **Done when**: All 3 functions verified against ASM, build passes, pushed to master.
 
@@ -6125,7 +6125,7 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 
 ## Task 510
 - [ ] Assigned to: (unassigned)
-- [ ] Finished
+- [x] Finished
 **Goal**: Deep ASM parity audit of command.cpp - do_command_move (129 lines, line 515), do_command_formation (116 lines, line 645), do_command_order (108 lines, line 383). Reference command.cpp.asm. Focus on command dispatch, formation logic, and move command handling.
 **Done when**: All 3 functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
@@ -6185,6 +6185,55 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 **Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
 
 ## Task 520
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TRIBE_Action_Build.cpp - update (126 lines, line 197) and set_state (97 lines, line 98). Reference tact_bld.cpp.asm. Focus on building construction state machine, progress math, and completion transitions.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+
+## Task 521
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TribeJoinScreen.cpp - TribeMPCreateDialog::action (114 lines, line 722) and TribeJoinScreen constructor (90 lines, line 354). Reference scr_cj.cpp.asm. Focus on MP dialog action dispatch and join screen initialization.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 522
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_Player.cpp - scenario_load (76 lines, line 701) and scenario_postload (72 lines, line 803). Reference player.cpp.asm. Focus on scenario data deserialization and post-load state initialization.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 523
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_Visible_Map.cpp - explore_terrain (98 lines, line 1040) and explore_terrain_sq (94 lines, line 1211). Reference vis_map.cpp.asm. Focus on fog of war exploration, visibility calculations, and boundary checks.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 524
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TRIBE_Building_Object.cpp - add_to_production_queue (86 lines, line 205) and set_object_state (86 lines, line 630). Reference trib_obj.cpp.asm. Focus on queue management and building state transitions.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 525
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of flics.cpp - palette (91 lines, line 57) and delta_flc (81 lines, line 295). Reference flics.cpp.asm. Focus on FLC animation palette handling and delta frame decompression.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 526
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of TRIBE_Action_Heal.cpp - update (147 lines, line 178) and set_state (85 lines, line 91). Reference tact_hel.cpp.asm. Focus on healing state machine, HP restoration math, and action transitions.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 527
+- [ ] Assigned to: (unassigned)
+- [ ] Finished
+**Goal**: Deep ASM parity audit of RGE_RMM_Controller.cpp - add_land_module (128 lines, line 44) and add_object_module (101 lines, line 243). Reference rmm_ctrl.cpp.asm. Focus on random map generation module initialization and parameter setup.
+**Done when**: Both functions verified against ASM, any parity issues fixed, build succeeds. Use ask_user to report.
+
+## Task 528
 - [ ] Assigned to: (unassigned)
 - [ ] Finished
 **Goal**: Deep ASM parity audit of TRIBE_Action_Build.cpp - update (126 lines, line 197) and set_state (97 lines, line 98). Reference tact_bld.cpp.asm. Focus on building construction state machine, progress math, and completion transitions.
