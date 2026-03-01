@@ -3205,44 +3205,25 @@ RGE_Game_World* TRIBE_Game::create_world() {
 
 int TRIBE_Game::handle_message(struct tagMSG* p1) { return RGE_Base_Game::handle_message(p1); }
 int TRIBE_Game::handle_idle() {
-    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529610
-    // 1. Call base class handle_idle first (palette, sound, panel->handle_idle, comm)
-    // 2. Reentrancy guard via inHandleIdle
-    // 3. Branch on prog_mode:
-    //    - 1 + video_window: video playback polling
-    //    - 3: multiplayer game start waiting
-    //    - 4, 5, 6: in-game world update
-    //    - else (2): menu mode — draw only (base already ran panel idle)
+    // Fully verified. Source of truth: tribegam.cpp.decomp/asm @ 0x00529610
+    static ulong wait_status_time = 0;
 
-    static int s_tribe_idle_logs = 0;
-    int base_result = RGE_Base_Game::handle_idle();
-    CUSTOM_DEBUG_BEGIN
-    if (s_tribe_idle_logs < 20) {
-        CUSTOM_DEBUG_LOG_FMT(
-            "TRIBE_Game::handle_idle enter base_result=%d prog_mode=%d inHandleIdle=%d world=%p game_screen=%p panel=%p",
-            base_result,
-            this->prog_mode,
-            this->inHandleIdle,
-            this->world,
-            this->game_screen,
-            (panel_system != nullptr) ? panel_system->currentPanelValue : nullptr);
-        s_tribe_idle_logs++;
-    }
-    CUSTOM_DEBUG_END
-    if (base_result == 0) {
+    int retval = RGE_Base_Game::handle_idle();
+    if (retval == 0) {
         return 0;
     }
 
     if (this->inHandleIdle != 0) {
+        if (L != nullptr && this->world != nullptr) {
+            L->Log("Already in handle_idle, wT=%ld.", this->world->world_time);
+        }
         return 0;
     }
 
     this->inHandleIdle = 1;
-
     int pm = this->prog_mode;
 
     if (pm == 1 && this->video_window != nullptr) {
-        // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00529610 (video polling branch)
         const ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1381);
         if (now - this->last_video_time >= 1000) {
             char status[100];
@@ -3258,43 +3239,43 @@ int TRIBE_Game::handle_idle() {
             this->last_video_time =
                 debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x138d);
         }
-    } else if (pm == 4 || pm == 5 || pm == 6) {
-        // In-game mode: world update + game screen update
-        CUSTOM_DEBUG_BEGIN
-        if (s_tribe_idle_logs < 24) {
-            CUSTOM_DEBUG_LOG_FMT(
-                "TRIBE_Game::handle_idle in-game branch out_of_sync2=%d world=%p game_screen=%p",
-                out_of_sync2,
-                this->world,
-                this->game_screen);
-            s_tribe_idle_logs++;
+    } else if (pm == 3) {
+        if (this->comm_handler->MultiplayerGameStart() != 0) {
+            this->let_game_begin();
+        } else {
+            const ulong now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x139c);
+            if (499 < now - wait_status_time) {
+                char msg[2304];
+                this->get_string(0x454, msg, sizeof(msg));
+                strncat(msg, "\n", sizeof(msg) - strlen(msg) - 1);
+
+                for (uint player = 1; player < 9; ++player) {
+                    if (player != this->comm_handler->WhoAmI() &&
+                        this->comm_handler->IsPlayerHuman(player) != 0) {
+                        strncat(msg, "\n", sizeof(msg) - strlen(msg) - 1);
+                        char* waiting = this->comm_handler->WaitingOnNamedInfo(player);
+                        if (waiting != nullptr) {
+                            strncat(msg, waiting, sizeof(msg) - strlen(msg) - 1);
+                        }
+                    }
+                }
+
+                TRIBE_Screen_Wait* wait_screen =
+                    (panel_system != nullptr) ? (TRIBE_Screen_Wait*)panel_system->panel((char*)"Multiplayer Wait Screen") : nullptr;
+                if (wait_screen != nullptr) {
+                    wait_screen->set_text(msg);
+                }
+                wait_status_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x13ac);
+            }
         }
-        CUSTOM_DEBUG_END
+    } else if (pm == 4 || pm == 6 || pm == 5) {
         if (out_of_sync2 == 0 && this->game_screen != nullptr) {
             this->game_screen->handle_game_update();
         }
-
-        // World update tick
-        if (this->world) {
-            CUSTOM_DEBUG_BEGIN
-            if (s_tribe_idle_logs < 28) {
-                CUSTOM_DEBUG_LOG("TRIBE_Game::handle_idle before world->update");
-                s_tribe_idle_logs++;
-            }
-            CUSTOM_DEBUG_END
-            this->world->update();
-            CUSTOM_DEBUG_BEGIN
-            if (s_tribe_idle_logs < 32) {
-                CUSTOM_DEBUG_LOG("TRIBE_Game::handle_idle after world->update");
-                s_tribe_idle_logs++;
-            }
-            CUSTOM_DEBUG_END
-        }
     }
-    // Menu mode (prog_mode == 2): base class already called panel->handle_idle()
 
     this->inHandleIdle = 0;
-    return base_result;
+    return retval;
 }
 int TRIBE_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) { return RGE_Base_Game::handle_mouse_move(p1, p2, p3, p4); }
 int TRIBE_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
