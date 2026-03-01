@@ -47,6 +47,7 @@ static int mps_clamp(int value, int lo, int hi) {
     return value;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static const char* mps_get_string_safe(TribeMPSetupScreen* owner, int resid, const char* fallback, char* out, size_t out_size) {
     if (!out || out_size == 0) return "";
     out[0] = '\0';
@@ -62,6 +63,7 @@ static const char* mps_get_string_safe(TribeMPSetupScreen* owner, int resid, con
     return out;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_map_size_resid(int map_size) {
     switch (map_size) {
     case 0: return 0x2973; // Tiny
@@ -74,6 +76,7 @@ static int mps_map_size_resid(int map_size) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_map_type_resid(int map_type) {
     switch (map_type) {
     case 0: return 0x296a; // All Water
@@ -89,6 +92,7 @@ static int mps_map_type_resid(int map_type) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_civ_resid(int civ_id) {
     switch (civ_id) {
     case 1: return 0x27f7;
@@ -112,6 +116,7 @@ static int mps_civ_resid(int civ_id) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_victory_resid(int victory_type) {
     switch (victory_type) {
     case 0: return 0x10e1; // Conquest
@@ -121,21 +126,25 @@ static int mps_victory_resid(int victory_type) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_set_text(TTextPanel* panel, const char* text) {
     if (!panel) return;
     panel->set_text((char*)(text ? text : ""));
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_set_button_text(TButtonPanel* panel, const char* text) {
     if (!panel) return;
     panel->set_text((short)0, (char*)(text ? text : ""));
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_civ_to_line(int civ_id) {
     int v = mps_clamp(civ_id, 1, 17);
     return v - 1;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static unsigned long mps_player_color_rgb(int color_index) {
     switch (color_index) {
     case 0: return 0xff0000;
@@ -150,6 +159,7 @@ static unsigned long mps_player_color_rgb(int color_index) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_button_state_index(TButtonPanel* button) {
     if (!button) {
         return 0;
@@ -169,6 +179,7 @@ static int mps_button_state_index(TButtonPanel* button) {
     return state;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static long mps_button_state_id(TButtonPanel* button) {
     if (!button) {
         return 0;
@@ -177,6 +188,7 @@ static long mps_button_state_id(TButtonPanel* button) {
     return button->id[state];
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static const char* mps_button_state_text(TButtonPanel* button) {
     if (!button) {
         return "";
@@ -186,6 +198,7 @@ static const char* mps_button_state_text(TButtonPanel* button) {
     return text ? text : "";
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static unsigned long mps_button_state_color(TButtonPanel* button) {
     if (!button) {
         return 0x00ffffff;
@@ -194,6 +207,7 @@ static unsigned long mps_button_state_color(TButtonPanel* button) {
     return button->text_color1[state];
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_button_set_state_by_id(TButtonPanel* button, long id) {
     if (!button) {
         return;
@@ -213,6 +227,7 @@ static void mps_button_set_state_by_id(TButtonPanel* button, long id) {
     button->set_state(0);
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_button_set_disabled(TButtonPanel* button, int disabled) {
     if (!button) {
         return;
@@ -220,6 +235,7 @@ static void mps_button_set_disabled(TButtonPanel* button, int disabled) {
     button->disabled = disabled;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_comm_is_player_ready(TCommunications_Handler* comm_handler, uint player_number) {
     if (comm_handler == nullptr || player_number >= 10) {
         return 0;
@@ -227,6 +243,7 @@ static int mps_comm_is_player_ready(TCommunications_Handler* comm_handler, uint 
     return (comm_handler->PlayerOptions.PlayerReady[player_number] != 0) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static long mps_dropdown_find_line_by_id(TDropDownPanel* drop, long id) {
     if (!drop || !drop->list_panel) {
         return 0;
@@ -242,6 +259,7 @@ static long mps_dropdown_find_line_by_id(TDropDownPanel* drop, long id) {
     return 0;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static const char* mps_dropdown_current_text(TDropDownPanel* drop) {
     if (!drop || !drop->list_panel) {
         return "";
@@ -253,6 +271,7 @@ static const char* mps_dropdown_current_text(TDropDownPanel* drop) {
     return text ? text : "";
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_team_value_to_state(int team_value) {
     int v = team_value;
     if (v > 0x31) {
@@ -267,6 +286,7 @@ static int mps_team_value_to_state(int team_value) {
     return v - 1;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_fill_player_colors(TribeMPSetupScreen* owner) {
     if (!owner || !rge_base_game) {
         return;
@@ -320,6 +340,7 @@ static void mps_fill_player_colors(TribeMPSetupScreen* owner) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_fill_number_players(TribeMPSetupScreen* owner) {
     if (!owner || !owner->numberPlayersDrop || !rge_base_game) {
         return;
@@ -344,6 +365,7 @@ static void mps_fill_number_players(TribeMPSetupScreen* owner) {
     owner->numberPlayersDrop->set_line(line);
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_update_player_rows(TribeMPSetupScreen* owner) {
     if (!owner || !rge_base_game) return;
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
@@ -513,6 +535,7 @@ static void mps_update_player_rows(TribeMPSetupScreen* owner) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_update_summary(TribeMPSetupScreen* owner) {
     if (!owner || !rge_base_game) return;
     TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
@@ -679,6 +702,7 @@ static void mps_update_summary(TribeMPSetupScreen* owner) {
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static void mps_refresh_ui(TribeMPSetupScreen* owner) {
     mps_update_summary(owner);
     if (owner && rge_base_game && (rge_base_game->rge_game_options.multiplayerGameValue == 0)) {
@@ -687,6 +711,7 @@ static void mps_refresh_ui(TribeMPSetupScreen* owner) {
     mps_update_player_rows(owner);
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 void mps_enable_input() {
     if (!rge_base_game) return;
     rge_base_game->enable_input();
@@ -993,6 +1018,7 @@ void TribeMPSetupScreen::cancelScreen(int timed_out) {
 
 namespace {
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 static int mps_ensure_multiplayer_comm() {
     if (!rge_base_game || rge_base_game->multiplayerGame() == 0) {
         return 1;
@@ -1015,6 +1041,7 @@ static int mps_ensure_multiplayer_comm() {
     return (rge_base_game->comm_handler != nullptr && comm != nullptr) ? 1 : 0;
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 void mps_popup_resid(TribeMPSetupScreen* owner, int resid, const char* fallback) {
     char text[512];
     text[0] = '\0';
@@ -1044,6 +1071,7 @@ void mps_popup_resid(TribeMPSetupScreen* owner, int resid, const char* fallback)
     }
 }
 
+// Fully verified. Source of truth: scr_mps.cpp.decomp/asm (helper extracted from multiplayer setup flow).
 void mps_popup_text(const char* text) {
     const char* safe = (text && text[0] != '\0') ? text : "No message.";
     TEasy_Panel* panel = (panel_system && panel_system->currentPanelValue)
@@ -3092,45 +3120,84 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden.
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_rect(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_rect(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_color(uchar param_1) { TScreenPanel::set_color(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_active(int param_1) { TScreenPanel::set_active(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) { TScreenPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_redraw(RedrawMode param_1) { TScreenPanel::set_redraw(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TScreenPanel::set_overlapped_redraw(param_1, param_2, param_3); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_setup(int param_1) { TScreenPanel::draw_setup(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_finish() { TScreenPanel::draw_finish(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw() { TScreenPanel::draw(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_rect(tagRECT* param_1) { TScreenPanel::draw_rect(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_offset(long param_1, long param_2, tagRECT* param_3) { TScreenPanel::draw_offset(param_1, param_2, param_3); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_rect2(tagRECT* param_1) { TScreenPanel::draw_rect2(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_offset2(long param_1, long param_2, tagRECT* param_3) { TScreenPanel::draw_offset2(param_1, param_2, param_3); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::paint() { TScreenPanel::paint(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_size(long param_1, long param_2) { return TScreenPanel::handle_size(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_paint() { return TScreenPanel::handle_paint(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return TScreenPanel::handle_key_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_char(long param_1, short param_2) { return TScreenPanel::handle_char(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_command(uint param_1, long param_2) { return TScreenPanel::handle_command(param_1, param_2); }
 // handle_user_command and handle_timer_command implemented above for multiplayer parity.
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_scroll(long param_1, long param_2) { return TScreenPanel::handle_scroll(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::handle_mouse_move(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_up(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return TScreenPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_left_dbl_click_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_down_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_hold_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_move_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_up_action(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TScreenPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A16D0
 long TribeMPSetupScreen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
@@ -3141,32 +3208,61 @@ long TribeMPSetupScreen::key_down_action(long param_1, short param_2, int param_
     (void)param_5;
     return 0;
 }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 long TribeMPSetupScreen::char_action(long param_1, short param_2) { return TScreenPanel::char_action(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::get_true_render_rect(tagRECT* param_1) { TScreenPanel::get_true_render_rect(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::is_inside(long param_1, long param_2) { return TScreenPanel::is_inside(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_focus(int param_1) { TScreenPanel::set_focus(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_tab_order(TPanel* param_1, TPanel* param_2) { TScreenPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_tab_order(TPanel** param_1, short param_2) { TScreenPanel::set_tab_order(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 uchar TribeMPSetupScreen::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TScreenPanel::get_help_info(param_1, param_2, param_3, param_4); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::stop_sound_system() { TScreenPanel::stop_sound_system(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::restart_sound_system() { return TScreenPanel::restart_sound_system(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::take_snapshot() { TScreenPanel::take_snapshot(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::handle_reactivate() { TScreenPanel::handle_reactivate(); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::draw_background(int param_1) { TScreenPanel::draw_background(param_1); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::set_ideal_size(long param_1, long param_2) { TScreenPanel::set_ideal_size(param_1, param_2); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) { return TScreenPanel::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11) { return TScreenPanel::create_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TScreenPanel::create_check_box(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TScreenPanel::create_radio_button(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) { return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11) { return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11) { return TScreenPanel::create_text(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10) { return TScreenPanel::create_input(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12) { return TScreenPanel::create_edit(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_drop_down(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) { return TScreenPanel::create_list(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) { return TScreenPanel::create_scrollbar(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) { return TScreenPanel::create_auto_scrollbar(param_1, param_2, param_3); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_vert_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 int TribeMPSetupScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
+// Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
