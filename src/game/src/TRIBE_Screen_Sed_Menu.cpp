@@ -73,6 +73,7 @@ TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu() {
 // Fully verified. Source of truth: scr_sedm.cpp.decomp @ 0x004B31A0
 long TRIBE_Screen_Sed_Menu::handle_idle() {
     // Fully verified. Source of truth: scr_sedm.cpp.decomp (helper implementation).
+    // TODO: PARITY - handle_idle adds a defensive rge_base_game null-guard before checking input_enabled; decomp directly dereferences rge_base_game->input_enabled. [decomp: scr_sedm.cpp.decomp @ 0x004B31A0]
     if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
@@ -92,6 +93,7 @@ long TRIBE_Screen_Sed_Menu::action(TPanel* param_1, long param_2, ulong param_3,
 
         if ((TButtonPanel*)param_1 == this->button[1]) {
             new TRIBE_Screen_Sed_Open();
+            // TODO: PARITY - action adds defensive panel_system null-guards around panel transitions; decomp directly dispatches setCurrentPanel/destroyPanel via panel_system. [decomp: scr_sedm.cpp.decomp @ 0x004B31D0]
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Scenario Editor Open", 0);
                 panel_system->destroyPanel((char*)"Scenario Editor Menu");
