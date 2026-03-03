@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 
+// TODO: PARITY - dpl_obj.cpp decomp includes DDlogf open/close and per-event fprintf diagnostics in ctor/dtor/add/remove/expand paths; current translation omits those side effects entirely. [decomp: dpl_obj.cpp.decomp @ 0x00442100]
+
 RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* param_1, int param_2) {
     // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442100
     this->Objects = (RGE_Static_Object**)calloc((size_t)param_2, 4);
