@@ -14,7 +14,10 @@
 #include <math.h>
 #include <new>
 
+// TODO: PARITY - Requested mis_obj.cpp.decomp source map is not present in-tree; this TU currently maps missile parity to misl_obj.cpp.decomp and needs canonical filename confirmation. [decomp: misl_obj.cpp.decomp @ 0x0045A740]
+
 // Default constructor
+// TODO: PARITY - Default ctor offset mapping is not present in misl_obj.cpp.decomp export; verify whether this path is compiler-synthesized/inherited-only in original binary.
 RGE_Missile_Object::RGE_Missile_Object()
     : RGE_Combat_Object()
 {
