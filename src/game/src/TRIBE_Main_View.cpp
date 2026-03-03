@@ -1,4 +1,5 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Main_View::scalar_deleting_destructor. [decomp: TRIBE_Main_View.decomp @ 0x00495470]
+// TODO: PARITY - Requested decomp naming (tmainvw.cpp.decomp) is not present in-tree; this audit maps TRIBE_Main_View parity to tvw_main.cpp.decomp and needs canonical filename confirmation. [decomp: tvw_main.cpp.decomp @ 0x0052CAF0]
 // TRIBE_Main_View.cpp
 // Transliterated from src/game/decomp/tvw_main.cpp.decomp
 // ASM audited vs src/game/decomp/tvw_main.cpp.asm as noted per-function.
@@ -369,6 +370,7 @@ LAB_0052d4c7:
     this->set_selection_area(-1, -1, -1, -1);
     {
         // Parity: virtual call at vtable + 0x20 with param 1 (tvw_main.cpp.asm @ 0x0052D4D6).
+        // TODO: PARITY - This raw vtable+0x20 dispatch currently assumes set_redraw(1); re-audit against class-layout drift before replacing with direct virtual call syntax. [decomp: tvw_main.cpp.decomp @ 0x0052D4F0]
         using VCall = void(__thiscall*)(TRIBE_Main_View*, int);
         VCall fn = (VCall)(*(void***)(this))[0x20 / 4];
         fn(this, 1);
