@@ -39,6 +39,7 @@ T_Scenario::T_Scenario(RGE_Game_World* param_1)
 T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2)
     : RGE_Scenario(param_1, param_2) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052AB90
+    // TODO: PARITY - Decomp includes an extra version-bitpattern branch (`Version == 0x3f8147ae`) that repeatedly reads AlliedVictory before the normal read path; this transliteration currently keeps only the standard path. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
     this->InitializeVictoryValues();
     this->InitializeFriendlinessValues();
     this->ClearDisabledTechnologies();
@@ -125,6 +126,8 @@ T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2)
         int checksum = 0;
         rge_read(param_1, &checksum, 4);
     }
+
+    // TODO: PARITY - Decomp tail writes victory.MP_Conquest from the low byte of the same storage used for victory_conquest; this constructor has no explicit sync assignment and needs parity recheck. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
 }
 
 void T_Scenario::InitializePlayerValues() {
