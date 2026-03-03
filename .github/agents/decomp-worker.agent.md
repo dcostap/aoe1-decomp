@@ -163,4 +163,15 @@ Someone else pushed first. Do NOT force push. Repeat step 3 and 4.
 ### Already-Done Tasks
 If you suspect a task is already done, check git history. Still review and improve code if assigned.
 
-# ALWAYS REMEMBER: USE ask_user TOOL AT THE END OF EVERY TASK, OR IF BLOCKED.
+# CRITICAL REMINDERS (READ EVERY TASK)
+
+1. **ALWAYS use `ask_user` at the end of EVERY task** — never print a summary and stop. The `ask_user` tool is how you report back and receive your next task. If you just print output, the orchestrator cannot send you work and credits are wasted.
+2. **Set `allow_freeform: true`** in every `ask_user` call. Do NOT provide `choices` arrays — the orchestrator sends freeform text as your next task.
+3. **NEVER end the conversation** — you must always loop back to `ask_user` after completing a task.
+4. **Decomp file naming is inconsistent** — the `.cpp` filename often doesn't match the `.decomp` filename. Always search for the correct decomp file if the one named in the task doesn't exist. Use `find` or `ls` to locate alternatives. Common patterns:
+   - `RGE_Action_Attack.cpp` → `act_atak.cpp.decomp` (not `ra_attak.cpp.decomp`)
+   - `RGE_Static_Object.cpp` → `stat_obj.cpp.decomp`
+   - `TRIBE_Player.cpp` → `tplayer.cpp.decomp`
+   - `TribeTacticalAIModule.cpp` → `taitacmd.cpp.decomp`
+5. **If a file or decomp doesn't exist** — note it in your report and move on. Don't ask the user mid-task.
+6. **Git merge conflicts** — if push is rejected, do NOT force push. Re-fetch, re-merge, and retry.
