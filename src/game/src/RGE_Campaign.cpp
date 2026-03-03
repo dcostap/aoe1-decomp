@@ -167,3 +167,8 @@ long RGE_Campaign::scenario_info(char*** param_1) {
     return count;
 }
 
+// TODO: MISSING_FUNC - open_scenario not implemented [decomp: campaign.cpp.decomp @ 0x00423690]
+// TODO: MISSING_FUNC - get_name not implemented [decomp: campaign.cpp.decomp @ 0x00423710]
+// TODO: MISSING_FUNC - scenario_number not implemented [decomp: campaign.cpp.decomp @ 0x00423720]
+// TODO: MISSING_FUNC - get_scenario_name not implemented [decomp: campaign.cpp.decomp @ 0x004237A0]
+
