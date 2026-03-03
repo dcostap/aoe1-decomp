@@ -764,6 +764,7 @@ int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, 
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D70
+// TODO: PARITY - Current addObject() only appends civilians, but decomp handles multiple object groups (boats, soldiers, artifacts, etc.) and additional branching. [decomp: taitacmd.cpp.decomp @ 0x004F0D70]
 void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
     if ((param_1 != nullptr) && (param_1->master_obj != nullptr) && (param_1->master_obj->object_group == 4)) {
         appendManagedArrayUnique(this->civilians, param_1->id);
@@ -4068,11 +4069,13 @@ int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9470
+// TODO: PARITY - highLevelTaskExplorer() is currently a thin forwarder, while decomp includes substantial action/order gating logic before tasking. [decomp: taitacmd.cpp.decomp @ 0x004F9470]
 int TribeTacticalAIModule::highLevelTaskExplorer(int param_1, int param_2) {
     return this->taskExplorer(param_1, param_2);
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F95B0
+// TODO: PARITY - highLevelTaskGatherer() is currently a thin forwarder, while decomp includes gatherer-state checks, timing gates, and action/order filters. [decomp: taitacmd.cpp.decomp @ 0x004F95B0]
 int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long param_2) {
     return this->taskGatherer(param_1, -1, -1, param_2, nullptr);
 }
@@ -4177,6 +4180,7 @@ int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA940
+// TODO: PARITY - taskExplorer(int,float,float) currently delegates directly, but decomp performs unitsTaskedThisUpdate and civilian/exploration-path branching first. [decomp: taitacmd.cpp.decomp @ 0x004FA940]
 int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3) {
     return this->taskExplorer(param_1, param_2, param_3, 100);
 }
@@ -4224,6 +4228,7 @@ int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3,
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
+// TODO: PARITY - taskWaterExplorer() currently delegates to taskExplorer(...,0), while decomp issues explicit water-explore command flow after task-tracking checks. [decomp: taitacmd.cpp.decomp @ 0x004FAEB0]
 int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
     return this->taskExplorer(param_1, 0);
 }
@@ -4243,6 +4248,7 @@ int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB160
+// TODO: PARITY - taskWaterFisher() currently delegates to taskGatherer(), while decomp contains distinct water-fishing targeting/command logic. [decomp: taitacmd.cpp.decomp @ 0x004FB160]
 int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) {
     (void)param_3;
     (void)param_4;
