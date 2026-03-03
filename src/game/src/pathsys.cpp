@@ -602,6 +602,7 @@ int PathingSystem::copyPath(int step) {
                 for (int iVar6 = fooX; iVar6 <= tWX2; iVar6 = iVar6 + 1) {
                     int objectCountOnTile = 0;
                     // NOTE: RGE_Game_World::objectGroupOnTile is not declared in headers in this task.
+                    // TODO: PARITY - objectGroupOnTile signature/ownership is inferred; declaration gap risks subtle call-signature mismatch in this pathing branch. [decomp: pathsys.cpp.decomp @ 0x0046D830]
                     int iVar9 = this->worldValue->objectGroupOnTile(this->currentUnobstructiblePlayerID,
                                                                    this->currentUnobstructibleGroupID, iVar8, iVar6,
                                                                    objectCountOnTile);
@@ -970,6 +971,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     }
 
     // NOTE: RGE_Moving_Object::setInitialPoints is not declared in headers in this task.
+    // TODO: PARITY - setInitialPoints declaration is missing from exported headers, so parameter typing/calling-convention parity is not fully verifiable here. [decomp: pathsys.cpp.decomp @ 0x0046B6E0]
     obj->setInitialPoints(&this->minInitialPosition, &this->maxInitialPosition);
 
     this->initialTile.x = startX;
