@@ -12,7 +12,7 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/custom_debug.h"
 
-// TODO: PARITY - bucket_056C routines at 0x0056C6B9, 0x0056C711, 0x0056C75D, 0x0056C777, 0x0056C78B,
+// TODO: PARITY [MODERATE] - bucket_056C routines at 0x0056C6B9, 0x0056C711, 0x0056C75D, 0x0056C777, 0x0056C78B,
 // 0x0056C7C6, 0x0056C7E0, 0x0056C9A0, 0x0056CBAC, 0x0056CC03, 0x0056CC49, 0x0056CC6C, 0x0056CD0C,
 // 0x0056CD45, 0x0056CDE6, 0x0056CE99, 0x0056CF39, and 0x0056CFC4 are not present in this TU; current
 // implementation only covers a subset of bucket_056C offsets.
@@ -127,7 +127,7 @@ extern "C" void _ASMSet_Xlate_Table(void* p) {
 
 // Fully verified. Source of truth: bucket_056C.asm @ 0x0056C7AD (label _ASMGet_Xlate_Table @ 0x0056C7C0)
 extern "C" void* _ASMGet_Xlate_Table() {
-    // TODO: PARITY - decomp emits a FUN_0056c7ad alias at the padding boundary; keep 0x0056C7AD vs 0x0056C7C0 label mapping explicit.
+    // TODO: PARITY [LOW] - decomp emits a FUN_0056c7ad alias at the padding boundary; keep 0x0056C7AD vs 0x0056C7C0 label mapping explicit.
     // [decomp: bucket_056C.decomp @ 0x0056C7AD]
     return (void*)g_ASMXlateTable;
 }
@@ -590,7 +590,7 @@ void TDrawSystem::DeleteSurfaces() {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443520
 void TDrawSystem::Paint(tagRECT* param_rect) {
-    // TODO: PARITY - Decomp marks local `dest` as unmapped in this routine; re-validate windowed ClientToScreen corner writes and source/dest rect field ordering in drawarea.cpp.asm. [decomp: drawarea.cpp.decomp @ 0x00443520]
+    // TODO: PARITY [MODERATE] - Decomp marks local `dest` as unmapped in this routine; re-validate windowed ClientToScreen corner writes and source/dest rect field ordering in drawarea.cpp.asm. [decomp: drawarea.cpp.decomp @ 0x00443520]
     if (this->DrawType == 1) return;
     if (this->PrimarySurface == nullptr) return;
     if (this->DrawArea == nullptr) return;
@@ -1158,7 +1158,7 @@ uchar TDrawArea::CheckSurface() {
 // Decomp signature: Init(TDrawSystem*, long width, long height, int use_trans, int is_primary)
 // Our signature keeps wnd/use_sys_mem for compat but ignores them per decomp
 int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem) {
-    // TODO: PARITY - function signature currently carries extra compat params (wnd/use_sys_mem) not present in decomp signature.
+    // TODO: PARITY [MODERATE] - function signature currently carries extra compat params (wnd/use_sys_mem) not present in decomp signature.
     // [decomp: drawarea.cpp.decomp @ 0x00444040]
     // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     this->DrawSystem = system;
@@ -1398,7 +1398,7 @@ void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445580
 void TDrawArea::OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int dy, int src_x_off, int dst_y_off) {
-    // TODO: PARITY - Decomp's backward-copy branch is keyed off param_3<0 when param_4==0; this transliteration uses src_x_off<0 instead, so parameter-role mapping for overlap direction needs ASM confirmation. [decomp: drawarea.cpp.decomp @ 0x00445580]
+    // TODO: PARITY [MODERATE] - Decomp's backward-copy branch is keyed off param_3<0 when param_4==0; this transliteration uses src_x_off<0 instead, so parameter-role mapping for overlap direction needs ASM confirmation. [decomp: drawarea.cpp.decomp @ 0x00445580]
     (void)dx;
     (void)dy;
     if (!src_rect || !dst_rect) return;
