@@ -2253,6 +2253,8 @@ void RGE_View::draw_paint_brush() {
 void RGE_View::draw()
 {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00534AE0
+    // TODO: PARITY - Decomp draw path performs scroll-reuse rectangle diffing and queued blits (CreateBlitQueue/ProcessQueuedBlit plus clip-list scrolling) before terrain render; current implementation skips that reuse path and does direct redraw from a cleared target. [decomp: view.cpp.decomp @ 0x00534AE0]
+    // TODO: PARITY - Decomp calls draw_paint_brush() in draw() for game modes 9/10/0x13 before terrain rendering; current implementation does not execute that branch here. [decomp: view.cpp.decomp @ 0x00534AE0]
     tiles_drawn = 0;
     s_view_debug_masked_draws = 0;
     s_view_debug_fog_masked_draws = 0;
@@ -2304,6 +2306,7 @@ void RGE_View::draw()
         }
     }
 
+    // TODO: PARITY - terrain_target is always cleared here, while decomp only clears save_area1 in the render_terrain_mode == 0 path and otherwise relies on scrolled/reused contents. [decomp: view.cpp.decomp @ 0x00534AE0]
     if (terrain_target != nullptr) {
         terrain_target->Clear(&terrain_target->ClipRect, 0);
     }
@@ -2351,6 +2354,7 @@ void RGE_View::update()
 {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00535210
     if (this->player == nullptr) return;
+    // TODO: PARITY - Extra null-map early return is not present in decomp update flow (original proceeds once player view changed). [decomp: view.cpp.decomp @ 0x00535210]
     if (this->map == nullptr) return;
 
     if (this->player->view_x != this->last_view_x || this->player->view_y != this->last_view_y) {
@@ -2386,11 +2390,13 @@ void RGE_View::update()
 void RGE_View::draw_view(uchar mode, TDrawArea* area)
 {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00535480 (RGE_View::draw_view).
+    // TODO: PARITY - Missing save_area1 coordinate-remap/restore block (start_scr/map offsets and render-rect adjustments) around draw dispatch. [decomp: view.cpp.decomp @ 0x00535480]
     if (area == nullptr) area = this->render_area;
     if (area == nullptr) return;
 
     this->cur_render_area = area;
     if (area->Lock("draw_view", 1)) {
+        // TODO: PARITY - mode != 10 branch should call view_function(...); current code drops the non-terrain draw path. [decomp: view.cpp.decomp @ 0x00535480]
         if (mode == 10) { // Terrain
             tagRECT rect = area->ClipRect;
             this->view_function_terrain(mode, rect);
