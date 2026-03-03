@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 
+// TODO: PARITY - Requested decomp naming (ra_make.cpp.decomp) is not present in-tree; this audit maps make-action parity to act_make.cpp.decomp and needs canonical filename confirmation. [decomp: act_make.cpp.decomp @ 0x004049B0]
+
 // Fully verified. Source of truth: act_make.cpp.decomp @ 0x004049B0
 RGE_Action_Make::RGE_Action_Make(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
@@ -162,6 +164,7 @@ uchar RGE_Action_Make::update() {
         }
 
         const float cur_attribute = *(const float*)(obj + 0x44);
+        // TODO: PARITY - Decomp uses register-aliased unaff_EDI in this timer decrement expression; confirm this pre_attribute delta path matches act_make ASM exactly. [decomp: act_make.cpp.decomp @ 0x00404A90]
         this->timer = this->timer - (cur_attribute - pre_attribute);
     }
 

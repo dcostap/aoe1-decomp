@@ -35,6 +35,7 @@ static int rge_ftol(float value) {
     return result;
 }
 
+// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_co_obj.cpp.decomp audit.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object()
     : RGE_Master_Action_Object() {
     this->master_type = 0x32;

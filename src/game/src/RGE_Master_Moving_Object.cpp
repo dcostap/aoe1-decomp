@@ -9,6 +9,7 @@
 #include <new>
 #include <stdio.h>
 
+// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_mo_obj.cpp.decomp audit.
 RGE_Master_Moving_Object::RGE_Master_Moving_Object()
     : RGE_Master_Animated_Object() {
     this->master_type = 0x1E;
