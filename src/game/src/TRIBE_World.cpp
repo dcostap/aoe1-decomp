@@ -1035,6 +1035,8 @@ void TRIBE_World::load_scenario7(int param_1, RGE_Player_Info* param_2) { RGE_Ga
 void TRIBE_World::load_scenario8(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario8(param_1, param_2); }
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::logStatus(FILE* param_1, int param_2) {
+    // TODO: PARITY - implementation is currently ASM-verified only; decomp line-by-line reconciliation is still pending.
+    // [decomp: tworld.cpp.decomp @ 0x0052E0B0]
     // Fully verified. Source of truth: tworld.cpp.asm @ 0x0052E0B0
     if (param_1 != nullptr && param_2 == 1) {
         fprintf(param_1, "\n\n\n*****************************************************\n");
