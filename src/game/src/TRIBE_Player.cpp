@@ -304,7 +304,9 @@ TRIBE_Gaia::TRIBE_Gaia(int param_1, RGE_Game_World* world, uchar player_id)
     rge_read(param_1, &this->last_count, 4);
 }
 
-TRIBE_Gaia::~TRIBE_Gaia() {}
+TRIBE_Gaia::~TRIBE_Gaia() {
+    // TODO: EMPTY_STUB - Destructor is currently empty; verify whether tplayer.cpp.decomp defines only a no-op dtor/vtable write path or additional side effects.
+}
 void TRIBE_Gaia::update() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519CA0
     this->update_time = this->update_time + this->world->world_time_delta_seconds;
@@ -319,9 +321,11 @@ void TRIBE_Gaia::update() {
 }
 void TRIBE_Gaia::changeToHumanPlayer() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514700
+    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this is an intentional empty implementation.
 }
 void TRIBE_Gaia::changeToComputerPlayer() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514710
+    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this is an intentional empty implementation.
 }
 void TRIBE_Gaia::save(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519C40
@@ -333,6 +337,7 @@ void TRIBE_Gaia::save(int param_1) {
 }
 void TRIBE_Gaia::random_start() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D40
+    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this is an intentional empty implementation.
 }
 void TRIBE_Gaia::scenario_postload(int param_1, long* param_2, float param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D50
@@ -362,6 +367,7 @@ TRIBE_Master_Player::TRIBE_Master_Player(FILE* param_1)
 
 TRIBE_Master_Player::~TRIBE_Master_Player() {
     // Fully verified. Source of truth: tmplayer.cpp.decomp @ 0x00511820
+    // TODO: EMPTY_STUB - Destructor body is empty in source; confirm parity remains no-op at this offset.
 }
 void TRIBE_Master_Player::finish_init(int p1, RGE_Sprite** p2, RGE_Sound** p3) { RGE_Master_Player::finish_init(p1, p2, p3); }
 void TRIBE_Master_Player::load_master_object(int p1, uchar p2, RGE_Sprite** p3, RGE_Sound** p4, short p5) {
