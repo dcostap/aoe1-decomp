@@ -538,6 +538,7 @@ void RGE_Static_Object::recycle_out_of_game() {
 }
 void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1F30
+    // TODO: PARITY - This implementation adds defensive owner/sprite/master null guards before draw dispatch; decomp flow dereferences owner/world/sprite-list without those checks, so corrupted-state behavior diverges (early-return here vs crash-prone original path). [decomp: stat_obj.cpp.decomp @ 0x004C1F30]
     static int s_static_draw_guard_logs = 0;
     SDI_Object_ID = this->id;
 
@@ -1908,6 +1909,7 @@ int RGE_Static_Object::findClosestPointInTerrainType(XYPoint param_1, XYPoint* p
 
 uchar RGE_Static_Object::update() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3C70
+    // TODO: PARITY - Decomp shows register-derived return bytes in some death/undead transitions (uVar11/uVar12), while this transliteration normalizes those branches to explicit 0 returns; confirm exact return semantics in ASM. [decomp: stat_obj.cpp.decomp @ 0x004C3C70]
 
     // goto_sleep_flag: transfer object between awake/sleep lists
     if (this->goto_sleep_flag != 0) {
@@ -3982,6 +3984,7 @@ long RGE_Static_Object::get_waypoint_checksum() {
 }
 int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1840
+    // TODO: PARITY - Decomp assumes sprite-list load and owner/world list linkage calls succeed unconditionally; this implementation adds null guards that can skip linkage on allocation failure. [decomp: stat_obj.cpp.decomp @ 0x004C1840]
     int fd = param_1;
 
     this->type = 0x0A;
