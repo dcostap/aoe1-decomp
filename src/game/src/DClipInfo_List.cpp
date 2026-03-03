@@ -4,4 +4,6 @@
 
 #include <cstdlib>
 
+// TODO: PARITY - This file has no DClipInfo_List implementations, while constructor/destructor and core list ops are defined in the decomp and should be explicitly tracked here or clearly delegated. [decomp: view.cpp.decomp @ 0x0053AD90]
+// TODO: PARITY - Missing direct coverage in this TU for DClipInfo_List::SetCaptureLevel/AddGDINode/ReclaimAllNodes creates module-boundary drift versus source-of-truth expectations. [decomp: view.cpp.decomp @ 0x0053AED0]
 
