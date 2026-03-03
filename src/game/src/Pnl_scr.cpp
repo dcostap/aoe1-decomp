@@ -17,6 +17,7 @@ TScreenPanel::TScreenPanel(char* name) : TEasy_Panel(name) {
 }
 
 TScreenPanel::~TScreenPanel() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_055F.decomp @ 0x0055f690]
     // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BAD0
 }
 
