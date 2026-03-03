@@ -358,6 +358,7 @@ RGE_Command::~RGE_Command() {
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_create(RGE_Command_Create* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004348B0
+    // TODO: PARITY - Decomp directly dereferences world/player/master-object paths here; this transliteration adds defensive null guards.
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -370,6 +371,7 @@ void RGE_Command::do_command_create(RGE_Command_Create* p1) {
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004348F0
+    // TODO: PARITY - Decomp calls player vtable add-attribute path without these explicit world/player null checks.
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -932,6 +934,7 @@ void RGE_Command::do_command_resign(RGE_Command_Resign* p1) {
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434920
+    // TODO: PARITY - Decomp only gates on available amount before issuing both vtable add-attribute calls; this version adds additional player/attribute bounds/null guards.
     if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
         return;
     }
@@ -997,6 +1000,7 @@ void RGE_Command::do_command(void* p1) {
         return;
     }
     if (cmd == 7) {
+        // TODO: PARITY - Decomp dispatches command-id 7 via vtable slot 0 call; keep this path behaviorally equivalent to that indirect dispatch.
         this->do_command_give_attribute((RGE_Command_Give_Attribute*)p1);
         return;
     }
