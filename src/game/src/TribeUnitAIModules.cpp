@@ -3,6 +3,7 @@
 #include <new>
 
 // TODO: PARITY - Requested taiuaimd.cpp.decomp parity is incomplete in this translation unit: implementations here are still predominantly mapped to aiuaimod.cpp.decomp offsets. [decomp: taiuaimd.cpp.decomp @ 0x00503D30]
+// TODO: PARITY - taiuaimd class-specific AI decision overrides (processNotify/processIdle/processMisc/attack/canAttack and related selection gates) remain untransliterated for multiple tribe modules beyond current Elephant/Soldier notes. [decomp: taiuaimd.cpp.decomp @ 0x00503D30]
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CB8D0
 UnitAIModule* CreateTribeUnitAIModule(RGE_Static_Object* object, short object_group, short master_id) {
