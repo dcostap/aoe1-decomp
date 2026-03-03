@@ -32,6 +32,7 @@ static long rge_ftol(float value) {
     return result;
 }
 
+// TODO: PARITY - This default constructor body is not present in tm_b_obj.cpp.decomp; verify original ctor coverage/offset mapping.
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object() : TRIBE_Master_Combat_Object() {
     this->construction_sound = nullptr;
     this->construction_sprite = nullptr;
@@ -104,6 +105,7 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(FILE* param_1, RGE_Sp
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E1B0
 int TRIBE_Master_Building_Object::setup(TRIBE_Master_Building_Object* param_1) {
+    // TODO: PARITY - tm_b_obj.cpp.decomp @ 0x0050E1B0 does not show a null-guard; confirm whether this early return exists in original code.
     if (param_1 == nullptr) {
         return 0;
     }
@@ -140,6 +142,7 @@ int TRIBE_Master_Building_Object::setup(int param_1, RGE_Sprite** param_2, RGE_S
     rge_read(param_1, &this->on_build_make_tech, 2);
     rge_read(param_1, &construction_sound_num, 2);
 
+    // TODO: PARITY - tm_b_obj.cpp.decomp @ 0x0050E250 indexes sprite/sound arrays without null checks; confirm if these guards are intentional divergence.
     if (construction_sprite_num >= 0 && param_2 != nullptr) {
         this->construction_sprite = param_2[construction_sprite_num];
     } else {
@@ -179,6 +182,7 @@ int TRIBE_Master_Building_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE
     this->building_connect_flag = (uchar)connect_flag;
     this->build_and_go_away = (uchar)go_away;
 
+    // TODO: PARITY - tm_b_obj.cpp.decomp @ 0x0050E360 indexes sprite/sound arrays without null checks; confirm if these guards are intentional divergence.
     if (construction_sprite_num >= 0 && param_2 != nullptr) {
         this->construction_sprite = param_2[construction_sprite_num];
     } else {
@@ -199,6 +203,7 @@ TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object() {}
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E440
 void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    // TODO: PARITY - tm_b_obj.cpp.decomp @ 0x0050E440 does not show a null-guard; verify whether this guard is non-parity hardening.
     if (param_1 == nullptr) {
         return;
     }
