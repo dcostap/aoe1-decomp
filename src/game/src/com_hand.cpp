@@ -3457,6 +3457,7 @@ void TCommunications_Handler::CheckPlayerStopTurn(ulong param_2) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004289A0
 int TCommunications_Handler::TEST(void) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x004289A0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: com_hand.cpp.decomp @ 0x004289A0]
     return 1;
 }
 
