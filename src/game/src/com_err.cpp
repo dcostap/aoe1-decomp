@@ -24,6 +24,7 @@ void RGE_Comm_Error::ShowReturn(long hr, const char* /*context*/) {
     // Fully verified. Source of truth: com_err.cpp.decomp @ 0x00424EB0
     // Logging strings are not preserved in this codebase; keep only the behavioral notifications.
     // TODO: PARITY - HRESULT handling here is a reduced subset; decomp includes many additional branch-specific error mappings/logging paths. [decomp: com_err.cpp.decomp @ 0x00424EB0]
+    // TODO: PARITY - Decomp uses signed threshold branches for HRESULT dispatch; this reduced switch uses unsigned-cast equality cases only. [decomp: com_err.cpp.decomp @ 0x00424EB0]
     if (hr == 0) {
         return;
     }
