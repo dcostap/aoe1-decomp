@@ -1458,6 +1458,7 @@ int UnitAIModule::processRetryableOrder() {
 }
 
 // TODO: Parity incomplete. Source refs: aiuaimod.cpp.decomp @ 0x00413AB0, aiuaimod.cpp.asm @ 0x00413AB0
+// TODO: PARITY - update() remains parity-incomplete and still requires full decomp/ASM branch and constant reconciliation. [decomp: aiuaimod.cpp.decomp @ 0x00413AB0]
 int UnitAIModule::update(unsigned long param_1) {
     if (this->objectValue == nullptr) {
         return 0;
