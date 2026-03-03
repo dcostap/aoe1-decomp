@@ -245,6 +245,7 @@ static long comm_fast_send_player(TCommunications_Handler* comm, uint to_player,
 static void comm_store_incoming(TCommunications_Handler* comm, uint serial, const char* msg, ulong len, ulong from_dpid,
                                 ulong to_dpid) {
     // TODO: PARITY - Helper extraction from StoreIncoming; re-verify duplicate-slot/full-buffer diagnostics and side effects against direct decomp control flow. [decomp: com_hand.cpp.decomp @ 0x0042A180]
+    // TODO: PARITY - Decomp logs and continues the slot-scan when len==0, while this helper exits early on len==0 and drops those diagnostics/side effects. [decomp: com_hand.cpp.decomp @ 0x0042A180]
     if (comm == nullptr || comm->OnHold == nullptr || msg == nullptr || len == 0) {
         return;
     }
@@ -3107,6 +3108,7 @@ void TCommunications_Handler::ShowSyncChatMsgs(int param_2) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
 void TCommunications_Handler::DropPacketsIntentionally(int param_2) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
+    // TODO: PARITY - Decomp emits a debug log when enabling intentional packet drop; this implementation only stores the flag. [decomp: com_hand.cpp.decomp @ 0x00425930]
     this->IntentionallyDropPackets = param_2;
 }
 
