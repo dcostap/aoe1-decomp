@@ -196,6 +196,7 @@ int RGE_Main_View::do_auto_scroll() {
         this->mouse_scrolling = 0;
         return 0;
     }
+    // TODO: PARITY - Added null guards for prog_info and render_area->Wnd are safety checks; decomp gate expression dereferences those chains directly without a preceding null check, so null-path behavior can diverge. [decomp: vw_main.cpp.decomp @ 0x0053DBA0]
     if (rge_base_game->prog_info == nullptr || rge_base_game->prog_info->auto_scroll == 0) {
         this->mouse_scrolling = 0;
         return 0;
@@ -315,6 +316,7 @@ int RGE_Main_View::handle_keys() {
         return 0;
     }
 
+    // TODO: PARITY - handle_keys adds explicit render_area/Wnd null-guard before foreground-window comparison; decomp directly dereferences render_area->Wnd in that compare. [decomp: vw_main.cpp.decomp @ 0x0053DEB0]
     if (this->render_area == nullptr || this->render_area->Wnd == nullptr) {
         this->key_scrolling = 0;
         return 0;
