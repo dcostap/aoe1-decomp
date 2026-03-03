@@ -394,16 +394,22 @@ void tribe_build_ai_add_ignore_type(TribeBuildAIModule* build_ai, int type_id) {
 // Offset: 0x004D3A80
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3A80
 TribeBuildAIModule::TribeBuildAIModule(void* param_1, int param_2)
-    : BuildAIModule(param_1, param_2), md(nullptr) {}
+    : BuildAIModule(param_1, param_2), md(nullptr) {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: taibldmd.cpp.decomp @ 0x004D3A80]
+}
 
 // Offset: 0x004D3AD0
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3AD0
 TribeBuildAIModule::TribeBuildAIModule(int param_1, int param_2)
-    : BuildAIModule(param_1, param_2), md(nullptr) {}
+    : BuildAIModule(param_1, param_2), md(nullptr) {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: taibldmd.cpp.decomp @ 0x004D3AD0]
+}
 
 // Offset: 0x004D3B00
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3B00
-TribeBuildAIModule::~TribeBuildAIModule() {}
+TribeBuildAIModule::~TribeBuildAIModule() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: taibldmd.cpp.decomp @ 0x004D3B00]
+}
 
 int TribeBuildAIModule::loggingHistory() {
     // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
@@ -986,6 +992,7 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
 // Source of truth: taibldmd.cpp.decomp @ 0x004D595E
 // TODO: PARITY - Decomp at this offset is fully failed (`<decompilation failed>`); current return-0 body is a placeholder pending ASM/manual reconstruction.
 unsigned char FUN_004d595e() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: taibldmd.cpp.decomp @ 0x004D595E]
     return 0;
 }
 
