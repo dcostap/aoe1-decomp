@@ -940,3 +940,7 @@ void T_Scenario::Save_victory_conditions_into_players(int param_1) {
     }
 }
 
+// TODO: MISSING_FUNC - TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario*) not implemented in this translation unit [decomp: tscenaro.cpp.decomp @ 0x0052A990]
+// TODO: MISSING_FUNC - TRIBE_Scenario_Header::TRIBE_Scenario_Header(int) not implemented in this translation unit [decomp: tscenaro.cpp.decomp @ 0x0052A9F0]
+// TODO: MISSING_FUNC - TRIBE_Scenario_Header::get_size not implemented in this translation unit [decomp: tscenaro.cpp.decomp @ 0x0052AA70]
+// TODO: MISSING_FUNC - TRIBE_Scenario_Header::save not implemented in this translation unit [decomp: tscenaro.cpp.decomp @ 0x0052AA80]

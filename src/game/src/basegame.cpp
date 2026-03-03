@@ -1673,11 +1673,13 @@ void RGE_Base_Game::delete_dialog(TPanel** dialog) {
 
 TPanel* RGE_Base_Game::get_view_panel() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C250
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C250]
     return nullptr;
 }
 
 TPanel* RGE_Base_Game::get_map_panel() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C260
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C260]
     return nullptr;
 }
 
@@ -3240,50 +3242,62 @@ int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
 }
 int RGE_Base_Game::action_update() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C710
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C710]
     return 1;
 }
 int RGE_Base_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C720
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C720]
     return 1;
 }
 int RGE_Base_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C730
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C730]
     return 1;
 }
 int RGE_Base_Game::action_user_command(ulong p1, ulong p2) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C740
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C740]
     return 1;
 }
 int RGE_Base_Game::action_command(ulong p1, ulong p2) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C750
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C750]
     return 1;
 }
 int RGE_Base_Game::action_music_done() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C760
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C760]
     return 1;
 }
 int RGE_Base_Game::action_activate() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C770
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C770]
     return 1;
 }
 int RGE_Base_Game::action_deactivate() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C780
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C780]
     return 1;
 }
 int RGE_Base_Game::action_init_menu() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C790
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C790]
     return 1;
 }
 int RGE_Base_Game::action_exit_menu() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7A0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C7A0]
     return 1;
 }
 int RGE_Base_Game::action_size() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7B0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C7B0]
     return 1;
 }
 int RGE_Base_Game::action_close() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C7C0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x0041C7C0]
     return 1;
 }
 void RGE_Base_Game::reset_timings() {
@@ -3543,6 +3557,7 @@ int RGE_Base_Game::setup_map_save_area() {
 
 void RGE_Base_Game::set_interface_messages() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422FE0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x00422FE0]
 }
 
 void RGE_Base_Game::set_render_all() {
@@ -4150,11 +4165,25 @@ int RGE_Base_Game::play_video(char* param_1) {
 
 void RGE_Base_Game::close_video() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422E40
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x00422E40]
 }
 
 void RGE_Base_Game::handle_video_notify() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422E50
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x00422E50]
 }
+
+// TODO: MISSING_FUNC - write_draw_log not implemented [decomp: basegame.cpp.decomp @ 0x0041B620]
+// TODO: MISSING_FUNC - write_draw_log2 not implemented [decomp: basegame.cpp.decomp @ 0x0041B650]
+// TODO: MISSING_FUNC - FUN_0041f6fa not implemented [decomp: basegame.cpp.decomp @ 0x0041F6FA]
+// TODO: MISSING_FUNC - get_mouse_pos not implemented [decomp: basegame.cpp.decomp @ 0x004202E0]
+// TODO: MISSING_FUNC - find_campaigns not implemented [decomp: basegame.cpp.decomp @ 0x004226A0]
+// TODO: MISSING_FUNC - play_sound not implemented [decomp: basegame.cpp.decomp @ 0x00422E60]
+// TODO: MISSING_FUNC - debug_random_reset not implemented [decomp: basegame.cpp.decomp @ 0x00423010]
+// TODO: MISSING_FUNC - debug_random_write not implemented [decomp: basegame.cpp.decomp @ 0x00423030]
+// TODO: MISSING_FUNC - debug_rand not implemented [decomp: basegame.cpp.decomp @ 0x004230A0]
+// TODO: MISSING_FUNC - debug_srand not implemented [decomp: basegame.cpp.decomp @ 0x00423140]
+// TODO: MISSING_FUNC - debug_timeGetTime not implemented [decomp: basegame.cpp.decomp @ 0x004231E0]
 
 
 
