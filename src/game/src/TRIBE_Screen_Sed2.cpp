@@ -1151,3 +1151,26 @@ int create_radio_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel**
     }
     return 1;
 }
+
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::SaveDisabledItemsInScenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004ADC80]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::LoadDisabledItemsFromScenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004ADD00]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::save_info_in_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004ADD50]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004ADD60]
+// TODO: MISSING_FUNC - T_Scenario::Set_Multi_Gold not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AE05A]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::save_victory_cond_in_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AE070]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::load_victory_cond_from_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AE620]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AE9D0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::save_diplomacy_in_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AEC95]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::save_diplomacy_in_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AECB0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::load_diplomacy_from_scenario not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AED50]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::activate_victory_proper_fields not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AEE10]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::init_module_variables not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AF2D2]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::init_module_variables not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AF320]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::create_all_buttons_etc not implemented [decomp: scr_sed2.cpp.decomp @ 0x004AF6C0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::position_panels not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B1A50]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::activate_victory_panel not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B29E0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::MakeFileList not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B2AA0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::Set_player_advance_civilization_text not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B2BC0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::SavePlayerActiveStatus not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B2C50]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::create_check_box not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B2DD0]
+// TODO: MISSING_FUNC - TRIBE_Screen_Sed::create_radio_button not implemented [decomp: scr_sed2.cpp.decomp @ 0x004B2E60]
