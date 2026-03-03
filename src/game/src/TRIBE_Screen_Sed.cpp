@@ -1328,6 +1328,7 @@ static void position_panels(TRIBE_Screen_Sed* this_) {
 
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
     // Partially verified. Source of truth: scr_sed.cpp.asm @ 0x004A81E0
+    // TODO: PARITY - Constructor remains partially verified; perform full control-flow/constant/sign audit before treating this path as parity-complete. [decomp: scr_sed.cpp.decomp @ 0x004A81E0]
     : TScreenPanel(kScenarioEditorScreenName) {
     this->is_multi_player = 0;
     this->scenario_mode = ScenarioModeNone;
