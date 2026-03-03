@@ -1037,6 +1037,7 @@ void Time_Line_Panel::draw_civilization_names() {
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x005204A0
 void Time_Line_Panel::draw_timeline() {
+    // TODO: PARITY - This transliteration adds defensive null checks (render_area/world/player/history) not present in the decomp's direct dereference flow; confirm whether crash-on-null behavior must be preserved. [decomp: tpnl_tml.cpp.decomp @ 0x005204A0]
     if (this->timeline_flag == 0 || this->render_area == nullptr) {
         return;
     }
