@@ -85,6 +85,7 @@ int DAT_00886c3c = 0;
 int DAT_00886c40 = 0;
 int DAT_00886c44 = 0;
 int DAT_00886c48 = 0;
+// TODO: PARITY - These global markers use raw data-address references rather than explicit // Offset function entries; validate them against ASM/data symbols to justify the current verification tags. [decomp: tplayer.cpp.decomp @ 0x0051748E]
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00518A66
 int computerPlayerSetup[13] = {0};
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x0051748E
@@ -403,6 +404,7 @@ void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_S
     this->master_objects[p5] = loaded;
 }
 void TRIBE_Master_Player::save(int p1) { RGE_Master_Player::save(p1); }
+// TODO: PARITY - This inherited-forwarder section mixes methods that have bodies in tplayer.cpp.decomp with methods that do not; validate vtable/call-site parity for the no-body forwarders. [decomp: tplayer.cpp.decomp @ 0x00514700]
 // Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::set_game_status(uchar param_1) { RGE_Player::set_game_status(param_1); }
 // Fully verified. Not in decomp, inherited/forwarding method.
