@@ -15,7 +15,7 @@
 
 #include <new>
 
-// TODO: PARITY - Requested decomp naming (ra_trans.cpp.decomp/act_trns.cpp.decomp) is not present in-tree; this audit maps transport-action parity to act_tran.cpp.decomp and needs canonical filename confirmation. [decomp: act_tran.cpp.decomp @ 0x00406D60]
+// TODO: PARITY [LOW] - Requested decomp naming (ra_trans.cpp.decomp/act_trns.cpp.decomp) is not present in-tree; this audit maps transport-action parity to act_tran.cpp.decomp and needs canonical filename confirmation. [decomp: act_tran.cpp.decomp @ 0x00406D60]
 
 namespace {
 static const char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
@@ -186,7 +186,7 @@ static uchar rge_static_drop_held_objects(RGE_Static_Object* self, int zone) {
 
 // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x0040712E
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
-// TODO: PARITY - Confirm this shim offset is truly non-callable and that no transitional branch logic was skipped. [decomp: act_tran.cpp.decomp @ 0x0040712E]
+// TODO: PARITY [MODERATE] - Confirm this shim offset is truly non-callable and that no transitional branch logic was skipped. [decomp: act_tran.cpp.decomp @ 0x0040712E]
 
 RGE_Action_Transport::RGE_Action_Transport(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x00406D60
@@ -206,7 +206,7 @@ RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* param_1, RGE_Task*
 }
 
 // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x004071A0 (virtual forwarding coverage).
-// TODO: PARITY - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current empty dtor may miss side effects. [decomp: bucket_0406.decomp @ 0x00406DB0]
+// TODO: PARITY [CRITICAL] - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current empty dtor may miss side effects. [decomp: bucket_0406.decomp @ 0x00406DB0]
 RGE_Action_Transport::~RGE_Action_Transport() {}
 
 // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x004071A0 (virtual forwarding coverage).
@@ -299,7 +299,7 @@ uchar RGE_Action_Transport::update() {
             if (has_drop_terrain == 0) {
                 RGE_Map* map = this->obj->owner->world->map;
                 if (this->target_x != -1.0f) {
-                    // TODO: PARITY - Decomp re-emits bare __ftol calls for each terrain probe; verify repeated act_tran_ftol calls preserve exact FPU rounding/exception behavior. [decomp: act_tran.cpp.decomp @ 0x00406F90]
+                    // TODO: PARITY [MODERATE] - Decomp re-emits bare __ftol calls for each terrain probe; verify repeated act_tran_ftol calls preserve exact FPU rounding/exception behavior. [decomp: act_tran.cpp.decomp @ 0x00406F90]
                     short col = (short)act_tran_ftol(this->target_x);
                     short row = (short)act_tran_ftol(this->target_y);
                     uchar terrain = map->get_terrain(col, row);
@@ -378,7 +378,7 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* /*param_1*/, float param_2,
 int RGE_Action_Transport::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     this->target2ID = 1;
 
-    // TODO: PARITY - Decomp uses bare __ftol call sequence before lookupZone; confirm these C++ float-to-int casts match original conversion semantics at this call site. [decomp: act_tran.cpp.decomp @ 0x004071A0]
+    // TODO: PARITY [MODERATE] - Decomp uses bare __ftol call sequence before lookupZone; confirm these C++ float-to-int casts match original conversion semantics at this call site. [decomp: act_tran.cpp.decomp @ 0x004071A0]
     int zone_x = (int)param_2;
     int zone_y = (int)param_3;
     uchar zone = this->obj->lookupZone(zone_x, zone_y);
