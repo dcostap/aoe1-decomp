@@ -234,6 +234,7 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
 }
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7430
+// TODO: PARITY - Destructor body is currently empty while decomp emits an explicit vtable-slot write (`this->_padding_ = (int)&_vftable_`); validate codegen/ASM parity.
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7440
