@@ -153,7 +153,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long p
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0
-    // TODO: PARITY - Decomp performs inline byte-wise comparison without a null-guard on param_1; this defensive early-return path can change behavior for null inputs. [decomp: gameinfo.cpp.decomp @ 0x0044CAD0]
+    // TODO: PARITY [MODERATE] - Decomp performs inline byte-wise comparison without a null-guard on param_1; this defensive early-return path can change behavior for null inputs. [decomp: gameinfo.cpp.decomp @ 0x0044CAD0]
     if (param_1 == nullptr) {
         return '\0';
     }
@@ -163,7 +163,7 @@ uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::set_current_scenario(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CA90
-    // TODO: PARITY - Decomp condition is (param_1 < scenario_num && scenario_info[param_1].status!=0) with no explicit negative-index/null checks; these added guards may change control flow for invalid inputs. [decomp: gameinfo.cpp.decomp @ 0x0044CA90]
+    // TODO: PARITY [MODERATE] - Decomp condition is (param_1 < scenario_num && scenario_info[param_1].status!=0) with no explicit negative-index/null checks; these added guards may change control flow for invalid inputs. [decomp: gameinfo.cpp.decomp @ 0x0044CA90]
     if (param_1 < 0 || param_1 >= this->scenario_num || this->scenario_info == nullptr) {
         return '\0';
     }
@@ -500,7 +500,7 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_campaign(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0 (simplified: no exception frame)
-    // TODO: PARITY - Exception-frame/cleanup behavior is simplified away; failure-path side effects should be re-audited against original control flow. [decomp: gameinfo.cpp.decomp @ 0x0044CEF0]
+    // TODO: PARITY [MODERATE] - Exception-frame/cleanup behavior is simplified away; failure-path side effects should be re-audited against original control flow. [decomp: gameinfo.cpp.decomp @ 0x0044CEF0]
     if (param_1 < 0 || param_1 >= this->campaign_num || this->campaigns == nullptr || this->campaigns[param_1] == nullptr) {
         return '\0';
     }
@@ -852,6 +852,7 @@ void RGE_Game_Info::remove_player(long param_1) {
         }
     }
 }
+
 
 
 

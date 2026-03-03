@@ -56,7 +56,7 @@ RGE_Flic_Player::~RGE_Flic_Player() {
 // Fully verified. Source of truth: flics.cpp.decomp + flics.cpp.asm @ 0x00449C50
 void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
     int* local_8 = (int*)0x0;
-    // TODO: PARITY - Decomp uses 32-bit int/long casts for frame-offset pointer arithmetic; current intptr_t widening may hide original truncation/signedness behavior. [decomp: flics.cpp.decomp @ 0x00449C50]
+    // TODO: PARITY [MODERATE] - Decomp uses 32-bit int/long casts for frame-offset pointer arithmetic; current intptr_t widening may hide original truncation/signedness behavior. [decomp: flics.cpp.decomp @ 0x00449C50]
     intptr_t index1 = 0;
     int* piVar2 = nullptr;
     if (this->flic_handle < 0) {
@@ -265,7 +265,7 @@ uchar RGE_Flic_Player::draw(TDrawArea* param_1, long param_2, long param_3) {
 
 // Fully verified. Source of truth: flics.cpp.decomp @ 0x0044A05D
 void FUN_0044a05d() {
-    // TODO: PARITY - Decompiled logic executes a software interrupt path (swi(1)); current no-op body changes control flow/side effects. [decomp: flics.cpp.decomp @ 0x0044A05D]
+    // TODO: PARITY [MODERATE] - Decompiled logic executes a software interrupt path (swi(1)); current no-op body changes control flow/side effects. [decomp: flics.cpp.decomp @ 0x0044A05D]
 }
 
 // Fully verified. Source of truth: flics.cpp.decomp @ 0x0044A090
@@ -503,3 +503,4 @@ void RGE_Flic_Player::byte_run() {
         } while (local_4 != 0);
     }
 }
+

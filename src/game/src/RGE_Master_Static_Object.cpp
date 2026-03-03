@@ -146,7 +146,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object() {
 
 // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452120
 RGE_Master_Static_Object::RGE_Master_Static_Object(RGE_Master_Static_Object* param_1, int param_2) {
-    // TODO: PARITY - Constructor path uses broad reset helper not shown in decomp ctor bodies (vftable + optional setup only); verify default-field writes are faithful for all ctor variants. [decomp: m_s_obj.cpp.decomp @ 0x00452120]
+    // TODO: PARITY [MODERATE] - Constructor path uses broad reset helper not shown in decomp ctor bodies (vftable + optional setup only); verify default-field writes are faithful for all ctor variants. [decomp: m_s_obj.cpp.decomp @ 0x00452120]
     rge_master_static_reset_fields(this);
     if (param_2 != 0 && param_1 != nullptr) {
         this->setup(param_1);
@@ -354,7 +354,7 @@ void RGE_Master_Static_Object::modify_delta(float param_1, uchar param_2) {
 }
 
 void RGE_Master_Static_Object::modify_percent(float param_1, uchar param_2) {
-    // TODO: PARITY - this method currently cites ASM only; decomp-backed parity confirmation is still pending.
+    // TODO: PARITY [MODERATE] - this method currently cites ASM only; decomp-backed parity confirmation is still pending.
     // [decomp: m_s_obj.cpp.decomp @ 0x004535F0]
     // Fully verified. Source of truth: m_s_obj.cpp.asm @ 0x004535F0
     switch (param_2) {
@@ -1325,3 +1325,4 @@ uchar RGE_Master_Static_Object::alignment_box(RGE_Game_World* world, float col, 
 
     return 1;
 }
+

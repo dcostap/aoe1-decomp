@@ -35,7 +35,7 @@ static int rge_ftol(float value) {
     return result;
 }
 
-// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_co_obj.cpp.decomp audit.
+// TODO: PARITY [MODERATE]: Default ctor needs explicit offset/ASM mapping in m_co_obj.cpp.decomp audit.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object()
     : RGE_Master_Action_Object() {
     this->master_type = 0x32;
@@ -687,3 +687,4 @@ void RGE_Master_Combat_Object::play_move_sound() {
 void RGE_Master_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 // Fully verified. Marker reconciliation coverage.
 RGE_Task_List* RGE_Master_Combat_Object::create_task_list() { return new RGE_Task_List(); }
+

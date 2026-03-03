@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeSaveGameScreen::vector_deleting_destructor. [decomp: TribeSaveGameScreen.decomp @ 0x004A75A0]
+// TODO: PARITY [MODERATE] - Missing function implementation for TribeSaveGameScreen::vector_deleting_destructor. [decomp: TribeSaveGameScreen.decomp @ 0x004A75A0]
 #include "../include/TribeSaveGameScreen.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -295,7 +295,7 @@ TribeSaveGameScreen::~TribeSaveGameScreen() {
 // Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::fillList() {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7670
-    // TODO: PARITY - fillList adds defensive list/prog_info null-guards; decomp helper dereferences list and global prog_info paths directly during pattern construction and append flow. [decomp: scr_save.cpp.decomp @ 0x004A7670]
+    // TODO: PARITY [MODERATE] - fillList adds defensive list/prog_info null-guards; decomp helper dereferences list and global prog_info paths directly during pattern construction and append flow. [decomp: scr_save.cpp.decomp @ 0x004A7670]
     if (this->list == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
         return;
     }
@@ -314,7 +314,7 @@ void TribeSaveGameScreen::fillList() {
         sprintf(pattern, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     }
     handle = _findfirst(pattern, &info);
-    // TODO: PARITY - Filename extraction/iteration is refactored to bounded memcpy(name + 4, len - 8) with explicit _findclose calls; decomp uses raw strncpy length math (~uVar4 - 5) and does not show explicit handle close sites.
+    // TODO: PARITY [MODERATE] - Filename extraction/iteration is refactored to bounded memcpy(name + 4, len - 8) with explicit _findclose calls; decomp uses raw strncpy length math (~uVar4 - 5) and does not show explicit handle close sites.
     while (handle != -1) {
         const char* name = info.name;
         if (name != nullptr) {
@@ -706,3 +706,4 @@ int TribeSaveGameScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPane
 int TribeSaveGameScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+

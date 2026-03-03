@@ -12,8 +12,8 @@
 #include <string.h>
 #include <stdio.h>
 
-// TODO: PARITY - RGE_Master_Player::vector_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Master_Player.decomp @ 0x004610A0]
-// TODO: PARITY - Requested m_player.cpp.decomp/mplayer.cpp.decomp names are not present in this tree; this audit maps RGE_Master_Player to mst_play.cpp.decomp. [decomp: mst_play.cpp.decomp @ 0x004610C0]
+// TODO: PARITY [MODERATE] - RGE_Master_Player::vector_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Master_Player.decomp @ 0x004610A0]
+// TODO: PARITY [MODERATE] - Requested m_player.cpp.decomp/mplayer.cpp.decomp names are not present in this tree; this audit maps RGE_Master_Player to mst_play.cpp.decomp. [decomp: mst_play.cpp.decomp @ 0x004610C0]
 
 RGE_Master_Player::RGE_Master_Player() {
     memset(this->name, 0, sizeof(this->name));
@@ -97,7 +97,7 @@ RGE_Master_Player::~RGE_Master_Player() {
 
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004611D0
 void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
-    // TODO: PARITY - Decomp labels this body under TRIBE_Master_Player while also documenting RGE_Master_Player virtual dispatch; keep vtable-owner mapping verified when auditing cross-module overrides. [decomp: mst_play.cpp.decomp @ 0x004611D0]
+    // TODO: PARITY [MODERATE] - Decomp labels this body under TRIBE_Master_Player while also documenting RGE_Master_Player virtual dispatch; keep vtable-owner mapping verified when auditing cross-module overrides. [decomp: mst_play.cpp.decomp @ 0x004611D0]
     CUSTOM_DEBUG_LOG_FMT("RGE_Master_Player::finish_init enter this=%p pos=%ld", this, rge_stream_tell(param_1));
     short* object_count = &this->master_object_num;
     rge_read(param_1, object_count, 2);
@@ -138,7 +138,7 @@ void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound
 
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461270
 void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
-    // TODO: PARITY - Decomp shows operator_new + failure/unwind scaffolding in this constructor-dispatch block; this transliteration relies on C++ new semantics and needs ASM audit on allocation-failure side effects. [decomp: mst_play.cpp.decomp @ 0x00461270]
+    // TODO: PARITY [MODERATE] - Decomp shows operator_new + failure/unwind scaffolding in this constructor-dispatch block; this transliteration relies on C++ new semantics and needs ASM audit on allocation-failure side effects. [decomp: mst_play.cpp.decomp @ 0x00461270]
     RGE_Master_Static_Object* loaded = nullptr;
 
     switch (param_2) {
@@ -235,3 +235,4 @@ void RGE_Master_Player::save(int param_1) {
         }
     }
 }
+

@@ -52,7 +52,7 @@ static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     }
 }
 
-// TODO: PARITY - This default constructor body is not present in tm_co_ob.cpp.decomp; verify original ctor coverage/offset mapping.
+// TODO: PARITY [MODERATE] - This default constructor body is not present in tm_co_ob.cpp.decomp; verify original ctor coverage/offset mapping.
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object() {
     memset(this->build_inventory, 0, sizeof(this->build_inventory));
     this->build_pts_required = 0;
@@ -109,7 +109,7 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(FILE* param_1, RGE_Sprite
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EAE0
 int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* param_1) {
-    // TODO: PARITY - tm_co_ob.cpp.decomp @ 0x0050EAE0 does not show a null-guard; confirm whether this early return exists in original code.
+    // TODO: PARITY [MODERATE] - tm_co_ob.cpp.decomp @ 0x0050EAE0 does not show a null-guard; confirm whether this early return exists in original code.
     if (param_1 == nullptr) {
         return 0;
     }
@@ -174,7 +174,7 @@ RGE_Task_List* TRIBE_Master_Combat_Object::create_task_list() {
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EE00
 void TRIBE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* param_1) {
-    // TODO: PARITY - tm_co_ob.cpp.decomp @ 0x0050EE00 does not show a null-guard; verify whether this guard is non-parity hardening.
+    // TODO: PARITY [MODERATE] - tm_co_ob.cpp.decomp @ 0x0050EE00 does not show a null-guard; verify whether this guard is non-parity hardening.
     if (param_1 == nullptr) {
         return;
     }
@@ -296,4 +296,5 @@ void TRIBE_Master_Combat_Object::play_command_sound() { this->RGE_Master_Static_
 void TRIBE_Master_Combat_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp (helper implementation).
 void TRIBE_Master_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+
 

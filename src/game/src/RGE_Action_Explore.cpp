@@ -8,7 +8,7 @@
 
 #include <new>
 
-// TODO: PARITY - Requested module names (TRIBE_Action_Explore.cpp / ta_explr.cpp.decomp) are not present in-tree; this audit maps explore-action parity to RGE_Action_Explore.cpp + act_expl.cpp.decomp and needs canonical filename confirmation. [decomp: act_expl.cpp.decomp @ 0x00402B40]
+// TODO: PARITY [MODERATE] - Requested module names (TRIBE_Action_Explore.cpp / ta_explr.cpp.decomp) are not present in-tree; this audit maps explore-action parity to RGE_Action_Explore.cpp + act_expl.cpp.decomp and needs canonical filename confirmation. [decomp: act_expl.cpp.decomp @ 0x00402B40]
 
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402B40
 RGE_Action_Explore::RGE_Action_Explore(int param_1, RGE_Action_Object* param_2) {
@@ -25,7 +25,7 @@ RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* param_1, RGE_Task* par
     this->target_z = param_5;
 }
 
-// TODO: PARITY - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current defaulted dtor may miss side effects. [decomp: bucket_0402.decomp @ 0x00402B90]
+// TODO: PARITY [MODERATE] - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current defaulted dtor may miss side effects. [decomp: bucket_0402.decomp @ 0x00402B90]
 RGE_Action_Explore::~RGE_Action_Explore() = default;
 
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E40 (virtual forwarding coverage).
@@ -173,7 +173,7 @@ uchar RGE_Action_Explore::update() {
 }
 
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E26 (embedded pre-work decomp stub).
-// TODO: PARITY - This embedded pre-work stub offset is not represented by a standalone body; verify no branch logic is missing before work(). [decomp: act_expl.cpp.decomp @ 0x00402E26]
+// TODO: PARITY [MODERATE] - This embedded pre-work stub offset is not represented by a standalone body; verify no branch logic is missing before work(). [decomp: act_expl.cpp.decomp @ 0x00402E26]
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E40
 int RGE_Action_Explore::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
@@ -187,4 +187,5 @@ int RGE_Action_Explore::work(RGE_Static_Object* param_1, float param_2, float pa
     this->set_state(3);
     return 1;
 }
+
 

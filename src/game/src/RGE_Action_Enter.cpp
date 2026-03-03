@@ -37,14 +37,14 @@ static RGE_Action* rge_action_object_get_action(RGE_Static_Object* obj) {
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x0040270E
 // Decompiler artifact: offset lands inside malformed instruction data in this unit.
-// TODO: PARITY - Reconfirm in ASM that this malformed-offset helper is non-callable and does not mask real control flow. [decomp: act_entr.cpp.decomp @ 0x0040270E]
+// TODO: PARITY [MODERATE] - Reconfirm in ASM that this malformed-offset helper is non-callable and does not mask real control flow. [decomp: act_entr.cpp.decomp @ 0x0040270E]
 static int FUN_0040270e() {
     return 0;
 }
 
 // Fully verified. Source of truth: act_entr.cpp.decomp @ 0x00402AFA
 // Decompiler artifact: offset is non-callable junk bytes in this unit.
-// TODO: PARITY - Placeholder no-op should be revalidated against ASM in case a real branch target was lost in decomp corruption. [decomp: act_entr.cpp.decomp @ 0x00402AFA]
+// TODO: PARITY [MODERATE] - Placeholder no-op should be revalidated against ASM in case a real branch target was lost in decomp corruption. [decomp: act_entr.cpp.decomp @ 0x00402AFA]
 static void FUN_00402afa() {}
 }
 
@@ -342,4 +342,5 @@ void RGE_Action_Enter::set_state(uchar param_1) {
     this->sub_actions->add_action(move_to);
     move_to->setSubAction(1);
 }
+
 

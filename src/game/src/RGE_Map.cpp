@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for RGE_Map::vector_deleting_destructor. [decomp: RGE_Map.decomp @ 0x00455080]
+// TODO: PARITY [MODERATE] - Missing function implementation for RGE_Map::vector_deleting_destructor. [decomp: RGE_Map.decomp @ 0x00455080]
 #include "RGE_Map.h"
 #include "RGE_Base_Game.h"
 #include "globals.h"
@@ -1881,7 +1881,7 @@ void RGE_Map::scenario_save(int param_1) {
     rge_write(param_1, &this->map_height, 4);
 
     // Parity: both loops are bounded by map_height (original has an apparent width/height mix-up).
-    // TODO: PARITY - Decomp serializes rows using map_height for both dimensions; verify this width/height mismatch is intentional file-format behavior and not a decompiler aliasing artifact. [decomp: map.cpp.decomp @ 0x00455F10]
+    // TODO: PARITY [MODERATE] - Decomp serializes rows using map_height for both dimensions; verify this width/height mismatch is intentional file-format behavior and not a decompiler aliasing artifact. [decomp: map.cpp.decomp @ 0x00455F10]
     for (int y = 0; y < this->map_height; ++y) {
         for (int x = 0; x < this->map_height; ++x) {
             RGE_Tile* tile = &this->map_row_offset[y][x];
@@ -1910,7 +1910,7 @@ void RGE_Map::scenario_load(int param_1, uchar* param_2) {
 
     for (int y = 0; y < this->map_height; ++y) {
         // Parity: both loops are bounded by map_height (original has an apparent width/height mix-up).
-        // TODO: PARITY - scenario_load mirrors the same map_height×map_height traversal as scenario_save; recheck rectangular-map behavior against original runtime to confirm this is not silent data truncation/corruption. [decomp: map.cpp.decomp @ 0x00455FF0]
+        // TODO: PARITY [MODERATE] - scenario_load mirrors the same map_height?map_height traversal as scenario_save; recheck rectangular-map behavior against original runtime to confirm this is not silent data truncation/corruption. [decomp: map.cpp.decomp @ 0x00455FF0]
         for (int x = 0; x < this->map_height; ++x) {
             uchar terrain_info = 0;
             uchar height_info = 0;
@@ -3103,3 +3103,4 @@ void RGE_Map::rebuild_border_types(short col0, short row0, short col1, short row
         }
     }
 }
+

@@ -699,11 +699,11 @@ int AIPlayBook::loadPlays(char* param_1) {
 }
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040EC4E (switch jump-table thunk)
-// TODO: PARITY - Decomp shows a non-trivial FUN_0040ec4e body (register/switch-derived mapping), but this remains an empty thunk stub pending transliteration/ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
+// TODO: PARITY [MODERATE] - Decomp shows a non-trivial FUN_0040ec4e body (register/switch-derived mapping), but this remains an empty thunk stub pending transliteration/ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
 static void FUN_0040ec4e() {}
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040F066 (switch jump-table thunk)
-// TODO: PARITY - Empty thunk stub is still unresolved; decomp at this offset reports bad-instruction control flow and needs explicit ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040F066]
+// TODO: PARITY [MODERATE] - Empty thunk stub is still unresolved; decomp at this offset reports bad-instruction control flow and needs explicit ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040F066]
 static void FUN_0040f066() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F530
@@ -846,7 +846,7 @@ done_grouping:
 }
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040FB9E (switch jump-table thunk)
-// TODO: PARITY - Decomp shows a substantive FUN_0040fb9e body, but this implementation remains an empty stub and needs transliteration/parity validation. [decomp: aipbook.cpp.decomp @ 0x0040FB9E]
+// TODO: PARITY [MODERATE] - Decomp shows a substantive FUN_0040fb9e body, but this implementation remains an empty stub and needs transliteration/parity validation. [decomp: aipbook.cpp.decomp @ 0x0040FB9E]
 static void FUN_0040fb9e() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FC30
@@ -1109,3 +1109,4 @@ int AIPlayBook::playNumber(char* name) {
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FA40 (implemented in AIPlayData.cpp)
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB60 (implemented in AIPlayData.cpp)
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FBB0 (implemented in AIPlayData.cpp)
+

@@ -54,7 +54,7 @@ static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     }
 }
 
-// TODO: PARITY - A default TRIBE_Master_Tree_Object ctor is not present in tm_tre_o.cpp.decomp; verify offset mapping for this initialization path.
+// TODO: PARITY [MODERATE] - A default TRIBE_Master_Tree_Object ctor is not present in tm_tre_o.cpp.decomp; verify offset mapping for this initialization path.
 TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object() : RGE_Master_Static_Object() {
     this->master_type = 0x5A;
 }
@@ -89,7 +89,7 @@ TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(FILE* param_1, RGE_Sprite** p
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Master_Tree_Object::~TRIBE_Master_Tree_Object() {}
 // Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
-// TODO: PARITY - tm_tre_o.cpp.decomp does not show copy_obj; confirm whether setup() usage here matches original override behavior.
+// TODO: PARITY [MODERATE] - tm_tre_o.cpp.decomp does not show copy_obj; confirm whether setup() usage here matches original override behavior.
 void TRIBE_Master_Tree_Object::copy_obj(RGE_Master_Static_Object* param_1) { if (param_1) this->RGE_Master_Static_Object::setup(param_1); this->master_type = 0x5A; }
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Tree_Object::modify(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify(param_1, param_2); }
@@ -102,7 +102,7 @@ void TRIBE_Master_Tree_Object::save(int param_1) { this->RGE_Master_Static_Objec
 
 // Fully verified. Source of truth: tm_tre_o.cpp.decomp @ 0x0050F320
 RGE_Static_Object* TRIBE_Master_Tree_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY - tm_tre_o.cpp.decomp @ 0x0050F320 constructs TRIBE_Tree_Object directly; this passthrough to base may not be parity-complete.
+    // TODO: PARITY [MODERATE] - tm_tre_o.cpp.decomp @ 0x0050F320 constructs TRIBE_Tree_Object directly; this passthrough to base may not be parity-complete.
     return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4);
 }
 
@@ -124,4 +124,5 @@ void TRIBE_Master_Tree_Object::play_command_sound() { this->RGE_Master_Static_Ob
 void TRIBE_Master_Tree_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 // Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
 void TRIBE_Master_Tree_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
+
 

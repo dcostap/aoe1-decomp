@@ -476,7 +476,7 @@ unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param
 // Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C01A0
-    // TODO: PARITY - do_draw currently ignores decomp mirror-branch and ASM color-xform/logging side effects; reconcile shape_draw vs shape_mirror pathing and _ASMSet_Color_Xform behavior. [decomp: sprite.cpp.decomp @ 0x004C01A0]
+    // TODO: PARITY [MODERATE] - do_draw currently ignores decomp mirror-branch and ASM color-xform/logging side effects; reconcile shape_draw vs shape_mirror pathing and _ASMSet_Color_Xform behavior. [decomp: sprite.cpp.decomp @ 0x004C01A0]
     if (this->frame_num <= param_2) {
         param_2 = 0;
     }
@@ -815,4 +815,5 @@ uchar RGE_Sprite::shape_hit_test(short param_1, short param_2, long param_3, lon
 
     return 0;
 }
+
 

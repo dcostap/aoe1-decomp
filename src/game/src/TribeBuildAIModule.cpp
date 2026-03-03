@@ -502,7 +502,7 @@ int TribeBuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
 
 // Offset: 0x004D3D60
 // Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3D60
-// TODO: PARITY - initialize() currently performs a minimal reset/update path, while decomp contains substantial build-list/resource/population balancing logic. [decomp: taibldmd.cpp.decomp @ 0x004D3D60]
+// TODO: PARITY [MODERATE] - initialize() currently performs a minimal reset/update path, while decomp contains substantial build-list/resource/population balancing logic. [decomp: taibldmd.cpp.decomp @ 0x004D3D60]
 void TribeBuildAIModule::initialize() {
     // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
     this->unskipBuildList(0, 0);
@@ -984,7 +984,7 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
 
 // Offset: 0x004D595E
 // Source of truth: taibldmd.cpp.decomp @ 0x004D595E
-// TODO: PARITY - Decomp at this offset is fully failed (`<decompilation failed>`); current return-0 body is a placeholder pending ASM/manual reconstruction.
+// TODO: PARITY [MODERATE] - Decomp at this offset is fully failed (`<decompilation failed>`); current return-0 body is a placeholder pending ASM/manual reconstruction.
 unsigned char FUN_004d595e() {
     return 0;
 }
@@ -1118,3 +1118,4 @@ BuildItem* TribeBuildAIModule::buildItem(int param_1, int param_2, int param_3) 
     }
     return nullptr;
 }
+

@@ -598,7 +598,7 @@ int TMousePointer::update_mouse_position() {
 
 void TMousePointer::draw(int param_1) {
     // Fully verified. Source of truth: mouseptr.cpp.decomp @ 0x0045BA60
-    // TODO: PARITY - Decomp warns on `lplpDDClipper`; verify clipper detach/reattach ordering and NULL-clipper error sequencing match asm control flow. [decomp: mouseptr.cpp.decomp @ 0x0045BA60]
+    // TODO: PARITY [MODERATE] - Decomp warns on `lplpDDClipper`; verify clipper detach/reattach ordering and NULL-clipper error sequencing match asm control flow. [decomp: mouseptr.cpp.decomp @ 0x0045BA60]
     IDirectDrawClipper* clipper = nullptr;
 
     if (this->active != 0 && this->custom_draw != 0) {
@@ -759,4 +759,5 @@ int TMousePointer::GetDDBltError(long err) {
     }
     return -1;
 }
+
 

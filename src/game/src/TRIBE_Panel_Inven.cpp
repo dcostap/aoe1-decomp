@@ -75,7 +75,7 @@ void TRIBE_Panel_Inven::draw() {
                 long x = this->pnl_x + 0x20;
                 const long y = this->pnl_y + 2;
 
-                // TODO: PARITY - Attribute text formatting here uses C++ casts to long; decomp uses __ftol conversions at each site, so rounding semantics can differ for non-integer values. [decomp: tpnl_inv.cpp.decomp @ 0x0051A770]
+                // TODO: PARITY [MODERATE] - Attribute text formatting here uses C++ casts to long; decomp uses __ftol conversions at each site, so rounding semantics can differ for non-integer values. [decomp: tpnl_inv.cpp.decomp @ 0x0051A770]
                 sprintf(str, "%ld", (long)this->player->attributes[1]);
                 SetTextColor(dc, (COLORREF)this->back_color);
                 TextOutA(dc, x - 1, y + 1, str, (int)strlen(str));
@@ -129,7 +129,7 @@ long TRIBE_Panel_Inven::handle_idle() {
             short i = 0;
             float* attributes = this->player->attributes;
             short* save_attr = this->save_attr;
-            // TODO: PARITY - Change detection compares (short)(long)attributes[i], but decomp compares __ftol() output; conversion differences can alter redraw triggering. [decomp: tpnl_inv.cpp.decomp @ 0x0051AAD0]
+            // TODO: PARITY [MODERATE] - Change detection compares (short)(long)attributes[i], but decomp compares __ftol() output; conversion differences can alter redraw triggering. [decomp: tpnl_inv.cpp.decomp @ 0x0051AAD0]
             while (i < this->save_attr_num) {
                 if ((short)((long)attributes[i]) != save_attr[i]) {
                     changed = 1;
@@ -176,7 +176,7 @@ void TRIBE_Panel_Inven::save_info() {
 
 SAVE_INFO_COPY_ATTR:
     if (this->save_attr_num > 0) {
-        // TODO: PARITY - save_info stores (short)(long)attributes[i]; decomp stores __ftol() results, which can differ for fractional or negative values. [decomp: tpnl_inv.cpp.decomp @ 0x0051AC10]
+        // TODO: PARITY [MODERATE] - save_info stores (short)(long)attributes[i]; decomp stores __ftol() results, which can differ for fractional or negative values. [decomp: tpnl_inv.cpp.decomp @ 0x0051AC10]
         for (int i = 0; i < this->save_attr_num; ++i) {
             this->save_attr[i] = (short)((long)this->player->attributes[i]);
         }
@@ -193,7 +193,7 @@ uchar TRIBE_Panel_Inven::get_help_info(char** param_1, long* param_2, long param
     }
 
     if (param_3 < this->pnl_x + 0x37) {
-        // TODO: PARITY - Help text values are formatted via long casts, while decomp uses __ftol() before sprintf in each branch. [decomp: tpnl_inv.cpp.decomp @ 0x0051ACA0]
+        // TODO: PARITY [MODERATE] - Help text values are formatted via long casts, while decomp uses __ftol() before sprintf in each branch. [decomp: tpnl_inv.cpp.decomp @ 0x0051ACA0]
         sprintf(*param_1, this->get_string(0x1D4EE), (long)this->player->attributes[1]);
         *param_2 = -1;
         return 1;
@@ -213,3 +213,4 @@ uchar TRIBE_Panel_Inven::get_help_info(char** param_1, long* param_2, long param
     *param_2 = -1;
     return 1;
 }
+

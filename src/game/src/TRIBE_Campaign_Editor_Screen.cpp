@@ -1,5 +1,5 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Campaign_Editor_Screen::vector_deleting_destructor. [decomp: TRIBE_Campaign_Editor_Screen.decomp @ 0x0048FA20]
-// TODO: PARITY - Requested alias source TRIBE_Screen_Campaign.cpp is absent in this tree; verify all scr_cam module bodies are fully represented by this TU. [decomp: scr_cam.cpp.decomp @ 0x0048F5D0]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Campaign_Editor_Screen::vector_deleting_destructor. [decomp: TRIBE_Campaign_Editor_Screen.decomp @ 0x0048FA20]
+// TODO: PARITY [MODERATE] - Requested alias source TRIBE_Screen_Campaign.cpp is absent in this tree; verify all scr_cam module bodies are fully represented by this TU. [decomp: scr_cam.cpp.decomp @ 0x0048F5D0]
 #include "../include/TRIBE_Campaign_Editor_Screen.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -736,4 +736,5 @@ int TRIBE_Campaign_Editor_Screen::create_vert_slider(TPanel* param_1, TVerticalS
 int TRIBE_Campaign_Editor_Screen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: scr_cam.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TRIBE_Campaign_Editor_Screen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

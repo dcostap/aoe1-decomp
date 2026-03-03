@@ -58,7 +58,7 @@ static int rmm_is_water_terrain(uchar terrain_type) {
     return terrain_type == 1 || terrain_type == 4 || terrain_type == 22;
 }
 
-// TODO: PARITY - this TU currently inlines rmm_terr-derived terrain helpers alongside rmm_dbct/rmm_tdbc flows;
+// TODO: PARITY [MODERATE] - this TU currently inlines rmm_terr-derived terrain helpers alongside rmm_dbct/rmm_tdbc flows;
 // module-boundary ownership should be reconciled during strict per-unit parity audits.
 // [decomp: rmm_dbct.cpp.decomp @ 0x00484160]
 
@@ -2182,5 +2182,6 @@ uchar TRIBE_RMM_Database_Controller::de_init() {
     (void)RGE_RMM_Database_Controller::de_init();
     return 1;
 }
+
 
 

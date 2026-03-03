@@ -16,7 +16,7 @@
 // - `src/game/src/spanlist.cpp.decomp`
 //
 // It intentionally keeps the data layouts from dumped headers intact.
-// TODO: PARITY - This unit is documented as a reimplementation; allocator pool-growth/free-thread control flow should be re-audited instruction-by-instruction for strict parity. [decomp: spanlist.cpp.decomp @ 0x004BD5E0]
+// TODO: PARITY [MODERATE] - This unit is documented as a reimplementation; allocator pool-growth/free-thread control flow should be re-audited instruction-by-instruction for strict parity. [decomp: spanlist.cpp.decomp @ 0x004BD5E0]
 
 // -------------------------
 // TSpan_Node_List
@@ -1011,7 +1011,7 @@ void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* p
             pal[i].rgbReserved = 0;
         }
 
-        // TODO: PARITY - Decomp writes 0x0E bytes from an offset derived from bmFH.bfSize (+2), while this path writes sizeof(tagBITMAPFILEHEADER); verify header-byte alignment/packing parity against ASM. [decomp: spanlist.cpp.decomp @ 0x004BEB10]
+        // TODO: PARITY [MODERATE] - Decomp writes 0x0E bytes from an offset derived from bmFH.bfSize (+2), while this path writes sizeof(tagBITMAPFILEHEADER); verify header-byte alignment/packing parity against ASM. [decomp: spanlist.cpp.decomp @ 0x004BEB10]
         _write(fd, &fh, sizeof(fh));
         _write(fd, &ih, sizeof(ih));
         _write(fd, pal, sizeof(pal));
@@ -1031,6 +1031,7 @@ void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* p
 
     free(line);
 }
+
 
 
 

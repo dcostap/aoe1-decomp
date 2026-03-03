@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeLoadSavedGameScreen::vector_deleting_destructor. [decomp: TribeLoadSavedGameScreen.decomp @ 0x0049E080]
+// TODO: PARITY [MODERATE] - Missing function implementation for TribeLoadSavedGameScreen::vector_deleting_destructor. [decomp: TribeLoadSavedGameScreen.decomp @ 0x0049E080]
 #include "../include/TribeLoadSavedGameScreen.h"
 #include "../include/TribeSPMenuScreen.h"
 #include "../include/RGE_Base_Game.h"
@@ -531,4 +531,5 @@ int TribeLoadSavedGameScreen::create_vert_slider(TPanel* param_1, TVerticalSlide
 int TribeLoadSavedGameScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: TribeLoadSavedGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeLoadSavedGameScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

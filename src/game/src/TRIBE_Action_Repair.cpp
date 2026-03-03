@@ -173,7 +173,7 @@ void TRIBE_Action_Repair::meet_target() {
 
 void TRIBE_Action_Repair::set_state(uchar param_1) {
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D18B0
-    // TODO: PARITY - 0x004D18B0 decomp includes additional state branches (1/2/3/6/7/0x0A/0x0B/0x0D) with sprite/notify/timer side effects that are not represented here; verify against tact_rep.cpp.asm.
+    // TODO: PARITY [MODERATE] - 0x004D18B0 decomp includes additional state branches (1/2/3/6/7/0x0A/0x0B/0x0D) with sprite/notify/timer side effects that are not represented here; verify against tact_rep.cpp.asm.
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
     }
@@ -194,8 +194,8 @@ void TRIBE_Action_Repair::set_state(uchar param_1) {
 
 uchar TRIBE_Action_Repair::update() {
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1B79 (embedded pre-update decomp stub).
-    // TODO: PARITY - Embedded pre-update stub offset is unresolved as standalone logic; validate ASM preamble before 0x004D1BB0 body. [decomp: tact_rep.cpp.decomp @ 0x004D1B79]
-    // TODO: PARITY - Re-check update/state coupling against 0x004D18B0 for missing notify/timer/save_target_command_flag side effects.
+    // TODO: PARITY [MODERATE] - Embedded pre-update stub offset is unresolved as standalone logic; validate ASM preamble before 0x004D1BB0 body. [decomp: tact_rep.cpp.decomp @ 0x004D1B79]
+    // TODO: PARITY [MODERATE] - Re-check update/state coupling against 0x004D18B0 for missing notify/timer/save_target_command_flag side effects.
     // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1BB0
     if (!this->obj) {
         return 0;
@@ -420,4 +420,5 @@ RGE_Static_Object* TRIBE_Action_Repair::get_target_obj2() { return RGE_Action::g
 void TRIBE_Action_Repair::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
+
 

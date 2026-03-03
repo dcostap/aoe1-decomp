@@ -1,7 +1,7 @@
 // Decompiled: Dsutil.cpp
 // SourceMap: C:/msdev/work/age1_x1/Dsutil.c
 // NOTE: Originally a C file, not C++. All functions are free (non-member).
-// TODO: PARITY - Decomp emits C-style undefined signatures; perform full calling-convention/type audit across exported Dsutil routines before parity closure. [decomp: dsutil.cpp.decomp @ 0x004477D0]
+// TODO: PARITY [MODERATE] - Decomp emits C-style undefined signatures; perform full calling-convention/type audit across exported Dsutil routines before parity closure. [decomp: dsutil.cpp.decomp @ 0x004477D0]
 
 #include "../include/Dsutil.h"
 #include <io.h>
@@ -488,7 +488,7 @@ int WaveCloseReadFile(HMMIO* phmmio, tWAVEFORMATEX** ppwfx) {
 // ============================================================================
 // Offset: 0x00448080
 int WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, tWAVEFORMATEX* pwfxDest, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF) {
-    // TODO: PARITY - this function currently cites ASM only; decomp-backed control-flow audit is still pending.
+    // TODO: PARITY [MODERATE] - this function currently cites ASM only; decomp-backed control-flow audit is still pending.
     // [decomp: dsutil.cpp.decomp @ 0x00448080]
     // Fully verified. Source of truth: dsutil.cpp.asm @ 0x00448080
     *phmmioOut = mmioOpenA(pszFileName, nullptr, MMIO_WRITE | MMIO_CREATE | MMIO_ALLOCBUF);
@@ -983,7 +983,7 @@ int ds_stream_messages(void* hwnd, unsigned int msg, unsigned int wParam, long l
 
 // ============================================================================
 // Offset: 0x00448BA0
-// Timer callback for streaming — fills next chunk of audio data
+// Timer callback for streaming ? fills next chunk of audio data
 static volatile int _timer_guard = 0;
 
 void CALLBACK ds_stream_time_func(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2) {
@@ -1163,3 +1163,4 @@ void CALLBACK ds_stream_time_func(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DW
 
     _timer_guard = 0;
 }
+

@@ -186,7 +186,7 @@ void save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed* this_) {
 void FUN_004ae05a(int param_1) {
     // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AE05A (switch-table data anchor thunk)
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AE05A (switch-table data anchor thunk)
-    // TODO: PARITY - Decomp at this offset decodes into a mixed thunk/body with switch-table noise; current transliteration keeps only a data-anchor thunk, so executable-logic parity at this address is unresolved. [decomp: scr_sed2.cpp.decomp @ 0x004AE05A]
+    // TODO: PARITY [MODERATE] - Decomp at this offset decodes into a mixed thunk/body with switch-table noise; current transliteration keeps only a data-anchor thunk, so executable-logic parity at this address is unresolved. [decomp: scr_sed2.cpp.decomp @ 0x004AE05A]
     (void)param_1;
 }
 
@@ -557,7 +557,7 @@ void load_multi_victory_cond_from_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AEC95
 void FUN_004aec95() {
-    // TODO: PARITY - Decomp includes a callable FUN_004aec95 body at this offset, but current transliteration keeps only an ASM thunk marker; confirm whether the decomp body is real logic or decode noise. [decomp: scr_sed2.cpp.decomp @ 0x004AEC95]
+    // TODO: PARITY [MODERATE] - Decomp includes a callable FUN_004aec95 body at this offset, but current transliteration keeps only an ASM thunk marker; confirm whether the decomp body is real logic or decode noise. [decomp: scr_sed2.cpp.decomp @ 0x004AEC95]
     // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AEC95 (switch-table data anchor thunk)
 }
 
@@ -1151,3 +1151,4 @@ int create_radio_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel**
     }
     return 1;
 }
+

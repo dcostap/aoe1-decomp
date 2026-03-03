@@ -13,7 +13,7 @@
 extern LOSTBL* NormalLOS[17];
 extern LOSTBL* SquareLOS[17];
 
-// TODO: PARITY - vis_unit.cpp.decomp includes Visible_Resource_Manager functions (0x0053BB30..0x0053C050)
+// TODO: PARITY [MODERATE] - vis_unit.cpp.decomp includes Visible_Resource_Manager functions (0x0053BB30..0x0053C050)
 // that are not present in this TU; keep split implementation parity aligned across both files.
 // [decomp: vis_unit.cpp.decomp @ 0x0053BB30]
 
@@ -289,3 +289,4 @@ int Visible_Unit_Manager::GetVisibleUnits(int param_1, int param_2, int param_3,
         }
     }
 }
+

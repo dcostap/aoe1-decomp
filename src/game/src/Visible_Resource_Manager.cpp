@@ -16,7 +16,7 @@
 #include <string.h>
 #include <math.h>
 
-// TODO: PARITY - vis_unit.cpp.decomp is shared with Visible_Unit_Manager offsets (0x0053B5A0..0x0053B9A0); keep split implementation parity synchronized across both TUs. [decomp: vis_unit.cpp.decomp @ 0x0053B5A0]
+// TODO: PARITY [MODERATE] - vis_unit.cpp.decomp is shared with Visible_Unit_Manager offsets (0x0053B5A0..0x0053B9A0); keep split implementation parity synchronized across both TUs. [decomp: vis_unit.cpp.decomp @ 0x0053B5A0]
 
 static int vis_unit_ftol(double value) {
     return (int)(long)value;
@@ -287,3 +287,4 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int param_1
     }
     return best;
 }
+

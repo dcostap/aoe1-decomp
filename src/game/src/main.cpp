@@ -16,7 +16,7 @@ const _GUID AGE1_ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     // Fully verified. Source of truth: main.cpp.decomp @ 0x004549E0
-    // TODO: PARITY - Custom debug scaffolding below introduces non-original logging/checkpoint control-flow around startup and shutdown.
+    // TODO: PARITY [MODERATE] - Custom debug scaffolding below introduces non-original logging/checkpoint control-flow around startup and shutdown.
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_INIT();
     CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
@@ -88,7 +88,7 @@ CUSTOM_DEBUG_END
     
     info.verify_cd = 0;
     info.max_players_per_cd = 1;
-    // TODO: PARITY - Expiration/CD gate is intentionally bypassed for startup triage and may diverge from retail startup policy. [decomp: main.cpp.decomp @ 0x004549E0]
+    // TODO: PARITY [MODERATE] - Expiration/CD gate is intentionally bypassed for startup triage and may diverge from retail startup policy. [decomp: main.cpp.decomp @ 0x004549E0]
     // TODO: Temporary startup unblock. Decomp parity around expiration gating is under investigation.
     info.max_players = 8;
     // TODO: Temporary startup unblock. Original value is 8; disabled for launch triage.
@@ -177,3 +177,4 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
     return retval;
 }
+

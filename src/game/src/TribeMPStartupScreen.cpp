@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeMPStartupScreen::vector_deleting_destructor. [decomp: TribeMPStartupScreen.decomp @ 0x0049F870]
+// TODO: PARITY [MODERATE] - Missing function implementation for TribeMPStartupScreen::vector_deleting_destructor. [decomp: TribeMPStartupScreen.decomp @ 0x0049F870]
 #include "../include/TribeMPStartupScreen.h"
 
 #include "../include/TribeJoinScreen.h"
@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: PARITY - TribeMPStartupScreen.decomp currently exports only the vector deleting destructor thunk; non-destructor methods in this unit rely on scr_mp.cpp decomp/asm references rather than class-unit decomp bodies.
+// TODO: PARITY [MODERATE] - TribeMPStartupScreen.decomp currently exports only the vector deleting destructor thunk; non-destructor methods in this unit rely on scr_mp.cpp decomp/asm references rather than class-unit decomp bodies.
 
 namespace {
 
@@ -684,4 +684,5 @@ int TribeMPStartupScreen::create_horz_slider(TPanel* param_1, THorizontalSliderP
 void TribeMPStartupScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) {
     TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5);
 }
+
 

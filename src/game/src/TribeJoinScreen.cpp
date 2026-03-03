@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeJoinScreen::scalar_deleting_destructor. [decomp: TribeJoinScreen.decomp @ 0x00491970]
+// TODO: PARITY [MODERATE] - Missing function implementation for TribeJoinScreen::scalar_deleting_destructor. [decomp: TribeJoinScreen.decomp @ 0x00491970]
 #include "../include/TribeJoinScreen.h"
 
 #include "../include/TribeMPCreateDialog.h"
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - TribeJoinScreen.decomp currently exports only the scalar deleting destructor thunk; non-destructor methods in this unit depend on scr_cj/scr_mp source maps rather than class-unit decomp bodies.
+// TODO: PARITY [MODERATE] - TribeJoinScreen.decomp currently exports only the scalar deleting destructor thunk; non-destructor methods in this unit depend on scr_cj/scr_mp source maps rather than class-unit decomp bodies.
 
 namespace {
 
@@ -1102,5 +1102,6 @@ void TribeJoinScreen::position_panel(TPanel* param_1, long param_2, long param_3
     // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5);
 }
+
 
 

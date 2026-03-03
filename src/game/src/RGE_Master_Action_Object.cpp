@@ -10,7 +10,7 @@
 #include <new>
 #include <stdio.h>
 
-// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_ac_obj.cpp.decomp audit.
+// TODO: PARITY [MODERATE]: Default ctor needs explicit offset/ASM mapping in m_ac_obj.cpp.decomp audit.
 RGE_Master_Action_Object::RGE_Master_Action_Object()
     : RGE_Master_Moving_Object() {
     this->master_type = 0x28;
@@ -312,7 +312,7 @@ void RGE_Master_Action_Object::play_command_sound() { this->RGE_Master_Static_Ob
 void RGE_Master_Action_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 
 
-// TODO: PARITY: draw() wrapper needs explicit offset mapping in m_ac_obj.cpp.decomp audit.
+// TODO: PARITY [MODERATE]: draw() wrapper needs explicit offset mapping in m_ac_obj.cpp.decomp audit.
 void RGE_Master_Action_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 
 
@@ -343,3 +343,4 @@ RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int param_1) const {
     }
     return nullptr;
 }
+

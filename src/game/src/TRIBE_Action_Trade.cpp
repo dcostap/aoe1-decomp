@@ -365,7 +365,7 @@ uchar TRIBE_Action_Trade::update() {
             }
         }
 
-        // TODO: PARITY - Decomp marks this section with an unmapped local (`take_amount`); verify attr subtraction/store ordering against tact_trd.cpp.asm @ 0x004D2CB0.
+        // TODO: PARITY [MODERATE] - Decomp marks this section with an unmapped local (`take_amount`); verify attr subtraction/store ordering against tact_trd.cpp.asm @ 0x004D2CB0.
         float take_amount = max_hold;
         if ((this->obj->owner != nullptr) && (this->obj->owner->attributes != nullptr)) {
             this->obj->owner->add_attribute_num(attr_type, -take_amount, 1);
@@ -521,7 +521,7 @@ int TRIBE_Action_Trade::stop() {
 
 // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D3340
 int TRIBE_Action_Trade::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY - Defensive nullptr/master_obj guards are stricter than decomp @ 0x004D3340; verify intended behavior when inputs are invalid.
+    // TODO: PARITY [MODERATE] - Defensive nullptr/master_obj guards are stricter than decomp @ 0x004D3340; verify intended behavior when inputs are invalid.
     if ((param_1 == nullptr) ||
         (this->obj == nullptr) ||
         (param_1->owner != this->obj->owner) ||
@@ -543,7 +543,7 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* param_1, float param_2, float
 
 // Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D33C0
 int TRIBE_Action_Trade::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY - Defensive nullptr/master_obj guards are stricter than decomp @ 0x004D33C0; confirm this does not mask original crash-prone paths.
+    // TODO: PARITY [MODERATE] - Defensive nullptr/master_obj guards are stricter than decomp @ 0x004D33C0; confirm this does not mask original crash-prone paths.
     if (param_1 != nullptr) {
         if ((param_1 == this->target_obj) && ((this->state == 4) || (this->state == 6) || (this->state == 7))) {
             return 1;
@@ -613,4 +613,5 @@ RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite() {
     RGE_Master_Static_Object* master = (this->obj != nullptr) ? this->obj->master_obj : nullptr;
     return (master != nullptr) ? master->sprite : nullptr;
 }
+
 

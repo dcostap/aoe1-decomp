@@ -90,7 +90,7 @@ void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RG
     this->attack_timer = ((RGE_Master_Combat_Object*)this->master_obj)->speed_of_attack;
 }
 
-// TODO: PARITY - this wrapper is currently justified by the RGE_Object_List::draw virtual-dispatch path
+// TODO: PARITY [MODERATE] - this wrapper is currently justified by the RGE_Object_List::draw virtual-dispatch path
 // (function @ 0x00463000, indirect callsite @ 0x00463055), but class-level ownership reconciliation is still pending.
 // [decomp: obj_list.cpp.decomp @ 0x00463000]
 // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
@@ -1055,3 +1055,4 @@ float RGE_Combat_Object::teleport(float param_1, float param_2, float param_3) {
     }
     return result;
 }
+

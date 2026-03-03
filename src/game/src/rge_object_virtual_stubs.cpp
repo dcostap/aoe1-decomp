@@ -3,7 +3,7 @@
 // Each derived class re-declares all parent virtuals at the same vtable slots.
 // These minimal forwarding implementations satisfy the linker when classes
 // are instantiated but full transliterations are not yet done.
-// TODO: PARITY - This TU has no one-to-one matching decomp module and relies on generalized parent-forwarders tagged as audits, so every forwarded slot still needs explicit address-backed parity confirmation. [decomp: stat_obj.cpp.decomp @ 0x00405D00]
+// TODO: PARITY [MODERATE] - This TU has no one-to-one matching decomp module and relies on generalized parent-forwarders tagged as audits, so every forwarded slot still needs explicit address-backed parity confirmation. [decomp: stat_obj.cpp.decomp @ 0x00405D00]
 
 #include "../include/RGE_Animated_Object.h"
 #include "../include/RGE_Moving_Object.h"
@@ -779,3 +779,4 @@ RGE_Active_Sprite_List* RGE_Doppleganger_Object::create_sprite_list() { return R
 int RGE_Doppleganger_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) { return RGE_Animated_Object::setup(param_1, param_2, param_3, param_4, param_5); } // Fully verified. Source of truth: decomp/asm audit (derived parent-forwarder).
 
 // --- New virtuals in Doppleganger (slots 123-125, different from Moving's slots) ---
+

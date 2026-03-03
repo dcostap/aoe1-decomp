@@ -130,7 +130,7 @@ uchar RGE_Random_Map_Module::add_module(RGE_Random_Map_Module* param_1) {
         return 0;
     }
     RGE_Random_Map_Module_List* node = (RGE_Random_Map_Module_List*)calloc(1, sizeof(RGE_Random_Map_Module_List));
-    // TODO: PARITY - decomp path dereferences calloc result directly; this null-guard introduces behavior divergence on allocation failure.
+    // TODO: PARITY [MODERATE] - decomp path dereferences calloc result directly; this null-guard introduces behavior divergence on allocation failure.
     // [decomp: rmm_base.cpp.decomp @ 0x004809E0]
     if (node == nullptr) {
         return 0;
@@ -164,7 +164,7 @@ uchar RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module* param_1) {
 
 // Fully verified. Source of truth: rmm_base.cpp.decomp @ 0x00480A80
 void RGE_Random_Map_Module::create_shared_resources() {
-    // TODO: PARITY - early return on non-positive dimensions is a safety guard not present in decomp's raw flow.
+    // TODO: PARITY [MODERATE] - early return on non-positive dimensions is a safety guard not present in decomp's raw flow.
     // [decomp: rmm_base.cpp.decomp @ 0x00480A80]
     if (this->map_width <= 0 || this->map_height <= 0) {
         return;
@@ -689,5 +689,6 @@ uchar RGE_Random_Map_Module::find_path(
 
     return 0;
 }
+
 
 

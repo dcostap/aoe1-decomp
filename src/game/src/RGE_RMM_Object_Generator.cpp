@@ -10,7 +10,7 @@
 #include <new>
 #include <string.h>
 
-// TODO: PARITY - Top-level helper cluster is reconstructed from logic inlined across placement routines rather than one-offset-per-body symbols; keep this area under strict re-audit when finalizing rmm_obj parity. [decomp: rmm_obj.cpp.decomp @ 0x00485DC0]
+// TODO: PARITY [MODERATE] - Top-level helper cluster is reconstructed from logic inlined across placement routines rather than one-offset-per-body symbols; keep this area under strict re-audit when finalizing rmm_obj parity. [decomp: rmm_obj.cpp.decomp @ 0x00485DC0]
 
 static long rmm_obj_rand_scaled(long scale, int line_no) {
     // Fully verified. Source of truth: rmm_obj.cpp.decomp (helper implementation).
@@ -645,4 +645,5 @@ void RGE_RMM_Object_Generator::place_cluster(
 
     this->deinit_stack(&obj_stack);
 }
+
 

@@ -1,5 +1,5 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Info::scalar_deleting_destructor. [decomp: TRIBE_Screen_Info.decomp @ 0x0049D5E0]
-// TODO: PARITY - Class-specific decomp currently only exposes the deleting-destructor thunk; method bodies remain mapped to scr_info.cpp.decomp.
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Screen_Info::scalar_deleting_destructor. [decomp: TRIBE_Screen_Info.decomp @ 0x0049D5E0]
+// TODO: PARITY [MODERATE] - Class-specific decomp currently only exposes the deleting-destructor thunk; method bodies remain mapped to scr_info.cpp.decomp.
 #include "../include/TRIBE_Screen_Info.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -333,4 +333,5 @@ int TRIBE_Screen_Info::create_vert_slider(TPanel* param_1, TVerticalSliderPanel*
 int TRIBE_Screen_Info::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D6C0 (virtual forwarding coverage).
 void TRIBE_Screen_Info::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Sed_Menu::scalar_deleting_destructor. [decomp: TRIBE_Screen_Sed_Menu.decomp @ 0x004B30F0]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Screen_Sed_Menu::scalar_deleting_destructor. [decomp: TRIBE_Screen_Sed_Menu.decomp @ 0x004B30F0]
 #include "../include/TRIBE_Screen_Sed_Menu.h"
 
 #include "../include/TRIBE_Campaign_Editor_Screen.h"
@@ -73,7 +73,7 @@ TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu() {
 // Fully verified. Source of truth: scr_sedm.cpp.decomp @ 0x004B31A0
 long TRIBE_Screen_Sed_Menu::handle_idle() {
     // Fully verified. Source of truth: scr_sedm.cpp.decomp (helper implementation).
-    // TODO: PARITY - handle_idle adds a defensive rge_base_game null-guard before checking input_enabled; decomp directly dereferences rge_base_game->input_enabled. [decomp: scr_sedm.cpp.decomp @ 0x004B31A0]
+    // TODO: PARITY [MODERATE] - handle_idle adds a defensive rge_base_game null-guard before checking input_enabled; decomp directly dereferences rge_base_game->input_enabled. [decomp: scr_sedm.cpp.decomp @ 0x004B31A0]
     if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
@@ -93,7 +93,7 @@ long TRIBE_Screen_Sed_Menu::action(TPanel* param_1, long param_2, ulong param_3,
 
         if ((TButtonPanel*)param_1 == this->button[1]) {
             new TRIBE_Screen_Sed_Open();
-            // TODO: PARITY - action adds defensive panel_system null-guards around panel transitions; decomp directly dispatches setCurrentPanel/destroyPanel via panel_system. [decomp: scr_sedm.cpp.decomp @ 0x004B31D0]
+            // TODO: PARITY [MODERATE] - action adds defensive panel_system null-guards around panel transitions; decomp directly dispatches setCurrentPanel/destroyPanel via panel_system. [decomp: scr_sedm.cpp.decomp @ 0x004B31D0]
             if (panel_system != nullptr) {
                 panel_system->setCurrentPanel((char*)"Scenario Editor Open", 0);
                 panel_system->destroyPanel((char*)"Scenario Editor Menu");
@@ -276,4 +276,5 @@ int TRIBE_Screen_Sed_Menu::create_horz_slider(TPanel* param_1, THorizontalSlider
     // Fully verified. Source of truth: TRIBE_Screen_Sed_Menu vtable parity (forwarding wrapper).
 void TRIBE_Screen_Sed_Menu::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
     // Fully verified. Source of truth: TRIBE_Screen_Sed_Menu vtable parity (forwarding wrapper).
+
 

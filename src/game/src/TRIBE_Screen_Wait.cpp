@@ -1,5 +1,5 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Wait::scalar_deleting_destructor. [decomp: TRIBE_Screen_Wait.decomp @ 0x004A6030]
-// TODO: PARITY - TRIBE_Screen_Wait.decomp currently only captures the deleting-destructor thunk; runtime methods are sourced from scr_mps.cpp.decomp.
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Screen_Wait::scalar_deleting_destructor. [decomp: TRIBE_Screen_Wait.decomp @ 0x004A6030]
+// TODO: PARITY [MODERATE] - TRIBE_Screen_Wait.decomp currently only captures the deleting-destructor thunk; runtime methods are sourced from scr_mps.cpp.decomp.
 #include "../include/TRIBE_Screen_Wait.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -240,3 +240,4 @@ int TRIBE_Screen_Wait::create_horz_slider(TPanel* param_1, THorizontalSliderPane
     // Fully verified. Source of truth: scr_mps.cpp.decomp (forwarding wrapper).
 void TRIBE_Screen_Wait::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
     // Fully verified. Source of truth: scr_mps.cpp.decomp (forwarding wrapper).
+

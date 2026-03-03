@@ -21,7 +21,7 @@ TRIBE_Tree_Object::TRIBE_Tree_Object(int param_1, RGE_Game_World* param_2, int p
 // Verified audit: remaining TRIBE_Tree_Object methods are inheritance forwarders to RGE_Static_Object.
 // Fully verified. Source of truth: TRIBE_Tree_Object.decomp @ 0x004CCAF0 (scalar deleting destructor thunk).
 // Fully verified. Source of truth: bucket_04CC.decomp @ 0x004CCB10
-// TODO: PARITY - bucket_04CC still contains TRIBE_Action_Artifact dtor coverage that is not represented in this TU.
+// TODO: PARITY [MODERATE] - bucket_04CC still contains TRIBE_Action_Artifact dtor coverage that is not represented in this TU.
 // [decomp: bucket_04CC.decomp @ 0x004CCBF0]
 TRIBE_Tree_Object::~TRIBE_Tree_Object() = default;
 
@@ -629,4 +629,5 @@ RGE_Object_List* TRIBE_Tree_Object::create_object_list() {
 RGE_Active_Sprite_List* TRIBE_Tree_Object::create_sprite_list() {
     return this->RGE_Static_Object::create_sprite_list();
 }
+
 

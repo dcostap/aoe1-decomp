@@ -101,7 +101,7 @@ void PointMaker::SetDefaultValues() {
 // Fully verified. Marker reconciliation coverage.
 void PointMaker::CreateMasks() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044ACB0
-    // TODO: PARITY - CreateMasks is table-driven here; confirm byte-for-byte mask contents/order against the decomp's explicit write sequence. [decomp: fractal.cpp.decomp @ 0x0044ACB0]
+    // TODO: PARITY [MODERATE] - CreateMasks is table-driven here; confirm byte-for-byte mask contents/order against the decomp's explicit write sequence. [decomp: fractal.cpp.decomp @ 0x0044ACB0]
     this->Mask_2x2 = (char*)operator new(0x10, std::nothrow);
     this->Mask_3x3 = (char*)operator new(0x19, std::nothrow);
     this->Mask_4x4 = (char*)operator new(0x24, std::nothrow);
@@ -529,7 +529,7 @@ int PointMaker::MakeSatelliteLink() {
 
     int y = this->y;
     if (dy + y < 3) {
-        // TODO: PARITY - Decomp at this branch uses cross-axis coupling (dy = -dx, not -dy); code matches that behavior, but ASM should confirm this asymmetry is intentional and not a decompiler artifact. [decomp: fractal.cpp.decomp @ 0x0044B950]
+        // TODO: PARITY [MODERATE] - Decomp at this branch uses cross-axis coupling (dy = -dx, not -dy); code matches that behavior, but ASM should confirm this asymmetry is intentional and not a decompiler artifact. [decomp: fractal.cpp.decomp @ 0x0044B950]
         dy = -dx;
         this->DirY = -this->DirY;
     }
@@ -915,3 +915,4 @@ void PointMaker::MapCleanUpEliminatingSinglesOnly() {
         }
     }
 }
+

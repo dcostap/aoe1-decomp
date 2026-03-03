@@ -31,7 +31,7 @@ RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* param_1, RGE_Task* param_2, 
     this->target_z = param_5;
 }
 
-// TODO: PARITY - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current defaulted dtor may miss side effects. [decomp: bucket_0402.decomp @ 0x00402030]
+// TODO: PARITY [MODERATE] - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current defaulted dtor may miss side effects. [decomp: bucket_0402.decomp @ 0x00402030]
 RGE_Action_Bird::~RGE_Action_Bird() = default;
 
 // Fully verified. Marker reconciliation coverage.
@@ -202,4 +202,5 @@ uchar RGE_Action_Bird::update() {
 
     return 0;
 }
+
 

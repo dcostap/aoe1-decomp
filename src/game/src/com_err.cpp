@@ -14,7 +14,7 @@ RGE_Comm_Error::~RGE_Comm_Error() {
 
 void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long param) {
     // Fully verified. Source of truth: com_err.cpp.decomp @ 0x00424E60
-    // TODO: PARITY - Decomp posts WM_USER unconditionally; this null-guard can drop notifications when HostHWND is null. [decomp: com_err.cpp.decomp @ 0x00424E60]
+    // TODO: PARITY [MODERATE] - Decomp posts WM_USER unconditionally; this null-guard can drop notifications when HostHWND is null. [decomp: com_err.cpp.decomp @ 0x00424E60]
     if (this->HostHWND != nullptr) {
         PostMessageA((HWND)this->HostHWND, WM_USER, (WPARAM)msg, (LPARAM)param);
     }
@@ -23,8 +23,8 @@ void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long param) {
 void RGE_Comm_Error::ShowReturn(long hr, const char* /*context*/) {
     // Fully verified. Source of truth: com_err.cpp.decomp @ 0x00424EB0
     // Logging strings are not preserved in this codebase; keep only the behavioral notifications.
-    // TODO: PARITY - HRESULT handling here is a reduced subset; decomp includes many additional branch-specific error mappings/logging paths. [decomp: com_err.cpp.decomp @ 0x00424EB0]
-    // TODO: PARITY - Decomp uses signed threshold branches for HRESULT dispatch; this reduced switch uses unsigned-cast equality cases only. [decomp: com_err.cpp.decomp @ 0x00424EB0]
+    // TODO: PARITY [MODERATE] - HRESULT handling here is a reduced subset; decomp includes many additional branch-specific error mappings/logging paths. [decomp: com_err.cpp.decomp @ 0x00424EB0]
+    // TODO: PARITY [MODERATE] - Decomp uses signed threshold branches for HRESULT dispatch; this reduced switch uses unsigned-cast equality cases only. [decomp: com_err.cpp.decomp @ 0x00424EB0]
     if (hr == 0) {
         return;
     }
@@ -67,5 +67,6 @@ void RGE_Comm_Error::ShowReturn(long hr, const char* /*context*/) {
             return;
     }
 }
+
 
 

@@ -940,7 +940,7 @@ void TribeMPSetupScreen::showNetInfo() {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4F52
 void FUN_004a4f52() {
-    // TODO: PARITY - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A4F52]
+    // TODO: PARITY [MODERATE] - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A4F52]
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4FC0
@@ -965,7 +965,7 @@ void TribeMPSetupScreen::handleKickedPlayer(int was_disconnect) {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5115
 void FUN_004a5115() {
-    // TODO: PARITY - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A5115]
+    // TODO: PARITY [MODERATE] - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A5115]
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2BA0
@@ -2669,7 +2669,7 @@ long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5FCD
 void FUN_004a5fcd() {
-    // TODO: PARITY - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A5FCD]
+    // TODO: PARITY [MODERATE] - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A5FCD]
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
@@ -3303,3 +3303,4 @@ int TribeMPSetupScreen::create_vert_slider(TPanel* param_1, TVerticalSliderPanel
 int TribeMPSetupScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+

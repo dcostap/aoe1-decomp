@@ -19,7 +19,7 @@ static int rge_ftol(float value) {
     return result;
 }
 
-// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_mi_obj.cpp.decomp audit.
+// TODO: PARITY [MODERATE]: Default ctor needs explicit offset/ASM mapping in m_mi_obj.cpp.decomp audit.
 RGE_Master_Missile_Object::RGE_Master_Missile_Object()
     : RGE_Master_Combat_Object() {
     this->master_type = 0x3C;
@@ -200,7 +200,7 @@ void RGE_Master_Missile_Object::save(int param_1) {
 }
 
 
-// TODO: PARITY: make_new_obj() marker placement should be normalized above signature in m_mi_obj.cpp.decomp audit.
+// TODO: PARITY [MODERATE]: make_new_obj() marker placement should be normalized above signature in m_mi_obj.cpp.decomp audit.
 RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
     // Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451770
     if (this->master_type != 0) {
@@ -258,3 +258,4 @@ void RGE_Master_Missile_Object::draw(TDrawArea* param_1, short param_2, short pa
 
 // Fully verified. Source of truth: m_mi_obj.cpp.decomp (helper implementation).
 RGE_Task_List* RGE_Master_Missile_Object::create_task_list() { return new RGE_Task_List(); }
+

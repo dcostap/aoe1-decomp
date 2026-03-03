@@ -14,10 +14,10 @@
 #include <math.h>
 #include <new>
 
-// TODO: PARITY - Requested mis_obj.cpp.decomp source map is not present in-tree; this TU currently maps missile parity to misl_obj.cpp.decomp and needs canonical filename confirmation. [decomp: misl_obj.cpp.decomp @ 0x0045A740]
+// TODO: PARITY [MODERATE] - Requested mis_obj.cpp.decomp source map is not present in-tree; this TU currently maps missile parity to misl_obj.cpp.decomp and needs canonical filename confirmation. [decomp: misl_obj.cpp.decomp @ 0x0045A740]
 
 // Default constructor
-// TODO: PARITY - Default ctor offset mapping is not present in misl_obj.cpp.decomp export; verify whether this path is compiler-synthesized/inherited-only in original binary.
+// TODO: PARITY [MODERATE] - Default ctor offset mapping is not present in misl_obj.cpp.decomp export; verify whether this path is compiler-synthesized/inherited-only in original binary.
 RGE_Missile_Object::RGE_Missile_Object()
     : RGE_Combat_Object()
 {
@@ -107,7 +107,7 @@ int RGE_Missile_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* p
 
 // Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A900
 void RGE_Missile_Object::rehook() {
-    // TODO: PARITY - Decompiled body performs explicit RGE_Static_Object::rehook + RGE_Action_List::rehook steps; current implementation relies on a base-method thunk, so parity depends on inherited call path staying identical. [decomp: misl_obj.cpp.decomp @ 0x0045A900]
+    // TODO: PARITY [MODERATE] - Decompiled body performs explicit RGE_Static_Object::rehook + RGE_Action_List::rehook steps; current implementation relies on a base-method thunk, so parity depends on inherited call path staying identical. [decomp: misl_obj.cpp.decomp @ 0x0045A900]
     RGE_Action_Object::rehook();
 }
 
@@ -119,7 +119,7 @@ void RGE_Missile_Object::save(int param_1) {
 
 // Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A940
 uchar RGE_Missile_Object::update() {
-    // TODO: PARITY - Decompiled body includes expanded per-tick visibility/AI update flow; current direct delegation assumes this offset remains a pure jump-thunk to base update logic. [decomp: misl_obj.cpp.decomp @ 0x0045A940]
+    // TODO: PARITY [MODERATE] - Decompiled body includes expanded per-tick visibility/AI update flow; current direct delegation assumes this offset remains a pure jump-thunk to base update logic. [decomp: misl_obj.cpp.decomp @ 0x0045A940]
     return RGE_Combat_Object::update();
 }
 
@@ -245,3 +245,4 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float param_1) {
 
     return check_list;
 }
+

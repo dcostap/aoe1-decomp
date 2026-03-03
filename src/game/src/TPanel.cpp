@@ -276,7 +276,7 @@ long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param
         this->max_hgt = param_6;
     }
 
-    // TODO: PARITY - setup uses direct set_rect(...)/set_color(...) flow; decomp dispatches virtual handle_size (vtable+0x50) using render-area dimensions before color setup, so sizing/control-flow can diverge for non-fixed positioning. [decomp: panel.cpp.decomp @ 0x00464A80]
+    // TODO: PARITY [MODERATE] - setup uses direct set_rect(...)/set_color(...) flow; decomp dispatches virtual handle_size (vtable+0x50) using render-area dimensions before color setup, so sizing/control-flow can diverge for non-fixed positioning. [decomp: panel.cpp.decomp @ 0x00464A80]
     // Keep current implementation model simple: fixed-position panels still get a concrete rect here.
     // The original setup routes through virtual size/color calls before node-linking.
     this->set_rect(param_3, param_4, param_5, param_6);
@@ -602,7 +602,7 @@ long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     if (!this->active) {
         return 0;
     }
-    // TODO: PARITY - wnd_proc introduces defensive null guards for render_area/panel_system on mouse/keyboard paths; decomp directly dereferences these owners once message range matches, so null-path behavior differs. [decomp: panel.cpp.decomp @ 0x004653E0]
+    // TODO: PARITY [MODERATE] - wnd_proc introduces defensive null guards for render_area/panel_system on mouse/keyboard paths; decomp directly dereferences these owners once message range matches, so null-path behavior differs. [decomp: panel.cpp.decomp @ 0x004653E0]
 
     if (msg < 0x207) {
         if (msg >= 0x200) {
@@ -1530,3 +1530,4 @@ void TPanel::draw_tree() {
     // Parity traversal adapter: delegate to TPanel::handle_paint (panel.cpp.decomp/.asm @ 0x00465A70).
     this->handle_paint();
 }
+

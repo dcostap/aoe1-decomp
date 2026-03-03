@@ -380,13 +380,13 @@ void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float p
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406785 (embedded pre-vtable-stub decomp block).
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406830
-// TODO: PARITY - set_attack currently has no behavior; verify whether 0x00406785/0x00406830 includes side effects beyond a pure no-op. [decomp: act_obj.cpp.decomp @ 0x00406785]
+// TODO: PARITY [MODERATE] - set_attack currently has no behavior; verify whether 0x00406785/0x00406830 includes side effects beyond a pure no-op. [decomp: act_obj.cpp.decomp @ 0x00406785]
 void RGE_Action_Object::set_attack(RGE_Static_Object* param_1) {
     (void)param_1;
 }
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406840
-// TODO: PARITY - Decomp reports unresolved jumptable recovery at 0x00406845; current implementation resolves this indirect dispatch to master->play_command_sound(), and this mapping still needs ASM confirmation. [decomp: act_obj.cpp.decomp @ 0x00406845]
+// TODO: PARITY [MODERATE] - Decomp reports unresolved jumptable recovery at 0x00406845; current implementation resolves this indirect dispatch to master->play_command_sound(), and this mapping still needs ASM confirmation. [decomp: act_obj.cpp.decomp @ 0x00406845]
 void RGE_Action_Object::play_command_sound() {
     RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
     if (master != nullptr) {
@@ -395,7 +395,7 @@ void RGE_Action_Object::play_command_sound() {
 }
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406850
-// TODO: PARITY - Decomp reports unresolved jumptable recovery at 0x00406855; current implementation resolves this indirect dispatch to master->play_move_sound(), and this mapping still needs ASM confirmation. [decomp: act_obj.cpp.decomp @ 0x00406855]
+// TODO: PARITY [MODERATE] - Decomp reports unresolved jumptable recovery at 0x00406855; current implementation resolves this indirect dispatch to master->play_move_sound(), and this mapping still needs ASM confirmation. [decomp: act_obj.cpp.decomp @ 0x00406855]
 void RGE_Action_Object::play_move_sound() {
     RGE_Master_Action_Object* master = (RGE_Master_Action_Object*)this->master_obj;
     if (master != nullptr) {
@@ -574,7 +574,7 @@ uchar RGE_Action_Object::have_action() {
 }
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406C10
-// TODO: PARITY - Decomp reports unresolved jumptable recovery at 0x00406C23 on action virtual dispatch; current implementation resolves to action->get_target_obj(), but this mapping and side effects still need ASM confirmation. [decomp: act_obj.cpp.decomp @ 0x00406C23]
+// TODO: PARITY [MODERATE] - Decomp reports unresolved jumptable recovery at 0x00406C23 on action virtual dispatch; current implementation resolves to action->get_target_obj(), but this mapping and side effects still need ASM confirmation. [decomp: act_obj.cpp.decomp @ 0x00406C23]
 RGE_Static_Object* RGE_Action_Object::get_target_obj() {
     if (this->actions != nullptr) {
         RGE_Action* action = this->actions->get_action();
@@ -637,3 +637,4 @@ long RGE_Action_Object::get_action_checksum() {
     }
     return checksum;
 }
+

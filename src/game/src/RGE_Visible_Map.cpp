@@ -10,8 +10,8 @@
 #include <string.h>
 #include <cstdint>
 
-// TODO: PARITY - visible.cpp module offsets for RGE_Unified_Visible_Map and dump_vismap_log are not implemented in this TU; keep module-level parity tracked in companion translation units. [decomp: visible.cpp.decomp @ 0x0053CE80]
-// TODO: PARITY - Requested vis_map.cpp.decomp alias is absent in this dump; RGE_Visible_Map parity mapping is currently anchored to visible.cpp.decomp offsets. [decomp: visible.cpp.decomp @ 0x0053C1B0]
+// TODO: PARITY [MODERATE] - visible.cpp module offsets for RGE_Unified_Visible_Map and dump_vismap_log are not implemented in this TU; keep module-level parity tracked in companion translation units. [decomp: visible.cpp.decomp @ 0x0053CE80]
+// TODO: PARITY [MODERATE] - Requested vis_map.cpp.decomp alias is absent in this dump; RGE_Visible_Map parity mapping is currently anchored to visible.cpp.decomp offsets. [decomp: visible.cpp.decomp @ 0x0053C1B0]
 
 // LOS edge tables (NormalLOS / SquareLOS) extracted from:
 //   dist\_original_empiresx_from_beta_that_was_decompiled.exe
@@ -1344,3 +1344,4 @@ void RGE_Visible_Map::unexplore_terrain_sq(int param_1, int param_2, int param_3
         }
     }
 }
+

@@ -9,7 +9,7 @@
 TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {}
 
 // Fully verified. Source of truth: bucket_04E6.decomp @ 0x004E68F0
-// TODO: PARITY - Destructor is an empty stub but bucket decomp shows vtable reset and conditional cleanup of field_0x4c; keep unresolved until full transliteration lands. [decomp: bucket_04E6.decomp @ 0x004E68F0]
+// TODO: PARITY [MODERATE] - Destructor is an empty stub but bucket decomp shows vtable reset and conditional cleanup of field_0x4c; keep unresolved until full transliteration lands. [decomp: bucket_04E6.decomp @ 0x004E68F0]
 TribeAIPlayBook::~TribeAIPlayBook() {}
 
 // Fully verified. Source of truth: taipbook.cpp.decomp @ 0x004E6900
@@ -65,3 +65,4 @@ int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* param_1) {
     }
     return 2;
 }
+

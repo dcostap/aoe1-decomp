@@ -36,8 +36,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-// TODO: PARITY - RGE_Player::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Player.decomp @ 0x0046E750]
-// TODO: PARITY - Several early helper blocks are tagged as generic helper implementations without explicit one-offset mapping, which blocks strict per-function parity closure. [decomp: player.cpp.decomp @ 0x0046E4B0]
+// TODO: PARITY [MODERATE] - RGE_Player::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Player.decomp @ 0x0046E750]
+// TODO: PARITY [MODERATE] - Several early helper blocks are tagged as generic helper implementations without explicit one-offset mapping, which blocks strict per-function parity closure. [decomp: player.cpp.decomp @ 0x0046E4B0]
 
 static long rge_ftol(float v) {
     // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
@@ -250,7 +250,7 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->world = world;
     this->id = (short)player_id;
 
-    // TODO: PARITY - Constructor early-allocation path for doppleganger_creator is documented but not explicitly tagged as fully verified; confirm ordering/branch parity against decomp. [decomp: player.cpp.decomp @ 0x00471D70]
+    // TODO: PARITY [MODERATE] - Constructor early-allocation path for doppleganger_creator is documented but not explicitly tagged as fully verified; confirm ordering/branch parity against decomp. [decomp: player.cpp.decomp @ 0x00471D70]
     // Source of truth: player.cpp.decomp (constructor paths allocate doppleganger_creator early).
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471D70 (implemented in src/game/src/TRIBE_World_types.cpp)
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471DF0 (implemented in src/game/src/TRIBE_World_types.cpp)
@@ -1744,7 +1744,7 @@ int RGE_Player::select_one_object(RGE_Static_Object* param_1, int param_2) {
 
 void RGE_Player::select_area(long param_1, long param_2, long param_3, long param_4) {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471480
-    // TODO: PARITY - player.cpp.decomp signature is select_area(short,short,short,short); confirm no ABI/signedness drift from this long-parameter wrapper.
+    // TODO: PARITY [MODERATE] - player.cpp.decomp signature is select_area(short,short,short,short); confirm no ABI/signedness drift from this long-parameter wrapper.
     this->selected_start_col = (short)param_1;
     this->selected_start_row = (short)param_2;
     this->selected_end_col = (short)param_3;
@@ -2456,4 +2456,5 @@ uchar RGE_Player::relation(long param_1) {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00470BD0
     return this->relations[param_1];
 }
+
 

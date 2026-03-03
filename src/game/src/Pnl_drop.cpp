@@ -9,7 +9,7 @@
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
-// TODO: PARITY - Offsets 0x00475470 and 0x004754C0 from pnl_drop.cpp.decomp are implemented in Pnl_drop_btn.cpp instead of this unit; keep cross-file offset traceability explicit during audits. [decomp: pnl_drop.cpp.decomp @ 0x00475470]
+// TODO: PARITY [MODERATE] - Offsets 0x00475470 and 0x004754C0 from pnl_drop.cpp.decomp are implemented in Pnl_drop_btn.cpp instead of this unit; keep cross-file offset traceability explicit during audits. [decomp: pnl_drop.cpp.decomp @ 0x00475470]
 
 // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00473ED0
 TDropDownPanel::TDropDownPanel() : TPanel() {
@@ -164,7 +164,7 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
 
 // Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (helper extracted from decomp flow).
 static long dropdown_calc_list_hgt(TDropDownPanel* self, int use_draw_lines) {
-    // TODO: PARITY - Decomp expresses this helper via raw list-panel field offsets while toggling between numberLines/numberDrawLines; keep spacer/border offset mapping under ASM audit. [decomp: pnl_drop.cpp.decomp @ 0x00474880]
+    // TODO: PARITY [MODERATE] - Decomp expresses this helper via raw list-panel field offsets while toggling between numberLines/numberDrawLines; keep spacer/border offset mapping under ASM audit. [decomp: pnl_drop.cpp.decomp @ 0x00474880]
     if (!self || !self->list_panel) {
         return 0;
     }
@@ -187,7 +187,7 @@ static long dropdown_calc_list_hgt(TDropDownPanel* self, int use_draw_lines) {
 
 // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474880
 void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode param_1) {
-    // TODO: PARITY - Overflow/flip handling in ModeList depends on tightly-coupled intermediate math (list_hgt/overflow/space_above); decomp has unmapped temporaries here, so branch arithmetic should stay asm-verified. [decomp: pnl_drop.cpp.decomp @ 0x00474880]
+    // TODO: PARITY [MODERATE] - Overflow/flip handling in ModeList depends on tightly-coupled intermediate math (list_hgt/overflow/space_above); decomp has unmapped temporaries here, so branch arithmetic should stay asm-verified. [decomp: pnl_drop.cpp.decomp @ 0x00474880]
     if (param_1 == this->mode) {
         return;
     }
@@ -901,3 +901,4 @@ int TDropDownPanel::restart_sound_system() { return TPanel::restart_sound_system
 void TDropDownPanel::take_snapshot() { TPanel::take_snapshot(); }
 // Fully verified. Source of truth: pnl_drop.cpp.decomp (inherited TPanel forwarding parity; no class-local decomp symbol).
 void TDropDownPanel::handle_reactivate() { TPanel::handle_reactivate(); }
+

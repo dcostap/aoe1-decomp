@@ -234,7 +234,7 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
 }
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7430
-// TODO: PARITY - Destructor body is currently empty while decomp emits an explicit vtable-slot write (`this->_padding_ = (int)&_vftable_`); validate codegen/ASM parity.
+// TODO: PARITY [MODERATE] - Destructor body is currently empty while decomp emits an explicit vtable-slot write (`this->_padding_ = (int)&_vftable_`); validate codegen/ASM parity.
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7440
@@ -788,9 +788,9 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
     managed_array_reset(&this->vcRuleSet);
 }
 
-// TODO: PARITY - Referenced offset 0x004E9240 is not present in taistrmd.cpp.decomp offset listings; verify whether this thunk belongs to ASM-only metadata or a different decomp unit. [decomp: taistrmd.cpp.decomp @ 0x004E9260]
+// TODO: PARITY [MODERATE] - Referenced offset 0x004E9240 is not present in taistrmd.cpp.decomp offset listings; verify whether this thunk belongs to ASM-only metadata or a different decomp unit. [decomp: taistrmd.cpp.decomp @ 0x004E9260]
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E9240
-// TODO: PARITY - The existing "Fully verified @ 0x004E9240" marker conflicts with current decomp offset coverage and should be treated as unresolved until re-mapped. [decomp: taistrmd.cpp.decomp @ 0x004E9260]
+// TODO: PARITY [MODERATE] - The existing "Fully verified @ 0x004E9240" marker conflicts with current decomp offset coverage and should be treated as unresolved until re-mapped. [decomp: taistrmd.cpp.decomp @ 0x004E9260]
 void* TribeStrategyAIModule::vector_deleting_destructor(uint param_1) {
     this->~TribeStrategyAIModule();
     if ((param_1 & 1) != 0) {
@@ -1074,3 +1074,4 @@ int TribeStrategyAIModule::isRuleExecuting(int param_1) {
 int TribeStrategyAIModule::isRuleIdle(int param_1) {
     return managed_array_contains(&this->idleRules, &param_1);
 }
+

@@ -303,7 +303,7 @@ long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(long param_1, long
     (void)param_3;
     (void)param_4;
     this->release_mouse();
-    // TODO: PARITY - Extra read from rge_base_game+0x1B0 is not present in decomp, which releases mouse and returns 1 directly. [decomp: spnl_obj.cpp.decomp @ 0x004BF6C0]
+    // TODO: PARITY [MODERATE] - Extra read from rge_base_game+0x1B0 is not present in decomp, which releases mouse and returns 1 directly. [decomp: spnl_obj.cpp.decomp @ 0x004BF6C0]
     if (rge_base_game != (RGE_Base_Game*)0) {
         (void)*(int*)((char*)rge_base_game + 0x1B0);
     }
@@ -329,3 +329,4 @@ long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor() {
     }
     return pierce_armor;
 }
+

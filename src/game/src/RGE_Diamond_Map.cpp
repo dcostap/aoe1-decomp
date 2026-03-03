@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for RGE_Diamond_Map::vector_deleting_destructor. [decomp: RGE_Diamond_Map.decomp @ 0x00436910]
+// TODO: PARITY [MODERATE] - Missing function implementation for RGE_Diamond_Map::vector_deleting_destructor. [decomp: RGE_Diamond_Map.decomp @ 0x00436910]
 #include "RGE_Diamond_Map.h"
 
 #include "RGE_Base_Game.h"
@@ -454,7 +454,7 @@ void RGE_Diamond_Map::set_main_view(RGE_View* param_1) {
 // Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::set_redraw(RedrawMode param_1) {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437090
-    // TODO: PARITY - 0x004370A0 is referenced here but no matching offset entry exists in diam_map.cpp.decomp; verify whether this should be an ASM/data-anchor reference instead. [decomp: diam_map.cpp.decomp @ 0x00437090]
+    // TODO: PARITY [MODERATE] - 0x004370A0 is referenced here but no matching offset entry exists in diam_map.cpp.decomp; verify whether this should be an ASM/data-anchor reference instead. [decomp: diam_map.cpp.decomp @ 0x00437090]
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004370A0
     TPanel::set_redraw(param_1);
     if (param_1 == TPanel::RedrawMode::RedrawFull) {
@@ -1106,7 +1106,7 @@ void RGE_Diamond_Map::draw_object(short param_1, short param_2, uchar param_3, s
 }
 
 static void FUN_0043804d() {
-    // TODO: PARITY - Decomp provides a FUN_0043804d body at this offset, while this file currently treats it as an ASM jump-table thunk only; re-audit this boundary for hidden branch logic. [decomp: diam_map.cpp.decomp @ 0x0043804D]
+    // TODO: PARITY [MODERATE] - Decomp provides a FUN_0043804d body at this offset, while this file currently treats it as an ASM jump-table thunk only; re-audit this boundary for hidden branch logic. [decomp: diam_map.cpp.decomp @ 0x0043804D]
     // Fully verified. Source of truth: diam_map.cpp.asm @ 0x0043804D (switch jump-table thunk)
 }
 
@@ -1346,4 +1346,5 @@ int RGE_Diamond_Map::is_inside(long param_1, long param_2) {
     short row = 0;
     return this->pick_tile(param_1, param_2, &col, &row, &tile);
 }
+
 

@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Name::vector_deleting_destructor. [decomp: TRIBE_Screen_Name.decomp @ 0x004A66C0]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Screen_Name::vector_deleting_destructor. [decomp: TRIBE_Screen_Name.decomp @ 0x004A66C0]
 #include "../include/TRIBE_Screen_Name.h"
 #include "../include/TRIBE_Dialog_Name.h"
 #include "../include/TRIBE_Screen_Campaign_Selection.h"
@@ -406,4 +406,5 @@ int TRIBE_Screen_Name::create_vert_slider(TPanel* param_1, TVerticalSliderPanel*
 int TRIBE_Screen_Name::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00469DB0
 void TRIBE_Screen_Name::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

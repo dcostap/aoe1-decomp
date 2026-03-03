@@ -265,7 +265,7 @@ static int rge_prepare_read_cache(int handle) {
 
 void run_log(char* param_1, int param_2) {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521020
-    // TODO: PARITY - Function body is sourced from tribegam.cpp.decomp but implemented in globals.cpp, so module-level ownership differs from source unit layout. [decomp: tribegam.cpp.decomp @ 0x00521020]
+    // TODO: PARITY [MODERATE] - Function body is sourced from tribegam.cpp.decomp but implemented in globals.cpp, so module-level ownership differs from source unit layout. [decomp: tribegam.cpp.decomp @ 0x00521020]
     if (do_run_log == 0) {
         return;
     }
@@ -297,7 +297,7 @@ void run_log(char* param_1, int param_2) {
 
 void debug_random_write() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423030
-    // TODO: PARITY - Function body is sourced from basegame.cpp.decomp but implemented in globals.cpp, so module-level ownership differs from source unit layout. [decomp: basegame.cpp.decomp @ 0x00423030]
+    // TODO: PARITY [MODERATE] - Function body is sourced from basegame.cpp.decomp but implemented in globals.cpp, so module-level ownership differs from source unit layout. [decomp: basegame.cpp.decomp @ 0x00423030]
     FILE* file = fopen("c:\\aoerand.txt", "w");
     if (file != nullptr) {
         for (int i = 0; i < 5000; ++i) {
@@ -588,3 +588,4 @@ long rge_stream_seek(int handle, long pos) {
     g_rge_read_count = (int)pos;
     return g_rge_stream_read_pos;
 }
+

@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Game::vector_deleting_destructor. [decomp: TRIBE_Screen_Game.decomp @ 0x00495450]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Screen_Game::vector_deleting_destructor. [decomp: TRIBE_Screen_Game.decomp @ 0x00495450]
 #include "../include/TRIBE_Screen_Game.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -279,7 +279,7 @@ static int scr_game_get_player_age(RGE_Player* player) {
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel((char*)"Game Screen") {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00493D60
-    // TODO: PARITY - Constructor path is architecture-refactored around runtime.main_view ownership; run full instruction-level audit to confirm identical failure/cleanup and panel wiring order. [decomp: scr_game.cpp.decomp @ 0x00493D60]
+    // TODO: PARITY [MODERATE] - Constructor path is architecture-refactored around runtime.main_view ownership; run full instruction-level audit to confirm identical failure/cleanup and panel wiring order. [decomp: scr_game.cpp.decomp @ 0x00493D60]
     // Parity-first: in-game rendering/input routes through TRIBE_Main_View/TRIBE_Diamond_Map_View.
     memset(&this->runtime, 0, sizeof(this->runtime));
     memset(this->shim_padding, 0, sizeof(this->shim_padding));
@@ -3406,7 +3406,7 @@ void TRIBE_Screen_Game::command_tool_box() {
 void TRIBE_Screen_Game::command_trade() {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F020.
-    // TODO: PARITY - Referenced offset 0x0049F020 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
+    // TODO: PARITY [MODERATE] - Referenced offset 0x0049F020 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3462,7 +3462,7 @@ void TRIBE_Screen_Game::command_ungroup() {
 void TRIBE_Screen_Game::command_unload() {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F400.
-    // TODO: PARITY - Referenced offset 0x0049F400 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
+    // TODO: PARITY [MODERATE] - Referenced offset 0x0049F400 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3669,6 +3669,7 @@ void TRIBE_Screen_Game::add_log(char* text) {
     this->runtime.log_text->append_line(text, 0);
     this->runtime.log_text->set_redraw(TPanel::Redraw);
 }
+
 
 
 

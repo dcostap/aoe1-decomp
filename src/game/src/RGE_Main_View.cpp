@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for RGE_Main_View::vector_deleting_destructor. [decomp: RGE_Main_View.decomp @ 0x0053DB10]
+// TODO: PARITY [MODERATE] - Missing function implementation for RGE_Main_View::vector_deleting_destructor. [decomp: RGE_Main_View.decomp @ 0x0053DB10]
 #include "RGE_Main_View.h"
 
 #include "RGE_Base_Game.h"
@@ -196,7 +196,7 @@ int RGE_Main_View::do_auto_scroll() {
         this->mouse_scrolling = 0;
         return 0;
     }
-    // TODO: PARITY - Added null guards for prog_info and render_area->Wnd are safety checks; decomp gate expression dereferences those chains directly without a preceding null check, so null-path behavior can diverge. [decomp: vw_main.cpp.decomp @ 0x0053DBA0]
+    // TODO: PARITY [MODERATE] - Added null guards for prog_info and render_area->Wnd are safety checks; decomp gate expression dereferences those chains directly without a preceding null check, so null-path behavior can diverge. [decomp: vw_main.cpp.decomp @ 0x0053DBA0]
     if (rge_base_game->prog_info == nullptr || rge_base_game->prog_info->auto_scroll == 0) {
         this->mouse_scrolling = 0;
         return 0;
@@ -316,7 +316,7 @@ int RGE_Main_View::handle_keys() {
         return 0;
     }
 
-    // TODO: PARITY - handle_keys adds explicit render_area/Wnd null-guard before foreground-window comparison; decomp directly dereferences render_area->Wnd in that compare. [decomp: vw_main.cpp.decomp @ 0x0053DEB0]
+    // TODO: PARITY [MODERATE] - handle_keys adds explicit render_area/Wnd null-guard before foreground-window comparison; decomp directly dereferences render_area->Wnd in that compare. [decomp: vw_main.cpp.decomp @ 0x0053DEB0]
     if (this->render_area == nullptr || this->render_area->Wnd == nullptr) {
         this->key_scrolling = 0;
         return 0;
@@ -1702,4 +1702,5 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long param_1, long param_2, i
 
     return best_target;
 }
+
 

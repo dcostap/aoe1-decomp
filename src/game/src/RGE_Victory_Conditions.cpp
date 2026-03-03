@@ -449,7 +449,7 @@ void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* par
 
 // Fully verified. Source of truth: victory.cpp.asm @ 0x00531F71
 void FUN_00531f71() {
-    // TODO: PARITY - Decomp has a dedicated FUN_00531f71 body at this offset, but this implementation currently treats it as ASM-only padding; re-verify control-flow impact before closing parity. [decomp: victory.cpp.decomp @ 0x00531F71]
+    // TODO: PARITY [MODERATE] - Decomp has a dedicated FUN_00531f71 body at this offset, but this implementation currently treats it as ASM-only padding; re-verify control-flow impact before closing parity. [decomp: victory.cpp.decomp @ 0x00531F71]
     // ASM is padding/jump-table anchor (`NOP; MOV EDI,EDI`) between switch stubs.
 }
 
@@ -1398,3 +1398,4 @@ long RGE_Victory_Conditions::get_attribute_id(uchar param_1) {
     }
     return value;
 }
+

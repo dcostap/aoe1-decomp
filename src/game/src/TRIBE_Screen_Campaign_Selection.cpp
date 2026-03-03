@@ -1,5 +1,5 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Campaign_Selection::vector_deleting_destructor. [decomp: TRIBE_Screen_Campaign_Selection.decomp @ 0x00490E10]
-// TODO: PARITY - Requested alias source TRIBE_Screen_Campaigns.cpp is absent in this tree; verify all scr_cams module bodies are fully represented by this TU. [decomp: scr_cams.cpp.decomp @ 0x004909D0]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Screen_Campaign_Selection::vector_deleting_destructor. [decomp: TRIBE_Screen_Campaign_Selection.decomp @ 0x00490E10]
+// TODO: PARITY [MODERATE] - Requested alias source TRIBE_Screen_Campaigns.cpp is absent in this tree; verify all scr_cams module bodies are fully represented by this TU. [decomp: scr_cams.cpp.decomp @ 0x004909D0]
 #include "../include/TRIBE_Screen_Campaign_Selection.h"
 #include "../include/TRIBE_Screen_Name.h"
 #include "../include/TRIBE_Game.h"
@@ -493,4 +493,5 @@ int TRIBE_Screen_Campaign_Selection::create_vert_slider(TPanel* param_1, TVertic
 int TRIBE_Screen_Campaign_Selection::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: scr_cams.cpp.decomp @ 0x00490FF0 (virtual forwarding coverage).
 void TRIBE_Screen_Campaign_Selection::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

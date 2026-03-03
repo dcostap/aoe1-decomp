@@ -88,7 +88,7 @@ std::ostream& operator<<(std::ostream& param_1, const DString& param_2) {
 
 // Fully verified. Source of truth: dstring.cpp.decomp @ 0x00446730
 std::istream& operator>>(std::istream& param_1, DString& param_2) {
-    // TODO: PARITY - Decomp increments internal `_fGline` and reads into `buffer + 4` before assignment; this direct stream call does not mirror those low-level side effects.
+    // TODO: PARITY [MODERATE] - Decomp increments internal `_fGline` and reads into `buffer + 4` before assignment; this direct stream call does not mirror those low-level side effects.
     char buffer[0x100];
     param_1.get(buffer, 0x100, '\n');
     param_2 = buffer;
@@ -514,3 +514,4 @@ DString DKeyString::value() const {
 void DKeyString::setValue(DString param_1) {
     this->valueValue = param_1;
 }
+

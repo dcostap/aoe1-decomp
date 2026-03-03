@@ -12,7 +12,7 @@ static int influence_ftol(double value) {
     return (int)(long)value;
 }
 
-// TODO: PARITY - Destructor is not present in this translation unit even though the decomp defines one; current implementation location should be reconciled against file-level parity expectations. [decomp: infmap.cpp.decomp @ 0x0044E080]
+// TODO: PARITY [MODERATE] - Destructor is not present in this translation unit even though the decomp defines one; current implementation location should be reconciled against file-level parity expectations. [decomp: infmap.cpp.decomp @ 0x0044E080]
 
 // Fully verified. Marker reconciliation coverage.
 InfluenceMap::InfluenceMap() {
@@ -566,3 +566,4 @@ int InfluenceMap::maxValue() {
     }
     return (int)max;
 }
+

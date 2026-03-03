@@ -8,7 +8,7 @@
 #include "../include/custom_debug.h"
 #include <stdlib.h>
 
-// TODO: PARITY - Requested mapping mismatch: tpnl_btn.cpp.decomp contains TRIBE_Panel_Button methods (0x00519DA0+), while this file implements TButtonPanel; direct function-by-function parity against that decomp unit is unresolved in this translation unit. [decomp: tpnl_btn.cpp.decomp @ 0x00519DA0]
+// TODO: PARITY [MODERATE] - Requested mapping mismatch: tpnl_btn.cpp.decomp contains TRIBE_Panel_Button methods (0x00519DA0+), while this file implements TButtonPanel; direct function-by-function parity against that decomp unit is unresolved in this translation unit. [decomp: tpnl_btn.cpp.decomp @ 0x00519DA0]
 // Fully verified. Source of truth: pnl_btn.cpp.decomp (helper parity).
 static unsigned long button_time_ms() {
     return (unsigned long)GetTickCount();
@@ -264,7 +264,7 @@ long TButtonPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, 
     }
     return TPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }
-// ASM: TButtonPanel does NOT override handle_mouse_dbl_click — inherit TPanel's default
+// ASM: TButtonPanel does NOT override handle_mouse_dbl_click ? inherit TPanel's default
 // which includes is_inside check and fallback to handle_mouse_down.
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
@@ -1152,3 +1152,4 @@ void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int 
     this->bevel_color6 = (unsigned char)c6;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
+

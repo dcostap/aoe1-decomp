@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Mission_Screen::vector_deleting_destructor. [decomp: TRIBE_Mission_Screen.decomp @ 0x004B87B0]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Mission_Screen::vector_deleting_destructor. [decomp: TRIBE_Mission_Screen.decomp @ 0x004B87B0]
 #include "../include/TRIBE_Mission_Screen.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -260,7 +260,7 @@ void TRIBE_Mission_Screen::draw() {
 
     this->draw_setup(0);
 
-    // TODO: PARITY - draw rewrites decomp's opaque (_padding_ == 2) clear gate into explicit need_redraw + render_area checks; this structural mapping may not be slot-exact. [decomp: scr_vc.cpp.decomp @ 0x004B88E0]
+    // TODO: PARITY [MODERATE] - draw rewrites decomp's opaque (_padding_ == 2) clear gate into explicit need_redraw + render_area checks; this structural mapping may not be slot-exact. [decomp: scr_vc.cpp.decomp @ 0x004B88E0]
     if (this->need_redraw == TPanel::RedrawMode::RedrawFull && this->render_area != nullptr) {
         this->render_area->Clear(&this->clip_rect, (int)this->color);
     }
@@ -304,7 +304,7 @@ void TRIBE_Mission_Screen::paint() { TScreenPanel::paint(); }
 long TRIBE_Mission_Screen::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4); }
 // Fully verified. Source of truth: scr_vc.cpp.decomp @ 0x004B88B0
 long TRIBE_Mission_Screen::handle_idle() {
-    // TODO: PARITY - handle_idle adds a defensive rge_base_game null-guard before checking input_enabled; decomp directly dereferences rge_base_game->input_enabled. [decomp: scr_vc.cpp.decomp @ 0x004B88B0]
+    // TODO: PARITY [MODERATE] - handle_idle adds a defensive rge_base_game null-guard before checking input_enabled; decomp directly dereferences rge_base_game->input_enabled. [decomp: scr_vc.cpp.decomp @ 0x004B88B0]
     if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
@@ -428,4 +428,5 @@ int TRIBE_Mission_Screen::create_vert_slider(TPanel* param_1, TVerticalSliderPan
 int TRIBE_Mission_Screen::create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) { return TScreenPanel::create_horz_slider(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9); }
 // Fully verified. Source of truth: scr_vc.cpp.decomp @ 0x004B89A0 (virtual forwarding coverage).
 void TRIBE_Mission_Screen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
+
 

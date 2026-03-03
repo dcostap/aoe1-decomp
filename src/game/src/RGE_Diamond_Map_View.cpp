@@ -1,5 +1,5 @@
-// TODO: PARITY - Missing function implementation for RGE_Diamond_Map_View::scalar_deleting_destructor. [decomp: RGE_Diamond_Map_View.decomp @ 0x0053D380]
-// TODO: PARITY - Decomp source naming differs for this TU (RGE_Diamond_Map_View.decomp vs vw_dimap.cpp.decomp); keep the offset mapping explicit during audits.
+// TODO: PARITY [MODERATE] - Missing function implementation for RGE_Diamond_Map_View::scalar_deleting_destructor. [decomp: RGE_Diamond_Map_View.decomp @ 0x0053D380]
+// TODO: PARITY [MODERATE] - Decomp source naming differs for this TU (RGE_Diamond_Map_View.decomp vs vw_dimap.cpp.decomp); keep the offset mapping explicit during audits.
 // [decomp: vw_dimap.cpp.decomp @ 0x0053D360]
 #include "RGE_Diamond_Map_View.h"
 
@@ -385,4 +385,5 @@ int RGE_Diamond_Map_View::command_make_work(long param_1, long param_2) {
     rge_base_game->set_game_mode(0, 0);
     return (int)(res & 0xFF);
 }
+
 

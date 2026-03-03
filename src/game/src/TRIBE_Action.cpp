@@ -6,7 +6,7 @@
 
 // Fully verified. Source of truth: taction.cpp.decomp @ 0x004D38E0
 TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3) {
-    // TODO: PARITY - Decomp constructor routes through RGE_Action(..., 0) + vtable set; this manual field-reset else-path may diverge from base-constructor side effects/layout assumptions. [decomp: taction.cpp.decomp @ 0x004D38E0]
+    // TODO: PARITY [MODERATE] - Decomp constructor routes through RGE_Action(..., 0) + vtable set; this manual field-reset else-path may diverge from base-constructor side effects/layout assumptions. [decomp: taction.cpp.decomp @ 0x004D38E0]
     if (param_3 != 0) {
         this->setup(param_1, param_2);
     } else {
@@ -30,7 +30,7 @@ TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3)
 
 // Fully verified. Source of truth: taction.cpp.decomp @ 0x004D3980
 TRIBE_Action::TRIBE_Action(RGE_Action_Object* param_1, int param_2) {
-    // TODO: PARITY - Decomp constructor similarly relies on base constructor call path; duplicated manual initialization here may not be bit-for-bit equivalent. [decomp: taction.cpp.decomp @ 0x004D3980]
+    // TODO: PARITY [MODERATE] - Decomp constructor similarly relies on base constructor call path; duplicated manual initialization here may not be bit-for-bit equivalent. [decomp: taction.cpp.decomp @ 0x004D3980]
     if (param_2 != 0) {
         this->setup(param_1);
     } else {
@@ -111,5 +111,6 @@ void TRIBE_Action::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_
 void TRIBE_Action::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 // Fully verified. Source of truth: taction.cpp.decomp @ 0x004D3A10 (virtual forwarding coverage).
 void TRIBE_Action::set_state(uchar param_1) { RGE_Action::set_state(param_1); }
+
 
 

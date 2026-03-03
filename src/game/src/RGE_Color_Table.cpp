@@ -75,7 +75,7 @@ void RGE_fade_palette(TDrawArea* param_1, tagPALETTEENTRY param_2, float param_3
             const float fade_time2 = param_3 - (float)(int)(now - old_time) * 0.001f;
 
             long delta_time = 0;
-            // TODO: PARITY - Decomp materializes this branch through float comparisons plus __ftol conversion; re-audit NaN/rounding semantics against color.cpp.asm before marking this fade path fully equivalent. [decomp: color.cpp.decomp @ 0x004240B0]
+            // TODO: PARITY [MODERATE] - Decomp materializes this branch through float comparisons plus __ftol conversion; re-audit NaN/rounding semantics against color.cpp.asm before marking this fade path fully equivalent. [decomp: color.cpp.decomp @ 0x004240B0]
             if (!((param_3 <= 0.0f) || (param_3 < fade_time2) || (fade_time2 < 0.0f))) {
                 delta_time = (long)fade_time2;
             }
@@ -132,7 +132,7 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
     this->map_color = (unsigned char)temp_map_color;
     this->type = (unsigned char)temp_type;
 
-    // TODO: PARITY - Decomp builds this filename through local buffer string ops before appending ".col"; confirm addstring() helper preserves exact truncation/termination behavior. [decomp: color.cpp.decomp @ 0x00424440]
+    // TODO: PARITY [MODERATE] - Decomp builds this filename through local buffer string ops before appending ".col"; confirm addstring() helper preserves exact truncation/termination behavior. [decomp: color.cpp.decomp @ 0x00424440]
     char* file_name = nullptr;
     addstring(&file_name, this->color_table_name, (char*)".col");
     if (file_name != nullptr) {
@@ -151,7 +151,7 @@ RGE_Color_Table::RGE_Color_Table(int fd) {
     rge_read(fd, &this->type, 1);
 
     char tempname[300];
-    // TODO: PARITY - Decomp writes into tempname+4 stack offset before fopen; verify this preserved offset/prefix pattern is behaviorally equivalent under all path lengths. [decomp: color.cpp.decomp @ 0x00424350]
+    // TODO: PARITY [MODERATE] - Decomp writes into tempname+4 stack offset before fopen; verify this preserved offset/prefix pattern is behaviorally equivalent under all path lengths. [decomp: color.cpp.decomp @ 0x00424350]
     sprintf(tempname + 4, "data\\%s", this->color_table_name);
 
     FILE* f = fopen(tempname + 4, "r");
@@ -263,4 +263,5 @@ void RGE_Color_Table::save(int fd) {
     rge_write(fd, &this->map_color, 1);
     rge_write(fd, &this->type, 1);
 }
+
 

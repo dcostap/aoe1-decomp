@@ -16,7 +16,7 @@
 #include <cmath>
 #include <new>
 
-// TODO: PARITY - Requested decomp naming (ra_missle.cpp.decomp) is not present in-tree; this audit maps missile-action parity to act_misl.cpp.decomp and needs canonical filename confirmation. [decomp: act_misl.cpp.decomp @ 0x00404BB0]
+// TODO: PARITY [MODERATE] - Requested decomp naming (ra_missle.cpp.decomp) is not present in-tree; this audit maps missile-action parity to act_misl.cpp.decomp and needs canonical filename confirmation. [decomp: act_misl.cpp.decomp @ 0x00404BB0]
 
 namespace {
 // Source of truth: stat_obj.cpp.decomp @ 0x004C5860
@@ -297,7 +297,7 @@ void RGE_Action_Missile::set_state(uchar param_1) {
 }
 
 // Fully verified. Source of truth: act_misl.cpp.decomp + act_misl.cpp.asm @ 0x004050F0
-// TODO: PARITY - Decomp includes corrupted FUN_004050d5 bytes immediately before update; audit ASM prologue/branch linkage for missing logic. [decomp: act_misl.cpp.decomp @ 0x004050D5]
+// TODO: PARITY [MODERATE] - Decomp includes corrupted FUN_004050d5 bytes immediately before update; audit ASM prologue/branch linkage for missing logic. [decomp: act_misl.cpp.decomp @ 0x004050D5]
 uchar RGE_Action_Missile::update() {
     float vx = 0.0f;
     float vy = 0.0f;
@@ -447,4 +447,5 @@ RGE_Static_Object* RGE_Action_Missile::get_target_obj2() { return RGE_Action::ge
 void RGE_Action_Missile::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
 // Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
+
 

@@ -142,7 +142,7 @@ TRIBE_Tech::~TRIBE_Tech() {
 
 // Fully verified. Marker reconciliation coverage.
 long TRIBE_Tech::get_help_message(short param_1) {
-    // TODO: PARITY - Getter trio in this range still carries non-verified source markers; re-audit bounds/return-path parity for all three accessors. [decomp: bucket_050C.decomp @ 0x0050C2FA]
+    // TODO: PARITY [MODERATE] - Getter trio in this range still carries non-verified source markers; re-audit bounds/return-path parity for all three accessors. [decomp: bucket_050C.decomp @ 0x0050C2FA]
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050C2FA
     if (param_1 < 0 || this->tech_tree_num < param_1) {
         return -1;
@@ -214,3 +214,4 @@ void TRIBE_Tech::save(int param_1) {
         }
     }
 }
+

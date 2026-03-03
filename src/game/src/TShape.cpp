@@ -22,7 +22,7 @@ extern "C" void* _ASMGet_Xlate_Table();
 
 static int Shape_Loads = 0;
 
-// TODO: PARITY - These local span helpers have no direct symbol-level entries in shape.cpp.decomp; verify they preserve the inlined span-walk behavior of surrounding transliterated paths. [decomp: shape.cpp.decomp @ 0x004B8B30]
+// TODO: PARITY [MODERATE] - These local span helpers have no direct symbol-level entries in shape.cpp.decomp; verify they preserve the inlined span-walk behavior of surrounding transliterated paths. [decomp: shape.cpp.decomp @ 0x004B8B30]
 
 static inline VSpan_Node* shape_span_advance(VSpan_Node* span, long x) {
     // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
@@ -3389,5 +3389,6 @@ unsigned char TShape::shape_dithered_clipped(TDrawArea* draw_area, long shape_x1
 
     return 1;
 }
+
 
 

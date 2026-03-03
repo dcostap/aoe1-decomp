@@ -64,7 +64,7 @@ void TSound_Driver::init_vars() {
 
 // Fully verified. Source of truth: sounddrv.cpp.decomp @ 0x004BC610
 int TSound_Driver::init(void* wnd, char* path) {
-    // TODO: PARITY - Decomp warns on stack-unmapped `fmt`; verify WAVEFORMATEX field initialization order matches asm before modifying this path. [decomp: sounddrv.cpp.decomp @ 0x004BC610]
+    // TODO: PARITY [MODERATE] - Decomp warns on stack-unmapped `fmt`; verify WAVEFORMATEX field initialization order matches asm before modifying this path. [decomp: sounddrv.cpp.decomp @ 0x004BC610]
     DSBUFFERDESC dsBD;
     DSCAPS dscaps;
     WAVEFORMATEX fmt;
@@ -858,4 +858,5 @@ int TDigital::add_to_play_list() {
     }
     return 0;
 }
+
 

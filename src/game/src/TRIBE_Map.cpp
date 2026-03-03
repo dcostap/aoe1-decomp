@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Map::scalar_deleting_destructor. [decomp: TRIBE_Map.decomp @ 0x0050F740]
+// TODO: PARITY [MODERATE] - Missing function implementation for TRIBE_Map::scalar_deleting_destructor. [decomp: TRIBE_Map.decomp @ 0x0050F740]
 // Implementations for TRIBE_Map extracted from TRIBE_World_types.cpp.
 #include "../include/TRIBE_Map.h"
 #include "../include/TRIBE_World.h"
@@ -1174,3 +1174,4 @@ void TRIBE_Map::tribe_clean_terrain(long p1, long p2, long p3, long p4, uchar p5
         }
     } while (true);
 }
+
