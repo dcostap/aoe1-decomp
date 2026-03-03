@@ -184,18 +184,22 @@ static void FUN_004c66a2() {
 }
 
 static void FUN_004c218d() {
+    // TODO: PARITY - Decomp at this offset contains a non-trivial control-flow block (draw/capture dispatch), but this implementation is a no-op landing-pad placeholder pending full ASM-backed parity confirmation. [decomp: stat_obj.cpp.decomp @ 0x004C218D]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C218D (switch jump-table landing pad).
 }
 
 static void FUN_004c2206() {
+    // TODO: PARITY - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against surrounding dispatch logic. [decomp: stat_obj.cpp.decomp @ 0x004C2206]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2206 (switch jump-table landing pad).
 }
 
 static void FUN_004c22a6() {
+    // TODO: PARITY - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against surrounding dispatch logic. [decomp: stat_obj.cpp.decomp @ 0x004C22A6]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C22A6 (switch jump-table landing pad).
 }
 
 static void FUN_004c3f65() {
+    // TODO: PARITY - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against damage-sprite update flow. [decomp: stat_obj.cpp.decomp @ 0x004C3F65]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C3F65 (switch jump-table landing pad).
 }
 

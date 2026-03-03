@@ -127,6 +127,8 @@ extern "C" void _ASMSet_Xlate_Table(void* p) {
 
 // Fully verified. Source of truth: bucket_056C.asm @ 0x0056C7AD (label _ASMGet_Xlate_Table @ 0x0056C7C0)
 extern "C" void* _ASMGet_Xlate_Table() {
+    // TODO: PARITY - decomp emits a FUN_0056c7ad alias at the padding boundary; keep 0x0056C7AD vs 0x0056C7C0 label mapping explicit.
+    // [decomp: bucket_056C.decomp @ 0x0056C7AD]
     return (void*)g_ASMXlateTable;
 }
 
@@ -1155,6 +1157,8 @@ uchar TDrawArea::CheckSurface() {
 // Decomp signature: Init(TDrawSystem*, long width, long height, int use_trans, int is_primary)
 // Our signature keeps wnd/use_sys_mem for compat but ignores them per decomp
 int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem) {
+    // TODO: PARITY - function signature currently carries extra compat params (wnd/use_sys_mem) not present in decomp signature.
+    // [decomp: drawarea.cpp.decomp @ 0x00444040]
     // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     this->DrawSystem = system;
     this->IsPrimarySurface = is_primary;

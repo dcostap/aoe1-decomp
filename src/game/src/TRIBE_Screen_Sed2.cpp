@@ -556,6 +556,7 @@ void load_multi_victory_cond_from_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AEC95
 void FUN_004aec95() {
+    // TODO: PARITY - Decomp includes a callable FUN_004aec95 body at this offset, but current transliteration keeps only an ASM thunk marker; confirm whether the decomp body is real logic or decode noise. [decomp: scr_sed2.cpp.decomp @ 0x004AEC95]
     // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AEC95 (switch-table data anchor thunk)
 }
 
