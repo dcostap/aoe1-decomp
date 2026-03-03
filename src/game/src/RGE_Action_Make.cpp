@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-// TODO: PARITY - Requested decomp naming (ra_make.cpp.decomp) is not present in-tree; this audit maps make-action parity to act_make.cpp.decomp and needs canonical filename confirmation. [decomp: act_make.cpp.decomp @ 0x004049B0]
+// TODO: PARITY - Requested module names (TRIBE_Action_Make.cpp / ta_make.cpp.decomp) are not present in-tree; this audit maps make-action parity to RGE_Action_Make.cpp + act_make.cpp.decomp and needs canonical filename confirmation. [decomp: act_make.cpp.decomp @ 0x004049B0]
 
 // Fully verified. Source of truth: act_make.cpp.decomp @ 0x004049B0
 RGE_Action_Make::RGE_Action_Make(int param_1, RGE_Action_Object* param_2) {
@@ -124,6 +124,7 @@ uchar RGE_Action_Make::update() {
                     return 0;
                 }
 
+                // TODO: PARITY - Decomp dereferences rge_base_game directly on this notification path; this null guard changes behavior if globals are uninitialized. [decomp: act_make.cpp.decomp @ 0x00404A90]
                 if (rge_base_game != nullptr) {
                     // __ftol
                     const long world_y = (long)*(const float*)(obj + 0x3C);
