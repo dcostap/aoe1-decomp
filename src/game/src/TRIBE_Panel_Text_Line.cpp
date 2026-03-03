@@ -6,6 +6,8 @@
 #include <new>
 #include <windows.h>
 
+// TODO: MISSING_FUNC - Class destructor symbol TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line (vt[0]) from bucket_0520 is not implemented as a class method in this TU; only C-style ctor/draw helpers are present. [decomp: bucket_0520.decomp @ 0x00520E20]
+
 // Fully verified. Source of truth: tpnl_txl.cpp.decomp @ 0x00520D70
 TRIBE_Panel_Text_Line* tpnl_txl_ctor_00520D70(TRIBE_Panel_Text_Line* this_, TDrawArea* param_1, TPanel* param_2, void* param_3) {
     new (this_) TPanel();

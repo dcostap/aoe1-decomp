@@ -557,7 +557,9 @@ void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
     }
 }
 
-T_Scenario::~T_Scenario() {}
+T_Scenario::~T_Scenario() {
+    // TODO: EMPTY_STUB - Decomp destructor performs extensive owned-pointer/array teardown; this empty body is not parity-complete. [decomp: bucket_052A.decomp @ 0x0052AB80]
+}
 
 RGE_Static_Object* T_Scenario::get_object_pointer(int param_1) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052C080
