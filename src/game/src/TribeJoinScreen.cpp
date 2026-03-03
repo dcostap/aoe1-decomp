@@ -29,6 +29,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO: PARITY - TribeJoinScreen.decomp currently exports only the scalar deleting destructor thunk; non-destructor methods in this unit depend on scr_cj/scr_mp source maps rather than class-unit decomp bodies.
+
 namespace {
 
 static const char kScrCjSourcePath[] = "C:\\msdev\\work\\age1_x1\\scr_cj.cpp";
