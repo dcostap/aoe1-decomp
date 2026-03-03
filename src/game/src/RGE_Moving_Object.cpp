@@ -2096,3 +2096,5 @@ long RGE_Moving_Object::get_waypoint_checksum() {
     p->setCurrentWaypointNumber(saved);
     return (long)temp;
 }
+
+// TODO: MISSING_FUNC - vcall_456_flat not implemented [decomp: bucket_0460.decomp @ 0x00460FC0]
