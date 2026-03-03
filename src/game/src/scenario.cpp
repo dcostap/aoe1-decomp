@@ -884,16 +884,22 @@ char* RGE_Scenario::Get_message(long param_1) {
 }
 
 int FUN_0048c33d() {
+    // TODO: PARITY - decomp output at this offset is control-flow-corrupted; current thunk remains ASM-derived placeholder.
+    // [decomp: scenario.cpp.decomp @ 0x0048C33D]
     // Fully verified. Source of truth: scenario.cpp.asm @ 0x0048C33D (jump-table alignment thunk).
     return 0;
 }
 
 int FUN_0048ce21() {
+    // TODO: PARITY - decomp output at this offset is control-flow-corrupted; current thunk remains ASM-derived placeholder.
+    // [decomp: scenario.cpp.decomp @ 0x0048CE21]
     // Fully verified. Source of truth: scenario.cpp.asm @ 0x0048CE21 (jump-table alignment thunk).
     return 0;
 }
 
 RGE_Scenario_File_Info* FUN_0048ce82() {
+    // TODO: PARITY - decomp output at this offset is control-flow-corrupted; current thunk remains ASM-derived placeholder.
+    // [decomp: scenario.cpp.decomp @ 0x0048CE82]
     // Fully verified. Source of truth: scenario.cpp.asm @ 0x0048CE82 (jump-table alignment thunk).
     return nullptr;
 }
