@@ -1139,6 +1139,7 @@ void RGE_Main_View::draw() {
 
 // Fully verified. Source of truth: RGE_Main_View.decomp (inherited-forwarder parity with RGE_View/TPanel).
 void RGE_Main_View::draw_multi_object_outline() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: vw_main.cpp.decomp @ 0x0053f800]
     // Fully verified. Source of truth: vw_main.cpp.decomp @ 0x0053F800
     return;
 }
@@ -1703,3 +1704,4 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long param_1, long param_2, i
     return best_target;
 }
 
+// TODO: MISSING_FUNC - FUN_0053e8e9 [decomp: vw_main.cpp.decomp @ 0x0053e8e9]

@@ -386,3 +386,5 @@ int RGE_Diamond_Map_View::command_make_work(long param_1, long param_2) {
     return (int)(res & 0xFF);
 }
 
+
+// TODO: MISSING_FUNC - RGE_Diamond_Map_View::scalar_deleting_destructor [decomp: RGE_Diamond_Map_View.decomp @ 0x0053d380]
