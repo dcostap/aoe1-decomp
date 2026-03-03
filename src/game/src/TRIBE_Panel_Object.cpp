@@ -314,6 +314,7 @@ unsigned char TRIBE_Panel_Object::get_mode() {
 
 void TRIBE_Panel_Object::draw() {
     // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190
+    // TODO: PARITY - This draw implementation adds defensive null guards (owner/color_table, bldg_pics, master->name) that are direct dereferences in decomp; null-path control flow differs. [decomp: tpnl_obj.cpp.decomp @ 0x0051B190]
     if (this->render_area == nullptr || this->active == 0 || this->visible == 0) {
         this->need_redraw = TPanel::NoRedraw;
         return;
@@ -655,6 +656,7 @@ void TRIBE_Panel_Object::draw() {
 
 void TRIBE_Panel_Object::draw_score() {
     // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051BF90
+    // TODO: PARITY - draw_score introduces null-guard fallbacks for comm, player/color_table, and victory_conditions that decomp accesses via direct dereferences. [decomp: tpnl_obj.cpp.decomp @ 0x0051BF90]
     if (this->render_area == nullptr || this->active == 0 || this->visible == 0) {
         this->need_redraw = TPanel::NoRedraw;
         return;
@@ -789,11 +791,13 @@ void TRIBE_Panel_Object::draw_item(int param_1, int param_2, ValueType param_3, 
 void FUN_0051c1f6() {
     // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C1F6
     // Switch jump-table padding thunk (`mov edi, edi`).
+    // TODO: PARITY - Currently a no-op thunk, but decomp at this offset shows additional switch-tail instructions and draw_item formatting flow; control-flow boundary needs ASM confirmation. [decomp: tpnl_obj.cpp.decomp @ 0x0051C1F6]
 }
 
 void FUN_0051c3da() {
     // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C3DA
     // Switch jump-table padding thunk (`mov edi, edi`).
+    // TODO: PARITY - Currently a no-op thunk, while decomp shows a call (`func_0xb30051c2()`) at this offset; missing thunk target/call path. [decomp: tpnl_obj.cpp.decomp @ 0x0051C3DA]
 }
 
 long TRIBE_Panel_Object::handle_idle() {
@@ -1005,6 +1009,7 @@ done_checks:
 
 void TRIBE_Panel_Object::save_object_info() {
     // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051CA10
+    // TODO: PARITY - save_object_info adds defensive guards for obj->objects, owner->attributes, and production_queue_actions with zero/default fallbacks; decomp performs direct dereferences. [decomp: tpnl_obj.cpp.decomp @ 0x0051CA10]
     if (this->mode == 2) {
         for (int i = 1; i < 9; ++i) {
             int player_id = rge_base_game->playerID(i);
