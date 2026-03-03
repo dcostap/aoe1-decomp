@@ -983,7 +983,8 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x004D595E
-// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D595E
+// Source of truth: taibldmd.cpp.decomp @ 0x004D595E
+// TODO: PARITY - Decomp at this offset is fully failed (`<decompilation failed>`); current return-0 body is a placeholder pending ASM/manual reconstruction.
 unsigned char FUN_004d595e() {
     return 0;
 }
