@@ -393,3 +393,5 @@ MsgQueue::~MsgQueue() {
     }
     this->msgptr = nullptr;
 }
+
+// TODO: MISSING_FUNC - MsgQueue::vector_deleting_destructor not implemented [decomp: bucket_0431.decomp @ 0x00431790]

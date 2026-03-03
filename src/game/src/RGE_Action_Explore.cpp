@@ -26,7 +26,9 @@ RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* param_1, RGE_Task* par
 }
 
 // TODO: PARITY - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current defaulted dtor may miss side effects. [decomp: bucket_0402.decomp @ 0x00402B90]
-RGE_Action_Explore::~RGE_Action_Explore() = default;
+RGE_Action_Explore::~RGE_Action_Explore() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0402.decomp @ 0x00402B90]
+}
 
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E40 (virtual forwarding coverage).
 int RGE_Action_Explore::setup(RGE_Action_Object* param_1) {

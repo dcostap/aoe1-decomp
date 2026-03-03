@@ -143,3 +143,5 @@ void RGE_Communications_Addresses::EraseInformation() {
     this->AddressesAvailable = 0;
 }
 
+// TODO: MISSING_FUNC - IPAD::vector_deleting_destructor not implemented [decomp: bucket_0424.decomp @ 0x00424AC0]
+
