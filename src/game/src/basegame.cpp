@@ -51,7 +51,7 @@ extern struct TPanelSystem* panel_system;
 static int snapshot_number = 1;
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
 // TODO: Debug-only automation state for reproducing start-game crashes via real UI action handlers.
-// TODO: PARITY - Debug-only autoplay globals introduce non-original UI-driving state and timing paths. [decomp: basegame.cpp.decomp @ 0x00420F60]
+// TODO: PARITY [LOW] - Debug-only autoplay globals introduce non-original UI-driving state and timing paths. [decomp: basegame.cpp.decomp @ 0x00420F60]
 static int debug_autoplay_sp_random_start_state = 0;
 static int debug_autoplay_sp_random_start_wait_frames = 0;
 static int debug_autoplay_sp_random_start_enabled = -1;
@@ -389,7 +389,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->single_player_difficulty = 2;
 
     // TODO: Constructor parity gap. panel_system must exist before setup_main_window()/palette setup paths.
-    // TODO: PARITY - Constructor currently injects panel_system allocation that is not proven in decomp ctor flow. [decomp: basegame.cpp.decomp @ 0x0041B6A0]
+    // TODO: PARITY [MODERATE] - Constructor currently injects panel_system allocation that is not proven in decomp ctor flow. [decomp: basegame.cpp.decomp @ 0x0041B6A0]
     if (panel_system == nullptr) {
         panel_system = new (std::nothrow) TPanelSystem();
         if (panel_system == nullptr) {
@@ -687,14 +687,14 @@ void RGE_Base_Game::setScenarioName(char* p1) {
 
 int RGE_Base_Game::setup_registry() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041ED70
-    // TODO: PARITY - Decomp uses operator_new null-check flow; this plain `new` path is exception-based on OOM instead of returning null.
+    // TODO: PARITY [MODERATE] - Decomp uses operator_new null-check flow; this plain `new` path is exception-based on OOM instead of returning null.
     this->registry = new TRegistry(this->prog_info->registry_key);
     return (this->registry != nullptr) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_debugging_log() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EDE0
-    // TODO: PARITY - Decomp constructor path uses explicit operator_new null handling; this plain `new` relies on exception semantics.
+    // TODO: PARITY [MODERATE] - Decomp constructor path uses explicit operator_new null handling; this plain `new` relies on exception semantics.
     this->debugLog = new TDebuggingLog();
     if (this->debugLog == nullptr) {
         return 0;
@@ -2545,7 +2545,7 @@ void RGE_Base_Game::setup_timings() {
 
 void RGE_Base_Game::stop_sound_system() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F830
-    // TODO: PARITY - Decomp uses TPanelSystem::stop_sound_system(&panel_system) and iterates world sounds without per-entry null checks; current path is more defensive and panel-scoped.
+    // TODO: PARITY [MODERATE] - Decomp uses TPanelSystem::stop_sound_system(&panel_system) and iterates world sounds without per-entry null checks; current path is more defensive and panel-scoped.
     TChat* chat_ptr = (TChat*)chat;
     if (chat_ptr != nullptr) {
         chat_ptr->StopSoundSystem();
@@ -2592,7 +2592,7 @@ void RGE_Base_Game::stop_sound_system() {
 
 int RGE_Base_Game::restart_sound_system() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F920
-    // TODO: PARITY - Decomp calls TPanelSystem::restart_sound_system(&panel_system) and restarts world sounds without per-entry null guards; this path currently differs.
+    // TODO: PARITY [MODERATE] - Decomp calls TPanelSystem::restart_sound_system(&panel_system) and restarts world sounds without per-entry null guards; this path currently differs.
     if (this->sound_system == nullptr) {
         if (this->setup_sound_system() == 0) {
             return 0;
@@ -2673,7 +2673,7 @@ RGE_Game_World* RGE_Base_Game::create_world() {
 }
 int RGE_Base_Game::run() {
     // Fully verified. Source of truth: basegame.cpp.decomp/asm @ 0x0041CFD0
-    // TODO: PARITY - Decomp body checks msg.wParam==0x12 and returns msg.lParam, while this implementation follows ASM-corrected msg.message/WM_QUIT and returns wParam; keep this divergence explicitly tracked. [decomp: basegame.cpp.decomp @ 0x0041CFD0]
+    // TODO: PARITY [FALSE_POSITIVE] - Decomp body checks msg.wParam==0x12 and returns msg.lParam, while this implementation follows ASM-corrected msg.message/WM_QUIT and returns wParam; keep this divergence explicitly tracked. [decomp: basegame.cpp.decomp @ 0x0041CFD0]
     MSG msg;
     
     while (1) {
@@ -2747,7 +2747,7 @@ int RGE_Base_Game::handle_idle() {
 
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
     // TODO: Debug-only automation path. Not parity with original executable.
-    // TODO: PARITY - Autoplay branch adds extra idle-time control flow and synthetic button actions. [decomp: basegame.cpp.decomp @ 0x00420F60]
+    // TODO: PARITY [MODERATE] - Autoplay branch adds extra idle-time control flow and synthetic button actions. [decomp: basegame.cpp.decomp @ 0x00420F60]
     if (debug_is_autoplay_sp_random_start_enabled() != 0 &&
         curPanel != nullptr &&
         curPanel->panelNameValue != nullptr) {

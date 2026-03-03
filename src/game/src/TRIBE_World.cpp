@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - TRIBE_World::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: tworld.cpp.decomp @ 0x0052E020]
+// TODO: PARITY [CRITICAL] - TRIBE_World::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: tworld.cpp.decomp @ 0x0052E020]
 
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
     // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
@@ -130,12 +130,12 @@ static void tribe_world_remove_tile_node(RGE_Tile* tile, RGE_Static_Object* obj)
 
 static void tworld_switch_anchor_005310DE() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005310DE
-    // TODO: PARITY - Decomp body at 0x005310DE is heavily malformed; this no-op anchor assumption must be revalidated against tworld.cpp.asm.
+    // TODO: PARITY [LOW] - Decomp body at 0x005310DE is heavily malformed; this no-op anchor assumption must be revalidated against tworld.cpp.asm.
 }
 
 static void tworld_switch_anchor_005316BD() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005316BD
-    // TODO: PARITY - Decomp body at 0x005316BD is heavily malformed; this no-op anchor assumption must be revalidated against tworld.cpp.asm.
+    // TODO: PARITY [LOW] - Decomp body at 0x005316BD is heavily malformed; this no-op anchor assumption must be revalidated against tworld.cpp.asm.
 }
 
 static void tribe_world_delete_object_now(RGE_Static_Object* obj) {
@@ -979,7 +979,7 @@ void TRIBE_World::send_zone_score_info() {
 
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
-    // TODO: PARITY - TRIBE_World-specific body is unresolved and currently forwards to base implementation; confirm no TRIBE-only branch is missing. [decomp: world.cpp.decomp @ 0x00542D10]
+    // TODO: PARITY [CRITICAL] - TRIBE_World-specific body is unresolved and currently forwards to base implementation; confirm no TRIBE-only branch is missing. [decomp: world.cpp.decomp @ 0x00542D10]
     // Source of truth:
     // - tworld.cpp.decomp / tworld.cpp.asm contain no dedicated TRIBE_World::new_random_game body.
     // - world.cpp.decomp / world.cpp.asm provide RGE_Game_World::new_random_game @ 0x00542D10.
@@ -1037,7 +1037,7 @@ void TRIBE_World::load_scenario7(int param_1, RGE_Player_Info* param_2) { RGE_Ga
 void TRIBE_World::load_scenario8(int param_1, RGE_Player_Info* param_2) { RGE_Game_World::load_scenario8(param_1, param_2); }
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 void TRIBE_World::logStatus(FILE* param_1, int param_2) {
-    // TODO: PARITY - implementation is currently ASM-verified only; decomp line-by-line reconciliation is still pending.
+    // TODO: PARITY [MODERATE] - implementation is currently ASM-verified only; decomp line-by-line reconciliation is still pending.
     // [decomp: tworld.cpp.decomp @ 0x0052E0B0]
     // Fully verified. Source of truth: tworld.cpp.asm @ 0x0052E0B0
     if (param_1 != nullptr && param_2 == 1) {
@@ -1739,13 +1739,13 @@ uchar TRIBE_World::new_game(RGE_Player_Info* param_1, int param_2) {
 
 void FUN_005310de() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005310DE
-    // TODO: PARITY - Decompiled control flow at 0x005310DE is corrupted/aliased; keep this thunk placeholder until a line-by-line asm audit confirms exact intent.
+    // TODO: PARITY [LOW] - Decompiled control flow at 0x005310DE is corrupted/aliased; keep this thunk placeholder until a line-by-line asm audit confirms exact intent.
     // Switch jump-table padding thunk (`mov edi, edi`).
 }
 
 void FUN_005316bd() {
     // Fully verified. Source of truth: tworld.cpp.decomp @ 0x005316BD
-    // TODO: PARITY - Decompiled control flow at 0x005316BD is corrupted/aliased; keep this thunk placeholder until a line-by-line asm audit confirms exact intent.
+    // TODO: PARITY [LOW] - Decompiled control flow at 0x005316BD is corrupted/aliased; keep this thunk placeholder until a line-by-line asm audit confirms exact intent.
     // Switch jump-table padding thunk (`nop; mov edi, edi`).
 }
 
