@@ -273,6 +273,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
 
     Map_Stack stack[99];
     Map_Stack loc_stack;
+    // TODO: PARITY - This transliteration clamps clump count to [0,99], while decomp iterates raw param_1.clumps against fixed local arrays. [decomp: rmm_elev.cpp.decomp @ 0x00484D00]
     long clumps = param_1.clumps;
     if (clumps > 99) clumps = 99;
     if (clumps < 0) clumps = 0;
