@@ -235,4 +235,5 @@ void RGE_Master_Player::save(int param_1) {
         }
     }
 }
+
 // TODO: MISSING_FUNC - FUN_004614d9 [decomp: mst_play.cpp.decomp @ 0x004614d9]

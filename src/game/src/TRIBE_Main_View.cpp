@@ -724,4 +724,6 @@ long TRIBE_Main_View::mouse_left_dbl_click_action(long param_1, long param_2,
     player->select_one_object(picked, 0);
     return 1;
 }
+
+
 // TODO: MISSING_FUNC - TRIBE_Main_View::scalar_deleting_destructor [decomp: TRIBE_Main_View.decomp @ 0x00495470]

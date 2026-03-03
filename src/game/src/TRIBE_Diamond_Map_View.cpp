@@ -176,4 +176,5 @@ int TRIBE_Diamond_Map_View::command_make_move(long param_1, long param_2) { retu
 // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm (explicit RGE_Diamond_Map_View base-call forwarding parity).
 int TRIBE_Diamond_Map_View::command_make_work(long param_1, long param_2) { return RGE_Diamond_Map_View::command_make_work(param_1, param_2); }
 
+
 // TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::scalar_deleting_destructor [decomp: TRIBE_Diamond_Map_View.decomp @ 0x0052ca00]
