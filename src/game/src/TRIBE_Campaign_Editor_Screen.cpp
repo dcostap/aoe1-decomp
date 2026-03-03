@@ -1,5 +1,6 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Campaign_Editor_Screen::vector_deleting_destructor. [decomp: TRIBE_Campaign_Editor_Screen.decomp @ 0x0048FA20]
 // TODO: PARITY - Requested alias source TRIBE_Screen_Campaign.cpp is absent in this tree; verify all scr_cam module bodies are fully represented by this TU. [decomp: scr_cam.cpp.decomp @ 0x0048F5D0]
+// TODO: MISSING_FUNC - Final-sweep mapping note: scr_cam.cpp.decomp corresponds to TRIBE_Campaign_Editor_Screen.cpp (no separate TRIBE_Screen_Campaign.cpp TU exists).
 #include "../include/TRIBE_Campaign_Editor_Screen.h"
 
 #include "../include/RGE_Base_Game.h"

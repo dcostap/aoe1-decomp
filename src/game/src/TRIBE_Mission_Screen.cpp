@@ -1,4 +1,5 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Mission_Screen::vector_deleting_destructor. [decomp: TRIBE_Mission_Screen.decomp @ 0x004B87B0]
+// TODO: MISSING_FUNC - Requested scr_mssn.cpp.decomp is absent in current decomp exports; inventory for this screen is mapped through TRIBE_Mission_Screen.decomp + scr_vc.cpp.decomp.
 #include "../include/TRIBE_Mission_Screen.h"
 
 #include "../include/RGE_Base_Game.h"
