@@ -186,6 +186,7 @@ void save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed* this_) {
 void FUN_004ae05a(int param_1) {
     // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AE05A (switch-table data anchor thunk)
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AE05A (switch-table data anchor thunk)
+    // TODO: PARITY - Decomp at this offset decodes into a mixed thunk/body with switch-table noise; current transliteration keeps only a data-anchor thunk, so executable-logic parity at this address is unresolved. [decomp: scr_sed2.cpp.decomp @ 0x004AE05A]
     (void)param_1;
 }
 
