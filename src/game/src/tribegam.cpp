@@ -358,6 +358,7 @@ CUSTOM_DEBUG_END
     char string_dll_name[100];
     strcpy(string_dll_name, "languagex.dll");
     
+    // TODO: PARITY - Decomp uses MBCS-aware __mbsstr/__mbsninc/__ismbcspace parsing for STRING= token handling; this ASCII strstr loop may diverge on multibyte locales. [decomp: tribegam.cpp.decomp @ 0x0052194A]
     char* string_arg = strstr(cmd_line_str, "STRING=");
     if (string_arg) {
         char* val = string_arg + 7;
@@ -419,6 +420,7 @@ CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: quick_start -> start_game result=%d", start_ok);
 CUSTOM_DEBUG_END
         } else if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
+            // TODO: PARITY - Decomp gates this branch with an internal state flag check (this + 0x890) before deciding start_video vs start_menu; this condensed flow may miss that state-dependent transition. [decomp: tribegam.cpp.decomp @ 0x00521E6A]
             if (this->check_prog_argument("DEBUGTREEGRIDMASTER")) {
                 int preload_ok = this->load_game_data();
 CUSTOM_DEBUG_BEGIN
@@ -987,6 +989,7 @@ int TRIBE_Game::load_game_data() {
 
         // Source of truth uses virtual dispatch. Current decomp tree still has vtable fidelity gaps,
         // so call the base implementation explicitly to keep binary data bootstrap deterministic.
+        // TODO: PARITY - Decomp shows a vtbl+0xB0 world init call in load_game_data; this explicit base-call shortcut may bypass subclass side effects if override behavior exists. [decomp: tribegam.cpp.decomp @ 0x005245D0]
         if (!world->RGE_Game_World::init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
             delete world;
             this->world = nullptr;
