@@ -699,9 +699,11 @@ int AIPlayBook::loadPlays(char* param_1) {
 }
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040EC4E (switch jump-table thunk)
+// TODO: PARITY - Empty thunk stub is still unresolved from decomp and needs explicit ASM/decomp reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
 static void FUN_0040ec4e() {}
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040F066 (switch jump-table thunk)
+// TODO: PARITY - Empty thunk stub is still unresolved from decomp and needs explicit ASM/decomp reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040F066]
 static void FUN_0040f066() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F530
@@ -844,6 +846,7 @@ done_grouping:
 }
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040FB9E (switch jump-table thunk)
+// TODO: PARITY - Decomp shows a substantive FUN_0040fb9e body, but this implementation remains an empty stub and needs transliteration/parity validation. [decomp: aipbook.cpp.decomp @ 0x0040FB9E]
 static void FUN_0040fb9e() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FC30
