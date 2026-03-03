@@ -13,6 +13,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
+// TODO: PARITY - campaign.cpp.decomp methods open_scenario/get_name/scenario_number/get_scenario_name are implemented in gameinfo.cpp, leaving this module with split function ownership. [decomp: campaign.cpp.decomp @ 0x00423690]
+
 // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423230
 RGE_Campaign::RGE_Campaign(char* param_1) {
     this->scenario_offsets = nullptr;
