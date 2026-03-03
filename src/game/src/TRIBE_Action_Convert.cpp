@@ -52,7 +52,9 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* param_1, RGE_Task*
 }
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
-TRIBE_Action_Convert::~TRIBE_Action_Convert() {}
+TRIBE_Action_Convert::~TRIBE_Action_Convert() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_04CD.decomp @ 0x004CDA80]
+}
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
 int TRIBE_Action_Convert::setup(RGE_Action_Object* param_1) {
