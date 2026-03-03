@@ -180,6 +180,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
     memset(land_size, 0, sizeof(land_size));
     Map_Stack stack[99];
 
+    // TODO: PARITY - Loops in this function cap processing at 99 entries, while decomp walks full info.land_num across stack/land_size local arrays. [decomp: rmm_land.cpp.decomp @ 0x00485520]
     const long land_num = this->info.land_num;
     const long max_x = this->map_width - 1;
     const long max_y = this->map_height - 1;
