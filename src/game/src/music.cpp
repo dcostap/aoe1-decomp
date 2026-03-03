@@ -40,6 +40,7 @@ TMusic_System::TMusic_System(uchar mtype, void* inst, void* wnd, TSound_Driver* 
     this->mixer_handle = nullptr;
     this->midi_window = nullptr;
     this->file_name[0] = '\0';
+    // TODO: PARITY - last_check_time initialization is not explicitly present in the decomp ctor listing; confirm this extra field init matches original behavior. [decomp: music.cpp.decomp @ 0x00461910]
     this->last_check_time = 0;
     if (p == nullptr) {
         this->path[0] = '\0';
