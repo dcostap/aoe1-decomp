@@ -48,6 +48,8 @@
 #include <vfw.h>
 #include <io.h>
 
+// TODO: PARITY - run_log() for this unit lives in globals.cpp instead of this translation unit, so per-file decomp coverage is split. [decomp: tribegam.cpp.decomp @ 0x00521020]
+
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
     if (lhs == nullptr || rhs == nullptr) {
@@ -3108,6 +3110,7 @@ int TRIBE_Game::setup_graphics_system() { return RGE_Base_Game::setup_graphics_s
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_palette() {
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
+    // TODO: PARITY - This body is not a pure forwarder; manual palette-entry reconstruction may still miss exact decomp/ASM field writes and branch shape. [decomp: tribegam.cpp.decomp @ 0x00522200]
     if (!RGE_Base_Game::setup_palette()) {
         return 0;
     }

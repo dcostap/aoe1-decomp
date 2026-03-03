@@ -1206,6 +1206,7 @@ void TCommunications_Handler::NotifyWindow(int message) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428270
     // Behavior: Post WM_USER to HostHWND with message as wParam and 0 as lParam.
     // Note: we use integer ids because the full COMMMESSAGES enum is not restored yet.
+    // TODO: PARITY - Message parameter uses int instead of COMMMESSAGES enum, which can mask signedness/type parity issues at call sites. [decomp: com_hand.cpp.decomp @ 0x00428270]
     if (this->HostHWND) {
         PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, 0);
     }
