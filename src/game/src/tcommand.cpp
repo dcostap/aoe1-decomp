@@ -456,6 +456,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
         // TODO: PARITY - Direct field write is a placeholder for missing set_game_speed call path and may skip side effects tied to the original setter. [decomp: tcommand.cpp.decomp @ 0x0050A1D0]
         this->world->game_speed = p1->var3;
         break;
+    // TODO: PARITY - Decomp has case 2 at 0x0050A1D0 that routes var2/var3 through player vtable +0x78 (attribute update path); this branch is currently not implemented.
     case 4:
         if (rge_base_game != nullptr) {
             rge_base_game->quick_build = (int)p1->var1;
@@ -471,6 +472,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
     case 6:
         ((TRIBE_World*)this->world)->cheat(p1->var1, (short)(uchar)p1->var2);
         break;
+    // TODO: PARITY - Decomp also includes case 7 (world UI/font dispatch via world+0x4c vtable +8) and case 8 (full out-of-sync recovery/save-game UI flow), both currently unimplemented here.
     default:
         break;
     }

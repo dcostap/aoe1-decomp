@@ -15,6 +15,8 @@
 
 #include <new>
 
+// TODO: PARITY - Requested decomp naming (ra_trans.cpp.decomp/act_trns.cpp.decomp) is not present in-tree; this audit maps transport-action parity to act_tran.cpp.decomp and needs canonical filename confirmation. [decomp: act_tran.cpp.decomp @ 0x00406D60]
+
 namespace {
 static const char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
@@ -296,6 +298,7 @@ uchar RGE_Action_Transport::update() {
             if (has_drop_terrain == 0) {
                 RGE_Map* map = this->obj->owner->world->map;
                 if (this->target_x != -1.0f) {
+                    // TODO: PARITY - Decomp re-emits bare __ftol calls for each terrain probe; verify repeated act_tran_ftol calls preserve exact FPU rounding/exception behavior. [decomp: act_tran.cpp.decomp @ 0x00406F90]
                     short col = (short)act_tran_ftol(this->target_x);
                     short row = (short)act_tran_ftol(this->target_y);
                     uchar terrain = map->get_terrain(col, row);
@@ -374,6 +377,7 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* /*param_1*/, float param_2,
 int RGE_Action_Transport::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     this->target2ID = 1;
 
+    // TODO: PARITY - Decomp uses bare __ftol call sequence before lookupZone; confirm these C++ float-to-int casts match original conversion semantics at this call site. [decomp: act_tran.cpp.decomp @ 0x004071A0]
     int zone_x = (int)param_2;
     int zone_y = (int)param_3;
     uchar zone = this->obj->lookupZone(zone_x, zone_y);
