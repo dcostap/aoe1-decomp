@@ -295,6 +295,7 @@ void RGE_Action_Missile::set_state(uchar param_1) {
 }
 
 // Fully verified. Source of truth: act_misl.cpp.decomp + act_misl.cpp.asm @ 0x004050F0
+// TODO: PARITY - Decomp includes corrupted FUN_004050d5 bytes immediately before update; audit ASM prologue/branch linkage for missing logic. [decomp: act_misl.cpp.decomp @ 0x004050D5]
 uchar RGE_Action_Missile::update() {
     float vx = 0.0f;
     float vy = 0.0f;

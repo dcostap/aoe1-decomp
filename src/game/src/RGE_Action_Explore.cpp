@@ -170,6 +170,7 @@ uchar RGE_Action_Explore::update() {
 }
 
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E26 (embedded pre-work decomp stub).
+// TODO: PARITY - This embedded pre-work stub offset is not represented by a standalone body; verify no branch logic is missing before work(). [decomp: act_expl.cpp.decomp @ 0x00402E26]
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402E40
 int RGE_Action_Explore::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
