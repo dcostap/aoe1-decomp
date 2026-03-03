@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for RGE_Diamond_Map_View::scalar_deleting_destructor. [decomp: RGE_Diamond_Map_View.decomp @ 0x0053D380]
 #include "RGE_Diamond_Map_View.h"
 
 #include "RGE_Base_Game.h"
