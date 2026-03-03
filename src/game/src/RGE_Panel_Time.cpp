@@ -13,6 +13,8 @@
 #include <new>
 #include <windows.h>
 
+// TODO: MISSING_FUNC - RGE_Panel_Time::~RGE_Panel_Time not implemented as a class method in this TU (bucket has direct base-destructor thunk). [decomp: bucket_048A.decomp @ 0x0048A730]
+
 // Fully verified. Source of truth: rpnl_tim.cpp.decomp @ 0x0048A680
 RGE_Panel_Time* rpnl_tim_ctor_0048A680(RGE_Panel_Time* this_, TDrawArea* param_1, TPanel* param_2, void* param_3) {
     new (this_) TPanel();

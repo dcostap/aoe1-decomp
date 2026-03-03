@@ -10,6 +10,9 @@
 
 // External declaration from Dib.cpp
 void* ReadPalette(char* filename, long resource_id, int flag);
+// TODO: MISSING_FUNC - E4 startup wrapper not implemented in this TU. [decomp: bucket_0463.decomp @ 0x00463BA0]
+// TODO: MISSING_FUNC - E3 atexit registration wrapper not implemented in this TU. [decomp: bucket_0463.decomp @ 0x00463BC0]
+// TODO: MISSING_FUNC - E2 panel_system teardown wrapper not implemented in this TU. [decomp: bucket_0463.decomp @ 0x00463BD0]
 
 // Source of truth: panel.cpp.decomp @ 0x00463BE0
 // Source of truth: panel.cpp.decomp @ 0x00463BB0

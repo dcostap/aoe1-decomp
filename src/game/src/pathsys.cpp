@@ -102,6 +102,13 @@ void E14() {
     new (&aiPathSystem) PathingSystem(0xFF, 0xFF, 1, nullptr, nullptr);
 }
 
+// TODO: MISSING_FUNC - E12 startup wrapper not implemented in this TU. [decomp: bucket_046B.decomp @ 0x0046B050]
+// TODO: MISSING_FUNC - E11 atexit registration wrapper not implemented in this TU. [decomp: bucket_046B.decomp @ 0x0046B080]
+// TODO: MISSING_FUNC - E10 pathSystem teardown wrapper not implemented in this TU. [decomp: bucket_046B.decomp @ 0x0046B090]
+// TODO: MISSING_FUNC - E17 startup wrapper not implemented in this TU. [decomp: bucket_046B.decomp @ 0x0046B0A0]
+// TODO: MISSING_FUNC - E16 atexit registration wrapper not implemented in this TU. [decomp: bucket_046B.decomp @ 0x0046B0D0]
+// TODO: MISSING_FUNC - E15 aiPathSystem teardown wrapper not implemented in this TU. [decomp: bucket_046B.decomp @ 0x0046B0E0]
+
 PathingSystem::PathingSystem(int param_1, int param_2, int param_3, RGE_Map* param_4,
                              RGE_Game_World* param_5) {
     // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B0F0

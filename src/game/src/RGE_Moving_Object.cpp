@@ -572,6 +572,7 @@ void RGE_Moving_Object::setTargetRadius(float param_1, float param_2) {
 }
 
 // Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045D6C0
+// TODO: MISSING_FUNC - vcall_456_flat thunk used by findPath is not explicitly represented in this TU. [decomp: bucket_0460.decomp @ 0x00460FC0]
 RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
     RGE_Master_Static_Object* master = this->master_obj;
     if (master != nullptr && master->radius_z <= 0.0f) {

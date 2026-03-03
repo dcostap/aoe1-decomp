@@ -48,7 +48,9 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* par
 }
 
 // Fully verified. Marker reconciliation coverage.
-TRIBE_Action_Build::~TRIBE_Action_Build() {}
+TRIBE_Action_Build::~TRIBE_Action_Build() {
+    // TODO: EMPTY_STUB - Bucket thunk is a direct base-destructor jump and this explicit body remains empty. [decomp: bucket_04CD.decomp @ 0x004CD200]
+}
 
 // Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Build::setup(RGE_Action_Object* param_1) {
