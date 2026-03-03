@@ -2669,6 +2669,7 @@ RGE_Game_World* RGE_Base_Game::create_world() {
 }
 int RGE_Base_Game::run() {
     // Fully verified. Source of truth: basegame.cpp.decomp/asm @ 0x0041CFD0
+    // TODO: PARITY - Decomp body checks msg.wParam==0x12 and returns msg.lParam, while this implementation follows ASM-corrected msg.message/WM_QUIT and returns wParam; keep this divergence explicitly tracked. [decomp: basegame.cpp.decomp @ 0x0041CFD0]
     MSG msg;
     
     while (1) {
