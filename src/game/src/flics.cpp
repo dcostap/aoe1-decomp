@@ -56,6 +56,7 @@ RGE_Flic_Player::~RGE_Flic_Player() {
 // Fully verified. Source of truth: flics.cpp.decomp + flics.cpp.asm @ 0x00449C50
 void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
     int* local_8 = (int*)0x0;
+    // TODO: PARITY - Decomp uses 32-bit int/long casts for frame-offset pointer arithmetic; current intptr_t widening may hide original truncation/signedness behavior. [decomp: flics.cpp.decomp @ 0x00449C50]
     intptr_t index1 = 0;
     int* piVar2 = nullptr;
     if (this->flic_handle < 0) {

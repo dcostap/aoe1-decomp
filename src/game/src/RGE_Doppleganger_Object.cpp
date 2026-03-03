@@ -122,6 +122,7 @@ void RGE_Doppleganger_Object::normal_draw(TDrawArea* param_1, short param_2, sho
 // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00441BB0
 void RGE_Doppleganger_Object::recycle_in_to_game(
     RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, RGE_Static_Object* param_6) {
+    // TODO: PARITY - CUSTOM_DEBUG logging and call-counter side effects in this routine are non-original instrumentation absent from the decomp body. [decomp: dpl_obj.cpp.decomp @ 0x00441BB0]
     CUSTOM_DEBUG_BEGIN
     static int s_dopple_recycle_dbg_calls = 0;
     int dbg_call_index = s_dopple_recycle_dbg_calls;
