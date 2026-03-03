@@ -66,6 +66,7 @@ static void button_send_command(TButtonPanel* btn, short state) {
 
 // Constructor
 // Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
+// TODO: PARITY - Decomp constructor path calls base as TPanel::TPanel((TPanel*)this); confirm TPanel(\"Button\") does not introduce non-parity base initialization side effects. [decomp: pnl_btn.cpp.decomp @ 0x00471EC0]
 TButtonPanel::TButtonPanel() : TPanel("Button") {
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
 
@@ -1121,6 +1122,7 @@ void TButtonPanel::draw() {
 // Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_state_info(int num_states) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722C0
+    // TODO: PARITY - Decomp signature takes short; current int parameter + cast may hide call-site signedness/ABI mismatches for out-of-range values. [decomp: pnl_btn.cpp.decomp @ 0x004722C0]
     // Original behavior is intentionally minimal:
     //   this->buttonTypeValue = State;
     //   this->num_states = param_1;
