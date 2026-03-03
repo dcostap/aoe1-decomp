@@ -883,6 +883,7 @@ in_range:
         }
 
         if ((path_ok == 0) && (this->pathValue.numberOfWaypoints() == 1)) {
+            // TODO: PARITY - Branch behavior diverges from decomp: decomp only enters the center-tile fallback when passable(center)!=0 and returns PathResult::PathNotFound if both fractions are exactly 0.5; current logic handles the passable==0 case with different return/status flow. [decomp: move_obj.cpp.decomp @ 0x0045DD90]
             float center_x = rge_tile_center(this->world_x);
             float center_y = rge_tile_center(this->world_y);
             int center_passable = pathSystem.passable(this, center_x, center_y, 1);

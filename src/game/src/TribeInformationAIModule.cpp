@@ -53,16 +53,19 @@ static void E19() {
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
+// TODO: PARITY - This function is still effectively unimplemented here (ASM-thunk placeholder), but decomp shows a complete object/zone predicate with explicit return paths. [decomp: taiinfmd.cpp.decomp @ 0x004D90F1]
 static void FUN_004d90f1() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk)
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
+// TODO: PARITY - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004DA16D]
 static void FUN_004da16d() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk)
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
+// TODO: PARITY - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004E0165]
 static void FUN_004e0165() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk)
 }
