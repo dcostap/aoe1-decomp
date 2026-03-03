@@ -590,6 +590,7 @@ void TDrawSystem::DeleteSurfaces() {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443520
 void TDrawSystem::Paint(tagRECT* param_rect) {
+    // TODO: PARITY - Decomp marks local `dest` as unmapped in this routine; re-validate windowed ClientToScreen corner writes and source/dest rect field ordering in drawarea.cpp.asm. [decomp: drawarea.cpp.decomp @ 0x00443520]
     if (this->DrawType == 1) return;
     if (this->PrimarySurface == nullptr) return;
     if (this->DrawArea == nullptr) return;
@@ -1397,6 +1398,7 @@ void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445580
 void TDrawArea::OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int dy, int src_x_off, int dst_y_off) {
+    // TODO: PARITY - Decomp's backward-copy branch is keyed off param_3<0 when param_4==0; this transliteration uses src_x_off<0 instead, so parameter-role mapping for overlap direction needs ASM confirmation. [decomp: drawarea.cpp.decomp @ 0x00445580]
     (void)dx;
     (void)dy;
     if (!src_rect || !dst_rect) return;
