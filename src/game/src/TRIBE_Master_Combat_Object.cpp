@@ -52,6 +52,7 @@ static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     }
 }
 
+// TODO: PARITY - This default constructor body is not present in tm_co_ob.cpp.decomp; verify original ctor coverage/offset mapping.
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object() {
     memset(this->build_inventory, 0, sizeof(this->build_inventory));
     this->build_pts_required = 0;
@@ -108,6 +109,7 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(FILE* param_1, RGE_Sprite
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EAE0
 int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* param_1) {
+    // TODO: PARITY - tm_co_ob.cpp.decomp @ 0x0050EAE0 does not show a null-guard; confirm whether this early return exists in original code.
     if (param_1 == nullptr) {
         return 0;
     }
@@ -172,6 +174,7 @@ RGE_Task_List* TRIBE_Master_Combat_Object::create_task_list() {
 
 // Fully verified. Source of truth: tm_co_ob.cpp.decomp @ 0x0050EE00
 void TRIBE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    // TODO: PARITY - tm_co_ob.cpp.decomp @ 0x0050EE00 does not show a null-guard; verify whether this guard is non-parity hardening.
     if (param_1 == nullptr) {
         return;
     }
