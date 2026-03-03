@@ -23,7 +23,7 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* panel_name, long text_id, lo
     }
 
     char* text = this->get_string((int)text_id);
-    // TODO: PARITY - Decomp constructor path only resolves text via get_string(text_id) and immediately delegates to setup_help; verify this pre-seeding of member fields matches original ctor/setup split. [decomp: dlg_help.cpp.decomp @ 0x0043E840]
+    // TODO: PARITY [MODERATE] - Decomp constructor path only resolves text via get_string(text_id) and immediately delegates to setup_help; verify this pre-seeding of member fields matches original ctor/setup split. [decomp: dlg_help.cpp.decomp @ 0x0043E840]
     this->setup_help(parent, panel_name, text, x, y, w, h);
 }
 
@@ -41,7 +41,7 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* panel_name, char* text, long
         this->parent_panel[sizeof(this->parent_panel) - 1] = '\0';
     }
 
-    // TODO: PARITY - Decomp setup_help writes help_page_id from its 4th argument; text-overload currently forces -1 before delegation. Reconfirm intended help-page semantics. [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
+    // TODO: PARITY [MODERATE] - Decomp setup_help writes help_page_id from its 4th argument; text-overload currently forces -1 before delegation. Reconfirm intended help-page semantics. [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
     this->setup_help(parent, panel_name, text, x, y, w, h);
 }
 
@@ -55,7 +55,7 @@ THelpDialog::~THelpDialog() {
 
 // Fully verified. Source of truth: dlg_help.cpp.decomp @ 0x0043E9E0
 void THelpDialog::setup_help(TEasy_Panel* parent, char* panel_name, char* text, long x, long y, long w, long h) {
-    // TODO: PARITY - Decomp gates encyclopedia_button creation on single-player mode, valid help_page_id, and non-empty help topic string; current code creates it unconditionally and uses text ID 0x2456 instead of 0x243d ("More Help"). [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
+    // TODO: PARITY [CRITICAL] - Decomp gates encyclopedia_button creation on single-player mode, valid help_page_id, and non-empty help topic string; current code creates it unconditionally and uses text ID 0x2456 instead of 0x243d ("More Help"). [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
     const long popup_id = parent ? parent->get_popup_info_id() : -1;
     char* popup_file = parent ? parent->get_popup_info_file() : nullptr;
     TDrawArea* area = parent ? parent->render_area : nullptr;
@@ -84,8 +84,8 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* panel_name, char* text, 
 
 // Fully verified. Source of truth: dlg_help.cpp.decomp @ 0x0043ED40
 long THelpDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // TODO: PARITY - encyclopedia_button click path should call WinHelpA(rge_base_game->prog_window, "empires.hlp", 0x101, get_string(help_page_id)) after closing the dialog; current implementation only closes/switches panels. [decomp: dlg_help.cpp.decomp @ 0x0043ED40]
-    // TODO: PARITY - Non-parity fallback to "Game Screen" when parent_panel is empty; decomp passes parent_panel directly to setCurrentPanel. [decomp: dlg_help.cpp.decomp @ 0x0043ED40]
+    // TODO: PARITY [CRITICAL] - encyclopedia_button click path should call WinHelpA(rge_base_game->prog_window, "empires.hlp", 0x101, get_string(help_page_id)) after closing the dialog; current implementation only closes/switches panels. [decomp: dlg_help.cpp.decomp @ 0x0043ED40]
+    // TODO: PARITY [MODERATE] - Non-parity fallback to "Game Screen" when parent_panel is empty; decomp passes parent_panel directly to setCurrentPanel. [decomp: dlg_help.cpp.decomp @ 0x0043ED40]
     if (param_2 == 1) {
         if (((TButtonPanel*)param_1 == this->ok_button) || ((TButtonPanel*)param_1 == this->encyclopedia_button)) {
             if (panel_system != nullptr) {
@@ -100,7 +100,7 @@ long THelpDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong par
 
 // Fully verified. Source of truth: dlg_help.cpp.decomp @ 0x0043EE10
 long THelpDialog::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
-    // TODO: PARITY - Decomp checks a class-local hit-test helper and can synthesize an OK-button action before fallback; current implementation always delegates directly. [decomp: dlg_help.cpp.decomp @ 0x0043EE10]
+    // TODO: PARITY [MODERATE] - Decomp checks a class-local hit-test helper and can synthesize an OK-button action before fallback; current implementation always delegates directly. [decomp: dlg_help.cpp.decomp @ 0x0043EE10]
     return TDialogPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
 }
 

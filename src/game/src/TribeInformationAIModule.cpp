@@ -53,19 +53,19 @@ static void E19() {
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
-// TODO: PARITY - This function is still effectively unimplemented here (ASM-thunk placeholder), but decomp shows a complete object/zone predicate with explicit return paths. [decomp: taiinfmd.cpp.decomp @ 0x004D90F1]
+// TODO: PARITY [CRITICAL] - This function is still effectively unimplemented here (ASM-thunk placeholder), but decomp shows a complete object/zone predicate with explicit return paths. [decomp: taiinfmd.cpp.decomp @ 0x004D90F1]
 static void FUN_004d90f1() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk)
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
-// TODO: PARITY - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004DA16D]
+// TODO: PARITY [CRITICAL] - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004DA16D]
 static void FUN_004da16d() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk)
 }
 
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
-// TODO: PARITY - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004E0165]
+// TODO: PARITY [CRITICAL] - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004E0165]
 static void FUN_004e0165() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk)
 }
@@ -2233,7 +2233,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, 
     float best_distance = 1000.0f;
     int resource_zone = tribe_object_current_zone(param_1);
 
-    // TODO: PARITY - taiinfmd.cpp.decomp @ 0x004E2A00 includes a playerBuildings capacity-growth path during iteration; this implementation hard-breaks at maximumSizeValue and needs asm verification.
+    // TODO: PARITY [CRITICAL] - taiinfmd.cpp.decomp @ 0x004E2A00 includes a playerBuildings capacity-growth path during iteration; this implementation hard-breaks at maximumSizeValue and needs asm verification.
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if (i >= this->playerBuildings.maximumSizeValue) {
             break;
@@ -2341,7 +2341,7 @@ void TribeInformationAIModule::updateAllResourceDropsites() {
             }
             int dropsite_id = -1;
             float distance = this->findClosestDropsite(resource_obj, 1, &dropsite_id);
-            // TODO: PARITY - Decomp uses __ftol for gatherValue/dropDistance writes in this path; static_cast truncation may drift at boundary values. [decomp: taiinfmd.cpp.decomp @ 0x004E2D10]
+            // TODO: PARITY [MODERATE] - Decomp uses __ftol for gatherValue/dropDistance writes in this path; static_cast truncation may drift at boundary values. [decomp: taiinfmd.cpp.decomp @ 0x004E2D10]
             this->resources[slot][i].gatherValue = static_cast<int>(distance);
             this->resources[slot][i].dropDistance = static_cast<uchar>(distance);
             this->resources[slot][i].dropsiteID = dropsite_id;
@@ -2373,7 +2373,7 @@ void TribeInformationAIModule::updateResourceDropsites(int param_1) {
 
         int dropsite_id = -1;
         float distance = this->findClosestDropsite(resource_obj, 1, &dropsite_id);
-        // TODO: PARITY - Decomp uses __ftol before writing gatherValue/dropDistance here; confirm rounding mode parity versus cast-based conversion. [decomp: taiinfmd.cpp.decomp @ 0x004E2E90]
+        // TODO: PARITY [MODERATE] - Decomp uses __ftol before writing gatherValue/dropDistance here; confirm rounding mode parity versus cast-based conversion. [decomp: taiinfmd.cpp.decomp @ 0x004E2E90]
         memory.gatherValue = static_cast<int>(distance);
         memory.dropDistance = static_cast<uchar>(distance);
         memory.dropsiteID = dropsite_id;

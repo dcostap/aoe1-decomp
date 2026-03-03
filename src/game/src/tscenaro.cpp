@@ -15,7 +15,7 @@
 #include <string.h>
 
 namespace {
-// TODO: PARITY - TRIBE_Scenario_Header ctors/get_size/save are sourced from this decomp but implemented in a different unit (TRIBE_World_types.cpp), so this file is missing those local bodies. [decomp: tscenaro.cpp.decomp @ 0x0052A990]
+// TODO: PARITY [MODERATE] - TRIBE_Scenario_Header ctors/get_size/save are sourced from this decomp but implemented in a different unit (TRIBE_World_types.cpp), so this file is missing those local bodies. [decomp: tscenaro.cpp.decomp @ 0x0052A990]
 } // namespace
 
 T_Scenario::T_Scenario(RGE_Game_World* param_1)
@@ -39,7 +39,7 @@ T_Scenario::T_Scenario(RGE_Game_World* param_1)
 T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2)
     : RGE_Scenario(param_1, param_2) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052AB90
-    // TODO: PARITY - Decomp includes an extra version-bitpattern branch (`Version == 0x3f8147ae`) that repeatedly reads AlliedVictory before the normal read path; this transliteration currently keeps only the standard path. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
+    // TODO: PARITY [CRITICAL] - Decomp includes an extra version-bitpattern branch (`Version == 0x3f8147ae`) that repeatedly reads AlliedVictory before the normal read path; this transliteration currently keeps only the standard path. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
     this->InitializeVictoryValues();
     this->InitializeFriendlinessValues();
     this->ClearDisabledTechnologies();
@@ -127,7 +127,7 @@ T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2)
         rge_read(param_1, &checksum, 4);
     }
 
-    // TODO: PARITY - Decomp tail writes victory.MP_Conquest from the low byte of the same storage used for victory_conquest; this constructor has no explicit sync assignment and needs parity recheck. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
+    // TODO: PARITY [MODERATE] - Decomp tail writes victory.MP_Conquest from the low byte of the same storage used for victory_conquest; this constructor has no explicit sync assignment and needs parity recheck. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
 }
 
 void T_Scenario::InitializePlayerValues() {
@@ -533,7 +533,7 @@ void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
     }
 
     if (rge_base_game->prog_mode != 7) {
-        // TODO: PARITY - Decomp switches on ScenarioOptions[player_index + 2], while this implementation switches on PlayerAge[player_index]; verify field mapping/parity. [decomp: tscenaro.cpp.decomp @ 0x0052C230]
+        // TODO: PARITY [MODERATE] - Decomp switches on ScenarioOptions[player_index + 2], while this implementation switches on PlayerAge[player_index]; verify field mapping/parity. [decomp: tscenaro.cpp.decomp @ 0x0052C230]
         switch (this->PlayerAge[player_index]) {
             case 1:
                 param_1->rev_tech(0x19);
@@ -712,12 +712,12 @@ void T_Scenario::Set_Multi_Conquest(int param_1) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B400
     if (param_1 != 0) {
         this->victory.MP_Conquest = 1;
-        // TODO: PARITY - Decomp calls RGE_Scenario::Set_conquest_victory(this, 1) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
+        // TODO: PARITY [CRITICAL] - Decomp calls RGE_Scenario::Set_conquest_victory(this, 1) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
         this->victory_conquest = 1;
         return;
     }
     this->victory.MP_Conquest = 0;
-    // TODO: PARITY - Decomp calls RGE_Scenario::Set_conquest_victory(this, 0) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
+    // TODO: PARITY [CRITICAL] - Decomp calls RGE_Scenario::Set_conquest_victory(this, 0) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
     this->victory_conquest = 0;
 }
 
