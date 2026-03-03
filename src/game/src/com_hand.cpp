@@ -1366,6 +1366,7 @@ void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
 uint TCommunications_Handler::GetRandomSeed() {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
+    // TODO: PARITY - Single-player path should seed/store PlayerOptions.RandomSeed via debug_timeGetTime/debug_srand/debug_rand before return; current code returns GetTickCount() directly. [decomp: com_hand.cpp.decomp @ 0x0042CA90]
     if (this->Multiplayer == 0) {
         return (uint)GetTickCount();
     }
@@ -3513,6 +3514,7 @@ void TCommunications_Handler::ClearRXTXForPlayer(uint param_2) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A180
 int TCommunications_Handler::StoreIncoming(uint param_2, char* param_3, uint param_4, ulong param_5, ulong param_6) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A180
+    // TODO: PARITY - Wrapper currently bypasses explicit duplicate-slot scan/full-buffer diagnostics from decomp; verify comm_store_incoming preserves all branch behavior and logging side effects. [decomp: com_hand.cpp.decomp @ 0x0042A180]
     comm_store_incoming(this, param_2, param_3, (ulong)param_4, param_5, param_6);
     return 1;
 }
@@ -3560,6 +3562,7 @@ int TCommunications_Handler::StoreForResend(uint param_2, char* param_3, uint pa
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
 int TCommunications_Handler::TXAcknowledgeMessage(uint param_2, uint param_3) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
+    // TODO: PARITY - Decomp returns 0 on disabled GTD, bad DCOID, or send failure; current wrapper always returns 1 after helper call. [decomp: com_hand.cpp.decomp @ 0x0042A540]
     comm_tx_ack(this, param_2, param_3);
     return 1;
 }
@@ -3708,6 +3711,7 @@ void TCommunications_Handler::DestroyMultiplayerGame(void) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
 void TCommunications_Handler::SetRandomSeed(int param_2) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+    // TODO: PARITY - Host-only gate, -1 sentinel randomization, NeedsToBeSent flag, and SendSharedData(0) side effects are missing in this simplified assignment. [decomp: com_hand.cpp.decomp @ 0x0042CA20]
     this->PlayerOptions.RandomSeed = (ulong)param_2;
 }
 
@@ -3728,6 +3732,7 @@ char* TCommunications_Handler::GetCommStateStr(void) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
 char* TCommunications_Handler::GetReadyPlayerStr(void) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+    // TODO: PARITY - Decomp builds per-player readiness/humanity glyph string; current implementation collapses to binary Ready/Not Ready text. [decomp: com_hand.cpp.decomp @ 0x0042CB30]
     return (this->AllPlayersReady() != 0) ? (char*)"Ready" : (char*)"Not Ready";
 }
 
