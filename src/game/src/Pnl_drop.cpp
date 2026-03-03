@@ -164,6 +164,7 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
 
 // Fully verified. Source of truth: pnl_drop.cpp.decomp/asm (helper extracted from decomp flow).
 static long dropdown_calc_list_hgt(TDropDownPanel* self, int use_draw_lines) {
+    // TODO: PARITY - Decomp expresses this helper via raw list-panel field offsets while toggling between numberLines/numberDrawLines; keep spacer/border offset mapping under ASM audit. [decomp: pnl_drop.cpp.decomp @ 0x00474880]
     if (!self || !self->list_panel) {
         return 0;
     }
@@ -186,6 +187,7 @@ static long dropdown_calc_list_hgt(TDropDownPanel* self, int use_draw_lines) {
 
 // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00474880
 void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode param_1) {
+    // TODO: PARITY - Overflow/flip handling in ModeList depends on tightly-coupled intermediate math (list_hgt/overflow/space_above); decomp has unmapped temporaries here, so branch arithmetic should stay asm-verified. [decomp: pnl_drop.cpp.decomp @ 0x00474880]
     if (param_1 == this->mode) {
         return;
     }
