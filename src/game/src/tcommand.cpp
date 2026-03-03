@@ -79,6 +79,7 @@ static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_i
 TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* comm)
     : RGE_Command(world, comm) {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509720
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tcommand.cpp.decomp @ 0x00509720]
 }
 
 // Fully verified. Marker reconciliation coverage.
@@ -153,6 +154,7 @@ void TRIBE_Command::do_command(void* p1) {
 // Fully verified. Marker reconciliation coverage.
 static void tcommand_jump_stub_00509859() {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x00509859
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tcommand.cpp.decomp @ 0x00509859]
     // ASM shows this is a jump-table alignment entry (NOP; MOV EDI, EDI).
 }
 
@@ -480,6 +482,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
 // Fully verified. Marker reconciliation coverage.
 static void tcommand_jump_stub_0050A465() {
     // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A465
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tcommand.cpp.decomp @ 0x0050A465]
     // ASM shows this is a jump-table alignment entry (NOP; MOV EDI, EDI).
 }
 
