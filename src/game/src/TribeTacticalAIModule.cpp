@@ -3574,47 +3574,48 @@ TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int 
 }
 TacticalAIGroup* TribeTacticalAIModule::getGroup(int param_1) { return group(param_1, -1, -1, -1); }
 
+// TODO: PARITY - For the FUN_* stubs below, "Fully verified" tags only confirm offset mapping to decomp entries; implementation parity is unresolved.
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0B62
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x004F0B62]
+// TODO: PARITY - Empty thunk placeholder; decomp shows overlapping-instruction string/enum mapping flow returning char* at this offset, so this remains unresolved. [decomp: taitacmd.cpp.decomp @ 0x004F0B62]
 static void FUN_004f0b62() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D4D
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x004F0D4D]
+// TODO: PARITY - Empty thunk placeholder; decomp contains substantial multi-branch object/task routing logic with many locals at this offset. [decomp: taitacmd.cpp.decomp @ 0x004F0D4D]
 static void FUN_004f0d4d() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005018C1
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x005018C1]
+// TODO: PARITY - Empty thunk placeholder; decomp shows a large stateful integer routine with heavy branching/register-state dependence. [decomp: taitacmd.cpp.decomp @ 0x005018C1]
 static void FUN_005018c1() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502451
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x00502451]
+// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502451/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502451]
 static void FUN_00502451() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050245D
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x0050245D]
+// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x0050245D/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x0050245D]
 static void FUN_0050245d() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502464
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x00502464]
+// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502464/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502464]
 static void FUN_00502464() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502470
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x00502470]
+// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502470/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502470]
 static void FUN_00502470() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050247C
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x0050247C]
+// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050247C]
 static void FUN_0050247c() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502488
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x00502488]
+// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502488/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502488]
 static void FUN_00502488() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050248F
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x0050248F]
+// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050248F]
 static void FUN_0050248f() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050249B
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x0050249B]
+// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050249B]
 static void FUN_0050249b() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024A7
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x005024A7]
+// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024A7]
 static void FUN_005024a7() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024B3
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x005024B3]
+// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024B3]
 static void FUN_005024b3() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005025CA
-// TODO: PARITY - Placeholder empty thunk; decomp block is non-trivial/corrupted and needs explicit parity decision. [decomp: taitacmd.cpp.decomp @ 0x005025CA]
+// TODO: PARITY - Empty thunk placeholder; decomp shows non-trivial uint-return tactical eligibility logic with player/unit-state and bitwise gating. [decomp: taitacmd.cpp.decomp @ 0x005025CA]
 static void FUN_005025ca() {}
 
 static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
