@@ -184,22 +184,22 @@ static void FUN_004c66a2() {
 }
 
 static void FUN_004c218d() {
-    // TODO: PARITY - Decomp at this offset contains a non-trivial control-flow block (draw/capture dispatch), but this implementation is a no-op landing-pad placeholder pending full ASM-backed parity confirmation. [decomp: stat_obj.cpp.decomp @ 0x004C218D]
+    // TODO: PARITY [CRITICAL] - Decomp at this offset contains a non-trivial control-flow block (draw/capture dispatch), but this implementation is a no-op landing-pad placeholder pending full ASM-backed parity confirmation. [decomp: stat_obj.cpp.decomp @ 0x004C218D]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C218D (switch jump-table landing pad).
 }
 
 static void FUN_004c2206() {
-    // TODO: PARITY - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against surrounding dispatch logic. [decomp: stat_obj.cpp.decomp @ 0x004C2206]
+    // TODO: PARITY [CRITICAL] - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against surrounding dispatch logic. [decomp: stat_obj.cpp.decomp @ 0x004C2206]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C2206 (switch jump-table landing pad).
 }
 
 static void FUN_004c22a6() {
-    // TODO: PARITY - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against surrounding dispatch logic. [decomp: stat_obj.cpp.decomp @ 0x004C22A6]
+    // TODO: PARITY [CRITICAL] - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against surrounding dispatch logic. [decomp: stat_obj.cpp.decomp @ 0x004C22A6]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C22A6 (switch jump-table landing pad).
 }
 
 static void FUN_004c3f65() {
-    // TODO: PARITY - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against damage-sprite update flow. [decomp: stat_obj.cpp.decomp @ 0x004C3F65]
+    // TODO: PARITY [CRITICAL] - Decompiled output at this offset is non-trivial and currently represented as a no-op landing-pad placeholder here; requires explicit parity audit against damage-sprite update flow. [decomp: stat_obj.cpp.decomp @ 0x004C3F65]
     // Fully verified. Source of truth: stat_obj.cpp.asm @ 0x004C3F65 (switch jump-table landing pad).
 }
 
@@ -538,7 +538,7 @@ void RGE_Static_Object::recycle_out_of_game() {
 }
 void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1F30
-    // TODO: PARITY - This implementation adds defensive owner/sprite/master null guards before draw dispatch; decomp flow dereferences owner/world/sprite-list without those checks, so corrupted-state behavior diverges (early-return here vs crash-prone original path). [decomp: stat_obj.cpp.decomp @ 0x004C1F30]
+    // TODO: PARITY [MODERATE] - This implementation adds defensive owner/sprite/master null guards before draw dispatch; decomp flow dereferences owner/world/sprite-list without those checks, so corrupted-state behavior diverges (early-return here vs crash-prone original path). [decomp: stat_obj.cpp.decomp @ 0x004C1F30]
     static int s_static_draw_guard_logs = 0;
     SDI_Object_ID = this->id;
 
@@ -1909,7 +1909,7 @@ int RGE_Static_Object::findClosestPointInTerrainType(XYPoint param_1, XYPoint* p
 
 uchar RGE_Static_Object::update() {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3C70
-    // TODO: PARITY - Decomp shows register-derived return bytes in some death/undead transitions (uVar11/uVar12), while this transliteration normalizes those branches to explicit 0 returns; confirm exact return semantics in ASM. [decomp: stat_obj.cpp.decomp @ 0x004C3C70]
+    // TODO: PARITY [MODERATE] - Decomp shows register-derived return bytes in some death/undead transitions (uVar11/uVar12), while this transliteration normalizes those branches to explicit 0 returns; confirm exact return semantics in ASM. [decomp: stat_obj.cpp.decomp @ 0x004C3C70]
 
     // goto_sleep_flag: transfer object between awake/sleep lists
     if (this->goto_sleep_flag != 0) {
@@ -3984,7 +3984,7 @@ long RGE_Static_Object::get_waypoint_checksum() {
 }
 int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1840
-    // TODO: PARITY - Decomp assumes sprite-list load and owner/world list linkage calls succeed unconditionally; this implementation adds null guards that can skip linkage on allocation failure. [decomp: stat_obj.cpp.decomp @ 0x004C1840]
+    // TODO: PARITY [MODERATE] - Decomp assumes sprite-list load and owner/world list linkage calls succeed unconditionally; this implementation adds null guards that can skip linkage on allocation failure. [decomp: stat_obj.cpp.decomp @ 0x004C1840]
     int fd = param_1;
 
     this->type = 0x0A;
