@@ -206,6 +206,7 @@ RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* param_1, RGE_Task*
 }
 
 // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x004071A0 (virtual forwarding coverage).
+// TODO: PARITY - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current empty dtor may miss side effects. [decomp: bucket_0406.decomp @ 0x00406DB0]
 RGE_Action_Transport::~RGE_Action_Transport() {}
 
 // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x004071A0 (virtual forwarding coverage).
