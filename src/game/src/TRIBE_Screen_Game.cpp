@@ -3406,6 +3406,7 @@ void TRIBE_Screen_Game::command_tool_box() {
 void TRIBE_Screen_Game::command_trade() {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F020.
+    // TODO: PARITY - Referenced offset 0x0049F020 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3461,6 +3462,7 @@ void TRIBE_Screen_Game::command_ungroup() {
 void TRIBE_Screen_Game::command_unload() {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F400.
+    // TODO: PARITY - Referenced offset 0x0049F400 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
