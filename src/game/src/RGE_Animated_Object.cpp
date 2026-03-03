@@ -6,10 +6,10 @@
 #include "../include/RGE_Player.h"
 #include "../include/globals.h"
 
-// TODO: PARITY - Requested decomp name anim_obj.cpp.decomp is not present; this audit maps to ani_obj.cpp.decomp for RGE_Animated_Object parity checks. [decomp: ani_obj.cpp.decomp @ 0x0041A150]
+// TODO: PARITY [LOW] - Requested decomp name anim_obj.cpp.decomp is not present; this audit maps to ani_obj.cpp.decomp for RGE_Animated_Object parity checks. [decomp: ani_obj.cpp.decomp @ 0x0041A150]
 
 // Default constructor for make_new_obj usage
-// TODO: PARITY - This default ctor path is used by make_new_obj scaffolding; no dedicated ani_obj.cpp.decomp body was found for this symbol, so constructor-side effects need ASM/vtable-init confirmation.
+// TODO: PARITY [MODERATE] - This default ctor path is used by make_new_obj scaffolding; no dedicated ani_obj.cpp.decomp body was found for this symbol, so constructor-side effects need ASM/vtable-init confirmation.
 RGE_Animated_Object::RGE_Animated_Object()
     : RGE_Static_Object()
 {
@@ -46,7 +46,7 @@ int RGE_Animated_Object::setup(int param_1, RGE_Game_World* param_2) {
     return 1;
 }
 
-// TODO: PARITY - Empty destructor currently mirrors expected inherited cleanup, but a direct ani_obj.cpp.decomp anchor for this specific symbol was not identified in this audit pass.
+// TODO: PARITY [MODERATE] - Empty destructor currently mirrors expected inherited cleanup, but a direct ani_obj.cpp.decomp anchor for this specific symbol was not identified in this audit pass.
 RGE_Animated_Object::~RGE_Animated_Object() {
 }
 
@@ -73,7 +73,7 @@ int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* 
     return 1;
 }
 
-// TODO: PARITY - Wrapper overrides below are currently sourced from vtable slot behavior/obj_list dispatch evidence; confirm each slot against ani_obj.cpp.asm before promoting to fully verified.
+// TODO: PARITY [MODERATE] - Wrapper overrides below are currently sourced from vtable slot behavior/obj_list dispatch evidence; confirm each slot against ani_obj.cpp.asm before promoting to fully verified.
 // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
 void RGE_Animated_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
     RGE_Static_Object::draw(param_1, param_2, param_3, param_4);

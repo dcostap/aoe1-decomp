@@ -30,7 +30,7 @@ uchar RGE_RMM_Shallows_Generator::generate() {
     // Fully verified. Source of truth: rmm_shal.cpp.decomp @ 0x00487050
     this->clear_stack();
 
-    // TODO: PARITY - This path clamps and rewrites shallows_num to [0,99], while decomp uses the raw value directly before adding two random pairs. [decomp: rmm_shal.cpp.decomp @ 0x00487050]
+    // TODO: PARITY [MODERATE] - This path clamps and rewrites shallows_num to [0,99], while decomp uses the raw value directly before adding two random pairs. [decomp: rmm_shal.cpp.decomp @ 0x00487050]
     long num = this->info.shallows_num;
     if (num < 0) num = 0;
     if (num > 99) num = 99;
@@ -102,7 +102,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
 
     long tx = start_x;
     long ty = start_y;
-    // TODO: PARITY - Decomp initializes the local stack before find_path, but this version calls find_path first and initializes stack afterward. [decomp: rmm_shal.cpp.decomp @ 0x00487200]
+    // TODO: PARITY [MODERATE] - Decomp initializes the local stack before find_path, but this version calls find_path first and initializes stack afterward. [decomp: rmm_shal.cpp.decomp @ 0x00487200]
     this->find_path(end_x, end_y, &tx, &ty, &terrain_cost[1]);
     if (tx != start_x || ty != start_y || tx < 0 || ty < 0 || tx >= this->map_width || ty >= this->map_height) {
         return;
@@ -112,7 +112,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     this->init_stack(&stack);
 
     long done = 0;
-    // TODO: PARITY - This transliteration adds a walk_guard fail-safe branch; decomp loops until a terminal path marker is encountered. [decomp: rmm_shal.cpp.decomp @ 0x00487200]
+    // TODO: PARITY [MODERATE] - This transliteration adds a walk_guard fail-safe branch; decomp loops until a terminal path marker is encountered. [decomp: rmm_shal.cpp.decomp @ 0x00487200]
     long walk_guard = this->map_width * this->map_height * 4;
     if (walk_guard < 1) walk_guard = 1;
     while (done == 0 && walk_guard-- > 0) {
@@ -158,7 +158,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
             float c = 0.0f;
             Map_Stack* it = this->pop_stack(&stack, &sx, &sy, &c);
             while (it != nullptr) {
-                // TODO: PARITY - Decomp writes terrain with bit-masked assignment (`old & 0xE4 | 4`), but this sets terrain_type to literal 4 and may drop preserved bits. [decomp: rmm_shal.cpp.decomp @ 0x00487200]
+                // TODO: PARITY [MODERATE] - Decomp writes terrain with bit-masked assignment (`old & 0xE4 | 4`), but this sets terrain_type to literal 4 and may drop preserved bits. [decomp: rmm_shal.cpp.decomp @ 0x00487200]
                 this->map_row_offset[sy][sx].terrain_type = 4;
                 it = this->pop_stack(&stack, &sx, &sy, &c);
             }

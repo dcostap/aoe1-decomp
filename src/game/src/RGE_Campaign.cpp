@@ -13,11 +13,11 @@
 #include <string.h>
 #include <sys/stat.h>
 
-// TODO: PARITY - campaign.cpp.decomp methods open_scenario/get_name/scenario_number/get_scenario_name are implemented in gameinfo.cpp, leaving this module with split function ownership. [decomp: campaign.cpp.decomp @ 0x00423690]
+// TODO: PARITY [MODERATE] - campaign.cpp.decomp methods open_scenario/get_name/scenario_number/get_scenario_name are implemented in gameinfo.cpp, leaving this module with split function ownership. [decomp: campaign.cpp.decomp @ 0x00423690]
 
 // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423230
 RGE_Campaign::RGE_Campaign(char* param_1) {
-    // TODO: PARITY - Decomp constructor directly dereferences global game/prog_info and input pointers; these defensive null guards add non-original early-return paths.
+    // TODO: PARITY [MODERATE] - Decomp constructor directly dereferences global game/prog_info and input pointers; these defensive null guards add non-original early-return paths.
     this->scenario_offsets = nullptr;
     memset(this->filename, 0, sizeof(this->filename));
 
@@ -51,7 +51,7 @@ RGE_Campaign::RGE_Campaign(char* param_1) {
 
 // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423330
 RGE_Campaign::RGE_Campaign(char* param_1, char* param_2, long param_3, char** param_4, char** param_5) {
-    // TODO: PARITY - Decomp constructor assumes global game/prog_info and campaign name are valid; this version adds null-guard exits.
+    // TODO: PARITY [MODERATE] - Decomp constructor assumes global game/prog_info and campaign name are valid; this version adds null-guard exits.
     this->scenario_offsets = nullptr;
     memset(this->filename, 0, sizeof(this->filename));
     memset(&this->campaign_header, 0, sizeof(this->campaign_header));
@@ -101,7 +101,7 @@ RGE_Campaign::~RGE_Campaign() {
 
 // Fully verified. Source of truth: campaign.cpp.decomp @ 0x004234B0
 void RGE_Campaign::create_file() {
-    // TODO: PARITY - Decomp create_file path does not include this upfront global/prog_info null guard before file operations.
+    // TODO: PARITY [MODERATE] - Decomp create_file path does not include this upfront global/prog_info null guard before file operations.
     if (rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
         return;
     }
@@ -149,7 +149,7 @@ void RGE_Campaign::create_file() {
 
 // Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423730
 long RGE_Campaign::scenario_info(char*** param_1) {
-    // TODO: PARITY - Decomp writes through param_1 without explicit null validation; this guard introduces a defensive early return on invalid pointers.
+    // TODO: PARITY [MODERATE] - Decomp writes through param_1 without explicit null validation; this guard introduces a defensive early return on invalid pointers.
     if (param_1 == nullptr) {
         return 0;
     }
