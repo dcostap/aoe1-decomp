@@ -1,4 +1,5 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Screen_Info::scalar_deleting_destructor. [decomp: TRIBE_Screen_Info.decomp @ 0x0049D5E0]
+// TODO: PARITY - Class-specific decomp currently only exposes the deleting-destructor thunk; method bodies remain mapped to scr_info.cpp.decomp.
 #include "../include/TRIBE_Screen_Info.h"
 
 #include "../include/RGE_Base_Game.h"
