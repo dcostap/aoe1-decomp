@@ -858,6 +858,7 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3, uchar
 // -----------------------------------------------------------------------------
 
 static void FUN_00437bd9() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: diam_map.cpp.decomp @ 0x00437bd9]
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x00437BD9 (switch jump-table thunk)
     // TODO: EMPTY_STUB - function body not transliterated [decomp: diam_map.cpp.decomp @ 0x00437BD9]
 }
@@ -1107,6 +1108,7 @@ void RGE_Diamond_Map::draw_object(short param_1, short param_2, uchar param_3, s
 }
 
 static void FUN_0043804d() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: diam_map.cpp.decomp @ 0x0043804d]
     // TODO: PARITY - Decomp provides a FUN_0043804d body at this offset, while this file currently treats it as an ASM jump-table thunk only; re-audit this boundary for hidden branch logic. [decomp: diam_map.cpp.decomp @ 0x0043804D]
     // Fully verified. Source of truth: diam_map.cpp.asm @ 0x0043804D (switch jump-table thunk)
     // TODO: EMPTY_STUB - function body not transliterated [decomp: diam_map.cpp.decomp @ 0x0043804D]
@@ -1354,3 +1356,4 @@ int RGE_Diamond_Map::is_inside(long param_1, long param_2) {
 // TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::draw_objects not implemented in this translation unit [decomp: tvw_dmap.cpp.decomp @ 0x0052CA60]
 // TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::draw_object not implemented in this translation unit [decomp: tvw_dmap.cpp.decomp @ 0x0052CAB0]
 
+// TODO: MISSING_FUNC - RGE_Diamond_Map::vector_deleting_destructor [decomp: RGE_Diamond_Map.decomp @ 0x00436910]
