@@ -51,6 +51,7 @@ extern struct TPanelSystem* panel_system;
 static int snapshot_number = 1;
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
 // TODO: Debug-only automation state for reproducing start-game crashes via real UI action handlers.
+// TODO: PARITY - Debug-only autoplay globals introduce non-original UI-driving state and timing paths. [decomp: basegame.cpp.decomp @ 0x00420F60]
 static int debug_autoplay_sp_random_start_state = 0;
 static int debug_autoplay_sp_random_start_wait_frames = 0;
 static int debug_autoplay_sp_random_start_enabled = -1;
@@ -388,6 +389,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->single_player_difficulty = 2;
 
     // TODO: Constructor parity gap. panel_system must exist before setup_main_window()/palette setup paths.
+    // TODO: PARITY - Constructor currently injects panel_system allocation that is not proven in decomp ctor flow. [decomp: basegame.cpp.decomp @ 0x0041B6A0]
     if (panel_system == nullptr) {
         panel_system = new (std::nothrow) TPanelSystem();
         if (panel_system == nullptr) {
@@ -2740,6 +2742,7 @@ int RGE_Base_Game::handle_idle() {
 
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
     // TODO: Debug-only automation path. Not parity with original executable.
+    // TODO: PARITY - Autoplay branch adds extra idle-time control flow and synthetic button actions. [decomp: basegame.cpp.decomp @ 0x00420F60]
     if (debug_is_autoplay_sp_random_start_enabled() != 0 &&
         curPanel != nullptr &&
         curPanel->panelNameValue != nullptr) {

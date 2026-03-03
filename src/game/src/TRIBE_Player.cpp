@@ -53,6 +53,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO: PARITY - TRIBE_Player::vector_deleting_destructor from decomp is not implemented in this translation unit. [decomp: TRIBE_Player.decomp @ 0x00511E00]
+
 class TribeBuildAIModule {
 public:
     void setMainDecisionAI(TribeMainDecisionAIModule* param_1);

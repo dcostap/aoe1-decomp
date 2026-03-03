@@ -37,6 +37,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// TODO: PARITY - TRIBE_World::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: TRIBE_World.decomp @ 0x0052E020]
+
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
     // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).
     if (world == nullptr || world->players == nullptr) {
@@ -975,6 +977,7 @@ void TRIBE_World::send_zone_score_info() {
 
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
+    // TODO: PARITY - TRIBE_World-specific body is unresolved and currently forwards to base implementation; confirm no TRIBE-only branch is missing. [decomp: world.cpp.decomp @ 0x00542D10]
     // Source of truth:
     // - tworld.cpp.decomp / tworld.cpp.asm contain no dedicated TRIBE_World::new_random_game body.
     // - world.cpp.decomp / world.cpp.asm provide RGE_Game_World::new_random_game @ 0x00542D10.

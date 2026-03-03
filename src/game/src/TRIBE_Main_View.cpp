@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for TRIBE_Main_View::scalar_deleting_destructor. [decomp: TRIBE_Main_View.decomp @ 0x00495470]
 // TRIBE_Main_View.cpp
 // Transliterated from src/game/decomp/tvw_main.cpp.decomp
 // ASM audited vs src/game/decomp/tvw_main.cpp.asm as noted per-function.

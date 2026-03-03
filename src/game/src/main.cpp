@@ -87,6 +87,7 @@ CUSTOM_DEBUG_END
     
     info.verify_cd = 0;
     info.max_players_per_cd = 1;
+    // TODO: PARITY - Expiration/CD gate is intentionally bypassed for startup triage and may diverge from retail startup policy. [decomp: main.cpp.decomp @ 0x004549E0]
     // TODO: Temporary startup unblock. Decomp parity around expiration gating is under investigation.
     info.max_players = 8;
     // TODO: Temporary startup unblock. Original value is 8; disabled for launch triage.

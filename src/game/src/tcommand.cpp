@@ -37,6 +37,8 @@
 
 #include <cstdlib>
 
+// TODO: PARITY - Multiple TRIBE_Command send helpers intentionally omit TDebuggingLog::Log side effects present in decomp; audit each omitted logging path for strict behavioral parity. [decomp: tcommand.cpp.decomp @ 0x0050A7F0]
+
 // Fully verified. Marker reconciliation coverage.
 static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
     if (obj == nullptr) {
