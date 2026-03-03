@@ -23,6 +23,7 @@ extern "C" void* _ASMGet_Xlate_Table();
 static int Shape_Loads = 0;
 
 // TODO: PARITY - These local span helpers have no direct symbol-level entries in shape.cpp.decomp; verify they preserve the inlined span-walk behavior of surrounding transliterated paths. [decomp: shape.cpp.decomp @ 0x004B8B30]
+// TODO: MISSING_FUNC - Requested tshape.cpp.decomp export is not present in src/game/decomp; inventory for this module currently relies on shape.cpp.decomp naming.
 
 static inline VSpan_Node* shape_span_advance(VSpan_Node* span, long x) {
     // Fully verified. Source of truth: shape.cpp.decomp (helper implementation).
