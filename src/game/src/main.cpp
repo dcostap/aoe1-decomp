@@ -6,6 +6,17 @@
 #include "../include/RGE_Prog_Info.h"
 #include "../include/custom_debug.h"
 
+// TODO: MISSING_FUNC - bucket_054F runtime exports (qsort/entry/FrameUnwindToState range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_054F.decomp @ 0x0054F020]
+// TODO: MISSING_FUNC - bucket_0550 runtime exports (EH/new-handler/heap allocator support range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0550.decomp @ 0x00550000]
+// TODO: MISSING_FUNC - bucket_0551 runtime exports (small-block heap + stdio buffering range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0551.decomp @ 0x00551230]
+// TODO: MISSING_FUNC - bucket_0552 runtime exports (stdio input/freebuf/dosmaperr range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0552.decomp @ 0x005520E0]
+// TODO: MISSING_FUNC - bucket_0553 runtime exports (filbuf/flsbuf/tzset/gmtime range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0553.decomp @ 0x00553000]
+// TODO: MISSING_FUNC - bucket_0554 runtime exports (mbcs/osfhnd/chsize/fltin range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0554.decomp @ 0x005541C8]
+// TODO: MISSING_FUNC - bucket_0555 runtime exports (locale/math exception handling range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0555.decomp @ 0x00555190]
+// TODO: MISSING_FUNC - bucket_0556 runtime exports (fp control/heap/env startup range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0556.decomp @ 0x00556005]
+// TODO: MISSING_FUNC - bucket_0557 runtime exports (__Cxx filter/memmove/floating conversion range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0557.decomp @ 0x00557070]
+// TODO: MISSING_FUNC - bucket_0558 runtime exports (dtold/isatty/setmode conversion range) have no matching gameplay translation unit under src/game/src. [decomp: bucket_0558.decomp @ 0x00558050]
+
 // Fully verified GUID initialization parity with main.cpp.asm @ 0x00454c17.
 // _TRIBE_GUID dword stores:
 //   Data1=0x08F50797, Data2=0x46A8, Data3=0xF2E8, Data4={0xE2,0xEB,0xD1,0x11,0x83,0x9B,0x00,0x60}

@@ -48,6 +48,7 @@ int RGE_Animated_Object::setup(int param_1, RGE_Game_World* param_2) {
 
 // TODO: PARITY [MODERATE] - Empty destructor currently mirrors expected inherited cleanup, but a direct ani_obj.cpp.decomp anchor for this specific symbol was not identified in this audit pass.
 RGE_Animated_Object::~RGE_Animated_Object() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_041A.decomp @ 0x0041A200]
 }
 
 // Fully verified. Source of truth: ani_obj.cpp.decomp @ 0x00405F40

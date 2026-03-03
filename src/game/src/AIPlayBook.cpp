@@ -1115,3 +1115,5 @@ int AIPlayBook::playNumber(char* name) {
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FA40 (implemented in AIPlayData.cpp)
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB60 (implemented in AIPlayData.cpp)
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FBB0 (implemented in AIPlayData.cpp)
+
+// TODO: MISSING_FUNC - vector_constructor_iterator not implemented [decomp: bucket_040F.decomp @ 0x0040F0E0]

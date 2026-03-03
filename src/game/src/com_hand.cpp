@@ -4437,6 +4437,9 @@ int EnumPlayersCallback2(ulong param_1, ulong param_2, DPNAME* param_3, ulong pa
     return 1;
 }
 
+// TODO: MISSING_FUNC - RESENDER::vector_deleting_destructor not implemented [decomp: bucket_0426.decomp @ 0x004260F0]
+// TODO: MISSING_FUNC - HOLDER::vector_deleting_destructor not implemented [decomp: bucket_0426.decomp @ 0x00426170]
+
 // BEGIN Task 222 decomp reference bundle
 // Inline preserved decomp snippets for implemented wrappers (audit trail).
 // ---- WaitingOnNamedInfo ----

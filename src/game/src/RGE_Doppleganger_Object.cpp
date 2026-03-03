@@ -376,3 +376,5 @@ void RGE_Doppleganger_Object::validate() {
         node = node->next;
     }
 }
+
+// TODO: MISSING_FUNC - RGE_Doppleganger_Object::~RGE_Doppleganger_Object not implemented [decomp: bucket_0441.decomp @ 0x00441A60]
