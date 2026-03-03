@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for TRIBE_Diamond_Map_View::scalar_deleting_destructor. [decomp: TRIBE_Diamond_Map_View.decomp @ 0x0052CA00]
 #include "TRIBE_Diamond_Map_View.h"
 
 #include "TRIBE_Screen_Game.h"

@@ -15,6 +15,7 @@
 #include <string.h>
 
 namespace {
+// TODO: PARITY - TRIBE_Scenario_Header ctors/get_size/save are sourced from this decomp but implemented in a different unit (TRIBE_World_types.cpp), so this file is missing those local bodies. [decomp: tscenaro.cpp.decomp @ 0x0052A990]
 } // namespace
 
 T_Scenario::T_Scenario(RGE_Game_World* param_1)

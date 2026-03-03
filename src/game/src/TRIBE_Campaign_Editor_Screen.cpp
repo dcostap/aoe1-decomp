@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for TRIBE_Campaign_Editor_Screen::vector_deleting_destructor. [decomp: TRIBE_Campaign_Editor_Screen.decomp @ 0x0048FA20]
 #include "../include/TRIBE_Campaign_Editor_Screen.h"
 
 #include "../include/RGE_Base_Game.h"

@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for RGE_Main_View::vector_deleting_destructor. [decomp: RGE_Main_View.decomp @ 0x0053DB10]
 #include "RGE_Main_View.h"
 
 #include "RGE_Base_Game.h"

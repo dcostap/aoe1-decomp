@@ -36,6 +36,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+// TODO: PARITY - RGE_Player::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Player.decomp @ 0x0046E750]
+
 static long rge_ftol(float v) {
     // Fully verified. Source of truth: player.cpp.decomp (helper implementation).
     // MSVC x86 __ftol equivalent (x87 FISTP using current rounding mode).
@@ -247,6 +249,7 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     this->world = world;
     this->id = (short)player_id;
 
+    // TODO: PARITY - Constructor early-allocation path for doppleganger_creator is documented but not explicitly tagged as fully verified; confirm ordering/branch parity against decomp. [decomp: player.cpp.decomp @ 0x00471D70]
     // Source of truth: player.cpp.decomp (constructor paths allocate doppleganger_creator early).
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471D70 (implemented in src/game/src/TRIBE_World_types.cpp)
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471DF0 (implemented in src/game/src/TRIBE_World_types.cpp)
