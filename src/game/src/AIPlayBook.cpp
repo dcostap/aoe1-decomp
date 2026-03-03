@@ -700,11 +700,15 @@ int AIPlayBook::loadPlays(char* param_1) {
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040EC4E (switch jump-table thunk)
 // TODO: PARITY - Decomp shows a non-trivial FUN_0040ec4e body (register/switch-derived mapping), but this remains an empty thunk stub pending transliteration/ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
-static void FUN_0040ec4e() {}
+static void FUN_0040ec4e() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
+}
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040F066 (switch jump-table thunk)
 // TODO: PARITY - Empty thunk stub is still unresolved; decomp at this offset reports bad-instruction control flow and needs explicit ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040F066]
-static void FUN_0040f066() {}
+static void FUN_0040f066() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: aipbook.cpp.decomp @ 0x0040F066]
+}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F530
 int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount, RGE_Game_World* world) {
@@ -847,7 +851,9 @@ done_grouping:
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040FB9E (switch jump-table thunk)
 // TODO: PARITY - Decomp shows a substantive FUN_0040fb9e body, but this implementation remains an empty stub and needs transliteration/parity validation. [decomp: aipbook.cpp.decomp @ 0x0040FB9E]
-static void FUN_0040fb9e() {}
+static void FUN_0040fb9e() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: aipbook.cpp.decomp @ 0x0040FB9E]
+}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FC30
 static void AIPlayStatus_ctor_0040FC30(AIPlayStatus* this_) {
