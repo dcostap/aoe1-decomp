@@ -9,6 +9,8 @@
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
+// TODO: PARITY - Offsets 0x00475470 and 0x004754C0 from pnl_drop.cpp.decomp are implemented in Pnl_drop_btn.cpp instead of this unit; keep cross-file offset traceability explicit during audits. [decomp: pnl_drop.cpp.decomp @ 0x00475470]
+
 // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x00473ED0
 TDropDownPanel::TDropDownPanel() : TPanel() {
     this->val_panel = nullptr;

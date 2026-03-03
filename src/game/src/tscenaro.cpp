@@ -530,6 +530,7 @@ void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
     }
 
     if (rge_base_game->prog_mode != 7) {
+        // TODO: PARITY - Decomp switches on ScenarioOptions[player_index + 2], while this implementation switches on PlayerAge[player_index]; verify field mapping/parity. [decomp: tscenaro.cpp.decomp @ 0x0052C230]
         switch (this->PlayerAge[player_index]) {
             case 1:
                 param_1->rev_tech(0x19);
@@ -708,10 +709,12 @@ void T_Scenario::Set_Multi_Conquest(int param_1) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B400
     if (param_1 != 0) {
         this->victory.MP_Conquest = 1;
+        // TODO: PARITY - Decomp calls RGE_Scenario::Set_conquest_victory(this, 1) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
         this->victory_conquest = 1;
         return;
     }
     this->victory.MP_Conquest = 0;
+    // TODO: PARITY - Decomp calls RGE_Scenario::Set_conquest_victory(this, 0) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
     this->victory_conquest = 0;
 }
 

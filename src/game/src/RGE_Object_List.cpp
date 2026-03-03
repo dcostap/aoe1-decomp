@@ -62,6 +62,7 @@ RGE_Object_List::RGE_Object_List() {
 // Fully verified. Marker reconciliation coverage.
 RGE_Object_List::~RGE_Object_List() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00462EA0
+    // TODO: PARITY - Decomp destructor path uses explicit virtual-dtor dispatch semantics ((vtbl)(1)); verify delete semantics and node-free traversal order remain binary-identical. [decomp: obj_list.cpp.decomp @ 0x00462EA0]
     RGE_Object_Node* node = this->list;
     while (node != nullptr) {
         RGE_Object_Node* next = node->next;

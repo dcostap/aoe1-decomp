@@ -940,6 +940,7 @@ void TribeMPSetupScreen::showNetInfo() {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4F52
 void FUN_004a4f52() {
+    // TODO: PARITY - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A4F52]
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4FC0
@@ -964,6 +965,7 @@ void TribeMPSetupScreen::handleKickedPlayer(int was_disconnect) {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5115
 void FUN_004a5115() {
+    // TODO: PARITY - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A5115]
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2BA0
@@ -2667,6 +2669,7 @@ long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) {
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5FCD
 void FUN_004a5fcd() {
+    // TODO: PARITY - Decompiled block at this offset is non-trivial (currently decompiler-noisy) while this implementation is a no-op placeholder; needs ASM-backed confirmation that no side effects are required. [decomp: scr_mps.cpp.decomp @ 0x004A5FCD]
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0

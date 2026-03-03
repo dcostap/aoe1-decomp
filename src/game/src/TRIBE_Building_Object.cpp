@@ -305,6 +305,7 @@ void TRIBE_Building_Object::remove_from_production_queue(short p1, short p2) {
             if (queue_index >= 0) {
                 short current_count = this->production_queue[queue_index].unit_count;
                 short reimburse_count = p2;
+                // TODO: PARITY - Decomp clamps reimburse_count only when unit_count <= requested and does not include the explicit (p2 < 0) branch present here; behavior differs for negative requests. [decomp: t_b_obj.cpp.decomp @ 0x004C9B10]
                 if (p2 < 0 || current_count <= p2) {
                     reimburse_count = current_count;
                 }
@@ -318,6 +319,7 @@ void TRIBE_Building_Object::remove_from_production_queue(short p1, short p2) {
                 }
 
                 short* unit_count = &this->production_queue[queue_index].unit_count;
+                // TODO: PARITY - Decomp subtracts the original requested count (param_2) from unit_count, while this implementation subtracts the clamped reimburse_count; this changes queue underflow/removal behavior. [decomp: t_b_obj.cpp.decomp @ 0x004C9B10]
                 *unit_count = (short)(*unit_count - reimburse_count);
                 this->production_queue_change_flag = this->production_queue_change_flag + 1;
 
@@ -854,6 +856,7 @@ void TRIBE_Building_Object::modify(float param_1, uchar param_2) {
         TRIBE_Combat_Object::modify(param_1, param_2);
         return;
     }
+    // TODO: PARITY - Decomp uses __ftol conversion for facet assignment; direct C++ cast here may not match original rounding semantics. [decomp: t_b_obj.cpp.decomp @ 0x004C8E60]
     this->facet = (uchar)(int)param_1;
 }
 
@@ -863,6 +866,7 @@ void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* param_1) {
         this->new_sprite(((TRIBE_Master_Building_Object*)param_1)->construction_sprite);
     }
     RGE_Combat_Object::copy_obj(param_1);
+    // TODO: PARITY - Decomp conditionally calls connect(this) after copy_obj when the post-copy connection flag is set; this call is currently missing. [decomp: t_b_obj.cpp.decomp @ 0x004C9710]
 }
 
 // Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9760
