@@ -1,6 +1,7 @@
 // Decompiled: Dsutil.cpp
 // SourceMap: C:/msdev/work/age1_x1/Dsutil.c
 // NOTE: Originally a C file, not C++. All functions are free (non-member).
+// TODO: PARITY - Decomp emits C-style undefined signatures; perform full calling-convention/type audit across exported Dsutil routines before parity closure. [decomp: dsutil.cpp.decomp @ 0x004477D0]
 
 #include "../include/Dsutil.h"
 #include <io.h>
