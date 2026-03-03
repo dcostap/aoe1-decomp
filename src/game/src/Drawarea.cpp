@@ -17,6 +17,14 @@
 // 0x0056CD45, 0x0056CDE6, 0x0056CE99, 0x0056CF39, and 0x0056CFC4 are not present in this TU; current
 // implementation only covers a subset of bucket_056C offsets.
 // [decomp: bucket_056C.decomp @ 0x0056C6B9]
+// TODO: MISSING_FUNC - bucket_0564 inventory: 98 FUN_* offsets (0x00564157..0x00564FC9) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_0565 inventory: 67 FUN_* offsets (0x0056501B..0x00565FE1) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_0566 inventory: 74 FUN_* offsets (0x00566045..0x00566FD1) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_0567 inventory: 77 FUN_* offsets (0x00567014..0x00567FDE) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_0568 inventory: 117 FUN_* offsets (0x0056802D..0x00568FDF) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_0569 inventory: 53 FUN_* offsets (0x00569023..0x00569F9D) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_056A inventory: 19 FUN_* offsets (0x0056A01A..0x0056A6DD) have no mapped function bodies in current src/game/src translation units.
+// TODO: MISSING_FUNC - bucket_056D inventory: 41 FUN_* offsets (0x0056D078..0x0056DB60) have no mapped function bodies in current src/game/src translation units.
 
 // EXTERNAL
 int system_ignore_size_messages = 0;
