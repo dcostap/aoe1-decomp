@@ -487,6 +487,7 @@ void TRIBE_Action_Convert::set_target_obj2(RGE_Static_Object* param_1) { RGE_Act
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE02D
 // TODO: PARITY - No-op anchor from malformed decomp region; verify jump-table/case body is not missing from transliteration. [decomp: tact_cnv.cpp.decomp @ 0x004CE02D]
 static void tact_cnv_switch_anchor_004CE02D() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: tact_cnv.cpp.decomp @ 0x004CE02D]
     // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
 
@@ -494,5 +495,6 @@ static void tact_cnv_switch_anchor_004CE02D() {
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE3FA
 // TODO: PARITY - No-op anchor from malformed decomp region; verify jump-table/case body is not missing from transliteration. [decomp: tact_cnv.cpp.decomp @ 0x004CE3FA]
 static void tact_cnv_switch_anchor_004CE3FA() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: tact_cnv.cpp.decomp @ 0x004CE3FA]
     // Listing body is only a switch-table anchor (MOV EDI, EDI).
 }
