@@ -27,6 +27,7 @@ RGE_Active_Sprite::RGE_Active_Sprite(int param_1, RGE_Sprite** param_2) {
 }
 
 RGE_Active_Sprite::~RGE_Active_Sprite() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_055C.decomp @ 0x0055c980]
     // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041ADD0
 }
 

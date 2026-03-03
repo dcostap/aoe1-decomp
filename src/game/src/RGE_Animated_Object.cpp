@@ -172,3 +172,5 @@ void RGE_Animated_Object::release_being_worked_on(RGE_Static_Object* param_1) {
     RGE_Static_Object::release_being_worked_on(param_1);
     this->set_sleep_flag(0);
 }
+
+// TODO: MISSING_FUNC - RGE_Animated_Object::~RGE_Animated_Object [decomp: bucket_055D.decomp @ 0x0055dc60]

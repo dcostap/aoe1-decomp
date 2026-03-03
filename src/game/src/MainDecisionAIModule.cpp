@@ -464,3 +464,6 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int param_1, int param_2) {
     }
     return best;
 }
+
+// TODO: MISSING_FUNC - MainDecisionAIModule::~MainDecisionAIModule [decomp: bucket_0560.decomp @ 0x00560620]
+// TODO: MISSING_FUNC - MainDecisionAIModule::~MainDecisionAIModule [decomp: bucket_0560.decomp @ 0x005606b0]

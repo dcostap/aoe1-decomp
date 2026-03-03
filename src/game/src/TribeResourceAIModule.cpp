@@ -41,6 +41,7 @@ TribeResourceAIModule::TribeResourceAIModule(int param_1, int param_2)
 // Offset: 0x004E6C20
 // Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C20 (audited vs tairesmd.cpp.asm).
 TribeResourceAIModule::~TribeResourceAIModule() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_0560.decomp @ 0x005606fe]
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.

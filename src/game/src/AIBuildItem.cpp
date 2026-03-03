@@ -151,7 +151,9 @@ BuildItem::BuildItem(const BuildItem& param_1) {
 }
 
 // Fully verified. Source of truth: aiblditm.cpp.decomp @ 0x00408470
-BuildItem::~BuildItem() {}
+BuildItem::~BuildItem() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_055C.decomp @ 0x0055c46b]
+}
 
 // Fully verified. Source of truth: aiblditm.cpp.decomp @ 0x00408480
 int operator==(const BuildItem& param_1, const BuildItem& param_2) {
