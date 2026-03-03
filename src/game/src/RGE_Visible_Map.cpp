@@ -10,6 +10,8 @@
 #include <string.h>
 #include <cstdint>
 
+// TODO: PARITY - visible.cpp module offsets for RGE_Unified_Visible_Map and dump_vismap_log are not implemented in this TU; keep module-level parity tracked in companion translation units. [decomp: visible.cpp.decomp @ 0x0053CE80]
+
 // LOS edge tables (NormalLOS / SquareLOS) extracted from:
 //   dist\_original_empiresx_from_beta_that_was_decompiled.exe
 // using the addresses referenced by visible.cpp.asm (e.g. 0x0058EA10 / 0x0058EA58).

@@ -110,6 +110,7 @@ Time_Line_Panel::~Time_Line_Panel() {
 }
 
 // Base virtuals: forward to TEasy_Panel.
+// TODO: PARITY - Many virtuals are forwarded here; verify each forwarded slot is truly parent-pass-through and not a missed class-local body in this module. [decomp: tpnl_tml.cpp.decomp @ 0x0051E860]
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp (inherited-forwarder parity with TEasy_Panel).
 long Time_Line_Panel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     return TEasy_Panel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
