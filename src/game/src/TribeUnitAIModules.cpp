@@ -2,6 +2,8 @@
 
 #include <new>
 
+// TODO: PARITY - Requested taiuaimd.cpp.decomp parity is incomplete in this translation unit: implementations here are still predominantly mapped to aiuaimod.cpp.decomp offsets. [decomp: taiuaimd.cpp.decomp @ 0x00503D30]
+
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CB8D0
 UnitAIModule* CreateTribeUnitAIModule(RGE_Static_Object* object, short object_group, short master_id) {
     switch (object_group) {
@@ -59,6 +61,7 @@ UnitAIModule* CreateTribeUnitAIModule(RGE_Static_Object* object, short object_gr
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413150
+// TODO: PARITY - TribeElephantUnitAIModule-specific overrides seen in taiuaimd (processNotify/processIdle) are not implemented in this file’s class block. [decomp: taiuaimd.cpp.decomp @ 0x005042D0]
 void TribeElephantUnitAIModule::save(int param_1) {
     UnitAIModule::save(param_1);
 }
@@ -394,6 +397,7 @@ void TribeElephantUnitAIModule::logDebug(char* param_1) {
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413150
+// TODO: PARITY - TribeSoldierUnitAIModule taiuaimd-specific logic (canAttackUnit/canAttackUnitAtNeutrality/processNotify/processIdle) is not implemented in this file’s class block. [decomp: taiuaimd.cpp.decomp @ 0x005071A0]
 void TribeSoldierUnitAIModule::save(int param_1) {
     UnitAIModule::save(param_1);
 }
