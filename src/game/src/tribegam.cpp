@@ -318,6 +318,7 @@ TRIBE_Game::~TRIBE_Game() {
 
 int TRIBE_Game::setup() {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521790
+    // TODO: PARITY - setup() currently contains simplified startup/control-flow paths versus the large decomp state machine; verify every branch side effect remains intact. [decomp: tribegam.cpp.decomp @ 0x00521790]
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
 CUSTOM_DEBUG_END
@@ -380,6 +381,7 @@ CUSTOM_DEBUG_END
 
     // Simplified selection of mouse click tables
     // (Palette setup removed and moved to setup_palette override)
+    // TODO: PARITY - Decomp performs palette-entry initialization in setup(); relocating behavior to setup_palette changes branch locality/order and needs full side-effect audit. [decomp: tribegam.cpp.decomp @ 0x00521790]
 
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
@@ -393,6 +395,7 @@ CUSTOM_DEBUG_END
     if (this->check_prog_argument("LOBBY")) {
         // Lobby startup logic
         // TCommunications_Handler::LaunchLobbyGame ...
+        // TODO: PARITY - LOBBY branch is currently placeholder/logging and does not mirror LaunchLobbyGame + panel transition flow shown in decomp. [decomp: tribegam.cpp.decomp @ 0x00521790]
 CUSTOM_DEBUG_BEGIN
         CUSTOM_DEBUG_LOG("TRIBE_Game::setup: LOBBY startup path");
 CUSTOM_DEBUG_END
@@ -403,6 +406,7 @@ CUSTOM_DEBUG_END
         if (this->startup_game[0]) {
             if (this->load_game(this->startup_game)) goto FINAL_SETUP;
         }
+        // TODO: PARITY - Failed startup_scenario/startup_game path in decomp routes through start_menu plus error dialog popup; this condensed flow may miss that branch behavior. [decomp: tribegam.cpp.decomp @ 0x00521790]
         
         if (this->check_prog_argument("DEBUGTREEAUTOSTART")) {
             int start_ok = this->start_game(1);
