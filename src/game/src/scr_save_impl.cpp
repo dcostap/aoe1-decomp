@@ -295,6 +295,7 @@ TribeSaveGameScreen::~TribeSaveGameScreen() {
 // Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::fillList() {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7670
+    // TODO: PARITY - fillList adds defensive list/prog_info null-guards; decomp helper dereferences list and global prog_info paths directly during pattern construction and append flow. [decomp: scr_save.cpp.decomp @ 0x004A7670]
     if (this->list == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
         return;
     }
@@ -313,6 +314,7 @@ void TribeSaveGameScreen::fillList() {
         sprintf(pattern, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     }
     handle = _findfirst(pattern, &info);
+    // TODO: PARITY - Filename extraction/iteration is refactored to bounded memcpy(name + 4, len - 8) with explicit _findclose calls; decomp uses raw strncpy length math (~uVar4 - 5) and does not show explicit handle close sites.
     while (handle != -1) {
         const char* name = info.name;
         if (name != nullptr) {
