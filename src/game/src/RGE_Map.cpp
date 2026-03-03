@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for RGE_Map::vector_deleting_destructor. [decomp: RGE_Map.decomp @ 0x00455080]
 #include "RGE_Map.h"
 #include "RGE_Base_Game.h"
 #include "globals.h"

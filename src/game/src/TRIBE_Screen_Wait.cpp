@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for TRIBE_Screen_Wait::scalar_deleting_destructor. [decomp: TRIBE_Screen_Wait.decomp @ 0x004A6030]
 #include "../include/TRIBE_Screen_Wait.h"
 
 #include "../include/RGE_Base_Game.h"

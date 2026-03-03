@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for TRIBE_Credits_Screen::scalar_deleting_destructor. [decomp: TRIBE_Credits_Screen.decomp @ 0x00492950]
 #include "../include/TRIBE_Credits_Screen.h"
 
 #include "../include/TDrawArea.h"

@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for RGE_Diamond_Map::vector_deleting_destructor. [decomp: RGE_Diamond_Map.decomp @ 0x00436910]
 #include "RGE_Diamond_Map.h"
 
 #include "RGE_Base_Game.h"

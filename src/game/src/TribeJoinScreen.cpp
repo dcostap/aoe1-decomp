@@ -1,3 +1,4 @@
+// TODO: PARITY - Missing function implementation for TribeJoinScreen::scalar_deleting_destructor. [decomp: TribeJoinScreen.decomp @ 0x00491970]
 #include "../include/TribeJoinScreen.h"
 
 #include "../include/TribeMPCreateDialog.h"
