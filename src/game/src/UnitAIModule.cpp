@@ -27,6 +27,8 @@
 #include <new>
 #include <string.h>
 
+// TODO: PARITY - Requested aiunitmd.cpp.decomp source map is not present in-tree; current parity markers point to aiuaimod.cpp.decomp and need canonical filename confirmation before final sign-off. [decomp: aiuaimod.cpp.decomp @ 0x00413AB0]
+
 // DAT_0087d7cc and DAT_0087d7d8 are individual ints in globals.cpp;
 // code accesses consecutive memory via pointer arithmetic (&DAT_0087d7cc)[i].
 // VisibleUnitManager, VisibleUnitList, VisibleUnitList_Size are defined in globals.cpp.
