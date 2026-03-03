@@ -418,6 +418,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float x, float y, int inObMa
     if (-1 < iVar4h) {
         if ((iVar4h < 0x18) &&
             (this->maxTarget.x < minX || this->maxTarget.y < minY || maxX < this->minTarget.x || maxY < this->minTarget.y)) {
+            // TODO: PARITY - Obstruction windowing here relies on inferred 0xFF row stride and kObstructionMasks pair layout from data tables; revalidate mask pairing/stride semantics against raw decomp+ASM for this branch. [decomp: pathsys.cpp.decomp @ 0x0046D280]
             const int idx = (minY & 3) + iVar4h * 4;
             const unsigned int mask1 = kObstructionMasks[idx * 2];
             const unsigned int mask2 = kObstructionMasks[idx * 2 + 1]; // (&DAT_00584F24)[idx]
