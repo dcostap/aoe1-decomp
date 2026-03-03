@@ -764,7 +764,7 @@ int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, 
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D70
-// TODO: PARITY - Current addObject() only appends civilians, but decomp handles multiple object groups (boats, soldiers, artifacts, etc.) and additional branching. [decomp: taitacmd.cpp.decomp @ 0x004F0D70]
+// TODO: PARITY [CRITICAL] - Current addObject() only appends civilians, but decomp handles multiple object groups (boats, soldiers, artifacts, etc.) and additional branching. [decomp: taitacmd.cpp.decomp @ 0x004F0D70]
 void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
     if ((param_1 != nullptr) && (param_1->master_obj != nullptr) && (param_1->master_obj->object_group == 4)) {
         appendManagedArrayUnique(this->civilians, param_1->id);
@@ -3574,48 +3574,48 @@ TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int 
 }
 TacticalAIGroup* TribeTacticalAIModule::getGroup(int param_1) { return group(param_1, -1, -1, -1); }
 
-// TODO: PARITY - For the FUN_* stubs below, "Fully verified" tags only confirm offset mapping to decomp entries; implementation parity is unresolved.
+// TODO: PARITY [MODERATE] - For the FUN_* stubs below, "Fully verified" tags only confirm offset mapping to decomp entries; implementation parity is unresolved.
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0B62
-// TODO: PARITY - Empty thunk placeholder; decomp shows overlapping-instruction string/enum mapping flow returning char* at this offset, so this remains unresolved. [decomp: taitacmd.cpp.decomp @ 0x004F0B62]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp shows overlapping-instruction string/enum mapping flow returning char* at this offset, so this remains unresolved. [decomp: taitacmd.cpp.decomp @ 0x004F0B62]
 static void FUN_004f0b62() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D4D
-// TODO: PARITY - Empty thunk placeholder; decomp contains substantial multi-branch object/task routing logic with many locals at this offset. [decomp: taitacmd.cpp.decomp @ 0x004F0D4D]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains substantial multi-branch object/task routing logic with many locals at this offset. [decomp: taitacmd.cpp.decomp @ 0x004F0D4D]
 static void FUN_004f0d4d() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005018C1
-// TODO: PARITY - Empty thunk placeholder; decomp shows a large stateful integer routine with heavy branching/register-state dependence. [decomp: taitacmd.cpp.decomp @ 0x005018C1]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp shows a large stateful integer routine with heavy branching/register-state dependence. [decomp: taitacmd.cpp.decomp @ 0x005018C1]
 static void FUN_005018c1() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502451
-// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502451/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502451]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502451/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502451]
 static void FUN_00502451() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050245D
-// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x0050245D/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x0050245D]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x0050245D/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x0050245D]
 static void FUN_0050245d() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502464
-// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502464/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502464]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502464/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502464]
 static void FUN_00502464() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502470
-// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502470/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502470]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502470/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502470]
 static void FUN_00502470() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050247C
-// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050247C]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050247C]
 static void FUN_0050247c() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502488
-// TODO: PARITY - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502488/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502488]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502488/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502488]
 static void FUN_00502488() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050248F
-// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050248F]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050248F]
 static void FUN_0050248f() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050249B
-// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050249B]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050249B]
 static void FUN_0050249b() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024A7
-// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024A7]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024A7]
 static void FUN_005024a7() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024B3
-// TODO: PARITY - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024B3]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024B3]
 static void FUN_005024b3() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005025CA
-// TODO: PARITY - Empty thunk placeholder; decomp shows non-trivial uint-return tactical eligibility logic with player/unit-state and bitwise gating. [decomp: taitacmd.cpp.decomp @ 0x005025CA]
+// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp shows non-trivial uint-return tactical eligibility logic with player/unit-state and bitwise gating. [decomp: taitacmd.cpp.decomp @ 0x005025CA]
 static void FUN_005025ca() {}
 
 static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
@@ -4070,13 +4070,13 @@ int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9470
-// TODO: PARITY - highLevelTaskExplorer() is currently a thin forwarder, while decomp includes substantial action/order gating logic before tasking. [decomp: taitacmd.cpp.decomp @ 0x004F9470]
+// TODO: PARITY [CRITICAL] - highLevelTaskExplorer() is currently a thin forwarder, while decomp includes substantial action/order gating logic before tasking. [decomp: taitacmd.cpp.decomp @ 0x004F9470]
 int TribeTacticalAIModule::highLevelTaskExplorer(int param_1, int param_2) {
     return this->taskExplorer(param_1, param_2);
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F95B0
-// TODO: PARITY - highLevelTaskGatherer() is currently a thin forwarder, while decomp includes gatherer-state checks, timing gates, and action/order filters. [decomp: taitacmd.cpp.decomp @ 0x004F95B0]
+// TODO: PARITY [CRITICAL] - highLevelTaskGatherer() is currently a thin forwarder, while decomp includes gatherer-state checks, timing gates, and action/order filters. [decomp: taitacmd.cpp.decomp @ 0x004F95B0]
 int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long param_2) {
     return this->taskGatherer(param_1, -1, -1, param_2, nullptr);
 }
@@ -4181,7 +4181,7 @@ int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA940
-// TODO: PARITY - taskExplorer(int,float,float) currently delegates directly, but decomp performs unitsTaskedThisUpdate and civilian/exploration-path branching first. [decomp: taitacmd.cpp.decomp @ 0x004FA940]
+// TODO: PARITY [CRITICAL] - taskExplorer(int,float,float) currently delegates directly, but decomp performs unitsTaskedThisUpdate and civilian/exploration-path branching first. [decomp: taitacmd.cpp.decomp @ 0x004FA940]
 int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3) {
     return this->taskExplorer(param_1, param_2, param_3, 100);
 }
@@ -4229,7 +4229,7 @@ int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3,
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
-// TODO: PARITY - taskWaterExplorer() currently delegates to taskExplorer(...,0), while decomp issues explicit water-explore command flow after task-tracking checks. [decomp: taitacmd.cpp.decomp @ 0x004FAEB0]
+// TODO: PARITY [CRITICAL] - taskWaterExplorer() currently delegates to taskExplorer(...,0), while decomp issues explicit water-explore command flow after task-tracking checks. [decomp: taitacmd.cpp.decomp @ 0x004FAEB0]
 int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
     return this->taskExplorer(param_1, 0);
 }
@@ -4249,7 +4249,7 @@ int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB160
-// TODO: PARITY - taskWaterFisher() currently delegates to taskGatherer(), while decomp contains distinct water-fishing targeting/command logic. [decomp: taitacmd.cpp.decomp @ 0x004FB160]
+// TODO: PARITY [CRITICAL] - taskWaterFisher() currently delegates to taskGatherer(), while decomp contains distinct water-fishing targeting/command logic. [decomp: taitacmd.cpp.decomp @ 0x004FB160]
 int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) {
     (void)param_3;
     (void)param_4;
