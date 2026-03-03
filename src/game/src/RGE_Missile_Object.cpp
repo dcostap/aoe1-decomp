@@ -104,6 +104,7 @@ int RGE_Missile_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* p
 
 // Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A900
 void RGE_Missile_Object::rehook() {
+    // TODO: PARITY - Decompiled body performs explicit RGE_Static_Object::rehook + RGE_Action_List::rehook steps; current implementation relies on a base-method thunk, so parity depends on inherited call path staying identical. [decomp: misl_obj.cpp.decomp @ 0x0045A900]
     RGE_Action_Object::rehook();
 }
 
@@ -115,6 +116,7 @@ void RGE_Missile_Object::save(int param_1) {
 
 // Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045A940
 uchar RGE_Missile_Object::update() {
+    // TODO: PARITY - Decompiled body includes expanded per-tick visibility/AI update flow; current direct delegation assumes this offset remains a pure jump-thunk to base update logic. [decomp: misl_obj.cpp.decomp @ 0x0045A940]
     return RGE_Combat_Object::update();
 }
 

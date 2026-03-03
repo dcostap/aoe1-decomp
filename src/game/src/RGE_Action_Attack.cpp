@@ -19,6 +19,8 @@
 #include <math.h>
 #include <new>
 
+// TODO: PARITY - Requested decomp naming (ra_attak.cpp.decomp) is not present in-tree; this audit maps attack parity to act_atak.cpp.decomp and needs canonical filename confirmation. [decomp: act_atak.cpp.decomp @ 0x00401000]
+
 // Fully verified. Source of truth: act_atak.cpp.decomp @ 0x00401746
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
 // TODO: PARITY - Verify this jump-table shim offset is truly non-callable and that no executable branch body is missing. [decomp: act_atak.cpp.decomp @ 0x00401746]

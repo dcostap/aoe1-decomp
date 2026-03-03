@@ -16,6 +16,8 @@
 #include <cmath>
 #include <new>
 
+// TODO: PARITY - Requested decomp naming (ra_missle.cpp.decomp) is not present in-tree; this audit maps missile-action parity to act_misl.cpp.decomp and needs canonical filename confirmation. [decomp: act_misl.cpp.decomp @ 0x00404BB0]
+
 namespace {
 // Source of truth: stat_obj.cpp.decomp @ 0x004C5860
 static uchar rge_static_object_is_dying(RGE_Static_Object* obj) {
