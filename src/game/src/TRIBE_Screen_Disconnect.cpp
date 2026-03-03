@@ -1,5 +1,6 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Screen_Disconnect::vector_deleting_destructor. [decomp: TRIBE_Screen_Disconnect.decomp @ 0x004A6270]
 // TODO: PARITY - TRIBE_Screen_Disconnect.decomp currently only captures the deleting-destructor thunk; functional methods are sourced from scr_mps.cpp.decomp/.asm.
+// TODO: MISSING_FUNC - Requested scr_disc.cpp.decomp is absent in current decomp exports; inventory for this screen is mapped through TRIBE_Screen_Disconnect.decomp + scr_mps.cpp.decomp.
 #include "../include/TRIBE_Screen_Disconnect.h"
 
 #include "../include/RGE_Base_Game.h"

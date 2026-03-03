@@ -1,4 +1,5 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Screen_Name::vector_deleting_destructor. [decomp: TRIBE_Screen_Name.decomp @ 0x004A66C0]
+// TODO: MISSING_FUNC - scr_name.cpp.decomp offsets 0x004A6D50/0x004A6F60/0x004A6FF0/0x004A71D0 are implemented in TRIBE_Dialog_Name.cpp, not in this screen TU.
 #include "../include/TRIBE_Screen_Name.h"
 #include "../include/TRIBE_Dialog_Name.h"
 #include "../include/TRIBE_Screen_Campaign_Selection.h"
