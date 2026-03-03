@@ -1593,21 +1593,25 @@ uchar RGE_RMM_Database_Controller::de_init() {
 namespace {
 static void rmm_tdbc_switch_anchor_0048790A() {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x0048790A
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: rmm_tdbc.cpp.decomp @ 0x0048790A]
 }
 
 static void rmm_tdbc_switch_anchor_00488675() {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: rmm_tdbc.cpp.decomp @ 0x00488675]
 }
 } // namespace
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* param_1, char* param_2, char* param_3, char* param_4)
     : RGE_RMM_Database_Controller(param_1, param_2, param_3, param_4) {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x004876C0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: rmm_tdbc.cpp.decomp @ 0x004876C0]
 }
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int param_1)
     : RGE_RMM_Database_Controller(param_1) {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x004876F0
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: rmm_tdbc.cpp.decomp @ 0x004876F0]
 }
 
 uchar TRIBE_RMM_Database_Controller::generate() {
@@ -1629,6 +1633,7 @@ uchar TRIBE_RMM_Database_Controller::generate() {
 void FUN_0048790a() {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x0048790A
     // Switch jump-table padding thunk (`mov edi, edi`).
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: rmm_tdbc.cpp.decomp @ 0x0048790A]
 }
 
 void TRIBE_RMM_Database_Controller::add_land_module(uchar param_1) {
@@ -2041,6 +2046,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
 void FUN_00488675() {
     // Fully verified. Source of truth: rmm_tdbc.cpp.decomp @ 0x00488675
     // Switch jump-table padding thunk (`nop; mov edi, edi`).
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: rmm_tdbc.cpp.decomp @ 0x00488675]
 }
 
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
