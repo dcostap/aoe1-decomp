@@ -12,6 +12,12 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/custom_debug.h"
 
+// TODO: PARITY - bucket_056C routines at 0x0056C6B9, 0x0056C711, 0x0056C75D, 0x0056C777, 0x0056C78B,
+// 0x0056C7C6, 0x0056C7E0, 0x0056C9A0, 0x0056CBAC, 0x0056CC03, 0x0056CC49, 0x0056CC6C, 0x0056CD0C,
+// 0x0056CD45, 0x0056CDE6, 0x0056CE99, 0x0056CF39, and 0x0056CFC4 are not present in this TU; current
+// implementation only covers a subset of bucket_056C offsets.
+// [decomp: bucket_056C.decomp @ 0x0056C6B9]
+
 // EXTERNAL
 int system_ignore_size_messages = 0;
 

@@ -487,6 +487,8 @@ int WaveCloseReadFile(HMMIO* phmmio, tWAVEFORMATEX** ppwfx) {
 // ============================================================================
 // Offset: 0x00448080
 int WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, tWAVEFORMATEX* pwfxDest, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF) {
+    // TODO: PARITY - this function currently cites ASM only; decomp-backed control-flow audit is still pending.
+    // [decomp: dsutil.cpp.decomp @ 0x00448080]
     // Fully verified. Source of truth: dsutil.cpp.asm @ 0x00448080
     *phmmioOut = mmioOpenA(pszFileName, nullptr, MMIO_WRITE | MMIO_CREATE | MMIO_ALLOCBUF);
     if (*phmmioOut == nullptr) {
