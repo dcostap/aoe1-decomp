@@ -1073,6 +1073,7 @@ void TRIBE_Building_Object::lay_down_impassable_terrain() {
     const float half_w = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x30);
     const float half_h = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x34);
 
+    // TODO: PARITY - t_b_obj.cpp.decomp @ 0x004C9230 computes tile bounds via repeated __ftol calls; these direct casts may not match original x87 rounding at boundary edges.
     short min_x = (short)(this->world_x - half_w);
     short max_x = (short)((this->world_x + half_w) - 10.0f);
     short min_y = (short)(this->world_y - half_h);
@@ -1126,6 +1127,7 @@ void TRIBE_Building_Object::lay_down_passable_terrain() {
     const float half_w = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x30);
     const float half_h = *reinterpret_cast<float*>(reinterpret_cast<char*>(this->master_obj) + 0x34);
 
+    // TODO: PARITY - t_b_obj.cpp.decomp @ 0x004C9360 also uses __ftol for bound conversion; confirm cast-based bounds do not drift by +/-1 tiles.
     short min_x = (short)(this->world_x - half_w);
     short max_x = (short)((this->world_x + half_w) - 10.0f);
     short min_y = (short)(this->world_y - half_h);
