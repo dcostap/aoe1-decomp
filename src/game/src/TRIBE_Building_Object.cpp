@@ -871,6 +871,7 @@ void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* param_1) {
 
 // Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9760
 void TRIBE_Building_Object::rotate(long) {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: t_b_obj.cpp.decomp @ 0x004C9760]
 }
 
 // Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9770
