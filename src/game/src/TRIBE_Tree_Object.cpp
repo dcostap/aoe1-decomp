@@ -23,6 +23,7 @@ TRIBE_Tree_Object::TRIBE_Tree_Object(int param_1, RGE_Game_World* param_2, int p
 // Fully verified. Source of truth: bucket_04CC.decomp @ 0x004CCB10
 // TODO: PARITY - bucket_04CC still contains TRIBE_Action_Artifact dtor coverage that is not represented in this TU.
 // [decomp: bucket_04CC.decomp @ 0x004CCBF0]
+// TODO: MISSING_FUNC - TRIBE_Tree_Object::~TRIBE_Tree_Object not implemented [decomp: bucket_04CC.decomp @ 0x004CCB10]
 TRIBE_Tree_Object::~TRIBE_Tree_Object() = default;
 
 // Fully verified. Source of truth: TRIBE_Tree_Object.decomp (inherited-forwarder parity with RGE_Static_Object).

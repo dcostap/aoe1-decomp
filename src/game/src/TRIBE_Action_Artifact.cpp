@@ -50,7 +50,9 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Tas
 }
 
 // Fully verified. Marker reconciliation coverage.
-TRIBE_Action_Artifact::~TRIBE_Action_Artifact() {}
+TRIBE_Action_Artifact::~TRIBE_Action_Artifact() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_04CC.decomp @ 0x004CCBF0]
+}
 
 // Fully verified. Source of truth: tact_art.cpp.decomp (helper implementation).
 int TRIBE_Action_Artifact::setup(RGE_Action_Object* param_1) { int r = RGE_Action::setup(param_1); this->action_type = 0x6b; return r; }

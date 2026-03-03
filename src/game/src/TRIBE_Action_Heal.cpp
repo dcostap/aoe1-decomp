@@ -42,7 +42,9 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(RGE_Action_Object* param_1, RGE_Task* param
 }
 
 // Fully verified. Marker reconciliation coverage.
-TRIBE_Action_Heal::~TRIBE_Action_Heal() {}
+TRIBE_Action_Heal::~TRIBE_Action_Heal() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_04CE.decomp @ 0x004CE980]
+}
 
 // Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Heal::setup(RGE_Action_Object* param_1) {

@@ -23,7 +23,9 @@
 
 TRIBE_Main_View::TRIBE_Main_View()
     : RGE_Main_View() {}
-TRIBE_Main_View::~TRIBE_Main_View() {}
+TRIBE_Main_View::~TRIBE_Main_View() {
+    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0495.decomp @ 0x00495490]
+}
 // ---------------------------------------------------------------------------
 // Offset: 0x0052D060
 // Fully verified. Source of truth: tvw_main.cpp.decomp @ 0x0052D060
