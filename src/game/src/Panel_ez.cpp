@@ -779,6 +779,7 @@ void TEasy_Panel::handle_reactivate() { TPanel::handle_reactivate(); }
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::draw_background(int param_1) {
     // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004675C0
+    // TODO: PARITY - Decomp for 0x004675C0 reports unmapped `pic`; keep validating background_pos tile/center branches against asm when touching draw sequencing. [decomp: panel_ez.cpp.decomp @ 0x004675C0]
     this->draw_setup(0);
 
     if ((param_1 != 0) && (this->shadow_area != nullptr)) {
@@ -1888,6 +1889,7 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004696B0
+    // TODO: PARITY - Decomp marks ideal_y as unmapped in this scaler path; keep asm verification on ideal-dimension arithmetic/order when auditing list layout regressions. [decomp: panel_ez.cpp.decomp @ 0x004696B0]
     // params: parent, out_ptr, x, y, w, h, font_index
 
     // Scale from ideal coords to current panel size (source of truth uses unconditional division).
