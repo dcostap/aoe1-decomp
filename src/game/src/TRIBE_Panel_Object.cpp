@@ -789,12 +789,14 @@ void TRIBE_Panel_Object::draw_item(int param_1, int param_2, ValueType param_3, 
 }
 
 void FUN_0051c1f6() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tpnl_obj.cpp.decomp @ 0x0051C1F6]
     // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C1F6
     // Switch jump-table padding thunk (`mov edi, edi`).
     // TODO: PARITY [CRITICAL] - Currently a no-op thunk, but decomp at this offset shows additional switch-tail instructions and draw_item formatting flow; control-flow boundary needs ASM confirmation. [decomp: tpnl_obj.cpp.decomp @ 0x0051C1F6]
 }
 
 void FUN_0051c3da() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tpnl_obj.cpp.decomp @ 0x0051C3DA]
     // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051C3DA
     // Switch jump-table padding thunk (`mov edi, edi`).
     // TODO: PARITY [CRITICAL] - Currently a no-op thunk, while decomp shows a call (`func_0xb30051c2()`) at this offset; missing thunk target/call path. [decomp: tpnl_obj.cpp.decomp @ 0x0051C3DA]
@@ -1089,11 +1091,13 @@ void TRIBE_Panel_Object::save_object_info() {
 }
 
 long TRIBE_Panel_Object::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tpnl_obj.cpp.decomp @ 0x0051CC80]
     // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051CC80
     return 0;
 }
 
 long TRIBE_Panel_Object::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: tpnl_obj.cpp.decomp @ 0x0051CC90]
     // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051CC90
     return 0;
 }
