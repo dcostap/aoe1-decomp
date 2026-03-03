@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - Requested uni_vmap.cpp.decomp alias is absent in this dump; RGE_Unified_Visible_Map parity mapping is currently anchored to visible.cpp.decomp offsets. [decomp: visible.cpp.decomp @ 0x0053CE80]
+// TODO: MISSING_FUNC - Requested uni_vmap.cpp.decomp alias is absent in this dump; unresolved if a separate uni_vmap export would surface additional functions beyond visible.cpp mappings. [decomp: visible.cpp.decomp @ 0x0053CE80]
 // TODO: PARITY - visible.cpp module also carries RGE_Visible_Map/dump_vismap_log offsets outside this TU; keep cross-TU parity synchronized. [decomp: visible.cpp.decomp @ 0x0053C1B0]
 
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int map_width, int map_height) {
