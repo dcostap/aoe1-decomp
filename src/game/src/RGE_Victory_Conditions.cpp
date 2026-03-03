@@ -751,6 +751,7 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* param_1) {
         float dy = obj->world_y - target->world_y;
         if (dx < 0.0f) dx = -dx;
         if (dy < 0.0f) dy = -dy;
+        // TODO: PARITY - Decomp dereferences both master_obj pointers directly in the radius compare path (no null guards), while this translation gates on non-null master_obj first; re-verify fault/branch parity. [decomp: victory.cpp.decomp @ 0x00532610]
         if (obj->master_obj != nullptr && target->master_obj != nullptr &&
             dx <= (target->master_obj->radius_x + obj->master_obj->radius_x + 1.0f) &&
             dy <= (target->master_obj->radius_y + obj->master_obj->radius_y + 1.0f)) {

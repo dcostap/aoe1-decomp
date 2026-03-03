@@ -15,6 +15,7 @@ static short player_tech_ftol(float value) {
 }
 
 // Source of truth: bucket_050C.cpp.decomp + bucket_050D.cpp.decomp
+// TODO: PARITY - Requested tplytech.cpp.decomp/tplytch.cpp.decomp mapping is not present in current decomp exports; this unit currently maps to bucket_050C/050D and should be re-verified if a canonical tplytech export appears.
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, uchar param_4) {
@@ -338,6 +339,7 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3,
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::check_for_new_tech() {
     // TODO: PARITY - This function still has a non-verified marker and needs a strict branch-by-branch parity pass against decomp. [decomp: bucket_050C.decomp @ 0x0050CE68]
+    // TODO: PARITY - Decomp signature returns uchar at this offset while current declaration/definition is void; confirm return-value contract/call-site behavior parity. [decomp: bucket_050C.decomp @ 0x0050CE68]
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050CE68
     if (this->base_tech == nullptr || this->owner == nullptr) {
         return;

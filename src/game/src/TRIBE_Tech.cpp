@@ -10,6 +10,7 @@
 // Constructor (int, TRIBE_World*): reads tech tree from binary data via rge_read.
 // Constructor (char*): reads tech tree from text file via fscanf.
 // Both are data-loading constructors that require the game database.
+// TODO: PARITY - Requested ttech.cpp.decomp mapping is not present in current decomp exports; this unit currently maps to bucket_050B/050C and should be re-verified if a canonical ttech export appears.
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
