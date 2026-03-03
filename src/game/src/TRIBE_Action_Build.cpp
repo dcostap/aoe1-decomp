@@ -26,6 +26,7 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* par
     this->action_type = 0x65;
     this->task = param_2;
 
+    // TODO: PARITY - Decomp writes target_x/y/z in the accepted branch without a null-object guard; current guarded writes avoid null-deref and can change original crash-prone behavior. [decomp: tact_bld.cpp.decomp @ 0x004CD210]
     if ((param_3 == nullptr) || (param_1->owner->id == param_3->owner->id)) {
         this->set_target_obj(param_3);
         if (param_3 != nullptr) {
@@ -96,6 +97,7 @@ uchar TRIBE_Action_Build::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD310, tact_bld.cpp.asm @ 0x004CD310
 void TRIBE_Action_Build::set_state(uchar param_1) {
+    // TODO: PARITY - Added null-guards on obj/task/sub_actions alter faulting behavior and branch outcomes versus direct dereferences in original listing. [decomp: tact_bld.cpp.decomp @ 0x004CD310]
     if (this->sub_actions != nullptr) {
         this->sub_actions->delete_list();
     }
@@ -195,6 +197,7 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5E0, tact_bld.cpp.asm @ 0x004CD5E0
 uchar TRIBE_Action_Build::update() {
+    // TODO: PARITY - Defensive null checks (world/sub_actions/owner/task gating) may mask original crash/invalid-state paths and change control flow. [decomp: tact_bld.cpp.decomp @ 0x004CD5E0]
     RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
 
     if ((this->targetID != -1) && (world != nullptr) && (world->object(this->targetID) == nullptr)) {
