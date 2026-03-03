@@ -8,6 +8,8 @@
 
 #include <new>
 
+// TODO: PARITY - Requested module names (TRIBE_Action_Explore.cpp / ta_explr.cpp.decomp) are not present in-tree; this audit maps explore-action parity to RGE_Action_Explore.cpp + act_expl.cpp.decomp and needs canonical filename confirmation. [decomp: act_expl.cpp.decomp @ 0x00402B40]
+
 // Fully verified. Source of truth: act_expl.cpp.decomp @ 0x00402B40
 RGE_Action_Explore::RGE_Action_Explore(int param_1, RGE_Action_Object* param_2) {
     this->setup(param_1, param_2);

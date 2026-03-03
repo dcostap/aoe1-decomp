@@ -297,6 +297,7 @@ void run_log(char* param_1, int param_2) {
 
 void debug_random_write() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00423030
+    // TODO: PARITY - Function body is sourced from basegame.cpp.decomp but implemented in globals.cpp, so module-level ownership differs from source unit layout. [decomp: basegame.cpp.decomp @ 0x00423030]
     FILE* file = fopen("c:\\aoerand.txt", "w");
     if (file != nullptr) {
         for (int i = 0; i < 5000; ++i) {

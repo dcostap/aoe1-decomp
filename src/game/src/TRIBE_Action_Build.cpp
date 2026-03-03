@@ -342,6 +342,7 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* /*param_1*/, float param_2, f
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD960
 int TRIBE_Action_Build::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // TODO: PARITY - Added obj/owner nullptr guards are stricter than decomp @ 0x004CD960 and can suppress original crash-prone dereference paths.
     if ((param_1 == nullptr) || (this->obj == nullptr) || (param_1->owner == nullptr) || (this->obj->owner == nullptr) || (param_1->owner->id != this->obj->owner->id)) {
         this->target_z = param_4;
         this->target_x = param_2;
