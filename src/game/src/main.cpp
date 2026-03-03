@@ -16,6 +16,7 @@ const _GUID AGE1_ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     // Fully verified. Source of truth: main.cpp.decomp @ 0x004549E0
+    // TODO: PARITY - Custom debug scaffolding below introduces non-original logging/checkpoint control-flow around startup and shutdown.
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_INIT();
     CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
