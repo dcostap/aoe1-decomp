@@ -687,12 +687,14 @@ void RGE_Base_Game::setScenarioName(char* p1) {
 
 int RGE_Base_Game::setup_registry() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041ED70
+    // TODO: PARITY - Decomp uses operator_new null-check flow; this plain `new` path is exception-based on OOM instead of returning null.
     this->registry = new TRegistry(this->prog_info->registry_key);
     return (this->registry != nullptr) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_debugging_log() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EDE0
+    // TODO: PARITY - Decomp constructor path uses explicit operator_new null handling; this plain `new` relies on exception semantics.
     this->debugLog = new TDebuggingLog();
     if (this->debugLog == nullptr) {
         return 0;
@@ -2543,6 +2545,7 @@ void RGE_Base_Game::setup_timings() {
 
 void RGE_Base_Game::stop_sound_system() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F830
+    // TODO: PARITY - Decomp uses TPanelSystem::stop_sound_system(&panel_system) and iterates world sounds without per-entry null checks; current path is more defensive and panel-scoped.
     TChat* chat_ptr = (TChat*)chat;
     if (chat_ptr != nullptr) {
         chat_ptr->StopSoundSystem();
@@ -2589,6 +2592,7 @@ void RGE_Base_Game::stop_sound_system() {
 
 int RGE_Base_Game::restart_sound_system() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F920
+    // TODO: PARITY - Decomp calls TPanelSystem::restart_sound_system(&panel_system) and restarts world sounds without per-entry null guards; this path currently differs.
     if (this->sound_system == nullptr) {
         if (this->setup_sound_system() == 0) {
             return 0;
