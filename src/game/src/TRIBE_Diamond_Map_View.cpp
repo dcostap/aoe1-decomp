@@ -1,4 +1,6 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Diamond_Map_View::scalar_deleting_destructor. [decomp: TRIBE_Diamond_Map_View.decomp @ 0x0052CA00]
+// TODO: PARITY - Decomp source naming differs for this TU (TRIBE_Diamond_Map_View.decomp vs tvw_dmap.cpp.decomp); keep the offset mapping explicit during audits.
+// [decomp: tvw_dmap.cpp.decomp @ 0x0052C9E0]
 #include "TRIBE_Diamond_Map_View.h"
 
 #include "TRIBE_Screen_Game.h"

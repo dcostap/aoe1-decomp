@@ -699,11 +699,11 @@ int AIPlayBook::loadPlays(char* param_1) {
 }
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040EC4E (switch jump-table thunk)
-// TODO: PARITY - Empty thunk stub is still unresolved from decomp and needs explicit ASM/decomp reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
+// TODO: PARITY - Decomp shows a non-trivial FUN_0040ec4e body (register/switch-derived mapping), but this remains an empty thunk stub pending transliteration/ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040EC4E]
 static void FUN_0040ec4e() {}
 
 // Fully verified. Source of truth: aipbook.cpp.asm @ 0x0040F066 (switch jump-table thunk)
-// TODO: PARITY - Empty thunk stub is still unresolved from decomp and needs explicit ASM/decomp reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040F066]
+// TODO: PARITY - Empty thunk stub is still unresolved; decomp at this offset reports bad-instruction control flow and needs explicit ASM reconciliation. [decomp: aipbook.cpp.decomp @ 0x0040F066]
 static void FUN_0040f066() {}
 
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F530
