@@ -110,3 +110,5 @@ void THelpDialog::draw() {
 
 IMPLEMENT_TDIALOGPANEL_FORWARDERS(THelpDialog, TDialogPanel)
 
+// TODO: MISSING_FUNC - THelpDialog::scalar_deleting_destructor not implemented [decomp: THelpDialog.decomp @ 0x0043E8C0]
+

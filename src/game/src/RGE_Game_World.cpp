@@ -2744,3 +2744,5 @@ int RGE_Game_World::removeObject(int param_1) {
 
     return 0;
 }
+
+// TODO: MISSING_FUNC - RGE_Game_World::scalar_deleting_destructor not implemented [decomp: world.cpp.decomp @ 0x00540A20]
