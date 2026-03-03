@@ -421,3 +421,5 @@ void TRIBE_Action_Repair::set_target_obj(RGE_Static_Object* param_1) { RGE_Actio
 // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D1F60 (virtual forwarding coverage).
 void TRIBE_Action_Repair::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
+// TODO: MISSING_FUNC - FUN_004d1b79 not implemented [decomp: tact_rep.cpp.decomp @ 0x004D1B79]
+
