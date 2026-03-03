@@ -48,7 +48,7 @@
 #include <vfw.h>
 #include <io.h>
 
-// TODO: PARITY - run_log() for this unit lives in globals.cpp instead of this translation unit, so per-file decomp coverage is split. [decomp: tribegam.cpp.decomp @ 0x00521020]
+// TODO: PARITY [MODERATE] - run_log() for this unit lives in globals.cpp instead of this translation unit, so per-file decomp coverage is split. [decomp: tribegam.cpp.decomp @ 0x00521020]
 
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
@@ -318,7 +318,7 @@ TRIBE_Game::~TRIBE_Game() {
 
 int TRIBE_Game::setup() {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521790
-    // TODO: PARITY - setup() currently contains simplified startup/control-flow paths versus the large decomp state machine; verify every branch side effect remains intact. [decomp: tribegam.cpp.decomp @ 0x00521790]
+    // TODO: PARITY [MODERATE] - setup() currently contains simplified startup/control-flow paths versus the large decomp state machine; verify every branch side effect remains intact. [decomp: tribegam.cpp.decomp @ 0x00521790]
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
 CUSTOM_DEBUG_END
@@ -358,7 +358,7 @@ CUSTOM_DEBUG_END
     char string_dll_name[100];
     strcpy(string_dll_name, "languagex.dll");
     
-    // TODO: PARITY - Decomp uses MBCS-aware __mbsstr/__mbsninc/__ismbcspace parsing for STRING= token handling; this ASCII strstr loop may diverge on multibyte locales. [decomp: tribegam.cpp.decomp @ 0x0052194A]
+    // TODO: PARITY [MODERATE] - Decomp uses MBCS-aware __mbsstr/__mbsninc/__ismbcspace parsing for STRING= token handling; this ASCII strstr loop may diverge on multibyte locales. [decomp: tribegam.cpp.decomp @ 0x0052194A]
     char* string_arg = strstr(cmd_line_str, "STRING=");
     if (string_arg) {
         char* val = string_arg + 7;
@@ -382,7 +382,7 @@ CUSTOM_DEBUG_END
 
     // Simplified selection of mouse click tables
     // (Palette setup removed and moved to setup_palette override)
-    // TODO: PARITY - Decomp performs palette-entry initialization in setup(); relocating behavior to setup_palette changes branch locality/order and needs full side-effect audit. [decomp: tribegam.cpp.decomp @ 0x00521790]
+    // TODO: PARITY [MODERATE] - Decomp performs palette-entry initialization in setup(); relocating behavior to setup_palette changes branch locality/order and needs full side-effect audit. [decomp: tribegam.cpp.decomp @ 0x00521790]
 
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
@@ -396,7 +396,7 @@ CUSTOM_DEBUG_END
     if (this->check_prog_argument("LOBBY")) {
         // Lobby startup logic
         // TCommunications_Handler::LaunchLobbyGame ...
-        // TODO: PARITY - LOBBY branch is currently placeholder/logging and does not mirror LaunchLobbyGame + panel transition flow shown in decomp. [decomp: tribegam.cpp.decomp @ 0x00521790]
+        // TODO: PARITY [CRITICAL] - LOBBY branch is currently placeholder/logging and does not mirror LaunchLobbyGame + panel transition flow shown in decomp. [decomp: tribegam.cpp.decomp @ 0x00521790]
 CUSTOM_DEBUG_BEGIN
         CUSTOM_DEBUG_LOG("TRIBE_Game::setup: LOBBY startup path");
 CUSTOM_DEBUG_END
@@ -407,7 +407,7 @@ CUSTOM_DEBUG_END
         if (this->startup_game[0]) {
             if (this->load_game(this->startup_game)) goto FINAL_SETUP;
         }
-        // TODO: PARITY - Failed startup_scenario/startup_game path in decomp routes through start_menu plus error dialog popup; this condensed flow may miss that branch behavior. [decomp: tribegam.cpp.decomp @ 0x00521790]
+        // TODO: PARITY [MODERATE] - Failed startup_scenario/startup_game path in decomp routes through start_menu plus error dialog popup; this condensed flow may miss that branch behavior. [decomp: tribegam.cpp.decomp @ 0x00521790]
         
         if (this->check_prog_argument("DEBUGTREEAUTOSTART")) {
             int start_ok = this->start_game(1);
@@ -420,7 +420,7 @@ CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: quick_start -> start_game result=%d", start_ok);
 CUSTOM_DEBUG_END
         } else if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
-            // TODO: PARITY - Decomp gates this branch with an internal state flag check (this + 0x890) before deciding start_video vs start_menu; this condensed flow may miss that state-dependent transition. [decomp: tribegam.cpp.decomp @ 0x00521E6A]
+            // TODO: PARITY [MODERATE] - Decomp gates this branch with an internal state flag check (this + 0x890) before deciding start_video vs start_menu; this condensed flow may miss that state-dependent transition. [decomp: tribegam.cpp.decomp @ 0x00521E6A]
             if (this->check_prog_argument("DEBUGTREEGRIDMASTER")) {
                 int preload_ok = this->load_game_data();
 CUSTOM_DEBUG_BEGIN
@@ -989,7 +989,7 @@ int TRIBE_Game::load_game_data() {
 
         // Source of truth uses virtual dispatch. Current decomp tree still has vtable fidelity gaps,
         // so call the base implementation explicitly to keep binary data bootstrap deterministic.
-        // TODO: PARITY - Decomp shows a vtbl+0xB0 world init call in load_game_data; this explicit base-call shortcut may bypass subclass side effects if override behavior exists. [decomp: tribegam.cpp.decomp @ 0x005245D0]
+        // TODO: PARITY [MODERATE] - Decomp shows a vtbl+0xB0 world init call in load_game_data; this explicit base-call shortcut may bypass subclass side effects if override behavior exists. [decomp: tribegam.cpp.decomp @ 0x005245D0]
         if (!world->RGE_Game_World::init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
             delete world;
             this->world = nullptr;
@@ -3117,7 +3117,7 @@ int TRIBE_Game::setup_graphics_system() { return RGE_Base_Game::setup_graphics_s
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_palette() {
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
-    // TODO: PARITY - This body is not a pure forwarder; manual palette-entry reconstruction may still miss exact decomp/ASM field writes and branch shape. [decomp: tribegam.cpp.decomp @ 0x00522200]
+    // TODO: PARITY [MODERATE] - This body is not a pure forwarder; manual palette-entry reconstruction may still miss exact decomp/ASM field writes and branch shape. [decomp: tribegam.cpp.decomp @ 0x00522200]
     if (!RGE_Base_Game::setup_palette()) {
         return 0;
     }

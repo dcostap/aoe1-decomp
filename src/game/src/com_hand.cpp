@@ -244,8 +244,8 @@ static long comm_fast_send_player(TCommunications_Handler* comm, uint to_player,
 
 static void comm_store_incoming(TCommunications_Handler* comm, uint serial, const char* msg, ulong len, ulong from_dpid,
                                 ulong to_dpid) {
-    // TODO: PARITY - Helper extraction from StoreIncoming; re-verify duplicate-slot/full-buffer diagnostics and side effects against direct decomp control flow. [decomp: com_hand.cpp.decomp @ 0x0042A180]
-    // TODO: PARITY - Decomp logs and continues the slot-scan when len==0, while this helper exits early on len==0 and drops those diagnostics/side effects. [decomp: com_hand.cpp.decomp @ 0x0042A180]
+    // TODO: PARITY [MODERATE] - Helper extraction from StoreIncoming; re-verify duplicate-slot/full-buffer diagnostics and side effects against direct decomp control flow. [decomp: com_hand.cpp.decomp @ 0x0042A180]
+    // TODO: PARITY [CRITICAL] - Decomp logs and continues the slot-scan when len==0, while this helper exits early on len==0 and drops those diagnostics/side effects. [decomp: com_hand.cpp.decomp @ 0x0042A180]
     if (comm == nullptr || comm->OnHold == nullptr || msg == nullptr || len == 0) {
         return;
     }
@@ -441,7 +441,7 @@ static int comm_all_players_acknowledged(TCommunications_Handler* comm) {
 static int comm_evaluate_player_message(TCommunications_Handler* comm, ulong full_len, uint from_player, ulong execute_on_turn,
                                         uchar command, uchar sequence, const char* payload, uint payload_len, ulong from_dpid,
                                         ulong to_dpid) {
-    // TODO: PARITY - EvaluatePlayerMessage is missing the decomp's Multiplayer gate and 0x2B non-host resume branch before default handling; re-audit command ordering/log side effects. [decomp: com_hand.cpp.decomp @ 0x004282C0]
+    // TODO: PARITY [CRITICAL] - EvaluatePlayerMessage is missing the decomp's Multiplayer gate and 0x2B non-host resume branch before default handling; re-audit command ordering/log side effects. [decomp: com_hand.cpp.decomp @ 0x004282C0]
     (void)full_len;
     (void)from_dpid;
     (void)to_dpid;
@@ -1209,7 +1209,7 @@ void TCommunications_Handler::NotifyWindow(int message) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428270
     // Behavior: Post WM_USER to HostHWND with message as wParam and 0 as lParam.
     // Note: we use integer ids because the full COMMMESSAGES enum is not restored yet.
-    // TODO: PARITY - Message parameter uses int instead of COMMMESSAGES enum, which can mask signedness/type parity issues at call sites. [decomp: com_hand.cpp.decomp @ 0x00428270]
+    // TODO: PARITY [LOW] - Message parameter uses int instead of COMMMESSAGES enum, which can mask signedness/type parity issues at call sites. [decomp: com_hand.cpp.decomp @ 0x00428270]
     if (this->HostHWND) {
         PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, 0);
     }
@@ -1369,7 +1369,7 @@ void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
 uint TCommunications_Handler::GetRandomSeed() {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
-    // TODO: PARITY - Single-player path should seed/store PlayerOptions.RandomSeed via debug_timeGetTime/debug_srand/debug_rand before return; current code returns GetTickCount() directly. [decomp: com_hand.cpp.decomp @ 0x0042CA90]
+    // TODO: PARITY [CRITICAL] - Single-player path should seed/store PlayerOptions.RandomSeed via debug_timeGetTime/debug_srand/debug_rand before return; current code returns GetTickCount() directly. [decomp: com_hand.cpp.decomp @ 0x0042CA90]
     if (this->Multiplayer == 0) {
         return (uint)GetTickCount();
     }
@@ -3108,7 +3108,7 @@ void TCommunications_Handler::ShowSyncChatMsgs(int param_2) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
 void TCommunications_Handler::DropPacketsIntentionally(int param_2) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
-    // TODO: PARITY - Decomp emits a debug log when enabling intentional packet drop; this implementation only stores the flag. [decomp: com_hand.cpp.decomp @ 0x00425930]
+    // TODO: PARITY [CRITICAL] - Decomp emits a debug log when enabling intentional packet drop; this implementation only stores the flag. [decomp: com_hand.cpp.decomp @ 0x00425930]
     this->IntentionallyDropPackets = param_2;
 }
 
@@ -3518,7 +3518,7 @@ void TCommunications_Handler::ClearRXTXForPlayer(uint param_2) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A180
 int TCommunications_Handler::StoreIncoming(uint param_2, char* param_3, uint param_4, ulong param_5, ulong param_6) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A180
-    // TODO: PARITY - Wrapper currently bypasses explicit duplicate-slot scan/full-buffer diagnostics from decomp; verify comm_store_incoming preserves all branch behavior and logging side effects. [decomp: com_hand.cpp.decomp @ 0x0042A180]
+    // TODO: PARITY [MODERATE] - Wrapper currently bypasses explicit duplicate-slot scan/full-buffer diagnostics from decomp; verify comm_store_incoming preserves all branch behavior and logging side effects. [decomp: com_hand.cpp.decomp @ 0x0042A180]
     comm_store_incoming(this, param_2, param_3, (ulong)param_4, param_5, param_6);
     return 1;
 }
@@ -3566,7 +3566,7 @@ int TCommunications_Handler::StoreForResend(uint param_2, char* param_3, uint pa
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
 int TCommunications_Handler::TXAcknowledgeMessage(uint param_2, uint param_3) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
-    // TODO: PARITY - Decomp returns 0 on disabled GTD, bad DCOID, or send failure; current wrapper always returns 1 after helper call. [decomp: com_hand.cpp.decomp @ 0x0042A540]
+    // TODO: PARITY [CRITICAL] - Decomp returns 0 on disabled GTD, bad DCOID, or send failure; current wrapper always returns 1 after helper call. [decomp: com_hand.cpp.decomp @ 0x0042A540]
     comm_tx_ack(this, param_2, param_3);
     return 1;
 }
@@ -3715,7 +3715,7 @@ void TCommunications_Handler::DestroyMultiplayerGame(void) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
 void TCommunications_Handler::SetRandomSeed(int param_2) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
-    // TODO: PARITY - Host-only gate, -1 sentinel randomization, NeedsToBeSent flag, and SendSharedData(0) side effects are missing in this simplified assignment. [decomp: com_hand.cpp.decomp @ 0x0042CA20]
+    // TODO: PARITY [CRITICAL] - Host-only gate, -1 sentinel randomization, NeedsToBeSent flag, and SendSharedData(0) side effects are missing in this simplified assignment. [decomp: com_hand.cpp.decomp @ 0x0042CA20]
     this->PlayerOptions.RandomSeed = (ulong)param_2;
 }
 
@@ -3736,7 +3736,7 @@ char* TCommunications_Handler::GetCommStateStr(void) {
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
 char* TCommunications_Handler::GetReadyPlayerStr(void) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
-    // TODO: PARITY - Decomp builds per-player readiness/humanity glyph string; current implementation collapses to binary Ready/Not Ready text. [decomp: com_hand.cpp.decomp @ 0x0042CB30]
+    // TODO: PARITY [CRITICAL] - Decomp builds per-player readiness/humanity glyph string; current implementation collapses to binary Ready/Not Ready text. [decomp: com_hand.cpp.decomp @ 0x0042CB30]
     return (this->AllPlayersReady() != 0) ? (char*)"Ready" : (char*)"Not Ready";
 }
 
