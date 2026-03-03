@@ -244,6 +244,7 @@ static long comm_fast_send_player(TCommunications_Handler* comm, uint to_player,
 
 static void comm_store_incoming(TCommunications_Handler* comm, uint serial, const char* msg, ulong len, ulong from_dpid,
                                 ulong to_dpid) {
+    // TODO: PARITY - Helper extraction from StoreIncoming; re-verify duplicate-slot/full-buffer diagnostics and side effects against direct decomp control flow. [decomp: com_hand.cpp.decomp @ 0x0042A180]
     if (comm == nullptr || comm->OnHold == nullptr || msg == nullptr || len == 0) {
         return;
     }
@@ -439,6 +440,7 @@ static int comm_all_players_acknowledged(TCommunications_Handler* comm) {
 static int comm_evaluate_player_message(TCommunications_Handler* comm, ulong full_len, uint from_player, ulong execute_on_turn,
                                         uchar command, uchar sequence, const char* payload, uint payload_len, ulong from_dpid,
                                         ulong to_dpid) {
+    // TODO: PARITY - EvaluatePlayerMessage is missing the decomp's Multiplayer gate and 0x2B non-host resume branch before default handling; re-audit command ordering/log side effects. [decomp: com_hand.cpp.decomp @ 0x004282C0]
     (void)full_len;
     (void)from_dpid;
     (void)to_dpid;
