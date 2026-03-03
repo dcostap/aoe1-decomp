@@ -101,6 +101,7 @@ void PointMaker::SetDefaultValues() {
 // Fully verified. Marker reconciliation coverage.
 void PointMaker::CreateMasks() {
     // Fully verified. Source of truth: fractal.cpp.decomp @ 0x0044ACB0
+    // TODO: PARITY - CreateMasks is table-driven here; confirm byte-for-byte mask contents/order against the decomp's explicit write sequence. [decomp: fractal.cpp.decomp @ 0x0044ACB0]
     this->Mask_2x2 = (char*)operator new(0x10, std::nothrow);
     this->Mask_3x3 = (char*)operator new(0x19, std::nothrow);
     this->Mask_4x4 = (char*)operator new(0x24, std::nothrow);
