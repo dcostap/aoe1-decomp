@@ -6,11 +6,15 @@
 #include <string.h>
 
 // Fully verified. Source of truth: taipbook.cpp.decomp @ 0x004E68B0
-TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {}
+TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: taipbook.cpp.decomp @ 0x004E68B0]
+}
 
 // Fully verified. Source of truth: bucket_04E6.decomp @ 0x004E68F0
 // TODO: PARITY - Destructor is an empty stub but bucket decomp shows vtable reset and conditional cleanup of field_0x4c; keep unresolved until full transliteration lands. [decomp: bucket_04E6.decomp @ 0x004E68F0]
-TribeAIPlayBook::~TribeAIPlayBook() {}
+TribeAIPlayBook::~TribeAIPlayBook() {
+    // TODO: EMPTY_STUB - function body not transliterated [decomp: taipbook.cpp.decomp @ 0x004E68F0]
+}
 
 // Fully verified. Source of truth: taipbook.cpp.decomp @ 0x004E6900
 int TribeAIPlayBook::convertTargetNameToIntType(char* param_1) {
