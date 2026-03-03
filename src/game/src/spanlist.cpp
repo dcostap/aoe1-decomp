@@ -1011,6 +1011,7 @@ void TSpan_List_Manager::take_snapshot(char* param_1, int* param_2, TDrawArea* p
             pal[i].rgbReserved = 0;
         }
 
+        // TODO: PARITY - Decomp writes 0x0E bytes from an offset derived from bmFH.bfSize (+2), while this path writes sizeof(tagBITMAPFILEHEADER); verify header-byte alignment/packing parity against ASM. [decomp: spanlist.cpp.decomp @ 0x004BEB10]
         _write(fd, &fh, sizeof(fh));
         _write(fd, &ih, sizeof(ih));
         _write(fd, pal, sizeof(pal));

@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 
+// TODO: PARITY - TribeMPStartupScreen.decomp currently exports only the vector deleting destructor thunk; non-destructor methods in this unit rely on scr_mp.cpp decomp/asm references rather than class-unit decomp bodies.
+
 namespace {
 
 static const char kScrMpSourcePath[] = "C:\\msdev\\work\\age1_x1\\scr_mp.cpp";
