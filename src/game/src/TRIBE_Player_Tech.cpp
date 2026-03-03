@@ -337,6 +337,7 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3,
 
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Player_Tech::check_for_new_tech() {
+    // TODO: PARITY - This function still has a non-verified marker and needs a strict branch-by-branch parity pass against decomp. [decomp: bucket_050C.decomp @ 0x0050CE68]
     // Source of truth: bucket_050C.cpp.decomp @ 0x0050CE68
     if (this->base_tech == nullptr || this->owner == nullptr) {
         return;

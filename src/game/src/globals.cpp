@@ -265,6 +265,7 @@ static int rge_prepare_read_cache(int handle) {
 
 void run_log(char* param_1, int param_2) {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521020
+    // TODO: PARITY - Function body is sourced from tribegam.cpp.decomp but implemented in globals.cpp, so module-level ownership differs from source unit layout. [decomp: tribegam.cpp.decomp @ 0x00521020]
     if (do_run_log == 0) {
         return;
     }

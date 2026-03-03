@@ -374,6 +374,7 @@ void TRIBE_Action_Build::set_target_obj(RGE_Static_Object* param_1) { RGE_Action
 void TRIBE_Action_Build::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5A5 (decomp body failed; verified against tact_bld.cpp.asm)
+// TODO: PARITY - This no-op anchor marks a failed decomp body; re-audit ASM to ensure no executable switch logic is missing. [decomp: tact_bld.cpp.decomp @ 0x004CD5A5]
 static void tact_bld_switch_anchor_004CD5A5() {
     // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
