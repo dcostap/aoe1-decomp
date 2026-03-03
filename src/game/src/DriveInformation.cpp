@@ -1,3 +1,3 @@
 #include "../include/DriveInformation.h"
 
-// TODO: PARITY - No matching decomp unit was found under src/game/decomp for this translation unit; parity cannot be audited yet. [decomp: DriveInformation.cpp.decomp @ 0x00000000]
+// TODO: PARITY - Requested decomp naming (drive.cpp.decomp / driveinfo.cpp.decomp) is not present under src/game/decomp; parity for this translation unit cannot be audited yet. [decomp: DriveInformation.cpp.decomp @ 0x00000000]
