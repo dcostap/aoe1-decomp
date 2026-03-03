@@ -122,6 +122,13 @@ static char debug_random_log[5000][0x64] = {{0}};
 static int debug_random_index = -1;
 static int wrote_debug_random_log = 0;
 
+// TODO: MISSING_FUNC - deflate_data [decomp: bucket_0547.decomp @ 0x005479A0]
+// TODO: MISSING_FUNC - deflate_init [decomp: bucket_054A.decomp @ 0x0054A4B0]
+// TODO: MISSING_FUNC - deflate_deinit [decomp: bucket_054A.decomp @ 0x0054A490]
+// TODO: MISSING_FUNC - deflate_buf_size [decomp: bucket_054A.decomp @ 0x0054A610]
+// TODO: MISSING_FUNC - Inf32BufSize [decomp: bucket_054B.decomp @ 0x0054B0C5]
+// TODO: MISSING_FUNC - Inf32Decode [decomp: bucket_054B.decomp @ 0x0054B0CB]
+
 struct VC_LOG {
     int values[9];
 };
