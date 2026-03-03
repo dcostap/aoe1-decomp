@@ -2233,6 +2233,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, 
     float best_distance = 1000.0f;
     int resource_zone = tribe_object_current_zone(param_1);
 
+    // TODO: PARITY - taiinfmd.cpp.decomp @ 0x004E2A00 includes a playerBuildings capacity-growth path during iteration; this implementation hard-breaks at maximumSizeValue and needs asm verification.
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if (i >= this->playerBuildings.maximumSizeValue) {
             break;
@@ -2340,6 +2341,7 @@ void TribeInformationAIModule::updateAllResourceDropsites() {
             }
             int dropsite_id = -1;
             float distance = this->findClosestDropsite(resource_obj, 1, &dropsite_id);
+            // TODO: PARITY - Decomp uses __ftol for gatherValue/dropDistance writes in this path; static_cast truncation may drift at boundary values. [decomp: taiinfmd.cpp.decomp @ 0x004E2D10]
             this->resources[slot][i].gatherValue = static_cast<int>(distance);
             this->resources[slot][i].dropDistance = static_cast<uchar>(distance);
             this->resources[slot][i].dropsiteID = dropsite_id;
@@ -2371,6 +2373,7 @@ void TribeInformationAIModule::updateResourceDropsites(int param_1) {
 
         int dropsite_id = -1;
         float distance = this->findClosestDropsite(resource_obj, 1, &dropsite_id);
+        // TODO: PARITY - Decomp uses __ftol before writing gatherValue/dropDistance here; confirm rounding mode parity versus cast-based conversion. [decomp: taiinfmd.cpp.decomp @ 0x004E2E90]
         memory.gatherValue = static_cast<int>(distance);
         memory.dropDistance = static_cast<uchar>(distance);
         memory.dropsiteID = dropsite_id;
