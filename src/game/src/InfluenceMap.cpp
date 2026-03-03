@@ -566,3 +566,5 @@ int InfluenceMap::maxValue() {
     }
     return (int)max;
 }
+
+// TODO: MISSING_FUNC - InfluenceMap::~InfluenceMap not implemented [decomp: infmap.cpp.decomp @ 0x0044E080]
