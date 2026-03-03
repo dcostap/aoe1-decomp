@@ -89,7 +89,9 @@ static int tribe_dialog_create_research_list(TRIBE_Dialog_List* self) {
 // Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B450
 TRIBE_Dialog_List::TRIBE_Dialog_List(char* name) : RGE_Dialog_List(name) {}
 
-TRIBE_Dialog_List::~TRIBE_Dialog_List() {}
+TRIBE_Dialog_List::~TRIBE_Dialog_List() {
+    // TODO: EMPTY_STUB - Decomp destructor frees list_info/list_state allocations before base teardown; this empty body is not parity-complete. [decomp: bucket_050B.decomp @ 0x0050B490]
+}
 
 // Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0
 int TRIBE_Dialog_List::create_list() {
