@@ -448,3 +448,5 @@ void RGE_Action_Missile::set_target_obj(RGE_Static_Object* param_1) { RGE_Action
 // Fully verified. Source of truth: act_misl.cpp.decomp @ 0x00404DB0 (virtual forwarding coverage).
 void RGE_Action_Missile::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
+// TODO: MISSING_FUNC - FUN_004050d5 not implemented [decomp: act_misl.cpp.decomp @ 0x004050D5]
+
