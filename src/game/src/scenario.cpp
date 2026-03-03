@@ -49,6 +49,7 @@ static void rge_copy_string_to_fixed(char* dst, const char* src, int dst_size) {
 
 // Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10 (helper coverage).
 static void rge_read_string16_into(int handle, char* dst, int dst_size) {
+    // TODO: PARITY - Decomp reads length bytes directly into fixed buffers and then writes NUL at index `length`; this helper clamps oversized reads and seeks past overflow bytes, which changes malformed-input behavior. [decomp: scenario.cpp.decomp @ 0x0048AE10]
     short length = 0;
     rge_read(handle, &length, 2);
 
