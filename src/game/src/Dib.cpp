@@ -844,6 +844,7 @@ void* ReadPalette(char* param_1, long param_2, int param_3) {
         (rge_base_game->draw_system->DrawType == 1 || rge_base_game->draw_system->ScreenMode == 1)) {
         CreateIdentityPalette(hpal);
     }
+
     return hpal;
 }
 
@@ -1219,6 +1220,7 @@ void CreateIdentityPalette(void* param_1) {
     HDC hdc = GetDC(hwnd);
     PALETTEENTRY new_pal[256];
     PALETTEENTRY from_pal[256];
+    memset(from_pal, 0, sizeof(from_pal));
     int got_sys = GetSystemPaletteEntries(hdc, 0, 256, new_pal);
     int got_src = GetPaletteEntries((HPALETTE)param_1, 0, 256, from_pal);
     for (int i = 10; i < 246; ++i) {
