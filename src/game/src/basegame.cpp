@@ -477,9 +477,13 @@ RGE_Base_Game::~RGE_Base_Game() {
     this->prog_mode = 0;
 
     if (this->world != nullptr) {
+        CUSTOM_DEBUG_LOG("~RGE_Base_Game: deleting world BEGIN");
         delete this->world;
         this->world = nullptr;
+        CUSTOM_DEBUG_LOG("~RGE_Base_Game: deleting world END");
     }
+
+    CUSTOM_DEBUG_LOG("~RGE_Base_Game: world deleted, continuing cleanup");
 
     if (this->map_save_area != nullptr) {
         delete this->map_save_area;

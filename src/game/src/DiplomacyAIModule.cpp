@@ -40,7 +40,7 @@ DiplomacyAIModule::DiplomacyAIModule(int param_1, int param_2) {
 // Offset: 0x0040BFF0
 // Fully verified. Source of truth: aidipmod.cpp.decomp @ 0x0040BFF0
 DiplomacyAIModule::~DiplomacyAIModule() {
-    ((AIModule*)this)->~AIModule();
+    ((AIModule*)this)->AIModule::~AIModule();
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.

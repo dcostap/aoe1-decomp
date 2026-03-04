@@ -61,7 +61,7 @@ EmotionalAIModule::EmotionalAIModule(int param_1, int param_2) {
 // Offset: 0x0040CA90
 // Fully verified. Source of truth: aiemomod.cpp.decomp @ 0x0040CA90
 EmotionalAIModule::~EmotionalAIModule() {
-    as_ai(this)->~AIModule();
+    as_ai(this)->AIModule::~AIModule();
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.

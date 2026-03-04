@@ -3,6 +3,7 @@
 #include "../include/AIModule.h"
 #include "../include/BaseItem.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <cstring>
 #include <io.h>
@@ -10,8 +11,9 @@
 
 // Fully verified. Source of truth: aiconitm.cpp.decomp @ 0x0040A950
 ConstructionItem::~ConstructionItem() {
-    BaseItem* base = reinterpret_cast<BaseItem*>(this);
-    base->~BaseItem();
+    // Must use qualified call — ConstructionItem doesn't inherit from BaseItem,
+    // just shares layout via padding. Unqualified call would virtual-dispatch back here.
+    reinterpret_cast<BaseItem*>(this)->BaseItem::~BaseItem();
 }
 
 namespace {
@@ -335,11 +337,18 @@ ConstructionAIModule::ConstructionAIModule(int param_1, int param_2) {
 // Offset: 0x0040B120
 // Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B120
 ConstructionAIModule::~ConstructionAIModule() {
+    CUSTOM_DEBUG_LOG_FMT("~ConstructionAIModule: BEGIN numLots=%d", this->numberConstructionLotsValue);
     if (0 < this->numberConstructionLotsValue) {
+        CUSTOM_DEBUG_LOG("~ConstructionAIModule: removeOldLots");
         this->removeOldLots();
     }
-    construction_destroy_list_nodes(&this->randomConstructionLots);
-    this->numberRandomConstructionLotsValue = 0;
+    // Compiler auto-destructs embedded ConstructionItem members (constructionLots, randomConstructionLots)
+    // Clean up the AIModule-compatible base layout per decomp.
+    // MUST use qualified call (AIModule::~AIModule) to bypass virtual dispatch,
+    // since ConstructionAIModule doesn't actually inherit from AIModule.
+    CUSTOM_DEBUG_LOG("~ConstructionAIModule: calling AIModule::~AIModule");
+    reinterpret_cast<AIModule*>(this)->AIModule::~AIModule();
+    CUSTOM_DEBUG_LOG("~ConstructionAIModule: END");
 }
 
 // Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).

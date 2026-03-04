@@ -1073,11 +1073,14 @@ void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
 // Destructor
 RGE_Game_World::~RGE_Game_World() {
     // Fully verified. Source of truth: world.cpp.decomp @ 0x00540A40
+    CUSTOM_DEBUG_LOG("~RGE_Game_World: BEGIN");
     if (this->commands != nullptr) {
         delete this->commands;
         this->commands = nullptr;
     }
+    CUSTOM_DEBUG_LOG("~RGE_Game_World: calling del_game_info");
     this->del_game_info();
+    CUSTOM_DEBUG_LOG("~RGE_Game_World: del_game_info done, deleting reusable pools");
 
     if (this->reusable_static_objects != nullptr) {
         delete this->reusable_static_objects;
@@ -1107,6 +1110,7 @@ RGE_Game_World::~RGE_Game_World() {
         delete this->reusable_doppleganger_objects;
         this->reusable_doppleganger_objects = nullptr;
     }
+    CUSTOM_DEBUG_LOG("~RGE_Game_World: reusable pools done, deleting master_players");
 
     if (this->master_players) {
         for (short i = 0; i < this->master_player_num; i++) {
@@ -1117,6 +1121,7 @@ RGE_Game_World::~RGE_Game_World() {
         free(this->master_players);
         this->master_players = nullptr;
     }
+    CUSTOM_DEBUG_LOG("~RGE_Game_World: master_players done, deleting effects+map+sprites+sounds");
     if (this->effects) {
         delete this->effects;
         this->effects = nullptr;
@@ -1381,16 +1386,22 @@ void RGE_Game_World::del_game_info() {
     if (this->players != nullptr && this->player_num > 0) {
         for (int i = 0; i < this->player_num; ++i) {
             if (this->players[i] != nullptr) {
+                CUSTOM_DEBUG_LOG_FMT("del_game_info: destroy_objects player %d BEGIN", i);
                 this->players[i]->destroy_objects();
+                CUSTOM_DEBUG_LOG_FMT("del_game_info: destroy_objects player %d END", i);
             }
         }
     }
 
+    CUSTOM_DEBUG_LOG("del_game_info: all destroy_objects done, deleting players");
+
     if (this->players != nullptr && this->player_num > 0) {
         for (int i = 0; i < this->player_num; ++i) {
             if (this->players[i] != nullptr) {
+                CUSTOM_DEBUG_LOG_FMT("del_game_info: delete player %d BEGIN", i);
                 delete this->players[i];
                 this->players[i] = nullptr;
+                CUSTOM_DEBUG_LOG_FMT("del_game_info: delete player %d END", i);
             }
         }
     }

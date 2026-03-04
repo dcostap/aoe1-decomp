@@ -2,6 +2,7 @@
 #include "../include/AIModuleMessage.h"
 
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 #include <new>
 #include <stdarg.h>
@@ -140,10 +141,13 @@ AIModule::AIModule(char* param_1, int param_2, int param_3, void* param_4)
 
 // Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E360
 AIModule::~AIModule() {
+    CUSTOM_DEBUG_LOG_FMT("~AIModule: BEGIN logCommon=%d commonFile=%p histFile=%p", 
+        this->logCommonHistoryValue, (void*)commonHistoryLogFile, (void*)this->historyLogFile);
     if ((this->logCommonHistoryValue != 0) && (commonHistoryLogFile != nullptr)) {
         fclose(commonHistoryLogFile);
         commonHistoryLogFile = nullptr;
     }
+    CUSTOM_DEBUG_LOG("~AIModule: END");
 }
 
 // Fully verified. Source of truth: aimodule.cpp.decomp @ 0x0040E3A0

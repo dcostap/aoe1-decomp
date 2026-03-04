@@ -254,7 +254,7 @@ if "%RES_CHANGED%"=="1" set "NEED_LINK=1"
 
 if "%NEED_LINK%"=="1" (
     echo [3/3] Linking...
-     link /nologo /DEBUG /INCREMENTAL /OUT:"%OUT_EXE%" ^
+     link /nologo /DEBUG /INCREMENTAL /STACK:4194304 /OUT:"%OUT_EXE%" ^
            /MAP:"%OBJ_DIR%\empiresx.map" ^
            !OBJECT_LIST! ^
            /LIBPATH:"%DP_LIB%" ^

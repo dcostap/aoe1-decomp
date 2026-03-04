@@ -56,7 +56,7 @@ ResourceAIModule::~ResourceAIModule() {
     }
     ::operator delete(this->resourceTypesValue);
     ::operator delete(this->numberResourceTypesValue);
-    ((AIModule*)this)->~AIModule();
+    ((AIModule*)this)->AIModule::~AIModule();
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.

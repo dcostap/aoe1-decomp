@@ -193,7 +193,7 @@ ResearchAIModule::~ResearchAIModule() {
     if (0 < this->techTreeLengthValue) {
         removeOldTechTree();
     }
-    as_ai(this)->~AIModule();
+    as_ai(this)->AIModule::~AIModule();
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.

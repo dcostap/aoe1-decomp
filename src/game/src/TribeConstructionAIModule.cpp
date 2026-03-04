@@ -6,6 +6,7 @@
 #include "../include/RGE_Static_Object.h"
 #include "../include/TribeMainDecisionAIModule.h"
 #include "../include/TribeInformationAIModule.h"
+#include "../include/custom_debug.h"
 
 #include <cstring>
 #include <new>
@@ -149,7 +150,9 @@ TribeConstructionAIModule::TribeConstructionAIModule(int param_1, int param_2)
 // Offset: 0x004D5EE0
 // Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5EE0
 TribeConstructionAIModule::~TribeConstructionAIModule() {
+    CUSTOM_DEBUG_LOG("~TribeConstructionAIModule: BEGIN");
     this->md = nullptr;
+    CUSTOM_DEBUG_LOG("~TribeConstructionAIModule: END (base dtor next)");
 }
 
 // Fully verified. Source of truth: taiconmd.cpp.decomp @ 0x004D5F00 (virtual forwarding coverage).

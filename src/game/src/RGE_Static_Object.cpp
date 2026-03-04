@@ -2752,17 +2752,13 @@ void RGE_Static_Object::set_object_state(uchar param_1) {
     // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C52F0
     // ASM-verified group commander play-status handoff at stat_obj.cpp.asm @ 0x004C55BF.
     if (this->object_state != param_1) {
-        if (param_1 == 7 || this->object_state == 3) {
+        if (param_1 == 7 && this->id % 500 == 0) {
             CUSTOM_DEBUG_LOG_FMT(
-                "RGE_Static_Object::set_object_state enter this=%p id=%ld old=%d new=%d sleep=%d tile=%p owner=%p master=%p",
+                "RGE_Static_Object::set_object_state sample this=%p id=%ld old=%d new=%d",
                 this,
                 this->id,
                 (int)this->object_state,
-                (int)param_1,
-                (int)this->sleep_flag,
-                this->tile,
-                this->owner,
-                this->master_obj);
+                (int)param_1);
         }
         if (param_1 > 2 && this->object_state < 3) {
             this->take_attribute_from_owner();
@@ -2772,9 +2768,7 @@ void RGE_Static_Object::set_object_state(uchar param_1) {
         }
 
         if (this->object_state < 4 && param_1 > 6) {
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::set_object_state: remove_visible_resource begin");
             this->remove_visible_resource();
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::set_object_state: remove_visible_resource end");
         }
 
         if (param_1 > 2 && this->object_state == 2 && this->tile != nullptr) {
@@ -2785,15 +2779,10 @@ void RGE_Static_Object::set_object_state(uchar param_1) {
         }
 
         if (this->object_state < 7 && param_1 == 7 && this->tile != nullptr && this->master_obj->los > 0.0f) {
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::set_object_state: unexplore_terrain begin");
             this->unexplore_terrain(this->owner, 1, -1);
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::set_object_state: unexplore_terrain end");
         }
 
         this->object_state = param_1;
-        if (param_1 == 7 || this->object_state == 3) {
-            CUSTOM_DEBUG_LOG_FMT("RGE_Static_Object::set_object_state: object_state assigned=%d", (int)this->object_state);
-        }
 
         if (param_1 == 3 && this->groupCommanderValue == this->id &&
             this->unitAIValue != nullptr && this->groupMembers.numberValue > 1) {
@@ -2825,9 +2814,7 @@ void RGE_Static_Object::set_object_state(uchar param_1) {
         }
 
         if (this->sleep_flag != 0 && this->object_state != 2 && this->object_state != 6) {
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::set_object_state: rge_static_set_sleep_flag begin");
             rge_static_set_sleep_flag(this, 0);
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::set_object_state: rge_static_set_sleep_flag end");
         }
     }
 }
