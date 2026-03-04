@@ -1469,12 +1469,10 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
             if (iVar3 == 0) return 0;
             break;
 
-        case WM_SETCURSOR: // 0x20
-            if (this->is_mouse_on && this->windows_mouse == 0) {
-                SetCursor(NULL);
-                return 1;
-            }
-            break;
+        // NOTE: The decomp does NOT handle WM_SETCURSOR (0x20) — it falls through
+        // to DefWindowProcA, which uses the class cursor set by SetClassLongA(GCL_HCURSOR).
+        // A previous non-parity handler here hid the cursor when windows_mouse==0, which
+        // broke windowed mode where custom_mouse==0 but set_focus sets windows_mouse=0.
 
         case WM_KEYDOWN: // 0x100
         case 0x104:      // WM_SYSKEYDOWN
