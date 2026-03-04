@@ -25,6 +25,7 @@ The decomp **lies** about:
 - **Struct sizes and padding**: the decomp may alias stack variables or get field boundaries wrong. The ASM shows exact byte counts (`REP MOVSD` with `ECX=0xB` = 44 bytes).
 - **Bitfield packing**: the decomp may merge or split fields incorrectly.
 - **Calling conventions**: parameter order, `this` pointer handling.
+- **Virtual destructor calls via reinterpret_cast**: Ghidra shows `AIModule::~AIModule((AIModule*)this)` which looks like a direct call. Transliterating as `((AIModule*)this)->~AIModule()` makes it a **virtual call** through the vtable — if the class doesn't actually inherit from AIModule (shares layout via padding), the vtable dispatches back to the current class's destructor → **infinite recursion**. **Always use qualified calls**: `reinterpret_cast<AIModule*>(this)->AIModule::~AIModule()`. This applies to any `reinterpret_cast`'d destructor call on a non-inheriting class.
 
 **When to do an ASM audit:**
 - A function doesn't behave correctly at runtime.
