@@ -2916,6 +2916,7 @@ int RGE_Base_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) {
 int RGE_Base_Game::check_paint() {
     // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041FF20
     tagRECT update_rect;
+    static int s_fatal_surface_reports = 0;
 
     if (this->prog_ready == 0) {
         this->clear_window();
@@ -2939,16 +2940,26 @@ int RGE_Base_Game::check_paint() {
     const uchar surface_status = this->draw_system->CheckSurfaces();
     if (surface_status != 1) {
         if (surface_status == 2) {
+            s_fatal_surface_reports = 0;
             this->draw_system->ClearRestored();
             this->set_render_all();
         } else if (surface_status == 3) {
+            // TODO: PARITY [MODERATE] - Original path destroys the main window on fatal surface checks.
+            // We intentionally suppress forced shutdown here to avoid reentrant teardown during map-load transitions
+            // while the underlying zero-sized draw-area surface issue is being reconciled. [decomp: basegame.cpp.asm @ 0x0041FF20]
+            if (s_fatal_surface_reports < 20) {
+                CUSTOM_DEBUG_LOG_FMT("check_paint: CheckSurfaces returned fatal (3), suppressing forced window destroy (count=%d)", s_fatal_surface_reports + 1);
+                s_fatal_surface_reports++;
+            }
             ValidateRect((HWND)this->prog_window, nullptr);
-            DestroyWindow((HWND)this->prog_window);
-            return 0;
+            return 1;
+        } else {
+            s_fatal_surface_reports = 0;
         }
         return 1;
     }
 
+    s_fatal_surface_reports = 0;
     return 0;
 }
 

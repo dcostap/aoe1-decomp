@@ -707,9 +707,18 @@ void TDrawSystem::ClearPrimarySurface() {
 // Returns: 0=OK, 1=display mode changed, 2=surfaces restored, 3=fatal error
 uchar TDrawSystem::CheckSurfaces() {
     // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
+    static int s_surface_fatal_logs = 0;
     if (this->DrawType != 2) return 0;
     if (this->PrimarySurface == nullptr || this->DrawArea == nullptr ||
         this->DrawArea->DrawSurface == nullptr) {
+        if (s_surface_fatal_logs < 20) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "TDrawSystem::CheckSurfaces fatal: primary=%p drawArea=%p drawAreaSurface=%p",
+                this->PrimarySurface,
+                this->DrawArea,
+                (this->DrawArea != nullptr) ? this->DrawArea->DrawSurface : nullptr);
+            s_surface_fatal_logs++;
+        }
         return 3;
     }
 
@@ -729,6 +738,10 @@ uchar TDrawSystem::CheckSurfaces() {
         }
         hr = this->PrimarySurface->Restore();
         if (hr != DD_OK) {
+            if (s_surface_fatal_logs < 20) {
+                CUSTOM_DEBUG_LOG_FMT("TDrawSystem::CheckSurfaces fatal: primary restore failed hr=0x%lX", (unsigned long)hr);
+                s_surface_fatal_logs++;
+            }
             return 3; // fatal
         }
         this->Restored = 1;
@@ -746,7 +759,21 @@ uchar TDrawSystem::CheckSurfaces() {
     while (node != nullptr) {
         if (node->DrawArea != this->PrimaryArea) {
             uchar chk = node->DrawArea->CheckSurface();
-            if (chk == 3) return 3;
+            if (chk == 3) {
+                if (s_surface_fatal_logs < 20) {
+                    const char* area_name =
+                        (node->DrawArea != nullptr && node->DrawArea->Name != nullptr) ? node->DrawArea->Name : "(null)";
+                    CUSTOM_DEBUG_LOG_FMT(
+                        "TDrawSystem::CheckSurfaces fatal: draw area '%s' (%p) check=3 surface=%p size=%ldx%ld",
+                        area_name,
+                        node->DrawArea,
+                        (node->DrawArea != nullptr) ? node->DrawArea->DrawSurface : nullptr,
+                        (node->DrawArea != nullptr) ? node->DrawArea->Width : 0,
+                        (node->DrawArea != nullptr) ? node->DrawArea->Height : 0);
+                    s_surface_fatal_logs++;
+                }
+                return 3;
+            }
         }
         node = node->NextNode;
     }
@@ -1112,6 +1139,14 @@ uchar TDrawArea::CheckSurface() {
     // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
         if (this->DrawSurface == nullptr) {
+            // TODO: PARITY [LOW] - Original helper returns fatal for null surfaces, but zero-sized placeholder
+            // draw areas (e.g., transient time-message panels) can intentionally remain unbacked in this build.
+            // Treat those as non-fatal to avoid false-positive fatal-surface shutdowns. [decomp: drawarea.cpp.decomp @ 0x00444110]
+            // Some UI draw areas are intentionally zero-sized placeholders (for example
+            // transient time-message panels). Treat those as non-fatal in surface checks.
+            if (this->Width <= 0 || this->Height <= 0) {
+                return 0;
+            }
             return 3;
         }
         HRESULT hr = this->DrawSurface->IsLost();

@@ -3330,14 +3330,11 @@ int TRIBE_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) {
 }
 int TRIBE_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: tribegam.cpp.decomp @ 0x00529980]
-    // Return 1 (not consumed) so DefWindowProcA handles it → calls DestroyWindow
-    return 1;
+    return RGE_Base_Game::handle_close(p1, p2, p3, p4);
 }
 int TRIBE_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
-    PostQuitMessage(0);
-    return 0; // consumed
+    return RGE_Base_Game::handle_destroy(p1, p2, p3, p4);
 }
 
 int TRIBE_Game::action_update() {
