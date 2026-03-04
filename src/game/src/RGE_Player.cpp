@@ -439,13 +439,9 @@ RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
 
 RGE_Player::~RGE_Player() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EB00
-    CUSTOM_DEBUG_LOG_FMT("~RGE_Player: BEGIN id=%d obj_count=%d master_count=%d",
-        (int)this->id, this->objects ? this->objects->number_of_objects : -1, (int)this->master_object_num);
     if (this->objects != nullptr) {
-        CUSTOM_DEBUG_LOG_FMT("~RGE_Player: deleting objects list (%d objects)", this->objects->number_of_objects);
         delete this->objects;
         this->objects = nullptr;
-        CUSTOM_DEBUG_LOG("~RGE_Player: objects list deleted");
     }
     if (this->sleeping_objects != nullptr) {
         delete this->sleeping_objects;
@@ -455,7 +451,6 @@ RGE_Player::~RGE_Player() {
         delete this->doppleganger_objects;
         this->doppleganger_objects = nullptr;
     }
-    CUSTOM_DEBUG_LOG("~RGE_Player: obj lists done, deleting victory_conditions");
     if (this->victory_conditions) {
         delete this->victory_conditions;
         this->victory_conditions = nullptr;
@@ -480,9 +475,7 @@ RGE_Player::~RGE_Player() {
         this->master_object_num = 0;
     }
 
-    CUSTOM_DEBUG_LOG("~RGE_Player: master objects done");
     if (this->visible != nullptr) {
-        CUSTOM_DEBUG_LOG("~RGE_Player: deleting visible");
         delete this->visible;
         this->visible = nullptr;
     }

@@ -268,27 +268,18 @@ TRIBE_Player::TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id)
 
 TRIBE_Player::~TRIBE_Player() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x005120F0
-    CUSTOM_DEBUG_LOG_FMT("~TRIBE_Player: BEGIN id=%d tech_tree=%p playerAI=%p history=%p",
-        (int)this->id, this->tech_tree, this->playerAI, this->history);
     if (this->tech_tree) {
-        CUSTOM_DEBUG_LOG("~TRIBE_Player: deleting tech_tree");
         delete this->tech_tree;
         this->tech_tree = nullptr;
-        CUSTOM_DEBUG_LOG("~TRIBE_Player: tech_tree deleted");
     }
     if (this->playerAI) {
-        CUSTOM_DEBUG_LOG("~TRIBE_Player: deleting playerAI");
         delete this->playerAI;
         this->playerAI = nullptr;
-        CUSTOM_DEBUG_LOG("~TRIBE_Player: playerAI deleted");
     }
     if (this->history) {
-        CUSTOM_DEBUG_LOG("~TRIBE_Player: deleting history");
         delete this->history;
         this->history = nullptr;
-        CUSTOM_DEBUG_LOG("~TRIBE_Player: history deleted");
     }
-    CUSTOM_DEBUG_LOG("~TRIBE_Player: END");
 }
 
 // --- TRIBE_Gaia constructors ---

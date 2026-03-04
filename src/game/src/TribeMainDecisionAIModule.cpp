@@ -22,7 +22,6 @@
 #include "../include/TribeTacticalAIModule.h"
 #include "../include/TRIBE_Player.h"
 #include "../include/globals.h"
-#include "../include/custom_debug.h"
 
 #include <cstring>
 #include <new>
@@ -293,28 +292,18 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(int player_number, char* pl
 }
 
 // Offset: 0x004E4EC0
+// Offset: 0x004E4EC0
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E4EC0
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule() {
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: BEGIN");
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: trade_ai");
     trade_ai(this)->~TradeAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: tactical_ai");
     tactical_ai(this)->~TribeTacticalAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: strategy_ai");
     strategy_ai(this)->~TribeStrategyAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: resource_ai");
     resource_ai(this)->~TribeResourceAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: information_ai");
     information_ai(this)->~TribeInformationAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: emotional_ai");
     emotional_ai(this)->~EmotionalAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: diplomacy_ai");
     diplomacy_ai(this)->~DiplomacyAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: construction_ai");
     construction_ai(this)->~TribeConstructionAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: tribe_build_ai");
     tribe_build_ai(this)->~TribeBuildAIModule();
-    CUSTOM_DEBUG_LOG("~TribeMainDecisionAIModule: END (body done, base dtors next)");
 }
 
 int TribeMainDecisionAIModule::loggingHistory() {

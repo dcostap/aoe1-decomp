@@ -248,9 +248,6 @@ CUSTOM_DEBUG_END
 
 TRIBE_Game::~TRIBE_Game() {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x005213A0
-    CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG("TRIBE_Game::~TRIBE_Game: destructor start");
-    CUSTOM_DEBUG_END
 
     this->inHandleIdle = 0;
     this->prog_mode = 0;  // ASM: MOV [ESI+0x1B0], 0
@@ -262,12 +259,10 @@ TRIBE_Game::~TRIBE_Game() {
     }
 
     // Close all game screens and dialogs
-    CUSTOM_DEBUG_LOG("TRIBE_Game dtor: closing game screens");
     this->close_game_screens(1);
 
     // Destroy all remaining panels
     if (panel_system) {
-        CUSTOM_DEBUG_LOG("TRIBE_Game dtor: destroying panel system panels");
         panel_system->destroyPanel((char*)"Video Screen");
         panel_system->destroyPanel((char*)"Create Dialog");
         panel_system->destroyPanel((char*)"Campaign Editor Screen");
@@ -299,7 +294,6 @@ TRIBE_Game::~TRIBE_Game() {
     }
 
     // Close DRS resource files
-    CUSTOM_DEBUG_LOG("TRIBE_Game dtor: closing resource files");
     RESFILE_close_new_resource_file((char*)"sounds.drs");
     RESFILE_close_new_resource_file((char*)"graphics.drs");
     RESFILE_close_new_resource_file((char*)"Terrain.drs");
@@ -311,8 +305,6 @@ TRIBE_Game::~TRIBE_Game() {
         FreeLibrary(StringTableX);
         StringTableX = nullptr;
     }
-
-    CUSTOM_DEBUG_LOG("TRIBE_Game::~TRIBE_Game: destructor end");
     // ~RGE_Base_Game() is called automatically by C++ destructor chain
 }
 
