@@ -3152,9 +3152,6 @@ int TRIBE_Game::setup_palette() {
         pe[6].peRed = 0x17; pe[6].peGreen = 0x27; pe[6].peBlue = 0x7b;
 
         SetPaletteEntries((HPALETTE)this->prog_palette, 0xF8, 7, pe); 
-        if (this->draw_system) {
-            this->draw_system->SetPalette(this->prog_palette);
-        }
     }
 
     return 1;

@@ -803,11 +803,12 @@ void* ReadPalette(char* param_1, long param_2, int param_3) {
 
     HPALETTE hpal = nullptr;
     if (strncmp((const char*)data, "JASC-PAL", 8) == 0) {
-        char sep[4];
+        char sep[5];
         sep[0] = '\t';
         sep[1] = ' ';
         sep[2] = '\r';
         sep[3] = '\n';
+        sep[4] = '\0';
         char* ctx = nullptr;
         char* tok = strtok_s((char*)data, sep, &ctx);
         tok = strtok_s(nullptr, sep, &ctx);

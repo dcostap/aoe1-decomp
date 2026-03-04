@@ -242,26 +242,6 @@ static void drawarea_fill_run(uchar* dst, int count, int bytes_per_pixel, unsign
     }
 }
 
-static unsigned long drawarea_palette_checksum(const tagPALETTEENTRY* entries, int count) {
-    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
-    if (entries == nullptr || count <= 0) {
-        return 0;
-    }
-
-    unsigned long hash = 2166136261UL;
-    for (int i = 0; i < count; ++i) {
-        hash ^= (unsigned long)entries[i].peRed;
-        hash *= 16777619UL;
-        hash ^= (unsigned long)entries[i].peGreen;
-        hash *= 16777619UL;
-        hash ^= (unsigned long)entries[i].peBlue;
-        hash *= 16777619UL;
-        hash ^= (unsigned long)entries[i].peFlags;
-        hash *= 16777619UL;
-    }
-    return hash;
-}
-
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00442680
 TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
