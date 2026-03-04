@@ -685,8 +685,9 @@ void RGE_View::calc_draw_vars() {
         this->center_scr_row_offset = 0;
         this->max_col_num = (short)(this->pnl_wid / (long)this->tile_wid);
         this->max_row_num = (short)(this->pnl_hgt / (long)this->tile_hgt);
-        this->center_scr_col = (short)((short)this->pnl_wid - this->tile_half_wid + (short)(this->pnl_wid / 2));
-        this->center_scr_row = (short)((short)this->pnl_hgt - this->tile_half_hgt + (short)(this->pnl_hgt / 2));
+        // ASM: BX = (short)render_rect.left - tile_half_wid + pnl_wid/2
+        this->center_scr_col = (short)((short)this->render_rect.left - this->tile_half_wid + (short)(this->pnl_wid / 2));
+        this->center_scr_row = (short)((short)this->render_rect.top - this->tile_half_hgt + (short)(this->pnl_hgt / 2));
         return;
     }
 
@@ -2314,19 +2315,14 @@ void RGE_View::draw()
 
     this->draw_view(10, terrain_target); // 10 is terrain mode
 
-    if (terrain_target == this->save_area1 && this->render_area != nullptr) {
-        tagRECT src;
-        src.left = 0;
-        src.top = 0;
-        src.right = this->pnl_wid - 1;
-        src.bottom = this->pnl_hgt - 1;
-        this->save_area1->Copy(this->render_area, this->pnl_x, this->pnl_y, &src, 0);
-    }
+    // NOTE: No explicit save_area1→render_area copy here per decomp source of truth.
+    // The original uses save_area1 as a scrollable terrain buffer; final blit to screen
+    // is handled by the DirectDraw/blit-queue system, not an explicit Copy call.
 
     CUSTOM_DEBUG_BEGIN
     if (s_view_debug_draw_logs < 12 || (frame_count % 120) == 0) {
         CUSTOM_DEBUG_LOG_FMT(
-            "RGE_View::draw: frame=%d tiles_drawn=%d mask_draws=%d fog_mask_draws=%d fallback_draws=%d world=%p map=%p player=%p start=(%d,%d) map_offset=(%d,%d)",
+            "RGE_View::draw: frame=%d tiles_drawn=%d mask_draws=%d fog_mask_draws=%d fallback_draws=%d world=%p map=%p player=%p start=(%d,%d) map_offset=(%d,%d) save_area1=%p render_area=%p pnl_x=%d pnl_y=%d pnl_wid=%d pnl_hgt=%d",
             frame_count,
             tiles_drawn,
             s_view_debug_masked_draws,
@@ -2338,7 +2334,13 @@ void RGE_View::draw()
             (int)this->start_map_col,
             (int)this->start_map_row,
             (int)this->map_scr_x_offset,
-            (int)this->map_scr_y_offset);
+            (int)this->map_scr_y_offset,
+            this->save_area1,
+            this->render_area,
+            (int)this->pnl_x,
+            (int)this->pnl_y,
+            (int)this->pnl_wid,
+            (int)this->pnl_hgt);
         if (s_view_debug_draw_logs < 12) {
             s_view_debug_draw_logs++;
         }
@@ -2353,10 +2355,8 @@ void RGE_View::draw()
 
 void RGE_View::update()
 {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535210
+    // Fully verified. Source of truth: view.cpp.asm @ 0x00535210
     if (this->player == nullptr) return;
-    // TODO: PARITY [MODERATE] - Extra null-map early return is not present in decomp update flow (original proceeds once player view changed). [decomp: view.cpp.decomp @ 0x00535210]
-    if (this->map == nullptr) return;
 
     if (this->player->view_x != this->last_view_x || this->player->view_y != this->last_view_y) {
         this->center_map_col = (short)this->player->view_x;
@@ -2364,23 +2364,42 @@ void RGE_View::update()
         this->last_view_x = this->player->view_x;
         this->last_view_y = this->player->view_y;
 
-        this->center_scr_col = (this->render_rect_wid / 2) - this->tile_half_wid;
-        this->center_scr_row = (this->render_rect_hgt / 2) - this->tile_half_hgt;
+        // Fractional sub-tile view offsets for smooth scrolling (isometric projection)
+        float fx = this->player->view_x - (float)(int)this->center_map_col;
+        float fy = this->player->view_y - (float)(int)this->center_map_row;
 
-        RGE_Tile* center_tile = this->map->get_tile(this->center_map_col, this->center_map_row);
-        if (center_tile) {
-            this->map_scr_x_offset = center_tile->screen_xpos - this->center_scr_col;
-            this->map_scr_y_offset = (this->elev_hgt * center_tile->height + center_tile->screen_ypos) - this->center_scr_row;
-        }
+        // Initial center screen position: panel render origin + half panel size - half tile
+        // ASM reads render_rect.left (word at 0x8c) and pnl_wid (dword at 0x14)
+        short center_col = (short)this->render_rect.left + (short)(this->pnl_wid / 2) - this->tile_half_wid;
+        short center_row = (short)this->render_rect.top + (short)(this->pnl_hgt / 2) - this->tile_half_hgt;
 
-        this->center_scr_col_offset = (short)((this->center_map_col + this->center_map_row) * this->tile_half_wid - this->player->view_x);
-        this->center_scr_row_offset = (short)((this->center_map_row - this->center_map_col) * this->tile_half_hgt - this->player->view_y);
+        // Sub-tile pixel adjustments from fractional view position
+        int sub_x = (int)((fx + fy) * 0.5f * (float)this->tile_wid);
+        int sub_y = (int)((fy - fx) * 0.5f * (float)this->tile_hgt);
 
+        center_col -= (short)sub_x;
+        center_row -= (short)(sub_y + this->tile_half_hgt);
+
+        this->center_scr_col = center_col;
+        this->center_scr_row = center_row;
+
+        // Map-to-screen offsets from the center tile
+        RGE_Tile* center_tile = &this->map->map_row_offset[this->center_map_row][this->center_map_col];
+        this->map_scr_x_offset = (int)center_tile->screen_xpos - (int)center_col;
+        this->map_scr_y_offset =
+            ((int)this->elev_hgt * (unsigned int)(center_tile->height) + (int)center_tile->screen_ypos)
+            - (int)center_row;
+
+        // Tile-grid screen offsets for coordinate transforms
+        this->center_scr_col_offset = (short)((this->center_map_col + this->center_map_row) * this->tile_half_wid - sub_x);
+        this->center_scr_row_offset = (short)((this->center_map_row - this->center_map_col) * this->tile_half_hgt - (sub_y + this->tile_half_hgt));
+
+        // Compute scan area
         short r_cols = (this->max_col_num / 2) + 2;
         this->start_map_col = this->center_map_col - r_cols;
         this->start_map_row = this->center_map_row - r_cols;
         this->start_scr_col = this->center_scr_col + (r_cols * this->tile_half_wid * -2);
-        
+
         short r_rows = (this->max_row_num / 2) + 1;
         this->start_map_col += r_rows;
         this->start_map_row -= r_rows;

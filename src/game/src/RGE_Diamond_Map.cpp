@@ -1,5 +1,6 @@
 #include "RGE_Diamond_Map.h"
 
+#include "custom_debug.h"
 #include "RGE_Base_Game.h"
 #include "RGE_Color_Table.h"
 #include "RGE_Game_World.h"
@@ -510,6 +511,14 @@ int RGE_Diamond_Map::create_surfaces() {
 // Fully verified. Source of truth: RGE_Diamond_Map.decomp (inherited-forwarder parity with TPanel).
 void RGE_Diamond_Map::draw() {
     // Fully verified. Source of truth: diam_map.cpp.decomp @ 0x004372C0
+    CUSTOM_DEBUG_BEGIN
+    static int s_dmap_draw_logs = 0;
+    if (s_dmap_draw_logs < 5) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Diamond_Map::draw: enter render_area=%p save_area=%p visible=%d active=%d map=%p player=%p map_image_lines=%p map_tile_rows=%p render_all=%d",
+            this->render_area, this->save_area, (int)this->visible, (int)this->active,
+            this->map, this->player, this->map_image_lines, this->map_tile_rows, (int)this->render_all);
+    }
+    CUSTOM_DEBUG_END
     if (this->render_area == nullptr || this->save_area == nullptr || this->visible == 0 || this->active == 0) {
         this->need_redraw = TPanel::NoRedraw;
         return;
@@ -520,35 +529,82 @@ void RGE_Diamond_Map::draw() {
     if (this->map != nullptr && this->player != nullptr && this->map_image_lines != nullptr && this->map_tile_rows != nullptr) {
         this->cur_player_bit = 1UL << (((unsigned long)this->world->curr_player) & 0x1FU);
 
+        CUSTOM_DEBUG_BEGIN
+        if (s_dmap_draw_logs < 5) {
+            CUSTOM_DEBUG_LOG_FMT("RGE_Diamond_Map::draw: path=full cur_player_bit=0x%lx render_all=%d", this->cur_player_bit, (int)this->render_all);
+        }
+        CUSTOM_DEBUG_END
+
         if (this->render_all == 0) {
+            CUSTOM_DEBUG_BEGIN
+            if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: calling draw_explored_tiles");
+            CUSTOM_DEBUG_END
             this->draw_explored_tiles();
+            CUSTOM_DEBUG_BEGIN
+            if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: draw_explored_tiles OK");
+            CUSTOM_DEBUG_END
         } else {
             if (this->parent_panel != nullptr) {
+                CUSTOM_DEBUG_BEGIN
+                if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG_FMT("RGE_Diamond_Map::draw: parent_panel->draw_rect parent=%p clip=(%ld,%ld,%ld,%ld)",
+                    this->parent_panel, this->clip_rect.left, this->clip_rect.top, this->clip_rect.right, this->clip_rect.bottom);
+                CUSTOM_DEBUG_END
                 this->parent_panel->draw_rect(&this->clip_rect);
+                CUSTOM_DEBUG_BEGIN
+                if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: draw_rect OK, calling Copy");
+                CUSTOM_DEBUG_END
                 this->render_area->Copy(this->save_area, 0, 0, &this->render_rect, 0);
+                CUSTOM_DEBUG_BEGIN
+                if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: Copy OK, calling clear_image");
+                CUSTOM_DEBUG_END
                 this->clear_image();
+                CUSTOM_DEBUG_BEGIN
+                if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: clear_image OK");
+                CUSTOM_DEBUG_END
             } else {
                 this->save_area->Clear(nullptr, (int)this->color);
             }
 
+            CUSTOM_DEBUG_BEGIN
+            if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: calling draw_all_tiles");
+            CUSTOM_DEBUG_END
             this->draw_all_tiles();
+            CUSTOM_DEBUG_BEGIN
+            if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: draw_all_tiles OK");
+            CUSTOM_DEBUG_END
             this->render_all = 0;
         }
 
+        CUSTOM_DEBUG_BEGIN
+        if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: calling copy_image");
+        CUSTOM_DEBUG_END
         this->copy_image();
+        CUSTOM_DEBUG_BEGIN
+        if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: copy_image OK, calling draw_selected_area/objects");
+        CUSTOM_DEBUG_END
 
         if (rge_base_game->game_mode != 0x15) {
             this->draw_selected_area();
         }
         this->draw_objects();
 
+        CUSTOM_DEBUG_BEGIN
+        if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: objects OK, calling draw_view_rect");
+        CUSTOM_DEBUG_END
+
         if (this->render_area->Lock((char*)"diam_map::draw", 1) != nullptr) {
             this->draw_view_rect();
             this->render_area->Unlock((char*)"diam_map::draw");
         }
 
+        CUSTOM_DEBUG_BEGIN
+        if (s_dmap_draw_logs < 5) CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: view_rect OK, calling draw_finish");
+        CUSTOM_DEBUG_END
         this->draw_finish();
         this->player->diam_tile_list.del_list();
+        CUSTOM_DEBUG_BEGIN
+        if (s_dmap_draw_logs < 5) { CUSTOM_DEBUG_LOG("RGE_Diamond_Map::draw: complete (full path)"); s_dmap_draw_logs++; }
+        CUSTOM_DEBUG_END
         return;
     }
 

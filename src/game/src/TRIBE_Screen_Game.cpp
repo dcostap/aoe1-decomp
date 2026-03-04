@@ -2089,16 +2089,53 @@ int TRIBE_Screen_Game::restart_sound_system() {
 }
 
 void TRIBE_Screen_Game::draw() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049B536 (draw prelude slice).
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049B560.
-    TPanel::draw();
+    // Source of truth: scr_game.cpp.decomp @ 0x0049B560, scr_game.cpp.asm @ 0x0049B560
+    // Normal path (do_color_log == 0): draws game screen background frame picture
+    // The child views (main_view, map_view) are drawn by handle_paint's child iteration, NOT by draw().
 
-    if (this->runtime.main_view != nullptr) {
-        this->runtime.main_view->draw_tree();
+    if (do_color_log != 0) {
+        // TODO: PARITY - color_log path saves clip_rect, calls draw_setup(0), renders color log FillRect,
+        // draws game_screen_pic shapes, calls draw_finish, restores clip_rect. Deferred. [decomp: scr_game.cpp.decomp @ 0x0049B560]
+        this->draw_setup(0);
+        this->draw_finish();
+        return;
     }
-    if (this->runtime.map_view != nullptr) {
-        this->runtime.map_view->draw_tree();
+
+    // Normal path
+    int clear_flag;
+    if (this->fill_in_background == 2 || this->runtime.game_screen_pic == nullptr) {
+        clear_flag = 1;
+    } else {
+        clear_flag = 0;
     }
+
+    this->draw_setup(clear_flag);
+
+    if (this->runtime.game_screen_pic != nullptr) {
+        uchar* locked = this->render_area->Lock((char*)"scr_game::draw3", 1);
+        if (locked != nullptr) {
+            long bottom_y;
+            if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
+                // 1024x768+
+                this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
+                bottom_y = 0x282; // 642
+            } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
+                // 800x600
+                this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
+                bottom_y = 0x1da; // 474
+            } else {
+                // 640x480
+                this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
+                bottom_y = 0x162; // 354
+            }
+            // Draw bottom portion
+            this->runtime.game_screen_pic->shape_draw(this->render_area, 0, bottom_y, 1, 0, nullptr);
+
+            this->render_area->Unlock((char*)"scr_game::draw3");
+        }
+    }
+
+    this->draw_finish();
 }
 
 long TRIBE_Screen_Game::handle_paint() {
