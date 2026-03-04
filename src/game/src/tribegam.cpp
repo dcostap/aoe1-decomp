@@ -253,12 +253,12 @@ TRIBE_Game::~TRIBE_Game() {
     CUSTOM_DEBUG_END
 
     this->inHandleIdle = 0;
+    this->prog_mode = 0;  // ASM: MOV [ESI+0x1B0], 0
 
-    // Destroy video window if present
-    if (this->video_window != nullptr) {
-        CUSTOM_DEBUG_LOG("TRIBE_Game dtor: destroying video_window");
-        DestroyWindow((HWND)this->video_window);
-        this->video_window = nullptr;
+    // Destroy input-disabled window if present (ASM: field at +0x1DC)
+    if (this->input_disabled_window != nullptr) {
+        DestroyWindow((HWND)this->input_disabled_window);
+        this->input_disabled_window = nullptr;
     }
 
     // Close all game screens and dialogs
@@ -1654,6 +1654,9 @@ void TRIBE_Game::close_game_screens(int p1) {
     // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521620
     // Destroy all in-game dialog and screen panels.
     if (panel_system) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("close_game_screens(%d): starting", p1);
+        CUSTOM_DEBUG_END
         panel_system->destroyPanel((char*)"Object List Dialog");
         panel_system->destroyPanel((char*)"OKDialog");
         panel_system->destroyPanel((char*)"YesNoDialog");
@@ -1675,9 +1678,18 @@ void TRIBE_Game::close_game_screens(int p1) {
         panel_system->destroyPanel((char*)"Achievements Screen");
         panel_system->destroyPanel((char*)"Multiplayer Wait Screen");
         panel_system->destroyPanel((char*)"Multiplayer Disconnect Screen");
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG_FMT("close_game_screens(%d): dialogs done, p1=%d", p1, p1);
+        CUSTOM_DEBUG_END
         if (p1 != 0) {
             this->game_screen = nullptr;
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("close_game_screens: destroying Game Screen");
+            CUSTOM_DEBUG_END
             panel_system->destroyPanel((char*)"Game Screen");
+            CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_LOG("close_game_screens: Game Screen destroyed");
+            CUSTOM_DEBUG_END
         }
     }
 }

@@ -233,12 +233,21 @@ static void RESFILE_Set_Missing_Flag(int flag) {
 // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F6FA (decompiler artifact thunk: no stable high-level body emitted)
 
 
+static volatile int g_in_shutdown = 0;
+
 LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041E7A0
+    CUSTOM_DEBUG_BEGIN
+    if (g_in_shutdown) {
+        CUSTOM_DEBUG_LOG_FMT("rge_base_game_wnd_proc[SHUTDOWN]: msg=0x%X rge_base_game=%p", msg, rge_base_game);
+    } else if (msg == WM_DESTROY || msg == WM_NCDESTROY) {
+        CUSTOM_DEBUG_LOG_FMT("rge_base_game_wnd_proc: msg=0x%X rge_base_game=%p", msg, rge_base_game);
+    }
+    CUSTOM_DEBUG_END
     if (rge_base_game) {
         return rge_base_game->wnd_proc(hWnd, (uint)msg, (uint)wParam, (long)lParam);
     }
-    return 0;
+    return DefWindowProcA(hWnd, msg, wParam, lParam);
 }
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
@@ -1419,10 +1428,20 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
     }
 
     if (curPanel != nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        if (p2 == WM_CLOSE || p2 == WM_DESTROY) {
+            CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: forwarding msg=0x%X to curPanel=%p", p2, curPanel);
+        }
+        CUSTOM_DEBUG_END
         result = curPanel->wnd_proc(p1, p2, p3, p4);
         // If panel consumed the message AND it's not WM_MOUSEMOVE or WM_TIMER,
         // return the result directly (decomp: goto LAB_004207c2 only if result==0 or msg==0x200 or msg==0x113)
         if (result != 0 && p2 != 0x200 && p2 != 0x113) {
+            CUSTOM_DEBUG_BEGIN
+            if (p2 == WM_CLOSE || p2 == WM_DESTROY) {
+                CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: curPanel consumed msg=0x%X result=%ld, returning early", p2, result);
+            }
+            CUSTOM_DEBUG_END
             return result;
         }
     }
@@ -1449,13 +1468,26 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
         case WM_CLOSE: // 0x10
             iVar3 = this->handle_close(p1, p2, p3, p4);
             if (iVar3 == 0) return 0;
+            CUSTOM_DEBUG_BEGIN
+            g_in_shutdown = 1;
+            CUSTOM_DEBUG_LOG("RGE_Base_Game::wnd_proc: WM_CLOSE not consumed, entering shutdown");
+            CUSTOM_DEBUG_END
             break;
 
         case WM_ACTIVATEAPP: // 0x1C
             // Decomp: complex activate/deactivate with surface restoration
+            CUSTOM_DEBUG_BEGIN
+            if (g_in_shutdown) {
+                CUSTOM_DEBUG_LOG_FMT("WM_ACTIVATEAPP[SHUTDOWN]: prog_active=%d p3=%d prog_window=%p draw_system=%p", 
+                    this->prog_active, (int)p3, this->prog_window, this->draw_system);
+            }
+            CUSTOM_DEBUG_END
             if (this->prog_active != 0) {
                 if ((long)p3 == 1) {
                     // Activating
+                    CUSTOM_DEBUG_BEGIN
+                    if (g_in_shutdown) CUSTOM_DEBUG_LOG("WM_ACTIVATEAPP[SHUTDOWN]: activating - checking surfaces");
+                    CUSTOM_DEBUG_END
                     if (this->draw_system != nullptr) {
                         this->draw_system->CheckSurfaces();
                         this->draw_system->ClearRestored();
@@ -1472,10 +1504,19 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
                     restore_mouse_after_paint = 1;
                 } else {
                     // Deactivating
+                    CUSTOM_DEBUG_BEGIN
+                    if (g_in_shutdown) CUSTOM_DEBUG_LOG("WM_ACTIVATEAPP[SHUTDOWN]: deactivating - setting cursor");
+                    CUSTOM_DEBUG_END
                     SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, 0);
                 }
             }
+            CUSTOM_DEBUG_BEGIN
+            if (g_in_shutdown) CUSTOM_DEBUG_LOG("WM_ACTIVATEAPP[SHUTDOWN]: calling handle_activate");
+            CUSTOM_DEBUG_END
             iVar3 = this->handle_activate(p1, 0x1c, p3, p4);
+            CUSTOM_DEBUG_BEGIN
+            if (g_in_shutdown) CUSTOM_DEBUG_LOG_FMT("WM_ACTIVATEAPP[SHUTDOWN]: handle_activate returned %d", iVar3);
+            CUSTOM_DEBUG_END
             if (iVar3 == 0) return 0;
             break;
 
@@ -1562,7 +1603,25 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
             break;
     }
 
-    return DefWindowProcA((HWND)p1, p2, p3, p4); 
+    CUSTOM_DEBUG_BEGIN
+    if (p2 == WM_CLOSE || p2 == WM_DESTROY) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: falling through to DefWindowProcA msg=0x%X", p2);
+    }
+    CUSTOM_DEBUG_END
+
+    LRESULT defResult = 0;
+    CUSTOM_DEBUG_BEGIN
+    __try {
+        defResult = DefWindowProcA((HWND)p1, p2, p3, p4);
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        DWORD code = GetExceptionCode();
+        CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: EXCEPTION in DefWindowProcA msg=0x%X exception=0x%08lX", p2, code);
+    }
+    if (p2 == WM_CLOSE) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::wnd_proc: DefWindowProcA(WM_CLOSE) returned %ld", defResult);
+    }
+    CUSTOM_DEBUG_END
+    return defResult;
 }
 void RGE_Base_Game::set_prog_mode(int p1) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041C240
@@ -3279,24 +3338,42 @@ int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4)
 
 int RGE_Base_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421B70
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::handle_close: msg=0x%X this=%p draw_area=%p draw_system=%p", p2, this, this->draw_area, this->draw_system);
+    CUSTOM_DEBUG_END
     if (this->action_close() == 0) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("RGE_Base_Game::handle_close: action_close returned 0, returning 0");
+        CUSTOM_DEBUG_END
         return 0;
     }
     if (this->draw_area != nullptr && this->draw_system != nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("RGE_Base_Game::handle_close: clearing draw_area and painting");
+        CUSTOM_DEBUG_END
         this->draw_area->Clear(nullptr, 0);
         this->draw_system->Paint(nullptr);
     }
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("RGE_Base_Game::handle_close: returning 1");
+    CUSTOM_DEBUG_END
     return 1;
 }
 
 int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00421BB0
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("RGE_Base_Game::handle_destroy: this=%p prog_window=%p is_timer=%d", this, this->prog_window, this->is_timer);
+    CUSTOM_DEBUG_END
     this->prog_ready = 0;
     if (this->is_timer != 0 && this->prog_window != nullptr) {
         KillTimer((HWND)this->prog_window, 1);
     }
     this->prog_window = nullptr;
     PostQuitMessage(0);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("RGE_Base_Game::handle_destroy: PostQuitMessage sent, returning 1");
+    CUSTOM_DEBUG_END
     return 1;
 }
 int RGE_Base_Game::action_update() {

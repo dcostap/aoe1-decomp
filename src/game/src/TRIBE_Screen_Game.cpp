@@ -845,9 +845,15 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
 TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004954A0.
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: start");
+    CUSTOM_DEBUG_END
     if (panel_system != nullptr) {
         panel_system->destroyPanel((char*)"Config Dialog");
     }
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: after Config Dialog");
+    CUSTOM_DEBUG_END
 
     if (this->runtime.game_over_sound != nullptr) {
         if (this->runtime.game_over_sound->is_playing() != 0) {
@@ -874,19 +880,40 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
         this->runtime.trade_list = nullptr;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("~TRIBE_Screen_Game: deleting shapes game_screen_pic=%p", this->runtime.game_screen_pic);
+    CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.game_screen_pic);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: game_screen_pic deleted");
+    CUSTOM_DEBUG_END
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting button_border1_pic"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_border1_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting button_other_pic"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_other_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting button_border2_pic"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_border2_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: button_border2_pic done, deleting border3"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_border3_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: border3 done, deleting cmd"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_cmd_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: cmd done, deleting tech"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_tech_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: tech done, deleting unit"); CUSTOM_DEBUG_END
     delete_shape_safe(this->runtime.button_unit_pic);
-    delete_shape_safe(this->runtime.more_cancel_pic);
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: unit done"); CUSTOM_DEBUG_END
+    // NOTE: more_cancel_pic is an alias to button_other_pic or button_cmd_pic (set in reload_ui_for_civ).
+    // The decomp does NOT delete it separately — just null the alias to avoid a double-free.
+    this->runtime.more_cancel_pic = nullptr;
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting bldg_pics"); CUSTOM_DEBUG_END
     for (int i = 0; i < 5; ++i) {
         delete_shape_safe(this->runtime.button_bldg_pics[i]);
     }
+    CUSTOM_DEBUG_BEGIN CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: all shapes done"); CUSTOM_DEBUG_END
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting sub-panels");
+    CUSTOM_DEBUG_END
     for (int i = 0; i < 8; ++i) {
         delete_panel_safe((TPanel*&)this->runtime.chat_panel[i]);
     }
@@ -916,8 +943,17 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     delete_panel_safe((TPanel*&)this->runtime.pop_panel);
     delete_panel_safe((TPanel*&)this->runtime.tool_box);
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting main_view");
+    CUSTOM_DEBUG_END
     delete_panel_safe(this->runtime.main_view);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: deleting map_view");
+    CUSTOM_DEBUG_END
     delete_panel_safe(this->runtime.map_view);
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("~TRIBE_Screen_Game: done");
+    CUSTOM_DEBUG_END
 }
 
 void TRIBE_Screen_Game::handle_game_update() {
