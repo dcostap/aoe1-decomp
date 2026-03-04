@@ -72,6 +72,7 @@ public:
     virtual void scenario_init(int param_1, RGE_Game_World* param_2); // vt[61] (0xF4)
     virtual int addObject(RGE_Static_Object* param_1); // vt[62] (0xF8)
     virtual int removeObject(int param_1); // vt[63] (0xFC)
+    void* scalar_deleting_destructor(uint param_1);
 
     // Non-virtual methods
     void reset_object_count();

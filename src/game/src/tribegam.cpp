@@ -3717,7 +3717,6 @@ void TRIBE_Game::close() {
     RGE_Base_Game::close(); 
 }
 
-// TODO: MISSING_FUNC - run_log not implemented [decomp: tribegam.cpp.decomp @ 0x00521020]
-// TODO: MISSING_FUNC - video_sub_wnd_proc not implemented [decomp: tribegam.cpp.decomp @ 0x00523AE0]
-// TODO: MISSING_FUNC - FUN_00523ef6 not implemented [decomp: tribegam.cpp.decomp @ 0x00523EF6]
+// TODO: PARITY [LOW] - run_log is a debug/logging helper path and remains unmapped. [decomp: tribegam.cpp.decomp @ 0x00521020]
+// TODO: PARITY [LOW] - FUN_00523EF6 remains an unmapped helper/thunk symbol pending ASM/name recovery. [decomp: tribegam.cpp.decomp @ 0x00523EF6]
 

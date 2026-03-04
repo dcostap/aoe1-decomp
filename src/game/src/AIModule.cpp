@@ -501,6 +501,3 @@ int AIModule::timeDifference(AIModuleMessage* param_1) {
     return 0;
 }
 
-// TODO: MISSING_FUNC - AIModule::~AIModule [decomp: bucket_055C.decomp @ 0x0055c460]
-// TODO: MISSING_FUNC - AIModule::~AIModule [decomp: bucket_055C.decomp @ 0x0055c540]
-// TODO: MISSING_FUNC - AIModule::~AIModule [decomp: bucket_055C.decomp @ 0x0055c670]

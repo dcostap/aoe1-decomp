@@ -1,4 +1,3 @@
-// TODO: PARITY - Missing function implementation for RGE_Diamond_Map::vector_deleting_destructor. [decomp: RGE_Diamond_Map.decomp @ 0x00436910]
 #include "RGE_Diamond_Map.h"
 
 #include "RGE_Base_Game.h"
@@ -22,6 +21,7 @@
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
+#include <new>
 
 extern RGE_Base_Game* rge_base_game;
 
@@ -1351,9 +1351,11 @@ int RGE_Diamond_Map::is_inside(long param_1, long param_2) {
     return this->pick_tile(param_1, param_2, &col, &row, &tile);
 }
 
-// TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::TRIBE_Diamond_Map_View not implemented in this translation unit [decomp: tvw_dmap.cpp.decomp @ 0x0052C9E0]
-// TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::set_redraw not implemented in this translation unit [decomp: tvw_dmap.cpp.decomp @ 0x0052CA30]
-// TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::draw_objects not implemented in this translation unit [decomp: tvw_dmap.cpp.decomp @ 0x0052CA60]
-// TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::draw_object not implemented in this translation unit [decomp: tvw_dmap.cpp.decomp @ 0x0052CAB0]
-
-// TODO: MISSING_FUNC - RGE_Diamond_Map::vector_deleting_destructor [decomp: RGE_Diamond_Map.decomp @ 0x00436910]
+// Fully verified. Source of truth: RGE_Diamond_Map.decomp @ 0x00436910
+void* RGE_Diamond_Map::vector_deleting_destructor(uint param_1) {
+    this->~RGE_Diamond_Map();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}

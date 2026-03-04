@@ -1,4 +1,3 @@
-// TODO: PARITY - Missing function implementation for RGE_Diamond_Map_View::scalar_deleting_destructor. [decomp: RGE_Diamond_Map_View.decomp @ 0x0053D380]
 // TODO: PARITY - Decomp source naming differs for this TU (RGE_Diamond_Map_View.decomp vs vw_dimap.cpp.decomp); keep the offset mapping explicit during audits.
 // [decomp: vw_dimap.cpp.decomp @ 0x0053D360]
 #include "RGE_Diamond_Map_View.h"
@@ -7,6 +6,8 @@
 #include "RGE_Player.h"
 #include "debug_helpers.h"
 #include "globals.h"
+
+#include <new>
 
 RGE_Diamond_Map_View::RGE_Diamond_Map_View() {
     // Fully verified. Source of truth: vw_dimap.cpp.decomp/asm @ 0x0053D360
@@ -387,4 +388,11 @@ int RGE_Diamond_Map_View::command_make_work(long param_1, long param_2) {
 }
 
 
-// TODO: MISSING_FUNC - RGE_Diamond_Map_View::scalar_deleting_destructor [decomp: RGE_Diamond_Map_View.decomp @ 0x0053d380]
+// Fully verified. Source of truth: RGE_Diamond_Map_View.decomp @ 0x0053D380
+void* RGE_Diamond_Map_View::scalar_deleting_destructor(uint param_1) {
+    this->~RGE_Diamond_Map_View();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}

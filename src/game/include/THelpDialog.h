@@ -88,6 +88,7 @@ public:
     virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // vt[73] (0x124)
     virtual int setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, uchar param_5, int param_6); // vt[74] (0x128)
     virtual int setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, char* param_5, long param_6, int param_7); // vt[75] (0x12C)
+    void* scalar_deleting_destructor(uint param_1);
 
     long help_page_id;
     char parent_panel[256];

@@ -504,15 +504,5 @@ void RGE_Flic_Player::byte_run() {
     }
 }
 
-// TODO: MISSING_FUNC - FUN_0044a4b9 not implemented [decomp: bucket_044A.decomp @ 0x0044A4B9]
-// TODO: MISSING_FUNC - FUN_0044a64f not implemented [decomp: bucket_044A.decomp @ 0x0044A64F]
-// TODO: MISSING_FUNC - FUN_0044a65c not implemented [decomp: bucket_044A.decomp @ 0x0044A65C]
-// TODO: MISSING_FUNC - FUN_0044a66f not implemented [decomp: bucket_044A.decomp @ 0x0044A66F]
-// TODO: MISSING_FUNC - FUN_0044a70f not implemented [decomp: bucket_044A.decomp @ 0x0044A70F]
-// TODO: MISSING_FUNC - FUN_0044a7af not implemented [decomp: bucket_044A.decomp @ 0x0044A7AF]
-// TODO: MISSING_FUNC - FUN_0044a852 not implemented [decomp: bucket_044A.decomp @ 0x0044A852]
-// TODO: MISSING_FUNC - FUN_0044a8f2 not implemented [decomp: bucket_044A.decomp @ 0x0044A8F2]
-// TODO: MISSING_FUNC - FUN_0044a98c not implemented [decomp: bucket_044A.decomp @ 0x0044A98C]
-// TODO: MISSING_FUNC - FUN_0044aa26 not implemented [decomp: bucket_044A.decomp @ 0x0044AA26]
-// TODO: MISSING_FUNC - FUN_0044aac3 not implemented [decomp: bucket_044A.decomp @ 0x0044AAC3]
-// TODO: MISSING_FUNC - x_StandardMemCopy not implemented [decomp: bucket_044A.decomp @ 0x0044AB5D]
+// TODO: PARITY [LOW] - bucket_044A contributes unnamed helper thunks (FUN_0044A4B9..FUN_0044AAC3, x_StandardMemCopy) that are not yet mapped to stable game symbols.
+// [decomp: bucket_044A.decomp @ 0x0044A4B9-0x0044AB5D]

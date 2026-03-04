@@ -1704,4 +1704,4 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(long param_1, long param_2, i
     return best_target;
 }
 
-// TODO: MISSING_FUNC - FUN_0053e8e9 [decomp: vw_main.cpp.decomp @ 0x0053e8e9]
+// TODO: PARITY [LOW] - FUN_0053E8E9 remains an unmapped helper/thunk symbol pending ASM/name recovery. [decomp: vw_main.cpp.decomp @ 0x0053E8E9]

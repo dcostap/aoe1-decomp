@@ -7,6 +7,7 @@ struct IPAD {
 
     IPAD();
     ~IPAD();
+    void* vector_deleting_destructor(uint param_1);
 };
 static_assert(sizeof(IPAD) == 0xA0, "Size mismatch");
 

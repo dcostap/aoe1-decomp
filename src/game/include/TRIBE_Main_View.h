@@ -19,6 +19,7 @@ public:
     virtual int  pick_through_fog(RGE_Static_Object* param_1) override;
     virtual int  pick_weight(RGE_Static_Object* param_1, int param_2) override;
     virtual int  command_make_do(long param_1, long param_2, int param_3, short param_4) override;
+    void* scalar_deleting_destructor(uint param_1);
 
 protected:
     int  draw_wall_outline(long col, long row, TRIBE_Master_Building_Object* master_bldg, long endpoint_flag);

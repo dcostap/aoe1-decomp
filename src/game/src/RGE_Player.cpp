@@ -38,7 +38,6 @@
 
 // TODO: PARITY - RGE_Player::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Player.decomp @ 0x0046E750]
 // TODO: PARITY - Several early helper blocks are tagged as generic helper implementations without explicit one-offset mapping, which blocks strict per-function parity closure. [decomp: player.cpp.decomp @ 0x0046E4B0]
-// TODO: MISSING_FUNC - Requested rge_plyr.cpp.decomp export is not present in current decomp set; Phase 3 inventory for this unit is mapped against player.cpp.decomp.
 
 static long rge_ftol(float v) {
     // Fully verified. Source of truth: player.cpp.decomp (helper implementation).

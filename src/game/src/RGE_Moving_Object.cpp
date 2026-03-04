@@ -2096,4 +2096,4 @@ long RGE_Moving_Object::get_waypoint_checksum() {
     return (long)temp;
 }
 
-// TODO: MISSING_FUNC - vcall_456_flat not implemented [decomp: bucket_0460.decomp @ 0x00460FC0]
+// TODO: PARITY [LOW] - vcall_456_flat remains an unmapped helper/thunk symbol pending ASM/name recovery. [decomp: bucket_0460.decomp @ 0x00460FC0]

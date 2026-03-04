@@ -71,6 +71,7 @@ public:
     virtual int command_make_do(long param_1, long param_2); // vt[61] (0xF4)
     virtual int command_make_move(long param_1, long param_2); // vt[62] (0xF8)
     virtual int command_make_work(long param_1, long param_2); // vt[63] (0xFC)
+    void* scalar_deleting_destructor(uint param_1);
 
     unsigned long last_attack_time;
     int flash_on;

@@ -394,4 +394,11 @@ MsgQueue::~MsgQueue() {
     this->msgptr = nullptr;
 }
 
-// TODO: MISSING_FUNC - MsgQueue::vector_deleting_destructor not implemented [decomp: bucket_0431.decomp @ 0x00431790]
+// Fully verified. Source of truth: bucket_0431.decomp @ 0x00431790
+void* MsgQueue::vector_deleting_destructor(uint param_1) {
+    this->~MsgQueue();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}

@@ -344,5 +344,3 @@ RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int param_1) const {
     return nullptr;
 }
 
-// TODO: MISSING_FUNC - RGE_Master_Combat_Object::play_command_sound not implemented [decomp: m_ac_obj.cpp.decomp @ 0x0044F980]
-// TODO: MISSING_FUNC - RGE_Master_Combat_Object::play_move_sound not implemented [decomp: m_ac_obj.cpp.decomp @ 0x0044F9A0]

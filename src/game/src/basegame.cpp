@@ -4173,17 +4173,9 @@ void RGE_Base_Game::handle_video_notify() {
     // TODO: EMPTY_STUB - function body not transliterated [decomp: basegame.cpp.decomp @ 0x00422E50]
 }
 
-// TODO: MISSING_FUNC - write_draw_log not implemented [decomp: basegame.cpp.decomp @ 0x0041B620]
-// TODO: MISSING_FUNC - write_draw_log2 not implemented [decomp: basegame.cpp.decomp @ 0x0041B650]
-// TODO: MISSING_FUNC - FUN_0041f6fa not implemented [decomp: basegame.cpp.decomp @ 0x0041F6FA]
-// TODO: MISSING_FUNC - get_mouse_pos not implemented [decomp: basegame.cpp.decomp @ 0x004202E0]
-// TODO: MISSING_FUNC - find_campaigns not implemented [decomp: basegame.cpp.decomp @ 0x004226A0]
-// TODO: MISSING_FUNC - play_sound not implemented [decomp: basegame.cpp.decomp @ 0x00422E60]
-// TODO: MISSING_FUNC - debug_random_reset not implemented [decomp: basegame.cpp.decomp @ 0x00423010]
-// TODO: MISSING_FUNC - debug_random_write not implemented [decomp: basegame.cpp.decomp @ 0x00423030]
-// TODO: MISSING_FUNC - debug_rand not implemented [decomp: basegame.cpp.decomp @ 0x004230A0]
-// TODO: MISSING_FUNC - debug_srand not implemented [decomp: basegame.cpp.decomp @ 0x00423140]
-// TODO: MISSING_FUNC - debug_timeGetTime not implemented [decomp: basegame.cpp.decomp @ 0x004231E0]
+// TODO: PARITY [LOW] - write_draw_log/write_draw_log2 are debug-log helper paths not yet mapped to stable game symbols. [decomp: basegame.cpp.decomp @ 0x0041B620, 0x0041B650]
+// TODO: PARITY [LOW] - FUN_0041F6FA remains an unmapped helper symbol pending ASM/name recovery. [decomp: basegame.cpp.decomp @ 0x0041F6FA]
+// TODO: PARITY [LOW] - debug_random_* and debug_timeGetTime are debug-instrumentation helper paths and remain unmapped. [decomp: basegame.cpp.decomp @ 0x00423010, 0x00423030, 0x004230A0, 0x00423140, 0x004231E0]
 
 
 

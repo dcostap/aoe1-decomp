@@ -1345,11 +1345,3 @@ void RGE_Visible_Map::unexplore_terrain_sq(int param_1, int param_2, int param_3
     }
 }
 
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int, RGE_Game_World*) not implemented [decomp: visible.cpp.decomp @ 0x0053CEE0]
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::load(int) not implemented [decomp: visible.cpp.decomp @ 0x0053CF10]
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map(void) not implemented [decomp: visible.cpp.decomp @ 0x0053CFC0]
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::save(int) not implemented [decomp: visible.cpp.decomp @ 0x0053CFF0]
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::reset(void) not implemented [decomp: visible.cpp.decomp @ 0x0053D040]
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::Set_Map_Offsets(void) not implemented [decomp: visible.cpp.decomp @ 0x0053D070]
-// TODO: MISSING_FUNC - RGE_Unified_Visible_Map::suppress_updates(int) not implemented [decomp: visible.cpp.decomp @ 0x0053D0C0]
-// TODO: MISSING_FUNC - dump_vismap_log not implemented [decomp: visible.cpp.decomp @ 0x0053D200]

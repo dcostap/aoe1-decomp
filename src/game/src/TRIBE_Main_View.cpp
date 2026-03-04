@@ -1,4 +1,3 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Main_View::scalar_deleting_destructor. [decomp: TRIBE_Main_View.decomp @ 0x00495470]
 // TODO: PARITY - Requested decomp naming (tmainvw.cpp.decomp) is not present in-tree; this audit maps TRIBE_Main_View parity to tvw_main.cpp.decomp and needs canonical filename confirmation. [decomp: tvw_main.cpp.decomp @ 0x0052CAF0]
 // TRIBE_Main_View.cpp
 // Transliterated from src/game/decomp/tvw_main.cpp.decomp
@@ -20,6 +19,8 @@
 #include "TRIBE_Master_Building_Object.h"
 #include "TDrawArea.h"
 #include "globals.h"
+
+#include <new>
 
 TRIBE_Main_View::TRIBE_Main_View()
     : RGE_Main_View() {}
@@ -728,4 +729,11 @@ long TRIBE_Main_View::mouse_left_dbl_click_action(long param_1, long param_2,
 }
 
 
-// TODO: MISSING_FUNC - TRIBE_Main_View::scalar_deleting_destructor [decomp: TRIBE_Main_View.decomp @ 0x00495470]
+// Fully verified. Source of truth: TRIBE_Main_View.decomp @ 0x00495470
+void* TRIBE_Main_View::scalar_deleting_destructor(uint param_1) {
+    this->~TRIBE_Main_View();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}

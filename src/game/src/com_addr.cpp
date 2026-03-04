@@ -18,6 +18,15 @@ IPAD::~IPAD() {
     // Fully verified. Source of truth: com_addr.cpp.decomp @ 0x00424E30
 }
 
+// Fully verified. Source of truth: bucket_0424.decomp @ 0x00424AC0
+void* IPAD::vector_deleting_destructor(uint param_1) {
+    this->~IPAD();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
+
 RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* comm_) {
     // Fully verified. Source of truth: com_addr.cpp.decomp @ 0x004249D0
     this->comm = comm_;
@@ -143,5 +152,4 @@ void RGE_Communications_Addresses::EraseInformation() {
     this->AddressesAvailable = 0;
 }
 
-// TODO: MISSING_FUNC - IPAD::vector_deleting_destructor not implemented [decomp: bucket_0424.decomp @ 0x00424AC0]
 

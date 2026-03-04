@@ -4,6 +4,7 @@
 struct RESENDER {
     RESENDER();
     ~RESENDER();
+    void* vector_deleting_destructor(uint param_1);
 
     ulong TimeSent;
     uint Serial;

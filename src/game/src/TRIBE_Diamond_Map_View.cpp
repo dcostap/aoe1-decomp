@@ -1,10 +1,11 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Diamond_Map_View::scalar_deleting_destructor. [decomp: TRIBE_Diamond_Map_View.decomp @ 0x0052CA00]
 // TODO: PARITY - Requested decomp naming (tdmap_vw.cpp.decomp) is not present in-tree; this audit maps TRIBE_Diamond_Map_View parity to tvw_dmap.cpp.decomp/TRIBE_Diamond_Map_View.decomp and needs canonical filename confirmation.
 // [decomp: tvw_dmap.cpp.decomp @ 0x0052C9E0]
 #include "TRIBE_Diamond_Map_View.h"
 
 #include "TRIBE_Screen_Game.h"
 #include "debug_helpers.h"
+
+#include <new>
 
 TRIBE_Diamond_Map_View::TRIBE_Diamond_Map_View() {
     // Fully verified. Source of truth: tvw_dmap.cpp.decomp/asm @ 0x0052C9E0
@@ -177,4 +178,11 @@ int TRIBE_Diamond_Map_View::command_make_move(long param_1, long param_2) { retu
 int TRIBE_Diamond_Map_View::command_make_work(long param_1, long param_2) { return RGE_Diamond_Map_View::command_make_work(param_1, param_2); }
 
 
-// TODO: MISSING_FUNC - TRIBE_Diamond_Map_View::scalar_deleting_destructor [decomp: TRIBE_Diamond_Map_View.decomp @ 0x0052ca00]
+// Fully verified. Source of truth: TRIBE_Diamond_Map_View.decomp @ 0x0052CA00
+void* TRIBE_Diamond_Map_View::scalar_deleting_destructor(uint param_1) {
+    this->~TRIBE_Diamond_Map_View();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}

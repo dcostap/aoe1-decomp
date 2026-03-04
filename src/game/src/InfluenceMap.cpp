@@ -12,8 +12,6 @@ static int influence_ftol(double value) {
     return (int)(long)value;
 }
 
-// TODO: PARITY - Destructor is not present in this translation unit even though the decomp defines one; current implementation location should be reconciled against file-level parity expectations. [decomp: infmap.cpp.decomp @ 0x0044E080]
-
 // Fully verified. Marker reconciliation coverage.
 InfluenceMap::InfluenceMap() {
     this->xSizeValue = 0;
@@ -64,6 +62,8 @@ InfluenceMap::InfluenceMap(int param_1) {
     this->yReferencePointValue = 0;
     this->load(param_1);
 }
+
+// TODO: PARITY [LOW] - InfluenceMap destructor is currently owned by TribeInformationAIModule.cpp in this codebase; TU ownership should be reconciled during focused parity cleanup. [decomp: infmap.cpp.decomp @ 0x0044E080]
 
 // Fully verified. Marker reconciliation coverage.
 int InfluenceMap::initialize(uchar param_1) {
@@ -567,4 +567,3 @@ int InfluenceMap::maxValue() {
     return (int)max;
 }
 
-// TODO: MISSING_FUNC - InfluenceMap::~InfluenceMap not implemented [decomp: infmap.cpp.decomp @ 0x0044E080]

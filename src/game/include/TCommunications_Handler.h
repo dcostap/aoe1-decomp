@@ -40,6 +40,7 @@ struct RESENDER;
 struct HOLDER {
     HOLDER();
     ~HOLDER();
+    void* vector_deleting_destructor(uint param_1);
 
     char* HoldMsg;
     uint Serial;

@@ -137,4 +137,4 @@ long rpnl_tim_handle_idle_0048AA70(RGE_Panel_Time* this_) {
     return 0;
 }
 
-// TODO: MISSING_FUNC - RGE_Panel_Time::~RGE_Panel_Time not implemented [decomp: bucket_048A.decomp @ 0x0048A730]
+// TODO: PARITY [LOW] - Defining RGE_Panel_Time::~RGE_Panel_Time currently forces unresolved vtable methods in this legacy class declaration set; leave unresolved until the full virtual table surface is reconciled. [decomp: bucket_048A.decomp @ 0x0048A730]

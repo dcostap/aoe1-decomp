@@ -4,6 +4,7 @@
 struct MsgQueue {
     MsgQueue();
     ~MsgQueue();
+    void* vector_deleting_destructor(uint param_1);
 
     ulong Code;
     ulong ExecTurn;

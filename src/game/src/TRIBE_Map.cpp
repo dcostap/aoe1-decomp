@@ -1,4 +1,3 @@
-// TODO: MISSING_FUNC - TRIBE_Map::scalar_deleting_destructor not implemented. [decomp: tmap.cpp.decomp @ 0x0050F740]
 // Implementations for TRIBE_Map extracted from TRIBE_World_types.cpp.
 #include "../include/TRIBE_Map.h"
 #include "../include/TRIBE_World.h"
@@ -70,6 +69,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <new>
 
 
 static void tribe_init_cliff_master_table(TRIBE_Map* map) {
@@ -237,6 +237,15 @@ TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4,
 // Offset: 0x0050F7A0
 // Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F7A0
 TRIBE_Map::~TRIBE_Map() {}
+// Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F740
+void* TRIBE_Map::scalar_deleting_destructor(uint param_1) {
+    this->~TRIBE_Map();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
+
 void TRIBE_Map::data_load_random_map(int p1) {
     // Fully verified. Source of truth: tmap.cpp.decomp @ 0x0050F800
     this->random_map = (RGE_RMM_Database_Controller*)new TRIBE_RMM_Database_Controller(p1);

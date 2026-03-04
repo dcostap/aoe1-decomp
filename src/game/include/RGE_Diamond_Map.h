@@ -73,6 +73,7 @@ public:
     virtual void draw_visible_object(RGE_Static_Object* param_1, uchar param_2, uchar param_3); // vt[58] (0xE8)
     virtual void draw_object(short param_1, short param_2, uchar param_3, short param_4, RGE_Static_Object* param_5); // vt[59] (0xEC)
     virtual void draw_view_rect(); // vt[60] (0xF0)
+    void* vector_deleting_destructor(uint param_1);
 
     // Non-virtual helpers (source of truth: diam_map.cpp.decomp / diam_map.cpp.asm)
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, TDrawArea* param_9);

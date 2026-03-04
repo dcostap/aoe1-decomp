@@ -26,6 +26,7 @@ public:
     virtual void map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4); // vt[9] (0x24)
     virtual void save(int param_1); // vt[11] (0x2C)
     virtual void delete_cliff(long param_1, long param_2); // vt[12] (0x30)
+    void* scalar_deleting_destructor(uint param_1);
 
     void map_generate(RGE_Player_Info* param_1);
     void setup_cliff_type(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, float param_9, float param_10);

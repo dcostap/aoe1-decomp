@@ -1725,6 +1725,24 @@ HOLDER::~HOLDER() {
     this->dcoReceiveID = 0;
 }
 
+// Fully verified. Source of truth: bucket_0426.decomp @ 0x004260F0
+void* RESENDER::vector_deleting_destructor(uint param_1) {
+    this->~RESENDER();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
+
+// Fully verified. Source of truth: bucket_0426.decomp @ 0x00426170
+void* HOLDER::vector_deleting_destructor(uint param_1) {
+    this->~HOLDER();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
+
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426470
 int TCommunications_Handler::AddCommand(ulong p1, void* p2, ulong p3, int p4, uchar p5, int p6) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00426470
@@ -4436,9 +4454,6 @@ int EnumPlayersCallback2(ulong param_1, ulong param_2, DPNAME* param_3, ulong pa
     comm->UpdatePlayerInformation(param_1, (char*)short_name, (char*)long_name);
     return 1;
 }
-
-// TODO: MISSING_FUNC - RESENDER::vector_deleting_destructor not implemented [decomp: bucket_0426.decomp @ 0x004260F0]
-// TODO: MISSING_FUNC - HOLDER::vector_deleting_destructor not implemented [decomp: bucket_0426.decomp @ 0x00426170]
 
 // BEGIN Task 222 decomp reference bundle
 // Inline preserved decomp snippets for implemented wrappers (audit trail).

@@ -236,4 +236,4 @@ void RGE_Master_Player::save(int param_1) {
     }
 }
 
-// TODO: MISSING_FUNC - FUN_004614d9 [decomp: mst_play.cpp.decomp @ 0x004614d9]
+// TODO: PARITY [LOW] - FUN_004614D9 remains an unmapped helper/thunk symbol pending ASM/name recovery. [decomp: mst_play.cpp.decomp @ 0x004614D9]

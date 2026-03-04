@@ -3304,17 +3304,3 @@ int TribeMPSetupScreen::create_horz_slider(TPanel* param_1, THorizontalSliderPan
 // Fully verified. Source of truth: scr_mps.cpp.decomp (inherited TScreenPanel forwarding parity; no class-local decomp symbol).
 void TribeMPSetupScreen::position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5) { TScreenPanel::position_panel(param_1, param_2, param_3, param_4, param_5); }
 
-// TODO: MISSING_FUNC - TCommunications_Handler::GetPlayerName not implemented [decomp: scr_mps.cpp.decomp @ 0x004A4F52]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::TRIBE_Screen_Wait not implemented [decomp: scr_mps.cpp.decomp @ 0x004A5610]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::~TRIBE_Screen_Wait not implemented [decomp: scr_mps.cpp.decomp @ 0x004A5FCD]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::~TRIBE_Screen_Wait not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6050]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::set_text not implemented [decomp: scr_mps.cpp.decomp @ 0x004A60E0]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::set_text not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6100]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::action not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6120]
-// TODO: MISSING_FUNC - TRIBE_Screen_Wait::handle_idle not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6170]
-// TODO: MISSING_FUNC - TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect not implemented [decomp: scr_mps.cpp.decomp @ 0x004A61A0]
-// TODO: MISSING_FUNC - TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6290]
-// TODO: MISSING_FUNC - TRIBE_Screen_Disconnect::set_text not implemented [decomp: scr_mps.cpp.decomp @ 0x004A62F0]
-// TODO: MISSING_FUNC - TRIBE_Screen_Disconnect::set_text not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6310]
-// TODO: MISSING_FUNC - TRIBE_Screen_Disconnect::action not implemented [decomp: scr_mps.cpp.decomp @ 0x004A6330]
-// TODO: MISSING_FUNC - TRIBE_Screen_Disconnect::handle_idle not implemented [decomp: scr_mps.cpp.decomp @ 0x004A63C0]

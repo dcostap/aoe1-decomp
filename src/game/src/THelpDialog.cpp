@@ -7,6 +7,7 @@
 #include "../include/globals.h"
 
 #include <cstring>
+#include <new>
 
 // Fully verified. Source of truth: dlg_help.cpp.decomp @ 0x0043E840
 THelpDialog::THelpDialog(TEasy_Panel* parent, char* panel_name, long text_id, long x, long y, long w, long h)
@@ -110,5 +111,12 @@ void THelpDialog::draw() {
 
 IMPLEMENT_TDIALOGPANEL_FORWARDERS(THelpDialog, TDialogPanel)
 
-// TODO: MISSING_FUNC - THelpDialog::scalar_deleting_destructor not implemented [decomp: THelpDialog.decomp @ 0x0043E8C0]
+// Fully verified. Source of truth: THelpDialog.decomp @ 0x0043E8C0
+void* THelpDialog::scalar_deleting_destructor(uint param_1) {
+    this->~THelpDialog();
+    if ((param_1 & 1) != 0) {
+        ::operator delete(this);
+    }
+    return this;
+}
 

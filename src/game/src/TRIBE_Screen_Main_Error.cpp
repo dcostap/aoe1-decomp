@@ -1,5 +1,4 @@
 // TODO: PARITY - Missing function implementation for TRIBE_Screen_Main_Error::vector_deleting_destructor. [decomp: TRIBE_Screen_Main_Error.decomp @ 0x0049F220]
-// TODO: MISSING_FUNC - Requested scr_merr.cpp.decomp is absent in current decomp exports; inventory for this screen is mapped through TRIBE_Screen_Main_Error.decomp + scr_main.cpp.decomp.
 #include "../include/TRIBE_Screen_Main_Error.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TTextPanel.h"

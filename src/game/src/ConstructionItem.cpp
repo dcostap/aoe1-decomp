@@ -173,5 +173,3 @@ void ConstructionItem::setBuildAttempts(int param_1) {
     this->buildAttemptsValue = param_1;
 }
 
-// TODO: MISSING_FUNC - ConstructionItem::~ConstructionItem [decomp: bucket_055C.decomp @ 0x0055c54b]
-// TODO: MISSING_FUNC - ConstructionItem::~ConstructionItem [decomp: bucket_055C.decomp @ 0x0055c55c]
