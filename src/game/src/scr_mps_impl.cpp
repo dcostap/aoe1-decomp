@@ -1268,12 +1268,14 @@ void TribeMPSetupScreen::fillPlayers() {
             if (slot == 0) {
                 humanity = 2;
                 is_me = 1;
-            } else if (this->playerNameDrop[slot] != nullptr) {
-                humanity = (int)this->playerNameDrop[slot]->get_id();
             } else {
-                humanity = 0;
+                if (this->playerNameDrop[slot] != nullptr) {
+                    humanity = (int)this->playerNameDrop[slot]->get_id();
+                } else {
+                    humanity = 0;
+                }
+                is_me = 0;
             }
-            is_me = 0;
         }
 
         // CD + version indicators are only shown for human players in multiplayer.
