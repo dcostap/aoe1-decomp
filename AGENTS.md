@@ -26,6 +26,7 @@ The decomp **lies** about:
 - **Bitfield packing**: the decomp may merge or split fields incorrectly.
 - **Calling conventions**: parameter order, `this` pointer handling.
 - **Virtual destructor calls via reinterpret_cast**: Ghidra shows `AIModule::~AIModule((AIModule*)this)` which looks like a direct call. Transliterating as `((AIModule*)this)->~AIModule()` makes it a **virtual call** through the vtable — if the class doesn't actually inherit from AIModule (shares layout via padding), the vtable dispatches back to the current class's destructor → **infinite recursion**. **Always use qualified calls**: `reinterpret_cast<AIModule*>(this)->AIModule::~AIModule()`. This applies to any `reinterpret_cast`'d destructor call on a non-inheriting class.
+- **Stack-constructed strings and implicit null terminators**: Ghidra often shows partial writes like `param_1._0_3_ = CONCAT12(DAT_005837c6, s___)` when the original code constructed a string on the stack by reusing a parameter slot. The decomp only shows the bytes explicitly written (e.g., 3 bytes for `_0_3_`), but the 4th byte may have been implicitly zero (from the original pointer value or stack initialization). **Always null-terminate** any C string you construct on the stack from decomp output — `strtok`, `strtok_s`, `strcmp`, etc. all require null-terminated strings. A missing terminator causes reads into random stack memory, producing intermittent, hard-to-diagnose corruption that varies between runs.
 
 **When to do an ASM audit:**
 - A function doesn't behave correctly at runtime.
