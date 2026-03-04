@@ -18,14 +18,22 @@ $env:AOE_AUTOPLAY_SP_RANDOM_START = "1"
 
 for ($i = 1; $i -le $Iterations; $i++) {
     if (Test-Path $logPath) {
-        Remove-Item $logPath -Force
+        $removed = $false
+        for ($attempt = 0; $attempt -lt 10 -and -not $removed; $attempt++) {
+            try {
+                Remove-Item $logPath -Force
+                $removed = $true
+            } catch {
+                Start-Sleep -Milliseconds 200
+            }
+        }
     }
 
     $proc = Start-Process -FilePath $exePath -WorkingDirectory $distDir -PassThru
     $exited = $proc.WaitForExit($TimeoutSec * 1000)
     if (-not $exited) {
         Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
-        Start-Sleep -Milliseconds 400
+        Start-Sleep -Milliseconds 700
     }
 
     $startedGame = $false
@@ -59,7 +67,8 @@ for ($i = 1; $i -le $Iterations; $i++) {
 Write-Output ""
 $results | Format-Table -AutoSize
 
-$failCount = ($results | Where-Object { -not $_.Pass }).Count
+$failed = @($results | Where-Object { -not [bool]$_.Pass })
+$failCount = $failed.Count
 if ($failCount -gt 0) {
     Write-Error "Autoplay regression loop failed in $failCount / $Iterations iteration(s)."
     exit 1

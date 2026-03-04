@@ -3279,6 +3279,14 @@ int TRIBE_Game::handle_idle() {
         }
     } else if (pm == 4 || pm == 6 || pm == 5) {
         if (out_of_sync2 == 0 && this->game_screen != nullptr) {
+            CUSTOM_DEBUG_BEGIN
+            static int s_game_update_logs = 0;
+            if (s_game_update_logs < 5) {
+                CUSTOM_DEBUG_LOG_FMT("handle_idle: calling handle_game_update pm=%d game_screen=%p world=%p prog_active=%d",
+                    pm, this->game_screen, this->world, this->prog_active);
+                s_game_update_logs++;
+            }
+            CUSTOM_DEBUG_END
             this->game_screen->handle_game_update();
         }
     }

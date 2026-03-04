@@ -424,6 +424,17 @@ void TPanel::set_redraw(RedrawMode param_1) {
         this->need_redraw = param_1;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    static int s_setredraw_logs = 0;
+    if (s_setredraw_logs < 20 && rge_base_game && rge_base_game->prog_mode >= 4 && param_1 != NoRedraw) {
+        const char* nm = this->panelNameValue ? this->panelNameValue : "(null)";
+        CUSTOM_DEBUG_LOG_FMT("TPanel::set_redraw[gm]: '%s' mode=%d render_area=%p visible=%d active=%d clip=(%ld,%ld,%ld,%ld)",
+            nm, (int)param_1, this->render_area, (int)this->visible, (int)this->active,
+            this->clip_rect.left, this->clip_rect.top, this->clip_rect.right, this->clip_rect.bottom);
+        s_setredraw_logs++;
+    }
+    CUSTOM_DEBUG_END
+
     if (param_1 != NoRedraw && this->render_area && this->visible && this->active) {
         InvalidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect, FALSE);
     }
@@ -1015,6 +1026,18 @@ long TPanel::handle_size(long param_1, long param_2) {
 // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465A70
 long TPanel::handle_paint() {
     // Fully verified. Source of truth: panel.cpp.decomp @ 0x00465A70 (TPanel::handle_paint).
+    CUSTOM_DEBUG_BEGIN
+    static int s_panel_paint_logs = 0;
+    if (s_panel_paint_logs < 40 && rge_base_game && rge_base_game->prog_mode >= 4) {
+        const char* nm = this->panelNameValue ? this->panelNameValue : "(null)";
+        int nch = 0;
+        for (PanelNode* c = this->first_child_node; c != nullptr; c = c->next_node) nch++;
+        CUSTOM_DEBUG_LOG_FMT("TPanel::handle_paint[gm]: '%s' render_area=%p visible=%d active=%d need_redraw=%d children=%d",
+            nm, this->render_area, (int)this->visible, (int)this->active,
+            (int)this->need_redraw, nch);
+        s_panel_paint_logs++;
+    }
+    CUSTOM_DEBUG_END
     if (((this->render_area != nullptr) && (this->visible != 0)) && (this->active != 0)) {
         if (rge_base_game->prog_active != 0 && IsIconic((HWND)this->render_area->Wnd) == 0) {
             if (this->need_redraw != NoRedraw) {

@@ -2476,6 +2476,16 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                 int sx = (int)tile->screen_xpos - this->map_scr_x_offset;
                 int sy = (int)tile->screen_ypos - this->map_scr_y_offset;
 
+                CUSTOM_DEBUG_BEGIN
+                if (in_bounds_tiles <= 3 && s_view_debug_terrain_logs < 12) {
+                    CUSTOM_DEBUG_LOG_FMT("  tile[%d,%d] screen=(%d,%d) offset=(%d,%d) adjusted=(%d,%d) rect=(%ld,%ld,%ld,%ld) tt=%d",
+                        map_col, map_row, (int)tile->screen_xpos, (int)tile->screen_ypos,
+                        this->map_scr_x_offset, this->map_scr_y_offset, sx, sy,
+                        rect.left, rect.top, rect.right, rect.bottom,
+                        (int)tile->tile_type);
+                }
+                CUSTOM_DEBUG_END
+
                 unsigned int tt = (unsigned int)tile->tile_type;
                 if (tt < 19u) {
                     int ex = sx + (int)this->map->tilesizes[tt].width;

@@ -17,6 +17,7 @@
 #include "../include/RGE_View.h"
 #include "../include/TChat.h"
 #include "../include/TDrawSystem.h"
+#include "../include/TDrawArea.h"
 #include "../include/TDigital.h"
 #include "../include/TMessagePanel.h"
 #include "../include/TShape.h"
@@ -1175,6 +1176,14 @@ void TRIBE_Screen_Game::handle_game_update() {
     }
 
     if (panel_system != nullptr && panel_system->currentPanel() == this) {
+        CUSTOM_DEBUG_BEGIN
+        static int s_panel_logs = 0;
+        if (s_panel_logs < 5) {
+            CUSTOM_DEBUG_LOG_FMT("handle_game_update: is current panel, update_counter=%d player=%p",
+                update_counter, player);
+            s_panel_logs++;
+        }
+        CUSTOM_DEBUG_END
         const ulong draw_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x79C);
 
         if (update_counter != 0 && player != nullptr) {
@@ -1200,6 +1209,15 @@ void TRIBE_Screen_Game::handle_game_update() {
         TPanel* quick_message_dialog = panel_system->panel((char*)"Send Quick Message Dialog");
         TPanel* help_dialog = panel_system->panel((char*)"Help Dialog");
         if (has_focus != 0 || this->curr_child == quick_message_dialog || this->curr_child == help_dialog) {
+            CUSTOM_DEBUG_BEGIN
+            static int s_draw_logs = 0;
+            if (s_draw_logs < 5) {
+                CUSTOM_DEBUG_LOG_FMT("handle_game_update: draw path has_focus=%d update_counter=%d main_view=%p need_redraw=%d",
+                    has_focus, update_counter, this->runtime.main_view,
+                    this->runtime.main_view ? (int)this->runtime.main_view->need_redraw : -1);
+                s_draw_logs++;
+            }
+            CUSTOM_DEBUG_END
             if (this->runtime.main_view != nullptr &&
                 (update_counter != 0 || this->runtime.view_interval <= draw_time - this->runtime.last_view_time)) {
                 this->runtime.main_view->set_redraw(TPanel::Redraw);
@@ -2085,13 +2103,14 @@ void TRIBE_Screen_Game::draw() {
 
 long TRIBE_Screen_Game::handle_paint() {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00496550.
-    if (this->active == 0 || this->render_area == nullptr || this->parent_panel == nullptr) {
+    // Decomp checks: render_area (0x20), visible (0x70), active (0x6C)
+    if (this->render_area == nullptr || this->visible == 0 || this->active == 0) {
         return 0;
     }
     if (rge_base_game == nullptr || rge_base_game->prog_active == 0) {
         return 0;
     }
-    if (AppWnd != nullptr && IsIconic(AppWnd) != 0) {
+    if (this->render_area->Wnd != nullptr && IsIconic((HWND)this->render_area->Wnd) != 0) {
         return 0;
     }
 
