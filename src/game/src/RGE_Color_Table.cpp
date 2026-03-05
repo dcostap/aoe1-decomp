@@ -144,6 +144,9 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
 // Fully verified. Marker reconciliation coverage.
 RGE_Color_Table::RGE_Color_Table(int fd) {
     // Fully verified. Source of truth: color.cpp.decomp @ 0x00424350
+    // Initialize table to identity as fallback (original relied on .col files existing)
+    for (int k = 0; k < 256; k++) this->table[k] = (unsigned char)k;
+
     rge_read(fd, this->color_table_name, 0x1E);
     rge_read(fd, &this->id, 2);
     rge_read(fd, &this->resource_id, 2);

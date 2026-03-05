@@ -31,6 +31,7 @@
 #include "../include/TribeSPMenuScreen.h"
 #include "../include/TribeMPSetupScreen.h"
 #include "../include/TRIBE_Credits_Screen.h"
+#include "../include/TRIBE_Game.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
@@ -2772,16 +2773,28 @@ int RGE_Base_Game::handle_idle() {
         }
         debug_autoplay_sp_random_start_wait_frames = debug_autoplay_sp_random_start_wait_frames + 1;
 
+        // Skip intro videos: when Blank Screen is showing and a video is playing, stop it
+        if (debug_autoplay_sp_random_start_state == 0 &&
+            strcmp(curPanel->panelNameValue, "Blank Screen") == 0 &&
+            debug_autoplay_sp_random_start_wait_frames >= 3) {
+            TRIBE_Game* tribe_game = (TRIBE_Game*)this;
+            if (tribe_game->cur_video >= 0) {
+                CUSTOM_DEBUG_LOG_FMT("AUTOPLAY: skipping video %d -> stop_video(1)", tribe_game->cur_video);
+                tribe_game->stop_video(1);
+                debug_autoplay_sp_random_start_wait_frames = 0;
+            }
+        }
+
         // Skip Credits Screen immediately by simulating a mouse click
         if (debug_autoplay_sp_random_start_state == 0 &&
             strcmp(curPanel->panelNameValue, "Credits Screen") == 0 &&
-            debug_autoplay_sp_random_start_wait_frames >= 30) {
+            debug_autoplay_sp_random_start_wait_frames >= 3) {
             CUSTOM_DEBUG_LOG("AUTOPLAY: skipping Credits Screen -> close_screen");
             ((TRIBE_Credits_Screen*)curPanel)->close_screen();
             debug_autoplay_sp_random_start_wait_frames = 0;
         } else if (debug_autoplay_sp_random_start_state == 0 &&
             strcmp(curPanel->panelNameValue, "Main Menu") == 0 &&
-            debug_autoplay_sp_random_start_wait_frames >= 60) {
+            debug_autoplay_sp_random_start_wait_frames >= 10) {
             TRIBE_Screen_Main_Menu* main_menu = (TRIBE_Screen_Main_Menu*)curPanel;
             if (main_menu->button[0] != nullptr) {
                 CUSTOM_DEBUG_LOG("AUTOPLAY: clicking Main Menu -> Single Player");
@@ -2791,7 +2804,7 @@ int RGE_Base_Game::handle_idle() {
             }
         } else if (debug_autoplay_sp_random_start_state == 1 &&
                    strcmp(curPanel->panelNameValue, "Single Player Menu") == 0 &&
-                   debug_autoplay_sp_random_start_wait_frames >= 45) {
+                   debug_autoplay_sp_random_start_wait_frames >= 10) {
             TribeSPMenuScreen* sp_menu = (TribeSPMenuScreen*)curPanel;
             if (sp_menu->button[0] != nullptr) {
                 CUSTOM_DEBUG_LOG("AUTOPLAY: clicking Single Player -> Random Map");
@@ -2801,7 +2814,7 @@ int RGE_Base_Game::handle_idle() {
             }
         } else if (debug_autoplay_sp_random_start_state == 2 &&
                    strcmp(curPanel->panelNameValue, "MP Setup Screen") == 0 &&
-                   debug_autoplay_sp_random_start_wait_frames >= 90) {
+                   debug_autoplay_sp_random_start_wait_frames >= 15) {
             TribeMPSetupScreen* mps = (TribeMPSetupScreen*)curPanel;
             if (mps->startButton != nullptr) {
                 CUSTOM_DEBUG_LOG("AUTOPLAY: clicking MP Setup -> Start Game");
@@ -2811,7 +2824,7 @@ int RGE_Base_Game::handle_idle() {
             }
         } else if (debug_autoplay_sp_random_start_state == 3 &&
                    strcmp(curPanel->panelNameValue, "Game Screen") == 0 &&
-                   debug_autoplay_sp_random_start_wait_frames >= 120) {
+                   debug_autoplay_sp_random_start_wait_frames >= 30) {
             // Take a diagnostic screenshot once in game
             if (this->draw_system != nullptr && this->draw_system->DrawArea != nullptr) {
                 static int autoplay_snapshot_num = 0;

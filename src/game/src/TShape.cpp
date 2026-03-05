@@ -2133,13 +2133,11 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     unsigned long* row_offsets = (unsigned long*)(slp_base + info->Shape_Data_Offsets);
     unsigned short* outline = (unsigned short*)(slp_base + info->Shape_Outline_Offset);
 
-    // When SDI_Capture_Info is disabled (our case), shape_draw() calls us
-    // immediately with the caller's color_table as `xlate`. We must NOT fall
-    // back to the global xlate table because it may contain stale state from
-    // a prior, unrelated draw call. In the original game the SDI sorted-draw
-    // list manages per-draw xlate explicitly; without it the global is unreliable.
+    // Parity: original _ASMDraw_Sprite starts with xlate INACTIVE (DAT_0088c044
+    // points to the direct-copy path). Opcode 0x3E activates it, 0x2E deactivates.
+    // base_xlate holds the table pointer; active_xlate starts null (inactive).
     unsigned char* base_xlate = xlate;
-    unsigned char* active_xlate = base_xlate;
+    unsigned char* active_xlate = nullptr;
 
     TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
     // Parity: surface/span globals are set by the shape_draw/shape_mirror wrapper (matches Shape.cpp.decomp).
