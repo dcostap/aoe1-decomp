@@ -461,6 +461,18 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RG
 
     this->player_object_node = this->owner->addObject(this, (int)this->sleep_flag, (int)this->dopple_flag);
 
+    CUSTOM_DEBUG_BEGIN
+    static int s_recycle_logs = 0;
+    if (s_recycle_logs < 30) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "recycle_in_to_game: id=%ld type=0x%02X pos=(%.1f,%.1f,%.1f) tile=%p owner=%d sprite=%p",
+            this->id, (unsigned int)this->type, param_3, param_4, param_5,
+            this->tile, this->owner ? this->owner->id : -1,
+            this->sprite_list);
+        s_recycle_logs++;
+    }
+    CUSTOM_DEBUG_END
+
     unsigned int r_num = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x183);
     int saved_random_on = debug_random_on;
     debug_random_on = 0;

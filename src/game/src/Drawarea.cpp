@@ -1230,6 +1230,18 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
             ddsd.dwWidth = width;
             ddsd.dwHeight = surface_height;
 
+            // NON-PARITY: Force 8-bit palettized pixel format.
+            // Original game ran in real 8-bit display mode where all surfaces were automatically 8-bit.
+            // cnc-ddraw emulates 8-bit mode using higher-BPP surfaces internally, causing CreateSurface
+            // without DDSD_PIXELFORMAT to produce 16-bit surfaces (Pitch=2*Width). Our rendering code
+            // writes 8-bit palette indices byte-by-byte, which corrupts 16-bit surface data.
+            if (ds->ColorBits == 8) {
+                ddsd.dwFlags |= DDSD_PIXELFORMAT;
+                ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+                ddsd.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
+                ddsd.ddpfPixelFormat.dwRGBBitCount = 8;
+            }
+
             HRESULT hr = ds->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
             if (hr == DD_OK) {
                 this->SurfaceDesc.dwSize = sizeof(DDSURFACEDESC);

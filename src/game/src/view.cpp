@@ -3,6 +3,7 @@
 #include "RGE_Map.h"
 #include "RGE_Game_World.h"
 #include "TSpan_List_Manager.h"
+#include "VSpanMiniList.h"
 #include "TDrawArea.h"
 #include "RGE_Base_Game.h"
 #include "RGE_Visible_Map.h"
@@ -2531,6 +2532,21 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     int draw_max_x = -0x7FFFFFFF;
     int draw_max_y = -0x7FFFFFFF;
 
+    // Deferred object draw list — objects must be rendered AFTER all terrain tiles
+    // to avoid being overwritten by subsequent overlapping terrain diamond draws.
+    // Source of truth: view.cpp.decomp lines 4236-4249 (SDI_Capture_Info=1 captures objects),
+    // lines 4394-4418 (post-tile-loop _ASMDraw_Sprite passes with Terrain_Clip_Mask).
+    struct DeferredObjDraw {
+        RGE_Object_List* objs;
+        short sx;
+        short obj_y;
+        uchar is_ambient;
+        int fog_next;
+    };
+    static const int kMaxDeferredObjDraws = 2048;
+    DeferredObjDraw deferred_obj_draws[kMaxDeferredObjDraws];
+    int num_deferred_obj_draws = 0;
+
     if (this->Terrain_Clip_Mask != nullptr) {
         this->Terrain_Clip_Mask->SetSpanRegions(rect.left, rect.top, rect.right, rect.bottom);
     }
@@ -2641,6 +2657,21 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                         const int has_black_clip =
                                             (explored_tile_mask_num >= 1 && black_undraw_data != nullptr) ? 1 : 0;
 
+                                        CUSTOM_DEBUG_BEGIN
+                                        static int s_add_mini_logs = 0;
+                                        if (s_add_mini_logs < 5) {
+                                            CUSTOM_DEBUG_LOG_FMT(
+                                                "ADD_MINI: tile_mask=%d clip_to=%d sx=%d sy=%d normal=%p fog=%p black=%p TCM=%p TFCM=%p edge_tbl=%p",
+                                                tile_mask_num, clip_to, sx, sy, normal_draw_data, fog_draw_data, black_undraw_data,
+                                                this->Terrain_Clip_Mask, this->Terrain_Fog_Clip_Mask, edge_table);
+                                            if (normal_draw_data) {
+                                                CUSTOM_DEBUG_LOG_FMT("  normal_draw: Y_delta=%u X_start=%u X_end=%u",
+                                                    (unsigned)normal_draw_data->Y_delta, (unsigned)normal_draw_data->X_start, (unsigned)normal_draw_data->X_end);
+                                            }
+                                            s_add_mini_logs++;
+                                        }
+                                        CUSTOM_DEBUG_END
+
                                         if (tile_mask_num != 0 && this->Terrain_Clip_Mask != nullptr) {
                                             this->Terrain_Clip_Mask->AddMiniList(normal_draw_data, sx, sy);
                                         }
@@ -2683,16 +2714,17 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                 // Fully verified. Source of truth: view.cpp.decomp @ 0x00536B40 (RGE_View::view_function_terrain)
                                 // calls RGE_Object_List::draw(&tile->objects, ...).
                                 if (tile->objects.list != nullptr) {
-                                    if (map_vis != 0x0F) {
-                                        fog_next_shape = 1;
-                                    }
+                                    // Defer object draws to after all terrain tiles are rendered.
+                                    // Original uses SDI_Capture_Info=1 to capture sprites into DClipInfo_List.
                                     short obj_y = (short)(sy + (int)tile->height * (int)this->tile_half_hgt);
-                                    tile->objects.draw(
-                                        this->cur_render_area,
-                                        (short)sx,
-                                        obj_y,
-                                        (uchar)(map_vis == 0x80));
-                                    fog_next_shape = 0;
+                                    if (num_deferred_obj_draws < kMaxDeferredObjDraws) {
+                                        DeferredObjDraw& d = deferred_obj_draws[num_deferred_obj_draws++];
+                                        d.objs = &tile->objects;
+                                        d.sx = (short)sx;
+                                        d.obj_y = obj_y;
+                                        d.is_ambient = (uchar)(map_vis == 0x80);
+                                        d.fog_next = (map_vis != 0x0F) ? 1 : 0;
+                                    }
                                 }
                             }
                         }
@@ -2709,6 +2741,38 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
         } else {
             col_num = col_num - 1;
         }
+    }
+
+    // ── Deferred object rendering pass ──
+    // After all terrain tiles are drawn, render objects so they aren't overwritten.
+    // Original: SDI_Capture_Info captures to DClipInfo_List, then _ASMDraw_Sprite
+    // with Terrain_Clip_Mask (decomp lines 4394-4418).
+    // TODO: Full parity requires SDI capture system + per-object clip mask + fog pass
+    if (num_deferred_obj_draws > 0 && this->cur_render_area != nullptr) {
+        // Use full-surface SpanList for deferred objects — ensures all pixels draw.
+        // TODO: Full parity uses Terrain_Clip_Mask for diamond clipping + fog pass
+        this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
+
+        g_deferred_draw_active = 1;
+        g_deferred_pixels_written = 0;
+
+        for (int i = 0; i < num_deferred_obj_draws; i++) {
+            DeferredObjDraw& d = deferred_obj_draws[i];
+            if (d.fog_next) fog_next_shape = 1;
+            d.objs->draw(this->cur_render_area, d.sx, d.obj_y, d.is_ambient);
+            fog_next_shape = 0;
+        }
+
+        g_deferred_draw_active = 0;
+
+        CUSTOM_DEBUG_BEGIN
+        static int s_deferred_log = 0;
+        if (s_deferred_log < 10) {
+            CUSTOM_DEBUG_LOG_FMT("DEFERRED_OBJS: count=%d pixels_written=%d",
+                num_deferred_obj_draws, g_deferred_pixels_written);
+            s_deferred_log++;
+        }
+        CUSTOM_DEBUG_END
     }
 
     if (rge_base_game != nullptr) {

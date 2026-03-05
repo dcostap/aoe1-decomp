@@ -6,6 +6,7 @@
 #include "../include/DClipInfo_List.h"
 #include "../include/debug_helpers.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 #include "../include/RGE_Color_Table.h"
 #include <string.h>
 #include <stdlib.h>
@@ -2071,6 +2072,39 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     long draw_x = (mirror != 0) ? ((info->Hotspot_X + x) - info->Width) : (x - info->Hotspot_X);
     long draw_y = y - info->Hotspot_Y;
 
+    CUSTOM_DEBUG_BEGIN
+    static int s_slp_logs = 0;
+    static int s_game_slp_logs = 0;
+    if (s_slp_logs < 10) {
+        CUSTOM_DEBUG_LOG_FMT(
+            "shape_draw_slp: x=%ld y=%ld draw=(%ld,%ld) w=%ld h=%ld area=%p bits=%p W=%d H=%d pitch=%d CurDisp=%p CurSpan=%p SpanList=%p",
+            x, y, draw_x, draw_y, width, height,
+            draw_area, draw_area->Bits, draw_area->Width, draw_area->Height, draw_area->Pitch,
+            draw_area->CurDisplayOffsets, draw_area->CurSpanList, draw_area->SpanList);
+        s_slp_logs++;
+    }
+    // Log game-time sprites (save_area1 has pnl_hgt < 480; filter out 64x48 buttons and 640x480 credits)
+    if (s_game_slp_logs < 20 && draw_area->Height > 48 && draw_area->Height < 480) {
+        TSpan_List_Manager* dbg_spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
+        int span_lines = 0, span_min = -1, span_max = -1;
+        int first_non_null_head = -1;
+        if (dbg_spans) {
+            span_lines = dbg_spans->Num_Lines;
+            span_min = dbg_spans->Min_Line;
+            span_max = dbg_spans->Max_Line;
+            for (int si = 0; si < span_lines && si < draw_area->Height; si++) {
+                if (dbg_spans->Line_Head_Ptrs && dbg_spans->Line_Head_Ptrs[si]) { first_non_null_head = si; break; }
+            }
+        }
+        CUSTOM_DEBUG_LOG_FMT(
+            "GAME_SLP: area=%p W=%d H=%d draw=(%ld,%ld) w=%ld h=%ld spans=%p spanLines=%d min=%d max=%d firstHead=%d CurSpan=%p SpanList=%p",
+            draw_area, draw_area->Width, draw_area->Height, draw_x, draw_y, width, height,
+            dbg_spans, span_lines, span_min, span_max, first_non_null_head,
+            draw_area->CurSpanList, draw_area->SpanList);
+        s_game_slp_logs++;
+    }
+    CUSTOM_DEBUG_END
+
     int locked_here = 0;
     unsigned char* dest_bits = draw_area->Bits;
     if (!dest_bits) {
@@ -2110,6 +2144,25 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
     TSpan_List_Manager* spans = draw_area->CurSpanList ? draw_area->CurSpanList : draw_area->SpanList;
     // Parity: surface/span globals are set by the shape_draw/shape_mirror wrapper (matches Shape.cpp.decomp).
 
+    // DEBUG: log span state for game-time draws
+    CUSTOM_DEBUG_BEGIN
+    static int s_game_span_log = 0;
+    if (s_game_span_log < 10 && draw_area->Height > 48 && draw_area->Height < 480) {
+        int any_head = 0;
+        if (spans && spans->Line_Head_Ptrs) {
+            for (int si = 0; si < spans->Num_Lines; si++) {
+                if (spans->Line_Head_Ptrs[si]) { any_head = 1; break; }
+            }
+        }
+        CUSTOM_DEBUG_LOG_FMT("GAME_SPAN: area=%p W=%d H=%d CurSpan=%p SpanList=%p spans=%p same_as_SpanList=%d any_head=%d draw=(%ld,%ld) w=%ld h=%ld",
+            draw_area, draw_area->Width, draw_area->Height,
+            draw_area->CurSpanList, draw_area->SpanList, spans,
+            (spans == draw_area->SpanList) ? 1 : 0, any_head,
+            draw_x, draw_y, width, height);
+        s_game_span_log++;
+    }
+    CUSTOM_DEBUG_END
+
     for (long row = 0; row < height; row++) {
         long dst_y = draw_y + row;
         if (dst_y < clip_t || dst_y > clip_b) continue;
@@ -2147,6 +2200,20 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         if (spans && spans->Line_Head_Ptrs && spans->Line_Tail_Ptrs && dst_y >= 0 && dst_y < spans->Num_Lines && dst_y >= spans->Min_Line && dst_y <= spans->Max_Line) {
             span = (mirror != 0) ? spans->Line_Tail_Ptrs[dst_y] : spans->Line_Head_Ptrs[dst_y];
         }
+
+        CUSTOM_DEBUG_BEGIN
+        static int s_obj_pixel_log = 0;
+        if (s_obj_pixel_log < 10 && draw_area->Height > 48 && draw_area->Height < 480 && width < 60 && row == 0 && dst_y >= 0) {
+            CUSTOM_DEBUG_LOG_FMT("OBJ_ROW: area=%p dst_y=%ld span=%p spans=%p same_SL=%d dst_row=%p clip=%ld,%ld,%ld,%ld dst_x=%ld limit_x=%ld",
+                draw_area, dst_y, span, spans,
+                (spans == draw_area->SpanList) ? 1 : 0,
+                dst_row, clip_l, clip_t, clip_r, clip_b, dst_x, limit_x);
+            if (span) {
+                CUSTOM_DEBUG_LOG_FMT("  span: Start=%d End=%d", span->StartPx, span->EndPx);
+            }
+            s_obj_pixel_log++;
+        }
+        CUSTOM_DEBUG_END
 
         for (;;) {
             if (src >= shape_end) break;
@@ -2300,6 +2367,7 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                         if (bytes_per_pixel > 1 && shadow_amount) out_px = shape_apply_shadowing_to_pixel(draw_area, out_px, shadow_amount);
                         shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
+                        if (g_deferred_draw_active) g_deferred_pixels_written++;
                     }
                     dst_x += (mirror != 0) ? -1 : 1;
                 }

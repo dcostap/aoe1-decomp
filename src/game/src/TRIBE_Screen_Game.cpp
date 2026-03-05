@@ -2152,21 +2152,16 @@ void TRIBE_Screen_Game::draw() {
         if (locked != nullptr) {
             long bottom_y;
             if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
-                // 1024x768+
                 this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
-                bottom_y = 0x282; // 642
+                bottom_y = 0x282;
             } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
-                // 800x600
                 this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
-                bottom_y = 0x1da; // 474
+                bottom_y = 0x1da;
             } else {
-                // 640x480
                 this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
-                bottom_y = 0x162; // 354
+                bottom_y = 0x162;
             }
-            // Draw bottom portion
             this->runtime.game_screen_pic->shape_draw(this->render_area, 0, bottom_y, 1, 0, nullptr);
-
             this->render_area->Unlock((char*)"scr_game::draw3");
         }
     }

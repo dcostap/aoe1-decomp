@@ -5,6 +5,7 @@
 #include "../include/RGE_Active_Animated_Sprite.h"
 #include "../include/TShape.h"
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include "../include/mystring.h"
 #include <malloc.h>
@@ -483,6 +484,14 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
 
     sprite_ensure_shape_loaded(this);
     if (this->shape == nullptr) {
+        CUSTOM_DEBUG_BEGIN
+        static int s_draw_no_shape = 0;
+        if (s_draw_no_shape < 10) {
+            CUSTOM_DEBUG_LOG_FMT("RGE_Sprite::do_draw: shape=null for sprite=%p pict='%s' res=%d loaded=%d",
+                this, this->pict_name ? this->pict_name : "null", this->resource_id, (int)this->loaded);
+            s_draw_no_shape++;
+        }
+        CUSTOM_DEBUG_END
         return;
     }
 
@@ -503,6 +512,15 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
             table = this->color_tables[color_idx]->table;
         }
     }
+
+    CUSTOM_DEBUG_BEGIN
+    static int s_draw_ok = 0;
+    if (s_draw_ok < 10) {
+        CUSTOM_DEBUG_LOG_FMT("RGE_Sprite::do_draw: calling shape_draw shape=%p FShape=%p area=%p x=%ld y=%ld facet=%ld",
+            this->shape, this->shape->FShape, param_6, param_3, param_4, facet_index);
+        s_draw_ok++;
+    }
+    CUSTOM_DEBUG_END
 
     this->shape->shape_draw(param_6, param_3, param_4, facet_index, (unsigned char)this->color_flag, table);
 }

@@ -30,6 +30,7 @@
 #include "../include/TRIBE_Screen_Main_Menu.h"
 #include "../include/TribeSPMenuScreen.h"
 #include "../include/TribeMPSetupScreen.h"
+#include "../include/TRIBE_Credits_Screen.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
@@ -861,25 +862,45 @@ int RGE_Base_Game::setup() {
         return 0;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_CHECKPOINT("setup: post-sound");
+    CUSTOM_DEBUG_END
+
     if (!this->setup_chat()) {
         this->error_code = 0x10;
         return 0;
     }
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_CHECKPOINT("setup: post-chat");
+    CUSTOM_DEBUG_END
 
     if (!this->setup_comm()) {
         this->error_code = 9;
         return 0;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_CHECKPOINT("setup: post-comm");
+    CUSTOM_DEBUG_END
+
     if (!this->setup_fonts()) {
         this->error_code = 0xb;
         return 0;
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_CHECKPOINT("setup: post-fonts");
+    CUSTOM_DEBUG_END
+
     if (!this->setup_sounds()) {
         this->error_code = 0xc;
         return 0;
     }
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_CHECKPOINT("setup: post-sounds");
+    CUSTOM_DEBUG_END
 
     driveInfo = new (std::nothrow) DriveInformation();
     if (driveInfo == nullptr) {
@@ -2751,7 +2772,14 @@ int RGE_Base_Game::handle_idle() {
         }
         debug_autoplay_sp_random_start_wait_frames = debug_autoplay_sp_random_start_wait_frames + 1;
 
+        // Skip Credits Screen immediately by simulating a mouse click
         if (debug_autoplay_sp_random_start_state == 0 &&
+            strcmp(curPanel->panelNameValue, "Credits Screen") == 0 &&
+            debug_autoplay_sp_random_start_wait_frames >= 30) {
+            CUSTOM_DEBUG_LOG("AUTOPLAY: skipping Credits Screen -> close_screen");
+            ((TRIBE_Credits_Screen*)curPanel)->close_screen();
+            debug_autoplay_sp_random_start_wait_frames = 0;
+        } else if (debug_autoplay_sp_random_start_state == 0 &&
             strcmp(curPanel->panelNameValue, "Main Menu") == 0 &&
             debug_autoplay_sp_random_start_wait_frames >= 60) {
             TRIBE_Screen_Main_Menu* main_menu = (TRIBE_Screen_Main_Menu*)curPanel;
