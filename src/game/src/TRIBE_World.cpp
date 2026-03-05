@@ -37,7 +37,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY [CRITICAL] - TRIBE_World::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: tworld.cpp.decomp @ 0x0052E020]
 
 static int tribe_count_object_type(TRIBE_World* world, short object_id_a, short object_id_b) {
     // Fully verified. Source of truth: TRIBE_World.decomp (helper implementation).

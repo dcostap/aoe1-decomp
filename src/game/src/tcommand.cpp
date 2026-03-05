@@ -83,7 +83,8 @@ TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* com
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Command::~TRIBE_Command() {
-    // TODO: EMPTY_STUB - Decomp destructor resets base fields and frees command-owned buffers; this empty body is not parity-complete. [decomp: bucket_0509.decomp @ 0x00509760]
+    // Decomp shows base-class cleanup inlined (vtable + field resets + free).
+    // C++ calls RGE_Command::~RGE_Command() automatically.
 }
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {

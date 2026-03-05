@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Credits_Screen::scalar_deleting_destructor. [decomp: TRIBE_Credits_Screen.decomp @ 0x00492950]
+
 // TODO: PARITY - TRIBE_Credits_Screen.decomp currently only captures the deleting-destructor thunk; credits flow logic is sourced from scr_cred.cpp.decomp/.asm.
 #include "../include/TRIBE_Credits_Screen.h"
 

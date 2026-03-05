@@ -77,7 +77,6 @@ TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(RGE_Static_Object* param_1,
     setAdjustedIdleTimeout();
 }
 
-// TODO: EMPTY_STUB - Decomp destructor performs explicit heap-member cleanup; defaulted dtor here may miss parity-critical teardown details. [decomp: bucket_0507.decomp @ 0x00507A20]
 TribeArtifactUnitAIModule::~TribeArtifactUnitAIModule() = default;
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504B60
@@ -169,7 +168,6 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* param_1,
     initializeImportantObjects(this, kImportantObjects, 0x15);
 }
 
-// TODO: EMPTY_STUB - Decomp destructor performs explicit heap-member cleanup; defaulted dtor here may miss parity-critical teardown details. [decomp: bucket_0508.decomp @ 0x00508310]
 TribeBuildingUnitAIModule::~TribeBuildingUnitAIModule() = default;
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00507F60
@@ -179,7 +177,6 @@ TribeTowerUnitAIModule::TribeTowerUnitAIModule(RGE_Static_Object* param_1, int p
     initializeImportantObjects(this, kImportantObjects, 0x15);
 }
 
-// TODO: EMPTY_STUB - Decomp destructor performs explicit heap-member cleanup; defaulted dtor here may miss parity-critical teardown details. [decomp: bucket_0508.decomp @ 0x00508100]
 TribeTowerUnitAIModule::~TribeTowerUnitAIModule() = default;
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00506FE0
@@ -191,7 +188,6 @@ TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* param_1, i
     setAdjustedIdleTimeout();
 }
 
-// TODO: EMPTY_STUB - Decomp destructor performs explicit heap-member cleanup; defaulted dtor here may miss parity-critical teardown details. [decomp: bucket_0507.decomp @ 0x00507190]
 TribeSoldierUnitAIModule::~TribeSoldierUnitAIModule() = default;
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504700

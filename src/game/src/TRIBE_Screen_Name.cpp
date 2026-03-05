@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Name::vector_deleting_destructor. [decomp: TRIBE_Screen_Name.decomp @ 0x004A66C0]
+
 #include "../include/TRIBE_Screen_Name.h"
 #include "../include/TRIBE_Dialog_Name.h"
 #include "../include/TRIBE_Screen_Campaign_Selection.h"

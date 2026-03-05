@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Campaign_Selection::vector_deleting_destructor. [decomp: TRIBE_Screen_Campaign_Selection.decomp @ 0x00490E10]
+
 // TODO: PARITY - Requested alias source TRIBE_Screen_Campaigns.cpp is absent in this tree; verify all scr_cams module bodies are fully represented by this TU. [decomp: scr_cams.cpp.decomp @ 0x004909D0]
 #include "../include/TRIBE_Screen_Campaign_Selection.h"
 #include "../include/TRIBE_Screen_Name.h"

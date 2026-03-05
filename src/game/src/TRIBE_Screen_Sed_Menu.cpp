@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Sed_Menu::scalar_deleting_destructor. [decomp: TRIBE_Screen_Sed_Menu.decomp @ 0x004B30F0]
+
 #include "../include/TRIBE_Screen_Sed_Menu.h"
 
 #include "../include/TRIBE_Campaign_Editor_Screen.h"

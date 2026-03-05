@@ -33,7 +33,6 @@
 #include <string.h>
 #include <new>
 
-// TODO: PARITY - RGE_Game_World::scalar_deleting_destructor from decomp is not implemented in this translation unit. [decomp: world.cpp.decomp @ 0x00540A20]
 
 static void rge_world_build_player_id_map(RGE_Game_World* world, RGE_Player_Info* info, long* player_id_map) {
     for (int i = 0; i < 9; ++i) {

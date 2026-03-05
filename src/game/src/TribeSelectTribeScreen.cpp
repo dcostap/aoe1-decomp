@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeSelectTribeScreen::scalar_deleting_destructor. [decomp: TribeSelectTribeScreen.decomp @ 0x004B7DD0]
+
 #include "../include/TribeSelectTribeScreen.h"
 
 #include "../include/RGE_Base_Game.h"

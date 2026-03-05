@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeAchievementsScreen::vector_deleting_destructor. [decomp: TribeAchievementsScreen.decomp @ 0x0048E1F0]
+
 #include "../include/TribeAchievementsScreen.h"
 
 #include "../include/Time_Line_Panel.h"

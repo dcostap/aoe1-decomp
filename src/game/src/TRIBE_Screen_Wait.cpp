@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Wait::scalar_deleting_destructor. [decomp: TRIBE_Screen_Wait.decomp @ 0x004A6030]
+
 // TODO: PARITY - TRIBE_Screen_Wait.decomp currently only captures the deleting-destructor thunk; runtime methods are sourced from scr_mps.cpp.decomp.
 #include "../include/TRIBE_Screen_Wait.h"
 

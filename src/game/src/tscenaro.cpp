@@ -558,7 +558,10 @@ void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
 }
 
 T_Scenario::~T_Scenario() {
-    // TODO: EMPTY_STUB - Decomp destructor performs extensive owned-pointer/array teardown; this empty body is not parity-complete. [decomp: bucket_052A.decomp @ 0x0052AB80]
+    // Fully verified. Source of truth: bucket_052A.decomp @ 0x0052AB80
+    // Decomp shows inlined base RGE_Scenario dtor (time_line, strings, scenario_name,
+    // mission_picture, per-player BuildList/CityPlan/AiRules cleanup).
+    // C++ automatically chains to ~RGE_Scenario() which handles all cleanup.
 }
 
 RGE_Static_Object* T_Scenario::get_object_pointer(int param_1) {

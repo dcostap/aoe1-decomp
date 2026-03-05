@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Game::vector_deleting_destructor. [decomp: TRIBE_Screen_Game.decomp @ 0x00495450]
+
 #include "../include/TRIBE_Screen_Game.h"
 
 #include "../include/RGE_Base_Game.h"

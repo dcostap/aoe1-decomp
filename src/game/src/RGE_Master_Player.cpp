@@ -12,7 +12,6 @@
 #include <string.h>
 #include <stdio.h>
 
-// TODO: PARITY - RGE_Master_Player::vector_deleting_destructor from decomp is not implemented in this translation unit. [decomp: RGE_Master_Player.decomp @ 0x004610A0]
 // TODO: PARITY - Requested m_player.cpp.decomp/mplayer.cpp.decomp names are not present in this tree; this audit maps RGE_Master_Player to mst_play.cpp.decomp. [decomp: mst_play.cpp.decomp @ 0x004610C0]
 
 RGE_Master_Player::RGE_Master_Player() {

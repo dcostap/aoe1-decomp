@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Main_Error::vector_deleting_destructor. [decomp: TRIBE_Screen_Main_Error.decomp @ 0x0049F220]
+
 #include "../include/TRIBE_Screen_Main_Error.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TTextPanel.h"

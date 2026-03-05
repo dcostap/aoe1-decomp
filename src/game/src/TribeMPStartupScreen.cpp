@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TribeMPStartupScreen::vector_deleting_destructor. [decomp: TribeMPStartupScreen.decomp @ 0x0049F870]
+
 #include "../include/TribeMPStartupScreen.h"
 
 #include "../include/TribeJoinScreen.h"

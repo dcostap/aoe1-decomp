@@ -88,7 +88,15 @@ TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object(FILE* param_1, RGE_Sprite** p
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Master_Tree_Object::~TRIBE_Master_Tree_Object() {
-    // TODO: EMPTY_STUB - Decomp destructor frees resource pointers before returning; this empty body is not parity-complete. [decomp: bucket_050F.decomp @ 0x0050F210]
+    // Fully verified. Source of truth: bucket_050F.decomp @ 0x0050F210
+    if (this->name) {
+        free(this->name);
+        this->name = nullptr;
+    }
+    if (this->damage_sprites) {
+        free(this->damage_sprites);
+        this->damage_sprites = nullptr;
+    }
 }
 // Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
 // TODO: PARITY - tm_tre_o.cpp.decomp does not show copy_obj; confirm whether setup() usage here matches original override behavior.

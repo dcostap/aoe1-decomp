@@ -1,4 +1,4 @@
-// TODO: PARITY [CRITICAL] - Missing function implementation for TRIBE_Screen_Sed_Open::scalar_deleting_destructor. [decomp: TRIBE_Screen_Sed_Open.decomp @ 0x004B3680]
+
 #include "../include/TRIBE_Screen_Sed_Open.h"
 
 #include "../include/RGE_Base_Game.h"

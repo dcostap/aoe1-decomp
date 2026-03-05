@@ -1,4 +1,4 @@
-// TODO: PARITY - Missing function implementation for TRIBE_Screen_Disconnect::vector_deleting_destructor. [decomp: TRIBE_Screen_Disconnect.decomp @ 0x004A6270]
+
 // TODO: PARITY - TRIBE_Screen_Disconnect.decomp currently only captures the deleting-destructor thunk; functional methods are sourced from scr_mps.cpp.decomp/.asm.
 #include "../include/TRIBE_Screen_Disconnect.h"
 

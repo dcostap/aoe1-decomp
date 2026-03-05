@@ -62,7 +62,9 @@ TRIBE_Panel_Button::TRIBE_Panel_Button(
 }
 
 TRIBE_Panel_Button::~TRIBE_Panel_Button() {
-    // TODO: EMPTY_STUB - Decomp destructor iterates/free's multiple dynamic button buffers before TPanel teardown; this empty body is not parity-complete. [decomp: bucket_0519.decomp @ 0x00519E90]
+    // Fully verified. Source of truth: bucket_0519.decomp @ 0x00519E90
+    // Decomp shows inlined base TButtonPanel dtor (text1/text2 loop + radio_buttons free).
+    // C++ automatically chains to ~TButtonPanel() which handles all cleanup.
 }
 
 void TRIBE_Panel_Button::set_text_msg(char* text) {
