@@ -111,9 +111,6 @@ extern int SDI_Draw_Line;
 extern int SDI_Draw_Level;
 extern int startLoggingAI;
 
-// Debug: deferred draw pixel tracking
-extern int g_deferred_draw_active;
-extern int g_deferred_pixels_written;
 extern int confirmed_close;
 extern FILE* commonHistoryLogFile;
 extern int specificAIPlayerToLog;

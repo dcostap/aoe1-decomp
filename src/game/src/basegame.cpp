@@ -3029,40 +3029,12 @@ int RGE_Base_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     TPanel* pTVar6;
     ulong uVar7;
 
-    CUSTOM_DEBUG_BEGIN
-    static int s_paint_logs = 0;
-    static int s_paint_gm_logs = 0;
-    if (s_paint_logs < 10) {
-        TPanel* dbg_panel = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
-        CUSTOM_DEBUG_LOG_FMT("handle_paint: enter prog_active=%d prog_ready=%d prog_mode=%d panel=%p render_all=%d",
-            this->prog_active, this->prog_ready, this->prog_mode, dbg_panel, this->render_all);
-        s_paint_logs++;
-    }
-    if (s_paint_gm_logs < 10 && this->prog_mode >= 4) {
-        TPanel* dbg_panel = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
-        CUSTOM_DEBUG_LOG_FMT("handle_paint[gm]: enter prog_active=%d prog_mode=%d panel=%p render_all=%d",
-            this->prog_active, this->prog_mode, dbg_panel, this->render_all);
-        s_paint_gm_logs++;
-    }
-    CUSTOM_DEBUG_END
-
     color_log('2', '2', 4);
     uVar2 = debug_timeGetTime(kBasegameSourcePath, 0x10ea);
     iVar3 = this->check_paint();
     uVar4 = debug_timeGetTime(kBasegameSourcePath, 0x10ee);
     this->add_to_timing(5, uVar4 - uVar2);
     if (iVar3 == 0) {
-        CUSTOM_DEBUG_BEGIN
-        if (s_paint_logs < 10) {
-            CUSTOM_DEBUG_LOG("handle_paint: check_paint=0 -> early return (no paint)");
-            s_paint_logs++;
-        }
-        if (s_paint_gm_logs < 10 && this->prog_mode >= 4) {
-            CUSTOM_DEBUG_LOG_FMT("handle_paint[gm]: check_paint=0 -> early return prog_active=%d prog_ready=%d",
-                this->prog_active, this->prog_ready);
-            s_paint_gm_logs++;
-        }
-        CUSTOM_DEBUG_END
         color_log('2', '_', 4);
         return 0;
     }
@@ -3105,29 +3077,9 @@ LAB_004214dc:
 
     color_log('2', 0x16, 4);
     pTVar6 = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;
-    CUSTOM_DEBUG_BEGIN
-    if (s_paint_gm_logs < 10 && this->prog_mode >= 4) {
-        CUSTOM_DEBUG_LOG_FMT("handle_paint[gm]: paint-decision panel=%p render_all=%d",
-            pTVar6, this->render_all);
-    }
-    CUSTOM_DEBUG_END
     if (pTVar6 == nullptr) {
-        CUSTOM_DEBUG_BEGIN
-        if (s_paint_logs < 10) {
-            CUSTOM_DEBUG_LOG("handle_paint: no current panel -> clear_window");
-            s_paint_logs++;
-        }
-        CUSTOM_DEBUG_END
         this->clear_window();
     } else {
-        CUSTOM_DEBUG_BEGIN
-        if (s_paint_logs < 10) {
-            CUSTOM_DEBUG_LOG_FMT("handle_paint: painting panel=%p name='%s' render_all=%d need_redraw=%d",
-                pTVar6, pTVar6->panelNameValue ? pTVar6->panelNameValue : "(null)",
-                this->render_all, (int)pTVar6->need_redraw);
-            s_paint_logs++;
-        }
-        CUSTOM_DEBUG_END
         color_log(0x16, 0x16, 1);
         if (this->render_all != 0) {
             pTVar6 = (panel_system != nullptr) ? panel_system->currentPanel() : nullptr;

@@ -484,14 +484,6 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
 
     sprite_ensure_shape_loaded(this);
     if (this->shape == nullptr) {
-        CUSTOM_DEBUG_BEGIN
-        static int s_draw_no_shape = 0;
-        if (s_draw_no_shape < 10) {
-            CUSTOM_DEBUG_LOG_FMT("RGE_Sprite::do_draw: shape=null for sprite=%p pict='%s' res=%d loaded=%d",
-                this, this->pict_name ? this->pict_name : "null", this->resource_id, (int)this->loaded);
-            s_draw_no_shape++;
-        }
-        CUSTOM_DEBUG_END
         return;
     }
 
@@ -512,27 +504,6 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
             table = this->color_tables[color_idx]->table;
         }
     }
-
-    CUSTOM_DEBUG_BEGIN
-    static int s_draw_ok = 0;
-    if (s_draw_ok < 20) {
-        CUSTOM_DEBUG_LOG_FMT("RGE_Sprite::do_draw: shape=%p area=%p x=%ld y=%ld facet=%ld mirrored=%d color_flag=%d color_table=%d table=%p",
-            this->shape, param_6, param_3, param_4, facet_index, (int)mirrored, (int)this->color_flag, (int)this->color_table, table);
-        if (table != nullptr) {
-            CUSTOM_DEBUG_LOG_FMT("  xlate[0..15]: %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-                table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7],
-                table[8], table[9], table[10], table[11], table[12], table[13], table[14], table[15]);
-            // Check if identity or all-same
-            int is_identity = 1, all_same = 1;
-            for (int ti = 0; ti < 256; ti++) {
-                if (table[ti] != (unsigned char)ti) is_identity = 0;
-                if (table[ti] != table[0]) all_same = 0;
-            }
-            CUSTOM_DEBUG_LOG_FMT("  xlate identity=%d all_same=%d table[0]=%d", is_identity, all_same, table[0]);
-        }
-        s_draw_ok++;
-    }
-    CUSTOM_DEBUG_END
 
     this->shape->shape_draw(param_6, param_3, param_4, facet_index, (unsigned char)this->color_flag, table);
 }
