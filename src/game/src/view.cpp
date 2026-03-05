@@ -2309,10 +2309,10 @@ void RGE_View::draw()
         }
     }
 
-    // TODO: PARITY [MODERATE] - terrain_target is always cleared here, while decomp only clears save_area1 in the render_terrain_mode == 0 path and otherwise relies on scrolled/reused contents. [decomp: view.cpp.decomp @ 0x00534AE0]
-    if (terrain_target != nullptr) {
-        terrain_target->Clear(&terrain_target->ClipRect, 0);
-    }
+    // Parity: decomp only clears save_area1 in the render_terrain_mode == 0 path.
+    // When render_terrain_mode != 0, the previous frame's terrain data persists,
+    // covering 1-pixel gaps between TILEEDGE diamond boundaries.
+    // We no longer unconditionally clear here to avoid black outlines.
 
     this->draw_view(10, terrain_target); // 10 is terrain mode
 
@@ -2659,15 +2659,10 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 
                                         CUSTOM_DEBUG_BEGIN
                                         static int s_add_mini_logs = 0;
-                                        if (s_add_mini_logs < 5) {
+                                        if (s_add_mini_logs < 3) {
                                             CUSTOM_DEBUG_LOG_FMT(
-                                                "ADD_MINI: tile_mask=%d clip_to=%d sx=%d sy=%d normal=%p fog=%p black=%p TCM=%p TFCM=%p edge_tbl=%p",
-                                                tile_mask_num, clip_to, sx, sy, normal_draw_data, fog_draw_data, black_undraw_data,
-                                                this->Terrain_Clip_Mask, this->Terrain_Fog_Clip_Mask, edge_table);
-                                            if (normal_draw_data) {
-                                                CUSTOM_DEBUG_LOG_FMT("  normal_draw: Y_delta=%u X_start=%u X_end=%u",
-                                                    (unsigned)normal_draw_data->Y_delta, (unsigned)normal_draw_data->X_start, (unsigned)normal_draw_data->X_end);
-                                            }
+                                                "ADD_MINI: tile_mask=%d clip_to=%d sx=%d sy=%d normal=%p fog=%p black=%p",
+                                                tile_mask_num, clip_to, sx, sy, normal_draw_data, fog_draw_data, black_undraw_data);
                                             s_add_mini_logs++;
                                         }
                                         CUSTOM_DEBUG_END
@@ -3123,6 +3118,15 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     }
 
     if (param_7 != 0) {
+        // NON-PARITY: Fill the full SLP diamond area BEFORE clip-masked draw.
+        // The TILEEDGE normal_draw + fog_draw diamonds can have 1-pixel gaps between them.
+        // In the original game, render_terrain_mode!=0 reuses the previous frame's buffer
+        // (with scrolling), so gaps are filled from prior frames. We don't implement terrain
+        // buffer scrolling yet, so we pre-fill with the unclipped SLP to prevent black outlines.
+        // TODO: Remove this when render_terrain_mode scrolling is implemented.
+        this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
+        (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
+
         this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
         (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
         s_view_debug_masked_draws++;
