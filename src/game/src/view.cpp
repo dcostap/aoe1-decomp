@@ -2315,9 +2315,24 @@ void RGE_View::draw()
 
     this->draw_view(10, terrain_target); // 10 is terrain mode
 
-    // NOTE: No explicit save_area1→render_area copy here per decomp source of truth.
-    // The original uses save_area1 as a scrollable terrain buffer; final blit to screen
-    // is handled by the DirectDraw/blit-queue system, not an explicit Copy call.
+    // Copy terrain from save_area1 to render_area at the panel's screen position.
+    // Decomp does this inside view_function_terrain via PtrSpanCopy with Master_Clip_Mask,
+    // then draws objects on top. Our simplified path uses a full Copy.
+    // TODO: PARITY [MODERATE] - Decomp uses PtrSpanCopy with Master_Clip_Mask for selective
+    // terrain copy, then draws objects to render_area via _ASMDraw_Sprite. This does a full
+    // surface copy and skips object rendering. [decomp: view.cpp.decomp @ 0x00536B40, line 4632]
+    if (terrain_target == this->save_area1 && this->save_area1 != nullptr && this->render_area != nullptr) {
+        // Use PtrCopy (software copy via CurDisplayOffsets) rather than Copy (Blt).
+        // save_area1 uses ExtendedLines=1 which shifts CurDisplayOffsets by 5 rows,
+        // making Blt read wrong data. PtrCopy respects CurDisplayOffsets.
+        tagRECT dst_rect;
+        dst_rect.left = this->render_rect.left;
+        dst_rect.top = this->render_rect.top;
+        dst_rect.right = this->render_rect.left + this->save_area1->ClipRect.right;
+        dst_rect.bottom = this->render_rect.top + this->save_area1->ClipRect.bottom;
+
+        this->render_area->PtrCopy(this->save_area1, 0, 0, &dst_rect);
+    }
 
     CUSTOM_DEBUG_BEGIN
     if (s_view_debug_draw_logs < 12 || (frame_count % 120) == 0) {
@@ -2409,16 +2424,40 @@ void RGE_View::update()
 
 void RGE_View::draw_view(uchar mode, TDrawArea* area)
 {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535480 (RGE_View::draw_view).
-    // TODO: PARITY [CRITICAL] - Missing save_area1 coordinate-remap/restore block (start_scr/map offsets and render-rect adjustments) around draw dispatch. [decomp: view.cpp.decomp @ 0x00535480]
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535480, view.cpp.asm @ 0x00535480
     if (area == nullptr) area = this->render_area;
     if (area == nullptr) return;
 
     this->cur_render_area = area;
+
+    // Coordinate remap when drawing to save_area1: shift render_rect to (0,0) origin
+    // so tile coordinates are save_area1-relative instead of screen-relative.
+    long saved_rect_left = this->render_rect.left;
+    long saved_rect_top = this->render_rect.top;
+    long saved_rect_right = this->render_rect.right;
+    long saved_rect_bottom = this->render_rect.bottom;
+
+    if (area == this->save_area1) {
+        this->render_rect.left = 0;
+        this->render_rect.right = saved_rect_right - saved_rect_left;
+        this->render_rect.top = 0;
+        this->render_rect.bottom = saved_rect_bottom - saved_rect_top;
+
+        this->start_scr_col -= (short)saved_rect_left;
+        this->start_scr_row -= (short)saved_rect_top;
+
+        this->map_scr_x_offset += (int)saved_rect_left;
+        this->map_scr_y_offset += (int)saved_rect_top;
+    }
+
     if (area->Lock("draw_view", 1)) {
-        // TODO: PARITY [CRITICAL] - mode != 10 branch should call view_function(...); current code drops the non-terrain draw path. [decomp: view.cpp.decomp @ 0x00535480]
+        // TODO: PARITY [MODERATE] - mode != 10 branch should call view_function(...); current code drops the non-terrain draw path. [decomp: view.cpp.decomp @ 0x00535480]
         if (mode == 10) { // Terrain
-            tagRECT rect = area->ClipRect;
+            tagRECT rect;
+            rect.left = saved_rect_left;
+            rect.top = saved_rect_top;
+            rect.right = saved_rect_right;
+            rect.bottom = saved_rect_bottom;
             this->view_function_terrain(mode, rect);
         }
         area->Unlock("draw_view");
@@ -2427,6 +2466,21 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
         CUSTOM_DEBUG_LOG_FMT("RGE_View::draw_view: Lock failed mode=%u area=%p", (unsigned)mode, area);
         CUSTOM_DEBUG_END
     }
+
+    // Restore coordinates after save_area1 remap
+    if (area == this->save_area1) {
+        this->start_scr_col += (short)saved_rect_left;
+        this->start_scr_row += (short)saved_rect_top;
+
+        this->render_rect.left += saved_rect_left;
+        this->render_rect.top += saved_rect_top;
+        this->render_rect.right += saved_rect_left;
+        this->render_rect.bottom += saved_rect_top;
+
+        this->map_scr_x_offset -= (int)saved_rect_left;
+        this->map_scr_y_offset -= (int)saved_rect_top;
+    }
+
     this->cur_render_area = nullptr;
 }
 

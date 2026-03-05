@@ -2781,6 +2781,16 @@ int RGE_Base_Game::handle_idle() {
                 debug_autoplay_sp_random_start_state = 3;
                 debug_autoplay_sp_random_start_wait_frames = 0;
             }
+        } else if (debug_autoplay_sp_random_start_state == 3 &&
+                   strcmp(curPanel->panelNameValue, "Game Screen") == 0 &&
+                   debug_autoplay_sp_random_start_wait_frames >= 120) {
+            // Take a diagnostic screenshot once in game
+            if (this->draw_system != nullptr && this->draw_system->DrawArea != nullptr) {
+                static int autoplay_snapshot_num = 0;
+                this->draw_system->DrawArea->take_snapshot((char*)".\\AoE%04d.bmp", &autoplay_snapshot_num);
+                CUSTOM_DEBUG_LOG("AUTOPLAY: screenshot taken in-game");
+            }
+            debug_autoplay_sp_random_start_state = 4;
         }
     }
 #endif

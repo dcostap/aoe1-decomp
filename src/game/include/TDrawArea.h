@@ -21,8 +21,8 @@ struct TDrawArea {
     void SetOverlayTrans(int enabled, uchar trans_color);
     void SetAccessOffsets();
     void SetInfo();
-    void PtrSpanCopy(TDrawArea* src, int x, int y);
-    void PtrSpanCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, uchar** span_heads);
+    void PtrSpanCopy(TDrawArea* dest, int x, int y);
+    void PtrSpanCopy(TDrawArea* dest, long dest_x, long dest_y, tagRECT* src_rect, uchar** span_heads);
     void PtrCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect);
     void PtrSurfaceCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, int lock_dst, int lock_src);
     void DrawLine(int x1, int y1, int x2, int y2, uchar color);

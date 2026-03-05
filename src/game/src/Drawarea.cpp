@@ -1564,48 +1564,52 @@ void TDrawArea::SetAccessOffsets() {
     this->LastBits = this->Bits;
 }
 
-void TDrawArea::PtrSpanCopy(TDrawArea* src, int x, int y) {
-    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
-    if (src == nullptr) return;
+void TDrawArea::PtrSpanCopy(TDrawArea* dest, int x, int y) {
+    // Convenience wrapper. this=source, dest=destination.
+    // Source of truth: drawarea.cpp.decomp (helper implementation).
+    if (dest == nullptr) return;
     tagRECT rect;
     rect.left = 0;
     rect.top = 0;
     rect.right = this->Width - 1;
     rect.bottom = this->Height - 1;
     uchar** spans = (uchar**)(this->SpanList ? this->SpanList->Line_Head_Ptrs : nullptr);
-    this->PtrSpanCopy(src, x, y, &rect, spans);
+    this->PtrSpanCopy(dest, x, y, &rect, spans);
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445250
-void TDrawArea::PtrSpanCopy(TDrawArea* src, long src_x, long src_y, tagRECT* dst_rect, uchar** span_heads) {
-    if (!src || !dst_rect || !span_heads) return;
-    if (dst_rect->left < 0 || dst_rect->left > dst_rect->right || dst_rect->right >= this->Width) return;
-    if (dst_rect->top < 0 || dst_rect->top > dst_rect->bottom || dst_rect->bottom >= this->Height) return;
-    if (src_x < 0 || src_x >= src->Width || src_y < 0 || src_y >= src->Height) return;
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445250, drawarea.cpp.asm @ 0x00445250
+// ASM confirms: this=source (SrcP), dest=destination (DestP). REP MOVSB copies ESI(src)→EDI(dest).
+// src_rect defines the region in this (source). dest_x/dest_y is the offset in dest.
+// span_heads are indexed by src_rect rows.
+void TDrawArea::PtrSpanCopy(TDrawArea* dest, long dest_x, long dest_y, tagRECT* src_rect, uchar** span_heads) {
+    if (!dest || !src_rect || !span_heads) return;
+    if (src_rect->left < 0 || src_rect->left > src_rect->right || src_rect->right >= this->Width) return;
+    if (src_rect->top < 0 || src_rect->top > src_rect->bottom || src_rect->bottom >= this->Height) return;
+    if (dest_x < 0 || dest_x >= dest->Width || dest_y < 0 || dest_y >= dest->Height) return;
 
-    int lines = (int)((dst_rect->bottom - dst_rect->top) + 1);
-    if (src->Height < lines + src_y) lines = (int)(src->Height - src_y);
+    int lines = (int)((src_rect->bottom - src_rect->top) + 1);
+    if (dest->Height < lines + dest_y) lines = (int)(dest->Height - dest_y);
     if (lines <= 0) return;
 
     if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
-        if (src->Lock((char*)"PtrSpanCopy", 1) == nullptr) return;
+        if (dest->Lock((char*)"PtrSpanCopy", 1) == nullptr) return;
     }
 
-    int dst_x_base = (int)dst_rect->left;
-    int dst_y = (int)dst_rect->top;
-    int src_row = (int)src_y;
+    int src_x_base = (int)src_rect->left;
+    int src_row = (int)src_rect->top;
+    int dst_row = (int)dest_y;
     for (int row = 0; row < lines; ++row) {
-        unsigned char* dst_line = (unsigned char*)this->CurDisplayOffsets[dst_y];
-        unsigned char* src_line = (unsigned char*)src->CurDisplayOffsets[src_row];
-        for (unsigned char* node = span_heads[dst_y]; node != nullptr; node = *(unsigned char**)node) {
+        unsigned char* src_line = (unsigned char*)this->CurDisplayOffsets[src_row];
+        unsigned char* dst_line = (unsigned char*)dest->CurDisplayOffsets[dst_row];
+        for (unsigned char* node = span_heads[src_row]; node != nullptr; node = *(unsigned char**)node) {
             int span_start = *(int*)(node + 8);
             int span_end = *(int*)(node + 12);
             int width = (span_end - span_start) + 1;
             if (width <= 0) continue;
-            memcpy(dst_line + span_start + dst_x_base, src_line + span_start + (int)src_x, (size_t)width);
+            memcpy(dst_line + span_start + (int)dest_x, src_line + span_start + src_x_base, (size_t)width);
         }
-        dst_y++;
         src_row++;
+        dst_row++;
     }
 }
 

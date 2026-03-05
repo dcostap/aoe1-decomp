@@ -145,7 +145,10 @@ int TScreenPanel::is_inside(long param_1, long param_2) { return TEasy_Panel::is
 void TScreenPanel::set_focus(int param_1) {
     // Fully verified. Source of truth: pnl_scr.cpp.decomp @ 0x0047BB60
     tagPALETTEENTRY save_focus = {};
-    tagPALETTEENTRY color_table[256];
+    // ASM shows SUB ESP,0x408 = 1032 bytes: save_focus(4) + color_table(257*4=1028).
+    // Ghidra shows [256] but GetPalette/GetPaletteEntries write 256 entries at color_table+1,
+    // so we need 257 entries to avoid stack buffer overflow.
+    tagPALETTEENTRY color_table[257];
     const int old_focus = this->have_focus;
 
     const bool change_screen = (this != last_screen);
