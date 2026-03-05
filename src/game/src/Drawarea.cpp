@@ -330,8 +330,10 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
             return 0;
         }
         if ((int)ddsd.ddpfPixelFormat.dwRGBBitCount != 8) {
-            // TODO: Compatibility fallback for modern desktops (typically 32-bit windowed display mode).
-            // Original parity expects 8-bit and returns ErrorCode=2.
+            // NON-PARITY: Original returns ErrorCode=2 here. We log and continue as a
+            // compatibility fallback for windowed mode on modern desktops (32-bit display).
+            // With cnc-ddraw in fullscreen mode, this path should not be reached (8-bit surfaces).
+            // TODO: PARITY [LOW] - Restore original error return once fullscreen-only is enforced.
             CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: desktop bpp=%lu (continuing with compatibility fallback)",
                                  (unsigned long)ddsd.ddpfPixelFormat.dwRGBBitCount);
@@ -1093,11 +1095,12 @@ uchar TDrawArea::CheckSurface() {
     // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
         if (this->DrawSurface == nullptr) {
-            // TODO: PARITY [LOW] - Original helper returns fatal for null surfaces, but zero-sized placeholder
-            // draw areas (e.g., transient time-message panels) can intentionally remain unbacked in this build.
-            // Treat those as non-fatal to avoid false-positive fatal-surface shutdowns. [decomp: drawarea.cpp.decomp @ 0x00444110]
-            // Some UI draw areas are intentionally zero-sized placeholders (for example
-            // transient time-message panels). Treat those as non-fatal in surface checks.
+            // NON-PARITY: Original returns 3 (fatal) for null surfaces unconditionally.
+            // Zero-sized placeholder draw areas (e.g., transient time-message panels) can
+            // intentionally remain unbacked. Treat those as non-fatal to avoid false-positive
+            // fatal-surface shutdowns that crash the game.
+            // TODO: PARITY [LOW] - Investigate why zero-sized draw areas exist in our build
+            // but don't trigger fatal in the original. [decomp: drawarea.cpp.decomp @ 0x00444110]
             if (this->Width <= 0 || this->Height <= 0) {
                 return 0;
             }

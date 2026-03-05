@@ -2315,12 +2315,12 @@ void RGE_View::draw()
 
     this->draw_view(10, terrain_target); // 10 is terrain mode
 
-    // Copy terrain from save_area1 to render_area at the panel's screen position.
+    // NON-PARITY: Copy terrain from save_area1 to render_area at the panel's screen position.
     // Decomp does this inside view_function_terrain via PtrSpanCopy with Master_Clip_Mask,
-    // then draws objects on top. Our simplified path uses a full Copy.
-    // TODO: PARITY [MODERATE] - Decomp uses PtrSpanCopy with Master_Clip_Mask for selective
-    // terrain copy, then draws objects to render_area via _ASMDraw_Sprite. This does a full
-    // surface copy and skips object rendering. [decomp: view.cpp.decomp @ 0x00536B40, line 4632]
+    // then draws objects on top. Our simplified path uses a full PtrCopy instead.
+    // TODO: PARITY [MODERATE] - Replace with PtrSpanCopy inside view_function_terrain using
+    // Master_Clip_Mask, then draw objects to render_area via _ASMDraw_Sprite.
+    // [decomp: view.cpp.decomp @ 0x00536B40, line 4632]
     if (terrain_target == this->save_area1 && this->save_area1 != nullptr && this->render_area != nullptr) {
         // Use PtrCopy (software copy via CurDisplayOffsets) rather than Copy (Blt).
         // save_area1 uses ExtendedLines=1 which shifts CurDisplayOffsets by 5 rows,
