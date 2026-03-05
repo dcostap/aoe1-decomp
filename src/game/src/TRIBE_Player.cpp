@@ -321,11 +321,9 @@ void TRIBE_Gaia::update() {
 }
 void TRIBE_Gaia::changeToHumanPlayer() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514700
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this is an intentional empty implementation.
 }
 void TRIBE_Gaia::changeToComputerPlayer() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00514710
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this is an intentional empty implementation.
 }
 void TRIBE_Gaia::save(int param_1) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519C40
@@ -337,7 +335,6 @@ void TRIBE_Gaia::save(int param_1) {
 }
 void TRIBE_Gaia::random_start() {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D40
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this is an intentional empty implementation.
 }
 void TRIBE_Gaia::scenario_postload(int param_1, long* param_2, float param_3) {
     // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00519D50

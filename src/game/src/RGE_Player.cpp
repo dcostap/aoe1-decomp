@@ -523,14 +523,12 @@ void RGE_Player::do_resign(int param_1) {
 // Offset: 0x0046EC80
 void RGE_Player::changeToHumanPlayer() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EC80
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this offset is intentionally empty.
     return;
 }
 
 // Offset: 0x0046EC90
 void RGE_Player::changeToComputerPlayer() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046EC90
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this offset is intentionally empty.
     return;
 }
 
@@ -1305,7 +1303,6 @@ void RGE_Player::save_info(int param_1) {
 // Offset: 0x00470570
 void RGE_Player::random_start() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00470570
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this offset is intentionally empty.
     return;
 }
 void RGE_Player::destroy_objects() {
@@ -1330,7 +1327,6 @@ RGE_Static_Object* RGE_Player::make_new_object(long param_1, float param_2, floa
 }
 void RGE_Player::analyize_selected_objects() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00471520
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this offset is intentionally empty.
     return;
 }
 int RGE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {

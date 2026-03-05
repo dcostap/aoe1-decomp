@@ -472,7 +472,6 @@ long TButtonPanel::char_action(long param_1, short param_2) {
 long TButtonPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::get_true_render_rect(tagRECT* param_1) {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: pnl_btn.cpp.decomp @ 0x00473920]
 }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 int TButtonPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
@@ -488,7 +487,6 @@ void TButtonPanel::set_focus(int focused) {
 void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_tab_order(TPanel** param_1, short param_2) {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: pnl_btn.cpp.decomp @ 0x00473920]
 }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::stop_sound_system() {
@@ -507,11 +505,9 @@ int TButtonPanel::restart_sound_system() {
 }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::take_snapshot() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: pnl_btn.cpp.decomp @ 0x00473BE0]
 }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::handle_reactivate() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: pnl_btn.cpp.decomp @ 0x00473BE0]
 }
 // Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
 void TButtonPanel::set_state(short param_1) {

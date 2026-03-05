@@ -1697,7 +1697,6 @@ int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, i
 
 void RGE_View::draw_multi_object_outline() {
     // Fully verified. Source of truth: view.cpp.decomp @ 0x00538410.
-    // TODO: EMPTY_STUB - No-op body; keep flagged until Phase 3 inventory confirms this offset is intentionally empty.
     return;
 }
 

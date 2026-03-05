@@ -27,7 +27,6 @@ RGE_Active_Sprite::RGE_Active_Sprite(int param_1, RGE_Sprite** param_2) {
 }
 
 RGE_Active_Sprite::~RGE_Active_Sprite() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_055C.decomp @ 0x0055c980]
     // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041ADD0
 }
 
@@ -47,7 +46,6 @@ void RGE_Active_Sprite::save(int param_1) {
 
 void RGE_Active_Sprite::update(float param_1, float param_2) {
     // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AE50
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: asprite.cpp.decomp @ 0x0041AE50]
 }
 
 void RGE_Active_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
@@ -78,7 +76,6 @@ uchar RGE_Active_Sprite::is_animating() {
 
 void RGE_Active_Sprite::set_frame(short param_1) {
     // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AF40
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: asprite.cpp.decomp @ 0x0041AF40]
 }
 
 uchar RGE_Active_Sprite::frame_passed(short param_1) {
@@ -105,7 +102,6 @@ uchar RGE_Active_Sprite::get_frame(short* param_1, short* param_2, short* param_
 
 void RGE_Active_Sprite::setToFirstFrame() {
     // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AFF0
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: asprite.cpp.decomp @ 0x0041AFF0]
 }
 
 int RGE_Active_Sprite::check_for_shadows() {

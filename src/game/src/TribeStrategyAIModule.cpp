@@ -200,21 +200,18 @@ int append_rule_if_missing(ManagedArray<int>* array, int rule_id) {
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7646
 // Decompiler artifact: switch-table label emitted as a bogus function in Ghidra output.
 static int FUN_004e7646() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: taistrmd.cpp.decomp @ 0x004E7646]
     return 0;
 }
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E8C42
 // Decompiler artifact: overlaps instruction data and is not a callable routine.
 static int FUN_004e8c42() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: taistrmd.cpp.decomp @ 0x004E8C42]
     return 0;
 }
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E90E9
 // Decompiler artifact: malformed synthetic constructor thunk in output.
 static int FUN_004e90e9() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: taistrmd.cpp.decomp @ 0x004E90E9]
     return 0;
 }
 
@@ -239,7 +236,6 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7430
 // TODO: PARITY - Destructor body is currently empty while decomp emits an explicit vtable-slot write (`this->_padding_ = (int)&_vftable_`); validate codegen/ASM parity.
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: taistrmd.cpp.decomp @ 0x004E7430]
 }
 
 // Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7440

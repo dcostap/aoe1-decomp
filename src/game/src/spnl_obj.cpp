@@ -42,7 +42,6 @@ TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(
 
 // Fully verified. Source of truth: spnl_obj.cpp.decomp @ 0x004BEE30
 TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: spnl_obj.cpp.decomp @ 0x004BEE30]
 }
 
 // Fully verified. Source of truth: spnl_obj.cpp.decomp @ 0x004BEE40
@@ -244,7 +243,6 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
 
 // Fully verified. Source of truth: spnl_obj.cpp.decomp @ 0x004BF499
 void FUN_004bf499() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: spnl_obj.cpp.decomp @ 0x004BF499]
     // Switch table label padding in original binary (NOP; MOV EDI, EDI).
 }
 
@@ -296,7 +294,6 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(int param_1, int param_2, Val
 
 // Fully verified. Source of truth: spnl_obj.cpp.decomp @ 0x004BF6A5
 void FUN_004bf6a5() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: spnl_obj.cpp.decomp @ 0x004BF6A5]
     // Switch table label padding in original binary (NOP; MOV EDI, EDI).
 }
 

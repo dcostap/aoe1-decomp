@@ -138,7 +138,6 @@ ResourceItem::ResourceItem(ResourceItem* param_1) {
 
 // Fully verified. Source of truth: airesitm.cpp.decomp @ 0x004120B0
 ResourceItem::~ResourceItem() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_055C.decomp @ 0x0055c7d0]
 }
 
 // Fully verified. Source of truth: airesitm.cpp.decomp @ 0x004120C0

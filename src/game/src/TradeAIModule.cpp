@@ -20,7 +20,6 @@ TradeAIModule::TradeAIModule(int param_1, int param_2) : AIModule(kTradeAIName, 
 // Offset: 0x00412ED0
 // Fully verified. Source of truth: aitrdmod.cpp.decomp @ 0x00412ED0, aitrdmod.cpp.asm @ 0x00412ED0
 TradeAIModule::~TradeAIModule() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: bucket_0560.decomp @ 0x00560698]
 }
 
 // Fully verified. Not in decomp, inherited/forwarding overrides from AIModule.

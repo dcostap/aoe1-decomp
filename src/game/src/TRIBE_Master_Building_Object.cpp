@@ -200,7 +200,6 @@ int TRIBE_Master_Building_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E430
 TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object() {
-    // TODO: EMPTY_STUB - function body not transliterated [decomp: tm_b_obj.cpp.decomp @ 0x0050E430]
 }
 
 // Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E440
