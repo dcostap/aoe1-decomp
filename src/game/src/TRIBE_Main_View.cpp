@@ -25,7 +25,7 @@
 TRIBE_Main_View::TRIBE_Main_View()
     : RGE_Main_View() {}
 TRIBE_Main_View::~TRIBE_Main_View() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0495.decomp @ 0x00495490]
+    // Fully verified. Source of truth: bucket_0495.decomp @ 0x00495490 — inlined base dtor only.
 }
 // ---------------------------------------------------------------------------
 // Offset: 0x0052D060

@@ -126,8 +126,8 @@ RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* param_1, RGE_Static_Ob
 }
 
 // Fully verified. Source of truth: bucket_0404.decomp @ 0x00404C80
+// Decomp shows inlined base RGE_Action dtor. C++ chains to ~RGE_Action() automatically.
 RGE_Action_Missile::~RGE_Action_Missile() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0404.decomp @ 0x00404C80]
 }
 
 int RGE_Action_Missile::setup(RGE_Action_Object* param_1) {

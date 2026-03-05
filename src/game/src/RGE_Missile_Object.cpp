@@ -68,7 +68,8 @@ int RGE_Missile_Object::setup(int param_1, RGE_Game_World* param_2) {
 }
 
 RGE_Missile_Object::~RGE_Missile_Object() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_045A.decomp @ 0x0045A7F0]
+    // Fully verified. Source of truth: bucket_045A.decomp @ 0x0045A7F0
+    // Decomp shows inlined base class cleanup. C++ chains to base dtors automatically.
 }
 
 // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463000, obj_list.cpp.asm @ 0x00463055

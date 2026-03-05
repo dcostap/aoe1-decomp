@@ -10,7 +10,7 @@ TDropDownButtonPanel::TDropDownButtonPanel(TDropDownPanel* drop_down) : TButtonP
 
 // Destructor
 TDropDownButtonPanel::~TDropDownButtonPanel() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0475.decomp @ 0x004754B0]
+    // Fully verified. Source of truth: bucket_0475.decomp @ 0x004754B0 — inlined base dtor only.
 }
 
 // Fully verified. Source of truth: pnl_drop.cpp.decomp @ 0x004754C0

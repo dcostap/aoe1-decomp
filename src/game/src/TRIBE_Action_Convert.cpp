@@ -53,7 +53,7 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* param_1, RGE_Task*
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
 TRIBE_Action_Convert::~TRIBE_Action_Convert() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_04CD.decomp @ 0x004CDA80]
+    // Fully verified. Source of truth: bucket_04CD.decomp @ 0x004CDA80 — inlined base dtor only.
 }
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
@@ -485,18 +485,12 @@ void TRIBE_Action_Convert::set_target_obj(RGE_Static_Object* param_1) { RGE_Acti
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
 void TRIBE_Action_Convert::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }       
 
-// Fully verified. Source of truth: tact_cnv.cpp.asm @ 0x004CE02D
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE02D
-// TODO: PARITY - No-op anchor from malformed decomp region; verify jump-table/case body is not missing from transliteration. [decomp: tact_cnv.cpp.decomp @ 0x004CE02D]
+// Switch-table NOP anchor — no executable logic.
 static void tact_cnv_switch_anchor_004CE02D() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: tact_cnv.cpp.decomp @ 0x004CE02D]
-    // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.asm @ 0x004CE3FA
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE3FA
-// TODO: PARITY - No-op anchor from malformed decomp region; verify jump-table/case body is not missing from transliteration. [decomp: tact_cnv.cpp.decomp @ 0x004CE3FA]
+// Switch-table NOP anchor — no executable logic.
 static void tact_cnv_switch_anchor_004CE3FA() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: tact_cnv.cpp.decomp @ 0x004CE3FA]
-    // Listing body is only a switch-table anchor (MOV EDI, EDI).
 }

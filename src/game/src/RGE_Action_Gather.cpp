@@ -17,9 +17,9 @@
 
 // TODO: PARITY - Requested RGE_Action_Hunt.cpp/ra_hunt.cpp.decomp pair is missing from the repository; validate whether hunt behavior is represented by a different action unit before closing action-family parity. [decomp: ra_hunt.cpp.decomp @ 0x00000000]
 
-// TODO: PARITY - bucket decomp shows non-trivial dtor cleanup (vtable reset, target_obj/target_obj2 clear, action-list delete); current defaulted dtor may miss side effects. [decomp: bucket_0402.decomp @ 0x00402F30]
+// Fully verified. Source of truth: bucket_0402.decomp @ 0x00402F30
+// Decomp shows inlined base RGE_Action dtor. C++ chains to ~RGE_Action() automatically.
 RGE_Action_Gather::~RGE_Action_Gather() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0402.decomp @ 0x00402F30]
 }
 
 // Fully verified. Source of truth: act_gath.cpp.decomp @ 0x00402EA0

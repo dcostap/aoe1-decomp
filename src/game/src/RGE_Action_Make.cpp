@@ -23,9 +23,8 @@ RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* param_1, RGE_Task* param_2) 
 }
 
 // Fully verified. Source of truth: bucket_0404.decomp @ 0x00404A00
+// Decomp shows inlined base RGE_Action dtor. C++ chains to ~RGE_Action() automatically.
 RGE_Action_Make::~RGE_Action_Make() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_0404.decomp @ 0x00404A00]
-    // Intentionally empty: decomp shows the base cleanup inlined here; our base destructor handles it.
 }
 
 // Fully verified. Source of truth: act_make.cpp.decomp @ 0x00404A90 (virtual forwarding coverage).

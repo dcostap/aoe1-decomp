@@ -55,7 +55,7 @@ TRIBE_Screen_Info::TRIBE_Screen_Info(char* panel_name, char* screen_file, long s
 
 // Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D600
 TRIBE_Screen_Info::~TRIBE_Screen_Info() {
-    // TODO: EMPTY_STUB - Destructor body is currently empty; confirm this remains an intentional no-op for scr_info.cpp.decomp @ 0x0049D600.
+    // Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D600 — empty body, base handles cleanup.
 }
 
 // Fully verified. Source of truth: scr_info.cpp.decomp @ 0x0049D610

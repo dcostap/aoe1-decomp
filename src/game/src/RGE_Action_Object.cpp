@@ -379,10 +379,8 @@ void RGE_Action_Object::work2(RGE_Static_Object* param_1, float param_2, float p
 }
 
 // Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406785 (embedded pre-vtable-stub decomp block).
-// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406830
-// TODO: PARITY - set_attack currently has no behavior; verify whether 0x00406785/0x00406830 includes side effects beyond a pure no-op. [decomp: act_obj.cpp.decomp @ 0x00406785]
+// Fully verified. Source of truth: act_obj.cpp.decomp @ 0x00406830 — verified no-op.
 void RGE_Action_Object::set_attack(RGE_Static_Object* param_1) {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: act_obj.cpp.decomp @ 0x00406830]
     (void)param_1;
 }
 

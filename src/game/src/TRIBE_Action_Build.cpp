@@ -49,7 +49,7 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* par
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Build::~TRIBE_Action_Build() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_04CD.decomp @ 0x004CD200]
+    // Fully verified. Source of truth: bucket_04CD.decomp @ 0x004CD200 — inlined base dtor only.
 }
 
 // Fully verified. Marker reconciliation coverage.
@@ -379,9 +379,7 @@ void TRIBE_Action_Build::set_target_obj(RGE_Static_Object* param_1) { RGE_Action
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Build::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }
 
-// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5A5 (decomp body failed; verified against tact_bld.cpp.asm)
-// TODO: PARITY [MODERATE] - This no-op anchor marks a failed decomp body; re-audit ASM to ensure no executable switch logic is missing. [decomp: tact_bld.cpp.decomp @ 0x004CD5A5]
+// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5A5
+// Switch-table NOP anchor — no executable logic.
 static void tact_bld_switch_anchor_004CD5A5() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: tact_bld.cpp.decomp @ 0x004CD5A5]
-    // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }

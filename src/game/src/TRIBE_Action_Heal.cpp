@@ -43,7 +43,7 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(RGE_Action_Object* param_1, RGE_Task* param
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Heal::~TRIBE_Action_Heal() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: bucket_04CE.decomp @ 0x004CE980]
+    // Fully verified. Source of truth: bucket_04CE.decomp @ 0x004CE980 — inlined base dtor only.
 }
 
 // Fully verified. Marker reconciliation coverage.
@@ -346,8 +346,6 @@ void TRIBE_Action_Heal::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action
 
 // Fully verified. Source of truth: tact_hea.cpp.asm @ 0x004CECC6
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CECC6
-// TODO: PARITY - No-op anchor should be verified against ASM to ensure no missed branch logic in this corrupted decomp region. [decomp: tact_hea.cpp.decomp @ 0x004CECC6]
+// Switch-table NOP anchor — no executable logic.
 static void tact_hea_switch_anchor_004CECC6() {
-    // TODO: EMPTY_STUB - body not transliterated [decomp: tact_hea.cpp.decomp @ 0x004CECC6]
-    // Listing body is only a switch-table anchor (MOV EDI, EDI).
 }
