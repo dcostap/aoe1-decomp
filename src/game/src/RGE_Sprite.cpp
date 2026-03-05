@@ -5,6 +5,7 @@
 #include "../include/RGE_Active_Animated_Sprite.h"
 #include "../include/TShape.h"
 #include "../include/globals.h"
+#include "../include/DClipInfo_List.h"
 #include "../include/custom_debug.h"
 #include "../include/debug_helpers.h"
 #include "../include/mystring.h"
@@ -12,6 +13,8 @@
 #include <new>
 #include <string.h>
 #include <stdio.h>
+
+extern "C" void _ASMSet_Color_Xform(int v);
 
 // Fully verified. Marker reconciliation coverage.
 RGE_Sprite::RGE_Sprite(short sprite_id) {
@@ -477,7 +480,6 @@ unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param
 // Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
     // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C01A0
-    // TODO: PARITY - do_draw currently ignores decomp mirror-branch and ASM color-xform/logging side effects; reconcile shape_draw vs shape_mirror pathing and _ASMSet_Color_Xform behavior. [decomp: sprite.cpp.decomp @ 0x004C01A0]
     if (this->frame_num <= param_2) {
         param_2 = 0;
     }
@@ -489,23 +491,62 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
 
     this->delta_time = 0;
 
-    long facet_index = 0;
-    unsigned char mirrored = this->get_facetindex(param_1, param_2, &facet_index);
-    (void)mirrored;
+    SDI_Draw_Level = (int)(unsigned int)this->draw_level;
+    if ((unsigned int)this->draw_level < (unsigned int)param_7) {
+        SDI_Draw_Level = (int)(unsigned int)param_7;
+    }
 
-    unsigned char* table = nullptr;
-    if (this->color_table < 0) {
-        if (param_5 != nullptr) {
-            table = param_5->table;
-        }
-    } else {
-        short color_idx = this->color_table;
-        if (this->color_tables != nullptr && this->color_tables[color_idx] != nullptr) {
-            table = this->color_tables[color_idx]->table;
+    if (SDI_List != nullptr) {
+        SDI_List->Select_Box = nullptr;
+        if (this->box_x1 != 0) {
+            SDI_List->Select_Box = &this->box_x1;
         }
     }
 
-    this->shape->shape_draw(param_6, param_3, param_4, facet_index, (unsigned char)this->color_flag, table);
+    long facet_index = 0;
+    unsigned char mirrored = this->get_facetindex(param_1, param_2, &facet_index);
+
+    unsigned char* table = nullptr;
+    if (mirrored == 0) {
+        // Normal (non-mirrored) draw path
+        if (this->color_table < 0) {
+            if (param_5 == nullptr) {
+                table = nullptr;
+            } else {
+                _ASMSet_Color_Xform((param_5->id + 1) * 0x10);
+                table = param_5->table;
+            }
+        } else {
+            short sVar1 = this->color_table;
+            if (this->color_tables[sVar1] == nullptr) {
+                table = nullptr;
+            } else {
+                _ASMSet_Color_Xform((sVar1 + 1) * 0x10);
+                table = this->color_tables[this->color_table]->table;
+            }
+        }
+        this->shape->shape_draw(param_6, param_3, param_4, facet_index, this->color_flag, table);
+    } else {
+        // Mirrored draw path
+        if (this->color_table < 0) {
+            if (param_5 == nullptr) {
+                table = nullptr;
+            } else {
+                _ASMSet_Color_Xform((param_5->id + 1) * 0x10);
+                table = param_5->table;
+            }
+            this->shape->shape_mirror(param_6, param_3, param_4, facet_index, this->color_flag, table);
+        } else {
+            short sVar1 = this->color_table;
+            if (this->color_tables[sVar1] == nullptr) {
+                table = nullptr;
+            } else {
+                _ASMSet_Color_Xform((sVar1 + 1) * 0x10);
+                table = this->color_tables[this->color_table]->table;
+            }
+            this->shape->shape_mirror(param_6, param_3, param_4, facet_index, this->color_flag, table);
+        }
+    }
 }
 
 // Fully verified. Marker reconciliation coverage.
