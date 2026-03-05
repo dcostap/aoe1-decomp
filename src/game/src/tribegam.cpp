@@ -424,11 +424,28 @@ CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: NOSTARTUP -> start_menu result=%d", menu_ok);
 CUSTOM_DEBUG_END
         } else {
-            // Check for NOVIDEO/SKIPVIDEO etc inside start_video
-            int video_ok = this->start_video(0, (char*)"logo1");
+#if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
+            // TODO: Non-parity: skip intro videos entirely during autoplay since handle_idle
+            // (where autoplay logic lives) is never called during video playback (prog_mode=1
+            // blocks in GetMessage loop). Without this, autoplay can never skip videos.
+            {
+                char _autoplay_val[8];
+                DWORD _autoplay_n = GetEnvironmentVariableA("AOE_AUTOPLAY_SP_RANDOM_START", _autoplay_val, sizeof(_autoplay_val));
+                if (_autoplay_n > 0 && _autoplay_val[0] == '1') {
+                    CUSTOM_DEBUG_LOG("TRIBE_Game::setup: AUTOPLAY active, skipping intro videos -> start_menu");
+                    this->start_menu();
+                } else
+#endif
+                {
+                    // Check for NOVIDEO/SKIPVIDEO etc inside start_video
+                    int video_ok = this->start_video(0, (char*)"logo1");
 CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: start_video(0,'logo1') result=%d", video_ok);
+                    CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: start_video(0,'logo1') result=%d", video_ok);
 CUSTOM_DEBUG_END
+                }
+#if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
+            }
+#endif
         }
     }
 

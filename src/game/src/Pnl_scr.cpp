@@ -1,6 +1,7 @@
 #include "../include/TScreenPanel.h"
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
+#include "../include/custom_debug.h"
 
 void RGE_fade_palette(TDrawArea*, tagPALETTEENTRY, float, uchar, tagPALETTEENTRY*, int, int);
 
@@ -152,6 +153,7 @@ void TScreenPanel::set_focus(int param_1) {
 
     const bool change_screen = (this != last_screen);
     TDrawArea* draw_area = this->render_area;
+
     if (draw_area != nullptr && draw_area->DrawSystem != nullptr && param_1 != 0 && change_screen &&
         (draw_area->DrawSystem->ScreenMode == 2 || draw_area->DrawSystem->DrawType == 1)) {
         if (this->palette == nullptr) {
@@ -161,6 +163,7 @@ void TScreenPanel::set_focus(int param_1) {
         }
 
         RGE_fade_palette(draw_area, save_focus, 0.13f, 1, nullptr, -1, -1);
+
         draw_area->Clear(nullptr, 0);
         draw_area->DrawSystem->Paint(nullptr);
     }
@@ -174,6 +177,7 @@ void TScreenPanel::set_focus(int param_1) {
         this->handle_paint();
         RGE_fade_palette(draw_area, save_focus, 0.0f, 1, nullptr, -1, -1);
         draw_area->DrawSystem->Paint(nullptr);
+
         RGE_fade_palette(draw_area, save_focus, 0.13f, 2, color_table + 1, -1, -1);
     }
 

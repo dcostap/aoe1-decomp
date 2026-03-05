@@ -2822,14 +2822,19 @@ int RGE_Base_Game::handle_idle() {
             }
         } else if (debug_autoplay_sp_random_start_state == 3 &&
                    strcmp(curPanel->panelNameValue, "Game Screen") == 0 &&
-                   debug_autoplay_sp_random_start_wait_frames >= 30) {
-            // Take a diagnostic screenshot once in game
+                   debug_autoplay_sp_random_start_wait_frames >= 60) {
+            // Take a diagnostic screenshot once in game (wait longer for rendering to stabilize)
             if (this->draw_system != nullptr && this->draw_system->DrawArea != nullptr) {
                 static int autoplay_snapshot_num = 0;
                 this->draw_system->DrawArea->take_snapshot((char*)".\\AoE%04d.bmp", &autoplay_snapshot_num);
-                CUSTOM_DEBUG_LOG("AUTOPLAY: screenshot taken in-game");
+                CUSTOM_DEBUG_LOG_FMT("AUTOPLAY: screenshot taken in-game (frame %d)", debug_autoplay_sp_random_start_wait_frames);
             }
             debug_autoplay_sp_random_start_state = 4;
+        } else if (debug_autoplay_sp_random_start_state == 3 &&
+                   debug_autoplay_sp_random_start_wait_frames % 30 == 0) {
+            // Log what panel we're waiting on if Game Screen hasn't appeared yet
+            CUSTOM_DEBUG_LOG_FMT("AUTOPLAY: state=3 waiting for Game Screen, current='%s' frame=%d",
+                curPanel->panelNameValue, debug_autoplay_sp_random_start_wait_frames);
         }
     }
 #endif
