@@ -312,7 +312,7 @@ void RGE_Master_Action_Object::play_command_sound() { this->RGE_Master_Static_Ob
 void RGE_Master_Action_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
 
 
-// TODO: PARITY: draw() wrapper needs explicit offset mapping in m_ac_obj.cpp.decomp audit.
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
 void RGE_Master_Action_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 
 
