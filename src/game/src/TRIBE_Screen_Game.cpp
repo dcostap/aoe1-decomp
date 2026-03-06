@@ -2099,7 +2099,7 @@ void TRIBE_Screen_Game::set_focus(int param_1) {
     // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049D4B0.
     TScreenPanel::set_focus(param_1);
     if (rge_base_game != nullptr) {
-        rge_base_game->windows_mouse = (this->have_focus != 0) ? 0 : 1;
+        rge_base_game->set_windows_mouse((this->have_focus != 0) ? 0 : 1);
     }
 }
 
