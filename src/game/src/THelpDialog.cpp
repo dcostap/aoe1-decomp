@@ -24,7 +24,7 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* panel_name, long text_id, lo
     }
 
     char* text = this->get_string((int)text_id);
-    // TODO: PARITY [MODERATE] - Decomp constructor path only resolves text via get_string(text_id) and immediately delegates to setup_help; verify this pre-seeding of member fields matches original ctor/setup split. [decomp: dlg_help.cpp.decomp @ 0x0043E840]
+    // TODO: PARITY [CRITICAL] - dlg_help.cpp.asm and panel_ez.cpp.asm pass only three trailing longs through this ctor/setup_help chain ((help_page_id, x, y)), but this translation models four ((x, y, w, h)). The current API and layout flow are therefore structurally mismapped, not just differently pre-seeded. [decomp: dlg_help.cpp.decomp @ 0x0043E840, panel_ez.cpp.decomp @ 0x0046A260]
     this->setup_help(parent, panel_name, text, x, y, w, h);
 }
 
@@ -42,7 +42,7 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* panel_name, char* text, long
         this->parent_panel[sizeof(this->parent_panel) - 1] = '\0';
     }
 
-    // TODO: PARITY [MODERATE] - Decomp setup_help writes help_page_id from its 4th argument; text-overload currently forces -1 before delegation. Reconfirm intended help-page semantics. [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
+    // TODO: PARITY [CRITICAL] - The text overload shares the same ctor/setup_help signature mismatch: source/headers route (x, y, w, h), while the asm shows (help_page_id, x, y) only. Current Panel_ez glue compensates by writing help_page_id after construction, which is not what the original call flow does. [decomp: dlg_help.cpp.decomp @ 0x0043E8E0, panel_ez.cpp.decomp @ 0x0046A2E0]
     this->setup_help(parent, panel_name, text, x, y, w, h);
 }
 
@@ -56,7 +56,7 @@ THelpDialog::~THelpDialog() {
 
 // Fully verified. Source of truth: dlg_help.cpp.decomp @ 0x0043E9E0
 void THelpDialog::setup_help(TEasy_Panel* parent, char* panel_name, char* text, long x, long y, long w, long h) {
-    // TODO: PARITY [CRITICAL] - Decomp gates encyclopedia_button creation on single-player mode, valid help_page_id, and non-empty help topic string; current code creates it unconditionally and uses text ID 0x2456 instead of 0x243d ("More Help"). [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
+    // TODO: PARITY [CRITICAL] - This body is materially broader than the existing button-creation gap: the original writes help_page_id from arg4, hardcodes a 0x154x190 dialog, computes popup placement from parent/help coordinates, lays out title/list/background via virtual helpers, and only then conditionally creates a 0x243d ("More Help") button in single-player when help_page_id/topic are valid. The current implementation instead treats args as (x, y, w, h), uses generic setup/create_* placement, and creates the encyclopedia button unconditionally. [decomp: dlg_help.cpp.decomp @ 0x0043E9E0]
     const long popup_id = parent ? parent->get_popup_info_id() : -1;
     char* popup_file = parent ? parent->get_popup_info_file() : nullptr;
     TDrawArea* area = parent ? parent->render_area : nullptr;
