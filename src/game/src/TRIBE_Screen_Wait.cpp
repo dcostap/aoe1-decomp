@@ -1,5 +1,5 @@
 
-// TODO: PARITY - TRIBE_Screen_Wait.decomp currently only captures the deleting-destructor thunk; runtime methods are sourced from scr_mps.cpp.decomp.
+// Source note: TRIBE_Screen_Wait.decomp only captures the deleting-destructor thunk; constructor/runtime methods are sourced from scr_mps.cpp.decomp/.asm.
 #include "../include/TRIBE_Screen_Wait.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -8,8 +8,10 @@
 #include "../include/globals.h"
 
 // Source of truth: scr_mps.cpp.decomp @ 0x004A5610, 0x004A6050, 0x004A60E0, 0x004A6100, 0x004A6120, 0x004A6170.
+// TODO: PARITY [HIGH] - scr_mps.cpp.decomp @ 0x004A5610 continues well past the basic control creation implemented here; the original constructor also formats and populates
+// scenarioName and settingText[0..] with the current scenario/random-map settings summary (map size/type, victory settings, age/resources, difficulty, fixed positions, reveal
+// map, tech tree, cheats, path finding, population limit, etc.).
 TRIBE_Screen_Wait::TRIBE_Screen_Wait()
-    // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5610
     : TScreenPanel((char*)"Multiplayer Wait Screen") {
     this->message = nullptr;
     this->cancel_button = nullptr;
