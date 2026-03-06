@@ -168,7 +168,8 @@ static void rge_object_list_load_list(RGE_Object_List* list, int file_handle, RG
 }
 
 // --- RGE_Player constructors ---
-RGE_Player::RGE_Player() {
+RGE_Player::RGE_Player()
+    : tile_list(400), diam_tile_list(400) {
     this->computerPlayerValue = 0;
     this->pathingAttemptCapValue = 0;
     this->pathingDelayCapValue = 0;
@@ -2141,7 +2142,7 @@ void RGE_Player::remake_visible_map() {
 
     if (this->id >= 0 && this->id < 32) {
         vis->PlayerVisibleMaskValue = (1UL << this->id);
-        vis->PlayerExploredMaskValue = (1UL << this->id);
+        vis->PlayerExploredMaskValue = vis->PlayerVisibleMaskValue << 16;
     } else {
         vis->PlayerVisibleMaskValue = 0;
         vis->PlayerExploredMaskValue = 0;
@@ -2161,6 +2162,11 @@ void RGE_Player::remake_visible_map() {
         free(vis);
         return;
     }
+
+    // Visible map tiles must start as 0xFF (unexplored) — matching the
+    // RGE_Visible_Map constructor.  explore_terrain increments the byte and
+    // checks for the 0xFF→0x00 wrap to detect first exploration.
+    memset(vis->visible_map, 0xFF, (size_t)vis->numberTotalTilesValue);
 
     for (int row = 0; row < vis->heightValue; ++row) {
         vis->map_offsets[row] = vis->visible_map + row * vis->widthValue;
