@@ -270,7 +270,7 @@ static void comm_store_incoming(TCommunications_Handler* comm, uint serial, cons
     }
 }
 
-static void comm_tx_ack(TCommunications_Handler* comm, uint serial, uint to_player) {
+static long comm_tx_ack(TCommunications_Handler* comm, uint serial, uint to_player) {
     // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
     struct MsgAck {
         uchar cmd;
@@ -282,7 +282,7 @@ static void comm_tx_ack(TCommunications_Handler* comm, uint serial, uint to_play
     memset(&ack, 0, sizeof(ack));
     ack.cmd = (uchar)'A';
     ack.serial = serial;
-    (void)comm_fast_send_player(comm, to_player, &ack, sizeof(ack));
+    return comm_fast_send_player(comm, to_player, &ack, sizeof(ack));
 }
 
 static void comm_tx_resend_request(TCommunications_Handler* comm, uint serial, uint to_player) {
@@ -3584,9 +3584,8 @@ int TCommunications_Handler::StoreForResend(uint param_2, char* param_3, uint pa
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
 int TCommunications_Handler::TXAcknowledgeMessage(uint param_2, uint param_3) {
     // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
-    // TODO: PARITY [CRITICAL] - Decomp returns 0 on disabled GTD, bad DCOID, or send failure; current wrapper always returns 1 after helper call. [decomp: com_hand.cpp.decomp @ 0x0042A540]
-    comm_tx_ack(this, param_2, param_3);
-    return 1;
+    // TODO: PARITY [MODERATE] - Wrapper still omits the decomp's GTD-disabled/BAD-DCOID slow-send logging and Err->ShowReturn("GTD ACK") side effects; only the send success/failure result now matches. [decomp: com_hand.cpp.decomp @ 0x0042A540]
+    return (comm_tx_ack(this, param_2, param_3) == 0) ? 1 : 0;
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A650
