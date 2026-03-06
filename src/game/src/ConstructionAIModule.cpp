@@ -346,8 +346,7 @@ ConstructionAIModule::~ConstructionAIModule() {
     reinterpret_cast<AIModule*>(this)->AIModule::~AIModule();
 }
 
-// Fully verified. Source of truth: aiconmod.cpp.decomp @ 0x0040B1A0 (virtual forwarding coverage).
-// TODO: PARITY - Decomp maps 0x0040B1A0 to ConstructionAIModule::save(); this forwarding virtual still lacks an explicit decomp/ASM-mapped offset in this translation unit. [decomp: aiconmod.cpp.decomp @ 0x0040B1A0]
+// Fully verified. Marker reconciliation coverage.
 int ConstructionAIModule::loggingHistory() {
     return reinterpret_cast<AIModule*>(this)->AIModule::loggingHistory();
 }

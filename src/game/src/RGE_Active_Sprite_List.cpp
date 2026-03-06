@@ -11,7 +11,6 @@
 
 RGE_Active_Sprite_List::RGE_Active_Sprite_List(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041A640
-    // TODO: PARITY - Task requested actsprit.cpp.decomp, but this class maps to asp_list.cpp.decomp/RGE_Active_Sprite_List.decomp; confirm expected source mapping.
     this->list = nullptr;
     this->owner = param_1;
 }

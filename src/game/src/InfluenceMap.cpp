@@ -55,6 +55,7 @@ InfluenceMap::InfluenceMap(int param_1, int param_2, uchar param_3) {
 
 // Fully verified. Marker reconciliation coverage.
 InfluenceMap::InfluenceMap(int param_1) {
+    // TODO: PARITY [HIGH] - Decomp/asm constructor @ 0x0044E050 zeroes only sizes/reference points before calling load(); it does not initialize or allocate valueValue/rowValue, so this TU still relies on unresolved preallocated storage/layout assumptions for the load path. [decomp: infmap.cpp.decomp @ 0x0044E050, 0x0044E1A0]
     // Fully verified. Source of truth: infmap.cpp.decomp @ 0x0044E050
     this->xSizeValue = -1;
     this->ySizeValue = -1;
