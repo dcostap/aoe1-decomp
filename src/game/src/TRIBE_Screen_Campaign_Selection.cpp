@@ -1,5 +1,4 @@
 
-// TODO: PARITY - Requested alias source TRIBE_Screen_Campaigns.cpp is absent in this tree; verify all scr_cams module bodies are fully represented by this TU. [decomp: scr_cams.cpp.decomp @ 0x004909D0]
 #include "../include/TRIBE_Screen_Campaign_Selection.h"
 #include "../include/TRIBE_Screen_Name.h"
 #include "../include/TRIBE_Game.h"

@@ -1,3 +1,4 @@
 #include "../include/DriveInformation.h"
 
-// TODO: PARITY - Requested decomp naming (drive.cpp.decomp / driveinfo.cpp.decomp) is not present under src/game/decomp; parity for this translation unit cannot be audited yet. [decomp: DriveInformation.cpp.decomp @ 0x00000000]
+// TODO: PARITY - DriveInformation's real implementation is audited in file_stf.cpp against file_stf.cpp.decomp/.asm; this TU is only an empty duplicate stub and does not map to
+// a standalone original decomp unit.
