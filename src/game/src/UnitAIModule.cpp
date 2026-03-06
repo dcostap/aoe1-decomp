@@ -1113,13 +1113,13 @@ int UnitAIModule::moveTo(int param_1, int param_2) {
     return 0;
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416C80
+// Source of truth: aiuaimod.cpp.decomp @ 0x00416C80
 // TODO: PARITY [CRITICAL] - Current implementation is a direct moveTo forwarder, but decomp includes evasive retry/randomization and map-bound clamping logic. [decomp: aiuaimod.cpp.decomp @ 0x00416C80]
 int UnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
     return this->moveTo(param_1, param_2, param_3, 1.0f, param_4);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416F30
+// Source of truth: aiuaimod.cpp.decomp @ 0x00416F30
 // TODO: PARITY [CRITICAL] - Current implementation only delegates to evasiveMoveTo(), while decomp contains additional distance/facet evaluation and fallback path selection. [decomp: aiuaimod.cpp.decomp @ 0x00416F30]
 int UnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
     (void)param_5;
@@ -1440,7 +1440,7 @@ int UnitAIModule::processIdle(int param_1) {
     return 5;
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419650
+// Source of truth: aiuaimod.cpp.decomp @ 0x00419650
 // TODO: PARITY [CRITICAL] - processMisc() currently returns 0 unconditionally, but decomp contains extensive action/order-specific behavior and state transitions. [decomp: aiuaimod.cpp.decomp @ 0x00419650]
 int UnitAIModule::processMisc() {
     return 0;
@@ -1524,13 +1524,13 @@ int UnitAIModule::update(unsigned long param_1) {
     return 1;
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414040
+// Source of truth: aiuaimod.cpp.decomp @ 0x00414040
 // TODO: PARITY [CRITICAL] - updateGroup() is currently a no-op, while decomp performs full group status/trigger evaluation and command propagation. [decomp: aiuaimod.cpp.decomp @ 0x00414040]
 void UnitAIModule::updateGroup(unsigned long param_1) {
     (void)param_1;
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00414800
+// Source of truth: aiuaimod.cpp.decomp @ 0x00414800
 // TODO: PARITY [CRITICAL] - selectNewPlayPhase() currently returns 1 trivially, but decomp performs phase command iteration, target checks, and state mutation. [decomp: aiuaimod.cpp.decomp @ 0x00414800]
 int UnitAIModule::selectNewPlayPhase(unsigned int param_1, int param_2) {
     (void)param_1;
@@ -1648,7 +1648,7 @@ int UnitAIModule::hasOrderOnQueue(int param_1) {
     return 0;
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00417960
+// Source of truth: aiuaimod.cpp.decomp @ 0x00417960
 // TODO: PARITY [CRITICAL] - askForHelp() is currently empty, but decomp iterates nearby units and dispatches help orders under multiple eligibility checks. [decomp: aiuaimod.cpp.decomp @ 0x00417960]
 void UnitAIModule::askForHelp(int param_1) {
     (void)param_1;
