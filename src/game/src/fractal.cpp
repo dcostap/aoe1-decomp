@@ -529,7 +529,7 @@ int PointMaker::MakeSatelliteLink() {
 
     int y = this->y;
     if (dy + y < 3) {
-        // TODO: PARITY - Decomp at this branch uses cross-axis coupling (dy = -dx, not -dy); code matches that behavior, but ASM should confirm this asymmetry is intentional and not a decompiler artifact. [decomp: fractal.cpp.decomp @ 0x0044B950]
+        // ASM confirms the original reflects Y using the current X delta here.
         dy = -dx;
         this->DirY = -this->DirY;
     }
