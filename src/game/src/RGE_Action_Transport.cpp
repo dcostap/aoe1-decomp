@@ -186,7 +186,6 @@ static uchar rge_static_drop_held_objects(RGE_Static_Object* self, int zone) {
 
 // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x0040712E
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
-// TODO: PARITY [MODERATE] - Confirm this shim offset is truly non-callable and that no transitional branch logic was skipped. [decomp: act_tran.cpp.decomp @ 0x0040712E]
 
 RGE_Action_Transport::RGE_Action_Transport(int param_1, RGE_Action_Object* param_2) {
     // Fully verified. Source of truth: act_tran.cpp.decomp @ 0x00406D60
@@ -379,9 +378,8 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* /*param_1*/, float param_2,
 int RGE_Action_Transport::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     this->target2ID = 1;
 
-    // TODO: PARITY [MODERATE] - Decomp uses bare __ftol call sequence before lookupZone; confirm these C++ float-to-int casts match original conversion semantics at this call site. [decomp: act_tran.cpp.decomp @ 0x004071A0]
-    int zone_x = (int)param_2;
-    int zone_y = (int)param_3;
+    int zone_x = (int)act_tran_ftol(param_2);
+    int zone_y = (int)act_tran_ftol(param_3);
     uchar zone = this->obj->lookupZone(zone_x, zone_y);
 
     float dist = this->obj->distance_to_position(param_2, param_3, this->obj->world_z);

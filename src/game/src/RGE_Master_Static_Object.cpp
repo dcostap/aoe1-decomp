@@ -354,9 +354,7 @@ void RGE_Master_Static_Object::modify_delta(float param_1, uchar param_2) {
 }
 
 void RGE_Master_Static_Object::modify_percent(float param_1, uchar param_2) {
-    // TODO: PARITY - this method currently cites ASM only; decomp-backed parity confirmation is still pending.
-    // [decomp: m_s_obj.cpp.decomp @ 0x004535F0]
-    // Fully verified. Source of truth: m_s_obj.cpp.asm @ 0x004535F0
+    // Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004535F0, m_s_obj.cpp.asm @ 0x004535F0
     switch (param_2) {
         case '\0': {
             this->hp = (short)rge_ftol(param_1 * (float)(int)this->hp);
