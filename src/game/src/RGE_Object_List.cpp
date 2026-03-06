@@ -389,54 +389,15 @@ void RGE_Object_List::rehook_list() {
 void RGE_Object_List::update() {
     // Fully verified. Source of truth: obj_list.cpp.decomp @ 0x00463210
     int polled_objects = 0;
-    int debug_idx = 0;
     RGE_Object_Node* node = this->list;
     while (node != nullptr) {
         RGE_Object_Node* next = node->next;
         if (node->node != nullptr) {
-            void** vtbl = *(void***)node->node;
-            void* update_fn = (vtbl != nullptr) ? vtbl[9] : nullptr;
-            CUSTOM_DEBUG_LOG_FMT(
-                "RGE_Object_List::update list=%p idx=%d obj=%p vtbl=%p update_fn=%p id=%d type=%d state=%d master=%p master_type=%d owner=%p",
-                this,
-                debug_idx,
-                node->node,
-                node->node ? *(void**)node->node : nullptr,
-                update_fn,
-                (int)node->node->id,
-                (int)node->node->type,
-                (int)node->node->object_state,
-                node->node->master_obj,
-                (node->node->master_obj != nullptr) ? (int)node->node->master_obj->master_type : -1,
-                node->node->owner);
-            uchar update_result = 0;
-            __try {
-                update_result = node->node->update();
-            } __except(EXCEPTION_EXECUTE_HANDLER) {
-                CUSTOM_DEBUG_LOG_FMT(
-                    "RGE_Object_List::update EXCEPTION list=%p idx=%d obj=%p code=0x%08X",
-                    this,
-                    debug_idx,
-                    node->node,
-                    (unsigned int)GetExceptionCode());
-                update_result = 0;
-            }
-            CUSTOM_DEBUG_LOG_FMT(
-                "RGE_Object_List::update post list=%p idx=%d obj=%p update_result=%d",
-                this,
-                debug_idx,
-                node->node,
-                (int)update_result);
+            uchar update_result = node->node->update();
             if (update_result != '\0') {
-                CUSTOM_DEBUG_LOG_FMT(
-                    "RGE_Object_List::update recycle list=%p idx=%d obj=%p",
-                    this,
-                    debug_idx,
-                    node->node);
                 node->node->recycle_out_of_game();
             }
             polled_objects = polled_objects + 1;
-            debug_idx = debug_idx + 1;
             if (polled_objects > 9) {
                 polled_objects = 0;
                 if (MouseSystem != nullptr) {

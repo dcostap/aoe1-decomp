@@ -2031,39 +2031,22 @@ uchar RGE_Static_Object::update() {
 
     case 3:
     case 5:
-        CUSTOM_DEBUG_LOG_FMT(
-            "RGE_Static_Object::update decay this=%p id=%ld state=%d owner=%p world=%p master=%p attr_type=%d attr_amt=%.3f",
-            this,
-            this->id,
-            (int)this->object_state,
-            this->owner,
-            (this->owner ? this->owner->world : nullptr),
-            this->master_obj,
-            (int)this->attribute_type_held,
-            this->attribute_amount_held);
         if (this->attribute_type_held == -1 || this->attribute_amount_held <= 0.0f) {
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::update decay branch: no held resource path");
             if (this->master_obj->undead_flag != 0) {
-                CUSTOM_DEBUG_LOG("RGE_Static_Object::update decay branch: undead transition");
                 this->set_object_state(6);
                 this->new_sprite(this->master_obj->undead_sprite);
                 return 0;
             }
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::update decay branch: final death transition");
             this->set_object_state(7);
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::update decay branch: state set to 7");
             this->spawn_death_obj();
-            CUSTOM_DEBUG_LOG("RGE_Static_Object::update decay branch: spawn_death_obj returned");
             return 0;
         }
         if (this->master_obj->attribute_rot > 0.0f) {
-            CUSTOM_DEBUG_LOG_FMT("RGE_Static_Object::update decay branch: attribute rot=%.3f", this->master_obj->attribute_rot);
             float newAmount = this->attribute_amount_held -
                 this->owner->world->world_time_delta_seconds * this->master_obj->attribute_rot;
             this->attribute_amount_held = newAmount;
             if (newAmount < 0.0f) {
                 this->attribute_amount_held = 0.0f;
-                CUSTOM_DEBUG_LOG("RGE_Static_Object::update decay branch: clamped attribute to zero");
                 return 0;
             }
         }

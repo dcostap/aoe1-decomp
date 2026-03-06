@@ -233,15 +233,6 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
 RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name_str, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3)
     : RGE_Player() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x0046E770
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_Player::RGE_Player begin this=%p id=%d civ=%d is_computer=%d is_active=%d world=%p master=%p",
-        this,
-        (int)player_id,
-        (int)civ,
-        (int)is_computer,
-        (int)is_active,
-        world,
-        master);
     this->pathingAttemptCapValue = 5;
     this->pathingDelayCapValue = 10;
     this->master_player_id = civ;
@@ -261,16 +252,13 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
     if (this->doppleganger_creator == nullptr) {
         this->doppleganger_creator = new (std::nothrow) RGE_Doppleganger_Creator(this, 100);
     }
-    CUSTOM_DEBUG_LOG_FMT("RGE_Player::RGE_Player after doppleganger this=%p doppleganger=%p", this, this->doppleganger_creator);
 
     if (name_str) {
         this->name = _strdup(name_str);
     }
-    CUSTOM_DEBUG_LOG_FMT("RGE_Player::RGE_Player after name this=%p name=%p", this, this->name);
 
     // Allocate relations array (one byte per player)
     if (world && world->player_num > 0) {
-        CUSTOM_DEBUG_LOG_FMT("RGE_Player::RGE_Player allocating relations player_num=%d", (int)world->player_num);
         this->relations = (unsigned char*)calloc(1, world->player_num);
         // Initialize diplomacy: -1 for all, then set per player
         for (int i = 0; i < 9; i++) {
@@ -287,33 +275,15 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
             }
         }
     }
-    CUSTOM_DEBUG_LOG_FMT("RGE_Player::RGE_Player after relations this=%p relations=%p", this, this->relations);
 
     // Copy master objects from RGE_Master_Player
     if (master) {
-        CUSTOM_DEBUG_LOG_FMT(
-            "RGE_Player::RGE_Player master copy begin master=%p master_object_num=%d attribute_num=%d",
-            master,
-            (int)master->master_object_num,
-            (int)master->attribute_num);
         this->master_object_num = master->master_object_num;
         if (this->master_object_num > 0) {
             this->master_objects = (RGE_Master_Static_Object**)calloc(this->master_object_num, sizeof(RGE_Master_Static_Object*));
             for (short i = 0; i < this->master_object_num; ++i) {
                 if (master->master_objects != nullptr && master->master_objects[i] != nullptr) {
-                    CUSTOM_DEBUG_LOG_FMT(
-                        "RGE_Player::RGE_Player master copy idx=%d src=%p vtbl=%p master_type=%u id=%d group=%d",
-                        (int)i,
-                        master->master_objects[i],
-                        *(void**)master->master_objects[i],
-                        (unsigned int)master->master_objects[i]->master_type,
-                        (int)master->master_objects[i]->id,
-                        (int)master->master_objects[i]->object_group);
                     this->master_objects[i] = master->master_objects[i]->make_new_master();
-                    CUSTOM_DEBUG_LOG_FMT(
-                        "RGE_Player::RGE_Player master copy idx=%d dst=%p",
-                        (int)i,
-                        this->master_objects[i]);
                 }
             }
         }
@@ -328,11 +298,6 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
         this->culture = master->culture;
         this->tribe_effect = (long)master->tribe_effect;
     }
-    CUSTOM_DEBUG_LOG_FMT(
-        "RGE_Player::RGE_Player after master copy this=%p master_objects=%p attributes=%p",
-        this,
-        this->master_objects,
-        this->attributes);
 
     // Set initial view to center of map
     if (world && world->map) {
@@ -363,7 +328,6 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar p
             this->visible = new (std::nothrow) RGE_Visible_Map(world->map, this);
         }
     }
-    CUSTOM_DEBUG_LOG_FMT("RGE_Player::RGE_Player end this=%p", this);
 }
 
 RGE_Player::RGE_Player(int param_1, RGE_Game_World* world, uchar player_id)
@@ -1189,7 +1153,6 @@ void RGE_Player::copy_obj(short param_1, short param_2) {
 }
 void RGE_Player::update() {
     // Fully verified. Source of truth: player.cpp.decomp @ 0x00470120
-    CUSTOM_DEBUG_LOG_FMT("RGE_Player::update this=%p id=%d objects=%p dopple=%p", this, (int)this->id, this->objects, this->doppleganger_objects);
     if (MouseSystem != nullptr) {
         MouseSystem->Poll();
     }
