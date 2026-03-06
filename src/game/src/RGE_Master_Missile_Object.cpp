@@ -200,9 +200,8 @@ void RGE_Master_Missile_Object::save(int param_1) {
 }
 
 
-// TODO: PARITY: make_new_obj() marker placement should be normalized above signature in m_mi_obj.cpp.decomp audit.
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451770
 RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
-    // Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451770
     if (this->master_type != 0) {
         RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
         if (recycled != nullptr) {

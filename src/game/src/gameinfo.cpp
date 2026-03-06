@@ -500,7 +500,9 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_campaign(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0 (simplified: no exception frame)
-    // TODO: PARITY - Exception-frame/cleanup behavior is simplified away; failure-path side effects should be re-audited against original control flow. [decomp: gameinfo.cpp.decomp @ 0x0044CEF0]
+    // TODO: PARITY - Exception-frame/cleanup behavior is simplified away, and this transliteration adds
+    // campaign_info/campaign entry null guards plus calloc/new failure returns that the decomp does not
+    // take on the original path. [decomp: gameinfo.cpp.decomp @ 0x0044CEF0]
     if (param_1 < 0 || param_1 >= this->campaign_num || this->campaigns == nullptr || this->campaigns[param_1] == nullptr) {
         return '\0';
     }
@@ -541,6 +543,9 @@ uchar RGE_Person_Info::set_current_campaign(long param_1) {
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_scenario(long param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0F0
+    // TODO: PARITY - Decomp only checks current_campaign >= 0 and campaigns[current_campaign] != null
+    // before calling campaign_info[current_campaign]; these added campaign_info/range/null guards can
+    // change invalid-state behavior. [decomp: gameinfo.cpp.decomp @ 0x0044D0F0]
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
         return '\0';
     }
@@ -554,6 +559,9 @@ uchar RGE_Person_Info::set_current_scenario(long param_1) {
 // Fully verified. Marker reconciliation coverage.
 void RGE_Person_Info::notify_of_scenario_complete() {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D160
+    // TODO: PARITY - Decomp only gates on current_campaign >= 0 before dispatching into
+    // campaign_info[current_campaign]; these extra range/null guards may suppress original calls when
+    // state is inconsistent. [decomp: gameinfo.cpp.decomp @ 0x0044D160]
     if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
         return;
     }

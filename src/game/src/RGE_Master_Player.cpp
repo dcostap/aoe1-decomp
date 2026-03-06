@@ -56,6 +56,8 @@ RGE_Master_Player::RGE_Master_Player(FILE* f) {
     
     short count;
     fscanf(f, " %hd", &count);
+    // TODO: PARITY - Decomp stores directly into attributes[temp_index] with no null/bounds guard, so
+    // this defensive check changes malformed-input behavior. [decomp: mst_play.cpp.decomp @ 0x00460FD0]
     for (short i = 0; i < count; i++) {
         short index;
         float val;
