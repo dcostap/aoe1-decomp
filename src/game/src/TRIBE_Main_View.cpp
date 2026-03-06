@@ -373,7 +373,6 @@ LAB_0052d4c7:
     this->set_selection_area(-1, -1, -1, -1);
     {
         // Parity: virtual call at vtable + 0x20 with param 1 (tvw_main.cpp.asm @ 0x0052D4D6).
-        // TODO: PARITY - This raw vtable+0x20 dispatch currently assumes set_redraw(1); re-audit against class-layout drift before replacing with direct virtual call syntax. [decomp: tvw_main.cpp.decomp @ 0x0052D4F0]
         using VCall = void(__thiscall*)(TRIBE_Main_View*, int);
         VCall fn = (VCall)(*(void***)(this))[0x20 / 4];
         fn(this, 1);
