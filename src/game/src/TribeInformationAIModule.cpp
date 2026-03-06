@@ -52,19 +52,19 @@ static void E19() {
     attackMap = InfluenceMap(0x32, 0x32, 0);
 }
 
-// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
 // TODO: PARITY [CRITICAL] - This function is still effectively unimplemented here (ASM-thunk placeholder), but decomp shows a complete object/zone predicate with explicit return paths. [decomp: taiinfmd.cpp.decomp @ 0x004D90F1]
 static void FUN_004d90f1() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk)
 }
 
-// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
 // TODO: PARITY [CRITICAL] - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004DA16D]
 static void FUN_004da16d() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk)
 }
 
-// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
 // TODO: PARITY [CRITICAL] - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004E0165]
 static void FUN_004e0165() {
     // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk)
@@ -5303,7 +5303,10 @@ void TribeInformationAIModule::unitsThatAreLeastBuilt(int* param_1, int* param_2
 // Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E4680
 int TribeInformationAIModule::acceptablePotentialDropsiteArea(int param_1, int param_2) {
     // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
-    int min_distance = (this->md != nullptr && this->md->player != nullptr) ? this->md->player->strategicNumber(0xCA) : 0;
+    int min_distance = 0;
+    if ((this->md != nullptr) && (this->md->tacticalAI != nullptr)) {
+        min_distance = reinterpret_cast<TribeTacticalAIModule*>(this->md->tacticalAI)->strategicNumber(0xCA);
+    }
     int min_distance_sq = min_distance * min_distance;
 
     for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
