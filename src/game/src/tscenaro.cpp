@@ -717,13 +717,11 @@ void T_Scenario::Set_Multi_Conquest(int param_1) {
     // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052B400
     if (param_1 != 0) {
         this->victory.MP_Conquest = 1;
-        // TODO: PARITY [CRITICAL] - Decomp calls RGE_Scenario::Set_conquest_victory(this, 1) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
-        this->victory_conquest = 1;
+        RGE_Scenario::Set_conquest_victory(1);
         return;
     }
     this->victory.MP_Conquest = 0;
-    // TODO: PARITY [CRITICAL] - Decomp calls RGE_Scenario::Set_conquest_victory(this, 0) here; direct member assignment may miss parent-side effects. [decomp: tscenaro.cpp.decomp @ 0x0052B400]
-    this->victory_conquest = 0;
+    RGE_Scenario::Set_conquest_victory(0);
 }
 
 void T_Scenario::Set_Multi_Ruins(int param_1) {
