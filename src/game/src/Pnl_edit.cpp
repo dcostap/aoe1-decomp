@@ -86,7 +86,6 @@ long TEditPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
 // Fully verified. Source of truth: pnl_edit.cpp.decomp/asm (parity-audited).
 long TEditPanel::setup(TDrawArea* render_area, TPanel* parent, long x, long y, long w, long h, void* font, short fixed_len_in, char* initial_text, FormatType format_in, int auto_sel_in) {
     // Fully verified. Source of truth: pnl_edit.cpp.decomp @ 0x00475770
-    // TODO: PARITY - CreateWindowEx style mask differs from decomp expression (0x40200044 multiline / 0x40000080 single-line); verify current WS_*/ES_* composition matches original bit-exact behavior. [decomp: pnl_edit.cpp.decomp @ 0x00475770]
     this->format = format_in;
     if (0 < fixed_len_in) {
         fixed_len_in = fixed_len_in + 1;
@@ -100,12 +99,7 @@ long TEditPanel::setup(TDrawArea* render_area, TPanel* parent, long x, long y, l
     }
 
     const int is_multiline = (this->format == FormatMultiLine);
-    DWORD style = WS_CHILD | WS_TABSTOP | ES_LEFT | ES_NOHIDESEL;
-    if (is_multiline) {
-        style |= ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_WANTRETURN;
-    } else {
-        style |= ES_AUTOHSCROLL;
-    }
+    DWORD style = is_multiline ? 0x40200044u : 0x40000080u;
 
     HWND hwnd = CreateWindowExA(
         0,
