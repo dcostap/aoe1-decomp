@@ -29,7 +29,7 @@ static long act_tran_ftol(float v) {
     return result;
 }
 
-// Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C6210
+// Source of truth: act_tran.cpp.decomp/asm (inlined transport location writes to world_x/world_y/world_z).
 static void rge_static_set_location(RGE_Static_Object* obj, float x, float y, float z) {
     obj->world_x = x;
     obj->world_y = y;
