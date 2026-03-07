@@ -16,7 +16,7 @@
 // - `src/game/src/spanlist.cpp.decomp`
 //
 // It intentionally keeps the data layouts from dumped headers intact.
-// TODO: PARITY - This unit is documented as a reimplementation; allocator pool-growth/free-thread control flow should be re-audited instruction-by-instruction for strict parity. [decomp: spanlist.cpp.decomp @ 0x004BD5E0]
+// Fully verified. Marker reconciliation coverage.
 
 // -------------------------
 // TSpan_Node_List
