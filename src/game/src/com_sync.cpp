@@ -18,7 +18,7 @@ static long DAT_0062d208[9];
 static ulong DAT_0062d230;
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_Handler* comm) {
-    // Fully verified. Source of truth: com_sync.cpp.decomp @ 0x00432FF0
+    // Source of truth: com_sync.cpp.decomp @ 0x00432FF0
     // TODO: PARITY [MODERATE] - Decomp/ASM emit TDebuggingLog::Log("Check turn = %d", 10) after setting CheckTurn; this constructor omits that debug-log side effect. [decomp/asm: com_sync.cpp @ 0x00432FF0]
     this->Comm = comm;
     this->CheckTime = 1000;
