@@ -144,16 +144,15 @@ RGE_Master_Static_Object::RGE_Master_Static_Object() {
     rge_master_static_reset_fields(this);
 }
 
-// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452120
+// TODO: PARITY - This constructor currently uses rge_master_static_reset_fields(), but decomp/asm only set vftable then optionally call setup. [decomp: m_s_obj.cpp.decomp @ 0x00452120; asm: m_s_obj.cpp.asm @ 0x00452120]
 RGE_Master_Static_Object::RGE_Master_Static_Object(RGE_Master_Static_Object* param_1, int param_2) {
-    // TODO: PARITY - Constructor path uses broad reset helper not shown in decomp ctor bodies (vftable + optional setup only); verify default-field writes are faithful for all ctor variants. [decomp: m_s_obj.cpp.decomp @ 0x00452120]
     rge_master_static_reset_fields(this);
     if (param_2 != 0 && param_1 != nullptr) {
         this->setup(param_1);
     }
 }
 
-// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x00452170
+// TODO: PARITY - This constructor currently uses rge_master_static_reset_fields(), but decomp/asm only set vftable then optionally call setup. [decomp: m_s_obj.cpp.decomp @ 0x00452170; asm: m_s_obj.cpp.asm @ 0x00452170]
 RGE_Master_Static_Object::RGE_Master_Static_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4) {
     rge_master_static_reset_fields(this);
     if (param_4 != 0) {
@@ -161,7 +160,7 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(int param_1, RGE_Sprite** par
     }
 }
 
-// Fully verified. Source of truth: m_s_obj.cpp.decomp @ 0x004521A0
+// TODO: PARITY - This constructor currently uses rge_master_static_reset_fields(), but decomp/asm only set vftable then optionally call setup. [decomp: m_s_obj.cpp.decomp @ 0x004521A0; asm: m_s_obj.cpp.asm @ 0x004521A0]
 RGE_Master_Static_Object::RGE_Master_Static_Object(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5) {
     rge_master_static_reset_fields(this);
     if (param_5 != 0) {

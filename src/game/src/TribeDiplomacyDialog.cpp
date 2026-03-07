@@ -89,7 +89,7 @@ TribeDiplomacyDialog::~TribeDiplomacyDialog() {
     this->delete_panel((TPanel**)&this->needMarket);
 }
 
-// Fully verified. Source of truth: dlg_dip.cpp.decomp @ 0x0043D8A0
+// TODO: PARITY [CRITICAL] - Decomp/ASM include full diplomacy transaction logic (ally-state commits, per-player relation updates, tribute amount/accounting flows, clear/reset UI refresh, and command emission); current implementation only handles close/clear shortcuts. [decomp/asm: dlg_dip.cpp @ 0x0043D8A0]
 long TribeDiplomacyDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->cancelButton || (TButtonPanel*)param_1 == this->okButton) {
@@ -112,16 +112,16 @@ long TribeDiplomacyDialog::action(TPanel* param_1, long param_2, ulong param_3, 
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// Fully verified. Source of truth: dlg_dip.cpp.decomp @ 0x0043E530
+// TODO: PARITY [CRITICAL] - Decomp/ASM compute available-gold gating and per-row button disable/visibility state updates based on tribute totals and current player row; current stub always returns 0. [decomp/asm: dlg_dip.cpp @ 0x0043E530]
 int TribeDiplomacyDialog::check_gold() { return 0; }
-// Fully verified. Source of truth: dlg_dip.cpp.decomp @ 0x0043E5C0
+// TODO: PARITY [CRITICAL] - Decomp/ASM compute available-wood gating and per-row button disable/visibility state updates based on tribute totals and current player row; current stub always returns 0. [decomp/asm: dlg_dip.cpp @ 0x0043E5C0]
 int TribeDiplomacyDialog::check_wood() { return 0; }
-// Fully verified. Source of truth: dlg_dip.cpp.decomp @ 0x0043E650
+// TODO: PARITY [CRITICAL] - Decomp/ASM compute available-food gating and per-row button disable/visibility state updates based on tribute totals and current player row; current stub always returns 0. [decomp/asm: dlg_dip.cpp @ 0x0043E650]
 int TribeDiplomacyDialog::check_food() { return 0; }
-// Fully verified. Source of truth: dlg_dip.cpp.decomp @ 0x0043E6E0
+// TODO: PARITY [CRITICAL] - Decomp/ASM compute available-stone gating and per-row button disable/visibility state updates based on tribute totals and current player row; current stub always returns 0. [decomp/asm: dlg_dip.cpp @ 0x0043E6E0]
 int TribeDiplomacyDialog::check_stone() { return 0; }
 
-// Fully verified. Source of truth: dlg_dip.cpp.decomp @ 0x0043E770
+// TODO: PARITY [CRITICAL] - Decomp/ASM draw path applies per-player background/civ color-table rendering and dynamic panel text updates; current implementation only calls base dialog draw. [decomp/asm: dlg_dip.cpp @ 0x0043E770]
 void TribeDiplomacyDialog::draw() {
     TDialogPanel::draw();
 }

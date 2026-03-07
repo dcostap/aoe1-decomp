@@ -97,7 +97,7 @@ TribeConfigDialog::~TribeConfigDialog() {
     this->delete_panel((TPanel**)&this->cancelButton);
 }
 
-// Fully verified. Source of truth: dlg_conf.cpp.decomp @ 0x0043C2B0
+// TODO: PARITY [CRITICAL] - Decomp/ASM implement full settings workflow here (speed/size/pathfinding/mouse-rollover toggles, slider-driven audio/scroll updates, cancel restore path, and mode-based panel transitions); current translation only handles OK/Cancel close actions. [decomp/asm: dlg_conf.cpp @ 0x0043C2B0]
 long TribeConfigDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->okButton) {
