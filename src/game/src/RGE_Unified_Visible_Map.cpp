@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - visible.cpp module also carries RGE_Visible_Map/dump_vismap_log offsets outside this TU; keep cross-TU parity synchronized. [decomp: visible.cpp.decomp @ 0x0053C1B0]
+// Source mapping note: RGE_Unified_Visible_Map and companion visible-map routines share
+// visible.cpp.decomp/.asm; this TU carries the 0x0053CE80+ unified-visible range.
 
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int map_width, int map_height) {
     // Fully verified. Source of truth: visible.cpp.decomp @ 0x0053CE80

@@ -2249,7 +2249,8 @@ void RGE_View::draw_paint_brush() {
 
 void RGE_View::draw()
 {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534AE0
+    // TODO: PARITY [CRITICAL] - draw() at 0x00534AE0 is still partial versus decomp/asm;
+    // keep gap notes below until scroll-reuse blits and paint-brush branch parity land.
     // TODO: PARITY [CRITICAL] - Decomp draw path performs scroll-reuse rectangle diffing and queued blits (CreateBlitQueue/ProcessQueuedBlit plus clip-list scrolling) before terrain render; current implementation skips that reuse path and does direct redraw from a cleared target. [decomp: view.cpp.decomp @ 0x00534AE0]
     // TODO: PARITY [CRITICAL] - Decomp calls draw_paint_brush() in draw() for game modes 9/10/0x13 before terrain rendering; current implementation does not execute that branch here. [decomp: view.cpp.decomp @ 0x00534AE0]
     tiles_drawn = 0;
@@ -2382,7 +2383,9 @@ void RGE_View::update()
 
 void RGE_View::draw_view(uchar mode, TDrawArea* area)
 {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535480, view.cpp.asm @ 0x00535480
+    // TODO: PARITY [MODERATE] - draw_view @ 0x00535480 is partial: asm/decomp branch
+    // mode!=10 into view_function(...), while this transliteration currently drops that path.
+    // [decomp: view.cpp.decomp @ 0x00535480] [asm: view.cpp.asm @ 0x00535568]
     if (area == nullptr) area = this->render_area;
     if (area == nullptr) return;
 
@@ -2444,7 +2447,10 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
 
 long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 {
-    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536B40
+    // TODO: PARITY [CRITICAL] - view_function_terrain @ 0x00536B40 remains simplified:
+    // decomp/asm use SDI capture lists, Master_Clip_Mask merge/PtrSpanCopy, and
+    // post-copy _ASMDraw_Sprite passes with Terrain_Clip_Mask/Terrain_Fog_Clip_Mask.
+    // [decomp: view.cpp.decomp @ 0x00536B40] [asm: view.cpp.asm @ 0x0053741E, 0x005378D3, 0x00537930]
     (void)mode;
 
     if (0 < this->DispSel_List_Size) {
@@ -2640,10 +2646,14 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     // After all terrain tiles are drawn, render objects so they aren't overwritten.
     // Original: SDI_Capture_Info captures to DClipInfo_List, then _ASMDraw_Sprite
     // with Terrain_Clip_Mask (decomp lines 4394-4418).
-    // TODO: Full parity requires SDI capture system + per-object clip mask + fog pass
+    // TODO: PARITY [CRITICAL] - Full parity requires SDI capture system + per-object
+    // clip-mask replay/fog sequencing used by decomp/asm object passes.
+    // [decomp: view.cpp.decomp @ 0x00536B40] [asm: view.cpp.asm @ 0x0053741E, 0x005378D3]
     if (num_deferred_obj_draws > 0 && this->cur_render_area != nullptr) {
         // Use full-surface SpanList for deferred objects — ensures all pixels draw.
-        // TODO: Full parity uses Terrain_Clip_Mask for diamond clipping + fog pass
+        // TODO: PARITY [CRITICAL] - Original replay uses Terrain_Clip_Mask and
+        // Terrain_Fog_Clip_Mask draws; current SpanList replay overdraws outside diamond clips.
+        // [decomp: view.cpp.decomp @ 0x00536B40] [asm: view.cpp.asm @ 0x00537860, 0x005378DE]
         this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
 
         for (int i = 0; i < num_deferred_obj_draws; i++) {
@@ -2929,7 +2939,9 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
         // In the original game, render_terrain_mode!=0 reuses the previous frame's buffer
         // (with scrolling), so gaps are filled from prior frames. We don't implement terrain
         // buffer scrolling yet, so we pre-fill with the unclipped SLP to prevent black outlines.
-        // TODO: Remove this when render_terrain_mode scrolling is implemented.
+        // TODO: PARITY [MODERATE] - Remove this once render_terrain_mode scroll-reuse
+        // (CreateBlitQueue/ProcessQueuedBlit + save-area persistence) matches decomp/asm.
+        // [decomp: view.cpp.decomp @ 0x00534AE0, 0x00536B40] [asm: view.cpp.asm @ 0x00534DA0, 0x00535145]
         this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
         (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
 

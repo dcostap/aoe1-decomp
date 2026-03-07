@@ -84,7 +84,6 @@ int DAT_00886c3c = 0;
 int DAT_00886c40 = 0;
 int DAT_00886c44 = 0;
 int DAT_00886c48 = 0;
-// TODO: PARITY [LOW] - These global markers use raw data-address references rather than explicit // Offset function entries; validate them against ASM/data symbols to justify the current verification tags. [decomp: tplayer.cpp.decomp @ 0x0051748E]
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x00518A66
 int computerPlayerSetup[13] = {0};
 // Fully verified. Source of truth: tplayer.cpp.decomp @ 0x0051748E
