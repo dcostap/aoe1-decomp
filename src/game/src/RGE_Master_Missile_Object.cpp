@@ -200,10 +200,9 @@ void RGE_Master_Missile_Object::save(int param_1) {
 }
 
 
-// Source of truth: m_mi_obj.cpp.decomp + m_mi_obj.cpp.asm @ 0x00451770
-// TODO: PARITY [HIGH] - ASM gates recycle_object_in_to_game on this->recyclable (byte +0xA4) and uses master_type (+0x4) only as recycle type; current code gates on master_type != 0.
+// Fully verified. Source of truth: m_mi_obj.cpp.decomp @ 0x00451770 [asm: m_mi_obj.cpp.asm @ 0x00451770]
 RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
-    if (this->master_type != 0) {
+    if (this->recyclable != 0) {
         RGE_Static_Object* recycled = param_1->world->recycle_object_in_to_game(this->master_type);
         if (recycled != nullptr) {
             recycled->recycle_in_to_game(this, param_1, param_2, param_3, param_4);

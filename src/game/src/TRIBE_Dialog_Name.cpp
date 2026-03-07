@@ -7,25 +7,21 @@
 #include "../include/TPanelSystem.h"
 #include "../include/globals.h"
 
+#include <new>
 #include <string.h>
 
-// TODO: PARITY [MODERATE] - Constructor adds defensive parent/draw-area fallback handling not present in the original unchecked call chain. [decomp: scr_name.cpp.decomp @ 0x004A6D50] [asm: scr_name.cpp.asm @ 0x004A6D50]
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6D50 [asm: scr_name.cpp.asm @ 0x004A6D50]
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_screen) : TDialogPanel((char*)"New Name Dialog") {
-    // TODO: PARITY [MODERATE] - Original immediately dereferences param_1 for popup/render-area calls; this version guards null parent_screen. [decomp: scr_name.cpp.decomp @ 0x004A6D50] [asm: scr_name.cpp.asm @ 0x004A6D50]
     this->title = nullptr;
     this->name_text = nullptr;
     this->name_input = nullptr;
     this->ok_button = nullptr;
     this->cancel_button = nullptr;
 
-    const long popup_id = parent_screen ? parent_screen->get_popup_info_id() : -1;
-    char* popup_file = parent_screen ? parent_screen->get_popup_info_file() : nullptr;
-
-    TDrawArea* area = parent_screen ? parent_screen->render_area : (rge_base_game ? rge_base_game->draw_area : nullptr);
-    if (!this->setup(area, (TPanel*)parent_screen, 500, 0xE6, popup_file, popup_id, 1)) {
-        this->error_code = 1;
-        return;
-    }
+    const long popup_id = parent_screen->get_popup_info_id();
+    char* popup_file = parent_screen->get_popup_info_file();
+    TDrawArea* area = parent_screen->renderArea();
+    if (!this->setup(area, (TPanel*)parent_screen, 500, 0xE6, popup_file, popup_id, 1)) return;
 
     if (!this->create_text((TPanel*)this, &this->title, 0x2A03, 0x14, 0x14, 0x1CC, 0x1E, 1, 1, 1, 0)) return;
     if (!this->create_text((TPanel*)this, &this->name_text, 0x2A04, 0x28, 0x55, 0x1A4, 0x14, 4, 0, 1, 0)) return;
@@ -55,51 +51,45 @@ TRIBE_Dialog_Name::~TRIBE_Dialog_Name() {
     this->delete_panel((TPanel**)&this->cancel_button);
 }
 
-// TODO: PARITY [HIGH] - action() adds defensive null checks and add_panel calls that are absent from the original direct panel-system flow. [decomp: scr_name.cpp.decomp @ 0x004A6FF0] [asm: scr_name.cpp.asm @ 0x004A6FF0]
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6FF0 [asm: scr_name.cpp.asm @ 0x004A6FF0]
 long TRIBE_Dialog_Name::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // TODO: PARITY [HIGH] - Decomp/asm call panel-system transitions/destroys directly and do not include these panel_system/null guards or extra add_panel calls. [decomp: scr_name.cpp.decomp @ 0x004A6FF0] [asm: scr_name.cpp.asm @ 0x004A6FF0]
     (void)param_3;
     (void)param_4;
 
-    if (param_1) {
-        const int ok_pressed = ((TButtonPanel*)param_1 == this->ok_button && param_2 == 1) ||
-                               ((TEditPanel*)param_1 == this->name_input && param_2 == 0);
+    if (param_1 != nullptr) {
+        const int ok_pressed = ((param_1 == (TPanel*)this->ok_button) && (param_2 == 1)) ||
+                               ((param_1 == (TPanel*)this->name_input) && (param_2 == 0));
         if (ok_pressed) {
-            char* name = this->name_input ? this->name_input->get_text() : (char*)"";
-            if (!name || *name == '\0') {
+            char* name = this->name_input->get_text();
+            if (*name == '\0') {
                 this->set_curr_child((TPanel*)this->name_input);
                 return 1;
             }
 
-            if (rge_base_game && rge_base_game->player_game_info) {
-                rge_base_game->player_game_info->add_new_person(name);
-            }
+            rge_base_game->player_game_info->add_new_person(name);
 
-            TRIBE_Screen_Campaign_Selection* scr = new TRIBE_Screen_Campaign_Selection();
-            if (panel_system) {
-                if (scr) panel_system->add_panel((TPanel*)scr);
-                panel_system->setCurrentPanel((char*)"Campaign Selection Screen", 0);
-                panel_system->destroyPanel((char*)"New Name Dialog");
-                panel_system->destroyPanel((char*)"Name Selection Screen");
-            }
+            TRIBE_Screen_Campaign_Selection* scr = new (std::nothrow) TRIBE_Screen_Campaign_Selection();
+            (void)scr;
+            panel_system->setCurrentPanel((char*)"Campaign Selection Screen", 0);
+            panel_system->destroyPanel((char*)"New Name Dialog");
+            panel_system->destroyPanel((char*)"Name Selection Screen");
             return 1;
         }
 
-        const int cancel_pressed = ((TButtonPanel*)param_1 == this->cancel_button && param_2 == 1) ||
-                                   ((TEditPanel*)param_1 == this->name_input && param_2 == 1);
+        const int cancel_pressed = ((param_1 == (TPanel*)this->cancel_button) && (param_2 == 1)) ||
+                                   ((param_1 == (TPanel*)this->name_input) && (param_2 == 1));
         if (cancel_pressed) {
-            const int have_name_screen = (panel_system && panel_system->panel((char*)"Name Selection Screen")) ? 1 : 0;
-            if (!have_name_screen) {
-                TribeSPMenuScreen* menu = new TribeSPMenuScreen();
-                if (panel_system && menu) {
-                    panel_system->add_panel((TPanel*)menu);
-                }
+            char* target_panel = nullptr;
+            if (panel_system->panel((char*)"Name Selection Screen") != nullptr) {
+                target_panel = (char*)"Name Selection Screen";
+            } else {
+                TribeSPMenuScreen* menu = new (std::nothrow) TribeSPMenuScreen();
+                (void)menu;
+                target_panel = (char*)"Single Player Menu";
             }
 
-            if (panel_system) {
-                panel_system->setCurrentPanel(have_name_screen ? (char*)"Name Selection Screen" : (char*)"Single Player Menu", 0);
-                panel_system->destroyPanel((char*)"New Name Dialog");
-            }
+            panel_system->setCurrentPanel(target_panel, 0);
+            panel_system->destroyPanel((char*)"New Name Dialog");
             return 1;
         }
     }

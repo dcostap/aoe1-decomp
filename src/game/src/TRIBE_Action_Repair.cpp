@@ -9,6 +9,7 @@
 #include "../include/RGE_Object_Node.h"
 #include "../include/RGE_Object_List.h"
 #include "../include/RGE_Player.h"
+#include "../include/RGE_Sound.h"
 #include "../include/RGE_Task.h"
 #include "../include/XYPoint.h"
 #include "../include/globals.h"
@@ -172,29 +173,94 @@ void TRIBE_Action_Repair::meet_target() {
 }
 
 void TRIBE_Action_Repair::set_state(uchar param_1) {
-    // TODO: PARITY [HIGH] - Source of truth: tact_rep.cpp.decomp @ 0x004D18B0, tact_rep.cpp.asm @ 0x004D18B0.
-    // TODO: PARITY - 0x004D18B0 includes additional state branches (1/2/3/6/7/0x0A/0x0B/0x0D) with sprite/notify/timer side effects that are not represented here.
-    if (this->sub_actions != nullptr) {
-        this->sub_actions->delete_list();
-    }
+    // Fully verified. Source of truth: tact_rep.cpp.decomp @ 0x004D18B0 [asm: tact_rep.cpp.asm @ 0x004D18B0]
+    this->sub_actions->delete_list();
     this->state = param_1;
 
-    if (param_1 == 4) {
-        if ((this->sub_actions != nullptr) && (this->task != nullptr) && (this->target_obj != nullptr)) {
-            RGE_Action* move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range, this->task->move_sprite);
-            if (move != nullptr) {
-                move->setSubAction(1);
-                this->sub_actions->add_action(move);
+    switch (param_1) {
+    case 1:
+        this->set_target_obj(nullptr);
+        if (this->save_target_command_flag == 0) {
+            const int id = (int)this->obj->id;
+            this->obj->notify(id, id, 0x1FA, 0x26A, 0, 0);
+        }
+        [[fallthrough]];
+
+    case 2:
+        this->obj->new_sprite(this->obj->master_obj->sprite);
+        break;
+
+    case 3: {
+        const int id = (int)this->obj->id;
+        this->obj->notify(id, id, 0x202, 0x26A, 0, 0);
+        this->obj->new_sprite(this->obj->master_obj->sprite);
+        break;
+    }
+
+    case 4: {
+        if (this->target_obj != nullptr) {
+            this->target_x = this->target_obj->world_x;
+            this->target_y = this->target_obj->world_y;
+            this->target_z = this->target_obj->world_z;
+        }
+
+        const float move_range = *(float*)((char*)this->obj->master_obj + 0x114);
+        RGE_Action* move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_obj, move_range, this->task->move_sprite);
+        if (move == nullptr) {
+            this->set_state(0x0D);
+            return;
+        }
+        move->setSubAction(1);
+        this->sub_actions->add_action(move);
+        return;
+    }
+
+    case 6:
+        this->target_x = this->target_obj->world_x;
+        this->target_y = this->target_obj->world_y;
+        this->target_z = this->target_obj->world_z;
+        this->obj->new_sprite(this->task->move_sprite);
+        return;
+
+    case 7:
+        this->obj->new_sprite(this->task->work_sprite);
+        if (this->task->work_sound != nullptr) {
+            this->task->work_sound->play(1);
+            return;
+        }
+        break;
+
+    case 10:
+        this->obj->new_sprite(this->obj->master_obj->sprite);
+        this->timer = 1.0f;
+        if (this->target_obj != nullptr) {
+            const short target_master_id = this->target_obj->master_obj->id;
+            if ((target_master_id == 2 || target_master_id == 0x14 || target_master_id == 0x15 || target_master_id == 0x16) &&
+                (((RGE_Action_Object*)this->target_obj)->command_flag == this->save_target_command_flag)) {
+                this->obj->moveTo(this->target_x, this->target_y, this->target_z, 0.0f, 1);
                 return;
             }
         }
-        this->state = 0x0d;
+        break;
+
+    case 11: {
+        RGE_Action* move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
+        if (move == nullptr) {
+            this->set_state(0x0D);
+            return;
+        }
+        this->sub_actions->add_action(move);
+        move->setSubAction(1);
+        return;
+    }
+
+    default:
+        break;
     }
 }
 
 uchar TRIBE_Action_Repair::update() {
     // NOTE: tact_rep.cpp.asm @ 0x004D1B79 is only NOP/MOV EDI,EDI plus switchdata; no standalone helper body exists there.
-    // TODO: PARITY - Re-check update/state coupling against 0x004D18B0 for missing notify/timer/save_target_command_flag side effects.
     // Source of truth: tact_rep.cpp.decomp @ 0x004D1BB0, tact_rep.cpp.asm @ 0x004D1BB0.
     if (!this->obj) {
         return 0;

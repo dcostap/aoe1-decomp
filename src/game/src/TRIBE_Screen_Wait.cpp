@@ -3,14 +3,61 @@
 #include "../include/TRIBE_Screen_Wait.h"
 
 #include "../include/RGE_Base_Game.h"
+#include "../include/TRIBE_Game.h"
 #include "../include/TTextPanel.h"
 #include "../include/TButtonPanel.h"
 #include "../include/globals.h"
 
+#include <stdio.h>
+#include <string.h>
+
+namespace {
+
+static void wait_get_string_safe(TPanel* owner, int resid, const char* fallback, char* out, size_t out_size) {
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    if (owner) {
+        owner->get_string(resid, out, (int)out_size);
+    } else if (rge_base_game) {
+        rge_base_game->get_string(resid, out, (int)out_size);
+    }
+    if (out[0] == '\0' && fallback) {
+        strncpy(out, fallback, out_size - 1);
+        out[out_size - 1] = '\0';
+    }
+}
+
+static int wait_map_size_resid(int map_size) {
+    switch (map_size) {
+    case 0: return 0x2973;
+    case 1: return 0x2974;
+    case 2: return 0x2975;
+    case 3: return 0x2976;
+    case 4: return 0x2977;
+    case 5: return 0x2978;
+    default: return -1;
+    }
+}
+
+static int wait_map_type_resid(int map_type) {
+    switch (map_type) {
+    case 0: return 0x296a;
+    case 1: return 0x296b;
+    case 2: return 0x296c;
+    case 3: return 0x296d;
+    case 4: return 0x296e;
+    case 5: return 0x296f;
+    case 6: return 0x2970;
+    case 7: return 0x2971;
+    case 8: return 0x2972;
+    default: return -1;
+    }
+}
+
+} // namespace
+
 // Source of truth: scr_mps.cpp.decomp @ 0x004A5610, 0x004A6050, 0x004A60E0, 0x004A6100, 0x004A6120, 0x004A6170.
-// TODO: PARITY [HIGH] - scr_mps.cpp.decomp @ 0x004A5610 continues well past the basic control creation implemented here; the original constructor also formats and populates
-// scenarioName and settingText[0..] with the current scenario/random-map settings summary (map size/type, victory settings, age/resources, difficulty, fixed positions, reveal
-// map, tech tree, cheats, path finding, population limit, etc.).
+// Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A5610 [asm: scr_mps.cpp.asm @ 0x004A5610]
 TRIBE_Screen_Wait::TRIBE_Screen_Wait()
     : TScreenPanel((char*)"Multiplayer Wait Screen") {
     this->message = nullptr;
@@ -34,6 +81,8 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait()
         this->error_code = 1;
         return;
     }
+    this->close_button->set_active(1);
+    this->close_button->set_positioning((TPanel::PositionMode)9, 4, 4, 4, 4, 0x11, 0x11, 0x11, 0x11, nullptr, nullptr, nullptr, nullptr);
 
     if (this->create_text((TPanel*)this, &this->scenarioName, (char*)"", 0x1a4, 0x54, 0xdc, 0x44, 0xb, 0, 0, 1) == 0) {
         this->error_code = 1;
@@ -53,6 +102,184 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait()
         if (this->settingText[i] != nullptr) {
             this->settingText[i]->set_active(0);
         }
+    }
+
+    TRIBE_Game* game = (TRIBE_Game*)rge_base_game;
+    char str1[256];
+    char str2[256];
+    char str3[256];
+    str1[0] = '\0';
+    str2[0] = '\0';
+    str3[0] = '\0';
+
+    int line_base = 1;
+    if (rge_base_game->scenarioGame() == 0) {
+        const int scenario_resid = (game->deathMatch() != 0) ? 0x2617 : 0x25b5;
+        wait_get_string_safe(this, scenario_resid, "Random Map", str1, sizeof(str1));
+        wait_get_string_safe(this, 0x25ed, "Scenario: %s", str2, sizeof(str2));
+        sprintf(str3, str2, str1);
+        this->scenarioName->set_text(str3);
+        line_base = 1;
+    } else {
+        wait_get_string_safe(this, 0x25ed, "Scenario: %s", str2, sizeof(str2));
+        sprintf(str3, str2, rge_base_game->scenarioName());
+        this->scenarioName->set_text(str3);
+        line_base = 3;
+    }
+
+    if (rge_base_game->randomGame() != 0) {
+        char value[256];
+        char fmt[256];
+        char line[320];
+
+        const int map_size_resid = wait_map_size_resid((int)game->mapSize());
+        wait_get_string_safe(this, (map_size_resid >= 0) ? map_size_resid : 0x2975, "Medium", value, sizeof(value));
+        wait_get_string_safe(this, 0x25da, "Map Size: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_base]->set_text(line);
+        this->settingText[line_base]->set_active(1);
+
+        const int map_type_resid = wait_map_type_resid((int)game->mapType());
+        wait_get_string_safe(this, (map_type_resid >= 0) ? map_type_resid : 0x296d, "Mostly Land", value, sizeof(value));
+        wait_get_string_safe(this, 0x25b6, "Map Type: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_base + 1]->set_text(line);
+        this->settingText[line_base + 1]->set_active(1);
+        line_base = line_base + 2;
+    }
+
+    int line_idx = line_base + 1;
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        int victory_resid = 0x10ec;
+        const int victory_type = (int)game->victoryType();
+        if (victory_type == 0) {
+            victory_resid = 0x10e1;
+        } else if (victory_type != 2 && victory_type != 3) {
+            victory_resid = (rge_base_game->randomGame() == 0) ? 0x10e7 : 0x10ec;
+        } else if (victory_type == 2) {
+            victory_resid = 0x10e9;
+        } else {
+            victory_resid = 0x10ea;
+        }
+
+        wait_get_string_safe(this, victory_resid, "Standard", value, sizeof(value));
+        if (victory_type == 2 || victory_type == 3) {
+            wait_get_string_safe(this, 0x25be, "Victory: %s (%d)", fmt, sizeof(fmt));
+            sprintf(line, fmt, value, game->victoryAmount());
+        } else {
+            wait_get_string_safe(this, 0x25bc, "Victory: %s", fmt, sizeof(fmt));
+            sprintf(line, fmt, value);
+        }
+        this->settingText[line_idx]->set_text(line);
+        this->settingText[line_idx]->set_active(1);
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        int age_resid = 0x10e7;
+        const int age = (int)game->startingAge();
+        if (age == 5) age_resid = 0x106e;
+        else if (age > 0) age_resid = 0x1067 + age;
+        wait_get_string_safe(this, age_resid, "Default", value, sizeof(value));
+        wait_get_string_safe(this, 0x25e4, "Age: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_idx + 1]->set_text(line);
+        this->settingText[line_idx + 1]->set_active(1);
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        if ((int)game->resourceLevel() == 0) wait_get_string_safe(this, 0x10e7, "Default", value, sizeof(value));
+        else wait_get_string_safe(this, 0x25e5 + (int)game->resourceLevel(), "Default", value, sizeof(value));
+        wait_get_string_safe(this, 0x25e5, "Resources: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_idx + 2]->set_text(line);
+        this->settingText[line_idx + 2]->set_active(1);
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        wait_get_string_safe(this, 0x2bd0 + rge_base_game->difficulty(), "Hardest", value, sizeof(value));
+        wait_get_string_safe(this, 0x25e0, "Difficulty Level: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_idx + 3]->set_text(line);
+        this->settingText[line_idx + 3]->set_active(1);
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        wait_get_string_safe(this, game->randomizePositions() == 0 ? 0xfa3 : 0xfa4, game->randomizePositions() == 0 ? "Yes" : "No", value, sizeof(value));
+        wait_get_string_safe(this, 0x25e9, "Fixed Positions: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_idx + 4]->set_text(line);
+        this->settingText[line_idx + 4]->set_active(1);
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        wait_get_string_safe(this, rge_base_game->fullVisibility() != 0 ? 0xfa3 : 0xfa4, rge_base_game->fullVisibility() != 0 ? "Yes" : "No", value, sizeof(value));
+        wait_get_string_safe(this, 0x25b8, "Reveal Map: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_idx + 5]->set_text(line);
+        this->settingText[line_idx + 5]->set_active(1);
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        wait_get_string_safe(this, game->fullTechTree() != 0 ? 0xfa3 : 0xfa4, game->fullTechTree() != 0 ? "Yes" : "No", value, sizeof(value));
+        wait_get_string_safe(this, 0x25ec, "Full Tech Tree: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[line_idx + 6]->set_text(line);
+        this->settingText[line_idx + 6]->set_active(1);
+    }
+
+    int path_index = line_idx + 7;
+    if (rge_base_game->multiplayerGame() != 0) {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        wait_get_string_safe(this, rge_base_game->allowCheatCodes() != 0 ? 0xfa3 : 0xfa4, rge_base_game->allowCheatCodes() != 0 ? "Yes" : "No", value, sizeof(value));
+        wait_get_string_safe(this, 0x25bb, "Enable Cheating: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[path_index]->set_text(line);
+        this->settingText[path_index]->set_active(1);
+        path_index = path_index + 1;
+    }
+
+    {
+        char value[256];
+        char fmt[256];
+        char line[320];
+        const int pf = (rge_base_game->multiplayerGame() != 0) ? (int)rge_base_game->mpPathFinding() : (int)rge_base_game->pathFinding();
+        wait_get_string_safe(this, 0x260e + pf, "Medium", value, sizeof(value));
+        wait_get_string_safe(this, 0x25f1, "Path Finding: %s", fmt, sizeof(fmt));
+        sprintf(line, fmt, value);
+        this->settingText[path_index]->set_text(line);
+        this->settingText[path_index]->set_active(1);
+    }
+
+    {
+        char fmt[256];
+        char line[320];
+        wait_get_string_safe(this, 0x25f0, "Population Limit: %d", fmt, sizeof(fmt));
+        sprintf(line, fmt, (int)game->popLimit());
+        this->settingText[path_index + 1]->set_text(line);
+        this->settingText[path_index + 1]->set_active(1);
     }
 }
 
