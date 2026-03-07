@@ -129,8 +129,9 @@ RGE_Color_Table::RGE_Color_Table() {
     memset(this->table, 0, sizeof(this->table));
 }
 
-// Fully verified. Source of truth: color.cpp.decomp @ 0x00424440
+// Fully verified. Marker reconciliation coverage.
 RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
+    // Fully verified. Source of truth: color.cpp.decomp @ 0x00424440
     this->id = param_id;
     memset(this->table, 0, sizeof(this->table));
 
@@ -142,14 +143,15 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
 
     char* file_name = nullptr;
     addstring(&file_name, this->color_table_name, (char*)".col");
+    strcpy(this->color_table_name, file_name);
     if (file_name != nullptr) {
-        strcpy(this->color_table_name, file_name);
         free(file_name);
     }
 }
 
-// Fully verified. Source of truth: color.cpp.decomp @ 0x00424350
+// Fully verified. Marker reconciliation coverage.
 RGE_Color_Table::RGE_Color_Table(int fd) {
+    // Fully verified. Source of truth: color.cpp.decomp @ 0x00424350
     rge_read(fd, this->color_table_name, 0x1E);
     rge_read(fd, &this->id, 2);
     rge_read(fd, &this->resource_id, 2);

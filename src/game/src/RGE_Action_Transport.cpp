@@ -299,13 +299,14 @@ uchar RGE_Action_Transport::update() {
             if (has_drop_terrain == 0) {
                 RGE_Map* map = this->obj->owner->world->map;
                 if (this->target_x != -1.0f) {
-                    // TODO: PARITY [MODERATE] - Decomp re-emits bare __ftol calls for each terrain probe; verify repeated act_tran_ftol calls preserve exact FPU rounding/exception behavior. [decomp: act_tran.cpp.decomp @ 0x00406F90]
                     short col = (short)act_tran_ftol(this->target_x);
                     short row = (short)act_tran_ftol(this->target_y);
                     uchar terrain = map->get_terrain(col, row);
                     if (terrain == 1) {
                         goto done;
                     }
+                    col = (short)act_tran_ftol(this->target_x);
+                    row = (short)act_tran_ftol(this->target_y);
                     terrain = map->get_terrain(col, row);
                     if (terrain == 0x16) {
                         goto done;

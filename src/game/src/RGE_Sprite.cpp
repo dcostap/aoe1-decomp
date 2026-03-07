@@ -190,10 +190,10 @@ RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
     
     short main_sound_id;
     rge_read(fd, &main_sound_id, 2);
-    if (main_sound_id >= 0 && sounds) {
-        this->main_sound = sounds[main_sound_id];
-    } else {
+    if (main_sound_id < 0) {
         this->main_sound = nullptr;
+    } else {
+        this->main_sound = sounds[main_sound_id];
     }
 
     rge_read(fd, &this->micro_man_sound, 1);
@@ -221,10 +221,10 @@ RGE_Sprite::RGE_Sprite(int fd, RGE_Sound** sounds, RGE_Color_Table** colors) {
                 short sound_idx;
                 rge_read(fd, &this->sound_list[i].frame[s], 2);
                 rge_read(fd, &sound_idx, 2);
-                if (sound_idx >= 0 && sounds) {
-                    this->sound_list[i].sound[s] = sounds[sound_idx];
-                } else {
+                if (sound_idx < 0) {
                     this->sound_list[i].sound[s] = nullptr;
+                } else {
+                    this->sound_list[i].sound[s] = sounds[sound_idx];
                 }
             }
         }
