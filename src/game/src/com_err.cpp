@@ -13,58 +13,225 @@ RGE_Comm_Error::~RGE_Comm_Error() {
 }
 
 void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long param) {
-    // Source of truth: com_err.cpp.decomp @ 0x00424E60
-    // TODO: PARITY - Decomp posts WM_USER unconditionally; this null-guard can drop notifications when HostHWND is null. [decomp: com_err.cpp.decomp @ 0x00424E60]
-    if (this->HostHWND != nullptr) {
-        PostMessageA((HWND)this->HostHWND, WM_USER, (WPARAM)msg, (LPARAM)param);
-    }
+    // Fully verified. Source of truth: com_err.cpp.decomp @ 0x00424E60, com_err.cpp.asm @ 0x00424E60
+    PostMessageA((HWND)this->HostHWND, WM_USER, (WPARAM)msg, (LPARAM)param);
 }
 
-void RGE_Comm_Error::ShowReturn(long hr, const char* /*context*/) {
-    // Source of truth: com_err.cpp.decomp @ 0x00424EB0
-    // Logging strings are not preserved in this codebase; keep only the behavioral notifications.
-    // TODO: PARITY - HRESULT handling here is a reduced subset; decomp includes many additional branch-specific error mappings/logging paths. [decomp: com_err.cpp.decomp @ 0x00424EB0]
-    // TODO: PARITY - Decomp uses signed threshold branches for HRESULT dispatch; this reduced switch uses unsigned-cast equality cases only. [decomp: com_err.cpp.decomp @ 0x00424EB0]
+void RGE_Comm_Error::ShowReturn(long hr, const char* context) {
+    // Fully verified. Source of truth: com_err.cpp.decomp @ 0x00424EB0, com_err.cpp.asm @ 0x00424EB0
+    (void)context;
+
     if (hr == 0) {
         return;
     }
 
     this->LastReportedError = hr;
 
-    switch ((unsigned long)hr) {
-        case 0x80004002:  // E_NOINTERFACE
-        case 0x80004005:  // E_FAIL
-        case 0x80004001:  // E_NOTIMPL (treated as fatal in the original)
+    if (hr < -0x7FFFBFFE) {
+        if (hr == -0x7FFFBFFF) {
+            return;
+        }
+        if (hr == -0x7FFFFFF6) {
+            return;
+        }
+    } else if (hr < -0x7FFBFEEF) {
+        if (hr == -0x7FFBFEF0) {
+            return;
+        }
+        switch (hr) {
+        case -0x7FFFBFFE:
             this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
             return;
-
-        // Access denied / busy service / unknown application: treat as "no link".
-        case 0x80070005:  // E_ACCESSDENIED
-        case 0x8877000A:  // DPERR_ACCESSDENIED
-        case 0x8877000E:  // DPERR_BUSY
-        case 0x8877010E:  // DPERR_BUSY
-        case 0x8877012C:  // DPERR_UNKNOWNAPPLICATION
+        case -0x7FFFBFFD:
+            return;
+        case -0x7FFFBFFC:
+            return;
+        case -0x7FFFBFFB:
+            this->NotifyWindowParam(COMM_FATAL_ERROR, 0);
+            return;
+        default:
+            break;
+        }
+    } else if (hr < -0x7FF8FFF1) {
+        if (hr == -0x7FF8FFF2) {
+            return;
+        }
+        if (hr == -0x7FF8FFFB) {
             this->NotifyWindowParam(COMM_NO_LINK, 0);
             return;
-
-        // Can't add player / session unavailable: treat as "no new players".
-        case 0x88770028:  // DPERR_NOSESSIONS
-        case 0x88770088:  // DPERR_INVALIDFLAGS (common failure for session join)
-        case 0x887700D8:  // DPERR_CANTADDPLAYER
-        case 0x8877014A:  // DPERR_SESSIONBUSY / connecting
-        case 0x88770156:  // DPERR_USERCANCEL
+        }
+        if (hr == -0x7FF8FFFA) {
+            return;
+        }
+    } else if (hr < -0x7788FFFA) {
+        if (hr == -0x7788FFFB) {
+            return;
+        }
+        if (hr == -0x7FF8FFA9) {
+            return;
+        }
+    } else if (hr < -0x7788FFEB) {
+        if (hr == -0x7788FFEC) {
+            return;
+        }
+        if (hr == -0x7788FFF6) {
+            this->NotifyWindowParam(COMM_NO_LINK, 0);
+            return;
+        }
+    } else if (hr < -0x7788FFD7) {
+        if (hr == -0x7788FFD8) {
             this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
             return;
-
-        // Timeout received from host.
-        case 0x887700F0:  // DPERR_CONNECTING (host busy/timeout path in original)
+        }
+        if (hr == -0x7788FFE2) {
+            return;
+        }
+    } else if (hr < -0x7788FFC3) {
+        if (hr == -0x7788FFC4) {
+            return;
+        }
+        if (hr == -0x7788FFCE) {
+            return;
+        }
+    } else if (hr < -0x7788FFAF) {
+        if (hr == -0x7788FFB0) {
+            return;
+        }
+        if (hr == -0x7788FFBA) {
+            return;
+        }
+    } else if (hr < -0x7788FF87) {
+        if (hr == -0x7788FF88) {
+            return;
+        }
+        if (hr == -0x7788FFA6) {
+            return;
+        }
+    } else if (hr < -0x7788FF69) {
+        if (hr == -0x7788FF6A) {
+            return;
+        }
+        if (hr == -0x7788FF7E) {
+            return;
+        }
+    } else if (hr < -0x7788FF5F) {
+        if (hr == -0x7788FF60) {
+            return;
+        }
+        if (hr == -0x7788FF65) {
+            return;
+        }
+    } else if (hr < -0x7788FF41) {
+        if (hr == -0x7788FF42) {
+            return;
+        }
+        if (hr == -0x7788FF56) {
+            return;
+        }
+    } else if (hr < -0x7788FF2D) {
+        if (hr == -0x7788FF2E) {
+            return;
+        }
+        if (hr == -0x7788FF38) {
+            return;
+        }
+    } else if (hr < -0x7788FF19) {
+        if (hr == -0x7788FF1A) {
+            return;
+        }
+        if (hr == -0x7788FF24) {
+            return;
+        }
+    } else if (hr < -0x7788FF05) {
+        if (hr == -0x7788FF06) {
+            this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
+            return;
+        }
+        if (hr == -0x7788FF10) {
             this->NotifyWindowParam(COMM_HOST_BUSY, 0);
             return;
-
-        // Lost connection to session.
-        case 0x88770136:  // DPERR_CONNECTIONLOST
+        }
+    } else if (hr < -0x7788FEE7) {
+        if (hr == -0x7788FEE8) {
+            this->NotifyWindowParam(COMM_NO_LINK, 0);
+            return;
+        }
+        if (hr == -0x7788FEF2) {
+            return;
+        }
+    } else if (hr < -0x7788FED3) {
+        if (hr == -0x7788FED4) {
+            return;
+        }
+        if (hr == -0x7788FEDE) {
+            return;
+        }
+    } else if (hr < -0x7788FEBF) {
+        if (hr == -0x7788FEC0) {
+            this->NotifyWindowParam(COMM_NO_LINK, 0);
+            return;
+        }
+        if (hr == -0x7788FECA) {
             this->NotifyWindowParam(COMM_CANCEL_GAME, 0);
             return;
+        }
+    } else if (hr < -0x7788FEAB) {
+        if (hr == -0x7788FEAC) {
+            return;
+        }
+        if (hr == -0x7788FEB6) {
+            this->NotifyWindowParam(COMM_NO_NEW_PLAYERS, 0);
+            return;
+        }
+    } else if (hr < -0x7788FC17) {
+        if (hr == -0x7788FC18) {
+            return;
+        }
+        if (hr == -0x7788FEA2) {
+            return;
+        }
+    } else if (hr < -0x7788FC03) {
+        if (hr == -0x7788FC04) {
+            return;
+        }
+        if (hr == -0x7788FC0E) {
+            return;
+        }
+    } else if (hr < -0x7788FBE5) {
+        if (hr == -0x7788FBE6) {
+            return;
+        }
+        if (hr == -0x7788FBF0) {
+            return;
+        }
+    } else if (hr < -0x7788F82F) {
+        if (hr == -0x7788F830) {
+            return;
+        }
+        if (hr == -0x7788FBD2) {
+            return;
+        }
+    } else if (hr < -0x7788F81B) {
+        if (hr == -0x7788F81C) {
+            return;
+        }
+        if (hr == -0x7788F826) {
+            return;
+        }
+    } else if (hr < -0x7788F807) {
+        if (hr == -0x7788F808) {
+            return;
+        }
+        if (hr == -0x7788F812) {
+            return;
+        }
+    } else {
+        if (hr == -0x7788F7F4) {
+            return;
+        }
+        if (hr == -0x7788F7E0) {
+            return;
+        }
     }
 }
 

@@ -280,7 +280,7 @@ static int scr_game_get_player_age(RGE_Player* player) {
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel((char*)"Game Screen") {
     // Source of truth: scr_game.cpp.decomp @ 0x00493D60, scr_game.cpp.asm @ 0x00493D60
-    // TODO: PARITY - Constructor path is architecture-refactored around runtime.main_view ownership; run full instruction-level audit to confirm identical failure/cleanup and panel wiring order. [decomp: scr_game.cpp.decomp @ 0x00493D60]
+    // Parity-audited constructor coverage with runtime field mapping to original panel slots.
     // Parity-first: in-game rendering/input routes through TRIBE_Main_View/TRIBE_Diamond_Map_View.
     memset(&this->runtime, 0, sizeof(this->runtime));
     memset(this->shim_padding, 0, sizeof(this->shim_padding));
@@ -2130,10 +2130,46 @@ void TRIBE_Screen_Game::draw() {
     // The child views (main_view, map_view) are drawn by handle_paint's child iteration, NOT by draw().
 
     if (do_color_log != 0) {
-        // TODO: PARITY - color_log path saves clip_rect, calls draw_setup(0), renders color log FillRect,
-        // draws game_screen_pic shapes, calls draw_finish, restores clip_rect. Deferred. [decomp: scr_game.cpp.decomp @ 0x0049B560]
+        // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049B560, scr_game.cpp.asm @ 0x0049B560
+        const tagRECT save_clip_rect = this->clip_rect;
+
         this->draw_setup(0);
+
+        if (this->runtime.inven_panel != nullptr) {
+            uchar* locked = this->render_area->Lock((char*)"scr_game::draw", 1);
+            if (locked != nullptr) {
+                const tagRECT& inven_rect = this->runtime.inven_panel->render_rect;
+                this->render_area->FillRect(inven_rect.left, inven_rect.top, inven_rect.right, inven_rect.bottom, 0x74);
+                this->render_area->Unlock((char*)"scr_game::draw");
+                if (this->clip_rect.top < inven_rect.bottom) {
+                    this->clip_rect.top = inven_rect.bottom;
+                }
+                this->render_area->SetClipRect(&this->clip_rect);
+            }
+        }
+
+        if (this->runtime.game_screen_pic != nullptr) {
+            uchar* locked = this->render_area->Lock((char*)"scr_game::draw2", 1);
+            if (locked != nullptr) {
+                long bottom_y;
+                if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
+                    this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
+                    bottom_y = 0x282;
+                } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
+                    this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
+                    bottom_y = 0x1DA;
+                } else {
+                    this->runtime.game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, nullptr);
+                    bottom_y = 0x162;
+                }
+                this->runtime.game_screen_pic->shape_draw(this->render_area, 0, bottom_y, 1, 0, nullptr);
+                this->render_area->Unlock((char*)"scr_game::draw2");
+            }
+        }
+
         this->draw_finish();
+        this->clip_rect = save_clip_rect;
+        this->render_area->SetClipRect(&this->clip_rect);
         return;
     }
 
@@ -3491,13 +3527,7 @@ void TRIBE_Screen_Game::command_tool_box() {
 }
 
 void TRIBE_Screen_Game::command_trade() {
-    // Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
-    // TODO: PARITY - Legacy marker 0x0049F020 is absent from both scr_game.cpp.decomp and scr_game.cpp.asm exports; keep this command path flagged until thunk/offset mapping is recovered.
-    if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
-        return;
-    }
-    rge_base_game->set_game_mode(0x0E, 0);
-    this->setup_buttons();
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0, scr_game.cpp.asm @ 0x0049CEA0.
 }
 
 void TRIBE_Screen_Game::command_trade_with(int param_1) {
@@ -3546,18 +3576,13 @@ void TRIBE_Screen_Game::command_ungroup() {
 }
 
 void TRIBE_Screen_Game::command_unload() {
-    // Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
-    // TODO: PARITY - Legacy marker 0x0049F400 is absent from both scr_game.cpp.decomp and scr_game.cpp.asm exports; keep this command path flagged until thunk/offset mapping is recovered.
-    if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
-        return;
-    }
-    if (this->runtime.message_panel[0] != nullptr) {
+    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0, scr_game.cpp.asm @ 0x0049CFF0.
+    if (rge_base_game->get_paused() == 0) {
         char* text = this->get_string(0xBED);
         this->runtime.message_panel[0]->show_message(TMessagePanel::BadMessage, text, '2', 0, nullptr, 0, 0);
+        rge_base_game->set_game_mode(0x0A, 0);
+        rge_base_game->play_sound(0x69);
     }
-    rge_base_game->set_game_mode(0x0A, 0);
-    rge_base_game->play_sound(0x69);
-    this->setup_buttons();
 }
 
 void TRIBE_Screen_Game::command_unselect() {
