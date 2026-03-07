@@ -294,7 +294,7 @@ uint RGE_Communications_Speed::GetRecommendedBufferGranularity() {
 }
 
 int RGE_Communications_Speed::AnalyzeGameSpeed(uint* out_granularity, uint* out_frames, int apply_change) {
-    // Fully verified. Source of truth: com_spd.cpp.decomp @ 0x00432DE0
+    // Source of truth: com_spd.cpp.decomp @ 0x00432DE0
     if (this->Comm->IsHost() == 0) {
         return 0;
     }

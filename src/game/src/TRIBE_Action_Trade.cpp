@@ -365,7 +365,8 @@ uchar TRIBE_Action_Trade::update() {
             }
         }
 
-        // TODO: PARITY - Decomp marks this section with an unmapped local (`take_amount`); verify attr subtraction/store ordering against tact_trd.cpp.asm @ 0x004D2CB0.
+        // NOTE: tact_trd.cpp.asm @ 0x004D2F76-0x004D2FFA materializes max_hold/take_amount as stack locals before debit/store updates.
+        // TODO: PARITY - Defensive owner/attributes nullptr guards here are stricter than tact_trd.cpp.decomp @ 0x004D2CB0 and tact_trd.cpp.asm @ 0x004D2FCB-0x004D2FFA.
         float take_amount = max_hold;
         if ((this->obj->owner != nullptr) && (this->obj->owner->attributes != nullptr)) {
             this->obj->owner->add_attribute_num(attr_type, -take_amount, 1);
