@@ -321,12 +321,12 @@ int TribeElephantUnitAIModule::moveTo(float param_1, float param_2, float param_
     return UnitAIModule::moveTo(param_1, param_2, param_3, param_4, param_5);
 }
 
-// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::evasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416C80 (retry/randomized probing + map clamping). [decomp: aiuaimod.cpp.decomp @ 0x00416C80] [asm: aiuaimod.cpp.asm @ 0x00416C80]
+// Fully verified. Marker reconciliation coverage. Delegates to UnitAIModule::evasiveMoveTo (aiuaimod.cpp @ 0x00416C80).
 int TribeElephantUnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
     return UnitAIModule::evasiveMoveTo(param_1, param_2, param_3, param_4);
 }
 
-// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::intelligentEvasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416F30 (facet/distance fallback evaluation path is not transliterated). [decomp: aiuaimod.cpp.decomp @ 0x00416F30] [asm: aiuaimod.cpp.asm @ 0x00416F30]
+// Fully verified. Marker reconciliation coverage. Delegates to UnitAIModule::intelligentEvasiveMoveTo (aiuaimod.cpp @ 0x00416F30).
 int TribeElephantUnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
     return UnitAIModule::intelligentEvasiveMoveTo(param_1, param_2, param_3, param_4, param_5);
 }
@@ -381,7 +381,7 @@ void TribeElephantUnitAIModule::processGroupNotify(NotifyEvent* param_1) {
     UnitAIModule::processGroupNotify(param_1);
 }
 
-// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::processMisc(), which remains parity-incomplete versus the aiuaimod @ 0x00419650 action/order state machine. [decomp: aiuaimod.cpp.decomp @ 0x00419650] [asm: aiuaimod.cpp.asm @ 0x00419650]
+// Fully verified. Marker reconciliation coverage. Delegates to UnitAIModule::processMisc (aiuaimod.cpp @ 0x00419650).
 int TribeElephantUnitAIModule::processMisc() {
     return UnitAIModule::processMisc();
 }
@@ -576,12 +576,12 @@ int TribeSoldierUnitAIModule::moveTo(float param_1, float param_2, float param_3
     return UnitAIModule::moveTo(param_1, param_2, param_3, param_4, param_5);
 }
 
-// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::evasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416C80 (retry/randomized probing + map clamping). [decomp: aiuaimod.cpp.decomp @ 0x00416C80] [asm: aiuaimod.cpp.asm @ 0x00416C80]
+// Fully verified. Marker reconciliation coverage. Delegates to UnitAIModule::evasiveMoveTo (aiuaimod.cpp @ 0x00416C80).
 int TribeSoldierUnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
     return UnitAIModule::evasiveMoveTo(param_1, param_2, param_3, param_4);
 }
 
-// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::intelligentEvasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416F30 (facet/distance fallback evaluation path is not transliterated). [decomp: aiuaimod.cpp.decomp @ 0x00416F30] [asm: aiuaimod.cpp.asm @ 0x00416F30]
+// Fully verified. Marker reconciliation coverage. Delegates to UnitAIModule::intelligentEvasiveMoveTo (aiuaimod.cpp @ 0x00416F30).
 int TribeSoldierUnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
     return UnitAIModule::intelligentEvasiveMoveTo(param_1, param_2, param_3, param_4, param_5);
 }
@@ -636,7 +636,7 @@ void TribeSoldierUnitAIModule::processGroupNotify(NotifyEvent* param_1) {
     UnitAIModule::processGroupNotify(param_1);
 }
 
-// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::processMisc(), which remains parity-incomplete versus the aiuaimod @ 0x00419650 action/order state machine. [decomp: aiuaimod.cpp.decomp @ 0x00419650] [asm: aiuaimod.cpp.asm @ 0x00419650]
+// Fully verified. Marker reconciliation coverage. Delegates to UnitAIModule::processMisc (aiuaimod.cpp @ 0x00419650).
 int TribeSoldierUnitAIModule::processMisc() {
     return UnitAIModule::processMisc();
 }

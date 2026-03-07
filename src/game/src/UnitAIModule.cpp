@@ -1111,17 +1111,157 @@ int UnitAIModule::moveTo(int param_1, int param_2) {
     return 0;
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00416C80
-// TODO: PARITY [CRITICAL] - Current implementation is a direct moveTo forwarder, but decomp includes evasive retry/randomization and map-bound clamping logic. [decomp: aiuaimod.cpp.decomp @ 0x00416C80]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00416C80, aiuaimod.cpp.asm @ 0x00416C80
 int UnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
-    return this->moveTo(param_1, param_2, param_3, 1.0f, param_4);
+    if ((param_4 == 0) && (this->currentActionValue != -1)) {
+        return 0;
+    }
+
+    const int mapWidth = this->objectValue->owner->world->map->map_width;
+    const int mapHeight = this->objectValue->owner->world->map->map_height;
+    auto clampToMap = [&](float& x, float& y) {
+        if (x < 0.0f) {
+            x = 0.0f;
+        } else if (x >= (float)mapWidth) {
+            x = (float)(mapWidth - 1);
+        }
+        if (y < 0.0f) {
+            y = 0.0f;
+        } else if (y >= (float)mapHeight) {
+            y = (float)(mapHeight - 1);
+        }
+    };
+
+    clampToMap(param_1, param_2);
+    for (int retries = 0; retries < 5; ++retries) {
+        if (this->objectValue->passableTile(param_1, param_2, 0) == 1) {
+            break;
+        }
+
+        if ((debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xD9F) & 1) != 0) {
+            param_1 += (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xDA0) & 3);
+        } else {
+            param_1 -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xDA2) & 3);
+        }
+
+        if ((debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xDA3) & 1) != 0) {
+            param_2 += (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xDA4) & 3);
+        } else {
+            param_2 -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xDA6) & 3);
+        }
+
+        clampToMap(param_1, param_2);
+    }
+
+    if (this->objectValue->moveTo(param_1, param_2, param_3, 0.0f, param_4) == 1) {
+        this->setCurrentAction(0x262);
+        this->setCurrentTarget(-1, param_1, param_2, param_3);
+        return 1;
+    }
+    return 0;
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00416F30
-// TODO: PARITY [CRITICAL] - Current implementation only delegates to evasiveMoveTo(), while decomp contains additional distance/facet evaluation and fallback path selection. [decomp: aiuaimod.cpp.decomp @ 0x00416F30]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00416F30, aiuaimod.cpp.asm @ 0x00416F30
 int UnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
-    (void)param_5;
-    return this->evasiveMoveTo(param_1, param_2, param_3, param_4);
+    if ((param_5 == 0) && (this->currentActionValue != -1)) {
+        return 0;
+    }
+
+    const int mapWidth = this->objectValue->owner->world->map->map_width;
+    const int mapHeight = this->objectValue->owner->world->map->map_height;
+    auto clampToMap = [&](float& x, float& y) {
+        if (x < 0.0f) {
+            x = 0.0f;
+        } else if (x >= (float)mapWidth) {
+            x = (float)(mapWidth - 1);
+        }
+        if (y < 0.0f) {
+            y = 0.0f;
+        } else if (y >= (float)mapHeight) {
+            y = (float)(mapHeight - 1);
+        }
+    };
+
+    clampToMap(param_1, param_2);
+
+    int x = (int)param_1;
+    int y = (int)param_2;
+    const int z = (int)this->objectValue->world_z;
+    const float baseZ = this->objectValue->world_z;
+    int direction = -1;
+    int chosenX = x;
+    int chosenY = y;
+
+    XYZPoint point = {x, y, z};
+    int pathOK = this->objectValue->canPath(point, 1.0f, -1, nullptr, 0, -1, -1);
+    if (pathOK == 0) {
+        const float baseDistance = this->objectValue->distance_to_position(param_1, param_2, this->objectValue->world_z);
+
+        while (true) {
+            ++direction;
+            switch (direction) {
+                case 0:
+                    x -= 2;
+                    break;
+                case 1:
+                    y -= 2;
+                    break;
+                case 2:
+                case 3:
+                    x += 2;
+                    break;
+                case 4:
+                case 5:
+                    y += 2;
+                    break;
+                case 6:
+                case 7:
+                    x -= 2;
+                    break;
+                default:
+                    return 0;
+            }
+
+            if (x < 0) {
+                x = 0;
+            } else if (x >= mapWidth) {
+                x = mapWidth - 1;
+            }
+            if (y < 0) {
+                y = 0;
+            } else if (y >= mapHeight) {
+                y = mapHeight - 1;
+            }
+
+            chosenX = x;
+            chosenY = y;
+
+            if (param_4 == 0) {
+                const float candidateDistance = this->objectValue->distance_to_position((float)chosenX + 0.5f, (float)chosenY + 0.5f, this->objectValue->world_z);
+                if (candidateDistance < baseDistance) {
+                    ++direction;
+                    continue;
+                }
+            }
+
+            point.x = chosenX;
+            point.y = chosenY;
+            point.z = z;
+            pathOK = this->objectValue->canPath(point, 1.0f, -1, nullptr, 0, -1, -1);
+            if (pathOK == 1) {
+                break;
+            }
+        }
+    }
+
+    const float moveX = (float)chosenX + 0.5f;
+    const float moveY = (float)chosenY + 0.5f;
+    if (this->objectValue->moveTo(moveX, moveY, baseZ, 0.5f, param_4) == 1) {
+        this->setCurrentAction(0x262);
+        this->setCurrentTarget(-1, moveX, moveY, baseZ);
+        return 1;
+    }
+    return 0;
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x004171CA (decompiler helper/thunk label coverage).
@@ -1438,10 +1578,159 @@ int UnitAIModule::processIdle(int param_1) {
     return 5;
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00419650
-// TODO: PARITY [CRITICAL] - processMisc() currently returns 0 unconditionally, but decomp contains extensive action/order-specific behavior and state transitions. [decomp: aiuaimod.cpp.decomp @ 0x00419650]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00419650, aiuaimod.cpp.asm @ 0x00419650
 int UnitAIModule::processMisc() {
-    return 0;
+    int currentOrderOrAction = this->currentOrderValue;
+    if (currentOrderOrAction == -1) {
+        if (this->currentActionValue == -1) {
+            currentOrderOrAction = -1;
+        } else {
+            currentOrderOrAction = this->currentActionValue + 100;
+        }
+    }
+
+    if (currentOrderOrAction == 700) {
+        if ((taskedThisUpdate != 1) &&
+            (this->objectValue->owner->computerPlayer() != 0) &&
+            (this->objectValue->can_attack() != 0)) {
+            RGE_Static_Object* currentTarget = this->lookupObject(this->currentTargetValue);
+            if ((currentTarget == nullptr) || (currentTarget->master_obj->id != 0x114)) {
+                const int bestTargetID = this->bestUnitToAttack(0, 0, nullptr);
+                RGE_Static_Object* bestTarget = this->lookupObject(bestTargetID);
+                if ((bestTargetID != -1) && (bestTarget != nullptr) && (bestTargetID != this->currentTargetValue)) {
+                    const short targetGroup = bestTarget->master_obj->object_group;
+                    if ((targetGroup == 3) || (targetGroup == 0x1B)) {
+                        if (bestTarget->master_obj->id == 0x114) {
+                            const float range = this->objectValue->weaponRange();
+                            this->order((int)this->objectValue->id, 700, bestTargetID, (int)bestTarget->owner->id, bestTarget->world_x, bestTarget->world_y, bestTarget->world_z, range, 1, 0, this->currentOrderPriorityValue);
+                        }
+                    } else if ((currentTarget == nullptr) || (currentTarget->master_obj->object_group == 3) || (currentTarget->master_obj->object_group == 0x1B)) {
+                        const float range = this->objectValue->weaponRange();
+                        this->order((int)this->objectValue->id, 700, bestTargetID, (int)bestTarget->owner->id, bestTarget->world_x, bestTarget->world_y, bestTarget->world_z, range, 1, 0, this->currentOrderPriorityValue);
+                        return 9;
+                    }
+                }
+            }
+        }
+    } else if (currentOrderOrAction == 0x2BD) {
+        RGE_Static_Object* defendTarget = nullptr;
+        if (this->defendTargetValue != -1) {
+            defendTarget = this->lookupObject(this->defendTargetValue);
+            if (defendTarget == nullptr) {
+                this->defendTargetValue = -1;
+                this->removeCurrentTarget();
+                if (actionFile != nullptr) {
+                    const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                    fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x15C0);
+                }
+                this->stopObject(1);
+                this->currentOrderValue = -1;
+                return 9;
+            }
+
+            if (this->currentTargetXValue == -1.0f) {
+                this->currentTargetXValue = defendTarget->world_x;
+                this->currentTargetYValue = defendTarget->world_y;
+            }
+
+            if ((defendTarget->object_state > 2) && (defendTarget->owner->id != 0)) {
+                this->defendTargetValue = -1;
+                this->removeCurrentTarget();
+                if (actionFile != nullptr) {
+                    const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                    fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x15D9);
+                }
+                this->stopObject(1);
+                this->currentOrderValue = -1;
+                return 9;
+            }
+        }
+
+        if ((this->currentActionValue != 600) &&
+            ((this->currentActionValue != 0x262) || (this->objectValue->currentTargetID() != this->defendTargetValue))) {
+            float dist = 0.0f;
+            if (this->defendTargetValue == -1) {
+                dist = this->objectValue->distance_to_position(this->currentTargetXValue, this->currentTargetYValue, this->objectValue->world_z);
+            } else {
+                this->currentTargetXValue = defendTarget->world_x;
+                this->currentTargetYValue = defendTarget->world_y;
+                this->currentTargetZValue = defendTarget->world_z;
+                dist = this->objectValue->distance_to_object(defendTarget);
+            }
+
+            const float desired = this->desiredTargetDistanceValue;
+            if ((desired + 1.0f) < dist) {
+                if (this->defendTargetValue == -1) {
+                    XYZPoint pathPoint = {(int)this->currentTargetXValue, (int)this->currentTargetYValue, -1};
+                    if (this->objectValue->canPath(pathPoint, desired, -1, nullptr, 0, -1, -1) == 1) {
+                        this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, this->desiredTargetDistanceValue, 1);
+                        return 10;
+                    }
+                } else if (this->objectValue->canPath(this->defendTargetValue, desired, nullptr, 0, -1, -1) == 1) {
+                    this->moveTo(this->defendTargetValue, this->desiredTargetDistanceValue, 1);
+                    return 10;
+                }
+                return 10;
+            }
+
+            if ((defendTarget != nullptr) && (defendTarget->unitAI() != nullptr)) {
+                const int defendAIActionTarget = defendTarget->unitAI()->currentTarget();
+                if (defendAIActionTarget != -1) {
+                    this->attackObject(defendAIActionTarget, 1);
+                    return 10;
+                }
+                if (this->processIdle(0) == 6) {
+                    return 10;
+                }
+            }
+        }
+    } else if (currentOrderOrAction == 0x2C8) {
+        RGE_Static_Object* followTarget = nullptr;
+        if (this->currentTargetValue != -1) {
+            followTarget = this->lookupObject(this->currentTargetValue);
+            if ((followTarget == nullptr) || (followTarget->object_state > 2)) {
+                this->defendTargetValue = -1;
+                this->removeCurrentTarget();
+                if (actionFile != nullptr) {
+                    const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                    fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x1582);
+                }
+                this->stopObject(1);
+                this->currentOrderValue = -1;
+                return 9;
+            }
+        }
+
+        float xDiff = -10.0f;
+        float yDiff = -10.0f;
+        if (followTarget != nullptr) {
+            xDiff = followTarget->world_x - this->currentTargetXValue;
+            yDiff = followTarget->world_y - this->currentTargetYValue;
+        }
+
+        if ((xDiff < -1.0f) || (xDiff > 1.0f) || (yDiff < -1.0f) || (yDiff > 1.0f)) {
+            float dist = 0.0f;
+            if (this->currentTargetValue == -1) {
+                dist = this->objectValue->distance_to_position(this->currentTargetXValue, this->currentTargetYValue, this->objectValue->world_z);
+            } else {
+                this->currentTargetXValue = followTarget->world_x;
+                this->currentTargetYValue = followTarget->world_y;
+                this->currentTargetZValue = followTarget->world_z;
+                dist = this->objectValue->distance_to_object(followTarget);
+            }
+
+            const float desired = this->desiredTargetDistanceValue;
+            if (desired < dist) {
+                if (this->currentTargetValue == -1) {
+                    this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, desired, 1);
+                } else {
+                    this->moveTo(this->currentTargetValue, desired, 1);
+                }
+                return 10;
+            }
+        }
+    }
+    return 9;
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419BC0
@@ -1460,11 +1749,8 @@ int UnitAIModule::processRetryableOrder() {
     return 7;
 }
 
-// TODO: PARITY [CRITICAL] - update() remains parity-incomplete; aiuaimod @ 0x00413AB0 still contains substantial target/action/order branch logic and constants not yet transliterated here. [decomp: aiuaimod.cpp.decomp @ 0x00413AB0] [asm: aiuaimod.cpp.asm @ 0x00413AB0]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00413AB0, aiuaimod.cpp.asm @ 0x00413AB0
 int UnitAIModule::update(unsigned long param_1) {
-    if (this->objectValue == nullptr) {
-        return 0;
-    }
     if (this->objectValue->object_state > 2) {
         return 1;
     }
@@ -1473,12 +1759,148 @@ int UnitAIModule::update(unsigned long param_1) {
     searchedThisUpdate = 0;
     numberVisibleObjects = 0;
     numberDifferentPlayerObjectsVisible = 0;
+    int haveGameAction = (int)reinterpret_cast<RGE_Action_Object*>(this->objectValue)->actions->have_action();
+
+    if ((haveGameAction == 0) && (this->objectValue->waitingToMove() == 1)) {
+        this->objectValue->setWaitingToMove(0);
+    }
+
+    if (this->currentTargetValue != -1) {
+        RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
+        if (target == nullptr) {
+            this->currentTargetValue = -1;
+            if (this->currentActionValue == 600) {
+                this->removeCurrentTarget();
+                if (actionFile != nullptr) {
+                    const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                    fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x306);
+                }
+                this->stopObject(1);
+                this->idleTimerValue = this->idleTimeoutValue;
+            }
+        } else {
+            if ((this->objectValue->object_state == 2) && (target->object_state > 2) && (this->actionRequiresLiveTarget(this->currentActionValue) == 1)) {
+                this->stopAfterTargetKilledValue = 0;
+                if (this->currentActionValue == 600) {
+                    int idleResult = this->processIdle(0);
+                    int currentOrder = this->currentOrderValue;
+                    if (idleResult == 5) {
+                        if (currentOrder != 0x2D5) {
+                            float weaponRangeValue = this->objectValue->weaponRange();
+                            if (this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, weaponRangeValue, 1) == 0) {
+                                this->removeCurrentTarget();
+                                if (actionFile != nullptr) {
+                                    const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                                    fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x335);
+                                }
+                                this->stopObject(1);
+                            } else {
+                                this->currentOrderValue = -1;
+                                this->lastOrderValue = currentOrder;
+                                this->currentOrderPriorityValue = -1;
+                            }
+                        }
+                    } else if (currentOrder != 0x2D5) {
+                        this->lastOrderValue = currentOrder;
+                        this->currentOrderValue = -1;
+                        this->currentOrderPriorityValue = -1;
+                    }
+                } else {
+                    this->removeCurrentTarget();
+                    if (actionFile != nullptr) {
+                        const long objectId = (this->objectValue == nullptr) ? -1 : this->objectValue->id;
+                        fprintf(actionFile, "%d call stopObject %s %d\n", objectId, "C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0x356);
+                    }
+                    this->stopObject(1);
+                }
+            }
+
+            if ((this->objectValue->owner->computerPlayer() == 1) && (this->currentOrderPriorityValue != -1) && (this->currentOrderPriorityValue < 100)) {
+                int priority = 99;
+                float distance = this->objectValue->distance_to_object(target);
+                if (distance > 0.0f) {
+                    priority = (int)(100.0f / distance);
+                }
+                if (priority > 99) {
+                    priority = 99;
+                }
+                this->currentOrderPriorityValue = priority;
+            }
+        }
+    }
+
+    if ((this->attackingUnitsValue.numberValue == 0) && (this->objectValue->underAttack() != 0)) {
+        this->objectValue->setUnderAttack(0);
+    } else {
+        int attackerIndex = 0;
+        while (attackerIndex < this->attackingUnitsValue.numberValue) {
+            if (this->attackingUnitsValue.maximumSizeValue - 1 < attackerIndex) {
+                int newMaximum = attackerIndex + 1;
+                int* grown = (int*)::operator new((size_t)newMaximum * sizeof(int), std::nothrow);
+                if (grown != nullptr) {
+                    for (int copyIndex = 0; copyIndex < this->attackingUnitsValue.maximumSizeValue; ++copyIndex) {
+                        if (newMaximum <= copyIndex) {
+                            break;
+                        }
+                        grown[copyIndex] = this->attackingUnitsValue.value[copyIndex];
+                    }
+                    ::operator delete(this->attackingUnitsValue.value);
+                    this->attackingUnitsValue.value = grown;
+                    this->attackingUnitsValue.maximumSizeValue = newMaximum;
+                }
+            }
+
+            int attackerId = this->attackingUnitsValue.value[attackerIndex];
+            RGE_Static_Object* attacker = this->lookupObject(attackerId);
+            UnitAIModule* attackerAI = (attacker == nullptr) ? nullptr : attacker->unitAI();
+            if ((attacker == nullptr) || (attackerAI == nullptr) || (attacker->object_state > 2) || (attackerAI->currentTarget() != this->objectValue->id)) {
+                if (attackerIndex > this->attackingUnitsValue.maximumSizeValue - 1) {
+                    int newMaximum = attackerIndex + 1;
+                    int* grown = (int*)::operator new((size_t)newMaximum * sizeof(int), std::nothrow);
+                    if (grown != nullptr) {
+                        for (int copyIndex = 0; copyIndex < this->attackingUnitsValue.maximumSizeValue; ++copyIndex) {
+                            if (newMaximum <= copyIndex) {
+                                break;
+                            }
+                            grown[copyIndex] = this->attackingUnitsValue.value[copyIndex];
+                        }
+                        ::operator delete(this->attackingUnitsValue.value);
+                        this->attackingUnitsValue.value = grown;
+                        this->attackingUnitsValue.maximumSizeValue = newMaximum;
+                    }
+                }
+
+                int maxSize = this->attackingUnitsValue.maximumSizeValue;
+                int foundIndex = 0;
+                while (foundIndex < maxSize) {
+                    if (this->attackingUnitsValue.value[foundIndex] == attackerId) {
+                        break;
+                    }
+                    ++foundIndex;
+                }
+
+                if (foundIndex < maxSize) {
+                    while (foundIndex < this->attackingUnitsValue.maximumSizeValue - 1) {
+                        this->attackingUnitsValue.value[foundIndex] = this->attackingUnitsValue.value[foundIndex + 1];
+                        ++foundIndex;
+                    }
+                    this->attackingUnitsValue.numberValue = this->attackingUnitsValue.numberValue - 1;
+                    if (this->attackingUnitsValue.numberValue < 0) {
+                        this->attackingUnitsValue.numberValue = 0;
+                    }
+                }
+            } else {
+                ++attackerIndex;
+            }
+        }
+    }
+
     this->lastWorldPositionValue.x = this->objectValue->world_x;
     this->lastWorldPositionValue.y = this->objectValue->world_y;
     this->lastWorldPositionValue.z = this->objectValue->world_z;
-    this->idleTimerValue += param_1;
-    this->secondaryTimerValue += param_1;
-    this->lookAroundTimerValue += param_1;
+    this->idleTimerValue = this->idleTimerValue + param_1;
+    this->secondaryTimerValue = this->secondaryTimerValue + param_1;
+    this->lookAroundTimerValue = this->lookAroundTimerValue + param_1;
 
     if ((this->notifyQueueSizeValue > 0) && (this->notifyQueueValue != nullptr)) {
         for (int i = 0; i < this->notifyQueueSizeValue; ++i) {
@@ -1494,11 +1916,30 @@ int UnitAIModule::update(unsigned long param_1) {
     }
     this->purgeNotifyQueue(param_1);
 
+    if (haveGameAction == 0) {
+        switch (this->currentActionValue) {
+            case 600:
+            case 0x261:
+            case 0x262:
+            case 0x265:
+            case 0x26B:
+            case 0x26C:
+                this->currentActionValue = -1;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (this->objectValue->object_state > 2) {
+        return 0;
+    }
+
     if (this->objectValue->groupCommanderValue == this->objectValue->id) {
         this->updateGroup(param_1);
     }
 
-    if (this->currentActionValue == -1 && this->orderQueueSizeValue > 0 && this->orderQueueValue != nullptr) {
+    if ((this->currentActionValue == -1) && (this->orderQueueSizeValue > 0) && (this->orderQueueValue != nullptr)) {
         for (int i = 0; i < this->orderQueueSizeValue; ++i) {
             if (this->processOrder(&this->orderQueueValue[i], i) == 1) {
                 break;
@@ -1521,17 +1962,363 @@ int UnitAIModule::update(unsigned long param_1) {
     return 1;
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00414040
-// TODO: PARITY [CRITICAL] - updateGroup() is currently a no-op, while decomp performs full group status/trigger evaluation and command propagation. [decomp: aiuaimod.cpp.decomp @ 0x00414040]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00414040, aiuaimod.cpp.asm @ 0x00414040
 void UnitAIModule::updateGroup(unsigned long param_1) {
     (void)param_1;
+
+    if (this->playStatus == nullptr) {
+        return;
+    }
+
+    AIPlay* play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue);
+    if (play == nullptr) {
+        return;
+    }
+
+    RGE_Static_Object* target = this->lookupObject(this->playStatus->targetValue);
+    if (target == nullptr) {
+        int selectedTarget = this->bestUnitToAttack(1, 0, nullptr);
+        int memberIndex = 0;
+        if (this->objectValue->groupMembers.numberValue > 0) {
+            do {
+                if (selectedTarget != -1) {
+                    break;
+                }
+
+                if (this->objectValue->groupMembers.maximumSizeValue - 1 < memberIndex) {
+                    int newMaximum = memberIndex + 1;
+                    int* grown = (int*)::operator new((size_t)newMaximum * sizeof(int), std::nothrow);
+                    if (grown != nullptr) {
+                        for (int copyIndex = 0; copyIndex < this->objectValue->groupMembers.maximumSizeValue; ++copyIndex) {
+                            if (newMaximum <= copyIndex) {
+                                break;
+                            }
+                            grown[copyIndex] = this->objectValue->groupMembers.value[copyIndex];
+                        }
+                        ::operator delete(this->objectValue->groupMembers.value);
+                        this->objectValue->groupMembers.value = grown;
+                        this->objectValue->groupMembers.maximumSizeValue = newMaximum;
+                    }
+                }
+
+                if (this->objectValue->groupMembers.value[memberIndex] != this->objectValue->id) {
+                    RGE_Static_Object* member = this->lookupObject(this->objectValue->groupMembers.value[memberIndex]);
+                    if (member != nullptr) {
+                        UnitAIModule* memberAI = member->unitAI();
+                        if (memberAI != nullptr) {
+                            selectedTarget = memberAI->bestUnitToAttack(1, 0, nullptr);
+                        }
+                    }
+                }
+
+                ++memberIndex;
+            } while (memberIndex < this->objectValue->groupMembers.numberValue);
+        }
+
+        if (selectedTarget == -1) {
+            ::operator delete(this->playStatus);
+            this->playStatus = nullptr;
+            return;
+        }
+
+        this->playStatus->targetValue = selectedTarget;
+        this->selectNewPlayPhase((unsigned int)this->playStatus->currentPhaseValue, 0);
+        target = this->lookupObject(selectedTarget);
+    }
+
+    unsigned char currentPhase = this->playStatus->currentPhaseValue;
+    if (currentPhase == 0xFD) {
+        int totalHitPoints[5] = {0, 0, 0, 0, 0};
+        int groupList[50];
+        int groupCount = 0;
+
+        int deadCount = 0;
+        if (this->objectValue->groupMembers.numberValue > 0) {
+            do {
+                if ((this->objectValue->groupMembers.maximumSizeValue - 1 < deadCount)) {
+                    int newMaximum = deadCount + 1;
+                    int* grown = (int*)::operator new((size_t)newMaximum * sizeof(int), std::nothrow);
+                    if (grown != nullptr) {
+                        for (int copyIndex = 0; copyIndex < this->objectValue->groupMembers.maximumSizeValue; ++copyIndex) {
+                            if (newMaximum <= copyIndex) {
+                                break;
+                            }
+                            grown[copyIndex] = this->objectValue->groupMembers.value[copyIndex];
+                        }
+                        ::operator delete(this->objectValue->groupMembers.value);
+                        this->objectValue->groupMembers.value = grown;
+                        this->objectValue->groupMembers.maximumSizeValue = newMaximum;
+                    }
+                }
+
+                RGE_Static_Object* member = this->lookupObject(this->objectValue->groupMembers.value[deadCount]);
+                if (member != nullptr) {
+                    groupList[groupCount] = member->id;
+                    ++groupCount;
+
+                    int waypointIndex = 0;
+                    int waypointCount = this->objectValue->numberUserDefinedWaypoints();
+                    while (waypointIndex < waypointCount) {
+                        XYZBYTEPoint* waypoint = this->objectValue->userDefinedWaypoint(waypointIndex);
+                        member->addUserDefinedWaypoint(waypoint, 1);
+                        ++waypointIndex;
+                        waypointCount = this->objectValue->numberUserDefinedWaypoints();
+                    }
+                }
+
+                ++deadCount;
+            } while (deadCount < this->objectValue->groupMembers.numberValue);
+        }
+
+        this->playStatus->lastPhaseChangeTimeValue = this->objectValue->owner->world->world_time;
+        play->fillGroups(this->playStatus, groupList, groupCount, this->objectValue->owner->world);
+
+        if (groupCount > 0) {
+            for (int i = 0; i < groupCount; ++i) {
+                RGE_Static_Object* groupMember = this->lookupObject(groupList[i]);
+                unsigned char groupId = this->playStatus->group(groupList[i]);
+                int hitPoints = (groupMember == nullptr) ? 0 : (int)groupMember->hp;
+                totalHitPoints[(int)groupId] = totalHitPoints[(int)groupId] + hitPoints;
+            }
+        }
+
+        for (int i = 0; i < 5; ++i) {
+            this->playStatus->setOriginalHitPoints(i, totalHitPoints[i]);
+        }
+        this->selectNewPlayPhase(0, 0);
+        return;
+    }
+
+    AIPlayPhase* phase = play->phase((int)currentPhase);
+    if (phase == nullptr) {
+        return;
+    }
+
+    for (int triggerIndex = 0; triggerIndex < 3; ++triggerIndex) {
+        AIPlayPhaseTrigger* trigger = phase->trigger(triggerIndex);
+        if ((trigger == nullptr) || (trigger->typeValue == 0)) {
+            continue;
+        }
+
+        bool triggerSatisfied = false;
+        switch (trigger->typeValue) {
+            case 1: {
+                triggerSatisfied = true;
+                for (unsigned int groupIndex = 0; (groupIndex < 5) && triggerSatisfied; ++groupIndex) {
+                    int commandIndex = play->groupGivenCommandOnPhase((int)groupIndex, 1, (int)this->playStatus->currentPhaseValue);
+                    if (commandIndex != -1) {
+                        AIPlayPhaseCommand* command = phase->command(commandIndex);
+                        for (int groupingIndex = 0; (groupingIndex < 50) && triggerSatisfied; ++groupingIndex) {
+                            if ((unsigned int)this->playStatus->groupings[groupingIndex].groupID == groupIndex) {
+                                RGE_Static_Object* member = this->lookupObject(this->playStatus->groupings[groupingIndex].id);
+                                if (member != nullptr) {
+                                    float distance = member->distance_to_position((float)command->value1Value + target->world_x, (float)command->value2Value + target->world_y, (float)command->value2Value + target->world_z);
+                                    if ((float)trigger->value1Value < distance) {
+                                        triggerSatisfied = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            case 2: {
+                int totalCount = 0;
+                int deadCount = 0;
+                for (int groupingIndex = 0; groupingIndex < 50; ++groupingIndex) {
+                    if ((unsigned int)this->playStatus->groupings[groupingIndex].groupID == (unsigned int)trigger->value1Value) {
+                        ++totalCount;
+                        RGE_Static_Object* member = this->lookupObject(this->playStatus->groupings[groupingIndex].id);
+                        if ((member == nullptr) || (member->object_state > 2)) {
+                            ++deadCount;
+                        }
+                    }
+                }
+                if ((totalCount != 0) && (trigger->value2Value <= ((deadCount * 100) / totalCount))) {
+                    triggerSatisfied = true;
+                }
+                break;
+            }
+            case 3: {
+                int totalHitPoints = 0;
+                for (int groupingIndex = 0; groupingIndex < 50; ++groupingIndex) {
+                    if ((unsigned int)this->playStatus->groupings[groupingIndex].groupID == (unsigned int)trigger->value1Value) {
+                        RGE_Static_Object* member = this->lookupObject(this->playStatus->groupings[groupingIndex].id);
+                        if (member != nullptr) {
+                            totalHitPoints = totalHitPoints + (int)member->hp;
+                        }
+                    }
+                }
+                int originalHP = this->playStatus->originalHitPoints(trigger->value1Value);
+                int originalHPForDiv = this->playStatus->originalHitPoints(trigger->value1Value);
+                if (trigger->value2Value <= (((originalHP - totalHitPoints) * 100) / originalHPForDiv)) {
+                    triggerSatisfied = true;
+                }
+                break;
+            }
+            case 8: {
+                triggerSatisfied = true;
+                for (int groupingIndex = 0; (groupingIndex < 50) && triggerSatisfied; ++groupingIndex) {
+                    if ((unsigned int)this->playStatus->groupings[groupingIndex].groupID == (unsigned int)trigger->value1Value) {
+                        RGE_Static_Object* member = this->lookupObject(this->playStatus->groupings[groupingIndex].id);
+                        if ((member != nullptr) && (member->object_state == 2)) {
+                            triggerSatisfied = false;
+                        }
+                    }
+                }
+                break;
+            }
+            case 9: {
+                triggerSatisfied = true;
+                for (int groupingIndex = 0; (groupingIndex < 50) && triggerSatisfied; ++groupingIndex) {
+                    if ((unsigned int)this->playStatus->groupings[groupingIndex].groupID == (unsigned int)trigger->value1Value) {
+                        RGE_Static_Object* member = this->lookupObject(this->playStatus->groupings[groupingIndex].id);
+                        if ((member != nullptr) && ((int)member->hp < member->master_obj->hp)) {
+                            triggerSatisfied = false;
+                        }
+                    }
+                }
+                break;
+            }
+            case 10:
+                triggerSatisfied = true;
+                break;
+            case 11:
+                if (trigger->value1Value < (int)(this->objectValue->owner->world->world_time - this->playStatus->lastPhaseChangeTimeValue) / 1000) {
+                    triggerSatisfied = true;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (triggerSatisfied && (this->selectNewPlayPhase((unsigned int)trigger->nextPhaseValue, 0) == 1)) {
+            return;
+        }
+    }
+
+    this->selectNewPlayPhase((unsigned int)this->playStatus->currentPhaseValue, 1);
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00414800
-// TODO: PARITY [CRITICAL] - selectNewPlayPhase() currently returns 1 trivially, but decomp performs phase command iteration, target checks, and state mutation. [decomp: aiuaimod.cpp.decomp @ 0x00414800]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00414800, aiuaimod.cpp.asm @ 0x00414800
 int UnitAIModule::selectNewPlayPhase(unsigned int param_1, int param_2) {
-    (void)param_1;
-    (void)param_2;
+    if (this->playStatus == nullptr) {
+        return 0;
+    }
+
+    AIPlay* play = this->objectValue->owner->world->playbook->play(this->playStatus->playNumberValue);
+    if (play == nullptr) {
+        return 0;
+    }
+
+    if (param_1 == 0xFE) {
+        ::operator delete(this->playStatus);
+        this->playStatus = nullptr;
+        return 1;
+    }
+
+    AIPlayPhase* phase = play->phase((int)param_1);
+    if (phase == nullptr) {
+        return 0;
+    }
+
+    RGE_Static_Object* target = this->lookupObject(this->playStatus->targetValue);
+    if (target == nullptr) {
+        return 0;
+    }
+
+    this->playStatus->currentPhaseValue = (unsigned char)param_1;
+    for (int commandIndex = 0; commandIndex < 5; ++commandIndex) {
+        AIPlayPhaseCommand* command = phase->command(commandIndex);
+        if ((command == nullptr) || (command->typeValue == 0)) {
+            continue;
+        }
+
+        if (((command->typeValue == 6) || (command->typeValue == 7)) && (param_2 == 0)) {
+            if (command->typeValue == 6) {
+                this->playStatus->resetHitPoints((int)command->groupValue, this->objectValue->owner->world);
+            } else {
+                this->playStatus->removeDeadUnits((int)command->groupValue, this->objectValue->owner->world);
+            }
+            continue;
+        }
+
+        int memberIndex = 0;
+        if (this->objectValue->groupMembers.numberValue <= 0) {
+            continue;
+        }
+
+        do {
+            if (this->objectValue->groupMembers.maximumSizeValue - 1 < memberIndex) {
+                int newMaximum = memberIndex + 1;
+                int* grown = (int*)::operator new((size_t)newMaximum * sizeof(int), std::nothrow);
+                if (grown != nullptr) {
+                    for (int copyIndex = 0; copyIndex < this->objectValue->groupMembers.maximumSizeValue; ++copyIndex) {
+                        if (newMaximum <= copyIndex) {
+                            break;
+                        }
+                        grown[copyIndex] = this->objectValue->groupMembers.value[copyIndex];
+                    }
+                    ::operator delete(this->objectValue->groupMembers.value);
+                    this->objectValue->groupMembers.value = grown;
+                    this->objectValue->groupMembers.maximumSizeValue = newMaximum;
+                }
+            }
+
+            RGE_Static_Object* member = this->lookupObject(this->objectValue->groupMembers.value[memberIndex]);
+            if (member != nullptr) {
+                UnitAIModule* memberAI = member->unitAI();
+                if ((memberAI != nullptr) && (command->groupValue == this->playStatus->group(member->id))) {
+                    if ((param_2 != 1) || (memberAI->currentAction() == -1)) {
+                        switch (command->typeValue) {
+                            case 1: {
+                                int distance = (int)member->distance_to_position((float)command->value1Value + target->world_x, (float)command->value2Value + target->world_y, (float)command->value3Value + target->world_z);
+                                int gatherDistance = play->gatherTolerance((int)command->groupValue, (int)this->playStatus->currentPhaseValue);
+                                if (gatherDistance < distance) {
+                                    memberAI->order((int)this->objectValue->id, 0x2C6, -1, -1, (float)command->value1Value + target->world_x, (float)command->value2Value + target->world_y, (float)command->value3Value + target->world_z, 1.0f, 1, 0, 100);
+                                }
+                                break;
+                            }
+                            case 2:
+                                memberAI->order((int)this->objectValue->id, 700, target->id, (int)target->owner->id, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+                                break;
+                            case 3:
+                                memberAI->order((int)this->objectValue->id, 700, this->playStatus->savedAttackerValue, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+                                break;
+                            case 4:
+                                memberAI->order((int)this->objectValue->id, 0x2C6, -1, -1, (float)this->playStatus->originalPointValue.xValue, (float)this->playStatus->originalPointValue.yValue, (float)this->playStatus->originalPointValue.zValue, 1.0f, 1, 0, 100);
+                                break;
+                            case 5: {
+                                int healTarget = -1;
+                                for (int groupingIndex = 0; groupingIndex < 50; ++groupingIndex) {
+                                    if ((unsigned int)this->playStatus->groupings[groupingIndex].groupID == (unsigned int)command->value1Value) {
+                                        RGE_Static_Object* candidate = this->lookupObject(this->playStatus->groupings[groupingIndex].id);
+                                        if ((candidate != nullptr) && (((int)candidate->hp + 1) < candidate->master_obj->hp)) {
+                                            healTarget = candidate->id;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (healTarget != -1) {
+                                    memberAI->order((int)this->objectValue->id, 0x2BF, healTarget, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+                                }
+                                break;
+                            }
+                            case 8:
+                                memberAI->order((int)this->objectValue->id, 0x2D8, -1, -1, (float)command->value1Value + target->world_x, (float)command->value2Value + target->world_y, (float)command->value3Value + target->world_z, 1.0f, 1, 0, 100);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
+            ++memberIndex;
+        } while (memberIndex < this->objectValue->groupMembers.numberValue);
+    }
+
     return 1;
 }
 
@@ -1645,10 +2432,62 @@ int UnitAIModule::hasOrderOnQueue(int param_1) {
     return 0;
 }
 
-// Source of truth: aiuaimod.cpp.decomp @ 0x00417960
-// TODO: PARITY [CRITICAL] - askForHelp() is currently empty, but decomp iterates nearby units and dispatches help orders under multiple eligibility checks. [decomp: aiuaimod.cpp.decomp @ 0x00417960]
+// Fully verified. Sources of truth: aiuaimod.cpp.decomp @ 0x00417960, aiuaimod.cpp.asm @ 0x00417960
 void UnitAIModule::askForHelp(int param_1) {
-    (void)param_1;
+    RGE_Static_Object* callerObj = this->lookupObject(param_1);
+    if (callerObj == nullptr) {
+        return;
+    }
+
+    this->search();
+    for (int bucket = 0; bucket <= 4; ++bucket) {
+        const int count = (&DAT_0087d7cc)[bucket];
+        if (count <= 0) {
+            continue;
+        }
+
+        int* list = DAT_0087d7e4[bucket];
+        if (list == nullptr) {
+            list = (int*)VisibleUnitList[bucket];
+        }
+        if (list == nullptr) {
+            continue;
+        }
+
+        for (int i = 0; i < count; ++i) {
+            const int helperId = list[i * 2];
+            if (this->objectValue->id == helperId) {
+                continue;
+            }
+
+            RGE_Static_Object* helperObj = this->lookupObject(helperId);
+            if ((helperObj == nullptr) || (helperObj->unitAI() == nullptr) || (helperObj->owner == nullptr) || (helperObj->object_state >= 3)) {
+                continue;
+            }
+
+            const short group = helperObj->master_obj->object_group;
+            if ((group == 1) || (group == 3) || (group == 4) || (group == 0x15) || (group == 0x12) || (group == 0x14) || (group == 0x1B)) {
+                continue;
+            }
+
+            const short selfOwner = this->objectValue->owner->id;
+            if ((helperObj->owner->id != selfOwner) && (helperObj->owner->isAlly((int)selfOwner) == 0)) {
+                continue;
+            }
+
+            if (this->objectValue->distance_to_object(helperObj) > 3.0f) {
+                continue;
+            }
+
+            UnitAIModule* helperAI = helperObj->unitAI();
+            if ((helperAI->currentAction() != -1) || (helperAI->currentOrder() != -1) || (helperAI->orderQueueSize() > 0)) {
+                continue;
+            }
+
+            const float helpRange = helperObj->weaponRange();
+            helperAI->order((int)helperObj->owner->id, 700, param_1, (int)callerObj->owner->id, callerObj->world_x, callerObj->world_y, callerObj->world_y, helpRange, 1, 0, 0x32);
+        }
+    }
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419C30
