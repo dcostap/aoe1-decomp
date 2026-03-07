@@ -19,7 +19,7 @@ static int rge_ftol(float value) {
     return result;
 }
 
-// TODO: PARITY [LOW] - Parameterless ctor has no direct symbol/offset in m_mi_obj decomp/asm exports; first mapped ctor is copy/setup form at 0x00451440, so default-ctor parity remains unresolved. [decomp/asm: m_mi_obj.cpp @ 0x00451440]
+// TODO: PARITY [LOW] - This parameterless constructor body is not present in m_mi_obj.cpp.decomp/m_mi_obj.cpp.asm exports (first constructor entry is @ 0x00451440); verify original ctor coverage/offset mapping.
 RGE_Master_Missile_Object::RGE_Master_Missile_Object()
     : RGE_Master_Combat_Object() {
     this->master_type = 0x3C;
