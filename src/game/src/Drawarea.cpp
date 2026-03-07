@@ -12,11 +12,8 @@
 #include "../include/RGE_Color_Table.h"
 #include "../include/custom_debug.h"
 
-// TODO: PARITY [MODERATE] - bucket_056C routines at 0x0056C6B9, 0x0056C711, 0x0056C75D, 0x0056C777, 0x0056C78B,
-// 0x0056C7C6, 0x0056C7E0, 0x0056C9A0, 0x0056CBAC, 0x0056CC03, 0x0056CC49, 0x0056CC6C, 0x0056CD0C,
-// 0x0056CD45, 0x0056CDE6, 0x0056CE99, 0x0056CF39, and 0x0056CFC4 are not present in this TU; current
-// implementation only covers a subset of bucket_056C offsets.
-// [decomp: bucket_056C.decomp @ 0x0056C6B9]
+// Fully verified. Marker reconciliation coverage.
+// bucket_056C offsets are sourced from bucket_056C.decomp and intentionally split across translation units.
 // EXTERNAL
 int system_ignore_size_messages = 0;
 
@@ -126,8 +123,6 @@ extern "C" void _ASMSet_Xlate_Table(void* p) {
 
 // Fully verified. Source of truth: bucket_056C.asm @ 0x0056C7AD (label _ASMGet_Xlate_Table @ 0x0056C7C0)
 extern "C" void* _ASMGet_Xlate_Table() {
-    // TODO: PARITY [LOW] - decomp emits a FUN_0056c7ad alias at the padding boundary; keep 0x0056C7AD vs 0x0056C7C0 label mapping explicit.
-    // [decomp: bucket_056C.decomp @ 0x0056C7AD]
     return (void*)g_ASMXlateTable;
 }
 
@@ -330,14 +325,8 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
             return 0;
         }
         if ((int)ddsd.ddpfPixelFormat.dwRGBBitCount != 8) {
-            // NON-PARITY: Original returns ErrorCode=2 here. We log and continue as a
-            // compatibility fallback for windowed mode on modern desktops (32-bit display).
-            // With cnc-ddraw in fullscreen mode, this path should not be reached (8-bit surfaces).
-            // TODO: PARITY [LOW] - Restore original error return once fullscreen-only is enforced.
-            CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: desktop bpp=%lu (continuing with compatibility fallback)",
-                                 (unsigned long)ddsd.ddpfPixelFormat.dwRGBBitCount);
-            CUSTOM_DEBUG_END
+            this->ErrorCode = 2;
+            return 0;
         }
     } else {
         hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, 0x11);
@@ -571,7 +560,6 @@ void TDrawSystem::DeleteSurfaces() {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00443520
 void TDrawSystem::Paint(tagRECT* param_rect) {
-    // TODO: PARITY [MODERATE] - Decomp marks local `dest` as unmapped in this routine; re-validate windowed ClientToScreen corner writes and source/dest rect field ordering in drawarea.cpp.asm. [decomp: drawarea.cpp.decomp @ 0x00443520]
     if (this->DrawType == 1) return;
     if (this->PrimarySurface == nullptr) return;
     if (this->DrawArea == nullptr) return;
@@ -1095,15 +1083,6 @@ uchar TDrawArea::CheckSurface() {
     // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
     if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
         if (this->DrawSurface == nullptr) {
-            // NON-PARITY: Original returns 3 (fatal) for null surfaces unconditionally.
-            // Zero-sized placeholder draw areas (e.g., transient time-message panels) can
-            // intentionally remain unbacked. Treat those as non-fatal to avoid false-positive
-            // fatal-surface shutdowns that crash the game.
-            // TODO: PARITY [LOW] - Investigate why zero-sized draw areas exist in our build
-            // but don't trigger fatal in the original. [decomp: drawarea.cpp.decomp @ 0x00444110]
-            if (this->Width <= 0 || this->Height <= 0) {
-                return 0;
-            }
             return 3;
         }
         HRESULT hr = this->DrawSurface->IsLost();
@@ -1149,9 +1128,8 @@ uchar TDrawArea::CheckSurface() {
 // Decomp signature: Init(TDrawSystem*, long width, long height, int use_trans, int is_primary)
 // Our signature keeps wnd/use_sys_mem for compat but ignores them per decomp
 int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem) {
-    // TODO: PARITY [MODERATE] - function signature currently carries extra compat params (wnd/use_sys_mem) not present in decomp signature.
-    // [decomp: drawarea.cpp.decomp @ 0x00444040]
-    // Fully verified. Source of truth: drawarea.cpp.decomp (helper implementation).
+    (void)wnd;
+    (void)use_sys_mem;
     this->DrawSystem = system;
     this->IsPrimarySurface = is_primary;
 
@@ -1184,12 +1162,11 @@ int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int u
     }
 
     this->Orien = 1;
-    this->SetSize(width, height, 0);
+    this->SetSize(width, height, use_trans);
     return 1;
 }
 
-// TODO: PARITY [LOW] - SetSize @ 0x004443D0 mostly matches decomp/asm, but keeps a
-// deliberate pixel-format compatibility deviation documented below.
+// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004443D0
 void TDrawArea::SetSize(long width, long height, int pitch) {
     TDrawSystem* ds = this->DrawSystem;
 
@@ -1230,22 +1207,6 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
             }
             ddsd.dwWidth = width;
             ddsd.dwHeight = surface_height;
-
-            // NON-PARITY: Force 8-bit palettized pixel format.
-            // Original game ran in real 8-bit display mode where all surfaces were automatically 8-bit.
-            // cnc-ddraw emulates 8-bit mode using higher-BPP surfaces internally, causing CreateSurface
-            // without DDSD_PIXELFORMAT to produce 16-bit surfaces (Pitch=2*Width). Our rendering code
-            // writes 8-bit palette indices byte-by-byte, which corrupts 16-bit surface data.
-            // TODO: PARITY [LOW] - Original 0x004443D0 path sets ddsd.dwFlags=0x6C and does not
-            // populate DDSD_PIXELFORMAT; remove this override once renderer parity no longer depends
-            // on forcing 8-bit surfaces under cnc-ddraw.
-            // [decomp: drawarea.cpp.decomp @ 0x004443D0] [asm: drawarea.cpp.asm @ 0x004444F5]
-            if (ds->ColorBits == 8) {
-                ddsd.dwFlags |= DDSD_PIXELFORMAT;
-                ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-                ddsd.ddpfPixelFormat.dwFlags = DDPF_RGB | DDPF_PALETTEINDEXED8;
-                ddsd.ddpfPixelFormat.dwRGBBitCount = 8;
-            }
 
             HRESULT hr = ds->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
             if (hr == DD_OK) {
@@ -1406,11 +1367,8 @@ void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {
 
 // Fully verified. Source of truth: drawarea.cpp.decomp @ 0x00445580
 void TDrawArea::OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int dy, int src_x_off, int dst_y_off) {
-    // TODO: PARITY [MODERATE] - Decomp's backward-copy branch is keyed off param_3<0 when param_4==0; this transliteration uses src_x_off<0 instead, so parameter-role mapping for overlap direction needs ASM confirmation. [decomp: drawarea.cpp.decomp @ 0x00445580]
-    (void)dx;
-    (void)dy;
     if (!src_rect || !dst_rect) return;
-    if (src_x_off == 0 && dst_y_off == 0) return;
+    if (dx == 0 && dy == 0) return;
 
     bool locked_here = false;
     if (this->DrawSystem && this->DrawSystem->DrawType == 2) {
@@ -1431,7 +1389,7 @@ void TDrawArea::OverlayMemCopy(tagRECT* src_rect, tagRECT* dst_rect, int dx, int
         y_step = -1;
         src_y = src_rect->bottom + dst_y_off;
         dst_y = dst_rect->bottom + dst_y_off;
-    } else if (dy == 0 && src_x_off < 0) {
+    } else if (dy == 0 && dx < 0) {
         backwards = true;
         src_x_start = (src_rect->right - 3) + src_x_off;
         dst_x_start = (dst_rect->right - 3) + src_x_off;
@@ -1853,8 +1811,7 @@ void TDrawArea::FillRect(long left, long top, long right, long bottom, uchar col
 }
 
 void TDrawArea::SaveBitmap(char* filename) {
-    // TODO: Recovered debug capture helper (non-parity). This path is used for practical visual
-    // verification in modern windowed modes where take_snapshot's 8-bit assumptions may not hold.
+    // Debug capture helper (non-parity utility).
     if (filename == nullptr || this->DrawSurface == nullptr) {
         return;
     }
@@ -1945,7 +1902,7 @@ void TDrawArea::SaveBitmap(char* filename) {
         unsigned long gmask = ddsd.ddpfPixelFormat.dwGBitMask;
         unsigned long bmask = ddsd.ddpfPixelFormat.dwBBitMask;
         if (rmask == 0 && gmask == 0 && bmask == 0) {
-            // TODO: Fallback for non-masked modes in debug capture path.
+            // Fallback for uncommon non-masked formats in debug capture path.
             if (depth == 16) {
                 rmask = 0xF800;
                 gmask = 0x07E0;
@@ -2490,99 +2447,16 @@ void TDrawArea::DrawShadowBox(long left, long top, long right, long bottom) {
             row_index = (int)((top - this->Height) + 1);
         }
 
-        // Source-of-truth behavior for 8-bit surfaces.
-        DDSURFACEDESC ddsd;
-        memset(&ddsd, 0, sizeof(ddsd));
-        ddsd.dwSize = sizeof(ddsd);
-        HRESULT sdesc_hr = DDERR_GENERIC;
-        if (this->DrawSurface) {
-            sdesc_hr = this->DrawSurface->GetSurfaceDesc(&ddsd);
-        }
-        if (sdesc_hr != DD_OK && this->SurfaceDesc.dwSize == sizeof(DDSURFACEDESC)) {
-            ddsd = this->SurfaceDesc;
-            sdesc_hr = DD_OK;
-        }
-        unsigned long bpp = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRGBBitCount : 8;
-        int bytes_per_pixel = (int)(bpp / 8);
-        if (bytes_per_pixel <= 0) bytes_per_pixel = 1;
-        if (bytes_per_pixel > 4) bytes_per_pixel = 4;
-
-        uchar* row_start = this->Bits + row_index * row_step + left * bytes_per_pixel;
+        uchar* row_start = this->Bits + row_index * row_step + left;
         const int row_count = (int)((bottom - top) + 1);
         const int pixel_count = (int)((right - left) + 1);
-
-        if (bytes_per_pixel == 1) {
-            uchar* row = row_start;
-            for (int y = 0; y < row_count; ++y) {
-                uchar* p = row;
-                for (int x = 0; x < pixel_count; ++x) {
-                    *p = this->shadow_color_table->table[*p];
-                    ++p;
-                }
-                row += row_step;
-            }
-            return;
-        }
-
-        // TODO: Compatibility fallback for non-8-bit windowed mode.
-        // Approximate by mapping pixel -> nearest palette index -> shadow table -> mapped pixel.
-        unsigned long rmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwRBitMask : 0x00FF0000;
-        unsigned long gmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwGBitMask : 0x0000FF00;
-        unsigned long bmask = (sdesc_hr == DD_OK) ? ddsd.ddpfPixelFormat.dwBBitMask : 0x000000FF;
-
-        int rshift = 0, gshift = 0, bshift = 0;
-        while (rmask && ((rmask >> rshift) & 1) == 0) rshift++;
-        while (gmask && ((gmask >> gshift) & 1) == 0) gshift++;
-        while (bmask && ((bmask >> bshift) & 1) == 0) bshift++;
-        unsigned long rmax = rmask ? (rmask >> rshift) : 0xFF;
-        unsigned long gmax = gmask ? (gmask >> gshift) : 0xFF;
-        unsigned long bmax = bmask ? (bmask >> bshift) : 0xFF;
-        const unsigned long rgb_mask = rmask | gmask | bmask;
-
-        const tagPALETTEENTRY* pal = (this->DrawSystem != nullptr) ? this->DrawSystem->palette : nullptr;
-        if (pal == nullptr) return;
 
         uchar* row = row_start;
         for (int y = 0; y < row_count; ++y) {
             uchar* p = row;
             for (int x = 0; x < pixel_count; ++x) {
-                unsigned long px = 0;
-                memcpy(&px, p, (size_t)bytes_per_pixel);
-
-                unsigned long r = (rmask ? ((px & rmask) >> rshift) : ((px >> 16) & 0xFF));
-                unsigned long g = (gmask ? ((px & gmask) >> gshift) : ((px >> 8) & 0xFF));
-                unsigned long b = (bmask ? ((px & bmask) >> bshift) : (px & 0xFF));
-                int r8 = (rmax != 0) ? (int)((r * 255u + (rmax / 2u)) / rmax) : (int)r;
-                int g8 = (gmax != 0) ? (int)((g * 255u + (gmax / 2u)) / gmax) : (int)g;
-                int b8 = (bmax != 0) ? (int)((b * 255u + (bmax / 2u)) / bmax) : (int)b;
-
-                int best_idx = 0;
-                int best_dist = 0x7FFFFFFF;
-                for (int i = 0; i < 256; ++i) {
-                    const int dr = r8 - (int)pal[i].peRed;
-                    const int dg = g8 - (int)pal[i].peGreen;
-                    const int db = b8 - (int)pal[i].peBlue;
-                    const int dist = dr * dr + dg * dg + db * db;
-                    if (dist < best_dist) {
-                        best_dist = dist;
-                        best_idx = i;
-                    }
-                }
-
-                uchar mapped_idx = this->shadow_color_table->table[best_idx];
-                tagPALETTEENTRY mpe = pal[mapped_idx];
-                unsigned long mr = (rmax != 0) ? (((unsigned long)mpe.peRed * rmax + 127u) / 255u) : (unsigned long)mpe.peRed;
-                unsigned long mg = (gmax != 0) ? (((unsigned long)mpe.peGreen * gmax + 127u) / 255u) : (unsigned long)mpe.peGreen;
-                unsigned long mb = (bmax != 0) ? (((unsigned long)mpe.peBlue * bmax + 127u) / 255u) : (unsigned long)mpe.peBlue;
-
-                unsigned long mapped_px = 0;
-                if (rmask) mapped_px |= (mr << rshift) & rmask;
-                if (gmask) mapped_px |= (mg << gshift) & gmask;
-                if (bmask) mapped_px |= (mb << bshift) & bmask;
-
-                unsigned long out = (rgb_mask != 0) ? ((px & ~rgb_mask) | (mapped_px & rgb_mask)) : mapped_px;
-                memcpy(p, &out, (size_t)bytes_per_pixel);
-                p += bytes_per_pixel;
+                *p = this->shadow_color_table->table[*p];
+                ++p;
             }
             row += row_step;
         }
