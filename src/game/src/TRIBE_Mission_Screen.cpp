@@ -250,7 +250,7 @@ void TRIBE_Mission_Screen::set_overlapped_redraw(TPanel* param_1, TPanel* param_
 // Fully verified. Source of truth: scr_vc.cpp.decomp @ 0x004B89A0 (virtual forwarding coverage).
 void TRIBE_Mission_Screen::draw_setup(int param_1) { TScreenPanel::draw_setup(param_1); }
 void TRIBE_Mission_Screen::draw_finish() { TScreenPanel::draw_finish(); }
-// TODO: PARITY - draw has a documented clear-gate/control-flow divergence from the original; see note inside. [decomp: scr_vc.cpp.decomp @ 0x004B88E0; asm: scr_vc.cpp.asm @ 0x004B88E0]
+// Fully verified. Source of truth: scr_vc.cpp.decomp @ 0x004B88E0, scr_vc.cpp.asm @ 0x004B88E0
 void TRIBE_Mission_Screen::draw() {
     TScreenPanel::draw();
 
@@ -260,32 +260,29 @@ void TRIBE_Mission_Screen::draw() {
 
     this->draw_setup(0);
 
-    // TODO: PARITY - decomp/asm gate Clear on field value == 2 (CMP [ESI+0x38],0x2), while this transliteration uses need_redraw + render_area checks; mapping may not be slot-exact. [decomp: scr_vc.cpp.decomp @ 0x004B88E0; asm: scr_vc.cpp.asm @ 0x004B88E0]
-    if (this->need_redraw == TPanel::RedrawMode::RedrawFull && this->render_area != nullptr) {
+    if ((int)this->need_redraw == 2) {
         this->render_area->Clear(&this->clip_rect, (int)this->color);
     }
 
-    if (this->render_area != nullptr) {
-        uchar* puVar2 = this->render_area->Lock((char*)"scr_vc::draw", 1);
-        if (puVar2 != nullptr) {
-            const long w = this->width();
-            long x;
-            long y;
+    uchar* puVar2 = this->render_area->Lock((char*)"scr_vc::draw", 1);
+    if (puVar2 != nullptr) {
+        const long w = this->width();
+        long x;
+        long y;
 
-            if (w <= 0x280) {
-                x = this->pnl_x + 7;
-                y = this->pnl_y + 0xA6;
-            } else if (w <= 0x320) {
-                x = this->pnl_x + 0x53;
-                y = this->pnl_y + 0x118;
-            } else {
-                x = this->pnl_x + 0xC5;
-                y = this->pnl_y + 0x16B;
-            }
-
-            this->vc_back_bmp->Draw(this->render_area, x, y, 0, 0);
-            this->render_area->Unlock((char*)"scr_vc::draw");
+        if (w <= 0x280) {
+            x = this->pnl_x + 7;
+            y = this->pnl_y + 0xA6;
+        } else if (w <= 0x320) {
+            x = this->pnl_x + 0x53;
+            y = this->pnl_y + 0x118;
+        } else {
+            x = this->pnl_x + 0xC5;
+            y = this->pnl_y + 0x16B;
         }
+
+        this->vc_back_bmp->Draw(this->render_area, x, y, 0, 0);
+        this->render_area->Unlock((char*)"scr_vc::draw");
     }
 
     this->draw_finish();
@@ -302,10 +299,9 @@ void TRIBE_Mission_Screen::draw_offset2(long param_1, long param_2, tagRECT* par
 void TRIBE_Mission_Screen::paint() { TScreenPanel::paint(); }
 // Fully verified. Source of truth: scr_vc.cpp.decomp @ 0x004B89A0 (virtual forwarding coverage).
 long TRIBE_Mission_Screen::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return TScreenPanel::wnd_proc(param_1, param_2, param_3, param_4); }
-// TODO: PARITY - handle_idle adds a defensive rge_base_game null guard not present in original direct-dereference flow. [decomp: scr_vc.cpp.decomp @ 0x004B88B0; asm: scr_vc.cpp.asm @ 0x004B88B0]
+// Fully verified. Source of truth: scr_vc.cpp.decomp @ 0x004B88B0, scr_vc.cpp.asm @ 0x004B88B0
 long TRIBE_Mission_Screen::handle_idle() {
-    // TODO: PARITY - original decomp/asm reads rge_base_game->input_enabled without a null check; this transliteration adds a null guard that changes null-pointer behavior. [decomp: scr_vc.cpp.decomp @ 0x004B88B0; asm: scr_vc.cpp.asm @ 0x004B88B0]
-    if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
+    if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
     return TPanel::handle_idle();
