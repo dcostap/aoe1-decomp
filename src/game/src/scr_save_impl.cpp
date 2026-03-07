@@ -295,73 +295,48 @@ TribeSaveGameScreen::~TribeSaveGameScreen() {
 // Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).
 void TribeSaveGameScreen::fillList() {
     // Fully verified. Source of truth: scr_save.cpp.decomp @ 0x004A7670
-    // TODO: PARITY - fillList adds defensive list/prog_info null-guards; decomp helper dereferences list and global prog_info paths directly during pattern construction and append flow. [decomp: scr_save.cpp.decomp @ 0x004A7670]
-    if (this->list == nullptr || rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
-        return;
-    }
-
     TTextPanel* list_text = (TTextPanel*)this->list;
     list_text->empty_list();
     this->list->sorted = 1;
 
-    char pattern[520];
+    char file_name[260];
     _finddata_t info;
     intptr_t handle = -1;
+    int next_result;
 
     if (this->modeValue == SaveGame) {
-        sprintf(pattern, "%s*.gam", rge_base_game->prog_info->save_dir);
+        sprintf(file_name + 4, "%s*.gam", rge_base_game->prog_info->save_dir);
     } else {
-        sprintf(pattern, "%s*.scn", rge_base_game->prog_info->scenario_dir);
+        sprintf(file_name + 4, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     }
-    handle = _findfirst(pattern, &info);
-    // TODO: PARITY - Filename extraction/iteration is refactored to bounded memcpy(name + 4, len - 8) with explicit _findclose calls; decomp uses raw strncpy length math (~uVar4 - 5) and does not show explicit handle close sites.
-    while (handle != -1) {
-        const char* name = info.name;
-        if (name != nullptr) {
-            size_t len = strlen(name);
-            if (len > 8) {
-                char out[260];
-                size_t body_len = len - 8;
-                if (body_len >= sizeof(out)) {
-                    body_len = sizeof(out) - 1;
-                }
-                memcpy(out, name + 4, body_len);
-                out[body_len] = '\0';
-                list_text->append_line(out, 0);
-            }
-        }
-        if (_findnext(handle, &info) != 0) {
-            _findclose(handle);
-            handle = -1;
-        }
+    handle = _findfirst(file_name + 4, &info);
+    next_result = (int)handle;
+    while (next_result != -1) {
+        int name_len = (int)strlen(info.name + 4) + 1;
+        strncpy(file_name + 4, info.name + 4, (size_t)(name_len - 5));
+        file_name[name_len - 1] = '\0';
+        list_text->append_line(file_name + 4, 0);
+        next_result = _findnext(handle, &info);
     }
 
     if (this->modeValue == SaveGame) {
-        sprintf(pattern, "%s*.gmx", rge_base_game->prog_info->save_dir);
+        sprintf(file_name + 4, "%s*.gmx", rge_base_game->prog_info->save_dir);
     } else {
-        sprintf(pattern, "%s*.scx", rge_base_game->prog_info->scenario_dir);
+        sprintf(file_name + 4, "%s*.scx", rge_base_game->prog_info->scenario_dir);
     }
-    handle = _findfirst(pattern, &info);
-    while (handle != -1) {
-        const char* name = info.name;
-        if (name != nullptr) {
-            size_t len = strlen(name);
-            if (len > 8) {
-                char out[260];
-                size_t body_len = len - 8;
-                if (body_len >= sizeof(out)) {
-                    body_len = sizeof(out) - 1;
-                }
-                memcpy(out, name + 4, body_len);
-                out[body_len] = '\0';
-                list_text->append_line(out, 0);
-            }
+    handle = _findfirst(file_name + 4, &info);
+    next_result = (int)handle;
+    do {
+        if (next_result == -1) {
+            return;
         }
-        if (_findnext(handle, &info) != 0) {
-            _findclose(handle);
-            handle = -1;
-        }
-    }
+
+        int name_len = (int)strlen(info.name + 4) + 1;
+        strncpy(file_name + 4, info.name + 4, (size_t)(name_len - 5));
+        file_name[name_len - 1] = '\0';
+        list_text->append_line(file_name + 4, 0);
+        next_result = _findnext(handle, &info);
+    } while (true);
 }
 
 // Fully verified. Source of truth: TribeSaveGameScreen.decomp (inherited-forwarder parity with TScreenPanel).

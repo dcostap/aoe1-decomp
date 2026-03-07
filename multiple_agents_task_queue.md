@@ -5071,13 +5071,14 @@ Status note: parity sweep confirmed `view.cpp` now carries 85 Fully verified mar
 ## Task 387
 - Mixed closures batch — dlg_msg (6) + aimdmod (6) + tribegam (6) + scr_save (5) + scr_load (4) = 27 gaps
 - [x] Assigned to worker-2 (clone_2)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close gaps across 5 diverse modules. TMessageDialog/dlg_msg (7 offsets, 1 verified, 6 gap), MainDecisionAIModule/aimdmod (20 offsets, 14 verified, 6 gap), tribegam (119 offsets, 113 verified, 6 gap), scr_save (5 offsets, 0 verified, 5 gap — may be greenfield), scr_load (5 offsets, 1 verified, 4 gap).
 
 **Where:** Find corresponding .cpp files for each module
 **Source of truth:** Corresponding .decomp + .asm files in src/game/decomp/
 **Done when:** ~22 new functions have Fully verified markers, builds clean.
+- Status note: follow-up parity closure completed; `scr_save_impl.cpp::fillList` now matches `scr_save.cpp.decomp @ 0x004A7670` (removed defensive guards and `_findclose` path), and the scoped files (`TMessageDialog.cpp`, `MainDecisionAIModule.cpp`, `tribegam.cpp`, `scr_save_impl.cpp`, `scr_load_impl.cpp`) now contain no remaining TODO markers.
 
 ---
 
