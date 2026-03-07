@@ -27,7 +27,7 @@ static void set_button_disabled(TButtonPanel* button, int disabled) {
 }
 } // namespace
 
-// Source of truth: scr_sedo.cpp.decomp @ 0x004B33D0
+// Source of truth: scr_sedo.cpp.decomp @ 0x004B33D0, scr_sedo.cpp.asm @ 0x004B33D0
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario Editor Open") {
     this->title = nullptr;
     this->list = nullptr;
@@ -35,12 +35,6 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario E
     this->okButton = nullptr;
     this->cancelButton = nullptr;
     this->deleteButton = nullptr;
-
-    // TODO: PARITY [MODERATE] - Constructor adds defensive null-guards for rge_base_game/draw_area/panel_system before setup flow; decomp directly dereferences these globals in constructor setup path. [decomp: scr_sedo.cpp.decomp @ 0x004B33D0]
-    if (rge_base_game == nullptr || rge_base_game->draw_area == nullptr || panel_system == nullptr) {
-        this->error_code = 1;
-        return;
-    }
 
     TPanel* from = panel_system->currentPanel();
     char info_file[260];
@@ -97,8 +91,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario E
     this->fillList();
 
     char* cur = ((TTextPanel*)this->list)->currentLine();
-    // TODO: PARITY [MODERATE] - Current-line emptiness check adds a null guard; decomp directly dereferences currentLine() result when testing for empty string. [decomp: scr_sedo.cpp.decomp @ 0x004B33D0]
-    if (cur != nullptr && cur[0] == '\0') {
+    if (cur[0] == '\0') {
         set_button_disabled(this->okButton, 1);
         set_button_disabled(this->deleteButton, 1);
     }
@@ -156,7 +149,6 @@ void TRIBE_Screen_Sed_Open::fillList() {
                 }
             }
         } while (_findnext(handle, &info) == 0);
-        _findclose(handle);
     }
 
     sprintf(pattern, "%s*.scx", rge_base_game->prog_info->scenario_dir);
@@ -176,8 +168,6 @@ void TRIBE_Screen_Sed_Open::fillList() {
                 }
             }
         } while (_findnext(handle, &info) == 0);
-        // TODO: PARITY [MODERATE] - Source closes directory-search handles explicitly; decomp helper does not show matching _findclose calls in either extension loop.
-        _findclose(handle);
     }
 }
 
@@ -193,14 +183,11 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2, ulong param_3,
 
             if (param_2 == 0 && rge_base_game != nullptr && rge_base_game->prog_info != nullptr) {
                 const char* selected = ((TTextPanel*)this->list)->currentLine();
-                // TODO: PARITY [MODERATE] - Source guards selected/currentLine before file delete formatting; decomp directly passes currentLine() result to sprintf/unlink.
-                if (selected != nullptr) {
-                    char file_name[512];
-                    sprintf(file_name, "%s%s.scn", rge_base_game->prog_info->scenario_dir, selected);
-                    _unlink(file_name);
-                    sprintf(file_name, "%s%s.scx", rge_base_game->prog_info->scenario_dir, selected);
-                    _unlink(file_name);
-                }
+                char file_name[512];
+                sprintf(file_name, "%s%s.scn", rge_base_game->prog_info->scenario_dir, selected);
+                _unlink(file_name);
+                sprintf(file_name, "%s%s.scx", rge_base_game->prog_info->scenario_dir, selected);
+                _unlink(file_name);
 
                 long line = ((TTextPanel*)this->list)->get_line();
                 ((TTextPanel*)this->list)->delete_line(line);
