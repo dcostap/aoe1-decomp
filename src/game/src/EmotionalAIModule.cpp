@@ -262,7 +262,7 @@ void EmotionalAIModule::setOverallState(int param_1) {
     }
 }
 
-// Fully verified. Source of truth: aiemomod.cpp.decomp @ 0x0040CD5E (embedded corrupted infinite-loop block).
+// Note: Source-of-truth has an interstitial switch-thunk block at aiemomod.cpp.decomp/aiemomod.cpp.asm @ 0x0040CD5E between setOverallState and defaultState (decomp shows a spurious infinite-loop artifact; asm is MOV EDI,EDI padding).
 // Offset: 0x0040CD80
 // Fully verified. Source of truth: aiemomod.cpp.decomp @ 0x0040CD80
 int EmotionalAIModule::defaultState() const {
