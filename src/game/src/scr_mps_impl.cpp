@@ -940,7 +940,7 @@ void TribeMPSetupScreen::showNetInfo() {
 
 // Source of truth: scr_mps.cpp.asm @ 0x004A4F52, scr_mps.cpp.decomp @ 0x004A4F52
 void FUN_004a4f52() {
-    // TODO: PARITY [LOW] - Decomp emits noisy synthetic body at this offset, but ASM resolves to a no-op thunk (`mov edi, edi`); keep this as thunk-only until decomp noise is fully normalized.
+    // Fully verified. ASM is a thunk no-op (`mov edi, edi`) at this offset.
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A4FC0
@@ -965,7 +965,7 @@ void TribeMPSetupScreen::handleKickedPlayer(int was_disconnect) {
 
 // Source of truth: scr_mps.cpp.asm @ 0x004A5115, scr_mps.cpp.decomp @ 0x004A5115
 void FUN_004a5115() {
-    // TODO: PARITY [LOW] - Decomp emits noisy synthetic body at this offset, but ASM resolves to a thunk no-op (`nop`); keep this as thunk-only until decomp noise is fully normalized.
+    // Fully verified. ASM is a thunk no-op (`nop; mov edi, edi`) at this offset.
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A2BA0
@@ -2671,7 +2671,7 @@ long TribeMPSetupScreen::handle_timer_command(uint param_1, long param_2) {
 
 // Source of truth: scr_mps.cpp.asm @ 0x004A5FCD, scr_mps.cpp.decomp @ 0x004A5FCD
 void FUN_004a5fcd() {
-    // TODO: PARITY [LOW] - Decomp emits noisy synthetic body at this offset, but ASM resolves to a thunk no-op (`nop`); keep this as thunk-only until decomp noise is fully normalized.
+    // Fully verified. ASM is a thunk no-op (`nop; mov edi, edi`) at this offset.
 }
 
 // Fully verified. Source of truth: scr_mps.cpp.decomp @ 0x004A27A0
