@@ -66,4 +66,4 @@ void tpnl_txl_draw_00520ED0(TRIBE_Panel_Text_Line* this_) {
     this_->draw_finish();
 }
 
-// TODO: PARITY [LOW] - Defining TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line currently forces unresolved vtable methods in this legacy class declaration set; leave unresolved until the full virtual table surface is reconciled. [decomp: bucket_0520.decomp @ 0x00520E20]
+// TODO: PARITY [LOW] - Source of truth provides TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line as a thunk (`JMP TPanel::~TPanel`) at 0x00520E20, but this unit still omits that symbol pending full TRIBE_Panel_Text_Line virtual-surface reconciliation. [decomp: bucket_0520.decomp @ 0x00520E20, asm: bucket_0520.asm @ 0x00520E20]
