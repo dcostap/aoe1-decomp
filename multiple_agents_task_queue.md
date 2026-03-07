@@ -4835,13 +4835,14 @@ The `m_ac_obj.cpp.decomp` file is 648 lines. Beyond the sound methods, audit ALL
 ## Task 368
 - view.cpp gap closure - 13 functions from view.cpp.decomp
 - [x] Assigned to worker-3 (clone_3)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close gaps in view.cpp. Currently 72 of 85 decomp functions are verified. 13 remain. Covers viewport scrolling, zoom, minimap display, and coordinate transformation.
 
 **Where:** src/game/src/view.cpp, related headers
 **Source of truth:** src/game/decomp/view.cpp.decomp + src/game/decomp/view.cpp.asm
 **Done when:** All 13 remaining functions transliterated with Fully verified markers, builds clean.
+Status note: parity sweep confirmed `view.cpp` now carries 85 Fully verified markers (full decomp coverage target met); no additional code deltas were required in this pass.
 
 
 ---
