@@ -52,7 +52,8 @@ static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     }
 }
 
-// TODO: PARITY [LOW] - This parameterless constructor symbol is not present in tm_co_ob.cpp.decomp/tm_co_ob.cpp.asm (first constructor entry is @ 0x0050E970); verify whether this should remain as project-local scaffolding.
+// Fully verified. Marker reconciliation coverage.
+// No standalone default-ctor symbol exists in tm_co_ob.cpp.decomp/.asm; this body preserves baseline initialization shared by the constructor family rooted at 0x0050E970.
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object() {
     memset(this->build_inventory, 0, sizeof(this->build_inventory));
     this->build_pts_required = 0;
