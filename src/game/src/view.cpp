@@ -41,6 +41,7 @@
 #include <io.h>
 
 extern "C" void _ASMSet_Shadowing(int p1, int p2, int p3, int p4);
+extern "C" void _ASMSet_Surface_Info(void** display_offsets, VSpan_Node** line_head_ptrs, VSpan_Node** line_tail_ptrs, int min_span_px, int min_line, int max_span_px, int max_line);
 extern "C" void _ASMSet_Color_Xform(int v);
 extern "C" void _ASMSet_Xlate_Table(void* p);
 
@@ -58,6 +59,68 @@ extern RGE_Base_Game* rge_base_game;
 static const float kView_Scroll_Factor = 0.0625f; // Source of truth: view.cpp.asm uses DAT_005776c4.
 static const float kView_Pick_Offset = 0.5f;      // Source of truth: view.cpp.asm uses DAT_005776c0 (=-0.5), i.e. +0.5 bias.
 static const float kView_Cliff_Brush_Snap_Scale = 0.33333334f; // Source of truth: view.cpp.asm uses DAT_005776b8.
+
+static bool view_nodes_match(const DClipInfo_Node* a, const DClipInfo_Node* b) {
+    if (a == nullptr || b == nullptr || a->Node_Type != b->Node_Type) {
+        return false;
+    }
+
+    const size_t cmp_size = (a->Node_Type == 0) ? 0x24u : 0x34u;
+    return std::memcmp(&a->Shape, &b->Shape, cmp_size) == 0;
+}
+
+static void view_rebuild_draw_levels(DClipInfo_List* list) {
+    if (list == nullptr) {
+        return;
+    }
+    for (int i = 0; i < list->Max_Draw_Levels; ++i) {
+        list->Draw_Level_Head[i] = nullptr;
+        list->Draw_Level_Tail[i] = nullptr;
+    }
+    for (int y = 0; y < list->YLine_Size; ++y) {
+        for (DClipInfo_Node* node = list->Draw_Clip_Nodes[y]; node != nullptr; node = node->Next) {
+            node->NextOnLevel = nullptr;
+            const int lvl = node->Draw_Level;
+            if (lvl < 0 || lvl >= list->Max_Draw_Levels) {
+                continue;
+            }
+            DClipInfo_Node* tail = list->Draw_Level_Tail[lvl];
+            if (tail == nullptr) {
+                list->Draw_Level_Head[lvl] = node;
+            } else {
+                tail->NextOnLevel = node;
+            }
+            list->Draw_Level_Tail[lvl] = node;
+        }
+    }
+}
+
+static void view_draw_captured_sprite_node(TDrawArea* area, DClipInfo_Node* node, int draw_flag) {
+    if (area == nullptr || node == nullptr || node->Node_Type != 0 || node->Shape == nullptr || node->Shape_Base == nullptr) {
+        return;
+    }
+
+    alignas(TShape) unsigned char shape_storage[sizeof(TShape)];
+    TShape* temp_shape = new (shape_storage) TShape();
+    temp_shape->shape = nullptr;
+    temp_shape->shape_header = nullptr;
+    temp_shape->head = nullptr;
+    temp_shape->offsets = nullptr;
+    temp_shape->FShape = reinterpret_cast<SLhape_File_Header*>(node->Shape_Base);
+    temp_shape->shape_info = node->Shape;
+    temp_shape->load_type = -1;
+    temp_shape->load_size = 0;
+
+    const int saved_fog_flag = fog_next_shape;
+    fog_next_shape = draw_flag;
+    _ASMSet_Color_Xform(node->Xform_Mask);
+    _ASMSet_Xlate_Table(node->Color_Table);
+
+    const long draw_x = (long)node->Draw_X + (long)node->Shape->Hotspot_X;
+    const long draw_y = (long)node->Draw_Y + (long)node->Shape->Hotspot_Y;
+    (void)temp_shape->shape_draw(area, draw_x, draw_y, 0, 0, node->Color_Table);
+    fog_next_shape = saved_fog_flag;
+}
 
 int RGE_View::get_border_edge_pictures(
     uchar border_type,
@@ -2249,10 +2312,7 @@ void RGE_View::draw_paint_brush() {
 
 void RGE_View::draw()
 {
-    // TODO: PARITY [CRITICAL] - draw() at 0x00534AE0 is still partial versus decomp/asm;
-    // keep gap notes below until scroll-reuse blits and paint-brush branch parity land.
-    // TODO: PARITY [CRITICAL] - Decomp draw path performs scroll-reuse rectangle diffing and queued blits (CreateBlitQueue/ProcessQueuedBlit plus clip-list scrolling) before terrain render; current implementation skips that reuse path and does direct redraw from a cleared target. [decomp: view.cpp.decomp @ 0x00534AE0]
-    // TODO: PARITY [CRITICAL] - Decomp calls draw_paint_brush() in draw() for game modes 9/10/0x13 before terrain rendering; current implementation does not execute that branch here. [decomp: view.cpp.decomp @ 0x00534AE0]
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00534AE0
     tiles_drawn = 0;
     if (view_debug_redraw_all != 0) {
         this->render_terrain_mode = 0;
@@ -2271,54 +2331,254 @@ void RGE_View::draw()
         return;
     }
 
-    if (this->Terrain_Clip_Mask) this->Terrain_Clip_Mask->ResetAll();
-    if (this->Terrain_Fog_Clip_Mask) this->Terrain_Fog_Clip_Mask->ResetAll();
-    if (this->Master_Clip_Mask) this->Master_Clip_Mask->ResetAll();
+    const short old_start_map_col = this->start_map_col;
+    const short old_start_map_row = this->start_map_row;
+    const short old_start_scr_col = this->start_scr_col;
+    const short old_start_scr_row = this->start_scr_row;
+    const int old_map_scr_x_offset = this->map_scr_x_offset;
+    const int old_map_scr_y_offset = this->map_scr_y_offset;
+
+    if (this->Terrain_Clip_Mask != nullptr) {
+        this->Terrain_Clip_Mask->ResetAll();
+    }
+    if (this->Terrain_Fog_Clip_Mask != nullptr) {
+        this->Terrain_Fog_Clip_Mask->ResetAll();
+    }
+    if (this->Master_Clip_Mask != nullptr) {
+        this->Master_Clip_Mask->ResetAll();
+    }
 
     this->Use_Rect2 = 0;
     this->Limited_Render_Rect = 0;
-
     this->update();
 
     this->draw_setup(0);
 
-    // Source of truth: view.cpp.decomp uses save_area1 as the terrain draw target.
-    // save_area1 is panel-local; it is copied into render_area at panel coordinates after draw.
-    TDrawArea* terrain_target = (this->save_area1 != nullptr) ? this->save_area1 : this->render_area;
+    if ((this->render_terrain_mode == 1) &&
+        !((this->start_map_col == old_start_map_col) &&
+          (this->start_map_row == old_start_map_row) &&
+          (this->start_scr_col == old_start_scr_col) &&
+          (this->start_scr_row == old_start_scr_row))) {
+        short dx_short = (short)this->map_scr_x_offset - (short)old_map_scr_x_offset;
+        short dy_short = (short)this->map_scr_y_offset - (short)old_map_scr_y_offset;
+
+        if ((dx_short != 0) || (dy_short != 0)) {
+            const int panel_w = (int)this->pnl_wid;
+            const int panel_h = (int)this->pnl_hgt;
+            tagRECT old_rect = { 0, 0, panel_w - 1, panel_h - 1 };
+            tagRECT new_rect = { (int)dx_short, (int)dy_short, old_rect.right + (int)dx_short, old_rect.bottom + (int)dy_short };
+
+            if ((new_rect.bottom < 0) || (new_rect.right < 0) || (old_rect.bottom < new_rect.top) || (old_rect.right < new_rect.left)) {
+                this->render_terrain_mode = 0;
+            } else {
+                if ((dx_short & 7) != 0) {
+                    int aligned_left = new_rect.left;
+                    if (dx_short < 0) {
+                        aligned_left = new_rect.left + 7;
+                    }
+                    const int align_delta = (aligned_left & ~7) - new_rect.left;
+                    dx_short = (short)(dx_short + align_delta);
+                    this->map_scr_x_offset = this->map_scr_x_offset + align_delta;
+                }
+                if ((dy_short & 7) != 0) {
+                    int aligned_top = new_rect.top;
+                    if (dy_short < 0) {
+                        aligned_top = new_rect.top + 7;
+                    }
+                    const int align_delta = (aligned_top & ~7) - new_rect.top;
+                    dy_short = (short)(dy_short + align_delta);
+                    this->map_scr_y_offset = this->map_scr_y_offset + align_delta;
+                }
+
+                int overlap_w = panel_w;
+                int overlap_h = panel_h;
+                const int dx = (int)dx_short;
+                const int dy = (int)dy_short;
+
+                if (dx < 0) {
+                    old_rect.left = 0;
+                    old_rect.right = dx + panel_w - 1;
+                    new_rect.left = -dx;
+                } else {
+                    old_rect.left = dx;
+                    old_rect.right = panel_w - 1;
+                    new_rect.left = 0;
+                    overlap_w = overlap_w - old_rect.left;
+                }
+                new_rect.right = overlap_w - 1;
+
+                if (dy < 0) {
+                    old_rect.top = 0;
+                    old_rect.bottom = dy + panel_h - 1;
+                    new_rect.top = -dy;
+                } else {
+                    old_rect.top = dy;
+                    old_rect.bottom = panel_h - 1;
+                    new_rect.top = 0;
+                    overlap_h = overlap_h - old_rect.top;
+                }
+                new_rect.bottom = overlap_h - 1;
+
+                TDrawArea* p = this->save_area1;
+                if (p != nullptr && p->DrawSystem != nullptr &&
+                    ((p->DrawSystem->DrawType == 1) || (p->UsingVidMem == 0))) {
+                    p->OverlayMemCopy(&old_rect, &new_rect, dx, dy, this->render_rect.left, this->render_rect.top);
+                    this->Queued_Blits = 0;
+                } else {
+                    this->CreateBlitQueue(&old_rect, &new_rect, dx, dy);
+                    if (MouseSystem != nullptr) {
+                        MouseSystem->Poll();
+                    }
+                    if (this->Queued_Blits != 0) {
+                        this->ProcessQueuedBlit(0);
+                    }
+                }
+
+                if (this->prior_objs != nullptr) {
+                    this->prior_objs->Scroll(dx, dy);
+                }
+
+                if (this->save_area1 != nullptr) {
+                    TDrawArea* float_area = this->save_area1;
+                    this->Float_X_Delta = this->Float_X_Delta + dx;
+
+                    if (this->Float_X_Delta >= float_area->Width) {
+                        if (float_area->Lock((char*)"view::draw", 1) != nullptr) {
+                            const int copy_bytes = this->Float_X_Delta - dx;
+                            if (copy_bytes > 0) {
+                                std::memcpy(float_area->DisplayOffsets[0],
+                                            (uchar*)float_area->DisplayOffsets[float_area->Height - 1] + float_area->Width,
+                                            (size_t)copy_bytes);
+                            }
+                            this->Float_X_Delta = this->Float_X_Delta - float_area->Width;
+                            this->Float_Y_Delta = this->Float_Y_Delta + 1;
+                            if (float_area->Height <= this->Float_Y_Delta) {
+                                this->Float_Y_Delta = 0;
+                            }
+                            float_area->Unlock((char*)"view::draw");
+                        }
+                    } else if (this->Float_X_Delta < 0) {
+                        if (float_area->Lock((char*)"view::draw2", 1) != nullptr) {
+                            this->Float_X_Delta = this->Float_X_Delta + float_area->Width;
+                            this->Float_Y_Delta = this->Float_Y_Delta - 1;
+                            if (this->Float_Y_Delta < 0) {
+                                this->Float_Y_Delta = float_area->Height - 1;
+                            }
+                            if (this->Float_X_Delta > 0) {
+                                std::memcpy((uchar*)float_area->DisplayOffsets[float_area->Height - 1] + float_area->Width,
+                                            float_area->DisplayOffsets[0],
+                                            (size_t)this->Float_X_Delta);
+                            }
+                            float_area->Unlock((char*)"view::draw3");
+                        }
+                    }
+
+                    this->Float_Y_Delta = this->Float_Y_Delta + dy;
+                    if (this->Float_Y_Delta < 0) {
+                        this->Float_Y_Delta = float_area->Height + this->Float_Y_Delta;
+                    }
+                    if (this->Float_Y_Delta >= float_area->Height) {
+                        this->Float_Y_Delta = this->Float_Y_Delta - float_area->Height;
+                    }
+                    float_area->SetFloatOffsets(this->Float_X_Delta, this->Float_Y_Delta);
+
+                    tagRECT clip_rect1 = { -1, 0, 0, 0 };
+                    tagRECT clip_rect2 = { -1, 0, 0, 0 };
+                    if ((new_rect.left == 0) && (new_rect.right == panel_w - 1)) {
+                        if ((new_rect.top != 0) || (new_rect.bottom != panel_h - 1)) {
+                            clip_rect2.left = 0;
+                            clip_rect2.right = panel_w - 1;
+                            if (new_rect.top == 0) {
+                                clip_rect2.top = new_rect.bottom + 1;
+                                clip_rect2.bottom = panel_h - 1;
+                            } else {
+                                clip_rect2.top = 0;
+                                clip_rect2.bottom = new_rect.top - 1;
+                            }
+                        }
+                    } else if (new_rect.left == 0) {
+                        clip_rect1.left = new_rect.right + 1;
+                        clip_rect1.right = panel_w - 1;
+                        clip_rect1.top = 0;
+                        clip_rect1.bottom = panel_h - 1;
+                        if ((new_rect.top != 0) || (new_rect.bottom != clip_rect1.bottom)) {
+                            clip_rect2.left = 0;
+                            if (new_rect.top == 0) {
+                                clip_rect2.top = new_rect.bottom + 1;
+                                clip_rect2.right = new_rect.right;
+                                clip_rect2.bottom = clip_rect1.bottom;
+                            } else {
+                                clip_rect2.top = 0;
+                                clip_rect2.right = new_rect.right;
+                                clip_rect2.bottom = new_rect.top - 1;
+                            }
+                        }
+                    } else {
+                        clip_rect1.left = 0;
+                        clip_rect1.right = new_rect.left - 1;
+                        clip_rect1.top = 0;
+                        clip_rect1.bottom = panel_h - 1;
+                        if ((new_rect.top != 0) || (new_rect.bottom != clip_rect1.bottom)) {
+                            clip_rect2.left = new_rect.left;
+                            if (new_rect.top == 0) {
+                                clip_rect2.top = new_rect.bottom + 1;
+                                clip_rect2.right = panel_w - 1;
+                                clip_rect2.bottom = clip_rect1.bottom;
+                            } else {
+                                clip_rect2.top = 0;
+                                clip_rect2.right = panel_w - 1;
+                                clip_rect2.bottom = new_rect.top - 1;
+                            }
+                        }
+                    }
+
+                    if (clip_rect1.left != -1) {
+                        float_area->PtrClear(&clip_rect1, 0);
+                        this->Limited_Render_Rect = 1;
+                        this->Render_Rect1 = clip_rect1;
+                    }
+                    if (clip_rect2.left != -1) {
+                        float_area->PtrClear(&clip_rect2, 0);
+                        if (clip_rect1.left == -1) {
+                            this->Limited_Render_Rect = 1;
+                            this->Render_Rect1 = clip_rect2;
+                        } else {
+                            this->Use_Rect2 = 1;
+                            this->Render_Rect2 = clip_rect2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (MouseSystem != nullptr) {
+        MouseSystem->Poll();
+    }
+    if (this->Queued_Blits != 0) {
+        this->ProcessQueuedBlit(0);
+    }
+
+    if (rge_base_game != nullptr) {
+        const int gm = rge_base_game->game_mode;
+        if ((gm >= 9 && gm <= 10) || gm == 0x13) {
+            this->draw_paint_brush();
+        }
+    }
 
     if (this->render_terrain_mode == 0) {
         this->Float_X_Delta = 0;
         this->Float_Y_Delta = 0;
-        if (this->save_area1) {
+        if (this->save_area1 != nullptr) {
             this->save_area1->SetFloatOffsets(0, 0);
-            this->save_area1->Clear(&this->save_area1->ClipRect, 0);
+            this->save_area1->PtrClear(&this->save_area1->ClipRect, 0);
         }
     }
 
-    // Parity: decomp only clears save_area1 in the render_terrain_mode == 0 path.
-    // When render_terrain_mode != 0, the previous frame's terrain data persists,
-    // covering 1-pixel gaps between TILEEDGE diamond boundaries.
-    // We no longer unconditionally clear here to avoid black outlines.
-
-    this->draw_view(10, terrain_target); // 10 is terrain mode
-
-    // NON-PARITY: Copy terrain from save_area1 to render_area at the panel's screen position.
-    // Decomp does this inside view_function_terrain via PtrSpanCopy with Master_Clip_Mask,
-    // then draws objects on top. Our simplified path uses a full PtrCopy instead.
-    // TODO: PARITY [MODERATE] - Replace with PtrSpanCopy inside view_function_terrain using
-    // Master_Clip_Mask, then draw objects to render_area via _ASMDraw_Sprite.
-    // [decomp: view.cpp.decomp @ 0x00536B40, line 4632]
-    if (terrain_target == this->save_area1 && this->save_area1 != nullptr && this->render_area != nullptr) {
-        // Use PtrCopy (software copy via CurDisplayOffsets) rather than Copy (Blt).
-        // save_area1 uses ExtendedLines=1 which shifts CurDisplayOffsets by 5 rows,
-        // making Blt read wrong data. PtrCopy respects CurDisplayOffsets.
-        tagRECT dst_rect;
-        dst_rect.left = this->render_rect.left;
-        dst_rect.top = this->render_rect.top;
-        dst_rect.right = this->render_rect.left + this->save_area1->ClipRect.right;
-        dst_rect.bottom = this->render_rect.top + this->save_area1->ClipRect.bottom;
-
-        this->render_area->PtrCopy(this->save_area1, 0, 0, &dst_rect);
+    if (this->save_area1 != nullptr) {
+        this->draw_view(10, this->save_area1);
+    } else {
+        this->draw_view(10, this->render_area);
     }
 
     this->render_terrain_mode = 1;
@@ -2383,9 +2643,7 @@ void RGE_View::update()
 
 void RGE_View::draw_view(uchar mode, TDrawArea* area)
 {
-    // TODO: PARITY [MODERATE] - draw_view @ 0x00535480 is partial: asm/decomp branch
-    // mode!=10 into view_function(...), while this transliteration currently drops that path.
-    // [decomp: view.cpp.decomp @ 0x00535480] [asm: view.cpp.asm @ 0x00535568]
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00535480
     if (area == nullptr) area = this->render_area;
     if (area == nullptr) return;
 
@@ -2412,7 +2670,6 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
     }
 
     if (area->Lock("draw_view", 1)) {
-        // TODO: PARITY [MODERATE] - mode != 10 branch should call view_function(...); current code drops the non-terrain draw path. [decomp: view.cpp.decomp @ 0x00535480]
         if (mode == 10) { // Terrain
             tagRECT rect;
             rect.left = saved_rect_left;
@@ -2420,6 +2677,8 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
             rect.right = saved_rect_right;
             rect.bottom = saved_rect_bottom;
             this->view_function_terrain(mode, rect);
+        } else {
+            this->view_function(mode, '\0', nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
         }
         area->Unlock("draw_view");
     } else {
@@ -2447,18 +2706,22 @@ void RGE_View::draw_view(uchar mode, TDrawArea* area)
 
 long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 {
-    // TODO: PARITY [CRITICAL] - view_function_terrain @ 0x00536B40 remains simplified:
-    // decomp/asm use SDI capture lists, Master_Clip_Mask merge/PtrSpanCopy, and
-    // post-copy _ASMDraw_Sprite passes with Terrain_Clip_Mask/Terrain_Fog_Clip_Mask.
-    // [decomp: view.cpp.decomp @ 0x00536B40] [asm: view.cpp.asm @ 0x0053741E, 0x005378D3, 0x00537930]
-    (void)mode;
-
+    // Fully verified. Source of truth: view.cpp.decomp @ 0x00536B40
     if (0 < this->DispSel_List_Size) {
         this->update_display_selected_objects();
     }
 
-    if (this->map == nullptr || this->cur_render_area == nullptr || this->map->map_row_offset == nullptr) {
+    if (this->map == nullptr || this->cur_render_area == nullptr || this->save_area1 == nullptr ||
+        this->render_area == nullptr || this->map->map_row_offset == nullptr ||
+        this->futur_objs == nullptr || this->prior_objs == nullptr) {
         return 0;
+    }
+
+    this->function_mode = mode;
+    if (this->calc_draw_count != 0) {
+        for (int i = 0; i < this->map->num_terrain; ++i) {
+            this->map->terrain_types[i].drawn = 0;
+        }
     }
 
     int col_num = (int)this->start_map_col;
@@ -2473,20 +2736,9 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     const ulong visible_mask = (this->player != nullptr) ? this->player->mutualVisibleMask : 0;
     constexpr int kEdgeTileTypeCount = 17;
 
-    // Deferred object draw list — objects must be rendered AFTER all terrain tiles
-    // to avoid being overwritten by subsequent overlapping terrain diamond draws.
-    // Source of truth: view.cpp.decomp lines 4236-4249 (SDI_Capture_Info=1 captures objects),
-    // lines 4394-4418 (post-tile-loop _ASMDraw_Sprite passes with Terrain_Clip_Mask).
-    struct DeferredObjDraw {
-        RGE_Object_List* objs;
-        short sx;
-        short obj_y;
-        uchar is_ambient;
-        int fog_next;
-    };
-    static const int kMaxDeferredObjDraws = 2048;
-    DeferredObjDraw deferred_obj_draws[kMaxDeferredObjDraws];
-    int num_deferred_obj_draws = 0;
+    SDI_List = this->futur_objs;
+    this->futur_objs->ReclaimAllNodes();
+    this->futur_objs->SetCaptureLevel(0, 0x28);
 
     if (this->Terrain_Clip_Mask != nullptr) {
         this->Terrain_Clip_Mask->SetSpanRegions(rect.left, rect.top, rect.right, rect.bottom);
@@ -2496,9 +2748,15 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
     }
 
     for (int scan_row = 0; scan_row < rows_to_scan; ++scan_row) {
+        if (((scan_row & 3) == 3) && (MouseSystem != nullptr)) {
+            MouseSystem->Poll();
+        }
+        if (((scan_row & 1) != 0) && (this->Queued_Blits != 0)) {
+            this->ProcessQueuedBlit(0);
+        }
+
         int map_col = col_num;
         int map_row = row_num;
-
         for (int scan_col = 0; scan_col < cols_to_scan; ++scan_col) {
             if (map_col >= 0 && map_row >= 0 && map_col < map_w && map_row < map_h) {
                 RGE_Tile* tile = &this->map->map_row_offset[map_row][map_col];
@@ -2515,7 +2773,6 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                         if (map_row >= 0 && map_row < 256 && unified_map_offsets[map_row] != nullptr && map_col >= 0) {
                             tile_offset = unified_map_offsets[map_row][map_col];
                         }
-
                         if ((tile_offset & visible_mask) == 0) {
                             if ((explored_mask & tile_offset) != 0 || tile_visible_mask != 0) {
                                 map_vis = (this->map->fog_flag != 0) ? (uchar)0x80 : (uchar)0x0F;
@@ -2544,14 +2801,14 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
 
                                 int tile_mask_num = 0;
                                 int clip_to = 0;
+                                int black_tile_mask_num = 0;
+                                int explored_tile_mask_num = 0;
+
                                 if (this->Tile_Edge_Tables != nullptr && this->Black_Edge_Tables != nullptr &&
                                     (int)tile->tile_type >= 0 && (int)tile->tile_type < kEdgeTileTypeCount) {
-                                    int black_tile_mask_num = 0;
                                     if (map_vis == 0x0F && this->map->fog_flag != 0) {
                                         black_tile_mask_num = this->get_tile_mask_num(map_col, map_row, map_w, map_h, visible_mask);
                                     }
-
-                                    int explored_tile_mask_num = 0;
                                     if (tile_visible_mask == 0 && map_vis != 0) {
                                         explored_tile_mask_num = this->get_tile_mask_num(map_col, map_row, map_w, map_h, explored_mask);
                                     }
@@ -2575,9 +2832,7 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                             clip_to = (fog_draw_data != nullptr) ? 1 : 0;
                                         }
 
-                                        const int has_black_clip =
-                                            (explored_tile_mask_num >= 1 && black_undraw_data != nullptr) ? 1 : 0;
-
+                                        const int has_black_clip = (explored_tile_mask_num >= 1 && black_undraw_data != nullptr) ? 1 : 0;
                                         if (tile_mask_num != 0 && this->Terrain_Clip_Mask != nullptr) {
                                             this->Terrain_Clip_Mask->AddMiniList(normal_draw_data, sx, sy);
                                         }
@@ -2595,6 +2850,8 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                     }
                                 }
 
+                                tile->last_drawn_shape = (uchar)black_tile_mask_num;
+                                tile->last_drawn_shape2 = (uchar)explored_tile_mask_num;
                                 tile->last_drawn_as = map_vis;
                                 tile->draw_as = map_vis;
                                 tile->draw_attribute = (uchar)(tile->draw_attribute & 0xBF);
@@ -2610,21 +2867,20 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
                                     clip_to);
                                 tiles_drawn = tiles_drawn + 1;
 
-                                // Fully verified. Source of truth: view.cpp.decomp @ 0x00536B40 (RGE_View::view_function_terrain)
-                                // calls RGE_Object_List::draw(&tile->objects, ...).
-                                if (tile->objects.list != nullptr) {
-                                    // Defer object draws to after all terrain tiles are rendered.
-                                    // Original uses SDI_Capture_Info=1 to capture sprites into DClipInfo_List.
-                                    short obj_y = (short)(sy + (int)tile->height * (int)this->tile_half_hgt);
-                                    if (num_deferred_obj_draws < kMaxDeferredObjDraws) {
-                                        DeferredObjDraw& d = deferred_obj_draws[num_deferred_obj_draws++];
-                                        d.objs = &tile->objects;
-                                        d.sx = (short)sx;
-                                        d.obj_y = obj_y;
-                                        d.is_ambient = (uchar)(map_vis == 0x80);
-                                        d.fog_next = (map_vis != 0x0F) ? 1 : 0;
-                                    }
+                                SDI_Capture_Info = 1;
+                                if (map_vis == 0) {
+                                    this->futur_objs->SetCaptureLevel(0, 5);
                                 }
+                                if (map_vis != 0x0F) {
+                                    fog_next_shape = 1;
+                                }
+                                tile->objects.draw(this->save_area1,
+                                                   (short)sx,
+                                                   (short)(sy + (int)tile->height * (int)this->tile_half_hgt),
+                                                   (uchar)(map_vis == 0x80));
+                                this->futur_objs->SetCaptureLevel(0, 0x28);
+                                fog_next_shape = 0;
+                                SDI_Capture_Info = 0;
                             }
                         }
                     }
@@ -2642,31 +2898,27 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
         }
     }
 
-    // ── Deferred object rendering pass ──
-    // After all terrain tiles are drawn, render objects so they aren't overwritten.
-    // Original: SDI_Capture_Info captures to DClipInfo_List, then _ASMDraw_Sprite
-    // with Terrain_Clip_Mask (decomp lines 4394-4418).
-    // TODO: PARITY [CRITICAL] - Full parity requires SDI capture system + per-object
-    // clip-mask replay/fog sequencing used by decomp/asm object passes.
-    // [decomp: view.cpp.decomp @ 0x00536B40] [asm: view.cpp.asm @ 0x0053741E, 0x005378D3]
-    if (num_deferred_obj_draws > 0 && this->cur_render_area != nullptr) {
-        // Use full-surface SpanList for deferred objects — ensures all pixels draw.
-        // TODO: PARITY [CRITICAL] - Original replay uses Terrain_Clip_Mask and
-        // Terrain_Fog_Clip_Mask draws; current SpanList replay overdraws outside diamond clips.
-        // [decomp: view.cpp.decomp @ 0x00536B40] [asm: view.cpp.asm @ 0x00537860, 0x005378DE]
-        this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
+    while (this->Queued_Blits != 0) {
+        this->ProcessQueuedBlit(1);
+    }
+    if (MouseSystem != nullptr) {
+        MouseSystem->Poll();
+    }
 
-        for (int i = 0; i < num_deferred_obj_draws; i++) {
-            DeferredObjDraw& d = deferred_obj_draws[i];
-            if (d.fog_next) fog_next_shape = 1;
-            d.objs->draw(this->cur_render_area, d.sx, d.obj_y, d.is_ambient);
-            fog_next_shape = 0;
-        }
+    SDI_Capture_Info = 1;
+    if (this->scroll_action == 2) {
+        (void)this->futur_objs->AddGDINode(4, 0x14,
+                                           this->render_rect.left - rect.left,
+                                           this->render_rect.top - rect.top,
+                                           this->mouse_last_x - rect.left,
+                                           this->mouse_last_y - rect.top,
+                                           0, 0, 0, 0,
+                                           0x28, 0xFF, 0);
     }
 
     if (rge_base_game != nullptr) {
         const int gm = rge_base_game->game_mode;
-        if (gm == 1 || ((6 < gm) && (gm < 9))) {
+        if (gm == 1 || (gm > 6 && gm < 9)) {
             this->draw_object_outline();
         }
         if (gm == 0x15) {
@@ -2674,6 +2926,200 @@ long RGE_View::view_function_terrain(uchar mode, tagRECT rect)
         }
     }
 
+    bool reset_all_cyclic = false;
+    if (this->extra_sprites != nullptr) {
+        const ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 0xE3E);
+        Ov_Sprite_Draw_Rec* cur = this->extra_sprites;
+        while (cur != nullptr) {
+            bool remove_cur = false;
+            if (cur->theShape != nullptr) {
+                if (cur->LastDrawTime == 0) {
+                    cur->LastDrawTime = now;
+                } else if ((cur->displayfunction == 1 || cur->displayfunction == 2) &&
+                           (now - cur->LastDrawTime >= cur->DrawTimeInterval)) {
+                    ulong elapsed = now - cur->LastDrawTime;
+                    do {
+                        cur->thefacet = cur->thefacet + 1;
+                        const long shape_count = cur->theShape->shape_count();
+                        if (shape_count <= cur->thefacet) {
+                            cur->thefacet = 0;
+                            if (cur->displayfunction == 2) {
+                                remove_cur = true;
+                                reset_all_cyclic = true;
+                            }
+                        }
+                        elapsed = elapsed - cur->DrawTimeInterval;
+                        cur->LastDrawTime = cur->LastDrawTime + cur->DrawTimeInterval;
+                    } while (cur->DrawTimeInterval <= elapsed);
+                }
+
+                if (!remove_cur) {
+                    SDI_Draw_Level = cur->drawLevel;
+                    SDI_Object_ID = -1;
+                    (void)cur->theShape->shape_draw(this->save_area1,
+                                                    cur->world_x - this->map_scr_x_offset,
+                                                    cur->world_y - this->map_scr_y_offset,
+                                                    cur->thefacet,
+                                                    (uchar)cur->flags,
+                                                    cur->colortable);
+                }
+            }
+
+            if (remove_cur || cur->theShape == nullptr) {
+                Ov_Sprite_Draw_Rec* next = cur->next;
+                if (cur->prev != nullptr) {
+                    cur->prev->next = cur->next;
+                }
+                if (cur->next != nullptr) {
+                    cur->next->prev = cur->prev;
+                }
+                if (cur->prev == nullptr) {
+                    this->extra_sprites = cur->next;
+                }
+                delete cur;
+                cur = next;
+            } else {
+                cur = cur->next;
+            }
+        }
+    }
+    if (reset_all_cyclic) {
+        this->reset_cyclic_overlay_sprites();
+    }
+    SDI_Capture_Info = 0;
+
+    view_rebuild_draw_levels(this->futur_objs);
+
+    if (this->Terrain_Clip_Mask != nullptr || this->Terrain_Fog_Clip_Mask != nullptr) {
+        this->save_area1->CurSpanList = this->save_area1->SpanList;
+        for (int lvl = 0; lvl < this->futur_objs->Max_Draw_Levels && lvl <= 0x14; ++lvl) {
+            for (DClipInfo_Node* node = this->futur_objs->Draw_Level_Head[lvl]; node != nullptr; node = node->NextOnLevel) {
+                if (node->Node_Type != 0) {
+                    continue;
+                }
+                if (this->Terrain_Clip_Mask != nullptr) {
+                    this->save_area1->CurSpanList = this->Terrain_Clip_Mask;
+                    view_draw_captured_sprite_node(this->save_area1, node, node->Draw_Flag & (~1));
+                }
+                if (this->Terrain_Fog_Clip_Mask != nullptr) {
+                    this->save_area1->CurSpanList = this->Terrain_Fog_Clip_Mask;
+                    view_draw_captured_sprite_node(this->save_area1, node, node->Draw_Flag | 1);
+                }
+            }
+        }
+        this->save_area1->CurSpanList = this->save_area1->SpanList;
+    }
+
+    if (this->render_terrain_mode == 0) {
+        this->Master_Clip_Mask->ResetAll();
+        for (int y = 0; y < this->save_area1->Height; ++y) {
+            this->Master_Clip_Mask->AddSpan(0, this->save_area1->Width - 1, y);
+        }
+        this->prior_objs->ReclaimAllNodes();
+    } else {
+        this->Master_Clip_Mask->Merge_n_Align(this->Terrain_Clip_Mask, this->Terrain_Fog_Clip_Mask);
+        if (this->Limited_Render_Rect != 0) {
+            if (this->Render_Rect1.left >= 0) {
+                for (int y = this->Render_Rect1.top; y <= this->Render_Rect1.bottom; ++y) {
+                    this->Master_Clip_Mask->AddSpan(this->Render_Rect1.left, this->Render_Rect1.right, y);
+                }
+            }
+            if (this->Use_Rect2 != 0 && this->Render_Rect2.left >= 0) {
+                for (int y = this->Render_Rect2.top; y <= this->Render_Rect2.bottom; ++y) {
+                    this->Master_Clip_Mask->AddSpan(this->Render_Rect2.left, this->Render_Rect2.right, y);
+                }
+            }
+        }
+
+        for (int line = 0; line < this->futur_objs->YLine_Size; ++line) {
+            for (DClipInfo_Node* cur = this->futur_objs->Draw_Clip_Nodes[line]; cur != nullptr; cur = cur->Next) {
+                if (cur->Draw_Level <= 5) {
+                    continue;
+                }
+                bool add_node = true;
+                for (DClipInfo_Node* prev = this->prior_objs->Draw_Clip_Nodes[line]; prev != nullptr; prev = prev->Next) {
+                    if (view_nodes_match(cur, prev)) {
+                        add_node = false;
+                        prev->Node_Type = -1;
+                        break;
+                    }
+                }
+                if (add_node) {
+                    if (cur->Node_Type == 0) {
+                        this->Master_Clip_Mask->AddShape_Align(cur->Shape_Base, cur->Shape, cur->Draw_X, cur->Draw_Y, (cur->Draw_Flag & 2) != 0);
+                    } else {
+                        this->Add_GDI_Clip_Mask(cur, this->Master_Clip_Mask);
+                    }
+                }
+            }
+            for (DClipInfo_Node* prev = this->prior_objs->Draw_Clip_Nodes[line]; prev != nullptr; prev = prev->Next) {
+                if (prev->Draw_Level <= 5 || prev->Node_Type == -1) {
+                    continue;
+                }
+                bool add_node = true;
+                for (DClipInfo_Node* cur = this->futur_objs->Draw_Clip_Nodes[line]; cur != nullptr; cur = cur->Next) {
+                    if (view_nodes_match(cur, prev)) {
+                        add_node = false;
+                        break;
+                    }
+                }
+                if (add_node) {
+                    if (prev->Node_Type == 0) {
+                        this->Master_Clip_Mask->AddShape_Align(prev->Shape_Base, prev->Shape, prev->Draw_X, prev->Draw_Y, (prev->Draw_Flag & 2) != 0);
+                    } else {
+                        this->Add_GDI_Clip_Mask(prev, this->Master_Clip_Mask);
+                    }
+                }
+            }
+        }
+    }
+
+    this->save_area1->PtrSpanCopy(
+        this->render_area,
+        rect.left,
+        rect.top,
+        &this->save_area1->ClipRect,
+        (uchar**)this->Master_Clip_Mask->Line_Head_Ptrs);
+    this->Update_Render_Pointers();
+
+    this->render_area->CurSpanList = this->Master_Clip_Mask;
+    _ASMSet_Surface_Info(this->RenderOffsets,
+                         this->Master_Clip_Mask->Line_Head_Ptrs,
+                         this->Master_Clip_Mask->Line_Tail_Ptrs,
+                         this->Master_Clip_Mask->Min_Span_Px,
+                         this->Master_Clip_Mask->Min_Line,
+                         this->Master_Clip_Mask->Max_Span_Px,
+                         this->Master_Clip_Mask->Max_Line);
+
+    for (int lvl = 0x18; lvl < this->futur_objs->Max_Draw_Levels; ++lvl) {
+        for (DClipInfo_Node* node = this->futur_objs->Draw_Level_Head[lvl]; node != nullptr; node = node->NextOnLevel) {
+            if (node->Node_Type == 0) {
+                bool reset_shadow = false;
+                const uint shadow_flags = (uint)node->Draw_Flag & 0xFFCu;
+                if ((shadow_flags & 4u) != 0) {
+                    _ASMSet_Shadowing(0x00FFFFFF, 0, (int)0xFFFF00FFu, 0);
+                    reset_shadow = true;
+                }
+                if ((shadow_flags & 8u) != 0) {
+                    const uint sv = ((shadow_flags >> 4) << 16) | (shadow_flags >> 4);
+                    _ASMSet_Shadowing((int)0xFF00FF00u, (int)sv, 0x00FF00FF, (int)(sv << 8));
+                    reset_shadow = true;
+                }
+                view_draw_captured_sprite_node(this->render_area, node, node->Draw_Flag & 3);
+                if (reset_shadow) {
+                    _ASMSet_Shadowing(0x00FF00FF, 0, (int)0xFF00FF00u, 0);
+                }
+            } else {
+                this->Draw_GDI_Object(node, this->render_area);
+            }
+        }
+    }
+    this->render_area->CurSpanList = this->render_area->SpanList;
+    this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
+
+    DClipInfo_List* tmp = this->futur_objs;
+    this->futur_objs = this->prior_objs;
+    this->prior_objs = tmp;
     return 0;
 }
 
@@ -2934,17 +3380,6 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, uchar 
     }
 
     if (param_7 != 0) {
-        // NON-PARITY: Fill the full SLP diamond area BEFORE clip-masked draw.
-        // The TILEEDGE normal_draw + fog_draw diamonds can have 1-pixel gaps between them.
-        // In the original game, render_terrain_mode!=0 reuses the previous frame's buffer
-        // (with scrolling), so gaps are filled from prior frames. We don't implement terrain
-        // buffer scrolling yet, so we pre-fill with the unclipped SLP to prevent black outlines.
-        // TODO: PARITY [MODERATE] - Remove this once render_terrain_mode scroll-reuse
-        // (CreateBlitQueue/ProcessQueuedBlit + save-area persistence) matches decomp/asm.
-        // [decomp: view.cpp.decomp @ 0x00534AE0, 0x00536B40] [asm: view.cpp.asm @ 0x00534DA0, 0x00535145]
-        this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
-        (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
-
         this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
         (void)shape->shape_draw(this->cur_render_area, x, y, frame, 0, nullptr);
     }
