@@ -2217,7 +2217,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* param_1) {
 }
 
 // Offset: 0x004E2A00
-// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2A00
+// Source of truth: taiinfmd.cpp.decomp + taiinfmd.cpp.asm @ 0x004E2A00
 float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, int param_2, int* param_3) {
     // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_3 != nullptr) {
@@ -2230,7 +2230,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, 
     float best_distance = 1000.0f;
     int resource_zone = tribe_object_current_zone(param_1);
 
-    // TODO: PARITY [CRITICAL] - taiinfmd.cpp.decomp @ 0x004E2A00 includes a playerBuildings capacity-growth path during iteration; this implementation hard-breaks at maximumSizeValue and needs asm verification.
+    // TODO: PARITY [CRITICAL] - taiinfmd.cpp.decomp + taiinfmd.cpp.asm @ 0x004E2A00 resize playerBuildings during iteration when numberValue exceeds maximumSizeValue; this implementation hard-breaks at maximumSizeValue and omits that growth path.
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if (i >= this->playerBuildings.maximumSizeValue) {
             break;
@@ -2274,7 +2274,7 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, 
 }
 
 // Offset: 0x004E2BA0
-// Fully verified. Source of truth: taiinfmd.cpp.decomp @ 0x004E2BA0
+// Source of truth: taiinfmd.cpp.decomp + taiinfmd.cpp.asm @ 0x004E2BA0
 RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     if (param_1 == nullptr) {
@@ -2285,6 +2285,7 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Stati
     float best_distance = 1000.0f;
     int unit_zone = tribe_object_current_zone(param_1);
 
+    // TODO: PARITY [CRITICAL] - taiinfmd.cpp.decomp + taiinfmd.cpp.asm @ 0x004E2BA0 resize playerBuildings during iteration when numberValue exceeds maximumSizeValue; this implementation hard-breaks at maximumSizeValue and omits that growth path.
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
         if (i >= this->playerBuildings.maximumSizeValue) {
             break;
