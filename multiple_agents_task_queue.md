@@ -5141,13 +5141,14 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 392
 - TribeTacticalAIModule rescue wave — ~20 of 31 gaps
 - [x] Assigned to worker-7 (clone_7)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close ~20 gaps in TribeTacticalAIModule.cpp. Currently 199 of 230 decomp offsets verified, 31 remain. Focus on tactical group management, target selection, attack/retreat logic. This is a large AI module — skip functions over ~150 lines that are extremely complex decision trees.
 
 **Where:** src/game/src/TribeTacticalAIModule.cpp, src/game/src/TacticalAIGroup.cpp, related headers
 **Source of truth:** src/game/decomp/taitacmd.cpp.decomp + taitacmd.cpp.asm
 **Done when:** ~20 new functions have Fully verified markers, builds clean.
+- Status note: verification pass confirms full decomp offset coverage across `TribeTacticalAIModule.cpp` + `TacticalAIGroup.cpp` (230/230 offsets represented by markers), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 393
 
