@@ -65,9 +65,8 @@ static void button_send_command(TButtonPanel* btn, short state) {
 }
 
 // Constructor
-// Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0 and pnl_btn.cpp.asm @ 0x00471EC6.
-// TODO: PARITY - Constructor base-call mismatch is confirmed: source uses TPanel::TPanel((TPanel*)this), while this transliteration calls TPanel(\"Button\").
-TButtonPanel::TButtonPanel() : TPanel("Button") {
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0, pnl_btn.cpp.asm @ 0x00471EC0
+TButtonPanel::TButtonPanel() : TPanel() {
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
 
     // Defaults verified against `src/game/src/Pnl_btn.cpp.decomp` / `.asm` (immutable references).
@@ -1122,15 +1121,14 @@ void TButtonPanel::draw() {
 }
 
 // Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
-void TButtonPanel::set_state_info(int num_states) {
+void TButtonPanel::set_state_info(short num_states) {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x004722C0
-    // TODO: PARITY - Decomp signature takes short; current int parameter + cast may hide call-site signedness/ABI mismatches for out-of-range values. [decomp: pnl_btn.cpp.decomp @ 0x004722C0]
     // Original behavior is intentionally minimal:
     //   this->buttonTypeValue = State;
     //   this->num_states = param_1;
     // Keep this exact so state-cycling buttons (team/color/etc.) enter the State mode path in do_action().
     this->buttonTypeValue = TButtonPanel::State;
-    this->num_states = (short)num_states;
+    this->num_states = num_states;
 }
 
 // From decomp: sets a picture for a given button state

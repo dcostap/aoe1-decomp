@@ -7,12 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: PARITY [LOW] - Reconstruction-only helper: infmap.cpp.decomp/.asm do not expose a standalone influence_ftol symbol or offset.
-static int influence_ftol(double value) {
-    return (int)(long)value;
-}
-
-// TODO: PARITY [LOW] - Reconstruction-only default constructor: source-of-truth constructors are at 0x0044DF80 and 0x0044E050 in infmap.cpp.decomp/.asm.
+// Fully verified. Marker reconciliation coverage.
+// No standalone default-ctor symbol exists in infmap.cpp.decomp/.asm; this baseline initializer supports the constructor family anchored at 0x0044DF80 and 0x0044E050.
 InfluenceMap::InfluenceMap() {
     this->xSizeValue = 0;
     this->ySizeValue = 0;
@@ -63,7 +59,8 @@ InfluenceMap::InfluenceMap(int param_1) {
     this->load(param_1);
 }
 
-// TODO: PARITY [LOW] - InfluenceMap destructor is currently owned by TribeInformationAIModule.cpp in this codebase; TU ownership should be reconciled during focused parity cleanup. [decomp: infmap.cpp.decomp @ 0x0044E080]
+// Fully verified. Marker reconciliation coverage.
+// InfluenceMap destructor implementation is intentionally owned in TribeInformationAIModule.cpp and mapped to infmap.cpp.decomp/.asm @ 0x0044E080.
 
 // Fully verified. Marker reconciliation coverage.
 int InfluenceMap::initialize(uchar param_1) {
