@@ -8,7 +8,7 @@
 #include "../include/custom_debug.h"
 #include <stdlib.h>
 
-// TODO: PARITY - Requested mapping mismatch: tpnl_btn.cpp.decomp contains TRIBE_Panel_Button methods (0x00519DA0+), while this file implements TButtonPanel; direct function-by-function parity against that decomp unit is unresolved in this translation unit. [decomp: tpnl_btn.cpp.decomp @ 0x00519DA0]
+// Fully verified. Source of truth: pnl_btn.cpp.decomp/pnl_btn.cpp.asm (base TButtonPanel methods); tpnl_btn.cpp.decomp/tpnl_btn.cpp.asm @ 0x00519DA0 covers derived TRIBE_Panel_Button.
 // Fully verified. Source of truth: pnl_btn.cpp.decomp (helper parity).
 static unsigned long button_time_ms() {
     return (unsigned long)GetTickCount();
@@ -37,7 +37,7 @@ static void button_send_command(TButtonPanel* btn, short state) {
 }
 
 // Constructor
-// Fully verified. Source of truth: TButtonPanel.decomp (inherited-forwarder parity with TPanel).
+// TODO: PARITY - Constructor base-call mismatch is confirmed: source uses TPanel::TPanel((TPanel*)this) at pnl_btn.cpp.decomp @ 0x00471EC0 / pnl_btn.cpp.asm @ 0x00471EC6, while this transliteration calls TPanel(\"Button\").
 TButtonPanel::TButtonPanel() : TPanel("Button") {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
