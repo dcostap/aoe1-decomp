@@ -335,6 +335,7 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(uint* out_granularity, uint* out_
         new_gran = cur_gran;
     }
 
+    // TODO: PARITY [LOW] - Decomp/ASM divide unconditionally (DIV EDI) with no zero-guard at this step; this defensive ternary introduces a non-parity branch for new_gran==0. [decomp/asm: com_spd.cpp @ 0x00432DE0]
     uint new_frames = (new_gran != 0) ? (max_latency / new_gran + 2) : 0;
     if (new_frames > 0x13) new_frames = 0x14;
     if (new_frames < 5) new_frames = 4;
