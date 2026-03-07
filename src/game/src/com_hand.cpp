@@ -53,24 +53,24 @@ static const int kPlayerHumanityCyborg = 5;
 static const int kPlayerHumanityViewOnly = 6;
 static const int kCommStatePause = 4;
 static const int kCommStateRunning = 5;
-static const int kCommWindowMessagePause = 0x17a2;
-static const int kCommWindowMessageResume = 0x17a3;
+static const COMMMESSAGES kCommWindowMessagePause = (COMMMESSAGES)0x17a2;
+static const COMMMESSAGES kCommWindowMessageResume = (COMMMESSAGES)0x17a3;
 
 // Source-of-truth constants from com_hand.cpp.asm:
 // - COMM_UPDATE_PARAMS literal pushed at SetPlayerHumanity+0x35 (0x0042cc5e): 0x17a6
 // - COMM_STATE_JOINNOW compare at SetPlayerHumanity+0x41 (0x0042cc71): 3
-static const int kCommMessageUpdateParams = 0x17a6;
-static const int kCommMessageUpdatePlayers = 0x17a4;
-static const int kCommMessagePlayerKicked = 0x17aa;
-static const int kCommMessageSyncError = 0x17b0;
-static const int kCommMessagePlayerDropped = 0x17b2;
-static const int kCommMessageOtherPlayerDropped = 0x17b3;
-static const int kCommMessagePlayerResigned = 0x17b4;
-static const int kCommMessagePlayerDefeated = 0x17b5;
-static const int kCommMessageNoOtherHumans = 0x17b6;
-static const int kCommMessageSharedDataSent = 0x17bb;
-static const int kCommMessagePlayerNotResponding = 0x17bd;
-static const int kCommMessagePlayerIdSet = 0x17b8;
+static const COMMMESSAGES kCommMessageUpdateParams = (COMMMESSAGES)0x17a6;
+static const COMMMESSAGES kCommMessageUpdatePlayers = (COMMMESSAGES)0x17a4;
+static const COMMMESSAGES kCommMessagePlayerKicked = (COMMMESSAGES)0x17aa;
+static const COMMMESSAGES kCommMessageSyncError = (COMMMESSAGES)0x17b0;
+static const COMMMESSAGES kCommMessagePlayerDropped = (COMMMESSAGES)0x17b2;
+static const COMMMESSAGES kCommMessageOtherPlayerDropped = (COMMMESSAGES)0x17b3;
+static const COMMMESSAGES kCommMessagePlayerResigned = (COMMMESSAGES)0x17b4;
+static const COMMMESSAGES kCommMessagePlayerDefeated = (COMMMESSAGES)0x17b5;
+static const COMMMESSAGES kCommMessageNoOtherHumans = (COMMMESSAGES)0x17b6;
+static const COMMMESSAGES kCommMessageSharedDataSent = (COMMMESSAGES)0x17bb;
+static const COMMMESSAGES kCommMessagePlayerNotResponding = (COMMMESSAGES)0x17bd;
+static const COMMMESSAGES kCommMessagePlayerIdSet = (COMMMESSAGES)0x17b8;
 static const int kCommStateJoinNow = 3;
 
 // Source-of-truth mirror for DAT_0062cf04 (local/self DPID).
@@ -83,6 +83,7 @@ static int s_rateInit = 0;
 static ulong s_intentionalDropCounter = 0;
 static ulong s_nextSequenceTurn = 0;
 static uchar s_nextSequence = 1;
+static char s_readyPlayerStr[64] = "Ready=                         ";
 
 static ulong comm_tslc_get_avg(RGE_TimeSinceLastCall* tslc, int sample_count) {
     // Fully verified. Source of truth: com_hand.cpp.decomp (helper implementation).
@@ -244,29 +245,59 @@ static long comm_fast_send_player(TCommunications_Handler* comm, uint to_player,
 
 static void comm_store_incoming(TCommunications_Handler* comm, uint serial, const char* msg, ulong len, ulong from_dpid,
                                 ulong to_dpid) {
-    // TODO: PARITY [CRITICAL] - Decomp only logs on zero-length and then continues holder scanning/diagnostics, while this helper early-returns on len==0 and msg==nullptr; null/zero-length paths differ. [decomp: com_hand.cpp.decomp @ 0x0042A180]
-    if (comm == nullptr || comm->OnHold == nullptr || msg == nullptr || len == 0) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A180
+    if (comm == nullptr || comm->OnHold == nullptr) {
         return;
     }
 
-    unsigned char* on_hold = (unsigned char*)comm->OnHold;
-    for (uint offset = 0; offset <= 0x2EF8; offset += 0x18) {
-        ulong* slot = (ulong*)(on_hold + offset);
-        if (slot[2] == 0) {
-            void* copy = ::operator new((size_t)len, std::nothrow);
-            if (copy == nullptr) {
-                return;
-            }
-            memcpy(copy, msg, (size_t)len);
-            slot[0] = (ulong)copy;
-            slot[1] = (ulong)serial;
-            slot[2] = (ulong)len;
-            slot[3] = (ulong)from_dpid;
-            slot[4] = (ulong)to_dpid;
-            comm->HoldCount += 1;
+    if (len == 0) {
+        L->Log("+++StoreIncoming called for zero-length message.");
+    }
+
+    HOLDER* on_hold = comm->OnHold;
+    for (uint i = 0; i <= 0x1F5; ++i) {
+        if (on_hold[i].Serial == serial && on_hold[i].dcoFromID == from_dpid) {
+            L->Log("Future Ser#%u previously stored (Slot#%u)", serial, i);
             return;
         }
     }
+
+    uint slot_index = 0;
+    while (slot_index < 0x1F5 && (on_hold[slot_index].Length != 0 || len == 0)) {
+        ++slot_index;
+    }
+
+    if (slot_index > 500) {
+        L->Log("+++ DID NOT STORE:  ");
+        if (slot_index > 0x1EB) {
+            L->Log("HOLD FULL WARNING.  COUNT=%u", slot_index);
+            for (int slot = 0; slot < 0x1F6; ++slot) {
+                HOLDER* held = &on_hold[slot];
+                if (held->Length != 0) {
+                    int cmd = 0;
+                    int b0 = 0;
+                    if (held->HoldMsg != nullptr) {
+                        cmd = (int)(signed char)held->HoldMsg[0];
+                        b0 = (int)(signed char)held->HoldMsg[1];
+                    }
+                    L->Log("S#%d  Ser#%u FromID=%lu Len=%u  CMD='%c' B0='%c'", slot, held->Serial, held->dcoFromID,
+                           held->Length, cmd, b0);
+                }
+            }
+        }
+        return;
+    }
+
+    HOLDER* held = &on_hold[slot_index];
+    held->Length = (uint)len;
+    held->HoldMsg = (char*)::operator new((size_t)held->Length, std::nothrow);
+    if (held->HoldMsg != nullptr) {
+        memcpy(held->HoldMsg, msg, (size_t)held->Length);
+        held->Length = (uint)len;
+    }
+    held->Serial = serial;
+    held->dcoFromID = from_dpid;
+    held->dcoReceiveID = to_dpid;
 }
 
 static long comm_tx_ack(TCommunications_Handler* comm, uint serial, uint to_player) {
@@ -297,6 +328,144 @@ static void comm_tx_resend_request(TCommunications_Handler* comm, uint serial, u
     req.cmd = (uchar)'X';
     req.serial = serial;
     (void)comm_fast_send_player(comm, to_player, &req, sizeof(req));
+}
+
+static int comm_send_ack_message(TCommunications_Handler* comm, uint serial, uint to_player) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
+    if (comm == nullptr) {
+        return 0;
+    }
+    if (comm->RGE_Guaranteed_Delivery == 0) {
+        L->Log("!RGEGTD Ack");
+        return 0;
+    }
+
+    unsigned char* msg = (unsigned char*)::operator new(8, std::nothrow);
+    if (msg == nullptr) {
+        return 0;
+    }
+    memset(msg, 0, 8);
+    msg[0] = (unsigned char)'A';
+    *(uint*)(msg + 4) = serial;
+
+    ulong from_dpid = s_localPlayerDpid;
+    if (from_dpid == 0 && comm->Me != 0 && comm->Me <= (uint)comm->MaxGamePlayers) {
+        from_dpid = comm->PlayerOptions.dcoID[comm->Me];
+        if (from_dpid != 0) {
+            s_localPlayerDpid = from_dpid;
+        }
+    }
+    if (from_dpid == 0) {
+        L->Log("+++BAD DCOID=0 NO TX");
+        return 0;
+    }
+
+    IDirectPlay2* dp = comm_get_dplay(comm);
+    if (dp == nullptr) {
+        ::operator delete(msg);
+        return 0;
+    }
+
+    const ulong start = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0xD53);
+    const long hr =
+        (long)dp->Send((DPID)from_dpid, (DPID)comm->PlayerOptions.dcoID[to_player], 0, (void*)msg, (DWORD)8);
+    const ulong stop = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0xD5E);
+    if (stop - start > 0x32) {
+        L->Log("!!!TXAcknowledgeMessage slow - %ld msec", (long)(stop - start));
+    }
+
+    comm->TXPacketLength += 8;
+    ::operator delete(msg);
+    (void)dp->Release();
+    if (hr == 0) {
+        return 1;
+    }
+
+    if (comm->Err != nullptr) {
+        comm->Err->ShowReturn(hr, "GTD ACK");
+    }
+    return 0;
+}
+
+static char comm_get_ready_glyph(int humanity) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+    switch (humanity) {
+    case 0: return '-';
+    case kPlayerHumanityHuman: return 'W';
+    case kPlayerHumanityComputer: return 'C';
+    case kPlayerHumanityCyborg: return 'X';
+    case kPlayerHumanityViewOnly: return 'V';
+    default: return '?';
+    }
+}
+
+static char* comm_build_ready_player_str(TCommunications_Handler* comm) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+    if (comm == nullptr) {
+        return s_readyPlayerStr;
+    }
+
+    strcpy(s_readyPlayerStr, "Ready=                         ");
+    uint player = 1;
+    if (comm->MaxGamePlayers != 0) {
+        do {
+            if (comm->LastTurnAck[player] < comm->current_turn) {
+                s_readyPlayerStr[6 + player] = comm_get_ready_glyph(comm->PlayerOptions.Humanity[player]);
+            } else {
+                s_readyPlayerStr[6 + player] = 'A';
+            }
+            ++player;
+        } while (player <= (uint)comm->MaxGamePlayers);
+    }
+    return s_readyPlayerStr;
+}
+
+static void comm_notify_window_param(TCommunications_Handler* comm, COMMMESSAGES message, long param) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428280
+    if (comm == nullptr) {
+        return;
+    }
+    PostMessageA((HWND)comm->HostHWND, 0x400, (WPARAM)message, (LPARAM)param);
+    L->Log("COMM: Send msg to window WM_USER  Msg=%d Param=%d", (int)message, (int)param);
+}
+
+static void comm_set_random_seed_host(TCommunications_Handler* comm, int seed) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+    if (comm == nullptr || comm->MeHost == 0) {
+        return;
+    }
+    if (seed == -1) {
+        const ulong rand_seed = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x1320);
+        debug_srand("C:/msdev/work/age1_x1/Com_hand.cpp", 0x1320, rand_seed);
+        seed = debug_rand("C:/msdev/work/age1_x1/Com_hand.cpp", 0x1321);
+    }
+    comm->PlayerOptions.RandomSeed = (ulong)seed;
+    comm->PlayerOptions.NeedsToBeSent = 1;
+    comm->SendSharedData(0);
+}
+
+static uint comm_get_random_seed(TCommunications_Handler* comm) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
+    if (comm == nullptr) {
+        return 0;
+    }
+    if (comm->Multiplayer == 0) {
+        const ulong rand_seed = debug_timeGetTime("C:/msdev/work/age1_x1/Com_hand.cpp", 0x1336);
+        debug_srand("C:/msdev/work/age1_x1/Com_hand.cpp", 0x1336, rand_seed);
+        comm->PlayerOptions.RandomSeed = (ulong)debug_rand("C:/msdev/work/age1_x1/Com_hand.cpp", 0x1337);
+    }
+    return (uint)comm->PlayerOptions.RandomSeed;
+}
+
+static void comm_drop_packets_intentionally(TCommunications_Handler* comm, int enabled) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
+    if (comm == nullptr) {
+        return;
+    }
+    comm->IntentionallyDropPackets = enabled;
+    if (enabled != 0) {
+        L->Log("DROPPING PACKETS INTENTIONALLY!!!");
+    }
 }
 
 static void comm_rx_ack_stored(TCommunications_Handler* comm, uint serial, uint from_player) {
@@ -1202,24 +1371,16 @@ done:
     }
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x00428270
-void TCommunications_Handler::NotifyWindow(int message) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00428270
-    // Behavior: Post WM_USER to HostHWND with message as wParam and 0 as lParam.
-    // Note: we use integer ids because the full COMMMESSAGES enum is not restored yet.
-    // TODO: PARITY [LOW] - Message parameter uses int instead of COMMMESSAGES enum, which can mask signedness/type parity issues at call sites. [decomp: com_hand.cpp.decomp @ 0x00428270]
-    if (this->HostHWND) {
-        PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, 0);
-    }
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428270
+void TCommunications_Handler::NotifyWindow(COMMMESSAGES message) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428270
+    this->NotifyWindowParam(message, 0);
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x00428280
-void TCommunications_Handler::NotifyWindowParam(int message, long param) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00428280
-    // TODO: PARITY [MODERATE] - Decomp/ASM call PostMessageA unconditionally and then emit TDebuggingLog::Log("COMM: Send msg to window WM_USER ..."); this implementation null-guards HostHWND and omits the debug log side effect. [decomp/asm: com_hand.cpp @ 0x00428280]
-    if (this->HostHWND) {
-        PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, (LPARAM)param);
-    }
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428280
+void TCommunications_Handler::NotifyWindowParam(COMMMESSAGES message, long param) {
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428280
+    comm_notify_window_param(this, message, param);
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428820
@@ -1365,16 +1526,10 @@ void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
     this->FriendlyName[player_number].Text[sizeof(this->FriendlyName[player_number].Text) - 1] = '\0';
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x0042CA90
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
 uint TCommunications_Handler::GetRandomSeed() {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042CA90
-    // TODO: PARITY [CRITICAL] - Single-player path should seed/store PlayerOptions.RandomSeed via debug_timeGetTime/debug_srand/debug_rand before return; current code returns GetTickCount() directly. [decomp: com_hand.cpp.decomp @ 0x0042CA90]
-    if (this->Multiplayer == 0) {
-        return (uint)GetTickCount();
-    }
-    const uint* random_seed =
-        (const uint*)((const char*)&this->PlayerOptions + kCommPlayerOptionsRandomSeedOffset);
-    return *random_seed;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
+    return comm_get_random_seed(this);
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CAF0
@@ -3122,11 +3277,10 @@ void TCommunications_Handler::ShowSyncChatMsgs(int param_2) {
     }
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x00425930
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
 void TCommunications_Handler::DropPacketsIntentionally(int param_2) {
-    // Source of truth: com_hand.cpp.decomp @ 0x00425930
-    // TODO: PARITY [CRITICAL] - Decomp emits a debug log when enabling intentional packet drop; this implementation only stores the flag. [decomp: com_hand.cpp.decomp @ 0x00425930]
-    this->IntentionallyDropPackets = param_2;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
+    comm_drop_packets_intentionally(this, param_2);
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425960
@@ -3579,11 +3733,10 @@ int TCommunications_Handler::StoreForResend(uint param_2, char* param_3, uint pa
     return 0;
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x0042A540
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
 int TCommunications_Handler::TXAcknowledgeMessage(uint param_2, uint param_3) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042A540
-    // TODO: PARITY [MODERATE] - Wrapper still omits the decomp's GTD-disabled/BAD-DCOID slow-send logging and Err->ShowReturn("GTD ACK") side effects; only the send success/failure result now matches. [decomp: com_hand.cpp.decomp @ 0x0042A540]
-    return (comm_tx_ack(this, param_2, param_3) == 0) ? 1 : 0;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
+    return comm_send_ack_message(this, param_2, param_3);
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A650
@@ -3727,11 +3880,10 @@ void TCommunications_Handler::DestroyMultiplayerGame(void) {
     memset(this->WasKicked, 0, sizeof(this->WasKicked));
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
 void TCommunications_Handler::SetRandomSeed(int param_2) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042CA20
-    // TODO: PARITY [CRITICAL] - Host-only gate, -1 sentinel randomization, NeedsToBeSent flag, and SendSharedData(0) side effects are missing in this simplified assignment. [decomp: com_hand.cpp.decomp @ 0x0042CA20]
-    this->PlayerOptions.RandomSeed = (ulong)param_2;
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+    comm_set_random_seed_host(this, param_2);
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB20
@@ -3748,11 +3900,10 @@ char* TCommunications_Handler::GetCommStateStr(void) {
     }
 }
 
-// Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
 char* TCommunications_Handler::GetReadyPlayerStr(void) {
-    // Source of truth: com_hand.cpp.decomp @ 0x0042CB30
-    // TODO: PARITY [CRITICAL] - Decomp builds per-player readiness/humanity glyph string; current implementation collapses to binary Ready/Not Ready text. [decomp: com_hand.cpp.decomp @ 0x0042CB30]
-    return (this->AllPlayersReady() != 0) ? (char*)"Ready" : (char*)"Not Ready";
+    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+    return comm_build_ready_player_str(this);
 }
 
 // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CC90
