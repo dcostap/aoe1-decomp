@@ -106,6 +106,7 @@ int ResourceAIModule::saveState(char* param_1) {
 }
 
 int ResourceAIModule::gleanState(int param_1) {
+    // Fully verified. Source of truth: airesmod.cpp.decomp (helper implementation).
     return ((AIModule*)this)->gleanState(param_1);
 }
 

@@ -263,6 +263,7 @@ void ResearchAIModule::setCallbackMessage(AIModuleMessage* param_1) {
 }
 
 int ResearchAIModule::filterOutMessage(AIModuleMessage* param_1) {
+    // Fully verified. Source of truth: airchmod.cpp.decomp (helper implementation).
     return as_ai(this)->filterOutMessage(param_1);
 }
 
