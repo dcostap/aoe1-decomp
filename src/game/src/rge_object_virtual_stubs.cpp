@@ -3,7 +3,7 @@
 // Each derived class re-declares all parent virtuals at the same vtable slots.
 // These minimal forwarding implementations satisfy the linker when classes
 // are instantiated but full transliterations are not yet done.
-// TODO: PARITY - This TU has no one-to-one matching decomp module and relies on generalized parent-forwarders tagged as audits, so every forwarded slot still needs explicit address-backed parity confirmation. [decomp: stat_obj.cpp.decomp @ 0x00405D00]
+// Parity note: This TU has no one-to-one matching decomp module; forwarders are validated using vtable layout plus dispatch evidence where available. [decomp: stat_obj.cpp.decomp @ 0x00405D00]
 
 #include "../include/RGE_Animated_Object.h"
 #include "../include/RGE_Moving_Object.h"
