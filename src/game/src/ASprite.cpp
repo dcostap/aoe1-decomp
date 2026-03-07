@@ -113,7 +113,7 @@ int RGE_Active_Sprite::check_for_shadows() {
 }
 
 unsigned char RGE_Active_Sprite::get_lowest_draw_level() {
-    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AFE0.
+    // Fully verified. Source of truth: asprite.cpp.decomp @ 0x0041AFE0
     if (this->sprite != nullptr) {
         return this->sprite->get_lowest_draw_level();
     }
