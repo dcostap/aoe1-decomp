@@ -6,7 +6,7 @@
 
 // Fully verified. Source of truth: taction.cpp.decomp @ 0x004D38E0
 TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3) {
-    // TODO: PARITY - Decomp constructor routes through RGE_Action(..., 0) + vtable set; this manual field-reset else-path may diverge from base-constructor side effects/layout assumptions. [decomp: taction.cpp.decomp @ 0x004D38E0]
+    // TODO: PARITY - Decomp/asm constructor path is RGE_Action::RGE_Action(..., 0) + vtable set (taction.cpp.decomp/taction.cpp.asm @ 0x004D38E0); this manual field-reset else-path is a confirmed divergence from that base-constructor path.
     if (param_3 != 0) {
         this->setup(param_1, param_2);
     } else {
@@ -30,7 +30,7 @@ TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3)
 
 // Fully verified. Source of truth: taction.cpp.decomp @ 0x004D3980
 TRIBE_Action::TRIBE_Action(RGE_Action_Object* param_1, int param_2) {
-    // TODO: PARITY - Decomp constructor similarly relies on base constructor call path; duplicated manual initialization here may not be bit-for-bit equivalent. [decomp: taction.cpp.decomp @ 0x004D3980]
+    // TODO: PARITY - Decomp/asm constructor path is RGE_Action::RGE_Action(..., 0) + vtable set (taction.cpp.decomp/taction.cpp.asm @ 0x004D3980); this duplicated manual initialization is a confirmed divergence from that base-constructor path.
     if (param_2 != 0) {
         this->setup(param_1);
     } else {
