@@ -124,14 +124,15 @@ uchar RGE_Random_Map_Module::generate() {
     return 1;
 }
 
-// Fully verified. Source of truth: rmm_base.cpp.decomp @ 0x004809E0
+// TODO: PARITY - CRITICAL: not fully parity. Source flow dereferences calloc() result without a null check.
+// [decomp+asm: rmm_base.cpp.decomp/rmm_base.cpp.asm @ 0x004809E0]
 uchar RGE_Random_Map_Module::add_module(RGE_Random_Map_Module* param_1) {
     if (param_1 == nullptr) {
         return 0;
     }
     RGE_Random_Map_Module_List* node = (RGE_Random_Map_Module_List*)calloc(1, sizeof(RGE_Random_Map_Module_List));
-    // TODO: PARITY - decomp path dereferences calloc result directly; this null-guard introduces behavior divergence on allocation failure.
-    // [decomp: rmm_base.cpp.decomp @ 0x004809E0]
+    // TODO: PARITY - null-guard below is a safety divergence on allocation failure.
+    // [decomp+asm: rmm_base.cpp.decomp/rmm_base.cpp.asm @ 0x004809E0]
     if (node == nullptr) {
         return 0;
     }
@@ -162,10 +163,11 @@ uchar RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module* param_1) {
     return 0;
 }
 
-// Fully verified. Source of truth: rmm_base.cpp.decomp @ 0x00480A80
+// TODO: PARITY - CRITICAL: not fully parity. Source flow has no upfront width/height <= 0 early return.
+// [decomp+asm: rmm_base.cpp.decomp/rmm_base.cpp.asm @ 0x00480A80]
 void RGE_Random_Map_Module::create_shared_resources() {
-    // TODO: PARITY - early return on non-positive dimensions is a safety guard not present in decomp's raw flow.
-    // [decomp: rmm_base.cpp.decomp @ 0x00480A80]
+    // TODO: PARITY - early return below diverges control flow on invalid dimensions.
+    // [decomp+asm: rmm_base.cpp.decomp/rmm_base.cpp.asm @ 0x00480A80]
     if (this->map_width <= 0 || this->map_height <= 0) {
         return;
     }
