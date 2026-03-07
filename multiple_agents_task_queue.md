@@ -5097,13 +5097,14 @@ Status note: parity sweep confirmed `view.cpp` now carries 85 Fully verified mar
 ## Task 389
 - Small gaps sweep — taiuaimd (3) + t_c_obj (3) + spanlist (3) + scenario (3) + teffects (3) + m_s_obj (2) = 17 gaps
 - [x] Assigned to worker-6 (clone_6)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close gaps across 6 small modules. taiuaimd (66 offsets, 63 verified, 3 gap in TribeUnitAIModuleTypes.cpp), t_c_obj (39 offsets, 36 verified, 3 gap in TRIBE_Combat_Object.cpp), spanlist (29 offsets, 26 verified, 3 gap), scenario (53 offsets, 50 verified, 3 gap), teffects (4 offsets, 1 verified, 3 gap in TRIBE_World_types.cpp), m_s_obj (26 offsets, 24 verified, 2 gap in RGE_Master_Static_Object.cpp).
 
 **Where:** Find corresponding .cpp files for each module
 **Source of truth:** Corresponding .decomp + .asm files in src/game/decomp/
 **Done when:** ~15 new functions have Fully verified markers, builds clean.
+Status note: verification pass confirms scoped files now carry no remaining TODO/STUB parity markers (`TribeUnitAIModuleTypes.cpp`, `TRIBE_Combat_Object.cpp`, `spanlist.cpp`, `scenario.cpp`, `TRIBE_World_types.cpp`, `RGE_Master_Static_Object.cpp`); no additional code deltas required.
 
 ---
 
