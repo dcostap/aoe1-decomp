@@ -265,7 +265,10 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(long param_1, long para
 }
 
 uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Line param_1) {
-    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484D00
+    // TODO: PARITY - CRITICAL: not fully parity. This transliteration adds safety guards/clamps absent from source flow.
+    // [decomp+asm: rmm_elev.cpp.decomp/rmm_elev.cpp.asm @ 0x00484D00]
+    // TODO: PARITY - early return guard below is not present in source flow.
+    // [decomp+asm: rmm_elev.cpp.decomp/rmm_elev.cpp.asm @ 0x00484D00]
     if (this->map_row_offset == nullptr || this->search_map_rows == nullptr || this->stack_offsets == nullptr ||
         this->map_width <= 0 || this->map_height <= 0) {
         return 0;
@@ -273,7 +276,9 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
 
     Map_Stack stack[99];
     Map_Stack loc_stack;
-    // TODO: PARITY - This transliteration clamps clump count to [0,99], while decomp iterates raw param_1.clumps against fixed local arrays. [decomp: rmm_elev.cpp.decomp @ 0x00484D00]
+    // TODO: PARITY - This transliteration clamps clump count to [0,99], while source iterates raw param_1.clumps
+    // against fixed stack[99] locals.
+    // [decomp+asm: rmm_elev.cpp.decomp/rmm_elev.cpp.asm @ 0x00484D00]
     long clumps = param_1.clumps;
     if (clumps > 99) clumps = 99;
     if (clumps < 0) clumps = 0;
