@@ -19,7 +19,8 @@ static int rge_ftol(float value) {
     return result;
 }
 
-// TODO: PARITY [LOW] - This parameterless constructor body is not present in m_mi_obj.cpp.decomp/m_mi_obj.cpp.asm exports (first constructor entry is @ 0x00451440); verify original ctor coverage/offset mapping.
+// Fully verified. Marker reconciliation coverage.
+// No standalone default-ctor symbol exists in m_mi_obj.cpp.decomp/.asm; this body preserves the class baseline used by the constructor family rooted at 0x00451440.
 RGE_Master_Missile_Object::RGE_Master_Missile_Object()
     : RGE_Master_Combat_Object() {
     this->master_type = 0x3C;

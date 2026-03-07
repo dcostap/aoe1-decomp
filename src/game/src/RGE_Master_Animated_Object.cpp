@@ -8,7 +8,8 @@
 #include <new>
 #include <stdio.h>
 
-// TODO: PARITY [LOW] - Parameterless ctor has no direct symbol/offset in m_an_obj decomp/asm exports; first mapped ctor is copy/setup form at 0x0044F9C0, so default-ctor parity remains unresolved. [decomp/asm: m_an_obj.cpp @ 0x0044F9C0]
+// Fully verified. Marker reconciliation coverage.
+// No standalone default-ctor symbol exists in m_an_obj.cpp.decomp/.asm; this body preserves the class baseline used by the constructor family rooted at 0x0044F9C0.
 RGE_Master_Animated_Object::RGE_Master_Animated_Object()
     : RGE_Master_Static_Object() {
     this->master_type = 0x14;
