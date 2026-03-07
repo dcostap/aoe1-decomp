@@ -9,9 +9,9 @@
 
 #include <string.h>
 
-// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6D50
+// TODO: PARITY [MODERATE] - Constructor adds defensive parent/draw-area fallback handling not present in the original unchecked call chain. [decomp: scr_name.cpp.decomp @ 0x004A6D50] [asm: scr_name.cpp.asm @ 0x004A6D50]
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_screen) : TDialogPanel((char*)"New Name Dialog") {
-    // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6D50
+    // TODO: PARITY [MODERATE] - Original immediately dereferences param_1 for popup/render-area calls; this version guards null parent_screen. [decomp: scr_name.cpp.decomp @ 0x004A6D50] [asm: scr_name.cpp.asm @ 0x004A6D50]
     this->title = nullptr;
     this->name_text = nullptr;
     this->name_input = nullptr;
@@ -45,10 +45,9 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_screen) : TDialogPanel
     this->set_curr_child((TPanel*)this->name_input);
 }
 
-// Fully verified. Source of truth: TRIBE_Dialog_Name.decomp @ 0x004A6F40 (scalar deleting destructor thunk).
+// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6F60 [asm: scr_name.cpp.asm @ 0x004A6F60]
 TRIBE_Dialog_Name::~TRIBE_Dialog_Name() {
-    // Fully verified. Source of truth: TRIBE_Dialog_Name.decomp @ 0x004A6F40 (scalar deleting destructor thunk).
-    // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6F60
+    // Fully verified. Scalar-deleting destructor thunk is covered separately at TRIBE_Dialog_Name.decomp/asm @ 0x004A6F40.
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->name_text);
     this->delete_panel((TPanel**)&this->name_input);
@@ -56,9 +55,9 @@ TRIBE_Dialog_Name::~TRIBE_Dialog_Name() {
     this->delete_panel((TPanel**)&this->cancel_button);
 }
 
-// Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6FF0
+// TODO: PARITY [HIGH] - action() adds defensive null checks and add_panel calls that are absent from the original direct panel-system flow. [decomp: scr_name.cpp.decomp @ 0x004A6FF0] [asm: scr_name.cpp.asm @ 0x004A6FF0]
 long TRIBE_Dialog_Name::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A6FF0
+    // TODO: PARITY [HIGH] - Decomp/asm call panel-system transitions/destroys directly and do not include these panel_system/null guards or extra add_panel calls. [decomp: scr_name.cpp.decomp @ 0x004A6FF0] [asm: scr_name.cpp.asm @ 0x004A6FF0]
     (void)param_3;
     (void)param_4;
 

@@ -7,12 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 
-// Fully verified. Marker reconciliation coverage.
+// TODO: PARITY [LOW] - Reconstruction-only helper: infmap.cpp.decomp/.asm do not expose a standalone influence_ftol symbol or offset.
 static int influence_ftol(double value) {
     return (int)(long)value;
 }
 
-// Fully verified. Marker reconciliation coverage.
+// TODO: PARITY [LOW] - Reconstruction-only default constructor: source-of-truth constructors are at 0x0044DF80 and 0x0044E050 in infmap.cpp.decomp/.asm.
 InfluenceMap::InfluenceMap() {
     this->xSizeValue = 0;
     this->ySizeValue = 0;
