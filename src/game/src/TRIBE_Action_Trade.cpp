@@ -230,15 +230,13 @@ void TRIBE_Action_Trade::set_state(uchar param_1) {
     }
 }
 
-// TODO: PARITY [MODERATE] - update() keeps defensive nullptr guards (owner/world/attributes) that are stricter than the original unchecked access paths. [decomp: tact_trd.cpp.decomp @ 0x004D2CB0] [asm: tact_trd.cpp.asm @ 0x004D2CB0]
+// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2CB0, tact_trd.cpp.asm @ 0x004D2CB0
 uchar TRIBE_Action_Trade::update() {
-    if ((this->targetID != -1) && (this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr) &&
-        (this->obj->owner->world->object(this->targetID) == nullptr)) {
+    if ((this->targetID != -1) && (this->obj->owner->world->object(this->targetID) == nullptr)) {
         this->set_target_obj(nullptr);
     }
 
-    if ((this->target2ID != -1) && (this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr) &&
-        (this->obj->owner->world->object(this->target2ID) == nullptr)) {
+    if ((this->target2ID != -1) && (this->obj->owner->world->object(this->target2ID) == nullptr)) {
         this->set_target_obj2(nullptr);
     }
 
@@ -250,8 +248,7 @@ uchar TRIBE_Action_Trade::update() {
         this->set_target_obj2(nullptr);
     }
 
-    if ((this->target_obj != nullptr) && (this->obj != nullptr) && (this->obj->owner != nullptr) && (this->target_obj->owner != nullptr) &&
-        (this->obj->owner->id == this->target_obj->owner->id)) {
+    if ((this->target_obj != nullptr) && (this->obj->owner->id == this->target_obj->owner->id)) {
         this->set_target_obj(nullptr);
         this->set_target_obj2(nullptr);
         this->set_state(1);
@@ -270,22 +267,20 @@ uchar TRIBE_Action_Trade::update() {
 
     case 4: {
         if (this->timer < 0.0f) {
-            if ((this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr)) {
-                this->timer = this->obj->owner->world->world_time_delta_seconds + this->timer;
-                if (0.0f < this->timer) {
-                    this->timer = 0.0f;
-                    if (this->target_obj != nullptr) {
-                        this->set_state(4);
-                        return 0;
-                    }
-                    this->set_state(3);
+            this->timer = this->obj->owner->world->world_time_delta_seconds + this->timer;
+            if (0.0f < this->timer) {
+                this->timer = 0.0f;
+                if (this->target_obj != nullptr) {
+                    this->set_state(4);
                     return 0;
                 }
+                this->set_state(3);
+                return 0;
             }
             break;
         }
 
-        uchar result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        uchar result = this->sub_actions->update();
         switch (result) {
         case 1:
         case 2:
@@ -314,27 +309,24 @@ uchar TRIBE_Action_Trade::update() {
             return 0;
         }
 
-        if (this->obj != nullptr) {
-            uchar turned = this->obj->turn_towards(this->target_obj, 0.0f, 0.0f);
-            if (turned != 0) {
-                int target_master_id = (this->target_obj->master_obj != nullptr) ? (int)this->target_obj->master_obj->id : -1;
-                if ((0.0f < this->target_obj->attribute_amount_held) ||
-                    (this->obj->keepGatheringWhenObjectIsOut(target_master_id) != 0)) {
-                    this->set_state(7);
-                    return 0;
-                }
-
-                this->set_target_obj(nullptr);
-                this->set_state(3);
+        uchar turned = this->obj->turn_towards(this->target_obj, 0.0f, 0.0f);
+        if (turned != 0) {
+            if ((0.0f < this->target_obj->attribute_amount_held) ||
+                (this->obj->keepGatheringWhenObjectIsOut((int)this->target_obj->master_obj->id) != 0)) {
+                this->set_state(7);
                 return 0;
             }
+
+            this->set_target_obj(nullptr);
+            this->set_state(3);
+            return 0;
         }
         break;
     }
 
     case 7: {
         if (this->target_obj == nullptr) {
-            if ((this->obj != nullptr) && (0.0f < this->obj->attribute_amount_held)) {
+            if (0.0f < this->obj->attribute_amount_held) {
                 this->set_state(8);
                 return 0;
             }
@@ -349,29 +341,23 @@ uchar TRIBE_Action_Trade::update() {
             attr_type = 1;
         }
 
-        short carry_max_short = (this->obj->master_obj != nullptr) ? this->obj->master_obj->attribute_max_amount : (short)0;
+        short carry_max_short = this->obj->master_obj->attribute_max_amount;
         float carry_max = (float)(int)carry_max_short;
 
         float max_hold = carry_max - this->obj->attribute_amount_held;
-        if ((this->obj->owner != nullptr) && (this->obj->owner->attributes != nullptr)) {
-            float avail_attr = this->obj->owner->attributes[(int)attr_type];
-            if (avail_attr < max_hold) {
-                max_hold = avail_attr;
-            }
-
-            float avail_trade = this->obj->owner->attributes[9];
-            if (avail_trade < max_hold) {
-                max_hold = avail_trade;
-            }
+        float avail_attr = this->obj->owner->attributes[(int)attr_type];
+        if (avail_attr < max_hold) {
+            max_hold = avail_attr;
         }
 
-        // NOTE: tact_trd.cpp.asm @ 0x004D2F76-0x004D2FFA materializes max_hold/take_amount as stack locals before debit/store updates.
-        // TODO: PARITY [MODERATE] - Defensive owner/attributes nullptr guards here are stricter than original direct attribute access/debit flow. [decomp: tact_trd.cpp.decomp @ 0x004D2CB0] [asm: tact_trd.cpp.asm @ 0x004D2CB0]
+        float avail_trade = this->obj->owner->attributes[9];
+        if (avail_trade < max_hold) {
+            max_hold = avail_trade;
+        }
+
         float take_amount = max_hold;
-        if ((this->obj->owner != nullptr) && (this->obj->owner->attributes != nullptr)) {
-            this->obj->owner->add_attribute_num(attr_type, -take_amount, 1);
-            this->obj->owner->attributes[9] = this->obj->owner->attributes[9] - take_amount;
-        }
+        this->obj->owner->add_attribute_num(attr_type, -take_amount, 1);
+        this->obj->owner->attributes[9] = this->obj->owner->attributes[9] - take_amount;
         this->obj->attribute_amount_held = take_amount + this->obj->attribute_amount_held;
 
         if (!(this->obj->attribute_amount_held < carry_max)) {
@@ -379,35 +365,31 @@ uchar TRIBE_Action_Trade::update() {
             return 0;
         }
 
-        if ((this->obj->owner != nullptr) && (this->obj->owner->attributes != nullptr) && (this->obj->owner->attributes[9] <= 0.0f)) {
-            int target_master_id = (this->target_obj->master_obj != nullptr) ? (int)this->target_obj->master_obj->id : -1;
-            if (this->obj->keepGatheringWhenObjectIsOut(target_master_id) == 0) {
-                this->set_state(8);
-                return 0;
-            }
+        if ((this->obj->owner->attributes[9] <= 0.0f) &&
+            (this->obj->keepGatheringWhenObjectIsOut((int)this->target_obj->master_obj->id) == 0)) {
+            this->set_state(8);
+            return 0;
         }
         break;
     }
 
     case 8: {
         if (this->timer < 0.0f) {
-            if ((this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr)) {
-                this->timer = this->obj->owner->world->world_time_delta_seconds + this->timer;
-                if (0.0f < this->timer) {
-                    this->timer = 0.0f;
-                    this->set_state(8);
-                    return 0;
-                }
+            this->timer = this->obj->owner->world->world_time_delta_seconds + this->timer;
+            if (0.0f < this->timer) {
+                this->timer = 0.0f;
+                this->set_state(8);
+                return 0;
             }
             break;
         }
 
-        uchar result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        uchar result = this->sub_actions->update();
         switch (result) {
         case 1:
         case 2:
             if (this->target_obj2 != nullptr) {
-                if ((this->obj != nullptr) && (0.0f < this->obj->attribute_amount_held)) {
+                if (0.0f < this->obj->attribute_amount_held) {
                     if (this->task->work_sound2 != nullptr) {
                         this->task->work_sound2->play(1);
                     }
@@ -420,7 +402,7 @@ uchar TRIBE_Action_Trade::update() {
                     }
 
                     // NOTE: Uses a raw player field offset per original codegen (checked in tact_trd.cpp.asm).
-                    if ((this->obj->owner != nullptr) && (((uchar*)this->obj->owner)[0x105] == 0x0F)) {
+                    if (((uchar*)this->obj->owner)[0x105] == 0x0F) {
                         distance_mod = distance_mod + distance_mod;
                     }
 
@@ -433,10 +415,7 @@ uchar TRIBE_Action_Trade::update() {
                         gold = 75.0f;
                     }
 
-                    if (this->obj->owner != nullptr) {
-                        this->obj->owner->add_attribute_num(3, gold, 1);
-                    }
-
+                    this->obj->owner->add_attribute_num(3, gold, 1);
                     this->obj->set_attribute(this->obj->attribute_type_held, 0.0f);
                 }
 
@@ -464,22 +443,20 @@ uchar TRIBE_Action_Trade::update() {
 
     case 0x0B: {
         if (this->timer < 0.0f) {
-            if ((this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr)) {
-                this->timer = this->obj->owner->world->world_time_delta_seconds + this->timer;
-                if (0.0f < this->timer) {
-                    this->timer = 0.0f;
-                    if (this->target_obj != nullptr) {
-                        this->set_state(4);
-                        return 0;
-                    }
-                    this->set_state(3);
+            this->timer = this->obj->owner->world->world_time_delta_seconds + this->timer;
+            if (0.0f < this->timer) {
+                this->timer = 0.0f;
+                if (this->target_obj != nullptr) {
+                    this->set_state(4);
                     return 0;
                 }
+                this->set_state(3);
+                return 0;
             }
             break;
         }
 
-        uchar result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        uchar result = this->sub_actions->update();
         switch (result) {
         case 1:
         case 2:
@@ -499,10 +476,8 @@ uchar TRIBE_Action_Trade::update() {
     }
 
     case 0x0D: {
-        if (this->obj != nullptr) {
-            int id = (int)this->obj->id;
-            this->obj->notify(id, id, 0x1F9, 0x267, 0, 0);
-        }
+        int id = (int)this->obj->id;
+        this->obj->notify(id, id, 0x1F9, 0x267, 0, 0);
         this->set_state(2);
         return 3;
     }
@@ -520,14 +495,10 @@ int TRIBE_Action_Trade::stop() {
     return 1;
 }
 
-// TODO: PARITY [MODERATE] - move_to() adds defensive nullptr/master_obj guards that are absent in the original direct dereference path. [decomp: tact_trd.cpp.decomp @ 0x004D3340] [asm: tact_trd.cpp.asm @ 0x004D3340]
+// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D3340, tact_trd.cpp.asm @ 0x004D3340
 int TRIBE_Action_Trade::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY [MODERATE] - Defensive nullptr/master_obj checks below are stricter than original direct owner/master_obj/drop_site dereferences. [decomp: tact_trd.cpp.decomp @ 0x004D3340] [asm: tact_trd.cpp.asm @ 0x004D3340]
     if ((param_1 == nullptr) ||
-        (this->obj == nullptr) ||
         (param_1->owner != this->obj->owner) ||
-        (param_1->master_obj == nullptr) ||
-        (this->obj->master_obj == nullptr) ||
         (param_1->master_obj->id != ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site)) {
         this->target_x = param_2;
         this->target_y = param_3;
@@ -542,16 +513,14 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* param_1, float param_2, float
     return 1;
 }
 
-// TODO: PARITY [MODERATE] - work() adds defensive nullptr/master_obj guards that are absent in the original direct dereference path. [decomp: tact_trd.cpp.decomp @ 0x004D33C0] [asm: tact_trd.cpp.asm @ 0x004D33C0]
+// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D33C0, tact_trd.cpp.asm @ 0x004D33C0
 int TRIBE_Action_Trade::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY [MODERATE] - Defensive nullptr/master_obj checks below are stricter than original direct owner/master_obj/drop_site dereferences. [decomp: tact_trd.cpp.decomp @ 0x004D33C0] [asm: tact_trd.cpp.asm @ 0x004D33C0]
     if (param_1 != nullptr) {
         if ((param_1 == this->target_obj) && ((this->state == 4) || (this->state == 6) || (this->state == 7))) {
             return 1;
         }
 
-        if ((this->obj != nullptr) && (param_1->owner == this->obj->owner) &&
-            (param_1->master_obj != nullptr) && (this->obj->master_obj != nullptr) &&
+        if ((param_1->owner == this->obj->owner) &&
             (param_1->master_obj->id == ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site)) {
             this->set_target_obj2(param_1);
             this->set_state(8);

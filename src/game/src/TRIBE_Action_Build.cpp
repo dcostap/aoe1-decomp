@@ -14,34 +14,29 @@
 
 #include <new>
 
-// Source of truth: tact_bld.cpp.decomp @ 0x004CD1B0 and tact_bld.cpp.asm @ 0x004CD1C1.
-TRIBE_Action_Build::TRIBE_Action_Build(int param_1, RGE_Action_Object* param_2) {
-    // TODO: PARITY [MODERATE] - Original constructor path calls RGE_Action::RGE_Action(..., 1) before vtable/action_type writes; this transliteration uses RGE_Action::setup instead of the base constructor path.
-    RGE_Action::setup(param_1, param_2);
+// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD1B0, tact_bld.cpp.asm @ 0x004CD1B0
+TRIBE_Action_Build::TRIBE_Action_Build(int param_1, RGE_Action_Object* param_2)
+    : RGE_Action(param_1, param_2, 1) {
     this->action_type = 0x65;
 }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD210
-TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
-    // TODO: PARITY [MODERATE] - Original constructor path calls RGE_Action::RGE_Action(..., 1) before vtable/task setup (tact_bld.cpp.decomp/tact_bld.cpp.asm @ 0x004CD210); this transliteration uses RGE_Action::setup instead of the base constructor path.
-    RGE_Action::setup(param_1);
+TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3)
+    : RGE_Action(param_1, 1) {
     this->action_type = 0x65;
     this->task = param_2;
 
-    // TODO: PARITY [MODERATE] - Decomp writes target_x/y/z in the accepted branch without a null-object guard; current guarded writes avoid null-deref and can change original crash-prone behavior. [decomp: tact_bld.cpp.decomp @ 0x004CD210]
     if ((param_3 == nullptr) || (param_1->owner->id == param_3->owner->id)) {
         this->set_target_obj(param_3);
-        if (param_3 != nullptr) {
-            this->target_x = param_3->world_x;
-            this->target_y = param_3->world_y;
-            this->target_z = param_3->world_z;
-        }
+        this->target_x = param_3->world_x;
+        this->target_y = param_3->world_y;
+        this->target_z = param_3->world_z;
     }
 }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD2A0
-TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {
-    RGE_Action::setup(param_1);
+TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5)
+    : RGE_Action(param_1, 1) {
     this->task = param_2;
     this->target_y = param_4;
     this->action_type = 0x65;
@@ -101,24 +96,17 @@ uchar TRIBE_Action_Build::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD310, tact_bld.cpp.asm @ 0x004CD310
 void TRIBE_Action_Build::set_state(uchar param_1) {
-    // TODO: PARITY [MODERATE] - Added null-guards on obj/task/sub_actions alter faulting behavior and branch outcomes versus direct dereferences in original listing. [decomp: tact_bld.cpp.decomp @ 0x004CD310]
-    if (this->sub_actions != nullptr) {
-        this->sub_actions->delete_list();
-    }
+    this->sub_actions->delete_list();
     this->state = param_1;
 
     switch ((char)param_1) {
     case 1:
     case 0x0D:
-        if (this->obj != nullptr && this->obj->master_obj != nullptr) {
-            this->obj->new_sprite(this->obj->master_obj->sprite);
-        }
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
 
     case 2:
-        if (this->obj != nullptr && this->obj->master_obj != nullptr) {
-            this->obj->new_sprite(this->obj->master_obj->sprite);
-        }
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         this->set_target_obj(nullptr);
         this->set_target_obj2(nullptr);
         this->target_x = -1.0f;
@@ -127,18 +115,14 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
         return;
 
     case 3:
-        if ((this->obj != nullptr) && (this->obj->owner != nullptr)) {
-            const int obj_id = (int)this->obj->id;
-            if (this->obj->owner->computerPlayer() == 1) {
-                this->obj->notify(obj_id, obj_id, 0x1FA, 0, 0, 0);
-                this->set_state(1);
-            } else {
-                this->obj->notify(obj_id, obj_id, 0x202, 0x25A, 0, 0);
-            }
-        }
-        if (this->obj != nullptr && this->obj->master_obj != nullptr) {
+        if (this->obj->owner->computerPlayer() == 1) {
+            this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1FA, 0, 0, 0);
+            this->set_state(1);
             this->obj->new_sprite(this->obj->master_obj->sprite);
+            return;
         }
+        this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x202, 0x25A, 0, 0);
+        this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
 
     case 4: {
@@ -148,10 +132,7 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
             this->target_z = this->target_obj->world_z;
         }
 
-        RGE_Action* move = nullptr;
-        if ((this->obj != nullptr) && (this->task != nullptr) && (this->target_obj != nullptr)) {
-            move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range, this->task->move_sprite);
-        }
+        RGE_Action* move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range, this->task->move_sprite);
 
         if (move == nullptr) {
             this->set_state(0x0D);
@@ -164,25 +145,18 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
     }
 
     case 6:
-        if ((this->obj != nullptr) && (this->task != nullptr)) {
-            this->obj->new_sprite(this->task->move_sprite);
-        }
+        this->obj->new_sprite(this->task->move_sprite);
         return;
 
     case 7:
-        if ((this->obj != nullptr) && (this->task != nullptr)) {
-            this->obj->new_sprite(this->task->work_sprite);
-            if (this->task->work_sound != nullptr) {
-                this->task->work_sound->play(1);
-            }
+        this->obj->new_sprite(this->task->work_sprite);
+        if (this->task->work_sound != nullptr) {
+            this->task->work_sound->play(1);
         }
         return;
 
     case 0x0B: {
-        RGE_Action* move = nullptr;
-        if ((this->obj != nullptr) && (this->task != nullptr)) {
-            move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
-        }
+        RGE_Action* move = new (std::nothrow) RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, this->task->move_sprite);
 
         if (move == nullptr) {
             this->set_state(0x0D);
@@ -201,10 +175,7 @@ void TRIBE_Action_Build::set_state(uchar param_1) {
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD5E0, tact_bld.cpp.asm @ 0x004CD5E0
 uchar TRIBE_Action_Build::update() {
-    // TODO: PARITY [MODERATE] - Defensive null checks (world/sub_actions/owner/task gating) may mask original crash/invalid-state paths and change control flow. [decomp: tact_bld.cpp.decomp @ 0x004CD5E0]
-    RGE_Game_World* world = (this->obj != nullptr && this->obj->owner != nullptr) ? this->obj->owner->world : nullptr;
-
-    if ((this->targetID != -1) && (world != nullptr) && (world->object(this->targetID) == nullptr)) {
+    if ((this->targetID != -1) && (this->obj->owner->world->object(this->targetID) == nullptr)) {
         this->set_target_obj(nullptr);
         if (this->state != 2) {
             this->set_state(3);
@@ -212,18 +183,16 @@ uchar TRIBE_Action_Build::update() {
         }
     }
 
-    if ((this->target2ID != -1) && (world != nullptr) && (world->object(this->target2ID) == nullptr)) {
+    if ((this->target2ID != -1) && (this->obj->owner->world->object(this->target2ID) == nullptr)) {
         this->set_target_obj2(nullptr);
     }
 
     if ((this->target_obj != nullptr) && (this->target_obj->object_state != 0) && (this->timer == 0.0f)) {
-        if ((this->target_obj->master_obj != nullptr) && (this->target_obj->hp < (float)(int)this->target_obj->master_obj->obj_max)) {
+        if (this->target_obj->hp < (float)(int)this->target_obj->master_obj->obj_max) {
             this->obj->removeAllFromPathingGroup();
-            if ((this->obj != nullptr) && (this->obj->owner != nullptr) && (this->target_obj->owner != nullptr)) {
-                this->obj->owner->processAIOrder((int)this->obj->owner->id, (int)this->obj->id, 0x2CE, (int)this->target_obj->id,
-                                                 (int)this->target_obj->owner->id, this->target_obj->world_x, this->target_obj->world_y,
-                                                 this->target_obj->world_z, 1.0f, 1, 0, 100);
-            }
+            this->obj->owner->processAIOrder((int)this->obj->owner->id, (int)this->obj->id, 0x2CE, (int)this->target_obj->id,
+                                             (int)this->target_obj->owner->id, this->target_obj->world_x, this->target_obj->world_y,
+                                             this->target_obj->world_z, 1.0f, 1, 0, 100);
             return 0;
         }
 
@@ -239,7 +208,7 @@ uchar TRIBE_Action_Build::update() {
         return 1;
 
     case 4: {
-        const uchar sub_result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        const uchar sub_result = this->sub_actions->update();
         switch (sub_result) {
         case 1:
         case 2:
@@ -260,7 +229,7 @@ uchar TRIBE_Action_Build::update() {
     }
 
     case 6:
-        if ((this->target_obj != nullptr) && (this->obj != nullptr) && (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0)) {
+        if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
             this->set_state(7);
             return 0;
         }
@@ -275,13 +244,12 @@ uchar TRIBE_Action_Build::update() {
         }
 
         float work_amount = 1000.0f;
-        if ((rge_base_game != nullptr) && (rge_base_game->quick_build == 0) && (this->task != nullptr) && (this->obj != nullptr) &&
-            (this->obj->master_obj != nullptr) && (world != nullptr)) {
-            work_amount = this->task->work_val1 * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate * world->world_time_delta_seconds;
+        if (rge_base_game->quick_build == 0) {
+            work_amount = this->task->work_val1 * ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate * this->obj->owner->world->world_time_delta_seconds;
         }
 
         if ((this->target_obj == nullptr) || (((TRIBE_Building_Object*)this->target_obj)->build(work_amount) != 0)) {
-            if ((this->target_obj != nullptr) && (this->target_obj->master_obj != nullptr) && (this->target_obj->master_obj->id == 0x32)) {
+            if ((this->target_obj != nullptr) && (this->target_obj->master_obj->id == 0x32)) {
                 this->timer = -1.0f;
                 return 0;
             }
@@ -293,7 +261,7 @@ uchar TRIBE_Action_Build::update() {
     }
 
     case 0x0B: {
-        const uchar sub_result = (this->sub_actions != nullptr) ? this->sub_actions->update() : 0;
+        const uchar sub_result = this->sub_actions->update();
         switch (sub_result) {
         case 1:
         case 2:
@@ -314,10 +282,7 @@ uchar TRIBE_Action_Build::update() {
     }
 
     case 0x0D:
-        if (this->obj != nullptr) {
-            const int obj_id = (int)this->obj->id;
-            this->obj->notify(obj_id, obj_id, 0x1F9, 0x25A, 0, 0);
-        }
+        this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1F9, 0x25A, 0, 0);
         this->set_state(2);
         return 3;
 
@@ -346,8 +311,7 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* /*param_1*/, float param_2, f
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD960
 int TRIBE_Action_Build::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY [MODERATE] - Added obj/owner nullptr guards are stricter than decomp @ 0x004CD960 and can suppress original crash-prone dereference paths.
-    if ((param_1 == nullptr) || (this->obj == nullptr) || (param_1->owner == nullptr) || (this->obj->owner == nullptr) || (param_1->owner->id != this->obj->owner->id)) {
+    if ((param_1 == nullptr) || (param_1->owner->id != this->obj->owner->id)) {
         this->target_z = param_4;
         this->target_x = param_2;
         this->target_y = param_3;
