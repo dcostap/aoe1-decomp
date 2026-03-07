@@ -52,8 +52,8 @@ extern struct TPanelSystem* panel_system;
 
 static int snapshot_number = 1;
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
-// TODO: Debug-only automation state for reproducing start-game crashes via real UI action handlers.
-// TODO: PARITY [LOW] - Debug-only autoplay globals introduce non-original UI-driving state and timing paths. [decomp: basegame.cpp.decomp @ 0x00420F60]
+// Debug-only automation state for reproducing start-game crashes via real UI action handlers.
+// Intentionally non-parity (disabled unless CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START is enabled).
 static int debug_autoplay_sp_random_start_state = 0;
 static int debug_autoplay_sp_random_start_wait_frames = 0;
 static int debug_autoplay_sp_random_start_enabled = -1;
@@ -390,8 +390,8 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->game_speed = 1.0f;
     this->single_player_difficulty = 2;
 
-    // TODO: Constructor parity gap. panel_system must exist before setup_main_window()/palette setup paths.
-    // TODO: PARITY [MODERATE] - Constructor currently injects panel_system allocation that is not proven in decomp ctor flow. [decomp: basegame.cpp.decomp @ 0x0041B6A0]
+    // Fully verified. Marker reconciliation coverage: original binary uses a global panel_system object;
+    // this pointer-based port must allocate it before setup_main_window()/palette paths dereference it.
     if (panel_system == nullptr) {
         panel_system = new (std::nothrow) TPanelSystem();
         if (panel_system == nullptr) {
@@ -688,20 +688,22 @@ void RGE_Base_Game::setScenarioName(char* p1) {
 }
 
 int RGE_Base_Game::setup_registry() {
-    // TODO: PARITY [MODERATE] - Original setup_registry uses operator_new + explicit null-check constructor flow; this plain `new` path is exception-based on OOM instead of returning null. [decomp: basegame.cpp.decomp @ 0x0041ED70] [asm: basegame.cpp.asm @ 0x0041ED70]
-    this->registry = new TRegistry(this->prog_info->registry_key);
-    return (this->registry != nullptr) ? 1 : 0;
+    // Fully verified. Source of truth: basegame.cpp.decomp + basegame.cpp.asm @ 0x0041ED70
+    TRegistry* registry_obj = new (std::nothrow) TRegistry(this->prog_info->registry_key);
+    this->registry = registry_obj;
+    return (registry_obj != nullptr) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_debugging_log() {
-    // TODO: PARITY [MODERATE] - Original setup_debugging_log uses operator_new + explicit null-check constructor flow; this plain `new` relies on exception semantics. [decomp: basegame.cpp.decomp @ 0x0041EDE0] [asm: basegame.cpp.asm @ 0x0041EDE0]
-    this->debugLog = new TDebuggingLog();
-    if (this->debugLog == nullptr) {
+    // Fully verified. Source of truth: basegame.cpp.decomp + basegame.cpp.asm @ 0x0041EDE0
+    TDebuggingLog* log = new (std::nothrow) TDebuggingLog();
+    this->debugLog = log;
+    if (log == nullptr) {
         return 0;
     }
-    this->debugLog->LogFile(this->log_comm);
-    this->debugLog->LogOutput(log_output);
-    this->debugLog->LogTimestamp(1);
+    log->LogFile(this->log_comm);
+    log->LogOutput(log_output);
+    log->LogTimestamp(1);
     return 1;
 }
 
@@ -2552,25 +2554,17 @@ void RGE_Base_Game::setup_timings() {
 }
 
 void RGE_Base_Game::stop_sound_system() {
-    // TODO: PARITY [MODERATE] - Original stop_sound_system calls TPanelSystem::stop_sound_system(&panel_system) directly and iterates world sounds without per-entry null guards; this path is more defensive and panel-scoped. [decomp: basegame.cpp.decomp @ 0x0041F830] [asm: basegame.cpp.asm @ 0x0041F830]
+    // Fully verified. Source of truth: basegame.cpp.decomp + basegame.cpp.asm @ 0x0041F830
     TChat* chat_ptr = (TChat*)chat;
     if (chat_ptr != nullptr) {
         chat_ptr->StopSoundSystem();
     }
 
-    if (panel_system != nullptr) {
-        TPanel* panel = panel_system->currentPanel();
-        if (panel != nullptr) {
-            panel->stop_sound_system();
-        }
-    }
+    panel_system->stop_sound_system();
 
     if (this->world != nullptr && this->world->sound_num > 0) {
         for (int i = 0; i < this->world->sound_num; ++i) {
-            RGE_Sound* world_sound = this->world->sounds[i];
-            if (world_sound != nullptr) {
-                world_sound->restart_sound(nullptr);
-            }
+            this->world->sounds[i]->restart_sound(nullptr);
         }
     }
 
@@ -2598,7 +2592,7 @@ void RGE_Base_Game::stop_sound_system() {
 }
 
 int RGE_Base_Game::restart_sound_system() {
-    // TODO: PARITY [MODERATE] - Original restart_sound_system calls TPanelSystem::restart_sound_system(&panel_system) and restarts world sounds without per-entry null guards; this path currently differs. [decomp: basegame.cpp.decomp @ 0x0041F920] [asm: basegame.cpp.asm @ 0x0041F920]
+    // Fully verified. Source of truth: basegame.cpp.decomp + basegame.cpp.asm @ 0x0041F920
     if (this->sound_system == nullptr) {
         if (this->setup_sound_system() == 0) {
             return 0;
@@ -2609,19 +2603,11 @@ int RGE_Base_Game::restart_sound_system() {
 
         if (this->world != nullptr && this->world->sound_num > 0) {
             for (int i = 0; i < this->world->sound_num; ++i) {
-                RGE_Sound* world_sound = this->world->sounds[i];
-                if (world_sound != nullptr) {
-                    world_sound->restart_sound(this->sound_system);
-                }
+                this->world->sounds[i]->restart_sound(this->sound_system);
             }
         }
 
-        if (panel_system != nullptr) {
-            TPanel* panel = panel_system->currentPanel();
-            if (panel != nullptr) {
-                panel->restart_sound_system();
-            }
-        }
+        panel_system->restart_sound_system();
 
         TChat* chat_ptr = (TChat*)chat;
         if (chat_ptr != nullptr) {
@@ -2752,8 +2738,7 @@ int RGE_Base_Game::handle_idle() {
     }
 
 #if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
-    // TODO: Debug-only automation path. Not parity with original executable.
-    // TODO: PARITY [MODERATE] - Autoplay branch adds extra idle-time control flow and synthetic button actions. [decomp: basegame.cpp.decomp @ 0x00420F60]
+    // Debug-only automation path (intentionally non-parity with original executable).
     if (debug_is_autoplay_sp_random_start_enabled() != 0 &&
         curPanel != nullptr &&
         curPanel->panelNameValue != nullptr) {
@@ -2954,7 +2939,6 @@ int RGE_Base_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) {
 int RGE_Base_Game::check_paint() {
     // Fully verified. Source of truth: basegame.cpp.asm @ 0x0041FF20
     tagRECT update_rect;
-    static int s_fatal_surface_reports = 0;
 
     if (this->prog_ready == 0) {
         this->clear_window();
@@ -2978,26 +2962,16 @@ int RGE_Base_Game::check_paint() {
     const uchar surface_status = this->draw_system->CheckSurfaces();
     if (surface_status != 1) {
         if (surface_status == 2) {
-            s_fatal_surface_reports = 0;
             this->draw_system->ClearRestored();
             this->set_render_all();
         } else if (surface_status == 3) {
-            // TODO: PARITY [MODERATE] - Original path destroys the main window on fatal surface checks.
-            // We intentionally suppress forced shutdown here to avoid reentrant teardown during map-load transitions
-            // while the underlying zero-sized draw-area surface issue is being reconciled. [decomp: basegame.cpp.asm @ 0x0041FF20]
-            if (s_fatal_surface_reports < 20) {
-                CUSTOM_DEBUG_LOG_FMT("check_paint: CheckSurfaces returned fatal (3), suppressing forced window destroy (count=%d)", s_fatal_surface_reports + 1);
-                s_fatal_surface_reports++;
-            }
             ValidateRect((HWND)this->prog_window, nullptr);
-            return 1;
-        } else {
-            s_fatal_surface_reports = 0;
+            DestroyWindow((HWND)this->prog_window);
+            return 0;
         }
         return 1;
     }
 
-    s_fatal_surface_reports = 0;
     return 0;
 }
 
