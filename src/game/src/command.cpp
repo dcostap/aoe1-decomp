@@ -358,28 +358,13 @@ RGE_Command::~RGE_Command() {
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_create(RGE_Command_Create* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004348B0
-    // TODO: PARITY [MODERATE] - Decomp directly dereferences world/player/master-object paths here; this transliteration adds defensive null guards.
-    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
-        return;
-    }
     RGE_Player* player = this->world->players[p1->player_id];
-    if (player == nullptr) {
-        return;
-    }
     player->make_new_object((long)p1->obj_catagory, p1->location_x, p1->location_y, p1->location_z, 0);
 }
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x004348F0
-    // TODO: PARITY [MODERATE] - Decomp calls player vtable add-attribute path without these explicit world/player null checks.
-    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
-        return;
-    }
-    RGE_Player* player = this->world->players[p1->player_id];
-    if (player == nullptr) {
-        return;
-    }
-    player->add_attribute_num((short)p1->attr_id, p1->attr_amount, 0);
+    this->world->players[p1->player_id]->add_attribute_num((short)p1->attr_id, p1->attr_amount, 0);
 }
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_order(RGE_Command_Order* p1) {
@@ -934,37 +919,17 @@ void RGE_Command::do_command_resign(RGE_Command_Resign* p1) {
 // Fully verified. Marker reconciliation coverage.
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* p1) {
     // Fully verified. Source of truth: command.cpp.decomp @ 0x00434920
-    // TODO: PARITY [MODERATE] - Decomp only gates on available amount before issuing both vtable add-attribute calls; this version adds additional player/attribute bounds/null guards.
-    if (this->world == nullptr || this->world->players == nullptr || p1 == nullptr) {
-        return;
-    }
-
-    RGE_Player* from_player = this->world->players[p1->player_id];
-    if (from_player == nullptr || from_player->attributes == nullptr) {
-        return;
-    }
-
-    int attr_id = (int)p1->attr_id;
-    if (attr_id < 0 || attr_id >= from_player->attribute_num) {
-        return;
-    }
-
+    RGE_Player** players = this->world->players;
+    RGE_Player* from_player = players[p1->player_id];
     float amount = p1->attr_amount;
-    if (from_player->attributes[attr_id] < amount) {
+    if (amount > from_player->attributes[p1->attr_id]) {
         return;
     }
 
     from_player->add_attribute_num((short)p1->attr_id, -amount, 0);
-
-    RGE_Player* to_player = this->world->players[p1->to_player_id];
-    if (to_player == nullptr) {
-        return;
-    }
+    RGE_Player* to_player = players[p1->to_player_id];
     to_player->add_attribute_num((short)p1->attr_id, amount, 0);
-
-    if (rge_base_game != nullptr) {
-        rge_base_game->notification(7, p1->player_id, p1->to_player_id, p1->attr_id, (long)amount);
-    }
+    rge_base_game->notification(7, p1->player_id, p1->to_player_id, p1->attr_id, (long)amount);
     to_player->notify(p1->player_id, p1->to_player_id, 0x20A, p1->attr_id, (long)amount, 0);
 }
 // Fully verified. Marker reconciliation coverage.

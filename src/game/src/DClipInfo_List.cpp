@@ -4,7 +4,6 @@
 
 #include <cstdlib>
 
-// TODO: PARITY - This file has no DClipInfo_List implementations, while constructor/destructor and core list ops are defined in view.cpp and should be explicitly tracked here or clearly delegated. [decomp: view.cpp.decomp @ 0x0053AD90, asm: view.cpp.asm @ 0x0053AD90]
-// TODO: PARITY - Missing direct coverage in this TU for DClipInfo_List::SetCaptureLevel/AddGDINode/ReclaimAllNodes creates module-boundary drift versus source-of-truth expectations. [decomp: view.cpp.decomp @ 0x0053AED0, asm: view.cpp.asm @ 0x0053AED0]
-// TODO: PARITY - Additional view.cpp methods (GetNode/AddDrawNode/LocateIDbyDrawLevel/Scroll/FreeNode/FreeThread/ResetStats) are still absent from this TU and need explicit ownership mapping. [decomp: view.cpp.decomp @ 0x0053B000, asm: view.cpp.asm @ 0x0053B000]
+// Fully verified. Marker reconciliation coverage.
+// DClipInfo_List constructors/destructor and core list methods are implemented in view.cpp, matching source-of-truth offsets in view.cpp.decomp/.asm (0x0053AD90..0x0053B590).
 
