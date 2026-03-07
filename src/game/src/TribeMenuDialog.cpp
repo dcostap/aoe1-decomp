@@ -49,7 +49,7 @@ TribeMenuDialog::~TribeMenuDialog() {
     }
 }
 
-// Fully verified. Source of truth: dlg_menu.cpp.decomp @ 0x0043F720
+// TODO: PARITY - action currently handles only the Cancel button path, while decomp/asm at this offset implement broad param_3/button dispatch (save/load/settings/help/about/etc). [decomp: dlg_menu.cpp.decomp @ 0x0043F720; asm: dlg_menu.cpp.asm @ 0x0043F720]
 long TribeMenuDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->button[6]) {
