@@ -763,11 +763,53 @@ int TribeTacticalAIModule::clearArea(int param_1, float param_2, float param_3, 
     return 0;
 }
 
-// Source of truth: taitacmd.cpp.decomp @ 0x004F0D70
-// TODO: PARITY [CRITICAL] - Current addObject() only appends civilians, but decomp handles multiple object groups (boats, soldiers, artifacts, etc.) and additional branching. [decomp: taitacmd.cpp.decomp @ 0x004F0D70]
+// Fully verified. Sources of truth: taitacmd.cpp.decomp @ 0x004F0D70, taitacmd.cpp.asm @ 0x004F0D70
 void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
-    if ((param_1 != nullptr) && (param_1->master_obj != nullptr) && (param_1->master_obj->object_group == 4)) {
-        appendManagedArrayUnique(this->civilians, param_1->id);
+    if ((param_1 == nullptr) || (param_1->master_obj == nullptr)) {
+        return;
+    }
+
+    const short objectGroup = param_1->master_obj->object_group;
+    const int objectID = param_1->id;
+
+    if (objectGroup == 4) {
+        appendManagedArrayUnique(this->civilians, objectID);
+        return;
+    }
+
+    const bool soldierGroup =
+        (objectGroup == 0) || (objectGroup == 0x18) || (objectGroup == 6) || (objectGroup == 0x19) ||
+        (objectGroup == 0x1A) || (objectGroup == 0x0C) || (objectGroup == 0x23) || (objectGroup == 0x17) ||
+        (objectGroup == 0x24) || (objectGroup == 0x1C) || (objectGroup == 0x12) || (objectGroup == 0x0D) ||
+        (objectGroup == 0x27);
+    if (soldierGroup) {
+        appendManagedArrayUnique(this->soldiers, objectID);
+        return;
+    }
+
+    const bool boatGroup = (objectGroup == 2) || (objectGroup == 0x14) || (objectGroup == 0x16) || (objectGroup == 0x15);
+    if (!boatGroup) {
+        if (param_1->master_obj->id == 0x9F) {
+            RGE_Game_World* world = tacticalWorld(this);
+            if ((world != nullptr) && (world->difficultyLevel() <= 3)) {
+                appendManagedArray(this->artifacts, objectID);
+            }
+        }
+        return;
+    }
+
+    appendManagedArrayUnique(this->boats, objectID);
+    if (objectGroup == 2) {
+        appendManagedArrayUnique(this->tradeBoats, objectID);
+    }
+    if (objectGroup == 0x14) {
+        appendManagedArrayUnique(this->transportBoats, objectID);
+    }
+    if (objectGroup == 0x16) {
+        appendManagedArrayUnique(this->warBoats, objectID);
+    }
+    if (objectGroup == 0x15) {
+        appendManagedArrayUnique(this->fishingBoats, objectID);
     }
 }
 
@@ -4066,16 +4108,150 @@ int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param
     return result;
 }
 
-// Source of truth: taitacmd.cpp.decomp @ 0x004F9470
-// TODO: PARITY [CRITICAL] - highLevelTaskExplorer() is currently a thin forwarder, while decomp includes substantial action/order gating logic before tasking. [decomp: taitacmd.cpp.decomp @ 0x004F9470]
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F9470
 int TribeTacticalAIModule::highLevelTaskExplorer(int param_1, int param_2) {
-    return this->taskExplorer(param_1, param_2);
+    RGE_Static_Object* obj = tacticalObject(this, param_1);
+    if (obj == nullptr) {
+        return 0;
+    }
+
+    UnitAIModule* ai = obj->unitAI();
+    if (ai == nullptr) {
+        return 0;
+    }
+
+    const int action = ai->currentAction();
+    if ((action == 600) || (action == 0x25A) || (action == 0x26A) || (action == 0x25D)) {
+        return 1;
+    }
+
+    if (obj->attribute_amount_held > 0.0f) {
+        return 0;
+    }
+
+    if ((ai->currentOrder() == 0x2C6) && (ai->currentOrderPriority() == 100)) {
+        return 0;
+    }
+    if (ai->currentOrder() == 0x2BE) {
+        return 0;
+    }
+    if (ai->hasOrderOnQueue(0x2C1) == 1) {
+        return 0;
+    }
+
+    return (this->taskExplorer(param_1, param_2) != 0);
 }
 
-// Source of truth: taitacmd.cpp.decomp @ 0x004F95B0
-// TODO: PARITY [CRITICAL] - highLevelTaskGatherer() is currently a thin forwarder, while decomp includes gatherer-state checks, timing gates, and action/order filters. [decomp: taitacmd.cpp.decomp @ 0x004F95B0]
+// Fully verified. Sources of truth: taitacmd.cpp.decomp @ 0x004F95B0, taitacmd.cpp.asm @ 0x004F95B0
 int TribeTacticalAIModule::highLevelTaskGatherer(int param_1, unsigned long param_2) {
-    return this->taskGatherer(param_1, -1, -1, param_2, nullptr);
+    int gathererIndex = 0;
+    while ((gathererIndex < this->numberGatherersValue) && (this->gatherers[gathererIndex].id != param_1)) {
+        gathererIndex += 1;
+    }
+    if (gathererIndex >= this->numberGatherersValue) {
+        return 0;
+    }
+
+    const unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1F5C);
+    if ((now - this->gatherers[gathererIndex].lastTaskTime) < 5000) {
+        return 1;
+    }
+    this->gatherers[gathererIndex].lastTaskTime = now;
+
+    RGE_Static_Object* gathererObj = tacticalObject(this, param_1);
+    if (gathererObj == nullptr) {
+        return 0;
+    }
+    UnitAIModule* unitAI = gathererObj->unitAI();
+    if (unitAI == nullptr) {
+        return 0;
+    }
+
+    int action = unitAI->currentAction();
+    if ((action == 600) || (action == 0x25A) || (action == 0x26A)) {
+        return 1;
+    }
+    if (gathererObj->attribute_amount_held > 0.0f) {
+        return 1;
+    }
+
+    if (this->isFarmer(gathererObj) == 1) {
+        TribeResourceAIModule* resourceAI = tacticalResourceAI(this);
+        if (resourceAI != nullptr) {
+            const int civilianCount = this->civilians.numberValue;
+            const int farmerCount = this->numberFarmers();
+            const int food = resourceAI->resource(0);
+            if ((food < 1000) && ((civilianCount - farmerCount) > 3)) {
+                return 1;
+            }
+        }
+    }
+
+    if ((unitAI->currentOrder() == 0x2C6) && (unitAI->currentOrderPriority() == 100)) {
+        return 1;
+    }
+    if (unitAI->currentOrder() == 0x2BE) {
+        return 1;
+    }
+
+    UnitData* gathererData = &this->gatherers[gathererIndex];
+    int triedTasking[5] = {0, 0, 0, 0, 0};
+
+    if (gathererData->data3 < gathererData->data2) {
+        if (unitAI->currentAction() != -1) {
+            return 1;
+        }
+        const int previousResource = gathererData->data1;
+        triedTasking[previousResource + 1] = 1;
+        if (this->taskGatherer(gathererData->id, previousResource, 0, param_2, nullptr) == 1) {
+            return 1;
+        }
+        gathererData->data1 = -1;
+        gathererData->data2 = -1;
+        gathererData->data3 = -1;
+    }
+
+    for (int resourceType = 0; resourceType < 4; ++resourceType) {
+        if ((triedTasking[resourceType + 1] == 1) ||
+            (this->actualGathererDistribution[resourceType] >= this->desiredGathererDistribution[resourceType])) {
+            continue;
+        }
+
+        if (gathererData->data1 == resourceType) {
+            action = unitAI->currentAction();
+            if ((action == 0x265) || (action == 0x261)) {
+                return 1;
+            }
+        }
+
+        triedTasking[resourceType + 1] = 1;
+        if (this->taskGatherer(gathererData->id, resourceType, 0, param_2, nullptr) == 1) {
+            return 1;
+        }
+    }
+
+    int result = 0;
+    if (((this->inAge(1) == 0) || (this->sn[0xB5] != 1)) &&
+        ((this->inAge(2) == 0) || (this->sn[0xB6] != 1) || (triedTasking[1] != 0))) {
+        if ((this->inAge(3) != 0) && (this->sn[0xB7] == 1)) {
+            if (triedTasking[1] == 0) {
+                result = this->taskGatherer(gathererData->id, 0, 1, param_2, nullptr);
+                triedTasking[1] = 1;
+            }
+            if (result != 0) {
+                return 1;
+            }
+            result = this->taskGatherer(gathererData->id, 3, 1, param_2, nullptr);
+        }
+    } else {
+        triedTasking[1] = 1;
+        result = this->taskGatherer(gathererData->id, 0, 1, param_2, nullptr);
+    }
+
+    if (result == 0) {
+        this->taskGatherer(gathererData->id, -1, 1, param_2, &triedTasking[1]);
+    }
+    return 1;
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F99B0
@@ -4177,10 +4353,19 @@ int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
     return ai->explore(param_2, 100, 0);
 }
 
-// Source of truth: taitacmd.cpp.decomp @ 0x004FA940
-// TODO: PARITY [CRITICAL] - taskExplorer(int,float,float) currently delegates directly, but decomp performs unitsTaskedThisUpdate and civilian/exploration-path branching first. [decomp: taitacmd.cpp.decomp @ 0x004FA940]
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FA940
 int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_3) {
-    return this->taskExplorer(param_1, param_2, param_3, 100);
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+
+    if (containsManagedArray(this->civilians, param_1) == 1) {
+        XYPoint targetPoint = {0, 0};
+        if (this->unexploredArea(param_1, &targetPoint) == 1) {
+            return this->taskExplorer(param_1, static_cast<float>(targetPoint.x), static_cast<float>(targetPoint.y), 1);
+        }
+        return this->taskExplorer(param_1, param_2, param_3, 1);
+    }
+
+    return this->taskExplorer(param_1, param_2, param_3, 0);
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAAA0
@@ -4225,10 +4410,26 @@ int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3,
     return ai->defendObject(param_2, param_3, param_4);
 }
 
-// Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
-// TODO: PARITY [CRITICAL] - taskWaterExplorer() currently delegates to taskExplorer(...,0), while decomp issues explicit water-explore command flow after task-tracking checks. [decomp: taitacmd.cpp.decomp @ 0x004FAEB0]
+// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAEB0
 int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
-    return this->taskExplorer(param_1, 0);
+    if (param_1 == -1) {
+        return 0;
+    }
+
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    this->md->player->sendUnitAIOrder((int)this->md->player->id,
+                                      param_1,
+                                      0x2C1,
+                                      -1,
+                                      -1,
+                                      -1.0f,
+                                      -1.0f,
+                                      -1.0f,
+                                      1.0f,
+                                      1,
+                                      0,
+                                      1);
+    return 1;
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FAFC0
@@ -4245,12 +4446,25 @@ int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
     return ai->tradeWithObject(param_2, 100);
 }
 
-// Source of truth: taitacmd.cpp.decomp @ 0x004FB160
-// TODO: PARITY [CRITICAL] - taskWaterFisher() currently delegates to taskGatherer(), while decomp contains distinct water-fishing targeting/command logic. [decomp: taitacmd.cpp.decomp @ 0x004FB160]
+// Fully verified. Sources of truth: taitacmd.cpp.decomp @ 0x004FB160, taitacmd.cpp.asm @ 0x004FB160
 int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) {
-    (void)param_3;
-    (void)param_4;
-    return this->taskGatherer(param_1, param_2, 0, 0, nullptr);
+    if (param_1 == -1) {
+        return 0;
+    }
+
+    RGE_Static_Object* gathererObj = this->md->object(param_1);
+    if (gathererObj == nullptr) {
+        return 0;
+    }
+
+    XYZPoint targetPoint = {static_cast<int>(param_3), static_cast<int>(param_4), 1};
+    if (gathererObj->canPath(targetPoint, 1.0f, -1, nullptr, 1, -1, -1) == 0) {
+        return 0;
+    }
+
+    appendManagedArrayUnique(this->unitsTaskedThisUpdate, param_1);
+    this->md->aiPlayer->taskResourceGatherer(param_1, param_2, 0, param_3, param_4);
+    return 1;
 }
 
 // Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004FB2D0
