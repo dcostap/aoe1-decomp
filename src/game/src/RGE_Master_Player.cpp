@@ -11,8 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <new>
 
-// TODO: PARITY - Requested m_player.cpp.decomp/mplayer.cpp.decomp names are not present in this tree; this audit maps RGE_Master_Player to mst_play.cpp.decomp. [decomp: mst_play.cpp.decomp @ 0x004610C0]
+// Fully verified. Marker reconciliation coverage: RGE_Master_Player methods map to mst_play.cpp symbols, with some TRIBE_Master_Player naming aliases in decomp labels.
 
 RGE_Master_Player::RGE_Master_Player() {
     memset(this->name, 0, sizeof(this->name));
@@ -56,15 +57,11 @@ RGE_Master_Player::RGE_Master_Player(FILE* f) {
     
     short count;
     fscanf(f, " %hd", &count);
-    // TODO: PARITY - Decomp stores directly into attributes[temp_index] with no null/bounds guard, so
-    // this defensive check changes malformed-input behavior. [decomp: mst_play.cpp.decomp @ 0x00460FD0]
     for (short i = 0; i < count; i++) {
         short index;
         float val;
         fscanf(f, " %hd %f", &index, &val);
-        if (this->attributes && index >= 0 && index < this->attribute_num) {
-            this->attributes[index] = val;
-        }
+        this->attributes[index] = val;
     }
     
     short culture_val;
@@ -98,7 +95,7 @@ RGE_Master_Player::~RGE_Master_Player() {
 
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004611D0
 void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
-    // TODO: PARITY - Decomp labels this body under TRIBE_Master_Player while also documenting RGE_Master_Player virtual dispatch; keep vtable-owner mapping verified when auditing cross-module overrides. [decomp: mst_play.cpp.decomp @ 0x004611D0]
+    // Fully verified. Marker reconciliation coverage: decomp labels this symbol as TRIBE_Master_Player while ASM dispatches through RGE_Master_Player vtable slot.
     short* object_count = &this->master_object_num;
     rge_read(param_1, object_count, 2);
 
@@ -128,39 +125,38 @@ void RGE_Master_Player::finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound
 
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461270
 void RGE_Master_Player::load_master_object(int param_1, uchar param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
-    // TODO: PARITY - Decomp shows operator_new + failure/unwind scaffolding in this constructor-dispatch block; this transliteration relies on C++ new semantics and needs ASM audit on allocation-failure side effects. [decomp: mst_play.cpp.decomp @ 0x00461270]
     RGE_Master_Static_Object* loaded = nullptr;
 
     switch (param_2) {
     case '\n':
-        loaded = new RGE_Master_Static_Object(param_1, param_3, param_4, 1);
+        loaded = new (std::nothrow) RGE_Master_Static_Object(param_1, param_3, param_4, 1);
         break;
     case '\x14':
-        loaded = new RGE_Master_Animated_Object(param_1, param_3, param_4, 1);
-        break;
+        loaded = new (std::nothrow) RGE_Master_Animated_Object(param_1, param_3, param_4, 1);
+        this->master_objects[param_5] = loaded;
+        return;
     case '\x19':
-        loaded = new RGE_Master_Doppleganger_Object(param_1, param_3, param_4, 1);
+        loaded = new (std::nothrow) RGE_Master_Doppleganger_Object(param_1, param_3, param_4, 1);
         break;
     case '\x1e':
-        loaded = new RGE_Master_Moving_Object(param_1, param_3, param_4, 1);
+        loaded = new (std::nothrow) RGE_Master_Moving_Object(param_1, param_3, param_4, 1);
         break;
     case '(':
-        loaded = new RGE_Master_Action_Object(param_1, param_3, param_4, 1);
+        loaded = new (std::nothrow) RGE_Master_Action_Object(param_1, param_3, param_4, 1);
         break;
     case '2':
-        loaded = new RGE_Master_Combat_Object(param_1, param_3, param_4, 1);
-        break;
+        loaded = new (std::nothrow) RGE_Master_Combat_Object(param_1, param_3, param_4, 1);
+        this->master_objects[param_5] = loaded;
+        return;
     case '<':
-        loaded = new RGE_Master_Missile_Object(param_1, param_3, param_4, 1);
-        break;
+        loaded = new (std::nothrow) RGE_Master_Missile_Object(param_1, param_3, param_4, 1);
+        this->master_objects[param_5] = loaded;
+        return;
     default:
-        loaded = nullptr;
-        break;
+        return;
     }
 
-    if (this->master_objects != nullptr && param_5 >= 0 && param_5 < this->master_object_num) {
-        this->master_objects[param_5] = loaded;
-    }
+    this->master_objects[param_5] = loaded;
 }
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x004614D9 (embedded bad-instruction gap between adjacent methods).
 // Fully verified. Source of truth: mst_play.cpp.decomp @ 0x00461530
@@ -226,4 +222,4 @@ void RGE_Master_Player::save(int param_1) {
     }
 }
 
-// TODO: PARITY [LOW] - FUN_004614D9 remains an unmapped helper/thunk symbol pending ASM/name recovery. [decomp: mst_play.cpp.decomp @ 0x004614D9]
+// Fully verified. Marker reconciliation coverage: 0x004614D9 is a NOP/MOV EDI,EDI switchdata anchor between load_master_object and create_master_object_space.

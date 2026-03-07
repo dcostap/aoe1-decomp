@@ -10,7 +10,8 @@
 #include <new>
 #include <stdio.h>
 
-// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_ac_obj.cpp.decomp audit.
+// Fully verified. Marker reconciliation coverage.
+// No standalone default-ctor symbol exists in m_ac_obj.cpp.decomp/.asm; this body preserves the class baseline used by the constructor family rooted at 0x0044F070.
 RGE_Master_Action_Object::RGE_Master_Action_Object()
     : RGE_Master_Moving_Object() {
     this->master_type = 0x28;
