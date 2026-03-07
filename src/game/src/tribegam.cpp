@@ -309,7 +309,7 @@ TRIBE_Game::~TRIBE_Game() {
 }
 
 int TRIBE_Game::setup() {
-    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521790
+    // Source of truth: tribegam.cpp.decomp @ 0x00521790, tribegam.cpp.asm @ 0x00521790
     // TODO: PARITY [MODERATE] - setup() currently contains simplified startup/control-flow paths versus the large decomp state machine; verify every branch side effect remains intact. [decomp: tribegam.cpp.decomp @ 0x00521790]
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
@@ -379,7 +379,7 @@ CUSTOM_DEBUG_END
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
 
-    // Video codec availability gate used by start_video (Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521B3F).
+    // Video codec availability gate used by start_video (source of truth: tribegam.cpp.asm @ 0x00521B3A..0x00521B3F; this block is within setup() in tribegam.cpp.decomp @ 0x00521790).
     ICINFO ici;
     memset(&ici, 0, sizeof(ici));
     video_codec_available = (int)ICInfo(mmioFOURCC('v', 'i', 'd', 'c'), mmioFOURCC('i', 'v', '4', '1'), &ici);
@@ -986,7 +986,7 @@ void TRIBE_Game::close_status_message() {
 }
 
 int TRIBE_Game::load_game_data() {
-    // Fully verified. Source of truth:
+    // Source of truth:
     // - `src/game/src/tribegam.cpp.asm` (`load_game_data` @ 0x005245D0)
     // - `src/game/src/tribegam.cpp.decomp`
     if (!this->world) {
@@ -3137,7 +3137,7 @@ int TRIBE_Game::setup_main_window() { return RGE_Base_Game::setup_main_window();
 int TRIBE_Game::setup_graphics_system() { return RGE_Base_Game::setup_graphics_system(); }
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_palette() {
-    // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
+    // Source of truth: tribegam.cpp.decomp @ 0x00522200, tribegam.cpp.asm @ 0x00522200
     // TODO: PARITY [MODERATE] - This body is not a pure forwarder; manual palette-entry reconstruction may still miss exact decomp/ASM field writes and branch shape. [decomp: tribegam.cpp.decomp @ 0x00522200]
     if (!RGE_Base_Game::setup_palette()) {
         return 0;
