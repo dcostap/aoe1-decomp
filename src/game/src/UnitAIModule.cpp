@@ -27,8 +27,6 @@
 #include <new>
 #include <string.h>
 
-// TODO: PARITY [LOW] - Requested aiunitmd.cpp.decomp source map is not present in-tree; current parity markers point to aiuaimod.cpp.decomp and need canonical filename confirmation before final sign-off. [decomp: aiuaimod.cpp.decomp @ 0x00413AB0]
-
 // DAT_0087d7cc and DAT_0087d7d8 are individual ints in globals.cpp;
 // code accesses consecutive memory via pointer arithmetic (&DAT_0087d7cc)[i].
 // VisibleUnitManager, VisibleUnitList, VisibleUnitList_Size are defined in globals.cpp.
@@ -1462,8 +1460,7 @@ int UnitAIModule::processRetryableOrder() {
     return 7;
 }
 
-// TODO: Parity incomplete. Source refs: aiuaimod.cpp.decomp @ 0x00413AB0, aiuaimod.cpp.asm @ 0x00413AB0
-// TODO: PARITY [MODERATE] - update() remains parity-incomplete and still requires full decomp/ASM branch and constant reconciliation. [decomp: aiuaimod.cpp.decomp @ 0x00413AB0]
+// TODO: PARITY [CRITICAL] - update() remains parity-incomplete; aiuaimod @ 0x00413AB0 still contains substantial target/action/order branch logic and constants not yet transliterated here. [decomp: aiuaimod.cpp.decomp @ 0x00413AB0] [asm: aiuaimod.cpp.asm @ 0x00413AB0]
 int UnitAIModule::update(unsigned long param_1) {
     if (this->objectValue == nullptr) {
         return 0;
