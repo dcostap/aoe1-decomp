@@ -24,7 +24,7 @@
 static const char* kScrCredSourcePath = "C:/msdev/work/age1_x1/scr_cred.cpp";
 
 static void RGE_translate_palette(tagPALETTEENTRY* in_pal, tagPALETTEENTRY* out_pal, tagPALETTEENTRY target, long amount_percent, int skip1, int skip2) {
-    // Fully verified. Source of truth: scr_cred.cpp.decomp @ 0x00493420
+    // TODO: PARITY [LOW] - scr_cred.cpp.decomp/.asm reference RGE_translate_palette from RGE_fade_palette_step (asm call @ 0x004936A6), but this export does not provide a standalone labeled body/offset for the helper.
     for (int index1 = 0; index1 < 256; ++index1) {
         if (index1 == skip1 || index1 == skip2) {
             out_pal[index1] = in_pal[index1];
