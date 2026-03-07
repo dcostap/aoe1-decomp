@@ -32,7 +32,7 @@ RGE_Lobby::~RGE_Lobby() {
 }
 
 void RGE_Lobby::ClearLobbyInfo() {
-    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F330
+    // Source of truth: com_loby.cpp.decomp @ 0x0042F330
     if (this->glpdplConnection != nullptr) {
         delete[] (char*)this->glpdplConnection;
         this->glpdplConnection = nullptr;
@@ -54,7 +54,7 @@ void RGE_Lobby::ClearLobbyInfo() {
 }
 
 int RGE_Lobby::IsLobbyLaunched() {
-    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F370
+    // Source of truth: com_loby.cpp.decomp @ 0x0042F370
     // TODO: PARITY [MODERATE] - Decomp/ASM log "LOBBY GAME LAUNCH STATUS = %d" via TDebuggingLog::Log before returning lobby_game; this implementation returns without logging. [decomp/asm: com_loby.cpp @ 0x0042F370]
     return (int)this->lobby_game;
 }
