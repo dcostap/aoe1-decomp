@@ -1202,9 +1202,9 @@ done:
     }
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428270
+// Source of truth: com_hand.cpp.decomp @ 0x00428270
 void TCommunications_Handler::NotifyWindow(int message) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428270
+    // Source of truth: com_hand.cpp.decomp @ 0x00428270
     // Behavior: Post WM_USER to HostHWND with message as wParam and 0 as lParam.
     // Note: we use integer ids because the full COMMMESSAGES enum is not restored yet.
     // TODO: PARITY [LOW] - Message parameter uses int instead of COMMMESSAGES enum, which can mask signedness/type parity issues at call sites. [decomp: com_hand.cpp.decomp @ 0x00428270]
@@ -1213,9 +1213,10 @@ void TCommunications_Handler::NotifyWindow(int message) {
     }
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428280
+// Source of truth: com_hand.cpp.decomp @ 0x00428280
 void TCommunications_Handler::NotifyWindowParam(int message, long param) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00428280
+    // Source of truth: com_hand.cpp.decomp @ 0x00428280
+    // TODO: PARITY [MODERATE] - Decomp/ASM call PostMessageA unconditionally and then emit TDebuggingLog::Log("COMM: Send msg to window WM_USER ..."); this implementation null-guards HostHWND and omits the debug log side effect. [decomp/asm: com_hand.cpp @ 0x00428280]
     if (this->HostHWND) {
         PostMessageA((HWND)this->HostHWND, 0x400, (WPARAM)message, (LPARAM)param);
     }
@@ -1364,9 +1365,9 @@ void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
     this->FriendlyName[player_number].Text[sizeof(this->FriendlyName[player_number].Text) - 1] = '\0';
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
+// Source of truth: com_hand.cpp.decomp @ 0x0042CA90
 uint TCommunications_Handler::GetRandomSeed() {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA90
+    // Source of truth: com_hand.cpp.decomp @ 0x0042CA90
     // TODO: PARITY [CRITICAL] - Single-player path should seed/store PlayerOptions.RandomSeed via debug_timeGetTime/debug_srand/debug_rand before return; current code returns GetTickCount() directly. [decomp: com_hand.cpp.decomp @ 0x0042CA90]
     if (this->Multiplayer == 0) {
         return (uint)GetTickCount();
@@ -3121,9 +3122,9 @@ void TCommunications_Handler::ShowSyncChatMsgs(int param_2) {
     }
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
+// Source of truth: com_hand.cpp.decomp @ 0x00425930
 void TCommunications_Handler::DropPacketsIntentionally(int param_2) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x00425930
+    // Source of truth: com_hand.cpp.decomp @ 0x00425930
     // TODO: PARITY [CRITICAL] - Decomp emits a debug log when enabling intentional packet drop; this implementation only stores the flag. [decomp: com_hand.cpp.decomp @ 0x00425930]
     this->IntentionallyDropPackets = param_2;
 }
@@ -3578,9 +3579,9 @@ int TCommunications_Handler::StoreForResend(uint param_2, char* param_3, uint pa
     return 0;
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
+// Source of truth: com_hand.cpp.decomp @ 0x0042A540
 int TCommunications_Handler::TXAcknowledgeMessage(uint param_2, uint param_3) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042A540
+    // Source of truth: com_hand.cpp.decomp @ 0x0042A540
     // TODO: PARITY [MODERATE] - Wrapper still omits the decomp's GTD-disabled/BAD-DCOID slow-send logging and Err->ShowReturn("GTD ACK") side effects; only the send success/failure result now matches. [decomp: com_hand.cpp.decomp @ 0x0042A540]
     return (comm_tx_ack(this, param_2, param_3) == 0) ? 1 : 0;
 }
@@ -3726,9 +3727,9 @@ void TCommunications_Handler::DestroyMultiplayerGame(void) {
     memset(this->WasKicked, 0, sizeof(this->WasKicked));
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+// Source of truth: com_hand.cpp.decomp @ 0x0042CA20
 void TCommunications_Handler::SetRandomSeed(int param_2) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CA20
+    // Source of truth: com_hand.cpp.decomp @ 0x0042CA20
     // TODO: PARITY [CRITICAL] - Host-only gate, -1 sentinel randomization, NeedsToBeSent flag, and SendSharedData(0) side effects are missing in this simplified assignment. [decomp: com_hand.cpp.decomp @ 0x0042CA20]
     this->PlayerOptions.RandomSeed = (ulong)param_2;
 }
@@ -3747,9 +3748,9 @@ char* TCommunications_Handler::GetCommStateStr(void) {
     }
 }
 
-// Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+// Source of truth: com_hand.cpp.decomp @ 0x0042CB30
 char* TCommunications_Handler::GetReadyPlayerStr(void) {
-    // Fully verified. Source of truth: com_hand.cpp.decomp @ 0x0042CB30
+    // Source of truth: com_hand.cpp.decomp @ 0x0042CB30
     // TODO: PARITY [CRITICAL] - Decomp builds per-player readiness/humanity glyph string; current implementation collapses to binary Ready/Not Ready text. [decomp: com_hand.cpp.decomp @ 0x0042CB30]
     return (this->AllPlayersReady() != 0) ? (char*)"Ready" : (char*)"Not Ready";
 }
