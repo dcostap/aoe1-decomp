@@ -56,7 +56,7 @@ void TRIBE_Panel_Inven::set_text_color(unsigned long color1, unsigned long color
 }
 
 void TRIBE_Panel_Inven::draw() {
-    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051A770
+    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051A770
     char str[20];
 
     if ((this->render_area != nullptr) && (this->visible != 0) && (this->active != 0)) {
@@ -116,7 +116,7 @@ void TRIBE_Panel_Inven::draw() {
 }
 
 long TRIBE_Panel_Inven::handle_idle() {
-    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051AAD0
+    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051AAD0
     TPanel::handle_idle();
 
     const int prog_mode = rge_base_game->prog_mode;
@@ -160,7 +160,7 @@ void TRIBE_Panel_Inven::set_player(TRIBE_Player* player_param) {
 }
 
 void TRIBE_Panel_Inven::save_info() {
-    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051AC10
+    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051AC10
     short* save_attr = this->save_attr;
     if (save_attr != nullptr) {
         if (this->save_attr_num == this->player->attribute_num) {
@@ -184,7 +184,7 @@ SAVE_INFO_COPY_ATTR:
 }
 
 uchar TRIBE_Panel_Inven::get_help_info(char** param_1, long* param_2, long param_3, long param_4) {
-    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051ACA0
+    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051ACA0
     if (this->active == 0) {
         return 0;
     }
