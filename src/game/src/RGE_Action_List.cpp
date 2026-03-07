@@ -27,21 +27,14 @@ static void action_list_set_current_action(UnitAIModule* unit_ai, int action_val
     if (unit_ai == nullptr) {
         return;
     }
-    unit_ai->lastActionValue = unit_ai->currentActionValue;
-    unit_ai->currentActionValue = action_value;
+    unit_ai->setCurrentAction(action_value);
 }
 
-static void action_list_set_current_target(UnitAIModule* unit_ai, long target_id, int target_type, float x, float y, float z) {
+static void action_list_set_current_target(UnitAIModule* unit_ai, long target_id, float x, float y, float z) {
     if (unit_ai == nullptr) {
         return;
     }
-    unit_ai->lastTargetValue = unit_ai->currentTargetValue;
-    unit_ai->lastTargetTypeValue = unit_ai->currentTargetTypeValue;
-    unit_ai->currentTargetValue = (int)target_id;
-    unit_ai->currentTargetTypeValue = target_type;
-    unit_ai->currentTargetXValue = x;
-    unit_ai->currentTargetYValue = y;
-    unit_ai->currentTargetZValue = z;
+    unit_ai->setCurrentTarget((int)target_id, x, y, z);
 }
 }
 
@@ -144,7 +137,6 @@ RGE_Action* RGE_Action_List::create_action(int param_1, short param_2) {
 
 // Fully verified. Source of truth: act_list.cpp.decomp @ 0x00404200
 RGE_Action* RGE_Action_List::create_task_action(RGE_Task* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5) {
-    // TODO: PARITY [MODERATE] - This path normalizes target metadata through action_list_set_current_target; verify object_group/id width/sign behavior against decomp's raw field arithmetic. [decomp: act_list.cpp.decomp @ 0x00404200]
     if (param_1 == nullptr) {
         return nullptr;
     }
@@ -153,10 +145,9 @@ RGE_Action* RGE_Action_List::create_task_action(RGE_Task* param_1, RGE_Static_Ob
     if (param_1->action_type == 7 && unit_ai != nullptr) {
         action_list_set_current_action(unit_ai, 600);
         if (param_2 == nullptr) {
-            action_list_set_current_target(unit_ai, -1, -1, param_3, param_4, param_5);
+            action_list_set_current_target(unit_ai, -1, param_3, param_4, param_5);
         } else {
-            int target_type = (param_2->master_obj != nullptr) ? (int)param_2->master_obj->object_group : -1;
-            action_list_set_current_target(unit_ai, param_2->id, target_type, param_2->world_x, param_2->world_y, param_2->world_z);
+            action_list_set_current_target(unit_ai, param_2->id, param_2->world_x, param_2->world_y, param_2->world_z);
         }
     }
 
@@ -184,7 +175,6 @@ RGE_Action* RGE_Action_List::create_task_action(RGE_Task* param_1, RGE_Static_Ob
                 gather->target_x = param_2->world_x;
                 gather->target_y = param_2->world_y;
                 gather->target_z = param_2->world_z;
-                // TODO: PARITY [MODERATE] - Decomp target-type extraction in gather path is offset-based; confirm signedness/width of master_obj->id cast remains faithful across all master object ids. [decomp: act_list.cpp.decomp @ 0x00404200]
                 gather->targetType = (param_2->master_obj != nullptr) ? (int)param_2->master_obj->id : -1;
             } else {
                 gather->target_x = param_3;
@@ -255,13 +245,10 @@ RGE_Action* RGE_Action_List::create_task_action(RGE_Task* param_1, RGE_Static_Ob
 
 // Fully verified. Source of truth: act_list.cpp.decomp @ 0x004044A0
 uchar RGE_Action_List::inside_obj_update() {
-    // TODO: PARITY [MODERATE] - Decomp dispatches this->list->action virtual update without a visible null guard; this defensive null-check may change crash-path behavior and should be ASM-validated. [decomp: act_list.cpp.decomp @ 0x004044A0]
     if (this->list != nullptr) {
-        uchar result = (this->list->action != nullptr) ? this->list->action->inside_obj_update() : 1;
+        uchar result = this->list->action->inside_obj_update();
         for (RGE_Action_Node* node = this->list->next; node != nullptr; node = node->next) {
-            if (node->action != nullptr) {
-                node->action->idle_update();
-            }
+            node->action->idle_update();
         }
         if (result == 1) {
             this->remove_action();

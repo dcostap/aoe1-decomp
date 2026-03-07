@@ -504,12 +504,222 @@ int TribeBuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
 }
 
 // Offset: 0x004D3D60
-// Source of truth: taibldmd.cpp.decomp @ 0x004D3D60
-// TODO: PARITY - initialize() currently performs a minimal reset/update path, while decomp contains substantial build-list/resource/population balancing logic. [decomp: taibldmd.cpp.decomp @ 0x004D3D60]
+// Fully verified. Source of truth: taibldmd.cpp.decomp @ 0x004D3D60, taibldmd.cpp.asm @ 0x004D3D60
 void TribeBuildAIModule::initialize() {
-    // TODO: PARITY - helper placeholder only; decomp body at taibldmd.cpp.decomp @ 0x004D3D60 contains substantial balancing logic not yet transliterated.
-    this->unskipBuildList(0, 0);
-    tribe_build_ai_update_needed_resources(this);
+    int bronze_age_count = 0;
+    int transport_count = 0;
+    int dock_count = 0;
+    int fishing_boat_count = 0;
+    int warship_research_count = 0;
+
+    int bronze_age_research_uid = -1;
+    int iron_age_research_uid = -1;
+    int tool_age_research_uid = -1;
+
+    bool has_research_5 = false;
+    bool has_research_7 = false;
+    bool has_research_8 = false;
+
+    BuildItem* head = tribe_build_ai_build_list(this);
+    for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
+        int build_category = item->buildCategory();
+        int type_id = ((BaseItem*)item)->typeID();
+
+        if (build_category == 0) {
+            if (type_id == 0x46) {
+                bronze_age_count = bronze_age_count + 1;
+            } else if (type_id == 0x2D) {
+                transport_count = transport_count + 1;
+            }
+        } else if (build_category == 2) {
+            if (type_id == 0x0D) {
+                dock_count = dock_count + 1;
+            } else if ((type_id == 0x11) || (type_id == 0x12)) {
+                fishing_boat_count = fishing_boat_count + 1;
+            } else if ((type_id == 0x13) || (type_id == 0xFA)) {
+                warship_research_count = warship_research_count + 1;
+            }
+        } else if ((build_category == 1) || (build_category == 4)) {
+            if (type_id == 0x65) {
+                bronze_age_research_uid = ((BaseItem*)item)->uniqueID();
+            } else if (type_id == 0x66) {
+                iron_age_research_uid = ((BaseItem*)item)->uniqueID();
+            } else if (type_id == 0x67) {
+                tool_age_research_uid = ((BaseItem*)item)->uniqueID();
+            } else if (type_id == 5) {
+                has_research_5 = true;
+            } else if (type_id == 7) {
+                has_research_7 = true;
+            } else if (type_id == 8) {
+                has_research_8 = true;
+            }
+        }
+    }
+
+    TribeTacticalAIModule* tactical_ai = reinterpret_cast<TribeTacticalAIModule*>(this->md->tacticalAI);
+
+    int required_transport_count = tactical_ai->strategicNumber(0xD4);
+    if ((transport_count < required_transport_count) && (tactical_ai->strategicNumber(0xD0) == 1)) {
+        int missing_transport_count = tactical_ai->strategicNumber(0xD4) - transport_count;
+        int transport_spacing;
+        if (iron_age_research_uid == -1) {
+            if (bronze_age_research_uid == -1) {
+                transport_spacing = 10;
+            } else {
+                transport_spacing = bronze_age_research_uid / missing_transport_count;
+            }
+        } else {
+            transport_spacing = iron_age_research_uid / missing_transport_count;
+        }
+
+        int insertion_index = transport_spacing;
+        for (int i = 0; i < missing_transport_count; ++i) {
+            this->insert(0x2D, -1, insertion_index);
+            insertion_index = insertion_index + transport_spacing;
+        }
+    }
+
+    int required_dock_count = tactical_ai->strategicNumber(0xD5);
+    if ((dock_count < required_dock_count) && (tactical_ai->strategicNumber(0xD1) == 1)) {
+        int missing_dock_count = tactical_ai->strategicNumber(0xD5) - dock_count;
+        if (missing_dock_count > 0) {
+            int dock_spacing;
+            if (iron_age_research_uid == -1) {
+                if (bronze_age_research_uid == -1) {
+                    dock_spacing = 10;
+                } else {
+                    dock_spacing = bronze_age_research_uid / missing_dock_count;
+                }
+            } else {
+                dock_spacing = iron_age_research_uid / missing_dock_count;
+            }
+
+            int insertion_index = dock_spacing;
+            for (int i = 0; i < missing_dock_count; ++i) {
+                this->insert(0x0D, -1, insertion_index);
+                insertion_index = insertion_index + dock_spacing;
+            }
+        }
+    }
+
+    int required_fishing_boat_count = tactical_ai->strategicNumber(0xD6);
+    if ((fishing_boat_count < required_fishing_boat_count) && (tactical_ai->strategicNumber(0xD2) == 1)) {
+        int missing_fishing_boat_count = tactical_ai->strategicNumber(0xD6) - fishing_boat_count;
+        int fishing_spacing = 10;
+        int insertion_index = 0;
+
+        if (bronze_age_research_uid == -1) {
+            if (iron_age_research_uid != -1) {
+                fishing_spacing = (this->buildListLengthValue - iron_age_research_uid) / (missing_fishing_boat_count * 2);
+                insertion_index = -1;
+            }
+        } else {
+            fishing_spacing = (this->buildListLengthValue - bronze_age_research_uid) / (missing_fishing_boat_count * 2);
+            insertion_index = iron_age_research_uid;
+        }
+
+        for (int i = 0; i < missing_fishing_boat_count; ++i) {
+            insertion_index = insertion_index + fishing_spacing;
+            this->insert(0x11, -1, insertion_index);
+        }
+
+        if (!has_research_8 && (tool_age_research_uid != -1)) {
+            this->insertResearch(8, tool_age_research_uid + 2);
+        }
+    }
+
+    int desired_warship_research_count = tactical_ai->strategicNumber(0xE0);
+    if ((warship_research_count < desired_warship_research_count) &&
+        (tactical_ai->strategicNumber(0xDF) == 1) &&
+        ((tool_age_research_uid != -1) || (iron_age_research_uid != -1))) {
+        int missing_warship_research_count = tactical_ai->strategicNumber(0xE0) - warship_research_count;
+        int insertion_basis = tool_age_research_uid;
+        if (insertion_basis == -1) {
+            insertion_basis = iron_age_research_uid;
+        }
+
+        int insertion_step = insertion_basis / missing_warship_research_count;
+        int insertion_index = insertion_step;
+        for (int i = 0; i < missing_warship_research_count; ++i) {
+            this->insertResearch(0x13, insertion_index);
+            insertion_index = insertion_index + insertion_step;
+        }
+
+        if (!has_research_5 && (iron_age_research_uid != -1)) {
+            this->insertResearch(5, iron_age_research_uid + 5);
+        }
+        if (!has_research_7 && (tool_age_research_uid != -1)) {
+            this->insertResearch(7, tool_age_research_uid + 5);
+        }
+    }
+
+    if ((bronze_age_count == 0) && (tactical_ai->strategicNumber(0xB4) == 1)) {
+        int loop_index = 0;
+        int required_pop = 0;
+        int planned_buildings = 0;
+        for (BuildItem* item = head->next; (item != head) && (item != nullptr); item = item->next) {
+            if ((item->buildCategory() == 0) && (((BaseItem*)item)->typeID() == 0x6D)) {
+                required_pop = required_pop + 4;
+            }
+            if (item->buildCategory() == 2) {
+                planned_buildings = planned_buildings + 1;
+            }
+
+            if (required_pop < planned_buildings) {
+                int insertion_index = (loop_index < 2) ? 1 : (loop_index - 1);
+                if (this->insert(0x46, -1, insertion_index) == 1) {
+                    required_pop = required_pop + 4;
+                }
+            }
+
+            if ((tactical_ai->strategicNumber(0x98) + 0x32) < required_pop) {
+                break;
+            }
+            loop_index = loop_index + 1;
+        }
+    }
+
+    int gatherer_total = tactical_ai->strategicNumber(0xA0);
+    int gatherer_window = tactical_ai->strategicNumber(0x9B) + 4;
+    if (gatherer_total != 0) {
+        ResourceItem resource_count(4);
+        resource_count.setAllValues(0);
+
+        int division_size = 0;
+        int insertion_index = 0;
+        for (BuildItem* item = head->next; (item != head) && (item != nullptr);) {
+            if (item->buildCategory() == 6) {
+                item = item->next;
+                division_size = division_size + 1;
+            } else {
+                if ((item->buildCategory() == 1) || (item->buildCategory() == 4)) {
+                    this->md->aiPlayer->researchCost(((BaseItem*)item)->typeID(), -1, &resource_count, 1);
+                } else {
+                    this->md->aiPlayer->objectCost(((BaseItem*)item)->typeID(), -1, &resource_count, 1);
+                }
+
+                division_size = division_size + 1;
+                if (division_size >= gatherer_window) {
+                    int total_cost = 0;
+                    for (int resource_index = 0; resource_index < 4; ++resource_index) {
+                        total_cost = total_cost + resource_count.value(resource_index);
+                    }
+
+                    if (total_cost > 0) {
+                        for (int resource_index = 0; resource_index < 4; ++resource_index) {
+                            int value = resource_count.value(resource_index);
+                            this->insertGathererPercentage(resource_index, (value * gatherer_total) / total_cost, insertion_index);
+                        }
+                        resource_count.setAllValues(0);
+                        insertion_index = insertion_index + gatherer_window;
+                        division_size = 0;
+                    }
+                }
+
+                item = item->next;
+            }
+        }
+    }
 }
 
 // Offset: 0x004D5170
@@ -986,8 +1196,8 @@ int TribeBuildAIModule::insert(int param_1, int param_2, int param_3) {
 }
 
 // Offset: 0x004D595E
-// Source of truth: taibldmd.cpp.decomp @ 0x004D595E
-// TODO: PARITY - Decomp at this offset is fully failed (`<decompilation failed>`); current return-0 body is a placeholder pending ASM/manual reconstruction.
+// Fully verified. Source of truth: taibldmd.cpp.asm @ 0x004D595E
+// ASM shows only a jump-table alignment shim (MOV EDI, EDI) with no callable function body.
 unsigned char FUN_004d595e() {
     return 0;
 }
