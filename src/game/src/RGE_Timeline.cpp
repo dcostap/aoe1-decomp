@@ -17,9 +17,9 @@ RGE_Timeline::RGE_Timeline(RGE_Game_World* param_1) {
     this->old_time = -1.0f;
 }
 
-// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050D5B0
+// TODO: PARITY [MODERATE] - Constructor still diverges with extra defensive pointer checks/calloc-failure handling versus original unchecked paths. [decomp: timeline.cpp.decomp @ 0x0050D5B0] [asm: timeline.cpp.asm @ 0x0050D5B0]
 RGE_Timeline::RGE_Timeline(int handle, RGE_Game_World* world) {
-    // TODO: PARITY [MODERATE] - Decomp only guards world/null player-id bounds, while this version additionally guards player/object-list pointers and handles calloc failure.
+    // TODO: PARITY [MODERATE] - Decomp/asm only guard world/null player-id bounds, while this version additionally guards player/object-list pointers and handles calloc failure. [decomp: timeline.cpp.decomp @ 0x0050D5B0] [asm: timeline.cpp.asm @ 0x0050D5B0]
     this->world = world;
     this->time_list = nullptr;
 
@@ -203,9 +203,9 @@ static void timeline_switch_anchor_0050DAF5() {
     // Listing body is only a switch-table anchor (NOP / MOV EDI, EDI).
 }
 
-// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DB10
+// TODO: PARITY [MODERATE] - mock_update keeps defensive player/master-object nullptr checks not present in original unchecked dereference paths. [decomp: timeline.cpp.decomp @ 0x0050DB10] [asm: timeline.cpp.asm @ 0x0050DB10]
 void RGE_Timeline::mock_update(float time) {
-    // TODO: PARITY [MODERATE] - This transliteration adds defensive player nullptr checks not present in decomp; verify whether strict parity should keep unchecked dereferences.
+    // TODO: PARITY [MODERATE] - This transliteration adds defensive player nullptr checks not present in decomp/asm; verify whether strict parity should keep unchecked dereferences. [decomp: timeline.cpp.decomp @ 0x0050DB10] [asm: timeline.cpp.asm @ 0x0050DB10]
     if ((time < this->old_time) && (this->time_list != nullptr)) {
         RGE_Time_Entry* last = this->time_list;
         while (last->next != nullptr) {
@@ -292,9 +292,9 @@ short RGE_Timeline::find_id(RGE_Static_Object* obj) {
     return -1;
 }
 
-// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DD70
+// TODO: PARITY [MODERATE] - add() preserves allocation-failure null guards whereas decomp/asm write fields unconditionally after calloc. [decomp: timeline.cpp.decomp @ 0x0050DD70] [asm: timeline.cpp.asm @ 0x0050DD70]
 RGE_Time_Entry* RGE_Timeline::add(float time) {
-    // TODO: PARITY [MODERATE] - Decomp writes fields unconditionally after calloc, while this version preserves safety null checks on allocation failure.
+    // TODO: PARITY [MODERATE] - Decomp/asm write fields unconditionally after calloc, while this version preserves safety null checks on allocation failure. [decomp: timeline.cpp.decomp @ 0x0050DD70] [asm: timeline.cpp.asm @ 0x0050DD70]
     RGE_Time_Entry** insert = &this->time_list;
     RGE_Time_Entry* cur = this->time_list;
     if (cur == nullptr) {
@@ -347,9 +347,9 @@ RGE_Time_Entry* RGE_Timeline::add_attack(float time, RGE_Static_Object* this_obj
     return e;
 }
 
-// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DE50
+// TODO: PARITY [MODERATE] - add_create() adds defensive player/master-object validity checks beyond original unchecked dereference flow. [decomp: timeline.cpp.decomp @ 0x0050DE50] [asm: timeline.cpp.asm @ 0x0050DE50]
 RGE_Time_Entry* RGE_Timeline::add_create(float time, short obj_type, uchar player_id, float x, float y, float z) {
-    // TODO: PARITY [MODERATE] - Decomp assumes world->players[player_id] is valid before master object lookup; this version adds nullptr checks.
+    // TODO: PARITY [MODERATE] - Decomp/asm assume world->players[player_id] is valid before master object lookup; this version adds nullptr checks. [decomp: timeline.cpp.decomp @ 0x0050DE50] [asm: timeline.cpp.asm @ 0x0050DE50]
     RGE_Static_Object* created = nullptr;
     RGE_Time_Entry* e = this->add(time);
 
@@ -417,9 +417,9 @@ RGE_Time_Entry* RGE_Timeline::add_delete(float time, RGE_Static_Object* this_obj
     return e;
 }
 
-// Fully verified. Source of truth: timeline.cpp.decomp @ 0x0050DFD0
+// TODO: PARITY [CRITICAL] - sub() omits original post-unlink recursive call/control flow and therefore is not fully equivalent. [decomp: timeline.cpp.decomp @ 0x0050DFD0] [asm: timeline.cpp.asm @ 0x0050DFD0]
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
-    // TODO: PARITY [CRITICAL] - ASM/decomp show a post-unlink recursive self-call path (`sub(this, <derived param>)`, including command==1 handling) not mirrored here.
+    // TODO: PARITY [CRITICAL] - ASM/decomp show a post-unlink recursive self-call path (`sub(this, <derived param>)`, including command==1 handling) not mirrored here. [decomp: timeline.cpp.decomp @ 0x0050DFD0] [asm: timeline.cpp.asm @ 0x0050DFD0]
     RGE_Time_Entry** pp = &this->time_list;
     RGE_Time_Entry* cur = this->time_list;
     while (cur != nullptr) {

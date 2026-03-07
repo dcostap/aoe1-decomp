@@ -53,7 +53,7 @@ static void RGE_translate_palette(tagPALETTEENTRY* in_pal, tagPALETTEENTRY* out_
     }
 }
 
-// Fully verified. Source of truth: color.cpp.decomp @ 0x004240B0
+// TODO: PARITY [MODERATE] - fade branch still has unresolved float/__ftol comparison parity nuances and is not fully verified. [decomp: color.cpp.decomp @ 0x004240B0] [asm: color.cpp.asm @ 0x004240B0]
 void RGE_fade_palette(TDrawArea* param_1, tagPALETTEENTRY param_2, float param_3, uchar param_4, tagPALETTEENTRY* param_5, int param_6, int param_7) {
     tagPALETTEENTRY palette1[257];
     tagPALETTEENTRY palette2[257];
@@ -75,7 +75,7 @@ void RGE_fade_palette(TDrawArea* param_1, tagPALETTEENTRY param_2, float param_3
             const float fade_time2 = param_3 - (float)(int)(now - old_time) * 0.001f;
 
             long delta_time = 0;
-            // TODO: PARITY - Decomp materializes this branch through float comparisons plus __ftol conversion; re-audit NaN/rounding semantics against color.cpp.asm before marking this fade path fully equivalent. [decomp: color.cpp.decomp @ 0x004240B0]
+            // TODO: PARITY [MODERATE] - Decomp/asm materialize this branch through float comparisons plus __ftol conversion; re-audit NaN/rounding semantics before marking this fade path fully equivalent. [decomp: color.cpp.decomp @ 0x004240B0] [asm: color.cpp.asm @ 0x004240B0]
             if (!((param_3 <= 0.0f) || (param_3 < fade_time2) || (fade_time2 < 0.0f))) {
                 delta_time = (long)fade_time2;
             }
@@ -120,9 +120,9 @@ RGE_Color_Table::RGE_Color_Table() {
     memset(this->table, 0, sizeof(this->table));
 }
 
-// Fully verified. Marker reconciliation coverage.
+// TODO: PARITY [MODERATE] - FILE* constructor still has unresolved helper/truncation parity notes and should not be marked fully verified yet. [decomp: color.cpp.decomp @ 0x00424440] [asm: color.cpp.asm @ 0x00424440]
 RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
-    // Fully verified. Source of truth: color.cpp.decomp @ 0x00424440
+    // TODO: PARITY [MODERATE] - Filename construction currently relies on addstring helper equivalence that remains under audit. [decomp: color.cpp.decomp @ 0x00424440] [asm: color.cpp.asm @ 0x00424440]
     this->id = param_id;
     memset(this->table, 0, sizeof(this->table));
 
@@ -132,7 +132,7 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
     this->map_color = (unsigned char)temp_map_color;
     this->type = (unsigned char)temp_type;
 
-    // TODO: PARITY - Decomp builds this filename through local buffer string ops before appending ".col"; confirm addstring() helper preserves exact truncation/termination behavior. [decomp: color.cpp.decomp @ 0x00424440]
+    // TODO: PARITY [MODERATE] - Decomp/asm build this filename through local buffer string ops before appending ".col"; confirm addstring() helper preserves exact truncation/termination behavior. [decomp: color.cpp.decomp @ 0x00424440] [asm: color.cpp.asm @ 0x00424440]
     char* file_name = nullptr;
     addstring(&file_name, this->color_table_name, (char*)".col");
     if (file_name != nullptr) {
@@ -141,9 +141,9 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short param_id) {
     }
 }
 
-// Fully verified. Marker reconciliation coverage.
+// TODO: PARITY [MODERATE] - fd constructor still has unresolved stack-offset filename handling parity notes and should not be marked fully verified yet. [decomp: color.cpp.decomp @ 0x00424350] [asm: color.cpp.asm @ 0x00424350]
 RGE_Color_Table::RGE_Color_Table(int fd) {
-    // Fully verified. Source of truth: color.cpp.decomp @ 0x00424350
+    // TODO: PARITY [MODERATE] - tempname+4 stack-offset fopen path is intentionally documented as parity-sensitive and still under audit. [decomp: color.cpp.decomp @ 0x00424350] [asm: color.cpp.asm @ 0x00424350]
     // Initialize table to identity as fallback (original relied on .col files existing)
     for (int k = 0; k < 256; k++) this->table[k] = (unsigned char)k;
 
@@ -154,7 +154,7 @@ RGE_Color_Table::RGE_Color_Table(int fd) {
     rge_read(fd, &this->type, 1);
 
     char tempname[300];
-    // TODO: PARITY - Decomp writes into tempname+4 stack offset before fopen; verify this preserved offset/prefix pattern is behaviorally equivalent under all path lengths. [decomp: color.cpp.decomp @ 0x00424350]
+    // TODO: PARITY [MODERATE] - Decomp/asm write into tempname+4 stack offset before fopen; verify this preserved offset/prefix pattern is behaviorally equivalent under all path lengths. [decomp: color.cpp.decomp @ 0x00424350] [asm: color.cpp.asm @ 0x00424350]
     sprintf(tempname + 4, "data\\%s", this->color_table_name);
 
     FILE* f = fopen(tempname + 4, "r");
