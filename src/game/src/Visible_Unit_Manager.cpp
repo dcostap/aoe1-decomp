@@ -31,6 +31,7 @@ static void vis_unit_set_backptr(int object_id, int player_index, VISIBLE_UNIT_R
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B5A0
 Visible_Unit_Manager::Visible_Unit_Manager(int param_1, int param_2) {
+    // TODO: PARITY - CUSTOM_DEBUG_LOG_FMT instrumentation in this constructor is non-original; source-of-truth flow at vis_unit.cpp.decomp/vis_unit.cpp.asm @ 0x0053B5A0 has no logging calls.
     CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor enter this=%p players=%d categories_in=%d", this, param_1, param_2);
     this->Player_Count = param_1;
     this->Category_Count = param_2 + 1;
@@ -94,6 +95,7 @@ Visible_Unit_Manager::~Visible_Unit_Manager() {
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B730
 void Visible_Unit_Manager::Build_Distance_Table() {
+    // TODO: PARITY - CUSTOM_DEBUG_LOG_FMT instrumentation in Build_Distance_Table is non-original; source-of-truth flow at vis_unit.cpp.decomp/vis_unit.cpp.asm @ 0x0053B730 has no logging calls.
     CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::Build_Distance_Table enter this=%p NormalLOS0=%p SquareLOS0=%p", this, NormalLOS[0], SquareLOS[0]);
     if (this->distanceTable != nullptr) {
         free(this->distanceTable);
