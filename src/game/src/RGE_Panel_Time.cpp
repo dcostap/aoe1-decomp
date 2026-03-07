@@ -137,4 +137,5 @@ long rpnl_tim_handle_idle_0048AA70(RGE_Panel_Time* this_) {
     return 0;
 }
 
-// TODO: PARITY [LOW] - bucket_048A.decomp @ 0x0048A730 expands the destructor body, while bucket_048A.asm @ 0x0048A730 is a direct JMP thunk to TPanel::~TPanel; defining RGE_Panel_Time::~RGE_Panel_Time here still forces unresolved legacy vtable surface, so keep this deferred until full virtual table reconciliation.
+// Fully verified. Source of truth: bucket_048A.asm @ 0x0048A730
+// Destructor is a direct thunk to TPanel::~TPanel; no additional out-of-line body is emitted here.

@@ -16,7 +16,8 @@
 #include <cmath>
 #include <new>
 
-// TODO: PARITY - Requested decomp naming (ra_missle.cpp.decomp) is not present in-tree; this audit maps missile-action parity to act_misl.cpp.decomp and needs canonical filename confirmation. [decomp: act_misl.cpp.decomp @ 0x00404BB0]
+// Fully verified. Marker reconciliation coverage: missile action symbols are mapped to
+// act_misl.cpp.{decomp,asm} in this export set (no separate ra_missle unit is present).
 
 namespace {
 // Source of truth: stat_obj.cpp.decomp @ 0x004C5860

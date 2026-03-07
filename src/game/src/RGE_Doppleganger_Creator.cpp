@@ -4,10 +4,10 @@
 #include "../include/RGE_Master_Static_Object.h"
 #include "../include/RGE_Static_Object.h"
 #include "../include/RGE_Player.h"
+#include "../include/globals.h"
 
 #include <stdlib.h>
-
-// TODO: PARITY - dpl_obj.cpp decomp includes DDlogf open/close and per-event fprintf diagnostics in ctor/dtor/add/remove/expand paths; current translation omits those side effects entirely. [decomp: dpl_obj.cpp.decomp @ 0x00442100]
+#include <stdio.h>
 
 RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* param_1, int param_2) {
     // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442100
@@ -18,6 +18,9 @@ RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* param_1, int para
     this->allocated_size = param_2;
     this->active_size = 0;
     this->owner = param_1;
+    if (DDlogf == nullptr) {
+        DDlogf = fopen("c:\\aoedoppl.txt", "w");
+    }
 }
 
 RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
@@ -38,10 +41,18 @@ RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
         free(this->Object_ids);
         this->Object_ids = nullptr;
     }
+    if (DDlogf != nullptr) {
+        fclose(DDlogf);
+        DDlogf = nullptr;
+    }
 }
 
 // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x00442540
 void RGE_Doppleganger_Creator::expand_allocations(int param_1) {
+    if (DDlogf != nullptr) {
+        fprintf(DDlogf, "RESIZE (@%d) p=%d  grow=%d\n", this->owner->world->world_time, (int)this->owner->id, param_1);
+    }
+
     int new_allocated_size = this->allocated_size + param_1;
     this->allocated_size = new_allocated_size;
 
@@ -78,11 +89,11 @@ void RGE_Doppleganger_Creator::expand_allocations(int param_1) {
 
 int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* param_1, ulong* param_2) {
     // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x004421F0
+    if (DDlogf != nullptr) {
+        fprintf(DDlogf, "ADC (@%d) p=%d  id=%d\n", this->owner->world->world_time, (int)this->owner->id, param_1->id);
+    }
     if (this->allocated_size <= this->active_size) {
         this->expand_allocations(0x1E);
-        if (this->allocated_size <= this->active_size) {
-            return 0;
-        }
     }
 
     if (param_1->owner->id != this->owner->id) {
@@ -109,6 +120,9 @@ int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* param_1,
 
 int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* param_1) {
     // Fully verified. Source of truth: dpl_obj.cpp.decomp @ 0x004422B0
+    if (DDlogf != nullptr) {
+        fprintf(DDlogf, "RDC (@%d)  p=%d  id=%d\n", this->owner->world->world_time, (int)this->owner->id, param_1->id);
+    }
     int active_count = this->active_size;
     if (active_count > 0) {
         for (int index = 0; index < active_count; index++) {
@@ -150,6 +164,9 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
                 if (checked_obj == nullptr ||
                     this->owner->world->object(this->Object_ids[index]) != checked_obj) {
                     remove_me = checked_obj;
+                    if (DDlogf != nullptr) {
+                        fprintf(DDlogf, "*** REMOVE CHECK (@%d) by p=%d id=%d\n", this->owner->world->world_time, (int)this->owner->id, this->Object_ids[index]);
+                    }
                 } else {
                     int player_index = 1;
                     unsigned long bitmask = ((map_value ^ this->Last_Map_Value[index]) & this->Last_Map_Value[index]) >> 1 & 0x7FFF;
@@ -159,6 +176,15 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
                             if (player_index != owner_id) {
                                 RGE_Player* target_player = this->owner->world->players[player_index];
                                 RGE_Static_Object* source_obj = this->Objects[index];
+                                if (DDlogf != nullptr) {
+                                    fprintf(DDlogf, "NEW DOP (@%d) by p=%d for p=%d of id=%d (x=%d,y=%d)\n",
+                                            this->owner->world->world_time,
+                                            owner_id,
+                                            player_index,
+                                            source_obj->id,
+                                            (int)source_obj->world_x,
+                                            (int)source_obj->world_y);
+                                }
                                 ((RGE_Master_Doppleganger_Object*)target_player->master_objects[0xF3])->make_new_obj(
                                     target_player, source_obj->world_x, source_obj->world_y, source_obj->world_z, source_obj);
                             }
