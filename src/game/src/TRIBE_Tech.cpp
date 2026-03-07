@@ -6,14 +6,16 @@
 #include "../include/globals.h"
 #include <string.h>
 
-// Source of truth: bucket_050B.cpp.decomp
+// Source of truth: bucket_050B.decomp + bucket_050B.asm
 // Constructor (int, TRIBE_World*): reads tech tree from binary data via rge_read.
 // Constructor (char*): reads tech tree from text file via fscanf.
 // Both are data-loading constructors that require the game database.
 
-// Fully verified. Marker reconciliation coverage.
+// TODO: PARITY - constructor contains defensive/logging behavior not present in source flow.
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
-    // Fully verified. Source of truth: bucket_050B.decomp @ 0x0050B840
+    // TODO: PARITY - includes non-source behavior: CUSTOM_DEBUG_LOG_FMT call, explicit tech_tree_num reset to 0
+    // for tech_tree_num < 1 (source only nulls tech_tree), and name_len upper-bound rejection (>4096).
+    // [decomp+asm: bucket_050B.decomp/bucket_050B.asm @ 0x0050B840]
     this->world = param_2;
     rge_read(param_1, &this->tech_tree_num, 2);
     if (this->tech_tree_num < 1) {
@@ -142,7 +144,7 @@ TRIBE_Tech::~TRIBE_Tech() {
 
 // Fully verified. Marker reconciliation coverage.
 long TRIBE_Tech::get_help_message(short param_1) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C2FA
+    // Source of truth: bucket_050C.decomp @ 0x0050C2FA
     if (param_1 < 0 || this->tech_tree_num < param_1) {
         return -1;
     }
@@ -151,7 +153,7 @@ long TRIBE_Tech::get_help_message(short param_1) {
 
 // Fully verified. Marker reconciliation coverage.
 long TRIBE_Tech::get_help_page(short param_1) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C333
+    // Source of truth: bucket_050C.decomp @ 0x0050C333
     if (param_1 < 0 || this->tech_tree_num < param_1) {
         return -1;
     }
@@ -160,7 +162,7 @@ long TRIBE_Tech::get_help_page(short param_1) {
 
 // Fully verified. Marker reconciliation coverage.
 long TRIBE_Tech::get_hotkey(short param_1) {
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050C36C
+    // Source of truth: bucket_050C.decomp @ 0x0050C36C
     if (param_1 < 0 || this->tech_tree_num < param_1) {
         return -1;
     }
