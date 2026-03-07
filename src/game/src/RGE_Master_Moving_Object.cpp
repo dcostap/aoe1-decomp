@@ -9,7 +9,7 @@
 #include <new>
 #include <stdio.h>
 
-// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_mo_obj.cpp.decomp audit.
+// TODO: PARITY [LOW] - Parameterless ctor has no direct symbol/offset in m_mo_obj decomp/asm exports; first mapped ctor is copy/setup form at 0x00451A20, so default-ctor parity remains unresolved. [decomp/asm: m_mo_obj.cpp @ 0x00451A20]
 RGE_Master_Moving_Object::RGE_Master_Moving_Object()
     : RGE_Master_Animated_Object() {
     this->master_type = 0x1E;
