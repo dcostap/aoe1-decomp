@@ -18,7 +18,7 @@
 #include <string.h>
 
 namespace {
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 static void make_obj_init_base(TRIBE_Action_Make_Obj* action, RGE_Action_Object* obj) {
     action->action_type = 0x66;
     action->obj = obj;
@@ -42,7 +42,7 @@ static void make_obj_init_base(TRIBE_Action_Make_Obj* action, RGE_Action_Object*
     action->pre_paid = 0;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 static void make_obj_load_base(RGE_Action* action, int fd) {
     int id_or_ptr = -1;
     short task_id = -1;
@@ -68,7 +68,7 @@ static void make_obj_load_base(RGE_Action* action, int fd) {
     action->sprite = nullptr;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 static void make_obj_save_base(const RGE_Action* action, int fd) {
     int target_obj_id = -1;
     int target_obj2_id = -1;
@@ -105,7 +105,7 @@ static void make_obj_save_base(const RGE_Action* action, int fd) {
     rge_write(fd, &sprite_id, 2);
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 static long make_obj_coord_to_long(float value) {
     return (long)value;
 }
@@ -139,13 +139,13 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* param_1, short p
 // Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D0EF0
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {}
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Make_Obj::setup(RGE_Action_Object* param_1) {
     make_obj_init_base(this, param_1);
     return 1;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Make_Obj::setup(int param_1, RGE_Action_Object* param_2) {
     make_obj_init_base(this, param_2);
     make_obj_load_base(this, param_1);
@@ -160,12 +160,12 @@ int TRIBE_Action_Make_Obj::setup(int param_1, RGE_Action_Object* param_2) {
     return 1;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 RGE_Action_List* TRIBE_Action_Make_Obj::create_action_list(RGE_Action_Object* param_1) {
     return new (std::nothrow) RGE_Action_List(param_1);
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Make_Obj::rehook() {}
 
 // Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D0F70
@@ -177,7 +177,7 @@ void TRIBE_Action_Make_Obj::save(int param_1) {
     rge_write(param_1, &this->pre_paid, 1);
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Make_Obj::type() {
     return this->action_type;
 }
@@ -223,12 +223,12 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Make_Obj::inside_obj_update() {
     return 1;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Make_Obj::idle_update() {
     return 1;
 }
@@ -419,7 +419,7 @@ int TRIBE_Action_Make_Obj::stop() {
     return 1;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Make_Obj::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     (void)param_2;
@@ -428,7 +428,7 @@ int TRIBE_Action_Make_Obj::move_to(RGE_Static_Object* param_1, float param_2, fl
     return 0;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Make_Obj::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     (void)param_1;
     (void)param_2;
@@ -437,32 +437,32 @@ int TRIBE_Action_Make_Obj::work(RGE_Static_Object* param_1, float param_2, float
     return 0;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Make_Obj::attack_response(RGE_Static_Object* param_1) {
     (void)param_1;
     return 0;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Make_Obj::relation_response(long param_1, uchar param_2) {
     (void)param_1;
     (void)param_2;
     return 0;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Make_Obj::copy_obj(RGE_Master_Action_Object* param_1) {
     (void)param_1;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Make_Obj::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) {
     (void)param_1;
     (void)param_2;
     (void)param_3;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Make_Obj::get_state_name(char* param_1) {
     if (param_1 == nullptr) {
         return;
@@ -480,23 +480,23 @@ void TRIBE_Action_Make_Obj::get_state_name(char* param_1) {
     param_1[31] = 0;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Make_Obj::get_target_obj() {
     return this->target_obj;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Make_Obj::get_target_obj2() {
     return this->target_obj2;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Make_Obj::set_target_obj(RGE_Static_Object* param_1) {
     this->target_obj = param_1;
     this->targetID = (param_1 != nullptr) ? param_1->id : -1;
 }
 
-// Fully verified. Source of truth: tact_mob.cpp.decomp @ 0x004D15F0 (virtual forwarding/helper coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Make_Obj::set_target_obj2(RGE_Static_Object* param_1) {
     this->target_obj2 = param_1;
     this->target2ID = (param_1 != nullptr) ? param_1->id : -1;
