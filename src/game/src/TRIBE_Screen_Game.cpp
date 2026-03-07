@@ -404,7 +404,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
     }
 
-    // Source of truth: scr_game.cpp.decomp @ 0x00493D60 (constructor), scr_game.cpp.asm @ 0x0049437E..0x004946E7
+    // Source of truth: scr_game.cpp.decomp @ 0x00493D60 (constructor), scr_game.cpp.asm @ 0x0049437E..0x00494702
     RGE_Font* font11 = rge_base_game->get_font(0x0B);
     RGE_Font* font7 = rge_base_game->get_font(7);
     TDigital* button_sound = rge_base_game->get_sound(1);
