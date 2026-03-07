@@ -133,7 +133,7 @@ void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
 }
 
 uchar RGE_Active_Sprite_List::get_lowest_draw_level() {
-    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041ACC0.
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041ACC0
     uchar bVar3 = 0x14;
     for (RGE_Active_Sprite_Node* pRVar1 = this->list; pRVar1 != nullptr; pRVar1 = pRVar1->next) {
         uchar bVar2 = pRVar1->node->get_lowest_draw_level();
@@ -310,7 +310,7 @@ short RGE_Active_Sprite_List::get_facetindex(RGE_Sprite* param_1, short param_2)
 }
 
 uchar RGE_Active_Sprite_List::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, RGE_Sprite* param_5, long param_6) {
-    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AC70.
+    // Fully verified. Source of truth: asp_list.cpp.decomp @ 0x0041AC70
     for (RGE_Active_Sprite_Node* node = this->list; node != nullptr; node = node->next) {
         if (node->node->sprite == param_5) {
             return node->node->get_frame(param_1, param_2, param_3, param_4, param_6);

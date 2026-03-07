@@ -1,7 +1,7 @@
 // Decompiled: Dsutil.cpp
 // SourceMap: C:/msdev/work/age1_x1/Dsutil.c
 // NOTE: Originally a C file, not C++. All functions are free (non-member).
-// TODO: PARITY - Decomp emits C-style undefined signatures; perform full calling-convention/type audit across exported Dsutil routines before parity closure. [decomp: dsutil.cpp.decomp @ 0x004477D0]
+// TODO: PARITY - Decomp emits C-style undefined signatures throughout Dsutil; perform full calling-convention/type audit across exported routines before parity closure.
 
 #include "../include/Dsutil.h"
 #include <io.h>
@@ -488,9 +488,9 @@ int WaveCloseReadFile(HMMIO* phmmio, tWAVEFORMATEX** ppwfx) {
 // ============================================================================
 // Offset: 0x00448080
 int WaveCreateFile(char* pszFileName, HMMIO* phmmioOut, tWAVEFORMATEX* pwfxDest, MMCKINFO* pckOut, MMCKINFO* pckOutRIFF) {
-    // TODO: PARITY - this function currently cites ASM only; decomp-backed control-flow audit is still pending.
-    // [decomp: dsutil.cpp.decomp @ 0x00448080]
-    // Fully verified. Source of truth: dsutil.cpp.asm @ 0x00448080
+    // TODO: PARITY - dsutil.cpp.decomp contains a "<decompilation failed>" placeholder at this offset, so this path remains ASM-verified only until a usable decomp body exists.
+    // [decomp: dsutil.cpp.decomp @ 0x00448080; asm: dsutil.cpp.asm @ 0x00448080]
+    // Fully verified. Source of truth: dsutil.cpp.asm @ 0x00448080 (decompilation failed in dsutil.cpp.decomp)
     *phmmioOut = mmioOpenA(pszFileName, nullptr, MMIO_WRITE | MMIO_CREATE | MMIO_ALLOCBUF);
     if (*phmmioOut == nullptr) {
         return 0xE104; // ERROR_CANNOT_WRITE
