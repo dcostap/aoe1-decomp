@@ -11,23 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY [MODERATE] - Shared copy helper replaces per-function raw string-copy loops and adds null-name/strcpy_s guard behavior not present in original code. [decomp: tdlg_lst.cpp.decomp @ 0x0050B4D0/0x0050B5E0/0x0050B700] [asm: tdlg_lst.cpp.asm @ 0x0050B4D0/0x0050B5E0/0x0050B700]
-static int tribe_dialog_copy_items(TRIBE_Dialog_List* self, Item_Avail* items, short item_count) {
-    self->list_size = item_count;
-    self->list_info = (rdlg_list_info*)calloc((size_t)item_count, sizeof(rdlg_list_info));
-    if (self->list_info == nullptr) {
-        return 0;
-    }
-
-    for (short i = 0; i < item_count; ++i) {
-        self->list_info[i].id = items[i].id;
-        const char* src = (items[i].name != nullptr) ? items[i].name : "";
-        strcpy_s(self->list_info[i].text, sizeof(self->list_info[i].text), src);
-    }
-    return 1;
-}
-
-// TODO: PARITY [MODERATE] - Build-list path is otherwise mapped to create_build_list but currently uses the non-parity shared copy helper. [decomp: tdlg_lst.cpp.decomp @ 0x0050B4D0] [asm: tdlg_lst.cpp.asm @ 0x0050B4D0]
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp + tdlg_lst.cpp.asm @ 0x0050B4D0
 static int tribe_dialog_create_build_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if (player == nullptr) {
@@ -43,10 +27,20 @@ static int tribe_dialog_create_build_list(TRIBE_Dialog_List* self) {
     if (item_num == 0) {
         return 0;
     }
-    return tribe_dialog_copy_items(self, item_list, item_num);
+    self->list_size = item_num;
+    self->list_info = (rdlg_list_info*)calloc((int)item_num, 0x66);
+    if (self->list_info == nullptr) {
+        return 0;
+    }
+
+    for (short i = 0; i < self->list_size; ++i) {
+        self->list_info[i].id = item_list[i].id;
+        strcpy(self->list_info[i].text, item_list[i].name);
+    }
+    return 1;
 }
 
-// TODO: PARITY [MODERATE] - Train-list path is otherwise mapped to create_train_list but currently uses the non-parity shared copy helper. [decomp: tdlg_lst.cpp.decomp @ 0x0050B5E0] [asm: tdlg_lst.cpp.asm @ 0x0050B5E0]
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp + tdlg_lst.cpp.asm @ 0x0050B5E0
 static int tribe_dialog_create_train_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if ((player == nullptr) || (player->selected_obj == nullptr)) {
@@ -63,10 +57,20 @@ static int tribe_dialog_create_train_list(TRIBE_Dialog_List* self) {
     if (item_num == 0) {
         return 0;
     }
-    return tribe_dialog_copy_items(self, item_list, item_num);
+    self->list_size = item_num;
+    self->list_info = (rdlg_list_info*)calloc((int)item_num, 0x66);
+    if (self->list_info == nullptr) {
+        return 0;
+    }
+
+    for (short i = 0; i < self->list_size; ++i) {
+        self->list_info[i].id = item_list[i].id;
+        strcpy(self->list_info[i].text, item_list[i].name);
+    }
+    return 1;
 }
 
-// TODO: PARITY [MODERATE] - Research-list path is otherwise mapped to create_research_list but currently uses the non-parity shared copy helper. [decomp: tdlg_lst.cpp.decomp @ 0x0050B700] [asm: tdlg_lst.cpp.asm @ 0x0050B700]
+// Fully verified. Source of truth: tdlg_lst.cpp.decomp + tdlg_lst.cpp.asm @ 0x0050B700
 static int tribe_dialog_create_research_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if ((player == nullptr) || (player->selected_obj == nullptr)) {
@@ -83,7 +87,17 @@ static int tribe_dialog_create_research_list(TRIBE_Dialog_List* self) {
     if (item_num == 0) {
         return 0;
     }
-    return tribe_dialog_copy_items(self, item_list, item_num);
+    self->list_size = item_num;
+    self->list_info = (rdlg_list_info*)calloc((int)item_num, 0x66);
+    if (self->list_info == nullptr) {
+        return 0;
+    }
+
+    for (short i = 0; i < self->list_size; ++i) {
+        self->list_info[i].id = item_list[i].id;
+        strcpy(self->list_info[i].text, item_list[i].name);
+    }
+    return 1;
 }
 
 // Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B450
