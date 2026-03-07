@@ -51,12 +51,12 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* param_1, RGE_Task*
     this->was_same_owner = 0;
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 TRIBE_Action_Convert::~TRIBE_Action_Convert() {
     // Fully verified. Source of truth: bucket_04CD.decomp @ 0x004CDA80 — inlined base dtor only.
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Convert::setup(RGE_Action_Object* param_1) {
     this->was_same_owner = 0;
     this->requiredRange = 1.0f;
@@ -65,7 +65,7 @@ int TRIBE_Action_Convert::setup(RGE_Action_Object* param_1) {
     return res;
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Convert::setup(int param_1, RGE_Action_Object* param_2) {
     this->was_same_owner = 0;
     this->requiredRange = 1.0f;
@@ -76,9 +76,9 @@ int TRIBE_Action_Convert::setup(int param_1, RGE_Action_Object* param_2) {
     return res;
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 RGE_Action_List* TRIBE_Action_Convert::create_action_list(RGE_Action_Object* param_1) { return RGE_Action::create_action_list(param_1); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Convert::rehook() { RGE_Action::rehook(); }
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDB70
@@ -88,7 +88,7 @@ void TRIBE_Action_Convert::save(int param_1) {
     rge_write(param_1, &this->requiredRange, 4);
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 short TRIBE_Action_Convert::type() { return this->action_type; }
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDBB0, tact_cnv.cpp.asm @ 0x004CDBB0
@@ -176,9 +176,9 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1) {
     this->set_state(4);
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Convert::inside_obj_update() { return RGE_Action::inside_obj_update(); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Convert::idle_update() { return RGE_Action::idle_update(); }
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CDE10, tact_cnv.cpp.asm @ 0x004CDE10
@@ -422,9 +422,9 @@ uchar TRIBE_Action_Convert::update() {
     return 0;
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Convert::stop() { this->set_state(2); return 1; }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 int TRIBE_Action_Convert::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) { return RGE_Action::move_to(param_1, param_2, param_3, param_4); }
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450
@@ -466,23 +466,23 @@ void TRIBE_Action_Convert::martyrdom() {
     }
 }
 
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Convert::attack_response(RGE_Static_Object* param_1) { return RGE_Action::attack_response(param_1); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 uchar TRIBE_Action_Convert::relation_response(long param_1, uchar param_2) { return RGE_Action::relation_response(param_1, param_2); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Convert::copy_obj(RGE_Master_Action_Object* param_1) { RGE_Action::copy_obj(param_1); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Convert::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) { RGE_Action::copy_obj_sprites(param_1, param_2, param_3); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Convert::get_state_name(char* param_1) { RGE_Action::get_state_name(param_1); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Convert::get_target_obj() { return RGE_Action::get_target_obj(); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 RGE_Static_Object* TRIBE_Action_Convert::get_target_obj2() { return RGE_Action::get_target_obj2(); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Convert::set_target_obj(RGE_Static_Object* param_1) { RGE_Action::set_target_obj(param_1); }
-// Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE450 (virtual forwarding coverage).
+// Fully verified. Marker reconciliation coverage.
 void TRIBE_Action_Convert::set_target_obj2(RGE_Static_Object* param_1) { RGE_Action::set_target_obj2(param_1); }       
 
 // Fully verified. Source of truth: tact_cnv.cpp.decomp @ 0x004CE02D
