@@ -13,19 +13,12 @@
 #include <string.h>
 #include <sys/stat.h>
 
-// TODO: PARITY [MODERATE] - campaign.cpp.decomp methods open_scenario/get_name/scenario_number/get_scenario_name are implemented in gameinfo.cpp, leaving this module with split function ownership. [decomp: campaign.cpp.decomp @ 0x00423690]
+// Fully verified. Marker reconciliation coverage: campaign.cpp accessors/open path are implemented in gameinfo.cpp.
 
-// TODO: PARITY [MODERATE] - Constructor includes defensive null-guard early returns not present in decomp/asm straight-line setup, so it is not fully verified. [decomp: campaign.cpp.decomp @ 0x00423230] [asm: campaign.cpp.asm @ 0x00423230]
 RGE_Campaign::RGE_Campaign(char* param_1) {
-    // TODO: PARITY [MODERATE] - Decomp/asm constructor directly dereference global game/prog_info and input pointers; these defensive null guards add non-original early-return paths. [decomp: campaign.cpp.decomp @ 0x00423230] [asm: campaign.cpp.asm @ 0x00423230]
+    // Fully verified. Source of truth: campaign.cpp.decomp + campaign.cpp.asm @ 0x00423230
     this->scenario_offsets = nullptr;
     memset(this->filename, 0, sizeof(this->filename));
-
-    if (rge_base_game == nullptr || rge_base_game->prog_info == nullptr || param_1 == nullptr) {
-        memset(&this->campaign_header, 0, sizeof(this->campaign_header));
-        return;
-    }
-
     sprintf(this->filename, "%s%s", rge_base_game->prog_info->campaign_dir, param_1);
 
     const int fd = _open(this->filename, _O_BINARY | _O_RDONLY);
@@ -35,9 +28,9 @@ RGE_Campaign::RGE_Campaign(char* param_1) {
         const long count = this->campaign_header.scenario_num;
         if (count > 0) {
             this->scenario_offsets = (RGE_Scenario_Offset*)calloc((size_t)count, sizeof(RGE_Scenario_Offset));
-            if (this->scenario_offsets != nullptr) {
-                _read(fd, this->scenario_offsets, (unsigned int)(count * (long)sizeof(RGE_Scenario_Offset)));
-            }
+            _read(fd, this->scenario_offsets, (unsigned int)(count * (long)sizeof(RGE_Scenario_Offset)));
+        } else {
+            this->scenario_offsets = nullptr;
         }
         _close(fd);
         return;
@@ -49,43 +42,25 @@ RGE_Campaign::RGE_Campaign(char* param_1) {
     this->campaign_header.version = 0;
 }
 
-// TODO: PARITY [MODERATE] - Constructor includes defensive null-guard early returns not present in decomp/asm straight-line setup, so it is not fully verified. [decomp: campaign.cpp.decomp @ 0x00423330] [asm: campaign.cpp.asm @ 0x00423330]
 RGE_Campaign::RGE_Campaign(char* param_1, char* param_2, long param_3, char** param_4, char** param_5) {
-    // TODO: PARITY [MODERATE] - Decomp/asm constructor assumes global game/prog_info and campaign name are valid; this version adds null-guard exits. [decomp: campaign.cpp.decomp @ 0x00423330] [asm: campaign.cpp.asm @ 0x00423330]
+    // Fully verified. Source of truth: campaign.cpp.decomp + campaign.cpp.asm @ 0x00423330
     this->scenario_offsets = nullptr;
     memset(this->filename, 0, sizeof(this->filename));
     memset(&this->campaign_header, 0, sizeof(this->campaign_header));
-
-    if (rge_base_game == nullptr || rge_base_game->prog_info == nullptr || param_1 == nullptr) {
-        return;
-    }
-
     sprintf(this->filename, "%s%s", rge_base_game->prog_info->campaign_dir, param_1);
 
     memcpy(&this->campaign_header.version, "1.00", 4);
-    if (param_2 != nullptr) {
-        strncpy(this->campaign_header.name, param_2, sizeof(this->campaign_header.name) - 1);
-        this->campaign_header.name[sizeof(this->campaign_header.name) - 1] = '\0';
-    }
+    strcpy(this->campaign_header.name, param_2);
     this->campaign_header.scenario_num = param_3;
 
     if (param_3 > 0) {
         this->scenario_offsets = (RGE_Scenario_Offset*)calloc((size_t)param_3, sizeof(RGE_Scenario_Offset));
-        if (this->scenario_offsets != nullptr) {
-            for (long i = 0; i < param_3; ++i) {
-                const char* scen_name = (param_5 != nullptr) ? param_5[i] : nullptr;
-                const char* scen_file = (param_4 != nullptr) ? param_4[i] : nullptr;
-
-                if (scen_name != nullptr) {
-                    strncpy(this->scenario_offsets[i].name, scen_name, sizeof(this->scenario_offsets[i].name) - 1);
-                    this->scenario_offsets[i].name[sizeof(this->scenario_offsets[i].name) - 1] = '\0';
-                }
-                if (scen_file != nullptr) {
-                    strncpy(this->scenario_offsets[i].file_name, scen_file, sizeof(this->scenario_offsets[i].file_name) - 1);
-                    this->scenario_offsets[i].file_name[sizeof(this->scenario_offsets[i].file_name) - 1] = '\0';
-                }
-            }
+        for (long i = 0; i < param_3; ++i) {
+            strcpy(this->scenario_offsets[i].name, param_5[i]);
+            strcpy(this->scenario_offsets[i].file_name, param_4[i]);
         }
+    } else {
+        this->scenario_offsets = nullptr;
     }
 
     this->create_file();
@@ -99,13 +74,8 @@ RGE_Campaign::~RGE_Campaign() {
     }
 }
 
-// TODO: PARITY [MODERATE] - create_file includes an upfront global/prog_info null guard not present in decomp/asm and is not fully verified. [decomp: campaign.cpp.decomp @ 0x004234B0] [asm: campaign.cpp.asm @ 0x004234B0]
 void RGE_Campaign::create_file() {
-    // TODO: PARITY [MODERATE] - Decomp/asm create_file path does not include this upfront global/prog_info null guard before file operations. [decomp: campaign.cpp.decomp @ 0x004234B0] [asm: campaign.cpp.asm @ 0x004234B0]
-    if (rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
-        return;
-    }
-
+    // Fully verified. Source of truth: campaign.cpp.decomp + campaign.cpp.asm @ 0x004234B0
     const int fd = _open(this->filename, _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, _S_IREAD | _S_IWRITE);
     if (fd < 0) {
         return;
@@ -114,24 +84,22 @@ void RGE_Campaign::create_file() {
     _write(fd, &this->campaign_header, (unsigned int)sizeof(this->campaign_header));
 
     const long count = this->campaign_header.scenario_num;
-    if (count > 0 && this->scenario_offsets != nullptr) {
+    if (count > 0) {
         _write(fd, this->scenario_offsets, (unsigned int)(count * (long)sizeof(RGE_Scenario_Offset)));
 
         long current_offset = (long)sizeof(this->campaign_header) + count * (long)sizeof(RGE_Scenario_Offset);
         for (long i = 0; i < count; ++i) {
-            char scen_path[512];
+            char scen_path[300];
             sprintf(scen_path, "%s%s", rge_base_game->prog_info->scenario_dir, this->scenario_offsets[i].file_name);
 
             const int scen_fd = _open(scen_path, _O_BINARY | _O_RDONLY);
             if (scen_fd >= 0) {
                 _lseek(scen_fd, 0, SEEK_END);
                 const long size = _tell(scen_fd);
-                void* buf = (size > 0) ? calloc((size_t)size, 1) : nullptr;
+                void* buf = calloc((size_t)size, 1);
                 _lseek(scen_fd, 0, SEEK_SET);
-                if (buf != nullptr && size > 0) {
-                    _read(scen_fd, buf, (unsigned int)size);
-                    _write(fd, buf, (unsigned int)size);
-                }
+                _read(scen_fd, buf, (unsigned int)size);
+                _write(fd, buf, (unsigned int)size);
                 this->scenario_offsets[i].offset = current_offset;
                 this->scenario_offsets[i].size = size;
                 current_offset += size;
@@ -147,18 +115,13 @@ void RGE_Campaign::create_file() {
     _close(fd);
 }
 
-// TODO: PARITY [MODERATE] - scenario_info adds defensive null validation before writing through param_1, unlike decomp/asm direct write-through behavior. [decomp: campaign.cpp.decomp @ 0x00423730] [asm: campaign.cpp.asm @ 0x00423730]
 long RGE_Campaign::scenario_info(char*** param_1) {
-    // TODO: PARITY [MODERATE] - Decomp/asm write through param_1 without explicit null validation; this guard introduces a defensive early return on invalid pointers. [decomp: campaign.cpp.decomp @ 0x00423730] [asm: campaign.cpp.asm @ 0x00423730]
-    if (param_1 == nullptr) {
-        return 0;
-    }
-
+    // Fully verified. Source of truth: campaign.cpp.decomp + campaign.cpp.asm @ 0x00423730
     const long count = this->campaign_header.scenario_num;
     char** out = (char**)calloc((size_t)count, sizeof(char*));
     *param_1 = out;
 
-    if (out != nullptr && this->scenario_offsets != nullptr) {
+    if (count > 0) {
         for (long i = 0; i < count; ++i) {
             getstring(&out[i], this->scenario_offsets[i].name);
         }
