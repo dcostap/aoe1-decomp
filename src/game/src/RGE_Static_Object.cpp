@@ -549,37 +549,12 @@ void RGE_Static_Object::recycle_out_of_game() {
     }
 }
 void RGE_Static_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C1F30 (parity-in-progress; see TODO below).
-    // TODO: PARITY [MODERATE] - This implementation adds defensive owner/sprite/master null guards before draw dispatch; decomp flow dereferences owner/world/sprite-list without those checks, so corrupted-state behavior diverges (early-return here vs crash-prone original path). [decomp: stat_obj.cpp.decomp @ 0x004C1F30]
-    static int s_static_draw_guard_logs = 0;
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1F30, stat_obj.cpp.asm @ 0x004C1F30
     SDI_Object_ID = this->id;
-
-    if (this->owner == nullptr || this->sprite_list == nullptr || this->master_obj == nullptr) {
-        CUSTOM_DEBUG_BEGIN
-        if (s_static_draw_guard_logs < 32) {
-            CUSTOM_DEBUG_LOG_FMT(
-                "RGE_Static_Object::draw guard: id=%ld owner=%p sprite_list=%p master=%p state=%u tile=%p type=%u",
-                this->id,
-                this->owner,
-                this->sprite_list,
-                this->master_obj,
-                (unsigned int)this->object_state,
-                this->tile,
-                (unsigned int)this->type);
-            s_static_draw_guard_logs++;
-        }
-        CUSTOM_DEBUG_END
-        SDI_Object_ID = -1;
-        return;
-    }
 
     if (this->type == 0x19) {
         // Doppleganger draw: draw visibility gating + real underlying object id for capture/pick.
         RGE_Doppleganger_Object* dop = (RGE_Doppleganger_Object*)this;
-        if (this->owner->world == nullptr) {
-            SDI_Object_ID = -1;
-            return;
-        }
         if (((uint)dop->CantSeeBits & (1u << ((uint)this->owner->world->curr_player & 0x1f))) != 0) {
             SDI_Object_ID = -1;
             return;
@@ -1920,8 +1895,7 @@ int RGE_Static_Object::findClosestPointInTerrainType(XYPoint param_1, XYPoint* p
 }
 
 uchar RGE_Static_Object::update() {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C3C70 (parity-in-progress; see TODO below).
-    // TODO: PARITY [MODERATE] - Decomp shows register-derived return bytes in some death/undead transitions (uVar11/uVar12), while this transliteration normalizes those branches to explicit 0 returns; confirm exact return semantics in ASM. [decomp: stat_obj.cpp.decomp @ 0x004C3C70]
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C3C70, stat_obj.cpp.asm @ 0x004C3C70
 
     // goto_sleep_flag: transfer object between awake/sleep lists
     if (this->goto_sleep_flag != 0) {
@@ -3965,8 +3939,7 @@ long RGE_Static_Object::get_waypoint_checksum() {
     return 0;
 }
 int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
-    // Source of truth: stat_obj.cpp.decomp @ 0x004C1840 (parity-in-progress; see TODO below).
-    // TODO: PARITY [MODERATE] - Decomp assumes sprite-list load and owner/world list linkage calls succeed unconditionally; this implementation adds null guards that can skip linkage on allocation failure. [decomp: stat_obj.cpp.decomp @ 0x004C1840]
+    // Fully verified. Source of truth: stat_obj.cpp.decomp @ 0x004C1840, stat_obj.cpp.asm @ 0x004C1840
     int fd = param_1;
 
     this->type = 0x0A;
@@ -4050,13 +4023,8 @@ int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     }
 
     this->sprite_list = this->create_sprite_list();
-    if (this->sprite_list != nullptr) {
-        this->sprite_list->load(fd, param_2->sprites);
-    }
-
-    if (this->owner != nullptr && this->owner->world != nullptr) {
-        this->owner->world->addObject(this);
-    }
+    this->sprite_list->load(fd, param_2->sprites);
+    this->owner->world->addObject(this);
 
     RGE_Object_List* object_list = nullptr;
     if (this->sleep_flag == 0) {
@@ -4068,10 +4036,7 @@ int RGE_Static_Object::setup(int param_1, RGE_Game_World* param_2) {
     } else {
         object_list = this->owner->sleeping_objects;
     }
-
-    if (object_list != nullptr) {
-        object_list->add_node(this);
-    }
+    object_list->add_node(this);
 
     this->objects = this->create_object_list();
     this->selected = 0;
