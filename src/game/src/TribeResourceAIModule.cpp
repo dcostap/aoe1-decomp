@@ -13,7 +13,8 @@ char kStoneName[] = "Stone";
 char kGoldName[] = "Gold";
 char kUnknownName[] = "Unknown";
 
-// Fully verified. Source of truth: tairesmd.cpp.decomp @ 0x004E6C30 (virtual forwarding/helper coverage).
+// Fully verified. Source of truth: tairesmd.cpp.decomp + tairesmd.cpp.asm @ 0x004E6CA0/0x004E6D40
+// (helper coverage for md + 0x50 resource-values indirection used by availability checks).
 float* tribe_resource_values(TribeMainDecisionAIModule* md) {
     return *(float**)((unsigned char*)md + 0x50);
 }
