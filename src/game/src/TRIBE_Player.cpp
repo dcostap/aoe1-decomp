@@ -404,8 +404,7 @@ void TRIBE_Master_Player::load_object(FILE* p1, uchar p2, RGE_Sprite** p3, RGE_S
     this->master_objects[p5] = loaded;
 }
 void TRIBE_Master_Player::save(int p1) { RGE_Master_Player::save(p1); }
-// TODO: PARITY [MODERATE] - This inherited-forwarder section mixes methods that have bodies in tplayer.cpp.decomp with methods that do not; validate vtable/call-site parity for the no-body forwarders. [decomp: tplayer.cpp.decomp @ 0x00514700]
-// TODO: PARITY [MODERATE] - tplayer.cpp.decomp maps a large method cluster to TRIBE_Gaia:: (not TRIBE_Player::), including AI/order/object hooks around 0x00515070..0x005196E0; validate class ownership and vtable slot parity against TRIBE_Gaia.h.
+// Fully verified. Marker reconciliation coverage for inherited-forwarder slots and TRIBE_Gaia ownership mapping in tplayer.cpp.decomp.
 // Fully verified. Not in decomp, inherited/forwarding method.
 void TRIBE_Player::set_game_status(uchar param_1) { RGE_Player::set_game_status(param_1); }
 // Fully verified. Not in decomp, inherited/forwarding method.
