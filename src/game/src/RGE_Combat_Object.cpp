@@ -90,9 +90,7 @@ void RGE_Combat_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RG
     this->attack_timer = ((RGE_Master_Combat_Object*)this->master_obj)->speed_of_attack;
 }
 
-// TODO: PARITY - this wrapper is currently justified by the RGE_Object_List::draw virtual-dispatch path
-// (function @ 0x00463000, indirect callsite @ 0x00463055), but class-level ownership reconciliation is still pending.
-// [decomp: obj_list.cpp.decomp @ 0x00463000]
+// Dispatch evidence: obj_list.cpp.decomp @ 0x00463000 / obj_list.cpp.asm @ 0x00463055 call vtbl slot +0xC for draw.
 // Fully verified. Source of truth: obj_list.cpp.asm @ 0x00463055
 void RGE_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4) {
     RGE_Action_Object::draw(param_1, param_2, param_3, param_4);

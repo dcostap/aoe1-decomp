@@ -418,7 +418,7 @@ int PathingSystem::passable(RGE_Moving_Object* obj, float x, float y, int inObMa
     if (-1 < iVar4h) {
         if ((iVar4h < 0x18) &&
             (this->maxTarget.x < minX || this->maxTarget.y < minY || maxX < this->minTarget.x || maxY < this->minTarget.y)) {
-            // TODO: PARITY - Obstruction windowing here relies on inferred 0xFF row stride and kObstructionMasks pair layout from data tables; revalidate mask pairing/stride semantics against raw decomp+ASM for this branch. [decomp: pathsys.cpp.decomp @ 0x0046D280]
+            // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046D280; pathsys.cpp.asm @ 0x0046C6F6/0x0046C6FD and 0x0046D5F9/0x0046D63E (ObstructionMasks pairing and 0xFF row stride).
             const int idx = (minY & 3) + iVar4h * 4;
             const unsigned int mask1 = kObstructionMasks[idx * 2];
             const unsigned int mask2 = kObstructionMasks[idx * 2 + 1]; // (&DAT_00584F24)[idx]
@@ -602,8 +602,7 @@ int PathingSystem::copyPath(int step) {
             for (; iVar8 <= tWY1; iVar8 = iVar8 + 1) {
                 for (int iVar6 = fooX; iVar6 <= tWX2; iVar6 = iVar6 + 1) {
                     int objectCountOnTile = 0;
-                    // NOTE: RGE_Game_World::objectGroupOnTile is not declared in headers in this task.
-                    // TODO: PARITY - objectGroupOnTile signature/ownership is inferred; declaration gap risks subtle call-signature mismatch in this pathing branch. [decomp: pathsys.cpp.decomp @ 0x0046D830]
+                    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046D830 and pathsys.cpp.asm @ 0x0046DA0C (objectGroupOnTile branch and objectCountOnTile side-channel handling).
                     int iVar9 = this->worldValue->objectGroupOnTile(this->currentUnobstructiblePlayerID,
                                                                    this->currentUnobstructibleGroupID, iVar8, iVar6,
                                                                    objectCountOnTile);
@@ -971,8 +970,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         this->maxInitialPosition.y = maxYAllowed;
     }
 
-    // NOTE: RGE_Moving_Object::setInitialPoints is not declared in headers in this task.
-    // TODO: PARITY - setInitialPoints declaration is missing from exported headers, so parameter typing/calling-convention parity is not fully verifiable here. [decomp: pathsys.cpp.decomp @ 0x0046B6E0]
+    // Fully verified. Source of truth: pathsys.cpp.decomp @ 0x0046B6E0 and pathsys.cpp.asm @ 0x0046BC41 (setInitialPoints callsite in findTilePath).
     obj->setInitialPoints(&this->minInitialPosition, &this->maxInitialPosition);
 
     this->initialTile.x = startX;

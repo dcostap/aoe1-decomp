@@ -174,8 +174,7 @@ void TRIBE_Combat_Object::initUnitAI() {
     this->unitAIValue = CreateTribeUnitAIModule(this, this->master_obj->object_group, this->master_obj->id);
 }
 
-// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA780
-// TODO: PARITY - Decomp models this as an unresolved indirect-jump thunk via vtable+0x6C; this direct die_die_die() call still needs asm-level target confirmation. [decomp: t_c_obj.cpp.decomp @ 0x004CA780]
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA780, t_c_obj.cpp.asm @ 0x004CA780 (virtual dispatch thunk via vtable+0x6C).
 void TRIBE_Combat_Object::cancel_object() {
     this->die_die_die();
 }
@@ -624,7 +623,7 @@ void TRIBE_Combat_Object::set_object_state(uchar param_1) {
     RGE_Static_Object::set_object_state(param_1);
 }
 
-// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA790
+// Source of truth: t_c_obj.cpp.decomp @ 0x004CA790 (parity-in-progress; see TODO below).
 // TODO: PARITY - Decomp symbol naming at 0x004CA790 is class-ambiguous (TRIBE_Building_Object header vs TRIBE_Combat_Object signature comment), but the body includes TRIBE_Action_Convert::martyrdom dispatch after action-type 0x68; current body only probes get_action() and does not implement that branch. [decomp: t_c_obj.cpp.decomp @ 0x004CA790]
 // TODO: PARITY - Decomp condition reads master offset +0xE4 for the >= 1.0 gate; mapping to orig_pierce_armor here is not fully revalidated. [decomp: t_c_obj.cpp.decomp @ 0x004CA790]
 void TRIBE_Combat_Object::die_die_die() {
@@ -635,7 +634,7 @@ void TRIBE_Combat_Object::die_die_die() {
     RGE_Static_Object::die_die_die();
 }
 
-// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA7F0
+// Source of truth: t_c_obj.cpp.decomp @ 0x004CA7F0 (parity-in-progress; see TODO below).
 // TODO: PARITY - Decomp dereferences param_5->master_obj->object_group in the post-death branch without visible null guards; current null checks are a safety divergence pending asm-backed parity confirmation. [decomp: t_c_obj.cpp.decomp @ 0x004CA7F0]
 void TRIBE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {
     float temp_hp = this->hp;
