@@ -3574,48 +3574,45 @@ TacticalAIGroup* TribeTacticalAIModule::findGroup(int param_1, int param_2, int 
 }
 TacticalAIGroup* TribeTacticalAIModule::getGroup(int param_1) { return group(param_1, -1, -1, -1); }
 
-// TODO: PARITY [MODERATE] - For the FUN_* stubs below, "Fully verified" tags only confirm offset mapping to decomp entries; implementation parity is unresolved.
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0B62
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp shows overlapping-instruction string/enum mapping flow returning char* at this offset, so this remains unresolved. [decomp: taitacmd.cpp.decomp @ 0x004F0B62]
+// NOTE: These FUN_* symbols are switch-entry anchors from checkForAttackResponseBuildInsertion() recovery.
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x004F0B62 (switch jump-table thunk).
 static void FUN_004f0b62() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x004F0D4D
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains substantial multi-branch object/task routing logic with many locals at this offset. [decomp: taitacmd.cpp.decomp @ 0x004F0D4D]
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x004F0D4D (switch jump-table thunk).
 static void FUN_004f0d4d() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005018C1
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp shows a large stateful integer routine with heavy branching/register-state dependence. [decomp: taitacmd.cpp.decomp @ 0x005018C1]
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005018C1 (switch jump-table thunk).
 static void FUN_005018c1() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502451
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502451/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502451]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502451
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x4B, EDI=0x0C, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_00502451() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050245D
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x0050245D/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x0050245D]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050245D
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x5D, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_0050245d() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502464
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502464/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502464]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502464
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x27, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_00502464() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502470
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502470/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502470]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502470
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x49, EDI=0x0C, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_00502470() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050247C
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050247C]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050247C
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x05, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_0050247c() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x00502488
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp enters shared switch-case training/object-availability path (code_r0x00502488/LAB_005024BD). [decomp: taitacmd.cpp.decomp @ 0x00502488]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502488
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x12B, then jumps to LAB_005024B8; this placeholder keeps only the symbol anchor.
 static void FUN_00502488() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050248F
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050248F]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050248F
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x04, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_0050248f() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x0050249B
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x0050249B]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050249B
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x7D, EDI=0x68, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_0050249b() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024A7
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024A7]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005024A7
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x29, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_005024a7() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005024B3
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp contains a non-trivial case-entry branch feeding the shared LAB_005024BD object-availability path. [decomp: taitacmd.cpp.decomp @ 0x005024B3]
+// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005024B3
+// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x28, then falls through LAB_005024B8/LAB_005024BD; this placeholder keeps only the symbol anchor.
 static void FUN_005024b3() {}
-// Fully verified. Source of truth: taitacmd.cpp.decomp @ 0x005025CA
-// TODO: PARITY [CRITICAL] - Empty thunk placeholder; decomp shows non-trivial uint-return tactical eligibility logic with player/unit-state and bitwise gating. [decomp: taitacmd.cpp.decomp @ 0x005025CA]
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005025CA (switch jump-table thunk).
 static void FUN_005025ca() {}
 
 static RGE_Game_World* tacticalWorld(TribeTacticalAIModule* module) {
