@@ -4,11 +4,11 @@
 
 class THelpDialog : public TDialogPanel {
 public:
-    THelpDialog(TEasy_Panel* parent, char* panel_name, long text_id, long x, long y, long w, long h);
-    THelpDialog(TEasy_Panel* parent, char* panel_name, char* text, long x, long y, long w, long h);
+    THelpDialog(TEasy_Panel* parent, char* panel_name, long text_id, long help_page_id, long x, long y);
+    THelpDialog(TEasy_Panel* parent, char* panel_name, char* text, long help_page_id, long x, long y);
 
 protected:
-    void setup_help(TEasy_Panel* parent, char* panel_name, char* text, long x, long y, long w, long h);
+    void setup_help(TEasy_Panel* parent, char* panel_name, char* text, long help_page_id, long x, long y);
 
 public:
     // Virtuals (best-effort)

@@ -48,6 +48,7 @@ extern FILE* logStatusFile;
 extern int logStatusOn;
 extern unsigned long lastStatusLogTime;
 extern FILE* DVlogf;
+extern FILE* DDlogf;
 extern int video_codec_available;
 extern int log_output;
 
