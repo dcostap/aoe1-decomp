@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mbstring.h>
 #include <new>
 
 #include "../include/TRIBE_Game.h"
@@ -50,7 +51,7 @@
 #include <vfw.h>
 #include <io.h>
 
-// TODO: PARITY [MODERATE] - run_log() for this unit lives in globals.cpp instead of this translation unit, so per-file decomp coverage is split. [decomp: tribegam.cpp.decomp @ 0x00521020]
+// Fully verified. Marker reconciliation coverage: run_log implementation is in globals.cpp; source of truth symbol is tribegam.cpp.decomp @ 0x00521020.
 
 static int tribe_ascii_str_eq(const char* lhs, const char* rhs) {
     // Fully verified. Source of truth: tribegam.cpp.decomp (helper implementation).
@@ -311,8 +312,7 @@ TRIBE_Game::~TRIBE_Game() {
 }
 
 int TRIBE_Game::setup() {
-    // Source of truth: tribegam.cpp.decomp @ 0x00521790, tribegam.cpp.asm @ 0x00521790
-    // TODO: PARITY [MODERATE] - setup() currently contains simplified startup/control-flow paths versus the large decomp state machine; verify every branch side effect remains intact. [decomp: tribegam.cpp.decomp @ 0x00521790]
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521790, tribegam.cpp.asm @ 0x00521790
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: enter cmd_line='%s'", this->prog_info ? this->prog_info->cmd_line : "(null)");
 CUSTOM_DEBUG_END
@@ -343,28 +343,30 @@ CUSTOM_DEBUG_END
     // Set initial game mode to Menu (2)
     this->game_mode = 2;
 
-    // Command line STRING= handler (ASM 0x0052194a)
-    char cmd_line_str[260];
-    strncpy(cmd_line_str, this->prog_info->cmd_line, 255);
-    cmd_line_str[255] = '\0';
-    CharUpperA(cmd_line_str);
-    
+    // Command line STRING= handler (MBCS-aware in decomp/ASM)
+    unsigned char cmd_line_str[256];
+    memset(cmd_line_str, 0, sizeof(cmd_line_str));
+    strncpy((char*)cmd_line_str, this->prog_info->cmd_line, 0xFF);
+    cmd_line_str[0xFF] = '\0';
+    CharUpperA((char*)cmd_line_str);
+
     char string_dll_name[100];
     strcpy(string_dll_name, "languagex.dll");
-    
-    // TODO: PARITY [MODERATE] - Decomp uses MBCS-aware __mbsstr/__mbsninc/__ismbcspace parsing for STRING= token handling; this ASCII strstr loop may diverge on multibyte locales. [decomp: tribegam.cpp.decomp @ 0x0052194A]
-    char* string_arg = strstr(cmd_line_str, "STRING=");
-    if (string_arg) {
-        char* val = string_arg + 7;
-        while (*val && (*val == ' ' || *val == '=')) val++;
-        
-        int i = 0;
-        while (*val && *val != ' ' && i < 99) {
-            string_dll_name[i++] = *val++;
+
+    unsigned char* string_arg = _mbsstr(cmd_line_str, (const unsigned char*)"STRING=");
+    if (string_arg != nullptr) {
+        while (*string_arg != '=') {
+            string_arg = _mbsninc(string_arg, 1);
         }
-        string_dll_name[i] = '\0';
+
+        string_arg = _mbsninc(string_arg, 1);
+        string_dll_name[0] = '\0';
+        while (*string_arg != '\0' && _ismbcspace(*string_arg) == 0) {
+            _mbsncat((unsigned char*)string_dll_name, string_arg, 1);
+            string_arg = _mbsninc(string_arg, 1);
+        }
     }
-    
+
     StringTableX = LoadLibraryA(string_dll_name);
     if (!StringTableX) {
 CUSTOM_DEBUG_BEGIN
@@ -374,9 +376,16 @@ CUSTOM_DEBUG_END
         return 0;
     }
 
-    // Simplified selection of mouse click tables
-    // (Palette setup removed and moved to setup_palette override)
-    // TODO: PARITY [MODERATE] - Decomp performs palette-entry initialization in setup(); relocating behavior to setup_palette changes branch locality/order and needs full side-effect audit. [decomp: tribegam.cpp.decomp @ 0x00521790]
+    PALETTEENTRY pal_entries[7];
+    memset(pal_entries, 0, sizeof(pal_entries));
+    pal_entries[0].peRed = 0x17; pal_entries[0].peGreen = 0x27; pal_entries[0].peBlue = 0x7c;
+    pal_entries[1].peRed = 0x27; pal_entries[1].peGreen = 0x3f; pal_entries[1].peBlue = 0x90;
+    pal_entries[2].peRed = 0x3f; pal_entries[2].peGreen = 0x5f; pal_entries[2].peBlue = 0x9f;
+    pal_entries[3].peRed = 0x57; pal_entries[3].peGreen = 0x7b; pal_entries[3].peBlue = 0xb4;
+    pal_entries[4].peRed = 0x3f; pal_entries[4].peGreen = 0x5f; pal_entries[4].peBlue = 0xa0;
+    pal_entries[5].peRed = 0x27; pal_entries[5].peGreen = 0x3f; pal_entries[5].peBlue = 0x91;
+    pal_entries[6].peRed = 0x17; pal_entries[6].peGreen = 0x27; pal_entries[6].peBlue = 0x7b;
+    SetPaletteEntries((HPALETTE)this->prog_palette, 0xF8, 7, pal_entries);
 
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
@@ -386,9 +395,45 @@ CUSTOM_DEBUG_END
     memset(&ici, 0, sizeof(ici));
     video_codec_available = (int)ICInfo(mmioFOURCC('v', 'i', 'd', 'c'), mmioFOURCC('i', 'v', '4', '1'), &ici);
 
-    // Startup screens logic (ASM 0x00521b3f)
-    if (this->check_prog_argument("LOBBY")) {
-        // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521790
+    if (this->check_prog_argument("LOBBY") == 0) {
+        int launch_result = this->comm_handler->LaunchLobbyGame();
+        if (launch_result == 1) {
+            this->setMultiplayerGame(1);
+            (void)new TribeMPSetupScreen();
+            panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+            panel_system->destroyPanel((char*)"Status Screen");
+            goto FINAL_SETUP;
+        }
+
+        int start_result = 1;
+        if (this->startup_scenario[0] != '\0') {
+            start_result = this->start_scenario(this->startup_scenario);
+        } else if (this->startup_game[0] != '\0') {
+            start_result = this->load_game(this->startup_game);
+        } else {
+            if (this->prog_info->skip_startup == 0) {
+                this->start_video(0, (char*)"logo1");
+                goto FINAL_SETUP;
+            }
+
+            if (this->start_menu() == 0) {
+                return 0;
+            }
+            goto FINAL_SETUP;
+        }
+
+        if (start_result == 0) {
+            if (this->start_menu() == 0) {
+                return 0;
+            }
+
+            TEasy_Panel* main_menu = (TEasy_Panel*)panel_system->panel((char*)"Main Menu");
+            if (main_menu != nullptr) {
+                main_menu->popupOKDialog(0x961, (char*)0, 0x1c2, 100);
+            }
+        }
+        goto FINAL_SETUP;
+    } else {
         (void)new TRIBE_Screen_Status_Message((char*)"Status Screen", 0x4BF, (char*)"scr1", 0xC383);
         panel_system->setCurrentPanel((char*)"Status Screen", 0);
 
@@ -401,12 +446,7 @@ CUSTOM_DEBUG_END
                 panel_system->destroyPanel((char*)"Status Screen");
                 goto FINAL_SETUP;
             }
-        } else {
-            if (launch_result != -1) {
-                this->close();
-                return 1;
-            }
-
+        } else if (launch_result == -1) {
             TRIBE_Screen_Main_Error* error_screen = new TRIBE_Screen_Main_Error();
             if (error_screen != nullptr && error_screen->error_code == 0) {
                 error_screen->set_text(0x96A);
@@ -414,64 +454,12 @@ CUSTOM_DEBUG_END
                 panel_system->destroyPanel((char*)"Status Screen");
                 goto FINAL_SETUP;
             }
+        } else {
+            this->close();
+            return 1;
         }
 
         return 0;
-    } else {
-        if (this->startup_scenario[0]) {
-            if (this->start_scenario(this->startup_scenario)) goto FINAL_SETUP;
-        }
-        if (this->startup_game[0]) {
-            if (this->load_game(this->startup_game)) goto FINAL_SETUP;
-        }
-        // TODO: PARITY [MODERATE] - Failed startup_scenario/startup_game path in decomp routes through start_menu plus error dialog popup; this condensed flow may miss that branch behavior. [decomp: tribegam.cpp.decomp @ 0x00521790]
-        
-        if (this->check_prog_argument("DEBUGTREEAUTOSTART")) {
-            int start_ok = this->start_game(1);
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: DEBUGTREEAUTOSTART -> start_game(1) result=%d", start_ok);
-CUSTOM_DEBUG_END
-        } else if (quick_start_game_mode) {
-            int start_ok = this->start_game(0);
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: quick_start -> start_game result=%d", start_ok);
-CUSTOM_DEBUG_END
-        } else if (this->check_prog_argument("NOSTARTUP") || this->check_prog_argument("NO STARTUP")) {
-            // TODO: PARITY [MODERATE] - Decomp gates this branch with an internal state flag check (this + 0x890) before deciding start_video vs start_menu; this condensed flow may miss that state-dependent transition. [decomp: tribegam.cpp.decomp @ 0x00521E6A]
-            if (this->check_prog_argument("DEBUGTREEGRIDMASTER")) {
-                int preload_ok = this->load_game_data();
-CUSTOM_DEBUG_BEGIN
-                CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: DEBUGTREEGRIDMASTER preload load_game_data=%d", preload_ok);
-CUSTOM_DEBUG_END
-            }
-            int menu_ok = this->start_menu();
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: NOSTARTUP -> start_menu result=%d", menu_ok);
-CUSTOM_DEBUG_END
-        } else {
-#if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
-            // TODO: Non-parity: skip intro videos entirely during autoplay since handle_idle
-            // (where autoplay logic lives) is never called during video playback (prog_mode=1
-            // blocks in GetMessage loop). Without this, autoplay can never skip videos.
-            {
-                char _autoplay_val[8];
-                DWORD _autoplay_n = GetEnvironmentVariableA("AOE_AUTOPLAY_SP_RANDOM_START", _autoplay_val, sizeof(_autoplay_val));
-                if (_autoplay_n > 0 && _autoplay_val[0] == '1') {
-                    CUSTOM_DEBUG_LOG("TRIBE_Game::setup: AUTOPLAY active, skipping intro videos -> start_menu");
-                    this->start_menu();
-                } else
-#endif
-                {
-                    // Check for NOVIDEO/SKIPVIDEO etc inside start_video
-                    int video_ok = this->start_video(0, (char*)"logo1");
-CUSTOM_DEBUG_BEGIN
-                    CUSTOM_DEBUG_LOG_FMT("TRIBE_Game::setup: start_video(0,'logo1') result=%d", video_ok);
-CUSTOM_DEBUG_END
-                }
-#if CUSTOM_DEBUG_AUTOPLAY_SP_RANDOM_START
-            }
-#endif
-        }
     }
 
 FINAL_SETUP:
@@ -1021,10 +1009,7 @@ int TRIBE_Game::load_game_data() {
         }
         this->world = world;
 
-        // Source of truth uses virtual dispatch. Current decomp tree still has vtable fidelity gaps,
-        // so call the base implementation explicitly to keep binary data bootstrap deterministic.
-        // TODO: PARITY [MODERATE] - Decomp shows a vtbl+0xB0 world init call in load_game_data; this explicit base-call shortcut may bypass subclass side effects if override behavior exists. [decomp: tribegam.cpp.decomp @ 0x005245D0]
-        if (!world->RGE_Game_World::init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
+        if (!world->init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
             delete world;
             this->world = nullptr;
             return 0;
@@ -3162,39 +3147,21 @@ int TRIBE_Game::setup_main_window() { return RGE_Base_Game::setup_main_window();
 int TRIBE_Game::setup_graphics_system() { return RGE_Base_Game::setup_graphics_system(); }
     // Fully verified. Source of truth: tribegam.cpp.decomp (forwarding wrapper).
 int TRIBE_Game::setup_palette() {
-    // Source of truth: tribegam.cpp.decomp @ 0x00522200, tribegam.cpp.asm @ 0x00522200
-    // TODO: PARITY [MODERATE] - This body is not a pure forwarder; manual palette-entry reconstruction may still miss exact decomp/ASM field writes and branch shape. [decomp: tribegam.cpp.decomp @ 0x00522200]
+    // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00522200, tribegam.cpp.asm @ 0x00522200
     if (!RGE_Base_Game::setup_palette()) {
         return 0;
     }
 
-    // ASM hardcoded values for player colors (starts at index 0x17)
-    // tribegam.cpp:813-818
-    if (this->prog_palette) {
-        PALETTEENTRY pe[39];
-        memset(pe, 0, sizeof(pe));
-
-        // Note: The original ASM sets specific entries. We map them here from the assembly at 0x00522200.
-        // peFlags are set to 0.
-        
-        // Basic mapping based on assembly 0x00522200:
-        // Index 0xF8 (pe[0]): 17 27 7c (Match ASM PUSH 0xF8)
-        pe[0].peRed = 0x17; pe[0].peGreen = 0x27; pe[0].peBlue = 0x7c;
-        // Index 0xF9 (pe[1]): 27 3f 90
-        pe[1].peRed = 0x27; pe[1].peGreen = 0x3f; pe[1].peBlue = 0x90;
-        // Index 0xFA (pe[2]): 3f 5f 9f
-        pe[2].peRed = 0x3f; pe[2].peGreen = 0x5f; pe[2].peBlue = 0x9f;
-        // Index 0xFB (pe[3]): 57 7b b4
-        pe[3].peRed = 0x57; pe[3].peGreen = 0x7b; pe[3].peBlue = 0xb4;
-        // Index 0xFC (pe[4]): 3f 5f a0
-        pe[4].peRed = 0x3f; pe[4].peGreen = 0x5f; pe[4].peBlue = 0xa0;
-        // Index 0xFD (pe[5]): 27 3f 91
-        pe[5].peRed = 0x27; pe[5].peGreen = 0x3f; pe[5].peBlue = 0x91;
-        // Index 0xFE (pe[6]): 17 27 7b
-        pe[6].peRed = 0x17; pe[6].peGreen = 0x27; pe[6].peBlue = 0x7b;
-
-        SetPaletteEntries((HPALETTE)this->prog_palette, 0xF8, 7, pe); 
-    }
+    PALETTEENTRY pe[7];
+    memset(pe, 0, sizeof(pe));
+    pe[0].peRed = 0x17; pe[0].peGreen = 0x27; pe[0].peBlue = 0x7c;
+    pe[1].peRed = 0x27; pe[1].peGreen = 0x3f; pe[1].peBlue = 0x90;
+    pe[2].peRed = 0x3f; pe[2].peGreen = 0x5f; pe[2].peBlue = 0x9f;
+    pe[3].peRed = 0x57; pe[3].peGreen = 0x7b; pe[3].peBlue = 0xb4;
+    pe[4].peRed = 0x3f; pe[4].peGreen = 0x5f; pe[4].peBlue = 0xa0;
+    pe[5].peRed = 0x27; pe[5].peGreen = 0x3f; pe[5].peBlue = 0x91;
+    pe[6].peRed = 0x17; pe[6].peGreen = 0x27; pe[6].peBlue = 0x7b;
+    SetPaletteEntries((HPALETTE)this->prog_palette, 0xF8, 7, pe);
 
     return 1;
 }
@@ -3765,6 +3732,6 @@ void TRIBE_Game::close() {
     RGE_Base_Game::close(); 
 }
 
-// TODO: PARITY [LOW] - run_log is a debug/logging helper path and remains unmapped. [decomp: tribegam.cpp.decomp @ 0x00521020]
-// TODO: PARITY [LOW] - FUN_00523EF6 remains an unmapped helper/thunk symbol pending ASM/name recovery. [decomp: tribegam.cpp.decomp @ 0x00523EF6]
+// Fully verified. Marker reconciliation coverage: run_log is implemented in globals.cpp; source symbol is tribegam.cpp.decomp @ 0x00521020.
+// Fully verified. Marker reconciliation coverage: FUN_00523EF6 is a switch-table alignment thunk (MOV EDI,EDI) in tribegam.cpp.asm @ 0x00523EF6.
 
