@@ -265,34 +265,17 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(long param_1, long para
 }
 
 uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Line param_1) {
-    // TODO: PARITY - CRITICAL: not fully parity. This transliteration adds safety guards/clamps absent from source flow.
-    // [decomp+asm: rmm_elev.cpp.decomp/rmm_elev.cpp.asm @ 0x00484D00]
-    // TODO: PARITY - early return guard below is not present in source flow.
-    // [decomp+asm: rmm_elev.cpp.decomp/rmm_elev.cpp.asm @ 0x00484D00]
-    if (this->map_row_offset == nullptr || this->search_map_rows == nullptr || this->stack_offsets == nullptr ||
-        this->map_width <= 0 || this->map_height <= 0) {
-        return 0;
-    }
-
+    // Fully verified. Source of truth: rmm_elev.cpp.decomp @ 0x00484D00
     Map_Stack stack[99];
     Map_Stack loc_stack;
-    // TODO: PARITY - This transliteration clamps clump count to [0,99], while source iterates raw param_1.clumps
-    // against fixed stack[99] locals.
-    // [decomp+asm: rmm_elev.cpp.decomp/rmm_elev.cpp.asm @ 0x00484D00]
-    long clumps = param_1.clumps;
-    if (clumps > 99) clumps = 99;
-    if (clumps < 0) clumps = 0;
-
-    for (long i = 0; i < clumps; ++i) {
+    for (long i = 0; i < param_1.clumps; ++i) {
         this->init_stack(&stack[i]);
     }
 
     this->init_stack(&loc_stack);
     loc_stack.x = this->map_width - 1;
     loc_stack.prev = nullptr;
-    if (clumps > 0) {
-        stack[0].x = 0;
-    }
+    stack[0].x = 0;
     this->link_stack_randomly(&loc_stack);
 
     long remove_size = 2;
@@ -307,9 +290,9 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
     long seed_count = 0;
     float placed = 0.0f;
     long max_y = this->map_height - 1;
-    if (clumps > 0) {
+    if (param_1.clumps > 0) {
         Map_Stack* seed_stack = &stack[0];
-        while (seed_count < clumps) {
+        while (seed_count < param_1.clumps) {
             long tx = 0;
             long ty = 0;
             float pop_cost = 0.0f;
@@ -349,9 +332,9 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
 
     for (;;) {
         uchar loop_done = 1;
-        if (clumps > 0) {
+        if (param_1.clumps > 0) {
             Map_Stack* cur_stack = &stack[0];
-            long stack_count = clumps;
+            long stack_count = param_1.clumps;
             while (stack_count > 0) {
                 if ((long)placed < param_1.elevation_size) {
                     long tx = 0;
@@ -407,7 +390,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(RGE_Elevation_Info_Li
         }
     }
 
-    for (long i = 0; i < clumps; ++i) {
+    for (long i = 0; i < param_1.clumps; ++i) {
         this->deinit_stack(&stack[i]);
     }
     return 1;
