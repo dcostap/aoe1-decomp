@@ -623,19 +623,18 @@ void TRIBE_Combat_Object::set_object_state(uchar param_1) {
     RGE_Static_Object::set_object_state(param_1);
 }
 
-// Source of truth: t_c_obj.cpp.decomp @ 0x004CA790 (parity-in-progress; see TODO below).
-// TODO: PARITY - Decomp symbol naming at 0x004CA790 is class-ambiguous (TRIBE_Building_Object header vs TRIBE_Combat_Object signature comment), but the body includes TRIBE_Action_Convert::martyrdom dispatch after action-type 0x68; current body only probes get_action() and does not implement that branch. [decomp: t_c_obj.cpp.decomp @ 0x004CA790]
-// TODO: PARITY - Decomp condition reads master offset +0xE4 for the >= 1.0 gate; mapping to orig_pierce_armor here is not fully revalidated. [decomp: t_c_obj.cpp.decomp @ 0x004CA790]
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA790, t_c_obj.cpp.asm @ 0x004CA790
 void TRIBE_Combat_Object::die_die_die() {
-    if (this->object_state == 2 && this->master_obj != nullptr && ((TRIBE_Master_Combat_Object*)this->master_obj)->orig_pierce_armor >= 1) {
-        TRIBE_Action_Convert* action = (TRIBE_Action_Convert*)this->actions->get_action();
-        (void)action;
+    if (this->object_state == 2 && this->master_obj != nullptr && *(float*)((char*)this->master_obj + 0xE4) >= 1.0f) {
+        RGE_Action* action = this->actions->get_action();
+        if (action != nullptr && action->type() == 0x68) {
+            ((TRIBE_Action_Convert*)action)->martyrdom();
+        }
     }
     RGE_Static_Object::die_die_die();
 }
 
-// Source of truth: t_c_obj.cpp.decomp @ 0x004CA7F0 (parity-in-progress; see TODO below).
-// TODO: PARITY - Decomp dereferences param_5->master_obj->object_group in the post-death branch without visible null guards; current null checks are a safety divergence pending asm-backed parity confirmation. [decomp: t_c_obj.cpp.decomp @ 0x004CA7F0]
+// Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CA7F0, t_c_obj.cpp.asm @ 0x004CA7F0
 void TRIBE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5) {
     float temp_hp = this->hp;
     if (this->hp < 1.0f) {
@@ -643,13 +642,13 @@ void TRIBE_Combat_Object::damage(int param_1, RGE_Armor_Weapon_Info* param_2, fl
     }
 
     RGE_Combat_Object::damage(param_1, param_2, param_3, param_4, param_5);
-    if (this->hp < 1.0f && param_5 != nullptr && param_5->master_obj != nullptr && this->produceWhenKilledBy((int)param_5->master_obj->object_group) == 0) {
+    if (this->hp < 1.0f && this->produceWhenKilledBy((int)param_5->master_obj->object_group) == 0) {
         this->set_attribute_amount(0, 0, 1);
     }
     if (temp_hp - this->hp < 1.0f) {
         this->hp = temp_hp - 1.0f;
     }
-    if (this->owner != nullptr && this->owner->id > 0 && this->hp < 1.0f && param_4 != nullptr) {
+    if (this->owner->id > 0 && this->hp < 1.0f) {
         param_4->command_add_attribute(0x14, 1.0f);
     }
 }
