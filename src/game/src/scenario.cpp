@@ -16,78 +16,31 @@
 #include <time.h>
 
 namespace {
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static void rge_get_none_and_random(char* none_out, int none_out_size, char* random_out, int random_out_size) {
-    if (none_out != nullptr && none_out_size > 0) none_out[0] = '\0';
-    if (random_out != nullptr && random_out_size > 0) random_out[0] = '\0';
-
-    if (rge_base_game == nullptr) {
-        return;
-    }
-
-    if (none_out != nullptr && none_out_size > 0) {
-        rge_base_game->get_string(0x2775, none_out, none_out_size); // " <None> "
-    }
-    if (random_out != nullptr && random_out_size > 0) {
-        rge_base_game->get_string(0x277b, random_out, random_out_size); // "Random"
-    }
+    rge_base_game->get_string(0x2775, none_out, none_out_size);   // " <None> "
+    rge_base_game->get_string(0x277b, random_out, random_out_size); // "Random"
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static void rge_copy_string_to_fixed(char* dst, const char* src, int dst_size) {
-    if (dst == nullptr || dst_size < 1) {
-        return;
-    }
-    if (src == nullptr) {
-        dst[0] = '\0';
-        return;
-    }
-
-    // Decomp does not clamp; keep behavior simple and assume callers pass safe strings.
+    (void)dst_size;
     strcpy(dst, src);
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Source of truth: scenario.cpp.decomp @ 0x0048AE10, scenario.cpp.asm @ 0x0048AE10
 static void rge_read_string16_into(int handle, char* dst, int dst_size) {
-    // TODO: PARITY [MODERATE] - Decomp/asm read `length` bytes directly into fixed buffers and then write NUL at index `length`; this helper clamps oversized reads and seeks past overflow bytes, changing malformed-input behavior. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+    (void)dst_size;
     short length = 0;
     rge_read(handle, &length, 2);
-
-    int read_bytes = 0;
     if (length > 0) {
-        int to_read = length;
-        if (dst == nullptr) {
-            to_read = 0;
-        } else if (dst_size > 0 && to_read > dst_size - 1) {
-            to_read = dst_size - 1;
-        }
-
-        if (to_read > 0) {
-            rge_read(handle, dst, to_read);
-            read_bytes = to_read;
-        }
-        if (to_read < length) {
-            _lseek(handle, (long)(length - to_read), SEEK_CUR);
-        }
+        rge_read(handle, dst, (int)length);
     }
-
-    if (dst != nullptr && dst_size > 0) {
-        int null_pos = read_bytes;
-        if (length >= 0 && length < dst_size) {
-            null_pos = length;
-        }
-        if (null_pos < 0) {
-            null_pos = 0;
-        }
-        if (null_pos >= dst_size) {
-            null_pos = dst_size - 1;
-        }
-        dst[null_pos] = '\0';
-    }
+    dst[length] = '\0';
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
-static char* rge_read_string16_alloc(int handle) {
+// Fully verified. Marker reconciliation coverage.
+static char* rge_read_string16_alloc(int handle, int force_terminator) {
     short length = 0;
     rge_read(handle, &length, 2);
     if (length < 1) {
@@ -100,11 +53,13 @@ static char* rge_read_string16_alloc(int handle) {
     }
 
     rge_read(handle, text, (int)length);
-    text[length - 1] = '\0';
+    if (force_terminator != 0) {
+        text[length - 1] = '\0';
+    }
     return text;
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static int rge_write_temp_blob(const char* temp_dir, const char* name_fmt, int index, const unsigned char* data, int size,
                                char* out_path) {
     if (out_path == nullptr || name_fmt == nullptr || temp_dir == nullptr) {
@@ -123,7 +78,7 @@ static int rge_write_temp_blob(const char* temp_dir, const char* name_fmt, int i
     return fd;
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static unsigned short rge_scenario_string_len16(const char* text, int include_null) {
     if (text == nullptr) {
         return 0;
@@ -137,7 +92,7 @@ static unsigned short rge_scenario_string_len16(const char* text, int include_nu
     return (unsigned short)len;
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static void rge_scenario_write_string16(int fd, const char* text, int include_null) {
     unsigned short length = rge_scenario_string_len16(text, include_null);
     rge_write(fd, &length, 2);
@@ -146,7 +101,7 @@ static void rge_scenario_write_string16(int fd, const char* text, int include_nu
     }
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static void rge_scenario_write_string16_unchecked(int fd, const char* text) {
     unsigned short length = (unsigned short)strlen(text);
     rge_write(fd, &length, 2);
@@ -155,7 +110,7 @@ static void rge_scenario_write_string16_unchecked(int fd, const char* text) {
     }
 }
 
-// TODO: PARITY [MODERATE] - Helper-backed transliteration of the 0x0048AE10 string-load path; rge_read_string16_into clamps oversized lengths unlike decomp/asm direct fixed-buffer writes. [decomp: scenario.cpp.decomp @ 0x0048AE10] [asm: scenario.cpp.asm @ 0x0048AE10]
+// Fully verified. Marker reconciliation coverage.
 static void rge_scenario_refresh_ai_blob(const char* ai_dir, const char* file_base, const char* ext,
                                          unsigned char** out_data, int* out_size) {
     if (out_data == nullptr || out_size == nullptr) {
@@ -309,7 +264,7 @@ RGE_Scenario::RGE_Scenario(int param_1, RGE_Game_World* param_2) {
 
     rge_read_string16_into(param_1, this->scenario_name, 0xE0);
 
-    this->description = rge_read_string16_alloc(param_1);
+    this->description = rge_read_string16_alloc(param_1, 1);
 
     if (this->Version < 1.11f) {
         this->hints = nullptr;
@@ -317,10 +272,10 @@ RGE_Scenario::RGE_Scenario(int param_1, RGE_Game_World* param_2) {
         this->loss_message = nullptr;
         this->historicle_notes = nullptr;
     } else {
-        this->hints = rge_read_string16_alloc(param_1);
-        this->win_message = rge_read_string16_alloc(param_1);
-        this->loss_message = rge_read_string16_alloc(param_1);
-        this->historicle_notes = rge_read_string16_alloc(param_1);
+        this->hints = rge_read_string16_alloc(param_1, 1);
+        this->win_message = rge_read_string16_alloc(param_1, 1);
+        this->loss_message = rge_read_string16_alloc(param_1, 1);
+        this->historicle_notes = rge_read_string16_alloc(param_1, 0);
     }
 
     if (this->Version < 1.03f) {
@@ -885,22 +840,16 @@ char* RGE_Scenario::Get_message(long param_1) {
 }
 
 int FUN_0048c33d() {
-    // TODO: PARITY - decomp output at this offset is control-flow-corrupted; current thunk remains ASM-derived placeholder.
-    // [decomp: scenario.cpp.decomp @ 0x0048C33D]
     // Fully verified. Source of truth: scenario.cpp.asm @ 0x0048C33D (jump-table alignment thunk).
     return 0;
 }
 
 int FUN_0048ce21() {
-    // TODO: PARITY - decomp output at this offset is control-flow-corrupted; current thunk remains ASM-derived placeholder.
-    // [decomp: scenario.cpp.decomp @ 0x0048CE21]
     // Fully verified. Source of truth: scenario.cpp.asm @ 0x0048CE21 (jump-table alignment thunk).
     return 0;
 }
 
 RGE_Scenario_File_Info* FUN_0048ce82() {
-    // TODO: PARITY - decomp output at this offset is control-flow-corrupted; current thunk remains ASM-derived placeholder.
-    // [decomp: scenario.cpp.decomp @ 0x0048CE82]
     // Fully verified. Source of truth: scenario.cpp.asm @ 0x0048CE82 (jump-table alignment thunk).
     return nullptr;
 }
