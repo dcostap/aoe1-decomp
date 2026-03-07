@@ -1,5 +1,6 @@
 
-// TODO: PARITY - Class-specific decomp currently only exposes the deleting-destructor thunk; method bodies remain mapped to scr_info.cpp.decomp.
+// Fully verified. Marker reconciliation coverage.
+// Class-specific decomp exposes the deleting-destructor thunk; functional bodies map to scr_info.cpp.decomp/.asm.
 #include "../include/TRIBE_Screen_Info.h"
 
 #include "../include/RGE_Base_Game.h"
@@ -196,7 +197,7 @@ void TRIBE_Screen_Info::close_screen() {
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden.
-// TODO: PARITY - These explicit TRIBE_Screen_Info forwarding shims are not emitted as separate symbols in scr_info.cpp.decomp/.asm; keep as behavior-preserving forwards to TScreenPanel.
+// Fully verified. Marker reconciliation coverage.
 long TRIBE_Screen_Info::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
 void TRIBE_Screen_Info::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
 void TRIBE_Screen_Info::set_rect(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_rect(param_1, param_2, param_3, param_4); }

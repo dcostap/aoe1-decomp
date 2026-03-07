@@ -2,7 +2,6 @@
 #include "../include/TRIBE_World.h"
 #include "../include/RGE_Effects.h"
 #include "../include/mystring.h"
-#include "../include/custom_debug.h"
 #include "../include/globals.h"
 #include <string.h>
 
@@ -11,16 +10,11 @@
 // Constructor (char*): reads tech tree from text file via fscanf.
 // Both are data-loading constructors that require the game database.
 
-// TODO: PARITY - constructor contains defensive/logging behavior not present in source flow.
+// Fully verified. Source of truth: bucket_050B.decomp @ 0x0050B840, bucket_050B.asm @ 0x0050B840
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
-    // TODO: PARITY - includes non-source behavior: CUSTOM_DEBUG_LOG_FMT call, explicit tech_tree_num reset to 0
-    // for tech_tree_num < 1 (source only nulls tech_tree), and name_len upper-bound rejection (>4096).
-    // [decomp+asm: bucket_050B.decomp/bucket_050B.asm @ 0x0050B840]
     this->world = param_2;
     rge_read(param_1, &this->tech_tree_num, 2);
     if (this->tech_tree_num < 1) {
-        CUSTOM_DEBUG_LOG_FMT("TRIBE_Tech::TRIBE_Tech(binary): tech_tree_num=%d (fd=%d)", (int)this->tech_tree_num, param_1);
-        this->tech_tree_num = 0;
         this->tech_tree = nullptr;
     } else {
         this->tech_tree = (Tech_Tree*)calloc(0x3c, (int)this->tech_tree_num);
@@ -50,7 +44,7 @@ TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
             // Read name
             short name_len = 0;
             rge_read(param_1, &name_len, 2);
-            if (name_len < 1 || name_len > 4096) {
+            if (name_len < 1) {
                 this->tech_tree[i].name = nullptr;
             } else {
                 this->tech_tree[i].name = (char*)calloc(1, (int)name_len);

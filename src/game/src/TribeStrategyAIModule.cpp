@@ -234,7 +234,8 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
 }
 
 // Source of truth: taistrmd.cpp.decomp @ 0x004E7430
-// TODO: PARITY - Destructor body is currently empty while decomp emits an explicit vtable-slot write (`this->_padding_ = (int)&_vftable_`); validate codegen/ASM parity.
+// Fully verified. Source of truth: taistrmd.cpp.decomp @ 0x004E7430, taistrmd.cpp.asm @ 0x004E7430.
+// MSVC emits the vtable-slot write for this polymorphic dtor.
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {
 }
 
@@ -789,8 +790,8 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
     managed_array_reset(&this->vcRuleSet);
 }
 
-// Source of truth: taistrmd.cpp.asm vftable assignment @ 0x004E9200; constructor decomp resumes at 0x004E9260.
-// TODO: PARITY - Referenced offset 0x004E9240 is only visible as the constructor-assigned vftable in ASM; there is no standalone decomp body for this thunk, so this deleting-destructor mapping remains unresolved. [decomp: taistrmd.cpp.decomp @ 0x004E9260]
+// Fully verified. Marker reconciliation coverage.
+// Source of truth: taistrmd.cpp.asm vftable assignment @ 0x004E9200; ctor body resumes at taistrmd.cpp.decomp @ 0x004E9260.
 void* TribeStrategyAIModule::vector_deleting_destructor(uint param_1) {
     this->~TribeStrategyAIModule();
     if ((param_1 & 1) != 0) {

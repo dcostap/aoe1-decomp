@@ -276,10 +276,13 @@ long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param
         this->max_hgt = param_6;
     }
 
-    // TODO: PARITY - setup uses direct set_rect(...)/set_color(...) flow; decomp dispatches virtual handle_size (vtable+0x50) using render-area dimensions before color setup, so sizing/control-flow can diverge for non-fixed positioning. [decomp: panel.cpp.decomp @ 0x00464A80]
-    // Keep current implementation model simple: fixed-position panels still get a concrete rect here.
-    // The original setup routes through virtual size/color calls before node-linking.
-    this->set_rect(param_3, param_4, param_5, param_6);
+    long calc_w = 0;
+    long calc_h = 0;
+    if (this->render_area != nullptr) {
+        calc_w = this->render_area->Width;
+        calc_h = this->render_area->Height;
+    }
+    this->handle_size(calc_w, calc_h);
     this->set_color(param_7);
     this->mouse_captured = 0;
 
@@ -613,15 +616,13 @@ long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     if (!this->active) {
         return 0;
     }
-    // TODO: PARITY - wnd_proc introduces defensive null guards for render_area/panel_system on mouse/keyboard paths; decomp directly dereferences these owners once message range matches, so null-path behavior differs. [decomp: panel.cpp.decomp @ 0x004653E0]
-
     if (msg < 0x207) {
         if (msg >= 0x200) {
             // Mouse path: WM_MOUSEMOVE..WM_RBUTTONDBLCLK
-            if (!this->render_area || hwnd != this->render_area->Wnd) {
+            if (hwnd != this->render_area->Wnd) {
                 return 0;
             }
-            if (!panel_system || panel_system->InputEnabled == 0) {
+            if (panel_system->InputEnabled == 0) {
                 return 0;
             }
 
@@ -661,8 +662,7 @@ long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
         } else {
             // Keyboard path: WM_KEYDOWN / WM_CHAR / WM_SYSKEYDOWN
             if ((msg == WM_KEYDOWN || msg == WM_CHAR || msg == WM_SYSKEYDOWN) &&
-                this->render_area && hwnd == this->render_area->Wnd &&
-                panel_system && panel_system->InputEnabled != 0) {
+                hwnd == this->render_area->Wnd && panel_system->InputEnabled != 0) {
                 TPanel* target = this;
                 if (panel_system->keyboardOwnerValue != nullptr) {
                     target = panel_system->keyboardOwnerValue;
