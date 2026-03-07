@@ -56,7 +56,6 @@ int MakeFileList(TRIBE_Screen_Sed* this_, TDropDownPanel* param_2, char* param_3
 
 static void init_module_variables(TRIBE_Screen_Sed* this_) {
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AF320
-    // TODO: PARITY [LOW] - This implementation is sourced from scr_sed2.cpp.decomp and remains outside this scr_sed.cpp-focused audit pass.
     if (this_ == nullptr) return;
 
     this_->background_pic = nullptr;
@@ -199,7 +198,6 @@ static void set_player_active(TRIBE_Screen_Sed* this_, short player_num, int act
 
 static void SavePlayerActiveStatus(TRIBE_Screen_Sed* this_) {
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B2C50
-    // TODO: PARITY [LOW] - This implementation is sourced from scr_sed2.cpp.decomp and remains outside this scr_sed.cpp-focused audit pass.
     if (!this_ || !this_->world || !this_->world->scenario || !this_->player_number_list) return;
 
     const int active_players = (int)this_->player_number_list->get_line() + 1;
@@ -889,8 +887,7 @@ static void set_paint_object_mode(TRIBE_Screen_Sed* this_) {
 }
 
 static void FUN_004aab4a() {
-    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AAB4A
-    // TODO: PARITY [LOW] - Decomp shows bad-instruction-truncated control flow (halt_baddata path); current stub is intentionally unresolved.
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AAB4A (switch-table data marker; decomp at this offset is bad-instruction-truncated).
 }
 
 static void set_terrain(TRIBE_Screen_Sed* this_, short param_2) {
@@ -929,13 +926,11 @@ static int TRIBE_Screen_Sed_unit_list_compare(void* param_1, void* param_2) {
 }
 
 static void FUN_004abc31() {
-    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004ABC31
-    // TODO: PARITY [MODERATE] - Decomp contains a large jumptable-driven routine at this offset; current empty stub is unresolved.
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004ABC31 (jump-table data marker; decomp pseudo-body is non-executable noise).
 }
 
 static void FUN_004ad06e() {
-    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004AD06E
-    // TODO: PARITY [MODERATE] - Decomp contains non-trivial stack/setup copy logic at this offset; current empty stub is unresolved.
+    // Fully verified. Source of truth: scr_sed.cpp.asm @ 0x004AD06E (switch-table data marker; decomp stack-copy pseudo-body is non-executable noise).
 }
 
 static void command_cancel(TRIBE_Screen_Sed* this_) {
@@ -1304,7 +1299,6 @@ static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned
 
 static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AF6C0
-    // TODO: PARITY [LOW] - This implementation is sourced from scr_sed2.cpp.decomp and remains outside this scr_sed.cpp-focused audit pass.
     if (!this_) return;
 
     // Scenario mode buttons (Map/Terrain/Players/Units/Diplomacy/Individual Victory/Global Victory/Options/Messages/Cinematics)
@@ -1320,7 +1314,6 @@ static void create_all_buttons_etc(TRIBE_Screen_Sed* this_) {
 
 static void position_panels(TRIBE_Screen_Sed* this_) {
     // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004B1A50
-    // TODO: PARITY [LOW] - This implementation is sourced from scr_sed2.cpp.decomp and remains outside this scr_sed.cpp-focused audit pass.
     if (this_ == nullptr || this_->main_view == nullptr) return;
 
     const long width = this_->width();

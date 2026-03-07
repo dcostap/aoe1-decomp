@@ -14,14 +14,16 @@
 
 #include <new>
 
-// Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD1B0
+// Source of truth: tact_bld.cpp.decomp @ 0x004CD1B0 and tact_bld.cpp.asm @ 0x004CD1C1.
 TRIBE_Action_Build::TRIBE_Action_Build(int param_1, RGE_Action_Object* param_2) {
+    // TODO: PARITY [MODERATE] - Original constructor path calls RGE_Action::RGE_Action(..., 1) before vtable/action_type writes; this transliteration uses RGE_Action::setup instead of the base constructor path.
     RGE_Action::setup(param_1, param_2);
     this->action_type = 0x65;
 }
 
 // Fully verified. Source of truth: tact_bld.cpp.decomp @ 0x004CD210
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
+    // TODO: PARITY [MODERATE] - Original constructor path calls RGE_Action::RGE_Action(..., 1) before vtable/task setup (tact_bld.cpp.decomp/tact_bld.cpp.asm @ 0x004CD210); this transliteration uses RGE_Action::setup instead of the base constructor path.
     RGE_Action::setup(param_1);
     this->action_type = 0x65;
     this->task = param_2;
