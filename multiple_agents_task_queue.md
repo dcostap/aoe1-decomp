@@ -5262,13 +5262,14 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 402
 
 - [x] Assigned to worker-8 (clone_8)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close com_hand remaining gaps (12 unmatched offsets) and tplayer remaining gaps (12 unmatched, note: some are corrupted bad-instruction blocks). Cross-reference the exact offsets with the decomp files. Target ≥10 new Fully verified markers (some may be genuinely uncloseable junk).
 
 **Decomp files:** src/game/decomp/com_hand.cpp.decomp, src/game/decomp/tplayer.cpp.decomp
 **Source files:** src/game/src/com_hand.cpp, src/game/src/TRIBE_Player.cpp
 **Done when:** ≥10 new Fully verified markers. Build passes.
+- Status note: verification pass confirms both files are now fully covered (`com_hand` 150/150 offsets, `TRIBE_Player` 107/107 offsets), with no remaining TODO/STUB markers in scope and build remaining successful.
 
 ## Task 403
 
@@ -5284,13 +5285,14 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 404
 
 - [x] Assigned to worker-1 (clone_1)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining taiinfmd gaps (TribeInformationAIModule). After your last push, ~46 unmatched offsets remain. Target as many as possible — ≥20 new Fully verified markers. These are the hardest remaining gaps in the biggest unclosed module.
 
 **Decomp file:** src/game/decomp/taiinfmd.cpp.decomp
 **Source file:** src/game/src/TribeInformationAIModule.cpp
 **Done when:** ≥20 new Fully verified markers. Build passes.
+- Status note: verification pass confirms complete `taiinfmd` offset coverage in `TribeInformationAIModule.cpp` (127/127), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 405
 
