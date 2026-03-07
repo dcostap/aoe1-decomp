@@ -27,7 +27,7 @@ static void set_button_disabled(TButtonPanel* button, int disabled) {
 }
 } // namespace
 
-// Fully verified. Source of truth: scr_sedo.cpp.decomp @ 0x004B33D0
+// Source of truth: scr_sedo.cpp.decomp @ 0x004B33D0
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open() : TScreenPanel((char*)"Scenario Editor Open") {
     this->title = nullptr;
     this->list = nullptr;
@@ -181,9 +181,9 @@ void TRIBE_Screen_Sed_Open::fillList() {
     }
 }
 
-// Fully verified. Source of truth: scr_sedo.cpp.decomp @ 0x004B38A0
+// Source of truth: scr_sedo.cpp.decomp @ 0x004B38A0
 long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Fully verified. Source of truth: scr_sedo.cpp.decomp (helper implementation).
+    // Source of truth: scr_sedo.cpp.decomp (helper implementation).
     if (param_1 != nullptr) {
         const char* panel_name = param_1->panelName();
         if (panel_name != nullptr && strcmp(panel_name, kCancelDialogName) == 0) {

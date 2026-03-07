@@ -70,9 +70,9 @@ TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu() {
     this->delete_panel((TPanel**)&this->close_button);
 }
 
-// Fully verified. Source of truth: scr_sedm.cpp.decomp @ 0x004B31A0
+// Source of truth: scr_sedm.cpp.decomp @ 0x004B31A0
 long TRIBE_Screen_Sed_Menu::handle_idle() {
-    // Fully verified. Source of truth: scr_sedm.cpp.decomp (helper implementation).
+    // Source of truth: scr_sedm.cpp.decomp (helper implementation).
     // TODO: PARITY - handle_idle adds a defensive rge_base_game null-guard before checking input_enabled; decomp directly dereferences rge_base_game->input_enabled. [decomp: scr_sedm.cpp.decomp @ 0x004B31A0]
     if (rge_base_game != nullptr && rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
@@ -80,9 +80,9 @@ long TRIBE_Screen_Sed_Menu::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// Fully verified. Source of truth: scr_sedm.cpp.decomp @ 0x004B31D0
+// Source of truth: scr_sedm.cpp.decomp @ 0x004B31D0
 long TRIBE_Screen_Sed_Menu::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    // Fully verified. Source of truth: scr_sedm.cpp.decomp (helper implementation).
+    // Source of truth: scr_sedm.cpp.decomp (helper implementation).
     if (param_1 != nullptr && param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->button[0]) {
             if (rge_base_game != nullptr) {
