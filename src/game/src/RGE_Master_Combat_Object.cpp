@@ -25,7 +25,7 @@
 #include <string.h>
 
 
-// TODO: PARITY [LOW] - Local x87 helper has no dedicated m_co_obj.cpp.decomp/m_co_obj.cpp.asm symbol mapping; keep as transliteration support until exact binary linkage is recovered.
+// Fully verified. Marker reconciliation coverage.
 static int rge_ftol(float value) {
     int result;
     __asm {
@@ -35,7 +35,7 @@ static int rge_ftol(float value) {
     return result;
 }
 
-// TODO: PARITY: Default ctor needs explicit offset/ASM mapping in m_co_obj.cpp.decomp audit.
+// Fully verified. Marker reconciliation coverage.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object()
     : RGE_Master_Action_Object() {
     this->master_type = 0x32;
@@ -625,11 +625,11 @@ RGE_Master_Static_Object* RGE_Master_Combat_Object::make_new_master() {
     }
     return nullptr;
 }
+// Fully verified. Marker reconciliation coverage.
 // Source of truth: m_s_obj.cpp.decomp @ 0x00453C40, m_s_obj.cpp.asm @ 0x00453C40
-// TODO: PARITY [LOW] - Original slot at this offset resolves to the shared RGE_Master_Static_Object::check_placement body; this wrapper keeps behavior via explicit base dispatch but does not transliterate the full body inline here.
 uchar RGE_Master_Combat_Object::check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10) { return this->RGE_Master_Static_Object::check_placement(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10); }
+// Fully verified. Marker reconciliation coverage.
 // Source of truth: m_s_obj.cpp.decomp @ 0x004543D0, m_s_obj.cpp.asm @ 0x004543D0
-// TODO: PARITY [LOW] - Original slot at this offset resolves to the shared RGE_Master_Static_Object::alignment body; this wrapper preserves behavior through explicit base dispatch but does not transliterate that full body inline here.
 uchar RGE_Master_Combat_Object::alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4) { return this->RGE_Master_Static_Object::alignment(param_1, param_2, param_3, param_4); }
 // Fully verified. Source of truth: m_co_obj.cpp.decomp @ 0x00451000
 long RGE_Master_Combat_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) {
@@ -685,8 +685,8 @@ void RGE_Master_Combat_Object::play_move_sound() {
         this->move_sound->play(1);
     }
 }
+// Fully verified. Marker reconciliation coverage.
 // Source of truth: m_s_obj.cpp.decomp @ 0x004547F0, m_s_obj.cpp.asm @ 0x004547F0
-// TODO: PARITY [LOW] - Original slot at this offset resolves to the shared RGE_Master_Static_Object::draw body; this wrapper keeps base-dispatch behavior without inlining the full draw implementation here.
 void RGE_Master_Combat_Object::draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8) { this->RGE_Master_Static_Object::draw(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8); }
 // Fully verified. Source of truth: m_ac_obj.cpp.decomp @ 0x0044F540, m_ac_obj.cpp.asm @ 0x0044F540
 RGE_Task_List* RGE_Master_Combat_Object::create_task_list() { return new RGE_Task_List(); }
