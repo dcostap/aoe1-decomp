@@ -138,7 +138,6 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel((char*)"Name Selection Scr
 
 // Fully verified. Source of truth: TRIBE_Screen_Name.decomp @ 0x004A66C0 (scalar deleting destructor thunk).
 TRIBE_Screen_Name::~TRIBE_Screen_Name() {
-    // Fully verified. Source of truth: TRIBE_Screen_Name.decomp @ 0x004A66C0 (scalar deleting destructor thunk).
     // Fully verified. Source of truth: scr_name.cpp.decomp @ 0x004A66E0
     if (panel_system) {
         panel_system->setCurrentPanel((char*)"New Name Dialog", 0);
