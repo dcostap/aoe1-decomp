@@ -5192,13 +5192,14 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 396
 
 - [x] Assigned to worker-4 (clone_4)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Micro-closures batch: Close ALL remaining tiny gaps across multiple nearly-complete modules: scenario (3 gap/53), command (3 gap/51), spanlist (3 gap/29), pnl_txt→TTextPanel (2 gap/67), taiuaimd→TribeUnitAIModuleTypes (2 gap/66), tscenaro (4 gap/82), tribegam (1 gap/119). Target ≥15 new Fully verified markers.
 
 **Source files:** src/game/src/scenario.cpp, src/game/src/tcommand.cpp, src/game/src/spanlist.cpp, src/game/src/TTextPanel.cpp, src/game/src/TribeUnitAIModuleTypes.cpp, src/game/src/tscenaro.cpp, src/game/src/tribegam.cpp
 **Decomp files:** src/game/decomp/scenario.cpp.decomp, src/game/decomp/command.cpp.decomp, src/game/decomp/spanlist.cpp.decomp, src/game/decomp/pnl_txt.cpp.decomp, src/game/decomp/taiuaimd.cpp.decomp, src/game/decomp/tscenaro.cpp.decomp, src/game/decomp/tribegam.cpp.decomp
 **Done when:** ≥15 micro-closures with Fully verified markers. Build passes.
+- Status note: verification pass confirms full decomp offset coverage across the full scope (including reconciled offsets 0x00504DC6 and 0x0052A990/0x0052A9F0/0x0052AA70/0x0052AA80), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 397
 

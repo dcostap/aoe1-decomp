@@ -16,7 +16,8 @@
 
 namespace {
 // Fully verified. Marker reconciliation coverage.
-// TRIBE_Scenario_Header ctors/get_size/save from tscenaro.cpp.decomp are implemented in TRIBE_World_types.cpp.
+// TRIBE_Scenario_Header ctors/get_size/save from tscenaro.cpp.decomp are implemented in TRIBE_World_types.cpp
+// (offsets 0x0052A990, 0x0052A9F0, 0x0052AA70, 0x0052AA80).
 } // namespace
 
 T_Scenario::T_Scenario(RGE_Game_World* param_1)
