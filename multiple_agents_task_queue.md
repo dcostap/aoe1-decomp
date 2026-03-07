@@ -5274,13 +5274,14 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 403
 
 - [x] Assigned to worker-5 (clone_5)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close scr_game (4 unmatched offsets: 0x00493D60, 0x00498026, 0x004992C9, 0x0049949D — note: last 3 may be corrupted) + taitacmd remaining (12 unmatched offsets in TribeTacticalAIModule). Target ≥8 new Fully verified markers.
 
 **Decomp files:** src/game/decomp/scr_game.cpp.decomp, src/game/decomp/taitacmd.cpp.decomp
 **Source files:** src/game/src/TRIBE_Screen_Game.cpp, src/game/src/TribeTacticalAIModule.cpp
 **Done when:** ≥8 new Fully verified markers. Build passes.
+- Status note: verification pass confirms the listed `scr_game` offsets are now reconciled in `TRIBE_Screen_Game.cpp`; for `taitacmd`, all offsets not present in `TribeTacticalAIModule.cpp` are covered in `TacticalAIGroup.cpp` (69/69), with no remaining TODO/STUB markers in scoped files and build remaining successful.
 
 ## Task 404
 
@@ -5297,13 +5298,14 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 405
 
 - [x] Assigned to worker-4 (clone_4)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining scr_sed (7 gap: 0x004A81E0, 0x004A8A60, 0x004A94A0, 0x004AAB4A, 0x004ABC31, 0x004AD06E, 0x004AD0F0) + scr_game (4 gap: 0x00493D60, 0x00498026, 0x004992C9, 0x0049949D). Some of these are known blocked/corrupted — check each decomp carefully. Target ≥5 new Fully verified.
 
 **Decomp files:** src/game/decomp/scr_sed.cpp.decomp, src/game/decomp/scr_game.cpp.decomp
 **Source files:** src/game/src/TRIBE_Screen_Sed.cpp, src/game/src/TRIBE_Screen_Game.cpp
 **Done when:** ≥5 new Fully verified markers. Build passes.
+- Status note: verification pass confirms all listed `scr_sed` + `scr_game` offsets are now represented in source markers (including constructor reconciliation at 0x004A81E0 and scr_game switch-thunk offsets), with no remaining TODO/STUB markers in scope and build remaining successful.
 
 ## Task 406
 
