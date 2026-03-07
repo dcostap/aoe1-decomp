@@ -153,7 +153,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long p
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
     // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0
-    // TODO: PARITY - Decomp performs inline byte-wise comparison without a null-guard on param_1; this defensive early-return path can change behavior for null inputs. [decomp: gameinfo.cpp.decomp @ 0x0044CAD0]
+    // TODO: PARITY - Decomp/ASM run direct byte loads from param_1 (no null guard) in the compare loop; this defensive early-return changes null-input behavior. [decomp: gameinfo.cpp.decomp @ 0x0044CAD0, asm: gameinfo.cpp.asm @ 0x0044CAD0]
     if (param_1 == nullptr) {
         return '\0';
     }
