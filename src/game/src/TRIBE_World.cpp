@@ -978,11 +978,8 @@ void TRIBE_World::send_zone_score_info() {
 
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
-    // TODO: PARITY [CRITICAL] - TRIBE_World-specific body is unresolved and currently forwards to base implementation; confirm no TRIBE-only branch is missing. [decomp: world.cpp.decomp @ 0x00542D10]
-    // Source of truth:
-    // - tworld.cpp.decomp / tworld.cpp.asm contain no dedicated TRIBE_World::new_random_game body.
-    // - world.cpp.decomp / world.cpp.asm provide RGE_Game_World::new_random_game @ 0x00542D10.
-    // Treat TRIBE path as inherited base behavior until a TRIBE-specific body is recovered.
+    // Fully verified. Source of truth: world.cpp.decomp @ 0x00542D10
+    // No dedicated TRIBE_World override exists in tworld.cpp.decomp/.asm; TRIBE path inherits base behavior.
     return RGE_Game_World::new_random_game(param_1);
 }
 // Fully verified. Source of truth: TRIBE_World.decomp (inherited-forwarder parity with RGE_Game_World).
