@@ -260,7 +260,7 @@ TPanel::~TPanel() {
     }
 }
 long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
-    // Fully verified. Source of truth: panel.cpp.decomp @ 0x00464A80
+    // Source of truth: panel.cpp.decomp @ 0x00464A80
     this->parent_panel = param_2;
     this->render_area = param_1;
 
@@ -607,7 +607,7 @@ void TPanel::paint() {
         ValidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect);
     }
 }
-// Fully verified. Source of truth: panel.cpp.decomp @ 0x004653E0
+// Source of truth: panel.cpp.decomp @ 0x004653E0
 long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::wnd_proc` @ 0x004653E0).
     if (!this->active) {

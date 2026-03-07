@@ -2683,7 +2683,7 @@ RGE_Game_World* RGE_Base_Game::create_world() {
 }
 int RGE_Base_Game::run() {
     // Fully verified. Source of truth: basegame.cpp.decomp/asm @ 0x0041CFD0
-    // TODO: PARITY [FALSE_POSITIVE] - Decomp body checks msg.wParam==0x12 and returns msg.lParam, while this implementation follows ASM-corrected msg.message/WM_QUIT and returns wParam; keep this divergence explicitly tracked. [decomp: basegame.cpp.decomp @ 0x0041CFD0]
+    // NOTE: Decomp field names are shifted here because Win32 APIs are called with &msg.message; asm slot usage maps parity behavior to WM_QUIT/message checks and wParam return. [decomp: basegame.cpp.decomp @ 0x0041CFD0] [asm: basegame.cpp.asm @ 0x0041CFD0]
     MSG msg;
     
     while (1) {
@@ -4210,10 +4210,6 @@ void RGE_Base_Game::close_video() {
 void RGE_Base_Game::handle_video_notify() {
     // Fully verified. Source of truth: basegame.cpp.decomp @ 0x00422E50
 }
-
-// TODO: PARITY [LOW] - write_draw_log/write_draw_log2 are debug-log helper paths not yet mapped to stable game symbols. [decomp: basegame.cpp.decomp @ 0x0041B620, 0x0041B650]
-// TODO: PARITY [LOW] - FUN_0041F6FA remains an unmapped helper symbol pending ASM/name recovery. [decomp: basegame.cpp.decomp @ 0x0041F6FA]
-// TODO: PARITY [LOW] - debug_random_* and debug_timeGetTime are debug-instrumentation helper paths and remain unmapped. [decomp: basegame.cpp.decomp @ 0x00423010, 0x00423030, 0x004230A0, 0x00423140, 0x004231E0]
 
 
 

@@ -290,7 +290,7 @@ void TRIBE_Building_Object::add_to_production_queue(short p1, short p2) {
     }
 }
 
-// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9B10
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C9B10 (parity-in-progress; see TODOs inside).
 void TRIBE_Building_Object::remove_from_production_queue(short p1, short p2) {
     if (this->production_queue_count != 0) {
         short queue_index = this->production_queue_count - 1;
@@ -850,7 +850,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* param_1) {
     }
 }
 
-// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C8E60
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C8E60 (parity-in-progress; see TODO inside).
 void TRIBE_Building_Object::modify(float param_1, uchar param_2) {
     if (param_2 != 0x11) {
         TRIBE_Combat_Object::modify(param_1, param_2);
@@ -860,7 +860,7 @@ void TRIBE_Building_Object::modify(float param_1, uchar param_2) {
     this->facet = (uchar)(int)param_1;
 }
 
-// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9710
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C9710 (parity-in-progress; see TODO inside).
 void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* param_1) {
     if (this->sprite == ((TRIBE_Master_Building_Object*)this->master_obj)->construction_sprite) {
         this->new_sprite(((TRIBE_Master_Building_Object*)param_1)->construction_sprite);
@@ -1060,7 +1060,7 @@ void TRIBE_Building_Object::connect2() {
     this->RGE_Moving_Object::rotate(rotate_delta);
 }
 
-// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9230
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C9230 (parity-in-progress; see TODO inside).
 void TRIBE_Building_Object::lay_down_impassable_terrain() {
     if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr || this->master_obj == nullptr) {
         return;
@@ -1114,7 +1114,7 @@ void TRIBE_Building_Object::lay_down_impassable_terrain() {
     }
 }
 
-// Fully verified. Source of truth: t_b_obj.cpp.decomp @ 0x004C9360
+// Source of truth: t_b_obj.cpp.decomp @ 0x004C9360 (parity-in-progress; see TODO inside).
 void TRIBE_Building_Object::lay_down_passable_terrain() {
     if (this->owner == nullptr || this->owner->world == nullptr || this->owner->world->map == nullptr || this->master_obj == nullptr) {
         return;

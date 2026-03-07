@@ -698,7 +698,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
     return PathFound;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045DB90
+// Source of truth: move_obj.cpp.decomp @ 0x0045DB90 (parity-in-progress; see TODO inside).
 int RGE_Moving_Object::doMove() {
     this->setWaitingToMove(0);
 
@@ -883,7 +883,7 @@ in_range:
         }
 
         if ((path_ok == 0) && (this->pathValue.numberOfWaypoints() == 1)) {
-            // TODO: PARITY - Branch behavior diverges from decomp: decomp only enters the center-tile fallback when passable(center)!=0 and returns PathResult::PathNotFound if both fractions are exactly 0.5; current logic handles the passable==0 case with different return/status flow. [decomp: move_obj.cpp.decomp @ 0x0045DD90]
+            // TODO: PARITY - Branch behavior diverges from decomp: decomp only enters the center-tile fallback when passable(center)!=0 and returns PathResult::PathNotFound if both fractions are exactly 0.5; current logic handles the passable==0 case with different return/status flow. [decomp: move_obj.cpp.decomp @ 0x0045DB90]
             float center_x = rge_tile_center(this->world_x);
             float center_y = rge_tile_center(this->world_y);
             int center_passable = pathSystem.passable(this, center_x, center_y, 1);
@@ -1466,7 +1466,7 @@ int RGE_Moving_Object::canPath(XYZPoint param_1, float param_2, int param_3, flo
     return sys->findTilePath(start_x, start_y, param_1.x, param_1.y, this, param_2, param_3, 0, param_4, 1, 1, 1, 1, param_6, param_7);
 }
 
-// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x0045F9D0
+// Source of truth: move_obj.cpp.decomp @ 0x0045F9D0 (parity-in-progress; see TODO inside).
 int RGE_Moving_Object::canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6) {
     // TODO: PARITY - Decomp marks `start` as unmapped in this path-family region (0x0045F9D0/0x0045FBC0/0x0045FED0); verify XYPoint conversion/order against move_obj.cpp.asm before declaring full parity.
     RGE_Game_World* world = (this->owner != nullptr) ? this->owner->world : nullptr;
@@ -1658,7 +1658,7 @@ int RGE_Moving_Object::canPathWithAdditionalPassability(XYZPoint param_1, float 
     return ok;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x00460210
+// Source of truth: move_obj.cpp.decomp @ 0x00460210 (parity-in-progress; see TODO inside).
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3) {
     // TODO: PARITY - Decomp for 0x00460210 reports unmapped loop state and suspicious same-axis writes for outputs; recheck the returned coordinate assignment in ASM.
     Path* p = &this->exceptionPathValue;
@@ -1729,7 +1729,7 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(int param_1, float* pa
     return 0;
 }
 
-// Fully verified. Source of truth: move_obj.cpp.decomp @ 0x004603B0
+// Source of truth: move_obj.cpp.decomp @ 0x004603B0 (parity-in-progress; see TODO inside).
 int RGE_Moving_Object::canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5) {
     // TODO: PARITY - Decomp marks yTile/numSteps as unmapped in this line-walk family (0x004603B0/0x00460570/0x00460710); validate step rounding boundaries in ASM.
     int x0 = param_1->x;
