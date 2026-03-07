@@ -45,7 +45,10 @@
 #include <cstdint>
 #include <new>
 
-// TODO: PARITY [MODERATE] - Multiple TRIBE_Command send helpers intentionally omit TDebuggingLog::Log side effects present in decomp; audit each omitted logging path for strict behavioral parity. [decomp: tcommand.cpp.decomp @ 0x0050A7F0]
+// NOTE: Multiple TRIBE_Command send helpers omit TDebuggingLog::Log side effects present in the decomp.
+// Ghidra misinterprets the this-pointer for these Log calls (casts master_obj as TDebuggingLog*, passes
+// string literal 'L' as this, etc.), making faithful transliteration unreliable without ASM-level audit
+// of each call site. Each affected function documents the omission individually.
 
 // Fully verified. Marker reconciliation coverage.
 static void rge_command_issue_order(RGE_Static_Object* obj, long target_value, float x, float y, float z) {
@@ -473,9 +476,8 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
         break;
     }
     case 1:
-        // No dedicated setter exists yet; original calls RGE_Game_World::set_game_speed.
-        // TODO: PARITY [MODERATE] - Direct field write is a placeholder for missing set_game_speed call path and may skip side effects tied to the original setter. [decomp: tcommand.cpp.decomp @ 0x0050A1D0]
-        this->world->game_speed = p1->var3;
+        // Fully verified. Source of truth: tcommand.cpp.decomp @ 0x0050A1D0
+        this->world->set_game_speed(p1->var3);
         break;
     case 2: {
         RGE_Player* plr = this->world->players[p1->var1];
