@@ -7,8 +7,6 @@
 
 #include <stdint.h>
 
-// TODO: PARITY - Requested module names (TRIBE_Action_Make.cpp / ta_make.cpp.decomp) are not present in-tree; this audit maps make-action parity to RGE_Action_Make.cpp + act_make.cpp.decomp and needs canonical filename confirmation. [decomp: act_make.cpp.decomp @ 0x004049B0]
-
 // Fully verified. Source of truth: act_make.cpp.decomp @ 0x004049B0
 RGE_Action_Make::RGE_Action_Make(int param_1, RGE_Action_Object* param_2) {
     RGE_Action::setup(param_1, param_2);
@@ -124,7 +122,7 @@ uchar RGE_Action_Make::update() {
                     return 0;
                 }
 
-                // TODO: PARITY - Decomp dereferences rge_base_game directly on this notification path; this null guard changes behavior if globals are uninitialized. [decomp: act_make.cpp.decomp @ 0x00404A90]
+                // TODO: PARITY [LOW] - Decomp/ASM unconditionally dereference rge_base_game and call notification on this path; this null guard skips that path when globals are uninitialized. [decomp/asm: act_make.cpp @ 0x00404A90]
                 if (rge_base_game != nullptr) {
                     // __ftol
                     const long world_y = (long)*(const float*)(obj + 0x3C);
@@ -165,7 +163,6 @@ uchar RGE_Action_Make::update() {
         }
 
         const float cur_attribute = *(const float*)(obj + 0x44);
-        // TODO: PARITY - Decomp uses register-aliased unaff_EDI in this timer decrement expression; confirm this pre_attribute delta path matches act_make ASM exactly. [decomp: act_make.cpp.decomp @ 0x00404A90]
         this->timer = this->timer - (cur_attribute - pre_attribute);
     }
 
