@@ -987,12 +987,7 @@ void TEasy_Panel::command_help(char* param_1, char* param_2, long param_3, long 
         return;
     }
 
-    long dialog_w = (this->ideal_width > 0) ? this->ideal_width : 0x280;
-    long dialog_h = (this->ideal_height > 0) ? this->ideal_height : 0x1e0;
-    THelpDialog* dialog = new THelpDialog(this, param_1, param_2, param_4, param_5, dialog_w, dialog_h);
-    if (dialog != nullptr) {
-        dialog->help_page_id = param_3;
-    }
+    (void)new THelpDialog(this, param_1, param_2, param_3, param_4, param_5);
 }
 
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).

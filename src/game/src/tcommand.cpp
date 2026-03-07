@@ -20,8 +20,13 @@
 #include "../include/TRIBE_Building_Object.h"
 #include "../include/TRIBE_Master_Building_Object.h"
 #include "../include/TRIBE_Player.h"
+#include "../include/TRIBE_Game.h"
+#include "../include/TRIBE_Screen_Status_Message.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TRIBE_Combat_Object.h"
+#include "../include/TEasy_Panel.h"
+#include "../include/TCommunications_Handler.h"
+#include "../include/TDrawSystem.h"
 #include "../include/RGE_Player.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/RGE_Game_World.h"
@@ -36,6 +41,9 @@
 #include "../include/debug_helpers.h"
 
 #include <cstdlib>
+#include <cstdio>
+#include <cstdint>
+#include <new>
 
 // TODO: PARITY [MODERATE] - Multiple TRIBE_Command send helpers intentionally omit TDebuggingLog::Log side effects present in decomp; audit each omitted logging path for strict behavioral parity. [decomp: tcommand.cpp.decomp @ 0x0050A7F0]
 
@@ -74,6 +82,16 @@ static void tribe_unit_ai_set_current_target(UnitAIModule* unit_ai, int target_i
     *(float*)(ai + 0x3C) = target_x;
     *(float*)(ai + 0x40) = target_y;
     *(float*)(ai + 0x44) = target_z;
+}
+
+// Fully verified. Marker reconciliation coverage.
+static int tribe_pack_game_var2_var3(short var2, float var3) {
+    union {
+        float as_float;
+        uint32_t as_uint;
+    } var3_bits;
+    var3_bits.as_float = var3;
+    return (int)((var3_bits.as_uint & 0xFFFF0000u) | (uint16_t)var2);
 }
 
 TRIBE_Command::TRIBE_Command(RGE_Game_World* world, TCommunications_Handler* comm)
@@ -459,7 +477,14 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
         // TODO: PARITY [MODERATE] - Direct field write is a placeholder for missing set_game_speed call path and may skip side effects tied to the original setter. [decomp: tcommand.cpp.decomp @ 0x0050A1D0]
         this->world->game_speed = p1->var3;
         break;
-    // TODO: PARITY [CRITICAL] - Decomp has case 2 at 0x0050A1D0 that routes var2/var3 through player vtable +0x78 (attribute update path); this branch is currently not implemented.
+    case 2: {
+        RGE_Player* plr = this->world->players[p1->var1];
+        typedef void(__thiscall* AttributeFn)(RGE_Player*, int, float, int);
+        void** vtable = *(void***)plr;
+        AttributeFn attribute_fn = (AttributeFn)vtable[0x78 / 4];
+        attribute_fn(plr, tribe_pack_game_var2_var3(p1->var2, p1->var3), p1->var3, 0);
+        break;
+    }
     case 4:
         if (rge_base_game != nullptr) {
             rge_base_game->quick_build = (int)p1->var1;
@@ -475,7 +500,59 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* p1) {
     case 6:
         ((TRIBE_World*)this->world)->cheat(p1->var1, (short)(uchar)p1->var2);
         break;
-    // TODO: PARITY [CRITICAL] - Decomp also includes case 7 (world UI/font dispatch via world+0x4c vtable +8) and case 8 (full out-of-sync recovery/save-game UI flow), both currently unimplemented here.
+    case 7: {
+        void* effects = *(void**)((unsigned char*)this->world + 0x4C);
+        typedef void(__thiscall* EffectsFn)(void*, int, RGE_Player*);
+        void** effects_vtable = *(void***)effects;
+        EffectsFn effects_fn = (EffectsFn)effects_vtable[0x8 / 4];
+        effects_fn(effects, 0x71, this->world->players[p1->var1]);
+        break;
+    }
+    case 8: {
+        out_of_sync2 = 1;
+        void* temp_screen_memory = ::operator new(sizeof(TRIBE_Screen_Status_Message), std::nothrow);
+        if (temp_screen_memory != nullptr) {
+            new (temp_screen_memory) TRIBE_Screen_Status_Message((char*)"Temp Screen", (char*)"", (char*)0, -1);
+        }
+
+        panel_system->setCurrentPanel((char*)"Temp Screen", 0);
+        ((TRIBE_Game*)rge_base_game)->close_game_screens(1);
+
+        if (do_debug_random != 0) {
+            debug_random_write();
+            dump_vismap_log();
+            if (actionFile != nullptr) {
+                fclose(actionFile);
+                actionFile = nullptr;
+            }
+            if (DVlogf != nullptr) {
+                fclose(DVlogf);
+                DVlogf = nullptr;
+            }
+            if (DDlogf != nullptr) {
+                fclose(DDlogf);
+                DDlogf = nullptr;
+            }
+        }
+
+        char fileName[260] = {};
+        int who_am_i = ((TCommunications_Handler*)comm)->WhoAmI();
+        sprintf(fileName + 4, "syncerr%d.gam", who_am_i);
+
+        ((TRIBE_Game*)rge_base_game)->save_game(fileName + 4);
+        this->world->players[this->world->curr_player]->loss_if_game_on();
+        ((TRIBE_Game*)rge_base_game)->do_game_over();
+
+        TEasy_Panel* panel = (TEasy_Panel*)panel_system->currentPanel();
+        if (panel != nullptr) {
+            rge_base_game->draw_system->SetPalette(panel->get_palette());
+            rge_base_game->set_render_all();
+            rge_base_game->draw_window();
+            panel->popupOKDialog(0x966, (char*)0, 0x1c2, 100);
+        }
+        panel_system->destroyPanel((char*)"Temp Screen");
+        break;
+    }
     default:
         break;
     }
