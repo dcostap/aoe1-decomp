@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
+// TODO: PARITY [MODERATE] - Shared copy helper replaces per-function raw string-copy loops and adds null-name/strcpy_s guard behavior not present in original code. [decomp: tdlg_lst.cpp.decomp @ 0x0050B4D0/0x0050B5E0/0x0050B700] [asm: tdlg_lst.cpp.asm @ 0x0050B4D0/0x0050B5E0/0x0050B700]
 static int tribe_dialog_copy_items(TRIBE_Dialog_List* self, Item_Avail* items, short item_count) {
     self->list_size = item_count;
     self->list_info = (rdlg_list_info*)calloc((size_t)item_count, sizeof(rdlg_list_info));
@@ -27,7 +27,7 @@ static int tribe_dialog_copy_items(TRIBE_Dialog_List* self, Item_Avail* items, s
     return 1;
 }
 
-// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
+// TODO: PARITY [MODERATE] - Build-list path is otherwise mapped to create_build_list but currently uses the non-parity shared copy helper. [decomp: tdlg_lst.cpp.decomp @ 0x0050B4D0] [asm: tdlg_lst.cpp.asm @ 0x0050B4D0]
 static int tribe_dialog_create_build_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if (player == nullptr) {
@@ -46,7 +46,7 @@ static int tribe_dialog_create_build_list(TRIBE_Dialog_List* self) {
     return tribe_dialog_copy_items(self, item_list, item_num);
 }
 
-// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
+// TODO: PARITY [MODERATE] - Train-list path is otherwise mapped to create_train_list but currently uses the non-parity shared copy helper. [decomp: tdlg_lst.cpp.decomp @ 0x0050B5E0] [asm: tdlg_lst.cpp.asm @ 0x0050B5E0]
 static int tribe_dialog_create_train_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if ((player == nullptr) || (player->selected_obj == nullptr)) {
@@ -66,7 +66,7 @@ static int tribe_dialog_create_train_list(TRIBE_Dialog_List* self) {
     return tribe_dialog_copy_items(self, item_list, item_num);
 }
 
-// Fully verified. Source of truth: tdlg_lst.cpp.decomp @ 0x0050B4A0 (virtual forwarding/helper coverage).
+// TODO: PARITY [MODERATE] - Research-list path is otherwise mapped to create_research_list but currently uses the non-parity shared copy helper. [decomp: tdlg_lst.cpp.decomp @ 0x0050B700] [asm: tdlg_lst.cpp.asm @ 0x0050B700]
 static int tribe_dialog_create_research_list(TRIBE_Dialog_List* self) {
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     if ((player == nullptr) || (player->selected_obj == nullptr)) {
