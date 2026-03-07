@@ -58,11 +58,11 @@ RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
 // Fully verified. Source of truth: RGE_Dialog_List.decomp @ 0x0047E690 (compiler scalar-deleting-destructor thunk)
 
 int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file, long popup_id, int list_type, char* title) {
-    // TODO: PARITY [MEDIUM] - rdlg_lst.cpp.decomp/.asm @ 0x0047E6B0 gates on this + 0xD8 before create_list (CMP [EBX+0xD8],0), while this transliteration currently gates on screen == nullptr; keep flagged until the entry guard condition is instruction-level matched.
+    // Fully verified. Source of truth: rdlg_lst.cpp.decomp @ 0x0047E6B0
     this->list_type = list_type;
     this->list_info = nullptr;
     this->list_text = nullptr;
-    if (screen == nullptr) {
+    if (this->render_area != nullptr) {
         return 0;
     }
 

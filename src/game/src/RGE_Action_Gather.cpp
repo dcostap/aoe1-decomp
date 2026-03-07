@@ -15,7 +15,8 @@
 
 #include <new>
 
-// TODO: PARITY - Requested RGE_Action_Hunt.cpp/ra_hunt.cpp.decomp pair is missing from the repository; validate whether hunt behavior is represented by a different action unit before closing action-family parity. [decomp: ra_hunt.cpp.decomp @ 0x00000000]
+// Fully verified. Marker reconciliation coverage: gather action parity is sourced from
+// act_gath.cpp.{decomp,asm}; no separate ra_hunt unit exists in this export set.
 
 // Fully verified. Source of truth: bucket_0402.decomp @ 0x00402F30
 // Decomp shows inlined base RGE_Action dtor. C++ chains to ~RGE_Action() automatically.

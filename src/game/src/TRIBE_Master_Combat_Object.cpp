@@ -53,7 +53,7 @@ static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
 }
 
 // Fully verified. Marker reconciliation coverage.
-// Parameterless ctor is project-local scaffolding; first source symbol in tm_co_ob.cpp is the copy ctor at 0x0050E970.
+// No standalone default-ctor symbol exists in tm_co_ob.cpp.decomp/.asm; this project-local scaffolding preserves the baseline initialization shared by the constructor family rooted at 0x0050E970.
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object() {
     memset(this->build_inventory, 0, sizeof(this->build_inventory));
     this->build_pts_required = 0;

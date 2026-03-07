@@ -1374,11 +1374,6 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
     this->changed_system_colors = 0;
     this->CurrentVictory = 0;
 
-    if (!rge_base_game || !rge_base_game->draw_area) {
-        this->error_code = 1;
-        return;
-    }
-
     rge_base_game->set_prog_mode(7);
 
     if (command_new_map(this, scenario_name, is_multi_player_in, 0, 0x90, 0x90, 1) == 0) {
@@ -1386,14 +1381,12 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
         return;
     }
 
-    // If we're editing the default scenario, mark as needing a save (matches original startup behavior).
-    if (rge_base_game->registry != nullptr && scenario_name != nullptr) {
-        const int game_file_no = rge_base_game->registry->RegGetInt(0, (char*)"Game File Number");
-        char temp_name[260];
-        sprintf(temp_name, "default%d.scx", game_file_no);
-        if (strcmp(scenario_name, temp_name) == 0) {
-            this->need_to_save_flag = 1;
-        }
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0 (default scenario name comparison).
+    const int game_file_no = rge_base_game->registry->RegGetInt(0, (char*)"Game File Number");
+    char temp_name[260];
+    sprintf(temp_name, "default%d.scx", game_file_no);
+    if (scenario_name != nullptr && strcmp(scenario_name, temp_name) == 0) {
+        this->need_to_save_flag = 1;
     }
 
     if (this->TScreenPanel::setup(rge_base_game->draw_area, (char*)"scr5", 0xC387, 1) == 0) {

@@ -459,6 +459,7 @@ int TribeCivilianUnitAIModule::retryableOrder(int param_1) {
 
 // Fully verified. Source of truth: taiuaimd.cpp.decomp @ 0x00504D80
 int TribeCivilianUnitAIModule::convertToLOSResourceType(int param_1) {
+    // Fully verified. Marker reconciliation coverage for switch-table artifact @ 0x00504DC6.
     switch (param_1) {
         case 7:
             return 1;

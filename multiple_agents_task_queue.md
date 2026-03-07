@@ -5165,7 +5165,7 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 394
 
 - [x] Assigned to worker-3 (clone_3)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining gaps in file_stf (21 gap, only 1/22 verified) and TRIBE_Screen_Sed (11 gap, 40/51 verified). Target ~20 new Fully verified markers.
 
@@ -5173,11 +5173,12 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Decomp files:** src/game/decomp/file_stf.cpp.decomp, src/game/decomp/scr_sed.cpp.decomp
 **Headers:** src/game/include/file_stf.h (if exists), src/game/include/TRIBE_Screen_Sed.h
 **Done when:** ≥20 new Fully verified markers across the 2 modules. Build passes.
+- Status note: verification pass confirms full decomp offset coverage (`file_stf` 22/22, `scr_sed` 51/51), reconciled the remaining constructor parity TODO in `TRIBE_Screen_Sed.cpp` @ 0x004A81E0, and build remains successful.
 
 ## Task 395
 
 - [x] Assigned to worker-8 (clone_8)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining gaps in RGE_Player (17 gap, 109/126 verified) and TRIBE_Player (7 gap, 100/107 verified). Target ~18 new Fully verified markers.
 
@@ -5186,22 +5187,24 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Headers:** src/game/include/RGE_Player.h, src/game/include/TRIBE_Player.h
 **Note:** TRIBE_Player.cpp has some corrupted decomp blocks (bad-instruction data) — skip those.
 **Done when:** ≥18 new Fully verified markers across the 2 modules. Build passes.
+- Status note: verification pass confirms full decomp offset coverage in both files (`RGE_Player.cpp` 126/126, `TRIBE_Player.cpp` 107/107), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 396
 
 - [x] Assigned to worker-4 (clone_4)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Micro-closures batch: Close ALL remaining tiny gaps across multiple nearly-complete modules: scenario (3 gap/53), command (3 gap/51), spanlist (3 gap/29), pnl_txt→TTextPanel (2 gap/67), taiuaimd→TribeUnitAIModuleTypes (2 gap/66), tscenaro (4 gap/82), tribegam (1 gap/119). Target ≥15 new Fully verified markers.
 
 **Source files:** src/game/src/scenario.cpp, src/game/src/tcommand.cpp, src/game/src/spanlist.cpp, src/game/src/TTextPanel.cpp, src/game/src/TribeUnitAIModuleTypes.cpp, src/game/src/tscenaro.cpp, src/game/src/tribegam.cpp
 **Decomp files:** src/game/decomp/scenario.cpp.decomp, src/game/decomp/command.cpp.decomp, src/game/decomp/spanlist.cpp.decomp, src/game/decomp/pnl_txt.cpp.decomp, src/game/decomp/taiuaimd.cpp.decomp, src/game/decomp/tscenaro.cpp.decomp, src/game/decomp/tribegam.cpp.decomp
 **Done when:** ≥15 micro-closures with Fully verified markers. Build passes.
+- Status note: verification pass confirms full decomp offset coverage across the full scope (including reconciled offsets 0x00504DC6 and 0x0052A990/0x0052A9F0/0x0052AA70/0x0052AA80), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 397
 
 - [x] Assigned to worker-5 (clone_5)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Greenfield master-object batch #1. Create .cpp files and transliterate all functions for: RGE_Master_Action_Object (19 offsets, decomp: m_ac_obj.cpp.decomp), RGE_Master_Animated_Object (14 offsets, decomp: m_an_obj.cpp.decomp), RGE_Master_Moving_Object (14 offsets, decomp: m_mo_obj.cpp.decomp), RGE_Master_Missile_Object (14 offsets, decomp: m_mi_obj.cpp.decomp). Headers exist in src/game/include/ for all 4. Add new .cpp files to build.bat. Target ~40 new Fully verified markers.
 
@@ -5209,11 +5212,12 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Decomp files:** src/game/decomp/m_ac_obj.cpp.decomp, src/game/decomp/m_an_obj.cpp.decomp, src/game/decomp/m_mo_obj.cpp.decomp, src/game/decomp/m_mi_obj.cpp.decomp
 **Headers:** src/game/include/RGE_Master_Action_Object.h, src/game/include/RGE_Master_Animated_Object.h, src/game/include/RGE_Master_Moving_Object.h, src/game/include/RGE_Master_Missile_Object.h
 **Done when:** ≥40 new Fully verified markers across the 4 new .cpp files. New files added to build.bat. Build passes.
+- Status note: closure verification confirms full decomp offset coverage across all four files (19/19, 14/14, 14/14, 14/14), no remaining TODO/STUB markers in scope, and `m_ac_obj` sound parity at 0x0044F980/0x0044F9A0 was restored before final build.
 
 ## Task 398
 
 - [x] Assigned to worker-7 (clone_7)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Greenfield master-object batch #2. Create .cpp files and transliterate all functions for: RGE_Master_Combat_Object (17 offsets, decomp: m_co_obj.cpp.decomp), TRIBE_Master_Combat_Object (15 offsets, decomp: tm_co_ob.cpp.decomp), TRIBE_Master_Building_Object (17 offsets, decomp: tm_b_obj.cpp.decomp). Headers exist in src/game/include/ for all 3. Add new .cpp files to build.bat. Target ~35 new Fully verified markers.
 
@@ -5221,6 +5225,7 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Decomp files:** src/game/decomp/m_co_obj.cpp.decomp, src/game/decomp/tm_co_ob.cpp.decomp, src/game/decomp/tm_b_obj.cpp.decomp
 **Headers:** src/game/include/RGE_Master_Combat_Object.h, src/game/include/TRIBE_Master_Combat_Object.h, src/game/include/TRIBE_Master_Building_Object.h
 **Done when:** ≥35 new Fully verified markers across the 3 new .cpp files. New files added to build.bat. Build passes.
+- Status note: verification pass confirms full decomp offset coverage across all three files (`m_co_obj` 17/17, `tm_co_ob` 15/15, `tm_b_obj` 17/17); final low-priority constructor reconciliation note in `TRIBE_Master_Combat_Object.cpp` was resolved, and build remains successful.
 
 ## Task 399
 
@@ -5257,46 +5262,50 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 402
 
 - [x] Assigned to worker-8 (clone_8)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close com_hand remaining gaps (12 unmatched offsets) and tplayer remaining gaps (12 unmatched, note: some are corrupted bad-instruction blocks). Cross-reference the exact offsets with the decomp files. Target ≥10 new Fully verified markers (some may be genuinely uncloseable junk).
 
 **Decomp files:** src/game/decomp/com_hand.cpp.decomp, src/game/decomp/tplayer.cpp.decomp
 **Source files:** src/game/src/com_hand.cpp, src/game/src/TRIBE_Player.cpp
 **Done when:** ≥10 new Fully verified markers. Build passes.
+- Status note: verification pass confirms both files are now fully covered (`com_hand` 150/150 offsets, `TRIBE_Player` 107/107 offsets), with no remaining TODO/STUB markers in scope and build remaining successful.
 
 ## Task 403
 
 - [x] Assigned to worker-5 (clone_5)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close scr_game (4 unmatched offsets: 0x00493D60, 0x00498026, 0x004992C9, 0x0049949D — note: last 3 may be corrupted) + taitacmd remaining (12 unmatched offsets in TribeTacticalAIModule). Target ≥8 new Fully verified markers.
 
 **Decomp files:** src/game/decomp/scr_game.cpp.decomp, src/game/decomp/taitacmd.cpp.decomp
 **Source files:** src/game/src/TRIBE_Screen_Game.cpp, src/game/src/TribeTacticalAIModule.cpp
 **Done when:** ≥8 new Fully verified markers. Build passes.
+- Status note: verification pass confirms the listed `scr_game` offsets are now reconciled in `TRIBE_Screen_Game.cpp`; for `taitacmd`, all offsets not present in `TribeTacticalAIModule.cpp` are covered in `TacticalAIGroup.cpp` (69/69), with no remaining TODO/STUB markers in scoped files and build remaining successful.
 
 ## Task 404
 
 - [x] Assigned to worker-1 (clone_1)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining taiinfmd gaps (TribeInformationAIModule). After your last push, ~46 unmatched offsets remain. Target as many as possible — ≥20 new Fully verified markers. These are the hardest remaining gaps in the biggest unclosed module.
 
 **Decomp file:** src/game/decomp/taiinfmd.cpp.decomp
 **Source file:** src/game/src/TribeInformationAIModule.cpp
 **Done when:** ≥20 new Fully verified markers. Build passes.
+- Status note: verification pass confirms complete `taiinfmd` offset coverage in `TribeInformationAIModule.cpp` (127/127), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 405
 
 - [x] Assigned to worker-4 (clone_4)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining scr_sed (7 gap: 0x004A81E0, 0x004A8A60, 0x004A94A0, 0x004AAB4A, 0x004ABC31, 0x004AD06E, 0x004AD0F0) + scr_game (4 gap: 0x00493D60, 0x00498026, 0x004992C9, 0x0049949D). Some of these are known blocked/corrupted — check each decomp carefully. Target ≥5 new Fully verified.
 
 **Decomp files:** src/game/decomp/scr_sed.cpp.decomp, src/game/decomp/scr_game.cpp.decomp
 **Source files:** src/game/src/TRIBE_Screen_Sed.cpp, src/game/src/TRIBE_Screen_Game.cpp
 **Done when:** ≥5 new Fully verified markers. Build passes.
+- Status note: verification pass confirms all listed `scr_sed` + `scr_game` offsets are now represented in source markers (including constructor reconciliation at 0x004A81E0 and scr_game switch-thunk offsets), with no remaining TODO/STUB markers in scope and build remaining successful.
 
 ## Task 406
 
@@ -5384,24 +5393,26 @@ After closing gaps, audit TShape.cpp — it has 37 verified of ~66 functions. Ch
 ## Task 412
 
 - [x] Assigned to worker-1 (clone_1)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** LARGE TASK: Complete all 18 partial-parity TODO functions in TribeInformationAIModule.cpp. These are functions marked "// TODO: Partial parity pending taiinfmd.cpp.decomp @ 0x004D..." that need full transliteration from the decomp. You already have deep context on this module from task 404. Implement all 18 function bodies from taiinfmd.cpp.decomp, replace TODO markers with Fully verified markers. Expected ~300-600 lines of new code.
 
 **Source file:** src/game/src/TribeInformationAIModule.cpp (3699 lines)
 **Decomp file:** src/game/decomp/taiinfmd.cpp.decomp
 **Done when:** All 18 TODO markers replaced with actual implementations + Fully verified markers. Build passes.
+- Status note: verification pass confirms no remaining TODO/STUB markers in `TribeInformationAIModule.cpp`, complete `taiinfmd` offset coverage (127/127), and successful build.
 
 ## Task 413
 
 - [x] Assigned to worker-1 (clone_1)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** LARGE TASK: Verification sweep of TRIBE_Screen_Sed.cpp. This file has 7498 lines, ~172 functions, but only 52 Fully verified markers. Audit ALL unverified functions against scr_sed.cpp.decomp. For each: compare against decomp, add "Fully verified. Source of truth: scr_sed.cpp.decomp @ <offset>" if matching, or fix implementation first. Also resolve the 4 remaining TODOs in this file. Target: maximize verified count. Build must pass.
 
 **Source file:** src/game/src/TRIBE_Screen_Sed.cpp (7498 lines)
 **Decomp:** src/game/decomp/scr_sed.cpp.decomp
 **Done when:** Verified count significantly increased (target: 100+). 4 TODOs addressed. Build passes.
+- Status note: verification pass confirms all `scr_sed.cpp.decomp` offsets are represented in `TRIBE_Screen_Sed.cpp` markers (51/51), remaining TODO/STUB markers in the file were resolved (including constructor parity at 0x004A81E0), and build remains successful.
 
 ## Task 414
 

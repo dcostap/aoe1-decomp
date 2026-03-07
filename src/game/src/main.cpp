@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include "../include/TRIBE_Game.h"
 #include "../include/RGE_Prog_Info.h"
-#include "../include/custom_debug.h"
 
 // Fully verified GUID initialization parity with main.cpp.asm @ 0x00454c17.
 // _TRIBE_GUID dword stores:
@@ -16,26 +15,6 @@ const _GUID AGE1_ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     // Fully verified. Source of truth: main.cpp.decomp @ 0x004549E0
-    // TODO: PARITY - Custom debug scaffolding below introduces non-original logging/checkpoint control-flow around startup and shutdown.
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_INIT();
-    CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
-    CUSTOM_DEBUG_LOG_FMT("CmdLine: %s", lpCmdLine ? lpCmdLine : "(null)");
-    {
-        HMODULE module = GetModuleHandleA(nullptr);
-        if (module != nullptr) {
-            IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER*)module;
-            if (dos->e_magic == IMAGE_DOS_SIGNATURE) {
-                IMAGE_NT_HEADERS* nt = (IMAGE_NT_HEADERS*)((unsigned char*)module + dos->e_lfanew);
-                if (nt->Signature == IMAGE_NT_SIGNATURE) {
-                    unsigned char* base = (unsigned char*)module;
-                    unsigned char* end = base + nt->OptionalHeader.SizeOfImage;
-                    CUSTOM_DEBUG_LOG_FMT("Module range: base=%p end=%p size=0x%X", base, end, (unsigned int)nt->OptionalHeader.SizeOfImage);
-                }
-            }
-        }
-    }
-CUSTOM_DEBUG_END
 
     RGE_Prog_Info info;
     memset(&info, 0, sizeof(info));
@@ -88,10 +67,10 @@ CUSTOM_DEBUG_END
     
     info.verify_cd = 0;
     info.max_players_per_cd = 1;
-    // TODO: Expiration/CD gate bypassed. Decomp original has check_expiration=1, max_players=8.
     info.max_players = 8;
-    info.check_expiration = 0;
+    info.check_expiration = 8;
     info.expire_month = 0;
+    info.expire_day = 0;
     info.expire_year = 0;
     info.update_interval = 0;
     info.check_multi_copies = 1;
@@ -131,28 +110,14 @@ CUSTOM_DEBUG_END
     strcpy(info.ai_dir, "data2\\");
     strcpy(info.avi_dir, "avi\\");
 
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_CHECKPOINT("Creating TRIBE_Game");
-CUSTOM_DEBUG_END
-
     int retval = 0;
     TRIBE_Game* game = new TRIBE_Game(&info, 1);
     if (game) {
-CUSTOM_DEBUG_BEGIN
-        int err = game->get_error_code();
-        CUSTOM_DEBUG_LOG_FMT("TRIBE_Game created, error_code=%d", err);
-CUSTOM_DEBUG_END
         if (game->get_error_code() == 0) {
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_CHECKPOINT("Starting game->run()");
-CUSTOM_DEBUG_END
             retval = game->run();
             (void)game->get_error_code();
         } else {
             int init_error = game->get_error_code();
-CUSTOM_DEBUG_BEGIN
-            CUSTOM_DEBUG_ERROR(init_error, "Game initialization failed");
-CUSTOM_DEBUG_END
             if (init_error != 4) {
                 char msg[256];
                 char title[256];
@@ -163,15 +128,6 @@ CUSTOM_DEBUG_END
             retval = init_error;
         }
         delete game;
-    } else {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_ERROR(-1, "Failed to allocate TRIBE_Game");
-CUSTOM_DEBUG_END
     }
-    
-CUSTOM_DEBUG_BEGIN
-    CUSTOM_DEBUG_LOG_FMT("WinMain returning %d", retval);
-    CUSTOM_DEBUG_SHUTDOWN();
-CUSTOM_DEBUG_END
     return retval;
 }
