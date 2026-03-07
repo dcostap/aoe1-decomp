@@ -137,6 +137,7 @@ RGE_Action_List* RGE_Action::create_action_list(RGE_Action_Object* param_1) {
 }
 
 void RGE_Action::rehook() {
+    // TODO: PARITY [LOW] - Decomp/ASM call get_object_pointer whenever target_obj/target_obj2 are non-null, while this translation also gates on this->obj != nullptr; obj-null path is behavior-divergent. [decomp/asm: action.cpp @ 0x00407740]
     if ((this->obj != nullptr) && (this->target_obj != nullptr)) {
         RGE_Static_Object* hooked = ((RGE_Static_Object*)this->obj)->get_object_pointer((long)this->target_obj);
         this->target_obj = hooked;
