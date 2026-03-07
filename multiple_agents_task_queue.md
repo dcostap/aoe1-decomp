@@ -5165,7 +5165,7 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 394
 
 - [x] Assigned to worker-3 (clone_3)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining gaps in file_stf (21 gap, only 1/22 verified) and TRIBE_Screen_Sed (11 gap, 40/51 verified). Target ~20 new Fully verified markers.
 
@@ -5173,11 +5173,12 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Decomp files:** src/game/decomp/file_stf.cpp.decomp, src/game/decomp/scr_sed.cpp.decomp
 **Headers:** src/game/include/file_stf.h (if exists), src/game/include/TRIBE_Screen_Sed.h
 **Done when:** ≥20 new Fully verified markers across the 2 modules. Build passes.
+- Status note: verification pass confirms full decomp offset coverage (`file_stf` 22/22, `scr_sed` 51/51), reconciled the remaining constructor parity TODO in `TRIBE_Screen_Sed.cpp` @ 0x004A81E0, and build remains successful.
 
 ## Task 395
 
 - [x] Assigned to worker-8 (clone_8)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close remaining gaps in RGE_Player (17 gap, 109/126 verified) and TRIBE_Player (7 gap, 100/107 verified). Target ~18 new Fully verified markers.
 
@@ -5186,6 +5187,7 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Headers:** src/game/include/RGE_Player.h, src/game/include/TRIBE_Player.h
 **Note:** TRIBE_Player.cpp has some corrupted decomp blocks (bad-instruction data) — skip those.
 **Done when:** ≥18 new Fully verified markers across the 2 modules. Build passes.
+- Status note: verification pass confirms full decomp offset coverage in both files (`RGE_Player.cpp` 126/126, `TRIBE_Player.cpp` 107/107), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ## Task 396
 
@@ -5201,7 +5203,7 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 ## Task 397
 
 - [x] Assigned to worker-5 (clone_5)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Greenfield master-object batch #1. Create .cpp files and transliterate all functions for: RGE_Master_Action_Object (19 offsets, decomp: m_ac_obj.cpp.decomp), RGE_Master_Animated_Object (14 offsets, decomp: m_an_obj.cpp.decomp), RGE_Master_Moving_Object (14 offsets, decomp: m_mo_obj.cpp.decomp), RGE_Master_Missile_Object (14 offsets, decomp: m_mi_obj.cpp.decomp). Headers exist in src/game/include/ for all 4. Add new .cpp files to build.bat. Target ~40 new Fully verified markers.
 
@@ -5209,11 +5211,12 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Decomp files:** src/game/decomp/m_ac_obj.cpp.decomp, src/game/decomp/m_an_obj.cpp.decomp, src/game/decomp/m_mo_obj.cpp.decomp, src/game/decomp/m_mi_obj.cpp.decomp
 **Headers:** src/game/include/RGE_Master_Action_Object.h, src/game/include/RGE_Master_Animated_Object.h, src/game/include/RGE_Master_Moving_Object.h, src/game/include/RGE_Master_Missile_Object.h
 **Done when:** ≥40 new Fully verified markers across the 4 new .cpp files. New files added to build.bat. Build passes.
+- Status note: closure verification confirms full decomp offset coverage across all four files (19/19, 14/14, 14/14, 14/14), no remaining TODO/STUB markers in scope, and `m_ac_obj` sound parity at 0x0044F980/0x0044F9A0 was restored before final build.
 
 ## Task 398
 
 - [x] Assigned to worker-7 (clone_7)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Greenfield master-object batch #2. Create .cpp files and transliterate all functions for: RGE_Master_Combat_Object (17 offsets, decomp: m_co_obj.cpp.decomp), TRIBE_Master_Combat_Object (15 offsets, decomp: tm_co_ob.cpp.decomp), TRIBE_Master_Building_Object (17 offsets, decomp: tm_b_obj.cpp.decomp). Headers exist in src/game/include/ for all 3. Add new .cpp files to build.bat. Target ~35 new Fully verified markers.
 
@@ -5221,6 +5224,7 @@ Status note: verification pass confirms scoped files now carry no remaining TODO
 **Decomp files:** src/game/decomp/m_co_obj.cpp.decomp, src/game/decomp/tm_co_ob.cpp.decomp, src/game/decomp/tm_b_obj.cpp.decomp
 **Headers:** src/game/include/RGE_Master_Combat_Object.h, src/game/include/TRIBE_Master_Combat_Object.h, src/game/include/TRIBE_Master_Building_Object.h
 **Done when:** ≥35 new Fully verified markers across the 3 new .cpp files. New files added to build.bat. Build passes.
+- Status note: verification pass confirms full decomp offset coverage across all three files (`m_co_obj` 17/17, `tm_co_ob` 15/15, `tm_b_obj` 17/17); final low-priority constructor reconciliation note in `TRIBE_Master_Combat_Object.cpp` was resolved, and build remains successful.
 
 ## Task 399
 

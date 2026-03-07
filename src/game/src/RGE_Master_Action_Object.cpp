@@ -305,12 +305,20 @@ uchar RGE_Master_Action_Object::alignment(float* param_1, float* param_2, RGE_Ga
 long RGE_Master_Action_Object::calc_base_damage_ability(RGE_Master_Combat_Object* param_1) { return this->RGE_Master_Static_Object::calc_base_damage_ability(param_1); }
 
 
-// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
-void RGE_Master_Action_Object::play_command_sound() { this->RGE_Master_Static_Object::play_command_sound(); }
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp @ 0x0044F980
+void RGE_Master_Action_Object::play_command_sound() {
+    if (this->command_sound != nullptr) {
+        this->command_sound->play(1);
+    }
+}
 
 
-// Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
-void RGE_Master_Action_Object::play_move_sound() { this->RGE_Master_Static_Object::play_move_sound(); }
+// Fully verified. Source of truth: m_ac_obj.cpp.decomp @ 0x0044F9A0
+void RGE_Master_Action_Object::play_move_sound() {
+    if (this->move_sound != nullptr) {
+        this->move_sound->play(1);
+    }
+}
 
 
 // Fully verified. Source of truth: m_ac_obj.cpp.decomp (helper implementation).
