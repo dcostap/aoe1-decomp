@@ -688,15 +688,13 @@ void RGE_Base_Game::setScenarioName(char* p1) {
 }
 
 int RGE_Base_Game::setup_registry() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041ED70
-    // TODO: PARITY [MODERATE] - Decomp uses operator_new null-check flow; this plain `new` path is exception-based on OOM instead of returning null.
+    // TODO: PARITY [MODERATE] - Original setup_registry uses operator_new + explicit null-check constructor flow; this plain `new` path is exception-based on OOM instead of returning null. [decomp: basegame.cpp.decomp @ 0x0041ED70] [asm: basegame.cpp.asm @ 0x0041ED70]
     this->registry = new TRegistry(this->prog_info->registry_key);
     return (this->registry != nullptr) ? 1 : 0;
 }
 
 int RGE_Base_Game::setup_debugging_log() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041EDE0
-    // TODO: PARITY [MODERATE] - Decomp constructor path uses explicit operator_new null handling; this plain `new` relies on exception semantics.
+    // TODO: PARITY [MODERATE] - Original setup_debugging_log uses operator_new + explicit null-check constructor flow; this plain `new` relies on exception semantics. [decomp: basegame.cpp.decomp @ 0x0041EDE0] [asm: basegame.cpp.asm @ 0x0041EDE0]
     this->debugLog = new TDebuggingLog();
     if (this->debugLog == nullptr) {
         return 0;
@@ -2554,8 +2552,7 @@ void RGE_Base_Game::setup_timings() {
 }
 
 void RGE_Base_Game::stop_sound_system() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F830
-    // TODO: PARITY [MODERATE] - Decomp uses TPanelSystem::stop_sound_system(&panel_system) and iterates world sounds without per-entry null checks; current path is more defensive and panel-scoped.
+    // TODO: PARITY [MODERATE] - Original stop_sound_system calls TPanelSystem::stop_sound_system(&panel_system) directly and iterates world sounds without per-entry null guards; this path is more defensive and panel-scoped. [decomp: basegame.cpp.decomp @ 0x0041F830] [asm: basegame.cpp.asm @ 0x0041F830]
     TChat* chat_ptr = (TChat*)chat;
     if (chat_ptr != nullptr) {
         chat_ptr->StopSoundSystem();
@@ -2601,8 +2598,7 @@ void RGE_Base_Game::stop_sound_system() {
 }
 
 int RGE_Base_Game::restart_sound_system() {
-    // Fully verified. Source of truth: basegame.cpp.decomp @ 0x0041F920
-    // TODO: PARITY [MODERATE] - Decomp calls TPanelSystem::restart_sound_system(&panel_system) and restarts world sounds without per-entry null guards; this path currently differs.
+    // TODO: PARITY [MODERATE] - Original restart_sound_system calls TPanelSystem::restart_sound_system(&panel_system) and restarts world sounds without per-entry null guards; this path currently differs. [decomp: basegame.cpp.decomp @ 0x0041F920] [asm: basegame.cpp.asm @ 0x0041F920]
     if (this->sound_system == nullptr) {
         if (this->setup_sound_system() == 0) {
             return 0;
