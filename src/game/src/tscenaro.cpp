@@ -38,8 +38,8 @@ T_Scenario::T_Scenario(RGE_Game_World* param_1)
 
 T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2)
     : RGE_Scenario(param_1, param_2) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052AB90
-    // TODO: PARITY [CRITICAL] - Decomp includes an extra version-bitpattern branch (`Version == 0x3f8147ae`) that repeatedly reads AlliedVictory before the normal read path; this transliteration currently keeps only the standard path. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
+    // TODO: PARITY [CRITICAL] - Constructor still has documented branch/tail gaps and is not fully verified yet. [decomp: tscenaro.cpp.decomp @ 0x0052AB90] [asm: tscenaro.cpp.asm @ 0x0052AB90]
+    // TODO: PARITY [CRITICAL] - Decomp/asm include an extra version-bitpattern branch (`Version == 0x3f8147ae`) that repeatedly reads AlliedVictory before the normal read path; this transliteration currently keeps only the standard path. [decomp: tscenaro.cpp.decomp @ 0x0052AB90] [asm: tscenaro.cpp.asm @ 0x0052AB90]
     this->InitializeVictoryValues();
     this->InitializeFriendlinessValues();
     this->ClearDisabledTechnologies();
@@ -127,7 +127,7 @@ T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2)
         rge_read(param_1, &checksum, 4);
     }
 
-    // TODO: PARITY [MODERATE] - Decomp tail writes victory.MP_Conquest from the low byte of the same storage used for victory_conquest; this constructor has no explicit sync assignment and needs parity recheck. [decomp: tscenaro.cpp.decomp @ 0x0052AB90]
+    // TODO: PARITY [MODERATE] - Decomp/asm tail writes victory.MP_Conquest from the low byte of the same storage used for victory_conquest; this constructor has no explicit sync assignment and needs parity recheck. [decomp: tscenaro.cpp.decomp @ 0x0052AB90] [asm: tscenaro.cpp.asm @ 0x0052AB90]
 }
 
 void T_Scenario::InitializePlayerValues() {
@@ -503,7 +503,7 @@ int T_Scenario::any_sp_victory() {
 }
 
 void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
-    // Fully verified. Source of truth: tscenaro.cpp.decomp @ 0x0052C230
+    // TODO: PARITY [MODERATE] - Function has a documented field-selection mismatch in the age-tech switch path and is not fully verified yet. [decomp: tscenaro.cpp.decomp @ 0x0052C230] [asm: tscenaro.cpp.asm @ 0x0052C230]
     int player_index = (int)param_1->id - 1;
     if (player_index < 0) {
         return;
@@ -533,7 +533,7 @@ void T_Scenario::set_player_tech(TRIBE_Player* param_1) {
     }
 
     if (rge_base_game->prog_mode != 7) {
-        // TODO: PARITY [MODERATE] - Decomp switches on ScenarioOptions[player_index + 2], while this implementation switches on PlayerAge[player_index]; verify field mapping/parity. [decomp: tscenaro.cpp.decomp @ 0x0052C230]
+        // TODO: PARITY [MODERATE] - Decomp/asm switch on ScenarioOptions[player_index + 2], while this implementation switches on PlayerAge[player_index]; verify field mapping/parity. [decomp: tscenaro.cpp.decomp @ 0x0052C230] [asm: tscenaro.cpp.asm @ 0x0052C230]
         switch (this->PlayerAge[player_index]) {
             case 1:
                 param_1->rev_tech(0x19);
