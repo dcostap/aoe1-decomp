@@ -479,8 +479,7 @@ unsigned char RGE_Sprite::get_facetindex(long param_1, long param_2, long* param
 
 // Fully verified. Marker reconciliation coverage.
 void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, unsigned char param_7) {
-    // Fully verified. Source of truth: sprite.cpp.decomp @ 0x004C01A0
-    // TODO: PARITY [LOW] - Original code dereferences SDI_List directly (sprite.cpp.asm @ 0x004C02A0/0x004C02B1); current null-guarded writes to Select_Box change null-path behavior.
+    // Fully verified. Sources of truth: sprite.cpp.decomp @ 0x004C01A0, sprite.cpp.asm @ 0x004C01A0
     if (this->frame_num <= param_2) {
         param_2 = 0;
     }
@@ -497,11 +496,9 @@ void RGE_Sprite::do_draw(long param_1, long param_2, long param_3, long param_4,
         SDI_Draw_Level = (int)(unsigned int)param_7;
     }
 
-    if (SDI_List != nullptr) {
-        SDI_List->Select_Box = nullptr;
-        if (this->box_x1 != 0) {
-            SDI_List->Select_Box = &this->box_x1;
-        }
+    SDI_List->Select_Box = nullptr;
+    if (this->box_x1 != 0) {
+        SDI_List->Select_Box = &this->box_x1;
     }
 
     long facet_index = 0;
