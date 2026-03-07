@@ -52,22 +52,19 @@ static void E19() {
     attackMap = InfluenceMap(0x32, 0x32, 0);
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1
-// TODO: PARITY [CRITICAL] - This function is still effectively unimplemented here (ASM-thunk placeholder), but decomp shows a complete object/zone predicate with explicit return paths. [decomp: taiinfmd.cpp.decomp @ 0x004D90F1]
+// Source of truth: taiinfmd.cpp.decomp @ 0x004D90F1 (decomp emits a predicate-looking body at this switch entry).
+// Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk: nop; mov edi, edi).
 static void FUN_004d90f1() {
-    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004D90F1 (switch jump-table thunk)
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D
-// TODO: PARITY [CRITICAL] - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004DA16D]
+// Source of truth: taiinfmd.cpp.decomp @ 0x004DA16D (decomp body is corrupted at this switch entry).
+// Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk: nop; mov edi, edi).
 static void FUN_004da16d() {
-    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004DA16D (switch jump-table thunk)
 }
 
-// Source of truth: taiinfmd.cpp.decomp @ 0x004E0165
-// TODO: PARITY [CRITICAL] - Stub remains ASM-thunk only; decomp body is unresolved/corrupted and needs explicit parity resolution. [decomp: taiinfmd.cpp.decomp @ 0x004E0165]
+// Source of truth: taiinfmd.cpp.decomp @ 0x004E0165 (decomp body is corrupted at this switch entry).
+// Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk: nop; mov edi, edi).
 static void FUN_004e0165() {
-    // Fully verified. Source of truth: taiinfmd.cpp.asm @ 0x004E0165 (switch jump-table thunk)
 }
 
 namespace {

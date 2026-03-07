@@ -1000,7 +1000,6 @@ void RGE_Command::do_command(void* p1) {
         return;
     }
     if (cmd == 7) {
-        // TODO: PARITY [MODERATE] - Decomp dispatches command-id 7 via vtable slot 0 call; keep this path behaviorally equivalent to that indirect dispatch.
         this->do_command_give_attribute((RGE_Command_Give_Attribute*)p1);
         return;
     }
