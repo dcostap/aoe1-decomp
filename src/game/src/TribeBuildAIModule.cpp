@@ -507,7 +507,7 @@ int TribeBuildAIModule::loadBuildList(char* param_1, RGE_Player* param_2) {
 // Source of truth: taibldmd.cpp.decomp @ 0x004D3D60
 // TODO: PARITY - initialize() currently performs a minimal reset/update path, while decomp contains substantial build-list/resource/population balancing logic. [decomp: taibldmd.cpp.decomp @ 0x004D3D60]
 void TribeBuildAIModule::initialize() {
-    // Fully verified. Source of truth: TribeBuildAIModule.decomp (helper implementation).
+    // TODO: PARITY - helper placeholder only; decomp body at taibldmd.cpp.decomp @ 0x004D3D60 contains substantial balancing logic not yet transliterated.
     this->unskipBuildList(0, 0);
     tribe_build_ai_update_needed_resources(this);
 }

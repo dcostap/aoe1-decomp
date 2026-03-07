@@ -65,8 +65,8 @@ static void button_send_command(TButtonPanel* btn, short state) {
 }
 
 // Constructor
-// Fully verified. Source of truth: pnl_btn.cpp.decomp (inherited-forwarder parity with TPanel).
-// TODO: PARITY - Decomp constructor path calls base as TPanel::TPanel((TPanel*)this); confirm TPanel(\"Button\") does not introduce non-parity base initialization side effects. [decomp: pnl_btn.cpp.decomp @ 0x00471EC0]
+// Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0 and pnl_btn.cpp.asm @ 0x00471EC6.
+// TODO: PARITY - Constructor base-call mismatch is confirmed: source uses TPanel::TPanel((TPanel*)this), while this transliteration calls TPanel(\"Button\").
 TButtonPanel::TButtonPanel() : TPanel("Button") {
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
 
