@@ -1,6 +1,8 @@
 #include "../include/RGE_Lobby.h"
 
 #include "../include/RGE_Comm_Error.h"
+#include "../include/TDebuggingLog.h"
+#include "../include/globals.h"
 
 #include <dplay.h>
 #include <dplobby.h>
@@ -32,15 +34,15 @@ RGE_Lobby::~RGE_Lobby() {
 }
 
 void RGE_Lobby::ClearLobbyInfo() {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F330
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F330, com_loby.cpp.asm @ 0x0042F330
     if (this->glpdplConnection != nullptr) {
         delete[] (char*)this->glpdplConnection;
         this->glpdplConnection = nullptr;
     }
 
     if (this->glpDPL2 != nullptr) {
-        // TODO: PARITY [MODERATE] - Decomp/ASM routes glpDPL2->Release() return through Err->ShowReturn("Release"); this path currently ignores the HRESULT. [decomp/asm: com_loby.cpp @ 0x0042F330]
-        (void)this->glpDPL2->Release();
+        long release_result = this->glpDPL2->Release();
+        this->Err->ShowReturn(release_result, "Release");
         this->glpDPL2 = nullptr;
     }
 
@@ -54,8 +56,8 @@ void RGE_Lobby::ClearLobbyInfo() {
 }
 
 int RGE_Lobby::IsLobbyLaunched() {
-    // Source of truth: com_loby.cpp.decomp @ 0x0042F370
-    // TODO: PARITY [MODERATE] - Decomp/ASM log "LOBBY GAME LAUNCH STATUS = %d" via TDebuggingLog::Log before returning lobby_game; this implementation returns without logging. [decomp/asm: com_loby.cpp @ 0x0042F370]
+    // Fully verified. Source of truth: com_loby.cpp.decomp @ 0x0042F370, com_loby.cpp.asm @ 0x0042F370
+    L->Log("LOBBY GAME LAUNCH STATUS = %d", (int)this->lobby_game);
     return (int)this->lobby_game;
 }
 

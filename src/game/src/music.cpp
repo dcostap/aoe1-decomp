@@ -9,8 +9,8 @@
 #include <string.h>
 
 // Offset: 0x00461910
+// Fully verified. Source of truth: music.cpp.decomp @ 0x00461910, music.cpp.asm @ 0x00461910
 TMusic_System::TMusic_System(uchar mtype, void* inst, void* wnd, TSound_Driver* snd, char* p) {
-    // TODO: PARITY [MODERATE] - Constructor still performs an extra fade_volume write not shown in decomp/asm for 0x00461910. [decomp: music.cpp.decomp @ 0x00461910] [asm: music.cpp.asm @ 0x00461910]
     this->music_type = mtype;
     this->sound_system = snd;
     this->window = wnd;
@@ -34,13 +34,11 @@ TMusic_System::TMusic_System(uchar mtype, void* inst, void* wnd, TSound_Driver* 
     this->fade_out = 0;
     this->fade_time = 2000;
     this->fading_track = 0;
-    this->fade_volume = 0;
     this->last_fade_time = 0;
     this->mixer_open = 0;
     this->mixer_handle = nullptr;
     this->midi_window = nullptr;
     this->file_name[0] = '\0';
-    // TODO: PARITY [MODERATE] - ASM/decomp initialization sequence skips the fade_volume slot (0x270) while this transliteration clears it explicitly; keep documented until parity is reconciled. [decomp: music.cpp.decomp @ 0x00461910] [asm: music.cpp.asm @ 0x00461910]
     this->last_check_time = 0;
     if (p == nullptr) {
         this->path[0] = '\0';

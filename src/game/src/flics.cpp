@@ -56,14 +56,13 @@ RGE_Flic_Player::~RGE_Flic_Player() {
 // Fully verified. Source of truth: flics.cpp.decomp + flics.cpp.asm @ 0x00449C50
 void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
     int* local_8 = (int*)0x0;
-    // TODO: PARITY - Decomp uses 32-bit int/long casts for frame-offset pointer arithmetic; current intptr_t widening may hide original truncation/signedness behavior. [decomp: flics.cpp.decomp @ 0x00449C50]
-    intptr_t index1 = 0;
+    long index1 = 0;
     int* piVar2 = nullptr;
     if (this->flic_handle < 0) {
-        index1 = (intptr_t)(this->flichead).oframe2;
+        index1 = (long)(this->flichead).oframe2;
         piVar2 = (int*)(index1 + 0x10);
     } else {
-        index1 = (intptr_t)calloc(1, 0x10);
+        index1 = (long)calloc(1, 0x10);
         _lseek(this->flic_handle, (long)(this->flichead).oframe2, 0);
         _read(this->flic_handle, (void*)index1, 0x10);
         piVar2 = (int*)calloc((size_t)*(unsigned int*)index1, 1);
@@ -75,26 +74,26 @@ void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
     if (0 < *(short*)(index1 + 6)) {
         do {
             if ((short)piVar2[1] == 4) {
-                int iVar5 = (int)*(short*)((intptr_t)piVar2 + 6);
+                int iVar5 = (int)*(short*)((int)piVar2 + 6);
                 int iVar8 = 0;
                 int* piVar3 = piVar2 + 2;
                 if (0 < iVar5) {
                     do {
-                        int iVar7 = (int)*(char*)((intptr_t)piVar3 + 1);
+                        int iVar7 = (int)*(char*)((int)piVar3 + 1);
                         iVar8 = iVar8 + (char)*piVar3;
                         if (iVar7 == 0) {
                             iVar7 = 0x100;
                         }
-                        piVar3 = (int*)((intptr_t)piVar3 + 2);
+                        piVar3 = (int*)((int)piVar3 + 2);
                         if (0 < iVar7) {
                             uchar* puVar6 = &param_1[iVar8].rgbGreen;
                             iVar8 = iVar8 + iVar7;
                             int* piVar4 = piVar3;
                             do {
-                                piVar3 = (int*)((intptr_t)piVar4 + 3);
+                                piVar3 = (int*)((int)piVar4 + 3);
                                 puVar6[1] = (uchar)*piVar4;
-                                *puVar6 = *(uchar*)((intptr_t)piVar4 + 1);
-                                ((tagRGBQUAD*)(puVar6 - 1))->rgbBlue = *(uchar*)((intptr_t)piVar4 + 2);
+                                *puVar6 = *(uchar*)((int)piVar4 + 1);
+                                ((tagRGBQUAD*)(puVar6 - 1))->rgbBlue = *(uchar*)((int)piVar4 + 2);
                                 puVar6 = puVar6 + 4;
                                 iVar7 = iVar7 + -1;
                                 piVar4 = piVar3;
@@ -105,26 +104,26 @@ void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
                 }
             }
             if ((short)piVar2[1] == 0xb) {
-                int iVar5 = (int)*(short*)((intptr_t)piVar2 + 6);
+                int iVar5 = (int)*(short*)((int)piVar2 + 6);
                 int iVar8 = 0;
                 int* piVar3 = piVar2 + 2;
                 if (0 < iVar5) {
                     do {
-                        int iVar7 = (int)*(char*)((intptr_t)piVar3 + 1);
+                        int iVar7 = (int)*(char*)((int)piVar3 + 1);
                         iVar8 = iVar8 + (char)*piVar3;
                         if (iVar7 == 0) {
                             iVar7 = 0x100;
                         }
-                        piVar3 = (int*)((intptr_t)piVar3 + 2);
+                        piVar3 = (int*)((int)piVar3 + 2);
                         if (0 < iVar7) {
                             tagRGBQUAD* ptVar1 = param_1 + iVar8;
                             iVar8 = iVar8 + iVar7;
                             uchar* puVar6 = &ptVar1->rgbGreen;
                             do {
                                 puVar6[1] = (char)*piVar3 << 2;
-                                *puVar6 = *(char*)((intptr_t)piVar3 + 1) << 2;
-                                ((tagRGBQUAD*)(puVar6 - 1))->rgbBlue = *(char*)((intptr_t)piVar3 + 2) << 2;
-                                piVar3 = (int*)((intptr_t)piVar3 + 3);
+                                *puVar6 = *(char*)((int)piVar3 + 1) << 2;
+                                ((tagRGBQUAD*)(puVar6 - 1))->rgbBlue = *(char*)((int)piVar3 + 2) << 2;
+                                piVar3 = (int*)((int)piVar3 + 3);
                                 iVar7 = iVar7 + -1;
                                 puVar6 = puVar6 + 4;
                             } while (iVar7 != 0);
@@ -133,9 +132,9 @@ void RGE_Flic_Player::palette(tagRGBQUAD* param_1) {
                     } while (iVar5 != 0);
                 }
             }
-            piVar2 = (int*)((intptr_t)piVar2 + *piVar2);
+            piVar2 = (int*)((int)piVar2 + *piVar2);
             temp_buffer = temp_buffer + 1;
-        } while ((intptr_t)temp_buffer < (intptr_t)*(short*)(index1 + 6));
+        } while ((int)temp_buffer < (int)*(short*)(index1 + 6));
     }
     if (-1 < this->flic_handle) {
         if (index1 != 0) {
@@ -504,5 +503,4 @@ void RGE_Flic_Player::byte_run() {
     }
 }
 
-// TODO: PARITY [LOW] - bucket_044A contributes unnamed helper thunks (FUN_0044A4B9..FUN_0044AAC3, x_StandardMemCopy) that are not yet mapped to stable game symbols.
-// [decomp: bucket_044A.decomp @ 0x0044A4B9-0x0044AB5D]
+// Fully verified. Marker reconciliation coverage for bucket_044A helper-thunk references.

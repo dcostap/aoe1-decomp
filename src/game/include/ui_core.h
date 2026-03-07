@@ -238,7 +238,7 @@ public:
     void set_sound(TDigital* s);
     void set_state(short param_1);
     int get_state();
-    void set_state_info(int num_states); // Added for scr_mps team buttons
+    void set_state_info(short num_states); // Added for scr_mps team buttons
     int hit_button(long param_1, long param_2);
     void do_action();
     void do_right_action(int param_1);

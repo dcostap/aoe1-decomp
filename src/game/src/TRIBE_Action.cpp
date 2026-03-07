@@ -4,51 +4,19 @@
 
 #include <new>
 
-// Fully verified. Source of truth: taction.cpp.decomp @ 0x004D38E0
-TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3) {
-    // TODO: PARITY - Decomp/asm constructor path is RGE_Action::RGE_Action(..., 0) + vtable set (taction.cpp.decomp/taction.cpp.asm @ 0x004D38E0); this manual field-reset else-path is a confirmed divergence from that base-constructor path.
+// Fully verified. Source of truth: taction.cpp.decomp @ 0x004D38E0, taction.cpp.asm @ 0x004D38E0
+TRIBE_Action::TRIBE_Action(int param_1, RGE_Action_Object* param_2, int param_3)
+    : RGE_Action(param_1, param_2, 0) {
     if (param_3 != 0) {
         this->setup(param_1, param_2);
-    } else {
-        this->action_type = 0;
-        this->obj = param_2;
-        this->state = 0;
-        this->target_obj = nullptr;
-        this->target_obj2 = nullptr;
-        this->targetID = -1;
-        this->target2ID = -1;
-        this->target_x = 0.0f;
-        this->target_y = 0.0f;
-        this->target_z = 0.0f;
-        this->timer = 0.0f;
-        this->task = nullptr;
-        this->sub_actions = nullptr;
-        this->sprite = nullptr;
-        this->subActionValue = 0;
     }
 }
 
-// Fully verified. Source of truth: taction.cpp.decomp @ 0x004D3980
-TRIBE_Action::TRIBE_Action(RGE_Action_Object* param_1, int param_2) {
-    // TODO: PARITY - Decomp/asm constructor path is RGE_Action::RGE_Action(..., 0) + vtable set (taction.cpp.decomp/taction.cpp.asm @ 0x004D3980); this duplicated manual initialization is a confirmed divergence from that base-constructor path.
+// Fully verified. Source of truth: taction.cpp.decomp @ 0x004D3980, taction.cpp.asm @ 0x004D3980
+TRIBE_Action::TRIBE_Action(RGE_Action_Object* param_1, int param_2)
+    : RGE_Action(param_1, 0) {
     if (param_2 != 0) {
         this->setup(param_1);
-    } else {
-        this->action_type = 0;
-        this->obj = param_1;
-        this->state = 0;
-        this->target_obj = nullptr;
-        this->target_obj2 = nullptr;
-        this->targetID = -1;
-        this->target2ID = -1;
-        this->target_x = 0.0f;
-        this->target_y = 0.0f;
-        this->target_z = 0.0f;
-        this->timer = 0.0f;
-        this->task = nullptr;
-        this->sub_actions = nullptr;
-        this->sprite = nullptr;
-        this->subActionValue = 0;
     }
 }
 
