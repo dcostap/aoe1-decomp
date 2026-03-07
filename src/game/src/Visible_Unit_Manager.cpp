@@ -5,7 +5,6 @@
 #include "../include/VISIBLE_UNIT_PTR.h"
 #include "../include/VISIBLE_UNIT_REC.h"
 #include "../include/globals.h"
-#include "../include/custom_debug.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -13,9 +12,8 @@
 extern LOSTBL* NormalLOS[17];
 extern LOSTBL* SquareLOS[17];
 
-// TODO: PARITY - vis_unit.cpp.decomp includes Visible_Resource_Manager functions (0x0053BB30..0x0053C050)
-// that are not present in this TU; keep split implementation parity aligned across both files.
-// [decomp: vis_unit.cpp.decomp @ 0x0053BB30]
+// Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053BB30, vis_unit.cpp.asm @ 0x0053BB30
+// Visible_Resource_Manager bodies at 0x0053BB30..0x0053C050 are implemented in Visible_Resource_Manager.cpp.
 
 // Fully verified. Marker reconciliation coverage.
 static void vis_unit_set_backptr(int object_id, int player_index, VISIBLE_UNIT_REC* rec) {
@@ -31,8 +29,6 @@ static void vis_unit_set_backptr(int object_id, int player_index, VISIBLE_UNIT_R
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B5A0
 Visible_Unit_Manager::Visible_Unit_Manager(int param_1, int param_2) {
-    // TODO: PARITY - CUSTOM_DEBUG_LOG_FMT instrumentation in this constructor is non-original; source-of-truth flow at vis_unit.cpp.decomp/vis_unit.cpp.asm @ 0x0053B5A0 has no logging calls.
-    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor enter this=%p players=%d categories_in=%d", this, param_1, param_2);
     this->Player_Count = param_1;
     this->Category_Count = param_2 + 1;
     this->distanceTable = nullptr;
@@ -55,11 +51,8 @@ Visible_Unit_Manager::Visible_Unit_Manager(int param_1, int param_2) {
         VisibleUnitList_Size[i] = 0;
     }
 
-    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor before Build_Distance_Table this=%p", this);
     Build_Distance_Table();
-    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor after Build_Distance_Table this=%p distanceTable=%p", this, this->distanceTable);
     VisibleUnitManager = this;
-    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::ctor exit this=%p", this);
 }
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B670
@@ -95,8 +88,6 @@ Visible_Unit_Manager::~Visible_Unit_Manager() {
 
 // Fully verified. Source of truth: vis_unit.cpp.decomp @ 0x0053B730
 void Visible_Unit_Manager::Build_Distance_Table() {
-    // TODO: PARITY - CUSTOM_DEBUG_LOG_FMT instrumentation in Build_Distance_Table is non-original; source-of-truth flow at vis_unit.cpp.decomp/vis_unit.cpp.asm @ 0x0053B730 has no logging calls.
-    CUSTOM_DEBUG_LOG_FMT("Visible_Unit_Manager::Build_Distance_Table enter this=%p NormalLOS0=%p SquareLOS0=%p", this, NormalLOS[0], SquareLOS[0]);
     if (this->distanceTable != nullptr) {
         free(this->distanceTable);
     }
@@ -109,15 +100,6 @@ void Visible_Unit_Manager::Build_Distance_Table() {
         LOSTBL** los_tables = (group == 0) ? &NormalLOS[0] : &SquareLOS[0];
         for (int table_index = 0; table_index < 17; ++table_index) {
             LOSTBL* offsets = los_tables[table_index];
-            if (offsets == nullptr) {
-                CUSTOM_DEBUG_LOG_FMT(
-                    "Visible_Unit_Manager::Build_Distance_Table null LOS table group=%d idx=%d",
-                    group,
-                    table_index);
-                ++distance_value;
-                continue;
-            }
-
             int row = offsets->y_delta;
             while (row != 999) {
                 int left = offsets->x_left;

@@ -336,16 +336,8 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3,
     if (*param_7 < 1) *param_6 = -1;
 }
 
-// TODO: PARITY - function includes defensive guards not present in source flow.
-void TRIBE_Player_Tech::check_for_new_tech() {
-    // TODO: PARITY - transliteration adds early null checks (base_tech/owner) and owner attribute bounds checks
-    // before writing attributes[0x27]; source flow dereferences these directly without guards.
-    // TODO: PARITY - source routine returns uchar '\x01' (caller-observable ABI), while this transliteration is void.
-    // [decomp+asm: bucket_050C.decomp/bucket_050C.asm @ 0x0050CE68]
-    // Source of truth: bucket_050C.decomp @ 0x0050CE68
-    if (this->base_tech == nullptr || this->owner == nullptr) {
-        return;
-    }
+// Fully verified. Source of truth: bucket_050C.decomp @ 0x0050CE68
+uchar TRIBE_Player_Tech::check_for_new_tech() {
     Tech_Tree* tt = this->base_tech->tech_tree;
     short pending_count = 0;
     for (short i = 0; i < this->tech_player_tree_num; i++) {
@@ -367,17 +359,16 @@ void TRIBE_Player_Tech::check_for_new_tech() {
                 }
             } else {
                 do_tech(i);
+                pending_count--;
             }
         } else if (this->tech_player_tree[i].state == 2) {
             pending_count++;
         }
     }
-    if (pending_count == 0 &&
-        this->owner->attributes != nullptr &&
-        this->owner->attribute_num > 0x27 &&
-        this->owner->attributes[0x27] == 0.0f) {
+    if (pending_count == 0 && this->owner->attributes[0x27] == 0.0f) {
         this->owner->attributes[0x27] = 1.0f;
     }
+    return 1;
 }
 
 // Fully verified. Marker reconciliation coverage.

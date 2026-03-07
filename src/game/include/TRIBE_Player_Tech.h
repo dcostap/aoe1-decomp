@@ -19,7 +19,7 @@ struct TRIBE_Player_Tech {
     short get_progress(short param_1);
     char* get_name(short param_1);
     void tech_cost(short param_1, short* param_2, short* param_3, short* param_4, short* param_5, short* param_6, short* param_7);
-    void check_for_new_tech();
+    uchar check_for_new_tech();
     void save(int param_1);
     void enable(short param_1);
     void disable(short param_1);

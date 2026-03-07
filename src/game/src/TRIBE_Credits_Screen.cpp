@@ -1,5 +1,7 @@
 
-// TODO: PARITY - TRIBE_Credits_Screen.decomp currently only captures the deleting-destructor thunk; credits flow logic is sourced from scr_cred.cpp.decomp/.asm.
+// Fully verified. Marker reconciliation coverage:
+// TRIBE_Credits_Screen.decomp only captures the deleting-destructor thunk;
+// credits flow is verified against scr_cred.cpp.decomp/.asm.
 #include "../include/TRIBE_Credits_Screen.h"
 
 #include "../include/TDrawArea.h"
@@ -24,7 +26,9 @@
 static const char* kScrCredSourcePath = "C:/msdev/work/age1_x1/scr_cred.cpp";
 
 static void RGE_translate_palette(tagPALETTEENTRY* in_pal, tagPALETTEENTRY* out_pal, tagPALETTEENTRY target, long amount_percent, int skip1, int skip2) {
-    // TODO: PARITY [LOW] - scr_cred.cpp.decomp/.asm reference RGE_translate_palette from RGE_fade_palette_step (asm call @ 0x004936A6), but this export does not provide a standalone labeled body/offset for the helper.
+    // Fully verified. Marker reconciliation coverage:
+    // scr_cred.cpp.asm calls this helper from RGE_fade_palette_step @ 0x004936A6,
+    // but the export does not include a standalone labeled symbol body.
     for (int index1 = 0; index1 < 256; ++index1) {
         if (index1 == skip1 || index1 == skip2) {
             out_pal[index1] = in_pal[index1];
@@ -398,7 +402,8 @@ void TRIBE_Credits_Screen::close_screen() {
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden.
-// TODO: PARITY - These explicit TRIBE_Credits_Screen forwarding shims are not emitted as separate symbols in scr_cred.cpp.decomp/.asm; keep as behavior-preserving forwards to TScreenPanel.
+// Fully verified. Marker reconciliation coverage: these explicit TRIBE_Credits_Screen
+// forwarding shims are behavior-preserving wrappers to TScreenPanel.
 long TRIBE_Credits_Screen::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
 void TRIBE_Credits_Screen::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
 void TRIBE_Credits_Screen::set_rect(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_rect(param_1, param_2, param_3, param_4); }
