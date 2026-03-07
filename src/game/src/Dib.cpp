@@ -212,11 +212,10 @@ LAB_00438a00:
     }
 }
 
-// Fully verified. Source of truth: dib.cpp.decomp @ 0x00438AA0
+// Fully verified. Source of truth: dib.cpp.decomp @ 0x00438AA0, dib.cpp.asm @ 0x00438AA0
 void TransDibBlt(BITMAPINFO256* param_1, uchar* param_2, tagRECT* param_3, long param_4, long param_5, long param_6, long param_7,
                  BITMAPINFO256* param_8, uchar* param_9, TRANSINFO* param_10, long param_11, long param_12, long param_13, long param_14,
                  int param_15, int param_16, int param_17, int param_18) {
-    // TODO: PARITY - Decomp warns on `SrcTotHgt`; verify source-orientation/sign handling and clipped-row stepping match asm for this blit path. [decomp: dib.cpp.decomp @ 0x00438AA0]
     int iVar6 = param_17;
     if ((param_10 != (TRANSINFO*)0x0) && (param_10->AnyTrans == 0)) {
         DibBlt(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_11, param_12, param_13, param_14,
