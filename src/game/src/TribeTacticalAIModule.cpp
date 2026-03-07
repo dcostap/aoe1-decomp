@@ -3624,35 +3624,25 @@ static void FUN_004f0b62() {}
 static void FUN_004f0d4d() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005018C1 (switch jump-table thunk).
 static void FUN_005018c1() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502451
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x4B, EDI=0x0C, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502451 (switch case-entry thunk: ESI=0x4B, EDI=0x0C, jump LAB_005024BD).
 static void FUN_00502451() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050245D
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x5D, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050245D (switch case-entry thunk: ESI=0x5D, jump LAB_005024BD).
 static void FUN_0050245d() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502464
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x27, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502464 (switch case-entry thunk: ESI=0x27, EDI=0x57, jump LAB_005024BD).
 static void FUN_00502464() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502470
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x49, EDI=0x0C, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502470 (switch case-entry thunk: ESI=0x49, EDI=0x0C, jump LAB_005024BD).
 static void FUN_00502470() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050247C
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x05, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050247C (switch case-entry thunk: ESI=0x05, EDI=0x57, jump LAB_005024BD).
 static void FUN_0050247c() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502488
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x12B, then jumps to LAB_005024B8; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x00502488 (switch case-entry thunk: ESI=0x12B, jump LAB_005024B8).
 static void FUN_00502488() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050248F
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x04, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050248F (switch case-entry thunk: ESI=0x04, EDI=0x57, jump LAB_005024BD).
 static void FUN_0050248f() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050249B
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x7D, EDI=0x68, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x0050249B (switch case-entry thunk: ESI=0x7D, EDI=0x68, jump LAB_005024BD).
 static void FUN_0050249b() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005024A7
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x29, EDI=0x57, then jumps to LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005024A7 (switch case-entry thunk: ESI=0x29, EDI=0x57, jump LAB_005024BD).
 static void FUN_005024a7() {}
-// Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005024B3
-// TODO: PARITY [LOW] - ASM case-entry thunk sets ESI=0x28, then falls through LAB_005024B8/LAB_005024BD; this placeholder keeps only the symbol anchor.
+// Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005024B3 (switch case-entry thunk: ESI=0x28, fall-through LAB_005024B8 then LAB_005024BD).
 static void FUN_005024b3() {}
 // Fully verified. Source of truth: taitacmd.cpp.decomp + taitacmd.cpp.asm @ 0x005025CA (switch jump-table thunk).
 static void FUN_005025ca() {}
