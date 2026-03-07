@@ -5060,13 +5060,14 @@ Status note: parity sweep confirmed `view.cpp` now carries 85 Fully verified mar
 ## Task 386
 - Comms batch — com_loby (8) + com_sync (6) + com_sess (5) + com_serv (5) + com_addr (4) = 28 gaps
 - [x] Assigned to worker-8 (clone_8)
-- [ ] Finished
+- [x] Finished
 
 **Goal:** Close gaps across 5 communication modules. com_loby (14 offsets, 6 verified, 8 gap), com_sync (12 offsets, 6 verified, 6 gap), com_sess (13 offsets, 8 verified, 5 gap), com_serv (11 offsets, 6 verified, 5 gap), com_addr (10 offsets, 6 verified, 4 gap). All related to multiplayer networking.
 
 **Where:** src/game/src/com_loby.cpp, com_sync.cpp, com_sess.cpp, com_serv.cpp, com_addr.cpp + headers
 **Source of truth:** Corresponding .decomp + .asm files in src/game/decomp/
 **Done when:** ~24 new functions have Fully verified markers across all 5 files, builds clean.
+- Status note: verification pass confirms full decomp offset coverage across all five comm modules (`com_loby` 14/14, `com_sync` 12/12, `com_sess` 13/13, `com_serv` 11/11, `com_addr` 10/10), no remaining TODO/STUB markers in scope, and build remains successful.
 
 ---
 
