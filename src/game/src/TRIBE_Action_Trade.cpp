@@ -230,7 +230,7 @@ void TRIBE_Action_Trade::set_state(uchar param_1) {
     }
 }
 
-// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D2CB0, tact_trd.cpp.asm @ 0x004D2CB0
+// TODO: PARITY [MODERATE] - update() keeps defensive nullptr guards (owner/world/attributes) that are stricter than the original unchecked access paths. [decomp: tact_trd.cpp.decomp @ 0x004D2CB0] [asm: tact_trd.cpp.asm @ 0x004D2CB0]
 uchar TRIBE_Action_Trade::update() {
     if ((this->targetID != -1) && (this->obj != nullptr) && (this->obj->owner != nullptr) && (this->obj->owner->world != nullptr) &&
         (this->obj->owner->world->object(this->targetID) == nullptr)) {
@@ -366,7 +366,7 @@ uchar TRIBE_Action_Trade::update() {
         }
 
         // NOTE: tact_trd.cpp.asm @ 0x004D2F76-0x004D2FFA materializes max_hold/take_amount as stack locals before debit/store updates.
-        // TODO: PARITY - Defensive owner/attributes nullptr guards here are stricter than tact_trd.cpp.decomp @ 0x004D2CB0 and tact_trd.cpp.asm @ 0x004D2FCB-0x004D2FFA.
+        // TODO: PARITY [MODERATE] - Defensive owner/attributes nullptr guards here are stricter than original direct attribute access/debit flow. [decomp: tact_trd.cpp.decomp @ 0x004D2CB0] [asm: tact_trd.cpp.asm @ 0x004D2CB0]
         float take_amount = max_hold;
         if ((this->obj->owner != nullptr) && (this->obj->owner->attributes != nullptr)) {
             this->obj->owner->add_attribute_num(attr_type, -take_amount, 1);
@@ -520,9 +520,9 @@ int TRIBE_Action_Trade::stop() {
     return 1;
 }
 
-// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D3340
+// TODO: PARITY [MODERATE] - move_to() adds defensive nullptr/master_obj guards that are absent in the original direct dereference path. [decomp: tact_trd.cpp.decomp @ 0x004D3340] [asm: tact_trd.cpp.asm @ 0x004D3340]
 int TRIBE_Action_Trade::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY - Defensive nullptr/master_obj guards are stricter than decomp @ 0x004D3340; verify intended behavior when inputs are invalid.
+    // TODO: PARITY [MODERATE] - Defensive nullptr/master_obj checks below are stricter than original direct owner/master_obj/drop_site dereferences. [decomp: tact_trd.cpp.decomp @ 0x004D3340] [asm: tact_trd.cpp.asm @ 0x004D3340]
     if ((param_1 == nullptr) ||
         (this->obj == nullptr) ||
         (param_1->owner != this->obj->owner) ||
@@ -542,9 +542,9 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* param_1, float param_2, float
     return 1;
 }
 
-// Fully verified. Source of truth: tact_trd.cpp.decomp @ 0x004D33C0
+// TODO: PARITY [MODERATE] - work() adds defensive nullptr/master_obj guards that are absent in the original direct dereference path. [decomp: tact_trd.cpp.decomp @ 0x004D33C0] [asm: tact_trd.cpp.asm @ 0x004D33C0]
 int TRIBE_Action_Trade::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY - Defensive nullptr/master_obj guards are stricter than decomp @ 0x004D33C0; confirm this does not mask original crash-prone paths.
+    // TODO: PARITY [MODERATE] - Defensive nullptr/master_obj checks below are stricter than original direct owner/master_obj/drop_site dereferences. [decomp: tact_trd.cpp.decomp @ 0x004D33C0] [asm: tact_trd.cpp.asm @ 0x004D33C0]
     if (param_1 != nullptr) {
         if ((param_1 == this->target_obj) && ((this->state == 4) || (this->state == 6) || (this->state == 7))) {
             return 1;
