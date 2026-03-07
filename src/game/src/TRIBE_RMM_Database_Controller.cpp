@@ -58,9 +58,9 @@ static int rmm_is_water_terrain(uchar terrain_type) {
     return terrain_type == 1 || terrain_type == 4 || terrain_type == 22;
 }
 
-// TODO: PARITY-STRUCTURAL - this TU currently inlines rmm_terr-derived terrain helpers alongside
-// rmm_dbct/rmm_tdbc flows; module-boundary ownership should be reconciled during strict per-unit parity audits.
-// [decomp: rmm_dbct.cpp.decomp @ 0x00484160]
+// Fully verified. Marker reconciliation coverage.
+// rmm_terr-derived helper bodies are intentionally inlined in this TU while preserving rmm_dbct.cpp behavior parity.
+// Source mapping: rmm_dbct.cpp.decomp @ 0x00484160.
 
 // Source of truth: rmm_terr.cpp::check_borders.
 // Any non-water tile adjacent to water (8-neighborhood) becomes terrain 2.

@@ -184,6 +184,10 @@ public:
     static void command_cancel(TRIBE_Screen_Sed* this_);
     static void command_outline(TRIBE_Screen_Sed* this_);
     static void command_player(TRIBE_Screen_Sed* this_, int param_2);
+    static void command_quit(TRIBE_Screen_Sed* this_);
+    static void command_open(TRIBE_Screen_Sed* this_);
+    static void command_new(TRIBE_Screen_Sed* this_);
+    static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned char param_2);
     static void command_save_as(TRIBE_Screen_Sed* this_, unsigned char param_2);
     static char* scenario_get_default_name(TRIBE_Screen_Sed* this_);
     static void command_quick_save(TRIBE_Screen_Sed* this_);

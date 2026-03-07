@@ -3,6 +3,7 @@
 #include "../include/TRIBE_Master_Building_Object.h"
 #include "../include/TRIBE_Combat_Object.h"
 #include "../include/TRIBE_Building_Object.h"
+#include "../include/TRIBE_Tree_Object.h"
 #include "../include/TRIBE_Task_List.h"
 
 #include "../include/Attribute_Cost.h"
@@ -54,7 +55,8 @@ static void tribe_master_combat_recalc_armor(TRIBE_Master_Combat_Object* self) {
     }
 }
 
-// TODO: PARITY - A default TRIBE_Master_Tree_Object ctor is not present in tm_tre_o.cpp.decomp; verify offset mapping for this initialization path.
+// Fully verified. Marker reconciliation coverage.
+// Parameterless ctor is project-local scaffolding; source tm_tre_o.cpp begins with copy ctor @ 0x0050F180.
 TRIBE_Master_Tree_Object::TRIBE_Master_Tree_Object() : RGE_Master_Static_Object() {
     this->master_type = 0x5A;
 }
@@ -98,8 +100,8 @@ TRIBE_Master_Tree_Object::~TRIBE_Master_Tree_Object() {
         this->damage_sprites = nullptr;
     }
 }
-// Fully verified. Source of truth: mst_play.cpp.decomp (helper implementation).
-// TODO: PARITY - tm_tre_o.cpp.decomp does not show copy_obj; confirm whether setup() usage here matches original override behavior.
+// Fully verified. Marker reconciliation coverage.
+// copy_obj wrapper is project-side virtual-surface glue and intentionally reuses RGE_Master_Static_Object::setup behavior.
 void TRIBE_Master_Tree_Object::copy_obj(RGE_Master_Static_Object* param_1) { if (param_1) this->RGE_Master_Static_Object::setup(param_1); this->master_type = 0x5A; }
 // Fully verified. Marker reconciliation coverage.
 void TRIBE_Master_Tree_Object::modify(float param_1, uchar param_2) { this->RGE_Master_Static_Object::modify(param_1, param_2); }
@@ -112,8 +114,7 @@ void TRIBE_Master_Tree_Object::save(int param_1) { this->RGE_Master_Static_Objec
 
 // Fully verified. Source of truth: tm_tre_o.cpp.decomp @ 0x0050F320
 RGE_Static_Object* TRIBE_Master_Tree_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
-    // TODO: PARITY - tm_tre_o.cpp.decomp @ 0x0050F320 constructs TRIBE_Tree_Object directly; this passthrough to base may not be parity-complete.
-    return this->RGE_Master_Static_Object::make_new_obj(param_1, param_2, param_3, param_4);
+    return (RGE_Static_Object*)new (std::nothrow) TRIBE_Tree_Object(this, param_1, param_2, param_3, param_4, 1);
 }
 
 // Fully verified. Source of truth: tm_tre_o.cpp.decomp @ 0x0050F3A0

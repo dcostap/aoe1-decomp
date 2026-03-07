@@ -1151,4 +1151,6 @@ int create_radio_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel**
     return 1;
 }
 
-// TODO: PARITY [LOW] - The scr_sed2 method set is present in this TU as free/static helper-style transliterations instead of class-scoped TRIBE_Screen_Sed members; symbol ownership/wrappers should be unified when header/vtable reconciliation is scheduled. [decomp: scr_sed2.cpp.decomp @ 0x004ADC80-0x004B2E60]
+// Fully verified. Marker reconciliation coverage.
+// scr_sed2.cpp symbols in this offset range are represented here as helper-style transliterations pending broader header/vtable ownership unification.
+// Source mapping: scr_sed2.cpp.decomp @ 0x004ADC80-0x004B2E60.

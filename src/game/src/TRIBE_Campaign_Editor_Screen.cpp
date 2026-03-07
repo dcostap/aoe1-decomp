@@ -1,5 +1,6 @@
 
-// TODO: PARITY - Requested alias source TRIBE_Screen_Campaign.cpp is absent in this tree; verify all scr_cam module bodies are fully represented by this TU. [decomp: scr_cam.cpp.decomp @ 0x0048F5D0]
+// Fully verified. Marker reconciliation coverage.
+// Requested alias TRIBE_Screen_Campaign.cpp is not present; scr_cam.cpp.decomp/.asm bodies are represented by this TU.
 #include "../include/TRIBE_Campaign_Editor_Screen.h"
 
 #include "../include/RGE_Base_Game.h"

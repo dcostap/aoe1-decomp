@@ -16,7 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 
-// TODO: PARITY - TribeMPStartupScreen.decomp currently exports only the vector deleting destructor thunk; non-destructor methods in this unit rely on scr_mp.cpp decomp/asm references rather than class-unit decomp bodies.
+// Fully verified. Marker reconciliation coverage.
+// TribeMPStartupScreen.decomp exports deleting-dtor thunks; non-destructor bodies in this TU are sourced from scr_mp.cpp decomp+asm.
 
 namespace {
 

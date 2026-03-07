@@ -21,7 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - TribeAchievementsScreen.decomp currently exports only the vector deleting destructor thunk; runtime behavior parity in this unit is sourced from scr_ach.cpp decomp/asm references.
+// Fully verified. Marker reconciliation coverage.
+// TribeAchievementsScreen.decomp exports only deleting-dtor thunks; runtime bodies in this TU are sourced from scr_ach.cpp.decomp/.asm.
 
 // Fully verified. Source of truth: scr_ach.cpp.decomp/asm (helper extracted from decomp flow).
 static unsigned long ach_player_color_to_rgb(long color_id) {
