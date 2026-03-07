@@ -8,14 +8,10 @@
 #include "../include/XYZBYTEPoint.h"
 #include "../include/globals.h"
 
-// TODO: PARITY - Requested RGE_Action_Move.cpp/ra_move.cpp.decomp naming does not exist in-tree; this audit currently maps move-action parity to RGE_Action_Move_To.cpp + act_move.cpp.decomp and needs canonical naming confirmation. [decomp: act_move.cpp.decomp @ 0x00405510]
-
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x0040582E
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
-// TODO: PARITY - Confirm this jump-table shim offset is non-callable and does not hide omitted case logic. [decomp: act_move.cpp.decomp @ 0x0040582E]
 // Fully verified. Source of truth: act_move.cpp.decomp @ 0x00405BCA
 // ASM shows a switch jump-table shim (MOV EDI, EDI), not a standalone callable function body.
-// TODO: PARITY - Confirm this jump-table shim offset is non-callable and does not hide omitted case logic. [decomp: act_move.cpp.decomp @ 0x00405BCA]
 static long action_move_ftol(float value) {
     long result;
     __asm {
