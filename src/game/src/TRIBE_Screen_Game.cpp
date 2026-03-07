@@ -279,7 +279,7 @@ static int scr_game_get_player_age(RGE_Player* player) {
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel((char*)"Game Screen") {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00493D60
+    // Source of truth: scr_game.cpp.decomp @ 0x00493D60, scr_game.cpp.asm @ 0x00493D60
     // TODO: PARITY - Constructor path is architecture-refactored around runtime.main_view ownership; run full instruction-level audit to confirm identical failure/cleanup and panel wiring order. [decomp: scr_game.cpp.decomp @ 0x00493D60]
     // Parity-first: in-game rendering/input routes through TRIBE_Main_View/TRIBE_Diamond_Map_View.
     memset(&this->runtime, 0, sizeof(this->runtime));
@@ -329,7 +329,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->set_ideal_size(screen_w, screen_h);
 
     // Main in-game view panel (original-style rendering pipeline).
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x00494285..0x0049431E
+    // Source of truth: scr_game.cpp.decomp @ 0x00493D60 (constructor), scr_game.cpp.asm @ 0x00494285..0x0049431E
     this->runtime.main_view = (TPanel*)new TRIBE_Main_View();
     if (this->runtime.main_view == nullptr ||
         ((RGE_View*)this->runtime.main_view)->setup(this->render_area, this, 0, 0, screen_w, screen_h, 0) == 0) {
@@ -353,7 +353,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
 
     // Minimap (diamond map) panel.
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x004942F0..0x004943F1
+    // Source of truth: scr_game.cpp.decomp @ 0x00493D60 (constructor), scr_game.cpp.asm @ 0x00494330..0x004943F1
     {
         TRIBE_Diamond_Map_View* map_view = new TRIBE_Diamond_Map_View();
         this->runtime.map_view = (TPanel*)map_view;
@@ -404,7 +404,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
     }
 
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049437E..0x004946E7
+    // Source of truth: scr_game.cpp.decomp @ 0x00493D60 (constructor), scr_game.cpp.asm @ 0x0049437E..0x004946E7
     RGE_Font* font11 = rge_base_game->get_font(0x0B);
     RGE_Font* font7 = rge_base_game->get_font(7);
     TDigital* button_sound = rge_base_game->get_sound(1);
@@ -3491,9 +3491,8 @@ void TRIBE_Screen_Game::command_tool_box() {
 }
 
 void TRIBE_Screen_Game::command_trade() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F020.
-    // TODO: PARITY - Referenced offset 0x0049F020 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
+    // Source of truth: scr_game.cpp.decomp @ 0x0049CEA0.
+    // TODO: PARITY - Legacy marker 0x0049F020 is absent from both scr_game.cpp.decomp and scr_game.cpp.asm exports; keep this command path flagged until thunk/offset mapping is recovered.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
@@ -3547,9 +3546,8 @@ void TRIBE_Screen_Game::command_ungroup() {
 }
 
 void TRIBE_Screen_Game::command_unload() {
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
-    // Fully verified. Source of truth: scr_game.cpp.decomp @ 0x0049F400.
-    // TODO: PARITY - Referenced offset 0x0049F400 is not present in current decomp exports; verify whether this marker is ASM-only thunk metadata or mis-mapped.
+    // Source of truth: scr_game.cpp.decomp @ 0x0049CFF0.
+    // TODO: PARITY - Legacy marker 0x0049F400 is absent from both scr_game.cpp.decomp and scr_game.cpp.asm exports; keep this command path flagged until thunk/offset mapping is recovered.
     if (allow_user_commands == 0 || rge_base_game == nullptr || rge_base_game->get_paused() != 0) {
         return;
     }
