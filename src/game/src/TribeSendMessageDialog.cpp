@@ -66,7 +66,7 @@ TribeSendMessageDialog::~TribeSendMessageDialog() {
     this->delete_panel((TPanel**)&this->help_button);
 }
 
-// Fully verified. Source of truth: dlg_smsg.cpp.decomp @ 0x00440F20
+// TODO: PARITY [CRITICAL] - Decomp/ASM handle chat-input submission, grouped recipient toggles/radio modes, help routing, panel transition sequencing, and multiplayer/system-message dispatch/logging; current implementation only handles OK/help close flow. [decomp/asm: dlg_smsg.cpp @ 0x00440F20]
 long TribeSendMessageDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->okButton) {
@@ -84,7 +84,7 @@ long TribeSendMessageDialog::action(TPanel* param_1, long param_2, ulong param_3
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// Fully verified. Source of truth: dlg_smsg.cpp.decomp @ 0x00441410
+// TODO: PARITY [CRITICAL] - Decomp/ASM iterate commPlayers/checkButtons and call TChat::setInChatGroup for each active player; current implementation is an empty loop. [decomp/asm: dlg_smsg.cpp @ 0x00441410]
 void TribeSendMessageDialog::checkButtons() {
     for (int i = 0; i < 8; ++i) {
         if (this->checkButton[i] == nullptr) {
@@ -93,7 +93,7 @@ void TribeSendMessageDialog::checkButtons() {
     }
 }
 
-// Fully verified. Source of truth: dlg_smsg.cpp.decomp @ 0x00441460
+// TODO: PARITY [CRITICAL] - Decomp/ASM draw path renders per-player background shapes with player color-table transforms; current implementation only calls base panel draw. [decomp/asm: dlg_smsg.cpp @ 0x00441460]
 void TribeSendMessageDialog::draw() {
     TEasy_Panel::draw();
 }
