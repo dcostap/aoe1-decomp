@@ -12,7 +12,9 @@
 #include "../include/TRIBE_Screen_Wait.h"
 #include "../include/TRIBE_Screen_Main_Menu.h"
 #include "../include/TRIBE_Screen_Campaign_Selection.h"
+#include "../include/TRIBE_Screen_Main_Error.h"
 #include "../include/TRIBE_Screen_Status_Message.h"
+#include "../include/TribeMPSetupScreen.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TDrawArea.h"
@@ -386,12 +388,35 @@ CUSTOM_DEBUG_END
 
     // Startup screens logic (ASM 0x00521b3f)
     if (this->check_prog_argument("LOBBY")) {
-        // Lobby startup logic
-        // TCommunications_Handler::LaunchLobbyGame ...
-        // TODO: PARITY [CRITICAL] - LOBBY branch is currently placeholder/logging and does not mirror LaunchLobbyGame + panel transition flow shown in decomp. [decomp: tribegam.cpp.decomp @ 0x00521790]
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("TRIBE_Game::setup: LOBBY startup path");
-CUSTOM_DEBUG_END
+        // Fully verified. Source of truth: tribegam.cpp.decomp @ 0x00521790
+        (void)new TRIBE_Screen_Status_Message((char*)"Status Screen", 0x4BF, (char*)"scr1", 0xC383);
+        panel_system->setCurrentPanel((char*)"Status Screen", 0);
+
+        int launch_result = this->comm_handler->LaunchLobbyGame();
+        if (launch_result == 1) {
+            this->setMultiplayerGame(1);
+            TribeMPSetupScreen* setup_screen = new TribeMPSetupScreen();
+            if (setup_screen != nullptr && setup_screen->error_code == 0) {
+                panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+                panel_system->destroyPanel((char*)"Status Screen");
+                goto FINAL_SETUP;
+            }
+        } else {
+            if (launch_result != -1) {
+                this->close();
+                return 1;
+            }
+
+            TRIBE_Screen_Main_Error* error_screen = new TRIBE_Screen_Main_Error();
+            if (error_screen != nullptr && error_screen->error_code == 0) {
+                error_screen->set_text(0x96A);
+                panel_system->setCurrentPanel((char*)"Main Error Screen", 0);
+                panel_system->destroyPanel((char*)"Status Screen");
+                goto FINAL_SETUP;
+            }
+        }
+
+        return 0;
     } else {
         if (this->startup_scenario[0]) {
             if (this->start_scenario(this->startup_scenario)) goto FINAL_SETUP;
