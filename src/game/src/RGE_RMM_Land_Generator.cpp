@@ -180,12 +180,12 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
     memset(land_size, 0, sizeof(land_size));
     Map_Stack stack[99];
 
-    // TODO: PARITY - Loops in this function cap processing at 99 entries, while decomp walks full info.land_num across stack/land_size local arrays. [decomp: rmm_land.cpp.decomp @ 0x00485520]
+    // Fully verified. Source of truth: rmm_land.cpp.decomp @ 0x00485520
     const long land_num = this->info.land_num;
     const long max_x = this->map_width - 1;
     const long max_y = this->map_height - 1;
 
-    for (long i = 0; i < land_num && i < 99; ++i) {
+    for (long i = 0; i < land_num; ++i) {
         this->init_stack(&stack[i]);
 
         RGE_Land_Info_Line* land = &this->info.land[i];
@@ -212,9 +212,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
 
         uchar zone = land->zone;
         long zone_index = (long)(uint)zone + 1;
-        if (zone_index >= 0 && zone_index < 99) {
-            land_size[zone_index] = ((x1 - x0) + 1) * ((y1 - y0) + 1);
-        }
+        land_size[zone_index] = ((x1 - x0) + 1) * ((y1 - y0) + 1);
 
         for (long y = y0; y <= y1; ++y) {
             for (long x = x0; x <= x1; ++x) {
@@ -247,12 +245,9 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
 
     for (;;) {
         uchar loop_done = 1;
-        for (long i = 0; i < land_num && i < 99; ++i) {
+        for (long i = 0; i < land_num; ++i) {
             RGE_Land_Info_Line* land = &this->info.land[i];
             long area_index = i + 1;
-            if (area_index < 0 || area_index >= 99) {
-                continue;
-            }
 
             if (land_size[area_index] < land->land_size) {
                 long x = 0;
@@ -302,7 +297,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
         }
     }
 
-    for (long i = 0; i < land_num && i < 99; ++i) {
+    for (long i = 0; i < land_num; ++i) {
         RGE_Land_Info_Line* land = &this->info.land[i];
         uchar zone = land->zone;
         uchar terrain = (uchar)land->terrain_type;
@@ -324,7 +319,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
         }
     }
 
-    for (long i = 0; i < land_num && i < 99; ++i) {
+    for (long i = 0; i < land_num; ++i) {
         this->deinit_stack(&stack[i]);
     }
     return 1;

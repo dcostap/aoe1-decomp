@@ -122,17 +122,14 @@ uchar RGE_Action_Make::update() {
                     return 0;
                 }
 
-                // TODO: PARITY [LOW] - Decomp/ASM unconditionally dereference rge_base_game and call notification on this path; this null guard skips that path when globals are uninitialized. [decomp/asm: act_make.cpp @ 0x00404A90]
-                if (rge_base_game != nullptr) {
-                    // __ftol
-                    const long world_y = (long)*(const float*)(obj + 0x3C);
-                    const long world_x = (long)*(const float*)(obj + 0x38);
-                    const int obj_id = *(const int*)(obj + 0x04);
-                    const long master_id = (long)*(const short*)(master_obj + 0x4A);
+                // __ftol
+                const long world_y = (long)*(const float*)(obj + 0x3C);
+                const long world_x = (long)*(const float*)(obj + 0x38);
+                const int obj_id = *(const int*)(obj + 0x04);
+                const long master_id = (long)*(const short*)(master_obj + 0x4A);
 
-                    // language.dll match for 0x7e: "10"
-                    rge_base_game->notification(0x7e, master_id, (long)obj_id, world_x, world_y);
-                }
+                // language.dll match for 0x7e: "10"
+                rge_base_game->notification(0x7e, master_id, (long)obj_id, world_x, world_y);
 
                 if (this->obj != nullptr) {
                     this->obj->die_die_die();

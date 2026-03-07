@@ -158,8 +158,13 @@ long THelpDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong par
 
 // Fully verified. Source of truth: dlg_help.cpp.decomp @ 0x0043EE10
 long THelpDialog::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
-    // TODO: PARITY [MODERATE] - Decomp checks a class-local hit-test helper and can synthesize an OK-button action before fallback; current implementation always delegates directly. [decomp: dlg_help.cpp.decomp @ 0x0043EE10]
-    return TDialogPanel::handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
+    (void)param_4;
+    (void)param_5;
+    if (this->is_inside(param_2, param_3) == 0) {
+        this->action((TPanel*)this->ok_button, 1, 0, 0);
+        return 1;
+    }
+    return TEasy_Panel::handle_mouse_down(param_1, param_2, param_3, (int)param_2, (int)param_3);
 }
 
 void THelpDialog::draw() {

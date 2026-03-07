@@ -1036,8 +1036,7 @@ void Time_Line_Panel::draw_civilization_names() {
 
 // Fully verified. Source of truth: tpnl_tml.cpp.decomp @ 0x005204A0
 void Time_Line_Panel::draw_timeline() {
-    // TODO: PARITY - This transliteration adds defensive null checks (render_area/world/player/history) not present in the decomp's direct dereference flow; confirm whether crash-on-null behavior must be preserved. [decomp: tpnl_tml.cpp.decomp @ 0x005204A0]
-    if (this->timeline_flag == 0 || this->render_area == nullptr) {
+    if (this->timeline_flag == 0) {
         return;
     }
     if (this->render_area->Lock((char*)"tpnl_tml::draw_timeline", 1) == nullptr) {
@@ -1054,18 +1053,11 @@ void Time_Line_Panel::draw_timeline() {
     while ((int)next_pop_total < this->num_history_entries && drawn_entries < this->num_entries_page) {
         const long time_slice = (long)next_pop_total;
         RGE_Game_World* world = rge_base_game->world;
-        if (world == nullptr) {
-            break;
-        }
 
         float pop_total = 0.0f;
         int special_event_flag = 0;
         for (int i = 1; i < world->player_num; ++i) {
             TRIBE_Player* player = (TRIBE_Player*)world->players[i];
-            if (player == nullptr || player->history == nullptr) {
-                continue;
-            }
-
             pop_total += (float)player->history->get_history_entry(0, time_slice);
             uchar event = 0;
             if (player->history->get_history_event(time_slice, &event) != 0) {
@@ -1099,9 +1091,6 @@ void Time_Line_Panel::draw_timeline() {
                 float_remainder = 0.0f;
                 for (int i = 1; i < world->player_num; ++i) {
                     TRIBE_Player* player = (TRIBE_Player*)world->players[i];
-                    if (player == nullptr || player->history == nullptr) {
-                        continue;
-                    }
                     float_remainder += (float)player->history->get_history_entry(0, time_slice + 1);
                 }
                 if (float_remainder == 0.0f) {
@@ -1137,17 +1126,15 @@ void Time_Line_Panel::draw_timeline() {
 
                 for (int i = 1; i < world->player_num; ++i) {
                     TRIBE_Player* player = (TRIBE_Player*)world->players[i];
-                    TRIBE_History_Info* history = (player != nullptr) ? player->history : nullptr;
+                    TRIBE_History_Info* history = player->history;
 
                     float value = 0.0f;
                     float value_next = 0.0f;
-                    if (history != nullptr) {
-                        value = (float)history->get_history_entry(0, time_slice);
-                        if (time_slice != this->num_entries_page - 1) {
-                            value_next = (float)history->get_history_entry(0, time_slice + 1);
-                        } else {
-                            value_next = value;
-                        }
+                    value = (float)history->get_history_entry(0, time_slice);
+                    if (time_slice != this->num_entries_page - 1) {
+                        value_next = (float)history->get_history_entry(0, time_slice + 1);
+                    } else {
+                        value_next = value;
                     }
 
                     float draw_value = value;
@@ -1181,7 +1168,7 @@ void Time_Line_Panel::draw_timeline() {
                     }
 
                     this->render_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, y_line_segment_length, temp_color);
-                    if (intermediate_x_pos == 0 && history != nullptr) {
+                    if (intermediate_x_pos == 0) {
                         this->record_special_event((uchar)i, history, temp_color, time_slice, this->X_line_pos, this->Y_line_pos, y_line_segment_length);
                     }
 

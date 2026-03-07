@@ -37,8 +37,8 @@ static void button_send_command(TButtonPanel* btn, short state) {
 }
 
 // Constructor
-// TODO: PARITY - Constructor base-call mismatch is confirmed: source uses TPanel::TPanel((TPanel*)this) at pnl_btn.cpp.decomp @ 0x00471EC0 / pnl_btn.cpp.asm @ 0x00471EC6, while this transliteration calls TPanel(\"Button\").
-TButtonPanel::TButtonPanel() : TPanel("Button") {
+// Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0
+TButtonPanel::TButtonPanel() : TPanel() {
     // Fully verified. Source of truth: pnl_btn.cpp.decomp @ 0x00471EC0
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
 

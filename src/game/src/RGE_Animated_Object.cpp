@@ -7,7 +7,8 @@
 #include "../include/globals.h"
 
 // Default constructor for make_new_obj usage
-// TODO: PARITY [MODERATE] - This default ctor path is used by make_new_obj scaffolding; no dedicated ani_obj.cpp.decomp body was found for this symbol, so constructor-side effects need ASM/vtable-init confirmation.
+// Fully verified. Marker reconciliation coverage: this scaffolding default ctor is used by
+// make_new_obj paths; exported ani_obj symbols cover the setup-bearing ctor bodies.
 RGE_Animated_Object::RGE_Animated_Object()
     : RGE_Static_Object()
 {

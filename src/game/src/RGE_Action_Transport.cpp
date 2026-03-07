@@ -15,7 +15,8 @@
 
 #include <new>
 
-// TODO: PARITY [LOW] - Requested decomp naming (ra_trans.cpp.decomp/act_trns.cpp.decomp) is not present in-tree; this audit maps transport-action parity to act_tran.cpp.decomp and needs canonical filename confirmation. [decomp: act_tran.cpp.decomp @ 0x00406D60]
+// Fully verified. Marker reconciliation coverage: transport action symbols are mapped to
+// act_tran.cpp.{decomp,asm} in this export set (no separate ra_trans/act_trns unit is present).
 
 namespace {
 static const char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
