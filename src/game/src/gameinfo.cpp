@@ -152,33 +152,22 @@ RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long p
 
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::verify_campaign_name(char* param_1) {
-    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0
-    // TODO: PARITY - Decomp/ASM run direct byte loads from param_1 (no null guard) in the compare loop; this defensive early-return changes null-input behavior. [decomp: gameinfo.cpp.decomp @ 0x0044CAD0, asm: gameinfo.cpp.asm @ 0x0044CAD0]
-    if (param_1 == nullptr) {
-        return '\0';
-    }
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CAD0, gameinfo.cpp.asm @ 0x0044CAD0
     return (strcmp(this->campaign_name, param_1) == 0) ? '\x01' : '\0';
 }
 
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Campaign_Info::set_current_scenario(long param_1) {
-    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CA90
-    // TODO: PARITY - Decomp condition is (param_1 < scenario_num && scenario_info[param_1].status!=0) with no explicit negative-index/null checks; these added guards may change control flow for invalid inputs. [decomp: gameinfo.cpp.decomp @ 0x0044CA90]
-    if (param_1 < 0 || param_1 >= this->scenario_num || this->scenario_info == nullptr) {
-        return '\0';
-    }
-
-    if (this->scenario_info[param_1].scenario_status == '\0') {
-        return '\0';
-    }
-
-    if (this->last_scenario < param_1) {
-        this->current_scenario = this->last_scenario;
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CA90, gameinfo.cpp.asm @ 0x0044CA90
+    if (param_1 < this->scenario_num && this->scenario_info[param_1].scenario_status != '\0') {
+        if (this->last_scenario < param_1) {
+            this->current_scenario = this->last_scenario;
+            return '\x01';
+        }
+        this->current_scenario = param_1;
         return '\x01';
     }
-
-    this->current_scenario = param_1;
-    return '\x01';
+    return '\0';
 }
 
 // Fully verified. Marker reconciliation coverage.
@@ -499,41 +488,27 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** param_1, long param_2) {
 
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_campaign(long param_1) {
-    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0 (simplified: no exception frame)
-    // TODO: PARITY - Exception-frame/cleanup behavior is simplified away, and this transliteration adds
-    // campaign_info/campaign entry null guards plus calloc/new failure returns that the decomp does not
-    // take on the original path. [decomp: gameinfo.cpp.decomp @ 0x0044CEF0]
-    if (param_1 < 0 || param_1 >= this->campaign_num || this->campaigns == nullptr || this->campaigns[param_1] == nullptr) {
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044CEF0, gameinfo.cpp.asm @ 0x0044CEF0
+    if (param_1 < 0 || param_1 >= this->campaign_num || this->campaigns[param_1] == nullptr) {
         return '\0';
     }
 
     const char* name = this->campaigns[param_1]->get_name();
     for (int i = 0; i < this->campaign_info_num; ++i) {
-        if (this->campaign_info != nullptr && this->campaign_info[i] != nullptr &&
-            this->campaign_info[i]->verify_campaign_name((char*)name) != '\0') {
+        if (this->campaign_info[i]->verify_campaign_name((char*)name) != '\0') {
             this->current_campaign = i;
             return '\x01';
         }
     }
 
     RGE_Campaign_Info** new_list = (RGE_Campaign_Info**)calloc((size_t)this->campaign_info_num + 1, sizeof(RGE_Campaign_Info*));
-    if (new_list == nullptr) {
-        return '\0';
-    }
-
     for (int i = 0; i < this->campaign_info_num; ++i) {
-        new_list[i] = (this->campaign_info != nullptr) ? this->campaign_info[i] : nullptr;
+        new_list[i] = this->campaign_info[i];
     }
-    if (this->campaign_info != nullptr) {
-        free(this->campaign_info);
-    }
+    free(this->campaign_info);
     this->campaign_info = new_list;
 
     RGE_Campaign_Info* info = new (std::nothrow) RGE_Campaign_Info(this->campaigns[param_1]);
-    if (info == nullptr) {
-        return '\0';
-    }
-
     this->campaign_info[this->campaign_info_num] = info;
     this->current_campaign = this->campaign_info_num;
     this->campaign_info_num = this->campaign_info_num + 1;
@@ -542,33 +517,21 @@ uchar RGE_Person_Info::set_current_campaign(long param_1) {
 
 // Fully verified. Marker reconciliation coverage.
 uchar RGE_Person_Info::set_current_scenario(long param_1) {
-    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0F0
-    // TODO: PARITY - Decomp only checks current_campaign >= 0 and campaigns[current_campaign] != null
-    // before calling campaign_info[current_campaign]; these added campaign_info/range/null guards can
-    // change invalid-state behavior. [decomp: gameinfo.cpp.decomp @ 0x0044D0F0]
-    if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D0F0, gameinfo.cpp.asm @ 0x0044D0F0
+    int i = this->current_campaign;
+    if (i < 0 || this->campaigns[i] == nullptr) {
         return '\0';
     }
-    RGE_Campaign_Info* info = this->campaign_info[this->current_campaign];
-    if (info == nullptr) {
-        return '\0';
-    }
-    return info->set_current_scenario(param_1);
+    return this->campaign_info[i]->set_current_scenario(param_1);
 }
 
 // Fully verified. Marker reconciliation coverage.
 void RGE_Person_Info::notify_of_scenario_complete() {
-    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D160
-    // TODO: PARITY - Decomp only gates on current_campaign >= 0 before dispatching into
-    // campaign_info[current_campaign]; these extra range/null guards may suppress original calls when
-    // state is inconsistent. [decomp: gameinfo.cpp.decomp @ 0x0044D160]
-    if (this->current_campaign < 0 || this->current_campaign >= this->campaign_info_num || this->campaign_info == nullptr) {
+    // Fully verified. Source of truth: gameinfo.cpp.decomp @ 0x0044D160, gameinfo.cpp.asm @ 0x0044D160
+    if (this->current_campaign < 0) {
         return;
     }
-    RGE_Campaign_Info* info = this->campaign_info[this->current_campaign];
-    if (info != nullptr) {
-        info->notify_of_scenario_complete();
-    }
+    this->campaign_info[this->current_campaign]->notify_of_scenario_complete();
 }
 
 // Fully verified. Marker reconciliation coverage.
