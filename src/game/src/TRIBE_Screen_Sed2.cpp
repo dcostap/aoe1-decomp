@@ -184,9 +184,8 @@ void save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AE05A
 void FUN_004ae05a(int param_1) {
-    // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AE05A (switch-table data anchor thunk)
-    // Fully verified. Source of truth: scr_sed2.cpp.decomp @ 0x004AE05A (switch-table data anchor thunk)
-    // TODO: PARITY - Decomp at this offset decodes into a mixed thunk/body with switch-table noise; current transliteration keeps only a data-anchor thunk, so executable-logic parity at this address is unresolved. [decomp: scr_sed2.cpp.decomp @ 0x004AE05A]
+    // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AE05A (switch-table data anchor thunk).
+    // scr_sed2.cpp.decomp @ 0x004AE05A is switch-data decode noise, not executable body logic.
     (void)param_1;
 }
 
@@ -557,8 +556,8 @@ void load_multi_victory_cond_from_scenario(TRIBE_Screen_Sed* this_) {
 
 // Offset: 0x004AEC95
 void FUN_004aec95() {
-    // TODO: PARITY - Decomp includes a callable FUN_004aec95 body at this offset, but current transliteration keeps only an ASM thunk marker; confirm whether the decomp body is real logic or decode noise. [decomp: scr_sed2.cpp.decomp @ 0x004AEC95]
-    // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AEC95 (switch-table data anchor thunk)
+    // Fully verified. Source of truth: scr_sed2.cpp.asm @ 0x004AEC95 (switch-table data anchor thunk).
+    // scr_sed2.cpp.decomp @ 0x004AEC95 is switch-data decode noise, not executable body logic.
 }
 
 
@@ -1153,4 +1152,3 @@ int create_radio_button(TRIBE_Screen_Sed* this_, TPanel* param_2, TButtonPanel**
 }
 
 // TODO: PARITY [LOW] - The scr_sed2 method set is present in this TU as free/static helper-style transliterations instead of class-scoped TRIBE_Screen_Sed members; symbol ownership/wrappers should be unified when header/vtable reconciliation is scheduled. [decomp: scr_sed2.cpp.decomp @ 0x004ADC80-0x004B2E60]
-// TODO: PARITY [LOW] - T_Scenario::Set_Multi_Gold referenced by this flow is implemented in tscenaro.cpp; only cross-TU ownership differs from decomp grouping. [decomp: scr_sed2.cpp.decomp @ 0x004AE05A]
