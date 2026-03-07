@@ -46,6 +46,7 @@ FILE* logStatusFile = nullptr;
 int logStatusOn = 0;
 unsigned long lastStatusLogTime = 0;
 FILE* DVlogf = nullptr;
+FILE* DDlogf = nullptr;
 int video_codec_available = 0;
 int log_output = 0;
 

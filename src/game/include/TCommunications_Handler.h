@@ -2,6 +2,8 @@
 #include "common.h"
 #include <dplay.h>
 
+enum COMMMESSAGES : int;
+
 enum COMMSTATUS {
     // Source of truth: com_hand.cpp.asm AnalyzeCommunicationsStatus @ 0x0042C690
     UNINITIALIZED = 0,
@@ -109,8 +111,8 @@ public:
     void HandleMessage();
     void UpdatePlayers();
     void UpdatePlayer(uint id, int timeout);
-    void NotifyWindow(int message);
-    void NotifyWindowParam(int message, long param);
+    void NotifyWindow(COMMMESSAGES message);
+    void NotifyWindowParam(COMMMESSAGES message, long param);
     long SendSharedData(int send_mode);
     long EnableNewPlayers(void* direct_play, int enable_links);
     int IsPlayerHuman(uint player_number);
