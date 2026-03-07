@@ -103,9 +103,9 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(FILE* param_1, RGE_Sp
     }
 }
 
-// Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E1B0
+// TODO: PARITY [MODERATE] - setup(copy) adds a defensive nullptr guard that is absent in the original direct dereference path. [decomp: tm_b_obj.cpp.decomp @ 0x0050E1B0] [asm: tm_b_obj.cpp.asm @ 0x0050E1B0]
 int TRIBE_Master_Building_Object::setup(TRIBE_Master_Building_Object* param_1) {
-    // TODO: PARITY [MODERATE] - tm_b_obj.cpp.decomp @ 0x0050E1B0 does not show a null-guard; confirm whether this early return exists in original code.
+    // TODO: PARITY [MODERATE] - Original setup(copy) dereferences param_1 unconditionally; this early-return null guard is non-parity hardening. [decomp: tm_b_obj.cpp.decomp @ 0x0050E1B0] [asm: tm_b_obj.cpp.asm @ 0x0050E1B0]
     if (param_1 == nullptr) {
         return 0;
     }
@@ -124,7 +124,7 @@ int TRIBE_Master_Building_Object::setup(TRIBE_Master_Building_Object* param_1) {
     return 1;
 }
 
-// Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E250
+// TODO: PARITY [MODERATE] - setup(stream) adds defensive sprite/sound array-pointer guards that are absent in the original direct indexing path. [decomp: tm_b_obj.cpp.decomp @ 0x0050E250] [asm: tm_b_obj.cpp.asm @ 0x0050E250]
 int TRIBE_Master_Building_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     this->TRIBE_Master_Combat_Object::setup(param_1, param_2, param_3);
     this->master_type = 0x50;
@@ -142,7 +142,7 @@ int TRIBE_Master_Building_Object::setup(int param_1, RGE_Sprite** param_2, RGE_S
     rge_read(param_1, &this->on_build_make_tech, 2);
     rge_read(param_1, &construction_sound_num, 2);
 
-    // TODO: PARITY [MODERATE] - tm_b_obj.cpp.decomp @ 0x0050E250 indexes sprite/sound arrays without null checks; confirm if these guards are intentional divergence.
+    // TODO: PARITY [MODERATE] - Original code indexes param_2/param_3 directly after sign checks on indices; this adds array-pointer null guards. [decomp: tm_b_obj.cpp.decomp @ 0x0050E250] [asm: tm_b_obj.cpp.asm @ 0x0050E250]
     if (construction_sprite_num >= 0 && param_2 != nullptr) {
         this->construction_sprite = param_2[construction_sprite_num];
     } else {
@@ -158,7 +158,7 @@ int TRIBE_Master_Building_Object::setup(int param_1, RGE_Sprite** param_2, RGE_S
     return 1;
 }
 
-// Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E360
+// TODO: PARITY [MODERATE] - setup(file) adds defensive sprite/sound array-pointer guards that are absent in the original direct indexing path. [decomp: tm_b_obj.cpp.decomp @ 0x0050E360] [asm: tm_b_obj.cpp.asm @ 0x0050E360]
 int TRIBE_Master_Building_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4) {
     this->TRIBE_Master_Combat_Object::setup(param_1, param_2, param_3, param_4);
     this->master_type = 0x50;
@@ -182,7 +182,7 @@ int TRIBE_Master_Building_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE
     this->building_connect_flag = (uchar)connect_flag;
     this->build_and_go_away = (uchar)go_away;
 
-    // TODO: PARITY [MODERATE] - tm_b_obj.cpp.decomp @ 0x0050E360 indexes sprite/sound arrays without null checks; confirm if these guards are intentional divergence.
+    // TODO: PARITY [MODERATE] - Original code indexes param_2/param_3 directly after sign checks on indices; this adds array-pointer null guards. [decomp: tm_b_obj.cpp.decomp @ 0x0050E360] [asm: tm_b_obj.cpp.asm @ 0x0050E360]
     if (construction_sprite_num >= 0 && param_2 != nullptr) {
         this->construction_sprite = param_2[construction_sprite_num];
     } else {
@@ -202,9 +202,9 @@ int TRIBE_Master_Building_Object::setup(FILE* param_1, RGE_Sprite** param_2, RGE
 TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object() {
 }
 
-// Fully verified. Source of truth: tm_b_obj.cpp.decomp @ 0x0050E440
+// TODO: PARITY [MODERATE] - copy_obj() adds a defensive nullptr guard that is absent in the original direct dereference path. [decomp: tm_b_obj.cpp.decomp @ 0x0050E440] [asm: tm_b_obj.cpp.asm @ 0x0050E440]
 void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* param_1) {
-    // TODO: PARITY [MODERATE] - tm_b_obj.cpp.decomp @ 0x0050E440 does not show a null-guard; verify whether this guard is non-parity hardening.
+    // TODO: PARITY [MODERATE] - Original copy_obj() dereferences param_1 immediately; this early-return null guard is non-parity hardening. [decomp: tm_b_obj.cpp.decomp @ 0x0050E440] [asm: tm_b_obj.cpp.asm @ 0x0050E440]
     if (param_1 == nullptr) {
         return;
     }

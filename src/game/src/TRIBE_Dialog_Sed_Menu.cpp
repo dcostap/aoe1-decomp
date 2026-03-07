@@ -44,7 +44,7 @@ TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu() {
     }
 }
 
-// Fully verified. Source of truth: dlg_sedm.cpp.decomp @ 0x00440400
+// TODO: PARITY - action currently handles only a minimal Cancel/Quit subset, while decomp/asm at this offset dispatch button[0..6] to distinct scenario-editor commands. [decomp: dlg_sedm.cpp.decomp @ 0x00440400; asm: dlg_sedm.cpp.asm @ 0x00440400]
 long TRIBE_Dialog_Sed_Menu::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
     if (param_2 == 1) {
         if ((TButtonPanel*)param_1 == this->buttons[6] || (TButtonPanel*)param_1 == this->buttons[0]) {
