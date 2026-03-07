@@ -313,8 +313,7 @@ unsigned char TRIBE_Panel_Object::get_mode() {
 }
 
 void TRIBE_Panel_Object::draw() {
-    // Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190, tpnl_obj.cpp.asm @ 0x0051B190
-    // TODO: PARITY [MODERATE] - This draw implementation adds defensive null guards (owner/color_table, bldg_pics, master->name) that are direct dereferences in decomp; null-path control flow differs. [decomp: tpnl_obj.cpp.decomp @ 0x0051B190]
+    // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051B190, tpnl_obj.cpp.asm @ 0x0051B190
     if (this->render_area == nullptr || this->active == 0 || this->visible == 0) {
         this->need_redraw = TPanel::NoRedraw;
         return;
@@ -347,15 +346,11 @@ void TRIBE_Panel_Object::draw() {
             if (master->unit_level == 2) {
                 unsigned char age = this->save_age;
                 button_pic = (short)(button_pic + ((TRIBE_Master_Building_Object*)master)->building_facet);
-                if (this->bldg_pics != nullptr) {
-                    pic_set = this->bldg_pics[age];
-                } else {
-                    pic_set = nullptr;
-                }
+                pic_set = this->bldg_pics[age];
             }
 
             if (pic_set != nullptr) {
-                RGE_Color_Table* color_table = (obj->owner != nullptr) ? obj->owner->color_table : nullptr;
+                RGE_Color_Table* color_table = obj->owner->color_table;
                 uchar* color_xform = nullptr;
                 uchar use_color_xform = 0;
                 if (color_table != nullptr) {
@@ -411,7 +406,8 @@ void TRIBE_Panel_Object::draw() {
             obj_name[0] = '\0';
         }
         if (obj_name[0] == '\0') {
-            panel_copy_string(obj_name, sizeof(obj_name), master->name);
+            std::strncpy(obj_name, master->name, sizeof(obj_name) - 1);
+            obj_name[sizeof(obj_name) - 1] = '\0';
         }
 
         char line[100];
@@ -655,8 +651,7 @@ void TRIBE_Panel_Object::draw() {
 }
 
 void TRIBE_Panel_Object::draw_score() {
-    // Source of truth: tpnl_obj.cpp.decomp @ 0x0051BF90, tpnl_obj.cpp.asm @ 0x0051BF90
-    // TODO: PARITY [MODERATE] - draw_score introduces null-guard fallbacks for comm, player/color_table, and victory_conditions that decomp accesses via direct dereferences. [decomp: tpnl_obj.cpp.decomp @ 0x0051BF90]
+    // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051BF90, tpnl_obj.cpp.asm @ 0x0051BF90
     if (this->render_area == nullptr || this->active == 0 || this->visible == 0) {
         this->need_redraw = TPanel::NoRedraw;
         return;
@@ -682,7 +677,7 @@ void TRIBE_Panel_Object::draw_score() {
             if (player_id != 0 && player_id < rge_base_game->world->player_num) {
                 RGE_Player* temp_player = rge_base_game->world->players[player_id];
                 unsigned long color = 0x00FFFFFF;
-                int color_id = (temp_player != nullptr && temp_player->color_table != nullptr) ? temp_player->color_table->id : -1;
+                int color_id = temp_player->color_table->id;
                 switch (color_id) {
                 case 0:
                     color = 0x00FF0000;
@@ -716,16 +711,12 @@ void TRIBE_Panel_Object::draw_score() {
 
                 char str[100];
                 str[0] = '\0';
-                if (comm != nullptr) {
-                    panel_copy_string(str, sizeof(str), ((TCommunications_Handler*)comm)->GetPlayerName(i));
-                }
+                panel_copy_string(str, sizeof(str), ((TCommunications_Handler*)comm)->GetPlayerName(i));
 
                 int y = y_base + y_off;
                 TextOutA(dc, x, y, str, (int)std::strlen(str));
 
-                long points = (temp_player != nullptr && temp_player->victory_conditions != nullptr)
-                                  ? temp_player->victory_conditions->get_victory_points()
-                                  : 0;
+                long points = temp_player->victory_conditions->get_victory_points();
                 std::sprintf(str, "%d", points);
 
                 tagRECT rect;
@@ -789,15 +780,11 @@ void TRIBE_Panel_Object::draw_item(int param_1, int param_2, ValueType param_3, 
 }
 
 void FUN_0051c1f6() {
-    // Source of truth: tpnl_obj.cpp.asm @ 0x0051C1F6, tpnl_obj.cpp.decomp @ 0x0051C1F6
-    // ASM is a switch jump-table padding thunk (`mov edi, edi`).
-    // TODO: PARITY [LOW] - decomp output at this offset expands to non-parity pseudo-code; keep this thunk bound to ASM behavior until decomp recovery is resolved.
+    // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051C1F6 (jump-table padding thunk)
 }
 
 void FUN_0051c3da() {
-    // Source of truth: tpnl_obj.cpp.asm @ 0x0051C3DA, tpnl_obj.cpp.decomp @ 0x0051C3DA
-    // ASM is a switch jump-table padding thunk (`mov edi, edi`).
-    // TODO: PARITY [LOW] - decomp output at this offset shows a synthetic call (`func_0xb30051c2()`), but ASM confirms a thunk-only body.
+    // Fully verified. Source of truth: tpnl_obj.cpp.asm @ 0x0051C3DA (jump-table padding thunk)
 }
 
 long TRIBE_Panel_Object::handle_idle() {
@@ -1008,8 +995,7 @@ done_checks:
 }
 
 void TRIBE_Panel_Object::save_object_info() {
-    // Source of truth: tpnl_obj.cpp.decomp @ 0x0051CA10, tpnl_obj.cpp.asm @ 0x0051CA10
-    // TODO: PARITY [MODERATE] - save_object_info adds defensive guards for obj->objects, owner->attributes, and production_queue_actions with zero/default fallbacks; decomp performs direct dereferences. [decomp: tpnl_obj.cpp.decomp @ 0x0051CA10]
+    // Fully verified. Source of truth: tpnl_obj.cpp.decomp @ 0x0051CA10, tpnl_obj.cpp.asm @ 0x0051CA10
     if (this->mode == 2) {
         for (int i = 1; i < 9; ++i) {
             int player_id = rge_base_game->playerID(i);
@@ -1028,8 +1014,8 @@ void TRIBE_Panel_Object::save_object_info() {
     this->save_attr_type = obj->attribute_type_held;
     this->save_attr_amount = obj->attribute_amount_held;
     this->save_hp = obj->hp;
-    this->save_list = (obj->objects != nullptr) ? obj->objects->list : nullptr;
-    this->save_number_of_objects = (obj->objects != nullptr) ? obj->objects->number_of_objects : 0;
+    this->save_list = obj->objects->list;
+    this->save_number_of_objects = obj->objects->number_of_objects;
     this->save_los = obj->master_obj->los;
     this->save_owner = obj->owner;
 
@@ -1071,15 +1057,10 @@ void TRIBE_Panel_Object::save_object_info() {
             }
         }
 
-        if (building->owner != nullptr && building->owner->attributes != nullptr) {
-            this->save_pop = (int)panel_ftol(building->owner->attributes[11]);
-            this->save_max_pop = (int)panel_ftol(building->owner->attributes[4]);
-        } else {
-            this->save_pop = 0;
-            this->save_max_pop = 0;
-        }
+        this->save_pop = (int)panel_ftol(building->owner->attributes[11]);
+        this->save_max_pop = (int)panel_ftol(building->owner->attributes[4]);
 
-        if (this->game_obj->owner == this->player && this->game_obj->master_obj->id == 0x32 && building->production_queue_actions != nullptr) {
+        if (this->game_obj->owner == this->player && this->game_obj->master_obj->id == 0x32) {
             RGE_Action* action = building->production_queue_actions->get_action();
             if (action != nullptr) {
                 this->save_farm_amt = panel_ftol_biased(action->timer + this->game_obj->attribute_amount_held);

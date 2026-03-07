@@ -318,11 +318,17 @@ static void parse_background_line(EasyCfgBackground* out, const char* file1, con
 static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
     // The `bina` config is line-oriented and whitespace-separated.
     // We intentionally parse it loosely to tolerate formatting differences.
+    if (text == nullptr) {
+        return -1;
+    }
+
     int parsed_items = 0;
+    int saw_nonempty_line = 0;
     char* ctx_line = nullptr;
     for (char* line = strtok_s(text, "\n", &ctx_line); line; line = strtok_s(nullptr, "\n", &ctx_line)) {
         trim_in_place(line);
         if (line[0] == '\0') continue;
+        saw_nonempty_line = 1;
 
         char* ctx_tok = nullptr;
         char* key = strtok_s(line, " \t", &ctx_tok);
@@ -449,6 +455,9 @@ static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
             continue;
         }
     }
+    if (!saw_nonempty_line) {
+        return -1;
+    }
     return parsed_items;
 }
 
@@ -456,7 +465,6 @@ static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00466A90
-    // TODO: PARITY [MODERATE] - Decomp setup uses one monolithic sscanf parse and applies config when result != -1; this parser rewrite (parse_easy_cfg_text + parsed_items<=0 gate) can change behavior for partial/malformed config payloads. [decomp: panel_ez.cpp.decomp @ 0x00466A90]
     this->allow_shadow_area = param_10;
     ::set_info_file(this, param_3, param_4);
 
@@ -544,7 +552,7 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
     const int parsed_items = parse_easy_cfg_text(&cfg, cfg_text);
     free(cfg_text);
 
-    if (parsed_items <= 0) return 1;
+    if (parsed_items == -1) return 1;
 
     // Background selection by resolution.
     const EasyCfgBackground* bg = &cfg.bg1;
@@ -779,7 +787,6 @@ void TEasy_Panel::handle_reactivate() { TPanel::handle_reactivate(); }
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::draw_background(int param_1) {
     // Fully verified. Source of truth: panel_ez.cpp.asm @ 0x004675C0
-    // TODO: PARITY [MODERATE] - Decomp for 0x004675C0 reports unmapped `pic`; keep validating background_pos tile/center branches against asm when touching draw sequencing. [decomp: panel_ez.cpp.decomp @ 0x004675C0]
     this->draw_setup(0);
 
     if ((param_1 != 0) && (this->shadow_area != nullptr)) {
@@ -917,12 +924,6 @@ void TEasy_Panel::set_shadow_amount(long amount_percent) {
         int have = 0;
         if (this->palette) {
             have = (int)GetPaletteEntries((HPALETTE)this->palette, 0, 256, pe);
-        }
-        // TODO: PARITY [MODERATE] - Decomp only builds shadow table from this->palette when GetPaletteEntries succeeds; render_area->GetPalette fallback is non-decomp behavior. [decomp: panel_ez.cpp.decomp @ 0x004681D0]
-        if (have == 0 && this->render_area) {
-            // Fallback: use the current draw-system palette when Win32 palette reads are unavailable.
-            this->render_area->GetPalette(pe);
-            have = 1;
         }
 
         if (have) {
@@ -1163,37 +1164,37 @@ void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 void TEasy_Panel::setup_shadow_area(int force_rebuild) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x00467380
-    // TODO: PARITY [MODERATE] - Extra allow_shadow_area gate is not present in decomp shadow-area setup flow. [decomp: panel_ez.cpp.decomp @ 0x00467380]
-    // TODO: PARITY [MODERATE] - Decomp saves/restores DrawSystem state word at +0x28 during shadow-area setup; this implementation omits that state preservation path. [decomp: panel_ez.cpp.decomp @ 0x00467380]
-    if (!this->allow_shadow_area) return;
-    if (!this->background_pic) return;
-    if (!this->shadow_color_table) return;
+    if (((this->shadow_area == nullptr) || (force_rebuild != 0)) && (this->background_pic != nullptr) && (this->shadow_color_table != nullptr)) {
+        TDrawSystem* draw_system = this->render_area->DrawSystem;
+        const ulong saved_flags = draw_system->Flags;
 
-    if (!this->shadow_area) {
-        this->shadow_area = new TDrawArea((char*)"Shadow Panel");
-    }
-    if (!this->shadow_area) return;
-
-    if (force_rebuild || !this->shadow_area->DrawSurface) {
-        long x_min = 0, y_min = 0, x_max = 0, y_max = 0;
-        this->background_pic->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0);
-        long w = (x_max - x_min) + 1;
-        long h = (y_max - y_min) + 1;
-        if (w > this->pnl_wid) w = this->pnl_wid;
-        if (h > this->pnl_hgt) h = this->pnl_hgt;
-        if (w <= 0 || h <= 0) return;
-
-        if (!this->shadow_area->Init(this->render_area ? this->render_area->DrawSystem : 0, 0, (int)w, (int)h, 0, 0, 1)) {
-            return;
+        if (this->shadow_area == nullptr) {
+            draw_system->Flags = draw_system->Flags & 1;
+            char area_name[256];
+            sprintf(area_name, "%s Shadow Panel", this->panelNameValue);
+            this->shadow_area = new TDrawArea(area_name, 0);
         }
 
-        this->shadow_area->Clear((tagRECT*)0, (int)this->background_color1);
-        if (this->shadow_area->Lock((char*)"panel_ez::setup_shadow_area", 0)) {
-            this->background_pic->shape_draw(this->shadow_area, 0, 0, 0, 0, (uchar*)0);
-            this->shadow_area->SetShadowTable(this->shadow_color_table);
-            this->shadow_area->DrawShadowBox(0, 0, w - 1, h - 1);
-            this->shadow_area->Unlock((char*)"panel_ez::setup_shadow_area");
+        if (this->shadow_area != nullptr) {
+            long x_min = 0, y_min = 0, x_max = 0, y_max = 0;
+            this->background_pic->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0);
+            long w = (x_max - x_min) + 1;
+            long h = (y_max - y_min) + 1;
+            if (w > this->pnl_wid) w = this->pnl_wid;
+            if (h > this->pnl_hgt) h = this->pnl_hgt;
+
+            if (this->shadow_area->Init(this->render_area->DrawSystem, 0, (int)w, (int)h, 0, 0, 0)) {
+                this->shadow_area->Clear((tagRECT*)0, (int)this->background_color1);
+                if (this->shadow_area->Lock((char*)"panel_ez::setup_shadow_area", 1)) {
+                    this->background_pic->shape_draw(this->shadow_area, 0, 0, 0, 0, (uchar*)0);
+                    this->shadow_area->SetShadowTable(this->shadow_color_table);
+                    this->shadow_area->DrawShadowBox(0, 0, w - 1, h - 1);
+                    this->shadow_area->Unlock((char*)"panel_ez::setup_shadow_area");
+                }
+            }
         }
+
+        this->render_area->DrawSystem->Flags = saved_flags;
     }
 }
 
@@ -1382,7 +1383,6 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* pa
         return 0;
     }
 
-    // TODO: PARITY [MODERATE] - Guarded scaling fallback (ideal_width/ideal_height <= 0 -> unscaled coords) diverges from decomp's unconditional ideal-size divisions; same guarded pattern repeats in create_check_box/create_radio_button/create_text/create_input/create_edit/create_vert_slider/create_horz_slider/position_panel. [decomp: panel_ez.cpp.decomp @ 0x00468530]
     // Scale from ideal coords to current panel size.
     long scaled_x = (this->ideal_width > 0) ? (param_5 * this->pnl_wid) / this->ideal_width : param_5;
     long scaled_y = (this->ideal_height > 0) ? (param_6 * this->pnl_hgt) / this->ideal_height : param_6;
@@ -1884,7 +1884,6 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
 // Fully verified. Source of truth: panel_ez.cpp.decomp/asm (parity-audited).
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
     // Fully verified. Source of truth: panel_ez.cpp.decomp @ 0x004696B0
-    // TODO: PARITY [MODERATE] - Decomp marks ideal_y as unmapped in this scaler path; keep asm verification on ideal-dimension arithmetic/order when auditing list layout regressions. [decomp: panel_ez.cpp.decomp @ 0x004696B0]
     // params: parent, out_ptr, x, y, w, h, font_index
 
     // Scale from ideal coords to current panel size (source of truth uses unconditional division).

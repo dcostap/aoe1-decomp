@@ -14,6 +14,16 @@
 static const char kTpnlInvSourcePath[] = "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp";
 static const char kTpnlInvDrawTag[] = "tpnl_inv::draw";
 
+static long panel_inven_ftol(float value) {
+    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051A770 (helper coverage)
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
+}
+
 TRIBE_Panel_Inven::TRIBE_Panel_Inven(TDrawArea* area, TPanel* parent, void* font_param, TRIBE_Player* player_param)
     : TPanel() {
     // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051A5C0
@@ -56,7 +66,7 @@ void TRIBE_Panel_Inven::set_text_color(unsigned long color1, unsigned long color
 }
 
 void TRIBE_Panel_Inven::draw() {
-    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051A770
+    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051A770, tpnl_inv.cpp.asm @ 0x0051A770
     char str[20];
 
     if ((this->render_area != nullptr) && (this->visible != 0) && (this->active != 0)) {
@@ -75,29 +85,28 @@ void TRIBE_Panel_Inven::draw() {
                 long x = this->pnl_x + 0x20;
                 const long y = this->pnl_y + 2;
 
-                // TODO: PARITY - Attribute text formatting here uses C++ casts to long; decomp uses __ftol conversions at each site, so rounding semantics can differ for non-integer values. [decomp: tpnl_inv.cpp.decomp @ 0x0051A770]
-                sprintf(str, "%ld", (long)this->player->attributes[1]);
+                sprintf(str, "%ld", panel_inven_ftol(this->player->attributes[1]));
                 SetTextColor(dc, (COLORREF)this->back_color);
                 TextOutA(dc, x - 1, y + 1, str, (int)strlen(str));
                 SetTextColor(dc, (COLORREF)this->font_color);
                 TextOutA(dc, x, y, str, (int)strlen(str));
 
                 x = this->pnl_x + 0x63;
-                sprintf(str, "%ld", (long)this->player->attributes[0]);
+                sprintf(str, "%ld", panel_inven_ftol(this->player->attributes[0]));
                 SetTextColor(dc, (COLORREF)this->back_color);
                 TextOutA(dc, x - 1, y + 1, str, (int)strlen(str));
                 SetTextColor(dc, (COLORREF)this->font_color);
                 TextOutA(dc, x, y, str, (int)strlen(str));
 
                 x = this->pnl_x + 0xA6;
-                sprintf(str, "%ld", (long)this->player->attributes[3]);
+                sprintf(str, "%ld", panel_inven_ftol(this->player->attributes[3]));
                 SetTextColor(dc, (COLORREF)this->back_color);
                 TextOutA(dc, x - 1, y + 1, str, (int)strlen(str));
                 SetTextColor(dc, (COLORREF)this->font_color);
                 TextOutA(dc, x, y, str, (int)strlen(str));
 
                 x = this->pnl_x + 0xE9;
-                sprintf(str, "%ld", (long)this->player->attributes[2]);
+                sprintf(str, "%ld", panel_inven_ftol(this->player->attributes[2]));
                 SetTextColor(dc, (COLORREF)this->back_color);
                 TextOutA(dc, x - 1, y + 1, str, (int)strlen(str));
                 SetTextColor(dc, (COLORREF)this->font_color);
@@ -116,7 +125,7 @@ void TRIBE_Panel_Inven::draw() {
 }
 
 long TRIBE_Panel_Inven::handle_idle() {
-    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051AAD0
+    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051AAD0, tpnl_inv.cpp.asm @ 0x0051AAD0
     TPanel::handle_idle();
 
     const int prog_mode = rge_base_game->prog_mode;
@@ -129,9 +138,8 @@ long TRIBE_Panel_Inven::handle_idle() {
             short i = 0;
             float* attributes = this->player->attributes;
             short* save_attr = this->save_attr;
-            // TODO: PARITY - Change detection compares (short)(long)attributes[i], but decomp compares __ftol() output; conversion differences can alter redraw triggering. [decomp: tpnl_inv.cpp.decomp @ 0x0051AAD0]
             while (i < this->save_attr_num) {
-                if ((short)((long)attributes[i]) != save_attr[i]) {
+                if ((short)panel_inven_ftol(attributes[i]) != save_attr[i]) {
                     changed = 1;
                     break;
                 }
@@ -160,7 +168,7 @@ void TRIBE_Panel_Inven::set_player(TRIBE_Player* player_param) {
 }
 
 void TRIBE_Panel_Inven::save_info() {
-    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051AC10
+    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051AC10, tpnl_inv.cpp.asm @ 0x0051AC10
     short* save_attr = this->save_attr;
     if (save_attr != nullptr) {
         if (this->save_attr_num == this->player->attribute_num) {
@@ -176,15 +184,14 @@ void TRIBE_Panel_Inven::save_info() {
 
 SAVE_INFO_COPY_ATTR:
     if (this->save_attr_num > 0) {
-        // TODO: PARITY - save_info stores (short)(long)attributes[i]; decomp stores __ftol() results, which can differ for fractional or negative values. [decomp: tpnl_inv.cpp.decomp @ 0x0051AC10]
         for (int i = 0; i < this->save_attr_num; ++i) {
-            this->save_attr[i] = (short)((long)this->player->attributes[i]);
+            this->save_attr[i] = (short)panel_inven_ftol(this->player->attributes[i]);
         }
     }
 }
 
 uchar TRIBE_Panel_Inven::get_help_info(char** param_1, long* param_2, long param_3, long param_4) {
-    // Source of truth: tpnl_inv.cpp.decomp @ 0x0051ACA0
+    // Fully verified. Source of truth: tpnl_inv.cpp.decomp @ 0x0051ACA0, tpnl_inv.cpp.asm @ 0x0051ACA0
     if (this->active == 0) {
         return 0;
     }
@@ -193,23 +200,22 @@ uchar TRIBE_Panel_Inven::get_help_info(char** param_1, long* param_2, long param
     }
 
     if (param_3 < this->pnl_x + 0x37) {
-        // TODO: PARITY - Help text values are formatted via long casts, while decomp uses __ftol() before sprintf in each branch. [decomp: tpnl_inv.cpp.decomp @ 0x0051ACA0]
-        sprintf(*param_1, this->get_string(0x1D4EE), (long)this->player->attributes[1]);
+        sprintf(*param_1, this->get_string(0x1D4EE), panel_inven_ftol(this->player->attributes[1]));
         *param_2 = -1;
         return 1;
     }
     if (param_3 < this->pnl_x + 0x6E) {
-        sprintf(*param_1, this->get_string(0x1D4ED), (long)this->player->attributes[0]);
+        sprintf(*param_1, this->get_string(0x1D4ED), panel_inven_ftol(this->player->attributes[0]));
         *param_2 = -1;
         return 1;
     }
     if (param_3 < this->pnl_x + 0xA5) {
-        sprintf(*param_1, this->get_string(0x1D4EF), (long)this->player->attributes[3]);
+        sprintf(*param_1, this->get_string(0x1D4EF), panel_inven_ftol(this->player->attributes[3]));
         *param_2 = -1;
         return 1;
     }
 
-    sprintf(*param_1, this->get_string(0x1D4F0), (long)this->player->attributes[2]);
+    sprintf(*param_1, this->get_string(0x1D4F0), panel_inven_ftol(this->player->attributes[2]));
     *param_2 = -1;
     return 1;
 }
