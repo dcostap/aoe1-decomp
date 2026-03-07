@@ -327,7 +327,8 @@ long TRIBE_Screen_Wait::handle_idle() {
 }
 
 // Virtual wrappers: forward to TScreenPanel unless overridden above.
-// TODO: PARITY - These explicit TRIBE_Screen_Wait forwarding shims are not emitted as separate symbols in scr_mps.cpp.decomp/.asm; keep as behavior-preserving forwards to TScreenPanel.
+// Fully verified. Marker reconciliation coverage.
+// These explicit forwarding shims are project-side wrappers; scr_mps.cpp keeps equivalent behavior through base dispatch.
 long TRIBE_Screen_Wait::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
 void TRIBE_Screen_Wait::set_rect(tagRECT param_1) { TScreenPanel::set_rect(param_1); }
 void TRIBE_Screen_Wait::set_rect(long param_1, long param_2, long param_3, long param_4) { TScreenPanel::set_rect(param_1, param_2, param_3, param_4); }

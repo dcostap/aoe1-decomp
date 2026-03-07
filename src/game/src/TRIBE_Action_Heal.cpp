@@ -24,13 +24,9 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(RGE_Action_Object* param_1, RGE_Task* param
     this->task = param_2;
     this->action_type = 0x69;
     this->set_target_obj(param_3);
-    // TODO: PARITY [MEDIUM] - 0x004CE990 dereferences param_3 unconditionally after set_target_obj (no null guard in decomp/asm); current guard changes null-input behavior.
-    // Source of truth: tact_hea.cpp.decomp @ 0x004CE990, tact_hea.cpp.asm @ 0x004CE990.
-    if (param_3 != nullptr) {
-        this->target_x = param_3->world_x;
-        this->target_y = param_3->world_y;
-        this->target_z = param_3->world_z;
-    }
+    this->target_x = param_3->world_x;
+    this->target_y = param_3->world_y;
+    this->target_z = param_3->world_z;
 }
 
 // Fully verified. Source of truth: tact_hea.cpp.decomp @ 0x004CEA10

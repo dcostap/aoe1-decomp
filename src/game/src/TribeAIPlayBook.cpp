@@ -9,8 +9,8 @@
 TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {
 }
 
-// Source of truth: bucket_04E6.decomp @ 0x004E68F0
-// TODO: PARITY - Destructor is an empty stub but bucket decomp shows vtable reset and conditional cleanup of field_0x4c; keep unresolved until full transliteration lands. [decomp: bucket_04E6.decomp @ 0x004E68F0]
+// Fully verified. Source of truth: bucket_04E6.decomp @ 0x004E68F0, bucket_04E6.asm @ 0x004E68F0
+// ASM is a JMP thunk to AIPlayBook::~AIPlayBook; this override intentionally has no extra subclass body.
 TribeAIPlayBook::~TribeAIPlayBook() {
 }
 

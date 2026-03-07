@@ -1,10 +1,21 @@
 #include "../include/TribeMenuDialog.h"
 
 #include "../include/TButtonPanel.h"
+#include "../include/TEasy_Panel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TScreenPanel.h"
+#include "../include/TribeAboutDialog.h"
+#include "../include/TribeAchievementsScreen.h"
+#include "../include/TribeConfigDialog.h"
+#include "../include/TribeSaveGameScreen.h"
+#include "../include/TRIBE_Mission_Screen.h"
+#include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Scenario.h"
 #include "dialog_forwarders.h"
 #include "../include/globals.h"
+
+#include <new>
 
 // Fully verified. Source of truth: dlg_menu.cpp.decomp @ 0x0043F340
 TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent_screen)
@@ -49,17 +60,99 @@ TribeMenuDialog::~TribeMenuDialog() {
     }
 }
 
-// TODO: PARITY - action currently handles only the Cancel button path, while decomp/asm at this offset implement broad param_3/button dispatch (save/load/settings/help/about/etc). [decomp: dlg_menu.cpp.decomp @ 0x0043F720; asm: dlg_menu.cpp.asm @ 0x0043F720]
+// Fully verified. Source of truth: dlg_menu.cpp.decomp @ 0x0043F720, dlg_menu.cpp.asm @ 0x0043F720
 long TribeMenuDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    if (param_2 == 1) {
-        if ((TButtonPanel*)param_1 == this->button[6]) {
-            if (panel_system != nullptr) {
-                panel_system->setCurrentPanel((char*)"Game Screen", 0);
-                panel_system->destroyPanel((char*)"Menu Dialog");
+    if (param_1 != nullptr && param_2 == 1) {
+        if (param_3 == 1) {
+            (void)new (std::nothrow) TribeSaveGameScreen(TribeSaveGameScreen::SaveGame, (char*)0, 0);
+            panel_system->setCurrentPanel((char*)"Save Game Screen", 0);
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            return 1;
+        }
+
+        if (param_3 == 2) {
+            (void)new (std::nothrow) TribeSaveGameScreen(TribeSaveGameScreen::SaveScenario, (char*)0, 0);
+            panel_system->setCurrentPanel((char*)"Save Game Screen", 0);
+            return 1;
+        }
+
+        if (param_3 == 3) {
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            ((TEasy_Panel*)this->parent_panel)->popupYesNoDialog(0x0C1C, (char*)"QuitAndLoadDialog", 0x1C2, 100);
+            return 1;
+        }
+
+        if (param_3 == 8) {
+            if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
+                rge_base_game->set_paused(0, 0);
             }
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            WinHelpA((HWND)rge_base_game->prog_window, "empires.hlp", HELP_FINDER, 0);
+            return 1;
+        }
+
+        if (param_3 == 4) {
+            confirmed_close = 1;
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            ((TEasy_Panel*)this->parent_panel)->popupYesNoDialog(0x0C1D, (char*)"QuitGameDialog", 0x1C2, 100);
+            return 1;
+        }
+
+        if (param_3 == 5) {
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            (void)new (std::nothrow) TribeConfigDialog(TribeConfigDialog::InGame, (TScreenPanel*)this->parent_panel);
+            return 1;
+        }
+
+        if (param_3 == 7) {
+            (void)new (std::nothrow) TribeAchievementsScreen(this->get_string(0x269E), 0);
+            panel_system->setCurrentPanel((char*)"Achievements Screen", 0);
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            return 1;
+        }
+
+        if (param_3 == 10) {
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            (void)new (std::nothrow) TribeAboutDialog((TScreenPanel*)this->parent_panel);
+            return 1;
+        }
+
+        if (param_3 == 0x0B) {
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            ((TEasy_Panel*)this->parent_panel)->popupYesNoDialog(0x0C1E, (char*)"RestartDialog", 0x1C2, 100);
+            return 1;
+        }
+
+        if (param_3 == 9) {
+            (void)new (std::nothrow) TRIBE_Mission_Screen((char*)0, 1, rge_base_game->world->scenario->mission_picture);
+            panel_system->setCurrentPanel((char*)"Mission Dialog", 0);
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            return 1;
+        }
+
+        if (param_3 == 6) {
+            if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
+                rge_base_game->set_paused(0, 0);
+            }
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            return 1;
+        }
+
+        if (param_3 == 0x0C) {
+            panel_system->destroyPanel((char*)"Menu Dialog");
+            panel_system->setCurrentPanel((char*)"Game Screen", 0);
+            ((TEasy_Panel*)this->parent_panel)->popupYesNoDialog(0x0C1F, (char*)"ResignDialog", 0x1C2, 100);
             return 1;
         }
     }
+
     return TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 

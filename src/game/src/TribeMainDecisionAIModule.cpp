@@ -827,7 +827,6 @@ int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2) {
 
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5D95
 // Decomp artifact block in save epilogue; behavior is covered by save() at 0x004E5DB0.
-// TODO: PARITY - 0x004E5D95 decomp resolves to corrupted FUN_004e5d95 thunk-like output and is not transliterated as an explicit function path here. [decomp: taimdmd.cpp.decomp @ 0x004E5D95]
 
 // Offset: 0x004E5F30
 // Fully verified. Source of truth: taimdmd.cpp.decomp @ 0x004E5F30

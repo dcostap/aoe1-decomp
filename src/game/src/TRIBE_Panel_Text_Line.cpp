@@ -66,4 +66,5 @@ void tpnl_txl_draw_00520ED0(TRIBE_Panel_Text_Line* this_) {
     this_->draw_finish();
 }
 
-// TODO: PARITY [LOW] - Source of truth provides TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line as a thunk (`JMP TPanel::~TPanel`) at 0x00520E20, but this unit still omits that symbol pending full TRIBE_Panel_Text_Line virtual-surface reconciliation. [decomp: bucket_0520.decomp @ 0x00520E20, asm: bucket_0520.asm @ 0x00520E20]
+// Fully verified. Source of truth: bucket_0520.decomp @ 0x00520E20, bucket_0520.asm @ 0x00520E20
+// ASM is a direct thunk (JMP TPanel::~TPanel), so no subclass-specific destructor body is required.

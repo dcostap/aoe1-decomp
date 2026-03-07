@@ -48,6 +48,9 @@ static char kNewSaveDialogName[] = "NewSaveDialog";
 extern int View_Grid_Mode;
 
 static int command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned char param_2);
+static void command_new(TRIBE_Screen_Sed* this_);
+static void command_open(TRIBE_Screen_Sed* this_);
+static void command_quit(TRIBE_Screen_Sed* this_);
 static void set_player(TRIBE_Screen_Sed* this_, short player_num, unsigned char param_2, unsigned char param_3);
 static void set_terrain(TRIBE_Screen_Sed* this_, short param_2);
 static void set_elevation(TRIBE_Screen_Sed* this_, short param_2);
@@ -1090,6 +1093,22 @@ void TRIBE_Screen_Sed::command_player(TRIBE_Screen_Sed* this_, int param_2) {
     ::command_player(this_, param_2);
 }
 
+void TRIBE_Screen_Sed::command_quit(TRIBE_Screen_Sed* this_) {
+    ::command_quit(this_);
+}
+
+void TRIBE_Screen_Sed::command_open(TRIBE_Screen_Sed* this_) {
+    ::command_open(this_);
+}
+
+void TRIBE_Screen_Sed::command_new(TRIBE_Screen_Sed* this_) {
+    ::command_new(this_);
+}
+
+int TRIBE_Screen_Sed::command_save(TRIBE_Screen_Sed* this_, unsigned char param_1, unsigned char param_2) {
+    return ::command_save(this_, param_1, param_2);
+}
+
 void TRIBE_Screen_Sed::command_save_as(TRIBE_Screen_Sed* this_, unsigned char param_2) {
     ::command_save_as(this_, param_2);
 }
@@ -1327,7 +1346,7 @@ static void position_panels(TRIBE_Screen_Sed* this_) {
 }
 
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* scenario_name, int is_multi_player_in)
-    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0
+    // Fully verified. Source of truth: scr_sed.cpp.decomp @ 0x004A81E0, scr_sed.cpp.asm @ 0x004A81E0
     : TScreenPanel(kScenarioEditorScreenName) {
     this->is_multi_player = 0;
     this->scenario_mode = ScenarioModeNone;

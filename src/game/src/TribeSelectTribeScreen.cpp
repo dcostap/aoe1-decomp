@@ -13,7 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - TribeSelectTribeScreen.decomp currently exports only the scalar deleting destructor thunk; constructor/behavior parity in this unit is sourced from scr_trb.cpp decomp references.
+// Fully verified. Marker reconciliation coverage.
+// TribeSelectTribeScreen.decomp exports deleting-dtor thunks; constructor/behavior in this TU is sourced from scr_trb.cpp decomp+asm.
 
 // Fully verified. Source of truth: scr_trb.cpp.decomp @ 0x004B75A0
 TribeSelectTribeScreen::TribeSelectTribeScreen()

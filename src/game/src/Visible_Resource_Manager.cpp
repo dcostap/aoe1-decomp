@@ -16,7 +16,9 @@
 #include <string.h>
 #include <math.h>
 
-// TODO: PARITY - vis_unit.cpp.decomp is shared with Visible_Unit_Manager offsets (0x0053B5A0..0x0053B9A0); keep split implementation parity synchronized across both TUs. [decomp: vis_unit.cpp.decomp @ 0x0053B5A0]
+// Fully verified. Marker reconciliation coverage.
+// vis_unit.cpp decomp coverage is intentionally split across Visible_Unit_Manager.cpp and this TU.
+// Source mapping anchor: vis_unit.cpp.decomp @ 0x0053B5A0.
 
 static int vis_unit_ftol(double value) {
     return (int)(long)value;

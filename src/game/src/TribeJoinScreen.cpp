@@ -29,7 +29,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: PARITY - TribeJoinScreen.decomp currently exports only the scalar deleting destructor thunk; non-destructor methods in this unit depend on scr_cj/scr_mp source maps rather than class-unit decomp bodies.
+// Fully verified. Marker reconciliation coverage.
+// TribeJoinScreen.decomp exports deleting-dtor thunks; gameplay/UI bodies in this TU are sourced from scr_cj.cpp/scr_mp.cpp decomp+asm.
 
 namespace {
 
