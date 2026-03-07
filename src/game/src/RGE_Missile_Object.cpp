@@ -143,7 +143,7 @@ void RGE_Missile_Object::init_missile(RGE_Combat_Object* param_1, float param_2,
     this->max_range = param_5;
 }
 
-// Fully verified. Source of truth: misl_obj.cpp.asm @ 0x0045AA70
+// Fully verified. Source of truth: misl_obj.cpp.decomp @ 0x0045AA70, misl_obj.cpp.asm @ 0x0045AA70
 uchar RGE_Missile_Object::missile_move() {
     float new_x = this->world_x + this->velocity_x;
     float new_y = this->world_y + this->velocity_y;
