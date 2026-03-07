@@ -1188,7 +1188,8 @@ int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int u
     return 1;
 }
 
-// Fully verified. Source of truth: drawarea.cpp.decomp @ 0x004443D0
+// TODO: PARITY [LOW] - SetSize @ 0x004443D0 mostly matches decomp/asm, but keeps a
+// deliberate pixel-format compatibility deviation documented below.
 void TDrawArea::SetSize(long width, long height, int pitch) {
     TDrawSystem* ds = this->DrawSystem;
 
@@ -1235,6 +1236,10 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
             // cnc-ddraw emulates 8-bit mode using higher-BPP surfaces internally, causing CreateSurface
             // without DDSD_PIXELFORMAT to produce 16-bit surfaces (Pitch=2*Width). Our rendering code
             // writes 8-bit palette indices byte-by-byte, which corrupts 16-bit surface data.
+            // TODO: PARITY [LOW] - Original 0x004443D0 path sets ddsd.dwFlags=0x6C and does not
+            // populate DDSD_PIXELFORMAT; remove this override once renderer parity no longer depends
+            // on forcing 8-bit surfaces under cnc-ddraw.
+            // [decomp: drawarea.cpp.decomp @ 0x004443D0] [asm: drawarea.cpp.asm @ 0x004444F5]
             if (ds->ColorBits == 8) {
                 ddsd.dwFlags |= DDSD_PIXELFORMAT;
                 ddsd.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
