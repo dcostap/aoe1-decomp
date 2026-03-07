@@ -14,7 +14,7 @@ static short player_tech_ftol(float value) {
     return (short)result;
 }
 
-// Source of truth: bucket_050C.cpp.decomp + bucket_050D.cpp.decomp
+// Source of truth: bucket_050C.decomp/.asm + bucket_050D.decomp/.asm
 
 // Fully verified. Marker reconciliation coverage.
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, uchar param_4) {
@@ -153,7 +153,8 @@ uchar TRIBE_Player_Tech::research(short param_1, float param_2) {
     return 0;
 }
 
-// Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D0FA
+// Fully verified. Source of truth: bucket_050D.decomp @ 0x0050D0FA + bucket_050D.asm
+// NOTE: decompiler text under-specifies this routine; asm confirms percent calculation via FMUL/FIDIV + __ftol.
 short TRIBE_Player_Tech::get_progress(short param_1) {
     if (this->tech_player_tree[param_1].state == 2) {
         short research_required = this->base_tech->tech_tree[param_1].research;
@@ -335,10 +336,13 @@ void TRIBE_Player_Tech::tech_cost(short param_1, short* param_2, short* param_3,
     if (*param_7 < 1) *param_6 = -1;
 }
 
-// Fully verified. Marker reconciliation coverage.
+// TODO: PARITY - function includes defensive guards not present in source flow.
 void TRIBE_Player_Tech::check_for_new_tech() {
-    // TODO: PARITY - This function still has a non-verified marker and needs a strict branch-by-branch parity pass against decomp. [decomp: bucket_050C.decomp @ 0x0050CE68]
-    // Source of truth: bucket_050C.cpp.decomp @ 0x0050CE68
+    // TODO: PARITY - transliteration adds early null checks (base_tech/owner) and owner attribute bounds checks
+    // before writing attributes[0x27]; source flow dereferences these directly without guards.
+    // TODO: PARITY - source routine returns uchar '\x01' (caller-observable ABI), while this transliteration is void.
+    // [decomp+asm: bucket_050C.decomp/bucket_050C.asm @ 0x0050CE68]
+    // Source of truth: bucket_050C.decomp @ 0x0050CE68
     if (this->base_tech == nullptr || this->owner == nullptr) {
         return;
     }
