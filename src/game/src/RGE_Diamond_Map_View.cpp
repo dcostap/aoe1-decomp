@@ -1,5 +1,6 @@
-// TODO: PARITY - Decomp source naming differs for this TU (RGE_Diamond_Map_View.decomp vs vw_dimap.cpp.decomp); keep the offset mapping explicit during audits.
-// [decomp: vw_dimap.cpp.decomp @ 0x0053D360]
+// Source mapping note: gameplay methods for this TU are in vw_dimap.cpp.decomp/.asm
+// (0x0053D360+), while RGE_Diamond_Map_View.decomp/.asm currently only carry the
+// scalar deleting destructor at 0x0053D380.
 #include "RGE_Diamond_Map_View.h"
 
 #include "RGE_Base_Game.h"

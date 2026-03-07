@@ -1,5 +1,6 @@
-// TODO: PARITY - Requested decomp naming (tdmap_vw.cpp.decomp) is not present in-tree; this audit maps TRIBE_Diamond_Map_View parity to tvw_dmap.cpp.decomp/TRIBE_Diamond_Map_View.decomp and needs canonical filename confirmation.
-// [decomp: tvw_dmap.cpp.decomp @ 0x0052C9E0]
+// Source mapping note: gameplay methods for this TU are in tvw_dmap.cpp.decomp/.asm
+// (0x0052C9E0+), while TRIBE_Diamond_Map_View.decomp/.asm currently only carry the
+// scalar deleting destructor at 0x0052CA00.
 #include "TRIBE_Diamond_Map_View.h"
 
 #include "TRIBE_Screen_Game.h"
@@ -45,7 +46,8 @@ void TRIBE_Diamond_Map_View::set_redraw(RedrawMode param_1) {
     RGE_Diamond_Map::set_redraw(param_1);
 
     if ((param_1 != NoRedraw && this->visible != 0) && this->active != 0) {
-        // TODO: PARITY - Decomp performs an unchecked parent-panel cast for this callback; verify parent_panel remains TRIBE_Screen_Game on all call sites to avoid layout-dependent UB. [decomp: tvw_dmap.cpp.decomp @ 0x0052CA30]
+        // Parity note: decomp/asm perform an unchecked parent_panel cast here (0x0052CA30/0x0052CA50),
+        // so keep the direct TRIBE_Screen_Game call after the visible/active/redraw checks.
         ((TRIBE_Screen_Game*)this->parent_panel)->set_map_buttons_redraw(param_1);
     }
 }

@@ -10,8 +10,8 @@
 #include <string.h>
 #include <cstdint>
 
-// TODO: PARITY - visible.cpp module offsets for RGE_Unified_Visible_Map and dump_vismap_log are not implemented in this TU; keep module-level parity tracked in companion translation units. [decomp: visible.cpp.decomp @ 0x0053CE80]
-// TODO: PARITY - Requested vis_map.cpp.decomp alias is absent in this dump; RGE_Visible_Map parity mapping is currently anchored to visible.cpp.decomp offsets. [decomp: visible.cpp.decomp @ 0x0053C1B0]
+// Source mapping note: RGE_Visible_Map and RGE_Unified_Visible_Map are both emitted in
+// visible.cpp.decomp/.asm. This TU carries the 0x0053C1B0+ RGE_Visible_Map range.
 
 // LOS edge tables (NormalLOS / SquareLOS) extracted from:
 //   dist\_original_empiresx_from_beta_that_was_decompiled.exe

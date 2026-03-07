@@ -1,4 +1,3 @@
-// TODO: PARITY - Requested decomp naming (tmainvw.cpp.decomp) is not present in-tree; this audit maps TRIBE_Main_View parity to tvw_main.cpp.decomp and needs canonical filename confirmation. [decomp: tvw_main.cpp.decomp @ 0x0052CAF0]
 // TRIBE_Main_View.cpp
 // Transliterated from src/game/decomp/tvw_main.cpp.decomp
 // ASM audited vs src/game/decomp/tvw_main.cpp.asm as noted per-function.
