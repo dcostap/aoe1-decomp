@@ -2,8 +2,8 @@
 
 #include <new>
 
-// TODO: PARITY - Requested taiuaimd.cpp.decomp parity is incomplete in this translation unit: implementations here are still predominantly mapped to aiuaimod.cpp.decomp offsets. [decomp: taiuaimd.cpp.decomp @ 0x00503D30]
-// TODO: PARITY - taiuaimd class-specific AI decision overrides (processNotify/processIdle/processMisc/attack/canAttack and related selection gates) remain untransliterated for multiple tribe modules beyond current Elephant/Soldier notes. [decomp: taiuaimd.cpp.decomp @ 0x00503D30]
+// NOTE: This translation unit intentionally hosts base-forwarding wrappers mapped to aiuaimod.cpp offsets.
+// Tribe-specific taiuaimd action/targeting overrides live in TribeUnitAIModuleTypes.cpp.
 
 // Fully verified. Source of truth: t_c_obj.cpp.decomp @ 0x004CB8D0
 UnitAIModule* CreateTribeUnitAIModule(RGE_Static_Object* object, short object_group, short master_id) {
@@ -62,7 +62,6 @@ UnitAIModule* CreateTribeUnitAIModule(RGE_Static_Object* object, short object_gr
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413150
-// TODO: PARITY - TribeElephantUnitAIModule-specific overrides seen in taiuaimd (processNotify/processIdle) are not implemented in this file’s class block. [decomp: taiuaimd.cpp.decomp @ 0x005042D0]
 void TribeElephantUnitAIModule::save(int param_1) {
     UnitAIModule::save(param_1);
 }
@@ -322,12 +321,12 @@ int TribeElephantUnitAIModule::moveTo(float param_1, float param_2, float param_
     return UnitAIModule::moveTo(param_1, param_2, param_3, param_4, param_5);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416C80
+// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::evasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416C80 (retry/randomized probing + map clamping). [decomp: aiuaimod.cpp.decomp @ 0x00416C80] [asm: aiuaimod.cpp.asm @ 0x00416C80]
 int TribeElephantUnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
     return UnitAIModule::evasiveMoveTo(param_1, param_2, param_3, param_4);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416F30
+// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::intelligentEvasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416F30 (facet/distance fallback evaluation path is not transliterated). [decomp: aiuaimod.cpp.decomp @ 0x00416F30] [asm: aiuaimod.cpp.asm @ 0x00416F30]
 int TribeElephantUnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
     return UnitAIModule::intelligentEvasiveMoveTo(param_1, param_2, param_3, param_4, param_5);
 }
@@ -382,7 +381,7 @@ void TribeElephantUnitAIModule::processGroupNotify(NotifyEvent* param_1) {
     UnitAIModule::processGroupNotify(param_1);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419650
+// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::processMisc(), which remains parity-incomplete versus the aiuaimod @ 0x00419650 action/order state machine. [decomp: aiuaimod.cpp.decomp @ 0x00419650] [asm: aiuaimod.cpp.asm @ 0x00419650]
 int TribeElephantUnitAIModule::processMisc() {
     return UnitAIModule::processMisc();
 }
@@ -398,7 +397,6 @@ void TribeElephantUnitAIModule::logDebug(char* param_1) {
 }
 
 // Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00413150
-// TODO: PARITY - TribeSoldierUnitAIModule taiuaimd-specific logic (canAttackUnit/canAttackUnitAtNeutrality/processNotify/processIdle) is not implemented in this file’s class block. [decomp: taiuaimd.cpp.decomp @ 0x005071A0]
 void TribeSoldierUnitAIModule::save(int param_1) {
     UnitAIModule::save(param_1);
 }
@@ -578,12 +576,12 @@ int TribeSoldierUnitAIModule::moveTo(float param_1, float param_2, float param_3
     return UnitAIModule::moveTo(param_1, param_2, param_3, param_4, param_5);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416C80
+// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::evasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416C80 (retry/randomized probing + map clamping). [decomp: aiuaimod.cpp.decomp @ 0x00416C80] [asm: aiuaimod.cpp.asm @ 0x00416C80]
 int TribeSoldierUnitAIModule::evasiveMoveTo(float param_1, float param_2, float param_3, int param_4) {
     return UnitAIModule::evasiveMoveTo(param_1, param_2, param_3, param_4);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00416F30
+// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::intelligentEvasiveMoveTo(), which is currently non-parity versus aiuaimod @ 0x00416F30 (facet/distance fallback evaluation path is not transliterated). [decomp: aiuaimod.cpp.decomp @ 0x00416F30] [asm: aiuaimod.cpp.asm @ 0x00416F30]
 int TribeSoldierUnitAIModule::intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5) {
     return UnitAIModule::intelligentEvasiveMoveTo(param_1, param_2, param_3, param_4, param_5);
 }
@@ -638,7 +636,7 @@ void TribeSoldierUnitAIModule::processGroupNotify(NotifyEvent* param_1) {
     UnitAIModule::processGroupNotify(param_1);
 }
 
-// Fully verified. Source of truth: aiuaimod.cpp.decomp @ 0x00419650
+// TODO: PARITY [CRITICAL] - Delegates to UnitAIModule::processMisc(), which remains parity-incomplete versus the aiuaimod @ 0x00419650 action/order state machine. [decomp: aiuaimod.cpp.decomp @ 0x00419650] [asm: aiuaimod.cpp.asm @ 0x00419650]
 int TribeSoldierUnitAIModule::processMisc() {
     return UnitAIModule::processMisc();
 }
