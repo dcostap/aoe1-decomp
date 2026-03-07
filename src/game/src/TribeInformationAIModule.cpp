@@ -80,6 +80,19 @@ constexpr int kUnitHistorySize = 11;
 const char* kDefaultUnitHistoryFilename = "learn_Default.uh";
 const char* kUnitHistoryFilenameFormat = "learn_%s.uh";
 
+long tribe_info_ftol(float value) {
+#if defined(_MSC_VER) && defined(_M_IX86)
+    long result;
+    __asm {
+        fld value
+        fistp result
+    }
+    return result;
+#else
+    return (long)value;
+#endif
+}
+
 void tribe_reset_managed_array(ManagedArray<int>& array) {
     // Fully verified. Source of truth: TribeInformationAIModule.decomp (helper implementation).
     array.value = nullptr;
@@ -2230,10 +2243,9 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* param_1, 
     float best_distance = 1000.0f;
     int resource_zone = tribe_object_current_zone(param_1);
 
-    // TODO: PARITY [CRITICAL] - taiinfmd.cpp.decomp + taiinfmd.cpp.asm @ 0x004E2A00 resize playerBuildings during iteration when numberValue exceeds maximumSizeValue; this implementation hard-breaks at maximumSizeValue and omits that growth path.
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
-        if (i >= this->playerBuildings.maximumSizeValue) {
-            break;
+        if ((this->playerBuildings.maximumSizeValue - 1) < i) {
+            tribe_managed_array_ensure_capacity(this->playerBuildings, i + 1);
         }
         RGE_Static_Object* building = tribe_information_object_by_id(this, this->playerBuildings.value[i]);
         if ((building == nullptr) || (building->master_obj == nullptr)) {
@@ -2285,10 +2297,9 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Stati
     float best_distance = 1000.0f;
     int unit_zone = tribe_object_current_zone(param_1);
 
-    // TODO: PARITY [CRITICAL] - taiinfmd.cpp.decomp + taiinfmd.cpp.asm @ 0x004E2BA0 resize playerBuildings during iteration when numberValue exceeds maximumSizeValue; this implementation hard-breaks at maximumSizeValue and omits that growth path.
     for (int i = 0; i < this->playerBuildings.numberValue; ++i) {
-        if (i >= this->playerBuildings.maximumSizeValue) {
-            break;
+        if ((this->playerBuildings.maximumSizeValue - 1) < i) {
+            tribe_managed_array_ensure_capacity(this->playerBuildings, i + 1);
         }
         RGE_Static_Object* building = tribe_information_object_by_id(this, this->playerBuildings.value[i]);
         if ((building == nullptr) || (building->master_obj == nullptr)) {
@@ -2339,9 +2350,8 @@ void TribeInformationAIModule::updateAllResourceDropsites() {
             }
             int dropsite_id = -1;
             float distance = this->findClosestDropsite(resource_obj, 1, &dropsite_id);
-            // TODO: PARITY [MODERATE] - Decomp uses __ftol for gatherValue/dropDistance writes in this path; static_cast truncation may drift at boundary values. [decomp: taiinfmd.cpp.decomp @ 0x004E2D10]
-            this->resources[slot][i].gatherValue = static_cast<int>(distance);
-            this->resources[slot][i].dropDistance = static_cast<uchar>(distance);
+            this->resources[slot][i].gatherValue = static_cast<int>(tribe_info_ftol(distance));
+            this->resources[slot][i].dropDistance = static_cast<uchar>(tribe_info_ftol(distance));
             this->resources[slot][i].dropsiteID = dropsite_id;
             tribe_update_closest_dropsite_for_resource(this, resource_obj, distance);
         }
@@ -2371,9 +2381,8 @@ void TribeInformationAIModule::updateResourceDropsites(int param_1) {
 
         int dropsite_id = -1;
         float distance = this->findClosestDropsite(resource_obj, 1, &dropsite_id);
-        // TODO: PARITY [MODERATE] - Decomp uses __ftol before writing gatherValue/dropDistance here; confirm rounding mode parity versus cast-based conversion. [decomp: taiinfmd.cpp.decomp @ 0x004E2E90]
-        memory.gatherValue = static_cast<int>(distance);
-        memory.dropDistance = static_cast<uchar>(distance);
+        memory.gatherValue = static_cast<int>(tribe_info_ftol(distance));
+        memory.dropDistance = static_cast<uchar>(tribe_info_ftol(distance));
         memory.dropsiteID = dropsite_id;
         tribe_update_closest_dropsite_for_resource(this, resource_obj, distance);
     }
