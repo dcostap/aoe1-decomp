@@ -15,9 +15,9 @@
 
 // TODO: PARITY [MODERATE] - campaign.cpp.decomp methods open_scenario/get_name/scenario_number/get_scenario_name are implemented in gameinfo.cpp, leaving this module with split function ownership. [decomp: campaign.cpp.decomp @ 0x00423690]
 
-// Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423230
+// TODO: PARITY [MODERATE] - Constructor includes defensive null-guard early returns not present in decomp/asm straight-line setup, so it is not fully verified. [decomp: campaign.cpp.decomp @ 0x00423230] [asm: campaign.cpp.asm @ 0x00423230]
 RGE_Campaign::RGE_Campaign(char* param_1) {
-    // TODO: PARITY [MODERATE] - Decomp constructor directly dereferences global game/prog_info and input pointers; these defensive null guards add non-original early-return paths.
+    // TODO: PARITY [MODERATE] - Decomp/asm constructor directly dereference global game/prog_info and input pointers; these defensive null guards add non-original early-return paths. [decomp: campaign.cpp.decomp @ 0x00423230] [asm: campaign.cpp.asm @ 0x00423230]
     this->scenario_offsets = nullptr;
     memset(this->filename, 0, sizeof(this->filename));
 
@@ -49,9 +49,9 @@ RGE_Campaign::RGE_Campaign(char* param_1) {
     this->campaign_header.version = 0;
 }
 
-// Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423330
+// TODO: PARITY [MODERATE] - Constructor includes defensive null-guard early returns not present in decomp/asm straight-line setup, so it is not fully verified. [decomp: campaign.cpp.decomp @ 0x00423330] [asm: campaign.cpp.asm @ 0x00423330]
 RGE_Campaign::RGE_Campaign(char* param_1, char* param_2, long param_3, char** param_4, char** param_5) {
-    // TODO: PARITY [MODERATE] - Decomp constructor assumes global game/prog_info and campaign name are valid; this version adds null-guard exits.
+    // TODO: PARITY [MODERATE] - Decomp/asm constructor assumes global game/prog_info and campaign name are valid; this version adds null-guard exits. [decomp: campaign.cpp.decomp @ 0x00423330] [asm: campaign.cpp.asm @ 0x00423330]
     this->scenario_offsets = nullptr;
     memset(this->filename, 0, sizeof(this->filename));
     memset(&this->campaign_header, 0, sizeof(this->campaign_header));
@@ -99,9 +99,9 @@ RGE_Campaign::~RGE_Campaign() {
     }
 }
 
-// Fully verified. Source of truth: campaign.cpp.decomp @ 0x004234B0
+// TODO: PARITY [MODERATE] - create_file includes an upfront global/prog_info null guard not present in decomp/asm and is not fully verified. [decomp: campaign.cpp.decomp @ 0x004234B0] [asm: campaign.cpp.asm @ 0x004234B0]
 void RGE_Campaign::create_file() {
-    // TODO: PARITY [MODERATE] - Decomp create_file path does not include this upfront global/prog_info null guard before file operations.
+    // TODO: PARITY [MODERATE] - Decomp/asm create_file path does not include this upfront global/prog_info null guard before file operations. [decomp: campaign.cpp.decomp @ 0x004234B0] [asm: campaign.cpp.asm @ 0x004234B0]
     if (rge_base_game == nullptr || rge_base_game->prog_info == nullptr) {
         return;
     }
@@ -147,9 +147,9 @@ void RGE_Campaign::create_file() {
     _close(fd);
 }
 
-// Fully verified. Source of truth: campaign.cpp.decomp @ 0x00423730
+// TODO: PARITY [MODERATE] - scenario_info adds defensive null validation before writing through param_1, unlike decomp/asm direct write-through behavior. [decomp: campaign.cpp.decomp @ 0x00423730] [asm: campaign.cpp.asm @ 0x00423730]
 long RGE_Campaign::scenario_info(char*** param_1) {
-    // TODO: PARITY [MODERATE] - Decomp writes through param_1 without explicit null validation; this guard introduces a defensive early return on invalid pointers.
+    // TODO: PARITY [MODERATE] - Decomp/asm write through param_1 without explicit null validation; this guard introduces a defensive early return on invalid pointers. [decomp: campaign.cpp.decomp @ 0x00423730] [asm: campaign.cpp.asm @ 0x00423730]
     if (param_1 == nullptr) {
         return 0;
     }
