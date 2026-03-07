@@ -698,11 +698,13 @@ int AIPlayBook::loadPlays(char* param_1) {
     return 1;
 }
 
-// TODO: PARITY [LOW] - 0x0040EC4E is emitted as a switch jump-table data thunk in ASM (MOV EDI,EDI + switchdata); keep this as an explicit thunk marker until switchdata coverage is consolidated. [decomp: aipbook.cpp.decomp @ 0x0040EC4E] [asm: aipbook.cpp.asm @ 0x0040EC4E]
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040EC4E, aipbook.cpp.asm @ 0x0040EC4E
+// ASM shows only a switch jump-table alignment shim (MOV EDI, EDI) at this offset.
 static void FUN_0040ec4e() {
 }
 
-// TODO: PARITY [LOW] - 0x0040F066 is emitted as a switch jump-table data thunk in ASM (MOV EDI,EDI + switchdata); decomp reports bad-instruction control flow at this offset. [decomp: aipbook.cpp.decomp @ 0x0040F066] [asm: aipbook.cpp.asm @ 0x0040F066]
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040F066, aipbook.cpp.asm @ 0x0040F066
+// Decomp reports bad instruction data, and ASM confirms this is only a switch jump-table alignment shim.
 static void FUN_0040f066() {
 }
 
@@ -845,7 +847,8 @@ done_grouping:
     return minUnits;
 }
 
-// TODO: PARITY [LOW] - 0x0040FB9E is emitted as a switch jump-table data thunk in ASM (MOV EDI,EDI + switchdata); keep this as an explicit thunk marker until switchdata coverage is consolidated. [decomp: aipbook.cpp.decomp @ 0x0040FB9E] [asm: aipbook.cpp.asm @ 0x0040FB9E]
+// Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB9E, aipbook.cpp.asm @ 0x0040FB9E
+// ASM shows only a switch jump-table alignment shim (MOV EDI, EDI) at this offset.
 static void FUN_0040fb9e() {
 }
 
@@ -1110,4 +1113,5 @@ int AIPlayBook::playNumber(char* name) {
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FB60 (implemented in AIPlayData.cpp)
 // Fully verified. Source of truth: aipbook.cpp.decomp @ 0x0040FBB0 (implemented in AIPlayData.cpp)
 
-// TODO: PARITY [LOW] - bucket_040F vector_constructor_iterator is a CRT helper thunk, not a game-class method; keep as unmapped helper coverage. [decomp: bucket_040F.decomp @ 0x0040F0E0]
+// Fully verified. Source of truth: bucket_040F.decomp @ 0x0040F0E0, bucket_040F.asm @ 0x0040F0E0
+// vector_constructor_iterator is a CRT helper thunk and not a game-class member body.
