@@ -15,8 +15,8 @@
 
 #include <new>
 
-// Fully verified. Marker reconciliation coverage: transport action symbols are mapped to
-// act_tran.cpp.{decomp,asm} in this export set (no separate ra_trans/act_trns unit is present).
+// Fully verified. Marker reconciliation coverage.
+// Source of truth: act_tran.cpp.decomp/.asm @ 0x00406D60.
 
 namespace {
 static const char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
