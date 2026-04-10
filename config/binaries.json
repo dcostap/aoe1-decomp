@@ -1,0 +1,12 @@
+{
+  "original_exe": "..\\aoe1_static_recomp\\dist\\_original_empiresx_from_beta_that_was_decompiled.exe",
+  "original_pdb": "..\\aoe1_static_recomp\\dist\\empiresx.pdb",
+  "ghidra_layout": "..\\aoe1_static_recomp\\dist\\ghidra_layout_alpha.json",
+  "ghidra_listing": "..\\aoe1_static_recomp\\aoe1_ghidra_assembly_listing.txt",
+  "type_dump": "..\\aoe1_static_recomp\\all_types_ground_truth.h",
+  "image_base": "0x00400000",
+  "notes": [
+    "The original EXE bytes are the primary oracle.",
+    "The current dist\\empiresx.pdb is useful for names/layout hints, but it is not assumed to be the pristine original VC5 PDB."
+  ]
+}

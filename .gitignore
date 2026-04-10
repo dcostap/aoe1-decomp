@@ -1,0 +1,11 @@
+build\
+orig\
+__pycache__\
+*.pyc
+*.pyo
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.map
+*.log

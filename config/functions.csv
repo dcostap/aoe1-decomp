@@ -1,0 +1,5 @@
+va,name,size_bytes,calling_convention,source_path,tu_hint,status,tu_required,flags_override,notes
+00449750,driveAsLetter,8,__cdecl,src\\scratch\\00449750_driveAsLetter.c,,scratch,false,config\\flags\\o2.rsp,Initial calibration candidate from Ghidra layout
+00449760,driveAsInt,9,__cdecl,src\\scratch\\00449760_driveAsInt.c,,scratch,false,,Initial calibration candidate from Ghidra layout
+0047F580,RESFILE_Set_Missing_Flag,10,__cdecl,src\\scratch\\0047F580_RESFILE_Set_Missing_Flag.c,,scratch,false,,Small named cdecl function from Ghidra layout
+00448A60,ds_stream_pause,11,__cdecl,src\\scratch\\00448A60_ds_stream_pause.c,,scratch,false,,Small named cdecl function from Ghidra layout

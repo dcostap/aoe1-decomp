@@ -1,0 +1,35 @@
+{
+  "toolchain_name": "vc5-host",
+  "status": "unproven",
+  "compiler": {
+    "cl": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\CL.EXE",
+    "link": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\LINK.EXE",
+    "nmake": "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\NMAKE.EXE",
+    "rc": "C:\\Program Files (x86)\\DevStudio\\SharedIDE\\bin\\RC.EXE",
+    "default_rsp": "config\\flags\\default.rsp"
+  },
+  "environment": {
+    "path_prepend": [
+      "C:\\Program Files (x86)\\DevStudio\\VC\\Bin",
+      "C:\\Program Files (x86)\\DevStudio\\VC\\Bin\\WINNT",
+      "C:\\Program Files (x86)\\DevStudio\\SharedIDE\\bin"
+    ],
+    "include": [
+      "C:\\Program Files (x86)\\DevStudio\\VC\\Include",
+      "C:\\Program Files (x86)\\DevStudio\\VC\\MFC\\Include"
+    ],
+    "lib": [
+      "C:\\Program Files (x86)\\DevStudio\\VC\\Lib",
+      "C:\\Program Files (x86)\\DevStudio\\VC\\MFC\\Lib"
+    ]
+  },
+  "expected_versions": {
+    "cl": "11.00.7022",
+    "link": "5.00.7022"
+  },
+  "notes": [
+    "Keep default flags minimal until calibration is complete.",
+    "Milestone 0 is a boring, repeatable compile-to-object proof.",
+    "Launch CL.EXE under a minimal environment; inheriting the full modern host PATH can break VC5 backend startup."
+  ]
+}
