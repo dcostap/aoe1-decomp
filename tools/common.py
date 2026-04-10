@@ -10,6 +10,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
+INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 
 
@@ -32,7 +33,7 @@ def load_binaries() -> dict:
 
 
 def load_functions() -> list[dict[str, str]]:
-    with (CONFIG_DIR / "functions.csv").open("r", encoding="utf-8", newline="") as handle:
+    with (INVENTORY_DIR / "all_functions.csv").open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
 
 
@@ -72,6 +73,28 @@ def slugify_name(name: str) -> str:
 
 def function_slug(record: dict[str, str]) -> str:
     return f"{record['va'].upper()}_{slugify_name(record['name'])}"
+
+
+def preferred_source_path(record: dict[str, str]) -> Path:
+    slug = function_slug(record)
+    candidates = [
+        REPO_ROOT / "src" / "matching" / f"{slug}.c",
+        REPO_ROOT / "src" / "matching" / f"{slug}.cpp",
+        REPO_ROOT / "src" / "scratch" / f"{slug}.c",
+        REPO_ROOT / "src" / "scratch" / f"{slug}.cpp",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return REPO_ROOT / "src" / "scratch" / f"{slug}.c"
+
+
+def preferred_flags_rsp_path(record: dict[str, str], toolchain: dict) -> Path:
+    slug = function_slug(record)
+    candidate = CONFIG_DIR / "flags" / f"{slug}.rsp"
+    if candidate.exists():
+        return candidate
+    return repo_path(toolchain["compiler"]["default_rsp"])
 
 
 def ensure_dir(path: Path) -> None:

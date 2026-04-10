@@ -42,7 +42,7 @@ def decode_bytes(code_bytes: bytes, start_va: int) -> list[dict]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Extract original function bytes and disassembly from the reference EXE.")
     parser.add_argument("--va", required=True, help="Function start VA in hex, for example 00449750.")
-    parser.add_argument("--size", type=int, help="Override size in bytes. When omitted, use functions.csv or Ghidra layout.")
+    parser.add_argument("--size", type=int, help="Override size in bytes. When omitted, use the inventory or Ghidra layout.")
     return parser.parse_args()
 
 

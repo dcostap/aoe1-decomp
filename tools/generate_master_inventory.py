@@ -1,0 +1,92 @@
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+
+from iced_x86 import Decoder, DecoderOptions
+
+from common import ensure_dir, format_hex, load_binaries, load_layout, load_pe_image, parse_hex, repo_path, slugify_name
+
+
+def decode_instruction_count(code_bytes: bytes, start_va: int) -> int:
+    decoder = Decoder(32, code_bytes, ip=start_va, options=DecoderOptions.NONE)
+    count = 0
+    while decoder.can_decode:
+        decoder.decode()
+        count += 1
+    return count
+
+
+def function_ranges(entry: dict) -> list[tuple[int, int]]:
+    ranges: list[tuple[int, int]] = []
+    for body_range in entry.get("body_ranges", []):
+        start = parse_hex(body_range.get("start"))
+        end = parse_hex(body_range.get("end"))
+        if start is None or end is None or end < start:
+            continue
+        ranges.append((start, end))
+    if ranges:
+        return ranges
+
+    start = parse_hex(entry.get("start"))
+    end = parse_hex(entry.get("end"))
+    if start is None or end is None or end < start:
+        return []
+    return [(start, end)]
+
+
+def main() -> None:
+    binaries = load_binaries()
+    exe = load_pe_image(repo_path(binaries["original_exe"]))
+    layout = load_layout(repo_path(binaries["ghidra_layout"]))
+
+    inventory_dir = repo_path("inventory")
+    ensure_dir(inventory_dir)
+    inventory_path = inventory_dir / "all_functions.csv"
+
+    rows: list[dict[str, str | int]] = []
+    for entry in layout.get("functions", []):
+        start = parse_hex(entry.get("start"))
+        name = (entry.get("name") or "").strip()
+        if start is None or not name:
+            continue
+
+        ranges = function_ranges(entry)
+        if not ranges:
+            continue
+
+        size_bytes = 0
+        asm_lines = 0
+        for range_start, range_end in ranges:
+            code_bytes = exe.read_va_range(range_start, range_end)
+            size_bytes += len(code_bytes)
+            asm_lines += decode_instruction_count(code_bytes, range_start)
+
+        rows.append(
+            {
+                "va": format_hex(start),
+                "name": name,
+                "slug": f"{format_hex(start)}_{slugify_name(name)}",
+                "size_bytes": size_bytes,
+                "asm_lines": asm_lines,
+                "calling_convention": entry.get("calling_convention") or "unknown",
+                "body_range_count": len(ranges),
+            }
+        )
+
+    rows.sort(key=lambda row: row["va"])
+
+    with inventory_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["va", "name", "slug", "size_bytes", "asm_lines", "calling_convention", "body_range_count"],
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+    print(f"Wrote {inventory_path}")
+    print(f"Functions: {len(rows)}")
+
+
+if __name__ == "__main__":
+    main()

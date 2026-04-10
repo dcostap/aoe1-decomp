@@ -4,9 +4,17 @@ import argparse
 import json
 import subprocess
 import sys
-from pathlib import Path
 
-from common import ensure_build_subdir, function_record_by_va, function_slug, load_toolchain, repo_path, tool_env
+from common import (
+    ensure_build_subdir,
+    function_record_by_va,
+    function_slug,
+    load_toolchain,
+    preferred_flags_rsp_path,
+    preferred_source_path,
+    repo_path,
+    tool_env,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,14 +28,13 @@ def main() -> None:
     va = int(args.va, 16)
     record = function_record_by_va(va)
     slug = function_slug(record)
-    source_path = repo_path(record["source_path"])
+    source_path = preferred_source_path(record)
     if not source_path.exists():
         raise SystemExit(f"Missing source file: {source_path}")
 
     toolchain = load_toolchain()
     cl_path = repo_path(toolchain["compiler"]["cl"])
-    flags_override = (record.get("flags_override") or "").strip()
-    rsp_path = repo_path(flags_override or toolchain["compiler"]["default_rsp"])
+    rsp_path = preferred_flags_rsp_path(record, toolchain)
 
     obj_dir = ensure_build_subdir("obj")
     manifest_dir = ensure_build_subdir("manifests")
@@ -47,6 +54,7 @@ def main() -> None:
         "command": command,
         "source": str(source_path),
         "object": str(obj_path),
+        "response_file": str(rsp_path),
         "returncode": result.returncode,
         "stdout": result.stdout,
         "stderr": result.stderr,

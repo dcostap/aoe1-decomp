@@ -293,9 +293,9 @@ That means the normal path is:
 
 This is a workflow choice, not a permanent promise that the final project will always remain one-file-per-function.
 
-Later, stable functions may be grouped into larger translation units if that becomes useful.
+Later, stable functions may be grouped into larger translation units if that becomes useful. This is TO BE DEFINED LATER.
 
-But the **working unit** is one function per source file.
+FOR NOW, the **working unit** is one function per source file.
 
 ## Scratch vs matching
 
