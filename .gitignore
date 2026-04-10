@@ -1,6 +1,6 @@
-build\
-orig\
-__pycache__\
+build/
+orig/
+__pycache__/
 *.pyc
 *.pyo
 *.obj
