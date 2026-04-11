@@ -23,10 +23,10 @@ public:
     virtual void vf50(void);
     virtual void vf54(void);
     virtual void vf58(void);
-    virtual void vf5c(unsigned char value);
+    virtual void set_state(unsigned char value);
     virtual void first_in_stack(unsigned char param_1);
 };
 
 void RGE_Action_Enter::first_in_stack(unsigned char param_1) {
-    this->vf5c(4);
+    this->set_state(4);
 }
