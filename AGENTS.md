@@ -29,6 +29,23 @@ After reading the README, follow these working rules.
   - finished bank
   - only promote a function here after local exact-match validation passes
 
+## Current phase bias: local-first type work
+
+The current phase is **match harvesting**, not broad type cleanup.
+
+That means:
+
+- default to **local stubs** inside the active function source,
+- promote **globals** into shared headers/source when they are clearly real shared program state,
+- promote **types/classes** into `include\game_types.h` only when reuse or cluster-unlocking value clearly justifies it,
+- do **not** spend time trying to build a definitive class just because one function revealed one more field or method.
+
+Practical rule:
+
+- one function needing one partial class view -> keep it local,
+- repeated use across multiple functions -> consider promoting it,
+- broad class reconstruction -> save it for a later convergence phase.
+
 ## Normal workflow for one function
 
 1. Read the relevant packet in `inventory\functions\...`.
@@ -61,7 +78,7 @@ If the reference dump is wrong or incomplete:
 
 `include\game_types.h` is the living shared type header.
 
-Agents should edit it as progress is made.
+Agents should edit it conservatively.
 
 Typical progression:
 
@@ -84,6 +101,9 @@ If only part of a type is currently known, it is fine to emit:
 - the known fields,
 - explicit `gap_...` / padding arrays,
 - blunt placeholder names.
+
+In the current matching phase, do **not** rush to move every partial class stub here.
+Prefer local per-function stubs first, then promote only once the shared version is clearly paying for itself.
 
 ## How to use `include\game_globals.h` and `src\game_globals.cpp`
 
@@ -112,8 +132,88 @@ Keep something local to the scratch source when:
 - it is speculative,
 - it is only needed to unblock one function right now,
 - it is too uncertain to promote confidently.
+- it is a one-off partial class view exposed by a single function.
 
 Temporary local declarations are allowed. They should be promoted later once stable.
+
+## Prefer explicit source over hidden compiler magic
+
+When the original binary looks like a compiler-emitted C++ helper pattern
+such as:
+
+- deleting destructors,
+- vector deleting destructors,
+- small virtual helper wrappers,
+- other special-member-style glue,
+
+prefer writing an **ordinary explicit function body** that reproduces the same
+behavior and code shape.
+
+Do **not** rely on the compiler to auto-generate hidden special-member helpers
+unless there is a strong reason to do so.
+
+Why:
+
+- explicit source is easier to control,
+- explicit source is easier to validate against the packet,
+- explicit source avoids guessing exactly how VC5 will synthesize helper code,
+- and explicit source keeps the matching bank understandable.
+
+The target is the machine-code behavior and shape, not faithfulness to how much
+of the original source was handwritten versus compiler-emitted.
+
+## Inline asm policy
+
+Inline asm is a **last resort**, not a normal matching tool.
+
+For ordinary functions, agents should first fight through:
+
+- declaration context,
+- return type/shape,
+- source expression shape,
+- materially different but semantically equivalent source spellings,
+- especially forms that materialize results differently,
+- C vs C++ frontend differences,
+- and reasonable flag differences,
+
+before accepting inline asm.
+
+Inline asm is most acceptable when the original function plausibly looks like:
+
+- hand-written low-level helper code,
+- compiler/runtime support glue,
+- or another function whose original source likely was already very close to raw asm.
+
+For small ordinary gameplay/utility functions, inline asm should be treated as a
+warning sign that the current source model is still wrong.
+
+For ordinary functions:
+
+- do **not** mark the function finished while it still depends on inline asm,
+- keep it in `src\scratch\...`,
+- and leave comments in the scratch file explaining why it is still draft,
+  what was tried, and which source-shape alternatives still remain to test.
+
+## Per-function flags policy
+
+Custom per-function response files are acceptable during the current
+match-harvesting phase, but they are **exceptions**, not the final project
+shape.
+
+Agents should:
+
+- prefer the default project flags when they work,
+- add custom per-function flags only when needed to make progress,
+- keep those custom flags as small and explainable as possible,
+- and treat them as candidates for later convergence.
+
+The long-term goal is not a chaotic forever-build with arbitrary flags per
+function. The long-term goal is:
+
+- a mostly coherent project-wide baseline,
+- plus a shrinking set of justified exceptions,
+- eventually regrouped at sensible translation-unit boundaries when the project
+  leaves the pure harvesting phase.
 
 ## Working scaffold rule
 
@@ -136,6 +236,11 @@ Agents should react to real problems pragmatically:
 - missing global -> add a local declaration first or promote it to shared globals if stable,
 - compile failure -> narrow the issue and fix the smallest correct surface,
 - mismatch -> prefer binary-observed behavior over prettier source.
+- compiler-generated-looking helper -> prefer a plain explicit implementation that matches the helper pattern over depending on hidden compiler synthesis.
+- ordinary function that only matches with inline asm -> investigate source shape, declaration context, and flags before accepting the asm workaround.
+- ordinary tiny mismatch -> remember that old compilers can generate meaningfully
+  different code for semantically equivalent source shapes, so keep exploring
+  alternative source-level formulations before giving up.
 
 Do not get stuck because the initial scaffold is imperfect.
 The scaffold is expected to improve through normal decomp work.
@@ -144,6 +249,8 @@ The scaffold is expected to improve through normal decomp work.
 
 - A function in `src\matching\...` is a claim that it is done.
 - Do not promote speculative or still-mismatching code there.
+- Do not promote an ordinary function there if it still relies on inline asm as
+  a temporary matching crutch.
 - Keep blocker notes and scratch workflow notes in `src\scratch\...` while a function is active.
 - Remove scratch-only notes before or during promotion.
 

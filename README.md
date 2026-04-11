@@ -284,6 +284,8 @@ Scratch functions should normally use those shared declarations.
 
 Temporary local `extern` declarations inside scratch files are acceptable only while something is still too tentative to promote into shared headers.
 
+During the current function-harvesting phase, globals should generally be promoted earlier than classes/types because they are real shared program state rather than partial local views.
+
 ## Source file model
 
 ## One implementation file per function, at least initially
@@ -318,6 +320,8 @@ Use this for:
 Use this for:
 
 - functions that passed local exact-match validation and are being claimed as finished.
+- functions that do not rely on inline asm as a temporary crutch for an
+  unresolved ordinary-source match.
 
 Folder location is the claim.
 
@@ -343,7 +347,9 @@ This is where agents put:
 - blocker notes,
 - decompilation-specific status,
 - current flags in use,
-- high-value “what’s wrong right now” notes.
+- high-value “what’s wrong right now” notes,
+- and, when inline asm is temporarily present in an ordinary function, an
+  explicit note that the file remains draft/scratch for that reason.
 
 These notes do **not** need to be queryable beyond simple scraping if desired.
 
@@ -498,6 +504,12 @@ Examples of things that may stay local temporarily:
 
 Promote that information into shared headers only once it is stable enough to represent project-wide truth.
 
+Current phase bias:
+
+- prefer **local type/class stubs** while matching individual functions,
+- prefer **shared globals** once they are stable enough to be real shared state,
+- only promote a class/type into shared headers when reuse or cluster-unlocking value clearly outweighs the cost of premature sharing.
+
 ### Rule of thumb
 
 Put it in shared headers if:
@@ -505,12 +517,14 @@ Put it in shared headers if:
 - multiple functions need it,
 - it describes real type/layout/linkage truth,
 - or it is stable enough to define the project-wide understanding of that type.
+- or leaving it local is now causing repeated duplicated work across a neighborhood of functions.
 
 Keep it local in the scratch file if:
 
 - it is speculative,
 - it is temporary,
 - it is only there to get one function compiling for now.
+- it is only a partial class view exposed by one function.
 
 ## Structs and classes
 
@@ -532,6 +546,93 @@ If a type is only needed for:
 then the working header only needs to preserve those facts.
 
 It does not need to be aesthetically complete.
+
+In the current phase, a class stub discovered while matching one function should usually remain a **local partial view** until multiple matched functions make a shared merged definition worth maintaining.
+
+## Prefer explicit source over hidden compiler-generated helpers
+
+When a function in the original binary appears to be compiler-emitted C++
+machinery such as:
+
+- deleting destructor helpers,
+- vector deleting destructor helpers,
+- tiny virtual wrappers,
+- or similar special-member glue,
+
+the preferred matching strategy is usually to write an **ordinary explicit
+source function** with the same observable behavior and let the compiler emit the
+same code shape.
+
+Do **not** assume the best path is to make the compiler auto-generate that
+helper implicitly.
+
+Why:
+
+- explicit source is easier to control,
+- explicit source is easier to diff against the packet,
+- explicit source avoids relying on tricky VC5 synthesis behavior,
+- explicit source keeps the finished bank understandable to later agents.
+
+The project cares about matching the original machine-code behavior and shape,
+not about reproducing whether the original source spelled the helper explicitly
+or got it from compiler magic.
+
+## Inline asm policy
+
+Inline asm is a **last resort**, not the default answer.
+
+For ordinary functions, the expected workflow is to first exhaust plausible
+source-level explanations such as:
+
+- declaration context,
+- return type and return-shape,
+- source expression shape,
+- materially different but semantically equivalent source spellings,
+- especially forms that materialize results differently,
+- C vs C++ frontend differences,
+- and reasonable compiler-flag differences.
+
+Inline asm is most justifiable when a function plausibly originated as:
+
+- hand-written low-level helper code,
+- compiler/runtime support glue,
+- or another path whose original source likely already lived very close to raw
+  asm.
+
+If a tiny ordinary function only matches with inline asm, that should usually be
+treated as evidence that the current source model is still wrong.
+
+For ordinary functions:
+
+- do **not** mark the function as finished while it still depends on inline asm,
+- keep it in `src\scratch\...`,
+- and add scratch comments explaining why it remains draft, what was tried,
+  and which source-shape alternatives still need to be tested.
+
+## Per-function flags policy
+
+Custom per-function response files are allowed during the current
+function-harvesting phase, but they are **temporary exceptions**, not the ideal
+final build shape.
+
+The intended progression is:
+
+1. use the project default flags wherever possible,
+2. introduce per-function flag overrides only when they materially help achieve
+   a match,
+3. keep those overrides narrow and explainable,
+4. later converge repeated exceptions into a more coherent translation-unit or
+   project-wide build policy.
+
+So a per-function custom flag file should be understood as:
+
+- a current matching aid,
+- a tracked exception,
+- and a candidate for later cleanup or regrouping.
+
+This does **not** mean the final project must forever compile as an unstructured
+chaos of unrelated flags. A future whole-project build can still be coherent if
+the harvesting-phase exceptions are later consolidated and reduced.
 
 ## Inheritance
 
@@ -686,6 +787,9 @@ An agent working on one function runs the exact-match loop for that function and
 The promotion rule is:
 
 - a function should only move from `src\scratch\` to `src\matching\` after local exact-match validation passes.
+- an ordinary function that still depends on inline asm as a temporary matching
+  aid should stay in `src\scratch\...` until a non-asm source-level match is
+  found.
 
 ## 2. Finished-bank sweep validation
 
@@ -735,7 +839,7 @@ The intended workflow is:
 2. open the committed per-function raw packet,
 3. create or edit one source file in `src\scratch\`,
 4. use shared working headers from `include\`,
-5. keep tentative declarations local when necessary,
+5. keep tentative declarations local when necessary, especially one-off partial class/type stubs,
 6. run the exact-match loop,
 7. remove scratch-only status/decomp notes when complete,
 8. promote the source file into `src\matching\`,
@@ -751,10 +855,15 @@ The project is built around these decisions:
 - active work lives in `src\scratch\`,
 - finished work lives in `src\matching\`,
 - scratch files themselves carry temporary status/blocker notes,
+- ordinary functions that still rely on inline asm stay in `src\scratch\` and
+  are not considered finished,
 - useful inline code comments may survive into final source,
 - shared headers live centrally and are not per-function,
 - generated type/global reference dumps are separate from editable working headers,
 - the shared working scaffold is generated once and then corrected in place as function work proves mistakes,
+- explicit source that matches compiler-emitted helper patterns is preferred over depending on hidden compiler-generated special-member machinery,
+- inline asm is a last resort for ordinary functions and should follow real source-shape investigation,
+- per-function custom flags are acceptable harvesting-phase exceptions, not the intended forever-build model,
 - PDB is used strongly for type metadata,
 - machine code remains the behavioral oracle,
 - `project_full_status.csv` is a regenerated dashboard,
