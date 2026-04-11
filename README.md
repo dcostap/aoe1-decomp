@@ -74,9 +74,9 @@ inventory\
   functions\
     <per-function raw packets>
   globals\
-    <immutable generated global truth>
+    <generated global reference dumps>
   types\
-    <immutable generated type/layout truth>
+    <generated type/layout reference dumps>
 
 include\
   <shared working headers used by the compiler>
@@ -86,7 +86,7 @@ src\
     <one active source file per function>
   matching\
     <finished exact-match source files>
-  globals.cpp
+  game_globals.cpp
 
 tools\
   <build, check, status, validation, generation scripts>
@@ -106,8 +106,8 @@ It answers:
 
 - what functions exist in total,
 - what the raw per-function context is,
-- what immutable global truth is available,
-- what immutable type/layout truth is available.
+- what generated global reference data is available,
+- what generated type/layout reference data is available.
 
 ### `include\`
 
@@ -216,6 +216,7 @@ For a target function, the repo should already contain a raw packet with stable,
 - original extracted asm from the EXE,
 - function ranges,
 - relevant Ghidra listing excerpt,
+- Ghidra auto-decompiler pseudocode excerpt,
 - calling convention,
 - stack parameter names if available,
 - source-file / line hints if available,
@@ -230,22 +231,22 @@ Globals are shared project facts, not per-function state.
 
 They should be handled the same way as types:
 
-- immutable generated truth in the committed corpus,
+- generated reference dumps in the committed corpus,
 - shared working declarations in central headers/sources,
 - temporary local declarations only when something is still too tentative.
 
-### Immutable generated global truth
+### Generated global reference dumps
 
 This should live in:
 
 ```text
 inventory\globals\
   all_globals.csv
-  headers\
+  dumps\
   data\
 ```
 
-This layer should capture facts such as:
+This layer should capture the generator's best read-only starting facts such as:
 
 - address,
 - name,
@@ -268,12 +269,16 @@ Use the original image strongly here for:
 - zero-init vs nonzero-init behavior,
 - raw string/table data.
 
+This layer is reference material, not the sacred compiler surface.
+
+If the generator gets something wrong, later agent work is allowed to correct the working headers/source instead of pretending the dump was perfect.
+
 ### Shared working global declarations
 
 Shared global declarations should live centrally, for example:
 
-- `include\globals.h`
-- `src\globals.cpp`
+- `include\game_globals.h`
+- `src\game_globals.cpp`
 
 Scratch functions should normally use those shared declarations.
 
@@ -388,14 +393,14 @@ Instead:
 
 ## Two header/type layers
 
-### Layer 1: immutable generated type truth
+### Layer 1: generated type reference dumps
 
 This lives under the committed corpus, for example:
 
 ```text
 inventory\types\
-  all_types_ground_truth.h
-  headers\
+  all_types_reference.h
+  dumps\
   vtables\
 ```
 
@@ -403,7 +408,7 @@ This layer is:
 
 - generated from PDB + Ghidra/layout facts,
 - committed to git,
-- treated as reference truth,
+- treated as read-only reference material,
 - regenerated in bulk when exporters improve.
 
 Use this layer aggressively for:
@@ -422,11 +427,31 @@ Use this layer aggressively for:
 
 These live under:
 
-- `include\...`
+- `include\game_types.h`
+- `include\game_globals.h`
 
 These are the headers used by the compiler.
 
-They are editable, but only under strict rules.
+They should usually be bootstrapped once from the generated reference dumps and then edited by agents as the project learns where the generator was wrong or incomplete.
+
+## Scaffold generation policy
+
+The practical workflow is:
+
+1. generate the initial shared type/global scaffold once,
+2. start using it for real function work,
+3. fix it in place when function work proves a generated assumption wrong.
+
+So:
+
+- generated reference dumps under `inventory\...` stay read-only,
+- generated working headers under `include\...` and `src\...` become normal editable project source.
+
+Important rule:
+
+- do **not** keep bulk-regenerating the same working headers in place after agents have started correcting them.
+
+If a later exporter improvement is worth comparing, generate a fresh candidate somewhere else and diff it against the working headers instead of overwriting project edits.
 
 ## Working header rules
 
@@ -439,6 +464,7 @@ These are safe to add as needed:
 - forward declarations,
 - includes,
 - static helper declarations,
+- corrections to bad generated names or declarations once function work proves them wrong,
 - other linkage-only declarations needed to compile.
 
 ### Unsafe edits unless strongly proven
@@ -455,7 +481,7 @@ These are not to be changed casually:
 The core rule is:
 
 - **if it changes bytes in memory, be extremely conservative**
-- **if it is only code linkage, adding it is usually fine**
+- **if it is only code linkage or a clearly proven correction, editing it is usually fine**
 
 ## Shared headers vs local temporary declarations
 
@@ -616,6 +642,8 @@ That context belongs in the pregenerated per-function raw packets.
 
 The function comparison pipeline itself still compares against the real EXE bytes.
 
+Ghidra auto-decompiler pseudocode may also be included in packets as a helpful lower-trust add-on, but it is not the behavioral oracle.
+
 ## Root status report
 
 The project-wide dashboard is:
@@ -725,7 +753,8 @@ The project is built around these decisions:
 - scratch files themselves carry temporary status/blocker notes,
 - useful inline code comments may survive into final source,
 - shared headers live centrally and are not per-function,
-- immutable generated type truth is separate from editable working headers,
+- generated type/global reference dumps are separate from editable working headers,
+- the shared working scaffold is generated once and then corrected in place as function work proves mistakes,
 - PDB is used strongly for type metadata,
 - machine code remains the behavioral oracle,
 - `project_full_status.csv` is a regenerated dashboard,

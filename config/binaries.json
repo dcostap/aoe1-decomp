@@ -3,6 +3,7 @@
   "original_pdb": "..\\aoe1_static_recomp\\dist\\empiresx.pdb",
   "ghidra_layout": "..\\aoe1_static_recomp\\dist\\ghidra_layout_alpha.json",
   "ghidra_listing": "..\\aoe1_static_recomp\\aoe1_ghidra_assembly_listing.txt",
+  "ghidra_decomp_root": "..\\aoe1\\src\\game\\decomp",
   "type_dump": "..\\aoe1_static_recomp\\all_types_ground_truth.h",
   "image_base": "0x00400000",
   "notes": [
