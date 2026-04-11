@@ -31,6 +31,19 @@ The project is **not** organized around “make the game build first.”
 
 It is organized around **exact-match function work**.
 
+## Toolchain discipline
+
+The project stays pinned to the configured **VC5 host toolchain** for normal
+matching work.
+
+That means:
+
+- build and diff functions with the repo's configured VC5 toolchain,
+- do **not** switch away from that toolchain just because a function does not
+  match.
+
+So a mismatch is first a source/model/workflow problem to solve under VC5.
+
 ## Truth hierarchy
 
 Use truth in this order:
@@ -71,6 +84,8 @@ So the repo should carry the raw context needed to start work.
 ```text
 inventory\
   all_functions.csv
+  classes\
+    <generated class/interface reference dumps>
   functions\
     <per-function raw packets>
   globals\
@@ -178,6 +193,7 @@ So the intended split is:
 ### Generated committed outputs
 
 - `inventory\all_functions.csv`,
+- `inventory\classes\...`,
 - `inventory\functions\...`,
 - `inventory\globals\...`,
 - `inventory\types\...`.
@@ -397,7 +413,7 @@ Instead:
 - function implementations are per-function,
 - headers live centrally and are shared.
 
-## Two header/type layers
+## Three class/type layers
 
 ### Layer 1: generated type reference dumps
 
@@ -429,7 +445,39 @@ Use this layer aggressively for:
 - enum names and values,
 - inheritance clues.
 
-### Layer 2: shared working headers
+### Layer 2: generated class interface reference dumps
+
+This lives under the committed corpus, for example:
+
+```text
+inventory\classes\
+  all_class_interfaces_reference.h
+  all_class_interfaces.csv
+  dumps\
+```
+
+This layer is:
+
+- generated from donor headers plus existing layout/function-packet evidence,
+- committed to git,
+- treated as read-only reference material,
+- confidence-tagged,
+- explicitly **not** the compiler-facing source of truth.
+
+Use this layer for:
+
+- candidate virtual names,
+- candidate non-virtual helper names,
+- slot-index and slot-offset review,
+- deciding when a local `vfXX` stub can be renamed,
+- deciding when a class fragment is mature enough to promote into the shared compiler headers.
+
+Important rule:
+
+- use the class interface layer as a **checked donor**,
+- not as something to bulk-copy blindly into `include\game_types.h`.
+
+### Layer 3: shared working headers
 
 These live under:
 
@@ -452,6 +500,14 @@ So:
 
 - generated reference dumps under `inventory\...` stay read-only,
 - generated working headers under `include\...` and `src\...` become normal editable project source.
+
+When class work is involved, the practical split is:
+
+1. use `inventory\types\...` for hard layout facts,
+2. use `inventory\classes\...` for best-effort named class surfaces,
+3. confirm slot-sensitive behavior against the packet/original asm,
+4. keep the declaration local unless repeated reuse justifies promotion,
+5. promote into `include\game_types.h` only once the shared version is clearly paying for itself.
 
 Important rule:
 

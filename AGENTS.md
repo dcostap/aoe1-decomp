@@ -8,6 +8,9 @@ After reading the README, follow these working rules.
 - The original EXE is the behavioral oracle.
 - PDB/Ghidra/type dumps are metadata/reference sources, not behavior oracles.
 - Agents are expected to improvise, react to errors, and correct earlier bad assumptions as they learn more.
+- The pinned working compiler is the repo's configured **VC5 host toolchain**.
+- Do **not** switch compilers during normal matching work just because something
+  does not match.
 
 ## Repository roles
 
@@ -59,10 +62,11 @@ Practical rule:
 
 ## How to use the generated reference layer
 
-Use `inventory\types\...` and `inventory\globals\...` as lookup/reference material:
+Use `inventory\types\...`, `inventory\classes\...`, and `inventory\globals\...` as lookup/reference material:
 
 - to find names,
 - to find candidate layouts,
+- to find candidate class surfaces and slot names,
 - to find candidate globals,
 - to inspect raw generated context.
 
@@ -74,6 +78,29 @@ If the reference dump is wrong or incomplete:
 - do fix the working headers/source,
 - and let real function work drive the correction.
 
+## How to use `inventory\classes\...`
+
+`inventory\classes\...` is the read-only best-effort class interface donor layer.
+
+Use it to:
+
+- replace local `vfXX` placeholders when slot/name evidence is strong,
+- compare donor virtual names against packet-discovered slot usage,
+- judge whether a class fragment is mature enough to promote.
+
+Do **not**:
+
+- treat it as compiler-facing truth,
+- bulk-copy it into `include\game_types.h`,
+- or let it override machine-code-observed slot behavior.
+
+The intended flow is:
+
+1. check `inventory\types\...` for hard layout facts,
+2. check `inventory\classes\...` for best-effort method/slot names,
+3. confirm against the packet/original asm,
+4. keep the class surface local unless repeated reuse justifies promotion.
+
 ## How to use `include\game_types.h`
 
 `include\game_types.h` is the living shared type header.
@@ -84,7 +111,8 @@ Typical progression:
 
 1. start with forward declarations,
 2. add a minimal layout body when a function needs field access or `sizeof`,
-3. expand the type later as more functions prove more fields.
+3. optionally promote named methods from `inventory\classes\...` only when the slot evidence is strong,
+4. expand the type later as more functions prove more fields or method surfaces.
 
 When adding or correcting type bodies:
 

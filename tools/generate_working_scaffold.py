@@ -34,6 +34,7 @@ def build_game_types_header() -> str:
         "// Generated once by tools\\generate_working_scaffold.py.",
         "// After the first scaffold pass, this file becomes editable project source.",
         "// The full read-only reference dump lives in ..\\inventory\\types\\all_types_reference.h.",
+        "// Best-effort class interface reference lives in ..\\inventory\\classes\\all_class_interfaces_reference.h.",
         "// Start by adding real type bodies here only when exact-match function work needs them.",
         "",
     ]
