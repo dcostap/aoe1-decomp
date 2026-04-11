@@ -3,6 +3,9 @@
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
 
+// 008884C0 [.data]
+int _stream_paused = 0;
+
 // 0056E0B8 [.rdata]
 float DAT_0056e0b8 = 0.0f;
 // 0056E0CC [.rdata]

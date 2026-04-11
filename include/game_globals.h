@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include "game_types.h"
 
+// 008884C0 [.data]
+extern int _stream_paused;
+
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;
 // 0056E0CC [.rdata]
