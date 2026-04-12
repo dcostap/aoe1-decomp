@@ -9,3 +9,5 @@ __pycache__/
 *.ilk
 *.map
 *.log
+!orig/
+!orig/**

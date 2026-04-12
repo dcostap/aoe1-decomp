@@ -15,6 +15,8 @@ from common import (
     load_binaries,
     load_functions,
     load_layout,
+    load_pdb_function_line_changes,
+    load_pdb_function_source_map,
     load_pe_image,
     parse_hex,
     repo_path,
@@ -122,11 +124,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def pdb_line_span(summary: dict[str, str] | None) -> str:
+    if not summary:
+        return "<none>"
+    start = summary.get("line_start", "").strip()
+    end = summary.get("line_end", "").strip()
+    if not start or not end:
+        return "<none>"
+    return f"{start}-{end}"
+
+
 def main() -> None:
     args = parse_args()
     binaries = load_binaries()
     exe = load_pe_image(repo_path(binaries["original_exe"]))
     layout = load_layout(repo_path(binaries["ghidra_layout"]))
+    pdb_source_map = load_pdb_function_source_map()
+    pdb_line_changes = load_pdb_function_line_changes()
     listing_lines = repo_path(binaries["ghidra_listing"]).read_text(encoding="utf-8", errors="replace").splitlines()
     listing_index = build_listing_index(listing_lines)
     decomp_root = repo_path(binaries["ghidra_decomp_root"])
@@ -158,6 +172,8 @@ def main() -> None:
         shard_dir = function_dir / record["va"][:4]
         ensure_dir(shard_dir)
         packet_path = shard_dir / f"{slug}.txt"
+        source_summary = pdb_source_map.get(record["va"].upper())
+        line_changes = pdb_line_changes.get(record["va"].upper(), [])
 
         packet_lines: list[str] = []
         packet_lines.append(f"VA: {record['va']}")
@@ -166,7 +182,38 @@ def main() -> None:
         packet_lines.append(f"SizeBytes: {record['size_bytes']}")
         packet_lines.append(f"AsmLines: {record.get('asm_lines', '')}")
         packet_lines.append(f"CallingConvention: {record.get('calling_convention', 'unknown')}")
+        packet_lines.append(
+            f"PdbSourceFile: {(source_summary or {}).get('primary_source_file', '') or '<none>'}"
+        )
+        packet_lines.append(
+            f"PdbSourcePath: {(source_summary or {}).get('primary_source_path', '') or '<none>'}"
+        )
+        packet_lines.append(f"PdbLineSpan: {pdb_line_span(source_summary)}")
+        packet_lines.append(f"PdbLineRecordCount: {(source_summary or {}).get('line_record_count', '0')}")
         packet_lines.append(f"BodyRangeCount: {len(ranges)}")
+        packet_lines.append("")
+        packet_lines.append("=== PdbSource ===")
+        if source_summary is None:
+            packet_lines.append("<pdb source unavailable>")
+        else:
+            packet_lines.append(
+                f"PrimarySource: {source_summary.get('primary_source_path', '') or '<none>'}"
+            )
+            packet_lines.append(
+                f"DirectSource: {source_summary.get('direct_source_path', '') or '<none>'}"
+            )
+            packet_lines.append(f"LineSpan: {pdb_line_span(source_summary)}")
+            packet_lines.append(f"LineRecords: {source_summary.get('line_record_count', '0')}")
+            packet_lines.append(f"LineChanges: {source_summary.get('line_change_count', '0')}")
+            packet_lines.append(f"UniqueLineFiles: {source_summary.get('unique_file_count', '0')}")
+            packet_lines.append("LineChangeMap:")
+            if not line_changes:
+                packet_lines.append("  <none>")
+            else:
+                for change in line_changes:
+                    packet_lines.append(
+                        f"  {change['address']} -> {change['source_file']}:{change['line_number']}"
+                    )
         packet_lines.append("")
         packet_lines.append("=== BodyRanges ===")
         for range_start, range_end in ranges:

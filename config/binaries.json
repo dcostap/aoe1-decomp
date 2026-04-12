@@ -1,13 +1,14 @@
 {
-  "original_exe": "..\\aoe1_static_recomp\\dist\\_original_empiresx_from_beta_that_was_decompiled.exe",
-  "original_pdb": "..\\aoe1_static_recomp\\dist\\empiresx.pdb",
-  "ghidra_layout": "..\\aoe1_static_recomp\\dist\\ghidra_layout_alpha.json",
-  "ghidra_listing": "..\\aoe1_static_recomp\\aoe1_ghidra_assembly_listing.txt",
-  "ghidra_decomp_root": "..\\aoe1\\src\\game\\decomp",
-  "type_dump": "..\\aoe1_static_recomp\\all_types_ground_truth.h",
+  "original_exe": "orig\\_original_empiresx_from_beta_that_was_decompiled.exe",
+  "original_pdb": "orig\\age1_x1.pdb",
+  "ghidra_layout": "orig\\ghidra_layout_alpha.json",
+  "ghidra_listing": "orig\\aoe1_ghidra_assembly_listing.txt",
+  "ghidra_decomp_root": "orig\\ghidra_decomp",
+  "type_dump": "orig\\all_types_ground_truth.h",
   "image_base": "0x00400000",
   "notes": [
     "The original EXE bytes are the primary oracle.",
-    "The current dist\\empiresx.pdb is useful for names/layout hints, but it is not assumed to be the pristine original VC5 PDB."
+    "Pinned immutable upstream inputs now live under orig\\ so this repo stays self-contained.",
+    "The current orig\\age1_x1.pdb is the preserved original beta PDB tied to the 1998 build."
   ]
 }

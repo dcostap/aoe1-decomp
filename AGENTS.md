@@ -7,6 +7,7 @@ After reading the README, follow these working rules.
 - The project is **function-first** and **exact-match-first**.
 - The original EXE is the behavioral oracle.
 - PDB/Ghidra/type dumps are metadata/reference sources, not behavior oracles.
+- Use the repo-local `orig\...` inputs instead of sibling-repo paths when a script needs the pinned EXE/PDB/Ghidra/type-dump side.
 - Agents are expected to improvise, react to errors, and correct earlier bad assumptions as they learn more.
 - The pinned working compiler is the repo's configured **VC5 host toolchain**.
 - Do **not** switch compilers during normal matching work just because something

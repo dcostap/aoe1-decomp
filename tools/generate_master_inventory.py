@@ -5,7 +5,17 @@ from pathlib import Path
 
 from iced_x86 import Decoder, DecoderOptions
 
-from common import ensure_dir, format_hex, load_binaries, load_layout, load_pe_image, parse_hex, repo_path, slugify_name
+from common import (
+    ensure_dir,
+    format_hex,
+    load_binaries,
+    load_layout,
+    load_pe_image,
+    load_pdb_function_source_map,
+    parse_hex,
+    repo_path,
+    slugify_name,
+)
 
 
 def decode_instruction_count(code_bytes: bytes, start_va: int) -> int:
@@ -39,6 +49,7 @@ def main() -> None:
     binaries = load_binaries()
     exe = load_pe_image(repo_path(binaries["original_exe"]))
     layout = load_layout(repo_path(binaries["ghidra_layout"]))
+    pdb_source_map = load_pdb_function_source_map()
 
     inventory_dir = repo_path("inventory")
     ensure_dir(inventory_dir)
@@ -71,6 +82,15 @@ def main() -> None:
                 "asm_lines": asm_lines,
                 "calling_convention": entry.get("calling_convention") or "unknown",
                 "body_range_count": len(ranges),
+                "pdb_source_file": pdb_source_map.get(format_hex(start), {}).get("primary_source_file", ""),
+                "pdb_source_path": pdb_source_map.get(format_hex(start), {}).get("primary_source_path", ""),
+                "pdb_line_start": pdb_source_map.get(format_hex(start), {}).get("line_start", ""),
+                "pdb_line_end": pdb_source_map.get(format_hex(start), {}).get("line_end", ""),
+                "pdb_line_record_count": pdb_source_map.get(format_hex(start), {}).get("line_record_count", "0"),
+                "pdb_line_change_count": pdb_source_map.get(format_hex(start), {}).get("line_change_count", "0"),
+                "pdb_unique_file_count": pdb_source_map.get(format_hex(start), {}).get("unique_file_count", "0"),
+                "pdb_has_line_info": pdb_source_map.get(format_hex(start), {}).get("has_line_info", "0"),
+                "pdb_has_direct_source": pdb_source_map.get(format_hex(start), {}).get("has_direct_source", "0"),
             }
         )
 
@@ -79,7 +99,24 @@ def main() -> None:
     with inventory_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["va", "name", "slug", "size_bytes", "asm_lines", "calling_convention", "body_range_count"],
+            fieldnames=[
+                "va",
+                "name",
+                "slug",
+                "size_bytes",
+                "asm_lines",
+                "calling_convention",
+                "body_range_count",
+                "pdb_source_file",
+                "pdb_source_path",
+                "pdb_line_start",
+                "pdb_line_end",
+                "pdb_line_record_count",
+                "pdb_line_change_count",
+                "pdb_unique_file_count",
+                "pdb_has_line_info",
+                "pdb_has_direct_source",
+            ],
         )
         writer.writeheader()
         writer.writerows(rows)

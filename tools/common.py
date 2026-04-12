@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
+PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
 
 
 def repo_path(value: str | Path) -> Path:
@@ -35,6 +36,28 @@ def load_binaries() -> dict:
 def load_functions() -> list[dict[str, str]]:
     with (INVENTORY_DIR / "all_functions.csv").open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+def load_optional_csv(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def load_pdb_function_source_map() -> dict[str, dict[str, str]]:
+    rows = load_optional_csv(PDB_INVENTORY_DIR / "function_source_map.csv")
+    return {row["va"].upper(): row for row in rows}
+
+
+def load_pdb_function_line_changes() -> dict[str, list[dict[str, str]]]:
+    rows = load_optional_csv(PDB_INVENTORY_DIR / "function_line_changes.csv")
+    grouped: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        grouped.setdefault(row["va"].upper(), []).append(row)
+    for records in grouped.values():
+        records.sort(key=lambda row: row["address"].upper())
+    return grouped
 
 
 def function_record_by_va(va: int) -> dict[str, str]:

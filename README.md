@@ -90,6 +90,8 @@ inventory\
     <per-function raw packets>
   globals\
     <generated global reference dumps>
+  pdb\
+    <generated PDB-backed source filename / line-number reference dumps>
   types\
     <generated type/layout reference dumps>
 
@@ -109,6 +111,9 @@ tools\
 build\
   <volatile generated artifacts; ignored in git>
 
+orig\
+  <pinned immutable upstream inputs used by generators and validation>
+
 project_full_status.csv
   <regenerated root dashboard>
 ```
@@ -122,6 +127,7 @@ It answers:
 - what functions exist in total,
 - what the raw per-function context is,
 - what generated global reference data is available,
+- what generated PDB-backed source / line reference data is available,
 - what generated type/layout reference data is available.
 
 ### `include\`
@@ -164,6 +170,19 @@ This is for volatile generated artifacts only:
 
 `build\` is ignored in git.
 
+### `orig\`
+
+This is the committed local store for pinned immutable upstream inputs:
+
+- original EXE,
+- original PDB,
+- Ghidra layout/listing exports,
+- read-only type dump,
+- the current decompiler excerpt corpus used by packet generation.
+
+`aoe1_attempt3` should prefer `orig\` over sibling-repo paths for these inputs so the
+workflow remains self-contained.
+
 ### `project_full_status.csv`
 
 This is the regenerated root dashboard.
@@ -186,9 +205,10 @@ So the intended split is:
 
 ### Upstream raw inputs
 
-- pinned original EXE,
-- pinned PDB,
-- pinned Ghidra exports/listings.
+- pinned original EXE under `orig\`,
+- pinned PDB under `orig\`,
+- pinned Ghidra exports/listings under `orig\`,
+- pinned read-only type dump / decompiler corpus under `orig\` when the generators use them.
 
 ### Generated committed outputs
 
@@ -196,6 +216,7 @@ So the intended split is:
 - `inventory\classes\...`,
 - `inventory\functions\...`,
 - `inventory\globals\...`,
+- `inventory\pdb\...`,
 - `inventory\types\...`.
 
 Agents should normally consume the generated committed outputs.
