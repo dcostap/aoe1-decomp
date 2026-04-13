@@ -65,15 +65,17 @@ Practical rule:
 
 ## Normal workflow for one function
 
-1. Read the relevant packet in `inventory\functions\...`.
-2. Check the shared working headers/source in `include\...` and `src\game_globals.cpp`.
-3. Create or edit the function in `src\scratch\...`.
-4. Compile and compare against the original.
-5. If compilation or matching work exposes missing shared facts, update the shared working layer.
-6. Keep iterating until the function matches.
-7. If a function is understood but intentionally parked as non-exact, move it to `src\almost_matched\...` only when the strict admission rules below are satisfied and the required structured header notes are present.
-8. Remove scratch-only workflow notes when done.
-9. Move the function to `src\matching\...` only after it is locally validated.
+1. If choosing a new target, regenerate `project_full_status.csv` first and usually
+   pick from the `unclaimed` bucket there instead of guessing from the raw dump.
+2. Read the relevant packet in `inventory\functions\...`.
+3. Check the shared working headers/source in `include\...` and `src\game_globals.cpp`.
+4. Create or edit the function in `src\scratch\...`.
+5. Compile and compare against the original.
+6. If compilation or matching work exposes missing shared facts, update the shared working layer.
+7. Keep iterating until the function matches.
+8. If a function is understood but intentionally parked as non-exact, move it to `src\almost_matched\...` only when the strict admission rules below are satisfied and the required structured header notes are present.
+9. Remove scratch-only workflow notes when done.
+10. Move the function to `src\matching\...` only after it is locally validated.
 
 ### Exact-match iteration heuristics
 
@@ -90,6 +92,26 @@ toolchain panic or inline asm:
 6. Revert failed probes, but remember them as negative evidence in notes or docs.
 7. Prefer a sequence of small controlled probes over large rewrites once the function
    is size-correct and behaviorally close.
+
+#### VC5-specific expression-shape hints
+
+These are heuristics, not laws, but a real exact-match win now backs them:
+
+1. Stack spills like `[esp+XX]` inside a math block often point to an **anonymous
+   temporary from one larger expression**, not a durable named local. If a value is
+   computed, spilled, other work happens, and it is immediately reloaded, try
+   deleting explicit locals and inlining the math back into the parent expression.
+2. Interleaved integer/FPU code often points to **one larger statement or tightly
+   nested expression tree**, not several clean semicolon-separated steps. If the
+   original asm mixes `fld` / `__ftol` / integer arithmetic before the final
+   accumulation, test a more inlined source shape.
+3. The final `add` / `lea` chain often reflects the source AST closely enough to
+   probe **textual term order**. If the original adds `distance + y` before folding
+   in `x`, test that exact `+` ordering in the source instead of assuming the
+   compiler will normalize it.
+4. If the math is behaviorally right but register allocation keeps thrashing, make
+   “remove named temporaries and inline the expression” an early probe, not a last
+   desperate guess.
 
 ## `almost_matched` admission rules
 

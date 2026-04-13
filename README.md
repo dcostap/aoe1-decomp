@@ -25,15 +25,8 @@ It is organized around **exact-match function work**.
 Exact-match work is iterative, evidence-driven, and often sensitive to tiny
 source-shape differences under the pinned historical compiler. Progress is not
 only “match” versus “no match”; moving the first mismatch deeper is often a real
-signal that the current source model is getting closer.
-
-General repo-level expectation:
-
-- keep iterating against the binary until a function matches or is intentionally
-  parked under the repo's strict non-exact rules,
-- preserve reusable lessons from real matching work so the workflow improves over
-  time,
-- keep detailed agent heuristics and probe tactics in `AGENTS.md`, not here.
+signal that the current source model is getting closer. Detailed agent tactics
+and probe heuristics live in `AGENTS.md`, not here.
 
 ## Toolchain discipline
 
