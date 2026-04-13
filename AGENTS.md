@@ -124,6 +124,35 @@ Agents may move a function from `src\scratch\...` to `src\almost_matched\...` on
 5. The remaining difference is **not** a changed predicate, changed call set, changed memory effect, changed copy size, or another behavior-sensitive divergence.
 6. The file carries a structured header that explains why it was parked.
 
+## Structured top comments in scratch and almost_matched files
+
+There is **no separate JSON scratch-state sidecar**.
+
+Instead, the source file itself is the working notebook.
+
+Active scratch files may carry a compact structured header block such as:
+
+```c
+// STATUS: blocked
+// FLAGS: config\flags\o2.rsp
+// BLOCKER: needs TU context for sibling helper at 004013A0
+// NOTE: stack cleanup matches, but register allocation still diverges after debug_srand
+```
+
+This is intentionally lightweight. The goal is:
+
+- enough structured state for agents and the root dashboard,
+- without creating a second parallel notebook that drifts from the code.
+
+Scratch files may use:
+
+- `STATUS:`
+- `FLAGS:`
+- `BLOCKER:`
+- `NOTE:`
+
+The source file itself is the detailed status record for active work.
+
 Required structured header for `src\almost_matched\...`:
 
 ```c
@@ -141,6 +170,54 @@ Optional additional notes may still use:
 // BLOCKER: ...
 // NOTE: ...
 ```
+
+The root dashboard may read these structured top comments from `src\scratch\...` and
+`src\almost_matched\...` when generating `project_full_status.csv`, so keep them
+short, structured, and genuinely useful.
+
+## Comments inside the function body
+
+Agents may add useful inline comments inside the code body when those comments explain:
+
+- how something works,
+- why a weird shape is intentional,
+- what binary-observed behavior is being preserved.
+
+These are real source comments and may survive into the final file.
+
+By contrast, the following are scratch-only comments and should be removed when the
+function is completed:
+
+- mismatch diary,
+- decomp workflow chatter,
+- blocker/status notes,
+- “I tried X and it failed” notes,
+- other temporary reconstruction commentary.
+
+So the rule is:
+
+- **code-explanatory comments may stay**
+- **status/decomp-workflow comments are removed on completion**
+
+## Header and type model
+
+Headers are **shared**, not per-function.
+
+This is critical.
+
+Functions may begin life one-file-per-function, but types are global facts and should
+not be duplicated per function.
+
+Therefore:
+
+- do **not** create one header per function,
+- do **not** make headers travel alongside a function through `scratch` and `matching`,
+- do **not** keep parallel scratch-vs-finished versions of the same shared type header.
+
+Instead:
+
+- function implementations are per-function,
+- headers live centrally and are shared.
 
 ## How to use the generated reference layer
 
@@ -235,11 +312,14 @@ Put something in the shared working layer when:
 
 - it is likely to be reused,
 - it describes real project-wide type/global truth,
-- or keeping it local would just duplicate the same fact repeatedly.
+- it is stable enough to define the project-wide understanding of that type,
+- keeping it local would just duplicate the same fact repeatedly,
+- or leaving it local is now causing repeated duplicated work across a neighborhood of functions.
 
 Keep something local to the scratch source when:
 
 - it is speculative,
+- it is temporary,
 - it is only needed to unblock one function right now,
 - it is too uncertain to promote confidently.
 - it is a one-off partial class view exposed by a single function.
