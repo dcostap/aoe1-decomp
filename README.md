@@ -1,18 +1,7 @@
 # aoe1_attempt3
 
-Agent-first, exact-match decompilation workflow for Age of Empires / Rise of Rome.
-
-This document describes **how the project is supposed to work**.
-
-It is intentionally focused on:
-
-- workflow,
-- repository roles,
-- source-of-truth rules,
-- type/header policy,
-- validation policy.
-
-It is **not** meant to be a running changelog of current progress.
+Decompilation of Age of Empires 1. Specifically, a leaked realease from 1998-07-17, where the Rise of Rome Expansion was still in Beta.
+This release contained the PDB and other goodies, which made this project substantially easier.
 
 ## Core goal
 
