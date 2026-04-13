@@ -2,6 +2,15 @@ Read the README.md file.
 
 After reading the README, follow these working rules.
 
+## Doc split
+
+- `README.md` owns the general repo model: purpose, structure, workflow, and
+  source-of-truth policy for humans and agents alike.
+- `AGENTS.md` owns actionable agent-side rules: how to work, what to try, what to
+  avoid, and how to respond to matching blockers.
+- Do not duplicate README guidance here unless the repetition adds a concrete
+  agent-only constraint or heuristic.
+
 ## Core model
 
 - The project is **function-first** and **exact-match-first**.
@@ -29,6 +38,10 @@ After reading the README, follow these working rules.
 - `src\scratch\...`
   - active per-function work area
   - create or edit one file per target function here
+- `src\almost_matched\...`
+  - intentionally parked non-exact bank
+  - use only for functions that remain non-matching under strict admission rules
+  - these files are **not** done and must not be treated as equivalent to `matching`
 - `src\matching\...`
   - finished bank
   - only promote a function here after local exact-match validation passes
@@ -58,8 +71,54 @@ Practical rule:
 4. Compile and compare against the original.
 5. If compilation or matching work exposes missing shared facts, update the shared working layer.
 6. Keep iterating until the function matches.
-7. Remove scratch-only workflow notes when done.
-8. Move the function to `src\matching\...` only after it is locally validated.
+7. If a function is understood but intentionally parked as non-exact, move it to `src\almost_matched\...` only when the strict admission rules below are satisfied and the required structured header notes are present.
+8. Remove scratch-only workflow notes when done.
+9. Move the function to `src\matching\...` only after it is locally validated.
+
+### Exact-match iteration heuristics
+
+When a function is close but sticky, use these heuristics before escalating to
+toolchain panic or inline asm:
+
+1. If the first mismatch moves deeper, treat that as a real lead and re-anchor on the
+   new mismatch.
+2. Assume semantically equivalent source may still produce very different VC5 codegen.
+3. Explicitly probe named temps versus anonymous/inlined expression shapes.
+4. Explicitly probe statement order, compare operand order, and expression term order.
+5. Re-check local struct/class stubs when a late mismatch survives after control-flow
+   issues are fixed.
+6. Revert failed probes, but remember them as negative evidence in notes or docs.
+7. Prefer a sequence of small controlled probes over large rewrites once the function
+   is size-correct and behaviorally close.
+
+## `almost_matched` admission rules
+
+Agents may move a function from `src\scratch\...` to `src\almost_matched\...` only when **all** of the following are true:
+
+1. The mismatch is **localized and specifically understood**.
+2. Source-shape and plausible flag/toolchain exploration have been meaningfully attempted; this is not just the first failed draft.
+3. Calling convention, stack cleanup, call boundaries, and obvious externally visible behavior still look correct.
+4. The remaining difference is judged **low-risk codegen drift**, such as merged epilogues, harmless register choice drift, or benign block-layout drift.
+5. The remaining difference is **not** a changed predicate, changed call set, changed memory effect, changed copy size, or another behavior-sensitive divergence.
+6. The file carries a structured header that explains why it was parked.
+
+Required structured header for `src\almost_matched\...`:
+
+```c
+// STATUS: almost_matched
+// CLASS: <short mismatch class>
+// RISK: <low|medium|high>
+// WHY: <why this is understood and parked>
+// NEXT: <what would justify revisiting it>
+```
+
+Optional additional notes may still use:
+
+```c
+// FLAGS: ...
+// BLOCKER: ...
+// NOTE: ...
+```
 
 ## How to use the generated reference layer
 
@@ -270,6 +329,11 @@ Agents should react to real problems pragmatically:
 - ordinary tiny mismatch -> remember that old compilers can generate meaningfully
   different code for semantically equivalent source shapes, so keep exploring
   alternative source-level formulations before giving up.
+- progress deeper into the function is a useful signal; a later first mismatch often
+  means the current source theory is partly correct even when the function is still
+  non-exact.
+- when a function finally matches after a non-obvious lesson, update the docs with the
+  reusable rule instead of leaving it as session-only memory.
 
 Do not get stuck because the initial scaffold is imperfect.
 The scaffold is expected to improve through normal decomp work.
@@ -277,6 +341,7 @@ The scaffold is expected to improve through normal decomp work.
 ## Matching discipline
 
 - A function in `src\matching\...` is a claim that it is done.
+- A function in `src\almost_matched\...` is a claim that it is intentionally parked, understood, and still non-exact.
 - Do not promote speculative or still-mismatching code there.
 - Do not promote an ordinary function there if it still relies on inline asm as
   a temporary matching crutch.
@@ -288,6 +353,7 @@ The scaffold is expected to improve through normal decomp work.
 - `inventory\...` = generated reference
 - `include\...` + `src\game_globals.cpp` = living shared source
 - `src\scratch\...` = active work area
+- `src\almost_matched\...` = understood non-exact parking area
 - `src\matching\...` = finished validated bank
 
 Agents should be conservative about layout, flexible about workflow, and willing to correct earlier mistakes as soon as the function-level evidence says they should.

@@ -31,6 +31,21 @@ The project is **not** organized around “make the game build first.”
 
 It is organized around **exact-match function work**.
 
+## Matching work is iterative
+
+Exact-match work is iterative, evidence-driven, and often sensitive to tiny
+source-shape differences under the pinned historical compiler. Progress is not
+only “match” versus “no match”; moving the first mismatch deeper is often a real
+signal that the current source model is getting closer.
+
+General repo-level expectation:
+
+- keep iterating against the binary until a function matches or is intentionally
+  parked under the repo's strict non-exact rules,
+- preserve reusable lessons from real matching work so the workflow improves over
+  time,
+- keep detailed agent heuristics and probe tactics in `AGENTS.md`, not here.
+
 ## Toolchain discipline
 
 The project stays pinned to the configured **VC5 host toolchain** for normal
@@ -74,8 +89,9 @@ The intended model is:
 2. the repo contains committed pregenerated per-function raw packets,
 3. agents read those packets directly,
 4. agents work in per-function scratch sources,
-5. matched functions are promoted into a finished bank,
-6. periodic sweeps revalidate the finished bank.
+5. understood but intentionally parked non-exact functions may be moved into an `almost_matched` bank under strict rules,
+6. matched functions are promoted into a finished bank,
+7. periodic sweeps revalidate the finished bank.
 
 So the repo should carry the raw context needed to start work.
 
@@ -101,6 +117,8 @@ include\
 src\
   scratch\
     <one active source file per function>
+  almost_matched\
+    <understood non-exact source files parked intentionally under strict rules>
   matching\
     <finished exact-match source files>
   game_globals.cpp
@@ -148,6 +166,18 @@ Functions that are:
 - currently being iterated on,
 
 should live here.
+
+### `src\almost_matched\`
+
+This is the intentionally parked non-exact bank.
+
+If a source file is here, the claim is:
+
+- “this function is still non-exact,”
+- “the remaining mismatch is understood and judged low-risk enough to park,”
+- “the file does **not** belong in `matching` yet.”
+
+This is **not** a fuzzy almost-done bucket.
 
 ### `src\matching\`
 
@@ -333,6 +363,7 @@ That means the normal path is:
 
 - create a function source in `src\scratch\`,
 - iterate until it matches,
+- or, if it remains non-exact but is intentionally parked under strict rules, move it into `src\almost_matched\`,
 - promote it into `src\matching\`.
 
 This is a workflow choice, not a permanent promise that the final project will always remain one-file-per-function.
@@ -341,7 +372,7 @@ Later, stable functions may be grouped into larger translation units if that bec
 
 FOR NOW, the **working unit** is one function per source file.
 
-## Scratch vs matching
+## Scratch vs almost_matched vs matching
 
 ### `src\scratch\`
 
@@ -351,6 +382,24 @@ Use this for:
 - blocked work,
 - known-nonmatching work,
 - temporary experiments.
+
+### `src\almost_matched\`
+
+Use this for:
+
+- intentionally parked non-exact work,
+- low-risk and specifically understood compiler/codegen drift,
+- functions you do **not** want to keep actively iterating right now,
+- functions that are still not exact and therefore must **not** live in `src\matching\`.
+
+Admission rules:
+
+1. the mismatch is localized and specifically understood,
+2. meaningful source/flag/toolchain exploration was already attempted,
+3. calling convention, stack cleanup, call boundaries, and obvious external behavior still look correct,
+4. the remaining difference is judged low-risk codegen drift,
+5. the difference is **not** a changed call set, changed memory effect, changed predicate, changed copy size, or another behavior-sensitive divergence,
+6. the file carries the required structured header notes.
 
 ### `src\matching\`
 
@@ -364,11 +413,11 @@ Folder location is the claim.
 
 No extra “finished” flag is required.
 
-## Structured top comments in scratch files
+## Structured top comments in scratch and almost_matched files
 
 There is **no separate JSON scratch-state sidecar**.
 
-Instead, the scratch source file itself is the working notebook.
+Instead, the source file itself is the working notebook.
 
 Active scratch files should be allowed to carry a compact structured header block such as:
 
@@ -391,6 +440,26 @@ This is where agents put:
 These notes do **not** need to be queryable beyond simple scraping if desired.
 
 The source file itself is the detailed status record for active work.
+
+Files in `src\almost_matched\` should carry a stricter structured header:
+
+```c
+// STATUS: almost_matched
+// CLASS: <short mismatch class>
+// RISK: <low|medium|high>
+// WHY: <why the remaining difference is understood and parked>
+// NEXT: <what would justify revisiting it>
+```
+
+Optional additional lines may still use:
+
+```c
+// FLAGS: ...
+// BLOCKER: ...
+// NOTE: ...
+```
+
+An agent must **not** move a file into `src\almost_matched\` unless that header is present and truthful.
 
 ## Comments inside the function body
 
@@ -834,17 +903,19 @@ It should be regenerated by a script that looks at:
 
 - `inventory\all_functions.csv`,
 - files present in `src\scratch\`,
+- files present in `src\almost_matched\`,
 - files present in `src\matching\`,
-- optionally the structured top comments in scratch files.
+- optionally the structured top comments in scratch / almost_matched files.
 
 It should answer questions like:
 
 - how much is left,
 - what functions are left,
 - which functions are in scratch,
+- which functions are in almost_matched,
 - which are in matching,
 - which are the largest remaining,
-- which scratch files currently declare blockers,
+- which non-matching files currently declare blockers,
 - which functions use custom flags.
 
 This CSV is a **computed dashboard**, not a hand-maintained source of truth.
@@ -864,6 +935,7 @@ An agent working on one function runs the exact-match loop for that function and
 The promotion rule is:
 
 - a function should only move from `src\scratch\` to `src\matching\` after local exact-match validation passes.
+- a function may move from `src\scratch\` to `src\almost_matched\` only when the strict `almost_matched` admission rules are satisfied and the required structured header notes are present.
 - an ordinary function that still depends on inline asm as a temporary matching
   aid should stay in `src\scratch\...` until a non-asm source-level match is
   found.
@@ -919,8 +991,9 @@ The intended workflow is:
 5. keep tentative declarations local when necessary, especially one-off partial class/type stubs,
 6. run the exact-match loop,
 7. remove scratch-only status/decomp notes when complete,
-8. promote the source file into `src\matching\`,
-9. periodically sweep `src\matching\` for regressions.
+8. if the function is intentionally parked as understood non-exact work, move it into `src\almost_matched\` only under the strict admission rules,
+9. otherwise promote the source file into `src\matching\`,
+10. periodically sweep `src\matching\` for regressions.
 
 ## Design summary
 
@@ -930,6 +1003,7 @@ The project is built around these decisions:
 - the repo should contain a committed pregenerated raw corpus for agents,
 - the full function universe should live in a committed inventory,
 - active work lives in `src\scratch\`,
+- intentionally parked non-exact work lives in `src\almost_matched\`,
 - finished work lives in `src\matching\`,
 - scratch files themselves carry temporary status/blocker notes,
 - ordinary functions that still rely on inline asm stay in `src\scratch\` and
@@ -946,3 +1020,5 @@ The project is built around these decisions:
 - `project_full_status.csv` is a regenerated dashboard,
 - `build\` is volatile and ignored,
 - finished-bank validation is separate from the status dashboard.
+- exact-match work should feed back into the docs so the workflow improves as the
+  matching bank grows.

@@ -7,7 +7,7 @@ from pathlib import Path
 from common import REPO_ROOT, load_functions
 
 
-HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z]+):\s*(.*)$")
+HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 
 
 def source_files(path: Path) -> dict[str, Path]:
@@ -22,7 +22,16 @@ def source_files(path: Path) -> dict[str, Path]:
 
 
 def parse_header_notes(path: Path) -> dict[str, str]:
-    notes = {"STATUS": "", "FLAGS": "", "BLOCKER": "", "NOTE": ""}
+    notes = {
+        "STATUS": "",
+        "FLAGS": "",
+        "BLOCKER": "",
+        "NOTE": "",
+        "CLASS": "",
+        "RISK": "",
+        "WHY": "",
+        "NEXT": "",
+    }
     if not path.exists():
         return notes
 
@@ -54,9 +63,11 @@ def rank_map(records: list[dict[str, str]], field: str) -> dict[str, int]:
 
 def main() -> None:
     scratch_dir = REPO_ROOT / "src" / "scratch"
+    almost_matched_dir = REPO_ROOT / "src" / "almost_matched"
     matching_dir = REPO_ROOT / "src" / "matching"
     flags_dir = REPO_ROOT / "config" / "flags"
     scratch_files = source_files(scratch_dir)
+    almost_matched_files = source_files(almost_matched_dir)
     matching_files = source_files(matching_dir)
 
     records = load_functions()
@@ -66,16 +77,22 @@ def main() -> None:
     for record in records:
         slug = record["slug"]
         scratch_path = scratch_files.get(slug)
+        almost_matched_path = almost_matched_files.get(slug)
         matching_path = matching_files.get(slug)
 
-        if scratch_path and matching_path:
+        present_paths = [path for path in (matching_path, almost_matched_path, scratch_path) if path is not None]
+        if len(present_paths) > 1:
             source_bucket = "conflict"
-            source_path = f"{matching_path.relative_to(REPO_ROOT)} | {scratch_path.relative_to(REPO_ROOT)}"
-            note_path = scratch_path
+            source_path = " | ".join(str(path.relative_to(REPO_ROOT)) for path in present_paths)
+            note_path = scratch_path or almost_matched_path
         elif matching_path:
             source_bucket = "matching"
             source_path = str(matching_path.relative_to(REPO_ROOT))
             note_path = None
+        elif almost_matched_path:
+            source_bucket = "almost_matched"
+            source_path = str(almost_matched_path.relative_to(REPO_ROOT))
+            note_path = almost_matched_path
         elif scratch_path:
             source_bucket = "scratch"
             source_path = str(scratch_path.relative_to(REPO_ROOT))
@@ -86,7 +103,16 @@ def main() -> None:
             note_path = None
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
-        header_notes = parse_header_notes(note_path) if note_path is not None else {"STATUS": "", "FLAGS": "", "BLOCKER": "", "NOTE": ""}
+        header_notes = parse_header_notes(note_path) if note_path is not None else {
+            "STATUS": "",
+            "FLAGS": "",
+            "BLOCKER": "",
+            "NOTE": "",
+            "CLASS": "",
+            "RISK": "",
+            "WHY": "",
+            "NEXT": "",
+        }
         is_remaining = "yes" if source_bucket != "matching" else "no"
 
         row = {
@@ -103,10 +129,14 @@ def main() -> None:
             "remaining_asm_rank": "",
             "uses_custom_flags": "yes" if custom_flags_path.exists() else "no",
             "custom_flags_path": str(custom_flags_path.relative_to(REPO_ROOT)) if custom_flags_path.exists() else "",
-            "scratch_status": header_notes["STATUS"],
-            "scratch_flags_note": header_notes["FLAGS"],
-            "scratch_blocker": header_notes["BLOCKER"],
-            "scratch_note": header_notes["NOTE"],
+            "source_status": header_notes["STATUS"],
+            "source_flags_note": header_notes["FLAGS"],
+            "source_blocker": header_notes["BLOCKER"],
+            "source_note": header_notes["NOTE"],
+            "source_class": header_notes["CLASS"],
+            "source_risk": header_notes["RISK"],
+            "source_why": header_notes["WHY"],
+            "source_next": header_notes["NEXT"],
             "has_blocker": "yes" if header_notes["BLOCKER"] else "no",
         }
         rows.append(row)
@@ -138,10 +168,14 @@ def main() -> None:
                 "remaining_asm_rank",
                 "uses_custom_flags",
                 "custom_flags_path",
-                "scratch_status",
-                "scratch_flags_note",
-                "scratch_blocker",
-                "scratch_note",
+                "source_status",
+                "source_flags_note",
+                "source_blocker",
+                "source_note",
+                "source_class",
+                "source_risk",
+                "source_why",
+                "source_next",
                 "has_blocker",
             ],
         )
@@ -149,6 +183,7 @@ def main() -> None:
         writer.writerows(rows)
 
     scratch_count = sum(1 for row in rows if row["source_bucket"] == "scratch")
+    almost_matched_count = sum(1 for row in rows if row["source_bucket"] == "almost_matched")
     matching_count = sum(1 for row in rows if row["source_bucket"] == "matching")
     conflict_count = sum(1 for row in rows if row["source_bucket"] == "conflict")
     unclaimed_count = sum(1 for row in rows if row["source_bucket"] == "unclaimed")
@@ -157,6 +192,7 @@ def main() -> None:
     print(
         "Counts: "
         f"matching={matching_count} "
+        f"almost_matched={almost_matched_count} "
         f"scratch={scratch_count} "
         f"unclaimed={unclaimed_count} "
         f"conflict={conflict_count}"
