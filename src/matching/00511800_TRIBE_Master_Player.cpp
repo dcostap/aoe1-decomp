@@ -6,8 +6,7 @@ public:
 
 class TRIBE_Master_Player : public BaseClass {
 public:
-    virtual ~TRIBE_Master_Player();
-    char gap_0[0x29];
+    char gap_4[0x25];
     unsigned char field_29;
 
     TRIBE_Master_Player(int param);

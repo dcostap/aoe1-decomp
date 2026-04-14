@@ -1,1 +1,3 @@
-/nologo /c /O2
+/nologo
+/c
+/O2

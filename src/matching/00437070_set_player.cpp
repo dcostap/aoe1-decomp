@@ -1,4 +1,4 @@
-class TTextPanel {
+class TRIBE_Gaia {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -9,13 +9,12 @@ public:
     virtual void vf18();
     virtual void vf1C();
     virtual void notify(int param);
-    char gap_0[0x160];
-    int field_160;
-
-    void set_second_column_pos(int value);
+    char gap_4[0xF2];
+    int field_F8;
+    void set_player(int value);
 };
 
-void TTextPanel::set_second_column_pos(int value) {
-    this->field_160 = value;
-    this->notify(1);
+void TRIBE_Gaia::set_player(int value) {
+    this->field_F8 = value;
+    this->notify(2);
 }
