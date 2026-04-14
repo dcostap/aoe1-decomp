@@ -277,6 +277,9 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
       line-height: 1.25;
       cursor: default;
     }}
+    .node.function.openable {{
+      cursor: pointer;
+    }}
     .node-content {{
       padding: 6px;
       width: 100%;
@@ -309,23 +312,9 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
     }}
     .preview-content {{
       position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 140ms ease;
-      overflow: hidden;
-    }}
-    .preview-child .node-content {{
-      opacity: 0;
-    }}
-    .preview-group:hover > .group-label {{
-      opacity: 0;
-    }}
-    .preview-group:hover > .preview-content {{
       opacity: 1;
       pointer-events: auto;
-    }}
-    .preview-group:hover > .preview-content .preview-child .node-content {{
-      opacity: 1;
+      overflow: hidden;
     }}
     .node.group:hover,
     .node.function:hover {{
@@ -709,11 +698,21 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
         <div class="muted">${{escapeHtml(child.source_path || "(no source file in repo)")}}</div>
         ${{child.note ? `<div>${{escapeHtml(child.note)}}</div>` : ""}}
         ${{child.blocker ? `<div><strong>BLOCKER:</strong> ${{escapeHtml(child.blocker)}}</div>` : ""}}
+        ${{child.source_path ? `<div class="muted">Click to open this generated source file.</div>` : ""}}
       `;
+    }}
+
+    function toRepoFileUrl(relativePath) {{
+      const normalized = String(relativePath || "").replace(/\\\\/g, "/");
+      if (!normalized) {{
+        return "";
+      }}
+      return new URL(normalized, window.location.href).href;
     }}
 
     function renderFunctionTiles(parent, group, rect, options = {{}}) {{
       const revealOnParentHover = Boolean(options.revealOnParentHover);
+      const openSourceOnClick = Boolean(options.openSourceOnClick);
       const tiles = squarify(group.children, rect);
       for (const entry of tiles) {{
         const child = entry.item;
@@ -723,15 +722,28 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
         }}
         const bucketColor = summary.bucketColors[child.bucket] || "#555";
         const showLabel = childRect.width > 90 && childRect.height > 42;
-        const compactLabel = !showLabel && childRect.width > 50 && childRect.height > 18;
+        const compactNameLabel = !showLabel && childRect.width > 64 && childRect.height > 24;
+        const compactLabel = !showLabel && !compactNameLabel && childRect.width > 50 && childRect.height > 18;
         const label = showLabel
           ? `<div>${{escapeHtml(child.va)}}</div><div>${{escapeHtml(child.name)}}</div><div class="meta">${{formatNumber(child.value)}} bytes</div>`
+          : compactNameLabel
+            ? `<div>${{escapeHtml(child.va)}}</div><div class="meta">${{escapeHtml(child.name)}}</div>`
           : compactLabel
             ? `<div>${{escapeHtml(child.va)}}</div>`
             : "";
         const node = addNode(parent, "function", childRect, label, bucketColor);
         if (revealOnParentHover) {{
           node.classList.add("preview-child");
+        }}
+        if (openSourceOnClick && child.source_path) {{
+          node.classList.add("openable");
+          node.addEventListener("click", (event) => {{
+            event.stopPropagation();
+            const url = toRepoFileUrl(child.source_path);
+            if (url) {{
+              window.open(url, "_blank", "noopener");
+            }}
+          }});
         }}
         if (childRect.width < 12 || childRect.height < 12) {{
           node.classList.add("tiny");
@@ -755,8 +767,8 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
       const activeGroup = activeGroupName ? groups.find((group) => group.name === activeGroupName) : null;
 
       if (activeGroup) {{
-        breadcrumb.textContent = `Viewing ${{activeGroup.name}} — click empty background to reset.`;
-        renderFunctionTiles(container, activeGroup, {{ x: 0, y: 0, width, height }});
+        breadcrumb.textContent = `Viewing ${{activeGroup.name}} — click a function tile to open its current file, or click empty background to reset.`;
+        renderFunctionTiles(container, activeGroup, {{ x: 0, y: 0, width, height }}, {{ openSourceOnClick: true }});
         return;
       }}
 

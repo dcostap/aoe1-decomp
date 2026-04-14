@@ -80,7 +80,7 @@ Practical rule:
 ### Exact-match iteration heuristics
 
 When a function is close but sticky, use these heuristics before escalating to
-toolchain panic or inline asm:
+toolchain panic or parking:
 
 1. If the first mismatch moves deeper, treat that as a real lead and re-anchor on the
    new mismatch.
@@ -354,35 +354,28 @@ of the original source was handwritten versus compiler-emitted.
 
 ## Inline asm policy
 
-Inline asm is a **last resort**, not a normal matching tool.
+Inline asm is **forbidden** in this repo.
 
-For ordinary functions, agents should first fight through:
+That ban includes:
 
-- declaration context,
-- return type/shape,
-- source expression shape,
-- materially different but semantically equivalent source spellings,
-- especially forms that materialize results differently,
-- C vs C++ frontend differences,
-- and reasonable flag differences,
+- `__asm`
+- `_asm`
+- `__declspec(naked)`
+- hand-written asm wrappers
+- any other source-level trick whose purpose is to smuggle raw asm into a matched file
 
-before accepting inline asm.
+If a function only seems to match with inline asm, treat that as proof that the
+current source model is still wrong, incomplete, or not yet ready for promotion.
 
-Inline asm is most acceptable when the original function plausibly looks like:
+When that happens:
 
-- hand-written low-level helper code,
-- compiler/runtime support glue,
-- or another function whose original source likely was already very close to raw asm.
+- keep the function in `src\scratch\...`,
+- continue source-shape / declaration / type / flag investigation if there is a
+  real next lead,
+- otherwise park it under the normal repo rules,
+- but do **not** use inline asm to force it through.
 
-For small ordinary gameplay/utility functions, inline asm should be treated as a
-warning sign that the current source model is still wrong.
-
-For ordinary functions:
-
-- do **not** mark the function finished while it still depends on inline asm,
-- keep it in `src\scratch\...`,
-- and leave comments in the scratch file explaining why it is still draft,
-  what was tried, and which source-shape alternatives still remain to test.
+No function may be promoted with inline asm still present.
 
 ## Per-function flags policy
 
@@ -427,7 +420,7 @@ Agents should react to real problems pragmatically:
 - compile failure -> narrow the issue and fix the smallest correct surface,
 - mismatch -> prefer binary-observed behavior over prettier source.
 - compiler-generated-looking helper -> prefer a plain explicit implementation that matches the helper pattern over depending on hidden compiler synthesis.
-- ordinary function that only matches with inline asm -> investigate source shape, declaration context, and flags before accepting the asm workaround.
+- ordinary function that seems to need inline asm -> investigate source shape, declaration context, and flags, or keep it parked; do not bypass the problem with asm.
 - ordinary tiny mismatch -> remember that old compilers can generate meaningfully
   different code for semantically equivalent source shapes, so keep exploring
   alternative source-level formulations before giving up.
@@ -445,10 +438,28 @@ The scaffold is expected to improve through normal decomp work.
 - A function in `src\matching\...` is a claim that it is done.
 - A function in `src\almost_matched\...` is a claim that it is intentionally parked, understood, and still non-exact.
 - Do not promote speculative or still-mismatching code there.
-- Do not promote an ordinary function there if it still relies on inline asm as
-  a temporary matching crutch.
+- Do not promote any function there if it contains inline asm or another
+  source-level hack added only to make the parity check pass.
+- Do not use hacks whose only purpose is to turn the check green while dodging
+  the real source-level problem.
 - Keep blocker notes and scratch workflow notes in `src\scratch\...` while a function is active.
 - Remove scratch-only notes before or during promotion.
+
+## Orchestrator promotion review
+
+If you are orchestrating child agents or reviewing branch-local work before it
+lands in the main tree:
+
+- do **not** trust a child agent's “matched” claim blindly,
+- read every incoming `.cpp` file yourself before moving it into
+  `src\matching\...`,
+- review any paired `config\flags\...rsp` file too,
+- verify the file did not break repo rules,
+- verify it does not use inline asm,
+- verify it is not relying on a green-check hack,
+- and only then run the normal validation loop and promote it.
+
+Promotion into `src\matching\...` is a review decision, not a blind file copy.
 
 ## Final mindset
 
