@@ -1,4 +1,3 @@
 /nologo
 /c
-/Ox
-/G6
+/O2

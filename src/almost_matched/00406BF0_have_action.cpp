@@ -1,20 +1,24 @@
 // STATUS: almost_matched
-// CLASS: boolean-conversion-idiom
+// CLASS: setcc codegen mismatch
 // RISK: low
-// WHY: VC5 generates neg/sbb/neg for != 0 but original uses test al,al;setne al — identical semantics
-// NEXT: investigate TU context or older compiler version
-class MemberType {
+// WHY: VC5 generates neg/sbb/neg (6 bytes) instead of test/setne (5 bytes) for bool conversion.
+//      All flag combinations and source shapes tested. Semantically identical.
+// NEXT: TU context investigation or compiler service pack change
+// FLAGS: config\flags\00406BF0_have_action.rsp
+
+class RGE_Action_List {
 public:
-    unsigned char target_method();
+    unsigned char have_action();
 };
 
 class RGE_Action_Object {
 public:
     char gap_0[0x184];
-    MemberType* member_184;
+    RGE_Action_List* actions;
+
     unsigned char have_action();
 };
 
 unsigned char RGE_Action_Object::have_action() {
-    return this->member_184->target_method() != 0;
+    return this->actions->have_action() != 0;
 }
