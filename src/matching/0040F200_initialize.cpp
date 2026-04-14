@@ -1,10 +1,5 @@
-// AIPlayPhase::initialize
-// Loops: zero 5 bytes at offsets +1, +11, +21, +31, +41 (stride 0x10)
-// Then zero 3 bytes at offsets +50, +64, +78 (stride 0x14)
-// No params, no return, __thiscall
-
 struct AIPlayPhase {
-    char data[0x100]; // placeholder
+    char data[0x100];
 };
 
 void __fastcall initialize(AIPlayPhase* self, int) {

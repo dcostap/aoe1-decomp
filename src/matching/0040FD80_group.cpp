@@ -1,8 +1,3 @@
-// AIPlayStatus::group
-// Searches 0x32 (50) entries of 8-byte records for matching id
-// Returns group byte if found, 0xFF if not found or id < 0
-// ret 4 = 1 param
-
 #pragma pack(push, 1)
 struct AIPlayStatusEntry {
     int id;

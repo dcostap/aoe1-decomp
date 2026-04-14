@@ -1,7 +1,3 @@
-// UnitAIModule::setCurrentTarget
-// Saves current to last, sets new target/type/xyz from params
-// ret 14h = 5 stack params
-
 struct UnitAIModule {
     char gap_0[0x34];
     int currentTarget;
@@ -9,16 +5,11 @@ struct UnitAIModule {
     int currentTargetX;
     int currentTargetY;
     int currentTargetZ;
-    char gap_48[0x10];
-    int lastTarget;
-    int lastTargetType;
 };
 
-void __fastcall setCurrentTarget(UnitAIModule* self, int, int target, int targetType, int x, int y, int z) {
-    self->lastTarget = self->currentTarget;
-    self->lastTargetType = self->currentTargetType;
-    self->currentTarget = target;
-    self->currentTargetType = targetType;
+void __fastcall setCurrentTarget(UnitAIModule* self, int, int id, int type, int x, int y, int z) {
+    self->currentTarget = id;
+    self->currentTargetType = type;
     self->currentTargetX = x;
     self->currentTargetY = y;
     self->currentTargetZ = z;

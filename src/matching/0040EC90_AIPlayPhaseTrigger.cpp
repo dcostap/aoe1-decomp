@@ -1,6 +1,3 @@
-// AIPlayPhaseTrigger constructor
-// ret 18h = 6 stack params + this in ecx
-
 struct AIPlayPhaseTrigger {
     unsigned char field_0;
     char gap_1[3];
@@ -12,7 +9,7 @@ struct AIPlayPhaseTrigger {
     int field_10;
 };
 
-AIPlayPhaseTrigger* __fastcall AIPlayPhaseTrigger_ctor(AIPlayPhaseTrigger* self, int /*edx*/, unsigned char p1, int p2, int p3, unsigned char p4, unsigned char p5, int p6) {
+AIPlayPhaseTrigger* __fastcall AIPlayPhaseTrigger_ctor(AIPlayPhaseTrigger* self, int, unsigned char p1, int p2, int p3, unsigned char p4, unsigned char p5, int p6) {
     self->field_0 = p1;
     self->field_4 = p2;
     self->field_8 = p3;

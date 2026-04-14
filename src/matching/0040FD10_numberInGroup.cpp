@@ -1,9 +1,3 @@
-// AIPlayStatus::numberInGroup
-// Iterates 0x32 (50) entries of 8-byte records
-// Each record: int id@0, uchar group@4
-// Counts records where id != -1 and group == param
-// ret 4 = 1 param
-
 #pragma pack(push, 1)
 struct AIPlayStatusEntry {
     int id;

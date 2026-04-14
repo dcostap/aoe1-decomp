@@ -1,8 +1,4 @@
-// get_string (0041C9C0) - basegame.cpp
-// Loads a string from the language resource DLL
-
 typedef int (__stdcall *LoadStringFunc)(void*, int, char*, int);
-
 extern void* DAT_0062c4a0;
 extern LoadStringFunc FN_0088a818;
 

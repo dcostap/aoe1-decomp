@@ -1,7 +1,3 @@
-// AIPlayPhaseCommand::addTargetType
-// Searches 5 bytes at offset +0x44 for empty slot (0 or 5), writes value
-// ret 4 = 1 param
-
 struct AIPlayPhaseCommand {
     char gap_0[0x44];
     unsigned char targetTypes[5];

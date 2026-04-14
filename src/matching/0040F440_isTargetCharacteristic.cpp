@@ -1,7 +1,3 @@
-// AIPlayPhaseCommand::isTargetCharacteristic
-// Searches 5 bytes at offset +0x49 for matching value
-// ret 4 = 1 param
-
 struct AIPlayPhaseCommand {
     char gap_0[0x49];
     unsigned char targetCharacteristics[5];
