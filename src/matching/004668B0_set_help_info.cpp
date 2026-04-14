@@ -1,0 +1,12 @@
+class TPanel {
+public:
+    char gap_0[0xE4];
+    int field_E4;
+    int field_E8;
+    void set_help_info(int a, int b);
+};
+
+void TPanel::set_help_info(int a, int b) {
+    this->field_E4 = a;
+    this->field_E8 = b;
+}
