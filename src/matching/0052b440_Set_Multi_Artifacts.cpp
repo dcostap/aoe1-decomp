@@ -1,0 +1,28 @@
+class T_Scenario {
+public:
+    virtual ~T_Scenario();
+    char gap_04[0x1A8C];
+    int MP_Conquest_;
+    int MP_Ruins_;
+    int MP_Artifacts_;
+    int MP_Discoveries_;
+    int MP_Exploration_;
+    int MP_Gold_;
+    char gap_1AA8[0x3100];
+    int AlliedVictory_[16];
+    int victory_all_flag_;
+    char gap_4BEC[4];
+    int which_player_;
+    char gap_4BF4[0x500];
+    int ScenarioOptions_[3];
+    int PlayerAge_[16];
+    int mp_victory_type_;
+    int victory_score_;
+    int victory_time_;
+
+    void Set_Multi_Artifacts(int v);
+};
+
+void T_Scenario::Set_Multi_Artifacts(int v) {
+    this->MP_Artifacts_ = v;
+}

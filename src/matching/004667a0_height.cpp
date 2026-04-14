@@ -1,0 +1,23 @@
+class TPanel {
+public:
+    virtual ~TPanel();
+    int previousPanel_;
+    int previousModalPanel_;
+    int pnl_x_;
+    int pnl_y_;
+    int pnl_wid_;
+    int pnl_hgt_;
+    int panelName_;
+    int render_area_;
+    char gap_24[0x54];
+    int have_focus_;
+    char gap_7C[0x68];
+    int help_string_id_;
+    int help_page_id_;
+
+    int height();
+};
+
+int TPanel::height() {
+    return this->pnl_hgt_;
+}
