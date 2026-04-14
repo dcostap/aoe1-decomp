@@ -1,10 +1,3 @@
-// STATUS: almost_matched
-// CLASS: backend_epilogue_merge
-// RISK: low
-// WHY: After matching the float compares, random-coordinate arithmetic, allocation size, and sub-action update test shape under /O2 /GX, the remaining drift is a localized VC5 backend tail merge: the case-3 post-add_action set_state(4) path still shares the final virtual-call/return tail with the case-6 set_state(3) path, leaving the rebuilt body 11 bytes short while predicates, calls, and memory effects stay aligned.
-// NEXT: Revisit only if a tighter source-shape trick or a closer VC5-family backend can preserve the duplicated early-return tail without regressing the now-matching arithmetic and compare blocks.
-// FLAGS: config\flags\00402180_update.rsp
-
 class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Action;
@@ -146,23 +139,6 @@ unsigned char RGE_Action_Bird::update(void) {
     }
 
     switch (this->state) {
-    case 1:
-        return 1;
-
-    case 3:
-        move_random = this->obj->owner->bird_data->move_random;
-        this->target_x = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 0x84) * move_random->x) / 0x7FFF);
-        this->target_y = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 0x85) * move_random->y) / 0x7FFF);
-        this->target_z = this->obj->world_z;
-        move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->obj->sprite);
-        if (move_to == 0) {
-            this->set_state(3);
-            return 0;
-        }
-        this->sub_actions->add_action(move_to);
-        this->set_state(4);
-        return 0;
-
     case 4:
         if (this->timer <= bird_update_zero) {
             this->set_state(6);
@@ -182,6 +158,23 @@ unsigned char RGE_Action_Bird::update(void) {
         }
         this->set_state(3);
         return 0;
+
+    case 3:
+        move_random = this->obj->owner->bird_data->move_random;
+        this->target_x = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 0x84) * move_random->x) / 0x7FFF);
+        this->target_y = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 0x85) * move_random->y) / 0x7FFF);
+        this->target_z = this->obj->world_z;
+        move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range, this->obj->sprite);
+        if (move_to == 0) {
+            this->set_state(3);
+            return 0;
+        }
+        this->sub_actions->add_action(move_to);
+        this->set_state(4);
+        return 0;
+
+    case 1:
+        return 1;
     }
 
     return 0;
