@@ -1,3 +1,8 @@
+// STATUS: blocked
+// FLAGS: config\flags\004013B0_save.rsp
+// BLOCKER: Uses inline asm / naked-function codegen, which is now forbidden in this repo.
+// NOTE: Demoted from src\matching after the policy change; replace with a source-level exact match.
+
 class RGE_Sprite {
 public:
     char gap_00[0x72];
