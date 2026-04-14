@@ -92,12 +92,13 @@ toolchain panic or parking:
 6. Revert failed probes, but remember them as negative evidence in notes or docs.
 7. Prefer a sequence of small controlled probes over large rewrites once the function
    is size-correct and behaviorally close.
-8. Do **not** trust decompiler switch-case order by default. If a switch is
-   behaviorally right but still has stubborn block-layout or tail-sharing drift,
-   inspect the original object layout and jump-table landing order, then try
-   reordering the source cases **without changing their bodies**. A real exact-match
-   win now backs this: matching the original lexical case order (`4, 6, 3, 1`)
-   solved a sticky VC5 tail-sharing mismatch that multiple control-flow and
+8. Do **not** trust decompiler source ordering or factoring by default. If a
+   function is behaviorally right but still has stubborn block-layout or
+   tail-sharing drift, inspect the original object layout, block placement, and
+   jump-table landing order, then try reordering the source **without changing
+   the bodies** of the affected blocks/arms/cases. A real exact-match win now
+   backs this: matching the original lexical order (`4, 6, 3, 1`) solved a
+   sticky VC5 tail-sharing mismatch that multiple control-flow and
    expression-shape tricks did not.
 
 #### VC5-specific expression-shape hints
