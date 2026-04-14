@@ -1,0 +1,12 @@
+class Base_RGE_Master_Missile_Object {
+public:
+    virtual ~Base_RGE_Master_Missile_Object();
+};
+
+class RGE_Master_Missile_Object : public Base_RGE_Master_Missile_Object {
+public:
+    virtual ~RGE_Master_Missile_Object();
+};
+
+RGE_Master_Missile_Object::~RGE_Master_Missile_Object() {
+}
