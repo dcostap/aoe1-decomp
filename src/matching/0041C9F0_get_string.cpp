@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\0041C9F0_get_string.rsp
-
 class RGE_Base_Game {
 public:
     virtual void vf00();

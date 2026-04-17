@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00422E10_get_countdown_timer.rsp
-
 class RGE_Base_Game {
 public:
     char gap_0[0x9D8];

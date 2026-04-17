@@ -28,5 +28,7 @@ public:
 };
 
 void RGE_Player::set_color_table(unsigned char param) {
-    color_table = world->color_tables[param];
+    RGE_Game_World* w = this->world;
+    unsigned int index = (unsigned int)param & 0xFF;
+    this->color_table = w->color_tables[index];
 }

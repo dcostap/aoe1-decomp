@@ -1,4 +1,3 @@
-// STATUS: scratch
 void __cdecl operator_delete(void* p);
 
 class RGE_Command {

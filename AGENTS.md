@@ -387,22 +387,38 @@ No function may be promoted with inline asm still present.
 
 ## Per-function flags policy
 
-Custom per-function response files are acceptable during the current
-match-harvesting phase, but they are **exceptions**, not the final project
-shape.
+The project has a **standard default flag set**. Per-function response files are
+allowed only as **last-resort exceptions** during active matching work, not as a
+normal tuning tool.
 
-Agents should:
+Agents should assume this by default:
 
-- prefer the default project flags when they work,
-- add custom per-function flags only when needed to make progress,
-- keep those custom flags as small and explainable as possible,
-- and treat them as candidates for later convergence.
+- if a function does not match, the first theory should be **source/type/layout
+  is still wrong**, not “try a new flag”,
+- prefer fixing declarations, struct layouts, calling context, control-flow
+  shape, statement order, and expression shape before touching flags,
+- treat custom flags as a sign that the current source model may still be
+  incomplete unless there is strong evidence the flag itself is genuinely
+  required,
+- avoid using flag changes as procrastination or as a substitute for finding the
+  real source-level fix,
+- prefer the default project flags whenever they work,
+- add custom per-function flags only when needed to make progress after
+  meaningful source-shape investigation,
+- keep those custom flags as small, rare, and explainable as possible,
+- and re-test old custom flags periodically because many of them become
+  unnecessary once the real source/type fix lands.
+
+Promotion rule:
+
+- do **not** keep a custom rsp file for a finished function unless the function
+  has been re-tested without it and the default flags truly fail.
 
 The long-term goal is not a chaotic forever-build with arbitrary flags per
 function. The long-term goal is:
 
-- a mostly coherent project-wide baseline,
-- plus a shrinking set of justified exceptions,
+- one coherent project-wide baseline,
+- plus a small and shrinking set of justified exceptions,
 - eventually regrouped at sensible translation-unit boundaries when the project
   leaves the pure harvesting phase.
 

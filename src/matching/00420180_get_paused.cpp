@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00420180_get_paused.rsp
-
 struct CommsHandler {
     int get_paused();
 };

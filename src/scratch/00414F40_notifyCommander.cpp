@@ -1,25 +1,35 @@
-struct NotifyArgs {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
+struct NotifyEvent {
+    int caller;
+    int recipient;
+    int mType;
+    int p1;
+    int p2;
+    int p3;
 };
 
-struct Commander {
-    int vfptr;
+struct CommanderDispatch {
+    void* vf00;
+    void* vf04;
+    void* vf08;
+    void* vf0C;
+    void* vf10;
+    void* vf14;
+    int (__stdcall *notify)(int, int, int, int, int, int);
 };
 
-struct SomeModule {
-    char gap_0[0xB4];
-    Commander* commander;
+class UnitAIModule {
+public:
+    int notifyCommander(NotifyEvent* event);
+    CommanderDispatch* dispatch;
 };
 
-void __fastcall notifyCommander(SomeModule* self, int, NotifyArgs* args) {
-    Commander* cmd = self->commander;
-    if (cmd) {
-        void (__stdcall **vtbl)(Commander*, int, int, int, int, int, int) = (void (__stdcall **)(Commander*, int, int, int, int, int, int))*(int*)cmd;
-        vtbl[6](cmd, args->field_0, args->field_4, args->field_8, args->field_C, args->field_10, args->field_14);
-    }
+int UnitAIModule::notifyCommander(NotifyEvent* event) {
+    return this->dispatch->notify(
+        event->caller,
+        event->recipient,
+        event->mType,
+        event->p1,
+        event->p2,
+        event->p3
+    );
 }

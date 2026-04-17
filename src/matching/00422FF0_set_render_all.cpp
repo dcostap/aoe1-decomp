@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00422FF0_set_render_all.rsp
-
 struct GlobalRenderObj {
     void invalidate_all();
 };

@@ -1,8 +1,3 @@
-// STATUS: blocked
-// FLAGS: config\flags\004014B0_first_in_stack.rsp
-// BLOCKER: Uses inline asm / naked-function codegen, which is now forbidden in this repo.
-// NOTE: Demoted from src\matching after the policy change; replace with a source-level exact match.
-
 class UnitAIModule;
 class RGE_Action_Object;
 

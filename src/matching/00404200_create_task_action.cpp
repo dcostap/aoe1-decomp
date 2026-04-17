@@ -1,8 +1,3 @@
-// STATUS: blocked
-// FLAGS: config\flags\00404200_create_task_action.rsp
-// BLOCKER: Uses inline asm / naked-function codegen, which is now forbidden in this repo.
-// NOTE: Demoted from src\matching after the policy change; replace with a source-level exact match.
-
 class RGE_Action;
 class RGE_Action_Object;
 class RGE_Master_Combat_Object;

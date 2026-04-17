@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\004220D0_send_game_options.rsp
-
 struct CommsHandler {
     void send_options(void* data, int size);
 };

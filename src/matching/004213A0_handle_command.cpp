@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\004213A0_handle_command.rsp
-
 class RGE_Base_Game {
 public:
     virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();

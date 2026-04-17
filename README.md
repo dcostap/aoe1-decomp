@@ -23,6 +23,10 @@ The basic unit of work is a function:
 
 VC5-era Microsoft toolchain, pinned through `config\toolchain.json`.
 
+The build policy is to use one standard default compiler flag set for normal
+work. Per-function flag overrides are exceptions and should be rare, justified,
+and revisited after source-level fixes land.
+
 - compiler: `C:\Program Files (x86)\DevStudio\VC\Bin\CL.EXE`
 - linker: `C:\Program Files (x86)\DevStudio\VC\Bin\LINK.EXE`
 - nmake: `C:\Program Files (x86)\DevStudio\VC\Bin\NMAKE.EXE`

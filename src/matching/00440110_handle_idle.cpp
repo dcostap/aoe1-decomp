@@ -1,6 +1,3 @@
-// STATUS: wip
-// FLAGS: config\flags\00440110_handle_idle.rsp
-
 class RGE_Base_Game {
 public:
     char gap_0[0x1D8];

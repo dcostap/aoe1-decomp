@@ -1,7 +1,3 @@
-// STATUS: matched
-// FLAGS: config\flags\00402F30_RGE_Action_Gather.rsp
-// NOTE: Exact match verified; left in scratch per task request.
-
 class RGE_Action {
 public:
     virtual ~RGE_Action();

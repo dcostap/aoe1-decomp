@@ -1,18 +1,24 @@
-struct GathererEntry {
-    char data[24];
+struct UnitData {
+    int id;
+    char data[0x14];
 };
 
-struct TribeTacticalAIModule {
-    char gap_0[0x51C];
-    GathererEntry gatherers[50];
-    char gap_after[0x100];
-    int numberGatherers;
+class TribeTacticalAIModule {
+public:
+    UnitData* gatherer(int unitId);
+    char gap_00[0x51C];
+    UnitData gatherers[50];
 };
 
-GathererEntry* __fastcall gatherer(TribeTacticalAIModule* self, int, int index) {
-    if (index < 0)
-        return 0;
-    if (index >= self->numberGatherers)
-        return 0;
-    return &self->gatherers[index];
+UnitData* TribeTacticalAIModule::gatherer(int unitId) {
+    int i = 0;
+    int* p = (int*)((char*)this + 0x51C);
+    do {
+        if (*p == unitId) {
+            return (UnitData*)((char*)this + 0x51C + i * 0x18);
+        }
+        ++i;
+        p = (int*)((char*)p + 0x18);
+    } while (i < 0x32);
+    return 0;
 }

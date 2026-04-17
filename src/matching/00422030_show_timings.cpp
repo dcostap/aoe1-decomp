@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00422030_show_timings.rsp
-
 extern "C" __declspec(dllimport) int __stdcall SetWindowTextA(void* hWnd, const char* lpString);
 
 class RGE_Base_Game {

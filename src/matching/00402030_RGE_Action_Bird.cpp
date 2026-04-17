@@ -1,7 +1,3 @@
-// STATUS: matched
-// FLAGS: config\flags\00402030_RGE_Action_Bird.rsp
-// NOTE: Exact match verified; left in scratch per task request.
-
 class RGE_Action {
 public:
     virtual ~RGE_Action();

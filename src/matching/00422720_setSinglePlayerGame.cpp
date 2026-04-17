@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00422720_setSinglePlayerGame.rsp
-
 class RGE_Base_Game {
 public:
     char gap_0[0x97D];

@@ -6,8 +6,8 @@ public:
 class TMusic_System : public Base_TMusic_System {
 };
 
-extern "C" void probe_TMusic_System(TMusic_System* p);
-#pragma alloc_text(".xtra", probe_TMusic_System)
-extern "C" void probe_TMusic_System(TMusic_System* p) {
+extern "C" void __stdcall probe_TMusic_System(void* p);
+#pragma alloc_text(".text", probe_TMusic_System)
+extern "C" void __stdcall probe_TMusic_System(void* p) {
     p->TMusic_System::~TMusic_System();
 }

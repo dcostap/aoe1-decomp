@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\0041C9A0_get_string.rsp
-
 static char g_string_buffer[0x200];
 
 class RGE_Base_Game {

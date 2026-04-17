@@ -35,7 +35,8 @@ def relocation_width(reloc_type: int) -> int:
     return width_map.get(reloc_type, 4)
 
 
-def load_coff_section(path: Path, section_name: str = ".text") -> CoffSection:
+def _load_all_sections(path: Path) -> dict[str, CoffSection]:
+    """Load all COFF sections from a COFF object file, returning a dict by name."""
     data = path.read_bytes()
     if len(data) < 20:
         raise ValueError(f"{path} is too small to be a COFF object")
@@ -49,17 +50,28 @@ def load_coff_section(path: Path, section_name: str = ".text") -> CoffSection:
         raise ValueError(f"Unexpected optional header size {optional_header_size} in COFF object")
 
     section_table_offset = 20
+    sections: dict[str, CoffSection] = {}
     for index in range(number_of_sections):
         offset = section_table_offset + index * 40
         raw_name = struct.unpack_from("8s", data, offset)[0]
         name = _decode_name(raw_name)
-        _, _, size_of_raw_data, pointer_to_raw_data, pointer_to_relocations, _, number_of_relocations, _, _ = (
-            struct.unpack_from("<IIIIIIHHI", data, offset + 8)
-        )
-        if name != section_name:
-            continue
 
-        section_bytes = data[pointer_to_raw_data : pointer_to_raw_data + size_of_raw_data]
+        (
+            _,
+            _,
+            size_of_raw_data,
+            pointer_to_raw_data,
+            pointer_to_relocations,
+            _,
+            number_of_relocations,
+            _,
+        ) = struct.unpack_from("<IIIIIIII", data, offset + 8)
+
+        if size_of_raw_data and pointer_to_raw_data:
+            section_bytes = data[pointer_to_raw_data : pointer_to_raw_data + size_of_raw_data]
+        else:
+            section_bytes = b""
+
         relocations: list[CoffRelocation] = []
         for reloc_index in range(number_of_relocations):
             reloc_offset = pointer_to_relocations + reloc_index * 10
@@ -72,12 +84,51 @@ def load_coff_section(path: Path, section_name: str = ".text") -> CoffSection:
                     width=relocation_width(reloc_type),
                 )
             )
-        return CoffSection(name=name, data=section_bytes, relocations=relocations)
 
-    available = []
-    for index in range(number_of_sections):
-        offset = section_table_offset + index * 40
-        available.append(_decode_name(struct.unpack_from("8s", data, offset)[0]))
+        if name in sections:
+            # Name collision — append relocations to existing section
+            existing = sections[name]
+            sections[name] = CoffSection(
+                name=name,
+                data=existing.data + section_bytes,
+                relocations=existing.relocations + relocations,
+            )
+        else:
+            sections[name] = CoffSection(name=name, data=section_bytes, relocations=relocations)
+
+    return sections
+
+
+def load_coff_section(path: Path, section_name: str = ".text") -> CoffSection:
+    """Load a COFF section by name.
+
+
+    Priority when looking for .text code fallback:
+    1. .xtra (used by VC5 for pragma alloc_text stubs, contains actual code)
+    2. .text (standard code section)
+    3. Any other non-metadata, non-empty section
+
+    This handles two VC5 pragma alloc_text edge cases:
+    (a) .text section is absent → fall through to .xtra
+    (b) .text section is present but empty → prefer .xtra over empty .text
+    """
+    sections = _load_all_sections(path)
+    if section_name in sections:
+        return sections[section_name]
+
+    # Fallback order: .xtra (pragma stubs) > .text (standard) > other non-metadata
+    skip = {".drectve", ".debug$F", ".debug$T", ".debug$S"}
+    # Try .xtra first (VC5 pragma stub code section)
+    if ".xtra" in sections and sections[".xtra"].data:
+        return sections[".xtra"]
+    # Then .text (may be present but empty for pragma stubs)
+    if ".text" in sections and sections[".text"].data:
+        return sections[".text"]
+    # Last resort: first non-metadata section with data
+    for name, sec in sections.items():
+        if name not in skip and sec.data:
+            return sec
+    available = list(sections.keys())
     raise KeyError(f"Section {section_name!r} not found in {path}; available sections: {available}")
 
 

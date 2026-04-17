@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\004228E0_set_map_fog.rsp
-
 struct World {
     void set_fog(int param);
 };

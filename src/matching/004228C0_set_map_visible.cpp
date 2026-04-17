@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\004228C0_set_map_visible.rsp
-
 struct World {
     void set_visible(int param);
 };

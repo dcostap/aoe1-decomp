@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\004201A0_get_font.rsp
-
 class RGE_Base_Game {
 public:
     char gap_0[0x1E4];

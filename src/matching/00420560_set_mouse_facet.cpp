@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00420560_set_mouse_facet.rsp
-
 struct RenderSystem {
     void set_mouse_facet(long param);
 };

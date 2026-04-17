@@ -1,6 +1,3 @@
-// STATUS: scratch
-// FLAGS: config\flags\00420110_delete_dialog.rsp
-
 struct VBase {
     virtual void scalar_deleting_destructor(int flag);
 };
