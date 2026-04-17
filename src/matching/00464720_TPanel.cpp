@@ -1,0 +1,158 @@
+struct PanelNode;
+struct TDrawArea;
+struct HRGN__;
+typedef HRGN__* HRGN;
+
+extern int TPanel_vftable;
+
+class TPanel;
+
+class TPanelSystem {
+public:
+    int addPanel(TPanel* panel, int make_current, int mode);
+};
+
+extern TPanelSystem panel_system;
+
+class TPanel {
+public:
+    void* vftable;
+    TPanel* previousPanelValue;
+    TPanel* previousModalPanelValue;
+    int pnl_x;
+    int pnl_y;
+    int pnl_wid;
+    int pnl_hgt;
+    char* panelNameValue;
+    TDrawArea* render_area;
+    int clip_left;
+    int clip_top;
+    int clip_right;
+    int clip_bottom;
+    int position_mode;
+    int need_redraw;
+    int field_3C;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    PanelNode* node;
+    PanelNode* first_child_node;
+    PanelNode* last_child_node;
+    TPanel* curr_child;
+    int field_64;
+    int field_68;
+    int active;
+    int field_70;
+    int have_focus;
+    int field_78;
+    int field_7C;
+    int field_80;
+    int gap_84;
+    HRGN clip_rgn;
+    int field_8C;
+    int field_90;
+    int field_94;
+    int field_98;
+    int left_border;
+    int top_border;
+    int right_border;
+    int bottom_border;
+    int min_wid;
+    int max_wid;
+    int min_hgt;
+    int max_hgt;
+    int field_BC;
+    int field_C0;
+    int field_C4;
+    int field_C8;
+    int field_CC;
+    int field_D0;
+    int field_D4;
+    int field_D8;
+    int field_DC;
+    int field_E0;
+    int field_E4;
+    int field_E8;
+    unsigned char field_EC;
+    unsigned char field_ED;
+    unsigned char field_EE;
+    unsigned char field_EF;
+    unsigned char field_F0;
+    unsigned char gap_F1;
+    unsigned char field_F2;
+    unsigned char field_F3;
+
+    void setPanelName(char* name);
+    TPanel(char* name);
+};
+
+TPanel::TPanel(char* name) {
+    previousPanelValue = 0;
+    previousModalPanelValue = 0;
+    pnl_x = 0;
+    pnl_y = 0;
+    pnl_wid = 0;
+    pnl_hgt = 0;
+    panelNameValue = 0;
+    render_area = 0;
+    position_mode = 0;
+    need_redraw = 2;
+    field_3C = 0;
+    parent_panel = 0;
+    left_panel = 0;
+    top_panel = 0;
+    right_panel = 0;
+    bottom_panel = 0;
+    node = 0;
+    first_child_node = 0;
+    last_child_node = 0;
+    curr_child = 0;
+    field_64 = 0;
+    field_68 = 0;
+    active = 1;
+    field_70 = 0;
+    have_focus = 0;
+    field_78 = 0;
+    field_7C = 1;
+    field_80 = 1;
+    gap_84 = 0;
+    clip_rgn = 0;
+    left_border = 0;
+    top_border = 0;
+    right_border = 0;
+    bottom_border = 0;
+    min_wid = 0;
+    max_wid = 0;
+    min_hgt = 0;
+    max_hgt = 0;
+    field_BC = 250;
+    field_C0 = 0;
+    field_C4 = 0;
+    field_C8 = 0;
+    field_CC = 0;
+    field_D0 = 0;
+    field_D4 = 0;
+    field_D8 = 0;
+    field_DC = 0;
+    field_E0 = 0;
+    field_EC = 0;
+    field_ED = 0;
+    field_EE = 0;
+    field_EF = 0;
+    field_F0 = 0;
+    field_F2 = 0;
+    vftable = &TPanel_vftable;
+    field_8C = 0;
+    field_90 = 0;
+    field_94 = 0;
+    field_98 = 0;
+    setPanelName(name);
+    field_F3 = 0;
+    field_E4 = -1;
+    field_E8 = -1;
+    if (panelNameValue != 0 && panelNameValue[0] != 0) {
+        panel_system.addPanel(this, 0, 0);
+    }
+}

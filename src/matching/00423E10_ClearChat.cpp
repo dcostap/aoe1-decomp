@@ -1,0 +1,24 @@
+extern "C" void free(void*);
+
+class TTaunt;
+
+class TChat {
+public:
+    void* HostWnd;
+    int chatGroupPlayers[10];
+    char* Chat[51];
+    int CurrentMsgNo;
+    TTaunt* taunt;
+
+    void ClearChat();
+};
+
+void TChat::ClearChat() {
+    for (int i = 0; i < 0x33; ++i) {
+        if (Chat[i] != 0) {
+            free(Chat[i]);
+        }
+        Chat[i] = 0;
+    }
+    CurrentMsgNo = 0;
+}
