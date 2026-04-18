@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift with exact 3704-byte body |
-| CalmTrail | CT-8: `004ABCD0_action` | TU scaffolding now in place; remaining blocker is the no-frame SEH wrapper / entry prolog shape |
+| CalmTrail | CT-8: `004ABCD0_action` | TU scaffolding now in place; remaining blocker is the no-frame SEH registration byte ordering / entry prolog shape |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | new medium-sized dlg_dip task in clean `agent4` worktree |
 
 ## Tally
@@ -75,8 +75,9 @@ Orchestrator: FrostTiger
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
-- CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, and the TU scaffolding is now in place; the remaining blocker is the no-frame SEH wrapper / entry prolog shape.
+- CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, and the TU scaffolding is now in place; the remaining blocker is the no-frame SEH registration byte ordering / entry prolog shape.
 - The latest CT-8 probe compiled but still emitted a plain framed function entry (`83ec4c 53 8b5c2454 55 56 85db 57 8bf1...`) instead of the oracle’s no-frame SEH wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`).
+- CalmTrail’s latest CT-8 wrapper probe also showed the no-frame family is reachable, but the registration bytes still come out in the wrong order (`6aff680000000064...` vs `64a10000000000ff...`).
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
