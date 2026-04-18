@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-10: `004E7690_execute` | compile-clean in clean `agent3` worktree; remaining blocker is entry/prolog shape (`8B 44 24 08 56 85 C0 57 8B F1...` vs `55 8B EC 83 EC 14 89 4D...`) |
-| CalmTrail | CT-9: `004B1A50_position_panels` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift from a wide top-of-function local-lifetime footprint |
+| CalmTrail | CT-11: `004F62C0_notify` | new medium-to-big `taitacmd.cpp` task in clean `agent2` worktree after CT-9 parking |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | in progress in clean `agent4` worktree; two build iterations done, remaining blockers are declaration ordering and type/signature cleanup |
 
 ## Tally
