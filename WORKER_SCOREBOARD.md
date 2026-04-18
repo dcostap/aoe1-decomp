@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | expanded to full size; now blocked on prolog/frame-shape mismatch and oversized stack frame |
-| CalmTrail | CT-8: `004ABCD0_action` | active medium-sized `scr_sed.cpp` task in agent2; blocker is finishing a packet-shaped draft before first compile |
+| CalmTrail | CT-8: `004ABCD0_action` | active medium-sized `scr_sed.cpp` task in agent2; blocker is reproducing the frameless/float-heavy entry body before first compile |
 
 ## Tally
 
@@ -54,6 +54,7 @@ Orchestrator: FrostTiger
 - CalmTrail confirmed CT-8 remains in the reserved agent2 worktree and is not touching the main tree.
 - CobaltHarrier’s latest CT-7 blocker is still the prolog/frame shape at offset 3, with the rebuilt frame remaining too large (`81 EC 10 01 00 00...`).
 - CobaltHarrier confirmed it is still working only in the reserved agent3 worktree and is trimming locals/temps to recover the smaller saved-regs prolog.
+- CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
