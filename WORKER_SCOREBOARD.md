@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift with exact 3704-byte body |
-| CalmTrail | CT-8: `004ABCD0_action` | TU scaffolding now in place; remaining blocker is the no-frame SEH registration byte ordering / entry prolog shape (`6aff680000000064...` vs `64a10000000000ff...`) |
+| CalmTrail | CT-9: `004B1A50_position_panels` | new medium-to-big `scr_sed2.cpp` task in clean `agent2` worktree after CT-8 parking |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | new medium-sized dlg_dip task in clean `agent4` worktree |
 
 ## Tally
@@ -78,6 +78,8 @@ Orchestrator: FrostTiger
 - CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, and the TU scaffolding is now in place; the remaining blocker is the no-frame SEH registration byte ordering / entry prolog shape.
 - The latest CT-8 probe compiled but still emitted a plain framed function entry (`83ec4c 53 8b5c2454 55 56 85db 57 8bf1...`) instead of the oracle’s no-frame SEH wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`).
 - CalmTrail’s latest CT-8 wrapper probe also showed the no-frame family is reachable, but the registration bytes still come out in the wrong order (`6aff680000000064...` vs `64a10000000000ff...`).
+- CT-8 has been parked in `src/almost_matched/004ABCD0_action.cpp`; the remaining difference is low-risk no-frame SEH byte-order drift.
+- CalmTrail’s new CT-9 target is the medium-to-big `004B1A50_position_panels` task in agent2.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
