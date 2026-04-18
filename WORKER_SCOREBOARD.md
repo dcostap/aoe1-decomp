@@ -19,7 +19,7 @@ Orchestrator: FrostTiger
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | first compile pass in clean `agent3` worktree; remaining blocker is constructor-visible type context and local scaffolding |
 | CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | first compile pass in clean `agent2` worktree; remaining blocker is constructor-form cleanup at the packet wrapper |
-| SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | compile-clean in clean `agent4` worktree; remaining blocker is SEH/prologue shape (`push -1 / fs:[0]` chain vs standard framed entry) |
+| SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | compile-clean in clean `agent4` worktree; remaining blocker is SEH/prologue shape (`push -1 / fs:[0]` chain vs standard framed entry, stack `0x124` vs `0x328`) |
 
 ## Tally
 
@@ -90,6 +90,7 @@ Orchestrator: FrostTiger
 - CT-11 is parked in `src/almost_matched/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
 - CT-13’s first probe is blocked by the constructor wrapper form: VC5 rejects the packet with `constructors not allowed a return type`.
 - SF-1 is now compile-clean; the remaining blocker is SEH/prologue shape, with the original emitting a manual FS:[0] chain and the rebuilt source still producing a standard framed entry.
+- SF-1’s next probe should be an explicit `__try/__except`-style source form, plus a locals trim to reduce the stack frame toward the original size.
 - CT-12’s first compile pass is now blocked on constructor-visible type context: `TribeTacticalAIModule` needs a local class scaffold and the dependent names are still undefined in the TU.
 - CT-12’s next narrow pass should add only the compiler-named locals and helpers around `gatherers` and the remaining `PlacementState` / `AttackState` members.
 - CT-12’s blocker is now even narrower: the compiler specifically called out `UnitData` at `gatherers` plus a handful of helper names and state members.
