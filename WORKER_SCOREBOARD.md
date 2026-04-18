@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | new medium-to-big `taiinfmd.cpp` task in clean `agent3` worktree after CT-12 parking |
+| CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | first compile pass in clean `agent3` worktree; remaining blocker is constructor-visible type context and local scaffolding |
 | CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | first compile pass in clean `agent2` worktree; remaining blocker is constructor-form cleanup at the packet wrapper |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | compile-clean in clean `agent4` worktree; remaining blocker is SEH/prologue shape (`push -1 / fs:[0]` chain vs standard framed entry) |
 
@@ -94,6 +94,7 @@ Orchestrator: FrostTiger
 - CT-12’s next narrow pass should add only the compiler-named locals and helpers around `gatherers` and the remaining `PlacementState` / `AttackState` members.
 - CT-12’s blocker is now even narrower: the compiler specifically called out `UnitData` at `gatherers` plus a handful of helper names and state members.
 - CT-12 is parked in `src/almost_matched/004ED4F0_TribeTacticalAIModule.cpp` with a structured header; the body is compile-clean and only the prolog/frame shape remains off.
+- CT-14’s first compile pass is now blocked on constructor-visible type context; the scratch file still needs a minimal local scaffold for the packet names the compiler just named.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
