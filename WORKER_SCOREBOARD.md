@@ -62,6 +62,7 @@ Orchestrator: FrostTiger
 - Exact blocker evidence for CT-7: the rebuilt prolog is `55 8B EC 81 EC A4 00 00 00...` instead of the oracle’s small saved-regs entry `55 8B EC 83 E4 F8 83 EC 2C 53 56...`; the remaining issue is stack-frame inflation from named locals.
 - A later CT-7 blocker narrowed further to a second `bVar4` reference remaining at line 318 in `0045E970_doTrivialMove`; removing that local reference is the next probe.
 - The latest CT-7 compile blocker is now a pure undeclared-identifier error on that same `bVar4` reference (`C2065`); the frame-shape trim itself is still in place.
+- A subsequent CT-7 check compiled again but became undersized at `3640` bytes vs the `3704` target, so the remaining work is to restore 64 bytes of packet-shaped body logic without bringing back the old frame-heavy temps.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
