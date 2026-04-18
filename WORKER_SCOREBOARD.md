@@ -18,7 +18,8 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift with exact 3704-byte body |
-| CalmTrail | CT-8: `004ABCD0_action` | compile-blocked on missing TU scaffolding; packet body is in place, but VC5 still treats the method like a global function |
+| CalmTrail | CT-8: `004ABCD0_action` | TU scaffolding now in place; remaining blocker is the entry/prolog shape (`64a1000000006aff` vs framed prolog) |
+| SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | new medium-sized dlg_dip task in clean `agent4` worktree |
 
 ## Tally
 
@@ -74,7 +75,7 @@ Orchestrator: FrostTiger
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
-- CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, but VC5 still needs minimal TU scaffolding (`TRIBE_Screen_Sed`, `RGE_Base_Game`, `uint`, `code`, and the local `c` / SEH-tail variables) before codegen can proceed.
+- CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, and the TU scaffolding is now in place; the remaining blocker is entry/prolog shape (`64a1000000006aff` vs `558bec6aff680000`).
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
