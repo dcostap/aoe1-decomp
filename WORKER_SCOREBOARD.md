@@ -59,6 +59,7 @@ Orchestrator: FrostTiger
 - A later CT-7 probe trimmed too far and undershot the size target: rebuilt size 3388 vs target 3704, so the next step is to add back body shape without restoring stack-heavy locals.
 - The latest CT-7 blocker is the missing packet-shaped middle pathfinding block around `userDefinedWaypoints` / `findTilePath`; prolog shape is closer, but the body is still too short to diff.
 - CT-7 has now recovered the packet-shaped pathfinding block and returned to exact target size (`3704` bytes), but the smaller prolog regressed to a larger frame again.
+- Exact blocker evidence for CT-7: the rebuilt prolog is `55 8B EC 81 EC A4 00 00 00...` instead of the oracle’s small saved-regs entry `55 8B EC 83 E4 F8 83 EC 2C 53 56...`; the remaining issue is stack-frame inflation from named locals.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
