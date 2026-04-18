@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | exact size again, but the small prolog regressed to a larger frame; one remaining `bVar4` local reference is the latest blocker |
-| CalmTrail | CT-8: `004ABCD0_action` | active medium-sized `scr_sed.cpp` task in agent2; blocker is reproducing the frameless/float-heavy entry body before first compile |
+| CalmTrail | CT-8: `004ABCD0_action` | compiled but mismatches at offset 0; blocker is restoring the SEH/entry wrapper and packet-shaped early entry body |
 
 ## Tally
 
@@ -63,6 +63,8 @@ Orchestrator: FrostTiger
 - A later CT-7 blocker narrowed further to a second `bVar4` reference remaining at line 318 in `0045E970_doTrivialMove`; removing that local reference is the next probe.
 - The latest CT-7 compile blocker is now a pure undeclared-identifier error on that same `bVar4` reference (`C2065`); the frame-shape trim itself is still in place.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
+- CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
+- CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
