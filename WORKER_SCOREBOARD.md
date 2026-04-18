@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | first compile pass in clean `agent3` worktree; remaining blocker is a very small missing-name scaffold (`ulonglong`, `SUB84`, `s_____Unsupported_building_size___`, `InfluenceMap`, `lookupValue`, `iMap`) |
+| CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | first compile pass in clean `agent3` worktree; remaining blocker is now just two missing names before body-shape fallout (`undesirableLot`, `uchar`) |
 | CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | first compile pass in clean `agent2` worktree; remaining blocker is constructor-body scaffolding and donor-visible member declarations |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | compile-clean in clean `agent4` worktree; remaining blocker is SEH/prologue shape (`push -1 / fs:[0]` chain vs standard framed entry, stack `0x124` vs `0x328`) |
 
@@ -100,6 +100,7 @@ Orchestrator: FrostTiger
 - CT-14’s blocker has narrowed further to a helper/member list: influence/decision types, lookup/log helpers, placement state names, and the `__ftol`/`FUN_00560538` pair.
 - CT-14’s latest blocker now specifically calls out `lastWallPosition` / `lastWallPosition2`, building-lot capacity fields, and the remaining placement helpers/data names.
 - CT-14 has been narrowed again to only `ulonglong`, `SUB84`, `s_____Unsupported_building_size___`, `InfluenceMap`, `lookupValue`, and `iMap`.
+- CT-14 is now down to just `undesirableLot` and `uchar` before the failure shifts into pure body/brace-shape fallout.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
