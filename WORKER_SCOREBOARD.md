@@ -55,6 +55,7 @@ Orchestrator: FrostTiger
 - CobaltHarrier’s latest CT-7 blocker is still the prolog/frame shape at offset 3, with the rebuilt frame remaining too large (`81 EC 10 01 00 00...`).
 - CobaltHarrier confirmed it is still working only in the reserved agent3 worktree and is trimming locals/temps to recover the smaller saved-regs prolog.
 - The next CT-7 diff shrank the frame to `81 EC C4 00 00 00...`, but offset-3 prolog mismatch remains.
+- CobaltHarrier clarified that the remaining CT-7 locals are scalar temporaries, with no address-taken locals or array-like stack objects in the active scaffold.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
