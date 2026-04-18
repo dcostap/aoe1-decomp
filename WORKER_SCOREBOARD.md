@@ -17,8 +17,8 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-12: `004ED4F0_TribeTacticalAIModule` | new medium-to-big `taitacmd.cpp` task in clean `agent3` worktree after CT-10 parking |
-| CalmTrail | CT-11: `004F62C0_notify` | compile-clean in clean `agent2` worktree; remaining blocker is prolog/frame-shape drift (`83 EC 30 53 55 56 8B 6C ...` vs `55 8B EC 81 EC B8 00 ...`) |
+| CobaltHarrier | CT-12: `004ED4F0_TribeTacticalAIModule` | first compile pass in clean `agent3` worktree; remaining blocker is constructor-visible type context and local scaffolding |
+| CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | new medium-to-big `scr_set.cpp` task in clean `agent2` worktree after CT-11 parking |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | in progress in clean `agent4` worktree; two build iterations done, remaining blockers are declaration ordering and type/signature cleanup |
 
 ## Tally
@@ -87,6 +87,8 @@ Orchestrator: FrostTiger
 - CT-10 has now moved fully past comment/banner cleanup; the remaining issue is pure prolog/frame-shape drift.
 - CT-10 is parked in `src/almost_matched/004E7690_execute.cpp` with a structured header; the member-call wrapper probe exceeded the `.text` budget and did not recover the frameless prolog.
 - CT-11’s first compile-clean pass is now in the same pure prolog/frame-shape zone (`83 EC 30 53 55 56 8B 6C ...` vs `55 8B EC 81 EC B8 00 ...`) with the body still intact.
+- CT-11 is parked in `src/almost_matched/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
+- CT-12’s first compile pass is now blocked on constructor-visible type context: `TribeTacticalAIModule` needs a local class scaffold and the dependent names are still undefined in the TU.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
