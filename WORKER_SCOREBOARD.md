@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | compiled again but is now undersized by 64 bytes; prolog trim is good, body needs a small restore |
+| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | exact size restored; prolog/frame remains the blocker (`83 EC 70` vs saved-regs entry) |
 | CalmTrail | CT-8: `004ABCD0_action` | compiled but mismatches at offset 0; blocker is restoring the SEH/entry wrapper and packet-shaped early entry body |
 
 ## Tally
@@ -63,9 +63,11 @@ Orchestrator: FrostTiger
 - A later CT-7 blocker narrowed further to a second `bVar4` reference remaining at line 318 in `0045E970_doTrivialMove`; removing that local reference is the next probe.
 - The latest CT-7 compile blocker is now a pure undeclared-identifier error on that same `bVar4` reference (`C2065`); the frame-shape trim itself is still in place.
 - A subsequent CT-7 check compiled again but became undersized at `3640` bytes vs the `3704` target, so the remaining work is to restore 64 bytes of packet-shaped body logic without bringing back the old frame-heavy temps.
+- CT-7 later returned to exact size `3704`, but the prolog/frame still regressed to `55 8B EC 83 EC 70...`; the remaining blocker is stack-frame excess, not body size.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
+- CalmTrail will rewrite `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet before tuning the wrapper again.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
