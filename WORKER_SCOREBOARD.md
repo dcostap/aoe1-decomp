@@ -17,8 +17,8 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | first compile pass in clean `agent3` worktree; remaining blocker is now just parser fallout plus one last undeclared name (`storeLot`) |
-| CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | first compile pass in clean `agent2` worktree; remaining blocker is constructor-body scaffolding and donor-visible member declarations |
+| CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | still active in clean `agent3` worktree; missing-name phase cleared and remaining blocker is parser/type-conversion shape cleanup |
+| CalmTrail | — | CT-13 parked in `src/almost_matched`; no new tasks assigned, ready for clean send-off |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | compile-clean in clean `agent4` worktree; remaining blocker is SEH/prologue shape (`push -1 / fs:[0]` chain vs standard framed entry, stack `0x124` vs `0x328`) |
 
 ## Tally
@@ -90,6 +90,7 @@ Orchestrator: FrostTiger
 - CT-11 is parked in `src/almost_matched/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
 - CT-13’s first probe is blocked by the constructor wrapper form: VC5 rejects the packet with `constructors not allowed a return type`.
 - CT-13’s constructor wrapper is now fixed; the remaining blockers are donor-accurate body stubs such as the `create_*` helpers, alignment/spacing setters, hotkey fields, and the mission text symbol.
+- CT-13 is parked in `src/almost_matched/004B4880_TribeGameSettingsScreen.cpp`; the constructor body is compile-clean and only the prolog/frame shape remains off.
 - SF-1 is now compile-clean; the remaining blocker is SEH/prologue shape, with the original emitting a manual FS:[0] chain and the rebuilt source still producing a standard framed entry.
 - SF-1’s next probe should be an explicit `__try/__except`-style source form, plus a locals trim to reduce the stack frame toward the original size.
 - CT-12’s first compile pass is now blocked on constructor-visible type context: `TribeTacticalAIModule` needs a local class scaffold and the dependent names are still undefined in the TU.
@@ -102,6 +103,7 @@ Orchestrator: FrostTiger
 - CT-14 has been narrowed again to only `ulonglong`, `SUB84`, `s_____Unsupported_building_size___`, `InfluenceMap`, `lookupValue`, and `iMap`.
 - CT-14 is now down to just `undesirableLot` and `uchar` before the failure shifts into pure body/brace-shape fallout.
 - CT-14’s latest compile only names `storeLot` as undeclared; the rest is parser/type-conversion fallout from the packet shape.
+- CT-14 has now cleared the missing-name phase entirely; the remaining blockers are bad `if/else` nesting, `unsigned long *` to `unsigned long` drift, and `ConstructionItem` ctor/allocation shape.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
