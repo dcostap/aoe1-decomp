@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-12: `004ED4F0_TribeTacticalAIModule` | first compile pass in clean `agent3` worktree; remaining blocker is narrow constructor-visible scaffolding (`UnitData`, `undefined4`, `code`, `rge_read`, `operator_new`, `operator_delete`, `save_game_version`, selected `PlacementState` / `AttackState` members) |
+| CobaltHarrier | CT-12: `004ED4F0_TribeTacticalAIModule` | first compile pass in clean `agent3` worktree; remaining blocker is narrow constructor-visible scaffolding (`UnitData` at `gatherers`, `undefined4`, `code`, `rge_read`, `operator_new`, `operator_delete`, `save_game_version`, selected `PlacementState` / `AttackState` members) |
 | CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | new medium-to-big `scr_set.cpp` task in clean `agent2` worktree after CT-11 parking |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | in progress in clean `agent4` worktree; two build iterations done, remaining blockers are declaration ordering and type/signature cleanup |
 
@@ -90,6 +90,7 @@ Orchestrator: FrostTiger
 - CT-11 is parked in `src/almost_matched/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
 - CT-12’s first compile pass is now blocked on constructor-visible type context: `TribeTacticalAIModule` needs a local class scaffold and the dependent names are still undefined in the TU.
 - CT-12’s next narrow pass should add only the compiler-named locals and helpers around `gatherers` and the remaining `PlacementState` / `AttackState` members.
+- CT-12’s blocker is now even narrower: the compiler specifically called out `UnitData` at `gatherers` plus a handful of helper names and state members.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
