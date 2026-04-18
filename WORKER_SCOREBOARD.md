@@ -66,6 +66,7 @@ Orchestrator: FrostTiger
 - CT-7 later returned to exact size `3704`, but the prolog/frame still regressed to `55 8B EC 83 EC 70...`; the remaining blocker is stack-frame excess, not body size.
 - CobaltHarrier later clarified that reintroducing the path-pointer locals preserved the packet body but still left a flat prolog (`55 8B EC 83 EC 70 56 89 4D D0...`) instead of the oracle’s saved-regs entry (`55 8B EC 83 E4 F8 83 EC 2C 53 56...`).
 - The latest CT-7 probe kept exact size but still flattened the entry to `55 8B EC 81 EC 80 00 00 00 89 4D...`; the body is intact, but the saved-regs prolog has not returned.
+- Exact remaining CT-7 locals are `uVar3`, `iVar13`, `iVar15`, `pPVar2`, `pWVar12`, `fVar14`, `fVar16`, `newAngle`, `targetDY`, `distanceToCover`, `dX`, `newY`, `fVar26`, `alreadyMoving`, `iTurnCount`.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
