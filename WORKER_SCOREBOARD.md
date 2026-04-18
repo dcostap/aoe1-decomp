@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-10: `004E7690_execute` | new medium-to-big `taistrmd.cpp` task in clean `agent3` worktree after CT-7 parking |
+| CobaltHarrier | CT-10: `004E7690_execute` | source-synthesis cleanup in clean `agent3` worktree; first blockers are banner/comment text and stub mismatches |
 | CalmTrail | CT-9: `004B1A50_position_panels` | compile-clean packet extraction in clean `agent2` worktree; current blocker is prolog/frame-shape divergence (`56 8B F1 ...` vs `55 8B EC 83 EC 30 ...`) |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | in progress in clean `agent4` worktree; two build iterations done, remaining blockers are declaration ordering and type/signature cleanup |
 
@@ -82,6 +82,7 @@ Orchestrator: FrostTiger
 - CalmTrail’s new CT-9 target is the medium-to-big `004B1A50_position_panels` task in agent2.
 - CT-9’s first build/check result hit packet-extraction cleanup blockers: malformed early comment fragments (`missing ';' before '/'`) and missing `TRIBE_Screen_Sed` type context at the header.
 - CT-9 later compiled cleanly, and the remaining blocker is now a pure prolog/frame-shape divergence (`56 8B F1 ...` vs `55 8B EC 83 EC 30 ...`).
+- CT-10’s first build/check result is now source-synthesis cleanup: the raw decompiler banner/comment text and stub mismatches need to be cleared before any meaningful diff.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
