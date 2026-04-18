@@ -372,10 +372,38 @@ That ban includes:
 - hand-written asm wrappers
 - any other source-level trick whose purpose is to smuggle raw asm into a matched file
 
-If a function only seems to match with inline asm, treat that as proof that the
-current source model is still wrong, incomplete, or not yet ready for promotion.
+### Narrow exception: padding-only pseudo-functions
 
-When that happens:
+A narrow exception is allowed for **padding-only pseudo-functions** whose entire
+body is just non-behavioral filler such as:
+
+- `nop`
+- repeated `nop`
+- `mov edi, edi`
+- `mov eax, eax`
+- simple combinations of those same padding bytes
+
+Use this exception only when **all** of the following are true:
+
+1. the body has no meaningful behavior,
+2. the body has no memory effect,
+3. the body has no real call/control-flow logic,
+4. the entry appears to be padding/thunk filler rather than a real source function,
+5. ordinary source cannot reasonably express the exact bytes.
+
+This exception is **not** permission to use inline asm for real logic such as:
+
+- getters/setters,
+- wrappers,
+- destructors with behavior,
+- virtual dispatch helpers with real effects,
+- or any other function where inline asm would bypass a still-unsolved source model.
+
+If a function only seems to match with inline asm, treat that as proof that the
+current source model is still wrong, incomplete, or not yet ready for promotion,
+**unless** it is one of the padding-only pseudo-functions above.
+
+When that happens for a real function:
 
 - keep the function in `src\scratch\...`,
 - continue source-shape / declaration / type / flag investigation if there is a
@@ -383,7 +411,10 @@ When that happens:
 - otherwise park it under the normal repo rules,
 - but do **not** use inline asm to force it through.
 
-No function may be promoted with inline asm still present.
+Promotion rule:
+
+- no real function may be promoted with inline asm still present,
+- padding-only pseudo-functions may use the narrow exception above.
 
 ## Per-function flags policy
 
@@ -463,7 +494,8 @@ The scaffold is expected to improve through normal decomp work.
 - A function in `src\almost_matched\...` is a claim that it is intentionally parked, understood, and still non-exact.
 - Do not promote speculative or still-mismatching code there.
 - Do not promote any function there if it contains inline asm or another
-  source-level hack added only to make the parity check pass.
+  source-level hack added only to make the parity check pass, except for the
+  documented padding-only pseudo-function exception above.
 - Do not use hacks whose only purpose is to turn the check green while dodging
   the real source-level problem.
 - Keep blocker notes and scratch workflow notes in `src\scratch\...` while a function is active.
@@ -479,7 +511,7 @@ lands in the main tree:
   `src\matching\...`,
 - review any paired `config\flags\...rsp` file too,
 - verify the file did not break repo rules,
-- verify it does not use inline asm,
+- verify it does not use inline asm outside the documented padding-only pseudo-function exception,
 - verify it is not relying on a green-check hack,
 - and only then run the normal validation loop and promote it.
 
