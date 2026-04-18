@@ -68,6 +68,7 @@ Orchestrator: FrostTiger
 - The latest CT-7 probe kept exact size but still flattened the entry to `55 8B EC 81 EC 80 00 00 00 89 4D...`; the body is intact, but the saved-regs prolog has not returned.
 - Exact remaining CT-7 locals are `uVar3`, `iVar13`, `iVar15`, `pPVar2`, `pWVar12`, `fVar14`, `fVar16`, `newAngle`, `targetDY`, `distanceToCover`, `dX`, `newY`, `fVar26`, `alreadyMoving`, `iTurnCount`.
 - The latest CT-7 blocker has since narrowed further to `55 8B EC 81 EC 84 00 00 00 56 89...` with exact size preserved; the remaining locals now reported are `iVar15`, `fVar14`, `distanceToCover`, `dX`, `newY`, and `fVar26`.
+- CobaltHarrier’s newest CT-7 probe still has exact size `3704` but the entry remains flat at `55 8B EC 81 EC 80 00 00 00 56 89...`; the live locals are now mostly `fVar14`, `distanceToCover`, `dX`, `newY`, and `fVar26` after removing `iVar15`.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
