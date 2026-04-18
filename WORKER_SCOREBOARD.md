@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | exact size again, but the small prolog regressed to a larger frame; one remaining `bVar4` local reference is the latest blocker |
+| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | compiled again but is now undersized by 64 bytes; prolog trim is good, body needs a small restore |
 | CalmTrail | CT-8: `004ABCD0_action` | compiled but mismatches at offset 0; blocker is restoring the SEH/entry wrapper and packet-shaped early entry body |
 
 ## Tally
