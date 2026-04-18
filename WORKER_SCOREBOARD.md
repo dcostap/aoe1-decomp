@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift with exact 3704-byte body |
-| CalmTrail | CT-9: `004B1A50_position_panels` | packet-extraction cleanup in clean `agent2` worktree; first build blockers are malformed comment fragments and missing header type context |
+| CalmTrail | CT-9: `004B1A50_position_panels` | packet-extraction cleanup in clean `agent2` worktree; first build blockers are malformed comment fragments and missing header type context (`TRIBE_Screen_Sed` undefined at the function header) |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | new medium-sized dlg_dip task in clean `agent4` worktree |
 
 ## Tally
@@ -80,6 +80,7 @@ Orchestrator: FrostTiger
 - CalmTrail’s latest CT-8 wrapper probe also showed the no-frame family is reachable, but the registration bytes still come out in the wrong order (`6aff680000000064...` vs `64a10000000000ff...`).
 - CT-8 has been parked in `src/almost_matched/004ABCD0_action.cpp`; the remaining difference is low-risk no-frame SEH byte-order drift.
 - CalmTrail’s new CT-9 target is the medium-to-big `004B1A50_position_panels` task in agent2.
+- CT-9’s first build/check result hit packet-extraction cleanup blockers: malformed early comment fragments (`missing ';' before '/'`) and missing `TRIBE_Screen_Sed` type context at the header.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
