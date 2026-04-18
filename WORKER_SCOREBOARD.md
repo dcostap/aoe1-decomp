@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-12: `004ED4F0_TribeTacticalAIModule` | first compile pass in clean `agent3` worktree; remaining blocker is narrow constructor-visible scaffolding (`UnitData` at `gatherers`, `undefined4`, `code`, `rge_read`, `operator_new`, `operator_delete`, `save_game_version`, selected `PlacementState` / `AttackState` members) |
-| CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | new medium-to-big `scr_set.cpp` task in clean `agent2` worktree after CT-11 parking |
+| CalmTrail | CT-13: `004B4880_TribeGameSettingsScreen` | first compile pass in clean `agent2` worktree; remaining blocker is constructor-form cleanup at the packet wrapper |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | in progress in clean `agent4` worktree; two build iterations done, remaining blockers are declaration ordering and type/signature cleanup |
 
 ## Tally
@@ -88,6 +88,7 @@ Orchestrator: FrostTiger
 - CT-10 is parked in `src/almost_matched/004E7690_execute.cpp` with a structured header; the member-call wrapper probe exceeded the `.text` budget and did not recover the frameless prolog.
 - CT-11’s first compile-clean pass is now in the same pure prolog/frame-shape zone (`83 EC 30 53 55 56 8B 6C ...` vs `55 8B EC 81 EC B8 00 ...`) with the body still intact.
 - CT-11 is parked in `src/almost_matched/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
+- CT-13’s first probe is blocked by the constructor wrapper form: VC5 rejects the packet with `constructors not allowed a return type`.
 - CT-12’s first compile pass is now blocked on constructor-visible type context: `TribeTacticalAIModule` needs a local class scaffold and the dependent names are still undefined in the TU.
 - CT-12’s next narrow pass should add only the compiler-named locals and helpers around `gatherers` and the remaining `PlacementState` / `AttackState` members.
 - CT-12’s blocker is now even narrower: the compiler specifically called out `UnitData` at `gatherers` plus a handful of helper names and state members.
