@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift with exact 3704-byte body |
+| CobaltHarrier | CT-10: `004E7690_execute` | new medium-to-big `taistrmd.cpp` task in clean `agent3` worktree after CT-7 parking |
 | CalmTrail | CT-9: `004B1A50_position_panels` | packet-extraction cleanup in clean `agent2` worktree; first build blockers are malformed comment fragments and missing header type context (`TRIBE_Screen_Sed` undefined at the function header) |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | new medium-sized dlg_dip task in clean `agent4` worktree |
 
@@ -87,6 +87,7 @@ Orchestrator: FrostTiger
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
 - KindTrail later went offline after leaving a late KT-1 draft in agent3; independent review showed it compiled but mismatched from offset 0 with a full stack-frame/prolog shape, so the worktree was reset clean.
 - CobaltHarrier later produced a corrected KT-1 in agent3; independent review confirmed an exact match under a justified per-function /O2 rsp, and the result was pulled into main and revalidated there before CH-1 was assigned.
+- CT-10 is now assigned to CobaltHarrier on `004E7690_execute` in the clean agent3 worktree after CT-7 parking.
 - CH-1's first draft in agent3 compiles but mismatches from offset 0 with a full stack frame; feedback was sent to flatten the source toward the original frameless stack-driven shape.
 - The CH-1 scratch file then remained unchanged across multiple monitor cycles, so a second status follow-up was sent asking for either a revised result or a concrete blocker.
 - No CH-1 revision or status reply arrived after that warning, so the task was stopped for this cycle, the reservation was released, and agent3 was reset clean.
