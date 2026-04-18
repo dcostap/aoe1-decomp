@@ -50,6 +50,10 @@ Orchestrator: FrostTiger
 - CT-7 later reached the target size exactly, and the first real diff shows a prolog/frame-shape mismatch at offset 3 (`55 8B EC 83 E4 F8 83 EC 2C 53 56...` vs `55 8B EC 81 EC 10 01 00 00...`).
 - CobaltHarrier reported the remaining blocker as too many stack temps/locals forcing the oversized frame; the next probe should trim locals and preserve the saved-regs entry shape.
 - CalmTrail confirmed CT-8 is running only in the reserved agent2 worktree and has not reached first compile yet.
+- CobaltHarrier confirmed CT-7 remains in the reserved agent3 worktree and is not touching the main tree.
+- CalmTrail confirmed CT-8 remains in the reserved agent2 worktree and is not touching the main tree.
+- CobaltHarrier’s latest CT-7 blocker is still the prolog/frame shape at offset 3, with the rebuilt frame remaining too large (`81 EC 10 01 00 00...`).
+- CobaltHarrier confirmed it is still working only in the reserved agent3 worktree and is trimming locals/temps to recover the smaller saved-regs prolog.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
