@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | parked in `src/almost_matched`; low-risk prolog/frame-shape drift with exact 3704-byte body |
-| CalmTrail | CT-9: `004B1A50_position_panels` | new medium-to-big `scr_sed2.cpp` task in clean `agent2` worktree after CT-8 parking |
+| CalmTrail | CT-9: `004B1A50_position_panels` | packet-extraction cleanup in clean `agent2` worktree; first build blockers are malformed comment fragments and missing header type context |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | new medium-sized dlg_dip task in clean `agent4` worktree |
 
 ## Tally
@@ -90,3 +90,4 @@ Orchestrator: FrostTiger
 - The CH-1 scratch file then remained unchanged across multiple monitor cycles, so a second status follow-up was sent asking for either a revised result or a concrete blocker.
 - No CH-1 revision or status reply arrived after that warning, so the task was stopped for this cycle, the reservation was released, and agent3 was reset clean.
 - A fresh responsiveness check is now pending before any reassignment to CobaltHarrier.
+- CT-9’s first compile probe hit raw packet-extraction cleanup: malformed early comment fragments and missing `TRIBE_Screen_Sed` type context at the header.
