@@ -57,6 +57,7 @@ Orchestrator: FrostTiger
 - The next CT-7 diff shrank the frame to `81 EC C4 00 00 00...`, but offset-3 prolog mismatch remains.
 - CobaltHarrier clarified that the remaining CT-7 locals are scalar temporaries, with no address-taken locals or array-like stack objects in the active scaffold.
 - A later CT-7 probe trimmed too far and undershot the size target: rebuilt size 3388 vs target 3704, so the next step is to add back body shape without restoring stack-heavy locals.
+- The latest CT-7 blocker is the missing packet-shaped middle pathfinding block around `userDefinedWaypoints` / `findTilePath`; prolog shape is closer, but the body is still too short to diff.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
