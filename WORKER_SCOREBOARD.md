@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | oscillating around the prolog/frame shape; latest trim went too far and undershot target size |
+| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | back near target; only 26 bytes short while preserving the smaller prolog |
 | CalmTrail | CT-8: `004ABCD0_action` | active medium-sized `scr_sed.cpp` task in agent2; blocker is reproducing the frameless/float-heavy entry body before first compile |
 
 ## Tally
@@ -58,6 +58,7 @@ Orchestrator: FrostTiger
 - CobaltHarrier clarified that the remaining CT-7 locals are scalar temporaries, with no address-taken locals or array-like stack objects in the active scaffold.
 - A later CT-7 probe trimmed too far and undershot the size target: rebuilt size 3388 vs target 3704, so the next step is to add back body shape without restoring stack-heavy locals.
 - The latest CT-7 blocker is the missing packet-shaped middle pathfinding block around `userDefinedWaypoints` / `findTilePath`; prolog shape is closer, but the body is still too short to diff.
+- CT-7 has now recovered the packet-shaped pathfinding block and is only 26 bytes short of the target size (`3678` vs `3704`), with the smaller prolog preserved.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
