@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-7: `0045E970_doTrivialMove` | exact size restored; prolog/frame remains the blocker (`55 8B EC 83 EC 6C...` flat frame vs saved-regs entry) |
-| CalmTrail | CT-8: `004ABCD0_action` | compiled but mismatches at offset 0; blocker is restoring the SEH/entry wrapper and packet-shaped early entry body |
+| CalmTrail | CT-8: `004ABCD0_action` | compile-blocked on missing TU scaffolding; packet body is in place, but VC5 still treats the method like a global function |
 
 ## Tally
 
@@ -71,7 +71,7 @@ Orchestrator: FrostTiger
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
-- CalmTrail will rewrite `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet before tuning the wrapper again.
+- CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, but VC5 still needs minimal TU scaffolding (`TRIBE_Screen_Sed`, `RGE_Base_Game`, `uint`, `code`, and the local `c` / SEH-tail variables) before codegen can proceed.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
