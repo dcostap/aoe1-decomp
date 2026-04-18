@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-12: `004ED4F0_TribeTacticalAIModule` | new medium-to-big `taitacmd.cpp` task in clean `agent3` worktree after CT-10 parking |
-| CalmTrail | CT-11: `004F62C0_notify` | new medium-to-big `taitacmd.cpp` task in clean `agent2` worktree after CT-9 parking |
+| CalmTrail | CT-11: `004F62C0_notify` | compile-clean in clean `agent2` worktree; remaining blocker is prolog/frame-shape drift (`83 EC 30 53 55 56 8B 6C ...` vs `55 8B EC 81 EC B8 00 ...`) |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | in progress in clean `agent4` worktree; two build iterations done, remaining blockers are declaration ordering and type/signature cleanup |
 
 ## Tally
@@ -86,6 +86,7 @@ Orchestrator: FrostTiger
 - CT-10 later compiled cleanly and now diff-checks; the remaining blocker is a standard framed entry (`55 8B EC 83 EC 14 89 4D...`) instead of the oracle’s frameless/early-entry sequence (`8B 44 24 08 56 85 C0 57 8B F1...`).
 - CT-10 has now moved fully past comment/banner cleanup; the remaining issue is pure prolog/frame-shape drift.
 - CT-10 is parked in `src/almost_matched/004E7690_execute.cpp` with a structured header; the member-call wrapper probe exceeded the `.text` budget and did not recover the frameless prolog.
+- CT-11’s first compile-clean pass is now in the same pure prolog/frame-shape zone (`83 EC 30 53 55 56 8B 6C ...` vs `55 8B EC 81 EC B8 00 ...`) with the body still intact.
 - The current CT-8 blocker is narrowed to no-frame SEH registration byte ordering; the body stays correct, but the wrapper still emits the wrong byte order.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
