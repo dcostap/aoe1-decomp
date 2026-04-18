@@ -17,7 +17,7 @@ Orchestrator: FrostTiger
 |---|---|---|
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
-| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | exact size again, but the small prolog regressed to a larger frame |
+| CobaltHarrier | CT-7: `0045E970_doTrivialMove` | exact size again, but the small prolog regressed to a larger frame; one remaining `bVar4` local reference is the latest blocker |
 | CalmTrail | CT-8: `004ABCD0_action` | active medium-sized `scr_sed.cpp` task in agent2; blocker is reproducing the frameless/float-heavy entry body before first compile |
 
 ## Tally
@@ -60,6 +60,8 @@ Orchestrator: FrostTiger
 - The latest CT-7 blocker is the missing packet-shaped middle pathfinding block around `userDefinedWaypoints` / `findTilePath`; prolog shape is closer, but the body is still too short to diff.
 - CT-7 has now recovered the packet-shaped pathfinding block and returned to exact target size (`3704` bytes), but the smaller prolog regressed to a larger frame again.
 - Exact blocker evidence for CT-7: the rebuilt prolog is `55 8B EC 81 EC A4 00 00 00...` instead of the oracle’s small saved-regs entry `55 8B EC 83 E4 F8 83 EC 2C 53 56...`; the remaining issue is stack-frame inflation from named locals.
+- A later CT-7 blocker narrowed further to a second `bVar4` reference remaining at line 318 in `0045E970_doTrivialMove`; removing that local reference is the next probe.
+- The latest CT-7 compile blocker is now a pure undeclared-identifier error on that same `bVar4` reference (`C2065`); the frame-shape trim itself is still in place.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - HarborWave and KindTrail were both idled for this cycle after failing to acknowledge their assignments or repeated follow-ups; their worktrees were reset clean and the path reservations were released.
 - Responsiveness re-checks were attempted before any fresh reassignment.
