@@ -20,7 +20,7 @@ Orchestrator: FrostTiger
 | CobaltHarrier | — | worker left; CT-14 was left at parser/type-conversion cleanup after the missing-name phase cleared |
 | CalmTrail | — | retired/parked in `src/almost_matched`; no new tasks assigned |
 | RiverField | CT-16: `004F21F0_taskActiveSoldiers` | new medium-to-big `taitacmd.cpp` task in clean `agent4` worktree after SF-1 parking |
-| JadeMoon | CT-17: `0046B6E0_findTilePath` | new medium-to-big `pathsys.cpp` task in clean `agent2` worktree after CT-15 parking |
+| JadeMoon | CT-17: `0046B6E0_findTilePath` | compile-clean but very undersized in clean `agent2` worktree; pathfinding body expansion needed toward the 6946-byte packet |
 
 ## Tally
 
