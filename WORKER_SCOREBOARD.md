@@ -19,7 +19,7 @@ Orchestrator: FrostTiger
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | — | worker left; CT-14 was left at parser/type-conversion cleanup after the missing-name phase cleared |
 | CalmTrail | — | retired/parked in `src/almost_matched`; no new tasks assigned |
-| MapleRidge | CT-16: `004F21F0_taskActiveSoldiers` | active in clean `agent4` worktree; first build/check pending |
+| MapleRidge | CT-16: `004F21F0_taskActiveSoldiers` | active in clean `agent4` worktree; compile-clean but undersized, body expansion needed toward the 9580-byte packet |
 | JadeMoon | — | worker left; CT-17 was left as a compile-clean but undersized pathfinding scratch in agent2 |
 
 ## Tally
