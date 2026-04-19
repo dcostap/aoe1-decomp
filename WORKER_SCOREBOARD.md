@@ -20,7 +20,7 @@ Orchestrator: FrostTiger
 | CobaltHarrier | — | worker left; CT-14 was left at parser/type-conversion cleanup after the missing-name phase cleared |
 | CalmTrail | — | retired/parked in `src/almost_matched`; no new tasks assigned |
 | RiverField | SF-1: `0043C930_TribeDiplomacyDialog` | active in clean `agent4` worktree; exact-match decompilation resumed after SolarFox left |
-| JadeMoon | CT-15: `004AF6C0_create_all_buttons_etc` | new medium-to-big `scr_sed2.cpp` task in clean `agent2` worktree after CalmTrail retirement |
+| JadeMoon | CT-15: `004AF6C0_create_all_buttons_etc` | compile-clean but undersized in clean `agent2` worktree; source-shape expansion needed toward the 9090-byte packet |
 
 ## Tally
 
