@@ -18,8 +18,9 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | CT-14: `004DB290_influencePlaceStructure` | still active in clean `agent3` worktree; missing-name phase cleared and remaining blocker is parser/type-conversion shape cleanup |
-| CalmTrail | — | CT-13 parked in `src/almost_matched`; no new tasks assigned, ready for clean send-off |
+| CalmTrail | — | retired/parked in `src/almost_matched`; no new tasks assigned |
 | SolarFox | SF-1: `0043C930_TribeDiplomacyDialog` | compile-clean in clean `agent4` worktree; remaining blocker is SEH/prologue shape (`push -1 / fs:[0]` chain vs standard framed entry, stack `0x124` vs `0x328`) |
+| JadeMoon | CT-15: `004AF6C0_create_all_buttons_etc` | new medium-to-big `scr_sed2.cpp` task in clean `agent2` worktree after CalmTrail retirement |
 
 ## Tally
 
