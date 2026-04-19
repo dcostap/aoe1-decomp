@@ -19,7 +19,7 @@ Orchestrator: FrostTiger
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | — | worker left; CT-14 was left at parser/type-conversion cleanup after the missing-name phase cleared |
 | CalmTrail | — | retired/parked in `src/almost_matched`; no new tasks assigned |
-| RiverField | CT-16: `004F21F0_taskActiveSoldiers` | new medium-to-big `taitacmd.cpp` task in clean `agent4` worktree after SF-1 parking |
+| RiverField | — | worker left; CT-16 was left before the first build result landed |
 | JadeMoon | — | worker left; CT-17 was left as a compile-clean but undersized pathfinding scratch in agent2 |
 
 ## Tally
@@ -34,7 +34,7 @@ Orchestrator: FrostTiger
 
 - New session started from a clean main tree and clean worker worktrees.
 - Default policy remains exact-match-first with default flags first; use per-function `.rsp` only if default flags fail and report that explicitly.
-- Live assignments now: RiverField is on CT-16, CalmTrail is retired, CT-15 is parked in `src/almost_matched`, and JadeMoon has been closed with CT-17 preserved in scratch.
+- No active workers are online right now; CalmTrail remains retired, CT-15 is parked in `src/almost_matched`, and CT-17/CT-16 were left behind in scratch after RiverField and JadeMoon left.
 - CT-2 was assigned after the load_node vtable-slot evidence was confirmed from the class dump (slot 0x2C / vt[11]).
 - CT-2 currently reports a first-byte prolog mismatch; the latest worker note says the rebuilt prolog begins with `64a1000000006aff6800000000508b44...` while the original begins `64a1000000006aff6876c95500508b44...`.
 - CalmTrail later narrowed the rebuilt entry to `56 57 84 c0 8b f9 75 13 8b4c2408 64890d...`; one final micro-probe was requested before parking.
