@@ -1,12 +1,16 @@
 class RGE_Active_Sprite {
 public:
-    char gap_0[0xC];
-    int field_C;
-    int field_10;
-    void set_offset(int a, int b);
+    void* vtable_ptr;
+    void* sprite;
+    unsigned char type;
+    char gap_09[0x3];
+    long offset_x;
+    long offset_y;
+
+    virtual void set_offset(long param_1, long param_2);
 };
 
-void RGE_Active_Sprite::set_offset(int a, int b) {
-    this->field_C = a;
-    this->field_10 = b;
+void RGE_Active_Sprite::set_offset(long param_1, long param_2) {
+    this->offset_x = param_1;
+    this->offset_y = param_2;
 }

@@ -37,11 +37,8 @@ After reading the README, follow these working rules.
   - editable
 - `src\scratch\...`
   - active per-function work area
+  - this also holds understood-but-still-nonmatching functions
   - create or edit one file per target function here
-- `src\almost_matched\...`
-  - intentionally parked non-exact bank
-  - use only for functions that remain non-matching under strict admission rules
-  - these files are **not** done and must not be treated as equivalent to `matching`
 - `src\matching\...`
   - finished bank
   - only promote a function here after local exact-match validation passes
@@ -73,14 +70,14 @@ Practical rule:
 5. Compile and compare against the original.
 6. If compilation or matching work exposes missing shared facts, update the shared working layer.
 7. Keep iterating until the function matches.
-8. If a function is understood but intentionally parked as non-exact, move it to `src\almost_matched\...` only when the strict admission rules below are satisfied and the required structured header notes are present.
+8. If a function remains non-exact after meaningful investigation, keep it in `src\scratch\...` and make the file's top attempt log summarize the remaining gap clearly.
 9. Remove scratch-only workflow notes when done.
 10. Move the function to `src\matching\...` only after it is locally validated.
 
 ### Exact-match iteration heuristics
 
 When a function is close but sticky, use these heuristics before escalating to
-toolchain panic or parking:
+toolchain panic or stepping away from the function:
 
 1. If the first mismatch moves deeper, treat that as a real lead and re-anchor on the
    new mismatch.
@@ -121,67 +118,86 @@ These are heuristics, not laws, but a real exact-match win now backs them:
    “remove named temporaries and inline the expression” an early probe, not a last
    desperate guess.
 
-## `almost_matched` admission rules
+#### VC5-specific tiny-helper / address-return hints
 
-Agents may move a function from `src\scratch\...` to `src\almost_matched\...` only when **all** of the following are true:
+These are also heuristics, but a long stubborn `DString::operator[]` investigation
+backed them hard enough to make them reusable:
+
+1. If a tiny helper returns an address-like result and the original asm clearly
+   carries an **integer offset/index** through the checks and into the final
+   address formation, prefer source that selects or preserves that **offset**,
+   not source that selects between two pointers/results. In practice this means
+   “pick `0` or `index`, then index with it” often lands in a better VC5 basin
+   than “pick `base` or `base + index` and return that”.
+2. For that same class of tiny helpers, keep the **base/member access direct** as
+   long as possible. A named `base` temp, even a `const` one, can kick VC5 into a
+   different family with earlier base loads, extra pushes, and worse register
+   choices.
+3. Once a tiny helper is in a promising basin, be suspicious of named compare
+   temps like `bound`, named `length` temps, copied-offset locals, and boolean
+   success flags. In a real case they reliably ejected the function from the best
+   basin even though the logic stayed the same.
+4. Preserve the original compare **algebra**, not just the meaning. If the target
+   wants an `index + 1` style compare, do not assume `index < length` or another
+   simpler equivalent check is an improvement. VC5 may treat those as different
+   basins with different register allocation and branch layout.
+5. If dozens of source spellings collapse into only a few exact code signatures,
+   stop treating it as ordinary decomp churn. That is a sign you are looking at a
+   **codegen-family problem**, not a missing random spelling. At that point,
+   switch from ad-hoc rewrites to classification, harnessing, and context/toolchain
+   archaeology.
+6. For this pathology class, final-expression sugar is often low value once the
+   correct basin is found. If `base[index]`, `*(base + index)`, `off[base]`,
+   address-of wrappers, trivial casts, and `+0`/`-0` all collapse to the same
+   bytes, treat that whole family as exhausted and move the investigation up a
+   level.
+
+## When it is okay to leave a function in `scratch`
+
+Agents may stop active iteration and leave a function in `src\scratch\...` only when **all** of the following are true:
 
 1. The mismatch is **localized and specifically understood**.
 2. Source-shape and plausible flag/toolchain exploration have been meaningfully attempted; this is not just the first failed draft.
 3. Calling convention, stack cleanup, call boundaries, and obvious externally visible behavior still look correct.
 4. The remaining difference is judged **low-risk codegen drift**, such as merged epilogues, harmless register choice drift, or benign block-layout drift.
 5. The remaining difference is **not** a changed predicate, changed call set, changed memory effect, changed copy size, or another behavior-sensitive divergence.
-6. The file carries a structured header that explains why it was parked.
+6. The file's top notes use the same compact attempt-log style used everywhere else, and the remaining gap is summarized there in plain language.
 
-## Structured top comments in scratch and almost_matched files
+## Attempt-log comments in scratch files
 
-There is **no separate JSON scratch-state sidecar**.
+There is **no separate sidecar notebook**.
 
 Instead, the source file itself is the working notebook.
 
-Active scratch files may carry a compact structured header block such as:
+Scratch files, including paused near-matches, carry the same compact attempt log near the top of the file.
+Use plain comments that record one probe at a time and its observed effect. Use as many short lines as needed to capture the probes you actually tried. 
+Keep appending them as you work. It's supposed to be a ledger of what was tried:
 
 ```c
-// STATUS: blocked
-// FLAGS: config\flags\o2.rsp
-// BLOCKER: needs TU context for sibling helper at 004013A0
-// NOTE: stack cleanup matches, but register allocation still diverges after debug_srand
+// tried inlining the temp; mismatch moved deeper to 00401A2C
+// kept that change; reversed the add order; first mismatch is now the compare
+// rolled back the temp change; tried a narrower local stub; no compile change
+// tried the direct success return; VC5 still loaded the arg into edx
+// tried a named base temp and a split fail-check form; no register change
+// left this in scratch because the remaining mismatch is register-allocation drift at the first arg load
 ```
 
-This is intentionally lightweight. The goal is:
+Good notes usually answer:
 
-- enough structured state for agents and the root dashboard,
-- without creating a second parallel notebook that drifts from the code.
+- what was tried,
+- whether the change was kept or rolled back,
+- what effect it had on the match or mismatch location,
+- and whether the new clue is local or global.
 
-Scratch files may use:
+Keep the note plain-language and focused on the observed effect.
+The notes themselves should make clear whether the file is an active lead, a paused near-match, or basically ready for validation.
 
-- `STATUS:`
-- `FLAGS:`
-- `BLOCKER:`
-- `NOTE:`
+`FLAGS:` is optional and should appear only when a custom response file is actually
+in use. Most functions should have no per-function flags at all.
 
-The source file itself is the detailed status record for active work.
-
-Required structured header for `src\almost_matched\...`:
-
-```c
-// STATUS: almost_matched
-// CLASS: <short mismatch class>
-// RISK: <low|medium|high>
-// WHY: <why this is understood and parked>
-// NEXT: <what would justify revisiting it>
-```
-
-Optional additional notes may still use:
-
-```c
-// FLAGS: ...
-// BLOCKER: ...
-// NOTE: ...
-```
-
-The root dashboard may read these structured top comments from `src\scratch\...` and
-`src\almost_matched\...` when generating `project_full_status.csv`, so keep them
-short, structured, and genuinely useful.
+The root dashboard may read these notes from `src\scratch\...` when
+generating `project_full_status.csv`, so keep them short, specific, and
+genuinely useful.
 
 ## Comments inside the function body
 
@@ -258,7 +274,7 @@ Use it to:
 Do **not**:
 
 - treat it as compiler-facing truth,
-- bulk-copy it into `include\game_types.h`,
+- promote it into `include\game_types.h`,
 - or let it override machine-code-observed slot behavior.
 
 The intended flow is:
@@ -362,7 +378,7 @@ of the original source was handwritten versus compiler-emitted.
 
 ## Inline asm policy
 
-Inline asm is **forbidden** in this repo.
+Inline asm is **forbidden** in this repo UNLESS the user explictly requests it.
 
 That ban includes:
 
@@ -408,7 +424,7 @@ When that happens for a real function:
 - keep the function in `src\scratch\...`,
 - continue source-shape / declaration / type / flag investigation if there is a
   real next lead,
-- otherwise park it under the normal repo rules,
+- otherwise leave it in `src\scratch\...` with a clear top-note summary,
 - but do **not** use inline asm to force it through.
 
 Promotion rule:
@@ -475,7 +491,7 @@ Agents should react to real problems pragmatically:
 - compile failure -> narrow the issue and fix the smallest correct surface,
 - mismatch -> prefer binary-observed behavior over prettier source.
 - compiler-generated-looking helper -> prefer a plain explicit implementation that matches the helper pattern over depending on hidden compiler synthesis.
-- ordinary function that seems to need inline asm -> investigate source shape, declaration context, and flags, or keep it parked; do not bypass the problem with asm.
+- ordinary function that seems to need inline asm -> investigate source shape, declaration context, and flags, or leave it in `src\scratch\...`; do not bypass the problem with asm.
 - ordinary tiny mismatch -> remember that old compilers can generate meaningfully
   different code for semantically equivalent source shapes, so keep exploring
   alternative source-level formulations before giving up.
@@ -491,8 +507,8 @@ The scaffold is expected to improve through normal decomp work.
 ## Matching discipline
 
 - A function in `src\matching\...` is a claim that it is done.
-- A function in `src\almost_matched\...` is a claim that it is intentionally parked, understood, and still non-exact.
-- Do not promote speculative or still-mismatching code there.
+- A function in `src\scratch\...` is still in progress, even if it is close or temporarily paused.
+- Do not promote speculative or still-mismatching code into `src\matching\...`.
 - Do not promote any function there if it contains inline asm or another
   source-level hack added only to make the parity check pass, except for the
   documented padding-only pseudo-function exception above.
@@ -515,14 +531,13 @@ lands in the main tree:
 - verify it is not relying on a green-check hack,
 - and only then run the normal validation loop and promote it.
 
-Promotion into `src\matching\...` is a review decision, not a blind file copy.
+Promotion into `src\matching\...` is a review decision, not a blind move.
 
 ## Final mindset
 
 - `inventory\...` = generated reference
 - `include\...` + `src\game_globals.cpp` = living shared source
-- `src\scratch\...` = active work area
-- `src\almost_matched\...` = understood non-exact parking area
+- `src\scratch\...` = active or paused non-exact work area
 - `src\matching\...` = finished validated bank
 
 Agents should be conservative about layout, flexible about workflow, and willing to correct earlier mistakes as soon as the function-level evidence says they should.

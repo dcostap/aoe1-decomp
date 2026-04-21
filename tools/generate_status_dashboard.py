@@ -11,7 +11,6 @@ from common import REPO_ROOT, load_functions
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 BUCKET_COLORS = {
     "matching": "#2e8b57",
-    "almost_matched": "#c98a1f",
     "scratch": "#7b68ee",
     "unclaimed": "#3f4a5a",
     "conflict": "#c0392b",
@@ -83,7 +82,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
     remaining_functions = total_functions - matched_functions
     remaining_bytes = total_bytes - matched_bytes
 
-    bucket_order = ["matching", "almost_matched", "scratch", "unclaimed", "conflict"]
+    bucket_order = ["matching", "scratch", "unclaimed", "conflict"]
     bucket_counts = {bucket: sum(1 for row in rows if row["source_bucket"] == bucket) for bucket in bucket_order}
     bucket_bytes = {
         bucket: sum(int(row["size_bytes"]) for row in rows if row["source_bucket"] == bucket)
@@ -480,7 +479,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
     function renderBuckets() {{
       const grid = document.getElementById("bucket-grid");
-      const order = ["matching", "almost_matched", "scratch", "unclaimed", "conflict"];
+      const order = ["matching", "scratch", "unclaimed", "conflict"];
       for (const bucket of order) {{
         const card = document.createElement("div");
         card.className = "bucket";
@@ -853,11 +852,9 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
 def main() -> None:
     scratch_dir = REPO_ROOT / "src" / "scratch"
-    almost_matched_dir = REPO_ROOT / "src" / "almost_matched"
     matching_dir = REPO_ROOT / "src" / "matching"
     flags_dir = REPO_ROOT / "config" / "flags"
     scratch_files = source_files(scratch_dir)
-    almost_matched_files = source_files(almost_matched_dir)
     matching_files = source_files(matching_dir)
 
     records = load_functions()
@@ -867,22 +864,17 @@ def main() -> None:
     for record in records:
         slug = record["slug"]
         scratch_path = scratch_files.get(slug)
-        almost_matched_path = almost_matched_files.get(slug)
         matching_path = matching_files.get(slug)
 
-        present_paths = [path for path in (matching_path, almost_matched_path, scratch_path) if path is not None]
+        present_paths = [path for path in (matching_path, scratch_path) if path is not None]
         if len(present_paths) > 1:
             source_bucket = "conflict"
             source_path = " | ".join(str(path.relative_to(REPO_ROOT)) for path in present_paths)
-            note_path = scratch_path or almost_matched_path
+            note_path = scratch_path
         elif matching_path:
             source_bucket = "matching"
             source_path = str(matching_path.relative_to(REPO_ROOT))
             note_path = None
-        elif almost_matched_path:
-            source_bucket = "almost_matched"
-            source_path = str(almost_matched_path.relative_to(REPO_ROOT))
-            note_path = almost_matched_path
         elif scratch_path:
             source_bucket = "scratch"
             source_path = str(scratch_path.relative_to(REPO_ROOT))
@@ -970,7 +962,6 @@ def main() -> None:
     html_output_path = write_html_dashboard(rows)
 
     scratch_count = sum(1 for row in rows if row["source_bucket"] == "scratch")
-    almost_matched_count = sum(1 for row in rows if row["source_bucket"] == "almost_matched")
     matching_count = sum(1 for row in rows if row["source_bucket"] == "matching")
     conflict_count = sum(1 for row in rows if row["source_bucket"] == "conflict")
     unclaimed_count = sum(1 for row in rows if row["source_bucket"] == "unclaimed")
@@ -980,7 +971,6 @@ def main() -> None:
     print(
         "Counts: "
         f"matching={matching_count} "
-        f"almost_matched={almost_matched_count} "
         f"scratch={scratch_count} "
         f"unclaimed={unclaimed_count} "
         f"conflict={conflict_count}"

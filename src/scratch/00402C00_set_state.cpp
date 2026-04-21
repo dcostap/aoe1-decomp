@@ -1,8 +1,5 @@
-// STATUS: almost_matched
-// CLASS: backend_epilogue_merge
-// RISK: low
-// WHY: The remaining mismatch is localized to the out-of-range sink shape; both the pinned VC5 host backend and the hybrid VS97 SP3 backend still emit a merged final-epilogue target instead of the original early pure-return block.
-// NEXT: Revisit only if a more exact VC5-family backend/build is found or if this function becomes strategically important enough to justify a lower-level workaround.
+// tried the current set_state shape; the remaining mismatch is the out-of-range sink / final-epilogue form
+// leaving this in scratch because the mismatch is still a low-risk backend shape issue
 // FLAGS: config\flags\00402C00_set_state.rsp
 
 class RGE_Sprite;

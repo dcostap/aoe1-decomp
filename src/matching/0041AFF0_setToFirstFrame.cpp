@@ -1,7 +1,7 @@
 class RGE_Active_Sprite {
 public:
-    virtual ~RGE_Active_Sprite();
-    void setToFirstFrame();
+    virtual void setToFirstFrame();
 };
 
-void RGE_Active_Sprite::setToFirstFrame() {}
+void RGE_Active_Sprite::setToFirstFrame() {
+}

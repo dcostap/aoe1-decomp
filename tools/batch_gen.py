@@ -6,7 +6,7 @@ import csv, os, re, sys
 
 def get_existing_vas():
     vas = set()
-    for d in ['src/matching', 'src/scratch', 'src/almost_matched']:
+    for d in ['src/matching', 'src/scratch']:
         if os.path.isdir(d):
             for f in os.listdir(d):
                 if f.endswith('.cpp'):

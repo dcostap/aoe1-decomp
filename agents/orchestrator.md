@@ -18,7 +18,8 @@ Use this file when starting a new orchestrator for this repo.
    - confirm it contains **no inline asm**,
    - confirm it does **not** use hacks whose only purpose is to turn the parity check green,
    - then run per-function validation and the matching-bank sweep.
-8. Inline asm is forbidden. If a function only seems matchable with asm, keep it in `scratch` or park it under the normal repo rules.
-9. `src\matching\...` is exact-only. `src\almost_matched\...` is a quarantine bucket, not a success bucket.
-10. Keep blocked work documented in the source with the structured top comments expected by `AGENTS.md`.
-11. Prefer reusing active agents over spawning new ones, and when explicitly told to hold, do **not** queue new agents or new tasks; let the existing live work finish first.
+8. Inline asm is forbidden. If a function only seems matchable with asm, keep it in `scratch` with a clear attempt-log summary.
+9. `src\matching\...` is exact-only. `src\scratch\...` holds all non-exact work, whether active or temporarily paused.
+10. Keep blocked work documented in the source with the attempt-log comments expected by `AGENTS.md`.
+11. If a tiny helper or other sticky function keeps collapsing into a small number of stable codegen families, stop assigning endless random spelling probes. Treat it as a codegen-family case, summarize the discovered families, and escalate to focused harness/context/toolchain work.
+12. Prefer reusing active agents over spawning new ones, and when explicitly told to hold, do **not** queue new agents or new tasks; let the existing live work finish first.

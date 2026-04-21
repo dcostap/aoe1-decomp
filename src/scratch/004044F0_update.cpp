@@ -1,5 +1,5 @@
-// STATUS: active
-// NOTE: size-correct and structurally close, but VC5 still delays the `push ebx/push esi` saves until after the null-list check; current drift is prolog/register-shape rather than algorithmic.
+// tried the current update scaffold; size and behavior are close, but VC5 still delays the callee-save pushes
+// leaving this in scratch because the remaining gap is register/prolog shape, not logic
 class RGE_Action {
 public:
     virtual void vf00(void);
@@ -31,26 +31,20 @@ public:
 };
 
 unsigned char RGE_Action_List::update(void) {
-    if (this->list == 0) {
-        return 1;
-    }
+    RGE_Action_Node* pRVar1;
+    unsigned char uVar2;
 
-    {
-        RGE_Action_Node* node;
-        unsigned char result;
-
-        result = this->list->action->update();
-        node = this->list;
-        if (node != 0) {
-            node = node->next;
-            while (node != 0) {
-                node->action->vf24();
-                node = node->next;
+    if (this->list != 0) {
+        uVar2 = this->list->action->update();
+        if (this->list != 0) {
+            for (pRVar1 = this->list->next; pRVar1 != 0; pRVar1 = pRVar1->next) {
+                pRVar1->action->vf24();
             }
-            if (result == 1) {
+            if (uVar2 == 1) {
                 this->remove_action();
             }
         }
-        return result;
+        return uVar2;
     }
+    return 1;
 }

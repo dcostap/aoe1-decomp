@@ -18,7 +18,7 @@ Orchestrator: FrostTiger
 | HarborWave | — | worker offline; late invalid draft cleaned from `agent2` |
 | KindTrail | — | worker offline; late non-matching draft cleaned from `agent3` |
 | CobaltHarrier | — | worker left; CT-14 was left at parser/type-conversion cleanup after the missing-name phase cleared |
-| CalmTrail | — | retired/parked in `src/almost_matched`; no new tasks assigned |
+| CalmTrail | — | retired; previous near-match left in `src/scratch`; no new tasks assigned |
 | MapleRidge | CT-16: `004F21F0_taskActiveSoldiers` | active in clean `agent4` worktree; compile-clean but undersized, body expansion needed toward the 9580-byte packet |
 | JadeMoon | — | worker left; CT-17 was left as a compile-clean but undersized pathfinding scratch in agent2 |
 
@@ -33,21 +33,20 @@ Orchestrator: FrostTiger
 ## Notes
 
 - New session started from a clean main tree and clean worker worktrees.
-- Live assignments now: MapleRidge is on CT-16, CalmTrail is retired, CT-15 is parked in `src/almost_matched`, and CT-17 is left behind in scratch after JadeMoon left.
+- Live assignments now: MapleRidge is on CT-16, CalmTrail is retired, CT-15 is left in `src/scratch`, and CT-17 is left behind in scratch after JadeMoon left.
 - Default policy remains exact-match-first with default flags first; use per-function `.rsp` only if default flags fail and report that explicitly.
-- Live assignments now: MapleRidge is on CT-16, CalmTrail is retired, CT-15 is parked in `src/almost_matched`, and CT-17 is left behind in scratch after JadeMoon left.
 - CT-2 was assigned after the load_node vtable-slot evidence was confirmed from the class dump (slot 0x2C / vt[11]).
 - CT-2 currently reports a first-byte prolog mismatch; the latest worker note says the rebuilt prolog begins with `64a1000000006aff6800000000508b44...` while the original begins `64a1000000006aff6876c95500508b44...`.
-- CalmTrail later narrowed the rebuilt entry to `56 57 84 c0 8b f9 75 13 8b4c2408 64890d...`; one final micro-probe was requested before parking.
+- CalmTrail later narrowed the rebuilt entry to `56 57 84 c0 8b f9 75 13 8b4c2408 64890d...`; one final micro-probe was requested before leaving it in scratch.
 - The latest CT-2 probe moved the first mismatch deeper to offset 30, with original window `00000025ff0000005783e8008bf90f84` and rebuilt window `00000025ff000000565783e8008bf90f`.
-- CT-2 was then deemed park-worthy as prolog/EH shape drift and the worker was instructed to move it into `src/almost_matched` with a structured header.
+- CT-2 was then deemed a scratch hold because of prolog/EH shape drift, and the worker was instructed to leave it in `src/scratch` with a structured header.
 - CT-4 was paused after an offset-0 prolog drift report on `00404A40_first_in_stack` and then superseded by a medium-sized move_obj task.
-- CT-3 was assigned to CobaltHarrier as a backup attempt on the animated-sprite constructor/EH scaffold while HW-1 remains parked.
+- CT-3 was assigned to CobaltHarrier as a backup attempt on the animated-sprite constructor/EH scaffold while HW-1 remains in scratch.
 - CobaltHarrier later confirmed CT-3 had not started, so agent3 was repurposed to CT-5 `004048C0_get_action_name` and then further superseded by CT-7 `0045E970_doTrivialMove`.
 - CalmTrail’s CT-4 first validation showed offset-0 prolog drift, which is now archived as a blocked tiny-helper attempt.
 - CalmTrail’s new CT-6 target is the medium-sized `0045DB90_doMove` task in agent2.
 - CT-6 first validation showed offset-0 prolog drift: rebuilt `55 8B EC 83 EC 08 89 4D F8 6A 06 8B 45 F8 8B 10...` vs original `56 8B F1 6A 06 8B 06 FF 50 5C...`.
-- CT-6 was later parked in `src/almost_matched/0045DB90_doMove.cpp` as low-risk prolog/source-shape drift.
+- CT-6 was later left in `src/scratch/0045DB90_doMove.cpp` as low-risk prolog/source-shape drift.
 - CT-8 is now assigned to CalmTrail on `004ABCD0_action` in the clean agent2 worktree.
 - CobaltHarrier’s CT-7 minimal scaffold for `0045E970_doTrivialMove` compiled but was too small for diffing (`Configured function size 3704 exceeds .text section size 15`), so it needed a much larger source shape next.
 - CT-7 later reached the target size exactly, and the first real diff shows a prolog/frame-shape mismatch at offset 3 (`55 8B EC 83 E4 F8 83 EC 2C 53 56...` vs `55 8B EC 81 EC 10 01 00 00...`).
@@ -73,32 +72,32 @@ Orchestrator: FrostTiger
 - The latest CT-7 blocker has since narrowed further to `55 8B EC 81 EC 84 00 00 00 56 89...` with exact size preserved; the remaining locals now reported are `iVar15`, `fVar14`, `distanceToCover`, `dX`, `newY`, and `fVar26`.
 - CobaltHarrier’s newest CT-7 probe still has exact size `3704` but the entry remains flat at `55 8B EC 81 EC 80 00 00 00 56 89...`; the live locals are now mostly `fVar14`, `distanceToCover`, `dX`, `newY`, and `fVar26` after removing `iVar15`.
 - The latest CT-7 blocker is down to just the five live locals `fVar14`, `distanceToCover`, `dX`, `newY`, and `fVar26`; the next probe should target entry-shape only.
-- CobaltHarrier confirmed CT-7 is parked in `src/almost_matched/0045E970_doTrivialMove.cpp` with the required structured header; the mismatch is low-risk prolog/frame-shape drift with an exact 3704-byte body.
+- CobaltHarrier confirmed CT-7 is left in `src/scratch/0045E970_doTrivialMove.cpp` with the required structured header; the mismatch is low-risk prolog/frame-shape drift with an exact 3704-byte body.
 - CalmTrail’s CT-8 blocker is now the frameless/float-heavy entry body: original entry setup and early FPU/pathing cluster need to stay in packet order without extra stack frame or temps.
 - CT-8 later compiled but mismatched at offset 0; the rebuilt starts `558bec81ecd40000`, while the oracle starts `64a1000000006aff`.
 - CT-8 now needs the original SEH/entry wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`) plus the early `push ebx / push ebp / mov ebp,[esp+40h] / push esi / push edi / mov esi,ecx` body shape.
 - CalmTrail later rewrote `004ABCD0_action` from the real `TRIBE_Screen_Sed::action(TPanel*, long, ulong, ulong)` packet, and the TU scaffolding is now in place; the remaining blocker is the no-frame SEH registration byte ordering / entry prolog shape.
 - The latest CT-8 probe compiled but still emitted a plain framed function entry (`83ec4c 53 8b5c2454 55 56 85db 57 8bf1...`) instead of the oracle’s no-frame SEH wrapper (`mov eax,fs:[0] / push -1 / push 55F48Bh / push eax / mov fs:[0],esp`).
 - CalmTrail’s latest CT-8 wrapper probe also showed the no-frame family is reachable, but the registration bytes still come out in the wrong order (`6aff680000000064...` vs `64a10000000000ff...`).
-- CT-8 has been parked in `src/almost_matched/004ABCD0_action.cpp`; the remaining difference is low-risk no-frame SEH byte-order drift.
+- CT-8 has been left in `src/scratch/004ABCD0_action.cpp`; the remaining difference is low-risk no-frame SEH byte-order drift.
 - CalmTrail’s new CT-9 target is the medium-to-big `004B1A50_position_panels` task in agent2.
 - CT-9’s first build/check result hit packet-extraction cleanup blockers: malformed early comment fragments (`missing ';' before '/'`) and missing `TRIBE_Screen_Sed` type context at the header.
 - CT-9 later compiled cleanly, and the remaining blocker is now a pure prolog/frame-shape divergence (`56 8B F1 ...` vs `55 8B EC 83 EC 30 ...`).
 - CT-10’s first build/check result is now source-synthesis cleanup: the raw decompiler banner/comment text and stub mismatches need to be cleared before any meaningful diff.
 - CT-10 later compiled cleanly and now diff-checks; the remaining blocker is a standard framed entry (`55 8B EC 83 EC 14 89 4D...`) instead of the oracle’s frameless/early-entry sequence (`8B 44 24 08 56 85 C0 57 8B F1...`).
 - CT-10 has now moved fully past comment/banner cleanup; the remaining issue is pure prolog/frame-shape drift.
-- CT-10 is parked in `src/almost_matched/004E7690_execute.cpp` with a structured header; the member-call wrapper probe exceeded the `.text` budget and did not recover the frameless prolog.
+- CT-10 is left in `src/scratch/004E7690_execute.cpp` with a structured header; the member-call wrapper probe exceeded the `.text` budget and did not recover the frameless prolog.
 - CT-11’s first compile-clean pass is now in the same pure prolog/frame-shape zone (`83 EC 30 53 55 56 8B 6C ...` vs `55 8B EC 81 EC B8 00 ...`) with the body still intact.
-- CT-11 is parked in `src/almost_matched/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
+- CT-11 is left in `src/scratch/004F62C0_notify.cpp` with a structured header; the entry/frame allocation remained off after the live temp set was trimmed to the packet core.
 - CT-13’s first probe is blocked by the constructor wrapper form: VC5 rejects the packet with `constructors not allowed a return type`.
 - CT-13’s constructor wrapper is now fixed; the remaining blockers are donor-accurate body stubs such as the `create_*` helpers, alignment/spacing setters, hotkey fields, and the mission text symbol.
-- CT-13 is parked in `src/almost_matched/004B4880_TribeGameSettingsScreen.cpp`; the constructor body is compile-clean and only the prolog/frame shape remains off.
+- CT-13 is left in `src/scratch/004B4880_TribeGameSettingsScreen.cpp`; the constructor body is compile-clean and only the prolog/frame shape remains off.
 - SF-1 is now compile-clean; the remaining blocker is SEH/prologue shape, with the original emitting a manual FS:[0] chain and the rebuilt source still producing a standard framed entry.
 - SF-1’s next probe should be an explicit `__try/__except`-style source form, plus a locals trim to reduce the stack frame toward the original size.
 - CT-12’s first compile pass is now blocked on constructor-visible type context: `TribeTacticalAIModule` needs a local class scaffold and the dependent names are still undefined in the TU.
 - CT-12’s next narrow pass should add only the compiler-named locals and helpers around `gatherers` and the remaining `PlacementState` / `AttackState` members.
 - CT-12’s blocker is now even narrower: the compiler specifically called out `UnitData` at `gatherers` plus a handful of helper names and state members.
-- CT-12 is parked in `src/almost_matched/004ED4F0_TribeTacticalAIModule.cpp` with a structured header; the body is compile-clean and only the prolog/frame shape remains off.
+- CT-12 is left in `src/scratch/004ED4F0_TribeTacticalAIModule.cpp` with a structured header; the body is compile-clean and only the prolog/frame shape remains off.
 - CT-14’s first compile pass is now blocked on constructor-visible type context; the scratch file still needs a minimal local scaffold for the packet names the compiler just named.
 - CT-14’s blocker has narrowed further to a helper/member list: influence/decision types, lookup/log helpers, placement state names, and the `__ftol`/`FUN_00560538` pair.
 - CT-14’s latest blocker now specifically calls out `lastWallPosition` / `lastWallPosition2`, building-lot capacity fields, and the remaining placement helpers/data names.
@@ -112,7 +111,7 @@ Orchestrator: FrostTiger
 - HarborWave later went offline after leaving a late HW-1 draft in agent2; independent review showed it did not compile under the pinned VC5 toolchain (`__thiscall` global + `nullptr`/`this` misuse), so the worktree was reset clean.
 - KindTrail later went offline after leaving a late KT-1 draft in agent3; independent review showed it compiled but mismatched from offset 0 with a full stack-frame/prolog shape, so the worktree was reset clean.
 - CobaltHarrier later produced a corrected KT-1 in agent3; independent review confirmed an exact match under a justified per-function /O2 rsp, and the result was pulled into main and revalidated there before CH-1 was assigned.
-- CT-10 is now assigned to CobaltHarrier on `004E7690_execute` in the clean agent3 worktree after CT-7 parking.
+- CT-10 is now assigned to CobaltHarrier on `004E7690_execute` in the clean agent3 worktree after CT-7 was left in scratch.
 - SolarFox has already made concrete progress on SF-1: two build iterations completed, with remaining blockers in declaration ordering, `RGE_Base_Game` typing, static/member signature mismatches, and `void*` cleanup.
 - CH-1's first draft in agent3 compiles but mismatches from offset 0 with a full stack frame; feedback was sent to flatten the source toward the original frameless stack-driven shape.
 - The CH-1 scratch file then remained unchanged across multiple monitor cycles, so a second status follow-up was sent asking for either a revised result or a concrete blocker.

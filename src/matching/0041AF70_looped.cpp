@@ -1,7 +1,8 @@
 class RGE_Active_Sprite {
 public:
-    virtual ~RGE_Active_Sprite();
-    unsigned char looped();
+    virtual unsigned char looped();
 };
 
-unsigned char RGE_Active_Sprite::looped() { return 0; }
+unsigned char RGE_Active_Sprite::looped() {
+    return 0;
+}

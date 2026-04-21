@@ -12,14 +12,7 @@ public:
 };
 
 unsigned char RGE_Campaign_Info_scs::set_current_scenario(int scenario) {
-    int idx = this->person_index;
-    if (idx < 0) {
-        goto fail;
-    }
-    if (idx >= this->people_count) {
-        goto fail;
-    }
-    return ((RGE_Campaign_scs*)this->campaigns[idx])->set_current_scenario(scenario);
-fail:
-    return 0;
+    if (this->person_index < 0) return 0;
+    if (this->person_index >= this->people_count) return 0;
+    return ((RGE_Campaign_scs*)this->campaigns[this->person_index])->set_current_scenario(scenario);
 }
