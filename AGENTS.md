@@ -97,6 +97,17 @@ toolchain panic or stepping away from the function:
    backs this: matching the original lexical order (`4, 6, 3, 1`) solved a
    sticky VC5 tail-sharing mismatch that multiple control-flow and
    expression-shape tricks did not.
+9. Treat **translation-unit context** as a normal matching axis, not a weird
+   last resort. For VC5, nearby declarations/definitions, header state, and even
+   small CRT includes can change codegen for tiny helpers.
+10. When a function is sticky, cycle **likely original-file include context**
+   alongside code-shape probes. If the function came from a known donor `.cpp`,
+   try the basic includes that file likely used even when the tiny function body
+   does not textually need them. Re-test includes as the source shape changes,
+   because the winning include/body combination can move together.
+11. Probe context deliberately, not randomly, and prefer donor-file or
+   cluster-local include baselines over repo-wide catch-all header sets. Then
+   reduce any winning context back down to the smallest proven reproducer.
 
 #### VC5-specific expression-shape hints
 
@@ -146,11 +157,53 @@ backed them hard enough to make them reusable:
    **codegen-family problem**, not a missing random spelling. At that point,
    switch from ad-hoc rewrites to classification, harnessing, and context/toolchain
    archaeology.
+   
+   Important policy: this kind of variant-generation lab / harness work is a
+   **last-resort escalation**, not normal function iteration, and agents should
+   use it only with **explicit user permission**.
 6. For this pathology class, final-expression sugar is often low value once the
    correct basin is found. If `base[index]`, `*(base + index)`, `off[base]`,
    address-of wrappers, trivial casts, and `+0`/`-0` all collapse to the same
    bytes, treat that whole family as exhausted and move the investigation up a
    level.
+7. If a tiny helper looks source-correct but only lands in the right codegen
+   family inside a fuller donor-style translation-unit context, it is okay to
+   reconstruct that local TU context **inside the same per-function file**.
+   Practical rule: keep the target function's definition **lexically first** so
+   the repo's current object extractor still sees the target bytes at the front
+   of the concatenated `.text` output, then place the donor-like neighboring
+   declarations/definitions after it.
+8. If fuller TU context unlocks a match, do a reduction pass instead of assuming
+   the whole donor context is truly required. A real `DString::operator[]` win
+   later collapsed from a fuller donor-style TU down to a tiny local stub plus a
+   CRT header include; the rest of the donor file was removable.
+
+#### VC5-specific TU / header-context hints
+
+These are broader than one helper class and should be treated as reusable
+matching guidance:
+
+1. Do **not** assume a semantically unused-looking include is codegen-neutral.
+   On VC5, even a small standard header such as `<stdlib.h>` can change the
+   front-end or optimizer enough to move a tiny function into a different codegen
+   family.
+2. Prefer the **likely include baseline of the original donor file** before you
+   invent ad-hoc context. If several matched functions come from the same source
+   file cluster, it is reasonable to reuse that cluster's basic include context.
+3. When a tiny function is behaviorally right but trapped in a small set of
+   stable signatures, probe minimal context changes on purpose: nearby class
+   declarations, adjacent tiny methods, and one header/include change at a time.
+   Re-test those include choices as the body shape changes; include/body coupling
+   is real on VC5.
+4. Do not cargo-cult random includes across the whole repo. Prefer donor-file or
+   cluster-local include baselines over a universal catch-all header pile.
+5. If a header or donor-style context change wins, keep the **smallest matching
+   context** you can prove. Reduction is part of the solve, not optional cleanup.
+6. Once a minimal context dependency is proven, preserve it even if it looks
+   cosmetically unnecessary. Exact-match context is part of the source model.
+7. When documenting a context win in a scratch or matching file, explain the
+   preserved context in plain language so later agents do not delete it as
+   “unused cleanup”.
 
 ## When it is okay to leave a function in `scratch`
 

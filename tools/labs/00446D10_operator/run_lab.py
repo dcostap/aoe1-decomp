@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import shutil
+import struct
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -16,7 +17,7 @@ TOOLS_DIR = REPO_ROOT / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from coff import load_coff_section, mask_relocations  # noqa: E402
+from coff import CoffRelocation, load_coff_section, mask_relocations  # noqa: E402
 from common import (  # noqa: E402
     ensure_dir,
     format_hex,
@@ -32,6 +33,7 @@ from common import (  # noqa: E402
 from extract_original_function import decode_bytes  # noqa: E402
 
 TARGET_VA = 0x00446D10
+TARGET_SYMBOL = "??ADString@@QAEAADH@Z"
 LAB_SLUG = "00446D10_operator"
 LAB_ROOT = REPO_ROOT / "build" / "labs" / LAB_SLUG
 GENERATED_DIR = LAB_ROOT / "generated"
@@ -112,6 +114,8 @@ class Variant:
     category: str
     source: str
     note: str
+    extra_flags: tuple[str, ...] = ()
+    symbol_name: str = TARGET_SYMBOL
 
 
 @dataclass(frozen=True)
@@ -140,8 +144,20 @@ class VariantResult:
     jump_pattern: str | None
     masked_window: str | None
     asm_path: str | None
+    compile_flags: str
+    symbol_name: str
+    section_name: str | None
+    symbol_offset: int | None
     stdout: str
     stderr: str
+
+
+@dataclass(frozen=True)
+class SymbolWindow:
+    section_name: str
+    symbol_offset: int
+    data: bytes
+    relocations: list[CoffRelocation]
 
 
 def first_mismatch_offset(left: bytes, right: bytes) -> int | None:
@@ -152,6 +168,109 @@ def first_mismatch_offset(left: bytes, right: bytes) -> int | None:
     if len(left) != len(right):
         return limit
     return None
+
+
+def _decode_coff_name(raw_name: bytes, string_table: bytes) -> str:
+    zero_prefix = raw_name[:4]
+    string_offset = struct.unpack_from("<I", raw_name, 4)[0]
+    if zero_prefix == b"\x00\x00\x00\x00" and string_offset:
+        end = string_table.find(b"\x00", string_offset)
+        if end == -1:
+            end = len(string_table)
+        return string_table[string_offset:end].decode("ascii", errors="replace")
+    return raw_name.split(b"\x00", 1)[0].decode("ascii", errors="replace")
+
+
+def load_symbol_window(path: Path, symbol_name: str, size: int) -> SymbolWindow:
+    data = path.read_bytes()
+    if len(data) < 20:
+        raise ValueError(f"{path} is too small to be a COFF object")
+
+    machine, number_of_sections, _, pointer_to_symbol_table, number_of_symbols, optional_header_size, _ = struct.unpack_from(
+        "<HHIIIHH", data, 0
+    )
+    if machine != 0x14C:
+        raise ValueError(f"Unsupported COFF machine 0x{machine:04X}")
+    if optional_header_size != 0:
+        raise ValueError(f"Unexpected optional header size {optional_header_size} in COFF object")
+
+    string_table_offset = pointer_to_symbol_table + number_of_symbols * 18
+    string_table_size = struct.unpack_from("<I", data, string_table_offset)[0]
+    string_table = data[string_table_offset : string_table_offset + string_table_size]
+
+    section_headers: list[dict[str, int | str]] = []
+    section_table_offset = 20
+    for index in range(number_of_sections):
+        offset = section_table_offset + index * 40
+        raw_name = struct.unpack_from("8s", data, offset)[0]
+        name = _decode_coff_name(raw_name, string_table)
+        (
+            _,
+            _,
+            size_of_raw_data,
+            pointer_to_raw_data,
+            pointer_to_relocations,
+            _,
+            number_of_relocations,
+            _,
+        ) = struct.unpack_from("<IIIIIIII", data, offset + 8)
+        section_headers.append(
+            {
+                "name": name,
+                "size": size_of_raw_data,
+                "raw": pointer_to_raw_data,
+                "reloc": pointer_to_relocations,
+                "reloc_count": number_of_relocations,
+            }
+        )
+
+    target_value = None
+    target_section = None
+    index = 0
+    while index < number_of_symbols:
+        offset = pointer_to_symbol_table + index * 18
+        raw_name, value, section_number, symbol_type, storage_class, aux_count = struct.unpack_from("<8sIhHBB", data, offset)
+        name = _decode_coff_name(raw_name, string_table)
+        if name == symbol_name and section_number > 0 and symbol_type == 0x20:
+            target_value = value
+            target_section = section_number
+            break
+        index += 1 + aux_count
+
+    if target_value is None or target_section is None:
+        raise KeyError(f"Symbol {symbol_name!r} not found in {path}")
+
+    section = section_headers[target_section - 1]
+    raw_start = int(section["raw"])
+    raw_size = int(section["size"])
+    section_bytes = data[raw_start : raw_start + raw_size]
+
+    start = target_value
+    end = start + size
+    symbol_bytes = section_bytes[start:end]
+
+    relocations: list[CoffRelocation] = []
+    reloc_base = int(section["reloc"])
+    reloc_count = int(section["reloc_count"])
+    for reloc_index in range(reloc_count):
+        reloc_offset = reloc_base + reloc_index * 10
+        virtual_address, symbol_index, reloc_type = struct.unpack_from("<IIH", data, reloc_offset)
+        if start <= virtual_address < end:
+            relocations.append(
+                CoffRelocation(
+                    offset=virtual_address - start,
+                    symbol_index=symbol_index,
+                    reloc_type=reloc_type,
+                    width=4 if reloc_type not in (0x000A,) else 2,
+                )
+            )
+
+    return SymbolWindow(
+        section_name=str(section["name"]),
+        symbol_offset=target_value,
+        data=symbol_bytes,
+        relocations=relocations,
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -928,6 +1047,382 @@ int DString::index(void) const { return this->indexValue; }
     return variants
 
 
+def build_full_tu_source(operator_body: str, methods_first: bool, rich_preamble: bool) -> str:
+    if methods_first:
+        class_decl = """struct DString {
+    DString();
+    DString(const DString& param_1);
+    DString(char const* param_1);
+    ~DString();
+
+    DString& operator=(char const* param_1);
+    DString& operator=(const DString& param_1);
+    DString operator+(const DString& param_1) const;
+    char& operator[](int param_1);
+    operator char*() const;
+
+    int length() const;
+    int index() const;
+    int contains(DString param_1) const;
+    int contains(char const* param_1) const;
+    void append(DString param_1);
+
+    char* stringValue;
+    int lengthValue;
+    int numWordsValue;
+    int indexValue;
+    int currentWordValue;
+};
+"""
+    else:
+        class_decl = """class DString {
+public:
+    char* stringValue;
+    int lengthValue;
+    int numWordsValue;
+    int indexValue;
+    int currentWordValue;
+
+    DString();
+    DString(const DString& param_1);
+    DString(char const* param_1);
+    ~DString();
+
+    DString& operator=(char const* param_1);
+    DString& operator=(const DString& param_1);
+    DString operator+(const DString& param_1) const;
+    char& operator[](int param_1);
+    operator char*() const;
+
+    int length() const;
+    int index() const;
+    int contains(DString param_1) const;
+    int contains(char const* param_1) const;
+    void append(DString param_1);
+};
+"""
+
+    preamble = "#include <stdlib.h>\n#include <string.h>\n\n"
+    if rich_preamble:
+        preamble += """static const char s_empty[] = \"\";
+
+static int dstring_compare(const char* lhs, const char* rhs) {
+    unsigned char bVar1;
+    int bVar2;
+    while (1) {
+        bVar1 = (unsigned char)*lhs;
+        bVar2 = bVar1 < (unsigned char)*rhs;
+        if (bVar1 != (unsigned char)*rhs) break;
+        if (bVar1 == 0) return 0;
+        bVar1 = (unsigned char)lhs[1];
+        bVar2 = bVar1 < (unsigned char)rhs[1];
+        if (bVar1 != (unsigned char)rhs[1]) break;
+        lhs += 2;
+        rhs += 2;
+        if (bVar1 == 0) return 0;
+    }
+    return (1 - bVar2) - (bVar2 != 0);
+}
+
+"""
+
+    support = """DString::DString() {
+    this->stringValue = (char*)malloc(1);
+    this->lengthValue = 0;
+    this->numWordsValue = -1;
+    this->indexValue = 0;
+    this->currentWordValue = 0;
+    if (this->stringValue != 0) {
+        this->stringValue[0] = '\\0';
+    }
+}
+
+DString::DString(const DString& param_1) {
+    this->stringValue = param_1.stringValue;
+    this->lengthValue = param_1.lengthValue;
+    this->numWordsValue = param_1.numWordsValue;
+    this->indexValue = param_1.indexValue;
+    this->currentWordValue = param_1.currentWordValue;
+}
+
+DString::DString(char const* param_1) {
+    this->stringValue = (char*)param_1;
+    this->lengthValue = param_1 == 0 ? 0 : (int)strlen(param_1);
+    this->numWordsValue = -1;
+    this->indexValue = 0;
+    this->currentWordValue = 0;
+}
+
+DString::~DString() {
+}
+
+DString& DString::operator=(char const* param_1) {
+    this->stringValue = (char*)param_1;
+    this->lengthValue = param_1 == 0 ? 0 : (int)strlen(param_1);
+    return *this;
+}
+
+DString& DString::operator=(const DString& param_1) {
+    this->stringValue = param_1.stringValue;
+    this->lengthValue = param_1.lengthValue;
+    this->numWordsValue = param_1.numWordsValue;
+    this->indexValue = param_1.indexValue;
+    this->currentWordValue = param_1.currentWordValue;
+    return *this;
+}
+
+"""
+
+    if rich_preamble:
+        compare_block = """int operator>(const DString& param_1, const DString& param_2) {
+    return (unsigned int)(dstring_compare(param_1.stringValue, param_2.stringValue) > 0);
+}
+
+int operator>(const DString& param_1, const char* param_2) {
+    return (unsigned int)(dstring_compare(param_1.stringValue, param_2) > 0);
+}
+
+int operator>(const char* param_1, const DString& param_2) {
+    return (unsigned int)(dstring_compare(param_1, param_2.stringValue) > 0);
+}
+
+"""
+    else:
+        compare_block = ""
+
+    neighbors = """DString DString::operator+(const DString& param_1) const {
+    DString newStr(*this);
+    newStr.append(param_1);
+    return newStr;
+}
+
+""" + operator_body + """
+DString::operator char*() const {
+    return this->stringValue;
+}
+
+int DString::length() const {
+    return this->lengthValue;
+}
+
+int DString::index() const {
+    return this->indexValue;
+}
+
+int DString::contains(DString param_1) const {
+    return strstr(this->stringValue, param_1.stringValue) != 0;
+}
+
+int DString::contains(char const* param_1) const {
+    return (unsigned int)(strstr(this->stringValue, param_1) != 0);
+}
+
+void DString::append(DString param_1) {
+    (void)param_1;
+}
+"""
+
+    return preamble + class_decl + "\n" + support + compare_block + neighbors
+
+
+def build_full_tu_variants() -> list[Variant]:
+    operator_bodies = {
+        "guard_returns": """char& DString::operator[](int param_1) {
+    if ((-1 < param_1) && (param_1 + 1 <= this->lengthValue)) {
+        return this->stringValue[param_1];
+    }
+    return this->stringValue[0];
+}
+
+""",
+        "best_array": """char& DString::operator[](int index) {
+    return this->stringValue[(index < 0 || this->lengthValue < index + 1) ? 0 : index];
+}
+
+""",
+    }
+    configs = {
+        "fields_first_min": (False, False, "fields-first common declaration with minimal TU support"),
+        "methods_first_min": (True, False, "methods-first donor-style declaration with minimal TU support"),
+        "methods_first_rich": (True, True, "methods-first donor-style declaration plus compare-helper preamble"),
+        "fields_first_rich": (False, True, "fields-first declaration plus compare-helper preamble"),
+    }
+
+    variants: list[Variant] = []
+    for body_name, operator_body in operator_bodies.items():
+        for config_name, (methods_first, rich_preamble, note) in configs.items():
+            variants.append(
+                Variant(
+                    name=f"fulltu__{body_name}__{config_name}",
+                    category="full_tu_frontier",
+                    source=build_full_tu_source(operator_body, methods_first, rich_preamble),
+                    note=f"{note}; operator={body_name}",
+                )
+            )
+    return variants
+
+
+def build_full_tu_compare_variants() -> list[Variant]:
+    bodies = {
+        "success_combined_le": """char& DString::operator[](int param_1) {
+    if ((-1 < param_1) && (param_1 + 1 <= this->lengthValue)) {
+        return this->stringValue[param_1];
+    }
+    return this->stringValue[0];
+}
+
+""",
+        "success_combined_ge": """char& DString::operator[](int param_1) {
+    if ((0 <= param_1) && (this->lengthValue >= param_1 + 1)) {
+        return this->stringValue[param_1];
+    }
+    return this->stringValue[0];
+}
+
+""",
+        "fail_combined_lt": """char& DString::operator[](int param_1) {
+    if (param_1 < 0 || this->lengthValue < param_1 + 1) {
+        return this->stringValue[0];
+    }
+    return this->stringValue[param_1];
+}
+
+""",
+        "fail_combined_gt": """char& DString::operator[](int param_1) {
+    if (param_1 < 0 || param_1 + 1 > this->lengthValue) {
+        return this->stringValue[0];
+    }
+    return this->stringValue[param_1];
+}
+
+""",
+        "split_fail_lt": """char& DString::operator[](int param_1) {
+    if (param_1 < 0) {
+        return this->stringValue[0];
+    }
+    if (this->lengthValue < param_1 + 1) {
+        return this->stringValue[0];
+    }
+    return this->stringValue[param_1];
+}
+
+""",
+        "split_fail_gt": """char& DString::operator[](int param_1) {
+    if (param_1 < 0) {
+        return this->stringValue[0];
+    }
+    if (param_1 + 1 > this->lengthValue) {
+        return this->stringValue[0];
+    }
+    return this->stringValue[param_1];
+}
+
+""",
+        "nested_success_le": """char& DString::operator[](int param_1) {
+    if (-1 < param_1) {
+        if (param_1 + 1 <= this->lengthValue) {
+            return this->stringValue[param_1];
+        }
+    }
+    return this->stringValue[0];
+}
+
+""",
+    }
+    return [
+        Variant(
+            name=f"fulltu_cmp__{name}",
+            category="full_tu_compare_frontier",
+            source=build_full_tu_source(body, True, True),
+            note=f"methods-first rich TU; compare/control form={name}",
+        )
+        for name, body in bodies.items()
+    ]
+
+
+def build_min_context_variants() -> list[Variant]:
+    headers = {
+        "none": "",
+        "stdlib": "#include <stdlib.h>\n",
+        "string": "#include <string.h>\n",
+        "stdio": "#include <stdio.h>\n",
+        "ctype": "#include <ctype.h>\n",
+        "stddef": "#include <stddef.h>\n",
+    }
+    decls = {
+        "2fields": "struct DString {\n    char* stringValue;\n    int lengthValue;\n    char& operator[](int param_1);\n};\n",
+        "5fields": "struct DString {\n    char* stringValue;\n    int lengthValue;\n    int numWordsValue;\n    int indexValue;\n    int currentWordValue;\n    char& operator[](int param_1);\n};\n",
+    }
+    bodies = {
+        "fail_lt": "char& DString::operator[](int param_1) {\n    if (param_1 < 0 || this->lengthValue < param_1 + 1) {\n        return this->stringValue[0];\n    }\n    return this->stringValue[param_1];\n}\n",
+        "success_ge": "char& DString::operator[](int param_1) {\n    if (0 <= param_1 && this->lengthValue >= param_1 + 1) {\n        return this->stringValue[param_1];\n    }\n    return this->stringValue[0];\n}\n",
+    }
+
+    variants: list[Variant] = []
+    for header_name, header_text in headers.items():
+        for decl_name, decl_text in decls.items():
+            for body_name, body_text in bodies.items():
+                variants.append(
+                    Variant(
+                        name=f"minctx__{header_name}__{decl_name}__{body_name}",
+                        category="minimal_context_frontier",
+                        source=header_text + decl_text + body_text,
+                        note=f"header={header_name}; decl={decl_name}; body={body_name}",
+                    )
+                )
+    return variants
+
+
+def build_flag_variants() -> list[Variant]:
+    base_variants = {
+        "isolated_best": (
+            COMMON_CLASS_DECL + "\n" + f"char& DString::operator[](int index) {{\n    return this->stringValue[({FAIL_COND}) ? 0 : index];\n}}\n",
+            "isolated best-basin array form",
+        ),
+        "fulltu_guard_returns": (
+            build_full_tu_source(
+                """char& DString::operator[](int param_1) {
+    if ((-1 < param_1) && (param_1 + 1 <= this->lengthValue)) {
+        return this->stringValue[param_1];
+    }
+    return this->stringValue[0];
+}
+
+""",
+                True,
+                True,
+            ),
+            "full TU donor-order guard-return form",
+        ),
+    }
+    flag_sets: dict[str, tuple[str, ...]] = {
+        "ob0": ("/Ob0",),
+        "ob1": ("/Ob1",),
+        "ob2": ("/Ob2",),
+        "ox": ("/Ox",),
+        "g5": ("/G5",),
+        "gb": ("/GB",),
+        "g5_gb": ("/G5", "/GB"),
+        "ox_g5": ("/Ox", "/G5"),
+        "ox_gb": ("/Ox", "/GB"),
+        "ox_g5_gb": ("/Ox", "/G5", "/GB"),
+    }
+
+    variants: list[Variant] = []
+    for base_name, (source, base_note) in base_variants.items():
+        for flag_name, flags in flag_sets.items():
+            variants.append(
+                Variant(
+                    name=f"flags__{base_name}__{flag_name}",
+                    category="flag_frontier",
+                    source=source,
+                    note=f"{base_note}; flags={' '.join(flags)}",
+                    extra_flags=flags,
+                )
+            )
+    return variants
+
+
 def build_handwritten_variants() -> list[Variant]:
     bodies = {
         "baseline_best_array": (
@@ -988,6 +1483,10 @@ def collect_variants(pattern: str | None, limit: int | None) -> list[Variant]:
         + build_compare_bound_variants()
         + build_final_add_order_variants()
         + build_context_variants()
+        + build_full_tu_variants()
+        + build_full_tu_compare_variants()
+        + build_min_context_variants()
+        + build_flag_variants()
     )
     variants.sort(key=lambda item: item.name)
     if pattern:
@@ -1007,8 +1506,9 @@ def compile_variant(variant: Variant, original: OriginalTarget, toolchain: dict)
 
     cl_path = repo_path(toolchain["compiler"]["cl"])
     rsp_path = repo_path(toolchain["compiler"]["default_rsp"])
-    command = [str(cl_path), f"@{rsp_path}", f"/Fo{obj_path}", str(source_path)]
+    command = [str(cl_path), f"@{rsp_path}", *variant.extra_flags, f"/Fo{obj_path}", str(source_path)]
     result = subprocess.run(command, capture_output=True, text=True, env=tool_env(toolchain))
+    flags_text = " ".join(variant.extra_flags)
     if result.returncode != 0 or not obj_path.exists():
         return VariantResult(
             name=variant.name,
@@ -1028,13 +1528,22 @@ def compile_variant(variant: Variant, original: OriginalTarget, toolchain: dict)
             jump_pattern=None,
             masked_window=None,
             asm_path=None,
+            compile_flags=flags_text,
+            symbol_name=variant.symbol_name,
+            section_name=None,
+            symbol_offset=None,
             stdout=result.stdout,
             stderr=result.stderr,
         )
 
-    section = load_coff_section(obj_path, ".text")
-    compare_bytes = section.data[: len(original.bytes)]
-    masked_bytes = mask_relocations(compare_bytes, [reloc for reloc in section.relocations if reloc.offset < len(compare_bytes)])
+    try:
+        symbol_window = load_symbol_window(obj_path, variant.symbol_name, len(original.bytes))
+    except KeyError:
+        section = load_coff_section(obj_path, ".text")
+        symbol_window = SymbolWindow(section_name=section.name, symbol_offset=0, data=section.data[: len(original.bytes)], relocations=[reloc for reloc in section.relocations if reloc.offset < len(original.bytes)])
+
+    compare_bytes = symbol_window.data
+    masked_bytes = mask_relocations(compare_bytes, symbol_window.relocations)
     mismatch = first_mismatch_offset(original.bytes, masked_bytes)
     decoded = decode_bytes(compare_bytes, TARGET_VA)
     asm_lines = [f"{line['address']}  {line['bytes']:<16}  {line['text']}" for line in decoded]
@@ -1051,14 +1560,17 @@ def compile_variant(variant: Variant, original: OriginalTarget, toolchain: dict)
                 "object": str(obj_path),
                 "size_bytes": len(compare_bytes),
                 "asm_sha1": asm_sha1,
+                "compile_flags": list(variant.extra_flags),
+                "symbol_name": variant.symbol_name,
+                "section_name": symbol_window.section_name,
+                "symbol_offset": symbol_window.symbol_offset,
                 "relocations": [
                     {
                         "offset": reloc.offset,
                         "width": reloc.width,
                         "type": f"0x{reloc.reloc_type:04X}",
                     }
-                    for reloc in section.relocations
-                    if reloc.offset < len(compare_bytes)
+                    for reloc in symbol_window.relocations
                 ],
             },
             indent=2,
@@ -1121,6 +1633,10 @@ def compile_variant(variant: Variant, original: OriginalTarget, toolchain: dict)
         jump_pattern=jump_pattern,
         masked_window=masked_window,
         asm_path=str(asm_path),
+        compile_flags=flags_text,
+        symbol_name=variant.symbol_name,
+        section_name=symbol_window.section_name,
+        symbol_offset=symbol_window.symbol_offset,
         stdout=result.stdout,
         stderr=result.stderr,
     )
@@ -1148,6 +1664,10 @@ def write_reports(results: list[VariantResult], original: OriginalTarget) -> Non
                 "source_path": result.source_path,
                 "object_path": result.object_path or "",
                 "asm_path": result.asm_path or "",
+                "compile_flags": result.compile_flags,
+                "symbol_name": result.symbol_name,
+                "section_name": result.section_name or "",
+                "symbol_offset": "" if result.symbol_offset is None else result.symbol_offset,
             }
         )
 
@@ -1169,7 +1689,7 @@ def write_reports(results: list[VariantResult], original: OriginalTarget) -> Non
     )
 
     sortable = [result for result in results if result.compile_ok]
-    sortable.sort(key=lambda item: (item.first_mismatch is None, -(item.first_mismatch or -1), item.name))
+    sortable.sort(key=lambda item: (item.first_mismatch is not None, -(item.first_mismatch or 0), item.name))
 
     family_counts: dict[str, int] = {}
     for result in results:
@@ -1183,7 +1703,7 @@ def write_reports(results: list[VariantResult], original: OriginalTarget) -> Non
 
     signature_rows = sorted(
         ((sha1, rows) for sha1, rows in signature_reps.items()),
-        key=lambda item: (-len(item[1]), item[1][0].first_mismatch or -1, item[0]),
+        key=lambda item: (-len(item[1]), item[1][0].first_mismatch is not None, -(item[1][0].first_mismatch or 0), item[0]),
     )
 
     lines = [
@@ -1228,7 +1748,7 @@ def write_reports(results: list[VariantResult], original: OriginalTarget) -> Non
 
 def print_console_summary(results: list[VariantResult]) -> None:
     sortable = [result for result in results if result.compile_ok]
-    sortable.sort(key=lambda item: (item.first_mismatch is None, -(item.first_mismatch or -1), item.name))
+    sortable.sort(key=lambda item: (item.first_mismatch is not None, -(item.first_mismatch or 0), item.name))
     print(f"Compiled {len(results)} variants.")
     print("Top results:")
     for result in sortable[:12]:
@@ -1273,6 +1793,10 @@ def main() -> None:
                     jump_pattern=None,
                     masked_window=None,
                     asm_path=None,
+                    compile_flags=" ".join(variant.extra_flags),
+                    symbol_name=variant.symbol_name,
+                    section_name=None,
+                    symbol_offset=None,
                     stdout="",
                     stderr=str(exc),
                 )

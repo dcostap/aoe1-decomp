@@ -19,6 +19,17 @@ The basic unit of work is a function:
 5. compare rebuilt output against the original,
 6. iterate until it matches.
 
+Exact parity is determined by the rebuilt machine code, not by source-body
+plausibility alone. In stubborn cases the effective source model can include
+small translation-unit context such as neighboring declarations or a minimal
+header include. Include context from the function's likely original donor file
+is legitimate source context even when the tiny function body does not textually
+use every header. Treat that context as something to iterate deliberately and
+reduce carefully, not something to strip blindly.
+
+Large variant-generation labs or harnesses are exceptional tools for stubborn
+codegen-family problems, not part of the normal per-function loop.
+
 ## Toolchain
 
 VC5-era Microsoft toolchain, pinned through `config\toolchain.json`.
