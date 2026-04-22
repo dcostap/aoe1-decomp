@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from common import REPO_ROOT, load_functions
+from common import REPO_ROOT, load_functions, load_toolchain_supplied_function_names
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -14,6 +14,8 @@ BUCKET_COLORS = {
     "scratch": "#7b68ee",
     "unclaimed": "#3f4a5a",
     "conflict": "#c0392b",
+    "toolchain_supplied": "#556b2f",
+    "toolchain_conflict": "#8e44ad",
 }
 
 
@@ -79,10 +81,10 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
     total_bytes = sum(int(row["size_bytes"]) for row in rows)
     matched_functions = sum(1 for row in rows if row["source_bucket"] == "matching")
     matched_bytes = sum(int(row["size_bytes"]) for row in rows if row["source_bucket"] == "matching")
-    remaining_functions = total_functions - matched_functions
-    remaining_bytes = total_bytes - matched_bytes
+    remaining_functions = sum(1 for row in rows if row["is_remaining"] == "yes")
+    remaining_bytes = sum(int(row["size_bytes"]) for row in rows if row["is_remaining"] == "yes")
 
-    bucket_order = ["matching", "scratch", "unclaimed", "conflict"]
+    bucket_order = ["matching", "scratch", "unclaimed", "conflict", "toolchain_supplied", "toolchain_conflict"]
     bucket_counts = {bucket: sum(1 for row in rows if row["source_bucket"] == bucket) for bucket in bucket_order}
     bucket_bytes = {
         bucket: sum(int(row["size_bytes"]) for row in rows if row["source_bucket"] == bucket)
@@ -412,7 +414,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 <body>
   <div class="page">
     <h1>aoe1-decomp status</h1>
-    <p class="subtle">Offline project dashboard generated from <code>inventory\\all_functions.csv</code>, source placement, per-function flags, and structured top comments.</p>
+    <p class="subtle">Offline project dashboard generated from <code>inventory\\all_functions.csv</code>, source placement, per-function flags, the toolchain/lib exclusion manifest, and structured top comments.</p>
 
     <div class="grid cards">
       <div class="card"><div class="subtle">Total functions</div><div class="value">{summary["totalFunctions"]}</div></div>
@@ -479,7 +481,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
     function renderBuckets() {{
       const grid = document.getElementById("bucket-grid");
-      const order = ["matching", "scratch", "unclaimed", "conflict"];
+      const order = ["matching", "scratch", "unclaimed", "conflict", "toolchain_supplied", "toolchain_conflict"];
       for (const bucket of order) {{
         const card = document.createElement("div");
         card.className = "bucket";
@@ -858,6 +860,7 @@ def main() -> None:
     matching_files = source_files(matching_dir)
 
     records = load_functions()
+    toolchain_supplied_names = load_toolchain_supplied_function_names()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
 
@@ -867,18 +870,25 @@ def main() -> None:
         matching_path = matching_files.get(slug)
 
         present_paths = [path for path in (matching_path, scratch_path) if path is not None]
+        toolchain_supplied = record["name"] in toolchain_supplied_names
+        toolchain_reason = "manifest-name" if toolchain_supplied else ""
+
         if len(present_paths) > 1:
-            source_bucket = "conflict"
+            source_bucket = "toolchain_conflict" if toolchain_supplied else "conflict"
             source_path = " | ".join(str(path.relative_to(REPO_ROOT)) for path in present_paths)
             note_path = scratch_path
         elif matching_path:
-            source_bucket = "matching"
+            source_bucket = "toolchain_conflict" if toolchain_supplied else "matching"
             source_path = str(matching_path.relative_to(REPO_ROOT))
             note_path = None
         elif scratch_path:
-            source_bucket = "scratch"
+            source_bucket = "toolchain_conflict" if toolchain_supplied else "scratch"
             source_path = str(scratch_path.relative_to(REPO_ROOT))
             note_path = scratch_path
+        elif toolchain_supplied:
+            source_bucket = "toolchain_supplied"
+            source_path = ""
+            note_path = None
         else:
             source_bucket = "unclaimed"
             source_path = ""
@@ -886,7 +896,7 @@ def main() -> None:
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
         header_notes = parse_header_notes(note_path) if note_path is not None else default_header_notes()
-        is_remaining = "yes" if source_bucket != "matching" else "no"
+        is_remaining = "no" if toolchain_supplied or source_bucket == "matching" else "yes"
 
         row = {
             "va": record["va"],
@@ -899,6 +909,8 @@ def main() -> None:
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
+            "toolchain_supplied": "yes" if toolchain_supplied else "no",
+            "toolchain_supplied_reason": toolchain_reason,
             "is_remaining": is_remaining,
             "remaining_size_rank": "",
             "remaining_asm_rank": "",
@@ -940,6 +952,8 @@ def main() -> None:
                 "pdb_source_path",
                 "source_bucket",
                 "source_path",
+                "toolchain_supplied",
+                "toolchain_supplied_reason",
                 "is_remaining",
                 "remaining_size_rank",
                 "remaining_asm_rank",
@@ -965,6 +979,8 @@ def main() -> None:
     matching_count = sum(1 for row in rows if row["source_bucket"] == "matching")
     conflict_count = sum(1 for row in rows if row["source_bucket"] == "conflict")
     unclaimed_count = sum(1 for row in rows if row["source_bucket"] == "unclaimed")
+    toolchain_supplied_count = sum(1 for row in rows if row["source_bucket"] == "toolchain_supplied")
+    toolchain_conflict_count = sum(1 for row in rows if row["source_bucket"] == "toolchain_conflict")
 
     print(f"Wrote {output_path}")
     print(f"Wrote {html_output_path}")
@@ -973,7 +989,9 @@ def main() -> None:
         f"matching={matching_count} "
         f"scratch={scratch_count} "
         f"unclaimed={unclaimed_count} "
-        f"conflict={conflict_count}"
+        f"conflict={conflict_count} "
+        f"toolchain_supplied={toolchain_supplied_count} "
+        f"toolchain_conflict={toolchain_conflict_count}"
     )
 
 

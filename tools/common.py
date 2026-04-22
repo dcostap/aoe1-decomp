@@ -13,6 +13,7 @@ CONFIG_DIR = REPO_ROOT / "config"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
+TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.txt"
 
 
 def repo_path(value: str | Path) -> Path:
@@ -43,6 +44,24 @@ def load_optional_csv(path: Path) -> list[dict[str, str]]:
         return []
     with path.open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+def load_toolchain_supplied_function_names() -> set[str]:
+    names: set[str] = set()
+    if not TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH.exists():
+        return names
+
+    for raw_line in TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        names.add(line)
+    return names
+
+
+def is_toolchain_supplied_function_name(name: str, configured_names: set[str] | None = None) -> bool:
+    names = configured_names if configured_names is not None else load_toolchain_supplied_function_names()
+    return name in names
 
 
 def load_pdb_function_source_map() -> dict[str, dict[str, str]]:

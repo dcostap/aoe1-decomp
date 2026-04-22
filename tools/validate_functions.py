@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from common import REPO_ROOT, ensure_build_subdir, load_functions
+from common import REPO_ROOT, ensure_build_subdir, load_functions, load_toolchain_supplied_function_names
 
 
 def parse_args() -> argparse.Namespace:
@@ -44,6 +44,7 @@ def main() -> None:
         raise SystemExit("Use --matching-only")
 
     slug_map = inventory_by_slug()
+    toolchain_supplied_names = load_toolchain_supplied_function_names()
     sources = matching_sources()
     summary_dir = ensure_build_subdir("validator")
     summary_path = summary_dir / "matching_only_summary.txt"
@@ -59,6 +60,7 @@ def main() -> None:
     passed = 0
     failed = 0
     missing_inventory = 0
+    skipped_toolchain = 0
 
     for source in sources:
         slug = source.stem
@@ -67,6 +69,13 @@ def main() -> None:
             missing_inventory += 1
             failed += 1
             message = f"FAIL  <unknown-va>  {slug}  missing inventory record"
+            print(message)
+            lines.append(message)
+            continue
+
+        if record["name"] in toolchain_supplied_names:
+            skipped_toolchain += 1
+            message = f"SKIP  {record['va']}  {slug}  toolchain/lib-supplied manifest entry"
             print(message)
             lines.append(message)
             continue
@@ -96,12 +105,14 @@ def main() -> None:
     lines.append(f"Passed: {passed}")
     lines.append(f"Failed: {failed}")
     lines.append(f"Missing inventory records: {missing_inventory}")
+    lines.append(f"Skipped toolchain/lib-supplied: {skipped_toolchain}")
     overall_ok = failed == 0
     lines.append(f"Result: {'PASS' if overall_ok else 'FAIL'}")
     summary_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Passed: {passed}")
     print(f"Failed: {failed}")
     print(f"Missing inventory records: {missing_inventory}")
+    print(f"Skipped toolchain/lib-supplied: {skipped_toolchain}")
     print(f"Result: {'PASS' if overall_ok else 'FAIL'}")
     print(f"Wrote {summary_path}")
 

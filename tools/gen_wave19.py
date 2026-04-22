@@ -20,7 +20,9 @@ def load_unclaimed_31_50():
         info = va_info.get(va)
         if not info:
             continue
-        if info['source_bucket'] in ('matching', 'scratch'):
+        if info.get('toolchain_supplied') == 'yes':
+            continue
+        if info['source_bucket'] in ('matching', 'scratch', 'toolchain_supplied', 'toolchain_conflict'):
             continue
         if info['calling_convention'] != '__thiscall':
             continue

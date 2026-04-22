@@ -18,6 +18,7 @@ After reading the README, follow these working rules.
 - PDB/Ghidra/type dumps are metadata/reference sources, not behavior oracles.
 - Use the repo-local `orig\...` inputs instead of sibling-repo paths when a script needs the pinned EXE/PDB/Ghidra/type-dump side.
 - The repo-local full original beta game-file tree is at `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
+- High-confidence toolchain/lib-supplied functions are listed in `config\toolchain_supplied_functions.txt`.
 - Agents are expected to improvise, react to errors, and correct earlier bad assumptions as they learn more.
 - The pinned working compiler is the repo's configured **VC5 host toolchain**.
 - Do **not** switch compilers during normal matching work just because something
@@ -65,6 +66,8 @@ Practical rule:
 
 1. If choosing a new target, regenerate `project_full_status.csv` first and usually
    pick from the `unclaimed` bucket there instead of guessing from the raw dump.
+   Do **not** pick functions listed in `config\toolchain_supplied_functions.txt`;
+   those are excluded from the normal manual decomp/matching corpus.
 2. Read the relevant packet in `inventory\functions\...`.
 3. Check the shared working headers/source in `include\...` and `src\game_globals.cpp`.
 4. Create or edit the function in `src\scratch\...`.
@@ -597,6 +600,31 @@ Promotion rule:
 The project has a **standard default flag set** in `config\flags\default.rsp`.
 Per-function response files are allowed only as **last-resort exceptions** during active matching work, not as a
 normal tuning tool. If a per-function rsp is redundant with `config\flags\default.rsp`, clean it up instead of keeping a duplicate.
+
+## Toolchain/lib-supplied exclusion set
+
+`config\toolchain_supplied_functions.txt` is the repo's high-confidence exclusion
+manifest for functions that should be supplied by the toolchain, runtime, or
+linked DLL import machinery rather than manually decompiled as normal project
+functions.
+
+Typical examples include:
+
+- DLL import thunks derived from the original EXE import table,
+- CRT/runtime baggage linked into the binary,
+- other high-confidence toolchain/lib-supplied entries explicitly approved into
+  that manifest.
+
+Agent rules:
+
+- do **not** create `src\scratch\...` work for functions listed there,
+- do **not** promote or keep them in `src\matching\...` as normal manual-match targets,
+- do **not** count them as ordinary remaining work,
+- and do **not** remove an entry from that manifest casually; if the classification
+  is wrong, fix the classification deliberately.
+
+These functions remain part of the binary/inventory, but they are intentionally
+separated from the normal manual decomp corpus.
 
 Agents should assume this by default:
 
