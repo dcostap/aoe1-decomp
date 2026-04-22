@@ -89,7 +89,10 @@ toolchain panic or stepping away from the function:
 6. Revert failed probes, but remember them as negative evidence in notes or docs.
 7. Prefer a sequence of small controlled probes over large rewrites once the function
    is size-correct and behaviorally close.
-8. Do **not** trust decompiler source ordering or factoring by default. If a
+8. Prefer the **simplest natural source family a real programmer likely wrote**
+   before reaching for decompiler-shaped factoring. Ask “how would the original
+   developers probably have written this?” and test that family early.
+9. Do **not** trust decompiler source ordering or factoring by default. If a
    function is behaviorally right but still has stubborn block-layout or
    tail-sharing drift, inspect the original object layout, block placement, and
    jump-table landing order, then try reordering the source **without changing
@@ -97,15 +100,15 @@ toolchain panic or stepping away from the function:
    backs this: matching the original lexical order (`4, 6, 3, 1`) solved a
    sticky VC5 tail-sharing mismatch that multiple control-flow and
    expression-shape tricks did not.
-9. Treat **translation-unit context** as a normal matching axis, not a weird
+10. Treat **translation-unit context** as a normal matching axis, not a weird
    last resort. For VC5, nearby declarations/definitions, header state, and even
    small CRT includes can change codegen for tiny helpers.
-10. When a function is sticky, cycle **likely original-file include context**
+11. When a function is sticky, cycle **likely original-file include context**
    alongside code-shape probes. If the function came from a known donor `.cpp`,
    try the basic includes that file likely used even when the tiny function body
    does not textually need them. Re-test includes as the source shape changes,
    because the winning include/body combination can move together.
-11. Probe context deliberately, not randomly, and prefer donor-file or
+12. Probe context deliberately, not randomly, and prefer donor-file or
    cluster-local include baselines over repo-wide catch-all header sets. Then
    reduce any winning context back down to the smallest proven reproducer.
 
@@ -128,6 +131,33 @@ These are heuristics, not laws, but a real exact-match win now backs them:
 4. If the math is behaviorally right but register allocation keeps thrashing, make
    “remove named temporaries and inline the expression” an early probe, not a last
    desperate guess.
+5. Do **not** assume semantically equivalent control-flow forms are codegen-neutral.
+   For VC5, changing an expression-style return into an explicit boolean / `0`-or-`1`
+   control-flow shape can move the function into a different codegen basin even when
+   the final machine code still looks compact. A real `RGE_Lobby::IsThisHost` win
+   came from rewriting `return (flags >> 1) & 1;` into `if (!((flags >> 1) & 1))
+   return 0; return 1;`; that simple source-form change preserved the desired full
+   dword load plus `shr al,1` / `and al,1` tail, while the direct return stayed in a
+   stubborn wide-shift basin.
+6. When a function is close but sticky, try **simple, natural code-shape adjustments**
+   before escalating into weird aliasing, bitfield, union, or other exotic probes.
+   Early probes should include direct return vs explicit branch form, expression vs
+   compare form, straightforward statement splits/merges, and other ordinary clean
+   spellings. Exhaust the natural source families first; save strange tricks for
+   later when the ordinary forms have been tested and classified.
+7. Named temporaries are **not** codegen-neutral on VC5. Extra predicate temps,
+   split per-loop index locals, or decompiler-style carry variables can change
+   liveness enough to move a helper into the wrong saved-register,
+   address-generation, or branch-layout basin. When a small function is close,
+   try deleting those extras and keep only the state a human author would
+   naturally preserve.
+8. For two-phase scans and similar helpers, mirror the **state topology** seen
+   in the asm. If one register advances through phase 1, gets copied once at the
+   phase boundary, and the original register keeps advancing through phase 2,
+   prefer source with **one running iterator plus one saved boundary/start
+   local**. A real `DString::nextWord` win came from collapsing a behaviorally
+   correct three-local decompiler shape into exactly that two-local natural
+   form.
 
 #### VC5-specific tiny-helper / address-return hints
 
@@ -201,7 +231,25 @@ matching guidance:
    context** you can prove. Reduction is part of the solve, not optional cleanup.
 6. Once a minimal context dependency is proven, preserve it even if it looks
    cosmetically unnecessary. Exact-match context is part of the source model.
-7. When documenting a context win in a scratch or matching file, explain the
+7. For tiny **UDT-return** helpers that directly copy-construct into the hidden
+   return storage, probe the interaction between **exception mode** and the
+   visible class surface on purpose. A real `DKeyString::key` win showed that
+   VC5's extra zeroed local / EH-state-slot prolog appeared only when `/GX`
+   and a visible nontrivial destructor declaration were both present; testing
+   `/GX` alone or the destructor alone looked like a false negative.
+8. Treat `/GX` as a plausible **donor-file / cluster-local context axis** when
+   nearby original functions already show EH-ish signals such as FS:[0]
+   registration, unwind-state slots, constructor/destructor cleanup tracking, or
+   repeated tiny UDT-return helpers that only land in the right basin with
+   `/GX`. One win does **not** prove the whole repo was built with `/GX`, but it
+   is enough to justify testing that baseline across the same source-file
+   cluster.
+9. There is now a concrete repo suspicion that at least some original files —
+   and possibly larger parts of the codebase — were compiled with `/GX` or an
+   equivalent VC5 C++ exception mode. Keep that possibility in play during
+   matching work. In the right neighborhoods, exception mode is not weird flag
+   flailing; it can be essential compiler context.
+10. When documenting a context win in a scratch or matching file, explain the
    preserved context in plain language so later agents do not delete it as
    “unused cleanup”.
 
@@ -505,6 +553,10 @@ Agents should assume this by default:
 - prefer the default project flags whenever they work,
 - add custom per-function flags only when needed to make progress after
   meaningful source-shape investigation,
+- treat `/GX` specially: do **not** spray it randomly, but do treat it as a
+  legitimate donor-file / cluster-level hypothesis when the original asm shows
+  EH/object-lifetime bookkeeping or when neighboring functions from the same
+  file start matching only under `/GX`,
 - keep those custom flags as small, rare, and explainable as possible,
 - and re-test old custom flags periodically because many of them become
   unnecessary once the real source/type fix lands.

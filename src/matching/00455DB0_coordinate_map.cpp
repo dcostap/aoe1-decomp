@@ -1,0 +1,14 @@
+class RGE_Map {
+public:
+    void* vtable_ptr;
+    int field_4;
+    int map_width;
+    int map_height;
+
+    void set_map_screen_pos(int left, int top, int right, int bottom);
+    void coordinate_map();
+};
+
+void RGE_Map::coordinate_map() {
+    this->set_map_screen_pos(0, 0, this->map_width - 1, this->map_height - 1);
+}

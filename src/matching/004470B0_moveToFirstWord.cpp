@@ -1,12 +1,15 @@
-class TText {
+class DString {
 public:
-    char gap_0[0xC];
-    int field_C;
-    int field_10;
+    char* stringValue;
+    int lengthValue;
+    int numWordsValue;
+    int indexValue;
+    int currentWordValue;
+
     void moveToFirstWord();
 };
 
-void TText::moveToFirstWord() {
-    this->field_C = 0;
-    this->field_10 = 0;
+void DString::moveToFirstWord() {
+    this->indexValue = 0;
+    this->currentWordValue = 0;
 }
