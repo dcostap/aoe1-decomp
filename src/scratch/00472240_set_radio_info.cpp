@@ -1,6 +1,6 @@
-// STATUS: blocked
-// BLOCKER: loop stays close, but VC5 keeps the count/copy registers in bx/edi instead of the original di/ebx split and rewrites the copy loop body
-// NOTE: allocation/free/copy behavior matches; remaining drift is register-loop shape only
+// STATUS: active lead
+// allocation/free/copy behavior matches; the remaining drift is the count/copy register choice around the final copy loop
+// the explicit destination pointer underbuilt badly; next lead is an explicit short-count plus int-total split, targeting the original di-for-count and ebx-for-total register family
 
 extern "C" void __cdecl free(void* ptr);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
@@ -17,31 +17,29 @@ public:
 };
 
 void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
-    short radio_button_count;
+    short button_count;
 
     buttonTypeValue = 2;
     if (radio_buttons != 0) {
         free(radio_buttons);
         radio_buttons = 0;
     }
-    radio_button_count = count;
-    if (radio_button_count != 0) {
+
+    button_count = count;
+    if (button_count != 0) {
         int total;
 
-        total = (int)radio_button_count;
-        num_radio_buttons = radio_button_count;
+        total = (int)button_count;
+        num_radio_buttons = button_count;
         radio_buttons = (TButtonPanel**)calloc(total, 4);
-        if (radio_button_count > 0) {
+        if (button_count > 0) {
             int offset;
 
             offset = 0;
             do {
-                TButtonPanel* value;
-
-                value = *(TButtonPanel**)((char*)buttons + offset);
-                *(TButtonPanel**)((char*)radio_buttons + offset) = value;
+                *(TButtonPanel**)((char*)radio_buttons + offset) = *(TButtonPanel**)((char*)buttons + offset);
                 offset += 4;
-                total--;
+                total = total - 1;
             } while (total != 0);
         }
     }

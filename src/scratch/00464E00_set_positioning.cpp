@@ -1,6 +1,6 @@
 // STATUS: blocked
 // BLOCKER: body size and tail match, but VC5 still hoists the max-width load ahead of the mode/left/top setup, so the prologue/store order diverges from the original
-// NOTE: field offsets, virtual call offsets, and later min/max/panel store sequence are understood; remaining drift is early parameter scheduling only
+// NOTE: stripping the local aliases back to direct assignments made the prologue much worse; the best current basin is still the earlier local-mode/local-left/local-top shape
 
 struct TDrawArea {
     char gap_00[0x18];

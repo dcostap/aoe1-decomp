@@ -1,6 +1,6 @@
-// STATUS: blocked
-// BLOCKER: VC5 insists on hoisting ebx/esi saves before the null-head fast return and slightly reorders the count/current setup, so the prologue and both loop headers drift
-// NOTE: free-list splice and block-count behavior match; remaining mismatch is prologue/register scheduling only
+// STATUS: active lead
+// free-list splice and block-count behavior match; the problem is still prologue/register scheduling around the null-head fast return
+// next lead: declare count/current only after the head-null gate and keep the two scans in separate inner scopes, matching the original delayed esi/ebx saves more closely
 
 struct DClipInfo_Node {
     DClipInfo_Node* Next;
@@ -17,41 +17,43 @@ public:
 };
 
 int DClipInfo_List::FreeThread(DClipInfo_Node* head, DClipInfo_Node* tail) {
-    int count;
-
     if (head == 0) {
         return 0;
     }
-    count = 0;
+
     if (tail == 0) {
+        int count;
         DClipInfo_Node* current;
 
+        count = 0;
         current = head;
         do {
             tail = current;
             count = count + 1;
-            Free_Blocks = Free_Blocks + 1;
+            this->Free_Blocks = this->Free_Blocks + 1;
             current = tail->Next;
         } while (current != 0);
-        tail->Next = Free_Head;
-        Free_Head = head;
+        tail->Next = this->Free_Head;
+        this->Free_Head = head;
         return count;
     }
     {
+        int count;
         DClipInfo_Node* current;
 
+        count = 0;
         current = head;
         do {
             count = count + 1;
-            Free_Blocks = Free_Blocks + 1;
+            this->Free_Blocks = this->Free_Blocks + 1;
             if (current == tail) {
                 current = 0;
             } else {
                 current = current->Next;
             }
         } while (current != 0);
+        tail->Next = this->Free_Head;
+        this->Free_Head = head;
+        return count;
     }
-    tail->Next = Free_Head;
-    Free_Head = head;
-    return count;
 }

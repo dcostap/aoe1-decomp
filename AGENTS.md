@@ -17,6 +17,7 @@ After reading the README, follow these working rules.
 - The original EXE is the behavioral oracle.
 - PDB/Ghidra/type dumps are metadata/reference sources, not behavior oracles.
 - Use the repo-local `orig\...` inputs instead of sibling-repo paths when a script needs the pinned EXE/PDB/Ghidra/type-dump side.
+- The repo-local full original beta game-file tree is at `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
 - Agents are expected to improvise, react to errors, and correct earlier bad assumptions as they learn more.
 - The pinned working compiler is the repo's configured **VC5 host toolchain**.
 - Do **not** switch compilers during normal matching work just because something
@@ -186,6 +187,13 @@ These are heuristics, not laws, but a real exact-match win now backs them:
     declared early but **born late**. `DString::word` exact-matched only when
     the scan locals were declared up front yet initialized after the early
     bounds gate and fast path.
+12. Treat **parameter width/signedness** as a normal codegen axis for tiny
+    helpers. `char`, `unsigned char`, and `int` spellings can change startup
+    load / mask / increment sequences even when the external behavior is the
+    same.
+13. Treat **statement spelling** as a real VC5 axis, not cosmetic cleanup.
+    Forms like `x += y`, `x = x + y`, and `tmp = x; x = tmp + y` can land in
+    different basins because they change liveness and FPU/integer scheduling.
 
 #### VC5-specific tiny-helper / address-return hints
 
@@ -280,6 +288,29 @@ matching guidance:
 10. When documenting a context win in a scratch or matching file, explain the
    preserved context in plain language so later agents do not delete it as
    “unused cleanup”.
+
+#### VC5-specific data-surface / helper-shape hints
+
+These are short, practical basin-finders backed by recent exact-match wins:
+
+1. Prefer the **natural typed surface** before raw-buffer tricks. For fixed
+   parameter blocks, API structs, and member aggregates, try the real struct
+   fields first; VC5 often chooses better stack layout and access order from
+   the typed view than from `char*` math or byte buffers.
+2. Do **not** assume the lower-level-looking source is closer. Manual buffer
+   writes, pointer casts, and hand-expanded copies often fall into worse VC5
+   basins than the ordinary high-level spelling.
+3. For small aggregate stores/copies, test the **natural aggregate/helper
+   form** early: whole-struct assignment, direct member assignment, `strcpy`,
+   `memset`, and similar ordinary library-shaped code. Real wins now back this:
+   `this->clip_rect = rect;`, `memset(dest, 'Y', 10);`, and `strcpy(...)`
+   matched where hand-expanded stores did not.
+4. When a typed or helper-shaped surface wins, keep it even if it looks
+   cosmetically “too high level”. Exact-match-friendly source surface is part
+   of the reconstruction, not optional cleanup.
+5. When a function is stuck in a tiny stable signature family, explicitly test
+   both **typed-surface** and **manual-expansion** families once, classify the
+   basin, then stay with the better family instead of bouncing randomly.
 
 ## When it is okay to leave a function in `scratch`
 
@@ -563,9 +594,9 @@ Promotion rule:
 
 ## Per-function flags policy
 
-The project has a **standard default flag set**. Per-function response files are
-allowed only as **last-resort exceptions** during active matching work, not as a
-normal tuning tool.
+The project has a **standard default flag set** in `config\flags\default.rsp`.
+Per-function response files are allowed only as **last-resort exceptions** during active matching work, not as a
+normal tuning tool. If a per-function rsp is redundant with `config\flags\default.rsp`, clean it up instead of keeping a duplicate.
 
 Agents should assume this by default:
 

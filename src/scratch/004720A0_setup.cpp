@@ -1,9 +1,17 @@
-// STATUS: blocked
-// BLOCKER: argument reload/store order around notifyTypeValue, drawTypeValue, and set_sound still differs from the original post-setup sequence
-// NOTE: overall behavior matches; remaining drift is source ordering/codegen only
+// STATUS: active lead
+// overall behavior matches; the remaining drift is the post-setup ordering of notifyTypeValue, drawTypeValue, and the set_sound call
+// direct notify-then-draw-then-set_sound fell into a worse draw-first basin; next lead is the donor-like visible parameter surface (enum draw/notify plus pointer-typed sound) on top of the best current body order
 
 class TDrawArea;
 class TDigital;
+
+enum DrawType {
+    DrawType_0 = 0
+};
+
+enum NotifyType {
+    NotifyType_0 = 0
+};
 
 class TPanel {
 public:
@@ -26,9 +34,9 @@ public:
         long y,
         long width,
         long height,
-        long draw_type,
+        DrawType draw_type,
         TDigital* sound,
-        long notify_type,
+        NotifyType notify_type,
         long button_id
     );
 };
@@ -40,9 +48,9 @@ long TButtonPanel::setup(
     long y,
     long width,
     long height,
-    long draw_type,
+    DrawType draw_type,
     TDigital* sound,
-    long notify_type,
+    NotifyType notify_type,
     long button_id
 ) {
     ((TPanel*)this)->setup(draw_area, parent, x, y, width, height, 0);

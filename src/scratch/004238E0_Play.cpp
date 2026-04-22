@@ -1,6 +1,6 @@
-// STATUS: blocked
-// BLOCKER: VC5 keeps hoisting callback/param loads into a different order around the play-parms stores, so the small prologue never matches the original eax/ecx/al sequence
-// NOTE: behavior is understood; remaining drift is source-shape/register scheduling only
+// STATUS: active lead
+// the literal donor-surface version still delayed the initial track load and compacted the store scheduling
+// even the direct mutate-track form kept the same push-esi-first basin, so the remaining gap is still the startup family before the mciSendCommandA call
 
 extern "C" __declspec(dllimport) unsigned long __stdcall mciSendCommandA(unsigned int device_id, unsigned int message, unsigned long flags, void* param);
 
@@ -12,21 +12,23 @@ struct MCI_PLAY_PARMS {
 
 class CCDAudio {
 public:
-    int m_Wnd;
+    void* m_Wnd;
     int m_bOpened;
-    unsigned int m_nDeviceID;
+    unsigned long m_nDeviceID;
     MCI_PLAY_PARMS m_mciPlayParms;
 
     unsigned long DisplayErrorMsg(unsigned long error);
-    unsigned long Play(unsigned int track);
+    unsigned long Play(unsigned char track);
 };
 
-unsigned long CCDAudio::Play(unsigned int track) {
-    unsigned int from;
+unsigned long CCDAudio::Play(unsigned char track) {
+    unsigned long result;
 
-    from = track;
     m_mciPlayParms.dwCallback = (unsigned long)m_Wnd;
-    m_mciPlayParms.dwFrom = from & 0xFF;
-    m_mciPlayParms.dwTo = (track + 1) & 0xFF;
-    return DisplayErrorMsg(mciSendCommandA(m_nDeviceID, 0x806, 0x0D, &m_mciPlayParms));
+    m_mciPlayParms.dwFrom = track;
+    track = (unsigned char)(track + 1);
+    m_mciPlayParms.dwTo = track;
+    result = mciSendCommandA(m_nDeviceID, 0x806, 0x0D, &m_mciPlayParms);
+    result = DisplayErrorMsg(result);
+    return result;
 }

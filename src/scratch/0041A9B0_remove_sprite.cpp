@@ -1,5 +1,5 @@
-// tried several source shapes; logic and memory effects match, but the count-check branch still drifts
-// tried: register-hint the target sprite; next probe is a packet-shaped for-loop with a body compare
+// tried several source shapes; logic and memory effects match, and the remaining drift is now the search-loop compare ordering before the count gate
+// next lead: keep the do/while shape but restore a named target local, so VC5 can ideally load the sprite arg into ecx once before the loop and keep the original compare order
 
 extern "C" void __cdecl free(void* block);
 
@@ -36,10 +36,10 @@ public:
 };
 
 void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
-    RGE_Active_Sprite_Node **ppRVar1;
+    RGE_Active_Sprite_Node** ppRVar1;
     int iVar2;
-    RGE_Active_Sprite_Node *pRVar3;
-    RGE_Sprite *target;
+    RGE_Active_Sprite_Node* pRVar3;
+    RGE_Sprite* target;
 
     pRVar3 = this->list;
     ppRVar1 = &this->list;
@@ -47,15 +47,16 @@ void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
         return;
     }
     target = param_1;
-    for (; pRVar3 != 0; pRVar3 = pRVar3->next) {
+    do {
         if (pRVar3->node->sprite == target) {
-            break;
+            goto found;
         }
         ppRVar1 = &pRVar3->next;
-    }
-    if (pRVar3 == 0) {
-        return;
-    }
+        pRVar3 = pRVar3->next;
+    } while (pRVar3 != 0);
+    return;
+
+found:
     if (pRVar3->count != 0) {
         pRVar3->count = pRVar3->count + 0xff;
         return;

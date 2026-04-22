@@ -1,6 +1,5 @@
-// tried the direct lhs<rhs form first; VC5 loaded master_obj before objects and added an extra bool-zeroing step
-// kept the local layout stubs but flipped the compare and return type to bool; load order still stayed master-first
-// left this in scratch because the remaining gap is small codegen drift in operand-load order and setcc materialization
+// tried lhs<rhs, reversed > form, named locals, ordered pointer locals, the fully direct-member compare, and a one-local objects/direct-master hybrid; all still kept the wrong initial master-vs-objects load order
+// the remaining gap is now isolated to that first load order, with the cmp/setl tail already matching cleanly
 class RGE_Object_List {
 public:
     void* vtable_ptr;
@@ -22,9 +21,14 @@ public:
     char gap_0C[0x18];
     RGE_Object_List* objects;
 
-    bool more_room();
+    unsigned char more_room();
 };
 
-bool RGE_Static_Object::more_room() {
-    return (short)(unsigned char)this->master_obj->obj_max > this->objects->number_of_objects;
+unsigned char RGE_Static_Object::more_room() {
+    RGE_Object_List* objects;
+
+    objects = this->objects;
+    if (objects->number_of_objects < (short)(unsigned char)this->master_obj->obj_max)
+        return 1;
+    return 0;
 }

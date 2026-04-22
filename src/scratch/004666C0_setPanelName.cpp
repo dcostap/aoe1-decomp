@@ -1,11 +1,11 @@
-// STATUS: blocked
-// BLOCKER: VC5 is very close, but still short-jumps directly into the clear-name path and keeps the final copy setup in a slightly different order instead of the original long jump to the shared epilogue plus subtract-edi/ecx source reconstruction
-// NOTE: repne-scasb length scans, free/malloc call set, and rep movsd/movsb copy are understood; remaining drift is block layout and copy-prep scheduling only
+// STATUS: active lead
+// nested early guards restored the original late clear-name block; the best current shape keeps the short null/empty jumps and only misses the later compare setup
+// re-testing the fully uncached repeated-strlen(name) family pushed the null case back into a near jump, so the better basin is still the nested-guard form with the earlier cached len
+
+#include <string.h>
 
 extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl malloc(unsigned int size);
-extern "C" unsigned int __cdecl strlen(const char* s);
-extern "C" void* __cdecl memcpy(void* dst, const void* src, unsigned int count);
 
 class TPanel {
 public:
@@ -18,35 +18,27 @@ public:
 void TPanel::setPanelName(char* name) {
     unsigned int len;
 
-    if (name == 0) {
-        goto clear_name;
-    }
+    if (name != 0) {
+        len = strlen(name);
+        if (len != 0) {
+            if (panelNameValue != 0) {
+                if (strlen(panelNameValue) < len) {
+                    free(panelNameValue);
+                    panelNameValue = 0;
+                }
+            }
 
-    len = strlen(name);
-    if (len == 0) {
-        goto clear_name;
-    }
+            if (panelNameValue == 0) {
+                panelNameValue = (char*)malloc(strlen(name) + 1);
+            }
 
-    if (panelNameValue != 0) {
-        if (strlen(panelNameValue) < len) {
-            free(panelNameValue);
-            panelNameValue = 0;
+            strcpy(panelNameValue, name);
+            return;
         }
     }
 
-    if (panelNameValue == 0) {
-        panelNameValue = (char*)malloc(strlen(name) + 1);
-    }
-
-    memcpy(panelNameValue, name, strlen(name) + 1);
-    goto done;
-
-clear_name:
     if (panelNameValue != 0) {
         free(panelNameValue);
         panelNameValue = 0;
     }
-
-done:
-    ;
 }

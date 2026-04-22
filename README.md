@@ -60,4 +60,9 @@ Inheriting the full modern host `PATH` can break VC5 backend startup.
 - type names, layouts, signatures, vtables, source-file hints, and enum values
   are taken from PDB/Ghidra.
 
+Additional pinned upstream game files now live under:
+- `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`
+
+Use that repo-local folder when the full original beta game file set is needed.
+
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.
