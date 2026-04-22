@@ -40,7 +40,7 @@ def load_unclaimed_31_50():
 
         instrs = []
         for line in asm_block.split('\n'):
-            line = line.strip()
+            line = line.split(';', 1)[0].strip()
             m = re.match(r'([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+(\w+)\s*(.*)', line)
             if m:
                 instrs.append({

@@ -134,6 +134,21 @@ def pdb_line_span(summary: dict[str, str] | None) -> str:
     return f"{start}-{end}"
 
 
+def pdb_line_comment_index(line_changes: list[dict[str, str]]) -> dict[str, str]:
+    comments: dict[str, str] = {}
+    for change in line_changes:
+        address = (change.get("address") or "").strip().upper()
+        line_number = (change.get("line_number") or "").strip()
+        if not address or not line_number:
+            continue
+        source_file = (change.get("source_file") or "").strip()
+        source_path = (change.get("source_path") or "").strip()
+        if not source_file and source_path:
+            source_file = Path(source_path).name
+        comments[address] = f"{source_file or '<unknown>'}: {line_number}"
+    return comments
+
+
 def main() -> None:
     args = parse_args()
     binaries = load_binaries()
@@ -174,6 +189,7 @@ def main() -> None:
         packet_path = shard_dir / f"{slug}.txt"
         source_summary = pdb_source_map.get(record["va"].upper())
         line_changes = pdb_line_changes.get(record["va"].upper(), [])
+        line_comment_index = pdb_line_comment_index(line_changes)
 
         packet_lines: list[str] = []
         packet_lines.append(f"VA: {record['va']}")
@@ -224,7 +240,12 @@ def main() -> None:
             range_start, range_end = ranges[block_index]
             packet_lines.append(f"{format_hex(range_start)}-{format_hex(range_end)}")
             for line in decoded:
-                packet_lines.append(f"  {line['address']}  {line['bytes']:<16}  {line['text']}")
+                asm_line = f"  {line['address']}  {line['bytes']:<16}  {line['text']}"
+                comment = line_comment_index.get(line["address"].upper())
+                if comment:
+                    packet_lines.append(f"{asm_line:<64} ; {comment}")
+                else:
+                    packet_lines.append(asm_line)
             packet_lines.append("")
         packet_lines.append("=== GhidraListingExcerpt ===")
         packet_lines.extend(listing_excerpt(listing_lines, listing_index, decoded_blocks))

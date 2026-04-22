@@ -76,7 +76,7 @@ def parse_original_asm(packet_text: str) -> list[str]:
 
     instrs: list[str] = []
     for line in sec.strip().splitlines():
-        line = line.strip()
+        line = line.split(";", 1)[0].strip()
         if not line:
             continue
         if len(line) >= 17 and line[8] == "-":

@@ -42,7 +42,7 @@ def parse_packet(pkt_path):
         if end_idx > 0:
             asm_section = asm_section[:end_idx]
         for line in asm_section.strip().split('\n'):
-            line = line.strip()
+            line = line.split(';', 1)[0].strip()
             if not line: continue
             if re.match(r'^[0-9A-Fa-f]+-[0-9A-Fa-f]+$', line): continue
             m = re.match(r'([0-9A-Fa-f]{8})\s+([0-9A-Fa-f]+)\s+(.*)', line)

@@ -44,7 +44,7 @@ def parse_asm_from_packet(content):
     
     instrs = []
     for line in asm_section.strip().split('\n'):
-        line = line.strip()
+        line = line.split(';', 1)[0].strip()
         if not line or re.match(r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{8}$', line):
             continue
         parts = line.split()
@@ -82,6 +82,7 @@ def extract_class_name(content):
 def extract_dtor_call_target(content):
     """Extract the destroy call target VA from the asm."""
     asm = content.split('=== OriginalAsm ===')[1].split('===')[0]
+    asm = re.sub(r'\s*;.*$', '', asm, flags=re.MULTILINE)
     m = re.search(r'call\s+([0-9A-Fa-f]+)h', asm)
     return m.group(1).upper() if m else None
 

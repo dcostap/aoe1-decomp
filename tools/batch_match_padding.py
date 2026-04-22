@@ -43,7 +43,7 @@ def parse_packet(packet_path: Path) -> tuple[list[str], list[int]]:
     instrs: list[str] = []
     raw_bytes: list[int] = []
     for line in sec.strip().splitlines():
-        line = line.strip()
+        line = line.split(";", 1)[0].strip()
         if not line:
             continue
         if len(line) >= 17 and line[8] == "-":
