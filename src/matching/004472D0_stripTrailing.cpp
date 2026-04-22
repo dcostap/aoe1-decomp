@@ -1,7 +1,6 @@
-// tried the direct stripTrailing body under /GX first; mismatch stayed early in the prolog/register-choice basin around the trailing-scan setup
-// kept a fuller donor-style dstring.cpp TU context after the target; that preserved the right high-level scan/call family and moved the function into a closer basin
-// tried both a named `text` pointer and direct `(this->stringValue + index)[-N]` addressing; both collapsed to the same near-match with the remaining gap at the saved-`this` / temp-char register family
-// leaving this in scratch because the remaining difference looks localized to register allocation and loop-head shaping in the trailing-scan setup while subString/operator=/dtor/copy-ctor boundaries still look right
+// Matches in the dstring.cpp /GX donor-context basin.
+// Keep the direct member-index trim loop here: naming extra trailing-scan pointer/char
+// temporaries kicks VC5 into the wrong saved-register family for this helper.
 #include <stdlib.h>
 #include <string.h>
 extern "C" int __cdecl isspace(int c);
@@ -38,13 +37,11 @@ public:
 };
 
 DString DString::stripTrailing(char value) {
-    char ch;
     int index;
 
     index = this->lengthValue;
-    ch = (this->stringValue + index)[-1];
-    for (; (ch == value && (0 < index)); index = index + -1) {
-        ch = (this->stringValue + index)[-2];
+    while ((this->stringValue[index - 1] == value) && (0 < index)) {
+        index = index - 1;
     }
     *this = this->subString(0, index);
     return *this;

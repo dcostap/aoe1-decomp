@@ -1,7 +1,5 @@
-// tried the obvious stripLeading body under /GX first; early mismatch was the leading-trim loop shape before the subString call
-// kept a fuller donor-style dstring.cpp TU context after the target; that moved the first mismatch deeper into just the trim-loop branch ordering
-// tried goto/for-loop rewrites and an `index + 1` loop-condition form; those changed the basin but did not beat the best donor-context near-match
-// leaving this in scratch because the remaining gap is localized to the leading-trim loop control shape (`je back` wanted around the char-compare / bound-check pair) while the EH frame, subString/operator=/dtor calls, and return path look correct
+// Matches in the dstring.cpp /GX donor-context basin.
+// The key shape here is the simple `while (1)` trim loop with the bound check before the post-increment character compare.
 #include <stdlib.h>
 #include <string.h>
 extern "C" int __cdecl isspace(int c);
@@ -41,12 +39,14 @@ DString DString::stripLeading(char value) {
     int index;
 
     index = 0;
-    if (*this->stringValue == value) {
-        do {
-            if (this->lengthValue <= index)
+    if (this->stringValue[0] == value) {
+        while (1) {
+            if (index >= this->lengthValue)
                 break;
             index = index + 1;
-        } while (this->stringValue[index] == value);
+            if (this->stringValue[index] != value)
+                break;
+        }
     }
     *this = this->subString(index, this->lengthValue);
     return *this;

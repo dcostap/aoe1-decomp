@@ -111,6 +111,16 @@ toolchain panic or stepping away from the function:
 12. Probe context deliberately, not randomly, and prefer donor-file or
    cluster-local include baselines over repo-wide catch-all header sets. Then
    reduce any winning context back down to the smallest proven reproducer.
+13. Use PDB **line-change** info to localize the mismatch region. If the first
+   mismatch lives in one early source-line band, treat later line bands that
+   already map cleanly as provisionally solved and stop churning them.
+14. Treat **declaration order** and **initialization order** as separate
+   code-shape axes. A local can need to be declared early for stack/layout
+   reasons yet initialized only at its first real use for the right VC5
+   liveness basin.
+15. When the mismatch is in the startup/prolog region, prefer probes that only
+   change the early gate / fast path / local-setup statements. Do not keep
+   perturbing a loop or success path that already matches the later line map.
 
 #### VC5-specific expression-shape hints
 
@@ -158,6 +168,24 @@ These are heuristics, not laws, but a real exact-match win now backs them:
    local**. A real `DString::nextWord` win came from collapsing a behaviorally
    correct three-local decompiler shape into exactly that two-local natural
    form.
+9. In EH-framed **UDT-return** functions, the order of otherwise boring scalar
+   zero-inits can affect which callee-saved register VC5 chooses as the shared
+   zero carrier for the hidden local-return temp at function entry. A real
+   `DString::word` win required leaving the counter uninitialized through the
+   early bounds/fast-path checks, then doing the scan setup specifically as
+   `index = 0; inWord = 0; wordCount = 0;` right before the loop. VC5 hoisted
+   that final counter zero into the entry `xor ebp` / temp-slot-store family,
+   while the more obvious `wordCount`-first orders kept falling into the wrong
+   EBX basin.
+10. For VC5, **what is live when** often matters more than **what exists where**.
+    If a function is close but the mismatch is still in the startup region,
+    test “declare early, initialize at first real use” before escalating into
+    larger TU or pressure experiments.
+11. When a stubborn mismatch seems tied to one early local/counter register,
+    explicitly test whether the winning source wants the eventual loop locals
+    declared early but **born late**. `DString::word` exact-matched only when
+    the scan locals were declared up front yet initialized after the early
+    bounds gate and fast path.
 
 #### VC5-specific tiny-helper / address-return hints
 
