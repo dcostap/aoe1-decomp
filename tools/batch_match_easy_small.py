@@ -4,7 +4,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-from common import function_record_by_va, function_slug
+from common import (
+    classify_corpus_bucket,
+    function_record_by_va,
+    function_slug,
+    load_asm_special_function_names,
+    load_asm_special_regions,
+    load_toolchain_supplied_function_names,
+)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRATCH_DIR = REPO_ROOT / "src" / "scratch"
@@ -51,9 +58,23 @@ def main() -> None:
     matched = 0
     failed = 0
     skipped = 0
+    toolchain_supplied_names = load_toolchain_supplied_function_names()
+    asm_special_names = load_asm_special_function_names()
+    asm_special_regions = load_asm_special_regions()
 
     for va, source in SOURCES.items():
         record = function_record_by_va(int(va, 16))
+        corpus_bucket, corpus_reason = classify_corpus_bucket(
+            record,
+            toolchain_supplied_names=toolchain_supplied_names,
+            asm_special_names=asm_special_names,
+            asm_special_regions=asm_special_regions,
+        )
+        if corpus_bucket != "normal":
+            print(f"[skip] {va} non-normal corpus bucket={corpus_bucket} ({corpus_reason})")
+            skipped += 1
+            continue
+
         slug = function_slug(record)
         matching_path = MATCHING_DIR / f"{slug}.cpp"
         if matching_path.exists():

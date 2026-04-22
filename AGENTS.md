@@ -19,10 +19,35 @@ After reading the README, follow these working rules.
 - Use the repo-local `orig\...` inputs instead of sibling-repo paths when a script needs the pinned EXE/PDB/Ghidra/type-dump side.
 - The repo-local full original beta game-file tree is at `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
 - High-confidence toolchain/lib-supplied functions are listed in `config\toolchain_supplied_functions.txt`.
+- High-confidence handwritten-assembly functions are listed in `config\asm_special_functions.txt`.
+- High-confidence handwritten-assembly/codelet regions are listed in `config\asm_special_regions.txt`.
 - Agents are expected to improvise, react to errors, and correct earlier bad assumptions as they learn more.
 - The pinned working compiler is the repo's configured **VC5 host toolchain**.
 - Do **not** switch compilers during normal matching work just because something
   does not match.
+
+## Corpus buckets
+
+The repo separates discovered binary functions/regions into four workflow buckets:
+
+- `normal`
+  - ordinary manual C/C++ decomp/matching corpus
+  - these are the normal `unclaimed` / `scratch` / `matching` targets
+- `toolchain_supplied`
+  - import thunks, CRT/runtime baggage, and other high-confidence toolchain/lib-supplied entries
+  - tracked, but excluded from normal manual decomp work
+- `asm_special`
+  - named handwritten-assembly functions
+  - tracked, but excluded from the normal C/C++ corpus
+  - restore these later through an asm-specific workstream, not as ordinary `.cpp` targets
+- `asm_region`
+  - non-normal asm/codelet/data-dispatch regions inside handwritten-assembly neighborhoods
+  - tracked, but excluded from the normal C/C++ corpus
+  - do not force these into one-function-one-`.cpp` reconstruction
+
+`config\toolchain_supplied_functions.txt`, `config\asm_special_functions.txt`, and
+`config\asm_special_regions.txt` are the high-confidence manifests that drive this
+separation.
 
 ## Repository roles
 
@@ -66,8 +91,9 @@ Practical rule:
 
 1. If choosing a new target, regenerate `project_full_status.csv` first and usually
    pick from the `unclaimed` bucket there instead of guessing from the raw dump.
-   Do **not** pick functions listed in `config\toolchain_supplied_functions.txt`;
-   those are excluded from the normal manual decomp/matching corpus.
+   Do **not** pick functions whose corpus bucket is `toolchain_supplied`,
+   `asm_special`, or `asm_region`; those are excluded from the normal manual
+   decomp/matching corpus.
 2. Read the relevant packet in `inventory\functions\...`.
 3. Check the shared working headers/source in `include\...` and `src\game_globals.cpp`.
 4. Create or edit the function in `src\scratch\...`.
@@ -601,30 +627,39 @@ The project has a **standard default flag set** in `config\flags\default.rsp`.
 Per-function response files are allowed only as **last-resort exceptions** during active matching work, not as a
 normal tuning tool. If a per-function rsp is redundant with `config\flags\default.rsp`, clean it up instead of keeping a duplicate.
 
-## Toolchain/lib-supplied exclusion set
+## Non-normal corpus manifests
 
-`config\toolchain_supplied_functions.txt` is the repo's high-confidence exclusion
-manifest for functions that should be supplied by the toolchain, runtime, or
-linked DLL import machinery rather than manually decompiled as normal project
-functions.
+The repo keeps three high-confidence exclusion manifests for entries that are
+real parts of the binary but are **not** ordinary manual C/C++ decomp targets:
 
-Typical examples include:
-
-- DLL import thunks derived from the original EXE import table,
-- CRT/runtime baggage linked into the binary,
-- other high-confidence toolchain/lib-supplied entries explicitly approved into
-  that manifest.
+- `config\toolchain_supplied_functions.txt`
+  - toolchain/lib-supplied functions such as import thunks and CRT/runtime baggage
+- `config\asm_special_functions.txt`
+  - named handwritten-assembly functions
+- `config\asm_special_regions.txt`
+  - handwritten-assembly/codelet/data-dispatch regions that do not fit the normal
+    one-function-one-`.cpp` model
 
 Agent rules:
 
-- do **not** create `src\scratch\...` work for functions listed there,
+- do **not** create `src\scratch\...` work for entries classified into those non-normal buckets,
 - do **not** promote or keep them in `src\matching\...` as normal manual-match targets,
-- do **not** count them as ordinary remaining work,
-- and do **not** remove an entry from that manifest casually; if the classification
+- do **not** count them as ordinary remaining C/C++ work,
+- do **not** try to force `asm_special` or `asm_region` entries into ordinary `.cpp`
+  reconstruction just to make the dashboard greener,
+- and do **not** remove an entry from those manifests casually; if the classification
   is wrong, fix the classification deliberately.
 
-These functions remain part of the binary/inventory, but they are intentionally
+These entries remain part of the binary/inventory, but they are intentionally
 separated from the normal manual decomp corpus.
+
+Important current-policy note:
+
+- the repo's no-inline-asm rule is about normal C/C++ reconstruction work where the
+  original code was clearly C/C++,
+- handwritten-assembly neighborhoods are a separate future workstream,
+- and until that asm workstream is implemented, agents should classify/isolate those
+  entries rather than shoving them into fake `.cpp` matches.
 
 Agents should assume this by default:
 

@@ -65,12 +65,19 @@ Additional pinned upstream game files now live under:
 
 Use that repo-local folder when the full original beta game file set is needed.
 
-The repo also keeps a separate toolchain/lib-supplied exclusion manifest at:
-- `config\toolchain_supplied_functions.txt`
+The repo separates functions into four workflow buckets:
 
-Functions listed there are treated as high-confidence toolchain/lib-supplied entries
-such as DLL import thunks or CRT/runtime baggage. They stay tracked in the repo,
-but they are excluded from the normal manual decomp/matching corpus and should not
-appear as ordinary "left to do" work.
+- **normal** — ordinary manual C/C++ decomp/matching work,
+- **toolchain_supplied** — supplied by imports / runtime / libraries and not manually decompiled,
+- **asm_special** — named handwritten-assembly functions to be restored later through an asm workstream,
+- **asm_region** — non-normal asm/codelet/data-dispatch regions that are part of handwritten-assembly neighborhoods and not ordinary `.cpp` targets.
+
+The exclusion manifests for the non-normal buckets live at:
+- `config\toolchain_supplied_functions.txt`
+- `config\asm_special_functions.txt`
+- `config\asm_special_regions.txt`
+
+Entries listed there stay tracked in the repo, but they are excluded from the normal
+manual C/C++ decomp/matching corpus and should not appear as ordinary "left to do" work.
 
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

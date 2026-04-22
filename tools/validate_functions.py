@@ -5,7 +5,15 @@ import subprocess
 import sys
 from pathlib import Path
 
-from common import REPO_ROOT, ensure_build_subdir, load_functions, load_toolchain_supplied_function_names
+from common import (
+    REPO_ROOT,
+    classify_corpus_bucket,
+    ensure_build_subdir,
+    load_asm_special_function_names,
+    load_asm_special_regions,
+    load_functions,
+    load_toolchain_supplied_function_names,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,6 +53,8 @@ def main() -> None:
 
     slug_map = inventory_by_slug()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
+    asm_special_names = load_asm_special_function_names()
+    asm_special_regions = load_asm_special_regions()
     sources = matching_sources()
     summary_dir = ensure_build_subdir("validator")
     summary_path = summary_dir / "matching_only_summary.txt"
@@ -60,7 +70,7 @@ def main() -> None:
     passed = 0
     failed = 0
     missing_inventory = 0
-    skipped_toolchain = 0
+    skipped_non_normal = 0
 
     for source in sources:
         slug = source.stem
@@ -73,9 +83,16 @@ def main() -> None:
             lines.append(message)
             continue
 
-        if record["name"] in toolchain_supplied_names:
-            skipped_toolchain += 1
-            message = f"SKIP  {record['va']}  {slug}  toolchain/lib-supplied manifest entry"
+        corpus_bucket, corpus_reason = classify_corpus_bucket(
+            record,
+            toolchain_supplied_names=toolchain_supplied_names,
+            asm_special_names=asm_special_names,
+            asm_special_regions=asm_special_regions,
+        )
+        if corpus_bucket != "normal":
+            skipped_non_normal += 1
+            extra = f" ({corpus_reason})" if corpus_reason else ""
+            message = f"SKIP  {record['va']}  {slug}  non-normal corpus bucket={corpus_bucket}{extra}"
             print(message)
             lines.append(message)
             continue
@@ -105,14 +122,14 @@ def main() -> None:
     lines.append(f"Passed: {passed}")
     lines.append(f"Failed: {failed}")
     lines.append(f"Missing inventory records: {missing_inventory}")
-    lines.append(f"Skipped toolchain/lib-supplied: {skipped_toolchain}")
+    lines.append(f"Skipped non-normal corpus entries: {skipped_non_normal}")
     overall_ok = failed == 0
     lines.append(f"Result: {'PASS' if overall_ok else 'FAIL'}")
     summary_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Passed: {passed}")
     print(f"Failed: {failed}")
     print(f"Missing inventory records: {missing_inventory}")
-    print(f"Skipped toolchain/lib-supplied: {skipped_toolchain}")
+    print(f"Skipped non-normal corpus entries: {skipped_non_normal}")
     print(f"Result: {'PASS' if overall_ok else 'FAIL'}")
     print(f"Wrote {summary_path}")
 

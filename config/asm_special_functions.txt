@@ -1,0 +1,13 @@
+# High-confidence handwritten-assembly functions.
+# These are excluded from the normal manual C/C++ decomp/matching corpus.
+# Restore them later through the asm-specific workstream, not as ordinary .cpp targets.
+# One exact inventory function name per line.
+
+_ASMSet_Shadowing
+_ASMSet_ShadowingEx
+_ASMSet_Surface_Info
+_ASMSet_Color_Xform
+_ASMGet_Color_Xform
+_ASMSet_Xlate_Table
+_ASMDraw_HLine
+_ASMDraw_Sprite

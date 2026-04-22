@@ -14,6 +14,8 @@ INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
 TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.txt"
+ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
+ASM_SPECIAL_REGIONS_PATH = CONFIG_DIR / "asm_special_regions.txt"
 
 
 def repo_path(value: str | Path) -> Path:
@@ -46,12 +48,12 @@ def load_optional_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-def load_toolchain_supplied_function_names() -> set[str]:
+def _load_name_manifest(path: Path) -> set[str]:
     names: set[str] = set()
-    if not TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH.exists():
+    if not path.exists():
         return names
 
-    for raw_line in TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH.read_text(encoding="utf-8").splitlines():
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
@@ -59,9 +61,78 @@ def load_toolchain_supplied_function_names() -> set[str]:
     return names
 
 
+def load_toolchain_supplied_function_names() -> set[str]:
+    return _load_name_manifest(TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH)
+
+
 def is_toolchain_supplied_function_name(name: str, configured_names: set[str] | None = None) -> bool:
     names = configured_names if configured_names is not None else load_toolchain_supplied_function_names()
     return name in names
+
+
+def load_asm_special_function_names() -> set[str]:
+    return _load_name_manifest(ASM_SPECIAL_FUNCTIONS_PATH)
+
+
+def is_asm_special_function_name(name: str, configured_names: set[str] | None = None) -> bool:
+    names = configured_names if configured_names is not None else load_asm_special_function_names()
+    return name in names
+
+
+def load_asm_special_regions() -> list[tuple[int, int, str]]:
+    regions: list[tuple[int, int, str]] = []
+    if not ASM_SPECIAL_REGIONS_PATH.exists():
+        return regions
+
+    for raw_line in ASM_SPECIAL_REGIONS_PATH.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        range_text = parts[0]
+        reason = parts[1].strip() if len(parts) > 1 else ""
+        if "-" not in range_text:
+            raise ValueError(f"Invalid asm special region line: {raw_line}")
+        start_text, end_text = range_text.split("-", 1)
+        start = parse_hex(start_text)
+        end = parse_hex(end_text)
+        if start is None or end is None:
+            raise ValueError(f"Invalid asm special region bounds: {raw_line}")
+        if end < start:
+            raise ValueError(f"Asm special region end before start: {raw_line}")
+        regions.append((start, end, reason))
+    return regions
+
+
+def asm_special_region_for_va(va: int, configured_regions: list[tuple[int, int, str]] | None = None) -> tuple[int, int, str] | None:
+    regions = configured_regions if configured_regions is not None else load_asm_special_regions()
+    for start, end, reason in regions:
+        if start <= va <= end:
+            return (start, end, reason)
+    return None
+
+
+def classify_corpus_bucket(
+    record: dict[str, str],
+    toolchain_supplied_names: set[str] | None = None,
+    asm_special_names: set[str] | None = None,
+    asm_special_regions: list[tuple[int, int, str]] | None = None,
+) -> tuple[str, str]:
+    name = record["name"]
+    va = int(record["va"], 16)
+
+    if is_toolchain_supplied_function_name(name, toolchain_supplied_names):
+        return "toolchain_supplied", "manifest-name"
+    if is_asm_special_function_name(name, asm_special_names):
+        return "asm_special", "manifest-name"
+
+    region = asm_special_region_for_va(va, asm_special_regions)
+    if region is not None:
+        start, end, reason = region
+        range_reason = reason or f"range {start:08X}-{end:08X}"
+        return "asm_region", range_reason
+
+    return "normal", ""
 
 
 def load_pdb_function_source_map() -> dict[str, dict[str, str]]:

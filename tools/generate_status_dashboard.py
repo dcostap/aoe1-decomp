@@ -5,7 +5,14 @@ import json
 import re
 from pathlib import Path
 
-from common import REPO_ROOT, load_functions, load_toolchain_supplied_function_names
+from common import (
+    REPO_ROOT,
+    classify_corpus_bucket,
+    load_asm_special_function_names,
+    load_asm_special_regions,
+    load_functions,
+    load_toolchain_supplied_function_names,
+)
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
@@ -14,8 +21,6 @@ BUCKET_COLORS = {
     "scratch": "#7b68ee",
     "unclaimed": "#3f4a5a",
     "conflict": "#c0392b",
-    "toolchain_supplied": "#556b2f",
-    "toolchain_conflict": "#8e44ad",
 }
 
 
@@ -77,22 +82,32 @@ def rank_map(records: list[dict[str, str]], field: str) -> dict[str, int]:
 def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
     html_path = REPO_ROOT / "project_full_status.html"
 
-    total_functions = len(rows)
-    total_bytes = sum(int(row["size_bytes"]) for row in rows)
-    matched_functions = sum(1 for row in rows if row["source_bucket"] == "matching")
-    matched_bytes = sum(int(row["size_bytes"]) for row in rows if row["source_bucket"] == "matching")
-    remaining_functions = sum(1 for row in rows if row["is_remaining"] == "yes")
-    remaining_bytes = sum(int(row["size_bytes"]) for row in rows if row["is_remaining"] == "yes")
+    normal_rows = [row for row in rows if row["corpus_bucket"] == "normal"]
+    excluded_rows = [row for row in rows if row["corpus_bucket"] != "normal"]
 
-    bucket_order = ["matching", "scratch", "unclaimed", "conflict", "toolchain_supplied", "toolchain_conflict"]
-    bucket_counts = {bucket: sum(1 for row in rows if row["source_bucket"] == bucket) for bucket in bucket_order}
+    total_functions = len(normal_rows)
+    total_bytes = sum(int(row["size_bytes"]) for row in normal_rows)
+    matched_functions = sum(1 for row in normal_rows if row["source_bucket"] == "matching")
+    matched_bytes = sum(int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] == "matching")
+    remaining_functions = sum(1 for row in normal_rows if row["is_remaining"] == "yes")
+    remaining_bytes = sum(int(row["size_bytes"]) for row in normal_rows if row["is_remaining"] == "yes")
+
+    bucket_order = ["matching", "scratch", "unclaimed", "conflict"]
+    bucket_counts = {bucket: sum(1 for row in normal_rows if row["source_bucket"] == bucket) for bucket in bucket_order}
     bucket_bytes = {
-        bucket: sum(int(row["size_bytes"]) for row in rows if row["source_bucket"] == bucket)
+        bucket: sum(int(row["size_bytes"]) for row in normal_rows if row["source_bucket"] == bucket)
         for bucket in bucket_order
     }
 
+    corpus_counts = {
+        "normal": sum(1 for row in rows if row["corpus_bucket"] == "normal"),
+        "toolchain_supplied": sum(1 for row in rows if row["corpus_bucket"] == "toolchain_supplied"),
+        "asm_special": sum(1 for row in rows if row["corpus_bucket"] == "asm_special"),
+        "asm_region": sum(1 for row in rows if row["corpus_bucket"] == "asm_region"),
+    }
+
     groups: dict[str, dict[str, object]] = {}
-    for row in rows:
+    for row in normal_rows:
         source_file = row["pdb_source_file"] or "(no pdb source file)"
         source_path = row["pdb_source_path"] or ""
         group = groups.setdefault(
@@ -133,11 +148,12 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
             "size_bytes": int(row["size_bytes"]),
             "asm_lines": int(row["asm_lines"]),
             "source_bucket": row["source_bucket"],
+            "corpus_bucket": row["corpus_bucket"],
             "remaining_size_rank": row["remaining_size_rank"],
             "pdb_source_file": row["pdb_source_file"] or "(no pdb source file)",
         }
         for row in sorted(
-            (row for row in rows if row["is_remaining"] == "yes"),
+            (row for row in normal_rows if row["is_remaining"] == "yes"),
             key=lambda row: (-int(row["size_bytes"]), row["va"]),
         )[:40]
     ]
@@ -157,6 +173,9 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
         "bucketCounts": bucket_counts,
         "bucketBytes": bucket_bytes,
         "bucketColors": BUCKET_COLORS,
+        "corpusCounts": corpus_counts,
+        "excludedFunctions": len(excluded_rows),
+        "excludedBytes": sum(int(row["size_bytes"]) for row in excluded_rows),
     }
 
     html_text = f"""<!DOCTYPE html>
@@ -414,15 +433,17 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 <body>
   <div class="page">
     <h1>aoe1-decomp status</h1>
-    <p class="subtle">Offline project dashboard generated from <code>inventory\\all_functions.csv</code>, source placement, per-function flags, the toolchain/lib exclusion manifest, and structured top comments.</p>
+    <p class="subtle">Offline project dashboard generated from <code>inventory\\all_functions.csv</code>, source placement, per-function flags, the non-normal corpus manifests, and structured top comments. The main charts below focus on the <strong>normal</strong> manual C/C++ corpus; toolchain/lib and handwritten-assembly buckets are tracked separately.</p>
 
     <div class="grid cards">
-      <div class="card"><div class="subtle">Total functions</div><div class="value">{summary["totalFunctions"]}</div></div>
+      <div class="card"><div class="subtle">Normal corpus functions</div><div class="value">{summary["totalFunctions"]}</div></div>
       <div class="card"><div class="subtle">Matched</div><div class="value">{summary["matchedFunctions"]}</div></div>
       <div class="card"><div class="subtle">Remaining</div><div class="value">{summary["remainingFunctions"]}</div></div>
-      <div class="card"><div class="subtle">Total bytes</div><div class="value">{summary["totalBytes"]:,}</div></div>
+      <div class="card"><div class="subtle">Normal corpus bytes</div><div class="value">{summary["totalBytes"]:,}</div></div>
       <div class="card"><div class="subtle">Matched bytes</div><div class="value">{summary["matchedBytes"]:,}</div></div>
       <div class="card"><div class="subtle">Remaining bytes</div><div class="value">{summary["remainingBytes"]:,}</div></div>
+      <div class="card"><div class="subtle">Excluded non-normal entries</div><div class="value">{summary["excludedFunctions"]}</div></div>
+      <div class="card"><div class="subtle">Toolchain / asm excluded</div><div class="value">{summary["excludedBytes"]:,} bytes</div></div>
     </div>
 
     <div class="panel">
@@ -451,7 +472,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
             <th>Name</th>
             <th>File</th>
             <th>Bytes</th>
-            <th>Status</th>
+            <th>Corpus</th>
           </tr>
         </thead>
         <tbody id="remaining-body"></tbody>
@@ -481,7 +502,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 
     function renderBuckets() {{
       const grid = document.getElementById("bucket-grid");
-      const order = ["matching", "scratch", "unclaimed", "conflict", "toolchain_supplied", "toolchain_conflict"];
+      const order = ["matching", "scratch", "unclaimed", "conflict"];
       for (const bucket of order) {{
         const card = document.createElement("div");
         card.className = "bucket";
@@ -504,7 +525,7 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
           <td>${{row.name}}</td>
           <td>${{row.pdb_source_file}}</td>
           <td>${{formatNumber(row.size_bytes)}}</td>
-          <td>${{row.source_bucket}}</td>
+          <td>${{row.corpus_bucket}}</td>
         `;
         body.appendChild(tr);
       }}
@@ -861,6 +882,8 @@ def main() -> None:
 
     records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
+    asm_special_names = load_asm_special_function_names()
+    asm_special_regions = load_asm_special_regions()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
 
@@ -870,25 +893,25 @@ def main() -> None:
         matching_path = matching_files.get(slug)
 
         present_paths = [path for path in (matching_path, scratch_path) if path is not None]
-        toolchain_supplied = record["name"] in toolchain_supplied_names
-        toolchain_reason = "manifest-name" if toolchain_supplied else ""
+        corpus_bucket, corpus_reason = classify_corpus_bucket(
+            record,
+            toolchain_supplied_names=toolchain_supplied_names,
+            asm_special_names=asm_special_names,
+            asm_special_regions=asm_special_regions,
+        )
 
         if len(present_paths) > 1:
-            source_bucket = "toolchain_conflict" if toolchain_supplied else "conflict"
+            source_bucket = "conflict"
             source_path = " | ".join(str(path.relative_to(REPO_ROOT)) for path in present_paths)
             note_path = scratch_path
         elif matching_path:
-            source_bucket = "toolchain_conflict" if toolchain_supplied else "matching"
+            source_bucket = "matching"
             source_path = str(matching_path.relative_to(REPO_ROOT))
             note_path = None
         elif scratch_path:
-            source_bucket = "toolchain_conflict" if toolchain_supplied else "scratch"
+            source_bucket = "scratch"
             source_path = str(scratch_path.relative_to(REPO_ROOT))
             note_path = scratch_path
-        elif toolchain_supplied:
-            source_bucket = "toolchain_supplied"
-            source_path = ""
-            note_path = None
         else:
             source_bucket = "unclaimed"
             source_path = ""
@@ -896,7 +919,7 @@ def main() -> None:
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
         header_notes = parse_header_notes(note_path) if note_path is not None else default_header_notes()
-        is_remaining = "no" if toolchain_supplied or source_bucket == "matching" else "yes"
+        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket != "matching" else "no"
 
         row = {
             "va": record["va"],
@@ -909,8 +932,10 @@ def main() -> None:
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
-            "toolchain_supplied": "yes" if toolchain_supplied else "no",
-            "toolchain_supplied_reason": toolchain_reason,
+            "corpus_bucket": corpus_bucket,
+            "corpus_reason": corpus_reason,
+            "toolchain_supplied": "yes" if corpus_bucket == "toolchain_supplied" else "no",
+            "toolchain_supplied_reason": corpus_reason if corpus_bucket == "toolchain_supplied" else "",
             "is_remaining": is_remaining,
             "remaining_size_rank": "",
             "remaining_asm_rank": "",
@@ -952,6 +977,8 @@ def main() -> None:
                 "pdb_source_path",
                 "source_bucket",
                 "source_path",
+                "corpus_bucket",
+                "corpus_reason",
                 "toolchain_supplied",
                 "toolchain_supplied_reason",
                 "is_remaining",
@@ -979,8 +1006,10 @@ def main() -> None:
     matching_count = sum(1 for row in rows if row["source_bucket"] == "matching")
     conflict_count = sum(1 for row in rows if row["source_bucket"] == "conflict")
     unclaimed_count = sum(1 for row in rows if row["source_bucket"] == "unclaimed")
-    toolchain_supplied_count = sum(1 for row in rows if row["source_bucket"] == "toolchain_supplied")
-    toolchain_conflict_count = sum(1 for row in rows if row["source_bucket"] == "toolchain_conflict")
+    normal_count = sum(1 for row in rows if row["corpus_bucket"] == "normal")
+    toolchain_supplied_count = sum(1 for row in rows if row["corpus_bucket"] == "toolchain_supplied")
+    asm_special_count = sum(1 for row in rows if row["corpus_bucket"] == "asm_special")
+    asm_region_count = sum(1 for row in rows if row["corpus_bucket"] == "asm_region")
 
     print(f"Wrote {output_path}")
     print(f"Wrote {html_output_path}")
@@ -990,8 +1019,10 @@ def main() -> None:
         f"scratch={scratch_count} "
         f"unclaimed={unclaimed_count} "
         f"conflict={conflict_count} "
+        f"normal={normal_count} "
         f"toolchain_supplied={toolchain_supplied_count} "
-        f"toolchain_conflict={toolchain_conflict_count}"
+        f"asm_special={asm_special_count} "
+        f"asm_region={asm_region_count}"
     )
 
 

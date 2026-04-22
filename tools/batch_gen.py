@@ -18,6 +18,7 @@ def get_target_funcs():
     funcs = []
     with open('project_full_status.csv', newline='') as f:
         for row in csv.DictReader(f):
+            if row.get('corpus_bucket', 'normal') != 'normal': continue
             if row['source_bucket'] != 'unclaimed': continue
             sz = int(row['size_bytes'])
             va = row['va']

@@ -607,7 +607,8 @@ def main():
     targets = []
     with open(os.path.join(ROOT, 'project_full_status.csv')) as f:
         for row in csv.DictReader(f):
-            if (row['source_bucket'] == 'unclaimed' and 
+            if (row.get('corpus_bucket', 'normal') == 'normal' and
+                row['source_bucket'] == 'unclaimed' and 
                 row['pdb_source_file'] and 
                 row['calling_convention'] == '__thiscall' and
                 int(row['size_bytes']) <= 15 and
