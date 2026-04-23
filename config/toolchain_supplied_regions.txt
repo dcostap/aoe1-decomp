@@ -12,5 +12,7 @@
 00550C17-00550C8D  hidden CRT heap helpers: __heap_term, __get_sbh_threshold, and __set_sbh_threshold
 00553EEB-00553FC3  hidden CRT stdio helpers: ___initstdio and ___endstdio around __ioinit
 005541C8-005541F7  hidden CRT stdio teardown helper __ioterm over ___pioinfo/free
+0054DF6A-0054E1D2  hidden CRT ctype helper island: _islower/_isdigit/_isxdigit/_ispunct/_isalnum/___isascii/___toascii/___iscsymf/___iscsym
+0054E237-0054E357  hidden CRT case-conversion helpers: __toupper and __tolower
 0055918F-00559347  hidden CRT signal helper island: _signal plus local switch/cleanup glue before raise
 005594D0-00559516  CRT signal/exception action-table lookup helper used by _signal and raise

@@ -102,4 +102,7 @@ A CRT heap helper audit is documented in:
 A CRT stdio helper audit is documented in:
 - `docs\toolchain_stdio_helper_report.md`
 
+A CRT ctype/case-conversion helper audit is documented in:
+- `docs\toolchain_ctype_helper_report.md`
+
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.
