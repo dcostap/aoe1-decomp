@@ -650,6 +650,10 @@ Agent rules:
 - do **not** create `src\scratch\...` work for entries classified into those non-normal buckets,
 - for duplicated generic helper labels such as `caseD_0` / `caseD_1` inside known
   CRT/helper islands, prefer the toolchain **region** manifest over a name manifest,
+- `tools\generate_toolchain_supplied_manifest.py` is the safe scripted front-end for
+  exact-name toolchain extraction and hidden-label candidate reporting,
+- treat `build\toolchain_hidden_label_safe_candidates.tsv` as a **review queue**, not as
+  an auto-approval list,
 - do **not** promote or keep them in `src\matching\...` as normal manual-match targets,
 - do **not** count them as ordinary remaining C/C++ work,
 - do **not** try to force `asm_special` or `asm_region` entries into ordinary `.cpp`
