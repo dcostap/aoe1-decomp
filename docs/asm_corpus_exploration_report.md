@@ -4,7 +4,7 @@ Date: 2026-04-22
 
 Scope explored:
 
-- `inventory/functions/0056/0056A01A_FUN_0056a01a.txt` through the draw neighborhood
+- `inventory/functions/0056/00564157_FUN_00564157.txt` through the draw neighborhood
 - `inventory/functions/0056/0056C680_ASMSet_Shadowing.txt` through `0056DB60_FUN_0056db60.txt`
 - `orig/ghidra_decomp/bucket_056A.asm`
 - packet Ghidra listing/decompiler excerpts for representative unnamed `FUN_` entries
@@ -34,7 +34,7 @@ asm corpuses.
 The exploration shows that the draw neighborhood is much larger than the first-pass
 `0056A6DD` region. High-confidence handwritten-asm material spans three practical bands:
 
-1. `0056A01A-0056B43F`
+1. `00564157-0056B43F`
 2. `0056C680-0056C7DF`
 3. `0056C7E0-0056DBBA`
 
@@ -42,10 +42,16 @@ That is now reflected in `config/asm_special_regions.txt`.
 
 ## Main findings by region
 
-### 1) `0056A01A-0056B43F` is asm codelet / dispatch-bank territory, not normal C++
+### 1) `00564157-0056B43F` is asm codelet / dispatch-bank territory, not normal C++
 
 High-confidence evidence:
 
+- follow-up pass across `00564157-0056A019` found **170 additional unnamed packets**,
+  all with no PDB source and all tail-jumping via `DAT_0088c044`.
+- spot-checks from buckets `0564` through `0569` (for example `00564157`, `0056501B`,
+  `00566045`, `00567FDE`, `0056802D`, `00568E6C`, `00569023`) all show the same
+  draw-codelet shape: tiny fixed copy/xlate/mask fragments that mutate `ESI`/`EDI` and
+  chain through `[88C044]` rather than normal call/return structure.
 - `0056A01A_FUN_0056a01a`, `0056A0A6_FUN_0056a0a6`, `0056A10D_FUN_0056a10d`,
   `0056A188_FUN_0056a188`, and `0056A210_FUN_0056a210` are real tiny draw codelets.
   They operate directly on pixel bytes/words/dwords, use `EBX` as a translate-table base,
@@ -110,10 +116,17 @@ Practical conclusion:
 
 ## Classification appendix
 
-### A. Codelets / dispatch-bank range: `0056A01A-0056B43F`
+### A. Codelets / dispatch-bank range: `00564157-0056B43F`
 
 | Inventory entry | Conclusion |
 |---|---|
+| `00564157_FUN_00564157` | tiny asm draw codelet chaining through `DAT_0088c044` |
+| `0056501B_FUN_0056501b` | asm draw codelet with mask/or globals and continuation jump |
+| `00566045_FUN_00566045` | asm draw/xlate codelet using `EBX` table lookup and `DAT_0088c044` |
+| `00567FDE_FUN_00567fde` | asm draw codelet bridge into the later `0568` bank |
+| `0056802D_FUN_0056802d` | asm draw codelet in the `0568` bank |
+| `00568E6C_FUN_00568e6c` | asm draw codelet in the `0568` bank |
+| `00569023_FUN_00569023` | asm draw codelet in the `0569` bank |
 | `0056A01A_FUN_0056a01a` | real asm draw/xlate codelet |
 | `0056A0A6_FUN_0056a0a6` | real asm draw/xlate codelet |
 | `0056A10D_FUN_0056a10d` | real asm draw/xlate codelet |
@@ -133,6 +146,10 @@ Practical conclusion:
 | `0056A65D_FUN_0056a65d` | misdisassembled table/codelet-bank data |
 | `0056A69D_FUN_0056a69d` | misdisassembled table/codelet-bank data |
 | `0056A6DD_FUN_0056a6dd` | draw dispatch/data bank; definitely not a normal function |
+
+Note: table A is representative rather than exhaustive. The `00564157-0056A019`
+prelude alone contributes 170 additional unnamed codelet packets with the same
+high-confidence asm traits.
 
 ### B. Setup/getter/padding range: `0056C680-0056C7DF`
 
