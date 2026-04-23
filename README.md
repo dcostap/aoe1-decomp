@@ -93,4 +93,7 @@ A focused FPU-control CRT helper-island audit is documented in:
 A CRT conversion/io helper audit is documented in:
 - `docs\toolchain_crt_conversion_io_report.md`
 
+A CRT signal helper audit is documented in:
+- `docs\toolchain_signal_helper_report.md`
+
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

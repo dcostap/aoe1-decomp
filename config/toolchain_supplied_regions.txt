@@ -9,3 +9,5 @@
 005577A8-00557946  FPU control/status helper island: __fpreset plus internal flag-conversion helpers for __statusfp/__clearfp/__control87
 00557EA8-00557EE7  hidden CRT wrapper __atoldbl: parse string with ___strgtold12 then convert via __ld12told
 0055878E-005587F7  hidden CRT helper __fcloseall over __nstream/___piob/fclose/free
+0055918F-00559347  hidden CRT signal helper island: _signal plus local switch/cleanup glue before raise
+005594D0-00559516  CRT signal/exception action-table lookup helper used by _signal and raise
