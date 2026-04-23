@@ -96,6 +96,7 @@
     .stats-row,
     .controls-row,
     .bucket-row,
+    .controls-groups,
     .detail-meta,
     .detail-tags,
     .actions,
@@ -105,6 +106,17 @@
       flex-wrap: wrap;
       gap: 8px 12px;
       align-items: center;
+    }
+
+    .controls-groups {
+      gap: 10px 40px;
+    }
+
+    .group-frame {
+      padding: 3px 5px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.025);
     }
 
     .stat-item {
@@ -218,11 +230,21 @@
       border-radius: 12px;
     }
 
-    #treemap {
+    #treemap,
+    #treemap-overlay {
       width: 100%;
       height: 100%;
       display: block;
+    }
+
+    #treemap {
       cursor: crosshair;
+    }
+
+    #treemap-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
     }
 
     .empty-state {
@@ -429,23 +451,24 @@
     <div class="stats-row" id="stats-primary"></div>
     <div class="stats-row" id="stats-secondary"></div>
     <div class="controls">
-      <div class="controls-row">
+      <div class="controls-groups">
         <label class="search">
           <span aria-hidden="true">⌕</span>
           <input id="search-input" type="search" placeholder="function, VA, file, blocker, note...">
         </label>
-        <div class="controls-row" id="view-controls"></div>
-        <div class="controls-row" id="metric-controls"></div>
-        <div class="controls-row" id="color-controls"></div>
-        <div class="controls-row" id="filter-controls"></div>
+        <div class="controls-row group-frame" id="view-controls"></div>
+        <div class="controls-row group-frame" id="metric-controls"></div>
+        <div class="controls-row group-frame" id="color-controls"></div>
+        <div class="controls-row group-frame" id="filter-controls"></div>
       </div>
-      <div class="bucket-row" id="bucket-controls"></div>
+      <div class="bucket-row group-frame" id="bucket-controls"></div>
     </div>
   </header>
 
   <section class="map-shell">
     <div class="canvas-wrap" id="canvas-wrap">
       <canvas id="treemap"></canvas>
+      <canvas id="treemap-overlay"></canvas>
       <div class="empty-state" id="empty-state"></div>
       <div class="tooltip" id="tooltip"></div>
     </div>
@@ -495,6 +518,7 @@
       bucketControls: document.getElementById("bucket-controls"),
       canvasWrap: document.getElementById("canvas-wrap"),
       canvas: document.getElementById("treemap"),
+      overlayCanvas: document.getElementById("treemap-overlay"),
       emptyState: document.getElementById("empty-state"),
       tooltip: document.getElementById("tooltip"),
       detailContent: document.getElementById("detail-content"),
@@ -526,6 +550,8 @@
     let derived = null;
     let hitRegions = [];
     let hoveredRegion = null;
+    let hoverFramePending = false;
+    let queuedPointer = null;
 
     function saveState() {
       try {
@@ -1187,9 +1213,8 @@
         const outer = insetRect(placement.rect, 2);
         const fill = groupBodyFill(group);
         const selectedGroup = selected === group.id;
-        const hoveredGroup = hoveredRegion && hoveredRegion.action && hoveredRegion.action.group === group.name;
-        const border = selectedGroup ? "rgba(255,255,255,0.94)" : hoveredGroup ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.12)";
-        const strokeWidth = selectedGroup ? 2 : hoveredGroup ? 1.5 : 1;
+        const border = selectedGroup ? "rgba(255,255,255,0.94)" : "rgba(255,255,255,0.12)";
+        const strokeWidth = selectedGroup ? 2 : 1;
 
         fillRoundedRect(ctx, outer, 8, fill, border, strokeWidth);
 
@@ -1221,10 +1246,9 @@
             continue;
           }
           const fnFill = colorForFunction(fn);
-          const hoveredFn = hoveredRegion && hoveredRegion.hoverItem && hoveredRegion.hoverItem.id === fn.id;
           const selectedFn = selected === fn.id;
-          const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : hoveredFn ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.04)";
-          const fnStroke = selectedFn ? 1.8 : hoveredFn ? 1.2 : 0.8;
+          const fnBorder = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.04)";
+          const fnStroke = selectedFn ? 1.8 : 0.8;
           fillRoundedRect(ctx, fnRect, Math.min(4, fnRect.width / 3, fnRect.height / 3), fnFill, fnBorder, fnStroke);
           pushHitRegion(fnRect, fn, { type: "zoom-group", group: group.name });
         }
@@ -1240,10 +1264,9 @@
         const fn = placement.item;
         const rect = insetRect(placement.rect, 1.2);
         const fill = colorForFunction(fn);
-        const hoveredFn = hoveredRegion && hoveredRegion.hoverItem && hoveredRegion.hoverItem.id === fn.id;
         const selectedFn = selected === fn.id;
-        const border = selectedFn ? "rgba(255,255,255,0.95)" : hoveredFn ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.08)";
-        const strokeWidth = selectedFn ? 2 : hoveredFn ? 1.5 : 1;
+        const border = selectedFn ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.08)";
+        const strokeWidth = selectedFn ? 2 : 1;
 
         fillRoundedRect(ctx, rect, 6, fill, border, strokeWidth);
         const sheen = ctx.createLinearGradient(rect.x, rect.y, rect.x, rect.y + rect.height);
@@ -1255,18 +1278,46 @@
       }
     }
 
+    function syncCanvasSize(canvas, width, height, dpr) {
+      const targetWidth = Math.floor(width * dpr);
+      const targetHeight = Math.floor(height * dpr);
+      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+      }
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return ctx;
+    }
+
+    function renderHoverOverlay() {
+      const dpr = window.devicePixelRatio || 1;
+      const bounds = elements.canvasWrap.getBoundingClientRect();
+      const width = Math.max(1, Math.floor(bounds.width));
+      const height = Math.max(1, Math.floor(bounds.height));
+      const ctx = syncCanvasSize(elements.overlayCanvas, width, height, dpr);
+      ctx.clearRect(0, 0, width, height);
+
+      if (!hoveredRegion) {
+        return;
+      }
+
+      const rect = hoveredRegion.rect;
+      const item = hoveredRegion.hoverItem;
+      const radius = item.type === "group" ? 8 : 6;
+      roundedRectPath(ctx, rect.x, rect.y, rect.width, rect.height, radius);
+      ctx.lineWidth = item.type === "group" ? 2 : 1.5;
+      ctx.strokeStyle = "rgba(255,255,255,0.92)";
+      ctx.stroke();
+    }
+
     function renderTreemap() {
       const dpr = window.devicePixelRatio || 1;
       const bounds = elements.canvasWrap.getBoundingClientRect();
       const width = Math.max(1, Math.floor(bounds.width));
       const height = Math.max(1, Math.floor(bounds.height));
-      if (elements.canvas.width !== Math.floor(width * dpr) || elements.canvas.height !== Math.floor(height * dpr)) {
-        elements.canvas.width = Math.floor(width * dpr);
-        elements.canvas.height = Math.floor(height * dpr);
-      }
-
-      const ctx = elements.canvas.getContext("2d");
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const ctx = syncCanvasSize(elements.canvas, width, height, dpr);
+      syncCanvasSize(elements.overlayCanvas, width, height, dpr);
       drawStageBackground(ctx, width, height);
       hitRegions = [];
 
@@ -1276,10 +1327,12 @@
         if (!derived.zoomGroup.childrenVisible.length) {
           elements.emptyState.classList.add("visible");
           elements.emptyState.innerHTML = "<div><strong>No visible functions</strong><div>Relax the current filters.</div></div>";
+          renderHoverOverlay();
           return;
         }
         elements.emptyState.classList.remove("visible");
         renderFlatFunctionTreemap(ctx, stageRect, derived.zoomGroup.childrenVisible, true);
+        renderHoverOverlay();
         return;
       }
 
@@ -1287,20 +1340,24 @@
         if (!derived.visibleFns.length) {
           elements.emptyState.classList.add("visible");
           elements.emptyState.innerHTML = "<div><strong>No visible functions</strong><div>Relax the current filters.</div></div>";
+          renderHoverOverlay();
           return;
         }
         elements.emptyState.classList.remove("visible");
         renderFlatFunctionTreemap(ctx, stageRect, derived.visibleFns, false);
+        renderHoverOverlay();
         return;
       }
 
       if (!derived.visibleGroups.length) {
         elements.emptyState.classList.add("visible");
         elements.emptyState.innerHTML = "<div><strong>No visible files</strong><div>Relax the current filters.</div></div>";
+        renderHoverOverlay();
         return;
       }
       elements.emptyState.classList.remove("visible");
       renderOverviewTreemap(ctx, stageRect);
+      renderHoverOverlay();
     }
 
     function hitRegionAt(x, y) {
@@ -1704,21 +1761,36 @@
       render();
     });
 
-    elements.canvas.addEventListener("mousemove", (event) => {
-      const rect = elements.canvas.getBoundingClientRect();
-      const region = hitRegionAt(event.clientX - rect.left, event.clientY - rect.top);
-      if (region !== hoveredRegion) {
-        updateTooltip(event, region);
-        renderTreemap();
-      } else if (region) {
-        updateTooltip(event, region);
+    function schedulePointerUpdate(pointer) {
+      queuedPointer = pointer;
+      if (hoverFramePending) {
+        return;
       }
+      hoverFramePending = true;
+      requestAnimationFrame(() => {
+        hoverFramePending = false;
+        if (!queuedPointer) {
+          return;
+        }
+        const region = hitRegionAt(queuedPointer.x, queuedPointer.y);
+        if (region !== hoveredRegion) {
+          updateTooltip(queuedPointer.event, region);
+          renderHoverOverlay();
+        } else if (region) {
+          updateTooltip(queuedPointer.event, region);
+        }
+      });
+    }
+
+    elements.canvas.addEventListener("mousemove", (event) => {
+      schedulePointerUpdate({ x: event.offsetX, y: event.offsetY, event });
     });
 
     elements.canvas.addEventListener("mouseleave", () => {
+      queuedPointer = null;
       hoveredRegion = null;
       elements.tooltip.classList.remove("visible");
-      renderTreemap();
+      renderHoverOverlay();
     });
 
     elements.canvas.addEventListener("click", (event) => {
