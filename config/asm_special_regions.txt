@@ -3,6 +3,6 @@
 # These are excluded from the normal manual C/C++ decomp/matching corpus.
 # Restore them later through the asm-specific workstream.
 
-0056A6DD-0056B43F  ASM draw dispatch/codelet bank referenced by _ASMDraw_HLine and neighboring draw helpers
-0056C680-0056C7DF  ASM draw setup/helper cluster around _ASMSet_* routines and tiny unnamed neighbors
-0056CBAC-0056D505  ASM draw helper cluster around switchD_0056cc42 and neighboring unnamed draw routines
+0056A01A-0056B43F  ASM draw codelets plus dispatch/data bank used by _ASMDraw_HLine and _ASMDraw_Sprite
+0056C680-0056C7DF  ASM draw setup/getter/padding cluster around _ASMSet_* and hidden getter stubs
+0056C7E0-0056DBBA  ASM draw entrypoints plus unnamed HLine/Sprite interpreters, opcode handlers, scanline walkers, and decoders

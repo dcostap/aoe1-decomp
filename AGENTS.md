@@ -44,6 +44,7 @@ The repo separates discovered binary functions/regions into four workflow bucket
   - non-normal asm/codelet/data-dispatch regions inside handwritten-assembly neighborhoods
   - tracked, but excluded from the normal C/C++ corpus
   - do not force these into one-function-one-`.cpp` reconstruction
+  - for unstable unnamed `FUN_...` asm neighborhoods, prefer high-confidence **region-based** exclusion over maintaining a brittle giant name list
 
 `config\toolchain_supplied_functions.txt`, `config\asm_special_functions.txt`, and
 `config\asm_special_regions.txt` are the high-confidence manifests that drive this
