@@ -99,4 +99,7 @@ A CRT signal helper audit is documented in:
 A CRT heap helper audit is documented in:
 - `docs\toolchain_heap_helper_report.md`
 
+A CRT stdio helper audit is documented in:
+- `docs\toolchain_stdio_helper_report.md`
+
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

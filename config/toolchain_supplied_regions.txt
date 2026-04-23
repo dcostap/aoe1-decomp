@@ -10,5 +10,7 @@
 00557EA8-00557EE7  hidden CRT wrapper __atoldbl: parse string with ___strgtold12 then convert via __ld12told
 0055878E-005587F7  hidden CRT helper __fcloseall over __nstream/___piob/fclose/free
 00550C17-00550C8D  hidden CRT heap helpers: __heap_term, __get_sbh_threshold, and __set_sbh_threshold
+00553EEB-00553FC3  hidden CRT stdio helpers: ___initstdio and ___endstdio around __ioinit
+005541C8-005541F7  hidden CRT stdio teardown helper __ioterm over ___pioinfo/free
 0055918F-00559347  hidden CRT signal helper island: _signal plus local switch/cleanup glue before raise
 005594D0-00559516  CRT signal/exception action-table lookup helper used by _signal and raise

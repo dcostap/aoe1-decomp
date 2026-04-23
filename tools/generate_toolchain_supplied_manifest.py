@@ -53,6 +53,7 @@ SAFE_EXACT_RUNTIME_NAMES = {
     "__fptrap",
     "__fptostr",
     "__heap_init",
+    "__ioterm",
     "__input",
     "__ioinit",
     "__isindst",
@@ -71,6 +72,8 @@ SAFE_EXACT_RUNTIME_NAMES = {
     "__statusfp",
     "__tzset",
     "___dtold",
+    "___endstdio",
+    "___initstdio",
     "__fltout",
     "__CopyMan",
 }
