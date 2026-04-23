@@ -1,10 +1,13 @@
-extern "C" void* __cdecl memset(void* dest, int val, unsigned int count);
+#include <string.h>
+
 class PathingSystem {
 public:
-    void zeroObstructionMap();
-    char pad[0xCE624];
-    int obstructionMap[0xFE01];
+    unsigned char gap_00[0xCE624];
+    unsigned char obstructionValue[1020][255];
+
+    void zeroObstructionMap(void);
 };
-void PathingSystem::zeroObstructionMap() {
-    memset(this->obstructionMap, 0, sizeof(this->obstructionMap));
+
+void PathingSystem::zeroObstructionMap(void) {
+    memset(obstructionValue, 0, sizeof(obstructionValue));
 }

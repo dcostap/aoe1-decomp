@@ -1,9 +1,14 @@
-class SomeClass {
+class TRIGONOMETRY {
 public:
-    int RestrictAngle(int angle);
+    int RestrictAngle(int param_1);
 };
-int SomeClass::RestrictAngle(int angle) {
-    int result = angle % 4096;
-    if (result < 0) result = -result;
-    return result;
+
+int TRIGONOMETRY::RestrictAngle(int param_1) {
+    int sign = param_1 >> 31;
+    int value = ((param_1 ^ sign) - sign) & 0xFFF;
+    value = (value ^ sign) - sign;
+    if (value < 0) {
+        value = -value;
+    }
+    return value;
 }

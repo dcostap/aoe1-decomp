@@ -1,12 +1,12 @@
-class TrigTable {
+class TRIGONOMETRY {
 public:
-    int normalize_index(int index);
-    char gap_0[0x4000];
-    float table[1];
+    int RestrictAngle(int param_1);
+    float cose[4096];
 
-    float cosine(int index);
+    float cosine(int param_1);
 };
 
-float TrigTable::cosine(int index) {
-    return this->table[this->normalize_index(index)];
+float TRIGONOMETRY::cosine(int param_1) {
+    int index = this->RestrictAngle(param_1);
+    return this->cose[index];
 }

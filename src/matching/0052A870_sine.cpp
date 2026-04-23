@@ -1,11 +1,12 @@
-class TrigTable {
+class TRIGONOMETRY {
 public:
-    int normalize_index(int index);
-    float table[1];
+    int RestrictAngle(int param_1);
+    float sines[4096];
 
-    float sine(int index);
+    float sine(int param_1);
 };
 
-float TrigTable::sine(int index) {
-    return this->table[this->normalize_index(index)];
+float TRIGONOMETRY::sine(int param_1) {
+    int index = this->RestrictAngle(param_1);
+    return this->sines[index];
 }

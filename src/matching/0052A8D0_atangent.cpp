@@ -1,12 +1,12 @@
-class TrigTable {
+class TRIGONOMETRY {
 public:
-    int normalize_index(int index);
-    char gap_0[0xC000];
-    float table[1];
+    int RestrictAngle(int param_1);
+    float atane[4096];
 
-    float atangent(int index);
+    float atangent(int param_1);
 };
 
-float TrigTable::atangent(int index) {
-    return this->table[this->normalize_index(index)];
+float TRIGONOMETRY::atangent(int param_1) {
+    int index = this->RestrictAngle(param_1);
+    return this->atane[index];
 }
