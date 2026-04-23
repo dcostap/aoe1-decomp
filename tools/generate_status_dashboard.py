@@ -95,6 +95,14 @@ def read_source_preview(path: Path | None, max_lines: int = 140, max_chars: int 
     return "\n".join(lines)
 
 
+def count_comment_lines(path: Path | None) -> int:
+    if path is None or not path.exists():
+        return 0
+
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return sum(1 for line in text.splitlines() if line.startswith("//"))
+
+
 def rank_map(records: list[dict[str, str]], field: str) -> dict[str, int]:
     ordered = sorted(records, key=lambda row: (-int(row[field]), row["va"]))
     return {row["va"]: index + 1 for index, row in enumerate(ordered)}
@@ -157,6 +165,7 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
             "sourceWhy": row["source_why"],
             "sourceNext": row["source_next"],
             "sourcePreview": row["source_preview"],
+            "sourceCommentLines": to_int(row["source_comment_lines"]),
             "usesCustomFlags": row["uses_custom_flags"] == "yes",
             "customFlagsPath": row["custom_flags_path"],
             "isRemaining": row["is_remaining"] == "yes",
@@ -329,6 +338,7 @@ def main() -> None:
             "source_why": header_notes["WHY"],
             "source_next": header_notes["NEXT"],
             "source_preview": read_source_preview(preview_path),
+            "source_comment_lines": str(count_comment_lines(preview_path)),
             "has_blocker": "yes" if header_notes["BLOCKER"] else "no",
         }
         rows.append(row)
@@ -375,6 +385,7 @@ def main() -> None:
                 "source_why",
                 "source_next",
                 "source_preview",
+                "source_comment_lines",
                 "has_blocker",
             ],
         )

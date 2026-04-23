@@ -418,8 +418,8 @@
       background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #22c55e 100%);
     }
 
-    .gradient.attention {
-      background: linear-gradient(90deg, #202736 0%, #8b5cf6 50%, #ff8b55 100%);
+    .gradient.complexity {
+      background: linear-gradient(90deg, #2563eb 0%, #ff0000 100%);
     }
 
     @media (max-width: 1100px) {
@@ -537,7 +537,7 @@
         query: "",
         viewMode: stored.viewMode || "files",
         metric: stored.metric || "bytes",
-        colorMode: stored.colorMode || "status",
+        colorMode: stored.colorMode === "attention" ? "complexity" : (stored.colorMode || "status"),
         onlyRemaining: Boolean(stored.onlyRemaining),
         onlyBlockers: Boolean(stored.onlyBlockers),
         buckets: { ...defaultBuckets, ...(stored.buckets || {}) },
@@ -1029,24 +1029,8 @@
         const progress = clamp((group ? group.progressBytes : 0) / 100, 0, 1);
         return triColor("#ef4444", "#f59e0b", "#22c55e", progress);
       }
-      let severity = 0.0;
-      if (item.bucket === "matching") {
-        severity = 0.08;
-      } else if (item.bucket === "conflict") {
-        severity = 1.0;
-      } else if (item.hasBlocker) {
-        severity = 0.95;
-      } else if (item.usesCustomFlags) {
-        severity = 0.82;
-      } else if (item.bucket === "unclaimed") {
-        severity = 0.72;
-      } else {
-        severity = 0.56;
-      }
-      if (item.isRemaining && item.remainingSizeRank) {
-        severity = Math.max(severity, 1 - Math.min(item.remainingSizeRank, 180) / 180);
-      }
-      return triColor("#202736", "#8b5cf6", "#ff8b55", clamp(severity, 0, 1));
+      const complexity = clamp((item.sourceCommentLines || 0) / 40, 0, 1);
+      return mixColor("#2563eb", "#ff0000", complexity);
     }
 
     function tileTextColor(fill) {
@@ -1379,7 +1363,7 @@
       }
       return `
         <div class="tooltip-title"><span class="mono">${escapeHtml(item.va)}</span> ${escapeHtml(item.name)}</div>
-        <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)}</div>
+        <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)} · ${formatNumber(item.sourceCommentLines || 0)} comment lines</div>
         ${(item.sourceBlocker || item.sourceNext || item.sourceNote) ? `<div class="tooltip-note">${escapeHtml(item.sourceBlocker || item.sourceNext || item.sourceNote)}</div>` : ""}`;
     }
 
@@ -1452,7 +1436,7 @@
       elements.colorControls.innerHTML = [
         ["status", "status"],
         ["progress", "progress"],
-        ["attention", "attention"],
+        ["complexity", "complexity"],
       ].map(([value, label]) => `<button class="button ${state.colorMode === value ? "active" : ""}" data-set-color="${value}">${escapeHtml(label)}</button>`).join("");
 
       elements.filterControls.innerHTML = [
@@ -1584,6 +1568,7 @@
         <div class="detail-grid">
           <div class="detail-block"><div class="detail-label">Size</div><div class="detail-value">${formatBytes(fn.sizeBytes)}</div></div>
           <div class="detail-block"><div class="detail-label">Asm lines</div><div class="detail-value">${formatNumber(fn.asmLines)}</div></div>
+          <div class="detail-block"><div class="detail-label">Comment lines</div><div class="detail-value">${formatNumber(fn.sourceCommentLines || 0)}</div></div>
           <div class="detail-block"><div class="detail-label">Calling convention</div><div class="detail-value">${escapeHtml(fn.callingConvention || "?")}</div></div>
           <div class="detail-block"><div class="detail-label">Remaining rank</div><div class="detail-value">${fn.isRemaining ? `#${formatNumber(fn.remainingSizeRank || 0)}` : "done"}</div></div>
         </div>
