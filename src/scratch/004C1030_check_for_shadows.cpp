@@ -1,3 +1,6 @@
+// tried the direct list-walk with exact draw_level/draw_list_num offsets; mismatch moved into the early branch layout
+// tried the exact field offsets from the asm; VC5 still preferred a different prolog/branch family on the initial low-count checks
+// leaving in scratch because the remaining gap is branch-shape drift, not a behavior mismatch
 class RGE_Sprite;
 
 class RGE_Picture_List {
@@ -12,10 +15,11 @@ public:
 
 class RGE_Sprite {
 public:
-    short draw_list_num;
-    char gap_02[0x2];
-    RGE_Picture_List* draw_list;
+    char gap_00[0x29];
     unsigned char draw_level;
+    char gap_2A[0xC];
+    short draw_list_num;
+    RGE_Picture_List* draw_list;
 
     int check_for_shadows();
 };
