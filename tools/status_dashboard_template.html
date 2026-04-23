@@ -1029,7 +1029,7 @@
         const progress = clamp((group ? group.progressBytes : 0) / 100, 0, 1);
         return triColor("#ef4444", "#f59e0b", "#22c55e", progress);
       }
-      const complexity = clamp((item.sourceCommentLines || 0) / 40, 0, 1);
+      const complexity = clamp((item.sourceCommentLines || 0) / 17, 0, 1);
       return mixColor("#2563eb", "#ff0000", complexity);
     }
 
