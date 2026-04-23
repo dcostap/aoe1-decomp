@@ -145,6 +145,11 @@ SAFE_RUNTIME_PREFIXES = (
     "__cfto",
 )
 
+GENERIC_INVENTORY_NAME_PREFIXES = ("FUN_", "case")
+MAX_PROBABLE_REGION_SPAN_BYTES = 0x600
+MAX_PROBABLE_ANCHOR_DISTANCE_BYTES = 0x400
+MAX_PROBABLE_ANCHOR_SCAN_FUNCTIONS = 8
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate a high-confidence toolchain/lib-supplied manifest.")
@@ -171,6 +176,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=REPO_ROOT / "build" / "toolchain_hidden_label_unhandled_candidates.tsv",
         help="Unhandled safe hidden-label candidate report output path.",
+    )
+    parser.add_argument(
+        "--probable-region-report",
+        type=Path,
+        default=REPO_ROOT / "build" / "toolchain_probable_helper_island_candidates.tsv",
+        help="Review-only probable helper-island region candidate report output path.",
     )
     return parser.parse_args()
 
@@ -238,6 +249,22 @@ def runtime_name_matches(label: str, exact_name: str) -> bool:
     return False
 
 
+def record_start(record: dict[str, str]) -> int:
+    return int(record["va"], 16)
+
+
+def record_end(record: dict[str, str]) -> int:
+    return record_start(record) + int(record["size_bytes"]) - 1
+
+
+def is_generic_inventory_name(name: str) -> bool:
+    return name.startswith(GENERIC_INVENTORY_NAME_PREFIXES)
+
+
+def record_has_pdb_source(record: dict[str, str]) -> bool:
+    return bool(record.get("pdb_source_file"))
+
+
 def label_matches_safe_runtime_name(label: str) -> bool:
     return any(runtime_name_matches(label, exact_name) for exact_name in SAFE_EXACT_RUNTIME_NAMES)
 
@@ -260,7 +287,194 @@ def label_matches_imported_symbol(label: str, imported_symbol_names: set[str]) -
     return normalized_label in imported_symbol_names
 
 
-def collect_candidates() -> tuple[list[dict[str, str]], list[dict[str, str]], list[dict[str, str]], list[dict[str, str]]]:
+def classify_record_bucket(
+    record: dict[str, str],
+    generated_toolchain_names: set[str],
+    toolchain_regions: list[tuple[int, int, str]],
+    asm_special_names: set[str],
+    asm_special_regions: list[tuple[int, int, str]],
+) -> tuple[str, str]:
+    return classify_corpus_bucket(
+        record,
+        toolchain_supplied_names=generated_toolchain_names,
+        toolchain_supplied_regions=toolchain_regions,
+        asm_special_names=asm_special_names,
+        asm_special_regions=asm_special_regions,
+    )
+
+
+def collect_runtime_hidden_labels(record: dict[str, str], imported_symbol_names: set[str]) -> list[str]:
+    labels: list[str] = []
+    for hidden_label in extract_hidden_labels(record):
+        if (
+            label_matches_safe_runtime_name(hidden_label)
+            or label_matches_safe_runtime_prefix(hidden_label)
+            or label_matches_imported_symbol(hidden_label, imported_symbol_names)
+        ):
+            if hidden_label not in labels:
+                labels.append(hidden_label)
+    return labels
+
+
+def find_probable_toolchain_anchors(
+    records: list[dict[str, str]],
+    run_start_index: int,
+    run_end_index: int,
+    generated_toolchain_names: set[str],
+    toolchain_regions: list[tuple[int, int, str]],
+    asm_special_names: set[str],
+    asm_special_regions: list[tuple[int, int, str]],
+) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    run_start_va = record_start(records[run_start_index])
+    run_end_va = record_end(records[run_end_index])
+
+    left_anchors: list[dict[str, str]] = []
+    for index in range(run_start_index - 1, max(-1, run_start_index - MAX_PROBABLE_ANCHOR_SCAN_FUNCTIONS - 1), -1):
+        record = records[index]
+        bucket, _ = classify_record_bucket(
+            record,
+            generated_toolchain_names,
+            toolchain_regions,
+            asm_special_names,
+            asm_special_regions,
+        )
+        if bucket in {"asm_special", "asm_region"}:
+            break
+        distance = run_start_va - record_end(record) - 1
+        if distance > MAX_PROBABLE_ANCHOR_DISTANCE_BYTES:
+            break
+        if bucket == "toolchain_supplied":
+            left_anchors.append(record)
+
+    right_anchors: list[dict[str, str]] = []
+    for index in range(run_end_index + 1, min(len(records), run_end_index + MAX_PROBABLE_ANCHOR_SCAN_FUNCTIONS + 1)):
+        record = records[index]
+        bucket, _ = classify_record_bucket(
+            record,
+            generated_toolchain_names,
+            toolchain_regions,
+            asm_special_names,
+            asm_special_regions,
+        )
+        if bucket in {"asm_special", "asm_region"}:
+            break
+        distance = record_start(record) - run_end_va - 1
+        if distance > MAX_PROBABLE_ANCHOR_DISTANCE_BYTES:
+            break
+        if bucket == "toolchain_supplied":
+            right_anchors.append(record)
+
+    return left_anchors, right_anchors
+
+
+def collect_probable_helper_island_rows(
+    records: list[dict[str, str]],
+    imported_symbol_names: set[str],
+    import_thunk_names: set[str],
+    generated_toolchain_names: set[str],
+    toolchain_regions: list[tuple[int, int, str]],
+    asm_special_names: set[str],
+    asm_special_regions: list[tuple[int, int, str]],
+) -> list[dict[str, str]]:
+    sorted_records = sorted(records, key=record_start)
+    rows: list[dict[str, str]] = []
+    index = 0
+
+    while index < len(sorted_records):
+        record = sorted_records[index]
+        bucket, _ = classify_record_bucket(
+            record,
+            generated_toolchain_names,
+            toolchain_regions,
+            asm_special_names,
+            asm_special_regions,
+        )
+        if bucket != "normal" or record_has_pdb_source(record) or not is_generic_inventory_name(record["name"]):
+            index += 1
+            continue
+
+        run_start_index = index
+        run_records = [record]
+        index += 1
+        while index < len(sorted_records):
+            next_record = sorted_records[index]
+            next_bucket, _ = classify_record_bucket(
+                next_record,
+                generated_toolchain_names,
+                toolchain_regions,
+                asm_special_names,
+                asm_special_regions,
+            )
+            if next_bucket != "normal" or record_has_pdb_source(next_record) or not is_generic_inventory_name(next_record["name"]):
+                break
+            run_records.append(next_record)
+            index += 1
+        run_end_index = run_start_index + len(run_records) - 1
+
+        run_span_bytes = record_end(run_records[-1]) - record_start(run_records[0]) + 1
+        if run_span_bytes > MAX_PROBABLE_REGION_SPAN_BYTES:
+            continue
+
+        left_anchors, right_anchors = find_probable_toolchain_anchors(
+            sorted_records,
+            run_start_index,
+            run_end_index,
+            generated_toolchain_names,
+            toolchain_regions,
+            asm_special_names,
+            asm_special_regions,
+        )
+        if not left_anchors or not right_anchors:
+            continue
+
+        hidden_runtime_labels: list[str] = []
+        for run_record in run_records:
+            for label in collect_runtime_hidden_labels(run_record, imported_symbol_names):
+                if label not in hidden_runtime_labels:
+                    hidden_runtime_labels.append(label)
+
+        left_anchor = left_anchors[0]
+        right_anchor = right_anchors[0]
+        if left_anchor["name"] in import_thunk_names or right_anchor["name"] in import_thunk_names:
+            continue
+
+        nearby_toolchain_records = left_anchors + right_anchors
+        rows.append(
+            {
+                "start_va": run_records[0]["va"],
+                "end_va": f"{record_end(run_records[-1]):08X}",
+                "span_bytes": str(run_span_bytes),
+                "candidate_kind": "sandwiched-generic-run",
+                "generic_function_count": str(len(run_records)),
+                "nearby_toolchain_count": str(len(nearby_toolchain_records)),
+                "hidden_runtime_label_count": str(len(hidden_runtime_labels)),
+                "left_anchor_va": left_anchor["va"],
+                "left_anchor_name": left_anchor["name"],
+                "right_anchor_va": right_anchor["va"],
+                "right_anchor_name": right_anchor["name"],
+                "generic_functions": "; ".join(f"{run_record['va']}:{run_record['name']}" for run_record in run_records),
+                "nearby_toolchain_functions": "; ".join(
+                    f"{anchor['va']}:{anchor['name']}" for anchor in nearby_toolchain_records
+                ),
+                "hidden_runtime_labels": "; ".join(hidden_runtime_labels),
+                "packet_paths": "; ".join(
+                    str(hidden_label_packet_path(run_record).relative_to(REPO_ROOT)) for run_record in run_records
+                ),
+                "reason": "generic no-PDB run between existing toolchain anchors; review as possible helper-island glue",
+            }
+        )
+
+    rows.sort(key=lambda row: (int(row["start_va"], 16), int(row["end_va"], 16)))
+    return rows
+
+
+def collect_candidates() -> tuple[
+    list[dict[str, str]],
+    list[dict[str, str]],
+    list[dict[str, str]],
+    list[dict[str, str]],
+    list[dict[str, str]],
+]:
     imported_symbol_names = load_imported_symbol_names()
     records = load_functions()
 
@@ -340,17 +554,29 @@ def collect_candidates() -> tuple[list[dict[str, str]], list[dict[str, str]], li
     hidden_label_unhandled_rows: list[dict[str, str]] = []
     for row in hidden_label_rows:
         record = records_by_va[row["va"]]
-        bucket, _ = classify_corpus_bucket(
+        bucket, _ = classify_record_bucket(
             record,
-            toolchain_supplied_names=generated_toolchain_names,
-            toolchain_supplied_regions=toolchain_regions,
-            asm_special_names=asm_special_names,
-            asm_special_regions=asm_special_regions,
+            generated_toolchain_names,
+            toolchain_regions,
+            asm_special_names,
+            asm_special_regions,
         )
         if bucket == "normal":
             hidden_label_unhandled_rows.append(row)
 
-    return manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows
+    import_thunk_names = {row["name"] for row in manifest_rows if "dll-import-thunk" in row["reason"]}
+
+    probable_region_rows = collect_probable_helper_island_rows(
+        records,
+        imported_symbol_names,
+        import_thunk_names,
+        generated_toolchain_names,
+        toolchain_regions,
+        asm_special_names,
+        asm_special_regions,
+    )
+
+    return manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows, probable_region_rows
 
 
 def write_manifest(path: Path, rows: list[dict[str, str]]) -> None:
@@ -411,17 +637,48 @@ def write_hidden_label_report(path: Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
+def write_probable_region_report(path: Path, rows: list[dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "start_va",
+                "end_va",
+                "span_bytes",
+                "candidate_kind",
+                "generic_function_count",
+                "nearby_toolchain_count",
+                "hidden_runtime_label_count",
+                "left_anchor_va",
+                "left_anchor_name",
+                "right_anchor_va",
+                "right_anchor_name",
+                "generic_functions",
+                "nearby_toolchain_functions",
+                "hidden_runtime_labels",
+                "packet_paths",
+                "reason",
+            ],
+            delimiter="\t",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def main() -> None:
     args = parse_args()
-    manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows = collect_candidates()
+    manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows, probable_region_rows = collect_candidates()
     write_manifest(args.output, manifest_rows)
     write_report(args.report, report_rows)
     write_hidden_label_report(args.hidden_label_report, hidden_label_rows)
     write_hidden_label_report(args.hidden_label_unhandled_report, hidden_label_unhandled_rows)
+    write_probable_region_report(args.probable_region_report, probable_region_rows)
     print(f"Wrote {args.output}")
     print(f"Wrote {args.report}")
     print(f"Wrote {args.hidden_label_report}")
     print(f"Wrote {args.hidden_label_unhandled_report}")
+    print(f"Wrote {args.probable_region_report}")
     reason_counts: dict[str, int] = defaultdict(int)
     for row in report_rows:
         for reason in row["reason"].split(","):
@@ -438,6 +695,7 @@ def main() -> None:
     print(f"Total report rows: {len(report_rows)}")
     print(f"Total hidden-label safe candidates: {len(hidden_label_rows)}")
     print(f"Total hidden-label unhandled candidates: {len(hidden_label_unhandled_rows)}")
+    print(f"Total probable helper-island region candidates: {len(probable_region_rows)}")
 
 
 if __name__ == "__main__":

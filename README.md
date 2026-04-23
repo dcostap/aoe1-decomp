@@ -87,6 +87,9 @@ That tool also emits a review-oriented hidden-label candidate report at:
 and a smaller review queue of still-unhandled safe hidden-label candidates at:
 - `build\toolchain_hidden_label_unhandled_candidates.tsv`
 
+It also emits a review-only probable helper-island region report at:
+- `build\toolchain_probable_helper_island_candidates.tsv`
+
 Entries listed there stay tracked in the repo, but they are excluded from the normal
 manual C/C++ decomp/matching corpus and should not appear as ordinary "left to do" work.
 
@@ -119,5 +122,8 @@ A CRT ctype/case-conversion helper audit is documented in:
 
 A review pass over safe hidden-label toolchain candidates is documented in:
 - `docs\toolchain_hidden_label_review_report.md`
+
+The review-only probable helper-island report is documented in:
+- `docs\toolchain_probable_helper_island_report.md`
 
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

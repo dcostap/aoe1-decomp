@@ -656,6 +656,9 @@ Agent rules:
   an auto-approval list,
 - prefer `build\toolchain_hidden_label_unhandled_candidates.tsv` when choosing the next
   strict hidden-label review target,
+- once the hidden-label unhandled queue is empty, prefer
+  `build\toolchain_probable_helper_island_candidates.tsv` as the next **review-only**
+  shortlist for toolchain-helper region investigation,
 - do **not** promote or keep them in `src\matching\...` as normal manual-match targets,
 - do **not** count them as ordinary remaining C/C++ work,
 - do **not** try to force `asm_special` or `asm_region` entries into ordinary `.cpp`
