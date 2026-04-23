@@ -87,4 +87,7 @@ The first explored handwritten-draw asm neighborhood is documented in:
 The first explored CRT/helper-island toolchain neighborhood is documented in:
 - `docs\toolchain_helper_island_report.md`
 
+A focused FPU-control CRT helper-island audit is documented in:
+- `docs\toolchain_fpu_control_helper_report.md`
+
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.
