@@ -90,4 +90,7 @@ The first explored CRT/helper-island toolchain neighborhood is documented in:
 A focused FPU-control CRT helper-island audit is documented in:
 - `docs\toolchain_fpu_control_helper_report.md`
 
+A CRT conversion/io helper audit is documented in:
+- `docs\toolchain_crt_conversion_io_report.md`
+
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

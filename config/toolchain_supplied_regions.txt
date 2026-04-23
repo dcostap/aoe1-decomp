@@ -7,3 +7,5 @@
 0054DB1B-0054DDDF  memcpy internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue
 0055740B-005576CF  memmove internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue
 005577A8-00557946  FPU control/status helper island: __fpreset plus internal flag-conversion helpers for __statusfp/__clearfp/__control87
+00557EA8-00557EE7  hidden CRT wrapper __atoldbl: parse string with ___strgtold12 then convert via __ld12told
+0055878E-005587F7  hidden CRT helper __fcloseall over __nstream/___piob/fclose/free
