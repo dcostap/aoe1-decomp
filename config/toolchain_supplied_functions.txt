@@ -279,6 +279,7 @@ __atodbl
 __atoflt
 __aulldiv
 __aullrem
+__callnewh
 __cftoe
 __cftof
 __cftog
@@ -292,6 +293,7 @@ __FillZeroMan
 __fltout
 __fptostr
 __fptrap
+__heap_init
 __IncMan
 __input
 __ioinit
@@ -311,6 +313,8 @@ __sopen
 __statusfp
 __tzset
 __ZeroTail
+_query_new_handler
+_set_new_handler
 abort
 ctime
 fwrite
