@@ -8,7 +8,16 @@ from pathlib import Path
 
 import pefile
 
-from common import REPO_ROOT, load_binaries, load_functions, repo_path
+from common import (
+    REPO_ROOT,
+    classify_corpus_bucket,
+    load_asm_special_function_names,
+    load_asm_special_regions,
+    load_binaries,
+    load_functions,
+    load_toolchain_supplied_regions,
+    repo_path,
+)
 
 
 SAFE_EXACT_RUNTIME_NAMES = {
@@ -131,6 +140,12 @@ def parse_args() -> argparse.Namespace:
         default=REPO_ROOT / "build" / "toolchain_hidden_label_safe_candidates.tsv",
         help="Safe hidden-label candidate report output path.",
     )
+    parser.add_argument(
+        "--hidden-label-unhandled-report",
+        type=Path,
+        default=REPO_ROOT / "build" / "toolchain_hidden_label_unhandled_candidates.tsv",
+        help="Unhandled safe hidden-label candidate report output path.",
+    )
     return parser.parse_args()
 
 
@@ -219,7 +234,7 @@ def label_matches_imported_symbol(label: str, imported_symbol_names: set[str]) -
     return normalized_label in imported_symbol_names
 
 
-def collect_candidates() -> tuple[list[dict[str, str]], list[dict[str, str]], list[dict[str, str]]]:
+def collect_candidates() -> tuple[list[dict[str, str]], list[dict[str, str]], list[dict[str, str]], list[dict[str, str]]]:
     imported_symbol_names = load_imported_symbol_names()
     records = load_functions()
 
@@ -289,7 +304,27 @@ def collect_candidates() -> tuple[list[dict[str, str]], list[dict[str, str]], li
     manifest_rows = sorted(manifest_candidates.values(), key=lambda row: row["name"].lower())
     report_rows.sort(key=lambda row: (row["name"].lower(), row["va"]))
     hidden_label_rows.sort(key=lambda row: (row["hidden_label"].lower(), row["va"]))
-    return manifest_rows, report_rows, hidden_label_rows
+
+    generated_toolchain_names = {row["name"] for row in manifest_rows}
+    toolchain_regions = load_toolchain_supplied_regions()
+    asm_special_names = load_asm_special_function_names()
+    asm_special_regions = load_asm_special_regions()
+    records_by_va = {record["va"]: record for record in records}
+
+    hidden_label_unhandled_rows: list[dict[str, str]] = []
+    for row in hidden_label_rows:
+        record = records_by_va[row["va"]]
+        bucket, _ = classify_corpus_bucket(
+            record,
+            toolchain_supplied_names=generated_toolchain_names,
+            toolchain_supplied_regions=toolchain_regions,
+            asm_special_names=asm_special_names,
+            asm_special_regions=asm_special_regions,
+        )
+        if bucket == "normal":
+            hidden_label_unhandled_rows.append(row)
+
+    return manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows
 
 
 def write_manifest(path: Path, rows: list[dict[str, str]]) -> None:
@@ -352,13 +387,15 @@ def write_hidden_label_report(path: Path, rows: list[dict[str, str]]) -> None:
 
 def main() -> None:
     args = parse_args()
-    manifest_rows, report_rows, hidden_label_rows = collect_candidates()
+    manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows = collect_candidates()
     write_manifest(args.output, manifest_rows)
     write_report(args.report, report_rows)
     write_hidden_label_report(args.hidden_label_report, hidden_label_rows)
+    write_hidden_label_report(args.hidden_label_unhandled_report, hidden_label_unhandled_rows)
     print(f"Wrote {args.output}")
     print(f"Wrote {args.report}")
     print(f"Wrote {args.hidden_label_report}")
+    print(f"Wrote {args.hidden_label_unhandled_report}")
     reason_counts: dict[str, int] = defaultdict(int)
     for row in report_rows:
         for reason in row["reason"].split(","):
@@ -374,6 +411,7 @@ def main() -> None:
     print(f"Total manifest names: {len(manifest_rows)}")
     print(f"Total report rows: {len(report_rows)}")
     print(f"Total hidden-label safe candidates: {len(hidden_label_rows)}")
+    print(f"Total hidden-label unhandled candidates: {len(hidden_label_unhandled_rows)}")
 
 
 if __name__ == "__main__":
