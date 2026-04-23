@@ -19,6 +19,7 @@ After reading the README, follow these working rules.
 - Use the repo-local `orig\...` inputs instead of sibling-repo paths when a script needs the pinned EXE/PDB/Ghidra/type-dump side.
 - The repo-local full original beta game-file tree is at `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
 - High-confidence toolchain/lib-supplied functions are listed in `config\toolchain_supplied_functions.txt`.
+- High-confidence toolchain/lib-supplied helper regions are listed in `config\toolchain_supplied_regions.txt`.
 - High-confidence handwritten-assembly functions are listed in `config\asm_special_functions.txt`.
 - High-confidence handwritten-assembly/codelet regions are listed in `config\asm_special_regions.txt`.
 - Agents are expected to improvise, react to errors, and correct earlier bad assumptions as they learn more.
@@ -46,9 +47,9 @@ The repo separates discovered binary functions/regions into four workflow bucket
   - do not force these into one-function-one-`.cpp` reconstruction
   - for unstable unnamed `FUN_...` asm neighborhoods, prefer high-confidence **region-based** exclusion over maintaining a brittle giant name list
 
-`config\toolchain_supplied_functions.txt`, `config\asm_special_functions.txt`, and
-`config\asm_special_regions.txt` are the high-confidence manifests that drive this
-separation.
+`config\toolchain_supplied_functions.txt`, `config\toolchain_supplied_regions.txt`,
+`config\asm_special_functions.txt`, and `config\asm_special_regions.txt` are the
+high-confidence manifests that drive this separation.
 
 ## Repository roles
 
@@ -635,6 +636,9 @@ real parts of the binary but are **not** ordinary manual C/C++ decomp targets:
 
 - `config\toolchain_supplied_functions.txt`
   - toolchain/lib-supplied functions such as import thunks and CRT/runtime baggage
+- `config\toolchain_supplied_regions.txt`
+  - toolchain/lib-supplied helper-island regions where generic local labels make
+    name-based exclusion unsafe
 - `config\asm_special_functions.txt`
   - named handwritten-assembly functions
 - `config\asm_special_regions.txt`
@@ -644,6 +648,8 @@ real parts of the binary but are **not** ordinary manual C/C++ decomp targets:
 Agent rules:
 
 - do **not** create `src\scratch\...` work for entries classified into those non-normal buckets,
+- for duplicated generic helper labels such as `caseD_0` / `caseD_1` inside known
+  CRT/helper islands, prefer the toolchain **region** manifest over a name manifest,
 - do **not** promote or keep them in `src\matching\...` as normal manual-match targets,
 - do **not** count them as ordinary remaining C/C++ work,
 - do **not** try to force `asm_special` or `asm_region` entries into ordinary `.cpp`

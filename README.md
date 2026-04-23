@@ -74,6 +74,7 @@ The repo separates functions into four workflow buckets:
 
 The exclusion manifests for the non-normal buckets live at:
 - `config\toolchain_supplied_functions.txt`
+- `config\toolchain_supplied_regions.txt`
 - `config\asm_special_functions.txt`
 - `config\asm_special_regions.txt`
 
@@ -82,5 +83,8 @@ manual C/C++ decomp/matching corpus and should not appear as ordinary "left to d
 
 The first explored handwritten-draw asm neighborhood is documented in:
 - `docs\asm_corpus_exploration_report.md`
+
+The first explored CRT/helper-island toolchain neighborhood is documented in:
+- `docs\toolchain_helper_island_report.md`
 
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

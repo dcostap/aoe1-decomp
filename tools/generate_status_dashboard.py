@@ -12,6 +12,7 @@ from common import (
     load_asm_special_regions,
     load_functions,
     load_toolchain_supplied_function_names,
+    load_toolchain_supplied_regions,
 )
 
 
@@ -882,6 +883,7 @@ def main() -> None:
 
     records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
+    toolchain_supplied_regions = load_toolchain_supplied_regions()
     asm_special_names = load_asm_special_function_names()
     asm_special_regions = load_asm_special_regions()
     remaining_records: list[dict[str, str]] = []
@@ -896,6 +898,7 @@ def main() -> None:
         corpus_bucket, corpus_reason = classify_corpus_bucket(
             record,
             toolchain_supplied_names=toolchain_supplied_names,
+            toolchain_supplied_regions=toolchain_supplied_regions,
             asm_special_names=asm_special_names,
             asm_special_regions=asm_special_regions,
         )

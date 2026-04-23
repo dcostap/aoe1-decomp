@@ -1,0 +1,8 @@
+# High-confidence toolchain/lib-supplied helper-island regions.
+# Format: START-END  reason
+# These are excluded from the normal manual C/C++ decomp/matching corpus.
+# Use regions here when generic local labels such as caseD_0/caseD_1 make
+# name-based exclusion unsafe or ambiguous.
+
+0054DB1B-0054DDDF  memcpy internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue
+0055740B-005576CF  memmove internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue

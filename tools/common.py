@@ -14,6 +14,7 @@ INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
 TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.txt"
+TOOLCHAIN_SUPPLIED_REGIONS_PATH = CONFIG_DIR / "toolchain_supplied_regions.txt"
 ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
 ASM_SPECIAL_REGIONS_PATH = CONFIG_DIR / "asm_special_regions.txt"
 
@@ -79,12 +80,12 @@ def is_asm_special_function_name(name: str, configured_names: set[str] | None = 
     return name in names
 
 
-def load_asm_special_regions() -> list[tuple[int, int, str]]:
+def _load_region_manifest(path: Path, label: str) -> list[tuple[int, int, str]]:
     regions: list[tuple[int, int, str]] = []
-    if not ASM_SPECIAL_REGIONS_PATH.exists():
+    if not path.exists():
         return regions
 
-    for raw_line in ASM_SPECIAL_REGIONS_PATH.read_text(encoding="utf-8").splitlines():
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
@@ -92,29 +93,49 @@ def load_asm_special_regions() -> list[tuple[int, int, str]]:
         range_text = parts[0]
         reason = parts[1].strip() if len(parts) > 1 else ""
         if "-" not in range_text:
-            raise ValueError(f"Invalid asm special region line: {raw_line}")
+            raise ValueError(f"Invalid {label} region line: {raw_line}")
         start_text, end_text = range_text.split("-", 1)
         start = parse_hex(start_text)
         end = parse_hex(end_text)
         if start is None or end is None:
-            raise ValueError(f"Invalid asm special region bounds: {raw_line}")
+            raise ValueError(f"Invalid {label} region bounds: {raw_line}")
         if end < start:
-            raise ValueError(f"Asm special region end before start: {raw_line}")
+            raise ValueError(f"{label} region end before start: {raw_line}")
         regions.append((start, end, reason))
     return regions
 
 
-def asm_special_region_for_va(va: int, configured_regions: list[tuple[int, int, str]] | None = None) -> tuple[int, int, str] | None:
-    regions = configured_regions if configured_regions is not None else load_asm_special_regions()
+def _region_for_va(va: int, regions: list[tuple[int, int, str]]) -> tuple[int, int, str] | None:
     for start, end, reason in regions:
         if start <= va <= end:
             return (start, end, reason)
     return None
 
 
+def load_toolchain_supplied_regions() -> list[tuple[int, int, str]]:
+    return _load_region_manifest(TOOLCHAIN_SUPPLIED_REGIONS_PATH, "toolchain supplied")
+
+
+def toolchain_supplied_region_for_va(
+    va: int, configured_regions: list[tuple[int, int, str]] | None = None
+) -> tuple[int, int, str] | None:
+    regions = configured_regions if configured_regions is not None else load_toolchain_supplied_regions()
+    return _region_for_va(va, regions)
+
+
+def load_asm_special_regions() -> list[tuple[int, int, str]]:
+    return _load_region_manifest(ASM_SPECIAL_REGIONS_PATH, "asm special")
+
+
+def asm_special_region_for_va(va: int, configured_regions: list[tuple[int, int, str]] | None = None) -> tuple[int, int, str] | None:
+    regions = configured_regions if configured_regions is not None else load_asm_special_regions()
+    return _region_for_va(va, regions)
+
+
 def classify_corpus_bucket(
     record: dict[str, str],
     toolchain_supplied_names: set[str] | None = None,
+    toolchain_supplied_regions: list[tuple[int, int, str]] | None = None,
     asm_special_names: set[str] | None = None,
     asm_special_regions: list[tuple[int, int, str]] | None = None,
 ) -> tuple[str, str]:
@@ -123,6 +144,13 @@ def classify_corpus_bucket(
 
     if is_toolchain_supplied_function_name(name, toolchain_supplied_names):
         return "toolchain_supplied", "manifest-name"
+
+    toolchain_region = toolchain_supplied_region_for_va(va, toolchain_supplied_regions)
+    if toolchain_region is not None:
+        start, end, reason = toolchain_region
+        range_reason = reason or f"range {start:08X}-{end:08X}"
+        return "toolchain_supplied", range_reason
+
     if is_asm_special_function_name(name, asm_special_names):
         return "asm_special", "manifest-name"
 
