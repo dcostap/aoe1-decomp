@@ -1,7 +1,13 @@
 #include "..\include\game_globals.h"
+#include <stdio.h>
 
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
+
+FILE* actionFile = 0;
+
+// Global game instance pointer
+RGE_Base_Game* rge_base_game = 0;
 
 // 0056E0B8 [.rdata]
 float DAT_0056e0b8 = 0.0f;

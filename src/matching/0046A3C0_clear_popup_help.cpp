@@ -23,7 +23,7 @@ public:
 };
 
 extern RGE_Base_Game* rge_base_game;
-extern "C" void* __stdcall LoadCursorA(void*, const char*);
+extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void*, const char*);
 
 void TEasy_Panel::clear_popup_help(void) {
     this->help_mode = 0;

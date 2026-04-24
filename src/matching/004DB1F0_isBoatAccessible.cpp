@@ -1,6 +1,11 @@
-// first pass: resolve the object through md, then check the master object group/id filter
-// if this misses, the remaining gap is likely just the exact call spelling for md->object or the final boolean return shape
-class RGE_Master_Static_Object;
+class RGE_Master_Static_Object {
+public:
+    char gap_00[0x10];
+    short id;
+    short copy_id;
+    short object_group;
+};
+
 class RGE_Static_Object {
 public:
     char gap_00[0x8];

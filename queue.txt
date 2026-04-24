@@ -1,0 +1,15 @@
+004C9F90 can_convert
+004E0040 isNextTo
+0040BEC0 DiplomacyAIModule
+004BD5E0 TSpan_Node_List
+004C1E20 get_starting_attribute
+004C2030 shadow_draw
+004C9710 copy_obj
+004C9990 attack_info
+004C9E40 can_attack_now
+00429A30 SendSpeedChange
+00473ED0 TDropDownPanel
+004C1ED0 take_attribute_from_owner
+004C85D0 take_building_attribute_from_owner
+00507E90 processIdle
+0050B0D0 command_cheat

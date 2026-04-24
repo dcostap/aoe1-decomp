@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include "game_types.h"
 
+// Global game instance pointer
+extern RGE_Base_Game* rge_base_game;
+
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;
 // 0056E0CC [.rdata]
