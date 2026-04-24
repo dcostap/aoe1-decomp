@@ -240,7 +240,13 @@ These are heuristics, not laws, but a real exact-match win now backs them:
     `image_buffer` local whose first assignment happened at the
     destroy/recreate phase, not before the guard and not via repeated raw
     member access.
-15. In teardown / recreate helpers, try a **single shared local** that carries
+15. A temp can make VC5 prove away a check the original kept. If the target has
+    a seemingly redundant reload/recheck of a member after a nearby branch, try
+    spelling the second test as a fresh direct member access instead of reusing
+    a saved pointer/temp. A real `TRIBE_Panel_Inven::save_info` win needed two
+    direct `this->save_attr != 0` checks; the temp-shaped versions optimized the
+    second check out.
+16. In teardown / recreate helpers, try a **single shared local** that carries
     the object through the whole phase: load old member into the local,
     destroy/delete via that local, assign the newly created object back into
     the same local, then store it to the member / continue init. On VC5 this
@@ -360,6 +366,11 @@ matching guidance:
 13. Prefer real member-call declarations over fake C helper wrappers when the
    original call is a member operation. Fake helpers can preserve behavior while
    silently changing argument order, stack shape, and optimizer scheduling.
+14. For IAT-resolved calls (Windows API, DLL imports), prefer **`extern` function
+   pointers** over `__declspec(dllimport)`. VC5 generates the indirect
+   `call dword [addr]` shape for extern-pointer declarations, matching the
+   original IAT thunk pattern. The dllimport form can produce different call
+   sequences. Real wins: `RegSet`, `RegSetAscii`, `RegGetInt` from registry.cpp.
 
 #### VC5-specific data-surface / helper-shape hints
 
@@ -607,6 +618,20 @@ Why:
 
 The target is the machine-code behavior and shape, not faithfulness to how much
 of the original source was handwritten versus compiler-emitted.
+
+## New match notification
+
+When you achieve a **brand-new exact match** during agent work, run this
+PowerShell command to play the Windows tada jingle:
+
+```powershell
+$player = New-Object System.Media.SoundPlayer
+$player.SoundLocation = "$env:WINDIR\Media\tada.wav"
+$player.PlaySync()
+```
+
+Do this only for a new match found in the current work session, not for routine
+revalidation of a function that was already known to match.
 
 ## Inline asm policy
 

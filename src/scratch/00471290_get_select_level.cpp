@@ -25,17 +25,20 @@ public:
 };
 
 unsigned char RGE_Player::get_select_level() {
-    unsigned char bl = 0xFF;
-    int si = 0;
-    for (int i = 0; i < 0x19; i++) {
-        if (si >= sel_count) break;
+    unsigned char result = 0xFF;
+    int matches = 0;
+    int i;
+    for (i = 0; i < 25; i++) {
+        if (matches >= sel_count) goto done;
         if (sel_list[i]) {
             unsigned char level = sel_list[i]->master_obj->select_level;
-            if (level < bl) {
-                bl = level;
+            if (level < result) {
+                result = level;
             }
-            si++;
+            matches++;
         }
     }
-    return (int)(bl != 0xFF) ? bl : 0;
+done:
+    if (result != 0xFF) return result;
+    return 0;
 }

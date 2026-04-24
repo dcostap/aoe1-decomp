@@ -1,6 +1,3 @@
-// first pass reconstructs the three top-level draw paths: refresh image-buffer if stale, blit cached image text when active, otherwise draw directly to the panel DC
-// current expectation: field/layout facts are mostly right thanks to the matched ctor/set_rect/get_true_render_rect/handle_idle cluster; remaining drift will likely be string-build and rect-layout code shape
-
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
 extern "C" __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* obj);
@@ -10,14 +7,19 @@ extern "C" __declspec(dllimport) int __stdcall DrawTextA(void* hdc, const char* 
 extern "C" __declspec(dllimport) int __stdcall SetRect(void* rect, int left, int top, int right, int bottom);
 
 struct tagRECT {
-    int left;
-    int top;
-    int right;
-    int bottom;
+    long left;
+    long top;
+    long right;
+    long bottom;
 };
 
 struct HRGN__;
-struct IDirectDrawSurface;
+
+struct WorldLike {
+    char gap_00[0x18];
+    float game_speed;
+};
+
 struct TDrawSystem {
     char gap_00[0x3F4];
     void* world_ptr;
@@ -28,21 +30,15 @@ public:
     TDrawSystem* DrawSystem;
     char gap_04[0x34];
     void* DrawDc;
-    IDirectDrawSurface* DrawSurface;
+    void* DrawSurface;
     char gap_40[0x14];
-    int Width;
-    int Height;
+    long Width;
+    long Height;
 
     void* GetDc(char* unused);
     void ReleaseDc(char* unused);
     void SetTrans(int enabled, unsigned char color);
     void Copy(TDrawArea* src, long x, long y, tagRECT* rect, int mode);
-};
-
-class WorldLike {
-public:
-    char gap_00[0x118];
-    float game_speed;
 };
 
 class TPanel {
@@ -61,31 +57,25 @@ public:
     virtual void finish_up(void);
 
     char gap_00[0x08];
-    int pnl_x;
-    int pnl_y;
-    int pnl_wid;
-    int pnl_hgt;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
     char gap_1C[0x04];
     TDrawArea* render_area;
-    tagRECT clip_rect;
-    int position_mode;
-    int need_redraw;
-    int field_3C;
-    TPanel* parent_panel;
-    char gap_44[0x24];
-    int field_68;
+    char gap_24[0x48];
     int field_6C;
     int field_70;
     char gap_74[0x14];
     void* clip_rgn;
-    int fallback_left;
-    int fallback_top;
-    int fallback_right;
-    int fallback_bottom;
+    long fallback_left;
+    long fallback_top;
+    long fallback_right;
+    long fallback_bottom;
     char gap_9C[0x44];
-    int draw_depth;
+    long draw_depth;
     char gap_E4[0x0F];
-    unsigned char need_restore;
+    unsigned char field_F3;
 
     char* get_string(int string_id);
 };
@@ -125,10 +115,31 @@ public:
     void draw();
 };
 
+// tried matching type model to set_rect cluster (gap arrays for TPanel); same mismatch at offset 2
+// tried direct field access for rect block instead of named locals; still 0x12C vs 0x134
+// tried adding explicit draw_depth local declared early; no change
+// tried carrying clock_format in ecx across display_time block; no compile change
+// tried aligning TDrawArea / TDrawSystem / WorldLike to original asm offsets; fld still at [eax+118h] instead of [edx+18h]
+// tried /GX (other tpnl_tim.cpp cluster functions need it); no prolog change
+// tried #include <new> (set_rect needs it); no change
+// tried function-scope locals (classic C style); no change
+// tried separate guard checks; no change
+// tried caching this->render_area into pArea; no change
+// BLOCKER: prolog register save order fundamentally different (push ebx/ebp/esi/edi vs push esi/.../push edi/ebp/ebx)
+//           stack frame 0x12C vs 0x134 (8 bytes short), all offsets cascade from there
+//           game_speed FPU load at [eax+118h] instead of [edx+18h] despite correct struct layout
+//           likely requires donor-file TU context reconstruction or flag investigation
+
 void TRIBE_Panel_Time::draw() {
-    if (this->render_area == 0 || this->field_70 == 0 || this->field_6C == 0) {
-        return;
-    }
+    char str[256];
+    void* old_font;
+    tagRECT rect;
+    int text_flags;
+    TDrawArea* pArea = this->render_area;
+
+    if (pArea == 0) return;
+    if (this->field_70 == 0) return;
+    if (this->field_6C == 0) return;
 
     this->draw_depth++;
     this->vf28(0);
@@ -140,10 +151,10 @@ void TRIBE_Panel_Time::draw() {
     }
 
     if (this->image_buffer != 0) {
-        if (this->display_time != (unsigned int)this->old_display_time || this->clock_type != this->old_clock_type || this->clock_format != this->player_id || this->need_restore) {
+        if (this->display_time != (unsigned int)this->old_display_time || this->clock_type != this->old_clock_type || this->clock_format != this->player_id || this->field_F3) {
             this->render_to_image_buffer();
-            if (this->need_restore) {
-                this->need_restore = 0;
+            if (this->field_F3) {
+                this->field_F3 = 0;
                 this->finish_up();
                 return;
             }
@@ -152,26 +163,21 @@ void TRIBE_Panel_Time::draw() {
 
     if (this->image_text_active != 0 && this->image_buffer != 0) {
         this->image_buffer->SetTrans(1, 1);
-        this->image_buffer->Copy(this->render_area, this->used_screen_rect.left, this->used_screen_rect.top, &this->used_image_rect, 1);
+        this->image_buffer->Copy(pArea, this->used_screen_rect.left, this->used_screen_rect.top, &this->used_image_rect, 1);
         this->image_buffer->SetTrans(0, 1);
         this->finish_up();
         return;
     }
 
-    char str[256];
-    void* old_font;
-    tagRECT rect;
-    int text_flags;
-
-    old_font = this->render_area->GetDc((char*)s_tpnl_tim_draw);
+    old_font = pArea->GetDc((char*)s_tpnl_tim_draw);
     if (old_font == 0) {
         this->finish_up();
         return;
     }
 
-    SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
-    old_font = SelectObject(this->render_area->DrawDc, this->font);
-    SetBkMode(this->render_area->DrawDc, 1);
+    SelectClipRgn(pArea->DrawDc, this->clip_rgn);
+    old_font = SelectObject(pArea->DrawDc, this->font);
+    SetBkMode(pArea->DrawDc, 1);
 
     if (this->clock_format == 1) {
         unsigned int seconds = this->current_display_value;
@@ -185,7 +191,10 @@ void TRIBE_Panel_Time::draw() {
                 minutes = minutes % 0x3C;
             }
         }
-        sprintf(str, s_clock_hms_fmt, hours, minutes, seconds, ((WorldLike*)rge_base_game->world_ptr)->game_speed);
+        {
+            float gs = *((float*)((char*)rge_base_game->world_ptr + 0x18));
+            sprintf(str, s_clock_hms_fmt, hours, minutes, seconds, gs);
+        }
         text_flags = 0x20;
     } else {
         int rounded_time = ((this->current_display_value + 4) / 5) * 5;
@@ -201,30 +210,30 @@ void TRIBE_Panel_Time::draw() {
         text_flags = 0x22;
     }
 
-    SetTextColor(this->render_area->DrawDc, this->color2);
+    SetTextColor(pArea->DrawDc, this->color2);
 
     {
         int left = this->fallback_left + 1;
         int top = this->fallback_top + 1;
-        int right = this->pnl_wid - 2 + left;
-        int bottom = this->pnl_hgt - 2 + top;
+        int right = left + this->pnl_wid - 2;
+        int bottom = top + this->pnl_hgt - 2;
 
         SetRect(&rect, left, top, right - 2, bottom - 2);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left, top + 2, right - 2, bottom);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left + 2, top, right, bottom - 2);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left + 2, top + 2, right, bottom);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
 
-        SetTextColor(this->render_area->DrawDc, this->color1);
+        SetTextColor(pArea->DrawDc, this->color1);
         SetRect(&rect, left + 1, top + 1, right - 1, bottom - 1);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
     }
 
-    SelectObject(this->render_area->DrawDc, old_font);
-    SelectClipRgn(this->render_area->DrawDc, 0);
-    this->render_area->ReleaseDc((char*)s_tpnl_tim_draw);
+    SelectObject(pArea->DrawDc, old_font);
+    SelectClipRgn(pArea->DrawDc, 0);
+    pArea->ReleaseDc((char*)s_tpnl_tim_draw);
     this->finish_up();
 }

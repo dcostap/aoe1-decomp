@@ -1,7 +1,5 @@
 // TRIBE_Panel_Inven::save_info
 // Syncs save_attr array with player's ability values.
-// reshaped with top zero/index and goto allocation path; prolog/loop now in the target basin
-// remaining first mismatch is the original's redundant cmp eax,edi / je before free; VC5 still removes it from this source
 
 extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
@@ -39,14 +37,13 @@ public:
 
 void TRIBE_Panel_Inven::save_info() {
     int iVar3 = 0;
-    short* psVar2 = this->save_attr;
-    if (psVar2 != (short*)0) {
+    if (this->save_attr != (short*)0) {
         if (this->save_attr_num == this->player->field_4C)
             goto fill_values;
-        if (psVar2 != (short*)0) {
-            free(psVar2);
-            this->save_attr = (short*)0;
-        }
+    }
+    if (this->save_attr != (short*)0) {
+        free(this->save_attr);
+        this->save_attr = (short*)0;
     }
     this->save_attr_num = this->player->field_4C;
     this->save_attr = (short*)calloc((int)this->save_attr_num, 2);

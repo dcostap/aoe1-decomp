@@ -2,6 +2,8 @@
 // Draws the inventory panel. Renders resource values from player->float_values
 // at fixed column positions, with shadow text using back_color and
 // foreground text using font_color.
+// changed TDrawArea to natural member-call surface; compiles but still short vs original
+// reduced early locals/direct checks; got closer size but prolog still uses ebx=this instead of original esi=this
 
 #include <stdio.h>
 #include <string.h>
@@ -11,10 +13,12 @@ extern "C" void* __stdcall SelectObject(void* hdc, void* obj);
 extern "C" int __stdcall SetBkMode(void* hdc, int mode);
 extern "C" int __stdcall SetTextColor(void* hdc, int color);
 
-struct TDrawArea {
-    char gap_00[0x18];
-    long width;
-    long height;
+class TDrawArea {
+public:
+    char gap_00[0x38];
+    void* hdc;
+    void* GetDc(const char* name);
+    void ReleaseDc(const char* name);
 };
 
 extern int TRIBE_Panel_Inven_vftable;
@@ -36,11 +40,6 @@ public:
     virtual void vf30(void);
     virtual void vf34(void* rect);
 };
-
-class TDrawArea;
-
-extern void* __stdcall TDrawArea_GetDc(TDrawArea* area, const char* name);
-extern void __stdcall TDrawArea_ReleaseDc(TDrawArea* area, const char* name);
 
 class TRIBE_Player {
 public:
@@ -77,21 +76,13 @@ public:
 };
 
 void TRIBE_Panel_Inven::draw() {
-    int pnl_x = *(int*)((char*)this + 0x0C);
-    int pnl_y = *(int*)((char*)this + 0x10);
-    TDrawArea* area = *(TDrawArea**)((char*)this + 0x20);
-    int active = *(int*)((char*)this + 0x6C);
-    int field_70 = *(int*)((char*)this + 0x70);
-    void* hdc;
+    TDrawArea* area;
     void* old_font;
-    int base_x1;
-    int base_x2;
-    int base_x3;
-    int base_x4;
+    int x;
     int row_y;
     char str[20];
 
-    if (area == 0 || field_70 == 0 || active == 0) {
+    if (*(TDrawArea**)((char*)this + 0x20) == 0 || *(int*)((char*)this + 0x70) == 0 || *(int*)((char*)this + 0x6C) == 0) {
         *(int*)((char*)this + 0x38) = 0;  // need_redraw = 0
         return;
     }
@@ -107,51 +98,50 @@ void TRIBE_Panel_Inven::draw() {
 
     this->vf28(0);
 
-    hdc = TDrawArea_GetDc(area, "tpnl_inv::draw");
-    if (hdc == 0) {
+    area = *(TDrawArea**)((char*)this + 0x20);
+    if (area->GetDc("tpnl_inv::draw") == 0) {
         goto do_post_draw;
     }
 
-    old_font = SelectObject(*(void**)((char*)area + 0x38), this->font);
-    SetBkMode(*(void**)((char*)area + 0x38), 1);
+    old_font = SelectObject(area->hdc, this->font);
+    SetBkMode(area->hdc, 1);
 
-    // Local helpers for readability using manual offset tracking
-    base_x1 = pnl_x + 0x20;   // column 1
-    base_x2 = pnl_x + 0x63;   // column 2
-    base_x3 = pnl_x + 0xA6;   // column 3
-    base_x4 = pnl_x + 0xE9;   // column 4
-    row_y = pnl_y + 2;
+    x = *(int*)((char*)this + 0x0C) + 0x20;
+    row_y = *(int*)((char*)this + 0x10) + 2;
 
     // Column 1: player->float_values[1]
     sprintf(str, "%ld", (int)this->player->float_values[1]);
-    SetTextColor(*(void**)((char*)area + 0x38), this->back_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x1, row_y + 1, str, strlen(str));
-    SetTextColor(*(void**)((char*)area + 0x38), this->font_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x1, row_y, str, strlen(str));
+    SetTextColor(area->hdc, this->back_color);
+    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
+    SetTextColor(area->hdc, this->font_color);
+    TextOutA(area->hdc, x, row_y, str, strlen(str));
 
     // Column 2: player->float_values[0]
     sprintf(str, "%ld", (int)this->player->float_values[0]);
-    SetTextColor(*(void**)((char*)area + 0x38), this->back_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x2, row_y + 1, str, strlen(str));
-    SetTextColor(*(void**)((char*)area + 0x38), this->font_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x2, row_y, str, strlen(str));
+    SetTextColor(area->hdc, this->back_color);
+    x = *(int*)((char*)this + 0x0C) + 0x63;
+    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
+    SetTextColor(area->hdc, this->font_color);
+    TextOutA(area->hdc, x, row_y, str, strlen(str));
 
     // Column 3: player->float_values[3]
     sprintf(str, "%ld", (int)this->player->float_values[3]);
-    SetTextColor(*(void**)((char*)area + 0x38), this->back_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x3, row_y + 1, str, strlen(str));
-    SetTextColor(*(void**)((char*)area + 0x38), this->font_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x3, row_y, str, strlen(str));
+    SetTextColor(area->hdc, this->back_color);
+    x = *(int*)((char*)this + 0x0C) + 0xA6;
+    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
+    SetTextColor(area->hdc, this->font_color);
+    TextOutA(area->hdc, x, row_y, str, strlen(str));
 
     // Column 4: player->float_values[2]
     sprintf(str, "%ld", (int)this->player->float_values[2]);
-    SetTextColor(*(void**)((char*)area + 0x38), this->back_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x4, row_y + 1, str, strlen(str));
-    SetTextColor(*(void**)((char*)area + 0x38), this->font_color);
-    TextOutA(*(void**)((char*)area + 0x38), base_x4, row_y, str, strlen(str));
+    SetTextColor(area->hdc, this->back_color);
+    x = *(int*)((char*)this + 0x0C) + 0xE9;
+    TextOutA(area->hdc, x, row_y + 1, str, strlen(str));
+    SetTextColor(area->hdc, this->font_color);
+    TextOutA(area->hdc, x, row_y, str, strlen(str));
 
-    SelectObject(*(void**)((char*)area + 0x38), old_font);
-    TDrawArea_ReleaseDc(area, "tpnl_inv::draw");
+    SelectObject(area->hdc, old_font);
+    area->ReleaseDc("tpnl_inv::draw");
 
 do_post_draw:
     this->vf2C();

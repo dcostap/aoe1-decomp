@@ -1,10 +1,6 @@
 // TRIBE_Panel_Inven::handle_idle
 // Checks game mode, timer, and whether saved values changed.
 // If changed, calls save_info and triggers redraw (vf20).
-// changed base call to nonvirtual TPanel::handle_idle-style declaration; prolog now matches through the base call
-// tried int loop index; worsened to 0x0c stack frame, rolled back to short index/do-while family
-// tried plain for-loop with p local; worsened this register to edi, rolled back
-// swapped loop locals to get ebx=this and two stack locals; current first real drift is loop source shape/bounds layout
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" void __cdecl color_log(unsigned char a, unsigned char b, unsigned char c);
@@ -73,17 +69,20 @@ long TRIBE_Panel_Inven::handle_idle() {
             color_log(0xBA, 0xBA, 5);
 
             int changed = 0;
-            short i = 0;
-            if (this->save_attr_num > i) {
+            short i;
+            i = (short)changed;
+            if (0 < this->save_attr_num) {
                 short* saved = this->save_attr;
                 float* values = this->player->float_values;
-                do {
+                for (;;) {
+                    if (i >= this->save_attr_num)
+                        break;
                     if ((short)(int)values[i] != saved[i]) {
                         changed = 1;
                         break;
                     }
                     i++;
-                } while (i < this->save_attr_num);
+                }
             }
 
             if (changed) {
