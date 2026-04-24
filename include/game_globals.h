@@ -574,6 +574,8 @@ extern float DAT_00575000;
 extern float DAT_00575004;
 // 00575070 [.rdata]
 extern double DAT_00575070;
+// 00575078 [.rdata]
+extern float DAT_00575078;
 // 0057507C [.rdata]
 extern float DAT_0057507c;
 // 005750E0 [.rdata]

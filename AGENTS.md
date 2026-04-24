@@ -123,7 +123,12 @@ toolchain panic or stepping away from the function:
    is size-correct and behaviorally close.
 8. Prefer the **simplest natural source family a real programmer likely wrote**
    before reaching for decompiler-shaped factoring. Ask “how would the original
-   developers probably have written this?” and test that family early.
+   developers probably have written this?” and test that family early. Treat this
+   as a high-level matching bias, not just a cosmetic preference: repeated wins
+   show that natural C/C++ surfaces such as real constructors/destructors,
+   member calls, `delete`, library calls, aggregate assignments, and ordinary
+   control-flow often land in the correct VC5 basin where manual low-level
+   rewrites, fake helper calls, raw stores, or decompiler-shaped plumbing do not.
 9. Do **not** trust decompiler source ordering or factoring by default. If a
    function is behaviorally right but still has stubborn block-layout or
    tail-sharing drift, inspect the original object layout, block placement, and
@@ -225,6 +230,31 @@ These are heuristics, not laws, but a real exact-match win now backs them:
 13. Treat **statement spelling** as a real VC5 axis, not cosmetic cleanup.
     Forms like `x += y`, `x = x + y`, and `tmp = x; x = tmp + y` can land in
     different basins because they change liveness and FPU/integer scheduling.
+14. Distinguish carefully between:
+    - repeated direct member access,
+    - a function-scope local declared early but assigned only at first real use,
+    - and a local declared-and-initialized immediately.
+    
+    On VC5 these can land in different saved-register and live-range basins.
+    A real `TRIBE_Panel_Time::set_rect` win required a function-scope
+    `image_buffer` local whose first assignment happened at the
+    destroy/recreate phase, not before the guard and not via repeated raw
+    member access.
+15. In teardown / recreate helpers, try a **single shared local** that carries
+    the object through the whole phase: load old member into the local,
+    destroy/delete via that local, assign the newly created object back into
+    the same local, then store it to the member / continue init. On VC5 this
+    can reproduce the original old-object / zero-carrier register family better
+    than either repeated member access or separate old/new locals.
+16. Treat final tiny `if/else` **arm order** as a normal VC5 axis.
+    `if (p) copy; else reset;` and `if (!p) reset; else copy;` are not assumed
+    codegen-equivalent. A real `TRIBE_Panel_Time::set_rect` match required
+    writing the non-null copy arm first and the null `-1/-1` arm second.
+17. In `/GX` EH/object-lifetime code, probe whether the winning local should
+    exist at function scope yet remain uninitialized until the first lifetime-
+    management block. This is a narrower but reusable form of “declare early,
+    initialize late”: the key boundary can be the start of the constructor /
+    destructor / recreate phase, not just the first arithmetic or loop use.
 
 #### VC5-specific tiny-helper / address-return hints
 
@@ -319,6 +349,17 @@ matching guidance:
 10. When documenting a context win in a scratch or matching file, explain the
    preserved context in plain language so later agents do not delete it as
    “unused cleanup”.
+11. In constructor/destructor neighborhoods, **object surface is codegen
+   context**. Correct base size, real base/member declarations, visible virtual
+   destructors, and real `delete` expressions can be the difference between a
+   missing/wrong EH/vptr basin and an exact match.
+12. If a destructor's vtable restore is ordered wrong, try **removing the manual
+   vtable store** and declaring the class/destructor naturally. VC5 may emit the
+   wanted vptr restore only as part of C++ destructor lowering, not as an
+   ordinary scalar assignment.
+13. Prefer real member-call declarations over fake C helper wrappers when the
+   original call is a member operation. Fake helpers can preserve behavior while
+   silently changing argument order, stack shape, and optimizer scheduling.
 
 #### VC5-specific data-surface / helper-shape hints
 

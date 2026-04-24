@@ -1,7 +1,7 @@
 // quick-win attempt log:
-// no existing work file for 0047E230; starting with the literal list/string compare
-// shape from the decompiler. The helper walks TTextPanel::list and returns the
-// zero-based index of the first matching text node, or -1 if none match.
+// the direct byte-compare shape was still landing in the wrong prolog family
+// this probe keeps the same text-node walk but spells the compare as ordered
+// less/greater tests, hoping to recover the original sbb-style compare basin
 
 class TTextPanel_TextNode {
 public:
@@ -24,36 +24,32 @@ long TTextPanel::get_line(char* param_1) {
     long index = 0;
 
     while (node != 0) {
-        char* text = node->text;
-        char* query = param_1;
-        unsigned char c;
-        bool diff;
+        unsigned char* text = (unsigned char*)node->text;
+        unsigned char* query = (unsigned char*)param_1;
 
         while (true) {
-            c = (unsigned char)*text;
-            diff = c < (unsigned char)*query;
-            if (c != (unsigned char)*query) {
-                int cmp = (1 - (unsigned int)diff) - (unsigned int)(diff != 0);
-                if (cmp == 0) {
-                    return index;
-                }
+            unsigned char a = text[0];
+            unsigned char b = query[0];
+            if (a < b) {
                 break;
             }
-            if (c == 0) {
+            if (a > b) {
+                break;
+            }
+            if (a == 0) {
                 return index;
             }
-            c = (unsigned char)text[1];
-            diff = c < (unsigned char)query[1];
-            if (c != (unsigned char)query[1]) {
-                int cmp = (1 - (unsigned int)diff) - (unsigned int)(diff != 0);
-                if (cmp == 0) {
-                    return index;
-                }
+            a = text[1];
+            b = query[1];
+            if (a < b) {
+                break;
+            }
+            if (a > b) {
                 break;
             }
             text += 2;
             query += 2;
-            if (c == 0) {
+            if (a == 0) {
                 return index;
             }
         }

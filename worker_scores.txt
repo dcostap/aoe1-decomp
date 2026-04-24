@@ -1,3 +1,3 @@
-VelvetHarrier 26/27
-CobaltCanyon 5/5
-CometField 0/0
+VelvetHarrier 29/31
+CobaltCanyon 12/9
+CometField 5/1
