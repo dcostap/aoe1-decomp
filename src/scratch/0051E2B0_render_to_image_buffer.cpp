@@ -13,6 +13,7 @@
 // variant_lab image_buffer function-local cache is much worse (832 bytes, early ECX/EDI mismatch); keep direct member access
 // variant_lab include context (<stdlib.h>, <new>) no codegen change; <windows.h> conflicts with local imports
 // variant_lab remainder spellings mostly same; explicit shift remainder is worse/too long
+// tried Ghidra-style old_font overlay in str[0..3] with sprintf/DrawText on str+4; no quotient/register improvement, rolled back
 // BLOCKER: render_to_image_buffer wants quotient formed in ECX (mov ecx,edx/add ecx,edi/...), current source keeps the shorter EDX quotient family
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);

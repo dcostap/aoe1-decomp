@@ -125,6 +125,11 @@ public:
 // tried separate guard checks; no change
 // tried caching this->render_area into pArea; no change
 // removed pArea cache again; direct render_area keeps source closer to original guard/reload shape but prolog still pushes all saved regs at entry
+// quick probe char str[264] gets desired 0x134 frame but shifts str lea to [esp+44] instead of original [esp+4c]; rolled back
+// quick probe unused two-int pad near str did not grow frame and still shifted str layout; rolled back
+// pArea cache probe gives 0x130 frame and early EDI render_area guard, worse than direct member access; rolled back
+// tried explicit vtable-local + indirect calls to mimic original iStack_114; VC5 cannot express free __thiscall function pointers cleanly, rolled back
+// tried dead/volatile stack pad locals; VC5 removed them unless used, no frame change; rolled back
 // fixed local TRIBE_Panel_Time layout by removing bogus gap before image_text_active; field now sits at original +168 instead of wrong +170
 // BLOCKER: prolog register save order fundamentally different (push ebx/ebp/esi/edi vs push esi/.../push edi/ebp/ebx)
 //           stack frame 0x12C vs 0x134 (8 bytes short), all offsets cascade from there
@@ -132,14 +137,14 @@ public:
 //           likely requires donor-file TU context reconstruction or flag investigation
 
 void TRIBE_Panel_Time::draw() {
-    if (this->render_area == 0) return;
-    if (this->field_70 == 0) return;
-    if (this->field_6C == 0) return;
-
     char str[256];
     void* old_font;
     tagRECT rect;
     int text_flags;
+
+    if (this->render_area == 0) return;
+    if (this->field_70 == 0) return;
+    if (this->field_6C == 0) return;
 
     this->draw_depth++;
     this->vf28(0);
