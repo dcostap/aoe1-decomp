@@ -12,3 +12,4 @@ __pycache__/
 !orig/
 !orig/**
 nul
+vc50.idb
