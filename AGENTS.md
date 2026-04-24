@@ -106,6 +106,13 @@ Practical rule:
 9. Remove scratch-only workflow notes when done.
 10. Move the function to `src\matching\...` only after it is locally validated.
 
+### Variant lab tool
+
+- This is a GREAT tool for quickly iterating and trying THOUSANDS of different source code shapes. Feel free to test TENS of THOUSANDS of variations with this tool.
+- `tools\variant_lab.py` can blast through source/flag variants for one function and group emitted-code results; run `python tools\variant_lab.py --help` for syntax.
+- For nontrivial labs, write a throwaway full-source template under `build\temp\...tpl.cpp` instead of embedding giant inline shell/Python strings.
+- Use it for sticky codegen-family problems; do not auto-promote matches without normal review.
+
 ### Exact-match iteration heuristics
 
 When a function is close but sticky, use these heuristics before escalating to

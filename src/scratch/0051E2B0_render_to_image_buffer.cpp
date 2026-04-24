@@ -2,14 +2,18 @@
 // tried /GX (other tpnl_tim.cpp cluster functions need it); 896 bytes, still diff regions
 // tried SetTrans param order swap; push order matches but register choice still EAX vs EDI
 // tried context local variable; no size change
-// tried s_tpnl_tim_render as class member; 43 diff regions (worse)
-// reverted to extern s_tpnl_tim_render approach
-// Prolog + early return match perfectly (first 36 bytes)
-// game_speed offset correct (0x18)
-// 20-byte size gap spread across many small instruction-encoding differences
-// BLOCKER: register allocation basin differs (EAX vs EDI for address computation)
-//           cascades into 40+ diff regions throughout the 916-byte function
-//           likely requires donor-file TU context to resolve
+// tried s_tpnl_tim_render as class member; worse, restored extern string
+// found missing TDrawArea::SetClip(&image_rect) call before GDI SelectClipRgn; kept it
+// changed clock formatting to signed seconds and explicit remainder arithmetic; removed idiv basin
+// switched type-string ladder to switch; recovered original sub/dec compare chain
+// current near-match is 912 vs 916 bytes; first mismatch is the first /60 quotient register shape in the HH:MM:SS path
+// variant_lab hms axis (direct/tmp/reordered/long/cast/volatile) collapsed to same 912-byte family except unsigned/idiv and volatile stack-growth variants
+// variant_lab /GX and small opt toggles: /GX no effect; /Og- destroys prolog; /Ot-/Ob0 no useful change
+// variant_lab game-speed/sprintf call topology (inline, flag-first, named float/world/system) still same first mismatch
+// variant_lab image_buffer function-local cache is much worse (832 bytes, early ECX/EDI mismatch); keep direct member access
+// variant_lab include context (<stdlib.h>, <new>) no codegen change; <windows.h> conflicts with local imports
+// variant_lab remainder spellings mostly same; explicit shift remainder is worse/too long
+// BLOCKER: render_to_image_buffer wants quotient formed in ECX (mov ecx,edx/add ecx,edi/...), current source keeps the shorter EDX quotient family
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(void* hdc, void* hrgn);
@@ -49,6 +53,7 @@ public:
     long Height;
 
     void* GetDc(char* unused);
+    void SetClip(tagRECT* rect);
     void ReleaseDc(char* unused);
     void SetTrans(void* context, int enabled);
 };
@@ -93,6 +98,7 @@ public:
 };
 
 extern TDrawSystem* rge_base_game;
+extern const char s_tpnl_tim_render_to_image_buffer[];
 extern const char s_clock_hms_fmt[];
 
 class TRIBE_Panel_Time : public TPanel {
@@ -117,7 +123,6 @@ public:
     char gap_138[0x10];
     tagRECT used_image_rect;
     tagRECT used_screen_rect;
-    char* s_tpnl_tim_render;
     int image_text_active;
     long last_ib_width;
     long last_ib_height;
@@ -137,39 +142,47 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
     }
 
     this->image_buffer->SetTrans(&this->gap_138, 1);
-    old_font = this->image_buffer->GetDc(this->s_tpnl_tim_render);
+    old_font = this->image_buffer->GetDc((char*)s_tpnl_tim_render_to_image_buffer);
     if (old_font == 0) {
         return 0;
     }
 
+    this->image_buffer->SetClip((tagRECT*)&this->gap_138);
     SelectClipRgn(this->image_buffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->image_buffer->DrawDc, this->font);
     SetBkMode(this->image_buffer->DrawDc, 1);
 
     if (this->clock_format == 1) {
-        unsigned int seconds = this->current_display_value;
+        int seconds = this->current_display_value;
         int minutes = 0;
         int hours = 0;
-        if ((int)seconds > 0x3B) {
-            minutes = seconds / 0x3C;
-            seconds = seconds % 0x3C;
+        if (seconds > 0x3B) {
+            int quotient = seconds / 0x3C;
+            minutes = quotient;
+            seconds = seconds + quotient * -0x3C;
             if (minutes > 0x3B) {
-                hours = minutes / 0x3C;
-                minutes = minutes % 0x3C;
+                quotient = minutes / 0x3C;
+                hours = quotient;
+                minutes = minutes + quotient * -0x3C;
             }
         }
-        sprintf(str + 4, s_clock_hms_fmt, hours, minutes, seconds, ((WorldLike*)rge_base_game->world_ptr)->game_speed);
+        sprintf(str, s_clock_hms_fmt, hours, minutes, seconds, ((WorldLike*)rge_base_game->world_ptr)->game_speed);
         text_flags = 0x20;
     } else {
         int rounded_time = ((this->current_display_value + 4) / 5) * 5;
-        if (this->clock_type == 4) {
-            sprintf(str + 4, this->get_string(0x2C25), rounded_time);
-        } else if (this->clock_type == 5) {
-            sprintf(str + 4, this->get_string(0x2C26), rounded_time);
-        } else if (this->clock_type == 6) {
-            sprintf(str + 4, this->get_string(0x2C27), rounded_time);
-        } else {
-            sprintf(str + 4, this->get_string(0x2C24), rounded_time);
+        switch (this->clock_type) {
+        case 4:
+            sprintf(str, this->get_string(0x2C25), rounded_time);
+            break;
+        case 5:
+            sprintf(str, this->get_string(0x2C26), rounded_time);
+            break;
+        case 6:
+            sprintf(str, this->get_string(0x2C27), rounded_time);
+            break;
+        default:
+            sprintf(str, this->get_string(0x2C24), rounded_time);
+            break;
         }
         text_flags = 0x22;
     }
@@ -177,21 +190,21 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
     SetTextColor(this->image_buffer->DrawDc, this->color2);
 
     SetRect(&rect, 0, 0, this->pnl_wid - 3, this->pnl_hgt - 3);
-    DrawTextA(this->image_buffer->DrawDc, str + 4, -1, &rect, text_flags);
+    DrawTextA(this->image_buffer->DrawDc, str, -1, &rect, text_flags);
     SetRect(&rect, 0, 2, this->pnl_wid - 3, this->pnl_hgt - 1);
-    DrawTextA(this->image_buffer->DrawDc, str + 4, -1, &rect, text_flags);
+    DrawTextA(this->image_buffer->DrawDc, str, -1, &rect, text_flags);
     SetRect(&rect, 2, 0, this->pnl_wid - 1, this->pnl_hgt - 3);
-    DrawTextA(this->image_buffer->DrawDc, str + 4, -1, &rect, text_flags);
+    DrawTextA(this->image_buffer->DrawDc, str, -1, &rect, text_flags);
     SetRect(&rect, 2, 2, this->pnl_wid - 1, this->pnl_hgt - 1);
-    DrawTextA(this->image_buffer->DrawDc, str + 4, -1, &rect, text_flags);
+    DrawTextA(this->image_buffer->DrawDc, str, -1, &rect, text_flags);
 
     SetTextColor(this->image_buffer->DrawDc, this->color1);
     SetRect(&rect, 1, 1, this->pnl_wid - 2, this->pnl_hgt - 2);
-    DrawTextA(this->image_buffer->DrawDc, str + 4, -1, &rect, text_flags);
+    DrawTextA(this->image_buffer->DrawDc, str, -1, &rect, text_flags);
 
     SelectObject(this->image_buffer->DrawDc, old_font);
     SelectClipRgn(this->image_buffer->DrawDc, 0);
-    this->image_buffer->ReleaseDc(this->s_tpnl_tim_render);
+    this->image_buffer->ReleaseDc((char*)s_tpnl_tim_render_to_image_buffer);
 
     this->used_image_rect.left = 0;
     this->used_image_rect.top = 0;

@@ -106,7 +106,6 @@ public:
     tagRECT image_rect;
     tagRECT used_image_rect;
     tagRECT used_screen_rect;
-    char gap_160[0x08];
     int image_text_active;
     long last_ib_width;
     long last_ib_height;
@@ -125,21 +124,22 @@ public:
 // tried function-scope locals (classic C style); no change
 // tried separate guard checks; no change
 // tried caching this->render_area into pArea; no change
+// removed pArea cache again; direct render_area keeps source closer to original guard/reload shape but prolog still pushes all saved regs at entry
+// fixed local TRIBE_Panel_Time layout by removing bogus gap before image_text_active; field now sits at original +168 instead of wrong +170
 // BLOCKER: prolog register save order fundamentally different (push ebx/ebp/esi/edi vs push esi/.../push edi/ebp/ebx)
 //           stack frame 0x12C vs 0x134 (8 bytes short), all offsets cascade from there
 //           game_speed FPU load at [eax+118h] instead of [edx+18h] despite correct struct layout
 //           likely requires donor-file TU context reconstruction or flag investigation
 
 void TRIBE_Panel_Time::draw() {
+    if (this->render_area == 0) return;
+    if (this->field_70 == 0) return;
+    if (this->field_6C == 0) return;
+
     char str[256];
     void* old_font;
     tagRECT rect;
     int text_flags;
-    TDrawArea* pArea = this->render_area;
-
-    if (pArea == 0) return;
-    if (this->field_70 == 0) return;
-    if (this->field_6C == 0) return;
 
     this->draw_depth++;
     this->vf28(0);
@@ -163,32 +163,32 @@ void TRIBE_Panel_Time::draw() {
 
     if (this->image_text_active != 0 && this->image_buffer != 0) {
         this->image_buffer->SetTrans(1, 1);
-        this->image_buffer->Copy(pArea, this->used_screen_rect.left, this->used_screen_rect.top, &this->used_image_rect, 1);
+        this->image_buffer->Copy(this->render_area, this->used_screen_rect.left, this->used_screen_rect.top, &this->used_image_rect, 1);
         this->image_buffer->SetTrans(0, 1);
         this->finish_up();
         return;
     }
 
-    old_font = pArea->GetDc((char*)s_tpnl_tim_draw);
+    old_font = this->render_area->GetDc((char*)s_tpnl_tim_draw);
     if (old_font == 0) {
         this->finish_up();
         return;
     }
 
-    SelectClipRgn(pArea->DrawDc, this->clip_rgn);
-    old_font = SelectObject(pArea->DrawDc, this->font);
-    SetBkMode(pArea->DrawDc, 1);
+    SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
+    old_font = SelectObject(this->render_area->DrawDc, this->font);
+    SetBkMode(this->render_area->DrawDc, 1);
 
     if (this->clock_format == 1) {
-        unsigned int seconds = this->current_display_value;
+        int seconds = this->current_display_value;
         int minutes = 0;
         int hours = 0;
-        if ((int)seconds > 0x3B) {
+        if (seconds > 0x3B) {
             minutes = seconds / 0x3C;
-            seconds = seconds % 0x3C;
+            seconds = seconds - minutes * 0x3C;
             if (minutes > 0x3B) {
                 hours = minutes / 0x3C;
-                minutes = minutes % 0x3C;
+                minutes = minutes - hours * 0x3C;
             }
         }
         {
@@ -198,19 +198,24 @@ void TRIBE_Panel_Time::draw() {
         text_flags = 0x20;
     } else {
         int rounded_time = ((this->current_display_value + 4) / 5) * 5;
-        if (this->clock_type == 4) {
+        switch (this->clock_type) {
+        case 4:
             sprintf(str, this->get_string(0x2C25), rounded_time);
-        } else if (this->clock_type == 5) {
+            break;
+        case 5:
             sprintf(str, this->get_string(0x2C26), rounded_time);
-        } else if (this->clock_type == 6) {
+            break;
+        case 6:
             sprintf(str, this->get_string(0x2C27), rounded_time);
-        } else {
+            break;
+        default:
             sprintf(str, this->get_string(0x2C24), rounded_time);
+            break;
         }
         text_flags = 0x22;
     }
 
-    SetTextColor(pArea->DrawDc, this->color2);
+    SetTextColor(this->render_area->DrawDc, this->color2);
 
     {
         int left = this->fallback_left + 1;
@@ -219,21 +224,21 @@ void TRIBE_Panel_Time::draw() {
         int bottom = top + this->pnl_hgt - 2;
 
         SetRect(&rect, left, top, right - 2, bottom - 2);
-        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left, top + 2, right - 2, bottom);
-        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left + 2, top, right, bottom - 2);
-        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left + 2, top + 2, right, bottom);
-        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
 
-        SetTextColor(pArea->DrawDc, this->color1);
+        SetTextColor(this->render_area->DrawDc, this->color1);
         SetRect(&rect, left + 1, top + 1, right - 1, bottom - 1);
-        DrawTextA(pArea->DrawDc, str, -1, &rect, text_flags);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
     }
 
-    SelectObject(pArea->DrawDc, old_font);
-    SelectClipRgn(pArea->DrawDc, 0);
-    pArea->ReleaseDc((char*)s_tpnl_tim_draw);
+    SelectObject(this->render_area->DrawDc, old_font);
+    SelectClipRgn(this->render_area->DrawDc, 0);
+    this->render_area->ReleaseDc((char*)s_tpnl_tim_draw);
     this->finish_up();
 }
