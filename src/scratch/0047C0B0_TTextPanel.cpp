@@ -16,16 +16,16 @@ public:
     ~TPanel() {}
 };
 
-class TTextPanel : public TPanel {
+class TTTextPanel : public TPanel {
 public:
     virtual void vf01() {}
     char gap_04[0x17C - 4];
     void* clip_rgn2;  // +0x17C
 
-    ~TTextPanel();
+    ~TTTextPanel();
 };
 
-TTextPanel::~TTextPanel() {
+TTTextPanel::~TTTextPanel() {
     ((void(*)(void*))0x47E380)(this);  // free_text
     if (clip_rgn2 != 0) {
         DeleteObject(clip_rgn2);

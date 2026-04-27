@@ -11,7 +11,7 @@ public:
     int have_focus;
 };
 
-class TTextPanel : public TPanel {
+class TTTextPanel : public TPanel {
 public:
     void* list;
     short num_lines;
@@ -22,7 +22,7 @@ public:
     short cur_col;
 };
 
-class TListPanel : public TTextPanel {
+class TListPanel : public TTTextPanel {
 public:
     int auto_track;
     unsigned long mouse_scroll_last_time;

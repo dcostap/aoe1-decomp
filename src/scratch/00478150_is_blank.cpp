@@ -6,13 +6,13 @@ typedef unsigned char uchar;
 extern "C" int __cdecl __ismbcspace(unsigned int ch);
 extern "C" uchar* __cdecl __mbsinc(const uchar* str);
 
-class TTextPanel {
+class TTTextPanel {
 public:
-    virtual ~TTextPanel();
+    virtual ~TTTextPanel();
     char* currentLine();
 };
 
-class TInputPanel : public TTextPanel {
+class TInputPanel : public TTTextPanel {
 public:
     int is_blank(void);
 };

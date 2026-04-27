@@ -1,7 +1,7 @@
 // tried the natural linked-list walk with a shared empty-string return; VC5 kept sinking the counter into ECX instead of matching the original EDX basin
 // tried a decompiler-style loop, then a register keyword probe; the remaining mismatch stayed in the early loop/register basin right after the list-null test
 
-class TTextPanel {
+class TTTextPanel {
 public:
     struct TextNode {
         char* text;
@@ -18,7 +18,7 @@ public:
 
 static char g_empty_text[4];
 
-char* TTextPanel::get_text(long param_1) {
+char* TTTextPanel::get_text(long param_1) {
     TextNode* node;
     register long index;
     long wanted;

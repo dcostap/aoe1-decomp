@@ -4,7 +4,7 @@ struct TextNode {
     TextNode* next_node;
 };
 
-class TTextPanel {
+class TTTextPanel {
 public:
     char gap_00[0xF4];
     TextNode* list;
@@ -12,7 +12,7 @@ public:
     long get_id(long index);
 };
 
-long TTextPanel::get_id(long index) {
+long TTTextPanel::get_id(long index) {
     TextNode* node = this->list;
     int count = 0;
 

@@ -1,0 +1,27 @@
+# Parent-owned fragment manifest
+#
+# Format:
+#   <fragment-va> <parent-va> <parent-name> <kind/reason>
+#
+# These entries are real game-code bytes but are not independently source-ownable
+# functions. They are compiler-emitted basic blocks, switch/case landing pads, or
+# shared tail/continuation regions inside the parent function. Do not create
+# normal one-function-one-.cpp targets for them; match them by matching the
+# owning parent function.
+
+0047F00C 0047EE90 RESFILE_open_new_resource_file internal_error_exit
+0047F076 0047EE90 RESFILE_open_new_resource_file internal_shared_tail
+
+00502451 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+0050245D 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+00502464 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+00502470 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+0050247C 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+00502488 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+0050248F 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+0050249B 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+005024A7 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+005024B3 00502310 checkForAttackResponseBuildInsertions switch_shared_body
+
+00536912 00535FE0 view_function switch_case_codelet
+00536957 00535FE0 view_function switch_continuation_region

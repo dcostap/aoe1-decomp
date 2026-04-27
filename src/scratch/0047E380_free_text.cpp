@@ -5,7 +5,7 @@
 // leaving this in scratch because the remaining diff is the init/prolog + tail-call basin, not the list-free logic
 extern "C" void __cdecl free(void* block);
 
-class TTextPanel {
+class TTTextPanel {
 public:
     virtual void vf00();
     virtual void vf04();
@@ -32,7 +32,7 @@ public:
     void free_text(void);
 };
 
-void TTextPanel::free_text(void) {
+void TTTextPanel::free_text(void) {
     TextNode* node;
     TextNode* next;
 

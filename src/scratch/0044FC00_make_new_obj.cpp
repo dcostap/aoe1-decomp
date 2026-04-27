@@ -1,6 +1,7 @@
 // 0044FC00 RGE_Master_Animated_Object::make_new_obj
 // Source: m_an_obj.cpp lines 100-114
 // Size: 201 bytes, EH-framed, /GX
+// First-pass skeleton/partial — needs proper implementation
 //
 // Attempt log:
 // Probe 1: factory with recycle-or-new pattern â†’ 67% diff

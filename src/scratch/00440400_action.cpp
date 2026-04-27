@@ -1,6 +1,7 @@
 // VA: 00440400 TRIBE_Dialog_Sed_Menu::action
 // PDB source: dlg_sedm.cpp
 // Attempt log:
+// First-pass skeleton/partial — needs proper implementation
 // - Probe 1: default flags, no EH frame generated (missing FS:[0] prolog)
 // - Kept probe 1: added /GX, still no EH frame (VC5 only adds FS:[0] for stack objects with destructors)
 // - Probe 2: class layout with proper padding (0x490 base + 8 bytes -> now scenario_editor at +0x490 correct)

@@ -17,6 +17,7 @@ TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.t
 TOOLCHAIN_SUPPLIED_REGIONS_PATH = CONFIG_DIR / "toolchain_supplied_regions.txt"
 ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
 ASM_SPECIAL_REGIONS_PATH = CONFIG_DIR / "asm_special_regions.txt"
+PARENT_OWNED_FRAGMENTS_PATH = CONFIG_DIR / "parent_owned_fragments.txt"
 
 
 def repo_path(value: str | Path) -> Path:
@@ -132,15 +133,62 @@ def asm_special_region_for_va(va: int, configured_regions: list[tuple[int, int, 
     return _region_for_va(va, regions)
 
 
+def load_parent_owned_fragments() -> dict[int, tuple[int, str, str]]:
+    """Load fragment VA -> (parent VA, parent name, reason).
+
+    Parent-owned fragments are real game-code bytes that the disassembler/PDB
+    split out as FUN_ entries even though they are basic blocks inside a larger
+    source function. They are excluded from the normal one-function corpus and
+    should be matched by matching their parent function.
+    """
+    fragments: dict[int, tuple[int, str, str]] = {}
+    if not PARENT_OWNED_FRAGMENTS_PATH.exists():
+        return fragments
+
+    for raw_line in PARENT_OWNED_FRAGMENTS_PATH.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(None, 3)
+        if len(parts) < 2:
+            raise ValueError(f"Invalid parent-owned fragment line: {raw_line}")
+        fragment_va = parse_hex(parts[0])
+        parent_va = parse_hex(parts[1])
+        if fragment_va is None or parent_va is None:
+            raise ValueError(f"Invalid parent-owned fragment VA: {raw_line}")
+        parent_name = parts[2] if len(parts) >= 3 else ""
+        reason = parts[3] if len(parts) >= 4 else ""
+        fragments[fragment_va] = (parent_va, parent_name, reason)
+    return fragments
+
+
+def parent_owned_fragment_for_va(
+    va: int, configured_fragments: dict[int, tuple[int, str, str]] | None = None
+) -> tuple[int, str, str] | None:
+    fragments = configured_fragments if configured_fragments is not None else load_parent_owned_fragments()
+    return fragments.get(va)
+
+
 def classify_corpus_bucket(
     record: dict[str, str],
     toolchain_supplied_names: set[str] | None = None,
     toolchain_supplied_regions: list[tuple[int, int, str]] | None = None,
     asm_special_names: set[str] | None = None,
     asm_special_regions: list[tuple[int, int, str]] | None = None,
+    parent_owned_fragments: dict[int, tuple[int, str, str]] | None = None,
 ) -> tuple[str, str]:
     name = record["name"]
     va = int(record["va"], 16)
+
+    parent_fragment = parent_owned_fragment_for_va(va, parent_owned_fragments)
+    if parent_fragment is not None:
+        parent_va, parent_name, reason = parent_fragment
+        detail = f"parent {parent_va:08X}"
+        if parent_name:
+            detail += f" {parent_name}"
+        if reason:
+            detail += f" {reason}"
+        return "parent_owned_fragment", detail
 
     if is_toolchain_supplied_function_name(name, toolchain_supplied_names):
         return "toolchain_supplied", "manifest-name"

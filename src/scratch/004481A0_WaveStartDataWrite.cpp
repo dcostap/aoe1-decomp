@@ -1,6 +1,7 @@
 // tried the direct chunk-write/MMIO-import shape; first mismatch moved to the stack-arg load order
 // tried adding a dummy leading parameter to shift the entry offsets; first arg matched, but the handle/info loads still drifted
 // leaving in scratch because the remaining gap is stack-argument ordering, not a behavior mismatch
+// First-pass skeleton/partial — needs proper implementation
 typedef unsigned long MMRESULT;
 
 struct _MMCKINFO {

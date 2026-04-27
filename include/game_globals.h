@@ -1716,6 +1716,14 @@ extern unsigned char DAT_0086b6b2;
 extern unsigned char DAT_0086b6b3;
 // 0086BAB0 [.data]
 extern unsigned int DAT_0086bab0;
+// 0086BAB4 [.data]
+extern void* DAT_0086bab4;
+// 0086BAB8 [.data]
+extern void* DAT_0086bab8;
+// 0086BABCh [.data]
+extern void* DAT_0086babc;
+// 0086BAC0h [.data]
+extern void* DAT_0086bac0;
 // 0086BC08 [.data]
 extern float DAT_0086bc08;
 // 0086BC8C [.data]

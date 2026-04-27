@@ -1,6 +1,7 @@
 // tried a simple byte-by-byte loop; VC5 shrank it too far
 // tried a two-byte unrolled compare with local temps; still landed in the wrong tiny-helper basin
 // left in scratch because the remaining gap is codegen-family drift, not a behavior mismatch
+// First-pass skeleton/partial — needs proper implementation
 class RGE_Campaign_Info {
 public:
     char campaign_name[255];

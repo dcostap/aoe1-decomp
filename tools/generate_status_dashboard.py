@@ -12,6 +12,7 @@ from common import (
     load_asm_special_function_names,
     load_asm_special_regions,
     load_functions,
+    load_parent_owned_fragments,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
 )
@@ -19,7 +20,7 @@ from common import (
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 BUCKET_ORDER = ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"]
-CORPUS_ORDER = ["normal", "toolchain_supplied", "asm_special", "asm_region"]
+CORPUS_ORDER = ["normal", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 BUCKET_COLORS = {
     "matching": "#22c55e",
     "accepted_drift": "#f59e0b",
@@ -278,6 +279,7 @@ def main() -> None:
     toolchain_supplied_regions = load_toolchain_supplied_regions()
     asm_special_names = load_asm_special_function_names()
     asm_special_regions = load_asm_special_regions()
+    parent_owned_fragments = load_parent_owned_fragments()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
 
@@ -294,6 +296,7 @@ def main() -> None:
             toolchain_supplied_regions=toolchain_supplied_regions,
             asm_special_names=asm_special_names,
             asm_special_regions=asm_special_regions,
+            parent_owned_fragments=parent_owned_fragments,
         )
 
         if len(present_paths) > 1:
@@ -340,6 +343,11 @@ def main() -> None:
                 "first_mismatch_offset": "",
             }
 
+        parent_fragment = parent_owned_fragments.get(int(record["va"], 16))
+        parent_va_text = f"{parent_fragment[0]:08X}" if parent_fragment else ""
+        parent_name_text = parent_fragment[1] if parent_fragment else ""
+        parent_reason_text = parent_fragment[2] if parent_fragment else ""
+
         row = {
             "va": record["va"],
             "name": record["name"],
@@ -355,6 +363,10 @@ def main() -> None:
             "corpus_reason": corpus_reason,
             "toolchain_supplied": "yes" if corpus_bucket == "toolchain_supplied" else "no",
             "toolchain_supplied_reason": corpus_reason if corpus_bucket == "toolchain_supplied" else "",
+            "parent_owned_fragment": "yes" if corpus_bucket == "parent_owned_fragment" else "no",
+            "parent_va": parent_va_text,
+            "parent_name": parent_name_text,
+            "parent_fragment_reason": parent_reason_text,
             "is_remaining": is_remaining,
             "remaining_size_rank": "",
             "remaining_asm_rank": "",
@@ -407,6 +419,10 @@ def main() -> None:
                 "corpus_reason",
                 "toolchain_supplied",
                 "toolchain_supplied_reason",
+                "parent_owned_fragment",
+                "parent_va",
+                "parent_name",
+                "parent_fragment_reason",
                 "is_remaining",
                 "remaining_size_rank",
                 "remaining_asm_rank",
@@ -444,6 +460,7 @@ def main() -> None:
     toolchain_supplied_count = sum(1 for row in rows if row["corpus_bucket"] == "toolchain_supplied")
     asm_special_count = sum(1 for row in rows if row["corpus_bucket"] == "asm_special")
     asm_region_count = sum(1 for row in rows if row["corpus_bucket"] == "asm_region")
+    parent_owned_fragment_count = sum(1 for row in rows if row["corpus_bucket"] == "parent_owned_fragment")
 
     print(f"Wrote {output_path}")
     print(f"Wrote {html_output_path}")
@@ -455,6 +472,7 @@ def main() -> None:
         f"unclaimed={unclaimed_count} "
         f"conflict={conflict_count} "
         f"normal={normal_count} "
+        f"parent_owned_fragment={parent_owned_fragment_count} "
         f"toolchain_supplied={toolchain_supplied_count} "
         f"asm_special={asm_special_count} "
         f"asm_region={asm_region_count}"

@@ -1,6 +1,7 @@
 // tried a direct wrapper-style spelling first; keeping the logic as a free function
 // tried direct COM Play slot spelling; mismatch stayed at the entry prolog/register basin
 // tried moving the flag read later and fixing the vtable slot; EBX still saved too early
+// First-pass skeleton/partial — needs proper implementation
 
 struct IDirectSoundBufferVtbl;
 

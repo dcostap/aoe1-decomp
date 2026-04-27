@@ -1,6 +1,7 @@
 // tried direct if/else member access; got the right branch structure but VC5 inserts mov ecx,edx in the GetDC call path
 // tried a local surface temp; no codegen change in the call basin
 // remaining mismatch is a single register-move before the IDirectDrawSurface::GetDC vcall
+// First-pass skeleton/partial — needs proper implementation
 class TDrawSystem {
 public:
     char gap_00[0x478];

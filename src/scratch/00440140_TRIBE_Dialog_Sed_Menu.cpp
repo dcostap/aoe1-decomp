@@ -1,6 +1,7 @@
 // 00440140 TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu
 // Source: dlg_sedm.cpp lines 41-58
 // Size: 505 bytes
+// First-pass skeleton/partial — needs proper implementation
 //
 // Attempt log:
 // Probe 1: constructor with void return type and undeclared param type â€” compile errors

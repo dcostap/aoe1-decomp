@@ -1,7 +1,7 @@
 // fifth pass: mirror the decompiler's variable roles exactly, using the same list/index terminology
 // if this still misses, the function is now a register-basin problem rather than a logic problem
 
-class TTextPanel {
+class TTTextPanel {
 public:
     struct TextNode {
         char* text;
@@ -18,7 +18,7 @@ public:
 
 extern char DAT_0086B24C[4];
 
-char* TTextPanel::get_text2(long param_1) {
+char* TTTextPanel::get_text2(long param_1) {
     TextNode* pTVar1;
     int iVar2;
 

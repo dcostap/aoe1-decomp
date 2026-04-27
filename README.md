@@ -73,14 +73,16 @@ Additional pinned upstream game files now live under:
 
 Use that repo-local folder when the full original beta game file set is needed.
 
-The repo separates functions into four workflow buckets:
+The repo separates functions into five workflow buckets:
 
 - **normal** — ordinary manual C/C++ decomp/matching work,
+- **parent_owned_fragment** — real game-code bytes that are compiler-emitted blocks inside a larger parent function, not independently source-ownable functions,
 - **toolchain_supplied** — supplied by imports / runtime / libraries and not manually decompiled,
 - **asm_special** — named handwritten-assembly functions to be restored later through an asm workstream,
 - **asm_region** — non-normal asm/codelet/data-dispatch regions that are part of handwritten-assembly neighborhoods and not ordinary `.cpp` targets.
 
-The exclusion manifests for the non-normal buckets live at:
+The exclusion manifests for the non-normal / non-independent buckets live at:
+- `config\parent_owned_fragments.txt`
 - `config\toolchain_supplied_functions.txt`
 - `config\toolchain_supplied_regions.txt`
 - `config\asm_special_functions.txt`
@@ -133,5 +135,8 @@ A review pass over safe hidden-label toolchain candidates is documented in:
 
 The review-only probable helper-island report is documented in:
 - `docs\toolchain_probable_helper_island_report.md`
+
+Parent-owned fragment handling is documented in:
+- `docs\parent_owned_fragments.md`
 
 Detailed workflow, agent rules, and project policy live in `AGENTS.md`.

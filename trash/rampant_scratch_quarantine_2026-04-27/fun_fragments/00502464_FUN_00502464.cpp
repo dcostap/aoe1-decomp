@@ -1,0 +1,14 @@
+// VA: 00502464 FUN_00502464 (7-12B)
+// taitacmd.cpp - compiler-emitted switch dispatch thunk
+
+class TribeAICommand {
+public:
+    char gap4[0x4];
+    int field_8;
+    
+    void FUN_00502464();
+};
+
+void TribeAICommand::FUN_00502464() {
+    field_8 = 0;
+}

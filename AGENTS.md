@@ -29,11 +29,16 @@ After reading the README, follow these working rules.
 
 ## Corpus buckets
 
-The repo separates discovered binary functions/regions into four workflow buckets:
+The repo separates discovered binary functions/regions into five workflow buckets:
 
 - `normal`
   - ordinary manual C/C++ decomp/matching corpus
   - these are the normal `unclaimed` / `scratch` / `matching` targets
+- `parent_owned_fragment`
+  - real game-code bytes that inventory split out as `FUN_...` entries even though they are basic blocks, switch/case landing pads, or shared tails inside a larger parent function
+  - tracked, but excluded from normal one-function-one-`.cpp` work
+  - match these bytes by matching the owning parent function listed in `config\parent_owned_fragments.txt`
+  - do not classify them as toolchain-supplied or handwritten asm unless separate evidence proves that; they are normal game code with non-independent ownership
 - `toolchain_supplied`
   - import thunks, CRT/runtime baggage, and other high-confidence toolchain/lib-supplied entries
   - tracked, but excluded from normal manual decomp work
@@ -99,9 +104,9 @@ Practical rule:
 
 1. If choosing a new target, regenerate `project_full_status.csv` first and usually
    pick from the `unclaimed` bucket there instead of guessing from the raw dump.
-   Do **not** pick functions whose corpus bucket is `toolchain_supplied`,
-   `asm_special`, or `asm_region`; those are excluded from the normal manual
-   decomp/matching corpus.
+   Do **not** pick functions whose corpus bucket is `parent_owned_fragment`,
+   `toolchain_supplied`, `asm_special`, or `asm_region`; those are excluded from
+   the normal manual one-function corpus.
 2. Read the relevant packet in `inventory\functions\...`.
 3. Check the shared working headers/source in `include\...` and `src\game_globals.cpp`.
 4. Create or edit the function in `src\scratch\...`.
@@ -730,9 +735,14 @@ normal tuning tool. If a per-function rsp is redundant with `config\flags\defaul
 
 ## Non-normal corpus manifests
 
-The repo keeps three high-confidence exclusion manifests for entries that are
-real parts of the binary but are **not** ordinary manual C/C++ decomp targets:
+The repo keeps high-confidence exclusion manifests for entries that are real
+parts of the binary but are **not** ordinary manual one-function C/C++ decomp
+targets:
 
+- `config\parent_owned_fragments.txt`
+  - compiler-emitted basic blocks / switch landing pads / shared tails that are owned by a larger parent function
+  - each line maps fragment VA to parent VA/name plus a short reason
+  - exclude these from normal queues and match their bytes through the parent function
 - `config\toolchain_supplied_functions.txt`
   - toolchain/lib-supplied functions such as import thunks and CRT/runtime baggage
 - `config\toolchain_supplied_regions.txt`
@@ -746,7 +756,7 @@ real parts of the binary but are **not** ordinary manual C/C++ decomp targets:
 
 Agent rules:
 
-- do **not** create `src\scratch\...` work for entries classified into those non-normal buckets,
+- do **not** create `src\scratch\...` work for entries classified into those non-normal / non-independent buckets,
 - for duplicated generic helper labels such as `caseD_0` / `caseD_1` inside known
   CRT/helper islands, prefer the toolchain **region** manifest over a name manifest,
 - `tools\generate_toolchain_supplied_manifest.py` is the safe scripted front-end for

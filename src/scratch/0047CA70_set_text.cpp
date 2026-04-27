@@ -1,4 +1,4 @@
-// tried explicit vtable-slot call, then a real 59th virtual method on TTextPanel
+// tried explicit vtable-slot call, then a real 59th virtual method on TTTextPanel
 // tried shrinking the buffer to 4092; that shifted the prolog family, so the closer 4096-byte stack shape is restored here
 // remaining gap is the exact esp+4 stack-buffer base and VC5 register choice around the virtual call
 
@@ -68,7 +68,7 @@ public:
     int get_string(int string_id, char* buffer, int length);
 };
 
-class TTextPanel : public TPanel {
+class TTTextPanel : public TPanel {
 public:
     struct TextNode {
         char* text;
@@ -82,7 +82,7 @@ public:
     void set_text(long string_id);
 };
 
-void TTextPanel::set_text(long string_id) {
+void TTTextPanel::set_text(long string_id) {
     char str[4096];
 
     TPanel::get_string((int)string_id, str + 4, 0x1000);

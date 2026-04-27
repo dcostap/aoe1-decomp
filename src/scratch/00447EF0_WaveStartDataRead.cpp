@@ -1,6 +1,7 @@
 // first pass: seek to the 'data' chunk, then descend into it with mmioDescend
 // tried stdcall imports and the obvious parent/data pointer layout; the remaining mismatch stayed in the stack-arg indexing around the success path
 // current best lead: the third-arg load still wants a different caller stack shape than the natural 3-pointer spelling
+// First-pass skeleton/partial — needs proper implementation
 
 struct MMIOINFO {
     int handle;

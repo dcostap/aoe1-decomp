@@ -3,24 +3,24 @@
 // this probe keeps the same text-node walk but spells the compare as ordered
 // less/greater tests, hoping to recover the original sbb-style compare basin
 
-class TTextPanel_TextNode {
+class TTTextPanel_TextNode {
 public:
     char* text;
     char* text2;
     long id;
-    TTextPanel_TextNode* next_node;
+    TTTextPanel_TextNode* next_node;
 };
 
-class TTextPanel {
+class TTTextPanel {
 public:
     char gap_00[0xF4];
-    TTextPanel_TextNode* list;
+    TTTextPanel_TextNode* list;
 
     long get_line(char*);
 };
 
-long TTextPanel::get_line(char* param_1) {
-    TTextPanel_TextNode* node = this->list;
+long TTTextPanel::get_line(char* param_1) {
+    TTTextPanel_TextNode* node = this->list;
     long index = 0;
 
     while (node != 0) {

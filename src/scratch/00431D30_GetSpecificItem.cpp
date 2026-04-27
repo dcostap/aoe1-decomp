@@ -1,8 +1,6 @@
 // 00431D30 GetSpecificItem
 // 156 bytes, __thiscall, RGE_Communications_Queue method
-// probe 1: search queue by Code and ExecTurn, return Data pointer
-
-void __cdecl operator delete(void* ptr);
+// probe 3: restructure loop to match original control flow
 
 struct MsgQueue {
     unsigned int ControlCommand;
@@ -36,10 +34,10 @@ extern unsigned int g_queue_data;
 void* RGE_Communications_Queue::GetSpecificItem(unsigned int param_1, unsigned long param_2, unsigned char param_3, unsigned int* param_4) {
     unsigned int i = 0;
     MsgQueue* mq = Queue;
-
     unsigned int targetCode = param_1 * 1000 + param_3;
 
-    while (mq->ControlCommand != targetCode || mq->ExecTurn != param_2) {
+    for (;;) {
+        if (mq->ControlCommand == targetCode && mq->ExecTurn == param_2) break;
         i++;
         mq++;
         if (i > HighQueueDepth) return 0;

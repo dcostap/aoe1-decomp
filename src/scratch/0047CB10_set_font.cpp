@@ -1,6 +1,6 @@
 class TScrollBarPanel;
 
-class TTextPanel {
+class TTTextPanel {
 public:
     virtual void vf00(void);
     virtual void vf04(void);
@@ -74,7 +74,7 @@ public:
     void set_font(void* param_1, long param_2, long param_3);
 };
 
-void TTextPanel::set_font(void* param_1, long param_2, long param_3) {
+void TTTextPanel::set_font(void* param_1, long param_2, long param_3) {
     this->font_wid = param_2;
     this->font = param_1;
     this->font_hgt = param_3;

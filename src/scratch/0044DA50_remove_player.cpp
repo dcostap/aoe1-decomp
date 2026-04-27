@@ -1,6 +1,7 @@
 // first pass: direct bounds check, delete-or-null guard, shift-down loop, and current-person cap
 // tried delete vs explicit destructor+operator_delete and a tighter count variable; default /GX still lands at 96 bytes for a 97-byte target
 // leaving this in scratch because the remaining blocker is a one-byte code-size basin mismatch, not a behavior question
+// First-pass skeleton/partial — needs proper implementation
 #include "..\..\include\game_types.h"
 
 class RGE_Campaign_Info;

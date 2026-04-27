@@ -21,13 +21,13 @@
 //   Also: VC5 uses mov eax,1 (not ecx) for one-fields; field_190=0x32
 //   appears after all ones (not between ones as in original).
 // FLAGS: /GX
-class TTextPanel {
+class TTTextPanel {
 public:
-    virtual ~TTextPanel();
-    TTextPanel();
+    virtual ~TTTextPanel();
+    TTTextPanel();
 };
 
-class TListPanel : public TTextPanel {
+class TListPanel : public TTTextPanel {
 public:
     char gap_04[0x80 - 0x04];
     int field_80;
@@ -52,7 +52,7 @@ public:
     TListPanel();
 };
 
-TListPanel::TListPanel() : TTextPanel() {
+TListPanel::TListPanel() : TTTextPanel() {
     this->field_C0 = 0;
     this->field_18C = 0;
     this->field_194 = 0;

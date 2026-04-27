@@ -4,7 +4,7 @@ struct TextNode {
     TextNode* next_node;
 };
 
-class TTextPanel {
+class TTTextPanel {
 public:
     char gap_00[0xF4];
     TextNode* list;
@@ -20,7 +20,7 @@ public:
     void set_line_by_id(long param_1);
 };
 
-void TTextPanel::set_line_by_id(long param_1) {
+void TTTextPanel::set_line_by_id(long param_1) {
     int index = 0;
     TextNode* node = this->list;
     while (true) {
@@ -36,7 +36,7 @@ void TTextPanel::set_line_by_id(long param_1) {
     this->set_line(index);
 }
 
-void TTextPanel::set_line(long line) {
+void TTTextPanel::set_line(long line) {
     cur_line = (short)line;
     calc_draw_info(1);
 }

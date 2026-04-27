@@ -5,7 +5,7 @@
 // attempt 4: try a single saved line-count temp so both clamps share the same compare source
 // still stuck: only the saved-short register assignment is swapped; the branch/body shape is otherwise aligned
 
-class TTextPanel {
+class TTTextPanel {
 public:
     char gap_0[0xF8 - 0x4];
     short num_lines;   // +0xF8
@@ -30,7 +30,7 @@ public:
     void scroll(unsigned char mode, short value, int param_3);
 };
 
-class TInputPanel : public TTextPanel {
+class TInputPanel : public TTTextPanel {
 public:
     unsigned char caret_color; // +0x188
     unsigned char _pad_0[0x3];
