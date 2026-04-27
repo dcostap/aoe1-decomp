@@ -40,11 +40,9 @@ extern "C" void __fastcall copy_obj(void* player, short a, short b);
 void RGE_Effects::do_effect(short effect_id, void* player) {
     if (effect_id < effect_num) {
         RGE_Effect* eff = &effects[effect_id];
-        if (eff == 0) return;
-        short count = eff->effect_list_num;
-        if (count > 0) {
+        if (eff != 0 && eff->effect_list_num > 0) {
             short i;
-            for (i = 0; i < count; i++) {
+            for (i = 0; i < eff->effect_list_num; i++) {
                 RGE_Effect_Command* cmd = &eff->effect_list[i];
                 switch (cmd->command) {
                 case 0:
