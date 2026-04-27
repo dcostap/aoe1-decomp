@@ -33,7 +33,6 @@ SAFE_EXACT_RUNTIME_NAMES = {
     "isupper",
     "isspace",
     "memcpy",
-    "memmove",
     "memset",
     "qsort",
     "raise",
@@ -135,6 +134,7 @@ SAFE_EXACT_RUNTIME_NAMES = {
     "signal",
     "`eh_vector_constructor_iterator'",
     "`eh_vector_destructor_iterator'",
+    "`vector_constructor_iterator'",
 }
 
 SAFE_RUNTIME_PREFIXES = (
@@ -144,6 +144,15 @@ SAFE_RUNTIME_PREFIXES = (
     "___strgtold",
     "__cfto",
 )
+
+# DPLAYX exports are ordinal-imported in the PE, but Ghidra resolves the thunk
+# labels from the import descriptor. Treat these named one-instruction IAT
+# thunks the same way as name-imported DLL thunks.
+SAFE_EXTRA_IMPORT_THUNK_NAMES = {
+    "_DirectPlayCreate@12",
+    "_DirectPlayLobbyCreateA@20",
+    "_DirectPlayEnumerateA@8",
+}
 
 GENERIC_INVENTORY_NAME_PREFIXES = ("FUN_", "case")
 MAX_PROBABLE_REGION_SPAN_BYTES = 0x600
@@ -488,6 +497,9 @@ def collect_candidates() -> tuple[
 
         if name.startswith("_") and normalize_import_name(name) in imported_symbol_names:
             reasons.append("dll-import-thunk")
+
+        if name in SAFE_EXTRA_IMPORT_THUNK_NAMES:
+            reasons.append("dll-import-thunk-ghidra-ordinal-name")
 
         if name in SAFE_EXACT_RUNTIME_NAMES:
             reasons.append("runtime-exact-name")

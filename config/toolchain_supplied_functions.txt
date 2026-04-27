@@ -38,6 +38,9 @@ _DeleteFileA@4
 _DeleteObject@4
 _DestroyWindow@4
 _DirectDrawCreate@12
+_DirectPlayCreate@12
+_DirectPlayEnumerateA@8
+_DirectPlayLobbyCreateA@20
 _DirectSoundCreate@12
 _DispatchMessageA@4
 _DrawTextA@20
@@ -341,6 +344,7 @@ _UnwindNestedFrames
 _ValidateExecute
 `eh_vector_constructor_iterator'
 `eh_vector_destructor_iterator'
+`vector_constructor_iterator'
 abort
 atof
 ctime
@@ -353,7 +357,6 @@ isupper
 localtime
 mbtowc
 memcpy
-memmove
 memset
 qsort
 raise

@@ -5,7 +5,7 @@
 # name-based exclusion unsafe or ambiguous.
 
 0054DB1B-0054DDDF  memcpy internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue
-0055740B-005576CF  memmove internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue
+005573B0-005576CF  CRT memmove plus internal helper island: jump-table cases, tail-copy stubs, and local dispatch glue
 005577A8-00557946  FPU control/status helper island: __fpreset plus internal flag-conversion helpers for __statusfp/__clearfp/__control87
 00557EA8-00557EE7  hidden CRT wrapper __atoldbl: parse string with ___strgtold12 then convert via __ld12told
 0055878E-005587F7  hidden CRT helper __fcloseall over __nstream/___piob/fclose/free
@@ -24,3 +24,15 @@
 0055918F-00559347  hidden CRT signal helper island: _signal plus local switch/cleanup glue before raise
 005594D0-00559516  CRT signal/exception action-table lookup helper used by _signal and raise
 00559EBA-0055A0C1  hidden CRT compare wrapper ___crtCompareStringW with W/A fallback and conversion glue
+005479A0-0054B17F  external compression/decompression library block: deflate/Inf32 state-machine helpers and local dispatch/codelet exits with no PDB source
+0054B1D0-0056204F  VC5 runtime/CRT/standard-library block: C++ EH runtime, CRT/string/stdio/math/io helpers, iostream/type_info, and compiler-generated EH thunks/cleanup funclets
+00460FC0-00460FC7  compiler-generated vcall thunk with no PDB source in pathing neighborhood
+0046B050-0046B059  compiler-generated EH cleanup funclet with no PDB source in pathsys.cpp neighborhood
+0046B080-0046B099  compiler-generated EH cleanup funclets with no PDB source in pathsys.cpp neighborhood
+0046B0A0-0046B0A9  compiler-generated EH cleanup funclet with no PDB source in pathsys.cpp neighborhood
+0046B0D0-0046B0E9  compiler-generated EH cleanup funclets with no PDB source in pathsys.cpp neighborhood
+004D6AC0-004D6AC9  compiler-generated EH cleanup funclet with no PDB source in taiinfmd.cpp neighborhood
+004D6AF0-004D6B19  compiler-generated EH cleanup funclets with no PDB source in taiinfmd.cpp neighborhood
+004D6B40-004D6B69  compiler-generated EH cleanup funclets with no PDB source in taiinfmd.cpp neighborhood
+004D6B90-004D6BA9  compiler-generated EH cleanup funclets with no PDB source in taiinfmd.cpp neighborhood
+0052A970-0052A974  compiler-generated thunk to sibling trig.cpp helper label with no PDB source

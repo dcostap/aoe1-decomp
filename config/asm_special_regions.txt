@@ -6,3 +6,4 @@
 00564157-0056B43F  ASM draw codelet mega-bank plus dispatch/data bank used by _ASMDraw_HLine and _ASMDraw_Sprite
 0056C680-0056C7DF  ASM draw setup/getter/padding cluster around _ASMSet_* and hidden getter stubs
 0056C7E0-0056DBBA  ASM draw entrypoints plus unnamed HLine/Sprite interpreters, opcode handlers, scanline walkers, and decoders
+0044A4B9-0044AB84  FLIC decoder optimized copy/dispatch codelet table plus _x_StandardMemCopy helper; no PDB source and not a normal one-function C++ neighborhood
