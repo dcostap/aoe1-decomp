@@ -53,4 +53,14 @@ RGE_Effects::RGE_Effects(int fd) {
                     rge_read(fd, &cmd->change_num1, 2);
                     rge_read(fd, &cmd->change_num2, 2);
                     rge_read(fd, &cmd->change_num3, 2);
-                    rge_read(fd,
+                    rge_read(fd, &cmd->change_amount, 4);
+                }
+            } else {
+                eff->effect_list = 0;
+            }
+        }
+    } else {
+        effects = 0;
+        effect_num = 0;
+    }
+}

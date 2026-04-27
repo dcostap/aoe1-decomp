@@ -3,8 +3,7 @@
 // 301 bytes
 
 // attempt 1: switch on command type, ret 8, __thiscall
-
-class RGE_Player;
+// attempt 2: short locals for loop vars
 
 struct RGE_Effect_Command {
     char command;       // +0x00
@@ -27,23 +26,25 @@ struct RGE_Effects {
     int* vtable;        // +0x00
     RGE_Effect* effects; // +0x04
     int effect_num;      // +0x08
+
+    void do_effect(short effect_id, void* player);
 };
 
-void __thiscall modify_tobj(RGE_Player* player, short a, short b, float amt, short c);
-void __thiscall modify_tobj_delta(RGE_Player* player, short a, short b, float amt, short c);
-void __thiscall modify_tobj_percent(RGE_Player* player, short a, short b, float amt, short c);
-void __thiscall new_attribute_num(RGE_Player* player, short a, float amt);
-void __thiscall make_available(RGE_Player* player, short a, char b);
-void __thiscall copy_obj(RGE_Player* player, short a, short b);
+extern "C" void __fastcall modify_tobj(void* player, short a, short b, float amt, short c);
+extern "C" void __fastcall modify_tobj_delta(void* player, short a, short b, float amt, short c);
+extern "C" void __fastcall modify_tobj_percent(void* player, short a, short b, float amt, short c);
+extern "C" void __fastcall new_attribute_num(void* player, short a, float amt);
+extern "C" void __fastcall make_available(void* player, short a, char b);
+extern "C" void __fastcall copy_obj(void* player, short a, short b);
 
-int __thiscall RGE_Player::_virtual_0x78(short a, float amt, int zero);
-
-void __thiscall RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
+void RGE_Effects::do_effect(short effect_id, void* player) {
     if (effect_id < effect_num) {
         RGE_Effect* eff = &effects[effect_id];
-        if (eff != 0 && eff->effect_list_num > 0) {
-            int i;
-            for (i = 0; i < eff->effect_list_num; i++) {
+        if (eff == 0) return;
+        short count = eff->effect_list_num;
+        if (count > 0) {
+            short i;
+            for (i = 0; i < count; i++) {
                 RGE_Effect_Command* cmd = &eff->effect_list[i];
                 switch (cmd->command) {
                 case 0:
@@ -54,7 +55,9 @@ void __thiscall RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
                         if (cmd->change_num2 == 0) {
                             new_attribute_num(player, cmd->change_num1, cmd->change_amount);
                         } else {
-                            player->_virtual_0x78(cmd->change_num1, cmd->change_amount, 0);
+                            int* vtab = *(int**)player;
+                            void (__fastcall* vfunc)(void*, short, float, int) = (void (__fastcall*)(void*, short, float, int))vtab[0x78 / 4];
+                            vfunc(player, cmd->change_num1, cmd->change_amount, 0);
                         }
                     }
                     break;

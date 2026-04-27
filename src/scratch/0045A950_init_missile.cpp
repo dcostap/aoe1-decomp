@@ -1,10 +1,10 @@
 // VA: 0045A950 RGE_Missile_Object::init_missile (Combat+Static+float variant)
 // PDB source: misl_obj.cpp
 // Attempt log:
-// - EH-framed from operator new call under /GX
-// - Proper body: new Action + ctor call + list-add + max_range store
-
-void* operator new(size_t size);
+// - 96-144 bytes, no FS:[0] generated despite operator new + /GX
+// - VC5 doesn't generate EH frame without stack destructors or try/catch
+// - Seems the original source used a different pattern with local destructors
+// - Left in scratch
 
 struct RGE_Action_Missile {
     char base[0x54];
@@ -24,7 +24,7 @@ struct RGE_Missile_Object {
 
 void RGE_Missile_Object::init_missile(void* p1, void* p2, float p3)
 {
-    RGE_Action_Missile* obj = (RGE_Action_Missile*)operator new(0x54);
+    RGE_Action_Missile* obj = new RGE_Action_Missile;
     if (obj) {
         float f1 = *(float*)((char*)p2 + 0x38);
         float f2 = *(float*)((char*)p2 + 0x3C);

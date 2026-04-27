@@ -18,7 +18,7 @@ struct RGE_Effect_Command {
 
 struct RGE_Effect {
     short id;                   // +0x00
-    char name[0x22];            // +0x02 (padded to 0x24)
+    char name[0x22];            // +0x02
     short effect_list_num;      // +0x24
     short pad2;                 // +0x26
     RGE_Effect_Command* effect_list; // +0x28
@@ -28,23 +28,27 @@ struct RGE_Effects {
     int* vtable;        // +0x00
     RGE_Effect* effects; // +0x04
     int effect_num;      // +0x08
+
+    void save(int fd);
 };
 
-void __thiscall RGE_Effects::save(int fd) {
+void RGE_Effects::save(int fd) {
     rge_write(fd, &effect_num, 4);
-    int i;
-    for (i = 0; i < effect_num; i++) {
-        RGE_Effect* eff = &effects[i];
-        rge_write(fd, eff->name, 0x1F);
-        rge_write(fd, &eff->effect_list_num, 2);
-        int j;
-        for (j = 0; j < eff->effect_list_num; j++) {
-            RGE_Effect_Command* cmd = &eff->effect_list[j];
-            rge_write(fd, &cmd->command, 1);
-            rge_write(fd, &cmd->change_num1, 2);
-            rge_write(fd, &cmd->change_num2, 2);
-            rge_write(fd, &cmd->change_num3, 2);
-            rge_write(fd, &cmd->change_amount, 4);
+    if (effect_num > 0) {
+        for (int i = 0; i < effect_num; i++) {
+            RGE_Effect* eff = &effects[i];
+            rge_write(fd, eff->name, 0x1F);
+            rge_write(fd, &eff->effect_list_num, 2);
+            if (eff->effect_list_num > 0) {
+                for (int j = 0; j < eff->effect_list_num; j++) {
+                    RGE_Effect_Command* cmd = &eff->effect_list[j];
+                    rge_write(fd, &cmd->command, 1);
+                    rge_write(fd, &cmd->change_num1, 2);
+                    rge_write(fd, &cmd->change_num2, 2);
+                    rge_write(fd, &cmd->change_num3, 2);
+                    rge_write(fd, &cmd->change_amount, 4);
+                }
+            }
         }
     }
 }

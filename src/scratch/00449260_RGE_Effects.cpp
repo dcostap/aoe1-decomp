@@ -32,11 +32,13 @@ struct RGE_Effects {
     int* vtable;        // +0x00
     RGE_Effect* effects; // +0x04
     int effect_num;      // +0x08
+
+    RGE_Effects(char* path);
 };
 
-extern int DAT_00570430;  // vtable
+extern int DAT_00570430;
 
-void __thiscall RGE_Effects::RGE_Effects(char* path) {
+RGE_Effects::RGE_Effects(char* path) {
     vtable = &DAT_00570430;
     FILE* f = fopen(path, "r");
     if (f == 0) {
