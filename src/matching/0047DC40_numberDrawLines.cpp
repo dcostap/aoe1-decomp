@@ -1,9 +1,14 @@
+// numberDrawLines (0047DC40, 8 bytes, Pnl_txt.cpp)
+// simple getter returning this->draw_lines
+#include "game_globals.h"
+#include "game_types.h"
+
 class TTextPanel {
 public:
-    virtual ~TTextPanel();
-    char gap_0[0xF6];
-    short field_FA;
-    int numberDrawLines();
+    unsigned char _pad[0xFA];
+    short draw_lines; // +0xFA
 };
 
-int TTextPanel::numberDrawLines() { return this->field_FA; }
+int TTextPanel::numberDrawLines() {
+    return draw_lines;
+}

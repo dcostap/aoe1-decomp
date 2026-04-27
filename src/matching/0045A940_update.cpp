@@ -1,11 +1,16 @@
-class RGE_Combat_Object {
-public:
-    virtual void update();
+// VA: 0045A940 RGE_Missile_Object::update
+// PDB source: misl_obj.cpp
+// Tail jump to base::update
+
+struct RGE_Combat_Object {
+    unsigned char update();
 };
 
-class RGE_Missile_Object : public RGE_Combat_Object {
-public:
-    void update();
+struct RGE_Missile_Object : public RGE_Combat_Object {
+    unsigned char update();
 };
 
-void RGE_Missile_Object::update() { RGE_Combat_Object::update(); }
+unsigned char RGE_Missile_Object::update()
+{
+    return RGE_Combat_Object::update();
+}

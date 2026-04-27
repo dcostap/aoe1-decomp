@@ -40,6 +40,50 @@ from extract_obj_function import decode_bytes
 MAX_VARIANTS_APPROX_TWO_MINUTES = 18_000
 
 
+FLAG_PRESETS: dict[str, dict[str, str]] = {
+    # Small, commonly useful VC5 classification sweep. These are appended after
+    # config/flags/default.rsp, just like template @flagchoice content.
+    "vc5-small": {
+        "default": "",
+        "gx": "/GX\n",
+        "ow": "/Ow\n",
+        "gx_ow": "/GX /Ow\n",
+        "oi": "/Oi\n",
+        "gx_oi": "/GX /Oi\n",
+        "og": "/Og\n",
+        "gx_og": "/GX /Og\n",
+        "ot": "/Ot\n",
+        "gx_ot": "/GX /Ot\n",
+        "ob0": "/Ob0\n",
+        "gx_ob0": "/GX /Ob0\n",
+    },
+    # Riskier/noisier options. Useful to classify basins, but a match under one
+    # of these flags needs deliberate review before promotion.
+    "vc5-risky": {
+        "default": "",
+        "gx": "/GX\n",
+        "oa": "/Oa\n",
+        "gx_oa": "/GX /Oa\n",
+        "og_minus": "/Og-\n",
+        "gx_og_minus": "/GX /Og-\n",
+        "ot_minus": "/Ot-\n",
+        "gx_ot_minus": "/GX /Ot-\n",
+        "o1": "/O1\n",
+        "gx_o1": "/GX /O1\n",
+        "ox": "/Ox\n",
+        "gx_ox": "/GX /Ox\n",
+    },
+    # Debug-info flags are intentionally separate: they can perturb codegen and
+    # produce debug sections that are noisier for tooling.
+    "vc5-debug-context": {
+        "default": "",
+        "zd": "/Zd\n",
+        "zi": "/Zi /Fd{work_dir}\\vc.pdb\n",
+        "z7": "/Z7\n",
+    },
+}
+
+
 HELP_EPILOG = r"""
 Template syntax
 ===============
@@ -85,6 +129,19 @@ is written to a per-variant response file that is passed AFTER config/flags/defa
 So every variant always starts from the project default flags and then appends the
 selected additions/overrides.  For debug-info flags, variant_lab automatically
 adds a unique /Fd path when needed to avoid parallel PDB collisions.
+
+Common flag presets
+-------------------
+
+Use --flag-preset to append a named reusable flag axis without editing the template:
+
+  --flag-preset vc5-small
+  --flag-preset vc5-risky
+  --flag-preset vc5-debug-context
+
+Presets are explicit on purpose. They are classification tools, not promotion
+policy. A match under non-default appended flags still needs normal review and
+retesting/justification before a function is promoted.
 
 Placeholders in flag cases
 --------------------------
@@ -564,6 +621,24 @@ def expand_flags(plan: TemplatePlan, spec: VariantSpec, fmt_values: dict[str, st
     if re.search(r"/(Zi|ZI|Zd)\b", text, flags=re.IGNORECASE) and not re.search(r"/Fd", text, flags=re.IGNORECASE):
         text += f"\n/Fd{fmt_values['work_dir']}\\vc.pdb\n"
     return text
+
+
+def flag_preset_template(preset_names: list[str]) -> str:
+    if not preset_names:
+        return ""
+    chunks: list[str] = []
+    for preset_name in preset_names:
+        cases = FLAG_PRESETS[preset_name]
+        axis_name = f"preset_{preset_name.replace('-', '_')}"
+        chunks.append(f"\n@flagchoice {axis_name}\n")
+        for label, flags in cases.items():
+            chunks.append(f"@case {label}\n")
+            if flags:
+                chunks.append(flags)
+                if not flags.endswith("\n"):
+                    chunks.append("\n")
+        chunks.append("@endflagchoice\n")
+    return "".join(chunks)
 
 
 def make_specs(plan: TemplatePlan) -> list[VariantSpec]:
@@ -1124,6 +1199,10 @@ def write_reports(
     summary.append(f"Tool errors: {tool_errors}")
     summary.append(f"Unique asm groups: {len(groups)}")
     summary.append(f"Exact matches: {len(exact_results)}")
+    preset_axes = [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")]
+    if preset_axes:
+        summary.append(f"Flag presets: {', '.join(preset_axes)}")
+        summary.append("Note: preset flags are appended after default.rsp and are for classification; non-default-flag matches need normal review.")
     summary.append("")
     summary.append("Axes:")
     for axis in axes:
@@ -1217,6 +1296,7 @@ def write_reports(
         "tool_errors": tool_errors,
         "unique_groups": len(groups),
         "exact_matches": len(exact_results),
+        "flag_presets": [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")],
         "axes": [
             {"kind": axis.kind, "name": axis.name, "labels": axis.labels, "blocks": len(axis.blocks)} for axis in axes
         ],
@@ -1234,6 +1314,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument("--va", required=True, help="Function VA in hex, e.g. 0051ACA0")
     parser.add_argument("--template", help="Full-source template path, or '-' for stdin")
+    parser.add_argument(
+        "--flag-preset",
+        action="append",
+        choices=sorted(FLAG_PRESETS.keys()),
+        default=[],
+        help="Append a reusable flag-axis preset (repeatable). Available: " + ", ".join(sorted(FLAG_PRESETS.keys())),
+    )
     parser.add_argument("--init", action="store_true", help="Create build/temp/<slug>_lab.tpl.cpp from the preferred source and exit")
     return parser.parse_args(argv)
 
@@ -1283,7 +1370,10 @@ def main(argv: list[str] | None = None) -> int:
         template_text = template_path.read_text(encoding="utf-8")
         template_name = str(template_path)
 
-    plan = parse_template(template_text)
+    preset_text = flag_preset_template(args.flag_preset)
+    effective_template_text = template_text + preset_text
+
+    plan = parse_template(effective_template_text)
     specs = make_specs(plan)
     if not specs:
         raise SystemExit("no variants generated")
@@ -1310,10 +1400,15 @@ def main(argv: list[str] | None = None) -> int:
     work_root = run_dir / "work"
     ensure_dir(work_root)
     (run_dir / "template_input.cpp").write_text(template_text, encoding="utf-8")
+    if preset_text:
+        (run_dir / "flag_presets.tpl").write_text(preset_text, encoding="utf-8")
+        (run_dir / "effective_template_input.cpp").write_text(effective_template_text, encoding="utf-8")
 
     workers = max(1, (os.cpu_count() or 2) - 1)
     print(f"Variant lab for {slug} ({va_text})")
     print(f"Template: {template_name}")
+    if args.flag_preset:
+        print(f"Flag presets: {', '.join(args.flag_preset)}")
     print(f"Run dir: {run_dir}")
     print(f"Variants: {len(specs)}")
     print(f"Workers: {workers}")

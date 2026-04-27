@@ -1,46 +1,38 @@
+// difficulty (00422640, 9 bytes, basegame.cpp)
+// simple getter returning rge_game_options.difficultyValue
+#include "game_globals.h"
+#include "game_types.h"
+
+// --- local stubs ---
+struct RGE_Game_Options {
+    float versionValue;                // +0x0
+    unsigned char scenarioGameValue;   // +0x4
+    char scenarioNameValue[128];       // +0x5
+    unsigned char singlePlayerGameValue;  // +0x85
+    unsigned char multiplayerGameValue;   // +0x86
+    unsigned char mapXSizeValue;       // +0x87
+    unsigned char mapYSizeValue;       // +0x88
+    unsigned char mapZSizeValue;       // +0x89
+    unsigned char allowCheatCodesValue;   // +0x8A
+    unsigned char mpPathFindingValue;     // +0x8B
+    unsigned char cheatNotificationValue; // +0x8C
+    unsigned char fullVisibilityValue;    // +0x8D
+    unsigned char fogOfWarValue;          // +0x8E
+    unsigned char coloredChatValue;       // +0x8F
+    unsigned char numberPlayersValue;     // +0x90
+    unsigned char gameDeveloperModeValue; // +0x91
+    unsigned char playerCDAndVersionValue[9]; // +0x92
+    unsigned char difficultyValue;        // +0x9B
+    // ... rest omitted
+};
+
 class RGE_Base_Game {
 public:
-    virtual ~RGE_Base_Game();
-    char gap_04[0x3C];
-    int error_code_;
-    char gap_44[0x4C4];
-    int world_update_count_;
-    int view_update_count_;
-    char gap_510[4];
-    int last_world_update_count_;
-    int last_view_update_count_;
-    char gap_51C[0x3DC];
-    float version_;
-    unsigned char scenarioGame_;
-    char scenarioName_[0x80];
-    unsigned char singlePlayerGame_;
-    unsigned char multiplayerGame_;
-    unsigned char mapXSize_;
-    unsigned char mapYSize_;
-    unsigned char mapZSize_;
-    unsigned char allowCheatCodes_;
-    unsigned char mpPathFinding_;
-    unsigned char cheatNotification_;
-    unsigned char fullVisibility_;
-    unsigned char fogOfWar_;
-    unsigned char coloredChat_;
-    unsigned char numberPlayers_;
-    unsigned char gameDeveloperMode_;
-    unsigned char cdAndVersion_[9];
-    unsigned char difficulty_;
-    char gap_994[0xC];
-    int campaignGame_;
-    int savedGame_;
-    char gap_9A8[8];
-    int playerID_[16];
-    char gap_9F0[0x1C];
-    float game_speed_;
-    int single_player_difficulty_;
-    unsigned char pathFinding_;
-
-    int difficulty();
+    void* vtable;                     // +0x0
+    unsigned char _pad[0x8F8];
+    RGE_Game_Options rge_game_options; // +0x8F8
 };
 
 int RGE_Base_Game::difficulty() {
-    return this->difficulty_;
+    return rge_game_options.difficultyValue;
 }

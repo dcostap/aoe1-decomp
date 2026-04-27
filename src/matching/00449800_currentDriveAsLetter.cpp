@@ -1,10 +1,15 @@
-class TDrive_System {
+// currentDriveAsLetter (00449800, 10 bytes, file_stf.cpp)
+// simple getter: return this->currentDriveValue + '@'
+#include "game_globals.h"
+#include "game_types.h"
+
+class DriveInformation {
 public:
-    char gap_0[0x104];
-    int currentDrive;
-    int currentDriveAsLetter();
+    int initialDriveValue;
+    char initialDirectoryValue[256];
+    int currentDriveValue;
 };
 
-int TDrive_System::currentDriveAsLetter() {
-    return this->currentDrive + 0x40;
+char DriveInformation::currentDriveAsLetter() {
+    return (char)(currentDriveValue + '@');
 }

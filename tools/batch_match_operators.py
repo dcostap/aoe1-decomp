@@ -12,6 +12,7 @@ from common import function_slug, load_functions, repo_path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRATCH_DIR = REPO_ROOT / "src" / "scratch"
 MATCHING_DIR = REPO_ROOT / "src" / "matching"
+ACCEPTED_DRIFT_DIR = REPO_ROOT / "src" / "accepted_drift"
 
 DIRECT_COMPARE_PATTERN = [
     re.compile(r"mov eax,\[esp\+4\]$"),
@@ -236,6 +237,11 @@ def main() -> None:
         slug = function_slug(record)
         scratch_path = SCRATCH_DIR / f"{slug}.cpp"
         matching_path = MATCHING_DIR / f"{slug}.cpp"
+        accepted_drift_path = ACCEPTED_DRIFT_DIR / f"{slug}.cpp"
+        if accepted_drift_path.exists():
+            print(f"[skip] {record['va']} already in accepted_drift")
+            skipped += 1
+            continue
 
         scratch_path.write_text(source, encoding="utf-8")
         print(f"\n[operator] {record['va']} {record['name']}")

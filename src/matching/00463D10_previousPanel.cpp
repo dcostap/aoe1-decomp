@@ -1,16 +1,23 @@
-struct Inner_00463D10 {
-    int previousPanel();
+// previousPanel (00463D10, 15 bytes, Panel.cpp)
+// if (currentPanel) return TPanel::previousPanel(currentPanel); return 0;
+#include "game_globals.h"
+#include "game_types.h"
+
+class TPanel {
+public:
+    void* vtable;
+    TPanel* previous_panel;
+    TPanel* previousPanel();
 };
 
 class TPanelSystem {
 public:
-    char gap_0[0x0C];
-    Inner_00463D10 *currentPanel;
-    int previousPanel();
+    unsigned char _pad[0xC];
+    TPanel* currentPanelValue;  // +0xC
 };
 
-int TPanelSystem::previousPanel() {
-    if (this->currentPanel)
-        return this->currentPanel->previousPanel();
+TPanel* TPanelSystem::previousPanel() {
+    if (currentPanelValue)
+        return TPanel::previousPanel(currentPanelValue);
     return 0;
 }

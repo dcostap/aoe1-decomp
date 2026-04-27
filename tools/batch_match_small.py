@@ -23,6 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = REPO_ROOT / "tools"
 SCRATCH_DIR = REPO_ROOT / "src" / "scratch"
 MATCHING_DIR = REPO_ROOT / "src" / "matching"
+ACCEPTED_DRIFT_DIR = REPO_ROOT / "src" / "accepted_drift"
 
 
 def load_all_functions():
@@ -310,6 +311,11 @@ def main():
         count += 1
         slug = function_slug(va, name)
         scratch_path = SCRATCH_DIR / f"{slug}.cpp"
+        accepted_drift_path = ACCEPTED_DRIFT_DIR / f"{slug}.cpp"
+        if accepted_drift_path.exists():
+            print(f"[skip] {va} already in accepted_drift")
+            results['skipped'] += 1
+            continue
         
         print(f"\n[{category}] {va} {name} ({size}B)")
         

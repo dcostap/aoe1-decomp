@@ -130,17 +130,37 @@ public:
 // pArea cache probe gives 0x130 frame and early EDI render_area guard, worse than direct member access; rolled back
 // tried explicit vtable-local + indirect calls to mimic original iStack_114; VC5 cannot express free __thiscall function pointers cleanly, rolled back
 // tried dead/volatile stack pad locals; VC5 removed them unless used, no frame change; rolled back
+// replaced LocalText with raw str after rect-argument correction; raw str now keeps frame 0x134 and str at [esp+4c]
+// adjusted shadow rect SetRect calls to use left/top minus one; this matches original rectangle semantics and vtable spill slot [esp+38]
+// moving LocalText declarations after early guards preserves frame/str address but does not affect upfront saved-register pushes, rolled back
+// tested small flag additions (/Ow,/Oa,/Og,/Oi,/Gs,/Gf); none fixed saved-register prolog, /Oa even grew frame to 0x138
+// variant_lab finish-shape axis found all three finish_up paths as goto finish recovers original shrinkwrapped prolog through first guards; kept it, first mismatch now branch displacement at offset 16
+// lab showed partial goto variants do not recover prolog; all three finish paths must share the final label
+// follow-up local order/pad probes could not move old_font/vtable spill from [esp+34]/[esp+38] to original [esp+38]/[esp+40] without breaking frame
+// current near-match is exact size 1102; first mismatch is early fail-branch target 2 bytes short because rect setup uses lea [ecx+ebx-2] / lea [eax+edi-2] where original used sub/sub/add/add
+// tried splitting right/bottom calculation statements plus long/unsigned/const/declare-early variants; VC5 still folded to lea
+// random variant_lab over 96 rect_calc/rect_call/tail_nudge/flag combos collapsed to only two groups: current shifted-call family or bad 0x12c direct-call family; no new lead
+// exhaustive lifetime/inline lab over named/recompute/inline rect blocks: named/recompute variants stayed in current LEA family; inlining right/bottom destroyed frame to 0x124; no match
+// declaration-order lab over top locals, old_font/rect late birth, HMS/rounded_time orders: most variants identical; hms_hours_first only changed an internal group; rounded_preadd overshot tail to +4; no match
+// volatile size locals force sub/add but destroy frame/register family; volatile tail read shifts epilogue but adds wrong behavior/too many bytes; rolled back
+// tried width/height split with ++left/++top source order; VC5 still folded right/bottom into lea family, no improvement
+// tried pointer-to-local size updates; got desired sub/add shape locally but destroyed register allocation and made early fail target much too long; rolled back
+// variant_lab 386 rect-local shapes across int/long/unsigned, load order, inc spelling, dec spelling, add order: only two near-match groups, both LEA families; no sub/sub/add/add island
+// variant_lab 30 rect+flag shapes across default,/Og-,/Oi-,/Ob0,/Os,/Ot,/O1,/Ox,/GX: no match; nondefault optimizer families break prolog/size badly
+// TU-context lab with stdlib/stdio/string/new includes, ctor/dtor declarations, after-target destructor stubs, and /GX: no target-body change; still same LEA family
+// tried windows.h/real RECT/HRGN surface instead of local tagRECT/import decls; compiled after HRGN adjustment but target body still same LEA family
 // fixed local TRIBE_Panel_Time layout by removing bogus gap before image_text_active; field now sits at original +168 instead of wrong +170
-// BLOCKER: prolog register save order fundamentally different (push ebx/ebp/esi/edi vs push esi/.../push edi/ebp/ebx)
-//           stack frame 0x12C vs 0x134 (8 bytes short), all offsets cascade from there
-//           game_speed FPU load at [eax+118h] instead of [edx+18h] despite correct struct layout
-//           likely requires donor-file TU context reconstruction or flag investigation
+// rect lab over split right/bottom add-assign, load order, plus-equal, long vs int: all collapsed to current LEA family
+// volatile rect lab produced distinct larger families but none close; volatile right/bottom also broke frame back to 0x12C
+// current near-match is exact target behavior/size except two-byte-short rect setup: VC5 folds original sub/sub/add/add into two LEAs
+// BLOCKER: remaining mismatch is codegen-family drift in rect right/bottom calculation, causing early fail branches to target 0051E0D4 instead of 0051E0D6
 
 void TRIBE_Panel_Time::draw() {
     char str[256];
     void* old_font;
     tagRECT rect;
     int text_flags;
+    int right, bottom;
 
     if (this->render_area == 0) return;
     if (this->field_70 == 0) return;
@@ -160,8 +180,7 @@ void TRIBE_Panel_Time::draw() {
             this->render_to_image_buffer();
             if (this->field_F3) {
                 this->field_F3 = 0;
-                this->finish_up();
-                return;
+                goto finish;
             }
         }
     }
@@ -170,14 +189,12 @@ void TRIBE_Panel_Time::draw() {
         this->image_buffer->SetTrans(1, 1);
         this->image_buffer->Copy(this->render_area, this->used_screen_rect.left, this->used_screen_rect.top, &this->used_image_rect, 1);
         this->image_buffer->SetTrans(0, 1);
-        this->finish_up();
-        return;
+        goto finish;
     }
 
     old_font = this->render_area->GetDc((char*)s_tpnl_tim_draw);
     if (old_font == 0) {
-        this->finish_up();
-        return;
+        goto finish;
     }
 
     SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
@@ -223,27 +240,34 @@ void TRIBE_Panel_Time::draw() {
     SetTextColor(this->render_area->DrawDc, this->color2);
 
     {
-        int left = this->fallback_left + 1;
-        int top = this->fallback_top + 1;
-        int right = left + this->pnl_wid - 2;
-        int bottom = top + this->pnl_hgt - 2;
+        int left = this->fallback_left;
+        int top = this->fallback_top;
+        int width = this->pnl_wid;
+        int height = this->pnl_hgt;
+        ++left;
+        ++top;
+        width -= 2;
+        height -= 2;
+        right = width + left;
+        bottom = height + top;
 
-        SetRect(&rect, left, top, right - 2, bottom - 2);
+        SetRect(&rect, left - 1, top - 1, right - 2, bottom - 2);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
-        SetRect(&rect, left, top + 2, right - 2, bottom);
+        SetRect(&rect, left - 1, top + 1, right - 2, bottom);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
-        SetRect(&rect, left + 2, top, right, bottom - 2);
+        SetRect(&rect, left + 1, top - 1, right, bottom - 2);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
-        SetRect(&rect, left + 2, top + 2, right, bottom);
+        SetRect(&rect, left + 1, top + 1, right, bottom);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
 
         SetTextColor(this->render_area->DrawDc, this->color1);
-        SetRect(&rect, left + 1, top + 1, right - 1, bottom - 1);
+        SetRect(&rect, left, top, right - 1, bottom - 1);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
     }
 
     SelectObject(this->render_area->DrawDc, old_font);
     SelectClipRgn(this->render_area->DrawDc, 0);
     this->render_area->ReleaseDc((char*)s_tpnl_tim_draw);
+finish:
     this->finish_up();
 }

@@ -14,6 +14,8 @@
 // variant_lab include context (<stdlib.h>, <new>) no codegen change; <windows.h> conflicts with local imports
 // variant_lab remainder spellings mostly same; explicit shift remainder is worse/too long
 // tried Ghidra-style old_font overlay in str[0..3] with sprintf/DrawText on str+4; no quotient/register improvement, rolled back
+// tried assign-in-if and modulo/rem-after-cmp variants; either dropped required remainder-before-compare shape or introduced idiv/wrong behavior, rolled back
+// tested /Oa briefly: it produces the desired ECX quotient family but collapses function to 848 bytes and is not a viable flag fix
 // BLOCKER: render_to_image_buffer wants quotient formed in ECX (mov ecx,edx/add ecx,edi/...), current source keeps the shorter EDX quotient family
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);

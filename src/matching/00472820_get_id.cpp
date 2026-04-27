@@ -1,12 +1,16 @@
-class Pnl_drop {
+// get_id (00472820, 15 bytes, Pnl_btn.cpp)
+// returns this->id[this->cur_state]
+#include "game_globals.h"
+#include "game_types.h"
+
+class TButtonPanel {
 public:
-    char gap_0[0xF4];
-    int ids[64];
-    char gap_1F4[2];
-    short currentIndex;
-    int get_id();
+    unsigned char _pad[0xF4];
+    long id[9];        // +0xF4
+    unsigned char _pad2[0x62];
+    short cur_state;  // +0x1F6
 };
 
-int Pnl_drop::get_id() {
-    return this->ids[(int)this->currentIndex];
+long TButtonPanel::get_id() {
+    return id[cur_state];
 }

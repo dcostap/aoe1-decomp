@@ -6,17 +6,7 @@ import json
 from pathlib import Path
 
 from coff import mask_relocations
-from common import ensure_build_subdir, function_record_by_va, function_slug, repo_path
-
-
-def first_mismatch_offset(left: bytes, right: bytes) -> int | None:
-    limit = min(len(left), len(right))
-    for index in range(limit):
-        if left[index] != right[index]:
-            return index
-    if len(left) != len(right):
-        return limit
-    return None
+from common import byte_diff_metrics, ensure_build_subdir, function_record_by_va, function_slug, repo_path
 
 
 def parse_args() -> argparse.Namespace:
@@ -77,11 +67,27 @@ def main() -> None:
                 masked_rebuilt[index] = 0
         masked_rebuilt = bytes(masked_rebuilt)
 
-    mismatch = first_mismatch_offset(masked_original, masked_rebuilt)
+    metrics = byte_diff_metrics(masked_original, masked_rebuilt)
+    mismatch_text = str(metrics["first_mismatch_offset"])
+    mismatch = int(mismatch_text) if mismatch_text else None
+    metrics_path = diff_dir / f"{slug}.json"
+    metrics_payload = {
+        "va": record["va"],
+        "name": record["name"],
+        "slug": slug,
+        "relocations_masked": relocation_count,
+        **metrics,
+    }
+    metrics_path.write_text(json.dumps(metrics_payload, indent=2), encoding="utf-8")
+
     lines: list[str] = []
     lines.append(f"Function: {record['name']} ({record['va']})")
     lines.append(f"Original bytes: {len(original_bytes)}")
     lines.append(f"Rebuilt bytes: {len(rebuilt_bytes)}")
+    lines.append(f"Compared bytes: {metrics['compare_size']}")
+    lines.append(f"Diff bytes: {metrics['diff_bytes']}")
+    lines.append(f"Diff percent: {float(metrics['diff_percent']):.4f}%")
+    lines.append(f"Diff spans: {metrics['diff_spans']}")
     lines.append(f"Relocations masked: {relocation_count}")
 
     if mismatch is None:

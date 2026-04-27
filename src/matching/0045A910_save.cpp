@@ -1,19 +1,24 @@
-extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
+// VA: 0045A910 RGE_Missile_Object::save
+// PDB source: misl_obj.cpp
 
-class RGE_Combat_Object {
-public:
-    virtual void save(int handle);
+#include <stdlib.h>
+
+extern "C" {
+    void rge_write(int fd, void* buf, int size);
+}
+
+struct RGE_Combat_Object_save {
+    char base[0x1C8];
+    void save(int fd);
 };
 
-class RGE_Missile_Object : public RGE_Combat_Object {
-public:
-    char gap_04[0x1C0];
-    float max_range;
-
-    void save(int handle);
+struct RGE_Missile_Object {
+    char base[0x1C8];
+    void save(int fd);
 };
 
-void RGE_Missile_Object::save(int handle) {
-    RGE_Combat_Object::save(handle);
-    rge_write(handle, &this->max_range, 4);
+void RGE_Missile_Object::save(int fd)
+{
+    ((RGE_Combat_Object_save*)this)->save(fd);
+    rge_write(fd, (char*)this + 0x1C4, 4);
 }

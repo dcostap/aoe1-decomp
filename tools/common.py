@@ -221,6 +221,8 @@ def preferred_source_path(record: dict[str, str]) -> Path:
     candidates = [
         REPO_ROOT / "src" / "matching" / f"{slug}.c",
         REPO_ROOT / "src" / "matching" / f"{slug}.cpp",
+        REPO_ROOT / "src" / "accepted_drift" / f"{slug}.c",
+        REPO_ROOT / "src" / "accepted_drift" / f"{slug}.cpp",
         REPO_ROOT / "src" / "scratch" / f"{slug}.c",
         REPO_ROOT / "src" / "scratch" / f"{slug}.cpp",
     ]
@@ -228,6 +230,39 @@ def preferred_source_path(record: dict[str, str]) -> Path:
         if candidate.exists():
             return candidate
     return REPO_ROOT / "src" / "scratch" / f"{slug}.c"
+
+
+def byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str]:
+    """Return stable byte-diff metrics used by diff/status/dashboard tools."""
+    compare_size = max(len(left), len(right))
+    first_mismatch: int | None = None
+    diff_bytes = 0
+    diff_spans = 0
+    in_span = False
+    for index in range(compare_size):
+        lval = left[index] if index < len(left) else None
+        rval = right[index] if index < len(right) else None
+        different = lval != rval
+        if different:
+            diff_bytes += 1
+            if first_mismatch is None:
+                first_mismatch = index
+            if not in_span:
+                diff_spans += 1
+                in_span = True
+        else:
+            in_span = False
+    diff_percent = 0.0 if compare_size == 0 else (diff_bytes / compare_size) * 100.0
+    return {
+        "original_size": len(left),
+        "rebuilt_size": len(right),
+        "compare_size": compare_size,
+        "diff_bytes": diff_bytes,
+        "diff_percent": diff_percent,
+        "diff_spans": diff_spans,
+        "first_mismatch_offset": "" if first_mismatch is None else str(first_mismatch),
+        "result": "MATCH" if diff_bytes == 0 else "MISMATCH",
+    }
 
 
 def preferred_flags_rsp_path(record: dict[str, str], toolchain: dict) -> Path:

@@ -17,6 +17,7 @@ from common import (
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRATCH_DIR = REPO_ROOT / "src" / "scratch"
 MATCHING_DIR = REPO_ROOT / "src" / "matching"
+ACCEPTED_DRIFT_DIR = REPO_ROOT / "src" / "accepted_drift"
 
 SOURCES: dict[str, str] = {
     "00411B40": """class ResourceItem;\n\nclass TechnologyItem {\npublic:\n    ResourceItem* resourceCost();\n};\n\nclass ResearchAIModule {\npublic:\n    TechnologyItem* item(int id);\n    ResourceItem* resourceCost(int id);\n};\n\nResourceItem* ResearchAIModule::resourceCost(int id) {\n    TechnologyItem* tech = this->item(id);\n    if (tech == 0) {\n        return 0;\n    }\n    return tech->resourceCost();\n}\n""",
@@ -80,6 +81,11 @@ def main() -> None:
 
         slug = function_slug(record)
         matching_path = MATCHING_DIR / f"{slug}.cpp"
+        accepted_drift_path = ACCEPTED_DRIFT_DIR / f"{slug}.cpp"
+        if accepted_drift_path.exists():
+            print(f"[skip] {va} already in accepted_drift")
+            skipped += 1
+            continue
         if matching_path.exists():
             print(f"[skip] {va} already in matching")
             skipped += 1

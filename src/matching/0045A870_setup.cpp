@@ -1,22 +1,21 @@
-class RGE_Master_Combat_Object;
-class RGE_Player;
+// VA: 0045A870 RGE_Missile_Object::setup (5-param variant)
+// PDB source: misl_obj.cpp
 
-class RGE_Combat_Object {
-public:
-    virtual void vf00(void);
-    int setup(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z);
+#include <stdlib.h>
+
+struct RGE_Combat_Object_setup_5 {
+    char base[0x1C8];
+    int setup(void* param1, void* param2, float param3, float param4, float param5);
 };
 
-class RGE_Missile_Object : public RGE_Combat_Object {
-public:
-    char gap_04[0x4A];
-    unsigned char field_4E;
-
-    int setup(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z);
+struct RGE_Missile_Object {
+    char base[0x1C8];
+    int setup(void* param1, void* param2, float param3, float param4, float param5);
 };
 
-int RGE_Missile_Object::setup(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z) {
-    RGE_Combat_Object::setup(master_obj, player, x, y, z);
-    this->field_4E = 0x3C;
+int RGE_Missile_Object::setup(void* param1, void* param2, float param3, float param4, float param5)
+{
+    ((RGE_Combat_Object_setup_5*)this)->setup(param1, param2, param3, param4, param5);
+    *(unsigned char*)((char*)this + 0x4E) = 0x3C;
     return 1;
 }

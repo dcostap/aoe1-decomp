@@ -1,27 +1,27 @@
+// Attempt 4: i declared but born late
 class BaseObject {
 public:
-    char gap_00[0x0C];
+    void* vftable;
+    char gap_04[0x08];
     int numberGroupsValue;
     int* groupIDValue;
 
-    int inGroup(int group) const;
+    int inGroup(int group_id) const;
 };
 
-int BaseObject::inGroup(int group) const {
-    int count = this->numberGroupsValue;
-    int i = 0;
-    int* ids;
-
-    if (count <= 0) {
+int BaseObject::inGroup(int group_id) const {
+    int i;
+    i = 0;
+    if (numberGroupsValue <= 0) {
         return 0;
     }
-    ids = this->groupIDValue;
+    int* p = groupIDValue;
     do {
-        if (*ids == group) {
+        if (*p == group_id) {
             return 1;
         }
         i++;
-        ids++;
-    } while (i < count);
+        p++;
+    } while (i < numberGroupsValue);
     return 0;
 }

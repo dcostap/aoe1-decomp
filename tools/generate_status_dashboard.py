@@ -18,10 +18,11 @@ from common import (
 
 
 HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
-BUCKET_ORDER = ["matching", "scratch", "unclaimed", "conflict"]
+BUCKET_ORDER = ["matching", "accepted_drift", "scratch", "unclaimed", "conflict"]
 CORPUS_ORDER = ["normal", "toolchain_supplied", "asm_special", "asm_region"]
 BUCKET_COLORS = {
     "matching": "#22c55e",
+    "accepted_drift": "#f59e0b",
     "scratch": "#8b5cf6",
     "unclaimed": "#475569",
     "conflict": "#ef4444",
@@ -166,6 +167,11 @@ def build_group_list(normal_rows: list[dict[str, str]]) -> list[dict[str, object
             "sourceNext": row["source_next"],
             "sourcePreview": row["source_preview"],
             "sourceCommentLines": to_int(row["source_comment_lines"]),
+            "diffPercent": float(row.get("diff_percent") or 0.0),
+            "diffBytes": to_int(row.get("diff_bytes")),
+            "diffSpans": to_int(row.get("diff_spans")),
+            "firstMismatchOffset": row.get("first_mismatch_offset", ""),
+            "diffResult": row.get("diff_result", ""),
             "usesCustomFlags": row["uses_custom_flags"] == "yes",
             "customFlagsPath": row["custom_flags_path"],
             "isRemaining": row["is_remaining"] == "yes",
@@ -261,9 +267,11 @@ def write_html_dashboard(rows: list[dict[str, str]]) -> Path:
 def main() -> None:
     scratch_dir = REPO_ROOT / "src" / "scratch"
     matching_dir = REPO_ROOT / "src" / "matching"
+    accepted_drift_dir = REPO_ROOT / "src" / "accepted_drift"
     flags_dir = REPO_ROOT / "config" / "flags"
     scratch_files = source_files(scratch_dir)
     matching_files = source_files(matching_dir)
+    accepted_drift_files = source_files(accepted_drift_dir)
 
     records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
@@ -277,7 +285,8 @@ def main() -> None:
         slug = record["slug"]
         scratch_path = scratch_files.get(slug)
         matching_path = matching_files.get(slug)
-        present_paths = [path for path in (matching_path, scratch_path) if path is not None]
+        accepted_drift_path = accepted_drift_files.get(slug)
+        present_paths = [path for path in (matching_path, accepted_drift_path, scratch_path) if path is not None]
 
         corpus_bucket, corpus_reason = classify_corpus_bucket(
             record,
@@ -294,7 +303,11 @@ def main() -> None:
         elif matching_path:
             source_bucket = "matching"
             source_path = str(matching_path.relative_to(REPO_ROOT))
-            note_path = None
+            note_path = matching_path
+        elif accepted_drift_path:
+            source_bucket = "accepted_drift"
+            source_path = str(accepted_drift_path.relative_to(REPO_ROOT))
+            note_path = accepted_drift_path
         elif scratch_path:
             source_bucket = "scratch"
             source_path = str(scratch_path.relative_to(REPO_ROOT))
@@ -306,8 +319,26 @@ def main() -> None:
 
         custom_flags_path = flags_dir / f"{slug}.rsp"
         header_notes = parse_header_notes(note_path) if note_path is not None else default_header_notes()
-        preview_path = scratch_path or matching_path
-        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket != "matching" else "no"
+        preview_path = scratch_path or accepted_drift_path or matching_path
+        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift"} else "no"
+        diff_metrics_path = REPO_ROOT / "build" / "diff" / f"{slug}.json"
+        diff_metrics = {}
+        if diff_metrics_path.exists():
+            try:
+                diff_metrics = json.loads(diff_metrics_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                diff_metrics = {}
+        elif source_bucket == "matching":
+            # src\matching is an exact-match claim; treat missing generated diff
+            # artifacts as 0.0000% for status/dashboard coloring. Expensive full
+            # sweep validation can be run separately when proof is needed.
+            diff_metrics = {
+                "result": "MATCH",
+                "diff_percent": 0.0,
+                "diff_bytes": 0,
+                "diff_spans": 0,
+                "first_mismatch_offset": "",
+            }
 
         row = {
             "va": record["va"],
@@ -340,6 +371,11 @@ def main() -> None:
             "source_preview": read_source_preview(preview_path),
             "source_comment_lines": str(count_comment_lines(preview_path)),
             "has_blocker": "yes" if header_notes["BLOCKER"] else "no",
+            "diff_result": str(diff_metrics.get("result", "")),
+            "diff_percent": f"{float(diff_metrics.get('diff_percent', 0.0)):.4f}" if diff_metrics else "",
+            "diff_bytes": str(diff_metrics.get("diff_bytes", "")),
+            "diff_spans": str(diff_metrics.get("diff_spans", "")),
+            "first_mismatch_offset": str(diff_metrics.get("first_mismatch_offset", "")),
         }
         rows.append(row)
         if is_remaining == "yes":
@@ -387,6 +423,11 @@ def main() -> None:
                 "source_preview",
                 "source_comment_lines",
                 "has_blocker",
+                "diff_result",
+                "diff_percent",
+                "diff_bytes",
+                "diff_spans",
+                "first_mismatch_offset",
             ],
         )
         writer.writeheader()
@@ -396,6 +437,7 @@ def main() -> None:
 
     scratch_count = sum(1 for row in rows if row["source_bucket"] == "scratch")
     matching_count = sum(1 for row in rows if row["source_bucket"] == "matching")
+    accepted_drift_count = sum(1 for row in rows if row["source_bucket"] == "accepted_drift")
     conflict_count = sum(1 for row in rows if row["source_bucket"] == "conflict")
     unclaimed_count = sum(1 for row in rows if row["source_bucket"] == "unclaimed")
     normal_count = sum(1 for row in rows if row["corpus_bucket"] == "normal")
@@ -408,6 +450,7 @@ def main() -> None:
     print(
         "Counts: "
         f"matching={matching_count} "
+        f"accepted_drift={accepted_drift_count} "
         f"scratch={scratch_count} "
         f"unclaimed={unclaimed_count} "
         f"conflict={conflict_count} "

@@ -68,8 +68,14 @@ high-confidence manifests that drive this separation.
   - active per-function work area
   - this also holds understood-but-still-nonmatching functions
   - create or edit one file per target function here
+- `src\accepted_drift\...`
+  - reviewed behavior-equivalent non-exact bank
+  - use only for rare localized VC5 codegen drift after meaningful matching work
+  - folder placement is the only category marker; there is no separate manifest
+  - keep the full previous attempt log as comments and add a clear `ACCEPTED_DRIFT` note
+  - these are solved-enough for queues but are not exact matches
 - `src\matching\...`
-  - finished bank
+  - exact finished bank
   - only promote a function here after local exact-match validation passes
 
 ## Current phase bias: local-first type work
@@ -102,9 +108,10 @@ Practical rule:
 5. Compile and compare against the original.
 6. If compilation or matching work exposes missing shared facts, update the shared working layer.
 7. Keep iterating until the function matches.
-8. If a function remains non-exact after meaningful investigation, keep it in `src\scratch\...` and make the file's top attempt log summarize the remaining gap clearly.
-9. Remove scratch-only workflow notes when done.
-10. Move the function to `src\matching\...` only after it is locally validated.
+8. If a function remains non-exact after meaningful investigation, usually keep it in `src\scratch\...` and make the file's top attempt log summarize the remaining gap clearly.
+9. For rare cases where the remaining diff is small, localized, and manually reviewed as behavior-equivalent VC5 drift, move it to `src\accepted_drift\...`; preserve all previous attempt-log comments and add an `ACCEPTED_DRIFT` note describing the exact localized drift and why calls/stores/stack/return behavior are still equivalent.
+10. Move the function to `src\matching\...` only after exact **local** validation passes with `python tools\check_function.py --va <VA>`.
+    This is a real move, not a copy: after promotion, remove any same-VA file from `src\scratch\...` so the function has exactly one compiler-facing source owner and the dashboard does not report a conflict.
 
 ### Variant lab tool
 
@@ -165,6 +172,8 @@ toolchain panic or stepping away from the function:
 15. When the mismatch is in the startup/prolog region, prefer probes that only
    change the early gate / fast path / local-setup statements. Do not keep
    perturbing a loop or success path that already matches the later line map.
+16. When one small function in a clear sibling cluster matches, immediately test
+   the same source/context model on nearby siblings before leaving the cluster.
 
 #### VC5-specific expression-shape hints
 
@@ -234,6 +243,9 @@ These are heuristics, not laws, but a real exact-match win now backs them:
     helpers. `char`, `unsigned char`, and `int` spellings can change startup
     load / mask / increment sequences even when the external behavior is the
     same.
+12a. Treat **return width** as a normal tiny-helper axis too. If the original
+    tests `al`/`dl` and your rebuild tests `eax`/`edx`, explicitly probe
+    `char`/`unsigned char` vs `int` on the callee surface.
 13. Treat **statement spelling** as a real VC5 axis, not cosmetic cleanup.
     Forms like `x += y`, `x = x + y`, and `tmp = x; x = tmp + y` can land in
     different basins because they change liveness and FPU/integer scheduling.
@@ -378,6 +390,9 @@ matching guidance:
    `call dword [addr]` shape for extern-pointer declarations, matching the
    original IAT thunk pattern. The dllimport form can produce different call
    sequences. Real wins: `RegSet`, `RegSetAscii`, `RegGetInt` from registry.cpp.
+15. In small `new`-using helpers, verify **`sizeof(T)` early**. A wrong local
+   stub size often shows up immediately as the wrong `operator new` size and can
+   block an otherwise-correct match family.
 
 #### VC5-specific data-surface / helper-shape hints
 
@@ -404,7 +419,7 @@ These are short, practical basin-finders backed by recent exact-match wins:
 
 ## When it is okay to leave a function in `scratch`
 
-Agents may stop active iteration and leave a function in `src\scratch\...` only when **all** of the following are true:
+Agents may stop active iteration and leave a function in `src\scratch\...`, or after review move it to `src\accepted_drift\...`, only when **all** of the following are true:
 
 1. The mismatch is **localized and specifically understood**.
 2. Source-shape and plausible flag/toolchain exploration have been meaningfully attempted; this is not just the first failed draft.
@@ -413,13 +428,45 @@ Agents may stop active iteration and leave a function in `src\scratch\...` only 
 5. The remaining difference is **not** a changed predicate, changed call set, changed memory effect, changed copy size, or another behavior-sensitive divergence.
 6. The file's top notes use the same compact attempt-log style used everywhere else, and the remaining gap is summarized there in plain language.
 
-## Attempt-log comments in scratch files
+## TU-work exhaustion rule
+
+When an agent is assigned a whole PDB translation unit (`*.cpp` / `*.c`), do **not** call the TU exhausted just because one target looks big, EH-framed, or intimidating.
+
+Rules:
+
+- give every **tractable** function in the assigned TU at least one real pass,
+- if the orchestrator explicitly names a function for a focused pass, do not skip it,
+- prefer clearing smaller helpers / destructors / wrappers before deferring the TU's largest functions,
+- defer only the clearly sticky holdouts after meaningful attempts, and leave those in `src\scratch\...` with compact notes,
+- do not free-ball into other TUs before the assigned TU is actually exhausted or reassigned.
+
+## Accepted drift files
+
+`src\accepted_drift\...` is for rare reviewed non-exact functions whose remaining machine-code difference is localized and behavior-equivalent. Do not use it for broad unexplained drift, changed predicates, changed calls, changed memory effects, changed stack cleanup, changed virtual dispatch, or source that only feels plausible.
+
+Rules:
+
+- folder placement is the only status marker; do not create an accepted-drift manifest,
+- keep all previous attempt logs as comments,
+- add a permanent `ACCEPTED_DRIFT` comment near the top explaining the remaining localized diff,
+- exact `src\matching\...` remains sacred and must stay `0.0000%` diff,
+- if later source/type/TU work makes an accepted-drift function exact, move it to `src\matching\...`,
+- dashboard/status tooling reports accepted drift separately and records diff percentage from the normal diff artifacts.
+
+Useful commands:
+
+```bat
+python tools\check_function.py --va 00400000
+python tools\generate_status_dashboard.py
+```
+
+## Attempt-log comments in scratch and accepted-drift files
 
 There is **no separate sidecar notebook**.
 
 Instead, the source file itself is the working notebook.
 
-Scratch files, including paused near-matches, carry the same compact attempt log near the top of the file.
+Scratch files and accepted-drift files, including paused near-matches, carry the same compact attempt log near the top of the file.
 Use plain comments that record one probe at a time and its observed effect. Use as many short lines as needed to capture the probes you actually tried. 
 Keep appending them as you work. It's supposed to be a ledger of what was tried:
 
@@ -459,19 +506,12 @@ Agents may add useful inline comments inside the code body when those comments e
 
 These are real source comments and may survive into the final file.
 
-By contrast, the following are scratch-only comments and should be removed when the
-function is completed:
-
-- mismatch diary,
-- decomp workflow chatter,
-- blocker/status notes,
-- “I tried X and it failed” notes,
-- other temporary reconstruction commentary.
+Attempt-log comments are retained when a function moves to `src\accepted_drift\...` or `src\matching\...`; they are part of the historical audit trail for stubborn VC5 codegen work. Keep them compact and factual rather than chatty.
 
 So the rule is:
 
 - **code-explanatory comments may stay**
-- **status/decomp-workflow comments are removed on completion**
+- **attempt-log comments stay, but should be compact and useful**
 
 ## Header and type model
 
@@ -625,20 +665,6 @@ Why:
 
 The target is the machine-code behavior and shape, not faithfulness to how much
 of the original source was handwritten versus compiler-emitted.
-
-## New match notification
-
-When you achieve a **brand-new exact match** during agent work, run this
-PowerShell command to play the Windows tada jingle:
-
-```powershell
-$player = New-Object System.Media.SoundPlayer
-$player.SoundLocation = "$env:WINDIR\Media\tada.wav"
-$player.PlaySync()
-```
-
-Do this only for a new match found in the current work session, not for routine
-revalidation of a function that was already known to match.
 
 ## Inline asm policy
 
@@ -822,7 +848,8 @@ The scaffold is expected to improve through normal decomp work.
 
 ## Matching discipline
 
-- A function in `src\matching\...` is a claim that it is done.
+- A function in `src\matching\...` is a claim that it is exact.
+- A function in `src\accepted_drift\...` is a claim that it is reviewed behavior-equivalent despite a known non-zero localized diff.
 - A function in `src\scratch\...` is still in progress, even if it is close or temporarily paused.
 - Do not promote speculative or still-mismatching code into `src\matching\...`.
 - Do not promote any function there if it contains inline asm or another
@@ -830,8 +857,8 @@ The scaffold is expected to improve through normal decomp work.
   documented padding-only pseudo-function exception above.
 - Do not use hacks whose only purpose is to turn the check green while dodging
   the real source-level problem.
-- Keep blocker notes and scratch workflow notes in `src\scratch\...` while a function is active.
-- Remove scratch-only notes before or during promotion.
+- Keep blocker notes and workflow notes in the source file while a function is active.
+- Preserve attempt-log notes during promotion so later agents can see the audit trail.
 
 ## Orchestrator promotion review
 
@@ -845,7 +872,7 @@ lands in the main tree:
 - verify the file did not break repo rules,
 - verify it does not use inline asm outside the documented padding-only pseudo-function exception,
 - verify it is not relying on a green-check hack,
-- and only then run the normal validation loop and promote it.
+- and only then run the local `check_function.py --va <VA>` validation for that function and promote it.
 
 Promotion into `src\matching\...` is a review decision, not a blind move.
 
@@ -853,7 +880,8 @@ Promotion into `src\matching\...` is a review decision, not a blind move.
 
 - `inventory\...` = generated reference
 - `include\...` + `src\game_globals.cpp` = living shared source
-- `src\scratch\...` = active or paused non-exact work area
-- `src\matching\...` = finished validated bank
+- `src\scratch\...` = active or paused unresolved non-exact work area
+- `src\accepted_drift\...` = reviewed behavior-equivalent localized non-exact drift bank
+- `src\matching\...` = exact finished validated bank
 
 Agents should be conservative about layout, flexible about workflow, and willing to correct earlier mistakes as soon as the function-level evidence says they should.
