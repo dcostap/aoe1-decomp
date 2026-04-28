@@ -4,7 +4,9 @@
 // No EH framing
 // tried correcting get_name as one-arg thiscall and leaving strncpy length under the method call; call cleanup shape got closer but register allocation shifted
 // tried early dest/max_len locals; still chooses ESI for this instead of original EDI/EBX/ESI topology
-// current gap: needs original register topology: EDI=this, EBX=dest, ESI=max_len for the name-copy block
+// register self/local dest/max_len and nested strncpy(get_name(...)) reached a one-byte SIB-only diff in the final terminator store
+// final-store variant lab tried subscript/pointer/cast forms; all best forms kept the same [esi+ebx-1] vs original [ebx+esi-1] encoding
+// ACCEPTED_DRIFT: remaining diff is only SIB base/index order for `dest[max_len - 1] = 0`; EBX and ESI are added symmetrically with scale 1, so the memory address and all calls/stack/return behavior are equivalent
 
 #include "../../include/game_globals.h"
 
@@ -42,24 +44,24 @@ public:
 
 void TRIBE_Action_Make_Tech::get_info(short* param_1, short* param_2, char* param_3, short param_4)
 {
+    register TRIBE_Action_Make_Tech* self = this;
     char* dest = param_3;
-    int max_len = param_4;
 
-    *param_1 = this->tech_id;
+    *param_1 = self->tech_id;
 
-    if (this->status == 1) {
+    if (self->status == 1) {
         *param_2 = 100;
     } else {
-        void* scenario = this->action_obj->obj_ptr;
+        void* scenario = self->action_obj->obj_ptr;
         TRIBE_Player_Tech* player_tech = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
-        *param_2 = player_tech->get_progress(this->tech_id);
+        *param_2 = player_tech->get_progress(self->tech_id);
     }
 
     if (dest) {
-        void* scenario = this->action_obj->obj_ptr;
+        int max_len = param_4;
+        void* scenario = self->action_obj->obj_ptr;
         TRIBE_Player_Tech* player_tech = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
-        char* name = player_tech->get_name(this->tech_id);
-        strncpy(dest, name, max_len);
+        strncpy(dest, player_tech->get_name(self->tech_id), max_len);
         dest[max_len - 1] = 0;
     }
 }

@@ -99,7 +99,9 @@ Variant lab template reference
 variant_lab compiles a full C/C++ source template many times, compares each
 emitted object against one original function, and groups variants by emitted
 machine code. It never edits src/scratch or src/matching; generated files go to
-build/variant_lab/<slug>/<run-id>/.
+build/variant_lab/<slug>/<run-id>/. Compile runs add repo-root, include/, and
+src/{scratch,matching,accepted_drift}/ include roots so normal repo includes and
+copied scratch-relative includes usually work unchanged.
 
 Use it for late-stage VC5 source-shape/codegen-basin work after behavior is
 mostly understood. Matches still need normal review, reduction, and local
@@ -1251,6 +1253,18 @@ def build_variant(
         flags_path_text = str(flags_path)
 
     command = [str(cl_path), f"@{default_rsp}"]
+    # Make copied repo sources/templates compile from variant work directories without
+    # include-path surgery. This supports root-relative includes such as
+    # "include/game_globals.h" and scratch/matching-relative includes such as
+    # "../../include/game_globals.h" when a scratch file is copied into build/temp.
+    include_roots = [
+        REPO_ROOT,
+        REPO_ROOT / "include",
+        REPO_ROOT / "src" / "scratch",
+        REPO_ROOT / "src" / "matching",
+        REPO_ROOT / "src" / "accepted_drift",
+    ]
+    command.extend(f"/I{path}" for path in include_roots)
     if extra_flags.strip():
         command.append(f"@{flags_path}")
     command.extend([f"/Fo{obj_path}", str(source_path)])

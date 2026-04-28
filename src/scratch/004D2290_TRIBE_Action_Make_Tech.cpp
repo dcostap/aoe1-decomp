@@ -5,6 +5,7 @@
 // FLAGS: config/flags/004D2290_TRIBE_Action_Make_Tech.rsp
 // added /GX rsp after extract showed EH-framed original; current source now extracts full size but has broad register/layout drift
 // likely next fixes mirror matched siblings: accurate RGE_Action_Object layout, no fake extra vptr padding, and typed RGE_Base_Game member-call surface
+// applied sibling object layout and typed RGE_Base_Game notify; edit diff improved, but EH prolog still has extra EDI save and destructor tail/register topology remains broad
 
 #include "../../include/game_globals.h"
 
@@ -31,7 +32,6 @@ public:
     V_DUMMY(80); V_DUMMY(81);
     virtual void vfn82(int, int, int, int, int, int);
 
-    char gap_00[4];
     int player_id;
     char gap_08[4];
     void* obj_ptr;
@@ -82,6 +82,14 @@ public:
     RGE_Action(int param_1, void* param_2, int flag);
 };
 
+class RGE_Base_Game {
+public:
+    V_DUMMY(0); V_DUMMY(1); V_DUMMY(2); V_DUMMY(3); V_DUMMY(4);
+    V_DUMMY(5); V_DUMMY(6); V_DUMMY(7); V_DUMMY(8); V_DUMMY(9);
+    V_DUMMY(10); V_DUMMY(11); V_DUMMY(12); V_DUMMY(13); V_DUMMY(14); V_DUMMY(15);
+    virtual void vfn16(int, int, int, int, int);
+};
+
 class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     ~TRIBE_Action_Make_Tech();
@@ -97,10 +105,8 @@ TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech()
         // Check game state
         unsigned char game_state = *(unsigned char*)(*(int*)((char*)rge_base_game + 0x3F4) + 0x1D);
         if (game_state == 0) {
-            // Same dispatch as stop
-            typedef void (*NotifyFn)(void*, int, int, int, int, int);
-            ((NotifyFn)((*(void***)rge_base_game)[0x40/4]))(
-                rge_base_game, 0x65, *(short*)((char*)scenario + 0x4A),
+            ((RGE_Base_Game*)rge_base_game)->vfn16(
+                0x65, *(short*)((char*)scenario + 0x4A),
                 this->tech_id, 0, 0);
 
             scenario->vfn70((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
