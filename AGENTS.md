@@ -113,9 +113,10 @@ Practical rule:
 5. Compile and compare against the original.
 6. If compilation or matching work exposes missing shared facts, update the shared working layer.
 7. Keep iterating until the function matches.
-8. If a function remains non-exact after meaningful investigation, usually keep it in `src\scratch\...` and make the file's top attempt log summarize the remaining gap clearly.
-9. For rare cases where the remaining diff is small, localized, and manually reviewed as behavior-equivalent VC5 drift, move it to `src\accepted_drift\...`; preserve all previous attempt-log comments and add an `ACCEPTED_DRIFT` note describing the exact localized drift and why calls/stores/stack/return behavior are still equivalent.
-10. Move the function to `src\matching\...` only after exact **local** validation passes with `python tools\check_function.py --va <VA>`.
+8. When the function is behaviorally understood and the remaining mismatch is localized or codegen-family-shaped, use `tools\variant_lab.py` before parking it. Prefer a small focused lab over more manual churn: store order, local/temp lifetime, guard shape, call-result temp, vtable padding, byte-select, include context, dummy member surface, declaration/init order, stack-array shape, or similar source-level axes.
+9. If a function remains non-exact after meaningful investigation, usually keep it in `src\scratch\...` and make the file's top attempt log summarize the remaining gap clearly.
+10. For rare cases where the remaining diff is small, localized, and manually reviewed as behavior-equivalent VC5 drift, move it to `src\accepted_drift\...`; preserve all previous attempt-log comments and add an `ACCEPTED_DRIFT` note describing the exact localized drift and why calls/stores/stack/return behavior are still equivalent.
+11. Move the function to `src\matching\...` only after exact **local** validation passes with `python tools\check_function.py --va <VA>`.
     This is a real move, not a copy: after promotion, remove any same-VA file from `src\scratch\...` so the function has exactly one compiler-facing source owner and the dashboard does not report a conflict.
 
 ### Variant lab tool
@@ -125,9 +126,11 @@ Practical rule:
 - For nontrivial labs, write a throwaway full-source template under `build\temp\...tpl.cpp` instead of embedding giant inline shell/Python strings.
 - Use preview/inspection modes (`--list-templates`, `--template-help`, `--expand-only`, `--preview-variants`, `--show-variant`) before launching broad compiles.
 - Use it for sticky codegen-family problems; do not auto-promote matches without normal review.
-- After normal manual passes have made a function behaviorally close, it is appropriate to run broad, preconfigured variant sweeps for weird VC5 basin problems: dummy class-surface declarations, helper/no-helper shapes, declaration order, `foo()` vs `foo(void)`, constructor/destructor/operator declarations, include axes, local/temporary forms, and other unintuitive but source-level perturbations.
+- After normal manual passes have made a function behaviorally close, it is appropriate to run focused or broad, preconfigured variant sweeps for weird VC5 basin problems: dummy class-surface declarations, helper/no-helper shapes, declaration order, `foo()` vs `foo(void)`, constructor/destructor/operator declarations, include axes, local/temporary forms, store order, guard shape, call-result temp width, byte-select shape, vtable padding, stack-array shape, and other unintuitive but source-level perturbations.
+- Good lab candidates: exact-size or near-size functions with a few diff bytes, first mismatch in prolog/local setup, notes mentioning register basin/store order/temp/declaration order, equivalent source shapes collapsing to the same mismatch, uncertain class/vtable surface, or narrow boolean/return/cast weirdness.
+- Poor lab candidates: behavior still unclear, wrong call set, wrong stack cleanup, broad control-flow mismatch, obviously wrong struct/class size, or missing real shared type/global facts. Fix those first.
 - Reusable source-shape preset files live in `config\variant_templates\`. Use `@template ...` directives in lab templates to insert these families instead of copy-pasting giant `@choice` blocks. Add new preset cases/files as reusable lessons appear, and start each preset with a concise `// TEMPLATE ...` metadata comment explaining why it exists.
-- Treat these broad sweeps as a **late-stage convergence tool**, not a substitute for understanding the function. Reduce any match to the smallest proven surface and document exactly which odd context is required.
+- Treat these sweeps as a **late-stage convergence tool**, not a substitute for understanding the function. Reduce any match to the smallest proven surface and document exactly which odd context is required.
 
 ### Exact-match iteration heuristics
 
