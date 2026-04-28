@@ -20,6 +20,10 @@ Block templates can consume slots:
 @endtemplate
 ```
 
+Templates may be nested inside ordinary `@case` bodies. Inner axes are only
+active for the selected outer case, so this is safe for broad source-family
+sweeps without multiplying unrelated branches.
+
 Template files use `{{name}}` placeholders for arguments and `{{slot:body}}` or
 `{{slot:body|indent:4}}` for user-provided body slots.
 

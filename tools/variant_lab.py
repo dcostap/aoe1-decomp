@@ -6,7 +6,6 @@ import argparse
 import concurrent.futures
 import difflib
 import hashlib
-import itertools
 import json
 import os
 import re
@@ -110,10 +109,27 @@ Source choices
       alternate source
   @endchoice
 
-Every distinct axis is expanded as a Cartesian product.  Reusing the same axis
-name links choices together: one selected case is used at every block with that
-axis name.  Repeated blocks may omit a case; omitted cases emit nothing for that
-block.  This is useful for donor/TU context toggles.
+Every distinct top-level axis is expanded as a Cartesian product.  Choices may
+also be nested inside @case bodies.  Nested axes are only active when their
+containing case is selected, so they do not multiply unrelated outer cases.
+Reusing the same axis name links choices together: one selected case is used at
+every active block with that axis name.  Repeated blocks may omit a case;
+omitted cases emit nothing for that block.  This is useful for donor/TU context
+toggles and for trying an inner family only under one outer source strategy.
+
+Example: this generates 3 variants, not 4, because inner is inactive for outer=b:
+
+  @choice outer
+  @case a
+      @choice inner
+      @case x
+      int x = 1;
+      @case y
+      int x = 2;
+      @endchoice
+  @case b
+      int x = 3;
+  @endchoice
 
 Reusable template presets
 -------------------------
@@ -259,7 +275,7 @@ class LoadedText:
 class ChoiceBlock:
     kind: str  # "source" or "flags"
     name: str
-    cases: dict[str, str]
+    cases: dict[str, list[object]]
     index: int
 
 
@@ -277,7 +293,7 @@ class Axis:
 
 @dataclass
 class TemplatePlan:
-    nodes: list[str | ChoiceBlock]
+    nodes: list[object]
     axes: list[Axis]
     axis_by_key: dict[tuple[str, str], Axis]
 
@@ -529,72 +545,24 @@ def parse_directive(line: str) -> tuple[str, str | None] | None:
     return directive, arg
 
 
+CHOICE_DIRECTIVES = ("@choice", "@flagchoice", "@flags")
+END_DIRECTIVES = ("@endchoice", "@endflagchoice", "@endflags")
+
+
 def parse_template(text: str) -> TemplatePlan:
+    """Parse a variant template, including choices nested inside cases.
+
+    Nested choices are represented as a tree.  Enumeration later only walks the
+    active branch, so an inner axis does not multiply variants when its enclosing
+    case is not selected.
+    """
     lines = text.splitlines(keepends=True)
-    nodes: list[str | ChoiceBlock] = []
     axes_order: list[tuple[str, str]] = []
     axis_by_key: dict[tuple[str, str], Axis] = {}
-    text_buf: list[str] = []
     block_index = 0
-    i = 0
 
-    def flush_text() -> None:
-        nonlocal text_buf
-        if text_buf:
-            nodes.append("".join(text_buf))
-            text_buf = []
-
-    while i < len(lines):
-        parsed = parse_directive(lines[i])
-        if parsed is None or parsed[0] not in ("@choice", "@flagchoice", "@flags"):
-            text_buf.append(lines[i])
-            i += 1
-            continue
-
-        directive, arg = parsed
-        if not arg:
-            raise ValueError(f"{directive} requires an axis name on line {i + 1}")
-        kind = "source" if directive == "@choice" else "flags"
-        name = arg
-        end_directives = {"@endchoice"} if kind == "source" else {"@endflagchoice", "@endflags"}
-
-        flush_text()
-        i += 1
-        cases: dict[str, str] = {}
-        current_label: str | None = None
-        current_lines: list[str] = []
-
-        def finish_case() -> None:
-            nonlocal current_label, current_lines
-            if current_label is not None:
-                cases[current_label] = "".join(current_lines)
-            current_label = None
-            current_lines = []
-
-        while i < len(lines):
-            inner = parse_directive(lines[i])
-            if inner is not None and inner[0] == "@case":
-                if not inner[1]:
-                    raise ValueError(f"@case requires a label on line {i + 1}")
-                finish_case()
-                current_label = inner[1]
-                i += 1
-                continue
-            if inner is not None and inner[0] in end_directives:
-                finish_case()
-                i += 1
-                break
-            if inner is not None and inner[0] in ("@choice", "@flagchoice", "@flags"):
-                raise ValueError(f"nested choices are not supported near line {i + 1}")
-            if current_label is None:
-                if lines[i].strip():
-                    raise ValueError(f"content before first @case in {directive} {name!r} near line {i + 1}")
-            else:
-                current_lines.append(lines[i])
-            i += 1
-        else:
-            raise ValueError(f"unterminated {directive} {name!r}")
-
+    def register_block(kind: str, name: str, cases: dict[str, list[object]]) -> ChoiceBlock:
+        nonlocal block_index
         key = (kind, name)
         axis = axis_by_key.get(key)
         if axis is None:
@@ -606,11 +574,88 @@ def parse_template(text: str) -> TemplatePlan:
         axis.blocks.append(block)
         for label in cases.keys():
             axis.add_label(label)
-        if kind == "source":
-            nodes.append(block)
-        # flag blocks are intentionally removed from generated source.
+        return block
 
-    flush_text()
+    def parse_nodes(i: int, stop_directives: set[str]) -> tuple[list[object], int]:
+        nodes: list[object] = []
+        text_buf: list[str] = []
+
+        def flush_text() -> None:
+            nonlocal text_buf
+            if text_buf:
+                nodes.append("".join(text_buf))
+                text_buf = []
+
+        while i < len(lines):
+            parsed = parse_directive(lines[i])
+            if parsed is not None:
+                directive, _arg = parsed
+                if directive in stop_directives:
+                    break
+                if directive == "@case":
+                    if "@case" in stop_directives:
+                        break
+                    raise ValueError(f"@case outside a choice near line {i + 1}")
+                if directive in END_DIRECTIVES:
+                    raise ValueError(f"unexpected {directive} near line {i + 1}")
+                if directive in CHOICE_DIRECTIVES:
+                    flush_text()
+                    block, i = parse_choice(i)
+                    nodes.append(block)
+                    continue
+            text_buf.append(lines[i])
+            i += 1
+
+        flush_text()
+        return nodes, i
+
+    def parse_choice(i: int) -> tuple[ChoiceBlock, int]:
+        parsed = parse_directive(lines[i])
+        if parsed is None or parsed[0] not in CHOICE_DIRECTIVES:
+            raise ValueError(f"internal parser error near line {i + 1}")
+        directive, arg = parsed
+        if not arg:
+            raise ValueError(f"{directive} requires an axis name on line {i + 1}")
+        kind = "source" if directive == "@choice" else "flags"
+        name = arg
+        end_directives = {"@endchoice"} if kind == "source" else {"@endflagchoice", "@endflags"}
+        block = register_block(kind, name, {})
+        cases = block.cases
+        i += 1
+
+        while i < len(lines):
+            parsed = parse_directive(lines[i])
+            if parsed is not None and parsed[0] in end_directives:
+                i += 1
+                break
+            if parsed is None or parsed[0] != "@case":
+                if lines[i].strip():
+                    raise ValueError(f"content before first @case in {directive} {name!r} near line {i + 1}")
+                i += 1
+                continue
+
+            label = parsed[1]
+            if not label:
+                raise ValueError(f"@case requires a label on line {i + 1}")
+            i += 1
+            case_nodes, i = parse_nodes(i, stop_directives={"@case", *end_directives})
+            cases[label] = case_nodes
+            # Leave the stop directive unconsumed.  The loop above consumes either
+            # the next @case or the matching end directive.
+        else:
+            raise ValueError(f"unterminated {directive} {name!r}")
+
+        axis = axis_by_key[(kind, name)]
+        for label in cases.keys():
+            axis.add_label(label)
+        return block, i
+
+    nodes, i = parse_nodes(0, stop_directives=set())
+    if i != len(lines):
+        parsed = parse_directive(lines[i])
+        directive = parsed[0] if parsed else lines[i].strip()
+        raise ValueError(f"unexpected {directive} near line {i + 1}")
+
     axes = [axis_by_key[key] for key in axes_order]
     for axis in axes:
         if not axis.labels:
@@ -621,34 +666,58 @@ def parse_template(text: str) -> TemplatePlan:
 def label_text(spec: VariantSpec, axes: list[Axis]) -> str:
     parts: list[str] = []
     for axis in axes:
-        label = spec.labels[(axis.kind, axis.name)]
+        key = (axis.kind, axis.name)
+        if key not in spec.labels:
+            continue
+        label = spec.labels[key]
         prefix = "flags." if axis.kind == "flags" else "src."
         parts.append(f"{prefix}{axis.name}={label}")
     return ";".join(parts)
 
 
-def expand_source(plan: TemplatePlan, spec: VariantSpec) -> str:
+def selected_case_nodes(block: ChoiceBlock, spec: VariantSpec) -> list[object]:
+    selected = spec.labels.get((block.kind, block.name))
+    if selected is None:
+        return []
+    return block.cases.get(selected, [])
+
+
+def expand_source_nodes(nodes: list[object], spec: VariantSpec) -> str:
     chunks: list[str] = []
-    for node in plan.nodes:
+    for node in nodes:
         if isinstance(node, str):
             chunks.append(node)
-        else:
-            selected = spec.labels[(node.kind, node.name)]
-            chunks.append(node.cases.get(selected, ""))
+        elif isinstance(node, ChoiceBlock):
+            if node.kind == "source":
+                chunks.append(expand_source_nodes(selected_case_nodes(node, spec), spec))
+            # Flag blocks are intentionally removed from generated source, even
+            # when nested inside a source case.
+    return "".join(chunks)
+
+
+def expand_source(plan: TemplatePlan, spec: VariantSpec) -> str:
+    return expand_source_nodes(plan.nodes, spec)
+
+
+def expand_flags_nodes(nodes: list[object], spec: VariantSpec, *, in_flag_case: bool) -> str:
+    chunks: list[str] = []
+    for node in nodes:
+        if isinstance(node, str):
+            if in_flag_case:
+                chunks.append(node)
+        elif isinstance(node, ChoiceBlock):
+            if node.kind == "flags":
+                chunks.append(expand_flags_nodes(selected_case_nodes(node, spec), spec, in_flag_case=True))
+            else:
+                # Walk selected source cases so nested flag choices are only
+                # active under the chosen source branch.  Source text itself is
+                # ignored while collecting flags.
+                chunks.append(expand_flags_nodes(selected_case_nodes(node, spec), spec, in_flag_case=False))
     return "".join(chunks)
 
 
 def expand_flags(plan: TemplatePlan, spec: VariantSpec, fmt_values: dict[str, str]) -> str:
-    chunks: list[str] = []
-    for axis in plan.axes:
-        if axis.kind != "flags":
-            continue
-        selected = spec.labels[(axis.kind, axis.name)]
-        for block in axis.blocks:
-            content = block.cases.get(selected, "")
-            if content:
-                chunks.append(content)
-    text = "".join(chunks)
+    text = expand_flags_nodes(plan.nodes, spec, in_flag_case=False)
     if text:
         text = text.format_map(SafeFormatDict(fmt_values))
     # Avoid parallel PDB collisions for debug-info variants unless the template
@@ -876,12 +945,43 @@ def expand_variant_templates(text: str, *, stack: tuple[str, ...] = ()) -> tuple
     return "".join(out), records
 
 
+def enumerate_label_states(plan: TemplatePlan) -> list[dict[tuple[str, str], str]]:
+    """Enumerate only choices reachable through active parent cases.
+
+    A nested axis is not assigned at all when its containing case is inactive.
+    Reused axis names remain linked: once an axis label has been chosen, every
+    later active block with that same kind/name uses the same label, and omitted
+    cases emit/activate nothing just like the historical flat parser.
+    """
+
+    def walk_nodes(nodes: list[object], state: dict[tuple[str, str], str]) -> list[dict[tuple[str, str], str]]:
+        states = [state]
+        for node in nodes:
+            if isinstance(node, str):
+                continue
+            if not isinstance(node, ChoiceBlock):
+                continue
+            key = (node.kind, node.name)
+            axis = plan.axis_by_key[key]
+            next_states: list[dict[tuple[str, str], str]] = []
+            for current in states:
+                if key in current:
+                    selected = current[key]
+                    next_states.extend(walk_nodes(node.cases.get(selected, []), current))
+                else:
+                    for label in axis.labels:
+                        branched = dict(current)
+                        branched[key] = label
+                        next_states.extend(walk_nodes(node.cases.get(label, []), branched))
+            states = next_states
+        return states
+
+    return walk_nodes(plan.nodes, {})
+
+
 def make_specs(plan: TemplatePlan) -> list[VariantSpec]:
-    axes = plan.axes
-    label_lists = [axis.labels for axis in axes]
     specs: list[VariantSpec] = []
-    for index, combo in enumerate(itertools.product(*label_lists)):
-        labels = {(axis.kind, axis.name): label for axis, label in zip(axes, combo)}
+    for index, labels in enumerate(enumerate_label_states(plan)):
         specs.append(VariantSpec(index=index, variant_id=f"V{index:06d}", labels=labels))
     return specs
 
