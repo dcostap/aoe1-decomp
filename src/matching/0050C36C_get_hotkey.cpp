@@ -1,17 +1,23 @@
-// VA: 0050C36C TRIBE_Player_Tech::get_hotkey (57 B)
-// __thiscall, return hotkey at id*8+0, or -1 if out of range
+// matched: /Od debug-style no-PDB TRIBE_Tech bounds-check getter
 
-struct TRIBE_Player_Tech {
-    void* tech_entries;  // +0x00
-    short count;         // +0x04
+struct TechEntry {
+    char gap_00[0x38];
+    long hotkey_id;
 };
 
-short TRIBE_Player_Tech_get_hotkey(TRIBE_Player_Tech* self, short id)
-{
-    if (id < 0 || id > self->count)
+class TRIBE_Tech {
+public:
+    TechEntry* tech_tree;
+    short tech_tree_num;
+    char gap_06[2];
+
+    long get_hotkey(short param_1);
+};
+
+long TRIBE_Tech::get_hotkey(short param_1) {
+    if (param_1 < 0 || param_1 > this->tech_tree_num) {
         return -1;
-    
-    // Each tech entry is 8 bytes. hotkey is at entry+0 (word)
-    short* entry = (short*)((char*)self->tech_entries + id * 8);
-    return entry[0];
+    }
+
+    return this->tech_tree[param_1].hotkey_id;
 }

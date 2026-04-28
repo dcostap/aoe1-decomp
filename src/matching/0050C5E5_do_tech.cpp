@@ -45,18 +45,18 @@ struct TRIBE_History_Info_Helper {
 
 unsigned char TRIBE_Player_Tech::do_tech(short param_1)
 {
-    if (this->tech_player_tree[param_1].state >= 3 || this->tech_player_tree[param_1].state < 0) {
-        return 0;
+    if (this->tech_player_tree[param_1].state < 3 && this->tech_player_tree[param_1].state > -1) {
+        this->tech_player_tree[param_1].state = 3;
+        ((TRIBE_Tech_Helper*)this->base_tech)->do_tech(param_1, this->owner);
+        check_for_new_tech();
+        if (param_1 == 0x65) {
+            ((TRIBE_History_Info_Helper*)(*(void**)((char*)this->owner + 0x83c)))->add_history_event(0);
+        } else if (param_1 == 0x66) {
+            ((TRIBE_History_Info_Helper*)(*(void**)((char*)this->owner + 0x83c)))->add_history_event(1);
+        } else if (param_1 == 0x67) {
+            ((TRIBE_History_Info_Helper*)(*(void**)((char*)this->owner + 0x83c)))->add_history_event(2);
+        }
+        return 1;
     }
-    this->tech_player_tree[param_1].state = 3;
-    ((TRIBE_Tech_Helper*)this->base_tech)->do_tech(param_1, this->owner);
-    check_for_new_tech();
-    if (param_1 == 0x65) {
-        ((TRIBE_History_Info_Helper*)(*(void**)((char*)this->owner + 0x83c)))->add_history_event(0);
-    } else if (param_1 == 0x66) {
-        ((TRIBE_History_Info_Helper*)(*(void**)((char*)this->owner + 0x83c)))->add_history_event(1);
-    } else if (param_1 == 0x67) {
-        ((TRIBE_History_Info_Helper*)(*(void**)((char*)this->owner + 0x83c)))->add_history_event(2);
-    }
-    return 1;
+    return 0;
 }

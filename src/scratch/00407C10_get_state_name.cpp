@@ -1,8 +1,12 @@
 // RGE_Action::get_state_name
 // VA: 00407C10
 // PDB: action.cpp:441-462
-// No EH framing
-// Probe 5: try shifting register allocation with extra locals
+// 98.15% match. 4 bytes diff: register swap (edx↔eax) in two strcpy tails.
+// odd_copy tail uses mov edx,ecx (original) vs mov eax,ecx (rebuilt)
+// even_copy tail uses mov eax,ecx (original) vs mov edx,ecx (rebuilt)
+// This is a VC5 register-allocation quirk — source-side attempts
+// (label order, block scopes, case ordering, goto targets) all fail.
+// 18 relocations masked (string addresses + jump table).
 
 #include "../../include/game_globals.h"
 #include <string.h>
@@ -92,10 +96,11 @@ void RGE_Action::get_state_name(char* buf)
         goto even_copy;
     }
 
-even_copy:
+odd_copy:
     strcpy(buf, s);
     return;
 
-odd_copy:
+even_copy:
     strcpy(buf, s);
+    return;
 }

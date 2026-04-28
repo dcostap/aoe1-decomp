@@ -1,24 +1,26 @@
 // VA: 00440400 TRIBE_Dialog_Sed_Menu::action
-// PDB source: dlg_sedm.cpp
+// PDB source: dlg_sedm.cpp, 919 bytes
+// FLAGS: /GX (EH required by original)
+//
 // Attempt log:
-// First-pass skeleton/partial — needs proper implementation
-// - Probe 1: default flags, no EH frame generated (missing FS:[0] prolog)
-// - Kept probe 1: added /GX, still no EH frame (VC5 only adds FS:[0] for stack objects with destructors)
-// - Probe 2: class layout with proper padding (0x490 base + 8 bytes -> now scenario_editor at +0x490 correct)
-// - Probe 3: strcmp vs custom inline comparison; strcmp worse (75.3%)
-// - Probe 4: new keyword instead of operator_new+ctor; ballooned to 1568 bytes
-// - All probes: consistently ~73-75% diff, 919 bytes exact match
-// Left in scratch: EH frame unfixable (no stack destructors), inline strcmp pattern mismatch,
-//   control flow shared-tail differences, 73% diff in deep basin
+// - Probe 1: default flags, no EH frame (missing FS:[0] prologue)
+// - Probe 2: added /GX, still no EH frame (no stack objects with dtors)
+// - Probe 3: class layout with padding fixes; strcmp worse than inline
+// - Probe 4: new keyword instead of operator_new+ctor; ballooned to 1568
+// - Probe 5: struct dtor at function scope -> EH frame working, 70.1%
+// - Probe 6: proper operator new + <new.h> -> no EH frame
+// - Probe 7: check_stack(off) + dtor trigger -> 67.8% (check_stack didn't materially help)
+// - Probe 8: double panelName()+inline byte-byte strcmp, dtor trigger -> 67.7%
+//   EH frame works, first 25 bytes match (after relocation masking)
+//   Prologue: VC5 saves regs before loading params (differs from original)
+//   Virtual dispatch: through vtable (original has devirtualized direct calls)
+// Left in scratch: VC5 register allocation and devirtualization limitations
 
 #include <string.h>
-
-extern "C" void* __cdecl operator_new(unsigned int size);
-
-#pragma check_stack(off)
+#include <new.h>
 
 struct TPanel {
-    char gap[0x04];
+    char gap[4];
     virtual ~TPanel() {}
     virtual int setup() { return 0; }
     virtual void set_rect() {}
@@ -53,33 +55,30 @@ struct TPanel {
     virtual long action(TPanel*, long, unsigned long, unsigned long) { return 0; }
 };
 
-struct TPanel_gap_0x488 {
-    char pad[0x488];
-};
-
-struct TDialogPanel : public TPanel, public TPanel_gap_0x488 {
-    // Total: 4 (vtable) + 4 (vtable) + 0x488 = 0x490
-};
-
-struct TButtonPanel : public TPanel {
-};
+struct TPanel_gap_0x488 { char pad[0x488]; };
+struct TDialogPanel : public TPanel, public TPanel_gap_0x488 {};
 
 struct TRIBE_Screen_Sed : public TPanel {
     virtual void command_quit() {}
-    virtual void command_save(unsigned char a, unsigned char b) {}
-    virtual void command_save_as(unsigned char a) {}
+    virtual void command_save(unsigned char, unsigned char) {}
+    virtual void command_save_as(unsigned char) {}
     virtual void command_open() {}
     virtual void command_new() {}
     virtual char* scenario_save_defaulted() { return 0; }
     virtual void command_quick_save() {}
 };
 
-struct TRIBE_Screen_Sed_Open : public TPanel {
-};
+struct TRIBE_Screen_Sed_Open : public TPanel {};
+struct TButtonPanel : public TPanel {};
 
 struct TPanelSystem : public TPanel {
-    virtual int setCurrentPanel(char* name, int a) { return 0; }
-    virtual int destroyPanel(char* name) { return 0; }
+    virtual int setCurrentPanel(char*, int) { return 0; }
+    virtual int destroyPanel(char*) { return 0; }
+};
+
+struct TRIBE_Game : public TPanel {
+    virtual void test_scenario(char*);
+    virtual void start_scenario_editor(char*, int);
 };
 
 extern char s_Scenario_Editor_Screen[];
@@ -89,23 +88,21 @@ extern char s_Open_Dialog[];
 extern char s_Scenario_Editor_Open[];
 
 TPanelSystem* panel_system;
-struct TRIBE_Game : public TPanel {
-    virtual void test_scenario(char* path) {}
-    virtual void start_scenario_editor(char* a, int b) {}
-};
 TRIBE_Game* rge_base_game;
 
 void __fastcall TRIBE_Screen_Sed_Open_ctor(void* _this);
+void* operator new(unsigned int);
 
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
-    TRIBE_Screen_Sed* scenario_editor;
-    TButtonPanel* buttons[7];
+    TRIBE_Screen_Sed* scenario_editor;  // +0x490
+    TButtonPanel* buttons[7];            // +0x494
     long action(TPanel* panel, long param_2, unsigned long param_3, unsigned long param_4);
 };
 
 long TRIBE_Dialog_Sed_Menu::action(TPanel* panel, long param_2, unsigned long param_3, unsigned long param_4)
 {
+    struct _Scope { ~_Scope() {} } _ehScope;
     TRIBE_Screen_Sed* sed = scenario_editor;
 
     if (param_2 == 1) {
@@ -158,42 +155,57 @@ long TRIBE_Dialog_Sed_Menu::action(TPanel* panel, long param_2, unsigned long pa
     if (panel) {
         char* name = panel->panelName();
         if (name) {
-            if (strcmp(name, s_New_Dialog) == 0) {
-                panel_system->setCurrentPanel(s_Scenario_Editor_Screen, 0);
-                panel_system->destroyPanel(s_New_Dialog);
-                panel_system->destroyPanel(s_Scenario_Menu_Dialog);
-                if (param_2 == 0)
-                    sed->command_quick_save();
-                if (param_2 == 0 || param_2 == 1) {
-                    panel_system->destroyPanel(s_Scenario_Menu_Dialog);
-                    rge_base_game->start_scenario_editor(0, 0);
+            {
+                char* n = panel->panelName();
+                char* t = s_New_Dialog;
+                int eq = 0;
+                for (;;) {
+                    if (*n != *t) { eq = 0; break; }
+                    if (*n == 0) { eq = 1; break; }
+                    n++; t++;
                 }
-                if (param_2 == 2)
+                if (eq) {
+                    panel_system->setCurrentPanel(s_Scenario_Editor_Screen, 0);
+                    panel_system->destroyPanel(s_New_Dialog);
                     panel_system->destroyPanel(s_Scenario_Menu_Dialog);
-                return 1;
-            }
-
-            if (strcmp(name, s_Open_Dialog) == 0) {
-                panel_system->setCurrentPanel(s_Scenario_Editor_Screen, 0);
-                panel_system->destroyPanel(s_Open_Dialog);
-                panel_system->destroyPanel(s_Scenario_Menu_Dialog);
-                if (param_2 == 0)
-                    sed->command_quick_save();
-                if (param_2 != 1) {
+                    if (param_2 == 0)
+                        sed->command_quick_save();
+                    if (param_2 == 0 || param_2 == 1) {
+                        panel_system->destroyPanel(s_Scenario_Menu_Dialog);
+                        rge_base_game->start_scenario_editor(0, 0);
+                    }
                     if (param_2 == 2)
                         panel_system->destroyPanel(s_Scenario_Menu_Dialog);
                     return 1;
                 }
-                {
-                    TRIBE_Screen_Sed_Open* openDlg = (TRIBE_Screen_Sed_Open*)operator_new(0x490);
-                    if (openDlg)
-                        TRIBE_Screen_Sed_Open_ctor(openDlg);
+            }
+
+            {
+                char* n = panel->panelName();
+                char* t = s_Open_Dialog;
+                int eq = 0;
+                for (;;) {
+                    if (*n != *t) { eq = 0; break; }
+                    if (*n == 0) { eq = 1; break; }
+                    n++; t++;
                 }
-                panel_system->setCurrentPanel(s_Scenario_Editor_Open, 0);
-                panel_system->destroyPanel(s_Scenario_Menu_Dialog);
-                if (param_2 == 2)
+                if (eq) {
+                    panel_system->setCurrentPanel(s_Scenario_Editor_Screen, 0);
+                    panel_system->destroyPanel(s_Open_Dialog);
                     panel_system->destroyPanel(s_Scenario_Menu_Dialog);
-                return 1;
+                    if (param_2 == 0)
+                        sed->command_quick_save();
+                    if (param_2 == 0 || param_2 == 1) {
+                        TRIBE_Screen_Sed_Open* openDlg = (TRIBE_Screen_Sed_Open*)operator new(0x490);
+                        if (openDlg)
+                            TRIBE_Screen_Sed_Open_ctor(openDlg);
+                    }
+                    panel_system->setCurrentPanel(s_Scenario_Editor_Open, 0);
+                    panel_system->destroyPanel(s_Scenario_Menu_Dialog);
+                    if (param_2 == 2)
+                        panel_system->destroyPanel(s_Scenario_Menu_Dialog);
+                    return 1;
+                }
             }
         }
     }

@@ -1,13 +1,17 @@
 // 00440140 TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu
 // Source: dlg_sedm.cpp lines 41-58
 // Size: 505 bytes
-// First-pass skeleton/partial � needs proper implementation
 //
 // Attempt log:
-// Probe 1: constructor with void return type and undeclared param type — compile errors
-// Probe 2: fix params and constructor syntax
+// Probe 1: skeleton, compile errors
+// Probe 2: fix params/ctor syntax
+// Probe 3: /GX flag for EH prologue -> EH matches, ~69% remaining
+//          Remaining: instruction scheduling/register cascade.
+// Left in scratch.
+// FLAGS: /GX (config/flags/00440140_TRIBE_Dialog_Sed_Menu.rsp; needed for EH prologue;
+// default flags produce no EH frame — tested and failed)
 
-#include "..\..\include\game_globals.h"
+#include "../../include/game_globals.h"
 
 class TPanel {
 public:
@@ -39,7 +43,7 @@ public:
 
 class TEasy_Panel : public TPanel {
 public:
-    char _gap_F4[0x39C];
+    char _gap_F4[0x384];
     virtual ~TEasy_Panel();
 };
 
@@ -53,6 +57,7 @@ public:
 
 class TDialogPanel : public TEasy_Panel {
 public:
+    char _gap_478[0x18];
     TDialogPanel(char* name);
     virtual ~TDialogPanel();
     int setup(void* renderArea, void* param1, int a, int b, int c, int d, int e);
@@ -95,26 +100,19 @@ TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* param_1)
 
     if (this->create_button(&this->buttons[0], this, 0x2443, 0, 0x1E, 0x14, 0x190, 0x28, 0, 0, 0) == 0)
         return;
-
     if (this->create_button(&this->buttons[1], this, 0x2441, 0, 0x1E, 0x46, 0x190, 0x28, 0, 0, 0) == 0)
         return;
-
     if (this->create_button(&this->buttons[2], this, 0x2442, 0, 0x1E, 0x78, 0x190, 0x28, 0, 0, 0) == 0)
         return;
-
     if (this->create_button(&this->buttons[3], this, 0x2445, 0, 0x1E, 0xAA, 0x190, 0x28, 0, 0, 0) == 0)
         return;
-
     if (this->create_button(&this->buttons[4], this, 0x242E, 0, 0x1E, 0xDC, 0x190, 0x28, 0, 0, 0) == 0)
         return;
-
     if (this->create_button(&this->buttons[5], this, 0x2446, 0, 0x1E, 0x10E, 0x190, 0x28, 0, 0, 0) == 0)
         return;
-
     if (this->create_button(&this->buttons[6], this, 0x2444, 0, 0x1E, 0x154, 0x190, 0x28, 0, 0, 0) == 0)
         return;
 
-    // Last button special: make it quit-style
     ((TButtonPanel*)this->buttons[6])->field_298 = 0x1B;
     ((TButtonPanel*)this->buttons[6])->field_29C = 0;
 }

@@ -37,11 +37,14 @@ public:
 
 short TRIBE_Player_Tech::get_progress(short param_1)
 {
+    short progress;
+
     if (this->tech_player_tree[param_1].state == 2) {
-        short cost = *(short*)((char*)(*(void**)((char*)this->base_tech)) + param_1 * 0x3c + 0x1e);
-        return (short)__ftol(this->tech_player_tree[param_1].research_done * 100.0f / (float)(int)cost);
+        progress = (short)(long)(this->tech_player_tree[param_1].research_done * 100.0f / (float)(int)*(short*)((char*)(*(void**)((char*)this->base_tech)) + param_1 * 0x3c + 0x1e));
     } else if (this->tech_player_tree[param_1].state == 3) {
-        return 100;
+        progress = 100;
+    } else {
+        progress = 0;
     }
-    return 0;
+    return progress;
 }

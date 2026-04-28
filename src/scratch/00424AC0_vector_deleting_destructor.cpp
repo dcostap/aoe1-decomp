@@ -4,8 +4,12 @@
 // Attempt log:
 // Probe 1: 50% diff — wrong calling convention on eh_vector_dtor
 // Probe 2: 18% diff — fixed __stdcall, edi push inside if-block (last remaining diff)
-//   Remaining: edi push/pop reordering (instruction order only), call relocs masked
-// Left in scratch: the remaining diff is VC5 register-save reordering, behavior equivalent.
+// Probe 3: 5 bytes → moved allocBase computation outside if-block; EDI now saved at 
+//   entry (good) but elemCount access uses [edi] instead of [esi-4] (bad), and prologue
+//   ordering moved mov esi,ecx before push edi. Total diff increased to 19 bytes.
+// Probe 4: Back to base; remaining diff is pure edi save/restore placement
+// (unconditional in orig, conditional in rebuilt) — TU-context register allocation.
+// Parked at 5 bytes.
 
 #include "..\..\include\game_globals.h"
 

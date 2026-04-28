@@ -1,37 +1,42 @@
-// VA: 0050D1F9 TRIBE_Player_Tech::do_rev_tech (136 B)
-// __thiscall, reverse a tech: loop through 4 slots, find matching entries, call sub
+// matched candidate: /Od debug-style no-PDB recursive reverse-tech helper
 
-struct TRIBE_Player_Tech {
-    void* tech_entries;  // +0x00
-    short count;         // +0x04
+struct Tech_Player_Tree {
+    float research_done;
+    short state;
 };
 
-extern short do_rev_tech_slot(void* self, short slotEntry);
-extern void disable_tech(void* self, short techId);
+struct Tech_Entry {
+    char gap_00[0x04];
+    short pre_reqs[4];
+    char gap_0C[0x30];
+};
 
-void TRIBE_Player_Tech_do_rev_tech(void* self, short techId)
+struct TRIBE_Tech {
+    Tech_Entry* tech_tree;
+};
+
+class TRIBE_Player_Tech {
+public:
+    Tech_Player_Tree* tech_player_tree;
+    short tech_player_tree_num;
+    TRIBE_Tech* base_tech;
+
+    unsigned char do_tech(short param_1);
+    void do_rev_tech(short param_1);
+};
+
+void TRIBE_Player_Tech::do_rev_tech(short param_1)
 {
     int i;
+    int tech;
+
     for (i = 0; i < 4; i++) {
-        // Look up entry at tech_entries[techId * 0x3C + i * 2 + 4] -> short
-        short* entryBase = (short*)((char*)(*(int*)self) + techId * 0x3C);
-        short slotEntry = entryBase[i * 2 + 2]; // offset = techId*0x3C + i*2 + 4
-        
-        if (slotEntry < 0)
-            continue;
-        
-        // Validate slot entry
-        short* slotEntryData = (short*)((char*)(*(int*)self) + slotEntry * 8);
-        short entryType = slotEntryData[2]; // offset 4 within 8-byte entry
-        if (entryType >= 3)
-            continue;
-        if (entryType < 0)
-            continue;
-        
-        // Reverse this slot
-        do_rev_tech_slot(self, slotEntry);
+        tech = this->base_tech->tech_tree[param_1].pre_reqs[i];
+        if (tech >= 0 && this->tech_player_tree[tech].state < 3) {
+            if (this->tech_player_tree[tech].state >= 0) {
+                this->do_rev_tech((short)tech);
+            }
+        }
     }
-    
-    // Clean up the tech
-    disable_tech(self, techId);
+    this->do_tech(param_1);
 }

@@ -35,25 +35,28 @@ public:
     unsigned char check_for_new_tech();
 };
 
+extern float save_game_version;
+
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, unsigned char param_4)
 {
+    short i;
+
     rge_read(param_1, &this->tech_player_tree_num, 2);
     this->base_tech = param_2;
     this->owner = param_3;
     if (0 < this->tech_player_tree_num) {
         this->tech_player_tree = (Tech_Player_Tree*)calloc(8, this->tech_player_tree_num);
 
-        extern float save_game_version;
-        for (short i = 0; i < this->tech_player_tree_num; i++) {
-            if (7.03f < save_game_version) {
-                rge_read(param_1, &this->tech_player_tree[i], 4);
-            } else {
+        for (i = 0; i < this->tech_player_tree_num; i++) {
+            if (save_game_version <= 7.03f) {
                 rge_read(param_1, &this->tech_player_tree[i], 2);
+            } else {
+                rge_read(param_1, &this->tech_player_tree[i], 4);
             }
             rge_read(param_1, &this->tech_player_tree[i].state, 2);
         }
         if (param_4) {
-            for (short i = 0; i < this->tech_player_tree_num; i++) {
+            for (i = 0; i < this->tech_player_tree_num; i++) {
                 if (this->tech_player_tree[i].state == 3) {
                     this->tech_player_tree[i].state = 1;
                     do_tech(i);

@@ -1,4 +1,5 @@
-// matched candidate: /Od debug-style no-PDB cancel research
+// Attempt: rewritten from packet as /Od C++ member body; behavior/flow close but rebuilt is 243 vs original 245.
+// Remaining: VC5 register-allocation/codegen around refund loop; original saves ESI and uses it for attribute_cost load.
 
 struct Tech_Player_Tree {
     float research_done;
@@ -47,7 +48,7 @@ unsigned char TRIBE_Player_Tech::cancel_research(short param_1, unsigned char pa
             for (i = 0; i < 3; i++) {
                 if (tech->attribute[i] >= 0 && tech->attribute_used[i] != 0) {
                     this->owner->player_attributes->attributes[tech->attribute[i]] =
-                        (float)(int)tech->attribute_cost[i] + this->owner->player_attributes->attributes[tech->attribute[i]];
+                        this->owner->player_attributes->attributes[tech->attribute[i]] + (float)(int)tech->attribute_cost[i];
                 }
             }
         }

@@ -1,6 +1,13 @@
-// tried a raw 4-byte packet with direct field stores; mismatch stayed at the early packet-load order
-// tried swapping the log args and then adding byte locals; VC5 still pulled the second/third arg loads into a different basin
-// leaving in scratch: behavior looks right, but the remaining mismatch is the prolog/packet-field load order before the log call
+// RGE_Command::command_resign
+// VA: 00435FE0
+// Command.cpp:2003-2024
+// 79 bytes, 11 diff bytes (13.92%).
+// Register allocation quirk: load order of params differs.
+// Original loads drop first (mov cl,[esp+18h]), then player (mov eax,[esp+14h]),
+// then reason (mov ecx,[esp+14h]) after popping calloc args.
+// Rebuilt loads reason first (mov ecx,[esp+1Ch]), then drop (mov al,[esp+18h]),
+// then player (mov eax,[esp+0Ch]). All sources tried produce same pattern.
+// 5 relocations masked (calloc, Log, submit calls + L address + format string).
 
 #include <stdlib.h>
 

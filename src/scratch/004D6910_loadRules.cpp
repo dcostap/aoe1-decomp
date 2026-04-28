@@ -1,27 +1,18 @@
-// CombatRuleSystem::loadRules
-// VA: 004D6910
-// PDB: taicrule.cpp:35-74
+// CombatRuleSystem::loadRules (004D6910, 386 bytes, taicrule.cpp lines 35-74)
 //
 // Attempt log:
-// - draft 1: 66% diff (frame 0x10C, extra local vars)
-// - draft 2: frame 0x100 (too small by 0x10, cascades to all stack offsets)
-// - volatile temp: same 0x100 frame (volatile doesn't add frame size)
-//
-// Remaining issue: original uses sub esp, 0x110 (272 bytes), our code uses
-// sub esp, 0x100 (256 bytes). The 0x10 difference is a gap between saved
-// registers and temp[256] in the original. Likely due to 16-byte alignment
-// of the temp buffer in the original TU context.
-// 
-// This cascading offset makes all stack-based accesses differ by 0x10 bytes:
-// - Param access: [esp+118h] vs [esp+108h]
-// - temp+4 access: [esp+24h] vs [esp+18h]
-// - etc.
-//
-// The logic is correct (strcmp inline, memset rep stosd, file I/O loop,
-// comment skipping, rating parsing and storage, fclose, strstr, unlink).
-// Left in scratch: needs TU-context to force 0x110 frame.
+// 1-3: temp[256], frame 0x100 (too small by 0x10), all offsets cascaded -> 66%
+// 4:   char temp[272] -> frame 0x110 correct, temp at [esp+18h] -> 66%
+// 5:   || shared epilogue (strcmp(...)==0 || !filename) -> 5.7% 
+// 6-8: padding vars, struct approach for offset fix -> no improvement
+// 9:   split locals line[256]+named parse vars -> 3.1%
+// VL:  variant_lab 8 variants, G0000 (4) best=3.1%.
+//      Axes: local_order=vars_after_line, memset_form=direct, store_form=direct_this
+//      Variant V000000 (representative). Remaining diff: lea edi scheduling
+//      (lea edi after mov ecx/mov eax for memset). Irreducible VC5 heuristic.
+// STATUS: unresolved, best at 3.1%. All real codegen diffs (relocs already masked).
 
-#include "..\..\include\game_globals.h"
+#include "../../include/game_globals.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -33,37 +24,31 @@ public:
 
 int CombatRuleSystem::loadRules(char* filename)
 {
-    char temp[256];
-    FILE* f;
+    char line[256]; FILE* f; int a,b,c; char c1,c2;
 
-    if (strcmp(filename, "NONE") == 0)
+    if (strcmp(filename, "NONE") == 0 || !filename) {
         return 0;
-    if (!filename)
-        return 0;
+    }
 
-    sprintf(temp + 4, "%s", filename);
-    f = fopen(temp + 4, "r");
+    sprintf(line, "%s", filename);
+    f = fopen(line, "r");
     if (!f)
         return 0;
 
     memset((char*)this + 4, '2', 2500);
 
-    while (fgets(temp + 4, 256, f)) {
-        sscanf(temp + 4, "%c%c", &temp[2], &temp[3]);
-        if (temp[2] == '/' && temp[3] == '/')
+    while (fgets(line, 256, f)) {
+        sscanf(line, "%c%c", &c1, &c2);
+        if (c1 == '/' && c2 == '/')
             continue;
-
-        sscanf(temp + 4, "%d %d %d", (int*)&temp[0xC], (int*)&temp[0], (int*)&temp[8]);
-        if (*(int*)&temp[0xC] < 0 || *(int*)&temp[0xC] >= 50)
+        sscanf(line, "%d %d %d", &c, &a, &b);
+        if (c < 0 || c >= 50)
             continue;
-
-        ((char*)this + 4)[*(int*)&temp[0] + *(int*)&temp[0xC] * 50] = *(char*)&temp[8];
+        ((char*)this + 4)[a + c * 50] = (char)b;
     }
 
     fclose(f);
-
     if (strstr(filename, ".tmp"))
         unlink(filename);
-
     return 1;
 }

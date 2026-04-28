@@ -150,7 +150,10 @@ evidence in the file's attempt log.
   placement and try source/order changes without changing block bodies.
 - Semantically equivalent control-flow forms are not codegen-neutral. Probe direct
   return vs explicit branch, nested `if` vs early return, `if/else` arm order,
-  switch/case order, and expression-style boolean vs 0/1 branches.
+  switch/case order, and expression-style boolean vs 0/1 branches. For guarded
+  success paths, also probe positive combined predicates (`state < 3 && state > -1`)
+  versus early negative returns; VC5 can change frame size and tail layout based on
+  whether the source names a result local or returns directly from each arm.
 - In VC5, `switch` and `if/else if/else` produce fundamentally different block layout
   for the same dispatch logic. A two-case dispatch with default that uses `je`
   (jump-to-handler: else inline, cases at end) in the original will likely be a
@@ -179,11 +182,28 @@ evidence in the file's attempt log.
 - A temp can make VC5 prove away a reload/recheck the original kept. For redundant
   member tests or later virtual calls, try a fresh direct member access.
 - For loops/scans, mirror state topology: one running iterator plus one saved
-  boundary/start local often beats decompiler-style many-local forms.
+  boundary/start local often beats decompiler-style many-local forms. When two
+  sequential loops in one function reuse the same source iterator in the original,
+  prefer one shared local declared outside both loops over separate `for (short i ...)`
+  declarations; the latter can add a stack slot and shift every frame offset.
+  Conversely, block-scoping an inner loop local around multiple adjacent loops can
+  keep an outer loop index in the original slot while moving the reused inner
+  iterator/name-length temp pair into the expected VC5 debug-frame slots.
 
 ### Expression and arithmetic shape
 
-- Probe statement order, compare operand order, and expression term order.
+- Probe statement order, compare operand order, and expression term order. Even
+  commutative arithmetic is not neutral: `dst = a + b` versus `dst = b + a` can
+  change which operand VC5 keeps live, whether it introduces/saves a register such
+  as `esi`, and whether a tiny helper lands at the exact size. If original asm
+  saves an otherwise surprising register around an expression, try swapping the
+  source operand order before reaching for lower-level rewrites. For
+  bounds checks, algebraically identical source such as `member < param`,
+  `param > member`, `param <= member`, and `member >= param` is not neutral: VC5
+  may reload operands in a different order and choose different compare registers.
+  If original asm loads/tests the parameter first and then reloads `this`/member,
+  try spelling the second check with the parameter on the left (for example
+  `param_1 > this->count`) rather than the member on the left (`this->count < param_1`).
 - Stack spills inside math often indicate an anonymous temporary from one larger
   expression, not a durable named local; try inlining the math back into the
   parent expression.
@@ -192,7 +212,10 @@ evidence in the file's attempt log.
 - Compound spelling matters: `x += y`, `x = x + y`, direct assignment, and helper
   call/inlining can land in different basins.
 - Preserve original compare algebra where visible, e.g. `index + 1` checks versus
-  equivalent `index < length` checks.
+  equivalent `index < length` checks. For FPU comparisons, also probe logically
+  inverted source (`!(a < b)`, `a <= b`, `b > a`) because VC5's `fcomp`/`fnstsw`
+  branch polarity and block placement can flip even when the C condition is
+  semantically identical.
 
 ### Widths, parameters, and return values
 
@@ -235,7 +258,10 @@ evidence in the file's attempt log.
   nearby functions only match with `/GX`. Do not spray it randomly.
 - Custom per-function flags are last-resort exceptions, not a substitute for
   source/type/layout fixes. Re-test without them before keeping a finished flag
-  file.
+  file. However, some no-PDB/debug-basin leftovers in this corpus genuinely match
+  only with `/Od`; when original asm has an EBP frame, `push ecx`/small local slots,
+  no frame-pointer omission, and very direct source-line-style codegen, test a
+  narrow `/Od` response file and document why it remains.
 
 ### Data/helper surface
 

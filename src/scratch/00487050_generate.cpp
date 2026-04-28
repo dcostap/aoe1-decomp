@@ -1,13 +1,13 @@
 // VA: 00487050 generate
 // rmm_shal.cpp lines 42-102
-
-// 8 probes total:
-//   1-2: temp vars used -> 400 bytes (debug_rand results stored to temps)
-//   3:   inline debug_rand expressions -> 416 bytes (2 short, prolog diff)
-//   4-8: various stack allocation tricks -> regressed or stayed at 416
-//   left in scratch: 416 bytes vs 418 (99.5%). Prolog: push ecx vs sub esp,8 (2 bytes).
-//   VC5 only allocates 4 bytes of stack for locals but original needs 8 (idx2 + limit).
-//   Body code is functionally correct; the 2-byte prolog shift prevents byte-level comparison.
+//
+// Attempts:
+//   1-3: temp vars, inline debug_rand -> 400-416 bytes
+//   4-8: stack alloc tricks -> stayed at 416
+//   Fix: volatile/address-of for limit+idx2 -> 418 bytes (stack frame now matches)
+//   Remaining: instruction scheduling (21 spans, 72.5%)
+//   e.g. mov edi,ebp vs jge instruction reordering at offset 31
+//   Deep codegen basin. Left in scratch.
 
 class RGE_Random_Map_Module {
 public:
@@ -41,7 +41,8 @@ extern int debug_rand(char*, int);
 unsigned char RGE_RMM_Shallows_Generator::generate() {
     int i, j;
     int x, y;
-    int idx1, idx2;
+    int idx1;
+    int idx2;
     int limit;
 
     clear_stack();

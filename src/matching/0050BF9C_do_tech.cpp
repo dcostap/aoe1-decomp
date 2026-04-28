@@ -1,27 +1,37 @@
-// VA: 0050BF9C TRIBE_Tech::do_tech (81 B)
-// __thiscall, check effect field at [tech_array + idx*0x3C + 0x20], if >= 0 call player tech vtable
+// matched candidate: /Od debug-style no-PDB TRIBE_Tech effect dispatcher
 
-extern void free(void* p);
+struct RGE_Player;
 
-struct TRIBE_Tech {
-    void** tech_array;   // +0x00
-    short count;         // +0x04
-    void* rge_player;    // +0x08
+struct RGE_Effects {
+    virtual void vf00();
+    virtual void vf04();
+    virtual void do_effect(short effect, RGE_Player* player);
 };
 
-unsigned char TRIBE_Tech_do_tech(TRIBE_Tech* self, short idx, void* player)
+struct TRIBE_World {
+    char gap_00[0x4C];
+    RGE_Effects* effects;
+};
+
+struct Tech_Entry {
+    char gap_00[0x20];
+    short effect;
+    char gap_22[0x1A];
+};
+
+class TRIBE_Tech {
+public:
+    Tech_Entry* tech_tree;
+    short tech_tree_num;
+    TRIBE_World* world;
+
+    unsigned char do_tech(short param_1, RGE_Player* param_2);
+};
+
+unsigned char TRIBE_Tech::do_tech(short param_1, RGE_Player* param_2)
 {
-    // Check if tech entry's effect field (at +0x20 within 0x3C entry) is valid
-    short* entry = (short*)((char*)self->tech_array + idx * 0x3C);
-    short effect = entry[0x20 / 2];
-    
-    if (effect < 0)
-        return 1;
-    
-    // Call world player tech application via vtable
-    void* playerTech = *(void**)((char*)self->rge_player + 0x4C);
-    void** vtable = *(void***)playerTech;
-    typedef void (*ApplyFunc)(void*, short, void*);
-    ((ApplyFunc)vtable[2])(playerTech, entry[0x20 / 2], player);
+    if (this->tech_tree[param_1].effect >= 0) {
+        this->world->effects->do_effect(this->tech_tree[param_1].effect, param_2);
+    }
     return 1;
 }

@@ -20,17 +20,15 @@ public:
 
 int TSpan_List_Manager::DecodeLine(unsigned char* line, int line_index, unsigned char delta, int unused) {
     int count = 0;
-    unsigned char* dest = line;
-    unsigned char step = delta;
-    VSpan_Node* node = Line_Head_Ptrs[line_index];
 
-    if (node != 0) {
+    if (Line_Head_Ptrs[line_index] != 0) {
+        VSpan_Node* node = Line_Head_Ptrs[line_index];
         do {
             int x = node->StartPx;
             int end = node->EndPx;
             if (x <= end) {
                 do {
-                    dest[x] = dest[x] + step;
+                    line[x] = line[x] + delta;
                     ++x;
                 } while (x <= end);
             }

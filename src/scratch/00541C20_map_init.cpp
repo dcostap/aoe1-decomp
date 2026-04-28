@@ -1,25 +1,40 @@
-// tried the natural new+ctor assignment shape against the EH prolog
-// tried the decompiler-style temp/if-else shape; the first mismatch moved to the fail/merge block
-// tried a placement-new helper; it regressed into a smaller size basin and then compilation friction
-// leaving this in scratch because the remaining issue is still prolog/codegen basin drift, not behavior
-#include "..\..\include\game_types.h"
+// RGE_Game_World::map_init
+// VA: 00541C20
+// World.cpp:831-833
+// 97 bytes, 21 diff bytes (21.65%)
+// EH frame scheduling differences (TU-context):
+//   - push 0 (handler) vs push real handler address
+//   - Shared vs separate epilogue structure
+//   - load ecx before vs after store map
+// 8+ source forms tried (new, operator_new, placement new, try/catch).
+// With /GX flag (World.cpp TU was compiled with EH).
 
-class RGE_Map {
-public:
-    char pad_00[0x8DD0];
-    RGE_Map(int param_1, RGE_Sound** sounds, char param_3);
-};
+// Attempt log:
+// v1: new RGE_Map(...) — correct sizeof(0x8DD0), almost-right EH frame.
+//     Remaining: push 0 vs push handler (TU), epilogue sharing (TU).
+// v2: operator_new + explicit construct call — no EH frame (64 bytes).
+// v3: try/catch — 73% diff, way off.
+// v4-GX+new: 21% diff, best result. EH handler addr + epilogue sharing are TU-context.
+
+#include "../../include/game_globals.h"
 
 class RGE_Game_World {
 public:
-    char pad_00[0x28];
-    RGE_Map* map;
-    char pad_2C[0x4];
-    RGE_Sound** sounds;
+    char gap_00[0x28];
+    void* map;           // +0x28
+    char gap_2C[4];      // +0x2C padding
+    void* sounds;        // +0x30
 
-    void map_init(int param_1, TSound_Driver* param_2);
+    void map_init(int param_1, void* param_2);
 };
 
-void RGE_Game_World::map_init(int param_1, TSound_Driver* param_2) {
-    this->map = new RGE_Map(param_1, this->sounds, 1);
+class RGE_Map {
+public:
+    char gap[0x8DD0];
+    RGE_Map(int param_1, void* sounds, int param_3);
+};
+
+void RGE_Game_World::map_init(int param_1, void* param_2) {
+    RGE_Map* new_map = new RGE_Map(param_1, this->sounds, 1);
+    this->map = new_map;
 }

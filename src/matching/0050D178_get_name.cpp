@@ -1,11 +1,8 @@
-// tried /Od (like matched TRIBE_Player_Tech neighbors)
-// tried multiple locals (tree ptr, char* p, no locals)
-// BLOCKER: rebuilt uses 'sub esp,8' for locals, original uses 'push ecx'
-//           this stored at [ebp-8] vs [ebp-4], shifts all offsets
-//           size correct (31) but prolog stack allocation differs
+// matched: /Od plus direct return avoids an extra result local; Tech_Entry stride is 0x3C
 
 struct Tech_Entry {
     char* name;
+    char gap_04[0x38];
 };
 
 struct Tech_Base {
@@ -21,7 +18,5 @@ public:
 };
 
 char* TRIBE_Player_Tech::get_name(short param_1) {
-    char* p;
-    p = this->base->tech_tree[param_1].name;
-    return p;
+    return this->base->tech_tree[param_1].name;
 }

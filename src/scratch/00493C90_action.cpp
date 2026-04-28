@@ -1,12 +1,23 @@
 // 00493C90 TribeEndScreen::action
+// Source: scr_end.cpp lines 132-143. 197 bytes. __thiscall, ret 10h.
+// EH-framed virtual function.
 //
+// Attempt log:
 // Probe 1: function pointer ctor — wrong codegen
-// Probe 2: new expression — generates allocator stub before function (offset 0 mismatch)
-// Left in scratch: constructor call via function pointer or new expression both give wrong codegen
-//   Need a proper TribeAchievementsScreen declaration + new call that VC5 can inline
+// Probe 2: new expression + local operator_new — STUB at +0 (local operator_new placed before action)
+//   KEY INSIGHT: local operator_new function compiled into .text before action body. Use extern "C".
+// Probe 3: extern operator_new + new expression — NO STUB, 192/197 bytes, EH present
+// Probe 4: extern operator_new + explicit ctor call — 144/197 (no EH without new expression)
+// Variant lab (30+30 variants): 
+//   G0001 = best result: first 36 bytes EXACT match (EH prologue, reg saves, param reads).
+//   32 edit-diff bytes (16.2%). Remaining mismatches are jump-offset shifts from EH handler split
+//   (.text$x/.xdata$x in .obj vs inline in EXE) — linker-level, not source-fixable.
+//   Winning source: externC + direct param reads + get_string inline in new args + /GX
+// Left in scratch: behavior correct, body very close. EH section split is the blocker.
 
 #include "..\..\include\game_globals.h"
-#include <stdlib.h>
+
+extern "C" void* __cdecl operator_new(size_t size);
 
 class TPanel {
 public:
@@ -64,17 +75,12 @@ public:
     long action(TPanel* panel, long id, unsigned long param3, unsigned long param4);
 };
 
-void* operator_new(size_t size) {
-    return malloc(size);
-}
-
 long TribeEndScreen::action(TPanel* panel, long id, unsigned long param3, unsigned long param4)
 {
     if (panel == 0 || id != 1)
         return ((TEasy_Panel*)this)->action(panel, id, param3, param4);
 
-    char* str = this->get_string(0x269E);
-    TribeAchievementsScreen* obj = new TribeAchievementsScreen(str, 1);
+    TribeAchievementsScreen* obj = new TribeAchievementsScreen(this->get_string(0x269E), 1);
 
     panel_system->setCurrentPanel("Achievements Screen", 0);
     panel_system->destroyPanel("End Screen");

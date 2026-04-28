@@ -1,6 +1,15 @@
-// tried direct array indexing; VC5 swapped the counter/pointer registers and kept the correct call sequence
-// tried a short loop index; VC5 introduced an extra EBP loop counter
-// current gap is register allocation only: the body and offsets are otherwise aligned
+// 004ADD00 TRIBE_Screen_Sed::LoadDisabledItemsFromScenario
+// STATUS: parked - 7 bytes remaining (8.97%)
+//
+// Remaining diff: all ESI↔EDI register swap between loop counter (i) and
+// button pointer. Original: ESI=i, EDI=ptr. Rebuilt: ESI=ptr, EDI=i.
+// Everything else is byte-identical.
+//
+// Tried: variable type (int/unsigned/short), declaration order,
+// initialization order (comma operator, separate statements),
+// loop structure (for/do-while), variable naming (i/idx/loop).
+// All produce same ESI↔EDI swap — pure VC5 register allocation heuristic
+// difference between original TU and isolated scratch TU.
 
 class T_Scenario {
 public:
@@ -99,11 +108,10 @@ public:
 };
 
 void TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) {
-    int i;
     TButtonPanel** button;
+    int i;
 
-    button = this->options_disable_button;
-    for (i = 0; i < 16; ++i, ++button) {
+    for (i = 0, button = this->options_disable_button; i < 16; i++, button++) {
         if (this->world->scenario->GetDisabledTechnology(this->player_num - 1, i) != 0) {
             (*button)->set_disabled(0);
         }

@@ -37,14 +37,14 @@ public:
 
 unsigned char TRIBE_Player_Tech::research(short param_1, float param_2)
 {
-    if (this->tech_player_tree[param_1].state != 2) {
-        return 0;
+    if (this->tech_player_tree[param_1].state == 2) {
+        this->tech_player_tree[param_1].research_done += param_2;
+        if (!(this->tech_player_tree[param_1].research_done < (float)(int)*(short*)((char*)(*(void**)((char*)this->base_tech)) + param_1 * 0x3c + 0x1e))) {
+            do_tech(param_1);
+            return 0;
+        } else {
+            return 1;
+        }
     }
-    this->tech_player_tree[param_1].research_done += param_2;
-    short cost = *(short*)((char*)(*(void**)((char*)this->base_tech)) + param_1 * 0x3c + 0x1e);
-    if (this->tech_player_tree[param_1].research_done < (float)(int)cost) {
-        return 1;
-    }
-    do_tech(param_1);
     return 0;
 }

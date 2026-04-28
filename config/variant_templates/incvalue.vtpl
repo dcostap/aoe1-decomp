@@ -1,0 +1,70 @@
+// TEMPLATE incvalue: match InfluenceMap incrementValue codegen
+// Tests: rx/ry computed as direct expressions vs named temps, 
+// cell ptr computed once vs multiple dereferences, 
+// byte masking approaches (explicit and vs implicit unsigned char).
+// Args: ry_axis, rx_axis, cell_get, store_axis.
+// ry_axis: how to compute the y-relative coordinate
+// rx_axis: how to compute the x-relative coordinate  
+// cell_get: how to get the cell value
+// store_axis: how to compute/store the new value
+
+@choice ry_axis
+@case sub_y_ref
+int ry = y - this->yReferencePoint;
+@case sub_y_ref_expr
+int ry;
+ry = y - this->yReferencePoint;
+@case sub_y_ref_partial
+int ry = y;
+ry -= this->yReferencePoint;
+@case ry_inline
+// ry computed inline
+@endchoice
+
+@choice rx_axis
+@case sub_x_ref
+int rx = x - this->xReferencePoint;
+@case sub_x_ref_expr
+int rx;
+rx = x - this->xReferencePoint;
+@case sub_x_ref_partial
+int rx = x;
+rx -= this->xReferencePoint;
+@case rx_inline
+// rx computed inline
+@endchoice
+
+@choice cell_get
+@case direct_ptr
+int cur = *(this->rowData[ry] + rx);
+@case byte_ptr
+unsigned char* cp = this->rowData[ry] + rx;
+int cur = *cp;
+@case byte_ptr_no_int
+unsigned char* cp = this->rowData[ry] + rx;
+unsigned char cur = *cp;
+@endchoice
+
+@choice store_axis
+@case if_add_mask
+int total = (unsigned char)cur + (unsigned char)value;
+if (total >= (unsigned char)this->maxLimit) {
+    *cp = (unsigned char)this->maxLimit - 1;
+} else {
+    *cp = (unsigned char)total;
+}
+@case if_add_no_mask
+int total = cur + value;
+if (total >= (unsigned char)this->maxLimit) {
+    *cp = (unsigned char)this->maxLimit - 1;
+} else {
+    *cp = (unsigned char)total;
+}
+@case inc_dec
+cur = (unsigned char)cur + value;
+if (cur >= this->maxLimit) {
+    *cp = this->maxLimit - 1;
+} else {
+    *cp = (unsigned char)cur;
+}
+@endchoice

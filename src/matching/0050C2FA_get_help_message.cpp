@@ -22,7 +22,7 @@ public:
 };
 
 long TRIBE_Tech::get_help_message(short param_1) {
-    if (param_1 < 0 || this->tech_tree_num < param_1) {
+    if (param_1 < 0 || param_1 > this->tech_tree_num) {
         return -1;
     }
 

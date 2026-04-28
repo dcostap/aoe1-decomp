@@ -1,29 +1,29 @@
-// VA: 0050D383 TRIBE_Player_Tech::enable (125 B)
-// __thiscall, set tech entries to enabled: either specific id or all
+// matched candidate: /Od debug-style no-PDB TRIBE_Player_Tech state mutator
 
-struct TRIBE_Player_Tech {
-    void** tech_entries; // +0x00
-    short count;         // +0x04
+struct Tech_Player_Tree {
+    float research_done;
+    short state;
 };
 
-void TRIBE_Player_Tech_enable(TRIBE_Player_Tech* self, short techId)
+class TRIBE_Player_Tech {
+public:
+    Tech_Player_Tree* tech_player_tree;
+    short tech_player_tree_num;
+
+    void enable(short param_1);
+};
+
+void TRIBE_Player_Tech::enable(short param_1)
 {
-    if (techId < 0) {
-        // Enable all techs in table
-        int i;
-        for (i = 0; i < self->count; i++) {
-            short* entry = (short*)((char*)self->tech_entries + i * 8);
-            short entryType = entry[2]; // word at +4
-            if (entryType != 3) {
-                entry[2] = 0; // set to enabled
+    int i;
+
+    if (param_1 < 0) {
+        for (i = 0; i < this->tech_player_tree_num; i++) {
+            if (this->tech_player_tree[i].state == -1) {
+                this->tech_player_tree[i].state = 0;
             }
         }
-    } else {
-        // Enable specific tech
-        short* entry = (short*)((char*)self->tech_entries + techId * 8);
-        short entryType = entry[2]; // word at +4
-        if (entryType != 3) {
-            entry[2] = 0; // set to enabled
-        }
+    } else if (this->tech_player_tree[param_1].state == -1) {
+        this->tech_player_tree[param_1].state = 0;
     }
 }

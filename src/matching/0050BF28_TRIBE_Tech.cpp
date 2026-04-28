@@ -1,26 +1,31 @@
-// VA: 0050BF28 TRIBE_Tech::~TRIBE_Tech (116 B)
-// __thiscall, destructor: free each non-null tech entry in the array, then free the array itself
+// matched candidate: /Od debug-style no-PDB TRIBE_Tech destructor
 
-extern void free(void* p);
+extern "C" void __cdecl free(void* p);
 
-struct TRIBE_Tech {
-    void** tech_array;   // +0x00
-    short count;         // +0x04
-    void* world;         // +0x08
+struct Tech_Entry {
+    char* name;
+    char gap_04[0x38];
 };
 
-void TRIBE_Tech_dtor(TRIBE_Tech* self)
+class TRIBE_Tech {
+public:
+    Tech_Entry* tech_tree;
+    short tech_tree_num;
+
+    ~TRIBE_Tech();
+};
+
+TRIBE_Tech::~TRIBE_Tech()
 {
-    if (!self->tech_array)
-        return;
-    
     int i;
-    for (i = 0; i < self->count; i++) {
-        void* p = self->tech_array[i * (0x3C / 4)]; // each entry is 0x3C bytes, first dword
-        if (p)
-            free(p);
+
+    if (this->tech_tree) {
+        for (i = 0; i < this->tech_tree_num; i++) {
+            if (this->tech_tree[i].name) {
+                free(this->tech_tree[i].name);
+            }
+        }
+        free(this->tech_tree);
+        this->tech_tree = 0;
     }
-    
-    free(self->tech_array);
-    self->tech_array = 0;
 }

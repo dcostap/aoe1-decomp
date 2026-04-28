@@ -1,15 +1,25 @@
-// tried the current set_state shape; the remaining mismatch is the out-of-range sink / final-epilogue form
-// leaving this in scratch because the mismatch is still a low-risk backend shape issue
-// FLAGS: config\flags\00402C00_set_state.rsp
+// 00402C00 RGE_Action_Explore::set_state
+// Source: act_expl.cpp lines 73-133
+//
+// Attempt log:
+// Multiple probes: switch table structure and case handler ordering
+//   are a stable codegen shape from VC5 with /GX EH.
+// Remaining gap: compressed switch table data placed in .rdata by VC5,
+//   original has it inline in .text. Also `ja default` uses rel8 in
+//   original but rel32 in rebuilt (default handler placed at end by VC5).
+// Edit diff: 62 bytes (17.3%) — most from alignment shifts.
+// 313/359 equal bytes (87.2%), 14 relocations masked.
+// Left in scratch: backend code-layout shape issue.
+// FLAGS: config\flags\00402C00_set_state.rsp (/nologo /c /O2 /GX)
 
 class RGE_Sprite;
 class RGE_Static_Object;
 
 class RGE_Master_Moving_Object {
 public:
-    char gap_00[0x18];
+    char gap_00[0x14];
     RGE_Sprite* sprite;
-    char gap_1C[0xA0];
+    char gap_14[0xA4];
     RGE_Sprite* move_sprite;
 };
 
@@ -29,7 +39,7 @@ public:
     virtual void vf2C(void);
     virtual void vf30(void);
     virtual void vf34(void);
-    virtual void new_sprite(RGE_Sprite* param_1);
+    virtual void new_sprite(RGE_Sprite*);
     virtual void vf3C(void);
     virtual void vf40(void);
     virtual void vf44(void);
@@ -97,18 +107,17 @@ public:
     virtual void vf13C(void);
     virtual void vf140(void);
     virtual void vf144(void);
-    virtual void notify(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    virtual void notify(int, int, int, int, int, int);
 
     int id;
     RGE_Master_Moving_Object* master_obj;
 };
 
 class RGE_Action;
-
 class RGE_Action_List {
 public:
     void delete_list(void);
-    void add_action(RGE_Action* param_1);
+    void add_action(RGE_Action*);
 };
 
 class RGE_Task {
@@ -122,29 +131,29 @@ public:
 class RGE_Action {
 public:
     virtual void vf00(void);
-    virtual int vf04(RGE_Action_Object* param_1);
-    virtual int vf08(int param_1, RGE_Action_Object* param_2);
-    virtual RGE_Action_List* vf0C(RGE_Action_Object* param_1);
+    virtual int vf04(RGE_Action_Object*);
+    virtual int vf08(int, RGE_Action_Object*);
+    virtual RGE_Action_List* vf0C(RGE_Action_Object*);
     virtual void vf10(void);
-    virtual void vf14(int param_1);
+    virtual void vf14(int);
     virtual short vf18(void);
-    virtual void vf1C(unsigned char param_1);
+    virtual void vf1C(unsigned char);
     virtual unsigned char vf20(void);
     virtual unsigned char vf24(void);
     virtual unsigned char vf28(void);
     virtual int vf2C(void);
-    virtual int vf30(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    virtual int vf34(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    virtual unsigned char vf38(RGE_Static_Object* param_1);
-    virtual unsigned char vf3C(long param_1, unsigned char param_2);
-    virtual void vf40(RGE_Master_Moving_Object* param_1);
-    virtual void vf44(RGE_Master_Moving_Object* param_1, RGE_Task* param_2, RGE_Task* param_3);
-    virtual void vf48(char* param_1);
+    virtual int vf30(RGE_Static_Object*, float, float, float);
+    virtual int vf34(RGE_Static_Object*, float, float, float);
+    virtual unsigned char vf38(RGE_Static_Object*);
+    virtual unsigned char vf3C(long, unsigned char);
+    virtual void vf40(RGE_Master_Moving_Object*);
+    virtual void vf44(RGE_Master_Moving_Object*, RGE_Task*, RGE_Task*);
+    virtual void vf48(char*);
     virtual RGE_Static_Object* vf4C(void);
     virtual RGE_Static_Object* vf50(void);
-    virtual void set_target_obj(RGE_Static_Object* param_1);
-    virtual void set_target_obj2(RGE_Static_Object* param_1);
-    virtual void set_state(unsigned char param_1);
+    virtual void set_target_obj(RGE_Static_Object*);
+    virtual void set_target_obj2(RGE_Static_Object*);
+    virtual void set_state(unsigned char);
 
     int gap_04;
     RGE_Action_Object* obj;
@@ -160,37 +169,32 @@ public:
     unsigned char subActionValue;
     char gap_3D[0x03];
 
-    void setSubAction(unsigned char param_1);
+    void setSubAction(unsigned char);
 };
 
 class RGE_Action_Move_To : public RGE_Action {
 public:
-    RGE_Action_Move_To(RGE_Action_Object* param_1, float param_2, float param_3, float param_4, float param_5, RGE_Sprite* param_6);
-
+    RGE_Action_Move_To(RGE_Action_Object*, float, float, float, float, RGE_Sprite*);
     float range;
 };
 
 class RGE_Action_Explore : public RGE_Action {
 public:
-    void set_state(unsigned char param_1);
+    void set_state(unsigned char);
 };
 
-void RGE_Action_Explore::set_state(unsigned char param_1) {
+void RGE_Action_Explore::set_state(unsigned char param_1)
+{
     this->sub_actions->delete_list();
     this->state = param_1;
 
     switch (param_1) {
-    case 3: {
-        int id = this->obj->id;
-        this->obj->notify(id, id, 0x202, 0x25D, 0, 0);
-    }
+    case 3:
+        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x25D, 0, 0);
     case 1:
     case 13:
     case 14:
         this->obj->new_sprite(this->obj->master_obj->sprite);
-        return;
-
-    default:
         return;
 
     case 2:
@@ -204,21 +208,27 @@ void RGE_Action_Explore::set_state(unsigned char param_1) {
 
     case 11:
         break;
-    }
 
-    RGE_Sprite* move_sprite;
-    if ((this->task != 0) && (this->task->move_sprite != 0)) {
-        move_sprite = this->task->move_sprite;
-    } else {
-        move_sprite = this->obj->master_obj->move_sprite;
-    }
-
-    RGE_Action_Move_To* move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.0f, move_sprite);
-    if (move_to == 0) {
-        ((RGE_Action*)this)->set_state(0x0D);
+    default:
         return;
     }
 
-    move_to->setSubAction(1);
-    this->sub_actions->add_action(move_to);
+    RGE_Sprite* ms;
+    if ((this->task != 0) && (this->task->move_sprite != 0))
+        ms = this->task->move_sprite;
+    else
+        ms = this->obj->master_obj->move_sprite;
+
+    {
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(
+            this->obj, this->target_x, this->target_y, this->target_z, 0.0f, ms);
+
+        if (action == 0) {
+            ((RGE_Action*)this)->set_state(0x0D);
+            return;
+        }
+
+        action->setSubAction(1);
+        this->sub_actions->add_action(action);
+    }
 }

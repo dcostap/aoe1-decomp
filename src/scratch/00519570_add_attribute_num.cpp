@@ -1,7 +1,11 @@
-// quick-win attempt log:
-// no existing work file for 00519570; source is a small override with two side effects
-// first probe will keep the class surface minimal but preserve the exact field offsets
-// needed for the attribute accumulator and the mutual-allies refresh
+// TRIBE_Player::add_attribute_num
+// VA: 00519570
+// tplayer.cpp:4873-4884
+// 86 bytes, 9 diff bytes (10.47%).
+// FPU scheduling quirk: original does fld param_2; fadd attr[49]
+// rebuilt does fld attr[49]; fadd param_2. Both compute same result.
+// Invariant across 4+ source forms (direct +=, param+attr, temp vars,
+// pointer indirection). 2 relocations masked (base call + update call).
 
 class RGE_Game_World {
 public:
@@ -27,9 +31,9 @@ public:
 
 void TRIBE_Player::add_attribute_num(short param_1, float param_2, unsigned char param_3) {
     if ((param_1 == 3) && (param_3 != 0)) {
-        float new_value = param_2;
-        new_value += this->attributes[49];
-        this->attributes[49] = new_value;
+        float addend = param_2;
+        float dest = this->attributes[49];
+        this->attributes[49] = addend + dest;
     }
     if (param_1 == 0x32) {
         this->allied_LOS_Enable = 1;

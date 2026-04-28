@@ -1,15 +1,23 @@
-// VA: 0050D1D9 TRIBE_Tech::get_button_location (32 B)
-// __thiscall, returns byte at [tech_array + id*0x3C + 0x26]
+// matched: /Od debug-style no-PDB getter; Tech_Entry stride is 0x3C
 
-struct TRIBE_Tech {
-    void** tech_array;   // +0x00
-    short count;         // +0x04
-    void** entries;      // +0x08
+struct Tech_Entry {
+    char gap_00[0x26];
+    unsigned char button_location;
+    char gap_27[0x15];
 };
 
-unsigned char TRIBE_Tech_get_button_location(TRIBE_Tech* self, short id)
-{
-    void* entryTable = *(void**)self->entries;
-    unsigned char* entry = (unsigned char*)((char*)entryTable + id * 0x3C);
-    return entry[0x26];
+struct Tech_Base {
+    Tech_Entry* tech_tree;
+};
+
+class TRIBE_Player_Tech {
+public:
+    char gap_00[0x08];
+    Tech_Base* base;
+
+    unsigned char get_button_location(short param_1);
+};
+
+unsigned char TRIBE_Player_Tech::get_button_location(short param_1) {
+    return this->base->tech_tree[param_1].button_location;
 }

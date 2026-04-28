@@ -3,12 +3,13 @@
 // attempt 2: compile errors - bad gaps, vfunc syntax, missing base decl
 // attempt 3: 1201 bytes, 96.8% diff, codegen basin problem
 // attempt 4: fix class offsets, add FPU global: still 1201 bytes, 96.9% diff
-// BLOCKER: deep codegen basin. VC5 picks eax for param_1 (orig: edx),
-// cascades through entire 1201 bytes. Logic/size correct (1201/1201)
-// but register allocation, instruction order, and loop layout differ.
-// Original uses jump table for switch; VC5 uses if/else chain.
-// Original uses fcomp [57733Ch] global; VC5 uses fcomp [0] inline.
-// Left in scratch per AGENTS.md 10-probe rule for large sticky functions.
+// Fixed base class to RGE_Static_Object with correct vtable/master/owner/44/48/4C.
+// Field offsets now match original EXE layout.
+// Remaining 96.4%: register allocation cascade (param_1 in EDX orig vs EAX rebuilt).
+// Original pushes esi before loading param_2; rebuilt loads param_2 early.
+// This changes stack offsets and register assignments throughout 1201 bytes.
+// Deep codegen basin — needs significant source restructuring.
+// Left in scratch.
 class TRIBE_Task_List;
 class RGE_Action_Object;
 class RGE_Static_Object;
@@ -32,16 +33,21 @@ public:
     RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float);
 };
 
-class RGE_Action_Object {
+// RGE_Static_Object base provides field offsets at original EXE positions
+class RGE_Static_Object_Base {
 public:
-    char gap_00[0x08];
-    RGE_Master_Static_Object* master_obj;  // +0x08
-    RGE_Player* owner;                     // +0x0C
-    char gap_10[0x34];
-    float field_44;                        // +0x44
-    char gap_48[0x04];
-    short field_4A;                        // +0x4A
-    short field_4C;                        // +0x4C
+    void* vtable;                           // +0x00
+    long obj_id;                            // +0x04
+    RGE_Master_Static_Object* master_obj;   // +0x08
+    RGE_Player* owner;                      // +0x0C
+    char _gap_10[0x34];
+    float attribute_amount_held;            // +0x44 (scratch field_44)
+    unsigned char object_state;             // +0x48
+    unsigned char _pad_49[3];               // +0x49 to +0x4B
+    short attribute_type_held;              // +0x4C (scratch field_4C)
+};
+
+class RGE_Action_Object : public RGE_Static_Object_Base {
 };
 
 class RGE_Master_Static_Object {
@@ -91,8 +97,8 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
     RGE_Task* pRVar4;
     RGE_Master_Static_Object* pRVar3;
 
-    sVar2 = param_1->field_4C;
-    if (sVar2 != -1 && param_1->field_44 > global_float_57733c && param_2 != 0 && param_2->object_state == 2) {
+    sVar2 = param_1->attribute_type_held;
+    if (sVar2 != -1 && param_1->attribute_amount_held > global_float_57733c && param_2 != 0 && param_2->object_state == 2) {
         short sVar1 = param_1->master_obj->object_group;
         if (sVar1 == 4 || sVar1 == 0x15) {
             if (sVar1 == 4) {
@@ -108,7 +114,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
                 sVar5 = 0x2D;
             }
             short id = param_2->owner->id;
-            if ((id == sVar5 || id == sVar7) && param_2->master_obj->id == param_1->field_4A) {
+            if ((id == sVar5 || id == sVar7) && param_2->master_obj->id == *(short*)((char*)param_1->owner + 0x4A)) {
                 if (this->task_count > 0) {
                     int* p = (int*)this->tasks;
                     for (int i = 0; i < this->task_count; i++) {
@@ -136,7 +142,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
             }
             return 0;
         }
-        if (param_2->owner == param_1->owner || ((iVar8 = param_1->owner->is_in_same_group(param_2->owner->id)) != 0 && (iVar8 = param_2->owner->is_in_same_group(param_1->field_4A)) != 0)) {
+        if (param_2->owner == param_1->owner || ((iVar8 = param_1->owner->is_in_same_group(param_2->owner->id)) != 0 && (iVar8 = param_2->owner->is_in_same_group(*(short*)((char*)param_1->owner + 0x4A))) != 0)) {
             if (param_2->object_state < 3 && param_2->master_obj->unit_level == 7) {
                 if (this->task_count < 1) return 0;
                 int* p = (int*)this->tasks;
@@ -164,7 +170,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1, RGE_Stati
                 }
             }
         }
-        if (param_2->owner == param_1->owner || ((iVar8 = param_1->owner->is_in_same_group(param_2->owner->id)) != 0 && (iVar8 = param_2->owner->is_in_same_group(param_1->field_4A)) != 0)) {
+        if (param_2->owner == param_1->owner || ((iVar8 = param_1->owner->is_in_same_group(param_2->owner->id)) != 0 && (iVar8 = param_2->owner->is_in_same_group(*(short*)((char*)param_1->owner + 0x4A))) != 0)) {
             sVar2 = param_2->master_obj->object_group_2;
             if ((sVar2 == 2 || sVar2 == 0x14 || sVar2 == 0x15 || sVar2 == 0x16) && param_2->hp < (float)param_2->master_obj->hp && param_2->object_state < 3) {
                 if (this->task_count < 1) return 0;

@@ -1,48 +1,59 @@
-// TScreenPanel::set_focus
-// VA: 0047BB60
-// PDB: Pnl_scr.cpp:106-145
+// 0047BB60 TScreenPanel::set_focus
+// Source: Pnl_scr.cpp lines 106-145
+// Size: 383 bytes
+// FLAGS: default (/nologo /c /O2 /Oy)
 //
 // Attempt log:
-// - draft 1: local vars focus, is_new, area, sys → 15 bytes too short (extra stack vars)
-// - draft 2: inlined most values → 31 bytes short (pal_entry[256] allocated differently?)
-// - draft 3: correct vtable slots for TEasy_Panel (5 virtuals), TScreenPanel dummies for slot 21
-// Stuck on: function size (352 vs 383) — VC5 allocates pal_entry array differently or
-// optimizes sub esp differently.
-// Left in scratch.
+// - Original scratch: 352 bytes (31 short). No PALETTEENTRY→ missing 3 byte-stores
+//   and sub esp=400h (should be 408h).
+// - Added PALETTEENTRY pe local (3 zero-byte stores for peRed/peGreen/peBlue)
+//   → sub esp=408h, correct size 383, local layout pe at [esp+0Ch]/is_new at [esp+10h]
+//   /pal_entry at [esp+18h]. Focus_copy in register, param_1 on stack.
+// - Tried axes: is_new as unsigned char/int/two-step, durable sys local,
+//   various declaration orders, pointer-typed last_screen, param_1 local.
+//   None produced original's `push ebx; xor ebx,ebx; setne bl` pattern.
+// - Remaining mismatch: backend register-allocation basin.
+//   Original: ebp=param_1, bl=is_new(push ebx), [esp+14h]=focus_copy, [esp+10h]=pe
+//   Rebuilt:  ebx=focus_copy, eax/is_new on stack, no push ebx, pe shifted 4 bytes.
+//   VC5 allocator picks eax/ecx over ebx for is_new given this TU context.
+// Left in scratch — register-allocation shape issue, all semantics/calls correct.
 
 #include "..\..\include\game_globals.h"
 
 class TDrawArea;
+class TDrawSystem;
+class TEasy_Panel;
+
+typedef struct { unsigned char r,g,b,a; } PE;
+
+extern int last_screen;
+
+extern void RGE_fade_palette(TDrawArea*, int, float, int, void*, int, int);
+extern void GetPaletteEntries(void*, int, int, void*);
 
 class TDrawSystem {
 public:
     char gap_00[0x478];
-    unsigned char ScreenMode;
     unsigned char DrawType;
-    void Paint(void* rect);
+    unsigned char ScreenMode;
+    void Paint(void*);
 };
-
 class TDrawArea {
 public:
     TDrawSystem* draw_system;
-    void GetPalette(void* pal_entries);
-    void Clear(void* rect, int zero1, int zero2);
+    void GetPalette(void*);
+    void Clear(void*, int, int);
 };
 
 class TEasy_Panel {
 public:
     virtual ~TEasy_Panel();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual void set_focus(int param_1);
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void set_focus(int);
 };
-
-void RGE_fade_palette(TDrawArea* draw_area, int color, float fade_time, int mode, void* pal, int left, int right);
-void GetPaletteEntries(void* palette, int start, int count, void* entries);
-
-int last_screen;
 
 class TScreenPanel : public TEasy_Panel {
 public:
@@ -53,14 +64,21 @@ public:
     char gap_7C[0x190];
     void* palette_handle;
 
-    virtual void set_focus(int param_1);
-    virtual void v6();  virtual void v7();
-    virtual void v8();  virtual void v9();
-    virtual void v10(); virtual void v11();
-    virtual void v12(); virtual void v13();
-    virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17();
-    virtual void v18(); virtual void v19();
+    virtual void set_focus(int);
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
     virtual void v20();
     virtual void after_set_focus();
 };
@@ -68,11 +86,16 @@ public:
 void TScreenPanel::set_focus(int param_1)
 {
     int pal_entry[256];
+    PE pe;
+    int focus_copy;
     int is_new;
-    TDrawArea* area;
 
+    pe.r = 0;
+    pe.g = 0;
+    pe.b = 0;
+    focus_copy = this->save_focus;
     is_new = (this != (TScreenPanel*)last_screen) ? 1 : 0;
-    area = this->draw_area;
+    TDrawArea* area = this->draw_area;
 
     if (area && area->draw_system && param_1 && is_new) {
         TDrawSystem* sys = area->draw_system;
@@ -83,7 +106,7 @@ void TScreenPanel::set_focus(int param_1)
                 area->GetPalette(pal_entry + 1);
             }
 
-            RGE_fade_palette(area, this->save_focus, 0.13f, 1, 0, -1, -1);
+            RGE_fade_palette(area, *(int*)&pe, 0.13f, 1, 0, -1, -1);
             area->Clear(0, 0, 0);
             area->draw_system->Paint(0);
         }
@@ -95,14 +118,14 @@ void TScreenPanel::set_focus(int param_1)
     if (area && area->draw_system && param_1 && is_new) {
         TDrawSystem* sys = area->draw_system;
         if (sys->ScreenMode == 2 || sys->DrawType == 1) {
-            RGE_fade_palette(area, this->save_focus, 0.0f, 2, pal_entry + 1, -1, -1);
+            RGE_fade_palette(area, focus_copy, 0.0f, 2, pal_entry + 1, -1, -1);
             this->after_set_focus();
-            RGE_fade_palette(area, this->save_focus, 0.0f, 1, 0, -1, -1);
+            RGE_fade_palette(area, focus_copy, 0.0f, 1, 0, -1, -1);
             area->draw_system->Paint(0);
-            RGE_fade_palette(area, this->save_focus, 0.13f, 2, pal_entry + 1, -1, -1);
+            RGE_fade_palette(area, focus_copy, 0.13f, 2, pal_entry + 1, -1, -1);
         }
     }
 
-    if (param_1 != this->save_focus && this->save_focus)
+    if (param_1 != focus_copy && focus_copy)
         last_screen = (int)this;
 }

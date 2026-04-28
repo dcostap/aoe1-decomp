@@ -1,15 +1,12 @@
 // VA: 0043B400 TribeAboutDialog::action
 // dlg_abt.cpp lines 174-200
 
-// attempt 1: natural C++ — compiled 320/325 bytes (5 short)
-//   Issues:
-//   - vtable offset: vf14 call uses [eax+8] vs original [eax+14h] (wrong slot)
-//   - Missing push 0 before vtable call (vf14 takes an arg in original)
-//   - operator_new + EH tracking pattern close but 5 bytes short total
-// Probe 2+, plus 6 more: same sizing gap persists
-//   Original's new expression doesn't null-check result after ctor;
-//   VC5 always adds it. Hard to suppress.
-// Left in scratch: vtable layout + new-expression null check mismatch
+// attempt 1: natural C++ — vf14 at wrong vtable slot, missing push 0
+// attempt 2: removed vf14 decl, direct slot 5 call with push 0 -> slot fixed
+// attempt 3: EH handler addr reloc prevents size match (320 vs 325)
+// Remaining: instruction scheduling differs (param load before/after push esi),
+// register allocation cascade (200+ diff bytes after crude reloc masking).
+// EH prologue present — needs /GX. Deep codegen basin. Left in scratch.
 
 class TPanelSystem;
 class TRIBE_Credits_Screen;
@@ -47,7 +44,6 @@ public:
     virtual long vf0C();
     virtual long vf10();
     virtual long action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4);
-    virtual long vf14();
 };
 
 class TEasy_Panel : public TPanel {
@@ -109,7 +105,7 @@ long TribeAboutDialog::action(TPanel* param_1, long param_2, unsigned long param
                 }
             }
             panel_system->setCurrentPanel("Game Screen", 0);
-            this->vf14();
+            ((void (__stdcall *)(int))(*(void***)this)[5])(0);
         }
         panel_system->destroyPanel("About Dialog");
         return 1;

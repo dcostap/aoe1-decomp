@@ -1,32 +1,43 @@
-// VA: 0050D281 TRIBE_Player_Tech::rev_tech (133 B)
-// __thiscall, check tech enable state, if enabled loop through slots and reverse
+// matched candidate: /Od debug-style no-PDB reverse-tech traversal
 
-extern short is_enabled(void* self, short techId);
-extern void do_rev_tech(void* self, short techId);
+struct Tech_Player_Tree {
+    float research_done;
+    short state;
+};
 
-void TRIBE_Player_Tech_rev_tech(void* self, short techId)
+struct Tech_Entry {
+    char gap_00[0x04];
+    short pre_reqs[4];
+    char gap_0C[0x30];
+};
+
+struct TRIBE_Tech {
+    Tech_Entry* tech_tree;
+};
+
+class TRIBE_Player_Tech {
+public:
+    Tech_Player_Tree* tech_player_tree;
+    short tech_player_tree_num;
+    TRIBE_Tech* base_tech;
+
+    unsigned char do_tech(short param_1);
+    void do_rev_tech(short param_1);
+    unsigned char rev_tech(short param_1);
+};
+
+unsigned char TRIBE_Player_Tech::rev_tech(short param_1)
 {
-    // Check if tech is enabled
-    short enabled = is_enabled(self, techId);
-    if (!enabled)
-        return;
-    
     int i;
-    for (i = 0; i < 4; i++) {
-        // Look up slot from tech table
-        short* entry = (short*)((char*)(*(int*)self) + techId * 8);
-        short slotEntry = entry[i * 2 + 2]; // offset = techId*8 + i*2 + 4
-        
-        if (slotEntry < 0)
-            continue;
-        
-        // Validate slot entry type
-        short* slotData = (short*)((char*)(*(int*)self) + slotEntry * 8);
-        if (slotData[2] >= 3) // entry type at offset 4
-            continue;
-        
-        // Reverse the tech in this slot
-        do_rev_tech(self, techId);
-        break;
+    int j;
+
+    this->do_tech(param_1);
+    for (i = 0; i < this->tech_player_tree_num; i++) {
+        for (j = 0; j < 4; j++) {
+            if (this->base_tech->tech_tree[i].pre_reqs[j] == param_1) {
+                this->do_rev_tech((short)i);
+            }
+        }
     }
+    return 1;
 }
