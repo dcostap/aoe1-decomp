@@ -1042,6 +1042,9 @@
     }
 
     function colorForFunction(item) {
+      if (item.bucket === "matching") {
+        return state.colorMode === "complexity" ? "#141820" : BUCKET_COLORS.matching;
+      }
       if (state.colorMode === "status") {
         return BUCKET_COLORS[item.bucket] || "#475569";
       }
