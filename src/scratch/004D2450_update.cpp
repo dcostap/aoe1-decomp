@@ -7,6 +7,7 @@
 // current gap: status dispatch and several success-path blocks still have shifted layout/register drift; edit diff improved but not exact
 // tried low-level state--/state-=5 spelling and result-variable form; result form worsened by introducing BL as carrier
 // fixed success-path object model: after vfn23 the original uses EDI=this->action_obj, loads float x/y from action_obj+3c/+38, then uses action_obj->obj_ptr for scenario calls
+// tried top-declared locals plus gotos to force original shared fail/success tails; it moved fail tail later but VC5 still emits add/test for state-5 and success block remains shifted
 
 #include "../../include/game_globals.h"
 
@@ -96,35 +97,49 @@ public:
 
 unsigned char TRIBE_Action_Make_Tech::update()
 {
-    unsigned int state = this->status;
-    state--;
-    if (state == 0)
-        return 1;
-    state -= 5;
-    if (state != 0)
-        return 0;
-
+    int state;
     float val;
-    void* some_obj = *(void**)((char*)rge_base_game + 0x9A8);
+    void* some_obj;
+    void* scn;
+    float* p1;
+    void* fb;
+    TRIBE_Player_Tech* pt;
+    RGE_Action_Object* action_obj;
+    float f1;
+    float f2;
+    RGE_Scenario* scenario;
+
+    state = this->status;
+    state--;
+    if (state == 0) {
+        goto success_initial;
+    }
+    state = state - 5;
+    if (state != 0) {
+        goto fail;
+    }
+
+    some_obj = *(void**)((char*)rge_base_game + 0x9A8);
     if (some_obj) {
         val = 1000.0f;
     } else {
-        void* scn = this->action_obj->obj_ptr;
-        float* p1 = *(float**)((char*)scn + 0x3C);
-        void* fb = this->action_obj->field_08;
+        scn = this->action_obj->obj_ptr;
+        p1 = *(float**)((char*)scn + 0x3C);
+        fb = this->action_obj->field_08;
         val = p1[0x84/4] * *(float*)((char*)fb + 0xE4);
     }
 
-    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
-    if (pt->research(this->tech_id, val))
-        return 0;
+    pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
+    if (pt->research(this->tech_id, val)) {
+        goto fail;
+    }
 
     this->vfn23(1);
 
-    RGE_Action_Object* action_obj = this->action_obj;
-    float f1 = *(float*)((char*)action_obj + 0x3C);
-    float f2 = *(float*)((char*)action_obj + 0x38);
-    RGE_Scenario* scenario = (RGE_Scenario*)action_obj->obj_ptr;
+    action_obj = this->action_obj;
+    f1 = *(float*)((char*)action_obj + 0x3C);
+    f2 = *(float*)((char*)action_obj + 0x38);
+    scenario = (RGE_Scenario*)action_obj->obj_ptr;
 
     ((RGE_Base_Game*)rge_base_game)->vfn16(
         0x64,
@@ -137,5 +152,11 @@ unsigned char TRIBE_Action_Make_Tech::update()
         this->action_obj->player_id, this->action_obj->player_id,
         0x1FA, 0x26C, 0, 0);
 
+    return 1;
+
+fail:
+    return 0;
+
+success_initial:
     return 1;
 }
