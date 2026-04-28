@@ -91,8 +91,6 @@ struct/class size, or missing real shared global/type facts. Fix those first.
 
 Practical rules:
 
-- Variant lab use does **not** require explicit user permission. The permission
-  gate was an older policy and is now obsolete.
 - Large functions are not automatically excluded. Avoid blind whole-function
   Cartesian sweeps on them, but use focused labs on localized gates, call sites,
   temps, or block-shape regions once those regions are understood.
