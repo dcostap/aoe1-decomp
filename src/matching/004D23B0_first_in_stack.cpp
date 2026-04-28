@@ -29,7 +29,6 @@ public:
     V_DUMMY(80); V_DUMMY(81);
     virtual void vfn82(int, int, int, int, int, int); // slot 82, offset 0x148
 
-    char gap_00[4];
     int player_id;
     char gap_08[4];
     void* obj_ptr;
@@ -37,7 +36,7 @@ public:
 
 class TRIBE_Player_Tech {
 public:
-    unsigned char start_research(short tech_id, int flag, short* out_param);
+    unsigned char start_research(short tech_id, int flag, unsigned char* out_param);
 };
 
 class RGE_Scenario {
@@ -87,19 +86,17 @@ void TRIBE_Action_Make_Tech::first_in_stack(unsigned char param_1)
     if (!param_1) return;
     if (this->tech_id < 0) return;
 
-    RGE_Scenario* scenario = (RGE_Scenario*)this->action_obj->obj_ptr;
-    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
-    
-    short param_copy = param_1;
-    unsigned char result = pt->start_research(this->tech_id, 1, &param_copy);
+    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
+
+    unsigned char result = pt->start_research(this->tech_id, 1, &param_1);
     if (result == 1) {
         this->vfn23(6);
         return;
     }
 
     // Vtable calls for non-match path
-    scenario->vfn70(
-        (int)(short)param_1,
+    ((RGE_Scenario*)this->action_obj->obj_ptr)->vfn70(
+        (int)*(short*)&param_1,
         (int)this->tech_id,
         this->action_obj->player_id,
         this->unique_id);

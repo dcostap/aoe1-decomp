@@ -2,6 +2,9 @@
 // VA: 004D2290
 // PDB: tact_tek.cpp:49-64
 // EH-framed, needs /GX
+// FLAGS: config/flags/004D2290_TRIBE_Action_Make_Tech.rsp
+// added /GX rsp after extract showed EH-framed original; current source now extracts full size but has broad register/layout drift
+// likely next fixes mirror matched siblings: accurate RGE_Action_Object layout, no fake extra vptr padding, and typed RGE_Base_Game member-call surface
 
 #include "../../include/game_globals.h"
 

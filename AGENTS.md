@@ -100,6 +100,14 @@ Practical rule:
 - repeated use across multiple functions -> consider promoting it,
 - broad class reconstruction -> save it for a later convergence phase.
 
+Local-first does **not** mean approximate-layout-first.
+
+All compiler-facing type stubs, including one-off local stubs in `src\scratch\...`, must be layout-accurate for every field, vptr, base-size boundary, `sizeof` value, and member offset the function touches or depends on. Use explicit padding arrays liberally to force observed offsets and sizes. Prefer blunt `gap_XX` / `pad_XX` members over convenient but wrong layouts.
+
+For constructors, destructors, and other member functions, preserve the observed base-vs-derived ownership boundary whenever it affects field offsets, vptr stores, EH state, or base constructor/destructor lowering. Do not put derived fields into a base class just because it is locally convenient, and do not shrink a base class if derived fields are observed at later offsets.
+
+If a packet, PDB/type dump, Ghidra listing, or original asm proves an offset or size, model that fact immediately in the local or shared type surface before chasing code-shape variants. A variant lab is for source-shape/codegen basin problems, not for compensating for an obviously wrong struct/class layout.
+
 ## Normal workflow for one function
 
 1. If choosing a new target, regenerate `project_full_status.csv` first and usually
@@ -259,6 +267,13 @@ These are heuristics, not laws, but a real exact-match win now backs them:
 12a. Treat **return width** as a normal tiny-helper axis too. If the original
     tests `al`/`dl` and your rebuild tests `eax`/`edx`, explicitly probe
     `char`/`unsigned char` vs `int` on the callee surface.
+12b. A parameter's declared width and a later **stack-slot access width** can be
+    different source-shape axes. If the PDB/signature says `unsigned char` but
+    the original later emits `movsx ..., word [esp+...]` from the argument slot,
+    test an explicit stack-slot reinterpretation such as `*(short*)&param` at
+    that use site. This can preserve the narrow entry test while forcing VC5 to
+    reload/sign-extend the original wider stack slot instead of generating an
+    `and 0FFh` byte-mask family.
 13. Treat **statement spelling** as a real VC5 axis, not cosmetic cleanup.
     Forms like `x += y`, `x = x + y`, and `tmp = x; x = tmp + y` can land in
     different basins because they change liveness and FPU/integer scheduling.

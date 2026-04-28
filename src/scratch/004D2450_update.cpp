@@ -2,6 +2,9 @@
 // VA: 004D2450
 // PDB: tact_tek.cpp:109-134
 // No EH framing (push ecx creates a local slot)
+// tried fixing local RGE_Action_Object layout to vptr/player_id/field_08/obj_ptr and removed fake base virtual dtor; vfn23 slot and object offsets now align better
+// tried natural RGE_Base_Game member-call surface instead of cdecl function-pointer notify; removed caller stack cleanup drift in notify block
+// current gap: status dispatch and several success-path blocks still have shifted layout/register drift; edit diff improved but not exact
 
 #include "../../include/game_globals.h"
 
@@ -28,11 +31,9 @@ public:
     V_DUMMY(80); V_DUMMY(81);
     virtual void vfn82(int, int, int, int, int, int);
 
-    char gap_00[4];
     int player_id;
-    char gap_08[4];
+    void* field_08;  // +0x08
     void* obj_ptr;   // +0x0C
-    void* field_08;  // +0x08 (separate from obj_ptr)
 };
 
 class TRIBE_Player_Tech {
@@ -62,7 +63,6 @@ public:
 
 class RGE_Action {
 public:
-    virtual ~RGE_Action();
     V_DUMMY(0); V_DUMMY(1); V_DUMMY(2); V_DUMMY(3); V_DUMMY(4);
     V_DUMMY(5); V_DUMMY(6); V_DUMMY(7); V_DUMMY(8); V_DUMMY(9);
     V_DUMMY(10); V_DUMMY(11); V_DUMMY(12); V_DUMMY(13); V_DUMMY(14);
@@ -79,6 +79,14 @@ public:
     int unique_id;
 };
 
+class RGE_Base_Game {
+public:
+    V_DUMMY(0); V_DUMMY(1); V_DUMMY(2); V_DUMMY(3); V_DUMMY(4);
+    V_DUMMY(5); V_DUMMY(6); V_DUMMY(7); V_DUMMY(8); V_DUMMY(9);
+    V_DUMMY(10); V_DUMMY(11); V_DUMMY(12); V_DUMMY(13); V_DUMMY(14); V_DUMMY(15);
+    virtual void vfn16(int, int, int, int, int);
+};
+
 class TRIBE_Action_Make_Tech : public RGE_Action {
 public:
     unsigned char update();
@@ -86,10 +94,14 @@ public:
 
 unsigned char TRIBE_Action_Make_Tech::update()
 {
-    if (this->status == 1)
+    switch (this->status) {
+    case 1:
         return 1;
-    if (this->status != 6)
+    case 6:
+        break;
+    default:
         return 0;
+    }
 
     float val;
     void* some_obj = *(void**)((char*)rge_base_game + 0x9A8);
@@ -113,9 +125,8 @@ unsigned char TRIBE_Action_Make_Tech::update()
     float f1 = *(float*)((char*)this->action_obj->obj_ptr + 0x3C);
     float f2 = *(float*)((char*)this->action_obj->obj_ptr + 0x38);
 
-    typedef void (*NotifyFn)(void*, int, int, int, int, int);
-    ((NotifyFn)((*(void***)rge_base_game)[0x40/4]))(
-        rge_base_game, 0x64,
+    ((RGE_Base_Game*)rge_base_game)->vfn16(
+        0x64,
         *(short*)((char*)scenario + 0x4A), this->tech_id,
         (int)f2, (int)f1);
 

@@ -28,7 +28,6 @@ public:
     V_DUMMY(80); V_DUMMY(81);
     virtual void vfn82(int, int, int, int, int, int); // slot 82
 
-    char gap_00[4];
     int player_id;
     char gap_08[4];
     void* obj_ptr;
@@ -83,24 +82,26 @@ public:
     int stop();
 };
 
-// RGE_Base_Game fragment with needed vtable slot
-// Slot 16 (offset 0x40) — notification-like function
+class RGE_Base_Game {
+public:
+    V_DUMMY(0); V_DUMMY(1); V_DUMMY(2); V_DUMMY(3); V_DUMMY(4);
+    V_DUMMY(5); V_DUMMY(6); V_DUMMY(7); V_DUMMY(8); V_DUMMY(9);
+    V_DUMMY(10); V_DUMMY(11); V_DUMMY(12); V_DUMMY(13); V_DUMMY(14); V_DUMMY(15);
+    virtual void vfn16(int, int, int, int, int);
+};
 
 int TRIBE_Action_Make_Tech::stop()
 {
     this->vfn23(1);
 
-    RGE_Scenario* scenario = (RGE_Scenario*)this->action_obj->obj_ptr;
-    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
+    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
     pt->cancel_research(this->tech_id, 1);
 
-    // rge_base_game vtable[0x40] — slot 16
-    typedef void (*NotifyFn)(void*, int, int, int, int, int);
-    ((NotifyFn)((*(void***)rge_base_game)[0x40/4]))(
-        rge_base_game, 0x65, *(short*)((char*)scenario + 0x4A),
+    ((RGE_Base_Game*)rge_base_game)->vfn16(
+        0x65, *(short*)((char*)this->action_obj->obj_ptr + 0x4A),
         this->tech_id, 0, 0);
 
-    scenario->vfn70((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
+    ((RGE_Scenario*)this->action_obj->obj_ptr)->vfn70((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
 
     this->action_obj->vfn82(
         this->action_obj->player_id, this->action_obj->player_id,
