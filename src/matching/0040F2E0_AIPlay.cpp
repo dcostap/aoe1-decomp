@@ -1,6 +1,7 @@
-// tried the raw-storage layout so the ctor calls can happen after the scalar stores
-// tried direct member-array construction, then raw helper calls, then a tweaked tail fill loop
-// remaining mismatch is localized to the final target-array fill sequence (first mismatch at byte 93)
+// 0040F2E0 AIPlay constructor
+// Diff: tail loop uses lea (edx=ecx+eax) vs add+inc approach
+// Trying: explicit for-loop with array indexing
+
 class AIPlayGroup {
 public:
     char data[0x0C];
@@ -57,14 +58,9 @@ AIPlay::AIPlay() {
         i++;
     }
 
-    int ecx = 0xFFFFFFB7;
-    unsigned char* p = &this->targetCharacteristicValue[0];
-    int edx;
-    ecx -= (int)this;
-    do {
-        p[-5] = 5;
-        *p = 5;
-        p++;
-        edx = ecx + (int)p;
-    } while (edx < 5);
+    // Use explicit for loop with member array access
+    for (int j = 0; j < 5; j++) {
+        this->targetTypeValue[j] = 5;
+        this->targetCharacteristicValue[j] = 5;
+    }
 }
