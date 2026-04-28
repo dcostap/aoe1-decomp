@@ -149,6 +149,14 @@ evidence in the file's attempt log.
 - Semantically equivalent control-flow forms are not codegen-neutral. Probe direct
   return vs explicit branch, nested `if` vs early return, `if/else` arm order,
   switch/case order, and expression-style boolean vs 0/1 branches.
+- In VC5, `switch` and `if/else if/else` produce fundamentally different block layout
+  for the same dispatch logic. A two-case dispatch with default that uses `je`
+  (jump-to-handler: else inline, cases at end) in the original will likely be a
+  `switch` statement. `if/else if/else`, independent `if+return`, and `goto` all
+  produce `jne`-skip layout (cases inline, else at end) even though they are
+  semantically equivalent. If you see `je` dispatch branches targeting code after
+  the function's main epilogue, try a `switch` before reaching for complex
+  control-flow hacks.
 - Do not over-force shared tails with `goto` just because asm has shared-looking
   epilogues. Natural nested `if`/`switch` can still produce the same tails; forced
   top-declared-local/goto plumbing can perturb branch distances, liveness, and
