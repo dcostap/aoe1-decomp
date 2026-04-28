@@ -1,9 +1,10 @@
-// VA: 004363A0 TDebuggingLog::Time
-// Debuglog.cpp lines 114-129
-
-// attempt 1-3: natural implementation
-// 132/132 bytes exact size, 10 diff bytes
-// Remaining: inverted branch (je vs jne) for timeinfo NULL check // VC5 codegen basin issue
+// 004363A0 TDebuggingLog::Time
+// Debuglog.cpp:114-129, 132 bytes
+// FLAGS: default
+//
+// Fixed: swapped if/else arm order. Original checks `timeinfo == 0` so the
+// "?" path is fall-through (branch-taken = asctime). The previous code had
+// `if (timeinfo != 0)` which inverted the branch (je vs jne).
 
 #include <time.h>
 
@@ -34,10 +35,10 @@ void TDebuggingLog::Time() {
     float elapsed = (float)(ticks - LogStartTickCount) * 0.001f;
     
     const char* timestr;
-    if (timeinfo != 0) {
-        timestr = asctime(timeinfo);
-    } else {
+    if (timeinfo == 0) {
         timestr = "?";
+    } else {
+        timestr = asctime(timeinfo);
     }
     Log(">>>TIME>>>  %s   [%7.1f sec. elapsed]", timestr, (double)elapsed);
 }
