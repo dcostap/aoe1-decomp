@@ -1,7 +1,10 @@
-// tried the direct chunk-write/MMIO-import shape; first mismatch moved to the stack-arg load order
-// tried adding a dummy leading parameter to shift the entry offsets; first arg matched, but the handle/info loads still drifted
-// leaving in scratch because the remaining gap is stack-argument ordering, not a behavior mismatch
-// First-pass skeleton/partial — needs proper implementation
+// 004481A0 _WaveStartDataWrite
+// PDB: Dsutil.c:906-929, 55 bytes
+// FLAGS: default
+//
+// Fixed: removed spurious `unsigned long unused` first param â€” the original
+// takes 3 params (void* hmmioPtr, _MMCKINFO* ckOut, _MMIOINFO* mmioinfoOut).
+// The extra 4-byte param shifted all stack offsets by 8/0x8.
 typedef unsigned long MMRESULT;
 
 struct _MMCKINFO {
@@ -34,7 +37,7 @@ struct _MMIOINFO {
 extern "C" __declspec(dllimport) MMRESULT __stdcall mmioCreateChunk(void* hmmio, void* ckInfo, unsigned long flags);
 extern "C" __declspec(dllimport) MMRESULT __stdcall mmioGetInfo(void* hmmio, void* info, unsigned long flags);
 
-MMRESULT __cdecl _WaveStartDataWrite(unsigned long unused, _MMCKINFO* ckOut, void* hmmioPtr, _MMIOINFO* mmioinfoOut) {
+MMRESULT __cdecl _WaveStartDataWrite(void* hmmioPtr, _MMCKINFO* ckOut, _MMIOINFO* mmioinfoOut) {
     MMRESULT result;
 
     ckOut->ckid = 0x61746164;
