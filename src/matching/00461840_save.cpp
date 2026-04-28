@@ -1,5 +1,6 @@
 // VA: 00461840 RGE_Master_Player::save (198 B)
 // PDB source: mst_play.cpp
+// Fix: vtable offset (save at slot 5 = 0x14), short loop counter
 
 #include <stdlib.h>
 
@@ -9,6 +10,11 @@ extern "C" {
 
 struct RGE_Master_Static_Object {
     void* vtable;
+    virtual ~RGE_Master_Static_Object();
+    virtual void copy_obj(RGE_Master_Static_Object* param_1);
+    virtual void modify(float param_1, unsigned char param_2);
+    virtual void modify_delta(float param_1, unsigned char param_2);
+    virtual void modify_percent(float param_1, unsigned char param_2);
     virtual void save(int fd);
 };
 
@@ -28,7 +34,7 @@ struct RGE_Master_Player_s {
 
 void RGE_Master_Player_s::save(int fd)
 {
-    int i;
+    short i;
     
     rge_write(fd, &type, 1);
     rge_write(fd, name, 20);
