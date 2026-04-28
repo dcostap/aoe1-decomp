@@ -15,7 +15,7 @@ import struct
 import subprocess
 import sys
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Iterable
 
@@ -153,7 +153,9 @@ Block preset with user body slots:
 
 Preset arguments use key=value shell-style parsing, so quote expressions with spaces.
 Inside preset files, use {{axis}}, {{class}}, {{prefix}}, etc. for arguments and
-{{slot:body}} or {{slot:body|indent:4}} for slot content. Defaults include:
+{{slot:body}} for slot content. Slot filters may be chained, e.g.
+{{slot:body|trim|indent:4}}; supported filters are trim, lstrip, rstrip/chomp,
+and indent:N. Defaults include:
   prefix=<sanitized axis/name>, tmp=<prefix>_tmp, tmp2=<prefix>_tmp2,
   inverse=!(<cond>) when cond is supplied.
 
@@ -217,6 +219,11 @@ Run examples
   python tools/variant_lab.py --init --va 0051ACA0
   python tools/variant_lab.py --va 0051ACA0 --template build/temp/0051ACA0_get_help_info_lab.tpl.cpp
   python tools/variant_lab.py --va 0051ACA0 --template - < build/temp/template.tpl.cpp
+  python tools/variant_lab.py --list-templates
+  python tools/variant_lab.py --template-help vc5_guard
+  python tools/variant_lab.py --template build/temp/template.tpl.cpp --expand-only
+  python tools/variant_lab.py --template build/temp/template.tpl.cpp --preview-variants 3
+  python tools/variant_lab.py --template build/temp/template.tpl.cpp --show-variant V000042
 
 For nontrivial labs, prefer writing a normal throwaway template file under
 build/temp/ and editing that file. Avoid huge inline shell/Python strings; they
@@ -231,6 +238,7 @@ Each run writes build/variant_lab/<slug>/<run-id>/ with:
   manifest.json                machine-readable run metadata
   groups.tsv                   one row per unique emitted-code group
   variants.tsv                 one row per expanded variant with source/object/flags paths
+  axis_sensitivity.tsv         per-axis exact/mismatch/error counts by label
   compile_errors.tsv           grouped compile/extract errors
   template_input.cpp           exact template used for the run
   work/V000000/source.cpp      exact generated source for variant V000000; contains a header comment pointing to summary/groups/variant companions
@@ -247,7 +255,9 @@ Each run writes build/variant_lab/<slug>/<run-id>/ with:
 To trace a group back to source: open summary.txt, pick a group id, inspect
  groups/Gxxxx/diff.txt and groups/Gxxxx/representative.cpp. For the exact
  variant row, use groups.tsv to find its representative Vxxxxxx, then inspect
- work/Vxxxxxx/source.cpp or the matching row in variants.tsv.
+ work/Vxxxxxx/source.cpp or the matching row in variants.tsv. Identical expanded
+ source/flag variants are deduped before compile by default; duplicate work dirs
+ contain dedup_alias.txt pointing at the representative object.
 
 By default the tool uses max(1, cpu_count - 1) parallel compiler workers.
 The default variant cap is high (250,000) because broad structured sweeps are a
@@ -341,6 +351,7 @@ class GroupInfo:
     relocations: int = 0
     first_mismatch: int | None = None
     exact: bool = False
+    exact_count: int = 0
     ret_count: int = 0
     last_ret_end: int | None = None
     extra_after_last_ret: int | None = None
@@ -637,6 +648,8 @@ def parse_template(text: str) -> TemplatePlan:
             label = parsed[1]
             if not label:
                 raise ValueError(f"@case requires a label on line {i + 1}")
+            if label in cases:
+                raise ValueError(f"duplicate @case label {label!r} in {directive} {name!r} near line {i + 1}")
             i += 1
             case_nodes, i = parse_nodes(i, stop_directives={"@case", *end_directives})
             cases[label] = case_nodes
@@ -746,7 +759,7 @@ def flag_preset_template(preset_names: list[str]) -> str:
 
 
 _IDENTIFIER_RE = re.compile(r"[^A-Za-z0-9_]+")
-_SLOT_RE = re.compile(r"\{\{slot:([A-Za-z_][A-Za-z0-9_]*)(?:\|indent:(\d+))?\}\}")
+_SLOT_RE = re.compile(r"\{\{slot:([A-Za-z_][A-Za-z0-9_]*)([^}]*)\}\}")
 _VALUE_RE = re.compile(r"\{\{([A-Za-z_][A-Za-z0-9_]*)\}\}")
 
 
@@ -768,6 +781,14 @@ def available_variant_templates() -> list[tuple[str, Path]]:
             for path in sorted(directory.glob(f"*{ext}")):
                 found.setdefault(path.stem, path)
     return sorted(found.items())
+
+
+def print_variant_template_help(name: str) -> None:
+    path = find_variant_template_path(name)
+    print(f"Template: {path.stem}")
+    print(f"Path: {path}")
+    print("")
+    print(path.read_text(encoding="utf-8"), end="")
 
 
 def find_variant_template_path(name: str) -> Path:
@@ -849,9 +870,27 @@ def render_variant_template(name: str, values: dict[str, str], slots: dict[str, 
 
     def replace_slot(match: re.Match[str]) -> str:
         slot_name = match.group(1)
-        indent = int(match.group(2) or "0")
+        filter_text = match.group(2) or ""
         slot_text = slots.get(slot_name, "")
-        return indent_slot_text(slot_text, indent)
+        for raw_filter in filter_text.split("|"):
+            filter_name = raw_filter.strip()
+            if not filter_name:
+                continue
+            if filter_name == "trim":
+                slot_text = slot_text.strip()
+            elif filter_name == "lstrip":
+                slot_text = slot_text.lstrip()
+            elif filter_name in ("rstrip", "chomp"):
+                slot_text = slot_text.rstrip()
+            elif filter_name.startswith("indent:"):
+                try:
+                    spaces = int(filter_name.split(":", 1)[1])
+                except ValueError as exc:
+                    raise ValueError(f"invalid indent filter {filter_name!r} in @template {name!r}") from exc
+                slot_text = indent_slot_text(slot_text, spaces)
+            else:
+                raise ValueError(f"unknown slot filter {filter_name!r} in @template {name!r}")
+        return slot_text
 
     expanded = _SLOT_RE.sub(replace_slot, text)
 
@@ -986,6 +1025,46 @@ def make_specs(plan: TemplatePlan) -> list[VariantSpec]:
     return specs
 
 
+def preview_fmt_values() -> dict[str, str]:
+    return {
+        "work_dir": "<work_dir>",
+        "variant_id": "<variant_id>",
+        "slug": "<slug>",
+        "run_dir": "<run_dir>",
+    }
+
+
+def select_spec(specs: list[VariantSpec], selector: str) -> VariantSpec:
+    wanted = selector.strip()
+    if wanted.upper().startswith("V"):
+        wanted = "V" + wanted[1:].zfill(6)
+        for spec in specs:
+            if spec.variant_id == wanted:
+                return spec
+    else:
+        try:
+            index = int(wanted, 10)
+        except ValueError as exc:
+            raise ValueError(f"invalid variant selector {selector!r}; use an index or V000123") from exc
+        if 0 <= index < len(specs):
+            return specs[index]
+    raise ValueError(f"variant {selector!r} is out of range for {len(specs)} variants")
+
+
+def print_variant_preview(plan: TemplatePlan, specs: list[VariantSpec], selected_specs: list[VariantSpec]) -> None:
+    print(f"Expanded variants: {len(specs)}")
+    for spec in selected_specs:
+        fmt_values = preview_fmt_values()
+        source = expand_source(plan, spec)
+        flags = expand_flags(plan, spec, fmt_values)
+        print(f"\n===== {spec.variant_id} {label_text(spec, plan.axes)} =====")
+        if flags.strip():
+            print("----- flags -----")
+            print(flags.rstrip())
+        print("----- source -----")
+        print(source, end="" if source.endswith("\n") else "\n")
+
+
 def ensure_original(va_text: str, slug: str) -> Path:
     orig_bin = REPO_ROOT / "build" / "asm" / f"orig_{slug}.bin"
     if orig_bin.exists():
@@ -1040,6 +1119,63 @@ def make_group_source_hint(*, run_dir: Path, group_id: str, variant_id: str) -> 
     )
 
 
+def variant_fmt_values(run_dir: Path, work_dir: Path, variant_id: str, slug: str) -> dict[str, str]:
+    return {
+        "work_dir": str(work_dir),
+        "variant_id": variant_id,
+        "slug": slug,
+        "run_dir": str(run_dir),
+    }
+
+
+def variant_build_material(plan: TemplatePlan, spec: VariantSpec, run_dir: Path, work_root: Path, slug: str) -> tuple[str, str]:
+    work_dir = work_root / spec.variant_id
+    source_body = expand_source(plan, spec)
+    extra_flags = expand_flags(plan, spec, variant_fmt_values(run_dir, work_dir, spec.variant_id, slug))
+    return source_body, extra_flags
+
+
+def variant_dedupe_key(source_body: str, extra_flags: str) -> str:
+    return stable_hash(source_body + "\0" + extra_flags)
+
+
+def write_dedup_alias_result(
+    representative: VariantResult,
+    spec: VariantSpec,
+    plan: TemplatePlan,
+    axes: list[Axis],
+    run_dir: Path,
+    work_root: Path,
+    slug: str,
+) -> VariantResult:
+    work_dir = work_root / spec.variant_id
+    ensure_dir(work_dir)
+    ensure_dir(work_dir / "tmp")
+    source_path = work_dir / "source.cpp"
+    flags_path = work_dir / "variant_flags.rsp"
+    source_body, extra_flags = variant_build_material(plan, spec, run_dir, work_root, slug)
+    source_path.write_text(make_source_hint(run_dir=run_dir, variant_id=spec.variant_id, slug=slug) + source_body, encoding="utf-8")
+    flags_path_text = ""
+    if extra_flags.strip():
+        flags_path.write_text(extra_flags, encoding="utf-8")
+        flags_path_text = str(flags_path)
+    (work_dir / "dedup_alias.txt").write_text(
+        "This variant expanded to the same source/flags as another variant and was not compiled separately.\n"
+        f"Representative variant: {representative.variant_id}\n"
+        f"Representative object: {representative.obj_path or ''}\n",
+        encoding="utf-8",
+    )
+    return replace(
+        representative,
+        variant_id=spec.variant_id,
+        labels_text=label_text(spec, axes),
+        source_path=str(source_path),
+        flags_path=flags_path_text,
+        stdout="",
+        stderr="",
+    )
+
+
 def build_variant(
     spec: VariantSpec,
     plan: TemplatePlan,
@@ -1053,6 +1189,8 @@ def build_variant(
     expected_size: int,
     va: int,
     slug: str,
+    source_body: str | None = None,
+    extra_flags: str | None = None,
 ) -> VariantResult:
     labels = label_text(spec, axes)
     work_dir = work_root / spec.variant_id
@@ -1063,14 +1201,12 @@ def build_variant(
     flags_path = work_dir / "variant_flags.rsp"
     flags_path_text = ""
 
-    fmt_values = {
-        "work_dir": str(work_dir),
-        "variant_id": spec.variant_id,
-        "slug": slug,
-        "run_dir": str(run_dir),
-    }
-    source = make_source_hint(run_dir=run_dir, variant_id=spec.variant_id, slug=slug) + expand_source(plan, spec)
-    extra_flags = expand_flags(plan, spec, fmt_values)
+    fmt_values = variant_fmt_values(run_dir, work_dir, spec.variant_id, slug)
+    if source_body is None:
+        source_body = expand_source(plan, spec)
+    if extra_flags is None:
+        extra_flags = expand_flags(plan, spec, fmt_values)
+    source = make_source_hint(run_dir=run_dir, variant_id=spec.variant_id, slug=slug) + source_body
     source_path.write_text(source, encoding="utf-8")
     if extra_flags.strip():
         flags_path.write_text(extra_flags, encoding="utf-8")
@@ -1256,6 +1392,7 @@ def write_group_artifacts(
         diff_lines: list[str] = []
         diff_lines.append(f"Group: {group.group_id}")
         diff_lines.append(f"Count: {group.count}")
+        diff_lines.append(f"Exact variants: {group.exact_count}")
         diff_lines.append(f"Representative: {rep.variant_id}")
         diff_lines.append(f"Labels: {rep.labels_text}")
         diff_lines.append(f"Representative source: {group_dir / 'representative.cpp'}")
@@ -1342,6 +1479,81 @@ def group_mismatch_snippet(group: GroupInfo, original_bytes: bytes, expected_siz
     return lines
 
 
+def axis_template_note(axis: Axis, template_expansions: list[dict] | None) -> str:
+    if not template_expansions:
+        return ""
+    matches: list[str] = []
+    for record in template_expansions:
+        values = record.get("values", {})
+        axis_arg = values.get("axis")
+        if not axis_arg:
+            continue
+        if axis.name == axis_arg or axis.name.startswith(axis_arg + "_"):
+            matches.append(record.get("name", "<template>"))
+    if not matches:
+        return ""
+    unique = []
+    for name in matches:
+        if name not in unique:
+            unique.append(name)
+    return " from @template " + ",".join(unique)
+
+
+def write_axis_sensitivity(
+    run_dir: Path,
+    axes: list[Axis],
+    specs: list[VariantSpec],
+    results: list[VariantResult],
+) -> list[str]:
+    spec_by_id = {spec.variant_id: spec for spec in specs}
+    rows: list[tuple[str, str, str, int, int, int, int]] = []
+    summary_lines: list[str] = []
+
+    for axis in axes:
+        key = (axis.kind, axis.name)
+        label_stats: dict[str, dict[str, int]] = {label: {"total": 0, "exact": 0, "errors": 0} for label in axis.labels}
+        for result in results:
+            spec = spec_by_id.get(result.variant_id)
+            if spec is None or key not in spec.labels:
+                continue
+            label = spec.labels[key]
+            stats = label_stats.setdefault(label, {"total": 0, "exact": 0, "errors": 0})
+            stats["total"] += 1
+            if result.exact:
+                stats["exact"] += 1
+            if result.status not in ("match", "mismatch"):
+                stats["errors"] += 1
+
+        active_stats = [(label, stats) for label, stats in label_stats.items() if stats["total"]]
+        if not active_stats:
+            continue
+        for label, stats in active_stats:
+            total = stats["total"]
+            exact = stats["exact"]
+            errors = stats["errors"]
+            rows.append((axis.kind, axis.name, label, total, exact, total - exact - errors, errors))
+
+        matching = [f"{label}({stats['exact']}/{stats['total']})" for label, stats in active_stats if stats["exact"]]
+        nonmatching = [f"{label}(0/{stats['total']})" for label, stats in active_stats if not stats["exact"]]
+        if matching:
+            prefix = "flags" if axis.kind == "flags" else "source"
+            line = f"  {prefix}.{axis.name}: matching " + ", ".join(matching[:12])
+            if len(matching) > 12:
+                line += f", ... +{len(matching) - 12}"
+            if nonmatching:
+                line += "; nonmatching " + ", ".join(nonmatching[:12])
+                if len(nonmatching) > 12:
+                    line += f", ... +{len(nonmatching) - 12}"
+            summary_lines.append(line)
+
+    with (run_dir / "axis_sensitivity.tsv").open("w", encoding="utf-8", newline="") as f:
+        f.write("axis_kind\taxis\tlabel\ttotal\texact\tmismatch\terror\n")
+        for row in rows:
+            f.write("\t".join(str(value) for value in row) + "\n")
+
+    return summary_lines
+
+
 def write_reports(
     *,
     run_dir: Path,
@@ -1354,6 +1566,8 @@ def write_reports(
     expected_size: int,
     started_at: float,
     template_expansions: list[dict] | None = None,
+    compile_jobs: int | None = None,
+    deduped_variants: int = 0,
 ) -> None:
     group_map: dict[str, GroupInfo] = {}
     error_map: dict[str, ErrorGroup] = {}
@@ -1378,6 +1592,8 @@ def write_reports(
                 )
                 group_map[result.group_key] = group
             group.count += 1
+            if result.exact:
+                group.exact_count += 1
             if result.exact and not group.exact:
                 group.exact = True
                 group.representative = result
@@ -1441,7 +1657,7 @@ def write_reports(
 
     # Groups TSV and per-group variant lists.
     with (run_dir / "groups.tsv").open("w", encoding="utf-8", newline="") as f:
-        f.write("group_id\tcount\texact\ttext_size\tcompare_size\tfirst_mismatch\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\trepresentative\tlabels\thash\n")
+        f.write("group_id\tcount\texact\texact_count\ttext_size\tcompare_size\tfirst_mismatch\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\trepresentative\tlabels\thash\n")
         for group in groups:
             rep = group.representative
             f.write(
@@ -1450,6 +1666,7 @@ def write_reports(
                         group.group_id,
                         str(group.count),
                         "1" if group.exact else "0",
+                        str(group.exact_count),
                         "" if group.text_size is None else str(group.text_size),
                         "" if group.compare_size is None else str(group.compare_size),
                         "" if group.first_mismatch is None else str(group.first_mismatch),
@@ -1487,6 +1704,7 @@ def write_reports(
     # Copy matches explicitly.
     matches_dir = run_dir / "matches"
     exact_results = [result for result in results if result.exact]
+    axis_sensitivity_lines = write_axis_sensitivity(run_dir, axes, specs, results)
     if exact_results:
         ensure_dir(matches_dir)
         for index, result in enumerate(exact_results):
@@ -1529,6 +1747,10 @@ def write_reports(
     summary.append(f"Run dir: {run_dir}")
     summary.append(f"Elapsed: {elapsed:.2f}s")
     summary.append(f"Variants generated: {len(specs)}")
+    if compile_jobs is not None:
+        summary.append(f"Compile jobs: {compile_jobs}")
+    if deduped_variants:
+        summary.append(f"Deduped variants: {deduped_variants}")
     summary.append(f"Compile OK: {compile_ok}")
     summary.append(f"Compile errors: {compile_errors}")
     summary.append(f"Extract errors: {extract_errors}")
@@ -1545,7 +1767,15 @@ def write_reports(
     summary.append("Axes:")
     for axis in axes:
         prefix = "flags" if axis.kind == "flags" else "source"
-        summary.append(f"  {prefix}.{axis.name}: {', '.join(axis.labels)}")
+        note = axis_template_note(axis, template_expansions)
+        summary.append(f"  {prefix}.{axis.name}: {', '.join(axis.labels)}{note}")
+    summary.append("")
+    if axis_sensitivity_lines:
+        summary.append("")
+        summary.append("Exact-match axis sensitivity:")
+        summary.extend(axis_sensitivity_lines[:30])
+        if len(axis_sensitivity_lines) > 30:
+            summary.append(f"  ... +{len(axis_sensitivity_lines) - 30} more axes; see axis_sensitivity.tsv")
     summary.append("")
     summary.append("Text-size histogram:")
     if size_hist_items:
@@ -1559,7 +1789,7 @@ def write_reports(
         rep = group.representative
         tail_note = " context-tail" if group.likely_context_tail else ""
         summary.append(
-            f"  {group.group_id} count={group.count} exact={int(group.exact)} text_size={group.text_size} "
+            f"  {group.group_id} count={group.count} exact={int(group.exact)} exact_count={group.exact_count} text_size={group.text_size} "
             f"compare_size={group.compare_size} first_mismatch={group.first_mismatch} reloc={group.relocations} "
             f"last_ret_end={group.last_ret_end} extra_after_ret={group.extra_after_last_ret}{tail_note}"
         )
@@ -1628,6 +1858,8 @@ def write_reports(
         "run_dir": str(run_dir),
         "elapsed_seconds": elapsed,
         "variants": len(specs),
+        "compile_jobs": compile_jobs,
+        "deduped_variants": deduped_variants,
         "compile_ok": compile_ok,
         "compile_errors": compile_errors,
         "extract_errors": extract_errors,
@@ -1637,7 +1869,14 @@ def write_reports(
         "flag_presets": [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")],
         "template_expansions": template_expansions or [],
         "axes": [
-            {"kind": axis.kind, "name": axis.name, "labels": axis.labels, "blocks": len(axis.blocks)} for axis in axes
+            {
+                "kind": axis.kind,
+                "name": axis.name,
+                "labels": axis.labels,
+                "blocks": len(axis.blocks),
+                "template_note": axis_template_note(axis, template_expansions).strip(),
+            }
+            for axis in axes
         ],
     }
     (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -1668,6 +1907,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help=f"Maximum expanded variants before refusing the run (default: {DEFAULT_MAX_VARIANTS}; 0 disables the cap).",
     )
     parser.add_argument("--list-templates", action="store_true", help="List reusable @template presets and exit")
+    parser.add_argument("--template-help", metavar="NAME", help="Print a reusable @template preset file and exit")
+    parser.add_argument("--expand-only", action="store_true", help="Expand @template directives to @choice text and print the effective template; no --va required")
+    parser.add_argument("--preview-variants", type=int, metavar="N", help="Print the first N fully expanded variant sources/flags and exit; no compile")
+    parser.add_argument("--show-variant", metavar="ID", help="Print one expanded variant by index or V000123 and exit; no compile")
+    parser.add_argument("--no-dedupe-expanded", action="store_true", help="Disable pre-compile deduping of identical expanded source/flag variants")
     return parser.parse_args(argv)
 
 
@@ -1699,20 +1943,22 @@ def main(argv: list[str] | None = None) -> int:
         for name, path in available_variant_templates():
             print(f"{name}\t{path}")
         return 0
-    if not args.va:
-        raise SystemExit("--va is required unless --list-templates is used")
-    va_text = format_hex(int(args.va, 16))
+    if args.template_help:
+        try:
+            print_variant_template_help(args.template_help)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+        return 0
 
     if args.init:
+        if not args.va:
+            raise SystemExit("--va is required with --init")
+        va_text = format_hex(int(args.va, 16))
         init_template(va_text)
         return 0
-    if not args.template:
-        raise SystemExit("--template is required unless --init is used")
 
-    va = int(va_text, 16)
-    record = function_record_by_va(va)
-    slug = function_slug(record)
-    expected_size = int(record["size_bytes"])
+    if not args.template:
+        raise SystemExit("--template is required unless --init, --list-templates, or --template-help is used")
 
     if args.template == "-":
         template_text = sys.stdin.read()
@@ -1729,8 +1975,15 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         raise SystemExit(f"template expansion error: {exc}") from exc
 
-    plan = parse_template(effective_template_text)
-    specs = make_specs(plan)
+    if args.expand_only:
+        print(effective_template_text, end="" if effective_template_text.endswith("\n") else "\n")
+        return 0
+
+    try:
+        plan = parse_template(effective_template_text)
+        specs = make_specs(plan)
+    except ValueError as exc:
+        raise SystemExit(f"template parse error: {exc}") from exc
     if not specs:
         raise SystemExit("no variants generated")
     if args.max_variants != 0 and len(specs) > args.max_variants:
@@ -1738,6 +1991,27 @@ def main(argv: list[str] | None = None) -> int:
             f"template expands to {len(specs)} variants, exceeding --max-variants {args.max_variants}. "
             "Raise the cap or pass --max-variants 0 for an intentional huge run."
         )
+
+    if args.preview_variants is not None:
+        if args.preview_variants < 0:
+            raise SystemExit("--preview-variants must be nonnegative")
+        print_variant_preview(plan, specs, specs[: args.preview_variants])
+        return 0
+    if args.show_variant:
+        try:
+            spec = select_spec(specs, args.show_variant)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+        print_variant_preview(plan, specs, [spec])
+        return 0
+
+    if not args.va:
+        raise SystemExit("--va is required for compile runs; preview/expand modes do not need it")
+    va_text = format_hex(int(args.va, 16))
+    va = int(va_text, 16)
+    record = function_record_by_va(va)
+    slug = function_slug(record)
+    expected_size = int(record["size_bytes"])
 
     toolchain = load_toolchain()
     cl_path = repo_path(toolchain["compiler"]["cl"])
@@ -1762,6 +2036,22 @@ def main(argv: list[str] | None = None) -> int:
     if template_expansions:
         (run_dir / "template_expansions.json").write_text(json.dumps(template_expansions, indent=2), encoding="utf-8")
 
+    specs_to_build = specs
+    dedupe_children: dict[str, list[VariantSpec]] = {spec.variant_id: [spec] for spec in specs}
+    if not args.no_dedupe_expanded:
+        rep_by_key: dict[str, VariantSpec] = {}
+        dedupe_children = {}
+        for spec in specs:
+            source_body, extra_flags = variant_build_material(plan, spec, run_dir, work_root, slug)
+            key = variant_dedupe_key(source_body, extra_flags)
+            rep = rep_by_key.get(key)
+            if rep is None:
+                rep_by_key[key] = spec
+                dedupe_children[spec.variant_id] = [spec]
+            else:
+                dedupe_children[rep.variant_id].append(spec)
+        specs_to_build = [children[0] for children in dedupe_children.values()]
+
     workers = max(1, (os.cpu_count() or 2) - 1)
     print(f"Variant lab for {slug} ({va_text})")
     print(f"Template: {template_name}")
@@ -1771,10 +2061,13 @@ def main(argv: list[str] | None = None) -> int:
         print("Template presets: " + ", ".join(record["name"] for record in template_expansions))
     print(f"Run dir: {run_dir}")
     print(f"Variants: {len(specs)}")
+    print(f"Compile jobs: {len(specs_to_build)}")
+    if len(specs_to_build) != len(specs):
+        print(f"Deduped variants: {len(specs) - len(specs_to_build)}")
     print(f"Workers: {workers}")
 
     started_at = time.time()
-    results: list[VariantResult] = []
+    built_results: list[VariantResult] = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         future_to_spec = {
             executor.submit(
@@ -1792,17 +2085,18 @@ def main(argv: list[str] | None = None) -> int:
                 va,
                 slug,
             ): spec
-            for spec in specs
+            for spec in specs_to_build
         }
         completed = 0
+        total_jobs = len(specs_to_build)
         for future in concurrent.futures.as_completed(future_to_spec):
             completed += 1
             try:
-                results.append(future.result())
+                built_results.append(future.result())
             except Exception as exc:  # pragma: no cover - defensive for lab robustness
                 spec = future_to_spec[future]
                 text = str(exc)
-                results.append(
+                built_results.append(
                     VariantResult(
                         variant_id=spec.variant_id,
                         labels_text=label_text(spec, plan.axes),
@@ -1811,8 +2105,18 @@ def main(argv: list[str] | None = None) -> int:
                         error_text=text,
                     )
                 )
-            if completed == len(specs) or completed % max(1, len(specs) // 20) == 0:
-                print(f"  completed {completed}/{len(specs)}")
+            if completed == total_jobs or completed % max(1, total_jobs // 20) == 0:
+                print(f"  completed {completed}/{total_jobs}")
+
+    result_by_variant = {result.variant_id: result for result in built_results}
+    results: list[VariantResult] = []
+    for rep_id, children in dedupe_children.items():
+        representative = result_by_variant[rep_id]
+        for child in children:
+            if child.variant_id == rep_id:
+                results.append(representative)
+            else:
+                results.append(write_dedup_alias_result(representative, child, plan, plan.axes, run_dir, work_root, slug))
 
     results.sort(key=lambda result: result.variant_id)
     write_reports(
@@ -1826,6 +2130,8 @@ def main(argv: list[str] | None = None) -> int:
         expected_size=expected_size,
         started_at=started_at,
         template_expansions=template_expansions,
+        compile_jobs=len(specs_to_build),
+        deduped_variants=len(specs) - len(specs_to_build),
     )
     return 0 if any(result.exact for result in results) else 1
 

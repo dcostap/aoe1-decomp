@@ -1,22 +1,38 @@
 @choice {{axis}}
 @case body_only
-{{slot:body}}
+{{slot:body|rstrip}}
 @case if_cond
 if ({{cond}}) {
-{{slot:body|indent:4}}
+{{slot:body|trim|indent:4}}
 }
+@case if_cond_no_braces
+if ({{cond}})
+{{slot:body|trim|indent:4}}
+@case if_cond_same_line
+if ({{cond}}) {{slot:body|trim}}
 @case if_cond_else_empty
 if ({{cond}}) {
-{{slot:body|indent:4}}
+{{slot:body|trim|indent:4}}
 } else {
 }
+@case if_cond_else_semicolon
+if ({{cond}}) {
+{{slot:body|trim|indent:4}}
+} else
+    ;
 @case inverted_empty_else
 if ({{inverse}}) {
 } else {
-{{slot:body|indent:4}}
+{{slot:body|trim|indent:4}}
+}
+@case inverted_semicolon_else
+if ({{inverse}})
+    ;
+else {
+{{slot:body|trim|indent:4}}
 }
 @case negated_if
 if (!({{inverse}})) {
-{{slot:body|indent:4}}
+{{slot:body|trim|indent:4}}
 }
 @endchoice

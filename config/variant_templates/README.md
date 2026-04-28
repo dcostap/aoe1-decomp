@@ -4,6 +4,15 @@
 normal `@choice` parsing.  These files are intentionally plain text so matching
 work can grow reusable VC5 source-shape families over time.
 
+Useful inspection commands:
+
+```bat
+python tools\variant_lab.py --list-templates
+python tools\variant_lab.py --template-help vc5_guard
+python tools\variant_lab.py --template build\temp\some_lab.tpl.cpp --expand-only
+python tools\variant_lab.py --template build\temp\some_lab.tpl.cpp --preview-variants 3
+```
+
 Basic usage:
 
 ```cpp
@@ -22,10 +31,14 @@ Block templates can consume slots:
 
 Templates may be nested inside ordinary `@case` bodies. Inner axes are only
 active for the selected outer case, so this is safe for broad source-family
-sweeps without multiplying unrelated branches.
+sweeps without multiplying unrelated branches. Identical expanded source/flag
+variants are deduped before compile by default; use `--no-dedupe-expanded` only
+when debugging the lab runner itself.
 
-Template files use `{{name}}` placeholders for arguments and `{{slot:body}}` or
-`{{slot:body|indent:4}}` for user-provided body slots.
+Template files use `{{name}}` placeholders for arguments and `{{slot:body}}` for
+user-provided body slots. Slot filters can be chained, for example
+`{{slot:body|trim|indent:4}}`; supported filters are `trim`, `lstrip`,
+`rstrip`/`chomp`, and `indent:N`.
 
 Current starter families:
 
