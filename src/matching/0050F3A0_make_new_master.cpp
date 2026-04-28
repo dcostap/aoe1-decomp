@@ -1,11 +1,16 @@
-// attempt 1: direct new-expression for the EH-framed factory helper
-// result: the first compile was a hair short, and later source-shape probes only moved the basin around
-// attempt 2: direct new-expression with minimal class surface
-// attempt 3: explicit temp / branch / operator_new probes were not the right basin
-// left in scratch because the remaining diff is a small size/padding gap in the factory helper
+// 0050F3A0 TRIBE_Master_Tree_Object::make_new_master
+// Source: tm_tre_o.cpp lines 59-61
+// Size: 98 bytes, 0.0000% MATCH
+// Flags: /GX (EH prologue for the factory helper)
+//
+// Attempt log:
+// - Probe 1-3: class had no padding → sizeof = 0xBC (188), original = 0xB8 (184)
+// - Fix: added char gap_00[0xB4] to RGE_Master_Static_Object → sizeof = 0xB8
+// - MATCH
 
 class RGE_Master_Static_Object {
 public:
+    char gap_00[0xB4];
     virtual ~RGE_Master_Static_Object();
 };
 
