@@ -1,6 +1,9 @@
-// tried a direct calculateDamage wrapper; first mismatch was the call/prolog basin
-// tried a smaller base class and then a long dummy-vtable stub to force slot 0x74; call target matched, but hp offset drifted to +4
-// leaving in scratch because the remaining gap is the hp/fcomp codegen basin, not the control flow
+// 004C5B90 RGE_Static_Object::damage
+// PDB: stat_obj.cpp:3099-3109, 74 bytes
+// FLAGS: default
+//
+// Fixed: removed redundant `void* vtable_ptr` member (pushed hp from +0x30 to
+// +0x34) and changed `1.0f` to `1.0` (original uses fcomp qword with double).
 struct RGE_Armor_Weapon_Info {
     char gap_00[2];
     short value;
@@ -41,7 +44,6 @@ public:
     virtual void vf70();
     virtual float calculateDamage(int count, RGE_Armor_Weapon_Info* info, float scale, RGE_Player* player, RGE_Static_Object* object);
 
-    void* vtable_ptr;
     long id;
     void* master_obj;
     RGE_Player* owner;
@@ -70,7 +72,7 @@ void RGE_Static_Object::damage(int count, RGE_Armor_Weapon_Info* info, float sca
 
     damage_amount = this->calculateDamage(count, info, scale, player, object);
     this->hp = this->hp - damage_amount;
-    if (this->hp < 1.0f) {
+    if (this->hp < 1.0) {
         this->hp = 0.0f;
         this->set_sleep_flag(0);
     }
