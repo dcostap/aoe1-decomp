@@ -1,0 +1,22 @@
+@choice {{axis}}
+@case body_only
+{{slot:body}}
+@case if_cond
+if ({{cond}}) {
+{{slot:body|indent:4}}
+}
+@case if_cond_else_empty
+if ({{cond}}) {
+{{slot:body|indent:4}}
+} else {
+}
+@case inverted_empty_else
+if ({{inverse}}) {
+} else {
+{{slot:body|indent:4}}
+}
+@case negated_if
+if (!({{inverse}})) {
+{{slot:body|indent:4}}
+}
+@endchoice

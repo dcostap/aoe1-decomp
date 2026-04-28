@@ -1,0 +1,32 @@
+@choice {{axis}}
+@case for_decl_i_postinc
+for (int {{index}} = 0; {{index}} < {{count}}; {{index}}++) {
+{{slot:body|indent:4}}
+}
+@case for_decl_i_preinc
+for (int {{index}} = 0; {{index}} < {{count}}; ++{{index}}) {
+{{slot:body|indent:4}}
+}
+@case int_before_for_postinc
+int {{index}};
+for ({{index}} = 0; {{index}} < {{count}}; {{index}}++) {
+{{slot:body|indent:4}}
+}
+@case int_before_for_preinc
+int {{index}};
+for ({{index}} = 0; {{index}} < {{count}}; ++{{index}}) {
+{{slot:body|indent:4}}
+}
+@case guarded_for_decl
+if ({{count}} > 0) {
+    for (int {{index}} = 0; {{index}} < {{count}}; {{index}}++) {
+{{slot:body|indent:8}}
+    }
+}
+@case while_loop
+int {{index}} = 0;
+while ({{index}} < {{count}}) {
+{{slot:body|indent:4}}
+    {{index}}++;
+}
+@endchoice

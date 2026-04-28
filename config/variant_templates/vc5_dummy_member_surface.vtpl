@@ -1,0 +1,31 @@
+@choice {{axis}}
+@case none
+@case dummy_oldstyle
+    void {{prefix}}_dummy();
+@case dummy_void
+    void {{prefix}}_dummy(void);
+@case dummy_int
+    void {{prefix}}_dummy(int);
+@case dummy_uint
+    void {{prefix}}_dummy(unsigned int);
+@case dummy_long
+    void {{prefix}}_dummy(long);
+@case dummy_short
+    void {{prefix}}_dummy(short);
+@case dummy_two_ints
+    void {{prefix}}_dummy(int, int);
+@case dummy_static_int
+    static void {{prefix}}_dummy(int);
+@case dummy_const_int
+    void {{prefix}}_dummy(int) const;
+@case dummy_returns_int
+    int {{prefix}}_dummy(int);
+@case dummy_returns_void_ptr
+    void* {{prefix}}_dummy(int);
+@case destructor_decl
+    ~{{class}}();
+@case constructor_decl
+    {{class}}();
+@case operator_plus_eq_int
+    {{class}}& operator+=(int);
+@endchoice

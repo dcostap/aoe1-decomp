@@ -1,0 +1,28 @@
+@choice {{axis}}
+@case compound
+{{target}} += {{value}};
+@case assign_target_plus_value
+{{target}} = {{target}} + {{value}};
+@case assign_value_plus_target
+{{target}} = {{value}} + {{target}};
+@case temp_init_target_plus_value
+{{type}} {{tmp}} = {{target}} + {{value}};
+{{target}} = {{tmp}};
+@case temp_init_value_plus_target
+{{type}} {{tmp}} = {{value}} + {{target}};
+{{target}} = {{tmp}};
+@case temp_assign_target_plus_value
+{{type}} {{tmp}};
+{{tmp}} = {{target}} + {{value}};
+{{target}} = {{tmp}};
+@case temp_assign_value_plus_target
+{{type}} {{tmp}};
+{{tmp}} = {{value}} + {{target}};
+{{target}} = {{tmp}};
+@case assign_expr_target_plus_value
+{{type}} {{tmp}};
+{{target}} = ({{tmp}} = {{target}} + {{value}});
+@case assign_expr_value_plus_target
+{{type}} {{tmp}};
+{{target}} = ({{tmp}} = {{value}} + {{target}});
+@endchoice

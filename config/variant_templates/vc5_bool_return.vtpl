@@ -1,0 +1,23 @@
+@choice {{axis}}
+@case direct
+return {{cond}};
+@case explicit_true_first
+if ({{cond}}) {
+    return 1;
+}
+return 0;
+@case explicit_false_first
+if (!({{cond}})) {
+    return 0;
+}
+return 1;
+@case int_temp
+int {{tmp}} = {{cond}};
+return {{tmp}};
+@case unsigned_char_temp
+unsigned char {{tmp}} = (unsigned char)({{cond}});
+return {{tmp}};
+@case char_temp
+char {{tmp}} = (char)({{cond}});
+return {{tmp}};
+@endchoice

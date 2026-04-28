@@ -1,0 +1,22 @@
+@choice {{axis}}
+@case operator_new_sizeof
+{{type}}* {{ptr}} = ({{type}}*)operator_new({{count}} * sizeof({{type}}));
+@case operator_new_literal_size
+{{type}}* {{ptr}} = ({{type}}*)operator_new({{count}} * {{size}});
+@case operator_new_shift
+{{type}}* {{ptr}} = ({{type}}*)operator_new(({{count}}) << {{shift}});
+@case new_array
+{{type}}* {{ptr}} = new {{type}}[{{count}}];
+@case count_temp_sizeof
+int {{tmp}} = {{count}};
+{{type}}* {{ptr}} = ({{type}}*)operator_new({{tmp}} * sizeof({{type}}));
+@case count_temp_literal_size
+int {{tmp}} = {{count}};
+{{type}}* {{ptr}} = ({{type}}*)operator_new({{tmp}} * {{size}});
+@case byte_temp_sizeof
+int {{tmp}} = {{count}} * sizeof({{type}});
+{{type}}* {{ptr}} = ({{type}}*)operator_new({{tmp}});
+@case byte_temp_literal_size
+int {{tmp}} = {{count}} * {{size}};
+{{type}}* {{ptr}} = ({{type}}*)operator_new({{tmp}});
+@endchoice

@@ -1,0 +1,60 @@
+@choice {{axis}}_iostream
+@case no
+@case yes
+#include <iostream.h>
+@endchoice
+@choice {{axis}}_fstream
+@case no
+@case yes
+#include <fstream.h>
+@endchoice
+@choice {{axis}}_stdlib
+@case no
+@case yes
+#include <stdlib.h>
+@endchoice
+@choice {{axis}}_malloc
+@case no
+@case yes
+#include <malloc.h>
+@endchoice
+@choice {{axis}}_newh
+@case no
+@case yes
+#include <new.h>
+@endchoice
+@choice {{axis}}_string
+@case no
+@case yes
+#include <string.h>
+@endchoice
+@choice {{axis}}_math
+@case no
+@case yes
+#include <math.h>
+@endchoice
+@choice {{axis}}_float
+@case no
+@case yes
+#include <float.h>
+@endchoice
+@choice {{axis}}_limits
+@case no
+@case yes
+#include <limits.h>
+@endchoice
+@choice {{axis}}_assert
+@case no
+@case yes
+#include <assert.h>
+@endchoice
+@choice {{axis}}_ctype
+@case no
+@case yes
+#include <ctype.h>
+@endchoice
+@choice {{axis}}_stdio
+@case no
+@case yes
+#include <stdio.h>
+@endchoice

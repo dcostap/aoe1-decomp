@@ -1,0 +1,44 @@
+# Variant lab reusable templates
+
+`tools/variant_lab.py` expands `@template` directives from this directory before
+normal `@choice` parsing.  These files are intentionally plain text so matching
+work can grow reusable VC5 source-shape families over time.
+
+Basic usage:
+
+```cpp
+@template vc5_dummy_member_surface axis=member_ctx class=Path
+```
+
+Block templates can consume slots:
+
+```cpp
+@template vc5_guard axis=gate cond="value > 0"
+@slot body
+    do_work();
+@endslot
+@endtemplate
+```
+
+Template files use `{{name}}` placeholders for arguments and `{{slot:body}}` or
+`{{slot:body|indent:4}}` for user-provided body slots.
+
+Current starter families:
+
+- `vc5_dummy_member_surface` — dummy class member declarations, ctor/dtor/operator declarations, `foo()` vs `foo(void)` style context.
+- `vc5_update_expr` — equivalent numeric/member update spellings (`+=`, `x=x+y`, named temps).
+- `vc5_guard` — guarded body spellings, inverted empty arm, unguarded body.
+- `vc5_loop_count` — common counted-loop spellings around a body slot.
+- `vc5_alloc` — `operator_new`, `new[]`, count temps, byte-size temps.
+- `vc5_assign_temp` — direct expression use versus named temp lifetime variants.
+- `vc5_bool_return` — direct boolean return versus explicit 0/1 branches and narrow temps.
+- `vc5_helper_extract` — helper/declaration surface experiments.
+- `vc5_standard_headers` — opt-in standard-header on/off axes.
+
+Conventions:
+
+- Use neutral dummy names for codegen-only context. Do not invent semantic names.
+- Keep each template family broad but source-level: no inline asm, no fake hacks.
+- Add new cases freely as real matching work discovers reusable VC5 basins.
+- Exact matches from broad presets must still be reduced and reviewed before
+  promotion.

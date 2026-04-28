@@ -11,6 +11,7 @@ import json
 import os
 import re
 import shutil
+import shlex
 import struct
 import subprocess
 import sys
@@ -34,10 +35,17 @@ from common import (
 from extract_obj_function import decode_bytes
 
 
-# Based on observed VC5 throughput on this host (~150 variants/sec in a large
-# 136k run), 18k variants is roughly a two-minute lab. Keep this fixed so agents
-# get an early error instead of accidentally launching very long sweeps.
-MAX_VARIANTS_APPROX_TWO_MINUTES = 18_000
+# Variant labs are intentionally allowed to get large: sticky VC5 codegen-family
+# problems are often cheaper to solve with broad structured sweeps than with
+# hours of manual churn. Keep a high default cap so accidental million-variant
+# explosions still fail early; pass --max-variants 0 to disable the cap.
+DEFAULT_MAX_VARIANTS = 250_000
+
+VARIANT_TEMPLATE_DIRS = [
+    REPO_ROOT / "config" / "variant_templates",
+    REPO_ROOT / "tools" / "variant_templates",
+]
+VARIANT_TEMPLATE_EXTENSIONS = (".vtpl", ".tpl", ".txt")
 
 
 FLAG_PRESETS: dict[str, dict[str, str]] = {
@@ -106,6 +114,32 @@ Every distinct axis is expanded as a Cartesian product.  Reusing the same axis
 name links choices together: one selected case is used at every block with that
 axis name.  Repeated blocks may omit a case; omitted cases emit nothing for that
 block.  This is useful for donor/TU context toggles.
+
+Reusable template presets
+-------------------------
+
+Preset files live in config/variant_templates/ (preferred) or tools/variant_templates/.
+They are ordinary text files with .vtpl/.tpl/.txt extensions that expand to normal
+@choice/@flagchoice template text before parsing. Use them to encode reusable VC5
+source-shape families and add more cases over time without editing this script.
+
+Single-line preset:
+
+  @template vc5_dummy_member_surface axis=member_ctx class=Path prefix=ctx
+
+Block preset with user body slots:
+
+  @template vc5_guard axis=gate cond="maxSizeValue < other.maxSizeValue"
+  @slot body
+      setMaxSize(other.maxSizeValue);
+  @endslot
+  @endtemplate
+
+Preset arguments use key=value shell-style parsing, so quote expressions with spaces.
+Inside preset files, use {{axis}}, {{class}}, {{prefix}}, etc. for arguments and
+{{slot:body}} or {{slot:body|indent:4}} for slot content. Defaults include:
+  prefix=<sanitized axis/name>, tmp=<prefix>_tmp, tmp2=<prefix>_tmp2,
+  inverse=!(<cond>) when cond is supplied.
 
 Compiler flag choices
 ---------------------
@@ -200,8 +234,9 @@ To trace a group back to source: open summary.txt, pick a group id, inspect
  work/Vxxxxxx/source.cpp or the matching row in variants.tsv.
 
 By default the tool uses max(1, cpu_count - 1) parallel compiler workers.
-To prevent accidental long runs, the tool refuses templates that expand beyond
-18,000 variants, which is approximately a two-minute run on the current host.
+The default variant cap is high (250,000) because broad structured sweeps are a
+normal late-stage convergence tool here. Use --max-variants N to lower it, or
+--max-variants 0 to disable the cap for an intentional very large run.
 """
 
 
@@ -641,6 +676,206 @@ def flag_preset_template(preset_names: list[str]) -> str:
     return "".join(chunks)
 
 
+_IDENTIFIER_RE = re.compile(r"[^A-Za-z0-9_]+")
+_SLOT_RE = re.compile(r"\{\{slot:([A-Za-z_][A-Za-z0-9_]*)(?:\|indent:(\d+))?\}\}")
+_VALUE_RE = re.compile(r"\{\{([A-Za-z_][A-Za-z0-9_]*)\}\}")
+
+
+def sanitize_identifier(text: str) -> str:
+    cleaned = _IDENTIFIER_RE.sub("_", text).strip("_")
+    if not cleaned:
+        return "v"
+    if cleaned[0].isdigit():
+        cleaned = "v_" + cleaned
+    return cleaned
+
+
+def available_variant_templates() -> list[tuple[str, Path]]:
+    found: dict[str, Path] = {}
+    for directory in VARIANT_TEMPLATE_DIRS:
+        if not directory.exists():
+            continue
+        for ext in VARIANT_TEMPLATE_EXTENSIONS:
+            for path in sorted(directory.glob(f"*{ext}")):
+                found.setdefault(path.stem, path)
+    return sorted(found.items())
+
+
+def find_variant_template_path(name: str) -> Path:
+    raw = Path(name)
+    candidates: list[Path] = []
+    if raw.suffix:
+        if raw.is_absolute():
+            candidates.append(raw)
+        else:
+            candidates.append(REPO_ROOT / raw)
+            for directory in VARIANT_TEMPLATE_DIRS:
+                candidates.append(directory / raw)
+    else:
+        for directory in VARIANT_TEMPLATE_DIRS:
+            for ext in VARIANT_TEMPLATE_EXTENSIONS:
+                candidates.append(directory / f"{name}{ext}")
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    searched = ", ".join(str(candidate) for candidate in candidates)
+    raise ValueError(f"unknown @template preset {name!r}; searched: {searched}")
+
+
+def parse_template_invocation(arg: str, line_no: int) -> tuple[str, dict[str, str]]:
+    try:
+        parts = shlex.split(arg, posix=True)
+    except ValueError as exc:
+        raise ValueError(f"invalid @template arguments on line {line_no}: {exc}") from exc
+    if not parts:
+        raise ValueError(f"@template requires a preset name on line {line_no}")
+    name = parts[0]
+    values: dict[str, str] = {}
+    positionals: list[str] = []
+    for part in parts[1:]:
+        if "=" in part:
+            key, value = part.split("=", 1)
+            if not key:
+                raise ValueError(f"empty @template argument key on line {line_no}")
+            values[key] = value
+        else:
+            positionals.append(part)
+    if positionals:
+        values.setdefault("axis", positionals[0])
+    if len(positionals) >= 2:
+        values.setdefault("class", positionals[1])
+    values.setdefault("template", name)
+    basis = values.get("axis") or values.get("name") or name
+    values.setdefault("prefix", sanitize_identifier(basis))
+    values.setdefault("tmp", f"{values['prefix']}_tmp")
+    values.setdefault("tmp2", f"{values['prefix']}_tmp2")
+    values.setdefault("tmp3", f"{values['prefix']}_tmp3")
+    values.setdefault("type", "int")
+    values.setdefault("ptr", f"{values['prefix']}_ptr")
+    values.setdefault("size", "16")
+    values.setdefault("shift", "4")
+    values.setdefault("ret", "void")
+    values.setdefault("name", f"{values['prefix']}_helper")
+    values.setdefault("params", "void")
+    values.setdefault("index", "i")
+    if "cond" in values:
+        values.setdefault("inverse", f"!({values['cond']})")
+    return name, values
+
+
+def indent_slot_text(text: str, spaces: int) -> str:
+    if spaces <= 0 or not text:
+        return text
+    prefix = " " * spaces
+    lines = text.splitlines(keepends=True)
+    return "".join((prefix + line if line.strip() else line) for line in lines)
+
+
+def render_variant_template(name: str, values: dict[str, str], slots: dict[str, str], stack: tuple[str, ...]) -> tuple[str, dict]:
+    if name in stack:
+        chain = " -> ".join((*stack, name))
+        raise ValueError(f"recursive @template expansion: {chain}")
+    path = find_variant_template_path(name)
+    text = path.read_text(encoding="utf-8")
+
+    def replace_slot(match: re.Match[str]) -> str:
+        slot_name = match.group(1)
+        indent = int(match.group(2) or "0")
+        slot_text = slots.get(slot_name, "")
+        return indent_slot_text(slot_text, indent)
+
+    expanded = _SLOT_RE.sub(replace_slot, text)
+
+    def replace_value(match: re.Match[str]) -> str:
+        key = match.group(1)
+        if key not in values:
+            raise ValueError(f"@template {name!r} requires argument {key!r} for {path}")
+        return values[key]
+
+    expanded = _VALUE_RE.sub(replace_value, expanded)
+    record = {
+        "name": name,
+        "path": str(path),
+        "values": values,
+        "slots": sorted(slots.keys()),
+    }
+    return expanded, record
+
+
+def expand_variant_templates(text: str, *, stack: tuple[str, ...] = ()) -> tuple[str, list[dict]]:
+    """Expand @template preset directives into ordinary @choice template text."""
+    if len(stack) > 20:
+        raise ValueError("@template expansion exceeded maximum recursion depth")
+    lines = text.splitlines(keepends=True)
+    out: list[str] = []
+    records: list[dict] = []
+    i = 0
+    while i < len(lines):
+        parsed = parse_directive(lines[i])
+        if parsed is None or parsed[0] != "@template":
+            out.append(lines[i])
+            i += 1
+            continue
+
+        directive, arg = parsed
+        assert directive == "@template"
+        if not arg:
+            raise ValueError(f"@template requires a preset name on line {i + 1}")
+        name, values = parse_template_invocation(arg, i + 1)
+        slots: dict[str, str] = {}
+
+        # A @template is block-style only when the next nonblank line is @slot.
+        # Otherwise it is a single-line directive and consumes no following text.
+        lookahead = i + 1
+        while lookahead < len(lines) and not lines[lookahead].strip():
+            lookahead += 1
+        block_style = False
+        if lookahead < len(lines):
+            inner = parse_directive(lines[lookahead])
+            block_style = inner is not None and inner[0] == "@slot"
+
+        if not block_style:
+            i += 1
+        else:
+            i += 1
+            while i < len(lines):
+                inner = parse_directive(lines[i])
+                if inner is not None and inner[0] == "@endtemplate":
+                    i += 1
+                    break
+                if inner is None or inner[0] != "@slot":
+                    if lines[i].strip():
+                        raise ValueError(f"content outside @slot in @template {name!r} near line {i + 1}")
+                    i += 1
+                    continue
+                slot_name = inner[1]
+                if not slot_name:
+                    raise ValueError(f"@slot requires a name near line {i + 1}")
+                i += 1
+                slot_lines: list[str] = []
+                while i < len(lines):
+                    slot_end = parse_directive(lines[i])
+                    if slot_end is not None and slot_end[0] == "@endslot":
+                        i += 1
+                        break
+                    if slot_end is not None and slot_end[0] in ("@slot", "@endtemplate"):
+                        raise ValueError(f"unterminated @slot {slot_name!r} in @template {name!r} near line {i + 1}")
+                    slot_lines.append(lines[i])
+                    i += 1
+                else:
+                    raise ValueError(f"unterminated @slot {slot_name!r} in @template {name!r}")
+                slots[slot_name] = "".join(slot_lines)
+            else:
+                raise ValueError(f"unterminated block @template {name!r}")
+
+        rendered, record = render_variant_template(name, values, slots, stack)
+        nested, nested_records = expand_variant_templates(rendered, stack=(*stack, name))
+        out.append(nested)
+        records.append(record)
+        records.extend(nested_records)
+    return "".join(out), records
+
+
 def make_specs(plan: TemplatePlan) -> list[VariantSpec]:
     axes = plan.axes
     label_lists = [axis.labels for axis in axes]
@@ -1018,6 +1253,7 @@ def write_reports(
     original_bytes: bytes,
     expected_size: int,
     started_at: float,
+    template_expansions: list[dict] | None = None,
 ) -> None:
     group_map: dict[str, GroupInfo] = {}
     error_map: dict[str, ErrorGroup] = {}
@@ -1203,6 +1439,8 @@ def write_reports(
     if preset_axes:
         summary.append(f"Flag presets: {', '.join(preset_axes)}")
         summary.append("Note: preset flags are appended after default.rsp and are for classification; non-default-flag matches need normal review.")
+    if template_expansions:
+        summary.append("Template presets: " + ", ".join(record["name"] for record in template_expansions))
     summary.append("")
     summary.append("Axes:")
     for axis in axes:
@@ -1297,6 +1535,7 @@ def write_reports(
         "unique_groups": len(groups),
         "exact_matches": len(exact_results),
         "flag_presets": [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")],
+        "template_expansions": template_expansions or [],
         "axes": [
             {"kind": axis.kind, "name": axis.name, "labels": axis.labels, "blocks": len(axis.blocks)} for axis in axes
         ],
@@ -1312,7 +1551,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         epilog=HELP_EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--va", required=True, help="Function VA in hex, e.g. 0051ACA0")
+    parser.add_argument("--va", help="Function VA in hex, e.g. 0051ACA0")
     parser.add_argument("--template", help="Full-source template path, or '-' for stdin")
     parser.add_argument(
         "--flag-preset",
@@ -1322,6 +1561,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="Append a reusable flag-axis preset (repeatable). Available: " + ", ".join(sorted(FLAG_PRESETS.keys())),
     )
     parser.add_argument("--init", action="store_true", help="Create build/temp/<slug>_lab.tpl.cpp from the preferred source and exit")
+    parser.add_argument(
+        "--max-variants",
+        type=int,
+        default=DEFAULT_MAX_VARIANTS,
+        help=f"Maximum expanded variants before refusing the run (default: {DEFAULT_MAX_VARIANTS}; 0 disables the cap).",
+    )
+    parser.add_argument("--list-templates", action="store_true", help="List reusable @template presets and exit")
     return parser.parse_args(argv)
 
 
@@ -1349,6 +1595,12 @@ def main(argv: list[str] | None = None) -> int:
         parse_args(["--help"])
         return 0
     args = parse_args(argv)
+    if args.list_templates:
+        for name, path in available_variant_templates():
+            print(f"{name}\t{path}")
+        return 0
+    if not args.va:
+        raise SystemExit("--va is required unless --list-templates is used")
     va_text = format_hex(int(args.va, 16))
 
     if args.init:
@@ -1371,17 +1623,20 @@ def main(argv: list[str] | None = None) -> int:
         template_name = str(template_path)
 
     preset_text = flag_preset_template(args.flag_preset)
-    effective_template_text = template_text + preset_text
+    raw_effective_template_text = template_text + preset_text
+    try:
+        effective_template_text, template_expansions = expand_variant_templates(raw_effective_template_text)
+    except ValueError as exc:
+        raise SystemExit(f"template expansion error: {exc}") from exc
 
     plan = parse_template(effective_template_text)
     specs = make_specs(plan)
     if not specs:
         raise SystemExit("no variants generated")
-    if len(specs) > MAX_VARIANTS_APPROX_TWO_MINUTES:
+    if args.max_variants != 0 and len(specs) > args.max_variants:
         raise SystemExit(
-            f"template expands to {len(specs)} variants, exceeding the safety limit of "
-            f"{MAX_VARIANTS_APPROX_TWO_MINUTES} (about a two-minute run on this host). "
-            "Split the lab into smaller passes."
+            f"template expands to {len(specs)} variants, exceeding --max-variants {args.max_variants}. "
+            "Raise the cap or pass --max-variants 0 for an intentional huge run."
         )
 
     toolchain = load_toolchain()
@@ -1402,13 +1657,18 @@ def main(argv: list[str] | None = None) -> int:
     (run_dir / "template_input.cpp").write_text(template_text, encoding="utf-8")
     if preset_text:
         (run_dir / "flag_presets.tpl").write_text(preset_text, encoding="utf-8")
+    if preset_text or template_expansions:
         (run_dir / "effective_template_input.cpp").write_text(effective_template_text, encoding="utf-8")
+    if template_expansions:
+        (run_dir / "template_expansions.json").write_text(json.dumps(template_expansions, indent=2), encoding="utf-8")
 
     workers = max(1, (os.cpu_count() or 2) - 1)
     print(f"Variant lab for {slug} ({va_text})")
     print(f"Template: {template_name}")
     if args.flag_preset:
         print(f"Flag presets: {', '.join(args.flag_preset)}")
+    if template_expansions:
+        print("Template presets: " + ", ".join(record["name"] for record in template_expansions))
     print(f"Run dir: {run_dir}")
     print(f"Variants: {len(specs)}")
     print(f"Workers: {workers}")
@@ -1465,6 +1725,7 @@ def main(argv: list[str] | None = None) -> int:
         original_bytes=original_bytes,
         expected_size=expected_size,
         started_at=started_at,
+        template_expansions=template_expansions,
     )
     return 0 if any(result.exact for result in results) else 1
 

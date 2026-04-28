@@ -1,0 +1,22 @@
+@choice {{axis}}
+@case direct_use
+{{slot:use}}
+@case init_temp_then_use
+{{type}} {{tmp}} = {{expr}};
+{{slot:use}}
+@case declare_then_assign_then_use
+{{type}} {{tmp}};
+{{tmp}} = {{expr}};
+{{slot:use}}
+@case early_decl_late_assign
+{{type}} {{tmp}};
+{{slot:before}}
+{{tmp}} = {{expr}};
+{{slot:use}}
+@case const_temp_then_use
+const {{type}} {{tmp}} = {{expr}};
+{{slot:use}}
+@case register_temp_then_use
+register {{type}} {{tmp}} = {{expr}};
+{{slot:use}}
+@endchoice

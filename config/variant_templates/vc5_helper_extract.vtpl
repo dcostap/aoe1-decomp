@@ -1,0 +1,16 @@
+@choice {{axis}}
+@case direct_body
+{{slot:body}}
+@case inline_member_before
+{{ret}} {{name}}({{params}}) {
+{{slot:body|indent:4}}
+}
+@case member_decl_only
+{{ret}} {{name}}({{params}});
+@case inline_member_decl_outside
+__inline {{ret}} {{name}}({{params}});
+@case dummy_member_decl_void
+void {{prefix}}_dummy(void);
+@case dummy_member_decl_int
+void {{prefix}}_dummy(int);
+@endchoice
