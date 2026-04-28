@@ -1,0 +1,67 @@
+/*
+ * 0050FDD0 TRIBE_Map::do_elevation_brush_stroke (tmap.cpp:400-439)
+ *
+ * Virtual unsigned char method with 6 params (long x1, long y1, long x2, long y2, long r, uchar c).
+ * Calls RGE_Map::do_elevation_brush_stroke base, then adjusts x1/x2 and y1/y2 boundaries
+ * based on comparisons and (r + c), then calls tribe_clean_elevation and tribe_clean_terrain.
+ *
+ * Remaining drift: persistent VC5 register-allocation basin.
+ *
+ * Attempt history:
+ * - Initial: direct else-branch with local temps → 89.8% pos_diff, wrong register mapping
+ * - Using ox1/oy1 save-orig approach → 70.7% pos_diff, still wrong register mapping
+ * - Variant lab (36 probes): c_form × x_else_form × y_else_form axes
+ *   No exact matches found; best group G0006 (save_orig for both branches): 73 pos_diff, 
+ *   first mismatch at offset 13 (parameter loading).
+ * - All 36 variants produce the same register allocation: r assigned to esi instead of ebx,
+ *   x1 to edi instead of esi, x2 to ebx instead of edi.
+ * - This is a stable VC5 codegen basin: VC5's heuristic chooses different callee-saved
+ *   registers for the same parameter set regardless of source structure changes.
+ *
+ * Left in scratch: remaining ~73-byte drift is purely register allocation (esi↔ebx↔edi swap
+ * for x1/x2/r). Behavior, call set, stack cleanup, and conditional logic all match.
+ */
+
+class RGE_Map {
+public:
+    void* vtable_ptr;
+
+    virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
+};
+
+class TRIBE_Map : public RGE_Map {
+public:
+    virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c);
+    void tribe_clean_elevation(long x1, long y1, long x2, long y2);
+    void tribe_clean_terrain(long x1, long y1, long x2, long y2, int a, int b);
+};
+
+unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c) {
+    RGE_Map::do_elevation_brush_stroke(x1, y1, x2, y2, r, c);
+
+    if (x1 < x2) {
+        x1 -= r + c;
+        x2 += r + c;
+    } else {
+        long ox1 = x1;
+        x1 = x2 - r - c;
+        x2 = ox1 + r + c;
+    }
+
+    if (y1 < y2) {
+        y1 -= r + c;
+        y2 += r + c;
+    } else {
+        long oy1 = y1;
+        y1 = y2 - r - c;
+        y2 = oy1 + r + c;
+    }
+
+    tribe_clean_elevation(x1 - 2, y1 - 2, x2 + 2, y2 + 2);
+    tribe_clean_terrain(x1 - 2, y1 - 2, x2 + 2, y2 + 2, 1, 0);
+    return 1;
+}
+
+unsigned char RGE_Map::do_elevation_brush_stroke(long x1, long y1, long x2, long y2, long r, unsigned char c) { return 0; }
+void TRIBE_Map::tribe_clean_elevation(long x1, long y1, long x2, long y2) { }
+void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2, int a, int b) { }
