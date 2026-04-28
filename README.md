@@ -35,8 +35,10 @@ is legitimate source context even when the tiny function body does not textually
 use every header. Treat that context as something to iterate deliberately and
 reduce carefully, not something to strip blindly.
 
-Large variant-generation labs or harnesses are exceptional tools for stubborn
-codegen-family problems, not part of the normal per-function loop.
+Variant-generation labs or harnesses are a normal, encouraged tool for stubborn
+unexpected VC5 codegen-family problems after a function has reached reasonable
+behavioral/layout parity. They are not a substitute for first understanding the
+behavior, call set, stack cleanup, and touched type/global surface.
 
 ## Toolchain
 
