@@ -1,0 +1,42 @@
+// TEMPLATE vc5_decl_init_order2: separates declaration order from init order.
+// Added because VC5 matches have required locals declared/initialized in a
+// specific order, and declaration order can differ from first-use/init order.
+// Slots: decl_a, decl_b, init_a, init_b, use.
+@choice {{axis}}
+@case declare_init_a_then_b
+{{slot:decl_a|rstrip}}
+{{slot:init_a|rstrip}}
+{{slot:decl_b|rstrip}}
+{{slot:init_b|rstrip}}
+{{slot:use|rstrip}}
+@case declare_init_b_then_a
+{{slot:decl_b|rstrip}}
+{{slot:init_b|rstrip}}
+{{slot:decl_a|rstrip}}
+{{slot:init_a|rstrip}}
+{{slot:use|rstrip}}
+@case declare_ab_init_ab
+{{slot:decl_a|rstrip}}
+{{slot:decl_b|rstrip}}
+{{slot:init_a|rstrip}}
+{{slot:init_b|rstrip}}
+{{slot:use|rstrip}}
+@case declare_ab_init_ba
+{{slot:decl_a|rstrip}}
+{{slot:decl_b|rstrip}}
+{{slot:init_b|rstrip}}
+{{slot:init_a|rstrip}}
+{{slot:use|rstrip}}
+@case declare_ba_init_ab
+{{slot:decl_b|rstrip}}
+{{slot:decl_a|rstrip}}
+{{slot:init_a|rstrip}}
+{{slot:init_b|rstrip}}
+{{slot:use|rstrip}}
+@case declare_ba_init_ba
+{{slot:decl_b|rstrip}}
+{{slot:decl_a|rstrip}}
+{{slot:init_b|rstrip}}
+{{slot:init_a|rstrip}}
+{{slot:use|rstrip}}
+@endchoice

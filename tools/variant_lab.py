@@ -157,7 +157,9 @@ Reusable @template presets
 
 Preset files live in config/variant_templates/ (preferred) or tools/variant_templates/.
 They are plain text .vtpl/.tpl/.txt files expanded to ordinary @choice/@flagchoice
-text before parsing. Add cases/files there as reusable VC5 lessons appear.
+text before parsing. Each preset starts with a short TEMPLATE comment explaining
+why it exists; `--template-help NAME` prints that metadata. Add cases/files there
+as reusable VC5 lessons appear.
 
 Single-line preset:
 
@@ -189,10 +191,20 @@ Starter preset families:
   vc5_dummy_member_surface  dummy class member declarations / ctor/dtor/operator context
   vc5_update_expr           +=, x=x+y, temp update spellings
   vc5_guard                 guarded body forms, no-brace forms, inverted empty arms
+  vc5_store_order2/3/4      permute independent statements/stores
+  vc5_decl_init_order2      separate local declaration order from init order
+  vc5_call_result_test      direct call-test vs named result locals / result width
+  vc5_byte_select           condition-to-byte/value selection spellings
+  vc5_pointer_local_use     direct access vs pointer local lifetime shapes
   vc5_loop_count            counted-loop spellings around a body slot
+  vc5_loop_access_shape     index loop vs running-entry local variants
   vc5_alloc                 operator_new/new[], count temps, byte-size temps
-  vc5_assign_temp           direct expression use vs named-temp lifetime variants
+  vc5_assign_temp           direct expression use versus named-temp lifetime variants
   vc5_bool_return           direct bool return vs explicit 0/1 branches/narrow temps
+  vc5_vtable_pad_surface    neutral dummy virtual slots for vtable offset probes
+  vc5_dtor_surface          destructor/class-surface declaration variants
+  vc5_ctor_init_zero_surface ctor init-list vs body zeroing variants
+  vc5_stack_array_shape     stack array size/layout variants
   vc5_helper_extract        helper/declaration surface experiments
   vc5_standard_headers      standard-header on/off axes
 
@@ -854,6 +866,9 @@ def parse_template_invocation(arg: str, line_no: int) -> tuple[str, dict[str, st
     values.setdefault("name", f"{values['prefix']}_helper")
     values.setdefault("params", "void")
     values.setdefault("index", "i")
+    values.setdefault("entry", f"{values['prefix']}_entry")
+    values.setdefault("entry_type", "char*")
+    values.setdefault("step", "1")
     if "cond" in values:
         values.setdefault("inverse", f"!({values['cond']})")
     return name, values

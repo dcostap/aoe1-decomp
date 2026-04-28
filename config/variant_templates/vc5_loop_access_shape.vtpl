@@ -1,0 +1,40 @@
+// TEMPLATE vc5_loop_access_shape: index loop vs running-entry local variants.
+// Added after loop matches showed direct double-access can beat an entry temp,
+// while other loops need a saved/running pointer to match VC5 register liveness.
+// Args: count, start. Optional args: index, entry_type, entry, step. Slots: body_direct, body_entry.
+@choice {{axis}}
+@case for_index_decl
+for (int {{index}} = 0; {{index}} < {{count}}; {{index}}++) {
+{{slot:body_direct|trim|indent:4}}
+}
+@case for_index_predecl
+int {{index}};
+for ({{index}} = 0; {{index}} < {{count}}; {{index}}++) {
+{{slot:body_direct|trim|indent:4}}
+}
+@case while_index
+int {{index}} = 0;
+while ({{index}} < {{count}}) {
+{{slot:body_direct|trim|indent:4}}
+    {{index}}++;
+}
+@case pointer_running_for
+{{entry_type}} {{entry}} = {{start}};
+for (int {{index}} = 0; {{index}} < {{count}}; {{index}}++, {{entry}} += {{step}}) {
+{{slot:body_entry|trim|indent:4}}
+}
+@case pointer_running_while
+{{entry_type}} {{entry}} = {{start}};
+int {{index}} = 0;
+while ({{index}} < {{count}}) {
+{{slot:body_entry|trim|indent:4}}
+    {{entry}} += {{step}};
+    {{index}}++;
+}
+@case pointer_boundary_then_index
+{{entry_type}} {{entry}} = {{start}};
+for (int {{index}} = 0; {{index}} < {{count}}; {{index}}++) {
+{{slot:body_entry|trim|indent:4}}
+    {{entry}} += {{step}};
+}
+@endchoice

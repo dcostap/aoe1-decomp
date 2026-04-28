@@ -1,0 +1,24 @@
+// TEMPLATE vc5_dtor_surface: destructor/class-surface declaration variants.
+// Added because EH/destructor matches depended on visible dtor declarations,
+// virtual/implicit vptr modeling, and avoiding explicit duplicate base calls.
+// Args: class. Optional args: prefix. Use inside a class declaration.
+@choice {{axis}}
+@case none
+@case dtor_decl
+    ~{{class}}();
+@case virtual_dtor_decl
+    virtual ~{{class}}();
+@case dtor_decl_with_dummy_virtual
+    ~{{class}}();
+    virtual void {{prefix}}_dummy(void);
+@case virtual_dtor_with_dummy_virtual
+    virtual ~{{class}}();
+    virtual void {{prefix}}_dummy(void);
+@case protected_dtor_decl
+protected:
+    ~{{class}}();
+public:
+@case public_virtual_dtor_oldstyle
+    virtual ~{{class}}();
+    virtual void {{prefix}}_dummy();
+@endchoice

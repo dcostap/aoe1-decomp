@@ -1,3 +1,7 @@
+// TEMPLATE vc5_bool_return: boolean return width/control-flow spellings.
+// Added because tiny helpers matched only after probing direct return vs explicit
+// 0/1 branches and narrow char temporaries.
+// Args: cond. Optional args: tmp.
 @choice {{axis}}
 @case direct
 return {{cond}};

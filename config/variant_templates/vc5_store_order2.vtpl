@@ -1,0 +1,12 @@
+// TEMPLATE vc5_store_order2: permutes two independent statement slots.
+// Added because hard matches such as slider set_rect and registry helpers showed
+// VC5 can preserve source store/init order closely enough for exact codegen.
+// Slots: a, b.
+@choice {{axis}}
+@case a_b
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+@case b_a
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+@endchoice

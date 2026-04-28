@@ -1,0 +1,126 @@
+// TEMPLATE vc5_store_order4: permutes four independent statement slots.
+// Added for late-stage store-scheduling/layout problems where VC5 follows
+// lexical statement order. This is intentionally broad: 24 variants.
+// Slots: a, b, c, d.
+@choice {{axis}}
+@case a_b_c_d
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+{{slot:d|rstrip}}
+@case a_b_d_c
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+{{slot:d|rstrip}}
+{{slot:c|rstrip}}
+@case a_c_b_d
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+{{slot:d|rstrip}}
+@case a_c_d_b
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+{{slot:d|rstrip}}
+{{slot:b|rstrip}}
+@case a_d_b_c
+{{slot:a|rstrip}}
+{{slot:d|rstrip}}
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+@case a_d_c_b
+{{slot:a|rstrip}}
+{{slot:d|rstrip}}
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+@case b_a_c_d
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+{{slot:d|rstrip}}
+@case b_a_d_c
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+{{slot:d|rstrip}}
+{{slot:c|rstrip}}
+@case b_c_a_d
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+{{slot:d|rstrip}}
+@case b_c_d_a
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+{{slot:d|rstrip}}
+{{slot:a|rstrip}}
+@case b_d_a_c
+{{slot:b|rstrip}}
+{{slot:d|rstrip}}
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+@case b_d_c_a
+{{slot:b|rstrip}}
+{{slot:d|rstrip}}
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+@case c_a_b_d
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+{{slot:d|rstrip}}
+@case c_a_d_b
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+{{slot:d|rstrip}}
+{{slot:b|rstrip}}
+@case c_b_a_d
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+{{slot:d|rstrip}}
+@case c_b_d_a
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+{{slot:d|rstrip}}
+{{slot:a|rstrip}}
+@case c_d_a_b
+{{slot:c|rstrip}}
+{{slot:d|rstrip}}
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+@case c_d_b_a
+{{slot:c|rstrip}}
+{{slot:d|rstrip}}
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+@case d_a_b_c
+{{slot:d|rstrip}}
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+@case d_a_c_b
+{{slot:d|rstrip}}
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+@case d_b_a_c
+{{slot:d|rstrip}}
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+@case d_b_c_a
+{{slot:d|rstrip}}
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+@case d_c_a_b
+{{slot:d|rstrip}}
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+@case d_c_b_a
+{{slot:d|rstrip}}
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+@endchoice

@@ -1,3 +1,7 @@
+// TEMPLATE vc5_dummy_member_surface: neutral unused class-surface declarations.
+// Added after an exact match required a codegen-active but semantically unused
+// member declaration; names stay deliberately neutral, not invented semantics.
+// Args: class. Optional args: prefix. Use inside a class declaration.
 @choice {{axis}}
 @case none
 @case dummy_oldstyle

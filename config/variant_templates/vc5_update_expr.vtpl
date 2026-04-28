@@ -1,3 +1,7 @@
+// TEMPLATE vc5_update_expr: equivalent numeric/member update spellings.
+// Added because `x += y`, `x = x + y`, term order, and named update temps can
+// produce different VC5 instruction/register basins.
+// Args: target, value. Optional args: type, tmp.
 @choice {{axis}}
 @case compound
 {{target}} += {{value}};

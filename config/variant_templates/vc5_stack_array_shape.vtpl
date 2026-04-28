@@ -1,0 +1,34 @@
+// TEMPLATE vc5_stack_array_shape: stack array size/layout variants around a body.
+// Added because the save-game constructor only matched after the tab-order array
+// shape restored the original stack frame; one extra slot can change offsets.
+// Args: type, name, count. Slots: body_array, body_locals.
+@choice {{axis}}
+@case array_exact
+{{type}} {{name}}[{{count}}];
+{{slot:body_array|rstrip}}
+@case array_plus_one
+{{type}} {{name}}[({{count}}) + 1];
+{{slot:body_array|rstrip}}
+@case array_plus_two
+{{type}} {{name}}[({{count}}) + 2];
+{{slot:body_array|rstrip}}
+@case first_local_plus_array
+{{type}} {{name}}_first;
+{{type}} {{name}}[{{count}}];
+{{slot:body_array|rstrip}}
+@case separate_locals_5
+{{type}} {{name}}0;
+{{type}} {{name}}1;
+{{type}} {{name}}2;
+{{type}} {{name}}3;
+{{type}} {{name}}4;
+{{slot:body_locals|rstrip}}
+@case separate_locals_6
+{{type}} {{name}}0;
+{{type}} {{name}}1;
+{{type}} {{name}}2;
+{{type}} {{name}}3;
+{{type}} {{name}}4;
+{{type}} {{name}}5;
+{{slot:body_locals|rstrip}}
+@endchoice

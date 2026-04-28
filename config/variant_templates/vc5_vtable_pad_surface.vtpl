@@ -1,0 +1,158 @@
+// TEMPLATE vc5_vtable_pad_surface: emits neutral dummy virtual slots.
+// Added because many hard matches needed exact virtual slot positions; use
+// this inside a class before the real virtual whose vtable offset is known.
+// Args: axis. Optional args: prefix. All names are neutral codegen dummies.
+@choice {{axis}}
+@case none
+@case pad_1
+    virtual void {{prefix}}_vf00(void);
+@case pad_2
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+@case pad_4
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+@case pad_8
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+@case pad_12
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+    virtual void {{prefix}}_vf08(void);
+    virtual void {{prefix}}_vf09(void);
+    virtual void {{prefix}}_vf10(void);
+    virtual void {{prefix}}_vf11(void);
+@case pad_16
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+    virtual void {{prefix}}_vf08(void);
+    virtual void {{prefix}}_vf09(void);
+    virtual void {{prefix}}_vf10(void);
+    virtual void {{prefix}}_vf11(void);
+    virtual void {{prefix}}_vf12(void);
+    virtual void {{prefix}}_vf13(void);
+    virtual void {{prefix}}_vf14(void);
+    virtual void {{prefix}}_vf15(void);
+@case pad_20
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+    virtual void {{prefix}}_vf08(void);
+    virtual void {{prefix}}_vf09(void);
+    virtual void {{prefix}}_vf10(void);
+    virtual void {{prefix}}_vf11(void);
+    virtual void {{prefix}}_vf12(void);
+    virtual void {{prefix}}_vf13(void);
+    virtual void {{prefix}}_vf14(void);
+    virtual void {{prefix}}_vf15(void);
+    virtual void {{prefix}}_vf16(void);
+    virtual void {{prefix}}_vf17(void);
+    virtual void {{prefix}}_vf18(void);
+    virtual void {{prefix}}_vf19(void);
+@case pad_22
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+    virtual void {{prefix}}_vf08(void);
+    virtual void {{prefix}}_vf09(void);
+    virtual void {{prefix}}_vf10(void);
+    virtual void {{prefix}}_vf11(void);
+    virtual void {{prefix}}_vf12(void);
+    virtual void {{prefix}}_vf13(void);
+    virtual void {{prefix}}_vf14(void);
+    virtual void {{prefix}}_vf15(void);
+    virtual void {{prefix}}_vf16(void);
+    virtual void {{prefix}}_vf17(void);
+    virtual void {{prefix}}_vf18(void);
+    virtual void {{prefix}}_vf19(void);
+    virtual void {{prefix}}_vf20(void);
+    virtual void {{prefix}}_vf21(void);
+@case pad_24
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+    virtual void {{prefix}}_vf08(void);
+    virtual void {{prefix}}_vf09(void);
+    virtual void {{prefix}}_vf10(void);
+    virtual void {{prefix}}_vf11(void);
+    virtual void {{prefix}}_vf12(void);
+    virtual void {{prefix}}_vf13(void);
+    virtual void {{prefix}}_vf14(void);
+    virtual void {{prefix}}_vf15(void);
+    virtual void {{prefix}}_vf16(void);
+    virtual void {{prefix}}_vf17(void);
+    virtual void {{prefix}}_vf18(void);
+    virtual void {{prefix}}_vf19(void);
+    virtual void {{prefix}}_vf20(void);
+    virtual void {{prefix}}_vf21(void);
+    virtual void {{prefix}}_vf22(void);
+    virtual void {{prefix}}_vf23(void);
+@case pad_32
+    virtual void {{prefix}}_vf00(void);
+    virtual void {{prefix}}_vf01(void);
+    virtual void {{prefix}}_vf02(void);
+    virtual void {{prefix}}_vf03(void);
+    virtual void {{prefix}}_vf04(void);
+    virtual void {{prefix}}_vf05(void);
+    virtual void {{prefix}}_vf06(void);
+    virtual void {{prefix}}_vf07(void);
+    virtual void {{prefix}}_vf08(void);
+    virtual void {{prefix}}_vf09(void);
+    virtual void {{prefix}}_vf10(void);
+    virtual void {{prefix}}_vf11(void);
+    virtual void {{prefix}}_vf12(void);
+    virtual void {{prefix}}_vf13(void);
+    virtual void {{prefix}}_vf14(void);
+    virtual void {{prefix}}_vf15(void);
+    virtual void {{prefix}}_vf16(void);
+    virtual void {{prefix}}_vf17(void);
+    virtual void {{prefix}}_vf18(void);
+    virtual void {{prefix}}_vf19(void);
+    virtual void {{prefix}}_vf20(void);
+    virtual void {{prefix}}_vf21(void);
+    virtual void {{prefix}}_vf22(void);
+    virtual void {{prefix}}_vf23(void);
+    virtual void {{prefix}}_vf24(void);
+    virtual void {{prefix}}_vf25(void);
+    virtual void {{prefix}}_vf26(void);
+    virtual void {{prefix}}_vf27(void);
+    virtual void {{prefix}}_vf28(void);
+    virtual void {{prefix}}_vf29(void);
+    virtual void {{prefix}}_vf30(void);
+    virtual void {{prefix}}_vf31(void);
+@endchoice

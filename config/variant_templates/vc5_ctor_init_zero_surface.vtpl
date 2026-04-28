@@ -1,0 +1,30 @@
+// TEMPLATE vc5_ctor_init_zero_surface: constructor initializer-list vs body zeroing.
+// Added because constructor matches showed member-initializer zeroing and body
+// zeroing can produce different vptr/member store order and EH state basins.
+// Use immediately after a constructor declarator. Slots: init, zero, body, prelude.
+@choice {{axis}}
+@case init_list_then_body
+: {{slot:init|trim}} {
+{{slot:body|trim|indent:4}}
+}
+@case body_zero_first
+{
+{{slot:zero|trim|indent:4}}
+{{slot:body|trim|indent:4}}
+}
+@case body_prelude_zero_body
+{
+{{slot:prelude|trim|indent:4}}
+{{slot:zero|trim|indent:4}}
+{{slot:body|trim|indent:4}}
+}
+@case body_zero_after_body
+{
+{{slot:body|trim|indent:4}}
+{{slot:zero|trim|indent:4}}
+}
+@case body_only
+{
+{{slot:body|trim|indent:4}}
+}
+@endchoice

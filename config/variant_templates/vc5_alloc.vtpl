@@ -1,3 +1,7 @@
+// TEMPLATE vc5_alloc: allocation expression and byte-count spellings.
+// Added because allocation size formation (`sizeof`, literal size, shifts, temps)
+// can choose different VC5 registers/scheduling even when behavior is identical.
+// Args: count. Optional args: type, ptr, size, shift, tmp.
 @choice {{axis}}
 @case operator_new_sizeof
 {{type}}* {{ptr}} = ({{type}}*)operator_new({{count}} * sizeof({{type}}));

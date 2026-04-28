@@ -1,0 +1,44 @@
+// TEMPLATE vc5_byte_select: tries condition-to-byte/value selection spellings.
+// Added after draw_object only matched with an if/else and explicit unsigned-char
+// casts on literals; ternary and arithmetic mask spellings landed in other basins.
+// Args: target, cond, true_value, false_value. Optional args: type, tmp.
+@choice {{axis}}
+@case if_else_cast_arms
+if ({{cond}}) {
+    {{target}} = ({{type}})({{true_value}});
+} else {
+    {{target}} = ({{type}})({{false_value}});
+}
+@case if_else_no_cast
+if ({{cond}}) {
+    {{target}} = {{true_value}};
+} else {
+    {{target}} = {{false_value}};
+}
+@case else_first_cast_arms
+if (!({{cond}})) {
+    {{target}} = ({{type}})({{false_value}});
+} else {
+    {{target}} = ({{type}})({{true_value}});
+}
+@case ternary_no_cast
+{{target}} = ({{cond}}) ? {{true_value}} : {{false_value}};
+@case ternary_cast_whole
+{{target}} = ({{type}})(({{cond}}) ? {{true_value}} : {{false_value}});
+@case ternary_cast_arms
+{{target}} = ({{cond}}) ? ({{type}})({{true_value}}) : ({{type}})({{false_value}});
+@case temp_type_if_else
+{{type}} {{tmp}};
+if ({{cond}}) {
+    {{tmp}} = ({{type}})({{true_value}});
+} else {
+    {{tmp}} = ({{type}})({{false_value}});
+}
+{{target}} = {{tmp}};
+@case temp_int_ternary_cast_assign
+int {{tmp}} = ({{cond}}) ? {{true_value}} : {{false_value}};
+{{target}} = ({{type}}){{tmp}};
+@case temp_unsigned_char_ternary
+unsigned char {{tmp}} = (unsigned char)(({{cond}}) ? {{true_value}} : {{false_value}});
+{{target}} = {{tmp}};
+@endchoice

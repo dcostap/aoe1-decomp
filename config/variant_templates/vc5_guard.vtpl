@@ -1,3 +1,7 @@
+// TEMPLATE vc5_guard: guarded-body spelling variants.
+// Added because VC5 branch layout differs across direct guard, no-brace guard,
+// empty else, and inverted-empty-else forms.
+// Args: cond. Optional arg: inverse. Slot: body.
 @choice {{axis}}
 @case body_only
 {{slot:body|rstrip}}

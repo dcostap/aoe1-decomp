@@ -1,3 +1,7 @@
+// TEMPLATE vc5_standard_headers: standard include on/off context axes.
+// Added because VC5 header/front-end context can perturb tiny helpers; use this
+// as a deliberate donor-context probe, then reduce any winning include set.
+// Optional arg: axis.
 @choice {{axis}}_iostream
 @case no
 @case yes

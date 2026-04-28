@@ -1,0 +1,30 @@
+// TEMPLATE vc5_store_order3: permutes three independent statement slots.
+// Added after several stubborn functions matched only when stores were written
+// in the original lexical order, not the decompiler/natural order.
+// Slots: a, b, c.
+@choice {{axis}}
+@case a_b_c
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+@case a_c_b
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+@case b_a_c
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+{{slot:c|rstrip}}
+@case b_c_a
+{{slot:b|rstrip}}
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+@case c_a_b
+{{slot:c|rstrip}}
+{{slot:a|rstrip}}
+{{slot:b|rstrip}}
+@case c_b_a
+{{slot:c|rstrip}}
+{{slot:b|rstrip}}
+{{slot:a|rstrip}}
+@endchoice

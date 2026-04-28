@@ -1,0 +1,26 @@
+// TEMPLATE vc5_pointer_local_use: direct access vs pointer/local lifetime shapes.
+// Added because constructor/panel matches showed a named pointer local, declared
+// early vs late, can move VC5 into or out of the right saved-register basin.
+// Args: expr. Optional args: type, ptr. Slots: use_direct, use_local, before.
+@choice {{axis}}
+@case direct
+{{slot:use_direct|rstrip}}
+@case init_local_then_use
+{{type}} {{ptr}} = {{expr}};
+{{slot:use_local|rstrip}}
+@case declare_then_assign_then_use
+{{type}} {{ptr}};
+{{ptr}} = {{expr}};
+{{slot:use_local|rstrip}}
+@case declare_before_late_assign
+{{type}} {{ptr}};
+{{slot:before|rstrip}}
+{{ptr}} = {{expr}};
+{{slot:use_local|rstrip}}
+@case const_local_then_use
+const {{type}} {{ptr}} = {{expr}};
+{{slot:use_local|rstrip}}
+@case register_local_then_use
+register {{type}} {{ptr}} = {{expr}};
+{{slot:use_local|rstrip}}
+@endchoice

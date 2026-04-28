@@ -1,0 +1,50 @@
+// TEMPLATE vc5_call_result_test: tries direct call-test vs named result locals.
+// Added because matches showed `if (setup(...) == 0)` can avoid saved-register
+// drift that appears when a result temp is introduced; return width can matter too.
+// Args: call. Optional args: type, tmp. Slot: body (runs when call result is zero).
+@choice {{axis}}
+@case direct_eq_zero
+if (({{call}}) == 0) {
+{{slot:body|trim|indent:4}}
+}
+@case direct_not
+if (!({{call}})) {
+{{slot:body|trim|indent:4}}
+}
+@case inverted_empty_else
+if ({{call}}) {
+} else {
+{{slot:body|trim|indent:4}}
+}
+@case inverted_ne_zero_else
+if (({{call}}) != 0) {
+} else {
+{{slot:body|trim|indent:4}}
+}
+@case temp_type_eq_zero
+{{type}} {{tmp}} = {{call}};
+if ({{tmp}} == 0) {
+{{slot:body|trim|indent:4}}
+}
+@case temp_int_eq_zero
+int {{tmp}} = {{call}};
+if ({{tmp}} == 0) {
+{{slot:body|trim|indent:4}}
+}
+@case temp_unsigned_long_eq_zero
+unsigned long {{tmp}} = {{call}};
+if ({{tmp}} == 0) {
+{{slot:body|trim|indent:4}}
+}
+@case temp_unsigned_char_eq_zero
+unsigned char {{tmp}} = (unsigned char)({{call}});
+if ({{tmp}} == 0) {
+{{slot:body|trim|indent:4}}
+}
+@case declare_late_assign_test
+{{type}} {{tmp}};
+{{tmp}} = {{call}};
+if ({{tmp}} == 0) {
+{{slot:body|trim|indent:4}}
+}
+@endchoice

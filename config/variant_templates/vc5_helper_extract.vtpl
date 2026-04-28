@@ -1,3 +1,7 @@
+// TEMPLATE vc5_helper_extract: helper body/declaration surface experiments.
+// Added because natural inline/member helper context can land in a better VC5
+// basin than manually pasted code or fake helper declarations.
+// Optional args: ret, name, params, prefix. Slot: body.
 @choice {{axis}}
 @case direct_body
 {{slot:body}}

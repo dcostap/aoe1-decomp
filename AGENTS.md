@@ -126,7 +126,7 @@ Practical rule:
 - Use preview/inspection modes (`--list-templates`, `--template-help`, `--expand-only`, `--preview-variants`, `--show-variant`) before launching broad compiles.
 - Use it for sticky codegen-family problems; do not auto-promote matches without normal review.
 - After normal manual passes have made a function behaviorally close, it is appropriate to run broad, preconfigured variant sweeps for weird VC5 basin problems: dummy class-surface declarations, helper/no-helper shapes, declaration order, `foo()` vs `foo(void)`, constructor/destructor/operator declarations, include axes, local/temporary forms, and other unintuitive but source-level perturbations.
-- Reusable source-shape preset files live in `config\variant_templates\`. Use `@template ...` directives in lab templates to insert these families instead of copy-pasting giant `@choice` blocks. Add new preset cases/files as reusable lessons appear.
+- Reusable source-shape preset files live in `config\variant_templates\`. Use `@template ...` directives in lab templates to insert these families instead of copy-pasting giant `@choice` blocks. Add new preset cases/files as reusable lessons appear, and start each preset with a concise `// TEMPLATE ...` metadata comment explaining why it exists.
 - Treat these broad sweeps as a **late-stage convergence tool**, not a substitute for understanding the function. Reduce any match to the smallest proven surface and document exactly which odd context is required.
 
 ### Exact-match iteration heuristics

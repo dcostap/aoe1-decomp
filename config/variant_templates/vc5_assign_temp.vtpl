@@ -1,3 +1,7 @@
+// TEMPLATE vc5_assign_temp: direct expression use vs named temp lifetime.
+// Added because VC5 liveness/register basins often change when a value is named,
+// declared early, assigned late, const, or register.
+// Args: expr. Optional args: type, tmp. Slots: before, use.
 @choice {{axis}}
 @case direct_use
 {{slot:use}}

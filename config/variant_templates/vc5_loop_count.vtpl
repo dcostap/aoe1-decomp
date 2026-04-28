@@ -1,3 +1,7 @@
+// TEMPLATE vc5_loop_count: common counted-loop spellings.
+// Added because predeclared index, pre/post increment, while vs for, and guard
+// placement can change VC5 liveness and branch layout.
+// Args: count. Optional args: index. Slot: body.
 @choice {{axis}}
 @case for_decl_i_postinc
 for (int {{index}} = 0; {{index}} < {{count}}; {{index}}++) {
