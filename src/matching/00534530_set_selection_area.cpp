@@ -1,0 +1,55 @@
+// 00534530 set_selection_area (157 bytes) — MATCHED
+// PDB: view.cpp (RGE_View::set_selection_area)
+
+#include "../../include/game_globals.h"
+
+// RGE_Base_Game stub with only game_mode field
+// rge_base_game->game_mode is at +0x1B4
+class RGE_Base_Game_Stub {
+public:
+    char gap_00[0x1B4];
+    int game_mode;
+};
+
+class RGE_Map {
+public:
+    void request_redraw(int col1, int row1, int col2, int row2, unsigned char flags);
+};
+
+class RGE_View {
+public:
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void redraw(int mode);
+
+    char gap_04[0x100];
+    RGE_Map* map;            // +0x104
+    char gap_108[0x3C];
+    int sel_col1;            // +0x144
+    int sel_row1;            // +0x148
+    int sel_col2;            // +0x14C
+    int sel_row2;            // +0x150
+
+    void set_selection_area(int col1, int row1, int col2, int row2);
+};
+
+void RGE_View::set_selection_area(int col1, int row1, int col2, int row2)
+{
+    if (this->map && ((RGE_Base_Game_Stub*)rge_base_game)->game_mode != 0x15) {
+        this->map->request_redraw(this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, 0);
+    }
+    this->sel_col1 = col1;
+    this->sel_row1 = row1;
+    this->sel_col2 = col2;
+    this->sel_row2 = row2;
+    if (this->map && ((RGE_Base_Game_Stub*)rge_base_game)->game_mode != 0x15) {
+        this->map->request_redraw(col1, row1, col2, row2, 0x10);
+    }
+    this->redraw(1);
+}
