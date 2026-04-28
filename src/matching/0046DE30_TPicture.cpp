@@ -1,12 +1,7 @@
 // VA: 0046DE30 TPicture::TPicture(int file_handle, int param_2)
 // Picture.cpp lines 25-76
 
-// attempt 3: proper file-read / bitmap-allocation constructor
-// ret 8, takes 2 params (file handle + transinfo flag)
-// 366/366 exact size, 14 diff bytes
-// Remaining: push order for calloc (1 vs dib_size first) + extra mov ecx,esi before malloc
-// Both are VC5 optimizer scheduling artifacts
-// Left in scratch.
+// attempt 7: fix calloc arg order — original is calloc(dib_size, 1) not calloc(1, dib_size)
 
 class TRANSINFO;
 
@@ -53,11 +48,9 @@ TPicture::TPicture(int file_handle, int param_2) {
     }
     
     if (Width > 0 && Height > 0) {
-        int count = 1;
-        int dib_size = AlignedWidth(this) * Height + 0x428;
-        Dib = calloc(count, dib_size);
-        dib_size = AlignedWidth(this) * Height + 0x428;
-        rge_read(file_handle, Dib, dib_size);
+        void* dib = calloc(AlignedWidth(this) * Height + 0x428, 1);
+        Dib = dib;
+        rge_read(file_handle, Dib, AlignedWidth(this) * Height + 0x428);
         BitmapInfo = Dib;
         Bits = (unsigned char*)Dib + 0x428;
     } else {
