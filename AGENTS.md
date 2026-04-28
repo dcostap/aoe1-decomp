@@ -293,6 +293,19 @@ These are heuristics, not laws, but a real exact-match win now backs them:
     a saved pointer/temp. A real `TRIBE_Panel_Inven::save_info` win needed two
     direct `this->save_attr != 0` checks; the temp-shaped versions optimized the
     second check out.
+15a. Match the original **pointer lifetime**, not just pointer values. If the
+    original repeatedly reloads through an object graph and does not save a
+    convenient intermediate pointer in a callee-saved register, avoid introducing
+    an early named local such as `scenario`, `player`, `object`, or `target`.
+    Use direct member access at the use site or delay the local until the block
+    where the original first preserves it. A real `TRIBE_Action_Make_Tech`
+    destructor match came from removing an early `scenario` local; VC5 then
+    stopped saving `EDI` in the EH prolog and matched the original lifetime.
+15b. Pair that with the natural typed member-call surface: prefer real typed
+    thiscall member declarations for virtual/member operations, but do not keep
+    their receiver or related object-graph pointers alive earlier than the asm
+    proves. Typed member calls fix call/stack shape; delayed/direct receiver
+    access fixes register lifetime.
 16. In teardown / recreate helpers, try a **single shared local** that carries
     the object through the whole phase: load old member into the local,
     destroy/delete via that local, assign the newly created object back into
