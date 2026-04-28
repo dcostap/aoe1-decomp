@@ -1,6 +1,5 @@
-// STATUS: blocked
-// BLOCKER: offsets and call set are right, but VC5 still reshapes the prologue around the parent/render_area stores and parameter reloads, so the first basic block never matches exactly
-// NOTE: fixed-position branch, virtual call offsets, node allocation, and parent add_panel_node path are understood; remaining drift is source ordering/register scheduling only
+// 00464A80 TPanel::setup
+// Prologue scheduling fix: match load order by swapping field assignments
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
@@ -70,13 +69,14 @@ public:
 };
 
 int TPanel::setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, int value) {
-    parent_panel = parent;
+    // render_area first to match original prologue
     render_area = area;
+    parent_panel = parent;
     if (position_mode == 0) {
+        left_border = left;
         top_border = top;
         min_wid = width;
         max_wid = width;
-        left_border = left;
         right_border = 0;
         bottom_border = 0;
         min_hgt = height;
