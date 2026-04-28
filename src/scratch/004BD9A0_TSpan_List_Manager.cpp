@@ -1,6 +1,7 @@
-// first pass: free the five manager-owned arrays in packet order, then run the embedded span-list destructor
-// tried member-call vs explicit base-call spelling; the only remaining diff is the tail pop/return after the helper call
-// leaving this in scratch because the body is behaviorally right and the mismatch is now localized to the final epilog basin
+// 004BD9A0 ~TSpan_List_Manager
+// Free 5 manager-owned arrays, then auto-destruct base class.
+// Removing explicit base destructor call — VC5 auto-generates it.
+
 #include <stdlib.h>
 
 class VSpan_Node;
@@ -49,5 +50,4 @@ TSpan_List_Manager::~TSpan_List_Manager() {
     if (LeftMostPx != 0) free(LeftMostPx);
     if (RightMostPx != 0) free(RightMostPx);
     if (Span_Count != 0) free(Span_Count);
-    this->TSpan_Node_List::~TSpan_Node_List();
 }
