@@ -1,9 +1,10 @@
-// BaseItem::BaseItem copy (00407E70, 118 bytes, aibitm.cpp)
-// Attempt 1
+// BaseItem::BaseItem(BaseItem* other) (00407E70, 118 bytes, aibitm.cpp lines 65-67)
+// Copy constructor taking pointer (BaseItem*), distinguished from const-ref at 00407EF0
+//
+// Attempt 1: handwritten strcpy decl -> external call, mismatch (96 bytes, no inline string copy)
+// Attempt 2: #include <string.h> for intrinsic strcpy, return this
 
-char* strcpy(char* dest, const char* src);
-
-extern const char default_item_name[];
+#include <string.h>
 
 class BaseItem {
 public:
