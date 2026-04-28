@@ -5,6 +5,8 @@
 // tried fixing local RGE_Action_Object layout to vptr/player_id/field_08/obj_ptr and removed fake base virtual dtor; vfn23 slot and object offsets now align better
 // tried natural RGE_Base_Game member-call surface instead of cdecl function-pointer notify; removed caller stack cleanup drift in notify block
 // current gap: status dispatch and several success-path blocks still have shifted layout/register drift; edit diff improved but not exact
+// tried low-level state--/state-=5 spelling and result-variable form; result form worsened by introducing BL as carrier
+// fixed success-path object model: after vfn23 the original uses EDI=this->action_obj, loads float x/y from action_obj+3c/+38, then uses action_obj->obj_ptr for scenario calls
 
 #include "../../include/game_globals.h"
 
@@ -94,14 +96,13 @@ public:
 
 unsigned char TRIBE_Action_Make_Tech::update()
 {
-    switch (this->status) {
-    case 1:
+    unsigned int state = this->status;
+    state--;
+    if (state == 0)
         return 1;
-    case 6:
-        break;
-    default:
+    state -= 5;
+    if (state != 0)
         return 0;
-    }
 
     float val;
     void* some_obj = *(void**)((char*)rge_base_game + 0x9A8);
@@ -114,23 +115,23 @@ unsigned char TRIBE_Action_Make_Tech::update()
         val = p1[0x84/4] * *(float*)((char*)fb + 0xE4);
     }
 
-    RGE_Scenario* scenario = (RGE_Scenario*)this->action_obj->obj_ptr;
-    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
+    TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
     if (pt->research(this->tech_id, val))
         return 0;
 
     this->vfn23(1);
 
-    // FPU float-to-int and notification
-    float f1 = *(float*)((char*)this->action_obj->obj_ptr + 0x3C);
-    float f2 = *(float*)((char*)this->action_obj->obj_ptr + 0x38);
+    RGE_Action_Object* action_obj = this->action_obj;
+    float f1 = *(float*)((char*)action_obj + 0x3C);
+    float f2 = *(float*)((char*)action_obj + 0x38);
+    RGE_Scenario* scenario = (RGE_Scenario*)action_obj->obj_ptr;
 
     ((RGE_Base_Game*)rge_base_game)->vfn16(
         0x64,
         *(short*)((char*)scenario + 0x4A), this->tech_id,
         (int)f2, (int)f1);
 
-    scenario->vfn71((int)this->tech_id, this->action_obj->player_id, this->unique_id);
+    scenario->vfn71((int)this->tech_id, action_obj->player_id, this->unique_id);
 
     this->action_obj->vfn82(
         this->action_obj->player_id, this->action_obj->player_id,

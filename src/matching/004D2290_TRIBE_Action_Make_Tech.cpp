@@ -98,18 +98,17 @@ public:
 TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech()
 {
     if (this->status != 1) {
-        RGE_Scenario* scenario = (RGE_Scenario*)this->action_obj->obj_ptr;
-        TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)scenario + 0x220);
+        TRIBE_Player_Tech* pt = *(TRIBE_Player_Tech**)((char*)this->action_obj->obj_ptr + 0x220);
         pt->cancel_research(this->tech_id, 0);
 
         // Check game state
         unsigned char game_state = *(unsigned char*)(*(int*)((char*)rge_base_game + 0x3F4) + 0x1D);
         if (game_state == 0) {
             ((RGE_Base_Game*)rge_base_game)->vfn16(
-                0x65, *(short*)((char*)scenario + 0x4A),
+                0x65, *(short*)((char*)this->action_obj->obj_ptr + 0x4A),
                 this->tech_id, 0, 0);
 
-            scenario->vfn70((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
+            ((RGE_Scenario*)this->action_obj->obj_ptr)->vfn70((int)this->tech_id, this->action_obj->player_id, -1, this->unique_id);
 
             this->action_obj->vfn82(
                 this->action_obj->player_id, this->action_obj->player_id,
