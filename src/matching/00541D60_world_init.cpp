@@ -1,6 +1,11 @@
-// tried explicit vtable-function-pointer calls first; that matched the slot sequence but introduced caller-cleanup drift
-// switched to direct virtual member calls on a tiny RGE_Game_World surface; the remaining mismatch is localized to the reload of param_3 after the first two calls ([esp+18h] vs [esp+1Ch])
-// leaving this in scratch because the body behavior is right and the remaining gap is low-risk codegen drift, not a changed call set
+// 00541D60 RGE_Game_World::world_init
+// PDB: World.cpp:858-867, 76 bytes
+// FLAGS: default
+//
+// Fixed: init_40/init_48 take TSound_Driver* (param_2), not TCommunications_Handler*.
+// init_54 takes TCommunications_Handler* (param_3), not TSound_Driver*.
+// The names init_3c/init_38 are slot numbers, not meaningful identifiers — the
+// association between slot and argument type was wrong in the original scratch.
 class TSound_Driver;
 class TCommunications_Handler;
 
@@ -22,12 +27,12 @@ public:
     virtual void vf34();
     virtual void init_3c(int param_1);
     virtual void init_38(int param_1);
-    virtual void init_40(int param_1, TCommunications_Handler* param_3);
+    virtual void init_40(int param_1, TSound_Driver* param_2);
     virtual void init_44(int param_1);
-    virtual void init_48(int param_1, TCommunications_Handler* param_3);
+    virtual void init_48(int param_1, TSound_Driver* param_2);
     virtual void init_4c(int param_1);
     virtual void init_50(int param_1);
-    virtual void init_54(int param_1, TSound_Driver* param_2);
+    virtual void init_54(int param_1, TCommunications_Handler* param_2);
 
     char gap_04[0x3F0];
 
@@ -37,10 +42,10 @@ public:
 void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
     this->init_38(param_1);
     this->init_3c(param_1);
-    this->init_40(param_1, param_3);
+    this->init_40(param_1, param_2);
     this->init_44(param_1);
-    this->init_48(param_1, param_3);
+    this->init_48(param_1, param_2);
     this->init_4c(param_1);
     this->init_50(param_1);
-    this->init_54(param_1, param_2);
+    this->init_54(param_1, param_3);
 }
