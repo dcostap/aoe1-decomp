@@ -229,6 +229,12 @@ These are heuristics, not laws, but a real exact-match win now backs them:
    compare form, straightforward statement splits/merges, and other ordinary clean
    spellings. Exhaust the natural source families first; save strange tricks for
    later when the ordinary forms have been tested and classified.
+6a. Do not over-force shared tails with `goto` just because the asm has shared-looking
+   epilogues. A natural nested `if`/`switch` source shape can still produce the same
+   tail blocks, while artificial goto factoring can perturb branch distances,
+   liveness, and block layout. A real `TRIBE_Action_Make_Tech::update` win came from
+   backing away from top-declared-local/goto plumbing to a natural nested status gate,
+   then using direct member reloads only where the asm showed them.
 7. Named temporaries are **not** codegen-neutral on VC5. Extra predicate temps,
    split per-loop index locals, or decompiler-style carry variables can change
    liveness enough to move a helper into the wrong saved-register,
