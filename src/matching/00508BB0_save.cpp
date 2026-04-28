@@ -1,9 +1,5 @@
-// VA: 00508BB0 RGE_Task::save
-// PDB source: task.cpp
-// Attempt log:
-// - 582B, writes all RGE_Task fields + sprite/sound ID lookups
-// - 592/582 (10 over), first mismatch at offset 359 (pointer ID lookups)
-// - Left in scratch after shallow pass
+// 00508BB0 RGE_Task::save
+// Branch inversion fix: use if (ptr == 0) for move/work/work2 sprites
 
 #include <stdlib.h>
 
@@ -74,50 +70,50 @@ void RGE_Task_save::save(int fd)
     rge_write(fd, &state_building, 1);
     
     // move_sprite ID
-    if (move_sprite != 0) {
-        id_val = *(short*)((char*)move_sprite + 0x72);
-    } else {
+    if (move_sprite == 0) {
         id_val = -1;
+    } else {
+        id_val = *(short*)((char*)move_sprite + 0x72);
     }
     rge_write(fd, &id_val, 2);
     
     // work_sprite ID
-    if (work_sprite != 0) {
-        id_val = *(short*)((char*)work_sprite + 0x72);
-    } else {
+    if (work_sprite == 0) {
         id_val = -1;
+    } else {
+        id_val = *(short*)((char*)work_sprite + 0x72);
     }
     rge_write(fd, &id_val, 2);
     
     // work_sprite2 ID
-    if (work_sprite2 != 0) {
-        id_val = *(short*)((char*)work_sprite2 + 0x72);
-    } else {
+    if (work_sprite2 == 0) {
         id_val = -1;
+    } else {
+        id_val = *(short*)((char*)work_sprite2 + 0x72);
     }
     rge_write(fd, &id_val, 2);
     
     // carry_sprite ID
-    if (carry_sprite != 0) {
-        id_val = *(short*)((char*)carry_sprite + 0x72);
-    } else {
+    if (carry_sprite == 0) {
         id_val = -1;
+    } else {
+        id_val = *(short*)((char*)carry_sprite + 0x72);
     }
     rge_write(fd, &id_val, 2);
     
     // work_sound ID
-    if (work_sound != 0) {
-        id_val = *(short*)((char*)work_sound + 0x0C);
-    } else {
+    if (work_sound == 0) {
         id_val = -1;
+    } else {
+        id_val = *(short*)((char*)work_sound + 0x0C);
     }
     rge_write(fd, &id_val, 2);
     
     // work_sound2 ID
-    if (work_sound2 != 0) {
-        id_val = *(short*)((char*)work_sound2 + 0x0C);
-    } else {
+    if (work_sound2 == 0) {
         id_val = -1;
+    } else {
+        id_val = *(short*)((char*)work_sound2 + 0x0C);
     }
     rge_write(fd, &id_val, 2);
 }
