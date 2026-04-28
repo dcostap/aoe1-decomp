@@ -2,7 +2,7 @@
 // first pass: mirror the pick loop, stop-on-mismatch behavior, and duplicate-suppression check
 // probe 1: direct compare against *objects caused an early pretest basin; try a saved first-result local instead
 // probe 2: the wider local set moved VC5 into a worse prolog basin; try the literal decompiler shape with only the packed pick_info local
-// blocker: current diff is down to the pick_info load offset (+0x20 vs +0x1C); prolog/body are otherwise aligned, so leave this paused after the probe cap
+// probe 3: variant lab over pick_info.object vs pick_info.tile proved original uses object (+0x1C stack load); object_all and object_saved_local exact-matched
 
 class RGE_Static_Object;
 class RGE_Tile;
@@ -42,13 +42,13 @@ int RGE_Main_View::pick_objects1(long param_1, long param_2, RGE_Static_Object**
         if (this->pick(0x29, 0, param_1, param_2, &pick_info, pRVar2) != 0x34) {
             break;
         }
-        if ((0 < iVar3) && ((RGE_Static_Object*)pick_info.tile == *param_3)) {
+        if ((0 < iVar3) && (pick_info.object == *param_3)) {
             return iVar3;
         }
-        *ppRVar4 = (RGE_Static_Object*)pick_info.tile;
+        *ppRVar4 = pick_info.object;
         iVar3 = iVar3 + 1;
         ppRVar4 = ppRVar4 + 1;
-        pRVar2 = (RGE_Static_Object*)pick_info.tile;
+        pRVar2 = pick_info.object;
     }
     return iVar3;
 }

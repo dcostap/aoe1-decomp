@@ -1,6 +1,6 @@
-// STATUS: active lead
-// constructor stays byte-identical except VC5 keeps loading/storing the 2nd and 3rd int params in source-order/field-order opposite the original prologue
-// next lead: write the two early scalar fields through explicit offsets, so VC5 has a direct reason to emit the +28 store before the +24 store without perturbing the later body
+// STATUS: exact via variant lab
+// constructor stayed byte-identical except VC5 kept loading/storing the 2nd and 3rd int params in source-order/field-order opposite the original prologue
+// variant lab over early scalar field spellings found exact match with explicit offset stores written +0x24 then +0x28; VC5 schedules the loads/stores into the original +0x28 then +0x24 machine order
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
@@ -47,8 +47,8 @@ DClipInfo_List::DClipInfo_List(int init_zone_size, int element_size, int default
 
     Free_Pool_Zone = -1;
     Free_Pool_Index = -1;
-    *(int*)((char*)this + 0x28) = default_grow_size;
     *(int*)((char*)this + 0x24) = element_size;
+    *(int*)((char*)this + 0x28) = default_grow_size;
     yline_offset = -ymin;
     yline_size = (ymax - ymin) + 1;
     Zone_Ptrs = 0;
