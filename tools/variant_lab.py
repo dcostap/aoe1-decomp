@@ -22,6 +22,7 @@ from typing import Iterable
 from common import (
     CONFIG_DIR,
     REPO_ROOT,
+    byte_diff_metrics,
     ensure_dir,
     format_hex,
     function_record_by_va,
@@ -344,6 +345,16 @@ class VariantResult:
     relocations: int = 0
     first_mismatch: int | None = None
     exact: bool = False
+    diff_bytes: int = 0
+    diff_percent: float = 0.0
+    diff_spans: int = 0
+    edit_diff_bytes: int = 0
+    edit_diff_percent: float = 0.0
+    edit_insert_bytes: int = 0
+    edit_delete_bytes: int = 0
+    edit_replace_bytes: int = 0
+    edit_equal_bytes: int = 0
+    likely_shifted_alignment: bool = False
     ret_count: int = 0
     last_ret_end: int | None = None
     extra_after_last_ret: int | None = None
@@ -370,6 +381,12 @@ class GroupInfo:
     first_mismatch: int | None = None
     exact: bool = False
     exact_count: int = 0
+    diff_bytes: int = 0
+    diff_percent: float = 0.0
+    diff_spans: int = 0
+    edit_diff_bytes: int = 0
+    edit_diff_percent: float = 0.0
+    likely_shifted_alignment: bool = False
     ret_count: int = 0
     last_ret_end: int | None = None
     extra_after_last_ret: int | None = None
@@ -1304,8 +1321,10 @@ def build_variant(
                 masked_original[i] = 0
     masked_original_bytes = bytes(masked_original)
 
-    mismatch = first_mismatch(masked_original_bytes, masked_rebuilt)
-    exact = mismatch is None and len(compare_bytes) == expected_size
+    metrics = byte_diff_metrics(masked_original_bytes, masked_rebuilt)
+    mismatch_text = str(metrics["first_mismatch_offset"])
+    mismatch = int(mismatch_text) if mismatch_text else None
+    exact = metrics["result"] == "MATCH" and len(compare_bytes) == expected_size
     status = "match" if exact else "mismatch"
     ret_ends = detect_ret_ends(loaded.data)
     last_ret_end = ret_ends[-1] if ret_ends else None
@@ -1335,6 +1354,16 @@ def build_variant(
         relocations=len(compare_relocs),
         first_mismatch=mismatch,
         exact=exact,
+        diff_bytes=int(metrics["diff_bytes"]),
+        diff_percent=float(metrics["diff_percent"]),
+        diff_spans=int(metrics["diff_spans"]),
+        edit_diff_bytes=int(metrics["edit_diff_bytes"]),
+        edit_diff_percent=float(metrics["edit_diff_percent"]),
+        edit_insert_bytes=int(metrics["edit_insert_bytes"]),
+        edit_delete_bytes=int(metrics["edit_delete_bytes"]),
+        edit_replace_bytes=int(metrics["edit_replace_bytes"]),
+        edit_equal_bytes=int(metrics["edit_equal_bytes"]),
+        likely_shifted_alignment=bool(metrics["likely_shifted_alignment"]),
         ret_count=len(ret_ends),
         last_ret_end=last_ret_end,
         extra_after_last_ret=extra_after_last_ret,
@@ -1424,6 +1453,11 @@ def write_group_artifacts(
         diff_lines.append(f"Compared bytes: {rep.compare_size}")
         diff_lines.append(f"Relocations masked: {rep.relocations}")
         diff_lines.append(f"First mismatch: {rep.first_mismatch}")
+        diff_lines.append(f"Positional diff bytes: {rep.diff_bytes}")
+        diff_lines.append(f"Positional diff percent: {rep.diff_percent:.4f}")
+        diff_lines.append(f"Edit diff bytes: {rep.edit_diff_bytes}")
+        diff_lines.append(f"Edit diff percent: {rep.edit_diff_percent:.4f}")
+        diff_lines.append(f"Likely shifted alignment: {int(rep.likely_shifted_alignment)}")
         diff_lines.append(f"Return instructions: {rep.ret_count}")
         diff_lines.append(f"Last return end offset: {rep.last_ret_end}")
         diff_lines.append(f"Extra bytes after last return: {rep.extra_after_last_ret}")
@@ -1606,6 +1640,12 @@ def write_reports(
                     relocations=result.relocations,
                     first_mismatch=result.first_mismatch,
                     exact=result.exact,
+                    diff_bytes=result.diff_bytes,
+                    diff_percent=result.diff_percent,
+                    diff_spans=result.diff_spans,
+                    edit_diff_bytes=result.edit_diff_bytes,
+                    edit_diff_percent=result.edit_diff_percent,
+                    likely_shifted_alignment=result.likely_shifted_alignment,
                     ret_count=result.ret_count,
                     last_ret_end=result.last_ret_end,
                     extra_after_last_ret=result.extra_after_last_ret,
@@ -1646,7 +1686,7 @@ def write_reports(
     # Variants TSV
     with (run_dir / "variants.tsv").open("w", encoding="utf-8", newline="") as f:
         f.write(
-            "variant_id\tstatus\tgroup_id\terror_id\texact\ttext_size\tcompare_size\tfirst_mismatch\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\tlabels\tsource\tobject\tflags\n"
+            "variant_id\tstatus\tgroup_id\terror_id\texact\ttext_size\tcompare_size\tfirst_mismatch\tdiff_bytes\tdiff_percent\tdiff_spans\tedit_diff_bytes\tedit_diff_percent\tedit_insert_bytes\tedit_delete_bytes\tedit_replace_bytes\tedit_equal_bytes\tlikely_shifted_alignment\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\tlabels\tsource\tobject\tflags\n"
         )
         for result in results:
             group_id = key_to_group_id.get(result.group_key or "", "")
@@ -1662,6 +1702,16 @@ def write_reports(
                         "" if result.text_size is None else str(result.text_size),
                         "" if result.compare_size is None else str(result.compare_size),
                         "" if result.first_mismatch is None else str(result.first_mismatch),
+                        str(result.diff_bytes),
+                        f"{result.diff_percent:.4f}",
+                        str(result.diff_spans),
+                        str(result.edit_diff_bytes),
+                        f"{result.edit_diff_percent:.4f}",
+                        str(result.edit_insert_bytes),
+                        str(result.edit_delete_bytes),
+                        str(result.edit_replace_bytes),
+                        str(result.edit_equal_bytes),
+                        "1" if result.likely_shifted_alignment else "0",
                         str(result.relocations),
                         str(result.ret_count),
                         "" if result.last_ret_end is None else str(result.last_ret_end),
@@ -1678,7 +1728,7 @@ def write_reports(
 
     # Groups TSV and per-group variant lists.
     with (run_dir / "groups.tsv").open("w", encoding="utf-8", newline="") as f:
-        f.write("group_id\tcount\texact\texact_count\ttext_size\tcompare_size\tfirst_mismatch\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\trepresentative\tlabels\thash\n")
+        f.write("group_id\tcount\texact\texact_count\ttext_size\tcompare_size\tfirst_mismatch\tdiff_bytes\tdiff_percent\tdiff_spans\tedit_diff_bytes\tedit_diff_percent\tlikely_shifted_alignment\trelocations\tret_count\tlast_ret_end\textra_after_last_ret\tlikely_context_tail\trepresentative\tlabels\thash\n")
         for group in groups:
             rep = group.representative
             f.write(
@@ -1691,6 +1741,12 @@ def write_reports(
                         "" if group.text_size is None else str(group.text_size),
                         "" if group.compare_size is None else str(group.compare_size),
                         "" if group.first_mismatch is None else str(group.first_mismatch),
+                        str(group.diff_bytes),
+                        f"{group.diff_percent:.4f}",
+                        str(group.diff_spans),
+                        str(group.edit_diff_bytes),
+                        f"{group.edit_diff_percent:.4f}",
+                        "1" if group.likely_shifted_alignment else "0",
                         str(group.relocations),
                         str(group.ret_count),
                         "" if group.last_ret_end is None else str(group.last_ret_end),
@@ -1811,7 +1867,8 @@ def write_reports(
         tail_note = " context-tail" if group.likely_context_tail else ""
         summary.append(
             f"  {group.group_id} count={group.count} exact={int(group.exact)} exact_count={group.exact_count} text_size={group.text_size} "
-            f"compare_size={group.compare_size} first_mismatch={group.first_mismatch} reloc={group.relocations} "
+            f"compare_size={group.compare_size} first_mismatch={group.first_mismatch} pos_diff={group.diff_bytes} "
+            f"edit_diff={group.edit_diff_bytes} shifted={int(group.likely_shifted_alignment)} reloc={group.relocations} "
             f"last_ret_end={group.last_ret_end} extra_after_ret={group.extra_after_last_ret}{tail_note}"
         )
         if rep:
@@ -1819,6 +1876,21 @@ def write_reports(
             summary.append(f"        artifacts: groups/{group.group_id}/")
             if group.first_mismatch is not None:
                 summary.extend(group_mismatch_snippet(group, original_bytes, expected_size, int(va_text, 16)))
+
+    edit_groups = [group for group in groups if group.first_mismatch is not None]
+    edit_groups.sort(key=lambda group: (group.edit_diff_bytes, group.diff_bytes, group.first_mismatch or -1, group.group_id))
+    if edit_groups:
+        summary.append("")
+        summary.append("Smallest resync edit diffs:")
+        for group in edit_groups[:10]:
+            rep = group.representative
+            summary.append(
+                f"  {group.group_id} count={group.count} edit_diff={group.edit_diff_bytes} "
+                f"pos_diff={group.diff_bytes} first_mismatch={group.first_mismatch} shifted={int(group.likely_shifted_alignment)}"
+            )
+            if rep:
+                summary.append(f"        example: {rep.variant_id} {rep.labels_text}")
+                summary.append(f"        artifacts: groups/{group.group_id}/")
 
     deepest_groups = [group for group in groups if group.first_mismatch is not None]
     deepest_groups.sort(key=lambda group: (group.first_mismatch or -1, -(abs((group.text_size or 0) - expected_size))), reverse=True)
@@ -1830,7 +1902,7 @@ def write_reports(
             tail_note = " context-tail" if group.likely_context_tail else ""
             summary.append(
                 f"  {group.group_id} count={group.count} text_size={group.text_size} first_mismatch={group.first_mismatch}"
-                f" last_ret_end={group.last_ret_end}{tail_note}"
+                f" edit_diff={group.edit_diff_bytes} shifted={int(group.likely_shifted_alignment)} last_ret_end={group.last_ret_end}{tail_note}"
             )
             if rep:
                 summary.append(f"        example: {rep.variant_id} {rep.labels_text}")

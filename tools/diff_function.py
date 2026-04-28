@@ -9,6 +9,31 @@ from coff import mask_relocations
 from common import byte_diff_metrics, ensure_build_subdir, function_record_by_va, function_slug, repo_path
 
 
+def format_edit_hunks(metrics: dict, original: bytes, rebuilt: bytes, limit: int = 12) -> list[str]:
+    lines: list[str] = []
+    opcodes = metrics.get("edit_opcodes") or []
+    for opcode in opcodes[:limit]:
+        tag = str(opcode["tag"])
+        i1 = int(opcode["i1"])
+        i2 = int(opcode["i2"])
+        j1 = int(opcode["j1"])
+        j2 = int(opcode["j2"])
+        left_size = i2 - i1
+        right_size = j2 - j1
+        line = f"  {tag:<7} orig+{i1:04X}..{i2:04X} ({left_size:4d})  rebuilt+{j1:04X}..{j2:04X} ({right_size:4d})"
+        if tag != "equal":
+            left_hex = original[i1:i2].hex()
+            right_hex = rebuilt[j1:j2].hex()
+            if left_hex:
+                line += f"  orig={left_hex[:48]}"
+            if right_hex:
+                line += f"  rebuilt={right_hex[:48]}"
+        lines.append(line)
+    if len(opcodes) > limit:
+        lines.append(f"  ... {len(opcodes) - limit} more edit hunks")
+    return lines
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare original and rebuilt function outputs.")
     parser.add_argument("--va", required=True, help="Function VA in hex, for example 00449750.")
@@ -85,9 +110,17 @@ def main() -> None:
     lines.append(f"Original bytes: {len(original_bytes)}")
     lines.append(f"Rebuilt bytes: {len(rebuilt_bytes)}")
     lines.append(f"Compared bytes: {metrics['compare_size']}")
-    lines.append(f"Diff bytes: {metrics['diff_bytes']}")
-    lines.append(f"Diff percent: {float(metrics['diff_percent']):.4f}%")
-    lines.append(f"Diff spans: {metrics['diff_spans']}")
+    lines.append(f"Positional diff bytes: {metrics['diff_bytes']}")
+    lines.append(f"Positional diff percent: {float(metrics['diff_percent']):.4f}%")
+    lines.append(f"Positional diff spans: {metrics['diff_spans']}")
+    lines.append(f"Edit diff bytes: {metrics['edit_diff_bytes']}")
+    lines.append(f"Edit diff percent: {float(metrics['edit_diff_percent']):.4f}%")
+    lines.append(
+        "Edit inserts/deletes/replaces: "
+        f"{metrics['edit_insert_bytes']} / {metrics['edit_delete_bytes']} / {metrics['edit_replace_bytes']}"
+    )
+    lines.append(f"Edit equal bytes: {metrics['edit_equal_bytes']}")
+    lines.append(f"Likely shifted alignment: {'yes' if metrics['likely_shifted_alignment'] else 'no'}")
     lines.append(f"Relocations masked: {relocation_count}")
 
     if mismatch is None:
@@ -102,6 +135,9 @@ def main() -> None:
     window_end = min(max(len(masked_original), len(masked_rebuilt)), mismatch + 8)
     lines.append(f"Original window: {masked_original[window_start:window_end].hex()}")
     lines.append(f"Rebuilt  window: {masked_rebuilt[window_start:window_end].hex()}")
+    lines.append("")
+    lines.append("Edit/resync hunks:")
+    lines.extend(format_edit_hunks(metrics, masked_original, masked_rebuilt))
 
     if orig_asm.exists() and rebuilt_asm.exists():
         original_text = orig_asm.read_text(encoding="utf-8").splitlines()

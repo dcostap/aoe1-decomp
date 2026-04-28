@@ -705,6 +705,7 @@
       let customFlagsCount = 0;
       let diffKnownCount = 0;
       let diffPercentTotal = 0;
+      let editDiffPercentTotal = 0;
 
       for (const fn of children) {
         valueBytes += fn.sizeBytes;
@@ -727,7 +728,8 @@
         }
         if (fn.diffResult) {
           diffKnownCount += 1;
-          diffPercentTotal += toNumber(fn.diffPercent);
+          diffPercentTotal += toNumber(fn.positionalDiffPercent ?? fn.diffPercent);
+          editDiffPercentTotal += toNumber(fn.editDiffPercent ?? fn.diffPercent);
         }
       }
 
@@ -751,6 +753,7 @@
         customFlagsCount,
         diffKnownCount,
         avgDiffPercent: diffKnownCount ? diffPercentTotal / diffKnownCount : 0,
+        avgEditDiffPercent: diffKnownCount ? editDiffPercentTotal / diffKnownCount : 0,
         bucketCounts,
         bucketBytes,
         progressFunctions: children.length ? (matchedCount / children.length) * 100 : 0,
@@ -1016,7 +1019,7 @@
         return soften(BUCKET_COLORS[item.dominantBucket] || "#475569", 0.42);
       }
       if (state.colorMode === "progress") {
-        return soften(diffColor(item.avgDiffPercent || 0, item.diffKnownCount > 0), 0.54);
+        return soften(diffColor(item.avgEditDiffPercent ?? item.avgDiffPercent ?? 0, item.diffKnownCount > 0), 0.54);
       }
       const unresolved = item.valueBytes ? item.remainingBytes / item.valueBytes : 0;
       const blocked = item.functionCount ? item.blockerCount / item.functionCount : 0;
@@ -1043,7 +1046,7 @@
         return BUCKET_COLORS[item.bucket] || "#475569";
       }
       if (state.colorMode === "progress") {
-        return diffColor(item.diffPercent || 0, Boolean(item.diffResult));
+        return diffColor(item.editDiffPercent ?? item.diffPercent ?? 0, Boolean(item.diffResult));
       }
       const complexity = clamp((item.sourceCommentLines || 0) / 17, 0, 1);
       return mixColor("#2563eb", "#ff0000", complexity);
@@ -1379,7 +1382,7 @@
       }
       return `
         <div class="tooltip-title"><span class="mono">${escapeHtml(item.va)}</span> ${escapeHtml(item.name)}</div>
-        <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)} · diff ${formatPercent(item.diffPercent || 0, 4)} · ${formatNumber(item.sourceCommentLines || 0)} comment lines</div>
+        <div class="tooltip-sub">${escapeHtml(item.groupName)} · ${formatBytes(item.sizeBytes)} · ${formatNumber(item.asmLines)} asm · ${escapeHtml(item.bucket)} · edit ${formatPercent(item.editDiffPercent ?? item.diffPercent ?? 0, 4)} · positional ${formatPercent(item.positionalDiffPercent ?? item.diffPercent ?? 0, 4)} · ${formatNumber(item.sourceCommentLines || 0)} comment lines</div>
         ${(item.sourceBlocker || item.sourceNext || item.sourceNote) ? `<div class="tooltip-note">${escapeHtml(item.sourceBlocker || item.sourceNext || item.sourceNote)}</div>` : ""}`;
     }
 
@@ -1430,7 +1433,7 @@
         statHtml("visible matched fn", formatPercent(visibleFnProgress, 1)),
         statHtml("visible matched bytes", formatPercent(visibleByteProgress, 1)),
         statHtml("visible remaining", formatBytes(derived.stats.remainingBytes)),
-        statHtml("color", state.colorMode === "progress" ? "diff %" : state.colorMode),
+        statHtml("color", state.colorMode === "progress" ? "edit diff %" : state.colorMode),
         statHtml("blockers", formatNumber(derived.stats.blockers)),
         statHtml("custom flags", formatNumber(derived.stats.customFlags)),
         statHtml("view", derived.zoomGroup ? "zoomed file" : state.viewMode),
@@ -1586,9 +1589,10 @@
         <div class="detail-grid">
           <div class="detail-block"><div class="detail-label">Size</div><div class="detail-value">${formatBytes(fn.sizeBytes)}</div></div>
           <div class="detail-block"><div class="detail-label">Asm lines</div><div class="detail-value">${formatNumber(fn.asmLines)}</div></div>
-          <div class="detail-block"><div class="detail-label">Diff</div><div class="detail-value">${formatPercent(fn.diffPercent || 0, 4)}</div></div>
-          <div class="detail-block"><div class="detail-label">Diff bytes/spans</div><div class="detail-value">${formatNumber(fn.diffBytes || 0)} / ${formatNumber(fn.diffSpans || 0)}</div></div>
-          <div class="detail-block"><div class="detail-label">First mismatch</div><div class="detail-value">${escapeHtml(fn.firstMismatchOffset || "-")}</div></div>
+          <div class="detail-block"><div class="detail-label">Edit diff</div><div class="detail-value">${formatPercent(fn.editDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.editDiffBytes ?? fn.diffBytes ?? 0)} bytes</div></div>
+          <div class="detail-block"><div class="detail-label">Positional diff</div><div class="detail-value">${formatPercent(fn.positionalDiffPercent ?? fn.diffPercent ?? 0, 4)} · ${formatNumber(fn.positionalDiffBytes ?? fn.diffBytes ?? 0)} / ${formatNumber(fn.positionalDiffSpans ?? fn.diffSpans ?? 0)} spans</div></div>
+          <div class="detail-block"><div class="detail-label">Edit ins/del/repl</div><div class="detail-value">${formatNumber(fn.editInsertBytes || 0)} / ${formatNumber(fn.editDeleteBytes || 0)} / ${formatNumber(fn.editReplaceBytes || 0)}</div></div>
+          <div class="detail-block"><div class="detail-label">First mismatch</div><div class="detail-value">${escapeHtml(fn.firstMismatchOffset || "-")}${fn.likelyShiftedAlignment ? " · shifted" : ""}</div></div>
           <div class="detail-block"><div class="detail-label">Comment lines</div><div class="detail-value">${formatNumber(fn.sourceCommentLines || 0)}</div></div>
           <div class="detail-block"><div class="detail-label">Calling convention</div><div class="detail-value">${escapeHtml(fn.callingConvention || "?")}</div></div>
           <div class="detail-block"><div class="detail-label">Remaining rank</div><div class="detail-value">${fn.isRemaining ? `#${formatNumber(fn.remainingSizeRank || 0)}` : "done"}</div></div>

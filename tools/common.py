@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import difflib
 import json
 import os
 import struct
@@ -280,8 +281,8 @@ def preferred_source_path(record: dict[str, str]) -> Path:
     return REPO_ROOT / "src" / "scratch" / f"{slug}.c"
 
 
-def byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str]:
-    """Return stable byte-diff metrics used by diff/status/dashboard tools."""
+def positional_byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str]:
+    """Return strict byte-at-same-offset metrics used for exact parity."""
     compare_size = max(len(left), len(right))
     first_mismatch: int | None = None
     diff_bytes = 0
@@ -310,6 +311,76 @@ def byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str]
         "diff_spans": diff_spans,
         "first_mismatch_offset": "" if first_mismatch is None else str(first_mismatch),
         "result": "MATCH" if diff_bytes == 0 else "MISMATCH",
+    }
+
+
+def edit_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | bool | list[dict[str, int | str]]]:
+    """Return a resynchronizing edit-diff diagnostic over byte sequences.
+
+    This is Git-like/LCS-style closeness information. It is useful for humans
+    because a one-byte insertion near the start no longer makes every later byte
+    look unrelated. It is not the exact-layout gate; byte_diff_metrics keeps the
+    positional result for that.
+    """
+    matcher = difflib.SequenceMatcher(a=left, b=right, autojunk=False)
+    opcodes: list[dict[str, int | str]] = []
+    equal_bytes = 0
+    insert_bytes = 0
+    delete_bytes = 0
+    replace_bytes = 0
+
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        left_size = i2 - i1
+        right_size = j2 - j1
+        if tag == "equal":
+            equal_bytes += left_size
+        elif tag == "insert":
+            insert_bytes += right_size
+        elif tag == "delete":
+            delete_bytes += left_size
+        elif tag == "replace":
+            replace_bytes += max(left_size, right_size)
+        opcodes.append({"tag": tag, "i1": i1, "i2": i2, "j1": j1, "j2": j2})
+
+    edit_bytes = insert_bytes + delete_bytes + replace_bytes
+    compare_size = max(len(left), len(right))
+    edit_percent = 0.0 if compare_size == 0 else (edit_bytes / compare_size) * 100.0
+    positional = positional_byte_diff_metrics(left, right)
+    positional_diff_bytes = int(positional["diff_bytes"])
+    shifted = (
+        edit_bytes > 0
+        and (insert_bytes > 0 or delete_bytes > 0)
+        and edit_bytes < positional_diff_bytes
+        and equal_bytes >= max(1, min(len(left), len(right)) // 2)
+    )
+
+    return {
+        "edit_diff_bytes": edit_bytes,
+        "edit_diff_percent": edit_percent,
+        "edit_equal_bytes": equal_bytes,
+        "edit_insert_bytes": insert_bytes,
+        "edit_delete_bytes": delete_bytes,
+        "edit_replace_bytes": replace_bytes,
+        "edit_opcode_count": len(opcodes),
+        "edit_opcodes": opcodes,
+        "likely_shifted_alignment": shifted,
+    }
+
+
+def byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str | bool | list[dict[str, int | str]]]:
+    """Return stable byte-diff metrics used by diff/status/dashboard tools.
+
+    Legacy diff_* keys remain the strict positional byte-at-offset metrics.
+    New edit_* keys are resynchronizing human-diagnostic metrics.
+    """
+    positional = positional_byte_diff_metrics(left, right)
+    edit = edit_diff_metrics(left, right)
+    return {
+        **positional,
+        "positional_diff_bytes": positional["diff_bytes"],
+        "positional_diff_percent": positional["diff_percent"],
+        "positional_diff_spans": positional["diff_spans"],
+        **edit,
     }
 
 
