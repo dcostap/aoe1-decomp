@@ -4,7 +4,7 @@
 normal `@choice` parsing.  These files are intentionally plain text so matching
 work can grow reusable VC5 source-shape families over time.
 
-Full lab guide: `docs/variant_lab.md`.
+Canonical lab reference: `python tools\variant_lab.py --help`.
 
 Useful inspection commands:
 

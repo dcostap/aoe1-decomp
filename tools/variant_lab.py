@@ -92,14 +92,33 @@ FLAG_PRESETS: dict[str, dict[str, str]] = {
 
 
 HELP_EPILOG = r"""
-Template syntax
-===============
+Variant lab template reference
+==============================
 
-variant_lab compiles a full C/C++ source template many times.  It never edits
-src/scratch or src/matching.  Generated sources/objects/reports are written under
+variant_lab compiles a full C/C++ source template many times, compares each
+emitted object against one original function, and groups variants by emitted
+machine code. It never edits src/scratch or src/matching; generated files go to
 build/variant_lab/<slug>/<run-id>/.
 
-Full guide: docs/variant_lab.md
+Use it for late-stage VC5 source-shape/codegen-basin work after behavior is
+mostly understood. Matches still need normal review, reduction, and local
+check_function validation before promotion.
+
+Quick workflow
+--------------
+
+  python tools/variant_lab.py --init --va 0051ACA0
+  # edit build/temp/<slug>_lab.tpl.cpp
+  python tools/variant_lab.py --template build/temp/<slug>_lab.tpl.cpp --preview-variants 3
+  python tools/variant_lab.py --va 0051ACA0 --template build/temp/<slug>_lab.tpl.cpp
+
+Inspection commands (no compile; --va not required):
+
+  python tools/variant_lab.py --list-templates
+  python tools/variant_lab.py --template-help vc5_guard
+  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --expand-only
+  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants 3
+  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --show-variant V000042
 
 Source choices
 --------------
@@ -111,15 +130,12 @@ Source choices
       alternate source
   @endchoice
 
-Every distinct top-level axis is expanded as a Cartesian product.  Choices may
-also be nested inside @case bodies.  Nested axes are only active when their
-containing case is selected, so they do not multiply unrelated outer cases.
-Reusing the same axis name links choices together: one selected case is used at
-every active block with that axis name.  Repeated blocks may omit a case;
-omitted cases emit nothing for that block.  This is useful for donor/TU context
-toggles and for trying an inner family only under one outer source strategy.
+Active axes select one case. Reusing the same axis name links choices together;
+if a later active block omits the selected label, that block emits nothing.
+Duplicate @case labels in one block are rejected.
 
-Example: this generates 3 variants, not 4, because inner is inactive for outer=b:
+Choices may be nested inside @case bodies. Nested axes are active only when their
+parent case is selected, so this generates 3 variants, not 4:
 
   @choice outer
   @case a
@@ -133,19 +149,21 @@ Example: this generates 3 variants, not 4, because inner is inactive for outer=b
       int x = 3;
   @endchoice
 
-Reusable template presets
--------------------------
+Labels would be: src.outer=a;src.inner=x, src.outer=a;src.inner=y, src.outer=b.
+Inactive nested axes are omitted from labels/reports.
+
+Reusable @template presets
+--------------------------
 
 Preset files live in config/variant_templates/ (preferred) or tools/variant_templates/.
-They are ordinary text files with .vtpl/.tpl/.txt extensions that expand to normal
-@choice/@flagchoice template text before parsing. Use them to encode reusable VC5
-source-shape families and add more cases over time without editing this script.
+They are plain text .vtpl/.tpl/.txt files expanded to ordinary @choice/@flagchoice
+text before parsing. Add cases/files there as reusable VC5 lessons appear.
 
 Single-line preset:
 
   @template vc5_dummy_member_surface axis=member_ctx class=Path prefix=ctx
 
-Block preset with user body slots:
+Block preset with user slot:
 
   @template vc5_guard axis=gate cond="maxSizeValue < other.maxSizeValue"
   @slot body
@@ -153,13 +171,30 @@ Block preset with user body slots:
   @endslot
   @endtemplate
 
-Preset arguments use key=value shell-style parsing, so quote expressions with spaces.
-Inside preset files, use {{axis}}, {{class}}, {{prefix}}, etc. for arguments and
-{{slot:body}} for slot content. Slot filters may be chained, e.g.
-{{slot:body|trim|indent:4}}; supported filters are trim, lstrip, rstrip/chomp,
-and indent:N. Defaults include:
+Arguments use shell-style key=value parsing; quote expressions with spaces.
+Inside preset files use {{axis}}, {{class}}, {{prefix}}, etc. for arguments and
+{{slot:body}} for user slots. Slot filters may be chained:
+
+  {{slot:body|trim|indent:4}}   filters: trim, lstrip, rstrip/chomp, indent:N
+
+Useful default arguments supplied by the lab:
+
   prefix=<sanitized axis/name>, tmp=<prefix>_tmp, tmp2=<prefix>_tmp2,
-  inverse=!(<cond>) when cond is supplied.
+  tmp3=<prefix>_tmp3, type=int, ptr=<prefix>_ptr, size=16, shift=4,
+  ret=void, name=<prefix>_helper, params=void, index=i,
+  inverse=!(<cond>) when cond=... is supplied.
+
+Starter preset families:
+
+  vc5_dummy_member_surface  dummy class member declarations / ctor/dtor/operator context
+  vc5_update_expr           +=, x=x+y, temp update spellings
+  vc5_guard                 guarded body forms, no-brace forms, inverted empty arms
+  vc5_loop_count            counted-loop spellings around a body slot
+  vc5_alloc                 operator_new/new[], count temps, byte-size temps
+  vc5_assign_temp           direct expression use vs named-temp lifetime variants
+  vc5_bool_return           direct bool return vs explicit 0/1 branches/narrow temps
+  vc5_helper_extract        helper/declaration surface experiments
+  vc5_standard_headers      standard-header on/off axes
 
 Compiler flag choices
 ---------------------
@@ -168,103 +203,72 @@ Compiler flag choices
   @case default
   @case debug_lines
   /Zd
-  @case no_global_opt
-  /Og-
   @endflagchoice
 
-or equivalently:
+or equivalently @flags ... @endflags. Flag case text is removed from generated
+C/C++ and written to per-variant variant_flags.rsp after config/flags/default.rsp.
+Debug-info variants get a unique /Fd path when needed.
 
-  @flags flags_axis
-  ...
-  @endflags
+Flag case placeholders:
 
-Flag choices are removed from the generated source.  Selected flag case content
-is written to a per-variant response file that is passed AFTER config/flags/default.rsp.
-So every variant always starts from the project default flags and then appends the
-selected additions/overrides.  For debug-info flags, variant_lab automatically
-adds a unique /Fd path when needed to avoid parallel PDB collisions.
+  {work_dir}  {variant_id}  {slug}  {run_dir}
 
-Common flag presets
--------------------
-
-Use --flag-preset to append a named reusable flag axis without editing the template:
+Reusable flag axes:
 
   --flag-preset vc5-small
   --flag-preset vc5-risky
   --flag-preset vc5-debug-context
 
-Presets are explicit on purpose. They are classification tools, not promotion
-policy. A match under non-default appended flags still needs normal review and
-retesting/justification before a function is promoted.
+Flag presets are classification tools, not promotion policy. Non-default-flag
+matches need normal review and justification.
 
-Placeholders in flag cases
---------------------------
-
-Flag case text can use these Python-style placeholders:
-
-  {work_dir}    per-variant working directory
-  {variant_id}  e.g. V000123
-  {slug}        function slug
-  {run_dir}     current lab run directory
-
-Example:
-
-  @flagchoice debug
-  @case none
-  @case zi
-  /Zi /Fd{work_dir}\\vc.pdb
-  @endflagchoice
-
-Run examples
+Run controls
 ------------
 
-  python tools/variant_lab.py --init --va 0051ACA0
-  python tools/variant_lab.py --va 0051ACA0 --template build/temp/0051ACA0_get_help_info_lab.tpl.cpp
-  python tools/variant_lab.py --va 0051ACA0 --template - < build/temp/template.tpl.cpp
-  python tools/variant_lab.py --list-templates
-  python tools/variant_lab.py --template-help vc5_guard
-  python tools/variant_lab.py --template build/temp/template.tpl.cpp --expand-only
-  python tools/variant_lab.py --template build/temp/template.tpl.cpp --preview-variants 3
-  python tools/variant_lab.py --template build/temp/template.tpl.cpp --show-variant V000042
+  --max-variants N     refuse larger expanded labs (default 250000)
+  --max-variants 0     disable the cap for an intentional huge run
+  --no-dedupe-expanded compile identical expanded source/flag variants separately
 
-For nontrivial labs, prefer writing a normal throwaway template file under
-build/temp/ and editing that file. Avoid huge inline shell/Python strings; they
-are error-prone and hard to inspect.
+Identical expanded source+flags are deduped before compile by default. Duplicate
+work dirs contain dedup_alias.txt pointing to the representative object.
 
-Output layout and tracing
--------------------------
+Output and reports
+------------------
 
-Each run writes build/variant_lab/<slug>/<run-id>/ with:
+Each compile run writes build/variant_lab/<slug>/<run-id>/ with:
 
-  summary.txt                  human-readable report; start here
-  manifest.json                machine-readable run metadata
-  groups.tsv                   one row per unique emitted-code group
-  variants.tsv                 one row per expanded variant with source/object/flags paths
-  axis_sensitivity.tsv         per-axis exact/mismatch/error counts by label
-  compile_errors.tsv           grouped compile/extract errors
-  template_input.cpp           exact template used for the run
-  work/V000000/source.cpp      exact generated source for variant V000000; contains a header comment pointing to summary/groups/variant companions
-  work/V000000/<slug>.obj      object produced for that variant
-  work/V000000/variant_flags.rsp
-                               extra flags for that variant, if any
-  groups/G0000/representative.cpp
-                               generated source for representative variant of group G0000; contains a header comment pointing back to work/Vxxxxxx and TSV indexes
-  groups/G0000/rebuilt.bin     representative rebuilt bytes
-  groups/G0000/rebuilt.asm     representative rebuilt disassembly
-  groups/G0000/diff.txt        original-vs-rebuilt asm diff, group metadata, and source/index paths
-  matches/...                  exact-match generated sources, if any
+  summary.txt            start here: counts, axes, sensitivity, top groups
+  manifest.json          machine-readable run metadata
+  variants.tsv           every expanded variant and artifact path
+  groups.tsv             one row per unique emitted-code group
+  axis_sensitivity.tsv   per-axis exact/mismatch/error counts by label
+  compile_errors.tsv     grouped compile/extract failures
+  template_input.cpp     original template
+  effective_template_input.cpp / template_expansions.json when presets are used
+  work/V000000/source.cpp, <slug>.obj, optional variant_flags.rsp
+  groups/G0000/representative.cpp, rebuilt.bin, rebuilt.asm, diff.txt
+  matches/...            copied exact-match generated sources, if any
 
-To trace a group back to source: open summary.txt, pick a group id, inspect
- groups/Gxxxx/diff.txt and groups/Gxxxx/representative.cpp. For the exact
- variant row, use groups.tsv to find its representative Vxxxxxx, then inspect
- work/Vxxxxxx/source.cpp or the matching row in variants.tsv. Identical expanded
- source/flag variants are deduped before compile by default; duplicate work dirs
- contain dedup_alias.txt pointing at the representative object.
+summary.txt fields to know:
 
-By default the tool uses max(1, cpu_count - 1) parallel compiler workers.
-The default variant cap is high (250,000) because broad structured sweeps are a
-normal late-stage convergence tool here. Use --max-variants N to lower it, or
---max-variants 0 to disable the cap for an intentional very large run.
+  Variants generated  all active label states after nested-choice pruning
+  Compile jobs        unique source/flag expansions actually compiled
+  Deduped variants    skipped duplicate compiles
+  Axes                includes "from @template ..." provenance when known
+  Exact-match axis sensitivity: label exact counts, e.g. if_cond(1/1)
+  Top groups          exact=1 means group has an exact; exact_count=N counts them
+
+Trace a lead by opening summary.txt, then groups/Gxxxx/diff.txt and
+representative.cpp; use variants.tsv for the exact Vxxxxxx row and artifacts.
+
+Policy reminders
+----------------
+
+Prefer build/temp/*.tpl.cpp templates over huge inline shell strings. Broad
+sweeps are for sticky late-stage convergence, not for replacing understanding.
+Reduce any winning context to the smallest proven surface. Use neutral names for
+codegen-only dummy declarations (dummy/codegen_dummy); do not invent semantics.
+Inline asm remains forbidden except the repo's padding-only pseudo-function rule.
 """
 
 

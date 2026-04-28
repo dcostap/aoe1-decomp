@@ -121,8 +121,7 @@ Practical rule:
 ### Variant lab tool
 
 - This is a GREAT tool for quickly iterating and trying THOUSANDS of different source code shapes. Feel free to test TENS of THOUSANDS of variations with this tool.
-- `tools\variant_lab.py` can blast through source/flag variants for one function and group emitted-code results; run `python tools\variant_lab.py --help` for syntax.
-- The fuller user/agent guide is `docs\variant_lab.md`; read it before designing a nontrivial lab.
+- `tools\variant_lab.py` can blast through source/flag variants for one function and group emitted-code results; run `python tools\variant_lab.py --help` for the complete lab syntax and workflow reference.
 - For nontrivial labs, write a throwaway full-source template under `build\temp\...tpl.cpp` instead of embedding giant inline shell/Python strings.
 - Use preview/inspection modes (`--list-templates`, `--template-help`, `--expand-only`, `--preview-variants`, `--show-variant`) before launching broad compiles.
 - Use it for sticky codegen-family problems; do not auto-promote matches without normal review.
