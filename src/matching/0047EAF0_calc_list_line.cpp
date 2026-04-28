@@ -5,9 +5,16 @@
 // attempt 4: 72.2%, vfunc slot at +0xDC not +0x13C
 // attempt 5: 96 bytes, too small with 52 vfuncs
 // attempt 6: 70.4%, vfunc slot correct, register basin diff
-// BEST: 70.4%. BLOCKER: VC5 uses edx for loop counter (not esi),
-//   reloads list_size each iteration (not saved in bp). Register
-//   allocation basin. Vfunc call, offsets, all correct.
+// attempt 7 (SparkleSquirrel): struct+local+natural form, 60.2%, still saving sel_id
+// attempt 8: remove named 'entries' local, 50.9%, still saving sel_id
+// attempt 9: (i*16+i)*6 expression, same 50.9%
+// attempt 10: use real rdlg_list_info type with natural member access
+
+struct rdlg_list_info {
+    char text[100];
+    short id;
+};
+
 class RGE_Dialog_List {
 public:
     virtual short vf00();
@@ -90,10 +97,12 @@ public:
     virtual void vf134();
     virtual void vf138();
     virtual short vf13C();
-    char gap_04[0x4B0 - 4];
-    short list_size;    // +0x4B0
-    short list_line;    // +0x4B2
-    void* list_info;    // +0x4B4
+    char gap_04[0x4AC - 4];
+    int list_type;          // +0x4AC
+    short list_size;        // +0x4B0
+    short list_line;        // +0x4B2
+    rdlg_list_info* list_info;  // +0x4B4
+    char** list_text;       // +0x4B8
 
     void calc_list_line();
 };
@@ -103,8 +112,7 @@ void RGE_Dialog_List::calc_list_line() {
     short sel_id = vf13C();
     if (sel_id != -1) {
         for (short i = 0; i < list_size; i++) {
-            unsigned short* p = (unsigned short*)((char*)list_info + (i * 16 + i) * 3 + 0x64);
-            if (*p == sel_id) {
+            if (list_info[i].id == sel_id) {
                 list_line = i;
                 break;
             }

@@ -124,6 +124,8 @@ Practical rule:
 - `tools\variant_lab.py` can blast through source/flag variants for one function and group emitted-code results; run `python tools\variant_lab.py --help` for syntax.
 - For nontrivial labs, write a throwaway full-source template under `build\temp\...tpl.cpp` instead of embedding giant inline shell/Python strings.
 - Use it for sticky codegen-family problems; do not auto-promote matches without normal review.
+- After normal manual passes have made a function behaviorally close, it is appropriate to run broad, preconfigured variant sweeps for weird VC5 basin problems: dummy class-surface declarations, helper/no-helper shapes, declaration order, `foo()` vs `foo(void)`, constructor/destructor/operator declarations, include axes, local/temporary forms, and other unintuitive but source-level perturbations.
+- Treat these broad sweeps as a **late-stage convergence tool**, not a substitute for understanding the function. Reduce any match to the smallest proven surface and document exactly which odd context is required.
 
 ### Exact-match iteration heuristics
 
@@ -398,6 +400,21 @@ matching guidance:
 15. In small `new`-using helpers, verify **`sizeof(T)` early**. A wrong local
    stub size often shows up immediately as the wrong `operator new` size and can
    block an otherwise-correct match family.
+16. VC5 can make **unused class-surface declarations codegen-active** for later
+   inline/member bodies. If a sticky member function is behaviorally right but
+   stuck on a register-copy, branch-size, or register-allocation basin, test
+   dummy member declarations and declaration-order context on purpose: e.g.
+   `void dummy(void);`, `void dummy(int);`, `~Class();`, `operator+=`, `foo()`
+   vs `foo(void)`, and placements before/after inline helpers. A real
+   `Path::operator=` win required this class-surface kind of perturbation after
+   body-only and header-context variants failed.
+17. When such an unused declaration is required only for codegen context, **do
+   not invent semantic names**. Use neutral dummy names such as `dummy`,
+   `dummy2`, or `codegen_dummy`, and add a comment that the declaration is a
+   proven VC5 codegen-context dependency with no evidence-backed original name.
+   Only use a real/plausible semantic name when PDB/inventory/source evidence
+   supports that name or the function is actually called/implemented with that
+   meaning.
 
 #### VC5-specific data-surface / helper-shape hints
 
