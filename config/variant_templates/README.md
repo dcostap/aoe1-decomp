@@ -4,6 +4,8 @@
 normal `@choice` parsing.  These files are intentionally plain text so matching
 work can grow reusable VC5 source-shape families over time.
 
+Full lab guide: `docs/variant_lab.md`.
+
 Useful inspection commands:
 
 ```bat

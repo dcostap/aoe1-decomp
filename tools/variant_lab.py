@@ -99,6 +99,8 @@ variant_lab compiles a full C/C++ source template many times.  It never edits
 src/scratch or src/matching.  Generated sources/objects/reports are written under
 build/variant_lab/<slug>/<run-id>/.
 
+Full guide: docs/variant_lab.md
+
 Source choices
 --------------
 
