@@ -1,5 +1,11 @@
-// VA: 00432FF0 RGE_Communications_Synchronize ctor (125B)
-// com_sync.cpp lines 23-27
+// 00432FF0 RGE_Communications_Synchronize ctor
+// com_sync.cpp:23-27, 125 bytes
+// FLAGS: default
+//
+// Fixed: loop base starts at +0x38 (not +0x30) with store order matching
+// original: base[-1], [0], [1], [2], [3], [4], [5], [6], then base[-2]
+// (PlayerNo) last, advancing by 9 dwords (0x24 bytes) per iteration.
+// The previous code started at +0x30 and stored 9 consecutive dwords.
 
 class TCommunications_Handler {
     // COM handler
@@ -26,9 +32,9 @@ public:
     int doChecksums;                     // +24 = 1
     int lastWorldRandom;                 // +28 = 0
     int gameWorldChecksum;              // +2C = 0
-    int field_30;                        // +30 = 0
-    // Checksum array[55] starts at +0x34
-    // each entry 0x24 bytes: PlayerNo + 8 dwords
+    int field_30;                        // +30 = 0 (covered by first entry's [eax-8][eax-4])
+    // Checksum array[55] starts at +0x38, each entry 9 ints (0x24 bytes)
+    // Entry layout: PlayerNo[-2], WTurn[-1], dword[0..6]
     
     RGE_Communications_Synchronize(TCommunications_Handler* handler);
     
@@ -53,19 +59,19 @@ RGE_Communications_Synchronize::RGE_Communications_Synchronize(TCommunications_H
     sendChatMsgs = 0;
     dialogOnSyncFail = 0;
     
-    // Zero out the checksum array (0x37 entries x 0x24 bytes each)
-    int* base = (int*)((char*)this + 0x30);
+    // Zero out the checksum array (0x37 entries x 9 dwords = 0x24 bytes each)
+    int* base = (int*)((char*)this + 0x38);
     int i;
     for (i = 0; i < 0x37; i++) {
-        base[0] = 0;  // field at -8 from base (PlayerNo-like)
-        base[1] = 0;  // field at -4 (WTurn-like)
-        base[2] = 0;  // WTurn at base+0
-        base[3] = 0;  // field at +4
-        base[4] = 0;  // field at +8
-        base[5] = 0;  // field at +0C
-        base[6] = 0;  // field at +10
-        base[7] = 0;  // field at +14
-        base[8] = 0;  // field at +18
-        base += 9;    // 9 dwords per entry
+        base[-1] = 0;  // WTurn-like
+        base[0] = 0;
+        base[1] = 0;
+        base[2] = 0;
+        base[3] = 0;
+        base[4] = 0;
+        base[5] = 0;
+        base[6] = 0;
+        base[-2] = 0;  // PlayerNo
+        base += 9;
     }
 }
