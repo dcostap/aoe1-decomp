@@ -34,8 +34,8 @@ public:
 };
 
 int TRIBE_Action_Build::move_to(void* obj, float x, float y, float z) {
-    this->move_y = y;
     this->move_x = x;
+    this->move_y = y;
     this->move_z = z;
     this->reset_target(0);
     this->set_state(0x0B);
