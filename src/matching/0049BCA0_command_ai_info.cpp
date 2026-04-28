@@ -1,10 +1,12 @@
-// 0049BCA0 command_ai_info
-// 126 bytes, __thiscall, TRIBE_Screen_Game method
-// probe 4: best at 126/126, 7.1% diff
-// remaining diff: VC5 reuses rge_base_game pointer across 3 stores, original reloads between each pair
-// also: VC5 pop esi placement differs, original reloads into ecx for final store
-// tried: direct extern globals (112 bytes, smaller), struct access (126/126, 7.1%)
-// left in scratch: deep VC5 register allocation/reload basin, core logic exact
+// 0049BCA0 TRIBE_Screen_Game::command_ai_info
+// PDB: scr_game.cpp:4857-4873, 126 bytes
+// FLAGS: default
+//
+// Fixed: each rge_base_game->field store must be in its own block-scoped
+// local to force VC5 to reload the global pointer 3 times using `a1`
+// (mov eax,[addr32], 5 bytes). Without block-scoped locals, VC5 reuses a
+// register for the last store, using `8b 0d` (mov ecx,[addr32], 6 bytes)
+// which changes function size and breaks the match.
 
 class TMessagePanel {
 public:
@@ -46,7 +48,16 @@ void TRIBE_Screen_Game::command_ai_info() {
         rge_base_game->do_show_ai = 0;
         return;
     }
-    rge_base_game->do_show_timings = 0;
-    rge_base_game->do_show_comm = 0;
-    rge_base_game->do_show_ai = 1;
+    {
+        RGE_Base_Game* g = rge_base_game;
+        g->do_show_timings = 0;
+    }
+    {
+        RGE_Base_Game* g = rge_base_game;
+        g->do_show_comm = 0;
+    }
+    {
+        RGE_Base_Game* g = rge_base_game;
+        g->do_show_ai = 1;
+    }
 }
