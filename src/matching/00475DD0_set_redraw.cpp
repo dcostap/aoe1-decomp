@@ -1,5 +1,8 @@
-// tried a minimal TPanel stub, then a shifted base-layout stub, then the full TPanel layout; the remaining mismatch stayed a clean +4 offset on every derived field
-// direct base-call shape still lands in a local thunk basin instead of the original 00464EE0 call, so this is parked as a near-match
+// 00475DD0 TEditPanel::set_redraw
+// MATCH: 0.0000% diff, 2 relocations masked
+// Fixed: removed explicit void* vtable_ptr from TPanel.
+// Having both explicit vtable_ptr AND virtual functions creates
+// a double-vtable shift (+4 on all derived field offsets).
 
 extern "C" __declspec(dllimport) int __stdcall InvalidateRect(void* hwnd, const void* rect, int erase);
 
@@ -12,7 +15,6 @@ struct tagRECT {
 
 class TPanel {
 public:
-    void* vtable_ptr;
     TPanel* previousPanelValue;
     TPanel* previousModalPanelValue;
     long pnl_x;
