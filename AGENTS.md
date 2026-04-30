@@ -141,7 +141,12 @@ evidence in the file's attempt log.
 - Prefer the simplest natural source family a real programmer likely wrote before
   decompiler-shaped plumbing. Ordinary control flow, member calls, constructors,
   destructors, `delete`, library calls, and aggregate assignments often land in a
-  better VC5 basin than raw stores, fake helpers, or forced gotos.
+  better VC5 basin than raw stores, fake helpers, forced gotos, or temporary-heavy
+  decompiler scaffolding. Treat natural source shape as the default hypothesis:
+  make lower-level or decompiler-shaped source earn its keep by moving the diff
+  deeper or matching a binary-observed effect. When chasing variants, periodically
+  stop and review the source as source: ask whether a human would likely have
+  written it that way, or whether you are preserving decompiler artifacts.
 - Use PDB line-change info to localize the mismatch region. If the first
   mismatch lives in one early source-line band, treat later line bands that
   already map cleanly as provisionally solved and stop churning them.
@@ -166,12 +171,24 @@ evidence in the file's attempt log.
   epilogues. Natural nested `if`/`switch` can still produce the same tails; forced
   top-declared-local/goto plumbing can perturb branch distances, liveness, and
   block layout.
+- If deleting or reordering a late block fixes an early prologue/frame/register
+  mismatch, treat that as a whole-function pressure-threshold clue, not proof that
+  the late block order or behavior is wrong. Look for artificial long-lived temps,
+  saved object pointers, assignment-in-condition results, or helper/declaration
+  surface mistakes that increase liveness across the function.
 
 ### Temporaries, liveness, and access shape
 
 - Named temps are not neutral. Extra predicate temps, split loop locals, copied
   offsets, or saved object-graph pointers can change saved-register choice and
   liveness.
+- Treat writes to incoming parameter stack slots as a source-shape clue, not just
+  decompiler noise. VC5 may reuse dead parameters as scratch locals, especially
+  narrow byte parameters used for row/column/modulo-style temporaries. If original
+  asm stores into `[esp+param]` and later reloads it, try assigning back to the
+  source parameter (`param_1 = rows; ... param_1 = remainder;`) before introducing
+  separate clean locals. Fresh locals can be behaviorally identical but still
+  perturb saved-register allocation and divisor/remainder registers.
 - Distinguish direct member access, early-declared/late-initialized locals, and
   immediate locals. VC5 often treats them differently.
 - When original asm repeatedly reloads `scenario`, `player`, `object`, or
@@ -181,6 +198,14 @@ evidence in the file's attempt log.
   local carrying that object through destroy/recreate or old/new use.
 - A temp can make VC5 prove away a reload/recheck the original kept. For redundant
   member tests or later virtual calls, try a fresh direct member access.
+- Decompiler-introduced predicate/result locals are especially suspect in `||` / `&&`
+  chains. If a call result is used only for truth testing (`!= 0`, pointer/nonzero)
+  and the original asm does not preserve that pointer/value for later use, try the
+  natural direct-predicate spelling (`if (call(a) || call(b) || ...)`) instead of
+  assignment-in-condition or reusable result-local forms. This can remove artificial
+  liveness that changes saved-register choice, hidden `this` homes, and frame size
+  in large VC5 functions. Do not apply blindly when the result value is consumed
+  later.
 - For loops/scans, mirror state topology: one running iterator plus one saved
   boundary/start local often beats decompiler-style many-local forms. When two
   sequential loops in one function reuse the same source iterator in the original,

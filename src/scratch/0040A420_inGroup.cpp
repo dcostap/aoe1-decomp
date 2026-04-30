@@ -1,27 +1,34 @@
-// Attempt 4: i declared but born late
+// 0040A420 BaseObject::inGroup
+// PDB: aibobj.cpp:212-217, 50 bytes
+// __thiscall, ret 4
+// FLAGS: default
+//
+// Probe 15: minimal matching approach
+
 class BaseObject {
 public:
-    void* vftable;
-    char gap_04[0x08];
-    int numberGroupsValue;
-    int* groupIDValue;
+    char pad_00[0x0C];
+    int numberGroupsValue;   // +0x0C
+    int* groupIDValue;       // +0x10
 
-    int inGroup(int group_id) const;
+    int inGroup(int groupId) const;
 };
 
-int BaseObject::inGroup(int group_id) const {
-    int i;
-    i = 0;
-    if (numberGroupsValue <= 0) {
+int BaseObject::inGroup(int groupId) const {
+    int count = this->numberGroupsValue;
+    if (count <= 0)
+        return 0;
+
+    int* ptr = this->groupIDValue;
+    int i = 0;
+
+loop:
+    if (*ptr != groupId) {
+        i = i + 1;
+        ptr = ptr + 1;
+        if (i < count)
+            goto loop;
         return 0;
     }
-    int* p = groupIDValue;
-    do {
-        if (*p == group_id) {
-            return 1;
-        }
-        i++;
-        p++;
-    } while (i < numberGroupsValue);
-    return 0;
+    return 1;
 }

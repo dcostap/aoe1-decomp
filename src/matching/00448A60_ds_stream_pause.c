@@ -1,5 +1,7 @@
-static int _stream_paused = 0;
+// 00448A60 ds_stream_pause
+// Dsutil.c:1620-1623, 11 bytes
 
-int __cdecl ds_stream_pause(void) {
-    return _stream_paused = 1;
+extern int _stream_paused;
+void ds_stream_pause(void) {
+    _stream_paused = 1;
 }
