@@ -117,11 +117,25 @@
 // - case4 through oHP store tail worsened positional/edit alone; rolled back.
 // - focused mini-lab over case4/case7/case10 shared-zero/oHP tails (18 combos): current remains best positional (3945). Best edit combo was c4ohp+c7zero+c10zero at positional 4049/edit 3025; closest default jump was c4ohp+c7zero+c10ohp (rebuilt ja 0x159a vs original 0x159e) but positional worsened to 4103, so not kept.
 // - rechecked closest-jump combo separately; it keeps case0 as a jump to a much earlier store tail (004ECA83), explaining better default distance but worse positional layout.
-// - moving store_return_one_from_oHP label before case20 compiled identically; busyOK-carried variant for the case0 accumulator also compiled identically. Current oHP-carried source kept.
+// - moving store_return_one_from_oHP label before case20 compiled identically; busyOK-carried variant for the case0 accumulator also compiled identically. Later case8 truthful tail made direct case0 store_return_one sufficient, so the oHP-carried case0 tail was removed.
 // - xref audit: original jumps to store_return_one tail at 004ECC06 from case0 and case8 only; original case4/7/10/11/group tails go to other local/shared tails or zero epilogue. This explains why adding oHP tail users from those cases worsened positional.
 // - case8 oHP zero-tail variant compiled identically; current case8 shared-zero + store_return_zero source kept.
 // - probing case8 firstTime==1 as store_return_one after xref audit shrank .text to 5648; rolled back despite original tail xref, indicating surrounding case8 source/body still under-modeled or case mapping needs care.
-// - case8 pointer-loop/parameter-slot topology from decomp/original (param_1 accumulator, param_3 index, piVar10 pointer) compiled identically with store_return_zero; kept as source-faithful. store_return_one still shrank .text to 5648, so not kept.
+// - case8 pointer-loop/parameter-slot topology from decomp/original (param_1 accumulator, param_3 index, piVar10 pointer) compiled identically with store_return_zero; kept as source-faithful.
+// - converted case4 to the same pointer-loop/unitp[40] topology as original/decomp; source-fidelity probe changed only a tiny local byte set while keeping .text 5648.
+// - converted case10 to pointer-loop/unitp[40] topology as original/decomp; testing source-fidelity over size.
+// - case4 oHP-tail after pointer conversion inflated .text to 5696 and inlined a local store tail rather than matching original 004ECA6B shared tail; rolled back.
+// - after case8 was changed to the truthful store_return_one tail, case0 no longer needs the oHP-carried tail: direct `goto store_return_one` emits the desired shared-tail jump sequence. Simplified case0 accordingly.
+// - added separate store_return_one_mid for case4/case10, matching original second shared store tail family at 004ECA6B distinct from case0/case8 tail 004ECC06. It worsens current byte metrics and grows .text to 5728, but is a source-fact correction under the new fidelity-first pass.
+// - routed case11 non-firstTime through shared zero tail and firstTime path through store_return_one_mid; edit equality improved substantially (2736->3693) while keeping .text 5728, so kept as the next fidelity/layout lead.
+// - routed grouped HP-only case5/6/12/19 through shared zero tail/store_return_one_mid; edit diff improved further (3135->3278? lower than prior baseline but edit equal 3687 slightly below case11-only 3693) and this aligns with tail-family direction, so kept for now under fidelity-first pass.
+// - original audit correction: the physical block after 004ECA87 (case11 strings) joins the late store tail at 004ECC06, while the following HP-only block stores then returns 0 at 004ECCE2..004ECCF4. Re-routed case11 to store_return_one and grouped case5/6/12/19 to store_return_zero despite metric risk; metrics improved markedly.
+// - checked case0/1 inUse store: original loads eax=1 for firstTime compare but stores ebx(0) to [esi+10] at 004EB833, so kept inUseValue=0; local one-temp compare spelling emitted identical code and was rolled back.
+// - probed case7 into store_return_one_mid/shared zero; worsened edit equality (3687->3410) and shrank .text to 5696, so rolled back. Case7 likely has a separate/local tail family.
+// - converted case20 roundup loop to pointer-loop/busyOK topology with explicit case20_next label; byte metrics nearly unchanged (edit equal 3669 vs 3687) but source shape now matches the other HP loops and decomp better, so kept.
+// - probed routing case20 to mid tail under 004EC8D9 hypothesis; metrics worsened badly (edit equal 3773->3335), and 004EC8D9 more likely belongs to case4/case10 family, so rolled case20 back to late store_return_one.
+// - tried converting shared attack case2/21 to pointer-loop/busyOK topology; edit equality worsened (3687->3611) and source needed awkward gotos across declarations, so rolled back for now.
+// - per xref audit, changed case8 firstTime==1 to store_return_one despite shrinking .text to 5648; size is less important than truthful tail ownership while filling missing logic. This now emits case0/case8 jumps to the shared store tail.
 // - changed gather attempt increment from !=0xff to <0xff; kept, matches original CMP/JAE spelling and improves edit equal by one byte.
 // - named `one` in case0 firstTime compare produced identical bytes; rolled back.
 // - restored gather nearDist/gatherDist to float topology; original asm stores strategicNumber via fild/fstp and keeps distance as float, not int truncation.
@@ -336,8 +350,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         inUseValue = 0;
         if (firstTime != 1)
             goto return_zero_tail;
-        oHP = taskID;
-        goto store_return_one_from_oHP;
+        goto store_return_one;
     }
 
 
@@ -488,7 +501,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         inUseValue = 1;
         if (firstTime != 1)
             goto return_zero_tail;
-        goto store_return_zero;
+        goto store_return_one;
     }
 
 
@@ -508,20 +521,22 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             return 0;
         }
         int stored20 = 0;
-        int i;
+        busyOK = 0;
         int* unitp;
         RGE_Static_Object* obj;
         UnitAIModule* ai;
-        for (i = 0, unitp = unitsValue; i < 40; ++i, ++unitp) {
-            if (*unitp == -1) continue;
+        int action20;
+        unitp = unitsValue;
+        do {
+            if (*unitp == -1) goto case20_next;
             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_60, *unitp);
             obj = md->object(*unitp);
-            if (obj == 0 || obj->unitAI() == 0) { TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_61, *unitp); removeUnitByIndex(i, md); continue; }
+            if (obj == 0 || obj->unitAI() == 0) { TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_61, *unitp); removeUnitByIndex(busyOK, md); goto case20_next; }
             ai = obj->unitAI();
-            int action20 = ai->currentAction();
+            action20 = ai->currentAction();
             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_62, action20);
             oHP = ((int)obj->hp); unitp[40] = oHP; stored20 += oHP;
-            if (busyOK == 0 && ai->currentAction() != -1) { TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_63, *unitp); continue; }
+            if (busyOK == 0 && ai->currentAction() != -1) { TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_63, *unitp); goto case20_next; }
             TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_64, *unitp);
             if (subTypeValue == 0 || subTypeValue == 4) {
                 TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_65, *unitp, targetValue);
@@ -535,7 +550,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                     tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ20->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 1);
                 }
             }
-        }
+case20_next:
+            ++unitp;
+            ++busyOK;
+        } while (busyOK < 40);
         inUseValue = 1;
         taskID = stored20;
         if (firstTime != 1)
@@ -659,79 +677,95 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
 
 
     case 4: {
-        int i;
+        int* unitp;
         RGE_Static_Object* obj;
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_25, targetValue, targetLocationValue.x, targetLocationValue.y);
         taskID = 0;
-        for (i = 0; i < 40; ++i) {
-            if (unitsValue[i] != -1) {
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_26, unitsValue[i]);
-                obj = md->object(unitsValue[i]);
+        busyOK = 0;
+        unitp = unitsValue;
+        do {
+            if (*unitp != -1) {
+                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_26, *unitp);
+                obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_27, unitsValue[i]);
-                    removeUnitByIndex(i, md);
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_27, *unitp);
+                    removeUnitByIndex(busyOK, md);
                 } else {
-                    taskID += (unitsOriginalHitPointsValue[i] = (int)obj->hp);
+                    oHP = ((int)obj->hp);
+                    unitp[40] = oHP;
+                    taskID += oHP;
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_28, unitsValue[i], busyAction);
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_28, *unitp, busyAction);
                     } else {
                         int defDist = (int)obj->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z);
                         int pri = tactical->calculatePriority((float)defDist);
                         if (targetTypeValue == 0x6d) {
                             int sn = tactical->strategicNumber(0x16);
-                            tactical->taskDefender(unitsValue[i], targetValue, (float)sn, pri);
+                            tactical->taskDefender(*unitp, targetValue, (float)sn, pri);
                         } else {
                             int sn = tactical->strategicNumber(0x39);
-                            tactical->taskDefender(unitsValue[i], targetValue, (float)sn, pri);
+                            tactical->taskDefender(*unitp, targetValue, (float)sn, pri);
                         }
                     }
                 }
             }
-        }
+            ++unitp;
+            ++busyOK;
+        } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
             return 0;
-        goto store_return_one;
+        goto store_return_one_mid;
     }
+
 
 
 
 
     case 10: {
-        int i;
+        int* unitp;
         RGE_Static_Object* obj;
         TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_43);
         taskID = 0;
-        for (i = 0; i < 40; ++i) {
-            if (unitsValue[i] != -1) {
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_44, unitsValue[i]);
-                obj = md->object(unitsValue[i]);
+        busyOK = 0;
+        unitp = unitsValue;
+        do {
+            if (*unitp != -1) {
+                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_44, *unitp);
+                obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_45, unitsValue[i]);
-                    removeUnitByIndex(i, md);
+                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_45, *unitp);
+                    removeUnitByIndex(busyOK, md);
                 } else {
-                    taskID += (unitsOriginalHitPointsValue[i] = (int)obj->hp);
+                    oHP = ((int)obj->hp);
+                    unitp[40] = oHP;
+                    taskID += oHP;
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_46, unitsValue[i], busyAction);
-                    } else if (unitsValue[i] == commanderValue) {
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_47, unitsValue[i]);
-                        tactical->taskWaterFisher(unitsValue[i], targetValue, targetLocationValue.x, targetLocationValue.y);
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_46, *unitp, busyAction);
+                    } else if (*unitp == commanderValue) {
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_47, *unitp);
+                        tactical->taskWaterFisher(*unitp, targetValue, targetLocationValue.x, targetLocationValue.y);
                     } else {
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_48, unitsValue[i]);
-                        tactical->taskDefender(unitsValue[i], commanderValue, obj->master_obj->los * 0.5f, 99);
+                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_48, *unitp);
+                        tactical->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
                     }
                 }
             }
-        }
+            ++unitp;
+            ++busyOK;
+        } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
             return 0;
-        goto store_return_one;
+        goto store_return_one_mid;
     }
 
-
+store_return_one_mid:
+    originalHitPointsValue = taskID;
+    originalUnitNumberValue = numberUnitsValue;
+    return 1;
 
     case 11: {
         int* unitp;
@@ -768,7 +802,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            return 0;
+            goto return_zero_tail;
         goto store_return_one;
     }
 
@@ -802,8 +836,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            return 0;
-        goto store_return_one;
+            goto return_zero_tail;
+        goto store_return_zero;
     }
 
 
@@ -825,14 +859,11 @@ return_one_tail:
 return_zero_tail:
     return 0;
 
+
+
+
 store_return_one:
     originalHitPointsValue = taskID;
-    originalUnitNumberValue = numberUnitsValue;
-    return 1;
-
-
-store_return_one_from_oHP:
-    originalHitPointsValue = oHP;
     originalUnitNumberValue = numberUnitsValue;
     return 1;
 

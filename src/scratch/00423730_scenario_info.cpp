@@ -39,7 +39,7 @@ long RGE_Campaign::scenario_info(char*** param_1) {
     if (0 < this->campaign_header.scenario_num) {
         iVar2 = 0;
         do {
-            getstring(*param_1 + iVar3, this->scenario_offsets->name + iVar2);
+            getstring(*param_1 + iVar3, iVar2 + this->scenario_offsets->name);
             iVar3 = iVar3 + 1;
             iVar2 = iVar2 + 0x208;
         } while (iVar3 < this->campaign_header.scenario_num);

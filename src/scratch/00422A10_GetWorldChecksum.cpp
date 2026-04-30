@@ -1,6 +1,6 @@
-// tried the decompiler-shaped loop with a nullable world pointer and reloads from this->world
-// tried a direct-this version and an early-return version; mismatch stayed in the prolog basin
-// remaining gap looks like saved-register / push-order codegen (esi/edi/ebx) rather than behavior
+// VA: 00422A10 GetWorldChecksum (64B)
+// basegame.cpp - RGE_Base_Game member function
+// sum declared before null check to match original prolog order
 
 class RGE_Player {
 public:
@@ -24,11 +24,11 @@ public:
 };
 
 long RGE_Base_Game::GetWorldChecksum(void) {
+    long sum = 0;
     if (this->world == 0) {
         return 0;
     }
 
-    long sum = 0;
     int i = 0;
     if (0 < this->world->player_num) {
         do {

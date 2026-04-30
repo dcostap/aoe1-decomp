@@ -1,3 +1,9 @@
+// VA: 00446340 TDrawArea::GetPalette (40 B)
+// PDB source: Drawarea.cpp
+// Copies palette entries from DrawSystem to the output buffer
+
+#include <string.h>
+
 struct tagPALETTEENTRY {
     unsigned char peRed;
     unsigned char peGreen;
@@ -5,20 +11,20 @@ struct tagPALETTEENTRY {
     unsigned char peFlags;
 };
 
-class TDrawArea {
+class TDrawSystem {
 public:
-    void* DrawSystem;
-
-    void GetPalette(tagPALETTEENTRY* palette);
+    char gap_00[0x78];
+    tagPALETTEENTRY Palette[256];  // +0x78
 };
 
-void TDrawArea::GetPalette(tagPALETTEENTRY* palette) {
-    int* out = (int*)palette;
-    int offset = 0x78 - (int)out;
-    int count = 0x100;
+class TDrawArea {
+public:
+    TDrawSystem* DrawSystem;   // +0x00
 
-    do {
-        *out = *(int*)((int)this->DrawSystem + offset + (int)out);
-        out++;
-    } while (--count);
+    void GetPalette(tagPALETTEENTRY* entries);
+};
+
+void TDrawArea::GetPalette(tagPALETTEENTRY* entries)
+{
+    memcpy(entries, this->DrawSystem->Palette, 256 * sizeof(tagPALETTEENTRY));
 }

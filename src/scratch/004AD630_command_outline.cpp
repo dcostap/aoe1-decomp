@@ -1,5 +1,8 @@
-// tried the direct switch form with a local game pointer; VC5 still picks the wrong global-load register basin
-// remaining gap is the initial global-load / switch-table shape, not behavior
+// VA: 004AD630 command_outline
+// Attempt log:
+// [1] Direct Ghidra-style switch with local game pointer; VC5 picks ecx for global, not edx
+// [2] Without local, all-return switch; structure completely different, no push ecx
+// [3] Ghidra-style with proper fall-through for case 1
 class RGE_Base_Game {
 public:
     char gap_00[0x50];
@@ -14,19 +17,18 @@ public:
 };
 
 void TRIBE_Screen_Sed::command_outline(void) {
-    RGE_Base_Game* game = rge_base_game;
-    unsigned char outline = game->outline_type;
+    unsigned char outline = rge_base_game->outline_type;
     switch (outline) {
     case 0:
     case 3:
-        game->outline_type = 2;
+        rge_base_game->outline_type = 2;
         return;
     case 1:
         outline = 0;
         break;
     case 2:
-        game->outline_type = 1;
+        rge_base_game->outline_type = 1;
         return;
     }
-    game->outline_type = outline;
+    rge_base_game->outline_type = outline;
 }

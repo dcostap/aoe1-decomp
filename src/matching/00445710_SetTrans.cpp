@@ -1,78 +1,82 @@
-// first pass: direct DrawSurface color-key setup from the packet/decompiler shape
-// after the first build, the main gap was just the local layout / field offsets, so use the real TDrawArea surface
-class TDrawSystem {
-public:
-    char pad_00[0x478];
-    unsigned char DrawType;
-};
-
-struct IDirectDrawSurface;
-struct IDirectDrawSurfaceVtbl {
-    void* pad_00[0x1D];
-    void (__stdcall *SetColorKey)(IDirectDrawSurface* this_, int, void*);
-};
+// VA: 00445710 TDrawArea::SetTrans (99 B)
+// PDB source: Drawarea.cpp
+// Sets source transparency color key
 
 struct IDirectDrawSurface {
-    IDirectDrawSurfaceVtbl* lpVtbl;
+    virtual void __stdcall QueryInterface();
+    virtual void __stdcall AddRef();
+    virtual void __stdcall Release();
+    virtual void __stdcall AddAttachedSurface();
+    virtual void __stdcall AddOverlayDirtyRect();
+    virtual void __stdcall Blt();
+    virtual void __stdcall ColorFill();
+    virtual void __stdcall CreateAttachedSurface();
+    virtual void __stdcall DeleteAttachedSurface();
+    virtual void __stdcall EnumAttachedSurfaces();
+    virtual void __stdcall EnumOverlayZOrders();
+    virtual void __stdcall Flip();
+    virtual void __stdcall GetAttachedSurface();
+    virtual void __stdcall GetBltStatus();
+    virtual void __stdcall GetCaps();
+    virtual void __stdcall GetClipper();
+    virtual void __stdcall GetColorKey();
+    virtual void __stdcall GetDC(void** dc);
+    virtual void __stdcall GetDeviceSurface();
+    virtual void __stdcall GetDDInterface();
+    virtual void __stdcall GetPalette();
+    virtual void __stdcall GetPixelFormat();
+    virtual void __stdcall GetSurfaceDesc(void* desc);
+    virtual void __stdcall Initialize();
+    virtual void __stdcall IsLost();
+    virtual int __stdcall Lock(void* rect, void* desc, int flags, void* hdc);
+    virtual void __stdcall ReleaseDC(void* dc);
+    virtual void __stdcall Method27();
+    virtual void __stdcall Method28();
+    virtual int __stdcall SetColorKey(unsigned long flags, void* colorKey);  // +0x74 (index 29)
+};
+
+class TDrawSystem {
+public:
+    char gap_00[0x478];
+    unsigned char DrawType;
 };
 
 class TDrawArea {
 public:
-    TDrawSystem* DrawSystem;      // +0x00
-    void* Wnd;                    // +0x04
-    unsigned char* Bits;          // +0x08
-    void* BitmapInfo;             // +0x0C
-    void* Bitmap;                 // +0x10
-    void* OldBitmap;              // +0x14
-    int Width;                    // +0x18
-    int Height;                   // +0x1C
-    int Pitch;                    // +0x20
-    int Orien;                    // +0x24
-    char ClipRect[0x10];          // +0x28
-    void* DrawDc;                 // +0x38
+    TDrawSystem* DrawSystem;         // +0x00
+    char gap_04[0x38];
     IDirectDrawSurface* DrawSurface; // +0x3C
-    char SurfaceDesc[0x6C];       // +0x40
-    void* Node;                   // +0xAC
-    char* Name;                   // +0xB0
-    unsigned char* LastBits;      // +0xB4
-    int LastPitch;                // +0xB8
-    void** DisplayOffsets;        // +0xBC
-    void** CurDisplayOffsets;     // +0xC0
-    void** FloatOffsets;          // +0xC4
-    void* shadow_color_table;     // +0xC8
-    void* SpanList;               // +0xCC
-    void* CurSpanList;            // +0xD0
-    int Float_X_Delta;            // +0xD4
-    int Float_Y_Delta;            // +0xD8
-    int DisplayOffsetsSz;         // +0xDC
-    int FloatOffsetsSz;           // +0xE0
-    int SystemMemOnly;            // +0xE4
-    int UsingVidMem;              // +0xE8
-    int UseTrans;                 // +0xEC
-    int IsPrimarySurface;         // +0xF0
-    int Restored;                 // +0xF4
-    int ExtendedLines;            // +0xF8
-    unsigned char TransColor;     // +0xFC
+    char gap_40[0xAC];
+    int UseTrans;                    // +0xEC
+    char gap_F0[0x0C];
+    unsigned char TransColor;        // +0xFC
 
-    void SetTrans(int param_1, unsigned char param_2);
+    void SetTrans(int useTrans, unsigned char transColor);
 };
 
-void TDrawArea::SetTrans(int param_1, unsigned char param_2) {
-    unsigned long ddck[2];
-    unsigned long color;
+void TDrawArea::SetTrans(int useTrans, unsigned char transColor)
+{
+    this->UseTrans = useTrans;
 
-    this->UseTrans = param_1;
-    if (param_1 != 0) {
-        this->TransColor = param_2;
-    }
-    else {
+    if (useTrans != 0)
+        this->TransColor = transColor;
+    else
         this->TransColor = 0xFF;
-    }
 
-    if (param_1 != 0 && this->DrawSurface != 0 && this->DrawSystem != 0 && this->DrawSystem->DrawType == 2) {
-        color = this->TransColor;
-        ddck[0] = color;
-        ddck[1] = color;
-        this->DrawSurface->lpVtbl->SetColorKey(this->DrawSurface, 8, ddck);
-    }
+    if (useTrans == 0)
+        return;
+
+    if (this->DrawSurface == 0)
+        return;
+
+    if (this->DrawSystem == 0)
+        return;
+
+    if (this->DrawSystem->DrawType != 2)
+        return;
+
+    int ddck[2];
+    ddck[0] = this->TransColor;
+    ddck[1] = this->TransColor;
+    this->DrawSurface->SetColorKey(8, ddck);
 }

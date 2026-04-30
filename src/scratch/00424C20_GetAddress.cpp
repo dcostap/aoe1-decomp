@@ -1,18 +1,15 @@
-class RGE_Communications_Addresses {
-public:
-    char gap_00[0x218];
-    unsigned int AddressesAvailable;
-    char gap_21C[0x04];
-    char* pIPAD;
+// VA: 00424C20 GetAddress (40B, com_addr.cpp)
+// RGE_Address::GetAddress - simple getter
+// TODO: implement with correct class layout
 
-    char* GetAddress(unsigned int index);
+class RGE_Address {
+public:
+    char gap_00[4];
+    char ip[16];    // placeholder
+    
+    char* GetAddress();
 };
 
-char* RGE_Communications_Addresses::GetAddress(unsigned int index) {
-    char* address = &this->pIPAD[index * 0xA0];
-
-    if ((address == 0) || (this->AddressesAvailable < index)) {
-        return (char*)0x00580460;
-    }
-    return address;
+char* RGE_Address::GetAddress() {
+    return this->ip;
 }

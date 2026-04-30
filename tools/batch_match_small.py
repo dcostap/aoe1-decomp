@@ -27,7 +27,7 @@ ACCEPTED_DRIFT_DIR = REPO_ROOT / "src" / "accepted_drift"
 
 
 def load_all_functions():
-    with open(REPO_ROOT / 'project_full_status.csv', 'r') as f:
+    with open(REPO_ROOT / 'project_full_status.csv', 'r', encoding='utf-8', errors='replace') as f:
         return list(csv.DictReader(f))
 
 

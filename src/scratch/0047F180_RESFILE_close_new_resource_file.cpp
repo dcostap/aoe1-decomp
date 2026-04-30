@@ -5,42 +5,48 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern void* g_resFileList;
+struct ResFileNode {
+    int flags;        // +0x00: 0 = raw data, non-zero = memory-mapped pointer
+    int fd;           // +0x04: file descriptor (-1 if none)
+    void* data;       // +0x08: raw data pointer (if flags==0)
+    ResFileNode* next; // +0x0C: linked list next
+    char name[4];     // +0x10: name (variable length)
+};
+
+extern ResFileNode* g_resFileList;
 extern int __cdecl close(int fd);
-extern void* __cdecl UnmapViewOfFile(void* ptr);
+extern "C" __declspec(dllimport) int __stdcall UnmapViewOfFile(void* address);
 
 void __cdecl RESFILE_close_new_resource_file(const char* name) {
-    void** cur = *(void***)g_resFileList;
-    void* prev = 0;
+    ResFileNode* cur = g_resFileList;
+    ResFileNode* prev = 0;
     
     while (cur) {
-        const char* curName = (const char*)cur + 0x10;
-        if (strcmp(name, curName) == 0) {
-            break;
+        if (strcmp(name, cur->name) == 0) {
+            goto found;
         }
         prev = cur;
-        cur = (void**)cur[3];  // next pointer at +0x0C
+        cur = cur->next;
     }
+    return;
     
-    if (!cur) return;
-    
-    if (*(int*)cur == 0) {
-        // Not memory-mapped, free the raw data at +8
-        free(cur[2]);
+found:
+    if (cur->flags == 0) {
+        free(cur->data);
     }
     
     if (prev) {
-        *(void**)((char*)prev + 0x0C) = cur[3];
+        prev->next = cur->next;
     } else {
-        *(void***)g_resFileList = (void**)cur[3];
+        g_resFileList = cur->next;
     }
     
-    if (*(int*)((char*)cur + 4) != -1) {
-        close(*(int*)((char*)cur + 4));
+    if (cur->fd != -1) {
+        close(cur->fd);
     }
     
-    if (*(int*)cur != 0) {
-        UnmapViewOfFile(*(void**)cur);
+    if (cur->flags != 0) {
+        UnmapViewOfFile((void*)cur->flags);
     }
     
     free(cur);

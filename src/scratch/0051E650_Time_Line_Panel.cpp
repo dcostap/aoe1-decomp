@@ -3,7 +3,7 @@
 
 class TPanel {
 public:
-    void TPanel(void);
+    TPanel();
     unsigned char gap_00[0x80];
     int field_80;
 };
@@ -48,11 +48,9 @@ public:
     int field_500;
     unsigned char gap_504[0x508 - 0x504];
     int field_508;
-    unsigned char gap_50C[0x50C - 0x50C];
     unsigned char field_50C;
     unsigned char gap_50D[0x518 - 0x50D];
     int field_518;
-    unsigned char gap_51C[0x51C - 0x51C];
     unsigned char field_51C;
     unsigned char gap_51D[0x520 - 0x51D];
     int field_520;
@@ -63,45 +61,44 @@ public:
 };
 
 TTimeLinePanel::TTimeLinePanel() : TPanel() {
-    int zero = 0;
     field_490 = 2;
-    field_478 = zero;
-    field_47C = zero;
-    field_480 = zero;
-    field_484 = zero;
-    field_488 = zero;
-    field_48C = zero;
+    field_478 = 0;
+    field_47C = 0;
+    field_480 = 0;
+    field_484 = 0;
+    field_488 = 0;
+    field_48C = 0;
     field_494 = 0xFFFFFF;
-    field_498 = zero;
+    field_498 = 0;
     field_49C = 0xFFFF;
-    field_4A0 = zero;
-    field_4A4 = zero;
-    field_4A8 = zero;
-    field_4AC = zero;
+    field_4A0 = 0;
+    field_4A4 = 0;
+    field_4A8 = 0;
+    field_4AC = 0;
     field_4B0 = 0;
     field_4B2 = 0;
-    field_4B4 = zero;
+    field_4B4 = 0;
     field_4B8 = 0xFF;
-    field_4BC = zero;
+    field_4BC = 0;
     field_4C0 = 0;
-    field_4C8 = zero;
+    field_4C8 = 0;
     field_4CC = 0;
     field_4CD = 0;
     field_4CE = 0;
     field_4CF = 0;
     field_4D0 = 0;
     field_4D1 = 0;
-    field_4D4 = zero;
+    field_4D4 = 0;
     field_4D8 = 0;
     field_4DA = 0;
-    field_508 = zero;
-    field_518 = zero;
+    field_508 = 0;
+    field_518 = 0;
     *(int*)this = 0x576F88;
-    field_80 = zero;
+    field_80 = 0;
     field_51C = 1;
     field_50C = 0;
     field_500 = 0x0C;
-    field_520 = zero;
-    field_524 = zero;
-    field_528 = zero;
+    field_520 = 0;
+    field_524 = 0;
+    field_528 = 0;
 }

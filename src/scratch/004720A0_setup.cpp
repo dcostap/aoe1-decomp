@@ -1,17 +1,7 @@
-// STATUS: active lead
-// overall behavior matches; the remaining drift is the post-setup ordering of notifyTypeValue, drawTypeValue, and the set_sound call
-// direct notify-then-draw-then-set_sound fell into a worse draw-first basin; next lead is the donor-like visible parameter surface (enum draw/notify plus pointer-typed sound) on top of the best current body order
+// TButtonPanel::setup - call TPanel::setup, store notify/draw, set_sound, set_id
 
 class TDrawArea;
 class TDigital;
-
-enum DrawType {
-    DrawType_0 = 0
-};
-
-enum NotifyType {
-    NotifyType_0 = 0
-};
 
 class TPanel {
 public:
@@ -22,11 +12,12 @@ public:
 class TButtonPanel : public TPanel {
 public:
     char gap_04[0x13C];
-    long drawTypeValue;
-    long notifyTypeValue;
+    long drawTypeValue;               // 0x140
+    long notifyTypeValue;             // 0x144
 
     void set_sound(TDigital* sound);
     void set_id(short state, long id1, long id2);
+
     long setup(
         TDrawArea* draw_area,
         TPanel* parent,
@@ -34,9 +25,9 @@ public:
         long y,
         long width,
         long height,
-        DrawType draw_type,
+        long draw_type,
         TDigital* sound,
-        NotifyType notify_type,
+        long notify_type,
         long button_id
     );
 };
@@ -48,15 +39,15 @@ long TButtonPanel::setup(
     long y,
     long width,
     long height,
-    DrawType draw_type,
+    long draw_type,
     TDigital* sound,
-    NotifyType notify_type,
+    long notify_type,
     long button_id
 ) {
-    ((TPanel*)this)->setup(draw_area, parent, x, y, width, height, 0);
-    notifyTypeValue = notify_type;
-    set_sound(sound);
-    drawTypeValue = draw_type;
-    set_id(0, button_id, 0);
+    TPanel::setup(draw_area, parent, x, y, width, height, 0);
+    this->notifyTypeValue = notify_type;
+    this->set_sound(sound);
+    this->drawTypeValue = draw_type;
+    this->set_id(0, button_id, 0);
     return 1;
 }

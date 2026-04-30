@@ -1,23 +1,37 @@
+// VA: 00446370 TDrawArea::SetPalette (61 B)
+// PDB source: Drawarea.cpp
+// Sets entry 0 to black, entry 255 to white, then calls ModifyPalette
+
+struct tagPALETTEENTRY {
+    unsigned char peRed;
+    unsigned char peGreen;
+    unsigned char peBlue;
+    unsigned char peFlags;
+};
+
 class TDrawSystem {
 public:
-    void ModifyPalette(int, int, void*);
+    void ModifyPalette(int start, int count, tagPALETTEENTRY* entries);
 };
 
 class TDrawArea {
 public:
-    TDrawSystem* DrawSystem;
+    TDrawSystem* DrawSystem;   // +0x00
 
-    void SetPalette(void* palette);
+    void SetPalette(tagPALETTEENTRY* entries);
 };
 
-void TDrawArea::SetPalette(void* palette) {
-    ((unsigned char*)palette)[0] = 0;
-    ((unsigned char*)palette)[1] = 0;
-    ((unsigned char*)palette)[2] = 0;
-    ((unsigned char*)palette)[3] = 0;
-    ((unsigned char*)palette)[0x3FC] = 0xFF;
-    ((unsigned char*)palette)[0x3FD] = 0xFF;
-    ((unsigned char*)palette)[0x3FE] = 0xFF;
-    ((unsigned char*)palette)[0x3FF] = 0;
-    this->DrawSystem->ModifyPalette(0, 0x100, palette);
+void TDrawArea::SetPalette(tagPALETTEENTRY* entries)
+{
+    entries[0].peRed = 0;
+    entries[0].peGreen = 0;
+    entries[0].peBlue = 0;
+    entries[0].peFlags = 0;
+
+    entries[255].peRed = 0xFF;
+    entries[255].peGreen = 0xFF;
+    entries[255].peBlue = 0xFF;
+    entries[255].peFlags = 0;
+
+    this->DrawSystem->ModifyPalette(0, 256, entries);
 }

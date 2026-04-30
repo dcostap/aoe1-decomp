@@ -12,5 +12,6 @@ public:
 void RGE_Player_aan::add_attribute_num(short attrib, float value, unsigned char unused) {
     if (attrib < 0) return;
     if (attrib >= this->num_attributes) return;
-    this->attributes[(int)attrib] = value + this->attributes[(int)attrib];
+    float* attr = this->attributes;
+    attr[(int)attrib] += value;
 }

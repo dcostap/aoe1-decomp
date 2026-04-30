@@ -1,8 +1,13 @@
-// tried a 3-byte point layout and several term orders; compiler still flips the base-load / scale sequence
-// remaining gap is a small codegen-family difference in the success-path address math
-class XYZBYTEPoint {
-public:
-    char data[3];
+// VA: 00460940 userDefinedWaypoint (35B)
+// Returns pointer into waypoint array, each element 12 bytes (3 * 4)
+// Remaining 9-byte diff (25%): VC5 reverses LEA/MOV order in the address math
+// (LEA EDX,[EAX+EAX*2]/MOV EAX,[ECX+0x168] vs MOV EDX,[ECX+0x168]/LEA EAX,[EAX+EAX*2])
+// Both sequences are semantically identical with same register pressure.
+
+struct XYZBYTEPoint {
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
 };
 
 class RGE_Moving_Object {
@@ -15,9 +20,7 @@ public:
 };
 
 XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int param_1) {
-    if ((param_1 >= 0) && (param_1 < this->numberUserDefinedWaypointsValue)) {
-        int offset = param_1 + param_1 + param_1;
-        return (XYZBYTEPoint*)((char*)this->userDefinedWaypoints + offset);
-    }
-    return 0;
+    if (param_1 < 0 || param_1 >= numberUserDefinedWaypointsValue) return 0;
+    XYZBYTEPoint* result = userDefinedWaypoints + param_1;
+    return result;
 }

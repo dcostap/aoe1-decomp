@@ -1,17 +1,13 @@
+// attempt: tiny static-init helper for losMap at 0x86BC10
+// target shape: call InfluenceMap::InfluenceMap(0x32, 0x32, 0) on the global and return
+
 class InfluenceMap {
 public:
-    void* vtable_ptr;
-    int xSizeValue;
-    int ySizeValue;
-    int xReferencePointValue;
-    int yReferencePointValue;
-    unsigned char* valueValue;
-    unsigned char** rowValue;
-    int coverageCountValue;
-    int connectionCountValue;
-    unsigned char unchangeableLimitValue;
-
-    InfluenceMap(int width, int height, unsigned char fill);
+    InfluenceMap(int xSize, int ySize, unsigned char unchangeableLimit);
 };
 
-InfluenceMap losMap(0x32, 0x32, 0);
+InfluenceMap* const losMap = (InfluenceMap*)0x86BC10;
+
+void $E14(void) {
+    losMap->InfluenceMap::InfluenceMap(0x32, 0x32, 0);
+}

@@ -1,23 +1,24 @@
-extern "C" void* __stdcall GetFocus(void);
-extern "C" void* __stdcall SetFocus(void* wnd);
+// TEditPanel::handle_reactivate - set focus to a HWND if conditions met
 
-class TEditPanel {
-public:
+extern "C" void* __stdcall GetFocus();
+extern "C" void* __stdcall SetFocus(void* hwnd);
+
+struct TEditPanel {
     char gap_00[0x78];
-    int field_78;
-    char gap_7C[0x74];
-    void* edit_wnd;
-
-    virtual void handle_reactivate(void);
+    int field_78;        // 0x78
+    char gap_7C[0x78];
+    void* field_F4;      // 0xF4
 };
 
-void TEditPanel::handle_reactivate(void) {
-    void* edit_wnd;
-
-    edit_wnd = this->edit_wnd;
-    if (edit_wnd != 0 && this->field_78 != 0) {
-        if (GetFocus() != edit_wnd) {
-            SetFocus(edit_wnd);
-        }
-    }
+void __thiscall handle_reactivate(TEditPanel* this) {
+    void* hwnd = this->field_F4;
+    if (hwnd == 0)
+        goto done;
+    if (this->field_78 == 0)
+        goto done;
+    if (GetFocus() == hwnd)
+        goto done;
+    SetFocus(hwnd);
+done:
+    return;
 }

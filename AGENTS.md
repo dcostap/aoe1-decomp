@@ -49,6 +49,7 @@ Repository roles:
 - `src\accepted_drift\...`: reviewed localized behavior-equivalent non-exact
   functions; rare.
 - `src\matching\...`: exact validated finished functions.
+- `LESSONS.md`: shared pattern memory for generalized exact-match breakthroughs.
 
 ## Normal function workflow
 
@@ -61,9 +62,11 @@ Repository roles:
 6. Fix missing shared facts only when stable/reusable; otherwise keep local stubs.
 7. Iterate source shape, layout, declarations, and context until exact or clearly
    paused with notes.
-8. Promote to `src\matching\...` only after local exact validation. This is a
+8. When a non-obvious reusable insight makes a function click, append the compact
+   generalized lesson to `LESSONS.md`.
+9. Promote to `src\matching\...` only after local exact validation. This is a
    move, not a copy; a VA must have exactly one compiler-facing owner.
-9. Use `src\accepted_drift\...` only for rare reviewed localized equivalent
+10. Use `src\accepted_drift\...` only for rare reviewed localized equivalent
    drift, preserving the full attempt log and adding an `ACCEPTED_DRIFT` note.
 
 When assigned a whole PDB translation unit, do not call it exhausted just because
@@ -348,6 +351,28 @@ clue is local/global. `FLAGS:` is optional and only for an actual custom respons
 file. Code-explanatory comments inside function bodies may stay when they explain
 binary-observed behavior or intentional weird source shape.
 
+## Shared lessons
+
+`LESSONS.md` is the project's shared pattern memory. It exists to simulate the
+human learning loop: as agents match more functions, they should notice what made
+VC5 emit the expected assembly and preserve those reusable eureka moments for the
+next agent.
+
+When a function finally matches because of a non-obvious insight, especially a
+stubborn match after many iterations, append a compact generalized note to
+`LESSONS.md`. Record lessons about source shape, control flow, temporaries,
+liveness, declaration/type/layout facts, include or flag context, helper surfaces,
+or variant-lab findings that are likely to help future matching work.
+
+Do not use `LESSONS.md` as a per-function attempt log or victory diary. Keep the
+local blow-by-blow in the scratch/accepted-drift source file. In `LESSONS.md`,
+abstract the lesson away from the specific function: explain the reusable pattern,
+when to try it, why it changes VC5 codegen, and any caveats. Mention function
+names or VAs only as optional evidence.
+
+If a lesson later proves broadly important and stable, promote or summarize it in
+`AGENTS.md`; otherwise leave it in `LESSONS.md` as field knowledge.
+
 ## Inline asm policy
 
 Inline asm is forbidden for real functions unless the user explicitly requests it:
@@ -402,8 +427,9 @@ React pragmatically:
 - mismatch: trust binary-observed behavior over prettier source;
 - ordinary mismatch: assume source/type/layout/context is still wrong before
   reaching for flags or hacks;
-- when a non-obvious exact-match lesson is reusable, update these rules instead
-  of leaving it as session-only memory.
+- when a non-obvious exact-match lesson is reusable, append it to `LESSONS.md`
+  instead of leaving it as session-only memory; promote it into these rules only
+  after it proves broadly important and stable.
 
 Final mental model:
 
@@ -412,3 +438,4 @@ Final mental model:
 - `src\scratch\...` = active/paused unresolved work
 - `src\accepted_drift\...` = reviewed localized equivalent non-exact drift
 - `src\matching\...` = exact validated finished bank
+- `LESSONS.md` = shared generalized memory of matching breakthroughs
