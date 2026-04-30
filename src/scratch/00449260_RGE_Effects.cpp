@@ -2,7 +2,7 @@
 // effects.cpp lines 68-129
 // 478 bytes
 
-// attempt 5: match original register usage, reuse fscanf return directly
+// attempt 6: vtable after fopen, register short sVar7
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,9 +26,9 @@ struct RGE_Effects {
 };
 
 RGE_Effects::RGE_Effects(char* path) {
+    vtable_ptr = (void*)0x570430;
     int local_4, index, count;
 
-    vtable_ptr = (void*)0x570430;
     FILE* fp = fopen(path, "r");
     if (fp == 0) {
         effect_num = 0;
@@ -39,32 +39,24 @@ RGE_Effects::RGE_Effects(char* path) {
             effects = 0;
         } else {
             effects = (RGE_Effect*)calloc(effect_num, 0x2C);
-            count = 0;
-            if (local_4 > 0) {
-                while (1) {
-                    register short sVar7 = 0;
-                    fscanf(fp, "%d", &index);
-                    if (fscanf(fp, "%s %hd", effects[index].name, &effects[index].effect_list_num) == -1) break;
-                    effects[index].id = (short)index;
-                    if (effects[index].effect_list_num < 1) {
-                        effects[index].effect_list = 0;
-                    } else {
-                        effects[index].effect_list = (RGE_Effect_Command*)calloc((int)effects[index].effect_list_num, 0x0C);
-                        if (effects[index].effect_list_num > 0) {
-                            do {
-                                if (fscanf(fp, "%d %hd %hd %hd %f", &sVar7, &effects[index].effect_list[sVar7].change_num1, &effects[index].effect_list[sVar7].change_num2, &effects[index].effect_list[sVar7].change_num3, &effects[index].effect_list[sVar7].change_amount) == -1) break;
-                                effects[index].effect_list[sVar7].command = (unsigned char)sVar7;
-                                sVar7++;
-                            } while (sVar7 < effects[index].effect_list_num);
-                        }
-                    }
-                    convert_us(effects[index].name);
-                    count++;
-                    if (local_4 <= count) {
-                        fclose(fp);
-                        return;
+            for (count = 0; count < local_4; count++) {
+                register short sVar7 = 0;
+                fscanf(fp, "%d", &index);
+                if (fscanf(fp, "%s %hd", effects[index].name, &effects[index].effect_list_num) == -1) break;
+                effects[index].id = (short)index;
+                if (effects[index].effect_list_num < 1) {
+                    effects[index].effect_list = 0;
+                } else {
+                    effects[index].effect_list = (RGE_Effect_Command*)calloc(effects[index].effect_list_num, 0x0C);
+                    if (effects[index].effect_list_num > 0) {
+                        do {
+                            if (fscanf(fp, "%hd %hd %hd %hd %f", &sVar7, &effects[index].effect_list[sVar7].change_num1, &effects[index].effect_list[sVar7].change_num2, &effects[index].effect_list[sVar7].change_num3, &effects[index].effect_list[sVar7].change_amount) == -1) break;
+                            effects[index].effect_list[sVar7].command = (unsigned char)sVar7;
+                            sVar7++;
+                        } while (sVar7 < effects[index].effect_list_num);
                     }
                 }
+                convert_us(effects[index].name);
             }
             fclose(fp);
         }
