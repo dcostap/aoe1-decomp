@@ -1,20 +1,32 @@
-// tried a direct nested scan, then a more decompiler-shaped outer/inner loop split
-// kept the command/compare semantics, but VC5 still drifts in the prolog register assignment
-// current mismatch starts at the entry setup, before the phase/command loop body
-// leaving this in scratch as a known near-match after several source-shape probes
-class AIPlayPhase_Entry_0040F110 {
-public:
-    unsigned char groupValue;
+// VA: 0040FBB0 AIPlay::locationsOnMap (122 bytes)
+// Nested loop over phases and commands, checking type==1 bounds on map
+// sizeof(AIPlayPhase)=0x8C: 5 commands * 0x10 + 3 triggers * 0x14
+
+struct AIPlayPhaseCommand {
+    unsigned char field_0;
+    unsigned char field_1;
+    char gap_02[2];
+    int field_4;
+    int field_8;
+    int field_C;
+};
+
+struct AIPlayPhaseTrigger {
     unsigned char typeValue;
-    unsigned char pad_02[2];
+    char gap_01[3];
     int value1Value;
     int value2Value;
-    int value3Value;
+    unsigned char phaseValue;
+    unsigned char nextPhaseValue;
+    char gap_0E[2];
+    int randomnessValue;
 };
 
 class AIPlayPhase {
 public:
-    AIPlayPhase_Entry_0040F110 *command(int index) const;
+    AIPlayPhaseCommand commands[5];
+    AIPlayPhaseTrigger triggers[3];
+    AIPlayPhaseCommand *command(int index);
 };
 
 class AIPlay {
@@ -24,27 +36,32 @@ public:
     int locationsOnMap(int x1, int y1, int x2, int y2);
 };
 
+AIPlayPhaseCommand *AIPlayPhase::command(int index) {
+    if (index < 0 || index >= 5) return 0;
+    return &this->commands[index];
+}
+
 int AIPlay::locationsOnMap(int x1, int y1, int x2, int y2) {
-    int phaseCount = 0;
-    int commandCount;
-    AIPlayPhase* phase = &this->phases[0];
+    AIPlayPhase *phase = &this->phases[0];
+    int phaseIdx = 0;
 
     do {
-        commandCount = 0;
+        int cmdIdx = 0;
         do {
-            AIPlayPhase_Entry_0040F110* command = phase->command(commandCount);
-            if (command->typeValue == 1) {
-                int px = command->value1Value + x1;
-                int py = command->value2Value + y1;
+            AIPlayPhaseCommand *cmd = phase->command(cmdIdx);
+            if (cmd->field_1 == 1) {
+                int px = cmd->field_4 + x1;
+                int py = cmd->field_8 + y1;
                 if (px < 0 || py < 0 || x2 <= px || y2 <= py) {
                     return 0;
                 }
             }
-            commandCount++;
-        } while (commandCount < 5);
+            cmdIdx++;
+        } while (cmdIdx < 5);
+
         phase++;
-        phaseCount++;
-        if (phaseCount > 9) {
+        phaseIdx++;
+        if (phaseIdx > 9) {
             return 1;
         }
     } while (1);

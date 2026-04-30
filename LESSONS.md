@@ -9,6 +9,36 @@ Use this file for generalized eureka moments, especially lessons about:
 
 - source shapes that make VC5 emit the expected assembly;
 
+## Lesson: Derived-class field layout requires field-level base class gaps
+
+When a derived class adds fields at offsets past the base class size (e.g.,
+TPanel* fields at +0x478 from TScreenPanel), the base class must use
+field-level gap declarations (__gap[...], render_area, __gap2[...], etc.)
+for sizeof to be correct. Monolithic `char fields[0x474]` patterns do not
+make sizeof cascade through the hierarchy.
+
+Example chain (Scr_main.cpp):
+- TPanel: field-level gaps + RECT render_rect => sizeof = 0xF4
+- TEasy_Panel: __gap7[0x384] => sizeof = 0x478
+- TScreenPanel: ~virtual => sizeof = 0x478
+- Derived: TPanel* at +0x478, +0x47C, +0x480, etc.
+
+## Lesson: Virtual function vtable position matters for member calls
+
+When calling `close_button->set_active(1)` through TPanel*, the virtual
+function must be declared in TPanel at the correct vtable offset. From the
+PDB class dumps, set_active is at vt[5] (+0x14) and set_positioning at vt[6]
+(+0x18). Missing virtual functions before them shifts the offset. Add dtor,
+setup, set_rect (RECT), set_rect (4 longs), set_color before set_active to
+get the +0x14 offset.
+
+## Lesson: VC5 block layout for if statements is non-trivial
+
+`if (x == 0) { return; }` can produce either `je` (early return at end as jump
+target) or `jne` (early return inline with jump to success). The original
+Scr_main.cpp Error ctor has early return inline (failure = likely path).
+goto labels do NOT force block placement - /O2 optimizer still rearranges.
+
 ## 2026-04-30: Drawarea.cpp batch matching lessons
 
 ### Tiny helpers match inline
@@ -464,4 +494,252 @@ bounds check that falls through to an assignment or call. The compiler uses
 the default case as the routing target for the bounds-check failure path.
 Even if the default does the same thing as another case, writing it
 separately changes the branch target encoding.
+
+## 2026-04-30: effects.cpp destructor match and remaining patterns
+
+### Destructor with manual vtable matches with non-virtual class + for(short)
+The RGE_Effects destructor (00449440, 99 bytes) matched using:
+1. **Non-virtual class with explicit void* vtable_ptr member** (not compiler virtual)
+   The class uses a manually-managed vtable, typical of game code from this era.
+   Declaring `virtual ~RGE_Effects()` adds a SECOND compiler-generated vtable
+   pointer and changes sizeof from 12 to 16, breaking all field offsets.
+2. **`for (short i = 0; i < effect_num; i++)`** with a SHORT loop counter.
+   `short i` forces VC5 to use `movsx eax, bx` for sign extension in the
+   comparison, which is exactly what the original does. `long i` produces
+   different loop code without the sign-extension.
+3. **Explicit `vtable_ptr = (void*)0x570430;`** at the top of the destructor
+   body, matching the binary's explicit vtable restore.
+
+### RGE_Effects pattern: manual vtable class
+RGE_Effects (12 bytes):
+  +0x00 void* vtable_ptr
+  +0x04 RGE_Effect* effects
+  +0x08 long effect_num
+RGE_Effect (0x2C = 44 bytes):
+  +0x00 short id
+  +0x02 char name[31]
+  +0x21 unsigned char _pad_0
+  +0x22 short string_table_id
+  +0x24 short effect_list_num
+  +0x26 unsigned char _pad_1[2]
+  +0x28 RGE_Effect_Command* effect_list
+RGE_Effect_Command (0x0C = 12 bytes):
+  +0x00 unsigned char command
+  +0x01 unsigned char _pad_0
+  +0x02 short change_num1
+  +0x04 short change_num2
+  +0x06 short change_num3
+  +0x08 float change_amount
+
+### Register allocation for `this` in effects.cpp functions
+In the RGE_Effects constructor (004490E0), the original uses `ebx` for `this`
+but all natural C++ variants produce `esi=this`. This shifts ALL subsequent
+register assignments. The choice appears to be a VC5 register allocator
+internal heuristic that we couldn't influence from source level. The save
+function (004494B0) has the same issue.
+
+For the do_effect function (004495C0), the switch-case with __thiscall
+member function calls through RGE_Player produces the right prologue but
+slightly different jump offsets because the function body size differs.
+The vtable call at offset 0x78 in case 1's fallback path is particularly
+hard to represent without inline asm or the real class vtable layout.
+
+## 2026-04-30: m_s_obj.cpp matching lessons
+
+### Switch-on-uchar dispatch with ftol uses double arithmetic
+In `modify`/`modify_delta`/`modify_percent` (004534A0, 00453540, 004535F0),
+the function dispatches on a `uchar` opcode using a simple switch statement.
+FPU operations (ftol, fild for rounding) need explicit `(float)((double)a OP (double)b)`
+casting to produce the right `fld`/`fadd`/`fmul` register ordering instead of
+in-register operations like `fadd st0, st1`.
+
+### /GX flag for EH-framed factory functions
+`make_new_obj` (00452FE0, 201B) matched only with a per-function `/GX` response
+file. The function creates an RGE_Static_Object via `operator new` + constructor
+call, and the original binary has exception-handling registration overhead
+(EH prologue/epilogue, exception table references) that VC5 only emits with `/GX`.
+
+### Double-comparison constants in FPU loops
+In `calc_base_damage_ability` (00454980, 95B), comparing floats against `0.0`
+produces `fcom dword` (single-precision constant) while comparing against `0.0`
+with double promotion `(double)x > 0.0` produces `fcom qword` (double-precision
+constant). The original asm uses `fcom qword [addr]` with a double 0.0 constant.
+Always verify the constant precision (dword vs qword fcom/fcomp) and match the
+source type accordingly.
+
+### Attribute loop diff computation scheduling
+In `setup` (004521E0, 755B), the attribute loop uses `diff = (int)src - (int)this`
+computed via pointer subtraction. VC5 schedules the `sub eax,esi` (diff)
+instruction based on declaration order of the pointer locals. Declaring
+`unsigned char* fp`, `float* ap`, `short* tp` before `int diff` produces the
+original LEA-then-SUB ordering; reversed declaration produces SUB-then-LEA.
+
+### jbe vs je from unsigned byte if-test
+VC5 generates `test al, al; jbe` for `if (x)` where x is `unsigned char`,
+but generates `test al, al; je` for equivalent patterns depending on how
+the condition expression is typed. Both are behaviorally identical after
+test (which clears CF), so this is a cosmetic codegen difference that may
+not be controllable from source.
+
+### Short-to-int conversion in array indexing
+For a `short` loop counter used in array indexing (`damage_sprites[i]`), the
+original binary uses `movsx eax, cx` (3 bytes, sign-extend from 16-bit),
+but VC5 in our toolchain generates `mov eax, ecx; and eax, 0FFFFh` (7 bytes,
+mask to 16 bits). This 4-byte difference shifts subsequent branch targets
+and adds 4 bytes to the function size. Both produce the same logical
+index value for values 0-32767. The source `short i` vs `int i` or
+with/without `(int)` casts doesn't change this codegen choice.
+
+## 2026-04-30: aipbook.cpp batch matching lessons
+
+### convertToIntType pattern: explicit int local for strcmp
+All convertToIntType functions (AIPlayPhaseCommand, AIPlayPhaseTrigger, AIPlay,
+AIPlayBook::convertTargetNameToIntType, AIPlayBook::convertTargetCharacteristicNameToIntType)
+match with the same pattern: `int r; r = strcmp(name, s_String); if (r == 0) return N;`
+repeated for each string. Using an explicit `int r` local (not inline `if (strcmp(...)==0)`)
+forces VC5 to generate the expected inline comparison with test/jne/mov pattern.
+Key: `int r` must be declared once and reused for each strcmp call.
+
+### AIPlayPhase requires full layout for pointer arithmetic
+When iterating phases with `phase++` or advancing by sizeof(AIPlayPhase),
+the AIPlayPhase class must have its full data layout (commands[5] + triggers[3])
+to give sizeof(AIPlayPhase) = 0x8C. Incomplete types default to sizeof 1,
+causing `phase++` to generate `inc ebx` instead of `add edi, 8Ch`.
+
+### command() as a method generates COMDAT
+Declaring AIPlayPhase::command() in the same file as locationsOnMap causes VC5
+to emit the command function body as a COMDAT at the start of .text, shifting
+all function addresses. To avoid this, either define command() after
+locationsOnMap() in source order, or use direct array access.
+
+### Play list scanning with strcmp matches well
+playNumber (scan plays array, compare names) with for-loop + strcmp gives
+108/113 bytes matching. The only diff is an extra test/jle from the for
+loop's condition check duplicating the explicit `if (n <= 0)` guard.
+
+### Copy function pointer arithmetic
+Manual pointer-walking copy loops generate compiler-specific code. The original
+uses `diff = other - this` once and reuses it, but VC5 may compute separate
+offsets. The field-copy portion (102 bytes) matches exactly; loop bodies
+show different register allocation.
+
+## Lesson: Eliminating local variables can fix register allocation swaps
+
+When VC5 allocates registers differently from the original (ECX vs EAX, EDX vs ECX),
+the root cause can be named local variables that force VC5 to load both values before
+any test, while the original loads and tests one at a time.
+
+**Example**: `handle_bring_object` (00532610) had 8.48% positional diff due to EDX/ECX
+swap for `this_obj`/`target_obj`. The fix was removing local variable declarations:
+```cpp
+// Bad: forces both loads upfront
+RGE_Static_Object* obj1 = entry->this_obj;
+RGE_Static_Object* obj2 = entry->target_obj;
+if (obj1 == 0 || obj2 == 0) { ... }
+
+// Good: inline access forces load-and-test order matching original
+if (entry->this_obj == 0 || entry->target_obj == 0) { ... }
+// ... use entry->this_obj and entry->target_obj directly throughout
+```
+
+Try when:
+- The first mismatch is a register swap (ECX↔EAX, EDX↔ECX, etc.)
+- The function accesses struct members through a pointer parameter
+- Local variables hold copies of pointer/reference fields
+
+Why it helps:
+- VC5's lazy evaluation of inline field accesses matches the original's load-and-test interleaving
+- Named locals force VC5 to pre-load both, triggering different register allocation
+
+Caveats:
+- Only works when the locals are accessed repeatedly; single-use locals don't matter
+- Doesn't fix the deeper `je` vs `jne` branch polarity issue
+
+## Lesson: VC5 branch polarity depends on error-handler placement
+
+When VC5 encounters `if (ptr == 0) { err; return; }`, it generates `jne` (skip over
+inline error handler) when the error handler is short (< ~10 bytes). The original
+binary may use `je` (jump to shared error handler at function end). This 2-byte
+branch-opcode difference causes cascading offset shifts throughout the function.
+
+Try when:
+- The first mismatch is a `je` vs `jne` opcode for a null/error check
+- The edit diff is small (15-25%) but positional diff is large (75-85%)
+- All subsequent mismatches are shifted jump offsets
+
+Current status (2026-04-30):
+- `handle_bring_area` (005325A0): 18.9% edit diff, persistent `je` vs `jne`
+- `condition_info` (00532C70): 40% edit diff, same polarity issue + vtable offset
+- No source-form fix found yet; likely requires TU context or `/O1`
+
+## 2026-04-30: aipbook.cpp matching harvest (7 matched, 8 improved)
+
+### strcmp pattern for convertToIntType
+`int r; r = strcmp(name, s_String); if (r == 0) return N;` works for ALL
+string-to-int lookup functions. The explicit `int r` local (not inline if (strcmp)))
+forces VC5 to generate the expected test/jne/mov pattern. Works for both
+__thiscall and virtual methods.
+
+### AIPlayPhase requires full layout for pointer arithmetic
+sizeof(AIPlayPhase) = 0x8C (5 commands[0x10] + 3 triggers[0x14]). If the class
+only declares methods without data members, sizeof = 1 and `phase++` generates
+`inc ebx` instead of `add edi, 8Ch`, breaking the loop.
+
+### volatile byte forces stack-temp zero-extension
+`volatile unsigned char temp = byte_field;` forces VC5 to store the byte to
+the stack and reload it with `mov [esp+N], dl; mov al, [esp+N]; and eax, 0FFh`.
+Without volatile, VC5 uses register-only `xor edx, edx; mov dl, [eax+1]` which
+is 4 bytes shorter (matches original's 132B vs 128B).
+
+### for-loop generates redundant test/jle
+`for (i = 0; i < n; i++)` combined with explicit `if (n <= 0) return` generates
+a redundant `test eax, eax; jle` for the for-loop's initial condition check.
+This adds 4-5 bytes of dead code. Switching to do-while changes register
+allocation frame. Best to accept this as a minor scheduling difference.
+
+### strcmp inlining for plays array lookup
+`strcmp(this->plays[i].nameValue, name)` is inlined by VC5 as the expected
+byte-by-byte comparison with test/jne branches. Works for both returning
+index (playNumber) and pointer (play).
+
+## 2026-04-30: file_stf.cpp getter matching and effects.cpp remaining
+
+### Tiny __cdecl helpers match as C files, not C++
+`driveAsLetter` (8B) and `driveAsInt` (9B) matched instantly as `.c` files
+(compiled as C, not C++). Avoid `(char)` casts on `int` parameters — they
+change the load instruction from `mov eax, [esp+4]` (4B) to `mov al, [esp+4]` (1B).
+```c
+// Matches: return param_1 + 0x40;  // int arithmetic, char return
+// Mismatches: return (char)param_1 + '@';  // char cast changes load
+```
+
+### DriveInformation getters match with simple struct layout
+All DriveInformation getters match with minimal class declarations:
+- initialDrive: `return initialDriveValue;`
+- initialDriveAsLetter: `return (char)initialDriveValue + '@';`  
+- initialDirectory: `return initialDirectoryValue;`  (char[256] at +4)
+- currentDrive: `return currentDriveValue;`  (at +0x104)
+- currentDriveAsLetter: `return (char)currentDriveValue + '@';`
+- currentDirectory: `return currentDirectoryValue;`  (at +0x108)
+- numberDrives: `return driveValues[0];`  (at +0x208)
+- validDrive: `return driveValues[param_1];`
+
+DriveInformation layout (0x274 = 628 bytes):
+  +0x000 int initialDriveValue
+  +0x004 char initialDirectoryValue[256]
+  +0x104 int currentDriveValue
+  +0x108 char currentDirectoryValue[256]
+  +0x208 int driveValues[27]
+
+### effects.cpp remaining (blockers documented in scratch)
+Four effects.cpp functions remain unmatched due to deep VC5 codegen decisions:
+- **004490E0 ctor(int)**: register allocation swaps (ebx↔esi for `this`)
+- **00449260 ctor(char*)**: different prologue style (path param loaded before sub esp)
+- **004494B0 save**: same register issue as ctor
+- **004495C0 do_effect**: member function calls through extern produce placeholder relocations
+
+The path ctor (00449260) uses `edi=this` (correct register) but has a different
+prologue order: `mov eax, [esp+4]` BEFORE `sub esp, 0x0C`. Our VC5 always places
+`sub esp` first then loads with adjusted offset. This may need custom flags or
+TU context.
 

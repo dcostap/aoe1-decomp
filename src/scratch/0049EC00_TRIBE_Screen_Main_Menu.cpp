@@ -1,56 +1,65 @@
 // VA: 0049EC00 ~TRIBE_Screen_Main_Menu dtor (203B)
 // Scr_main.cpp lines 199-214
-// Has EH frame, needs /GX
+// EH-framed destructor: delete_panel for all sub-panels, then scalar delete for circle_p_pic and ms_title_text, then base dtor
+// FLAGS: /GX (EH)
 
-class TScreenPanel {
-public:
-    virtual ~TScreenPanel();
-};
+#include <windows.h>
 
 class TPanel {
 public:
+    char __gap[0x1C];
+    void* render_area;
+    char __gap2[0x1C];
+    void* parent_panel;
+    char __gap3[0x28];
+    int active;
+    int visible;
+    char __gap4[0x14];
+    void* clip_rgn;
+    RECT render_rect;
+    char __gap5[0x44];
+    int display_changed_count;
+    char __gap6[0x10];
+
     virtual ~TPanel();
+    void delete_panel(TPanel** panel_ptr);
 };
 
-class TTextPanel : public TPanel {
-};
-
-class TPicturePanel : public TPanel {
+class TScreenPanel : public TPanel {
+public:
+    char __gap7[0x384];
+    virtual ~TScreenPanel();
 };
 
 class TRIBE_Screen_Main_Menu : public TScreenPanel {
 public:
-    char gap4[0x474];
-    TPanel* field_478;          // +0x478 title1
-    TPanel* field_47C;          // +0x47C title2
-    TPanel* field_480[7];       // +0x480-0x49C buttons[7]
-    TTextPanel* field_49C;      // +0x49C ms_title_text
-    TPanel* field_4A0;          // +0x4A0 ms_copy_text1
-    TPanel* field_4A4;          // +0x4A4 ms_copy_text2
-    TPanel* field_4A8;          // +0x4A8 warning_text
-    TPicturePanel* field_4AC;   // +0x4AC circle_p_pic
-    
-    ~TRIBE_Screen_Main_Menu();
+    TPanel* title1;              // +0x478
+    TPanel* title2;              // +0x47C
+    TPanel* button[7];           // +0x480-0x49C
+    TPanel* ms_title_text;       // +0x49C
+    TPanel* ms_copy_text1;       // +0x4A0
+    TPanel* ms_copy_text2;       // +0x4A4
+    TPanel* warning_text;        // +0x4A8
+    TPanel* circle_p_pic;        // +0x4AC
+
+    virtual ~TRIBE_Screen_Main_Menu();
 };
 
-void __cdecl delete_panel(void* this_, void** pPanel);
-
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
-    delete_panel(this, (void**)&field_478);
-    delete_panel(this, (void**)&field_47C);
-    delete_panel(this, (void**)&field_4A0);
-    delete_panel(this, (void**)&field_4A4);
-    delete_panel(this, (void**)&field_4A8);
-    
-    int i;
-    for (i = 0; i < 7; i++) {
-        delete_panel(this, (void**)&field_480[i]);
+    this->delete_panel((TPanel**)&this->title1);
+    this->delete_panel((TPanel**)&this->title2);
+    this->delete_panel((TPanel**)&this->ms_copy_text1);
+    this->delete_panel((TPanel**)&this->ms_copy_text2);
+    this->delete_panel((TPanel**)&this->warning_text);
+
+    for (int i = 0; i < 7; i++) {
+        this->delete_panel((TPanel**)&this->button[i]);
     }
-    
-    if (field_4AC) {
-        delete field_4AC;
+
+    if (this->circle_p_pic != (TPanel*)0x0) {
+        delete this->circle_p_pic;
     }
-    if (field_49C) {
-        delete field_49C;
+    if (this->ms_title_text != (TPanel*)0x0) {
+        delete this->ms_title_text;
     }
 }

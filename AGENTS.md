@@ -1,4 +1,5 @@
 Read the README.md file.
+Read LESSONS.md.
 
 After reading the README, follow these agent-side working rules. README owns the
 repo overview and source-of-truth model; this file owns actionable constraints,

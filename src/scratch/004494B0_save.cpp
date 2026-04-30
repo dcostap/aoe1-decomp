@@ -1,41 +1,39 @@
-// VA: 004494B0 RGE_Effects::save
-// effects.cpp lines 154-180
+// VA: 004494B0 RGE_Effects::save(int fd)
+// effects.cpp lines 140-183
 // 265 bytes
-
-// attempt 1: Mirror of ctor file-read logic via rge_write
-// ret 4, __thiscall
+// BLOCKER: same register allocation issue as the int ctor.
+// The original uses esi=this but with a different register order.
+// Rebuilt patterns all produce different prologue/frame code.
+//
+// Attempt log:
+// - natural pattern mirroring ctor: diverse register allocation
+// - int* num = &effect_num: same
+// - for loops with offsets: different prologue
+// FLAGS: none
 
 void __cdecl rge_write(int fd, void* buf, int size);
 
 struct RGE_Effect_Command {
-    char command;       // +0x00
-    char pad;           // +0x01
-    short change_num1;  // +0x02
-    short change_num2;  // +0x04
-    short change_num3;  // +0x06
-    float change_amount;// +0x08
+    unsigned char command; unsigned char _pad_0;
+    short change_num1; short change_num2; short change_num3; float change_amount;
 };
 
 struct RGE_Effect {
-    short id;                   // +0x00
-    char name[0x22];            // +0x02
-    short effect_list_num;      // +0x24
-    short pad2;                 // +0x26
-    RGE_Effect_Command* effect_list; // +0x28
+    short id; char name[31]; unsigned char _pad_0;
+    short string_table_id; short effect_list_num;
+    unsigned char _pad_1[2]; RGE_Effect_Command* effect_list;
 };
 
 struct RGE_Effects {
-    int* vtable;        // +0x00
-    RGE_Effect* effects; // +0x04
-    int effect_num;      // +0x08
-
+    void* vtable_ptr; RGE_Effect* effects; long effect_num;
     void save(int fd);
 };
 
 void RGE_Effects::save(int fd) {
-    rge_write(fd, &effect_num, 4);
-    if (effect_num > 0) {
-        for (int i = 0; i < effect_num; i++) {
+    int* num = &effect_num;
+    rge_write(fd, num, 4);
+    if (*num > 0) {
+        for (int i = 0; i < *num; i++) {
             RGE_Effect* eff = &effects[i];
             rge_write(fd, eff->name, 0x1F);
             rge_write(fd, &eff->effect_list_num, 2);

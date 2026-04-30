@@ -1,12 +1,4 @@
 // VA: 0041B560 frame_passed (44B, asprite.cpp)
-// Checks if the sprite's animation frame has crossed a target threshold.
-// Returns 1 if the frame has passed, considering frame_changed/looped flags.
-//
-// Attempt log:
-// - Using `this->frame >= target` generates correct `cmp [ecx+14h],ax` operand order
-// - Remaining: frame_looped check uses inline return vs shared jne target
-// - Return value width: unsigned char generates 8-bit mov al/xor al
-// Left in scratch: small register scheduling / branch layout diff
 
 class RGE_Active_Animated_Sprite {
 public:
@@ -23,6 +15,6 @@ public:
 unsigned char RGE_Active_Animated_Sprite::frame_passed(short param_1) {
     if (this->frame_changed == 0) return 0;
     if (this->frame_looped != 0) return 1;
-    if (this->frame >= param_1 && this->last_frame < param_1) return 1;
+    if (param_1 <= this->frame && this->last_frame < param_1) return 1;
     return 0;
 }

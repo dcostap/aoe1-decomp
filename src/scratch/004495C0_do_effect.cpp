@@ -1,77 +1,82 @@
 // VA: 004495C0 RGE_Effects::do_effect
 // effects.cpp lines 186-274
 // 301 bytes
-
-// attempt 1: switch on command type, ret 8, __thiscall
-// attempt 2: short locals for loop vars
+// BLOCKER: Deep codegen differences from extern member function calls.
+// The original uses direct CALL relocations (resolved by linker) while
+// our extern function declarations produce placeholder CALLs. The switch
+// case bodies also differ in how they pass float args (fld/fstp vs mov/push).
+//
+// Attempt log:
+// - real member functions through RGE_Player: placeholder CALL relocations
+// - extern "C" __fastcall wrappers: different calling convention (ecx/edx vs stack)
+// - union to cast int to member function pointer: same issue
+// - __declspec(naked) vtable thunk: inline asm forbidden by policy
+// - short i declared outside for loop: no prologue change
+// - do-while pattern instead of for: same codegen
+// - removed outer if(effect_list_num>0): same 70% diff
+// FLAGS: none
+// NOTE: Would need real function addresses or TU context to match calls.
 
 struct RGE_Effect_Command {
-    char command;       // +0x00
-    char pad;           // +0x01
-    short change_num1;  // +0x02
-    short change_num2;  // +0x04
-    short change_num3;  // +0x06
-    float change_amount; // +0x08
+    unsigned char command; unsigned char _pad_0;
+    short change_num1; short change_num2; short change_num3; float change_amount;
 };
 
 struct RGE_Effect {
-    short id;                   // +0x00
-    char name[0x22];            // +0x02
-    short effect_list_num;      // +0x24
-    short pad2;                 // +0x26
-    RGE_Effect_Command* effect_list; // +0x28
+    short id; char name[31]; unsigned char _pad_0;
+    short string_table_id; short effect_list_num;
+    unsigned char _pad_1[2]; RGE_Effect_Command* effect_list;
+};
+
+struct RGE_Player {
+    void* vtable_ptr;
+    void modify_tobj(short a, short b, float c, short d);
+    void new_attribute_num(short a, float b);
+    void make_available(short a, unsigned char b);
+    void copy_obj(short a, short b);
+    void modify_tobj_delta(short a, short b, float c, short d);
+    void modify_tobj_percent(short a, short b, float c, short d);
 };
 
 struct RGE_Effects {
-    int* vtable;        // +0x00
-    RGE_Effect* effects; // +0x04
-    int effect_num;      // +0x08
-
-    void do_effect(short effect_id, void* player);
+    void* vtable_ptr; RGE_Effect* effects; long effect_num;
+    void do_effect(short effect_id, RGE_Player* player);
 };
 
-extern "C" void __fastcall modify_tobj(void* player, short a, short b, float amt, short c);
-extern "C" void __fastcall modify_tobj_delta(void* player, short a, short b, float amt, short c);
-extern "C" void __fastcall modify_tobj_percent(void* player, short a, short b, float amt, short c);
-extern "C" void __fastcall new_attribute_num(void* player, short a, float amt);
-extern "C" void __fastcall make_available(void* player, short a, char b);
-extern "C" void __fastcall copy_obj(void* player, short a, short b);
+extern "C" void __fastcall player_vfunc_78(RGE_Player* player, short a, float b, int c);
 
-void RGE_Effects::do_effect(short effect_id, void* player) {
+void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
     if (effect_id < effect_num) {
         RGE_Effect* eff = &effects[effect_id];
-        if (eff != 0 && eff->effect_list_num > 0) {
-            short i;
-            for (i = 0; i < eff->effect_list_num; i++) {
+        if (eff) {
+            for (short i = 0; i < eff->effect_list_num; i++) {
                 RGE_Effect_Command* cmd = &eff->effect_list[i];
                 switch (cmd->command) {
                 case 0:
-                    modify_tobj(player, cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
+                    player->modify_tobj(cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
                     break;
                 case 1:
                     if (cmd->change_num1 >= 0) {
                         if (cmd->change_num2 == 0) {
-                            new_attribute_num(player, cmd->change_num1, cmd->change_amount);
+                            player->new_attribute_num(cmd->change_num1, cmd->change_amount);
                         } else {
-                            int* vtab = *(int**)player;
-                            void (__fastcall* vfunc)(void*, short, float, int) = (void (__fastcall*)(void*, short, float, int))vtab[0x78 / 4];
-                            vfunc(player, cmd->change_num1, cmd->change_amount, 0);
+                            player_vfunc_78(player, cmd->change_num1, cmd->change_amount, 0);
                         }
                     }
                     break;
                 case 2:
                     if (cmd->change_num1 >= 0) {
-                        make_available(player, cmd->change_num1, cmd->change_num2);
+                        player->make_available(cmd->change_num1, (unsigned char)cmd->change_num2);
                     }
                     break;
                 case 3:
-                    copy_obj(player, cmd->change_num1, cmd->change_num2);
+                    player->copy_obj(cmd->change_num1, cmd->change_num2);
                     break;
                 case 4:
-                    modify_tobj_delta(player, cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
+                    player->modify_tobj_delta(cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
                     break;
                 case 5:
-                    modify_tobj_percent(player, cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
+                    player->modify_tobj_percent(cmd->change_num1, cmd->change_num2, cmd->change_amount, cmd->change_num3);
                     break;
                 }
             }

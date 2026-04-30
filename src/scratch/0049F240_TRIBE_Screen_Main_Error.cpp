@@ -1,37 +1,31 @@
-// attempt 1: natural EH-framed destructor with the two delete_panel calls, vptr restore, and base destructor tail
-// attempt 2: tried multiple surface/layout baselines; the remaining gap is still the 4-byte offset on the panel member access
-// leaving this in scratch paused because the current mismatch is a layout/register basin, not a behavior bug
-
-class TPanel;
-
-class TScreenPanel {
-public:
-    char gap_0[0x474];
-
-    ~TScreenPanel();
-    void delete_panel(TPanel** panel);
-};
+// VA: 0049F240 ~TRIBE_Screen_Main_Error dtor (106B)
+// Scr_main.cpp lines 426-429
+// EH-framed destructor: delete_panel for message and cancel_button, then base dtor
+// FLAGS: /GX (EH)
 
 class TPanel {
 public:
-    virtual void scalar_deleting_destructor(unsigned int flags);
+    char gap_00[0xF0];
+    void delete_panel(TPanel** panel_ptr);
+    virtual ~TPanel();
 };
 
-class TTextPanel;
-class TButtonPanel;
+class TScreenPanel : public TPanel {
+public:
+    char gap[0x384];
+    virtual ~TScreenPanel();
+};
 
 class TRIBE_Screen_Main_Error : public TScreenPanel {
 public:
-    TTextPanel* message;
-    TButtonPanel* cancel_button;
-    TButtonPanel* close_button;
+    TPanel* message;             // +0x478
+    TPanel* cancel_button;       // +0x47C
+    TPanel* close_button;        // +0x480
 
     virtual ~TRIBE_Screen_Main_Error();
 };
 
 TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error() {
-    *(void**)this = (void*)0x573078;
     this->delete_panel((TPanel**)&this->message);
     this->delete_panel((TPanel**)&this->cancel_button);
-    this->TScreenPanel::~TScreenPanel();
 }

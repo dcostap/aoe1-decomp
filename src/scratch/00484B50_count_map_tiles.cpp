@@ -1,23 +1,26 @@
-struct MapTile { char gap_00[5]; unsigned char type; char gap_06[0x12]; };
-struct MapContainer { MapTile* tiles; };
+// VA: 00484B50 count_map_tiles (54B)
+// rmm_elev.cpp
+
 class RGE_RMM_Elevation_Generator {
 public:
     char gap_00[0x10];
-    MapContainer* map;
-    int width;
-    int height;
-    long count_map_tiles(unsigned char value);
+    char** tiles;    // +0x10
+    int width;       // +0x14
+    int height;      // +0x18
+
+    long count_map_tiles(unsigned char tile_type);
 };
-long RGE_RMM_Elevation_Generator::count_map_tiles(unsigned char value) {
-    MapContainer* map = this->map;
+
+long RGE_RMM_Elevation_Generator::count_map_tiles(unsigned char tile_type) {
+    char* ptr = *this->tiles;
+    char* end = ptr + (this->width * this->height) * 24;
     long count = 0;
-    MapTile* tile = map->tiles;
-    MapTile* end = tile + (this->width * this->height);
-    while (tile < end) {
-        if ((tile->type & 0x1F) == value) {
+
+    while (ptr < end) {
+        if ((ptr[5] & 0x1F) == tile_type) {
             count++;
         }
-        tile++;
+        ptr += 24;
     }
     return count;
 }
