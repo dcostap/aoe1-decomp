@@ -1,6 +1,5 @@
-// Attempt 14: unsigned short pid local only. With commanderCreateGroup taking int for 
-// numberUnitsToGroup, the implicit promotion should produce xor ecx,ecx naturally.
-// Trying to tip register allocation by loading pid into a specific register first.
+// Attempt 15: Cast BOTH sides to unsigned short - same type for both cmp operands
+// Trying to tip register allocator by making comparison operands match in type width
 
 class RGE_Game_World;
 class RGE_Static_Object;
@@ -45,10 +44,9 @@ public:
 
 void RGE_Command::do_command_create_group(RGE_Command_Create_Group* param_1) {
     RGE_Static_Object* obj = this->world->object(param_1->groupCommander);
-    unsigned short pid = (unsigned short)param_1->player_id;
     if (obj == 0)
         return;
-    if (obj->owner->id != pid)
+    if ((unsigned short)obj->owner->id != (unsigned short)param_1->player_id)
         return;
     obj->commanderCreateGroup(param_1->unitsToGroup, param_1->numberUnitsToGroup, param_1->groupCommander, param_1->groupRange);
 }

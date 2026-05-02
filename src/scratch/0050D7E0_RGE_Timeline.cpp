@@ -1,11 +1,11 @@
 // VA: 0050D7E0 RGE_Timeline::~RGE_Timeline (70 B, 23 asm)
 // PDB source: Timeline.cpp lines 90-103
 //
+// FLAGS: /GX (testing if EH changes register allocation)
+//
 // Attempt log:
-// 1. Prior scratch: RGE_Timeline* timeline = this + pRVar1.
-//    72% diff: esi↔edi swap + push eax vs mov ecx,eax+push ecx.
-// 2-5. Various loop forms, void* temp, function-scope next: same systematic esi↔edi swap.
-// 6. while(this->time_list) with guard to force reload pattern.
+// 1-6. Various loop forms, scope/temp vars: systematic esi↔edi swap.
+// 7. Try with /GX to see if EH context changes register allocator behavior.
 
 #include <stdlib.h>
 
@@ -45,14 +45,15 @@ public:
 };
 
 RGE_Timeline::~RGE_Timeline() {
+    RGE_Time_Entry* list = this->time_list;
     this->vtable_ptr = (void*)0x5766F4;
-    if (this->time_list != 0) {
-        while (this->time_list != 0) {
-            RGE_Time_Entry* current = this->time_list;
-            RGE_Time_Entry* nxt = current->next;
-            free(current);
+    if (list != 0) {
+        do {
+            RGE_Time_Entry* cur = this->time_list;
+            RGE_Time_Entry* nxt = cur->next;
+            free(cur);
             this->time_list = nxt;
-        }
+        } while (this->time_list != 0);
     }
     this->avail_id = 0;
     this->old_time = -1.0f;

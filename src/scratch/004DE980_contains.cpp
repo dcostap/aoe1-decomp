@@ -20,4 +20,23 @@ int ManagedArray_int::contains(int* value) const {
 
     i = 0;
     if (this->numberValue <= 0) {
-    
+        goto not_found_outer;
+    }
+    max = this->maximumSizeValue;
+    target = value;
+loop_top:
+    if (i >= max) {
+        goto not_found_outer;
+    }
+    if (this->value[i] == *target) {
+        return 1;
+    }
+    i = i + 1;
+    if (i < this->numberValue) {
+        goto loop_top;
+    }
+    return 0;
+
+not_found_outer:
+    return 0;
+}
