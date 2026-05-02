@@ -12,7 +12,9 @@ struct RGE_Visible_Map;
 
 class UnitAIModule {
 public:
-    // vfptr at +0x00 (implicit, compiler-generated, 4 bytes)
+    // vfptr at +0x00 (implicit, requires at least one virtual function)
+    virtual ~UnitAIModule();
+
     RGE_Static_Object* objectValue;                     // +0x04
     int moodValue;                                      // +0x08
     int objectCategoryValue;                            // +0x0C
@@ -56,7 +58,7 @@ public:
     float defenseBufferValue;                           // +0x120
     int* importantObjects;                              // +0x124
     int numberImportantObjects;                         // +0x128
-    char gap_12C[4];                                    // +0x12C
+    void* playStatus;                                   // +0x12C (AIPlayStatus*)
     char stopAfterTargetKilledValue;                    // +0x130
 
 
@@ -153,10 +155,10 @@ public:
     int waypoint(int);
     int waypointQueueSize();
     int evasiveMoveTo(float x, float y, float z, int flag);
-    int intelligentEvasiveMoveTo(int targetId, float x, float y, float z, int flag);
-    void update();
-    int selectNewPlayPhase();
-    int processNotify(int caller, int recipient, int mType, int p1, int p2, int p3);
+    int intelligentEvasiveMoveTo(float x, float y, float z, int targetId, int flag);
+    int update(unsigned long param_1);
+    int selectNewPlayPhase(int playNumber, int param2);
+    int processNotify(void* notifyEvent);
     void processMisc();
 };
 // Total size check: vfptr(4) + 0x04..0x130 = 4 + 0x130 = 0x134 bytes

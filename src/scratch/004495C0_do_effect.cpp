@@ -1,19 +1,24 @@
 // VA: 004495C0 RGE_Effects::do_effect
 // effects.cpp lines 186-274
 // 301 bytes
-// BLOCKER: Deep codegen differences from extern member function calls.
-// The original uses direct CALL relocations (resolved by linker) while
-// our extern function declarations produce placeholder CALLs. The switch
-// case bodies also differ in how they pass float args (fld/fstp vs mov/push).
+// BLOCKER: 53.8% diff (best result). First 14 bytes match perfectly.
+// The core loop structure now matches: xor edi, edi; cmp [mem], di; jle
+// Remaining differences:
+// 1. Float arg passing: rebuilt uses mov edx,[mem];push edx while
+//    original uses fld dword [mem]; push ecx/temp; fstp [esp]
+// 2. CALL instructions are placeholder relocations (e800000000) in rebuilt
+// 3. Jump table address is placeholder (00000000) instead of 4496F0h
+// 4. Case 1 vtable call at offset 0x78: uses extern function ptr
 //
 // Attempt log:
+// - best version (no extra locals): first 14 bytes match, 53.8% overall
+// - with float f local: regressed to 68% (extra stack slot)
 // - real member functions through RGE_Player: placeholder CALL relocations
-// - extern "C" __fastcall wrappers: different calling convention (ecx/edx vs stack)
-// - union to cast int to member function pointer: same issue
+// - extern __fastcall wrappers: different calling convention
+// - union to cast int to MFP: compile error possible
 // - __declspec(naked) vtable thunk: inline asm forbidden by policy
-// - short i declared outside for loop: no prologue change
-// - do-while pattern instead of for: same codegen
-// - removed outer if(effect_list_num>0): same 70% diff
+// - removed outer if(effect_list_num>0): no change
+// - for(short) with correct loop structure: matches cmp [mem],di pattern
 // FLAGS: none
 // NOTE: Would need real function addresses or TU context to match calls.
 

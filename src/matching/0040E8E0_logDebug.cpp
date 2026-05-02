@@ -1,7 +1,11 @@
+// logDebug (0040E8E0) - AIModule::logDebug
+// Empty member function - just ret
+
 class AIModule {
 public:
-    virtual ~AIModule();
-    void logDebug();
+    void logDebug(void);
 };
 
-void AIModule::logDebug() {}
+void AIModule::logDebug(void)
+{
+}

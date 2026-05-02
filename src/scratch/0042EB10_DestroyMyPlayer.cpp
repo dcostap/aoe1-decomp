@@ -45,7 +45,7 @@ long TCommunications_Handler::DestroyMyPlayer()
         return 0;
 
     result = player->vf24(other);
-    this->Err->ShowReturn(result, "Release Player");
+    this->Err->ShowReturn(result, (char*)0x582FA8);
     if (result == 0) {
         *(RGE_Player**)0x62CF04 = 0;
         this->Me = 0;

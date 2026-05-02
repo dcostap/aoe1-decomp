@@ -1,10 +1,6 @@
 // VA: 0044F1E0 RGE_Master_Action_Object::setup (copy-from-master variant)
 // PDB source: m_ac_obj.cpp
-// Attempt log:
-// First-pass skeleton/partial — needs proper implementation
-// - 169 bytes correct, 18-32 bytes diff from virtual call through vtable
-// - Direct call vs vtable call and __thiscall vs __cdecl convention mismatch
-// - Left in scratch
+// 18.9349% diff, 169/169 bytes - register allocation diff at vtable call
 
 #include <stdlib.h>
 
@@ -18,15 +14,14 @@ struct CopyRefHelper {
     void copy_obj(void* src);
 };
 
-typedef void* (*CreateTaskListFn)(void* self);
+typedef void* (__fastcall* CreateTaskListFn)(void* self, int dummy);
 
 struct RGE_Master_Action_Object {
     char pad[0xD8];
     int setup(void* src);
 };
 
-int RGE_Master_Action_Object::setup(void* src)
-{
+int RGE_Master_Action_Object::setup(void* src) {
     ((RGE_Master_Moving_Object_copy_setup*)this)->copy_setup(src);
     *(unsigned char*)((char*)this + 4) = 0x28;
     *(short*)((char*)this + 0xDC) = *(short*)((char*)src + 0xDC);
@@ -38,7 +33,8 @@ int RGE_Master_Action_Object::setup(void* src)
     *(int*)((char*)this + 0xF0) = *(int*)((char*)src + 0xF0);
     *(int*)((char*)this + 0xF4) = *(int*)((char*)src + 0xF4);
     *(unsigned char*)((char*)this + 0xF8) = *(unsigned char*)((char*)src + 0xF8);
-    void* val = ((CreateTaskListFn)(*(void***)this)[0x38/4])(this);
+    void** vtable = *(void***)this;
+    void* val = ((CreateTaskListFn)vtable[0x38/4])(this, 0);
     *(int*)((char*)this + 0xD8) = (int)val;
     ((CopyRefHelper*)(*(int*)((char*)this + 0xD8)))->copy_obj((void*)*(int*)((char*)src + 0xD8));
     return 1;

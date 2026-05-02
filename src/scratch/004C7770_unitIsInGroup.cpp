@@ -14,24 +14,27 @@ public:
     int unitIsInGroup(int value);
 };
 
-// tried the straightforward count/max loop; VC5 kept changing the prolog register save order
-// tried moving the array base into a local and reordering count/max loads; mismatch moved to the early base-load/register setup
-// leaving this in scratch because the remaining drift is prolog/register-allocation only
+// tried straightforward count/max loop forms and direct-member variants; VC5 kept collapsing
+// to a different family that omits the early `push ebx` and adds an extra `test max,max`
+// before entering the scan. Best shape keeps the main compare/load body close but still differs
+// in prolog/save order and in using jge/jmp structure instead of the original top-tested loop.
 int RGE_Static_Object::unitIsInGroup(int value) {
     int count = this->groupMembers.numberValue;
     int index = 0;
-    int* members = this->groupMembers.value;
-    int max = this->groupMembers.maximumSizeValue;
 
     if (count > 0) {
-        while (index < max) {
-            if (members[index] == value) {
+        while (1) {
+            if (index >= this->groupMembers.maximumSizeValue) {
+                break;
+            }
+            if (this->groupMembers.value[index] == value) {
                 return 1;
             }
-            ++index;
-            if (index >= count) {
-                return 0;
+            index++;
+            if (index < count) {
+                continue;
             }
+            return 0;
         }
     }
     return 0;

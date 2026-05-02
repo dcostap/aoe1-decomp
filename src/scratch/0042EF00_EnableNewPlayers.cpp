@@ -32,9 +32,6 @@ public:
 };
 
 extern TDebuggingLog* g_debug_log;
-extern _GUID DAT_0056F0D0;
-extern char DAT_00583188[];
-
 class TCommunications_Handler {
 public:
     long EnableNewPlayers(IDirectPlay2* param_1, int param_2);
@@ -52,13 +49,13 @@ long TCommunications_Handler::EnableNewPlayers(IDirectPlay2* param_1, int param_
     }
 
     pNewObj = 0;
-    hr = pDirectPlay->QueryInterface(&DAT_0056F0D0, (void**)&pNewObj);
+    hr = pDirectPlay->QueryInterface((const _GUID*)0x56F0D0, (void**)&pNewObj);
     if (hr < 0) {
         return hr;
     }
 
     hr = pNewObj->EnableNewPlayers(param_2);
     log_value = pNewObj->vf08();
-    g_debug_log->Log(DAT_00583188, (unsigned long)log_value);
+    g_debug_log->Log((char*)0x583188, (unsigned long)log_value);
     return hr;
 }

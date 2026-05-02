@@ -1,37 +1,28 @@
-// tried a direct member-call version, then a cdecl Log wrapper with the handler passed as an extra arg; mismatch stayed at the early log-call prolog
-// kept the vtable callback and AddSelfPlayer transition, but VC5 is still taking a different global-load / argument-push basin
-// leaving in scratch: remaining delta is instruction order before the first Log call
+// VA: 0042F140 ForcePlayerDestroyAndCreate (78B)
+// Original: Log, virtual call, AddSelfPlayer, Log
+// Use absolute addresses for global variables
 
-class TDebuggingLog;
-class TCommunications_Handler;
-extern "C" void __cdecl Log(TDebuggingLog* log, const char* text, ...);
+extern "C" void __cdecl Log(void* log, const char* text, ...);
 
 class TCommunications_Handler {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(int value);
-    void AddSelfPlayer();
-    void ForcePlayerDestroyAndCreate();
+    void ForcePlayerDestroyAndCreate(void);
 };
 
-extern TDebuggingLog* DAT_0062C4FC;
-extern TCommunications_Handler* DAT_0062C5EC;
-extern int DAT_0062CF04;
-extern const char* s_Force_Self_player_destroy_and_create;
-extern const char* s_Create_called;
+void __cdecl AddSelfPlayer(void*);
 
 void TCommunications_Handler::ForcePlayerDestroyAndCreate() {
-    Log(DAT_0062C4FC, s_Force_Self_player_destroy_and_create, this);
-    DAT_0062C5EC->vf24(DAT_0062CF04);
-    DAT_0062CF04 = 0;
-    this->AddSelfPlayer();
-    Log(DAT_0062C4FC, s_Create_called);
+    Log(*(void**)0x62C4FC, (const char*)0x583294);
+    
+    void* com_global = *(void**)0x62C5EC;
+    void* param = *(void**)0x62CF04;
+    
+    void** vtbl = *(void***)com_global;
+    ((long (__stdcall*)(void*, void*))vtbl[9])(com_global, param);
+    
+    *(int*)0x62CF04 = 0;
+    
+    AddSelfPlayer(this);
+    
+    Log(*(void**)0x62C4FC, (const char*)0x583284);
 }

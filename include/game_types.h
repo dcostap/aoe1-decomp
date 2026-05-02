@@ -198,7 +198,6 @@ class RGE_Land_Info_Line;
 class RGE_Land_Point_Info_Line;
 class RGE_Lobby;
 class RGE_Main_View;
-class RGE_Tile;
 class RGE_Map;
 class RGE_Map_Data;
 class RGE_Map_Data_Entry;

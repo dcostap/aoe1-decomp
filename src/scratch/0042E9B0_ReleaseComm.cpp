@@ -26,7 +26,7 @@ long TCommunications_Handler::ReleaseComm() {
     if (com_global) {
         int* vtbl = *(int**)com_global;
         ((void(*)(void*))vtbl[2])(com_global);
-        logCommonHistory(debugging_log_global, "1.Release COMM links=%d", *(int*)com_global);
+        logCommonHistory(debugging_log_global, (const char*)0x582F58, *(int*)com_global);
         nullGUID[0] = serviceGUID[0];
         nullGUID[1] = serviceGUID[1];
         nullGUID[2] = serviceGUID[2];

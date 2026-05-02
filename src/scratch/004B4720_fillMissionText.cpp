@@ -28,7 +28,7 @@ void TribeSelectScenarioScreen::fillMissionText()
 {
     long line;
 
-    this->missionText->setText("");
+    this->missionText->setText((char*)0x592A40);
     line = this->scenarioList->get_line();
     if (line >= 0)
         this->missionText->setText(this->scenarioMission[line]);

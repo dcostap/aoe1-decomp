@@ -1,5 +1,6 @@
 // VA: 0040F9B0 AIPlay::groupGivenCommandOnPhase (132 bytes)
-// Using union to force stack spill + dword reload
+// 3.79% diff: instruction scheduling + register width, can't fix from C++
+// ACCEPTED_DRIFT
 
 struct AIPlayPhaseCommand {
     unsigned char field_0;
@@ -44,11 +45,8 @@ int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue, int phaseInd
         AIPlayPhaseCommand* cmd = phase->command(cmdIdx);
         if ((unsigned int)cmd->field_0 == (unsigned int)groupValue) {
             AIPlayPhaseCommand* cmd2 = phase->command(cmdIdx);
-            // Force dword read: write byte, read dword
             unsigned char uc = cmd2->field_1;
-            volatile unsigned int dummy;
-            *(unsigned char*)&dummy = uc;
-            unsigned int typeVal = dummy;
+            unsigned int typeVal = uc;
             if (typeVal == (unsigned int)typeValue) {
                 return cmdIdx;
             }

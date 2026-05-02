@@ -52,10 +52,43 @@ Repository roles:
 - `src\matching\...`: exact validated finished functions.
 - `LESSONS.md`: shared pattern memory for generalized exact-match breakthroughs.
 
+## Project status queries and target search
+
+Use `python tools\query_project_status.py` for project-status questions and
+function target searches. It computes status live from repo state; it does **not**
+depend on stale `project_full_status.csv`. The CSV/HTML dashboard is mainly for
+human browsing, not agent automation.
+
+Use this tool instead of ad-hoc CSV parsing or manual `src\...` directory scans
+when answering questions like "what is unclaimed?", "smallest remaining?",
+"what is the status of this VA?", or "find functions matching these filters".
+Common examples:
+
+```bat
+python tools\query_project_status.py --unclaimed --normal --smallest --no-blockers --limit 20
+python tools\query_project_status.py --remaining --normal --smallest --limit 20
+python tools\query_project_status.py --va 0047A3A0 --paths
+python tools\query_project_status.py --source Pnl_pic.cpp --remaining
+python tools\query_project_status.py --query set_picture --normal --paths
+python tools\query_project_status.py --summary --normal
+```
+
+Useful filters include `--normal`, `--unclaimed`, `--scratch`, `--matching`,
+`--accepted-drift`, `--conflict`, `--remaining`, `--no-blockers`, `--blockers`,
+`--source <file-or-path-substring>`, `--query <tokens>`, `--min-size`,
+`--max-size`, `--smallest`, `--largest`, `--sort size|asm|va|name|source|bucket|diff|edit-diff|first-mismatch`,
+`--paths`, `--notes`, `--json`, and `--csv`.
+
+If a human-readable dashboard is needed, run
+`python tools\generate_status_dashboard.py` to rewrite `project_full_status.csv`
+and `project_full_status.html`. Do not treat the generated CSV as the live source
+of truth unless explicitly using `query_project_status.py --from-csv` for a
+known stale/fast check.
+
 ## Normal function workflow
 
-1. If choosing a target, regenerate `project_full_status.csv` and usually pick
-   from `unclaimed`; avoid non-normal buckets.
+1. If choosing a target, use `python tools\query_project_status.py` and usually
+   pick from `--unclaimed --normal --no-blockers`; avoid non-normal buckets.
 2. Read the function packet in `inventory\functions\...`.
 3. Check relevant shared headers/source and generated type/class/global reference.
 4. Implement or edit one per-function source in `src\scratch\...`.

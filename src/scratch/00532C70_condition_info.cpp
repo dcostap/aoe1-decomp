@@ -1,6 +1,7 @@
 // RGE_Victory_Conditions::condition_info
 // VA: 00532C70
-// victory.cpp
+// 2.5% positional diff = 2 bytes: register choice (ecx vs edx) for 
+// outEntry in the null-handler path. Behaviorally equivalent.
 
 class RGE_Victory_Entry {
 public:
@@ -24,22 +25,21 @@ unsigned char RGE_Victory_Conditions::condition_info(long index, RGE_Victory_Ent
     RGE_Victory_Entry* entry = this->victory_list;
     long i = 0;
 
-    if (entry == 0) goto null_entry;
-
-    while (entry != 0) {
-        if (i == index) {
-            *outEntry = (RGE_Victory_Entry*)this->condition_description(entry);
-            *outCommand = entry->command;
-            return 1;
+    if (entry) {
+        while (entry != 0) {
+            if (i == index) {
+                *outEntry = (RGE_Victory_Entry*)this->condition_description(entry);
+                *outCommand = entry->command;
+                return 1;
+            }
+            entry = entry->next;
+            i++;
         }
-        entry = entry->next;
-        i++;
+
+        *outEntry = 0;
+        return 0;
     }
 
-    *outEntry = 0;
-    return 0;
-
-null_entry:
     *outEntry = 0;
     return 0;
 }

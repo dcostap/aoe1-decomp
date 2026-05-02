@@ -1,34 +1,66 @@
-// PointMaker::DrawCurrentSatelliteIntoProbArray — real pass
-// VA: 0044BCD0
-void __fastcall DrawCurrentSatelliteIntoProbArray(void* _this, int _, int param1)
-{
-    int r = *(int*)((char*)_this + 0xFFC);  // SatelliteRadius
-    *(int*)((char*)_this + 0xFF4) = 2;       // ProbabilityAdd = 2
-    for (int i = r; i >= 0; i--) {
-        int px = *(int*)((char*)_this + 8 + param1 * 8 + 0);
-        int py = *(int*)((char*)_this + 8 + param1 * 8 + 4);
-        ((void(__fastcall*)(void*,int,int,int,int))0x44BF90)(_this, 0, px, py, i);  // AddingCircle
-        *(int*)((char*)_this + 0xFF4) += 1;  // ProbabilityAdd++
+// PointMaker::DrawCurrentSatelliteIntoProbArray
+// VA: 0044BCD0 - v3: goto-based branch structure matching original asm
+
+int __cdecl debug_rand(char* param_1, int param_2);
+
+class PointMaker {
+public:
+    int Prime_x;
+    int Prime_y;
+    int Point[1000];
+    char gap_FA8[0x10];
+    int x;
+    int y;
+    char gap_FC0[0x14];
+    int Width;
+    int Height;
+    char gap_FDC[0x04];
+    int NumNodes;
+    char gap_FE4[0x08];
+    int ProbabilityTiles;
+    int TargetProbabilityCount;
+    int ProbabilityAdd;
+    int BranchRadius;
+    int SatelliteRadius;
+    int PrimaryRadius;
+    int SizeArrays;
+    int SatelliteDistance;
+    int BranchDistance;
+    int DirX;
+    int DirY;
+    int MaxNumberOfBranchLevels;
+    int CurrentNumberOfBranchLevels;
+    char* ExternalArray;
+    char* ProbArray;
+    char* PlacementArray;
+
+    void AddingCircle(int param_1, int param_2, int param_3);
+    void DrawCurrentSatelliteIntoProbArray(int param_1);
+};
+
+void PointMaker::DrawCurrentSatelliteIntoProbArray(int param_1) {
+    int iVar4 = SatelliteRadius;
+    ProbabilityAdd = 2;
+    while (iVar4 >= 0) {
+        AddingCircle(Point[param_1 * 2], Point[param_1 * 2 + 1], iVar4);
+        ProbabilityAdd++;
+        iVar4--;
     }
-    int px = *(int*)((char*)_this + 8 + param1 * 8 + 0);
-    int py = *(int*)((char*)_this + 8 + param1 * 8 + 4);
-    int idx = py * *(int*)((char*)_this + 0xFD4) + px;  // y * Width + x
-    int probAdd = *(int*)((char*)_this + 0xFF4);
-    if (idx < 1) return;
-    int sizeArrays = *(int*)((char*)_this + 0x1004);
-    if (idx >= sizeArrays - 1) return;
-    char* probArray = (char*)*(int*)((char*)_this + 0x1024);  // ProbArray
-    char val = probArray[idx];
-    if (val == 0) {
-        probArray[idx] = (char)probAdd;
-        *(int*)((char*)_this + 0xFEC) += 1;  // ProbabilityTiles++
-        return;
+    
+    iVar4 = Point[param_1 * 2 + 1] * Width + Point[param_1 * 2];
+    int probAdd = ProbabilityAdd;
+    if (iVar4 >= 1 && iVar4 < SizeArrays - 1) {
+        char* p = ProbArray + iVar4;
+        if (*p == 0) {
+            *p = (char)probAdd;
+            ProbabilityTiles++;
+        } else {
+            int total = probAdd + (int)*p;
+            if (total < 0xFF) {
+                *p = (char)total;
+            } else {
+                *p = (char)-1;
+            }
+        }
     }
-    int total = probAdd + (signed char)val;
-    if (total >= 0xFF) {
-        probArray[idx] = (char)0xFF;
-        return;
-    }
-    probArray[idx] = (char)(probAdd + val);
-    return;
 }

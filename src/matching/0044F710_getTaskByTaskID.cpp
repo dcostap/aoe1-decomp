@@ -1,0 +1,36 @@
+// VA: 0044F710 RGE_Master_Action_Object::getTaskByTaskID (76 B)
+// PDB source: m_ac_obj.cpp lines 223-237
+
+struct RGE_Task {
+    char gap_00[6];
+    short action_type;  // +0x06, signed word
+};
+
+struct TaskList {
+    char gap_00[4];
+    RGE_Task** list;  // +0x04
+    short list_num;   // +0x08, signed word
+};
+
+class RGE_Master_Action_Object {
+public:
+    char gap_00[0xD8];
+    TaskList* tasks;  // +0xD8
+
+    RGE_Task* getTaskByTaskID(int task_id) const;
+};
+
+RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int task_id) const {
+    if (task_id == -1) {
+        return 0;
+    }
+
+    TaskList* tl = this->tasks;
+    int i;
+    for (i = 0; i < tl->list_num; i++) {
+        if (task_id == tl->list[i]->action_type) {
+            return tl->list[i];
+        }
+    }
+    return 0;
+}

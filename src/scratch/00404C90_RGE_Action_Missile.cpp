@@ -24,13 +24,10 @@ public:
 };
 
 RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* obj, RGE_Static_Object* target, RGE_Static_Object* target2,
-                                       float vx, float vy, float vz) {
-    RGE_Action::RGE_Action(obj, 1);
-    this->velocity_x = vx;
-    this->velocity_y = vy;
-    this->velocity_z = vz;
-    ((void**)this)[0] = (void*)0x56E320;
-    ((unsigned short*)this)[2] = 8;
-    RGE_Action::set_target_obj(target);
-    RGE_Action::set_target_obj2(target2);
+                                       float vx, float vy, float vz) : RGE_Action(obj, 1) {
+    velocity_x = vx;
+    velocity_y = vy;
+    velocity_z = vz;
+    set_target_obj(target);
+    set_target_obj2(target2);
 }

@@ -1,4 +1,7 @@
-// attempt 17: separate ifs instead of compound || condition
+// VA: 0046F010 processAddWaypointCommand (63B)
+// PDB source: player.cpp lines 550-556
+// tried __stdcall function-pointer form and a virtual-slot class surface up to vt+0x1BC
+// best result matches the world->object call, keeps object in edi, and gets the loop body close, but VC5 still chooses the wrong saved-register pair/count register (ebp/ebx instead of ebx/ebp) and either emits direct vcall-through-[ecx+1BC] with stack cleanup or the wrong push order before the call
 
 struct XYZBYTEPoint {
     unsigned char x;
@@ -8,120 +11,118 @@ struct XYZBYTEPoint {
 
 class RGE_Static_Object {
 public:
-    virtual ~RGE_Static_Object() {}
-    virtual void v001(void) = 0;
-    virtual void v002(void) = 0;
-    virtual void v003(void) = 0;
-    virtual void v004(void) = 0;
-    virtual void v005(void) = 0;
-    virtual void v006(void) = 0;
-    virtual void v007(void) = 0;
-    virtual void v008(void) = 0;
-    virtual void v009(void) = 0;
-    virtual void v010(void) = 0;
-    virtual void v011(void) = 0;
-    virtual void v012(void) = 0;
-    virtual void v013(void) = 0;
-    virtual void v014(void) = 0;
-    virtual void v015(void) = 0;
-    virtual void v016(void) = 0;
-    virtual void v017(void) = 0;
-    virtual void v018(void) = 0;
-    virtual void v019(void) = 0;
-    virtual void v020(void) = 0;
-    virtual void v021(void) = 0;
-    virtual void v022(void) = 0;
-    virtual void v023(void) = 0;
-    virtual void v024(void) = 0;
-    virtual void v025(void) = 0;
-    virtual void v026(void) = 0;
-    virtual void v027(void) = 0;
-    virtual void v028(void) = 0;
-    virtual void v029(void) = 0;
-    virtual void v030(void) = 0;
-    virtual void v031(void) = 0;
-    virtual void v032(void) = 0;
-    virtual void v033(void) = 0;
-    virtual void v034(void) = 0;
-    virtual void v035(void) = 0;
-    virtual void v036(void) = 0;
-    virtual void v037(void) = 0;
-    virtual void v038(void) = 0;
-    virtual void v039(void) = 0;
-    virtual void v040(void) = 0;
-    virtual void v041(void) = 0;
-    virtual void v042(void) = 0;
-    virtual void v043(void) = 0;
-    virtual void v044(void) = 0;
-    virtual void v045(void) = 0;
-    virtual void v046(void) = 0;
-    virtual void v047(void) = 0;
-    virtual void v048(void) = 0;
-    virtual void v049(void) = 0;
-    virtual void v050(void) = 0;
-    virtual void v051(void) = 0;
-    virtual void v052(void) = 0;
-    virtual void v053(void) = 0;
-    virtual void v054(void) = 0;
-    virtual void v055(void) = 0;
-    virtual void v056(void) = 0;
-    virtual void v057(void) = 0;
-    virtual void v058(void) = 0;
-    virtual void v059(void) = 0;
-    virtual void v060(void) = 0;
-    virtual void v061(void) = 0;
-    virtual void v062(void) = 0;
-    virtual void v063(void) = 0;
-    virtual void v064(void) = 0;
-    virtual void v065(void) = 0;
-    virtual void v066(void) = 0;
-    virtual void v067(void) = 0;
-    virtual void v068(void) = 0;
-    virtual void v069(void) = 0;
-    virtual void v070(void) = 0;
-    virtual void v071(void) = 0;
-    virtual void v072(void) = 0;
-    virtual void v073(void) = 0;
-    virtual void v074(void) = 0;
-    virtual void v075(void) = 0;
-    virtual void v076(void) = 0;
-    virtual void v077(void) = 0;
-    virtual void v078(void) = 0;
-    virtual void v079(void) = 0;
-    virtual void v080(void) = 0;
-    virtual void v081(void) = 0;
-    virtual void v082(void) = 0;
-    virtual void v083(void) = 0;
-    virtual void v084(void) = 0;
-    virtual void v085(void) = 0;
-    virtual void v086(void) = 0;
-    virtual void v087(void) = 0;
-    virtual void v088(void) = 0;
-    virtual void v089(void) = 0;
-    virtual void v090(void) = 0;
-    virtual void v091(void) = 0;
-    virtual void v092(void) = 0;
-    virtual void v093(void) = 0;
-    virtual void v094(void) = 0;
-    virtual void v095(void) = 0;
-    virtual void v096(void) = 0;
-    virtual void v097(void) = 0;
-    virtual void v098(void) = 0;
-    virtual void v099(void) = 0;
-    virtual void v100(void) = 0;
-    virtual void v101(void) = 0;
-    virtual void v102(void) = 0;
-    virtual void v103(void) = 0;
-    virtual void v104(void) = 0;
-    virtual void v105(void) = 0;
-    virtual void v106(void) = 0;
-    virtual void v107(void) = 0;
-    virtual void v108(void) = 0;
-    virtual void v109(void) = 0;
-    virtual void v110(void) = 0;
-    virtual int addUserDefinedWaypoint(XYZBYTEPoint* param_1, int param_2);
-
-    char gap_04[0x84];
+    virtual void vf00();
+    virtual void vf04();
+    virtual void vf08();
+    virtual void vf0C();
+    virtual void vf10();
+    virtual void vf14();
+    virtual void vf18();
+    virtual void vf1C();
+    virtual void vf20();
+    virtual void vf24();
+    virtual void vf28();
+    virtual void vf2C();
+    virtual void vf30();
+    virtual void vf34();
+    virtual void vf38();
+    virtual void vf3C();
+    virtual void vf40();
+    virtual void vf44();
+    virtual void vf48();
+    virtual void vf4C();
+    virtual void vf50();
+    virtual void vf54();
+    virtual void vf58();
+    virtual void vf5C();
+    virtual void vf60();
+    virtual void vf64();
+    virtual void vf68();
+    virtual void vf6C();
+    virtual void vf70();
+    virtual void vf74();
+    virtual void vf78();
+    virtual void vf7C();
+    virtual void vf80();
+    virtual void vf84();
+    virtual void vf88();
+    virtual void vf8C();
+    virtual void vf90();
+    virtual void vf94();
+    virtual void vf98();
+    virtual void vf9C();
+    virtual void vfA0();
+    virtual void vfA4();
+    virtual void vfA8();
+    virtual void vfAC();
+    virtual void vfB0();
+    virtual void vfB4();
+    virtual void vfB8();
+    virtual void vfBC();
+    virtual void vfC0();
+    virtual void vfC4();
+    virtual void vfC8();
+    virtual void vfCC();
+    virtual void vfD0();
+    virtual void vfD4();
+    virtual void vfD8();
+    virtual void vfDC();
+    virtual void vfE0();
+    virtual void vfE4();
+    virtual void vfE8();
+    virtual void vfEC();
+    virtual void vfF0();
+    virtual void vfF4();
+    virtual void vfF8();
+    virtual void vfFC();
+    virtual void vf100();
+    virtual void vf104();
+    virtual void vf108();
+    virtual void vf10C();
+    virtual void vf110();
+    virtual void vf114();
+    virtual void vf118();
+    virtual void vf11C();
+    virtual void vf120();
+    virtual void vf124();
+    virtual void vf128();
+    virtual void vf12C();
+    virtual void vf130();
+    virtual void vf134();
+    virtual void vf138();
+    virtual void vf13C();
+    virtual void vf140();
+    virtual void vf144();
+    virtual void vf148();
+    virtual void vf14C();
+    virtual void vf150();
+    virtual void vf154();
+    virtual void vf158();
+    virtual void vf15C();
+    virtual void vf160();
+    virtual void vf164();
+    virtual void vf168();
+    virtual void vf16C();
+    virtual void vf170();
+    virtual void vf174();
+    virtual void vf178();
+    virtual void vf17C();
+    virtual void vf180();
+    virtual void vf184();
+    virtual void vf188();
+    virtual void vf18C();
+    virtual void vf190();
+    virtual void vf194();
+    virtual void vf198();
+    virtual void vf19C();
+    virtual void vf1A0();
+    virtual void vf1A4();
+    virtual void vf1A8();
+    virtual void vf1AC();
+    virtual void vf1B0();
+    virtual void vf1B4();
+    virtual void vf1B8();
+    virtual void add_waypoint(XYZBYTEPoint* waypoint, int one);
 };
 
 class RGE_Game_World {
@@ -134,16 +135,20 @@ public:
     char gap_00[0x3C];
     RGE_Game_World* world;
 
-    void processAddWaypointCommand(int object_id, char* waypoints, int count);
+    void processAddWaypointCommand(int object_id, XYZBYTEPoint* waypoints, int count);
 };
 
-void RGE_Player::processAddWaypointCommand(int object_id, char* waypoints, int count) {
-    RGE_Static_Object* object = this->world->object(object_id);
-    if (object == 0) return;
-    if (count <= 0) return;
-    do {
-        object->addUserDefinedWaypoint((XYZBYTEPoint*)waypoints, 1);
-        waypoints += 3;
-        count--;
-    } while (count != 0);
+void RGE_Player::processAddWaypointCommand(int object_id, XYZBYTEPoint* waypoints, int count) {
+    RGE_Static_Object* object;
+
+    object = this->world->object(object_id);
+    if ((object != 0) && (count > 0)) {
+        void (*method)(RGE_Static_Object*, XYZBYTEPoint*, int);
+        method = *(void (**)(RGE_Static_Object*, XYZBYTEPoint*, int))((char*)*(void**)object + 0x1BC);
+        do {
+            method(object, waypoints, 1);
+            waypoints = waypoints + 1;
+            count = count - 1;
+        } while (count != 0);
+    }
 }

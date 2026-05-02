@@ -1,55 +1,67 @@
-// tried a direct loop with packed stop-record fields; compiler still put the stack arg load before the ebx save
-// tried the decompiler-style count/pointer loop and then a packed 1-byte header + +2 data layout; mismatch stayed at entry prolog
-// remaining gap looks like register allocation / prolog shape, not the loop body
+// VA: 00434290 do_command_stop (70 B)
+// PDB source: Command.cpp lines 425-442
 
-struct RGE_Command_Stop;
+#pragma pack(push, 1)
+struct RGE_Command_Stop {
+    unsigned char command;    // +0
+    unsigned char unit_num;   // +1
+    int unit_ids[1];          // +2 (at least 1 element)
+};
+#pragma pack(pop)
+
+class RGE_Game_World;
+class RGE_Player;
 
 class RGE_Static_Object {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual void vf28(void);
-    virtual void vf2C(void);
-    virtual void vf30(void);
-    virtual void vf34(void);
-    virtual void vf38(void);
-    virtual void vf3C(void);
-    virtual void vf40(void);
-    virtual void vf44(void);
-    virtual void vf48(void);
-    virtual void vf4C(void);
-    virtual void vf50(void);
-    virtual void vf54(void);
-    virtual void vf58(void);
-    virtual void vf5C(void);
-    virtual void vf60(void);
-    virtual void vf64(void);
-    virtual void vf68(void);
-    virtual void vf6C(void);
-    virtual void vf70(void);
-    virtual void vf74(void);
-    virtual void vf78(void);
-    virtual void vf7C(void);
-    virtual void vf80(void);
-    virtual void vf84(void);
-    virtual void vf88(void);
-    virtual void vf8C(void);
-    virtual void vf90(void);
-    virtual void vf94(void);
-    virtual void vf98(void);
-    virtual void vf9C(void);
-    virtual void vfA0(void);
-    virtual void vfA4(void);
+    virtual void vf00() = 0;
+    virtual void vf04() = 0;
+    virtual void vf08() = 0;
+    virtual void vf0C() = 0;
+    virtual void vf10() = 0;
+    virtual void vf14() = 0;
+    virtual void vf18() = 0;
+    virtual void vf1C() = 0;
+    virtual void vf20() = 0;
+    virtual void vf24() = 0;
+    virtual void vf28() = 0;
+    virtual void vf2C() = 0;
+    virtual void vf30() = 0;
+    virtual void vf34() = 0;
+    virtual void vf38() = 0;
+    virtual void vf3C() = 0;
+    virtual void vf40() = 0;
+    virtual void vf44() = 0;
+    virtual void vf48() = 0;
+    virtual void vf4C() = 0;
+    virtual void vf50() = 0;
+    virtual void vf54() = 0;
+    virtual void vf58() = 0;
+    virtual void vf5C() = 0;
+    virtual void vf60() = 0;
+    virtual void vf64() = 0;
+    virtual void vf68() = 0;
+    virtual void vf6C() = 0;
+    virtual void vf70() = 0;
+    virtual void vf74() = 0;
+    virtual void vf78() = 0;
+    virtual void vf7C() = 0;
+    virtual void vf80() = 0;
+    virtual void vf84() = 0;
+    virtual void vf88() = 0;
+    virtual void vf8C() = 0;
+    virtual void vf90() = 0;
+    virtual void vf94() = 0;
+    virtual void vf98() = 0;
+    virtual void vf9C() = 0;
+    virtual void vfA0() = 0;     // vt[40] = +0xA0
+    virtual void stop() = 0;     // vt[41] = +0xA4
 
-    void removeAllFromPathingGroup(void);
+    int id;                      // +0x04
+    void* master_obj;            // +0x08
+    RGE_Player* owner;           // +0x0C
+
+    void removeAllFromPathingGroup();
 };
 
 class RGE_Game_World {
@@ -59,33 +71,23 @@ public:
 
 class RGE_Command {
 public:
-    char gap_00[4];
-    RGE_Game_World* world;
+    virtual void vf00() = 0;
+    virtual ~RGE_Command() {}
+    virtual void vf08() = 0;
+    virtual void vf0C() = 0;
+
+    RGE_Game_World* world;       // +0x04
 
     RGE_Static_Object* get_obj(int id);
-    void do_command_stop(RGE_Command_Stop* stop);
+    void do_command_stop(RGE_Command_Stop* param_1);
 };
 
-#pragma pack(push, 1)
-struct RGE_Command_Stop {
-    char gap_00[1];
-    unsigned char unit_num;
-    int object_ids[1];
-};
-#pragma pack(pop)
-
-void RGE_Command::do_command_stop(RGE_Command_Stop* stop) {
-    unsigned char count = stop->unit_num;
-    int* pRVar2 = stop->object_ids;
-
-    if (count > 0) {
-        do {
-            RGE_Static_Object* this_00 = this->get_obj(*pRVar2);
-            if (this_00 != 0) {
-                this_00->removeAllFromPathingGroup();
-                this_00->vfA4();
-            }
-            pRVar2 = pRVar2 + 1;
-        } while (--count != 0);
+void RGE_Command::do_command_stop(RGE_Command_Stop* param_1) {
+    for (int count = (unsigned char)param_1->unit_num; count > 0; count--) {
+        RGE_Static_Object* obj = get_obj(param_1->unit_ids[param_1->unit_num - count]);
+        if (obj) {
+            obj->removeAllFromPathingGroup();
+            obj->stop();
+        }
     }
 }

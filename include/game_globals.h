@@ -7,9 +7,6 @@
 #include <stdio.h>
 #include "game_types.h"
 
-// Global game instance pointer
-extern RGE_Base_Game* rge_base_game;
-
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;
 // 0056E0CC [.rdata]
@@ -574,8 +571,6 @@ extern float DAT_00575000;
 extern float DAT_00575004;
 // 00575070 [.rdata]
 extern double DAT_00575070;
-// 00575078 [.rdata]
-extern float DAT_00575078;
 // 0057507C [.rdata]
 extern float DAT_0057507c;
 // 005750E0 [.rdata]
@@ -1716,14 +1711,6 @@ extern unsigned char DAT_0086b6b2;
 extern unsigned char DAT_0086b6b3;
 // 0086BAB0 [.data]
 extern unsigned int DAT_0086bab0;
-// 0086BAB4 [.data]
-extern void* DAT_0086bab4;
-// 0086BAB8 [.data]
-extern void* DAT_0086bab8;
-// 0086BABCh [.data]
-extern void* DAT_0086babc;
-// 0086BAC0h [.data]
-extern void* DAT_0086bac0;
 // 0086BC08 [.data]
 extern float DAT_0086bc08;
 // 0086BC8C [.data]

@@ -15,28 +15,28 @@ public:
 };
 
 void RGE_Victory_Conditions::handle_victory_points(void* entry) {
-    if (this->player == 0) return;
-
     long total = this->tot_victory_points;
     int count = 1;
 
-    if (*(unsigned char*)((char*)entry + 0x2D) != 0 && 
-        *(unsigned char*)((char*)this->player + 0x104) != 0) {
-        short self_id = *(short*)((char*)this->player + 0x4A);
-        void* world = *(void**)((char*)this->player + 0x3C);
-        int num = *(short*)((char*)world + 0x3C);
-        void** players = *(void***)((char*)world + 0x40);
-
-        for (int i = num - 1; i >= 0; i--) {
-            if (*(unsigned char*)((char*)this->player + 0x84 + i) == 0) {
-                void* p = players[i];
-                if (*(unsigned char*)((char*)p + 0x84 + self_id) == 0 && 
-                    i != self_id && 
-                    *(unsigned char*)((char*)p + 0x104) != 0) {
-                    void* vc = *(void**)((char*)p + 0x34);
-                    total += get_victory_points(vc);
-                    count++;
+    if (this->player) {
+        if (*(unsigned char*)((char*)entry + 0x2D) && 
+            *(unsigned char*)((char*)this->player + 0x104)) {
+            short self_id = *(short*)((char*)this->player + 0x4A);
+            void* w = *(void**)((char*)this->player + 0x3C);
+            void** pl = *(void***)((char*)w + 0x40);
+            int max_i = *(short*)((char*)w + 0x3C) - 1;
+            int i = max_i;
+            while (i >= 0) {
+                if (*(unsigned char*)((char*)this->player + 0x84 + i) == 0) {
+                    void* p = pl[i];
+                    if (*(unsigned char*)((char*)p + 0x84 + self_id) == 0 && 
+                        i != self_id && 
+                        *(unsigned char*)((char*)p + 0x104)) {
+                        total += get_victory_points(*(void**)((char*)p + 0x34));
+                        count++;
+                    }
                 }
+                i--;
             }
         }
     }

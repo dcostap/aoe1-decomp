@@ -1,5 +1,11 @@
+// toggleLogCommonHistory (0040E5C0) - AIModule::toggleLogCommonHistory
+// Empty member function - just ret
+
 class AIModule {
 public:
-    virtual void toggleLogCommonHistory();
+    void toggleLogCommonHistory(void);
 };
-void AIModule::toggleLogCommonHistory() {}
+
+void AIModule::toggleLogCommonHistory(void)
+{
+}

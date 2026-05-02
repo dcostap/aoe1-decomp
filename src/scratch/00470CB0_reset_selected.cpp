@@ -1,7 +1,6 @@
-// attempt 6: reverse memset order to try to match scheduling
-
+// VA: 00470CB0 reset_selected (101B)
+// TODO: register scheduling issue with memset address/size ordering
 #include <string.h>
-
 class RGE_Player {
 public:
     char gap_0[0x120];
@@ -18,10 +17,8 @@ public:
     char gap_198[4];
     short sel_count;
     unsigned char groups_used[127];
-
     void reset_selected();
 };
-
 void RGE_Player::reset_selected() {
     this->selected_start_col = -1;
     this->selected_start_row = -1;
@@ -33,5 +30,5 @@ void RGE_Player::reset_selected() {
     this->sel_count = 0;
     this->selected_obj = 0;
     memset(this->sel_list, 0, 0x64);
-    memset((char*)this->sel_list + 0x6A, 0, 0x7F);
+    memset(this->groups_used, 0, 0x7F);
 }

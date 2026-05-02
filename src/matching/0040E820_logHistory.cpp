@@ -1,7 +1,11 @@
+// logHistory (0040E820) - AIModule::logHistory
+// Empty member function - just ret
+
 class AIModule {
 public:
-    virtual ~AIModule();
-    void logHistory();
+    void logHistory(void);
 };
 
-void AIModule::logHistory() {}
+void AIModule::logHistory(void)
+{
+}

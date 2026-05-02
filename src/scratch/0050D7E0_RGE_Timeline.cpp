@@ -1,7 +1,12 @@
-// attempt log:
-// started with the direct destructor shape: set the vtable, free the time_list chain, then clear the trailing fields
-// tried the literal decompiler loop, a copied-timeline local, and a direct field-walk variant; the remaining mismatch stayed on the prologue register basin (esi vs edi)
-// left in scratch because the logic is right but VC5 keeps choosing the wrong this-register family
+// VA: 0050D7E0 RGE_Timeline::~RGE_Timeline (70 B, 23 asm)
+// PDB source: Timeline.cpp lines 90-103
+//
+// Attempt log:
+// 1. Prior scratch: RGE_Timeline* timeline = this + pRVar1.
+//    72% diff: esi↔edi swap + push eax vs mov ecx,eax+push ecx.
+// 2-5. Various loop forms, void* temp, function-scope next: same systematic esi↔edi swap.
+// 6. while(this->time_list) with guard to force reload pattern.
+
 #include <stdlib.h>
 
 class RGE_Game_World;
@@ -24,34 +29,33 @@ public:
     void* target_obj;
     short target_obj_id;
     unsigned char _pad_4[2];
-    RGE_Time_Entry* next;
+    RGE_Time_Entry* next;  // at +0x2C
 };
 
 class RGE_Timeline {
 public:
-    void* vtable_ptr;
-    RGE_Game_World* world;
-    RGE_Time_Entry* time_list;
-    short list_num;
-    short avail_id;
-    float old_time;
+    void* vtable_ptr;          // +0x00
+    RGE_Game_World* world;     // +0x04
+    RGE_Time_Entry* time_list; // +0x08
+    short list_num;            // +0x0C
+    short avail_id;            // +0x0E
+    float old_time;            // +0x10
 
     ~RGE_Timeline();
 };
 
 RGE_Timeline::~RGE_Timeline() {
-    RGE_Timeline* timeline = this;
-    RGE_Time_Entry* pRVar1;
-
-    pRVar1 = timeline->time_list;
-    timeline->vtable_ptr = (void*)0x5766F4;
-    while (pRVar1 != 0) {
-        pRVar1 = timeline->time_list->next;
-        free(timeline->time_list);
-        timeline->time_list = pRVar1;
+    this->vtable_ptr = (void*)0x5766F4;
+    if (this->time_list != 0) {
+        while (this->time_list != 0) {
+            RGE_Time_Entry* current = this->time_list;
+            RGE_Time_Entry* nxt = current->next;
+            free(current);
+            this->time_list = nxt;
+        }
     }
-    timeline->avail_id = 0;
-    timeline->old_time = -1.0f;
-    timeline->world = 0;
-    timeline->list_num = 0;
+    this->avail_id = 0;
+    this->old_time = -1.0f;
+    this->world = 0;
+    this->list_num = 0;
 }

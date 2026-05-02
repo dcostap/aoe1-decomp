@@ -39,7 +39,7 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
         return 0;
 
     unsigned char* cell = this->rowData[ry] + rx;
-    unsigned char cur = *cell;
+    int cur = *cell;
 
     if (cur >= this->maxLimit)
         return 1;
@@ -47,10 +47,10 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     cur = cur + value;
 
     if (cur >= this->maxLimit) {
-        *cell = this->maxLimit - 1;
+        *cell = (unsigned char)(this->maxLimit - 1);
         return 1;
     }
 
-    *cell = cur;
+    *cell = (unsigned char)cur;
     return 1;
 }

@@ -1,6 +1,3 @@
-// tried the decompiler-shaped scan with a pointer walk and the exact early-out/return structure; build stayed at 64 bytes vs the expected 70
-// tried adding a named return temp and then a break/return split; codegen still collapsed to the same short basin
-// leaving in scratch because the blocker is still the object-size ceiling, not a proven behavior mismatch
 class TacticalAIGroup {
 public:
     void* vtable_ptr;
@@ -15,30 +12,29 @@ public:
     int unit(int index);
 };
 
+// tried decompiler-style pointer walk, straight while/do forms, and an index+continue form.
+// Best remaining family still differs in early register/save order:
+// original wants param in esi, base in ebx, then push edi; rebuilt keeps pushing edi too early
+// and tends to compare/count against a derived `index+1` temp in esi instead of using
+// `cmp edx, esi` after the occupied-slot increment. The object now reaches the full 70-byte
+// size, so the blocker is codegen shape rather than missing behavior.
 int TacticalAIGroup::unit(int index) {
-    int iVar1;
-    int* piVar2;
-    int iVar3;
-    int value;
+    int i = 0;
+    int used = -1;
+    int* units = this->unitsValue;
 
-    iVar1 = 0;
-    iVar3 = -1;
-    piVar2 = this->unitsValue;
-    while (true) {
-        if (index + 1 <= iVar3) {
-            return -1;
+    while (used < index + 1) {
+        if (*units != -1) {
+            used++;
         }
-        if (*piVar2 != -1) {
-            iVar3 = iVar3 + 1;
+        if (used == index) {
+            return this->unitsValue[i];
         }
-        if (iVar3 == index) {
-            value = this->unitsValue[iVar1];
-            return value;
-        }
-        iVar1 = iVar1 + 1;
-        piVar2 = piVar2 + 1;
-        if (0x27 < iVar1) {
+        i++;
+        units++;
+        if (i >= 0x28) {
             return -1;
         }
     }
+    return -1;
 }

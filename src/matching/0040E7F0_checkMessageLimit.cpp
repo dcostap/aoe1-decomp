@@ -1,5 +1,11 @@
+// checkMessageLimit (0040E7F0) - AIModule::checkMessageLimit
+// Empty member function - just ret
+
 class AIModule {
-protected:
-    void checkMessageLimit();
+public:
+    void checkMessageLimit(void);
 };
-void AIModule::checkMessageLimit() {}
+
+void AIModule::checkMessageLimit(void)
+{
+}

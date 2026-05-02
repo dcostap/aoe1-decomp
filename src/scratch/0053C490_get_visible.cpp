@@ -1,8 +1,9 @@
-// tried direct Ghidra spelling; VC5 kept shifting the player load / final mask fold
-// tried local player/mask temps and a row temp; mismatch moved earlier into the first load-order bytes
-// leaving this in scratch: remaining gap is early register/load ordering plus the 0x80 boolean fold
-
-extern unsigned long* unified_map_offsets[256];
+// tried local row/value/player/mask variants and direct repeated-expression variants.
+// Best source shape still misses early load/register order: VC5 wants either
+// mov eax,[ecx+8] first or keeps the map cell in ecx/edx instead of the original
+// y -> eax, player -> ecx, row -> edx, value -> eax sequence. Boolean 0x80 fold also
+// stays in eax (neg/sbb eax,eax) instead of original ecx/cl fold.
+extern unsigned long* unified_map_offsets[];
 
 class RGE_Player {
 public:
@@ -20,9 +21,8 @@ public:
 };
 
 unsigned char RGE_Visible_Map::get_visible(int x, int y) {
-    unsigned long value = unified_map_offsets[y][x];
-    if ((value & this->player->mutualVisibleMask) != 0) {
+    if ((unified_map_offsets[y][x] & this->player->mutualVisibleMask) != 0) {
         return 0x0F;
     }
-    return (unsigned char)(-(int)((value & this->player->mutualExploredMask) != 0) & 0x80);
+    return (unsigned char)(-((this->player->mutualExploredMask & unified_map_offsets[y][x]) != 0) & 0x80);
 }

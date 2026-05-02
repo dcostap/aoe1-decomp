@@ -1,22 +1,12 @@
 // RGE_Victory_Conditions::handle_capture
 // VA: 00532050
 // victory.cpp
-// Attempt 1: struct layout approach with exact asm-based logic
 
 struct RGE_Static_Object {
     char gap_00[0x0C];
     void* owner;             // +0x0C
     char gap_10[0x3C];
     unsigned char object_state; // +0x48
-};
-
-struct RGE_Player {
-    char gap_00[0x4A];
-    short id;                // +0x4A
-    char gap_4C[0x38];
-    unsigned char* relations; // +0x84
-    char gap_88[0x7C];
-    unsigned char allied_victory; // +0x104
 };
 
 struct RGE_Victory_Entry {
@@ -30,45 +20,40 @@ struct RGE_Victory_Entry {
 class RGE_Victory_Conditions {
 public:
     char gap_00[0x0C];
-    RGE_Player* player;      // +0x0C
-
-    void handle_capture(RGE_Victory_Entry* entry);
+    void* player;            // +0x0C
 };
 
-void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* entry) {
-    RGE_Static_Object* obj = (RGE_Static_Object*)entry->target_obj;
-    if (obj == 0) return;
-
-    if (obj->object_state <= 2) {
-        RGE_Player* owner = (RGE_Player*)obj->owner;
-        if (entry->state == 0) {
-            RGE_Player* self = this->player;
-            if (owner == self) {
-                entry->state = 2;
-                return;
-            }
-            if (entry->ally_flag != 0 && self->allied_victory != 0) {
-                short owner_id = owner->id;
-                if (self->relations[owner_id] == 0) {
-                    short self_id = self->id;
-                    if (owner->relations[self_id] == 0 && owner->allied_victory != 0) {
-                        entry->state = 2;
-                        return;
+void __fastcall handle_capture(void* _this, int _, struct RGE_Victory_Entry* entry) {
+    if (entry->target_obj) {
+        if (*(unsigned char*)((char*)(entry->target_obj) + 0x48) <= 2) {
+            void* owner = *(void**)((char*)(entry->target_obj) + 0x0C);
+            if (entry->state == 0) {
+                void* self = *(void**)((char*)_this + 0x0C);
+                if (owner == self) {
+                    entry->state = 2;
+                } else if (entry->ally_flag && *(unsigned char*)((char*)self + 0x104)) {
+                    short owner_id = *(short*)((char*)owner + 0x4A);
+                    if (*(unsigned char*)((char*)self + 0x84 + owner_id) == 0) {
+                        short self_id = *(short*)((char*)self + 0x4A);
+                        if (*(unsigned char*)((char*)owner + 0x84 + self_id) == 0 &&
+                            *(unsigned char*)((char*)owner + 0x104)) {
+                            entry->state = 2;
+                        }
+                    }
+                }
+            } else if (entry->state == 2) {
+                void* self = *(void**)((char*)_this + 0x0C);
+                if (owner != self) {
+                    if (!entry->ally_flag || *(unsigned char*)((char*)self + 0x84 + *(short*)((char*)owner + 0x4A))) {
+                        entry->state = 0;
                     }
                 }
             }
-        } else if (entry->state == 2) {
-            RGE_Player* self = this->player;
-            if (owner != self) {
-                if (entry->ally_flag == 0 || self->relations[owner->id] != 0) {
-                    entry->state = 0;
-                }
+        } else {
+            entry->target_obj = 0;
+            if (entry->state == 0) {
+                entry->state = 1;
             }
-        }
-    } else {
-        entry->target_obj = 0;
-        if (entry->state == 0) {
-            entry->state = 1;
         }
     }
 }

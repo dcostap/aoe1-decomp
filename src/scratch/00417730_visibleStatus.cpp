@@ -1,5 +1,8 @@
-// tried the straight decompiler shape; first mismatch stayed at the initial register/load order
-// fixed the visible-mask player offset to 0xD4; mismatch still begins at the first load sequence
+// VA: 00417730 UnitAIModule::visibleStatus (60B)
+// PDB source: aiuaimod.cpp lines 3900-3910
+// tried direct inline access and row/mask/player local variants; best match gets first 19 bytes exact
+// remaining drift: VC5 keeps loading mask into edx before owner into ecx/eax, then computes the explored return in eax instead of the original edx/dl neg+sbb byte pattern
+
 class RGE_Player {
 public:
     char gap_00[0xD0];
@@ -11,7 +14,7 @@ class RGE_Static_Object {
 public:
     void* vtable_ptr;
     long id;
-    char gap_08[0x4];
+    char gap_08[4];
     RGE_Player* owner;
 };
 
@@ -28,14 +31,16 @@ public:
 
 unsigned char UnitAIModule::visibleStatus(RGE_Visible_Map* param_1, int param_2, int param_3) {
     unsigned long* row;
-    RGE_Player* pVar1;
+    RGE_Player* player;
     unsigned long mask;
+    unsigned long explored;
 
     row = unified_map_offsets[param_3];
-    pVar1 = this->objectValue->owner;
     mask = row[param_2];
-    if ((pVar1->mutualVisibleMask & mask) != 0) {
-        return 0x0f;
+    player = this->objectValue->owner;
+    if ((player->mutualVisibleMask & mask) != 0) {
+        return 0x0F;
     }
-    return (unsigned char)(-((pVar1->mutualExploredMask & mask) != 0) & 0x80);
+    explored = player->mutualExploredMask & mask;
+    return (unsigned char)(-((int)(explored != 0)) & 0x80);
 }

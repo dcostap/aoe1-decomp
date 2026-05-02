@@ -1,15 +1,18 @@
 // VA: 004494B0 RGE_Effects::save(int fd)
 // effects.cpp lines 140-183
 // 265 bytes
-// BLOCKER: same register allocation issue as the int ctor.
-// The original uses esi=this but with a different register order.
-// Rebuilt patterns all produce different prologue/frame code.
+// BLOCKER: first 20 bytes match perfectly (prologue/frame/es=this),
+// but stack layout differs from offset 20 (this saved at different slot).
+// The remaining diff is all shifted stack offsets from this one difference.
 //
 // Attempt log:
-// - natural pattern mirroring ctor: diverse register allocation
-// - int* num = &effect_num: same
-// - for loops with offsets: different prologue
+// - with RGE_Effect* eff local: first 20 bytes match (best result: 74% diff)
+// - without eff local: prologue breaks (83% diff)
+// - int* num = &effect_num: same 83% diff
+// - natural nested for loops: 74% first 20 bytes match
 // FLAGS: none
+// NOTE: very close - the stack layout diff at byte 20 suggests one extra
+// local variable in our version vs the original.
 
 void __cdecl rge_write(int fd, void* buf, int size);
 
@@ -30,10 +33,9 @@ struct RGE_Effects {
 };
 
 void RGE_Effects::save(int fd) {
-    int* num = &effect_num;
-    rge_write(fd, num, 4);
-    if (*num > 0) {
-        for (int i = 0; i < *num; i++) {
+    rge_write(fd, &effect_num, 4);
+    if (effect_num > 0) {
+        for (int i = 0; i < effect_num; i++) {
             RGE_Effect* eff = &effects[i];
             rge_write(fd, eff->name, 0x1F);
             rge_write(fd, &eff->effect_list_num, 2);

@@ -1,18 +1,31 @@
-// UnitAIModule::setPlayStatus — real pass (EH-framed)
-// VA: 004177D0
-#include "../../include/game_globals.h"
+// UnitAIModule::setPlayStatus 
+// VA: 004177D0 (131 bytes, EH-framed)
 
-void __fastcall setPlayStatus(void* _this, int _, void* status)
-{
-    void* ps = *(void**)((char*)_this + 0x12C);
-    if (!ps) {
-        ps = operator new(0x1C8);
-        if (ps) {
-            ((void(__fastcall*)(void*,int))0x40FC30)(ps, 0);
+void* __cdecl operator_new(size_t sz);
+void __cdecl operator_delete(void* p);
+
+struct FakeDtor {
+    ~FakeDtor() { }
+};
+
+class UnitAIModule {
+public:
+    char gap_00[0x12C];
+    void* play_status;
+
+    void setPlayStatus(void* status);
+};
+
+void UnitAIModule::setPlayStatus(void* status) {
+    FakeDtor guard;  // forces EH frame with /GX
+    if (play_status == 0) {
+        void* ps = operator_new(0x1C8);
+        if (ps != 0) {
+            ((void(__fastcall*)(void*,int))0x0040FC30)(ps, 0);
         }
-        *(void**)((char*)_this + 0x12C) = ps;
+        play_status = ps;
     }
-    if (status) {
-        ((void(__fastcall*)(void*,int,void*))0x410050)(*(void**)((char*)_this + 0x12C), 0, status);
+    if (play_status != 0 && status != 0) {
+        ((void(__fastcall*)(void*,int,void*))0x00410050)(play_status, 0, status);
     }
 }

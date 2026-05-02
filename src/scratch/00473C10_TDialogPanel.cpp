@@ -1,28 +1,31 @@
-// TDialogPanel::TDialogPanel(char* name) - call TEasy_Panel base ctor, init dialog fields
-
 class TEasy_Panel {
 public:
+    void* vftable;
+    char gap_04[0x474];
+
     TEasy_Panel(char* name);
 };
 
 class TDialogPanel : public TEasy_Panel {
 public:
-    char pad_04[0x474];
-    int field_478;         // 0x478 - zeroed
-    int field_47C;         // 0x47C - zeroed
-    int field_480;         // 0x480 - set to 0xB (11)
-    int field_484;         // 0x484 - set to 0xB
-    int field_488;         // 0x488 - set to 0xB
-    int field_48C;         // 0x48C - zeroed
+    int field_478;
+    int field_47C;
+    int field_480;
+    int field_484;
+    int field_488;
+    int field_48C;
 
     TDialogPanel(char* name);
 };
 
 TDialogPanel::TDialogPanel(char* name) : TEasy_Panel(name) {
-    this->field_480 = 0xB;
-    this->field_484 = 0xB;
-    this->field_488 = 0xB;
-    this->field_478 = 0;
-    this->field_47C = 0;
-    this->field_48C = 0;
+    int zero = 0;
+
+    field_480 = 0xB;
+    field_484 = 0xB;
+    field_488 = 0xB;
+    field_478 = zero;
+    field_47C = zero;
+    field_48C = zero;
+    *(volatile void**)this = (void*)0x005710B0;
 }

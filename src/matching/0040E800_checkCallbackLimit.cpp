@@ -1,5 +1,11 @@
+// checkCallbackLimit (0040E800) - AIModule::checkCallbackLimit
+// Empty member function - just ret
+
 class AIModule {
-protected:
-    void checkCallbackLimit();
+public:
+    void checkCallbackLimit(void);
 };
-void AIModule::checkCallbackLimit() {}
+
+void AIModule::checkCallbackLimit(void)
+{
+}

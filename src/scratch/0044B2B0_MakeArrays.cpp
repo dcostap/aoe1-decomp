@@ -1,36 +1,33 @@
-// VA: 0044B2B0
-// PointMaker::MakeArrays()
-// Source: fractal.cpp lines 194-206
+// PointMaker::MakeArrays
+// VA: 0044B2B0 - variant_lab best: dec_jne + cmp_jne (edit_diff=21)
 
 void* __cdecl operator_new(unsigned int size);
 
 class PointMaker {
 public:
     char gap_000[0xFD4];
-    int Width;           // +0xFD4
-    int Height;          // +0xFD8
+    int Width;
+    int Height;
     char gap_FDC[0x28];
-    int SizeArrays;      // +0x1004
+    int SizeArrays;
     char gap_1008[0x1C];
-    char* ProbArray;     // +0x1024
-    char* PlacementArray;// +0x1028
+    char* ProbArray;
+    char* PlacementArray;
 
     void MakeArrays();
 };
 
 void PointMaker::MakeArrays() {
-    int size = Height * Width;
-    SizeArrays = size;
-
+    SizeArrays = Height * Width;
     int count = 9;
     do {
         if (ProbArray != 0) break;
-        ProbArray = (char*)operator_new(size);
-    } while (count-- != 0);
-
+        ProbArray = (char*)operator_new(SizeArrays);
+    } while (--count != 0);
     count = 9;
-    do {
+    while (count != 0) {
         if (PlacementArray != 0) return;
-        PlacementArray = (char*)operator_new(size);
-    } while (count-- != 0);
+        PlacementArray = (char*)operator_new(SizeArrays);
+        count--;
+    }
 }

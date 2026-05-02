@@ -1,92 +1,88 @@
 // 004374C0 RGE_Diamond_Map::clear_image (diam_map.cpp:519-569)
-// Minimal implementation matching original structure
 
 #include <string.h>
 
 struct TDA {
     unsigned char* Lock(char*, int);
     void Unlock(char*);
-    unsigned char* pixels;
-    int gap_0C[4];
-    int pitch;
-    int width;
-    int bpp;
-    int height;
+    unsigned char* Bits;
+    int _gap[4];
+    int Height;
+    int Pitch;
+    int Orien;
 };
 
-struct ImLine {
-    short tile_row;
-    short start_x;
-    short line_len;
-};
-
-struct DMap {
-    char pad0[0x0C];
+class DMap {
+public:
+    void clear_image();
+    char _0[0x0C];
     long pnl_x;
     long pnl_y;
-    char pad1[0x14 - 0x14];
+    char _1[0x10];
     long clip_l;
     long clip_t;
     long clip_r;
     long clip_b;
-    char pad2[0xBB];
+    char _2[0xBB];
     unsigned char bg;
-    char pad3[0x34];
-    ImLine* lines;
-    char pad4[8];
-    short map_w;
-    short map_h;
-    short start_y;
-    short map_iw;
-    short map_ih;
-    char pad5[0x2C];
+    char _3[0x34];
+    short* lines;
+    char _4[8];
+    short w, h, sy, iw, ih;
+    char _5[0x2C];
     TDA* sa;
 };
 
 void DMap::clear_image()
 {
-    TDA* area = this->sa;
-    unsigned char* lock_ret = area->Lock("diam_map::clear_image", 1);
-    if (!lock_ret) return;
+    unsigned char* lock_ret = this->sa->Lock("diam_map::clear_image", 1);
+    if (lock_ret == 0)
+        return;
 
-    short sy = this->start_y;
-    int pitch;
-    short line_w;
+    {
+        short start_y = this->sy;
+        unsigned char* p;
+        short pi;
 
-    if (area->bpp == 1) {
-        pitch = sy * area->width + (int)area->pixels;
-        line_w = (short)area->width;
-    } else {
-        pitch = (area->height - sy - 1) * area->width + (int)area->pixels;
-        line_w = (short)(-(short)area->width);
+        if (this->sa->Orien == 1) {
+            pi = (short)this->sa->Pitch;
+            p = this->sa->Bits + (int)start_y * this->sa->Pitch;
+        } else {
+            p = this->sa->Bits + ((this->sa->Height - (int)start_y) - 1) * this->sa->Pitch;
+            pi = -(short)this->sa->Pitch;
+        }
+
+        short cur_y = (short)this->pnl_y + start_y;
+        short end_y = this->ih + cur_y;
+
+        if (cur_y < end_y) {
+            short* lp = this->lines + 2;
+            int yv = (int)cur_y;
+            int rm = (int)end_y - yv;
+
+            do {
+                if (yv >= this->clip_t && yv <= this->clip_b) {
+                    short sx = lp[-1];
+                    int s2 = (int)this->pnl_x + (int)sx;
+                    int ex = s2 + (int)*lp - 1;
+
+                    if (s2 < this->clip_l) {
+                        int adj = this->clip_l - s2;
+                        sx = (short)((int)sx + adj);
+                        s2 = this->clip_l;
+                    }
+                    if (ex > this->clip_r) ex = this->clip_r;
+
+                    if (s2 >= this->clip_l && ex <= this->clip_r)
+                        memset(p + (int)sx, this->bg, ex - s2 + 1);
+                }
+                lp += 3;
+                p += (int)pi;
+                yv++;
+                rm--;
+            } while (rm);
+        }
     }
 
-    short cy = (short)(this->pnl_y + sy);
-    short ey = cy + this->map_ih;
-    ImLine* p = this->lines;
-    short rc = ey - cy;
-
-    do {
-        int y = cy;
-        if (y >= this->clip_t && y <= this->clip_b) {
-            short sx = p->start_x;
-            short ex = sx + (short)this->pnl_x + p->line_len - 1;
-
-            if ((int)sx < this->clip_l)
-                sx = (short)this->clip_l;
-            if ((int)ex > this->clip_r)
-                ex = (short)this->clip_r;
-
-            if ((int)sx >= this->clip_l && (int)ex <= this->clip_r) {
-                int w = (int)ex - (int)sx + 1;
-                memset((void*)(pitch + (int)sx), this->bg, w);
-            }
-        }
-        p++;
-        pitch += line_w;
-        cy++;
-        rc--;
-    } while (rc);
-
-    area->Unlock("diam_map::clear_image");
+    this->sa->Unlock("diam_map::clear_image");
 }

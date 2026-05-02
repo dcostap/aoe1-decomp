@@ -1,6 +1,7 @@
-// first pass: direct scenario flag fast path plus scan for the next free object slot
-// first build was wrong on the field layout; the remaining question is whether the loop lands in the original esi-save basin
-// after layout fixes, the only stable drift left is the entry branch sense and prolog register ordering around max/next_object_id
+// VA: 00545D90 RGE_Game_World::get_next_object_id (62B)
+// PDB source: World.cpp lines 3636-3651
+// tried direct decompiler form, explicit iVar1/iVar2 locals, and direct-member scan forms
+// best shape keeps the scenario fast-path and most of the scan structure, but VC5 still prefers `lea esi,[eax-1]` / `cmp eax,esi` or early-return branch reshaping instead of the original `lea edx,[eax-1]` / `cmp edx,eax` with the exact loop entry layout
 
 class RGE_Static_Object;
 
@@ -21,20 +22,18 @@ public:
 
 long RGE_Game_World::get_next_object_id() {
     if (scenario_object_flag == 0) {
-        int limit = maxNumberObjectsValue + -1;
-        if (next_object_id <= limit) {
+        if (this->next_object_id <= this->maxNumberObjectsValue - 1) {
+            RGE_Static_Object** objs = this->objectsValue;
             do {
-                if (objectsValue[next_object_id] == 0) {
+                if (objs[this->next_object_id] == 0) {
                     break;
                 }
-                next_object_id = next_object_id + 1;
-            } while (next_object_id <= limit);
+                this->next_object_id = this->next_object_id + 1;
+            } while (this->next_object_id <= this->maxNumberObjectsValue - 1);
         }
-
-        int object_id = next_object_id;
-        next_object_id = object_id + 1;
+        int object_id = this->next_object_id;
+        this->next_object_id = object_id + 1;
         return object_id;
     }
-
-    return scenario_object_id;
+    return this->scenario_object_id;
 }

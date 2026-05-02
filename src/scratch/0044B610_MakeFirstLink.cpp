@@ -1,30 +1,40 @@
 // PointMaker::MakeFirstLink
-// VA: 0044B610
+// VA: 0044B610 - from Ghidra decomp
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
 
 class PointMaker {
 public:
-    char gap_00[0x8];
-    int Point[1000];                       // +0x08
+    int Prime_x;
+    int Prime_y;
+    int Point[1000];
     char gap_FA8[0x10];
-    int x;                                 // +0xFB8
-    int y;                                 // +0xFBC
+    int x;
+    int y;
     char gap_FC0[0x14];
-    int Width;                             // +0xFD4
-    int Height;                            // +0xFD8
+    int Width;
+    int Height;
     char gap_FDC[0x04];
-    int NumNodes;                          // +0xFE0
-    char gap_FE4[0x24];
-    int BranchDistance;                    // +0x1008
-    char gap_100C[0x04];
-    int DirX;                              // +0x1010
-    int DirY;                              // +0x1014
-    char gap_1018[0x2C];
-    int LeftLimit;                         // +0x1044
-    int RightLimit;                        // +0x1048
-    int TopLimit;                          // +0x104C
-    int BottomLimit;                       // +0x1050
+    int NumNodes;
+    char gap_FE4[0x08];
+    int ProbabilityTiles;
+    int TargetProbabilityCount;
+    int ProbabilityAdd;
+    int BranchRadius;
+    int SatelliteRadius;
+    int PrimaryRadius;
+    int SizeArrays;
+    int SatelliteDistance;
+    int BranchDistance;
+    int DirX;
+    int DirY;
+    int MaxNumberOfBranchLevels;
+    int CurrentNumberOfBranchLevels;
+    char gap_1020[0x24];
+    int LeftLimit;
+    int RightLimit;
+    int TopLimit;
+    int BottomLimit;
 
     int MakeFirstLink();
 };
@@ -33,12 +43,14 @@ int PointMaker::MakeFirstLink() {
     int dx = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
     dx = dx % BranchDistance + 2;
     int r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
-    if ((r & 0x80000001) == 1 || (r & 0x80000001) == 0x80000001) dx = -dx;
+    int abs_r = r < 0 ? -r : r;
+    if (abs_r & 1) dx = -dx;
 
     int dy = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
     dy = dy % BranchDistance + 2;
     r = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
-    if ((r & 0x80000001) == 1 || (r & 0x80000001) == 0x80000001) dy = -dy;
+    abs_r = r < 0 ? -r : r;
+    if (abs_r & 1) dy = -dy;
 
     DirX = dx;
     int nx = x + dx;
