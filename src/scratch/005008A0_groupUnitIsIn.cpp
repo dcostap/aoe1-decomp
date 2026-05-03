@@ -1,6 +1,8 @@
-// tried the direct sentinel-walk shape with a single group temp; VC5 still re-ordered the early test/load pair and the mismatch stayed at the first branch window
-// tried removing the separate end temp and comparing against &this->groups inline; same result
-// leaving in scratch because the remaining gap is source-shape/codegen ordering, not a behavior mismatch
+// VA: 005008A0 TribeTacticalAIModule::groupUnitIsIn (71B)
+// PDB source: taitacmd.cpp lines 11465-11473
+// tried the direct sentinel-walk shape with a single group temp and inline `&this->groups` compares
+// best result keeps `mov edi,[esp+10]` before `test esi,esi` and matches most of the body/call sequence, but VC5 still lowers the post-`group = group->next` tail as `cmp esi,ebx ; je ret0 ; jmp loop` instead of the original single `cmp esi,ebx ; jne loop` fallthrough-to-ret0 basin
+
 class TacticalAIGroup {
 public:
     void* vtable_ptr;
@@ -28,18 +30,26 @@ public:
 
 TacticalAIGroup* TribeTacticalAIModule::groupUnitIsIn(int unit) {
     TacticalAIGroup* group;
+    TacticalAIGroup* end;
 
     group = this->groups.next;
-    if (group != &this->groups) {
-        while (group != 0) {
-            if (group->containsUnit(unit) == 1) {
-                return group;
-            }
-            group = group->next;
-            if (group == &this->groups) {
-                return 0;
-            }
+    end = &this->groups;
+    if (group == end) {
+        goto not_found_outer;
+    }
+    while (1) {
+        if (group == 0) {
+            goto not_found_outer;
+        }
+        if (group->containsUnit(unit) == 1) {
+            return group;
+        }
+        group = group->next;
+        if (group == end) {
+            return 0;
         }
     }
+
+not_found_outer:
     return 0;
 }

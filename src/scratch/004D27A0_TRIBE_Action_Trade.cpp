@@ -1,6 +1,7 @@
-// tried the base RGE_Action ctor plus direct member writes; mismatch stayed in the first post-call store block
-// tried raw int bit-casts and a 0x2C gap to force the task pointer at +30; offsets matched, but VC5 still reordered 20/30 vs 40/44
-// remaining gap is statement/order codegen drift around the trade-specific field stores, not the ctor call itself
+// VA: 004D27A0 TRIBE_Action_Trade::TRIBE_Action_Trade (72B)
+// PDB source: tact_trd.cpp lines 77-91
+// tried the base ctor plus direct member writes, raw int bit-casts, and offset-faithful fields/gaps
+// best result keeps the ctor call and most final stores right, but VC5 still chooses a different post-call load/store order: it loads x/y/task from different stack slots and emits the 20/24/30/28 field stores in offset-grouped order instead of the original `24, 30, load z, const, vftable, 40, 44, type, 20, 28` sequence
 
 class RGE_Action_Object;
 class RGE_Task;
@@ -30,16 +31,12 @@ public:
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z)
     : RGE_Action(obj, 1) {
-    int x_bits = *(int*)&x;
-    int y_bits = *(int*)&y;
-    int z_bits = *(int*)&z;
-
-    *(int*)&this->field_24 = y_bits;
+    *(int*)&this->field_24 = *(int*)&y;
     this->task = task;
+    *(int*)&this->field_20 = *(int*)&x;
+    *(int*)&this->field_28 = *(int*)&z;
     this->vftable = (void*)0x005752E8;
-    *(int*)&this->pick_up_x = 0xBF800000;
-    *(int*)&this->pick_up_y = 0xBF800000;
+    this->pick_up_x = -1.0f;
+    this->pick_up_y = -1.0f;
     this->action_type = 0x6F;
-    *(int*)&this->field_20 = x_bits;
-    *(int*)&this->field_28 = z_bits;
 }

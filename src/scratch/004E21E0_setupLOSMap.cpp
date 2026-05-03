@@ -1,0 +1,115 @@
+// 004E21E0 TribeInformationAIModule::setupLOSMap
+// taiinfmd.cpp:7032-7076
+// Status: scratch / not exact.
+// Attempt log:
+// - Natural implementation with losMap.initialize/setReferencePoint, importantObjectMemory scan, md->object lookup, ftol radius/x/y, vf[0x108] float test, incrementValue, maxValue gets exact size (269) and 13.01% positional / 14.87% edit diff.
+// - Prologue, losMap setup, loop frame, null-object path, final loop increment, and maxValue tail are largely aligned.
+// - First persistent drift is loop entry register allocation/order: original loads importantObjectMemory into EDX, offset into EAX, then owner param into EDX and zero-extends owner byte into ECX; rebuilt uses EAX for base and EDX for offset/byte. Tried separate mem local, char* field, and compare operand swap; compare swap improved one byte but allocation remained.
+// - Tried reordering radius/x/y integer calculations to match original `fld y; mov ebx,eax; lea ecx,[edi+eax]; sub ebx,edi; store maxX; ftol`; source variants either kept current call-before-integer scheduling or caused a larger shifted diff.
+// - Tried explicit UnitTypeInfo temp/yfloat temp; worsened to ~47% positional by shortening the middle block.
+// - Remaining blocker: VC5 register allocation and scheduling in the object-memory entry check plus FPU/int interleaving before incrementValue.
+
+typedef unsigned char uchar;
+
+class InfluenceMap {
+public:
+    int initialize(uchar param);
+    void setReferencePoint(int x, int y);
+    int incrementValue(int min_x, int min_y, int max_x, int max_y, int flag);
+    int maxValue(void);
+};
+
+InfluenceMap* const losMap = (InfluenceMap*)0x86BC10;
+
+struct UnitTypeInfo {
+    char gap_00[0x28];
+    float los_radius;
+};
+
+class RGE_Static_Object {
+public:
+    virtual void vf000(); virtual void vf004(); virtual void vf008(); virtual void vf00C();
+    virtual void vf010(); virtual void vf014(); virtual void vf018(); virtual void vf01C();
+    virtual void vf020(); virtual void vf024(); virtual void vf028(); virtual void vf02C();
+    virtual void vf030(); virtual void vf034(); virtual void vf038(); virtual void vf03C();
+    virtual void vf040(); virtual void vf044(); virtual void vf048(); virtual void vf04C();
+    virtual void vf050(); virtual void vf054(); virtual void vf058(); virtual void vf05C();
+    virtual void vf060(); virtual void vf064(); virtual void vf068(); virtual void vf06C();
+    virtual void vf070(); virtual void vf074(); virtual void vf078(); virtual void vf07C();
+    virtual void vf080(); virtual void vf084(); virtual void vf088(); virtual void vf08C();
+    virtual void vf090(); virtual void vf094(); virtual void vf098(); virtual void vf09C();
+    virtual void vf0A0(); virtual void vf0A4(); virtual void vf0A8(); virtual void vf0AC();
+    virtual void vf0B0(); virtual void vf0B4(); virtual void vf0B8(); virtual void vf0BC();
+    virtual void vf0C0(); virtual void vf0C4(); virtual void vf0C8(); virtual void vf0CC();
+    virtual void vf0D0(); virtual void vf0D4(); virtual void vf0D8(); virtual void vf0DC();
+    virtual void vf0E0(); virtual void vf0E4(); virtual void vf0E8(); virtual void vf0EC();
+    virtual void vf0F0(); virtual void vf0F4(); virtual void vf0F8(); virtual void vf0FC();
+    virtual void vf100(); virtual void vf104();
+    virtual float vf108();
+
+    char gap_04[4];
+    UnitTypeInfo* type;     // +0x08
+    char gap_0C[0x38 - 0x0C];
+    float x;                // +0x38
+    float y;                // +0x3C
+};
+
+class MainDecisionAIModule {
+public:
+    RGE_Static_Object* object(int id);
+};
+
+struct ImportantObjectMemory {
+    int id;                 // +0
+    char gap_04[7];
+    uchar owner;            // +0x0B
+    char gap_0C[0x24 - 0x0C];
+};
+
+class TribeInformationAIModule {
+public:
+    virtual void vf00();
+    char gap_04[0x100 - 0x04];
+    MainDecisionAIModule* md;                 // +0x100
+    char gap_104[0x110 - 0x104];
+    int maxImportantObjectMemory;             // +0x110
+    char* importantObjectMemory;              // +0x114
+
+    int setupLOSMap(int owner, int refX, int refY);
+};
+
+int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
+{
+    losMap->initialize(0);
+    losMap->setReferencePoint(refX, refY);
+
+    int i = 0;
+    if (this->maxImportantObjectMemory > 0) {
+        int offset = 0;
+        do {
+            ImportantObjectMemory* mem = (ImportantObjectMemory*)(this->importantObjectMemory + offset);
+            if ((unsigned int)owner == (unsigned int)mem->owner) {
+                RGE_Static_Object* obj = this->md->object(mem->id);
+                if (obj != 0) {
+                    int range = (int)obj->type->los_radius;
+                    int objX = (int)obj->x;
+                    int objY = (int)obj->y;
+                    int maxX = range + objX;
+                    int minX = objX - range;
+                    int minY = objY - range;
+                    int maxY = range + objY;
+                    int flag;
+                    if (obj->vf108() > 0.0f) {
+                        flag = 5;
+                    } else {
+                        flag = 1;
+                    }
+                    losMap->incrementValue(minX, minY, maxX, maxY, flag);
+                }
+            }
+            i++;
+            offset += 0x24;
+        } while (i < this->maxImportantObjectMemory);
+    }
+    return losMap->maxValue();
+}

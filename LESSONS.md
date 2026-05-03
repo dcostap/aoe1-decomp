@@ -9,6 +9,41 @@ Use this file for generalized eureka moments, especially lessons about:
 
 - source shapes that make VC5 emit the expected assembly;
 
+### IAT import thunks via `extern const` function pointer
+
+When the original calls through an import thunk (`call dword [IAT_addr]` like
+`call [88A88Ch]` for MessageBeep), use:
+```c
+extern "C" void (__stdcall* const FuncName)(arg_type);
+```
+Calling `FuncName(args)` generates `call dword [encoded_addr]`. The relocation
+is zeroed in comparison but the instruction encoding (`ff15...`) matches exactly,
+unlike a direct `call rel32` which VC5 generates for a normal function declaration.
+
+### MBCS string function naming
+
+CRT MBCS functions like `_mbsncpy`, `_mbsninc`, `_mbsinc` exist in the VC5 CRT
+(`mbstring.h`). Declare them as `extern "C"` with appropriate signatures:
+```c
+extern "C" void* __cdecl _mbsncpy(void* dest, void* src, int count);
+extern "C" void* __cdecl _mbsninc(void* str, int count);
+extern "C" void* __cdecl _mbsinc(void* str);
+```
+
+### Forcing _mbsinc evaluation before _mbsncpy args
+
+When calling `_mbsncpy(_mbsinc(p), src, count)`, VC5 evaluates args right-to-left
+for cdecl, so `_mbsinc` is called AFTER `count` and `src` are pushed. To match
+original code where `_mbsinc` is called before any `_mbsncpy` arg pushes, separate
+the calls:
+```c
+p = (char*)_mbsinc(p);
+_mbsncpy(p, src, count);
+```
+VC5 reuses the live `eax` (the `_mbsinc` return) directly for the final push,
+avoiding stack temporaries. This matches the original's pattern of `push eax`
+from the `_mbsinc` return value.
+
 ## Lesson: Derived-class field layout requires field-level base class gaps
 
 When a derived class adds fields at offsets past the base class size (e.g.,
@@ -1021,6 +1056,39 @@ This `if (ptr == 0) { call new; } loop` with the check at TOP of the loop
 is controlled by `do { if (ptr != 0) break; ptr = call(); } while (--count != 0)`.
 The `break` puts the exit at top, not bottom.
 
+## Lesson: Member initializer list delays vftable override in constructor body
+
+When a derived class constructor sets a field in the member initializer list
+(e.g., `: Base(args), derivedField(value)`), VC5 places the implicit vftable
+override (writing the derived class vtable pointer) AFTER the initializer-list
+stores but still within the constructor preamble. This can match the original
+binary's vftable position if the original also has field stores before the
+vftable write.
+
+If the same field is assigned in the constructor body instead, VC5 may place
+
+the vftable override earlier (after fewer body statements), shifting subsequent
+instruction positions.
+
+Try when:
+- A derived class constructor writes a vftable override (`mov [this], vftable_addr`)
+  at a specific position among field stores.
+- Moving a constant field assignment (like `field = 1.0f`) from the body to the
+  initializer list changes the vftable override position.
+
+Why it helps:
+- The vftable position is determined by the compiler, not directly controllable.
+- The initializer list causes it to be placed after the initializer stores but
+  before the first body statement, which can match the original's position.
+
+Caveats:
+- Initializer list items execute in DECLARATION order (within the class), not
+  in the order written in the initializer list.
+- This does NOT change parameter load ordering (params are always loaded in
+  stack order in our VC5 version).
+- Verified with TRIBE_Action_Convert (004CDB20): requiredRange(1.0f) in
+  initializer list moved vftable after +0x44 store, matching original.
+
 ## Lesson: Virtual destructor adds 4-byte vtable pointer shift to gap arrays
 
 When a class has a `virtual ~ClassName()` destructor and uses `char gap_0[N]` as
@@ -1677,3 +1745,416 @@ Caveats:
 Reference: `0042CC90` (GetActivePlayerCount) — switching `unsigned int player`
 to `int player` in the for-loop preserved the initial guard and the signed `jle`
 comparison, achieving exact match.
+
+## 2026-05-02: VC5 strcmp intrinsic — ternary `? 0 : 1` produces `sete al` directly
+
+VC5 inlines `strcmp` as a 2-byte unrolled compare loop with `mov cl, dl` for the
+null check and `sbb eax, eax; sbb eax, 0FFFFFFFFh` for the signed comparison
+result. When converting the strcmp result to a boolean for `unsigned char`
+return, the form of the boolean expression determines whether VC5 uses
+`sete al` directly or introduces a `sete cl; mov al, cl` intermediate:
+
+- **`strcmp(a, b) == 0`** or **`!strcmp(a, b)`**: VC5 allocates `ecx` as a
+  separate bool intermediate, producing `xor ecx,ecx; sete cl; mov al,cl`.
+- **`strcmp(a, b) ? 0 : 1`**: VC5 targets `al` directly, producing
+  `xor eax,eax; test eax,eax; sete al` for the match path and the same `sbb`
+  chain for the mismatch path.
+
+Use the ternary form when the goal is exact-match at the byte level and the
+`ecx` intermediate is the only remaining blocker.
+
+Reference: `0044CAD0` (verify_campaign_name) — `return strcmp(a,b) ? 0 : 1;`
+matched on first try with ternary form after 9 iterations with other forms.
+
+## Lesson: Controlling vtable offsets for thiscall dispatch with dummy virtuals
+
+When a function makes virtual calls through `this` (e.g., `this->set_redraw(1)`
+or `this->do_paint(...)`), VC5 generates `call dword [vtable+offset]` with
+`ECX = this` (thiscall). To get the correct offset, the virtual method must
+be declared at the exact vtable slot (e.g., slot 8 = offset 0x20).
+
+Approach:
+- Declare a shallow base class with known virtuals in order (destructor first,
+  then dummies for every slot up to the first target method).
+- Declare the derived class with more dummy virtuals to pad to deeper slots.
+- The total vtable position = base virtuals + derived virtuals (in declaration
+  order). The last dummy before a real method determines its slot.
+- Read the real binary's vtable entries to verify slot positions: the vtable
+  address is visible in the class constructor (`mov [esi], vtable_addr`). Use
+  a Python script with PE parsing to dump entries.
+
+Reference: `0053A9C0` (end_scroll_view) — base TPanel_Base with 9 virtuals
+(set_redraw at slot 8/0x20), derived with 51 dummies (slots 9-59), then
+end_scroll_view at slot 60 (0xF0), do_paint at slot 61 (0xF4).
+
+## SEH-framed functions with `new` and shared tails
+
+`00431340` (`RGE_Combat_Object::unload` in com_obj.cpp, 254 bytes):
+
+- **SEH frame via `new` + `/GX`**: Using `new RGE_Action_Transport(...)` instead of
+  separate `operator_new` + explicit ctor call triggers VC5's SEH frame generation
+  when compiled with `/GX`. The `new` expression is recognized as potentially
+  throwing, which forces the push -1 / mov fs:[0] prologue.
+- **No virtual functions on the flat struct**: When declaring a class with virtual
+  functions in a hierarchy that already has a vtable, the compiler may add an
+  extra vtable pointer (4 bytes) if the class doesn't inherit from a vtable-bearing
+  base. This shifts ALL field offsets by 4. Avoid this by keeping the combat object
+  as a flat struct with explicit `vtable_ptr` field, using a separate virtual-holder
+  struct (with 131 dummy virtual slots) only for the vtable[0x208] dispatch cast.
+- **Double `get_action()` call**: The original asm calls `actions->get_action()`
+  TWICE — once to check `func18() == 12`, then again to get a fresh pointer for
+  the `func34()` call. If you save the first result and reuse it, the compiler
+  won't emit the second `get_action()` call or the fresh vtable load.
+- **Virtual on RGE_Action only**: Declare RGE_Action with the 14 virtual slots
+  (up to `func34` at slot 13 / vtable+0x34) for natural `__thiscall` virtual
+  dispatch. This avoids function-pointer-cast calling-convention mismatches.
+
+## Lesson: `strcmp()` against a short string literal gets inlined as 2-byte unrolled loop
+
+When comparing a local buffer against a short string literal (`"VER 8.6"`),
+VC5 inlines `strcmp()` into a 2-byte-at-once comparison loop with the exact
+`sbb eax,eax; sbb eax,-1` strcmp result pattern — identical to the hand-written
+inline code a programmer would write. This is preferable to manual byte-by-byte
+comparison (`version[0] != 'V' || version[1] != 'E' ...`) which generates an
+entirely different code sequence (series of individual `cmp`/`jne` with no loop).
+
+The `strcmp` approach also increases register pressure enough to force the
+correct prologue register allocation (save `this` in `ebp`, vtable in `ebx`)
+for functions with two or more virtual calls. A function using manual comparison
+may save fewer callee-saved registers, changing the entire prologue.
+
+Example: `RGE_Game_World::load_game` @ 00542360 — using
+`strcmp(version, "VER 8.6")` produced the exact prologue and inline comparison
+loop matching the original, while manual byte checks shifted register allocation
+(this→esi instead of ebp) and produced a different comparison sequence.
+
+## Lesson: Preventing VC5 end-of-function exit-path merging with a guardian return
+
+VC5 (/O2) applies a speculative exit-path optimization to the LAST conditional
+block before a function's terminal `return`. Instead of generating a dedicated
+early-return path (separate pop sequence) plus a fallthrough (interleaved pop +
+mov sequence), it merges both into a shared pop sequence using speculative
+register assignment:
+
+```asm
+; VC5 merged exit (when last block)
+mov ecx, [mem]      ; load memory operand
+cmp ecx, eax        ; reg-reg compare
+mov eax, ret_val    ; speculative set
+jg skip             ; conditional keep
+mov eax, fallback   ; else fallback value
+skip:
+pop; pop; pop; ret   ; shared exit
+```
+
+vs the desired separate paths:
+
+```asm
+; Two separate exit paths (when NOT last block)
+cmp [mem], eax       ; memory-direct compare
+jle fallback         ; branch to fallthrough
+mov eax, ret_val     ; early return
+pop; pop; pop; ret
+fallback:
+pop                   ; interleaved fallthrough
+mov eax, fallback_val
+pop; pop; ret
+```
+
+The merged path saves 4 bytes but changes compare encoding (loads mem into
+register) and uses speculative assignment + conditional move, producing
+different bytes than the original.
+
+**Fix**: Add a second `return` or `goto` right after the critical if-block to
+create a destination block that looks like a "next check" to the compiler,
+preventing it from applying the end-of-function optimization. Simply duplicating
+the terminal return (one inside the if scope, one after) is enough:
+
+```cpp
+if (param_1 == 1) {
+    // ... checks with early returns ...
+    return -1;   // guardian return: creates a "next block" target
+}
+return -1;       // actual fallthrough for param_1 != 1
+```
+
+Without the guardian `return -1` inside the if block, the last check before the
+function's terminal return gets the merged-exit optimization. This applies
+especially to functions with multiple if-blocks all returning early to a common
+terminal fallthrough value.
+
+## Lesson: Single multiplication expression forces correct register allocation for `strategicNumber` product
+
+When calling the same function twice and multiplying results (`tacticalAI->strategicNumber(0xCA) * tacticalAI->strategicNumber(0xCA)`),
+the expression form determines whether VC5 saves the first result in EBP (original) or EDI (shifted).
+
+- `int s = a() * b();` → compiler evaluates `a()`, saves result in EBP, evaluates `b()`, `imul ebp, eax`. MATCHES original.
+- `s = a(); s *= b();` → compiler saves first result in EDI, evaluates `b()`, moves to EBP, then `imul ebp, edi`. MISMATCH (wastes 2 bytes, shifts all offsets).
+- `int t1 = a(); int t2 = b(); int s = t1 * t2;` → same as chained assignment (EDI save).
+
+Use case: `acceptablePotentialDropsiteArea` @ 004E4680 (taiinfmd.cpp). The original source
+likely wrote the strategicNumber product as a single expression. The chained form (`threshold *= ...`)
+and separate-variable form both produce different register allocation even though they are semantically
+equivalent. When a function has two identical calls whose results are multiplied, try the single-expression
+form early.
+
+## Lesson: Modern MSVC optimizes switch with dense values into jump table — use if-else chains to match original cmp/je
+
+When using `switch` with somewhat-dense case values (e.g. 0, 1, 2, 5, 6, 8), modern MSVC (VS2022) replaces the original VC5's explicit cmp/je chain with a jump table:
+```asm
+; Original VC5 (cmp/je chain):
+cmp eax, 0; je case0
+cmp eax, 1; je case0
+cmp eax, 2; je case2_6
+cmp eax, 6; je case2_6
+...
+
+; Modern MSVC (jump table):
+cmp eax, 8; ja default
+jmp dword [eax*4]
+```
+
+Fix: Replace `switch` with explicit `if-else if` chains using `||` conditions:
+```cpp
+if (type == 0 || type == 1) { ... }
+else if (type == 2 || type == 6) { ... }
+else if (type == 5 || type == 8) { ... }
+else { ... }
+```
+
+This forces the modern compiler to generate the original cmp/je chain pattern.
+
+Try when:
+- The original asm uses sequential `cmp/je` pairs for dispatch.
+- The `switch` case values are a mix of low and mid-range values (0,1,2,5,6,8 pattern).
+- Rebuilt shows `cmp max_value; ja default; jmp [eax*4]` (jump table).
+
+Verified: `setupBabylonian` @ 00517E10 — if-else chains matched exactly (275B, 0.0000% diff).
+
+## Lesson: Ternary-to-negative-one can force `dec; neg; sbb; add` boolean arithmetic
+
+For tiny integer status returns of the form “base plus -1 when an adjusted field is nonzero,” spelling the boolean as a ternary with an explicit `-1` arm can make VC5 keep the field in `eax` and emit the compact branchless sequence:
+`mov eax,[field]; dec eax; neg eax; sbb eax,eax; add eax,base`.
+
+Try when:
+- The original tail computes a 1/2-style status with `dec`, `neg`, `sbb`, then `add`.
+- Equivalent forms like `base - (expr != 0)` or `(field == value) + 1` compile to `setcc` or use a different register.
+
+Why it helps:
+- The explicit `?: -1 : 0` source names the all-bits false/true mask that VC5 can lower directly through `neg; sbb`, instead of materializing a 0/1 boolean and adding/subtracting it.
+
+Caveats:
+- Keep the adjusted expression inline (e.g. `field - 1 ? -1 : 0`) if the original loads the field directly into `eax`; a named temp may change register allocation.
+
+## Lesson: Non-virtual destructor for direct-call cleanup matched with cached local
+
+When the original destructor code calls `~T()` DIRECTLY (not through vtable dispatch) and then separately calls `operator delete`, declare the destructor as non-virtual (`~T()`, not `virtual ~T()`). Calling `ptr->~T()` then generates a direct call instruction, matching the original.
+
+Additionally, cache the pointer in a local variable (`T* p = member; if (p != 0) { p->~T(); operator delete(p); member = 0; }`) to match the original's load-into-callee-saved-register pattern (`mov edi, [esi+off]; test edi, edi; je skip; mov ecx, edi; call ~T; push edi; call op_delete`). A local forces the compiler to preserve the pointer in a callee-saved register (EDI), matching the original reload avoidance.
+
+Try when:
+- The original shows a direct call to a destructor (not through `call [vtable+offset]`).
+- The original loads the pointer into a callee-saved register (EDI/EBX) before the destructor call and reuses it for `operator delete`.
+- My `delete ptr` generates a vtable dispatch instead of a direct destructor call + operator delete.
+
+Why it helps:
+- `delete ptr` generates `push 1; call vtable[0]` (scalar deleting destructor). The original two-step pattern needs explicit destructor call.
+- Caching in a local variable forces the reload from member into a register, matching the original's register usage.
+
+Caveats:
+- Only works when the destructor is NOT virtual in the original — if the original uses virtual dispatch, keep `virtual`.
+- The struct must still have a vtable pointer at +0x00 (use a void* vtable field) to match sizeof.
+
+## Arbitrary vtable slot dispatch via dummy virtuals (`activateVictoryPanels`)
+
+When the original asm dispatches through a vtable slot at an arbitrary offset
+(such as `call [eax+14h]` = slot 5), declare a struct with N dummy virtual
+methods before the real one:
+
+```cpp
+struct PanelDispatch {
+    virtual void dummy0() {}
+    virtual void dummy1() {}
+    virtual void dummy2() {}
+    virtual void dummy3() {}
+    virtual void dummy4() {}
+    virtual void setVisible(int v) {}
+};
+```
+
+Calling `((PanelDispatch*)obj)->setVisible(arg)` generates:
+```
+push arg
+mov ecx, obj
+mov eax, [ecx]       ; load vtable pointer
+call [eax+14h]       ; dispatch to slot 5
+```
+
+Why this works:
+- VC5 places virtual methods in the vtable in declaration order: dummy0 at
+  slot 0 (offset 0x00), dummy1 at slot 1 (0x04), …, setVisible at slot 5
+  (0x14).
+- The `(PanelDispatch*)` cast doesn't adjust the pointer (no multiple
+  inheritance), so the vptr at +0x00 is used as-is.
+- The real object's vtable is never touched — we just use it for dispatch.
+- Dummy bodies can be empty: `{}`. Pure virtuals (`= 0`) also work but empty
+  bodies are simpler.
+
+Caveats:
+- The struct size includes the vptr (4 bytes) plus any other declared
+  fields — use this cast technique only when you don't care about sizeof or
+  struct layout (i.e., you only call virtual functions through it).
+- Does NOT work for slots 0-2 if the struct needs non-virtual member
+  function calls or field access — those mix vtable + data layout.
+- For dual-role objects (need both vtable dispatch AND regular member
+  calls), use a cast: `((PanelDispatch*)obj)->vfunc(arg)` for vtable slots,
+  `((ActualType*)obj)->memberFunc()` for direct calls.
+
+## High vtable slot dispatch via inheritance chain (`damagePerSecond`)
+
+When the original dispatches through very high vtable slots (e.g., slot 64 =
+0x100, slot 65 = 0x104), create a base struct with 64 dummy virtual methods
+and inherit from it:
+
+```cpp
+struct UnitFunctionsBase {
+    virtual void d00() {} virtual void d01() {} ... virtual void d63() {}
+};
+
+struct UnitFunctions : UnitFunctionsBase {
+    virtual float getAttackRate() {}      // vtable slot 64 = 0x100
+    virtual float applyDamage(void* obj) {} // vtable slot 65 = 0x104
+};
+```
+
+Each `virtual` line adds one vtable entry. VC5 lays them out in declaration
+order: d00 at slot 0 (0x00), d01 at slot 1 (0x04), …, d63 at slot 63 (0xFC),
+getAttackRate at slot 64 (0x100), applyDamage at slot 65 (0x104).
+
+Calling `((UnitFunctions*)obj)->getAttackRate()` generates:
+```
+mov eax, [esi]
+mov ecx, esi
+call [eax+100h]
+```
+
+Caveats:
+- 64 dummies is verbose but deterministic — VC5 generates exactly one vtable
+  entry per `virtual void dN() {}` in declaration order.
+- The struct with 65+ virtuals works but has no other fields — it's purely
+  for dispatch. Field access would require a different struct.
+
+## `__declspec(novtable)` interface classes for mixed calling convention vtable dispatch
+
+When a vtable contains functions with DIFFERENT calling conventions (e.g., __cdecl
+at some slots and __thiscall at others), use `__declspec(novtable)` interface
+classes with the correct number of dummy virtual functions to pad to the target
+slot, then declare the target virtual with the correct calling convention.
+
+**Example** (first_in_stack @ 004D0FC0): vtable[57] is __cdecl (caller cleans
+with `add esp, 14h`), vtable[67] is __thiscall (ECX=this, callee cleans).
+
+```cpp
+struct __declspec(novtable) PlayerVtbl {
+    // 57 dummies fill slots 0-56 (0x00-0xE0)
+    virtual void d0(); virtual void d1(); // ... 57 total
+    virtual void d56();
+    // Slot 57 (0xE4): __cdecl!
+    virtual void __cdecl logFn(const char* str, int a, int b, int c);
+    // 9 more dummies fill slots 58-66 (0xE8-0x108)
+    virtual void e58(); virtual void e59(); // ... 9 total
+    virtual void e66();
+    // Slot 67 (0x10C): __thiscall (default for member functions)
+    virtual void zeroFn(int a, int b, int c, int d);
+};
+```
+
+Try when:
+- Original asm shows `add esp, 14h` (caller cleans 5 dwords) after some vtable
+  calls but NOT after others for the same player/vtable.
+- Function pointer typedefs with `__cdecl`/`__fastcall` produce `xor edx, edx`
+  (for __fastcall) before each __thiscall slot call.
+- Using plain `virtual` declarations causes `push ebp` from vtable init code.
+
+Why it helps:
+- `__declspec(novtable)` prevents the compiler from generating vtable
+  initializer code (no `push ebp` overhead from struct declarations).
+- Pure virtual functions compile correctly for __thiscall dispatch without
+  the forbidden `__thiscall` keyword.
+- The `__cdecl` specifier on an individual virtual function changes only that
+  slot's calling convention — VC5 generates `add esp, N` after the call
+  instead of `ret N` in the callee.
+- All calling conventions are resolved at compile time with no runtime EDX
+  setup overhead.
+
+Caveats:
+- The number of dummy virtuals must EXACTLY match the original vtable layout.
+  Any miscount shifts all subsequent slot offsets.
+- `__declspec(novtable)` requires the struct to NOT be instantiated directly
+  (only used for casting existing objects).
+- The dummy virtuals must be declared but never defined (pure virtual or just
+  declared). VC5 generates the vtable entries regardless.
+- Cannot mix base class inheritance — the interface must be a flat struct
+  with the vtable pointer as the first member, matching the original object.
+- The interface struct works for vtable dispatch only. Field access requires
+  a separate data struct.
+
+Reference: first_in_stack @ 004D0FC0 (accepted drift, 36.1% edit diff)
+
+## Block-scoped variable placement for register save ordering (`damagePerSecond`)
+
+VC5 pushes callee-saved registers at the narrowest scope where a local
+variable is first used. Declaring a loop variable `int i = 0;` at function
+scope forces VC5 to allocate ebx and push it early (before an `if` guard).
+Declaring `int base = 0;` inside the `if (max > 0)` block forces ebp to be
+pushed inside the guarded region.
+
+Original register save pattern:
+```
+push ebx        ; ebx for loop counter (declared at function scope)
+test eax, eax  ; if (maxImportantObjectMemory > 0)
+jle skip
+push esi        ; esi for importantObjectMemory ptr (used inside loop)
+push ebp        ; ebp for base offset (declared inside if block)
+```
+
+C++ code to match:
+```cpp
+int i = 0;                     // forces ebx save at function scope
+if (maxImportantObjectMemory > 0) {
+    int base = 0;              // forces ebp save inside the if
+    do {
+        ...
+        i++;
+        base += 0x24;
+    } while (i < max);
+}
+```
+
+This works because VC5 allocates registers lazily — a variable is assigned
+to a register at its declaration point.
+
+## Lesson: `*(int*)&float` forces raw 32-bit push for int-callee float-member param
+
+When a virtual function declares a parameter as `float` in one TU but as `int`
+in another, the call site generates different argument-passing code. Passing a
+`float` member field to a function declared with `int` for that parameter forces
+VC5 to load the float's bit pattern as a raw 32-bit integer (`mov ecx, [mem]; push ecx`)
+instead of converting via FPU (`fld; fstp [esp]`).
+
+Use `*(int*)&float_field` to pass the raw 32-bit value at that address.
+
+Example (explore @ 00431020):
+- `func34(void*, float, float, int)` declared with int last param
+- Field at +0x40 is `float world_z` (RGE_Combat_Object)
+- Call: `action2->func34(0, (float)param_1, (float)param_2, *(int*)&world_z)`
+- Generates `mov ecx, [esi+40h]; push ecx` matching original
+
+Try when:
+- The original asm uses `mov reg, [base+off]; push reg` for a field that's a float
+- The function declaration elsewhere uses `float` but the call site needs `int`
+
+Caveats:
+- Works within a single TU (different TUs can have different declarations)
+- Only needed when the original passes the float field's BITS as an int
+- If both TUs are compiled together, must use consistent declaration

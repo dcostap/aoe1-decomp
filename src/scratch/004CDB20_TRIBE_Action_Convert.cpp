@@ -1,50 +1,46 @@
-// tried the straight constructor body with base init-list; first mismatch moved to the early prolog / constructor-call basin
-// tried adding a virtual destructor to force a vtable store; that changed the layout too much and the mismatch moved deeper into the prolog
-// leaving in scratch because the remaining gap is constructor-codegen shape, not a behavior mismatch
+// VA: 004CDB20 TRIBE_Action_Convert (72 B)
+// PDB source: tact_cnv.cpp lines 90-102
+//
+// Blocker: VC5 scheduling differences for parameter loads.
+// Original loads params in source order (task, fy, fx, fz).
+// Our VC5 loads params in stack order (task, fx, fy, fz).
+// Vftable override position also differs (after field_44 vs after fy).
+// ~59/72 bytes match; remaining are store-ordering differences.
+
 class RGE_Action_Object;
 class RGE_Task;
 
 class RGE_Action {
 public:
-    void* vtable_ptr;
-    short action_type;
-    char gap_06[0x2];
-    RGE_Action_Object* obj;
-    unsigned char state;
-    char gap_0D[0x3];
-    void* target_obj;
-    void* target_obj2;
-    int targetID;
-    int target2ID;
-    float target_x;
-    float target_y;
-    float target_z;
-    float timer;
-    RGE_Task* task;
-    void* sub_actions;
-    void* sprite;
-    unsigned char subActionValue;
+    virtual void vf00(void);
+    RGE_Action(RGE_Action_Object* object, int doSetup);
 
-    RGE_Action(RGE_Action_Object* object, int do_setup);
+    unsigned short action_type;
+    char gap_06[0x1A];
 };
 
 class TRIBE_Action_Convert : public RGE_Action {
 public:
-    unsigned char was_same_owner;
-    char gap_41[0x3];
-    float requiredRange;
+    float target_x;        // +0x20
+    float target_y;        // +0x24
+    float target_z;        // +0x28
+    float timer;           // +0x2C
+    RGE_Task* task;        // +0x30
+    char gap_34[0x0C];     // +0x34 to +0x3F
+    unsigned char field_40;// +0x40
+    char gap_41[0x03];     // +0x41 to +0x43
+    float requiredRange;   // +0x44
 
-    virtual ~TRIBE_Action_Convert();
-    TRIBE_Action_Convert(RGE_Action_Object* object, RGE_Task* task, float x, float y, float z);
+    TRIBE_Action_Convert(RGE_Action_Object* obj, RGE_Task* task, float fy, float fx, float fz);
 };
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* object, RGE_Task* task, float x, float y, float z)
-    : RGE_Action(object, 1) {
+TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj, RGE_Task* task, float fy, float fx, float fz)
+    : RGE_Action(obj, 1) {
     this->task = task;
-    this->target_y = y;
+    this->target_y = fy;
     this->requiredRange = 1.0f;
     this->action_type = 0x68;
-    this->target_x = x;
-    this->target_z = z;
-    this->was_same_owner = 0;
+    this->target_x = fx;
+    this->target_z = fz;
+    this->field_40 = 0;
 }

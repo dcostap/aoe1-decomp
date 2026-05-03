@@ -1,13 +1,25 @@
 // VA: 00434290 do_command_stop (70 B)
 // PDB source: Command.cpp lines 425-442
-
-#pragma pack(push, 1)
-struct RGE_Command_Stop {
-    unsigned char command;    // +0
-    unsigned char unit_num;   // +1
-    int unit_ids[1];          // +2 (at least 1 element)
-};
-#pragma pack(pop)
+// 
+// Blocker: VC5 register allocation for param_1 differs. Our compiler loads
+// param_1 into eax before saving this (ecx→ebx), while the original saves
+// this first, then reuses ecx for param_1. This cascades through 12 byte
+// differences (eax↔ecx swap for param_1, edx↔eax in loop body, pop order).
+// 
+// Remaining differences (all register allocation):
+//   1. Prologue: mov eax,[esp+4] (5B) vs push ebx; mov ebx,ecx; mov ecx,[esp+8] (original)
+//      → Our compiler loads param_1 before saving this; original saves this first.
+//   2. xor ecx,ecx; mov cl,[eax+1] vs xor eax,eax; mov al,[ecx+1] (register swap)
+//   3. lea edi,[eax+2] vs lea edi,[ecx+2]
+//   4. mov ebp,ecx vs mov ebp,eax (count init)
+//   5. mov edx,[edi]; push edx vs mov eax,[edi]; push eax
+//   6. mov eax,[esi]; ff 90 vs mov edx,[esi]; ff 92 (vtable call)
+//   7. Pop order: esi,edi,ebp,ebx vs ebp,esi,edi,ebx
+//   8. Extra nop padding (3 nops vs 0)
+// 
+// Everything else matches: loop structure (dec ebp; jne), null check,
+// get_obj → removeAllFromPathingGroup → vtable[0xA4] call sequence,
+// push esi inside loop guard, ret 4.
 
 class RGE_Game_World;
 class RGE_Player;
@@ -54,12 +66,12 @@ public:
     virtual void vf94() = 0;
     virtual void vf98() = 0;
     virtual void vf9C() = 0;
-    virtual void vfA0() = 0;     // vt[40] = +0xA0
+    virtual void vfA0() = 0;
     virtual void stop() = 0;     // vt[41] = +0xA4
 
-    int id;                      // +0x04
-    void* master_obj;            // +0x08
-    RGE_Player* owner;           // +0x0C
+    int id;
+    void* master_obj;
+    RGE_Player* owner;
 
     void removeAllFromPathingGroup();
 };
@@ -76,18 +88,29 @@ public:
     virtual void vf08() = 0;
     virtual void vf0C() = 0;
 
-    RGE_Game_World* world;       // +0x04
+    RGE_Game_World* world;
 
     RGE_Static_Object* get_obj(int id);
-    void do_command_stop(RGE_Command_Stop* param_1);
+    void do_command_stop(void* param_1);
 };
 
-void RGE_Command::do_command_stop(RGE_Command_Stop* param_1) {
-    for (int count = (unsigned char)param_1->unit_num; count > 0; count--) {
-        RGE_Static_Object* obj = get_obj(param_1->unit_ids[param_1->unit_num - count]);
+void RGE_Command::do_command_stop(void* param_1) {
+    int count;
+    int* ids;
+    RGE_Static_Object* obj;
+
+    ids = (int*)((unsigned char*)param_1 + 2);
+    if ((count = ((unsigned char*)param_1)[1]) <= 0) goto end;
+
+    do {
+        obj = get_obj(*ids);
         if (obj) {
             obj->removeAllFromPathingGroup();
             obj->stop();
         }
-    }
+        ids++;
+    } while (--count != 0);
+
+end:
+    ;
 }

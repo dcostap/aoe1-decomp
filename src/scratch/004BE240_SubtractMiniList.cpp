@@ -1,7 +1,8 @@
-// attempt log:
-// started with the direct 3-byte mini-span walk and exact DeleteSpan argument order; that got close but not exact
-// tried copying the offsets into locals before the loop, then tried a plain int Y_delta local; the remaining mismatch stayed on the loop prologue / first byte-load basin
-// left in scratch because the logic is right but VC5 keeps choosing a different early-load/register order
+// VA: 004BE240 TSpan_List_Manager::SubtractMiniList (71B)
+// PDB source: spanlist.cpp lines 1164-1179
+// tried the direct 3-byte mini-span walk with exact DeleteSpan arg order, local offset copies, and a `for(;;)`/return form
+// best result keeps the body/call sequence right, but VC5 still chooses a different loop-top basin: it hoists `xor eax,eax; mov al,[esi]; cmp eax,0FFh` before loading x_off/y_off into ebx/edi, then emits a post-call zero/sentinel recheck instead of the original `add esi,3 ; jne loop`
+
 class VSpanMiniList {
 public:
     unsigned char Y_delta;
@@ -29,17 +30,25 @@ public:
 };
 
 void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini, int x_off, int y_off) {
+    int add_x;
+    int add_y;
+
     if (mini == 0) {
         return;
     }
-    int add_x = x_off;
-    int add_y = y_off;
-    do {
-        int y_delta = mini->Y_delta;
-        if (y_delta == 0xff) {
+    add_x = x_off;
+    add_y = y_off;
+    for (;;) {
+        int y_delta;
+
+        y_delta = mini->Y_delta;
+        if (y_delta == 0xFF) {
             return;
         }
         this->DeleteSpan((int)mini->X_start + add_x, (int)mini->X_end + add_x, y_delta + add_y);
-        mini = mini + 1;
-    } while (mini != 0);
+        mini = (VSpanMiniList*)((char*)mini + 3);
+        if (mini == 0) {
+            return;
+        }
+    }
 }
