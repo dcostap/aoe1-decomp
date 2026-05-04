@@ -1,18 +1,31 @@
-// explicit entry liveness for both locals forced the right early pushes, but it also hoisted a `mov bl,1` before the null-list test
-// next lead: use separate head and node locals while still birthing the return value only after the virtual update call, to see if VC5 keeps the full push-save prolog without the early `mov bl,1`
+// VA: 004044F0 RGE_Action_List::update (73B)
+// give-up/pause after >10 focused attempts
+// best source shape is a single-return form that forces the original early full prologue (push ebx/push esi/push edi),
+// but VC5 still rewrites the empty-list path as `mov bl,1 / mov al,bl` instead of the original literal `mov al,1`,
+// shifting the rest of the function by 2 bytes
+// tried/rolled back: direct-return shapes (late shrink-wrapped pushes), top-level head/node/result variants, goto/no_list,
+// result-width variants (char/int/bool), full real vtable surface, register locals, two focused variant-lab sweeps,
+// and custom-flag probes (/O1, /Od, /Og-, /Ob0, /Os) with no exact basin
+// 2026-05-04 retry: rechecked direct-return/goto forms; all still shrink-wrap to push edi first, then push esi/ebx only in the non-empty path
+// 2026-05-04 Boss reassignment recheck: reconfirmed the retained best basin below; no new source/flag probe beat the single-return `mov bl,1 / mov al,bl` family.
+
+class RGE_Static_Object;
 class RGE_Action {
 public:
-    virtual void vf00(void);
-    virtual void vf04(void);
-    virtual void vf08(void);
-    virtual void vf0C(void);
-    virtual void vf10(void);
-    virtual void vf14(void);
-    virtual void vf18(void);
-    virtual void vf1C(void);
-    virtual void vf20(void);
-    virtual void vf24(void);
-    virtual unsigned char update(void);
+    virtual ~RGE_Action();
+    virtual int setup(RGE_Static_Object* param_1);
+    virtual int setup(int param_1, RGE_Static_Object* param_2);
+    virtual void* create_action_list(RGE_Static_Object* param_1);
+    virtual void rehook();
+    virtual void save(int param_1);
+    virtual short type();
+    virtual void first_in_stack(unsigned char param_1);
+    virtual unsigned char inside_obj_update();
+    virtual unsigned char idle_update();
+    virtual unsigned char update();
+    virtual int stop();
+    virtual int move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    virtual int work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
 };
 
 class RGE_Action_Node {
@@ -31,26 +44,25 @@ public:
 };
 
 unsigned char RGE_Action_List::update(void) {
-    RGE_Action_Node* head;
     RGE_Action_Node* node;
-    unsigned char uVar2;
+    unsigned char result;
 
-    head = this->list;
-    if (head == 0) {
-        return 1;
-    }
-
-    uVar2 = head->action->update();
-    head = this->list;
-    if (head != 0) {
-        node = head->next;
-        while (node != 0) {
-            node->action->vf24();
+    node = this->list;
+    if (node == 0) {
+        result = 1;
+    } else {
+        result = node->action->update();
+        node = this->list;
+        if (node != 0) {
             node = node->next;
-        }
-        if (uVar2 == 1) {
-            this->remove_action();
+            while (node != 0) {
+                node->action->idle_update();
+                node = node->next;
+            }
+            if (result == 1) {
+                this->remove_action();
+            }
         }
     }
-    return uVar2;
+    return result;
 }

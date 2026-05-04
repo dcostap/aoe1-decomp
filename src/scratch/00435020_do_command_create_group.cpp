@@ -22,6 +22,27 @@
 //   10-19: Tried every source shape (virtual dtor, full PDB structs, inverted conditions,
 //      intermediate locals, cast BOTH sides, !(a==b), explicit 16-bit locals, etc.)
 //      -> ALL produce the same CX/EDX register coloring. VC5 allocator is stubborn.
+//   20: variant_lab sweep (2304 variants across owner surface, call proto, gate shape,
+//      prelocals, object return type, call-arg locals) -> no exact; only two near groups,
+//      both still the same 3-byte CX/EDX vs DX/ECX mismatch.
+//   21: focused 72-variant lab on compare locals/order/pid width + call surface ->
+//      44 variants collapse to the same best 64-byte group; register coloring invariant.
+//   22: assignment-in-condition + positive equality retry after fresh validation -> identical
+//      61/64-byte result; same CX/EDX vs DX/ECX coloring.
+//   23: sibling-inspired compare-surface retry using separate owner/compare stubs plus casted compare
+//      surface -> unchanged 61/64-byte result; no register movement.
+//   24: casted-compare + reversed equality + inner `n` local retry -> regressed to 60/64; reverted.
+//   25: destroy-group-style surface sweep (destroy_like/player_like headers, early-return vs &&,
+//      owner local, pid locals, casted owner) -> 16/16 variants collapse to the same 61/64-byte
+//      group; compare-region DX/ECX vs CX/EDX coloring is fully invariant.
+//   26: raw pointer-compare sweep (`*(ushort*)((char*)owner+0x4A)`, full raw owner fetch,
+//      short* local, void* object cast) -> 28/28 variants collapse to the same best 61/64-byte group.
+//   27: flag sweep (/O1, /Og, /Od) -> default-/O2 family remains best; no register movement lead.
+//   28: owner-id signedness sweep (short vs ushort) -> identical best 61/64-byte group.
+//   29: fresh 120-variant sibling-surface sweep (accepted-drift-style owner stub, && vs early return,
+//      owner/pid locals, direct vs local call args, raw/casted compare forms) -> every near variant
+//      still collapses to the same 61/64-byte family; first mismatch remains the compare-region
+//      DX/ECX vs CX/EDX register coloring at offset 24.
 //
 // This is a pure register coloring tiebreak in VC5's allocator. The function is
 // behaviorally identical, same stack cleanup, same call set, same instruction count.

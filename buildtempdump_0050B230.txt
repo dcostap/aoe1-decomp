@@ -1,0 +1,4 @@
+Microsoft Windows [Version 10.0.26200.8246]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Projects\my_decomps\aoe1_attempt3>

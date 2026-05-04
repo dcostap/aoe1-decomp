@@ -4,7 +4,9 @@
 // attempt 4: swapped expression terms, same
 // attempt 5: local temps a and b, same
 // attempt 6: param1 * 255, adds extra push edi
-// left in scratch: VC5 always reads param2 ([esp+8]) first instead of param1 ([esp+4])
+// resumed pass: mirrored the matched obstruction/increment surfaces, plus row/idx/ptr/2D-array variants and shl-sub row shaping;
+// every successful probe still either reads param2 ([esp+8]) first with extra edi/spill pressure, or stays in a worse 96-byte family.
+// left in scratch: VC5 always reads param2 ([esp+8]) first instead of param1 ([esp+4]) in the closest basin.
 // this changes register allocation and pushes (original has 2 pushes, rebuilt has 2-3)
 // behavior fully correct, size matches (82 bytes), benign codegen drift
 
