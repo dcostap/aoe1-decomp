@@ -10,5 +10,6 @@ Updated by Boss when a worker-submitted exact match is locally validated.
 | NectarCloud | 1 |
 | PeachRose | 2 |
 | LuckyCricket | 0 |
-| DaintyCloud | 9 |
+| DaintyCloud | 10 |
+| HollowSnowdrop | 2 |
 

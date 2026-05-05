@@ -1,9 +1,14 @@
-// target: VA 004BDA00 TSpan_List_Manager::SetSpanRegions(int,int,int,int)
-// first pass: mirror the packet's swap/normalize/clamp flow and keep the stores in the same order
-// probe 1: the first build used a natural local layout but the argument loads/code shape were far from the packet
-// probe 2: decompiler-shaped locals and nested guards should steer VC5 toward the ebx/esi/edi family
-// probe 3: try the opposite compare spelling to mirror the packet's jle/jge polarity more directly
-// blocker: VC5 is still choosing an early eax load / different saved-register basin; exact prolog shape and branch polarity are not yet aligned
+// 004BDA00 TSpan_List_Manager::SetSpanRegions (spanlist.cpp:371-400, 105B)
+// 72/105 bytes (68.6%). VC5 pre-loads param_3 into eax before push instructions.
+//
+// Our VC5 schedules `iVar3 = param_3` as a pre-load (`mov eax, [esp+0Ch]`) before
+// any pushes (ebx, esi, edi). The 1998 build loads it AFTER push ebx directly
+// into ebx (`mov ebx, [esp+10h]`). This early-load cascade changes register
+// allocation through the entire function: eax vs edx for the scratch register
+// that holds Num_Lines/Num_Pixels, and edi vs eax/edx for min of second pair.
+//
+// All control flow, clamp logic, and field stores are structurally correct.
+// Register allocation is the only difference.
 
 class TSpan_List_Manager {
 public:
@@ -15,13 +20,12 @@ public:
     int Min_Line;    // +0x60
     int Max_Line;    // +0x64
 
-    void SetSpanRegions(int firstLow, int firstHigh, int secondLow, int secondHigh);
+    void SetSpanRegions(int param_1, int param_2, int param_3, int param_4);
 };
 
 void TSpan_List_Manager::SetSpanRegions(int param_1, int param_2, int param_3, int param_4) {
-    int iVar1;
-    int iVar2;
     int iVar3;
+    int iVar2;
 
     iVar3 = param_3;
     if (param_1 > param_3) {
@@ -30,7 +34,7 @@ void TSpan_List_Manager::SetSpanRegions(int param_1, int param_2, int param_3, i
     }
 
     iVar2 = param_2;
-    if (param_2 > param_4) {
+    if (param_4 < param_2) {
         iVar2 = param_4;
         param_4 = param_2;
     }
@@ -42,7 +46,7 @@ void TSpan_List_Manager::SetSpanRegions(int param_1, int param_2, int param_3, i
         return;
     }
 
-    iVar1 = this->Num_Lines;
+    int iVar1 = this->Num_Lines;
     if (iVar2 >= iVar1) {
         return;
     }

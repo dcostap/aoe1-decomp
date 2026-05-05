@@ -1,58 +1,61 @@
-// VA: 0046AFE0
-// Path::distanceToNextWaypoint() const
+// 0046AFE0 Path::distanceToNextWaypoint() const
 // Source: Path.cpp lines 358-367
-
-// attempt log:
-// 1. natural dx/dy/dz temps + sqrt(dx*dx+dy*dy+dz*dz) -> 97% diff (FPU codegen, sub esp vs push ecx)
-// 2. local temps + Waypoint* path + early returns -> 87% diff (each exit loads own 0.0, sub esp)
-// 3. shared return path with local result variable -> 87% diff (same prolog/epilog issue)
-// 
-// Left in scratch: persistent FPU codegen-family problem. Original has:
-//   push ecx (1 temp slot) + fld [global_zero] BEFORE checks
-//   then all 3 early exits + main path -> shared pop ecx; ret
-// My code: sub esp,8 + each early exit fld zero + returns separately
-// The FPU stack management for dx/dy/dz multiply-add chain is also in a different basin.
-// Needs variant_lab for FPU expression-shape exploration.
+// Size: 110 bytes, 46 asm lines
+//
+// Attempt log:
+// 1-4 (previous session): natural dx/dy/dz + sqrt gave 87-97% diff (FPU basin)
+// 5: float temp + float result=0.0f + nested ifs -> 85% (sub esp,8 not push ecx)
+// 6: early returns + single temp -> 87% (separate fld zero per exit)
+// 7: single return, dz*dz+dy*dy+dx*dx expr order -> 80%
+// 8: compound condition, single local -> 85%
+// 9: early returns, pw local, dz*dz+dy*dy+dx*dx -> 85%
+//
+// BLOCKER: persistent FPU codegen-family problem. The original uses:
+//   - push ecx (1 byte, 4-byte slot) not sub esp,8
+//   - fld [global_zero] PUSHED ONCE before all checks, shared by all exits
+//   - fstp st0 (pop zero) + FPU expression with specific fxch/faddp pattern
+//   - shared pop ecx; ret epilogue
+// My code: sub esp,8 for 2 locals, each exit loads 0.0 separately,
+// FPU expression (dx*dx+dy*dy+dz*dz) schedules differently despite
+// trying multiple expression orders.
+//
+// Left in scratch — FPU scheduling basin.
 
 #include <math.h>
 
 struct Waypoint {
-    float x;  // +0x00
-    float y;  // +0x04
-    float z;  // +0x08
-    unsigned char facetToNextWaypoint;  // +0x0C
+    float x;
+    float y;
+    float z;
+    unsigned char facetToNextWaypoint;
 };
 
 class Path {
 public:
-    unsigned long timeStampValue;       // +0x00
-    Waypoint startValue;                // +0x04
-    Waypoint goalValue;                 // +0x14
-    Waypoint* pathValue;                // +0x24
-    int maxSizeValue;                   // +0x28
-    int currentSizeValue;               // +0x2C
-    int currentWaypointValue;           // +0x30
+    unsigned long timeStampValue;
+    Waypoint startValue;
+    Waypoint goalValue;
+    Waypoint* pathValue;
+    int maxSizeValue;
+    int currentSizeValue;
+    int currentWaypointValue;
 
     float distanceToNextWaypoint() const;
 };
 
 float Path::distanceToNextWaypoint() const {
-    float result;
+    int temp;
     Waypoint* path = this->pathValue;
     if (path == 0) {
-        result = 0.0f;
-    } else {
-        int current = this->currentWaypointValue;
-        if (current < 0) {
-            result = 0.0f;
-        } else if (current >= this->currentSizeValue - 1) {
-            result = 0.0f;
-        } else {
-            float dx = path[current + 1].x - path[current].x;
-            float dy = path[current + 1].y - path[current].y;
-            float dz = path[current + 1].z - path[current].z;
-            result = (float)sqrt(dx * dx + dy * dy + dz * dz);
-        }
+        return 0.0f;
     }
-    return result;
+    int current = this->currentWaypointValue;
+    if (current < 0 || current >= this->currentSizeValue - 1) {
+        return 0.0f;
+    }
+    Waypoint* pw = path + current;
+    float dx = pw[1].x - pw->x;
+    float dy = pw[1].y - pw->y;
+    float dz = pw[1].z - pw->z;
+    return (float)sqrt(dz*dz + dy*dy + dx*dx);
 }

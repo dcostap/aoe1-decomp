@@ -1,32 +1,20 @@
 // InfluenceMap::incrementValue
 // VA: 0044E600
-// infmap.cpp:240-257
-// 123 bytes, ~11 byte diff (parked on VC5 register allocation quirk)
-//
-// Two stable codegen patterns regardless of source form:
-// - Pattern A (112 bytes): only push esi, no byte masking (AND) — missing ~11 bytes
-// - Pattern B (128 bytes): push esi+edi, with explicit AND masking — 5 bytes too big
-//
-// The original asm has 3 AND instructions (16 bytes total) for byte masking
-// that come from partial register overwrite + full register read patterns.
-// No C source variant found that generates these ANDs WITHOUT adding
-// an extra callee-saved register (edi/ebx). VC5 register allocation quirk.
-// Same behavior, same structure, same field layout.
-// 4 relocations masked.
-// 8+ source forms tried. Scoped variant_lab candidates documented below.
-
-#include "../../include/game_globals.h"
+// parked: original-like natural source without shared include. Remaining work is VC5 source-shape/register allocation.
+// tried this pass: removed shared include, mutable parameter-style source, explicit byte locals, int cur, removed casts.
+// current result is worse than prior parked note (81.3% positional diff): VC5 saves EBX/ESI and preserves this in ESI instead of original's single ESI save with this in ECX.
+// leave in scratch; original notes above/below document prior best families (one missing masks vs extra callee-saved register).
 
 struct InfluenceMap {
     char gap_00[4];
-    int xSize;                // +0x04
-    int ySize;                // +0x08
-    int xReferencePoint;      // +0x0C
-    int yReferencePoint;      // +0x10
+    int xSize;
+    int ySize;
+    int xReferencePoint;
+    int yReferencePoint;
     char gap_14[4];
-    unsigned char** rowData;  // +0x18
+    unsigned char** rowData;
     char gap_1C[8];
-    unsigned char maxLimit;   // +0x24
+    unsigned char maxLimit;
 
     int incrementValue(int x, int y, unsigned char value);
 };
@@ -47,10 +35,10 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     cur = cur + value;
 
     if (cur >= this->maxLimit) {
-        *cell = (unsigned char)(this->maxLimit - 1);
+        *cell = this->maxLimit - 1;
         return 1;
     }
 
-    *cell = (unsigned char)cur;
+    *cell = cur;
     return 1;
 }

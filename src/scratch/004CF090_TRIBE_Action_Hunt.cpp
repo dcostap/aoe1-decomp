@@ -1,8 +1,12 @@
-// quick-win attempt log:
-// target is 004CF090 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int,RGE_Action_Object*) from tact_hnt.cpp
-// starting from the oracle shape: EH frame, base RGE_Action(this,param1,param2,1), then vptr/word
-// init and the rge_read(param1, this+0x40, 4) helper call. /GX was tested, but VC5 still only
-// emitted a 64-byte .text body instead of the 103-byte EH frame, so this is paused in scratch.
+// 004CF090 TRIBE_Action_Hunt::TRIBE_Action_Hunt (tact_hnt.cpp:70-73, 103B)
+// BLOCKER: SEH frame format difference.
+// Original uses compact ESP-based SEH (push -1, push handler, fs:[0] setup, push ecx).
+// Our VC5 generates EBP-based SEH for __try/__except and drops try/catch entirely.
+// Attempts:
+// 1. No EH: 64 bytes (correct logic, no EH frame at all)
+// 2. __try/__except with /GX: 103 bytes but EBP-based frame, completely different layout
+// 3. try/catch with /GX: 64 bytes (empty catch optimized away)
+// No C++ source or flag fix found. VC5-version difference in SEH frame format.
 
 class RGE_Action_Object;
 
@@ -31,7 +35,7 @@ public:
     RGE_Action(int param_1, RGE_Action_Object* param_2, int param_3);
 };
 
-extern void rge_read(int, void*, int);
+extern "C" void __cdecl rge_read(int, void*, int);
 
 class TRIBE_Action_Hunt : public RGE_Action {
 public:

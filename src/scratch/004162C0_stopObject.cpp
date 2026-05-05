@@ -7,6 +7,7 @@ extern FILE* actionFile;
 
 class RGE_World {
 public:
+    char gap_00[4];
     long world_time; // +0x4
 };
 
@@ -18,13 +19,6 @@ public:
 
 class RGE_Static_Object {
 public:
-    int id; // +0x4
-    RGE_Player* owner; // +0xC
-    // Extends to various vtable slots
-};
-
-// Vtable proxy with exactly 100 virtual slots (0x18C/4 = 99)
-struct ObjVtable {
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
     virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
     virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
@@ -50,33 +44,37 @@ struct ObjVtable {
     virtual void v88(); virtual void v89(); virtual void v90(); virtual void v91();
     virtual void v92(); virtual void v93(); virtual void v94(); virtual void v95();
     virtual void v96(); virtual void v97(); virtual void v98();
-    virtual void stopAction(); // vtable[99] = offset 0x18C
+    virtual void stopAction();
+
+    int id; // +0x4
+    char gap_08[4];
+    RGE_Player* owner; // +0xC
 };
 
 class UnitAIModule {
 public:
-    void* vtable_ptr; // +0x0
-    RGE_Static_Object* objectValue; // +0x4
-    int moodValue; // +0x8
-    int objectCategoryValue; // +0xC
-    int orderQueueSizeValue; // +0x10
-    int orderQueueMaxSizeValue; // +0x14
-    void* orderQueueValue; // +0x18
-    int notifyQueueSizeValue; // +0x1C
-    int notifyQueueMaxSizeValue; // +0x20
-    void* notifyQueueValue; // +0x24
-    int currentOrderValue; // +0x28
-    int currentOrderPriorityValue; // +0x2C
-    int currentActionValue; // +0x30
-    int currentTargetValue; // +0x34
-    int currentTargetTypeValue; // +0x38
-    float currentTargetXValue; // +0x3C
-    float currentTargetYValue; // +0x40
-    float currentTargetZValue; // +0x44
-    float desiredTargetDistanceValue; // +0x48
-    int defendTargetValue; // +0x4C
-    int lastOrderValue; // +0x50
-    int lastActionValue; // +0x54
+    void* vtable_ptr;
+    RGE_Static_Object* objectValue;
+    int moodValue;
+    int objectCategoryValue;
+    int orderQueueSizeValue;
+    int orderQueueMaxSizeValue;
+    void* orderQueueValue;
+    int notifyQueueSizeValue;
+    int notifyQueueMaxSizeValue;
+    void* notifyQueueValue;
+    int currentOrderValue;
+    int currentOrderPriorityValue;
+    int currentActionValue;
+    int currentTargetValue;
+    int currentTargetTypeValue;
+    float currentTargetXValue;
+    float currentTargetYValue;
+    float currentTargetZValue;
+    float desiredTargetDistanceValue;
+    int defendTargetValue;
+    int lastOrderValue;
+    int lastActionValue;
 
     int stopObject(int param);
 };
@@ -91,12 +89,13 @@ int UnitAIModule::stopObject(int param) {
 
     lastActionValue = currentActionValue;
     if (param == 0 || currentActionValue + 100 == currentOrderValue) {
-        lastOrderValue = currentOrderValue;
+        int order = currentOrderValue;
         currentOrderValue = -1;
+        lastOrderValue = order;
         currentOrderPriorityValue = -1;
     }
 
-    ((ObjVtable*)(void*)objectValue)->stopAction();
+    objectValue->stopAction();
     currentActionValue = -1;
     return 1;
 }

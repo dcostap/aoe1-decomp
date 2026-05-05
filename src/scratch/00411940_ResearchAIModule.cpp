@@ -1,9 +1,18 @@
-// attempt 1: EH-framed ResearchAIModule destructor with explicit vptr store, tech-tree guard, member destructor, and base dtor call
-// blocker watch: the target is a tiny EH helper; current mismatch is a bad EH/prolog basin with the techTreeLength load drifting to the wrong offset and an extra saved-register shape, so this is paused in scratch
-#include "..\..\include\game_types.h"
+// 00411940 ResearchAIModule::~ResearchAIModule
+// Source: airchmod.cpp lines 80-83
+// Size: 105 bytes, 26 asm lines
 
-class ResourceItem;
-class MainDecisionAIModule;
+// EH-framed destructor. Field offsets fixed: removed explicit `void* vtable_ptr`
+// from AIModule (let virtual ~AIModule() add it implicitly) — this made
+// AIModule 0xF0 bytes and techTree at +0xF4 (matching original).
+//
+// Remaining diff (58%): same EH codegen basin as load_victory/setup_gaia.
+// VC5 generates extra push edi (for techTree ptr), try level at [esp+14h]
+// vs [esp+10h], vtable store scheduled after load (before in original).
+// Behavioral match, size match.
+
+class ResourceItem {};
+class MainDecisionAIModule {};
 
 class AIModuleID {
 public:
@@ -14,7 +23,6 @@ public:
 
 class AIModule {
 public:
-    void* vtable_ptr;
     AIModuleID idValue;
     int playerNumberValue;
     char playerNameValue[64];

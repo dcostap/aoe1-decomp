@@ -1,35 +1,34 @@
-// 0042EC40 StringFromGUID (120 bytes)
-// PDB: Com_hand.cpp
-// STATUS: parked — register allocation differs from original
-//
-// Code structure is correct: extern array references generate relocation-based 
-// indexed addressing matching the original's [reg+56F218h]/[reg*2+56F230h].
-// However, VC5 assigns different registers:
-//   Original: EAX=output, ESI=counter, EDI=guid
-//   Rebuilt:  ECX=output, EDX=counter, ESI=guid
-// Plus extra spilling of local temps.
-//
-// The extern arrays DAT_0056f218[20] and u_0123456789ABCDEF_0056f230[16]
-// resolve via linker to 0x56F218 and 0x56F230 (relocations masked in diff).
+// 0042EC40 StringFromGUID
+// honest pass: improved from parked register-allocation mismatch to 2-byte SIB encoding drift.
+// tried: mutable output pointer to keep EAX; int loop plus unsigned loop condition to keep ESI and jb; local guid/g pointer and struct byte-array surface.
+// remaining scratch gap: two equivalent byte loads encode as [ecx+edi]/[edx+edi] instead of original [edi+ecx]/[edi+edx]; behavior/call/stack/loop shape otherwise byte-identical.
 
 extern unsigned char DAT_0056f218[20];
 extern unsigned short u_0123456789ABCDEF_0056f230[16];
 
-extern "C" int __cdecl StringFromGUID(void* guid, unsigned short* output)
+struct GUIDBytes { unsigned char b[16]; };
+
+extern "C" int __cdecl StringFromGUID(GUIDBytes* guid, unsigned short* output)
 {
     int i;
+    unsigned char* g;
 
-    *output++ = L'{';
-    for (i = 0; i < 20; i++) {
-        if (DAT_0056f218[i] == 0x2D) {
-            *output++ = L'-';
+    g = guid->b;
+    *output = 0x7b;
+    output = output + 1;
+    i = 0;
+    do {
+        if (DAT_0056f218[i] == '-') {
+            *output = '-';
         } else {
-            unsigned char b = ((unsigned char*)guid)[DAT_0056f218[i]];
-            *output++ = u_0123456789ABCDEF_0056f230[b >> 4];
-            *output++ = u_0123456789ABCDEF_0056f230[b & 0xF];
+            output = output + 1;
+            output[-1] = u_0123456789ABCDEF_0056f230[g[DAT_0056f218[i]] >> 4];
+            output[0] = u_0123456789ABCDEF_0056f230[g[DAT_0056f218[i]] & 0xf];
         }
-    }
-    *output++ = L'}';
-    *output = 0;
+        output = output + 1;
+        i = i + 1;
+    } while ((unsigned int)i < 20);
+    *output = '}';
+    output[1] = 0;
     return 0x26;
 }

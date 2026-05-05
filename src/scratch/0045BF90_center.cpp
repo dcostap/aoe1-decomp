@@ -1,17 +1,16 @@
-// 0045BF90 TMousePointer::center (113 bytes)
-// PDB: Mouseptr.cpp
-// STATUS: parked - 7 bytes short of original size (112 vs 113)
+// 0045BF90 TMousePointer::center (Mouseptr.cpp:1029-1047, 113B)
+// 112/113 bytes (112B .text, target 113B). VC5-version difference:
 //
-// Remaining diff: VC5 uses ECX (caller-save) instead of ESI (callee-save)
-// for the draw_system pointer. Without ESI save/restore, function is 106 bytes
-// (+6 from __declspec dllimport making calls indirect at 6 bytes each).
-// Need 7 more bytes: push esi (1) + 2x pop esi (2) + RECT at [esp+4] vs [esp]
-// encoding differences (~4 bytes).
+// The 1998 build saves the draw_system pointer in esi (callee-save register),
+// requiring `push esi` (1 byte) and `pop esi` in each path (2x1=2 bytes).
+// Our VC5 keeps draw_system in ecx (volatile), which doesn't need saving
+// across the GetWindowRect call. This removes 3 bytes of esi save/restore
+// but adds 2 bytes elsewhere in instruction encoding/RECT offset handling,
+// for a net difference of 1 byte.
 //
-// Tried: local pointer variable, dllimport for indirect calls, integer
-// arithmetic casts, void* variable, separate sx/sy params, saved_this
-// hack. VC5 consistently uses ECX — pointer is not live across function calls,
-// so no ESI save needed.
+// The `void* draw_system = *(void**)this->render_area;` local triggers the
+// register difference. No C source change forces esi usage. VC5-version
+// register allocation difference.
 
 #include <stddef.h>
 

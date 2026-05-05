@@ -1,11 +1,15 @@
-// STATUS: blocked
-// tried the earlier natural clamp shape; mismatch started near the prologue register setup
-// switched to the Ghidra-style iVar3/iVar1 shape; first mismatch moved deeper into the swap/clamp register choreography at 0053B30D
-// BLOCKER: behavior matches, but VC5 still carries the clamped minimum level in edx/eax opposite the original's eax/edx split, shifting the middle search loop register shape
-// NOTE: bounds clamp and list walk are understood; remaining drift is register-choice/source-shape only
+// VA: 0053B300 DClipInfo_List::LocateIDbyDrawLevel (103 B)
+// PDB source: view.cpp lines 6800-6822
+// Notes: 24.3% positional diff (25/103 bytes). All structural elements match
+// (prologue, swap, clamp, validation, loop, inner walk, epilogue).
+// Remaining diff: VC5 assigns level_a to edx instead of eax (original uses eax).
+// This cascades: speculative `mov eax, edx` at swap point, `mov edx, eax`
+// for loop counter positioned after param loads instead of before conditional jump.
+// Tried: declaration order, variable naming (Ghida-style), pointer walk vs indexed
+// access, do-while vs for, temp variable styles. None fix eax/edx swap.
 
 struct DClipInfo_Node {
-    DClipInfo_Node* Next;
+    DClipInfo_Node* field_0;
     DClipInfo_Node* NextOnLevel;
     int Object_ID;
     char gap_0C[0x20];
@@ -16,41 +20,46 @@ class DClipInfo_List {
 public:
     char gap_00[0x4C];
     int Max_Draw_Levels;
-    char gap_50[0x08];
+    char gap_50[0x0C];
     DClipInfo_Node** Draw_Level_Head;
 
-    DClipInfo_Node* LocateIDbyDrawLevel(int object_id, int min_level, int max_level, int node_type);
+    DClipInfo_Node* LocateIDbyDrawLevel(int object_id, int level_a, int level_b, int node_type);
 };
 
-DClipInfo_Node* DClipInfo_List::LocateIDbyDrawLevel(int object_id, int min_level, int max_level, int node_type) {
-    int iVar1;
-    DClipInfo_Node* pDVar2;
-    int iVar3;
-    DClipInfo_Node** ppDVar4;
+DClipInfo_Node* DClipInfo_List::LocateIDbyDrawLevel(int object_id, int level_a, int level_b, int node_type)
+{
+    int low = level_a;
+    int high = level_b;
 
-    iVar3 = min_level;
-    if (iVar3 > max_level) {
-        iVar3 = max_level;
-        max_level = min_level;
+    if (low > high) {
+        int temp = low;
+        low = high;
+        high = temp;
     }
-    if (iVar3 < 0) {
-        iVar3 = 0;
+
+    if (low < 0) {
+        low = 0;
     }
-    iVar1 = this->Max_Draw_Levels;
-    if (iVar1 < max_level) {
-        max_level = iVar1;
+
+    int max_levels = this->Max_Draw_Levels;
+    if (high > max_levels) {
+        high = max_levels;
     }
-    if (((iVar3 <= iVar1) && (-1 < max_level)) && (iVar3 <= max_level)) {
-        ppDVar4 = this->Draw_Level_Head + iVar3;
-        do {
-            for (pDVar2 = *ppDVar4; pDVar2 != 0; pDVar2 = pDVar2->NextOnLevel) {
-                if ((pDVar2->Object_ID == object_id) && (pDVar2->Node_Type == node_type)) {
-                    return pDVar2;
-                }
+
+    if (low > max_levels || high < 0 || low > high) {
+        return 0;
+    }
+
+    DClipInfo_Node** head_ptr = this->Draw_Level_Head + low;
+    for (int level = low; level <= high; level++) {
+        DClipInfo_Node* node = *head_ptr;
+        while (node) {
+            if (node->Object_ID == object_id && node->Node_Type == node_type) {
+                return node;
             }
-            iVar3 = iVar3 + 1;
-            ppDVar4 = ppDVar4 + 1;
-        } while (iVar3 <= max_level);
+            node = node->NextOnLevel;
+        }
+        head_ptr++;
     }
     return 0;
 }

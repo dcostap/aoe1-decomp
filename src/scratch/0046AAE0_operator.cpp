@@ -1,6 +1,7 @@
 // VA: 0046AAE0 Path::operator==(const Path& other) const
 // Path.cpp lines 99-108
 // 122 bytes
+// attempted direct compare with named i; close but not exact: remaining mismatch is setup load order.
 
 struct Waypoint {
     float x;
@@ -24,12 +25,13 @@ struct Path {
 };
 
 int Path::operator==(const Path& other) const {
+    int i = 0;
     if (currentSizeValue <= 0) return 1;
-    for (int i = 0; i < currentSizeValue; i++) {
-        if (pathValue[i].x != other.pathValue[i].x ||
-            pathValue[i].y != other.pathValue[i].y ||
-            pathValue[i].z != other.pathValue[i].z ||
-            pathValue[i].facetToNextWaypoint != other.pathValue[i].facetToNextWaypoint) {
+    for (; i < currentSizeValue; i++) {
+        if (other.pathValue[i].x != pathValue[i].x ||
+            other.pathValue[i].y != pathValue[i].y ||
+            other.pathValue[i].z != pathValue[i].z ||
+            other.pathValue[i].facetToNextWaypoint != pathValue[i].facetToNextWaypoint) {
             return 0;
         }
     }

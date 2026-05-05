@@ -21,13 +21,14 @@
 // identical.
 
 #include "../../include/game_types.h"
-#include "../../include/game_globals.h"
 
 class RGE_Base_Game {
 public:
     char _gap_00[0x3FC];
     short master_obj_id;
 };
+
+#define rge_base_game (*(RGE_Base_Game**)0x62C574)
 
 struct ListInfo {
     char text[100];

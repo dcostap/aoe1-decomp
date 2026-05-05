@@ -1,6 +1,9 @@
-// first pass: direct global-game guard and the outline-type switch to the two back-frame helpers
-// tried the direct helper-call spelling, then a local game pointer; VC5 kept moving the push/register order around the helper calls
-// the remaining mismatch is now localized to the helper-call basin / push order, not the global guard or switch topology
+// VA: 004C21A0 RGE_Static_Object::draw_back_frame (102 B)
+// PDB source: stat_obj.cpp lines 885-907
+// Notes: remaining 25.5% diff is register allocation (ecx vs edx).
+// VC5 consistently uses ecx for the outline_type temp where original uses edx,
+// and uses 3-register push pattern where original uses 2-register reuse.
+
 class TDrawArea;
 
 class RGE_Base_Game {

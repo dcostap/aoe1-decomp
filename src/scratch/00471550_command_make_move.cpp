@@ -1,4 +1,0 @@
-// 00471550_command_make_move
-// Probe 1: structural stub
-class RGE_Player { public: char _gap_00[4]; unsigned char command_make_move(int a,int b,int c,int d,int e); };
-unsigned char RGE_Player::command_make_move(int a,int b,int c,int d,int e) { return 1; }

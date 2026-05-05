@@ -1,14 +1,10 @@
 // target: VA 004125C0 ResourceAIModule::resourcesAvailable(ResourceItem *)
-// sibling of unavailableResource; keep the memory-vs-register compare order and the early count<=0 success path
-// probe 1: used a local count and then a for-loop; compare basin stayed close but branch layout drifted
-// probe 2: moved to direct item->number() checks; exact compare order matched, but the loop-start basin still drifted
-// probe 3: tried do/while to mirror the PDB shape; codegen got worse, so leaving the function in scratch
 
 class ResourceItem {
 public:
     int typeID_;
     char gap_04[0x68];
-    ResourceItem* next; // +0x6C
+    ResourceItem* next;
 
     int number();
     int value(int index);
@@ -24,13 +20,13 @@ public:
 
 class ResourceAIModule : public AIModule {
 public:
-    MainDecisionAIModule* md; // +0xF0
-    int numberResourcesValue; // +0xF4
-    int* resourceValue; // +0xF8
-    int* minValue; // +0xFC
-    int* maxValue; // +0x100
-    int** resourceTypesValue; // +0x104
-    int* numberResourceTypesValue; // +0x108
+    MainDecisionAIModule* md;
+    int numberResourcesValue;
+    int* resourceValue;
+    int* minValue;
+    int* maxValue;
+    int** resourceTypesValue;
+    int* numberResourceTypesValue;
 
     int resourcesAvailable(ResourceItem* item);
 };

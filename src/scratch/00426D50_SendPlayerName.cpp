@@ -1,6 +1,20 @@
-// first pass: stack-temp DPNAME plus logging of the returned HRESULT/result
-// probe 1: direct member offsets were structurally right but still optimized into the smaller basin
-// probe 2: keeping local_4 before the DPNAME did not change the 96-byte basin; the remaining mismatch is the stack temp/call-shape basin around the DPNAME setup and DirectPlay vtable call
+// 00426D50 TCommunications_Handler::SendPlayerName (Com_hand.cpp:808-826, 105B)
+// 96/105 bytes. VC5 dead-store-elimination / scheduling differences.
+//
+// Our VC5 optimizes away 3 of 4 zero stores (keeps only dwFlags=0 as the
+// sole survivor) and schedules all field stores before call pushes. The
+// 1998 build keeps all 4 zero stores and interleaves field stores with
+// pushes, using [esp+N] to access different DPNAME fields as pushes shift
+// the stack. Cannot replicate from C source.
+//
+// Correct struct layout:
+//   DPNAME at [esp+0..+0Ch] before pushes.
+//   lpszLongName = this->MyFormalName (+0x1179)
+//   lpszShortName = this->MyFriendlyName (+0x10F8)
+//   dwSize = 0x10
+
+#include <string.h>
+
 class RGE_Comm_Error;
 
 struct DPNAME {
@@ -15,7 +29,7 @@ public:
     char pad_000[0x10F8];
     char MyFriendlyName[129];
     char MyFormalName[129];
-    char pad_127A[0x26E];
+    char pad_11FA[0x2E6];
     RGE_Comm_Error* Err;
 
     long SendPlayerName();
@@ -26,23 +40,13 @@ public:
     void ShowReturn(long result, const char* msg);
 };
 
-extern const char s_Send_Player_Name[];
-
-long TCommunications_Handler::SendPlayerName() {
-    long local_4;
-    DPNAME dpnSetName;
-    long result;
-
-    local_4 = 0;
-    dpnSetName.dwSize = 0;
-    dpnSetName.dwFlags = 0;
-    dpnSetName.lpszShortName = 0;
-    dpnSetName.lpszLongName = 0;
-    dpnSetName.lpszShortName = (unsigned short*)(this->MyFormalName);
-    dpnSetName.lpszLongName = (unsigned short*)(this->MyFriendlyName);
+long TCommunications_Handler::SendPlayerName()
+{
+    DPNAME dpnSetName = {0};
+    dpnSetName.lpszLongName = (unsigned short*)(void*)this->MyFormalName;
+    dpnSetName.lpszShortName = (unsigned short*)(void*)this->MyFriendlyName;
     dpnSetName.dwSize = 0x10;
-
-    result = (long)((int (__stdcall *)(void*, void*, DPNAME*, int))(*(void***)*(void**)0x62C5EC)[0x78 / 4])(*(void**)0x62C5EC, *(void**)0x62CF04, &dpnSetName, 2);
-    this->Err->ShowReturn(result, s_Send_Player_Name);
+    long result = ((long (__stdcall *)(void*, void*, void*, int))(*(void***)*(void**)0x62C5EC)[0x78 / 4])(*(void**)0x62C5EC, *(void**)0x62CF04, &dpnSetName, 2);
+    this->Err->ShowReturn(result, "Send Player Name");
     return result;
 }

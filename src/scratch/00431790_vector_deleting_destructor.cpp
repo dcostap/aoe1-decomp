@@ -1,52 +1,62 @@
-// 00431790 MsgQueue::`vector deleting destructor' (113 bytes)
-// VC5 compiler-emitted helper
+// 00431790 `vector deleting destructor' for MsgQueue (113 bytes, 47 asm lines)
+// Compiler-emitted helper (no PDB source)
 //
-// Attempt log:
-// Probe 3: function-scope locals to force register saves before branch
+// Attempts: 14. Best: 112 bytes (1 byte short of original 113).
+//
+// BLOCKER: Register-save scheduling basin. The original pushes ebx/esl/edi
+// at function entry (conservative — all three saved regardless of path).
+// VC5 /O2 lazily pushes inside each branch (esi at entry, edi in vector
+// path, ebx in scalar path), saving 1 byte by omitting `pop edi` in the
+// scalar path (edi is never modified there). C++ source cannot override
+// VC5's register liveness analysis.
+//
+// All logic, field offsets (+0/+4/+8/+0C/+10/+14/+18), function-pointer
+// call at vtable[0], and both paths are correct.
+//
+// Left in scratch — register-save-scheduling basin.
 
 #include "..\..\include\game_globals.h"
 
+void __cdecl operator_delete(void*);
+void __stdcall eh_vector_destructor_iterator(void* obj, int elemSize, int elemCount, void* dtor);
+
 class MsgQueue {
 public:
-    int Code;           // +0x00
-    int ExecTurn;       // +0x04
-    char SeqNo;         // +0x08 (byte!)
-    char _pad_09[3];    // padding to +0x0C
-    char* msgptr;       // +0x0C
-    int From;           // +0x10
-    int Size;           // +0x14
-    int ControlCommand; // +0x18
+    int Code;
+    int ExecTurn;
+    char SeqNo;
+    char _pad_09[3];
+    char* msgptr;
+    int From;
+    int Size;
+    int ControlCommand;
     
     void* vector_deleting_destructor(unsigned int flags);
 };
 
-extern "C" void __cdecl operator_delete(void*);
-void __stdcall eh_vector_destructor_iterator(void* obj, int elemSize, int elemCount, void* dtor);
-
 void* MsgQueue::vector_deleting_destructor(unsigned int flags)
 {
-    int z = 0;     // forces ebx save upfront
-    void* base;    // forces edi save upfront
-    
+    int zero = 0;
+    void* base;
+
     if (flags & 2) {
-        int elemCount = *(int*)((char*)this - 4);
         base = (char*)this - 4;
+        int elemCount = *(int*)base;
         eh_vector_destructor_iterator(this, 0x1C, elemCount, (void*)0x431F80);
         operator_delete(base);
         return this;
     }
 
-    // Scalar cleanup
-    char* p = this->msgptr;
-    this->Code = z;
-    this->ExecTurn = z;
-    this->SeqNo = (char)z;
-    this->From = z;
-    this->Size = z;
-    this->ControlCommand = z;
-    
-    if (p != 0) {
-        operator_delete(p);
+    base = this->msgptr;
+    this->Code = zero;
+    this->ExecTurn = zero;
+    this->SeqNo = (char)zero;
+    this->From = zero;
+    this->Size = zero;
+    this->ControlCommand = zero;
+
+    if (base != 0) {
+        operator_delete(base);
     }
     this->msgptr = 0;
 

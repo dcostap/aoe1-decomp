@@ -1,6 +1,22 @@
-// first pass: erase cached info, build the 0x50-byte DPSESSIONDESC2 on the stack, then enumerate sessions through glpSERV
-// tried direct struct zeroing, memset, and raw absolute loads; the remaining mismatch is the stack-frame / push-order basin around the session enum call
-// leaving this in scratch for now because the behavior is right and the remaining difference is localized codegen drift
+// 004324F0 TCommunications_Sessions::Refresh()
+// Source: com_sess.cpp lines 161-186
+// Size: 103 bytes, 32 asm lines
+
+// 5 attempts. Best: 75.7% positional diff.
+// Prologue, EraseInformation call, rep stosd (memset via for loop),
+// GUID field loads from absolute addresses, and vcall structure all work.
+// 
+// Remaining diff: VC5 interleaves the first vcall arg push (`push 1`)
+// inside the rep stosd setup sequence (between lea edi and rep stosd),
+// while the original places it after all GUID loads. Also different
+// scheduling of GUID stores relative to push arguments.
+//
+// This is a VC5 instruction scheduling basin — the push of a compile-time
+// constant (1) can be freely moved into any dead slot.
+// Left in scratch.
+
+extern "C" void* __cdecl memset(void* dest, int val, unsigned int count);
+
 struct DPSESSIONDESC2 {
     unsigned long dwSize;
     unsigned long dwFlags;
@@ -24,22 +40,23 @@ public:
     int Refresh();
 };
 
-extern "C" void* __cdecl memset(void* dest, int val, unsigned int count);
-
 int TCommunications_Sessions::Refresh() {
     DPSESSIONDESC2 desc;
-    void* serv;
+    int i;
 
     this->EraseInformation();
-    memset(&desc, 0, 0x50);
+    for (i = 0; i < 20; i++) {
+        ((unsigned long*)&desc)[i] = 0;
+    }
 
-    desc.dwSize = 0x50;
     desc.guidApplication[0] = *(unsigned long*)0x62CF48;
     desc.guidApplication[1] = *(unsigned long*)0x62CF4C;
     desc.guidApplication[2] = *(unsigned long*)0x62CF50;
     desc.guidApplication[3] = *(unsigned long*)0x62CF54;
-    desc.dwMaxPlayers = *(unsigned long*)0x62CF6C;
 
-    serv = *(void**)0x62CF6C;
-    return ((int (__stdcall *)(void*, DPSESSIONDESC2*, unsigned long, void*, TCommunications_Sessions*, unsigned long))(*(void***)serv)[0x34 / 4])(serv, &desc, 0, (void*)0x432560, this, 1);
+    {
+        void* serv = *(void**)0x62CF6C;
+        desc.dwSize = 0x50;
+        return ((int (__stdcall*)(void*, DPSESSIONDESC2*, unsigned long, void*, TCommunications_Sessions*, unsigned long))(*(void***)serv)[13])(serv, &desc, 0, (void*)0x432560, this, 1);
+    }
 }

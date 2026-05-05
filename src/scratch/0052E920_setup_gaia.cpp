@@ -1,32 +1,39 @@
-// attempt log:
-// first pass: EH-framed new-helper sibling to the matching Gaia ctor
-// second pass: fix the TRIBE_Gaia surface to 0x858 so VC5 emits the correct allocation size
-// third pass: the allocation size is right, but the ctor argument basin still drifts on the early push order
-// paused here: the remaining mismatch is the ctor push/order basin around the vtable-ish Gaia player argument and the GAIA string
-// target shape: allocate 0x858, call TRIBE_Gaia::TRIBE_Gaia(this/world, vtable-ish *[this+0x48], 0, GAIA, 0), store result into *([this+0x40]) or 0 on failure
+// 0052E920 TRIBE_World::setup_gaia()
+// Source: tworld.cpp lines 348-351
+// Size: 102 bytes, 33 asm lines
+
+// 6+ attempts. Same EH epilogue codegen basin as 00471C90, 00519490.
+// Size fixed: TRIBE_Gaia is 0x858 bytes (TRIBE_Player + 4 int fields).
+// Remaining 21.6% diff: shared common epilogue (original) vs split-path
+// epilogue (rebuilt). Not fixable from C++ source with this VC5 version.
+// String/handler addresses are relocations masked by the tool.
 
 class RGE_Master_Player {
 public:
-    void* vtable_ptr;
+    void* vtable;
 };
 
-class TRIBE_Gaia;
-
-class TRIBE_World {
+class RGE_Game_World {
 public:
-    char gap_00[0x40];
-    TRIBE_Gaia** gaia_ptr;
-    char gap_44[0x4];
-    RGE_Master_Player* gaia_master_player;
-    void setup_gaia(void);
+    char pad_00[0x40];
+    void** players;
+    char pad_44[0x4];
+    void** master_players;
+
+    void setup_gaia();
+};
+
+class TRIBE_World : public RGE_Game_World {
 };
 
 class TRIBE_Gaia {
 public:
-    char pad_0[0x858];
-    TRIBE_Gaia(TRIBE_World* world, void* player_vtable, unsigned char param_3, char* param_4, unsigned char param_5);
+    char gap[0x858];
+
+    TRIBE_Gaia(void* world, RGE_Master_Player* player,
+               unsigned char param_3, const char* param_4, unsigned char param_5);
 };
 
-void TRIBE_World::setup_gaia(void) {
-    *this->gaia_ptr = new TRIBE_Gaia(this, this->gaia_master_player->vtable_ptr, 0, "GAIA", 0);
+void RGE_Game_World::setup_gaia() {
+    this->players[0] = new TRIBE_Gaia(this, (RGE_Master_Player*)this->master_players[0], 0, "GAIA", 0);
 }
