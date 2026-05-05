@@ -1,12 +1,6 @@
-// attempt 1: for-loop too compact (80 vs 89 bytes)
-// attempt 2: while-loop+base ptr matches 89 bytes but prologue wrong (VC5 pushes ebx first vs original loads param1 first)
-// attempt 3: direct this->last_order access still wrong prologue
-// attempt 4: local 'unsigned char n = param1->unit_num' makes function too small (80 vs 89)
-// Left in scratch after 4 attempts
-// Remaining: prologue register allocation differs (original loads param1 into eax before any pushes,
-// overwrites ecx with last_order, then pushes ebx/esi/edi with xor edx between).
-// Loop uses delta-based addressing (sub edi,esi; mov esi,[edi+eax]) that VC5 doesn't generate from natural source.
-// Behavioral logic fully correct.
+// 004351B0 RGE_Command::duplicate_check_command_stop
+// HollowSnowdrop pass: tried low-level pointer-delta scan and natural forms. Best prior while-loop remains exact size 89/89 but wrong prologue/loop-addressing. Low-level version improved initial param load but still pushes before last_order load and hoists pointer increments differently; rolled back to best natural behavior source.
+// Remaining: original loads param1 into EAX and last_order into ECX before pushes, then uses EDI/ESI delta addressing (`sub edi,esi; mov esi,[edi+eax]`) in loop. VC5 natural forms prefer loading last_order after pushes or separate advancing pointers.
 
 class RGE_Command_Stop {
 public:

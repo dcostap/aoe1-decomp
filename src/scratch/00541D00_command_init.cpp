@@ -1,8 +1,9 @@
 // World.cpp:852-854, 89 bytes
 // attempt 1: 23.6%, same null-store basin as 00541B60
-// BEST: 23.6%. BLOCKER: identical to 00541B60 - original fail path has
-//   jmp/xor eax/mov [esi+58h],eax before EH teardown; rebuilt new expression
-//   skips this store. All other bytes match.
+// BEST: 23.6%. BLOCKER: identical to 00541B60/0052E530 - original fail path has
+//   ctor; jmp common; null xor eax; common mov [esi+58h],eax before EH teardown;
+//   rebuilt new expression sinks the store/teardown into the non-null path.
+// 2026 retry after 0052E530: revalidated, same 21-byte positional / 15-byte edit diff.
 // FLAGS: /GX
 class RGE_Game_World;
 

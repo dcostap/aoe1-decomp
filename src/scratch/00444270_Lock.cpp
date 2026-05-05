@@ -1,6 +1,9 @@
 // VA: 00444270 TDrawArea::Lock (129 B)
 // PDB source: Drawarea.cpp
 // Locks the DirectDraw surface and returns a pointer to the pixel buffer
+// left in scratch: behavior modeled, but VC5 keeps saving EDI for the lock flag (`setne dl`) when
+// expressed through raw/function-pointer or typed virtual surfaces. Original uses no EDI, reads
+// waitFlag directly from [esp+0C], and branches to push 1/0 before the call.
 
 class TDrawSystem {
 public:
@@ -22,8 +25,8 @@ public:
     char gap_68[0x4C];
     void* LastBits;            // +0xB4
 
-    void SetInfo();
-    void SetAccessOffsets();
+    void __fastcall SetInfo();
+    void __fastcall SetAccessOffsets();
     unsigned char* Lock(char* name, int waitFlag);
 };
 

@@ -1,67 +1,39 @@
-// Function: TribeInformationAIModule::invalidLot
-// VA: 004E0560
-// Source: taiinfmd.cpp
-//
-// STATUS: Cannot match exactly due to compiler register allocation differences
-//
-// ISSUE: The original compiler (older MSVC) made different register choices:
-// - Original: ESI = maxBuildingLots, EDI = typeID, BL = x, CL = y
-// - Modern MSVC: EDX = maxBuildingLots, EBP = typeID, BL = x, CL = y
-//
-// The logic is identical, but MSVC uses EBP as a general purpose register
-// while the original didn't use EBP at all.
-//
-// This is a fundamental compiler version difference that can't be easily
-// worked around without inline assembly (which is forbidden).
-//
-// Leaving in scratch due to this toolchain limitation.
-// 
-// This is a simple array search function that checks if a building lot
-// with specific properties exists in the buildingLots array.
+// VA: 004E0560 TribeInformationAIModule::invalidLot
+// left in scratch: natural loop matches call-free behavior and register allocation but VC5 either emits
+// an extra redundant pre-loop `test esi,esi` for `while(i<count)` or, with do/while, collapses the
+// original false/true return tails and uses a jge+jmp loop shape. No exact branch-layout basin found yet.
 
 class BuildingLot {
 public:
-    int typeID;      // offset 0
-    char status;     // offset 4
-    char x;          // offset 5
-    char y;          // offset 6
-    char pad;        // offset 7 (padding to 8 bytes)
+    int typeID;
+    unsigned char status;
+    unsigned char x;
+    unsigned char y;
+    unsigned char pad;
 };
 
 class TribeInformationAIModule {
 public:
-    char pad_000[0x1F4];
-    int maxBuildingLots;    // offset 0x1F4
-    BuildingLot* buildingLots; // offset 0x1F8
-    
+    char gap_000[0x1F4];
+    int maxBuildingLots;
+    BuildingLot* buildingLots;
+
     int invalidLot(int typeID, unsigned char x, unsigned char y);
 };
 
 int TribeInformationAIModule::invalidLot(int typeID, unsigned char x, unsigned char y) {
-    // Original uses EDI for typeID, but MSVC is using EBP
-    // Let me try to force EDI usage by accessing it early
-    
-    int maxLots = this->maxBuildingLots;
-    if (maxLots <= 0) {
+    int count = this->maxBuildingLots;
+    int i = 0;
+    if (count <= 0) {
         return 0;
     }
-    
     BuildingLot* lot = this->buildingLots;
-    int counter = 0;
-    
-    // Force EDI to be used for typeID by assigning it first
-    register int typeID_copy = typeID;
-    
-    while (counter < maxLots) {
-        if (lot->typeID == typeID_copy &&
-            lot->status == 2 &&
-            lot->x == x &&
-            lot->y == y) {
+    while (i < count) {
+        if (lot->typeID == typeID && lot->status == 2 && lot->x == x && lot->y == y) {
             return 1;
         }
-        counter++;
+        i++;
         lot++;
     }
-    
     return 0;
 }

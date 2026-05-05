@@ -1,6 +1,8 @@
 // VA: 004AD340 TRIBE_Screen_Sed::command_new_map | scr_sed.cpp:3308-3408
 // First natural pass from Ghidra/asm.
 // compiles at original size after padding map_info; current mismatch is broad early register/source-shape drift (this kept in ESI, show_status in EDI) versus original stack-homed this and ESI show_status.
+// HollowSnowdrop pass: revalidated 590/590 bytes, 81.69% positional diff. Tried moving result declaration later to avoid early EBX zeroing; no change.
+// Remaining blocker is early whole-function register allocation/prologue: original `mov eax,ecx` before saves and homes this at [esp+10h], while rebuilt saves this in ESI and zeroes EBX early.
 
 struct RGE_Scenario { int Get_player_Active(int index); };
 struct TDropDownPanel { void set_line(long line); };
@@ -76,7 +78,6 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     int current_tribe;
     RGE_Player_Info_Local player_info;
     RGE_Map_Gen_Info_Local map_info;
-    int result;
     int i;
 
     this->need_to_save_flag = 0;
@@ -123,7 +124,7 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name, int param_2, int para
     if (rge_base_game->sound_system != 0) {
         rge_base_game->sound_system->mute = 1;
     }
-    result = this->world->create_new_map((void*)player_info.names, param_3) & 0xff;
+    int result = this->world->create_new_map((void*)player_info.names, param_3) & 0xff;
     if (result != 0 && this->world->player_count < 8) {
         result = 0;
         this->world->vB8();

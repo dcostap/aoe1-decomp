@@ -1,6 +1,8 @@
 // natural constructor ordering with a manual XYZ call and the 50-slot grouping fill
 // tried moving the raw-storage layout and constructor-call order around
 // remaining mismatch is localized: EAX is restored after the final hit-point stores instead of before them
+// HollowSnowdrop pass: tried non-volatile result local before/after first hit-point store and mixed result/this stores; still 2-byte mov eax,esi is emitted at tail instead of after first store.
+// left in scratch: exact size, only 4-byte edit drift / 20.8% positional due to shifted constructor return-value restore; behavior and all stores match.
 class XYZ {
 public:
     char data[0x0C];
@@ -45,10 +47,10 @@ AIPlayStatus::AIPlayStatus() {
         i--;
     } while (i != 0);
 
-    this->originalHitPointsValue[0] = -1;
-    volatile AIPlayStatus* result = this;
-    result->originalHitPointsValue[1] = -1;
-    result->originalHitPointsValue[2] = -1;
-    result->originalHitPointsValue[3] = -1;
-    result->originalHitPointsValue[4] = -1;
+    AIPlayStatus* result = this;
+    result->originalHitPointsValue[0] = -1;
+    this->originalHitPointsValue[1] = -1;
+    this->originalHitPointsValue[2] = -1;
+    this->originalHitPointsValue[3] = -1;
+    this->originalHitPointsValue[4] = -1;
 }

@@ -1,14 +1,16 @@
-// World.cpp:820-822, 96 bytes
-// attempt 1: 64 bytes, class size 0x1990 too compact
-// attempt 2: 48 bytes, small class too compact
-// attempt 3: 48 bytes, extern ctor too compact
-// attempt 4: 59.4%, new RGE_Scenario, class size 4
-// attempt 5: 21.9%, class size 0x1990, fail path order diff
-// attempt 6: 21.9%, source shape change no help
-// attempt 7: 48 bytes, manual operator new too small
-// BEST: 21.9% (attempts 5,6). BLOCKER: original fail path has
-//   jmp/xor eax/mov [esi+5ch],eax before EH teardown; rebuilt skips this.
+// VA: 00541B60 RGE_Game_World::scenario_init(int, RGE_Game_World*)
+// PDB source: World.cpp lines 820-822 (96 bytes, 29 asm lines)
 // FLAGS: /GX
+//
+// __thiscall: this in ecx, 2 stack params. ret 8 cleanup.
+// SEH-framed, allocates RGE_Scenario (0x1990 bytes), constructs if non-null,
+// stores at this->scenario (+0x5C).
+//
+// 86/96 edit-match bytes. Same null-path shared-epilogue issue as
+// 005414A0, 00541BC0, 0052E920: original has jmp+shared tail for null path,
+// VC5 generates separate epilogue per path. 15-byte edit diff.
+//
+// SEH handler address differs (relocation masked).
 class RGE_Game_World;
 
 class RGE_Scenario {

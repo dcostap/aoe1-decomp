@@ -1,36 +1,48 @@
-// TribeBuildAIModule::buildItem
-// VA: 004D5DE0
+// VA: 004D5DE0 TribeBuildAIModule::buildItem
 // PDB: taibldmd.cpp:1759-1773
-// ret 0Ch, returns void*
+// left in scratch: behavior/calls/layout modeled; remaining drift is the same list-loop branch shape
+// seen in 00500320 (`cmp sentinel; je fail; test; jne body`) versus original backedge to loop-top test.
 
-#include "../../include/game_globals.h"
+class BuildItem {
+public:
+    char gap_00[0x6C];
+    BuildItem* next;
 
-typedef int (__fastcall *_BCat)(void* item);
-typedef int (__fastcall *_BBuilt)(void* item);
-typedef int (__fastcall *_BInProg)(void* item);
-typedef int (__fastcall *_BId)(void* item);
+    int built();
+    int inProgress();
+    int typeID();
+    int buildCategory();
+};
 
-extern _BCat _buildCategory;
-extern _BBuilt _built;
-extern _BInProg _inProgress;
-extern _BId _itemId;
+class TribeBuildAIModule {
+public:
+    char gap_000[0x0F0];
+    char list[0x6C];
+    BuildItem* first;
 
-void* __fastcall buildItem(void* _this, int _, int param_1, int param_2, int param_3)
-{
-    void* item = *(void**)((char*)_this + 0x15C);
-    void* sentinel = (char*)_this + 0x0F0;
+    BuildItem* buildItem(int type, int category1, int category2);
+};
 
-    if (item == sentinel) return 0;
-    int bp = param_2;
-    int bx = param_3;
-
-    while (item) {
-        if (!_built(item) && !_inProgress(item) && _itemId(item) == param_1) {
-            if (_buildCategory(item) == bp || _buildCategory(item) == bx)
-                return item;
-        }
-        item = *(void**)((char*)item + 0x6C);
-        if (item == sentinel) return 0;
+BuildItem* TribeBuildAIModule::buildItem(int type, int category1, int category2) {
+    BuildItem* item = this->first;
+    BuildItem* sentinel = (BuildItem*)&this->list;
+    if (item != sentinel) {
+        int cat2 = category2;
+        int cat1 = category1;
+        goto check_item;
+        do {
+            if (!item->built() && !item->inProgress() && item->typeID() == type) {
+                if (item->buildCategory() == cat1 || item->buildCategory() == cat2) {
+                    return item;
+                }
+            }
+            item = item->next;
+            if (item == sentinel) {
+                return 0;
+            }
+check_item:
+            ;
+        } while (item != 0);
     }
     return 0;
 }

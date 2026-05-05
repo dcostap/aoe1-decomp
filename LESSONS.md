@@ -3532,3 +3532,38 @@ Some command helper wrappers pass the address of an incoming `int` parameter as 
 ### Float-typed fields can be needed even when stores are integer `mov` immediates
 
 When original asm stores constants like `0x43480000` and `0x42C80000` with integer `mov` instructions, model the destination as `float*` and write `200.0f` / `100.0f`, not integer `200` / `100`. VC5 will still use integer immediate stores for float constants in memory, but the immediate values match the IEEE-754 bit patterns. Integer fields with integer literals produce the same instruction shape but wrong constants.
+
+### Inline denominator call can force VC5 `fdivr` instead of x87 stack shuffle
+
+When a float ratio should compile as `fstp temp; call denominator; fdivr temp`, avoid naming the denominator result as a separate `float` local. Keep only the numerator temp and inline the denominator-producing call in the division, e.g. `sum = numerator / obj->denominator() + sum;`. A named denominator local can make VC5 preserve/reload both operands with `fld`/`fxch`/`fstp` and use `fdiv`, shifting the whole loop even though the math is equivalent.
+
+
+## Lesson: A local `this` alias can flip `this` versus loop-counter register coloring
+
+When VC5 swaps the expected callee-saved register roles for `this` and a loop counter (for example rebuilt uses `esi=this, edi=i` while original uses `edi=this, esi=i`), try introducing a simple local alias as the first statement:
+
+```cpp
+ClassName* th = this;
+```
+
+Then use `th->field` throughout the function. The extra pointer local can change register pressure just enough for VC5 to keep the object pointer in the original register and leave the loop counter in the other saved register.
+
+Try when:
+- the logic is correct but almost every member access differs by an `esi`/`edi` ModRM swap;
+- a loop counter and `this` both live across calls;
+- declaration-order probes do not affect the allocator.
+
+Caveat:
+- do not keep the alias if the original repeatedly reloads `this` or if it introduces extra memory loads; this is specifically for stable saved-register color swaps.
+
+### Preserve inner loop guard topology with `if` body inside `do`
+
+For bounded copy loops with two limits, VC5 may emit either a pre-body break (`if (i >= limit) break;`) or the original compare-at-top/branch-to-exit shape. If the target has `cmp i,newLimit; jge exit; ...; cmp i,oldLimit; jl loop`, spell the loop as a `do` with the copy inside the positive arm (`if (i < newLimit) { ++i; copy; reload oldLimit; } else { break; }`) rather than an early `if (i >= newLimit) break;`. This can remove extra `test`/preheader checks and match the exact loop topology.
+
+### Volatile value parameters can preserve x87 operand load order
+
+When a VC5 match is down to a commutative-looking x87 expression (`value * member`) but the compiler loads the member first (`fld [this+...] ; fmul [esp+param]`) while the original loads the stack parameter first (`fld [esp+param] ; fmul [this+...]`), try declaring the by-value float parameter as `volatile float` in both the member declaration and definition. This can force the stack parameter to be the primary x87 load without changing the ABI or the generated call surface. Use narrowly: it is a codegen-shape tool for observed parameter reload order, not a semantic claim about the source API.
+
+### Split chained member calls to prevent argument interleaving
+
+When a call result is immediately used for another member call and later another argument-producing call feeds a small wrapper, VC5 can interleave argument pushes if the source keeps everything as one expression. If the original shows one call's full argument block, call, `mov ecx,eax`, second call, then a separate helper call whose result is pushed into a wrapper, split the expression into named pointer/message temporaries. This preserves the natural call boundaries and avoids extra/early pushes from nested argument evaluation.

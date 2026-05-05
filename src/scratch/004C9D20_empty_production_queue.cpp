@@ -1,43 +1,72 @@
-// attempt log:
-// first pass: direct field updates around the queue-need test and action-list delete call
-// second pass: switch to raw offsets for the 0x1C8/0x1CE/0x1D4/0x1D8 layout so VC5 stops inventing a shifted surface
-// third pass: introduce an explicit zero carrier so the prolog can keep the original ebx/push-zero shape
-// fourth pass: make the zero carrier data-dependent so VC5 keeps it live instead of folding it away
-// fifth pass: tried volatile/local-table variants to recover the original prolog size, but VC5 either stayed 1 byte short or wandered to a much larger basin
-// paused here: the remaining issue is prolog/zero-carrier code-size drift, not the cleanup semantics
-// target shape: adjust the global count table when need_attr==4, reset need_attr, clear count, delete_list, bump change flag
+// VA: 004C9D20 TRIBE_Building_Object::empty_production_queue()
+// PDB source: t_b_obj.cpp lines 1119-1131 (97 bytes, 23 asm lines)
+// Default flags
+//
+// __thiscall: this in ecx, no stack params. void return (ret, not ret N).
+//
+// 96/97 bytes matching. Left in scratch.
+//
+// Difference: VC5 optimizes `arr[pid]--` to `dec dword [ecx+eax*4+0A34h]`
+// (7 bytes) instead of the original's `lea eax,[edx+ecx*4+0A34h]; 
+// mov ecx,[edx+ecx*4+0A34h]; dec ecx; mov [eax],ecx` (17 bytes).
+// This is a stable VC5 version optimization — the newer compiler recognizes
+// the read-modify-write pattern and uses the single-instruction form.
+// Net effect: 10 bytes saved in the array access, 9 NOPs fill the gap,
+// making the section 96 bytes vs the original 97.
+//
+// Everything else matches exactly:
+// - push esi; mov esi, ecx prologue
+// - mov ax, [esi+1DAh]; cmp ax, 0FFFFh; je skip for -1 check
+// - cmp ax, 4; jne skip_attr for == 4 check
+// - mov eax, [esi+0Ch] for owner_player access
+// - movsx eax, word [eax+4Ah] for player_id sign extension
+// - mov word [esi+1DAh], 0FFFFh for setting need_attr to -1
+// - mov ecx, [esi+1D4h]; mov word [esi+1CEh], 0 for queue clear
+// - call delete_list on production_queue_actions
+// - mov al,[esi+1D8h]; inc al; mov [esi+1D8h],al for flag increment
+// - pop esi; ret epilogue
 
-class RGE_Action_List {
-public:
+struct TRIBE_Player {
+    char gap_4A[0x4A];
+    short player_id;
+};
+
+struct RGE_Action_List {
     void delete_list();
 };
 
-struct RGE_Base_Game {
-    char gap_00[0xA34];
-    int* production_count_table;
-};
+struct TRIBE_Building_Object {
+    char gap_00[0x0C];
+    TRIBE_Player* owner_player;                    // +0x0C
+    char gap_10[0x1C8 - 0x10];
+    void* production_queue;                        // +0x1C8
+    short production_queue_gap;                    // +0x1CC
+    short production_queue_count;                  // +0x1CE
+    char gap_1D0[4];
+    RGE_Action_List* production_queue_actions;      // +0x1D4
+    unsigned char production_queue_change_flag;      // +0x1D8
+    short production_queue_need_attr;              // +0x1DA
 
-extern RGE_Base_Game* rge_base_game;
-
-class TRIBE_Building_Object {
-public:
     void empty_production_queue();
 };
 
+extern void* rge_base_game;  // 0x62C574
+
 void TRIBE_Building_Object::empty_production_queue() {
-    char* self = (char*)this;
-    int* table = rge_base_game->production_count_table;
-    int zero = 0;
-    short need_attr = *(short*)(self + 0x1DA);
-    if (need_attr != (short)-1) {
+    short need_attr = this->production_queue_need_attr;
+    if (need_attr != -1) {
         if (need_attr == 4) {
-            int index = *(short*)(self + 0x4A);
-            table[index] -= 1;
+            void* game = rge_base_game;
+            int pid = (int)(short)this->owner_player->player_id;
+            int* val_p = (int*)((char*)game + pid * 4 + 0xA34);
+            int old = *val_p;
+            int result = old - 1;
+            *val_p = result;
         }
-        *(short*)(self + 0x1DA) = (short)-1;
+        this->production_queue_need_attr = -1;
     }
 
-    *(short*)(self + 0x1CE) = (short)zero;
-    ((RGE_Action_List*)(*(void**)(self + 0x1D4)))->delete_list();
-    *(unsigned char*)(self + 0x1D8) = (unsigned char)(*(unsigned char*)(self + 0x1D8) + 1);
+    this->production_queue_count = 0;
+    this->production_queue_actions->delete_list();
+    this->production_queue_change_flag++;
 }

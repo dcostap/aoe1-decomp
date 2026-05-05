@@ -6,6 +6,9 @@
 // fifth pass: fall back to the smaller Path surface and a fully inlined segment-distance expression
 // target shape: sum pairwise distances when currentSizeValue > 1, otherwise return 0.0f
 // paused here: remaining mismatch is early prolog/FPU scheduling drift around the zero init and loop body
+// 2026 retry: removing <math.h> and declaring sqrtf as extern forced a real call/prolog and regressed badly;
+// restored <math.h>/intrinsic sqrtf basin. Remaining mismatch is still x87 expression scheduling in loop.
+
 
 #include <math.h>
 

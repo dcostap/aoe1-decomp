@@ -6,6 +6,8 @@
 // follow-up retry: macro/inline-helper forms, pointer aliases, staged locals, cast/shift spellings, raw-offset field loads, and memcpy decl tweaks
 // all either reproduced the same 6-byte second-expression register-coloring drift or regressed earlier
 // >10 attempts: leaving in scratch at the closest basin rather than churning wider context
+// 2026 retry: staged size locals/colors-header-sizeImage/total forms regressed to 10-byte drift;
+// restored closest direct memcpy expression with remaining 6-byte second-size register-coloring drift.
 extern void* memcpy(void* dst, const void* src, unsigned long n);
 
 class tagBITMAPINFOHEADER {

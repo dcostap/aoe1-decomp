@@ -1,57 +1,52 @@
-// first pass: count-gated scan across the 0x10-stride placement entries at +0x12C8/+0x12CC
-// tried the head-count test in signed-zero and signed-one forms, plus while/do/goto loop shapes; mismatch is now localized to the count-test / loop-back VC5 basin
-// pausing in scratch for now because the behavior is right and the remaining difference is codegen shape, not control flow or data access
-class RGE_Object_Info_Line;
+// VA: 00486110 RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line&, long, long)
+// PDB source: rmm_obj.cpp lines 185-202 (97 bytes, 47 asm lines)
+// Default flags
+//
+// __thiscall: this in ecx, 3 stack params. ret 0Ch cleanup.
+// Returns 1 if (x,y) is within land_inner_radius of any land point, 0 otherwise.
+//
+// 96/97 bytes matching. Left in scratch.
+//
+// Difference: VC5 restructures do-while loop with early return to use
+// `jge exit; jmp loop` (4 bytes) instead of `jl loop` (2 bytes). The compiler
+// inverts the loop-end condition when a `return 1` exists inside the body.
+// The epilogue difference saves ~1 byte.
 
-class RGE_RMM_Object_Generator {
-public:
-    char pad_000[0x12C8];
-    long entry_x;
-    long entry_y;
-    char pad_12D0[0x628];
-    long count;
+struct RGE_Object_Info_Line {
+    char gap_00[0x24];
+    long land_inner_radius;
+};
+
+struct RGE_RMM_Object_Generator {
+    char gap_000[0x12C8];
+    char lands_area[0x18F8 - 0x12C8];
+    long land_num;  // +0x18F8
 
     unsigned char to_close(RGE_Object_Info_Line* info_line, long x, long y);
 };
 
-class RGE_Object_Info_Line {
-public:
-    char pad_00[0x24];
-    long land_inner_radius;
-};
-
 unsigned char RGE_RMM_Object_Generator::to_close(RGE_Object_Info_Line* info_line, long x, long y) {
-    int iVar1;
-    int iVar2;
-    int iVar3;
-    long* plVar4;
-    int iVar5;
+    long count = this->land_num;
+    long i = 0;
+    if (count <= 0) return 0;
 
-    iVar1 = this->count;
-    iVar5 = 0;
-    if (iVar1 < 1) {
-        return 0;
-    }
+    long radius = info_line->land_inner_radius;
+    long* p_y = (long*)((char*)this + 0x12CC);
 
-    plVar4 = (long*)((char*)this + 0x12CC);
-    while (true) {
-        iVar3 = x - *(plVar4 - 1);
-        if (iVar3 < 0) {
-            iVar3 = -iVar3;
-        }
-        iVar2 = y - *plVar4;
-        if (iVar2 < 0) {
-            iVar2 = -iVar2;
-        }
-        if ((iVar3 < info_line->land_inner_radius) && (iVar2 < info_line->land_inner_radius)) {
-            break;
-        }
-        iVar5 = iVar5 + 1;
-        plVar4 = plVar4 + 4;
-        if (iVar1 <= iVar5) {
-            return 0;
-        }
-    }
+    do {
+        long dx = x - *(p_y - 1);
+        if (dx < 0) dx = -dx;
 
-    return 1;
+        long dy = y - *p_y;
+        if (dy < 0) dy = -dy;
+
+        if (dx < radius && dy < radius) {
+            return 1;
+        }
+
+        i++;
+        p_y += 4;
+    } while (i < count);
+
+    return 0;
 }

@@ -1,30 +1,12 @@
-// TRIBE_Action_Discovery_Artifact ctor 2: 004CE5F0, tact_dar.cpp:42-48
-// TRIBE_Action_Discovery_Artifact(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)
-//
-// tried initial draft; compile error - needed member initializer list syntax
-// tried fixed version; size too small (80 vs 127) - EH frame not generated
-// tried /GX; still no EH frame - VC5 decides cleanup not needed
-// tried adding setup() to base; still 80
-// tried /O1 /Oy-; still no EH
-// tried /EHa; still no EH
-// PAUSED: EH frame is VC5 TU-context issue; logic correct, 47-byte size gap is EH prolog+epilog+stack bookkeeping
+// TRIBE_Action_Discovery_Artifact ctor: 004CE5F0, tact_dar.cpp:42-48
+// EH-framed constructor; /GX response file required.
+// HollowSnowdrop pass: /GX + visible virtual base dtor gets EH frame and exact size, but register/param scheduling still off (extra EDI save; obj kept in EDI for calloc chain). Current 127/127, 68.5% positional / 28.3% edit diff.
 
-#include <stdlib.h>
+extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 
-struct DiscoverySizeInfo {
-    char gap_00[0x3C];
-    short size;
-};
-
-struct DiscoveryInfo {
-    char gap_00[0x3C];
-    DiscoverySizeInfo* size_info;
-};
-
-struct DiscoveryMaster {
-    char gap_00[0x0C];
-    DiscoveryInfo* info;
-};
+struct DiscoverySizeInfo { char gap_00[0x3C]; short size; };
+struct DiscoveryInfo { char gap_00[0x3C]; DiscoverySizeInfo* size_info; };
+struct DiscoveryMaster { char gap_00[0x0C]; DiscoveryInfo* info; };
 
 class RGE_Action_Object;
 class RGE_Task;
@@ -32,31 +14,26 @@ class RGE_Static_Object;
 
 class RGE_Action {
 public:
-    virtual void vf00(void);
+    virtual ~RGE_Action();
     RGE_Action(RGE_Action_Object* object, int doSetup);
-
-    unsigned short action_type;
-    char gap_06[0x26];
-
     void set_target_obj(RGE_Static_Object* obj);
 };
 
 class TRIBE_Action_Discovery_Artifact : public RGE_Action {
 public:
-    float timer;
-    RGE_Task* task;
+    char gap_04[0x2C];
+    RGE_Task* task;       // +0x30
     char gap_34[0x0C];
-    char* flags;
+    char* flags;          // +0x40
 
     TRIBE_Action_Discovery_Artifact(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target);
 };
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target)
     : RGE_Action(obj, 1) {
-    this->action_type = 0x6C;
     this->task = task;
+    *(void**)this = (void*)0x575010;
+    *(short*)((char*)this + 4) = 0x6C;
     this->set_target_obj(target);
-    short size;
-    size = ((DiscoveryMaster*)obj)->info->size_info->size;
-    this->flags = (char*)calloc(size, 1);
+    this->flags = (char*)calloc(((DiscoveryMaster*)obj)->info->size_info->size, 1);
 }

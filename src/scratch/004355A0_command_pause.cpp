@@ -5,8 +5,7 @@
 // __thiscall: this in ecx, 3 stack params. ret 0Ch cleanup.
 //
 // 114/118 edit-match bytes, only 7 positional diff bytes.
-// Remaining: lea [esi+2] scheduled after je (original computes before je),
-// string constant (relocation masked), call rel32s (relocation masked).
+// Remaining: lea [esi+2] scheduled after test ebx,ebx (original computes before).
 
 #include <stdlib.h>
 
@@ -25,15 +24,18 @@ void RGE_Command::command_pause(int param_1, int* data, int count) {
         unsigned char* buf = (unsigned char*)calloc(1, alloc_size);
         if (buf != 0) {
             int* dst = (int*)(buf + 2);
-            for (int i = 0; i < count; i++) {
-                dst[i] = data[i];
+            void* log = g_pLog;
+            int cnt = count;
+            if (cnt > 0) {
+                int i = 0;
+                do {
+                    dst[i] = data[i];
+                    i++;
+                } while (i < cnt);
             }
             buf[0] = 0x0D;
-            buf[1] = (unsigned char)count;
-
-            void* log_obj = g_pLog;
-            TDebuggingLog_Log(log_obj, "      >SEND CMD PAUSE");
-
+            buf[1] = (unsigned char)cnt;
+            TDebuggingLog_Log(log, "      >SEND CMD PAUSE");
             this->submit(buf, alloc_size);
         }
     }

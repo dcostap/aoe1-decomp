@@ -1,10 +1,12 @@
-// quick-win attempt log:
-// no existing work file for 00541C90; this is the same allocate-and-ctor helper shape
-// as the other effects_init variant, but for RGE_Game_World. Start with the EH-framed
-// local-temp spelling and the direct operator new + RGE_Effects constructor call.
+// 00541C90 RGE_Game_World::effects_init
+// EH-framed allocate and construct RGE_Effects, store at +0x4C.
+// HollowSnowdrop pass: /GX + 0x0C-sized RGE_Effects direct-new gets exact 88/88 prologue/allocation/ctor family. Remaining drift mirrors 0052E650: original has short null branch to xor eax and common store; rebuilt stores after ctor and branches null to padded epilogue. Placement-new/decompiler null fallback likely collapses out of EH in this context.
+
+void* operator new(unsigned int size);
 
 class RGE_Effects {
 public:
+    char gap_00[0x0C];
     RGE_Effects(int param_1);
 };
 

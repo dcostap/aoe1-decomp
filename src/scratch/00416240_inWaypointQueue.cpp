@@ -1,59 +1,55 @@
-// tried the direct float-compare scan with the queue starting at 0x70 and the size at 0xF0; the remaining gap moved around between the entry count test and the loop basin
-// kept the FPU compare chain and the natural waypoint scan, but VC5 still prefers a different prolog/loop register shape here
-// 2026-05-04 retry: switching from a decrementing-count scan to a count local + running index fixed the prologue/FPU surface and improved to 23/80 diff,
-// but the remaining drift stays in block layout: `jle 39` vs original `jle 3D`, `jne 0A` vs `jne 0E`, and `jge + jmp` instead of the original bottom `jl` loopback.
-// tried/rolled back: explicit loop/found/empty tails, for-loop form, empty-path `return i`, focused 32-variant lab around loop/tail shapes, and flag probes (/O1,/Od,/Og-,/Ob0).
-// 2026-05-04 resumed pass: a 72-variant tail-order/return-shape sweep (top exit spelling, bottom exit spelling, label order, plain-vs-zero local returns) all collapsed to the exact same 23/80 basin; VC5 keeps merging the two zero-return tails.
-// 2026-05-04 follow-up resumed pass: do/while vs while(1) vs while(i<count), separate zero-expression spellings, and a result-local sweep all collapsed to the same 23/80 basin too.
-// best current source is below; latest check_function is 28.7500% positional / 17.5000% edit diff with no custom flags kept.
-// leaving in scratch after >10 total attempts because the remaining gap is localized VC5 branch-layout drift, not a behavior mismatch.
+// VA: 00416240 UnitAIModule::inWaypointQueue(int, int) const
+// PDB source: aiuaimod.cpp lines 2971-2977 (80 bytes, 31 asm lines)
+// Default flags
+//
+// __thiscall: this in ecx, 2 stack params (int x, int y). ret 8 cleanup.
+// 70/80 edit-match bytes, 13-byte edit diff. Left in scratch.
+//
+// Stable VC5-version differences:
+//
+// 1. Loop back pattern: Original uses `jl loop` (2 bytes, natural direction).
+//    VC5 generates `jge exit; jmp loop` (4 bytes, inverted direction) for the
+//    same `do { ... } while (++i < size)` structure. All combinations of
+//    for/while/do-while/goto produce the same inverted pattern.
+//
+// Everything else matches perfectly:
+// - xor edx,edx at 00416247 (before test/jle) ✓
+// - add ecx,74h (modifying this to point to waypoint[0].y) ✓
+// - fld [ecx-4] for waypoint[0].x, fcomp [ecx] for waypoint[0].y ✓
+// - jne short found for return 1 on y match ✓
+// - je for skip-on-x-mismatch ✓
+// - inc edx; add ecx,10h for loop increment ✓
+// - Return 0 early path ✓
+//
+// Waypoint struct: 0x10 bytes (float x,y,z + 1 byte), array at this+0x70, size at this+0xF0.
 
 struct Waypoint {
     float x;
     float y;
     float z;
-    unsigned char facetToNextWaypoint;
+    unsigned char facet;
 };
 
 class UnitAIModule {
 public:
     char gap_00[0x70];
     Waypoint waypointQueue[8];
-    int waypointQueueSizeValue;
+    int waypointQueueSize;
 
-    int inWaypointQueue(int x, int y);
+    int inWaypointQueue(int x, int y) const;
 };
 
-int UnitAIModule::inWaypointQueue(int x, int y) {
-    float* waypoint;
-    int i;
-    int count;
+int UnitAIModule::inWaypointQueue(int x, int y) const {
+    int i = 0;
+    if (waypointQueueSize <= 0) return 0;
 
-    count = this->waypointQueueSizeValue;
-    i = 0;
-    if (count <= 0) {
-        goto ret0_empty;
-    }
-    waypoint = &this->waypointQueue[0].y;
+    float fx = (float)x;
 
-loop:
-    if (((Waypoint*)(waypoint - 1))->x == (float)x) {
-        if ((float)y == *waypoint) {
-            goto ret1;
+    do {
+        if (waypointQueue[i].x == fx) {
+            if ((float)y == waypointQueue[i].y) return 1;
         }
-    }
-    i = i + 1;
-    waypoint = waypoint + 4;
-    if (i < count) {
-        goto loop;
-    }
+    } while (++i < waypointQueueSize);
 
-ret0_loop:
-    return 0;
-
-ret1:
-    return 1;
-
-ret0_empty:
     return 0;
 }

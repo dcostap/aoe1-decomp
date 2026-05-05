@@ -1,14 +1,13 @@
-// attempt 1: instruction order different, params read in wrong order
-// attempt 2: extern arrays, same VC5 reordering
-// attempt 3: (param1 * 256) + (param2 >> 2), same
-// attempt 4: swapped expression terms, same
-// attempt 5: local temps a and b, same
-// attempt 6: param1 * 255, adds extra push edi
-// resumed pass: mirrored the matched obstruction/increment surfaces, plus row/idx/ptr/2D-array variants and shl-sub row shaping;
-// every successful probe still either reads param2 ([esp+8]) first with extra edi/spill pressure, or stays in a worse 96-byte family.
-// left in scratch: VC5 always reads param2 ([esp+8]) first instead of param1 ([esp+4]) in the closest basin.
-// this changes register allocation and pushes (original has 2 pushes, rebuilt has 2-3)
-// behavior fully correct, size matches (82 bytes), benign codegen drift
+// VA: 0046B680 PathingSystem::decrementObstruction(int, int)
+// PDB source: pathsys.cpp lines 658-668 (82 bytes, 28 asm lines)
+// Default flags
+//
+// __thiscall: this in ecx, 2 stack params (int, int). ret 8 cleanup.
+//
+// Attempt log:
+// - attempts 1-10+ (prior): param2 always read first by VC5, causing extra push edi and wrong reg alloc
+// - current/best: direct pointer expression below gives exact size 82/82 but still swaps initial param load order and saves EDI; 79.27% positional / 76.83% edit.
+// - HollowSnowdrop pass: tried explicit rowOffset/byteIndex/lane locals and a 2D obstruction_value[256][255] surface; both kept the worse param2-first/EDI basin. Rolled back to prior best.
 
 extern const unsigned char ObstructionValueShift[4];
 extern const unsigned char ObstructionValueMask[4];
@@ -22,12 +21,12 @@ public:
 };
 
 void PathingSystem::decrementObstruction(int param1, int param2) {
-    int a = param1 * 255;
-    unsigned char* p = &obstruction_value[a + (param2 >> 2)];
+    unsigned char* p = &obstruction_value[param1 * 255];
+    p += param2 >> 2;
     unsigned char val = *p;
-    unsigned char shift = ObstructionValueShift[param2 & 3];
-    unsigned char ob = (val >> shift) & 3;
-    if (ob <= 0) return;
-    unsigned char mask = ObstructionValueMask[param2 & 3];
-    *p = (mask & val) | ((ob - 1) << shift);
+    unsigned char shiftIdx = param2 & 3;
+    unsigned char shift = ObstructionValueShift[shiftIdx];
+    unsigned char field = (val >> shift) & 3;
+    if (field == 0) return;
+    *p = (ObstructionValueMask[shiftIdx] & val) | ((field - 1) << shift);
 }

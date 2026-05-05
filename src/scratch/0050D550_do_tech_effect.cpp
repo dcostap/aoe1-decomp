@@ -1,61 +1,45 @@
-// 0050D550 TRIBE_Effects::do_tech_effect
-//
-// Probe 1: pointer-increment — 81% diff
-// Probe 2: offset-based calc, int count — 71% diff
-// Probe 3: short count for word compare — 70% diff
-// Left in scratch: same register allocation basin mismatch as do_effect (3 probes)
-
-#include "..\..\include\game_globals.h"
-
-class TRIBE_Player;
-
-class RGE_Effects {
-public:
-    virtual ~RGE_Effects();
-    RGE_Effects(int param);
-};
-
-class TRIBE_Effects : public RGE_Effects {
-public:
-    void* record_ptr;
-    int record_count;
-
-    virtual ~TRIBE_Effects();
-    TRIBE_Effects(int param);
-    virtual void do_effect(short param_1, void* param_2);
-    void do_tech_effect(short tech_id, TRIBE_Player* player);
-};
+// VA: 0050D550 TRIBE_Effects::do_tech_effect
+// left in scratch: rebuilt now matches prolog/index/record setup and main loop topology much better,
+// but remaining drift is small condition/codegen around effect kind and zero enable arg. Original uses
+// 32-bit `sub ecx,65; je skip; dec ecx; jne skip; push 0`; VC5 either emits an extra `test ecx,ecx`
+// after dec and reuses ECX for `push ecx`, or byte-register ops if kind is unsigned char.
 
 class TRIBE_Player {
 public:
-    void tech_abling(long tech_value, unsigned char enable);
+    void tech_abling(long tech_value, int enable);
 };
 
-void TRIBE_Effects::do_tech_effect(short tech_id, TRIBE_Player* player)
-{
-    unsigned char* record = (unsigned char*)this->record_ptr + tech_id * 0x2C;
-    short count = *(short*)(record + 0x24);
+class TRIBE_Effects {
+public:
+    void* vtable;
+    unsigned char* records;
+
+    void do_tech_effect(short tech_id, TRIBE_Player* player);
+};
+
+void TRIBE_Effects::do_tech_effect(short tech_id, TRIBE_Player* player) {
+    int index = tech_id;
+    unsigned char* base = this->records;
+    int scaled = index + index * 4;
+    int recIndex = index + scaled * 2;
+    unsigned char* record = base + recIndex * 4;
     int i = 0;
 
-    if (count > 0) {
-        unsigned char* effect_list = *(unsigned char**)(record + 0x28);
+    if (*(short*)(record + 0x24) > 0) {
         int offset = 0;
-
         do {
-            unsigned char* effect = effect_list + offset;
-            unsigned long t = (unsigned long)(unsigned char)(*effect);
-
-            t -= 0x65;
-            if (t != 0) {
-                t--;
-                if (t == 0) {
-                    long tech_value = (long)*(float*)(effect + 8);
-                    player->tech_abling(tech_value, 0);
+            unsigned char* effect = *(unsigned char**)(record + 0x28) + offset;
+            unsigned int kind = *effect;
+            kind -= 0x65;
+            if (kind == 0) {
+            } else {
+                kind--;
+                if (kind == 0) {
+                    player->tech_abling((long)*(float*)(effect + 8), 0);
                 }
             }
-
             i++;
             offset += 0x0C;
-        } while (i < count);
+        } while (i < *(short*)(record + 0x24));
     }
 }

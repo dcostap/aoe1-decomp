@@ -102,7 +102,7 @@
 // - corrected case20 tail from zero-waypoint store tail to ordinary store_return_one; original case20 tail stores HP/unit only (zero-waypoint tail belongs earlier attack-family case). Improved 4040 -> 4038.
 // - also probed case20 non-firstTime as return 0 to match original branch-to-zero-return shape; kept because behavior/asm tail is closer though total diff remained 4038.
 // - tried removing cached case20 UnitAIModule* and using direct obj->unitAI() calls; worsened to 4039, rolled back to cached ai.
-// - corrected more firstTime return-family facts from original branch targets: cases 0/1, 4, 7, 10, 11, 2/21, and 20 branch to the common zero return when firstTime != 1, but store original HP/unit and return 1 when firstTime == 1. This supersedes earlier notes that described case0/1 or case11 as store+return-0. Updating these tails improved to 4030/5679.
+// - corrected more firstTime return-family facts from original branch targets: cases 0/1, 4, 7, 8, 10, 11, 2/21, and 20 branch to the common return-one epilogue when firstTime != 1, while firstTime==1 stores original HP/unit and returns 1. Only the grouped HP-only case branches to the zero epilogue/store-return-zero family.
 // - probed case5/6/12/19 store-return-zero despite decompiler text; worsened to 4054, confirming original asm's `eax=1` tail. Rolled back.
 // - moved gather case 9/14 physically after case0/1 to match original block order (004EB845 immediately follows case0 tail); kept, improved positional 4030->3989 and edit equal 1743->2355.
 // - corrected case0/1 firstTime tail after re-reading original asm: firstTime!=1 branches to shared zero epilogue; firstTime==1 stores original HP/unit and returns 1. This improved positional 4003->3966 and edit equality 2994->3442.
@@ -149,6 +149,30 @@
 // - physical switch-order probe moving case20 before attack improved positional 4020->3996 but worsened edit equality; kept temporarily as original-label-order lead.
 // - physical switch-order probe moving grouped HP-only case5/6/12/19 near end improved positional 3996->3991; kept temporarily.
 // - probing full original label order: move cases 3,7,8 before case20.
+// - confirmed original jump table order directly from empiresx.exe: 0/1, 9/14, 3, 7, 8, 20, 2/21, 4, 10, 11, 5/6/12/19, default; current physical source order follows it.
+// - current validation: MISMATCH, 3884/5679 positional bytes (68.3923%), edit equal 3773, first mismatch offset 313; first 313 bytes are exact.
+// - case0 tail variants with duplicate firstTime tests, one/ft locals, volatile firstTime, and explicit taskID reload all compiled to the same cmp-eax-imm/store-before-compare family or worsened.
+// - changing case0/8/11 non-firstTime paths to literal return-one is binary/behavior plausible from original epilogue xrefs, but VC5 inlined a local store/return tail near case0 and worsened first mismatch to offset 110; rolled back to preserve current best layout.
+// - behavior-fix pass: original branches to 004ECD15 return-one (no xor) for the non-firstTime paths of cases 0/1, 4, 7, 8, 10, 11, 2/21, and 20; updated these from the older zero-tail approximation. Metrics worsen, but this restores the binary-observed return value.
+// - case0/1 now uses source-like `break` to a common post-switch firstTime store. This reproduces the original compare/mov-one/cmp/store scheduling for that local tail, though the compiler still places the common tail too early versus original.
+// - current validation after behavior/tail fixes: MISMATCH, 4062/5679 positional bytes (71.5267%), edit equal 2922, first mismatch offset 110; local case0 tail bytes now match through the compare/store sequence, but jump-table/default displacement and common-tail placement drift remain.
+// - tested making case4/7/8/10/11 individually or collectively `break` to the post-switch store tail: VC5 either inlined the common return near case0 or shrank .text to 5648, all worse; rolled back except case0's source-like break.
+// - combined source-like break for case4/case10/case11 plus an explicit case0 non-firstTime return-one guard improves both metrics (4014 positional, 3502 edit equal); kept temporarily.
+// - restored case4 to the local `store_return_one_mid` tail too: original has the case4/case10 store/return tail before the next case, and breaking case4 made case10/case11/default blocks too early.
+// - re-audited original case20 tail: 004EC189 jumps to return-one on firstTime!=1, but firstTime==1 loads the HP total then joins the zero-waypoint tail at 004EC6FA. Restored case20 to `store_return_one_zero_waypoints` despite a metric regression.
+// - current validation after case20 correction: MISMATCH, 4062/5679 positional bytes (71.5267%), edit equal 2567, first mismatch offset 110.
+// - restored case10 to its local `store_return_one_mid` tail: original has an inline store/return tail immediately before case11, so breaking case10 to the post-switch tail made all later blocks ~45 bytes early.
+// - moved case20 HP-total assignment after the firstTime check to mirror original scheduling (`cmp firstTime,1; mov inUse,1; jne return; load total; join zero-waypoint tail`). This worsens positional slightly but fixes a real local ordering fact.
+// - applied the same delayed HP-total assignment to attack case2/21; this is a real original tail fact and improves current metrics to 4013 positional / 3398 edit equal.
+// - storedHP temp probes for case7/case8 firstTime tails compiled identically; rolled back.
+// - case4/case10 tail audit: original case4 falls through to a firstTime check then jumps to the mid store tail at 004ECA6B; original case10 owns the same mid tail immediately before case11. Restored both to `store_return_one_mid`; current metrics are 4056 positional / 3357 edit equal, first mismatch 110.
+// - removing the explicit case10 goto and letting it fall through to `store_return_one_mid` compiled identically; VC5 still moved the mid store tail after case11.
+// - tried forcing case4's mid store tail inline with explicit assignments/returns; VC5 still merged it to the later shared tail or worsened layout, so kept the shared label.
+// - tried case11 accumulator/index as separate locals and as reused `tactical` parameter slot with a saved tactical pointer; both worsened and did not recover the original case11 stack-slot topology. Restored the simpler taskID/busyOK form.
+// - tried routing case11 to store_return_one instead of the post-switch break; this badly worsened edit equality, confirming the source-like break remains the better shape for now.
+// - revisited case11 parameter-slot reuse more directly: original uses [esp+30] (incoming tactical parameter slot) as the HP accumulator while preserving the tactical pointer in a register. Kept a local saved tactical pointer plus tactical-as-accumulator form because it improves positional diff substantially and brings the switch default target closer (rebuilt displacement 0x157c vs original 0x159e), even though EBX/EDI coloring is still wrong and needs a later pass.
+// - tried the same [esp+30] tactical-parameter-slot accumulator in case4/case10. Direct local store/return improved positional bytes but moved the switch default before later case bodies (rebuilt displacement 0x13ed), contradicting the original jump-table order, so rolled it back to the shared `store_return_one_mid` shape.
+// - probed case11 using `taskID` as the loop index to force [esp+38] instead of [esp+40]; stack slot matched that local original clue but positional worsened by one byte with no edit gain, so left the index in `busyOK` for now.
 
 struct UnitAIModule;
 struct RGE_Master_Static_Object { char pad_00[0x28]; float los; char pad_2c[0x1e]; short owner_id; };
@@ -349,8 +373,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         }
         inUseValue = 0;
         if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_one;
+            goto return_one_tail;
+        break;
     }
 
 
@@ -462,7 +486,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            return 0;
+            goto return_one_tail;
         goto store_return_one;
     }
 
@@ -500,7 +524,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_zero_tail;
+            goto return_one_tail;
         goto store_return_one;
     }
 
@@ -555,10 +579,10 @@ case20_next:
             ++busyOK;
         } while (busyOK < 40);
         inUseValue = 1;
-        taskID = stored20;
         if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_one;
+            goto return_one_tail;
+        taskID = stored20;
+        goto store_return_one_zero_waypoints;
     }
 
 
@@ -669,9 +693,9 @@ case20_next:
             return 0;
         }
         inUseValue = 1;
-        taskID = stored;
         if (firstTime != 1)
-            return 0;
+            goto return_one_tail;
+        taskID = stored;
         goto store_return_one_zero_waypoints;
     }
 
@@ -715,7 +739,7 @@ case20_next:
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            return 0;
+            goto return_one_tail;
         goto store_return_one_mid;
     }
 
@@ -758,7 +782,7 @@ case20_next:
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            return 0;
+            goto return_one_tail;
         goto store_return_one_mid;
     }
 
@@ -770,30 +794,31 @@ store_return_one_mid:
     case 11: {
         int* unitp;
         RGE_Static_Object* obj;
-        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_49);
-        taskID = 0;
+        TribeTacticalAIModule* tt = tactical;
+        TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_49);
+        tactical = (TribeTacticalAIModule*)0;
         busyOK = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
-                TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_50, *unitp);
+                TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_50, *unitp);
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
-                    TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_51, *unitp);
+                    TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_51, *unitp);
                     removeUnitByIndex(busyOK, md);
                 } else {
                     oHP = ((int)obj->hp);
                     unitp[40] = oHP;
-                    taskID += oHP;
+                    tactical = (TribeTacticalAIModule*)((int)tactical + oHP);
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_52, *unitp, busyAction);
+                        TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_52, *unitp, busyAction);
                     } else if (*unitp == commanderValue) {
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_53, *unitp);
-                        tactical->taskWaterTrader(*unitp, targetValue);
+                        TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_53, *unitp);
+                        tt->taskWaterTrader(*unitp, targetValue);
                     } else {
-                        TribeTacticalAIModule::logGroupDebug(tactical, idValue, s_log_54, *unitp);
-                        tactical->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
+                        TribeTacticalAIModule::logGroupDebug(tt, idValue, s_log_54, *unitp);
+                        tt->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
                     }
                 }
             }
@@ -802,8 +827,10 @@ store_return_one_mid:
         } while (busyOK < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_one;
+            goto return_one_tail;
+        originalHitPointsValue = (int)tactical;
+        originalUnitNumberValue = numberUnitsValue;
+        return 1;
     }
 
 
@@ -851,6 +878,10 @@ store_return_one_mid:
 
     }
 
+    if (firstTime == 1) {
+        originalHitPointsValue = taskID;
+        originalUnitNumberValue = numberUnitsValue;
+    }
     return 1;
 
 return_one_tail:

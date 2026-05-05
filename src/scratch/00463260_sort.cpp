@@ -1,6 +1,8 @@
 // 00463260 sort (125 bytes)
 // PDB: obj_list.cpp (RGE_Object_List::sort)
 // STATUS: parked — VC5 register allocation differs
+// Rechecked after Boss assignment; current blocker unchanged: VC5 keeps source iterator in EBP,
+// while original uses EBX and has the longer empty-list tail.
 //
 // Key structures correct:
 //   - RGE_Static_Object: vtable_ptr at +0, master_obj at +8, screen_y_offset at +0x2A
@@ -139,8 +141,8 @@ RGE_Object_Node* RGE_Object_List::sort()
     RGE_Object_Node* pRVar5;
     unsigned char bVar1;
 
-    pRVar3 = this->list;
     sorted = 0;
+    pRVar3 = this->list;
     if (pRVar3 == 0) {
         return 0;
     }

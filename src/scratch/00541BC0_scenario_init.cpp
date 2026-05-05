@@ -1,14 +1,9 @@
-// attempt 1: natural EH/new helper shape from the asm
-// result: signature is void, not a returning helper; keep the body as a simple store
-// attempt 2: explicit temp + null branch to mirror the asm's local/save/store pattern
-// attempt 3: switch to explicit operator_new + conditional placement-construction, matching the helper call chain
-// attempt 4: assign the placement-new result back into the temp so the post-branch store stays natural
-// default flags first; if the body stays in the tiny non-EH basin, test the sibling-style /GX context and record it here
+// 00541BC0 RGE_Game_World::scenario_init
+// EH-framed allocate and construct RGE_Scenario, store at +0x5C.
+// HollowSnowdrop pass: /GX + direct new with sizeof(RGE_Scenario)=0x1990 gives exact 91/91 EH prologue/allocation/ctor family. Remaining drift is the same common-tail blocker as 0052E5F0: original has short null branch to xor eax and common store; rebuilt stores immediately after ctor and sends null branch to padded/shared epilogue.
 
 class RGE_Game_World;
-
-void* __cdecl operator_new(unsigned int size);
-void* __cdecl operator new(unsigned int size, void* place);
+void* operator new(unsigned int size);
 
 class RGE_Scenario {
 public:
@@ -25,11 +20,7 @@ public:
 };
 
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
-    RGE_Scenario* pScenario;
-
-    pScenario = (RGE_Scenario*)operator_new(0x1990);
-    if (pScenario != 0) {
-        pScenario = new (pScenario) RGE_Scenario(param_1);
-    }
-    this->scenario = pScenario;
+    RGE_Scenario* s;
+    s = new RGE_Scenario(param_1);
+    this->scenario = s;
 }

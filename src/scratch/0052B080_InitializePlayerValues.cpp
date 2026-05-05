@@ -1,6 +1,6 @@
-// tried direct field assignment, then pointer-loop forms, then biased-pointer forms
-// current blocker: build stays 112 bytes vs. 123-byte target, so this is a paused near-match
-// remaining lead is codegen family/initial prolog shape, not call boundaries or behavior
+// VA: 0052B080 T_Scenario::InitializePlayerValues
+// left in scratch: behavior/offset pattern modeled, but VC5 keeps a shorter pointer-loop family.
+// Original uses EAX=this+0x18CC saved stack slot, EDX loop counter, ECX advanced by 0x10, and EBP=ESI.
 
 struct Player_Start_Info {
     int Gold;
