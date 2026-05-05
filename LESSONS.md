@@ -3262,6 +3262,122 @@ pre-increment form `++i; this->value[i - 1] = this->value[i];` generates an `lea
 (`mov esi,[edx+eax*4]; lea edx,[edx+eax*4]; mov [edx-4],esi`) that is one instruction longer
 (VA 004F1390 `ManagedArray<int>::remove`).
 
+### VC5 in-charge/not-in-charge constructor variant: controlling .text COMDAT order for single-function TU
+
+When a VC5 constructor with EH frame (push -1, fs:0) is compiled in isolation, the
+compiler generates multiple .text COMDATs: the in-charge constructor (with EH frame,
+base ctor call, vtable write), plus implicit helpers (destructor, deleting destructor).
+The repo's COFF tool concatenates duplicate `.text` sections in section-table order,
+and the checker extracts the first N bytes (where N = original function size).
+
+To match, the in-charge constructor COMDAT must be the FIRST .text section in the OBJ.
+This requires:
+1. No function definitions before the constructor in the source file (no inline
+   virtual function bodies, no explicit function defs).
+2. All virtual functions and base ctors declared as extern (not defined inline).
+3. Any helper functions (like `setup()`) defined in another TU, not in this one.
+4. The `/GX` flag is required for EH frame generation.
+
+Without these precautions, earlier .text COMDATs (e.g., setup(), inline virtual fn
+bodies, base not-in-charge ctors) push the constructor past byte 0 of the concatentated
+.text section, causing the checker to extract wrong code.
+
+Also: the original does NOT zero `member_ptr` in the constructor body (no `member_ptr(0)`
+in the member initializer list). Adding the zero creates an extra `mov [esi+04], 0`
+instruction that isn't in the original.
+
+Affected function: 0044F0F0 `RGE_Master_Action_Object::RGE_Master_Action_Object`.
+
+### Vtable dispatch: helper class yields correct __thiscall vcall without shifting field offsets
+
+When original code uses manual vtable dispatch (`mov edx,[esi]; call [edx+offset]`)
+with `this` in ecx, a raw function pointer cast `((void(*)(void*,int))vtbl[n])(this,1)`
+generates `this` on the stack (like __cdecl), not in ecx. Declaring virtual methods on
+the class fixes the convention but adds a compiler-managed vtable pointer that shifts
+all field offsets by 4 bytes.
+
+Solution: define a standalone struct with dummy virtual methods to establish the correct
+vtable slot, then cast `this` to that struct and call through it:
+```cpp
+struct VTableHelper {
+    virtual void d0(); virtual void d1(); // ... 6 more ...
+    virtual void target_method(int x);  // at desired slot
+};
+((VTableHelper*)this)->target_method(1);
+```
+This generates the correct `mov ecx,this; push 1; call [vtable+offset]` sequence without
+adding a vtable pointer to the real class. The helper struct uses the OBJECT's vtable
+(set by the real constructor), not its own. All data field offsets remain unchanged.
+
+Affected function: 00476F30 `TInputPanel::handle_idle`.
+
+### Loop variable type determines signed vs unsigned branch instruction
+
+When the original uses `jbe` (unsigned below-or-equal) for a loop-back comparison,
+the loop variable must be `unsigned int`. With `int`, VC5 uses `jle` (signed
+less-or-equal) instead. The difference is a single byte in the opcode
+(`76` for `jbe` vs `7e` for `jle`), so any loop with a boundary check at 0x8000+
+will produce wrong comparison with a signed variable.
+
+**Example** (`CountWaitingMessages`, 0042A0C0):
+```cpp
+// MATCHES (unsigned offset, jbe):
+unsigned int offset = 0;
+do {
+    // ... body ...
+    offset += 0x38;
+} while (offset <= 0x6D98);
+
+// MISMATCHES (signed offset, jle):
+int offset = 0;
+do {
+    // ... body ...
+    offset += 0x38;
+} while (offset <= 0x6D98);
+```
+
+Also: use `signed char` for sign-extended loads (`movsx`). The `*(signed char*)ptr`
+cast forces VC5 to emit `movsx` instead of `movzx`.
+
+Try when:
+- original uses `jbe`/`ja` but rebuilt uses `jle`/`jg`
+- the loop variable is updated by addition and compared against a constant
+
+### Destructor with array-of-struct iteration: use `short` for signed comparison
+
+When the original asm uses `movsx` (sign-extend) to reload a loop bound from a
+member field, declare the field as `short` (signed) rather than `unsigned short`.
+VC5 generates `movsx eax, word [member]` for signed comparisons but `xor eax,eax; mov ax,[member]`
+(zero-extend) when the field is unsigned. The loop comparison (`jl`/`jle` for signed)
+and the bound-field type must match.
+
+**Example** (`~RGE_Sound`, 004BC080):
+```cpp
+// MATCHES (generates movsx eax,word [esi+2]):
+short sound_num;
+// ...
+} while (i < this->sound_num);  // signed comparison
+
+// MISMATCHES (generates xor eax,eax; mov ax,[esi+2]):
+unsigned short sound_num;
+// ...
+} while (i < this->sound_num);  // compiler zero-extends unsigned field
+```
+
+Also notable: the original uses TWO loop variables — a counter (`ebx`, incremented
+by 1) and a byte offset (`edi`, incremented by sizeof-0x24). Use a local `int offset`
+that increments by the struct size to match the `add edi, 24h` stride. The first byte
+of each struct entry is set to 0 (`mov byte [sounds+offset], 0`), matching a Ghidra-
+observed `sounds->name[i] = '\0'` write.
+
+Try when:
+- original uses `movsx eax, word [member]` to reload a loop bound
+- rebuilt uses `xor + mov ax` (zero-extend) instead
+- changing `unsigned short` to `short` fixes the instruction selection
+
+Caveat: only works when the field's actual range is small enough that sign doesn't
+matter (e.g., sound_num is always < 32768).
+
 ### Copy loop: `for` with compound condition prevents loop peeling in resize
 
 `ManagedArray<int>::resize` uses a copy loop bounded by both `maximumSizeValue` and
@@ -3270,3 +3386,40 @@ direct array access (`new_value[i] = this->value[i]`) generates the exact two-co
 loop control (`jl` backedge to a middle check) without loop peeling or extra `jmp`.
 Using a guard (`if (maxSize > 0)`) or goto-based loop structure triggers loop peeling
 of the first element copy (VA 004147A0 `ManagedArray<int>::resize`).
+
+### /GX EH-framed destructors: never explicitly call the base destructor
+
+When a derived class destructor is compiled with `/GX`, VC5 auto-generates the base
+destructor call (implicit call at end of the derived destructor body). Writing an
+explicit `BaseClass::~BaseClass()` in the destructor body creates a DUPLICATE call
+that shifts the EH state machine: the rebuilt gets `call ???; mov ecx, esi;` before
+`mov [esp+10h], -1; call ~BaseClass` instead of the original's single-call sequence.
+The first 77+ bytes (EH frame, free_text, DeleteObject) match fine, then the extra
+call breaks the base destructor sequence.
+
+Leave the base destructor call implicit — let VC5 insert it naturally. The explicit
+call is only needed when you need a specific ordering or the compiler doesn't
+auto-generate it (e.g., in a manually written delegating destructor).
+(VAs: 0047C0B0 `~TTextPanel`)
+
+### /GX EH-framed destructors: explicit temp for member pointer forces register save
+
+When a /GX EH-framed destructor frees a member pointer (e.g., `this->actions`),
+writing the load as an explicit local declaration BEFORE the if-check forces VC5
+to save the pointer in a callee-saved register like `edi`:
+
+```cpp
+RGE_Action_List* p = this->actions;  // loads into edi
+if (p != 0) {
+    p->~RGE_Action_List();           // ecx = edi
+    operator_delete(p);              // push edi
+    this->actions = 0;
+}
+```
+
+Without the explicit temp (`if (this->actions != 0) { ... }`), VC5 loads from
+memory twice (once for destructor call, once for delete) and doesn't save `edi`.
+The explicit temp produces a single load into `edi`, uses it for both calls,
+then nullifies the member — matching the original's `push edi` / `pop edi`
+register-save pattern.
+(VA: 00406010 `~RGE_Action_Object`)
