@@ -2956,3 +2956,317 @@ Why it helps:
 Caveat:
 - use this only when the binary already proves the record field offset; if the field layout is still
   speculative, fix the layout first rather than papering over it with casts.
+
+## Lesson: Clear stale per-function flags before chasing source-shape ghosts
+
+If a tiny helper stubbornly misses from offset 0 or lands in an obviously wrong
+prologue/codegen family, check whether a leftover `config/flags/<slug>.rsp` is
+forcing an old experiment like `/O1` or `/Od`. Re-test under the repo default
+`/O2 /Oy` before spending more source probes; a stale flag file can completely
+hide the natural exact basin.
+
+## Lesson: Parenthesized FPU addends can flip `fsubr` back to the original `fadd`
+
+For expressions of the form `a * C + b`, VC5 can emit the wrong commuted FPU
+opcode family (`fsubr` instead of `fadd`) even when the math is equivalent. If
+behavior and stack shape are already right and only the arithmetic opcode/polarity
+is off, try explicitly parenthesizing the multiplied term:
+
+```cpp
+out = (a * 0.5f) + b;
+```
+
+This can preserve the desired `fld a ; fmul C ; fadd b` sequence instead of a
+reassociated/commuted alternative.
+
+## Lesson: `if (i < count) continue; return 0;` can recover the bottom `jl` loopback without disturbing an exact early guard basin
+
+For tiny counted walkers where the early prologue/guard region is already matching, a
+plain `while (1)` loop with the bottom spelled as:
+
+```cpp
+if (i < count) continue;
+return 0;
+```
+
+can make VC5 emit the original `cmp i,count ; jl loop_body` backedge, while source
+forms like `if (i >= count) goto ret0;`, `break`, or explicit `goto loop_test` may
+collapse into `jge + jmp` or other tail-layout drift. If the success path also needs
+to share a later `ret1` label, routing it through `goto ret1` instead of `return 1`
+can preserve the farther shared tail.
+
+## Lesson: stubborn volatile-register coloring can depend on the full typed class surface, not just accessed offsets
+
+If a tiny helper is stuck in a pure register-coloring mismatch and raw gaps/local stubs keep collapsing to the same near-miss, try restoring the real typed class body for the main object even when the function only touches one early field. For `00435020`, every minimal `gap_00[0x0C]; owner;` surface kept producing `CX/EDX` in the owner-id compare, but the exact basin appeared once `RGE_Static_Object` used its fuller real field list (including later members like the `ManagedArray<int>` blocks) while the source stayed otherwise simple. In VC5, TU/type context can steer allocator choices even when the accessed offsets are unchanged.
+
+## Lesson: for list-update helpers, `if (result != 1) return result; remove_action();` can preserve both an early literal `return 1` and the later `cmp bl,1`
+
+When a tiny virtual-dispatch list walker needs the empty-list path to compile as a direct literal `mov al,1` but a single-return shape keeps forcing `mov bl,1 / mov al,bl`, try splitting the tail as:
+
+```cpp
+if (result != 1)
+    return result;
+this->remove_action();
+return result;
+```
+
+With top-declared `node`/`result` locals, this can still keep the full saved-register prologue while preserving the empty-path direct return and the non-empty-path `mov bl,al` / `cmp bl,1` family. For `004044F0`, this matched where `if (result == 1) remove_action(); return result;` stayed in the wrong basin.
+
+
+## Lesson: In tiny derived constructors, hoisting `action_type` in source can still leave its store late-but-before delayed field copies
+
+For compact post-base constructors that only copy a few parameters and initialize two same-constant fields, do not assume the source order must mirror the final store order around `this->action_type`. In VC5, a body that starts with:
+
+```cpp
+this->action_type = TYPE;
+this->field_20 = x;
+this->field_24 = y;
+this->pick_up_x = -1.0f;
+this->pick_up_y = -1.0f;
+this->field_28 = z;
+```
+
+can produce a schedule where `field_24`/`task` are stored first, the vftable and `-1.0f` stores happen next, then `action_type`, and only after that the delayed `field_20`/`field_28` stores land. If the only remaining drift is `action_type` sinking after two late copied fields, try hoisting the type assignment to the top of the constructor body before changing layouts or flags.
+
+## Lesson: an outer positive `if (...) { loop } else { return 0; }` can preserve a distinct early-fail tail that `if (param <= 0) return 0;` collapses
+
+For small search loops where the loop body and late fail tail already match but the early empty/invalid-input return keeps merging into the loop-fail block, try flipping the top guard into a positive outer wrapper:
+
+```cpp
+if (count > 0) {
+    // loop
+} else {
+    return 0;
+}
+```
+
+This can keep the original top `jle` to a separate late zero-return block while still letting an in-loop `return 0;` own the earlier loop-fail tail. In `004E0F40`, this also let a later `goto found; return 1;` keep the success block between the two zero-return tails.
+
+## Lesson: 1-based enum arrays may need `array[type - 1]` to recover base-minus-one indexing
+
+When an enum's first real value is 1 but the object stores a zero-based pointer array, VC5 can fold `array[type - 1]` into an address like `[this + type*4 + (array_offset - 4)]`. If the original asm shows the base displacement four bytes before the declared first element (for example `[edi+ebx*4+504h]` while the first array element is at `+508h`), do not add a fake field or raw cast first; spell the source as the natural one-based enum adjustment.
+
+Try when:
+- the only remaining diff is an indexed member-array displacement off by exactly one element;
+- the index register holds a 1-based enum value used directly elsewhere.
+
+Why it helps:
+- VC5 folds the `- 1` into the addressing displacement, preserving the original compact SIB form without extra arithmetic.
+
+Reference: `004AA7A0` (`TRIBE_Screen_Sed::set_map_type`).
+
+## Lesson: Use `while (i < limit)` to avoid VC5 peeling the first scan element
+
+For small fixed-capacity array scans where the original loop starts with a memory
+compare at the loop label (`cmp dword [ptr], imm`) after an initial `xor index,index`,
+a natural `do { if (*p == ...) ...; i++; p++; } while (i < limit);` can make VC5
+peel/preload the first element into a register before the loop top. Rewriting the
+same scan as `while (i < limit) { if (*p == ...) ...; i++; p++; }` can keep the
+unpeeled top-of-loop memory compare and the expected saved-register scheduling.
+
+Try when:
+- rebuilt code has an early `mov reg,[base]` followed by `cmp reg,imm`, but the
+  original has `cmp [ptr],imm` at the loop label;
+- the loop scans for a free/sentinel slot and returns immediately on match.
+
+Why it helps:
+- the explicit precondition gives VC5 a non-peeled loop basin, preserving the
+  pointer local and index initialization order instead of special-casing the first
+  iteration.
+
+Reference: `004EAFA0` (`TacticalAIGroup::addUnit`) matched exactly after changing
+only the scan from do-while to while.
+
+### UnitAIModule-derived constructor arrays: cache element 0, reload later indices
+
+For `taiuaimd.cpp` `UnitAIModule` derived constructors that allocate and fill
+`importantObjects`, the exact VC5 shape is a natural base-constructor initializer,
+visible virtual destructor on the base, `/GX`, then:
+`importantObjects = (int*)operator new(byte_count); if (importantObjects) { ... }`.
+Use the cached `importantObjects[0]` for the first store, but spell all following
+stores as `this->importantObjects[i]`; VC5 then reloads `[esi+124h]` for each
+source line and cycles EDX/EAX/ECX exactly. Optional timeout setup is a plain
+`idleTimeoutValue = value; setAdjustedIdleTimeout();` after the guarded array fill.
+
+- For VC5 `_findfirst` / `_findnext` loops over CRT `_finddata_t` where the asm passes `&file_info.time_create` and scans `file_info.name + 4`, a local shim can match by making the passed local start at the time fields (`gap_00[0x10]; name[260]; pad_114[4]`) and using a 256-byte filename buffer directly, not `file_name + 4`, even if the decompiler labels the stack slot as `file_name+4`. The trailing 4-byte pad can be required solely to preserve the original stack reservation while keeping the filename and finddata offsets unchanged.
+
+## Lesson: For linked-list sentinel walks, explicit `while (1)` can avoid extra bottom null tests
+
+When the original checks the first node against the sentinel, then loads a loop
+parameter/local, then tests the current node for null at the loop top, and the
+bottom only reloads/compares the sentinel before jumping back to that top test,
+spell the traversal as `while (1)` with explicit `if (node == 0) break;` at the
+top and explicit `if (node == sentinel) break;` at the bottom. A source-level
+`while (node != 0)` or do/while condition may make VC5 duplicate the null test at
+the bottom (`cmp sentinel; je exit; test node; jne top`), shifting branch targets
+and epilogue layout.
+
+Reference: `005003A0` (`TribeTacticalAIModule::removeAllGroups`) matched exactly
+with the explicit-break loop shape.
+
+## Lesson: Initialization order can decide ESI/EDI roles in compact copy/count loops
+
+In VC5, two live integer locals in a small copy/count loop can swap callee-saved
+registers solely based on initialization order, even when the loop body is
+unchanged. If the original uses `EDI` as the accumulated count and reuses `ESI`
+as a countdown after `ESI` previously held `this`, initialize the count before
+materializing the source pointer (`count = 0; src = this->array; ...`). Initializing
+`src` first can make VC5 choose `ESI` for the count and `EDI` for the countdown,
+leaving only a few-byte register-choice mismatch.
+
+Reference: `004EB3A0` (`TacticalAIGroup::setSpecificCommander`).
+
+## Lesson: One-element ManagedArray copy loops may need an `if (i < limit)` body, not an early break
+
+For VC5 inlined ManagedArray growth that copies at most one element, source like
+`if (i >= 1) break; next = i + 1; dst[i] = src[i]; i = next;` can make the compiler
+use ECX as the index, synthesize `lea`, and place the one-element guard at the
+bottom. If the original has `cmp eax,1; jge exit; mov ecx,src; inc eax; mov ...
+[eax*4-4]`, spell the loop as:
+
+```
+if (i < 1) {
+    i = i + 1;
+    dst[i - 1] = src[i - 1];
+} else {
+    break;
+}
+```
+
+with a separate `max = this->maximumSizeValue; i = 0; if (0 < max)` precheck.
+This keeps the index in EAX, emits the top `cmp eax,1`, and uses the post-increment
+`[eax*4-4]` addressing form.
+
+Reference: `005009A0` (`TribeTacticalAIModule::numberItemsToAttack`).
+
+- For UI panel helpers with calls through high vtable slots (for example `[vptr+0xE4]`) but only approximate local class surfaces, a real virtual declaration ladder can be cleaner than fake function-pointer fields. Give the class a hidden vptr with enough dummy virtuals to place the called method at the observed slot, and adjust explicit padding so object/member offsets stay exact. This lets VC5 emit the natural `mov eax,[ecx]` / `call [eax+slot]` sequence while preserving normal direct calls for non-virtual panel methods.
+
+- Automatic local object declaration position matters for VC5 EH codegen: a nontrivial stack object declared after an initial statement is constructed after that statement, even though its storage is still reserved in the frame. When original asm performs setup work (for example clearing a UI list) before a local service/helper constructor and then sets the EH state immediately before the first method call, move the declaration down to that source point instead of keeping all locals at the top. For large EH objects, validate the effective storage span from the state-slot offset; the visible class payload may need to be smaller than the stack span because VC5 adds object/EH bookkeeping alignment.
+
+### Save routines may reuse the incoming file parameter slot as a tiny flag buffer
+
+In VC5 save/serialize methods, the compiler may copy the incoming file handle to a
+callee-saved register (often EDI) and then reuse the original stack parameter slot
+as a 4-byte local written by `rge_write`. Source can model this with a saved local
+for the handle plus assignment back to the parameter before `rge_write(saved,
+&param, 4)`. Also keep base-class vptr size visible: an apparently empty base with
+virtuals shifts derived fields by 4 bytes, and missing dummy virtuals before a save
+slot changes only the final indirect call offset.
+
+### Unsigned loop counters for `jbe` after zero-extending a short bound
+
+When VC5 reloads an unsigned-short member with `xor eax,eax; mov ax,[...]` and
+then compares an int loop counter against EAX, the source counter usually needs to
+be `unsigned int` to get `jbe`/`ja` style loop branches. Leaving the counter as
+plain `int` can produce the same bytes except for a single signed `jle`/`jg` branch.
+
+- For TEasy_Panel/TShape image setters, prefer the high-level natural `delete old; field=0;` then `new TShape(buffer_or_empty, id)` shape with `<stdio.h>/<string.h>` helpers (`stricmp`, `strchr`, `sprintf`). VC5 reuses the first dword of a 260-byte filename local as the constructor-new temporary and emits the expected EH state transitions; manual allocation or raw buffer tricks are unnecessary and can perturb the local layout.
+
+- Tiny EH-framed dialog helpers often match with plain `new Dialog(args...)` and the real constructor signature/sizeof, not manual `operator_new` scaffolding. For nullable text checks, preserve the exact odd source predicate if the asm shows it: `if (text || *text != 0)` can intentionally emit `test eax,eax; jne ...; cmp byte [eax],0; je ...`, even though it looks unsafe.
+
+- TEasy_Panel string-id wrapper methods can be modeled as small stack buffers plus a virtual delegate call. Declare enough dummy virtuals to put the delegate at the observed slot (`0xEC`, `0x100`, etc.) and call the nonvirtual `get_string(id, buffer, sizeof buffer)` first; VC5 will naturally preserve `this` in ESI, allocate exact fixed buffers, and push the translated text pointers in the original order.
+
+### Switch before allocation can preserve VC5 case-block order in factory loaders
+
+For type-dispatch factory helpers, write an actual `switch (type)` even when an
+`if/else` chain is behaviorally equivalent. VC5 may emit all byte comparisons up
+front and place allocation/constructor case bodies afterward; an `if` chain tends
+to inline the first allocation immediately. Also give allocated class stubs their
+real `sizeof` early, and keep a visible virtual in the base class when a derived
+array field must sit after the base vptr.
+
+- Palette/system-color helpers match well with real Win32 surfaces and high-level expressions. `__declspec(dllimport)` for GDI/User APIs can still emit the observed indirect IAT calls, and spelling `((blue << 16) | (green << 8) | red)` from a `PALETTEENTRY` local produces VC5's byte loads/masks/shifts exactly. For old color-table members with `push 1; call [vptr]`, model a virtual destructor and use ordinary `delete ptr; ptr = 0;`.
+
+- When modeling derived panel methods that call a base method and later dispatch a virtual slot, make the base polymorphic if the real object vptr belongs to the base at offset 0. If the base is modeled as non-polymorphic and the derived class introduces the first virtual, VC5 treats the base subobject as starting after the vptr and emits `lea ecx,[this+4]` for `Base::method`; adding the base virtual surface keeps `this` at offset 0 and preserves field/vtable slot offsets.
+- In VC5 growth/copy loops, a source `while (i < old_count && i < new_count)` can be necessary to avoid an extra positivity test on the new bound. If asm tests the old count once, then at loop top compares iterator against the new bound before copying and only reloads/compares old count after increment, prefer a single combined `while` condition over a `do` loop with an inner `break`.
+- For VC5 allocation-size expressions used twice, avoid naming a `bytes` local if original keeps the expression in a transient register around each call. Repeating `(int)short_count + (int)short_count + 1` at each `calloc` can preserve the expected register choice and later member-load scheduling, whereas a named local may force ECX/EAX drift even when size and behavior match.
+- For VC5 state machines on byte enum members, a `switch (state)` can emit the original `xor eax; mov al; dec; dec` dispatch where equivalent `if (state == 1) ... else if (state == 2)` emits direct byte compares. When the original has a decrement chain, prefer switch, and include all enum cases so the `cmp eax,N` bound matches.
+- In destructors, an unwanted `lea ecx,[this+base_offset]` before a member/helper call means the local inheritance surface has an extra modeled base subobject. If original keeps ECX as the complete object for a helper like `delete_panel(&member)`, put that helper on the visible base/destructor class without an intermediate base adjustment; the natural destructor then also emits the derived vptr restore.
+- For Win32 API calls that original emits as IAT indirect `call dword [addr]`, declare the API as `__declspec(dllimport)` with the right calling convention. A plain extern can be behaviorally correct but emits a direct call relocation and leaves a tiny otherwise-perfect diff.
+- For tiny EH-framed `return new T` helpers, `sizeof(T)` is often the only remaining mismatch after the EH skeleton matches. If a local class declares both an explicit vptr field and virtual methods, VC5 counts both; model only the implicit virtual vptr plus padding to make `operator new` receive the original size.
+- COM-style interface calls are not C++ virtual `thiscall`s. If original does `mov ecx,[obj]; push obj; call [ecx+slot]`, model the object as a struct with a vtable of `__stdcall` function pointers rather than a C++ class with virtual methods. For adjacent 16-byte GUID copies, a typed aggregate assignment can also preserve the original `lea src; add esp; add dst; mov/mov/mov/mov` copy schedule better than manual element stores.
+- Inside a derived constructor body, `Base::Base();` constructs a temporary/local rather than initializing the base subobject and can make VC5 reserve a huge stack object and emit an extra constructor call. Put base construction in the initializer list (`Derived::Derived() : Base() { ... }`) to match normal constructor prologues.
+- Do not hand-expand common CRT string helpers too early. VC5 may inline `strcmp` into the exact two-byte-at-a-time/sbb comparison sequence seen in the original, while manual byte loops land in different prolog and branch basins. Try the natural `<string.h>` helper surface first when the asm resembles a CRT inline.
+- When original object cleanup is `call real_destructor; push obj; call operator_delete` rather than a vtable deleting destructor call, do not use `delete ptr` on a class with a virtual destructor. Model the ordinary destructor explicitly (`ptr->~T(); operator delete(ptr);`) and keep the virtual table surface only for the other virtual calls.
+- VC5 can inline `strcpy` as a `repne scasb` length discovery followed by `rep movsd`/`rep movsb` copy including the NUL. If original has that exact pattern, use natural `strcpy` with the correct destination offsets instead of spelling `strlen` plus `memmove`/manual loops.
+- For constructors with many scalar member initializers, a real member-initializer list can preserve VC5's original initialization scheduling and register choices better than equivalent assignments in the body. This is especially useful when the original sets sentinel fields first, zeroes a group, then loads constructor parameters only later.
+- For sibling virtual action `work(target, float, float, float)` helpers that only gate null/same-target states, set the base virtual slot ladder exactly so `first_in_stack` is vtable+0x1C and `set_target_obj` is vtable+0x54, then use natural member virtual calls. Manual vtable casts can perturb stack cleanup/call scheduling; a compact typed base surface matched both convert/heal work helpers.
+- For VC5 linked-list searches, a natural `while (node->field != target) { node = node->next; if (!node) return; }` can produce the original compare-then-`jne` loop with a separate short jump to the found tail. Equivalent `while(1)`/`break` forms may invert the final compare (`je found; jmp loop`) and leave only a few stubborn branch bytes different.
+- When VC5 indexes a fixed-size table embedded at a nonzero-looking decompiler offset, verify the effective base from assembly before baking the generated struct layout into source. For `idx * stride` tables, raw `(char*)this + idx * stride` plus field offsets can match `lea ecx,[ecx+edx*scale]` where a typed array at `this+base` adds an unwanted displacement and extra register pressure.
+- If a loop index is passed to a call as a full `int` but the loop bottom compares only the low 16 bits against a `short` member (`cmp si,[...]`), keep the source index as `int` and cast only in the loop condition, e.g. `for (int i = 0; (short)i < count; ++i)`. Making the index itself `short` can introduce a `movsx` before the call, while plain `int` can force a 32-bit bottom compare.
+- For constructor helpers that pass `this` in ECX before a call, model the helper as a real member function and call `this->helper(...)`. A free/static helper with an explicit `this` argument may be behaviorally equivalent but adds a pushed object argument and cdecl cleanup, shifting the EH tail.
+- When original code loads a field from an object and then calls with that field in ECX (`mov ecx,[obj+slot]; call target`) after pushing the remaining arguments, model the target as a member function on the pointee/subobject. A free helper that takes the owner object explicitly adds an extra pushed argument and cdecl cleanup.
+- Before chasing register allocation in virtual-call functions, verify the local vtable surface has enough placeholder slots to put the observed call at the original offset. A too-short stub can make the same source call slot 0 instead of (for example) `vtable+0x58`, causing broad false drift that disappears once the virtual ladder is padded correctly.
+- Command wrapper helpers often match naturally once both layers are modeled as member calls: first a selected object's virtual action query (with the observed vtable slot ladder), then a command-subobject member call through `player->command->command_obj`. Keeping either as a free helper changes pushes/cleanup even when behavior is identical.
+- Tiny stack-local widths can decide exact addresses in VC5. If original reserves a dword-sized scratch but only uses it as an opaque/local-byte output, declare it as `int` rather than `char`; otherwise `lea [esp+N]` may become `[esp+N+3]` and also pull saved-register setup before an early global gate.
+- Diamond-map command wrappers are highly regular: gate on `allow_user_commands`, use an `int` scratch local for the pick-tile byte output, convert the two short outputs through dword stack temps before subtracting the shared half-tile float, then call the view's game object at the action-specific virtual slot and finally clear modal/input state through the global base-game virtual slot.
+- For FPU sign/zero classification loops, source-level branch nesting controls VC5's reuse of the `test ah,41h` flags across a following `fnstsw`. If original does `test`, performs another `fcomp/fnstsw`, then branches on the earlier test flags, try spelling the outer condition with the opposite compare (`<= 0` vs `> 0`) and keep direct `return 0` failures so the success epilogue stays before the failure epilogue.
+
+
+## Lesson: External table declarations and inline indexed access can prevent spills
+
+When original code indexes fixed lookup tables through relocations, declare the tables as `extern const` rather than defining file-local arrays. A local definition can put data in the scratch object and change addressing/relocation behavior.
+
+For small bitfield helpers, also try inlining repeated table lookups instead of naming a `shift` local. VC5 may keep the table-loaded shift count in `cl` across adjacent `shr`/`shl` operations only when the access is inline; a named local can force a spill/reload between the shifts.
+
+Try when:
+- the original has relocation-masked table loads but rebuilt creates local data or different data references;
+- the only remaining diff is a `cl` spill/reload around shift-count use;
+- a mask/shift table is indexed by the same small expression more than once.
+
+Caveat:
+- use `extern` only when the table really exists in the original binary/shared data surface; do not hide unknown constants behind extern declarations.
+
+### `sete`/`dec`/`and` vs branched return for `?:` ternary
+
+In VC5, `return (cond) ? 0 : val;` produces a branch (`jne`/`jmp` or `je`/`jmp`) around the
+return value, while the equivalent `if (cond) return 0; return val;` forces VC5 into the
+branchless `sete al; dec eax; and eax, reg` trick that pops intermediate callee-saves around
+the SETE/DEC for better scheduling. When the original asm shows the branchless pattern, prefer
+the `if/else` spelling over `?:` (VA 00471290 `get_select_level`).
+
+### Variable declaration order drives prologue register init order
+
+When VC5 allocates `short`/`char` locals to 16-bit/8-bit registers in the prologue (`xor edx,
+edx` / `xor esi, esi` / `or bl, 0FFh`), the init order in asm follows the declaration order in
+the closest enclosing scope. Two variables of the same width can swap positions in the prologue
+by swapping their declarations (VA 00471290: `short i` before `short matches` gave `xor edx`
+before `xor esi`; adding `const` to the method changes the field offset scheme).
+
+### Field layout: overlapping explicit gaps with short fields
+
+When a `short` field sits inside what appears to be a `char gap_NN[M]` region (based on class
+type-dump boundaries), split the gap to place the `short` at the correct offset. Example:
+`char gap_198[4]; short sel_count; char gap_19E[2];` instead of `char gap_198[8]; short
+sel_count;` (VA 00471290 `get_select_level`, where sel_count was at +0x19C inside a
+0x198-base gap).
+
+### Loop structure: `for` with direct index access prevents loop peeling
+
+VC5 peels the first iteration of a `do-while` loop when it's guarded by `if (max > 0)`, even
+for a simple linear search. The peeled first iteration creates a different control-flow layout
+(moves the `je`/`jl` targets). Using `for (; i < max; ++i) { if (value[i] == v) break; }`
+eliminates both the guard and the pointer temp, preventing the peeling (VA 004F1390
+`ManagedArray<int>::remove`).
+
+When the search loop used a running pointer (`int* p = this->value; do { ... p++; } while...`),
+VC5 still peeled the first iteration even without the `if (max > 0)` guard. Only the direct
+index-access for-loop (`this->value[i] == v`) without a separate pointer variable and without
+an outer guard produced the unpeeled `jl` loop control.
+
+### Shift loop: post-increment `value[i] = value[i+1]` over `++i; value[i-1] = value[i]`
+
+For shifting array elements left by one position, `this->value[i] = this->value[i + 1]; ++i;`
+generates the compact two-address `mov esi,[edx+eax*4]; mov [edx+eax*4-4],esi` form. The
+pre-increment form `++i; this->value[i - 1] = this->value[i];` generates an `lea`-based form
+(`mov esi,[edx+eax*4]; lea edx,[edx+eax*4]; mov [edx-4],esi`) that is one instruction longer
+(VA 004F1390 `ManagedArray<int>::remove`).
+
+### Copy loop: `for` with compound condition prevents loop peeling in resize
+
+`ManagedArray<int>::resize` uses a copy loop bounded by both `maximumSizeValue` and
+`new_size`. The `for (; i < this->maximumSizeValue && i < new_size; i++)` form with
+direct array access (`new_value[i] = this->value[i]`) generates the exact two-condition
+loop control (`jl` backedge to a middle check) without loop peeling or extra `jmp`.
+Using a guard (`if (maxSize > 0)`) or goto-based loop structure triggers loop peeling
+of the first element copy (VA 004147A0 `ManagedArray<int>::resize`).
