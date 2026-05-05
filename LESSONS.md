@@ -3423,3 +3423,112 @@ The explicit temp produces a single load into `edi`, uses it for both calls,
 then nullifies the member — matching the original's `push edi` / `pop edi`
 register-save pattern.
 (VA: 00406010 `~RGE_Action_Object`)
+
+### Loop peel: `while (count-- != 0)` avoids null-check insertion seen with `do-while`
+
+When a loop allocates memory via `operator new` with a `break` guard, VC5 generates
+different code for `while (count-- != 0)` vs `do { ... } while (count-- != 0)`:
+
+- **`while (count-- != 0)`**: Generates a peeled loop with no null check on the
+  allocation result. The counter is initialized to N-1 (peeled), so use `count = 10`
+  if the original uses `mov edi, 9`. The count-- post-decrement in the while
+  condition generates the `mov edx, edi; dec edi; test edx, edx; jne` pattern
+  without extra `test eax, eax; je alloc` null-guard instructions.
+
+- **`do { ... } while (count-- != 0)`**: Generates an unpeeled loop with the same
+  `mov edx, edi; dec edi; test edx, edx; jne` post-body pattern, but adds extra
+  `test eax, eax; je alloc` null-guard instructions after the counter check.
+  This inflates the function by ~7 bytes.
+
+The `while` form also removes the initial `jmp check` that `while` usually adds
+(because the compiler knows the first iteration always executes when count >= 1).
+(VA: 0044B2B0 `MakeArrays`)
+
+### Separate `next` local forces two-register linked-list walk pattern
+
+When walking a linked list with `p = p->next`, VC5 may optimize to a single
+register by reusing `p` for both current and next pointers (`mov esi,[esi+4]`,
+then `jne loop_start` where esi is the new current). This differs from the
+original two-register pattern (`mov ecx,[eax]; mov esi,[eax+4]; mov eax,esi;
+jne loop_start`).
+
+Fix: use a separate `next` local so the compiler keeps two registers:
+```cpp
+while (p != 0) {
+    auto* obj = p->node;
+    auto* next = p->next;  // separate local forces register
+    // ... use obj ...
+    p = next;
+}
+```
+This generates the expected `mov ecx,[eax]; mov esi,[eax+4]; ... mov eax,esi`
+pattern matching the original binary.
+
+Also: **declare `int` for sign-extended loads** — assigning a `short` field to a
+`short` local generates `mov ax,[mem]; movsx eax,ax` (two instructions), while
+assigning to `int` generates `movsx eax,word [mem]` (one instruction).
+
+Also: **object_list pointer at +0x10, not wrapped struct** — the RGE_Tile stores
+a plain `RGE_Object_Node* objects_list` at offset 0x10, not an RGE_Object_List
+struct. Total tile size = 24 bytes.
+
+Affected function: 00458760 `RGE_Map::delete_objects_on_tile`.
+
+### Class methods for __thiscall external function calls
+
+When the original uses `__thiscall` standalone functions (not virtual), use class
+method declarations instead of `extern "C"` function pointers. A class method on
+a forward-declared class generates the correct `ecx=this; push args; call [func]`
+pattern with callee cleanup (`ret N`), avoiding the `add esp` that `extern "C"`
+would generate.
+
+```cpp
+class RGE_Zone_Map_List {
+public:
+    RGE_Zone_Map* get_zone_map(int a, int b, int* c);
+};
+// Usage:
+zone_list->get_zone_map(a, b, &c);
+// generates: push &c; push b; push a; mov ecx, zone_list; call get_zone_map
+```
+
+Also: raw pointer arithmetic on `void*` or `char*` with explicit offsets generates
+the exact `mov eax,[ecx+offset]` / `movsx edx,word [ecx+offset]` patterns when
+the target struct layout isn't fully known. Use `(short)(*(short*)(ptr + off))` for
+`movsx` sign extension.
+
+Affected function: 004C75B0 `RGE_Static_Object::withinRangeOfZoneAtPoint`.
+
+### Preserve a named byte-count temp to let VC5 schedule independent array stores between `push` and `call`
+
+When a one-argument allocation call should appear as `push bytes; mov [array+idx*4],value; call malloc`, avoid introducing a pointer result temp (which increases register pressure) and avoid folding the size expression directly into the call (which can store too early). Use a named integer byte-count temp before the side-effecting array store:
+
+```cpp
+int bytes = this->elementSize * grow;
+sizes[idx] = grow;
+this->zonePtrs[idx] = (T*)malloc(bytes);
+```
+
+VC5 can keep `bytes` in the expected register, push it, and schedule the independent `sizes[idx]` store into the call setup gap. A separate allocation-result temp may force an extra saved register and reorder the surrounding counter updates.
+
+### Prefer declared member calls over raw address casts for same-class helpers
+
+When original asm calls a nearby same-class helper as a direct `call rel32` with `this` already in ECX, declare the helper as a normal member and call it naturally (`save();`). A raw absolute function-pointer cast may be behaviorally correct but can force a cdecl-style `push this` / indirect call basin or otherwise perturb the prologue and register allocation.
+
+### For virtual slot calls, prefer a typed virtual surface over raw `__thiscall` function-pointer typedefs
+
+VC5 may reject or mishandle raw `__thiscall` function-pointer typedefs in this project context, and lower-level vtable casts can perturb call cleanup and branch layout. When original asm clearly does `mov edx,[obj]; ...; call [edx+slot]`, model enough virtual methods to put the target operation at the correct slot and call it naturally as a member (`obj->slot_method(args)`). This preserves ECX `this`, argument pushes, and indirect call shape without custom calling-convention typedefs.
+
+### Integrated `while` body can avoid VC5's post-loop null recheck in linked-list searches
+
+For linked-list remove/search functions where original asm has an initial null check, a loop body that either handles the found node immediately or advances, and a distinct not-found early epilogue, avoid a `for (...; p && condition; ...)` followed by `if (p == 0) return;`. VC5 may emit an extra post-loop `test p,p` and share the null path with the final epilogue. Writing the found handling inside `while (p != 0)` lets the compiler use the searched node directly and place the not-found return before the found block, matching the original layout.
+
+Also, after `test cl,cl`, spelling an unsigned-byte count check as `count > 0` can emit `jbe` to the zero case, while `count != 0` emits `je`; both are equivalent for a byte but not byte-identical.
+
+### Reusing an input stack slot as a helper output can require passing the parameter address and reloading it narrow
+
+Some command helper wrappers pass the address of an incoming `int` parameter as a `short*` output to a selection helper, then later reload that same stack slot as a signed word (`movsx ..., word [esp+param]`) while preserving the original full-width parameter in a register for another argument. Model this directly by saving the original value in a local, passing `(short*)&param` to the helper, and later using `*(short*)&param` for the list-count argument while using the saved local for the original command argument. If the callee declaration uses `int` for that list-count parameter, VC5 emits the required `movsx`; a `short` formal may keep the value in a different register or skip the sign-extension shape.
+
+### Float-typed fields can be needed even when stores are integer `mov` immediates
+
+When original asm stores constants like `0x43480000` and `0x42C80000` with integer `mov` instructions, model the destination as `float*` and write `200.0f` / `100.0f`, not integer `200` / `100`. VC5 will still use integer immediate stores for float constants in memory, but the immediate values match the IEEE-754 bit patterns. Integer fields with integer literals produce the same instruction shape but wrong constants.

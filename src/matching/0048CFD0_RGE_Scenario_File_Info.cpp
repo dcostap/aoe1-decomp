@@ -28,7 +28,7 @@ public:
 };
 
 RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
-    ((void(*)(void*))0x48D040)(this);  // save
+    save();
     if (scenario_num > 0) {
         for (int i = 0; i < scenario_num; i++) {
             RGE_Scenario_Header* hdr = *(RGE_Scenario_Header**)((char*)scenarios + i * 0x10C + 4);

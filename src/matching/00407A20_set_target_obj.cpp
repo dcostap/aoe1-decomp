@@ -1,16 +1,33 @@
 // target: VA 00407A20 set_target_obj
-// first pass: direct object swap with world lookup and the two virtual notifications
-// tried raw vtable casts first; the call sites picked up extra cleanup and the wrong branch offsets
-// tried local ownership/object stubs; the object access shape is close, but the two virtual notifications still need a better slot-call basin
+// first pass had raw __thiscall typedefs, which VC5 rejects in this context.
+// current: typed virtual surface for slots +0xC0/+0xC4.
 
 class RGE_Game_World;
 class RGE_Unit_Object_Owner;
 class RGE_Action_Object;
 class RGE_Sprite;
+class RGE_Static_Object;
 
-class RGE_Static_Object {
+class RGE_Static_Object_Virtuals {
 public:
-    void* vtable_ptr;
+    virtual void vf00(); virtual void vf04(); virtual void vf08(); virtual void vf0C();
+    virtual void vf10(); virtual void vf14(); virtual void vf18(); virtual void vf1C();
+    virtual void vf20(); virtual void vf24(); virtual void vf28(); virtual void vf2C();
+    virtual void vf30(); virtual void vf34(); virtual void vf38(); virtual void vf3C();
+    virtual void vf40(); virtual void vf44(); virtual void vf48(); virtual void vf4C();
+    virtual void vf50(); virtual void vf54(); virtual void vf58(); virtual void vf5C();
+    virtual void vf60(); virtual void vf64(); virtual void vf68(); virtual void vf6C();
+    virtual void vf70(); virtual void vf74(); virtual void vf78(); virtual void vf7C();
+    virtual void vf80(); virtual void vf84(); virtual void vf88(); virtual void vf8C();
+    virtual void vf90(); virtual void vf94(); virtual void vf98(); virtual void vf9C();
+    virtual void vfA0(); virtual void vfA4(); virtual void vfA8(); virtual void vfAC();
+    virtual void vfB0(); virtual void vfB4(); virtual void vfB8(); virtual void vfBC();
+    virtual void notify_target_set(RGE_Action_Object*, short, int); // +0xC0
+    virtual void notify_target_clear(RGE_Action_Object*);           // +0xC4
+};
+
+class RGE_Static_Object : public RGE_Static_Object_Virtuals {
+public:
     long id;
     char gap_08[4];
     RGE_Unit_Object_Owner* owner;
@@ -32,9 +49,6 @@ public:
     char gap_00[0xC];
     RGE_Unit_Object_Owner* owner;
 };
-
-typedef void (__thiscall *RGE_Action_C4)(RGE_Static_Object*, RGE_Action_Object*);
-typedef void (__thiscall *RGE_Action_C0)(RGE_Static_Object*, RGE_Action_Object*, short, int);
 
 class RGE_Action {
 public:
@@ -59,7 +73,7 @@ public:
     virtual void vf48(char*);
     virtual void* vf4C(void);
     virtual void* vf50(void);
-    virtual void set_target_obj(void*);
+    virtual void set_target_obj(RGE_Static_Object*);
     virtual void vf58(void*);
     virtual void set_state(unsigned char);
 
@@ -81,19 +95,13 @@ public:
     RGE_Sprite* sprite;
     unsigned char subActionValue;
     char gap_3D[0x3];
-
-    void set_target_obj(RGE_Static_Object* param_1);
 };
 
 void RGE_Action::set_target_obj(RGE_Static_Object* param_1) {
-    RGE_Static_Object* previous;
-    void** vtable;
-
     if (this->target_obj != 0 && this->target_obj != param_1) {
-        previous = this->obj->owner->world->object(this->targetID);
+        RGE_Static_Object* previous = this->obj->owner->world->object(this->targetID);
         if (previous != 0) {
-            vtable = *(void***)previous;
-            ((RGE_Action_C4)vtable[49])(previous, this->obj);
+            previous->notify_target_clear(this->obj);
         }
     }
 
@@ -101,11 +109,9 @@ void RGE_Action::set_target_obj(RGE_Static_Object* param_1) {
         this->target_obj = param_1;
         if (param_1 != 0) {
             this->targetID = param_1->id;
-            vtable = *(void***)param_1;
-            ((RGE_Action_C0)vtable[48])(param_1, this->obj, this->action_type, 0);
+            param_1->notify_target_set(this->obj, this->action_type, 0);
             return;
         }
-
         this->targetID = -1;
     }
 }
