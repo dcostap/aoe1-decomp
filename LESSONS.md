@@ -3587,3 +3587,14 @@ Why it helps:
 - the positive outer guard preserves the separate early-empty tail;
 - the `continue` bottom encourages VC5 to emit the backward conditional branch directly;
 - the `goto found` success path can keep the success return after the loop-fail return without disturbing the loop body.
+
+## Lesson: Direct indexed array scans can remove redundant pre-loop tests
+
+When a small counted scan already has an explicit `if (count <= 0) return 0;` guard, a carried pointer local plus `while (i < count)` may still make VC5 emit a second redundant entry test before the loop body. Rewriting the loop as direct indexed member-array access (`this->array[i].field`) inside a `for (; i < count; i++)` can keep the single top guard, preserve the counter/base registers, and emit the original bottom `cmp i,count; jl loop` backedge.
+
+Try when:
+- a pointer-walk version matches the body but has an extra `test count,count` before loading loop parameters;
+- do/while or explicit-goto forms remove the entry test but collapse return-tail layout or produce `jge` + `jmp` instead of a single `jl` backedge.
+
+Caveat:
+- only prefer this when the original keeps the array base in a register and advances via index/stride-compatible addressing; true pointer-walk originals may still need a carried pointer local.

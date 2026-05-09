@@ -1,8 +1,21 @@
 // VA: 004C1ED0 RGE_Static_Object::take_attribute_from_owner
+// PDB source: stat_obj.cpp lines 772-779 (86 bytes, 36 asm lines)
+// Default flags
+//
 // left in scratch: natural typed virtual surface reaches the known 8-edit-byte basin. Remaining drift is
 // address encoding/order for master+loop offsets: original emits [edi+eax+88], [ebp+eax+0], [esi+eax],
 // rebuilt emits equivalent [eax+edi+88], [eax+ebp], [eax+esi], shortening branches by one byte.
-// Retried offset+(int)master and char* offset variants; no improvement (char* regressed branch signedness).
+// Earlier notes: retried offset+(int)master and char* offset variants; no improvement (char* regressed branch signedness).
+// MidnightLily tries:
+// - Baseline check confirmed 86/86 bytes, edit diff 8, first drift is SIB base/index at flag compare.
+// - Try 1: cast offset regs to char* base terms for all three memory accesses; no codegen change.
+// - Try 2: pointer locals for i/typeOffset/amountOffset forced unsigned `jb` loop branch and kept same SIB drift; worse.
+// - Try 3: reversed subscript form for flag (`i[(unsigned char*)master+0x88]`); no codegen change.
+// - Try 4: master held as an `int` local each iteration; no codegen change.
+// - Try 5: per-access pointer temporaries (`flagp`, `typep`, `amountp`); optimized back to same codegen.
+// - Try 6: temporary no-/Oy flag (`/O2` only) had no effect; removed flag file.
+// - Try 7: volatile master pointer forced stack locals and wrong prologue, much worse; rolled back.
+// Blocker: VC5 consistently chooses the shorter [eax+offsetReg] SIB encoding for equivalent address expressions; source-level term/order/pointer probes did not recover original longer offsetReg-base encodings.
 
 class RGE_Master_Static_Object {
 public:

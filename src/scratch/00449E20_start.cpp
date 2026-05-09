@@ -1,6 +1,12 @@
 // 00449E20 RGE_Flic_Player::start
 // natural flic header offsets: buffer +0, type +0x0c, speed +0x18, oframe1 +0x5c, oframe2 +0x60.
-// HollowSnowdrop pass: fixed layout and switch/sub gate; current exact size 88/88, 71.6% positional / 27.3% edit. Remaining drift is register/order: af12 block uses EAX for oframe1 and EDX for buffer instead of original EAX=buffer/EDX=oframe1; af11 block loads/stores buffer before speed while original loads speed, computes EDX=buffer+0x84, stores oframe1 after first lea. Tried source ordering/local splits; same basin.
+// HollowSnowdrop pass: fixed layout and switch/sub gate; baseline exact size 88/88, 71.6% positional / 27.3% edit. Remaining drift was register/order in af12 and af11 blocks.
+// 2026-05-09 GraniteCub: tried 20 focused source variants: direct/member/compound af12 sums, chained assignments,
+// tmp/base/off local declaration orders, long/register/volatile temps, af11 store and speed-calc orderings, int-pointer tmp,
+// direct expression stores, and if/else dispatch. Best edit basin is current source: af12 register order and af11 block match,
+// but VC5 inserts `mov eax,edx` before the two af12 stores and stores oframe2 from eax, adding 2 bytes and shifting the rest.
+// Blocker: need original af12 `mov eax,[ecx]; mov edx,[ecx+5c]; add edx,eax; mov [ecx+5c],edx; mov [ecx+60],edx`
+// without the extra result copy; no inline asm/hacks used.
 
 class RGE_Flic_Player {
 public:
@@ -19,22 +25,14 @@ public:
 void RGE_Flic_Player::start() {
     switch (this->type) {
     case 0xAF12: {
-        char* base;
-        char* tmp;
-        base = this->flic_buffer;
-        tmp = this->oframe1;
-        tmp = tmp + (long)base;
-        this->oframe1 = tmp;
-        this->oframe2 = tmp;
+        this->oframe1 = this->flic_buffer + (long)this->oframe1;
+        this->oframe2 = this->oframe1;
         return;
     }
     case 0xAF11: {
-        int s;
-        char* tmp;
-        s = this->speed;
+        int s = this->speed;
+        char* tmp = this->flic_buffer + 0x84;
         s = s * 5;
-        tmp = this->flic_buffer;
-        tmp += 0x84;
         this->oframe1 = tmp;
         s = s * 5;
         s = s * 5;
