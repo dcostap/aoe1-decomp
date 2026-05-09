@@ -2,7 +2,8 @@
 // Attempt log:
 // 1. Prior free helper declarations matched behavior but let VC5 use ECX as a temp and pre-load all args; original preserves ECX as this for member helper calls.
 // 2. Member draw_frame_* calls produced exact helper argument-load/push shape, but VC5 merged identical cube tails into a 96B body.
-// 3. Use a second same-signature member declaration for the case-1 cube call to block tail merging; relocation is masked.
+// 3. Inline wrapper/cast/local/volatile variants either merged tails or added extra code.
+// 4. Kept separate same-signature member declaration for the case-1 cube call to block VC5 tail merging; relocation-masked call target bytes match original.
 
 class TDrawArea;
 

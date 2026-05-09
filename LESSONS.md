@@ -3769,3 +3769,7 @@ if (i >= count) { result = 0; goto final; }
 ```
 
 This can preserve both the simple `jl loop` backedge and the shared final epilogue.
+
+### Member helper surface can preserve `this` and call-argument scheduling
+
+When a method calls helper routines that are really same-class `thiscall` helpers, declaring them as free/static helpers may let VC5 treat `ECX` as a scratch register and pre-load all stack arguments, even if the resulting call arity is behaviorally similar. A same-class member helper declaration keeps `ECX` live as `this` and can produce the original stack-argument load/push interleaving. Caveat: if two source call sites are byte-identical, VC5 may tail-merge them; if the original kept separate source-line call sites, a distinct local declaration/surface for one verified-same helper call can block merging, but review this carefully because relocation-masked comparisons do not prove helper identity by themselves.
