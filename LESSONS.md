@@ -3733,3 +3733,39 @@ default:
 ```
 
 VC5 can synthesize the byte class table and grouped return blocks exactly from grouped sparse case labels. Preserve the original grouped return order if visible from line records/asm, but do not pre-encode the classifier table unless the natural switch fails.
+
+## Lesson: Use `while (1)` plus post-search not-found test for compact search/remove loops
+
+For small remove-from-array helpers, a natural `do { if (*p == target) break; ++i; ++p; } while (i < count); if (i < count) ...` may make VC5 duplicate the top comparison or invert the loop exit (`jge exit; cmp; jne loop`). If the original has the compact search loop:
+
+```asm
+cmp [p], target
+je found
+inc i
+add p, stride
+cmp i, count
+jl loop
+cmp i, count
+jl found
+xor eax,eax
+jmp final
+```
+
+spell the source as a positive outer guard with an infinite loop that breaks on both found and exhausted, followed by a separate not-found test:
+
+```cpp
+if (count > 0) {
+    int* p = value;
+    while (1) {
+        if (*p == target) break;
+        ++i;
+        ++p;
+        if (i < count) continue;
+        break;
+    }
+}
+if (i >= count) { result = 0; goto final; }
+// found/remove path
+```
+
+This can preserve both the simple `jl loop` backedge and the shared final epilogue.

@@ -1,5 +1,12 @@
 // VA: 00470CB0 reset_selected (101B)
-// TODO: register scheduling issue with memset address/size ordering
+// Best basin: high-level memset form is exact except the second memset setup order.
+// Original after first `rep stosd`: `lea edi,[edx+19E]; mov ecx,1Fh; rep stosd; stosw; stosb`.
+// VC5 emits `mov ecx,1Fh; lea edi,[edx+19E]; rep stosd; stosw; stosb`.
+// 2026-05-09 GraniteCub: tried 13 focused variants: manual dword loop for groups_used,
+// manual loops for both arrays, raw address `(char*)this+0x19E`, temp pointer/temp size,
+// comma pointer assignment, volatile pointer, array reference, expression/UL size spellings,
+// and pointer-before-size/source-order variants. All either stayed in the same 8-byte
+// setup-order drift or regressed into immediate stores/manual-loop basin. No inline asm/hacks.
 #include <string.h>
 class RGE_Player {
 public:

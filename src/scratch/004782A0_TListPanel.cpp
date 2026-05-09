@@ -11,6 +11,14 @@
 // 3. TListPanel virtual only: layout wrong (base at offset 4)
 // 4. /O1 both virtual: 63.7% - vptr=0 at end, push/pop for const 1
 // 5. Field reordering match: no effect - vptr=0 always inserted
+// 2026-05-09 GraniteCub: tried 10 more focused variants: derived/base/both
+// __declspec(novtable), manual vptr assignment, flat non-inherited TListPanel with
+// explicit base ctor call, volatile field stores, local `one = 1`, alternate vptr
+// source positions, /O1, and /Od+/GX. Best flat+volatile basin removes the vptr-zero
+// safety store but VC5 hoists the manual vptr store immediately after zeroing EAX and
+// uses EAX as the constant-1 register; original needs `mov ecx,1`, five zero stores,
+// `field_19C=ecx`, then the vptr store. Existing inherited basin remains the cleaner
+// source but has the automatic vptr-zero/version-scheduling blocker. No inline asm/hacks.
 //
 // No C++ source or compiler flag fix found. VC5-version difference.
 // The 1998 build also sets vtable mid-body (after some field stores), while
