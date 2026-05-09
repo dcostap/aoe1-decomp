@@ -3773,3 +3773,27 @@ This can preserve both the simple `jl loop` backedge and the shared final epilog
 ### Member helper surface can preserve `this` and call-argument scheduling
 
 When a method calls helper routines that are really same-class `thiscall` helpers, declaring them as free/static helpers may let VC5 treat `ECX` as a scratch register and pre-load all stack arguments, even if the resulting call arity is behaviorally similar. A same-class member helper declaration keeps `ECX` live as `this` and can produce the original stack-argument load/push interleaving. Caveat: if two source call sites are byte-identical, VC5 may tail-merge them; if the original kept separate source-line call sites, a distinct local declaration/surface for one verified-same helper call can block merging, but review this carefully because relocation-masked comparisons do not prove helper identity by themselves.
+
+## Lesson: Plain C++ callee declarations can trigger /GX constructor base-unwind frames
+
+For compact /GX constructors that call a nontrivial base constructor and then call a helper such as `rge_read`, declaring the helper as `extern "C"` can suppress the C++ EH constructor frame entirely: VC5 emits only the short non-EH body even though the original has the `push -1 / fs:[0]` frame and a state store after the base ctor.
+
+Declare the helper as an ordinary C++ function instead:
+
+```cpp
+void rge_read(int handle, void* buffer, int count);
+```
+
+Try when:
+- a constructor under `/GX` is byte-perfect in the body but the rebuilt object is missing the whole EH prologue/epilogue;
+- adding fake cleanup locals/destructors creates the right frame size but inserts extra normal-path destructor calls;
+- the call after the base constructor is currently declared `extern "C"`.
+
+Why it helps:
+- VC5 treats the plain C++ call as potentially throwing, so it emits the base-subobject unwind state for the already-constructed base;
+- the call instruction itself remains a normal relocation-masked direct call, so this changes EH scaffolding without changing the intended helper call surface.
+
+Caveat:
+- keep `/GX` as a deliberate per-function flag only when the original really has the EH frame; do not add fake EH-relevant locals just to force the frame.
+
+Reference: `00405510` and `004CF090` matched by changing only `rge_read` from `extern "C"` to a plain C++ declaration.

@@ -1,4 +1,7 @@
 // VA: 00470CB0 reset_selected (101B)
+// ACCEPTED_DRIFT: manually reviewed localized setup-order drift before the second
+// memset only. `mov ecx,1Fh` and `lea edi,[edx+19E]` are independent before
+// `rep stosd`; stores/counts and all cleared ranges are identical.
 // Best basin: high-level memset form is exact except the second memset setup order.
 // Original after first `rep stosd`: `lea edi,[edx+19E]; mov ecx,1Fh; rep stosd; stosw; stosb`.
 // VC5 emits `mov ecx,1Fh; lea edi,[edx+19E]; rep stosd; stosw; stosb`.

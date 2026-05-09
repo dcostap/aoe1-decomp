@@ -1,3 +1,6 @@
+// ACCEPTED_DRIFT: manually reviewed localized 6-byte drift in only the second
+// Dib size calculation before memcpy. Both forms compute `biSize + biClrUsed*4 +
+// biSizeImage` and pass the same dst/src/size to memcpy; allocation path is exact.
 // tried direct GlobalAlloc/GlobalLock/memcpy form; VC5 kept inlining memcpy into rep movs
 // tried forcing memcpy out with pragma/prototype; mismatch stayed at the copy helper basin
 // tried <string.h>, plain extern memcpy(int/ulong), grouped expressions, temporary partial sums, dword-array field access, and named locals; the best basin uses plain extern memcpy plus volatile biSizeImage
