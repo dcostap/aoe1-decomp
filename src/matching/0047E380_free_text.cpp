@@ -1,8 +1,8 @@
-// first pass: walk the text-node list, free each payload, clear the list, then rebuild draw state
-// if this is sticky, the remaining gap is likely just the exact vtable-call shape at the tail
-// tried the straight node/free loop with a raw tail vcall; prolog drifted to EBP and the tail call shape was wrong
-// tried a virtual-slot spelling and it kept shifting the class layout / prolog basin instead of landing on the packet
-// leaving this in scratch because the remaining diff is the init/prolog + tail-call basin, not the list-free logic
+// 0047E380 TTextPanel::free_text
+// Attempt log:
+// 1. Prior straight loop used wrong object/list offsets (+F8/+FC) and node next at +8, causing EBP/EDI basin.
+// 2. Corrected TTextPanel layout (vptr + pad to list at +F4) and TextNode next at +0C.
+
 extern "C" void __cdecl free(void* block);
 
 class TTTextPanel {
@@ -20,11 +20,11 @@ public:
     struct TextNode {
         char* text;
         char* text2;
+        char* pad_08;
         TextNode* next;
-        char* pad_0C;
     };
 
-    char pad_00[0xF4];
+    char pad_04[0xF4 - 4];
     TextNode* list;
     short num_lines;
 
@@ -33,10 +33,7 @@ public:
 };
 
 void TTTextPanel::free_text(void) {
-    TextNode* node;
-    TextNode* next;
-
-    node = this->list;
+    TextNode* node = this->list;
     if (node != 0) {
         do {
             if (node->text != 0) {
@@ -45,9 +42,9 @@ void TTTextPanel::free_text(void) {
             if (node->text2 != 0) {
                 free(node->text2);
             }
-            next = node->next;
-            free(node);
-            node = next;
+            TextNode* old = node;
+            node = node->next;
+            free(old);
         } while (node != 0);
         this->list = 0;
     }
