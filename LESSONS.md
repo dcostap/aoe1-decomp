@@ -3683,3 +3683,7 @@ Try when:
 
 Caveat:
 - use this only when the global truly is being treated as an untyped byte base in the original addressing; typed globals may be preferable for ordinary field access.
+
+### Let VC5 inline `strcmp` from natural source before hand-writing byte loops
+
+For small string-compare gates, a natural `strcmp(a, b) != 0` spelling can make VC5 emit its optimized inline two-byte-at-a-time compare kernel, including the characteristic `mov dl/[eax]`, `mov bl/[esi]`, `sbb eax,eax; sbb eax,-1` result construction. Hand-written decompiler loops with explicit bool/less-than state often preserve behavior but add spills or shift the register basin. Pair this with an accurately positioned virtual method surface when the compare guards a virtual call; wrong vtable slot declarations can leave only a tiny offset mismatch after the inline `strcmp` body matches.
