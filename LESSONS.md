@@ -3687,3 +3687,19 @@ Caveat:
 ### Let VC5 inline `strcmp` from natural source before hand-writing byte loops
 
 For small string-compare gates, a natural `strcmp(a, b) != 0` spelling can make VC5 emit its optimized inline two-byte-at-a-time compare kernel, including the characteristic `mov dl/[eax]`, `mov bl/[esi]`, `sbb eax,eax; sbb eax,-1` result construction. Hand-written decompiler loops with explicit bool/less-than state often preserve behavior but add spills or shift the register basin. Pair this with an accurately positioned virtual method surface when the compare guards a virtual call; wrong vtable slot declarations can leave only a tiny offset mismatch after the inline `strcmp` body matches.
+
+## Lesson: Adjacent non-volatile member stores may need reversed source order
+
+VC5 can reorder adjacent independent non-volatile member assignments, especially before a following member call, by member offset / scheduling pressure rather than preserving source order. If the original stores a higher-offset member first, then interleaves a call argument push or `this` reload, then stores a lower-offset member, try writing the lower-offset assignment first in source and the higher-offset assignment second:
+
+```cpp
+this->field_140 = a;
+this->field_144 = b;
+this->member_call(arg);
+```
+
+This can produce original-looking code such as loading the higher-offset value first, storing `field_144`, pushing the call argument, then storing `field_140` before the call. Marking fields `volatile` is usually too strong: it preserves source order but can also force both stores to occur before the call setup, missing the compiler's natural interleaving.
+
+### Object and node padding offsets can decide the saved-register basin
+
+When a simple list-walk/free loop is behaviorally right but VC5 saves an extra register or chooses EBP instead of EBX for `this`, verify both the containing object offset and the node field offsets before reshaping control flow. A class with virtuals needs the vptr counted in the padding (`pad_04[target-4]`, not `pad_00[target]`), and a linked-list node's `next` may sit after an unused/padding field. Getting `this->list` and `node->next` at the exact binary offsets can remove artificial temporaries (like an EDI-held next pointer) and land the natural two-register loop.
